@@ -9,7 +9,7 @@
 {% if include.render_dropdown and tmp.size > 0 %}
   <li class="dropdown-header">Basic</li>
   {% for tutorial in tmp %}
-    <li><a href="{{ site.root }}{{ tutorial.url }}">{{ tutorial.title }}</a></li>
+    <li><a href="{{ site.baseurl }}{{ tutorial.url }}">{{ tutorial.title }}</a></li>
   {% endfor %}
 {% endif %}
 {% assign categories = tutorials | group_by:"category" | sort: "name" %}
@@ -19,7 +19,7 @@
     {% if include.render_dropdown %}
       <li class="dropdown-header">{{ category.name }}</li>
       {% for tutorial in category.items %}
-        <li><a href="{{ site.root }}{{ tutorial.url }}">{{ tutorial.title }}</a></li>
+        <li><a href="{{ site.baseurl }}{{ tutorial.url }}">{{ tutorial.title }}</a></li>
       {% endfor %}
     {% endif %}
   {% endif %}
@@ -30,7 +30,7 @@
   {% if include.render_dropdown %}
     <li class="dropdown-header">Other</li>
     {% for tutorial in other.items %}
-      <li><a href="{{ site.root }}{{ tutorial.url }}">{{ tutorial.title }}</a></li>
+      <li><a href="{{ site.baseurl }}{{ tutorial.url }}">{{ tutorial.title }}</a></li>
     {% endfor %}
   {% endif %}
 {% endif %}

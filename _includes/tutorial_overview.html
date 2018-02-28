@@ -12,7 +12,7 @@
       {% for prerequisite in page.prerequisites %}
         {% assign prereq_url = '/tutorials/' | append: prerequisite | append: '/' %}
         {% assign tutorial = site.pages | where:"url", prereq_url | first %}
-        <li><a href="{{ site.root }}{{ tutorial.url }}">{{ tutorial.title }}</a></li>
+        <li><a href="{{ site.baseurl }}{{ tutorial.url }}">{{ tutorial.title }}</a></li>
       {% endfor %}
     {% else %}
       <li>None</li>
