@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta http-equiv="last-modified" content="2018-02-28 03:01:49 -0600">
+    <meta http-equiv="last-modified" content="2018-02-28 17:16:29 -0600">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- meta "search-domain" used for google site search function google_search() -->
     <meta name="search-domain" value="">
@@ -143,7 +143,7 @@
     
     <h1 class="maintitle">Getting Started</h1>
     <h3 class="subtitle">A very short introduction to RevBayes & Rev</h3>
-    <h3 class="maintitle">Mike May and Sebastian H&#246;hna</h3>
+    <h3 class="maintitle"></h3>
     
   </div>
   <div class="col-md-1 no-print">
@@ -156,98 +156,60 @@
 </div>
 
 
-<blockquote class="objectives">
+<blockquote class="overview" id="overview">
   <h2>Overview</h2>
 
   <div class="row">
     <div class="col-md-9">
         <strong>Prerequisites</strong>
         <ul>
-    
-      <li>None</li>
-    
+        
+          <li>None</li>
+        
         </ul>
-      </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-9">
-      <strong>Objectives</strong>
-      <ul>
-	
-	<li><p>Brief overview of basic datatypes.</p>
-</li>
-	
-	<li><p>Syntax for defining a function.</p>
-</li>
-	
-	<li><p>Installing, updating, and importing packages.</p>
-</li>
-	
-	<li><p>Verify that everyone’s Python environment is ready.</p>
-</li>
-	
-      </ul>
     </div>
   </div>
-
 </blockquote>
 
-<h1 id="basic-commands">Basic Commands</h1>
-
-<h2 id="introduction">Introduction</h2>
-
-<p>This tutorial demonstrates the very basic syntactical features of and .
-A more elaborate introduction into and probabilistic graphical models is
-provided . A good reference for probabilistic graphical models for
-Bayesian phylogenetic inference is given in <a href="#Hoehna2014b">(Höhna et al., 2014)</a>. The
-statistical examples are borrowed from a fourth year statistics course
-taught in the fall term 2011 at Stockholm University.</p>
-
-<p>The first section of this tutorial involves</p>
-
-<ol>
-  <li>
-    <p>Creating different types of variables.</p>
-  </li>
-  <li>
-    <p>Learning about functions.</p>
-  </li>
-</ol>
-
-<p>Then we will see how to perform statistical inference using and by
-implementing a Monte Carlo algorithm. Finally, we will see how ’s
-built-in functions vastly simplify this inference task.</p>
-
-<p>Let’s start with the basic concepts for the interactive use of with (the
-language of ). You should try to execute the statements step by step,
-look at the output and try to understand what and why things are
-happening. We start with some simple concepts to get familiar and used
-to . By now you should have executed and you should see the command
-prompt waiting for input. The best exercise is to write these statements
-exactly in .</p>
-
-<h2 id="starting">Starting</h2>
+<blockquote class="tutorial_files">
+  <h2>Data files and scripts</h2>
+  
+    <div class="row">
+      <div class="col-md-9">
+          <strong>Data Files</strong>
+          <ul id="data_files">
+          
+            <li><a href="/revbayes_tutorials/tutorials/intro/primates.nex">primates.nex</a></li>
+          
+            <li><a href="/revbayes_tutorials/tutorials/intro/primates.tre">primates.tre</a></li>
+          
+          </ul>
+        </div>
+    </div>
+  
+</blockquote>
+<h1 id="basic-rev-commands">Basic <code class="highlighter-rouge">Rev</code> Commands</h1>
 
 <p>This tutorial demonstrates the basic syntactical features of <code class="highlighter-rouge">RevBayes</code>
-and the <code class="highlighter-rouge">Rev</code> scripting language. Let’s start with the basic concepts
+and the <code class="highlighter-rouge">Rev</code> scripting language. A good reference for probabilistic graphical models for
+Bayesian phylogenetic inference is given in <a href="#Hoehna2014b">(Höhna et al., 2014)</a>. Let’s start with the basic concepts
 for the interactive use of <code class="highlighter-rouge">RevBayes</code> with <code class="highlighter-rouge">Rev</code> (the language of
 <code class="highlighter-rouge">RevBayes</code>). You should try to execute the statements step by step, look
 at the output and try to understand what and why things are happening.</p>
 
-<p>First, open up your terminal and type . This should launch and give you
-a command prompt (the <code class="highlighter-rouge">&gt;</code> character). This means is waiting for input.</p>
+<p>First, open up your terminal and type <code class="highlighter-rouge">RevBayes</code>. This should launch <code class="highlighter-rouge">RevBayes</code> and give you
+a command prompt (the <code class="highlighter-rouge">&gt;</code> character). This means <code class="highlighter-rouge">RevBayes</code> is waiting for input.</p>
 
 <p><img src="figures/terminal.png" alt="image" /></p>
 
-<h2 id="operators-and-functions">Operators and Functions</h2>
+<h2 class="section" id="operators-and-functions">Operators and Functions</h2>
 
-<p>is an interpreted language for statistical computing and phylogenetic
+<p><code class="highlighter-rouge">Rev</code> is an interpreted language for statistical computing and phylogenetic
 analysis. Therefore, the basics are simple mathematical operations.
 Entering each of the following lines will automatically execute these
 operations.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Simple mathematical operators:
+<div output="intro.Rev" class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Simple mathematical operators:
 1 + 1                            # Addition
 10 - 5                           # Subtraction
 5 * 5                            # Multiplication
@@ -287,7 +249,7 @@ sqrt(16)                         # square root function
 power(2,2)                       # power function: power(a,b) = a^b
 </code></pre></div></div>
 
-<p>Notice that is case-sensitive. That means, distinguishes upper and lower
+<p>Notice that <code class="highlighter-rouge">Rev</code> is case-sensitive. That means, <code class="highlighter-rouge">Rev</code> distinguishes upper and lower
 case letter for both variable names and function names. For example,
 only the first of these two calls will work:</p>
 
@@ -295,12 +257,12 @@ only the first of these two calls will work:</p>
 Exp(1)                           # wrong upper case name
 </code></pre></div></div>
 
-<h2 id="variable-declaration-and-assignment">Variable Declaration and Assignment</h2>
+<h2 class="section" id="variable-declaration-and-assignment">Variable Declaration and Assignment</h2>
 
 <p>One of the most important features of (or any programming language,
 really) is the ability to declare and assign variables. Variables store
 information to be referenced later, and can change throughout the
-execution of the program. There are three kinds of variables in , called
+execution of the program. There are three kinds of variables in <code class="highlighter-rouge">RevBayes</code>, called
 <em>constant</em>, <em>deterministic</em>, and <em>stochastic</em> variables. Constant
 variables contain values that are not random in your model.
 Deterministic variables are functions of other variables. Stochastic
@@ -343,7 +305,7 @@ c := ln(b)
 c 
 </code></pre></div></div>
 
-<p>Finally, we will create the third type of variables in : stochastic
+<p>Finally, we will create the third type of variables in <code class="highlighter-rouge">RevBayes</code>: stochastic
 variables. We will create a random variable <code class="highlighter-rouge">x</code> from an exponential
 distribution with parameter <code class="highlighter-rouge">lambda</code>. Stochastic assignments use the
 $\sim$ operation.</p>
@@ -367,16 +329,20 @@ x.probability()                  # print the probability if `x'
 x.lnProbability()                # print the log-probability if `x'
 </code></pre></div></div>
 
-<h2 id="distributions-and-random-numbers">Distributions and Random Numbers</h2>
+<h2 class="section" id="distributions-and-random-numbers">Distributions and Random Numbers</h2>
 
 <p>provides functions for common statistical distributions. We’ll
 demonstrate by generating random exponential numbers as we did in
 lecture. Recall that we can transform a random variable $u$ sampled from
 a Uniform(0,1) distribution into an exponential distribution with rate
-parameter $\lambda$: <script type="math/tex">% <![CDATA[
+parameter $\lambda$:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
 \begin{aligned}
     u &\sim \text{Uniform(0,1)}\\
-    x &= -\frac{1}{\lambda \ln u}\end{aligned} %]]></script> In , we might describe
+    x &= -\frac{1}{\lambda \ln u}\end{aligned} %]]></script>
+
+<p>In <code class="highlighter-rouge">RevBayes</code>, we might describe
 $u$ as a stochastic variable, and $x$ as a deterministic variable (since
 it is a function of $u$):</p>
 
@@ -400,7 +366,7 @@ x ~ dnExponential(lambda)
 x
 </code></pre></div></div>
 
-<h2 id="vectors">Vectors</h2>
+<h2 class="section" id="vectors">Vectors</h2>
 
 <p>Individual variables can have more than one value. Variables that have
 more than one value are called <em>vectors</em>. The simplest way to create a
@@ -417,21 +383,21 @@ v[1] &lt;- 10                       # change the value of the first entry
 v
 </code></pre></div></div>
 
-<h2 id="for-loops"><code class="highlighter-rouge">for</code> loops</h2>
+<h2 class="section" id="for-loops"><code class="highlighter-rouge">for</code> loops</h2>
 
 <p><code class="highlighter-rouge">for</code> loops are important programming structures that allow you to
 repeat the same statement a number of times on different variables. The
 basic structure of a <code class="highlighter-rouge">for</code> loop is:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># a for loop
-for (&lt;variable&gt; in &lt;set of values&gt;) {
-   &lt;statements using variable&gt;
+for ([variable] in [set of values]) {
+   [statements using variable]
 }
 </code></pre></div></div>
 
 <p>The <code class="highlighter-rouge">for</code> statement is followed by a set of parenthesis containing
-<code class="highlighter-rouge">&lt;variable&gt;</code>, which contains the name of the variable being iterated,
-and <code class="highlighter-rouge">&lt;set of values&gt;</code>, which are the values that the variable iterates
+<code class="highlighter-rouge">[variable]</code>, which contains the name of the variable being iterated,
+and <code class="highlighter-rouge">[set of values]</code>, which are the values that the variable iterates
 over. The <code class="highlighter-rouge">for</code> loop variable is a special variable that is created by
 the <code class="highlighter-rouge">for</code> loop: you do not have to create it before executing the loop.
 This simple <code class="highlighter-rouge">for</code> loop creates the variable <code class="highlighter-rouge">i</code>, and for each value of
@@ -456,16 +422,6 @@ them into a <em>second</em> vector of exponential random numbers.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>q()
 </code></pre></div></div>
-
-<blockquote class="keypoints">
-  <h2>Key Points</h2>
-  <ul>
-    
-    <li><p>Are you flying yet?</p>
-</li>
-    
-  </ul>
-</blockquote>
 
 <ol class="bibliography"><li><span id="Hoehna2014b">Höhna, S., Heath, T. A., Boussau, B., Landis, M. J., Ronquist, F., &amp; Huelsenbeck, J. P. (2014). Probabilistic Graphical Model Representation in Phylogenetics. <i>Systematic Biology</i>, <i>63</i>(5), 753–771. https://doi.org/10.1093/sysbio/syu039</span></li></ol>
 
@@ -550,6 +506,8 @@ for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
 
     </div>
     <script src="/revbayes_tutorials/assets/js/jquery.min.js"></script>
+<script src="/revbayes_tutorials/assets/js/FileSaver.min.js"></script>
+<script src="/revbayes_tutorials/assets/js/jszip.min.js"></script>
 <script src="/revbayes_tutorials/assets/js/bootstrap.min.js"></script>
 <script src="/revbayes_tutorials/assets/js/lesson.js"></script>
 <script>
