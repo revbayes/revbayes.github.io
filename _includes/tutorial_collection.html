@@ -1,0 +1,40 @@
+{% comment %}
+  Find tutorials and order by category.
+{% endcomment %}
+{% if include.render_dropdown %}
+  <ul class="dropdown-menu">
+{% endif %}
+{% assign tutorials = site.pages | where:"layout", "tutorial" %}
+{% assign tmp = tutorials | where:"category", "Basic" %}
+{% if include.render_dropdown and tmp.size > 0 %}
+  <li class="dropdown-header">Basic</li>
+  {% for tutorial in tmp %}
+    <li><a href="{{ site.root }}{{ tutorial.url }}">{{ tutorial.title }}</a></li>
+  {% endfor %}
+{% endif %}
+{% assign categories = tutorials | group_by:"category" | sort: "name" %}
+{% for category in categories %}
+  {% if category.name != "Basic" and category.name != "" %}
+    {% assign tmp = tmp | concat: category.items %}
+    {% if include.render_dropdown %}
+      <li class="dropdown-header">{{ category.name }}</li>
+      {% for tutorial in category.items %}
+        <li><a href="{{ site.root }}{{ tutorial.url }}">{{ tutorial.title }}</a></li>
+      {% endfor %}
+    {% endif %}
+  {% endif %}
+{% endfor %}
+{% assign other = categories | where:"name","" | first %}
+{% if other.items.size > 0 %}
+  {% assign tmp = tmp | concat: other.items %}
+  {% if include.render_dropdown %}
+    <li class="dropdown-header">Other</li>
+    {% for tutorial in other.items %}
+      <li><a href="{{ site.root }}{{ tutorial.url }}">{{ tutorial.title }}</a></li>
+    {% endfor %}
+  {% endif %}
+{% endif %}
+{% assign tutorials = tmp %}
+{% if include.render_dropdown %}
+  </ul>
+{% endif %}
