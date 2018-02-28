@@ -1,0 +1,705 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="last-modified" content="2018-02-28 02:28:12 -0600">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- meta "search-domain" used for google site search function google_search() -->
+    <meta name="search-domain" value="">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/tutorial.css" />
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+	<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+    <title>RevBayes Tutorials: Introduction to Python Datatypes and Packages</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+      <a href="https://revbayes.github.io" class="pull-left">
+        <img class="navbar-logo" src="/assets/img/aquabayes.png" alt="RevBayes logo" />
+      </a>
+      
+      
+      <a class="navbar-brand" href="/">Home</a>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+
+	
+        <li><a href="/setup/">Setup</a></li>
+        <li class="dropdown">
+          <a href="/" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Tutorials <span class="caret"></span></a>
+          
+
+  <ul class="dropdown-menu">
+
+
+
+
+  <li class="dropdown-header">Basic</li>
+  
+    <li><a href="/tutorials/intro/">Getting Started</a></li>
+  
+
+
+
+  
+
+  
+
+  
+    
+    
+      <li class="dropdown-header">Data</li>
+      
+        <li><a href="/tutorials/datatypes/">Introduction to Python Datatypes and Packages</a></li>
+      
+    
+  
+
+
+
+  
+  
+    <li class="dropdown-header">Other</li>
+    
+      <li><a href="/tutorials/more-dataframes/">Indexing, Slicing, and Subsetting DataFrames in Python</a></li>
+    
+      <li><a href="/tutorials/starting-with-data/">Working With Pandas DataFrames in Python</a></li>
+    
+  
+
+
+
+  </ul>
+
+        </li>
+        <li><a href="/reference/">Reference</a></li>
+
+	
+        <li><a href="/license/">License</a></li>
+      </ul>
+      <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form>
+    </div>
+  </div>
+</nav>
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+    
+    
+  
+
+
+
+  
+  
+
+
+
+
+
+
+<div class="row">
+  <div class="col-md-1 no-print">
+    <h3>
+      
+      <a href="/tutorials/intro/"><span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span><span class="sr-only">previous tutorial</span></a>
+      
+    </h3>
+  </div>
+  <div class="col-md-10">
+    
+    <h1 class="maintitle">Introduction to Python Datatypes and Packages</h1>
+    <h3 class="subtitle">Blah blah blah</h3>
+    <h3 class="maintitle"></h3>
+    
+  </div>
+  <div class="col-md-1 no-print">
+    <h3>
+      
+      <a href="/tutorials/more-dataframes/"><span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span><span class="sr-only">next tutorial</span></a>
+      
+    </h3>
+  </div>
+</div>
+
+
+<blockquote class="objectives">
+  <h2>Overview</h2>
+
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        <ul>
+    
+      
+        
+        
+        <li><a href="/tutorials/intro/">Getting Started</a></li>
+      
+    
+        </ul>
+      </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-9">
+      <strong>Objectives</strong>
+      <ul>
+	
+	<li><p>Brief overview of basic datatypes like lists, tuples, &amp; dictionaries.</p>
+</li>
+	
+	<li><p>Syntax for defining a function.</p>
+</li>
+	
+	<li><p>Installing, updating, and importing packages.</p>
+</li>
+	
+	<li><p>Verify that everyone’s Python environment is ready.</p>
+</li>
+	
+      </ul>
+    </div>
+  </div>
+
+</blockquote>
+
+<h1 id="pythons-basic-built-in-datatypes">Python’s Basic Built-in Datatypes</h1>
+
+<h2 id="strings-integers-and-floats">Strings, integers and floats</h2>
+
+<p>The most basic data types in Python are strings, integers and floats:</p>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>text = "Go Cyclones"
+number = 42
+pi_value = 3.1415
+</code></pre></div></div>
+
+<p>Here we’ve assigned data to variables, namely <code class="highlighter-rouge">text</code>, <code class="highlighter-rouge">number</code> and <code class="highlighter-rouge">pi_value</code>,
+using the assignment operator <code class="highlighter-rouge">=</code>. The variable called <code class="highlighter-rouge">text</code> is a string which
+means it can contain letters and numbers. We could reassign the variable <code class="highlighter-rouge">text</code>
+to an integer too - but be careful reassigning variables as this can get
+confusing.</p>
+
+<p>To print out the value stored in a variable we can simply type the name of the
+variable into the interpreter:</p>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>text
+</code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Go Cyclones
+</code></pre></div></div>
+
+<p>however, in scripts we must use the <code class="highlighter-rouge">print</code> function:</p>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Comments start with #
+# Next line will print out text
+print(text)
+</code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Go Cyclones
+</code></pre></div></div>
+
+<h2 id="sequential-types-lists-and-tuples">Sequential types: Lists and Tuples</h2>
+
+<h3 id="lists">Lists</h3>
+
+<p><strong>Lists</strong> are a common data structure to hold an ordered sequence of
+elements. Each element can be accessed by an index.  Remember that Python indices start with 0 instead of 1:</p>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>numbers = [1,2,3]
+numbers[0]
+</code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1
+</code></pre></div></div>
+
+<p>A <code class="highlighter-rouge">for</code> loop can be used to access the elements in a list or other Python data structure one at a time:</p>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for num in numbers:
+    print(num)
+</code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1
+2
+3
+</code></pre></div></div>
+
+<p><strong>Remember</strong> <em>indentation</em> is very important in Python. Note that the second line in the
+example above is indented. This is Python’s way of marking a block of code.</p>
+
+<p>To add elements to the end of a list, we can use the <code class="highlighter-rouge">append</code> method:</p>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>numbers.append(4)
+print(numbers)
+</code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[1,2,3,4]
+</code></pre></div></div>
+
+<p>Methods are a way to interact with an object (a list, for example). We can invoke
+a method using the dot <code class="highlighter-rouge">.</code> followed by the method name and a list of arguments in parentheses.
+To find out what methods are available for an object, we can use the built-in <code class="highlighter-rouge">help</code> command (you can exit the help page by typing <code class="highlighter-rouge">q</code>:</p>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>help(numbers)
+</code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Help on list object:
+
+class list(object)
+ |  list() -&gt; new empty list
+ |  list(iterable) -&gt; new list initialized from iterable's items
+ ...
+</code></pre></div></div>
+
+<p>We can also access a list of methods using <code class="highlighter-rouge">dir</code>. Some methods names are
+surrounded by double underscores. Those methods are called “special”, and
+usually we access them in a different way. For example <code class="highlighter-rouge">__add__</code> method is
+responsible for the <code class="highlighter-rouge">+</code> operator.</p>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dir(numbers)
+</code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>['__add__', '__class__', '__contains__', ...]
+</code></pre></div></div>
+
+<h3 id="tuples">Tuples</h3>
+
+<p>A tuple is similar to a list in that it’s an ordered sequence of elements. However,
+tuples can not be changed once created (they are “immutable”). Tuples are
+created by placing comma-separated values inside parentheses <code class="highlighter-rouge">()</code>.</p>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code># tuples use parentheses
+my_tuple = (0,1,2)
+colours = ('red','blue','green')
+# Note: lists use square brackets
+my_list = [0,1,2]
+</code></pre></div></div>
+
+<blockquote class="challenge">
+  <h2 id="what-happens-when-you-try-to-change-a-list-versus-a-tuple">What happens when you try to change a list versus a tuple?</h2>
+
+  <p>Change the value of a single element in <code class="highlighter-rouge">my_list </code> and <code class="highlighter-rouge">my_tuple </code>.</p>
+
+  <blockquote class="solution">
+    <h2 id="solution-list">Solution: List</h2>
+
+    <div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>my_list[1] = 5
+print("my_list =", my_list)
+</code></pre></div>    </div>
+
+    <div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>my_list = [0, 5, 2]
+</code></pre></div>    </div>
+  </blockquote>
+
+  <blockquote class="solution">
+    <h2 id="solution-tuple">Solution: Tuple</h2>
+
+    <div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>my_tuple[1] = 5
+</code></pre></div>    </div>
+
+    <div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Traceback (most recent call last):
+ File "&lt;stdin&gt;", line 1, in &lt;module&gt;
+TypeError: 'tuple' object does not support item assignment
+</code></pre></div>    </div>
+  </blockquote>
+</blockquote>
+
+<h3 id="mixing-types">Mixing Types</h3>
+
+<p>In Python, it is also possible to mix types in a list or tuple. This makes it easy to store data of variable type.
+Thus, you can have a list that contains both natural numbers, floating point numbers, strings, lists, and tuples:</p>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>my_data = [('Manidae', 'Phataginus', 'tricuspis', 1821), 23.56, 30, [10.8,8.45,9.33]]
+</code></pre></div></div>
+
+<h2 id="dictionaries">Dictionaries</h2>
+
+<p>A <strong>dictionary</strong> is a container that holds pairs of objects - keys and values. This datatype is one of the most useful types in Python.</p>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>numbers = {"one" : 1, "two" : 2}
+numbers["one"]
+</code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1
+</code></pre></div></div>
+
+<p>Dictionaries work a lot like lists - except that you index them with <em>keys</em>.
+You can think about a key as a name for or a unique identifier for a set of values
+in the dictionary. Keys can only have particular types - they have to be
+“hashable”. Strings, numeric types, and tuples are acceptable, but lists are not.</p>
+
+<p>Here is a dictionary with natural numbers as keys. You access the values associated with each key, by providing the key in <code class="highlighter-rouge">[]</code></p>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>numbers2 = {1 : "one", 2 : "two"}
+numbers2[1]
+</code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>'one'
+</code></pre></div></div>
+
+<p>You can also use a tuple as a key, but only if the tuple contains hashable elements (strings, numbers, tuples):</p>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>my_dict2 = {(1,2,3) : 3}
+my_dict2
+</code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{(1, 2, 3): 3}
+</code></pre></div></div>
+
+<p>However, you cannot create a dictionary with a list as a key:</p>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bad = {[1,2,3] : 3}
+</code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Traceback (most recent call last):
+  File "&lt;stdin&gt;", line 1, in &lt;module&gt;
+TypeError: unhashable type: 'list'
+</code></pre></div></div>
+
+<p>To add an item to the dictionary we assign a value to a new key:</p>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>numbers2 = {1 : 'one', 2 : 'two'}
+numbers2[3] = 'three'
+numbers2
+</code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{1: 'one', 2: 'two', 3: 'three'}
+</code></pre></div></div>
+
+<p>It is often necessary to check if the dictionary has a key before adding it, otherwise you will overwrite the value associated with that key:</p>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if 4 not in numbers2:
+    numbers2[4] = 'four'
+numbers2
+</code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{1: 'one', 2: 'two', 3: 'three', 4: 'four'}
+</code></pre></div></div>
+
+<p>Using <code class="highlighter-rouge">for</code> loops with dictionaries is a little more complicated. We can do this
+in two ways.</p>
+
+<p>We can use the method <code class="highlighter-rouge">.items()</code> to return the key-value pair (this is the recommended way of iterating over a dictionary in Python):</p>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for key, value in numbers2.items():
+    print(key, "-&gt;", value)
+</code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1 -&gt; one
+2 -&gt; two
+3 -&gt; three
+4 -&gt; four
+</code></pre></div></div>
+
+<p>Alternatively, you can iterate over the keys. When you loop over the dictionary in this way, Python just assigns the key value to the iterator variable:</p>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for key in numbers2:
+    print(key, "-&gt;", numbers2[key])
+</code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1 -&gt; one
+2 -&gt; two
+3 -&gt; three
+4 -&gt; four
+</code></pre></div></div>
+
+<blockquote class="challenge">
+  <h2 id="can-you-reassign-the-value-of-an-element-in-a-dictionary">Can you reassign the value of an element in a dictionary?</h2>
+
+  <p>Try to reassign the second value of <code class="highlighter-rouge">numbers2</code> (in the <em>key value pair</em>) so that it no longer reads “two” but instead reads “spam and eggs”. What does your dictionary look like after you make this change?</p>
+
+  <blockquote class="solution">
+    <h2 id="solution">Solution</h2>
+
+    <div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>numbers2[2] = 'spam and eggs'
+numbers2
+</code></pre></div>    </div>
+
+    <div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{1: 'one', 2: 'spam and eggs', 3: 'three', 4: 'four'}
+</code></pre></div>    </div>
+  </blockquote>
+</blockquote>
+
+<p>It is important to note that dictionaries are <em>unordered</em> and do not remember the
+sequence of their items (i.e., the order in which key:value pairs were added to
+the dictionary). Because of this, the order in which items are returned from loops
+over dictionaries might appear random and can even change with time.
+If the dictionary’s keys are of a single type that can be sorted (numbers or strings), then you can get a sorted list of the keys and iterate over it in a loop.</p>
+
+<p>A loop over the unordered dictionary:</p>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>d = {3 : 'three', 2 : 'two', 6 : 'six', 5 : 'five'}
+for key, value in d.items():
+    print(key, ' = ', value)
+</code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>3  =  three
+2  =  two
+6  =  six
+5  =  five
+</code></pre></div></div>
+
+<p>To get a list of sorted keys, you can use the <code class="highlighter-rouge">sorted()</code> function on the list returned by the <code class="highlighter-rouge">.keys()</code> method:</p>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>d = {3 : 'three', 2 : 'two', 6 : 'six', 5 : 'five'}
+for key in sorted(d.keys()):
+    print(key, ' = ', d[key])
+</code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>2  =  two
+3  =  three
+5  =  five
+6  =  six
+</code></pre></div></div>
+
+<h2 id="functions">Functions</h2>
+
+<p>Defining part of a program in Python as a function is done using the <code class="highlighter-rouge">def</code>
+keyword. For example a function that takes two arguments and returns their sum
+can be defined as:</p>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>def add_function(a, b):
+    result = a + b
+    return result
+
+z = add_function(20, 22)
+print(z)
+</code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>42
+</code></pre></div></div>
+
+<h1 id="python-packages">Python Packages</h1>
+
+<p>There are an immense number of Python packages (also called libraries) out there that do a lot of different things. Python doesn’t have a heavily managed central resource like CRAN for R, but you can find a long and probably incomplete <a href="https://pypi.python.org/pypi/">list of packages for Python online</a>. Additionally, Anaconda provides easy installs of over 620 packages listed <a href="https://docs.continuum.io/anaconda/pkg-docs">here</a>.</p>
+
+<h2 id="installing-new-packages">Installing New Packages</h2>
+
+<p>Anaconda helps install many important Python packages. You can use <code class="highlighter-rouge">conda</code> to install others that do not come with the default install. One very useful Python library for bioinformatics is <a href="http://biopython.org/">biopython</a>. You can install this it easily with <code class="highlighter-rouge">conda</code> from your terminal window.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ conda install biopython
+</code></pre></div></div>
+
+<p>The prompt will ask you if you want to proceed with installing this package. Simply type <code class="highlighter-rouge">y</code> followed by the enter key and <code class="highlighter-rouge">conda</code> will manage the download and installation.</p>
+
+<p>For packages that are not available via Anaconda, you may also be able to use the application <code class="highlighter-rouge">pip</code> to install. If you like using ggplot2 in R, you may like to use it in Python. The Python <a href="http://ggplot.yhathq.com/">ggplot</a> package can be installed using <code class="highlighter-rouge">pip install</code>:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ pip install ggplot
+</code></pre></div></div>
+
+<h2 id="updating-packages">Updating Packages</h2>
+
+<p>Anaconda makes it easy to update packages in <code class="highlighter-rouge">conda</code>. For any individual package, you can use <code class="highlighter-rouge">update</code>. The example below updates the package <a href="http://pandas.pydata.org/">pandas</a>, which allows us to deal with complex data structures.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ conda update pandas
+</code></pre></div></div>
+
+<p>Alternatively, you can update all of the packages managed by Anaconda using:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ conda update --all
+</code></pre></div></div>
+
+<p>For packages installed using <code class="highlighter-rouge">pip</code>, you can use the <code class="highlighter-rouge">-U</code> flag or <code class="highlighter-rouge">--upgrade</code>.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ pip install ggplot -U
+</code></pre></div></div>
+
+<h2 id="importing-packages">Importing Packages</h2>
+
+<p>Once you have a package installed, you don’t have to do that again (except you may have to update them from time-to-time). However, you cannot use a package in any Python instance without importing it first. This is quite simple.</p>
+
+<p>Open a Python interpreter and type:</p>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import ggplot
+</code></pre></div></div>
+
+<p>For convenience, you can also give packages aliases in your scripts. That way you don’t have to type out the whole name each time. The example below imports the Python package <a href="http://www.numpy.org/">numpy</a> and uses the <code class="highlighter-rouge">numpy.sum()</code> function to add up the values in a list. Notice that <code class="highlighter-rouge">np</code> is an alias for <code class="highlighter-rouge">numpy</code>.</p>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import numpy as np
+np.sum([2,4,6])
+</code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>12
+</code></pre></div></div>
+
+<h3 id="just-for-fun">Just for Fun</h3>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import antigravity
+</code></pre></div></div>
+
+<p>And sage advice:</p>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import this
+</code></pre></div></div>
+
+<!-- ## Check your Python Environment
+
+Now that we have installed ggplot, let's check that our Python environment is ready for the lessons we'll do in class.
+These lessons were mainly adapted from [Data Carpentry](http://datacarpentry.org/) lessons on Python.
+That course provides an easy script that you can use to check your environment.
+
+1. Download this file and save it to your `python-bcb546` directory: [check_env.py](https://raw.githubusercontent.com/datacarpentry/python-ecology-lesson/gh-pages/_includes/scripts/check_env.py).
+2. Now run the file by executing it in your terminal window (make sure you're in the `python-bcb546` directory:
+
+```
+$ python check_env.py
+```
+
+If everything is installed properly you should get:
+
+~~~
+All checks passed. Your Anaconda installation is up and running and ready for Data Carpentry!
+~~~
+{: .output}
+
+Otherwise you will get an error. If you do not get the message above, let's take some time to make sure everyone is on the same page. -->
+
+<blockquote class="keypoints">
+  <h2>Key Points</h2>
+  <ul>
+    
+    <li><p>Are you flying yet?</p>
+</li>
+    
+  </ul>
+</blockquote>
+
+<ol class="bibliography"></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		{
+			elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2>References</h2>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+    
+    
+  
+
+
+
+  
+  
+
+
+
+
+
+
+<div class="row">
+  <div class="col-md-1 no-print">
+    <h3>
+      
+      <a href="/tutorials/intro/"><span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span><span class="sr-only">previous tutorial</span></a>
+      
+    </h3>
+  </div>
+  <div class="col-md-10">
+    
+  </div>
+  <div class="col-md-1 no-print">
+    <h3>
+      
+      <a href="/tutorials/more-dataframes/"><span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span><span class="sr-only">next tutorial</span></a>
+      
+    </h3>
+  </div>
+</div>
+
+
+      <footer>
+  <div class="row">
+    <div class="col-md-6" align="left">
+      <h5>
+	Content adapted by Walker Pett</a>
+      </h5>
+    </div>
+    <div class="col-md-6" align="right">
+      <h5>
+	<a href="<USERNAME>/<PROJECT>">Source</a>
+	/
+	<a href="mailto:willpett@iastate.edu">Contact</a>
+      </h5>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/jquery.min.js"></script>
+<script src="/assets/js/bootstrap.min.js"></script>
+<script src="/assets/js/lesson.js"></script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-37305346-2', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  </body>
+</html>
+<script type="text/javascript"
+    src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+  });
+</script>

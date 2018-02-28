@@ -1,0 +1,792 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="last-modified" content="2018-02-28 02:28:12 -0600">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- meta "search-domain" used for google site search function google_search() -->
+    <meta name="search-domain" value="">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/tutorial.css" />
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+	<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+    <title>RevBayes Tutorials: Indexing, Slicing, and Subsetting DataFrames in Python</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+      <a href="https://revbayes.github.io" class="pull-left">
+        <img class="navbar-logo" src="/assets/img/aquabayes.png" alt="RevBayes logo" />
+      </a>
+      
+      
+      <a class="navbar-brand" href="/">Home</a>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+
+	
+        <li><a href="/setup/">Setup</a></li>
+        <li class="dropdown">
+          <a href="/" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Tutorials <span class="caret"></span></a>
+          
+
+  <ul class="dropdown-menu">
+
+
+
+
+  <li class="dropdown-header">Basic</li>
+  
+    <li><a href="/tutorials/intro/">Getting Started</a></li>
+  
+
+
+
+  
+
+  
+
+  
+    
+    
+      <li class="dropdown-header">Data</li>
+      
+        <li><a href="/tutorials/datatypes/">Introduction to Python Datatypes and Packages</a></li>
+      
+    
+  
+
+
+
+  
+  
+    <li class="dropdown-header">Other</li>
+    
+      <li><a href="/tutorials/more-dataframes/">Indexing, Slicing, and Subsetting DataFrames in Python</a></li>
+    
+      <li><a href="/tutorials/starting-with-data/">Working With Pandas DataFrames in Python</a></li>
+    
+  
+
+
+
+  </ul>
+
+        </li>
+        <li><a href="/reference/">Reference</a></li>
+
+	
+        <li><a href="/license/">License</a></li>
+      </ul>
+      <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form>
+    </div>
+  </div>
+</nav>
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+    
+    
+  
+
+
+
+  
+  
+
+
+
+
+
+
+<div class="row">
+  <div class="col-md-1 no-print">
+    <h3>
+      
+      <a href="/tutorials/datatypes/"><span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span><span class="sr-only">previous tutorial</span></a>
+      
+    </h3>
+  </div>
+  <div class="col-md-10">
+    
+    <h1 class="maintitle">Indexing, Slicing, and Subsetting DataFrames in Python</h1>
+    <h3 class="subtitle"></h3>
+    <h3 class="maintitle"></h3>
+    
+  </div>
+  <div class="col-md-1 no-print">
+    <h3>
+      
+      <a href="/tutorials/starting-with-data/"><span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span><span class="sr-only">next tutorial</span></a>
+      
+    </h3>
+  </div>
+</div>
+
+
+<blockquote class="objectives">
+  <h2>Overview</h2>
+
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        <ul>
+    
+      <li>None</li>
+    
+        </ul>
+      </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-9">
+      <strong>Objectives</strong>
+      <ul>
+	
+	<li><p>Extract data using column headings and index locations.</p>
+</li>
+	
+	<li><p>Use slicing to select sets of data from a DataFrame.</p>
+</li>
+	
+	<li><p>Use label and integer-based indexing to select ranges of data in a DataFrame.</p>
+</li>
+	
+	<li><p>Create a copy of a DataFrame.</p>
+</li>
+	
+	<li><p>Locate subsets of data using masks.</p>
+</li>
+	
+      </ul>
+    </div>
+  </div>
+
+</blockquote>
+
+<h1 id="more-on-pandas-dataframes">More on Pandas DataFrames</h1>
+
+<p>In the last lesson, we read a CSV file into a DataFrame and
+saved it to a named object. With the data in memory, we performed basic math on the data, 
+calculated summary statistics, and created plots of the data. In this
+lesson, we will explore ways to access different parts of the data using indexing,
+slicing and subsetting.</p>
+
+<h2 id="import-pandas-and-load-the-data">Import Pandas and Load the Data</h2>
+
+<p>We will continue to use the surveys dataset that we worked with in the last
+exercise. Import the DataFrame and load the CSV file:</p>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import pandas as pd
+surveys_df = pd.read_csv("surveys.csv")
+</code></pre></div></div>
+
+<h1 id="indexing--slicing-in-python">Indexing &amp; Slicing in Python</h1>
+
+<p>We often want to work with subsets of a DataFrame object. There are
+different ways to accomplish this including: using labels (column headings),
+numeric ranges, or specific x,y index locations.</p>
+
+<h2 id="selecting-data-using-labels-column-headings">Selecting Data Using Labels: Column Headings</h2>
+
+<p>We use square brackets <code class="highlighter-rouge">[]</code> to select a subset of a Python object. For example,
+we can select all of data from a column named <code class="highlighter-rouge">species_id</code> from the <code class="highlighter-rouge">surveys_df</code>
+DataFrame by name:</p>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>surveys_df['species_id']
+</code></pre></div></div>
+
+<p>You can also call the column as an attribute, which gives you the same output as above</p>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>surveys_df.species_id
+</code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>0         NL
+1         NL
+2         DM
+3         DM
+4         DM
+5         PF
+6         PE
+7         DM
+...
+</code></pre></div></div>
+
+<p>We can create an new object that contains the data within the <code class="highlighter-rouge">species_id</code>
+column as a pandas Series:</p>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>surveys_species = surveys_df['species_id']
+</code></pre></div></div>
+
+<p>If we wish to view a set of columns, then
+we can pass a list of column names to select columns in the
+order we would like them in our subset. This is useful when we need to reorganize the data.
+<em>NOTE:</em> If a column name is not contained in the DataFrame, an exception
+(error) will be raised.</p>
+
+<p>View the species and plot number columns from the DataFrame:</p>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>surveys_df[['species_id', 'plot_id']]
+</code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>      species_id  plot_id
+0             NL        2
+1             NL        3
+2             DM        2
+3             DM        7
+4             DM        3
+5             PF        1
+6             PE        2
+7             DM        1
+...
+</code></pre></div></div>
+
+<p>The order you specify the column names is the same order they appear in the 
+subset:</p>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>surveys_df[['plot_id', 'species_id']]
+</code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>       plot_id species_id
+0            2         NL
+1            3         NL
+2            2         DM
+3            7         DM
+4            3         DM
+5            1         PF
+6            2         PE
+7            1         DM
+...
+</code></pre></div></div>
+
+<h2 id="extracting-range-based-subsets-slicing-subsets-of-rows">Extracting Range Based Subsets: Slicing Subsets of Rows</h2>
+
+<p>Slicing using the <code class="highlighter-rouge">[]</code> operator selects a set of rows and/or columns from a
+DataFrame. To slice out a set of rows, you must use the following syntax:
+<code class="highlighter-rouge">data_frame[start:stop]</code>.</p>
+
+<p>To select rows 0, 1, and 2 you specify the rows using the index ranges. Note that the 
+bounds you specify require that the start bound (<code class="highlighter-rouge">0</code>) is included in the subset and the stop bound
+(<code class="highlighter-rouge">3</code>) is one index greater than the last row you want to include.</p>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>surveys_df[0:3]
+</code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   record_id  month  day  year  plot_id species_id sex  hindfoot_length     weight
+0          1      7   16  1977        2         NL   M             32.0        NaN
+1          2      7   16  1977        3         NL   M             33.0        NaN
+2          3      7   16  1977        2         DM   F             37.0        NaN
+</code></pre></div></div>
+
+<blockquote class="callout">
+  <h2 id="python-slice-syntax">Python slice syntax</h2>
+  <p>The rules of Python slice syntax are as follows and also apply to 
+lists, stings, and other sequential datatypes. The following example shows 
+this using a list.</p>
+
+  <p>First create a list:</p>
+
+  <div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>a = list(range(10))
+a
+</code></pre></div>  </div>
+
+  <div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+</code></pre></div>  </div>
+
+  <p>Print the value of indices 1 through 4:</p>
+
+  <div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>a[0:5]
+</code></pre></div>  </div>
+
+  <div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[0, 1, 2, 3, 4]
+</code></pre></div>  </div>
+
+  <p>Print the list starting at index 4 through to the end:</p>
+
+  <div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>a[4:]
+</code></pre></div>  </div>
+
+  <div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[4, 5, 6, 7, 8, 9]
+</code></pre></div>  </div>
+
+  <p>Print the first 4 elements in the list:</p>
+
+  <div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>a[:4]
+</code></pre></div>  </div>
+
+  <div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[0, 1, 2, 3]
+</code></pre></div>  </div>
+
+  <p>Print the <em>last</em> element in the list:</p>
+
+  <div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>a[-1]
+</code></pre></div>  </div>
+
+  <div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>9
+</code></pre></div>  </div>
+
+  <p>The slice syntax includes a third component called the <em>step</em>. Where 
+<code class="highlighter-rouge">a[start:stop:step]</code> returns the list from the <code class="highlighter-rouge">start</code> index for every <code class="highlighter-rouge">step</code> up to the index
+before <code class="highlighter-rouge">stop</code>. The example below prints every third element in the list starting from <code class="highlighter-rouge">0</code>
+all the way to the end.</p>
+
+  <div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>a[::3]
+</code></pre></div>  </div>
+
+  <div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[0, 3, 6, 9]
+</code></pre></div>  </div>
+</blockquote>
+
+<blockquote class="challenge">
+  <h2 id="select-a-subset-of-rows-from-a-column">Select a subset of rows from a column</h2>
+
+  <p>Combine selecting a subset with column headings and slice syntax for rows. Get
+every 5th row for rows 20-60, from the columns <code class="highlighter-rouge">plot_id</code>, <code class="highlighter-rouge">species_id</code>, and <code class="highlighter-rouge">sex</code>.</p>
+
+  <blockquote class="solution">
+    <h2 id="solution">Solution</h2>
+
+    <div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>surveys_df[['plot_id', 'species_id','sex']][20:61:5]
+</code></pre></div>    </div>
+
+    <div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    plot_id species_id sex
+20       14         DM   F
+25       15         DM   M
+30       15         DM   F
+35       16         OT   F
+40       23         DM   F
+45       19         DM   M
+50       21         DM   F
+55       20         DM   M
+60       23         DM   M
+</code></pre></div>    </div>
+  </blockquote>
+</blockquote>
+
+<h2 id="changing-values-in-a-dataframe">Changing Values in a DataFrame</h2>
+
+<p>We can reassign values within subsets of our DataFrame. But before we do that, let’s make a 
+copy of our DataFrame so as not to modify our original imported data.</p>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>surveys_copy = surveys_df
+</code></pre></div></div>
+
+<p>Now set the first three rows of data in the DataFrame to 0 for every column</p>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>surveys_copy[0:3] = 0
+</code></pre></div></div>
+
+<p>Next, print the first 6 rows of <code class="highlighter-rouge">surveys_copy</code> using the <code class="highlighter-rouge">.head()</code> method:</p>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>surveys_copy.head(6)
+</code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   record_id  month  day  year  plot_id species_id sex  hindfoot_length  \
+0          0      0    0     0        0          0   0              0.0   
+1          0      0    0     0        0          0   0              0.0   
+2          0      0    0     0        0          0   0              0.0   
+3          4      7   16  1977        7         DM   M             36.0   
+4          5      7   16  1977        3         DM   M             35.0   
+5          6      7   16  1977        1         PF   M             14.0   
+
+   weight  
+0     0.0  
+1     0.0  
+2     0.0  
+3     NaN  
+4     NaN  
+5     NaN  
+</code></pre></div></div>
+
+<p>Now print the first 6 rows of <code class="highlighter-rouge">surveys_df</code></p>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>surveys_df.head(6)
+</code></pre></div></div>
+
+<p>What is the difference between the two data frames? Did <code class="highlighter-rouge">surveys_copy = surveys_df</code> make a 
+proper copy of the DataFrame?</p>
+
+<h2 id="referencing-objects-vs-copying-objects-in-python">Referencing Objects vs. Copying Objects in Python</h2>
+
+<p>We might have thought that we were creating a fresh copy of the <code class="highlighter-rouge">surveys_df</code> values when we 
+used <code class="highlighter-rouge">surveys_copy = surveys_df</code>. However, for objects of certain datatypes (like lists and 
+DataFrames) the assignment operator <code class="highlighter-rouge">=</code> only copies by reference. 
+That is, it creates a new variable name “<code class="highlighter-rouge">surveys_copy</code>” that refers to the <strong>same</strong> 
+object <code class="highlighter-rouge">surveys_df</code> refers to. 
+This means that there is only one object 
+(the DataFrame), and both <code class="highlighter-rouge">surveys_df</code> and <code class="highlighter-rouge">surveys_copy</code> refer to it. So when we assign 
+the first 3 rows 
+the value of 0 using the 
+<code class="highlighter-rouge">surveys_copy</code> DataFrame, the <code class="highlighter-rouge">surveys_df</code> DataFrame is modified too.</p>
+
+<p>To create a fresh, <em>duplicate</em> 
+copy of the <code class="highlighter-rouge">surveys_df</code>
+DataFrame we use the syntax <code class="highlighter-rouge">surveys_copy = surveys_df.copy()</code>. 
+But first we have to read the <code class="highlighter-rouge">surveys_df</code> again 
+because the current version contains the unintentional changes made to the first 3 rows.</p>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>surveys_df = pd.read_csv("surveys.csv")
+surveys_copy= surveys_df.copy()
+</code></pre></div></div>
+
+<p>Now reassign the first three rows to have the value <code class="highlighter-rouge">0</code> for all columns:</p>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>surveys_copy[0:3] = 0
+</code></pre></div></div>
+
+<p>Print the first 5 rows of both DataFrames:</p>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>surveys_copy.head(5)
+</code></pre></div></div>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>surveys_df.head(5)
+</code></pre></div></div>
+
+<p>Did both DataFrames get altered this time?</p>
+
+<h2 id="slicing-subsets-of-rows-and-columns">Slicing Subsets of Rows and Columns</h2>
+
+<p>We can select specific ranges of our data in 
+both the row and column directions
+using either label or integer-based indexing.</p>
+
+<ul>
+  <li><code class="highlighter-rouge">iloc</code>: indexing via <em>integer indices</em></li>
+  <li><code class="highlighter-rouge">loc</code>: indexing via <em>labels</em></li>
+</ul>
+
+<p>To select a subset of rows AND columns from our DataFrame, we can use the <code class="highlighter-rouge">.iloc[]</code>
+index. For example, we can select month, day and year (columns 2, 3 and 4 if we
+start counting at 1) for the first 3 rows in the DataFrame, like this:</p>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>surveys_df.iloc[0:3, 1:4]
+</code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   month  day  year
+0      7   16  1977
+1      7   16  1977
+2      7   16  1977
+</code></pre></div></div>
+
+<p>Notice that we asked for a slice from 0:3. This yielded 3 rows of data. When you
+ask for 0:3, you are actually telling python to start at index 0 and select rows
+0, 1, 2 <strong>up to but not including 3</strong>.</p>
+
+<p>Alternatively, <code class="highlighter-rouge">.loc[]</code> requires that you use labels to access the rows (row labels are their integer indices) and columns (column names).</p>
+
+<p>Here we can access the <code class="highlighter-rouge">species_id</code> for row number <code class="highlighter-rouge">5</code>:</p>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>surveys_df.loc[5, 'species_id']
+</code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>'PF'
+</code></pre></div></div>
+
+<p>If we want to use <code class="highlighter-rouge">.iloc[]</code> to access that same cell we would use:</p>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>surveys_df.iloc[5, 5]
+</code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>'PF'
+</code></pre></div></div>
+
+<p>Thus there are many different ways to access our DataFrame. Here’s another example: we can select all the columns for rows with index labels <code class="highlighter-rouge">0</code> and <code class="highlighter-rouge">10</code>:</p>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>surveys_df.loc[[0, 10], :]
+</code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    record_id  month  day  year  plot_id species_id sex  hindfoot_length  \
+0           1      7   16  1977        2         NL   M             32.0   
+10         11      7   16  1977        5         DS   F             53.0   
+
+    weight  
+0      NaN  
+10     NaN  
+</code></pre></div></div>
+
+<p>Or we can just view the <code class="highlighter-rouge">species_id</code>, <code class="highlighter-rouge">plot_id</code>, and <code class="highlighter-rouge">weight</code> of observation <code class="highlighter-rouge">777</code>:</p>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>surveys_df.loc[777, ['species_id', 'plot_id', 'weight']]
+</code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>species_id    DM
+plot_id        8
+weight        36
+Name: 777, dtype: object
+</code></pre></div></div>
+
+<p>NOTE: Labels must be found in the DataFrame or you will get a <code class="highlighter-rouge">KeyError</code>. The
+start bound and the stop bound are <em>included</em>.  When using <code class="highlighter-rouge">.loc[]</code> to access ros, integer indices
+but they refer to the index label and not the position. Thus
+when you use <code class="highlighter-rouge">.loc[]</code>, and select <code class="highlighter-rouge">1:4</code>, you will get a different result than using
+<code class="highlighter-rouge">.iloc[]</code> to select rows <code class="highlighter-rouge">1:4</code>.</p>
+
+<p>Here we use <code class="highlighter-rouge">.iloc[]</code> to get the first 2 columns for rows 1, 2, and 3:</p>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>surveys_df.iloc[1:4, :2]
+</code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   record_id  month
+1          2      7
+2          3      7
+3          4      7
+</code></pre></div></div>
+
+<p>If we use <code class="highlighter-rouge">.loc[]</code> to select <code class="highlighter-rouge">1:4</code>, then this will include all of the elements with the specified labels:</p>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>surveys_df.loc[1:4, ['record_id','month']]
+</code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   record_id  month
+1          2      7
+2          3      7
+3          4      7
+4          5      7
+</code></pre></div></div>
+
+<blockquote class="challenge">
+  <h2 id="access-specific-values-using-loc-and-iloc">Access specific values using <code class="highlighter-rouge">.loc[]</code> and <code class="highlighter-rouge">.iloc[]</code></h2>
+
+  <ol>
+    <li>
+      <p>Use <code class="highlighter-rouge">.loc[]</code> to view the <code class="highlighter-rouge">species_id</code> and <code class="highlighter-rouge">sex</code> of the animals observed in
+row 1, 3, and 5</p>
+    </li>
+    <li>
+      <p>Use <code class="highlighter-rouge">.iloc[]</code> to view the same thing.</p>
+    </li>
+  </ol>
+
+  <blockquote class="solution">
+    <h2 id="solution-1">Solution</h2>
+
+    <div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code># 1
+surveys_df.loc[[1, 3, 5], ['species_id','sex']]
+
+# 2
+surveys_df.iloc[1:6:2, [5,6]]
+</code></pre></div>    </div>
+  </blockquote>
+</blockquote>
+
+<h2 id="subsetting-data-using-criteria">Subsetting Data using Criteria</h2>
+
+<p>We can also select a subset of our data using specific criteria. For example, we can
+select all rows that have a year value of 2002.</p>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>surveys_df[surveys_df.year == 2002]
+</code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>record_id  month  day  year  plot_id species_id  sex  hindfoot_length  weight
+33320      33321      1   12  2002        1         DM    M     38      44 
+33321      33322      1   12  2002        1         DO    M     37      58
+33322      33323      1   12  2002        1         PB    M     28      45
+33323      33324      1   12  2002        1         AB  NaN    NaN     NaN
+33324      33325      1   12  2002        1         DO    M     35      29
+...
+35544      35545     12   31  2002       15         AH  NaN    NaN     NaN
+35545      35546     12   31  2002       15         AH  NaN    NaN     NaN
+35546      35547     12   31  2002       10         RM    F     15      14
+35547      35548     12   31  2002        7         DO    M     36      51
+35548      35549     12   31  2002        5        NaN  NaN    NaN     NaN
+
+[2229 rows x 9 columns]
+</code></pre></div></div>
+
+<p>Or we can select all rows that do not contain the year 2002.</p>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>surveys_df[surveys_df.year != 2002]
+</code></pre></div></div>
+
+<p>We can define sets of criteria too:</p>
+
+<div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>surveys_df[(surveys_df.sex == 'M') &amp; (surveys_df.year &lt;= 1985)]
+</code></pre></div></div>
+
+<blockquote class="challenge">
+  <h2 id="records-by-weight-and-year">Records by weight and year</h2>
+
+  <p>Select a subset of rows in the <code class="highlighter-rouge">surveys_df</code> DataFrame that contain data from
+the year 1999 and that contain weight values less than or equal to 8. How
+many rows did you end up with?</p>
+
+  <blockquote class="solution">
+    <h2 id="solution-2">Solution</h2>
+
+    <div class="python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>surveys_df[(surveys_df.weight &lt;= 8.0) &amp; (surveys_df.year == 1999)]
+</code></pre></div>    </div>
+    <div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>       record_id  month  day  year  plot_id species_id sex  hindfoot_length  \
+29082      29083      1   16  1999       21         RM   M             16.0   
+29196      29197      2   20  1999       18         RM   M             18.0   
+29421      29422      3   15  1999       16         RM   M             15.0   
+29903      29904     10   10  1999        4         PP   M             20.0   
+29905      29906     10   10  1999        4         PP   M             21.0   
+
+       weight  
+29082     8.0  
+29196     8.0  
+29421     8.0  
+29903     7.0  
+29905     4.0  
+</code></pre></div>    </div>
+  </blockquote>
+</blockquote>
+
+<!-- ## Looping Over a DataFrame
+
+To loop over a data frame we can access the row and its index using the `.iterrows()` method.
+
+~~~
+for index, row in surveys_df.iterrows():
+  
+~~~
+{: .python}
+ -->
+
+<blockquote class="keypoints">
+  <h2>Key Points</h2>
+  <ul>
+    
+    <li><p>Python can be used to work with complex data structures.</p>
+</li>
+    
+  </ul>
+</blockquote>
+
+<ol class="bibliography"></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		{
+			elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2>References</h2>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+    
+    
+  
+
+
+
+  
+  
+
+
+
+
+
+
+<div class="row">
+  <div class="col-md-1 no-print">
+    <h3>
+      
+      <a href="/tutorials/datatypes/"><span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span><span class="sr-only">previous tutorial</span></a>
+      
+    </h3>
+  </div>
+  <div class="col-md-10">
+    
+  </div>
+  <div class="col-md-1 no-print">
+    <h3>
+      
+      <a href="/tutorials/starting-with-data/"><span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span><span class="sr-only">next tutorial</span></a>
+      
+    </h3>
+  </div>
+</div>
+
+
+      <footer>
+  <div class="row">
+    <div class="col-md-6" align="left">
+      <h5>
+	Content adapted by Walker Pett</a>
+      </h5>
+    </div>
+    <div class="col-md-6" align="right">
+      <h5>
+	<a href="<USERNAME>/<PROJECT>">Source</a>
+	/
+	<a href="mailto:willpett@iastate.edu">Contact</a>
+      </h5>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/jquery.min.js"></script>
+<script src="/assets/js/bootstrap.min.js"></script>
+<script src="/assets/js/lesson.js"></script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-37305346-2', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  </body>
+</html>
+<script type="text/javascript"
+    src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+  });
+</script>

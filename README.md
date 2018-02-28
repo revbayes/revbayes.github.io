@@ -1,0 +1,16 @@
+revbayes-tutorials
+==========================
+
+This is the repository for the RevBayes tutorials website.
+
+Because this site makes use of third party jekyll plugins, the static site is stored on branch `master`, while the source files are stored on branch `source`.
+
+After first cloning this repository you should checkout the source branch. Then you should clone the master branch again to the `_site` directory.
+
+	git checkout source
+	git clone github.com/willpett/revbayes_tutorials.git _site
+
+Then, when making changes to the tutorials, the static site should be rebuilt and committed as well. The script `jekgit.sh` takes care of the steps involved. After making changes, simply run the script from the source repository, along with a commit message
+
+	sh jekgit.sh <commit message>
+
