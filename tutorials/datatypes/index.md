@@ -5,13 +5,7 @@ subtitle: Blah blah blah
 category: Data
 prerequisites:
 - intro
-objectives:
-- "Brief overview of basic datatypes like lists, tuples, & dictionaries."
-- "Syntax for defining a function."
-- "Installing, updating, and importing packages."
-- "Verify that everyone's Python environment is ready."
-keypoints:
-- "Are you flying yet?"
+- more-dataframes
 ---
 
 

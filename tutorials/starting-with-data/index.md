@@ -1,26 +1,6 @@
 ---
 layout: tutorial
 title: Working With Pandas DataFrames in Python
-teaching: 60
-exercises: 0
-questions:
-- "How do you import data into Python?"
-- "How do you create a DataFrame and access its contents?"
-- "How do you create simple plots?"
-objectives:
-- "Describe the Python Data Analysis Library (Pandas)."
-- "Load Pandas."
-- "Use `read_csv` to read tabular data into Python."
-- "Describe what a DataFrame is in Python."
-- "Access and summarize data stored in a DataFrame."
-- "Define indexing as it relates to data structures."
-- "Perform basic mathematical operations and summary statistics on data in a Pandas DataFrame."
-- "Create simple plots."
-keypoints:
-- "Python can be used to work with complex data structures."
-- "Pandas is a powerful tool for dealing with tabular data."
-- "You can easily summarize data."
-- "There are ways to readily visualize summaries."
 ---
 
 # Starting with Data

@@ -1,20 +1,6 @@
 ---
 layout: tutorial
 title: Indexing, Slicing, and Subsetting DataFrames in Python
-teaching: 60
-exercises: 0
-questions:
-- "How do you extract data from columns and rows?"
-- "How do you select subsets of the DataFrame?"
-- "How do you reassign values within the DataFrame?"
-objectives:
-- "Extract data using column headings and index locations."
-- "Use slicing to select sets of data from a DataFrame."
-- "Use label and integer-based indexing to select ranges of data in a DataFrame."
-- "Create a copy of a DataFrame."
-- "Locate subsets of data using masks."
-keypoints:
-- "Python can be used to work with complex data structures."
 ---
 
 # More on Pandas DataFrames

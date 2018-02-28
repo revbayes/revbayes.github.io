@@ -2,8 +2,13 @@
 ---
 
 body {
+  display:none;
   font-family: "Times New Roman", Times, serif;
   font-size: 16px;
+}
+
+html {
+  overflow:   scroll;
 }
 
 @media print
@@ -29,12 +34,14 @@ $color-output-bg:   #b7cfed !default;
 $color-output:      #808080 !default;
 
 // blockquotes
+$color-overview:    #b7cfed !default;
+$color-files:       #f4fd9c !default;
+
 $color-callout:     #f4fd9c !default;
 $color-challenge:   #eec275 !default;
 $color-checklist:   #dfd2a0 !default;
 $color-discussion:  #eec275 !default;
 $color-keypoints:   #7ae78e !default;
-$color-objectives:  #daee84 !default;
 $color-prereq:      #9cd6dc !default;
 $color-solution:    #ded4b9 !default;
 $color-testimonial: #fc8dc1 !default;
@@ -101,15 +108,26 @@ $codeblock-padding: 5px !default;
 
 }
 
+.tutorial_files{ @include bkSetup($color-files, ""); }
+.overview{ @include bkSetup($color-overview, "\e085"); }
+
 .callout{ @include bkSetup($color-callout, "\e146"); }
 .challenge{ @include bkSetup($color-challenge, "\270f"); }
 .checklist{ @include bkSetup($color-checklist, "\e067"); }
 .discussion{ @include bkSetup($color-discussion, "\e123"); }
 .keypoints{ @include bkSetup($color-keypoints, "\e101"); }
-.objectives{ @include bkSetup($color-objectives, "\e085"); }
 .prereq{ @include bkSetup($color-prereq, "\e124"); }
 .solution{ @include bkSetup($color-solution, "\e105"); }
 .testimonial{ @include bkSetup($color-testimonial, "\e143"); }
+
+.download_files {
+  cursor: pointer;
+  float: left;
+  padding-left: $codeblock-padding;
+  padding-right: $codeblock-padding;
+  display: inline-block;
+  -webkit-font-smoothing: antialiased;
+}
 
 //----------------------------------------
 // Override Bootstrap settings.

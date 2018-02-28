@@ -1,35 +1,39 @@
 {% comment %}
     Display an tutorials's prerequisites and learning objectives.
 {% endcomment %}
-<blockquote class="objectives">
+<blockquote class="overview" id="overview">
   <h2>Overview</h2>
 
   <div class="row">
     <div class="col-md-9">
         <strong>Prerequisites</strong>
         <ul>
-    {% if page.prerequisites.size > 0 %}
-      {% for prerequisite in page.prerequisites %}
-        {% assign prereq_url = '/tutorials/' | append: prerequisite | append: '/' %}
-        {% assign tutorial = site.pages | where:"url", prereq_url | first %}
-        <li><a href="{{ site.baseurl }}{{ tutorial.url }}">{{ tutorial.title }}</a></li>
-      {% endfor %}
-    {% else %}
-      <li>None</li>
-    {% endif %}
+        {% if page.prerequisites.size > 0 %}
+          {% for prerequisite in page.prerequisites %}
+            {% assign prereq_url = '/tutorials/' | append: prerequisite | append: '/' %}
+            {% assign tutorial = site.pages | where:"url", prereq_url | first %}
+            <li><a href="{{ site.baseurl }}{{ tutorial.url }}">{{ tutorial.title }}</a></li>
+          {% endfor %}
+        {% else %}
+          <li>None</li>
+        {% endif %}
         </ul>
-      </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-9">
-      <strong>Objectives</strong>
-      <ul>
-	{% for objective in page.objectives %}
-	<li>{{ objective|markdownify }}</li>
-	{% endfor %}
-      </ul>
     </div>
   </div>
+</blockquote>
 
+<blockquote class="tutorial_files">
+  <h2>Data files and scripts</h2>
+  {% if page.files.size > 0 %}
+    <div class="row">
+      <div class="col-md-9">
+          <strong>Data Files</strong>
+          <ul id="data_files">
+          {% for file in page.files %}
+            <li><a href="{{ site.baseurl }}{{ page.url }}{{ file }}">{{ file }}</a></li>
+          {% endfor %}
+          </ul>
+        </div>
+    </div>
+  {% endif %}
 </blockquote>
