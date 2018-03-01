@@ -31,7 +31,7 @@ for (var i = 0, element; element = _code[i]; i++) {
   var output = element.parentElement.parentElement.getAttribute("output");
   if( typeof scripts[output] == 'undefined' )
     scripts[output] = "";
-  scripts[output] += element.firstChild.innerHTML;
+  scripts[output] += element.firstChild.innerHTML.replace(/&lt;/g,'<')+"\n";
 }
 
 // Retrieve script file for download
