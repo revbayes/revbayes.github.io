@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta http-equiv="last-modified" content="2018-03-01 02:22:19 -0600">
+    <meta http-equiv="last-modified" content="2018-03-01 04:16:06 -0600">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- meta "search-domain" used for google site search function google_search() -->
     <meta name="search-domain" value="">
@@ -92,50 +92,10 @@
   </div>
 </nav>
 
-
-
-
-
-
-
-
-
-  
-
-  
-    
-    
-  
-
-
-
-
-
-
-
-
 <div class="row">
-  <div class="col-md-1 no-print">
-    <h3>
-      
-      <a href="/revbayes_tutorials/tutorials/intro/"><span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span><span class="sr-only">previous tutorial</span></a>
-      
-    </h3>
-  </div>
-  <div class="col-md-10">
-    
-    <h1 class="maintitle">Phylogenetic Inference Using RevBayes</h1>
-    <h3 class="subtitle">Substitution Models</h3>
-    <h4 class="maintitle">Sebastian H&#246;hna</h4>
-    
-  </div>
-  <div class="col-md-1 no-print">
-    <h3>
-      
-      <a href="/revbayes_tutorials/"><span class="glyphicon glyphicon-menu-up" aria-hidden="true"></span><span class="sr-only">tutorials home</span></a>
-      
-    </h3>
-  </div>
+	<h1 class="maintitle">Phylogenetic Inference Using RevBayes</h1>
+	<h3 class="subtitle">Substitution Models</h3>
+	<h4 class="maintitle">Sebastian H&#246;hna, Michael Landis, Brian Moore and Tracy Heath</h4>
 </div>
 
 
@@ -176,7 +136,7 @@
 <h1 id="introduction">Introduction</h1>
 
 <p>This tutorial provides the first protocol from our recent publication
-<a href="#Hoehna2017a">(Höhna, Landis, &amp; Heath, 2017)</a>. The second protocol is described in the <a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Partition_Tutorial/RB_Partition_Tutorial.pdf">Partitioned
+<a href="#Hoehna2017a">(Höhna et al. 2017)</a>. The second protocol is described in the <a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Partition_Tutorial/RB_Partition_Tutorial.pdf">Partitioned
 data analysis
 tutorial</a>
 and the third protocol is described in the <a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_BayesFactor_Tutorial/RB_BayesFactor_Tutorial.pdf">Bayes factor
@@ -234,7 +194,7 @@ summarizing the MCMC output by computing the maximum <em>a posteriori</em>
 tree.</p>
 
 <p>We first consider the simplest substitution model described by
-<a href="#Jukes1969">(Jukes &amp; Cantor, 1969)</a>. The instantaneous-rate matrix for the JC substitution
+<a href="#Jukes1969">(Jukes and Cantor 1969)</a>. The instantaneous-rate matrix for the JC substitution
 model is defined as</p>
 
 <script type="math/tex; mode=display">% <![CDATA[
@@ -438,14 +398,14 @@ function, which calculates the sum of any vector of values.</p>
 
 <blockquote class="discussion no-print">
   <h2 id="alternative-branch-length-priors">Alternative branch-length priors</h2>
-  <p>Some studies, <a href="#Brown2010">(Brown, Hedtke, Lemmon, &amp; Lemmon, 2010)</a> <a href="#Rannala2012">(Rannala, Zhu, &amp; Yang, 2012)</a>, have criticized the
+  <p>Some studies, <a href="#Brown2010">(Brown et al. 2010)</a> <a href="#Rannala2012">(Rannala et al. 2012)</a>, have criticized the
 exponential prior distribution for branch lengths because it induces a
 gamma-dsitributed tree-length and the mean of this gamma distribution
 grows with the number of taxa. For example, we can use instead a
 specific gamma prior distribution (or any other distribution defined on
 a positive real variable) for the tree length, and then use a Dirichlet
 prior distribution to break the tree length into the corresponding
-branch lengths <a href="#Zhang2012">(Zhang, Rannala, &amp; Yang, 2012)</a>.</p>
+branch lengths <a href="#Zhang2012">(Zhang et al. 2012)</a>.</p>
 
   <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># specify a prior distribution on the tree length with your desired mean
 TL ~ dnGamma(2,4)
@@ -503,7 +463,7 @@ to improve mixing (the efficiency of the MCMC simulation). In the case
 of our rooted tree, for example, we can use both a nearest-neighbor
 interchange move without and with changing the node ages (<code class="highlighter-rouge">mvNarrow</code> and <code class="highlighter-rouge">mvNNI</code>) and a
 fixed-nodeheight subtree-prune and regrafting move (<code class="highlighter-rouge">mvFNPR</code>) and its
-Metropolized-Gibbs variant (<code class="highlighter-rouge">mvGPR</code>) <a href="#Hoehna2008">(Höhna, Defoin-Platel, &amp; Drummond, 2008)</a> <a href="#Hoehna2012">(Höhna &amp; Drummond, 2012)</a>. We also need
+Metropolized-Gibbs variant (<code class="highlighter-rouge">mvGPR</code>) <a href="#Hoehna2008">(Höhna et al. 2008)</a> <a href="#Hoehna2012">(Höhna and Drummond 2012)</a>. We also need
 moves that change the ages of the internal nodes, <code class="highlighter-rouge">mvTreeSubscale</code> and <code class="highlighter-rouge">mvNodeTimeSlideUniform</code>.
 These moves do not have tuning parameters associated with them, thus you
 only need to pass in the <code class="highlighter-rouge">psi</code> node and proposal <code class="highlighter-rouge">weight</code>.</p>
@@ -656,7 +616,7 @@ output directory.</p>
 
 <p>Methods for visualizing the marginal densities of parameter values are
 not currently available in <code class="highlighter-rouge">RevBayes</code> itself. Thus, it is important to use programs
-like <code class="highlighter-rouge">Tracer</code> <a href="#Rambaut2011">(Rambaut &amp; Drummond, 2011)</a> to evaluate mixing and non-convergence.</p>
+like <code class="highlighter-rouge">Tracer</code> <a href="#Rambaut2011">(Rambaut and Drummond 2011)</a> to evaluate mixing and non-convergence.</p>
 
 <blockquote>
   <p>Look at the file called <code class="highlighter-rouge">output/primates_cytb_JC.log</code> in <code class="highlighter-rouge">Tracer</code>. There you see the posterior distribution of
@@ -950,7 +910,7 @@ rate of transversion substitutions? If so, by how much?</p>
   <li>
     <p>Like the HKY model, the Felsenstein 1981 (F81) substitution model
 has unequal stationary frequencies, but it assumes equal
-transition-transversion rates <a href="#Felsenstein1981">(Felsenstein, 1981)</a>. Can you set up the
+transition-transversion rates <a href="#Felsenstein1981">(Felsenstein 1981)</a>. Can you set up the
 F81 model and run an analysis?</p>
   </li>
   <li>
@@ -965,7 +925,7 @@ probabilities of phylogenetic relationships.</p>
 different rates of transition and transversion substitutions. Despite
 these extensions, the HKY model may still be too simplistic for many
 real datasets. Here, we extend the HKY model to specify the General Time
-Reversible (GTR) substitution model <a href="#Tavare1986">(Tavaré, 1986)</a>, which allows all six
+Reversible (GTR) substitution model <a href="#Tavare1986">(Tavaré 1986)</a>, which allows all six
 exchangeability rates to differ (Figure [fig:gtr]).</p>
 
 <p>The instantaneous-rate matrix for the GTR substitution model is:</p>
@@ -1092,7 +1052,7 @@ performed under the GTR substitution model.</p>
 <p>Members of the GTR family of substitution models assume that rates are
 homogeneous across sites, an assumption that is often violated by real
 data. We can accommodate variation in substitution rate among sites
-(ASRV) by adopting the discrete-gamma model <a href="#Yang1994a">(Yang, 1994)</a>. This model
+(ASRV) by adopting the discrete-gamma model <a href="#Yang1994a">(Yang 1994)</a>. This model
 assumes that the substitution rate at each site is a random variable
 that is described by a discretized gamma distribution, which has two
 parameters: the shape parameter, $\alpha$, and the rate parameter,
@@ -1216,7 +1176,7 @@ invariant site pattern may be achieved via multiple substitutions that
 happen to end in the same state for every species.</p>
 
 <p>Here we describe an extension to our phylogenetic model to accommodate
-invariable sites. Under the invariable-sites model <a href="#Hasegawa1985">(Hasegawa, Kishino, &amp; Yano, 1985)</a>, each
+invariable sites. Under the invariable-sites model <a href="#Hasegawa1985">(Hasegawa et al. 1985)</a>, each
 site is invariable with probability <code class="highlighter-rouge">pinvar</code>, and variable with probability
 $1-$ <code class="highlighter-rouge">pinvar</code>.</p>
 
@@ -1273,75 +1233,71 @@ run an analysis.</p>
   </li>
 </ul>
 
-<ol class="bibliography"><li><span id="Hoehna2017a">Höhna, S., Landis, M. J., &amp; Heath, T. A. (2017). Phylogenetic Inference using RevBayes. <i>Current Protocols in Bioinformatics</i>. https://doi.org/10.1002/cpbi.22</span></li>
-<li><span id="Jukes1969">Jukes, T. H., &amp; Cantor, C. R. (1969). Evolution of Protein Molecules. <i>Mammalian Protein Metabolism</i>, <i>3</i>, 21–132. https://doi.org/10.1016/B978-1-4832-3211-9.50009-7</span></li>
-<li><span id="Brown2010">Brown, J. M., Hedtke, S. M., Lemmon, A. R., &amp; Lemmon, E. M. (2010). When Trees Grow Too Long: Investigating the Causes of Highly Inaccurate Bayesian Branch-Length Estimates. <i>Systematic Biology</i>, <i>59</i>(2), 145–161. https://doi.org/10.1093/sysbio/syp081</span></li>
-<li><span id="Rannala2012">Rannala, B., Zhu, T., &amp; Yang, Z. (2012). Tail Paradox, Partial Identifiability, and Influential Priors in Bayesian Branch Length Inference. <i>Molecular Biology and Evolution</i>, <i>29</i>(1), 325–335.</span></li>
-<li><span id="Zhang2012">Zhang, C., Rannala, B., &amp; Yang, Z. (2012). Robustness of Compound Dirichlet Priors for Bayesian Inference of Branch Lengths. <i>Systematic Biology</i>, <i>61</i>(5), 779–784.</span></li>
-<li><span id="Hoehna2008">Höhna, S., Defoin-Platel, M., &amp; Drummond, A. J. (2008). Clock-Constrained Tree Proposal Operators in Bayesian Phylogenetic Inference. In <i>8th IEEE International Conference on BioInformatics and BioEngineering, 2008. BIBE 2008</i> (pp. 1–7).</span></li>
-<li><span id="Hoehna2012">Höhna, S., &amp; Drummond, A. J. (2012). Guided Tree Topology Proposals for Bayesian Phylogenetic Inference. <i>Systematic Biology</i>, <i>61</i>(1), 1–11.</span></li>
-<li><span id="Rambaut2011">Rambaut, A., &amp; Drummond, A. J. (2011, July). Tracer v1.5. http://tree.bio.ed.ac.uk/software/tracer/.</span></li>
-<li><span id="Felsenstein1981">Felsenstein, J. (1981). Evolutionary Trees from DNA Sequences: a Maximum Likelihood Approach. <i>Journal of Molecular Evolution</i>, <i>17</i>(6), 368–376. https://doi.org/10.1007/BF01734359</span></li>
-<li><span id="Tavare1986">Tavaré, S. (1986). Some Probabilistic and Statistical Problems in the Analysis of DNA Sequences. <i>Some Mathematical Questions in Biology: DNA Sequence Analysis</i>, <i>17</i>, 57–86.</span></li>
-<li><span id="Yang1994a">Yang, Z. (1994). Maximum Likelihood Phylogenetic Estimation from DNA Sequences with Variable Rates Over Sites: Approximate Methods. <i>Journal of Molecular Evolution</i>, <i>39</i>(3), 306–314. https://doi.org/10.1007/BF00160154</span></li>
-<li><span id="Hasegawa1985">Hasegawa, M., Kishino, H., &amp; Yano, T. (1985). Dating of the Human-Ape Splitting by a molecular Clock of Mitochondrial DNA. <i>Journal of Molecular Evolution</i>, <i>22</i>(2), 160–174. https://doi.org/10.1007/BF02101694</span></li></ol>
+<ol class="bibliography"><li><span id="Hoehna2017a">Höhna S., Landis M.J., Heath T.A. 2017. Phylogenetic Inference using RevBayes. Current Protocols in Bioinformatics.</span>
+
+<a href="https://doi.org/10.1002/cpbi.22">10.1002/cpbi.22</a>
+
+</li>
+<li><span id="Jukes1969">Jukes T.H., Cantor C.R. 1969. Evolution of Protein Molecules. Mammalian Protein Metabolism. 3:21–132.</span>
+
+<a href="https://doi.org/10.1016/B978-1-4832-3211-9.50009-7">10.1016/B978-1-4832-3211-9.50009-7</a>
+
+</li>
+<li><span id="Brown2010">Brown J.M., Hedtke S.M., Lemmon A.R., Lemmon E.M. 2010. When Trees Grow Too Long: Investigating the Causes of Highly Inaccurate Bayesian Branch-Length Estimates. Systematic Biology. 59:145–161.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syp081">10.1093/sysbio/syp081</a>
+
+</li>
+<li><span id="Rannala2012">Rannala B., Zhu T., Yang Z. 2012. Tail Paradox, Partial Identifiability, and Influential Priors in Bayesian Branch Length Inference. Molecular Biology and Evolution. 29:325–335.</span>
+
+</li>
+<li><span id="Zhang2012">Zhang C., Rannala B., Yang Z. 2012. Robustness of Compound Dirichlet Priors for Bayesian Inference of Branch Lengths. Systematic Biology. 61:779–784.</span>
+
+</li>
+<li><span id="Hoehna2008">Höhna S., Defoin-Platel M., Drummond A.J. 2008. Clock-Constrained Tree Proposal Operators in Bayesian Phylogenetic Inference. 8th IEEE International Conference on BioInformatics and BioEngineering, 2008. BIBE 2008.:1–7.</span>
+
+</li>
+<li><span id="Hoehna2012">Höhna S., Drummond A.J. 2012. Guided Tree Topology Proposals for Bayesian Phylogenetic Inference. Systematic Biology. 61:1–11.</span>
+
+</li>
+<li><span id="Rambaut2011">Rambaut A., Drummond A.J. 2011. Tracer v1.5. .</span>
+
+
+<a href="http://tree.bio.ed.ac.uk/software/tracer/">http://tree.bio.ed.ac.uk/software/tracer/</a>
+</li>
+<li><span id="Felsenstein1981">Felsenstein J. 1981. Evolutionary Trees from DNA Sequences: a Maximum Likelihood Approach. Journal of Molecular Evolution. 17:368–376.</span>
+
+<a href="https://doi.org/10.1007/BF01734359">10.1007/BF01734359</a>
+
+</li>
+<li><span id="Tavare1986">Tavaré S. 1986. Some Probabilistic and Statistical Problems in the Analysis of DNA Sequences. Some Mathematical Questions in Biology: DNA Sequence Analysis. 17:57–86.</span>
+
+</li>
+<li><span id="Yang1994a">Yang Z. 1994. Maximum Likelihood Phylogenetic Estimation from DNA Sequences with Variable Rates Over Sites: Approximate Methods. Journal of Molecular Evolution. 39:306–314.</span>
+
+<a href="https://doi.org/10.1007/BF00160154">10.1007/BF00160154</a>
+
+</li>
+<li><span id="Hasegawa1985">Hasegawa M., Kishino H., Yano T. 1985. Dating of the Human-Ape Splitting by a molecular Clock of Mitochondrial DNA. Journal of Molecular Evolution. 22:160–174.</span>
+
+<a href="https://doi.org/10.1007/BF02101694">10.1007/BF02101694</a>
+
+</li></ol>
 
 <script type="text/javascript">
 var _ol = document.querySelectorAll('ol');
 for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
 	if ( elem_ol.classList == "bibliography" ) {
 		var _li = elem_ol.getElementsByTagName("li");
-		for (var j = 0, elem_li; elem_li = _li[j]; j++)
-		{
-			elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
-		}
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
 		if(_li.length > 0)
 			elem_ol.outerHTML = "<h2>References</h2>"+elem_ol.outerHTML
 	}
 }
 </script>
-
-
-
-
-
-
-
-
-  
-
-  
-    
-    
-  
-
-
-
-
-
-
-
-
-<div class="row">
-  <div class="col-md-1 no-print">
-    <h3>
-      
-      <a href="/revbayes_tutorials/tutorials/intro/"><span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span><span class="sr-only">previous tutorial</span></a>
-      
-    </h3>
-  </div>
-  <div class="col-md-10">
-    
-  </div>
-  <div class="col-md-1 no-print">
-    <h3>
-      
-      <a href="/revbayes_tutorials/"><span class="glyphicon glyphicon-menu-up" aria-hidden="true"></span><span class="sr-only">tutorials home</span></a>
-      
-    </h3>
-  </div>
-</div>
-
 
     </div>
     <script src="/revbayes_tutorials/assets/js/jquery.min.js"></script>
