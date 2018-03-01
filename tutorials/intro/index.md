@@ -1,9 +1,9 @@
 ---
 layout: tutorial
-title: Getting Started
+title: Statistical Inference Using RevBayes
 subtitle: A very short introduction to RevBayes & Rev
+authors: Mike May and Sebastian H&#246;hna
 category: Basic
-files: ['primates.nex','primates.tre']
 prerequisites:
 ---
 
@@ -38,7 +38,6 @@ operations.
     10 / 2                           # Division
     2^3                              # Exponentiation
     5%2                              # Modulo
-{:output="intro.Rev"}
 
 ![image](figures/revbayes_operations.png)
 

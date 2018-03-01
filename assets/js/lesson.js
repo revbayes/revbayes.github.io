@@ -4,7 +4,7 @@ $(window).load(function() {
 });
 
 // Make all tables striped by default.
-$("table").addClass("table table-striped");
+$("table").addClass("table");
 
 
 // Handle foldable challenges and solutions (on click and at start).
@@ -61,7 +61,7 @@ function get_files() {
   var _li = ul.getElementsByTagName("li");
   for (var i = 0; i < _li.length; ++i) {
     var file = _li[i].firstChild.innerHTML;
-    d.file(file, $.get(file));
+    d.file(file, $.get("data/"+file));
   }
   zip.generateAsync({type:"blob"})
     .then(function(content) {
@@ -99,9 +99,8 @@ $(".tutorial_files").each(function() {
       this.appendChild(row);
 
       //$(">*:not(h2)", this).toggle();
-    }
-    else {
-      this.outerHTML = "";
+    } else if( document.getElementById("data_files") == null ) {
+        this.outerHTML = "";
     }
 });
 
@@ -123,7 +122,6 @@ $(".overview").each(function() {
 
       var ul = document.createElement('ul');
       for (var i = 0, element; element = _sections[i]; i++) {
-        element.id = "section"+i;
         ul.innerHTML += "<li><a href=\"#"+element.id+"\">"+element.innerHTML+"</a></li>";
       }
 
@@ -144,7 +142,7 @@ function google_search() {
 // Split pre spans into lines
 var _pre = document.querySelectorAll('pre');
 for (var i = 0, element; element = _pre[i]; i++) {
-  element.innerHTML="<span class='line'>"+(element.textContent.split("\n").filter(Boolean).join("</span>\n<span class='line'>"))+"</span>";
+  element.innerHTML="<span class='line'>"+(element.textContent.split("\n").slice(0,-1).join("</span>\n<span class='line'>"))+"</span>";
   // Italicize comments
   if ( element.parentElement.parentElement.classList == "highlighter-rouge" )
     element.innerHTML = element.innerHTML.replace(/(#[^<]*)/g,"<i>$1</i>");

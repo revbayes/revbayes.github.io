@@ -1,7 +1,7 @@
 {% comment %}
     Display an tutorials's prerequisites and learning objectives.
 {% endcomment %}
-<blockquote class="overview" id="overview">
+<blockquote class="overview no-print" id="overview">
   <h2>Overview</h2>
 
   <div class="row">
@@ -22,7 +22,7 @@
   </div>
 </blockquote>
 
-<blockquote class="tutorial_files">
+<blockquote class="tutorial_files no-print">
   <h2>Data files and scripts</h2>
   {% if page.files.size > 0 %}
     <div class="row">
@@ -30,7 +30,7 @@
           <strong>Data Files</strong>
           <ul id="data_files">
           {% for file in page.files %}
-            <li><a href="{{ site.baseurl }}{{ page.url }}{{ file }}">{{ file }}</a></li>
+            <li><a href="{{ site.baseurl }}{{ page.url }}data/{{ file }}">{{ file }}</a></li>
           {% endfor %}
           </ul>
         </div>
