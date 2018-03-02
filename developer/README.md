@@ -139,6 +139,8 @@ Note: Anytime you write anything new, you must add it to the "RbRegister_" file,
 ----
 ## 3. Implementing a Function
 
+
+[**Creating a RevBayes project in Eclipse**](eclipse-config/README.md)
 **General info**:
 There are different types of functions in RevBayes: 
 
