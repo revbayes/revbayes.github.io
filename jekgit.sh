@@ -5,7 +5,8 @@ if [[ -z "$1" ]]; then
   exit
 fi
   
-  cd _site && git pull -f
+  cd _site && git reset --hard
+  git pull
   cd ..
 bundle exec jekyll build && \
   cd _site && \
