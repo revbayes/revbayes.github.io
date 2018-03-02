@@ -24,7 +24,7 @@ To install `jekyll` and `bundler` (or update them):
 
     gem install jekyll bundler
 
-If you get a permission error, you can install the `jekyll` and `bunder` gems
+If you get a permission error, you can install the `jekyll` and `bundler` gems
 in your home folder using:
 
     export GEM_HOME="${HOME}/.gem"
