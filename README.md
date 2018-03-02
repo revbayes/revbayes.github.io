@@ -15,3 +15,28 @@ Then, when making changes to the tutorials, the static site should be rebuilt an
 	sh jekgit.sh <commit message>
 
 In order to build the site you will need to [install `jekyll`](https://jekyllrb.com/docs/installation/) and the [`jekyll-scholar`](https://github.com/inukshuk/jekyll-scholar)
+
+
+Setting up jekyll
+=================
+
+To install `jekyll` and `bundler` (or update them):
+
+    gem install jekyll bundler
+
+If you get a permission error, you can install the `jekyll` and `bunder` gems
+in your home folder using:
+
+    export GEM_HOME="${HOME}/.gem"
+    gem install jekyll bundler
+
+NOTE: You may get errors here that you need to update ruby to install these
+gems. 
+
+Next, move into the `revbayes_tutorials` repo, and install required gems via:
+
+    bundle install
+
+Now, you should be able to build and serve the static HTML with:
+
+    bundle exec jekyll serve
