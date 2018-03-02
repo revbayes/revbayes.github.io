@@ -4,7 +4,9 @@ if [[ -z "$1" ]]; then
   echo "Please enter a git commit message"
   exit
 fi
- 
+  
+  cd _site && git pull
+  cd ..
 bundle exec jekyll build && \
   cd _site && \
   git add . && \
