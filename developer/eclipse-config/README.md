@@ -15,6 +15,8 @@ To start writing C++ in Eclipse, you must obtain the Eclipse CDT (C/C++ Developm
 
 If you already have Eclipse installed you can go to *Help > Install New Software...* and enter the p2 repository URL for your version of eclipse found on the CDT downloads page. Then check the *Main Features* box, click *Next* twice, accept the User Agreement, and restart Eclipse.
 
+> **Important** When you first open Eclipse, you will be asked to choose a location for your workspace.
+
 Create an Eclipse project for RevBayes
 -----------------------------
 Assuming you have cloned the RevBayes github repository into the directory `<revbayes-repo>`, you can create a new C++ Eclipse project as follows:
