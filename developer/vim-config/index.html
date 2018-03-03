@@ -131,19 +131,23 @@ To use it specifically with RevBayes (or any other project), you need to give it
 YCM-Generator is one way to do this.</p>
 
 <div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd revbayes/  # or wherever you keep revbayes
-cd projects/cmake/
+cd projects/cmake/build/
 ~/.vim/bundle/YCM-Generator/config_gen.py . # adjust the vim path if necessary
 </code></pre></div></div>
 
 <p>That should take a few seconds to run.
 Then move the result to the top-level directory:</p>
-<div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mv .ycm_extra_conf.py ../../
+<div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mv .ycm_extra_conf.py ../../../
 </code></pre></div></div>
 
 <h3 id="try-it-out">Try it out</h3>
 
 <p>That should be it.
 If YCM is working, when you open a revbayes <code class="highlighter-rouge">.cpp</code> or <code class="highlighter-rouge">.h</code> file, vim will ask <code class="highlighter-rouge">Found revbayes/.ycm_extra_conf.py. Load?</code></p>
+
+<p>If you find that you don’t want YCM operating on all your other filetypes, you can put something like this in your <code class="highlighter-rouge">.vimrc</code>.</p>
+<div class="vim highlighter-rouge"><div class="highlight"><pre class="highlight"><code>let g:ycm_filetype_whitelist = { 'cpp': 1, 'c': 1, 'python': 1 }
+</code></pre></div></div>
 
 <ol class="bibliography"></ol>
 
