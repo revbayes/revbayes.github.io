@@ -194,19 +194,18 @@ In the following steps, we'll implement the Beta Binomial Distribution as an exa
 1. Create new .cpp & .h files in /revlanguage/distributions/math/  (named Dist_betabinomial.cpp, Dist_betaBinomial.h )
 
 2.
-    2a.  Create new .cpp & .h files in /core/distributions/math/  (named BetaBinomialDistribution.cpp, BetaBinomialDistribution.h ).
+    a.  Create new .cpp & .h files in /core/distributions/math/  (named BetaBinomialDistribution.cpp, BetaBinomialDistribution.h ).
 
- *Note: This is the object oriented wrapper code, that references the functions hard-coded in step 2b.*
-
+     *Note: This is the object oriented wrapper code, that references the functions hard-coded in step 2b.*
     b. Create new .cpp and .h files in /core/math/Distributions/  (named DistributionBetaBinomial.cpp, DistributionBetaBinomial.h ). 
 
- These are the raw procedural functions in revbayes namespace (e.g. pdf, cdf, quantile); they are not derived functions. RbStatistics = namespace.
+    These are the raw procedural functions in revbayes namespace (e.g. pdf, cdf, quantile); they are not derived functions. RbStatistics = namespace.
 
- *Note: This is the most time-consuming step in the entire process of implementing a new distribution.*
+    *Note: This is the most time-consuming step in the entire process of implementing a new distribution.*
 
 3. Create a new .cpp and .h file in /revlanguage/workspace/  (filename: RBregister_BetaBinomialDistribution ). 
 
- *Note: Your new distribution won’t run or compile without this step. This step is also required when implementing new functions in RevBayes; not just distributions.*
+    *Note: Your new distribution won’t run or compile without this step. This step is also required when implementing new functions in RevBayes; not just distributions.*
 
 4. Navigate to revlanguage/workspace/RbRegister_Dist.cpp 
 
@@ -218,14 +217,16 @@ In the following steps, we'll implement the Beta Binomial Distribution as an exa
     For the Beta Binomial distribution, we navigate to the section in the file with the header 'Distributions' and then look for the sub-header dealing with math distributions. 
 Then, add the following line of code: 
 #include "Dist_betaBinomial.h". 
-*This step registers the header file for the beta binomial distribution, effectively adding it to RevBayes.*
+    
+    *This step registers the header file for the beta binomial distribution, effectively adding it to RevBayes.*
 
     Next, navigate to the section of the file that initializes the global workspace. This section defines the workspace class, which houses info on all distributions.
 
     Then, add the following line of code: 
     AddDistribution< Natural				   >( new Dist_betaBinomial());
-*This adds the distribution to the workspace. Without this step, the betaBinomial will not be added to the revlanguage.*
-*Note: Depending on the type of distribution, you may need to change 'Natural' to a different type (e.g. 'Probability', 'Real', 'RealPos', etc.*
+    
+    *This adds the distribution to the workspace. Without this step, the betaBinomial will not be added to the revlanguage.*
+    *Note: Depending on the type of distribution, you may need to change 'Natural' to a different type (e.g. 'Probability', 'Real', 'RealPos', etc.*
 
 
 ## 5. Implementing a Move
