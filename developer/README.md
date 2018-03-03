@@ -222,7 +222,7 @@ We are implementing a distribution, so we will edit the `RbRegister_Dist.cpp fil
 
    *This step registers the header file for the beta binomial distribution, effectively adding it to RevBayes.*
 
-    Next, navigate to the section of the file that initializes the global workspace. This section defines the workspace class, which houses info on all distributions. Then, add the following line of code: 
+   Next, navigate to the section of the file that initializes the global workspace. This section defines the workspace class, which houses info on all distributions. Then, add the following line of code: 
 
 ```
     AddDistribution< Natural		>( new Dist_betaBinomial());
