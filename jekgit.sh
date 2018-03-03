@@ -6,7 +6,8 @@ then
 
 	msg=`git log -1 --pretty=%B`
 
-	cd _site && git reset --hard && git pull -f
+	cd _site
+	git fetch origin && git reset --hard origin/master
 	cd ..
 	bundle exec jekyll build && \
 	cd _site
