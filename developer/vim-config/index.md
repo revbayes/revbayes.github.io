@@ -1,3 +1,9 @@
+---
+layout: tutorial
+title: Vim for RevBayes
+category: Developer
+---
+
 Setting up Vim for RevBayes development
 ================================
 
