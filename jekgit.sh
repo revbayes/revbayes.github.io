@@ -17,9 +17,9 @@ then
 	else
 		echo "$msg"
 		echo "Successfully built and pushed to master."
-		# git add . && \
-		# git commit -am "$msg" && \
-		# git push origin master
+		git add . && \
+		git commit -am "$msg" && \
+		git push origin master
 	fi
 	cd ..
 else
