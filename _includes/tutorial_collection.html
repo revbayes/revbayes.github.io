@@ -8,6 +8,9 @@
   {% if category.name != "Basic" and category.name != "Developer" and category.name != "" %}
     {% assign tmp = tmp | concat: category.items %}
   {% endif %}
+  {% if category.name == "Developer" %}
+    {% assign developer = category.items %}
+  {% endif %}
 {% endfor %}
 {% assign other = categories | where:"name","" | first %}
 {% if other.items.size > 0 %}
