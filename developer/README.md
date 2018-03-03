@@ -215,12 +215,14 @@ In the following steps, we'll implement the Beta Binomial Distribution as an exa
 We are implementing a distribution, so we'll add some lines of code to the RbRegister_Dist.cpp file.
 
 You need to have an include statement at the top of the rb registered script, to effectively add your code to the RevBayes language. You also need to include it at the bottom of this file, and give it a type and a ‘new’ constructor. Generally, you can look within the file for an idea of proper syntax to use. For the Beta Binomial distribution, we navigate to the section in the file with the header 'Distributions' and then look for the sub-header dealing with math distributions. 
-Then, add the following line of code: #include "Dist_betaBinomial.h". 
+Then, add the following line of code: 
+#include "Dist_betaBinomial.h". 
 *This step registers the header file for the beta binomial distribution, effectively adding it to RevBayes.*
 
 Next, navigate to the section of the file that initializes the global workspace. This section defines the workspace class, which houses info on all distributions.
 
-Then, add the following line of code: AddDistribution< Natural				   >( new Dist_betaBinomial());
+Then, add the following line of code: 
+AddDistribution< Natural				   >( new Dist_betaBinomial());
 *This adds the distribution to the workspace. Without this step, the betaBinomial will not be added to the revlanguage.*
 *Note: Depending on the type of distribution, you may need to change 'Natural' to a different type (e.g. 'Probability', 'Real', 'RealPos', etc.*
 
