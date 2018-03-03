@@ -216,8 +216,8 @@ In the following steps, we'll implement the Beta Binomial Distribution as an exa
 
     For the Beta Binomial distribution, we navigate to the section in the file with the header 'Distributions' and then look for the sub-header dealing with math distributions. Then, add the following line of code:
 
-    #include "Dist_betaBinomial.h". 
-    
+'''#include "Dist_betaBinomial.h".'''
+
     *This step registers the header file for the beta binomial distribution, effectively adding it to RevBayes.*
 
     Next, navigate to the section of the file that initializes the global workspace. This section defines the workspace class, which houses info on all distributions. Then, add the following line of code: 
