@@ -183,9 +183,9 @@ All predefined mathematical distributions that have been implemented exist in co
 
 Note that when implementing a new distribution, you will need to create .cpp and .h files in both the revlanguage directory and the core directory. For the language side, one of the most important things is the create distribution function (it converts user-arguments into calculations). Also, the getParameterRules function is important (to get the degrees of freedom & other things).
 
-Within your new distribution, you will need to implement function. For example, each new distribution must have: the get class type, name, and help. Some of these you may not need to implement (if it's dictated by the parent class & is already present), but others you will need to implement within the distribution. 
+Within your new distribution, you will need to include some functions. For example, each new distribution must have: the get class type, name, and help. Some of these you may not need to implement (if it's dictated by the parent class & is already present), but others you will need to implement within the distribution. 
 
-Distributions have a prefexed DN (dag node), and all moves have previxed MV. RevBayes takes the name within & creates the DN automatically, so be aware of this. 
+Distributions have a prefexed DN (dag node), and all moves have a previxed MV (move). RevBayes takes the name within & creates the DN automatically, so be aware of this. 
  
 Example for syntax purposes: the Beta Binomial Distribution
 
@@ -193,10 +193,9 @@ Example for syntax purposes: the Beta Binomial Distribution
 
 1. Create new .cpp & .h files in /revlanguage/distributions/math/  (named Dist_betabinomial.cpp, Dist_betaBinomial.h )
 
-2. 
-  a.  Create new .cpp & .h files in /core/distributions/math/  (named BetaBinomialDistribution.cpp, BetaBinomialDistribution.h ).
+2.a.  Create new .cpp & .h files in /core/distributions/math/  (named BetaBinomialDistribution.cpp, BetaBinomialDistribution.h ).
 
- This is the object oriented wrapper code, that references the functions hard-coded in step 2b.
+ *Note: This is the object oriented wrapper code, that references the functions hard-coded in step 2b.*
 
   b. Create new .cpp and .h files in /core/math/Distributions/  (named DistributionBetaBinomial.cpp, DistributionBetaBinomial.h ). 
 
