@@ -193,11 +193,13 @@ Example for syntax purposes: the Beta Binomial Distribution
 
 1. Create new .cpp & .h files in /revlanguage/distributions/math/  (named Dist_betabinomial.cpp, Dist_betaBinomial.h )
 
-2.a.  Create new .cpp & .h files in /core/distributions/math/  (named BetaBinomialDistribution.cpp, BetaBinomialDistribution.h ).
+2.
+
+a.  Create new .cpp & .h files in /core/distributions/math/  (named BetaBinomialDistribution.cpp, BetaBinomialDistribution.h ).
 
  *Note: This is the object oriented wrapper code, that references the functions hard-coded in step 2b.*
 
-  b. Create new .cpp and .h files in /core/math/Distributions/  (named DistributionBetaBinomial.cpp, DistributionBetaBinomial.h ). 
+b. Create new .cpp and .h files in /core/math/Distributions/  (named DistributionBetaBinomial.cpp, DistributionBetaBinomial.h ). 
 
  These are the raw procedural functions in revbayes namespace (e.g. pdf, cdf, quantile); they are not derived functions. RbStatistics = namespace.
 
