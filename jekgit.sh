@@ -11,7 +11,9 @@ then
 	bundle exec jekyll build && \
 	cd _site
 
-	if git diff --exit-code > /dev/null
+	untracked=`git ls-files --other --exclude-standard --directory`
+
+	if git diff --exit-code > /dev/null && [ "$untracked" = "" ]
 	then
 		echo "Nothing to update on master."
 	else
