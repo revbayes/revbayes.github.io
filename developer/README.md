@@ -191,16 +191,16 @@ In the following steps, we'll implement the Beta Binomial Distribution as an exa
 
 **Steps**:
 
-1. Create new .cpp & .h files in revlanguage/distributions/math/  (named Dist_betabinomial.cpp, Dist_betaBinomial.h )
+1. Create new .cpp & .h files in revlanguage/distributions/math/  (named Dist_betabinomial.cpp, Dist_betaBinomial.h)
 
-    To populate these files, look at existing examples of similar distributions for specific info on what to include & syntax.
+    To populate these files, look at existing examples of similar distributions for specific info on what to include & on proper syntax. For example, for the Beta Binomial distribution, I looked to the existing Binomial Distribution code for guidance.
 
 2.
-    a.  Create new .cpp & .h files in core/distributions/math/  (named BetaBinomialDistribution.cpp, BetaBinomialDistribution.h ).
+    a.  Create new .cpp & .h files in core/distributions/math/  (named BetaBinomialDistribution.cpp, BetaBinomialDistribution.h).
 
      *Note: This is the object oriented wrapper code, that references the functions hard-coded in step 2b.*
     
-    b. Create new .cpp and .h files in core/math/Distributions/  (named DistributionBetaBinomial.cpp, DistributionBetaBinomial.h ). 
+    b. Create new .cpp and .h files in core/math/Distributions/  (named DistributionBetaBinomial.cpp, DistributionBetaBinomial.h). 
 
     These are the raw procedural functions in revbayes namespace (e.g. pdf, cdf, quantile); they are not derived functions. RbStatistics = namespace. Again, to populate these files, look at existing examples of similar distributions to get an idea of what functions to include, what variables are needed, and the proper syntax.
 
