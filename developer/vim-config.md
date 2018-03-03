@@ -60,7 +60,7 @@ YCM-Generator is one way to do this.
 
 ```
 cd revbayes/  # or wherever you keep revbayes
-cd projects/cmake/
+cd projects/cmake/build/
 ~/.vim/bundle/YCM-Generator/config_gen.py . # adjust the vim path if necessary
 ```
 {:.bash}
@@ -68,7 +68,7 @@ cd projects/cmake/
 That should take a few seconds to run.
 Then move the result to the top-level directory:
 ```
-mv .ycm_extra_conf.py ../../
+mv .ycm_extra_conf.py ../../../
 ```
 {:.bash}
 
@@ -76,3 +76,9 @@ mv .ycm_extra_conf.py ../../
 
 That should be it.
 If YCM is working, when you open a revbayes `.cpp` or `.h` file, vim will ask `Found revbayes/.ycm_extra_conf.py. Load?`
+
+If you find that you don't want YCM operating on all your other filetypes, you can put something like this in your `.vimrc`.
+```
+let g:ycm_filetype_whitelist = { 'cpp': 1, 'c': 1, 'python': 1 }
+```
+{:.vim}
