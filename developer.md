@@ -4,6 +4,6 @@ title: Developer
 permalink: /developer/
 ---
 
-### Developer Guide
+# Information for RevBayes Developers
 
 Welcome!
