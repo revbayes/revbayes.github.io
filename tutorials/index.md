@@ -22,6 +22,7 @@ Several tutorials have been written for RevBayes. Each one explicitly walks you 
 {% assign lesson_number = lesson_number | plus: 1 %}
 {{ lesson_number }}. <a href="{{ site.baseurl }}{{ lesson.url }}">{{ lesson.title }}</a>
 </td>
+<td class="col-sm-3">{{ lesson.subtitle }}</td>
 </tr>
 {% endif %}
 {% endfor %}
