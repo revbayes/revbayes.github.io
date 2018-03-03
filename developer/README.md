@@ -1,3 +1,7 @@
+---
+layout: default
+title: Developer
+---
 # RevBayes Developer's Manual
 
 ----

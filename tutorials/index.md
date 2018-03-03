@@ -1,7 +1,6 @@
 ---
 layout: default
 title: Tutorials
-permalink: /tutorials/
 ---
 
 ## Tutorial Menu
