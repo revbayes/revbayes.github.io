@@ -187,7 +187,7 @@ Within your new distribution, you will need to include some functions. For examp
 
 Distributions have a prefexed DN (dag node), and all moves have a previxed MV (move). RevBayes takes the name within & creates the DN automatically, so be aware of this. 
  
-Example for syntax purposes: the Beta Binomial Distribution
+In the following steps, we'll implement the Beta Binomial Distribution as an example, for syntax purposes.
 
 **Steps**:
 
@@ -211,9 +211,10 @@ Example for syntax purposes: the Beta Binomial Distribution
 
 4. Navigate to revlanguage/workspace/RbRegister_Dist.cpp 
 
- Add your distribution to this file: You need to have an include statement at the top of the rb registered script, to effectively add your code to the RevBayes language. You also need to include it at the bottom of this file, and give it a type and a ‘new’ constructor. 
+ Every implementation you add must be registered in RevBayes. All register files are located in the revlanguage/workspace directory, and there are different files for the different implementations (RbRegister_Func.cpp is for new functions; RbRegister_Move is for new types; etc.). 
+We are implementing a distribution, so we'll add some lines of code to the RbRegister_Dist.cpp file.
 
-**Add specific steps for editing the RbRegister file**
+You need to have an include statement at the top of the rb registered script, to effectively add your code to the RevBayes language. You also need to include it at the bottom of this file, and give it a type and a ‘new’ constructor. 
 
 
 
