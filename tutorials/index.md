@@ -3,6 +3,6 @@ layout: default
 title: Tutorials
 ---
 
-## Tutorial Menu
+# RevBayes User Tutorials
 
-Here's a bunch of tutorials!
+Several tutorials have been written for RevBayes. Each one explicitly walks you through model specification and analysis set-up for different phylogenetic methods.
