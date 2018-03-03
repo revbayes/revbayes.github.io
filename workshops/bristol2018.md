@@ -2,8 +2,8 @@
 layout: default
 title: RevBayes for Palaeos
 location: University of Bristol, United Kingdom
-startdate: 04/10/2018
-enddate: 04/15/2018
+startdate: 04/30/2018
+enddate: 05/04/2018
 team: Höhna, Pett, Warnock
 category: workshop
 lessons:
