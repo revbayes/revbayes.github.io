@@ -3,7 +3,7 @@ layout: tutorial
 title: Setting up an IDE to develop RevBayes
 subtitle: 
 category: Developer
-authors: 
+authors: Will Pett, April Wright, Lyndon Coghill, Sebastian H&#246;hna, Wade Dismukes
 prerequisites:
 ---
 
@@ -144,7 +144,7 @@ Setting up Xcode for RevBayes development
 Set up the XCode Project
 ------------------------
   1. Open Xcode and in the *Welcome to Xcode* window, choose **Create a new Xcode project**.
-  2. Select **Command Line Tool** and name it ```rb``` and click **Next**. ![](images/making_xcode_project.png "")
+  2. Select **Command Line Tool** and name it ```rb``` and click **Next**. ![](images/making_xcode_project.png)
   3. Click **New Folder**  to create an empty directory and name it whatever you'd like.
   4. Click **Create**.
   5. Delete all of the files and folders in each of the directories including ```main.cpp``` so that RevBayes is empty. You can do this by selecting the folders and files, right clicking and selecting delete. When asked, choose **Move to Trash**. 
@@ -160,7 +160,7 @@ Set up the XCode Project
   8. Add the boost library to your Xcode project 
     * Select the RevBayes project and go to the **Build Settings**. 
     * Search for or Scroll down to the **Search Paths** heading and find the sub-heading named **Header Search Paths**.
-    * Double click the heading, click the **+**, and add the value: **\<path to revbayes repository\>/revbayes/boost_1_60_0"**. 
+    * Double click the heading, click the **+**, and add the value: **\<path to revbayes repository\>/revbayes/boost_1_60_0**. 
     	* ```<path to revbayes repository>``` = the location of the revbayes repository on your machine.
        ![](images/finding_boost.png)
 
