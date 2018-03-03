@@ -10,9 +10,9 @@ After first cloning this repository you should checkout the source branch. Then 
 	git checkout source
 	git clone git@github.com:willpett/revbayes_tutorials.git _site
 
-Then, when making changes to the tutorials, the static site should be rebuilt and committed as well. The script `jekgit.sh` takes care of the steps involved. After committing changes to the source, simply run the `jekgit.sh` script from the source repository, along with a commit message
+Then, when making changes to the tutorials, the static site should be rebuilt and committed as well. The script `jekgit.sh` takes care of the steps involved. After committing changes to the source, simply run the `jekgit.sh` script from the source repository
 
-	sh jekgit.sh <commit message>
+	sh jekgit.sh
 
 In order to build the site you will need to install [`jekyll`](https://jekyllrb.com/docs/installation/) and [`jekyll-scholar`](https://github.com/inukshuk/jekyll-scholar)
 
