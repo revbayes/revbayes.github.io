@@ -14,7 +14,7 @@ Then, when making changes to the tutorials, the static site should be rebuilt an
 
 	sh jekgit.sh <commit message>
 
-In order to build the site you will need to [install `jekyll`](https://jekyllrb.com/docs/installation/) and the [`jekyll-scholar`](https://github.com/inukshuk/jekyll-scholar)
+In order to build the site you will need to install [`jekyll`](https://jekyllrb.com/docs/installation/) and [`jekyll-scholar`](https://github.com/inukshuk/jekyll-scholar)
 
 
 Setting up jekyll
