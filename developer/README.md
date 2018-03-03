@@ -191,22 +191,22 @@ In the following steps, we'll implement the Beta Binomial Distribution as an exa
 
 **Steps**:
 
-1. Create new .cpp & .h files in /revlanguage/distributions/math/  (named Dist_betabinomial.cpp, Dist_betaBinomial.h )
+1. Create new .cpp & .h files in revlanguage/distributions/math/  (named Dist_betabinomial.cpp, Dist_betaBinomial.h )
 
     To populate these files, look at existing examples of similar distributions for specific info on what to include & syntax.
 
 2.
-    a.  Create new .cpp & .h files in /core/distributions/math/  (named BetaBinomialDistribution.cpp, BetaBinomialDistribution.h ).
+    a.  Create new .cpp & .h files in core/distributions/math/  (named BetaBinomialDistribution.cpp, BetaBinomialDistribution.h ).
 
      *Note: This is the object oriented wrapper code, that references the functions hard-coded in step 2b.*
     
-    b. Create new .cpp and .h files in /core/math/Distributions/  (named DistributionBetaBinomial.cpp, DistributionBetaBinomial.h ). 
+    b. Create new .cpp and .h files in core/math/Distributions/  (named DistributionBetaBinomial.cpp, DistributionBetaBinomial.h ). 
 
     These are the raw procedural functions in revbayes namespace (e.g. pdf, cdf, quantile); they are not derived functions. RbStatistics = namespace. Again, to populate these files, look at existing examples of similar distributions to get an idea of what functions to include, what variables are needed, and the proper syntax.
 
     *Note: This is the most time-consuming step in the entire process of implementing a new distribution.*
 
-3. Navigate to /revlanguage/workspace/RbRegister_Dist.cpp 
+3. Navigate to revlanguage/workspace/RbRegister_Dist.cpp 
 
     Every implementation you add must be registered in RevBayes. All register files are located in the revlanguage/workspace directory, and there are different files for the different implementations (RbRegister_Func.cpp is for new functions; RbRegister_Move is for new types; etc.). 
     We are implementing a distribution, so we will edit the RbRegister_Dist.cpp file.
@@ -227,7 +227,9 @@ In the following steps, we'll implement the Beta Binomial Distribution as an exa
     *This adds the distribution to the workspace. Without this step, the betaBinomial will not be added to the revlanguage.*
     *Note: Depending on the type of distribution, you may need to change 'Natural' to a different type (e.g. 'Probability', 'Real', 'RealPos', etc.).*
     
-5. Before pushing your changes, you should ensure your code is working properly. There are multiple ways to do this, so use your best judgment. As a best practice, you should first compile it to ensure there are no errors. Once it compiles, you can test it various ways (e.g. run your individual functions within the new Beta Binomial distribution in R, then run the Binomial distribution with a Beta prior in Rev and see if the output matches).  
+5. Before pushing your changes, you should ensure your code is working properly. 
+
+    There are multiple ways to do this, so use your best judgment. As a best practice, you should first compile it to ensure there are no errors. Once it compiles, you can test it various ways (e.g. run your individual functions within the new Beta Binomial distribution in R, then run the Binomial distribution with a Beta prior in Rev and see if the output matches).  
 
 
 ## 5. Implementing a Move
