@@ -73,17 +73,17 @@ title: Developer
 
 RevBayes is written in object-oriented C++. There is a heirarchy of classes, so developers will most often need to work with the 'abstract/parent' class. However, it's sometimes necessary to use sub-classes. You can follow the paths to the parent class through the code to find who owns a subclass.
 
-There are multiple levels within RevBayes:
+There are two main directories within RevBayes:
 
  * revlanguage
 
  * core
 
-**.h = header files** (where you define the class and reference the .cpp files.
+**.h = header files** (where you define the class and reference the .cpp files).
 
 **.cpp = C++ files** (where you implement the RevBayes functionality/distributions/etc. and reference the header file code).
 
-Note: Anytime you write anything new, you must add it to the "RbRegister_" file, located in /revlanguage/workspace/ (there are separate RbRegister files for adding new functions, distributions, moves, types, help documentation, etc.)
+Note: Anytime you write anything new, you must add it to an "RbRegister_" file, located in /revlanguage/workspace/ (there are separate RbRegister files for adding new functions, distributions, moves, types, help documentation, etc.)
 
 *In the backend, if you write a new function/distribution you must create files for it in both the revlanguage and the core folders. Specifics on this are included in the 'Implementing a Function' and 'Implementing a Distribution'*
 
@@ -245,10 +245,10 @@ It's important to think about what types of moves are required to work on differ
 
 It's tricky to test things in RevBayes unless you have a lot of things to test. So, sometimes you may want to write Rev code to "test" your new implementations in a hack-y way. If it's working the way you want/expect, it will most likely compile successfully.
 
- **Fill in**
+
 
 ----
 ## 8. Writing simulation scripts
 
- **Fill in**
+
 ----
