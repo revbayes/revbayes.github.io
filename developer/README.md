@@ -54,8 +54,6 @@ title: Developer
 
  * Steps
 
-
-
 7. Testing suites/validation scripts
 
 8. Writing simulation scripts
@@ -178,13 +176,14 @@ There are different types of functions in RevBayes:
 ----
 ## 4. Implementing a Distribution
 
-**General info:**
+**General info before getting started:**
 
-All predefined mathematical distributions that have been implemented in RevBayes exist in core/distributions/math.
+Within RevBayes, there are math distributions and phylogenetic distributions. 
+All predefined mathematical distributions that have been implemented exist in core/distributions/math.
 
-When you create a distribution, look at the implementation. For the language side, one of the most important things is the create distribution function (it converts user-arguments into calculations). Also, the getParameterRules function is important (have to get the degrees of freedom & other things)
+Note that when implementing a new distribution, you will need to create .cpp and .h files in both the revlanguage directory and the core directory. For the language side, one of the most important things is the create distribution function (it converts user-arguments into calculations). Also, the getParameterRules function is important (to get the degrees of freedom & other things).
 
-You have to implement certain functions within your new distribution. For example, each new distribution must have: the get class type, name, and help. Some of these you may not need to implement (if it's dictated by the parent class & is already present), but others you will need to implement within the distribution. 
+Within your new distribution, you will need to implement function. For example, each new distribution must have: the get class type, name, and help. Some of these you may not need to implement (if it's dictated by the parent class & is already present), but others you will need to implement within the distribution. 
 
 Distributions have a prefexed DN (dag node), and all moves have previxed MV. RevBayes takes the name within & creates the DN automatically, so be aware of this. 
  
