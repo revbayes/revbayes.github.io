@@ -16,3 +16,18 @@ Alternatively, if you are interested in joining the RevBayes development team, p
 
 The RevBayes Developers' Guide will provide you with the information needed to implement new methods, models, functions, and algorithms in the RevBayes language and core libraries. 
 
+## Developer Guide
+
+{% assign tutorials = site.pages | where:"layout", "tutorial" %}
+{% assign devguide = tutorials | where:"category", "Developer" | sort: "index" %}
+<table class="table table-striped">
+{% for lesson in devguide %}
+<tr>
+<td class="col-sm-3">
+{% assign lesson_number = lesson_number | plus: 1 %}
+{{ lesson_number }}. <a href="{{ site.baseurl }}{{ lesson.url }}">{{ lesson.title }}</a>
+</td>
+<td class="col-sm-3">{{ lesson.subtitle }}</td>
+</tr>
+{% endfor %}
+</table>
