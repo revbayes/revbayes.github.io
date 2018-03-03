@@ -368,18 +368,22 @@ These are the raw procedural functions in revbayes namespace (e.g. pdf, cdf, qua
     You need to have an include statement at the top of the RbRegister script, to effectively add your distribution to the RevBayes language. You also need to add code to the bottom of this file, and give it a type and a ‘new’ constructor. Generally, you can look within the file for an idea of proper syntax to use.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>For the Beta Binomial distribution, we navigate to the section in the file with the header 'Distributions' and then look for the sub-header dealing with math distributions. Then, add the following line of code:
-
-#include "Dist_betaBinomial.h". 
-
-*This step registers the header file for the beta binomial distribution, effectively adding it to RevBayes.*
-
-Next, navigate to the section of the file that initializes the global workspace. This section defines the workspace class, which houses info on all distributions. Then, add the following line of code: 
-
-AddDistribution&lt; Natural				   &gt;( new Dist_betaBinomial());
-
-*This adds the distribution to the workspace. Without this step, the betaBinomial will not be added to the revlanguage.*
-*Note: Depending on the type of distribution, you may need to change 'Natural' to a different type (e.g. 'Probability', 'Real', 'RealPos', etc.).*
 </code></pre></div></div>
+
+<p>’’’
+#include “Dist_betaBinomial.h”.
+‘’’</p>
+
+<p><em>This step registers the header file for the beta binomial distribution, effectively adding it to RevBayes.</em></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Next, navigate to the section of the file that initializes the global workspace. This section defines the workspace class, which houses info on all distributions. Then, add the following line of code: 
+</code></pre></div></div>
+
+<p>’’’
+    AddDistribution&lt; Natural				   &gt;( new Dist_betaBinomial());
+‘’’   <br />
+    <em>This adds the distribution to the workspace. Without this step, the betaBinomial will not be added to the revlanguage.</em>
+    <em>Note: Depending on the type of distribution, you may need to change ‘Natural’ to a different type (e.g. ‘Probability’, ‘Real’, ‘RealPos’, etc.).</em></p>
 
 <ol>
   <li>
