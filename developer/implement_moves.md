@@ -1,14 +1,10 @@
 ---
-layout: tutorial
-title: Implementing Moves and Distributions
+layout: developer
+title: Implementing Moves
 subtitle: Getting started with RevBayes development
-authors: Jeremy M. Brown and Rosana Zenil-Ferguson
+authors: Jeremy M. Brown
 category: Developer
-prerequisites:
 ---
 
 Hello move!
-==============
-
-Hello distribution!
 ==============
