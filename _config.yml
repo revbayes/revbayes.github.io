@@ -25,6 +25,28 @@ plugins: ['jekyll/scholar']
 
 include: [.nojekyll]
 
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: "default"
+  - scope:
+      path: "tutorials"
+    values:
+      layout: tutorial
+  - scope:
+      path: "developer"
+    values:
+      layout: developer
+  - scope:
+      layout: tutorial
+    values:
+      code_layout: Rev
+  - scope:
+      layout: developer
+    values:
+      code_layout: cpp
+
 scholar:
   bibliography_template: bib
   style: systematic-biology

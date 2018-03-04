@@ -1,12 +1,11 @@
 ---
-layout: tutorial
 title: Phylogenetic Inference Using RevBayes
 subtitle: Substitution Models
 authors: Sebastian Höhna, Michael Landis, Brian Moore and Tracy Heath
 category: Substitution Models
 prerequisites:
 - intro
-files: ['primates_and_galeopterus_cytb.nex']
+data_files: ['primates_and_galeopterus_cytb.nex']
 ---
 
 Introduction

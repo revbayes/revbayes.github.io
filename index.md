@@ -1,5 +1,4 @@
 ---
-layout: tutorial
 title: RevBayes
 subtitle: Bayesian phylogenetic inference using probabilistic graphical models and an interpreted language
 root: .

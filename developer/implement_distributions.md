@@ -1,5 +1,4 @@
 ---
-layout: developer
 category: implementation
 ---
 

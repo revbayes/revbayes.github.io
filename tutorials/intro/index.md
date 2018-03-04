@@ -1,5 +1,4 @@
 ---
-layout: tutorial
 title: Statistical Inference Using RevBayes
 subtitle: A very short introduction to RevBayes & Rev
 authors: Mike May and Sebastian Höhna
