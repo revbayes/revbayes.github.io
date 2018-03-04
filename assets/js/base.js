@@ -10,7 +10,8 @@ $(".overview").each(function() {
     var h2 = $("h2:first", this);
     //h2.append("<span class='fold-unfold glyphicon glyphicon-collapse-down'></span>");
 
-    var _sections = document.getElementsByClassName('section');
+    // var _sections = document.getElementsByClassName('section');
+    var _sections = document.querySelectorAll('.section, .subsection');
     
     if( _sections.length > 0 ) {
       var row = document.createElement('div');
@@ -23,7 +24,13 @@ $(".overview").each(function() {
 
       var ul = document.createElement('ul');
       for (var i = 0, element; element = _sections[i]; i++) {
-        ul.innerHTML += "<li><a href=\"#"+element.id+"\">"+element.innerHTML+"</a></li>";
+          if (element.className == "subsection") {
+              var sublist = document.createElement('ul');
+              sublist.innerHTML += "<li><a href=\"#"+element.id+"\">"+element.innerHTML+"</a></li>";
+              ul.appendChild(sublist);
+          } else {
+              ul.innerHTML += "<li><a href=\"#"+element.id+"\">"+element.innerHTML+"</a></li>";
+          }
       }
 
       col.appendChild(ul);

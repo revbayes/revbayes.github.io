@@ -171,7 +171,7 @@ Check C++ language options
 At this point, if everything has been setup correctly, you should be able to build the project. You can try by clicking on **Product - Build** or by using **&#8984;+B**.
 
 
-Setting up Netbeans for RevBayes Development
+<!-- Setting up Netbeans for RevBayes Development
 =============================================
 {:.section}
 
@@ -234,7 +234,7 @@ Here are some handy keyboard shortcuts to start with:
 
 On [Netbeans wiki](http://wiki.netbeans.org/Keyboard_Shortcuts) you can download the full map for keyboard shortcuts. Happy coding! 
 
-
+ -->
 Setting up Vim for RevBayes development
 =======================================
 {:.section}
