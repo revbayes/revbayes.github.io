@@ -1,6 +1,7 @@
 ---
 layout: tutorial
 title: Implementing functions, distributions, and moves
+subtitle: Getting started with RevBayes development
 authors: Jeremy M. Brown, Rosana Zenil-Ferguson, Jordan Koch, Will Pett
 category: Developer
 ---
