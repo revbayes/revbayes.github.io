@@ -14,6 +14,7 @@ files:
 
 Overview
 ========
+{:.section}
 
 This tutorial provides the first protocol from our recent publication
 {% cite Hoehna2017a %}. The second protocol is described in the [Partitioned
@@ -91,6 +92,7 @@ for a more in-depth discussion of concepts in ‘Rev‘.
 
 Data and files
 ==============
+{:.section}
 
 We provide the data file(s) which we will use in this tutorial. You may
 want to use your own data instead. In the ‘data‘ folder, you will find
@@ -103,6 +105,7 @@ the following files
 
 Example: Character Evolution under the Jukes-Cantor Substitution Model
 ======================================================================
+{:.section}
 
 Getting Started
 ---------------
@@ -552,6 +555,7 @@ a Jukes-Cantor substitution model.
 
 Exercise 1
 ----------
+{:.subsection}
 
 We are interested in the phylogenetic relationship of the Tarsiers.
 Therefore, we need to summarize the trees sampled from the posterior
@@ -623,6 +627,7 @@ monophyletic using the following command:
 
 The Hasegawa-Kishino-Yano (HKY) 1985 Substitution Model
 =======================================================
+{:.section}
 
 The Jukes-Cantor model assumes that all substitution rates are equal,
 which also implies that the stationary frequencies of the four
@@ -689,6 +694,7 @@ analyses files will be overwritten.
 
 Exercise 2
 ----------
+{:.subsection}
 
 -   With figure [fig:jc] as your guide, draw the probabilistic
     graphical model of the HKY model.
@@ -718,6 +724,7 @@ Exercise 2
 
 The General Time-Reversible (GTR) Substitution Model
 ====================================================
+{:.section}
 
 The HKY substitution model can accommodate unequal base frequencies and
 different rates of transition and transversion substitutions. Despite
@@ -834,6 +841,7 @@ calculating the likelihood of our model.
 
 Exercise 3
 ----------
+{:.subsection}
 
 -   Use one of your previous analysis files—either the ‘mcmc_JC.Rev‘ or
     ‘HKY.Rev‘—to specify a GTR analysis in a new file called
@@ -846,6 +854,7 @@ Exercise 3
 
 The Discrete Gamma Model of Among Site Rate Variation
 =====================================================
+{:.section}
 
 Members of the GTR family of substitution models assume that rates are
 homogeneous across sites, an assumption that is often violated by real
@@ -953,6 +962,7 @@ the new site-rate parameter:
 
 Exercise 4
 ----------
+{:.subsection}
 
 Modify the previous GTR analysis to specify the GTR+Gamma model. Run an
 MCMC simulation to estimate the posterior distribution.
@@ -965,6 +975,7 @@ MCMC simulation to estimate the posterior distribution.
 
 Modeling Invariable Sites
 =========================
+{:.section}
 
 All of the substitution models described so far assume that the sequence
 data are potentially variable. That is, we assume that the sequence data
@@ -1013,6 +1024,7 @@ new‘pinvar‘ parameter:
 
 Exercise 5
 ----------
+{:.subsection}
 
 -   Extend the GTR model to account for invariable sites and run
     an analysis.
