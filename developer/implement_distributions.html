@@ -6,9 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- meta "search-domain" used for google site search function google_search() -->
     <meta name="search-domain" value="">
+    <link rel="stylesheet" href="/revbayes_tutorials/assets/css/syntax.css">
     <link rel="stylesheet" type="text/css" href="/revbayes_tutorials/assets/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="/revbayes_tutorials/assets/css/bootstrap-theme.css" />
-    <link rel="stylesheet" type="text/css" href="/revbayes_tutorials/assets/css/tutorial.css" />
+    <link rel="stylesheet" type="text/css" href="/revbayes_tutorials/assets/css/main.css" />
+    
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -57,15 +59,38 @@
   </div>
 </nav>
 
+      <div class="row">
+	<h1 class="maintitle"></h1>
+	<h3 class="subtitle"></h3>
+	<h4 class="maintitle"></h4>
+</div>
+
+
+<blockquote class="overview no-print" id="overview">
+  <h2>Overview</h2>
+
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        <ul>
+        
+          <li>None</li>
+        
+        </ul>
+    </div>
+  </div>
+</blockquote>
+
+
 <hr />
 <h2 id="4-implementing-a-distribution">4. Implementing a Distribution</h2>
 
 <p><strong>General info before getting started:</strong></p>
 
 <p>Within RevBayes, there are math distributions and phylogenetic distributions. 
-All predefined mathematical distributions that have been implemented exist in <code class="highlighter-rouge">core/distributions/math</code>.</p>
+All predefined mathematical distributions that have been implemented exist in <code class="language-cpp highlighter-rouge"><span class="n">core</span><span class="o">/</span><span class="n">distributions</span><span class="o">/</span><span class="n">math</span></code>.</p>
 
-<p>Note that when implementing a new distribution, you will need to create <code class="highlighter-rouge">.cpp</code> and <code class="highlighter-rouge">.h</code> files in both the revlanguage directory and the core directory. For the language side, one of the most important things is the create distribution function (it converts user-arguments into calculations). Also, the getParameterRules function is important (to get the degrees of freedom &amp; other things). As a rule of thumb, you can look at the code of existing distributions for general help on syntax &amp; organization.</p>
+<p>Note that when implementing a new distribution, you will need to create <code class="language-cpp highlighter-rouge"><span class="p">.</span><span class="n">cpp</span></code> and <code class="language-cpp highlighter-rouge"><span class="p">.</span><span class="n">h</span></code> files in both the revlanguage directory and the core directory. For the language side, one of the most important things is the create distribution function (it converts user-arguments into calculations). Also, the getParameterRules function is important (to get the degrees of freedom &amp; other things). As a rule of thumb, you can look at the code of existing distributions for general help on syntax &amp; organization.</p>
 
 <p>Within your new distribution, you will need to include some functions. For example, each new distribution must have: the get class type, name, and help. Some of these you may not need to implement (if it’s dictated by the parent class &amp; is already present), but others you will need to implement within the distribution.</p>
 
@@ -76,51 +101,54 @@ All predefined mathematical distributions that have been implemented exist in <c
 <p><strong>Steps</strong>:</p>
 
 <ol>
-  <li>Create new .cpp &amp; .h files in <code class="highlighter-rouge">revlanguage/distributions/math/</code>  (named <code class="highlighter-rouge">Dist_betabinomial.cpp</code>, <code class="highlighter-rouge">Dist_betaBinomial.h</code>)</li>
+  <li>Create new .cpp &amp; .h files in <code class="language-cpp highlighter-rouge"><span class="n">revlanguage</span><span class="o">/</span><span class="n">distributions</span><span class="o">/</span><span class="n">math</span><span class="o">/</span></code>  (named <code class="language-cpp highlighter-rouge"><span class="n">Dist_betabinomial</span><span class="p">.</span><span class="n">cpp</span></code>, <code class="language-cpp highlighter-rouge"><span class="n">Dist_betaBinomial</span><span class="p">.</span><span class="n">h</span></code>)</li>
 </ol>
 
 <p>To populate these files, look at existing examples of similar distributions for specific info on what to include &amp; on proper syntax. For example, for the Beta Binomial distribution, I looked to the existing Binomial Distribution code for guidance.</p>
 
 <p>2.
-   a.  Create new .cpp &amp; .h files in <code class="highlighter-rouge">core/distributions/math/</code>  (named <code class="highlighter-rouge">BetaBinomialDistribution.cpp</code>, <code class="highlighter-rouge">BetaBinomialDistribution.h</code>).</p>
+   a.  Create new .cpp &amp; .h files in <code class="language-cpp highlighter-rouge"><span class="n">core</span><span class="o">/</span><span class="n">distributions</span><span class="o">/</span><span class="n">math</span><span class="o">/</span></code>  (named <code class="language-cpp highlighter-rouge"><span class="n">BetaBinomialDistribution</span><span class="p">.</span><span class="n">cpp</span></code>, <code class="language-cpp highlighter-rouge"><span class="n">BetaBinomialDistribution</span><span class="p">.</span><span class="n">h</span></code>).</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>*Note: This is the object oriented wrapper code, that references the functions hard-coded in step 2b.*
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">*</span> <span class="n">Note</span><span class="o">:</span> <span class="n">This</span> <span class="n">is</span> <span class="n">the</span> <span class="n">object</span> <span class="n">oriented</span> <span class="n">wrapper</span> <span class="n">code</span><span class="p">,</span> <span class="n">that</span> <span class="n">references</span> <span class="n">the</span> <span class="n">functions</span> <span class="n">hard</span><span class="o">-</span><span class="n">coded</span> <span class="n">in</span> <span class="n">step</span> <span class="mi">2</span><span class="n">b</span><span class="p">.</span><span class="o">*</span>
 </code></pre></div></div>
 
-<p>b. Create new .cpp and .h files in <code class="highlighter-rouge">core/math/Distributions/</code>  (named <code class="highlighter-rouge">DistributionBetaBinomial.cpp</code>, <code class="highlighter-rouge">DistributionBetaBinomial.h</code>).</p>
+<p>b. Create new .cpp and .h files in <code class="language-cpp highlighter-rouge"><span class="n">core</span><span class="o">/</span><span class="n">math</span><span class="o">/</span><span class="n">Distributions</span><span class="o">/</span></code>  (named <code class="language-cpp highlighter-rouge"><span class="n">DistributionBetaBinomial</span><span class="p">.</span><span class="n">cpp</span></code>, <code class="language-cpp highlighter-rouge"><span class="n">DistributionBetaBinomial</span><span class="p">.</span><span class="n">h</span></code>).</p>
 
 <p>These are the raw procedural functions in revbayes namespace (e.g. pdf, cdf, quantile); they are not derived functions. RbStatistics is a namespace. To populate these files, look at existing examples of similar distributions to get an idea of what functions to include, what variables are needed, and the proper syntax.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>*Note: This is the most time-consuming step in the entire process of implementing a new distribution.*
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">*</span> <span class="n">Note</span><span class="o">:</span> <span class="n">This</span> <span class="n">is</span> <span class="n">the</span> <span class="n">most</span> <span class="n">time</span><span class="o">-</span><span class="n">consuming</span> <span class="n">step</span> <span class="n">in</span> <span class="n">the</span> <span class="n">entire</span> <span class="n">process</span> <span class="n">of</span> <span class="n">implementing</span> <span class="n">a</span> <span class="k">new</span> <span class="n">distribution</span><span class="p">.</span><span class="o">*</span>
 </code></pre></div></div>
 
 <ol>
   <li>
-    <p>Navigate to <code class="highlighter-rouge">revlanguage/workspace/RbRegister_Dist.cpp</code></p>
+    <p>Navigate to <code class="language-cpp highlighter-rouge"><span class="n">revlanguage</span><span class="o">/</span><span class="n">workspace</span><span class="o">/</span><span class="n">RbRegister_Dist</span><span class="p">.</span><span class="n">cpp</span></code></p>
 
-    <p>Every implementation you add must be registered in RevBayes. All register files are located in the <code class="highlighter-rouge">revlanguage/workspace</code> directory, and there are different files for the different implementations (<code class="highlighter-rouge">RbRegister_Func.cpp</code> is for new functions; <code class="highlighter-rouge">RbRegister_Move</code> is for new types; etc.). 
-We are implementing a distribution, so we will edit the <code class="highlighter-rouge">RbRegister_Dist.cpp file</code>.</p>
+    <p>Every implementation you add must be registered in RevBayes. All register files are located in the <code class="language-cpp highlighter-rouge"><span class="n">revlanguage</span><span class="o">/</span><span class="n">workspace</span></code> directory, and there are different files for the different implementations (<code class="language-cpp highlighter-rouge"><span class="n">RbRegister_Func</span><span class="p">.</span><span class="n">cpp</span></code> is for new functions; <code class="language-cpp highlighter-rouge"><span class="n">RbRegister_Move</span></code> is for new types; etc.). 
+We are implementing a distribution, so we will edit the <code class="language-cpp highlighter-rouge"><span class="n">RbRegister_Dist</span><span class="p">.</span><span class="n">cpp</span> <span class="n">file</span></code>.</p>
   </li>
 </ol>
 
 <p>4.
-    You need to have an include statement at the top of the RbRegister script, to effectively add your distribution to the RevBayes language. You also need to add code to the bottom of this file, and give it a type and a ‘new’ constructor. Generally, you can look within the file for an idea of proper syntax to use.</p>
+  You need to have an include statement at the top of the RbRegister script, to effectively add your distribution to the RevBayes language. You also need to add code to the bottom of this file, and give it a type and a ‘new’ constructor. Generally, you can look within the file for an idea of proper syntax to use.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>For the Beta Binomial distribution, we navigate to the section in the file with the header 'Distributions' and then look for the sub-header dealing with math distributions. Then, add the following line of code:
-</code></pre></div></div>
+<p>For the Beta Binomial distribution, we navigate to the section in the file with the header ‘Distributions’ and then look for the sub-header dealing with math distributions. Then, add the following line of code:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#include "Dist_betaBinomial.h"
-</code></pre></div></div>
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include "Dist_betaBinomial.h"
+</span></code></pre></div></div>
 
-<p><em>This step registers the header file for the beta binomial distribution, effectively adding it to RevBayes.</em></p>
+<ul>
+  <li>This step registers the header file for the beta binomial distribution, effectively adding it to RevBayes.*</li>
+</ul>
 
 <p>Next, navigate to the section of the file that initializes the global workspace. This section defines the workspace class, which houses info on all distributions. Then, add the following line of code:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    AddDistribution&lt; Natural		&gt;( new Dist_betaBinomial());
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="n">AddDistribution</span><span class="o">&lt;</span> <span class="n">Natural</span>		<span class="o">&gt;</span><span class="p">(</span> <span class="k">new</span> <span class="n">Dist_betaBinomial</span><span class="p">());</span>
 </code></pre></div></div>
 
-<p><em>This adds the distribution to the workspace. Without this step, the betaBinomial will not be added to the revlanguage.</em>
-   <em>Note: Depending on the type of distribution, you may need to change ‘Natural’ to a different type (e.g. ‘Probability’, ‘Real’, ‘RealPos’, etc.).</em></p>
+<ul>
+  <li>This adds the distribution to the workspace. Without this step, the betaBinomial will not be added to the revlanguage.*</li>
+  <li>Note: Depending on the type of distribution, you may need to change ‘Natural’ to a different type (e.g. ‘Probability’, ‘Real’, ‘RealPos’, etc.).*</li>
+</ul>
 
 <ol>
   <li>
@@ -130,8 +158,24 @@ We are implementing a distribution, so we will edit the <code class="highlighter
   </li>
 </ol>
 
+<ol class="bibliography"></ol>
 
-<footer>
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2>References</h2>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      <footer>
   <div class="container">
   <div class="row">
     <div class="col-sm-3" align="left">
@@ -154,22 +198,18 @@ We are implementing a distribution, so we will edit the <code class="highlighter
 </footer>
 
     </div>
-    <script src="/revbayes_tutorials/assets/js/jquery.min.js"></script>
-<script src="/revbayes_tutorials/assets/js/FileSaver.min.js"></script>
-<script src="/revbayes_tutorials/assets/js/jszip.min.js"></script>
-<script src="/revbayes_tutorials/assets/js/bootstrap.min.js"></script>
-<script src="/revbayes_tutorials/assets/js/lesson.js"></script>
-<script>
+    <script src="/revbayes_tutorials/assets/js/vendor/jquery.min.js"></script>
+<script src="/revbayes_tutorials/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/revbayes_tutorials/assets/js/vendor/jszip.min.js"></script>
+<script src="/revbayes_tutorials/assets/js/vendor/bootstrap.min.js"></script>
+<!-- <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
   })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
   ga('create', 'UA-37305346-2', 'auto');
   ga('send', 'pageview');
-</script>
-
-  </body>
-</html>
+</script> -->
 <script type="text/javascript"
     src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
     MathJax.Hub.Config({
@@ -179,3 +219,8 @@ We are implementing a distribution, so we will edit the <code class="highlighter
     }
   });
 </script>
+
+    <script src="/revbayes_tutorials/assets/js/base.js"></script>
+    
+  </body>
+</html>

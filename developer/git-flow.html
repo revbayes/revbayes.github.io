@@ -6,9 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- meta "search-domain" used for google site search function google_search() -->
     <meta name="search-domain" value="">
+    <link rel="stylesheet" href="/revbayes_tutorials/assets/css/syntax.css">
     <link rel="stylesheet" type="text/css" href="/revbayes_tutorials/assets/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="/revbayes_tutorials/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/revbayes_tutorials/assets/css/main.css" />
+    
     <link rel="stylesheet" type="text/css" href="/revbayes_tutorials/assets/css/tutorial.css" />
+    
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -57,7 +61,7 @@
   </div>
 </nav>
 
-<div class="row">
+      <div class="row">
 	<h1 class="maintitle">Git Workflow Best Practices</h1>
 	<h3 class="subtitle"></h3>
 	<h4 class="maintitle"></h4>
@@ -79,36 +83,38 @@
   </div>
 </blockquote>
 
+
 <blockquote class="tutorial_files no-print">
   <h2>Data files and scripts</h2>
   
 </blockquote>
+
 <h1 id="git-workflow">Git workflow</h1>
 
-<p>The core branches of the <code class="highlighter-rouge">RevBayes</code> repo that should always exist are</p>
+<p>The core branches of the <code class="language-cpp highlighter-rouge"><span class="n">RevBayes</span></code> repo that should always exist are</p>
 
 <ul>
-  <li><code class="highlighter-rouge">master</code></li>
-  <li><code class="highlighter-rouge">development</code></li>
+  <li><code class="language-cpp highlighter-rouge"><span class="n">master</span></code></li>
+  <li><code class="language-cpp highlighter-rouge"><span class="n">development</span></code></li>
 </ul>
 
-<p>The <code class="highlighter-rouge">master</code> branch should always reflect the state of the current release of
-<code class="highlighter-rouge">RevBayes</code>.
-The <code class="highlighter-rouge">development</code> branch should contain the working additions/changes to the
+<p>The <code class="language-cpp highlighter-rouge"><span class="n">master</span></code> branch should always reflect the state of the current release of
+<code class="language-cpp highlighter-rouge"><span class="n">RevBayes</span></code>.
+The <code class="language-cpp highlighter-rouge"><span class="n">development</span></code> branch should contain the working additions/changes to the
 code that are to be included in the next release.
 Under normal circumstances, you should not work on either of these branches
 directly.
 Rather, to make changes or work on a new feature, you should create a separate
-branch off of <code class="highlighter-rouge">development</code>.
-While working on your branch, frequently merge changes from <code class="highlighter-rouge">development</code> to
+branch off of <code class="language-cpp highlighter-rouge"><span class="n">development</span></code>.
+While working on your branch, frequently merge changes from <code class="language-cpp highlighter-rouge"><span class="n">development</span></code> to
 stay up to date.
-Once your work is ready, and <em>before</em> you merge your branch into <code class="highlighter-rouge">development</code>,
-make sure to merge any changes from <code class="highlighter-rouge">development</code> and verify the code is
+Once your work is ready, and <em>before</em> you merge your branch into <code class="language-cpp highlighter-rouge"><span class="n">development</span></code>,
+make sure to merge any changes from <code class="language-cpp highlighter-rouge"><span class="n">development</span></code> and verify the code is
 compiling and tests are passing.
-Never merge a feature branch directly into <code class="highlighter-rouge">master</code>, the only exception being
+Never merge a feature branch directly into <code class="language-cpp highlighter-rouge"><span class="n">master</span></code>, the only exception being
 hotfixes to the current release.
-For hotfixes, create a separate branch from <code class="highlighter-rouge">master</code>, make the fix and verify
-it, and then merge the hotfix branch into <code class="highlighter-rouge">master</code> and <code class="highlighter-rouge">development</code>.</p>
+For hotfixes, create a separate branch from <code class="language-cpp highlighter-rouge"><span class="n">master</span></code>, make the fix and verify
+it, and then merge the hotfix branch into <code class="language-cpp highlighter-rouge"><span class="n">master</span></code> and <code class="language-cpp highlighter-rouge"><span class="n">development</span></code>.</p>
 
 <p>A great reference:</p>
 
@@ -136,8 +142,7 @@ for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
 }
 </script>
 
-
-<footer>
+      <footer>
   <div class="container">
   <div class="row">
     <div class="col-sm-3" align="left">
@@ -160,22 +165,18 @@ for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
 </footer>
 
     </div>
-    <script src="/revbayes_tutorials/assets/js/jquery.min.js"></script>
-<script src="/revbayes_tutorials/assets/js/FileSaver.min.js"></script>
-<script src="/revbayes_tutorials/assets/js/jszip.min.js"></script>
-<script src="/revbayes_tutorials/assets/js/bootstrap.min.js"></script>
-<script src="/revbayes_tutorials/assets/js/lesson.js"></script>
-<script>
+    <script src="/revbayes_tutorials/assets/js/vendor/jquery.min.js"></script>
+<script src="/revbayes_tutorials/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/revbayes_tutorials/assets/js/vendor/jszip.min.js"></script>
+<script src="/revbayes_tutorials/assets/js/vendor/bootstrap.min.js"></script>
+<!-- <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
   })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
   ga('create', 'UA-37305346-2', 'auto');
   ga('send', 'pageview');
-</script>
-
-  </body>
-</html>
+</script> -->
 <script type="text/javascript"
     src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
     MathJax.Hub.Config({
@@ -185,3 +186,10 @@ for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
     }
   });
 </script>
+
+    <script src="/revbayes_tutorials/assets/js/base.js"></script>
+    
+    <script src="/revbayes_tutorials/assets/js/tutorial.js"></script>
+    
+  </body>
+</html>
