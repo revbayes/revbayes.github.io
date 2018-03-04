@@ -1,7 +1,7 @@
 ---
 layout: tutorial
 title: Setting up to develop in RevBayes
-subtitle: 
+subtitle: Some options for setting up a `RevBayes` development environment
 category: Developer
 authors: Will Pett, April Wright, Lyndon Coghill, Sebastian H&#246;hna, Wade Dismukes
 prerequisites:

@@ -1,6 +1,7 @@
 ---
 layout: tutorial
 title: Git Workflow Best Practices
+subtitle: How to contribute code effectively
 category: Developer
 index: 1
 ---
