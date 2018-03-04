@@ -15,6 +15,6 @@ Notice the repetition in naming structure between the directories within the cor
  
  * The **revlanguage** directory is essentially a wrapper for all code within the core directory. The code within **revlanguage** is written to match the scripting Rev language syntax.
  
-<img src="images/RB_structure_map.jpg" width="80%">
+<img src="images/RB_structure_map.jpg" width="110%">
  
  
