@@ -14,7 +14,7 @@ Then, when making changes to the tutorials, the static site should be rebuilt an
 
 	sh jekgit.sh
 
-In order to build the site you will need to install [`jekyll`](https://jekyllrb.com/docs/installation/) and [`jekyll-scholar`](https://github.com/inukshuk/jekyll-scholar)
+In order to build the site you will need to install [`jekyll`](https://jekyllrb.com/docs/installation/)
 
 
 Setting up jekyll
@@ -27,9 +27,9 @@ To install `jekyll` and `bundler` (or update them):
 If you get a permission error, you can install the `jekyll` and `bundler` gems
 in your home folder using:
 
-    export GEM_HOME="${HOME}/.gem"
+    export GEM_HOME=~/.gem
     gem install jekyll bundler
-
+    
 NOTE: You may get errors here that you need to update ruby to install these
 gems. 
 
