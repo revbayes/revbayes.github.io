@@ -20,15 +20,15 @@ In order to build the site you will need to install [`jekyll`](https://jekyllrb.
 Setting up jekyll
 =================
 
-To install `jekyll` and `bundler` (or update them):
+To install `jekyll` and `bundler` and `jekyll-scholar` (or update them):
 
-    gem install jekyll bundler
+    gem install jekyll bundler jekyll-scholar
 
 If you get a permission error, you can install the `jekyll` and `bundler` gems
 in your home folder using:
 
-    export GEM_HOME="${HOME}/.gem"
-    gem install jekyll bundler
+    export GEM_HOME=~/.gem
+    gem install jekyll bundler jekyll-scholar
 
 NOTE: You may get errors here that you need to update ruby to install these
 gems. 
