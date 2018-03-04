@@ -3,6 +3,7 @@
 if git diff --exit-code > /dev/null
 then
 	git pull
+	git push
 
 	msg=`git log -1 --pretty=%B`
 
@@ -25,5 +26,5 @@ then
 	fi
 	cd ..
 else
-	echo "Error: Source changes not staged for commit.\nPlease commit to source before updating master."
+	echo "Error: Source changes not staged for commit.\nPlease commit or stash before updating master."
 fi
