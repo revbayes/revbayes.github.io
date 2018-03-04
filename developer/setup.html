@@ -19,7 +19,7 @@
 	<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
 	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 	<![endif]-->
-    <title>RevBayes Tutorials: Setting up an IDE to develop RevBayes</title>
+    <title>RevBayes Tutorials: Setting up to develop in RevBayes</title>
   </head>
   <body>
     <div class="container">
@@ -62,7 +62,7 @@
 </nav>
 
       <div class="row">
-	<h1 class="maintitle">Setting up an IDE to develop RevBayes</h1>
+	<h1 class="maintitle">Setting up to develop in RevBayes</h1>
 	<h3 class="subtitle"></h3>
 	<h4 class="maintitle">Will Pett, April Wright, Lyndon Coghill, Sebastian H&#246;hna, Wade Dismukes</h4>
 </div>
@@ -319,6 +319,72 @@ make -j 4 (4 = the number of processors on your computer)
 
 <p>On <a href="http://wiki.netbeans.org/Keyboard_Shortcuts">Netbeans wiki</a> you can download the full map for keyboard shortcuts. Happy coding!</p>
 
+<h1 class="section" id="setting-up-vim-for-revbayes-development">Setting up Vim for RevBayes development</h1>
+
+<p><a href="http://www.vim.org">Vim</a> is a text editor that some people love.
+It’s not an IDE, but it can provide useful IDE-like behaviors.
+If you are reading this, you are probably a vim-lover and already have a set of customizations that you like.
+Here are some more to consider.</p>
+
+<h2 id="youcompleteme">YouCompleteMe</h2>
+
+<p><a href="https://github.com/Valloric/YouCompleteMe">YouCompleteMe</a> is an extremely useful plugin that provides suggestions as you type for function names, prompts about their arguments, etc.
+There are several steps to get it working.</p>
+
+<h3 id="install-dependencies">Install dependencies</h3>
+
+<p>This seems to be sufficient on Ubuntu 16.04:</p>
+<div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo apt-get install build-essential cmake python-dev python3-dev clang
+</code></pre></div></div>
+
+<h3 id="get-the-vim-code-itself">Get the vim code itself</h3>
+
+<p>Grab these two plugins:</p>
+
+<ul>
+  <li><a href="https://github.com/Valloric/YouCompleteMe">YouCompleteMe</a></li>
+  <li><a href="https://github.com/rdnetto/YCM-Generator">YCM-Generator</a></li>
+</ul>
+
+<p>Put them wherever you put your plugins, e.g., <code class="highlighter-rouge">.vim/bundle/</code> if you’re using <a href="https://github.com/tpope/vim-pathogen">Pathogen</a>.</p>
+
+<p>For YCM, you also need to get its submodules:</p>
+<div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd YouCompleteMe/
+git submodule update --init --recursive
+</code></pre></div></div>
+<p>(If you manage your plugins as git subtrees, note that you probably can’t for YouCompleteMe because it contains submodules itself.)</p>
+
+<h3 id="compile-the-ycm-plugin">Compile the YCM plugin</h3>
+
+<p>YCM has a compiled component as well as vim code.  This may take a few minutes to run.</p>
+<div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd YouCompleteMe/
+./install.py --clang-completer
+</code></pre></div></div>
+
+<h3 id="provide-the-compilation-flags-to-ycm">Provide the compilation flags to YCM</h3>
+
+<p>The above was to install YCM in general.
+To use it specifically with RevBayes (or any other project), you need to give it information about the codebase.
+YCM-Generator is one way to do this.</p>
+
+<div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd revbayes/  # or wherever you keep revbayes
+cd projects/cmake/build/
+~/.vim/bundle/YCM-Generator/config_gen.py . # adjust the vim path if necessary
+</code></pre></div></div>
+
+<p>That should take a few seconds to run.
+Then move the result to the top-level directory:</p>
+<div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mv .ycm_extra_conf.py ../../../
+</code></pre></div></div>
+
+<h3 id="try-it-out">Try it out</h3>
+
+<p>That should be it.
+If YCM is working, when you open a revbayes <code class="highlighter-rouge">.cpp</code> or <code class="highlighter-rouge">.h</code> file, vim will ask <code class="highlighter-rouge">Found revbayes/.ycm_extra_conf.py. Load?</code></p>
+
+<p>If you find that you don’t want YCM operating on all your other filetypes, you can put something like this in your <code class="highlighter-rouge">.vimrc</code>.</p>
+<div class="vim highlighter-rouge"><div class="highlight"><pre class="highlight"><code>let g:ycm_filetype_whitelist = { 'cpp': 1, 'c': 1, 'python': 1 }
+</code></pre></div></div>
 
 <ol class="bibliography"></ol>
 
