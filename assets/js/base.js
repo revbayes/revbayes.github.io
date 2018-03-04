@@ -29,6 +29,8 @@ $(".overview").each(function() {
       col.appendChild(ul);
       row.appendChild(col);
       this.appendChild(row);
+    } else if( document.getElementById("prerequisites") == null ) {
+        this.outerHTML = "";
     }
 });
 

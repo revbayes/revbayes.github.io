@@ -3,21 +3,23 @@
 {% endcomment %}
 <blockquote class="overview no-print" id="overview">
   <h2>Overview</h2>
-
   <div class="row">
     <div class="col-md-9">
         <strong>Prerequisites</strong>
         <ul>
         {% if page.prerequisites.size > 0 %}
+          <ul id="prerequisites">
           {% for prerequisite in page.prerequisites %}
             {% assign prereq_url = '/tutorials/' | append: prerequisite | append: '/' %}
             {% assign tutorial = site.pages | where:"url", prereq_url | first %}
             <li><a href="{{ site.baseurl }}{{ tutorial.url }}">{{ tutorial.title }}</a></li>
           {% endfor %}
+          </ul>
         {% else %}
+          <ul>
           <li>None</li>
+          </ul>
         {% endif %}
-        </ul>
     </div>
   </div>
 </blockquote>
