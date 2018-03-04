@@ -1,5 +1,4 @@
 ---
-layout: tutorial
 title: Getting familiar with the code
 subtitle: The architecture of the `RevBayes` source code 
 category: Developer

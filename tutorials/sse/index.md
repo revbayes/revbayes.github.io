@@ -1,5 +1,4 @@
 ---
-layout: tutorial
 title: Phylogenetic Inference using ‘RevBayes‘
 subtitle: State-Dependent Diversification Rate Estimation
 authors:  Sebastian H&#246;hna, Will Freyman, and Emma Goldberg

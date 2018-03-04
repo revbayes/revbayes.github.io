@@ -1,5 +1,4 @@
 ---
-layout: tutorial
 title: Setting up to develop in RevBayes
 subtitle: Some options for setting up a `RevBayes` development environment
 category: Developer
