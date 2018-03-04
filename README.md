@@ -28,8 +28,8 @@ If you get a permission error, you can install the `jekyll` and `bundler` gems
 in your home folder using:
 
     export GEM_HOME=~/.gem
-    gem install jekyll bundler jekyll-scholar
-
+    gem install jekyll bundler
+    
 NOTE: You may get errors here that you need to update ruby to install these
 gems. 
 
