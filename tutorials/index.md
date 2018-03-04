@@ -17,14 +17,11 @@ The tutorials all follow the same format, please see the Tutorial Format guide f
 
 <a href="{{ site.baseurl }}{{ page.url }}format" class="btn btn-info" role="button">Tutorial Format Guide</a>
 
-{% assign tutorials = site.pages | where:"layout", "tutorial" %}
-{% assign categories = tutorials | group_by:"category" | sort: "index" %}
-{% for category in categories %}
-{% if category.name != "Developer" and category.name != "" %}
-<h3>{{ category.name }}</h3>
+{% assign alltutorials = site.pages | where:"layout", "tutorial" %}
+{% assign tutorials = alltutorials | where:"category", "Basic" | sort: "index" %}
+<h3>Introduction to MCMC and RevBayes</h3>
 <table class="table table-striped">
 {% for lesson in tutorials %}
-{% if lesson.category == category.name %}
 <tr>
 <td class="col-sm-3">
 {% assign lesson_number = lesson_number | plus: 1 %}
@@ -32,8 +29,36 @@ The tutorials all follow the same format, please see the Tutorial Format guide f
 </td>
 <td class="col-sm-3">{{ lesson.subtitle }}</td>
 </tr>
-{% endif %}
 {% endfor %}
 </table>
-{% endif %}
+
+{% assign alltutorials = site.pages | where:"layout", "tutorial" %}
+{% assign tutorials = alltutorials | where:"category", "Standard" | sort: "index" %}
+<h3>Standard tree inference and comparative methods</h3>
+<table class="table table-striped">
+{% for lesson in tutorials %}
+<tr>
+<td class="col-sm-3">
+{% assign lesson_number = lesson_number | plus: 1 %}
+{{ lesson_number }}. <a href="{{ site.baseurl }}{{ lesson.url }}">{{ lesson.title }}</a>
+</td>
+<td class="col-sm-3">{{ lesson.subtitle }}</td>
+</tr>
 {% endfor %}
+</table>
+
+{% assign alltutorials = site.pages | where:"layout", "tutorial" %}
+{% assign tutorials = alltutorials | where:"category", "Advanced" | sort: "index" %}
+<h3>Complex hierachical models for phylogenetic inference</h3>
+<table class="table table-striped">
+{% for lesson in tutorials %}
+<tr>
+<td class="col-sm-3">
+{% assign lesson_number = lesson_number | plus: 1 %}
+{{ lesson_number }}. <a href="{{ site.baseurl }}{{ lesson.url }}">{{ lesson.title }}</a>
+</td>
+<td class="col-sm-3">{{ lesson.subtitle }}</td>
+</tr>
+{% endfor %}
+</table>
+
