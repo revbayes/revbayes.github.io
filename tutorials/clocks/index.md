@@ -13,9 +13,11 @@ files:
 
 Exercise: Comparing Relaxed-Clock Models & Estimating Rooted Time Trees
 =======================================================================
+{:.section}
 
 Introduction
 ------------
+{:.subsection}
 
 Central among the questions explored in biology are those that seek to
 understand the timing and rates of evolutionary processes. Accurate
@@ -31,6 +33,7 @@ divergences using the program [‘RevBayes‘](http://revbayes.github.io/).
 
 Getting Started {#gettingStarted}
 ---------------
+{:.subsection}
 
 The various exercises in this tutorial take you through the steps
 required to perform phylogenetic analyses of the example datasets. In
@@ -59,6 +62,7 @@ that covers node calibrations.
 
 Creating Rev Files
 ------------------
+{:.subsection}
 
 This tutorial sets up three different relaxed clock models and a
 calibrated birth-death model. Because of the complexity of the various
@@ -124,6 +128,7 @@ You can refer to these examples to verify your own work.
 
 The Birth-Death Model {#brMods}
 ---------------------
+{:.subsection}
 
 The birth-death process we will use is a constant-rate process
 conditioned on the age of the root of the tree (Fig. [m_BDCal:fig]).
@@ -282,6 +287,7 @@ specifications will be loaded by other ‘Rev‘ files.
 
 Specifying Branch-Rate Models {#brMods}
 -----------------------------
+{:.subsection}
 
 The next sections will walk you through setting up the files specifying
 different relaxed clock models. Each section will require you to create
@@ -569,6 +575,7 @@ under the UCLN model in Table [ssTable].
 
 Compute Bayes Factors and Select Model
 --------------------------------------
+{:.subsection}
 
 Now that we have estimates of the marginal likelihood under each of our
 different models, we can evaluate their relative plausibility using
@@ -640,6 +647,7 @@ Supported model? &
 
 Estimate the Topology and Branch Times
 --------------------------------------
+{:.subsection}
 
 After computing the Bayes factors and determining the relative support
 of each model, you can choose your favorite model among the three tested
