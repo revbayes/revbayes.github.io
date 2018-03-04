@@ -90,6 +90,70 @@
 
 <h1 id="installation-instructions">Installation Instructions</h1>
 
+<h3 id="installing-revbayes-from-source-on-mac-os-x">Installing RevBayes from source on Mac OS X</h3>
+
+<ol>
+  <li>
+    <p>Make sure that you have a c++ compiler installed on your computer. GCC 4.2 (or higher) and Apple LLVM version 6.0 have been used successfully. If you don’t have a c++ compiler, you can get it on a Mac when you download and install XCode.</p>
+  </li>
+  <li>
+    <p>Make sure that you have CMake installed. One option to install CMake is using homebrew:</p>
+  </li>
+</ol>
+
+<div class="language-cpp bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ruby</span> <span class="o">-</span><span class="n">e</span> <span class="s">"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"</span>
+<span class="n">brew</span> <span class="n">install</span> <span class="n">cmake</span>
+</code></pre></div></div>
+
+<ol class="bash">
+  <li>Download RevBayes from our github repository. You can clone the repository using git by running the following command in the terminal
+    <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="o">:</span><span class="c1">//github.com/revbayes/revbayes.git revbayes-master
+</span></code></pre></div>    </div>
+  </li>
+</ol>
+<p>4) Open a terminal and go to the RevBayes source directory if you haven’t already done so, e.g.,</p>
+
+<div class="language-cpp bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">cd</span> <span class="n">revbayes</span><span class="o">-</span><span class="n">master</span>
+</code></pre></div></div>
+
+<p>Next, go into the projects and then the cmake subdirectory:</p>
+<div class="language-cpp bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">cd</span> <span class="n">projects</span><span class="o">/</span><span class="n">cmake</span>
+</code></pre></div></div>
+
+<p>Now you can either build the standard version, e.g., for older Mac OS or Linux distributions using the following:</p>
+<div class="language-cpp bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">.</span><span class="o">/</span><span class="n">build</span><span class="p">.</span><span class="n">sh</span>
+</code></pre></div></div>
+
+<p>This builds the standard RevBayes executable rb. Alternatively, you can build the MPI version using instead the following to produce the rb-mpi executeable:</p>
+<div class="language-cpp bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">.</span><span class="o">/</span><span class="n">build</span><span class="p">.</span><span class="n">sh</span> <span class="o">-</span><span class="n">mpi</span> <span class="nb">true</span>
+</code></pre></div></div>
+
+<ol>
+  <li>You should be ready to use RevBayes. We have listed below some potential issues to troubleshoot below.</li>
+</ol>
+
+<p>Troubleshooting:</p>
+
+<p>1) <code class="language-cpp highlighter-rouge"><span class="n">Error</span> <span class="n">cmake</span> <span class="n">not</span> <span class="n">found</span><span class="o">!</span></code>
+Please go to step 2.</p>
+
+<p> 
+2) <code class="language-cpp highlighter-rouge"><span class="n">Error</span> <span class="n">can</span><span class="err">'</span><span class="n">t</span> <span class="n">find</span> <span class="n">the</span> <span class="n">libboost_filesystem</span><span class="p">.</span><span class="n">dylib</span> <span class="n">library</span> <span class="n">or</span> <span class="n">Library</span> <span class="n">not</span> <span class="n">loaded</span><span class="o">:</span> <span class="n">libboost_filesystem</span><span class="p">.</span><span class="n">dylib</span></code>
+ You need to add the boost libraries to your path variable. You may find that you have to export this <code class="language-cpp highlighter-rouge"><span class="n">DYLD_LIBRARY_PATH</span></code> every time you open a new terminal window. To get around this, you can add this to your <code class="language-cpp highlighter-rouge"><span class="p">.</span><span class="n">bash_profile</span></code> or <code class="language-cpp highlighter-rouge"><span class="p">.</span><span class="n">bashrc</span></code> file (which lives in your home directory). To change this, open a new terminal window and you should be in the home directory. If you do not have either of these files, use the text editor <code class="language-cpp highlighter-rouge"><span class="n">nano</span></code> to create this file type:</p>
+<div class="language-cpp bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">cd</span> <span class="o">~</span>
+<span class="n">touch</span> <span class="p">.</span><span class="n">bash_rpo</span>
+<span class="n">nano</span> <span class="p">.</span><span class="n">bash_profile</span>
+</code></pre></div></div>
+<p>Then add the following lines, replacing <code class="language-cpp highlighter-rouge"><span class="o">&lt;</span><span class="n">your_revbayes_directory</span><span class="o">&gt;</span></code> with wherever you put the Revbayes Github repository:</p>
+
+<div class="language-cpp bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">export</span> <span class="n">DYLD_LIBRARY_PATH</span><span class="o">=&lt;</span><span class="n">your_revbayes_directory</span><span class="o">&gt;/</span><span class="n">boost_1_60_0</span><span class="o">/</span><span class="n">stage</span><span class="o">/</span><span class="n">lib</span><span class="o">:</span><span class="err">$</span><span class="n">DYLD_LIBRARY_PATH</span>
+<span class="k">export</span> <span class="n">PATH</span><span class="o">=&lt;</span><span class="n">your_revbayes_directory</span><span class="o">&gt;/</span><span class="n">projects</span><span class="o">/</span><span class="n">cmake</span><span class="o">:</span><span class="err">$</span><span class="n">PATH</span> 
+</code></pre></div></div>
+
+<p>Then save the file using ctrl^o and hit return, then exit using ctrl^x. Now quit the Terminal app and reopen it and the boost libraries will forever be in your path.</p>
+
+<p>3) <code class="language-cpp highlighter-rouge"><span class="o">-</span><span class="n">bash</span><span class="o">:</span> <span class="n">rb</span><span class="o">:</span> <span class="n">command</span> <span class="n">not</span> <span class="n">found</span></code>
+The problem is that you tried to run RevBayes but your computer doesn’t know where the executable is. The easiest way is to set add the directory in which you compiled RevBayes to your path variable. You can do this by following exactly the instructions given for problem 2).</p>
 
       <footer>
   <div class="container">
