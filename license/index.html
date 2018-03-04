@@ -10,7 +10,6 @@
     <link rel="stylesheet" type="text/css" href="/revbayes_tutorials/assets/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="/revbayes_tutorials/assets/css/bootstrap-theme.css" />
     <link rel="stylesheet" type="text/css" href="/revbayes_tutorials/assets/css/main.css" />
-    
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -59,6 +58,37 @@
   </div>
 </nav>
 
+      <div class="row">
+	<h1 class="maintitle">Licenses</h1>
+	<h3 class="subtitle"></h3>
+	<h4 class="maintitle"></h4>
+</div>
+
+      
+<blockquote class="overview no-print" id="overview">
+  <h2>Overview</h2>
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul>
+          <li>None</li>
+          </ul>
+        
+    </div>
+  </div>
+</blockquote>
+
+<blockquote class="tutorial_files no-print">
+  <h2>Data files and scripts</h2>
+  
+    <div class="row">
+      <div class="col-md-9">
+          <strong>Scripts</strong>
+          <ul id="scripts"></ul>
+        </div>
+    </div>
+</blockquote>
       <h2 id="instructional-material">Instructional Material</h2>
 
 <p>All Software Carpentry and Data Carpentry instructional material is
@@ -139,6 +169,22 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
 are registered trademarks of <a href="http://numfocus.org/">NumFOCUS</a>.</p>
 
 
+      <ol class="bibliography"></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2>References</h2>"+elem_ol.outerHTML
+	}
+}
+</script>
       <br>
 <footer>
   <div class="container">
@@ -162,14 +208,19 @@ are registered trademarks of <a href="http://numfocus.org/">NumFOCUS</a>.</p>
 <script src="/revbayes_tutorials/assets/js/vendor/FileSaver.min.js"></script>
 <script src="/revbayes_tutorials/assets/js/vendor/jszip.min.js"></script>
 <script src="/revbayes_tutorials/assets/js/vendor/bootstrap.min.js"></script>
-<!-- <script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-  ga('create', 'UA-37305346-2', 'auto');
-  ga('send', 'pageview');
-</script> -->
+
+<script type="text/javascript">
+// Add default language
+$(".highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge")
+    this.classList = " highlighter-rouge";
+  
+});
+</script>
+
+<script src="/revbayes_tutorials/assets/js/base.js"></script>
+
 <script type="text/javascript"
     src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
     MathJax.Hub.Config({
@@ -180,7 +231,5 @@ are registered trademarks of <a href="http://numfocus.org/">NumFOCUS</a>.</p>
   });
 </script>
 
-    <script src="/revbayes_tutorials/assets/js/base.js"></script>
-    
   </body>
 </html>
