@@ -48,7 +48,7 @@ $color-testimonial: #fc8dc1 !default;
 // Specialized code blocks.
 //----------------------------------------
 
-@mixin cdSetup($box-color, $text-color: #000000, $prompt: "") {
+@mixin cdSetup($box-color, $text-color: #000000, $prompt: "", $secondary: "") {
   pre {
     font-size: 14px;
     background-color: $box-color;
@@ -56,13 +56,16 @@ $color-testimonial: #fc8dc1 !default;
     .line::before {
       content: $prompt ' ';
     }
+    .secondary::before {
+      content: $secondary ' ';
+    }
   }
   margin-bottom: 12px;
 }
 
-.Rev       { @include cdSetup($color-Rev, #000000, ">"); }
+.Rev       { @include cdSetup($color-Rev, #000000, ">", "+"); }
 .cpp       { @include cdSetup($color-cpp, #000000); }
-.bash      { @include cdSetup($color-bash, #000000, "$"); }
+.bash      { @include cdSetup($color-bash, #000000, "$", ">"); }
 .console   { @include cdSetup($color-console-bg, $color-console); }
 
 .error     { @include cdSetup($color-error); }

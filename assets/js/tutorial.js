@@ -81,7 +81,44 @@ $(".tutorial_files").each(function() {
 // Revify highlight blocks
 var _pre = document.querySelectorAll('pre');
 for (var i = 0, element; element = _pre[i]; i++) {
-  element.innerHTML="<span class='line'>"+(element.textContent.split("\n").slice(0,-1).join("</span>\n<span class='line'>"))+"</span>";
+  var lines = element.textContent.split("\n").slice(0,-1);
+
+  var open_brace = false;
+  var open_paren = false;
+  var open_curly = false;
+  var open_slash = false;
+  for (var line in lines) {
+      if ( open_brace || open_paren || open_curly ) {
+        lines[line] = "<span class='secondary'>"+lines[line]+"</span>";
+      } else {
+        lines[line] = "<span class='line'>"+lines[line]+"</span>";
+      }
+
+      if ( lines[line].match(/\[[^\]]*$/) != null ) {
+        open_brace = true;
+      }
+      if ( lines[line].match(/\([^\)]*$/) != null ) {
+        open_paren = true;
+      }
+      if ( lines[line].match(/\{[^\}]*$/) != null ) {
+        open_curly = true;
+      }
+      if ( lines[line].match(/\\\s*$/) != null ) {
+        open_slash = true;
+      }
+
+      if ( lines[line].match(/\][^\[]]*$/) != null ) {
+        open_brace = false;
+      }
+      if ( lines[line].match(/\)[^\()]*$/) != null ) {
+        open_paren = false;
+      }
+      if ( lines[line].match(/\}[^\{}]*$/) != null ) {
+        open_curly = false;
+      }
+  }
+
+  element.innerHTML=lines.join("\n");
   // Italicize comments
   if ( element.parentElement.parentElement.classList == "highlighter-rouge" )
     element.innerHTML = element.innerHTML.replace(/(#[^<]*)/g,"<i>$1</i>");
