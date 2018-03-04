@@ -7,6 +7,22 @@ index: 1
 ---
 
 # Git workflow
+{:.section}
+
+Recommended reading:
+
+-   <http://nvie.com/posts/a-successful-git-branching-model/>
+
+
+## Getting started by forking the `RevBayes` repo
+{:.subsection}
+
+Due to the size of the `RevBayes` project and the number of developers
+contributing to it, new developers should fork their own copy of the repository
+on GitHub, and contribute their changes via pull request.
+
+## Best practices when working in the code
+{:.subsection}
 
 The core branches of the `RevBayes` repo that should always exist are
 
@@ -30,11 +46,3 @@ Never merge a feature branch directly into `master`, the only exception being
 hotfixes to the current release.
 For hotfixes, create a separate branch from `master`, make the fix and verify
 it, and then merge the hotfix branch into `master` and `development`.
-
-A great reference:
-
--   <http://nvie.com/posts/a-successful-git-branching-model/>
-
-## Cleaning up feature branches
-
-
