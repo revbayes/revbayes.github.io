@@ -235,6 +235,8 @@ Here are some handy keyboard shortcuts to start with:
 On [Netbeans wiki](http://wiki.netbeans.org/Keyboard_Shortcuts) you can download the full map for keyboard shortcuts. Happy coding! 
 
  -->
+
+ 
 Setting up Vim for RevBayes development
 =======================================
 {:.section}
