@@ -29,7 +29,7 @@ built-in functions vastly simplify this inference task.</p>
 <p>All of the files for this analysis are provided for you, and you can run
 these without significant effort using the function in the console:</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">source</span><span class="p">(</span><span class="s">"RevBayes_scripts/basics.Rev"</span><span class="p">)</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("RevBayes_scripts/basics.Rev")
 </code></pre></div></div>
 
 <p>Nevertheless, you will learn more if you type in the commands directly.</p>
@@ -46,20 +46,20 @@ exactly in .</p>
 evolutionary biology. Therefore, the basics are simple mathematical
 operations, such as</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp"># Simple mathematical operators:
-</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">1</span>                            <span class="err">#</span> <span class="n">Addition</span>
-<span class="mi">10</span> <span class="o">-</span> <span class="mi">5</span>                           <span class="err">#</span> <span class="n">Subtraction</span>
-<span class="mi">5</span> <span class="o">*</span> <span class="mi">5</span>                            <span class="err">#</span> <span class="n">Multiplication</span>
-<span class="mi">10</span> <span class="o">/</span> <span class="mi">2</span>                           <span class="err">#</span> <span class="n">Division</span>
-<span class="mi">2</span><span class="o">^</span><span class="mi">3</span>                              <span class="err">#</span> <span class="n">Exponentiation</span>
-<span class="mi">5</span><span class="o">%</span><span class="mi">2</span>                              <span class="err">#</span> <span class="n">Modulo</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Simple mathematical operators:
+1 + 1                            # Addition
+10 - 5                           # Subtraction
+5 * 5                            # Multiplication
+10 / 2                           # Division
+2^3                              # Exponentiation
+5%2                              # Modulo
 </code></pre></div></div>
 
 <p>Just as a side note, you can also write multiple statements in the same
 line if you separate these by a semicolon (). The statements will be
 executed as if you wrote each on a single line.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">1</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span>                    <span class="err">#</span> <span class="n">Multiple</span> <span class="n">statements</span> <span class="n">in</span> <span class="n">one</span> <span class="n">line</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1 + 1; 2 + 2                    # Multiple statements in one line
 </code></pre></div></div>
 
 <p>Here you can see that comments always start with the hash symbol ().
@@ -67,57 +67,57 @@ Everything after the ‘’-symbol will be ignored. In addition to these
 simple mathematical operations, we provide some standard math functions
 which can be called by:</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp"># Math-Functions
-</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>                           <span class="err">#</span> <span class="n">exponential</span> <span class="n">function</span>
-<span class="n">ln</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>                            <span class="err">#</span> <span class="n">logarithmic</span> <span class="n">function</span> <span class="n">with</span> <span class="n">natural</span> <span class="n">base</span>
-<span class="n">sqrt</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span>                         <span class="err">#</span> <span class="n">square</span> <span class="n">root</span> <span class="n">function</span> 
-<span class="n">power</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>                       <span class="err">#</span> <span class="n">power</span> <span class="n">function</span><span class="o">:</span> <span class="n">power</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span> <span class="o">=</span> <span class="n">a</span><span class="o">^</span><span class="n">b</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Math-Functions
+exp(1)                           # exponential function
+ln(1)                            # logarithmic function with natural base
+sqrt(16)                         # square root function 
+power(2,2)                       # power function: power(a,b) = a^b
 </code></pre></div></div>
 
 <p>Notice that is case-sensitive. That means, distinguishes upper and lower
 case letter for both variable names and function names. For example,
 only the first of these two calls will work</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>                           <span class="err">#</span> <span class="n">correct</span> <span class="n">lower</span> <span class="k">case</span> <span class="n">name</span>
-<span class="n">Exp</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>                           <span class="err">#</span> <span class="n">wrong</span> <span class="n">upper</span> <span class="k">case</span> <span class="n">name</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>exp(1)                           # correct lower case name
+Exp(1)                           # wrong upper case name
 </code></pre></div></div>
 
 <p>Moreover, we provide functions for the common statistical distributions.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp"># distribution functions
-</span><span class="n">dexp</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">lambda</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>       <span class="err">#</span> <span class="n">exponential</span> <span class="n">distribution</span> <span class="n">density</span> <span class="n">function</span>
-<span class="n">qexp</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>              <span class="err">#</span> <span class="n">exponential</span> <span class="n">distribution</span> <span class="n">quantile</span> <span class="n">function</span>
-<span class="n">rexp</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>             <span class="err">#</span> <span class="n">random</span> <span class="n">draws</span> <span class="n">from</span> <span class="n">an</span> <span class="n">exponential</span> <span class="n">distribution</span>
-<span class="n">dnorm</span><span class="p">(</span><span class="o">-</span><span class="mf">2.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">)</span>      <span class="err">#</span> <span class="n">normal</span> <span class="n">distribution</span> <span class="n">density</span> <span class="n">function</span>
-<span class="n">rnorm</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>          <span class="err">#</span> <span class="n">random</span> <span class="n">draws</span> <span class="n">from</span> <span class="n">a</span> <span class="n">normal</span> <span class="n">distribution</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># distribution functions
+dexp(x=1,lambda=1)       # exponential distribution density function
+qexp(0.5,1)              # exponential distribution quantile function
+rexp(n=10,1)             # random draws from an exponential distribution
+dnorm(-2.0,0.0,1.0)      # normal distribution density function
+rnorm(n=10,0,1)          # random draws from a normal distribution
 </code></pre></div></div>
 
 <p>You may have noticed that we sometimes provided labels of the arguments
 and sometimes not. You can always provide the argument labels and then
 will match the arguments based on the labels.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">dnorm</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span><span class="n">mean</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span><span class="n">sd</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>       <span class="err">#</span> <span class="n">normal</span> <span class="n">distribution</span> <span class="n">density</span> <span class="n">function</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dnorm(x=0.5,mean=0.0,sd=1)       # normal distribution density function
 </code></pre></div></div>
 
 <p>If you do not provide the argument labels, then will match the arguments
 by the best fitting types and the order in which you provided the
 arguments.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">dnorm</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.5</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>         <span class="err">#</span> <span class="n">correct</span> <span class="n">order</span>
-<span class="n">dnorm</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mf">0.5</span><span class="p">)</span>         <span class="err">#</span> <span class="n">mismatched</span> <span class="n">order</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dnorm(0.5,0.5,1)         # correct order
+dnorm(0.5,1,0.5)         # mismatched order
 </code></pre></div></div>
 
 <p>You may provide also just some arguments with labels and leave the other
 arguments without labels.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">dnorm</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span><span class="n">sd</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>    <span class="err">#</span> <span class="n">partially</span> <span class="n">labeled</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dnorm(0.0,x=0.5,sd=1)    # partially labeled
 </code></pre></div></div>
 
 <p>If you do not remember what the parameter name or parameter names of a
 function are, then you can simply type in the function name and will
 tell you the possible parameters with their names.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">dnorm</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dnorm
 </code></pre></div></div>
 
 <h2 id="variable-declaration">Variable Declaration</h2>
@@ -133,67 +133,67 @@ constant and deterministic variables.</p>
 value 1 to it. The left arrow assignment () always creates a constant
 variable.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp"># Variable assignment: constant and deterministic
-</span><span class="n">a</span> <span class="o">&lt;-</span> <span class="mi">1</span>                           <span class="err">#</span> <span class="n">assignment</span> <span class="n">of</span> <span class="n">constant</span> <span class="n">node</span> <span class="sc">'a'</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Variable assignment: constant and deterministic
+a &lt;- 1                           # assignment of constant node 'a'
 </code></pre></div></div>
 
 <p>You see the value of ’a’ by just typing in the variable name and
 pressing enter.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">a</span>                                <span class="err">#</span> <span class="n">printing</span> <span class="n">the</span> <span class="n">value</span> <span class="n">of</span> <span class="sc">'a'</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>a                                # printing the value of 'a'
 </code></pre></div></div>
 
 <p>If you want to see which type of variable (constant, deterministic or
 stochastic) ’a’ has, then call the structure function for it.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">str</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>                           <span class="err">#</span> <span class="n">printing</span> <span class="n">the</span> <span class="n">structure</span> <span class="n">information</span> <span class="n">of</span> <span class="sc">'a'</span>
-<span class="o">|*</span>   <span class="n">_variable</span>     <span class="o">=</span> <span class="n">a</span>
-<span class="o">|*</span>   <span class="n">_RevType</span>      <span class="o">=</span> <span class="n">Natural</span>
-<span class="o">|*</span>   <span class="n">_RevTypeSpec</span>  <span class="o">=</span> <span class="p">[</span> <span class="n">Natural</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span> <span class="n">RevObject</span> <span class="p">]</span>
-<span class="o">|*</span>   <span class="n">_value</span>        <span class="o">=</span> <span class="mi">1</span>
-<span class="o">|*</span>   <span class="n">_dagType</span>      <span class="o">=</span> <span class="n">Constant</span> <span class="n">DAG</span> <span class="n">node</span>
-<span class="o">|*</span>   <span class="n">_children</span>     <span class="o">=</span> <span class="p">[</span>  <span class="p">]</span>
-<span class="o">|*</span>   <span class="p">.</span><span class="n">methods</span> <span class="o">=</span> <span class="kt">void</span> <span class="n">function</span> <span class="p">()</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>str(a)                           # printing the structure information of 'a'
+|*   _variable     = a
+|*   _RevType      = Natural
+|*   _RevTypeSpec  = [ Natural, Integer, RevObject ]
+|*   _value        = 1
+|*   _dagType      = Constant DAG node
+|*   _children     = [  ]
+|*   .methods = void function ()
 </code></pre></div></div>
 
 <p>An additional quite useful built-in function in is the function which
 gives you only the type information of the variable and thus is a subset
 of the function.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">type</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>                          <span class="err">#</span> <span class="n">printing</span> <span class="n">the</span> <span class="n">type</span> <span class="n">information</span> <span class="n">of</span> <span class="sc">'a'</span>
-<span class="o">|*</span>    <span class="n">Natural</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>type(a)                          # printing the type information of 'a'
+|*    Natural
 </code></pre></div></div>
 
 <p>Next, we create a deterministic variable using the assignment computed
 by and another deterministic variable computed by . Deterministic
 variables are always created using the colon-equal assignment ().</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">b</span> <span class="o">:=</span> <span class="n">exp</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>                      <span class="err">#</span> <span class="n">assignment</span> <span class="n">of</span> <span class="n">deterministic</span> <span class="n">node</span> <span class="sc">'b'</span> <span class="n">with</span> <span class="n">the</span> <span class="n">exponential</span> <span class="n">function</span> <span class="n">with</span> <span class="n">parameter</span> <span class="sc">'a'</span>
-<span class="n">b</span>                                <span class="err">#</span> <span class="n">printing</span> <span class="n">the</span> <span class="n">value</span> <span class="n">of</span> <span class="sc">'b'</span>
-<span class="n">c</span> <span class="o">:=</span> <span class="n">ln</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>                       <span class="err">#</span> <span class="n">assignment</span> <span class="n">of</span> <span class="n">deterministic</span> <span class="n">node</span> <span class="sc">'c'</span> <span class="n">with</span> <span class="n">logarithmic</span> <span class="n">function</span> <span class="n">with</span> <span class="n">parameter</span> <span class="sc">'b'</span>
-<span class="n">c</span>                                <span class="err">#</span> <span class="n">printing</span> <span class="n">the</span> <span class="n">value</span> <span class="n">of</span> <span class="sc">'c'</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>b := exp(a)                      # assignment of deterministic node 'b' with the exponential function with parameter 'a'
+b                                # printing the value of 'b'
+c := ln(b)                       # assignment of deterministic node 'c' with logarithmic function with parameter 'b'
+c                                # printing the value of 'c'
 </code></pre></div></div>
 
 <p>Again, you see the type of the variable and additional information such
 as which the parents and children are by calling the structure function
 on it.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">str</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>                           <span class="err">#</span> <span class="n">printing</span> <span class="n">the</span> <span class="n">structure</span> <span class="n">information</span> <span class="n">of</span> <span class="sc">'b'</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>str(b)                           # printing the structure information of 'b'
 </code></pre></div></div>
 
 <p>For example, see the difference to the creation of variable ’d’, which
 is a constant variable.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">d</span> <span class="o">&lt;-</span> <span class="n">ln</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>                       <span class="err">#</span> <span class="n">assignment</span> <span class="n">of</span> <span class="n">constant</span> <span class="n">node</span> <span class="sc">'d'</span> <span class="n">with</span> <span class="n">the</span> <span class="n">value</span> <span class="k">if</span> <span class="n">the</span> <span class="n">logarithmic</span> <span class="n">function</span> <span class="n">with</span> <span class="n">parameter</span> <span class="sc">'b'</span>
-<span class="n">d</span>                                <span class="err">#</span> <span class="n">printing</span> <span class="n">the</span> <span class="n">value</span> <span class="n">of</span> <span class="sc">'d'</span>
-<span class="n">str</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>                           <span class="err">#</span> <span class="n">printing</span> <span class="n">the</span> <span class="n">structure</span> <span class="n">information</span> <span class="n">of</span> <span class="sc">'d'</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>d &lt;- ln(b)                       # assignment of constant node 'd' with the value if the logarithmic function with parameter 'b'
+d                                # printing the value of 'd'
+str(d)                           # printing the structure information of 'd'
 </code></pre></div></div>
 
 <p>Currently, the variables and have the same value. We can check this
 using the equal comparison ().</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">e</span> <span class="o">:=</span> <span class="p">(</span><span class="n">c</span> <span class="o">==</span> <span class="n">d</span><span class="p">)</span>           
-<span class="n">e</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>e := (c == d)           
+e
 </code></pre></div></div>
 
 <p>Now, if we assign a new value to variable , then naturally the value of
@@ -201,12 +201,12 @@ changes. This has the consequence that all deterministic variables that
 use ’a’ as a parameter, i.e., the variable , change their value
 automatically too.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">a</span> <span class="o">&lt;-</span> <span class="mi">2</span>                           <span class="err">#</span> <span class="n">reassignment</span> <span class="n">of</span> <span class="n">variable</span> <span class="n">a</span><span class="p">;</span> <span class="n">every</span> <span class="n">deterministic</span> <span class="n">node</span> <span class="n">which</span> <span class="n">has</span> <span class="sc">'a'</span> <span class="n">as</span> <span class="n">a</span> <span class="n">parameter</span> <span class="n">changes</span> <span class="n">its</span> <span class="n">value</span>
-<span class="n">a</span>                                <span class="err">#</span> <span class="n">printing</span> <span class="n">the</span> <span class="n">value</span> <span class="n">of</span> <span class="sc">'a'</span>
-<span class="n">b</span>                                <span class="err">#</span> <span class="n">printing</span> <span class="n">the</span> <span class="n">value</span> <span class="n">of</span> <span class="sc">'b'</span>
-<span class="n">c</span>                                <span class="err">#</span> <span class="n">printing</span> <span class="n">the</span> <span class="n">value</span> <span class="n">of</span> <span class="sc">'c'</span>
-<span class="n">d</span>                                <span class="err">#</span> <span class="n">printing</span> <span class="n">the</span> <span class="n">value</span> <span class="n">of</span> <span class="sc">'d'</span>
-<span class="n">e</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>a &lt;- 2                           # reassignment of variable a; every deterministic node which has 'a' as a parameter changes its value
+a                                # printing the value of 'a'
+b                                # printing the value of 'b'
+c                                # printing the value of 'c'
+d                                # printing the value of 'd'
+e
 </code></pre></div></div>
 
 <p>Since variable was a constant variable it did not change its value. This
@@ -217,29 +217,29 @@ stochastic variables. We will create a random variable from an
 exponential distribution with parameter . Stochastic assignments use the
 operation.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp"># Variable assignment: stochastic
-</span><span class="n">lambda</span> <span class="o">&lt;-</span> <span class="mi">1</span>                      <span class="err">#</span> <span class="n">assign</span> <span class="n">constant</span> <span class="n">node</span> <span class="err">'</span><span class="n">lambda</span><span class="err">'</span> <span class="n">with</span> <span class="n">value</span> <span class="sc">'1'</span>
-<span class="n">x</span> <span class="o">~</span> <span class="n">dnExponential</span><span class="p">(</span><span class="n">lambda</span><span class="p">)</span>        <span class="err">#</span> <span class="n">create</span> <span class="n">stochastic</span> <span class="n">node</span> <span class="n">with</span> <span class="n">exponential</span> <span class="n">distribution</span> <span class="n">and</span> <span class="n">parameter</span> <span class="err">'</span><span class="n">lambda</span><span class="err">'</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Variable assignment: stochastic
+lambda &lt;- 1                      # assign constant node 'lambda' with value '1'
+x ~ dnExponential(lambda)        # create stochastic node with exponential distribution and parameter 'lambda'
 </code></pre></div></div>
 
 <p>The value of is a random draw from the distribution. You can see the
 value and the probability (or log-probability) of the current value
 under the current parameter values by</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">x</span>                                <span class="err">#</span> <span class="n">print</span> <span class="n">value</span> <span class="n">of</span> <span class="n">stochastic</span> <span class="n">node</span> <span class="sc">'x'</span>
-<span class="n">x</span><span class="p">.</span><span class="n">probability</span><span class="p">()</span>                  <span class="err">#</span> <span class="n">print</span> <span class="n">the</span> <span class="n">probability</span> <span class="k">if</span> <span class="sc">'x'</span>
-<span class="n">x</span><span class="p">.</span><span class="n">lnProbability</span><span class="p">()</span>                <span class="err">#</span> <span class="n">print</span> <span class="n">the</span> <span class="n">log</span><span class="o">-</span><span class="n">probability</span> <span class="k">if</span> <span class="sc">'x'</span>
-<span class="n">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>                           <span class="err">#</span> <span class="n">printing</span> <span class="n">all</span> <span class="n">the</span> <span class="n">information</span> <span class="n">of</span> <span class="sc">'x'</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>x                                # print value of stochastic node 'x'
+x.probability()                  # print the probability if 'x'
+x.lnProbability()                # print the log-probability if 'x'
+str(x)                           # printing all the information of 'x'
 </code></pre></div></div>
 
 <p>Similarly, we create a random variable from a normal distribution by</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">mu</span> <span class="o">&lt;-</span> <span class="mi">0</span>
-<span class="n">sigma</span> <span class="o">&lt;-</span> <span class="mi">1</span>
-<span class="n">y</span> <span class="o">~</span> <span class="n">dnNorm</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span><span class="n">sigma</span><span class="p">)</span>    
-<span class="n">y</span><span class="p">.</span><span class="n">probability</span><span class="p">()</span>                  <span class="err">#</span> <span class="n">print</span> <span class="n">the</span> <span class="n">probability</span> <span class="n">of</span> <span class="sc">'y'</span>
-<span class="n">y</span><span class="p">.</span><span class="n">lnProbability</span><span class="p">()</span>                <span class="err">#</span> <span class="n">print</span> <span class="n">the</span> <span class="n">log</span><span class="o">-</span><span class="n">probability</span> <span class="k">if</span> <span class="sc">'y'</span>
-<span class="n">str</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>                           <span class="err">#</span> <span class="n">printing</span> <span class="n">all</span> <span class="n">the</span> <span class="n">information</span> <span class="n">of</span> <span class="sc">'y'</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mu &lt;- 0
+sigma &lt;- 1
+y ~ dnNorm(mu,sigma)    
+y.probability()                  # print the probability of 'y'
+y.lnProbability()                # print the log-probability if 'y'
+str(y)                           # printing all the information of 'y'
 </code></pre></div></div>
 
 <p>Variables that are not part of a model are assigned with , for example,
@@ -259,18 +259,18 @@ post increment () increases the value after returning the value, that
 is, the old value is returned. A pre increment () increases the value
 before returning the value, that is, the new value is returned.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">index</span> <span class="o">&lt;-</span> <span class="mi">1</span>
-<span class="n">index</span><span class="o">++</span>                          <span class="err">#</span> <span class="n">post</span> <span class="n">increment</span>
-<span class="o">++</span><span class="n">index</span>                          <span class="err">#</span> <span class="n">pre</span> <span class="n">increment</span>
-<span class="n">index</span><span class="o">--</span>                          <span class="err">#</span> <span class="n">post</span> <span class="n">decrement</span>
-<span class="o">--</span><span class="n">index</span>                          <span class="err">#</span> <span class="n">pre</span> <span class="n">decrement</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>index &lt;- 1
+index++                          # post increment
+++index                          # pre increment
+index--                          # post decrement
+--index                          # pre decrement
 </code></pre></div></div>
 
 <p>Additionally, you can use addition (), subtraction (), multiplication ()
 and division () to an existing variable.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">index</span> <span class="o">+=</span> <span class="mi">10</span>                      <span class="err">#</span> <span class="n">add</span> <span class="mi">10</span> <span class="n">to</span> <span class="n">the</span> <span class="n">current</span> <span class="n">value</span>
-<span class="n">index</span> <span class="o">*=</span> <span class="mi">2</span>                       <span class="err">#</span> <span class="kt">double</span> <span class="n">the</span> <span class="n">current</span> <span class="n">value</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>index += 10                      # add 10 to the current value
+index *= 2                       # double the current value
 </code></pre></div></div>
 
 <p>These variable manipulations will come in very handy for indices of
@@ -282,7 +282,7 @@ vectors/arrays.</p>
 a vector by default. Instead, you can create a vector using three
 different ways. First, you can call the vector function.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">v</span> <span class="o">&lt;-</span> <span class="n">v</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>                    <span class="err">#</span> <span class="n">create</span> <span class="n">a</span> <span class="n">vector</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>v &lt;- v(1,2,3)                    # create a vector
 </code></pre></div></div>
 
 <p>Interestingly, we can use the same name for a variable as for a
@@ -292,42 +292,42 @@ variable.</p>
 
 <p>Second, you can use the square bracket notation.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">w</span> <span class="o">&lt;-</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>                     <span class="err">#</span> <span class="n">create</span> <span class="n">a</span> <span class="n">vector</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>w &lt;- [1,2,3]                     # create a vector
 </code></pre></div></div>
 
 <p>And third, you can implicitly create the vector by assigning elements.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">z</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;-</span><span class="mi">1</span>                         <span class="err">#</span> <span class="n">implicit</span> <span class="n">creation</span> <span class="n">of</span> <span class="n">a</span> <span class="n">vector</span>
-<span class="n">z</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&lt;-</span><span class="mi">2</span>                   
-<span class="n">z</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">&lt;-</span><span class="mi">3</span>                  
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>z[1] &lt;-1                         # implicit creation of a vector
+z[2] &lt;-2                   
+z[3] &lt;-3                  
 </code></pre></div></div>
 
 <p>The implicit creation does not need to instantiate the variable
 beforehand. There are other useful built-in functions that produce
 vectors.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">1</span><span class="o">:</span><span class="mi">10</span>                             <span class="err">#</span> <span class="n">range</span> <span class="n">function</span>
-<span class="n">rep</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>                        <span class="err">#</span> <span class="n">replicate</span> <span class="n">an</span> <span class="n">element</span> <span class="n">n</span> <span class="n">times</span>
-<span class="n">seq</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>                      <span class="err">#</span> <span class="n">built</span> <span class="n">a</span> <span class="n">sequence</span> <span class="n">from</span> <span class="n">a</span> <span class="n">to</span> <span class="n">b</span> <span class="n">by</span> <span class="n">c</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1:10                             # range function
+rep(10,1)                        # replicate an element n times
+seq(1,20,2)                      # built a sequence from a to b by c
 </code></pre></div></div>
 
 <p>Vectors in belong to the class of objects that have methods. You can
 call a member method by</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">x</span><span class="p">.</span><span class="o">&lt;</span><span class="n">method</span> <span class="n">name</span><span class="o">&gt;</span><span class="p">(</span><span class="o">&lt;</span><span class="n">arguments</span><span class="o">&gt;</span><span class="p">)</span>                 
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>x.&lt;method name&gt;(&lt;arguments&gt;)                 
 </code></pre></div></div>
 
 <p>You have seen two methods previously, and . If you don’t remember what
 the methods were called, or if this object has any member methods, then
 you can get these by</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">v</span><span class="p">.</span><span class="n">methods</span><span class="p">()</span>                 
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>v.methods()                 
 </code></pre></div></div>
 
 <p>In general, this is very, very useful. So for a vector we can get the
 size — the number of elements — by calling its member function:</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">v</span><span class="p">.</span><span class="n">size</span><span class="p">()</span>                 
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>v.size()                 
 </code></pre></div></div>
 
 <h3 id="control-structures">Control Structures</h3>
@@ -336,54 +336,54 @@ size — the number of elements — by calling its member function:</p>
 control structure that we will look at is the loop. A loop executes a
 single statement or a block of statements.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp"># loops
-</span><span class="k">for</span> <span class="p">(</span><span class="o">&lt;</span><span class="n">variable</span><span class="o">&gt;</span> <span class="n">in</span> <span class="o">&lt;</span><span class="n">set</span> <span class="n">of</span> <span class="n">value</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">&lt;</span><span class="n">single</span> <span class="n">statement</span><span class="o">&gt;</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># loops
+for (&lt;variable&gt; in &lt;set of value&gt;) &lt;single statement&gt;
  
-<span class="k">for</span> <span class="p">(</span><span class="o">&lt;</span><span class="n">variable</span><span class="o">&gt;</span> <span class="n">in</span> <span class="o">&lt;</span><span class="n">set</span> <span class="n">of</span> <span class="n">value</span><span class="o">&gt;</span><span class="p">)</span> 
-   <span class="o">&lt;</span><span class="n">single</span> <span class="n">statement</span><span class="o">&gt;</span>
+for (&lt;variable&gt; in &lt;set of value&gt;) 
+   &lt;single statement&gt;
 
-<span class="k">for</span> <span class="p">(</span><span class="o">&lt;</span><span class="n">variable</span><span class="o">&gt;</span> <span class="n">in</span> <span class="o">&lt;</span><span class="n">set</span> <span class="n">of</span> <span class="n">value</span><span class="o">&gt;</span><span class="p">)</span> <span class="p">{</span>
-   <span class="o">&lt;</span><span class="n">multiple</span> <span class="n">statements</span><span class="o">&gt;</span>
-   <span class="o">&lt;</span><span class="n">multiple</span> <span class="n">statements</span><span class="o">&gt;</span>
-   <span class="o">&lt;</span><span class="n">multiple</span> <span class="n">statements</span><span class="o">&gt;</span>
-<span class="p">}</span>
+for (&lt;variable&gt; in &lt;set of value&gt;) {
+   &lt;multiple statements&gt;
+   &lt;multiple statements&gt;
+   &lt;multiple statements&gt;
+}
 </code></pre></div></div>
 
 <p>The statement(s) will be executed for each value of variable of the
 loop. A simple example is a loop that computes the sum of a sequence.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sum</span> <span class="o">&lt;-</span> <span class="mi">0</span>
-<span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="n">in</span> <span class="mi">1</span><span class="o">:</span><span class="mi">100</span><span class="p">)</span> <span class="p">{</span>
-   <span class="n">sum</span> <span class="o">&lt;-</span> <span class="n">sum</span> <span class="o">+</span> <span class="n">i</span>
-<span class="p">}</span>
-<span class="n">sum</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sum &lt;- 0
+for (i in 1:100) {
+   sum &lt;- sum + i
+}
+sum
 </code></pre></div></div>
 
 <p>Another example using a loop is the computation of the <a href="http://en.wikipedia.org/wiki/Fibonacci_number">Fibonacci
 number</a> for a given
 integer.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp"># Fibonacci series using a for loop
-</span><span class="n">fib</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;-</span> <span class="mi">1</span>
-<span class="n">fib</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&lt;-</span> <span class="mi">1</span>
-<span class="k">for</span> <span class="p">(</span><span class="n">j</span> <span class="n">in</span> <span class="mi">3</span><span class="o">:</span><span class="mi">10</span><span class="p">)</span> <span class="p">{</span>
-   <span class="n">fib</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">&lt;-</span> <span class="n">fib</span><span class="p">[</span><span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">fib</span><span class="p">[</span><span class="n">j</span> <span class="o">-</span> <span class="mi">2</span><span class="p">]</span>
-<span class="p">}</span>
-<span class="n">fib</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Fibonacci series using a for loop
+fib[1] &lt;- 1
+fib[2] &lt;- 1
+for (j in 3:10) {
+   fib[j] &lt;- fib[j - 1] + fib[j - 2]
+}
+fib
 </code></pre></div></div>
 
 <p>We could also compute the Fibonacci numbers using a loop. The loop
 continues to execute the statement(s) until the condition is wrong.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp"># Fibonacci series using a while loop
-</span><span class="n">fib</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;-</span> <span class="mi">1</span>
-<span class="n">fib</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&lt;-</span> <span class="mi">1</span>
-<span class="n">j</span> <span class="o">&lt;-</span> <span class="mi">3</span>
-<span class="k">while</span> <span class="p">(</span><span class="n">j</span> <span class="o">&lt;=</span> <span class="mi">10</span><span class="p">)</span> <span class="p">{</span>
-   <span class="n">fib</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">&lt;-</span> <span class="n">fib</span><span class="p">[</span><span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">fib</span><span class="p">[</span><span class="n">j</span> <span class="o">-</span> <span class="mi">2</span><span class="p">]</span>
-   <span class="n">j</span><span class="o">++</span>
-<span class="p">}</span>
-<span class="n">fib</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Fibonacci series using a while loop
+fib[1] &lt;- 1
+fib[2] &lt;- 1
+j &lt;- 3
+while (j &lt;= 10) {
+   fib[j] &lt;- fib[j - 1] + fib[j - 2]
+   j++
+}
+fib
 </code></pre></div></div>
 
 <h3 id="user-defined-functions">User Defined Functions</h3>
@@ -391,7 +391,7 @@ continues to execute the statement(s) until the condition is wrong.</p>
 <p>In you can write your own functions as well. The syntax for writing a
 function is:</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">function</span> <span class="o">&lt;</span><span class="k">return</span> <span class="n">value</span> <span class="n">type</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">function</span> <span class="n">name</span><span class="o">&gt;</span> <span class="p">(</span><span class="o">&lt;</span><span class="n">list</span> <span class="n">of</span> <span class="n">arguments</span><span class="o">&gt;</span><span class="p">)</span> <span class="p">{</span> <span class="o">&lt;</span><span class="n">statements</span><span class="o">&gt;</span> <span class="p">}</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>function &lt;return value type&gt; &lt;function name&gt; (&lt;list of arguments&gt;) { &lt;statements&gt; }
 </code></pre></div></div>
 
 <p>As a simple example, let’s write a function that computes the square of
@@ -400,23 +400,23 @@ of real number is . Since the square is always a positive real number,
 we choose the return to be Now we can call our own function the same way
 as we call other already built-in functions in .</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">a</span> <span class="o">&lt;-</span> <span class="n">square</span><span class="p">(</span><span class="mf">5.0</span><span class="p">)</span>
-<span class="n">a</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>a &lt;- square(5.0)
+a
 </code></pre></div></div>
 
 <p>As an exercise, let’s write a function that computes the factorial of a
 natural number.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp"># function for computing the factorial
-</span><span class="n">function</span> <span class="n">Natural</span> <span class="nf">fac</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
-   <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">return</span> <span class="n">i</span> <span class="o">*</span> <span class="n">fac</span><span class="p">(</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-   <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-      <span class="k">return</span> <span class="mi">1</span>
-   <span class="p">}</span>
-<span class="p">}</span>
-<span class="n">b</span> <span class="o">&lt;-</span> <span class="n">fac</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
-<span class="n">b</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># function for computing the factorial
+function Natural fac(i) {
+   if (i &gt; 1) {
+      return i * fac(i-1)
+   } else {
+      return 1
+   }
+}
+b &lt;- fac(6)
+b
 </code></pre></div></div>
 
 <p>Here you see that within your own function you can call your function as
@@ -425,30 +425,30 @@ well, which is commonly called recursive function calls.</p>
 <p>Now let us write a recursive function for the sum of numbers which we
 computed before using a loop.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp"># function for computing the sum
-</span><span class="n">function</span> <span class="n">Integer</span> <span class="nf">sum</span><span class="p">(</span><span class="n">Integer</span> <span class="n">j</span><span class="p">)</span> <span class="p">{</span>
-   <span class="k">if</span> <span class="p">(</span><span class="n">j</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">return</span> <span class="n">j</span> <span class="o">+</span> <span class="n">sum</span><span class="p">(</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-   <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-      <span class="k">return</span> <span class="mi">1</span>
-   <span class="p">}</span>
-<span class="p">}</span>
-<span class="n">c</span> <span class="o">&lt;-</span> <span class="n">sum</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
-<span class="n">c</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># function for computing the sum
+function Integer sum(Integer j) {
+   if (j &gt; 1) {
+      return j + sum(j-1)
+   } else {
+      return 1
+   }
+}
+c &lt;- sum(100)
+c
 </code></pre></div></div>
 
 <p>We can do the same for our favorite example, the Fibonacci series.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp"># function for computing the fibonacci series
-</span><span class="n">function</span> <span class="n">Integer</span> <span class="nf">fib</span><span class="p">(</span><span class="n">Integer</span> <span class="n">k</span><span class="p">)</span> <span class="p">{</span>
-   <span class="k">if</span> <span class="p">(</span><span class="n">k</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">return</span> <span class="n">fib</span><span class="p">(</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">fib</span><span class="p">(</span><span class="n">k</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span>
-   <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-      <span class="k">return</span> <span class="n">k</span>
-   <span class="p">}</span>
-<span class="p">}</span>
-<span class="n">d</span> <span class="o">&lt;-</span> <span class="n">fib</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
-<span class="n">d</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># function for computing the fibonacci series
+function Integer fib(Integer k) {
+   if (k &gt; 1) {
+      return fib(k-1) + fib(k-2)
+   } else {
+      return k
+   }
+}
+d &lt;- fib(6)
+d
 </code></pre></div></div>
 
 <p>Now that should be enough to get you going with our first example
@@ -482,7 +482,7 @@ Table [tab:airlineFatalities].</p>
 
 <p>These data can be loaded into by typing:</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">observed_fatalities</span> <span class="o">&lt;-</span> <span class="n">v</span><span class="p">(</span><span class="mi">24</span><span class="p">,</span><span class="mi">25</span><span class="p">,</span><span class="mi">31</span><span class="p">,</span><span class="mi">31</span><span class="p">,</span><span class="mi">22</span><span class="p">,</span><span class="mi">21</span><span class="p">,</span><span class="mi">26</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">16</span><span class="p">,</span><span class="mi">22</span><span class="p">)</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>observed_fatalities &lt;- v(24,25,31,31,22,21,26,20,16,22)
 </code></pre></div></div>
 
 <p>The model is a <a href="http://en.wikipedia.org/wiki/Poisson_regression">Poisson
@@ -496,7 +496,7 @@ for $\alpha$ and $\beta$. <script type="math/tex">% <![CDATA[
 \beta &  \sim & \text{Uniform}(-10,10)\end{aligned} %]]></script> The probability
 density can be computed in for a single year by</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">dpoisson</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">exp</span><span class="p">(</span><span class="n">alpha</span><span class="o">+</span><span class="n">beta</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dpoisson(y[i],exp(alpha+beta*x[i]))
 </code></pre></div></div>
 
 <h2 id="problems">Problems</h2>
@@ -515,20 +515,20 @@ tutorial</a>.)</p>
 
 <p>For simplicity of the calculations you can “normalize” the years, e.g.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">x</span> <span class="o">&lt;-</span> <span class="mi">1976</span><span class="o">:</span><span class="mi">1985</span> <span class="o">-</span> <span class="n">mean</span><span class="p">(</span><span class="mi">1976</span><span class="o">:</span><span class="mi">1985</span><span class="p">)</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>x &lt;- 1976:1985 - mean(1976:1985)
 </code></pre></div></div>
 
 <p>A common proposal distribution for $\alpha^{\prime} \sim P(\alpha[i-1])$
 is the normal distribution with mean $\mu = \alpha[i-1]$ and standard
 deviation $\sigma = \delta_\alpha$:</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">alpha_prime</span> <span class="o">&lt;-</span> <span class="n">rnorm</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">alpha</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">delta_alpha</span><span class="p">)</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha_prime &lt;- rnorm(1,alpha[i-1],delta_alpha)
 </code></pre></div></div>
 
 <p>A similar distribution should be used for $\beta^{\prime}$.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">delta_alpha</span> <span class="o">&lt;-</span> <span class="mf">1.0</span>
-<span class="n">delta_beta</span> <span class="o">&lt;-</span> <span class="mf">1.0</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>delta_alpha &lt;- 1.0
+delta_beta &lt;- 1.0
 </code></pre></div></div>
 
 <p>After you look at the output of the MCMC (later), play around to find
@@ -539,16 +539,16 @@ these are drawn from the prior distribution, but sometimes if the prior
 is very uninformative, then these parameter values result in a
 likelihood of 0.0 (or log-likelihood of -Inf).</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">alpha</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;-</span> <span class="o">-</span><span class="mf">0.01</span>     <span class="err">#</span> <span class="n">you</span> <span class="n">can</span> <span class="n">also</span> <span class="n">use</span> <span class="n">runif</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">)</span>
-<span class="n">beta</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;-</span> <span class="o">-</span><span class="mf">0.01</span>      <span class="err">#</span> <span class="n">you</span> <span class="n">can</span> <span class="n">also</span> <span class="n">use</span> <span class="n">runif</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">)</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha[1] &lt;- -0.01     # you can also use runif(-1.0,1.0)
+beta[1] &lt;- -0.01      # you can also use runif(-1.0,1.0)
 </code></pre></div></div>
 
 <p>Next, create some output for our MCMC algorithm. The output will be
 written into a file that can be read into or Tracer <a href="#Rambaut2011">(Rambaut and Drummond 2011)</a>.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp"># create a file output
-</span><span class="n">write</span><span class="p">(</span><span class="s">"iteration"</span><span class="p">,</span><span class="s">"alpha"</span><span class="p">,</span><span class="s">"beta"</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="s">"airline_fatalities.log"</span><span class="p">)</span>
-<span class="n">write</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">alpha</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">beta</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">file</span><span class="o">=</span><span class="s">"airline_fatalities.log"</span><span class="p">,</span><span class="n">append</span><span class="o">=</span><span class="n">TRUE</span><span class="p">)</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># create a file output
+write("iteration","alpha","beta",file="airline_fatalities.log")
+write(0,alpha[1],beta[1],file="airline_fatalities.log",append=TRUE)
 </code></pre></div></div>
 
 <p>Note that we need a first iteration with value 0 so that Tracer can load
@@ -556,57 +556,57 @@ in this file.</p>
 
 <p>Finally, we set up a loop over each iteration of the MCMC.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="n">in</span> <span class="mi">2</span><span class="o">:</span><span class="mi">10000</span><span class="p">)</span> <span class="p">{</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 2:10000) {
 </code></pre></div></div>
 
 <p>Within the loop we propose new parameter values.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="n">alpha_prime</span> <span class="o">&lt;-</span> <span class="n">rnorm</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">alpha</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">delta_alpha</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">beta_prime</span> <span class="o">&lt;-</span> <span class="n">rnorm</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">beta</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">delta_beta</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    alpha_prime &lt;- rnorm(1,alpha[i-1],delta_alpha)[1]
+    beta_prime &lt;- rnorm(1,beta[i-1],delta_beta)[1]
 </code></pre></div></div>
 
 <p>For the newly proposed parameter values we compute the prior ratio. In
 this case we know that the prior ratio is 0.0 as long as the new
 parameters are within the limits.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="n">ln_prior_ratio</span> <span class="o">&lt;-</span> <span class="n">dunif</span><span class="p">(</span><span class="n">alpha_prime</span><span class="p">,</span><span class="o">-</span><span class="mf">10.0</span><span class="p">,</span><span class="mf">10.0</span><span class="p">,</span><span class="n">log</span><span class="o">=</span><span class="n">TRUE</span><span class="p">)</span> <span class="o">+</span> <span class="n">dunif</span><span class="p">(</span><span class="n">beta_prime</span><span class="p">,</span><span class="o">-</span><span class="mf">10.0</span><span class="p">,</span><span class="mf">10.0</span><span class="p">,</span><span class="n">log</span><span class="o">=</span><span class="n">TRUE</span><span class="p">)</span> <span class="o">-</span> <span class="n">dunif</span><span class="p">(</span><span class="n">alpha</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="o">-</span><span class="mf">10.0</span><span class="p">,</span><span class="mf">10.0</span><span class="p">,</span><span class="n">log</span><span class="o">=</span><span class="n">TRUE</span><span class="p">)</span> <span class="o">-</span> <span class="n">dunif</span><span class="p">(</span><span class="n">beta</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="o">-</span><span class="mf">10.0</span><span class="p">,</span><span class="mf">10.0</span><span class="p">,</span><span class="n">log</span><span class="o">=</span><span class="n">TRUE</span><span class="p">)</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    ln_prior_ratio &lt;- dunif(alpha_prime,-10.0,10.0,log=TRUE) + dunif(beta_prime,-10.0,10.0,log=TRUE) - dunif(alpha[i-1],-10.0,10.0,log=TRUE) - dunif(beta[i-1],-10.0,10.0,log=TRUE)
 </code></pre></div></div>
 
 <p>Similarly, we compute the likelihood ratio for each observation.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="n">ln_likelihood_ratio</span> <span class="o">&lt;-</span> <span class="mi">0</span>
-    <span class="k">for</span> <span class="p">(</span><span class="n">j</span> <span class="n">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">x</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="p">)</span> <span class="p">{</span>
-       <span class="n">lambda_prime</span> <span class="o">&lt;-</span> <span class="n">exp</span><span class="p">(</span> <span class="n">alpha_prime</span> <span class="o">+</span> <span class="n">beta_prime</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="p">)</span>
-       <span class="n">lambda</span> <span class="o">&lt;-</span> <span class="n">exp</span><span class="p">(</span> <span class="n">alpha</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">beta</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="p">)</span>
-       <span class="n">ln_likelihood_ratio</span> <span class="o">+=</span> <span class="n">dpoisson</span><span class="p">(</span><span class="n">observed_fatalities</span><span class="p">[</span><span class="n">j</span><span class="p">],</span><span class="n">lambda_prime</span><span class="p">)</span> <span class="o">-</span> <span class="n">dpoisson</span><span class="p">(</span><span class="n">observed_fatalities</span><span class="p">[</span><span class="n">j</span><span class="p">],</span><span class="n">lambda</span><span class="p">)</span>
-    <span class="p">}</span>
-    <span class="n">ratio</span> <span class="o">&lt;-</span> <span class="n">ln_prior_ratio</span> <span class="o">+</span> <span class="n">ln_likelihood_ratio</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    ln_likelihood_ratio &lt;- 0
+    for (j in 1:x.size() ) {
+       lambda_prime &lt;- exp( alpha_prime + beta_prime * x[j] )
+       lambda &lt;- exp( alpha[i-1] + beta[i-1] * x[j] )
+       ln_likelihood_ratio += dpoisson(observed_fatalities[j],lambda_prime) - dpoisson(observed_fatalities[j],lambda)
+    }
+    ratio &lt;- ln_prior_ratio + ln_likelihood_ratio
 </code></pre></div></div>
 
 <p>And finally we accept or reject the newly proposed parameter values with
 probability .</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="k">if</span> <span class="p">(</span> <span class="n">ln</span><span class="p">(</span><span class="n">runif</span><span class="p">(</span><span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">ratio</span><span class="p">)</span> <span class="p">{</span>
-       <span class="n">alpha</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;-</span> <span class="n">alpha_prime</span>
-       <span class="n">beta</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;-</span> <span class="n">beta_prime</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-       <span class="n">alpha</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;-</span> <span class="n">alpha</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-       <span class="n">beta</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;-</span> <span class="n">beta</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-    <span class="p">}</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    if ( ln(runif(1)[1]) &lt; ratio) {
+       alpha[i] &lt;- alpha_prime
+       beta[i] &lt;- beta_prime
+    } else {
+       alpha[i] &lt;- alpha[i-1]
+       beta[i] &lt;- beta[i-1]
+    }
 </code></pre></div></div>
 
 <p>Then we log the current parameter values to the file by appending the
 file.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="cp"># output to a log-file
-</span>    <span class="n">write</span><span class="p">(</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">alpha</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">beta</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">file</span><span class="o">=</span><span class="s">"airline_fatalities.log"</span><span class="p">,</span><span class="n">append</span><span class="o">=</span><span class="n">TRUE</span><span class="p">)</span>
- <span class="p">}</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    # output to a log-file
+    write(i-1,alpha[i],beta[i],file="airline_fatalities.log",append=TRUE)
+ }
 </code></pre></div></div>
 
 <p>As a quick summary you can compute the posterior mean of the parameters.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">mean</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span>
-<span class="n">mean</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mean(alpha)
+mean(beta)
 </code></pre></div></div>
 
 <p>You can also load the file into or Tracer to analyze the output.</p>
@@ -626,14 +626,14 @@ may help to restart .</p>
 
 <p>We start by loading in the data to .</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">observed_fatalities</span> <span class="o">&lt;-</span> <span class="n">v</span><span class="p">(</span><span class="mi">24</span><span class="p">,</span><span class="mi">25</span><span class="p">,</span><span class="mi">31</span><span class="p">,</span><span class="mi">31</span><span class="p">,</span><span class="mi">22</span><span class="p">,</span><span class="mi">21</span><span class="p">,</span><span class="mi">26</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">16</span><span class="p">,</span><span class="mi">22</span><span class="p">)</span>
-<span class="n">x</span> <span class="o">&lt;-</span> <span class="mi">1976</span><span class="o">:</span><span class="mi">1985</span> <span class="o">-</span> <span class="n">mean</span><span class="p">(</span><span class="mi">1976</span><span class="o">:</span><span class="mi">1985</span><span class="p">)</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>observed_fatalities &lt;- v(24,25,31,31,22,21,26,20,16,22)
+x &lt;- 1976:1985 - mean(1976:1985)
 </code></pre></div></div>
 
 <p>Then we create the parameters with their prior distributions.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">alpha</span> <span class="o">~</span> <span class="n">dnUnif</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span> 
-<span class="n">beta</span> <span class="o">~</span> <span class="n">dnUnif</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha ~ dnUnif(-10,10) 
+beta ~ dnUnif(-10,10)
 </code></pre></div></div>
 
 <p>It may be good to set some reasonable starting values especially if you
@@ -641,9 +641,9 @@ choose a very uninformative prior distribution. If by chance you had
 starting values that gave a likelihood of -Inf, then will try several
 times to propose new starting values drawn from the prior distribution.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp"># let us use reasonable starting value
-</span><span class="n">alpha</span><span class="p">.</span><span class="n">setValue</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
-<span class="n">beta</span><span class="p">.</span><span class="n">setValue</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># let us use reasonable starting value
+alpha.setValue(0.0)
+beta.setValue(0.0)
 </code></pre></div></div>
 
 <p>Our next step is to set up the moves. Moves are algorithms that propose
@@ -651,44 +651,44 @@ new values and know how to reset the values if the proposals are
 rejected. We use the same sliding window move as we implemented above by
 ourselves.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">mi</span> <span class="o">&lt;-</span> <span class="mi">0</span>
-<span class="n">moves</span><span class="p">[</span><span class="n">mi</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">mvSlide</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span>
-<span class="n">moves</span><span class="p">[</span><span class="n">mi</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">mvSlide</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mi &lt;- 0
+moves[mi++] = mvSlide(alpha)
+moves[mi++] = mvSlide(beta)
 </code></pre></div></div>
 
 <p>Then we set up the model. This means we create a stochastic variable for
 each observation and clamp its value with the observed data.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="n">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">x</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="p">)</span> <span class="p">{</span>
-    <span class="n">lambda</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">:=</span> <span class="n">exp</span><span class="p">(</span> <span class="n">alpha</span> <span class="o">+</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="p">)</span>
-    <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">~</span> <span class="n">dnPoisson</span><span class="p">(</span><span class="n">lambda</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-    <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">clamp</span><span class="p">(</span><span class="n">observed_fatalities</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-<span class="p">}</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:x.size() ) {
+    lambda[i] := exp( alpha + beta * x[i] )
+    y[i] ~ dnPoisson(lambda[i])
+    y[i].clamp(observed_fatalities[i])
+}
 </code></pre></div></div>
 
 <p>We can now create the model by pulling up the model graph from any
 variable that is connected to our model graph.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">mymodel</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span> <span class="n">alpha</span> <span class="p">)</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model( alpha )
 </code></pre></div></div>
 
 <p>We also need some monitors that report the current values during the
 MCMC run. We create two monitors, one printing all numeric non-constant
 variables to a file and one printing some information to the screen.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">monitors</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">mnModel</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s">"output/airline_fatalities.log"</span><span class="p">,</span><span class="n">printgen</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">separator</span> <span class="o">=</span> <span class="s">"   "</span><span class="p">)</span>
-<span class="n">monitors</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">mnScreen</span><span class="p">(</span><span class="n">printgen</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">)</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[1] = mnModel(filename="output/airline_fatalities.log",printgen=10, separator = "   ")
+monitors[2] = mnScreen(printgen=10, alpha, beta)
 </code></pre></div></div>
 
 <p>Finally we create an MCMC object. The MCMC object takes in a model
 object, the vector of monitors and the vector of moves.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">mymcmc</span> <span class="o">=</span> <span class="n">mcmc</span><span class="p">(</span><span class="n">mymodel</span><span class="p">,</span> <span class="n">monitors</span><span class="p">,</span> <span class="n">moves</span><span class="p">)</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves)
 </code></pre></div></div>
 
 <p>On the MCMC object we call its member method to run the MCMC.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">mymcmc</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">generations</span><span class="o">=</span><span class="mi">3000</span><span class="p">)</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=3000)
 </code></pre></div></div>
 
 <p>And now we are done</p>
@@ -771,51 +771,51 @@ they both depend on $\eta$.</p>
 
 <p>We start as usual by loading in the data.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">observed_fatalities</span> <span class="o">&lt;-</span>  <span class="n">v</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">year</span> <span class="o">&lt;-</span> <span class="mi">1851</span><span class="o">:</span><span class="mi">1962</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>observed_fatalities &lt;-  v(4, 5, 4, 1, 0, 4, 3, 4, 0, 6, 3, 3, 4, 0, 2, 6, 3, 3, 5, 4, 5, 3, 1, 4, 4, 1, 5, 5, 3, 4, 2, 5, 2, 2, 3, 4, 2, 1, 3, 2, 2, 1, 1, 1, 1, 3, 0, 0, 1, 0, 1, 1, 0, 0, 3, 1, 0, 3, 2, 2, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 2, 1, 0, 0, 0, 1, 1, 0, 2, 3, 3, 1, 1, 2, 1, 1, 1, 1, 2, 3, 3, 0, 0, 0, 1, 4, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1)
+year &lt;- 1851:1962
 </code></pre></div></div>
 
 <p>In we specify this prior choice by</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">eta</span> <span class="o">~</span> <span class="n">dnGamma</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span><span class="mf">20.0</span><span class="p">)</span>
-<span class="n">beta</span> <span class="o">~</span> <span class="n">dnGamma</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span><span class="n">eta</span><span class="p">)</span>
-<span class="n">gamma</span> <span class="o">~</span> <span class="n">dnGamma</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span><span class="n">eta</span><span class="p">)</span>
-<span class="n">theta</span> <span class="o">~</span> <span class="n">dnUnif</span><span class="p">(</span><span class="mf">1852.0</span><span class="p">,</span><span class="mf">1962.0</span><span class="p">)</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>eta ~ dnGamma(10.0,20.0)
+beta ~ dnGamma(2.0,eta)
+gamma ~ dnGamma(2.0,eta)
+theta ~ dnUnif(1852.0,1962.0)
 </code></pre></div></div>
 
 <p>Then we select moves for each parameter. For the rate parameters — which
 are defined only on the positive real line — we choose a scaling move.
 Only for we choose the sliding window proposal.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">mi</span> <span class="o">&lt;-</span> <span class="mi">0</span>
-<span class="n">moves</span><span class="p">[</span><span class="n">mi</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">mvScale</span><span class="p">(</span><span class="n">eta</span><span class="p">)</span>
-<span class="n">moves</span><span class="p">[</span><span class="n">mi</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">mvScale</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span>
-<span class="n">moves</span><span class="p">[</span><span class="n">mi</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">mvScale</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span>
-<span class="n">moves</span><span class="p">[</span><span class="n">mi</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">mvSlide</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mi &lt;- 0
+moves[mi++] = mvScale(eta)
+moves[mi++] = mvScale(beta)
+moves[mi++] = mvScale(gamma)
+moves[mi++] = mvSlide(theta)
 </code></pre></div></div>
 
 <p>Then, we set up the model by computing the conditional rate of the
 Poisson distribution, creating random variables for each observation and
 attaching (clamping) data to the variables.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="n">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">year</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="p">)</span> <span class="p">{</span>
-    <span class="n">rate</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">:=</span> <span class="n">ifelse</span><span class="p">(</span><span class="n">theta</span> <span class="o">&gt;</span> <span class="n">year</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span><span class="p">)</span>
-    <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">~</span> <span class="n">dnPoisson</span><span class="p">(</span><span class="n">rate</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-    <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">clamp</span><span class="p">(</span><span class="n">observed_fatalities</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-<span class="p">}</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:year.size() ) {
+    rate[i] := ifelse(theta &gt; year[i], beta, gamma)
+    y[i] ~ dnPoisson(rate[i])
+    y[i].clamp(observed_fatalities[i])
+}
 </code></pre></div></div>
 
 <p>Finally, we create the model object from the variables, add some
 monitors and run the MCMC algorithm.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">mymodel</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span> <span class="n">theta</span> <span class="p">)</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model( theta )
 
-<span class="n">monitors</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">mnModel</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s">"output/coal_accidents.log"</span><span class="p">,</span><span class="n">printgen</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">separator</span> <span class="o">=</span> <span class="s">"   "</span><span class="p">)</span>
-<span class="n">monitors</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">mnScreen</span><span class="p">(</span><span class="n">printgen</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">eta</span><span class="p">,</span> <span class="n">lambda</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">theta</span><span class="p">)</span>
+monitors[1] = mnModel(filename="output/coal_accidents.log",printgen=10, separator = "   ")
+monitors[2] = mnScreen(printgen=10, eta, lambda, gamma, theta)
 
-<span class="n">mymcmc</span> <span class="o">=</span> <span class="n">mcmc</span><span class="p">(</span><span class="n">mymodel</span><span class="p">,</span> <span class="n">monitors</span><span class="p">,</span> <span class="n">moves</span><span class="p">)</span>
+mymcmc = mcmc(mymodel, monitors, moves)
 
-<span class="n">mymcmc</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">generations</span><span class="o">=</span><span class="mi">3000</span><span class="p">)</span>
+mymcmc.run(generations=3000)
 </code></pre></div></div>
 
 <h2 id="batch-mode">Batch Mode</h2>

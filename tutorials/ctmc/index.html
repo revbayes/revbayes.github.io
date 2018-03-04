@@ -70,19 +70,19 @@
 
 <blockquote class="overview no-print" id="overview">
   <h2>Overview</h2>
-
   <div class="row">
     <div class="col-md-9">
         <strong>Prerequisites</strong>
         <ul>
         
+          <ul id="prerequisites">
           
             
             
             <li><a href="/revbayes_tutorials/tutorials/intro/">Statistical Inference Using RevBayes</a></li>
           
+          </ul>
         
-        </ul>
     </div>
   </div>
 </blockquote>
@@ -187,17 +187,17 @@ P_{JC69} = \begin{pmatrix} {\frac{1}{4} + \frac{3}{4}e^{-rt}} & {\frac{1}{4} - \
 time, and $r$ is the rate (clock) for the process. In the later
 exercises you will be asked to specify more complex substitution models.
 <strong>Don’t worry, you won’t have to calculate all of the transition
-probabilities, because <code class="language-cpp highlighter-rouge"><span class="n">RevBayes</span></code> will take care of all the computations for you.</strong>
+probabilities, because <code class="highlighter-rouge">RevBayes</code> will take care of all the computations for you.</strong>
 Here we only provide some of the equations for the models in case you
 might be interested in the details. You will be able to complete the
 exercises without understanding the underlying math.</p>
 
 <blockquote>
   <p>The files for this example analysis are provided for you, which can
-easily be run using the <code class="language-cpp highlighter-rouge"><span class="n">source</span></code> function in <code class="language-cpp highlighter-rouge"><span class="n">RevBayes</span></code> the console:</p>
+easily be run using the <code class="highlighter-rouge">source</code> function in <code class="highlighter-rouge">RevBayes</code> the console:</p>
 </blockquote>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">source</span><span class="p">(</span><span class="s">"scripts/mcmc_JC.Rev"</span><span class="p">)</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/mcmc_JC.Rev")
 </code></pre></div></div>
 
 <p>If everything loaded properly, then you should see the program initiate
@@ -205,13 +205,13 @@ the Markov chain Monte Carlo analysis that estimates the posterior
 distribution. If you continue to let this run, then you will see it
 output the states of the Markov chain once the MCMC analysis begins.</p>
 
-<p>Ultimately, this is how you will execute most analyses in <code class="language-cpp highlighter-rouge"><span class="n">RevBayes</span></code>, with the
+<p>Ultimately, this is how you will execute most analyses in <code class="highlighter-rouge">RevBayes</code>, with the
 full specification of the model and analyses contained in the sourced
 files. You could easily run this entire analysis on your own data by
 substituting your data file name for that in the model-specification
 file. However, it is important to understand the components of the model
-to be able to take full advantage of the flexibility and richness of <code class="language-cpp highlighter-rouge"><span class="n">RevBayes</span></code>.
-Furthermore, without inspecting the <code class="language-cpp highlighter-rouge"><span class="n">Rev</span></code> code sourced in <code class="language-cpp highlighter-rouge"><span class="n">mcmc_JC</span><span class="p">.</span><span class="n">Rev</span></code>, you may end up
+to be able to take full advantage of the flexibility and richness of <code class="highlighter-rouge">RevBayes</code>.
+Furthermore, without inspecting the <code class="highlighter-rouge">Rev</code> code sourced in <code class="highlighter-rouge">mcmc_JC.Rev</code>, you may end up
 inadvertently performing inappropriate analyses on your dataset, which
 would be a waste of your time and CPU cycles. The next steps will walk
 you through the full specification of the model and MCMC analyses.</p>
@@ -219,48 +219,48 @@ you through the full specification of the model and MCMC analyses.</p>
 <h2 id="loading-the-data">Loading the Data</h2>
 
 <p>We provide the data file(s) which we will use in this tutorial. You may
-want to use your own data instead. In the <code class="language-cpp highlighter-rouge"><span class="n">data</span></code> folder, you will find the
+want to use your own data instead. In the <code class="highlighter-rouge">data</code> folder, you will find the
 following files</p>
 
 <ul>
-  <li><code class="language-cpp highlighter-rouge"><span class="n">primates_and_galeopterus_cytb</span><span class="p">.</span><span class="n">nex</span></code>: Alignment of the <em>cytochrome b</em> subunit from 23 primates
+  <li><code class="highlighter-rouge">primates_and_galeopterus_cytb.nex</code>: Alignment of the <em>cytochrome b</em> subunit from 23 primates
 representing 14 of the 16 families (<em>Indriidae</em> and <em>Callitrichidae</em>
 are missing). Note that there is one outgroup species included:
 <em>Galeopterus variegatus</em>.</li>
 </ul>
 
-<p>First load in the sequences using the <code class="language-cpp highlighter-rouge"><span class="n">readDiscreteCharacterData</span></code> function.</p>
+<p>First load in the sequences using the <code class="highlighter-rouge">readDiscreteCharacterData</code> function.</p>
 
-<div output="mcmc_JC.Rev" class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">data</span> <span class="o">&lt;-</span> <span class="n">readDiscreteCharacterData</span><span class="p">(</span><span class="s">"data/primates_and_galeopterus_cytb.nex"</span><span class="p">)</span>
+<div output="mcmc_JC.Rev" class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data &lt;- readDiscreteCharacterData("data/primates_and_galeopterus_cytb.nex")
 </code></pre></div></div>
 
-<p>Executing these lines initializes the data matrix as the respective <code class="language-cpp highlighter-rouge"><span class="n">Rev</span></code>
+<p>Executing these lines initializes the data matrix as the respective <code class="highlighter-rouge">Rev</code>
 variables. To report the current value of any variable, simply type the
-variable name and press enter. For the <code class="language-cpp highlighter-rouge"><span class="n">data</span></code> matrix, this provides information
+variable name and press enter. For the <code class="highlighter-rouge">data</code> matrix, this provides information
 about the alignment:</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">data</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data
 </code></pre></div></div>
 
-<div class="language-cpp console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">DNA</span> <span class="n">character</span> <span class="n">matrix</span> <span class="n">with</span> <span class="mi">23</span> <span class="n">taxa</span> <span class="n">and</span> <span class="mi">1141</span> <span class="n">characters</span>
-<span class="o">=====================================================</span>
-<span class="n">Origination</span><span class="o">:</span>                      <span class="n">primates_and_galeopterus_cytb</span><span class="p">.</span><span class="n">nex</span>
-<span class="n">Number</span> <span class="n">of</span> <span class="n">taxa</span><span class="o">:</span>                   <span class="mi">23</span>
-<span class="n">Number</span> <span class="n">of</span> <span class="n">included</span> <span class="n">taxa</span><span class="o">:</span>          <span class="mi">23</span>
-<span class="n">Number</span> <span class="n">of</span> <span class="n">characters</span><span class="o">:</span>             <span class="mi">1141</span>
-<span class="n">Number</span> <span class="n">of</span> <span class="n">included</span> <span class="n">characters</span><span class="o">:</span>    <span class="mi">1141</span>
-<span class="n">Datatype</span><span class="o">:</span>                         <span class="n">DNA</span>
+<div class="console highlighter-rouge"><div class="highlight"><pre class="highlight"><code>DNA character matrix with 23 taxa and 1141 characters
+=====================================================
+Origination:                      primates_and_galeopterus_cytb.nex
+Number of taxa:                   23
+Number of included taxa:          23
+Number of characters:             1141
+Number of included characters:    1141
+Datatype:                         DNA
 </code></pre></div></div>
 
 <p>Next we will specify some useful variables based on our dataset. The
-variable <code class="language-cpp highlighter-rouge"><span class="n">data</span></code> has <em>member functions</em> that we can use to retrieve information
+variable <code class="highlighter-rouge">data</code> has <em>member functions</em> that we can use to retrieve information
 about the dataset. These include, for example, the number of species and
 the taxa. We will need that taxon information for setting up different
 parts of our model.</p>
 
-<div output="mcmc_JC.Rev" class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">n_species</span> <span class="o">&lt;-</span> <span class="n">data</span><span class="p">.</span><span class="n">ntaxa</span><span class="p">()</span>
-<span class="n">n_branches</span> <span class="o">&lt;-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">n_species</span> <span class="o">-</span> <span class="mi">3</span>
-<span class="n">taxa</span> <span class="o">&lt;-</span> <span class="n">data</span><span class="p">.</span><span class="n">taxa</span><span class="p">()</span>
+<div output="mcmc_JC.Rev" class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_species &lt;- data.ntaxa()
+n_branches &lt;- 2 * n_species - 3
+taxa &lt;- data.taxa()
 </code></pre></div></div>
 
 <p>Additionally, we set up a counter variable for the number of moves that
@@ -272,11 +272,11 @@ variable for the number of monitors. [Monitors print the values of
 model parameters to the screen and/or log files during the MCMC
 analysis].</p>
 
-<div output="mcmc_JC.Rev" class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">mvi</span> <span class="o">=</span> <span class="mi">1</span> 
-<span class="n">mni</span> <span class="o">=</span> <span class="mi">1</span>
+<div output="mcmc_JC.Rev" class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvi = 1 
+mni = 1
 </code></pre></div></div>
 
-<p>You may have noticed that we used the <code class="language-cpp highlighter-rouge"><span class="o">=</span></code> operator to create the move index.
+<p>You may have noticed that we used the <code class="highlighter-rouge">=</code> operator to create the move index.
 This simply means that the variable is not part of the model. You will
 later see that we use this operator more often, when we create moves and
 monitors.</p>
@@ -290,22 +290,22 @@ substitution model.</p>
 instantaneous-rate matrix, $Q$. The Jukes-Cantor substitution model does
 not have any free parameters (as the substitution rates are all assumed
 to be equal, and there is a separate parameter that scales their overall
-magnitude), so we can define it as a constant variable. The function <code class="language-cpp highlighter-rouge"><span class="n">fnJC</span></code>
+magnitude), so we can define it as a constant variable. The function <code class="highlighter-rouge">fnJC</code>
 will create an instantaneous-rate matrix for a character with $n$
 states. Since we use DNA data here, we create a 4x4 instantaneous-rate
 matrix:</p>
 
-<div output="mcmc_JC.Rev" class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Q</span> <span class="o">&lt;-</span> <span class="n">fnJC</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> 
+<div output="mcmc_JC.Rev" class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q &lt;- fnJC(4) 
 </code></pre></div></div>
 
 <p>You can see the rates of the $Q$ matrix by typing</p>
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Q</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q
 </code></pre></div></div>
 
-<div class="language-cpp console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span> <span class="p">[</span> <span class="o">-</span><span class="mf">1.0000</span><span class="p">,</span> <span class="mf">0.3333</span><span class="p">,</span> <span class="mf">0.3333</span><span class="p">,</span> <span class="mf">0.3333</span> <span class="p">]</span> <span class="p">,</span>
-  <span class="mf">0.3333</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0000</span><span class="p">,</span> <span class="mf">0.3333</span><span class="p">,</span> <span class="mf">0.3333</span> <span class="p">]</span> <span class="p">,</span>
-  <span class="mf">0.3333</span><span class="p">,</span> <span class="mf">0.3333</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0000</span><span class="p">,</span> <span class="mf">0.3333</span> <span class="p">]</span> <span class="p">,</span>
-  <span class="mf">0.3333</span><span class="p">,</span> <span class="mf">0.3333</span><span class="p">,</span> <span class="mf">0.3333</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0000</span> <span class="p">]</span> <span class="p">]</span>
+<div class="console highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[ [ -1.0000, 0.3333, 0.3333, 0.3333 ] ,
+  0.3333, -1.0000, 0.3333, 0.3333 ] ,
+  0.3333, 0.3333, -1.0000, 0.3333 ] ,
+  0.3333, 0.3333, 0.3333, -1.0000 ] ]
 </code></pre></div></div>
 
 <p>As you can see, all substitution rates are equal.</p>
@@ -317,14 +317,14 @@ phylogenetic model. In Figure [fig:jc], the tree topology is denoted
 $\Psi$ and the length of the branch leading to node $i$ is $bl_i$.</p>
 
 <p>We will assume that all possible labeled, unrooted tree topologies have
-equal probability. This is the <code class="language-cpp highlighter-rouge"><span class="n">dnUniformTopology</span></code> distribution in <code class="language-cpp highlighter-rouge"><span class="n">RevBayes</span></code>. Note that in <code class="language-cpp highlighter-rouge"><span class="n">RevBayes</span></code> it is
+equal probability. This is the <code class="highlighter-rouge">dnUniformTopology</code> distribution in <code class="highlighter-rouge">RevBayes</code>. Note that in <code class="highlighter-rouge">RevBayes</code> it is
 advisable to specify the outgroup for your study system if you use an
-unrooted tree prior, whereas other software e.g. <code class="language-cpp highlighter-rouge"><span class="n">MrBayes</span></code>, uses the first taxon in the
-data matrix file as the outgroup. Specify the <code class="language-cpp highlighter-rouge"><span class="n">topology</span></code> stochastic node by passing
-in the tip labels <code class="language-cpp highlighter-rouge"><span class="n">names</span></code> to the <code class="language-cpp highlighter-rouge"><span class="n">dnUniformTopology</span></code> distribution:</p>
+unrooted tree prior, whereas other software e.g. <code class="highlighter-rouge">MrBayes</code>, uses the first taxon in the
+data matrix file as the outgroup. Specify the <code class="highlighter-rouge">topology</code> stochastic node by passing
+in the tip labels <code class="highlighter-rouge">names</code> to the <code class="highlighter-rouge">dnUniformTopology</code> distribution:</p>
 
-<div output="mcmc_JC.Rev" class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">out_group</span> <span class="o">=</span> <span class="n">clade</span><span class="p">(</span><span class="s">"Galeopterus_variegatus"</span><span class="p">)</span>
-<span class="n">topology</span> <span class="o">~</span> <span class="n">dnUniformTopology</span><span class="p">(</span><span class="n">taxa</span><span class="p">,</span> <span class="n">outgroup</span><span class="o">=</span><span class="n">out_group</span><span class="p">)</span>
+<div output="mcmc_JC.Rev" class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>out_group = clade("Galeopterus_variegatus")
+topology ~ dnUniformTopology(taxa, outgroup=out_group)
 </code></pre></div></div>
 
 <p>Some types of stochastic nodes can be updated by a number of alternative
@@ -332,12 +332,12 @@ moves. Different moves may explore parameter space in different ways,
 and it is possible to use multiple different moves for a given parameter
 to improve mixing (the efficiency of the MCMC simulation). In the case
 of our unrooted tree topology, for example, we can use both a
-nearest-neighbor interchange move (<code class="language-cpp highlighter-rouge"><span class="n">mvNNI</span></code>) and a subtree-prune and regrafting
-move (<code class="language-cpp highlighter-rouge"><span class="n">mvSPR</span></code>). These moves do not have tuning parameters associated with them,
-thus you only need to pass in the <code class="language-cpp highlighter-rouge"><span class="n">topology</span></code> node and proposal <code class="language-cpp highlighter-rouge"><span class="n">weight</span></code>.</p>
+nearest-neighbor interchange move (<code class="highlighter-rouge">mvNNI</code>) and a subtree-prune and regrafting
+move (<code class="highlighter-rouge">mvSPR</code>). These moves do not have tuning parameters associated with them,
+thus you only need to pass in the <code class="highlighter-rouge">topology</code> node and proposal <code class="highlighter-rouge">weight</code>.</p>
 
-<div output="mcmc_JC.Rev" class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">moves</span><span class="p">[</span><span class="n">mvi</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">mvNNI</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
-<span class="n">moves</span><span class="p">[</span><span class="n">mvi</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">mvSPR</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<div output="mcmc_JC.Rev" class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvNNI(topology, weight=1.0)
+moves[mvi++] = mvSPR(topology, weight=1.0)
 </code></pre></div></div>
 
 <p>The weight specifies how often the move will be applied either on
@@ -345,26 +345,26 @@ average per iteration or relative to all other moves. Have a look at the
 <a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_MCMC_Tutorial/RB_MCMC_Tutorial.pdf">MCMC Diagnosis
 tutorial</a>
 for more details about moves and MCMC strategies (found on the
-<a href="http://revbayes.github.io/tutorials.html"><code class="language-cpp highlighter-rouge"><span class="n">RevBayes</span></code> Tutorials Website</a>).</p>
+<a href="http://revbayes.github.io/tutorials.html"><code class="highlighter-rouge">RevBayes</code> Tutorials Website</a>).</p>
 
 <p>Next we have to create a stochastic node for each of the $2N-3$ branches
-in our tree (where $N=$ <code class="language-cpp highlighter-rouge"><span class="n">n_species</span></code>). We can do this using a <code class="language-cpp highlighter-rouge"><span class="k">for</span></code> loop — this is a plate
+in our tree (where $N=$ <code class="highlighter-rouge">n_species</code>). We can do this using a <code class="highlighter-rouge">for</code> loop — this is a plate
 in our graphical model. In this loop, we can create each of the
 branch-length nodes and assign each move. Copy this entire block of
-<code class="language-cpp highlighter-rouge"><span class="n">Rev</span></code> code into the console:</p>
+<code class="highlighter-rouge">Rev</code> code into the console:</p>
 
-<div output="mcmc_JC.Rev" class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="n">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">n_branches</span><span class="p">)</span> <span class="p">{</span>
-   <span class="n">br_lens</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">~</span> <span class="n">dnExponential</span><span class="p">(</span><span class="mf">10.0</span><span class="p">)</span>
-   <span class="n">moves</span><span class="p">[</span><span class="n">mvi</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">mvScale</span><span class="p">(</span><span class="n">br_lens</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> 
-<span class="p">}</span>
+<div output="mcmc_JC.Rev" class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:n_branches) {
+   br_lens[i] ~ dnExponential(10.0)
+   moves[mvi++] = mvScale(br_lens[i]) 
+}
 </code></pre></div></div>
 
 <p>It is convenient for monitoring purposes to add the tree length as
 deterministic variable. The tree length is simply the sum of all branch
-lengths. Accordingly, the tree length can be computed using the <code class="language-cpp highlighter-rouge"><span class="n">sum</span></code>
+lengths. Accordingly, the tree length can be computed using the <code class="highlighter-rouge">sum</code>
 function, which calculates the sum of any vector of values.</p>
 
-<div output="mcmc_JC.Rev" class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">TL</span> <span class="o">:=</span> <span class="n">sum</span><span class="p">(</span><span class="n">br_lens</span><span class="p">)</span>
+<div output="mcmc_JC.Rev" class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>TL := sum(br_lens)
 </code></pre></div></div>
 
 <blockquote class="discussion no-print">
@@ -378,28 +378,28 @@ a positive real variable) for the tree length, and then use a Dirichlet
 prior distribution to break the tree length into the corresponding
 branch lengths <a href="#Zhang2012">(Zhang et al. 2012)</a>.</p>
 
-  <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp"># specify a prior distribution on the tree length with your desired mean
-</span><span class="n">TL</span> <span class="o">~</span> <span class="n">dnGamma</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
-<span class="n">moves</span><span class="p">[</span><span class="n">mvi</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">mvScale</span><span class="p">(</span><span class="n">TL</span><span class="p">)</span> 
+  <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># specify a prior distribution on the tree length with your desired mean
+TL ~ dnGamma(2,4)
+moves[mvi++] = mvScale(TL) 
 
-<span class="cp"># now create a random variable for the relative branch lengths
-</span><span class="n">rel_branch_lengths</span> <span class="o">~</span> <span class="n">dnDirichlet</span><span class="p">(</span> <span class="n">rep</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span><span class="n">n_branches</span><span class="p">)</span> <span class="p">)</span>
-<span class="n">moves</span><span class="p">[</span><span class="n">mvi</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">mvBetaSimplex</span><span class="p">(</span><span class="n">rel_branch_lengths</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">n_branches</span><span class="p">)</span>
-<span class="n">moves</span><span class="p">[</span><span class="n">mvi</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">mvDirichletSimplex</span><span class="p">(</span><span class="n">rel_branch_lengths</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">n_branches</span><span class="o">/</span><span class="mf">10.0</span><span class="p">)</span>
+# now create a random variable for the relative branch lengths
+rel_branch_lengths ~ dnDirichlet( rep(1.0,n_branches) )
+moves[mvi++] = mvBetaSimplex(rel_branch_lengths, weight=n_branches)
+moves[mvi++] = mvDirichletSimplex(rel_branch_lengths, weight=n_branches/10.0)
 
-<span class="cp"># finally, transform the relative branch lengths into actual branch lengths
-</span><span class="n">br_lens</span> <span class="o">:=</span> <span class="n">rel_branch_lengths</span> <span class="o">*</span> <span class="n">TL</span>
+# finally, transform the relative branch lengths into actual branch lengths
+br_lens := rel_branch_lengths * TL
 </code></pre></div>  </div>
 </blockquote>
 
 <p>Finally, we can create a <em>phylogram</em> (a phylogeny in which the branch
 lengths are proportional to the expected number of substitutions/site)
-by combining the tree topology and branch lengths. We do this using the <code class="language-cpp highlighter-rouge"><span class="n">treeAssembly</span></code>
-function, which applies the value of the $i^{th}$ member of the <code class="language-cpp highlighter-rouge"><span class="n">br_lens</span></code> vector
-to the branch leading to the $i^{th}$ node in <code class="language-cpp highlighter-rouge"><span class="n">topology</span></code>. Thus, the <code class="language-cpp highlighter-rouge"><span class="n">psi</span></code> variable is a
+by combining the tree topology and branch lengths. We do this using the <code class="highlighter-rouge">treeAssembly</code>
+function, which applies the value of the $i^{th}$ member of the <code class="highlighter-rouge">br_lens</code> vector
+to the branch leading to the $i^{th}$ node in <code class="highlighter-rouge">topology</code>. Thus, the <code class="highlighter-rouge">psi</code> variable is a
 deterministic node:</p>
 
-<div output="mcmc_JC.Rev" class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">psi</span> <span class="o">:=</span> <span class="n">treeAssembly</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">br_lens</span><span class="p">)</span>
+<div output="mcmc_JC.Rev" class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psi := treeAssembly(topology, br_lens)
 </code></pre></div></div>
 
 <blockquote class="discussion no-print">
@@ -410,21 +410,21 @@ inference of time trees.</p>
 
   <p>The tree (the topology and node ages) is a stochastic node in our
 phylogenetic model. For simplicity, we will assume a uniform prior on
-both topologies and node ages. The distribution in <code class="language-cpp highlighter-rouge"><span class="n">RevBayes</span></code> is <code class="language-cpp highlighter-rouge"><span class="n">dnUniformTimeTree</span></code>.</p>
+both topologies and node ages. The distribution in <code class="highlighter-rouge">RevBayes</code> is <code class="highlighter-rouge">dnUniformTimeTree</code>.</p>
 
   <p>First, we need to specify the age of the tree:</p>
 
-  <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">root_age</span> <span class="o">&lt;-</span> <span class="mf">10.0</span>
+  <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root_age &lt;- 10.0
 </code></pre></div>  </div>
 
   <p>Here we simply assumed that the tree is 10.0 time units old. We could
 also specify a prior on the root age if we have fossil calibrations (see
 <a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_DivergenceTime_Calibration_Tutorial/RB_DivergenceTime_Calibration_Tutorial.pdf">Divergence Time and Calibration
 Tutorial</a>).
-Next, we specify the <code class="language-cpp highlighter-rouge"><span class="n">psi</span></code> stochastic variable by passing in the taxon
-information <code class="language-cpp highlighter-rouge"><span class="n">taxa</span></code> to the <code class="language-cpp highlighter-rouge"><span class="n">dnUniformTimeTree</span></code> distribution:</p>
+Next, we specify the <code class="highlighter-rouge">psi</code> stochastic variable by passing in the taxon
+information <code class="highlighter-rouge">taxa</code> to the <code class="highlighter-rouge">dnUniformTimeTree</code> distribution:</p>
 
-  <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">psi</span> <span class="o">~</span> <span class="n">dnUniformTimeTree</span><span class="p">(</span><span class="n">rootAge</span><span class="o">=</span><span class="n">root_age</span><span class="p">,</span> <span class="n">taxa</span><span class="o">=</span><span class="n">taxa</span><span class="p">)</span>
+  <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psi ~ dnUniformTimeTree(rootAge=root_age, taxa=taxa)
 </code></pre></div>  </div>
 
   <p>Some types of stochastic nodes can be updated by a number of alternative
@@ -432,19 +432,19 @@ moves. Different moves may explore parameter space in different ways,
 and it is possible to use multiple different moves for a given parameter
 to improve mixing (the efficiency of the MCMC simulation). In the case
 of our rooted tree, for example, we can use both a nearest-neighbor
-interchange move without and with changing the node ages (<code class="language-cpp highlighter-rouge"><span class="n">mvNarrow</span></code> and <code class="language-cpp highlighter-rouge"><span class="n">mvNNI</span></code>) and a
-fixed-nodeheight subtree-prune and regrafting move (<code class="language-cpp highlighter-rouge"><span class="n">mvFNPR</span></code>) and its
-Metropolized-Gibbs variant (<code class="language-cpp highlighter-rouge"><span class="n">mvGPR</span></code>) <a href="#Hoehna2008">(Höhna et al. 2008)</a> <a href="#Hoehna2012">(Höhna and Drummond 2012)</a>. We also need
-moves that change the ages of the internal nodes, <code class="language-cpp highlighter-rouge"><span class="n">mvTreeSubscale</span></code> and <code class="language-cpp highlighter-rouge"><span class="n">mvNodeTimeSlideUniform</span></code>.
+interchange move without and with changing the node ages (<code class="highlighter-rouge">mvNarrow</code> and <code class="highlighter-rouge">mvNNI</code>) and a
+fixed-nodeheight subtree-prune and regrafting move (<code class="highlighter-rouge">mvFNPR</code>) and its
+Metropolized-Gibbs variant (<code class="highlighter-rouge">mvGPR</code>) <a href="#Hoehna2008">(Höhna et al. 2008)</a> <a href="#Hoehna2012">(Höhna and Drummond 2012)</a>. We also need
+moves that change the ages of the internal nodes, <code class="highlighter-rouge">mvTreeSubscale</code> and <code class="highlighter-rouge">mvNodeTimeSlideUniform</code>.
 These moves do not have tuning parameters associated with them, thus you
-only need to pass in the <code class="language-cpp highlighter-rouge"><span class="n">psi</span></code> node and proposal <code class="language-cpp highlighter-rouge"><span class="n">weight</span></code>.</p>
+only need to pass in the <code class="highlighter-rouge">psi</code> node and proposal <code class="highlighter-rouge">weight</code>.</p>
 
-  <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">moves</span><span class="p">[</span><span class="n">mvi</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">mvNarrow</span><span class="p">(</span><span class="n">psi</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mf">5.0</span><span class="p">)</span>
-<span class="n">moves</span><span class="p">[</span><span class="n">mvi</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">mvNNI</span><span class="p">(</span><span class="n">psi</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
-<span class="n">moves</span><span class="p">[</span><span class="n">mvi</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">mvFNPR</span><span class="p">(</span><span class="n">psi</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mf">3.0</span><span class="p">)</span>
-<span class="n">moves</span><span class="p">[</span><span class="n">mvi</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">mvGPR</span><span class="p">(</span><span class="n">psi</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mf">3.0</span><span class="p">)</span>
-<span class="n">moves</span><span class="p">[</span><span class="n">mvi</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">mvSubtreeScale</span><span class="p">(</span><span class="n">psi</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mf">3.0</span><span class="p">)</span>
-<span class="n">moves</span><span class="p">[</span><span class="n">mvi</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">mvNodeTimeSlideUniform</span><span class="p">(</span><span class="n">psi</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mf">15.0</span><span class="p">)</span>
+  <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvNarrow(psi, weight=5.0)
+moves[mvi++] = mvNNI(psi, weight=1.0)
+moves[mvi++] = mvFNPR(psi, weight=3.0)
+moves[mvi++] = mvGPR(psi, weight=3.0)
+moves[mvi++] = mvSubtreeScale(psi, weight=3.0)
+moves[mvi++] = mvNodeTimeSlideUniform(psi, weight=15.0)
 </code></pre></div>  </div>
 
   <p>The weight specifies how often the move will be applied either on
@@ -462,9 +462,9 @@ the root age. We use a uniform prior on the log-transform clock rate.
 This specifies our lack of prior knowledge on the magnitude of the clock
 rate.</p>
 
-    <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">log_clock_rate</span> <span class="o">~</span> <span class="n">dnUniform</span><span class="p">(</span><span class="o">-</span><span class="mi">6</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">moves</span><span class="p">[</span><span class="n">mvi</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">mvSlide</span><span class="p">(</span><span class="n">log_clock_rate</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mf">2.0</span><span class="p">)</span>
-<span class="n">clock_rate</span> <span class="o">:=</span> <span class="mi">10</span><span class="o">^</span><span class="n">log_clock_rate</span>
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log_clock_rate ~ dnUniform(-6,1)
+moves[mvi++] = mvSlide(log_clock_rate, weight=2.0)
+clock_rate := 10^log_clock_rate
 </code></pre></div>    </div>
 
     <p>Instead, you could also fix the clock rate and estimate the root age.</p>
@@ -477,25 +477,25 @@ rate.</p>
 model—the tree topology with branch lengths, and the substitution model
 that describes how the sequence data evolved over the tree with branch
 lengths. Collectively, these parameters comprise a distribution called
-the <em>phylogenetic continuous-time Markov chain</em>, and we use the <code class="language-cpp highlighter-rouge"><span class="n">dnPhyloCTMC</span></code>
+the <em>phylogenetic continuous-time Markov chain</em>, and we use the <code class="highlighter-rouge">dnPhyloCTMC</code>
 constructor function to create this node. This distribution requires
 several input arguments:</p>
 <ul>
-  <li>the <code class="language-cpp highlighter-rouge"><span class="n">tree</span></code> with branch lengths</li>
-  <li>the instantaneous-rate matrix <code class="language-cpp highlighter-rouge"><span class="n">Q</span></code></li>
-  <li>the <code class="language-cpp highlighter-rouge"><span class="n">type</span></code> of character data.</li>
+  <li>the <code class="highlighter-rouge">tree</code> with branch lengths</li>
+  <li>the instantaneous-rate matrix <code class="highlighter-rouge">Q</code></li>
+  <li>the <code class="highlighter-rouge">type</code> of character data.</li>
 </ul>
 
 <p>Build the random variable for the character data (sequence alignment).</p>
 
-<div output="mcmc_JC.Rev" class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp"># the sequence evolution model
-</span><span class="n">seq</span> <span class="o">~</span> <span class="n">dnPhyloCTMC</span><span class="p">(</span><span class="n">tree</span><span class="o">=</span><span class="n">psi</span><span class="p">,</span> <span class="n">Q</span><span class="o">=</span><span class="n">Q</span><span class="p">,</span> <span class="n">type</span><span class="o">=</span><span class="s">"DNA"</span><span class="p">)</span>
+<div output="mcmc_JC.Rev" class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># the sequence evolution model
+seq ~ dnPhyloCTMC(tree=psi, Q=Q, type="DNA")
 </code></pre></div></div>
 
-<p>Once the <code class="language-cpp highlighter-rouge"><span class="n">dnPhyloCTMC</span></code> model has been created, we can attach our sequence data to the
+<p>Once the <code class="highlighter-rouge">dnPhyloCTMC</code> model has been created, we can attach our sequence data to the
 tip nodes in the tree.</p>
 
-<div output="mcmc_JC.Rev" class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">seq</span><span class="p">.</span><span class="n">clamp</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<div output="mcmc_JC.Rev" class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>seq.clamp(data)
 </code></pre></div></div>
 
 <blockquote>
@@ -504,24 +504,24 @@ variables (they are realizations of our phylogenetic model) for the
 purposes of inference, we assume that the sequence data are “clamped”.</p>
 </blockquote>
 
-<p>When this function is called, <code class="language-cpp highlighter-rouge"><span class="n">RevBayes</span></code> sets each of the stochastic nodes
+<p>When this function is called, <code class="highlighter-rouge">RevBayes</code> sets each of the stochastic nodes
 representing the tips of the tree to the corresponding nucleotide
 sequence in the alignment. This essentially tells the program that we
 have observed data for the sequences at the tips.</p>
 
 <p>Finally, we wrap the entire model to provide convenient access to the
-DAG. To do this, we only need to give the <code class="language-cpp highlighter-rouge"><span class="n">model</span></code> function a single node. With
-this node, the <code class="language-cpp highlighter-rouge"><span class="n">model</span></code> function can find all of the other nodes by following the
+DAG. To do this, we only need to give the <code class="highlighter-rouge">model</code> function a single node. With
+this node, the <code class="highlighter-rouge">model</code> function can find all of the other nodes by following the
 arrows in the graphical model:</p>
 
-<div output="mcmc_JC.Rev" class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">mymodel</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
+<div output="mcmc_JC.Rev" class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(Q)
 </code></pre></div></div>
 
 <p>Now we have specified a simple phylogenetic analysis. Each parameter of
 the model will be estimated from every site in our alignment. If we
-inspect the contents of <code class="language-cpp highlighter-rouge"><span class="n">mymodel</span></code> we can review all of the nodes in the DAG:</p>
+inspect the contents of <code class="highlighter-rouge">mymodel</code> we can review all of the nodes in the DAG:</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">mymodel</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel
 </code></pre></div></div>
 
 <h2 class="section" id="performing-an-mcmc-analysis-under-the-jukes-cantor-model">Performing an MCMC Analysis Under the Jukes-Cantor Model</h2>
@@ -533,25 +533,25 @@ summarize the resulting posterior distribution of trees.</p>
 
 <p>For our MCMC analysis, we need to set up a vector of <em>monitors</em> to
 record the states of our Markov chain. The monitor functions are all
-called <code class="language-cpp highlighter-rouge"><span class="n">mn</span><span class="o">*</span></code>, where <code class="language-cpp highlighter-rouge"><span class="o">*</span></code> is a wildcard representing the monitor type. First, we
-will initialize the model monitor using the <code class="language-cpp highlighter-rouge"><span class="n">mnModel</span></code> function. This creates a new
+called <code class="highlighter-rouge">mn*</code>, where <code class="highlighter-rouge">*</code> is a wildcard representing the monitor type. First, we
+will initialize the model monitor using the <code class="highlighter-rouge">mnModel</code> function. This creates a new
 monitor variable that will output the states for all model parameters
 when passed into a MCMC function.</p>
 
-<div output="mcmc_JC.Rev" class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">monitors</span><span class="p">[</span><span class="n">mni</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">mnModel</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s">"output/primates_cytb_JC.log"</span><span class="p">,</span> <span class="n">printgen</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<div output="mcmc_JC.Rev" class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[mni++] = mnModel(filename="output/primates_cytb_JC.log", printgen=10)
 </code></pre></div></div>
 
-<p>The <code class="language-cpp highlighter-rouge"><span class="n">mnFile</span></code> monitor will record the states for only the parameters passed in as
+<p>The <code class="highlighter-rouge">mnFile</code> monitor will record the states for only the parameters passed in as
 arguments. We use this monitor to specify the output for our sampled
 trees and branch lengths.</p>
 
-<div output="mcmc_JC.Rev" class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">monitors</span><span class="p">[</span><span class="n">mni</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">mnFile</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s">"output/primates_cytb_JC.trees"</span><span class="p">,</span> <span class="n">printgen</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">psi</span><span class="p">)</span>
+<div output="mcmc_JC.Rev" class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[mni++] = mnFile(filename="output/primates_cytb_JC.trees", printgen=10, psi)
 </code></pre></div></div>
 
 <p>Finally, create a screen monitor that will report the states of
-specified variables to the screen with <code class="language-cpp highlighter-rouge"><span class="n">mnScreen</span></code>:</p>
+specified variables to the screen with <code class="highlighter-rouge">mnScreen</code>:</p>
 
-<div output="mcmc_JC.Rev" class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">monitors</span><span class="p">[</span><span class="n">mni</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">mnScreen</span><span class="p">(</span><span class="n">printgen</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">TL</span><span class="p">)</span>
+<div output="mcmc_JC.Rev" class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[mni++] = mnScreen(printgen=1000, TL)
 </code></pre></div></div>
 
 <p>This monitor mostly helps us to see the progress of the MCMC run.</p>
@@ -560,58 +560,58 @@ specified variables to the screen with <code class="language-cpp highlighter-rou
 
 <p>With a fully specified model, a set of monitors, and a set of moves, we
 can now set up the MCMC algorithm that will sample parameter values in
-proportion to their posterior probability. The <code class="language-cpp highlighter-rouge"><span class="n">mcmc</span></code> function will create our
+proportion to their posterior probability. The <code class="highlighter-rouge">mcmc</code> function will create our
 MCMC object:</p>
 
-<div output="mcmc_JC.Rev" class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">mymcmc</span> <span class="o">=</span> <span class="n">mcmc</span><span class="p">(</span><span class="n">mymodel</span><span class="p">,</span> <span class="n">monitors</span><span class="p">,</span> <span class="n">moves</span><span class="p">)</span>
+<div output="mcmc_JC.Rev" class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves)
 </code></pre></div></div>
 
-<p>We may wish to run the <code class="language-cpp highlighter-rouge"><span class="n">burnin</span></code> member function. Recall that
+<p>We may wish to run the <code class="highlighter-rouge">burnin</code> member function. Recall that
 this function <strong>does not</strong> specify the number of states that we wish to
 discard from the MCMC analysis as burnin (i.e., the samples collected
-before the chain converges to the stationary distribution). Instead, the <code class="language-cpp highlighter-rouge"><span class="n">burnin</span></code>
+before the chain converges to the stationary distribution). Instead, the <code class="highlighter-rouge">burnin</code>
 function specifies a <em>completely separate</em> preliminary MCMC analysis
 that is used to tune the scale of the moves to improve mixing of the
 MCMC analysis.</p>
 
-<div output="mcmc_JC.Rev" class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">mymcmc</span><span class="p">.</span><span class="n">burnin</span><span class="p">(</span><span class="n">generations</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span><span class="n">tuningInterval</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+<div output="mcmc_JC.Rev" class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.burnin(generations=10000,tuningInterval=200)
 </code></pre></div></div>
 
 <p>Now, run the MCMC:</p>
 
-<div output="mcmc_JC.Rev" class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">mymcmc</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">generations</span><span class="o">=</span><span class="mi">30000</span><span class="p">)</span>
+<div output="mcmc_JC.Rev" class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=30000)
 </code></pre></div></div>
 
 <p>When the analysis is complete, you will have the monitored files in your
 output directory.</p>
 
 <p>Methods for visualizing the marginal densities of parameter values are
-not currently available in <code class="language-cpp highlighter-rouge"><span class="n">RevBayes</span></code> itself. Thus, it is important to use programs
-like <code class="language-cpp highlighter-rouge"><span class="n">Tracer</span></code> <a href="#Rambaut2011">(Rambaut and Drummond 2011)</a> to evaluate mixing and non-convergence.</p>
+not currently available in <code class="highlighter-rouge">RevBayes</code> itself. Thus, it is important to use programs
+like <code class="highlighter-rouge">Tracer</code> <a href="#Rambaut2011">(Rambaut and Drummond 2011)</a> to evaluate mixing and non-convergence.</p>
 
 <blockquote>
-  <p>Look at the file called <code class="language-cpp highlighter-rouge"><span class="n">output</span><span class="o">/</span><span class="n">primates_cytb_JC</span><span class="p">.</span><span class="n">log</span></code> in <code class="language-cpp highlighter-rouge"><span class="n">Tracer</span></code>. There you see the posterior distribution of
-the continuous parameters, e.g. the tree length variable <code class="language-cpp highlighter-rouge"><span class="n">TL</span></code>.</p>
+  <p>Look at the file called <code class="highlighter-rouge">output/primates_cytb_JC.log</code> in <code class="highlighter-rouge">Tracer</code>. There you see the posterior distribution of
+the continuous parameters, e.g. the tree length variable <code class="highlighter-rouge">TL</code>.</p>
 </blockquote>
 
 <h2 id="exercise-1">Exercise 1</h2>
 
 <p>We are interested in the phylogenetic relationship of the Tarsiers.
 Therefore, we need to summarize the trees sampled from the posterior
-distribution. <code class="language-cpp highlighter-rouge"><span class="n">RevBayes</span></code> can summarize the sampled trees by reading in the
+distribution. <code class="highlighter-rouge">RevBayes</code> can summarize the sampled trees by reading in the
 tree-trace file:</p>
 
-<div output="mcmc_JC.Rev" class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">treetrace</span> <span class="o">=</span> <span class="n">readTreeTrace</span><span class="p">(</span><span class="s">"output/primates_cytb_JC.trees"</span><span class="p">,</span> <span class="n">treetype</span><span class="o">=</span><span class="s">"non-clock"</span><span class="p">)</span>
+<div output="mcmc_JC.Rev" class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>treetrace = readTreeTrace("output/primates_cytb_JC.trees", treetype="non-clock")
 </code></pre></div></div>
 
-<p>The <code class="language-cpp highlighter-rouge"><span class="n">mapTree</span></code> function will summarize the tree samples and write the maximum <em>a
+<p>The <code class="highlighter-rouge">mapTree</code> function will summarize the tree samples and write the maximum <em>a
 posteriori</em> tree to file:</p>
 
-<div output="mcmc_JC.Rev" class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">map_tree</span> <span class="o">=</span> <span class="n">mapTree</span><span class="p">(</span><span class="n">treetrace</span><span class="p">,</span><span class="s">"output/primates_cytb_JC_MAP.tree"</span><span class="p">)</span>
+<div output="mcmc_JC.Rev" class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>map_tree = mapTree(treetrace,"output/primates_cytb_JC_MAP.tree")
 </code></pre></div></div>
 
 <blockquote>
-  <p>Look at the file called <code class="language-cpp highlighter-rouge"><span class="n">output</span><span class="o">/</span><span class="n">primates_cytb_JC_MAP</span><span class="p">.</span><span class="n">tree</span></code> in <code class="language-cpp highlighter-rouge"><span class="n">FigTree</span></code>. We show it in
+  <p>Look at the file called <code class="highlighter-rouge">output/primates_cytb_JC_MAP.tree</code> in <code class="highlighter-rouge">FigTree</code>. We show it in
 Figure [fig:jc_tree].</p>
 </blockquote>
 
@@ -620,15 +620,15 @@ Figure [fig:jc_tree].</p>
 <p>Note, you can query the posterior probability of a clade being
 monophyletic using the following command:</p>
 
-<div output="mcmc_JC.Rev" class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Lemuroidea</span> <span class="o">&lt;-</span> <span class="n">clade</span><span class="p">(</span><span class="s">"Cheirogaleus_major"</span><span class="p">,</span> 
-                    <span class="s">"Daubentonia_madagascariensis"</span><span class="p">,</span> 
-                    <span class="s">"Lemur_catta"</span><span class="p">,</span> 
-                    <span class="s">"Lepilemur_hubbardorum"</span><span class="p">,</span>
-                    <span class="s">"Microcebus_murinus"</span><span class="p">,</span>
-                    <span class="s">"Propithecus_coquereli"</span><span class="p">,</span>
-                    <span class="s">"Varecia_variegata_variegata"</span><span class="p">)</span>
+<div output="mcmc_JC.Rev" class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Lemuroidea &lt;- clade("Cheirogaleus_major", 
+                    "Daubentonia_madagascariensis", 
+                    "Lemur_catta", 
+                    "Lepilemur_hubbardorum",
+                    "Microcebus_murinus",
+                    "Propithecus_coquereli",
+                    "Varecia_variegata_variegata")
                     
-<span class="n">treetrace</span><span class="p">.</span><span class="n">cladeProbability</span><span class="p">(</span> <span class="n">Lemuroidea</span> <span class="p">)</span>
+treetrace.cladeProbability( Lemuroidea )
 </code></pre></div></div>
 
 <p>[tab:pp]</p>
@@ -804,25 +804,25 @@ Q_{HKY} = \begin{pmatrix}
 the negative sum of the elements in the corresponding row.]</p>
 
 <blockquote>
-  <p>Use the file <code class="language-cpp highlighter-rouge"><span class="n">mcmc_JC</span><span class="p">.</span><span class="n">Rev</span></code> as a starting point for the HKY analysis.</p>
+  <p>Use the file <code class="highlighter-rouge">mcmc_JC.Rev</code> as a starting point for the HKY analysis.</p>
 </blockquote>
 
-<p>Note that we are adding two new variables to our model. We can define a <code class="language-cpp highlighter-rouge"><span class="n">pi</span></code>
+<p>Note that we are adding two new variables to our model. We can define a <code class="highlighter-rouge">pi</code>
 variable for the stationary frequencies that are drawn from a flat
 Dirichlet distribution by</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">pi_prior</span> <span class="o">&lt;-</span> <span class="n">v</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> 
-<span class="n">pi</span> <span class="o">~</span> <span class="n">dnDirichlet</span><span class="p">(</span><span class="n">pi_prior</span><span class="p">)</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pi_prior &lt;- v(1,1,1,1) 
+pi ~ dnDirichlet(pi_prior)
 </code></pre></div></div>
 
-<p>Since <code class="language-cpp highlighter-rouge"><span class="n">pi</span></code> is a stochastic variable, we need to specify a move to propose
+<p>Since <code class="highlighter-rouge">pi</code> is a stochastic variable, we need to specify a move to propose
 updates to it. A good move on variables drawn from a Dirichlet
-distribution is the <code class="language-cpp highlighter-rouge"><span class="n">mvBetaSimplex</span></code>. This move randomly takes an element from the
+distribution is the <code class="highlighter-rouge">mvBetaSimplex</code>. This move randomly takes an element from the
 simplex, proposes a new value for it drawn from a Beta distribution, and
 then rescales all values of the simplex to sum to 1 again.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">moves</span><span class="p">[</span><span class="n">mvi</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">mvBetaSimplex</span><span class="p">(</span><span class="n">pi</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">moves</span><span class="p">[</span><span class="n">mvi</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">mvDirichletSimplex</span><span class="p">(</span><span class="n">pi</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvBetaSimplex(pi, weight=2)
+moves[mvi++] = mvDirichletSimplex(pi, weight=1)
 </code></pre></div></div>
 
 <p>The second new variable is $\kappa$, which specifies the ratio of
@@ -830,19 +830,19 @@ transition-transversion rates. The $\kappa$ parameter must be a
 positive-real number and a natural choice as the prior distribution is
 the lognormal distribution:</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">kappa</span> <span class="o">~</span> <span class="n">dnLognormal</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kappa ~ dnLognormal(0.0, 1.0)
 </code></pre></div></div>
 
 <p>Again, we need to specify a move for this new stochastic variable. A
 simple scaling move should do the job.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">moves</span><span class="p">[</span><span class="n">mvi</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">mvScale</span><span class="p">(</span><span class="n">kappa</span><span class="p">)</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvScale(kappa)
 </code></pre></div></div>
 
-<p>Finally, we need to create the HKY instantaneous-rate matrix using the <code class="language-cpp highlighter-rouge"><span class="n">fnHKY</span></code>
+<p>Finally, we need to create the HKY instantaneous-rate matrix using the <code class="highlighter-rouge">fnHKY</code>
 function:</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Q</span> <span class="o">:=</span> <span class="n">fnHKY</span><span class="p">(</span><span class="n">kappa</span><span class="p">,</span><span class="n">pi</span><span class="p">)</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q := fnHKY(kappa,pi)
 </code></pre></div></div>
 
 <p>This should be all for the HKY model.</p>
@@ -860,7 +860,7 @@ analyses files will be overwritten.</p>
 graphical model of the HKY model.</p>
   </li>
   <li>
-    <p>Copy the file called <code class="language-cpp highlighter-rouge"><span class="n">mcmc_JC</span><span class="p">.</span><span class="n">Rev</span></code> and modify it by including the necessary
+    <p>Copy the file called <code class="highlighter-rouge">mcmc_JC.Rev</code> and modify it by including the necessary
 parameters to specify the HKY substitution model.</p>
   </li>
   <li>
@@ -872,7 +872,7 @@ the HKY substitution model.</p>
 how much do they differ? Are the estimated base frequencies similar
 to the empirical base frequencies? The empirical base frequencies
 are the frequencies of the characters in the alignment, which can be
-computed with <code class="language-cpp highlighter-rouge"><span class="n">RevBayes</span></code> by <code class="language-cpp highlighter-rouge"><span class="n">data</span><span class="p">.</span><span class="n">getEmpiricalBaseFrequencies</span><span class="p">()</span></code>.</p>
+computed with <code class="highlighter-rouge">RevBayes</code> by <code class="highlighter-rouge">data.getEmpiricalBaseFrequencies()</code>.</p>
   </li>
   <li>
     <p>Is the inferred rate of transition substitutions higher than the
@@ -916,19 +916,19 @@ rates of change between states $i$ and $j$.</p>
 exchangeability rates, which we will describe using a flat Dirichlet
 distribution. As we did previously for the Dirichlet prior on base
 frequencies, we first define a constant node specifying the vector of
-concentration-parameter values using the <code class="language-cpp highlighter-rouge"><span class="n">v</span><span class="p">()</span></code> function:</p>
+concentration-parameter values using the <code class="highlighter-rouge">v()</code> function:</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">er_prior</span> <span class="o">&lt;-</span> <span class="n">v</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> 
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>er_prior &lt;- v(1,1,1,1,1,1) 
 </code></pre></div></div>
 
 <p>This node defines the concentration-parameter values of the Dirichlet
 prior distribution on the exchangeability rates. Now, we can create a
-stochastic node for the exchangeability rates using the <code class="language-cpp highlighter-rouge"><span class="n">dnDirichlet</span></code> function, which
+stochastic node for the exchangeability rates using the <code class="highlighter-rouge">dnDirichlet</code> function, which
 takes the vector of concentration-parameter values as an argument and
-the <code class="language-cpp highlighter-rouge"><span class="o">~</span></code> operator. Together, these create a stochastic node named <code class="language-cpp highlighter-rouge"><span class="n">er</span></code> ($\theta$
+the <code class="highlighter-rouge">~</code> operator. Together, these create a stochastic node named <code class="highlighter-rouge">er</code> ($\theta$
 in Figure [fig:gtr]):</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">er</span> <span class="o">~</span> <span class="n">dnDirichlet</span><span class="p">(</span><span class="n">er_prior</span><span class="p">)</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>er ~ dnDirichlet(er_prior)
 </code></pre></div></div>
 
 <p>The Dirichlet distribution assigns probability densities to a group of
@@ -948,13 +948,13 @@ each is equal to $\frac{1}{6}$ (Figure [dirichletFig]a). We might also
 parameterize the Dirichlet distribution such that all of the shape
 parameters were equal to 100, which would also specify a prior with an
 expectation of equal exchangeability rates (Figure [dirichletFig]b).
-However, by increasing the values of the shape parameters, <code class="language-cpp highlighter-rouge"><span class="n">er_prior</span> <span class="o">&lt;-</span> <span class="n">v</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span></code>, the
+However, by increasing the values of the shape parameters, <code class="highlighter-rouge">er_prior &lt;- v(100,100,100,100,100,100)</code>, the
 Dirichlet distribution will more strongly favor equal exchangeability
 rates; ([<em>i.e.</em>]{}, a relatively [<em>informative</em>]{} prior).
 Alternatively, we might consider an asymmetric Dirichlet
 parameterization that could reflect a strong prior belief that
 transition and transversion substitutions occur at different rates. For
-example, we might specify the prior density <code class="language-cpp highlighter-rouge"><span class="n">er_prior</span> <span class="o">&lt;-</span> <span class="n">v</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span></code>. Under this model, the
+example, we might specify the prior density <code class="highlighter-rouge">er_prior &lt;- v(4,8,4,4,8,4)</code>. Under this model, the
 expected rate for transversions would be $\frac{4}{32}$ and that for
 transitions would be $\frac{8}{32}$, and there would be greater prior
 probability on sets of GTR rates that matched this configuration (Figure
@@ -965,16 +965,16 @@ probability density for each rate parameter (Figure [dirichletFig]d).
 Without strong prior knowledge about the pattern of relative rates,
 however, we can better reflect our uncertainty by using a vague prior on
 the GTR rates. Notably, all patterns of relative rates have the same
-probability density under <code class="language-cpp highlighter-rouge"><span class="n">er_prior</span> <span class="o">&lt;-</span> <span class="n">v</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span></code>.</p>
+probability density under <code class="highlighter-rouge">er_prior &lt;- v(1,1,1,1,1,1)</code>.</p>
 
 <p>For each stochastic node in our model, we must also specify a proposal
 mechanism if we wish to estimate that parameter. The Dirichlet prior on
-our parameter <code class="language-cpp highlighter-rouge"><span class="n">er</span></code> creates a
+our parameter <code class="highlighter-rouge">er</code> creates a
 <a href="http://en.wikipedia.org/wiki/Simplex"><em>simplex</em></a> of values that sum to
 1.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">moves</span><span class="p">[</span><span class="n">mvi</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">mvBetaSimplex</span><span class="p">(</span><span class="n">er</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-<span class="n">moves</span><span class="p">[</span><span class="n">mvi</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">mvDirichletSimplex</span><span class="p">(</span><span class="n">er</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvBetaSimplex(er, weight=3)
+moves[mvi++] = mvDirichletSimplex(er, weight=1)
 </code></pre></div></div>
 
 <p>We can use the same type of distribution as a prior on the 4 stationary
@@ -982,32 +982,32 @@ frequencies ($\pi_A, \pi_C, \pi_G, \pi_T$) since these parameters also
 represent proportions. Specify a flat Dirichlet prior density on the
 base frequencies:</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">pi_prior</span> <span class="o">&lt;-</span> <span class="n">v</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> 
-<span class="n">pi</span> <span class="o">~</span> <span class="n">dnDirichlet</span><span class="p">(</span><span class="n">pi_prior</span><span class="p">)</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pi_prior &lt;- v(1,1,1,1) 
+pi ~ dnDirichlet(pi_prior)
 </code></pre></div></div>
 
-<p>The node <code class="language-cpp highlighter-rouge"><span class="n">pi</span></code> represents the $\pi$ node in Figure [fig:gtr]. Now add the
+<p>The node <code class="highlighter-rouge">pi</code> represents the $\pi$ node in Figure [fig:gtr]. Now add the
 simplex scale move on the stationary frequencies to the moves vector:</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">moves</span><span class="p">[</span><span class="n">mvi</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">mvBetaSimplex</span><span class="p">(</span><span class="n">pi</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">moves</span><span class="p">[</span><span class="n">mvi</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">mvDirichletSimplex</span><span class="p">(</span><span class="n">pi</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvBetaSimplex(pi, weight=2)
+moves[mvi++] = mvDirichletSimplex(pi, weight=1)
 </code></pre></div></div>
 
 <p>We can finish setting up this part of the model by creating a
-deterministic node for the GTR instantaneous-rate matrix <code class="language-cpp highlighter-rouge"><span class="n">Q</span></code>. The function <code class="language-cpp highlighter-rouge"><span class="n">fnGTR</span></code>
+deterministic node for the GTR instantaneous-rate matrix <code class="highlighter-rouge">Q</code>. The function <code class="highlighter-rouge">fnGTR</code>
 takes a set of exchangeability rates and a set of base frequencies to
 compute the instantaneous-rate matrix used when calculating the
 likelihood of our model.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Q</span> <span class="o">:=</span> <span class="n">fnGTR</span><span class="p">(</span><span class="n">er</span><span class="p">,</span><span class="n">pi</span><span class="p">)</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q := fnGTR(er,pi)
 </code></pre></div></div>
 
 <h2 id="exercise-3">Exercise 3</h2>
 
 <ul>
   <li>
-    <p>Use one of your previous analysis files, either <code class="language-cpp highlighter-rouge"><span class="n">mcmc_JC</span><span class="p">.</span><span class="n">Rev</span></code> or <code class="language-cpp highlighter-rouge"><span class="n">mcmc_HKY</span><span class="p">.</span><span class="n">Rev</span></code>, to specify a
-GTR analysis in a new file called <code class="language-cpp highlighter-rouge"><span class="n">mcmc_GTR</span><span class="p">.</span><span class="n">Rev</span></code>. Adapt the old analysis to be
+    <p>Use one of your previous analysis files, either <code class="highlighter-rouge">mcmc_JC.Rev</code> or <code class="highlighter-rouge">mcmc_HKY.Rev</code>, to specify a
+GTR analysis in a new file called <code class="highlighter-rouge">mcmc_GTR.Rev</code>. Adapt the old analysis to be
 performed under the GTR substitution model.</p>
   </li>
   <li>
@@ -1052,7 +1052,7 @@ $\alpha$, we can instead estimate the value of the $\alpha$-shape
 parameter from the data. This requires that we specify a diffuse
 (relatively ‘uninformative’) prior on the $\alpha$-shape parameter. For
 this analysis, we will use a lognormal distribution with a mean
-parameter, <code class="language-cpp highlighter-rouge"><span class="n">alpha_prior_mean</span></code>, equal to 5.0, and standard deviation, <code class="language-cpp highlighter-rouge"><span class="n">alpha_prior_sd</span></code>, equal to 0.587405
+parameter, <code class="highlighter-rouge">alpha_prior_mean</code>, equal to 5.0, and standard deviation, <code class="highlighter-rouge">alpha_prior_sd</code>, equal to 0.587405
 (thus, 95% of the prior density spans exactly one order of magnitude).</p>
 
 <p>This approach for accommodating ASRV is another example of a
@@ -1066,22 +1066,22 @@ in turn, is treated as a lognormal distributed random variable. Finally,
 the shape of the lognormal prior is governed by the mean and standard
 deviation parameters, which are set to fixed values.</p>
 
-<h2 id="setting-up-the-gamma-model-in-revbayes">Setting up the Gamma Model in <code class="language-cpp highlighter-rouge"><span class="n">RevBayes</span></code></h2>
+<h2 id="setting-up-the-gamma-model-in-revbayes">Setting up the Gamma Model in <code class="highlighter-rouge">RevBayes</code></h2>
 
-<p>Create a constant node called <code class="language-cpp highlighter-rouge"><span class="n">alpha_prior_mean</span></code> for the mean parameter and a constant node
-called <code class="language-cpp highlighter-rouge"><span class="n">alpha_prior_sd</span></code> for the standard deviation of the lognormal prior on the
+<p>Create a constant node called <code class="highlighter-rouge">alpha_prior_mean</code> for the mean parameter and a constant node
+called <code class="highlighter-rouge">alpha_prior_sd</code> for the standard deviation of the lognormal prior on the
 gamma-shape parameter (this is represented as the constant $m_\alpha$
 and $sd_\alpha$ parameters in Figure [fig:gtrg]):</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">alpha_prior_mean</span> <span class="o">&lt;-</span> <span class="n">ln</span><span class="p">(</span><span class="mf">5.0</span><span class="p">)</span>
-<span class="n">alpha_prior_sd</span> <span class="o">&lt;-</span> <span class="mf">0.587405</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha_prior_mean &lt;- ln(5.0)
+alpha_prior_sd &lt;- 0.587405
 </code></pre></div></div>
 
-<p>Then create a stochastic node called <code class="language-cpp highlighter-rouge"><span class="n">alpha</span></code> with a lognormal prior (this
+<p>Then create a stochastic node called <code class="highlighter-rouge">alpha</code> with a lognormal prior (this
 represents the stochastic node for the $\alpha$-shape parameter in
 Figure [fig:gtrg]):</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">alpha</span> <span class="o">~</span> <span class="n">dnLognormal</span><span class="p">(</span> <span class="n">alpha_prior_mean</span><span class="p">,</span> <span class="n">alpha_prior_sd</span> <span class="p">)</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha ~ dnLognormal( alpha_prior_mean, alpha_prior_sd )
 </code></pre></div></div>
 
 <p>The way the ASRV model is implemented involves discretizing the mean-one
@@ -1091,28 +1091,28 @@ site. The likelihood of each site is averaged over the $k$ rate
 categories, where the rate multiplier is the mean (or median) of each of
 the discrete $k$ categories. To specify this, we need a deterministic
 node that is a vector that will hold the set of $k$ rates drawn from the
-gamma distribution with $k$ rate categories. The function <code class="language-cpp highlighter-rouge"><span class="n">fnDiscretizeGamma</span></code> returns this
+gamma distribution with $k$ rate categories. The function <code class="highlighter-rouge">fnDiscretizeGamma</code> returns this
 deterministic node and takes three arguments: the shape and rate of the
 gamma distribution and the number of categories. Since we want to
-discretize a mean-one gamma distribution, we can pass in <code class="language-cpp highlighter-rouge"><span class="n">alpha</span></code> for both the
+discretize a mean-one gamma distribution, we can pass in <code class="highlighter-rouge">alpha</code> for both the
 shape and rate.</p>
 
-<p>Initialize the <code class="language-cpp highlighter-rouge"><span class="n">gamma_rates</span></code> deterministic node vector using the <code class="language-cpp highlighter-rouge"><span class="n">fnDiscretizeGamma</span></code> function with 4 bins:</p>
+<p>Initialize the <code class="highlighter-rouge">gamma_rates</code> deterministic node vector using the <code class="highlighter-rouge">fnDiscretizeGamma</code> function with 4 bins:</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">gamma_rates</span> <span class="o">:=</span> <span class="n">fnDiscretizeGamma</span><span class="p">(</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="mi">4</span> <span class="p">)</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gamma_rates := fnDiscretizeGamma( alpha, alpha, 4 )
 </code></pre></div></div>
 
 <p>Note that here, by convention, we set $k = 4$. The random variable that
-controls the rate variation is the stochastic node <code class="language-cpp highlighter-rouge"><span class="n">alpha</span></code>. We will apply a
+controls the rate variation is the stochastic node <code class="highlighter-rouge">alpha</code>. We will apply a
 simple scale move to this parameter.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">moves</span><span class="p">[</span><span class="n">mvi</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">mvScale</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mf">2.0</span><span class="p">)</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvScale(alpha, weight=2.0)
 </code></pre></div></div>
 
-<p>Remember that you need to call the <code class="language-cpp highlighter-rouge"><span class="n">dnPhyloCTMC</span></code> constructor to include the new
+<p>Remember that you need to call the <code class="highlighter-rouge">dnPhyloCTMC</code> constructor to include the new
 site-rate parameter:</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">seq</span> <span class="o">~</span> <span class="n">dnPhyloCTMC</span><span class="p">(</span><span class="n">tree</span><span class="o">=</span><span class="n">psi</span><span class="p">,</span> <span class="n">Q</span><span class="o">=</span><span class="n">Q</span><span class="p">,</span> <span class="n">siteRates</span><span class="o">=</span><span class="n">gamma_rates</span><span class="p">,</span> <span class="n">type</span><span class="o">=</span><span class="s">"DNA"</span><span class="p">)</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>seq ~ dnPhyloCTMC(tree=psi, Q=Q, siteRates=gamma_rates, type="DNA")
 </code></pre></div></div>
 
 <h2 id="exercise-4">Exercise 4</h2>
@@ -1136,7 +1136,7 @@ probabilities of the clades.</p>
 <p>All of the substitution models described so far assume that the sequence
 data are potentially variable. That is, we assume that the sequence data
 are random variables; specifically, we assume that they are realizations
-of the specified <code class="language-cpp highlighter-rouge"><span class="n">dnPhyloCTMC</span></code> distribution. However, some sites may not be free to
+of the specified <code class="highlighter-rouge">dnPhyloCTMC</code> distribution. However, some sites may not be free to
 vary. When the substitution rate of a site is zero, it is said to be
 <em>invariable</em>. Invariable sites are often confused with <em>invariant</em>
 sites—when each species exhibits the same state, it is said to be
@@ -1148,22 +1148,22 @@ happen to end in the same state for every species.</p>
 
 <p>Here we describe an extension to our phylogenetic model to accommodate
 invariable sites. Under the invariable-sites model <a href="#Hasegawa1985">(Hasegawa et al. 1985)</a>, each
-site is invariable with probability <code class="language-cpp highlighter-rouge"><span class="n">pinvar</span></code>, and variable with probability
-$1-$ <code class="language-cpp highlighter-rouge"><span class="n">pinvar</span></code>.</p>
+site is invariable with probability <code class="highlighter-rouge">pinvar</code>, and variable with probability
+$1-$ <code class="highlighter-rouge">pinvar</code>.</p>
 
 <p>First, let’s have a look at the data and see how many invariant sites we
 have:</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">data</span><span class="p">.</span><span class="n">getNumInvariantSites</span><span class="p">()</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data.getNumInvariantSites()
 </code></pre></div></div>
 
 <p>There seem to be a substantial number of invariant sites.</p>
 
-<p>Now let’s specify the invariable-sites model in <code class="language-cpp highlighter-rouge"><span class="n">RevBayes</span></code>. We need to specify the
-prior probability that a site is invariable. A <code class="language-cpp highlighter-rouge"><span class="n">Beta</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span></code> distribution is a
+<p>Now let’s specify the invariable-sites model in <code class="highlighter-rouge">RevBayes</code>. We need to specify the
+prior probability that a site is invariable. A <code class="highlighter-rouge">Beta(1,1)</code> distribution is a
 common choice for parameters representing probabilities.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">pinvar</span> <span class="o">~</span> <span class="n">dnBeta</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pinvar ~ dnBeta(1,1)
 </code></pre></div></div>
 
 <p>The distribution is a flat prior distribution that specifies equal
@@ -1172,12 +1172,12 @@ probability for all values between 0 and 1.</p>
 <p>Then, as usual, we add a move to change this stochastic variable; we’ll
 used a simple sliding window move.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">moves</span><span class="p">[</span><span class="n">mvi</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">mvSlide</span><span class="p">(</span><span class="n">pinvar</span><span class="p">)</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvSlide(pinvar)
 </code></pre></div></div>
 
-<p>Finally, you need to call the <code class="language-cpp highlighter-rouge"><span class="n">dnPhyloCTMC</span></code> constructor to include the new <code class="language-cpp highlighter-rouge"><span class="n">pinvar</span></code> parameter:</p>
+<p>Finally, you need to call the <code class="highlighter-rouge">dnPhyloCTMC</code> constructor to include the new <code class="highlighter-rouge">pinvar</code> parameter:</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">seq</span> <span class="o">~</span> <span class="n">dnPhyloCTMC</span><span class="p">(</span><span class="n">tree</span><span class="o">=</span><span class="n">psi</span><span class="p">,</span> <span class="n">Q</span><span class="o">=</span><span class="n">Q</span><span class="p">,</span> <span class="n">siteRates</span><span class="o">=</span><span class="n">gamma_rates</span><span class="p">,</span> <span class="n">pInv</span><span class="o">=</span><span class="n">pinvar</span><span class="p">,</span> <span class="n">type</span><span class="o">=</span><span class="s">"DNA"</span><span class="p">)</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>seq ~ dnPhyloCTMC(tree=psi, Q=Q, siteRates=gamma_rates, pInv=pinvar, type="DNA")
 </code></pre></div></div>
 
 <h2 id="exercise-5">Exercise 5</h2>

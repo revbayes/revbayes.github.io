@@ -11,6 +11,8 @@
     <link rel="stylesheet" type="text/css" href="/revbayes_tutorials/assets/css/bootstrap-theme.css" />
     <link rel="stylesheet" type="text/css" href="/revbayes_tutorials/assets/css/main.css" />
     
+    <link rel="stylesheet" type="text/css" href="/revbayes_tutorials/assets/css/tutorial.css" />
+    
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -59,32 +61,77 @@
   </div>
 </nav>
 
-      <h1 id="welcome-to-the-revbayes-tutorials-repository">Welcome to the RevBayes tutorials repository</h1>
+      <div class="row">
+	<h1 class="maintitle"></h1>
+	<h3 class="subtitle"></h3>
+	<h4 class="maintitle"></h4>
+</div>
+
+
+<blockquote class="overview no-print" id="overview">
+  <h2>Overview</h2>
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        <ul>
+        
+          <ul>
+          <li>None</li>
+          </ul>
+        
+    </div>
+  </div>
+</blockquote>
+
+
+<blockquote class="tutorial_files no-print">
+  <h2>Data files and scripts</h2>
+  
+</blockquote>
+
+<h1 id="welcome-to-the-revbayes-tutorials-repository">Welcome to the RevBayes tutorials repository</h1>
 
 <h3 id="tutorial-format">Tutorial Format</h3>
 
 <p>These tutorials will provide command line text and code in specific formats.</p>
 
-<p>All commands that are intended to be executed in your Unix terminal will be shown in gray boxes with the <code class="language-cpp highlighter-rouge"><span class="err">$</span></code> prompt. For example:</p>
+<p>All commands that are intended to be executed in your Unix terminal will be shown in gray boxes with the <code class="highlighter-rouge">$</code> prompt. For example:</p>
 
-<div class="language-cpp bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">cd</span> <span class="n">my_directory</span>
-<span class="n">pwd</span>
+<div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd my_directory
+pwd
 </code></pre></div></div>
 
-<p>All Rev code will be shown in light blue boxes with the <code class="language-cpp highlighter-rouge"><span class="o">&gt;</span></code> prompt:</p>
+<p>All Rev code will be shown in light blue boxes with the <code class="highlighter-rouge">&gt;</code> prompt:</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-<span class="n">i</span> <span class="o">=</span> <span class="mi">12</span><span class="p">;</span>
-<span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-	<span class="cp">#this is a comment
-</span>	<span class="n">i</span><span class="o">++</span><span class="p">;</span>
-<span class="p">}</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>int i = 0;
+i = 12;
+for(int j = 0; j &lt; 100; j++) {
+	#this is a comment
+	i++;
+}
 </code></pre></div></div>
 
 <p>All output the RevBayes console will be given in light blue boxes with gray text:</p>
 
-<div class="language-cpp console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">my_directory</span>
+<div class="console highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/home/my_directory
 </code></pre></div></div>
+
+<ol class="bibliography"></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2>References</h2>"+elem_ol.outerHTML
+	}
+}
+</script>
 
       <footer>
   <div class="container">
@@ -132,6 +179,8 @@
 </script>
 
     <script src="/revbayes_tutorials/assets/js/base.js"></script>
+    
+    <script src="/revbayes_tutorials/assets/js/tutorial.js"></script>
     
   </body>
 </html>

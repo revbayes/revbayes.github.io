@@ -70,15 +70,15 @@
 
 <blockquote class="overview no-print" id="overview">
   <h2>Overview</h2>
-
   <div class="row">
     <div class="col-md-9">
         <strong>Prerequisites</strong>
         <ul>
         
+          <ul>
           <li>None</li>
+          </ul>
         
-        </ul>
     </div>
   </div>
 </blockquote>
@@ -89,34 +89,34 @@
   
 </blockquote>
 
-<h1 id="basic-rev-commands">Basic <code class="language-cpp highlighter-rouge"><span class="n">Rev</span></code> Commands</h1>
+<h1 id="basic-rev-commands">Basic <code class="highlighter-rouge">Rev</code> Commands</h1>
 
-<p>This tutorial demonstrates the basic syntactical features of <code class="language-cpp highlighter-rouge"><span class="n">RevBayes</span></code>
-and the <code class="language-cpp highlighter-rouge"><span class="n">Rev</span></code> scripting language. A good reference for probabilistic graphical models for
+<p>This tutorial demonstrates the basic syntactical features of <code class="highlighter-rouge">RevBayes</code>
+and the <code class="highlighter-rouge">Rev</code> scripting language. A good reference for probabilistic graphical models for
 Bayesian phylogenetic inference is given in <a href="#Hoehna2014b">(Höhna et al. 2014)</a>. Let’s start with the basic concepts
-for the interactive use of <code class="language-cpp highlighter-rouge"><span class="n">RevBayes</span></code> with <code class="language-cpp highlighter-rouge"><span class="n">Rev</span></code> (the language of
-<code class="language-cpp highlighter-rouge"><span class="n">RevBayes</span></code>). You should try to execute the statements step by step, look
+for the interactive use of <code class="highlighter-rouge">RevBayes</code> with <code class="highlighter-rouge">Rev</code> (the language of
+<code class="highlighter-rouge">RevBayes</code>). You should try to execute the statements step by step, look
 at the output and try to understand what and why things are happening.</p>
 
-<p>First, open up your terminal and type <code class="language-cpp highlighter-rouge"><span class="n">RevBayes</span></code>. This should launch <code class="language-cpp highlighter-rouge"><span class="n">RevBayes</span></code> and give you
-a command prompt (the <code class="language-cpp highlighter-rouge"><span class="o">&gt;</span></code> character). This means <code class="language-cpp highlighter-rouge"><span class="n">RevBayes</span></code> is waiting for input.</p>
+<p>First, open up your terminal and type <code class="highlighter-rouge">RevBayes</code>. This should launch <code class="highlighter-rouge">RevBayes</code> and give you
+a command prompt (the <code class="highlighter-rouge">&gt;</code> character). This means <code class="highlighter-rouge">RevBayes</code> is waiting for input.</p>
 
 <p><img src="figures/terminal.png" alt="image" /></p>
 
 <h2 class="section" id="operators-and-functions">Operators and Functions</h2>
 
-<p><code class="language-cpp highlighter-rouge"><span class="n">Rev</span></code> is an interpreted language for statistical computing and phylogenetic
+<p><code class="highlighter-rouge">Rev</code> is an interpreted language for statistical computing and phylogenetic
 analysis. Therefore, the basics are simple mathematical operations.
 Entering each of the following lines will automatically execute these
 operations.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp"># Simple mathematical operators:
-</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">1</span>                            <span class="err">#</span> <span class="n">Addition</span>
-<span class="mi">10</span> <span class="o">-</span> <span class="mi">5</span>                           <span class="err">#</span> <span class="n">Subtraction</span>
-<span class="mi">5</span> <span class="o">*</span> <span class="mi">5</span>                            <span class="err">#</span> <span class="n">Multiplication</span>
-<span class="mi">10</span> <span class="o">/</span> <span class="mi">2</span>                           <span class="err">#</span> <span class="n">Division</span>
-<span class="mi">2</span><span class="o">^</span><span class="mi">3</span>                              <span class="err">#</span> <span class="n">Exponentiation</span>
-<span class="mi">5</span><span class="o">%</span><span class="mi">2</span>                              <span class="err">#</span> <span class="n">Modulo</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Simple mathematical operators:
+1 + 1                            # Addition
+10 - 5                           # Subtraction
+5 * 5                            # Multiplication
+10 / 2                           # Division
+2^3                              # Exponentiation
+5%2                              # Modulo
 </code></pre></div></div>
 
 <p><img src="figures/revbayes_operations.png" alt="image" /></p>
@@ -132,30 +132,30 @@ to the text file containing the list of commands as a <em>script</em>, because
 it describes line-by-line instructions for the program to follow.</p>
 
 <p>You can write multiple statements in the same line if you separate them
-by a semicolon (<code class="language-cpp highlighter-rouge"><span class="p">;</span></code>). The statements will execute as if you wrote each
+by a semicolon (<code class="highlighter-rouge">;</code>). The statements will execute as if you wrote each
 on a single line.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">1</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span>                    <span class="err">#</span> <span class="n">Multiple</span> <span class="n">statements</span> <span class="n">in</span> <span class="n">one</span> <span class="n">line</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1 + 1; 2 + 2                    # Multiple statements in one line
 </code></pre></div></div>
 
-<p>Here you can see that comments always start with the hash symbol (<code class="language-cpp highlighter-rouge"><span class="cp">#</span></code>).
-Everything after the ‘<code class="language-cpp highlighter-rouge"><span class="cp">#</span></code>’-symbol will be ignored. In addition to these
+<p>Here you can see that comments always start with the hash symbol (<code class="highlighter-rouge">#</code>).
+Everything after the ‘<code class="highlighter-rouge">#</code>’-symbol will be ignored. In addition to these
 simple mathematical operations, provides some standard math functions
 which can be called by:</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp"># Math functions
-</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>                           <span class="err">#</span> <span class="n">exponential</span> <span class="n">function</span>
-<span class="n">ln</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>                            <span class="err">#</span> <span class="n">logarithmic</span> <span class="n">function</span> <span class="n">with</span> <span class="n">natural</span> <span class="n">base</span>
-<span class="n">sqrt</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span>                         <span class="err">#</span> <span class="n">square</span> <span class="n">root</span> <span class="n">function</span> 
-<span class="n">power</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>                       <span class="err">#</span> <span class="n">power</span> <span class="n">function</span><span class="o">:</span> <span class="n">power</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span> <span class="o">=</span> <span class="n">a</span><span class="o">^</span><span class="n">b</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Math functions
+exp(1)                           # exponential function
+ln(1)                            # logarithmic function with natural base
+sqrt(16)                         # square root function 
+power(2,2)                       # power function: power(a,b) = a^b
 </code></pre></div></div>
 
-<p>Notice that <code class="language-cpp highlighter-rouge"><span class="n">Rev</span></code> is case-sensitive. That means, <code class="language-cpp highlighter-rouge"><span class="n">Rev</span></code> distinguishes upper and lower
+<p>Notice that <code class="highlighter-rouge">Rev</code> is case-sensitive. That means, <code class="highlighter-rouge">Rev</code> distinguishes upper and lower
 case letter for both variable names and function names. For example,
 only the first of these two calls will work:</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>                           <span class="err">#</span> <span class="n">correct</span> <span class="n">lower</span> <span class="k">case</span> <span class="n">name</span>
-<span class="n">Exp</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>                           <span class="err">#</span> <span class="n">wrong</span> <span class="n">upper</span> <span class="k">case</span> <span class="n">name</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>exp(1)                           # correct lower case name
+Exp(1)                           # wrong upper case name
 </code></pre></div></div>
 
 <h2 class="section" id="variable-declaration-and-assignment">Variable Declaration and Assignment</h2>
@@ -163,7 +163,7 @@ only the first of these two calls will work:</p>
 <p>One of the most important features of (or any programming language,
 really) is the ability to declare and assign variables. Variables store
 information to be referenced later, and can change throughout the
-execution of the program. There are three kinds of variables in <code class="language-cpp highlighter-rouge"><span class="n">RevBayes</span></code>, called
+execution of the program. There are three kinds of variables in <code class="highlighter-rouge">RevBayes</code>, called
 <em>constant</em>, <em>deterministic</em>, and <em>stochastic</em> variables. Constant
 variables contain values that are not random in your model.
 Deterministic variables are functions of other variables. Stochastic
@@ -174,60 +174,60 @@ distribution.</p>
 
 <p>Different types of variables differ in how you create them and assign
 values to them. We will begin by creating a constant variable with name
-<code class="language-cpp highlighter-rouge"><span class="n">a</span></code> that starts with the value 1. The left arrow assignment (<code class="language-cpp highlighter-rouge"><span class="o">&lt;-</span></code>)
+<code class="highlighter-rouge">a</code> that starts with the value 1. The left arrow assignment (<code class="highlighter-rouge">&lt;-</code>)
 always creates a constant variable, and automatically assigns the
 following value to it.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp"># Variable assignment: constant
-</span><span class="n">a</span> <span class="o">&lt;-</span> <span class="mi">1</span>                           <span class="err">#</span> <span class="n">assignment</span> <span class="n">of</span> <span class="n">constant</span> <span class="n">node</span> <span class="err">`</span><span class="n">a</span><span class="err">'</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Variable assignment: constant
+a &lt;- 1                           # assignment of constant node `a'
 </code></pre></div></div>
 
 <p>You see the value of ‘a’ by just typing in the variable name and
 pressing enter.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">a</span>                                <span class="err">#</span> <span class="n">printing</span> <span class="n">the</span> <span class="n">value</span> <span class="n">of</span> <span class="err">`</span><span class="n">a</span><span class="err">'</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>a                                # printing the value of `a'
 </code></pre></div></div>
 
-<p>Next, we create a deterministic variable <code class="language-cpp highlighter-rouge"><span class="n">b</span></code> using the <code class="language-cpp highlighter-rouge"><span class="o">:=</span></code> assignment
-computed by <code class="language-cpp highlighter-rouge"><span class="n">exp</span><span class="p">(</span><span class="n">a</span><span class="p">)</span></code> and another deterministic variable <code class="language-cpp highlighter-rouge"><span class="n">c</span></code> computed by
-<code class="language-cpp highlighter-rouge"><span class="n">ln</span><span class="p">(</span><span class="n">b</span><span class="p">)</span></code>. Deterministic variables are always created using the
-colon-equal assignment (<code class="language-cpp highlighter-rouge"><span class="o">:=</span></code>).</p>
+<p>Next, we create a deterministic variable <code class="highlighter-rouge">b</code> using the <code class="highlighter-rouge">:=</code> assignment
+computed by <code class="highlighter-rouge">exp(a)</code> and another deterministic variable <code class="highlighter-rouge">c</code> computed by
+<code class="highlighter-rouge">ln(b)</code>. Deterministic variables are always created using the
+colon-equal assignment (<code class="highlighter-rouge">:=</code>).</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp"># Variable assignment: deterministic
-</span>
-<span class="cp"># assignment of deterministic node `b' with
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Variable assignment: deterministic
+
+# assignment of deterministic node `b' with
 # the exponential function with parameter `a'
-</span><span class="n">b</span> <span class="o">:=</span> <span class="n">exp</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>  
-<span class="n">b</span>
+b := exp(a)  
+b
 
-<span class="cp"># assignment of deterministic node `c' with
+# assignment of deterministic node `c' with
 # logarithmic function with parameter `b'
-</span><span class="n">c</span> <span class="o">:=</span> <span class="n">ln</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>              
-<span class="n">c</span> 
+c := ln(b)              
+c 
 </code></pre></div></div>
 
-<p>Finally, we will create the third type of variables in <code class="language-cpp highlighter-rouge"><span class="n">RevBayes</span></code>: stochastic
-variables. We will create a random variable <code class="language-cpp highlighter-rouge"><span class="n">x</span></code> from an exponential
-distribution with parameter <code class="language-cpp highlighter-rouge"><span class="n">lambda</span></code>. Stochastic assignments use the
+<p>Finally, we will create the third type of variables in <code class="highlighter-rouge">RevBayes</code>: stochastic
+variables. We will create a random variable <code class="highlighter-rouge">x</code> from an exponential
+distribution with parameter <code class="highlighter-rouge">lambda</code>. Stochastic assignments use the
 $\sim$ operation.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp"># Variable assignment: stochastic
-</span>
-<span class="cp"># assign constant node `lambda' with value `1'
-</span><span class="n">lambda</span> <span class="o">&lt;-</span> <span class="mf">1.0</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Variable assignment: stochastic
 
-<span class="cp"># create stochastic node with exponential 
+# assign constant node `lambda' with value `1'
+lambda &lt;- 1.0
+
+# create stochastic node with exponential 
 # distribution and parameter `lambda'
-</span><span class="n">x</span> <span class="o">~</span> <span class="n">dnExponential</span><span class="p">(</span><span class="n">lambda</span><span class="p">)</span>
+x ~ dnExponential(lambda)
 </code></pre></div></div>
 
-<p>The value of <code class="language-cpp highlighter-rouge"><span class="n">x</span></code> is a random draw from the distribution. You can see the
+<p>The value of <code class="highlighter-rouge">x</code> is a random draw from the distribution. You can see the
 value and the probability (or log-probability) of the current value
 under the current parameter values by</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">x</span>                                <span class="err">#</span> <span class="n">print</span> <span class="n">value</span> <span class="n">of</span> <span class="n">stochastic</span> <span class="n">node</span> <span class="err">`</span><span class="n">x</span><span class="err">'</span>
-<span class="n">x</span><span class="p">.</span><span class="n">probability</span><span class="p">()</span>                  <span class="err">#</span> <span class="n">print</span> <span class="n">the</span> <span class="n">probability</span> <span class="k">if</span> <span class="err">`</span><span class="n">x</span><span class="err">'</span>
-<span class="n">x</span><span class="p">.</span><span class="n">lnProbability</span><span class="p">()</span>                <span class="err">#</span> <span class="n">print</span> <span class="n">the</span> <span class="n">log</span><span class="o">-</span><span class="n">probability</span> <span class="k">if</span> <span class="err">`</span><span class="n">x</span><span class="err">'</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>x                                # print value of stochastic node `x'
+x.probability()                  # print the probability if `x'
+x.lnProbability()                # print the log-probability if `x'
 </code></pre></div></div>
 
 <h2 class="section" id="distributions-and-random-numbers">Distributions and Random Numbers</h2>
@@ -243,28 +243,28 @@ parameter $\lambda$:</p>
     u &\sim \text{Uniform(0,1)}\\
     x &= -\frac{1}{\lambda \ln u}\end{aligned} %]]></script>
 
-<p>In <code class="language-cpp highlighter-rouge"><span class="n">RevBayes</span></code>, we might describe
+<p>In <code class="highlighter-rouge">RevBayes</code>, we might describe
 $u$ as a stochastic variable, and $x$ as a deterministic variable (since
 it is a function of $u$):</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp"># create the random variable u
-</span><span class="n">u</span> <span class="o">~</span> <span class="n">dnUniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">u</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># create the random variable u
+u ~ dnUniform(0,1)
+u
 
-<span class="cp"># determine the rate parameter
-</span><span class="n">lambda</span> <span class="o">&lt;-</span> <span class="mf">1.0</span>
+# determine the rate parameter
+lambda &lt;- 1.0
 
-<span class="cp"># create x as a deterministic function of u
-</span><span class="n">x</span> <span class="o">:=</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">lambda</span> <span class="o">*</span> <span class="n">ln</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
-<span class="n">x</span>
+# create x as a deterministic function of u
+x := - 1 / lambda * ln(u)
+x
 </code></pre></div></div>
 
 <p>Alternatively, we can create $x$ directly as an exponential random
 variable:</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp"># create the random variable x
-</span><span class="n">x</span> <span class="o">~</span> <span class="n">dnExponential</span><span class="p">(</span><span class="n">lambda</span><span class="p">)</span>
-<span class="n">x</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># create the random variable x
+x ~ dnExponential(lambda)
+x
 </code></pre></div></div>
 
 <h2 class="section" id="vectors">Vectors</h2>
@@ -273,55 +273,55 @@ variable:</p>
 more than one value are called <em>vectors</em>. The simplest way to create a
 vector is like this:</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">v</span> <span class="o">&lt;-</span> <span class="n">v</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">2.0</span><span class="p">,</span><span class="mf">3.0</span><span class="p">)</span>              <span class="err">#</span> <span class="n">create</span> <span class="n">a</span> <span class="n">vector</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>v &lt;- v(1.0,2.0,3.0)              # create a vector
 </code></pre></div></div>
 
-<p>You can refer to a specific value in the vector using brackets, <code class="language-cpp highlighter-rouge"><span class="p">[</span><span class="n">i</span><span class="p">]</span></code>,
-where <code class="language-cpp highlighter-rouge"><span class="n">i</span></code> is the index of the variable of interest.</p>
+<p>You can refer to a specific value in the vector using brackets, <code class="highlighter-rouge">[i]</code>,
+where <code class="highlighter-rouge">i</code> is the index of the variable of interest.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>                             <span class="err">#</span> <span class="n">print</span> <span class="n">the</span> <span class="n">first</span> <span class="n">entry</span>
-<span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;-</span> <span class="mi">10</span>                       <span class="err">#</span> <span class="n">change</span> <span class="n">the</span> <span class="n">value</span> <span class="n">of</span> <span class="n">the</span> <span class="n">first</span> <span class="n">entry</span>
-<span class="n">v</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>v[1]                             # print the first entry
+v[1] &lt;- 10                       # change the value of the first entry
+v
 </code></pre></div></div>
 
-<h2 class="section" id="for-loops"><code class="language-cpp highlighter-rouge"><span class="k">for</span></code> loops</h2>
+<h2 class="section" id="for-loops"><code class="highlighter-rouge">for</code> loops</h2>
 
-<p><code class="language-cpp highlighter-rouge"><span class="k">for</span></code> loops are important programming structures that allow you to
+<p><code class="highlighter-rouge">for</code> loops are important programming structures that allow you to
 repeat the same statement a number of times on different variables. The
-basic structure of a <code class="language-cpp highlighter-rouge"><span class="k">for</span></code> loop is:</p>
+basic structure of a <code class="highlighter-rouge">for</code> loop is:</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp"># a for loop
-</span><span class="k">for</span> <span class="p">([</span><span class="n">variable</span><span class="p">]</span> <span class="n">in</span> <span class="p">[</span><span class="n">set</span> <span class="n">of</span> <span class="n">values</span><span class="p">])</span> <span class="p">{</span>
-   <span class="p">[</span><span class="n">statements</span> <span class="k">using</span> <span class="n">variable</span><span class="p">]</span>
-<span class="p">}</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># a for loop
+for ([variable] in [set of values]) {
+   [statements using variable]
+}
 </code></pre></div></div>
 
-<p>The <code class="language-cpp highlighter-rouge"><span class="k">for</span></code> statement is followed by a set of parenthesis containing
-<code class="language-cpp highlighter-rouge"><span class="p">[</span><span class="n">variable</span><span class="p">]</span></code>, which contains the name of the variable being iterated,
-and <code class="language-cpp highlighter-rouge"><span class="p">[</span><span class="n">set</span> <span class="n">of</span> <span class="n">values</span><span class="p">]</span></code>, which are the values that the variable iterates
-over. The <code class="language-cpp highlighter-rouge"><span class="k">for</span></code> loop variable is a special variable that is created by
-the <code class="language-cpp highlighter-rouge"><span class="k">for</span></code> loop: you do not have to create it before executing the loop.
-This simple <code class="language-cpp highlighter-rouge"><span class="k">for</span></code> loop creates the variable <code class="language-cpp highlighter-rouge"><span class="n">i</span></code>, and for each value of
-<code class="language-cpp highlighter-rouge"><span class="n">i</span></code> from 1 to 100, prints the value of <code class="language-cpp highlighter-rouge"><span class="n">i</span></code> to the screen.</p>
+<p>The <code class="highlighter-rouge">for</code> statement is followed by a set of parenthesis containing
+<code class="highlighter-rouge">[variable]</code>, which contains the name of the variable being iterated,
+and <code class="highlighter-rouge">[set of values]</code>, which are the values that the variable iterates
+over. The <code class="highlighter-rouge">for</code> loop variable is a special variable that is created by
+the <code class="highlighter-rouge">for</code> loop: you do not have to create it before executing the loop.
+This simple <code class="highlighter-rouge">for</code> loop creates the variable <code class="highlighter-rouge">i</code>, and for each value of
+<code class="highlighter-rouge">i</code> from 1 to 100, prints the value of <code class="highlighter-rouge">i</code> to the screen.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="n">in</span> <span class="mi">1</span><span class="o">:</span><span class="mi">100</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">i</span>
-<span class="p">}</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:100) {
+  i
+}
 </code></pre></div></div>
 
-<p><code class="language-cpp highlighter-rouge"><span class="k">for</span></code> loops are very powerful programming tools. We can use a <code class="language-cpp highlighter-rouge"><span class="k">for</span></code> loop
+<p><code class="highlighter-rouge">for</code> loops are very powerful programming tools. We can use a <code class="highlighter-rouge">for</code> loop
 to create an entire <em>vector</em> of uniform random numbers, and transform
 them into a <em>second</em> vector of exponential random numbers.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="n">in</span> <span class="mi">1</span><span class="o">:</span><span class="mi">100</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">u</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">~</span> <span class="n">dnUniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
-  <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">:=</span> <span class="o">-</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">lambda</span> <span class="o">*</span> <span class="n">ln</span><span class="p">(</span><span class="n">u</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-<span class="p">}</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:100) {
+  u[i] ~ dnUniform(0,1)
+  x[i] := - 1.0 / lambda * ln(u[i])
+}
 </code></pre></div></div>
 
-<p>Close using the statement <code class="language-cpp highlighter-rouge"><span class="n">q</span><span class="p">()</span></code>.</p>
+<p>Close using the statement <code class="highlighter-rouge">q()</code>.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">q</span><span class="p">()</span>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>q()
 </code></pre></div></div>
 
 <ol class="bibliography"><li><span id="Hoehna2014b">Höhna S., Heath T.A., Boussau B., Landis M.J., Ronquist F., Huelsenbeck J.P. 2014. Probabilistic Graphical Model Representation in Phylogenetics. Systematic Biology. 63:753–771.</span>

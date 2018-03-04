@@ -70,15 +70,15 @@
 
 <blockquote class="overview no-print" id="overview">
   <h2>Overview</h2>
-
   <div class="row">
     <div class="col-md-9">
         <strong>Prerequisites</strong>
         <ul>
         
+          <ul>
           <li>None</li>
+          </ul>
         
-        </ul>
     </div>
   </div>
 </blockquote>
@@ -91,22 +91,22 @@
 
 <hr />
 
-<p>It is easiest to use an IDE to develop RevBayes. Some examples of IDEs are XCode, Eclipse Oxygen, or Netbeans. One could also use <a href="/revbayes_tutorials/developer/vim-config"><code class="language-cpp highlighter-rouge"><span class="n">vim</span></code></a> or Sublime Text if they prefer to do so, and we provide some helpful hints in setting up your <code class="language-cpp highlighter-rouge"><span class="n">vim</span></code> environment. However, there are a few steps that must be taken before setting up your IDE.</p>
+<p>It is easiest to use an IDE to develop RevBayes. Some examples of IDEs are XCode, Eclipse Oxygen, or Netbeans. One could also use <a href="/revbayes_tutorials/developer/vim-config"><code class="highlighter-rouge">vim</code></a> or Sublime Text if they prefer to do so, and we provide some helpful hints in setting up your <code class="highlighter-rouge">vim</code> environment. However, there are a few steps that must be taken before setting up your IDE.</p>
 
 <p>If you do not have the RevBayes source code, you can do so by cloning the Github repository:</p>
-<div class="language-cpp bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="o">:</span><span class="c1">//github.com/revbayes/revbayes
-</span></code></pre></div></div>
+<div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/revbayes/revbayes
+</code></pre></div></div>
 
 <p>See the <a href="/revbayes_tutorials/software/">Software</a> tab for further installation instructions.</p>
 
 <h1 class="section" id="setting-up-eclipse-for-revbayes-development">Setting up Eclipse for RevBayes development</h1>
 <hr />
-<p>Eclipse is a Java-based, cross-platform IDE with lots of nice features that make it convenient for RevBayes development. First, it’s cross-platform, and unlike Xcode, you can use any compiler you like (not just <code class="language-cpp highlighter-rouge"><span class="n">clang</span></code>).</p>
+<p>Eclipse is a Java-based, cross-platform IDE with lots of nice features that make it convenient for RevBayes development. First, it’s cross-platform, and unlike Xcode, you can use any compiler you like (not just <code class="highlighter-rouge">clang</code>).</p>
 
 <h2 id="prerequisites">Prerequisites</h2>
 <ul>
-  <li>To compile RevBayes using Eclipse, you must install <a href="https://cmake.org/install/">CMake</a> and its <a href="https://stackoverflow.com/questions/30668601/installing-cmake-command-line-tools-on-a-mac">command line tools</a>. This is very easy if you have <a href="https://brew.sh/">homebrew</a> installed (<code class="language-cpp highlighter-rouge"><span class="n">brew</span> <span class="n">install</span> <span class="n">cmake</span></code>)</li>
-  <li>You must also have a C++ compiler. If you are using a Mac, you can use <code class="language-cpp highlighter-rouge"><span class="n">clang</span></code> (included with <a href="https://developer.apple.com/xcode/">XCode</a>), or you can install <a href="https://gcc.gnu.org/"><code class="language-cpp highlighter-rouge"><span class="n">gcc</span></code></a> (e.g. via homebrew <code class="language-cpp highlighter-rouge"><span class="n">brew</span> <span class="n">install</span> <span class="n">gcc</span></code>).</li>
+  <li>To compile RevBayes using Eclipse, you must install <a href="https://cmake.org/install/">CMake</a> and its <a href="https://stackoverflow.com/questions/30668601/installing-cmake-command-line-tools-on-a-mac">command line tools</a>. This is very easy if you have <a href="https://brew.sh/">homebrew</a> installed (<code class="highlighter-rouge">brew install cmake</code>)</li>
+  <li>You must also have a C++ compiler. If you are using a Mac, you can use <code class="highlighter-rouge">clang</code> (included with <a href="https://developer.apple.com/xcode/">XCode</a>), or you can install <a href="https://gcc.gnu.org/"><code class="highlighter-rouge">gcc</code></a> (e.g. via homebrew <code class="highlighter-rouge">brew install gcc</code>).</li>
 </ul>
 
 <h2 id="installing-eclipse-cdt">Installing Eclipse CDT</h2>
@@ -119,13 +119,13 @@
 </blockquote>
 
 <h2 id="create-an-eclipse-project-for-revbayes">Create an Eclipse project for RevBayes</h2>
-<p>Assuming you have cloned the RevBayes github repository into the directory <code class="language-cpp highlighter-rouge"><span class="o">&lt;</span><span class="n">revbayes</span><span class="o">-</span><span class="n">repo</span><span class="o">&gt;</span></code>, you can create a new C++ Eclipse project as follows:</p>
+<p>Assuming you have cloned the RevBayes github repository into the directory <code class="highlighter-rouge">&lt;revbayes-repo&gt;</code>, you can create a new C++ Eclipse project as follows:</p>
 
 <ol>
   <li>In Eclipse, go to <em>File &gt; New &gt; Makefile Project with Existing Code</em></li>
-  <li>Set the <em>Name</em> of the project to <code class="language-cpp highlighter-rouge"><span class="n">revbayes</span></code></li>
-  <li>Select <code class="language-cpp highlighter-rouge"><span class="o">&lt;</span><span class="n">revbayes</span><span class="o">-</span><span class="n">repo</span><span class="o">&gt;/</span><span class="n">src</span></code> as the <em>Existing Code Location</em></li>
-  <li>Select <code class="language-cpp highlighter-rouge"><span class="n">Cross</span> <span class="n">GCC</span></code> in <em>Toolchain for Indexer Settings</em> (you can change this later if you want).</li>
+  <li>Set the <em>Name</em> of the project to <code class="highlighter-rouge">revbayes</code></li>
+  <li>Select <code class="highlighter-rouge">&lt;revbayes-repo&gt;/src</code> as the <em>Existing Code Location</em></li>
+  <li>Select <code class="highlighter-rouge">Cross GCC</code> in <em>Toolchain for Indexer Settings</em> (you can change this later if you want).</li>
   <li>Click Finish</li>
 </ol>
 
@@ -133,7 +133,7 @@
 <p>You will need to configure your Eclipse project so it correctly compiles the revbayes CMake project.</p>
 
 <h3 id="configure-the-path-environment-variable">Configure the PATH environment variable</h3>
-<p>If you installed the CMake command line tools in the default location <code class="language-cpp highlighter-rouge"><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">bin</span></code>, you must add it to the PATH environment variable of your Eclipse project.</p>
+<p>If you installed the CMake command line tools in the default location <code class="highlighter-rouge">/usr/local/bin</code>, you must add it to the PATH environment variable of your Eclipse project.</p>
 
 <ol>
   <li>
@@ -142,29 +142,29 @@
   </li>
   <li>Go to <em>Project &gt; Properties</em>, or right click on the project name and select <em>Properties</em>.</li>
   <li>Expand <em>C/C++ Build</em> and click on <em>Environment</em></li>
-  <li>Click on the PATH entry, click <em>Edit…</em> and add <code class="language-cpp highlighter-rouge"><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">bin</span></code> to the end of the <em>Value</em>
+  <li>Click on the PATH entry, click <em>Edit…</em> and add <code class="highlighter-rouge">/usr/local/bin</code> to the end of the <em>Value</em>
 <img src="images/eclipse-path.png" alt="eclipse-path" title="PATH Configuration" /></li>
 </ol>
 
 <h3 id="configure-the-cc-build-settings">Configure the C/C++ build settings</h3>
-<p>The RevBayes CMake project uses a special build script <code class="language-cpp highlighter-rouge"><span class="n">build</span><span class="p">.</span><span class="n">sh</span></code> to build the RevBayes executable. You must tell your Eclipse project to use this script as a build command.</p>
+<p>The RevBayes CMake project uses a special build script <code class="highlighter-rouge">build.sh</code> to build the RevBayes executable. You must tell your Eclipse project to use this script as a build command.</p>
 
 <ol>
   <li>Click on <em>C/C++ Build</em></li>
-  <li>Uncheck <em>Use default build command</em> and in <em>Build command</em>, enter <code class="language-cpp highlighter-rouge"><span class="n">sh</span> <span class="n">build</span><span class="p">.</span><span class="n">sh</span></code></li>
-  <li>In <em>Build directory</em>, add <code class="language-cpp highlighter-rouge"><span class="p">..</span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="n">cmake</span></code> to the directory path
+  <li>Uncheck <em>Use default build command</em> and in <em>Build command</em>, enter <code class="highlighter-rouge">sh build.sh</code></li>
+  <li>In <em>Build directory</em>, add <code class="highlighter-rouge">../projects/cmake</code> to the directory path
 <img src="images/eclipse-build.png" alt="eclipse-build" title="C/C++ Build Configuration" /></li>
   <li>Click on the <em>Behavior</em> tab</li>
-  <li>In <em>Build (incremental build)</em>, enter <code class="language-cpp highlighter-rouge"><span class="o">-</span><span class="n">boost</span> <span class="nb">false</span></code>
+  <li>In <em>Build (incremental build)</em>, enter <code class="highlighter-rouge">-boost false</code>
 <img src="images/eclipse-behavior.png" alt="eclipse-behavior" title="C/C++ Build Behavior" /></li>
   <li>Again, click on <em>C/C++ Build</em></li>
   <li>Click <em>Manage Configurations</em></li>
   <li>Click on <em>New…</em> to create a new configuration, and name it <em>Debug</em>
 <img src="images/eclipse-config.png" width="75%" /></li>
   <li>
-    <p>Configure the Debug configuration by adding <code class="language-cpp highlighter-rouge"><span class="o">-</span><span class="n">debug</span> <span class="nb">true</span></code> to the <em>Build (incremental build)</em> options
+    <p>Configure the Debug configuration by adding <code class="highlighter-rouge">-debug true</code> to the <em>Build (incremental build)</em> options
 <img src="images/eclipse-debug.png" alt="eclipse-debug" title="C/C++ Debug Configuration" />
-Now, if you set the active configuration to <em>Debug</em>, RevBayes will be compiled with debugger symbols that can be loaded by <code class="language-cpp highlighter-rouge"><span class="n">lldb</span></code> or <code class="language-cpp highlighter-rouge"><span class="n">gdb</span></code>. You can also set the active build configuration by going to <em>Project &gt; Build Configurations &gt; Set Active</em></p>
+Now, if you set the active configuration to <em>Debug</em>, RevBayes will be compiled with debugger symbols that can be loaded by <code class="highlighter-rouge">lldb</code> or <code class="highlighter-rouge">gdb</code>. You can also set the active build configuration by going to <em>Project &gt; Build Configurations &gt; Set Active</em></p>
   </li>
   <li>Click <em>Apply and Close</em></li>
 </ol>
@@ -181,25 +181,25 @@ Now, if you set the active configuration to <em>Debug</em>, RevBayes will be com
   <li>Click on <em>Formatter</em></li>
   <li>Click the <em>New…</em> button to create a new profile, name the profile (e.g. <em>“spaces”</em>) then click <em>OK</em> to continue</li>
   <li>Click the <em>Indentation</em> tab</li>
-  <li>Under <em>General Settings</em> set <em>Tab Policy</em> to <code class="language-cpp highlighter-rouge"><span class="n">Spaces</span> <span class="n">only</span></code></li>
+  <li>Under <em>General Settings</em> set <em>Tab Policy</em> to <code class="highlighter-rouge">Spaces only</code></li>
   <li>Click <em>OK</em> and <em>Apply and Close</em></li>
 </ol>
 
 <h2 id="build-the-revbayes-project">Build the RevBayes project</h2>
-<p>The first time you build RevBayes, you will also need to build the included Boost libraries. You only need to do this once. To build the boost libraries, return to step 5 in the <a href="#configure-the-cc-build-settings">build configuration section</a> and enter <code class="language-cpp highlighter-rouge"><span class="o">-</span><span class="n">boost</span> <span class="nb">true</span></code> instead. Then after you’ve built the libraries, you can disable the Boost build flag by resetting <code class="language-cpp highlighter-rouge"><span class="o">-</span><span class="n">boost</span> <span class="nb">false</span></code>.</p>
+<p>The first time you build RevBayes, you will also need to build the included Boost libraries. You only need to do this once. To build the boost libraries, return to step 5 in the <a href="#configure-the-cc-build-settings">build configuration section</a> and enter <code class="highlighter-rouge">-boost true</code> instead. Then after you’ve built the libraries, you can disable the Boost build flag by resetting <code class="highlighter-rouge">-boost false</code>.</p>
 
 <p>With all the build settings correctly configured, you can build RevBayes by highlighting the project in the <em>Project Explorer</em> view, and then going to <em>Project &gt; Build Project</em>. You can also right click on the project directory and select <em>Build Project</em>.</p>
 
 <p>The <em>Console</em> view should display the progress of the compilation process.</p>
 
-<p>You’re done! Now you can find the <code class="language-cpp highlighter-rouge"><span class="n">rb</span></code> executable in the <code class="language-cpp highlighter-rouge"><span class="o">&lt;</span><span class="n">revbayes</span><span class="o">-</span><span class="n">repo</span><span class="o">&gt;/</span><span class="n">projects</span><span class="o">/</span><span class="n">cmake</span></code> directory.</p>
+<p>You’re done! Now you can find the <code class="highlighter-rouge">rb</code> executable in the <code class="highlighter-rouge">&lt;revbayes-repo&gt;/projects/cmake</code> directory.</p>
 
 <h2 id="tips">Tips</h2>
 <ul>
   <li>
-    <p>Create a symlink of <code class="language-cpp highlighter-rouge"><span class="n">rb</span></code> in your PATH, so it is automatically updated every time you build RevBayes. e.g.</p>
+    <p>Create a symlink of <code class="highlighter-rouge">rb</code> in your PATH, so it is automatically updated every time you build RevBayes. e.g.</p>
 
-    <p><code class="language-cpp highlighter-rouge"><span class="n">sudo</span> <span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="o">&lt;</span><span class="n">revbayes</span><span class="o">-</span><span class="n">repo</span><span class="o">&gt;/</span><span class="n">projects</span><span class="o">/</span><span class="n">cmake</span><span class="o">/</span><span class="n">rb</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">rb</span></code></p>
+    <p><code class="highlighter-rouge">sudo ln -s &lt;revbayes-repo&gt;/projects/cmake/rb /usr/local/bin/rb</code></p>
   </li>
   <li>
     <p>If your <em>Project Explorer</em> or <em>Console</em> views disappear and you can’t find them, go to <em>Window &gt; Show View</em> to display various views.</p>
@@ -217,16 +217,16 @@ Now, if you set the active configuration to <em>Debug</em>, RevBayes will be com
 <h2 id="set-up-the-xcode-project">Set up the XCode Project</h2>
 <ol>
   <li>Open Xcode and in the <em>Welcome to Xcode</em> window, choose <strong>Create a new Xcode project</strong>.</li>
-  <li>Select <strong>Command Line Tool</strong> and name it <code class="language-cpp highlighter-rouge"><span class="n">rb</span></code> and click <strong>Next</strong>. <img src="images/making_xcode_project.png" alt="" /></li>
+  <li>Select <strong>Command Line Tool</strong> and name it <code class="highlighter-rouge">rb</code> and click <strong>Next</strong>. <img src="images/making_xcode_project.png" alt="" /></li>
   <li>Click <strong>New Folder</strong>  to create an empty directory and name it whatever you’d like.</li>
   <li>Click <strong>Create</strong>.</li>
-  <li>Delete all of the files and folders in each of the directories including <code class="language-cpp highlighter-rouge"><span class="n">main</span><span class="p">.</span><span class="n">cpp</span></code> so that RevBayes is empty. You can do this by selecting the folders and files, right clicking and selecting delete. When asked, choose <strong>Move to Trash</strong>.</li>
+  <li>Delete all of the files and folders in each of the directories including <code class="highlighter-rouge">main.cpp</code> so that RevBayes is empty. You can do this by selecting the folders and files, right clicking and selecting delete. When asked, choose <strong>Move to Trash</strong>.</li>
   <li>Add the source files by selecting the appropriate directory and going to the <strong>File</strong> pull-down menu and selecting <strong>Add Files to rb</strong>.</li>
   <li>Click on <strong>Options</strong> at the button of the window, and under the <strong><em>Added Folders</em></strong> heading, select the <strong>Create Groups</strong> radio button.
     * Select the 
-    	* <code class="language-cpp highlighter-rouge"><span class="n">revbayes</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">revlanguage</span></code>
-    	* <code class="language-cpp highlighter-rouge"><span class="n">revbayes</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">core</span></code>
-    	* <code class="language-cpp highlighter-rouge"><span class="n">revbayes</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">libs</span></code>
+    	* <code class="highlighter-rouge">revbayes/src/revlanguage</code>
+    	* <code class="highlighter-rouge">revbayes/src/core</code>
+    	* <code class="highlighter-rouge">revbayes/src/libs</code>
     * directories and click <strong>Add</strong>.
     <img src="images/adding_files.png" alt="" />
     * <em>Note:</em> On some versions of XCode, you may need to click on the “Options” Tab, and choose “Create Groups” for the import to work properly. This is the default behavior on most XCode installs.</li>
@@ -234,7 +234,7 @@ Now, if you set the active configuration to <em>Debug</em>, RevBayes will be com
     * Select the RevBayes project and go to the <strong>Build Settings</strong>. 
     * Search for or Scroll down to the <strong>Search Paths</strong> heading and find the sub-heading named <strong>Header Search Paths</strong>.
     * Double click the heading, click the <strong>+</strong>, and add the value: <strong>&lt;path to revbayes repository&gt;/revbayes/boost_1_60_0</strong>. 
-    	* <code class="language-cpp highlighter-rouge"><span class="o">&lt;</span><span class="n">path</span> <span class="n">to</span> <span class="n">revbayes</span> <span class="n">repository</span><span class="o">&gt;</span></code> = the location of the revbayes repository on your machine.
+    	* <code class="highlighter-rouge">&lt;path to revbayes repository&gt;</code> = the location of the revbayes repository on your machine.
   <img src="images/finding_boost.png" alt="" /></li>
 </ol>
 
@@ -242,7 +242,7 @@ Now, if you set the active configuration to <em>Debug</em>, RevBayes will be com
 <ol>
   <li>Select the RevBayes project and go to the <strong>Build Settings</strong>.</li>
   <li>Search for or Scroll down to the <strong>Apple LLVM X.X - Preprocessing</strong> heading and find the sub-heading named <strong>Preprocessor Macros</strong>.</li>
-  <li>Double click on right hand column, click on the <strong>+</strong> and enter <code class="language-cpp highlighter-rouge"><span class="n">RB_XCODE</span></code>. Do not replace the debug flag that is already present.
+  <li>Double click on right hand column, click on the <strong>+</strong> and enter <code class="highlighter-rouge">RB_XCODE</code>. Do not replace the debug flag that is already present.
     <img src="images/macro.png" alt="" /></li>
 </ol>
 
@@ -263,7 +263,7 @@ Now, if you set the active configuration to <em>Debug</em>, RevBayes will be com
 
 <h2 id="preparations">Preparations</h2>
 <p>Make sure you have Java (JRE) on your system: if the command</p>
-<div class="language-cpp bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">which</span> <span class="n">java</span>
+<div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>which java
 </code></pre></div></div>
 
 <p>responds with a file path, like /usr/bin/java, then you’re fine, otherwise browse to the <a href="http://java.com/en/download/">java download page</a> and download the JRE.</p>
@@ -279,10 +279,10 @@ Now, if you set the active configuration to <em>Debug</em>, RevBayes will be com
 
 <p>The Netbeans project described here will use the Makefile generated by the CMake script /projects/cmake/regenerate.sh. Before setting up our project it is conventient to have all the files needed in place so let’s start with running these commands in a terminal:</p>
 
-<div class="language-cpp bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">cd</span>  <span class="o">&lt;</span><span class="n">path</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">revbayes</span><span class="o">&gt;/</span><span class="n">revbayes</span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="n">cmake</span> 
-<span class="p">.</span><span class="o">/</span><span class="n">regenerate</span> 
-<span class="n">cmake</span> <span class="p">.</span> <span class="o">-</span><span class="n">DCMAKE_BUILD_TYPE</span><span class="o">=</span><span class="n">debugfull</span> 
-<span class="n">make</span> <span class="o">-</span><span class="n">j</span> <span class="mi">4</span> <span class="p">(</span><span class="mi">4</span> <span class="o">=</span> <span class="n">the</span> <span class="n">number</span> <span class="n">of</span> <span class="n">processors</span> <span class="n">on</span> <span class="n">your</span> <span class="n">computer</span><span class="p">)</span> 
+<div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd  &lt;path-to-revbayes&gt;/revbayes/projects/cmake 
+./regenerate 
+cmake . -DCMAKE_BUILD_TYPE=debugfull 
+make -j 4 (4 = the number of processors on your computer) 
 </code></pre></div></div>
 
 <h2 id="netbeans-setup">Netbeans setup</h2>

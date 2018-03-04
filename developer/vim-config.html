@@ -70,15 +70,15 @@
 
 <blockquote class="overview no-print" id="overview">
   <h2>Overview</h2>
-
   <div class="row">
     <div class="col-md-9">
         <strong>Prerequisites</strong>
         <ul>
         
+          <ul>
           <li>None</li>
+          </ul>
         
-        </ul>
     </div>
   </div>
 </blockquote>
@@ -104,7 +104,7 @@ There are several steps to get it working.</p>
 <h3 id="install-dependencies">Install dependencies</h3>
 
 <p>This seems to be sufficient on Ubuntu 16.04:</p>
-<div class="language-cpp bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">build</span><span class="o">-</span><span class="n">essential</span> <span class="n">cmake</span> <span class="n">python</span><span class="o">-</span><span class="n">dev</span> <span class="n">python3</span><span class="o">-</span><span class="n">dev</span> <span class="n">clang</span>
+<div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo apt-get install build-essential cmake python-dev python3-dev clang
 </code></pre></div></div>
 
 <h3 id="get-the-vim-code-itself">Get the vim code itself</h3>
@@ -116,19 +116,19 @@ There are several steps to get it working.</p>
   <li><a href="https://github.com/rdnetto/YCM-Generator">YCM-Generator</a></li>
 </ul>
 
-<p>Put them wherever you put your plugins, e.g., <code class="language-cpp highlighter-rouge"><span class="p">.</span><span class="n">vim</span><span class="o">/</span><span class="n">bundle</span><span class="o">/</span></code> if you’re using <a href="https://github.com/tpope/vim-pathogen">Pathogen</a>.</p>
+<p>Put them wherever you put your plugins, e.g., <code class="highlighter-rouge">.vim/bundle/</code> if you’re using <a href="https://github.com/tpope/vim-pathogen">Pathogen</a>.</p>
 
 <p>For YCM, you also need to get its submodules:</p>
-<div class="language-cpp bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">cd</span> <span class="n">YouCompleteMe</span><span class="o">/</span>
-<span class="n">git</span> <span class="n">submodule</span> <span class="n">update</span> <span class="o">--</span><span class="n">init</span> <span class="o">--</span><span class="n">recursive</span>
+<div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd YouCompleteMe/
+git submodule update --init --recursive
 </code></pre></div></div>
 <p>(If you manage your plugins as git subtrees, note that you probably can’t for YouCompleteMe because it contains submodules itself.)</p>
 
 <h3 id="compile-the-ycm-plugin">Compile the YCM plugin</h3>
 
 <p>YCM has a compiled component as well as vim code.  This may take a few minutes to run.</p>
-<div class="language-cpp bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">cd</span> <span class="n">YouCompleteMe</span><span class="o">/</span>
-<span class="p">.</span><span class="o">/</span><span class="n">install</span><span class="p">.</span><span class="n">py</span> <span class="o">--</span><span class="n">clang</span><span class="o">-</span><span class="n">completer</span>
+<div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd YouCompleteMe/
+./install.py --clang-completer
 </code></pre></div></div>
 
 <h3 id="provide-the-compilation-flags-to-ycm">Provide the compilation flags to YCM</h3>
@@ -137,23 +137,23 @@ There are several steps to get it working.</p>
 To use it specifically with RevBayes (or any other project), you need to give it information about the codebase.
 YCM-Generator is one way to do this.</p>
 
-<div class="language-cpp bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">cd</span> <span class="n">revbayes</span><span class="o">/</span>  <span class="err">#</span> <span class="n">or</span> <span class="n">wherever</span> <span class="n">you</span> <span class="n">keep</span> <span class="n">revbayes</span>
-<span class="n">cd</span> <span class="n">projects</span><span class="o">/</span><span class="n">cmake</span><span class="o">/</span><span class="n">build</span><span class="o">/</span>
-<span class="o">~/</span><span class="p">.</span><span class="n">vim</span><span class="o">/</span><span class="n">bundle</span><span class="o">/</span><span class="n">YCM</span><span class="o">-</span><span class="n">Generator</span><span class="o">/</span><span class="n">config_gen</span><span class="p">.</span><span class="n">py</span> <span class="p">.</span> <span class="err">#</span> <span class="n">adjust</span> <span class="n">the</span> <span class="n">vim</span> <span class="n">path</span> <span class="k">if</span> <span class="n">necessary</span>
+<div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd revbayes/  # or wherever you keep revbayes
+cd projects/cmake/build/
+~/.vim/bundle/YCM-Generator/config_gen.py . # adjust the vim path if necessary
 </code></pre></div></div>
 
 <p>That should take a few seconds to run.
 Then move the result to the top-level directory:</p>
-<div class="language-cpp bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">mv</span> <span class="p">.</span><span class="n">ycm_extra_conf</span><span class="p">.</span><span class="n">py</span> <span class="p">..</span><span class="o">/</span><span class="p">..</span><span class="o">/</span><span class="p">..</span><span class="o">/</span>
+<div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mv .ycm_extra_conf.py ../../../
 </code></pre></div></div>
 
 <h3 id="try-it-out">Try it out</h3>
 
 <p>That should be it.
-If YCM is working, when you open a revbayes <code class="language-cpp highlighter-rouge"><span class="p">.</span><span class="n">cpp</span></code> or <code class="language-cpp highlighter-rouge"><span class="p">.</span><span class="n">h</span></code> file, vim will ask <code class="language-cpp highlighter-rouge"><span class="n">Found</span> <span class="n">revbayes</span><span class="o">/</span><span class="p">.</span><span class="n">ycm_extra_conf</span><span class="p">.</span><span class="n">py</span><span class="p">.</span> <span class="n">Load</span><span class="o">?</span></code></p>
+If YCM is working, when you open a revbayes <code class="highlighter-rouge">.cpp</code> or <code class="highlighter-rouge">.h</code> file, vim will ask <code class="highlighter-rouge">Found revbayes/.ycm_extra_conf.py. Load?</code></p>
 
-<p>If you find that you don’t want YCM operating on all your other filetypes, you can put something like this in your <code class="language-cpp highlighter-rouge"><span class="p">.</span><span class="n">vimrc</span></code>.</p>
-<div class="language-cpp vim highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">let</span> <span class="n">g</span><span class="o">:</span><span class="n">ycm_filetype_whitelist</span> <span class="o">=</span> <span class="p">{</span> <span class="err">'</span><span class="n">cpp</span><span class="err">'</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span> <span class="sc">'c'</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span> <span class="err">'</span><span class="n">python</span><span class="err">'</span><span class="o">:</span> <span class="mi">1</span> <span class="p">}</span>
+<p>If you find that you don’t want YCM operating on all your other filetypes, you can put something like this in your <code class="highlighter-rouge">.vimrc</code>.</p>
+<div class="vim highlighter-rouge"><div class="highlight"><pre class="highlight"><code>let g:ycm_filetype_whitelist = { 'cpp': 1, 'c': 1, 'python': 1 }
 </code></pre></div></div>
 
 <ol class="bibliography"></ol>
