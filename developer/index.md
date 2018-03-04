@@ -19,7 +19,7 @@ The RevBayes Developers' Guide will provide you with the information needed to i
 
 
 {% assign tutorials = site.pages | where:"layout", "tutorial" %}
-{% assign devguide = tutorials | where:"category", "Developer" | sort: "index" %}
+{% assign devguide = tutorials | where:"category", "Developer" | sort: "index","last" %}
 <table class="table table-striped">
 {% for lesson in devguide %}
 <tr>
