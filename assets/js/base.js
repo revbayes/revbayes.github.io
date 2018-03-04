@@ -189,5 +189,5 @@ for (var i = 0, element; element = _pre[i]; i++) {
   element.innerHTML=lines.join("\n");
   // Italicize comments
   if( Rev )
-    element.innerHTML = element.innerHTML.replace(/([^\\]?#[^<]*)/g,"<i>$1</i>");
+    element.innerHTML = element.innerHTML.replace(/(#[^<]*)/g,"<i>$1</i>");
 }

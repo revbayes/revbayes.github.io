@@ -1,4 +1,93 @@
-<style type="text/css" media="screen">
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- meta "search-domain" used for google site search function google_search() -->
+    <meta name="search-domain" value="">
+    <link rel="stylesheet" href="/revbayes_tutorials/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/revbayes_tutorials/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/revbayes_tutorials/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/revbayes_tutorials/assets/css/main.css" />
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+	<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+    <title>RevBayes Tutorials</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+      <a href="https://revbayes.github.io" class="pull-left">
+        <img class="navbar-logo" src="/revbayes_tutorials/assets/img/aquabayes.png" alt="RevBayes logo" />
+      </a>
+      
+      
+      <a class="navbar-brand" href="/revbayes_tutorials/">Home</a>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+
+	
+        <li><a href="/revbayes_tutorials/software/">Software</a></li>
+        <li><a href="/revbayes_tutorials/developer/">Developer</a></li>
+        <li><a href="/revbayes_tutorials/tutorials/">Tutorials</a></li>
+        <li><a href="/revbayes_tutorials/workshops/">Workshops</a></li>
+      </ul>
+      <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form>
+    </div>
+  </div>
+</nav>
+
+      <div class="row">
+	<h1 class="maintitle"></h1>
+	<h3 class="subtitle"></h3>
+	<h4 class="maintitle"></h4>
+</div>
+
+      
+<blockquote class="overview no-print" id="overview">
+  <h2>Overview</h2>
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul>
+          <li>None</li>
+          </ul>
+        
+    </div>
+  </div>
+</blockquote>
+
+<blockquote class="tutorial_files no-print">
+  <h2>Data files and scripts</h2>
+  
+    <div class="row">
+      <div class="col-md-9">
+          <strong>Scripts</strong>
+          <ul id="scripts"></ul>
+        </div>
+    </div>
+</blockquote>
+      <style type="text/css" media="screen">
   .container {
     margin: 10px auto;
     max-width: 600px;
@@ -18,3 +107,61 @@
   <p><strong>Page not found :(</strong></p>
   <p>The requested page could not be found.</p>
 </div>
+
+      <ol class="bibliography"></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2>References</h2>"+elem_ol.outerHTML
+	}
+}
+</script>
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/revbayes_tutorials/license">License</a> | <a href="/revbayes_tutorials/citation">Cite RevBayes</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users' Forum</a>
+    </div>
+  </div>
+  </div>
+</footer>
+
+    </div>
+    <script src="/revbayes_tutorials/assets/js/vendor/jquery.min.js"></script>
+<script src="/revbayes_tutorials/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/revbayes_tutorials/assets/js/vendor/jszip.min.js"></script>
+<script src="/revbayes_tutorials/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(".highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge")
+    this.classList = "cpp highlighter-rouge";
+  
+});
+</script>
+
+<script src="/revbayes_tutorials/assets/js/base.js"></script>
+
+<script type="text/javascript"
+    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+  });
+</script>
+
+  </body>
+</html>
