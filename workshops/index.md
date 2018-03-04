@@ -19,7 +19,7 @@ Throughout the year, the members of the RevBayes development team and our collab
 </tr>
 {% for event in courses %}
 <tr>
-<td>{{ event.startdate }}</td>
+<td>{{ event.startdate | date: "%B %-d, %Y" }}</td>
 <td><a href="{{ site.baseurl }}{{ event.url }}">{{ event.title }}</a></td>
 <td>{{ event.location }}</td>
 <td>{{ event.team }}</td>

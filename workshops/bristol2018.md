@@ -2,8 +2,8 @@
 layout: default
 title: RevBayes for Palaeos
 location: University of Bristol, United Kingdom
-startdate: 04/30/2018
-enddate: 05/04/2018
+startdate: 2018-04-30
+enddate: 2018-05-04
 team: Höhna, Pett, Warnock
 category: workshop
 lessons:
@@ -15,7 +15,7 @@ lessons:
 
 <b>Location:</b> {{ page.location }}
 
-<b>Dates:</b> {{ page.startdate }} to {{ page.enddate }}
+<b>Dates:</b> {{ page.startdate | date: "%-m/%-d" }} to {{ page.enddate | date: "%-m/%-d" }}, {{ page.enddate | date: "%Y" }}
 
 <b>Instructors:</b> Sebastian Höhna, Walker Pett, & Rachel Warnock
 

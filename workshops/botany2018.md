@@ -2,7 +2,7 @@
 layout: default
 title: RevBayes for Botanists
 location: Botany 2018 Conference, Rochester, MN USA
-startdate: 07/21/2018
+startdate: 2018-07-21
 team: Freyman, Zenil-Ferguson, Koch
 category: workshop
 lessons:
@@ -14,9 +14,11 @@ lessons:
 
 <b>Location:</b> {{ page.location }}
 
-<b>Dates:</b> {{ page.startdate }} 
+<b>Date:</b> {{ page.startdate | date: "%B %-d, %Y" }} 
 
 <b>Instructors:</b> William Freyman, Rosana Zenil-Ferguson, Jordan Koch
+
+<b>Register:</b> [http://2018.botanyconference.org](http://2018.botanyconference.org)
 
 ## Description
 
