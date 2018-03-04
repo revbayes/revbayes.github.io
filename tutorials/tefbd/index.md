@@ -1,11 +1,12 @@
 ---
 layout: tutorial
-title: Phylogenetic Inference using ‘RevBayes‘
-subtitle: Total-Evidence Analysis of Fossil and Extant Taxa under the Fossilized Birth-Death Process
+title: Total-Evidence Analysis and the Fossilized Birth-Death Process
+subtitle: Joint inference of divergence times and phylogenetic relationships of fossil and extant taxa
 authors:  Tracy A. Heath, April M. Wright, and Walker Pett
 category: In Progress
 prerequisites:
 - intro
+- ctmc
 files:
 ---
 
