@@ -191,3 +191,11 @@ for (var i = 0, element; element = _pre[i]; i++) {
   if( Rev )
     element.innerHTML = element.innerHTML.replace(/(#[^<]*)/g,"<i>$1</i>");
 }
+
+// Handle searches.
+// Relies on document having 'meta' element with name 'search-domain'.
+function google_search() {
+  var query = document.getElementById("google-search").value;
+  var domain = $("meta[name=search-domain]").attr("value");
+  window.open("https://www.google.com/search?q=" + query + "+site:" + domain);
+}
