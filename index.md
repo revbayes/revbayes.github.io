@@ -1,6 +1,6 @@
 ---
 title: RevBayes
-subtitle: Bayesian Phylogenetic Inference using Probabilistic Graphical models and an interpreted language
+subtitle: Bayesian phylogenetic inference using probabilistic graphical models and an interpreted language
 root: .
 ---
 
