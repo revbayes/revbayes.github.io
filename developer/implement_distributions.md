@@ -4,7 +4,7 @@ category: implementation
 ---
 
 ----
-#Implementing a Distribution
+##**Implementing a Distribution**
 
 **General info before getting started:**
 
