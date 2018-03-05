@@ -1,16 +1,15 @@
 ---
-layout: tutorial
 title: Setting up to develop in RevBayes
-subtitle: Some options for setting up a `RevBayes` development environment
+subtitle: Some options for setting up a RevBayes development environment
 category: Developer
-authors: Will Pett, April Wright, Lyndon Coghill, Sebastian H&#246;hna, Wade Dismukes
+authors: Will Pett, April Wright, Lyndon Coghill, Emma Goldberg, Wade Dismukes
 prerequisites:
 index: 2
 ---
 
 -------------------------------------
 
-It is easiest to use an IDE to develop RevBayes. Some examples of IDEs are XCode, Eclipse Oxygen, or Netbeans. One could also use [`vim`]({{ site.baseurl }}/developer/vim-config) or Sublime Text if they prefer to do so, and we provide some helpful hints in setting up your `vim` environment. However, there are a few steps that must be taken before setting up your IDE.
+It is easiest to use an IDE to develop RevBayes. Some examples of IDEs are XCode, Eclipse Oxygen, or Netbeans. One could also use `vim` or Sublime Text if they prefer to do so, and we provide some helpful hints in setting up your `vim` environment. However, there are a few steps that must be taken before setting up your IDE.
 
 If you do not have the RevBayes source code, you can do so by cloning the Github repository:
 ```
@@ -171,9 +170,8 @@ Check C++ language options
 At this point, if everything has been setup correctly, you should be able to build the project. You can try by clicking on **Product - Build** or by using **&#8984;+B**.
 
 
-Setting up Netbeans for RevBayes Development
-=============================================
-{:.section}
+<!-- Setting up Netbeans for RevBayes Development
+=================================================
 
 Conventions: File paths are relative to the repository root. 
 
@@ -234,9 +232,10 @@ Here are some handy keyboard shortcuts to start with:
 
 On [Netbeans wiki](http://wiki.netbeans.org/Keyboard_Shortcuts) you can download the full map for keyboard shortcuts. Happy coding! 
 
+ -->
 
 Setting up Vim for RevBayes development
-=======================================
+=========================================
 {:.section}
 
 [Vim](http://www.vim.org) is a text editor that some people love.

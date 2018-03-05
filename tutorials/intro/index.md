@@ -1,5 +1,4 @@
 ---
-layout: tutorial
 title: Statistical Inference Using RevBayes
 subtitle: A very short introduction to RevBayes & Rev
 authors: Mike May and Sebastian Höhna
@@ -9,6 +8,7 @@ prerequisites:
 
 Basic `Rev` Commands
 ==============
+{:.section}
 
 This tutorial demonstrates the basic syntactical features of `RevBayes`
 and the `Rev` scripting language. A good reference for probabilistic graphical models for
@@ -24,7 +24,7 @@ a command prompt (the `>` character). This means `RevBayes` is waiting for input
 
 Operators and Functions
 -----------------------
-{:.section}
+{:.subsection}
 
 `Rev` is an interpreted language for statistical computing and phylogenetic
 analysis. Therefore, the basics are simple mathematical operations.
@@ -77,7 +77,7 @@ only the first of these two calls will work:
 
 Variable Declaration and Assignment
 -----------------------------------
-{:.section}
+{:.subsection}
 
 One of the most important features of (or any programming language,
 really) is the ability to declare and assign variables. Variables store
@@ -146,7 +146,7 @@ under the current parameter values by
 
 Distributions and Random Numbers
 --------------------------------
-{:.section}
+{:.subsection}
 
 provides functions for common statistical distributions. We’ll
 demonstrate by generating random exponential numbers as we did in
@@ -182,7 +182,7 @@ variable:
 
 Vectors
 -------
-{:.section}
+{:.subsection}
 
 Individual variables can have more than one value. Variables that have
 more than one value are called *vectors*. The simplest way to create a
@@ -199,7 +199,7 @@ where `i` is the index of the variable of interest.
 
 `for` loops
 -----------
-{:.section}
+{:.subsection}
 
 `for` loops are important programming structures that allow you to
 repeat the same statement a number of times on different variables. The

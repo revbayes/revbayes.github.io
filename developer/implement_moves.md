@@ -1,8 +1,6 @@
 ---
-layout: developer
 title: Implementing Moves
 subtitle: Quick start guide to RevBayes development by adding a new move
-authors: Jeremy M. Brown
 category: implementation
 ---
 

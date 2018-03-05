@@ -1,9 +1,8 @@
 ---
 layout: default
-title: Developer
+title: Tools for RevBayes Developers
 ---
 
-# Tools for RevBayes Developers
 
 ## Joining the RevBayes Team
 
@@ -18,8 +17,8 @@ Alternatively, if you are interested in joining the RevBayes development team, p
 The RevBayes Developers' Guide will provide you with the information needed to implement new methods, models, functions, and algorithms in the RevBayes language and core libraries. 
 
 
-{% assign tutorials = site.pages | where:"layout", "tutorial" %}
-{% assign devguide = tutorials | where:"category", "Developer" | sort: "index","last" %}
+{% assign developer = site.pages | where:"layout", "developer" %}
+{% assign devguide = developer | where:"category", "Developer" | sort: "index","last" %}
 <table class="table table-striped">
 {% for lesson in devguide %}
 <tr>

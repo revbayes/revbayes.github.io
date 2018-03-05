@@ -6,7 +6,6 @@
   <div class="row">
     <div class="col-md-9">
         <strong>Prerequisites</strong>
-        <ul>
         {% if page.prerequisites.size > 0 %}
           <ul id="prerequisites">
           {% for prerequisite in page.prerequisites %}
@@ -24,20 +23,24 @@
   </div>
 </blockquote>
 
-{% if include.data_files %}
 <blockquote class="tutorial_files no-print">
   <h2>Data files and scripts</h2>
-  {% if page.files.size > 0 %}
+  {% if page.data_files.size > 0 %}
     <div class="row">
       <div class="col-md-9">
           <strong>Data Files</strong>
           <ul id="data_files">
-          {% for file in page.files %}
+          {% for file in page.data_files %}
             <li><a href="{{ site.baseurl }}{{ page.url }}data/{{ file }}">{{ file }}</a></li>
           {% endfor %}
           </ul>
         </div>
     </div>
   {% endif %}
+    <div class="row">
+      <div class="col-md-9">
+          <strong>Scripts</strong>
+          <ul id="scripts">{% if page.scripts.size > 0 %}{% for file in page.scripts %}<li><a href="{{ site.baseurl }}{{ page.url }}scripts/{{ file }}">{{ file }}</a></li>{% endfor %}{% endif %}</ul>
+        </div>
+    </div>
 </blockquote>
-{% endif %}
