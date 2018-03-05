@@ -1,5 +1,6 @@
 ---
 category: implementation
+index: 1
 ---
 
 # Implementing a Distribution

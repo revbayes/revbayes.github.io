@@ -1,6 +1,7 @@
 ---
 layout: developer
 category: implementation
+index: 0
 ---
 
 
@@ -249,4 +250,4 @@ const TypeSpec& Func_hyperbolicCosine::getTypeSpec( void ) const
 ```
 
 
-Finally, we need to include the hyperbolic cosine function in the `RbRegister_Func.cpp` file located in the `/revlanguage/workspace/` directory. To do this go to the `RbRegister_Func.cpp` file and locate the math functions and type `#include Func_hyperbolicCosine.h` in the correct alphabetical order for that group. 
+Finally, we need to include the hyperbolic cosine function in the `RbRegister_Func.cpp` file located in the `/revlanguage/workspace/` directory. To do this go to the `RbRegister_Func.cpp` file and locate the math functions and type `#include Func_hyperbolicCosine.h` in the correct alphabetical order for that group. Now scroll down in that file until you find the math functions and add the line `addFunction( new Func_hyperbolicCosine());`
