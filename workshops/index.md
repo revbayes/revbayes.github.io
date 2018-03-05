@@ -1,11 +1,10 @@
 ---
 layout: default
-title: Workshops
+title: RevBayes Workshops
 ---
 
-# RevBayes Workshops
 
-Throughout the year, the members of the RevBayes development team and our collaborators teach workshops on molecular evolution, phylogenetics, and Bayesian inference using RevBayes. 
+Throughout the year, the members of the RevBayes development team and our collaborators teach workshops on molecular evolution, phylogenetics, and Bayesian inference using RevBayes. Additionally, we have occasional <a href="{{ site.baseurl }}{{ page.url }}hackathons">hackathons</a> which bring together developers to work on the software and methods for phylogenetic analysis. 
 
 ## Future Workshops featuring RevBayes
 

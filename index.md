@@ -6,7 +6,7 @@ root: .
   <img src="{{ site.baseurl }}/assets/img/gm-tree.svg" alt="" width="100%" />
 </div>
 <div class="col-sm-9" align="left">
-  <h1 style="font-family:'Bungee Shade'" size="+2"><br><br>RevBayes</h1>
+  <h1 style="font-family:'Chelsea Market'"><br><br><font color="#2D28B5"><b>RevBayes</b></font></h1>
   <h3>Bayesian phylogenetic inference using probabilistic graphical models and an interpreted language</h3>
 </div>
 </div>

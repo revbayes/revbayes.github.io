@@ -1,9 +1,8 @@
 ---
 layout: default
-title: Developer
+title: Tools for RevBayes Developers
 ---
 
-# Tools for RevBayes Developers
 
 ## Joining the RevBayes Team
 
@@ -12,6 +11,7 @@ Since `RevBayes` is open source, everyone is free to clone the [GitHub repositor
 If you would like to implement new methods or models in any of the RevBayes source code, you can contribute your work to the project by issuing a pull request on GitHub. 
 Alternatively, if you are interested in joining the RevBayes development team, please contact [one of the public members](https://github.com/orgs/revbayes/people) to request access.
 
+Before digging into the developer guide it may be useful to understand the user side of RevBayes. We have provided [tutorials]({{ site.baseurl }}/tutorials) that walk through the basics of using directed acyclic graphs (DAGs) for conducting phylogenetic analyses in RevBayes.   
 
 ## Developer Guide
 

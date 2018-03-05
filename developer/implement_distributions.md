@@ -1,8 +1,9 @@
 ---
 category: implementation
+index: 1
 ---
 
-# Implementing a Distribution
+# Implementing a distribution
 {:.section}
 
 ## General info before getting started
@@ -27,7 +28,7 @@ In the following steps, we'll implement the Beta Binomial Distribution as an exa
     To populate these files, look at existing examples of similar distributions for specific info on what to include & on proper syntax. For example, for the Beta Binomial distribution, I looked to the existing Binomial Distribution code for guidance.
 
 2.  Test
-    1.  Create new .cpp & .h files in `core/distributions/math/`  (named `BetaBinomialDistribution.cpp`, `BetaBinomialDistribution.h`).
+    1.  Create new `.cpp` & `.h` files in `core/distributions/math/`  (named `BetaBinomialDistribution.cpp`, `BetaBinomialDistribution.h`).
 
         **Note:** This is the object oriented wrapper code, that references the functions hard-coded in step 2b.
     
@@ -45,7 +46,7 @@ In the following steps, we'll implement the Beta Binomial Distribution as an exa
 
     For the Beta Binomial distribution, we navigate to the section in the file with the header 'Distributions' and then look for the sub-header dealing with math distributions. Then, add the following line of code:
 
-    ```
+    ```cpp
     #include "Dist_betaBinomial.h"
     ```
 
@@ -53,13 +54,14 @@ In the following steps, we'll implement the Beta Binomial Distribution as an exa
 
     Next, navigate to the section of the file that initializes the global workspace. This section defines the workspace class, which houses info on all distributions. Then, add the following line of code: 
 
+    ```cpp
+    AddDistribution< Natural		>( new Dist_betaBinomial());
     ```
-        AddDistribution< Natural		>( new Dist_betaBinomial());
-    ```     
+
 
     This adds the distribution to the workspace. Without this step, the betaBinomial will not be added to the revlanguage.
     
-    **Note:** Depending on the type of distribution, you may need to change 'Natural' to a different type (e.g. 'Probability', 'Real', 'RealPos', etc.).
+    **Note:** Depending on the type of distribution, you may need to change `Natural` to a different type (e.g. `Probability`, `Real`, `RealPos`, etc.).
     
 5.  Before pushing your changes, you should ensure your code is working properly. 
 

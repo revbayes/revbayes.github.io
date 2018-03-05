@@ -1,10 +1,10 @@
 ---
 layout: default
-title: Software
+title: Download and Install RevBayes
 permalink: /software/
 ---
 
-## Download pre-compiled executables
+## Download Pre-compiled Executables
 
 <table class="table table-hover ">
 	<tr>
@@ -35,7 +35,7 @@ permalink: /software/
 
 <br>
 
-## Compiling from source on Linux
+## Compiling from Source on Linux
 
 ```
 git clone https://github.com/revbayes/revbayes.git revbayes
@@ -51,7 +51,7 @@ For the MPI version:
 
 <br>
 
-## Compiling from source on Mac OS X
+## Compiling from Source on Mac OS X
 
 1. Make sure that you have a C++ compiler installed on your computer. GCC 4.2 (or higher) and Apple LLVM version 6.0 have both been used successfully. If you don't have a C++ compiler, you should install Xcode.
 

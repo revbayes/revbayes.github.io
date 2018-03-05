@@ -122,13 +122,12 @@ $(".tutorial_files").each(function() {
 });
 
 // Add figure titles
-$(".figure").each(function(index) {
-    var img = $("img:last", this);
-    img.after("<b>Figure " + (index+1) + ".</b>");
-
+$("figure").each(function(index) {
     if( this.id != null ) {
       var els = document.querySelectorAll("a[href=\"#"+this.id+"\"]");
-      els[0].innerHTML="Figure " + (index+1);
+      if(els.length > 0)
+        for (var i = 0, element; element = els[i]; i++)
+          els[i].innerHTML="Figure " + (index+1);
     }
 });
 

@@ -2,7 +2,7 @@
 title: Introduction to MCMC using ‘RevBayes‘
 subtitle: A Simple Example for Building a Hierarchical Model and Sampling under Markov Chain Monte Carlo
 authors:  Wade Dismukes, Tracy A. Heath, Walker Pett
-category: In Progress
+category: Basic
 prerequisites:
 - intro
 files:
@@ -29,12 +29,11 @@ Requirements {#subsect:Overview-Requirements}
 ### Required Software {#subsub:Req-Software}
 
 This tutorial requires that you download and install the latest release
-of ‘RevBayes‘ {% cite Hoehna2017a %}, which is available for Mac OS X, Windows,
+of RevBayes {% cite Hoehna2017a %}, which is available for Mac OS X, Windows,
 and Linux operating systems. Directions for downloading and installing
-the software are available on the program webpage:
-[http://revbayes.com](http://revbayes.com/). The exercise provided also
+the software are available under [software](https://willpett.github.io/revbayes_tutorials/software/). The exercise provided also
 requires additional programs for editing text files and visualizing
-output. The following are very useful tools for working with ‘RevBayes‘:
+output. The following are very useful tools for working with RevBayes:
 
 -   A good text editor – if you do not already have one that you like,
     we recommend one that has features for syntax coloring, easy
@@ -45,24 +44,24 @@ output. The following are very useful tools for working with ‘RevBayes‘:
 
 -   [Tracer](http://tree.bio.ed.ac.uk/software/tracer/) – for
     visualizing and assessing numerical parameter samples from
-    ‘RevBayes‘
+    RevBayes
 
 Modeling an Archer’s Shots on a Target {#sect:Exercise}
 ======================================
 
-{fig:#target}
-
-![]( figures/target.png) 
->*Representation of the archery data used in this tutorial.Each yellow dot represents the position of an arrow shot by an archer.The distance of each arrow from the the center of the target is assumed to be exponentially distributed with mean $\mu$.*
+{% figure target %}
+<img src="figures/target.png" width="200" />  
+{% figcaption %}
+*Representation of the archery data used in this tutorial.Each yellow dot represents the position of an arrow shot by an archer.The distance of each arrow from the the center of the target is assumed to be exponentially distributed with mean $\mu$.*
+{% endfigcaption %}
+{% endfigure %}
 
 We’ll begin our exploration of Bayesian inference with a simple archery
 model. For this model, there is an unknown archer shooting $n$ arrows at
-a target (see [figure 1](#target). The distance $d$ of each arrow
+a target (see {% figref target %}). The distance $d$ of each arrow
 from the target’s center is measured. Let’s assume that the distance of
 each arrow from the bullseye follows an exponential
-distribution—*i.e.,* $d\sim\mbox{Exp}(\mu^{-1})$.
-This implies the archer has an inherent ability to shoot arrows at an
-average distance $\mu$. Then, the probability density of each arrow distance $d_i$ is 
+distribution—*i.e.,* $d\sim\mbox{Exp}(\mu^{-1})$. This implies the archer has an inherent ability to shoot arrows at an average distance $\mu$. Then, the probability density of each arrow distance $d_i$ is 
 
 $$
 \begin{aligned}
@@ -100,19 +99,23 @@ $$
 
 Where $P(\mu \mid \bar d)$ is our posterior distribution, $P(\bar d \mid \mu)$ is our likelihood or data distribution, $P(\mu)$ is our prior distribution, and $P(\bar d)$ is our marginal likelihood. The take-home message here is that, if we’re interested in doing Bayesian inference for the archery model, we need to specify a *likelihood function* and a *prior distribution* for $\mu$. In virtually all practical cases, we cannot compute the posterior distribution directly and instead use numerical procedures, such as a Markov chain Monte Carlo (MCMC) algorithm. Therefore, we will also have to write a MCMC algorithm that samples parameter values in the frequency of their posterior probability.
 
-We’ll use a simple exponential distribution as a prior on the parameter of the model, $\mu$. The [exponential distribution](https://en.wikipedia.org/wiki/Exponential_distribution) has one parameter $\alpha$ representing our prior belief about the mean arrow distance (Figure 2)[#exponential_distribution]). Different choices for $\alpha$ represent different prior beliefs.
+We’ll use a simple exponential distribution as a prior on the parameter of the model, $\mu$. The [exponential distribution](https://en.wikipedia.org/wiki/Exponential_distribution) has one parameter $\alpha$ representing our prior belief about the mean arrow distance {% figref exponential %}. Different choices for $\alpha$ represent different prior beliefs.
 
-{fig:#exponential_distribution}
+{% figure exponential %}
+![](figures/exp.png) 
+{% figcaption %}
+*Exponential distribution with one parameter $\alpha$. This distribution is used as a prior distribution on the average arrow distance $\mu$.Here we show different curves for the exponential distribution when using different parameters.*
+{% endfigcaption %}
+{% endfigure %}
 
-![]( figures/exp.png) 
->*Exponential distribution with one parameter $\alpha$. This distribution is used as a prior distribution on the average arrow distance $\mu$.Here we show different curves for the exponential distribution when using different parameters.*
+{% figref archery_model %} shows the graphical model for the archery model. This nicely visualizes the dependency structure in the model. We see that the parameter $\alpha$ is drawn in a solid square, representing that this variable is constant (*i.e.,* it takes a “known” value). Following the graph in {% figref archery_model %}, we see an arrow connecting $\alpha$ and the variable $\mu$. That simply means that $\mu$ depends on $\alpha$. More specifically, $\mu$ is a stochastic variable (shown as a solid circle) that is drawn from an exponential distribution with parameter $\alpha$. Another constant variable, $n$, represents the number of shots taken by the archer. Finally, we have the observed data $\bar d$ which is drawn from a gamma distribution with parameters $\mu$ and $n$, as can be seen by the arrows pointing from those parameters to $d$. Furthermore, the solid circle of $\bar d$ is shaded which means that the variable has data attached to it.
 
-[Figure 3](#archery_model) shows the graphical model for the archery model. This nicely visualizes the dependency structure in the model. We see that the parameter $\alpha$ is drawn in a solid square, representing that this variable is constant (*i.e.,* it takes a “known” value). Following the graph in figure [fig:archery_model], we see an arrow connecting $\alpha$ and the variable $\mu$. That simply means that $\mu$ depends on $\alpha$. More specifically, $\mu$ is a stochastic variable (shown as a solid circle) that is drawn from an exponential distribution with parameter $\alpha$. Another constant variable, $n$, represents the number of shots taken by the archer. Finally, we have the observed data $\bar d$ which is drawn from a gamma distribution with parameters $\mu$ and $n$, as can be seen by the arrows pointing from those parameters to $d$. Furthermore, the solid circle of $\bar d$ is shaded which means that the
-variable has data attached to it.
-
-{fig:#archery_model}
-<img src="figures/archery_graphical_model.png" width="400" />
->*Figure 3. Graphical model for the archery model.*
+{% figure archery_model %}
+<img src="figures/archery_graphical_model.png" width="200" />  
+{% figcaption %}
+*Graphical model for the archery model.*
+{% endfigcaption %}
+{% endfigure %}
 
 Writing MCMC from Scratch {#sect:MCMC-scratch}
 =========================
@@ -131,12 +134,10 @@ All command-line text, including all `Rev` syntax, are given in `monotype font`.
 
     n = 10
 
-It is important to be aware that some PDF viewers may render some characters given as differently. Thus, if you copy and paste text from this PDF, you may introduce some incorrect characters. Because of this, we recommend that you type the instructions in this tutorial or copy them from the scripts provided ([link](https://github.com/revbayes/revbayes_tutorial/tree/master/RB_MCMC_Archery_Tutorial)).
-
 Create Your Script File
 -----------------------
 
-Make yourself familiar with the example script called `[archery_MH.Rev]`(https://raw.githubusercontent.com/revbayes/revbayes_tutorial/master/RB_MCMC_Archery_Tutorial/archery_MH.Rev) which shows the code for the following sections. Then, start a new and empty script in your text editor and follow each step provided as below.
+Make yourself familiar with the example script called [`archery_MH.Rev`](https://raw.githubusercontent.com/revbayes/revbayes_tutorial/master/RB_MCMC_Archery_Tutorial/archery_MH.Rev) which shows the code for the following sections. Then, start a new and empty script in your text editor and follow each step provided as below.
 
 Name the script file `my_archery_MH.Rev` or anything you’d like.
 
@@ -178,13 +179,7 @@ Though RevBayes implements efficient and easy-to-use Markov chain Monte Carlo (M
 Reading in the data
 -------------------
 
-Since we do not have access to archery data, we will simulate the the
-shots of our archer using the simulation tools in RevBayes. By
-simulating the data, we can also evaluate how well our moves and prior
-model perform—*i.e.,* how robust and accurate
-are our estimators. After completing this exercise, feel free to repeat
-it and alter the true values to see how they influence the posterior
-distribution.
+Since we do not have access to archery data, we will simulate the the shots of our archer using the simulation tools in RevBayes. By simulating the data, we can also evaluate how well our moves and prior model perform—*i.e.,* how robust and accurate our estimators are. After completing this exercise, feel free to repeat it and alter the true values to see how they influence the posterior distribution.
 
     # Simulate some data (i.e. shoot some arrows)
     # First we need the number of arrows to shoot
@@ -210,9 +205,11 @@ parameters (just $\mu$, in this case) from the prior distribution. We’ll
 assume a simple exponential prior distribution; that is, one with
 $\alpha = 1$.
 
-    # Initialize the chain with some starting value
-    alpha = 1.0
-    mu = rexp(1, alpha)[1]
+```
+# Initialize the chain with some starting value
+alpha = 1.0
+mu = rexp(1, alpha)[1]
+```
 
 ### Likelihood function
 
@@ -258,18 +255,18 @@ headers in the first line of our output file, which we will name
 `\n` to `\r\n` if you’re using a Windows operating system.):
 
 ```
-    # Prepare a file to log our samples
-    write("iteration","mu","\n",file="archery_MH.log")
-    write(0,mu,"\n",file="archery_MH.log",append=TRUE)
+# Prepare a file to log our samples
+write("iteration","mu","\n",file="archery_MH.log")
+write(0,mu,"\n",file="archery_MH.log",append=TRUE)
 ```
 
 We’ll also monitor the parameter values to the screen, so let’s print
 the initial values:
 
 ```
-    # Print the initial values to the screen
-    print("iteration","mu")
-    print(0,mu)
+# Print the initial values to the screen
+print("iteration","mu")
+print(0,mu)
 ```
 
 Writing the Metropolis-Hastings Algorithm
@@ -279,20 +276,20 @@ At long last, we can write our MCMC algorithm. First, we define how
 often we print to file (*i.e.,* monitor); this is called thinning if we do not choose to save every value of our parameter to file. If we set the variable `printgen=1`, then we will store the parameter values at every iteration; if we instead choose `printgen=10`, then we’ll only save the values every $10^{th}$ step in our Markov chain.
 
 ```
-    # Write the MH algorithm    
-    printgen = 10
+# Write the MH algorithm    
+printgen = 10
 ```
 
 We will repeat this resampling procedure many times and iterate the MCMC
 using a `for` loop (*e.g.,* step 6 in [The Metropolis-Hastings Algorithm Section](#sect:MH_algorithm)). We will start
 this part by defining the number of iterations for our MCMC ( `reps =
 10000`), and writing the first line of our ‘for‘ loop. We’ll also define
-a variable ‘delta‘ (explained momentarily).
+a variable `delta` (explained momentarily).
 
 ```
-    reps = 10000
-    delta = 1
-    for(rep in 1:reps){
+reps = 10000
+delta = 1
+for(rep in 1:reps){
 ```
 
 In `Rev`, the contents of every `for` loop must be enclosed within a set
@@ -313,16 +310,18 @@ likely to be very close to the current value of $\mu$. By changing the
 value of `delta` we can tune the behavior of the proposal, and therefore
 `delta` is called a *tuning parameter*.
 
-        # Propose a new value of p
-        mu_prime <- mu + runif(n=1,-delta,delta)[1]
+```
+# Propose a new value of p
+mu_prime <- mu + runif(n=1,-delta,delta)[1]
+```
 
 Next, we compute the proposed likelihood and prior probabilities using
 the functions we defined above, as well as the acceptance probability,
 $R$ (step 3 of the [The Metropolis-Hastings Algorithm Section](#sect:MH_algorithm)):
 
 ```
-        # Compute the acceptance probability
-        R = ( likelihood(mu_prime)/likelihood(mu) ) * ( prior(mu_prime)/prior(mu) )
+# Compute the acceptance probability
+R = ( likelihood(mu_prime)/likelihood(mu) ) * ( prior(mu_prime)/prior(mu) )
 ```
 
 Then, we accept the proposal with probability $R$ and reject otherwise
@@ -342,6 +341,7 @@ Begin by running the RevBayes executable. You can do this by navigating to the f
 rb
 ```
 {:.bash}
+
 *Alternatively*, if you are on a Unix system and the RevBayes binary is in your path, you only have to type the following from any directory:
 
 ```
@@ -362,23 +362,26 @@ Exercise 1
     called `archery_MH.Rev`).
 
 2.  The `.log` file will contain samples from the posterior distribution
-    of the model. Open the file in `Tracer`to learn about
+    of the model. Open the file in `Tracer` to learn about
     various features of the posterior distribution, for example: the
     posterior mean or the 95% credible interval.
 
 Pretty awesome, right?
 
 Below we show an example of the obtained output in
-`Tracer`. Specifically, Figure [fig:mcmc_samples] shows
+`Tracer`. Specifically, {% figref mcmc-trace %} shows
 the sample trace (left) and the estimated posterior distribution of
 $\mu$ (right). There are other parameters, such as the posterior mean
 and the 95% HPD (highest posterior density) interval, that you can
 obtain from `Tracer`.
 
-[fig:mcmc_samples]
-
-<img src="figures/archery_MCMC_Trace.png" width="500" /> <img src="figures/archery_MCMC_distribution.png" width="500" />
-> The *Trace* of sample from an MCMC simulation. Right: The approximated posterior probability distribution for $\mu$.
+{% figure mcmc-trace %}
+<img src="figures/archery_MCMC_Trace.png" width="45%" />
+<img src="figures/archery_MCMC_distribution.png" width="45%" />
+{% figcaption %}
+The *Trace* of sample from an MCMC simulation. Right: The approximated posterior probability distribution for $\mu$.
+{% endfigcaption %}
+{% endfigure %}
 
 More on Moves: Tuning and Weights {#sect:More_on_Moves}
 =================================
@@ -425,7 +428,7 @@ is the same as the proposal ratio given in Section
 case, and one only needs to multiply the acceptance rate by the scaling
 factor.
 
-As before, this move has a tuning parameter called ‘lambda‘.
+As before, this move has a tuning parameter called `lambda`.
 
 The sliding-window and scaling moves are very common and popular moves in RevBayes. The code examples here are actually showing the exact same equation as implemented internally. It will be very useful for you to understand these moves.
 
@@ -436,7 +439,7 @@ Exercise 2
     and re-run the script to estimate the posterior distribution of
     $\mu$ again.
 
-2.  Use only a single move and set ‘printgen=1‘. Which move has the best
+2.  Use only a single move and set `printgen=1`. Which move has the best
     ESS?
 
 3.  How does the ESS change if you use tuning parameter values
@@ -454,19 +457,23 @@ specify the above model is extremely simple and similar to the one we
 used before. Again, we start by “reading in” (*i.e.* making up) our
 data.
 
-    # Simulate some data (i.e. shoot some arrows)
-    # First we need the number of arrows to shoot
-    n = 10
-    # Then we need some true mean distance
-    mu_true = 1
-    # Simulate the observed mean distance of the arrows we shot
-    arrow_mean = rgamma(1, n, n/mu_true)[1]
+```
+# Simulate some data (i.e. shoot some arrows)
+# First we need the number of arrows to shoot
+n = 10
+# Then we need some true mean distance
+mu_true = 1
+# Simulate the observed mean distance of the arrows we shot
+arrow_mean = rgamma(1, n, n/mu_true)[1]
+```
 
 Now we specify our prior model.
 
-    # Specify the prior distribution
-    alpha <- 1.0
-    mu ~ dnExponential(alpha)
+```
+# Specify the prior distribution
+alpha <- 1.0
+mu ~ dnExponential(alpha)
+```
 
 One difference between RevBayes and the MH algorithm that we wrote
 above is that many MCMC proposals are already built-in, but we have to
@@ -474,52 +481,59 @@ specify them *before* we run the MCMC. We usually define (at least) one
 move per parameter immediately after we specify the prior distribution
 for that parameter.
 
-    # Define a move for our parameter, mu
-    moves[1] = mvSlide(mu, delta=1, weight=1.0)
+```
+# Define a move for our parameter, mu
+moves[1] = mvSlide(mu, delta=1, weight=1.0)
+```
 
 Next, our likelihood model.
 
-    # Specify the likelihood model
-    d_bar ~ dnGamma(n, n/mu)
-    d_bar.clamp(arrow_mean)
+```
+# Specify the likelihood model
+d_bar ~ dnGamma(n, n/mu)
+d_bar.clamp(arrow_mean)
+```
 
 We wrap our full Bayesian model into one model object (this is a
 convenience to keep the entire model in a single object, and is more
 useful when we have very large models):
-
-    # Construct the full model
-    my_model = model(mu)
+```
+# Construct the full model
+my_model = model(mu)
+```
 
 We use “monitors” to keep track of parameters throughout the MCMC. The
 two kinds of monitors we use here are the `mnModel`, which writes
 parameters to a specified file, and the `mnScreen`, which simply outputs
 some parts of the model to screen (as a sort of progress bar).
 
-    # Make the monitors to keep track of the MCMC
-    monitors[1] = mnModel(filename="archery_RB.log", printgen=10)
-    monitors[2] = mnScreen(printgen=1000, mu)
+```
+# Make the monitors to keep track of the MCMC
+monitors[1] = mnModel(filename="archery_RB.log", printgen=10)
+monitors[2] = mnScreen(printgen=1000, mu)
+```
 
 Finally, we assemble the analysis object (which contains the model, the
 monitors, and the moves) and execute the run using the `.run` command:
 
 ```
-    # Make the analysis object
-    analysis = mcmc(my_model, monitors, moves)
-    # Run the MCMC
-    analysis.run(100000)
-    # Show how the moves performed
-    analysis.operatorSummary()
+# Make the analysis object
+analysis = mcmc(my_model, monitors, moves)
+# Run the MCMC
+analysis.run(100000)
+# Show how the moves performed
+analysis.operatorSummary()
 ```
 
 Open the resulting `archery_RB.log` file in `Tracer`.
 
-Do the posterior distributions for the parameter $mu$ look the same as the ones we got from our first analysis?
+Do the posterior distributions for the parameter $\mu$ look the same as the ones we got from our first analysis?
 
 Hopefully, you’ll note that this `Rev` model is substantially simpler
 and easier to read than the MH algorithm script we began with. Perhaps
 more importantly, this `Rev` analysis is *orders of magnitude* faster
 than our own script, because it makes use of extremely efficient
-probability calculations built-in to ‘RevBayes‘ (rather than the ones we
+probability calculations built-in to RevBayes (rather than the ones we
 hacked together in our own algorithm).
 
 Exercise 3
@@ -557,13 +571,17 @@ $Gamma(0,0)$ distribution (this is the [Jeffreys prior](https://en.wikipedia.org
 this prior distribution is *improper* (it does not integrate to 1), and
 so we can’t use it in RevBayes. However we can approximate this prior
 distribution by using very small parameter values, e.g. $Gamma(0.001,
-0.001)$. As you can see in Figure [fig:gamma_distribution], compared
+0.001)$. As you can see in {% figref gamma_distribution %}, compared
 to the exponential distribution, the $Gamma(0.001, 0.001)$ distribution is
 much more “flat”.
 
-{fig:#gamma_distribution}
-![]( figures/gamma.png) 
-> Comparison of exponential distribution with $\alpha = 1$ and uninformative gamma distribution with parameters $\alpha=0.001$ and $\beta=0.001$.
+{% figure gamma_distribution %}
+![]( figures/gamma.png)
+{% figcaption %}
+Comparison of exponential distribution with $\alpha = 1$ and uninformative gamma distribution with parameters $\alpha=0.001$ and $\beta=0.001$.
+{% endfigcaption %}
+{% endfigure %}
+
 
 The second and simplest way we can overcome the informativeness of the
 prior is to increase the amount of data we collect. We can do that in
