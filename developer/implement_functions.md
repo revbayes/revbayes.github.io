@@ -52,7 +52,7 @@ namespace RevBayesCore {
 #endif
 ```
 
-The first part of this file should be the standard header that goes in all the files giving a brief description about what that file is as well as information about the copyright and the author of that file. Here we are implementing our hyperbolic cosine function as its own class that is derived from the continuous function class that is derived from the typed function class. This class stores the hyperbolic cosine of a value that is held in a DAG node. We have also defined a clone method which can creates a clone of our class, and an update method which will update the value of our Hyperbolic Cosine class whenever the value of the DAG node changes. Now we will move on to the `HyperbolicCosineFunction.cpp` file. 
+The first part of this file should be the standard header that goes in all the files giving a brief description about what that file is as well as information about the copyright and the author of that file. Here we are implementing our hyperbolic cosine function as its own class that is derived from the continuous function class that is derived from the typed function class. This class stores the hyperbolic cosine of a value that is held in a DAG node. We have also defined a clone method which can create a clone of our class, and an update method which will update the value of our Hyperbolic Cosine class whenever the value of the DAG node changes. Now we will move on to the `HyperbolicCosineFunction.cpp` file. 
 
 ```cpp
 #include "HyperbolicCosineFunction.h"
@@ -94,9 +94,9 @@ void HyperbolicCosineFunction::update( void )
 ```
 
 
-Now all we need to do is add the hyperbolic cosine function to the `revlanguage` side of things so that when we are using `Rev` we can use our function. First we need to add `Func_hyperbolicCosineFunction.cpp` and `Func_hyperbolicCosineFunction.h` to `/src/revlanguage/functions/math/`. Note that the directory structure of `revlanguage` is similar to that of the `core`. The Revlanguage side serves as a wrapper of the function that we just wrote in the `core`.
+Now all we need to do is add the hyperbolic cosine function to the `revlanguage` side of things so that when we are using `Rev` we can use our function. First we need to add `Func_hyperbolicCosine.cpp` and `Func_hyperbolicCosine.h` to `/src/revlanguage/functions/math/`. Note that the directory structure of `revlanguage` is similar to that of the `core`. The Revlanguage side serves as a wrapper of the function that we just wrote in the `core`.
 
-The `Func_hyperbolicCosineFunction.h` should look like the following:
+The `Func_hyperbolicCosine.h` should look like the following:
 
 ```cpp
 
@@ -148,7 +148,7 @@ namespace RevLanguage {
 
 ```
 
-And the `Func_hyperbolicCosineFunction.cpp` should look like this:
+And the `Func_hyperbolicCosine.cpp` should look like this:
 
 ```cpp
 #include "Func_hyperbolicCosine.h"
