@@ -24,8 +24,7 @@ The RevBayes Developers' Guide will provide you with the information needed to i
 {% for lesson in devguide %}
 <tr>
 <td class="col-sm-3">
-{% assign lesson_number = lesson_number | plus: 1 %}
-{{ lesson_number }}. <a href="{{ site.baseurl }}{{ lesson.url }}">{{ lesson.title }}</a>
+<a href="{{ site.baseurl }}{{ lesson.url }}">{{ lesson.title }}</a>
 </td>
 <td class="col-sm-3">{{ lesson.subtitle }}</td>
 </tr>
