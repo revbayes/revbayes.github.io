@@ -53,8 +53,6 @@ module Jekyll
 end
 
 Liquid::Template.register_tag('figure', Jekyll::FigureTag)
-
 Liquid::Template.register_tag('figcaption', Jekyll::FigureCaptionTag)
-
 Liquid::Template.register_tag('figureref', Jekyll::FigureRefTag)
 Liquid::Template.register_tag('figref', Jekyll::FigureRefTag)

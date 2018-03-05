@@ -126,7 +126,7 @@ $("figure").each(function(index) {
     if( this.id != null ) {
       var els = document.querySelectorAll("a[href=\"#"+this.id+"\"]");
       if(els.length > 0)
-        for (var i = 0, element; element = els; i++)
+        for (var i = 0, element; element = els[i]; i++)
           els[i].innerHTML="Figure " + (index+1);
     }
 });
