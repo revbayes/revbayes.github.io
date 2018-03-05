@@ -1,10 +1,10 @@
 ---
 layout: default
-title: Software
+title: Download and Install RevBayes
 permalink: /software/
 ---
 
-# Download executables
+# Download Executables
 
 <table class="table table-hover ">
 	<tr>
