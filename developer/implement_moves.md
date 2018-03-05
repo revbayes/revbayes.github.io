@@ -26,13 +26,13 @@ In general, the fastest and easiest way to get help is to find the most similar 
     Next, we'll need to create a **new .cpp file** containing the implementation of our new move. As with the header, it's easiest to copy and rename an existing file, so we'll use `ScaleProposal.cpp` as our template, copy it, and rename to `GammaScaleProposal.cpp`. As with the header file, most of the necessary changes involve updating the names of variables and function names. If the move requires access to other math functions, additional header files may need to be included at the top. Explore `src/core/math` as needed to find the necessary functions or distributions. For our example, the number and type of variables used by our move is the same as our template, so we don't need to modify the constructor or variable initialization, other than updating the constructor name. Similarly for this example, we don't need to alter the code in the `::cleanProposal`, `::clone`, `::prepareProposal`, `::printParameterSummary`, `::undoProposal`, `::swapNodeInternal`, and `::tune` methods as these are common to our template and new moves (and will be identical to many of the scalar moves), but we do need to update the class names associated with the methods (i.e., `ScaleMove::` -> `GammaScaleMove::`). For the `::getProposalName` method, we need to update the string in the method that provides a descriptive name for the move - `name = "Gamma Scaling"`. The bulk of the necessary changes for the new move will come in the `::propose` method and the help description above the method. For this example, the new `::propose` method looks like this:
 
     ```cpp
-/**
+/*
  * Perform the proposal.
  *
  * A gamma scaling proposal draws a random number from a gamma distribution u ~ Gamma(lambda,1) and scales the current vale by u
  * lambda is the tuning parameter of the proposal which influences the size of the proposals by changing the shape of the Gamma.
  *
-  * \return The hastings ratio.
+ * \return The hastings ratio.
  */
 double GammaScaleProposal::propose( double &val )
 {
@@ -66,6 +66,7 @@ double GammaScaleProposal::propose( double &val )
 }
 ```
 
+In this case, the Hastings ratio involves the probability density of the forward move (the scaling factor *u*), the corresponding backward move (the scaling factor $\frac{1}/{u}$), and the solution to the Jacobian ($-\frac{1}{u}$).
 
 3.  _Creating new files for the rev language_ -
 

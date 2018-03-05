@@ -1,5 +1,5 @@
 ---
-title: Introduction to MCMC using ‘RevBayes‘
+title: Introduction to MCMC using RevBayes
 subtitle: A Simple Example for Building a Hierarchical Model and Sampling under Markov Chain Monte Carlo
 authors:  Wade Dismukes, Tracy A. Heath, Walker Pett
 category: Basic
