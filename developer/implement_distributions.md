@@ -12,7 +12,7 @@ index: 1
 * Within the RevBayes **core** directory, there are subdirectories for different categories of distributions. 
 All predefined mathematical distributions that have been implemented exist in `core/distributions/math`.
 
-* Note that when implementing a new distribution, you will need to create `.cpp` and `.h` files in both the **revlanguage** directory and the **core** directory. (For a refresher on the difference between these two directories, refer to the 'Getting familiar with the code' section of this Developer's guide).
+* Note that when implementing a new distribution, you will need to create `.cpp` and `.h` files in both the **revlanguage** directory and the **core** directory. (For a refresher on the difference between these two directories, refer to the [Getting familiar with the code]({{ site.baseurl }}/Getting familiar with the code) section of this Developer's guide).
 The overall naming format remains the same for every distribution in RevBayes. In the Beta Binomial Distribution example provided below, I specify what to name each file.
 
 * It is often helpful to look at / 'borrow' code from existing RevBayes distributions for general help on syntax and organization.
