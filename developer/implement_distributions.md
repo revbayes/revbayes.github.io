@@ -9,6 +9,8 @@ index: 1
 ## General info before getting started
 {:.subsection}
 
+TESTING HELLO
+
 * Within the RevBayes **core** directory, there are subdirectories for different categories of distributions. 
 All predefined mathematical distributions that have been implemented exist in `core/distributions/math`.
 
