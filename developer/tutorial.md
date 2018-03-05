@@ -1,7 +1,6 @@
 ---
 title: Writing a user tutorial
 category: Developer
-index: 5
 code_layout: none
 ---
 
