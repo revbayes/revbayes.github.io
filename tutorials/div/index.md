@@ -319,7 +319,7 @@ pure-birth process is quite simple, where the observed time tree
 topology and node ages are conditional on the speciation rate, sampling
 probability, and root age (Fig. [fig:yule_gm]).
 
-![]( figures/yule_gm.eps) 
+![]( figures/yule_gm.png) 
 > The graphical model representation of
 the pure-birth (Yule) process.
 
@@ -331,7 +331,7 @@ Yule model. Ultimately, the pure birth model is just a special case of
 the birth-death process, where the extinction rate (typically denoted
 $\mu$) is a constant node with the value 0.
 
-![]( figures/yule_gm2.eps) 
+![]( figures/yule_gm2.png) 
 > The graphical model representation
 of the pure-birth (Yule) process, where the speciation rate is treated
 as a random variable drawn from a lognormal distribution.
@@ -640,7 +640,7 @@ this model, the parameter $\rho$ accounts for the probability of
 sampling in the present time, and because it is a probability, this
 parameter can only take values between 0 and 1.
 
-![]( figures/simple_BD_gm_root.eps) 
+![]( figures/simple_BD_gm_root.png) 
 > The graphical model
 representation of the birth-death process with uniform sampling and
 conditioned on the root age.
@@ -653,7 +653,7 @@ distributions on a transformation of the speciation and extinction rate
 because, for example, we want to enforce that the speciation rate is
 always larger than the extinction rate.
 
-![]( figures/cBDR_gm.eps) 
+![]( figures/cBDR_gm.png) 
 > The graphical model representation of
 the birth-death process with uniform sampling parameterized using the
 diversification and turnover.
