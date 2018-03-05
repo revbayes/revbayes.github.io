@@ -50,7 +50,7 @@ Next, move into the `revbayes_tutorials` repo, and install required gems via:
 
 Now, you should be able to build and serve the static HTML with:
 
-    bundle exec jekyll serve
+    bundle exec jekyll serve --incremental
 
 If you get the error "invalid byte sequence in US-ASCII", this seems to fix it:
 

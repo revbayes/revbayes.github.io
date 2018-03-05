@@ -2,7 +2,7 @@
 title: Introduction to MCMC using ‘RevBayes‘
 subtitle: A Simple Example for Building a Hierarchical Model and Sampling under Markov Chain Monte Carlo
 authors:  Wade Dismukes, Tracy A. Heath, Walker Pett
-category: In Progress
+category: basic
 prerequisites:
 - intro
 files:
@@ -137,7 +137,7 @@ All command-line text, including all `Rev` syntax, are given in `monotype font`.
 Create Your Script File
 -----------------------
 
-Make yourself familiar with the example script called `[archery_MH.Rev]`(https://raw.githubusercontent.com/revbayes/revbayes_tutorial/master/RB_MCMC_Archery_Tutorial/archery_MH.Rev) which shows the code for the following sections. Then, start a new and empty script in your text editor and follow each step provided as below.
+Make yourself familiar with the example script called [`archery_MH.Rev`](https://raw.githubusercontent.com/revbayes/revbayes_tutorial/master/RB_MCMC_Archery_Tutorial/archery_MH.Rev) which shows the code for the following sections. Then, start a new and empty script in your text editor and follow each step provided as below.
 
 Name the script file `my_archery_MH.Rev` or anything you’d like.
 
@@ -179,13 +179,7 @@ Though RevBayes implements efficient and easy-to-use Markov chain Monte Carlo (M
 Reading in the data
 -------------------
 
-Since we do not have access to archery data, we will simulate the the
-shots of our archer using the simulation tools in RevBayes. By
-simulating the data, we can also evaluate how well our moves and prior
-model perform—*i.e.,* how robust and accurate
-are our estimators. After completing this exercise, feel free to repeat
-it and alter the true values to see how they influence the posterior
-distribution.
+Since we do not have access to archery data, we will simulate the the shots of our archer using the simulation tools in RevBayes. By simulating the data, we can also evaluate how well our moves and prior model perform—*i.e.,* how robust and accurate our estimators are. After completing this exercise, feel free to repeat it and alter the true values to see how they influence the posterior distribution.
 
     # Simulate some data (i.e. shoot some arrows)
     # First we need the number of arrows to shoot
@@ -290,7 +284,7 @@ We will repeat this resampling procedure many times and iterate the MCMC
 using a `for` loop (*e.g.,* step 6 in [The Metropolis-Hastings Algorithm Section](#sect:MH_algorithm)). We will start
 this part by defining the number of iterations for our MCMC ( `reps =
 10000`), and writing the first line of our ‘for‘ loop. We’ll also define
-a variable ‘delta‘ (explained momentarily).
+a variable `delta` (explained momentarily).
 
 ```
 reps = 10000
@@ -368,7 +362,7 @@ Exercise 1
     called `archery_MH.Rev`).
 
 2.  The `.log` file will contain samples from the posterior distribution
-    of the model. Open the file in `Tracer`to learn about
+    of the model. Open the file in `Tracer` to learn about
     various features of the posterior distribution, for example: the
     posterior mean or the 95% credible interval.
 
@@ -385,7 +379,7 @@ obtain from `Tracer`.
 <img src="figures/archery_MCMC_Trace.png" width="45%" />
 <img src="figures/archery_MCMC_distribution.png" width="45%" />
 {% figcaption %}
-The *Trace* of sample from an MCMC simulation. Right: The approximated posterior probability distribution for \mu$.
+The *Trace* of sample from an MCMC simulation. Right: The approximated posterior probability distribution for $\mu$.
 {% endfigcaption %}
 {% endfigure %}
 
@@ -533,13 +527,13 @@ analysis.operatorSummary()
 
 Open the resulting `archery_RB.log` file in `Tracer`.
 
-Do the posterior distributions for the parameter $mu$ look the same as the ones we got from our first analysis?
+Do the posterior distributions for the parameter $\mu$ look the same as the ones we got from our first analysis?
 
 Hopefully, you’ll note that this `Rev` model is substantially simpler
 and easier to read than the MH algorithm script we began with. Perhaps
 more importantly, this `Rev` analysis is *orders of magnitude* faster
 than our own script, because it makes use of extremely efficient
-probability calculations built-in to ‘RevBayes‘ (rather than the ones we
+probability calculations built-in to RevBayes (rather than the ones we
 hacked together in our own algorithm).
 
 Exercise 3
