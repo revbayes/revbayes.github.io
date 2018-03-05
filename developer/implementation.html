@@ -321,7 +321,7 @@
 
 <p>Finally, we need to include the hyperbolic cosine function in the <code class="highlighter-rouge">RbRegister_Func.cpp</code> file located in the <code class="highlighter-rouge">/revlanguage/workspace/</code> directory. To do this go to the <code class="highlighter-rouge">RbRegister_Func.cpp</code> file and locate the math functions and type <code class="highlighter-rouge">#include Func_hyperbolicCosine.h</code> in the correct alphabetical order for that group. Now scroll down in that file until you find the math functions and add the line <code class="highlighter-rouge">addFunction( new Func_hyperbolicCosine());</code></p>
 
-<h1 class="section" id="implementing-a-distribution">Implementing a Distribution</h1>
+<h1 class="section" id="implementing-a-distribution">Implementing a distribution</h1>
 
 <h2 class="subsection" id="general-info-before-getting-started">General info before getting started</h2>
 
@@ -370,14 +370,14 @@ All predefined mathematical distributions that have been implemented exist in <c
 
     <p>For the Beta Binomial distribution, we navigate to the section in the file with the header ‘Distributions’ and then look for the sub-header dealing with math distributions. Then, add the following line of code:</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#include "Dist_betaBinomial.h"
-</code></pre></div>    </div>
+    <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include "Dist_betaBinomial.h"
+</span></code></pre></div>    </div>
 
     <p>This step registers the header file for the beta binomial distribution, effectively adding it to RevBayes.</p>
 
     <p>Next, navigate to the section of the file that initializes the global workspace. This section defines the workspace class, which houses info on all distributions. Then, add the following line of code:</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    AddDistribution&lt; Natural		&gt;( new Dist_betaBinomial());
+    <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">AddDistribution</span><span class="o">&lt;</span> <span class="n">Natural</span>		<span class="o">&gt;</span><span class="p">(</span> <span class="k">new</span> <span class="n">Dist_betaBinomial</span><span class="p">());</span>
 </code></pre></div>    </div>
 
     <p>This adds the distribution to the workspace. Without this step, the betaBinomial will not be added to the revlanguage.</p>
