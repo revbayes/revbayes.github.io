@@ -57,14 +57,6 @@ $(".challenge,.discussion,.solution").each(function() {
     h2.append("<span class='fold-unfold glyphicon glyphicon-collapse-down'></span>");
 });
 
-// Handle searches.
-// Relies on document having 'meta' element with name 'search-domain'.
-function google_search() {
-  var query = document.getElementById("google-search").value;
-  var domain = $("meta[name=search-domain]").attr("value");
-  window.open("https://www.google.com/search?q=" + query + "+site:" + domain);
-}
-
 // Create an array of all script files and their contents
 var scripts = {};
 var _code = document.querySelectorAll('pre');
@@ -127,6 +119,12 @@ $(".tutorial_files").each(function() {
     if( ul.innerHTML == "" && document.getElementById("data_files") == null ) {
         this.outerHTML = "";
     }
+});
+
+// Add figure titles
+$(".figure").each(function(index) {
+    var img = $("img:first", this);
+    img.after("<b>Figure " + (index+1) + ".</b>");
 });
 
 // Process highlighted blocks
