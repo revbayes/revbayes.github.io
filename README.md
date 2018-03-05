@@ -3,6 +3,10 @@ revbayes-tutorials
 
 This is the repository for the RevBayes tutorials website.
 
+To do list!
+- add Hackathons page (kinda like the workshops page)
+- populate all the workshops to the new site
+
 Setting up this repo locally
 =================
 

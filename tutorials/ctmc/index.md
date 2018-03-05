@@ -1,5 +1,4 @@
 ---
-layout: tutorial
 title: Phylogenetic Inference using ‘RevBayes‘
 subtitle: Substitution Models
 authors:  Sebastian H&#246;hna, Michael Landis, Brian Moore and Tracy Heath
