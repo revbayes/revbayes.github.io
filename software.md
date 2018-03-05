@@ -4,7 +4,7 @@ title: Software
 permalink: /software/
 ---
 
-# Download RevBayes
+# Download executables
 
 <table class="table table-hover ">
 	<tr>
@@ -33,11 +33,8 @@ permalink: /software/
     </tr>
 </table>
 
-# Installation Instructions
 
-
-### Installing RevBayes from source on Mac OS X
-
+# Compiling from source on Mac OS X
 
 1. Make sure that you have a c++ compiler installed on your computer. GCC 4.2 (or higher) and Apple LLVM version 6.0 have both been used successfully. If you don't have a c++ compiler, you can get it on a Mac when you download and install XCode.
 

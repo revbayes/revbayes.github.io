@@ -151,10 +151,10 @@ for (var i = 0, element; element = _pre[i]; i++) {
 
   var lines = element.textContent.split("\n").slice(0,-1);
 
-  var open_brace = false;
-  var open_paren = false;
-  var open_curly = false;
-  var open_slash = false;
+  var open_brace = 0;
+  var open_paren = 0;
+  var open_curly = 0;
+  var backslash = false;
   for (var line in lines) {
       if ( open_brace || open_paren || open_curly ) {
         lines[line] = "<span class='secondary'>"+lines[line]+"</span>";
@@ -162,27 +162,30 @@ for (var i = 0, element; element = _pre[i]; i++) {
         lines[line] = "<span class='line'>"+lines[line]+"</span>";
       }
 
-      if ( lines[line].match(/\[[^\]]*$/) != null ) {
-        open_brace = true;
-      }
-      if ( lines[line].match(/\([^\)]*$/) != null ) {
-        open_paren = true;
-      }
-      if ( lines[line].match(/\{[^\}]*$/) != null ) {
-        open_curly = true;
-      }
-      if ( lines[line].match(/\\\s*$/) != null ) {
-        open_slash = true;
-      }
+      var myRegexp = /[\[\]\(\)\{\}\\]/g;
+      match = myRegexp.exec(lines[line]);
+      while (match != null) {
+        if ( match == '[' )
+          open_brace++;
+        if ( match == '(' )
+          open_paren++;
+        if ( match == '{' )
+          open_curly++;
 
-      if ( lines[line].match(/\][^\[]]*$/) != null ) {
-        open_brace = false;
-      }
-      if ( lines[line].match(/\)[^\()]*$/) != null ) {
-        open_paren = false;
-      }
-      if ( lines[line].match(/\}[^\{}]*$/) != null ) {
-        open_curly = false;
+        backslash = false;
+        if ( match == '\\' )
+          backslash = true;
+
+        if ( open_brace && match == ']' )
+          open_brace--;
+
+        if ( open_paren && match == ')' )
+          open_paren--;
+
+        if ( open_curly && match == '}' )
+          open_curly--;
+
+        match = myRegexp.exec(lines[line]);
       }
   }
 
