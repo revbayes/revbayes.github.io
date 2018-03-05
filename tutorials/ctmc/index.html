@@ -102,7 +102,7 @@
 </blockquote>
       <h1 class="section" id="overview">Overview</h1>
 
-<p>This tutorial provides the first protocol from our recent publication <a href="#Hoehna2017a">(Höhna et al. 2017)</a>. The second protocol is described in the <a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Partition_Tutorial/RB_Partition_Tutorial.pdf">Partitioned data analysis tutorial</a> and the third protocol is described in the <a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_BayesFactor_Tutorial/RB_BayesFactor_Tutorial.pdf">Bayes factor tutorial</a>.</p>
+<p>This tutorial provides the first protocol from our recent publication <a href="#Hoehna2017a">(Höhna et al. 2017)</a>. The second protocol is described in the <a href="/revbayes_tutorials/tutorials/paritition/">Partitioned data analysis tutorial</a> and the third protocol is described in the <a href="/revbayes_tutorials/tutorials/bayes_fastors/">Bayes factor tutorial</a>.</p>
 
 <p>The present tutorial demonstrates how to set up and perform analyses
 using common nucleotide substitution models. The substitution models
@@ -229,26 +229,15 @@ n_branches &lt;- 2 * n_species - 3
 taxa &lt;- data.taxa()
 </code></pre></div></div>
 
-<p>Additionally, we set up a counter variable for the number of moves that
-we already added to our analysis. [Recall that moves are algorithms
-used to propose new parameter values during the MCMC simulation.] This
-will make it much easier if we extend the model or analysis to include
-additional moves or to remove some moves. Similarly, we set up a counter
-variable for the number of monitors. [Monitors print the values of
-model parameters to the screen and/or log files during the MCMC
-analysis].</p>
+<p>Additionally, we set up a counter variable for the number of moves that we already added to our analysis. Recall that moves are algorithms used to propose new parameter values during the MCMC simulation. This will make it much easier if we extend the model or analysis to include additional moves or to remove some moves. Similarly, we set up a counter variable for the number of monitors. Monitors print the values of model parameters to the screen and/or log files during the MCMC analysis.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvi = 1 
 mni = 1
 </code></pre></div></div>
 
-<p>You may have noticed that we used the <code class="highlighter-rouge">=</code> operator to create the move
-index. This simply means that the variable is not part of the model. You
-will later see that we use this operator more often,
-<em>e.g.,</em>when we create moves and monitors.</p>
+<p>You may have noticed that we used the <code class="highlighter-rouge">=</code> operator to create the move index. This simply means that the variable is not part of the model. You will later see that we use this operator more often, <em>e.g.,</em> when we create moves and monitors.</p>
 
-<p>With the data loaded, we can now proceed to specify our Jukes-Cantor
-substitution model.</p>
+<p>With the data loaded, we can now proceed to specify our Jukes-Cantor substitution model.</p>
 
 <h2 id="jukes-cantor-substitution-model">Jukes-Cantor Substitution Model</h2>
 
@@ -278,7 +267,7 @@ instantaneous-rate matrix:</p>
 
 <h2 id="tree-topology-and-branch-lengths">Tree Topology and Branch Lengths</h2>
 
-<p>The tree topology and branch lengths are stochastic nodes in our phylogenetic model. In Figure &lt;a href=”#jc_graphical_model  %], the tree topology is denoted $\Psi$ and the length of the branch leading to node $i$ is $bl_i$.</p>
+<p>The tree topology and branch lengths are stochastic nodes in our phylogenetic model. In Figure <a href="#jc_graphical_model"></a>, the tree topology is denoted $\Psi$ and the length of the branch leading to node $i$ is $bl_i$.</p>
 
 <p>We will assume that all possible labeled, unrooted tree topologies have equal probability. This is the <code class="highlighter-rouge">dnUniformTopology()</code> distribution in RevBayes. Note that in RevBayes it is advisable to specify the outgroup for your study system if you use an unrooted tree prior, whereas other software, <em>e.g.,</em> MrBayes uses the first taxon in the data matrix file as the outgroup. Specify the <code class="highlighter-rouge">topology</code> stochastic node by passing in the tip labels <code class="highlighter-rouge">names</code> to the <code class="highlighter-rouge">dnUniformTopology()</code> distribution:</p>
 
@@ -292,9 +281,9 @@ topology ~ dnUniformTopology(taxa, outgroup=out_group)
 moves[mvi++] = mvSPR(topology, weight=1.0)
 </code></pre></div></div>
 
-<p>The weight specifies how often the move will be applied either on average per iteration or relative to all other moves. Have a look at the <a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_MCMC_Tutorial/RB_MCMC_Tutorial.pdf">MCMC Diagnosis tutorial</a> for more details about moves and MCMC strategies (found on the <a href="http://revbayes.github.io/tutorials.html"><code class="highlighter-rouge">RevBayes</code> Tutorials Website</a>).</p>
+<p>The weight specifies how often the move will be applied either on average per iteration or relative to all other moves. Have a look at the MCMC Diagnosis tutorial for more details about moves and MCMC strategies (found in <a href="/revbayes_tutorials/tutorials/">Tutorials</a>).</p>
 
-<p>Next we have to create a stochastic node for each of the $2N-3$ branches in our tree (where $N=$ <code class="highlighter-rouge">n_species</code>). We can do this using a <code class="highlighter-rouge">for</code> loop — this is a plate in our graphical model. In this loop, we can create each of the branch-length nodes and assign each move. Copy this entire block of <code class="highlighter-rouge">Rev</code> code into the console:</p>
+<p>Next we have to create a stochastic node for each of the $2N - 3$ branches in our tree (where $N=$ <code class="highlighter-rouge">n_species</code>). We can do this using a <code class="highlighter-rouge">for</code> loop — this is a plate in our graphical model. In this loop, we can create each of the branch-length nodes and assign each move. Copy this entire block of <code class="highlighter-rouge">Rev</code> code into the console:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:n_branches) {
    br_lens[i] ~ dnExponential(10.0)
@@ -308,7 +297,7 @@ moves[mvi++] = mvSPR(topology, weight=1.0)
 </code></pre></div></div>
 
 <p><strong>Alternative branch-length priors</strong>
-Some studies, <em>e.g.,</em> {% cite Brown2010} {% cite Rannala2012”&gt;&lt;/a&gt;, have criticized the exponential prior distribution for branch lengths because it induces a gamma-dsitributed tree-length and the mean of this gamma distribution grows with the number of taxa. For example, we can use instead a specific gamma prior distribution (or any other distribution defined on a positive real variable) for the tree length, and then use a Dirichlet prior distribution to break the tree length into the corresponding branch lengths <a href="#Zhang2012">(Zhang et al. 2012)</a>.</p>
+Some studies, <em>e.g.,</em> <a href="#Brown2010">(Brown et al. 2010)</a> <a href="#Rannala2012">(Rannala et al. 2012)</a>, have criticized the exponential prior distribution for branch lengths because it induces a gamma-dsitributed tree-length and the mean of this gamma distribution grows with the number of taxa. For example, we can use instead a specific gamma prior distribution (or any other distribution defined on a positive real variable) for the tree length, and then use a Dirichlet prior distribution to break the tree length into the corresponding branch lengths <a href="#Zhang2012">(Zhang et al. 2012)</a>.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># specify a prior distribution on the tree length with your desired mean
 TL ~ dnGamma(2,4)
@@ -338,14 +327,14 @@ phylogenetic model. For simplicity, we will assume a uniform prior on
 both topologies and node ages. The distribution in RevBayes is <code class="highlighter-rouge">dnUniformTimeTree()</code>.</p>
 
 <p>Fore more information on tree priors, such as birth-death
-processes, please read the <a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_DiversificationRate_Tutorial/RB_DiversificationRate_Tutorial.pdf">RB_DiversificationRate_Tutorial</a>.</p>
+processes, please read the <a href="/revbayes_tutorials/tutorials/div/">Diversification Rate Tutorial</a>.</p>
 
 <p>First, we need to specify the age of the tree:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root_age &lt;- 10.0
 </code></pre></div></div>
 
-<p>Here we simply assumed that the tree is 10.0 time units old. We could also specify a prior on the root age if we have fossil calibrations (see <a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_DivergenceTime_Calibration_Tutorial/RB_DivergenceTime_Calibration_Tutorial.pdf">Divergence Time and Calibration Tutorial</a>). Next, we specify the <code class="highlighter-rouge">tree</code> stochastic variable by passing in the taxon information <code class="highlighter-rouge">taxa</code> to the <code class="highlighter-rouge">dnUniformTimeTree()</code> distribution:</p>
+<p>Here we simply assumed that the tree is 10.0 time units old. We could also specify a prior on the root age if we have fossil calibrations (see <a href="/revbayes_tutorials/tutorials/clocks/">Divergence Time and Calibration Tutorial</a>). Next, we specify the <code class="highlighter-rouge">tree</code> stochastic variable by passing in the taxon information <code class="highlighter-rouge">taxa</code> to the <code class="highlighter-rouge">dnUniformTimeTree()</code> distribution:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psi ~ dnUniformTimeTree(rootAge=root_age, taxa=taxa)
 </code></pre></div></div>
@@ -370,7 +359,7 @@ moves[mvi++] = mvSlide(log_clock_rate, weight=2.0)
 clock_rate := 10^log_clock_rate
 </code></pre></div></div>
 
-<p>Instead, you could also fix the clock rate and estimate the root age. For more information on molecular clocks please read the <a href="/tutorials/div/">RB_DivergenceTime_Tutorial</a></p>
+<p>Instead, you could also fix the clock rate and estimate the root age. For more information on molecular clocks please read the <a href="/tutorials/clocks/">Divergence Time Tutorial</a></p>
 
 <h2 id="putting-it-all-together">Putting it All Together</h2>
 
@@ -474,14 +463,14 @@ create our MCMC object:</p>
 
 <p>When the analysis is complete, you will have the monitored files in your output directory.</p>
 
-<p>Methods for visualizing the marginal densities of parameter values are not currently available in <code class="highlighter-rouge">RevBayes</code> itself. Thus, it is important to use programs like <code class="highlighter-rouge">Tracer</code><a href="#Rambaut2011">(Rambaut and Drummond 2011)</a> to evaluate mixing and non-convergence.</p>
+<p>Methods for visualizing the marginal densities of parameter values are not currently available in <code class="highlighter-rouge">RevBayes</code> itself. Thus, it is important to use programs like <code class="highlighter-rouge">Tracer</code> <a href="#Rambaut2011">(Rambaut and Drummond 2011)</a> to evaluate mixing and non-convergence.</p>
 
-<p>Look at the file called <code class="highlighter-rouge">output/primates_cytb_JC.log</code> in <code class="highlighter-rouge">Tracer</code>. There you see the posterior distribution of the continuous parameters, <em>e.g.,</em>the tree length variable <code class="highlighter-rouge">TL</code>.</p>
+<p>Look at the file called <code class="highlighter-rouge">output/primates_cytb_JC.log</code> in <code class="highlighter-rouge">Tracer</code>. There you see the posterior distribution of the continuous parameters, <em>e.g.,</em> the tree length variable <code class="highlighter-rouge">TL</code>.</p>
 
 <figure id="jc_trace_tl">
-<img href="figures/primates_cytb_JC_TL_Trace.png" width="400" /> <img href="figures/primates_cytb_JC_TL_Distribution.png" width="400" />``
+<img src="figures/primates_cytb_JC_TL_Trace.png" width="500" /> <img src="figures/primates_cytb_JC_TL_Distribution.png" width="500" />``
 <figcaption>
-Left: Trace of tree-length samples for one MCMC run. The caterpillar-like look is a good sign.You will also see that the effective sample size is comparably large, i.e., much larger than 200.Right: Posterior distribution of the tree length of the primate phylogeny under a Jukes-Cantor substitution model.
+<strong>Left:</strong> Trace of tree-length samples for one MCMC run. The caterpillar-like look is a good sign.You will also see that the effective sample size is comparably large, i.e., much larger than 200. <strong>Right:</strong> Posterior distribution of the tree length of the primate phylogeny under a Jukes-Cantor substitution model.
 </figcaption>
 </figure>
 
@@ -502,7 +491,7 @@ maximum <em>a posteriori</em> tree to file:</p>
 </code></pre></div></div>
 
 <figure id="jc_tree">
-<img src="figures/primates_cytb_JC_tree.png" alt="" />
+<img src="figures/primates_cytb_JC_tree.png" width="800" />
 <figcaption>
 Maximum a posteriori estimate of the primate phylogeny under a Jukes-Cantor substitution model. The numbers at the nodes show the posterior probabilities for the clades.We have rooted the tree at the outgroup <em>Galeopterus_variegatus</em>
 </figcaption>
@@ -742,10 +731,7 @@ simple scaling move should do the job.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q := fnHKY(kappa,pi)
 </code></pre></div></div>
 
-<p>This should be all for the HKY model.</p>
-
-<p>Don’t forget to change the output file names, otherwise your old
-analyses files will be overwritten.</p>
+<p>This should be all for the HKY model. Don’t forget to change the output file names, otherwise your old analyses files will be overwritten.</p>
 
 <h2 class="subsection" id="exercise-2">Exercise 2</h2>
 
@@ -779,7 +765,7 @@ has unequal stationary frequencies, but it assumes equal
 transition-transversion rates <a href="#Felsenstein1981">(Felsenstein 1981)</a>. Can you set up the F81 model and run an analysis?</p>
   </li>
   <li>
-    <p>Complete the Table [tab:pp] by reporting the posterior
+    <p>Complete the Table <a href="#tab_primates"></a> by reporting the posterior
 probabilities of phylogenetic relationships.</p>
   </li>
 </ul>
@@ -886,10 +872,10 @@ GTR substitution model.</p>
 
 <h1 class="section" id="the-discrete-gamma-model-of-among-site-rate-variation">The Discrete Gamma Model of Among Site Rate Variation</h1>
 
-<p>Members of the GTR family of substitution models assume that rates are homogeneous across sites, an assumption that is often violated by real data. We can accommodate variation in substitution rate among sites (ASRV) by adopting the discrete-gamma model <a href="#Yang1994a">(Yang 1994)</a>. This model assumes that the substitution rate at each site is a random variable that is described by a discretized gamma distribution, which has two parameters: the shape parameter, $\alpha$, and the rate parameter, $\beta$. In order that we can interpret the branch lengths as the expected number of substitutions per site, this model assumes that the mean site rate is equal to 1. The mean of the gamma is equal to $\alpha/\beta$, so a mean-one gamma is specified by setting the two parameters to be equal, $\alpha=\beta$. This means that we can fully describe the gamma distribution with the single shape parameter, $\alpha$. The degree of among-site substitution rate variation is inversely proportional to the value of the $\alpha$-shape parameter. As the value of the $\alpha$-shape increases, the gamma distribution increasingly resembles a normal distribution with decreasing variance, which therefore corresponds to decreasing levels of ASRV <a href="#asrhGammaFig"></a>. By contrast, when the value of the $\alpha$-shape parameter is $&lt; 1$, the gamma distribution assumes a concave distribution that concentrates most of the prior density on low rates, but retains some prior mass on sites with very high rates, which therefore corresponds to high levels of ASRV <a href="#asrhGammaFig"></a>). Note that, when $\alpha = 1$, the gamma distribution collapses to an exponential distribution with a rate parameter equal to $\beta$.</p>
+<p>Members of the GTR family of substitution models assume that rates are homogeneous across sites, an assumption that is often violated by real data. We can accommodate variation in substitution rate among sites (ASRV) by adopting the discrete-gamma model <a href="#Yang1994a">(Yang 1994)</a>. This model assumes that the substitution rate at each site is a random variable that is described by a discretized gamma distribution, which has two parameters: the shape parameter, $\alpha$, and the rate parameter, $\beta$. In order that we can interpret the branch lengths as the expected number of substitutions per site, this model assumes that the mean site rate is equal to 1. The mean of the gamma is equal to $\alpha/\beta$, so a mean-one gamma is specified by setting the two parameters to be equal, $\alpha=\beta$. This means that we can fully describe the gamma distribution with the single shape parameter, $\alpha$. The degree of among-site substitution rate variation is inversely proportional to the value of the $\alpha$-shape parameter. As the value of the $\alpha$-shape increases, the gamma distribution increasingly resembles a normal distribution with decreasing variance, which therefore corresponds to decreasing levels of ASRV <a href="#asrhGammaFig"></a>. By contrast, when the value of the $\alpha$-shape parameter is $&lt; 1$, the gamma distribution assumes a concave distribution that concentrates most of the prior density on low rates, but retains some prior mass on sites with very high rates, which therefore corresponds to high levels of ASRV <a href="#asrhGammaFig"></a>. Note that, when $\alpha = 1$, the gamma distribution collapses to an exponential distribution with a rate parameter equal to $\beta$.</p>
 
 <figure id="asrhGammaFig">
-<img src="figures/asrh_gamma.png" alt="" />
+<img src="figures/asrh_gamma.png" />
 <figcaption>
 The probability density of mean-one gamma-distributed rates for different values of the $\alpha$-shape parameter.
 </figcaption>
@@ -1022,6 +1008,14 @@ run an analysis.</p>
 <li><span id="Jukes1969">Jukes T.H., Cantor C.R. 1969. Evolution of Protein Molecules. Mammalian Protein Metabolism. 3:21–132.</span>
 
 <a href="https://doi.org/10.1016/B978-1-4832-3211-9.50009-7">10.1016/B978-1-4832-3211-9.50009-7</a>
+
+</li>
+<li><span id="Brown2010">Brown J.M., Hedtke S.M., Lemmon A.R., Lemmon E.M. 2010. When Trees Grow Too Long: Investigating the Causes of Highly Inaccurate Bayesian Branch-Length Estimates. Systematic Biology. 59:145–161.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syp081">10.1093/sysbio/syp081</a>
+
+</li>
+<li><span id="Rannala2012">Rannala B., Zhu T., Yang Z. 2012. Tail Paradox, Partial Identifiability, and Influential Priors in Bayesian Branch Length Inference. Molecular Biology and Evolution. 29:325–335.</span>
 
 </li>
 <li><span id="Zhang2012">Zhang C., Rannala B., Yang Z. 2012. Robustness of Compound Dirichlet Priors for Bayesian Inference of Branch Lengths. Systematic Biology. 61:779–784.</span>
