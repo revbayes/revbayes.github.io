@@ -81,7 +81,7 @@
         </div>
     </div>
 </blockquote>
-      <h1 id="download-executables">Download executables</h1>
+      <h2 id="download-pre-compiled-executables">Download pre-compiled executables</h2>
 
 <table class="table table-hover ">
 	<tr>
@@ -110,71 +110,84 @@
     </tr>
 </table>
 
-<h1 id="compiling-from-source-on-mac-os-x">Compiling from source on Mac OS X</h1>
+<p><br /></p>
+
+<h2 id="compiling-from-source-on-linux">Compiling from source on Linux</h2>
+
+<div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/revbayes/revbayes.git revbayes
+cd revbayes/projects/cmake
+./build.sh
+</code></pre></div></div>
+<p>For the MPI version:</p>
+<div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./build.sh -mpi true
+</code></pre></div></div>
+
+<p><br /></p>
+
+<h2 id="compiling-from-source-on-mac-os-x">Compiling from source on Mac OS X</h2>
 
 <ol>
   <li>
-    <p>Make sure that you have a c++ compiler installed on your computer. GCC 4.2 (or higher) and Apple LLVM version 6.0 have both been used successfully. If you don’t have a c++ compiler, you can get it on a Mac when you download and install XCode.</p>
+    <p>Make sure that you have a C++ compiler installed on your computer. GCC 4.2 (or higher) and Apple LLVM version 6.0 have both been used successfully. If you don’t have a C++ compiler, you should install Xcode.</p>
   </li>
   <li>Make sure that you have CMake installed. One option to install CMake is using homebrew:
     <div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
  brew install cmake
 </code></pre></div>    </div>
   </li>
-  <li>Download RevBayes from our github repository. You can clone the repository using git by running the following command in the terminal
+  <li>Download RevBayes from our github repository. Clone the repository using git by running the following command in the terminal
     <div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> git clone https://github.com/revbayes/revbayes.git revbayes
 </code></pre></div>    </div>
   </li>
-  <li>Open a terminal and go to the RevBayes source directory if you haven’t already done so, e.g.,
-    <div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> cd revbayes
+  <li>Open a terminal and go to the RevBayes cmake directory:
+    <div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> cd revbayes/projects/cmake
 </code></pre></div>    </div>
   </li>
-  <li>Next, go into the projects and then the cmake subdirectory:
-    <div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> cd projects/cmake
-</code></pre></div>    </div>
-  </li>
-  <li>Now you can either build the standard version using the following:
+  <li>Now either build the standard version using the following:
     <div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> ./build.sh
 </code></pre></div>    </div>
-    <p>or, you can build the MPI version using the following to produce the rb-mpi executeable:</p>
+    <p>or build the MPI version to produce the rb-mpi executeable:</p>
     <div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> ./build.sh -mpi true
 </code></pre></div>    </div>
     <p>You will likely some compiler warning (e.g. <code class="highlighter-rouge">clang: warning: optimization flag '-finline-functions' is not supported</code>). This is normal.</p>
   </li>
-  <li>You should be ready to use RevBayes. We have listed below some potential issues to troubleshoot below.</li>
 </ol>
 
-<h3 id="troubleshooting">Troubleshooting:</h3>
+<p><br /></p>
+
+<h2 id="troubleshooting">Troubleshooting:</h2>
 
 <ul>
   <li>
-    <p><code class="highlighter-rouge">Error cmake not found!</code>. Please go to step 2 in the Installation instructions.</p>
+    <p><code class="highlighter-rouge">-bash: rb: command not found</code></p>
+
+    <p>The problem is that you tried to run RevBayes but your computer doesn’t know where the executable is. The easiest way is to add the directory in which you compiled RevBayes to your system path:</p>
+    <div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  export PATH=&lt;your_revbayes_directory&gt;/projects/cmake:$PATH  
+</code></pre></div>    </div>
   </li>
   <li>
-    <p><code class="highlighter-rouge">Error can't find the libboost_filesystem.dylib library or Library not   loaded: libboost_filesystem.dylib</code>.</p>
+    <p><code class="highlighter-rouge">Error cmake not found!</code>
+  Please double check that CMake is installed. For OS X, go to step 2 above.</p>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">Error can't find the libboost_filesystem.dylib library or Library not   loaded: libboost_filesystem.dylib</code></p>
+
+    <p>You need to add the boost libraries to your path variable. You may find that you have to export this <code class="highlighter-rouge">DYLD_LIBRARY_PATH</code> every time you open a new terminal window. To get around this, you can add this to your <code class="highlighter-rouge">.bash_profile</code> or <code class="highlighter-rouge">.bashrc</code> file (which lives in your home directory). To change this, open a new terminal window and you should be in the home directory. If you do not have either of these files, use the text editor <code class="highlighter-rouge">nano</code> to create this file type:</p>
+
+    <div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  cd ~
+  touch .bash_profile
+  nano .bash_profile
+</code></pre></div>    </div>
+
+    <p>Then add the following lines, replacing <code class="highlighter-rouge">&lt;your_revbayes_directory&gt;</code> with wherever you put the Revbayes Github repository:</p>
+
+    <div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  export DYLD_LIBRARY_PATH=&lt;your_revbayes_directory&gt;/boost_1_60_0/stage/lib:$DYLD_LIBRARY_PATH
+  export PATH=&lt;your_revbayes_directory&gt;/projects/cmake:$PATH  
+</code></pre></div>    </div>
+
+    <p>Then save the file using ctrl^o and hit return, then exit using ctrl^x. Now quit the Terminal app and reopen it and the boost libraries will forever be in your path.</p>
   </li>
 </ul>
-
-<p>You need to add the boost libraries to your path variable. You may find that you have to export this <code class="highlighter-rouge">DYLD_LIBRARY_PATH</code> every time you open a new terminal window. To get around this, you can add this to your <code class="highlighter-rouge">.bash_profile</code> or <code class="highlighter-rouge">.bashrc</code> file (which lives in your home directory). To change this, open a new terminal window and you should be in the home directory. If you do not have either of these files, use the text editor <code class="highlighter-rouge">nano</code> to create this file type:</p>
-
-<div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd ~
-touch .bash_profile
-nano .bash_profile
-</code></pre></div></div>
-
-<p>Then add the following lines, replacing <code class="highlighter-rouge">&lt;your_revbayes_directory&gt;</code> with wherever you put the Revbayes Github repository:</p>
-
-<div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export DYLD_LIBRARY_PATH=&lt;your_revbayes_directory&gt;/boost_1_60_0/stage/lib:$DYLD_LIBRARY_PATH
-export PATH=&lt;your_revbayes_directory&gt;/projects/cmake:$PATH  
-</code></pre></div></div>
-
-<p>Then save the file using ctrl^o and hit return, then exit using ctrl^x. Now quit the Terminal app and reopen it and the boost libraries will forever be in your path.</p>
-
-<ul>
-  <li><code class="highlighter-rouge">-bash: rb: command not found</code></li>
-</ul>
-
-<p>The problem is that you tried to run RevBayes but your computer doesn’t know where the executable is. The easiest way is to add the directory in which you compiled RevBayes to your path variable. You can do this by following exactly the instructions given above).</p>
 
 
       <ol class="bibliography"></ol>
