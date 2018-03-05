@@ -3,7 +3,7 @@ category: implementation
 index: 1
 ---
 
-# Implementing a Distribution
+# Implementing a distribution
 {:.section}
 
 ## General info before getting started
@@ -46,7 +46,7 @@ In the following steps, we'll implement the Beta Binomial Distribution as an exa
 
     For the Beta Binomial distribution, we navigate to the section in the file with the header 'Distributions' and then look for the sub-header dealing with math distributions. Then, add the following line of code:
 
-    ```
+    ```cpp
     #include "Dist_betaBinomial.h"
     ```
 
@@ -54,8 +54,8 @@ In the following steps, we'll implement the Beta Binomial Distribution as an exa
 
     Next, navigate to the section of the file that initializes the global workspace. This section defines the workspace class, which houses info on all distributions. Then, add the following line of code: 
 
-    ```
-        AddDistribution< Natural		>( new Dist_betaBinomial());
+    ```cpp
+    AddDistribution< Natural		>( new Dist_betaBinomial());
     ```     
 
     This adds the distribution to the workspace. Without this step, the betaBinomial will not be added to the revlanguage.
