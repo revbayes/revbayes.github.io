@@ -20,7 +20,7 @@ For our example implementation we will be implementing a typed function. We will
 #include "TypedDagNode.h"
 #include <cmath>
 
-namespace RevBayesCores {
+namespace RevBayesCore {
     /**
      * \brief Hyperbolic Cosine of a real number.
      *
@@ -111,11 +111,11 @@ The `Func_hyperbolicCosineFunction.h` should look like the following:
 namespace RevLanguage {
     
     /**
-     * The RevLanguage wrapper of the hyperbolic Sine function (sinh()).
+     * The RevLanguage wrapper of the hyperbolic Cosine function (sinh()).
      *
      * The RevLanguage wrapper of the hyperbolic function function connects
-     * the variables/parameters of the function and creates the internal HyperbolicSineFunction object.
-     * Please read the HyperbolicSineFunction.h for more info.
+     * the variables/parameters of the function and creates the internal HyperbolicCosineFunction object.
+     * Please read the HyperbolicCosineFunction.h for more info.
      *
      *
      * @copyright Copyright 2009-
@@ -161,7 +161,7 @@ And the `Func_hyperbolicCosineFunction.cpp` should look like this:
 using namespace RevLanguage;
 
 /** default constructor */
-Func_hyperbolicSine::Func_hyperbolicCosine( void ) : TypedFunction<Real>( )
+Func_hyperbolicCosine::Func_hyperbolicCosine( void ) : TypedFunction<Real>( )
 {
     
 }
