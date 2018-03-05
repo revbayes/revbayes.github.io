@@ -22,7 +22,7 @@ For our example implementation we will be implementing a typed function. We will
 
 namespace RevBayesCores {
     /**
-     * \brief Hyperbolic Sine of a real number.
+     * \brief Hyperbolic Cosine of a real number.
      *
      * Compute the hyperbolic cosine of a real number x. (cosh(x) = (exp(x) + exp(-x))/2).
      *
@@ -34,7 +34,7 @@ namespace RevBayesCores {
     class HyperbolicCosineFunction : public ContinuousFunction {
 
         public:
-                                        HyperbolicSineFunction(const TypedDagNode<double> *a); 
+                                        HyperbolicCosineFunction(const TypedDagNode<double> *a); 
 
             HyperbolicCosineFunction*     clone(void) const; //!< creates a clone
             void                        update(void); //!< recomputes the value
@@ -151,8 +151,8 @@ namespace RevLanguage {
 And the `Func_hyperbolicCosineFunction.cpp` should look like this:
 
 ```cpp
-#include "Func_hyperbolicSine.h"
-#include "HyperbolicSineFunction.h"
+#include "Func_hyperbolicCosine.h"
+#include "HyperbolicCosineFunction.h"
 #include "Probability.h"
 #include "Real.h"
 #include "RlDeterministicNode.h"
@@ -173,7 +173,7 @@ Func_hyperbolicSine::Func_hyperbolicCosine( void ) : TypedFunction<Real>( )
  *
  * \return A new copy of the process.
  */
-Func_hyperbolicSine* Func_hyperbolicCosine::clone( void ) const
+Func_hyperbolicCosine* Func_hyperbolicCosine::clone( void ) const
 {
     
     return new Func_hyperbolicCosine( *this );
@@ -184,7 +184,7 @@ RevBayesCore::TypedFunction<double>* Func_hyperbolicCosine::createFunction( void
 {
     
     RevBayesCore::TypedDagNode<double>* x = static_cast<const Real&>( this->args[0].getVariable()->getRevObject() ).getDagNode();
-    RevBayesCore::HyperbolicCosineFunction* f = new RevBayesCore::HyperbolicSineFunction( x );
+    RevBayesCore::HyperbolicCosineFunction* f = new RevBayesCore::HyperbolicCosineFunction( x );
     
     return f;
 }
@@ -212,7 +212,7 @@ const ArgumentRules& Func_hyperbolicCosine::getArgumentRules( void ) const
 const std::string& Func_hyperbolicCosine::getClassType(void)
 {
     
-    static std::string rev_type = "Func_hyperbolicSine";
+    static std::string rev_type = "Func_hyperbolicCosine";
     
     return rev_type;
 }
