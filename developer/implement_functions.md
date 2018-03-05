@@ -6,7 +6,7 @@ category: implementation
 
 Implementing a function
 ========================
-(:.section)
+{:.section}
 
 There are two main classes of functions in RevBayes: member functions and typed functions. Member functions are functions used inside of deterministic nodes and allow access to member methods of a member object. Typed functions are either values within directed acyclic graph (DAG) nodes (i.e. random variables of some distribution), or are associated with a deterministic node. All deterministic nodes hold a function, the value of these deterministic nodes are returned by a call to that function. This has the advantage of simply modifying the value instead of creating a new objuect. 
 
