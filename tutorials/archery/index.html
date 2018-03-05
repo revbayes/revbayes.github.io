@@ -205,7 +205,7 @@ information.</p>
 
 <h2 id="create-your-script-file">Create Your Script File</h2>
 
-<p>Make yourself familiar with the example script called <code class="highlighter-rouge">[archery_MH.Rev]</code>(https://raw.githubusercontent.com/revbayes/revbayes_tutorial/master/RB_MCMC_Archery_Tutorial/archery_MH.Rev) which shows the code for the following sections. Then, start a new and empty script in your text editor and follow each step provided as below.</p>
+<p>Make yourself familiar with the example script called <a href="https://raw.githubusercontent.com/revbayes/revbayes_tutorial/master/RB_MCMC_Archery_Tutorial/archery_MH.Rev"><code class="highlighter-rouge">archery_MH.Rev</code></a> which shows the code for the following sections. Then, start a new and empty script in your text editor and follow each step provided as below.</p>
 
 <p>Name the script file <code class="highlighter-rouge">my_archery_MH.Rev</code> or anything you’d like.</p>
 
@@ -258,13 +258,7 @@ $\mu = \mu$.</p>
 
 <h2 id="reading-in-the-data">Reading in the data</h2>
 
-<p>Since we do not have access to archery data, we will simulate the the
-shots of our archer using the simulation tools in RevBayes. By
-simulating the data, we can also evaluate how well our moves and prior
-model perform—<em>i.e.,</em> how robust and accurate
-are our estimators. After completing this exercise, feel free to repeat
-it and alter the true values to see how they influence the posterior
-distribution.</p>
+<p>Since we do not have access to archery data, we will simulate the the shots of our archer using the simulation tools in RevBayes. By simulating the data, we can also evaluate how well our moves and prior model perform—<em>i.e.,</em> how robust and accurate our estimators are. After completing this exercise, feel free to repeat it and alter the true values to see how they influence the posterior distribution.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Simulate some data (i.e. shoot some arrows)
 # First we need the number of arrows to shoot
@@ -362,7 +356,7 @@ printgen = 10
 using a <code class="highlighter-rouge">for</code> loop (<em>e.g.,</em> step 6 in <a href="#sect:MH_algorithm">The Metropolis-Hastings Algorithm Section</a>). We will start
 this part by defining the number of iterations for our MCMC ( <code class="highlighter-rouge">reps =
 10000</code>), and writing the first line of our ‘for‘ loop. We’ll also define
-a variable ‘delta‘ (explained momentarily).</p>
+a variable <code class="highlighter-rouge">delta</code> (explained momentarily).</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>reps = 10000
 delta = 1
@@ -433,7 +427,7 @@ called <code class="highlighter-rouge">archery_MH.Rev</code>).</p>
   </li>
   <li>
     <p>The <code class="highlighter-rouge">.log</code> file will contain samples from the posterior distribution
-of the model. Open the file in <code class="highlighter-rouge">Tracer</code>to learn about
+of the model. Open the file in <code class="highlighter-rouge">Tracer</code> to learn about
 various features of the posterior distribution, for example: the
 posterior mean or the 95% credible interval.</p>
   </li>
@@ -452,7 +446,7 @@ obtain from <code class="highlighter-rouge">Tracer</code>.</p>
 <img src="figures/archery_MCMC_Trace.png" width="45%" />
 <img src="figures/archery_MCMC_distribution.png" width="45%" />
 <figcaption>
-The <em>Trace</em> of sample from an MCMC simulation. Right: The approximated posterior probability distribution for \mu$.
+The <em>Trace</em> of sample from an MCMC simulation. Right: The approximated posterior probability distribution for $\mu$.
 </figcaption>
 </figure>
 
@@ -595,13 +589,13 @@ analysis.operatorSummary()
 
 <p>Open the resulting <code class="highlighter-rouge">archery_RB.log</code> file in <code class="highlighter-rouge">Tracer</code>.</p>
 
-<p>Do the posterior distributions for the parameter $mu$ look the same as the ones we got from our first analysis?</p>
+<p>Do the posterior distributions for the parameter $\mu$ look the same as the ones we got from our first analysis?</p>
 
 <p>Hopefully, you’ll note that this <code class="highlighter-rouge">Rev</code> model is substantially simpler
 and easier to read than the MH algorithm script we began with. Perhaps
 more importantly, this <code class="highlighter-rouge">Rev</code> analysis is <em>orders of magnitude</em> faster
 than our own script, because it makes use of extremely efficient
-probability calculations built-in to ‘RevBayes‘ (rather than the ones we
+probability calculations built-in to RevBayes (rather than the ones we
 hacked together in our own algorithm).</p>
 
 <h2 id="exercise-3">Exercise 3</h2>
