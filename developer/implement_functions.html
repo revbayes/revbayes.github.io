@@ -126,7 +126,7 @@
 <span class="cp">#endif
 </span></code></pre></div></div>
 
-<p>The first part of this file should be the standard header that goes in all the files giving a brief description about what that file is as well as information about the copyright and the author of that file. Here we are implementing our hyperbolic cosine function as its own class that is derived from the continuous function class that is derived from the typed function class. This class stores the hyperbolic cosine of a value that is held in a DAG node. We have also defined a clone method which can creates a clone of our class, and an update method which will update the value of our Hyperbolic Cosine class whenever the value of the DAG node changes. Now we will move on to the <code class="highlighter-rouge">HyperbolicCosineFunction.cpp</code> file.</p>
+<p>The first part of this file should be the standard header that goes in all the files giving a brief description about what that file is as well as information about the copyright and the author of that file. Here we are implementing our hyperbolic cosine function as its own class that is derived from the continuous function class that is derived from the typed function class. This class stores the hyperbolic cosine of a value that is held in a DAG node. We have also defined a clone method which can create a clone of our class, and an update method which will update the value of our Hyperbolic Cosine class whenever the value of the DAG node changes. Now we will move on to the <code class="highlighter-rouge">HyperbolicCosineFunction.cpp</code> file.</p>
 
 <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include "HyperbolicCosineFunction.h"
 </span>
@@ -166,9 +166,9 @@
 <span class="p">}</span>
 </code></pre></div></div>
 
-<p>Now all we need to do is add the hyperbolic cosine function to the <code class="highlighter-rouge">revlanguage</code> side of things so that when we are using <code class="highlighter-rouge">Rev</code> we can use our function. First we need to add <code class="highlighter-rouge">Func_hyperbolicCosineFunction.cpp</code> and <code class="highlighter-rouge">Func_hyperbolicCosineFunction.h</code> to <code class="highlighter-rouge">/src/revlanguage/functions/math/</code>. Note that the directory structure of <code class="highlighter-rouge">revlanguage</code> is similar to that of the <code class="highlighter-rouge">core</code>. The Revlanguage side serves as a wrapper of the function that we just wrote in the <code class="highlighter-rouge">core</code>.</p>
+<p>Now all we need to do is add the hyperbolic cosine function to the <code class="highlighter-rouge">revlanguage</code> side of things so that when we are using <code class="highlighter-rouge">Rev</code> we can use our function. First we need to add <code class="highlighter-rouge">Func_hyperbolicCosine.cpp</code> and <code class="highlighter-rouge">Func_hyperbolicCosine.h</code> to <code class="highlighter-rouge">/src/revlanguage/functions/math/</code>. Note that the directory structure of <code class="highlighter-rouge">revlanguage</code> is similar to that of the <code class="highlighter-rouge">core</code>. The Revlanguage side serves as a wrapper of the function that we just wrote in the <code class="highlighter-rouge">core</code>.</p>
 
-<p>The <code class="highlighter-rouge">Func_hyperbolicCosineFunction.h</code> should look like the following:</p>
+<p>The <code class="highlighter-rouge">Func_hyperbolicCosine.h</code> should look like the following:</p>
 
 <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
 <span class="cp">#ifndef Func_hyperbolicCosine_h
@@ -219,7 +219,7 @@
 </span>
 </code></pre></div></div>
 
-<p>And the <code class="highlighter-rouge">Func_hyperbolicCosineFunction.cpp</code> should look like this:</p>
+<p>And the <code class="highlighter-rouge">Func_hyperbolicCosine.cpp</code> should look like this:</p>
 
 <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include "Func_hyperbolicCosine.h"
 #include "HyperbolicCosineFunction.h"
