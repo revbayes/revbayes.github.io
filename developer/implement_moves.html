@@ -52,8 +52,8 @@
 
       <div class="row">
 	<h1 class="maintitle">Implementing Moves</h1>
-	<h3 class="subtitle">Getting started with RevBayes development</h3>
-	<h4 class="maintitle">Jeremy M. Brown</h4>
+	<h3 class="subtitle">Quick start guide to RevBayes development by adding a new move</h3>
+	<h4 class="maintitle"></h4>
 </div>
 
       
@@ -81,7 +81,17 @@
         </div>
     </div>
 </blockquote>
-      <h1 id="hello-move">Hello move!</h1>
+      <p>##<strong>Implementing a Metropolis-Hastings Move</strong></p>
+
+<p><strong>General info before getting started:</strong></p>
+
+<p>The steps to implementing a new move vary slightly, depending on the move’s type (e.g., Metropolis-Hastings versus Gibbs). For the purposes of this guide, we will focus on a Metropolis-Hastings move.</p>
+
+<p><strong>Steps</strong>:</p>
+
+<ol>
+  <li><em>Orienting within the repository</em> - As with implementing a new distribution or function, you’ll need to add relevant code to both the core of RevBayes and on the language side. For the core, navigate in the repository to <code class="highlighter-rouge">src/core/moves</code>. For a Metropolis-Hastings move, we’ll then go into the <code class="highlighter-rouge">proposal</code> directory. In this directory, you can find several templates for generic proposal classes, as well as folders containing moves for specific parameter types. To keep things easy, we’ll focus on a single scalar parameter, so we’ll navigate one step further into the <code class="highlighter-rouge">scalar</code> directory.</li>
+</ol>
 
       <ol class="bibliography"></ol>
 
