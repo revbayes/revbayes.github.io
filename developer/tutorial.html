@@ -10,7 +10,7 @@
     <link rel="stylesheet" type="text/css" href="/revbayes_tutorials/assets/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="/revbayes_tutorials/assets/css/bootstrap-theme.css" />
     <link rel="stylesheet" type="text/css" href="/revbayes_tutorials/assets/css/main.css" />
-    <title>RevBayes: Tools for RevBayes Developers</title>
+    <title>RevBayes: Writing a user tutorial</title>
   </head>
   <body>
     <div class="container">
@@ -51,7 +51,7 @@
 </nav>
 
       <div class="row">
-	<h1 class="maintitle">Tools for RevBayes Developers</h1>
+	<h1 class="maintitle">Writing a user tutorial</h1>
 	<h3 class="subtitle"></h3>
 	<h4 class="maintitle"></h4>
 </div>
@@ -81,62 +81,43 @@
         </div>
     </div>
 </blockquote>
-      <h2 id="joining-the-revbayes-team">Joining the RevBayes Team</h2>
+      <p>Writing a tutorial for fun and profit!</p>
 
-<p><code class="highlighter-rouge">RevBayes</code> is a collaborative software project involving developers from Europe and North America. 
-Since <code class="highlighter-rouge">RevBayes</code> is open source, everyone is free to clone the <a href="https://github.com/revbayes/revbayes">GitHub repository</a>. 
-If you would like to implement new methods or models in any of the RevBayes source code, you can contribute your work to the project by issuing a pull request on GitHub. 
-Alternatively, if you are interested in joining the RevBayes development team, please contact <a href="https://github.com/orgs/revbayes/people">one of the public members</a> to request access.</p>
+<h1 id="including-a-citation">Including a citation</h1>
 
-<h2 id="developer-guide">Developer Guide</h2>
+<h3 id="markdown">Markdown:</h3>
+<div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>This is a citation {% cite Felsenstein1981 %}.
+</code></pre></div></div>
+<h3 id="output">Output:</h3>
+<p>This is a citation <a href="#Felsenstein1981">(Felsenstein 1981)</a></p>
 
-<p>The RevBayes Developers’ Guide will provide you with the information needed to implement new methods, models, functions, and algorithms in the RevBayes language and core libraries.</p>
+<h1 id="including-a-figure">Including a figure</h1>
 
-<table class="table table-striped">
+<h3 id="markdown-1">Markdown:</h3>
+<div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{% figure example %}
+<span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"images/example.png"</span> <span class="na">width=</span><span class="s">"200"</span><span class="nt">&gt;</span>
+{% figcaption %}
+This is an example figure caption. You can include <span class="ge">*Markdown*</span> and $<span class="se">\L</span>aTeX$.
+{% endfigcaption %}
+{% endfigure %}
 
-<tr>
-<td class="col-sm-3">
+This is a reference to {% figref example %}
+</code></pre></div></div>
+<h3 id="output-1">Output:</h3>
+<figure id="example">
+<img src="images/example.png" width="200" />
+<figcaption>
+This is an example figure caption. You can include <em>Markdown</em> and $\LaTeX$.
+</figcaption>
+</figure>
 
-1. <a href="/revbayes_tutorials/developer/git-flow.html">Git Workflow Best Practices</a>
-</td>
-<td class="col-sm-3">How to contribute code effectively</td>
-</tr>
+<p>This is a reference to <a href="#example"></a></p>
 
-<tr>
-<td class="col-sm-3">
+      <ol class="bibliography"><li><span id="Felsenstein1981">Felsenstein J. 1981. Evolutionary Trees from DNA Sequences: a Maximum Likelihood Approach. Journal of Molecular Evolution. 17:368–376.</span>
 
-2. <a href="/revbayes_tutorials/developer/setup.html">Setting up to develop in RevBayes</a>
-</td>
-<td class="col-sm-3">Some options for setting up a RevBayes development environment</td>
-</tr>
+<a href="https://doi.org/10.1007/BF01734359">10.1007/BF01734359</a>
 
-<tr>
-<td class="col-sm-3">
-
-3. <a href="/revbayes_tutorials/developer/architecture.html">Getting familiar with the code</a>
-</td>
-<td class="col-sm-3">The architecture of the RevBayes source code</td>
-</tr>
-
-<tr>
-<td class="col-sm-3">
-
-4. <a href="/revbayes_tutorials/developer/tutorial.html">Writing a user tutorial</a>
-</td>
-<td class="col-sm-3"></td>
-</tr>
-
-<tr>
-<td class="col-sm-3">
-
-5. <a href="/revbayes_tutorials/developer/implementation.html">Implementing functions, distributions, and moves</a>
-</td>
-<td class="col-sm-3">Getting started with RevBayes development</td>
-</tr>
-
-</table>
-
-      <ol class="bibliography"></ol>
+</li></ol>
 
 <script type="text/javascript">
 var _ol = document.querySelectorAll('ol');
@@ -174,7 +155,7 @@ for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
 $(".highlighter-rouge").each(function() {
   
   if( this.classList == "highlighter-rouge")
-    this.classList = "Rev highlighter-rouge";
+    this.classList = "none highlighter-rouge";
   
 });
 </script>
