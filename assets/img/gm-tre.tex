@@ -1,0 +1,18 @@
+\usepackage{tikz}
+
+\tikzstyle{snode}=[black,draw=black,line width=3.5pt,shape=circle,fill=white,minimum size=13mm]
+\tikzstyle{obnode}=[black,draw=black,line width=3.5pt,shape=circle,fill=black!20!white,minimum size=13mm]
+\tikzstyle{taro}=[->,line width=3.5pt,color=black]
+
+\begin{tikzpicture}
+\node [obnode] (n0) at (1,0) {};
+\node [obnode] (n1) at (4,0) {};
+\node [obnode] (n2) at (7,0) {};
+\coordinate (mid01) at ($(n0)!0.5!(n1)$);
+\node [snode] (n5) at ($(mid01)+(0,3)$) {};
+\node [snode] (n6) at ($(n1)+(0,6)$) {};
+\draw [taro] (n5) -- (n0);
+\draw [taro] (n5) -- (n1);
+\draw [taro] (n6) -- (n5);
+\draw [taro] (n6) -- (n2);
+\end{tikzpicture}
