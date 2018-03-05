@@ -8,6 +8,7 @@ prerequisites:
 data_files: 
 - bears_dosReis.tre
 - bears_irbp.nex
+index: 2
 ---
 
 
