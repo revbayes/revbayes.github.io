@@ -66,7 +66,7 @@ double GammaScaleProposal::propose( double &val )
 }
 ```
 
-In this case, the Hastings ratio involves the probability density of the forward move ( the scaling factor u), the corresponding backward move (the scaling factor 1/u), and the solution to the Jacobian ($\frac{-1}{u}$).
+In this case, the Hastings ratio involves the probability density of the forward move (the scaling factor *u*), the corresponding backward move (the scaling factor $\frac{1}/{u}$), and the solution to the Jacobian ($-\frac{1}{u}$).
 
 3.  _Creating new files for the rev language_ -
 
