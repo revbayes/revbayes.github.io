@@ -9,34 +9,47 @@ index: 1
 ## General info before getting started
 {:.subsection}
 
-Within RevBayes, there are math distributions and phylogenetic distributions. 
+* Within the RevBayes **core** directory, there are subdirectories for different categories of distributions. 
 All predefined mathematical distributions that have been implemented exist in `core/distributions/math`.
 
-Note that when implementing a new distribution, you will need to create `.cpp` and `.h` files in both the revlanguage directory and the core directory. For the language side, one of the most important things is the create distribution function (it converts user-arguments into calculations). Also, the getParameterRules function is important (to get the degrees of freedom & other things). As a rule of thumb, you can look at the code of existing distributions for general help on syntax & organization.
+* Note that when implementing a new distribution, you will need to create `.cpp` and `.h` files in both the **revlanguage** directory and the **core** directory. (For a refresher on the difference between these two directories, refer to the 'Getting familiar with the code' section of this Developer's guide).
+The overall naming format remains the same for every distribution in RevBayes. In the Beta Binomial Distribution example provided below, I specify what to name each file.
 
-Within your new distribution, you will need to include some functions. For example, each new distribution must have: the get class type, name, and help. Some of these you may not need to implement (if it's dictated by the parent class & is already present), but others you will need to implement within the distribution. 
+* It is often helpful to look at / 'borrow' code from existing RevBayes distributions for general help on syntax and organization.
 
-Distributions have a prefexed DN (dag node), and all moves have a previxed MV (move). RevBayes takes the name within & creates the DN automatically, so be aware of this. 
+For the language side, one of the most important things is the create distribution function (it converts user-arguments into calculations). Also, the getParameterRules function is important (to get the degrees of freedom & other things). It is often helpful to look at the code of existing distributions for general help on syntax & organization.
+
+Within your new distribution, you will need to include some functions. For example, each new distribution must have: the get class type, name, and help. You may not need to implement these from scratch (if they're dictated by the parent class & are already present), but you will need to implement other functions within your distribution (e.g. cdf, rv, quantile). 
+
+Distributions have a prefexed DN (dag node), and all moves have a previxed MV. RevBayes takes the name within & creates the DN automatically, so be aware of this. 
+
+
  
 In the following steps, we'll implement the Beta Binomial Distribution as an example, for syntax purposes.
 
 ## Steps
 {:.subsection}
 
-1.  Create new .cpp & .h files in `revlanguage/distributions/math/`  (named `Dist_betabinomial.cpp`, `Dist_betaBinomial.h`)
+1.  Create new .cpp & .h files in `revlanguage/distributions/math/` named `Dist_betabinomial.cpp` and `Dist_betaBinomial.h`. 
+ *Note: all files in this directory will follow this naming format*
 
-    To populate these files, look at existing examples of similar distributions for specific info on what to include & on proper syntax. For example, for the Beta Binomial distribution, I looked to the existing Binomial Distribution code for guidance.
+    To populate these files, look at existing examples of similar distributions for specific info on what to include & on proper syntax.  For example, for the Beta Binomial distribution, I looked to the existing Binomial Distribution code for guidance.
+    
+```cpp 
+//add code here
+```
 
 2.  Test
-    1.  Create new `.cpp` & `.h` files in `core/distributions/math/`  (named `BetaBinomialDistribution.cpp`, `BetaBinomialDistribution.h`).
+    1.  Create new `.cpp` & `.h` files in `core/distributions/math/` named `BetaBinomialDistribution.cpp` and `BetaBinomialDistribution.h`.
 
-        **Note:** This is the object oriented wrapper code, that references the functions hard-coded in step 2b.
+        **Note:** This is the object oriented wrapper code, that references the functions hard-coded in the next step.
     
-    2.  Create new .cpp and .h files in `core/math/Distributions/`  (named `DistributionBetaBinomial.cpp`, `DistributionBetaBinomial.h`). 
+    2.  Create new .cpp and .h files in `core/math/Distributions/` named `DistributionBetaBinomial.cpp` and `DistributionBetaBinomial.h`. 
 
-        These are the raw procedural functions in revbayes namespace (e.g. pdf, cdf, quantile); they are not derived functions. RbStatistics is a namespace. To populate these files, look at existing examples of similar distributions to get an idea of what functions to include, what variables are needed, and the proper syntax.
+        These are the raw procedural functions in the RevBayes namespace (e.g. pdf, cdf, quantile); they are not derived functions. RbStatistics is a namespace. To populate these files, look at existing examples of similar distributions to get an idea of what functions to include, what variables are needed, and the proper syntax.
 
         **Note:** This is the most time-consuming step in the entire process of implementing a new distribution.
+
 
 3.  Navigate to `revlanguage/workspace/RbRegister_Dist.cpp` 
 
