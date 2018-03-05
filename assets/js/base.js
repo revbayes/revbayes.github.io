@@ -57,14 +57,6 @@ $(".challenge,.discussion,.solution").each(function() {
     h2.append("<span class='fold-unfold glyphicon glyphicon-collapse-down'></span>");
 });
 
-// Handle searches.
-// Relies on document having 'meta' element with name 'search-domain'.
-function google_search() {
-  var query = document.getElementById("google-search").value;
-  var domain = $("meta[name=search-domain]").attr("value");
-  window.open("https://www.google.com/search?q=" + query + "+site:" + domain);
-}
-
 // Create an array of all script files and their contents
 var scripts = {};
 var _code = document.querySelectorAll('pre');
@@ -129,6 +121,12 @@ $(".tutorial_files").each(function() {
     }
 });
 
+// Add figure titles
+$(".figure").each(function(index) {
+    var img = $("img:first", this);
+    img.after("<b>Figure " + (index+1) + ".</b>");
+});
+
 // Process highlighted blocks
 var _pre = document.querySelectorAll('pre');
 for (var i = 0, element; element = _pre[i]; i++) {
@@ -156,13 +154,17 @@ for (var i = 0, element; element = _pre[i]; i++) {
   var open_curly = 0;
   var backslash = false;
   for (var line in lines) {
-      if ( open_brace || open_paren || open_curly ) {
-        lines[line] = "<span class='secondary'>"+lines[line]+"</span>";
-      } else {
-        lines[line] = "<span class='line'>"+lines[line]+"</span>";
-      }
+      var txt = "<span class='line'>"+lines[line]+"</span>";
+      if ( open_brace || open_paren || open_curly || backslash )
+        txt = "<span class='secondary'>"+lines[line]+"</span>";
 
-      var myRegexp = /[\[\]\(\)\{\}\\]/g;
+      backslash = false;
+      if ( lines[line].match(/\s\\\s*$/g) != null )
+        backslash = true;
+
+      lines[line] = txt;
+
+      var myRegexp = /[\[\]\(\)\{\}]/g;
       match = myRegexp.exec(lines[line]);
       while (match != null) {
         if ( match == '[' )
@@ -172,16 +174,10 @@ for (var i = 0, element; element = _pre[i]; i++) {
         if ( match == '{' )
           open_curly++;
 
-        backslash = false;
-        if ( match == '\\' )
-          backslash = true;
-
         if ( open_brace && match == ']' )
           open_brace--;
-
         if ( open_paren && match == ')' )
           open_paren--;
-
         if ( open_curly && match == '}' )
           open_curly--;
 
