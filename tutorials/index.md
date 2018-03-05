@@ -23,8 +23,7 @@ The tutorials all follow the same format, please see the Tutorial Format guide f
 {% for lesson in tutorials %}
 <tr>
 <td class="col-sm-3">
-{% assign lesson_number = lesson_number | plus: 1 %}
-{{ lesson_number }}. <a href="{{ site.baseurl }}{{ lesson.url }}">{{ lesson.title }}</a>
+<a href="{{ site.baseurl }}{{ lesson.url }}">{{ lesson.title }}</a>
 </td>
 <td class="col-sm-3">{{ lesson.subtitle }}</td>
 </tr>
@@ -38,8 +37,7 @@ The tutorials all follow the same format, please see the Tutorial Format guide f
 {% for lesson in tutorials %}
 <tr>
 <td class="col-sm-3">
-{% assign lesson_number = lesson_number | plus: 1 %}
-{{ lesson_number }}. <a href="{{ site.baseurl }}{{ lesson.url }}">{{ lesson.title }}</a>
+<a href="{{ site.baseurl }}{{ lesson.url }}">{{ lesson.title }}</a>
 </td>
 <td class="col-sm-3">{{ lesson.subtitle }}</td>
 </tr>
@@ -53,8 +51,7 @@ The tutorials all follow the same format, please see the Tutorial Format guide f
 {% for lesson in tutorials %}
 <tr>
 <td class="col-sm-3">
-{% assign lesson_number = lesson_number | plus: 1 %}
-{{ lesson_number }}. <a href="{{ site.baseurl }}{{ lesson.url }}">{{ lesson.title }}</a>
+<a href="{{ site.baseurl }}{{ lesson.url }}">{{ lesson.title }}</a>
 </td>
 <td class="col-sm-3">{{ lesson.subtitle }}</td>
 </tr>
@@ -68,8 +65,7 @@ The tutorials all follow the same format, please see the Tutorial Format guide f
 {% for lesson in tutorials %}
 <tr>
 <td class="col-sm-3">
-{% assign lesson_number = lesson_number | plus: 1 %}
-{{ lesson_number }}. <a href="{{ site.baseurl }}{{ lesson.url }}">{{ lesson.title }}</a>
+<a href="{{ site.baseurl }}{{ lesson.url }}">{{ lesson.title }}</a>
 </td>
 <td class="col-sm-3">{{ lesson.subtitle }}</td>
 </tr>
