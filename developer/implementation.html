@@ -103,13 +103,13 @@
 
     <p>Next, we’ll need to create a <strong>new .cpp file</strong> containing the implementation of our new move. As with the header, it’s easiest to copy and rename an existing file, so we’ll use <code class="highlighter-rouge">ScaleProposal.cpp</code> as our template, copy it, and rename to <code class="highlighter-rouge">GammaScaleProposal.cpp</code>. As with the header file, most of the necessary changes involve updating the names of variables and function names. If the move requires access to other math functions, additional header files may need to be included at the top. Explore <code class="highlighter-rouge">src/core/math</code> as needed to find the necessary functions or distributions. For our example, the number and type of variables used by our move is the same as our template, so we don’t need to modify the constructor or variable initialization, other than updating the constructor name. Similarly for this example, we don’t need to alter the code in the <code class="highlighter-rouge">::cleanProposal</code>, <code class="highlighter-rouge">::clone</code>, <code class="highlighter-rouge">::prepareProposal</code>, <code class="highlighter-rouge">::printParameterSummary</code>, <code class="highlighter-rouge">::undoProposal</code>, <code class="highlighter-rouge">::swapNodeInternal</code>, and <code class="highlighter-rouge">::tune</code> methods as these are common to our template and new moves (and will be identical to many of the scalar moves), but we do need to update the class names associated with the methods (i.e., <code class="highlighter-rouge">ScaleMove::</code> -&gt; <code class="highlighter-rouge">GammaScaleMove::</code>). For the <code class="highlighter-rouge">::getProposalName</code> method, we need to update the string in the method that provides a descriptive name for the move - <code class="highlighter-rouge">name = "Gamma Scaling"</code>. The bulk of the necessary changes for the new move will come in the <code class="highlighter-rouge">::propose</code> method and the help description above the method. For this example, the new <code class="highlighter-rouge">::propose</code> method looks like this:</p>
 
-    <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+    <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/*
          * Perform the proposal.
  *
          * A gamma scaling proposal draws a random number from a gamma distribution u ~ Gamma(lambda,1) and scales the current vale by u
          * lambda is the tuning parameter of the proposal which influences the size of the proposals by changing the shape of the Gamma.
  *
-          * \return The hastings ratio.
+         * \return The hastings ratio.
  */</span>
 <span class="kt">double</span> <span class="n">GammaScaleProposal</span><span class="o">::</span><span class="n">propose</span><span class="p">(</span> <span class="kt">double</span> <span class="o">&amp;</span><span class="n">val</span> <span class="p">)</span>
 <span class="p">{</span>
@@ -143,6 +143,11 @@
 <span class="p">}</span>
 </code></pre></div>    </div>
   </li>
+</ol>
+
+<p>In this case, the Hastings ratio involves the probability density of the forward move ( the scaling factor u), the corresponding backward move (the scaling factor 1/u), and the solution to the Jacobian ($\frac{-1}{u}$).</p>
+
+<ol>
   <li>
     <p><em>Creating new files for the rev language</em> -</p>
   </li>
