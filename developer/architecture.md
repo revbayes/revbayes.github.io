@@ -18,4 +18,6 @@ For more specific information on functions and distributions, and for general in
  
 <img src="images/RB_structure_map.jpg" width="110%">
  
- 
+##DAG Nodes
+
+Define/explain what a DAG node is here
