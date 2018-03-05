@@ -9,9 +9,11 @@ Implementing a function
 ========================
 {:.section}
 
-There are two main classes of functions in RevBayes: member functions and typed functions. Member functions are functions used inside of deterministic nodes and allow access to member methods of a member object. Typed functions are either values within directed acyclic graph (DAG) nodes (i.e. random variables of some distribution), or are associated with a deterministic node. All deterministic nodes hold a function, the value of these deterministic nodes are returned by a call to that function. This has the advantage of simply modifying the value instead of creating a new objuect. 
+There are two main classes of functions in RevBayes: member functions and typed functions. Member functions are functions used inside of deterministic nodes and allow access to member methods of a member object. Typed functions are either values within directed acyclic graph (DAG) nodes (i.e. random variables of some distribution), or are associated with a deterministic node. All deterministic nodes hold a function, the value of these deterministic nodes are returned by a call to that function. This has the advantage of simply modifying the value instead of creating a new object.
 
-For our example implementation we will be implementing a typed function. We will begin with a simple example of implementing a mathematical function, the hyperbolic cosine function. First we need to add two files to the RevBayes source code, a `HyperbolicCosineFunction.cpp` and a `HyperbolicCosineFunction.h`. These will go within `revbayes/src/core/functions/math` since we are adding a function and it is a mathematical function. First, we will write our header file. We will need a few other RevBayes header files including `ContinousFunction.h` since hyperbolic cosine is a continuous function, and `TypedDagNode.h` since our typed function deals with nodes of DAGs.
+For our example implementation we will be implementing a typed function. We will begin with a simple example of implementing a mathematical function, the hyperbolic cosine function. First we need to add two files to the RevBayes source code, a `HyperbolicCosineFunction.cpp` and a `HyperbolicCosineFunction.h`. These will go within `revbayes/src/core/functions/math` since we are adding a function and it is a mathematical function.
+
+First, we will write our header file. Within our header file, we need to `include` a few other RevBayes header files, including `ContinousFunction.h` since hyperbolic cosine is a continuous function, and `TypedDagNode.h` since our typed function deals with nodes of DAGs.
 
 ```cpp
 #ifndef HyperbolicCosineFunction_h 
@@ -52,8 +54,9 @@ namespace RevBayesCore {
 
 #endif
 ```
-
-The first part of this file should be the standard header that goes in all the files giving a brief description about what that file is as well as information about the copyright and the author of that file. Here we are implementing our hyperbolic cosine function as its own class that is derived from the continuous function class that is derived from the typed function class. This class stores the hyperbolic cosine of a value that is held in a DAG node. We have also defined a clone method which can create a clone of our class, and an update method which will update the value of our Hyperbolic Cosine class whenever the value of the DAG node changes. Now we will move on to the `HyperbolicCosineFunction.cpp` file. 
+The first part of this file should be the standard header that goes in all the files giving a brief description about what that file is as well as information about the copyright and the author of that file.
+Next, after including the necessary header files, we have to ensure that our new function is included within the `RevBayesCore` namespace.
+Here we are implementing our hyperbolic cosine function as its own class that is derived from the continuous function class that is derived from the typed function class. This class stores the hyperbolic cosine of a value that is held in a DAG node. We have also defined a clone method which can create a clone of our class, and an update method which will update the value of our Hyperbolic Cosine class whenever the value of the DAG node changes. Now we will move on to the `HyperbolicCosineFunction.cpp` file.
 
 ```cpp
 #include "HyperbolicCosineFunction.h"
