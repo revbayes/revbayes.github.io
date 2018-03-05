@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="search-domain" value="https://willpett.github.io/revbayes_tutorials/">
-    <link href="https://fonts.googleapis.com/css?family=Chelsea+Market" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
     <link rel="stylesheet" href="/revbayes_tutorials/assets/css/syntax.css">
     <link rel="stylesheet" type="text/css" href="/revbayes_tutorials/assets/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="/revbayes_tutorials/assets/css/bootstrap-theme.css" />
@@ -83,9 +83,11 @@
 </blockquote>
       <h1 class="section" id="implementing-a-function">Implementing a function</h1>
 
-<p>There are two main classes of functions in RevBayes: member functions and typed functions. Member functions are functions used inside of deterministic nodes and allow access to member methods of a member object. Typed functions are either values within directed acyclic graph (DAG) nodes (i.e. random variables of some distribution), or are associated with a deterministic node. All deterministic nodes hold a function, the value of these deterministic nodes are returned by a call to that function. This has the advantage of simply modifying the value instead of creating a new objuect.</p>
+<p>There are two main classes of functions in RevBayes: member functions and typed functions. Member functions are functions used inside of deterministic nodes and allow access to member methods of a member object. Typed functions are either values within directed acyclic graph (DAG) nodes (i.e. random variables of some distribution), or are associated with a deterministic node. All deterministic nodes hold a function, the value of these deterministic nodes are returned by a call to that function. This has the advantage of simply modifying the value instead of creating a new object.</p>
 
-<p>For our example implementation we will be implementing a typed function. We will begin with a simple example of implementing a mathematical function, the hyperbolic cosine function. First we need to add two files to the RevBayes source code, a <code class="highlighter-rouge">HyperbolicCosineFunction.cpp</code> and a <code class="highlighter-rouge">HyperbolicCosineFunction.h</code>. These will go within <code class="highlighter-rouge">revbayes/src/core/functions/math</code> since we are adding a function and it is a mathematical function. First, we will write our header file. We will need a few other RevBayes header files including <code class="highlighter-rouge">ContinousFunction.h</code> since hyperbolic cosine is a continuous function, and <code class="highlighter-rouge">TypedDagNode.h</code> since our typed function deals with nodes of DAGs.</p>
+<p>For our example implementation we will be implementing a typed function. We will begin with a simple example of implementing a mathematical function, the hyperbolic cosine function. First we need to add two files to the RevBayes source code, a <code class="highlighter-rouge">HyperbolicCosineFunction.cpp</code> and a <code class="highlighter-rouge">HyperbolicCosineFunction.h</code>. These will go within <code class="highlighter-rouge">revbayes/src/core/functions/math</code> since we are adding a function and it is a mathematical function.</p>
+
+<p>First, we will write our header file. Within our header file, we need to <code class="highlighter-rouge">include</code> a few other RevBayes header files, including <code class="highlighter-rouge">ContinousFunction.h</code> since hyperbolic cosine is a continuous function, and <code class="highlighter-rouge">TypedDagNode.h</code> since our typed function deals with nodes of DAGs.</p>
 
 <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#ifndef HyperbolicCosineFunction_h 
 #define HyperbolicCosineFunction_h
@@ -125,8 +127,9 @@
 
 <span class="cp">#endif
 </span></code></pre></div></div>
-
-<p>The first part of this file should be the standard header that goes in all the files giving a brief description about what that file is as well as information about the copyright and the author of that file. Here we are implementing our hyperbolic cosine function as its own class that is derived from the continuous function class that is derived from the typed function class. This class stores the hyperbolic cosine of a value that is held in a DAG node. We have also defined a clone method which can create a clone of our class, and an update method which will update the value of our Hyperbolic Cosine class whenever the value of the DAG node changes. Now we will move on to the <code class="highlighter-rouge">HyperbolicCosineFunction.cpp</code> file.</p>
+<p>The first part of this file should be the standard header that goes in all the files giving a brief description about what that file is as well as information about the copyright and the author of that file.
+Next, after including the necessary header files, we have to ensure that our new function is included within the <code class="highlighter-rouge">RevBayesCore</code> namespace.
+Here we are implementing our hyperbolic cosine function as its own class that is derived from the continuous function class that is derived from the typed function class. This class stores the hyperbolic cosine of a value that is held in a DAG node. We have also defined a clone method which can create a clone of our class, and an update method which will update the value of our Hyperbolic Cosine class whenever the value of the DAG node changes. Now we will move on to the <code class="highlighter-rouge">HyperbolicCosineFunction.cpp</code> file.</p>
 
 <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include "HyperbolicCosineFunction.h"
 </span>
