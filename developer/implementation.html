@@ -25,7 +25,7 @@
       </button>
 
       <a href="https://revbayes.github.io" class="pull-left">
-        <img class="navbar-logo" src="/revbayes_tutorials/assets/img/aquabayes.png" alt="RevBayes logo" />
+        <img class="navbar-logo" src="/revbayes_tutorials/assets/img/aquabayes-desaturated.png" alt="RevBayes Logo" />
       </a>
       
       
@@ -71,10 +71,10 @@
   </div>
 </blockquote>
 
-<blockquote class="tutorial_files no-print">
+<blockquote class="tutorial_files no-print" id="tutorial_files">
   <h2>Data files and scripts</h2>
   
-    <div class="row">
+    <div class="row" id="script_row">
       <div class="col-md-9">
           <strong>Scripts</strong>
           <ul id="scripts"></ul>
@@ -340,13 +340,15 @@ Here we are implementing our hyperbolic cosine function as its own class that is
 
 <h2 class="subsection" id="general-info-before-getting-started">General info before getting started</h2>
 
+<p>TESTING HELLO</p>
+
 <ul>
   <li>
     <p>Within the RevBayes <strong>core</strong> directory, there are subdirectories for different categories of distributions. 
 All predefined mathematical distributions that have been implemented exist in <code class="highlighter-rouge">core/distributions/math</code>.</p>
   </li>
   <li>
-    <p>Note that when implementing a new distribution, you will need to create <code class="highlighter-rouge">.cpp</code> and <code class="highlighter-rouge">.h</code> files in both the <strong>revlanguage</strong> directory and the <strong>core</strong> directory. (For a refresher on the difference between these two directories, refer to the <a href="/revbayes_tutorials/Getting familiar with the code">Getting familiar with the code</a> section of this Developer’s guide).
+    <p>Note that when implementing a new distribution, you will need to create <code class="highlighter-rouge">.cpp</code> and <code class="highlighter-rouge">.h</code> files in both the <strong>revlanguage</strong> directory and the <strong>core</strong> directory. (For a refresher on the difference between these two directories, refer to the <a href="/revbayes_tutorials/developer/architecture.html">Getting familiar with the code</a> section of this Developer’s guide).
 The overall naming format remains the same for every distribution in RevBayes. In the Beta Binomial Distribution example provided below, I specify what to name each file.</p>
   </li>
   <li>
@@ -361,7 +363,7 @@ The overall naming format remains the same for every distribution in RevBayes. I
     <p>Within every new distribution, you will need to include some functions. For example, each new distribution must have: the get class type, name, and help functions. You may not need to implement these from scratch (if they’re dictated by the parent class &amp; are already present), but you will need to implement other functions within your distribution (e.g. cdf, rv, quantile).</p>
   </li>
   <li>
-    <p>Distributions have a prefexed DN (dag node), and all moves have a previxed MV. RevBayes takes the name within &amp; creates the DN automatically, so be aware of this. For a refresher on DAG nodes, refer <a href="/revbayes_tutorials/Getting familiar with the code">here</a>.</p>
+    <p>Distributions have a prefexed DN (dag node), and all moves have a previxed MV. RevBayes takes the name within &amp; creates the DN automatically, so be aware of this. For a refresher on DAG nodes, refer <a href="/revbayes_tutorials/developer/architecture.html">to this page</a>.</p>
   </li>
 </ul>
 
@@ -429,7 +431,7 @@ The overall naming format remains the same for every distribution in RevBayes. I
 
     <p>There are multiple ways to do this, so use your best judgment. As a best practice, you should first compile it to ensure there are no errors. Once it compiles with no problems, you can test in various ways (e.g. run each individual function within the new Beta Binomial distribution in R, then run the Binomial distribution with a Beta prior in Rev and see if the output matches).</p>
 
-    <p>After ensuring your code runs properly, you are ready to add it to the git repo. We recommend reading through the <a href="/revbayes_tutorials/Git Workflow Best Practices">Git Workflow Best Practices</a> section of the Developer’s guide before pushing.</p>
+    <p>After ensuring your code runs properly, you are ready to add it to the git repo. We recommend reading through the <a href="/revbayes_tutorials/developer/git-flow.html">Git Workflow Best Practices</a> section of the Developer’s guide before pushing.</p>
   </li>
 </ol>
 

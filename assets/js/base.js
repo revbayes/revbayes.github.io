@@ -116,9 +116,13 @@ $(".tutorial_files").each(function() {
       }
     }
 
-    if( ul.innerHTML == "" && document.getElementById("data_files") == null ) {
-        this.outerHTML = "";
-    }
+    var d = document.getElementById("data_files");
+    var r = document.getElementById("script_row");
+
+    if( d == null && ul.innerHTML == "")
+      this.outerHTML = "";
+    else if( ul.innerHTML == "" )
+      r.outerHTML = "";
 });
 
 // Add figure titles

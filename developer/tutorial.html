@@ -25,7 +25,7 @@
       </button>
 
       <a href="https://revbayes.github.io" class="pull-left">
-        <img class="navbar-logo" src="/revbayes_tutorials/assets/img/aquabayes.png" alt="RevBayes logo" />
+        <img class="navbar-logo" src="/revbayes_tutorials/assets/img/aquabayes-desaturated.png" alt="RevBayes Logo" />
       </a>
       
       
@@ -71,29 +71,78 @@
   </div>
 </blockquote>
 
-<blockquote class="tutorial_files no-print">
+<blockquote class="tutorial_files no-print" id="tutorial_files">
   <h2>Data files and scripts</h2>
   
-    <div class="row">
+    <div class="row" id="script_row">
       <div class="col-md-9">
           <strong>Scripts</strong>
           <ul id="scripts"></ul>
         </div>
     </div>
 </blockquote>
-      <p>Writing a tutorial for fun and profit!</p>
+      <h1 id="writing-the-front-matter">Writing the front matter</h1>
+
+<p>In order for Jekyll to process your tutorial page, it must include YAML front matter, indicated with <code class="highlighter-rouge">---</code></p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">---</span>
+<span class="nn">---</span>
+</code></pre></div></div>
+
+<p>You will populate the front matter with YAML attributes that are used to organize your tutorial on the RevBayes website. The most basic attributes are <code class="highlighter-rouge">title</code>, <code class="highlighter-rouge">subtitle</code>, <code class="highlighter-rouge">authors</code> which are displayed in the tutorial’s title header section. The <code class="highlighter-rouge">category</code> attribute is used to group tutorials with similar subject matter in the site index.</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">---</span>
+<span class="na">title</span><span class="pi">:</span> <span class="s">How to science</span>
+<span class="na">subtitle</span><span class="pi">:</span> <span class="s">A postmodern experience</span>
+<span class="na">authors</span><span class="pi">:</span> <span class="s">Alice, Bob</span>
+<span class="na">category</span><span class="pi">:</span> <span class="s">Miscellaneous</span>
+<span class="nn">---</span>
+</code></pre></div></div>
+
+<h3 id="including-prerequisites">Including prerequisites</h3>
+
+<p>If you would like users to complete other tutorials before they do yours, you can refer them to prequisite tutorials in the overview section, which is populated using the <code class="highlighter-rouge">prerequisites</code> YAML attribute.</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">---</span>
+<span class="na">title</span><span class="pi">:</span> <span class="s">Non-parametric interdimensional Bayesian hyperloop methods</span>
+<span class="na">category</span><span class="pi">:</span> <span class="s">Advanced phylogenetics</span>
+<span class="na">prerequisites</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">intro</span>
+    <span class="pi">-</span> <span class="s">ctmc</span>
+    <span class="pi">-</span> <span class="s">habilitation</span>
+<span class="nn">---</span>
+</code></pre></div></div>
+
+<h3 id="including-data-files-and-scripts">Including data files and scripts</h3>
+<p>You can include data files (stored under the tutorial subdirectory <code class="highlighter-rouge">data</code>) and script files (subdirectory <code class="highlighter-rouge">scripts</code>) in the tutorial overview download by adding them to the <code class="highlighter-rouge">data_files</code> and <code class="highlighter-rouge">scripts</code> YAML attributes of your tutorial page.</p>
+
+<p>For example,</p>
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">---</span>
+<span class="na">title</span><span class="pi">:</span> <span class="s">How to build a phylogenetic tree</span>
+<span class="na">category</span><span class="pi">:</span> <span class="s">Phylogenetics</span>
+<span class="na">prerequisites</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">intro</span>
+    <span class="pi">-</span> <span class="s">ctmc</span>
+<span class="na">data_files</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">primates.nex</span>
+    <span class="pi">-</span> <span class="s">primates.tre</span>
+<span class="na">scripts</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">mcmc.Rev</span>
+    <span class="pi">-</span> <span class="s">model.Rev</span>
+<span class="nn">---</span>
+</code></pre></div></div>
 
 <h1 id="including-a-citation">Including a citation</h1>
 
-<h3 id="markdown">Markdown:</h3>
-<div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>This is a citation {% cite Felsenstein1981 %}.
+<h3 id="jekyll">Jekyll:</h3>
+<div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>This is a citation {% cite Felsenstein1981 %}. This is an in-text citation of {% citet Felsenstein1981 %}.
 </code></pre></div></div>
 <h3 id="output">Output:</h3>
-<p>This is a citation <a href="#Felsenstein1981">(Felsenstein 1981)</a></p>
+<p>This is a citation <a href="#Felsenstein1981">(Felsenstein 1981)</a>. This is an in-text citation of <a href="#Felsenstein1981">Felsenstein (1981)</a>.</p>
 
 <h1 id="including-a-figure">Including a figure</h1>
 
-<h3 id="markdown-1">Markdown:</h3>
+<h3 id="jekyll-1">Jekyll:</h3>
 <div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{% figure example %}
 <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"images/example.png"</span> <span class="na">width=</span><span class="s">"200"</span><span class="nt">&gt;</span>
 {% figcaption %}
@@ -155,7 +204,7 @@ for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
 $(".highlighter-rouge").each(function() {
   
   if( this.classList == "highlighter-rouge")
-    this.classList = "none highlighter-rouge";
+    this.classList = "Rev highlighter-rouge";
   
 });
 </script>
