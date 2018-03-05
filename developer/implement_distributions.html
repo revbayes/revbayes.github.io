@@ -85,14 +85,25 @@
 
 <h2 class="subsection" id="general-info-before-getting-started">General info before getting started</h2>
 
-<p>Within RevBayes, there are math distributions and phylogenetic distributions. 
+<ul>
+  <li>
+    <p>Within the RevBayes <strong>core</strong> directory, there are subdirectories for different categories of distributions. 
 All predefined mathematical distributions that have been implemented exist in <code class="highlighter-rouge">core/distributions/math</code>.</p>
+  </li>
+  <li>
+    <p>Note that when implementing a new distribution, you will need to create <code class="highlighter-rouge">.cpp</code> and <code class="highlighter-rouge">.h</code> files in both the <strong>revlanguage</strong> directory and the <strong>core</strong> directory. (For a refresher on the difference between these two directories, refer to the ‘Getting familiar with the code’ section of this Developer’s guide).
+The overall naming format remains the same for every distribution in RevBayes. In the Beta Binomial Distribution example provided below, I specify what to name each file.</p>
+  </li>
+  <li>
+    <p>It is often helpful to look at / ‘borrow’ code from existing RevBayes distributions for general help on syntax and organization.</p>
+  </li>
+</ul>
 
-<p>Note that when implementing a new distribution, you will need to create <code class="highlighter-rouge">.cpp</code> and <code class="highlighter-rouge">.h</code> files in both the revlanguage directory and the core directory. For the language side, one of the most important things is the create distribution function (it converts user-arguments into calculations). Also, the getParameterRules function is important (to get the degrees of freedom &amp; other things). As a rule of thumb, you can look at the code of existing distributions for general help on syntax &amp; organization.</p>
+<p>For the language side, one of the most important things is the create distribution function (it converts user-arguments into calculations). Also, the getParameterRules function is important (to get the degrees of freedom &amp; other things). It is often helpful to look at the code of existing distributions for general help on syntax &amp; organization.</p>
 
-<p>Within your new distribution, you will need to include some functions. For example, each new distribution must have: the get class type, name, and help. Some of these you may not need to implement (if it’s dictated by the parent class &amp; is already present), but others you will need to implement within the distribution.</p>
+<p>Within your new distribution, you will need to include some functions. For example, each new distribution must have: the get class type, name, and help. You may not need to implement these from scratch (if they’re dictated by the parent class &amp; are already present), but you will need to implement other functions within your distribution (e.g. cdf, rv, quantile).</p>
 
-<p>Distributions have a prefexed DN (dag node), and all moves have a previxed MV (move). RevBayes takes the name within &amp; creates the DN automatically, so be aware of this.</p>
+<p>Distributions have a prefexed DN (dag node), and all moves have a previxed MV. RevBayes takes the name within &amp; creates the DN automatically, so be aware of this.</p>
 
 <p>In the following steps, we’ll implement the Beta Binomial Distribution as an example, for syntax purposes.</p>
 
@@ -100,21 +111,28 @@ All predefined mathematical distributions that have been implemented exist in <c
 
 <ol>
   <li>
-    <p>Create new .cpp &amp; .h files in <code class="highlighter-rouge">revlanguage/distributions/math/</code>  (named <code class="highlighter-rouge">Dist_betabinomial.cpp</code>, <code class="highlighter-rouge">Dist_betaBinomial.h</code>)</p>
+    <p>Create new .cpp &amp; .h files in <code class="highlighter-rouge">revlanguage/distributions/math/</code> named <code class="highlighter-rouge">Dist_betabinomial.cpp</code> and <code class="highlighter-rouge">Dist_betaBinomial.h</code>. 
+ <em>Note: all files in this directory will follow this naming format</em></p>
 
-    <p>To populate these files, look at existing examples of similar distributions for specific info on what to include &amp; on proper syntax. For example, for the Beta Binomial distribution, I looked to the existing Binomial Distribution code for guidance.</p>
+    <p>To populate these files, look at existing examples of similar distributions for specific info on what to include &amp; on proper syntax.  For example, for the Beta Binomial distribution, I looked to the existing Binomial Distribution code for guidance.</p>
   </li>
+</ol>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//add code here
+</span></code></pre></div></div>
+
+<ol>
   <li>Test
     <ol>
       <li>
-        <p>Create new <code class="highlighter-rouge">.cpp</code> &amp; <code class="highlighter-rouge">.h</code> files in <code class="highlighter-rouge">core/distributions/math/</code>  (named <code class="highlighter-rouge">BetaBinomialDistribution.cpp</code>, <code class="highlighter-rouge">BetaBinomialDistribution.h</code>).</p>
+        <p>Create new <code class="highlighter-rouge">.cpp</code> &amp; <code class="highlighter-rouge">.h</code> files in <code class="highlighter-rouge">core/distributions/math/</code> named <code class="highlighter-rouge">BetaBinomialDistribution.cpp</code> and <code class="highlighter-rouge">BetaBinomialDistribution.h</code>.</p>
 
-        <p><strong>Note:</strong> This is the object oriented wrapper code, that references the functions hard-coded in step 2b.</p>
+        <p><strong>Note:</strong> This is the object oriented wrapper code, that references the functions hard-coded in the next step.</p>
       </li>
       <li>
-        <p>Create new .cpp and .h files in <code class="highlighter-rouge">core/math/Distributions/</code>  (named <code class="highlighter-rouge">DistributionBetaBinomial.cpp</code>, <code class="highlighter-rouge">DistributionBetaBinomial.h</code>).</p>
+        <p>Create new .cpp and .h files in <code class="highlighter-rouge">core/math/Distributions/</code> named <code class="highlighter-rouge">DistributionBetaBinomial.cpp</code> and <code class="highlighter-rouge">DistributionBetaBinomial.h</code>.</p>
 
-        <p>These are the raw procedural functions in revbayes namespace (e.g. pdf, cdf, quantile); they are not derived functions. RbStatistics is a namespace. To populate these files, look at existing examples of similar distributions to get an idea of what functions to include, what variables are needed, and the proper syntax.</p>
+        <p>These are the raw procedural functions in the RevBayes namespace (e.g. pdf, cdf, quantile); they are not derived functions. RbStatistics is a namespace. To populate these files, look at existing examples of similar distributions to get an idea of what functions to include, what variables are needed, and the proper syntax.</p>
 
         <p><strong>Note:</strong> This is the most time-consuming step in the entire process of implementing a new distribution.</p>
       </li>
