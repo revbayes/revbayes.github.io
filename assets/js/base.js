@@ -156,13 +156,17 @@ for (var i = 0, element; element = _pre[i]; i++) {
   var open_curly = 0;
   var backslash = false;
   for (var line in lines) {
-      if ( open_brace || open_paren || open_curly ) {
-        lines[line] = "<span class='secondary'>"+lines[line]+"</span>";
-      } else {
-        lines[line] = "<span class='line'>"+lines[line]+"</span>";
-      }
+      var txt = "<span class='line'>"+lines[line]+"</span>";
+      if ( open_brace || open_paren || open_curly || backslash )
+        txt = "<span class='secondary'>"+lines[line]+"</span>";
 
-      var myRegexp = /[\[\]\(\)\{\}\\]/g;
+      backslash = false;
+      if ( lines[line].match(/\s\\\s*$/g) != null )
+        backslash = true;
+
+      lines[line] = txt;
+
+      var myRegexp = /[\[\]\(\)\{\}]/g;
       match = myRegexp.exec(lines[line]);
       while (match != null) {
         if ( match == '[' )
@@ -172,16 +176,10 @@ for (var i = 0, element; element = _pre[i]; i++) {
         if ( match == '{' )
           open_curly++;
 
-        backslash = false;
-        if ( match == '\\' )
-          backslash = true;
-
         if ( open_brace && match == ']' )
           open_brace--;
-
         if ( open_paren && match == ')' )
           open_paren--;
-
         if ( open_curly && match == '}' )
           open_curly--;
 
