@@ -9,10 +9,12 @@ index: 1
 ## General info before getting started
 {:.subsection}
 
+TESTING HELLO
+
 * Within the RevBayes **core** directory, there are subdirectories for different categories of distributions. 
 All predefined mathematical distributions that have been implemented exist in `core/distributions/math`.
 
-* Note that when implementing a new distribution, you will need to create `.cpp` and `.h` files in both the **revlanguage** directory and the **core** directory. (For a refresher on the difference between these two directories, refer to the [Getting familiar with the code]({{ site.baseurl }}/Getting familiar with the code) section of this Developer's guide).
+* Note that when implementing a new distribution, you will need to create `.cpp` and `.h` files in both the **revlanguage** directory and the **core** directory. (For a refresher on the difference between these two directories, refer to the [Getting familiar with the code]({{ site.baseurl }}/developer/architecture.html) section of this Developer's guide).
 The overall naming format remains the same for every distribution in RevBayes. In the Beta Binomial Distribution example provided below, I specify what to name each file.
 
 * It is often helpful to look at/borrow code from existing RevBayes distributions for general help on syntax and organization.
@@ -21,7 +23,7 @@ For the language side, one of the most important things is the create distributi
 
 * Within every new distribution, you will need to include some functions. For example, each new distribution must have: the get class type, name, and help functions. You may not need to implement these from scratch (if they're dictated by the parent class & are already present), but you will need to implement other functions within your distribution (e.g. cdf, rv, quantile). 
 
-* Distributions have a prefexed DN (dag node), and all moves have a previxed MV. RevBayes takes the name within & creates the DN automatically, so be aware of this. For a refresher on DAG nodes, refer [here]({{ site.baseurl }}/Getting familiar with the code). 
+* Distributions have a prefexed DN (dag node), and all moves have a previxed MV. RevBayes takes the name within & creates the DN automatically, so be aware of this. For a refresher on DAG nodes, refer [to this page]({{ site.baseurl }}/developer/architecture.html). 
  
 In the following steps, we'll implement the **Beta Binomial Distribution** as an example, for syntax purposes.
 
@@ -80,4 +82,4 @@ In the following steps, we'll implement the **Beta Binomial Distribution** as an
 
     There are multiple ways to do this, so use your best judgment. As a best practice, you should first compile it to ensure there are no errors. Once it compiles with no problems, you can test in various ways (e.g. run each individual function within the new Beta Binomial distribution in R, then run the Binomial distribution with a Beta prior in Rev and see if the output matches).  
     
-    After ensuring your code runs properly, you are ready to add it to the git repo. We recommend reading through the [Git Workflow Best Practices]({{ site.baseurl }}/Git Workflow Best Practices) section of the Developer's guide before pushing. 
+    After ensuring your code runs properly, you are ready to add it to the git repo. We recommend reading through the [Git Workflow Best Practices]({{ site.baseurl }}/developer/git-flow.html) section of the Developer's guide before pushing. 
