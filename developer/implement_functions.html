@@ -96,7 +96,7 @@
 </span>
 <span class="k">namespace</span> <span class="n">RevBayesCores</span> <span class="p">{</span>
     <span class="cm">/**
-     * \brief Hyperbolic Sine of a real number.
+     * \brief Hyperbolic Cosine of a real number.
      *
      * Compute the hyperbolic cosine of a real number x. (cosh(x) = (exp(x) + exp(-x))/2).
      *
@@ -108,7 +108,7 @@
     <span class="k">class</span> <span class="nc">HyperbolicCosineFunction</span> <span class="o">:</span> <span class="k">public</span> <span class="n">ContinuousFunction</span> <span class="p">{</span>
 
         <span class="k">public</span><span class="o">:</span>
-                                        <span class="n">HyperbolicSineFunction</span><span class="p">(</span><span class="k">const</span> <span class="n">TypedDagNode</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span> <span class="o">*</span><span class="n">a</span><span class="p">);</span> 
+                                        <span class="n">HyperbolicCosineFunction</span><span class="p">(</span><span class="k">const</span> <span class="n">TypedDagNode</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span> <span class="o">*</span><span class="n">a</span><span class="p">);</span> 
 
             <span class="n">HyperbolicCosineFunction</span><span class="o">*</span>     <span class="n">clone</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span> <span class="c1">//!&lt; creates a clone
 </span>            <span class="kt">void</span>                        <span class="n">update</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span> <span class="c1">//!&lt; recomputes the value
@@ -221,8 +221,8 @@
 
 <p>And the <code class="highlighter-rouge">Func_hyperbolicCosineFunction.cpp</code> should look like this:</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include "Func_hyperbolicSine.h"
-#include "HyperbolicSineFunction.h"
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include "Func_hyperbolicCosine.h"
+#include "HyperbolicCosineFunction.h"
 #include "Probability.h"
 #include "Real.h"
 #include "RlDeterministicNode.h"
@@ -243,7 +243,7 @@
  *
  * \return A new copy of the process.
  */</span>
-<span class="n">Func_hyperbolicSine</span><span class="o">*</span> <span class="n">Func_hyperbolicCosine</span><span class="o">::</span><span class="n">clone</span><span class="p">(</span> <span class="kt">void</span> <span class="p">)</span> <span class="k">const</span>
+<span class="n">Func_hyperbolicCosine</span><span class="o">*</span> <span class="n">Func_hyperbolicCosine</span><span class="o">::</span><span class="n">clone</span><span class="p">(</span> <span class="kt">void</span> <span class="p">)</span> <span class="k">const</span>
 <span class="p">{</span>
     
     <span class="k">return</span> <span class="k">new</span> <span class="n">Func_hyperbolicCosine</span><span class="p">(</span> <span class="o">*</span><span class="k">this</span> <span class="p">);</span>
@@ -254,7 +254,7 @@
 <span class="p">{</span>
     
     <span class="n">RevBayesCore</span><span class="o">::</span><span class="n">TypedDagNode</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;*</span> <span class="n">x</span> <span class="o">=</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">Real</span><span class="o">&amp;&gt;</span><span class="p">(</span> <span class="k">this</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">getVariable</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">getRevObject</span><span class="p">()</span> <span class="p">).</span><span class="n">getDagNode</span><span class="p">();</span>
-    <span class="n">RevBayesCore</span><span class="o">::</span><span class="n">HyperbolicCosineFunction</span><span class="o">*</span> <span class="n">f</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RevBayesCore</span><span class="o">::</span><span class="n">HyperbolicSineFunction</span><span class="p">(</span> <span class="n">x</span> <span class="p">);</span>
+    <span class="n">RevBayesCore</span><span class="o">::</span><span class="n">HyperbolicCosineFunction</span><span class="o">*</span> <span class="n">f</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RevBayesCore</span><span class="o">::</span><span class="n">HyperbolicCosineFunction</span><span class="p">(</span> <span class="n">x</span> <span class="p">);</span>
     
     <span class="k">return</span> <span class="n">f</span><span class="p">;</span>
 <span class="p">}</span>
@@ -282,7 +282,7 @@
 <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">Func_hyperbolicCosine</span><span class="o">::</span><span class="n">getClassType</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
 <span class="p">{</span>
     
-    <span class="k">static</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">rev_type</span> <span class="o">=</span> <span class="s">"Func_hyperbolicSine"</span><span class="p">;</span>
+    <span class="k">static</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">rev_type</span> <span class="o">=</span> <span class="s">"Func_hyperbolicCosine"</span><span class="p">;</span>
     
     <span class="k">return</span> <span class="n">rev_type</span><span class="p">;</span>
 <span class="p">}</span>
