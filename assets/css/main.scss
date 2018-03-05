@@ -5,6 +5,7 @@ body {
   display:none;
   font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
   font-size: 16px;
+  counter-reset: figures;
 }
 
 html {
@@ -47,7 +48,8 @@ $color-prereq:      #9cd6dc !default;
 $color-solution:    #ded4b9 !default;
 $color-testimonial: #fc8dc1 !default;
 
-$lavender-blush2:	#eee0e5 !default;
+$lavender-blush2:	  #eee0e5 !default;
+$figure-border:     #B0B0B0 !default;
 
 //----------------------------------------
 // Specialized code blocks.
@@ -149,6 +151,39 @@ code {
 
 img {
   max-width: 100%;
+}
+
+//----------------------------------------
+// Figures
+//----------------------------------------
+figure {
+  padding: 10px 20px;
+  counter-increment: figures;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 0.9em;
+  margin-bottom: 0.5em;
+  border-left: 5px solid #eee;
+  border-right: 5px solid #eee;
+  display: table;
+
+  img {
+    margin-bottom: 0.5em
+  }
+}
+
+figure figcaption:before {
+  content: 'Figure ' counter(figures) '. ';
+  font-weight: bold;
+}
+
+@media print {
+  figure {
+    border: 1px solid #999;
+
+    page-break-inside: avoid;
+  }
 }
 
 //----------------------------------------
