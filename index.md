@@ -1,8 +1,16 @@
 ---
-title: RevBayes
-subtitle: Bayesian phylogenetic inference using probabilistic graphical models and an interpreted language
 root: .
 ---
+<div class="row">
+<div class="col-sm-3" align="center">
+  <img src="{{ site.baseurl }}/assets/img/gm-tree.svg" alt="" width="100%" />
+</div>
+<div class="col-sm-9" align="left">
+  <h1 style="color:#2D28B5;" size="+2"><font face="Comic Sans MS"><b>RevBayes</b></font></h1>
+  <h3>Bayesian phylogenetic inference using probabilistic graphical models and an interpreted language</h3>
+</div>
+</div>
+
 
 ### About
 
