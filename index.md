@@ -1,12 +1,12 @@
 ---
 root: .
 ---
-<div class="row">
-<div class="col-sm-2" align="center">
+<div class="row" style="display: flex; align-items: center;">
+<div class="col-sm-2 col-xs-4">
   <img src="{{ site.baseurl }}/assets/img/gm-tree.svg" alt="" width="100%" />
 </div>
-<div class="col-sm-10" align="left">
-  <h1 style="font-family:'Raleway'"><br><font color="#2D28B5"><b>RevBayes</b></font></h1>
+<div class="col-sm-10 col-xs-8">
+  <h1 style="font-family:'Raleway'"><font color="#2D28B5"><b>RevBayes</b></font></h1>
   <h3>Bayesian phylogenetic inference using probabilistic graphical models and an interpreted language</h3>
 </div>
 </div>
