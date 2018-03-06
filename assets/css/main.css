@@ -11,71 +11,108 @@ html {
 @media print {
   .no-print, .no-print * {
     display: none !important; } }
-.Rev {
-  margin-bottom: 12px; }
-  .Rev pre {
-    font-size: 14px;
-    background-color: #b7cfed;
-    color: #000000; }
-    .Rev pre .line::before {
-      content: ">" " "; }
-    .Rev pre .secondary::before {
-      content: "+" " "; }
+:not(pre) > code {
+  background-color: #eff0f1;
+  color: #000000;
+  border-radius: 0;
+  padding: 1px 5px; }
 
-.rev {
-  margin-bottom: 12px; }
-  .rev pre {
-    font-size: 14px;
-    background-color: #b7cfed;
-    color: #000000; }
-    .rev pre .line::before {
-      content: ">" " "; }
-    .rev pre .secondary::before {
-      content: "+" " "; }
+:not(pre) > code.Rev {
+  background-color: #b7cfed;
+  color: #000000;
+  border-radius: 0;
+  padding: 1px 5px; }
 
-.cpp {
-  margin-bottom: 12px; }
-  .cpp pre {
-    font-size: 14px;
-    background-color: #eee0e5;
-    color: #000000; }
-    .cpp pre .line::before {
-      content: "" " "; }
-    .cpp pre .secondary::before {
-      content: "" " "; }
+:not(pre) > code.rev {
+  background-color: #b7cfed;
+  color: #000000;
+  border-radius: 0;
+  padding: 1px 5px; }
 
-.bash {
-  margin-bottom: 12px; }
-  .bash pre {
-    font-size: 14px;
-    background-color: #f0f0f0;
-    color: #000000; }
-    .bash pre .line::before {
-      content: "$" " "; }
-    .bash pre .secondary::before {
-      content: ">" " "; }
+:not(pre) > code.cpp {
+  background-color: #eee0e5;
+  color: #000000;
+  border-radius: 0;
+  padding: 1px 5px; }
 
-.console {
-  margin-bottom: 12px; }
-  .console pre {
-    font-size: 14px;
-    background-color: #b7cfed;
-    color: #808080; }
-    .console pre .line::before {
-      content: "" " "; }
-    .console pre .secondary::before {
-      content: "" " "; }
+:not(pre) > code.bash {
+  background-color: #f0f0f0;
+  color: #000000;
+  border-radius: 0;
+  padding: 1px 5px; }
 
-.error {
-  margin-bottom: 12px; }
-  .error pre {
-    font-size: 14px;
-    background-color: #bd2c00;
-    color: #000000; }
-    .error pre .line::before {
-      content: "" " "; }
-    .error pre .secondary::before {
-      content: "" " "; }
+:not(pre) > code.console {
+  background-color: #b7cfed;
+  color: #808080;
+  border-radius: 0;
+  padding: 1px 5px; }
+
+.default pre {
+  font-size: 14px;
+  background-color: #eff0f1;
+  color: #000000; }
+  .default pre .line::before {
+    content: "" " "; }
+  .default pre .secondary::before {
+    content: "" " "; }
+
+.Rev pre {
+  font-size: 14px;
+  background-color: #b7cfed;
+  color: #000000; }
+  .Rev pre .line::before {
+    content: ">" " "; }
+  .Rev pre .secondary::before {
+    content: "+" " "; }
+
+.rev pre {
+  font-size: 14px;
+  background-color: #b7cfed;
+  color: #000000; }
+  .rev pre .line::before {
+    content: ">" " "; }
+  .rev pre .secondary::before {
+    content: "+" " "; }
+
+.cpp pre {
+  font-size: 14px;
+  background-color: #eee0e5;
+  color: #000000; }
+  .cpp pre .line::before {
+    content: "" " "; }
+  .cpp pre .secondary::before {
+    content: "" " "; }
+
+.bash pre {
+  font-size: 14px;
+  background-color: #f0f0f0;
+  color: #000000; }
+  .bash pre .line::before {
+    content: "$" " "; }
+  .bash pre .secondary::before {
+    content: ">" " "; }
+
+.console pre {
+  font-size: 14px;
+  background-color: #b7cfed;
+  color: #808080; }
+  .console pre .line::before {
+    content: "" " "; }
+  .console pre .secondary::before {
+    content: "" " "; }
+
+.error pre {
+  font-size: 14px;
+  background-color: #bd2c00;
+  color: #000000; }
+  .error pre .line::before {
+    content: "" " "; }
+  .error pre .secondary::before {
+    content: "" " "; }
+
+.instruction {
+  border: 1px solid;
+  border-color: #ddd; }
 
 .tutorial_files {
   padding-left: 5px;
@@ -357,12 +394,34 @@ figure {
   figure img {
     margin-bottom: 0.5em; }
 
+figure .table {
+  padding: 10px 20px;
+  counter-increment: tables;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 0.9em;
+  margin-bottom: 0.5em;
+  border-left: 5px solid #eee;
+  border-right: 5px solid #eee;
+  display: table; }
+  figure .table img {
+    margin-bottom: 0.5em; }
+
 figure figcaption:before {
   content: "Figure " counter(figures) ". ";
   font-weight: bold; }
 
+figure .table figcaption:before {
+  content: "Table " counter(tables) ". ";
+  font-weight: bold; }
+
 @media print {
   figure {
+    border: 1px solid #999;
+    page-break-inside: avoid; }
+
+  figure .table {
     border: 1px solid #999;
     page-break-inside: avoid; } }
 .maintitle {

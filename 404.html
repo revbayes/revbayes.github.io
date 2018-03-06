@@ -137,12 +137,20 @@ for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
 
 <script type="text/javascript">
 // Add default language
-$(".highlighter-rouge").each(function() {
+$(":not(code).highlighter-rouge").each(function() {
   
-  if( this.classList == "highlighter-rouge")
+  if( this.classList == "highlighter-rouge") {
     this.classList = "cpp highlighter-rouge";
+  }
   
 });
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "cpp highlighter-rouge";
+//   }
+//   
+// });
 </script>
 
 <script src="/revbayes_tutorials/assets/js/base.js"></script>
