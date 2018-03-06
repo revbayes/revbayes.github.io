@@ -66,7 +66,7 @@ double GammaScaleProposal::propose( double &val )
 }
 ```
 
-In this case, the Hastings ratio involves the probability density of the forward move (the scaling factor *u*), the density of the corresponding backward move (the scaling factor $\frac{1}{u}$), and the solution to the Jacobian ($-\frac{1}{u}$).
+    In this case, the Hastings ratio involves the probability density of the forward move (the scaling factor *u*), the density of the corresponding backward move (the scaling factor $\frac{1}{u}$), and the solution to the Jacobian ($-\frac{1}{u}$).
 
 3.  _Creating new files for the rev language_ - After implementing the detailed machinery to perform the new move in the RevBayes core, you need to modify a few files associated with the Rev language to make it available to users. As a reminder, the first set of these files is found in `src/revlanguage/moves`. For our example, we will be focusing specifically on a move for a scalar value, so navigate to the `scalar` subdirectory. As with the files in the core, we will copy and rename a header (.h) and implementation (.cpp) file from the Scale move. In this case, our new header file will be called `Move_GammaScale.h` and our new implementation file will be called `Move_GammaScale.cpp`. In the **header file**, simply update the names of the preprocessor macro, the class, and the objects. Also remember to update the help comments near the top of the file.
 
