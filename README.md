@@ -10,7 +10,7 @@ Because this site makes use of third party jekyll plugins, the static site is st
 
 After first cloning this repository, you will be on the `source` branch. Then, you should clone the `master` branch into the `_site` directory.
 
-	git clone -b master git@github.com:willpett/revbayes_tutorials.git _site
+	git clone -b master git@github.com:revbayes/revbayes-site.git _site
 
 In order to build the site you will need `jekyll`, see instructions below to install.
 
