@@ -31,3 +31,8 @@ All output the RevBayes console will be given in light blue boxes with gray text
 ~~~
 {:.console}
 
+Some tutorials will provide instructions for you that will be highlighted by a box. These instructions will guide you to create new files or other tasks that are not completed in the RevBayes console.
+
+>Make a new file called `m_gtr.Rev`.
+{:.instruction}
+

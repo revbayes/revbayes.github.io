@@ -84,12 +84,10 @@ tutorial directory can be any directory on your file system, but you may
 want to create a new one so that you avoid conflicts with other
 RevBayes tutorials.
 
-<!-- block -->
-Create a directory for this tutorial called <font style="font-family:'Courier'" color="#E40606">RB_ClockModels_Tutorial</font> (or any name you like), and
-navigate to that directory. This is the tutorial directory mentioned
-above.
-<!-- block -->
-
+>Create a directory for this tutorial called <font style="font-family:'Courier'" color="#E40606">RB_ClockModels_Tutorial</font> (or any name you like), and
+>navigate to that directory. This is the tutorial directory mentioned
+>above.
+{:.instruction}
 
 For this exercise, the `Rev` code provided assumes that within the
 tutorial directory exists subdirectories. These directories must have
@@ -99,18 +97,17 @@ to conform to your specific directory names.
 The first subdirectory will contain the data files (downloaded in
 the [Getting Started](#getting-started) section).
 
-<!-- block -->
-Create a directory called <font style="font-family:'Courier'" color="#E40606">data</font> in your tutorial directory.
 
-Save the tree and alignment files downloaded above ([Getting Started](#getting-started)) in the `data` directory.
-<!-- block -->
+>Create a directory called <font style="font-family:'Courier'" color="#E40606">data</font> in your tutorial directory.
+>
+>Save the tree and alignment files downloaded above ([Getting Started](#getting-started)) in the `data` directory.
+{:.instruction}
 
 The second subdirectory will contain the `Rev` files you write to
 execute the exercises in this tutorial.
 
-<!-- block -->
-Create a directory called <font style="font-family:'Courier'" color="#E40606">scripts</font> in your tutorial directory.
-<!-- block -->
+>Create a directory called <font style="font-family:'Courier'" color="#E40606">scripts</font> in your tutorial directory.
+{:.instruction}
 
 This tutorial will guide you through creating all of the files necessary
 to execute the analyses without typing the `Rev` language syntax
@@ -123,9 +120,8 @@ Finally, we’ll need a directory for all of the files written by our
 analyses. For some operations, RevBayes can create this directory on
 the fly for you. However, it may be safer just to add it now.
 
-<!-- block -->
-Create a directory called <font style="font-family:'Courier'" color="#E40606">output</font> in your tutorial directory.
-<!-- block -->
+>Create a directory called <font style="font-family:'Courier'" color="#E40606">output</font> in your tutorial directory.
+{:.instruction}
 
 The only files you need for this exercise are now in the `data`
 directory. Otherwise, you will create all of the `Rev` files specifying
@@ -154,12 +150,11 @@ the birth-death process conditioned on the root age in RevBayes.
 
 ***Create the Rev File***
 
-<!-- block -->
-Open your text editor and create the birth-death model file called <font style="font-family:'Courier'" color="#E40606">m_BDP_bears.Rev</font> in
+>Open your text editor and create the birth-death model file called <font style="font-family:'Courier'" color="#E40606">m_BDP_bears.Rev</font> in
 the `scripts` directory.
-
-Enter the `Rev` code provided in this section in the new model file.
-<!-- block -->
+>
+>Enter the `Rev` code provided in this section in the new model file.
+{:.instruction}
 
 ***Read in a Tree from a Previous Study***
 
