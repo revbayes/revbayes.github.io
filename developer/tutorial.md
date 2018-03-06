@@ -105,13 +105,6 @@ sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
 ```
 {:.console}
 -------------
-### {% raw %}`{:.cpp}`{% endraw %}
-```
-Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-```
-{:.cpp}
--------------
 
 ## Blockquotes
 
