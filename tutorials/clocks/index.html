@@ -4,12 +4,12 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="search-domain" value="https://willpett.github.io/revbayes_tutorials/">
+    <meta name="search-domain" value="https://revbayes.github.io/revbayes-site/">
     <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
-    <link rel="stylesheet" href="/revbayes_tutorials/assets/css/syntax.css">
-    <link rel="stylesheet" type="text/css" href="/revbayes_tutorials/assets/css/bootstrap.css" />
-    <link rel="stylesheet" type="text/css" href="/revbayes_tutorials/assets/css/bootstrap-theme.css" />
-    <link rel="stylesheet" type="text/css" href="/revbayes_tutorials/assets/css/main.css" />
+    <link rel="stylesheet" href="/revbayes-site/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/revbayes-site/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/revbayes-site/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/revbayes-site/assets/css/main.css" />
     <title>RevBayes: Relaxed-Clocks & Time Trees</title>
   </head>
   <body>
@@ -25,18 +25,18 @@
       </button>
 
       <a href="https://revbayes.github.io" class="pull-left">
-        <img class="navbar-logo" src="/revbayes_tutorials/assets/img/aquabayes-desaturated.png" alt="RevBayes Logo" />
+        <img class="navbar-logo" src="/revbayes-site/assets/img/aquabayes-desaturated.png" alt="RevBayes Logo" />
       </a>
       
-      <a class="navbar-brand" href="/revbayes_tutorials/">Home</a>
+      <a class="navbar-brand" href="/revbayes-site/">Home</a>
 
     </div>
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-        <li><a href="/revbayes_tutorials/software/">Software</a></li>
-        <li><a href="/revbayes_tutorials/developer/">Developer</a></li>
-        <li><a href="/revbayes_tutorials/tutorials/">Tutorials</a></li>
-        <li><a href="/revbayes_tutorials/workshops/">Workshops</a></li>
+        <li><a href="/revbayes-site/software/">Software</a></li>
+        <li><a href="/revbayes-site/developer/">Developer</a></li>
+        <li><a href="/revbayes-site/tutorials/">Tutorials</a></li>
+        <li><a href="/revbayes-site/workshops/">Workshops</a></li>
       </ul>
       <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
         <div class="form-group">
@@ -64,7 +64,7 @@
           
             
             
-            <li><a href="/revbayes_tutorials/tutorials/intro/">Statistical Inference Using RevBayes</a></li>
+            <li><a href="/revbayes-site/tutorials/intro/">Statistical Inference Using RevBayes</a></li>
           
           </ul>
         
@@ -80,9 +80,9 @@
           <strong>Data Files</strong>
           <ul id="data_files">
           
-            <li><a href="/revbayes_tutorials/tutorials/clocks/data/bears_dosReis.tre">bears_dosReis.tre</a></li>
+            <li><a href="/revbayes-site/tutorials/clocks/data/bears_dosReis.tre">bears_dosReis.tre</a></li>
           
-            <li><a href="/revbayes_tutorials/tutorials/clocks/data/bears_irbp.nex">bears_irbp.nex</a></li>
+            <li><a href="/revbayes-site/tutorials/clocks/data/bears_irbp.nex">bears_irbp.nex</a></li>
           
           </ul>
         </div>
@@ -160,11 +160,11 @@ tutorial directory can be any directory on your file system, but you may
 want to create a new one so that you avoid conflicts with other
 RevBayes tutorials.</p>
 
-<!-- block -->
-<p>Create a directory for this tutorial called <font style="font-family:'Courier'" color="#E40606">RB_ClockModels_Tutorial</font> (or any name you like), and
+<blockquote class="instruction">
+  <p>Create a directory for this tutorial called <font style="font-family:'Courier'" color="#E40606">RB_ClockModels_Tutorial</font> (or any name you like), and
 navigate to that directory. This is the tutorial directory mentioned
-above.
-<!-- block --></p>
+above.</p>
+</blockquote>
 
 <p>For this exercise, the <code class="highlighter-rouge">Rev</code> code provided assumes that within the
 tutorial directory exists subdirectories. These directories must have
@@ -174,18 +174,18 @@ to conform to your specific directory names.</p>
 <p>The first subdirectory will contain the data files (downloaded in
 the <a href="#getting-started">Getting Started</a> section).</p>
 
-<!-- block -->
-<p>Create a directory called <font style="font-family:'Courier'" color="#E40606">data</font> in your tutorial directory.</p>
+<blockquote class="instruction">
+  <p>Create a directory called <font style="font-family:'Courier'" color="#E40606">data</font> in your tutorial directory.</p>
 
-<p>Save the tree and alignment files downloaded above (<a href="#getting-started">Getting Started</a>) in the <code class="highlighter-rouge">data</code> directory.
-<!-- block --></p>
+  <p>Save the tree and alignment files downloaded above (<a href="#getting-started">Getting Started</a>) in the <code class="highlighter-rouge">data</code> directory.</p>
+</blockquote>
 
 <p>The second subdirectory will contain the <code class="highlighter-rouge">Rev</code> files you write to
 execute the exercises in this tutorial.</p>
 
-<!-- block -->
-<p>Create a directory called <font style="font-family:'Courier'" color="#E40606">scripts</font> in your tutorial directory.
-<!-- block --></p>
+<blockquote class="instruction">
+  <p>Create a directory called <font style="font-family:'Courier'" color="#E40606">scripts</font> in your tutorial directory.</p>
+</blockquote>
 
 <p>This tutorial will guide you through creating all of the files necessary
 to execute the analyses without typing the <code class="highlighter-rouge">Rev</code> language syntax
@@ -198,9 +198,9 @@ make sure that the file paths given throughout the tutorial are correct.</p>
 analyses. For some operations, RevBayes can create this directory on
 the fly for you. However, it may be safer just to add it now.</p>
 
-<!-- block -->
-<p>Create a directory called <font style="font-family:'Courier'" color="#E40606">output</font> in your tutorial directory.
-<!-- block --></p>
+<blockquote class="instruction">
+  <p>Create a directory called <font style="font-family:'Courier'" color="#E40606">output</font> in your tutorial directory.</p>
+</blockquote>
 
 <p>The only files you need for this exercise are now in the <code class="highlighter-rouge">data</code>
 directory. Otherwise, you will create all of the <code class="highlighter-rouge">Rev</code> files specifying
@@ -227,12 +227,12 @@ the birth-death process conditioned on the root age in RevBayes.
 
 <p><strong><em>Create the Rev File</em></strong></p>
 
-<!-- block -->
-<p>Open your text editor and create the birth-death model file called <font style="font-family:'Courier'" color="#E40606">m_BDP_bears.Rev</font> in
+<blockquote class="instruction">
+  <p>Open your text editor and create the birth-death model file called <font style="font-family:'Courier'" color="#E40606">m_BDP_bears.Rev</font> in
 the <code class="highlighter-rouge">scripts</code> directory.</p>
 
-<p>Enter the <code class="highlighter-rouge">Rev</code> code provided in this section in the new model file.
-<!-- block --></p>
+  <p>Enter the <code class="highlighter-rouge">Rev</code> code provided in this section in the new model file.</p>
+</blockquote>
 
 <p><strong><em>Read in a Tree from a Previous Study</em></strong></p>
 
@@ -931,17 +931,17 @@ for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
   <div class="container">
   <div class="row">
     <div class="col-sm-12" align="center">
-      <a href="https://github.com/revbayes">GitHub</a> | <a href="/revbayes_tutorials/license">License</a> | <a href="/revbayes_tutorials/citation">Cite RevBayes</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users' Forum</a>
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/revbayes-site/license">License</a> | <a href="/revbayes-site/citation">Cite RevBayes</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users' Forum</a>
     </div>
   </div>
   </div>
 </footer>
 
     </div>
-    <script src="/revbayes_tutorials/assets/js/vendor/jquery.min.js"></script>
-<script src="/revbayes_tutorials/assets/js/vendor/FileSaver.min.js"></script>
-<script src="/revbayes_tutorials/assets/js/vendor/jszip.min.js"></script>
-<script src="/revbayes_tutorials/assets/js/vendor/bootstrap.min.js"></script>
+    <script src="/revbayes-site/assets/js/vendor/jquery.min.js"></script>
+<script src="/revbayes-site/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/revbayes-site/assets/js/vendor/jszip.min.js"></script>
+<script src="/revbayes-site/assets/js/vendor/bootstrap.min.js"></script>
 
 <script type="text/javascript">
 // Add default language
@@ -961,7 +961,7 @@ $(":not(code).highlighter-rouge").each(function() {
 // });
 </script>
 
-<script src="/revbayes_tutorials/assets/js/base.js"></script>
+<script src="/revbayes-site/assets/js/base.js"></script>
 
 <script type="text/javascript"
     src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">

@@ -4,12 +4,12 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="search-domain" value="https://willpett.github.io/revbayes_tutorials/">
+    <meta name="search-domain" value="https://revbayes.github.io/revbayes-site/">
     <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
-    <link rel="stylesheet" href="/revbayes_tutorials/assets/css/syntax.css">
-    <link rel="stylesheet" type="text/css" href="/revbayes_tutorials/assets/css/bootstrap.css" />
-    <link rel="stylesheet" type="text/css" href="/revbayes_tutorials/assets/css/bootstrap-theme.css" />
-    <link rel="stylesheet" type="text/css" href="/revbayes_tutorials/assets/css/main.css" />
+    <link rel="stylesheet" href="/revbayes-site/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/revbayes-site/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/revbayes-site/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/revbayes-site/assets/css/main.css" />
     <title>RevBayes: Implementing functions, distributions, and moves</title>
   </head>
   <body>
@@ -25,18 +25,18 @@
       </button>
 
       <a href="https://revbayes.github.io" class="pull-left">
-        <img class="navbar-logo" src="/revbayes_tutorials/assets/img/aquabayes-desaturated.png" alt="RevBayes Logo" />
+        <img class="navbar-logo" src="/revbayes-site/assets/img/aquabayes-desaturated.png" alt="RevBayes Logo" />
       </a>
       
-      <a class="navbar-brand" href="/revbayes_tutorials/">Home</a>
+      <a class="navbar-brand" href="/revbayes-site/">Home</a>
 
     </div>
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-        <li><a href="/revbayes_tutorials/software/">Software</a></li>
-        <li><a href="/revbayes_tutorials/developer/">Developer</a></li>
-        <li><a href="/revbayes_tutorials/tutorials/">Tutorials</a></li>
-        <li><a href="/revbayes_tutorials/workshops/">Workshops</a></li>
+        <li><a href="/revbayes-site/software/">Software</a></li>
+        <li><a href="/revbayes-site/developer/">Developer</a></li>
+        <li><a href="/revbayes-site/tutorials/">Tutorials</a></li>
+        <li><a href="/revbayes-site/workshops/">Workshops</a></li>
       </ul>
       <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
         <div class="form-group">
@@ -98,7 +98,7 @@
 
     <p>Once the new <strong>header file</strong> is created and named, we can update the content to match our new move. The simplest changes involve renaming things to match the new move (e.g., updating the preprocessor macro from <code class="highlighter-rouge">ScaleProposal_H</code> to <code class="highlighter-rouge">GammaScaleProposal_H</code>, or changing the name of object references and constructor from <code class="highlighter-rouge">ScaleProposal</code> to <code class="highlighter-rouge">GammaScaleProposal</code>). The comments at the top of the header file that describe how the move works should also be updated, but these changes will obviously be specific to the move being implemented.</p>
 
-    <p>Next, we’ll need to create a <strong>new .cpp file</strong> containing the implementation of our new move. As with the header, it’s easiest to copy and rename an existing file, so we’ll use <code class="highlighter-rouge">ScaleProposal.cpp</code> as our template, copy it, and rename to <code class="highlighter-rouge">GammaScaleProposal.cpp</code>. As with the header file, most of the necessary changes involve updating the names of variables and function names. If the move requires access to other math functions, additional header files may need to be included at the top. Explore <code class="highlighter-rouge">src/core/math</code> as needed to find the necessary functions or distributions. For our example, the number and type of variables used by our move is the same as our template, so we don’t need to modify the constructor or variable initialization, other than updating the constructor name. Similarly for this example, we don’t need to alter the code in the <code class="highlighter-rouge">::cleanProposal</code>, <code class="highlighter-rouge">::clone</code>, <code class="highlighter-rouge">::prepareProposal</code>, <code class="highlighter-rouge">::printParameterSummary</code>, <code class="highlighter-rouge">::undoProposal</code>, <code class="highlighter-rouge">::swapNodeInternal</code>, and <code class="highlighter-rouge">::tune</code> methods as these are common to our template and new moves (and will be identical to many of the scalar moves), but we do need to update the class names associated with the methods (i.e., <code class="highlighter-rouge">ScaleMove::</code> -&gt; <code class="highlighter-rouge">GammaScaleMove::</code>). For the <code class="highlighter-rouge">::getProposalName</code> method, we need to update the string in the method that provides a descriptive name for the move - <code class="highlighter-rouge">name = "Gamma Scaling"</code>. The bulk of the necessary changes for the new move will come in the <code class="highlighter-rouge">::propose</code> method and the help description above the method. For this example, the new <code class="highlighter-rouge">::propose</code> method looks like this:</p>
+    <p>Next, we’ll need to create a <strong>new .cpp file</strong> containing the implementation of our new move. As with the header, it’s easiest to copy and rename an existing file, so we’ll use <code class="highlighter-rouge">ScaleProposal.cpp</code> as our template, copy it, and rename to <code class="highlighter-rouge">GammaScaleProposal.cpp</code>. As with the header file, most of the necessary changes involve updating the names of variables and function names. If the move requires access to other math functions, additional header files may need to be included at the top. Explore <code class="highlighter-rouge">src/core/math</code> as needed to find the necessary functions or distributions. In this case, we will need access to methods associated with the Gamma distribution, so we will add <code class="highlighter-rouge">#include "DistributionGamma.h"</code>. For our example, the number and type of variables used by our move are the same as our template based on the Scale move, so we don’t need to modify the constructor or variable initialization, other than updating the constructor name. Similarly for this example, we don’t need to alter the code in the <code class="highlighter-rouge">::cleanProposal</code>, <code class="highlighter-rouge">::clone</code>, <code class="highlighter-rouge">::prepareProposal</code>, <code class="highlighter-rouge">::printParameterSummary</code>, <code class="highlighter-rouge">::undoProposal</code>, <code class="highlighter-rouge">::swapNodeInternal</code>, and <code class="highlighter-rouge">::tune</code> methods as these are common to our template and new moves (and will be identical to many of the scalar moves), but we do need to update the class names associated with the methods (i.e., <code class="highlighter-rouge">ScaleMove::</code> -&gt; <code class="highlighter-rouge">GammaScaleMove::</code>). For the <code class="highlighter-rouge">::getProposalName</code> method, we need to update the string in the method that provides a descriptive name for the move - <code class="highlighter-rouge">name = "Gamma Scaling"</code>. The bulk of the necessary changes for the new move will come in the <code class="highlighter-rouge">::propose</code> method and the help description above the method. For this example, the new <code class="highlighter-rouge">::propose</code> method looks like this:</p>
 
     <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/*
          * Perform the proposal.
@@ -139,14 +139,43 @@
 <span class="k">return</span> <span class="n">ln_hastings_ratio</span><span class="p">;</span>
 <span class="p">}</span>
 </code></pre></div>    </div>
+
+    <p>In this case, the Hastings ratio involves the probability density of the forward move (the scaling factor <em>u</em>), the density of the corresponding backward move (the scaling factor $\frac{1}{u}$), and the solution to the Jacobian ($-\frac{1}{u}$).</p>
+  </li>
+  <li>
+    <p><em>Creating new files for the rev language</em> - After implementing the detailed machinery to perform the new move in the RevBayes core, you need to modify a few files associated with the Rev language to make it available to users. As a reminder, the first set of these files is found in <code class="highlighter-rouge">src/revlanguage/moves</code>. For our example, we will be focusing specifically on a move for a scalar value, so navigate to the <code class="highlighter-rouge">scalar</code> subdirectory. As with the files in the core, we will copy and rename a header (.h) and implementation (.cpp) file from the Scale move. In this case, our new header file will be called <code class="highlighter-rouge">Move_GammaScale.h</code> and our new implementation file will be called <code class="highlighter-rouge">Move_GammaScale.cpp</code>. In the <strong>header file</strong>, simply update the names of the preprocessor macro, the class, and the objects. Also remember to update the help comments near the top of the file.</p>
+
+    <p>In the new <strong>.cpp file</strong>, begin by updating the names of the header files included at the top. Note that we include, and will need to update, the names of both the header for the core <code class="highlighter-rouge">GammaScaleProposal.h</code> and the workspace <code class="highlighter-rouge">Move_GammaScale.h</code>. Most of the rest of the changes in this file involve updating the names of classes and objects associated with this move, but we also need to update the string specifying the type in the <code class="highlighter-rouge">::getClassType</code> method and specifying the constructor name in the <code class="highlighter-rouge">::getMoveName</code> method. Pay special attention to the rules specified in <code class="highlighter-rouge">::getParameterRules</code> and make sure they satisfy the constraints required by the new move. Update these rules as needed, using existing rules from other moves as templates.</p>
+
+    <p>For our particular example, we also need to make one additional change. Because we’ve only updated the <code class="highlighter-rouge">ScaleProposal</code>, and not the <code class="highlighter-rouge">ScaleProposalContinuous</code>, we need to remove the part of the code in this move that could call <code class="highlighter-rouge">ScaleProposalContinuous</code>. The <code class="highlighter-rouge">::constructInternalObject</code> method now looks like this (compare to the corresponding method from <code class="highlighter-rouge">Move_Scale.cpp</code>):</p>
+
+    <p>```cpp
+void Move_GammaScale::constructInternalObject( void )
+{
+// we free the memory first
+delete value;</p>
+
+    <p>RevBayesCore::Proposal *p = NULL;</p>
+
+    <p>// now allocate a new sliding move
+double d = static_cast&lt;const RealPos &amp;&gt;( lambda-&gt;getRevObject() ).getValue();
+double w = static_cast&lt;const RealPos &amp;&gt;( weight-&gt;getRevObject() ).getValue();
+double r = static_cast&lt;const Probability &amp;&gt;( tuneTarget-&gt;getRevObject() ).getValue();
+RevBayesCore::TypedDagNode<double>* tmp = static_cast&lt;const RealPos &amp;&gt;( x-&gt;getRevObject() ).getDagNode();
+    RevBayesCore::StochasticNode<double> *n = dynamic_cast&lt;RevBayesCore::StochasticNode<double> *&gt;( tmp );
+    p = new RevBayesCore::GammaScaleProposal(n, d, r);
+bool t = static_cast&lt;const RlBoolean &amp;&gt;( tune-&gt;getRevObject() ).getValue();</double></double></double></p>
+
+    <p>value = new RevBayesCore::MetropolisHastingsMove(p, w, t);</p>
   </li>
 </ol>
 
-<p>In this case, the Hastings ratio involves the probability density of the forward move (the scaling factor <em>u</em>), the corresponding backward move (the scaling factor $\frac{1}/{u}$), and the solution to the Jacobian ($-\frac{1}{u}$).</p>
+<p>}
+```</p>
 
 <ol>
   <li>
-    <p><em>Creating new files for the rev language</em> -</p>
+    <p><em>Updating the Rev language register</em> - The last step in implementing our new move is to make sure that it’s registered in the Rev language. To do this, we will need to update the file <code class="highlighter-rouge">RbRegister_Move.cpp</code> in <code class="highlighter-rouge">src/revlanguage/workspace</code>. In this file, we’ll need to include the header for our new move <code class="highlighter-rouge">#include "Move_GammaScale.h"</code> in the section corresponding to moves on real values. We’ll also need to add the constructor to the workspace by updating the <code class="highlighter-rouge">::initializeMoveGlobalWorkspace</code> method to include <code class="highlighter-rouge">addTypeWithConstructor( new Move_GammaScale() );</code>, again in the section corresponding to moves on real values.</p>
   </li>
   <li>
     <p><em>Testing the performance of the new move</em> - If properly implemented, a new move can be validated by running an MCMC analysis where the data are ignored and one tries to sample only the prior. This can be done in RevBayes by adding the <code class="highlighter-rouge">underPrior=TRUE</code> option as an argument to the <code class="highlighter-rouge">.run()</code> method of an <code class="highlighter-rouge">mcmc</code> object. The recommended strategy is to implement the simplest possible model that uses a variable of the type appropriate for the new move, and assigning that variable an easily validated prior (e.g., a uniform). Run the analysis with only the new move operating on that variable and then plot the variable’s marginal distribution to make sure it matches the prior.</p>
@@ -407,7 +436,7 @@ Here we are implementing our hyperbolic cosine function as its own class that is
 All predefined mathematical distributions that have been implemented exist in <code class="highlighter-rouge">core/distributions/math</code>.</p>
   </li>
   <li>
-    <p>Note that when implementing a new distribution, you will need to create <code class="highlighter-rouge">.cpp</code> and <code class="highlighter-rouge">.h</code> files in both the <strong>revlanguage</strong> directory and the <strong>core</strong> directory. (For a refresher on the difference between these two directories, refer to the <a href="/revbayes_tutorials/developer/architecture.html">Getting familiar with the code</a> section of this Developer’s guide).
+    <p>Note that when implementing a new distribution, you will need to create <code class="highlighter-rouge">.cpp</code> and <code class="highlighter-rouge">.h</code> files in both the <strong>revlanguage</strong> directory and the <strong>core</strong> directory. (For a refresher on the difference between these two directories, refer to the <a href="/revbayes-site/developer/architecture.html">Getting familiar with the code</a> section of this Developer’s guide).
 The overall naming format remains the same for every distribution in RevBayes. In the Beta Binomial Distribution example provided below, I specify what to name each file.</p>
   </li>
   <li>
@@ -422,7 +451,7 @@ The overall naming format remains the same for every distribution in RevBayes. I
     <p>Within every new distribution, you will need to include some functions. For example, each new distribution must have: the get class type, name, and help functions. You may not need to implement these from scratch (if they’re dictated by the parent class &amp; are already present), but you will need to implement other functions within your distribution (e.g. cdf, rv, quantile).</p>
   </li>
   <li>
-    <p>Distributions have a prefexed DN (dag node), and all moves have a previxed MV. RevBayes takes the name within &amp; creates the DN automatically, so be aware of this. For a refresher on DAG nodes, refer <a href="/revbayes_tutorials/developer/architecture.html">to this page</a>.</p>
+    <p>Distributions have a prefexed DN (dag node), and all moves have a previxed MV. RevBayes takes the name within &amp; creates the DN automatically, so be aware of this. For a refresher on DAG nodes, refer <a href="/revbayes-site/developer/architecture.html">to this page</a>.</p>
   </li>
 </ul>
 
@@ -490,7 +519,7 @@ The overall naming format remains the same for every distribution in RevBayes. I
 
     <p>There are multiple ways to do this, so use your best judgment. As a best practice, you should first compile it to ensure there are no errors. Once it compiles with no problems, you can test in various ways (e.g. run each individual function within the new Beta Binomial distribution in R, then run the Binomial distribution with a Beta prior in Rev and see if the output matches).</p>
 
-    <p>After ensuring your code runs properly, you are ready to add it to the git repo. We recommend reading through the <a href="/revbayes_tutorials/developer/git-flow.html">Git Workflow Best Practices</a> section of the Developer’s guide before pushing.</p>
+    <p>After ensuring your code runs properly, you are ready to add it to the git repo. We recommend reading through the <a href="/revbayes-site/developer/git-flow.html">Git Workflow Best Practices</a> section of the Developer’s guide before pushing.</p>
   </li>
 </ol>
 
@@ -516,17 +545,17 @@ for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
   <div class="container">
   <div class="row">
     <div class="col-sm-12" align="center">
-      <a href="https://github.com/revbayes">GitHub</a> | <a href="/revbayes_tutorials/license">License</a> | <a href="/revbayes_tutorials/citation">Cite RevBayes</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users' Forum</a>
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/revbayes-site/license">License</a> | <a href="/revbayes-site/citation">Cite RevBayes</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users' Forum</a>
     </div>
   </div>
   </div>
 </footer>
 
     </div>
-    <script src="/revbayes_tutorials/assets/js/vendor/jquery.min.js"></script>
-<script src="/revbayes_tutorials/assets/js/vendor/FileSaver.min.js"></script>
-<script src="/revbayes_tutorials/assets/js/vendor/jszip.min.js"></script>
-<script src="/revbayes_tutorials/assets/js/vendor/bootstrap.min.js"></script>
+    <script src="/revbayes-site/assets/js/vendor/jquery.min.js"></script>
+<script src="/revbayes-site/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/revbayes-site/assets/js/vendor/jszip.min.js"></script>
+<script src="/revbayes-site/assets/js/vendor/bootstrap.min.js"></script>
 
 <script type="text/javascript">
 // Add default language
@@ -546,7 +575,7 @@ $(":not(code).highlighter-rouge").each(function() {
 // });
 </script>
 
-<script src="/revbayes_tutorials/assets/js/base.js"></script>
+<script src="/revbayes-site/assets/js/base.js"></script>
 
 <script type="text/javascript"
     src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">

@@ -4,12 +4,12 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="search-domain" value="https://willpett.github.io/revbayes_tutorials/">
+    <meta name="search-domain" value="https://revbayes.github.io/revbayes-site/">
     <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
-    <link rel="stylesheet" href="/revbayes_tutorials/assets/css/syntax.css">
-    <link rel="stylesheet" type="text/css" href="/revbayes_tutorials/assets/css/bootstrap.css" />
-    <link rel="stylesheet" type="text/css" href="/revbayes_tutorials/assets/css/bootstrap-theme.css" />
-    <link rel="stylesheet" type="text/css" href="/revbayes_tutorials/assets/css/main.css" />
+    <link rel="stylesheet" href="/revbayes-site/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/revbayes-site/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/revbayes-site/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/revbayes-site/assets/css/main.css" />
     <title>RevBayes: Phylogenetic Inference using RevBayes</title>
   </head>
   <body>
@@ -25,18 +25,18 @@
       </button>
 
       <a href="https://revbayes.github.io" class="pull-left">
-        <img class="navbar-logo" src="/revbayes_tutorials/assets/img/aquabayes-desaturated.png" alt="RevBayes Logo" />
+        <img class="navbar-logo" src="/revbayes-site/assets/img/aquabayes-desaturated.png" alt="RevBayes Logo" />
       </a>
       
-      <a class="navbar-brand" href="/revbayes_tutorials/">Home</a>
+      <a class="navbar-brand" href="/revbayes-site/">Home</a>
 
     </div>
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-        <li><a href="/revbayes_tutorials/software/">Software</a></li>
-        <li><a href="/revbayes_tutorials/developer/">Developer</a></li>
-        <li><a href="/revbayes_tutorials/tutorials/">Tutorials</a></li>
-        <li><a href="/revbayes_tutorials/workshops/">Workshops</a></li>
+        <li><a href="/revbayes-site/software/">Software</a></li>
+        <li><a href="/revbayes-site/developer/">Developer</a></li>
+        <li><a href="/revbayes-site/tutorials/">Tutorials</a></li>
+        <li><a href="/revbayes-site/workshops/">Workshops</a></li>
       </ul>
       <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
         <div class="form-group">
@@ -64,11 +64,11 @@
           
             
             
-            <li><a href="/revbayes_tutorials/tutorials/intro/">Statistical Inference Using RevBayes</a></li>
+            <li><a href="/revbayes-site/tutorials/intro/">Statistical Inference Using RevBayes</a></li>
           
             
             
-            <li><a href="/revbayes_tutorials/tutorials/archery/">Introduction to MCMC using RevBayes</a></li>
+            <li><a href="/revbayes-site/tutorials/archery/">Introduction to MCMC using RevBayes</a></li>
           
           </ul>
         
@@ -84,7 +84,7 @@
           <strong>Data Files</strong>
           <ul id="data_files">
           
-            <li><a href="/revbayes_tutorials/tutorials/ctmc/data/primates_and_galeopterus_cytb.nex">primates_and_galeopterus_cytb.nex</a></li>
+            <li><a href="/revbayes-site/tutorials/ctmc/data/primates_and_galeopterus_cytb.nex">primates_and_galeopterus_cytb.nex</a></li>
           
           </ul>
         </div>
@@ -93,13 +93,13 @@
     <div class="row" id="script_row">
       <div class="col-md-9">
           <strong>Scripts</strong>
-          <ul id="scripts"><li><a href="/revbayes_tutorials/tutorials/ctmc/scripts/mcmc_JC.Rev">mcmc_JC.Rev</a></li></ul>
+          <ul id="scripts"><li><a href="/revbayes-site/tutorials/ctmc/scripts/mcmc_JC.Rev">mcmc_JC.Rev</a></li></ul>
         </div>
     </div>
 </blockquote>
       <h1 class="section" id="overview">Overview</h1>
 
-<p>This tutorial provides the first protocol from our recent publication <a href="#Hoehna2017a">(Höhna et al. 2017)</a>. The second protocol is described in the <a href="/revbayes_tutorials/tutorials/paritition/">Partitioned data analysis tutorial</a> and the third protocol is described in the <a href="/revbayes_tutorials/tutorials/bayes_fastors/">Bayes factor tutorial</a>.</p>
+<p>This tutorial provides the first protocol from our recent publication <a href="#Hoehna2017a">(Höhna et al. 2017)</a>. The second protocol is described in the <a href="/revbayes-site/tutorials/paritition/">Partitioned data analysis tutorial</a> and the third protocol is described in the <a href="/revbayes-site/tutorials/bayes_fastors/">Bayes factor tutorial</a>.</p>
 
 <p>The present tutorial demonstrates how to set up and perform analyses
 using common nucleotide substitution models. The substitution models
@@ -278,7 +278,7 @@ topology ~ dnUniformTopology(taxa, outgroup=out_group)
 moves[mvi++] = mvSPR(topology, weight=1.0)
 </code></pre></div></div>
 
-<p>The weight specifies how often the move will be applied either on average per iteration or relative to all other moves. Have a look at the MCMC Diagnosis tutorial for more details about moves and MCMC strategies (found in <a href="/revbayes_tutorials/tutorials/">Tutorials</a>).</p>
+<p>The weight specifies how often the move will be applied either on average per iteration or relative to all other moves. Have a look at the MCMC Diagnosis tutorial for more details about moves and MCMC strategies (found in <a href="/revbayes-site/tutorials/">Tutorials</a>).</p>
 
 <p>Next we have to create a stochastic node for each of the $2N - 3$ branches in our tree (where $N=$ <code class="highlighter-rouge">n_species</code>). We can do this using a <code class="highlighter-rouge">for</code> loop — this is a plate in our graphical model. In this loop, we can create each of the branch-length nodes and assign each move. Copy this entire block of <code class="highlighter-rouge">Rev</code> code into the console:</p>
 
@@ -324,14 +324,14 @@ phylogenetic model. For simplicity, we will assume a uniform prior on
 both topologies and node ages. The distribution in RevBayes is <code class="highlighter-rouge">dnUniformTimeTree()</code>.</p>
 
 <p>Fore more information on tree priors, such as birth-death
-processes, please read the <a href="/revbayes_tutorials/tutorials/div/">Diversification Rate Tutorial</a>.</p>
+processes, please read the <a href="/revbayes-site/tutorials/div/">Diversification Rate Tutorial</a>.</p>
 
 <p>First, we need to specify the age of the tree:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root_age &lt;- 10.0
 </code></pre></div></div>
 
-<p>Here we simply assumed that the tree is 10.0 time units old. We could also specify a prior on the root age if we have fossil calibrations (see <a href="/revbayes_tutorials/tutorials/clocks/">Divergence Time and Calibration Tutorial</a>). Next, we specify the <code class="highlighter-rouge">tree</code> stochastic variable by passing in the taxon information <code class="highlighter-rouge">taxa</code> to the <code class="highlighter-rouge">dnUniformTimeTree()</code> distribution:</p>
+<p>Here we simply assumed that the tree is 10.0 time units old. We could also specify a prior on the root age if we have fossil calibrations (see <a href="/revbayes-site/tutorials/clocks/">Divergence Time and Calibration Tutorial</a>). Next, we specify the <code class="highlighter-rouge">tree</code> stochastic variable by passing in the taxon information <code class="highlighter-rouge">taxa</code> to the <code class="highlighter-rouge">dnUniformTimeTree()</code> distribution:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psi ~ dnUniformTimeTree(rootAge=root_age, taxa=taxa)
 </code></pre></div></div>
@@ -1061,17 +1061,17 @@ for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
   <div class="container">
   <div class="row">
     <div class="col-sm-12" align="center">
-      <a href="https://github.com/revbayes">GitHub</a> | <a href="/revbayes_tutorials/license">License</a> | <a href="/revbayes_tutorials/citation">Cite RevBayes</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users' Forum</a>
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/revbayes-site/license">License</a> | <a href="/revbayes-site/citation">Cite RevBayes</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users' Forum</a>
     </div>
   </div>
   </div>
 </footer>
 
     </div>
-    <script src="/revbayes_tutorials/assets/js/vendor/jquery.min.js"></script>
-<script src="/revbayes_tutorials/assets/js/vendor/FileSaver.min.js"></script>
-<script src="/revbayes_tutorials/assets/js/vendor/jszip.min.js"></script>
-<script src="/revbayes_tutorials/assets/js/vendor/bootstrap.min.js"></script>
+    <script src="/revbayes-site/assets/js/vendor/jquery.min.js"></script>
+<script src="/revbayes-site/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/revbayes-site/assets/js/vendor/jszip.min.js"></script>
+<script src="/revbayes-site/assets/js/vendor/bootstrap.min.js"></script>
 
 <script type="text/javascript">
 // Add default language
@@ -1091,7 +1091,7 @@ $(":not(code).highlighter-rouge").each(function() {
 // });
 </script>
 
-<script src="/revbayes_tutorials/assets/js/base.js"></script>
+<script src="/revbayes-site/assets/js/base.js"></script>
 
 <script type="text/javascript"
     src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
