@@ -97,7 +97,7 @@ prior component (section [subsect:Intro-FBD]).
 
 [fig:module-gm]
 
-![]( figures/tikz/full_model_modular) 
+![]( figures/tikz/full_model_modular.png) 
 > Modular components of
 the graphical model used in the “total-evidence” analysis described in
 this tutorial
@@ -113,8 +113,8 @@ We will describe the distinction between these two trees in section
 
 [fig:example-tree]
 
-![]( figures/tree_plot_with_fossils) ![](
-figures/tree_plot_with_fossils_reconstructed) 
+![]( figures/tree_plot_with_fossils.png) ![](
+figures/tree_plot_with_fossils_reconstructed.png) 
 > One possible
 realization of the fossilized birth-death (described in section
 [subsect:Intro-FBD]) process starting at origin time $\phi$, showing
@@ -165,7 +165,7 @@ originated.
 
 [fig:fbd_gm]
 
-![]( figures/tikz/fbd_gm) 
+![]( figures/tikz/fbd_gm.png) 
 > A graphical model of the fossilized
 birth-death model describing the generation of the time tree ( in
 Fig. [fig:module-gm]) used in this tutorial. The parameters of the
@@ -236,7 +236,7 @@ the observed in the modular graphical model shown in figure
 
 [fig:tipsampling_gm]
 
-![]( figures/tikz/tipsampling_gm) 
+![]( figures/tikz/tipsampling_gm.png) 
 > A graphical model of the
 fossil age likelihood model used in this tutorial. The likelihood of
 fossil observation $\mathcal{F}_i$ is uniform and non-zero when the
@@ -285,7 +285,7 @@ tutorial [also see @Thorne2002} {% cite Heath2013].
 
 [fig:uexp_gm]
 
-![]( figures/tikz/uexp_gm) 
+![]( figures/tikz/uexp_gm.png) 
 > A graphical model of the
 uncorrelated exponential relaxed clock model. In this model, the clock
 rate on each branch is independent and identically distributed according
@@ -352,7 +352,7 @@ model shown in Fig. [fig:morph_clock_gm]).
 
 [fig:morph_clock_gm]
 
-![]( figures/tikz/morph_clock_gm) 
+![]( figures/tikz/morph_clock_gm.png) 
 > The graphical-model
 representation of the branch-rate model governing the evolution of
 morphological characters. This model is consistent with a strict
@@ -1264,7 +1264,7 @@ statistics of the values sampled by the Markov chain. Figure
 ***Posterior*** statistic for the ‘bears.log‘ file in the
 ‘output‘ directory.
 
-![]( figures/samplewindow) 
+![]( figures/samplewindow.png) 
 > The Estimates window. The left-hand
 window provides mean and ESS of the chain. The right-hand window
 visualizes the distribution of samples.
