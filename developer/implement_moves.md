@@ -94,7 +94,7 @@ double GammaScaleProposal::propose( double &val )
     value = new RevBayesCore::MetropolisHastingsMove(p, w, t);
     
 }
-   ```
+```
 
 4. _Updating the Rev language register_ - The last step in implementing our new move is to make sure that it's registered in the Rev language. To do this, we will need to update the file `RbRegister_Move.cpp` in `src/revlanguage/workspace`. In this file, we'll need to include the header for our new move `#include "Move_GammaScale.h"` in the section corresponding to moves on real values. We'll also need to add the constructor to the workspace by updating the `::initializeMoveGlobalWorkspace` method to include `addTypeWithConstructor( new Move_GammaScale() );`, again in the section corresponding to moves on real values.
 
