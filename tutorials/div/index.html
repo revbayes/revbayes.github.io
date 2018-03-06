@@ -10,7 +10,7 @@
     <link rel="stylesheet" type="text/css" href="/revbayes-site/assets/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="/revbayes-site/assets/css/bootstrap-theme.css" />
     <link rel="stylesheet" type="text/css" href="/revbayes-site/assets/css/main.css" />
-    <title>RevBayes: Phylogenetic Inference using ‘RevBayes‘</title>
+    <title>RevBayes: Basic Diversification Rate Estimation</title>
   </head>
   <body>
     <div class="container">
@@ -48,9 +48,9 @@
 </nav>
 
       <div class="row">
-	<h1 class="maintitle">Phylogenetic Inference using ‘RevBayes‘</h1>
-	<h3 class="subtitle">Basic Diversification Rate Estimation</h3>
-	<h4 class="maintitle">Sebastian H&#246;hna and Tracy Heath</h4>
+	<h1 class="maintitle">Basic Diversification Rate Estimation</h1>
+	<h3 class="subtitle">Comparing different constant-rate models of lineage diversification</h3>
+	<h4 class="maintitle">Sebastian Höhna and Tracy Heath</h4>
 </div>
 
       
@@ -75,6 +75,17 @@
 <blockquote class="tutorial_files no-print" id="tutorial_files">
   <h2>Data files and scripts</h2>
   
+    <div class="row">
+      <div class="col-md-9">
+          <strong>Data Files</strong>
+          <ul id="data_files">
+          
+            <li><a href="/revbayes-site/tutorials/div/data/primates_tree.nex">primates_tree.nex</a></li>
+          
+          </ul>
+        </div>
+    </div>
+  
     <div class="row" id="script_row">
       <div class="col-md-9">
           <strong>Scripts</strong>
@@ -96,12 +107,12 @@ extinction rates. These inferences allow us to investigate key questions
 in evolutionary biology.</p>
 
 <p>Diversification-rate parameters may be included as nuisance parameters
-of other phylogenetic models—<em>i.e.,</em>where
+of other phylogenetic models—<em>i.e.,</em> where
 these diversification-rate parameters are not of direct interest. For
 example, many methods for estimating species divergence times—such as
-<code class="highlighter-rouge">BEAST</code><a href="#Drummond2012">(Drummond et al. 2012)</a>,
-<code class="highlighter-rouge">MrBayes</code><a href="#Ronquist2012">(Ronquist et al. 2012)</a>, and
-<code class="highlighter-rouge">RevBayes</code><a href="#Hoehna2016b">(Höhna et al. 2016)</a>—implement ‘relaxed-clock models’
+<code class="highlighter-rouge">BEAST</code> <a href="#Drummond2012">(Drummond et al. 2012)</a>,
+<code class="highlighter-rouge">MrBayes</code> <a href="#Ronquist2012">(Ronquist et al. 2012)</a>, and
+<code class="highlighter-rouge">RevBayes</code> <a href="#Hoehna2016b">(Höhna et al. 2016)</a>—implement ‘relaxed-clock models’
 that include a constant-rate birth-death branching process as a prior
 model on the distribution of tree topologies and node ages. Although the
 parameters of these ‘tree priors’ are not typically of direct interest,
@@ -113,7 +124,7 @@ of the diversification-rate parameters, as they accommodate uncertainty
 in the other phylogenetic-model parameters (including the tree topology,
 divergence-time estimates, and the other relaxed-clock model
 parameters). More recent work,
-<em>e.g.,</em>@Heath2014, uses macroevolutionary
+<em>e.g.</em>, <a href="#Heath2014">Heath et al. (2014)</a>, uses macroevolutionary
 models (the fossilized birth-death process) to calibrate phylogenies and
 thus to infer dated trees.</p>
 
@@ -141,14 +152,14 @@ rates.</p>
 
 <p><em>What is the (constant) rate of diversification in my study group?</em> The
 most basic models estimate parameters of the stochastic-branching
-process (<em>i.e.,</em>rates of speciation and
+process (<em>i.e.,</em> rates of speciation and
 extinction, or composite parameters such as net-diversification and
 relative-extinction rates) under the assumption that rates have remained
 constant across lineages and through time;
-<em>i.e.,</em>under a constant-rate birth-death
+<em>i.e.,</em> under a constant-rate birth-death
 stochastic-branching process model <a href="#Nee1994b">(Nee et al. 1994)</a>. Extensions to the
 (basic) constant-rate models include diversification-rate variation
-through time (missing reference). First, we might ask whether
+through time <a href="#Stadler2011">(Stadler 2011; Höhna 2015)</a>. First, we might ask whether
 there is evidence of an episodic, tree-wide increase in diversification
 rates (associated with a sudden increase in speciation rate and/or
 decrease in extinction rate), as might occur during an episode of
@@ -165,7 +176,7 @@ environmental factors, such as environmental CO~2~ or temperature
 <a href="#Condamine2013">(Condamine et al. 2013)</a>. A final question in this category asks whether our
 study tree was impacted by a mass-extinction event (where a large
 fraction of the standing species diversity is suddenly lost,
-<em>e.g.,</em>@May2016). The common theme of these
+<em>e.g.,</em> <a href="#May2016">May et al. (2016)</a>). The common theme of these
 studies is that the diversification process is tree-wide, that is, all
 lineages of the study group have the exact same rates at a given time.</p>
 
@@ -830,14 +841,34 @@ times the relative death rate?</p>
 <a href="https://doi.org/10.1093/sysbio/syw021">10.1093/sysbio/syw021</a>
 
 </li>
+<li><span id="Heath2014">Heath T.A., Huelsenbeck J.P., Stadler T. 2014. The fossilized birth-death process for coherent calibration of divergence-time estimates. Proceedings of the National Academy of Sciences. 111:E2957–E2966.</span>
+
+<a href="https://doi.org/10.1073/pnas.1319091111">10.1073/pnas.1319091111</a>
+
+</li>
 <li><span id="Nee1994b">Nee S., May R.M., Harvey P.H. 1994. The Reconstructed Evolutionary Process. Philosophical Transactions: Biological Sciences. 344:305–311.</span>
 
 <a href="https://doi.org/10.1098/rstb.1994.0068">10.1098/rstb.1994.0068</a>
 
 </li>
+<li><span id="Stadler2011">Stadler T. 2011. Mammalian phylogeny reveals recent diversification rate shifts. Proceedings of the National Academy of Sciences. 108:6187–6192.</span>
+
+<a href="https://doi.org/10.1073/pnas.1016876108">10.1073/pnas.1016876108</a>
+
+</li>
+<li><span id="Hoehna2015a">Höhna S. 2015. The time-dependent reconstructed evolutionary process with a key-role for mass-extinction events. Journal of Theoretical Biology. 380:321–331.</span>
+
+<a href="https://doi.org/http://dx.doi.org/10.1016/j.jtbi.2015.06.005">http://dx.doi.org/10.1016/j.jtbi.2015.06.005</a>
+
+</li>
 <li><span id="Condamine2013">Condamine F.L., Rolland J., Morlon H. 2013. Macroevolutionary perspectives to environmental change. Ecology Letters.</span>
 
 <a href="https://doi.org/10.1111/ele.12062">10.1111/ele.12062</a>
+
+</li>
+<li><span id="May2016">May M.R., Höhna S., Moore B.R. 2016. A Bayesian Approach for Detecting the Impact of Mass-Extinction Events on Molecular Phylogenies When Rates of Lineage Diversification May Vary. Methods in Ecology and Evolution. 7:947–959.</span>
+
+<a href="https://doi.org/10.1111/2041-210X.12563">10.1111/2041-210X.12563</a>
 
 </li>
 <li><span id="Maddison2007">Maddison W.P., Midford P.E., Otto S.P. 2007. Estimating a binary character’s effect on speciation and extinction. Systematic Biology. 56:701.</span>
