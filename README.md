@@ -6,7 +6,7 @@ This is the repository for the RevBayes website.
 Setting up this repo locally
 =================
 
-Because this site makes use of third party jekyll plugins, the static site is stored on branch `master`, while the source files are stored on branch `source`.
+The static version of this site is stored on branch `master`, while the source files are stored on branch `source`.
 
 After first cloning this repository, you will be on the `source` branch. Then, you should clone the `master` branch into the `_site` directory.
 
