@@ -5,12 +5,20 @@
 
 <script type="text/javascript">
 // Add default language
-$(".highlighter-rouge").each(function() {
+$(":not(code).highlighter-rouge").each(function() {
   {% if page.code_layout %}
-  if( this.classList == "highlighter-rouge")
+  if( this.classList == "highlighter-rouge") {
     this.classList = "{{ page.code_layout }} highlighter-rouge";
+  }
   {% endif %}
 });
+// $("code.highlighter-rouge").each(function() {
+//   {% if page.code_layout %}
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "{{ page.code_layout }} highlighter-rouge";
+//   }
+//   {% endif %}
+// });
 </script>
 
 <script src="{{ site.baseurl }}/assets/js/base.js"></script>

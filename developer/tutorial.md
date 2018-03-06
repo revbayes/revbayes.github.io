@@ -1,11 +1,14 @@
 ---
 title: Writing a user tutorial
 category: Developer
+code_layout: default
 ---
 
-Writing the front matter
-==================
+## Getting started
+------------------
 
+## Writing the front matter
+------------------
 In order for Jekyll to process your tutorial page, it must include YAML front matter, indicated with `---`
 
 ```yaml
@@ -59,18 +62,110 @@ scripts:
 ---
 ``` 
 
-Including a citation
-==================
+## Formatting
+------------------
+
+## Code formats
+
+### Jekyll:
+~~~markdown
+```
+Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+```
+{:.default}
+~~~
+
+### Rendered:
+```
+Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+```
+{:.default}
+-------------
+### {% raw %}`{:.Rev}`{% endraw %}
+```
+Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+```
+{:.Rev}
+-------------
+
+### {% raw %}`{:.bash}`{% endraw %}
+```
+Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+```
+{:.bash}
+-------------
+### {% raw %}`{:.console}`{% endraw %}
+```
+Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+```
+{:.console}
+-------------
+### {% raw %}`{:.cpp}`{% endraw %}
+```
+Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+```
+{:.cpp}
+-------------
+
+## Blockquotes
+
+### Jekyll:
+~~~markdown
+> Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+> sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+~~~
+
+### Rendered:
+> Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+> sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+
+-------------
+
+### Jekyll:
+~~~markdown
+> Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+> sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+{:.instruction}
+~~~
+
+### Rendered:
+> Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+> sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+{:.instruction}
+-------------
+
+### Jekyll:
+~~~markdown
+> ## Discussion header
+> Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+> sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+{:.discussion}
+~~~
+
+### Rendered:
+> ## Discussion header
+> Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+> sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+{:.discussion}
+
+## Including citations
+------------------
 
 ### Jekyll:
 ```markdown
 {% raw %}This is a citation {% cite Felsenstein1981 %}. This is an in-text citation of {% citet Felsenstein1981 %}.{% endraw %}
 ``` 
-### Output:
+### Rendered:
 This is a citation {% cite Felsenstein1981 %}. This is an in-text citation of {% citet Felsenstein1981 %}.
 
-Including a figure
-==================
+## Including figures
+------------------
 
 ### Jekyll:
 ```markdown
@@ -83,7 +178,7 @@ This is an example figure caption. You can include *Markdown* and $\LaTeX$.
 
 This is a reference to {% figref example %}{% endraw %}
 ``` 
-### Output:
+### Rendered:
 {% figure example %}
 <img src="images/example.png" width="200">
 {% figcaption %}

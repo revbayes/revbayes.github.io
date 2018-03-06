@@ -55,6 +55,13 @@ $figure-border:     #B0B0B0 !default;
 // Specialized code blocks.
 //----------------------------------------
 
+@mixin codeSetup($box-color, $text-color: #000000) {
+  background-color: $box-color;
+  color: $text-color;
+  border-radius: 0;
+  padding: 1px 5px;
+}
+
 @mixin cdSetup($box-color, $text-color: #000000, $prompt: "", $secondary: "") {
   pre {
     font-size: 14px;
@@ -67,9 +74,16 @@ $figure-border:     #B0B0B0 !default;
       content: $secondary ' ';
     }
   }
-  margin-bottom: 12px;
 }
 
+:not(pre) > code         { @include codeSetup(#eff0f1); }
+:not(pre) > code.Rev     { @include codeSetup($color-Rev); }
+:not(pre) > code.rev     { @include codeSetup($color-Rev); }
+:not(pre) > code.cpp     { @include codeSetup($lavender-blush2); }
+:not(pre) > code.bash    { @include codeSetup($color-bash); }
+:not(pre) > code.console { @include codeSetup($color-console-bg, $color-console); }
+
+.default   { @include cdSetup(#eff0f1, #000000); }
 .Rev       { @include cdSetup($color-Rev, #000000, ">", "+"); }
 .rev       { @include cdSetup($color-Rev, #000000, ">", "+"); }
 .cpp       { @include cdSetup($lavender-blush2, #000000); }
@@ -77,6 +91,15 @@ $figure-border:     #B0B0B0 !default;
 .console   { @include cdSetup($color-console-bg, $color-console); }
 
 .error     { @include cdSetup($color-error); }
+
+.instruction {
+  border: 1px solid;
+  border-color: #ddd;
+
+  pre {
+
+  }
+}
 
 //----------------------------------------
 // Specialized blockquote environments for learning objectives, callouts, etc.
@@ -173,13 +196,40 @@ figure {
   }
 }
 
+figure .table {
+  padding: 10px 20px;
+  counter-increment: tables;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 0.9em;
+  margin-bottom: 0.5em;
+  border-left: 5px solid #eee;
+  border-right: 5px solid #eee;
+  display: table;
+
+  img {
+    margin-bottom: 0.5em
+  }
+}
+
 figure figcaption:before {
   content: 'Figure ' counter(figures) '. ';
   font-weight: bold;
 }
 
+figure .table figcaption:before {
+  content: 'Table ' counter(tables) '. ';
+  font-weight: bold;
+}
+
 @media print {
   figure {
+    border: 1px solid #999;
+
+    page-break-inside: avoid;
+  }
+  figure .table {
     border: 1px solid #999;
 
     page-break-inside: avoid;
