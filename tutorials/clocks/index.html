@@ -98,7 +98,9 @@
         </div>
     </div>
 </blockquote>
-      <h2 class="section" id="introduction">Introduction</h2>
+      <!-- category: Standard -->
+
+<h2 class="section" id="introduction">Introduction</h2>
 
 <p>Central among the questions explored in biology are those that seek to
 understand the timing and rates of evolutionary processes. Accurate
@@ -121,8 +123,11 @@ can verify your results. (Note that since the MCMC runs you perform will
 start from different random seeds, the output files resulting from your
 analyses <em>will not</em> be identical to the ones we provide you.)</p>
 
-<p>Download the <a href="#data_files">data files</a> listed above and place them in a new folder called <code class="highlighter-rouge">data</code>.
-The alignment in file, <code class="highlighter-rouge">data/bears_irbp.nex</code>, contains interphotoreceptor
+<!-- block -->
+<p>Download the <a href="#data_files">data files</a> listed above.
+<!-- block --></p>
+
+<p>The alignment in file, <code class="highlighter-rouge">data/bears_irbp.nex</code>, contains interphotoreceptor
 retinoid-binding protein (irbp) sequences for each extant species.</p>
 
 <p>In this exercise, we will compare among different relaxed clock models
@@ -158,9 +163,11 @@ tutorial directory can be any directory on your file system, but you may
 want to create a new one so that you avoid conflicts with other
 RevBayes tutorials.</p>
 
-<p>Create a directory for this tutorial called (or any name you like), and
+<!-- block -->
+<p>Create a directory for this tutorial called <font style="font-family:'Courier'" color="#E40606">RB_ClockModels_Tutorial</font> (or any name you like), and
 navigate to that directory. This is the tutorial directory mentioned
-above.</p>
+above.
+<!-- block --></p>
 
 <p>For this exercise, the <code class="highlighter-rouge">Rev</code> code provided assumes that within the
 tutorial directory exists subdirectories. These directories must have
@@ -170,14 +177,18 @@ to conform to your specific directory names.</p>
 <p>The first subdirectory will contain the data files (downloaded in
 the <a href="#getting-started">Getting Started</a> section).</p>
 
-<p>Create a directory called in your tutorial directory.</p>
+<!-- block -->
+<p>Create a directory called <font style="font-family:'Courier'" color="#E40606">data</font> in your tutorial directory.</p>
 
-<p>Save the tree and alignment files downloaded above (<a href="#getting-started">Getting Started</a>) in the <code class="highlighter-rouge">data</code> directory.</p>
+<p>Save the tree and alignment files downloaded above (<a href="#getting-started">Getting Started</a>) in the <code class="highlighter-rouge">data</code> directory.
+<!-- block --></p>
 
 <p>The second subdirectory will contain the <code class="highlighter-rouge">Rev</code> files you write to
 execute the exercises in this tutorial.</p>
 
-<p>Create a directory called in your tutorial directory.</p>
+<!-- block -->
+<p>Create a directory called <font style="font-family:'Courier'" color="#E40606">scripts</font> in your tutorial directory.
+<!-- block --></p>
 
 <p>This tutorial will guide you through creating all of the files necessary
 to execute the analyses without typing the <code class="highlighter-rouge">Rev</code> language syntax
@@ -190,16 +201,19 @@ make sure that the file paths given throughout the tutorial are correct.</p>
 analyses. For some operations, RevBayes can create this directory on
 the fly for you. However, it may be safer just to add it now.</p>
 
-<p>Create a directory called in your tutorial directory.</p>
+<!-- block -->
+<p>Create a directory called <font style="font-family:'Courier'" color="#E40606">output</font> in your tutorial directory.
+<!-- block --></p>
 
 <p>The only files you need for this exercise are now in the <code class="highlighter-rouge">data</code>
 directory. Otherwise, you will create all of the <code class="highlighter-rouge">Rev</code> files specifying
-the models and analyses. All of the <code class="highlighter-rouge">Rev</code> files you write for this
-tutorial are available on the <a href="https://github.com/revbayes/revbayes_tutorial">RevBayes Tutorial GitHub
-repository</a> in the
-<a href="https://github.com/revbayes/revbayes_tutorial/tree/master/RB_ClockModels_Tutorial/scripts">scripts directory of the Clock Models
-Tutorial</a>.
-You can refer to these examples to verify your own work.</p>
+the models and analyses. 
+<!-- All of the `Rev` files you write for this
+tutorial are available on the [RevBayes Tutorial GitHub
+repository](https://github.com/revbayes/revbayes_tutorial) in the
+[scripts directory of the Clock Models
+Tutorial](https://github.com/revbayes/revbayes_tutorial/tree/master/RB_ClockModels_Tutorial/scripts).
+You can refer to these examples to verify your own work. --></p>
 
 <h2 class="section" id="the-birth-death-model">The Birth-Death Model</h2>
 
@@ -216,10 +230,12 @@ the birth-death process conditioned on the root age in RevBayes.
 
 <p><strong><em>Create the Rev File</em></strong></p>
 
-<p>Open your text editor and create the birth-death model file called in
+<!-- block -->
+<p>Open your text editor and create the birth-death model file called <font style="font-family:'Courier'" color="#E40606">m_BDP_bears.Rev</font> in
 the <code class="highlighter-rouge">scripts</code> directory.</p>
 
-<p>Enter the <code class="highlighter-rouge">Rev</code> code provided in this section in the new model file.</p>
+<p>Enter the <code class="highlighter-rouge">Rev</code> code provided in this section in the new model file.
+<!-- block --></p>
 
 <p><strong><em>Read in a Tree from a Previous Study</em></strong></p>
 
@@ -246,13 +262,11 @@ workspace iterator <code class="highlighter-rouge">mi</code> yet. Because of thi
 in the RevBayes console, you would get an error. Since this code is
 intended to be in a sourced <code class="highlighter-rouge">Rev</code> file, we are assuming that you would
 initialize <code class="highlighter-rouge">mi</code> before calling
-<code class="highlighter-rouge">source(“scripts/m_BDP_Tree_bears.Rev”)</code>.</p>
+<code class="highlighter-rouge">source("scripts/m_BDP_Tree_bears.Rev")</code>.</p>
 
 <p>We will use the parameterization of the birth-death process specifying
 the diversification and turnover. For a more detailed tutorial on the
-simple birth-death model, please refer to the <a href="../div">Basic Diversification
-Rate
-Estimation</a>
+simple birth-death model, please refer to the <a href="../div">Basic Diversification Rate Estimation</a>
 tutorial.</p>
 
 <p><strong><em>Diversification</em></strong></p>
@@ -261,7 +275,7 @@ tutorial.</p>
 extinction rate ($\mu$): $d = \lambda - \mu$.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>diversification ~ dnExponential(10.0) 
-moves[mi++] = mvScale(diversification,lambda=1.0,tune=true,weight=3.0)
+moves[mi++] = mvScale(diversification, lambda=1.0, tune=true, weight=3.0)
 </code></pre></div></div>
 
 <p><strong><em>Turnover</em></strong></p>
@@ -377,7 +391,7 @@ moves[mi++] = mvFNPR(timetree, weight=8.0)
 <p>Now save and close the file called . This file, with all the model
 specifications will be loaded by other <code class="highlighter-rouge">Rev</code> files.</p>
 
-<h2 id="brMods" class="section">Specifying Branch-Rate Models</h2>
+<h2 class="section" id="specifying-branch-rate-models">Specifying Branch-Rate Models</h2>
 
 <p>The next sections will walk you through setting up the files specifying
 different relaxed clock models. Each section will require you to create
