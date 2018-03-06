@@ -75,7 +75,7 @@ double GammaScaleProposal::propose( double &val )
     For our particular example, we also need to make one additional change. Because we've only updated the `ScaleProposal`, and not the `ScaleProposalContinuous`, we need to remove the part of the code in this move that could call `ScaleProposalContinuous`. The `::constructInternalObject` method now looks like this (compare to the corresponding method from `Move_Scale.cpp`):
    
     ```cpp
-   void Move_GammaScale::constructInternalObject( void )
+void Move_GammaScale::constructInternalObject( void )
 {
     // we free the memory first
     delete value;
