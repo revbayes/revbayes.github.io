@@ -8,7 +8,7 @@ module Jekyll
 
 		def initialize(tag_name, arguments, tokens)
 	        super
-	        arguments += " --style assets/systematic-biology-citet.csl"
+	        arguments += " --style assets/systematic-biology-in-text.csl"
 	        
 	        @config = Scholar.defaults.dup
 	        @keys, arguments = split_arguments(arguments)
