@@ -1,21 +1,16 @@
-revbayes-tutorials
+revbayes.github.io
 ==========================
 
-This is the repository for the RevBayes tutorials website.
-
-To do list!
-- add Hackathons page (kinda like the workshops page)
-- populate all the workshops to the new site
+This is the repository for the RevBayes website.
 
 Setting up this repo locally
 =================
 
 Because this site makes use of third party jekyll plugins, the static site is stored on branch `master`, while the source files are stored on branch `source`.
 
-After first cloning this repository you should checkout the `source` branch. Then you should clone the `master` branch again to the `_site` directory.
+After first cloning this repository, you will be on the `source` branch. Then, you should clone the `master` branch into the `_site` directory.
 
-	git checkout source
-	git clone git@github.com:willpett/revbayes_tutorials.git _site
+	git clone -b master git@github.com:willpett/revbayes_tutorials.git _site
 
 In order to build the site you will need `jekyll`, see instructions below to install.
 
