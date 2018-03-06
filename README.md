@@ -6,7 +6,7 @@ This is the repository for the RevBayes website.
 Setting up this repo locally
 =================
 
-Because this site makes use of third party jekyll plugins, the static site is stored on branch `master`, while the source files are stored on branch `source`.
+The static version of this site is stored on branch `master`, while the source files are stored on branch `source`.
 
 After first cloning this repository, you will be on the `source` branch. Then, you should clone the `master` branch into the `_site` directory.
 
@@ -45,7 +45,13 @@ Next, move into the `revbayes_tutorials` repo, and install required gems via:
 
 Now, you should be able to build and serve the static HTML with:
 
-    bundle exec jekyll serve --incremental
+    bundle exec jekyll serve
+
+The previous command will cause a full rebuild of the site each time a file is modified. This can sometimes take a long time. You can selectively regenerate only modified files using the `--incremental` option
+
+	bundle exec jekyll serve --incremental
+
+This will reduce regeneration times substantially. However, keep in mind that if you add new files, or modify `_config.yml` or any plugins, you will need to do a non-incremental rebuild.
 
 If you get the error "invalid byte sequence in US-ASCII", this seems to fix it:
 
