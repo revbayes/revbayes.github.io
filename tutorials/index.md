@@ -1,17 +1,19 @@
 ---
 layout: default
+title: Tutorials
 ---
 
-# RevBayes Tutorials
+## RevBayes Tutorials
+----
 
 Several tutorials have been written for RevBayes. Each one explicitly walks you through model specification and analysis set-up for different phylogenetic methods.
 
 
-## Available Tutorials
+### Available Tutorials
 
 This list shows all of the RevBayes tutorials for learning various aspects of RevBayes and Bayesian phylogenetic analysis. 
 These tutorials have been written for new users to learn RevBayes at home, at workshops, and in course taught at the undergraduate and graduate levels. 
-Thus, you may find that the styles are somewhat different between tutorials and that some  have overlapping content. 
+You may find that the styles are somewhat different between tutorials and that some  have overlapping content. 
 The tutorials all follow the same format, please see the Tutorial Format guide for details about how to read the tutorials.
 
 <a href="{{ site.baseurl }}{{ page.url }}format" class="btn btn-info" role="button">Tutorial Format Guide</a>

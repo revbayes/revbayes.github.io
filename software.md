@@ -1,9 +1,11 @@
 ---
-title: Download and Install RevBayes
+title: Software
 permalink: /software/
 code_layout: bash
 ---
 
+## Download and Install RevBayes
+----
 <div class="row">
 
 <div class="col-sm-4" align="center">
