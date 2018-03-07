@@ -28,17 +28,21 @@ html {
 $color-brand:       #2b3990 !default;
 
 // code boxes
-$color-error:        #bd2c00 !default;
-$color-bash:         #f0f0f0 !default;
-$color-Rev:          #b7cfed !default;
-$color-cpp:          #cfb7ed !default;
-$color-console-bg:   #b7cfed !default;
-$color-console:      #808080 !default;
+$color-bash:          #f0f0f0 !default;
+$color-rev:           #b7cfed !default;
+$color-rev-output-bg: #b7cfed !default;
+$color-rev-output:    #808080 !default;
 
 // blockquotes
 $color-overview:    #b7cfed !default;
 $color-files:       #f4fd9c !default;
 
+// figures
+$figure-border:     #B0B0B0 !default;
+
+// unused
+$color-cpp:         #cfb7ed !default;
+$color-error:       #bd2c00 !default;
 $color-callout:     #f4fd9c !default;
 $color-challenge:   #eec275 !default;
 $color-checklist:   #dfd2a0 !default;
@@ -49,7 +53,6 @@ $color-solution:    #ded4b9 !default;
 $color-testimonial: #fc8dc1 !default;
 
 $lavender-blush2:	  #eee0e5 !default;
-$figure-border:     #B0B0B0 !default;
 
 //----------------------------------------
 // Specialized code blocks.
@@ -77,26 +80,24 @@ $figure-border:     #B0B0B0 !default;
 }
 
 :not(pre) > code         { @include codeSetup(#eff0f1); }
-:not(pre) > code.Rev     { @include codeSetup($color-Rev); }
-:not(pre) > code.rev     { @include codeSetup($color-Rev); }
+:not(pre) > code.Rev     { @include codeSetup($color-rev); }
+:not(pre) > code.rev     { @include codeSetup($color-rev); }
 :not(pre) > code.bash    { @include codeSetup($color-bash); }
-:not(pre) > code.console { @include codeSetup($color-console-bg, $color-console); }
+:not(pre) > code.rev-output { @include codeSetup($color-rev-output-bg, $color-rev-output); }
+:not(pre) > code.Rev-output { @include codeSetup($color-rev-output-bg, $color-rev-output); }
 
-.default   { @include cdSetup(#eff0f1, #000000); }
-.Rev       { @include cdSetup($color-Rev, #000000, ">", "+"); }
-.rev       { @include cdSetup($color-Rev, #000000, ">", "+"); }
-.bash      { @include cdSetup($color-bash, #000000, "$", ">"); }
-.console   { @include cdSetup($color-console-bg, $color-console); }
+.default      { @include cdSetup(#eff0f1, #000000); }
+.Rev          { @include cdSetup($color-rev, #000000, ">", "+"); }
+.rev          { @include cdSetup($color-rev, #000000, ">", "+"); }
+.rev-output   { @include cdSetup($color-rev-output-bg, $color-rev-output); }
+.Rev-output   { @include cdSetup($color-rev-output-bg, $color-rev-output); }
+.bash         { @include cdSetup($color-bash, #000000, "$", ">"); }
 
-.error     { @include cdSetup($color-error); }
+.error        { @include cdSetup($color-error); }
 
 .instruction {
   border: 1px solid;
   border-color: #ddd;
-
-  pre {
-
-  }
 }
 
 //----------------------------------------

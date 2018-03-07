@@ -138,7 +138,7 @@ The Birth-Death Model
 {:.section}
 
 The birth-death process we will use is a constant-rate process
-conditioned on the age of the root of the tree ({% figref bdgm %}).
+conditioned on the age of the root of the tree ({% ref bdgm %}).
 
 {% figure bdgm %}
 <img src="figures/BDPR_gm.png" width="500">

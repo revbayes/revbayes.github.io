@@ -58,7 +58,7 @@ Modeling an Archer’s Shots on a Target {#sect:Exercise}
 
 We’ll begin our exploration of Bayesian inference with a simple archery
 model. For this model, there is an unknown archer shooting $n$ arrows at
-a target (see {% figref target %}). The distance $d$ of each arrow
+a target (see {% ref target %}). The distance $d$ of each arrow
 from the target’s center is measured. Let’s assume that the distance of
 each arrow from the bullseye follows an exponential
 distribution—*i.e.,* $d\sim\mbox{Exp}(\mu^{-1})$. This implies the archer has an inherent ability to shoot arrows at an average distance $\mu$. Then, the probability density of each arrow distance $d_i$ is 
@@ -99,7 +99,7 @@ $$
 
 Where $P(\mu \mid \bar d)$ is our posterior distribution, $P(\bar d \mid \mu)$ is our likelihood or data distribution, $P(\mu)$ is our prior distribution, and $P(\bar d)$ is our marginal likelihood. The take-home message here is that, if we’re interested in doing Bayesian inference for the archery model, we need to specify a *likelihood function* and a *prior distribution* for $\mu$. In virtually all practical cases, we cannot compute the posterior distribution directly and instead use numerical procedures, such as a Markov chain Monte Carlo (MCMC) algorithm. Therefore, we will also have to write a MCMC algorithm that samples parameter values in the frequency of their posterior probability.
 
-We’ll use a simple exponential distribution as a prior on the parameter of the model, $\mu$. The [exponential distribution](https://en.wikipedia.org/wiki/Exponential_distribution) has one parameter $\alpha$ representing our prior belief about the mean arrow distance {% figref exponential %}. Different choices for $\alpha$ represent different prior beliefs.
+We’ll use a simple exponential distribution as a prior on the parameter of the model, $\mu$. The [exponential distribution](https://en.wikipedia.org/wiki/Exponential_distribution) has one parameter $\alpha$ representing our prior belief about the mean arrow distance {% ref exponential %}. Different choices for $\alpha$ represent different prior beliefs.
 
 {% figure exponential %}
 ![](figures/exp.png) 
@@ -108,7 +108,7 @@ We’ll use a simple exponential distribution as a prior on the parameter of the
 {% endfigcaption %}
 {% endfigure %}
 
-{% figref archery_model %} shows the graphical model for the archery model. This nicely visualizes the dependency structure in the model. We see that the parameter $\alpha$ is drawn in a solid square, representing that this variable is constant (*i.e.,* it takes a “known” value). Following the graph in {% figref archery_model %}, we see an arrow connecting $\alpha$ and the variable $\mu$. That simply means that $\mu$ depends on $\alpha$. More specifically, $\mu$ is a stochastic variable (shown as a solid circle) that is drawn from an exponential distribution with parameter $\alpha$. Another constant variable, $n$, represents the number of shots taken by the archer. Finally, we have the observed data $\bar d$ which is drawn from a gamma distribution with parameters $\mu$ and $n$, as can be seen by the arrows pointing from those parameters to $d$. Furthermore, the solid circle of $\bar d$ is shaded which means that the variable has data attached to it.
+{% ref archery_model %} shows the graphical model for the archery model. This nicely visualizes the dependency structure in the model. We see that the parameter $\alpha$ is drawn in a solid square, representing that this variable is constant (*i.e.,* it takes a “known” value). Following the graph in {% ref archery_model %}, we see an arrow connecting $\alpha$ and the variable $\mu$. That simply means that $\mu$ depends on $\alpha$. More specifically, $\mu$ is a stochastic variable (shown as a solid circle) that is drawn from an exponential distribution with parameter $\alpha$. Another constant variable, $n$, represents the number of shots taken by the archer. Finally, we have the observed data $\bar d$ which is drawn from a gamma distribution with parameters $\mu$ and $n$, as can be seen by the arrows pointing from those parameters to $d$. Furthermore, the solid circle of $\bar d$ is shaded which means that the variable has data attached to it.
 
 {% figure archery_model %}
 <img src="figures/archery_graphical_model.png" width="200" />  
@@ -369,7 +369,7 @@ Exercise 1
 Pretty awesome, right?
 
 Below we show an example of the obtained output in
-`Tracer`. Specifically, {% figref mcmc-trace %} shows
+`Tracer`. Specifically, {% ref mcmc-trace %} shows
 the sample trace (left) and the estimated posterior distribution of
 $\mu$ (right). There are other parameters, such as the posterior mean
 and the 95% HPD (highest posterior density) interval, that you can
@@ -571,7 +571,7 @@ $Gamma(0,0)$ distribution (this is the [Jeffreys prior](https://en.wikipedia.org
 this prior distribution is *improper* (it does not integrate to 1), and
 so we can’t use it in RevBayes. However we can approximate this prior
 distribution by using very small parameter values, e.g. $Gamma(0.001,
-0.001)$. As you can see in {% figref gamma_distribution %}, compared
+0.001)$. As you can see in {% ref gamma_distribution %}, compared
 to the exponential distribution, the $Gamma(0.001, 0.001)$ distribution is
 much more “flat”.
 

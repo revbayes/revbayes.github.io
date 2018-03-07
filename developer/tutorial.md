@@ -9,7 +9,7 @@ code_layout: default
 
 ## Writing the front matter
 ------------------
-In order for Jekyll to process your tutorial page, it must include YAML front matter, indicated with `---`
+In order for Jekyll to process your tutorial page, it must include YAML front matter, indicated by 
 
 ```yaml
 ---
@@ -65,118 +65,92 @@ scripts:
 ## Formatting
 ------------------
 
+{% preview %}
+{% section This is a section header | section1 %}
+This is a reference to {% ref section1 %}
+{% endpreview %}
+
+{% preview %}
+{% subsection This is a subsection header | subsection1 %}
+This is a reference to {% ref subsection1 %}
+{% endpreview %}
+
 ## Code formats
 
-### Jekyll:
-~~~markdown
+{% preview %}
 ```
 Lorem ipsum dolor sit amet, consectetur adipiscing elit,
 sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
 ```
 {:.default}
-~~~
+{% endpreview %}
 
-### Rendered:
-```
-Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-```
-{:.default}
--------------
-### {% raw %}`{:.Rev}`{% endraw %}
+`{:.Rev}`
+{% preview %}
 ```
 Lorem ipsum dolor sit amet, consectetur adipiscing elit,
 sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
 ```
 {:.Rev}
--------------
+{% endpreview %}
 
-### {% raw %}`{:.bash}`{% endraw %}
+`{:.bash}`
+{% preview %}
 ```
-Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
 ```
 {:.bash}
--------------
-### {% raw %}`{:.console}`{% endraw %}
+{% endpreview %}
+
+`{:.Rev-output}`
+{% preview %}
 ```
 Lorem ipsum dolor sit amet, consectetur adipiscing elit,
 sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
 ```
-{:.console}
--------------
+{:.Rev-output}
+{% endpreview %}
+
 
 ## Blockquotes
 
-### Jekyll:
-~~~markdown
+{% preview %}
 > Lorem ipsum dolor sit amet, consectetur adipiscing elit,
 > sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-~~~
-
-### Rendered:
-> Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-> sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+{% endpreview %}
 
 -------------
 
-### Jekyll:
-~~~markdown
+{% preview %}
 > Lorem ipsum dolor sit amet, consectetur adipiscing elit,
 > sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
 {:.instruction}
-~~~
+{% endpreview %}
 
-### Rendered:
-> Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-> sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-{:.instruction}
--------------
-
-### Jekyll:
-~~~markdown
+{% preview %}
 > ## Discussion header
 > Lorem ipsum dolor sit amet, consectetur adipiscing elit,
 > sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
 {:.discussion}
-~~~
-
-### Rendered:
-> ## Discussion header
-> Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-> sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-{:.discussion}
+{% endpreview %}
 
 ## Including citations
 ------------------
-
-### Jekyll:
-```markdown
-{% raw %}This is a citation {% cite Felsenstein1981 %}. This is an in-text citation of {% citet Felsenstein1981 %}.{% endraw %}
-``` 
-### Rendered:
-This is a citation {% cite Felsenstein1981 %}. This is an in-text citation of {% citet Felsenstein1981 %}.
+{% preview %}
+This is a citation {% cite Felsenstein1981 %}.  
+This is an in-text citation of {% citet Felsenstein1981 %}.  
+This is a citation with multiple sources {% cite Felsenstein1981 Hoehna2016b %}.
+{% endpreview %}
 
 ## Including figures
 ------------------
-
-### Jekyll:
-```markdown
-{% raw %}{% figure example %}
-<img src="images/example.png" width="200">
-{% figcaption %}
-This is an example figure caption. You can include *Markdown* and $\LaTeX$.
-{% endfigcaption %}
-{% endfigure %}
-
-This is a reference to {% figref example %}{% endraw %}
-``` 
-### Rendered:
+{% preview %}
 {% figure example %}
 <img src="images/example.png" width="200">
 {% figcaption %}
 This is an example figure caption. You can include *Markdown* and $\LaTeX$.
 {% endfigcaption %}
 {% endfigure %}
- 
-This is a reference to {% figref example %}
+  
+This is a reference to {% ref example %}
+{% endpreview %}
