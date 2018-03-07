@@ -49,11 +49,71 @@
 
       <div class="row">
 	<h1 class="maintitle">Writing a user tutorial</h1>
-	<h3 class="subtitle"></h3>
+	<h3 class="subtitle">How to write RevBayes tutorials for this website</h3>
 	<h4 class="maintitle"></h4>
 </div>
 
-      
+      <h2 class="section" id="getting-started">Getting started</h2>
+<hr />
+
+<p>This tutorial will take you through the steps of writing a new RevBayes tutorial for this website.</p>
+
+<p>In order to build and test your tutorial, you will need to download and host an instance of the RevBayes website on your local machine. The site was built using <a href="https://jekyllrb.com">Jekyll</a> and is hosted by <a href="https://pages.github.com/">GitHub Pages</a>. Please refer to the README.md in the site’s <a href="https://github.com/revbayes/revbayes-site">GitHub repository</a> for instructions on setting up and hosting the site on your computer.</p>
+
+<p>This website is generated from simple plain-text files in <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet">Markdown</a> format with <a href="http://camel.readthedocs.io/en/latest/yamlref.html">YAML</a> front matter, with additional support for accessing/modifying page attribute data using <a href="https://help.shopify.com/themes/liquid">Liquid</a> templates. This tutorial presumes the reader is already at least somewhat familiar with these markup tools.</p>
+
+<h3 class="subsection" id="tutorial-directory-structure">Tutorial directory structure</h3>
+
+<p>Each tutorial follows the same general file organization:</p>
+
+<pre>
+revbayes.github.io
+└── tutorials
+    └── <font color="red">new_tutorial
+        ├── data/
+        ├── scripts/
+        ├── figures/
+        └── index.md</font> &lt;-- main text of tutorial
+</pre>
+
+<p>Specifically, your new RevBayes tutorial should be placed in its own directory (e.g. <code class="highlighter-rouge">new_tutorial</code>) under the <code class="highlighter-rouge">tutorials</code> directory in the root website repository. The main text of the tutorial should be written in the Markdown file <code class="highlighter-rouge">index.md</code>, and if the tutorial uses additional data, scripts or image files they should be stored in the subdirectories <code class="highlighter-rouge">data</code>, <code class="highlighter-rouge">scripts</code> and <code class="highlighter-rouge">figures</code> respectively. Your tutorial can include additional pages or other files, but the above basic components are used in integrating your tutorial with the rest of the website.</p>
+
+<h3 class="subsection" id="creating-the-indexmd-file">Creating the <code class="highlighter-rouge">index.md</code> file</h3>
+
+<p>In order for Jekyll to process your tutorial’s index page, it must include YAML front matter, indicated by</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">---</span>
+<span class="nn">---</span>
+</code></pre></div></div>
+
+<p>You will populate the front matter with YAML attributes that are used to organize your tutorial on the RevBayes website. The most basic attributes are <code class="highlighter-rouge">title</code>, <code class="highlighter-rouge">subtitle</code>, <code class="highlighter-rouge">authors</code> which are displayed in the tutorial’s title header section.</p>
+
+<p>The <code class="highlighter-rouge">category</code> attribute is used to group tutorials with similar subject matter in the site index.
+At the moment, only three main categories are recognized: <code class="highlighter-rouge">Basic</code> for tutorials not including phylogenetic methods, <code class="highlighter-rouge">Standard</code> for tutorials covering widely-used phylogenetic methods and <code class="highlighter-rouge">Advanced</code> for more specialized topics in phylogenetics.</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">---</span>
+<span class="na">title</span><span class="pi">:</span> <span class="s">How to science</span>
+<span class="na">subtitle</span><span class="pi">:</span> <span class="s">A postmodern experience</span>
+<span class="na">authors</span><span class="pi">:</span> <span class="s">Alice, Bob</span>
+<span class="na">category</span><span class="pi">:</span> <span class="s">Basic</span>
+<span class="nn">---</span>
+</code></pre></div></div>
+
+<!-- You can also include `keywords` as a YAML list attribute which can be used to help lead users to your tutorial from other related tutorials.
+
+```yaml
+category: Standard
+keywords:
+    - diversification
+    - birth-death
+    - relaxed-clock
+```  -->
+
+<h2 class="section" id="filling-in-the-overview-box">Filling in the overview box</h2>
+<hr />
+
+<p>At the top of each tutorial, an <strong>Overview</strong> box is displayed with a list of prerequisite tutorials and a table of contents. Here is the overview for this tutorial:</p>
+
 <blockquote class="overview no-print" id="overview">
   <h2>Overview</h2>
   <div class="row">
@@ -68,40 +128,9 @@
   </div>
 </blockquote>
 
-<blockquote class="tutorial_files no-print" id="tutorial_files">
-  <h2>Data files and scripts</h2>
-  
-    <div class="row" id="script_row">
-      <div class="col-md-9">
-          <strong>Scripts</strong>
-          <ul id="scripts"></ul>
-        </div>
-    </div>
-</blockquote>
-      <h2 id="getting-started">Getting started</h2>
-<hr />
+<h3 class="subsection" id="including-prerequisites">Including prerequisites</h3>
 
-<h2 id="writing-the-front-matter">Writing the front matter</h2>
-<hr />
-<p>In order for Jekyll to process your tutorial page, it must include YAML front matter, indicated by</p>
-
-<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">---</span>
-<span class="nn">---</span>
-</code></pre></div></div>
-
-<p>You will populate the front matter with YAML attributes that are used to organize your tutorial on the RevBayes website. The most basic attributes are <code class="highlighter-rouge">title</code>, <code class="highlighter-rouge">subtitle</code>, <code class="highlighter-rouge">authors</code> which are displayed in the tutorial’s title header section. The <code class="highlighter-rouge">category</code> attribute is used to group tutorials with similar subject matter in the site index.</p>
-
-<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">---</span>
-<span class="na">title</span><span class="pi">:</span> <span class="s">How to science</span>
-<span class="na">subtitle</span><span class="pi">:</span> <span class="s">A postmodern experience</span>
-<span class="na">authors</span><span class="pi">:</span> <span class="s">Alice, Bob</span>
-<span class="na">category</span><span class="pi">:</span> <span class="s">Miscellaneous</span>
-<span class="nn">---</span>
-</code></pre></div></div>
-
-<h3 id="including-prerequisites">Including prerequisites</h3>
-
-<p>If you would like users to complete other tutorials before they do yours, you can refer them to prequisite tutorials in the overview section, which is populated using the <code class="highlighter-rouge">prerequisites</code> YAML attribute.</p>
+<p>If you would like users to complete other tutorials before they do yours, you can refer them to prequisite tutorials in the tutorial’s overview section, which is populated using the <code class="highlighter-rouge">prerequisites</code> YAML attribute.</p>
 
 <div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">---</span>
 <span class="na">title</span><span class="pi">:</span> <span class="s">Non-parametric interdimensional Bayesian hyperloop methods</span>
@@ -113,29 +142,14 @@
 <span class="nn">---</span>
 </code></pre></div></div>
 
-<h3 id="including-data-files-and-scripts">Including data files and scripts</h3>
-<p>You can include data files (stored under the tutorial subdirectory <code class="highlighter-rouge">data</code>) and script files (subdirectory <code class="highlighter-rouge">scripts</code>) in the tutorial overview download by adding them to the <code class="highlighter-rouge">data_files</code> and <code class="highlighter-rouge">scripts</code> YAML attributes of your tutorial page.</p>
+<p>Prerequisite tutorials are referred to by the name of their containing directory in <code class="highlighter-rouge">tutorials</code> directory.</p>
 
-<p>For example,</p>
-<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">---</span>
-<span class="na">title</span><span class="pi">:</span> <span class="s">How to build a phylogenetic tree</span>
-<span class="na">category</span><span class="pi">:</span> <span class="s">Phylogenetics</span>
-<span class="na">prerequisites</span><span class="pi">:</span>
-    <span class="pi">-</span> <span class="s">intro</span>
-    <span class="pi">-</span> <span class="s">ctmc</span>
-<span class="na">data_files</span><span class="pi">:</span>
-    <span class="pi">-</span> <span class="s">primates.nex</span>
-    <span class="pi">-</span> <span class="s">primates.tre</span>
-<span class="na">scripts</span><span class="pi">:</span>
-    <span class="pi">-</span> <span class="s">mcmc.Rev</span>
-    <span class="pi">-</span> <span class="s">model.Rev</span>
-<span class="nn">---</span>
-</code></pre></div></div>
+<h3 class="subsection" id="filling-in-the-table-of-contents">Filling in the table of contents</h3>
 
-<h2 id="formatting">Formatting</h2>
-<hr />
+<p>To create a heading that will be included in the table of contents, you can use the <code class="highlighter-rouge">section</code> and <code class="highlighter-rouge">subection</code> Liquid tags, which take the heading text and anchor id as arguments, separated by a pipe <code class="highlighter-rouge">|</code>. Sections are referenced using the <code class="highlighter-rouge">ref</code> tag.</p>
 
 <blockquote><div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{% section This is a section header | section1 %}
+
 This is a reference to {% ref section1 %}
 </code></pre></div></div>
 <br /><h2 class="section" id="section1">This is a section header</h2>
@@ -145,48 +159,93 @@ This is a reference to {% ref section1 %}
 </blockquote>
 
 <blockquote><div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{% subsection This is a subsection header | subsection1 %}
+
 This is a reference to {% ref subsection1 %}
 </code></pre></div></div>
-<br /><h3 class="section" id="subsection1">This is a subsection header</h3>
+<br /><h3 class="subsection" id="subsection1">This is a subsection header</h3>
+
 <p>This is a reference to <a href="#subsection1"></a></p>
 </blockquote>
 
-<h2 id="code-formats">Code formats</h2>
+<p>You can also create a manually-formatted section/subsection heading by tagging it with the HTML class <code class="highlighter-rouge">section</code> or <code class="highlighter-rouge">subection</code>. In general, any block of text can be manually tagged with any class using the <code class="highlighter-rouge">{:.class}</code> syntax.</p>
 
-<blockquote><div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>```
-Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-```
-{:.default}
+<blockquote><div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gu">## This section heading was tagged manually</span>
+{:.section}
+
+<span class="gu">### This subsection heading was tagged manually</span>
+{:.subsection}
 </code></pre></div></div>
-<br /><div class="default highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+<br /><h2 class="section" id="this-section-heading-was-tagged-manually">This section heading was tagged manually</h2>
+
+<h3 class="subsection" id="this-subsection-heading-was-tagged-manually">This subsection heading was tagged manually</h3>
+</blockquote>
+
+<p>The anchor id of a manually-tagged section heading is automatically generated by changing the heading text to lower case and replacing spaces with hyphens. You must link to it using the normal Markdown URL syntax.</p>
+
+<blockquote><div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(<span class="p">[</span><span class="nv">Manually-tagged section heading</span><span class="p">](</span><span class="sx">#this-section-heading-was-tagged-manually</span><span class="p">)</span>)
+</code></pre></div></div>
+<br /><p>(<a href="#this-section-heading-was-tagged-manually">Manually-tagged section heading</a>)</p>
+</blockquote>
+
+<h2 class="section" id="including-data-files-and-scripts">Including data files and scripts</h2>
+<hr />
+
+<p>At the top of each tutorial, the <strong>Data files and scripts</strong> box is displayed with a list files for download:</p>
+
+<blockquote class="tutorial_files no-print" id="tutorial_files">
+  <h2>Data files and scripts</h2>
+  
+    <div class="row">
+      <div class="col-md-9">
+          <strong>Data Files</strong>
+          <ul id="data_files">
+          
+            <li><a href="/revbayes-site/developer/tutorial.htmldata/example.nex">example.nex</a></li>
+          
+          </ul>
+        </div>
+    </div>
+  
+    <div class="row" id="script_row">
+      <div class="col-md-9">
+          <strong>Scripts</strong>
+          <ul id="scripts"><li><a href="/revbayes-site/developer/tutorial.htmlscripts/example.Rev">example.Rev</a></li></ul>
+        </div>
+    </div>
+</blockquote>
+
+<p>You can include data files (stored under the tutorial subdirectory <code class="highlighter-rouge">data</code>) and script files (subdirectory <code class="highlighter-rouge">scripts</code>) in the download box by adding them to the <code class="highlighter-rouge">data_files</code> and <code class="highlighter-rouge">scripts</code> YAML attributes of your tutorial page.</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">---</span>
+<span class="na">title</span><span class="pi">:</span> <span class="s">How to build a phylogenetic tree</span>
+<span class="na">category</span><span class="pi">:</span> <span class="s">Phylogenetics</span>
+<span class="na">data_files</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">example.nex</span>
+<span class="na">scripts</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">example.Rev</span>
+<span class="nn">---</span>
+</code></pre></div></div>
+
+<h2 class="section" id="formatting-code">Formatting code</h2>
+<hr />
+
+<p>You can format code using the <code>```</code> or <code>~~~</code> fenced code delimiters. By default, tutorial code is formatted for Rev code</p>
+<blockquote><div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>```
+for (i in 1:n_branches) {
+   br_lens<span class="p">[</span><span class="nv">i</span><span class="p">]</span> ~ dnExponential(10.0)
+   moves<span class="p">[</span><span class="nv">mvi++</span><span class="p">]</span> = mvScale(br_lens<span class="p">[</span><span class="nv">i</span><span class="p">]</span>) 
+}
+```
+</code></pre></div></div>
+<br /><div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:n_branches) {
+   br_lens[i] ~ dnExponential(10.0)
+   moves[mvi++] = mvScale(br_lens[i]) 
+}
 </code></pre></div></div>
 </blockquote>
 
-<p><code class="highlighter-rouge">{:.Rev}</code></p>
-<blockquote><div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>```
-Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-```
-{:.Rev}
-</code></pre></div></div>
-<br /><div class="Rev highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-</code></pre></div></div>
-</blockquote>
+<p>Code representing output from the Rev console can be formatted using the <code class="highlighter-rouge">{:.Rev-output}</code> tag</p>
 
-<p><code class="highlighter-rouge">{:.bash}</code></p>
-<blockquote><div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>```
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-```
-{:.bash}
-</code></pre></div></div>
-<br /><div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-</code></pre></div></div>
-</blockquote>
-
-<p><code class="highlighter-rouge">{:.Rev-output}</code></p>
 <blockquote><div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>```
 Lorem ipsum dolor sit amet, consectetur adipiscing elit,
 sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
@@ -198,7 +257,23 @@ sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
 </code></pre></div></div>
 </blockquote>
 
-<h2 id="blockquotes">Blockquotes</h2>
+<h3 class="subsection" id="other-formatting-options">Other formatting options</h3>
+
+<p>Other code formats can be assigned using the <code class="highlighter-rouge">{:.}</code> syntax.</p>
+
+<p><code class="highlighter-rouge">{:.bash}</code> - bash console input</p>
+<blockquote><div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>```
+ls tutorials
+grep phylogenetics index.md
+```
+{:.bash}
+</code></pre></div></div>
+<br /><div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ls tutorials
+grep phylogenetics index.md
+</code></pre></div></div>
+</blockquote>
+
+<p><strong>Blockquote</strong></p>
 
 <blockquote><div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gt">&gt; Lorem ipsum dolor sit amet, consectetur adipiscing elit,</span>
 <span class="gt">&gt; sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</span>
@@ -209,7 +284,7 @@ sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
 </blockquote>
 </blockquote>
 
-<hr />
+<p><code class="highlighter-rouge">{:.instruction}</code> - Instruction box</p>
 
 <blockquote><div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gt">&gt; Lorem ipsum dolor sit amet, consectetur adipiscing elit,</span>
 <span class="gt">&gt; sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</span>
@@ -220,6 +295,8 @@ sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
 sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
 </blockquote>
 </blockquote>
+
+<p><code class="highlighter-rouge">{:.discussion}</code> - Optional discussion information box</p>
 
 <blockquote><div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gt">&gt; ## Discussion header</span>
 <span class="gt">&gt; Lorem ipsum dolor sit amet, consectetur adipiscing elit,</span>
@@ -233,8 +310,89 @@ sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
 </blockquote>
 </blockquote>
 
-<h2 id="including-citations">Including citations</h2>
+<h2 class="section" id="math-notation">Math notation</h2>
 <hr />
+
+<p>Mathematical notation using $\LaTeX$ symbols are rendered with <a href="https://www.mathjax.org/">MathJax</a>. You can write inline math using the <code class="highlighter-rouge">$</code>, <code class="highlighter-rouge">$$</code> or <code class="highlighter-rouge">\\(...\\)</code> delimiters, while display math uses <code class="highlighter-rouge">\\[...\\]</code>.
+You can alternatively write display math using <code class="highlighter-rouge">$$</code> if it is separated from the previous text by a line break.</p>
+
+<blockquote><div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Inline math
+$S = <span class="se">\m</span>athbb{R}$
+$$f(x) = x^2$$
+<span class="se">\\</span>(<span class="se">\i</span>mplies <span class="se">\m</span>in_{x<span class="se">\i</span>n S}f(x) = 0<span class="se">\\</span>)
+is cool
+
+Display math <span class="se">\\</span><span class="p">[</span><span class="nv">f(a) = \frac{1}{2\pi i}\int_{\gamma}\frac{f(z)}{z-a}dz\\</span><span class="p">]</span>
+
+Alternative display math
+
+$$<span class="se">\i</span>nt(1-e^{-x})^n<span class="se">\,</span>dx=x-<span class="se">\s</span>um_{p=1}^n<span class="se">\t</span>frac{1}{p}(1-e^{-x})^p$$
+</code></pre></div></div>
+<br /><p>Inline math
+$S = \mathbb{R}$
+<script type="math/tex">f(x) = x^2</script>
+\(\implies \min_{x\in S}f(x) = 0\)
+is cool</p>
+
+<p>Display math \[f(a) = \frac{1}{2\pi i}\int_{\gamma}\frac{f(z)}{z-a}dz\]</p>
+
+<p>Alternative display math</p>
+
+<script type="math/tex; mode=display">\int(1-e^{-x})^n\,dx=x-\sum_{p=1}^n\tfrac{1}{p}(1-e^{-x})^p</script>
+</blockquote>
+
+<h2 class="section" id="modularizing-your-tutorial">Modularizing your tutorial</h2>
+<hr />
+
+<p>You can modularize your tutorial by putting major sections in separate markdown files in your tutorial directory. These can be included in the main text using the <code class="highlighter-rouge">include_relative</code> Liquid tag. Make sure that <em>only</em> the main text Markdown file contains YAML front matter.</p>
+
+<p>For example, if you have an external file <a href="external_file.md"><code class="highlighter-rouge">external_file.md</code></a> with the following contents</p>
+
+<div class="default highlighter-rouge"><div class="highlight"><pre class="highlight"><code>This is an external *Markdown* file
+without [YAML](http://camel.readthedocs.io/en/latest/yamlref.html) front matter.
+
+This *file* will be __formatted__ ~~as plain text~~ like the rest of the main text.
+
+You can even include $\LaTeX$.
+</code></pre></div></div>
+
+<p>You can include it in the main text as follows</p>
+<blockquote><div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{% include_relative external_file.md %}
+</code></pre></div></div>
+<br /><p>This is an external <em>Markdown</em> file
+without <a href="http://camel.readthedocs.io/en/latest/yamlref.html">YAML</a> front matter.</p>
+
+<p>This <em>file</em> will be <strong>formatted</strong> <del>as plain text</del> like the rest of the main text.</p>
+
+<p>You can even include $\LaTeX$.</p>
+</blockquote>
+
+<h2 class="section" id="figures">Figures</h2>
+<hr />
+
+<p>Figures can be included from the <code class="highlighter-rouge">figures</code> subdirectory (or elsewhere) using the <code class="highlighter-rouge">figure</code> and <code class="highlighter-rouge">figcaption</code> Liquid tags.</p>
+
+<blockquote><div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{% figure example %}
+<span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"figures/example.png"</span> <span class="na">width=</span><span class="s">"200"</span><span class="nt">&gt;</span>
+{% figcaption %}
+This is an example figure caption. You can include <span class="ge">*Markdown*</span> and $<span class="se">\L</span>aTeX$.
+{% endfigcaption %}
+{% endfigure %}
+  
+This is a reference to {% ref example %}
+</code></pre></div></div>
+<br /><figure id="example"><p><img src="figures/example.png" width="200" /></p>
+<figcaption>This is an example figure caption. You can include <em>Markdown</em> and $\LaTeX$.</figcaption>
+</figure>
+
+<p>This is a reference to <a href="#example"></a></p>
+</blockquote>
+
+<h2 class="section" id="citations-and-bibliography">Citations and bibliography</h2>
+<hr />
+
+<p>You can include a citation using the <code class="highlighter-rouge">cite</code> and <code class="highlighter-rouge">citet</code> Liquid tags. Figures are referenced using the <code class="highlighter-rouge">ref</code> tag.</p>
+
 <blockquote><div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>This is a citation {% cite Felsenstein1981 %}.  
 This is an in-text citation of {% citet Felsenstein1981 %}.  
 This is a citation with multiple sources {% cite Felsenstein1981 Hoehna2016b %}.
@@ -244,25 +402,9 @@ This is an in-text citation of <a href="#Felsenstein1981">Felsenstein (1981)</a>
 This is a citation with multiple sources <a href="#Felsenstein1981">(Felsenstein 1981; Höhna et al. 2016)</a>.</p>
 </blockquote>
 
-<h2 id="including-figures">Including figures</h2>
-<hr />
-<blockquote><div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{% figure example %}
-<span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"images/example.png"</span> <span class="na">width=</span><span class="s">"200"</span><span class="nt">&gt;</span>
-{% figcaption %}
-This is an example figure caption. You can include <span class="ge">*Markdown*</span> and $<span class="se">\L</span>aTeX$.
-{% endfigcaption %}
-{% endfigure %}
-  
-This is a reference to {% ref example %}
-</code></pre></div></div>
-<br /><figure id="example"><p><img src="images/example.png" width="200" /></p>
-<figcaption>This is an example figure caption. You can include <em>Markdown</em> and $\LaTeX$.</figcaption>
-</figure>
+<p>Citations are included in the <strong>References</strong> section at the end of each tutorial. References are formatted according to the <a href="https://github.com/citation-style-language/styles">CSL</a> style for <a href="https://academic.oup.com/sysbio"><em>Systematic Biology</em></a>.</p>
 
-<p>This is a reference to <a href="#example"></a></p>
-</blockquote>
-
-      <ol class="bibliography"><li><span id="Felsenstein1981">Felsenstein J. 1981. Evolutionary Trees from DNA Sequences: a Maximum Likelihood Approach. Journal of Molecular Evolution. 17:368–376.</span>
+<ol class="bibliography"><li><span id="Felsenstein1981">Felsenstein J. 1981. Evolutionary Trees from DNA Sequences: a Maximum Likelihood Approach. Journal of Molecular Evolution. 17:368–376.</span>
 
 <a href="https://doi.org/10.1007/BF01734359">10.1007/BF01734359</a>
 
@@ -287,6 +429,8 @@ for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
 	}
 }
 </script>
+
+
       <br>
 <footer>
   <div class="container">
@@ -309,14 +453,14 @@ for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
 $(":not(code).highlighter-rouge").each(function() {
   
   if( this.classList == "highlighter-rouge") {
-    this.classList = "default highlighter-rouge";
+    this.classList = "Rev highlighter-rouge";
   }
   
 });
 // $("code.highlighter-rouge").each(function() {
 //   
 //   if( this.classList == "highlighter-rouge") {
-//       this.classList = "default highlighter-rouge";
+//       this.classList = "Rev highlighter-rouge";
 //   }
 //   
 // });

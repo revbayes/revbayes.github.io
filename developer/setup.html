@@ -67,18 +67,7 @@
     </div>
   </div>
 </blockquote>
-
-<blockquote class="tutorial_files no-print" id="tutorial_files">
-  <h2>Data files and scripts</h2>
-  
-    <div class="row" id="script_row">
-      <div class="col-md-9">
-          <strong>Scripts</strong>
-          <ul id="scripts"></ul>
-        </div>
-    </div>
-</blockquote>
-      <p>It is easy to use an IDE to develop RevBayes such as XCode, Eclipse Oxygen, or Netbeans. You can also useyour favorite text editor (e.g. vim or emacs). 
+<p>It is easy to use an IDE to develop RevBayes such as XCode, Eclipse Oxygen, or Netbeans. You can also useyour favorite text editor (e.g. vim or emacs). 
 This page will provide some helpful tips on how to set up your development enviroment.
 See the <a href="/revbayes-site/software/">Software</a> page for instructions on how to obtain the source code.</p>
 
@@ -125,12 +114,12 @@ See the <a href="/revbayes-site/software/">Software</a> page for instructions on
 <ol>
   <li>
     <p>In the <em>Project Explorer</em> view, highlight your revbayes project directory
-<img src="images/eclipse-explorer.png" width="50%" /></p>
+<img src="figures/eclipse-explorer.png" width="50%" /></p>
   </li>
   <li>Go to <em>Project &gt; Properties</em>, or right click on the project name and select <em>Properties</em>.</li>
   <li>Expand <em>C/C++ Build</em> and click on <em>Environment</em></li>
   <li>Click on the PATH entry, click <em>Edit…</em> and add <code class="highlighter-rouge">/usr/local/bin</code> to the end of the <em>Value</em>
-<img src="images/eclipse-path.png" alt="eclipse-path" title="PATH Configuration" /></li>
+<img src="figures/eclipse-path.png" alt="eclipse-path" title="PATH Configuration" /></li>
 </ol>
 
 <h3 id="configure-the-cc-build-settings">Configure the C/C++ build settings</h3>
@@ -140,17 +129,17 @@ See the <a href="/revbayes-site/software/">Software</a> page for instructions on
   <li>Click on <em>C/C++ Build</em></li>
   <li>Uncheck <em>Use default build command</em> and in <em>Build command</em>, enter <code class="highlighter-rouge">sh build.sh</code></li>
   <li>In <em>Build directory</em>, add <code class="highlighter-rouge">../projects/cmake</code> to the directory path
-<img src="images/eclipse-build.png" alt="eclipse-build" title="C/C++ Build Configuration" /></li>
+<img src="figures/eclipse-build.png" alt="eclipse-build" title="C/C++ Build Configuration" /></li>
   <li>Click on the <em>Behavior</em> tab</li>
   <li>In <em>Build (incremental build)</em>, enter <code class="highlighter-rouge">-boost false</code>
-<img src="images/eclipse-behavior.png" alt="eclipse-behavior" title="C/C++ Build Behavior" /></li>
+<img src="figures/eclipse-behavior.png" alt="eclipse-behavior" title="C/C++ Build Behavior" /></li>
   <li>Again, click on <em>C/C++ Build</em></li>
   <li>Click <em>Manage Configurations</em></li>
   <li>Click on <em>New…</em> to create a new configuration, and name it <em>Debug</em>
-<img src="images/eclipse-config.png" width="75%" /></li>
+<img src="figures/eclipse-config.png" width="75%" /></li>
   <li>
     <p>Configure the Debug configuration by adding <code class="highlighter-rouge">-debug true</code> to the <em>Build (incremental build)</em> options
-<img src="images/eclipse-debug.png" alt="eclipse-debug" title="C/C++ Debug Configuration" />
+<img src="figures/eclipse-debug.png" alt="eclipse-debug" title="C/C++ Debug Configuration" />
 Now, if you set the active configuration to <em>Debug</em>, RevBayes will be compiled with debugger symbols that can be loaded by <code class="highlighter-rouge">lldb</code> or <code class="highlighter-rouge">gdb</code>. You can also set the active build configuration by going to <em>Project &gt; Build Configurations &gt; Set Active</em></p>
   </li>
   <li>Click <em>Apply and Close</em></li>
@@ -207,7 +196,7 @@ Now, if you set the active configuration to <em>Debug</em>, RevBayes will be com
 <h2 id="set-up-the-xcode-project">Set up the XCode Project</h2>
 <ol>
   <li>Open Xcode and in the <em>Welcome to Xcode</em> window, choose <strong>Create a new Xcode project</strong>.</li>
-  <li>Select <strong>Command Line Tool</strong> and name it <code class="highlighter-rouge">rb</code> and click <strong>Next</strong>. <img src="images/making_xcode_project.png" alt="" /></li>
+  <li>Select <strong>Command Line Tool</strong> and name it <code class="highlighter-rouge">rb</code> and click <strong>Next</strong>. <img src="figures/making_xcode_project.png" alt="" /></li>
   <li>Click <strong>New Folder</strong>  to create an empty directory and name it whatever you’d like.</li>
   <li>Click <strong>Create</strong>.</li>
   <li>Delete all of the files and folders in each of the directories including <code class="highlighter-rouge">main.cpp</code> so that RevBayes is empty. You can do this by selecting the folders and files, right clicking and selecting delete. When asked, choose <strong>Move to Trash</strong>.</li>
@@ -218,14 +207,14 @@ Now, if you set the active configuration to <em>Debug</em>, RevBayes will be com
     	* <code class="highlighter-rouge">revbayes/src/core</code>
     	* <code class="highlighter-rouge">revbayes/src/libs</code>
     * directories and click <strong>Add</strong>.
-    <img src="images/adding_files.png" alt="" />
+    <img src="figures/adding_files.png" alt="" />
     * <em>Note:</em> On some versions of XCode, you may need to click on the “Options” Tab, and choose “Create Groups” for the import to work properly. This is the default behavior on most XCode installs.</li>
   <li>Add the boost library to your Xcode project 
     * Select the RevBayes project and go to the <strong>Build Settings</strong>. 
     * Search for or Scroll down to the <strong>Search Paths</strong> heading and find the sub-heading named <strong>Header Search Paths</strong>.
     * Double click the heading, click the <strong>+</strong>, and add the value: <strong>&lt;path to revbayes repository&gt;/revbayes/boost_1_60_0</strong>. 
     	* <code class="highlighter-rouge">&lt;path to revbayes repository&gt;</code> = the location of the revbayes repository on your machine.
-  <img src="images/finding_boost.png" alt="" /></li>
+  <img src="figures/finding_boost.png" alt="" /></li>
 </ol>
 
 <h2 id="add-the-revbayes-preprocessor-macro-to-your-xcode-project">Add the RevBayes Preprocessor Macro to your Xcode project</h2>
@@ -233,7 +222,7 @@ Now, if you set the active configuration to <em>Debug</em>, RevBayes will be com
   <li>Select the RevBayes project and go to the <strong>Build Settings</strong>.</li>
   <li>Search for or Scroll down to the <strong>Apple LLVM X.X - Preprocessing</strong> heading and find the sub-heading named <strong>Preprocessor Macros</strong>.</li>
   <li>Double click on right hand column, click on the <strong>+</strong> and enter <code class="highlighter-rouge">RB_XCODE</code>. Do not replace the debug flag that is already present.
-    <img src="images/macro.png" alt="" /></li>
+    <img src="figures/macro.png" alt="" /></li>
 </ol>
 
 <h2 id="check-c-language-options">Check C++ language options</h2>
@@ -242,7 +231,7 @@ Now, if you set the active configuration to <em>Debug</em>, RevBayes will be com
   <li>Search or scroll to: **Apple LLVM X.X - C++ - Language **.</li>
   <li>Make sure C++ Language Dialect is set to <strong><em>Gnu++ 98</em></strong>.</li>
   <li>Make sure C++ Standard Library is set to <strong><em>libstdc++(Gnu C++)</em></strong>
-    <img src="images/cpp_lang_options.png" alt="" /></li>
+    <img src="figures/cpp_lang_options.png" alt="" /></li>
 </ol>
 
 <p>At this point, if everything has been setup correctly, you should be able to build the project. You can try by clicking on <strong>Product - Build</strong> or by using <strong>⌘+B</strong>.</p>
@@ -394,22 +383,6 @@ On [Netbeans wiki](http://wiki.netbeans.org/Keyboard_Shortcuts) you can download
 
  -->
 
-      <ol class="bibliography"></ol>
-
-<script type="text/javascript">
-var _ol = document.querySelectorAll('ol');
-for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
-	if ( elem_ol.classList == "bibliography" ) {
-		var _li = elem_ol.getElementsByTagName("li");
-		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
-		//{
-		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
-		//}
-		if(_li.length > 0)
-			elem_ol.outerHTML = "<h2>References</h2>"+elem_ol.outerHTML
-	}
-}
-</script>
       <br>
 <footer>
   <div class="container">
