@@ -1,7 +1,7 @@
 ---
 title: Writing a user tutorial
 subtitle: How to write RevBayes tutorials for this website
-layout: default
+layout: developer
 category: Developer
 code_layout: Rev
 data_files:
@@ -69,9 +69,7 @@ keywords:
 
 {% section Filling in the overview box %}
 
-At the top of each tutorial, an **Overview** box is displayed with a list of prerequisite tutorials and a table of contents. Here is the overview for this tutorial:
-
-{% include overview.html %}
+At the top of each tutorial, an **Overview** box is displayed with a list of prerequisite tutorials and a table of contents. Take another look at the [overview for this tutorial](#overview).
 
 {% subsection Including prerequisites %}
 
