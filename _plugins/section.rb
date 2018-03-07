@@ -1,11 +1,19 @@
 module Liquid
 	class Section < Tag
-		include Liquid::StandardFilters
+		include StandardFilters
+
 		def initialize(tag_name, arguments, tokens)
 			super
 			@title, @id = arguments.split(/(?<!\\)\|/)
-			@title = @title.strip
-			@id = @id.strip
+
+			@title = @title = nil ? "" : @title.strip
+			if @id == nil
+				@id = @title.strip.downcase.gsub(/[^\w\- ]+/, '').gsub(/\s/, '-').gsub(/\-+$/, '')
+			else
+				@id = @id.strip
+			end
+			
+			@tag_name = tag_name
 			@h = (tag_name == 'section' ? '2' : '3')
 		end
 
@@ -17,7 +25,7 @@ module Liquid
 			content = remove(content, '</p>')
 			content = content.strip
 
-			output = "<h#{@h} class=\"section\" id=\"#{@id}\">#{content}</h#{@h}>"
+			output = "<h#{@h} class=\"#{@tag_name}\" id=\"#{@id}\">#{content}</h#{@h}>"
 
 			if @h == '2'
 				output += "<hr>"

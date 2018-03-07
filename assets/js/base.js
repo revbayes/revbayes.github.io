@@ -14,13 +14,14 @@ $(".overview").each(function() {
     var _sections = document.querySelectorAll('.section, .subsection');
     
     if( _sections.length > 0 ) {
+
       var row = document.createElement('div');
       row.className = 'row';
 
       var col = document.createElement('div');
       col.className = 'col-md-9';
 
-      col.innerHTML += "<strong>Sections</strong>";
+      col.innerHTML += "<strong>Table of Contents</strong>";
 
       var ul = document.createElement('ul');
       for (var i = 0, element; element = _sections[i]; i++) {
@@ -61,10 +62,12 @@ $(".challenge,.discussion,.solution").each(function() {
 var scripts = {};
 var _code = document.querySelectorAll('pre');
 for (var i = 0, element; element = _code[i]; i++) {
-  var output = element.parentElement.parentElement.getAttribute("output");
-  if( typeof scripts[output] == 'undefined' )
-    scripts[output] = "";
-  scripts[output] += element.firstChild.innerHTML.replace(/&lt;/g,'<')+"\n";
+  if( element.firstChild.innerHTML != null ) {
+    var output = element.parentElement.parentElement.getAttribute("output");
+    if( typeof scripts[output] == 'undefined' )
+      scripts[output] = "";
+    scripts[output] += element.firstChild.innerHTML.replace(/&lt;/g,'<')+"\n";
+  }
 }
 
 // Retrieve script file for download
@@ -141,7 +144,8 @@ $(".section, .subsection").each(function(index) {
       var els = document.querySelectorAll("a[href=\"#"+this.id+"\"]");
       if(els.length > 0) {
         for (var i = 0, element; element = els[i]; i++)
-          els[i].innerHTML=this.innerHTML;
+          if( els[i].innerHTML == "")
+            els[i].innerHTML=this.innerHTML;
       }
     }
 });

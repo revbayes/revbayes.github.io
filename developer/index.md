@@ -18,8 +18,7 @@ Before digging into the developer guide it may be useful to understand the user 
 The RevBayes Developers' Guide will provide you with the information needed to implement new methods, models, functions, and algorithms in the RevBayes language and core libraries. 
 
 
-{% assign developer = site.pages | where:"layout", "developer" %}
-{% assign devguide = developer | where:"category", "Developer" | sort: "index","last" %}
+{% assign devguide = site.pages | where:"category", "Developer" | sort: "index","last" %}
 <table class="table table-striped">
 {% for lesson in devguide %}
 <tr>

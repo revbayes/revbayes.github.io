@@ -58,13 +58,6 @@ $lavender-blush2:	  #eee0e5 !default;
 // Specialized code blocks.
 //----------------------------------------
 
-@mixin codeSetup($box-color, $text-color: #000000) {
-  background-color: $box-color;
-  color: $text-color;
-  border-radius: 0;
-  padding: 1px 5px;
-}
-
 @mixin cdSetup($box-color, $text-color: #000000, $prompt: "", $secondary: "") {
   pre {
     font-size: 14px;
@@ -79,12 +72,11 @@ $lavender-blush2:	  #eee0e5 !default;
   }
 }
 
-:not(pre) > code         { @include codeSetup(#eff0f1); }
-:not(pre) > code.Rev     { @include codeSetup($color-rev); }
-:not(pre) > code.rev     { @include codeSetup($color-rev); }
-:not(pre) > code.bash    { @include codeSetup($color-bash); }
-:not(pre) > code.rev-output { @include codeSetup($color-rev-output-bg, $color-rev-output); }
-:not(pre) > code.Rev-output { @include codeSetup($color-rev-output-bg, $color-rev-output); }
+:not(pre) > code {
+  background-color: #eff0f1;
+  border-radius: 0;
+  padding: 1px 5px;
+}
 
 .default      { @include cdSetup(#eff0f1, #000000); }
 .Rev          { @include cdSetup($color-rev, #000000, ">", "+"); }
