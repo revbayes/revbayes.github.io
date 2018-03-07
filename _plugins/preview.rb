@@ -3,10 +3,14 @@ module Liquid
 		def initialize(tag_name, markup, options)
 			super
 			@tag_name,@markup,@options = tag_name,markup,options
+
+			if @markup == ''
+				@markup = 'markdown'
+			end
 		end
 
 		def parse(tokenizer)
-			@raw = Raw::parse(@tag_name, @markup, Marshal.load(Marshal.dump(tokenizer)), @options)
+			@raw = Raw::parse(@tag_name, '', Marshal.load(Marshal.dump(tokenizer)), @options)
 
 			super
 		end
@@ -17,7 +21,7 @@ module Liquid
   			converter = site.find_converter_instance(::Jekyll::Converters::Markdown)
   			@raw = @raw.render(context)
   			@raw.gsub! '```', '26c84fecb586abdf357c2489a0f033e5'
-			highlight = converter.convert("```markdown"+@raw+"```")
+			highlight = converter.convert("```#{@markup}"+@raw+"```")
 			highlight.gsub! '26c84fecb586abdf357c2489a0f033e5', '```'
 			
 			rendered = converter.convert(markdown)

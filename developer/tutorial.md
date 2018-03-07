@@ -203,10 +203,10 @@ grep phylogenetics index.md
 
 {% section Math notation %}
 
-Mathematical notation using $\LaTeX$ symbols are rendered with [MathJax](https://www.mathjax.org/). You can write inline math using the `$`, `$$` or `\\(...\\)` delimiters, while display math uses `\\[...\\]`.
-You can alternatively write display math using `$$` if it is separated from the previous text by a line break.
+Mathematical notation using $\LaTeX$ symbols are rendered with [MathJax](https://www.mathjax.org/). You can write inline math using the `$...$`, `$$...$$` or `\\(...\\)` delimiters, while display math uses `\\[...\\]`.
+You can alternatively write display math using `$$...$$` if it is separated from the previous text by a line break.
 
-{% preview %}
+{% preview latex %}
 Inline math
 $S = \mathbb{R}$
 $$f(x) = x^2$$

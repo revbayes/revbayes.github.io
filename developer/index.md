@@ -1,8 +1,8 @@
 ---
 layout: default
-title: Tools for RevBayes Developers
 ---
 
+# Tools for Developers
 
 ## Joining the RevBayes Team
 
