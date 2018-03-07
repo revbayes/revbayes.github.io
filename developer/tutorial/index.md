@@ -235,6 +235,28 @@ You can include it in the main text as follows
 {% include_relative external_file.md %}
 {% endpreview %}
 
+{% subsection Making alternative versions of your tutorial %}
+
+Any Markdown file in your tutorial directory will be rendered as a separate tutorial as long as it has YAML front matter. For example, if we make copy of the same external file (say `external_file-yaml.md`) and simply add an empty front matter section, then Jekyll will generate automatically [this page](external_file-yaml.html) when building the website.
+
+This makes it easy for you to create alternative versions of your tutorial. Each alternative versions is built from a Markdown file with YAML front matter, each of which then includes one or more external Markdown module text files that do not include front matter. Consider the following example modular tutorial structure.
+
+<pre>
+new_tutorial
+├── data/
+├── scripts/
+├── figures/
+├── modules/ <font color="red"><-- module files (no front matter)</font>
+│   ├── intro.md
+│   ├── exercise1.md
+│   ├── exercise2.md
+│   └── exercise3.md
+├── index.md <font color="red"><-- tutorial page (with front matter)</font>
+└── v2.md    <font color="red"><-- tutorial page (with front matter)</font>
+</pre>
+
+In this example, there are two versions of the tutorial, both of which will get listed on the main [Tutorials Page]({{site.baseurl}}/tutorials/). The default version of the tutorial will be rendered at the relative URL `{{site.baseurl}}/tutorials/new_tutorial/`, while `v2.md` will render at the URL `{{site.baseurl}}/tutorials/new_tutorial/v2.html`.
+
 {% section Figures %}
 
 Figures can be included from the `figures` subdirectory (or elsewhere) using the `figure` and `figcaption` Liquid tags.
@@ -263,3 +285,7 @@ This is a citation with multiple sources {% cite Felsenstein1981 Hoehna2016b %}.
 Citations are included in the **References** section at the end of each tutorial. References are formatted according to the [CSL](https://github.com/citation-style-language/styles) style for [*Systematic Biology*](https://academic.oup.com/sysbio).
 
 {% include bibliography.html %}
+
+{% section Controling printed output %}
+
+You can prevent any element from being printed when the tutorial is sent to PDF or a printer by tagging it with `{:.no-print}`.
