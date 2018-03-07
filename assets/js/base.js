@@ -14,13 +14,14 @@ $(".overview").each(function() {
     var _sections = document.querySelectorAll('.section, .subsection');
     
     if( _sections.length > 0 ) {
+
       var row = document.createElement('div');
       row.className = 'row';
 
       var col = document.createElement('div');
       col.className = 'col-md-9';
 
-      col.innerHTML += "<strong>Sections</strong>";
+      col.innerHTML += "<strong>Table of Contents</strong>";
 
       var ul = document.createElement('ul');
       for (var i = 0, element; element = _sections[i]; i++) {
@@ -61,46 +62,18 @@ $(".challenge,.discussion,.solution").each(function() {
 var scripts = {};
 var _code = document.querySelectorAll('pre');
 for (var i = 0, element; element = _code[i]; i++) {
-  var output = element.parentElement.parentElement.getAttribute("output");
-  if( typeof scripts[output] == 'undefined' )
-    scripts[output] = "";
-  scripts[output] += element.firstChild.innerHTML.replace(/&lt;/g,'<')+"\n";
+  if( element.firstChild.innerHTML != null ) {
+    var output = element.parentElement.parentElement.getAttribute("script");
+    if( typeof scripts[output] == 'undefined' )
+      scripts[output] = "";
+    scripts[output] += element.firstChild.innerHTML.replace(/&lt;/g,'<')+"\n";
+  }
 }
 
 // Retrieve script file for download
 function get_script(script) {
   var blob = new Blob([scripts[script]], {type: "text/plain;charset=utf-8"});
   saveAs(blob, script);
-}
-
-// Zip all files for download
-function get_files() {
-
-  var path = window.location.pathname.split('/');
-  var name = "revbayes_"+path[path.length-2];
-
-  var zip = new JSZip().folder(name);
-
-  var s = zip.folder("scripts");
-  for(var script in scripts) {
-    if( script != "null") {
-      s.file(script, scripts[script]);
-    }
-  }
-
-  var ul = document.getElementById("data_files");
-
-  var d = zip.folder("data");
-  var _li = ul.getElementsByTagName("li");
-  for (var i = 0; i < _li.length; ++i) {
-    var file = _li[i].firstChild.innerHTML;
-    d.file(file, $.get("data/"+file));
-  }
-  zip.generateAsync({type:"blob"})
-    .then(function(content) {
-      // see FileSaver.js
-      saveAs(content, name+".zip");
-  });
 }
 
 // Handle downloadable data files and scripts (on click and at start).
@@ -125,7 +98,46 @@ $(".tutorial_files").each(function() {
       r.outerHTML = "";
 });
 
-// Add figure titles
+// Zip all files for download
+function get_files() {
+
+  var uld = document.getElementById("data_files");
+  var uls = document.getElementById("scripts");
+
+  if( uld == null && uls == null)
+    return;
+
+  var path = window.location.pathname.split('/');
+  var name = "revbayes_"+path[path.length-2];
+
+  var zip = new JSZip().folder(name);
+  var d = zip.folder("data");
+  var s = zip.folder("scripts");
+
+  if( uld != null) {
+    var _li = uld.getElementsByTagName("li");
+    for (var i = 0; i < _li.length; ++i) {
+      var file = _li[i].firstChild.innerHTML;
+      d.file(file, $.get("data/"+file));
+    }
+  }
+  if( uls != null) {
+    var _li = uls.getElementsByTagName("li");
+    for (var i = 0; i < _li.length; ++i) {
+      var file = _li[i].firstChild.innerHTML;
+      s.file(file, $.get("scripts/"+file));
+    }
+  }
+  zip.generateAsync({type:"blob"})
+    .then(function(content) {
+      saveAs(content, name+".zip");
+  });
+}
+
+if(location.search.substring(1) == 'download')
+  get_files();
+
+// Add figure titles to figure references
 $("figure").each(function(index) {
     if( this.id != null ) {
       var els = document.querySelectorAll("a[href=\"#"+this.id+"\"]");
@@ -135,15 +147,27 @@ $("figure").each(function(index) {
     }
 });
 
+// Add section titles to section references
+$(".section, .subsection").each(function(index) {
+    if( this.id != null ) {
+      var els = document.querySelectorAll("a[href=\"#"+this.id+"\"]");
+      if(els.length > 0) {
+        for (var i = 0, element; element = els[i]; i++)
+          if( els[i].innerHTML == "")
+            els[i].innerHTML=this.innerHTML;
+      }
+    }
+});
+
 // Process highlighted blocks
-var _pre = document.querySelectorAll('pre');
+var _pre = document.querySelectorAll('pre.highlight');
 for (var i = 0, element; element = _pre[i]; i++) {
   var classes = element.parentElement.parentElement.classList;
         
   var language = false;
   var Rev = false;
   for (var j = 0; j < classes.length; ++j) {
-    if ( classes[j].match(/Rev/) != null )
+    if ( classes[j].match(/rev/i) != null )
       Rev = true;
 
     if ( classes[j].match(/language/) != null ) {

@@ -1,7 +1,10 @@
 ---
+layout: default
 title: Tutorial Format
 ---
 
+## Tutorial Format
+----
 
 These tutorials will provide command line text and code in specific formats.
 
@@ -29,7 +32,7 @@ All output the RevBayes console will be given in light blue boxes with gray text
 ~~~
 /home/my_directory
 ~~~
-{:.console}
+{:.rev-output}
 
 Some tutorials will provide instructions for you that will be highlighted by a box. These instructions will guide you to create new files or other tasks that are not completed in the RevBayes console.
 

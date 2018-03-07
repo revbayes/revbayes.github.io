@@ -1,6 +1,7 @@
 ---
-layout: default
-title: "Citing RevBayes"
+layout: top
+title: "Citation"
+subtitle: "Citing RevBayes"
 permalink: /citation/
 ---
 

@@ -1,10 +1,10 @@
 ---
-layout: default
-title: Tools for RevBayes Developers
+layout: top
+title: Developer
+subtitle: Resources for Developers
 ---
 
-
-## Joining the RevBayes Team
+### Joining the RevBayes Team
 
 RevBayes is a collaborative software project involving developers from Europe and North America. 
 Since RevBayes is open source, everyone is free to clone the [GitHub repository](https://github.com/revbayes/revbayes). 
@@ -13,13 +13,12 @@ Alternatively, if you are interested in joining the RevBayes development team, p
 
 Before digging into the developer guide it may be useful to understand the user side of RevBayes. We have provided [tutorials]({{ site.baseurl }}/tutorials) that walk through the basics of using directed acyclic graphs (DAGs) for conducting phylogenetic analyses in RevBayes.   
 
-## Developer Guide
+### Developer's Guide
 
-The RevBayes Developers' Guide will provide you with the information needed to implement new methods, models, functions, and algorithms in the RevBayes language and core libraries. 
+The RevBayes Developer's Guide will provide you with the information needed to implement new methods, models, functions, and algorithms in the RevBayes language and core libraries. 
 
 
-{% assign developer = site.pages | where:"layout", "developer" %}
-{% assign devguide = developer | where:"category", "Developer" | sort: "index","last" %}
+{% assign devguide = site.pages | where:"category", "Developer" | sort: "index","last" %}
 <table class="table table-striped">
 {% for lesson in devguide %}
 <tr>

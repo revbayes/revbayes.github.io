@@ -1,17 +1,15 @@
-module Jekyll
-	class FigureTag < Liquid::Block
-		include Liquid::StandardFilters
+module Liquid
+	class Figure < Block
 		def initialize(tag_name, id, tokens)
 			super
 			@id = id.strip
 		end
 
 		def render(context)
+			markdown = super(context).strip
 			site = context.registers[:site]
   			converter = site.find_converter_instance(::Jekyll::Converters::Markdown)
-			figure_main = converter.convert(super(context))
-			figure_main = remove(figure_main, '<p>')
-			figure_main = remove(figure_main, '</p>')
+			figure_main = converter.convert(markdown)
 
 			output = "<figure id=\"#{@id}\">#{figure_main}</figure>"
 
@@ -19,40 +17,26 @@ module Jekyll
 		end
 	end
 
-	class FigureCaptionTag < Liquid::Block
-		include Liquid::StandardFilters
+	class FigureCaption < Block
+		include StandardFilters
+
 		def initialize(tag_name, markup, tokens)
 			super
 		end
 
 		def render(context)
+			markdown = super(context).strip
 			site = context.registers[:site]
   			converter = site.find_converter_instance(::Jekyll::Converters::Markdown)
-			caption = converter.convert(super(context))
+			caption = converter.convert(markdown)
 			caption = remove(caption, '<p>')
 			caption = remove(caption, '</p>')
+			caption = caption.strip
 
-			output = "<figcaption>#{caption}</figcaption>"
-
-			return output
-		end
-	end
-
-	class FigureRefTag < Liquid::Tag
-		def initialize(tag_name, id, tokens)
-			super
-			@id = id.strip
-		end
-
-		def render(context)
-			output = "<a href=\"##{@id}\"></a>"
-
-			return output
+			"<figcaption>#{caption}</figcaption>"
 		end
 	end
 end
 
-Liquid::Template.register_tag('figure', Jekyll::FigureTag)
-Liquid::Template.register_tag('figcaption', Jekyll::FigureCaptionTag)
-Liquid::Template.register_tag('figureref', Jekyll::FigureRefTag)
-Liquid::Template.register_tag('figref', Jekyll::FigureRefTag)
+Liquid::Template.register_tag('figure', Liquid::Figure)
+Liquid::Template.register_tag('figcaption', Liquid::FigureCaption)

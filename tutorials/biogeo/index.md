@@ -204,7 +204,7 @@ To continue, create the DEC rate matrix from the dispersal rates
         0.0000, 0.0000, 1.0000, 1.0000, 0.0000, 0.0000, -4.0000, 2.0000 ] ,
         0.0000, 0.0000, 0.0000, 0.0000, 1.0000, 1.0000, 1.0000, -3.0000 ] ]
 ~~~
-{:.console}
+{:.rev-output}
 
 
 Compute the anagenetic transition probabilities for a branch of length
@@ -223,7 +223,7 @@ Compute the anagenetic transition probabilities for a branch of length
       [ 0.000, 0.004, 0.107, 0.107, 0.031, 0.031, 0.502, 0.218],
       [ 0.000, 0.021, 0.021, 0.021, 0.107, 0.107, 0.107, 0.616]]
 ~~~
-{:.console}
+{:.rev-output}
 
 
 Notice how the structure of the rate matrix is reflected in the
@@ -308,7 +308,7 @@ Print the cladogenetic transition probabilities
          ( 7 -> 7, 3 ) = 0.0833
        ]
 ```
-{:.console}
+{:.rev-output}
 
 
 The cladogenetic probability matrix becomes very sparse for large
@@ -450,7 +450,7 @@ numbers
       Argyroxiphium_grayanum_East_Maui:
         3
 ~~~
-{:.console}
+{:.rev-output}
 
 
 We’ll want to record the relationship between range states and range
@@ -853,7 +853,7 @@ but not H) contains
     1 1 1 0
     0 0 0 0
 ~~~
-{:.console}
+{:.rev-output}
 
 
 Dispersal events between, say, K and M will be penalized by distance
@@ -874,7 +874,7 @@ The distances files contains
     239 059 001 082
     419 239 082 001
 ~~~
-{:.console}
+{:.rev-output}
 
 
 and, if we assume the relative distance between islands remains roughly

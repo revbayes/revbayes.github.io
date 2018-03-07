@@ -1,6 +1,6 @@
 ---
-title: Setting up to develop in RevBayes
-subtitle: Some options for setting up a RevBayes development environment
+title: Setting up an IDE for RevBayes
+subtitle: Setting up Eclipse, XCode, vim
 category: Developer
 authors: Will Pett, April Wright, Lyndon Coghill, Emma Goldberg, Wade Dismukes, Will Freyman, Jamie Oaks
 prerequisites:
@@ -53,12 +53,12 @@ You will need to configure your Eclipse project so it correctly compiles the rev
 If you installed the CMake command line tools in the default location `/usr/local/bin`, you must add it to the PATH environment variable of your Eclipse project.
 
 1. In the *Project Explorer* view, highlight your revbayes project directory
-<img src="images/eclipse-explorer.png" width="50%">
+<img src="figures/eclipse-explorer.png" width="50%">
 
 2. Go to *Project > Properties*, or right click on the project name and select *Properties*.
 3. Expand *C/C++ Build* and click on *Environment*
 4. Click on the PATH entry, click *Edit...* and add `/usr/local/bin` to the end of the *Value*
-![eclipse-path](images/eclipse-path.png "PATH Configuration")
+![eclipse-path](figures/eclipse-path.png "PATH Configuration")
 
 ### Configure the C/C++ build settings
 The RevBayes CMake project uses a special build script `build.sh` to build the RevBayes executable. You must tell your Eclipse project to use this script as a build command.
@@ -66,16 +66,16 @@ The RevBayes CMake project uses a special build script `build.sh` to build the R
 1. Click on *C/C++ Build*
 2. Uncheck *Use default build command* and in *Build command*, enter `sh build.sh`
 3. In *Build directory*, add `../projects/cmake` to the directory path
-![eclipse-build](images/eclipse-build.png "C/C++ Build Configuration")
+![eclipse-build](figures/eclipse-build.png "C/C++ Build Configuration")
 4. Click on the *Behavior* tab
 5. In *Build (incremental build)*, enter `-boost false`
-![eclipse-behavior](images/eclipse-behavior.png "C/C++ Build Behavior")
+![eclipse-behavior](figures/eclipse-behavior.png "C/C++ Build Behavior")
 6. Again, click on *C/C++ Build*
 7. Click *Manage Configurations*
 8. Click on *New...* to create a new configuration, and name it *Debug*
-<img src="images/eclipse-config.png" width="75%">
+<img src="figures/eclipse-config.png" width="75%">
 9. Configure the Debug configuration by adding `-debug true` to the *Build (incremental build)* options
-![eclipse-debug](images/eclipse-debug.png "C/C++ Debug Configuration")
+![eclipse-debug](figures/eclipse-debug.png "C/C++ Debug Configuration")
 Now, if you set the active configuration to *Debug*, RevBayes will be compiled with debugger symbols that can be loaded by `lldb` or `gdb`. You can also set the active build configuration by going to *Project > Build Configurations > Set Active*
 
 10. Click *Apply and Close*
@@ -129,7 +129,7 @@ Setting up Xcode for RevBayes development
 Set up the XCode Project
 ------------------------
   1. Open Xcode and in the *Welcome to Xcode* window, choose **Create a new Xcode project**.
-  2. Select **Command Line Tool** and name it ```rb``` and click **Next**. ![](images/making_xcode_project.png)
+  2. Select **Command Line Tool** and name it ```rb``` and click **Next**. ![](figures/making_xcode_project.png)
   3. Click **New Folder**  to create an empty directory and name it whatever you'd like.
   4. Click **Create**.
   5. Delete all of the files and folders in each of the directories including ```main.cpp``` so that RevBayes is empty. You can do this by selecting the folders and files, right clicking and selecting delete. When asked, choose **Move to Trash**. 
@@ -140,21 +140,21 @@ Set up the XCode Project
     	* ```revbayes/src/core```
     	* ```revbayes/src/libs```
     * directories and click **Add**.
-    ![](images/adding_files.png)
+    ![](figures/adding_files.png)
     * _Note:_ On some versions of XCode, you may need to click on the "Options" Tab, and choose "Create Groups" for the import to work properly. This is the default behavior on most XCode installs.
   8. Add the boost library to your Xcode project 
     * Select the RevBayes project and go to the **Build Settings**. 
     * Search for or Scroll down to the **Search Paths** heading and find the sub-heading named **Header Search Paths**.
     * Double click the heading, click the **+**, and add the value: **\<path to revbayes repository\>/revbayes/boost_1_60_0**. 
     	* ```<path to revbayes repository>``` = the location of the revbayes repository on your machine.
-       ![](images/finding_boost.png)
+       ![](figures/finding_boost.png)
 
 Add the RevBayes Preprocessor Macro to your Xcode project 
 ---------------------------------------------------------
   1. Select the RevBayes project and go to the **Build Settings**. 
   2. Search for or Scroll down to the **Apple LLVM X.X - Preprocessing** heading and find the sub-heading named **Preprocessor Macros**. 
   3. Double click on right hand column, click on the **+** and enter ```RB_XCODE```. Do not replace the debug flag that is already present.
-    ![](images/macro.png)
+    ![](figures/macro.png)
     
 Check C++ language options
 --------------------------
@@ -162,7 +162,7 @@ Check C++ language options
   2. Search or scroll to: **Apple LLVM X.X - C++ - Language **.
   3. Make sure C++ Language Dialect is set to ***Gnu++ 98***.
   4. Make sure C++ Standard Library is set to ***libstdc++(Gnu C++)***
-    ![](images/cpp_lang_options.png)
+    ![](figures/cpp_lang_options.png)
 
 At this point, if everything has been setup correctly, you should be able to build the project. You can try by clicking on **Product - Build** or by using **&#8984;+B**.
 

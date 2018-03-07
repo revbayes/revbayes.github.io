@@ -16,7 +16,7 @@ Notice the repetition in naming within the core and revlanguage directories. Thi
 
 For more specific information on functions and distributions, and for general information on implementing in RevBayes, navigate to the ['Implementing functions, distributions, and moves']({{ site.baseurl }}/developer/implementation.html) section of this Developer's guide.
  
-<img src="images/RB_structure_map.jpg" width="110%">
+<img src="figures/RB_structure_map.jpg" width="110%">
  
 ##DAG Nodes
 
