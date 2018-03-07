@@ -1,5 +1,4 @@
 ---
-layout: default
 title: Download and Install RevBayes
 permalink: /software/
 ---
