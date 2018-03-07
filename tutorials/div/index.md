@@ -1,11 +1,12 @@
 ---
-title: Phylogenetic Inference using ‘RevBayes‘
-subtitle: Basic Diversification Rate Estimation
-authors:  Sebastian H&#246;hna and Tracy Heath
+title: Basic Diversification Rate Estimation
+subtitle: Comparing different constant-rate models of lineage diversification
+authors:  Sebastian Höhna and Tracy Heath
 category: In Progress
 prerequisites:
 - intro
-files:
+data_files:
+- primates_tree.nex
 ---
 
 
@@ -26,12 +27,12 @@ extinction rates. These inferences allow us to investigate key questions
 in evolutionary biology.
 
 Diversification-rate parameters may be included as nuisance parameters
-of other phylogenetic models—*i.e.,*where
+of other phylogenetic models—*i.e.,* where
 these diversification-rate parameters are not of direct interest. For
 example, many methods for estimating species divergence times—such as
-`BEAST`{% cite Drummond2012 %},
-`MrBayes`{% cite Ronquist2012 %}, and
-`RevBayes`{% cite Hoehna2016b %}—implement ‘relaxed-clock models’
+`BEAST` {% cite Drummond2012 %},
+`MrBayes` {% cite Ronquist2012 %}, and
+`RevBayes` {% cite Hoehna2016b %}—implement 'relaxed-clock models'
 that include a constant-rate birth-death branching process as a prior
 model on the distribution of tree topologies and node ages. Although the
 parameters of these ‘tree priors’ are not typically of direct interest,
@@ -43,7 +44,7 @@ of the diversification-rate parameters, as they accommodate uncertainty
 in the other phylogenetic-model parameters (including the tree topology,
 divergence-time estimates, and the other relaxed-clock model
 parameters). More recent work,
-*e.g.,*@Heath2014, uses macroevolutionary
+*e.g.*, {% citet Heath2014 %}, uses macroevolutionary
 models (the fossilized birth-death process) to calibrate phylogenies and
 thus to infer dated trees.
 
@@ -72,14 +73,14 @@ rates.
 
 *What is the (constant) rate of diversification in my study group?* The
 most basic models estimate parameters of the stochastic-branching
-process (*i.e.,*rates of speciation and
+process (*i.e.,* rates of speciation and
 extinction, or composite parameters such as net-diversification and
 relative-extinction rates) under the assumption that rates have remained
 constant across lineages and through time;
-*i.e.,*under a constant-rate birth-death
+*i.e.,* under a constant-rate birth-death
 stochastic-branching process model {% cite Nee1994b %}. Extensions to the
 (basic) constant-rate models include diversification-rate variation
-through time {% cite Stadler2011} {% cite Hoehna2015a %}. First, we might ask whether
+through time {% cite Stadler2011 Hoehna2015a %}. First, we might ask whether
 there is evidence of an episodic, tree-wide increase in diversification
 rates (associated with a sudden increase in speciation rate and/or
 decrease in extinction rate), as might occur during an episode of
@@ -96,7 +97,7 @@ environmental factors, such as environmental CO~2~ or temperature
 {% cite Condamine2013 %}. A final question in this category asks whether our
 study tree was impacted by a mass-extinction event (where a large
 fraction of the standing species diversity is suddenly lost,
-*e.g.,*@May2016). The common theme of these
+*e.g.,* {% citet May2016 %}). The common theme of these
 studies is that the diversification process is tree-wide, that is, all
 lineages of the study group have the exact same rates at a given time.
 
