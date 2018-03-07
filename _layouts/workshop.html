@@ -1,0 +1,43 @@
+---
+layout: default
+---
+
+<h1>{{ page.title }}</h1>
+
+<b>Location:</b> {{ page.location }} <br>
+
+<b>Dates:</b> {{ page.startdate | date: "%-m/%-d" }}
+
+{% if page.enddate %}
+to {{ page.enddate | date: "%-m/%-d" }}, {{ page.enddate | date: "%Y" }}
+{% endif %}
+
+<br>
+
+<b>Instructors:</b> {{ page.instructors | join: ", " }} <br>
+
+{% if page.registration %}
+<b>Register:</b> <a href="{{ page.registration  }}">{{ page.registration  }}</a> <br>
+{% endif %}
+
+<h2>Description</h2>
+
+{{ page.description }}
+
+<h2>Schedule</h2>
+
+<div class="row">
+    <div class="col-md-9">
+        <ul>
+        {% if page.lessons.size > 0 %}
+          {% for lesson in page.lessons %}
+            {% assign lesson_url = '/tutorials/' | append: lesson | append: '/' %}
+            {% assign tutorial = site.pages | where:"url", lesson_url | first %}
+            <li><a href="{{ site.baseurl }}/{{ tutorial.url }}">{{ tutorial.title }}</a></li>
+          {% endfor %}
+        {% else %}
+          <li>None</li>
+        {% endif %}
+        </ul>
+    </div>
+</div>
