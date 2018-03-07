@@ -3,6 +3,7 @@ Display a tutorials's prerequisites and learning objectives.
 {% endcomment %}
 <blockquote class="overview no-print" id="overview">
   <h2>Overview</h2>
+  {% if page.layout == "tutorial" or page.prerequisites.size > 0 %}
   <div class="row">
     <div class="col-md-9">
         <strong>Prerequisites</strong>
@@ -21,4 +22,5 @@ Display a tutorials's prerequisites and learning objectives.
         {% endif %}
     </div>
   </div>
+  {% endif %}
 </blockquote>
