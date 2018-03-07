@@ -34,9 +34,9 @@
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
         <li><a href="/revbayes-site/software/">Software</a></li>
-        <li><a href="/revbayes-site/developer/">Developer</a></li>
         <li><a href="/revbayes-site/tutorials/">Tutorials</a></li>
         <li><a href="/revbayes-site/workshops/">Workshops</a></li>
+        <li><a href="/revbayes-site/developer/">Developer</a></li>
       </ul>
       <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
         <div class="form-group">
@@ -53,88 +53,94 @@
 	<h4 class="maintitle"></h4>
 </div>
 
-      <h2 id="download-pre-compiled-executables">Download Pre-compiled Executables</h2>
+      <div class="row" style="display: flex; align-items: center;">
 
-<table class="table table-hover ">
-	<tr>
-		<td valign="top" class="td4">
-			<a href="https://github.com/revbayes/revbayes/releases/download/v1.0.7/RevBayes_Win_v1.0.7.zip" class="btn btn-primary" role="button">Windows</a>
-		</td>
-		<td valign="top" class="td5">
-			<p class="p2"><span class="s1">Supported versions: 7+<span class="Apple-converted-space"> </span></span></p>
-		</td>
-	</tr>
-	<tr>
-		<td valign="top" class="td4">
-			<a href="https://github.com/revbayes/revbayes/releases/download/v1.0.7/RevBayes_Mac_v1.0.7.zip" class="btn btn-primary" role="button">Mac OS X</a>
-		</td>
-		<td valign="top" class="td5">
-			<p class="p2"><span class="s1">Supported versions: 10.6+<span class="Apple-converted-space"> </span></span></p>
-		</td>
-    </tr>
-    <tr>
-		<td valign="top" class="td4">
-			<a href="http://github.com/revbayes/revbayes" class="btn btn-primary" role="button">Source</a>
-		</td>
-		<td valign="top" class="td5">
-			<p class="p2"><span class="s1">Public git repository<span class="Apple-converted-space"> </span></span></p>
-		</td>
-    </tr>
-</table>
+<div class="col-xs-4" align="center">
+<h2>Mac OS X</h2>
+<a href="https://github.com/revbayes/revbayes/releases/download/v1.0.7/RevBayes_Mac_v1.0.7.zip" class="btn btn-info" role="button">Download Executable (10.6+)</a>
+</div>
+
+<div class="col-xs-4" align="center">
+<h2>Windows</h2>
+<a href="https://github.com/revbayes/revbayes/releases/download/v1.0.7/RevBayes_Win_v1.0.7.zip" class="btn btn-info" role="button">Download Executable (7+)</a>
+</div>
+
+<div class="col-xs-4" align="center">
+<h2>Source code</h2>
+<a href="http://github.com/revbayes/revbayes" class="btn btn-info" role="button">GitHub Repository</a>
+</div>
+
+</div>
 
 <p><br /></p>
 
-<h2 id="compiling-from-source-on-linux">Compiling from Source on Linux</h2>
+<h2 id="compiling-from-source">Compiling from source</h2>
+<hr />
+<h3 id="linux">Linux</h3>
 
-<div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/revbayes/revbayes.git revbayes
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/revbayes/revbayes.git revbayes
 cd revbayes/projects/cmake
 ./build.sh
 </code></pre></div></div>
+
 <p>For the MPI version:</p>
-<div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./build.sh -mpi true
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./build.sh -mpi true
 </code></pre></div></div>
 
 <p><br /></p>
 
-<h2 id="compiling-from-source-on-mac-os-x">Compiling from Source on Mac OS X</h2>
+<h3 id="mac-os-x">Mac OS X</h3>
 
 <ol>
   <li>
     <p>Make sure that you have a C++ compiler installed on your computer. GCC 4.2 (or higher) and Apple LLVM version 6.0 have both been used successfully. If you don’t have a C++ compiler, you should install Xcode.</p>
   </li>
-  <li>Make sure that you have CMake installed. One option to install CMake is using homebrew:
-    <div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
- brew install cmake
+  <li>
+    <p>Make sure that you have CMake installed. One option to install CMake is using homebrew:</p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+brew install cmake
 </code></pre></div>    </div>
   </li>
-  <li>Download RevBayes from our github repository. Clone the repository using git by running the following command in the terminal
-    <div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> git clone https://github.com/revbayes/revbayes.git revbayes
+  <li>
+    <p>Download RevBayes from our github repository. Clone the repository using git by running the following command in the terminal</p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/revbayes/revbayes.git revbayes
 </code></pre></div>    </div>
   </li>
-  <li>Open a terminal and go to the RevBayes cmake directory:
-    <div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> cd revbayes/projects/cmake
+  <li>
+    <p>Open a terminal and go to the RevBayes cmake directory:</p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd revbayes/projects/cmake
 </code></pre></div>    </div>
   </li>
-  <li>Now either build the standard version using the following:
-    <div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> ./build.sh
+  <li>
+    <p>Now either build the standard version using the following:</p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./build.sh
 </code></pre></div>    </div>
+
     <p>or build the MPI version to produce the rb-mpi executeable:</p>
-    <div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> ./build.sh -mpi true
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./build.sh -mpi true
 </code></pre></div>    </div>
+
     <p>You will likely some compiler warning (e.g. <code class="highlighter-rouge">clang: warning: optimization flag '-finline-functions' is not supported</code>). This is normal.</p>
   </li>
 </ol>
 
 <p><br /></p>
 
-<h2 id="troubleshooting">Troubleshooting:</h2>
+<h3 id="troubleshooting">Troubleshooting</h3>
 
 <ul>
   <li>
-    <p><code class="highlighter-rouge">-bash: rb: command not found</code></p>
+    <p><code class="highlighter-rouge">rb: command not found</code></p>
 
     <p>The problem is that you tried to run RevBayes but your computer doesn’t know where the executable is. The easiest way is to add the directory in which you compiled RevBayes to your system path:</p>
-    <div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  export PATH=&lt;your_revbayes_directory&gt;/projects/cmake:$PATH  
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export PATH=&lt;your_revbayes_directory&gt;/projects/cmake:$PATH  
 </code></pre></div>    </div>
   </li>
   <li>
@@ -146,15 +152,15 @@ cd revbayes/projects/cmake
 
     <p>You need to add the boost libraries to your path variable. You may find that you have to export this <code class="highlighter-rouge">DYLD_LIBRARY_PATH</code> every time you open a new terminal window. To get around this, you can add this to your <code class="highlighter-rouge">.bash_profile</code> or <code class="highlighter-rouge">.bashrc</code> file (which lives in your home directory). To change this, open a new terminal window and you should be in the home directory. If you do not have either of these files, use the text editor <code class="highlighter-rouge">nano</code> to create this file type:</p>
 
-    <div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  cd ~
-  touch .bash_profile
-  nano .bash_profile
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd ~
+touch .bash_profile
+nano .bash_profile
 </code></pre></div>    </div>
 
-    <p>Then add the following lines, replacing <code class="highlighter-rouge">&lt;your_revbayes_directory&gt;</code> with wherever you put the Revbayes Github repository:</p>
+    <p>Then add the following lines, replacing <code class="highlighter-rouge">&lt;your-revbayes-directory&gt;</code> with wherever you put the Revbayes Github repository:</p>
 
-    <div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  export DYLD_LIBRARY_PATH=&lt;your_revbayes_directory&gt;/boost_1_60_0/stage/lib:$DYLD_LIBRARY_PATH
-  export PATH=&lt;your_revbayes_directory&gt;/projects/cmake:$PATH  
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export DYLD_LIBRARY_PATH=&lt;your-revbayes-directory&gt;/boost_1_60_0/stage/lib:$DYLD_LIBRARY_PATH
+export PATH=&lt;your-revbayes-directory&gt;/projects/cmake:$PATH  
 </code></pre></div>    </div>
 
     <p>Then save the file using ctrl^o and hit return, then exit using ctrl^x. Now quit the Terminal app and reopen it and the boost libraries will forever be in your path.</p>
@@ -184,14 +190,14 @@ cd revbayes/projects/cmake
 $(":not(code).highlighter-rouge").each(function() {
   
   if( this.classList == "highlighter-rouge") {
-    this.classList = "default highlighter-rouge";
+    this.classList = "bash highlighter-rouge";
   }
   
 });
 // $("code.highlighter-rouge").each(function() {
 //   
 //   if( this.classList == "highlighter-rouge") {
-//       this.classList = "default highlighter-rouge";
+//       this.classList = "bash highlighter-rouge";
 //   }
 //   
 // });
