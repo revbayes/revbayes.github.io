@@ -1,10 +1,11 @@
 ---
 title: Software
+subtitle: Download and Install RevBayes
 permalink: /software/
 code_layout: bash
 ---
 
-## Download and Install RevBayes
+## {{ page.subtitle }}
 ----
 <div class="row">
 
