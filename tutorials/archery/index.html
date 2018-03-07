@@ -122,11 +122,8 @@ RevBayes</p>
 
 <h1 id="sect:Exercise">Modeling an Archer’s Shots on a Target</h1>
 
-<figure id="target">
-<img src="figures/target.png" width="200" />
-<figcaption>
-<em>Representation of the archery data used in this tutorial.Each yellow dot represents the position of an arrow shot by an archer.The distance of each arrow from the the center of the target is assumed to be exponentially distributed with mean $\mu$.</em>
-</figcaption>
+<figure id="target"><p><img src="figures/target.png" width="200" /></p>
+<figcaption><em>Representation of the archery data used in this tutorial.Each yellow dot represents the position of an arrow shot by an archer.The distance of each arrow from the the center of the target is assumed to be exponentially distributed with mean $\mu$.</em></figcaption>
 </figure>
 
 <p>We’ll begin our exploration of Bayesian inference with a simple archery
@@ -168,20 +165,14 @@ P\left(\mu \mid \bar d\right) = \frac{P\left(\bar d \mid \mu\right) \times P\lef
 
 <p>We’ll use a simple exponential distribution as a prior on the parameter of the model, $\mu$. The <a href="https://en.wikipedia.org/wiki/Exponential_distribution">exponential distribution</a> has one parameter $\alpha$ representing our prior belief about the mean arrow distance <a href="#exponential"></a>. Different choices for $\alpha$ represent different prior beliefs.</p>
 
-<figure id="exponential">
-<img src="figures/exp.png" alt="" />
-<figcaption>
-<em>Exponential distribution with one parameter $\alpha$. This distribution is used as a prior distribution on the average arrow distance $\mu$.Here we show different curves for the exponential distribution when using different parameters.</em>
-</figcaption>
+<figure id="exponential"><p><img src="figures/exp.png" alt="" /></p>
+<figcaption><em>Exponential distribution with one parameter $\alpha$. This distribution is used as a prior distribution on the average arrow distance $\mu$.Here we show different curves for the exponential distribution when using different parameters.</em></figcaption>
 </figure>
 
 <p><a href="#archery_model"></a> shows the graphical model for the archery model. This nicely visualizes the dependency structure in the model. We see that the parameter $\alpha$ is drawn in a solid square, representing that this variable is constant (<em>i.e.,</em> it takes a “known” value). Following the graph in <a href="#archery_model"></a>, we see an arrow connecting $\alpha$ and the variable $\mu$. That simply means that $\mu$ depends on $\alpha$. More specifically, $\mu$ is a stochastic variable (shown as a solid circle) that is drawn from an exponential distribution with parameter $\alpha$. Another constant variable, $n$, represents the number of shots taken by the archer. Finally, we have the observed data $\bar d$ which is drawn from a gamma distribution with parameters $\mu$ and $n$, as can be seen by the arrows pointing from those parameters to $d$. Furthermore, the solid circle of $\bar d$ is shaded which means that the variable has data attached to it.</p>
 
-<figure id="archery_model">
-<img src="figures/archery_graphical_model.png" width="200" />
-<figcaption>
-<em>Graphical model for the archery model.</em>
-</figcaption>
+<figure id="archery_model"><p><img src="figures/archery_graphical_model.png" width="200" /></p>
+<figcaption><em>Graphical model for the archery model.</em></figcaption>
 </figure>
 
 <h1 id="sect:MCMC-scratch">Writing MCMC from Scratch</h1>
@@ -439,12 +430,9 @@ $\mu$ (right). There are other parameters, such as the posterior mean
 and the 95% HPD (highest posterior density) interval, that you can
 obtain from <code class="highlighter-rouge">Tracer</code>.</p>
 
-<figure id="mcmc-trace">
-<img src="figures/archery_MCMC_Trace.png" width="45%" />
-<img src="figures/archery_MCMC_distribution.png" width="45%" />
-<figcaption>
-The <em>Trace</em> of sample from an MCMC simulation. Right: The approximated posterior probability distribution for $\mu$.
-</figcaption>
+<figure id="mcmc-trace"><p><img src="figures/archery_MCMC_Trace.png" width="45%" />
+<img src="figures/archery_MCMC_distribution.png" width="45%" /></p>
+<figcaption>The <em>Trace</em> of sample from an MCMC simulation. Right: The approximated posterior probability distribution for $\mu$.</figcaption>
 </figure>
 
 <h1 id="sect:More_on_Moves">More on Moves: Tuning and Weights</h1>
@@ -639,11 +627,8 @@ distribution by using very small parameter values, e.g. $Gamma(0.001,
 to the exponential distribution, the $Gamma(0.001, 0.001)$ distribution is
 much more “flat”.</p>
 
-<figure id="gamma_distribution">
-<img src="figures/gamma.png" alt="" />
-<figcaption>
-Comparison of exponential distribution with $\alpha = 1$ and uninformative gamma distribution with parameters $\alpha=0.001$ and $\beta=0.001$.
-</figcaption>
+<figure id="gamma_distribution"><p><img src="figures/gamma.png" alt="" /></p>
+<figcaption>Comparison of exponential distribution with $\alpha = 1$ and uninformative gamma distribution with parameters $\alpha=0.001$ and $\beta=0.001$.</figcaption>
 </figure>
 
 <p>The second and simplest way we can overcome the informativeness of the

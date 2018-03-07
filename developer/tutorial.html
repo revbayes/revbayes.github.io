@@ -83,7 +83,7 @@
 
 <h2 id="writing-the-front-matter">Writing the front matter</h2>
 <hr />
-<p>In order for Jekyll to process your tutorial page, it must include YAML front matter, indicated with <code class="highlighter-rouge">---</code></p>
+<p>In order for Jekyll to process your tutorial page, it must include YAML front matter, indicated by</p>
 
 <div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">---</span>
 <span class="nn">---</span>
@@ -135,115 +135,141 @@
 <h2 id="formatting">Formatting</h2>
 <hr />
 
+<blockquote><div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{% section This is a section header | section1 %}
+This is a reference to {% ref section1 %}
+</code></pre></div></div>
+<br /><h2 class="section" id="section1">This is a section header</h2>
+<hr />
+
+<p>This is a reference to <a href="#section1"></a></p>
+</blockquote>
+
+<blockquote><div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{% subsection This is a subsection header | subsection1 %}
+This is a reference to {% ref subsection1 %}
+</code></pre></div></div>
+<br /><h3 class="section" id="subsection1">This is a subsection header</h3>
+<p>This is a reference to <a href="#subsection1"></a></p>
+</blockquote>
+
 <h2 id="code-formats">Code formats</h2>
 
-<h3 id="jekyll">Jekyll:</h3>
-<div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="sb">```
+<blockquote><div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>```
 Lorem ipsum dolor sit amet, consectetur adipiscing elit,
 sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-```</span>
+```
 {:.default}
 </code></pre></div></div>
+<br /><div class="default highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+</code></pre></div></div>
+</blockquote>
 
-<h3 id="rendered">Rendered:</h3>
-<div class="default highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+<p><code class="highlighter-rouge">{:.Rev}</code></p>
+<blockquote><div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>```
+Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+```
+{:.Rev}
+</code></pre></div></div>
+<br /><div class="Rev highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Lorem ipsum dolor sit amet, consectetur adipiscing elit,
 sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
 </code></pre></div></div>
-<hr />
-<h3 id="rev"><code class="highlighter-rouge">{:.Rev}</code></h3>
-<div class="Rev highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-</code></pre></div></div>
-<hr />
+</blockquote>
 
-<h3 id="bash"><code class="highlighter-rouge">{:.bash}</code></h3>
-<div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+<p><code class="highlighter-rouge">{:.bash}</code></p>
+<blockquote><div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>```
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+```
+{:.bash}
+</code></pre></div></div>
+<br /><div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+</code></pre></div></div>
+</blockquote>
+
+<p><code class="highlighter-rouge">{:.Rev-output}</code></p>
+<blockquote><div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>```
+Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+```
+{:.Rev-output}
+</code></pre></div></div>
+<br /><div class="Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Lorem ipsum dolor sit amet, consectetur adipiscing elit,
 sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
 </code></pre></div></div>
-<hr />
-<h3 id="console"><code class="highlighter-rouge">{:.console}</code></h3>
-<div class="console highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-</code></pre></div></div>
-<hr />
+</blockquote>
 
 <h2 id="blockquotes">Blockquotes</h2>
 
-<h3 id="jekyll-1">Jekyll:</h3>
-<div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gt">&gt; Lorem ipsum dolor sit amet, consectetur adipiscing elit,</span>
+<blockquote><div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gt">&gt; Lorem ipsum dolor sit amet, consectetur adipiscing elit,</span>
 <span class="gt">&gt; sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</span>
 </code></pre></div></div>
-
-<h3 id="rendered-1">Rendered:</h3>
-<blockquote>
+<br /><blockquote>
   <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit,
 sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+</blockquote>
 </blockquote>
 
 <hr />
 
-<h3 id="jekyll-2">Jekyll:</h3>
-<div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gt">&gt; Lorem ipsum dolor sit amet, consectetur adipiscing elit,</span>
+<blockquote><div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gt">&gt; Lorem ipsum dolor sit amet, consectetur adipiscing elit,</span>
 <span class="gt">&gt; sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</span>
 {:.instruction}
 </code></pre></div></div>
-
-<h3 id="rendered-2">Rendered:</h3>
-<blockquote class="instruction">
+<br /><blockquote class="instruction">
   <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit,
 sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
 </blockquote>
-<hr />
+</blockquote>
 
-<h3 id="jekyll-3">Jekyll:</h3>
-<div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gt">&gt; ## Discussion header</span>
+<blockquote><div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gt">&gt; ## Discussion header</span>
 <span class="gt">&gt; Lorem ipsum dolor sit amet, consectetur adipiscing elit,</span>
 <span class="gt">&gt; sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</span>
 {:.discussion}
 </code></pre></div></div>
-
-<h3 id="rendered-3">Rendered:</h3>
-<blockquote class="discussion">
+<br /><blockquote class="discussion">
   <h2 id="discussion-header">Discussion header</h2>
   <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit,
 sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
 </blockquote>
+</blockquote>
 
 <h2 id="including-citations">Including citations</h2>
 <hr />
-
-<h3 id="jekyll-4">Jekyll:</h3>
-<div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>This is a citation {% cite Felsenstein1981 %}. This is an in-text citation of {% citet Felsenstein1981 %}.
+<blockquote><div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>This is a citation {% cite Felsenstein1981 %}.  
+This is an in-text citation of {% citet Felsenstein1981 %}.  
+This is a citation with multiple sources {% cite Felsenstein1981 Hoehna2016b %}.
 </code></pre></div></div>
-<h3 id="rendered-4">Rendered:</h3>
-<p>This is a citation <a href="#Felsenstein1981">(Felsenstein 1981)</a>. This is an in-text citation of <a href="#Felsenstein1981">Felsenstein (1981)</a>.</p>
+<br /><p>This is a citation <a href="#Felsenstein1981">(Felsenstein 1981)</a>.<br />
+This is an in-text citation of <a href="#Felsenstein1981">Felsenstein (1981)</a>.<br />
+This is a citation with multiple sources <a href="#Felsenstein1981">(Felsenstein 1981; Höhna et al. 2016)</a>.</p>
+</blockquote>
 
 <h2 id="including-figures">Including figures</h2>
 <hr />
-
-<h3 id="jekyll-5">Jekyll:</h3>
-<div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{% figure example %}
+<blockquote><div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{% figure example %}
 <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"images/example.png"</span> <span class="na">width=</span><span class="s">"200"</span><span class="nt">&gt;</span>
 {% figcaption %}
 This is an example figure caption. You can include <span class="ge">*Markdown*</span> and $<span class="se">\L</span>aTeX$.
 {% endfigcaption %}
 {% endfigure %}
-
-This is a reference to {% figref example %}
+  
+This is a reference to {% ref example %}
 </code></pre></div></div>
-<h3 id="rendered-5">Rendered:</h3>
-<figure id="example">
-<img src="images/example.png" width="200" />
-<figcaption>
-This is an example figure caption. You can include <em>Markdown</em> and $\LaTeX$.
-</figcaption>
+<br /><figure id="example"><p><img src="images/example.png" width="200" /></p>
+<figcaption>This is an example figure caption. You can include <em>Markdown</em> and $\LaTeX$.</figcaption>
 </figure>
 
 <p>This is a reference to <a href="#example"></a></p>
+</blockquote>
 
       <ol class="bibliography"><li><span id="Felsenstein1981">Felsenstein J. 1981. Evolutionary Trees from DNA Sequences: a Maximum Likelihood Approach. Journal of Molecular Evolution. 17:368–376.</span>
 
 <a href="https://doi.org/10.1007/BF01734359">10.1007/BF01734359</a>
+
+</li>
+<li><span id="Hoehna2016b">Höhna S., Landis M.J., Heath T.A., Boussau B., Lartillot N., Moore B.R., Huelsenbeck J.P., Ronquist F. 2016. RevBayes: Bayesian Phylogenetic Inference Using Graphical Models and an Interactive Model-Specification Language. Systematic Biology. 65:726–736.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syw021">10.1093/sysbio/syw021</a>
 
 </li></ol>
 

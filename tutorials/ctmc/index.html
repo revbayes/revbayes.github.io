@@ -151,11 +151,8 @@ topology and node ages (and all other parameters) using MCMC, and; (3)
 summarizing the MCMC output by computing the maximum <em>a posteriori</em>
 tree.</p>
 
-<figure id="jc_graphical_model">
-<img src="figures/jc_graphical_model.png" />
-<figcaption>
-Graphical model representation of a simple phylogenetic model. The graphical model shows the dependencies between the parameters.Here, the rate matrix $Q$ is a constant variable because it is fixed and does not depend on any parameters.The only free parameters of this model, the Jukes-Cantor model, are the tree $\Psi$ including the node ages.
-</figcaption>
+<figure id="jc_graphical_model"><p><img src="figures/jc_graphical_model.png" /></p>
+<figcaption>Graphical model representation of a simple phylogenetic model. The graphical model shows the dependencies between the parameters.Here, the rate matrix $Q$ is a constant variable because it is fixed and does not depend on any parameters.The only free parameters of this model, the Jukes-Cantor model, are the tree $\Psi$ including the node ages.</figcaption>
 </figure>
 
 <p>We first consider the simplest substitution model described by
@@ -464,11 +461,8 @@ create our MCMC object:</p>
 
 <p>Look at the file called <code class="highlighter-rouge">output/primates_cytb_JC.log</code> in <code class="highlighter-rouge">Tracer</code>. There you see the posterior distribution of the continuous parameters, <em>e.g.,</em> the tree length variable <code class="highlighter-rouge">TL</code>.</p>
 
-<figure id="jc_trace_tl">
-<img src="figures/primates_cytb_JC_TL_Trace.png" width="500" /> <img src="figures/primates_cytb_JC_TL_Distribution.png" width="500" />``
-<figcaption>
-<strong>Left:</strong> Trace of tree-length samples for one MCMC run. The caterpillar-like look is a good sign.You will also see that the effective sample size is comparably large, i.e., much larger than 200. <strong>Right:</strong> Posterior distribution of the tree length of the primate phylogeny under a Jukes-Cantor substitution model.
-</figcaption>
+<figure id="jc_trace_tl"><p><img src="figures/primates_cytb_JC_TL_Trace.png" width="500" /> <img src="figures/primates_cytb_JC_TL_Distribution.png" width="500" />``</p>
+<figcaption><strong>Left:</strong> Trace of tree-length samples for one MCMC run. The caterpillar-like look is a good sign.You will also see that the effective sample size is comparably large, i.e., much larger than 200. <strong>Right:</strong> Posterior distribution of the tree length of the primate phylogeny under a Jukes-Cantor substitution model.</figcaption>
 </figure>
 
 <h2 class="subsection" id="exercise-1">Exercise 1</h2>
@@ -487,11 +481,8 @@ maximum <em>a posteriori</em> tree to file:</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>map_tree = mapTree(treetrace,"output/primates_cytb_JC_MAP.tree")
 </code></pre></div></div>
 
-<figure id="jc_tree">
-<img src="figures/primates_cytb_JC_tree.png" width="800" />
-<figcaption>
-Maximum a posteriori estimate of the primate phylogeny under a Jukes-Cantor substitution model. The numbers at the nodes show the posterior probabilities for the clades.We have rooted the tree at the outgroup <em>Galeopterus_variegatus</em>
-</figcaption>
+<figure id="jc_tree"><p><img src="figures/primates_cytb_JC_tree.png" width="800" /></p>
+<figcaption>Maximum a posteriori estimate of the primate phylogeny under a Jukes-Cantor substitution model. The numbers at the nodes show the posterior probabilities for the clades.We have rooted the tree at the outgroup <em>Galeopterus_variegatus</em></figcaption>
 </figure>
 
 <p>Look at the file called <code class="highlighter-rouge">output/primates_cytb_JC_MAP.tree</code> in
@@ -513,8 +504,7 @@ monophyletic using the following command:</p>
 treetrace.cladeProbability( Lemuroidea )
 </code></pre></div></div>
 
-<figure id="tab_primates">
-<table>
+<figure id="tab_primates"><table>
   <thead>
     <tr>
       <th><strong>Species</strong></th>
@@ -659,9 +649,7 @@ treetrace.cladeProbability( Lemuroidea )
   </tbody>
 </table>
 
-<figcaption>
-Primate and species relationships.
-</figcaption>
+<figcaption>Primate and species relationships.</figcaption>
 </figure>
 
 <h1 class="section" id="the-hasegawa-kishino-yano-hky-1985-substitution-model">The Hasegawa-Kishino-Yano (HKY) 1985 Substitution Model</h1>
@@ -789,11 +777,8 @@ Q_{GTR} = \begin{pmatrix}
 <p>where the six exchangeability parameters, $r_{ij}$, specify the relative
 rates of change between states $i$ and $j$.</p>
 
-<figure id="gtr_graphical_model">
-<img src="figures/gtr_graphical_model.png" alt="" />
-<figcaption>
-Graphical model representation of the General Time Reversible (GTR) phylogenetic model.
-</figcaption>
+<figure id="gtr_graphical_model"><p><img src="figures/gtr_graphical_model.png" alt="" /></p>
+<figcaption>Graphical model representation of the General Time Reversible (GTR) phylogenetic model.</figcaption>
 </figure>
 
 <p>The GTR model requires that we define and specify a prior on the six
@@ -817,11 +802,8 @@ named <code class="highlighter-rouge">er</code> ($\theta$ in <a href="#gtr_graph
 
 <p>The Dirichlet distribution assigns probability densities to a group of parameters: <em>e.g.,</em> those that measure proportions and must sum to 1. Here, we have specified a six-parameter Dirichlet prior, where each value describes one of the six relative rates of the GTR model: (1) $A\leftrightarrows C$; (2) $A\leftrightarrows G$; (3) $A\leftrightarrows T$; (4) $C\leftrightarrows G$; (5) $C\leftrightarrows T$; (6) $G\leftrightarrows T$. The input parameters of a Dirichlet distribution are called shape (or concentration) parameters. The expectation and variance for each variable are related to the sum of the shape parameters. The prior we specified above is a ‘flat’ or symmetric Dirichlet distribution; all of the shape parameters are equal (1,1,1,1,1,1). This describes a model that allows for equal rates of change between nucleotides, such that the expected rate for each is equal to $\frac{1}{6}$ (<a href="#dirichletFig"></a> a). We might also parameterize the Dirichlet distribution such that all of the shape parameters were equal to 100, which would also specify a prior with an expectation of equal exchangeability rates (<a href="#dirichletFig"></a> b). However, by increasing the values of the shape parameters, <code class="highlighter-rouge">er_prior &lt;- v(100,100,100,100,100,100)</code>, the Dirichlet distribution will more strongly favor equal exchangeability rates; (<em>i.e.</em>, a relatively informative prior). Alternatively, we might consider an asymmetric Dirichlet parameterization that could reflect a strong prior belief that transition and transversion substitutions occur at different rates. For example, we might specify the prior density <code class="highlighter-rouge">er_prior &lt;- v(4,8,4,4,8,4)</code>. Under this model, the expected rate for transversions would be $\frac{4}{32}$ and that for transitions would be $\frac{8}{32}$, and there would be greater prior probability on sets of GTR rates that matched this configuration (<a href="#dirichletFig"></a> c). Yet another aymmetric prior could specify that each of the six GTR rates had a different value conforming to a Dirichlet(2,4,6,8,10,12). This would lead to a different prior probability density for each rate parameter (<a href="#dirichletFig"></a> d). Without strong prior knowledge about the pattern of relative rates, however, we can better reflect our uncertainty by using a vague prior on the GTR rates. Notably, all patterns of relative rates have the same probability density under <code class="highlighter-rouge">er_prior &lt;- v(1,1,1,1,1,1)</code>.</p>
 
-<figure id="dirichletFig">
-<img src="figures/dirichlet_rates.png" alt="" />
-<figcaption>
-Four different examples of Dirichlet priors on exchangeability rates.
-</figcaption>
+<figure id="dirichletFig"><p><img src="figures/dirichlet_rates.png" alt="" /></p>
+<figcaption>Four different examples of Dirichlet priors on exchangeability rates.</figcaption>
 </figure>
 
 <p>For each stochastic node in our model, we must also specify a proposal mechanism if we wish to estimate that parameter. The Dirichlet prior on our parameter <code class="highlighter-rouge">er</code> creates a <a href="http://en.wikipedia.org/wiki/Simplex"><em>simplex</em></a> of values that sum to 1.</p>
@@ -871,22 +853,16 @@ GTR substitution model.</p>
 
 <p>Members of the GTR family of substitution models assume that rates are homogeneous across sites, an assumption that is often violated by real data. We can accommodate variation in substitution rate among sites (ASRV) by adopting the discrete-gamma model <a href="#Yang1994a">(Yang 1994)</a>. This model assumes that the substitution rate at each site is a random variable that is described by a discretized gamma distribution, which has two parameters: the shape parameter, $\alpha$, and the rate parameter, $\beta$. In order that we can interpret the branch lengths as the expected number of substitutions per site, this model assumes that the mean site rate is equal to 1. The mean of the gamma is equal to $\alpha/\beta$, so a mean-one gamma is specified by setting the two parameters to be equal, $\alpha=\beta$. This means that we can fully describe the gamma distribution with the single shape parameter, $\alpha$. The degree of among-site substitution rate variation is inversely proportional to the value of the $\alpha$-shape parameter. As the value of the $\alpha$-shape increases, the gamma distribution increasingly resembles a normal distribution with decreasing variance, which therefore corresponds to decreasing levels of ASRV <a href="#asrhGammaFig"></a>. By contrast, when the value of the $\alpha$-shape parameter is $&lt; 1$, the gamma distribution assumes a concave distribution that concentrates most of the prior density on low rates, but retains some prior mass on sites with very high rates, which therefore corresponds to high levels of ASRV <a href="#asrhGammaFig"></a>. Note that, when $\alpha = 1$, the gamma distribution collapses to an exponential distribution with a rate parameter equal to $\beta$.</p>
 
-<figure id="asrhGammaFig">
-<img src="figures/asrh_gamma.png" />
-<figcaption>
-The probability density of mean-one gamma-distributed rates for different values of the $\alpha$-shape parameter.
-</figcaption>
+<figure id="asrhGammaFig"><p><img src="figures/asrh_gamma.png" /></p>
+<figcaption>The probability density of mean-one gamma-distributed rates for different values of the $\alpha$-shape parameter.</figcaption>
 </figure>
 
 <p>We typically lack prior knowledge regarding the degree of ASRV for a given alignment. Accordingly, rather than specifying a precise value of $\alpha$, we can instead estimate the value of the $\alpha$-shape parameter from the data. This requires that we specify a diffuse (relatively <a href="http://andrewgelman.com/2013/11/21/hidden-dangers-noninformative-priors/">‘uninformative’</a>) prior on the $\alpha$-shape parameter. For this analysis, we will use a lognormal distribution with a mean parameter, <code class="highlighter-rouge">alpha_prior_mean</code>, equal to <code class="highlighter-rouge">5.0</code>, and standard deviation, <code class="highlighter-rouge">alpha_prior_sd</code>, equal to 0.587405 (thus, 95% of the prior density spans exactly one order of magnitude).</p>
 
 <p>This approach for accommodating ASRV is another example of a hierarchical model (<a href="#gtrg"></a>). That is, variation in substitution rates across sites is addressed by applying a site-specific rate multiplier to each of the $j$ sites, $r_j$. These rate-multipliers are drawn from a discrete, mean-one gamma distribution; the shape of this prior distribution (and the corresponding degree of ASRV) is governed by the $\alpha$-shape parameter. The $\alpha$-shape parameter, in turn, is treated as a lognormal distributed random variable. Finally, the shape of the lognormal prior is governed by the mean and standard deviation parameters, which are set to fixed values.</p>
 
-<figure id="grtrg">
-<img src="figures/gtrg_graphical_model.png" alt="" />
-<figcaption>
-Graphical model representation of the General Time Reversible (GTR) + Gamma phylogenetic model with invariable sites.
-</figcaption>
+<figure id="grtrg"><p><img src="figures/gtrg_graphical_model.png" alt="" /></p>
+<figcaption>Graphical model representation of the General Time Reversible (GTR) + Gamma phylogenetic model with invariable sites.</figcaption>
 </figure>
 
 <h2 id="setting-up-the-gamma-model-in-revbayes">Setting up the Gamma Model in <code class="highlighter-rouge">RevBayes</code></h2>
