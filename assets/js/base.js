@@ -151,7 +151,7 @@ $(".section, .subsection").each(function(index) {
 });
 
 // Process highlighted blocks
-var _pre = document.querySelectorAll('pre');
+var _pre = document.querySelectorAll('pre.highlight');
 for (var i = 0, element; element = _pre[i]; i++) {
   var classes = element.parentElement.parentElement.classList;
         
