@@ -1,7 +1,7 @@
 ---
 title: Phylogenetic Inference using ‘RevBayes‘
 subtitle: Continuous trait evolution with Ornstein-Uhlenbeck models
-authors:  Sebastian H&#246;hna
+authors:  Sebastian Höhna
 category: In Progress
 prerequisites:
 - intro
@@ -65,7 +65,7 @@ contains several characters (columns).
        Number of included characters: 11
        Datatype:                      Continuous
 ~~~
-{:.console}
+{:.rev-output}
 
 
 Since we only want the body mass (of females) we exclude all but the

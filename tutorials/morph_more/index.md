@@ -572,7 +572,7 @@ Create the rate matrix
         0.3333, 0.3333, -1.0000, 0.3333 ] ,
         0.3333, 0.3333, 0.3333, -1.0000 ] ]
 ~~~
-{:.console}
+{:.rev-output}
 
 
 Compute the transition probability matrix for a branch length of 0.1.
@@ -586,7 +586,7 @@ Compute the transition probability matrix for a branch length of 0.1.
       [ 0.031, 0.031, 0.906, 0.031],
       [ 0.031, 0.031, 0.031, 0.906] ]
 ~~~
-{:.console}
+{:.rev-output}
 
 
 If we believed that, for example, for a couple of states, some
@@ -674,7 +674,7 @@ Create the rate matrix
          0.0000, 0.5128, -2.0513, 1.5385 ] ,
          0.0000, 0.0000, 0.5128, -0.5128 ] ]
 ~~~
-{:.console}
+{:.rev-output}
 
 
 Compute the transition probability matrix for a branch length of 0.1.
@@ -687,7 +687,7 @@ Compute the transition probability matrix for a branch length of 0.1.
       [ 0.001, 0.042, 0.821, 0.136],
       [ 0.000, 0.001, 0.045, 0.954]]
 ~~~
-{:.console}
+{:.rev-output}
 
 
 Note that P[1][2] &gt; P[1][3] &gt;
@@ -757,7 +757,7 @@ Create the rate matrix
          1.0000, 0.0000, -2.0000, 1.0000 ] ,
          0.0000, 0.3333, 0.3333, -0.6667 ] ]
 ~~~
-{:.console}
+{:.rev-output}
 
 
 Compute the transition probability matrix for a branch length of 0.1.
@@ -770,7 +770,7 @@ Compute the transition probability matrix for a branch length of 0.1.
       [ 0.088, 0.003, 0.822, 0.088],
       [ 0.003, 0.029, 0.029, 0.938] ]
 ~~~
-{:.console}
+{:.rev-output}
 
 
 Note that the probability of remaining in state 10 or state 01 is less
@@ -838,7 +838,7 @@ Create the rate matrix
          0.4750, 0.0000, -2.3750, 1.9000 ] ,
          0.0000, 0.3167, 0.3167, -0.6333 ] ]
 ~~~
-{:.console}
+{:.rev-output}
 
 
 Compute the transition probability matrix for a branch length of 0.1.
@@ -852,7 +852,7 @@ Compute the transition probability matrix for a branch length of 0.1.
       [ 0.041, 0.003, 0.792, 0.164],
       [ 0.001, 0.027, 0.027, 0.944] ]
 ~~~
-{:.console}
+{:.rev-output}
 
 
 Note that this model has a tendency towards state 11.
@@ -866,7 +866,7 @@ Note that this model has a tendency towards state 11.
       [ 0.158, 0.105, 0.105, 0.632],
       [ 0.158, 0.105, 0.105, 0.632] ]
 ~~~
-{:.console}
+{:.rev-output}
 
 
 Covarion
@@ -950,7 +950,7 @@ Create the rate matrix
          0.4451, 0.0000, -1.0385, 0.5934 ] ,
          0.0000, 0.4451, 0.1978, -0.6429 ] ]
 ~~~
-{:.console}
+{:.rev-output}
 
 
 Compute the transition probability matrix for a branch length of 0.1.
@@ -965,7 +965,7 @@ Compute the transition probability matrix for a branch length of 0.1.
       [ 0.040, 0.003, 0.902, 0.055],
       [ 0.002, 0.041, 0.018, 0.939] ]
 ~~~
-{:.console}
+{:.rev-output}
 
 
 The rows and columns correspond to (in order): state 0 evolving by
@@ -1407,7 +1407,7 @@ on the tip states) every 10 iterations, storing the samples to the file
     50	?,0,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,0,0, ...
     ...
 ~~~
-{:.console}
+{:.rev-output}
 
 
 The first column is the MCMC iteration, and the remaining columns
@@ -1433,7 +1433,7 @@ ancestral state estimates by viewing the final column
     ... 1,1,0,1,1,0,1,0,1,1,0,0,1,0
     ...
 ~~~
-{:.console}
+{:.rev-output}
 
 
 Ancestral state figures

@@ -203,7 +203,7 @@ contains several characters (columns).
        Number of included characters: 11
        Datatype:                      Continuous
 ~~~
-{:.console}
+{:.rev-output}
 
 
 Since we only want the body mass (of females) we exclude all but the
