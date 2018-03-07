@@ -192,7 +192,7 @@ This is a reference to {% ref subsection1 %}
           <strong>Data Files</strong>
           <ul id="data_files">
           
-            <li><a href="/revbayes-site/developer/tutorial.htmldata/example.nex">example.nex</a></li>
+            <li><a href="/revbayes-site/developer/tutorial/data/example.nex">example.nex</a></li>
           
           </ul>
         </div>
@@ -201,7 +201,7 @@ This is a reference to {% ref subsection1 %}
     <div class="row" id="script_row">
       <div class="col-md-9">
           <strong>Scripts</strong>
-          <ul id="scripts"><li><a href="/revbayes-site/developer/tutorial.htmlscripts/example.Rev">example.Rev</a></li></ul>
+          <ul id="scripts"><li><a href="/revbayes-site/developer/tutorial/scripts/example.Rev">example.Rev</a></li></ul>
         </div>
     </div>
 </blockquote>
@@ -359,6 +359,28 @@ without <a href="http://camel.readthedocs.io/en/latest/yamlref.html">YAML</a> fr
 <p>You can even include $\LaTeX$.</p>
 </blockquote>
 
+<h3 class="subsection" id="making-alternative-versions-of-your-tutorial">Making alternative versions of your tutorial</h3>
+
+<p>Any Markdown file in your tutorial directory will be rendered as a separate tutorial as long as it has YAML front matter. For example, if we make copy of the same external file (say <code class="highlighter-rouge">external_file-yaml.md</code>) and simply add an empty front matter section, then Jekyll will generate automatically <a href="external_file-yaml.html">this page</a> when building the website.</p>
+
+<p>This makes it easy for you to create alternative versions of your tutorial. Each alternative versions is built from a Markdown file with YAML front matter, each of which then includes one or more external Markdown module text files that do not include front matter. Consider the following example modular tutorial structure.</p>
+
+<pre>
+new_tutorial
+├── data/
+├── scripts/
+├── figures/
+├── modules/ <font color="red">&lt;-- module files (no front matter)</font>
+│   ├── intro.md
+│   ├── exercise1.md
+│   ├── exercise2.md
+│   └── exercise3.md
+├── index.md <font color="red">&lt;-- tutorial page (with front matter)</font>
+└── v2.md    <font color="red">&lt;-- tutorial page (with front matter)</font>
+</pre>
+
+<p>In this example, there are two versions of the tutorial, both of which will get listed on the main <a href="/revbayes-site/tutorials/">Tutorials Page</a>. The default version of the tutorial will be rendered at the relative URL <code class="highlighter-rouge">/revbayes-site/tutorials/new_tutorial/</code>, while <code class="highlighter-rouge">v2.md</code> will render at the URL <code class="highlighter-rouge">/revbayes-site/tutorials/new_tutorial/v2.html</code>.</p>
+
 <h2 class="section" id="figures">Figures</h2>
 <hr />
 
@@ -422,6 +444,10 @@ for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
 }
 </script>
 
+<h2 class="section" id="controling-printed-output">Controling printed output</h2>
+<hr />
+
+<p>You can prevent any element from being printed when the tutorial is sent to PDF or a printer by tagging it with <code class="highlighter-rouge">{:.no-print}</code>.</p>
 
       <br>
 <footer>

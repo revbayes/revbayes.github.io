@@ -63,7 +63,7 @@ var scripts = {};
 var _code = document.querySelectorAll('pre');
 for (var i = 0, element; element = _code[i]; i++) {
   if( element.firstChild.innerHTML != null ) {
-    var output = element.parentElement.parentElement.getAttribute("output");
+    var output = element.parentElement.parentElement.getAttribute("script");
     if( typeof scripts[output] == 'undefined' )
       scripts[output] = "";
     scripts[output] += element.firstChild.innerHTML.replace(/&lt;/g,'<')+"\n";
@@ -74,36 +74,6 @@ for (var i = 0, element; element = _code[i]; i++) {
 function get_script(script) {
   var blob = new Blob([scripts[script]], {type: "text/plain;charset=utf-8"});
   saveAs(blob, script);
-}
-
-// Zip all files for download
-function get_files() {
-
-  var path = window.location.pathname.split('/');
-  var name = "revbayes_"+path[path.length-2];
-
-  var zip = new JSZip().folder(name);
-
-  var s = zip.folder("scripts");
-  for(var script in scripts) {
-    if( script != "null") {
-      s.file(script, scripts[script]);
-    }
-  }
-
-  var ul = document.getElementById("data_files");
-
-  var d = zip.folder("data");
-  var _li = ul.getElementsByTagName("li");
-  for (var i = 0; i < _li.length; ++i) {
-    var file = _li[i].firstChild.innerHTML;
-    d.file(file, $.get("data/"+file));
-  }
-  zip.generateAsync({type:"blob"})
-    .then(function(content) {
-      // see FileSaver.js
-      saveAs(content, name+".zip");
-  });
 }
 
 // Handle downloadable data files and scripts (on click and at start).
@@ -127,6 +97,45 @@ $(".tutorial_files").each(function() {
     else if( ul.innerHTML == "" )
       r.outerHTML = "";
 });
+
+// Zip all files for download
+function get_files() {
+
+  var uld = document.getElementById("data_files");
+  var uls = document.getElementById("scripts");
+
+  if( uld == null && uls == null)
+    return;
+
+  var path = window.location.pathname.split('/');
+  var name = "revbayes_"+path[path.length-2];
+
+  var zip = new JSZip().folder(name);
+  var d = zip.folder("data");
+  var s = zip.folder("scripts");
+
+  if( uld != null) {
+    var _li = uld.getElementsByTagName("li");
+    for (var i = 0; i < _li.length; ++i) {
+      var file = _li[i].firstChild.innerHTML;
+      d.file(file, $.get("data/"+file));
+    }
+  }
+  if( uls != null) {
+    var _li = uls.getElementsByTagName("li");
+    for (var i = 0; i < _li.length; ++i) {
+      var file = _li[i].firstChild.innerHTML;
+      s.file(file, $.get("scripts/"+file));
+    }
+  }
+  zip.generateAsync({type:"blob"})
+    .then(function(content) {
+      saveAs(content, name+".zip");
+  });
+}
+
+if(location.search.substring(1) == 'download')
+  get_files();
 
 // Add figure titles to figure references
 $("figure").each(function(index) {
