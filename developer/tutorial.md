@@ -163,7 +163,7 @@ sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
 {:.Rev-output}
 {% endpreview %}
 
-### Other formatting options
+{% subsection Other formatting options %}
 
 Other code formats can be assigned using the `{:.}` syntax.
 
@@ -199,6 +199,25 @@ grep phylogenetics index.md
 > Lorem ipsum dolor sit amet, consectetur adipiscing elit,
 > sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
 {:.discussion}
+{% endpreview %}
+
+{% section Math notation %}
+
+Mathematical notation using $\LaTeX$ symbols are rendered with [MathJax](https://www.mathjax.org/). You can write inline math using the `$`, `$$` or `\\(...\\)` delimiters, while display math uses `\\[...\\]`.
+You can alternatively write display math using `$$` if it is separated from the previous text by a line break.
+
+{% preview %}
+Inline math
+$S = \mathbb{R}$
+$$f(x) = x^2$$
+\\(\implies \min_{x\in S}f(x) = 0\\)
+is cool
+
+Display math \\[f(a) = \frac{1}{2\pi i}\int_{\gamma}\frac{f(z)}{z-a}dz\\]
+
+Alternative display math
+
+$$\int(1-e^{-x})^n\,dx=x-\sum_{p=1}^n\tfrac{1}{p}(1-e^{-x})^p$$
 {% endpreview %}
 
 {% section Modularizing your tutorial %}
