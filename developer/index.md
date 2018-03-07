@@ -3,7 +3,7 @@ layout: default
 title: Developer
 ---
 
-## Tools for Developers
+## Resources for Developers
 ----
 
 ### Joining the RevBayes Team
@@ -15,9 +15,9 @@ Alternatively, if you are interested in joining the RevBayes development team, p
 
 Before digging into the developer guide it may be useful to understand the user side of RevBayes. We have provided [tutorials]({{ site.baseurl }}/tutorials) that walk through the basics of using directed acyclic graphs (DAGs) for conducting phylogenetic analyses in RevBayes.   
 
-### Developer Guide
+### Developer's Guide
 
-The RevBayes Developers' Guide will provide you with the information needed to implement new methods, models, functions, and algorithms in the RevBayes language and core libraries. 
+The RevBayes Developer's Guide will provide you with the information needed to implement new methods, models, functions, and algorithms in the RevBayes language and core libraries. 
 
 
 {% assign devguide = site.pages | where:"category", "Developer" | sort: "index","last" %}
