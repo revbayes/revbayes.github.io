@@ -1,12 +1,11 @@
 ---
+layout: top
 title: Software
 subtitle: Download and Install RevBayes
 permalink: /software/
 code_layout: bash
 ---
 
-## {{ page.subtitle }}
-----
 <div class="row">
 
 <div class="col-sm-4" align="center">

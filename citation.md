@@ -1,12 +1,9 @@
 ---
-layout: default
+layout: top
 title: "Citation"
 subtitle: "Citing RevBayes"
 permalink: /citation/
 ---
-
-## {{ page.subtitle }}
-----
 
 #### The recommended citation for the current version of the RevBayes software is:
 

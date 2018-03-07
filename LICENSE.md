@@ -1,11 +1,8 @@
 ---
-layout: default
+layout: top
 title: "License"
 permalink: /license/
 ---
-
-## {{ page.title }}
-----
 
 ### RevBayes Software
 

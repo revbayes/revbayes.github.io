@@ -1,11 +1,8 @@
 ---
-layout: default
+layout: top
 title: Developer
 subtitle: Resources for Developers
 ---
-
-## {{ page.subtitle }}
-----
 
 ### Joining the RevBayes Team
 

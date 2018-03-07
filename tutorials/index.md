@@ -1,11 +1,8 @@
 ---
-layout: default
+layout: top
 title: Tutorials
 subtitle: RevBayes Tutorials
 ---
-
-## {{ page.subtitle }}
-----
 
 Several tutorials have been written for RevBayes. Each one explicitly walks you through model specification and analysis set-up for different phylogenetic methods.
 
