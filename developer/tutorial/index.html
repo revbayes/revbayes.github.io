@@ -45,7 +45,27 @@
   </div>
 </nav>
 
-      <h2 class="section" id="getting-started">Getting started</h2>
+      <div class="row">
+	<h1 class="maintitle">Writing a user tutorial</h1>
+	<h3 class="subtitle">How to write RevBayes tutorials for this website</h3>
+	<h4 class="maintitle"></h4>
+</div>
+
+
+<blockquote class="overview no-print" id="overview">
+  <h2>Overview</h2>
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul>
+          <li>None</li>
+          </ul>
+        
+    </div>
+  </div>
+</blockquote>
+<h2 class="section" id="getting-started">Getting started</h2>
 <hr />
 
 <p>This tutorial will take you through the steps of writing a new RevBayes tutorial for this website.</p>
@@ -104,21 +124,7 @@ keywords:
 <h2 class="section" id="filling-in-the-overview-box">Filling in the overview box</h2>
 <hr />
 
-<p>At the top of each tutorial, an <strong>Overview</strong> box is displayed with a list of prerequisite tutorials and a table of contents. Here is the overview for this tutorial:</p>
-
-<blockquote class="overview no-print" id="overview">
-  <h2>Overview</h2>
-  <div class="row">
-    <div class="col-md-9">
-        <strong>Prerequisites</strong>
-        
-          <ul>
-          <li>None</li>
-          </ul>
-        
-    </div>
-  </div>
-</blockquote>
+<p>At the top of each tutorial, an <strong>Overview</strong> box is displayed with a list of prerequisite tutorials and a table of contents. Take another look at the <a href="#overview">overview for this tutorial</a>.</p>
 
 <h3 class="subsection" id="including-prerequisites">Including prerequisites</h3>
 
@@ -449,6 +455,22 @@ for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
 
 <p>You can prevent any element from being printed when the tutorial is sent to PDF or a printer by tagging it with <code class="highlighter-rouge">{:.no-print}</code>.</p>
 
+<ol class="bibliography"></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2>References</h2>"+elem_ol.outerHTML
+	}
+}
+</script>
       <br>
 <footer>
   <div class="container">
