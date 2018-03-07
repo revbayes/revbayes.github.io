@@ -1,7 +1,7 @@
 ---
 title: Writing a user tutorial
 subtitle: How to write RevBayes tutorials for this website
-layout: developer
+layout: default
 category: Developer
 code_layout: Rev
 data_files:
@@ -9,6 +9,9 @@ data_files:
 scripts:
 - example.Rev
 ---
+
+{% include title.html %}
+{% include overview.html %}
 
 {% section Getting started %}
 
@@ -284,6 +287,6 @@ Citations are included in the **References** section at the end of each tutorial
 
 {% include bibliography.html %}
 
-{% section Controling printed output %}
+{% subsection Controling printed output %}
 
 You can prevent any element from being printed when the tutorial is sent to PDF or a printer by tagging it with `{:.no-print}`.
