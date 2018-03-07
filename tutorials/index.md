@@ -46,7 +46,7 @@ The tutorials all follow the same format, please see the Tutorial Format guide f
 
 {% assign alltutorials = site.pages | where:"layout", "tutorial" %}
 {% assign tutorials = alltutorials | where:"category", "Advanced" | sort: "index" %}
-<h3>Complex hierachical models for phylogenetic inference</h3>
+<h3>Complex hierarchical models for phylogenetic inference</h3>
 <table class="table table-striped">
 {% for lesson in tutorials %}
 <tr>
