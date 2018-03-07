@@ -39,7 +39,7 @@ in your home folder using:
 NOTE: You may get errors here that you need to update ruby to install these
 gems. 
 
-Next, move into the `revbayes_tutorials` repo, and install required gems via:
+Next, move into the `revbayes-site` repo directory, and install required gems via:
 
     bundle install
 

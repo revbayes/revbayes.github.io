@@ -1,6 +1,6 @@
 ---
-title: Setting up to develop in RevBayes
-subtitle: Some options for setting up a RevBayes development environment
+title: Setting up an IDE for RevBayes
+subtitle: Setting up Eclipse, XCode, vim
 category: Developer
 authors: Will Pett, April Wright, Lyndon Coghill, Emma Goldberg, Wade Dismukes, Will Freyman, Jamie Oaks
 prerequisites:
