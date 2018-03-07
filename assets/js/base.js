@@ -158,7 +158,7 @@ for (var i = 0, element; element = _pre[i]; i++) {
   var language = false;
   var Rev = false;
   for (var j = 0; j < classes.length; ++j) {
-    if ( classes[j].match(/Rev/) != null )
+    if ( classes[j].match(/rev/i) != null )
       Rev = true;
 
     if ( classes[j].match(/language/) != null ) {
