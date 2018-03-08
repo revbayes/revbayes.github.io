@@ -25,7 +25,7 @@ module Liquid
 			highlight.gsub! '26c84fecb586abdf357c2489a0f033e5', '```'
 			
 			rendered = converter.convert(markdown)
-			"<blockquote>#{highlight}<br>#{rendered}</blockquote>"
+			"<blockquote class=\"preview\">#{highlight}<br>#{rendered}</blockquote>"
 		end
 	end
 end
