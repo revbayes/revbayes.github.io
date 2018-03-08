@@ -359,7 +359,7 @@ and print it to our screen.
 
     ss.marginal()
 
-Write down the value displayed. This is the marginal likelihood of the Yule model ($M_0$).
+**Write down the value displayed. This is the marginal likelihood of the Yule model ($M_0$).**
 
 
 {% subsection The Birth-Death Model | bdsec %}
@@ -467,7 +467,7 @@ Use stepping-stone sampling to calculate marginal likelihood and print the value
     ss = steppingStoneSampler(file="output/BDP_powp.out", powerColumnName="power", likelihoodColumnName="likelihood")
     ss.marginal()
 
-Write down the value displayed. This is the marginal likelihood of the birth-death model ($M_1$).
+**Write down the value displayed. This is the marginal likelihood of the birth-death model ($M_1$).**
 
 {% subsection Bayes Factors for Comparing Two Models | bayfacsec %}
 
