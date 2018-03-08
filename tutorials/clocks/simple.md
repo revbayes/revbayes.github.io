@@ -14,7 +14,7 @@ index: 2
 - bears_dosReis.tre
 - bears_irbp.nex -->
 
-{% section Overview | overview %}
+{% section Introduction | introduction %}
 
 This tutorial describes how to perform a simple analysis that compares three different birth-death models using Bayes factors. 
 The selected model will be used as a tree prior to estimate a new dated phylogeny of all living bears. 
@@ -59,7 +59,7 @@ Now you can execute RevBayes.
 Once you execute RevBayes, you will be in the console. The rest of this tutorial will proceed 
 using the interactive console.
 
-{% section Comparing two diversification rate models | secdiv %}
+{% section Comparing Two Diversification Models using Bayes Factors | secdiv %}
 
 In this first section, we will evaluate two different diversification models: (1) the Yule process and (2) the birth-death process.
 To compare the relative fit of the two models, we can use [_Bayes factors_](https://en.wikipedia.org/wiki/Bayes_factor) {% cite Suchard2001 Lartillot2006 Xie2011 Baele2012 Baele2013 %}.
