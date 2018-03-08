@@ -2,20 +2,20 @@
 title: Simple Diversification Models & Estimating Time Trees
 subtitle: Comparing diversification models using Bayes factors and estimating a dated phylogeny
 authors:  Tracy A. Heath
-category: In Progress
+level: 1
 prerequisites:
 - archery
-data_files: 
-- bears_dosReis.tre
-- bears_irbp.nex
-index: 2
+order: 2
+index: false
 ---
 
 <!-- category: Standard -->
 
+<!-- data_files: 
+- bears_dosReis.tre
+- bears_irbp.nex -->
 
-
-{% section Overview | overview %}
+{% section Introduction | introduction %}
 
 This tutorial describes how to perform a simple analysis that compares three different birth-death models using Bayes factors. 
 The selected model will be used as a tree prior to estimate a new dated phylogeny of all living bears. 
@@ -42,8 +42,10 @@ To keep things organized, it is recommended that you create a new directory for 
 > Create a new directory on your computer called `RB_div_clock_tutorial`.
 > 
 > Within the `RB_div_clock_tutorial` directory, create a subdirectory called `data`. 
-> Then, dowload the [data files](#data_files) listed above and place them in the `data` folder.
+> Then, dowload the [`bears_dosReis.tre`](https://revbayes.github.io/revbayes-site/tutorials/clocks/data/bears_dosReis.tre) and [`bears_irbp.nex`](https://revbayes.github.io/revbayes-site/tutorials/clocks/data/bears_irbp.nex) and place them in the `data` folder.
 {:.instruction}
+
+<!-- need to fix the data file links -->
 
 Now you can execute RevBayes. 
 
@@ -58,7 +60,7 @@ Now you can execute RevBayes.
 Once you execute RevBayes, you will be in the console. The rest of this tutorial will proceed 
 using the interactive console.
 
-{% section Comparing two diversification rate models | secdiv %}
+{% section Comparing Two Diversification Models using Bayes Factors | secdiv %}
 
 In this first section, we will evaluate two different diversification models: (1) the Yule process and (2) the birth-death process.
 To compare the relative fit of the two models, we can use [_Bayes factors_](https://en.wikipedia.org/wiki/Bayes_factor) {% cite Suchard2001 Lartillot2006 Xie2011 Baele2012 Baele2013 %}.
@@ -173,7 +175,7 @@ Of course, it is not possible to observe a diversification process spanning over
 This model makes the very simple assumption that over the course of diversification, 
 there is a constant rate of speciation and the rate of extinction is 0.0. 
 
-#### _Read in the tree and get some helper variables_
+#### Read in the tree and get some helper variables
 
 To start our evaluation of the Yule model, we must first read in the published phylogeny and
 the branch lengths (in units of millions of years). 
@@ -194,7 +196,7 @@ Next we need a helper variable to keep track of the index in our list of moves:
 
     mvi = 1
 
-#### _The speciation rate_
+#### The speciation rate
 
 Now we can start constructing our model.
 For the Yule process, we do not need very many parameters. The most important one 
@@ -358,7 +360,7 @@ and print it to our screen.
 
     ss.marginal()
 
-Write down the value displayed. This is the marginal likelihood of the Yule model ($M_0$)
+**Write down the value displayed. This is the marginal likelihood of the Yule model ($M_0$).**
 
 
 {% subsection The Birth-Death Model | bdsec %}
@@ -466,7 +468,7 @@ Use stepping-stone sampling to calculate marginal likelihood and print the value
     ss = steppingStoneSampler(file="output/BDP_powp.out", powerColumnName="power", likelihoodColumnName="likelihood")
     ss.marginal()
 
-Write down the value displayed. This is the marginal likelihood of the birth-death model ($M_1$)
+**Write down the value displayed. This is the marginal likelihood of the birth-death model ($M_1$).**
 
 {% subsection Bayes Factors for Comparing Two Models | bayfacsec %}
 

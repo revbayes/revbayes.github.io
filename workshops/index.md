@@ -4,7 +4,7 @@ title: Workshops
 subtitle: RevBayes Workshops
 ---
 
-Throughout the year, the members of the RevBayes development team and our collaborators teach workshops on molecular evolution, phylogenetics, and Bayesian inference using RevBayes. Additionally, we have occasional <a href="{{ site.baseurl }}{{ page.url }}hackathons">hackathons</a> which bring together developers to work on the software and methods for phylogenetic analysis. 
+Throughout the year, the members of the RevBayes development team and our collaborators teach workshops on molecular evolution, phylogenetics, and Bayesian inference using RevBayes. Additionally, we have occasional <a href="{{ site.baseurl }}{{ page.url }}{% link workshops/hackathons.md %}">hackathons</a> which bring together developers to work on the software and methods for phylogenetic analysis. 
 
 {% assign workshops = site.pages | where:"layout","workshop" | sort: "startdate" %}
 

@@ -12,14 +12,14 @@ If you would like to implement new methods or models in any of the RevBayes sour
 Alternatively, if you are interested in joining the RevBayes development team, please contact [one of the public members](https://github.com/orgs/revbayes/people) to request access.
 Also consider attending a RevBayes <a href="{{ site.baseurl }}/workshops/hackathons">hackathon</a> where the developers get together to work on the software. 
 
-Before digging into the developer guide it may be useful to understand the user side of RevBayes. We have provided [tutorials]({{ site.baseurl }}/tutorials) that walk through the basics of using directed acyclic graphs (DAGs) for conducting phylogenetic analyses in RevBayes.   
+Before digging into the developer guide it may be useful to understand the user side of RevBayes. We have provided [tutorials]({{ site.baseurl }}{% link tutorials/index.md %}) that walk through the basics of using directed acyclic graphs (DAGs) for conducting phylogenetic analyses in RevBayes.   
 
 ### Developer's Guide
 
 The RevBayes Developer's Guide will provide you with the information needed to implement new methods, models, functions, and algorithms in the RevBayes language and core libraries. 
 
 
-{% assign devguide = site.pages | where:"category", "Developer" | sort: "index","last" %}
+{% assign devguide = site.pages | where:"category", "Developer" | sort: "order","last" %}
 <table class="table table-striped">
 {% for lesson in devguide %}
 <tr>

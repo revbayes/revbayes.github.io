@@ -1,7 +1,7 @@
 ---
 ---
 This is an external *Markdown* file
-without [YAML](http://camel.readthedocs.io/en/latest/yamlref.html) front matter.
+**with** [YAML](http://camel.readthedocs.io/en/latest/yamlref.html) front matter.
 
 This *file* will be __formatted__ ~~as plain text~~ like the rest of the main text.
 

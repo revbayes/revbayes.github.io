@@ -2,7 +2,7 @@
 title: Getting familiar with the code
 subtitle: The architecture of the RevBayes source code 
 category: Developer
-index: 3
+order: 3
 ---
 
 To develop in RevBayes, it is important to be familiar with the overall file structure.
@@ -14,7 +14,7 @@ Notice the repetition in naming within the core and revlanguage directories. Thi
  
  * The **revlanguage** directory is essentially a wrapper for all code within the core directory. The code within **revlanguage** is written to match the scripting Rev language syntax.
 
-For more specific information on functions and distributions, and for general information on implementing in RevBayes, navigate to the ['Implementing functions, distributions, and moves']({{ site.baseurl }}/developer/implementation.html) section of this Developer's guide.
+For more specific information on functions and distributions, and for general information on implementing in RevBayes, navigate to the ['Implementing functions, distributions, and moves']({{ site.baseurl }}{% link developer/implementation.md %}) section of this Developer's guide.
  
 <img src="figures/RB_structure_map.jpg" width="110%">
  

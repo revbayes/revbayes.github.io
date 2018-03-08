@@ -40,7 +40,7 @@ to {{ page.enddate | date: "%-m/%-d" }}, {{ page.enddate | date: "%Y" }}
           {% for lesson in page.lessons %}
             {% assign lesson_url = '/tutorials/' | append: lesson | append: '/' %}
             {% assign tutorial = site.pages | where:"url", lesson_url | first %}
-            <li><a href="{{ site.baseurl }}/{{ tutorial.url }}">{{ tutorial.title }}</a></li>
+            <li><a href="{{ site.baseurl }}{{ tutorial.url }}">{{ tutorial.title }}</a></li>
           {% endfor %}
         </ul>
     </div>
