@@ -319,10 +319,6 @@ You can reference another tutorial using the `tutorialref` Liquid tag.
 This is a reference to the {% tutorialref "ctmc" %} tutorial
 {% endpreview %}
 
-{% subsection Controling printed output %}
-
-You can prevent any element from being printed when the tutorial is sent to PDF or a printer by tagging it with `{:.no-print}`.
-
 {% section Figures %}
 
 Figures can be included from the `figures` subdirectory (or elsewhere) using the `figure` and `figcaption` Liquid tags.
@@ -337,6 +333,10 @@ This is an example figure caption. You can include *Markdown* and $\LaTeX$.
   
 This is a reference to {% ref example %}
 {% endpreview %}
+
+{% section Printing to PDF %}
+
+You can prevent any element from being printed when the tutorial is sent to PDF or a printer by tagging it with `{:.no-print}`.
 
 {% section Citations and bibliography %}
 
