@@ -1,11 +1,12 @@
 ---
-title: Phylogenetic Inference using ‘RevBayes‘
-subtitle: State-Dependent Diversification Rate Estimation
+title: State-Dependent Diversification Rate Estimation
+subtitle: How to use state-dependent speciation and extinction (SSE) branching processes
 authors:  Sebastian H&#246;hna, Will Freyman, and Emma Goldberg
-category: In Progress
+level: 2
 prerequisites:
 - intro
-files:
+title-old: RB_DiversificationRate_CharacterDependent_Tutorial
+redirect: true
 ---
 
 

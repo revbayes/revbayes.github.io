@@ -1,8 +1,8 @@
 ---
-title: Phylogenetic Inference using RevBayes
-subtitle: Substitution Models
-authors:  Sebastian H&#246;hna, Michael Landis, Brian Moore and Tracy Heath
-category: Standard
+title: Substitution Models
+subtitle: Phylogenetic inference of nucleotide data using RevBayes
+authors:  Sebastian Höhna, Michael Landis, Brian Moore and Tracy Heath
+level: 1
 prerequisites:
 - intro
 - archery
@@ -10,7 +10,11 @@ data_files:
 - primates_and_galeopterus_cytb.nex
 scripts: 
 - mcmc_JC.Rev
+- mcmc_GTR.Rev
+- mcmc_GTR_Gamma_Inv.Rev
 index: 1
+title-old: RB_CTMC_Tutorial
+redirect: false
 ---
 
 
@@ -20,7 +24,7 @@ Overview
 ========
 {:.section}
 
-This tutorial provides the first protocol from our recent publication {% cite Hoehna2017a %}. The second protocol is described in the [Partitioned data analysis tutorial]({{site.baseurl}}/tutorials/paritition/) and the third protocol is described in the [Bayes factor tutorial]({{site.baseurl}}/tutorials/bayes_fastors/).
+This tutorial provides the first protocol from our recent publication {% cite Hoehna2017a %}. The second protocol is described in the [Partitioned data analysis tutorial]({{site.baseurl}}/tutorials/paritition/) and the third protocol is described in the [Bayes factor tutorial]({{site.baseurl}}/tutorials/bayes_factors/).
 
 The present tutorial demonstrates how to set up and perform analyses
 using common nucleotide substitution models. The substitution models

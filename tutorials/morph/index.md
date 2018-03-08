@@ -1,11 +1,12 @@
 ---
-title: Phylogenetic Inference using ‘RevBayes‘
-subtitle: Discrete Morphology
+title: Tree Inference with Discrete Morphology
+subtitle: Phylogenetic inference of discrete morphological data
 authors:  April M. Wright and Michael J. Landis
-category: In Progress
+level: 1
 prerequisites:
 - intro
-files:
+title-old: RB_DiscreteMorphology_Tutorial
+redirect: true
 ---
 
 

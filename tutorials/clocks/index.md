@@ -1,14 +1,16 @@
 ---
-title: Relaxed-Clocks & Time Trees
-subtitle: Comparing Relaxed-Clock Models & Estimating Rooted Time Trees
+title: Relaxed Clocks & Time Trees
+subtitle: Comparing relaxed clock models & estimating rooted time trees
 authors:  Tracy A. Heath
-category: In Progress
+level: 1
 prerequisites:
 - intro
 data_files: 
 - bears_dosReis.tre
 - bears_irbp.nex
 index: 2
+title-old: RB_ClockModels_Tutorial
+redirect: true
 ---
 
 <!-- category: Standard -->

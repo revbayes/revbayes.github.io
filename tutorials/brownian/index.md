@@ -1,11 +1,12 @@
 ---
-title: Phylogenetic Inference using ‘RevBayes‘
+title: Phylogenies and the comparative method
 subtitle: Continuous trait evolution with Brownian motion
-authors:  Nicolas Lartillot and Sebastian H&#246;hna
-category: In Progress
+authors:  Nicolas Lartillot and Sebastian Höhna
+level: 1
 prerequisites:
 - intro
-files:
+title-old: RB_PhyloComparative_Tutorial
+redirect: true
 ---
 
 

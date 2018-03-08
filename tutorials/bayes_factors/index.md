@@ -1,11 +1,12 @@
 ---
-title: Phylogenetic Inference using ‘RevBayes‘
-subtitle: Model selection using Bayes factors
-authors:  Sebastian H&#246;hna, Michael J Landis, Tracy A Heath and Brian R Moore
-category: In Progress
+title: Model selection
+subtitle: Comparing relative model fit with Bayes factors
+authors:  Sebastian Höhna, Michael J Landis, Tracy A Heath and Brian R Moore
+level: 1
 prerequisites:
 - intro
-files:
+title-old: RB_BayesFactor_Tutorial
+redirect: true
 ---
 
 

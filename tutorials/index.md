@@ -2,6 +2,10 @@
 layout: top
 title: Tutorials
 subtitle: RevBayes Tutorials
+levels:
+- Introduction to MCMC and RevBayes
+- Standard tree inference and comparative methods
+- Complex hierarchical models for phylogenetic inference
 ---
 
 Several tutorials have been written for RevBayes. Each one explicitly walks you through model specification and analysis set-up for different phylogenetic methods.
@@ -16,60 +20,41 @@ The tutorials all follow the same format, please see the Tutorial Format guide f
 
 <a href="{{ site.baseurl }}{{ page.url }}format" class="btn btn-info" role="button">Tutorial Format Guide</a>
 
-{% assign alltutorials = site.pages | where:"layout", "tutorial" %}
-{% assign tutorials = alltutorials | where:"category", "Basic" | sort: "index" %}
-<h3>Introduction to MCMC and RevBayes</h3>
-<table class="table table-striped">
-{% for lesson in tutorials %}
-<tr>
-<td class="col-sm-3">
-<a href="{{ site.baseurl }}{{ lesson.url }}">{{ lesson.title }}</a>
-</td>
-<td class="col-sm-3">{{ lesson.subtitle }}</td>
-</tr>
-{% endfor %}
-</table>
 
-{% assign alltutorials = site.pages | where:"layout", "tutorial" %}
-{% assign tutorials = alltutorials | where:"category", "Standard" | sort: "index" %}
-<h3>Standard tree inference and comparative methods</h3>
-<table class="table table-striped">
-{% for lesson in tutorials %}
-<tr>
-<td class="col-sm-3">
-<a href="{{ site.baseurl }}{{ lesson.url }}">{{ lesson.title }}</a>
-</td>
-<td class="col-sm-3">{{ lesson.subtitle }}</td>
-</tr>
-{% endfor %}
-</table>
+{% assign keywords = site.empty_array %}
 
-{% assign alltutorials = site.pages | where:"layout", "tutorial" %}
-{% assign tutorials = alltutorials | where:"category", "Advanced" | sort: "index" %}
-<h3>Complex hierarchical models for phylogenetic inference</h3>
-<table class="table table-striped">
-{% for lesson in tutorials %}
-<tr>
-<td class="col-sm-3">
-<a href="{{ site.baseurl }}{{ lesson.url }}">{{ lesson.title }}</a>
-</td>
-<td class="col-sm-3">{{ lesson.subtitle }}</td>
-</tr>
-{% endfor %}
-</table>
+{% assign levels = site.pages | where:"layout","tutorial" | group_by:"level" | reverse %}
 
-{% assign alltutorials = site.pages | where:"layout", "tutorial" %}
-{% assign tutorials = alltutorials | where:"category", "In Progress" | sort: "index" %}
-<h3>Tutorials that are currently in development</h3>
-<table class="table table-striped">
-{% for lesson in tutorials %}
-<tr>
-<td class="col-sm-3">
-<a href="{{ site.baseurl }}{{ lesson.url }}">{{ lesson.title }}</a>
-</td>
-<td class="col-sm-3">{{ lesson.subtitle }}</td>
-</tr>
-{% endfor %}
-</table>
+{% for level in levels %}
+{% if level.name == "" %}
+{% continue %}
+{% endif %}
 
+{% assign i = level.name | plus:0 %}
+{% if page.levels[i] %}
+<h3>{{ page.levels[i] }}</h3>
+{% else %}
+{% continue %}
+{% endif %}
+
+<table width="90%" class="table table-striped">
+{% assign tutorials = level.items | sort:"index" %}
+{% for tutorial in tutorials %}
+{% assign keywords = tutorial.keywords | concat: keywords %}
+<tr class="tutorial {{ tutorial.keywords | join:' '}}">
+<td class="col-xs-5">
+{% if tutorial.title-old and tutorial.redirect %}
+<a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/{{ tutorial.title-old }}/{{ tutorial.title-old }}.pdf">{{ tutorial.title | markdownify }}</a>
+{% else %}
+<a href="{{ site.baseurl }}{{ tutorial.url }}">{{ tutorial.title | markdownify }}</a>
+{% endif %}
+<p style="font-style: italic">{{ tutorial.subtitle }}</p>
+</td>
+
+</tr>
+
+{% endfor %}
+</table><hr align="left" width="80%">
+
+{% endfor %}
 
