@@ -46,7 +46,7 @@ The tutorials all follow the same format, please see the Tutorial Format guide f
 {% else %}
 <a class="title" href="{{ site.baseurl }}{{ tutorial.url }}">{{ tutorial.title | markdownify }}</a>
 {% endif %}
-<p class="subtitle" >{{ tutorial.subtitle }}</p>
+<p class="subtitle" >{{ tutorial.subtitle | markdownify }}</p>
 </div>
 {% endif %}
 {% endfor %}

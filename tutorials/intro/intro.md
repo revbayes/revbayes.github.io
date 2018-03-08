@@ -3,7 +3,7 @@ title: Rev Language Syntax
 subtitle: A very short introduction to the Rev language
 authors: Mike May and Sebastian Höhna
 level: 0
-order: 1
+order: 0
 index: true
 title-old: RB_Intro_Tutorial
 redirect: false

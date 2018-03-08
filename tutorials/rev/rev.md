@@ -3,9 +3,10 @@ title: Basic introduction to Rev & MCMC
 subtitle: General Rev language features and simple Poisson regression example
 authors:  Sebastian H&#246;hna
 level: 0
+order: 2
+index: true
 prerequisites:
 - intro
-files:
 title-old: RB_Rev_Tutorial
 redirect: true
 ---

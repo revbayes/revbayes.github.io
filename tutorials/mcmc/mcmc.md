@@ -3,9 +3,9 @@ title: Diagnosing MCMC performance
 subtitle: How to assess the performance of MCMC simulations
 authors:  Sebastian H&#246;hna, Mike R. May and Brian R. Moore 
 level: 0
+index: true
 prerequisites:
 - intro
-files:
 title-old: RB_MCMC_Tutorial
 redirect: true
 ---

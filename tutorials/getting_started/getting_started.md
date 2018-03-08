@@ -1,10 +1,10 @@
 ---
-title: Getting Started with `RevBayes`
-subtitle: A very basic overview on how to use `RevBayes`
-authors: entclass[11pt]{article
+title: Getting Started with RevBayes
+subtitle: A very basic overview on how to use RevBayes
+authors: Sebastian Höhna
 level: 0
-prerequisites:
-files:
+order: 0
+index: true
 title-old: RB_Getting_Started
 redirect: true
 ---
