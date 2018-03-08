@@ -23,7 +23,7 @@ The tutorials all follow the same format, please see the Tutorial Format guide f
 
 {% assign keywords = site.empty_array %}
 
-{% assign levels = site.pages | where:"layout","tutorial" | group_by:"level" | reverse %}
+{% assign levels = site.pages | where:"layout","tutorial" | sort:"level" | group_by:"level" %}
 
 {% for level in levels %}
 {% if level.name == "" %}
