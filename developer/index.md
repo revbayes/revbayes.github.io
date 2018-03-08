@@ -10,6 +10,7 @@ RevBayes is a collaborative software project involving developers from Europe an
 Since RevBayes is open source, everyone is free to clone the [GitHub repository](https://github.com/revbayes/revbayes). 
 If you would like to implement new methods or models in any of the RevBayes source code, you can contribute your work to the project by issuing a pull request on GitHub. 
 Alternatively, if you are interested in joining the RevBayes development team, please contact [one of the public members](https://github.com/orgs/revbayes/people) to request access.
+Also consider attending a RevBayes <a href="{{ site.baseurl }}/workshops/hackathons">hackathon</a> where the developers get together to work on the software. 
 
 Before digging into the developer guide it may be useful to understand the user side of RevBayes. We have provided [tutorials]({{ site.baseurl }}{% link tutorials/index.md %}) that walk through the basics of using directed acyclic graphs (DAGs) for conducting phylogenetic analyses in RevBayes.   
 

@@ -6,7 +6,7 @@ layout: default
 
 <b>Location:</b> {{ page.location }} <br>
 
-<b>Dates:</b> {{ page.startdate | date: "%-m/%-d" }}
+<b>Dates:</b> {{ page.startdate | date: "%-m/%-d" }}, {{ page.startdate | date: "%Y" }}
 
 {% if page.enddate %}
 to {{ page.enddate | date: "%-m/%-d" }}, {{ page.enddate | date: "%Y" }}
@@ -22,22 +22,27 @@ to {{ page.enddate | date: "%-m/%-d" }}, {{ page.enddate | date: "%Y" }}
 
 <h2>Description</h2>
 
-{{ page.description }}
+{{ page.description }}<br>
 
+{% if page.website.size > 0 %}
+<h2>Workshop Website</h2>
+
+<a href="{{ page.website }}">{{ page.website  }}</a><br>
+
+{% endif %}
+
+{% if page.lessons.size > 0 %}
 <h2>Schedule</h2>
 
 <div class="row">
     <div class="col-md-9">
         <ul>
-        {% if page.lessons.size > 0 %}
           {% for lesson in page.lessons %}
             {% assign lesson_url = '/tutorials/' | append: lesson | append: '/' %}
             {% assign tutorial = site.pages | where:"url", lesson_url | first %}
             <li><a href="{{ site.baseurl }}{{ tutorial.url }}">{{ tutorial.title }}</a></li>
           {% endfor %}
-        {% else %}
-          <li>None</li>
-        {% endif %}
         </ul>
     </div>
 </div>
+{% endif %}

@@ -63,8 +63,8 @@ Throughout the year, the members of the RevBayes development team and our collab
 
 ### Past Workshops
 
-{% if past %}
-{{ past }}
+{% if past_table %}
+{{ past_table }}
 {% else %}
 **No past workshops**
 {% endif %}
