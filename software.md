@@ -90,8 +90,9 @@ cd revbayes/projects/cmake
 export PATH=<your_revbayes_directory>/projects/cmake:$PATH  
 ```
 
-* `Error cmake not found!`
-    Please double check that CMake is installed. For OS X, go to step 2 above.
+* `Error cmake not found!`  
+   
+   Please double check that CMake is installed. For OS X, go to step 2 above.
 
 * `Error can't find the libboost_filesystem.dylib library or Library not   loaded: libboost_filesystem.dylib` 
    
