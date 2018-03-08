@@ -37,7 +37,7 @@ The tutorials all follow the same format, please see the Tutorial Format guide f
 
 <div class="tutorialbox">
 {% for tutorial in tutorials %}
-
+{% if tutorial.index %}
 {% assign keywords = tutorial.keywords | concat: keywords %}
 
 <div class="tutorial {{ tutorial.keywords | join:' '}}" width="30%">
@@ -48,7 +48,7 @@ The tutorials all follow the same format, please see the Tutorial Format guide f
 {% endif %}
 <p class="subtitle" >{{ tutorial.subtitle }}</p>
 </div>
-
+{% endif %}
 {% endfor %}
 </div>
 
