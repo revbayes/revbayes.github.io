@@ -55,7 +55,7 @@ The tutorials all follow the same format, please see the Tutorial Format guide f
 </tr>
 
 {% endfor %}
-</table><hr align="left" width="80%">
+</table><hr align="left" width="90%">
 
 {% endfor %}
 
