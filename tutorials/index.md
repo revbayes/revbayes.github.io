@@ -18,43 +18,38 @@ These tutorials have been written for new users to learn RevBayes at home, at wo
 You may find that the styles are somewhat different between tutorials and that some  have overlapping content. 
 The tutorials all follow the same format, please see the Tutorial Format guide for details about how to read the tutorials.
 
-<a href="{{ site.baseurl }}{{ page.url }}format" class="btn btn-info" role="button">Tutorial Format Guide</a>
+<a href="{{ site.baseurl }}{% link tutorials/format.md %}" class="btn btn-info" role="button">Tutorial Format Guide</a>
 
 
 {% assign keywords = site.empty_array %}
 
-{% assign levels = site.pages | where:"layout","tutorial" | group_by:"level" | reverse %}
+{% assign levels = site.pages | where:"layout","tutorial" | sort:"level","last" | group_by:"level" %}
 
 {% for level in levels %}
-{% if level.name == "" %}
-{% continue %}
-{% endif %}
-
-{% assign i = level.name | plus:0 %}
+{% assign i = forloop.index | minus: 1 %}
 {% if page.levels[i] %}
 <h3>{{ page.levels[i] }}</h3>
 {% else %}
-{% continue %}
+<h3>Miscellaneous Tutorials</h3>
 {% endif %}
 
-<table width="90%" class="table table-striped">
-{% assign tutorials = level.items | sort:"index" %}
+{% assign tutorials = level.items | sort:"order","last" %}
+
+<div class="tutorialbox">
 {% for tutorial in tutorials %}
+
 {% assign keywords = tutorial.keywords | concat: keywords %}
-<tr class="tutorial {{ tutorial.keywords | join:' '}}">
-<td class="col-xs-5">
+
+<div class="tutorial {{ tutorial.keywords | join:' '}}" width="30%">
 {% if tutorial.title-old and tutorial.redirect %}
-<a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/{{ tutorial.title-old }}/{{ tutorial.title-old }}.pdf">{{ tutorial.title | markdownify }}</a>
+<a class="title" href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/{{ tutorial.title-old }}/{{ tutorial.title-old }}.pdf">{{ tutorial.title | markdownify }}</a>
 {% else %}
-<a href="{{ site.baseurl }}{{ tutorial.url }}">{{ tutorial.title | markdownify }}</a>
+<a class="title" href="{{ site.baseurl }}{{ tutorial.url }}">{{ tutorial.title | markdownify }}</a>
 {% endif %}
-<p style="font-style: italic">{{ tutorial.subtitle }}</p>
-</td>
-
-</tr>
+<p class="subtitle" >{{ tutorial.subtitle }}</p>
+</div>
 
 {% endfor %}
-</table><hr align="left" width="80%">
+</div>
 
 {% endfor %}
-
