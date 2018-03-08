@@ -1,0 +1,725 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/revbayes-site/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/revbayes-site/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/revbayes-site/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/revbayes-site/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/revbayes-site/assets/css/main.css" />
+    <title>RevBayes: Introduction to MCMC using RevBayes</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/revbayes-site/" class="pull-left">
+        <img class="navbar-logo" src="/revbayes-site/assets/img/aquabayes-desaturated.png" alt="RevBayes Logo" />
+      </a>
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/revbayes-site/software/">Software</a></li>
+        <li><a href="/revbayes-site/tutorials/">Tutorials</a></li>
+        <li><a href="/revbayes-site/workshops/">Workshops</a></li>
+        <li><a href="/revbayes-site/developer/">Developer</a></li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <div class="row">
+	<h1 class="maintitle">Introduction to MCMC using RevBayes</h1>
+	<h3 class="subtitle">A simple example for building a hierarchical model and sampling under Markov Chain Monte Carlo</h3>
+	<h4 class="maintitle">Wade Dismukes, Tracy A. Heath, Walker Pett</h4>
+</div>
+
+
+<blockquote class="overview no-print" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul id="prerequisites">
+          
+            <li><a href="/revbayes-site/tutorials/intro/intro.html">Statistical Inference Using RevBayes</a></li>
+          
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+<blockquote class="tutorial_files no-print" id="tutorial_files">
+  <h2>Data files and scripts</h2>
+  
+    <div class="row" id="script_row">
+      <div class="col-md-9">
+          <strong>Scripts</strong>
+          <ul id="scripts"></ul>
+        </div>
+    </div>
+</blockquote>
+<h1 id="sect:Overview">Overview</h1>
+
+<p>This tutorial is intended to provide a introduction to the basics of
+Markov chain Monte Caro (MCMC) using the Metropolis-Hastings algorithm.
+This will provide a brief introduction to MCMC moves as well as prior
+distributions. We begin with a simple example of estimating the
+probability distribution of an archer’s ability to shoot at a target,
+and the distance those arrows land from the center. We will simulate
+data using this example and attempt to estimate the posterior
+distribution using a variety of MCMC moves.</p>
+
+<h2 id="subsect:Overview-Requirements">Requirements</h2>
+
+<h3 id="subsub:Req-Software">Required Software</h3>
+
+<p>This tutorial requires that you download and install the latest release
+of RevBayes <a href="#Hoehna2017a">(Höhna et al. 2017)</a>, which is available for Mac OS X, Windows,
+and Linux operating systems. Directions for downloading and installing
+the software are available under <a href="/revbayes-site/software/">software</a>. The exercise provided also
+requires additional programs for editing text files and visualizing
+output. The following are very useful tools for working with RevBayes:</p>
+
+<ul>
+  <li>
+    <p>A good text editor – if you do not already have one that you like,
+we recommend one that has features for syntax coloring, easy
+navigation between different files, line numbers, etc. Good options
+include <a href="http://www.sublimetext.com/">Sublime Text</a> or
+<a href="https://atom.io/">Atom</a>, which are available for Mac OSX, Windows,
+and Linux.</p>
+  </li>
+  <li>
+    <p><a href="http://tree.bio.ed.ac.uk/software/tracer/">Tracer</a> – for
+visualizing and assessing numerical parameter samples from
+RevBayes</p>
+  </li>
+</ul>
+
+<h1 id="sect:Exercise">Modeling an Archer’s Shots on a Target</h1>
+
+<figure id="target"><p><img src="figures/target.png" width="200" /></p>
+<figcaption><em>Representation of the archery data used in this tutorial.Each yellow dot represents the position of an arrow shot by an archer.The distance of each arrow from the the center of the target is assumed to be exponentially distributed with mean $\mu$.</em></figcaption>
+</figure>
+
+<p>We’ll begin our exploration of Bayesian inference with a simple archery
+model. For this model, there is an unknown archer shooting $n$ arrows at
+a target (see <a href="#target"></a>). The distance $d$ of each arrow
+from the target’s center is measured. Let’s assume that the distance of
+each arrow from the bullseye follows an exponential
+distribution—<em>i.e.,</em> $d\sim\mbox{Exp}(\mu^{-1})$. This implies the archer has an inherent ability to shoot arrows at an average distance $\mu$. Then, the probability density of each arrow distance $d_i$ is</p>
+
+<script type="math/tex; mode=display">\begin{aligned}
+P(d_i \mid \mu) = \frac{1}{\mu} e^{-d_i/\mu}
+\end{aligned}</script>
+
+<p>Simple intuition suggests that, given that we observe $n$ arrows, a good
+estimate of $\mu$ is the average of all the arrow distances
+$\bar d = \frac{1}{n}\sum_{i=1}^n d_i$. Indeed this is the maximum
+likelihood estimate! In fact, given $n$ arrows whose distances follow an
+exponential distribution, it turns out that the observed average
+$\bar d$ follows a gamma distribution, with parameters $n$ and $n/\mu$,</p>
+
+<script type="math/tex; mode=display">\begin{aligned}
+P(\bar d \mid \mu,n) = \frac{(n/\mu)^n}{\Gamma(n)} {\bar d}\,^{n-1}e^{-n\bar d /\mu}
+\end{aligned}</script>
+
+<p>In this case, the average $\bar d$ acts as a <em>sufficient statistic</em> for
+$\mu$. This means that it tells just as much about $\mu$ as the
+collection of individual arrow distances. Therefore, we will use a
+Gamma$(n, n/\mu)$ distribution on $\bar d$ as the likelihood of our
+data.</p>
+
+<p>From Bayes’ theorem, the <em>posterior distribution</em> of $\mu$ given
+$\bar d$, $P(\mu \mid \bar d)$, is:</p>
+
+<script type="math/tex; mode=display">\begin{aligned}
+P\left(\mu \mid \bar d\right) = \frac{P\left(\bar d \mid \mu\right) \times P\left(\mu\right)}{P\left(\bar d\right)}
+\end{aligned}</script>
+
+<p>Where $P(\mu \mid \bar d)$ is our posterior distribution, $P(\bar d \mid \mu)$ is our likelihood or data distribution, $P(\mu)$ is our prior distribution, and $P(\bar d)$ is our marginal likelihood. The take-home message here is that, if we’re interested in doing Bayesian inference for the archery model, we need to specify a <em>likelihood function</em> and a <em>prior distribution</em> for $\mu$. In virtually all practical cases, we cannot compute the posterior distribution directly and instead use numerical procedures, such as a Markov chain Monte Carlo (MCMC) algorithm. Therefore, we will also have to write a MCMC algorithm that samples parameter values in the frequency of their posterior probability.</p>
+
+<p>We’ll use a simple exponential distribution as a prior on the parameter of the model, $\mu$. The <a href="https://en.wikipedia.org/wiki/Exponential_distribution">exponential distribution</a> has one parameter $\alpha$ representing our prior belief about the mean arrow distance <a href="#exponential"></a>. Different choices for $\alpha$ represent different prior beliefs.</p>
+
+<figure id="exponential"><p><img src="figures/exp.png" alt="" /></p>
+<figcaption><em>Exponential distribution with one parameter $\alpha$. This distribution is used as a prior distribution on the average arrow distance $\mu$.Here we show different curves for the exponential distribution when using different parameters.</em></figcaption>
+</figure>
+
+<p><a href="#archery_model"></a> shows the graphical model for the archery model. This nicely visualizes the dependency structure in the model. We see that the parameter $\alpha$ is drawn in a solid square, representing that this variable is constant (<em>i.e.,</em> it takes a “known” value). Following the graph in <a href="#archery_model"></a>, we see an arrow connecting $\alpha$ and the variable $\mu$. That simply means that $\mu$ depends on $\alpha$. More specifically, $\mu$ is a stochastic variable (shown as a solid circle) that is drawn from an exponential distribution with parameter $\alpha$. Another constant variable, $n$, represents the number of shots taken by the archer. Finally, we have the observed data $\bar d$ which is drawn from a gamma distribution with parameters $\mu$ and $n$, as can be seen by the arrows pointing from those parameters to $d$. Furthermore, the solid circle of $\bar d$ is shaded which means that the variable has data attached to it.</p>
+
+<figure id="archery_model"><p><img src="figures/archery_graphical_model.png" width="200" /></p>
+<figcaption><em>Graphical model for the archery model.</em></figcaption>
+</figure>
+
+<h1 id="sect:MCMC-scratch">Writing MCMC from Scratch</h1>
+
+<h2 id="subsect:Exercise-Format">Tutorial Format</h2>
+
+<p>This tutorial follows a specific format for issuing instructions and
+information.</p>
+
+<p>The boxed instructions guide you to complete tasks that are not part of the RevBayes syntax, but rather direct you to create directories or files or similar.</p>
+
+<p>Information describing the commands and instructions will be written in paragraph-form before or after they are issued.</p>
+
+<p>All command-line text, including all <code class="highlighter-rouge">Rev</code> syntax, are given in <code class="highlighter-rouge">monotype font</code>. Furthermore, blocks of <code class="highlighter-rouge">Rev</code> code that are needed to build the model, specify the analysis, or execute the run are given in separate shaded boxes. For example, we will instruct you to create a new variable called <code class="highlighter-rouge">n</code> that is equal to <code class="highlighter-rouge">10</code> using the <code class="highlighter-rouge">=</code> operator like this:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n = 10
+</code></pre></div></div>
+
+<h2 id="create-your-script-file">Create Your Script File</h2>
+
+<p>Make yourself familiar with the example script called <a href="https://raw.githubusercontent.com/revbayes/revbayes_tutorial/master/RB_MCMC_Archery_Tutorial/archery_MH.Rev"><code class="highlighter-rouge">archery_MH.Rev</code></a> which shows the code for the following sections. Then, start a new and empty script in your text editor and follow each step provided as below.</p>
+
+<p>Name the script file <code class="highlighter-rouge">my_archery_MH.Rev</code> or anything you’d like.</p>
+
+<h2 id="sect:MH_algorithm">The Metropolis-Hastings Algorithm</h2>
+
+<p>Though RevBayes implements efficient and easy-to-use Markov chain Monte Carlo (MCMC) algorithms, we’ll begin by writing one ourselves to gain a better understanding of the moving parts. The Metropolis-Hastings MCMC algorithm (missing reference) proceeds as follows:</p>
+
+<ol>
+  <li>
+    <p>Generate initial values for the parameters of the model (in this
+case, $\mu$).</p>
+  </li>
+  <li>
+    <p>Propose a new value (which we’ll call $\mu^\prime$) for some
+parameters of the model, (possibly) based on their current values</p>
+  </li>
+  <li>
+    <p>Calculate the acceptance probability, $R$, according to:</p>
+
+    <script type="math/tex; mode=display">% <![CDATA[
+\begin{aligned}
+R &= \text{min}\left\{1, \frac{P(\bar d \mid \mu^\prime)}{P(\bar d \mid \mu)} \times \frac{P(\mu^\prime)}{P(\mu)} \times \frac{q(\mu)}{q(\mu^\prime)} \right\}\\
+  &= \text{min}\left\{1, \text{likelihood ratio} \times \text{prior ratio} \times \text{proposal ratio} \right\},
+\end{aligned} %]]></script>
+
+    <p>where the proposal ratio (also called the Hastings ratio) ensures the correct target density, even if the move is biased.</p>
+  </li>
+  <li>
+    <p>Generate a uniform random number $u$ between 1 and 0.</p>
+
+    <dl>
+      <dt>if $u&lt;R$:</dt>
+      <dd>
+        <p>then accept the move and set $\mu = \mu^\prime$.</p>
+      </dd>
+      <dt>else (if $u \geq R$):</dt>
+      <dd>
+        <p>the value of $\mu$ does not change and the move is rejected:
+$\mu = \mu$.</p>
+      </dd>
+    </dl>
+  </li>
+  <li>
+    <p>Record the values of the parameters.</p>
+  </li>
+  <li>
+    <p>Return to step 2 many, many times, keeping track of the value of $\mu$.</p>
+  </li>
+</ol>
+
+<h2 id="reading-in-the-data">Reading in the data</h2>
+
+<p>Since we do not have access to archery data, we will simulate the the shots of our archer using the simulation tools in RevBayes. By simulating the data, we can also evaluate how well our moves and prior model perform—<em>i.e.,</em> how robust and accurate our estimators are. After completing this exercise, feel free to repeat it and alter the true values to see how they influence the posterior distribution.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Simulate some data (i.e. shoot some arrows)
+# First we need the number of arrows to shoot
+n = 10
+# Then we need a true mean distance
+mu_true = 1
+# Simulate the observed mean distance of the arrows shot from a gamma distribution
+arrow_mean = rgamma(1, n, n/mu_true)[1]
+</code></pre></div></div>
+
+<p>The <code class="highlighter-rouge">Rev</code> code above uses the <code class="highlighter-rouge">rgamma()</code> function to simulate a single
+observed <code class="highlighter-rouge">arrow_mean</code> from $n=10$ arrows shot on target. The <code class="highlighter-rouge">[1]</code>
+following the <code class="highlighter-rouge">rgamma()</code> function is needed because this function always
+returns a <em>vector</em> even when we only request a single value. Thus, in
+order to treat <code class="highlighter-rouge">arrow_mean</code> as a single value, we have to request the
+first element of the vector returned by that function.</p>
+
+<h2 id="initializing-the-markov-chain">Initializing the Markov chain</h2>
+
+<p>We have to start the MCMC off with some initial values for all of the
+parameters. One way to do this is to randomly draw values of the
+parameters (just $\mu$, in this case) from the prior distribution. We’ll
+assume a simple exponential prior distribution; that is, one with
+$\alpha = 1$.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Initialize the chain with some starting value
+alpha = 1.0
+mu = rexp(1, alpha)[1]
+</code></pre></div></div>
+
+<h3 id="likelihood-function">Likelihood function</h3>
+
+<p>Next we will specify the likelihood function, which will compute the
+probability of our data given the prior model. We use the gamma
+distribution for the likelihood. Since the likelihood is defined only
+for values of $\mu$ greater than 0, we return a likelihood of 0.0 if
+$\mu$ is negative:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Define the likelihood function on the mean
+function likelihood(mu){
+    if(mu &lt; 0.0)
+        return 0.0
+    return dgamma(arrow_mean, n, n/mu, log=false)
+}
+</code></pre></div></div>
+<p>In <code class="highlighter-rouge">Rev</code>, we can create a <em>user-defined function</em> using the
+<code class="highlighter-rouge">function</code> keyword. In our function definition above, <code class="highlighter-rouge">likelihood()</code>
+takes a single value as an argument that is expected to be the mean
+($\mu$) value. All other parameters in our function are expected to be
+defined before <code class="highlighter-rouge">likelihood()</code> is called.</p>
+
+<h3 id="prior-distribution">Prior distribution</h3>
+
+<p>Similarly, we need to define a function for the prior distribution.
+Here, we use the exponential probability distribution for the prior on
+$\mu$:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Define the prior function on the mean
+function prior(mu){
+    if(mu &lt; 0.0)
+        return 0.0
+    return dexp(mu, alpha, log=false)
+}
+</code></pre></div></div>
+
+<h3 id="monitoring-parameter-values">Monitoring parameter values</h3>
+
+<p>Additionally, we are going to monitor, <em>i.e.</em> store, parameter values into a file during the MCMC simulation. For this file we need to write the column
+headers in the first line of our output file, which we will name
+<code class="highlighter-rouge">archery_MH.log</code> (you may have to change the newline characters from
+<code class="highlighter-rouge">\n</code> to <code class="highlighter-rouge">\r\n</code> if you’re using a Windows operating system.):</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Prepare a file to log our samples
+write("iteration","mu","\n",file="archery_MH.log")
+write(0,mu,"\n",file="archery_MH.log",append=TRUE)
+</code></pre></div></div>
+
+<p>We’ll also monitor the parameter values to the screen, so let’s print
+the initial values:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Print the initial values to the screen
+print("iteration","mu")
+print(0,mu)
+</code></pre></div></div>
+
+<h2 id="writing-the-metropolis-hastings-algorithm">Writing the Metropolis-Hastings Algorithm</h2>
+
+<p>At long last, we can write our MCMC algorithm. First, we define how
+often we print to file (<em>i.e.,</em> monitor); this is called thinning if we do not choose to save every value of our parameter to file. If we set the variable <code class="highlighter-rouge">printgen=1</code>, then we will store the parameter values at every iteration; if we instead choose <code class="highlighter-rouge">printgen=10</code>, then we’ll only save the values every $10^{th}$ step in our Markov chain.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Write the MH algorithm    
+printgen = 10
+</code></pre></div></div>
+
+<p>We will repeat this resampling procedure many times and iterate the MCMC
+using a <code class="highlighter-rouge">for</code> loop (<em>e.g.,</em> step 6 in <a href="#sect:MH_algorithm">The Metropolis-Hastings Algorithm Section</a>). We will start
+this part by defining the number of iterations for our MCMC ( <code class="highlighter-rouge">reps =
+10000</code>), and writing the first line of our ‘for‘ loop. We’ll also define
+a variable <code class="highlighter-rouge">delta</code> (explained momentarily).</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>reps = 10000
+delta = 1
+for(rep in 1:reps){
+</code></pre></div></div>
+
+<p>In <code class="highlighter-rouge">Rev</code>, the contents of every <code class="highlighter-rouge">for</code> loop must be enclosed within a set
+of ‘curly braces’ . Our loop will not be complete until we finish it and
+add the closing brace. Additionally, it is good style to make our loops
+readable by indenting the contents within the curly braces. We recommend
+that you use 4 spaces to represent these indents.</p>
+
+<p>For our MCMC algorithm, the first thing we do is generate a new value of
+$\mu^\prime$ to evaluate (step 2 of the <a href="#sect:MH_algorithm">The Metropolis-Hastings Algorithm Section</a>). We’ll propose a new value of $\mu$ by
+drawing a random number from a uniform window and then adding this
+random number to the current value (<em>i.e.</em> centered on the previous value). The
+value of <code class="highlighter-rouge">delta</code> defines the width of the uniform window from which we
+draw new values. Thus, if <code class="highlighter-rouge">delta</code> is large, then the proposed values are
+more likely to be very different from the current value of $\mu$.
+Conversely, if <code class="highlighter-rouge">delta</code> is small, then the proposed values are more
+likely to be very close to the current value of $\mu$. By changing the
+value of <code class="highlighter-rouge">delta</code> we can tune the behavior of the proposal, and therefore
+<code class="highlighter-rouge">delta</code> is called a <em>tuning parameter</em>.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Propose a new value of p
+mu_prime &lt;- mu + runif(n=1,-delta,delta)[1]
+</code></pre></div></div>
+
+<p>Next, we compute the proposed likelihood and prior probabilities using
+the functions we defined above, as well as the acceptance probability,
+$R$ (step 3 of the <a href="#sect:MH_algorithm">The Metropolis-Hastings Algorithm Section</a>):</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Compute the acceptance probability
+R = ( likelihood(mu_prime)/likelihood(mu) ) * ( prior(mu_prime)/prior(mu) )
+</code></pre></div></div>
+
+<p>Then, we accept the proposal with probability $R$ and reject otherwise
+(step 4 of the <a href="#sect:MH_algorithm">The Metropolis-Hastings Algorithm Section</a>):</p>
+
+<p>Finally, we store the current value of $\mu$ in our log file (step
+5 of the the <a href="#sect:MH_algorithm">The Metropolis-Hastings Algorithm Section</a>). Here, we actually check if we want to store the value during this iteration.</p>
+
+<p>Execute the MCMC Analysis {#subsect:Exercise-RunMCMC}</p>
+
+<p>Now that you have defined your model and written functions to compute the probability and sample values of $\mu$, you are now ready to run your analysis.</p>
+
+<p>Begin by running the RevBayes executable. You can do this by navigating to the folder containing your RevBayes executable and running it. If you’re on a Unix system you can do this by typing:</p>
+
+<div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rb
+</code></pre></div></div>
+
+<p><em>Alternatively</em>, if you are on a Unix system and the RevBayes binary is in your path, you only have to type the following from any directory:</p>
+
+<div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rb
+</code></pre></div></div>
+<p>Now you can run your RevBayes script:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("my_archery_MH.Rev")
+</code></pre></div></div>
+
+<h2 id="exercise-1">Exercise 1</h2>
+
+<ol>
+  <li>
+    <p>Write and execute the script outlined above, which you can give any
+name you like (there is also an example file
+called <code class="highlighter-rouge">archery_MH.Rev</code>).</p>
+  </li>
+  <li>
+    <p>The <code class="highlighter-rouge">.log</code> file will contain samples from the posterior distribution
+of the model. Open the file in <code class="highlighter-rouge">Tracer</code> to learn about
+various features of the posterior distribution, for example: the
+posterior mean or the 95% credible interval.</p>
+  </li>
+</ol>
+
+<p>Pretty awesome, right?</p>
+
+<p>Below we show an example of the obtained output in
+<code class="highlighter-rouge">Tracer</code>. Specifically, <a href="#mcmc-trace"></a> shows
+the sample trace (left) and the estimated posterior distribution of
+$\mu$ (right). There are other parameters, such as the posterior mean
+and the 95% HPD (highest posterior density) interval, that you can
+obtain from <code class="highlighter-rouge">Tracer</code>.</p>
+
+<figure id="mcmc-trace"><p><img src="figures/archery_MCMC_Trace.png" width="45%" />
+<img src="figures/archery_MCMC_distribution.png" width="45%" /></p>
+<figcaption>The <em>Trace</em> of sample from an MCMC simulation. Right: The approximated posterior probability distribution for $\mu$.</figcaption>
+</figure>
+
+<h1 id="sect:More_on_Moves">More on Moves: Tuning and Weights</h1>
+
+<p>In the previous example we hard coded a single move updating the
+variable $\mu$ by drawing a new value from a sliding window. There are
+other ways how to propose new values; some of which are more efficient
+than others.</p>
+
+<p>First, let us rewrite the MCMC loop so that instead we call a function,
+which we name <code class="highlighter-rouge">move_slide</code> for simplicity, that performs the move:</p>
+
+<h2 id="slide-move">Slide move</h2>
+
+<p>Now we need to actually write the <code class="highlighter-rouge">move_slide</code> function. We mostly just
+copy the code we had before into a dedicated function</p>
+
+<p>There are a few things to consider in the function <code class="highlighter-rouge">move_slide</code>. First,
+we do not have a return value because the move simply changes the
+variable $\mu$ if the move is accepted. Second, in addition to the
+tuning parameter <code class="highlighter-rouge">delta</code>, we expect an argument called <code class="highlighter-rouge">weight</code> which
+will tell us how often we want to use this move. Otherwise, this
+function does exactly the same what was inside the for loop previously.</p>
+
+<p>(Note that you need to define this function before the for loop in your
+script).</p>
+
+<p>Experiment with different values for <code class="highlighter-rouge">delta</code> and see how the effective
+sample size (ESS) changes.</p>
+
+<p>There is, <em>a priori</em>, no good method for knowing what values of <code class="highlighter-rouge">delta</code> are most efficient. However, there are some algorithms implemented in RevBayes, called <em>auto-tuning</em>, that will estimate good values for <code class="highlighter-rouge">delta</code>.</p>
+
+<h2 id="scaling-move">Scaling move</h2>
+
+<p>As another move we will write a scaling move. The scaling move proposes
+an update by drawing a random number from a $Uniform(-0.5,0.5)$
+distribution, exponentiating the random number, and then multiplying
+this scaling factor by the current value. An interesting feature of this
+move is that it is not symmetrical and thus needs a Hastings ratio (this
+is the same as the proposal ratio given in Section
+[sect:MH_algorithm]). The Hastings ratio is rather trivial in this
+case, and one only needs to multiply the acceptance rate by the scaling
+factor.</p>
+
+<p>As before, this move has a tuning parameter called <code class="highlighter-rouge">lambda</code>.</p>
+
+<p>The sliding-window and scaling moves are very common and popular moves in RevBayes. The code examples here are actually showing the exact same equation as implemented internally. It will be very useful for you to understand these moves.</p>
+
+<h2 id="exercise-2">Exercise 2</h2>
+
+<ol>
+  <li>
+    <p>Rewrite your previous script to include these two different moves,
+and re-run the script to estimate the posterior distribution of
+$\mu$ again.</p>
+  </li>
+  <li>
+    <p>Use only a single move and set <code class="highlighter-rouge">printgen=1</code>. Which move has the best
+ESS?</p>
+  </li>
+  <li>
+    <p>How does the ESS change if you use tuning parameter values
+<code class="highlighter-rouge">delta=10</code> or <code class="highlighter-rouge">delta=0.1</code> for the sliding-window move? What about
+<code class="highlighter-rouge">lambda=10</code> or <code class="highlighter-rouge">lambda=0.1</code> for the scaling move?</p>
+  </li>
+  <li>
+    <p>You can keep track of your results using the following table.</p>
+  </li>
+</ol>
+
+<h1 id="the-metropolis-hastings-algorithm-with-the-real-revbayes">The Metropolis-Hastings Algorithm with the <em>Real</em> RevBayes</h1>
+
+<p>We’ll now specify the exact same model in <code class="highlighter-rouge">Rev</code> using the built-in
+modeling functionality and moves. It turns out that the ‘Rev‘ code to
+specify the above model is extremely simple and similar to the one we
+used before. Again, we start by “reading in” (<em>i.e.</em> making up) our
+data.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Simulate some data (i.e. shoot some arrows)
+# First we need the number of arrows to shoot
+n = 10
+# Then we need some true mean distance
+mu_true = 1
+# Simulate the observed mean distance of the arrows we shot
+arrow_mean = rgamma(1, n, n/mu_true)[1]
+</code></pre></div></div>
+
+<p>Now we specify our prior model.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Specify the prior distribution
+alpha &lt;- 1.0
+mu ~ dnExponential(alpha)
+</code></pre></div></div>
+
+<p>One difference between RevBayes and the MH algorithm that we wrote
+above is that many MCMC proposals are already built-in, but we have to
+specify them <em>before</em> we run the MCMC. We usually define (at least) one
+move per parameter immediately after we specify the prior distribution
+for that parameter.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Define a move for our parameter, mu
+moves[1] = mvSlide(mu, delta=1, weight=1.0)
+</code></pre></div></div>
+
+<p>Next, our likelihood model.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Specify the likelihood model
+d_bar ~ dnGamma(n, n/mu)
+d_bar.clamp(arrow_mean)
+</code></pre></div></div>
+
+<p>We wrap our full Bayesian model into one model object (this is a
+convenience to keep the entire model in a single object, and is more
+useful when we have very large models):</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Construct the full model
+my_model = model(mu)
+</code></pre></div></div>
+
+<p>We use “monitors” to keep track of parameters throughout the MCMC. The
+two kinds of monitors we use here are the <code class="highlighter-rouge">mnModel</code>, which writes
+parameters to a specified file, and the <code class="highlighter-rouge">mnScreen</code>, which simply outputs
+some parts of the model to screen (as a sort of progress bar).</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Make the monitors to keep track of the MCMC
+monitors[1] = mnModel(filename="archery_RB.log", printgen=10)
+monitors[2] = mnScreen(printgen=1000, mu)
+</code></pre></div></div>
+
+<p>Finally, we assemble the analysis object (which contains the model, the
+monitors, and the moves) and execute the run using the <code class="highlighter-rouge">.run</code> command:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Make the analysis object
+analysis = mcmc(my_model, monitors, moves)
+# Run the MCMC
+analysis.run(100000)
+# Show how the moves performed
+analysis.operatorSummary()
+</code></pre></div></div>
+
+<p>Open the resulting <code class="highlighter-rouge">archery_RB.log</code> file in <code class="highlighter-rouge">Tracer</code>.</p>
+
+<p>Do the posterior distributions for the parameter $\mu$ look the same as the ones we got from our first analysis?</p>
+
+<p>Hopefully, you’ll note that this <code class="highlighter-rouge">Rev</code> model is substantially simpler
+and easier to read than the MH algorithm script we began with. Perhaps
+more importantly, this <code class="highlighter-rouge">Rev</code> analysis is <em>orders of magnitude</em> faster
+than our own script, because it makes use of extremely efficient
+probability calculations built-in to RevBayes (rather than the ones we
+hacked together in our own algorithm).</p>
+
+<h2 id="exercise-3">Exercise 3</h2>
+
+<ol>
+  <li>
+    <p>Run the built-in MCMC and compare the results to your own MCMC. Are
+the posterior estimates the same? Are the acceptance rates of the
+moves similar?</p>
+  </li>
+  <li>
+    <p>Add a second move <code class="highlighter-rouge">moves[2] = mvScale(mu,lambda=0.1,weight=1.0)</code></p>
+  </li>
+  <li>
+    <p>Run the analysis again and compare the output.</p>
+  </li>
+  <li>
+    <p>Have a look at how the acceptance rate changes for different values
+of the tuning parameters.</p>
+  </li>
+</ol>
+
+<h1 id="influence-of-the-prior">Influence of the Prior</h1>
+
+<p>So far we have used a fairly simple exponential prior with $\alpha = 1$.
+However, we have not explored what impact this prior has on our estimate
+of $\mu$, or whether it is an appropriate prior distribution. If the
+prior is very informative, then our posterior distribution will be
+relatively similar to our prior beliefs. In order to explore the
+informativeness of the prior, we can change the true value of $\mu$ so
+that it is very different from our prior belief. If we are still able to
+recover the correct value of $\mu$, then we can say that our prior is
+fairly uninformative.</p>
+
+<p>If we find that our prior distribution is very informative, we have two
+options for minimizing sensitivity to the prior. First, we can use a
+less informative prior distribution. For example, since our data is
+exponentially distributed, a good choice for an uninformative prior is a
+$Gamma(0,0)$ distribution (this is the <a href="https://en.wikipedia.org/wiki/Jeffreys_prior">Jeffreys prior</a>). Unfortunately,
+this prior distribution is <em>improper</em> (it does not integrate to 1), and
+so we can’t use it in RevBayes. However we can approximate this prior
+distribution by using very small parameter values, e.g. $Gamma(0.001,
+0.001)$. As you can see in <a href="#gamma_distribution"></a>, compared
+to the exponential distribution, the $Gamma(0.001, 0.001)$ distribution is
+much more “flat”.</p>
+
+<figure id="gamma_distribution"><p><img src="figures/gamma.png" alt="" /></p>
+<figcaption>Comparison of exponential distribution with $\alpha = 1$ and uninformative gamma distribution with parameters $\alpha=0.001$ and $\beta=0.001$.</figcaption>
+</figure>
+
+<p>The second and simplest way we can overcome the informativeness of the
+prior is to increase the amount of data we collect. We can do that in
+our example by increasing the number of arrows we shoot.</p>
+
+<h2 id="exercise-4">Exercise 4</h2>
+
+<ol>
+  <li>
+    <p>Increase the true mean arrow distance so that it is significantly
+larger than $\alpha$. How does this impact your estimate of $\mu$?</p>
+  </li>
+  <li>
+    <p>Now use an uninformative $Gamma(0.001, 0.001)$ prior for $\mu$. Did
+your estimate of $\mu$ improve?</p>
+  </li>
+  <li>
+    <p>Increase the number of arrows shot. How does this change the shape
+and scale of the posterior distribution?</p>
+  </li>
+</ol>
+
+<p>Version dated:</p>
+
+<ol class="bibliography"><li><span id="Hoehna2017a">Höhna S., Landis M.J., Heath T.A. 2017. Phylogenetic Inference using RevBayes. Current Protocols in Bioinformatics.</span>
+
+<a href="https://doi.org/10.1002/cpbi.22">10.1002/cpbi.22</a>
+
+</li></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2>References</h2>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/revbayes-site/license/">License</a> | <a href="/revbayes-site/citation/">Cite RevBayes</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/revbayes-site/assets/js/vendor/jquery.min.js"></script>
+<script src="/revbayes-site/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/revbayes-site/assets/js/vendor/jszip.min.js"></script>
+<script src="/revbayes-site/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+
+<script src="/revbayes-site/assets/js/base.js"></script>
+
+<script type="text/javascript"
+    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+  });
+</script>
+
+  </body>
+</html>

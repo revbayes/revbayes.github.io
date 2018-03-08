@@ -1,0 +1,973 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/revbayes-site/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/revbayes-site/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/revbayes-site/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/revbayes-site/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/revbayes-site/assets/css/main.css" />
+    <title>RevBayes: Relaxed Clocks & Time Trees</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/revbayes-site/" class="pull-left">
+        <img class="navbar-logo" src="/revbayes-site/assets/img/aquabayes-desaturated.png" alt="RevBayes Logo" />
+      </a>
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/revbayes-site/software/">Software</a></li>
+        <li><a href="/revbayes-site/tutorials/">Tutorials</a></li>
+        <li><a href="/revbayes-site/workshops/">Workshops</a></li>
+        <li><a href="/revbayes-site/developer/">Developer</a></li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <div class="row">
+	<h1 class="maintitle">Relaxed Clocks & Time Trees</h1>
+	<h3 class="subtitle">Comparing relaxed clock models & estimating rooted time trees</h3>
+	<h4 class="maintitle">Tracy A. Heath</h4>
+</div>
+
+
+<blockquote class="overview no-print" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul id="prerequisites">
+          
+            <li><a href="/revbayes-site/tutorials/intro/intro.html">Statistical Inference Using RevBayes</a></li>
+          
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+<blockquote class="tutorial_files no-print" id="tutorial_files">
+  <h2>Data files and scripts</h2>
+  
+    <div class="row">
+      <div class="col-md-9">
+          <strong>Data Files</strong>
+          <ul id="data_files">
+          
+            <li><a href="/revbayes-site/tutorials/clocks/clocks.htmldata/bears_dosReis.tre">bears_dosReis.tre</a></li>
+          
+            <li><a href="/revbayes-site/tutorials/clocks/clocks.htmldata/bears_irbp.nex">bears_irbp.nex</a></li>
+          
+          </ul>
+        </div>
+    </div>
+  
+    <div class="row" id="script_row">
+      <div class="col-md-9">
+          <strong>Scripts</strong>
+          <ul id="scripts"></ul>
+        </div>
+    </div>
+</blockquote>
+<!-- category: Standard -->
+
+<h2 class="section" id="introduction">Introduction</h2>
+
+<p>Central among the questions explored in biology are those that seek to
+understand the timing and rates of evolutionary processes. Accurate
+estimates of species divergence times are vital to understanding
+historical biogeography, estimating diversification rates, and
+identifying the causes of variation in rates of molecular evolution.</p>
+
+<p>This tutorial will provide a general overview of divergence time
+estimation using fossil calibration and relaxed-clock model comparison
+in a Bayesian framework. The exercise will guide you through the steps
+necessary for estimating phylogenetic relationships and dating species
+divergences using the program <a href="http://revbayes.github.io/">RevBayes</a>.</p>
+
+<h2 class="section" id="getting-started">Getting Started</h2>
+
+<p>The various exercises in this tutorial take you through the steps
+required to perform phylogenetic analyses of the example datasets. In
+addition, we have provided the output files for every exercise so you
+can verify your results. (Note that since the MCMC runs you perform will
+start from different random seeds, the output files resulting from your
+analyses <em>will not</em> be identical to the ones we provide you.)</p>
+
+<!-- block -->
+<p>Download the <a href="#data_files">data files</a> listed above.
+<!-- block --></p>
+
+<p>The alignment in file, <code class="highlighter-rouge">data/bears_irbp.nex</code>, contains interphotoreceptor
+retinoid-binding protein (irbp) sequences for each extant species.</p>
+
+<p>In this exercise, we will compare among different relaxed clock models
+and estimate a posterior distribution of calibrated time trees. The
+dataset we will use is an alignment of 10 caniform sequences, comprising
+8 bears, 1 spotted seal, and 1 gray wolf. Additionally, we will use the
+occurrence time of the caniform fossil <em>Hesperocyon gregarius</em> to inform
+our prior on the root age of the tree
+(<em>i.e.</em>, the most-recent-common ancestor of
+caniforms). 
+<!-- If you’re interested in how to construct internal node
+calibrations in RevBayes, please see the [version of this
+tutorial](https://github.com/revbayes/revbayes_tutorial/blob/master/tutorial_TeX/RB_Dating_Tutorial/RB_Dating_Tutorial.pdf)
+that covers node calibrations. --></p>
+
+<h2 class="section" id="creating-rev-files">Creating Rev Files</h2>
+
+<p>This tutorial sets up three different relaxed clock models and a
+calibrated birth-death model. Because of the complexity of the various
+models, this exercise is best performed by specifying the models and
+samplers in different <code class="highlighter-rouge">Rev</code> files. At the beginning of each section, you
+will be given a suggested name for each component file; these names
+correspond to the provided <code class="highlighter-rouge">Rev</code> scripts that reproduce these commands.</p>
+
+<p><strong><em>Directory Structure</em></strong></p>
+
+<p>This tutorial assumes that you have a very specific directory structure
+when running RevBayes. First, you may want to put the
+RevBayes binary in your path if you’re using a Unix-based operating
+system. Alternatively, you can place the binary in a directory from
+which you will execute RevBayes, e.g., the tutorial directory. The
+tutorial directory can be any directory on your file system, but you may
+want to create a new one so that you avoid conflicts with other
+RevBayes tutorials.</p>
+
+<blockquote class="instruction">
+  <p>Create a directory for this tutorial called <font style="font-family:'Courier'" color="#E40606">RB_ClockModels_Tutorial</font> (or any name you like), and
+navigate to that directory. This is the tutorial directory mentioned
+above.</p>
+</blockquote>
+
+<p>For this exercise, the <code class="highlighter-rouge">Rev</code> code provided assumes that within the
+tutorial directory exists subdirectories. These directories must have
+the same names given here, unless you wish to also change the <code class="highlighter-rouge">Rev</code> code
+to conform to your specific directory names.</p>
+
+<p>The first subdirectory will contain the data files (downloaded in
+the <a href="#getting-started">Getting Started</a> section).</p>
+
+<blockquote class="instruction">
+  <p>Create a directory called <font style="font-family:'Courier'" color="#E40606">data</font> in your tutorial directory.</p>
+
+  <p>Save the tree and alignment files downloaded above (<a href="#getting-started">Getting Started</a>) in the <code class="highlighter-rouge">data</code> directory.</p>
+</blockquote>
+
+<p>The second subdirectory will contain the <code class="highlighter-rouge">Rev</code> files you write to
+execute the exercises in this tutorial.</p>
+
+<blockquote class="instruction">
+  <p>Create a directory called <font style="font-family:'Courier'" color="#E40606">scripts</font> in your tutorial directory.</p>
+</blockquote>
+
+<p>This tutorial will guide you through creating all of the files necessary
+to execute the analyses without typing the <code class="highlighter-rouge">Rev</code> language syntax
+directly in the RevBayes console. Since the scripts must point to
+model and analysis files in a modular way, it is important to be aware
+of you directory structure and if you choose to do something different,
+make sure that the file paths given throughout the tutorial are correct.</p>
+
+<p>Finally, we’ll need a directory for all of the files written by our
+analyses. For some operations, RevBayes can create this directory on
+the fly for you. However, it may be safer just to add it now.</p>
+
+<blockquote class="instruction">
+  <p>Create a directory called <font style="font-family:'Courier'" color="#E40606">output</font> in your tutorial directory.</p>
+</blockquote>
+
+<p>The only files you need for this exercise are now in the <code class="highlighter-rouge">data</code>
+directory. Otherwise, you will create all of the <code class="highlighter-rouge">Rev</code> files specifying
+the models and analyses. 
+<!-- All of the `Rev` files you write for this
+tutorial are available on the [RevBayes Tutorial GitHub
+repository](https://github.com/revbayes/revbayes_tutorial) in the
+[scripts directory of the Clock Models
+Tutorial](https://github.com/revbayes/revbayes_tutorial/tree/master/RB_ClockModels_Tutorial/scripts).
+You can refer to these examples to verify your own work. --></p>
+
+<h2 class="section" id="the-birth-death-model">The Birth-Death Model</h2>
+
+<p>The birth-death process we will use is a constant-rate process
+conditioned on the age of the root of the tree (<a href="#bdgm"></a>).</p>
+
+<figure id="bdgm"><p><img src="figures/BDPR_gm.png" width="500" /></p>
+<figcaption>The graphical model representation of
+the birth-death process conditioned on the root age in RevBayes.</figcaption>
+</figure>
+
+<p><strong><em>Create the Rev File</em></strong></p>
+
+<blockquote class="instruction">
+  <p>Open your text editor and create the birth-death model file called <font style="font-family:'Courier'" color="#E40606">m_BDP_bears.Rev</font> in
+the <code class="highlighter-rouge">scripts</code> directory.</p>
+
+  <p>Enter the <code class="highlighter-rouge">Rev</code> code provided in this section in the new model file.</p>
+</blockquote>
+
+<p><strong><em>Read in a Tree from a Previous Study</em></strong></p>
+
+<p>Sometimes it is convienent to read in a tree from a previous study. This
+can be used as a starting tree or if there are nodes in the tree from
+the previous study that we wish to compare our estimates to. We will
+read in the tree estimated by <a href="#DosReis2012">(dos Reis et al. 2012)</a>.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>T &lt;- readTrees("data/bears_dosReis.tre")[1]
+</code></pre></div></div>
+
+<p>From the tree we can initialize some useful variables. (These can also
+be created from the data matrix using the same methods.)</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_taxa &lt;- T.ntips()
+taxa &lt;- T.taxa()
+</code></pre></div></div>
+
+<h3 id="birth-death-parameters">Birth-Death Parameters</h3>
+
+<p>We will begin by setting up the model parameters and proposal mechanisms
+of the birth-death model. Note that we have not initialized the
+workspace iterator <code class="highlighter-rouge">mi</code> yet. Because of this, if you typed these lines
+in the RevBayes console, you would get an error. Since this code is
+intended to be in a sourced <code class="highlighter-rouge">Rev</code> file, we are assuming that you would
+initialize <code class="highlighter-rouge">mi</code> before calling
+<code class="highlighter-rouge">source("scripts/m_BDP_Tree_bears.Rev")</code>.</p>
+
+<p>We will use the parameterization of the birth-death process specifying
+the diversification and turnover. For a more detailed tutorial on the
+simple birth-death model, please refer to the <a href="../div">Basic Diversification Rate Estimation</a>
+tutorial.</p>
+
+<p><strong><em>Diversification</em></strong></p>
+
+<p>Diversification ($d$) is the speciation rate ($\lambda$) minus the
+extinction rate ($\mu$): $d = \lambda - \mu$.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>diversification ~ dnExponential(10.0) 
+moves[mi++] = mvScale(diversification, lambda=1.0, tune=true, weight=3.0)
+</code></pre></div></div>
+
+<p><strong><em>Turnover</em></strong></p>
+
+<p>Turnover is: $r = \mu / \lambda$.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>turnover ~ dnBeta(2.0, 2.0) 
+moves[mi++] = mvSlide(turnover,delta=1.0,tune=true,weight=3.0)
+</code></pre></div></div>
+
+<p><strong><em>Deterministic Nodes for Birth and Death Rates</em></strong></p>
+
+<p>The birth rate and death rate are deterministic functions of the
+diversification and turnover. First, create a deterministic node for
+$1 - r$, which is the denominator for each formula.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>denom := abs(1.0 - turnover) 
+</code></pre></div></div>
+
+<p>Now, the rates will both be positive real numbers that are variable
+transformations of the stochastic variables.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>birth_rate := diversification / denom
+death_rate := (turnover * diversification) / denom
+</code></pre></div></div>
+
+<p><strong><em>Sampling Probability</em></strong></p>
+
+<p>Fix the probability of sampling to a known value. Since there are
+approximately 147 described caniform species, we will create a constant
+node for this parameter that is equal to 10/147.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rho &lt;- 0.068
+</code></pre></div></div>
+
+<h3 id="prior-on-the-root-node">Prior on the Root Node</h3>
+
+<p>The fossil <em>Hesperocyon gregarius</em> is a fossil descendant of the
+most-recent common ancestor of all caniformes and has an occurrence time
+of $\sim$38 Mya. Thus, we can assume that the probability of the root
+age being younger than 38 Mya is equal to 0, using this value to offset
+a prior distribution on the root-age.</p>
+
+<p>First specify the occurrence-time of the fossil.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tHesperocyon &lt;- 38.0
+</code></pre></div></div>
+
+<p>We will assume a lognormal prior on the root age that is offset by the
+observed age of <em>Hesperocyon gregarius</em>. We can use the previous
+analysis by <a href="#DosReis2012">(dos Reis et al. 2012)</a> to parameterize the lognormal prior on the root
+time. The age for the MRCA of the caniformes reported in their study was
+$\sim$49 Mya. Therefore, we can specify the mean of our lognormal
+distribution to equal $49 - 38 = 11$ Mya. Given the expected value of
+the lognormal (<code class="highlighter-rouge">mean_ra</code>) and a standard deviation (<code class="highlighter-rouge">stdv_ra</code>), we can
+also compute the location parameter of the lognormal (<code class="highlighter-rouge">mu_ra</code>).</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mean_ra &lt;- 11.0
+stdv_ra &lt;- 0.25
+mu_ra &lt;- ln(mean_ra) - ((stdv_ra*stdv_ra) * 0.5)
+</code></pre></div></div>
+
+<p>With these parameters we can instantiate the root age stochastic node
+with the offset value.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root_time ~ dnLognormal(mu_ra, stdv_ra, offset=tHesperocyon)
+</code></pre></div></div>
+
+<h3 id="time-tree-stochastic-node">Time Tree Stochastic Node</h3>
+
+<p>Now that we have specified all of the parameters of the birth-death
+process, we can create our stochastic node representing the tree
+topology and divergence times.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree ~ dnBDP(lambda=birth_rate, mu=death_rate, rho=rho, rootAge=root_time, samplingStrategy="uniform", condition="nTaxa", taxa=taxa)
+</code></pre></div></div>
+
+<h3 id="creating-a-node-age-variable">Creating a Node-Age Variable</h3>
+
+<p>We may be interested in a particular node in the tree and thus wish to
+save the age of that node to a log file. To do this, we can create a
+deterministic node for that node age. First, define the node by a set of
+taxa using the <code class="highlighter-rouge">clade()</code> function. This will not restrict this node to
+be monophyletic, but just create a node that is the MRCA of the taxa
+listed (even if that node has descendants that are not named).</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clade_Ursidae &lt;- clade("Ailuropoda_melanoleuca","Tremarctos_ornatus","Helarctos_malayanus", "Ursus_americanus","Ursus_thibetanus","Ursus_arctos","Ursus_maritimus","Melursus_ursinus")
+</code></pre></div></div>
+
+<p>Once we have defined the node, we can create a deterministic node to
+monitor its age.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tmrca_Ursidae := tmrca(timetree,clade_Ursidae)
+</code></pre></div></div>
+
+<h3 id="proposals-on-the-time-tree">Proposals on the Time Tree</h3>
+
+<p>Next, create the vector of moves. These tree moves act on node ages:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mi++] = mvNodeTimeSlideUniform(timetree, weight=30.0)
+moves[mi++] = mvSlide(root_time, delta=2.0, tune=true, weight=10.0)
+moves[mi++] = mvScale(root_time, lambda=2.0, tune=true, weight=10.0)
+moves[mi++] = mvTreeScale(tree=timetree, rootAge=root_time, delta=1.0, tune=true, weight=3.0)
+</code></pre></div></div>
+
+<p>Then, we will add moves that will propose changes to the tree topology.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mi++] = mvNNI(timetree, weight=8.0)
+moves[mi++] = mvNarrow(timetree, weight=8.0)
+moves[mi++] = mvFNPR(timetree, weight=8.0)
+</code></pre></div></div>
+
+<p>Now save and close the file called . This file, with all the model
+specifications will be loaded by other <code class="highlighter-rouge">Rev</code> files.</p>
+
+<h2 class="section" id="specifying-branch-rate-models">Specifying Branch-Rate Models</h2>
+
+<p>The next sections will walk you through setting up the files specifying
+different relaxed clock models. Each section will require you to create
+a separate <code class="highlighter-rouge">Rev</code> file for each relaxed clock model, as well as for each
+marginal-likelihood analysis.</p>
+
+<h3 id="globalClockSec">The Global Molecular Clock Model</h3>
+
+<p>The global molecular clock assumes that the rate of substitution is
+constant over the tree and over time (Fig. [m_GMC:fig]).</p>
+
+<p><img src="RB_Dating_Tutorial/figures/gmc_gm.eps" alt="" /></p>
+<blockquote>
+  <p>The graphical
+model representation of the global molecular clock model used in this
+exercise.</p>
+</blockquote>
+
+<p><strong><em>Create the Rev File</em></strong></p>
+
+<p>Open your text editor and create the global molecular clock model file
+called in the <code class="highlighter-rouge">scripts</code> directory.</p>
+
+<p>Enter the <code class="highlighter-rouge">Rev</code> code provided in this section in the new model file.
+Keep in mind that we are creating modular model files that can be
+sourced by different analysis files. Thus, the <code class="highlighter-rouge">Rev</code> code below will
+still depend on variable initialized in different files.</p>
+
+<p><strong><em>The Clock-Rate</em></strong></p>
+
+<p>The clock-rate parameter is a stochastic node from a gamma distribution.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clock_rate ~ dnGamma(2.0,4.0)
+moves[mi++] = mvScale(clock_rate,lambda=0.5,tune=true,weight=5.0)
+</code></pre></div></div>
+
+<p><strong><em>The Sequence Model and Phylogenetic CTMC</em></strong></p>
+
+<p>Specify the parameters of the GTR model and the moves to operate on
+them.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sf ~ dnDirichlet(v(1,1,1,1))
+er ~ dnDirichlet(v(1,1,1,1,1,1))
+Q := fnGTR(er,sf)
+moves[mi++] = mvSimplexElementScale(er, alpha=10.0, tune=true, weight=3.0)
+moves[mi++] = mvSimplexElementScale(sf, alpha=10.0, tune=true, weight=3.0)
+</code></pre></div></div>
+
+<p>And instantiate the phyloCTMC.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phySeq ~ dnPhyloCTMC(tree=timetree, Q=Q, branchRates=clock_rate, nSites=n_sites, type="DNA")
+phySeq.clamp(D)
+</code></pre></div></div>
+
+<p>This is all we will include in the global molecular clock model file.</p>
+
+<p>Save and close the file called in the <code class="highlighter-rouge">scripts</code> directory.</p>
+
+<p><strong><em>Estimate the Marginal Likelihood</em></strong></p>
+
+<p>Now we can use the model files we created and estimate the marginal
+likelihood under the global molecular clock model (and all other model
+settings). You can enter the following commands directly in the
+RevBayes console, or you can create another <code class="highlighter-rouge">Rev</code> script.</p>
+
+<p>Open your text editor and create the marginal-likelihood analysis file
+under the global molecular clock model. Call the file: and save it in
+the <code class="highlighter-rouge">scripts</code> directory.</p>
+
+<p><em>Load Sequence Alignment</em> — Read in the sequences and initialize
+important variables.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>D &lt;- readDiscreteCharacterData(file="data/bears_irbp.nex")
+n_sites &lt;- D.nchar()
+mi = 1
+</code></pre></div></div>
+
+<p><em>The Calibrated Time-Tree Model</em> — Load the calibrated tree model from
+file using the <code class="highlighter-rouge">source()</code> function. Note that this file does not have
+moves that operate on the tree topology, which is helpful when you plan
+to estimate the marginal likelihoods and compare different relaxed clock
+models.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/m_BDP_bears.Rev")
+</code></pre></div></div>
+
+<p><em>Load the GMC Model File</em> — Source the file containing all of the
+parameters of the global molecular clock model. This file is called .</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/m_GMC_bears.Rev")
+</code></pre></div></div>
+
+<p>We can now create our workspace model variable with our fully specified
+model DAG. We will do this with the <code class="highlighter-rouge">model()</code> function and provide a
+single node in the graph (<code class="highlighter-rouge">er</code>).</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(er)
+</code></pre></div></div>
+
+<p><em>Run the Power-Posterior Sampler and Compute the Marginal Likelihoods</em> —
+With a fully specified model, we can set up the <code class="highlighter-rouge">powerPosterior()</code>
+analysis to create a file of ‘powers’ and likelihoods from which we can
+estimate the marginal likelihood using stepping-stone or path sampling.
+This method computes a vector of powers from a beta distribution, then
+executes an MCMC run for each power step while raising the likelihood to
+that power. In this implementation, the vector of powers starts with 1,
+sampling the likelihood close to the posterior and incrementally
+sampling closer and closer to the prior as the power decreases.</p>
+
+<p>First, we initialize a monitor which will log the MCMC samples for each
+parameter at every step in the power posterior.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[1] = mnModel(filename="output/GMC_posterior_pp.log",printgen=10, separator = TAB)
+</code></pre></div></div>
+
+<p>Next, we create the variable containing the power posterior. This
+requires us to provide a model and vector of moves, as well as an output
+file name. The <code class="highlighter-rouge">cats</code> argument sets the number of power steps. Once we
+have specified the options for our sampler, we can then start the run
+after a burn-in/tuning period.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pow_p = powerPosterior(mymodel, moves, monitors, "output/GMC_bears_powp.out", cats=50, sampleFreq=10) 
+pow_p.burnin(generations=5000,tuningInterval=200)
+pow_p.run(generations=1000)  
+</code></pre></div></div>
+
+<p>Compute the marginal likelihood using two different methods,
+stepping-stone sampling and path sampling.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ss = steppingStoneSampler(file="output/GMC_bears_powp.out", powerColumnName="power", likelihoodColumnName="likelihood")
+ss.marginal() 
+
+### use path sampling to calculate marginal likelihoods
+ps = pathSampler(file="output/GMC_bears_powp.out", powerColumnName="power", likelihoodColumnName="likelihood")
+ps.marginal() 
+</code></pre></div></div>
+
+<p>If you have entered all of this directly in the RevBayes console, you
+will see the marginal likelihoods under each method printed to screen.
+Otherwise, if you have created the separate <code class="highlighter-rouge">Rev</code> file in the <code class="highlighter-rouge">scripts</code>
+directory, you now have to directly source this file in RevBayes
+(after saving the up-to-date content).</p>
+
+<p>Begin by running the RevBayes executable. In Unix systems, type the
+following in your terminal (if the RevBayes binary is in your path):</p>
+
+<p>Now load your RevBayes analysis:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/mlnl_GMC_bears.Rev")
+</code></pre></div></div>
+
+<p>Once you have completed this analysis, record the marginal likelihoods
+under the global molecular clock model in Table [ssTable].</p>
+
+<h3 id="UCLNModelSec">The Uncorrelated Lognormal Rates Model</h3>
+
+<p>The uncorrelated lognormal (UCLN) model relaxes the assumption of a
+single-rate molecular clock. Under this model, the rate associated with
+each branch in the tree is a stochastic node. Each branch-rate variable
+is drawn from the same lognormal distribution (Fig. [m_UCLN:fig]).</p>
+
+<p>Given that we might not have prior information on the parameters of the
+lognormal distribution, we can assign hyper priors to these variables.
+Generally, it is more straightforward to construct a hyperprior on the
+expectation (i.e., the mean) of a lognormal density rather than the
+location parameter $\mu$. Here, we will assume that the mean branch rate
+is exponentially distributed and as is the stochastic node representing
+the standard deviation. With these two parameters, we can get the
+location parameter of the lognormal by:
+<script type="math/tex">\mu = \log(M) - \frac{\sigma^2}{2}.</script> Thus, $\mu$ is a deterministic
+node, which is a function of $M$ and $\sigma$. In Figure
+[m_UCLN:fig], we can represent the vector of $N$ branch rates using
+the plate notation.</p>
+
+<p><img src="RB_Dating_Tutorial/figures/ucln_gm.eps" alt="" /></p>
+<blockquote>
+  <p>The graphical
+model representation of the UCLN model used in this exercise.</p>
+</blockquote>
+
+<p><strong><em>Create the Rev File</em></strong></p>
+
+<p>Open your text editor and create the uncorrelated-lognormal
+relaxed-clock model file called in the <code class="highlighter-rouge">scripts</code> directory.</p>
+
+<p>Enter the <code class="highlighter-rouge">Rev</code> code provided in this section in the new model file.
+Keep in mind that we are creating modular model files that can be
+sourced by different analysis files. Thus, the <code class="highlighter-rouge">Rev</code> code below will
+still depend on variable initialized in different files.</p>
+
+<p><strong><em>Independent Branch Rates</em></strong></p>
+
+<p>Before we can set up the variable of the branch-rate model, we must know
+how many branches exist in the tree.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_branches &lt;- 2 * n_taxa - 2
+</code></pre></div></div>
+
+<p>We will start with the mean of the lognormal distribution, $M$ in Figure
+[m_UCLN:fig].</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ucln_mean ~ dnExponential(2.0)
+</code></pre></div></div>
+
+<p>And the exponentially distributed node representing the standard
+deviation. We will also create a deterministic node, which is the
+variance, $\sigma^2$.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ucln_sigma ~ dnExponential(3.0)
+ucln_var := ucln_sigma * ucln_sigma
+</code></pre></div></div>
+
+<p>Now we can declare the function that gives us the $\mu$ parameter of the
+lognormal distribution on branch rates.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ucln_mu := ln(ucln_mean) - (ucln_var * 0.5)
+</code></pre></div></div>
+
+<p>The only stochastic nodes we need to operate on for this part of the
+model are the lognormal mean ($M$ or <code class="highlighter-rouge">ucln_mean</code>) and the standard
+deviation ($\sigma$ or <code class="highlighter-rouge">ucln_sigma</code>).</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mi++] = mvScale(ucln_mean, lambda=1.0, tune=true, weight=4.0)
+moves[mi++] = mvScale(ucln_sigma, lambda=0.5, tune=true, weight=4.0)
+</code></pre></div></div>
+
+<p>With our nodes representing the $\mu$ and $\sigma$ of the lognormal
+distribution, we can create the vector of stochastic nodes for each of
+the branch rates using a <code class="highlighter-rouge">for</code> loop. Within this loop, we also add the
+move for each branch-rate stochastic node to our moves vector.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for(i in 1:n_branches){
+   branch_rates[i] ~ dnLnorm(ucln_mu, ucln_sigma)
+   moves[mi++] = mvScale(branch_rates[i], lambda=1, tune=true, weight=2.)
+}
+</code></pre></div></div>
+
+<p><strong><em>Sidebar: Other Uncorrelated-Rates Models</em></strong></p>
+
+<p>The choice in the branch-rate prior does not necessarily have to be a
+lognormal distribution. Depending on your prior beliefs about how branch
+rates vary across the tree, the rates can just as easily be assigned an
+exponential distribution (e.g., defines each branch rate as an
+independent draw from an exponential distribution centered on 1) or a
+gamma distribution (e.g., defines each branch rate as an independent
+draw from a gamma distribution centered on 0.5) or any other
+distribution on positive-real numbers. The exercises outlined in this
+tutorial demonstrate how to compare different models of branch-rate
+variation using Bayes factors, and it may also be important to consider
+alternative priors on branch rates using these approaches. Importantly,
+RevBayes is flexible enough to make the process of comparing these
+models very straightforward. <strong>For the purposes of this exercise,
+specify a lognormal prior on the branch rates.</strong></p>
+
+<p>Because we are dealing with semi-identifiable parameters, it often helps
+to apply a range of moves to the variables representing the branch rates
+and branch times. This will help to improve the mixing of our MCMC. Here
+we will add 2 additional types of moves that act on vectors.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mi++] = mvVectorScale(branch_rates,lambda=1.0,tune=true,weight=2.0) 
+moves[mi++] = mvVectorSingleElementScale(branch_rates,lambda=30.0,tune=true,weight=1.0) 
+</code></pre></div></div>
+
+<p>The mean of the branch rates is a convenient deterministic node to
+monitor, particularly in the screen output when conducting MCMC.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mean_rt := mean(branch_rates) 
+</code></pre></div></div>
+
+<p><strong><em>The Sequence Model and Phylogenetic CTMC</em></strong></p>
+
+<p>Now, specify the stationary frequencies and exchangeability rates of the
+GTR matrix.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sf ~ dnDirichlet(v(1,1,1,1))
+er ~ dnDirichlet(v(1,1,1,1,1,1))
+Q := fnGTR(er,sf)
+moves[mi++] = mvSimplexElementScale(er, alpha=10.0, tune=true, weight=3.0)
+moves[mi++] = mvSimplexElementScale(sf, alpha=10.0, tune=true, weight=3.0)
+</code></pre></div></div>
+
+<p>Now, we can put the whole model together in the phylogenetic CTMC and
+clamp that node with our sequence data.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phySeq ~ dnPhyloCTMC(tree=timetree, Q=Q, branchRates=branch_rates, nSites=n_sites, type="DNA")
+attach the observed sequence data
+phySeq.clamp(D)
+</code></pre></div></div>
+
+<p>Save and close the file called in the <code class="highlighter-rouge">scripts</code> directory.</p>
+
+<p><strong><em>Estimate the Marginal Likelihood</em></strong></p>
+
+<p>Just as we did for the strict clock model, we can execute a
+power-posterior analysis to compute the marginal likelihood under the
+UCLN model.</p>
+
+<p>Open your text editor and create the marginal-likelihood analysis file
+under the global molecular clock model. Call the file: and save it in
+the <code class="highlighter-rouge">scripts</code> directory.</p>
+
+<p>Refer to the section describing this process for the GMC model above.
+Write your own <code class="highlighter-rouge">Rev</code> language script to estimate the marginal likelihood
+under the UCLN model. Be sure to change the file names in all of the
+relevant places (e.g., your output file for the <code class="highlighter-rouge">powerPosterior()</code>
+function should be and be sure to <code class="highlighter-rouge">source()</code> the correct model file ).</p>
+
+<p>Once you have completed this analysis, record the marginal likelihoods
+under the UCLN model in Table [ssTable].</p>
+
+<h2 class="section" id="compute-bayes-factors-and-select-model">Compute Bayes Factors and Select Model</h2>
+
+<p>Now that we have estimates of the marginal likelihood under each of our
+different models, we can evaluate their relative plausibility using
+Bayes factors. Use Table [ssTable] to summarize the marginal
+log-likelihoods estimated using the stepping-stone and path-sampling
+methods.</p>
+
+<p>l c c c c &amp; &amp;\
+&amp; &amp; &amp; &amp;\
+[globalClockSec] Global molecular clock ($M_0$) &amp;</p>
+
+<p>&amp; &amp;</p>
+
+<p>&amp;\
+[UCLNModelSec] Uncorrelated lognormal ($M_1$) &amp;</p>
+
+<p>&amp; &amp;</p>
+
+<p>&amp;\
+\</p>
+
+<p>[ssTable]</p>
+
+<p>Phylogenetics software programs log-transform the likelihood to avoid
+<a href="http://en.wikipedia.org/wiki/Arithmetic_underflow">underflow</a>, because
+multiplying likelihoods results in numbers that are too small to be held
+in computer memory. Thus, we must calculate the ln-Bayes factor (we will
+denote this value $\mathcal{K}$): <script type="math/tex">\begin{aligned}
+\label{LNbfFormula}
+\mathcal{K}=\ln[BF(M_0,M_1)] = \ln[\mathbb{P}(\mathbf X \mid M_0)]-\ln[\mathbb{P}(\mathbf X \mid M_1)],\end{aligned}</script>
+where $\ln[\mathbb{P}(\mathbf X \mid M_0)]$ is the <em>marginal lnL</em>
+estimate for model $M_0$. The value resulting from equation
+[LNbfFormula] can be converted to a raw Bayes factor by simply taking
+the exponent of $\cal{K}$ <script type="math/tex">\begin{aligned}
+\label{LNbfFormula2}
+BF(M_0,M_1) = e^{\cal{K}}.\end{aligned}</script> Alternatively, you can
+interpret the strength of evidence in favor of $M_0$ using the $\cal{K}$
+and skip equation [LNbfFormula2]. In this case, we evaluate the
+$\cal{K}$ in favor of model $M_0$ against model $M_1$ so that:</p>
+
+<hr />
+<p>if $\mathcal{K} &gt; 1$, then model $M_0$ wins
+  if $\mathcal{K} &lt; -1$, then model $M_1$ wins.
+  ———————————————–</p>
+
+<p>Thus, values of $\mathcal{K}$ around 0 indicate ambiguous support.</p>
+
+<p>Using the values you entered in Table [ssTable] and equation
+[LNbfFormula], calculate the ln-Bayes factors (using $\mathcal{K}$)
+for the different model comparisons. Enter your answers in Table
+[bfTable] using the stepping-stone and the path-sampling estimates of
+the marginal log likelihoods.</p>
+
+<p>l c c c c &amp; &amp;\
+&amp; &amp; &amp; &amp;\
+$M_0,M_1$ &amp;</p>
+
+<p>&amp; &amp;</p>
+
+<p>&amp;\
+Supported model? &amp;</p>
+
+<p>&amp; &amp;</p>
+
+<p>&amp;\
+\</p>
+
+<p>[bfTable]</p>
+
+<h2 class="section" id="estimate-the-topology-and-branch-times">Estimate the Topology and Branch Times</h2>
+
+<p>After computing the Bayes factors and determining the relative support
+of each model, you can choose your favorite model among the three tested
+in this tutorial. The next step, then, is to use MCMC to jointly
+estimate the tree topology and branch times.</p>
+
+<p>Open your text editor and create the MCMC analysis file under the your
+favorite clock model. Call the file: and save it in the <code class="highlighter-rouge">scripts</code>
+directory.</p>
+
+<p>This file will contain much of the same initial <code class="highlighter-rouge">Rev</code> code as the files
+you wrote for the marginal-likelihood analyses.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>### Load the sequence alignment
+D &lt;- readDiscreteCharacterData(file="data/bears_irbp.nex")
+
+### get helpful variables from the data
+n_sites &lt;- D.nchar(1)
+
+### initialize an iterator for the moves vector
+mi = 1
+</code></pre></div></div>
+
+<p>This is how you should begin your MCMC analysis file. The next step is
+to source the birth-death model.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>### set up the birth-death model from file
+source("scripts/m_BDP_bears.Rev")
+</code></pre></div></div>
+
+<p>Next load the file containing your favorite model (where the wildcard
+<code class="highlighter-rouge">\*</code> indicates the name of the model you prefer: <code class="highlighter-rouge">GMC</code>, <code class="highlighter-rouge">UCLN</code>, or
+<code class="highlighter-rouge">ACLN</code>).</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>### load the model from file 
+source("scripts/m_*_bears.Rev")
+
+### workspace model wrapper ###
+mymodel = model(er)
+</code></pre></div></div>
+
+<p><strong><em>MCMC Monitors</em></strong></p>
+
+<p>Before you instantiate the MCMC workspace object, you need to create a
+vector of “monitors” that are responsible for monitoring parameter
+values and saving those to file or printing them to the screen.</p>
+
+<p>First, create a monitor of all the model parameters except the
+<code class="highlighter-rouge">timetree</code> using the model monitor: <code class="highlighter-rouge">mnModel</code>. This monitor takes <em>all</em>
+of the named parameters in the model DAG and saves their value to a
+file. Thus, every variable that you gave a name in your model files will
+be written to your log file. This makes it very easy to get an analysis
+going, but can generate very large files with a lot of redundant output.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[1] = mnModel(filename="output/TimetTree_bears_mcmc.log", printgen=10)
+</code></pre></div></div>
+
+<p>If the model monitor is too verbose for your needs, you should use the
+file monitor instead: <code class="highlighter-rouge">mnFile</code>. For this monitor, you have to provide
+the names of all the parameters you’re interested in after the file name
+and print interval. (Refer to the example files for how to set up the
+file monitor for model parameters.)</p>
+
+<p>In fact, we use the file monitor for saving the sampled chronograms to
+file. It is important that you <em>do not</em> save the sampled trees in the
+same file with other numerical parameters you would like to summarize.
+That is because tools for reading MCMC log files—like
+<a href="http://tree.bio.ed.ac.uk/software/tracer/">Tracer</a> (missing reference)—cannot
+load files with non-numerical states. Therefore, you must save the
+sampled trees to a different file.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[2] = mnFile(filename="output/TimeTree_bears_mcmc.trees", printgen=10, timetree)
+</code></pre></div></div>
+
+<p>Finally, we will create a monitor in charge of writing information to
+the screen: <code class="highlighter-rouge">mnScreen</code>. We will report the root age and the age of the
+MRCA of all Ursidae to the screen. If there is anything else you’d like
+to see in your screen output (e.g., the mean rate of the UCLN or ACLN
+model), feel free to add them to the list of parameters give to this
+model.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[3] = mnScreen(printgen=10, root_time, tmrca_Ursidae)
+</code></pre></div></div>
+
+<p><strong><em>Setting-Up &amp; Executing the MCMC</em></strong></p>
+
+<p>Now everything is in place to create the MCMC object in the workspace.
+This object allows you to perform a burn-in, execute a run of a given
+length, continue an analysis that might not have reached stationarity,
+and summarize the performance of the various proposals.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves)
+</code></pre></div></div>
+
+<p>With this object instantiated, specify a burn-in period that will sample
+parameter space while re-tuning the proposals (only for the moves with
+<code class="highlighter-rouge">tune=true</code>). The monitors do not sample the states of the chain during
+burn-in.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.burnin(generations=2000,tuningInterval=100)
+</code></pre></div></div>
+
+<p>Once the burn-in is complete, we want the analysis to run the full MCMC.
+Specify the length of the chain.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=5000)
+</code></pre></div></div>
+
+<p>When the MCMC run has completed, it’s often good to evaluate the
+acceptance rates of the various proposal mechanisms. The
+<code class="highlighter-rouge">.operatorSummary()</code> member method of the MCMC object prints a table
+summarizing each of the parameter moves to the screen.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.operatorSummary()
+</code></pre></div></div>
+
+<p><strong><em>Summarize the Sampled Time-Trees</em></strong></p>
+
+<p>During the MCMC, the sampled trees will be written to a file that we
+will summarize using the <code class="highlighter-rouge">mapTree</code> function in RevBayes. This first
+requires that you add the code for reading in the tree-trace file and
+performing an analysis of those trees.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tt = readTreeTrace("output/TimeTree_bears_mcmc.trees", "clock")
+tt.summarize()
+
+### write MAP tree to file
+mapTree(tt, "output/TimeTree_bears_mcmc_MAP.tre")
+</code></pre></div></div>
+
+<p>Save and close the file called in the <code class="highlighter-rouge">scripts</code> directory. Then, execute
+the MCMC analysis using:</p>
+
+<p>Version dated:</p>
+
+<ol class="bibliography"><li><span id="DosReis2012">dos Reis M., Inoue J., Hasegawa M., Asher R.J., Donoghue P.C.J., Yang Z. 2012. Phylogenomic datasets provide both precision and accuracy in estimating the timescale of placental mammal phylogeny. Proceedings of the Royal Society B: Biological Sciences. 279:3491–3500.</span>
+
+<a href="https://doi.org/10.1098/rspb.2012.0683">10.1098/rspb.2012.0683</a>
+
+</li></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2>References</h2>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/revbayes-site/license/">License</a> | <a href="/revbayes-site/citation/">Cite RevBayes</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/revbayes-site/assets/js/vendor/jquery.min.js"></script>
+<script src="/revbayes-site/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/revbayes-site/assets/js/vendor/jszip.min.js"></script>
+<script src="/revbayes-site/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+
+<script src="/revbayes-site/assets/js/base.js"></script>
+
+<script type="text/javascript"
+    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+  });
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,1449 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/revbayes-site/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/revbayes-site/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/revbayes-site/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/revbayes-site/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/revbayes-site/assets/css/main.css" />
+    <title>RevBayes: State-dependent diversification rate estimation</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/revbayes-site/" class="pull-left">
+        <img class="navbar-logo" src="/revbayes-site/assets/img/aquabayes-desaturated.png" alt="RevBayes Logo" />
+      </a>
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/revbayes-site/software/">Software</a></li>
+        <li><a href="/revbayes-site/tutorials/">Tutorials</a></li>
+        <li><a href="/revbayes-site/workshops/">Workshops</a></li>
+        <li><a href="/revbayes-site/developer/">Developer</a></li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <div class="row">
+	<h1 class="maintitle">State-dependent diversification rate estimation</h1>
+	<h3 class="subtitle">Inference using state-dependent speciation and extinction (SSE) branching processes</h3>
+	<h4 class="maintitle">Sebastian H&#246;hna, Will Freyman, and Emma Goldberg</h4>
+</div>
+
+
+<blockquote class="overview no-print" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul id="prerequisites">
+          
+            <li><a href="/revbayes-site/tutorials/intro/intro.html">Statistical Inference Using RevBayes</a></li>
+          
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+<blockquote class="tutorial_files no-print" id="tutorial_files">
+  <h2>Data files and scripts</h2>
+  
+    <div class="row" id="script_row">
+      <div class="col-md-9">
+          <strong>Scripts</strong>
+          <ul id="scripts"></ul>
+        </div>
+    </div>
+</blockquote>
+<h1 id="estimating-character-state-dependent-speciation--extinction-rates-estimating-character-state-dependent-speciation-extinction-rates-unnumbered">Estimating Character State-Dependent Speciation &amp; Extinction Rates {#estimating-character-state-dependent-speciation-extinction-rates .unnumbered}</h1>
+
+<h2 id="introduction-introduction-unnumbered">Introduction {#introduction .unnumbered}</h2>
+
+<p>This tutorial describes how to specify character state-dependent
+branching process models in ‘RevBayes‘. Frequently referred to as
+state-dependent speciation and extinction (SSE) models, these models are
+a birth-death process where the diversification rates are dependent on
+the state of an evolving character. The original model of this type
+considered a binary character (a trait with two discrete state values;
+called BiSSE, @Maddison2007). Several variants have also been developed
+for other types of traits
+(missing reference).</p>
+
+<p>We will outline the theory behind this method, and then you will fit it
+to data using Markov chain Monte Carlo (MCMC). ‘RevBayes‘ is a powerful
+tool for SSE analyses. After working through this tutorial you should be
+able to set up custom SSE models and use them to infer
+character-dependent diversification rates and ancestral states. We also
+provide examples of how to plot the results using the ‘Rev‘Gadgets R
+package.</p>
+
+<h2 id="contents-contents-unnumbered">Contents {#contents .unnumbered}</h2>
+
+<p>The State-Dependent Speciation and Extinction tutorial contains several
+sections:</p>
+
+<ul>
+  <li>
+    <p>Section [sec:diversification_rate_overview]: Introduction to
+diversification rate estimation</p>
+  </li>
+  <li>
+    <p>Section [sec:models]: Theory behind diversification rate models</p>
+  </li>
+  <li>
+    <p>Section [sec:BiSSE_Theory]: Theory behind SSE models</p>
+  </li>
+  <li>
+    <p>Section [sec:CDBDP]: Running a BiSSE/MuSSE analysis in ‘RevBayes‘</p>
+  </li>
+  <li>
+    <p>Section [sec:HiSSE_Theory]: Running a HiSSE analysis in
+‘RevBayes‘</p>
+  </li>
+  <li>
+    <p>Section [sec:ClaSSE]: Running a ClaSSE analysis in ‘RevBayes‘</p>
+  </li>
+</ul>
+
+<h2 id="requirements-requirements-unnumbered">Requirements {#requirements .unnumbered}</h2>
+
+<p>We assume that you have read and hopefully completed the following
+tutorials:</p>
+
+<ul>
+  <li>
+    <p><a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Getting_Started/RB_Getting_Started.pdf">Getting
+started</a></p>
+  </li>
+  <li>
+    <p><a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Intro_Tutorial/RB_Intro_Tutorial.pdf">Very Basic Introduction to
+‘Rev‘</a></p>
+  </li>
+  <li>
+    <p><a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Rev_Tutorial/RB_Rev_Tutorial.pdf">General Introduction to the ‘Rev‘
+syntax</a></p>
+  </li>
+  <li>
+    <p><a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_MCMC_Archery_Tutorial/RB_MCMC_Archery_Tutorial.pdf">General Introduction to MCMC using an archery
+example</a></p>
+  </li>
+  <li>
+    <p><a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_MCMC_Binomial_Tutorial/RB_MCMC_Binomial_Tutorial.pdf">General Introduction to MCMC using a coin-flipping
+example</a></p>
+  </li>
+  <li>
+    <p><a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_DiversificationRate_Tutorial/RB_DiversificationRate_Tutorial.pdf">Basic Diversification Rate
+Estimation</a></p>
+  </li>
+</ul>
+
+<p>Note that the <a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Intro_Tutorial/RB_Intro_Tutorial.pdf">‘Rev‘ basics
+tutorial</a>
+introduces the basic syntax of ‘Rev‘ but does not cover any phylogenetic
+models. We tried to keep this tutorial very basic and introduce all the
+language concepts and theory on the way. You may only need the <a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Rev_Tutorial/RB_Rev_Tutorial.pdf">‘Rev‘
+syntax
+tutorial</a>
+for a more in-depth discussion of concepts in ‘Rev‘.</p>
+
+<h1 id="data-and-files-secdata_files-unnumbered">Data and files {#sec:data_files .unnumbered}</h1>
+
+<p>We provide the data files which we will use in this tutorial. You may
+want to use your own data instead. In the ‘data‘ folder, you will find
+the following files:</p>
+
+<ul>
+  <li>
+    <p><a href="https://github.com/revbayes/revbayes_tutorial/raw/master/RB_DiversificationRate_CharacterDependent_Tutorial/data/primates_tree.nex">primates_tree.nex</a>:
+Dated primate phylogeny including 233 out of 367 species. (This tree
+is from @MagnusonFord2012, who took it from @Vos2006 and then
+randomly resolved the polytomies using the method of @Kuhn2011.)</p>
+  </li>
+  <li>
+    <p><a href="https://github.com/revbayes/revbayes_tutorial/raw/master/RB_DiversificationRate_CharacterDependent_Tutorial/data/primates_morph.nex">primates_morph.nex</a>:
+A set of several discrete-valued characters. The characters are
+described in the file
+<a href="https://github.com/revbayes/revbayes_tutorial/raw/master/RB_DiversificationRate_CharacterDependent_Tutorial/data/primates_morph_description.txt">primates_morph_description.txt</a>.</p>
+  </li>
+  <li>
+    <p><a href="https://github.com/revbayes/revbayes_tutorial/raw/master/RB_DiversificationRate_CharacterDependent_Tutorial/data/primates_biogeo.tre">primates_biogeo.tre</a>:
+A dated phylogeny of the 23 primate species.</p>
+  </li>
+  <li>
+    <p><a href="https://github.com/revbayes/revbayes_tutorial/raw/master/RB_DiversificationRate_CharacterDependent_Tutorial/data/primates_biogeo.tsv">primates_biogeo.tsv</a>:
+Biogeographic range data for 23 primate species.</p>
+  </li>
+</ul>
+
+<p>Open the tree files ‘primates_tree.nex‘ and
+‘primates_biogeo.tre‘ in FigTree.</p>
+
+<p>Open the character data files ‘primates_morph.nex‘ and
+‘primates_biogeo.tsv‘ in a text editor.</p>
+
+<h1 id="sec:diversification_rate_overview">Overview: Diversification Rate Estimation</h1>
+
+<p>Models of speciation and extinction are fundamental to any phylogenetic
+analysis of macroevolutionary processes
+(<em>e.g.,</em>divergence time estimation,
+diversification rate estimation, continuous and discrete trait
+evolution, and historical biogeography). First, a prior model describing
+the distribution of speciation events over time is critical to
+estimating phylogenies with branch lengths proportional to time. Second,
+stochastic branching models allow for inference of speciation and
+extinction rates. These inferences allow us to investigate key questions
+in evolutionary biology.</p>
+
+<p>Diversification-rate parameters may be included as nuisance parameters
+of other phylogenetic models—<em>i.e.,</em>where
+these diversification-rate parameters are not of direct interest. For
+example, many methods for estimating species divergence times—such as
+<code class="highlighter-rouge">BEAST</code><a href="#Drummond2012">(Drummond et al. 2012)</a>,
+<code class="highlighter-rouge">MrBayes</code><a href="#Ronquist2012">(Ronquist et al. 2012)</a>, and
+<code class="highlighter-rouge">RevBayes</code><a href="#Hoehna2016b">(Höhna et al. 2016)</a>—implement ‘relaxed-clock models’
+that include a constant-rate birth-death branching process as a prior
+model on the distribution of tree topologies and node ages. Although the
+parameters of these ‘tree priors’ are not typically of direct interest,
+they are nevertheless estimated as part of the joint posterior
+probability distribution of the relaxed-clock model, and so can be
+estimated simply by querying the corresponding marginal posterior
+probability densities. In fact, this may provide more robust estimates
+of the diversification-rate parameters, as they accommodate uncertainty
+in the other phylogenetic-model parameters (including the tree topology,
+divergence-time estimates, and the other relaxed-clock model
+parameters). More recent work,
+<em>e.g.,</em>@Heath2014, uses macroevolutionary
+models (the fossilized birth-death process) to calibrate phylogenies and
+thus to infer dated trees.</p>
+
+<p>In these tutorials we focus on the different types of macroevolutionary
+models to study diversification processes and thus the
+diversification-rate parameters themselves. Nevertheless, these
+macroevolutionary models should be used for other evolutionary
+questions, when an appropriate prior distribution on the tree and
+divergence times is needed.</p>
+
+<h2 id="types-of-hypotheses-for-estimating-diversification-rates">Types of Hypotheses for Estimating Diversification Rates</h2>
+
+<p>Many evolutionary phenomena entail differential rates of diversification
+(speciation – extinction); <em>e.g.,</em>adaptive
+radiation, diversity-dependent diversification, key innovations, and
+mass extinction. The specific study questions regarding lineage
+diversification may be classified within three fundamental categories of
+inference problems. Admittedly, this classification scheme is somewhat
+arbitrary, but it is nevertheless useful, as it allows users to navigate
+the ever-increasing number of available phylogenetic methods. Below, we
+describe each of the fundamental questions regarding diversification
+rates.</p>
+
+<h4 id="1-diversification-rate-through-time-estimation">(1) Diversification-rate through time estimation</h4>
+
+<p><em>What is the (constant) rate of diversification in my study group?</em> The
+most basic models estimate parameters of the stochastic-branching
+process (<em>i.e.,</em>rates of speciation and
+extinction, or composite parameters such as net-diversification and
+relative-extinction rates) under the assumption that rates have remained
+constant across lineages and through time;
+<em>i.e.,</em>under a constant-rate birth-death
+stochastic-branching process model <a href="#Nee1994b">(Nee et al. 1994)</a>. Extensions to the
+(basic) constant-rate models include diversification-rate variation
+through time (missing reference). First, we might ask whether
+there is evidence of an episodic, tree-wide increase in diversification
+rates (associated with a sudden increase in speciation rate and/or
+decrease in extinction rate), as might occur during an episode of
+adaptive radiation. A second question asks whether there is evidence of
+a continuous/gradual decrease in diversification rates through time
+(associated with decreasing speciation rates and/or increasing
+extinction rates), as might occur because of diversity-dependent
+diversification (<em>i.e.,</em>where competitive
+ecological interactions among the species of a growing tree decrease the
+opportunities for speciation and/or increase the probability of
+extinction, <em>e.g.,</em>@Hoehna2014a). Third, we
+can ask whether changes in diversification rates are correlated with
+environmental factors, such as environmental CO~2~ or temperature
+<a href="#Condamine2013">(Condamine et al. 2013)</a>. A final question in this category asks whether our
+study tree was impacted by a mass-extinction event (where a large
+fraction of the standing species diversity is suddenly lost,
+<em>e.g.,</em>@May2016). The common theme of these
+studies is that the diversification process is tree-wide, that is, all
+lineages of the study group have the exact same rates at a given time.</p>
+
+<h4 id="2-diversification-rate-variation-across-branches-estimation">(2) Diversification-rate variation across branches estimation</h4>
+
+<p><em>Is there evidence that diversification rates have varied significantly
+across the branches of my study group?</em> Models have been developed to
+detect departures from rate constancy across lineages; these tests are
+analogous to methods that test for departures from a molecular
+clock—<em>i.e.,</em>to assess whether substitution
+rates vary significantly across lineages (missing reference).
+These models are important for assessing whether a given tree violates
+the assumptions of rate homogeneity among lineages. Furthermore, these
+models are important to answer questions such as: <em>What are the
+branch-specific diversification rates?</em>; and <em>Have there been
+significant diversification-rate shifts along branches in my study
+group, and if so, how many shifts, what magnitude of rate-shifts and
+along which branches?</em></p>
+
+<h4 id="3-character-dependent-diversification-rate-estimation">(3) Character-dependent diversification-rate estimation</h4>
+
+<p><em>Are diversification rates correlated with some variable in my study
+group?</em> Character-dependent diversification-rate models aim to identify
+overall correlations between diversification rates and organismal
+features (binary and multi-state discrete morphological traits,
+continuous morphological traits, geographic range, etc.). For example,
+one can hypothesize that a binary character, say if an organism is
+herbivorous/carnivorous or self-compatible/self-incompatible, impact the
+diversification rates. Then, if the organism is in state 0
+(<em>e.g.,</em>is herbivorous) it has a lower (or
+higher) diversification rate than if the organism is in state 1
+(<em>e.g.,</em>carnivorous) <a href="#Maddison2007">(Maddison et al. 2007)</a>.</p>
+
+<h1 id="sec:models">Diversification Rate Models</h1>
+
+<p>We begin this section with a general introduction to the stochastic
+birth-death branching process that underlies inference of
+diversification rates in <code class="highlighter-rouge">RevBayes</code>. This primer will
+provide some details on the relevant theory of stochastic-branching
+process models. We appreciate that some readers may want to skip this
+somewhat technical primer; however, we believe that a better
+understanding of the relevant theory provides a foundation for
+performing better inferences. We then discuss a variety of specific
+birth-death models, but emphasize that these examples represent only a
+tiny fraction of the possible diversification-rate models that can be
+specified in <code class="highlighter-rouge">RevBayes</code>.</p>
+
+<h2 id="the-birth-death-branching-process">The birth-death branching process</h2>
+
+<p>Our approach is based on the <em>reconstructed evolutionary process</em>
+described by @Nee1994b; a birth-death process in which only sampled,
+extant lineages are observed. Let $N(t)$ denote the number of species at
+time $t$. Assume the process starts at time $t_1$ (the ‘crown’ age of
+the most recent common ancestor of the study group, $t_\text{MRCA}$)
+when there are two species. Thus, the process is initiated with two
+species, $N(t_1) = 2$. We condition the process on sampling at least one
+descendant from each of these initial two lineages; otherwise $t_1$
+would not correspond to the $t_\text{MRCA}$ of our study group. Each
+lineage evolves independently of all other lineages, giving rise to
+exactly one new lineage with rate $b(t)$ and losing one existing lineage
+with rate $d(t)$ (Figure [fig:BirthDeathShift] and
+Figure [fig:BDP]). Note that although each lineage evolves
+independently, all lineages share both a common (tree-wide) speciation
+rate $b(t)$ and a common extinction rate $d(t)$
+(missing reference) for arbitrary rate functions.</p>
+
+<p>To compute the equation above we need to know the rate function,
+$r(t,s) = \int_t^s d(x)-b(x) dx$, and the probability of survival,
+$P(N(T)!&gt;!0|N(t)!=!1)$. @Yule1925 and later @Kendall1948 derived the
+probability that a process survives ($N(T) &gt; 0$) and the probability of
+obtaining exactly $n$ species at time $T$ ($N(T) = n$) when the process
+started at time $t$ with one species. Kendall’s results were summarized
+in Equation (3) and Equation (24) in @Nee1994b <script type="math/tex">% <![CDATA[
+\begin{aligned}
+P(N(T)\!>\!0|N(t)\!=\!1) & = & \left(1+\int\limits_t^{T} \bigg(\mu(s) \exp(r(t,s))\bigg) ds\right)^{-1} \label{eq:survival} \\ \nonumber \\
+P(N(T)\!=\!n|N(t)\!=\!1) & = & (1-P(N(T)\!>\!0|N(t)\!=\!1)\exp(r(t,T)))^{n-1} \nonumber\\
+& & \times P(N(T)\!>\!0|N(t)\!=\!1)^2 \exp(r(t,T)) \label{eq:N} %]]></script> An
+overview for different diversification models is given in @Hoehna2015a.</p>
+
+<p><strong><em>Sidebar: Phylogenetic trees as observations</em></strong></p>
+
+<p>The branching processes used here describe probability distributions on
+phylogenetic trees. This probability distribution can be used to infer
+diversification rates given an “observed” phylogenetic tree. In reality
+we never observe a phylogenetic tree itself. Instead, phylogenetic trees
+themselves are estimated from actual observations, such as DNA
+sequences. These phylogenetic tree estimates, especially the divergence
+times, can have considerable uncertainty associated with them. Thus, the
+correct approach for estimating diversification rates is to include the
+uncertainty in the phylogeny by, for example, jointly estimating the
+phylogeny and diversification rates. For the simplicity of the following
+tutorials, we take a shortcut and assume that we know the phylogeny
+without error. For publication quality analysis you should always
+estimate the diversification rates jointly with the phylogeny and
+divergence times.</p>
+
+<h1 id="sec:BiSSE_Theory">Theory behind state-dependent diversification models</h1>
+
+<p>The Binary State Speciation and Extinction model (BiSSE} (missing reference) can be thrown off if the transition
+rates are asymmetric. BiSSE and related models are now mostly used to
+assess if the states of a character are associated with different rates
+of speciation or extinction.</p>
+
+<p>‘RevBayes‘ implements the extension of BiSSE to any number of discrete
+states (i.e., the MuSSE model in <code class="highlighter-rouge">diversitree</code>;
+@FitzJohn2012). We will first describe the general theory about the
+model; you may skip over this section if you are not interested in the
+math behind the model. Then we will show how to run an analysis in
+‘RevBayes‘.</p>
+
+<p><img src="figures/BiSSE.png" alt="" /></p>
+<blockquote>
+  <p>Estimated ancestral states for the
+activity period of primates.</p>
+</blockquote>
+
+<h2 id="general-approach">General approach</h2>
+
+<p>The <code class="highlighter-rouge">BiSSE</code>model assumes two discrete states
+(<em>i.e.,</em>a binary character), and that the
+state of each extant species is known
+(<em>i.e.,</em>the discrete-valued character is
+observed). The general approach adopted by <code class="highlighter-rouge">BiSSE</code>and
+related models is to derive a set of ordinary differential equations
+(ODEs) that describe how the probability of observing a descendant clade
+changes along a branch in the observed phylogeny. Each equation in this
+set describes how the probability of observing a clade changes through
+time if it is in a particular state over that time period; collectively,
+these equations are called $\frac{ \mathrm{d}D_{N,i}(t)}{\mathrm{d}t}$,
+where $i$ is the state of a lineage at time $t$ and $N$ is the clade
+descended from that lineage.</p>
+
+<p>Computing the likelihood proceeds by establishing an initial value
+problem. We initialize the procedure by observing the character states
+of some lineages, generally the tip states. Then starting from those
+probabilities (<em>e.g.,</em>species X has state 0
+with probability 1 at the present), we describe how those probabilities
+change over time (described by the ODEs), working our way back until we
+have computed the probabilities of observing that collection of lineages
+at some earlier time (<em>e.g.,</em>the root).</p>
+
+<p>As we integrate from the tips to the root, we need to deal with branches
+coming together at nodes. Assuming that the parent and daughter lineages
+have the same state, we multiply together the probabilities that the
+daughters are state $i$ and the instantaneous speciation rate
+$\lambda_i$ to get the initial value for the ancestral branch subtending
+that node.</p>
+
+<p>Proceeding in this way down the tree results in a set of $k$
+probabilities at the root; these $k$ probabilities represent the
+probability of observing the phylogeny conditional on the root being in
+each of the states (<em>i.e.,</em>the $i^\text{th}$
+conditional probability is the probability of observing the tree given
+that the root is in state $i$). The overall likelihood of the tree is a
+weighted average of the $k$ probabilities at the root, where the
+weighting scheme represents the assumed probability that the root was in
+each of the $k$ states.</p>
+
+<p>As with all birth-death process models, special care must be taken to
+account for the possibility of extinction. Specifically, the above ODEs
+must accommodate lineages that may arise along each branch in the tree
+that subsequently go extinct before the present (and so are unobserved).
+This requires a second set of $k$ ODEs,
+$\frac{ \mathrm{d}E_{i}(t)}{\mathrm{d}t}$, which define how the
+probability of eventual extinction from state $i$ changes over time.
+These ODEs must be solved to compute the differential equations
+$\frac{ \mathrm{d}D_{N,i}(t)}{\mathrm{d}t}$. We will derive both sets of
+equations in the following sections.</p>
+
+<h2 id="derivation-for-the-binary-state-birth-death-process">Derivation for the binary state birth-death process</h2>
+
+<p>The derivation here follows the original description in @Maddison2007.
+Consider a (time-independent) birth-death process with two possible
+states (a binary character), with diversification rates
+${\lambda_0, \mu_0}$ and ${\lambda_1, \mu_1}$.</p>
+
+<h3 id="clade-probabilities-d_n-i">Clade probabilities, $D_{N, i}$</h3>
+
+<p>We define $D_{N,0}(t)$ as the probability of observing lineage $N$
+descending from a particular branch at time $t$, given that the lineage
+at that time is in state 0. To compute the probability of observing the
+lineage at some earlier time point, $D_{N,0}(t + \Delta t)$, we
+enumerate all possible events that could occur within the interval
+$\Delta t$. Assuming that $\Delta t$ is small—so that the probability of
+more than one event occurring in the interval is negligible—there are
+four possible scenarios within the time interval
+(Fig. [fig:BiSSE_Events_D]):</p>
+
+<ol>
+  <li>
+    <p>nothing happens;</p>
+  </li>
+  <li>
+    <p>a transition occurs, so the state changes $0 \rightarrow 1$;</p>
+  </li>
+  <li>
+    <p>a speciation event occurs, and the right descendant subsequently
+goes extinct before the present, or;</p>
+  </li>
+  <li>
+    <p>a speciation event occurs and the left descendant subsequently goes
+extinct before the present.</p>
+  </li>
+</ol>
+
+<p>We are describing events within a branch of the tree (not at a node), so
+for (3) and (4), we require that one of the descendant lineages go
+extinct before the present because we do not observe a node in the tree
+between $t$ and $t + \Delta t$.</p>
+
+<p><img src="figures/BiSSE_Events_D.png" alt="" /></p>
+<blockquote>
+  <p>Estimated ancestral states
+for the activity period of primates.</p>
+</blockquote>
+
+<p>We can thus compute $D_{N,0}(t + \Delta t)$ as: <script type="math/tex">% <![CDATA[
+\begin{aligned}
+	D_{N,0}(t + \Delta t) = & \;(1 - \mu_0 \Delta t) \times & \text{in all cases, no extinction of the observed lineage} \\
+                         & \;[  (1 - q_{01} \Delta t)(1 - \lambda_0 \Delta t) D_{N,0}(t) & \text{case (1) nothing happens} \\
+                         & \; + (q_{01} \Delta t) (1 - \lambda_0 \Delta t) D_{N,1}(t) & \text{case (2) state change but no speciation} \\
+                         & \; + (1 - q_{01} \Delta t) (\lambda_0 \Delta t) E_0(t) D_{N,0}(t) & \text{case (3) no state change, speciation, extinction} \\
+                         & \; + (1 - q_{01} \Delta t) (\lambda_0 \Delta t) E_0(t) D_{N,0}(t)] & \text{case (4) no state change, speciation, extinction}\end{aligned} %]]></script>
+A matching equation can be written down for $D_{N,1}(t+\Delta t)$.</p>
+
+<p>To convert these difference equations into differential equations, we
+take the limit $\Delta t \rightarrow 0$. With the notation that $i$ can
+be either state 0 or state 1, and $j$ is the other state, this yields:
+<script type="math/tex">\frac{\mathrm{d}D_{N,i}(t)}{\mathrm{d}t} = - \left(\lambda_i + \mu_i + q_{ij} \right) D_{N,i}(t) + q_{ij} D_{N,j}(t) + 2 \lambda_i E_i(t) D_{N,i}(t)
+    \label{eq:BiSSE_D}</script></p>
+
+<h3 id="extinction-probabilities-e_i">Extinction probabilities, $E_i$</h3>
+
+<p>To solve the above equations for $D_{N, i}$, we see that we need the
+extinction probabilities. Define $E_0(t)$ as the probability that a
+lineage in state 0 at time $t$ goes extinct before the present. To
+determine the extinction probability at an earlier point,
+$E_0(t+\Delta t)$, we can again enumerate all the possible events in the
+interval $\Delta t$ (Fig. [fig:BiSSE_Events_E]):</p>
+
+<ol>
+  <li>
+    <p>the lineage goes extinct within the interval;</p>
+  </li>
+  <li>
+    <p>the lineage neither goes extinct nor speciates, resulting in a
+single lineage that must eventually go extinct before the present;</p>
+  </li>
+  <li>
+    <p>the lineage neither goes extinct nor speciates, but there is a state
+change, resulting in a single lineage that must go extinct before
+the present, or;</p>
+  </li>
+  <li>
+    <p>the lineage speciates in the interval, resulting in <em>two</em> lineages
+that must eventually go extinct before the present.</p>
+  </li>
+</ol>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{aligned}
+    E_0(t + \Delta t) = &\; \mu_0\Delta t + 
+	                 & \text{case (1) extinction in the interval} \\
+				     & (1 - \mu_0\Delta t) \times & \text{no extinction in the interval and \dots} \\
+				     & \;[(1-q_{01}\Delta t)(1-\lambda_0 \Delta t) E_0(t) & \text{case (2) nothing happens, but subsequent extinction} \\
+                     & \;+ (q_{01}\Delta t) (1-\lambda_0 \Delta t) E_1(t) & \text{case (3) state change and subsequent extinction} \\
+                     & \;+ (1 - q_{01} \Delta t) (\lambda_0 \Delta t) E_0(t)^2] & \text{case (4) speciation and subsequent extinctions}\end{aligned} %]]></script>
+
+<p>Again, a matching equation for $E_1(t+\Delta t)$ can be written down.</p>
+
+<p><img src="figures/BiSSE_Events_E.png" alt="" /></p>
+<blockquote>
+  <p>Estimated ancestral states
+for the activity period of primates.</p>
+</blockquote>
+
+<p>To convert these difference equations into differential equations, we
+again take the limit $\Delta t \rightarrow 0$:
+<script type="math/tex">\frac{\mathrm{d}E_i(t)}{\mathrm{d}t} = \mu_i - \left(\lambda_i + \mu_i + q_{ij} \right)E_i(t) + q_{ij} E_j(t) + \lambda_i E_i(t)^2
+    \label{eq:BiSSE_E}</script></p>
+
+<h3 id="initial-values-tips-and-sampling">Initial values: tips and sampling</h3>
+
+<p>The equations above describe how to get the answer at time
+$t + \Delta t$ assuming we already have the answer at time $t$. How do
+we start this process? The answer is with our character state
+observations, which are generally the tip state values. If species $s$
+has state $i$, then $D_{s,i}(0) = 1$ (probability is 1 at time 0 [the
+present] because we observed it for sure) and $E_i(0) = 0$ (probability
+0 of being extinct at the present). For all states other than $i$,
+$D_{s,j}(0) = 0$ and $E_j(0) = 1$.</p>
+
+<p>We can adjust these initial conditions to allow for incomplete sampling.
+If a proportion $\rho$ of species are included on the tree, we would
+instead set $D_{s,i}(0) = \rho$ (probability of having state $s$ <em>and</em>
+of being on the tree) and $E_i(0) = 1-\rho$ (probability of absent, due
+to sampling rather than extinction). This simple form of incomplete
+sampling assumes that any species is equally likely to be on the tree
+<a href="#FitzJohn2009">(FitzJohn et al. 2009)</a>.</p>
+
+<h3 id="at-nodes">At nodes</h3>
+
+<p>Equations ([eq:BiSSE_D]) and ([eq:BiSSE_E]) are the BiSSE ODEs,
+describing probabilities along the branches of a phylogeny. We also need
+to specify what happens with the clade probabilities (the $D$s) at the
+nodes of the tree. BiSSE assumes the ancestor (called $A$) and
+descendants (called $N$ and $M$) have the same state
+(<em>i.e.,</em>there is no cladogenetic character
+change). The initial value for the ancestral branch going into a node
+(at time $t_A$) is then the product of the final values for each of the
+daughter branches coming out of that node, times the instantaneous
+speciation rate (to account for the observed speciation event):
+<script type="math/tex">D_{A, i}(t_A) = D_{N, i}(t_A) D_{M, i}(t_A) \lambda_i
+    \label{eq:BiSSE_node}</script></p>
+
+<h3 id="at-the-root">At the root</h3>
+
+<p>After we integrate Equations ([eq:BiSSE_D]) and ([eq:BiSSE_E])
+from the tips to the root, dealing with nodes along the way via
+Equation ([eq:BiSSE_node]), we arrive at the root with the $D$ values
+(called $D_{R, i}$), one for each state. These need to be combined
+somehow to get the overall likelihood of the data:</p>
+
+<script type="math/tex; mode=display">\text{Likelihood(tree, tip states | model)} = \sum_i D_{R, i} \, p_{R, i}</script>
+
+<p>What probability weighting, $p_{R, i}$ should be used for the possible
+root states? Sometimes a fixed approach is used, assuming that the prior
+root state probabilities are either all equal, or are the same as the
+observed tip state frequencies, or are the equilibrium state frequencies
+under the model parameters. These assumptions do not have a real basis,
+however (unless there is some external data that supports them), and
+they can cause trouble <a href="#Goldberg2008">(Goldberg and Igić 2008)</a>. An alternative is to use the
+BiSSE probabilities themselves to determine the root state weightings,
+essentially adjusting the weightings to be most consistent with the data
+and BiSSE parameters <a href="#FitzJohn2009">(FitzJohn et al. 2009)</a>. Perhaps better is to treat the
+weightings as unknown parameters to be estimated. These estimates are
+usually quite uncertain, but in a Bayesian framework, one can treat the
+$p_{R, i}$ as nuisance parameters and integrate over them.</p>
+
+<dl>
+  <dt>Parameter     Interpretation                            </dt>
+  <dt>  ————- —————————————– –</dt>
+  <dt>  $\Psi$        Phylogenetic tree with divergence times   </dt>
+  <dt>  $T$           Root age                                  </dt>
+  <dt>  $q_{01}$      Rate of transitions from 0 to 1           </dt>
+  <dt>  $q_{10}$      Rate of transitions from 1 to 0           </dt>
+  <dt>  $\lambda_0$   Speciation rate for state 0               </dt>
+  <dt>  $\mu_0$       Extinction rate for state 0               </dt>
+  <dt>  $\lambda_1$   Speciation rate for state 1               </dt>
+  <dt>  $\mu_1$       Extinction rate for state 1</dt>
+  <dd>
+    <p><strong><code class="highlighter-rouge">BiSSE</code>model parameters and their
+  interpretation</strong><span data-label="tab:Bparam"></span></p>
+  </dd>
+</dl>
+
+<h2 id="equations-for-the-multi-state-birth-death-process">Equations for the multi-state birth-death process</h2>
+
+<p>The entire derivation above can easily be expanded to accommodate an
+arbitrary number of states <a href="#FitzJohn2012">(FitzJohn 2012)</a>. The only extra piece is
+summing over all the possible state transitions. The resulting
+differential equations within the branches are: <script type="math/tex">% <![CDATA[
+\begin{aligned}
+    \frac{\mathrm{d}D_{N,i}(t)}{\mathrm{d}t} &= - \left(\lambda_i + \mu_i + \sum\limits_{j \neq i}^k q_{ij} \right)D_{N,i}(t) + \sum\limits_{j \neq i}^k q_{ij} D_{N,j}(t) + 2\lambda_iE_i(t)D_{N,i}(t) \\
+    \frac{\mathrm{d}E_i(t)}{\mathrm{d}t} &= \mu_i - \left(\lambda_i + \mu_i + \sum\limits_{j \neq i}^k q_{ij} \right)E_i(t) + \sum\limits_{j \neq i}^k q_{ij} E_j(t) + \lambda_i E_i(t)^2\end{aligned} %]]></script></p>
+
+<h1 id="sec:CDBDP">Using state-dependent diversification models with ‘RevBayes‘: the BiSSE model</h1>
+
+<p>Now let’s start to analyze an example in ‘RevBayes‘ using the BiSSE
+model. In ‘RevBayes‘, it’s called “CDBDP,” meaning Character Dependent
+Birth Death Process.</p>
+
+<h2 id="read-in-the-data">Read in the data</h2>
+
+<p>Begin by reading in the observed tree and the character state data. We
+have both stored in separate nexus files.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>observed_phylogeny &lt;- readTrees("data/primates_tree.nex")[1]
+data &lt;- readCharacterData("data/primates_activity_period.nex")
+</code></pre></div></div>
+
+<p>Note, the character-dependent birth-death process currently uses always
+the first character/site in the alignment file. We have therefore split
+the character dataset into several small files that include only one
+character each.</p>
+
+<p>It will be convenient to pull out the list of tip names from the tree:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>taxa &lt;- observed_phylogeny.taxa()
+</code></pre></div></div>
+
+<p>Our vectors of moves and monitors will be defined later, but here we
+initialize iterator variables for them:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvi = 0
+mni = 0
+</code></pre></div></div>
+
+<p>Finally, we create a helper variable that specifies the number of states
+that the observed character has:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NUM_STATES = 2
+</code></pre></div></div>
+
+<p>Using this variable we can easily change our script to use a different
+character with a different number of states, essentially changing out
+model from BiSSE to MuSSE. (This will also be handy in our later example
+with the hidden-state speciation and extinction model.)</p>
+
+<h2 id="specify-the-model">Specify the model</h2>
+
+<p>The basic idea behind the model in this example is that speciation and
+extinction rates are dependent on a binary character, and the character
+transitions between its two possible states <a href="#Maddison2007">(Maddison et al. 2007)</a>.</p>
+
+<h3 id="priors-on-the-rates">Priors on the rates</h3>
+
+<p>We start by specifying prior distributions on the diversification rates.
+We will assume here an identical prior distribution on each of the
+speciation and extinction rates. Furthermore, we will use a normal
+distribution as the prior distribution on the log of each speciation and
+extinction rate. Hence, we will use a mean of
+$\ln(\frac{\text{#Taxa}}{2}) / \text{tree-age}$ which is the expected
+net diversification rate.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_mean &lt;- ln( ln(367.0/2.0) / observed_phylogeny.rootAge() )
+rate_sd &lt;- 2.0
+</code></pre></div></div>
+
+<p>Now we can specify our character-specific speciation and extinction rate
+parameters. Because we will use the same prior for each rate, it’s easy
+to specify them all in a ‘for‘-loop. We set up moves at the same time; a
+sliding move is good for a log-transformed variable.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:NUM_STATES) {
+    
+     ### Create a lognormal distributed variable for the diversification rate
+    log_speciation[i] ~ dnNormal(mean=rate_mean,sd=rate_sd) 
+    speciation[i] := exp( log_speciation[i] )
+    moves[++mvi] = mvSlide(log_speciation[i],delta=0.20,tune=true,weight=3.0)
+
+    ### Create a lognormal distributed variable for the turnover rate
+    log_extinction[i] ~ dnNormal(mean=rate_mean,sd=rate_sd) 
+    extinction[i] := exp( log_extinction[i] )
+    moves[++mvi] = mvSlide(log_extinction[i],delta=0.20,tune=true,weight=3.0)
+
+}
+</code></pre></div></div>
+
+<p>Next we specify the transition rates between the states 0 and 1,
+$q_{01}$ and $q_{10}$. As a prior, we choose that each transition rate
+is drawn from an exponential distribution with a mean of 10 character
+state transitions over the entire tree. This is reasonable because we
+use this kind of model for traits that transition not-infrequently, and
+it leaves a fair bit of uncertainty. (You may want to compare the
+posterior to the prior and/or check the resulting posterior estimates
+for different choices of the prior.)</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_pr := observed_phylogeny.treeLength() / 10
+rate_12 ~ dnExponential(rate_pr)
+rate_21 ~ dnExponential(rate_pr)
+</code></pre></div></div>
+
+<p>For both transition rate variables we specify a scaling move.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[++mvi] = mvScale( rate_12, weight=2 )
+moves[++mvi] = mvScale( rate_21, weight=2 )
+</code></pre></div></div>
+
+<p>Finally, we put the rates into a matrix, because this is what’s needed
+by the function for the state-dependent birth-death process.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_matrix := fnFreeBinary( [rate_12, rate_21 ], rescaled=false)
+</code></pre></div></div>
+
+<p>Note that we do not “rescale” the rate matrix. Rate matrices for
+molecular evolution are rescaled to have an average rate of 1.0, but for
+this model we want estimates of the transition rates with the same time
+scale as the diversification rates.</p>
+
+<h3 id="prior-on-the-root-state">Prior on the root state</h3>
+
+<p>Create a variable with the prior probabilities of each rate category at
+the root. We are using a flat Dirichlet distribution as the prior on
+each state. In this case we are actually estimating the prior
+frequencies of the root states. There has been some discussion about
+this in <a href="#FitzJohn2009">(FitzJohn et al. 2009)</a>. You could also fix the prior probabilities for
+the root states to be equal (generally not recommended), or use
+empirical state frequencies.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_category_prior ~ dnDirichlet( rep(1,NUM_STATES) )
+moves[++mvi] = mvDirichletSimplex(rate_category_prior,tune=true,weight=2)
+</code></pre></div></div>
+
+<h3 id="incomplete-taxon-sampling">Incomplete taxon sampling</h3>
+
+<p>We know that we have sampled 233 out of 367 living primate species. To
+account for this we can set the sampling parameter as a constant node
+with a value of 233/367.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rho &lt;- observed_phylogeny.ntips()/367
+</code></pre></div></div>
+
+<h3 id="root-age">Root age</h3>
+
+<p>The birth-death process requires a parameter for the root age. In this
+exercise we use a fixed tree and thus we know the age of the tree.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root &lt;- observed_phylogeny.rootAge()
+</code></pre></div></div>
+
+<h3 id="the-time-tree">The time tree</h3>
+
+<p>Now we have all of the parameters we need to specify the full character
+state-dependent birth-death model. We initialize the stochastic node
+representing the time tree.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree ~ dnCDBDP( rootAge           = root,
+                    speciationRates   = speciation,
+                    extinctionRates   = extinction, 
+                    Q                 = rate_matrix,
+                    pi                = rate_category_prior,
+                    delta             = 1.0,
+                    rho               = rho,
+                    condition         = "survival" )
+</code></pre></div></div>
+
+<p>And then we attach data to it.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree.clamp( observed_phylogeny )
+timetree.clampCharData( data )
+</code></pre></div></div>
+
+<p>Finally, we create a workspace object of our whole model. The ‘model()‘
+function traverses all of the connections and finds all of the nodes we
+specified.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(rate_matrix)
+</code></pre></div></div>
+
+<h2 id="running-an-mcmc-analysis">Running an MCMC analysis</h2>
+
+<h3 id="specifying-monitors">Specifying monitors</h3>
+
+<p>For our MCMC analysis, we set up a vector of <em>monitors</em> to record the
+states of our Markov chain. The first monitor will model all numerical
+variables; we are particularly interesed in the rates of speciation,
+extinction, and transition.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[++mni] = mnModel(filename="output/primates_BiSSE.log", printgen=1)
+</code></pre></div></div>
+
+<p>The second monitor is a new type of monitor: an joint-ancestral-states
+monitor. This monitor takes a draw from the joint posterior distribution
+of the ancestral states. Thus, with this output file we will be able to
+make a nice plot with ancestral states.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[++mni] = mnJointConditionalAncestralState(tree=timetree, cdbdp=timetree, type="Standard", printgen=1, withTips=true, withStartStates=false, filename="output/anc_states_primates_BiSSE.log")
+</code></pre></div></div>
+
+<p>(Note that this is a bit different than the marginal ancestral state
+reconstructions commonly produced by, e.g., Mesquite or various R
+packages. These joint draws are a self-consistent set of states across
+all nodes. @Pagel1999 discusses the differences.)</p>
+
+<p>Finally, we add a screen monitor showing some updates during the MCMC
+run.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[++mni] = mnScreen(printgen=10, rate_12, rate_21, speciation, extinction)
+</code></pre></div></div>
+
+<h3 id="initializing-and-running-the-mcmc-simulation">Initializing and running the MCMC simulation</h3>
+
+<p>With a fully specified model, a set of monitors, and a set of moves, we
+can now set up the MCMC algorithm that will sample parameter values in
+proportion to their posterior probability. The ‘mcmc()‘ function will
+create our MCMC object:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves)
+</code></pre></div></div>
+
+<p>First, we will run a pre-burnin to tune the moves and to obtain starting
+values from the posterior distribution.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.burnin(generations=5000,tuningInterval=200)
+</code></pre></div></div>
+
+<p>Now, run the MCMC:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=20000)
+</code></pre></div></div>
+
+<h3 id="summarizing-ancestral-states">Summarizing ancestral states</h3>
+
+<p>After our MCMC run has finished, we read-in again our samples from the
+joint-ancestral-state posterior distribution.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>anc_states = readAncestralStateTrace("output/anc_states_primates_BiSSE.log")
+</code></pre></div></div>
+
+<p>Then we can use this trace and our fixed tree to compute the posterior
+probabilities of the ancestral states and prepare the output for
+plotting. We will use the function called ‘ancestralStateTree‘ which
+stores the tree with ancestral states automatically in a file.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>anc_tree = ancestralStateTree(tree=observed_phylogeny, ancestral_state_trace_vector=anc_states, include_start_states=false, file="output/anc_states_primates_BiSSE_results.tree", burnin=0, summary_statistic="MAP", site=0)
+</code></pre></div></div>
+
+<h3 id="plotting-ancestral-states">Plotting ancestral states</h3>
+
+<p>Let us first plot the ancestral states mapped on the phylogeny. We will
+use <code class="highlighter-rouge">R</code>and the package ‘Rev‘Gadgets. Execute the following
+code in <code class="highlighter-rouge">R</code>.</p>
+
+<p><img src="figures/RevBayes_Anc_States_BiSSE.png" alt="" /></p>
+<blockquote>
+  <p>Estimated
+ancestral states for the activity period of primates.</p>
+</blockquote>
+
+<p>The resulting plot is shown in Figure [fig:anc_states_BiSSE]. We see
+both the maximum <em>a posteriori</em> (MAP) estimate for each node as well as
+the posterior probability of the states represented by the size of the
+dots.</p>
+
+<h3 id="plotting-diversification-rates">Plotting diversification rates</h3>
+
+<p>Now let us plot the diversification rate estimates. Again, we are going
+to use <code class="highlighter-rouge">R</code>for our plotting. Specifically, we will use the
+package <code class="highlighter-rouge">ggplot2</code> but you can also use any other package that you
+prefer. We are only taking advantage of reading in the tab-delimited
+file as a table and plot the different diversification rate parameters.
+Note that we also rely on another provided <code class="highlighter-rouge">R</code>script for
+plotting multiple plots in one file.</p>
+
+<p><img src="figures/RevBayes_BiSSE_Results_activity_period.png" alt="" /></p>
+<blockquote>
+
+  <p>Estimated diversification rate for activity period (state 1 = Diurnal
+and state 2 = Nocturnal). We see that there is a noticeable difference
+in the estimated speciation rates but only little difference in the
+estimated extinction rates.</p>
+</blockquote>
+
+<h2 id="exercise">Exercise</h2>
+
+<ol>
+  <li>
+    <p>Run an MCMC simulation to estimate the posterior distribution of the
+speciation rate and extinction rate.</p>
+  </li>
+  <li>
+    <p>Visualize the state-specific diversification rates using
+<code class="highlighter-rouge">R</code>.</p>
+  </li>
+  <li>
+    <p>Do you see evidence for rate differences between the two states?</p>
+  </li>
+  <li>
+    <p>Repeat this analysis for a different binary character.</p>
+  </li>
+</ol>
+
+<h1 id="sec:HiSSE_Theory">Accommodating uncorrelated diversification rate changes: the HiSSE model</h1>
+
+<p>BiSSE and MuSSE are powerful approaches for testing the association of a
+character with diversification rate heterogeneity. However, BiSSE has
+been shown to be prone to falsely identifying a positive association
+when diversification rate shifts are correlated with a character <em>not</em>
+included in the model (missing reference). One approach to
+reduce the possibility of falsely associating a character with
+diversification rate heterogeneity is to incorporate a second,
+unobserved character into the model [i.e. a Hidden State-Dependent
+Speciation and Extinction (HiSSE) model} (missing reference), or
+due to incomplete sampling of lineages in the present. Teasing apart the
+phylogenetic signal for cladogenetic and anagenetic processes given
+unobserved speciation events is a major difficulty. Commonly used
+biographic models like the dispersal-extinction-cladogenesis [DEC;
+@Ree2008] simply ignore unobserved speciation events and so result in
+biased estimates of cladogenetic versus anagenetic change.</p>
+
+<p>This bias can be avoided by using the Cladogenetic State change
+Speciation and Extinction (ClaSSE) model <a href="#Goldberg2012">(Goldberg and Igić 2012)</a>, which accounts
+for unobserved speciation events by jointly modeling both character
+evolution and the phylogenetic birth-death process. ClaSSE models extend
+other SSE models by incorporating both cladogenetic and anagenetic
+character evolution. This approach has been used to model biogeographic
+range evolution <a href="#Goldberg2011">(Goldberg et al. 2011)</a> and chromosome number evolution
+<a href="#Freyman2017">(Freyman and Höhna 2017)</a>.</p>
+
+<p>Here we will use ‘RevBayes‘ to examine biogeographic range evolution in
+the primates. We will model biogeographic range evolution similar to a
+DEC model, however we will use ClaSSE to account for speciation events
+unobserved due to extinction or incomplete sampling.</p>
+
+<h2 id="setting-up-the-analysis">Setting up the analysis</h2>
+
+<h3 id="reading-in-the-data">Reading in the data</h3>
+
+<p>Begin by reading in the observed tree.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>observed_phylogeny &lt;- readTrees("data/primates_biogeo.tre")[1]
+</code></pre></div></div>
+
+<p>Get the taxa in the tree. We’ll need this later on.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>taxa = observed_phylogeny.taxa()
+</code></pre></div></div>
+
+<p>Now let’s read in the biogeographic range data. The areas are
+represented as the following character states:</p>
+
+<ul>
+  <li>
+    <p>0 = 00 = the null state with no range</p>
+  </li>
+  <li>
+    <p>1 = 01 = New World only</p>
+  </li>
+  <li>
+    <p>2 = 10 = Old World only</p>
+  </li>
+  <li>
+    <p>3 = 11 = both New and Old World</p>
+  </li>
+</ul>
+
+<p>For consistency, we have chosen to use the same representation of
+biogeographic ranges used in the ‘RevBayes‘ biogeography/DEC tutorial.
+Each range is represented as both a natural number (0, 1, 2, 3) and a
+corresponding bitset (00, 01, 10, 11). The null state (state 0) is used
+in DEC models to represent a lineage that has no biogeographic range and
+is therefore extinct. Our model will include this null state as well,
+however, we will explicitly model extinction as part of the birth-death
+process so our character will never enter state 0.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data_biogeo = readCharacterDataDelimited("data/primates_biogeo.tsv", stateLabels="0123", type="NaturalNumbers", delimiter="\t", headers=TRUE)
+</code></pre></div></div>
+
+<p>Also we need to set the move and monitor indices.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvi = 0
+mni = 0
+</code></pre></div></div>
+
+<h3 id="set-up-the-extinction-rates">Set up the extinction rates</h3>
+
+<p>We are going to draw both anagenetic transition rates and
+diversification rates from a lognormal distribution. The mean of the
+prior distribution will be
+$\ln(\frac{\text{#Taxa}}{2}) / \text{tree-age}$ which is the expected
+net diversification rate, and the SD will be 1.0 so the 95% prior
+interval ranges well over 2 orders of magnitude.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>num_species &lt;- 424 # approximate total number of primate species
+rate_mean &lt;- ln( ln(num_species/2.0) / observed_phylogeny.rootAge() )
+rate_sd &lt;- 1.0
+</code></pre></div></div>
+
+<p>The extinction rates will be stored in a vector where each element
+represents the extinction rate for the corresponding character state. We
+have chosen to allow a lineage to go extinct in both the New and Old
+World at the same time (like a global extinction event). As an
+alternative, you could restrict the model so that a lineage can only go
+extinct if it’s range is limited to one area.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>extinction_rates[1] &lt;- 0.0 # the null state (state 0)
+extinction_rates[2] ~ dnLognormal(rate_mean, rate_sd) # extinction when the lineage is in New World (state 1)
+extinction_rates[3] ~ dnLognormal(rate_mean, rate_sd) # extinction when the lineage is in Old World (state 2)
+extinction_rates[4] ~ dnLognormal(rate_mean, rate_sd) # extinction when in both (state 3)
+</code></pre></div></div>
+
+<p>Note ‘Rev‘ vectors are indexed starting with 1, yet our character states
+start at 0. So <code class="highlighter-rouge">extinction_rate[1]</code> will represent the extinction rate
+for character state 0.</p>
+
+<p>Add MCMC moves for each extinction rate.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[++mvi] = mvSlide( extinction_rates[2], weight=4 )
+moves[++mvi] = mvSlide( extinction_rates[3], weight=4 )
+moves[++mvi] = mvSlide( extinction_rates[4], weight=4 )
+</code></pre></div></div>
+
+<p>Let’s also create a deterministic variable to monitor the overall
+extinction rate.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>total_extinction := sum(extinction_rates)
+</code></pre></div></div>
+
+<h3 id="set-up-the-anagenetic-transition-rate-matrix">Set up the anagenetic transition rate matrix</h3>
+
+<p>First, let’s create the rates of anagenetic dispersal:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>anagenetic_dispersal_13 ~ dnLognormal(rate_mean, rate_sd) # disperse from New to Old World 01 -&gt; 11
+anagenetic_dispersal_23 ~ dnLognormal(rate_mean, rate_sd) # disperse from Old to New World 10 -&gt; 11
+</code></pre></div></div>
+
+<p>Now add MCMC moves for each anagenetic dispersal rate.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[++mvi] = mvSlide( anagenetic_dispersal_13, weight=4 )
+moves[++mvi] = mvSlide( anagenetic_dispersal_23, weight=4 )
+</code></pre></div></div>
+
+<p>The anagenetic transitions will be stored in a 4 by 4 instantaneous rate
+matrix. We will construct this by first creating a vector of vectors.
+Let’s begin by initalizing all rates to 0.0:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:4) {
+    for (j in 1:4) {
+        r[i][j] &lt;- 0.0
+    }
+}
+</code></pre></div></div>
+
+<p>Now we can populate non-zero rates into the anagenetic transition rate
+matrix:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>r[2][4] := anagenetic_dispersal_13
+r[3][4] := anagenetic_dispersal_23
+r[4][2] := extinction_rates[3]
+r[4][3] := extinction_rates[2]
+</code></pre></div></div>
+
+<p>Note that we have modeled the rate of 11 $\rightarrow$ 01 (3
+$\rightarrow$ 1) as being the rate of going extinct in area 2, and the
+rate of 11 $\rightarrow$ 10 (3 $\rightarrow$ 2) as being the rate of
+going extinct in area 1.</p>
+
+<p>Now we pass our vector of vectors into the ‘fnFreeK‘ function to create
+the instaneous rate matrix.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ana_rate_matrix := fnFreeK(r, rescaled=false)
+</code></pre></div></div>
+
+<h3 id="set-up-the-cladogenetic-speciation-rate-matrix">Set up the cladogenetic speciation rate matrix</h3>
+
+<p>Here we need to define each cladogenetic event type in the form
+<code class="highlighter-rouge">[ancestor_state, daughter1_state, daughter2_state]</code> and assign each
+cladogenetic event type a corresponding speciation rate.</p>
+
+<p>The first type of cladogenetic event we’ll specify is widespread
+sympatry. Widespread sympatric cladogenesis is where the biogeographic
+range does not change; that is the daughter lineages inherit the same
+range as the ancestor. In this example we are not going to allow the
+speciation events like 11 $\rightarrow$ 11, 11, as it seems biologically
+implausible. However if you wanted you could add this to your model.</p>
+
+<p>Define the speciation rate for widespread sympatric cladogenesis events:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>speciation_wide_sympatry ~ dnLognormal(rate_mean, rate_sd)
+moves[++mvi] = mvSlide( speciation_wide_sympatry, weight=4 )
+</code></pre></div></div>
+
+<p>Define the widespread sympatric cladogenetic events:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clado_events[1] = [1, 1, 1] # 01 -&gt; 01, 01
+clado_events[2] = [2, 2, 2] # 10 -&gt; 10, 10
+</code></pre></div></div>
+
+<p>and assign each the same speciation rate:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>speciation_rates[1] := speciation_wide_sympatry/2
+speciation_rates[2] := speciation_wide_sympatry/2
+</code></pre></div></div>
+
+<p>Subset sympatry is where one daughter lineage inherits the full
+ancestral range but the other lineage inherits only a single region.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>speciation_sub_sympatry ~ dnLognormal(rate_mean, rate_sd)
+moves[++mvi] = mvSlide( speciation_sub_sympatry, weight=4 )
+</code></pre></div></div>
+
+<p>Define the subset sympatry events and assign each a speciation rate:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clado_events[3] = [3, 3, 1] # 11 -&gt; 11, 01 
+clado_events[4] = [3, 1, 3] # 11 -&gt; 01, 11
+clado_events[5] = [3, 3, 2] # 11 -&gt; 11, 10
+clado_events[6] = [3, 2, 3] # 11 -&gt; 10, 11
+speciation_rates[3] := speciation_sub_sympatry/4
+speciation_rates[4] := speciation_sub_sympatry/4
+speciation_rates[5] := speciation_sub_sympatry/4
+speciation_rates[6] := speciation_sub_sympatry/4
+</code></pre></div></div>
+
+<p>Allopatric cladogenesis is when the two daughter lineages split the
+ancestral range:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>speciation_allopatry ~ dnLognormal(rate_mean, rate_sd)
+moves[++mvi] = mvSlide( speciation_allopatry, weight=4 )
+</code></pre></div></div>
+
+<p>Define the allopatric events:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clado_events[7] = [3, 1, 2] # 11 -&gt; 01, 10
+clado_events[8] = [3, 2, 1] # 11 -&gt; 10, 01
+speciation_rates[7] := speciation_allopatry/2
+speciation_rates[8] := speciation_allopatry/2
+</code></pre></div></div>
+
+<p>Now let’s create a deterministic variable to monitor the overall
+speciation rate:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>total_speciation := sum(speciation_rates)
+</code></pre></div></div>
+
+<p>Finally, we construct the cladogenetic speciation rate matrix from the
+cladogenetic event types and the speciation rates.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clado_matrix := fnCladogeneticSpeciationRateMatrix(clado_events, speciation_rates, 4)
+</code></pre></div></div>
+
+<p>Let’s view the cladogenetic matrix to see if we have set it up
+correctly:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clado_matrix
+</code></pre></div></div>
+
+<h3 id="set-up-the-cladogenetic-character-state-dependent-birth-death-process">Set up the cladogenetic character state-dependent birth-death process</h3>
+
+<p>For simplicity we will fix the root frequencies to be equal except for
+the null state which has probability of 0.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root_frequencies &lt;- simplex([0, 1, 1, 1])
+</code></pre></div></div>
+
+<p><code class="highlighter-rouge">rho</code> is the probability of sampling species at the present:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rho &lt;- observed_phylogeny.ntips()/num_species
+</code></pre></div></div>
+
+<p>Now we construct a stochastic variable drawn from the cladogenetic
+character state-dependent birth-death process.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>classe ~ dnCDBDP( rootAge         = observed_phylogeny.rootAge(),
+                  cladoEventMap   = clado_matrix,
+                  extinctionRates = extinction_rates,
+                  Q               = ana_rate_matrix,
+                  delta           = 1.0,
+                  pi              = root_frequencies,
+                  rho             = rho,
+                  condition       = "time" )
+</code></pre></div></div>
+
+<p>Clamp the model with the observed data.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>classe.clamp( observed_phylogeny )
+classe.clampCharData( data_biogeo )
+</code></pre></div></div>
+
+<h3 id="finalize-the-model">Finalize the model</h3>
+
+<p>Just like before, we must create a workspace model object.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(classe)
+</code></pre></div></div>
+
+<h2 id="set-up-and-run-the-mcmc">Set up and run the MCMC</h2>
+
+<p>First, set up the monitors that will output parameter values to file and
+screen.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[++mni] = mnModel(filename="output/primates_ClaSSE.log", printgen=1)
+monitors[++mni] = mnJointConditionalAncestralState(tree=observed_phylogeny, cdbdp=classe, type="NaturalNumbers", printgen=1, withTips=true, withStartStates=true, filename="output/anc_states_primates_ClaSSE.log")
+monitors[++mni] = mnScreen(printgen=1, speciation_wide_sympatry, speciation_sub_sympatry, speciation_allopatry, extinction_rates)
+</code></pre></div></div>
+
+<p>Now define our workspace MCMC object.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves)
+</code></pre></div></div>
+
+<p>We will perform a pre-burnin to tune the proposals and then run the
+MCMC. Note that for a real analysis you would want to run the MCMC for
+many more iterations.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.burnin(generations=200,tuningInterval=5)
+mymcmc.run(generations=1000)
+</code></pre></div></div>
+
+<h2 id="summarize-ancestral-states">Summarize ancestral states</h2>
+
+<p>When the analysis has completed you now summarize the ancestral states.
+The ancestral states are estimated both for the “beginning” and “end”
+state of each branch, so that the cladogenetic changes that occurred at
+speciation events are distinguished from the changes that occurred
+anagenetically along branches. Make sure the <code class="highlighter-rouge">include_start_states</code>
+argument is set to <code class="highlighter-rouge">true</code>.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>anc_states = readAncestralStateTrace("output/anc_states_primates_ClaSSE.log")
+anc_tree = ancestralStateTree(tree=observed_phylogeny, ancestral_state_trace_vector=anc_states, include_start_states=true, file="output/anc_states_primates_ClaSSE_results.tree", burnin=0, summary_statistic="MAP", site=0)
+</code></pre></div></div>
+
+<h3 id="plotting-ancestral-states-1">Plotting ancestral states</h3>
+
+<p>Like before, we’ll plot the ancestral states using the ‘Rev‘Gadgets
+<code class="highlighter-rouge">R</code>package. Execute the script\
+<code class="highlighter-rouge">plot_anc_states_ClaSSE.R</code> in <code class="highlighter-rouge">R</code>. The results can be seen
+in Figure [fig:results_ClaSSE]. The maximum <em>a posteriori</em> (MAP)
+estimate for each node is shown as well as the posterior probability of
+the states represented by the size of the dots.</p>
+
+<p><img src="figures/RevBayes_Anc_States_ClaSSE.png" alt="" /></p>
+<blockquote>
+  <p>Maximum a
+posteriori estimate of biogeographic range evolution of the primates.
+The most recent common ancestor of the primates is inferred to be in the
+Old World (green). According to this reconstruction, approximately 70
+Mya one lineage dispersed to be in both New and Old World (blue). This
+widespread lineage underwent allopatric cladogenesis, resulting in one
+daughter lineage in the Old World and one in the New World (green).</p>
+</blockquote>
+
+<h2 id="exercise-1">Exercise</h2>
+
+<ol>
+  <li>
+    <p>Using either R or Tracer, visualize the posterior estimates for
+different types of cladogenetic events. What kind of speciation
+events are most common?</p>
+  </li>
+  <li>
+    <p>As we have specified the model, we did not allow cladogenetic long
+distance (jump) dispersal, for example 01 $\rightarrow$ 01, 10.
+Modify this script to include cladogenetic long distance dispersal
+and calculate Bayes factors to see which model fits the data better.
+How does this affect the ancestral state estimate?</p>
+  </li>
+</ol>
+
+<p>Version dated:</p>
+
+<ol class="bibliography"><li><span id="Drummond2012">Drummond A.J., Suchard M.A., Xie D., Rambaut A. 2012. Bayesian phylogenetics with BEAUti and the BEAST 1.7. Molecular Biology and Evolution. 29:1969–1973.</span>
+
+<a href="https://doi.org/10.1093/molbev/mss075">10.1093/molbev/mss075</a>
+
+</li>
+<li><span id="Ronquist2012">Ronquist F., Teslenko M., Mark P. van der, Ayres D.L., Darling A., Höhna S., Larget B., Liu L., Suchard M.A., Huelsenbeck J.P. 2012. MrBayes 3.2: efficient Bayesian phylogenetic inference and model choice across a large model space. Systematic Biology. 61:539–542.</span>
+
+<a href="https://doi.org/10.1093/sysbio/sys029">10.1093/sysbio/sys029</a>
+
+</li>
+<li><span id="Hoehna2016b">Höhna S., Landis M.J., Heath T.A., Boussau B., Lartillot N., Moore B.R., Huelsenbeck J.P., Ronquist F. 2016. RevBayes: Bayesian Phylogenetic Inference Using Graphical Models and an Interactive Model-Specification Language. Systematic Biology. 65:726–736.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syw021">10.1093/sysbio/syw021</a>
+
+</li>
+<li><span id="Nee1994b">Nee S., May R.M., Harvey P.H. 1994. The Reconstructed Evolutionary Process. Philosophical Transactions: Biological Sciences. 344:305–311.</span>
+
+<a href="https://doi.org/10.1098/rstb.1994.0068">10.1098/rstb.1994.0068</a>
+
+</li>
+<li><span id="Condamine2013">Condamine F.L., Rolland J., Morlon H. 2013. Macroevolutionary perspectives to environmental change. Ecology Letters.</span>
+
+<a href="https://doi.org/10.1111/ele.12062">10.1111/ele.12062</a>
+
+</li>
+<li><span id="Maddison2007">Maddison W.P., Midford P.E., Otto S.P. 2007. Estimating a binary character’s effect on speciation and extinction. Systematic Biology. 56:701.</span>
+
+<a href="https://doi.org/10.1080/10635150701607033">10.1080/10635150701607033</a>
+
+</li>
+<li><span id="FitzJohn2009">FitzJohn R.G., Maddison W.P., Otto S.P. 2009. Estimating trait-dependent speciation and extinction rates from incompletely resolved phylogenies. Systematic Biology. 58:595–611.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syp067">10.1093/sysbio/syp067</a>
+
+</li>
+<li><span id="Goldberg2008">Goldberg E.E., Igić B. 2008. On Phylogenetic Tests of Irreversible Evolution. Evolution. 62:2727–2741.</span>
+
+<a href="https://doi.org/10.1111/j.1558-5646.2008.00505.x">10.1111/j.1558-5646.2008.00505.x</a>
+
+</li>
+<li><span id="FitzJohn2012">FitzJohn R.G. 2012. Diversitree: Comparative Phylogenetic Analyses of Diversification in R. Methods in Ecology and Evolution. 3:1084–1092.</span>
+
+<a href="https://doi.org/10.1111/j.2041-210X.2012.00234.x">10.1111/j.2041-210X.2012.00234.x</a>
+
+</li>
+<li><span id="Goldberg2012">Goldberg E.E., Igić B. 2012. Tempo and Mode in Plant Breeding System Evolution. Evolution. 66:3701–3709.</span>
+
+<a href="https://doi.org/10.1111/j.1558-5646.2012.01730.x">10.1111/j.1558-5646.2012.01730.x</a>
+
+</li>
+<li><span id="Goldberg2011">Goldberg E.E., Lancaster L.T., Ree R.H. 2011. Phylogenetic Inference of Reciprocal Effects between Geographic Range Evolution and Diversification. Systematic Biology. 60:451–465.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syr046">10.1093/sysbio/syr046</a>
+
+</li>
+<li><span id="Freyman2017">Freyman W.A., Höhna S. 2017. Cladogenetic and anagenetic models of chromosome number evolution: a Bayesian model averaging approach. SYSBIO. syx065.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syx065">10.1093/sysbio/syx065</a>
+
+</li></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2>References</h2>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/revbayes-site/license/">License</a> | <a href="/revbayes-site/citation/">Cite RevBayes</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/revbayes-site/assets/js/vendor/jquery.min.js"></script>
+<script src="/revbayes-site/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/revbayes-site/assets/js/vendor/jszip.min.js"></script>
+<script src="/revbayes-site/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+
+<script src="/revbayes-site/assets/js/base.js"></script>
+
+<script type="text/javascript"
+    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+  });
+</script>
+
+  </body>
+</html>
