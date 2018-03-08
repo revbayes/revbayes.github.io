@@ -5,15 +5,14 @@ authors:  Tracy A. Heath
 category: In Progress
 prerequisites:
 - archery
-data_files: 
-- bears_dosReis.tre
-- bears_irbp.nex
 index: 2
 ---
 
 <!-- category: Standard -->
 
-
+<!-- data_files: 
+- bears_dosReis.tre
+- bears_irbp.nex -->
 
 {% section Overview | overview %}
 
@@ -42,8 +41,10 @@ To keep things organized, it is recommended that you create a new directory for 
 > Create a new directory on your computer called `RB_div_clock_tutorial`.
 > 
 > Within the `RB_div_clock_tutorial` directory, create a subdirectory called `data`. 
-> Then, dowload the [data files](#data_files) listed above and place them in the `data` folder.
+> Then, dowload the [`bears_dosReis.tre`](https://revbayes.github.io/revbayes-site/tutorials/clocks/data/bears_dosReis.tre) and [`bears_irbp.nex`](https://revbayes.github.io/revbayes-site/tutorials/clocks/data/bears_irbp.nex) and place them in the `data` folder.
 {:.instruction}
+
+<!-- need to fix the data file links -->
 
 Now you can execute RevBayes. 
 
