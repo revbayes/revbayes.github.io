@@ -1,12 +1,12 @@
 ---
-layout: tutorial
-title: Phylogenetic Inference using ‘RevBayes‘
-subtitle: Chromosome Evolution
-authors:  William A. Freyman and Sebastian H&#246;hna
-category: In Progress
+title: Chromosome Evolution
+subtitle: Phylogenetic analysis with ChromoSSE models
+authors:  William A. Freyman and Sebastian Höhna
+level: 2
 prerequisites:
 - intro
-files:
+title-old: RB_Chromosome_Evolution_Tutorial
+redirect: true
 ---
 
 

@@ -1,11 +1,12 @@
 ---
-title: Phylogenetic Inference using ‘RevBayes‘
-subtitle: Gene tree-species tree reconstruction using the multispecies coalescent
+title: Gene tree - species tree reconstruction
+subtitle: Incomplete lineage sorting and the multispecies coalescent
 authors:  Bastien Boussau and Sebastian H&#246;hna
-category: In Progress
+level: 2
 prerequisites:
 - intro
-files:
+title-old: RB_MultispeciesCoalescent_Tutorial
+redirect: true
 ---
 
 

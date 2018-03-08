@@ -1,11 +1,12 @@
 ---
-title: Phylogenetic Inference using ‘RevBayes‘
+title: Phylogenetic Inference using RevBayes
 subtitle: Continuous trait evolution with Ornstein-Uhlenbeck models
 authors:  Sebastian Höhna
-category: In Progress
+level: 2
 prerequisites:
 - intro
-files:
+title-old: RB_PhyloComparativeAdvanced_Tutorial
+redirect: true
 ---
 
 

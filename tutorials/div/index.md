@@ -2,11 +2,13 @@
 title: Basic Diversification Rate Estimation
 subtitle: Comparing different constant-rate models of lineage diversification
 authors:  Sebastian Höhna and Tracy Heath
-category: In Progress
+level: 1
 prerequisites:
 - intro
 data_files:
 - primates_tree.nex
+title-old: RB_DiversificationRate_Tutorial
+redirect: true
 ---
 
 
@@ -32,7 +34,7 @@ these diversification-rate parameters are not of direct interest. For
 example, many methods for estimating species divergence times—such as
 `BEAST` {% cite Drummond2012 %},
 `MrBayes` {% cite Ronquist2012 %}, and
-`RevBayes` {% cite Hoehna2016b %}—implement 'relaxed-clock models'
+RevBayes {% cite Hoehna2016b %}—implement 'relaxed-clock models'
 that include a constant-rate birth-death branching process as a prior
 model on the distribution of tree topologies and node ages. Although the
 parameters of these ‘tree priors’ are not typically of direct interest,
@@ -59,7 +61,7 @@ Types of Hypotheses for Estimating Diversification Rates
 --------------------------------------------------------
 
 Many evolutionary phenomena entail differential rates of diversification
-(speciation – extinction); *e.g.,*adaptive
+(speciation – extinction); *e.g.,* adaptive
 radiation, diversity-dependent diversification, key innovations, and
 mass extinction. The specific study questions regarding lineage
 diversification may be classified within three fundamental categories of
@@ -88,12 +90,12 @@ adaptive radiation. A second question asks whether there is evidence of
 a continuous/gradual decrease in diversification rates through time
 (associated with decreasing speciation rates and/or increasing
 extinction rates), as might occur because of diversity-dependent
-diversification (*i.e.,*where competitive
+diversification (*i.e.,* where competitive
 ecological interactions among the species of a growing tree decrease the
 opportunities for speciation and/or increase the probability of
-extinction, *e.g.,*@Hoehna2014a). Third, we
+extinction, *e.g.,* {% citet Hoehna2014a %}). Third, we
 can ask whether changes in diversification rates are correlated with
-environmental factors, such as environmental CO~2~ or temperature
+environmental factors, such as environmental CO<sub>2</sub> or temperature
 {% cite Condamine2013 %}. A final question in this category asks whether our
 study tree was impacted by a mass-extinction event (where a large
 fraction of the standing species diversity is suddenly lost,
@@ -107,8 +109,8 @@ lineages of the study group have the exact same rates at a given time.
 across the branches of my study group?* Models have been developed to
 detect departures from rate constancy across lineages; these tests are
 analogous to methods that test for departures from a molecular
-clock—*i.e.,*to assess whether substitution
-rates vary significantly across lineages {% cite Alfaro2009} {% cite Rabosky2014a %}.
+clock—*i.e.,* to assess whether substitution
+rates vary significantly across lineages {% cite Alfaro2009 Rabosky2014a %}.
 These models are important for assessing whether a given tree violates
 the assumptions of rate homogeneity among lineages. Furthermore, these
 models are important to answer questions such as: *What are the
@@ -127,16 +129,16 @@ continuous morphological traits, geographic range, etc.). For example,
 one can hypothesize that a binary character, say if an organism is
 herbivorous/carnivorous or self-compatible/self-incompatible, impact the
 diversification rates. Then, if the organism is in state 0
-(*e.g.,*is herbivorous) it has a lower (or
+(*e.g.,* is herbivorous) it has a lower (or
 higher) diversification rate than if the organism is in state 1
-(*e.g.,*carnivorous) {% cite Maddison2007 %}.
+(*e.g.,* carnivorous) {% cite Maddison2007 %}.
 
 Diversification Rate Models {#sec:models}
 ===========================
 
 We begin this section with a general introduction to the stochastic
 birth-death branching process that underlies inference of
-diversification rates in `RevBayes`. This primer will
+diversification rates in RevBayes. This primer will
 provide some details on the relevant theory of stochastic-branching
 process models. We appreciate that some readers may want to skip this
 somewhat technical primer; however, we believe that a better
@@ -144,13 +146,13 @@ understanding of the relevant theory provides a foundation for
 performing better inferences. We then discuss a variety of specific
 birth-death models, but emphasize that these examples represent only a
 tiny fraction of the possible diversification-rate models that can be
-specified in `RevBayes`.
+specified in RevBayes.
 
 The birth-death branching process
 ---------------------------------
 
 Our approach is based on the *reconstructed evolutionary process*
-described by @Nee1994b; a birth-death process in which only sampled,
+described by {% citet Nee1994b %}; a birth-death process in which only sampled,
 extant lineages are observed. Let $N(t)$ denote the number of species at
 time $t$. Assume the process starts at time $t_1$ (the ‘crown’ age of
 the most recent common ancestor of the study group, $t_\text{MRCA}$)
@@ -193,7 +195,9 @@ remains (Figure [fig:BirthDeathShift]).
 To condition the probability of observing the branching times on the
 survival of both lineages that descend from the root, we divide by
 $P(N(T) > 0 | N(0) = 1)^2$. Then, the probability density of the
-branching times, $\mathbb{T}$, becomes $$\begin{aligned}
+branching times, $\mathbb{T}$, becomes 
+
+$$\begin{aligned}
 P(\mathbb{T}) = \fra\frac{{}{b}ace{P(N(T) = 1 \mid N(0) = 1)^2}^{\text{both initial lineages have one descendant}}}{ \underbrace{P(N(T) > 0 \mid N(0) = 1)^2}_{\text{both initial lineages survive}} } \times \prod_{i=2}^{n-1\frac{ }{b}ace{i \times b(t_i)}^{\text{speciation rate}} \time\frac{ }{b}ace{P(N(T) = 1 \mid N(t_i) = 1)}^\text{lineage has one descendant},\end{aligned}$$
 and the probability density of the reconstructed tree (topology and
 branching times) is then $$\begin{aligned}
@@ -227,22 +231,22 @@ P(N(T)\!=\!n|N(t)\!=\!1) & = & (1-P(N(T)\!>\!0|N(t)\!=\!1)\exp(r(t,T)))^{n-1} \n
 & & \times P(N(T)\!>\!0|N(t)\!=\!1)^2 \exp(r(t,T)) \label{eq:N} $$ An
 overview for different diversification models is given in @Hoehna2015a.
 
-***Sidebar: Phylogenetic trees as observations***
-
-The branching processes used here describe probability distributions on
-phylogenetic trees. This probability distribution can be used to infer
-diversification rates given an “observed” phylogenetic tree. In reality
-we never observe a phylogenetic tree itself. Instead, phylogenetic trees
-themselves are estimated from actual observations, such as DNA
-sequences. These phylogenetic tree estimates, especially the divergence
-times, can have considerable uncertainty associated with them. Thus, the
-correct approach for estimating diversification rates is to include the
-uncertainty in the phylogeny by, for example, jointly estimating the
-phylogeny and diversification rates. For the simplicity of the following
-tutorials, we take a shortcut and assume that we know the phylogeny
-without error. For publication quality analysis you should always
-estimate the diversification rates jointly with the phylogeny and
-divergence times.
+> ## Phylogenetic trees as observations
+> The branching processes used here describe probability distributions on
+> phylogenetic trees. This probability distribution can be used to infer
+> diversification rates given an “observed” phylogenetic tree. In reality
+> we never observe a phylogenetic tree itself. Instead, phylogenetic trees
+> themselves are estimated from actual observations, such as DNA
+> sequences. These phylogenetic tree estimates, especially the divergence
+> times, can have considerable uncertainty associated with them. Thus, the
+> correct approach for estimating diversification rates is to include the
+> uncertainty in the phylogeny by, for example, jointly estimating the
+> phylogeny and diversification rates. For the simplicity of the following
+> tutorials, we take a shortcut and assume that we know the phylogeny
+> without error. For publication quality analysis you should always
+> estimate the diversification rates jointly with the phylogeny and
+> divergence times.
+{:.discussion}
 
 Estimating Constant Speciation & Extinction Rates
 =================================================
