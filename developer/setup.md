@@ -3,14 +3,13 @@ title: Setting up an IDE for RevBayes
 subtitle: Setting up Eclipse, XCode, vim
 category: Developer
 authors: Will Pett, April Wright, Lyndon Coghill, Emma Goldberg, Wade Dismukes, Will Freyman, Jamie Oaks
-prerequisites:
-index: 2
+order: 2
 ---
 
 
 It is easy to use an IDE to develop RevBayes such as XCode, Eclipse Oxygen, or Netbeans. You can also useyour favorite text editor (e.g. vim or emacs). 
 This page will provide some helpful tips on how to set up your development enviroment.
-See the [Software]({{site.baseurl}}/software/) page for instructions on how to obtain the source code.
+See the [Software]({{site.baseurl}}{% link software.md %}) page for instructions on how to obtain the source code.
 
 <br><br>
 

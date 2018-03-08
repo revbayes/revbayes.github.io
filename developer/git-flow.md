@@ -2,7 +2,7 @@
 title: Git Workflow Best Practices
 subtitle: How to contribute code effectively
 category: Developer
-index: 1
+order: 1
 ---
 
 # Git workflow

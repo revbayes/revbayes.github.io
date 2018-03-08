@@ -8,7 +8,7 @@ permalink: /license/
 
 RevBayes and all associated software developed by the [RevBayes Team](https://github.com/revbayes) are distributed for free and open-source. These products are licensed under [version 3 of the GNU General Public License](http://www.gnu.org/copyleft/gpl.html) (GPL). The source code is available on [GitHub](https://github.com/revbayes/revbayes). 
 
-If you use RevBayes, please be sure to properly cite the software and materials. See the <a href="{{ site.baseurl }}/citation">Citation page</a> for a list of the RevBayes papers.
+If you use RevBayes, please be sure to properly cite the software and materials. See the <a href="{{ site.baseurl }}{% link citation.md %}">Citation page</a> for a list of the RevBayes papers.
 
 
 ### RevBayes Website and Tutorials
