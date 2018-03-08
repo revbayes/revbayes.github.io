@@ -33,6 +33,8 @@ function autocomplete(inp, arr) {
               /*close the list of autocompleted values,
               (or any other open lists of autocompleted values:*/
               closeAllLists();
+
+              apply_filter();
           });
           a.appendChild(b);
         }

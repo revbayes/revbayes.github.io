@@ -11,7 +11,7 @@
 <script type="text/javascript" src="{{ site.baseurl }}/assets/js/vendor/jquery.min.js"></script>
 <script type="text/javascript" src="{{ site.baseurl }}/assets/js/autocomplete.js"></script>
 <script type="text/javascript">
-var keywords = ['{{ keywords | join:"','" }}'];
+var keywords = ['{{ keywords | uniq | join:"','" }}'];
 var active_keywords= [];
 
 autocomplete(document.getElementById("keywords"), keywords);
@@ -23,33 +23,37 @@ function clear_keywords() {
 	update_tutorials();
 }
 
-$("#keywords").keydown(function(e){
-	if(e.keyCode == 13) {
-		var keyword = $("#keywords").val();
-		var id = keyword.replace(/[\s\#\.]+/g,"-");
+function apply_filter(){
+	var keyword = $("#keywords").val();
+	var id = keyword.replace(/[\s\#\.]+/g,"-");
 
-		if( $("#"+id).length == 0 ) {
-			var btn = document.createElement('input');
-			btn.value=keyword;
-			btn.type="button";
-			btn.classList="btn-keyword";
-			btn.id=id;
-			active_keywords.push(keyword);
-			btn.onclick=function(){
-				const index = active_keywords.indexOf(this.value);
-    
-			    if (index !== -1) {
-			        active_keywords.splice(index, 1);
-			    }
-				this.outerHTML="";
-				update_tutorials();
-			}
-			$("#keyword_list").append(btn);
+	if( $("#"+id).length == 0 ) {
+		var btn = document.createElement('input');
+		btn.value=keyword;
+		btn.type="button";
+		btn.classList="btn-keyword";
+		btn.id=id;
+		active_keywords.push(keyword);
+		btn.onclick=function(){
+			const index = active_keywords.indexOf(this.value);
+
+		    if (index !== -1) {
+		        active_keywords.splice(index, 1);
+		    }
+			this.outerHTML="";
+			update_tutorials();
 		}
+		$("#keyword_list").append(btn);
+	}
 
-		$("#keywords").val('');
+	$("#keywords").val('');
 
-		update_tutorials();
+	update_tutorials();
+}
+
+$("#keywords").keyup(function(e) {
+	if(e.keyCode == 13) {
+		apply_filter();
 	}
 });
 
@@ -58,13 +62,13 @@ function update_tutorials() {
 	Array.prototype.filter.call(tutorials, function(tut){
     	tut.style.display="none";
 	});
-	var keyclass = active_keywords.join(',.').replace(/\s+/g,',.');
+	var keyclass = active_keywords.join('.').replace(/\s+/g,'.');
+	
 	if( keyclass == "" ) {
 		keyclass = ".tutorial";
 	} else {
 		keyclass = "."+keyclass;
 	}
-
 	tutorials = document.querySelectorAll(keyclass);
 	Array.prototype.filter.call(tutorials, function(tut){
     	tut.style.display="block";
