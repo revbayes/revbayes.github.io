@@ -1,6 +1,6 @@
 ---
-title: Statistical Inference Using RevBayes
-subtitle: A very short introduction to RevBayes & Rev
+title: Rev Language Syntax
+subtitle: A very short introduction to the Rev language
 authors: Mike May and Sebastian Höhna
 level: 0
 title-old: RB_Intro_Tutorial
