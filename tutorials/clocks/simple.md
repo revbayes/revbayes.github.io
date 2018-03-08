@@ -82,9 +82,11 @@ $$\mbox{prior odds} = \frac{\mathbb{P}(M_0)}{\mathbb{P}(M_1)}.$$ Thus,
 the Bayes factor measures the degree to which the data alter our belief
 regarding the support for $M_0$ relative to $M_1$ {% cite Lavine1999 %}:
 
-$$\begin{aligned}
-\label{BFeq1}
-BF(M_0,M_1) = \frac{\mathbb{P}(M_0 \mid \mathbf X, \theta_0)}{\mathbb{P}(M_1 \mid \mathbf X, \theta_1)} \div \frac{\mathbb{P}(M_0)}{\mathbb{P}(M_1)}. \end{aligned}$$
+$$
+\begin{equation}
+BF(M_0,M_1) = \frac{\mathbb{P}(M_0 \mid \mathbf X, \theta_0)}{\mathbb{P}(M_1 \mid \mathbf X, \theta_1)} \div \frac{\mathbb{P}(M_0)}{\mathbb{P}(M_1)} \tag{1}\label{eq:one}
+\end{equation}
+$$
 
 Note that interpreting Bayes factors involves some subjectivity. That
 is, it is up to *you* to decide the degree of your belief in $M_0$
@@ -116,7 +118,7 @@ $$\begin{aligned}
 This makes it clear that more complex (parameter-rich) models are
 penalized by virtue of the associated prior: each additional parameter
 entails integration of the likelihood over the corresponding prior
-density. If you refer back to equation [BFeq1], you can see that, with
+density. If you refer back to equation \eqref{eq:one}, you can see that, with
 very little algebra, the ratio of marginal likelihoods is equal to the
 Bayes factor: 
 
