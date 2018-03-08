@@ -1,11 +1,12 @@
 ---
-title: Phylogenetic Inference using RevBayes
-subtitle: Historical biogeography
+title: Historical biogeography
+subtitle: Phylogeographic analysis under the dispersal-extinction-cladogenesis process
 authors:  Michael J. Landis
-category: In Progress
+level: 2
 prerequisites:
 - intro
-files:
+title-old: RB_Biogeography_Tutorial
+redirect: true
 ---
 
 

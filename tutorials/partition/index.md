@@ -1,14 +1,13 @@
 ---
-title: Phylogenetic Inference using ‘RevBayes‘
-subtitle: Partitioned data analyses
+title: Partitioned data analysis
+subtitle: Current Protocols in Bioninformatics - Phylogenetic Inference using RevBayes (Protocol 2)
 authors:  Sebastian H&#246;hna, Michael J.~Landis and Brian R.~Moore
-category: In Progress
+level: 1
 prerequisites:
 - intro
-files:
+title-old: RB_Partition_Tutorial
+redirect: true
 ---
-
-
 
 
 Overview

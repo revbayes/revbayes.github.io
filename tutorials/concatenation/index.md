@@ -1,11 +1,12 @@
 ---
-title: Phylogenetic Inference using ‘RevBayes‘
-subtitle: Species tree estimation from multiple genes using concatenation
+title: Alignment concatenation
+subtitle: Species tree estimation from multiple concatenated gene sequence alignments
 authors:  Bastien Boussau and Sebastian H&#246;hna
-category: In Progress
+level: 1
 prerequisites:
 - intro
-files:
+title-old: RB_GeneConcatenation_Tutorial
+redirect: true
 ---
 
 
