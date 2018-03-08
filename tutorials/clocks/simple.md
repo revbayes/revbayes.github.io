@@ -174,7 +174,7 @@ Of course, it is not possible to observe a diversification process spanning over
 This model makes the very simple assumption that over the course of diversification, 
 there is a constant rate of speciation and the rate of extinction is 0.0. 
 
-#### _Read in the tree and get some helper variables_
+#### Read in the tree and get some helper variables
 
 To start our evaluation of the Yule model, we must first read in the published phylogeny and
 the branch lengths (in units of millions of years). 
@@ -195,7 +195,7 @@ Next we need a helper variable to keep track of the index in our list of moves:
 
     mvi = 1
 
-#### _The speciation rate_
+#### The speciation rate
 
 Now we can start constructing our model.
 For the Yule process, we do not need very many parameters. The most important one 
