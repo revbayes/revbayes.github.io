@@ -1,6 +1,6 @@
 ---
-title: Contributing a tutorial
-subtitle: How to write RevBayes tutorials for this website
+title: Contributing a RevBayes tutorial
+subtitle: How to write and host a tutorial on this website
 layout: default
 permalink: /developer/tutorial/
 category: Developer
