@@ -5,10 +5,6 @@ layout: default
 permalink: /developer/tutorial/
 category: Developer
 code_layout: Rev
-data_files:
-- example.nex
-scripts:
-- example.Rev
 ---
 
 {% include title.html %}
@@ -33,10 +29,10 @@ revbayes.github.io
         ├── data/
         ├── scripts/
         ├── figures/
-        └── tutorial.md</font> <-- main text of tutorial
+        └── new_tutorial.md</font> <-- main text of tutorial
 </pre>
 
-Specifically, your new RevBayes tutorial should be placed in its own directory (e.g. `new_tutorial`) under the `tutorials` directory of the root website repository. The main text of the tutorial should be written in the Markdown file `index.md`, and if the tutorial uses additional data, scripts or image files they should be stored in the subdirectories `data`, `scripts` and `figures` respectively. Your tutorial can include additional pages or other files, but the above basic components are used in integrating your tutorial with the rest of the website.
+Specifically, your new RevBayes tutorial should be placed in its own directory (e.g. `new_tutorial`) under the `tutorials` directory of the root website repository. The main text of the tutorial should be written in a Markdown file with a short, *unique* name (e.g. `new_tutorial.md`). If the tutorial uses additional data, scripts or image files they should be stored in the subdirectories `data`, `scripts` and `figures` respectively. Your tutorial can include additional pages or other files, but the above basic components are used in integrating your tutorial with the rest of the website.
 
 {% subsection Writing tutorial front matter %}
 
@@ -80,8 +76,8 @@ Here is a glossary of all the tutorial attributes used by this site.
  `authors`  | Title authors. Displayed in the title header.
  `level`    | Numeric level 0-2 indicating basic, intermediate or advanced subject matter.
  `prerequisites` | List of prerequisite tutorials.
- `data_files` | List of data files associated with this tutorial in the `data` subdirectory.
- `scripts` | List of script files associated with this tutorial in the `scripts` subdirectory.
+ `include_files` | List of file name patterns that should be included in the tutorial file download.
+ `exclude_files` | List of file name patterns that should not be included in the download (overrides matching `include_files`).
  `index` | Boolean indicating whether the tutorial should be included in the main [tutorial index]({{site.baseurl}}{% link tutorials/index.md %})
  `order` | Number indicating the order in which this tutorial should appear in its level in the [tutorial index]({{site.baseurl}}{% link tutorials/index.md %}).
  `keywords` | List of keywords for grouping tutorials with related subject matter.
@@ -95,7 +91,7 @@ At the top of each tutorial, an **Overview** box is displayed with a list of pre
 
 {% subsection Including prerequisites %}
 
-If you would like users to complete other tutorials before they do yours, you can refer them to prequisite tutorials in the tutorial's overview section, which is populated using the `prerequisites` YAML attribute.
+If you would like to refer users to prequisite tutorials in the tutorial's overview section, list the names of the prequisite tutorials in the `prerequisites` YAML attribute. The name of a tutorial is the basename of its markdown file.
 
 ```yaml
 ---
@@ -106,9 +102,7 @@ prerequisites:
     - ctmc
     - habilitation
 ---
-``` 
-
-Prerequisite tutorials are referred to by the name of their containing directory in the `tutorials` directory.
+```
 
 {% subsection Filling in the table of contents %}
 
@@ -168,26 +162,15 @@ At the top of each tutorial, the **Data files and scripts** box contains a list 
 
 {% include download.html %}
 
-You can include data files (stored under the tutorial subdirectory `data`) and script files (subdirectory `scripts`) in the download box by adding them to the `data_files` and `scripts` YAML attributes of your tutorial page.
+Files in the `data` and `scripts` directories of your tutorial are added to the *Data files and scripts* box automatically. You can include files from another tutorial by listing their relative paths in the `include_files` YAML front matter attribute. You can exclude files using the `exclude_files` attribute.
 
 ```yaml
----
-title: How to build a phylogenetic tree
-category: Phylogenetics
-data_files:
-    - example.nex
-scripts:
-    - example.Rev
----
-``` 
-
-You can include data files from another tutorial be prepending the name of the tutorial:
-
-```yaml
-data_files:
-    - example.nex
-    - ctmc/primates_and_galeopterus_cytb.nex
+include_files:
+    - ctmc/data/primates_and_galeopterus_cytb.nex
+exclude_files:
+    - data/useless_file.nex
 ```
+
 
 {% section Formatting code %}
 
@@ -219,7 +202,7 @@ Other code formats can be assigned using the `{:.}` syntax.
 {% preview %}
 ```
 ls tutorials
-grep phylogenetics index.md
+grep phylogenetics tutorial.md
 ```
 {:.bash}
 {% endpreview %}
@@ -313,8 +296,8 @@ new_tutorial
 │   ├── exercise1.md
 │   ├── exercise2.md
 │   └── exercise3.md
-├── index.md <font color="red"><-- tutorial page (with front matter)</font>
-└── v2.md    <font color="red"><-- tutorial page (with front matter)</font>
+├── new_tutorial.md <font color="red"><-- tutorial page (with front matter)</font>
+└── v2.md           <font color="red"><-- tutorial page (with front matter)</font>
 </pre>
 
 In this example, there are two versions of the tutorial, both of which will get listed on the main [Tutorials Page]({{site.baseurl}}{% link tutorials/index.md %}). The default version of the tutorial will be rendered at the relative URL `{{site.baseurl}}/tutorials/new_tutorial/`, while `v2.md` will render at the URL `{{site.baseurl}}/tutorials/new_tutorial/v2.html`. If you do not want your tutorial listed in the [Tutorials]({{site.baseurl}}/tutorials/) index, use the `index: false` attribute in the YAML front matter.

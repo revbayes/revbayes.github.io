@@ -6,12 +6,6 @@ level: 1
 prerequisites:
 - intro
 - archery
-data_files:
-- primates_and_galeopterus_cytb.nex
-scripts: 
-- mcmc_JC.Rev
-- mcmc_GTR.Rev
-- mcmc_GTR_Gamma_Inv.Rev
 order: 0
 index: true
 title-old: RB_CTMC_Tutorial

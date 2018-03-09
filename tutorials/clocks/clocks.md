@@ -5,9 +5,6 @@ authors:  Tracy A. Heath
 level: 1
 prerequisites:
 - intro
-data_files: 
-- bears_dosReis.tre
-- bears_irbp.nex
 order: 1
 index: true
 title-old: RB_ClockModels_Tutorial

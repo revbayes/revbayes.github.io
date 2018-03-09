@@ -1,21 +1,15 @@
-{% comment %}
-Display a tutorials's data files and scripts for download
-{% endcomment %}
+{% comment %}Display a tutorials's data files and scripts for download{% endcomment %}
+
+{% if page.data_files or page.scripts or page.other %}
 <blockquote class="tutorial_files no-print" id="tutorial_files">
   <h2>Data files and scripts</h2>
-  {% if page.data_files.size > 0 %}
+  {% if page.data_files %}
     <div class="row">
       <div class="col-md-9">
           <strong>Data Files</strong>
           <ul id="data_files">
           {% for file in page.data_files %}
-            {% assign filepath = file | split: '/' %}
-            {% if filepath[1] %}
-            {% assign tutorial = filepath[0] | get_page %}
-            <li><a href="{{ tutorial.dir }}data/{{ filepath[1] }}">{{ filepath[1] }}</a></li>
-            {% else %}
-            <li><a href="data/{{ file }}">{{ file }}</a></li>
-            {% endif %}
+            <li><a href="{{ site.baseurl }}{{ file.path }}">{{ file.name }}</a></li>
           {% endfor %}
           </ul>
         </div>
@@ -24,7 +18,20 @@ Display a tutorials's data files and scripts for download
     <div class="row" id="script_row">
       <div class="col-md-9">
           <strong>Scripts</strong>
-          <ul id="scripts">{% if page.scripts.size > 0 %}{% for file in page.scripts %}<li><a href="scripts/{{ file }}">{{ file }}</a></li>{% endfor %}{% endif %}</ul>
+          <ul id="scripts">{% for script in page.scripts %}<li><a href="{{ site.baseurl }}{{ script.path }}">{{ script.name }}</a></li>{% endfor %}</ul>
         </div>
     </div>
+  {% if page.other %}
+    <div class="row">
+      <div class="col-md-9">
+          <strong>Other files</strong>
+          <ul id="other_files">
+          {% for file in page.other %}
+            <li><a href="{{ site.baseurl }}{{ file.path }}">{{ file.name }}</a></li>
+          {% endfor %}
+          </ul>
+        </div>
+    </div>
+  {% endif %}
 </blockquote>
+{% endif %}
