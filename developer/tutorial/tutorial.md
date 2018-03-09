@@ -282,7 +282,7 @@ You can include it in the main text as follows
 
 {% subsection Making alternative versions of your tutorial %}
 
-Any Markdown file in your tutorial directory will be rendered as a separate tutorial as long as it has YAML front matter. For example, if we make copy of the same external file (say `external_file-yaml.md`) and simply add an empty front matter section, then Jekyll will automatically generate [this page](external_file-yaml.html) when building the website.
+Any Markdown file in your tutorial directory will be rendered as a separate tutorial as long as it has YAML front matter. For example, if we make a copy of the same external file (say `external_file-yaml.md`) and simply add an empty front matter section, then Jekyll will automatically generate [this page](external_file-yaml.html) when building the website.
 
 This makes it easy for you to create alternative versions of your tutorial. Each alternative versions is built from a Markdown file with YAML front matter, each of which then includes one or more external Markdown module text files that do not include front matter. Consider the following example modular tutorial structure.
 
@@ -300,7 +300,7 @@ new_tutorial
 └── v2.md           <font color="red"><-- tutorial page (with front matter)</font>
 </pre>
 
-In this example, there are two versions of the tutorial, both of which will get listed on the main [Tutorials Page]({{site.baseurl}}{% link tutorials/index.md %}). The default version of the tutorial will be rendered at the relative URL `{{site.baseurl}}/tutorials/new_tutorial/`, while `v2.md` will render at the URL `{{site.baseurl}}/tutorials/new_tutorial/v2.html`. If you do not want your tutorial listed in the [Tutorials]({{site.baseurl}}/tutorials/) index, use the `index: false` attribute in the YAML front matter.
+In this example, there are two versions of the tutorial, both of which will get listed on the main [Tutorials Page]({{site.baseurl}}{% link tutorials/index.md %}). If you do not want your tutorial listed in the [Tutorials]({{site.baseurl}}/tutorials/) index, use the `index: false` attribute in the YAML front matter.
 
 {% subsection Linking to other tutorials %}
 
