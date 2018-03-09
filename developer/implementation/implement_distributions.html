@@ -18,7 +18,9 @@
   <div class="container-fluid">
     <div class="navbar-header">
       <a href="/revbayes-site/" class="pull-left">
-        <img class="navbar-logo" src="/revbayes-site/assets/img/aquabayes-desaturated.png" alt="RevBayes Logo" />
+        
+        <img class="navbar-logo" src="/revbayes-site/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
       </a>
       
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
@@ -31,10 +33,10 @@
     </div>
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-        <li><a href="/revbayes-site/software/">Software</a></li>
-        <li><a href="/revbayes-site/tutorials/">Tutorials</a></li>
-        <li><a href="/revbayes-site/workshops/">Workshops</a></li>
-        <li><a href="/revbayes-site/developer/">Developer</a></li>
+        <li><a href="/revbayes-site/software">Software</a></li>
+        <li><a href="/revbayes-site/tutorials">Tutorials</a></li>
+        <li><a href="/revbayes-site/workshops">Workshops</a></li>
+        <li><a href="/revbayes-site/developer">Developer</a></li>
       </ul>
       <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
         <div class="form-group">
@@ -63,16 +65,14 @@
 
 <h2 class="subsection" id="general-info-before-getting-started">General info before getting started</h2>
 
-<p>TESTING HELLO</p>
-
 <ul>
   <li>
     <p>Within the RevBayes <strong>core</strong> directory, there are subdirectories for different categories of distributions. 
-All predefined mathematical distributions that have been implemented exist in <code class="highlighter-rouge">core/distributions/math</code>.</p>
+All mathematical distributions that have been implemented exist in <code class="highlighter-rouge">core/distributions/math</code>.</p>
   </li>
   <li>
     <p>Note that when implementing a new distribution, you will need to create <code class="highlighter-rouge">.cpp</code> and <code class="highlighter-rouge">.h</code> files in both the <strong>revlanguage</strong> directory and the <strong>core</strong> directory. (For a refresher on the difference between these two directories, refer to the <a href="/revbayes-site/developer/architecture.html">Getting familiar with the code</a> section of this Developer’s guide).
-The overall naming format remains the same for every distribution in RevBayes. In the Beta Binomial Distribution example provided below, I specify what to name each file.</p>
+The overall naming format remains the same for every distribution in RevBayes. In the Beta Binomial Distribution example provided below, I specify what naming convention to use when creating each file.</p>
   </li>
   <li>
     <p>It is often helpful to look at/borrow code from existing RevBayes distributions for general help on syntax and organization.</p>
@@ -97,7 +97,7 @@ The overall naming format remains the same for every distribution in RevBayes. I
 <ol>
   <li>
     <p>Create new .cpp &amp; .h files in <code class="highlighter-rouge">revlanguage/distributions/math/</code>, named <code class="highlighter-rouge">Dist_betabinomial.cpp</code> and <code class="highlighter-rouge">Dist_betaBinomial.h</code>. 
- <strong>Note:</strong> all files in this directory will follow this naming format*</p>
+ <strong>Note:</strong> all files in this directory will follow this naming format: ‘Dist_<nameofdistribution>.cpp/h'</nameofdistribution></p>
 
     <p>To populate these files, look at existing examples of similar distributions for specific info on what to include &amp; on proper syntax.  For example, for the Beta Binomial distribution, I looked to the existing Binomial Distribution code for guidance.</p>
   </li>
@@ -112,14 +112,14 @@ The overall naming format remains the same for every distribution in RevBayes. I
       <li>
         <p>Create new <code class="highlighter-rouge">.cpp</code> &amp; <code class="highlighter-rouge">.h</code> files in <code class="highlighter-rouge">core/distributions/math/</code>, named <code class="highlighter-rouge">BetaBinomialDistribution.cpp</code> and <code class="highlighter-rouge">BetaBinomialDistribution.h</code>.</p>
 
-        <p><strong>Note:</strong> This is the object oriented wrapper code, that references the functions hard-coded in the next step.</p>
+        <p><strong>Note:</strong> This is the object oriented wrapper code, that references the functions hard-coded in the next step. All files in this directory will follow this naming format: ‘<NameOfDistribution>Distribution.cpp/h'</NameOfDistribution></p>
       </li>
       <li>
         <p>Create new .cpp and .h files in <code class="highlighter-rouge">core/math/Distributions/</code>, named <code class="highlighter-rouge">DistributionBetaBinomial.cpp</code> and <code class="highlighter-rouge">DistributionBetaBinomial.h</code>.</p>
 
         <p>These are the raw procedural functions in the RevBayes namespace (e.g. pdf, cdf, quantile); they are not derived functions. RbStatistics is a namespace. To populate these files, look at existing examples of similar distributions to get an idea of what functions to include, what variables are needed, and the proper syntax.</p>
 
-        <p><strong>Note:</strong> This is the most time-consuming step in the entire process of implementing a new distribution.</p>
+        <p><strong>Note:</strong> This is the most time-consuming step in the entire process of implementing a new distribution. All files in this directory will follow this naming format: ‘Distribution<NameOfDistribution>.cpp/h'</NameOfDistribution></p>
       </li>
     </ol>
   </li>
@@ -143,7 +143,7 @@ The overall naming format remains the same for every distribution in RevBayes. I
     <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">AddDistribution</span><span class="o">&lt;</span> <span class="n">Natural</span>		<span class="o">&gt;</span><span class="p">(</span> <span class="k">new</span> <span class="n">Dist_betaBinomial</span><span class="p">());</span>
 </code></pre></div>    </div>
 
-    <p>This adds the distribution to the workspace. Without this step, the betaBinomial will not be added to the revlanguage.</p>
+    <p>This adds the distribution to the workspace. Without this step, the beta binomial distribution will not be added to the revlanguage.</p>
 
     <p><strong>Note:</strong> Depending on the kind of distribution, you may need to change <code class="highlighter-rouge">Natural</code> to a different type (e.g. <code class="highlighter-rouge">Probability</code>, <code class="highlighter-rouge">Real</code>, <code class="highlighter-rouge">RealPos</code>, etc.).</p>
 
@@ -152,7 +152,7 @@ The overall naming format remains the same for every distribution in RevBayes. I
   <li>
     <p>Before pushing your changes, you should ensure your code is working properly.</p>
 
-    <p>There are multiple ways to do this, so use your best judgment. As a best practice, you should first compile it to ensure there are no errors. Once it compiles with no problems, you can test in various ways (e.g. run each individual function within the new Beta Binomial distribution in R, then run the Binomial distribution with a Beta prior in Rev and see if the output matches).</p>
+    <p>There are multiple ways to do this, so use your best judgment. As a best practice, you should first compile it to ensure there are no errors. Once it compiles with no problems, you can test in various ways (e.g. run each individual function within the new Beta Binomial distribution in R, then run the Binomial distribution with a Beta prior in Rev and see if the output matches). For more information, see the section of this Developer’s Guide entitled ‘Testing/Validating’.</p>
 
     <p>After ensuring your code runs properly, you are ready to add it to the git repo. We recommend reading through the <a href="/revbayes-site/developer/git-flow.html">Git Workflow Best Practices</a> section of the Developer’s guide before pushing.</p>
   </li>
@@ -179,7 +179,7 @@ for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
   <div class="container">
   <div class="row">
     <div class="col-sm-12" align="center">
-      <a href="https://github.com/revbayes">GitHub</a> | <a href="/revbayes-site/license/">License</a> | <a href="/revbayes-site/citation/">Cite RevBayes</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/revbayes-site/license">License</a> | <a href="/revbayes-site/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
     </div>
   </div>
   <br>
