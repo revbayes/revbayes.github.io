@@ -1,10 +1,7 @@
 ---
-layout: default
+layout: top
 title: Tutorial Format
 ---
-
-## Tutorial Format
-----
 
 These tutorials will provide command line text and code in specific formats.
 
