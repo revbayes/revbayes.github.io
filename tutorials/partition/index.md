@@ -1,6 +1,6 @@
 ---
 title: Partitioned data analysis
-subtitle: Current Protocols in Bioninformatics - Phylogenetic Inference using RevBayes (&#3;2)
+subtitle: Current Protocols in Bioninformatics - Phylogenetic Inference using RevBayes (Protocol &#35;2)
 authors:  Sebastian Höhna, Michael J.~Landis and Brian R.~Moore
 level: 1
 prerequisites:
