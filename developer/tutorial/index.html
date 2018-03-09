@@ -278,7 +278,10 @@ This is a reference to {% ref subsection1 %}
           <strong>Data Files</strong>
           <ul id="data_files">
           
-            <li><a href="/revbayes-site/developer/tutorial/data/example.nex">example.nex</a></li>
+            
+            
+            <li><a href="data/example.nex">example.nex</a></li>
+            
           
           </ul>
         </div>
@@ -287,7 +290,7 @@ This is a reference to {% ref subsection1 %}
     <div class="row" id="script_row">
       <div class="col-md-9">
           <strong>Scripts</strong>
-          <ul id="scripts"><li><a href="/revbayes-site/developer/tutorial/scripts/example.Rev">example.Rev</a></li></ul>
+          <ul id="scripts"><li><a href="scripts/example.Rev">example.Rev</a></li></ul>
         </div>
     </div>
 </blockquote>
@@ -302,6 +305,13 @@ This is a reference to {% ref subsection1 %}
 <span class="na">scripts</span><span class="pi">:</span>
     <span class="pi">-</span> <span class="s">example.Rev</span>
 <span class="nn">---</span>
+</code></pre></div></div>
+
+<p>You can include data files from another tutorial be prepending the name of the tutorial:</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">data_files</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">example.nex</span>
+    <span class="pi">-</span> <span class="s">ctmc/primates_and_galeopterus_cytb.nex</span>
 </code></pre></div></div>
 
 <h2 class="section" id="formatting-code">Formatting code</h2>
@@ -490,11 +500,25 @@ new_tutorial
 
 <h3 class="subsection" id="linking-to-other-tutorials">Linking to other tutorials</h3>
 
-<p>You can reference another tutorial using the <code class="highlighter-rouge">tutorialref</code> Liquid tag.</p>
+<p>You can reference another tutorial using the <code class="highlighter-rouge">page_ref</code> and <code class="highlighter-rouge">page_url</code> Liquid tags, or with the <code class="highlighter-rouge">get_page</code> Jekyll filter.</p>
 
-<blockquote class="preview"><div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>This is a reference to the {% tutorialref "ctmc" %} tutorial
+<blockquote class="preview"><div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>This is a reference to the {% page_ref intro %} tutorial.
+
+{% assign var = "ctmc" %}
+This how to link to the {% page_ref {{ var }} %} tutorial using a liquid variable,
+
+{% assign tut = "biogeo" | get_page %}
+This is how to retrieve the <span class="ge">*{{ tut.title }}*</span> tutorial page by name.
+
+The relative URL of the <span class="sb">`{{ var }}`</span> tutorial is <span class="sb">`{% page_url {{ var }} %}`</span>.
 </code></pre></div></div>
-<br /><p>This is a reference to the <a href="/revbayes-site/tutorials/ctmc/ctmc.html">Substitution Models</a> tutorial</p>
+<br /><p>This is a reference to the <a href="/revbayes-site/tutorials/intro/intro.html">Rev Language Syntax</a> tutorial.</p>
+
+<p>This how to link to the <a href="/revbayes-site/tutorials/ctmc/ctmc.html">Substitution Models</a> tutorial using a liquid variable,</p>
+
+<p>This is how to retrieve the <em>Historical biogeography</em> tutorial page by name.</p>
+
+<p>The relative URL of the <code class="highlighter-rouge">ctmc</code> tutorial is <code class="highlighter-rouge">/tutorials/ctmc/ctmc.html</code>.</p>
 </blockquote>
 
 <h2 class="section" id="figures">Figures</h2>
