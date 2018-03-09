@@ -10,10 +10,10 @@ order: 1
 {:.subsection}
 
 * Within the RevBayes **core** directory, there are subdirectories for different categories of distributions. 
-All predefined mathematical distributions that have been implemented exist in `core/distributions/math`.
+All mathematical distributions that have been implemented exist in `core/distributions/math`.
 
 * Note that when implementing a new distribution, you will need to create `.cpp` and `.h` files in both the **revlanguage** directory and the **core** directory. (For a refresher on the difference between these two directories, refer to the [Getting familiar with the code]({{ site.baseurl }}{% link developer/architecture.md %}) section of this Developer's guide).
-The overall naming format remains the same for every distribution in RevBayes. In the Beta Binomial Distribution example provided below, I specify what to name each file.
+The overall naming format remains the same for every distribution in RevBayes. In the Beta Binomial Distribution example provided below, I specify what naming convention to use when creating each file.
 
 * It is often helpful to look at/borrow code from existing RevBayes distributions for general help on syntax and organization.
 
@@ -29,7 +29,7 @@ In the following steps, we'll implement the **Beta Binomial Distribution** as an
 {:.subsection}
 
 1.  Create new .cpp & .h files in `revlanguage/distributions/math/`, named `Dist_betabinomial.cpp` and `Dist_betaBinomial.h`. 
-     **Note:** all files in this directory will follow this naming format*
+     **Note:** all files in this directory will follow this naming format: 'Dist_<nameofdistribution>.cpp/h'
 
     To populate these files, look at existing examples of similar distributions for specific info on what to include & on proper syntax.  For example, for the Beta Binomial distribution, I looked to the existing Binomial Distribution code for guidance.
     
@@ -40,13 +40,13 @@ In the following steps, we'll implement the **Beta Binomial Distribution** as an
 2.  Test
     1.  Create new `.cpp` & `.h` files in `core/distributions/math/`, named `BetaBinomialDistribution.cpp` and `BetaBinomialDistribution.h`.
 
-        **Note:** This is the object oriented wrapper code, that references the functions hard-coded in the next step.
+        **Note:** This is the object oriented wrapper code, that references the functions hard-coded in the next step. All files in this directory will follow this naming format: '<NameOfDistribution>Distribution.cpp/h'
     
     2.  Create new .cpp and .h files in `core/math/Distributions/`, named `DistributionBetaBinomial.cpp` and `DistributionBetaBinomial.h`. 
 
         These are the raw procedural functions in the RevBayes namespace (e.g. pdf, cdf, quantile); they are not derived functions. RbStatistics is a namespace. To populate these files, look at existing examples of similar distributions to get an idea of what functions to include, what variables are needed, and the proper syntax.
 
-        **Note:** This is the most time-consuming step in the entire process of implementing a new distribution.
+        **Note:** This is the most time-consuming step in the entire process of implementing a new distribution. All files in this directory will follow this naming format: 'Distribution<NameOfDistribution>.cpp/h'
 
 
 3.  Navigate to `revlanguage/workspace/RbRegister_Dist.cpp` 
@@ -70,14 +70,14 @@ In the following steps, we'll implement the **Beta Binomial Distribution** as an
     ```
 
 
-    This adds the distribution to the workspace. Without this step, the betaBinomial will not be added to the revlanguage.
+    This adds the distribution to the workspace. Without this step, the beta binomial distribution will not be added to the revlanguage.
     
     **Note:** Depending on the kind of distribution, you may need to change `Natural` to a different type (e.g. `Probability`, `Real`, `RealPos`, etc.).
     
-    After registering your distribution, you are ready to test your code.
+    After registering your distribution, you are ready to test your code. 
     
 5.  Before pushing your changes, you should ensure your code is working properly. 
 
-    There are multiple ways to do this, so use your best judgment. As a best practice, you should first compile it to ensure there are no errors. Once it compiles with no problems, you can test in various ways (e.g. run each individual function within the new Beta Binomial distribution in R, then run the Binomial distribution with a Beta prior in Rev and see if the output matches).  
+    There are multiple ways to do this, so use your best judgment. As a best practice, you should first compile it to ensure there are no errors. Once it compiles with no problems, you can test in various ways (e.g. run each individual function within the new Beta Binomial distribution in R, then run the Binomial distribution with a Beta prior in Rev and see if the output matches). For more information, see the section of this Developer's Guide entitled 'Testing/Validating'.
     
     After ensuring your code runs properly, you are ready to add it to the git repo. We recommend reading through the [Git Workflow Best Practices]({{ site.baseurl }}{% link developer/git-flow.md %}) section of the Developer's guide before pushing. 
