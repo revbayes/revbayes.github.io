@@ -1,8 +1,8 @@
 ---
-layout: top
+layout: home
 title: "Citation"
 subtitle: "Citing RevBayes"
-permalink: /citation/
+permalink: /citation
 ---
 
 #### The recommended citation for the current version of the RevBayes software is:

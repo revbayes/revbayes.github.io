@@ -1,6 +1,7 @@
 ---
-layout: top
+layout: home
 title: Tutorial Format
+permalink: /tutorials/format
 ---
 
 These tutorials will provide command line text and code in specific formats.

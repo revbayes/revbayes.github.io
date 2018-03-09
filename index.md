@@ -1,6 +1,6 @@
 ---
-root: .
 ---
+
 <div class="row" style="display: flex; align-items: center;">
 <div class="col-sm-2 col-xs-4">
   <img src="{{ site.baseurl }}{% link assets/img/gm-tree.svg %}" alt="" width="100%" />

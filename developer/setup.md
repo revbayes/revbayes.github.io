@@ -9,7 +9,7 @@ order: 2
 
 It is easy to use an IDE to develop RevBayes such as XCode, Eclipse Oxygen, or Netbeans. You can also useyour favorite text editor (e.g. vim or emacs). 
 This page will provide some helpful tips on how to set up your development enviroment.
-See the [Software]({{site.baseurl}}{% link software.md %}) page for instructions on how to obtain the source code.
+See the {% page_ref software %} page for instructions on how to obtain the source code.
 
 <br><br>
 

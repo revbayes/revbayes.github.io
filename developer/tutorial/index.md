@@ -2,9 +2,9 @@
 title: Contributing a RevBayes tutorial
 subtitle: How to write and host a tutorial on this website
 layout: default
-permalink: /developer/tutorial/
 category: Developer
 code_layout: Rev
+permalink: /developer/tutorial
 ---
 
 {% include title.html %}
@@ -56,7 +56,7 @@ level: 0
 ---
 ``` 
 
-The `level` attribute is used to group tutorials with similar levels of complexity in the [tutorial index]({{site.baseurl}}{% link tutorials/index.md %}).
+The `level` attribute is used to group tutorials with similar levels of complexity in the [tutorial index]({% page_url tutorials %}).
 At the moment, only these levels are recognized:
 {% assign tutorial_index = site.pages | where:"url","/tutorials/" | first %}
 {% for level in tutorial_index.levels %}
@@ -71,15 +71,15 @@ Here is a glossary of all the tutorial attributes used by this site.
 
  Attribute  |  Description
 ----------- | -----------
- `title`    | Tutorial title displayed in the title header and the [tutorial index]({{site.baseurl}}{% link tutorials/index.md %})
+ `title`    | Tutorial title displayed in the title header and the [tutorial index]({% page_url tutorials %})
  `subtitle` | Italicized description displayed below the title.
  `authors`  | Title authors. Displayed in the title header.
  `level`    | Numeric level 0-2 indicating basic, intermediate or advanced subject matter.
  `prerequisites` | List of prerequisite tutorials.
  `include_files` | List of file name patterns that should be included in the tutorial file download.
  `exclude_files` | List of file name patterns that should not be included in the download (overrides matching `include_files`).
- `index` | Boolean indicating whether the tutorial should be included in the main [tutorial index]({{site.baseurl}}{% link tutorials/index.md %})
- `order` | Number indicating the order in which this tutorial should appear in its level in the [tutorial index]({{site.baseurl}}{% link tutorials/index.md %}).
+ `index` | Boolean indicating whether the tutorial should be included in the main [tutorial index]({% page_url tutorials %})
+ `order` | Number indicating the order in which this tutorial should appear in its level in the [tutorial index]({% page_url tutorials %}).
  `keywords` | List of keywords for grouping tutorials with related subject matter.
  `title-old`| Name of the corresponding tutorial in the deprecated [Latex repository](https://github.com/revbayes/revbayes_tutorial)
  `redirect` | Automatically redirect to the deprecated Latex tutorial? Used for tutorials not yet updated for this site.
@@ -296,7 +296,7 @@ new_tutorial
 └── v2.md           <font color="red"><-- tutorial page (with front matter)</font>
 </pre>
 
-In this example, there are two versions of the tutorial, both of which will get listed on the main [Tutorials Page]({{site.baseurl}}{% link tutorials/index.md %}). If you do not want your tutorial listed in the [Tutorials]({{site.baseurl}}/tutorials/) index, use the `index: false` attribute in the YAML front matter.
+In this example, there are two versions of the tutorial, both of which will get listed on the main {% page_ref tutorials %} page. If you do not want your tutorial listed in the [Tutorials]({{site.baseurl}}/tutorials/) index, use the `index: false` attribute in the YAML front matter.
 
 {% subsection Linking to other tutorials | linking %}
 

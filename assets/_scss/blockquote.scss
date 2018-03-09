@@ -1,0 +1,48 @@
+$codeblock-padding: 5px !default;
+
+@mixin bkSetup($color, $glyph) {
+
+  $gradientcolor1: $color;
+  $gradientcolor2: scale-color($color, $lightness: 10%);
+
+  padding-left: $codeblock-padding;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-right: 0;
+  border: 1px solid;
+  border-color: $color;
+  padding-bottom: $codeblock-padding;
+
+  h2 {
+    padding-top: $codeblock-padding;
+    padding-bottom: $codeblock-padding;
+    font-size: 20px;
+    background: linear-gradient(to bottom, $gradientcolor1, $gradientcolor2);
+    border-color: $color;
+    margin-top: 0px;
+    margin-left: -$codeblock-padding; // to move back to the left margin of the enclosing blockquote
+  }
+  h2:before {
+    font-family: 'Glyphicons Halflings';
+    content: $glyph;
+    float: left;
+    padding-left: $codeblock-padding;
+    padding-right: $codeblock-padding;
+    display: inline-block;
+    -webkit-font-smoothing: antialiased;
+  }
+
+}
+
+.tutorial_files{ @include bkSetup($color-files, ""); }
+.overview{ @include bkSetup($color-overview, "\e105"); }
+.discussion{ @include bkSetup($color-discussion, "\e086"); }
+
+.download_files {
+  cursor: pointer;
+  float: left;
+  padding-left: $codeblock-padding;
+  padding-right: $codeblock-padding;
+  display: inline-block;
+  -webkit-font-smoothing: antialiased;
+}

@@ -213,7 +213,7 @@ moves[mvi++] = mvNNI(topology, weight=1.0)
 moves[mvi++] = mvSPR(topology, weight=1.0)
 ```
 
-The weight specifies how often the move will be applied either on average per iteration or relative to all other moves. Have a look at the MCMC Diagnosis tutorial for more details about moves and MCMC strategies (found in [Tutorials]({{site.baseurl}}{% link tutorials/index.md %})).
+The weight specifies how often the move will be applied either on average per iteration or relative to all other moves. Have a look at the MCMC Diagnosis tutorial for more details about moves and MCMC strategies (found in {% page_ref tutorials %}).
 
 Next we have to create a stochastic node for each of the $2N - 3$ branches in our tree (where $N=$ `n_species`). We can do this using a `for` loop — this is a plate in our graphical model. In this loop, we can create each of the branch-length nodes and assign each move. Copy this entire block of `Rev` code into the console:
 

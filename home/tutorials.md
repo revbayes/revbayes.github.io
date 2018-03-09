@@ -1,7 +1,8 @@
 ---
-layout: top
+layout: home
 title: Tutorials
 subtitle: RevBayes Tutorials
+permalink: /tutorials
 levels:
 - Introduction to MCMC and RevBayes
 - Standard tree inference and comparative methods
@@ -18,13 +19,12 @@ These tutorials have been written for new users to learn RevBayes at home, at wo
 You may find that the styles are somewhat different between tutorials and that some  have overlapping content. 
 The tutorials all follow the same format, please see the Tutorial Format guide for details about how to read the tutorials.
 
-<a href="{{ site.baseurl }}{% link tutorials/format.md %}" class="btn btn-info" role="button">Tutorial Format Guide</a>
+<a href="{% page_url format %}" class="btn btn-info" role="button">Tutorial Format Guide</a>
 
 
 {% assign keywords = site.empty_array %}
 
-{% assign levels = site.pages | where:"layout","tutorial" | sort:"level","last" | group_by:"level" %}
-
+{% assign levels = site.tutorials | sort:"level","last" | group_by:"level" %}
 {% for level in levels %}
 {% assign i = forloop.index | minus: 1 %}
 {% if page.levels[i] %}

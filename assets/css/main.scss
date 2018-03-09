@@ -20,165 +20,36 @@ html {
     }
 }
 
-//----------------------------------------
-// Colors.
-//----------------------------------------
-
-// branding
-$color-brand:       #2b3990 !default;
-
-// code boxes
-$color-bash:          #f0f0f0 !default;
-$color-rev:           #b7cfed !default;
-$color-rev-output-bg: #b7cfed !default;
-$color-rev-output:    #808080 !default;
-
-// blockquotes
-$color-overview:    #b7cfed !default;
-$color-files:       #f4fd9c !default;
-
-// figures
-$figure-border:     #B0B0B0 !default;
-
-// unused
-$color-cpp:         #cfb7ed !default;
-$color-error:       #bd2c00 !default;
-$color-callout:     #f4fd9c !default;
-$color-challenge:   #eec275 !default;
-$color-checklist:   #dfd2a0 !default;
-$color-discussion:  #eec275 !default;
-$color-keypoints:   #7ae78e !default;
-$color-prereq:      #9cd6dc !default;
-$color-solution:    #ded4b9 !default;
-$color-testimonial: #fc8dc1 !default;
-
-$lavender-blush2:	  #eee0e5 !default;
+@import 'colors';
+@import 'home';
+@import 'code';
+@import 'blockquote';
+@import 'tutorial';
+@import 'tutorial-index';
+@import 'figure';
 
 //----------------------------------------
-// Specialized code blocks.
+// Globals
 //----------------------------------------
 
-@mixin cdSetup($box-color, $text-color: #000000, $prompt: "", $secondary: "") {
-  pre {
-    font-size: 14px;
-    background-color: $box-color;
-    color: $text-color;
-    .line::before {
-      content: $prompt ' ';
-    }
-    .secondary::before {
-      content: $secondary ' ';
-    }
-  }
+.footertext {
+  text-align: center;
 }
 
-:not(pre) > code {
-  background-color: #eff0f1;
-  border-radius: 0;
-  padding: 1px 5px;
+img.navbar-logo {
+  height: 40px; // synchronize with height of navbar
+  padding-top: 5px;
+  padding-right: 10px;
 }
 
-.default      { @include cdSetup(#eff0f1, #000000); }
-.Rev          { @include cdSetup($color-rev, #000000, ">", "+"); }
-.rev          { @include cdSetup($color-rev, #000000, ">", "+"); }
-.rev-output   { @include cdSetup($color-rev-output-bg, $color-rev-output); }
-.Rev-output   { @include cdSetup($color-rev-output-bg, $color-rev-output); }
-.bash         { @include cdSetup($color-bash, #000000, "$", ">"); }
-
-.error        { @include cdSetup($color-error); }
-
-.instruction {
-  border: 1px solid;
-  border-color: #ddd;
+ul,
+ol {
+  padding-left: 1em;
 }
 
-//----------------------------------------
-// Specialized blockquote environments for learning objectives, callouts, etc.
-//----------------------------------------
-
-$codeblock-padding: 5px !default;
-
-@mixin bkSetup($color, $glyph) {
-
-  $gradientcolor1: $color;
-  $gradientcolor2: scale-color($color, $lightness: 10%);
-
-  padding-left: $codeblock-padding;
-  padding-top: 0;
-  padding-bottom: 0;
-  padding-right: 0;
-  border: 1px solid;
-  border-color: $color;
-  padding-bottom: $codeblock-padding;
-
-  h2 {
-    padding-top: $codeblock-padding;
-    padding-bottom: $codeblock-padding;
-    font-size: 20px;
-    background: linear-gradient(to bottom, $gradientcolor1, $gradientcolor2);
-    border-color: $color;
-    margin-top: 0px;
-    margin-left: -$codeblock-padding; // to move back to the left margin of the enclosing blockquote
-  }
-  h2:before {
-    font-family: 'Glyphicons Halflings';
-    content: $glyph;
-    float: left;
-    padding-left: $codeblock-padding;
-    padding-right: $codeblock-padding;
-    display: inline-block;
-    -webkit-font-smoothing: antialiased;
-  }
-
-}
-
-.tutorial_files{ @include bkSetup($color-files, ""); }
-.overview{ @include bkSetup($color-overview, "\e105"); }
-.discussion{ @include bkSetup($color-discussion, "\e086"); }
-
-.callout{ @include bkSetup($color-callout, "\e146"); }
-.challenge{ @include bkSetup($color-challenge, "\270f"); }
-.checklist{ @include bkSetup($color-checklist, "\e067"); }
-.keypoints{ @include bkSetup($color-keypoints, "\e101"); }
-.prereq{ @include bkSetup($color-prereq, "\e124"); }
-.solution{ @include bkSetup($color-solution, "\e105"); }
-.testimonial{ @include bkSetup($color-testimonial, "\e143"); }
-
-.download_files {
-  cursor: pointer;
-  float: left;
-  padding-left: $codeblock-padding;
-  padding-right: $codeblock-padding;
-  display: inline-block;
-  -webkit-font-smoothing: antialiased;
-}
-
-.maintitle {
-  font-family: 'Raleway';
-  font-size: 2.5em;
-}
-
-.titlebar {
-  margin-bottom: 2em;
-  text-align: left;
-  font-family: 'Raleway';
-
-  .subtitle {
-    font-size: 1.8em;
-    font-style: italic;
-  }
-
-  .authors {
-    font-size: 1em;
-  }
-}
-
-.sidebar {
-    width: 22em;
-    float: left;
-    font-size: 0.9em;
-    margin-right: 1em;
-    margin-top: 0em;
+span.fold-unfold {
+  margin-left: 1em;
+  opacity: 0.5;
 }
 
 //----------------------------------------
@@ -206,134 +77,4 @@ img {
 
 .navbar-toggle {
   float: right;
-}
-
-//----------------------------------------
-// Section headings
-//----------------------------------------
-
-h2.section {
-  margin-top: 30pt;
-}
-
-//----------------------------------------
-// Tutorial list
-//----------------------------------------
-
-.tutorialbox {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.tutorial {
-  width: "30%";
-  background-color: #fafafa;
-  margin: 0.2em;
-  padding: 0.6em;
-  
-  max-width: 14em;
-  text-align: left;
-
-  .title {
-    font-size: 1.2em;
-  }
-  .subtitle {
-    font-style: italic;
-  }
-}
-
-//----------------------------------------
-// Figures
-//----------------------------------------
-figure {
-  padding: 10px 20px;
-  counter-increment: figures;
-  text-align: center;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 0.9em;
-  margin-bottom: 0.5em;
-  border-left: 5px solid #eee;
-  border-right: 5px solid #eee;
-  display: table;
-
-  img {
-    margin-bottom: 0.5em
-  }
-}
-
-figure .table {
-  padding: 10px 20px;
-  counter-increment: tables;
-  text-align: center;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 0.9em;
-  margin-bottom: 0.5em;
-  border-left: 5px solid #eee;
-  border-right: 5px solid #eee;
-  display: table;
-
-  img {
-    margin-bottom: 0.5em
-  }
-}
-
-figure figcaption:before {
-  content: 'Figure ' counter(figures) '. ';
-  font-weight: bold;
-}
-
-figure .table figcaption:before {
-  content: 'Table ' counter(tables) '. ';
-  font-weight: bold;
-}
-
-@media print {
-  figure {
-    border: 1px solid #999;
-
-    page-break-inside: avoid;
-  }
-  figure .table {
-    border: 1px solid #999;
-
-    page-break-inside: avoid;
-  }
-}
-
-//----------------------------------------
-// Miscellaneous.
-//----------------------------------------
-
-.MathJax_Display {
-    pointer-events:none;
-}
-
-//----------------------------------------
-// Miscellaneous.
-//----------------------------------------
-
-.footertext {
-  text-align: center;
-}
-
-img.navbar-logo {
-  height: 40px; // synchronize with height of navbar
-  padding-top: 5px;
-  padding-right: 10px;
-}
-
-div.branding {
-  color: $color-brand;
-}
-
-ul,
-ol {
-  padding-left: 1em;
-}
-
-span.fold-unfold {
-  margin-left: 1em;
-  opacity: 0.5;
 }

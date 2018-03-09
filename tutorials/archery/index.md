@@ -31,7 +31,7 @@ Requirements {#subsect:Overview-Requirements}
 This tutorial requires that you download and install the latest release
 of RevBayes {% cite Hoehna2017a %}, which is available for Mac OS X, Windows,
 and Linux operating systems. Directions for downloading and installing
-the software are available under [software]({{ site.baseurl}}{% link software.md %}). The exercise provided also
+the software are available under {% page_ref software %}. The exercise provided also
 requires additional programs for editing text files and visualizing
 output. The following are very useful tools for working with RevBayes:
 

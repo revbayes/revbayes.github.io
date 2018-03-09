@@ -1,0 +1,35 @@
+//----------------------------------------
+// Specialized code blocks.
+//----------------------------------------
+
+@mixin cdSetup($box-color, $text-color: #000000, $prompt: "", $secondary: "") {
+  pre {
+    font-size: 14px;
+    background-color: $box-color;
+    color: $text-color;
+    .line::before {
+      content: $prompt ' ';
+    }
+    .secondary::before {
+      content: $secondary ' ';
+    }
+  }
+}
+
+:not(pre) > code {
+  background-color: #eff0f1;
+  border-radius: 0;
+  padding: 1px 5px;
+}
+
+.default      { @include cdSetup(#eff0f1, #000000); }
+.Rev          { @include cdSetup($color-rev, #000000, ">", "+"); }
+.rev          { @include cdSetup($color-rev, #000000, ">", "+"); }
+.rev-output   { @include cdSetup($color-rev-output-bg, $color-rev-output); }
+.Rev-output   { @include cdSetup($color-rev-output-bg, $color-rev-output); }
+.bash         { @include cdSetup($color-bash, #000000, "$", ">"); }
+
+.instruction {
+  border: 1px solid;
+  border-color: #ddd;
+}
