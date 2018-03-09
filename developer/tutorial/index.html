@@ -76,10 +76,10 @@ revbayes.github.io
         ├── data/
         ├── scripts/
         ├── figures/
-        └── tutorial.md</font> &lt;-- main text of tutorial
+        └── new_tutorial.md</font> &lt;-- main text of tutorial
 </pre>
 
-<p>Specifically, your new RevBayes tutorial should be placed in its own directory (e.g. <code class="highlighter-rouge">new_tutorial</code>) under the <code class="highlighter-rouge">tutorials</code> directory of the root website repository. The main text of the tutorial should be written in the Markdown file <code class="highlighter-rouge">index.md</code>, and if the tutorial uses additional data, scripts or image files they should be stored in the subdirectories <code class="highlighter-rouge">data</code>, <code class="highlighter-rouge">scripts</code> and <code class="highlighter-rouge">figures</code> respectively. Your tutorial can include additional pages or other files, but the above basic components are used in integrating your tutorial with the rest of the website.</p>
+<p>Specifically, your new RevBayes tutorial should be placed in its own directory (e.g. <code class="highlighter-rouge">new_tutorial</code>) under the <code class="highlighter-rouge">tutorials</code> directory of the root website repository. The main text of the tutorial should be written in a Markdown file with a short, <em>unique</em> name (e.g. <code class="highlighter-rouge">new_tutorial.md</code>). If the tutorial uses additional data, scripts or image files they should be stored in the subdirectories <code class="highlighter-rouge">data</code>, <code class="highlighter-rouge">scripts</code> and <code class="highlighter-rouge">figures</code> respectively. Your tutorial can include additional pages or other files, but the above basic components are used in integrating your tutorial with the rest of the website.</p>
 
 <h3 class="subsection" id="writing-tutorial-front-matter">Writing tutorial front matter</h3>
 
@@ -145,12 +145,12 @@ At the moment, only these levels are recognized:</p>
       <td>List of prerequisite tutorials.</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">data_files</code></td>
-      <td>List of data files associated with this tutorial in the <code class="highlighter-rouge">data</code> subdirectory.</td>
+      <td><code class="highlighter-rouge">include_files</code></td>
+      <td>List of file name patterns that should be included in the tutorial file download.</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">scripts</code></td>
-      <td>List of script files associated with this tutorial in the <code class="highlighter-rouge">scripts</code> subdirectory.</td>
+      <td><code class="highlighter-rouge">exclude_files</code></td>
+      <td>List of file name patterns that should not be included in the download (overrides matching <code class="highlighter-rouge">include_files</code>).</td>
     </tr>
     <tr>
       <td><code class="highlighter-rouge">index</code></td>
@@ -186,7 +186,7 @@ At the moment, only these levels are recognized:</p>
 
 <h3 class="subsection" id="including-prerequisites">Including prerequisites</h3>
 
-<p>If you would like users to complete other tutorials before they do yours, you can refer them to prequisite tutorials in the tutorial’s overview section, which is populated using the <code class="highlighter-rouge">prerequisites</code> YAML attribute.</p>
+<p>If you would like to refer users to prequisite tutorials in the tutorial’s overview section, list the names of the prequisite tutorials in the <code class="highlighter-rouge">prerequisites</code> YAML attribute. The name of a tutorial is the basename of its markdown file.</p>
 
 <div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">---</span>
 <span class="na">title</span><span class="pi">:</span> <span class="s">Non-parametric interdimensional Bayesian hyperloop methods</span>
@@ -197,8 +197,6 @@ At the moment, only these levels are recognized:</p>
     <span class="pi">-</span> <span class="s">habilitation</span>
 <span class="nn">---</span>
 </code></pre></div></div>
-
-<p>Prerequisite tutorials are referred to by the name of their containing directory in the <code class="highlighter-rouge">tutorials</code> directory.</p>
 
 <h3 class="subsection" id="filling-in-the-table-of-contents">Filling in the table of contents</h3>
 
@@ -278,10 +276,7 @@ This is a reference to {% ref subsection1 %}
           <strong>Data Files</strong>
           <ul id="data_files">
           
-            
-            
-            <li><a href="data/example.nex">example.nex</a></li>
-            
+            <li><a href="/revbayes-site/developer/tutorial/data/example.nex">example.nex</a></li>
           
           </ul>
         </div>
@@ -290,28 +285,18 @@ This is a reference to {% ref subsection1 %}
     <div class="row" id="script_row">
       <div class="col-md-9">
           <strong>Scripts</strong>
-          <ul id="scripts"><li><a href="scripts/example.Rev">example.Rev</a></li></ul>
+          <ul id="scripts"><li><a href="/revbayes-site/developer/tutorial/scripts/example.Rev">example.Rev</a></li></ul>
         </div>
     </div>
+  
 </blockquote>
 
-<p>You can include data files (stored under the tutorial subdirectory <code class="highlighter-rouge">data</code>) and script files (subdirectory <code class="highlighter-rouge">scripts</code>) in the download box by adding them to the <code class="highlighter-rouge">data_files</code> and <code class="highlighter-rouge">scripts</code> YAML attributes of your tutorial page.</p>
+<p>Files in the <code class="highlighter-rouge">data</code> and <code class="highlighter-rouge">scripts</code> directories of your tutorial are added to the <em>Data files and scripts</em> box automatically. You can include files from another tutorial by listing their relative paths in the <code class="highlighter-rouge">include_files</code> YAML front matter attribute. You can exclude files using the <code class="highlighter-rouge">exclude_files</code> attribute.</p>
 
-<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">---</span>
-<span class="na">title</span><span class="pi">:</span> <span class="s">How to build a phylogenetic tree</span>
-<span class="na">category</span><span class="pi">:</span> <span class="s">Phylogenetics</span>
-<span class="na">data_files</span><span class="pi">:</span>
-    <span class="pi">-</span> <span class="s">example.nex</span>
-<span class="na">scripts</span><span class="pi">:</span>
-    <span class="pi">-</span> <span class="s">example.Rev</span>
-<span class="nn">---</span>
-</code></pre></div></div>
-
-<p>You can include data files from another tutorial be prepending the name of the tutorial:</p>
-
-<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">data_files</span><span class="pi">:</span>
-    <span class="pi">-</span> <span class="s">example.nex</span>
-    <span class="pi">-</span> <span class="s">ctmc/primates_and_galeopterus_cytb.nex</span>
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">include_files</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">ctmc/data/primates_and_galeopterus_cytb.nex</span>
+<span class="na">exclude_files</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">data/useless_file.nex</span>
 </code></pre></div></div>
 
 <h2 class="section" id="formatting-code">Formatting code</h2>
@@ -352,12 +337,12 @@ sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
 <p><code class="highlighter-rouge">{:.bash}</code> - bash console input</p>
 <blockquote class="preview"><div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>```
 ls tutorials
-grep phylogenetics index.md
+grep phylogenetics tutorial.md
 ```
 {:.bash}
 </code></pre></div></div>
 <br /><div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ls tutorials
-grep phylogenetics index.md
+grep phylogenetics tutorial.md
 </code></pre></div></div>
 </blockquote>
 
@@ -492,8 +477,8 @@ new_tutorial
 │   ├── exercise1.md
 │   ├── exercise2.md
 │   └── exercise3.md
-├── index.md <font color="red">&lt;-- tutorial page (with front matter)</font>
-└── v2.md    <font color="red">&lt;-- tutorial page (with front matter)</font>
+├── new_tutorial.md <font color="red">&lt;-- tutorial page (with front matter)</font>
+└── v2.md           <font color="red">&lt;-- tutorial page (with front matter)</font>
 </pre>
 
 <p>In this example, there are two versions of the tutorial, both of which will get listed on the main <a href="/revbayes-site/tutorials/">Tutorials Page</a>. The default version of the tutorial will be rendered at the relative URL <code class="highlighter-rouge">/revbayes-site/tutorials/new_tutorial/</code>, while <code class="highlighter-rouge">v2.md</code> will render at the URL <code class="highlighter-rouge">/revbayes-site/tutorials/new_tutorial/v2.html</code>. If you do not want your tutorial listed in the <a href="/revbayes-site/tutorials/">Tutorials</a> index, use the <code class="highlighter-rouge">index: false</code> attribute in the YAML front matter.</p>
