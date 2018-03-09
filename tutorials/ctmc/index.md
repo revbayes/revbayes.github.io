@@ -19,7 +19,7 @@ Overview
 ========
 {:.section}
 
-This tutorial provides the first protocol from our recent publication {% cite Hoehna2017a %}. The second protocol is described in the [Partitioned data analysis tutorial]({{site.baseurl}}{% link tutorials/partition/partition.md %}) and the third protocol is described in the [Bayes factor tutorial]({{site.baseurl}}{% link tutorials/bayes_factors/bayes_factors.md %}).
+This tutorial provides the first protocol from our recent publication {% cite Hoehna2017a %}. The second protocol is described in the {% page_ref partition %} tutorial and the third protocol is described in the {% page_ref bayes_factors %}.
 
 The present tutorial demonstrates how to set up and perform analyses
 using common nucleotide substitution models. The substitution models
@@ -263,7 +263,7 @@ phylogenetic model. For simplicity, we will assume a uniform prior on
 both topologies and node ages. The distribution in RevBayes is `dnUniformTimeTree()`.
 
 Fore more information on tree priors, such as birth-death
-processes, please read the [Diversification Rate Tutorial]({{site.baseurl}}{% link tutorials/div/div.md %}).
+processes, please read the {% page_ref div %}.
 
 First, we need to specify the age of the tree:
 
@@ -271,7 +271,7 @@ First, we need to specify the age of the tree:
 root_age <- 10.0
 ```
 
-Here we simply assumed that the tree is 10.0 time units old. We could also specify a prior on the root age if we have fossil calibrations (see [Divergence Time and Calibration Tutorial]({{site.baseurl}}{% link tutorials/clocks/clocks.md %})). Next, we specify the `tree` stochastic variable by passing in the taxon information `taxa` to the `dnUniformTimeTree()` distribution:
+Here we simply assumed that the tree is 10.0 time units old. We could also specify a prior on the root age if we have fossil calibrations (see {% page_ref clocks %}). Next, we specify the `tree` stochastic variable by passing in the taxon information `taxa` to the `dnUniformTimeTree()` distribution:
 
 ```
 psi ~ dnUniformTimeTree(rootAge=root_age, taxa=taxa)

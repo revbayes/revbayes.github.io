@@ -29,10 +29,10 @@ revbayes.github.io
         ├── data/
         ├── scripts/
         ├── figures/
-        └── new_tutorial.md</font> <-- main text of tutorial
+        └── index.md</font> <-- main text of tutorial
 </pre>
 
-Specifically, your new RevBayes tutorial should be placed in its own directory (e.g. `new_tutorial`) under the `tutorials` directory of the root website repository. The main text of the tutorial should be written in a Markdown file with a short, *unique* name (e.g. `new_tutorial.md`). If the tutorial uses additional data, scripts or image files they should be stored in the subdirectories `data`, `scripts` and `figures` respectively. Your tutorial can include additional pages or other files, but the above basic components are used in integrating your tutorial with the rest of the website.
+Specifically, your new RevBayes tutorial should be placed in its own directory (e.g. `new_tutorial`) under the `tutorials` directory of the root website repository. The main text of the tutorial should be written in a Markdown file named `index.md` (although any unique name will work). If the tutorial uses additional data, scripts or image files they should be stored in the subdirectories `data`, `scripts` and `figures` respectively. Your tutorial can include additional pages or other files, but the above basic components are used in integrating your tutorial with the rest of the website.
 
 {% subsection Writing tutorial front matter %}
 
@@ -91,17 +91,13 @@ At the top of each tutorial, an **Overview** box is displayed with a list of pre
 
 {% subsection Including prerequisites %}
 
-If you would like to refer users to prequisite tutorials in the tutorial's overview section, list the names of the prequisite tutorials in the `prerequisites` YAML attribute. The name of a tutorial is the basename of its markdown file.
+If you would like to refer users to prequisite tutorials in the tutorial's overview section, list the names of the prequisite tutorials in the `prerequisites` YAML attribute. Tutorials can be referred to by any unique path identifier, ignoring `index.md` and `.md` suffixes.
 
 ```yaml
----
-title: Non-parametric interdimensional Bayesian hyperloop methods
-category: Advanced phylogenetics
 prerequisites:
-    - intro
-    - ctmc
-    - habilitation
----
+- intro
+- ctmc
+- clocks/simple
 ```
 
 {% subsection Filling in the table of contents %}
@@ -302,9 +298,10 @@ new_tutorial
 
 In this example, there are two versions of the tutorial, both of which will get listed on the main [Tutorials Page]({{site.baseurl}}{% link tutorials/index.md %}). If you do not want your tutorial listed in the [Tutorials]({{site.baseurl}}/tutorials/) index, use the `index: false` attribute in the YAML front matter.
 
-{% subsection Linking to other tutorials %}
+{% subsection Linking to other tutorials | linking %}
 
-You can reference another tutorial using the `page_ref` and `page_url` Liquid tags, or with the `match_page` filter.
+You can reference another tutorial using the `page_ref` and `page_url` Liquid tags, or with the `match_page` filter. As with [Prerequisites](#includeing-prerequisites), tutorials can be referred to by any unique path identifier, ignoring `index.md` and `.md` suffixes.
+
 
 {% preview %}
 This is a reference to the {% page_ref intro %} tutorial.
@@ -312,7 +309,7 @@ This is a reference to the {% page_ref intro %} tutorial.
 {% assign var = "ctmc" %}
 This how to link to the {% page_ref {{ var }} %} tutorial using a liquid variable,
 
-{% assign tut = "biogeo" | match_page %}
+{% assign tut = "clocks/simple" | match_page %}
 This is how to retrieve the *{{ tut.title }}* tutorial page by name.
 
 The relative URL of the `{{ var }}` tutorial is `{% page_url {{ var }} %}`.
