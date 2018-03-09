@@ -1,7 +1,8 @@
 {% comment %}
 Display a tutorials's prerequisites and learning objectives.
 {% endcomment %}
-<blockquote class="overview no-print" id="overview">
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
   <h2>Overview</h2>
   {% if page.layout == "tutorial" or page.prerequisites.size > 0 %}
   <div class="row">
@@ -22,3 +23,7 @@ Display a tutorials's prerequisites and learning objectives.
   </div>
   {% endif %}
 </blockquote>
+{% if include.download %}
+{% include download.html %}
+{% endif %}
+</div>

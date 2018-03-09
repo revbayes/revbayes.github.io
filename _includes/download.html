@@ -1,36 +1,35 @@
 {% comment %}Display a tutorials's data files and scripts for download{% endcomment %}
-
 {% if page.data_files or page.scripts or page.other %}
-<blockquote class="tutorial_files no-print" id="tutorial_files">
+<blockquote class="tutorial_files" id="tutorial_files">
   <h2>Data files and scripts</h2>
   {% if page.data_files %}
     <div class="row">
       <div class="col-md-9">
-          <strong>Data Files</strong>
-          <ul id="data_files">
-          {% for file in page.data_files %}
-            <li><a href="{{ site.baseurl }}{{ file.path }}">{{ file.name }}</a></li>
-          {% endfor %}
-          </ul>
-        </div>
+        <strong>Data Files</strong>
+        <ul id="data_files">
+        {% for file in page.data_files %}
+          <li><a href="{{ site.baseurl }}{{ file.path }}">{{ file.name }}</a></li>
+        {% endfor %}
+        </ul>
+      </div>
     </div>
   {% endif %}
     <div class="row" id="script_row">
       <div class="col-md-9">
-          <strong>Scripts</strong>
-          <ul id="scripts">{% for script in page.scripts %}<li><a href="{{ site.baseurl }}{{ script.path }}">{{ script.name }}</a></li>{% endfor %}</ul>
-        </div>
+        <strong>Scripts</strong>
+        <ul id="scripts">{% for script in page.scripts %}<li><a href="{{ site.baseurl }}{{ script.path }}">{{ script.name }}</a></li>{% endfor %}</ul>
+      </div>
     </div>
   {% if page.other %}
     <div class="row">
       <div class="col-md-9">
-          <strong>Other files</strong>
-          <ul id="other_files">
-          {% for file in page.other %}
-            <li><a href="{{ site.baseurl }}{{ file.path }}">{{ file.name }}</a></li>
-          {% endfor %}
-          </ul>
-        </div>
+        <strong>Other files</strong>
+        <ul id="other_files">
+        {% for file in page.other %}
+          <li><a href="{{ site.baseurl }}{{ file.path }}">{{ file.name }}</a></li>
+        {% endfor %}
+        </ul>
+      </div>
     </div>
   {% endif %}
 </blockquote>
