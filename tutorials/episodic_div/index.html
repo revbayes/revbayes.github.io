@@ -10,7 +10,7 @@
     <link rel="stylesheet" type="text/css" href="/revbayes-site/assets/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="/revbayes-site/assets/css/bootstrap-theme.css" />
     <link rel="stylesheet" type="text/css" href="/revbayes-site/assets/css/main.css" />
-    <title>RevBayes: Diversification Rate Estimation with Missing Taxa</title>
+    <title>RevBayes: Episodic Diversification Rate Estimation</title>
   </head>
   <body>
     <div class="container">
@@ -46,9 +46,9 @@
 </nav>
 
       <div class="row">
-	<h1 class="maintitle">Diversification Rate Estimation with Missing Taxa</h1>
-	<h3 class="subtitle">How to estimate diversification rates with incomplete taxon sampling</h3>
-	<h4 class="maintitle">Sebastian H&#246;hna, Will Freyman and Mike May</h4>
+	<h1 class="maintitle">Episodic Diversification Rate Estimation</h1>
+	<h3 class="subtitle">Estimating episodic, tree-wide changes in diversification rates</h3>
+	<h4 class="maintitle">Sebastian H&#246;hna</h4>
 </div>
 
 
@@ -61,7 +61,7 @@
         
           <ul id="prerequisites">
           
-            <li><a href="/revbayes-site/tutorials/intro/intro.html">Rev Language Syntax</a></li>
+            <li><a href="/revbayes-site/tutorials/intro/">Rev Language Syntax</a></li>
           
           </ul>
         
@@ -325,22 +325,13 @@ divergence times.</p>
 
 <h2 id="outline">Outline</h2>
 
-<p>This tutorial describes how to specify different models of incomplete
-taxon sampling (missing reference) for estimating
-diversification rates in <code class="highlighter-rouge">RevBayes</code> <a href="#Hoehna2016b">(Höhna et al. 2016)</a>. Incomplete taxon
-sampling, if not modeled correctly, severely biases diversification-rate
-parameter estimates (missing reference). Specifically, we will
-discuss <em>uniform</em>, <em>diversified</em>, and <em>empirical</em> taxon sampling. All
-analyses in this tutorial will focus on diversification rate estimation
-through-time and use a birth-death process where diversification rates
-vary episodically which we model by piecewise constant rates <code class="highlighter-rouge">RevBayes</code>
+<p>This tutorial describes how to specify an episodic branching-process
+model in <code class="highlighter-rouge">RevBayes</code>; a birth-death process where diversification rates
+vary episodically through time modeled as piecewise-constant rates
 (missing reference). The probabilistic graphical model is given
-only once for this tutorial as an overview. The model itself does not
-change between the different analyses; only the assumptions of
-incomplete taxon sampling. For each analysis you will estimate
+once at the beginning of this tutorial. Your goal is to estimate
 speciation and extinction rates through-time using Markov chain Monte
-Carlo (MCMC) and assess the impact of incomplete taxon sampling as well
-as the sampling scheme.</p>
+Carlo (MCMC).</p>
 
 <h2 id="requirements">Requirements</h2>
 
@@ -372,10 +363,6 @@ example</a></p>
     <p><a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_DiversificationRate_Tutorial/RB_DiversificationRate_Tutorial.pdf">Basic Diversification Rate
 Estimation</a></p>
   </li>
-  <li>
-    <p><a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_DiversificationRate_Episodic_Tutorial/RB_DiversificationRate_Episodic_Tutorial.pdf">Diversification Rates Through
-Time</a></p>
-  </li>
 </ul>
 
 <p>Note that the <a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Intro_Tutorial/RB_Intro_Tutorial.pdf"><code class="highlighter-rouge">Rev</code> basics
@@ -387,37 +374,30 @@ syntax
 tutorial</a>
 for a more in-depth discussion of concepts in <code class="highlighter-rouge">Rev</code>.</p>
 
-<p>For this tutorial it is especially important that you have read the two
-tutorials on diversification rate estimation: <a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_DiversificationRate_Tutorial/RB_DiversificationRate_Tutorial.pdf">Basic Diversification
-Rate Estimation
-tutorial</a>
-and <a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_DiversificationRate_Episodic_Tutorial/RB_DiversificationRate_Episodic_Tutorial.pdf">Diversification Rates Through Time
-tutorial</a>.
-Specifically the <a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_DiversificationRate_Episodic_Tutorial/RB_DiversificationRate_Episodic_Tutorial.pdf">Diversification Rates Through Time
-tutorial</a>
-present the underlying diversification model and thus foundation for
-this tutorial. Here we will build on the tutorial by modifying the
-assumptions of incomplete taxon sampling in different ways.</p>
-
 <h1 id="data-and-files">Data and files</h1>
 
 <p>We provide the data file(s) which we will use in this tutorial. You may
 want to use your own data instead. In the ‘data‘ folder, you will find
-the following file</p>
+the following files</p>
 
 <ul>
-  <li>‘primates.tre‘: Dated primates phylogeny including 23 out of
-377 species.</li>
+  <li>‘primates_tree.nex‘: Dated primates phylogeny including 233 out of
+367 species from <a href="#MagnusonFord2012">(Magnuson-Ford and Otto 2012)</a>.</li>
 </ul>
 
-<p>Note that we use here the small primate phylogeny including only 23 of
-the 377 taxa instead of the much more complete primate phylogeny from
-<a href="#Springer2012">(Springer et al. 2012)</a>. This choice was solely made to emphasize the point and
-impact of incomplete taxon sampling, which is a very prominent feature
-in many large scale phylogenies.</p>
-
-<p>Open the tree ‘data/primates.tre‘ in
+<p>Open the tree ‘data/primates_tree.nex‘ in
 <code class="highlighter-rouge">FigTree</code>.</p>
+
+<h1 id="episodic-birth-death-model">Episodic Birth-Death Model</h1>
+
+<p>The basic idea behind the model is that speciation and extinction rates
+are constant within time intervals but can be different between time
+intervals. Thus, we will divide time into equally sized intervals, with
+the only exception that the first 20% of the time does not have any rate
+changes. Our only reason to do so is because there are too few lineages
+in the reconstructed tree at that time to obtain reliable parameter
+estimates. An overview of the underlying theory of the specific model
+and implementation is given in <a href="#Hoehna2015a">(Höhna 2015)</a>.</p>
 
 <blockquote class="figure">
   <p><img src="figures/EBD_scenarios.png" alt="" /> 
@@ -425,241 +405,295 @@ Two scenarios of
 birth-death models. On the left we show constant diversification. On the
 right we show an example of an episodic birth-death process where rates
 are constant in each time interval (epoch). The top panel of this figure
-shows example realization under the given rates.</p>
+shows an example realization under the given rates.</p>
 </blockquote>
 
-<h1 id="episodic-birth-death-model">Episodic Birth-Death Model</h1>
+<p>Figure [fig:EBD] shows an example of a constant rate birth-death
+process and an episodic birth-death process.</p>
 
-<p>Here we study the impact of incomplete taxon sampling by estimating
-diversification rates through time. The goal is to compare the impact of
-different taxon sampling strategies rather than the description of the
-diversification-rate model itself. The episodic birth-death model used
-here is equivalent to the model described in our previous tutorial.
-Please read the <a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_DiversificationRate_Episodic_Tutorial/RB_DiversificationRate_Episodic_Tutorial.pdf">Diversification Rates Through
-Time</a>
-tutorial for more detailed information about the model.</p>
+<p>We assume that the log-transformed rates are drawn from a normal
+distribution. Furthermore, we will assume that rates are autocorrelated,
+that is, rates in the current time interval will be centered around the
+rates in the previous time interval. Thus, we model (log-transformed)
+diversification rates by a Brownian motion. The assumption of
+autocorrelated rates does not only makes sense biologically but also
+improves our ability to estimate parameters.</p>
 
-<p>We have included in Figure [fig:EBD] again the cartoon of episodic
-birth-death process with piecewise constant diversification rates. As
-mentioned above, diversification rate estimates are biased when only a
-fraction of the species is included and the sampling scheme is not
-accommodated appropriately
-(missing reference). Hence, the
-diversification rate through time model will be an excellent example to
-study the impact of the assumed incomplete sampling strategy on
-diversification rates.</p>
-
-<blockquote>
+<blockquote class="figure">
   <p><img src="figures/graphical_model_EBD.png" alt="" /> 
 A graphical model
 with the outline of the <code class="highlighter-rouge">Rev</code> code. On the left we see the graphical
 model describing the correlated (Brownian motion) model for
-rate-variation through time. On the right we show the correspond <code class="highlighter-rouge">Rev</code>
-commands to instantiate this model in computer memory. This figure gives
-a complete overview of the model that we use here in this analysis.</p>
+rate-variation through time. On the right we show the corresponding
+<code class="highlighter-rouge">Rev</code> commands to instantiate this model. This figure gives a complete
+overview of the model that we use here in this analysis.</p>
 </blockquote>
 
-<p class="figure">We additionally include the graphical model representing the episodic
-birth-death process with autocorrelated diversification rates. This
-graphical model shows you which variables are included in the model, and
-the dependency between the variables. Thus, it makes the structure and
-assumption of the model clear and visible instead of a black-box
-<a href="#Hoehna2014b">(Höhna et al. 2014)</a>. Here we will focus only on the variable ‘rho‘, the
-sampling probability, to model incomplete taxon sampling.</p>
+<p>We show a graphical model of the episodic birth-death process with
+autocorrelated rates in Figure [fig:EBD_GM]. This graphical model
+shows you which variables are included in the model, and the dependency
+between the variables. Thus, it makes the structure and assumption of
+the model clear and visible instead of a black-box <a href="#Hoehna2014b">(Höhna et al. 2014)</a>. For
+example, you see how the speciation and extinction rates in each time
+interval depend on the rates of the previous interval, and that we use a
+hyperprior for the standard deviation of rates between time intervals.</p>
 
-<h2 id="specifying-the-model-in-rev">Specifying the model in <code class="highlighter-rouge">Rev</code></h2>
+<h2 id="read-the-tree">Read the tree</h2>
 
-<p>We will give a very brief and compressed version of the model with fewer
-comments and explanation. The more detailed explanation can be found in
-the <a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_DiversificationRate_Episodic_Tutorial/RB_DiversificationRate_Episodic_Tutorial.pdf">Diversification Rates Through Time
-tutorial</a>.
-Any attempt from us to present the full description here would only be a
-duplication/copy of the original tutorial with the additional to be less
-complete and less up to date.</p>
+<p>Begin by reading in the “observed” tree.</p>
 
-<p>Here are the summarized steps for running the episodic birth-death model
-in <code class="highlighter-rouge">Rev</code>.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>T &lt;- readTrees("data/primates_tree.nex")[1]
+</code></pre></div></div>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#######################
-# Reading in the Data #
-#######################
+<p>From this tree, we get some helpful variables, such as the taxon
+information which we need to instantiate the birth-death process.</p>
 
-### Read in the "observed" tree
-T &lt;- readTrees("data/primates.tre")[1]
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>taxa &lt;- T.taxa()
+</code></pre></div></div>
 
-# Get some useful variables from the data. We need these later on.
-taxa &lt;- T.taxa()
+<p>Additionally, we initialize an iterator variable for our vector of moves
+and monitors.</p>
 
-# set my move index
-mvi = 0
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvi = 0
 mni = 0
+</code></pre></div></div>
 
-NUM_INTERVALS = 10
+<p>Finally, we create a helper variable that specifies the number of
+intervals.</p>
 
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NUM_INTERVALS = 10
+</code></pre></div></div>
 
+<p>Using this variable we can easily change our script to break-up time
+into many (<em>e.g.,</em> ‘NUM_INTERVALS = 100‘) or
+few (<em>e.g.,</em> ‘NUM_INTERVALS = 4‘) intervals.</p>
 
-####################
-# Create the rates #
-####################
+<h2 id="specifying-the-model">Specifying the model</h2>
 
-# first we create the standard deviation of the rates between intervals
-# draw the sd from an exponential distribution
-speciation_sd ~ dnExponential(1.0)
-moves[++mvi] = mvScale(speciation_sd,weight=5.0)
+<h3 id="priors-on-amount-of-rate-variation">Priors on amount of rate variation</h3>
 
+<p>We start by specifying prior distributions on the rates. Each
+interval-specific speciation- and extinction-rate will be drawn from a
+normal distribution. Thus, we need a parameter for the standard
+deviation of those normal distributions. We use an exponential
+hyperprior with rate 1.0 to estimate the standard deviation, but assume
+that all speciation rates and all extinction rates share the same
+standard deviation. The motivation for an exponential hyperprior is that
+it has the highest probability density at 0 which would make the
+variance of rates between consecutive time intervals 0 and thus
+represent a constant-rate process. The data will tell us if there should
+be much variation in rates through time. (You may want to experiment
+with this hyperprior if you are interested.)</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>speciation_sd ~ dnExponential(1.0)
 extinction_sd ~ dnExponential(1.0)
+</code></pre></div></div>
+
+<p>We apply a simple scaling move on each prior parameter.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[++mvi] = mvScale(speciation_sd,weight=5.0)
 moves[++mvi] = mvScale(extinction_sd,weight=5.0)
+</code></pre></div></div>
 
+<h3 id="specifying-episodic-rates">Specifying episodic rates</h3>
 
-# create a random variable at the present time
+<p>As we mentioned before, we will apply normal distributions as priors for
+each log-transformed rate. We begin with the rate at the present which
+is our initial rate parameter. The rates at the present will be
+specified slightly differently because they are not correlated to any
+previous rates. This is because we are actually modeling rate-changes
+backwards in time and there is no previous rate for the rate at the
+present. Modeling rates backwards in time makes it easier for us if we
+had some prior information about some event affected diversification
+sometime before the present, <em>e.g.,</em>25 million
+years ago.</p>
+
+<p>We use a uniform distribution between -10 and 10 because of our lack of
+prior knowledge on the diversification rate. This actually means that we
+allow speciation and extinction rates between $e^{-10}$ and $e^10$, so
+we should clearly cover the true values. (Note that for diversification
+rate estimates, $e^{-10}$ is virtually 0 since the rate is so slow).</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log_speciation[1] ~ dnUniform(-10.0,10.0)
 log_speciation[1] ~ dnUniform(-10.0,10.0)
-log_extinction[1] ~ dnUniform(-10.0,10.0)
+</code></pre></div></div>
 
+<p>Notice that we store the diversification rate variables in vectors.
+Storing the rate parameters in vectors will be useful and important
+later when we pass the rates into the birth-death process.</p>
 
-# apply moves on the rates
-moves[++mvi] = mvSlide(log_speciation[1], weight=2)
+<p>We apply simple sliding window moves for the rates. Normally we would
+use scaling moves but in this case we work on the log-transformed
+parameters and thus sliding moves perform better. (If you are keen you
+can test the differences.)</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[++mvi] = mvSlide(log_speciation[1], weight=2)
 moves[++mvi] = mvSlide(log_extinction[1], weight=2)
+</code></pre></div></div>
 
+<p>Now we transform the diversification rate parameters into actual rates
+using an exponential parameter transformation.</p>
 
-speciation[1] := exp( log_speciation[1] )
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>speciation[1] := exp( log_speciation[1] )
 extinction[1] := exp( log_extinction[1] )
+</code></pre></div></div>
 
+<p>Next, we specify the speciation and extinction rates for each time
+interval (<em>i.e.,</em>epoch). This can be done
+efficiently using a ‘for‘-loop. We will use a specific index variable so
+that we can more easily refer to the rate at the previous interval.
+Remember that we want to model the rates as a Brownian motion, which we
+achieve by specifying a normal distribution as the prior distribution on
+the rates centered around the previous rate
+(<em>i.e.,</em>the mean of the normal distribution is
+equal to the previous rate).</p>
 
-for (i in 1:NUM_INTERVALS) {
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:NUM_INTERVALS) {
     index = i+1
-    
-    # specify normal priors (= Brownian motion) on the log of the rates
+
     log_speciation[index] ~ dnNormal( mean=log_speciation[i], sd=speciation_sd )
     log_extinction[index] ~ dnNormal( mean=log_extinction[i], sd=extinction_sd )
 
-    # apply moves on the rates
     moves[++mvi] = mvSlide(log_speciation[index], weight=2)
     moves[++mvi] = mvSlide(log_extinction[index], weight=2)
 
-    # transform the log-rate into actual rates
     speciation[index] := exp( log_speciation[index] )
     extinction[index] := exp( log_extinction[index] )
 
 }
+</code></pre></div></div>
 
-moves[++mvi] = mvVectorSlide(log_speciation, weight=10)
+<p>Finally, we apply moves that slide all values in the rate vectors,
+<em>i.e.,</em>all speciation or extinction rates. We
+will use an ‘mvVectorSlide‘ move.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[++mvi] = mvVectorSlide(log_speciation, weight=10)
 moves[++mvi] = mvVectorSlide(log_extinction, weight=10)
+</code></pre></div></div>
 
-moves[++mvi] = mvShrinkExpand( log_speciation, sd=speciation_sd, weight=10 )
+<p>Additionally, we apply a ‘mvShrinkExpand‘ move which changes the spread
+of several variables around their mean.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[++mvi] = mvShrinkExpand( log_speciation, sd=speciation_sd, weight=10 )
 moves[++mvi] = mvShrinkExpand( log_extinction, sd=extinction_sd, weight=10 )
-
-
-interval_times &lt;- T.rootAge() * (1:NUM_INTERVALS) / (NUM_INTERVALS) * 0.8
-
-
-### rho is the probability of sampling species at the present
-### fix this to 23/377, since there are ~377 described species of primates
-### and we have sampled 23
-rho &lt;- T.ntips()/377
-
-timetree ~ dnEpisodicBirthDeath(rootAge=T.rootAge(), lambdaRates=speciation, lambdaTimes=interval_times, muRates=extinction, muTimes=interval_times, rho=rho, samplingStrategy="uniform", condition="survival", taxa=taxa)
-
-### clamp the model with the "observed" tree
-timetree.clamp(T)
-
-
-
-#############
-# The Model #
-#############
-
-
-### workspace model wrapper ###
-mymodel = model(timetree)
-
-### set up the monitors that will output parameter values to file and screen 
-monitors[++mni] = mnModel(filename="output/primates_uniform.log",printgen=10, separator = TAB)
-monitors[++mni] = mnFile(filename="output/primates_uniform_speciation_rates.log",printgen=10, separator = TAB, speciation)
-monitors[++mni] = mnFile(filename="output/primates_uniform_speciation_times.log",printgen=10, separator = TAB, interval_times)#
-monitors[++mni] = mnFile(filename="output/primates_uniform_extinction_rates.log",printgen=10, separator = TAB, extinction)
-monitors[++mni] = mnFile(filename="output/primates_uniform_extinction_times.log",printgen=10, separator = TAB, interval_times)
-monitors[++mni] = mnScreen(printgen=1000, extinction_sd, speciation_sd)
-
-
-
-################
-# The Analysis #
-################
-
-### workspace mcmc ###
-mymcmc = mcmc(mymodel, monitors, moves)
-
-### pre-burnin to tune the proposals ###
-mymcmc.burnin(generations=10000,tuningInterval=200)
-
-### run the MCMC ###
-mymcmc.run(generations=50000)
 </code></pre></div></div>
 
-<p>This <code class="highlighter-rouge">Rev</code> code shows the template for estimating episodic
-diversification rates. In the next sections we will tweak the script for
-the different sampling schemes.</p>
+<p>Both moves considerably improve the efficiency of our MCMC analysis.</p>
 
-<h1 id="uniform-taxon-sampling">Uniform Taxon Sampling</h1>
+<h3 id="setting-up-the-time-intervals">Setting up the time intervals</h3>
 
-<p>In our first analysis we will assume <em>uniform</em> taxon sampling [see
-@Hoehna2011} (missing reference). Uniform taxon sampling corresponds to the
-assumption that every species has the same probability $\rho$ to be
-included (<em>i.e.,</em>sampled) in our study.
-Imagine flipping a coin that has the probability $\rho$ to show up
-heads. For every species you flip the coin and are going to include the
-species, for example by sequencing it, in your study. This is what the
-assumption of uniform taxon sampling means.</p>
+<p>In <code class="highlighter-rouge">RevBayes</code> you actually have the possibility to specify unequal time
+intervals or even different intervals for the speciation and extinction
+rate. This is achieved by providing a vector of times when each interval
+ends. Here we simply break-up the most recent 80% of time since the root
+in equal-length intervals.</p>
 
-<p>For our study, we know that we have sampled 23 out of 377 living primate
-species. To account for this we can set the sampling parameter as a
-constant variable with a value of 23/377.</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rho &lt;- T.ntips()/377
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>interval_times &lt;- T.rootAge() * (1:NUM_INTERVALS) / (NUM_INTERVALS) * 0.8
 </code></pre></div></div>
 
-<p>Note that in principle you could specify a hyperprior distribution on
-the sampling probability ‘rho‘. However, all three parameters
-(speciation rate, extinction rate, and sampling probability) are not
-identifiable <a href="#Stadler2009">(Stadler 2009)</a>. Nevertheless, we could specify informative
-priors on the sampling fraction if, for example, we know that the true
-diversity is in same range.</p>
+<p>This vector of times will be used for both the speciation and extinction
+rates. Also, remember that the times of the intervals represent ages
+going backwards in time.</p>
 
-<p>Moreover, we specify the <em>uniform</em> sampling scheme by setting
-‘samplingStrategy=“uniform”‘ in the birth-death process.</p>
+<h3 id="incomplete-taxon-sampling">Incomplete Taxon Sampling</h3>
+
+<p>We know that we have sampled 233 out of 367 living primate species. To
+account for this we can set the sampling parameter as a constant node
+with a value of 233/367. For simplicity, and since almost all species
+have been sampled, we assume <em>uniform</em> taxon sampling
+(missing reference),</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rho &lt;- T.ntips()/367
+</code></pre></div></div>
+
+<h3 id="root-age">Root age</h3>
+
+<p>The birth-death process requires a parameter for the root age. In this
+exercise we use a fixed tree and thus we know the age of the tree.
+Hence, we can get the value for the root from the @MagnusonFord2012
+tree.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root_time &lt;- T.rootAge()
+</code></pre></div></div>
+
+<h3 id="the-time-tree">The time tree</h3>
+
+<p>Now we have all of the parameters we need to specify the full episodic
+birth-death model. We initialize the stochastic node representing the
+time tree.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree ~ dnEpisodicBirthDeath(rootAge=T.rootAge(), lambdaRates=speciation, lambdaTimes=interval_times, muRates=extinction, muTimes=interval_times, rho=rho, samplingStrategy="uniform", condition="survival", taxa=taxa)
 </code></pre></div></div>
 
-<p>This is exactly what we did in the <code class="highlighter-rouge">Rev</code> script above.</p>
+<p>You may notice that we explicitly specify that we want to condition on
+survival. It is possible to change this condition to the <em>time of the
+process</em> or <em>the number of sampled taxa</em> too.</p>
 
-<p>The <code class="highlighter-rouge">Rev</code> file for performing this analysis:
-<a href="https://github.com/revbayes/revbayes_tutorial/raw/master/RB_DiversificationRate_Sampling_Tutorial/scripts/mcmc_uniform.Rev">‘mcmc_uniform.Rev‘</a>.</p>
+<p>Then we attach data to the ‘timetree‘ variable.</p>
 
-<h2 id="exercise-1">Exercise 1</h2>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree.clamp(T)
+</code></pre></div></div>
 
-<ul>
-  <li>
-    <p>Run an MCMC simulation to estimate the posterior distribution of the
-speciation rate and extinction rate through time assuming <em>uniform</em>
-taxon sampling. You can use the script ‘mcmc_uniform.Rev‘ to run
-the analysis.</p>
-  </li>
-  <li>
-    <p>Visualize the rate through time using
-<code class="highlighter-rouge">R</code>and <code class="highlighter-rouge">Rev</code>Gadgets.</p>
-  </li>
-</ul>
+<p>Finally, we create a workspace object of our whole model using the
+‘model()‘ function.</p>
 
-<blockquote class="figure">
-  <p><img src="figures/uniform.png" alt="" /> 
-Resulting diversification rate
-estimations when using 20 intervals and assuming uniform taxon sampling.
-You should create similar plots for the other sampling schemes and
-compare the rates through time.</p>
-</blockquote>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(speciation)
+</code></pre></div></div>
 
-<h2 id="summarizing-and-plotting-diversification-rates-through-time">Summarizing and plotting diversification rates through time</h2>
+<p>The ‘model()‘ function traversed all of the connections and found all of
+the nodes we specified.</p>
+
+<h2 id="running-an-mcmc-analysis">Running an MCMC analysis</h2>
+
+<h3 id="specifying-monitors">Specifying Monitors</h3>
+
+<p>For our MCMC analysis, we need to set up a vector of <em>monitors</em> to
+record the states of our Markov chain. First, we will initialize the
+model monitor using the ‘mnModel‘ function. This creates a new monitor
+variable that will output the states for all model parameters when
+passed into a MCMC function.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[++mni] = mnModel(filename="output/primates_EBD.log",printgen=10, separator = TAB)
+</code></pre></div></div>
+
+<p>Additionally, we create four separate file monitors, one for each vector
+of speciation and extinction rates and for each speciation and
+extinction rate epoch (<em>i.e.,</em>the times when
+the interval ends). We want to have the speciation and extinction rates
+stored separately so that we can plot them nicely afterwards.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[++mni] = mnFile(filename="output/primates_EBD_speciation_rates.log",printgen=10, separator = TAB, speciation)
+monitors[++mni] = mnFile(filename="output/primates_EBD_speciation_times.log",printgen=10, separator = TAB, interval_times)
+monitors[++mni] = mnFile(filename="output/primates_EBD_extinction_rates.log",printgen=10, separator = TAB, extinction)
+monitors[++mni] = mnFile(filename="output/primates_EBD_extinction_times.log",printgen=10, separator = TAB, interval_times)
+</code></pre></div></div>
+
+<p>Finally, we create a screen monitor that will report the states of
+specified variables to the screen with ‘mnScreen‘:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[++mni] = mnScreen(printgen=1000, extinction_sd, speciation_sd)
+</code></pre></div></div>
+
+<h3 id="initializing-and-running-the-mcmc-simulation">Initializing and Running the MCMC Simulation</h3>
+
+<p>With a fully specified model, a set of monitors, and a set of moves, we
+can now set up the MCMC algorithm that will sample parameter values in
+proportion to their posterior probability. The ‘mcmc()‘ function will
+create our MCMC object:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves)
+</code></pre></div></div>
+
+<p>First, we will run a pre-burnin to tune the moves and to obtain starting
+values from the posterior distribution.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.burnin(generations=10000,tuningInterval=200)
+</code></pre></div></div>
+
+<p>Now, run the MCMC:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=50000)
+</code></pre></div></div>
 
 <p>When the analysis is complete, you will have the monitored files in your
 output directory. You can then visualize the rates through time using
@@ -672,197 +706,87 @@ then type the following commands:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>library(RevGadgets)
 
-tree &lt;- read.nexus("data/primates.tre")
-files &lt;- c("output/primates_uniform_speciation_times.log", "output/primates_uniform_speciation_rates.log", "output/primates_uniform_extinction_times.log", "output/primates_uniform_extinction_rates.log")
+tree &lt;- read.nexus("data/primates_tree.nex")
 
-rev_out &lt;- rev.process.output(files,tree,burnin=0.25,numIntervals=100)
+rev_out &lt;- rev.process.div.rates(speciation_times_file = "output/primates_EBD_speciation_times.log", speciation_rates_file = "output/primates_EBD_speciation_rates.log", extinction_times_file = "output/primates_EBD_extinction_times.log", extinction_rates_file = "output/primates_EBD_extinction_rates.log", tree, burnin=0.25,numIntervals=100)
 
-pdf("uniform.pdf")
+pdf("EBD.pdf")
 par(mfrow=c(2,2))
-rev.plot.output(rev_out)
+rev.plot.output(rev_out,use.geoscale=FALSE)
 dev.off()
 </code></pre></div></div>
 
-<p>You can see the resulting plot in Figure [fig:EBD_Results].</p>
+<p>(Note, you may want to add a nice geological timescale to the plot by
+setting ‘use.geoscale=TRUE‘ but then you can only plot one figure per
+page.)</p>
 
-<h1 id="diversified-taxon-sampling">Diversified Taxon Sampling</h1>
-
-<p>In the previous analysis we assumed that species were sampled uniformly.
-However, this assumption is very often violated
-(missing reference). For example, the primate phylogeny that we
-use in this tutorial includes one species for almost all genera. Thus,
-we had selected the species for the study neither uniformly nor randomly
-but instead by including one species per genera and hence maximizing
-diversity. This sampling scheme is called <em>diversified</em> taxon sampling
-<a href="#Hoehna2011">(Höhna et al. 2011)</a>.</p>
+<p>The <code class="highlighter-rouge">Rev</code> file for performing this analysis:
+<a href="https://github.com/revbayes/revbayes_tutorial/raw/master/RB_DiversificationRate_Episodic_Tutorial/scripts/mcmc_EBD.Rev">‘mcmc_EBD.Rev‘</a>.</p>
 
 <blockquote class="figure">
-  <p><img src="figures/diversified-sampling.png" alt="" /> 
-Example of
-diversified taxon sampling. a) An example phylogeny showing that all
-species after a certain time are not sampled. b) The cumulative
-probability of a speciation event occurring as a function of time. Here
-we see that the highest probability for a speciation event is more
-recently.</p>
+  <p><img src="figures/EBD_10_Result.png" alt="" /> 
+Resulting
+diversification rate estimations when using 10 intervals. You should
+obtain similar results when you use 10 intervals. The estimated rates
+might change when you use a different resolution,
+<em>i.e.,</em>a different number of intervals.</p>
 </blockquote>
 
-<p>Figure [fig:DiversifiedSampling] shows an example of diversified
-sampling. The example shows the same tree as in Figure [fig:BDP] where
-5 species are sampled. In fact, here we sampled 5 species so that every
-group is included and the most recent speciation events are excluded
-(not sampled).</p>
+<h2 id="exercise-1">Exercise 1</h2>
 
-<p>In <code class="highlighter-rouge">RevBayes</code> we can specify <em>diversified</em> taxon sampling in the same
-way as we did <em>uniform</em> taxon sampling. First, we specify a constant
-variable for the sampling fraction ‘rho‘ which we set to the number of
-included (sampled) taxa divided by the number of total taxa in the
-group.</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rho &lt;- T.ntips()/377
-</code></pre></div></div>
-
-<p>Then, we specify that our sampling strategy was diversified by setting
-the argument of the birth-death process
-to‘samplingStrategy=“diversified”‘.</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree ~ dnEpisodicBirthDeath(rootAge=T.rootAge(), lambdaRates=speciation, lambdaTimes=interval_times, muRates=extinction, muTimes=interval_times, rho=rho, samplingStrategy="diversified", condition="time", taxa=taxa)
-</code></pre></div></div>
-
-<p>This is all we needed to do to change our previous script to model
-<em>diversified</em> taxon sampling.</p>
+<ul>
+  <li>
+    <p>Run an MCMC simulation to estimate the posterior distribution of the
+speciation rate and extinction rate.</p>
+  </li>
+  <li>
+    <p>Visualize the rate through time using <code class="highlighter-rouge">R</code>.</p>
+  </li>
+  <li>
+    <p>Do you see evidence for rate decreases or increases? What is the
+general trend?</p>
+  </li>
+  <li>
+    <p>Is there evidence for rate variation? Look at the estimates of
+‘speciation_sd‘ and ‘extinction_sd‘: Is there information in the
+data to change the estimates from the prior?</p>
+  </li>
+  <li>
+    <p>Run the analysis using a different number of intervals,
+<em>e.g.,</em>5 or 50. How do the rates change?</p>
+  </li>
+</ul>
 
 <h2 id="exercise-2">Exercise 2</h2>
 
 <ul>
   <li>
-    <p>Copy the <code class="highlighter-rouge">Rev</code> script ‘mcmc_uniform.Rev‘ and name
-it ‘mcmc_diversified.Rev‘.</p>
+    <p>In our results we see that the extinction rate is fairly constant.
+Modify the model by using a constant-rate for the extinction rate
+parameter but still let the speciation rate vary through time.</p>
+
+    <ul>
+      <li>
+        <p>Remove all previous occurrences of the extinction rates
+(<em>i.e.,</em>priors, parameters and moves).</p>
+      </li>
+      <li>
+        <p>Specify a lognormal prior distribution on the constant
+extinction rate\
+(‘extinction $\sim$ dnLognormal(-5,sd=2*0.587405)‘)</p>
+      </li>
+      <li>
+        <p>Add a move for the new extinction rate parameter\
+‘moves[++mvi] = mvScale(extinction,weight=5.0)‘.</p>
+      </li>
+      <li>
+        <p>Remove the argument ‘muTimes=interval_times‘ from the
+birth-death process.</p>
+      </li>
+    </ul>
   </li>
   <li>
-    <p>Make the changes so that you assume now <em>diversified</em>
-taxon sampling.</p>
-  </li>
-  <li>
-    <p>Change the file names in the monitors from ‘uniform‘
-to ‘diversified‘.</p>
-  </li>
-  <li>
-    <p>Run the analysis and plot the diversification rates.</p>
-  </li>
-  <li>
-    <p>How does the new sampling assumption influence your estimated rates?</p>
-  </li>
-</ul>
-
-<h1 id="empirical-taxon-sampling">Empirical Taxon Sampling</h1>
-
-<p>Unfortunately, <em>diversified</em> taxon sampling was derived under a strict
-mathematical concept that assumes all species that speciated before a
-given time were included and all other species were discarded (not
-sampled); see Figure [fig:DiversifiedSampling]. The <em>diversified</em>
-sampling strategy is clearly to restrictive to be realistic and can bias
-parameter estimates too <a href="#Hoehna2014a">(Höhna 2014)</a>. As another alternative we apply
-an <em>empirical</em> taxon sampling strategy that uses empirical information
-on the clade relationships and speciation times of the missing species.
-For example, in the primate phylogeny we know the crown age of
-Hominoidea and know that 19 additional speciation events must have
-happened between the crown age of the Hominoidea and the present time to
-accommodate the 19 missing species (see
-Figure [fig:EmpiricalSampling]). In fact, we can obtain for all larger
-groups the crown ages and the number of missing species and thus narrow
-down with empirical evidence the times when these missing speciation
-events have happened.</p>
-
-<blockquote class="figure">
-  <p><img src="figures/primates.png" alt="" /> 
-Cartoon of empirical taxon
-sampling. The triangle in the phylogeny depict clades with missing
-species. To illustrate the point we have written the names of higher
-taxa on the right with the number of species belonging to them. From
-this number of taxa in the clade we can compute how many species are
-missing per clade and which crown age the clade.</p>
-</blockquote>
-
-<p>In your phylogeny you can count the number of species belonging to a
-given clade and thus compute how many species are missing for this
-clade. Then, you can pick two or more species to define the clade. These
-species will be used to compute the crown age. For example, we use
-<em>Pan_paniscus</em> <em>Hylobates_lar</em> to define the <em>Hominoidae</em> clade. If we
-would have <em>Homo_sapiens</em> sampled as well then we could additionally
-include it in the clade but we could not leave out <em>Hylobates_lar</em>.</p>
-
-<p>In <code class="highlighter-rouge">Rev</code> we specify several clades and give the number of missing
-species.</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Galagidae             = clade("Galago_senegalensis",  "Otolemur_crassicaudatus", missing= 17)
-Lorisidae             = clade("Perodicticus_potto", "Loris_tardigradus", "Nycticebus_coucang", missing=6)
-Cheirogaleoidea       = clade("Cheirogaleus_major", "Microcebus_murinus", missing= 19)
-Lemuridae             = clade("Lemur_catta", "Varecia_variegata_variegata", missing=17)
-Lemuriformes          = clade(Lemuridae, Cheirogaleoidea, missing=29)
-Atelidae_Aotidae      = clade("Alouatta_palliata", "Aotus_trivirgatus", missing=30)
-NWM                   = clade(Atelidae_Aotidae,"Callicebus_donacophilus", "Saimiri_sciureus", "Cebus_albifrons", missing=93)
-Hominoidea            = clade("Pan_paniscus", "Hylobates_lar", missing=19)
-Cercopithecoidea      = clade("Colobus_guereza", "Macaca_mulatta", "Chlorocebus_aethiops", missing=60)
-</code></pre></div></div>
-
-<p>Next, we combine all clades into a single vector for later use.</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>missing_species_per_clade = v(Galagidae, Lorisidae, Cheirogaleoidea, Lemuridae, Lemuriformes, Atelidae_Aotidae, NWM, Hominoidea, Cercopithecoidea)
-</code></pre></div></div>
-
-<p>In the birth-death model we include these missing speciation events by
-integrating over the known interval when these speciation events have
-happened (between the crown age and the present). This integral of the
-probability density of a speciation event is exactly the same as one
-minus the cumulative distribution function of a speciation event,
-<script type="math/tex">F(t|N(t_1)=1,t_1\leq t \leq T) = 1 - \frac{1-P(N(T)>0|N(t)=1)\exp{(r(t,T))}}{1-P(N(T)>0|N(t_1)=1)\exp{(r(t_1,T))}} \label{spec_dist}</script>
-which was previously derived by @Hoehna2014a [Equation (6)] (see also
-@Yang1997 [Equation (3)] for constant rates and @Hoehna2013
-[Equation (8)]).</p>
-
-<p>Let us define $\mathbb{K}$ as the set of missing species and
-$|\mathbb{K}|$ the number of clades with missing species. In our example
-we have $|\mathbb{K}| = 9$ clades. Additionally, we define $c_i$ as the
-time of most recent common ancestor of the $i^{th}$ clade.</p>
-
-<p>Then, the joint probability density of the sampled reconstructed tree
-and the empirically informed missing speciation times is
-<script type="math/tex">% <![CDATA[
-\begin{aligned}
-f(\Psi,\mathbb{K}|N(t_1\!=\!0)\!=\!2,S(2,t_1\!=\!0,T))  & = & f(\Psi|N(t_1\!=\!0)\!=\!2,S(2,t_1\!=\!0,T)) \nonumber \\
-& &  \times\prod_{i=1}^{|\mathbb{K}|}\left(1-F(t|N(c_{i})=1,c_{i}\leq t \leq T)\right)^{k_i}  \nonumber\\ \label{eq:timesAndMissing}\end{aligned} %]]></script>
-Equation ([eq:timesAndMissing]) is actually proportional to the
-original equation under the birth-death process times the probabilities
-of the missing species. There are two things to consider when specifying
-empirical taxon sampling in <code class="highlighter-rouge">RevBayes</code>. First, we set the “traditional”
-sampling fraction to one (‘rho=1.0‘). Second, we provide the clades with
-missing species as an argument of the birth-death model
-(‘incompleteClades=missing_species_per_clade‘).</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree ~ dnEpisodicBirthDeath(rootAge=T.rootAge(), lambdaRates=speciation, lambdaTimes=interval_times, muRates=extinction, muTimes=interval_times, rho=1.0, taxa=taxa, incompleteClades=missing_species_per_clade, condition="time")
-</code></pre></div></div>
-
-<p>These are the only necessary changes to perform a diversification rate
-analysis under <em>empirical</em> taxon sampling.</p>
-
-<h2 id="exercise-3">Exercise 3</h2>
-
-<ul>
-  <li>
-    <p>Copy the <code class="highlighter-rouge">Rev</code> script ‘mcmc_uniform.Rev‘ and name
-it ‘mcmc_empirical.Rev‘.</p>
-  </li>
-  <li>
-    <p>Make the changes so that you assume now <em>empirical</em> taxon sampling.</p>
-  </li>
-  <li>
-    <p>Change the file names in the monitors from ‘uniform‘ to ‘empirical‘.</p>
-  </li>
-  <li>
-    <p>Run the analysis and plot the diversification rates.</p>
-  </li>
-  <li>
-    <p>How does the new sampling assumption influence your estimated rates?</p>
+    <p>How does this influence your estimated rates?</p>
   </li>
 </ul>
 
@@ -926,22 +850,14 @@ it ‘mcmc_empirical.Rev‘.</p>
 <a href="https://doi.org/10.1214/aoms/1177730285">10.1214/aoms/1177730285</a>
 
 </li>
-<li><span id="Springer2012">Springer M.S., Meredith R.W., Gatesy J., Emerling C.A., Park J., Rabosky D.L., Stadler T., Steiner C., Ryder O.A., Janečka J.E., others. 2012. Macroevolutionary dynamics and historical biogeography of primate diversification inferred from a species supermatrix. PLoS One. 7:e49521.</span>
+<li><span id="MagnusonFord2012">Magnuson-Ford K., Otto S.P. 2012. Linking the Investigations of Character Evolution and Species Diversification. The American Naturalist. 180:225–245.</span>
 
-<a href="https://doi.org/10.1371/journal.pone.0049521">10.1371/journal.pone.0049521</a>
+<a href="https://doi.org/10.1086/666649">10.1086/666649</a>
 
 </li>
 <li><span id="Hoehna2014b">Höhna S., Heath T.A., Boussau B., Landis M.J., Ronquist F., Huelsenbeck J.P. 2014. Probabilistic Graphical Model Representation in Phylogenetics. Systematic Biology. 63:753–771.</span>
 
 <a href="https://doi.org/10.1093/sysbio/syu039">10.1093/sysbio/syu039</a>
-
-</li>
-<li><span id="Stadler2009">Stadler T. 2009. On incomplete sampling under birth-death models and connections to the sampling-based coalescent. Journal of Theoretical Biology. 261:58–66.</span>
-
-<a href="https://doi.org/10.1016/j.jtbi.2009.07.018">10.1016/j.jtbi.2009.07.018</a>
-
-</li>
-<li><span id="Hoehna2011">Höhna S., Stadler T., Ronquist F., Britton T. 2011. Inferring speciation and extinction rates under different species sampling schemes. Molecular Biology and Evolution. 28:2577–2589.</span>
 
 </li></ol>
 

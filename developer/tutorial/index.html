@@ -76,10 +76,10 @@ revbayes.github.io
         ├── data/
         ├── scripts/
         ├── figures/
-        └── new_tutorial.md</font> &lt;-- main text of tutorial
+        └── index.md</font> &lt;-- main text of tutorial
 </pre>
 
-<p>Specifically, your new RevBayes tutorial should be placed in its own directory (e.g. <code class="highlighter-rouge">new_tutorial</code>) under the <code class="highlighter-rouge">tutorials</code> directory of the root website repository. The main text of the tutorial should be written in a Markdown file with a short, <em>unique</em> name (e.g. <code class="highlighter-rouge">new_tutorial.md</code>). If the tutorial uses additional data, scripts or image files they should be stored in the subdirectories <code class="highlighter-rouge">data</code>, <code class="highlighter-rouge">scripts</code> and <code class="highlighter-rouge">figures</code> respectively. Your tutorial can include additional pages or other files, but the above basic components are used in integrating your tutorial with the rest of the website.</p>
+<p>Specifically, your new RevBayes tutorial should be placed in its own directory (e.g. <code class="highlighter-rouge">new_tutorial</code>) under the <code class="highlighter-rouge">tutorials</code> directory of the root website repository. The main text of the tutorial should be written in a Markdown file named <code class="highlighter-rouge">index.md</code> (although any unique name will work). If the tutorial uses additional data, scripts or image files they should be stored in the subdirectories <code class="highlighter-rouge">data</code>, <code class="highlighter-rouge">scripts</code> and <code class="highlighter-rouge">figures</code> respectively. Your tutorial can include additional pages or other files, but the above basic components are used in integrating your tutorial with the rest of the website.</p>
 
 <h3 class="subsection" id="writing-tutorial-front-matter">Writing tutorial front matter</h3>
 
@@ -186,21 +186,17 @@ At the moment, only these levels are recognized:</p>
 
 <h3 class="subsection" id="including-prerequisites">Including prerequisites</h3>
 
-<p>If you would like to refer users to prequisite tutorials in the tutorial’s overview section, list the names of the prequisite tutorials in the <code class="highlighter-rouge">prerequisites</code> YAML attribute. The name of a tutorial is the basename of its markdown file.</p>
+<p>If you would like to refer users to prequisite tutorials in the tutorial’s overview section, list the names of the prequisite tutorials in the <code class="highlighter-rouge">prerequisites</code> YAML attribute. Tutorials can be referred to by any unique path identifier, ignoring <code class="highlighter-rouge">index.md</code> and <code class="highlighter-rouge">.md</code> suffixes.</p>
 
-<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">---</span>
-<span class="na">title</span><span class="pi">:</span> <span class="s">Non-parametric interdimensional Bayesian hyperloop methods</span>
-<span class="na">category</span><span class="pi">:</span> <span class="s">Advanced phylogenetics</span>
-<span class="na">prerequisites</span><span class="pi">:</span>
-    <span class="pi">-</span> <span class="s">intro</span>
-    <span class="pi">-</span> <span class="s">ctmc</span>
-    <span class="pi">-</span> <span class="s">habilitation</span>
-<span class="nn">---</span>
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">prerequisites</span><span class="pi">:</span>
+<span class="pi">-</span> <span class="s">intro</span>
+<span class="pi">-</span> <span class="s">ctmc</span>
+<span class="pi">-</span> <span class="s">clocks/simple</span>
 </code></pre></div></div>
 
 <h3 class="subsection" id="filling-in-the-table-of-contents">Filling in the table of contents</h3>
 
-<p>To create a heading that will be included in the table of contents, you can use the <code class="highlighter-rouge">section</code> and <code class="highlighter-rouge">subection</code> Liquid tags, which take the heading text and anchor id as arguments, separated by a pipe <code class="highlighter-rouge">|</code>. Sections are referenced using the <code class="highlighter-rouge">ref</code> tag.</p>
+<p>To create a heading that will be included in the table of contents, you can use the <code class="highlighter-rouge">section</code> and <code class="highlighter-rouge">subection</code> Liquid tags, which take the heading text and anchor id as arguments, separated by a pipe <code class="highlighter-rouge">|</code>. Sections are referenced using the <code class="highlighter-rouge">ref</code> Liquid tag.</p>
 
 <blockquote class="preview"><div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{% section This is a section header | section1 %}
 
@@ -243,7 +239,7 @@ This is a reference to {% ref subsection1 %}
 <br /><p><a href="#this-subsection-heading-was-tagged-manually">Manually-tagged section heading</a></p>
 </blockquote>
 
-<p>You can provide your own id by including it with the class tag, or with the <code class="highlighter-rouge">{#id}</code> syntax. The following two snippets are equivalent.</p>
+<p>You can provide your own id by including it along with the class, or with the <code class="highlighter-rouge">{#id}</code> syntax. The following two snippets are equivalent.</p>
 
 <blockquote style="margin-bottom: 0">
   <div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gu">### This subsection heading has a custom id</span>
@@ -317,7 +313,7 @@ for (i in 1:n_branches) {
 </code></pre></div></div>
 </blockquote>
 
-<p>Code representing output from the Rev console can be formatted using the <code class="highlighter-rouge">{:.Rev-output}</code> tag</p>
+<p>Code representing output from the Rev console can be formatted using the <code class="highlighter-rouge">{:.Rev-output}</code> class</p>
 
 <blockquote class="preview"><div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>```
 Lorem ipsum dolor sit amet, consectetur adipiscing elit,
@@ -483,27 +479,27 @@ new_tutorial
 
 <p>In this example, there are two versions of the tutorial, both of which will get listed on the main <a href="/revbayes-site/tutorials/">Tutorials Page</a>. If you do not want your tutorial listed in the <a href="/revbayes-site/tutorials/">Tutorials</a> index, use the <code class="highlighter-rouge">index: false</code> attribute in the YAML front matter.</p>
 
-<h3 class="subsection" id="linking-to-other-tutorials">Linking to other tutorials</h3>
+<h3 class="subsection" id="linking">Linking to other tutorials</h3>
 
-<p>You can reference another tutorial using the <code class="highlighter-rouge">page_ref</code> and <code class="highlighter-rouge">page_url</code> Liquid tags, or with the <code class="highlighter-rouge">get_page</code> Jekyll filter.</p>
+<p>You can reference another tutorial using the <code class="highlighter-rouge">page_ref</code> and <code class="highlighter-rouge">page_url</code> Liquid tags, or with the <code class="highlighter-rouge">match_page</code> filter. As with <a href="#includeing-prerequisites">Prerequisites</a>, tutorials can be referred to by any unique path identifier, ignoring <code class="highlighter-rouge">index.md</code> and <code class="highlighter-rouge">.md</code> suffixes.</p>
 
 <blockquote class="preview"><div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>This is a reference to the {% page_ref intro %} tutorial.
 
 {% assign var = "ctmc" %}
 This how to link to the {% page_ref {{ var }} %} tutorial using a liquid variable,
 
-{% assign tut = "biogeo" | get_page %}
+{% assign tut = "clocks/simple" | match_page %}
 This is how to retrieve the <span class="ge">*{{ tut.title }}*</span> tutorial page by name.
 
 The relative URL of the <span class="sb">`{{ var }}`</span> tutorial is <span class="sb">`{% page_url {{ var }} %}`</span>.
 </code></pre></div></div>
-<br /><p>This is a reference to the <a href="/revbayes-site/tutorials/intro/intro.html">Rev Language Syntax</a> tutorial.</p>
+<br /><p>This is a reference to the <a href="/revbayes-site/tutorials/intro/">Rev Language Syntax</a> tutorial.</p>
 
-<p>This how to link to the <a href="/revbayes-site/tutorials/ctmc/ctmc.html">Substitution Models</a> tutorial using a liquid variable,</p>
+<p>This how to link to the <a href="/revbayes-site/tutorials/ctmc/">Substitution Models</a> tutorial using a liquid variable,</p>
 
-<p>This is how to retrieve the <em>Historical biogeography</em> tutorial page by name.</p>
+<p>This is how to retrieve the <em>Simple Diversification Models &amp; Estimating Time Trees</em> tutorial page by name.</p>
 
-<p>The relative URL of the <code class="highlighter-rouge">ctmc</code> tutorial is <code class="highlighter-rouge">/tutorials/ctmc/ctmc.html</code>.</p>
+<p>The relative URL of the <code class="highlighter-rouge">ctmc</code> tutorial is <code class="highlighter-rouge">/tutorials/ctmc/</code>.</p>
 </blockquote>
 
 <h2 class="section" id="figures">Figures</h2>
@@ -535,7 +531,7 @@ This is a reference to {% ref example %}
 <h2 class="section" id="citations-and-bibliography">Citations and bibliography</h2>
 <hr />
 
-<p>You can include a citation using the <code class="highlighter-rouge">cite</code> and <code class="highlighter-rouge">citet</code> Liquid tags. Figures are referenced using the <code class="highlighter-rouge">ref</code> tag.</p>
+<p>You can include a citation using the <code class="highlighter-rouge">cite</code> and <code class="highlighter-rouge">citet</code> Liquid tags. Figures are referenced using the <code class="highlighter-rouge">ref</code> Liquid tag.</p>
 
 <blockquote class="preview"><div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>This is a citation {% cite Felsenstein1981 %}.  
 This is an in-text citation of {% citet Felsenstein1981 %}.  

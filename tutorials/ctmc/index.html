@@ -61,9 +61,9 @@
         
           <ul id="prerequisites">
           
-            <li><a href="/revbayes-site/tutorials/intro/intro.html">Rev Language Syntax</a></li>
+            <li><a href="/revbayes-site/tutorials/intro/">Rev Language Syntax</a></li>
           
-            <li><a href="/revbayes-site/tutorials/archery/archery.html">Introduction to MCMC using RevBayes</a></li>
+            <li><a href="/revbayes-site/tutorials/archery/">Introduction to MCMC using RevBayes</a></li>
           
           </ul>
         
@@ -99,7 +99,7 @@
 
 <h1 class="section" id="overview">Overview</h1>
 
-<p>This tutorial provides the first protocol from our recent publication <a href="#Hoehna2017a">(Höhna et al. 2017)</a>. The second protocol is described in the <a href="/revbayes-site/tutorials/partition/partition.html">Partitioned data analysis tutorial</a> and the third protocol is described in the <a href="/revbayes-site/tutorials/bayes_factors/bayes_factors.html">Bayes factor tutorial</a>.</p>
+<p>This tutorial provides the first protocol from our recent publication <a href="#Hoehna2017a">(Höhna et al. 2017)</a>. The second protocol is described in the <a href="/revbayes-site/tutorials/partition/">Partitioned data analysis</a> tutorial and the third protocol is described in the <a href="/revbayes-site/tutorials/bayes_factors/">Model selection</a>.</p>
 
 <p>The present tutorial demonstrates how to set up and perform analyses
 using common nucleotide substitution models. The substitution models
@@ -321,14 +321,14 @@ phylogenetic model. For simplicity, we will assume a uniform prior on
 both topologies and node ages. The distribution in RevBayes is <code class="highlighter-rouge">dnUniformTimeTree()</code>.</p>
 
 <p>Fore more information on tree priors, such as birth-death
-processes, please read the <a href="/revbayes-site/tutorials/div/div.html">Diversification Rate Tutorial</a>.</p>
+processes, please read the <a href="/revbayes-site/tutorials/div/">Diversification rate estimation</a>.</p>
 
 <p>First, we need to specify the age of the tree:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root_age &lt;- 10.0
 </code></pre></div></div>
 
-<p>Here we simply assumed that the tree is 10.0 time units old. We could also specify a prior on the root age if we have fossil calibrations (see <a href="/revbayes-site/tutorials/clocks/clocks.html">Divergence Time and Calibration Tutorial</a>). Next, we specify the <code class="highlighter-rouge">tree</code> stochastic variable by passing in the taxon information <code class="highlighter-rouge">taxa</code> to the <code class="highlighter-rouge">dnUniformTimeTree()</code> distribution:</p>
+<p>Here we simply assumed that the tree is 10.0 time units old. We could also specify a prior on the root age if we have fossil calibrations (see <a href="/revbayes-site/tutorials/clocks/">Relaxed Clocks &amp; Time Trees</a>). Next, we specify the <code class="highlighter-rouge">tree</code> stochastic variable by passing in the taxon information <code class="highlighter-rouge">taxa</code> to the <code class="highlighter-rouge">dnUniformTimeTree()</code> distribution:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psi ~ dnUniformTimeTree(rootAge=root_age, taxa=taxa)
 </code></pre></div></div>
