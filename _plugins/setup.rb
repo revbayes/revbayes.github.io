@@ -3,17 +3,7 @@ module Tutorials
     def generate(site)
       tutorials = site.pages.find_all {|page| page['layout'] == "tutorial" or page['permalink'] == "/developer/tutorial/" }
 
-      found_tutorials = {}
-
       tutorials.each do |tutorial|
-        if found_tutorials[tutorial.name]
-          raise Jekyll::Errors::FatalException, <<-MSG
-Duplicate tutorial name '#{tutorial.name}'.
-MSG
-        end
-
-        found_tutorials[tutorial.name] = true
-
         found_includes = {}
         found_excludes = {}
 
@@ -36,12 +26,12 @@ MSG
           page_file = false
           if file.relative_path.match(Regexp.new(Regexp.escape(tutorial.dir+"data/")))
             page_file = true
-          	tutorial.data['data_files'] = [] if tutorial.data['data_files'] == nil
+          	tutorial.data['data_files'] = [] if tutorial['data_files'] == nil
           	tutorial.data['data_files'] << file
           end
           if file.relative_path.match(Regexp.new(Regexp.escape(tutorial.dir+"scripts/")))
             page_file = true
-          	tutorial.data['scripts'] = [] if tutorial.data['scripts'] == nil
+          	tutorial.data['scripts'] = [] if tutorial['scripts'] == nil
           	tutorial.data['scripts'] << file
           end
 

@@ -1,54 +1,38 @@
-module Jekyll
+module RevBayes
   module Tags
-    class PageRef < Liquid::Tag
-	    VARIABLE_SYNTAX = %r!
-	      (?<variable>[^{]*(\{\{\s*[\w\-\.]+\s*(\|.*)?\}\}[^\s{}]*)+)
-	      (?<params>.*)
-	    !x
+  	class PageRef < Liquid::Tag
+      include RevBayes::Filters
 
-		def initialize(tag_name, markup, tokens)
-			super
+      def initialize(tag_name, markup, tokens)
+				super
+			end
 
-			super
-	        matched = markup.strip.match(VARIABLE_SYNTAX)
-	        if matched
-	          @page = matched["variable"].strip
-	          @params = matched["params"].strip
-	        else
-	          @page, @params = markup.strip.split(%r!\s+!, 2)
-	        end
-	        @tag_name = tag_name
-		end
+			def render(context)
+        @context = context
+				site = @context.registers[:site]
 
-	    def render_variable(context)
-	        if @page.match(VARIABLE_SYNTAX)
-	          partial = context.registers[:site]
-	            .liquid_renderer
-	            .file("(variable)")
-	            .parse(@page)
-	          partial.render!(context)
-	        end
-	    end
+				page = match_page(@markup.strip)
 
-	    def render(context)
-			site = context.registers[:site]
-
-        	page = render_variable(context) || @page
-
-	        site.pages.each do |item|
-	        	if item.respond_to?(:[]) and item['title'] != nil
-		        	link = "<a href=\"#{site.baseurl+item.url}\">#{item['title']}</a>"
-					return link if item.basename == page
-				end
-	        end
-
-	        raise ArgumentError, <<-MSG
-Could not find page '#{page}' in tag '#{self.class.tag_name}'.
-Make sure the page exists and the name is correct.
-MSG
-        end
+				"<a href=\"#{site.baseurl+page.url}\">#{page['title']}</a>"
+      end
     end
+
+    class PageUrl < Liquid::Tag
+      include RevBayes::Filters
+
+	    def initialize(tag_name, markup, tokens)
+				super
+			end
+
+			def render(context)
+        @context = context
+
+				match_page(@markup.strip).url
+      end
+    end
+
   end
 end
 
-Liquid::Template.register_tag('page_ref', Jekyll::Tags::PageRef)
+Liquid::Template.register_tag('page_ref', RevBayes::Tags::PageRef)
+Liquid::Template.register_tag('page_url', RevBayes::Tags::PageUrl)
