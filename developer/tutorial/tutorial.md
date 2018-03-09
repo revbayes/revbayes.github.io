@@ -181,6 +181,14 @@ scripts:
 ---
 ``` 
 
+You can include data files from another tutorial be prepending the name of the tutorial:
+
+```yaml
+data_files:
+    - example.nex
+    - ctmc/primates_and_galeopterus_cytb.nex
+```
+
 {% section Formatting code %}
 
 You can format code using the <code>```</code> or <code>~~~</code> fenced code delimiters. By default, tutorial code is formatted for Rev code
@@ -313,10 +321,18 @@ In this example, there are two versions of the tutorial, both of which will get 
 
 {% subsection Linking to other tutorials %}
 
-You can reference another tutorial using the `tutorialref` Liquid tag.
+You can reference another tutorial using the `page_ref` and `page_url` Liquid tags, or with the `get_page` Jekyll filter.
 
 {% preview %}
-This is a reference to the {% tutorialref "ctmc" %} tutorial
+This is a reference to the {% page_ref intro %} tutorial.
+
+{% assign var = "ctmc" %}
+This how to link to the {% page_ref {{ var }} %} tutorial using a liquid variable,
+
+{% assign tut = "biogeo" | get_page %}
+This is how to retrieve the *{{ tut.title }}* tutorial page by name.
+
+The relative URL of the `{{ var }}` tutorial is `{% page_url {{ var }} %}`.
 {% endpreview %}
 
 {% section Figures %}

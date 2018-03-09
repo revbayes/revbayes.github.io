@@ -9,7 +9,13 @@ Display a tutorials's data files and scripts for download
           <strong>Data Files</strong>
           <ul id="data_files">
           {% for file in page.data_files %}
-            <li><a href="{{ site.baseurl }}{{ page.url }}data/{{ file }}">{{ file }}</a></li>
+            {% assign filepath = file | split: '/' %}
+            {% if filepath[1] %}
+            {% assign tutorial = filepath[0] | get_page %}
+            <li><a href="{{ tutorial.dir }}data/{{ filepath[1] }}">{{ filepath[1] }}</a></li>
+            {% else %}
+            <li><a href="data/{{ file }}">{{ file }}</a></li>
+            {% endif %}
           {% endfor %}
           </ul>
         </div>
@@ -18,7 +24,7 @@ Display a tutorials's data files and scripts for download
     <div class="row" id="script_row">
       <div class="col-md-9">
           <strong>Scripts</strong>
-          <ul id="scripts">{% if page.scripts.size > 0 %}{% for file in page.scripts %}<li><a href="{{ site.baseurl }}{{ page.url }}scripts/{{ file }}">{{ file }}</a></li>{% endfor %}{% endif %}</ul>
+          <ul id="scripts">{% if page.scripts.size > 0 %}{% for file in page.scripts %}<li><a href="scripts/{{ file }}">{{ file }}</a></li>{% endfor %}{% endif %}</ul>
         </div>
     </div>
 </blockquote>

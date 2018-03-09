@@ -10,7 +10,7 @@ Display a tutorials's prerequisites and learning objectives.
         {% if page.prerequisites.size > 0 %}
           <ul id="prerequisites">
           {% for prerequisite in page.prerequisites %}
-            <li>{% tutorialref prerequisite %}</li>
+            <li>{% page_ref {{ prerequisite }} %}</li>
           {% endfor %}
           </ul>
         {% else %}

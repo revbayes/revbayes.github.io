@@ -38,7 +38,7 @@ to {{ page.enddate | date: "%-m/%-d" }}, {{ page.enddate | date: "%Y" }}
     <div class="col-md-9">
         <ul>
           {% for lesson in page.lessons %}
-            <li>{% tutorialref lesson %}</li>
+            <li>{% page_ref {{ lesson }} %}</li>
           {% endfor %}
         </ul>
     </div>
