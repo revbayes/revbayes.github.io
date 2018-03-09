@@ -20,13 +20,11 @@ The RevBayes Developer's Guide will provide you with the information needed to i
 
 
 {% assign devguide = site.pages | where:"category", "Developer" | sort: "order","last" %}
-<table class="table table-striped">
+<div class="tutorialbox">
 {% for lesson in devguide %}
-<tr>
-<td class="col-sm-3">
-<a href="{{ site.baseurl }}{{ lesson.url }}">{{ lesson.title }}</a>
-</td>
-<td class="col-sm-3">{{ lesson.subtitle }}</td>
-</tr>
+<div class="tutorial">
+<a class="title" href="{{ site.baseurl }}{{ lesson.url }}">{{ lesson.title | markdownify }}</a>
+<p class="subtitle">{{ lesson.subtitle | markdownify }}</p>
+</div>
 {% endfor %}
-</table>
+</div>

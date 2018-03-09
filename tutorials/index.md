@@ -40,7 +40,7 @@ The tutorials all follow the same format, please see the Tutorial Format guide f
 {% if tutorial.index %}
 {% assign keywords = tutorial.keywords | concat: keywords %}
 
-<div class="tutorial {{ tutorial.keywords | join:' '}}" width="30%">
+<div class="tutorial {{ tutorial.keywords | join:' '}}">
 {% if tutorial.title-old and tutorial.redirect %}
 <a class="title" href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/{{ tutorial.title-old }}/{{ tutorial.title-old }}.pdf">{{ tutorial.title | markdownify }}</a>
 {% else %}

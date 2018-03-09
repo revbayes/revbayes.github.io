@@ -170,7 +170,7 @@ exclude_files:
 
 {% section Formatting code %}
 
-You can format code using the <code>```</code> or <code>~~~</code> fenced code delimiters. By default, tutorial code is formatted for Rev code
+You can format code using the <code>```</code> or <code>~~~</code> fenced code delimiters. By default, tutorial code is formatted for Rev
 {% preview %}
 ```
 for (i in 1:n_branches) {
@@ -317,7 +317,7 @@ The relative URL of the `{{ var }}` tutorial is `{% page_url {{ var }} %}`.
 
 {% section Figures %}
 
-Figures can be included from the `figures` subdirectory (or elsewhere) using the `figure` and `figcaption` Liquid tags.
+Figures can be included from the `figures` subdirectory (or elsewhere) using the `figure` and `figcaption` Liquid tags. Figures are referenced using the `ref` Liquid tag.
 
 {% preview %}
 {% figure example %}
@@ -336,7 +336,7 @@ You can prevent any element from being printed when the tutorial is sent to PDF 
 
 {% section Citations and bibliography %}
 
-You can include a citation using the `cite` and `citet` Liquid tags. Figures are referenced using the `ref` Liquid tag.
+You can include a citation using the `cite` and `citet` Liquid tags.
 
 {% preview %}
 This is a citation {% cite Felsenstein1981 %}.  
