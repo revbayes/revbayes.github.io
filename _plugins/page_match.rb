@@ -17,9 +17,8 @@ module RevBayes
           page_identifier = partial.render!(@context)
         end
 
-        page_string = page_identifier.sub(/^(?!\/)/,'/').gsub(/\//,'\/').sub(/(?<!\.md)$/,'(\/index)?\.md$')
-
-
+        page_string = page_identifier.sub(/\/$/,'').sub(/^(?!\/)/,'/').sub(/^(\/tutorials)?\//,'/').gsub(/\//,'\/').sub(/(?<!\.md)$/,'(\/index)?\.md$')
+        
         tag_string = @tag_name ? "tag '"+@tag_name+"'" : "filter 'match_page'"
 
         matches = site.pages.find_all {|page| page.relative_path.match(Regexp.new(page_string)) }
