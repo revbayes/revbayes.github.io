@@ -2,7 +2,7 @@
 layout: home
 title: Developer
 subtitle: Resources for Developers
-permalink: /developer
+permalink: /developer/
 ---
 
 ### Joining the RevBayes Team

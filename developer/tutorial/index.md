@@ -4,7 +4,6 @@ subtitle: How to write and host a tutorial on this website
 layout: default
 category: Developer
 code_layout: Rev
-permalink: /developer/tutorial
 ---
 
 {% include title.html %}

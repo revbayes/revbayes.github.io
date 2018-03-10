@@ -1,7 +1,6 @@
 ---
 layout: default
 title: RevBayes Hackathons
-permalink: /workshops/hackathons
 ---
 
 

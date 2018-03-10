@@ -2,7 +2,7 @@
 layout: home
 title: Tutorials
 subtitle: RevBayes Tutorials
-permalink: /tutorials
+permalink: /tutorials/
 levels:
 - Introduction to MCMC and RevBayes
 - Standard tree inference and comparative methods
