@@ -5,11 +5,34 @@ module Tutorials
       tutorials = site.pages.find_all {|page| page.relative_path.match(/^tutorials/) != nil }
       site.config['tutorials'] = tutorials
 
-      developer = site.pages.find { |page| page['permalink'] == "/developer/tutorial"}
+      other = site.pages.find_all { |page| page['include_files'] != nil && page.relative_path.match(/^tutorials/) == nil}
 
-      # add the developer tutorial separately so it doesn't go in site.tutorials
-      tutorials << developer
+      tutorials += other
 
+      # label each file in a tutorial data/script directory
+      tutorials.each do |tutorial|
+        site.each_site_file do |file|
+          tutorial_dir = tutorial.relative_path.sub(Regexp.new(Regexp.escape(tutorial.name)),'');
+          
+          type = nil
+          if file.relative_path.match(Regexp.new(Regexp.escape(tutorial_dir+"data/")))
+            type = 'data'
+          elsif file.relative_path.match(Regexp.new(Regexp.escape(tutorial_dir+"scripts/")))
+            type = 'script'
+          end
+
+          file.data['type'] = type
+
+          # include the file in its containing tutorial
+          # don't do this for non-standard tutorials
+          if type and not other.include? file.data['tutorial']
+            tutorial.data['files'] = [] if tutorial.data['files'] == nil
+            tutorial.data['files'] << file
+          end
+        end
+      end
+
+      # fill in the tutorial files attribute
       tutorials.each do |tutorial|
         found_includes = {}
         found_excludes = {}
@@ -29,42 +52,23 @@ module Tutorials
               next unless file.relative_path.match(Regexp.new(Regexp.escape(exclude_file)+"$"))
               exclude = true
             end
+            # skip if excluded
             next if exclude
           end
-
-          tutorial_dir = tutorial.relative_path.sub(Regexp.new(Regexp.escape(tutorial.name)),'');
-
-          # check if this file is in one of the page's files directories
-          page_file = false
-          if file.relative_path.match(Regexp.new(Regexp.escape(tutorial_dir+"data/")))
-            page_file = true
-          	tutorial.data['data_files'] = [] if tutorial['data_files'] == nil
-          	tutorial.data['data_files'] << file
-          end
-          if file.relative_path.match(Regexp.new(Regexp.escape(tutorial_dir+"scripts/")))
-            page_file = true
-          	tutorial.data['scripts'] = [] if tutorial['scripts'] == nil
-          	tutorial.data['scripts'] << file
-          end
-          next if page_file
 
           # check if this file is one of the page's include_files
           if tutorial.data['include_files']
           	tutorial.data['include_files'].each do |include_file|
+              next unless include_file
 
           	  if file.relative_path.match(Regexp.new(Regexp.escape(include_file)+"$"))
                 found_includes[include_file] = true
-          	  	matches = file.relative_path.match(/tutorials\/[^\/]+\/([^\/]+)/)
-          	  	if matches[1] == 'data'
-          	  	  tutorial.data['data_files'] = [] if tutorial.data['data_files'] == nil
-          	      tutorial.data['data_files'] << file
-          	    elsif matches[1] == 'scripts'
-          	      tutorial.data['scripts'] = [] if tutorial.data['scripts'] == nil
-          	      tutorial.data['scripts'] << file
-          	    else
-                  tutorial.data['other'] = [] if tutorial.data['other'] == nil
-          	      tutorial.data['other'] << file
-          	    end
+
+                tutorial.data['files'] = [] if tutorial.data['files'] == nil
+
+                next if tutorial.data['files'].include? file
+
+                tutorial.data['files'] << file
           	  end
           	end
           end
@@ -73,7 +77,7 @@ module Tutorials
         found_includes.each do |key, value|
           unless value
             raise Jekyll::Errors::FatalException, <<-MSG
-Could not locate file '#{key}' included in tutorial '#{tutorial.name}'.
+Could not locate file '#{key}' included in tutorial '#{tutorial.relative_path}'.
 MSG
           end
         end

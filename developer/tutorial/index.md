@@ -4,6 +4,9 @@ subtitle: How to write and host a tutorial on this website
 layout: default
 category: Developer
 code_layout: Rev
+include_files:
+- example.nex
+- example.Rev
 ---
 
 {% include title.html %}
