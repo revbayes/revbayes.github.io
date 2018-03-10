@@ -26,8 +26,9 @@ module RevBayes
 
 			def render(context)
         @context = context
+        site = @context.registers[:site]
 
-				match_page(@markup.strip).url
+				site.baseurl+match_page(@markup.strip).url
       end
     end
 
