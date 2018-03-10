@@ -1,21 +1,16 @@
 ---
-title: Implementing Moves
-subtitle: Quick start guide to RevBayes development by adding a new move
+title: Implementing a Metropolis-Hastings Move
 category: implementation
+order: 2
 ---
 
-# Implementing a Metropolis-Hastings Move
-{:.section}
-
 ## General info before getting started
-{:.subsection}
 
 The steps to implementing a new move vary slightly, depending on the move's type (e.g., Metropolis-Hastings versus Gibbs). For the purposes of this guide, we will focus on a Metropolis-Hastings move.
 
 In general, the fastest and easiest way to get help is to find the most similar move already implemented in RevBayes and use it as a guide. Remember that, as with implementing a new distribution or function, you'll need to add relevant code to both the core of RevBayes and the language. Also remember that you'll need to work out the math appropriate for your move (e.g., the Hastings ratio) ahead of time.
 
 ## Steps
-{:.subsection}
 
 1.  _Orienting within the repository_ - For the **core**, navigate in the repository to `src/core/moves`. For a Metropolis-Hastings move, we'll then go into the `proposal` directory. In this directory, you can find several templates for generic proposal classes, as well as subdirectories containing moves for specific parameter types. To keep things easy, we'll focus on a single scalar parameter, so we'll navigate one step further into the `scalar` directory. For the **language**, navigate to `src/revlanguage/moves`. For this example, as we did in the core, we'll focus on a move for a scalar parameter, so we'll then open `scalar`. To **register** our new move after it's implemented, we'll also need to update the file `src/revlanguage/workspace/RbRegister_Move.cpp`.
 
