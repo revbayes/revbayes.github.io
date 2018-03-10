@@ -5,7 +5,7 @@ title: RevBayes Hackathons
 
 
 Members of the RevBayes development team meet periodicically to work on development objectives for the project. During these hackathons, we work on software design, new phylogenetic methods and models, documentation, etc. 
-If you are interested in developing in RevBayes and joining a hackathon, please see the <a href="{{ site.baseurl }}{% link developer/index.md %}">Developer page</a>.
+If you are interested in developing in RevBayes and joining a hackathon, please see the {% page_ref developer %} page.
 
 
 ## Hackathon Schedule
