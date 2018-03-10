@@ -49,12 +49,12 @@
 
       <div class="titlebar">
 	<h1 class="maintitle">Implementing functions, distributions, and moves</h1>
-	<h3 class="subtitle">Getting started with RevBayes development</h3>
-	<h4 class="authors">Jeremy M. Brown, Rosana Zenil-Ferguson, Jordan Koch, Will Pett</h4>
+	
+	<h4 class="authors"></h4>
 </div>
 
 
-<div class="sidebar no-print">
+<div class="sidebar no-print" style="width: 100%;">
 <blockquote class="overview" id="overview">
   <h2>Overview</h2>
   
@@ -62,9 +62,8 @@
 
 </div>
 
-<h1 class="section" id="implementing-a-distribution">Implementing a distribution</h1>
-
-<h2 class="subsection" id="general-info-before-getting-started">General info before getting started</h2>
+<p class="section maintitle" id="implement_distributions.md">Implementing a distribution</p>
+<h2 id="general-info-before-getting-started">General info before getting started</h2>
 
 <ul>
   <li>
@@ -72,7 +71,7 @@
 All mathematical distributions that have been implemented exist in <code class="highlighter-rouge">core/distributions/math</code>.</p>
   </li>
   <li>
-    <p>Note that when implementing a new distribution, you will need to create <code class="highlighter-rouge">.cpp</code> and <code class="highlighter-rouge">.h</code> files in both the <strong>revlanguage</strong> directory and the <strong>core</strong> directory. (For a refresher on the difference between these two directories, refer to the <a href="/revbayes-site/developer/architecture.html">Getting familiar with the code</a> section of this Developer’s guide).
+    <p>Note that when implementing a new distribution, you will need to create <code class="highlighter-rouge">.cpp</code> and <code class="highlighter-rouge">.h</code> files in both the <strong>revlanguage</strong> directory and the <strong>core</strong> directory. (For a refresher on the difference between these two directories, refer to the <a href="/revbayes-site/developer/architecture/">Getting familiar with the code</a> section of this Developer’s guide).
 The overall naming format remains the same for every distribution in RevBayes. In the Beta Binomial Distribution example provided below, I specify what naming convention to use when creating each file.</p>
   </li>
   <li>
@@ -87,13 +86,13 @@ The overall naming format remains the same for every distribution in RevBayes. I
     <p>Within every new distribution, you will need to include some functions. For example, each new distribution must have: the get class type, name, and help functions. You may not need to implement these from scratch (if they’re dictated by the parent class &amp; are already present), but you will need to implement other functions within your distribution (e.g. cdf, rv, quantile).</p>
   </li>
   <li>
-    <p>Distributions have a prefexed DN (dag node), and all moves have a previxed MV. RevBayes takes the name within &amp; creates the DN automatically, so be aware of this. For a refresher on DAG nodes, refer <a href="/revbayes-site/developer/architecture.html">to this page</a>.</p>
+    <p>Distributions have a prefexed DN (dag node), and all moves have a previxed MV. RevBayes takes the name within &amp; creates the DN automatically, so be aware of this. For a refresher on DAG nodes, refer <a href="/revbayes-site/developer/architecture/">to this page</a>.</p>
   </li>
 </ul>
 
 <p>In the following steps, we’ll implement the <strong>Beta Binomial Distribution</strong> as an example, for syntax purposes.</p>
 
-<h2 class="subsection" id="steps">Steps</h2>
+<h2 id="steps">Steps</h2>
 
 <ol>
   <li>
@@ -159,8 +158,7 @@ The overall naming format remains the same for every distribution in RevBayes. I
   </li>
 </ol>
 
-<h1 class="section" id="implementing-a-function">Implementing a function</h1>
-
+<p class="section maintitle" id="implement_functions.md">Implementing a function</p>
 <p>There are two main classes of functions in RevBayes: member functions and typed functions. Member functions are functions used inside of deterministic nodes and allow access to member methods of a member object. Typed functions are either values within directed acyclic graph (DAG) nodes (i.e. random variables of some distribution), or are associated with a deterministic node. All deterministic nodes hold a function, the value of these deterministic nodes are returned by a call to that function. This has the advantage of simply modifying the value instead of creating a new object.</p>
 
 <p>For our example implementation we will be implementing a typed function. We will begin with a simple example of implementing a mathematical function, the hyperbolic cosine function. First we need to add two files to the RevBayes source code, a <code class="highlighter-rouge">HyperbolicCosineFunction.cpp</code> and a <code class="highlighter-rouge">HyperbolicCosineFunction.h</code>. These will go within <code class="highlighter-rouge">revbayes/src/core/functions/math</code> since we are adding a function and it is a mathematical function.</p>
@@ -401,15 +399,14 @@ Here we are implementing our hyperbolic cosine function as its own class that is
 
 <p>Finally, we need to include the hyperbolic cosine function in the <code class="highlighter-rouge">RbRegister_Func.cpp</code> file located in the <code class="highlighter-rouge">/revlanguage/workspace/</code> directory. To do this go to the <code class="highlighter-rouge">RbRegister_Func.cpp</code> file and locate the math functions and type <code class="highlighter-rouge">#include Func_hyperbolicCosine.h</code> in the correct alphabetical order for that group. Now scroll down in that file until you find the math functions and add the line <code class="highlighter-rouge">addFunction( new Func_hyperbolicCosine());</code></p>
 
-<h1 class="section" id="implementing-a-metropolis-hastings-move">Implementing a Metropolis-Hastings Move</h1>
-
-<h2 class="subsection" id="general-info-before-getting-started">General info before getting started</h2>
+<p class="section maintitle" id="implement_moves.md">Implementing a Metropolis-Hastings Move</p>
+<h2 id="general-info-before-getting-started">General info before getting started</h2>
 
 <p>The steps to implementing a new move vary slightly, depending on the move’s type (e.g., Metropolis-Hastings versus Gibbs). For the purposes of this guide, we will focus on a Metropolis-Hastings move.</p>
 
 <p>In general, the fastest and easiest way to get help is to find the most similar move already implemented in RevBayes and use it as a guide. Remember that, as with implementing a new distribution or function, you’ll need to add relevant code to both the core of RevBayes and the language. Also remember that you’ll need to work out the math appropriate for your move (e.g., the Hastings ratio) ahead of time.</p>
 
-<h2 class="subsection" id="steps">Steps</h2>
+<h2 id="steps">Steps</h2>
 
 <ol>
   <li>

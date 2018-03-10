@@ -10,7 +10,7 @@
     <link rel="stylesheet" type="text/css" href="/revbayes-site/assets/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="/revbayes-site/assets/css/bootstrap-theme.css" />
     <link rel="stylesheet" type="text/css" href="/revbayes-site/assets/css/main.css" />
-    <title>RevBayes</title>
+    <title>RevBayes: Implementing a distribution</title>
   </head>
   <body>
     <div class="container">
@@ -48,22 +48,12 @@
 </nav>
 
       <div class="titlebar">
-	<h1 class="maintitle"></h1>
-	<h3 class="subtitle"></h3>
+	<h1 class="maintitle">Implementing a distribution</h1>
+	
 	<h4 class="authors"></h4>
 </div>
 
-
-<div class="sidebar no-print">
-<blockquote class="overview" id="overview">
-  <h2>Overview</h2>
-  
-</blockquote>
-
-</div>
-<h1 class="section" id="implementing-a-distribution">Implementing a distribution</h1>
-
-<h2 class="subsection" id="general-info-before-getting-started">General info before getting started</h2>
+<h2 id="general-info-before-getting-started">General info before getting started</h2>
 
 <ul>
   <li>
@@ -71,7 +61,7 @@
 All mathematical distributions that have been implemented exist in <code class="highlighter-rouge">core/distributions/math</code>.</p>
   </li>
   <li>
-    <p>Note that when implementing a new distribution, you will need to create <code class="highlighter-rouge">.cpp</code> and <code class="highlighter-rouge">.h</code> files in both the <strong>revlanguage</strong> directory and the <strong>core</strong> directory. (For a refresher on the difference between these two directories, refer to the <a href="/revbayes-site/developer/architecture.html">Getting familiar with the code</a> section of this Developer’s guide).
+    <p>Note that when implementing a new distribution, you will need to create <code class="highlighter-rouge">.cpp</code> and <code class="highlighter-rouge">.h</code> files in both the <strong>revlanguage</strong> directory and the <strong>core</strong> directory. (For a refresher on the difference between these two directories, refer to the <a href="/revbayes-site/developer/architecture/">Getting familiar with the code</a> section of this Developer’s guide).
 The overall naming format remains the same for every distribution in RevBayes. In the Beta Binomial Distribution example provided below, I specify what naming convention to use when creating each file.</p>
   </li>
   <li>
@@ -86,13 +76,13 @@ The overall naming format remains the same for every distribution in RevBayes. I
     <p>Within every new distribution, you will need to include some functions. For example, each new distribution must have: the get class type, name, and help functions. You may not need to implement these from scratch (if they’re dictated by the parent class &amp; are already present), but you will need to implement other functions within your distribution (e.g. cdf, rv, quantile).</p>
   </li>
   <li>
-    <p>Distributions have a prefexed DN (dag node), and all moves have a previxed MV. RevBayes takes the name within &amp; creates the DN automatically, so be aware of this. For a refresher on DAG nodes, refer <a href="/revbayes-site/developer/architecture.html">to this page</a>.</p>
+    <p>Distributions have a prefexed DN (dag node), and all moves have a previxed MV. RevBayes takes the name within &amp; creates the DN automatically, so be aware of this. For a refresher on DAG nodes, refer <a href="/revbayes-site/developer/architecture/">to this page</a>.</p>
   </li>
 </ul>
 
 <p>In the following steps, we’ll implement the <strong>Beta Binomial Distribution</strong> as an example, for syntax purposes.</p>
 
-<h2 class="subsection" id="steps">Steps</h2>
+<h2 id="steps">Steps</h2>
 
 <ol>
   <li>
