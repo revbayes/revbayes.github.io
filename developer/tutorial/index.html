@@ -34,9 +34,9 @@
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
         <li><a href="/revbayes-site/software">Software</a></li>
-        <li><a href="/revbayes-site/tutorials">Tutorials</a></li>
-        <li><a href="/revbayes-site/workshops">Workshops</a></li>
-        <li><a href="/revbayes-site/developer">Developer</a></li>
+        <li><a href="/revbayes-site/tutorials/">Tutorials</a></li>
+        <li><a href="/revbayes-site/workshops/">Workshops</a></li>
+        <li><a href="/revbayes-site/developer/">Developer</a></li>
       </ul>
       <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
         <div class="form-group">
@@ -106,8 +106,14 @@ revbayes.github.io
 <span class="nn">---</span>
 </code></pre></div></div>
 
-<p>The <code class="highlighter-rouge">level</code> attribute is used to group tutorials with similar levels of complexity in the <a href="/tutorials">tutorial index</a>.
+<p>The <code class="highlighter-rouge">level</code> attribute is used to group tutorials with similar levels of complexity in the <a href="/revbayes-site/tutorials/">tutorial index</a>.
 At the moment, only these levels are recognized:</p>
+
+<p><code class="highlighter-rouge">level: 0</code> is for <em>Introduction to MCMC and RevBayes</em></p>
+
+<p><code class="highlighter-rouge">level: 1</code> is for <em>Standard tree inference and comparative methods</em></p>
+
+<p><code class="highlighter-rouge">level: 2</code> is for <em>Complex hierarchical models for phylogenetic inference</em></p>
 
 <p>Any other level is for <em>Miscellaneous tutorials</em></p>
 
@@ -125,7 +131,7 @@ At the moment, only these levels are recognized:</p>
   <tbody>
     <tr>
       <td><code class="highlighter-rouge">title</code></td>
-      <td>Tutorial title displayed in the title header and the <a href="/tutorials">tutorial index</a></td>
+      <td>Tutorial title displayed in the title header and the <a href="/revbayes-site/tutorials/">tutorial index</a></td>
     </tr>
     <tr>
       <td><code class="highlighter-rouge">subtitle</code></td>
@@ -153,11 +159,11 @@ At the moment, only these levels are recognized:</p>
     </tr>
     <tr>
       <td><code class="highlighter-rouge">index</code></td>
-      <td>Boolean indicating whether the tutorial should be included in the main <a href="/tutorials">tutorial index</a></td>
+      <td>Boolean indicating whether the tutorial should be included in the main <a href="/revbayes-site/tutorials/">tutorial index</a></td>
     </tr>
     <tr>
       <td><code class="highlighter-rouge">order</code></td>
-      <td>Number indicating the order in which this tutorial should appear in its level in the <a href="/tutorials">tutorial index</a>.</td>
+      <td>Number indicating the order in which this tutorial should appear in its level in the <a href="/revbayes-site/tutorials/">tutorial index</a>.</td>
     </tr>
     <tr>
       <td><code class="highlighter-rouge">keywords</code></td>
@@ -264,26 +270,26 @@ This is a reference to {% ref subsection1 %}
 <p>At the top of each tutorial, the <strong>Data files and scripts</strong> box contains a list of files that can be downloaded by clicking the <span class="glyphicon glyphicon-download"></span> icon.</p>
 
 <blockquote class="tutorial_files" id="tutorial_files">
-  <h2>Data files and scripts</h2>
-  
-    <div class="row">
-      <div class="col-md-9">
+    <h2>Data files and scripts</h2>
+    
+        
         <strong>Data Files</strong>
         <ul id="data_files">
+        
         
           <li><a href="/revbayes-site/developer/tutorial/data/example.nex">example.nex</a></li>
         
         </ul>
-      </div>
-    </div>
-  
-    <div class="row" id="script_row">
-      <div class="col-md-9">
+    
+        
         <strong>Scripts</strong>
-        <ul id="scripts"><li><a href="/revbayes-site/developer/tutorial/scripts/example.Rev">example.Rev</a></li></ul>
-      </div>
-    </div>
-  
+        <ul id="scripts">
+        
+        
+          <li><a href="/revbayes-site/developer/tutorial/scripts/example.Rev">example.Rev</a></li>
+        
+        </ul>
+    
 </blockquote>
 
 <p>Files in the <code class="highlighter-rouge">data</code> and <code class="highlighter-rouge">scripts</code> directories of your tutorial are added to the <em>Data files and scripts</em> box automatically. You can include files from another tutorial by listing their relative paths in the <code class="highlighter-rouge">include_files</code> YAML front matter attribute. You can exclude files using the <code class="highlighter-rouge">exclude_files</code> attribute.</p>
@@ -476,7 +482,7 @@ new_tutorial
 └── v2.md           <font color="red">&lt;-- tutorial page (with front matter)</font>
 </pre>
 
-<p>In this example, there are two versions of the tutorial, both of which will get listed on the main <a href="/revbayes-site/tutorials">Tutorials</a> page. If you do not want your tutorial listed in the <a href="/revbayes-site/tutorials/">Tutorials</a> index, use the <code class="highlighter-rouge">index: false</code> attribute in the YAML front matter.</p>
+<p>In this example, there are two versions of the tutorial, both of which will get listed on the main <a href="/revbayes-site/tutorials/">Tutorials</a> page. If you do not want your tutorial listed in the <a href="/revbayes-site/tutorials/">Tutorials</a> index, use the <code class="highlighter-rouge">index: false</code> attribute in the YAML front matter.</p>
 
 <h3 class="subsection" id="linking">Linking to other tutorials</h3>
 
@@ -498,7 +504,7 @@ The relative URL of the <span class="sb">`{{ var }}`</span> tutorial is <span cl
 
 <p>This is how to retrieve the <em>Simple Diversification Models &amp; Estimating Time Trees</em> tutorial page by name.</p>
 
-<p>The relative URL of the <code class="highlighter-rouge">ctmc</code> tutorial is <code class="highlighter-rouge">/tutorials/ctmc/</code>.</p>
+<p>The relative URL of the <code class="highlighter-rouge">ctmc</code> tutorial is <code class="highlighter-rouge">/revbayes-site/tutorials/ctmc/</code>.</p>
 </blockquote>
 
 <h2 class="section" id="figures">Figures</h2>

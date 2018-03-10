@@ -34,9 +34,9 @@
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
         <li><a href="/revbayes-site/software">Software</a></li>
-        <li><a href="/revbayes-site/tutorials">Tutorials</a></li>
-        <li><a href="/revbayes-site/workshops">Workshops</a></li>
-        <li><a href="/revbayes-site/developer">Developer</a></li>
+        <li><a href="/revbayes-site/tutorials/">Tutorials</a></li>
+        <li><a href="/revbayes-site/workshops/">Workshops</a></li>
+        <li><a href="/revbayes-site/developer/">Developer</a></li>
       </ul>
       <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
         <div class="form-group">
@@ -77,27 +77,20 @@
 
 
 
+
+
 <blockquote class="tutorial_files" id="tutorial_files">
-  <h2>Data files and scripts</h2>
-  
-    <div class="row">
-      <div class="col-md-9">
-        <strong>Data Files</strong>
-        <ul id="data_files">
+    <h2>Data files and scripts</h2>
+    
+        
+        <strong>Other</strong>
+        <ul id="other_files">
+        
         
           <li><a href="/revbayes-site/tutorials/ctmc/data/primates_and_galeopterus_cytb.nex">primates_and_galeopterus_cytb.nex</a></li>
         
         </ul>
-      </div>
-    </div>
-  
-    <div class="row" id="script_row">
-      <div class="col-md-9">
-        <strong>Scripts</strong>
-        <ul id="scripts"></ul>
-      </div>
-    </div>
-  
+    
 </blockquote>
 
 
@@ -280,7 +273,7 @@ topology ~ dnUniformTopology(taxa, outgroup=out_group)
 moves[mvi++] = mvSPR(topology, weight=1.0)
 </code></pre></div></div>
 
-<p>The weight specifies how often the move will be applied either on average per iteration or relative to all other moves. Have a look at the MCMC Diagnosis tutorial for more details about moves and MCMC strategies (found in <a href="/revbayes-site/tutorials">Tutorials</a>).</p>
+<p>The weight specifies how often the move will be applied either on average per iteration or relative to all other moves. Have a look at the MCMC Diagnosis tutorial for more details about moves and MCMC strategies (found in <a href="/revbayes-site/tutorials/">Tutorials</a>).</p>
 
 <p>Next we have to create a stochastic node for each of the $2N - 3$ branches in our tree (where $N=$ <code class="highlighter-rouge">n_species</code>). We can do this using a <code class="highlighter-rouge">for</code> loop — this is a plate in our graphical model. In this loop, we can create each of the branch-length nodes and assign each move. Copy this entire block of <code class="highlighter-rouge">Rev</code> code into the console:</p>
 

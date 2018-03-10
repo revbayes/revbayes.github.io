@@ -49,7 +49,7 @@ $(".overview").each(function() {
 });
 
 // Handle foldable challenges and solutions (on click and at start).
-$(".challenge,.discussion,.solution,.tutorial_files,.overview").click(function(event) {
+$(".discussion").click(function(event) {
     var trigger = $(event.target).has(".fold-unfold").size() > 0
                || $(event.target).filter(".fold-unfold").size() > 0;
     if (trigger) {
@@ -58,50 +58,16 @@ $(".challenge,.discussion,.solution,.tutorial_files,.overview").click(function(e
         event.stopPropagation();
     }
 });
-$(".challenge,.discussion,.solution").each(function() {
+$(".discussion").each(function() {
     $(">*:not(h2)", this).toggle();
     var h2 = $("h2:first", this);
     h2.append("<span class='fold-unfold glyphicon glyphicon-collapse-down'></span>");
 });
 
-// Create an array of all script files and their contents
-var scripts = {};
-var _code = document.querySelectorAll('pre');
-for (var i = 0, element; element = _code[i]; i++) {
-  if( element.firstChild.innerHTML != null ) {
-    var output = element.parentElement.parentElement.getAttribute("script");
-    if( typeof scripts[output] == 'undefined' )
-      scripts[output] = "";
-    scripts[output] += element.firstChild.innerHTML.replace(/&lt;/g,'<')+"\n";
-  }
-}
-
-// Retrieve script file for download
-function get_script(script) {
-  var blob = new Blob([scripts[script]], {type: "text/plain;charset=utf-8"});
-  saveAs(blob, script);
-}
-
 // Handle downloadable data files and scripts (on click and at start).
 $(".tutorial_files").each(function() {
     var h2 = $("h2:first", this);
     h2.prepend("<span onclick=get_files() title=\"Download Zip Archive\" class='download_files glyphicon glyphicon-download'></span>");
-    
-    var ul = document.getElementById("scripts");
-
-    for(var script in scripts) {
-      if( script != "null") {
-        ul.innerHTML += "<li><a onclick=get_script(\""+script+"\") onmouseover=\"\" style=\"cursor: pointer;\">"+script+"</a></li>";
-      }
-    }
-
-    var d = document.getElementById("data_files");
-    var r = document.getElementById("script_row");
-
-    if( d == null && ul.innerHTML == "")
-      this.outerHTML = "";
-    else if( ul.innerHTML == "" )
-      r.outerHTML = "";
 });
 
 // Zip all files for download
