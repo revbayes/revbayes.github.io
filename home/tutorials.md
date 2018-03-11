@@ -22,9 +22,10 @@ The tutorials all follow the same format, please see the Tutorial Format guide f
 <a href="{% page_url format %}" class="btn btn-info" role="button">Tutorial Format Guide</a>
 <a href="{% page_url tutorial %}" class="btn btn-warning" role="button">Contribute!</a>
 
+{% comment %}
 {% include keywords.html input=true %}
-
 {% assign keywords = site.empty_array %}
+{% endcomment %}
 
 {% assign levels = site.tutorials | sort:"level","last" | group_by:"level" %}
 {% for level in levels %}
@@ -40,7 +41,8 @@ The tutorials all follow the same format, please see the Tutorial Format guide f
 <div class="tutorialbox">
 {% for tutorial in tutorials %}
 {% if tutorial.index %}
-{% assign keywords = tutorial.keywords | concat: keywords %}
+
+{% comment %}{% assign keywords = tutorial.keywords | concat: keywords %}{% endcomment %}
 
 <div class="tutorial {{ tutorial.keywords | join:' '}}">
 {% if tutorial.title-old and tutorial.redirect %}
@@ -57,4 +59,4 @@ The tutorials all follow the same format, please see the Tutorial Format guide f
 
 {% endfor %}
 
-{% include keywords.html script=true %}
+{% comment %}{% include keywords.html script=true %}{% endcomment %}
