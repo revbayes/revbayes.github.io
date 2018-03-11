@@ -22,7 +22,7 @@ The tutorials all follow the same format, please see the Tutorial Format guide f
 <a href="{% page_url format %}" class="btn btn-info" role="button">Tutorial Format Guide</a>
 <a href="{% page_url tutorial %}" class="btn btn-warning" role="button">Contribute!</a>
 
-{% include autocomplete.html keyword=true %}
+{% include keywords.html input=true %}
 
 {% assign keywords = site.empty_array %}
 
@@ -57,4 +57,4 @@ The tutorials all follow the same format, please see the Tutorial Format guide f
 
 {% endfor %}
 
-{% include autocomplete.html script=true %}
+{% include keywords.html script=true %}

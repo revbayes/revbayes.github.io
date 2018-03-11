@@ -1,4 +1,4 @@
-{% if include.keyword %}
+{% if include.input %}
 <!--Make sure the form has the autocomplete function switched off:-->
 <div class="autocomplete">
 <input id="keywords" type="text" name="keyword" placeholder="filter by keyword" style="width:300px;">
@@ -23,8 +23,11 @@ function clear_keywords() {
 	update_tutorials();
 }
 
-function apply_filter(){
+function submit_keyword(){
 	var keyword = $("#keywords").val();
+	if(keyword == '')
+		return;
+
 	var id = keyword.replace(/[\s\#\.]+/g,"-");
 
 	if( $("#"+id).length == 0 ) {
@@ -53,7 +56,7 @@ function apply_filter(){
 
 $("#keywords").keyup(function(e) {
 	if(e.keyCode == 13) {
-		apply_filter();
+		submit_keyword();
 	}
 });
 

@@ -2,15 +2,15 @@
 body {
   font: 16px Arial; 
 }
+
+$keyword-color: $color-link2;
+
 .autocomplete {
   /*the container must be positioned relative:*/
   position: relative;
   display: inline-block;
   float: left;
   padding-right: 10px;
-}
-.btn-keyword {
-  margin: 3px;
 }
 input {
   border: 1px solid transparent;
@@ -23,7 +23,6 @@ input[type=text] {
   width: 100%;
 }
 input[type=submit] {
-  background-color: DodgerBlue;
   color: #fff;
 }
 .autocomplete-items {
@@ -45,10 +44,16 @@ input[type=submit] {
 }
 .autocomplete-items div:hover {
   /*when hovering an item:*/
-  background-color: #e9e9e9; 
+  background-color: $keyword-color; 
+  color: #ffffff; 
 }
 .autocomplete-active {
   /*when navigating through the items using the arrow keys:*/
-  background-color: DodgerBlue !important; 
+  background-color: $keyword-color !important; 
+  color: #ffffff; 
+}
+.btn-keyword {
+  margin: 3px;
+  background-color: $keyword-color;
   color: #ffffff; 
 }
