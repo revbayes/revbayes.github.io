@@ -1,0 +1,81 @@
+{% if include.input %}
+<!--Make sure the form has the autocomplete function switched off:-->
+<div class="autocomplete">
+<input id="keywords" type="text" name="keyword" placeholder="filter by keyword" style="width:300px;">
+</div>
+<input id="clear" type="button" class="btn-clear" value="clear" onclick="clear_keywords()">
+<div id="keyword_list" class="keyword_list"></div>
+{% endif %}
+
+{% if include.script %}
+<script type="text/javascript" src="{{ site.baseurl }}/assets/js/vendor/jquery.min.js"></script>
+<script type="text/javascript" src="{{ site.baseurl }}/assets/js/autocomplete.js"></script>
+<script type="text/javascript">
+var keywords = ['{{ keywords | uniq | join:"','" }}'];
+var active_keywords= [];
+
+autocomplete(document.getElementById("keywords"), keywords);
+
+function clear_keywords() {
+	active_keywords=[];
+	document.getElementById("keyword_list").innerHTML="";
+
+	update_tutorials();
+}
+
+function submit_keyword(){
+	var keyword = $("#keywords").val();
+	if(keyword == '')
+		return;
+
+	var id = keyword.replace(/[\s\#\.]+/g,"-");
+
+	if( $("#"+id).length == 0 ) {
+		var btn = document.createElement('input');
+		btn.value=keyword;
+		btn.type="button";
+		btn.classList="btn-keyword";
+		btn.id=id;
+		active_keywords.push(keyword);
+		btn.onclick=function(){
+			const index = active_keywords.indexOf(this.value);
+
+		    if (index !== -1) {
+		        active_keywords.splice(index, 1);
+		    }
+			this.outerHTML="";
+			update_tutorials();
+		}
+		$("#keyword_list").append(btn);
+	}
+
+	$("#keywords").val('');
+
+	update_tutorials();
+}
+
+$("#keywords").keyup(function(e) {
+	if(e.keyCode == 13) {
+		submit_keyword();
+	}
+});
+
+function update_tutorials() {
+	var tutorials = document.getElementsByClassName("tutorial");
+	Array.prototype.filter.call(tutorials, function(tut){
+    	tut.style.display="none";
+	});
+	var keyclass = active_keywords.join('.').replace(/\s+/g,'.');
+	
+	if( keyclass == "" ) {
+		keyclass = ".tutorial";
+	} else {
+		keyclass = "."+keyclass;
+	}
+	tutorials = document.querySelectorAll(keyclass);
+	Array.prototype.filter.call(tutorials, function(tut){
+    	tut.style.display="block";
+	});
+}
+</script>
+{% endif %}
