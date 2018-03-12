@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-<link rel="icon" type="image/png" href="/revbayes-site/favicon.png" >
+<link rel="icon" type="image/png" href="/revbayes-site/assets/img/favicon.png" >
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -63,7 +63,7 @@
 
 </div>
 
-<p class="section maintitle" id="implement_distributions.md">Implementing a distribution</p>
+<p class="section maintitle" id="implement_distributions">Implementing a distribution</p>
 <h2 id="general-info-before-getting-started">General info before getting started</h2>
 
 <ul>
@@ -159,7 +159,7 @@ The overall naming format remains the same for every distribution in RevBayes. I
   </li>
 </ol>
 
-<p class="section maintitle" id="implement_functions.md">Implementing a function</p>
+<p class="section maintitle" id="implement_functions">Implementing a function</p>
 <p>There are two main classes of functions in RevBayes: member functions and typed functions. Member functions are functions used inside of deterministic nodes and allow access to member methods of a member object. Typed functions are either values within directed acyclic graph (DAG) nodes (i.e. random variables of some distribution), or are associated with a deterministic node. All deterministic nodes hold a function, the value of these deterministic nodes are returned by a call to that function. This has the advantage of simply modifying the value instead of creating a new object.</p>
 
 <p>For our example implementation we will be implementing a typed function. We will begin with a simple example of implementing a mathematical function, the hyperbolic cosine function. First we need to add two files to the RevBayes source code, a <code class="highlighter-rouge">HyperbolicCosineFunction.cpp</code> and a <code class="highlighter-rouge">HyperbolicCosineFunction.h</code>. These will go within <code class="highlighter-rouge">revbayes/src/core/functions/math</code> since we are adding a function and it is a mathematical function.</p>
@@ -400,7 +400,7 @@ Here we are implementing our hyperbolic cosine function as its own class that is
 
 <p>Finally, we need to include the hyperbolic cosine function in the <code class="highlighter-rouge">RbRegister_Func.cpp</code> file located in the <code class="highlighter-rouge">/revlanguage/workspace/</code> directory. To do this go to the <code class="highlighter-rouge">RbRegister_Func.cpp</code> file and locate the math functions and type <code class="highlighter-rouge">#include Func_hyperbolicCosine.h</code> in the correct alphabetical order for that group. Now scroll down in that file until you find the math functions and add the line <code class="highlighter-rouge">addFunction( new Func_hyperbolicCosine());</code></p>
 
-<p class="section maintitle" id="implement_moves.md">Implementing a Metropolis-Hastings Move</p>
+<p class="section maintitle" id="implement_moves">Implementing a Metropolis-Hastings Move</p>
 <h2 id="general-info-before-getting-started">General info before getting started</h2>
 
 <p>The steps to implementing a new move vary slightly, depending on the move’s type (e.g., Metropolis-Hastings versus Gibbs). For the purposes of this guide, we will focus on a Metropolis-Hastings move.</p>

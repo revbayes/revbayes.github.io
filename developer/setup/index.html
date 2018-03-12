@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-<link rel="icon" type="image/png" href="/revbayes-site/favicon.png" >
+<link rel="icon" type="image/png" href="/revbayes-site/assets/img/favicon.png" >
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -59,18 +59,243 @@ You can also use your favorite text editor (e.g. vim or emacs).
 This page will provide some helpful tips on how to set up these development enviroments.
 See the <a href="/revbayes-site/software">Software</a> page for instructions on how to obtain the source code.</p>
 
+<div class="sidebar no-print" style="width: 100%;">
 <blockquote class="overview" id="overview">
-<h2>Overview</h2>
-<ul id="prerequisites">
-
-<li><a href="/revbayes-site/developer/setup/eclipse.html">Setting up Eclipse for RevBayes development</a></li>
-
-<li><a href="/revbayes-site/developer/setup/xcode.html">Setting up XCode for RevBayes development</a></li>
-
-<li><a href="/revbayes-site/developer/setup/vim.html">Setting up vim for RevBayes development</a></li>
-
-</ul>
+  <h2>Overview</h2>
+  
 </blockquote>
+
+</div>
+
+<p class="section maintitle" id="xcode">Setting up XCode for RevBayes development</p>
+<p>XCode is an IDE for Mac OSX. XCode does not keep track of files, so each time you open your RevBayes project in XCode you must pull revbayes-master from git &amp; remove reference to all of the source. Eclipse Oxygen does a cleaner job of managing the files; you do not need to pull from git each time you work in it.</p>
+
+<h2 id="set-up-the-xcode-project">Set up the XCode Project</h2>
+<ol>
+  <li>Open Xcode and in the <em>Welcome to Xcode</em> window, choose <strong>Create a new Xcode project</strong>.</li>
+  <li>Select <strong>Command Line Tool</strong> and name it <code class="highlighter-rouge">rb</code> and click <strong>Next</strong>. <img src="figures/xcode-making_xcode_project.png" alt="" /></li>
+  <li>Click <strong>New Folder</strong>  to create an empty directory and name it whatever you’d like.</li>
+  <li>Click <strong>Create</strong>.</li>
+  <li>Delete all of the files and folders in each of the directories including <code class="highlighter-rouge">main.cpp</code> so that RevBayes is empty. You can do this by selecting the folders and files, right clicking and selecting delete. When asked, choose <strong>Move to Trash</strong>.</li>
+  <li>Add the source files by selecting the appropriate directory and going to the <strong>File</strong> pull-down menu and selecting <strong>Add Files to rb</strong>.</li>
+  <li>Click on <strong>Options</strong> at the button of the window, and under the <strong><em>Added Folders</em></strong> heading, select the <strong>Create Groups</strong> radio button.
+    * Select the 
+    	* <code class="highlighter-rouge">revbayes/src/revlanguage</code>
+    	* <code class="highlighter-rouge">revbayes/src/core</code>
+    	* <code class="highlighter-rouge">revbayes/src/libs</code>
+    * directories and click <strong>Add</strong>.
+    <img src="figures/xcode-adding_files.png" alt="" />
+    * <em>Note:</em> On some versions of XCode, you may need to click on the “Options” Tab, and choose “Create Groups” for the import to work properly. This is the default behavior on most XCode installs.</li>
+  <li>Add the boost library to your Xcode project 
+    * Select the RevBayes project and go to the <strong>Build Settings</strong>. 
+    * Search for or Scroll down to the <strong>Search Paths</strong> heading and find the sub-heading named <strong>Header Search Paths</strong>.
+    * Double click the heading, click the <strong>+</strong>, and add the value: <strong>&lt;path to revbayes repository&gt;/revbayes/boost_1_60_0</strong>. 
+    	* <code class="highlighter-rouge">&lt;path to revbayes repository&gt;</code> = the location of the revbayes repository on your machine.
+  <img src="figures/xcode-finding_boost.png" alt="" /></li>
+</ol>
+
+<h2 id="add-the-revbayes-preprocessor-macro-to-your-xcode-project">Add the RevBayes Preprocessor Macro to your Xcode project</h2>
+<ol>
+  <li>Select the RevBayes project and go to the <strong>Build Settings</strong>.</li>
+  <li>Search for or Scroll down to the <strong>Apple LLVM X.X - Preprocessing</strong> heading and find the sub-heading named <strong>Preprocessor Macros</strong>.</li>
+  <li>Double click on right hand column, click on the <strong>+</strong> and enter <code class="highlighter-rouge">RB_XCODE</code>. Do not replace the debug flag that is already present.
+    <img src="figures/xcode-macro.png" alt="" /></li>
+</ol>
+
+<h2 id="check-c-language-options">Check C++ language options</h2>
+<ol>
+  <li>Select the RevBayes project and go to the <strong>Build Settings</strong>.</li>
+  <li>Search or scroll to: **Apple LLVM X.X - C++ - Language **.</li>
+  <li>Make sure C++ Language Dialect is set to <strong><em>Gnu++ 98</em></strong>.</li>
+  <li>Make sure C++ Standard Library is set to <strong><em>libstdc++(Gnu C++)</em></strong>
+    <img src="figures/xcode-cpp_lang_options.png" alt="" /></li>
+</ol>
+
+<p>At this point, if everything has been setup correctly, you should be able to build the project. You can try by clicking on <strong>Product - Build</strong> or by using <strong>⌘+B</strong>.</p>
+
+<p class="section maintitle" id="eclipse">Setting up Eclipse for RevBayes development</p>
+<p>Eclipse is a Java-based, cross-platform IDE with lots of nice features that make it convenient for RevBayes development. First, it’s cross-platform, and unlike Xcode, you can use any compiler you like (not just <code class="highlighter-rouge">clang</code>).</p>
+
+<h2 id="prerequisites">Prerequisites</h2>
+<ul>
+  <li>To compile RevBayes using Eclipse, you must install <a href="https://cmake.org/install/">CMake</a> and its <a href="https://stackoverflow.com/questions/30668601/installing-cmake-command-line-tools-on-a-mac">command line tools</a>. This is very easy if you have <a href="https://brew.sh/">homebrew</a> installed (<code class="highlighter-rouge">brew install cmake</code>)</li>
+  <li>You must also have a C++ compiler. If you are using a Mac, you can use <code class="highlighter-rouge">clang</code> (included with <a href="https://developer.apple.com/xcode/">XCode</a>), or you can install <a href="https://gcc.gnu.org/"><code class="highlighter-rouge">gcc</code></a> (e.g. via homebrew <code class="highlighter-rouge">brew install gcc</code>).</li>
+</ul>
+
+<h2 id="installing-eclipse-cdt">Installing Eclipse CDT</h2>
+<p>To start writing C++ in Eclipse, you must obtain the Eclipse CDT (C/C++ Development Tooling) package. You can download a distribution of Eclipse that comes prepackaged with CDT from the <a href="https://cmake.org/download/">CDT Downloads page</a>.</p>
+
+<p>If you already have Eclipse installed you can go to <em>Help &gt; Install New Software…</em> and enter the p2 repository URL for your version of eclipse found on the CDT downloads page. Then check the <em>Main Features</em> box, click <em>Next</em> twice, accept the User Agreement, and restart Eclipse.</p>
+
+<blockquote>
+  <p><strong>Important!</strong> When you first open Eclipse, you will be asked to choose a location for your workspace. Make sure to choose a location that is not inside the source directory of your project!</p>
+</blockquote>
+
+<h2 id="create-an-eclipse-project-for-revbayes">Create an Eclipse project for RevBayes</h2>
+<p>Assuming you have cloned the RevBayes github repository into the directory <code class="highlighter-rouge">&lt;revbayes-repo&gt;</code>, you can create a new C++ Eclipse project as follows:</p>
+
+<ol>
+  <li>In Eclipse, go to <em>File &gt; New &gt; Makefile Project with Existing Code</em></li>
+  <li>Set the <em>Name</em> of the project to <code class="highlighter-rouge">revbayes</code></li>
+  <li>Select <code class="highlighter-rouge">&lt;revbayes-repo&gt;/src</code> as the <em>Existing Code Location</em></li>
+  <li>Select <code class="highlighter-rouge">Cross GCC</code> in <em>Toolchain for Indexer Settings</em> (you can change this later if you want).</li>
+  <li>Click Finish</li>
+</ol>
+
+<h2 id="configure-the-revbayes-project">Configure the RevBayes project</h2>
+<p>You will need to configure your Eclipse project so it correctly compiles the revbayes CMake project.</p>
+
+<h3 id="configure-the-path-environment-variable">Configure the PATH environment variable</h3>
+<p>If you installed the CMake command line tools in the default location <code class="highlighter-rouge">/usr/local/bin</code>, you must add it to the PATH environment variable of your Eclipse project.</p>
+
+<ol>
+  <li>
+    <p>In the <em>Project Explorer</em> view, highlight your revbayes project directory
+<img src="figures/eclipse-explorer.png" width="50%" /></p>
+  </li>
+  <li>Go to <em>Project &gt; Properties</em>, or right click on the project name and select <em>Properties</em>.</li>
+  <li>Expand <em>C/C++ Build</em> and click on <em>Environment</em></li>
+  <li>Click on the PATH entry, click <em>Edit…</em> and add <code class="highlighter-rouge">/usr/local/bin</code> to the end of the <em>Value</em>
+<img src="figures/eclipse-path.png" alt="eclipse-path" title="PATH Configuration" /></li>
+</ol>
+
+<h3 id="configure-the-cc-build-settings">Configure the C/C++ build settings</h3>
+<p>The RevBayes CMake project uses a special build script <code class="highlighter-rouge">build.sh</code> to build the RevBayes executable. You must tell your Eclipse project to use this script as a build command.</p>
+
+<ol>
+  <li>Click on <em>C/C++ Build</em></li>
+  <li>Uncheck <em>Use default build command</em> and in <em>Build command</em>, enter <code class="highlighter-rouge">sh build.sh</code></li>
+  <li>In <em>Build directory</em>, add <code class="highlighter-rouge">../projects/cmake</code> to the directory path
+<img src="figures/eclipse-build.png" alt="eclipse-build" title="C/C++ Build Configuration" /></li>
+  <li>Click on the <em>Behavior</em> tab</li>
+  <li>In <em>Build (incremental build)</em>, enter <code class="highlighter-rouge">-boost false</code>
+<img src="figures/eclipse-behavior.png" alt="eclipse-behavior" title="C/C++ Build Behavior" /></li>
+  <li>Again, click on <em>C/C++ Build</em></li>
+  <li>Click <em>Manage Configurations</em></li>
+  <li>Click on <em>New…</em> to create a new configuration, and name it <em>Debug</em>
+<img src="figures/eclipse-config.png" width="75%" /></li>
+  <li>
+    <p>Configure the Debug configuration by adding <code class="highlighter-rouge">-debug true</code> to the <em>Build (incremental build)</em> options
+<img src="figures/eclipse-debug.png" alt="eclipse-debug" title="C/C++ Debug Configuration" />
+Now, if you set the active configuration to <em>Debug</em>, RevBayes will be compiled with debugger symbols that can be loaded by <code class="highlighter-rouge">lldb</code> or <code class="highlighter-rouge">gdb</code>. You can also set the active build configuration by going to <em>Project &gt; Build Configurations &gt; Set Active</em></p>
+  </li>
+  <li>Click <em>Apply and Close</em></li>
+</ol>
+
+<p>At this point, C/C++ Indexer will get to work indexing the RevBayes code, during which time Eclipse might appear to be unresponsive.</p>
+
+<h3 id="configure-the-project-to-use-spaces-instead-of-tabs">Configure the project to use spaces instead of tabs</h3>
+
+<p>RevBayes code is indented using spaces. However, by default Eclipse uses tabs. Configure your project to automatically insert 4 spaces when you press the Tab key.</p>
+
+<ol>
+  <li>Open <em>Eclipse &gt; Preferences</em></li>
+  <li>Expand <em>C/C++ &gt; Code Style</em></li>
+  <li>Click on <em>Formatter</em></li>
+  <li>Click the <em>New…</em> button to create a new profile, name the profile (e.g. <em>“spaces”</em>) then click <em>OK</em> to continue</li>
+  <li>Click the <em>Indentation</em> tab</li>
+  <li>Under <em>General Settings</em> set <em>Tab Policy</em> to <code class="highlighter-rouge">Spaces only</code></li>
+  <li>Click <em>OK</em> and <em>Apply and Close</em></li>
+</ol>
+
+<h2 id="build-the-revbayes-project">Build the RevBayes project</h2>
+<p>The first time you build RevBayes, you will also need to build the included Boost libraries. You only need to do this once. To build the boost libraries, return to step 5 in the <a href="#configure-the-cc-build-settings">build configuration section</a> and enter <code class="highlighter-rouge">-boost true</code> instead. Then after you’ve built the libraries, you can disable the Boost build flag by resetting <code class="highlighter-rouge">-boost false</code>.</p>
+
+<p>With all the build settings correctly configured, you can build RevBayes by highlighting the project in the <em>Project Explorer</em> view, and then going to <em>Project &gt; Build Project</em>. You can also right click on the project directory and select <em>Build Project</em>.</p>
+
+<p>The <em>Console</em> view should display the progress of the compilation process.</p>
+
+<p>You’re done! Now you can find the <code class="highlighter-rouge">rb</code> executable in the <code class="highlighter-rouge">&lt;revbayes-repo&gt;/projects/cmake</code> directory.</p>
+
+<h2 id="tips">Tips</h2>
+<ul>
+  <li>
+    <p>Create a symlink of <code class="highlighter-rouge">rb</code> in your PATH, so it is automatically updated every time you build RevBayes. e.g.</p>
+
+    <p><code class="highlighter-rouge">sudo ln -s &lt;revbayes-repo&gt;/projects/cmake/rb /usr/local/bin/rb</code></p>
+  </li>
+  <li>
+    <p>If your <em>Project Explorer</em> or <em>Console</em> views disappear and you can’t find them, go to <em>Window &gt; Show View</em> to display various views.</p>
+  </li>
+</ul>
+
+<p class="section maintitle" id="vim">Setting up vim for RevBayes development</p>
+<p><a href="http://www.vim.org">Vim</a> is a text editor that some people love.
+It’s not an IDE, but it can provide useful IDE-like behaviors.
+If you are reading this, you are probably a vim-lover and already have a set of customizations that you like.
+Here are some more to consider.</p>
+
+<h2 id="youcompleteme">YouCompleteMe</h2>
+
+<p><a href="https://github.com/Valloric/YouCompleteMe">YouCompleteMe</a> is an extremely useful plugin that provides suggestions as you type for function names, prompts about their arguments, etc.
+There are several steps to get it working.</p>
+
+<h3 id="install-dependencies">Install dependencies</h3>
+
+<p>This seems to be sufficient on Ubuntu 16.04:</p>
+<div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo apt-get install build-essential cmake python-dev python3-dev clang
+</code></pre></div></div>
+
+<h3 id="get-the-vim-code-itself">Get the vim code itself</h3>
+
+<p>Grab these two plugins:</p>
+
+<ul>
+  <li><a href="https://github.com/Valloric/YouCompleteMe">YouCompleteMe</a></li>
+  <li><a href="https://github.com/rdnetto/YCM-Generator">YCM-Generator</a></li>
+</ul>
+
+<p>Put them wherever you put your plugins, e.g., <code class="highlighter-rouge">.vim/bundle/</code> if you’re using <a href="https://github.com/tpope/vim-pathogen">Pathogen</a>.</p>
+
+<p>For YCM, you also need to get its submodules:</p>
+<div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd YouCompleteMe/
+git submodule update --init --recursive
+</code></pre></div></div>
+<p>(If you manage your plugins as git subtrees, note that you probably can’t for YouCompleteMe because it contains submodules itself.)</p>
+
+<h3 id="compile-the-ycm-plugin">Compile the YCM plugin</h3>
+
+<p>YCM has a compiled component as well as vim code.  This may take a few minutes to run.</p>
+<div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd YouCompleteMe/
+./install.py --clang-completer
+</code></pre></div></div>
+
+<h3 id="provide-the-compilation-flags-to-ycm">Provide the compilation flags to YCM</h3>
+
+<p>The above was to install YCM in general.
+To use it specifically with RevBayes (or any other project), you need to give it information about the codebase.
+YCM-Generator is one way to do this.</p>
+
+<div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd revbayes/  # or wherever you keep revbayes
+cd projects/cmake/build/
+~/.vim/bundle/YCM-Generator/config_gen.py . # adjust the vim path if necessary
+</code></pre></div></div>
+
+<p>That should take a few seconds to run.
+Then move the result to the top-level directory:</p>
+<div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mv .ycm_extra_conf.py ../../../
+</code></pre></div></div>
+
+<h3 id="try-it-out">Try it out</h3>
+
+<p>That should be it.
+If YCM is working, when you open a revbayes <code class="highlighter-rouge">.cpp</code> or <code class="highlighter-rouge">.h</code> file, vim will ask <code class="highlighter-rouge">Found revbayes/.ycm_extra_conf.py. Load?</code></p>
+
+<p>If you find that you don’t want YCM operating on all your other filetypes, you can put something like this in your <code class="highlighter-rouge">.vimrc</code>.</p>
+<div class="vim highlighter-rouge"><div class="highlight"><pre class="highlight"><code>let g:ycm_filetype_whitelist = { 'cpp': 1, 'c': 1, 'python': 1 }
+</code></pre></div></div>
+
+<h3 id="debugging-with-gdb">Debugging with GDB</h3>
+
+<p>If you use vim, we recommend debugging in GDB. You’ll need to compile RevBayes with the <code class="highlighter-rouge">-debug true</code> flag:</p>
+<div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./build.sh -debug true
+</code></pre></div></div>
+
+<p>The you can debug RevBayes with GDB:</p>
+<div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gdb rb
+</code></pre></div></div>
+
+<p>See <a href="https://www.cs.cmu.edu/~gilpin/tutorial/">here</a> for more on using GDB.</p>
 
 <ol class="bibliography"></ol>
 
