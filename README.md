@@ -17,9 +17,9 @@ In order to build the site you will need `jekyll`, see instructions below to ins
 Making changes to the site
 =================
 
-When making changes to the site, you should always work on the `source` branch. After committing your changes to `source`, simply run the `update-site.sh` script. This script will take care of the steps involved to push both the `source` and `master` branches to github. 
+When making changes to the site, you should always work on the `source` branch. After committing your changes to `source`, simply run the `deploy.sh` script. This script will take care of the steps involved to push both the `source` and `master` branches to github. 
 
-	sh update-site.sh
+	./deploy.sh
 
 Setting up jekyll
 =================
