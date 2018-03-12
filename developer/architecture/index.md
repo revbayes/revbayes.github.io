@@ -15,8 +15,10 @@ Notice the repetition in naming within the core and revlanguage directories. Thi
  * The **revlanguage** directory is essentially a wrapper for all code within the core directory. The code within **revlanguage** is written to match the scripting Rev language syntax.
 
 For more specific information on functions and distributions, and for general information on implementing in RevBayes, navigate to the {% page_ref implementation %} section of this Developer's guide.
- 
-<img src="RB_structure_map.jpg" width="110%">
+
+<a href="RB_structure_map.jpg">
+<img src="RB_structure_map.jpg">
+</a>
  
 <!-- ## DAG Nodes
 

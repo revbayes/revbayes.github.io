@@ -4,8 +4,8 @@ subtitle: Setting up XCode, Eclipse, vim
 category: Developer
 order: 2
 ides:
-- eclipse
 - xcode
+- eclipse
 - vim
 ---
 
@@ -14,11 +14,12 @@ You can also use your favorite text editor (e.g. vim or emacs).
 This page will provide some helpful tips on how to set up these development enviroments.
 See the {% page_ref software %} page for instructions on how to obtain the source code.
 
-<blockquote class="overview" id="overview">
-<h2>Overview</h2>
-<ul id="prerequisites">
+{% include overview.html %}
+{:style='width: 100%;'}
+
 {% for ide in page.ides %}
-<li>{% page_ref {{ ide }} %}</li>
+{% assign ide_page = ide | match_page %}
+{{ ide_page.title }}
+{:.section.maintitle id="{{ ide_page.name | remove: ".md" }}" }
+{{ ide_page.content }}
 {% endfor %}
-</ul>
-</blockquote>

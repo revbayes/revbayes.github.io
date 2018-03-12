@@ -12,6 +12,6 @@ category: Developer
 
 {% for x in implementations %}
 {{ x.title }}
-{:.section.maintitle id="{{ x.name }}" }
+{:.section.maintitle id="{{ x.name | remove: ".md" }}" }
 {{x.content}}
 {% endfor %}
