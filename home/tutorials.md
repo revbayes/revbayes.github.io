@@ -19,6 +19,7 @@ These tutorials have been written for new users to learn RevBayes at home, at wo
 You may find that the styles are somewhat different between tutorials and that some  have overlapping content. 
 The tutorials all follow the same format, please see the Tutorial Format guide for details about how to read the tutorials.
 
+
 <a href="{% page_url format %}" class="btn btn-info" role="button">Tutorial Format Guide</a>
 <a href="{% page_url tutorial %}" class="btn btn-warning" role="button">Contribute!</a>
 
