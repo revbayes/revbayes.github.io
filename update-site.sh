@@ -1,10 +1,10 @@
 #!/bin/bash
 
-if git diff --exit-code > /dev/null
+if git diff-index --quiet HEAD --
 then
     git pull
     git push
-
+    
     msg=`git log -1 --pretty=%B`
 
     cd _site
@@ -29,6 +29,6 @@ then
     fi
     cd ..
 else
-    echo "Error: Source changes not staged for commit.\nPlease commit or stash before updating master."
+    echo "Error: Uncommitted source changes. Please commit or stash before updating master."
     exit 1
 fi
