@@ -40,6 +40,7 @@ then
     fi
     
     git push origin source
+    echo "Deployment complete."
 else
     echo "Error: Uncommitted source changes. Please commit or stash before updating master."
     exit 1

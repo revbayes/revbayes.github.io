@@ -16,9 +16,7 @@ Notice the repetition in naming within the core and revlanguage directories. Thi
 
 For more specific information on functions and distributions, and for general information on implementing in RevBayes, navigate to the {% page_ref implementation %} section of this Developer's guide.
 
-<a href="RB_structure_map.jpg">
-<img src="RB_structure_map.jpg">
-</a>
+<a href="RB_structure_map.jpg"><img src="RB_structure_map.jpg"></a>
  
 <!-- ## DAG Nodes
 
