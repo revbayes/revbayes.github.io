@@ -5,7 +5,7 @@ subtitle: RevBayes Workshops
 permalink: /workshops/
 ---
 
-Throughout the year, the members of the RevBayes development team and our collaborators teach workshops on molecular evolution, phylogenetics, and Bayesian inference using RevBayes. Additionally, we have occasional <a href="{{ site.baseurl }}{{ page.url }}{% link workshops/hackathons.md %}">hackathons</a> which bring together developers to work on the software and methods for phylogenetic analysis. 
+Throughout the year, the members of the RevBayes development team and our collaborators teach workshops on molecular evolution, phylogenetics, and Bayesian inference using RevBayes. Additionally, we have occasional <a href="{{ site.baseurl }}{% link workshops/hackathons.md %}">hackathons</a> which bring together developers to work on the software and methods for phylogenetic analysis. 
 
 {% assign workshops = site.pages | where:"layout","workshop" | sort: "startdate" %}
 
@@ -52,18 +52,6 @@ Throughout the year, the members of the RevBayes development team and our collab
 </tr>
 {{ past }}
 <tr>
-    <td>2017 (date ?)</td>
-    <td>Bayesian Phylogenetics in RevBayes</td>
-    <td>Iowa State University, Ames, Iowa</td>
-    <td>Walker Pett, Tracy Heath</td>
-</tr>
-<tr>
-    <td>September 25-28, 2017</td>
-    <td> Bayesian inference of phylogenies with RevBayes</td>
-    <td>International Biogeography Society Meeting, Bangalore, India</td>
-    <td>Walker Pett, Tracy Heath</td>
-</tr>
-<tr>
     <td>October 23-27, 2017</td>
     <td><a href="http://www.forbio.uio.no/events/courses/2017/RevBayes_and_BEAST2.html">Bayesian Phylogenetics Workshop</a></td>
     <td>Gothenberg, Sweden</td>
@@ -74,6 +62,18 @@ Throughout the year, the members of the RevBayes development team and our collab
     <td><a href="https://github.com/mlandis/revbayes_fossils">Bayesian fossil tip dating using RevBayes</a></td>
     <td>Geological Society of America Meeting, Seattle, Washington</td>
     <td>Rachel Warnock and Michael Landis</td>
+</tr>
+<tr>
+    <td>September 25-28, 2017</td>
+    <td><a href="https://github.com/phyloworks/revbayes-workshop2017">Bayesian inference of phylogenies with RevBayes</a></td>
+    <td>International Biogeography Society Meeting, Bangalore, India</td>
+    <td>Walker Pett, Tracy Heath</td>
+</tr>
+<tr>
+    <td>August 13-14, 2017</td>
+    <td><a href="https://github.com/phyloworks/revbayes-workshop2017">Bayesian Phylogenetics in RevBayes</a></td>
+    <td>Iowa State University, Ames, Iowa</td>
+    <td>Walker Pett, Tracy Heath</td>
 </tr>
 <tr>
     <td>August 7-11, 2017</td>
@@ -91,8 +91,14 @@ Throughout the year, the members of the RevBayes development team and our collab
     <td>March 11-17, 2017</td>
     <td><a href="http://treethinkers.org/2017-bodega-applied-phylogenetics-workshop/">Workshop in Applied Phylogenetics</a></td>
     <td>Bodega Bay Applied Phylogenetics, California</td>
-    <td>Peter Wainright, Peter Wainright, April Wright, Bob Thomson, Rachel Warnock, Sebastian Höhna,
+    <td>Peter Wainright, April Wright, Bob Thomson, Rachel Warnock, Sebastian Höhna,
     Jeremy Brown, Joanna Chiu, Michael Landis, Sam Price, Bruce Rannala</td>
+</tr>
+<tr>
+    <td>January 27, 2017</td>
+    <td><a href="http://evomics.org/2017-workshop-on-phylogenomics-cesky-krumlov/">Bayesian phylogenetic inference and divergence time estimation using RevBayes</a></td>
+    <td>Workshop on Phylogenomics, Český Krumlov, Czechia</td>
+    <td>Tracy Heath</td>
 </tr>
 <tr>
     <td>January 7-8, 2017</td>
@@ -162,7 +168,7 @@ Throughout the year, the members of the RevBayes development team and our collab
 <tr>
     <td>Jan 25 - Feb 7, 2015</td>
     <td><a href="http://evomics.org/workshops/workshop-on-molecular-evolution/2015-workshop-on-molecular-evolution-cesky-krumlov/">Bayesian phylogenetic inference using RevBayes</a></td>
-    <td>Molecular Evolution Workshop, Cesky Krumlov, Czech Republic</td>
+    <td>Molecular Evolution Workshop, Český Krumlov, Czechia</td>
     <td>Sebastian Höhna</td>
 </tr>
 <tr>
@@ -175,7 +181,7 @@ Throughout the year, the members of the RevBayes development team and our collab
     <td>July 28-August 6, 2014</td>
     <td><a href="https://molevol.mbl.edu/index.php/RevBayes">Bayesian phylogenetic inference using RevBayes</a></td>
     <td>Workshop on Molecular Evolution at Woods Hole, Massachusetts</td>
-    <td></td>
+    <td>Tracy Heath and Michael Landis</td>
 </tr>
 <tr>
     <td>March 11-15, 2013</td>
