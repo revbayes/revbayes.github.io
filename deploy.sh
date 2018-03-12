@@ -14,7 +14,7 @@ then
     git pull origin source
 
     cd _site
-    git fetch origin && git reset --hard origin/master
+    git fetch --quiet origin && git reset --quiet --hard origin/master
     cd ..
     if ! bundle exec jekyll build; then
     	echo "Jekyll build failed. Master not updated."
@@ -31,15 +31,15 @@ then
     else
         git add . && \
         git commit -am "$msg" && \
-        git push origin master
+        git push --quiet origin master
         echo "Successfully built and pushed to master."
         cd ..
 
         git add _site
-        git commit --amend -m "$msg"
+        git commit --quiet --amend -m "$msg"
     fi
     
-    git push origin source
+    git push --quiet origin source
     echo "Deployment complete."
 else
     echo "Error: Uncommitted source changes. Please commit or stash before updating master."
