@@ -1,11 +1,17 @@
 #!/bin/bash
 
+branch=`git rev-parse --abbrev-ref HEAD`
+
+if [ "$branch" != "source" ]
+then
+    echo "Error: Cannot deploy from branch '$branch'. Switch to 'source' before deploying."
+fi
+
 if git diff-index --quiet HEAD --
 then
-    git pull
-    git push
-    
     msg=`git log -1 --pretty=%B`
+
+    git pull origin source
 
     cd _site
     git fetch origin && git reset --hard origin/master
@@ -21,13 +27,19 @@ then
     if git diff --exit-code > /dev/null && [ "$untracked" = "" ]
     then
         echo "Nothing to update on master."
+        cd ..
     else
         git add . && \
         git commit -am "$msg" && \
         git push origin master
         echo "Successfully built and pushed to master."
+        cd ..
+
+        git add _site
+        git commit --amend -m "$msg"
     fi
-    cd ..
+    
+    git push origin source
 else
     echo "Error: Uncommitted source changes. Please commit or stash before updating master."
     exit 1
