@@ -14,7 +14,7 @@
 
 ### About
 
-RevBayes provides an interactive environment for statistical computation in phylogenetics. It is primarily intended for modeling, simulation, and Bayesian inference in evolutionary biology, particularly phylogenetics. However, the environment is quite general and can be useful for any complex modeling.
+RevBayes provides an interactive environment for statistical computation in phylogenetics. It is primarily intended for modeling, simulation, and Bayesian inference in evolutionary biology, particularly phylogenetics. However, the environment is quite general and can be useful for many complex modeling tasks.
 
 RevBayes uses its own lanugae, Rev, which is a probabilistic programming language like [JAGS](http://mcmc-jags.sourceforge.net/), [STAN](http://mc-stan.org/), [Edward](http://edwardlib.org/), [PyMC3](http://docs.pymc.io/intro.html), and related software. However, phylogenetic models require inference machinery and distributions that are unavailable in these other tools.
 
