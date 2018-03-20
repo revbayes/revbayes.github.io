@@ -6,6 +6,11 @@ level: 2
 prerequisites:
 - archery
 - clocks
+include_files:
+- sse/data/primates_tree.nex
+- sse/data/primates_morph.nex
+- sse/data/primates_biogeo.tre
+- sse/data/primates_biogeo.tsv
 index: false
 ---
 
