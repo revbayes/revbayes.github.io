@@ -213,7 +213,8 @@ Again, a matching equation for $E_1(t+\Delta t)$ can be written down.
 {% figure BiSSE_Events_E %}
 <img src="figures/BiSSE_Events_E.png">
 {% figcaption %}
-Estimated ancestral states for the activity period of primates.
+Possible events along a branch in the BiSSE model, used for deriving $E_0(t + \Delta t)$.
+This is Figure 3 in {% citet{Maddison2007 %}.
 {% endfigcaption %}
 {% endfigure %}
 
