@@ -6,11 +6,11 @@ This is the repository for the RevBayes website.
 Setting up this repo locally
 =================
 
-Clone the repository using the following command:
+The static version of this site is stored on branch `master`, while the source files are stored on branch `source`.
 
-	git clone --recursive git@github.com:revbayes/revbayes-site.git
+After first cloning this repository, you will be on the `source` branch. Then, you should clone the `master` branch into the `_site` directory.
 
-The static version of this site is stored as a submodule on branch `master` in the `_site` directory. The source files are stored on the default branch `source`.
+	git clone -b master git@github.com:revbayes/revbayes-site.git _site
 
 In order to build the site you will need `jekyll`, see instructions below to install.
 

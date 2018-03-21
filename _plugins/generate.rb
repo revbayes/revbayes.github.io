@@ -12,6 +12,18 @@ module Tutorials
       # label each file in a tutorial data/script directory
       tutorials.each do |tutorial|
         site.each_site_file do |file|
+          # check if this file is one of the page's exclude_files
+          exclude = false
+          if tutorial.data['exclude_files']
+            tutorial.data['exclude_files'].each do |exclude_file|
+              next unless file.relative_path.match(Regexp.new(Regexp.escape(exclude_file)+"$"))
+              exclude = true
+              break
+            end
+            # skip if excluded
+            next if exclude
+          end
+
           tutorial_dir = tutorial.relative_path.sub(Regexp.new(Regexp.escape(tutorial.name)),'');
           
           type = nil
@@ -21,11 +33,9 @@ module Tutorials
             type = 'script'
           end
 
-          file.data['type'] = type
-
           # include the file in its containing tutorial
-          # don't do this for non-standard tutorials
-          if type and not other.include? file.data['tutorial']
+          if type
+            file.data['type'] = type
             tutorial.data['files'] = [] if tutorial.data['files'] == nil
             tutorial.data['files'] << file
           end
@@ -51,6 +61,7 @@ module Tutorials
             tutorial.data['exclude_files'].each do |exclude_file|
               next unless file.relative_path.match(Regexp.new(Regexp.escape(exclude_file)+"$"))
               exclude = true
+              break
             end
             # skip if excluded
             next if exclude
@@ -58,10 +69,10 @@ module Tutorials
 
           # check if this file is one of the page's include_files
           if tutorial.data['include_files']
-          	tutorial.data['include_files'].each do |include_file|
+            tutorial.data['include_files'].each do |include_file|
               next unless include_file
 
-          	  if file.relative_path.match(Regexp.new(Regexp.escape(include_file)+"$"))
+              if file.relative_path.match(Regexp.new(Regexp.escape(include_file)+"$"))
                 found_includes[include_file] = true
 
                 tutorial.data['files'] = [] if tutorial.data['files'] == nil
@@ -69,8 +80,8 @@ module Tutorials
                 next if tutorial.data['files'].include? file
 
                 tutorial.data['files'] << file
-          	  end
-          	end
+              end
+            end
           end
         end
 
