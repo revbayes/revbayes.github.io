@@ -86,9 +86,9 @@ and Markov chain Monte Carlo (MCMC) algorithms. The tutorial explains
 the fundamental concepts of an MCMC algorithm, such as <em>moves</em> and
 <em>monitors</em>, which are ubiquitous in every other tutorial. After the
 tutorial you should be somewhat familiar with Bayesian inference
-(<em>e.g.,</em>what is a prior distribution,
+(<em>e.g.</em>, what is a prior distribution,
 posterior distribution, and likelihood function) and MCMC simulation
-(<em>e.g.,</em>what are moves and monitors and why do
+(<em>e.g.</em>, what are moves and monitors and why do
 we need them).</p>
 
 <h1 id="a-coin-flipping-binomial-model">A Coin Flipping (Binomial) Model</h1>
@@ -164,7 +164,7 @@ provided in the .</p>
 
 <h2 id="the-metropolis-hastings-algorithm">The Metropolis-Hastings Algorithm</h2>
 
-<p>Though <code class="highlighter-rouge">RevBayes</code> implements efficient and easy-to-use Markov chain
+<p>Though RevBayes implements efficient and easy-to-use Markov chain
 Monte Carlo algorithms, we’ll begin by writing one ourselves to gain a
 better understanding of the moving parts. The Metropolis-Hastings MCMC
 algorithm (missing reference) proceeds as follows:</p>
@@ -258,7 +258,7 @@ function prior(p) {
 <h3 id="monitoring-parameter-values">Monitoring parameter values</h3>
 
 <p>Additionally, we are going to monitor,
-<em>i.e.,</em>store, parameter values into a file
+<em>i.e.</em>, store, parameter values into a file
 during the MCMC simulation. For this file we need to write the column
 headers:</p>
 
@@ -281,9 +281,9 @@ print(0,p)
 
 <p>At long last, we can write our MCMC algorithm. First, let us define the
 frequency how often we print to file
-(<em>i.e.,</em>monitor), which is also often called
-thinning. If we set the variable ‘printgen‘ to 1, then we will store the
-parameter values every single iteration; if we choose ‘printgen=10‘
+(<em>i.e.</em>, monitor), which is also often called
+thinning. If we set the variable <code class="highlighter-rouge">printgen</code> to 1, then we will store the
+parameter values every single iteration; if we choose <code class="highlighter-rouge">printgen=10</code>
 instead, then only every $10^{th}$ iteration.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>printgen = 10
@@ -364,7 +364,7 @@ There are actually many other ways how to propose new values; some of
 which are more efficient than others.</p>
 
 <p>First, let us rewrite the MCMC loop so that we use instead a function,
-which we call ‘move_uniform‘ for simplicity, that performs the move:</p>
+which we call <code class="highlighter-rouge">move_uniform</code> for simplicity, that performs the move:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (rep in 1:reps){
     
@@ -383,7 +383,7 @@ which we call ‘move_uniform‘ for simplicity, that performs the move:</p>
 
 <h2 id="uniform-move">Uniform move</h2>
 
-<p>Now we need to actually write the ‘move_uniform‘ function. We mostly
+<p>Now we need to actually write the <code class="highlighter-rouge">move_uniform</code> function. We mostly
 just copy the code we had before into a dedicated function</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>function move_uniform( Natural weight) {
@@ -409,10 +409,10 @@ just copy the code we had before into a dedicated function</p>
 }
 </code></pre></div></div>
 
-<p>There are a few things to consider in the function ‘move_uniform‘.
+<p>There are a few things to consider in the function <code class="highlighter-rouge">move_uniform</code>.
 First, we do not have a return value because the move simply changes the
 variable $p$ if the move is accepted. Second, we expect an argument
-called ‘weight‘ which will tell us how often we want to use this move.
+called <code class="highlighter-rouge">weight</code> which will tell us how often we want to use this move.
 Otherwise, this function does exactly the same what was inside the for
 loop previously.</p>
 
@@ -424,7 +424,7 @@ script).</p>
 <p>As a second move we will write a sliding-window move. The sliding-window
 moves propose an update by drawing a random number from a uniform
 distribution and then adding this random number to the current value
-(<em>i.e.,</em>centered on the previous value).</p>
+(<em>i.e.</em>, centered on the previous value).</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>function move_slide( RealPos delta, Natural weight) {
 
@@ -450,19 +450,19 @@ distribution and then adding this random number to the current value
 </code></pre></div></div>
 
 <p>In addition to the weight of the move, this move has another argument,
-‘delta‘. The argument ‘delta‘ defines the width of the uniform window
-from which we draw new values. Thus, if ‘delta‘ is large, then the
+<code class="highlighter-rouge">delta</code>. The argument <code class="highlighter-rouge">delta</code> defines the width of the uniform window
+from which we draw new values. Thus, if <code class="highlighter-rouge">delta</code> is large, then the
 proposed values are more likely to be very different from the current
-value of $p$. Conversely, if ‘delta‘ is small, then the proposed values
+value of $p$. Conversely, if <code class="highlighter-rouge">delta</code> is small, then the proposed values
 are more likely to be very close to the current value of $p$.</p>
 
-<p>Experiment with different values for ‘delta‘ and check how the effective
+<p>Experiment with different values for <code class="highlighter-rouge">delta</code> and check how the effective
 sample size (ESS) changes.</p>
 
-<p>There is, a priori, no good method for knowing what values of ‘delta‘
+<p>There is, a priori, no good method for knowing what values of <code class="highlighter-rouge">delta</code>
 are most efficient. However, there are some algorithms implemented in
-<code class="highlighter-rouge">RevBayes</code>, called <em>auto-tuning</em>, that will estimate good values for
-‘delta‘.</p>
+RevBayes, called <em>auto-tuning</em>, that will estimate good values for
+<code class="highlighter-rouge">delta</code>.</p>
 
 <h2 id="scaling-move">Scaling move</h2>
 
@@ -501,14 +501,14 @@ multiply the acceptance rate by the scaling factor.</p>
 <p>As before, this move has a tuning parameter called <em>lambda</em>.</p>
 
 <p>The sliding-window and scaling moves are very common and popular moves
-in <code class="highlighter-rouge">RevBayes</code>. The code examples here are actually showing the exact
+in RevBayes. The code examples here are actually showing the exact
 same equation as implemented internally. It will be very useful for you
 to understand these moves.</p>
 
 <p>However, this MCMC algorithm is <em>very</em> specific to our binomial model
 and thus hard to extend (also it’s pretty inefficient!).</p>
 
-<h1 id="the-metropolis-hastings-algorithm-with-the-real-revbayes">The Metropolis-Hastings Algorithm with the <em>Real</em> <code class="highlighter-rouge">RevBayes</code></h1>
+<h1 id="the-metropolis-hastings-algorithm-with-the-real-revbayes">The Metropolis-Hastings Algorithm with the <em>Real</em> RevBayes</h1>
 
 <p>We’ll now specify the exact same model in <code class="highlighter-rouge">Rev</code> using the built-in
 modeling functionality. It turns out that the <code class="highlighter-rouge">Rev</code> code to specify the
@@ -529,7 +529,7 @@ beta  &lt;- 1
 p ~ dnBeta(alpha,beta)
 </code></pre></div></div>
 
-<p>One difference between <code class="highlighter-rouge">RevBayes</code> and the MH algorithm that we wrote
+<p>One difference between RevBayes and the MH algorithm that we wrote
 above is that many MCMC proposals are already built-in, but we have to
 specify them <em>before</em> we run the MCMC. We usually define (at least) one
 move per parameter immediately after we specify the prior distribution
@@ -585,7 +585,7 @@ we got from our first analysis?</p>
 and easier to read than the MH algorithm script we began with. Perhaps
 more importantly, this <code class="highlighter-rouge">Rev</code> analysis is <em>orders of magnitude</em> faster
 than our own script, because it makes use of extremely efficient
-probability calculations built-in to <code class="highlighter-rouge">RevBayes</code> (rather than the ones we
+probability calculations built-in to RevBayes (rather than the ones we
 hacked together in our own algorithm).</p>
 
 <h1 id="exercises-for-the-mcmc-tutorial">Exercises for the MCMC Tutorial</h1>
@@ -628,11 +628,11 @@ this tutorial.</p>
     <p>Look at the output in <code class="highlighter-rouge">Tracer</code>.</p>
   </li>
   <li>
-    <p>Use only a single move and set ‘printgen=1‘. Which move has the best
+    <p>Use only a single move and set <code class="highlighter-rouge">printgen=1</code>. Which move has the best
 ESS? Enter the ESS values for the different moves here:\</p>
   </li>
   <li>
-    <p>How does the ESS change if you use a ‘delta=10‘ for the
+    <p>How does the ESS change if you use a <code class="highlighter-rouge">delta=10</code> for the
 sliding-window move?\</p>
   </li>
   <li>
@@ -652,7 +652,7 @@ of the tuning parameters.\</p>
   </li>
 </ol>
 
-<h2 id="exercise-3-mcmc-in-revbayes">Exercise 3: MCMC in <code class="highlighter-rouge">RevBayes</code></h2>
+<h2 id="exercise-3-mcmc-in-revbayes">Exercise 3: MCMC in RevBayes</h2>
 
 <ol>
   <li>
@@ -661,8 +661,8 @@ to your own MCMC. Are the posterior estimates the same? Are the ESS
 values similar? Which script was the fastest?\</p>
   </li>
   <li>
-    <p>Next, add a second move ‘moves[2] =
-mvScale(p,lambda=0.1,tune=true,weight=1.0)‘ just after the
+    <p>Next, add a second move <code class="highlighter-rouge">moves[2] =
+mvScale(p,lambda=0.1,tune=true,weight=1.0)</code> just after the
 first one.</p>
   </li>
   <li>
@@ -671,13 +671,13 @@ name of your file:\</p>
   </li>
   <li>
     <p>Finally, run a pre-burnin using
-‘analysis.burnin(generations=10000,tuningInterval=200)‘ just before
-you call ‘analysis.run(100000)‘. This will auto-tune the tuning
-parameters (<em>e.g.,</em>‘delta‘ and ‘lambda‘)
+<code class="highlighter-rouge">analysis.burnin(generations=10000,tuningInterval=200)</code> just before
+you call <code class="highlighter-rouge">analysis.run(100000)</code>. This will auto-tune the tuning
+parameters (<em>e.g.</em>, <code class="highlighter-rouge">delta</code> and <code class="highlighter-rouge">lambda</code>)
 so that the acceptance ratio is between 0.4 and 0.5.</p>
   </li>
   <li>
-    <p>What are the tuned values for ‘delta‘ and ‘lambda‘? Did the
+    <p>What are the tuned values for <code class="highlighter-rouge">delta</code> and <code class="highlighter-rouge">lambda</code>? Did the
 auto-tuning increase the ESS?\</p>
   </li>
 </ol>
@@ -710,13 +710,12 @@ the posterior distribution change as you increase the number of coin
 flips (say, increase both the number of flips and the number of heads by
 an order of magnitude)? How does the estimated posterior distribution
 change if you change the prior model parameters, $\alpha$ and $\beta$
-(<em>i.e.,</em>is the model prior sensitive)? Does
+(<em>i.e.</em>, is the model prior sensitive)? Does
 the prior sensitivity depend on the sample size? Are the posterior
 estimates sensitive to the length of the MCMC? Do you think this MCMC
 has been run sufficiently long, or should you run it longer? Try to
 answer some of these questions and explain your finding here:\</p>
 
-<p>Version dated:</p>
 
 <ol class="bibliography"></ol>
 

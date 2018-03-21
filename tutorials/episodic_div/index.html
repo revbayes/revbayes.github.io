@@ -83,7 +83,7 @@
 
 <p>Models of speciation and extinction are fundamental to any phylogenetic
 analysis of macroevolutionary processes
-(<em>e.g.,</em>divergence time estimation,
+(<em>e.g.,</em> divergence time estimation,
 diversification rate estimation, continuous and discrete trait
 evolution, and historical biogeography). First, a prior model describing
 the distribution of speciation events over time is critical to
@@ -93,11 +93,11 @@ extinction rates. These inferences allow us to investigate key questions
 in evolutionary biology.</p>
 
 <p>Diversification-rate parameters may be included as nuisance parameters
-of other phylogenetic models—<em>i.e.,</em>where
+of other phylogenetic models—<em>i.e.,</em> where
 these diversification-rate parameters are not of direct interest. For
 example, many methods for estimating species divergence times—such as
 <code class="highlighter-rouge">BEAST</code><a href="#Drummond2012">(Drummond et al. 2012)</a>,
-<code class="highlighter-rouge">MrBayes</code><a href="#Ronquist2012">(Ronquist et al. 2012)</a>, and <code class="highlighter-rouge">RevBayes</code>
+<code class="highlighter-rouge">MrBayes</code><a href="#Ronquist2012">(Ronquist et al. 2012)</a>, and RevBayes
 <a href="#Hoehna2016b">(Höhna et al. 2016)</a>—implement ‘relaxed-clock models’ that include a
 constant-rate birth-death branching process as a prior model on the
 distribution of tree topologies and node ages. Although the parameters
@@ -110,7 +110,7 @@ diversification-rate parameters, as they accommodate uncertainty in the
 other phylogenetic-model parameters (including the tree topology,
 divergence-time estimates, and the other relaxed-clock model
 parameters). More recent work,
-<em>e.g.,</em><a href="#Heath2014">(Heath et al. 2014)</a>, uses macroevolutionary
+<em>e.g.,</em> <a href="#Heath2014">(Heath et al. 2014)</a>, uses macroevolutionary
 models (the fossilized birth-death process) to calibrate phylogenies and
 thus to infer dated trees.</p>
 
@@ -124,7 +124,7 @@ divergence times is needed.</p>
 <h2 id="types-of-hypotheses-for-estimating-diversification-rates">Types of Hypotheses for Estimating Diversification Rates</h2>
 
 <p>Many evolutionary phenomena entail differential rates of diversification
-(speciation – extinction); <em>e.g.,</em>adaptive
+(speciation – extinction); <em>e.g.,</em> adaptive
 radiation, diversity-dependent diversification, key innovations, and
 mass extinction. The specific study questions regarding lineage
 diversification may be classified within three fundamental categories of
@@ -138,11 +138,11 @@ rates.</p>
 
 <p><em>What is the (constant) rate of diversification in my study group?</em> The
 most basic models estimate parameters of the stochastic-branching
-process (<em>i.e.,</em>rates of speciation and
+process (<em>i.e.,</em> rates of speciation and
 extinction, or composite parameters such as net-diversification and
 relative-extinction rates) under the assumption that rates have remained
 constant across lineages and through time;
-<em>i.e.,</em>under a constant-rate birth-death
+<em>i.e.,</em> under a constant-rate birth-death
 stochastic-branching process model <a href="#Nee1994b">(Nee et al. 1994)</a>. Extensions to the
 (basic) constant-rate models include diversification-rate variation
 through time (missing reference). First, we might ask whether
@@ -153,16 +153,16 @@ adaptive radiation. A second question asks whether there is evidence of
 a continuous/gradual decrease in diversification rates through time
 (associated with decreasing speciation rates and/or increasing
 extinction rates), as might occur because of diversity-dependent
-diversification (<em>i.e.,</em>where competitive
+diversification (<em>i.e.,</em> where competitive
 ecological interactions among the species of a growing tree decrease the
 opportunities for speciation and/or increase the probability of
-extinction, <em>e.g.,</em><a href="#Hoehna2014a">(Höhna 2014)</a>). Third, we
+extinction, <em>e.g.,</em> <a href="#Hoehna2014a">(Höhna 2014)</a>). Third, we
 can ask whether changes in diversification rates are correlated with
 environmental factors, such as environmental CO~2~ or temperature
 <a href="#Condamine2013">(Condamine et al. 2013)</a>. A final question in this category asks whether our
 study tree was impacted by a mass-extinction event (where a large
 fraction of the standing species diversity is suddenly lost,
-<em>e.g.,</em><a href="#May2016">(May et al. 2016)</a>). The common theme of these
+<em>e.g.,</em> <a href="#May2016">(May et al. 2016)</a>). The common theme of these
 studies is that the diversification process is tree-wide, that is, all
 lineages of the study group have the exact same rates at a given time.</p>
 
@@ -172,8 +172,8 @@ lineages of the study group have the exact same rates at a given time.</p>
 across the branches of my study group?</em> Models have been developed to
 detect departures from rate constancy across lineages; these tests are
 analogous to methods that test for departures from a molecular
-clock—<em>i.e.,</em>to assess whether substitution
-rates vary significantly across lineages (missing reference).
+clock—<em>i.e.,</em> to assess whether substitution
+rates vary significantly across lineages <a href="#Alfaro2009">(Alfaro et al. 2009; Rabosky 2014)</a>.
 These models are important for assessing whether a given tree violates
 the assumptions of rate homogeneity among lineages. Furthermore, these
 models are important to answer questions such as: <em>What are the
@@ -192,22 +192,22 @@ continuous morphological traits, geographic range, etc.). For example,
 one can hypothesize that a binary character, say if an organism is
 herbivorous/carnivorous or self-compatible/self-incompatible, impact the
 diversification rates. Then, if the organism is in state 0
-(<em>e.g.,</em>is herbivorous) it has a lower (or
+(<em>e.g.,</em> is herbivorous) it has a lower (or
 higher) diversification rate than if the organism is in state 1
-(<em>e.g.,</em>carnivorous) <a href="#Maddison2007">(Maddison et al. 2007)</a>.</p>
+(<em>e.g.,</em> carnivorous) <a href="#Maddison2007">(Maddison et al. 2007)</a>.</p>
 
 <h1 id="sec:models">Diversification Rate Models</h1>
 
 <p>We begin this section with a general introduction to the stochastic
 birth-death branching process that underlies inference of
-diversification rates in <code class="highlighter-rouge">RevBayes</code>. This primer will provide some
+diversification rates in RevBayes. This primer will provide some
 details on the relevant theory of stochastic-branching process models.
 We appreciate that some readers may want to skip this somewhat technical
 primer; however, we believe that a better understanding of the relevant
 theory provides a foundation for performing better inferences. We then
 discuss a variety of specific birth-death models, but emphasize that
 these examples represent only a tiny fraction of the possible
-diversification-rate models that can be specified in <code class="highlighter-rouge">RevBayes</code>.</p>
+diversification-rate models that can be specified in RevBayes.</p>
 
 <h2 id="the-birth-death-branching-process">The birth-death branching process</h2>
 
@@ -333,7 +333,7 @@ divergence times.</p>
 <h2 id="outline">Outline</h2>
 
 <p>This tutorial describes how to specify an episodic branching-process
-model in <code class="highlighter-rouge">RevBayes</code>; a birth-death process where diversification rates
+model in RevBayes; a birth-death process where diversification rates
 vary episodically through time modeled as piecewise-constant rates
 (missing reference). The probabilistic graphical model is given
 once at the beginning of this tutorial. Your goal is to estimate
@@ -384,15 +384,15 @@ for a more in-depth discussion of concepts in <code class="highlighter-rouge">Re
 <h1 id="data-and-files">Data and files</h1>
 
 <p>We provide the data file(s) which we will use in this tutorial. You may
-want to use your own data instead. In the ‘data‘ folder, you will find
+want to use your own data instead. In the ‘data’ folder, you will find
 the following files</p>
 
 <ul>
-  <li>‘primates_tree.nex‘: Dated primates phylogeny including 233 out of
+  <li>‘primates_tree.nex’: Dated primates phylogeny including 233 out of
 367 species from <a href="#MagnusonFord2012">(Magnuson-Ford and Otto 2012)</a>.</li>
 </ul>
 
-<p>Open the tree ‘data/primates_tree.nex‘ in
+<p>Open the tree ‘data/primates_tree.nex’ in
 <code class="highlighter-rouge">FigTree</code>.</p>
 
 <h1 id="episodic-birth-death-model">Episodic Birth-Death Model</h1>
@@ -472,8 +472,8 @@ intervals.</p>
 </code></pre></div></div>
 
 <p>Using this variable we can easily change our script to break-up time
-into many (<em>e.g.,</em> ‘NUM_INTERVALS = 100‘) or
-few (<em>e.g.,</em> ‘NUM_INTERVALS = 4‘) intervals.</p>
+into many (<em>e.g.,</em>  <code class="highlighter-rouge">NUM_INTERVALS = 100</code>) or
+few (<em>e.g.,</em>  <code class="highlighter-rouge">NUM_INTERVALS = 4</code>) intervals.</p>
 
 <h2 id="specifying-the-model">Specifying the model</h2>
 
@@ -512,7 +512,7 @@ previous rates. This is because we are actually modeling rate-changes
 backwards in time and there is no previous rate for the rate at the
 present. Modeling rates backwards in time makes it easier for us if we
 had some prior information about some event affected diversification
-sometime before the present, <em>e.g.,</em>25 million
+sometime before the present, <em>e.g.,</em> 25 million
 years ago.</p>
 
 <p>We use a uniform distribution between -10 and 10 because of our lack of
@@ -546,13 +546,13 @@ extinction[1] := exp( log_extinction[1] )
 </code></pre></div></div>
 
 <p>Next, we specify the speciation and extinction rates for each time
-interval (<em>i.e.,</em>epoch). This can be done
-efficiently using a ‘for‘-loop. We will use a specific index variable so
+interval (<em>i.e.,</em> epoch). This can be done
+efficiently using a <code class="highlighter-rouge">for</code>-loop. We will use a specific index variable so
 that we can more easily refer to the rate at the previous interval.
 Remember that we want to model the rates as a Brownian motion, which we
 achieve by specifying a normal distribution as the prior distribution on
 the rates centered around the previous rate
-(<em>i.e.,</em>the mean of the normal distribution is
+(<em>i.e.,</em> the mean of the normal distribution is
 equal to the previous rate).</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:NUM_INTERVALS) {
@@ -571,14 +571,14 @@ equal to the previous rate).</p>
 </code></pre></div></div>
 
 <p>Finally, we apply moves that slide all values in the rate vectors,
-<em>i.e.,</em>all speciation or extinction rates. We
-will use an ‘mvVectorSlide‘ move.</p>
+<em>i.e.,</em> all speciation or extinction rates. We
+will use an ‘mvVectorSlide’ move.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[++mvi] = mvVectorSlide(log_speciation, weight=10)
 moves[++mvi] = mvVectorSlide(log_extinction, weight=10)
 </code></pre></div></div>
 
-<p>Additionally, we apply a ‘mvShrinkExpand‘ move which changes the spread
+<p>Additionally, we apply a ‘mvShrinkExpand’ move which changes the spread
 of several variables around their mean.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[++mvi] = mvShrinkExpand( log_speciation, sd=speciation_sd, weight=10 )
@@ -589,7 +589,7 @@ moves[++mvi] = mvShrinkExpand( log_extinction, sd=extinction_sd, weight=10 )
 
 <h3 id="setting-up-the-time-intervals">Setting up the time intervals</h3>
 
-<p>In <code class="highlighter-rouge">RevBayes</code> you actually have the possibility to specify unequal time
+<p>In RevBayes you actually have the possibility to specify unequal time
 intervals or even different intervals for the speciation and extinction
 rate. This is achieved by providing a vector of times when each interval
 ends. Here we simply break-up the most recent 80% of time since the root
@@ -636,18 +636,18 @@ time tree.</p>
 survival. It is possible to change this condition to the <em>time of the
 process</em> or <em>the number of sampled taxa</em> too.</p>
 
-<p>Then we attach data to the ‘timetree‘ variable.</p>
+<p>Then we attach data to the ‘timetree’ variable.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree.clamp(T)
 </code></pre></div></div>
 
 <p>Finally, we create a workspace object of our whole model using the
-‘model()‘ function.</p>
+‘model()’ function.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(speciation)
 </code></pre></div></div>
 
-<p>The ‘model()‘ function traversed all of the connections and found all of
+<p>The ‘model()’ function traversed all of the connections and found all of
 the nodes we specified.</p>
 
 <h2 id="running-an-mcmc-analysis">Running an MCMC analysis</h2>
@@ -656,7 +656,7 @@ the nodes we specified.</p>
 
 <p>For our MCMC analysis, we need to set up a vector of <em>monitors</em> to
 record the states of our Markov chain. First, we will initialize the
-model monitor using the ‘mnModel‘ function. This creates a new monitor
+model monitor using the ‘mnModel’ function. This creates a new monitor
 variable that will output the states for all model parameters when
 passed into a MCMC function.</p>
 
@@ -665,7 +665,7 @@ passed into a MCMC function.</p>
 
 <p>Additionally, we create four separate file monitors, one for each vector
 of speciation and extinction rates and for each speciation and
-extinction rate epoch (<em>i.e.,</em>the times when
+extinction rate epoch (<em>i.e.,</em> the times when
 the interval ends). We want to have the speciation and extinction rates
 stored separately so that we can plot them nicely afterwards.</p>
 
@@ -676,7 +676,7 @@ monitors[++mni] = mnFile(filename="output/primates_EBD_extinction_times.log",pri
 </code></pre></div></div>
 
 <p>Finally, we create a screen monitor that will report the states of
-specified variables to the screen with ‘mnScreen‘:</p>
+specified variables to the screen with ‘mnScreen’:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[++mni] = mnScreen(printgen=1000, extinction_sd, speciation_sd)
 </code></pre></div></div>
@@ -685,7 +685,7 @@ specified variables to the screen with ‘mnScreen‘:</p>
 
 <p>With a fully specified model, a set of monitors, and a set of moves, we
 can now set up the MCMC algorithm that will sample parameter values in
-proportion to their posterior probability. The ‘mcmc()‘ function will
+proportion to their posterior probability. The ‘mcmc()’ function will
 create our MCMC object:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves)
@@ -724,11 +724,11 @@ dev.off()
 </code></pre></div></div>
 
 <p>(Note, you may want to add a nice geological timescale to the plot by
-setting ‘use.geoscale=TRUE‘ but then you can only plot one figure per
+setting ‘use.geoscale=TRUE’ but then you can only plot one figure per
 page.)</p>
 
 <p>The <code class="highlighter-rouge">Rev</code> file for performing this analysis:
-<a href="https://github.com/revbayes/revbayes_tutorial/raw/master/RB_DiversificationRate_Episodic_Tutorial/scripts/mcmc_EBD.Rev">‘mcmc_EBD.Rev‘</a>.</p>
+<a href="https://github.com/revbayes/revbayes_tutorial/raw/master/RB_DiversificationRate_Episodic_Tutorial/scripts/mcmc_EBD.Rev">‘mcmc_EBD.Rev’</a>.</p>
 
 <blockquote class="figure">
   <p><img src="figures/EBD_10_Result.png" alt="" /> 
@@ -736,7 +736,7 @@ Resulting
 diversification rate estimations when using 10 intervals. You should
 obtain similar results when you use 10 intervals. The estimated rates
 might change when you use a different resolution,
-<em>i.e.,</em>a different number of intervals.</p>
+<em>i.e.,</em> a different number of intervals.</p>
 </blockquote>
 
 <h2 id="exercise-1">Exercise 1</h2>
@@ -755,12 +755,12 @@ general trend?</p>
   </li>
   <li>
     <p>Is there evidence for rate variation? Look at the estimates of
-‘speciation_sd‘ and ‘extinction_sd‘: Is there information in the
+<code class="highlighter-rouge">speciation_sd</code> and <code class="highlighter-rouge">extinction_sd</code>: Is there information in the
 data to change the estimates from the prior?</p>
   </li>
   <li>
     <p>Run the analysis using a different number of intervals,
-<em>e.g.,</em>5 or 50. How do the rates change?</p>
+<em>e.g.,</em> 5 or 50. How do the rates change?</p>
   </li>
 </ul>
 
@@ -775,19 +775,19 @@ parameter but still let the speciation rate vary through time.</p>
     <ul>
       <li>
         <p>Remove all previous occurrences of the extinction rates
-(<em>i.e.,</em>priors, parameters and moves).</p>
+(<em>i.e.,</em> priors, parameters and moves).</p>
       </li>
       <li>
         <p>Specify a lognormal prior distribution on the constant
 extinction rate\
-(‘extinction $\sim$ dnLognormal(-5,sd=2*0.587405)‘)</p>
+(‘extinction $\sim$ dnLognormal(-5,sd=2*0.587405)’)</p>
       </li>
       <li>
         <p>Add a move for the new extinction rate parameter\
-‘moves[++mvi] = mvScale(extinction,weight=5.0)‘.</p>
+‘moves[++mvi] = mvScale(extinction,weight=5.0)’.</p>
       </li>
       <li>
-        <p>Remove the argument ‘muTimes=interval_times‘ from the
+        <p>Remove the argument ‘muTimes=interval_times’ from the
 birth-death process.</p>
       </li>
     </ul>
@@ -797,7 +797,6 @@ birth-death process.</p>
   </li>
 </ul>
 
-<p>Version dated:</p>
 
 <ol class="bibliography"><li><span id="Drummond2012">Drummond A.J., Suchard M.A., Xie D., Rambaut A. 2012. Bayesian phylogenetics with BEAUti and the BEAST 1.7. Molecular Biology and Evolution. 29:1969–1973.</span>
 
@@ -837,6 +836,16 @@ birth-death process.</p>
 <li><span id="May2016">May M.R., Höhna S., Moore B.R. 2016. A Bayesian Approach for Detecting the Impact of Mass-Extinction Events on Molecular Phylogenies When Rates of Lineage Diversification May Vary. Methods in Ecology and Evolution. 7:947–959.</span>
 
 <a href="https://doi.org/10.1111/2041-210X.12563">10.1111/2041-210X.12563</a>
+
+</li>
+<li><span id="Alfaro2009">Alfaro M.E., Santini F., Brock C., Alamillo H., Dornburg A., Rabosky D.L., Carnevale G., Harmon L.J. 2009. Nine exceptional radiations plus high turnover explain species diversity in jawed vertebrates. Proceedings of the National Academy of Sciences. 106:13410–13414.</span>
+
+<a href="https://doi.org/10.1073/pnas.0811087106">10.1073/pnas.0811087106</a>
+
+</li>
+<li><span id="Rabosky2014a">Rabosky D.L. 2014. Automatic detection of key innovations, rate shifts, and diversity-dependence on phylogenetic trees. PLoS One. 9:e89543.</span>
+
+<a href="https://doi.org/10.1371/journal.pone.0089543">10.1371/journal.pone.0089543</a>
 
 </li>
 <li><span id="Maddison2007">Maddison W.P., Midford P.E., Otto S.P. 2007. Estimating a binary character’s effect on speciation and extinction. Systematic Biology. 56:701.</span>

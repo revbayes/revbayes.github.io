@@ -118,7 +118,7 @@ that phylogenetic reconstruction, molecular dating and the comparative
 method should all be considered jointly, in the context of one single
 overarching probabilistic model.</p>
 
-<p>Thanks to its modular structure, ‘RevBayes‘ represents a natural
+<p>Thanks to its modular structure, RevBayes represents a natural
 framework for attempting this integration. The aim of the present
 tutorial is to guide you through a series of examples where this
 integration is achieved, step by step. It can also be considered as an
@@ -128,23 +128,23 @@ can be recruited in many other contexts.</p>
 <h1 id="data-and-files">Data and files</h1>
 
 <p>We provide several data files which we will use in this tutorial. You
-may want to use your own data instead. In the ‘data‘ folder, you will
+may want to use your own data instead. In the <code class="highlighter-rouge">data</code> folder, you will
 find the following files</p>
 
 <ul>
   <li>
-    <p>‘primates_cytb.nex‘: Alignment of the <em>cytochrome b</em> subunit from
+    <p><code class="highlighter-rouge">primates_cytb.nex</code>: Alignment of the <em>cytochrome b</em> subunit from
 23 primates representing 14 of the 16 families (<em>Indriidae</em> and
 <em>Callitrichidae</em> are missing).</p>
   </li>
   <li>
-    <p>‘primates_lhtlog.nex‘: 2 life-history traits (endocranial volume
+    <p><code class="highlighter-rouge">primates_lhtlog.nex</code>: 2 life-history traits (endocranial volume
 (ECV), body mass; each for males and females separately) for 23
 primate species [taken from the Anage database, @DeMagalhaes2009].
 The traits have been log-transformed.</p>
   </li>
   <li>
-    <p>‘primates.tree‘: A time calibrated phylogeny of the same
+    <p><code class="highlighter-rouge">primates.tree</code>: A time calibrated phylogeny of the same
 23 primates.</p>
   </li>
 </ul>
@@ -158,12 +158,12 @@ of body mass follows a simple univariate Brownian motion along the
 phylogeny. In a first step, we will ignore phylogenetic uncertainty:
 thus, we will assume that the Brownian process describing body mass
 evolution runs along a fixed time-calibrated phylogeny (with fixed
-divergence times), such as specified in the file ‘primates.tree‘.</p>
+divergence times), such as specified in the file <code class="highlighter-rouge">primates.tree</code>.</p>
 
 <p>\
 You may want to take the time to visualize the tree given in
-‘primates.tree‘ as well as the matrix of quantitative traits specified
-by the ‘primates_lhtlog.nex‘ file, before going into the modeling work
+<code class="highlighter-rouge">primates.tree</code> as well as the matrix of quantitative traits specified
+by the <code class="highlighter-rouge">primates_lhtlog.nex</code> file, before going into the modeling work
 described below.</p>
 
 <h2 id="the-model-and-the-priors">The model and the priors</h2>
@@ -203,7 +203,7 @@ posterior distribution on $\sigma$ and $x$. Once this is done, we can
 obtain posterior means, medians or credible intervals for the value of
 body mass or other life-history traits for specific ancestors.</p>
 
-<h2 id="programming-the-model-in-revbayes">Programming the model in ‘RevBayes‘</h2>
+<h2 id="programming-the-model-in-revbayes">Programming the model in RevBayes</h2>
 
 <p>The problem of continuous trait evolution —just as for discrete trait
 evolution— along a phylogeny is that we do not know the values of the
@@ -212,7 +212,7 @@ states at the internal nodes as additional parameters of the model. For
 discrete characters we use the sum-product (a.k.a. pruning) algorithm
 <a href="#Felsenstein1981">(Felsenstein 1981)</a> to analytically integrate over all possible states at
 the internal nodes. For continuous characters (traits) similar methods
-have been proposed. In ‘RevBayes‘ you have three main ways of specifying
+have been proposed. In RevBayes you have three main ways of specifying
 this model and running an analysis on it. The three approaches are: (1)
 phylogenetic independent contrasts using the reduced likelihood (REML),
 (2) Brownian motion using a phylogenetic covariance matrix, and (3) a
@@ -244,13 +244,13 @@ $\nu_j$ are the (scaled) branch lengths leading to node $i$ and $j$
 respectively. $\delta$ is the additional uncertainty that is propagated
 through the phylogeny and is compute by
 $\delta_k = ((\nu_i + \delta_i)*(\nu_j + \delta_j)) / (\nu_i + \delta_i + \nu_j + \delta_j)$.
-These computations are done for you in the ‘RevBayes‘ distribution
-called ‘dnPhyloBrownianREML‘.</p>
+These computations are done for you in the RevBayes distribution
+called <code class="highlighter-rouge">dnPhyloBrownianREML</code>.</p>
 
-<p>In the directory ‘RevBayes_scripts/‘ you will find a script called
-‘primatesMass_BM_REML.Rev‘. This script implements the univariate
+<p>In the directory <code class="highlighter-rouge">RevBayes_scripts/</code> you will find a script called
+<code class="highlighter-rouge">primatesMass_BM_REML.Rev</code>. This script implements the univariate
 Brownian model described above. Instead of re-typing the content of
-script entirely in the context of an interactive ‘RevBayes‘ session, you
+script entirely in the context of an interactive RevBayes session, you
 can instead run the script directly:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("RevBayes_scripts/primatesMass_BM_REML.Rev")
@@ -260,7 +260,7 @@ can instead run the script directly:</p>
 subsection and serves as an example solution for you. For the later
 section you need to adjust the script.</p>
 
-<p>Let us go through the script step by step in the ‘Rev‘ language. First,
+<p>Let us go through the script step by step in the <code class="highlighter-rouge">Rev</code> language. First,
 load the trait data:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>contData &lt;- readContinuousCharacterData("data/primates_lhtlog.nex")
@@ -298,7 +298,7 @@ psi &lt;- treeArray[1]
 </code></pre></div></div>
 
 <p>\
-You may want to look at this tree before by loading the ‘primates.tree‘
+You may want to look at this tree before by loading the <code class="highlighter-rouge">primates.tree</code>
 in FigTree or any other tree visualization software.</p>
 
 <p>As usual, we start be initializing some useful helper variables. For
@@ -320,11 +320,11 @@ sigma := 10^logSigma
 </code></pre></div></div>
 
 <p>Using this approach we have specified a prior probability distribution
-on ‘sigma‘ between $10^{-5}$ to $10^5$ which should be broad enough to
+on <code class="highlighter-rouge">sigma</code> between $10^{-5}$ to $10^5$ which should be broad enough to
 include all reasonable values. Since the rate of trait evolution
-‘logSigma‘ is a stochastic variable and we want to estimate it, we need
+<code class="highlighter-rouge">logSigma</code> is a stochastic variable and we want to estimate it, we need
 to add a sliding move on it. Remember that the sliding move proposes new
-values drawn from a window with width ‘delta‘ and is centered around the
+values drawn from a window with width <code class="highlighter-rouge">delta</code> and is centered around the
 current values; thus it slides through the parameter space together with
 the current parameter value.</p>
 
@@ -332,9 +332,9 @@ the current parameter value.</p>
 </code></pre></div></div>
 
 <p>Next, define a random variable from the univariate Brownian-Phylo-REML
-process, which we will call ‘logmass‘. We need to provide the tree
-variable ‘psi‘, some branch-specific rate multiplier parameter which we
-simply set to 1, the shared rate for this site ‘sigma‘ and the number of
+process, which we will call <code class="highlighter-rouge">logmass</code>. We need to provide the tree
+variable <code class="highlighter-rouge">psi</code>, some branch-specific rate multiplier parameter which we
+simply set to 1, the shared rate for this site <code class="highlighter-rouge">sigma</code> and the number of
 sites (number of continuous traits) that we use.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>logmass ~ dnPhyloBrownianREML(psi, branchRates=1.0, siteRates=sigma, nSites=1)
@@ -348,13 +348,13 @@ body mass in the extant taxa.</p>
 
 <p>The model is now entirely specified and we can create a model object
 containing the entire model graph by providing it with only one of our
-model variables, <em>e.g.,</em>‘sigma‘.</p>
+model variables, <em>e.g.</em>, <code class="highlighter-rouge">sigma</code>.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(sigma)
 </code></pre></div></div>
 
 <p>To see what it happing during the MCMC let us make a screen monitor that
-tracks the rate ‘sigma‘.</p>
+tracks the rate <code class="highlighter-rouge">sigma</code>.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[1] = mnScreen(printgen=10, sigma)
 </code></pre></div></div>
@@ -380,8 +380,8 @@ mymcmc.run(100000)
     <p>Run the model.</p>
   </li>
   <li>
-    <p>using ‘Tracer‘, visualize the posterior distribution on the rate
-parameter ‘sigma‘</p>
+    <p>using <code class="highlighter-rouge">Tracer</code>, visualize the posterior distribution on the rate
+parameter <code class="highlighter-rouge">sigma</code></p>
   </li>
   <li>
     <p>calculate the 95% credible interval for the rate of evolution of the
@@ -402,8 +402,8 @@ matrix approach may take long for very large data sets (at least in its
 current implementation).</p>
 
 <p>\
-Copy the file ‘primatesMass_BM_REML.Rev‘, name it for example
-‘primatesMass_BM_Cov.Rev‘ and start editing it.</p>
+Copy the file <code class="highlighter-rouge">primatesMass_BM_REML.Rev</code>, name it for example
+<code class="highlighter-rouge">primatesMass_BM_Cov.Rev</code> and start editing it.</p>
 
 <p>In the previous example, the REML approach, we did not specify a
 parameter for the state at the root. In this exercise, we need this
@@ -416,17 +416,17 @@ if it has body mass smaller than exp(-100) or larger than exp(100).</p>
 </code></pre></div></div>
 
 <p>Next, we’ll specify a sliding move that proposes new values for the
-‘rootlogmass‘ randomly drawn from a window centered around the current
+<code class="highlighter-rouge">rootlogmass</code> randomly drawn from a window centered around the current
 value.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[++mvi] = mvSlide(rootlogmass,delta=10,tune=true,weight=2) 
 </code></pre></div></div>
 
-<p>Finally, we need to substitute the ‘dnPhyloBrownianREML‘ by
-‘dnPhyloBrownianMVN‘ to use the phylogenetic covariance matrix approach.
-Again, we provide the tree variable ‘psi‘, some branch-specific rate
+<p>Finally, we need to substitute the <code class="highlighter-rouge">dnPhyloBrownianREML</code> by
+<code class="highlighter-rouge">dnPhyloBrownianMVN</code> to use the phylogenetic covariance matrix approach.
+Again, we provide the tree variable <code class="highlighter-rouge">psi</code>, some branch-specific rate
 multiplier parameter which we simply set to 1, the shared rate for this
-site ‘sigma‘ and the number of sites (number of continuous traits) that
+site <code class="highlighter-rouge">sigma</code> and the number of sites (number of continuous traits) that
 we use.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>logmass ~ dnPhyloBrownianMVN(psi, branchRates=1.0, siteRates=sigma, rootStates=rootlogmass, nSites=1)
@@ -434,7 +434,7 @@ we use.</p>
 
 <p>This will automatically connect the parameters of the model together.</p>
 
-<p>Additionally, we now have the extra parameter ‘rootlogmass‘ which we
+<p>Additionally, we now have the extra parameter <code class="highlighter-rouge">rootlogmass</code> which we
 want to monitor. Thus we need to replace the file monitor and use
 instead.</p>
 
@@ -452,16 +452,16 @@ your old analyses files will be overwritten.</p>
     <p>Run the analysis.</p>
   </li>
   <li>
-    <p>Using ‘Tracer‘, visualize the posterior distribution on the rate
-parameter ‘sigma‘ and the ‘rootlogmass‘</p>
+    <p>Using <code class="highlighter-rouge">Tracer</code>, visualize the posterior distribution on the rate
+parameter <code class="highlighter-rouge">sigma</code> and the <code class="highlighter-rouge">rootlogmass</code></p>
   </li>
   <li>
-    <p>How does the posterior distribution of ‘sigma‘ looks compared with
+    <p>How does the posterior distribution of <code class="highlighter-rouge">sigma</code> looks compared with
 the first analysis?</p>
   </li>
   <li>
     <p>Calculate the 95% credible interval for the rate of evolution of the
-log of body mass ($\sigma$) and the ‘rootlogmass‘</p>
+log of body mass ($\sigma$) and the <code class="highlighter-rouge">rootlogmass</code></p>
   </li>
 </ul>
 
@@ -469,7 +469,7 @@ log of body mass ($\sigma$) and the ‘rootlogmass‘</p>
 
 <p>The third method to we will use is a data augmentation method. The data
 augmentation method uses explicitly the states at the internal nodes. We
-will specify the full model in ‘Rev‘. That means that we will create a
+will specify the full model in <code class="highlighter-rouge">Rev</code>. That means that we will create a
 random variable for each node of the tree using a for loop. Each trait
 is then simply assign a normal distribution, as we described above in
 the model description. The advantage of this method is that you estimate
@@ -481,8 +481,8 @@ mixing of the MCMC because proposing new trees involves proposing new
 good values for the states at the internal nodes.</p>
 
 <p>\
-Copy the file ‘primatesMass_BM_REML.Rev‘, name it for example
-‘primatesMass_BM_DA.Rev‘ and start editing it.</p>
+Copy the file <code class="highlighter-rouge">primatesMass_BM_REML.Rev</code>, name it for example
+<code class="highlighter-rouge">primatesMass_BM_DA.Rev</code> and start editing it.</p>
 
 <p>]As in the previous example we will use a uniform prior distribution on
 the logarithm of the root mass.</p>
@@ -491,7 +491,7 @@ the logarithm of the root mass.</p>
 </code></pre></div></div>
 
 <p>Again, we’ll specify a sliding move that proposes new values for the
-‘rootlogmass‘ randomly drawn from a window centered around the current
+<code class="highlighter-rouge">rootlogmass</code> randomly drawn from a window centered around the current
 value.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[++mvi] = mvSlide(rootlogmass,delta=10,tune=true,weight=2) 
@@ -509,20 +509,20 @@ numTips = psi.ntips()
 That is, we simply specify a new normal distributed random variable for
 each node with mean being equal to the value of the parent variable and
 the standard deviation being equal to the product of the square root of
-the branch length and our rate parameter ‘sigma‘. We store all the
-variables in the vector ‘logmass‘. Then we are able to access the value
+the branch length and our rate parameter <code class="highlighter-rouge">sigma</code>. We store all the
+variables in the vector <code class="highlighter-rouge">logmass</code>. Then we are able to access the value
 at the parent node using the index of the parent node, which we can
-obtain from the tree using the function ‘psi.parent(i)‘. Similarly,
+obtain from the tree using the function <code class="highlighter-rouge">psi.parent(i)</code>. Similarly,
 since the variance depends on the branch length we retrieve the branch
-length of node with index ‘i‘ using the function ‘psi.branchLength(i)‘.</p>
+length of node with index <code class="highlighter-rouge">i</code> using the function <code class="highlighter-rouge">psi.branchLength(i)</code>.</p>
 
-<p>First we need to copy (create a reference to) the ‘rootlogmass‘</p>
+<p>First we need to copy (create a reference to) the <code class="highlighter-rouge">rootlogmass</code></p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>logmass[numNodes] := rootlogmass
 </code></pre></div></div>
 
 <p>Let us start by creating the random variables for the internal nodes.
-Remember that the variance is equal to ‘sigma‘-squared times the branch
+Remember that the variance is equal to <code class="highlighter-rouge">sigma</code>-squared times the branch
 length, and we need to compute the square root of it to obtain the
 standard deviation.</p>
 
@@ -536,7 +536,7 @@ for (i in (numNodes-1):(numTips+1) ) {
 </code></pre></div></div>
 
 <p>You may have noticed that we specified in the loop a move for each
-internal ‘logmass‘. This is because we want to use the MCMC algorithm to
+internal <code class="highlighter-rouge">logmass</code>. This is because we want to use the MCMC algorithm to
 integrate over the uncertainty in the states.</p>
 
 <p>Next, we repeat the same loop but now for the tip nodes. Instead of
@@ -551,7 +551,7 @@ be clamped with the data that we read in before.</p>
 }
 </code></pre></div></div>
 
-<p>Here we do not need a ‘dnPhyloBrownianREML‘ or ‘dnPhyloBrownianMVN‘
+<p>Here we do not need a <code class="highlighter-rouge">dnPhyloBrownianREML</code> or <code class="highlighter-rouge">dnPhyloBrownianMVN</code>
 distribution anymore because we explicitly instantiated the model. Note
 that the approach we have taken using the loop is the tree-plate
 approach described in (missing reference)</p>
@@ -580,16 +580,16 @@ your old analyses files will be overwritten.</p>
     <p>Run the analysis.</p>
   </li>
   <li>
-    <p>Using ‘Tracer‘, visualize the posterior distribution on the rate
-parameter ‘sigma‘ and the ‘rootlogmass‘ and the internal states.</p>
+    <p>Using <code class="highlighter-rouge">Tracer</code>, visualize the posterior distribution on the rate
+parameter <code class="highlighter-rouge">sigma</code> and the <code class="highlighter-rouge">rootlogmass</code> and the internal states.</p>
   </li>
   <li>
-    <p>How does the posterior distribution of ‘sigma‘ looks compared with
+    <p>How does the posterior distribution of <code class="highlighter-rouge">sigma</code> looks compared with
 the first and second analysis?</p>
   </li>
   <li>
     <p>Calculate the 95% credible interval for the rate of evolution of the
-log of body mass ($\sigma$) and the ‘rootlogmass‘. Have they
+log of body mass ($\sigma$) and the <code class="highlighter-rouge">rootlogmass</code>. Have they
 changed?</p>
   </li>
 </ul>
@@ -603,7 +603,7 @@ fast the body mass evolves. The exercises showed you three different
 ways how to approach the BM model, each having its advantages and
 disadvantages. You will need to decide for your analysis which approach
 is most appropriate. Our intention was mainly to show you some of the
-flexibility in ‘RevBayes‘ how to specify the same model in many
+flexibility in RevBayes how to specify the same model in many
 different ways, exposing sometimes more and sometimes less of the
 internal model graph structure. As an extra exercise you could start
 thinking about how to extend the basic BM.</p>
@@ -613,7 +613,7 @@ thinking about how to extend the basic BM.</p>
 <p>The Brownian motion can easily be applied to multiple traits. The
 exactly same procedure and model will be applied as above and thus we
 will skip the repetitive description. The interesting questions that you
-can ask about multiple traits is —amongst others— if rates between
+can ask about multiple traits is–amongst others–if rates between
 traits vary.</p>
 
 <p>As an example we use now the first four characters of the data matrix,
@@ -625,7 +625,7 @@ contData.excludeCharacter(5:11)
 </code></pre></div></div>
 
 <p>In the first simple example we assume that all site rates are equal,
-thus we use a rate multiplier we we call ‘perSiteRates‘.</p>
+thus we use a rate multiplier we we call <code class="highlighter-rouge">perSiteRates</code>.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>perSiteRates &lt;- [1,1,1,1]
 </code></pre></div></div>
@@ -642,13 +642,13 @@ every character, just as above for the single character example.</p>
 
 <p>Finally, we bring together all the parameter to specify our Brownian
 motion model along the tree. Note that we specify here the site rates as
-the product of the global rate ‘sigma‘ time the sites specific rates
+the product of the global rate <code class="highlighter-rouge">sigma</code> time the sites specific rates
 (which are, however all equal in this first exercie).</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>logmass ~ dnPhyloBrownianMVN(psi, branchRates=1.0, siteRates=sigma*perSiteRates, rootStates=rootlogmass, nSites=4)
 </code></pre></div></div>
 
-<p>After this you need to create the model using the ‘model‘ function,
+<p>After this you need to create the model using the <code class="highlighter-rouge">model</code> function,
 create your monitors, create the MCMC and finaly run the MCMC.</p>
 
 <h2 id="exercises-exercises-3-unnumbered">Exercises {#exercises-3 .unnumbered}</h2>
@@ -658,8 +658,8 @@ create your monitors, create the MCMC and finaly run the MCMC.</p>
     <p>Run the analysis.</p>
   </li>
   <li>
-    <p>Using ‘Tracer‘, visualize the posterior distribution on the rate
-parameter ‘sigma‘ and the four ‘rootlogmass‘ values.</p>
+    <p>Using <code class="highlighter-rouge">Tracer</code>, visualize the posterior distribution on the rate
+parameter <code class="highlighter-rouge">sigma</code> and the four <code class="highlighter-rouge">rootlogmass</code> values.</p>
   </li>
   <li>
     <p>Compare the results to the previous single trait analyses?</p>
@@ -679,8 +679,8 @@ moves[++mvi] = mvSimplexElementScale(perSiteRates,alpha=10,tune=true,weight=4)
     <p>Run the analysis.</p>
   </li>
   <li>
-    <p>Using ‘Tracer‘, visualize the posterior distribution on the per site
-rate parameter ‘perSiteRates‘.</p>
+    <p>Using <code class="highlighter-rouge">Tracer</code>, visualize the posterior distribution on the per site
+rate parameter <code class="highlighter-rouge">perSiteRates</code>.</p>
   </li>
   <li>
     <p>How are the estimate per site rates compared to each other?</p>
@@ -693,7 +693,7 @@ rate parameter ‘perSiteRates‘.</p>
 for females and males for both the ECV and the body mass are very
 similar. This motivates us to specify an explicit model where the rates
 between ECV and body mass evolution are different but shared between
-females and males. We will model the difference using the ‘siteRateDiff‘
+females and males. We will model the difference using the <code class="highlighter-rouge">siteRateDiff</code>
 parameter which is drawn from a Beta(1,1) distribution, which is
 essentially a uniform distribution between 0 and 1. We still choose the
 Beta distribution because it is easier to specify more informative
@@ -702,21 +702,21 @@ priors.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>siteRateDiff ~ dnBeta(1,1)
 </code></pre></div></div>
 
-<p>Next, we specify a sliding move on the ‘siteRateDiff‘.</p>
+<p>Next, we specify a sliding move on the <code class="highlighter-rouge">siteRateDiff</code>.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[++mvi] = mvSlide(siteRateDiff,delta=10,tune=true,weight=2)
 </code></pre></div></div>
 
-<p>To obtain the rates we use ‘siteRateDiff‘ as the rate for the ECV
-evolution in females and males and 1-‘siteRateDiff‘ as the rate for the
+<p>To obtain the rates we use <code class="highlighter-rouge">siteRateDiff</code> as the rate for the ECV
+evolution in females and males and 1-<code class="highlighter-rouge">siteRateDiff</code> as the rate for the
 body mass evolution in females and males. Note, however, that we need a
-small workaround here. ‘Rev‘ is a strictly typed language, which you may
+small workaround here. <code class="highlighter-rouge">Rev</code> is a strictly typed language, which you may
 have noticed. The per site rates need to be positive real number
 (negative rates obviously don’t make sense). However, the difference
 between two number is not guaranteed to be positive, only if we know
 that the first term is larger than the second. This is exactly the case
-for 1-‘siteRateDiff‘ but ‘RevBayes‘ doesn’t know this so we need to tell
-it by using the absolute value ‘abs‘ function.</p>
+for 1-<code class="highlighter-rouge">siteRateDiff</code> but RevBayes doesn’t know this so we need to tell
+it by using the absolute value <code class="highlighter-rouge">abs</code> function.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>perSiteRates[1] := siteRateDiff
 perSiteRates[2] := siteRateDiff
@@ -728,11 +728,11 @@ perSiteRates[4] := abs(1.0 - siteRateDiff)
 rate (or ratio) such as a uniform prior distribution and then use logit
 or hyperbolic tangent transformation. The only important factor is that
 the rates are somehow normalized because we use the global, shared rate
-‘sigma‘. Using the beta distribution makes the rates automatically
+<code class="highlighter-rouge">sigma</code>. Using the beta distribution makes the rates automatically
 normalized because the two different rates sum to one. Note that in the
 previous all four rates summed to 1.0 and here the two different rates
 sum to 1.0. This has the effect that we should estimate the global rate
-‘sigma‘ to be half of what you estimated previously. You may want to
+<code class="highlighter-rouge">sigma</code> to be half of what you estimated previously. You may want to
 check this once you ran the analysis and loaded the output into
 <code class="highlighter-rouge">Tracer</code>.</p>
 
@@ -745,11 +745,11 @@ check this once you ran the analysis and loaded the output into
     <p>Run the analysis.</p>
   </li>
   <li>
-    <p>Using ‘Tracer‘, visualize the posterior distribution on the per site
-rate parameter ‘perSiteRates‘.</p>
+    <p>Using <code class="highlighter-rouge">Tracer</code>, visualize the posterior distribution on the per site
+rate parameter <code class="highlighter-rouge">perSiteRates</code>.</p>
   </li>
   <li>
-    <p>Does the value of equal rate (‘siteRateDiff‘=0.5) fall into the 95%
+    <p>Does the value of equal rate (<code class="highlighter-rouge">siteRateDiff</code>=0.5) fall into the 95%
 credible interval?</p>
   </li>
   <li>
@@ -772,7 +772,7 @@ shared rates.</p>
 <p>\
 You need to adopt the three scripts of your previous analysis.</p>
 
-<p>Previously you created an ‘mymcmc‘ object using the ‘mcmc‘ function.
+<p>Previously you created an <code class="highlighter-rouge">mymcmc</code> object using the <code class="highlighter-rouge">mcmc</code> function.
 Now, you need to replace this object with the power posterior MCMC
 object.</p>
 
@@ -796,7 +796,7 @@ pow_p.run(generations=10000)
 ss.marginal() 
 </code></pre></div></div>
 
-<p>‘RevBayes‘ will print to the screen the estimated marginal likelihood.
+<p>RevBayes will print to the screen the estimated marginal likelihood.
 Write down this value and repeat the exercise for the other two models.</p>
 
 <h2 id="exercises-exercises-6-unnumbered">Exercises {#exercises-6 .unnumbered}</h2>
@@ -823,11 +823,11 @@ support of the alternative hypothesis (or 2.3 for strong support)?</p>
 together with the parameters of the evolutionary process. Only for
 simplicity we used fixed trees in the previous exercises. Instead of
 using a tree fixed to a pre-defined value, the tree should now be moved
-during the MCMC. Implementing this joint model in ‘RevBayes‘ is just a
+during the MCMC. Implementing this joint model in RevBayes is just a
 matter of adding the following features to the model defined in the
 previous section (after duplicating the script). You may want to use the
 REML approach for computational efficient
-(<em>i.e.,</em>good MCMC mixing) although the
+(<em>i.e.</em>, good MCMC mixing) although the
 phylogenetic covariance matrix and the data augmentation are generally
 possible too.</p>
 
@@ -843,8 +843,8 @@ numNodes = numTips * 2 - 1
 
 <p>Instead of having a fixed tree as in the previous, we should now define
 a <em>random</em> tree. We use a birth death prior with prior distributions on
-the ‘diversification‘ rate and ‘turnover‘ rate. The ‘diversification‘
-rate corresponds to the rate of growth of the tree and the ‘turnover‘
+the <code class="highlighter-rouge">diversification</code> rate and <code class="highlighter-rouge">turnover</code> rate. The <code class="highlighter-rouge">diversification</code>
+rate corresponds to the rate of growth of the tree and the <code class="highlighter-rouge">turnover</code>
 rate corresponds to the rate how quickly a species is replaced by a new
 one. This parametrization has the advantage that we can use meaningful
 prior distributions from the fossil record.</p>
@@ -853,15 +853,15 @@ prior distributions from the fossil record.</p>
 turnover ~ dnGamma(4,4)
 </code></pre></div></div>
 
-<p>Then, we compute deterministically the ‘speciation‘ and ‘extinction‘
-rate from the ‘diversification‘ rate and ‘turnover‘ rate.</p>
+<p>Then, we compute deterministically the <code class="highlighter-rouge">speciation</code> and <code class="highlighter-rouge">extinction</code>
+rate from the <code class="highlighter-rouge">diversification</code> rate and <code class="highlighter-rouge">turnover</code> rate.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>speciation := diversification + turnover
 extinction := turnover
 </code></pre></div></div>
 
 <p>Instead, you could also use directly the speciation and extinction
-rates, <em>e.g.,</em>endowed with some diffuse
+rates, <em>e.g.</em>, endowed with some diffuse
 exponential prior.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># rescaling moves on speciation and extinction rates
@@ -878,7 +878,7 @@ sampling see (missing reference) and (missing reference).</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sampling_fraction &lt;- 23 / 270     # 23 out of the ~ 270 primate species
 </code></pre></div></div>
 
-<p>Now we are able to specify of tree variable ‘psi‘ which is drawn from a
+<p>Now we are able to specify of tree variable <code class="highlighter-rouge">psi</code> which is drawn from a
 constant rate birth-death process. We will condition the age of the tree
 to be 75 million years old which is approximately the crown age of
 primates, although this estimate is still debated. We only condition
@@ -925,20 +925,20 @@ A short analysis of 50 000 iterations will be sufficient.</p>
     <p>Run the analysis.</p>
   </li>
   <li>
-    <p>Create the maximum a posteriori (MAP) tree ‘readTreeTrace‘
-and ‘mapTree‘.</p>
+    <p>Create the maximum a posteriori (MAP) tree <code class="highlighter-rouge">readTreeTrace</code>
+and <code class="highlighter-rouge">mapTree</code>.</p>
   </li>
   <li>
     <p>Look at the estimated tree and compare it to the tree you
 used before.</p>
   </li>
   <li>
-    <p>How does the posterior distribution of ‘sigma‘ looks compared with
+    <p>How does the posterior distribution of <code class="highlighter-rouge">sigma</code> looks compared with
 the first and second analysis?</p>
   </li>
   <li>
     <p>Compute the posterior probabilities of each tree using the
-‘treetrace.summarize()‘ command.</p>
+<code class="highlighter-rouge">treetrace.summarize()</code> command.</p>
   </li>
   <li>
     <p>What is the posterior probability of the best tree?</p>
@@ -977,19 +977,19 @@ sequence data.</p>
   </li>
 </ul>
 
-<h2 id="programming-the-model-in-revbayes-1">Programming the model in ‘RevBayes‘</h2>
+<h2 id="programming-the-model-in-revbayes-1">Programming the model in RevBayes</h2>
 
 <p>First, we create a substitution model, just like what you probably did
 in previous tutorial
-(<em>e.g.,</em>RB_CTMC_Tutorial). In a first step,
+(<em>e.g.</em>, RB_CTMC_Tutorial). In a first step,
 we will use a GTR+Gamma model. Start by loading the sequence data matrix
-specified in ‘data/primates_cytb.nex‘.</p>
+specified in <code class="highlighter-rouge">data/primates_cytb.nex</code>.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>seqData &lt;- readDiscreteCharacterData("data/primates_cytb.nex")
 </code></pre></div></div>
 
 <p>We can use a flat Dirichlet prior density on the exchangeability rates
-‘er‘ and the the base frequencies ‘pi‘.</p>
+<code class="highlighter-rouge">er</code> and the the base frequencies <code class="highlighter-rouge">pi</code>.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>er_prior &lt;- v(1,1,1,1,1,1) 
 er ~ dnDirichlet(er_prior)
@@ -997,16 +997,16 @@ pi_prior &lt;- v(1,1,1,1)
 pi ~ dnDirichlet(pi_prior)
 </code></pre></div></div>
 
-<p>Now add the simplex scale move one each the exchangeability rates ‘er‘
-and the stationary frequencies ‘pi‘ to the moves vector:</p>
+<p>Now add the simplex scale move one each the exchangeability rates <code class="highlighter-rouge">er</code>
+and the stationary frequencies <code class="highlighter-rouge">pi</code> to the moves vector:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[++mvi] = mvSimplexElementScale(er) 
 moves[++mvi] = mvSimplexElementScale(pi)  
 </code></pre></div></div>
 
 <p>We can finish setting up this part of the model by creating a
-deterministic node for the GTR instantaneous-rate matrix ‘Q‘. The
-‘fnGTR()‘ function takes a set of exchangeability rates and a set of
+deterministic node for the GTR instantaneous-rate matrix <code class="highlighter-rouge">Q</code>. The
+<code class="highlighter-rouge">fnGTR()</code> function takes a set of exchangeability rates and a set of
 base frequencies to compute the instantaneous-rate matrix used when
 calculating the likelihood of our model.</p>
 
@@ -1015,25 +1015,25 @@ calculating the likelihood of our model.</p>
 
 <p>The next part of the substitution process is the rate variation among
 sites. We will model this using the commonly applied 4 discrete gamma
-categories which only have a single parameter ‘alpha‘. Let us specify
-the rate of ‘alpha‘ to 0.05 (thus the mean will be 20.0).</p>
+categories which only have a single parameter <code class="highlighter-rouge">alpha</code>. Let us specify
+the rate of <code class="highlighter-rouge">alpha</code> to 0.05 (thus the mean will be 20.0).</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha_prior &lt;- 0.05                                                                             
 </code></pre></div></div>
 
-<p>Then create a stochastic node called ‘alpha‘ with an exponential prior:</p>
+<p>Then create a stochastic node called <code class="highlighter-rouge">alpha</code> with an exponential prior:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha ~ dnExponential(alpha_prior)
 </code></pre></div></div>
 
-<p>Initialize the ‘gamma_rates‘ deterministic node vector using the
-‘fnDiscretizeGamma()‘ function with ‘4‘ bins:</p>
+<p>Initialize the <code class="highlighter-rouge">gamma_rates</code> deterministic node vector using the
+<code class="highlighter-rouge">fnDiscretizeGamma()</code> function with <code class="highlighter-rouge">4</code> bins:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gamma_rates := fnDiscretizeGamma( alpha, alpha, 4 )
 </code></pre></div></div>
 
 <p>The random variable that controls the rate variation is the stochastic
-node ‘alpha‘. We will apply a simple scale move to this parameter.</p>
+node <code class="highlighter-rouge">alpha</code>. We will apply a simple scale move to this parameter.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[++mvi] = mvScale(alpha, weight=2.0)
 </code></pre></div></div>
@@ -1049,12 +1049,12 @@ invariant.</p>
 clockRate := 10^logClockRate
 </code></pre></div></div>
 
-<p>We will apply a sliding window move to the ‘logClockRate‘.</p>
+<p>We will apply a sliding window move to the <code class="highlighter-rouge">logClockRate</code>.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[++mvi] = mvSlide(logClockRate, delta=0.1, tune=true, weight=2.0)
 </code></pre></div></div>
 
-<p>Remember that you need to call the ‘PhyloCTMC‘ constructor to include
+<p>Remember that you need to call the <code class="highlighter-rouge">PhyloCTMC</code> constructor to include
 the new site-rate parameter:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>seq ~ dnPhyloCTMC(tree=psi, Q=Q, siteRates=gamma_rates, branchRates=clockRate, type="DNA")
@@ -1067,7 +1067,7 @@ the new site-rate parameter:</p>
 
 <p>You may have wondered how the continuous trait model and the molecular
 sequence model are combined. This happened automatically when you used
-the same tree parameter ‘psi‘ for both models. Since both models share
+the same tree parameter <code class="highlighter-rouge">psi</code> for both models. Since both models share
 now the same parameter, they will be used for a joint analyses. The
 model function thus will construct the joint model graph for the
 continuous trait model as well as the molecular sequence model.</p>
@@ -1086,7 +1086,7 @@ one.</p>
 </code></pre></div></div>
 
 <p>Write this model and make sure that it runs when you give it to
-‘RevBayes‘.</p>
+RevBayes.</p>
 
 <h2 id="exercises-exercises-8-unnumbered">Exercises {#exercises-8 .unnumbered}</h2>
 
@@ -1095,15 +1095,14 @@ one.</p>
     <p>Run the analysis.</p>
   </li>
   <li>
-    <p>Using ‘Tracer‘, visualize the posterior distribution on the rate
-parameter ‘sigma‘ and compare it to the previous analyses.</p>
+    <p>Using <code class="highlighter-rouge">Tracer</code>, visualize the posterior distribution on the rate
+parameter <code class="highlighter-rouge">sigma</code> and compare it to the previous analyses.</p>
   </li>
   <li>
     <p>Look at the MAP tree which you estimated now.</p>
   </li>
 </ul>
 
-<p>Version dated:</p>
 
 <ol class="bibliography"><li><span id="Felsenstein1981">Felsenstein J. 1981. Evolutionary Trees from DNA Sequences: a Maximum Likelihood Approach. Journal of Molecular Evolution. 17:368–376.</span>
 

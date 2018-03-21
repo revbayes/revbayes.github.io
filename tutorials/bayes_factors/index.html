@@ -105,11 +105,11 @@ tutorials:</p>
 started</a></p>
   </li>
   <li>
-    <p><a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Intro_Tutorial/RB_Intro_Tutorial.pdf">‘Rev‘
+    <p><a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Intro_Tutorial/RB_Intro_Tutorial.pdf"><code class="highlighter-rouge">Rev</code>
 basics</a></p>
   </li>
   <li>
-    <p><a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Rev_Tutorial/RB_Rev_Tutorial.pdf">‘Rev‘
+    <p><a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Rev_Tutorial/RB_Rev_Tutorial.pdf"><code class="highlighter-rouge">Rev</code>
 syntax</a></p>
   </li>
   <li>
@@ -118,23 +118,23 @@ models</a></p>
   </li>
 </ul>
 
-<p>Note that the <a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Intro_Tutorial/RB_Intro_Tutorial.pdf">‘Rev‘ basics
+<p>Note that the <a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Intro_Tutorial/RB_Intro_Tutorial.pdf"><code class="highlighter-rouge">Rev</code> basics
 tutorial</a>
-introduces the basic syntax of ‘Rev‘ but does not cover any phylogenetic
+introduces the basic syntax of <code class="highlighter-rouge">Rev</code> but does not cover any phylogenetic
 models. We tried to keep this tutorial very basic and introduce all the
-language concepts and theory on the way. You may only need the <a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Rev_Tutorial/RB_Rev_Tutorial.pdf">‘Rev‘
+language concepts and theory on the way. You may only need the <a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Rev_Tutorial/RB_Rev_Tutorial.pdf"><code class="highlighter-rouge">Rev</code>
 syntax
 tutorial</a>
-for a more in-depth discussion of concepts in ‘Rev‘.</p>
+for a more in-depth discussion of concepts in <code class="highlighter-rouge">Rev</code>.</p>
 
 <h1 id="data-and-files">Data and files</h1>
 
 <p>We provide the data file that we will use in this tutorial. Of course,
-you may want to use your own dataset instead. In the ‘data‘ folder, you
+you may want to use your own dataset instead. In the <code class="highlighter-rouge">data</code> folder, you
 will find the following file:</p>
 
 <ul>
-  <li>‘primates_and_galeopterus_cytb.nex‘: Alignment of the <em>cytochrome
+  <li><code class="highlighter-rouge">primates_and_galeopterus_cytb.nex</code>: Alignment of the <em>cytochrome
 b</em> subunit from 23 primates representing 14 of the 16 families
 (<em>Indriidae</em> and <em>Callitrichidae</em> are missing).</li>
 </ul>
@@ -146,8 +146,23 @@ models of varying complexity are plausible <em>a priori</em>. We therefore need
 a way to objectively identify the model that balances estimation bias
 and inflated error variance associated with under- and
 over-parameterized models, respectively. Increasingly, model selection
-is based on <em>Bayes factors</em> [<em>e.g.,</em>
-@Suchard2001} (missing reference):
+is based on <em>Bayes factors</em> [<em>e.g.</em>, 
+<a href="#Suchard2001">Suchard et al. (2001), Lartillot (2006), Xie et al. (2011), Baele et al. (2012), Baele et al. (2013)</a>], which
+involves first calculating the marginal likelihood of each candidate
+model and then comparing the ratio of the marginal likelihoods for the
+set of candidate models.</p>
+
+<p>Given two models, $M_0$ and $M_1$, the Bayes-factor comparison assessing
+the relative fit of each model to the data, $BF(M_0,M_1)$, is:
+<script type="math/tex">BF(M_0,M_1) = \frac{\mbox{posterior odds}}{\mbox{prior odds}}.</script> The
+posterior odds is the posterior probability of $M_0$ given the data,
+$\mathbf X$, divided by the posterior odds of $M_1$ given the data:
+<script type="math/tex">\mbox{posterior odds} = \frac{\mathbb{P}(M_0 \mid \mathbf X)}{\mathbb{P}(M_1 \mid \mathbf X)},</script>
+and the prior odds is the prior probability of $M_0$ divided by the
+prior probability of $M_1$:
+<script type="math/tex">\mbox{prior odds} = \frac{\mathbb{P}(M_0)}{\mathbb{P}(M_1)}.</script> Thus,
+the Bayes factor measures the degree to which the data alter our belief
+regarding the support for $M_0$ relative to $M_1$ <a href="#Lavine1999">(Lavine and Schervish 1999)</a>:
 <script type="math/tex">\begin{aligned}
 \label{BFeq1}
 BF(M_0,M_1) = \frac{\mathbb{P}(M_0 \mid \mathbf X, \theta_0)}{\mathbb{P}(M_1 \mid \mathbf X, \theta_1)} \div \frac{\mathbb{P}(M_0)}{\mathbb{P}(M_1)}. \end{aligned}</script>
@@ -193,8 +208,8 @@ for calculating marginal likelihoods are not known for phylogenetic
 models (see equation [margeLike]), thus we must resort to numerical
 integration methods to estimate or approximate these values. In this
 exercise, we will estimate the marginal likelihood for each partition
-scheme using both the stepping-stone (missing reference) and path
-sampling estimators (missing reference).</p>
+scheme using both the stepping-stone <a href="#Xie2011">(Xie et al. 2011; Fan et al. 2011)</a> and path
+sampling estimators <a href="#Lartillot2006">(Lartillot 2006; Baele et al. 2012)</a>.</p>
 
 <h2 id="substitution-models">Substitution Models</h2>
 
@@ -235,7 +250,7 @@ prior probability distributions. The basic idea is to estimate the
 probability of the data for all points between the posterior and the
 prior—effectively summing the probability of the data over the prior
 probability of the parameters to estimate the marginal likelihood.
-Technically, the steps correspond to a series of ‘powerPosteriors()‘,
+Technically, the steps correspond to a series of <code class="highlighter-rouge">powerPosteriors()</code>,
 where the likelihood is iteratively raised to a series of numbers
 between 1 and 0 (Figure [fig:ss]). When the likelihood is raised to
 the power of 1 (typically the first stepping stone), samples are drawn
@@ -244,12 +259,12 @@ raised to the power of 0 (typically the last stepping stone), samples
 are drawn from the prior. To perform a stepping-stone simulation, we
 need to specify (1) the number of stepping stones (power posteriors)
 that we will use to traverse the path between the posterior and the
-prior (<em>e.g.,</em>we specify 50 or 100 stones),
+prior (<em>e.g.</em>, we specify 50 or 100 stones),
 (2) the spacing of the stones between the posterior and prior
-(<em>e.g.,</em>we may specify that the stones are
+(<em>e.g.</em>, we may specify that the stones are
 distributed according to a beta distribution), (3) the number of samples
 (and their thinning) to be drawn from each stepping stone, and (4) the
-direction we will take (<em>i.e.,</em>from the
+direction we will take (<em>i.e.</em>, from the
 posterior to the prior or vice versa).</p>
 
 <blockquote class="figure">
@@ -277,7 +292,7 @@ sampling the likelihood close to the posterior and incrementally
 sampling closer and closer to the prior as the power decreases.</p>
 
 <p>Just to be safe, it is better to clear the workspace (if you did not
-just restart ‘RevBayes‘):</p>
+just restart RevBayes):</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clear()
 </code></pre></div></div>
@@ -289,7 +304,7 @@ requires:</p>
 <ol>
   <li>
     <p>Loading the data and retrieving useful variables about it
-(<em>e.g.,</em>number of sequences and
+(<em>e.g.</em>, number of sequences and
 taxon names).</p>
   </li>
   <li>
@@ -300,7 +315,7 @@ taxon names).</p>
   </li>
   <li>
     <p>Creating a random variable for the sequences that evolved under
-the ‘PhyloCTMC‘.</p>
+the <code class="highlighter-rouge">PhyloCTMC</code>.</p>
   </li>
   <li>
     <p>Clamping the data.</p>
@@ -314,10 +329,10 @@ the ‘PhyloCTMC‘.</p>
 </ol>
 
 <p>The following procedure for estimating marginal likelihoods is valid for
-any model in ‘RevBayes‘. You will need to repeat this later for other
+any model in RevBayes. You will need to repeat this later for other
 models. First, we create the variable containing the power-posterior
 analysis. This requires that we provide a model and vector of moves, as
-well as an output file name. The ‘cats‘ argument sets the number of
+well as an output file name. The <code class="highlighter-rouge">cats</code> argument sets the number of
 stepping stones.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pow_p = powerPosterior(mymodel, moves, monitors, "output/model1.out", cats=50) 
@@ -331,7 +346,7 @@ from some random point.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pow_p.burnin(generations=10000,tuningInterval=1000)
 </code></pre></div></div>
 
-<p>Now execute the run with the ‘.run()‘ function:</p>
+<p>Now execute the run with the <code class="highlighter-rouge">.run()</code> function:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pow_p.run(generations=1000)  
 </code></pre></div></div>
@@ -346,7 +361,7 @@ compute the marginal likelihood using stepping-stone sampling.</p>
 <p>These commands will execute a stepping-stone simulation with 50 stepping
 stones, sampling 1000 states from each step. Compute the marginal
 likelihood under stepping-stone sampling using the member function
-‘marginal()‘ of the ‘ss‘ variable and record the value in Table
+<code class="highlighter-rouge">marginal()</code> of the <code class="highlighter-rouge">ss</code> variable and record the value in Table
 [tab:ml_cytb].</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ss.marginal() 
@@ -359,7 +374,7 @@ takes the same power posteriors as input.</p>
 </code></pre></div></div>
 
 <p>Compute the marginal likelihood under stepping-stone sampling using the
-member function ‘marginal()‘ of the ‘ps‘ variable and record the value
+member function <code class="highlighter-rouge">marginal()</code> of the <code class="highlighter-rouge">ps</code> variable and record the value
 in Table [tab:ml_cytb].</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ps.marginal() 
@@ -373,7 +388,7 @@ As an example we provide the file
 path-sampling very generic and did not provide the information about the
 model here. Our main motivation is to show that the marginal likelihood
 estimation algorithms are independent of the model. Thus, you can apply
-these algorithms to any model, <em>e.g.,</em>relaxed
+these algorithms to any model, <em>e.g.</em>, relaxed
 clock models and birth-death models, as well.</p>
 
 <h2 id="exercises">Exercises</h2>
@@ -459,15 +474,22 @@ the likelihood values to avoid
 multiplying likelihoods (numbers $&lt; 1$) generates numbers that are too
 small to be held in computer memory. Accordingly, we need to use a
 different form of equation [bfFormula] to calculate the ln-Bayes
-factor (we will denote this value $\mathcal{K}$): <script type="math/tex">\begin{aligned}
+factor (we will denote this value $\mathcal{K}$):</p>
+
+<script type="math/tex; mode=display">\begin{aligned}
 \label{LNbfFormula}
 \mathcal{K}=\ln[BF(M_0,M_1)] = \ln[\mathbb{P}(\mathbf X \mid M_0)]-\ln[\mathbb{P}(\mathbf X \mid M_1)],\end{aligned}</script>
-where $\ln[\mathbb{P}(\mathbf X \mid M_0)]$ is the <em>marginal lnL</em>
+
+<p>where $\ln[\mathbb{P}(\mathbf X \mid M_0)]$ is the <em>marginal lnL</em>
 estimate for model $M_0$. The value resulting from equation
 [LNbfFormula] can be converted to a raw Bayes factor by simply taking
-the exponent of $\cal{K}$ <script type="math/tex">\begin{aligned}
+the exponent of $\cal{K}$</p>
+
+<script type="math/tex; mode=display">\begin{aligned}
 \label{LNbfFormula2}
-BF(M_0,M_1) = e^{\cal{K}}.\end{aligned}</script> Alternatively, you can
+BF(M_0,M_1) = e^{\cal{K}}.\end{aligned}</script>
+
+<p>Alternatively, you can
 directly interpret the strength of evidence in favor of $M_0$ in log
 space by comparing the values of $\cal{K}$ to the appropriate scale
 (Table [bftable], second column). In this case, we evaluate $\cal{K}$
@@ -491,7 +513,7 @@ log-likelihoods.</p>
 
 <h1 id="for-your-consideration">For your consideration…</h1>
 
-<p>In this tutorial you have learned how to use ‘RevBayes‘ to assess the
+<p>In this tutorial you have learned how to use RevBayes to assess the
 <em>relative</em> fit of a pool of candidate substitution models to a given
 sequence alignment. Typically, once we have identified the “best”
 substitution model for our alignment, we would then proceed to use this
@@ -504,7 +526,7 @@ proceeding along these lines, which we briefly mention below.</p>
 <h2 id="accommodating-model-uncertainty">Accommodating Model Uncertainty</h2>
 
 <p>In some or many situations the number of possible models to compare is
-large, <em>e.g.,</em>choosing all possible
+large, <em>e.g.</em>, choosing all possible
 combinations of substitution models <a href="#Huelsenbeck2004">(Huelsenbeck et al. 2004)</a>. Furthermore,
 imagine, for example, that there are several (possibly many) alternative
 models that provide a similarly good fit to our given dataset. In such
@@ -516,7 +538,7 @@ uncertainty by means of <em>model averaging</em>; we simply adopt the
 perspective that models (like standard parameters) are random variables,
 and integrate the inference over the distribution of candidate models.
 We will demonstrate how to accommodate model uncertainty using
-‘RevBayes‘ in a separate tutorial, RB_ModelAveraging_Tutorial.</p>
+RevBayes in a separate tutorial, RB_ModelAveraging_Tutorial.</p>
 
 <h2 id="assessing-model-adequacy">Assessing Model Adequacy</h2>
 
@@ -533,14 +555,40 @@ approach is based on the following premise: if the candidate model
 provides a reasonable description of the process that gave rise to our
 dataset, then we should be able to generate data under this model that
 resemble our observed data. We will demonstrate how to assess model
-adequacy using ‘RevBayes‘ in a separate tutorial,
+adequacy using RevBayes in a separate tutorial,
 RB_ModelAdequacy_Tutorial.</p>
 
-<p>Version dated:</p>
 
 <ol class="bibliography"><li><span id="Hoehna2017a">Höhna S., Landis M.J., Heath T.A. 2017. Phylogenetic Inference using RevBayes. Current Protocols in Bioinformatics.</span>
 
 <a href="https://doi.org/10.1002/cpbi.22">10.1002/cpbi.22</a>
+
+</li>
+<li><span id="Suchard2001">Suchard M.A., Weiss R.E., Sinsheimer J.S. 2001. Bayesian Selection of Continuous-Time Markov Chain Evolutionary Models. Molecular Biology and Evolution. 18:1001–1013.</span>
+
+</li>
+<li><span id="Lartillot2006">Lartillot N. 2006. Conjugate Gibbs Sampling for Bayesian Phylogenetic Models. Journal of Computational Biology. 13:1701–1722.</span>
+
+</li>
+<li><span id="Xie2011">Xie W., Lewis P.O., Fan Y., Kuo L., Chen M.H. 2011. Improving Marginal Likelihood Estimation for Bayesian Phylogenetic Model Selection. Systematic Biology. 60:150–160.</span>
+
+</li>
+<li><span id="Baele2012">Baele G., Lemey P., Bedford T., Rambaut A., Suchard M.A., Alekseyenko A.V. 2012. Improving the Accuracy of Demographic and Molecular Clock Model Comparison while Accommodating Phylogenetic Uncertainty. Molecular Biology and Evolution. 29:2157–2167.</span>
+
+<a href="https://doi.org/10.1093/molbev/mss084">10.1093/molbev/mss084</a>
+
+</li>
+<li><span id="Baele2013">Baele G., Li W.L.S., Drummond A.J., Suchard M.A., Lemey P. 2013. Accurate Model Selection of Relaxed Molecular Clocks in Bayesian Phylogenetics. Molecular Biology and Evolution. 30:239–243.</span>
+
+<a href="https://doi.org/10.1093/molbev/mss243">10.1093/molbev/mss243</a>
+
+</li>
+<li><span id="Lavine1999">Lavine M., Schervish M.J. 1999. Bayes Factors: What They Are and What They Are Not. The American Statistician. 53:119–122.</span>
+
+<a href="https://doi.org/10.1080/00031305.1999.10474443">10.1080/00031305.1999.10474443</a>
+
+</li>
+<li><span id="Fan2011">Fan Y., Wu R., Chen M.-H., Kuo L., Lewis P.O. 2011. Choosing among Partition Models in Bayesian Phylogenetics. Molecular Biology and Evolution. 28:523–532.</span>
 
 </li>
 <li><span id="Jukes1969">Jukes T.H., Cantor C.R. 1969. Evolution of Protein Molecules. Mammalian Protein Metabolism. 3:21–132.</span>

@@ -286,7 +286,7 @@ paragraph-form before or after they are issued.</p>
 <code class="highlighter-rouge">monotype font</code>. Furthermore, blocks of Rev code that are needed to
 build the model, specify the analysis, or execute the run are given in
 separate shaded boxes. For example, we will instruct you to create a
-constant node called <code class="highlighter-rouge">example</code> that is equal to <code class="highlighter-rouge">1.0</code> using the <code class="highlighter-rouge">&amp;lt;-</code>
+constant node called <code class="highlighter-rouge">example</code> that is equal to <code class="highlighter-rouge">1.0</code> using the <code class="highlighter-rouge">&lt;-</code>
 operator like this:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>example &lt;- 1.0
@@ -350,12 +350,12 @@ verify or troubleshoot your own scripts.</p>
 <p>Enter the Rev code provided in this section in the new model file.</p>
 
 <p>The file you will begin in this section will be the one you load into
-RevBayes when you<code class="highlighter-rouge">ve completed all of the components of the analysis.
+RevBayes when you’ve completed all of the components of the analysis.
 In this section you will begin the file and write the Rev commands for
 loading in the taxon list and managing the data matrices. Then, starting
 in section [subsect:Exercise-MkModel], you will move on to writing
 module files for each of the model components. Once the model files are
-complete, you will return to editing </code>mcmc_Mk.Rev` and complete the
+complete, you will return to editing <code class="highlighter-rouge">mcmc_Mk.Rev</code> and complete the
 Rev script with the instructions given in section
 [subsect:Exercise-CompleteMCMC].</p>
 
@@ -375,7 +375,7 @@ Import the morphological character matrix and assign it to the variable
 <p>Before we begin writing the Rev scripts for each of the model
 components, we need to instantiate a couple “helper variables” that will
 be used by downstream parts of our model specification files. These
-variables will be used in more than one of the module files so it`s best
+variables will be used in more than one of the module files so it’s best
 to initialize them in the master file.</p>
 
 <p>Create a new constant node called <code class="highlighter-rouge">n_taxa</code> that is equal to the number
@@ -397,7 +397,7 @@ value of <code class="highlighter-rouge">1</code>.</p>
 
 <p>One important distinction here is that <code class="highlighter-rouge">mvi</code> is part of the RevBayes
 workspace and not the hierarchical model. Thus, we use the workspace
-assignment operator <code class="highlighter-rouge">=</code> instead of the constant node assignment <code class="highlighter-rouge">&amp;lt;-</code>.</p>
+assignment operator <code class="highlighter-rouge">=</code> instead of the constant node assignment <code class="highlighter-rouge">&lt;-</code>.</p>
 
 <p>Save your current working version of <code class="highlighter-rouge">mcmc_Mk.Rev</code> in the <code class="highlighter-rouge">scripts</code>
 directory.</p>
@@ -537,12 +537,12 @@ our </code>phylogeny` variable in the arguments.</p>
 
 <p>The third monitor we will add to our analysis will print information to
 the screen. Like with <code class="highlighter-rouge">mnFile</code> we must tell <code class="highlighter-rouge">mnScreen</code> which parameters
-we`d like to see updated on the screen.</p>
+we’d like to see updated on the screen.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[mni++] = mnScreen(printgen=10)
 </code></pre></div></div>
 
-<p>Finally, we`ll create an ancestral state monitor, which is described in
+<p>Finally, we’ll create an ancestral state monitor, which is described in
 more detail in Section [sec:anc_states].</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[mni++] = mnJointConditionalAncestralState(
@@ -667,7 +667,7 @@ distribution has two parameters, $\alpha$ and $\beta$. These two
 parameters specify the shape of the distribution. State frequencies will
 be evaluated according to this distribution, in the same way that rate
 variation is evaluated according to the Gamma distribution. The
-discretized distribution is split into multiple classes, each with it`s
+discretized distribution is split into multiple classes, each with it’s
 own set of frequencies for the 0 and 1 characters. The number of classes
 can vary; we have chosen 4 for tractability.</p>
 
@@ -707,7 +707,7 @@ a parameter. We will, therefore, use the <code class="highlighter-rouge">fnF81</
 }
 </code></pre></div></div>
 
-<p>Once we`ve made the our vector of matrices, we specified moves on our
+<p>Once we’ve made the our vector of matrices, we specified moves on our
 matrix vector:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>matrix_probs ~ dnDirichlet(v(1,1,1,1))
@@ -777,10 +777,10 @@ contain the new model parameters and models.</p>
 <h2 id="modifying-the-mcmc-file-1">Modifying the MCMC File</h2>
 
 <p>At each place in which the output files are specified in the MCMC file,
-change the output path so you don<code class="highlighter-rouge">t overwrite the output from the
+change the output path so you don’t overwrite the output from the
 previous exercise. For example, you might call your output file
-</code>output/mk_hyperprior.log<code class="highlighter-rouge"> and </code>output/mk_hyperprior.trees<code class="highlighter-rouge">. We will
-also monitor Q_morpho and pi. Add Q_morpho and pi to the </code>mnScreen`.
+<code class="highlighter-rouge">output/mk_hyperprior.log</code> and <code class="highlighter-rouge">output/mk_hyperprior.trees</code>. We will
+also monitor Q_morpho and pi. Add Q_morpho and pi to the <code class="highlighter-rouge">mnScreen</code>.
 Change source statement to indicate the new model file.</p>
 
 <h2 id="modifying-the-model-file-1">Modifying the Model File</h2>
@@ -945,7 +945,7 @@ the MRCT, while poorly support clades with $p \leq 0.5$ are shown as
 unresolved polytomies. Poor phylogenetic resolution might be caused by
 having too few phylogenetically informative characters, or it might be
 due to conflicting signals for certain species relationships. Because
-phylogenetic information is generated through model choice, let`s
+phylogenetic information is generated through model choice, let’s
 compare our topological estimates across models.</p>
 
 <p>[fig:mk_discretized_majrule]</p>
@@ -964,10 +964,8 @@ inflated without the +v correction, just as we saw when comparing the
 posterior tree length densities. In general, it is important to assess
 whether your results are sensitive to model assumptions, such as the
 degree of model complexity, and any mechanistic assumptions that
-motivate the model`s design. In this case, our tree estimate appears to
+motivate the model’s design. In this case, our tree estimate appears to
 be robust to model complexity.</p>
-
-<p>Version dated:</p>
 
 <div class="footnotes">
   <ol>

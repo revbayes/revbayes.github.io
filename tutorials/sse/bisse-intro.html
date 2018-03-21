@@ -63,8 +63,12 @@
     <div class="col-md-9">
         <strong>Prerequisites</strong>
         
-          <ul>
-          <li>None</li>
+          <ul id="prerequisites">
+          
+            <li><a href="/revbayes-site/tutorials/archery/">Introduction to MCMC using RevBayes</a></li>
+          
+            <li><a href="/revbayes-site/tutorials/clocks/">Relaxed Clocks & Time Trees</a></li>
+          
           </ul>
         
     </div>
@@ -111,14 +115,6 @@ called BiSSE, <a href="#Maddison2007">(Maddison et al. 2007)</a>. Several varian
 for other types of traits
 <a href="#FitzJohn2010">(FitzJohn 2010; Goldberg et al. 2011; Goldberg and Igić 2012; Magnuson-Ford and Otto 2012; FitzJohn 2012; Beaulieu and O’Meara 2016; Freyman and Höhna 2017)</a>.</p>
 
-<p>We will outline the theory behind this method, and then you will fit it
-to data using Markov chain Monte Carlo (MCMC). RevBayes is a powerful
-tool for SSE analyses. After working through this tutorial you should be
-able to set up custom SSE models and use them to infer
-character-dependent diversification rates and ancestral states. We also
-provide examples of how to plot the results using the <code class="highlighter-rouge">Rev</code>Gadgets R
-package.</p>
-
 <h2 class="section" id="BiSSE_Theory">The theory behind state-dependent diversification models</h2>
 <hr />
 
@@ -134,25 +130,22 @@ assess if the states of a character are associated with different rates
 of speciation or extinction.</p>
 
 <p>RevBayes implements the extension of BiSSE to any number of discrete
-states (i.e., the MuSSE model in <code class="highlighter-rouge">diversitree</code>;
+states–<em>i.e.</em>, the MuSSE model in <a href="http://www.zoology.ubc.ca/prog/diversitree/">diversitree</a>;
 <a href="#FitzJohn2012">FitzJohn (2012)</a>. We will first describe the general theory about the
-model; you may skip over this section if you are not interested in the
-math behind the model. Then we will show how to run an analysis in
-RevBayes.</p>
+model.</p>
 
-<p><img src="figures/BiSSE.png" alt="" /></p>
-<blockquote>
-  <p>Estimated ancestral states for the
-activity period of primates.</p>
-</blockquote>
+<figure id="model_fig"><p><img src="figures/BiSSE.png" /></p>
+<figcaption>Estimated ancestral states for the
+activity period of primates.</figcaption>
+</figure>
 
 <h3 class="subsection" id="general-approach">General approach</h3>
 
-<p>The <code class="highlighter-rouge">BiSSE</code>model assumes two discrete states
+<p>The BiSSE model assumes two discrete states
 (<em>i.e.,</em> a binary character), and that the
 state of each extant species is known
 (<em>i.e.,</em> the discrete-valued character is
-observed). The general approach adopted by <code class="highlighter-rouge">BiSSE</code>and
+observed). The general approach adopted by BiSSE and
 related models is to derive a set of ordinary differential equations
 (ODEs) that describe how the probability of observing a descendant clade
 changes along a branch in the observed phylogeny. Each equation in this
@@ -201,7 +194,7 @@ equations in the following sections.</p>
 
 <h3 class="subsection" id="derivation-for-the-binary-state-birth-death-process">Derivation for the binary state birth-death process</h3>
 
-<p>The derivation here follows the original description in @Maddison2007.
+<p>The derivation here follows the original description in <a href="#Maddison2007">(Maddison et al. 2007)</a>.
 Consider a (time-independent) birth-death process with two possible
 states (a binary character), with diversification rates
 ${\lambda_0, \mu_0}$ and ${\lambda_1, \mu_1}$.</p>
@@ -216,7 +209,7 @@ enumerate all possible events that could occur within the interval
 $\Delta t$. Assuming that $\Delta t$ is small—so that the probability of
 more than one event occurring in the interval is negligible—there are
 four possible scenarios within the time interval
-(Fig. [fig:BiSSE_Events_D]):</p>
+(<a href="#bisse_events"></a>):</p>
 
 <ol>
   <li>
@@ -240,20 +233,21 @@ for (3) and (4), we require that one of the descendant lineages go
 extinct before the present because we do not observe a node in the tree
 between $t$ and $t + \Delta t$.</p>
 
-<p><img src="figures/BiSSE_Events_D.png" alt="" /></p>
-<blockquote>
-  <p>Estimated ancestral states
-for the activity period of primates.</p>
-</blockquote>
+<figure id="bisse_events"><p><img src="figures/BiSSE_Events_D.png" /></p>
+<figcaption>Estimated ancestral states for the activity period of primates.</figcaption>
+</figure>
 
-<p>We can thus compute $D_{N,0}(t + \Delta t)$ as: <script type="math/tex">% <![CDATA[
+<p>We can thus compute $D_{N,0}(t + \Delta t)$ as:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
 \begin{aligned}
 	D_{N,0}(t + \Delta t) = & \;(1 - \mu_0 \Delta t) \times & \text{in all cases, no extinction of the observed lineage} \\
-                         & \;[  (1 - q_{01} \Delta t)(1 - \lambda_0 \Delta t) D_{N,0}(t) & \text{case (1) nothing happens} \\
-                         & \; + (q_{01} \Delta t) (1 - \lambda_0 \Delta t) D_{N,1}(t) & \text{case (2) state change but no speciation} \\
-                         & \; + (1 - q_{01} \Delta t) (\lambda_0 \Delta t) E_0(t) D_{N,0}(t) & \text{case (3) no state change, speciation, extinction} \\
-                         & \; + (1 - q_{01} \Delta t) (\lambda_0 \Delta t) E_0(t) D_{N,0}(t)] & \text{case (4) no state change, speciation, extinction}\end{aligned} %]]></script>
-A matching equation can be written down for $D_{N,1}(t+\Delta t)$.</p>
+& \;[  (1 - q_{01} \Delta t)(1 - \lambda_0 \Delta t) D_{N,0}(t) & \text{case (1) nothing happens} \\
+& \; + (q_{01} \Delta t) (1 - \lambda_0 \Delta t) D_{N,1}(t) & \text{case (2) state change but no speciation} \\
+& \; + (1 - q_{01} \Delta t) (\lambda_0 \Delta t) E_0(t) D_{N,0}(t) & \text{case (3) no state change, speciation, extinction} \\
+& \; + (1 - q_{01} \Delta t) (\lambda_0 \Delta t) E_0(t) D_{N,0}(t)] & \text{case (4) no state change, speciation, extinction}\end{aligned} %]]></script>
+
+<p>A matching equation can be written down for $D_{N,1}(t+\Delta t)$.</p>
 
 <p>To convert these difference equations into differential equations, we
 take the limit $\Delta t \rightarrow 0$. With the notation that $i$ can
@@ -268,7 +262,7 @@ extinction probabilities. Define $E_0(t)$ as the probability that a
 lineage in state 0 at time $t$ goes extinct before the present. To
 determine the extinction probability at an earlier point,
 $E_0(t+\Delta t)$, we can again enumerate all the possible events in the
-interval $\Delta t$ (Fig. [fig:BiSSE_Events_E]):</p>
+interval $\Delta t$ (<a href="#BiSSE_Events_E"></a>):</p>
 
 <ol>
   <li>
@@ -291,25 +285,23 @@ that must eventually go extinct before the present.</p>
 
 <script type="math/tex; mode=display">% <![CDATA[
 \begin{aligned}
-    E_0(t + \Delta t) = &\; \mu_0\Delta t + 
-	                 & \text{case (1) extinction in the interval} \\
-				     & (1 - \mu_0\Delta t) \times & \text{no extinction in the interval and \dots} \\
-				     & \;[(1-q_{01}\Delta t)(1-\lambda_0 \Delta t) E_0(t) & \text{case (2) nothing happens, but subsequent extinction} \\
-                     & \;+ (q_{01}\Delta t) (1-\lambda_0 \Delta t) E_1(t) & \text{case (3) state change and subsequent extinction} \\
-                     & \;+ (1 - q_{01} \Delta t) (\lambda_0 \Delta t) E_0(t)^2] & \text{case (4) speciation and subsequent extinctions}\end{aligned} %]]></script>
+E_0(t + \Delta t) = &\; \mu_0\Delta t + 
+& \text{case (1) extinction in the interval} \\
+& (1 - \mu_0\Delta t) \times & \text{no extinction in the interval and \dots} \\
+& \;[(1-q_{01}\Delta t)(1-\lambda_0 \Delta t) E_0(t) & \text{case (2) nothing happens, but subsequent extinction} \\
+& \;+ (q_{01}\Delta t) (1-\lambda_0 \Delta t) E_1(t) & \text{case (3) state change and subsequent extinction} \\
+& \;+ (1 - q_{01} \Delta t) (\lambda_0 \Delta t) E_0(t)^2] & \text{case (4) speciation and subsequent extinctions}\end{aligned} %]]></script>
 
 <p>Again, a matching equation for $E_1(t+\Delta t)$ can be written down.</p>
 
-<p><img src="figures/BiSSE_Events_E.png" alt="" /></p>
-<blockquote>
-  <p>Estimated ancestral states
-for the activity period of primates.</p>
-</blockquote>
+<figure id="BiSSE_Events_E"><p><img src="figures/BiSSE_Events_E.png" /></p>
+<figcaption>Estimated ancestral states for the activity period of primates.</figcaption>
+</figure>
 
 <p>To convert these difference equations into differential equations, we
 again take the limit $\Delta t \rightarrow 0$:
 <script type="math/tex">\frac{\mathrm{d}E_i(t)}{\mathrm{d}t} = \mu_i - \left(\lambda_i + \mu_i + q_{ij} \right)E_i(t) + q_{ij} E_j(t) + \lambda_i E_i(t)^2
-    \label{eq:BiSSE_E}</script></p>
+\label{eq:BiSSE_E}</script></p>
 
 <h3 id="initial-values-tips-and-sampling">Initial values: tips and sampling</h3>
 
@@ -369,32 +361,62 @@ weightings as unknown parameters to be estimated. These estimates are
 usually quite uncertain, but in a Bayesian framework, one can treat the
 $p_{R, i}$ as nuisance parameters and integrate over them.</p>
 
-<dl>
-  <dt>Parameter     Interpretation                            </dt>
-  <dt>  ————- —————————————– –</dt>
-  <dt>  $\Psi$        Phylogenetic tree with divergence times   </dt>
-  <dt>  $T$           Root age                                  </dt>
-  <dt>  $q_{01}$      Rate of transitions from 0 to 1           </dt>
-  <dt>  $q_{10}$      Rate of transitions from 1 to 0           </dt>
-  <dt>  $\lambda_0$   Speciation rate for state 0               </dt>
-  <dt>  $\mu_0$       Extinction rate for state 0               </dt>
-  <dt>  $\lambda_1$   Speciation rate for state 1               </dt>
-  <dt>  $\mu_1$       Extinction rate for state 1</dt>
-  <dd>
-    <p><strong><code class="highlighter-rouge">BiSSE</code>model parameters and their
-  interpretation</strong><span data-label="tab:Bparam"></span></p>
-  </dd>
-</dl>
+<h3 id="bisse-model-parameters-and-their-interpretation">BiSSE model parameters and their interpretation</h3>
 
-<h2 id="equations-for-the-multi-state-birth-death-process">Equations for the multi-state birth-death process</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Interpretation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$\Psi$</td>
+      <td>Phylogenetic tree with divergence times</td>
+    </tr>
+    <tr>
+      <td>$T$</td>
+      <td>Root age</td>
+    </tr>
+    <tr>
+      <td>$q_{01}$</td>
+      <td>Rate of transitions from 0 to 1</td>
+    </tr>
+    <tr>
+      <td>$q_{10}$</td>
+      <td>Rate of transitions from 1 to 0</td>
+    </tr>
+    <tr>
+      <td>$\lambda_0$</td>
+      <td>Speciation rate for state 0</td>
+    </tr>
+    <tr>
+      <td>$\mu_0$</td>
+      <td>Extinction rate for state 0</td>
+    </tr>
+    <tr>
+      <td>$\lambda_1$</td>
+      <td>Speciation rate for state 1</td>
+    </tr>
+    <tr>
+      <td>$\mu_1$</td>
+      <td>Extinction rate for state 1</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 class="subsection" id="equations-for-the-multi-state-birth-death-process">Equations for the multi-state birth-death process</h3>
 
 <p>The entire derivation above can easily be expanded to accommodate an
 arbitrary number of states <a href="#FitzJohn2012">(FitzJohn 2012)</a>. The only extra piece is
 summing over all the possible state transitions. The resulting
-differential equations within the branches are: <script type="math/tex">% <![CDATA[
+differential equations within the branches are:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
 \begin{aligned}
-    \frac{\mathrm{d}D_{N,i}(t)}{\mathrm{d}t} &= - \left(\lambda_i + \mu_i + \sum\limits_{j \neq i}^k q_{ij} \right)D_{N,i}(t) + \sum\limits_{j \neq i}^k q_{ij} D_{N,j}(t) + 2\lambda_iE_i(t)D_{N,i}(t) \\
-    \frac{\mathrm{d}E_i(t)}{\mathrm{d}t} &= \mu_i - \left(\lambda_i + \mu_i + \sum\limits_{j \neq i}^k q_{ij} \right)E_i(t) + \sum\limits_{j \neq i}^k q_{ij} E_j(t) + \lambda_i E_i(t)^2\end{aligned} %]]></script></p>
+\frac{\mathrm{d}D_{N,i}(t)}{\mathrm{d}t} &= - \left(\lambda_i + \mu_i + \sum\limits_{j \neq i}^k q_{ij} \right)D_{N,i}(t) + \sum\limits_{j \neq i}^k q_{ij} D_{N,j}(t) + 2\lambda_iE_i(t)D_{N,i}(t) \\
+\frac{\mathrm{d}E_i(t)}{\mathrm{d}t} &= \mu_i - \left(\lambda_i + \mu_i + \sum\limits_{j \neq i}^k q_{ij} \right)E_i(t) + \sum\limits_{j \neq i}^k q_{ij} E_j(t) + \lambda_i E_i(t)^2\end{aligned} %]]></script>
 
 
 <ol class="bibliography"><li><span id="Maddison2007">Maddison W.P., Midford P.E., Otto S.P. 2007. Estimating a binary character’s effect on speciation and extinction. Systematic Biology. 56:701.</span>

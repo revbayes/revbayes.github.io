@@ -93,7 +93,7 @@ extinction rates. These inferences allow us to investigate key questions
 in evolutionary biology.</p>
 
 <p>Diversification-rate parameters may be included as nuisance parameters
-of other phylogenetic models—<em>i.e.,</em> where
+of other phylogenetic models—<em>i.e.</em>,  where
 these diversification-rate parameters are not of direct interest. For
 example, many methods for estimating species divergence times—such as
 <code class="highlighter-rouge">BEAST</code> <a href="#Drummond2012">(Drummond et al. 2012)</a>,
@@ -138,11 +138,11 @@ rates.</p>
 
 <p><em>What is the (constant) rate of diversification in my study group?</em> The
 most basic models estimate parameters of the stochastic-branching
-process (<em>i.e.,</em> rates of speciation and
+process (<em>i.e.</em>,  rates of speciation and
 extinction, or composite parameters such as net-diversification and
 relative-extinction rates) under the assumption that rates have remained
 constant across lineages and through time;
-<em>i.e.,</em> under a constant-rate birth-death
+<em>i.e.</em>,  under a constant-rate birth-death
 stochastic-branching process model <a href="#Nee1994b">(Nee et al. 1994)</a>. Extensions to the
 (basic) constant-rate models include diversification-rate variation
 through time <a href="#Stadler2011">(Stadler 2011; Höhna 2015)</a>. First, we might ask whether
@@ -153,7 +153,7 @@ adaptive radiation. A second question asks whether there is evidence of
 a continuous/gradual decrease in diversification rates through time
 (associated with decreasing speciation rates and/or increasing
 extinction rates), as might occur because of diversity-dependent
-diversification (<em>i.e.,</em> where competitive
+diversification (<em>i.e.</em>,  where competitive
 ecological interactions among the species of a growing tree decrease the
 opportunities for speciation and/or increase the probability of
 extinction, <em>e.g.,</em> <a href="#Hoehna2014a">Höhna (2014)</a>). Third, we
@@ -172,7 +172,7 @@ lineages of the study group have the exact same rates at a given time.</p>
 across the branches of my study group?</em> Models have been developed to
 detect departures from rate constancy across lineages; these tests are
 analogous to methods that test for departures from a molecular
-clock—<em>i.e.,</em> to assess whether substitution
+clock—<em>i.e.</em>,  to assess whether substitution
 rates vary significantly across lineages <a href="#Alfaro2009">(Alfaro et al. 2009; Rabosky 2014)</a>.
 These models are important for assessing whether a given tree violates
 the assumptions of rate homogeneity among lineages. Furthermore, these
@@ -265,8 +265,8 @@ divergence times.</p>
 <h2 id="outline">Outline</h2>
 
 <p>This tutorial describes how to specify basic branching-process models in
-‘RevBayes‘; two variants of the constant-rate birth-death process
-(missing reference).
+RevBayes; two variants of the constant-rate birth-death process
+<a href="#Yule1925">(Yule 1925; Kendall 1948; Thompson 1975; Nee et al. 1994; Rannala and Yang 1996; Yang and Rannala 1997; Höhna 2015)</a>.
 The probabilistic graphical model is given for each component of this
 tutorial. After each model is specified, you will estimate speciation
 and extinction rates using Markov chain Monte Carlo (MCMC). Finally, you
@@ -290,7 +290,7 @@ tutorials:</p>
   </li>
 </ul>
 
-<p>Note that the RB_Basics_Tutorial introduces the basic syntax of ‘Rev‘
+<p>Note that the RB_Basics_Tutorial introduces the basic syntax of <code class="highlighter-rouge">Rev</code>
 but does not cover any phylogenetic models. You may skip the
 RB_Basics_Tutorial if you have some familiarity with <code class="highlighter-rouge">R</code>.
 The RB_BayesFactor_Tutorial introduced Bayesian model selection by
@@ -298,25 +298,25 @@ means of Bayes factors, which can be skipped by readers familiar with
 Bayesian model selection. We tried to keep this tutorial very basic and
 introduce all the language concepts and theory on the way. You may only
 need the RB_Basics_Tutorial for a more in-depth discussion of concepts
-in ‘Rev‘.</p>
+in <code class="highlighter-rouge">Rev</code>.</p>
 
 <h1 id="data-and-files">Data and files</h1>
 
 <p>We provide the data file(s) which we will use in this tutorial. You may
-want to use your own data instead. In the ‘data‘ folder, you will find
+want to use your own data instead. In the <code class="highlighter-rouge">data</code> folder, you will find
 the following files</p>
 
 <ul>
-  <li>‘primates_tree.nex‘: Dated primates phylogeny including 233 species
+  <li><code class="highlighter-rouge">primates_tree.nex</code>: Dated primates phylogeny including 233 species
 from <a href="#MagnusonFord2012">(Magnuson-Ford and Otto 2012)</a>.</li>
 </ul>
 
-<p>Open the tree ‘data/primates_tree.nex‘ in FigTree.</p>
+<p>Open the tree <code class="highlighter-rouge">data/primates_tree.nex</code> in FigTree.</p>
 
 <h1 id="yuleModSec">Pure-Birth (Yule) Model</h1>
 
 <p>Before evaluating the relative support for different models, we must
-first specify them in ‘Rev‘. In this section, we will walk through
+first specify them in <code class="highlighter-rouge">Rev</code>. In this section, we will walk through
 specifying a pure-birth process model and estimating the marginal
 likelihood. The section about the birth-death process will be less
 detailed because it will build up on this section.</p>
@@ -330,7 +330,7 @@ exponential distribution is the product of the number of extant lineages
 ($n$) at that time and the speciation rate: $n\lambda$
 (missing reference). The pure-birth branching model
 does not allow for lineage extinction
-(<em>i.e.,</em>the extinction rate $\mu=0$). However,
+(<em>i.e.</em>, the extinction rate $\mu=0$). However,
 the model depends on a second parameter, $\rho$, which is the
 probability of sampling a species in the present time. It also depends
 on the time of the start of the process, whether that is the origin time
@@ -377,8 +377,8 @@ parameter $\rho$ to $233/367$.</p>
 
 <ul>
   <li>The full Yule-model specification is in the file called
-<a href="https://github.com/revbayes/revbayes_tutorial/raw/master/RB_DiversificationRate_Tutorial/RevBayes_scripts/Yule.Rev">‘Yule.Rev‘</a>
-on the ‘RevBayes‘ tutorial repository.\</li>
+<a href="https://github.com/revbayes/revbayes_tutorial/raw/master/RB_DiversificationRate_Tutorial/RevBayes_scripts/Yule.Rev"><code class="highlighter-rouge">Yule.Rev</code></a>
+on the RevBayes tutorial repository.\</li>
 </ul>
 
 <h2 id="read-the-tree">Read the tree</h2>
@@ -408,31 +408,31 @@ mni = 0
 (Fig. [fig:yule_gm2]). We can specify the birth rate $\lambda$, the
 mean and standard deviation of the lognormal hyperprior on $\lambda$,
 and the conditional dependency of the two parameters all in one line of
-‘Rev‘ code.</p>
+<code class="highlighter-rouge">Rev</code> code.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>birth_rate_mean &lt;- ln( ln(367/2) / T.rootAge() )
 birth_rate_sd &lt;- 0.587405
 birth_rate ~ dnLognormal(mean=birth_rate_mean,sd=birth_rate_sd)
 </code></pre></div></div>
 
-<p>Here, the stochastic node called ‘birth_rate‘ represents the speciation
-rate $\lambda$. ‘birth_rate_mean‘ and ‘birth_rate_sd‘ are the prior
+<p>Here, the stochastic node called <code class="highlighter-rouge">birth_rate</code> represents the speciation
+rate $\lambda$. <code class="highlighter-rouge">birth_rate_mean</code> and <code class="highlighter-rouge">birth_rate_sd</code> are the prior
 mean and prior standard deviation, respectively. We chose the prior mean
 so that it is centered around observed number of species
-(<em>i.e.,</em>the expected number of species under a
+(<em>i.e.</em>, the expected number of species under a
 Yule process will thus be equal to the observed number of species) and a
 prior standard deviation of 0.587405 which creates a lognormal
 distribution with 95% prior probability spanning exactly one order of
 magnitude. If you want to represent more prior uncertainty by,
 <em>e.g.,</em>allowing for two orders of magnitude in
-the 95% prior probability then you can simply multiply ‘birth_rate_sd‘
+the 95% prior probability then you can simply multiply <code class="highlighter-rouge">birth_rate_sd</code>
 by a factor of 2.</p>
 
 <p>To estimate the value of $\lambda$, we assign a proposal mechanism to
-operate on this node. In ‘RevBayes‘ these MCMC sampling algorithms are
+operate on this node. In RevBayes these MCMC sampling algorithms are
 called <em>moves</em>. We need to create a vector of moves and we can do this
-by using vector indexing and our pre-initialized iterator ‘mi‘. We will
-use a scaling move on $\lambda$ called ‘mvScale‘.</p>
+by using vector indexing and our pre-initialized iterator <code class="highlighter-rouge">mi</code>. We will
+use a scaling move on $\lambda$ called <code class="highlighter-rouge">mvScale</code>.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[++mvi] = mvScale(birth_rate,lambda=1,tune=true,weight=3)
 </code></pre></div></div>
@@ -467,15 +467,15 @@ originate at the time of the root.</p>
 
 <p>Now we have all of the parameters we need to specify the full pure-birth
 model. We can initialize the stochastic node representing the time tree.
-Note that we set the ‘mu‘ parameter to the constant value ‘0.0‘.</p>
+Note that we set the <code class="highlighter-rouge">mu</code> parameter to the constant value <code class="highlighter-rouge">0.0</code>.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree ~ dnBDP(lambda=birth_rate, mu=0.0, rho=rho, rootAge=root_time, samplingStrategy="uniform", condition="survival", taxa=taxa)
 </code></pre></div></div>
 
 <p>If you refer back to Equation [bayesTher] and Figure
 [fig:yule_gm2], the time tree $\Psi$ is the variable we observe,
-<em>i.e.,</em>the data. We can set this in ‘Rev‘ by
-using the ‘clamp()‘ function.</p>
+<em>i.e.</em>, the data. We can set this in <code class="highlighter-rouge">Rev</code> by
+using the <code class="highlighter-rouge">clamp()</code> function.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree.clamp(T)
 </code></pre></div></div>
@@ -484,10 +484,10 @@ using the ‘clamp()‘ function.</p>
 @MagnusonFord2012.</p>
 
 <p>Finally, we can create a workspace object of our whole model using the
-‘model()‘ function. Workspace objects are initialized using the ‘=‘
+<code class="highlighter-rouge">model()</code> function. Workspace objects are initialized using the <code class="highlighter-rouge">=</code>
 operator. This distinguishes the objects used by the program to run the
 MCMC analysis from the distinct nodes of our graphical model. The model
-workspace objects makes it easy to work with the model in ‘Rev‘ and
+workspace objects makes it easy to work with the model in <code class="highlighter-rouge">Rev</code> and
 creates a wrapper around our model DAG. Because our model is a directed,
 acyclic graph (DAG), we only need to give the model wrapper function a
 single node and it does the work to find all the other nodes through
@@ -496,7 +496,7 @@ their connections.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(birth_rate)
 </code></pre></div></div>
 
-<p>The ‘model()‘ function traverses all of the connections and finds all of
+<p>The <code class="highlighter-rouge">model()</code> function traverses all of the connections and finds all of
 the nodes we specified.</p>
 
 <h2 id="running-an-mcmc-analysis">Running an MCMC analysis</h2>
@@ -505,8 +505,8 @@ the nodes we specified.</p>
 
 <p>For our MCMC analysis, we need to set up a vector of <em>monitors</em> to
 record the states of our Markov chain. The monitor functions are all
-called ‘mn*‘, where ‘*‘ is the wildcard representing the monitor type.
-First, we will initialize the model monitor using the ‘mnModel‘
+called <code class="highlighter-rouge">mn\*</code>, where <code class="highlighter-rouge">\*</code> is the wildcard representing the monitor type.
+First, we will initialize the model monitor using the <code class="highlighter-rouge">mnModel</code>
 function. This creates a new monitor variable that will output the
 states for all model parameters when passed into a MCMC function.</p>
 
@@ -514,7 +514,7 @@ states for all model parameters when passed into a MCMC function.</p>
 </code></pre></div></div>
 
 <p>Additionally, create a screen monitor that will report the states of
-specified variables to the screen with ‘mnScreen‘:</p>
+specified variables to the screen with <code class="highlighter-rouge">mnScreen</code>:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[++mni] = mnScreen(printgen=1000, birth_rate)
 </code></pre></div></div>
@@ -523,15 +523,15 @@ specified variables to the screen with ‘mnScreen‘:</p>
 
 <p>With a fully specified model, a set of monitors, and a set of moves, we
 can now set up the MCMC algorithm that will sample parameter values in
-proportion to their posterior probability. The ‘mcmc()‘ function will
+proportion to their posterior probability. The <code class="highlighter-rouge">mcmc()</code> function will
 create our MCMC object:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves)
 </code></pre></div></div>
 
-<p>We may wish to run the ‘.burnin()‘ member function,
-<em>i.e.,</em>if we wish to pre-run the chain and
-discard the initial states. Recall that the ‘.burnin()‘ function
+<p>We may wish to run the <code class="highlighter-rouge">.burnin()</code> member function,
+<em>i.e.</em>, if we wish to pre-run the chain and
+discard the initial states. Recall that the <code class="highlighter-rouge">.burnin()</code> function
 specifies a <em>completely separate</em> preliminary MCMC analysis that is used
 to tune the scale of the moves to improve mixing of the MCMC analysis.</p>
 
@@ -546,24 +546,24 @@ to tune the scale of the moves to improve mixing of the MCMC analysis.</p>
 <p>When the analysis is complete, you will have the monitored files in your
 output directory.</p>
 
-<p>The ‘Rev‘ file for performing this analysis:
-<a href="https://github.com/revbayes/revbayes_tutorial/raw/master/RB_DiversificationRate_Tutorial/RevBayes_scripts/mcmc_Yule.Rev">‘mcmc_Yule.Rev‘</a>.</p>
+<p>The <code class="highlighter-rouge">Rev</code> file for performing this analysis:
+<a href="https://github.com/revbayes/revbayes_tutorial/raw/master/RB_DiversificationRate_Tutorial/RevBayes_scripts/mcmc_Yule.Rev"><code class="highlighter-rouge">mcmc_Yule.Rev</code></a>.</p>
 
 <h2 id="exercise-1">Exercise 1</h2>
 
 <ul>
   <li>
     <p>Run an MCMC simulation to estimate the posterior distribution of the
-speciation rate (‘birth_rate‘).</p>
+speciation rate (<code class="highlighter-rouge">birth_rate</code>).</p>
   </li>
   <li>
     <p>Load the generated output file into <code class="highlighter-rouge">Tracer</code>: What is
-the mean posterior estimate of the ‘birth_rate‘ and what is the
+the mean posterior estimate of the <code class="highlighter-rouge">birth_rate</code> and what is the
 estimated HPD?</p>
   </li>
   <li>
     <p>Compare the prior mean with the posterior mean. (<strong>Hint:</strong> Use the
-optional argument ‘underPrior=TRUE‘ in the function ‘mymcmc.run()‘)
+optional argument <code class="highlighter-rouge">underPrior=TRUE</code> in the function <code class="highlighter-rouge">mymcmc.run()</code>)
 Are they different
 (<em>e.g.,</em>Figure [fig:prior_posterior])?
 Is the posterior mean outside the prior 95% probability interval?</p>
@@ -577,14 +577,14 @@ prior uncertainty.</p>
 <p><img src="figures/birth_rate_prior_posterior.png" alt="" /></p>
 <blockquote>
   <p>Estimates of the
-posterior and prior distribution of the ‘birth_rate‘ visualized in
+posterior and prior distribution of the <code class="highlighter-rouge">birth_rate</code> visualized in
 <code class="highlighter-rouge">Tracer</code>. The prior (black curve) shows the lognormal
 distribution that we chose as the prior distribution.</p>
 </blockquote>
 
 <h1 id="estimating-the-marginal-likelihood-of-the-model">Estimating the marginal likelihood of the model</h1>
 
-<p>With a fully specified model, we can set up the ‘powerPosterior()‘
+<p>With a fully specified model, we can set up the <code class="highlighter-rouge">powerPosterior()</code>
 analysis to create a file of ‘powers’ and likelihoods from which we can
 estimate the marginal likelihood using stepping-stone or path sampling.
 This method computes a vector of powers from a beta distribution, then
@@ -597,7 +597,7 @@ information on marginal likelihood estimation please read the
 
 <p>First, we create the variable containing the power posterior. This
 requires us to provide a model and vector of moves, as well as an output
-file name. The ‘cats‘ argument sets the number of power steps.</p>
+file name. The <code class="highlighter-rouge">cats</code> argument sets the number of power steps.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pow_p = powerPosterior(mymodel, moves, monitors, "output/Yule_powp.out", cats=100, sampleFreq=10)
 </code></pre></div></div>
@@ -608,7 +608,7 @@ discarding the first 10000 states.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pow_p.burnin(generations=10000,tuningInterval=200)
 </code></pre></div></div>
 
-<p>Now execute the run with the ‘.run()‘ function:</p>
+<p>Now execute the run with the <code class="highlighter-rouge">.run()</code> function:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pow_p.run(generations=10000)
 </code></pre></div></div>
@@ -622,7 +622,7 @@ sampling.</p>
 </code></pre></div></div>
 
 <p>Compute the marginal likelihood under stepping-stone sampling using the
-member function ‘marginal()‘ of the ‘ss‘ variable and record the value
+member function <code class="highlighter-rouge">marginal()</code> of the <code class="highlighter-rouge">ss</code> variable and record the value
 in Table [ssTable].</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ss.marginal()
@@ -635,14 +635,14 @@ takes the same power posteriors as input.</p>
 </code></pre></div></div>
 
 <p>Compute the marginal likelihood under stepping-stone sampling using the
-member function ‘marginal()‘ of the ‘ps‘ variable and record the value
+member function <code class="highlighter-rouge">marginal()</code> of the <code class="highlighter-rouge">ps</code> variable and record the value
 in Table [ssTable].</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ps.marginal()
 </code></pre></div></div>
 
-<p>The ‘Rev‘ file for performing this analysis:
-<a href="https://github.com/revbayes/revbayes_tutorial/raw/master/RB_DiversificationRate_Tutorial/RevBayes_scripts/ml_Yule.Rev">‘ml_Yule.Rev‘</a>.</p>
+<p>The <code class="highlighter-rouge">Rev</code> file for performing this analysis:
+<a href="https://github.com/revbayes/revbayes_tutorial/raw/master/RB_DiversificationRate_Tutorial/RevBayes_scripts/ml_Yule.Rev"><code class="highlighter-rouge">ml_Yule.Rev</code></a>.</p>
 
 <h2 id="exercise-2">Exercise 2</h2>
 
@@ -681,13 +681,13 @@ Supported model? &amp;</p>
 that every lineage at the start of the process will have sampled
 descendants at time 0. This assumption is fairly unrealistic for most
 phylogenetic datasets on a macroevolutionary time scale since the fossil
-record provides evidence of extinct lineages. @Kendall1948 described a
+record provides evidence of extinct lineages. <a href="#Kendall1948">(Kendall 1948)</a> described a
 more general branching process model to account for lineage extinction
 called the <em>birth-death process</em>. Under this model, at any instant in
 time, every lineage has the same rate of speciation $\lambda$ and the
 same rate of extinction $\mu$. This is the <em>constant-rate</em> birth-death
 process, which considers the rates constant over time and over the tree
-(missing reference).</p>
+<a href="#Nee1994b">(Nee et al. 1994; Höhna 2015)</a>.</p>
 
 <p>@Yang1997 derived the probability of time trees under an extension of
 the birth-death model that accounts for incomplete sampling of the tips
@@ -721,7 +721,7 @@ diversification and turnover.</p>
 <p>In the following subsections we will only provide the key command that
 are different for the constant-rate birth-death process. All other
 commands will be the same as in the previous exercise. You should copy
-the ‘mcmc_Yule.Rev‘ script and modify it accordingly. Don’t forget to
+the <code class="highlighter-rouge">mcmc_Yule.Rev</code> script and modify it accordingly. Don’t forget to
 rename the filenames of the monitors to avoid overwriting of your
 previous results!</p>
 
@@ -810,7 +810,6 @@ times the relative death rate?</p>
   </li>
 </ul>
 
-<p>Version dated:</p>
 
 <ol class="bibliography"><li><span id="Drummond2012">Drummond A.J., Suchard M.A., Xie D., Rambaut A. 2012. Bayesian phylogenetics with BEAUti and the BEAST 1.7. Molecular Biology and Evolution. 29:1969–1973.</span>
 
@@ -877,12 +876,30 @@ times the relative death rate?</p>
 <a href="https://doi.org/10.1080/10635150701607033">10.1080/10635150701607033</a>
 
 </li>
+<li><span id="Yule1925">Yule G.U. 1925. A mathematical theory of evolution, based on the conclusions of Dr. JC Willis, FRS. Philosophical Transactions of the Royal Society of London. Series B, Containing Papers of a Biological Character. 213:21–87.</span>
+
+</li>
+<li><span id="Kendall1948">Kendall D.G. 1948. On the Generalized "Birth-and-Death" Process. The Annals of Mathematical Statistics. 19:1–15.</span>
+
+<a href="https://doi.org/10.1214/aoms/1177730285">10.1214/aoms/1177730285</a>
+
+</li>
+<li><span id="Thompson1975">Thompson E.A. 1975. Human evolutionary trees. Cambridge University Press Cambridge.</span>
+
+</li>
+<li><span id="Rannala1996">Rannala B., Yang Z. 1996. Probability distribution of molecular evolutionary trees: A new method of phylogenetic inference. Journal of Molecular Evolution. 43:304–311.</span>
+
+<a href="https://doi.org/10.1007/BF02338839">10.1007/BF02338839</a>
+
+</li>
+<li><span id="Yang1997">Yang Z., Rannala B. 1997. Bayesian phylogenetic inference using DNA sequences: a Markov Chain Monte Carlo Method. Molecular Biology and Evolution. 14:717–724.</span>
+
+<a href="https://doi.org/10.1093/oxfordjournals.molbev.a025811">10.1093/oxfordjournals.molbev.a025811</a>
+
+</li>
 <li><span id="MagnusonFord2012">Magnuson-Ford K., Otto S.P. 2012. Linking the Investigations of Character Evolution and Species Diversification. The American Naturalist. 180:225–245.</span>
 
 <a href="https://doi.org/10.1086/666649">10.1086/666649</a>
-
-</li>
-<li><span id="Yule1925">Yule G.U. 1925. A mathematical theory of evolution, based on the conclusions of Dr. JC Willis, FRS. Philosophical Transactions of the Royal Society of London. Series B, Containing Papers of a Biological Character. 213:21–87.</span>
 
 </li>
 <li><span id="Stadler2009">Stadler T. 2009. On incomplete sampling under birth-death models and connections to the sampling-based coalescent. Journal of Theoretical Biology. 261:58–66.</span>

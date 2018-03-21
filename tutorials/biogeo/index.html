@@ -142,7 +142,7 @@ the content covered in the following RevBayes tutorials</p>
 <h1 id="sec:bg_intro2">Overview of the Dispersal-Extinction-Cladogenesis model</h1>
 
 <p>The Dispersal-Extinction-Cladogenesis (DEC) process models range
-evolution as a discrete-valued process (missing reference). There are
+evolution as a discrete-valued process <a href="#Ree2005">(Ree et al. 2005; Ree and Smith 2008)</a>. There are
 three key components to understanding the DEC model: range characters,
 anagenetic range evolution, and cladogenetic range evolution (Figure
 [fig:dec_cartoon]).</p>
@@ -175,7 +175,7 @@ species is observed or not observed across multiple discrete areas. For
 example, say there are three areas, A, B, and C. If a species is present
 in areas A and C, then its range equals AC, which can also be encoded
 into the length-3 bit vector, 101. Bit vectors may also be transformed
-into (decimal) integers, <em>e.g.,</em>the binary
+into (decimal) integers, <em>e.g.</em>, the binary
 number 101 equals the decimal number 5.</p>
 
 <dl>
@@ -317,14 +317,14 @@ and has probability 0.005.</p>
 <p>Also note that the probability of entering or leaving the null range is
 zero. By default, the RevBayes conditions the anagenetic range
 evolution process on never entering the null range when computing the
-transition probabilities (nullRange=“CondSurv”). This
+transition probabilities (nullRange=”CondSurv”). This
 allows the model to both simulate and infer using the same transition
 probabilities. @Massana2015 first noted that the null range—an
 unobserved absorbing state—results in abnormal extirpation rate and
 range size estimates. Their proposed solution to eliminate the null
 range from the state space is enabled with the
-nullRange=“Exclude” setting. The
-nullRange=“Include” setting provides no special handling of
+nullRange=”Exclude” setting. The
+nullRange=”Include” setting provides no special handling of
 the null range, and produces the raw probabilities of @Ree2005.</p>
 
 <h2 id="cladogenetic-range-evolution">Cladogenetic range evolution</h2>
@@ -562,7 +562,7 @@ extirpation rate. To gain greater control to observe and manage prior
 sensitivity, we’ll reparameterize the DEC rate matrix to report the
 <em>relative</em> rates of dispersal versus extirpation events. In
 order for anagenetic event rates to be measured on an absolute time
-scale (e.g. in millions of years), we will also introduce a a
+scale (<em>e.g.</em>, in millions of years), we will also introduce a a
 biogeographic rate parameter, similar to the molecular clock parameter
 used in dating analyses.</p>
 
@@ -624,7 +624,7 @@ moves[2] = mvScale(extirpation_rate, weight=2)
 </code></pre></div></div>
 
 <p>Note that er is a diagonal matrix whose diagonal values are
-determined (:=) by the stochastic variable,
+determined (<code class="highlighter-rouge">:=</code>) by the stochastic variable,
 extirpation_rate. We can now create our relative rate
 matrix, Q_DEC, with the fnDECRateMatrix
 function.</p>
@@ -1807,11 +1807,15 @@ the formation of Kauai, $P(a_s &gt; a_K) = 0.02 &lt; 1-0.95$ and weak support
 that they originated after the formation of Oahu,
 $P(a_s &gt; a_O) = 0.26 &gt; 1-0.95$.</p>
 
-<p>Version dated:</p>
 
 <ol class="bibliography"><li><span id="Ree2005">Ree R.H., Moore B.R., Webb C.O., Donoghue M.J., Crandall K. 2005. A likelihood framework for inferring the evolution of geographic range on phylogenetic trees. Evolution. 59:2299–2311.</span>
 
 <a href="https://doi.org/10.1111/j.0014-3820.2005.tb00940.x">10.1111/j.0014-3820.2005.tb00940.x</a>
+
+</li>
+<li><span id="Ree2008">Ree R.H., Smith S.A. 2008. Maximum Likelihood Inference of Geographic Range Evolution by Dispersal, Local Extinction, and Cladogenesis. Systematic Biology. 57:4–14.</span>
+
+<a href="https://doi.org/10.1080/10635150701883881">10.1080/10635150701883881</a>
 
 </li>
 <li><span id="Landis2013a">Landis M.J., Matzke N.J., Moore B.R., Huelsenbeck J.P. 2013. Bayesian Analysis of Biogeography when the Number of Areas is Large. Systematic Biology. 62:789–804.</span>
