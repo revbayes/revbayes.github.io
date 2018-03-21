@@ -1,17 +1,11 @@
 #!/bin/bash
 
-# define a function to determine whether we are in a submodule
-function is_submodule() 
-{       
-     (cd "$(git rev-parse --show-toplevel)/.." && 
-      git rev-parse --is-inside-work-tree) 2>/dev/null | grep -q true
-}
+scriptpath="$( cd "$(dirname "$0")" ; pwd -P )"
 
 # make sure we are in the repo root
 cwd=`pwd`
-toplevel=`git rev-parse --show-toplevel`
 
-if is_submodule || [ $cwd != $toplevel ]
+if [ $cwd != $scriptpath ]
 then
     echo "Error: deploy.sh must be run from the repository root."
     exit 1
@@ -36,11 +30,11 @@ then
     # build the site
     cd _site
     git fetch --quiet origin
-    git reset --quiet --hard origin/master && git checkout --quiet master
+    git reset --quiet --hard origin/master
     cd ..
     if ! bundle exec jekyll build; then
-    	echo "Jekyll build failed. Master not updated."
-    	exit 1
+        echo "Jekyll build failed. Master not updated."
+        exit 1
     fi
     cd _site
 
@@ -58,10 +52,6 @@ then
         git push --quiet origin master
         echo "Successfully built and pushed to master."
         cd ..
-
-        # update submodule
-        git add _site
-        git commit --quiet --amend -m "$msg"
     fi
     
     # deploy source
