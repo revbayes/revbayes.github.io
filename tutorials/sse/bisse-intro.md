@@ -18,8 +18,8 @@ index: false
 
 {% section Introduction | introduction %}
 
-This tutorial describes how to specify character state-dependent
-branching process models in RevBayes. Frequently referred to as
+This is a general introduction to character state-dependent
+branching process models, particularly as they are implemented in RevBayes. Frequently referred to as
 state-dependent speciation and extinction (SSE) models, these models are
 a birth-death process where the diversification rates are dependent on
 the state of an evolving character. The original model of this type
@@ -160,15 +160,17 @@ $$\begin{aligned}
 & \;[  (1 - q_{01} \Delta t)(1 - \lambda_0 \Delta t) D_{N,0}(t) & \text{case (1) nothing happens} \\
 & \; + (q_{01} \Delta t) (1 - \lambda_0 \Delta t) D_{N,1}(t) & \text{case (2) state change but no speciation} \\
 & \; + (1 - q_{01} \Delta t) (\lambda_0 \Delta t) E_0(t) D_{N,0}(t) & \text{case (3) no state change, speciation, extinction} \\
-& \; + (1 - q_{01} \Delta t) (\lambda_0 \Delta t) E_0(t) D_{N,0}(t)] & \text{case (4) no state change, speciation, extinction}\end{aligned}$$
+& \; + (1 - q_{01} \Delta t) (\lambda_0 \Delta t) E_0(t) D_{N,0}(t)] & \text{case (4) no state change, speciation, extinction}
+\end{aligned}$$
 
 A matching equation can be written down for $D_{N,1}(t+\Delta t)$.
 
 To convert these difference equations into differential equations, we
 take the limit $\Delta t \rightarrow 0$. With the notation that $i$ can
 be either state 0 or state 1, and $j$ is the other state, this yields:
+
 $$\frac{\mathrm{d}D_{N,i}(t)}{\mathrm{d}t} = - \left(\lambda_i + \mu_i + q_{ij} \right) D_{N,i}(t) + q_{ij} D_{N,j}(t) + 2 \lambda_i E_i(t) D_{N,i}(t)
-    \label{eq:BiSSE_D}$$
+\label{eq:BiSSE_D}$$
 
 ### Extinction probabilities, $E_i$
 
@@ -197,7 +199,8 @@ E_0(t + \Delta t) = &\; \mu_0\Delta t +
 & (1 - \mu_0\Delta t) \times & \text{no extinction in the interval and \dots} \\
 & \;[(1-q_{01}\Delta t)(1-\lambda_0 \Delta t) E_0(t) & \text{case (2) nothing happens, but subsequent extinction} \\
 & \;+ (q_{01}\Delta t) (1-\lambda_0 \Delta t) E_1(t) & \text{case (3) state change and subsequent extinction} \\
-& \;+ (1 - q_{01} \Delta t) (\lambda_0 \Delta t) E_0(t)^2] & \text{case (4) speciation and subsequent extinctions}\end{aligned}$$
+& \;+ (1 - q_{01} \Delta t) (\lambda_0 \Delta t) E_0(t)^2] & \text{case (4) speciation and subsequent extinctions}
+\end{aligned}$$
 
 Again, a matching equation for $E_1(t+\Delta t)$ can be written down.
 
@@ -211,6 +214,7 @@ Estimated ancestral states for the activity period of primates.
 
 To convert these difference equations into differential equations, we
 again take the limit $\Delta t \rightarrow 0$:
+
 $$\frac{\mathrm{d}E_i(t)}{\mathrm{d}t} = \mu_i - \left(\lambda_i + \mu_i + q_{ij} \right)E_i(t) + q_{ij} E_j(t) + \lambda_i E_i(t)^2
 \label{eq:BiSSE_E}$$
 
@@ -245,8 +249,9 @@ change). The initial value for the ancestral branch going into a node
 (at time $t_A$) is then the product of the final values for each of the
 daughter branches coming out of that node, times the instantaneous
 speciation rate (to account for the observed speciation event):
+
 $$D_{A, i}(t_A) = D_{N, i}(t_A) D_{M, i}(t_A) \lambda_i
-    \label{eq:BiSSE_node}$$
+\label{eq:BiSSE_node}$$
 
 ### At the root
 
@@ -295,5 +300,6 @@ differential equations within the branches are:
 
 $$\begin{aligned}
 \frac{\mathrm{d}D_{N,i}(t)}{\mathrm{d}t} &= - \left(\lambda_i + \mu_i + \sum\limits_{j \neq i}^k q_{ij} \right)D_{N,i}(t) + \sum\limits_{j \neq i}^k q_{ij} D_{N,j}(t) + 2\lambda_iE_i(t)D_{N,i}(t) \\
-\frac{\mathrm{d}E_i(t)}{\mathrm{d}t} &= \mu_i - \left(\lambda_i + \mu_i + \sum\limits_{j \neq i}^k q_{ij} \right)E_i(t) + \sum\limits_{j \neq i}^k q_{ij} E_j(t) + \lambda_i E_i(t)^2\end{aligned}$$
+\frac{\mathrm{d}E_i(t)}{\mathrm{d}t} &= \mu_i - \left(\lambda_i + \mu_i + \sum\limits_{j \neq i}^k q_{ij} \right)E_i(t) + \sum\limits_{j \neq i}^k q_{ij} E_j(t) + \lambda_i E_i(t)^2
+\end{aligned}$$
 
