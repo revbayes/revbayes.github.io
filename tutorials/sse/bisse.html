@@ -69,6 +69,8 @@
           
             <li><a href="/revbayes-site/tutorials/clocks/">Relaxed Clocks & Time Trees</a></li>
           
+            <li><a href="/revbayes-site/tutorials/sse/bisse-intro.html">Background on state-dependent diversification rate estimation</a></li>
+          
           </ul>
         
     </div>
@@ -106,22 +108,17 @@
 <hr />
 
 <p>This tutorial describes how to specify character state-dependent
-branching process models in RevBayes. Frequently referred to as
-state-dependent speciation and extinction (SSE) models, these models are
-a birth-death process where the diversification rates are dependent on
-the state of an evolving character. The original model of this type
-considered a binary character (a trait with two discrete state values;
-called BiSSE, <a href="#Maddison2007">(Maddison et al. 2007)</a>. Several variants have also been developed
-for other types of traits
-<a href="#FitzJohn2010">(FitzJohn 2010; Goldberg et al. 2011; Goldberg and Igić 2012; Magnuson-Ford and Otto 2012; FitzJohn 2012; Beaulieu and O’Meara 2016; Freyman and Höhna 2017)</a>.</p>
+branching process models in RevBayes. For more details on the theory behind these models, please see the 
+introductory page: <a href="/revbayes-site/tutorials/sse/bisse-intro.html">Background on state-dependent diversification rate estimation</a>.</p>
 
-<p>We will outline the theory behind this method, and then you will fit it
+<p>This tutorial will explain how to fit the BiSSE model
 to data using Markov chain Monte Carlo (MCMC). RevBayes is a powerful
-tool for SSE analyses. After working through this tutorial you should be
+tool for SSE analyses. 
+<!-- After working through this tutorial you should be
 able to set up custom SSE models and use them to infer
 character-dependent diversification rates and ancestral states. We also
-provide examples of how to plot the results using the <code class="highlighter-rouge">Rev</code>Gadgets R
-package.</p>
+provide examples of how to plot the results using the `Rev`Gadgets R
+package. --></p>
 
 <h2 class="section" id="thedata">Getting Set Up</h2>
 <hr />
@@ -1106,41 +1103,6 @@ How does this affect the ancestral state estimate?</p>
 <a href="https://doi.org/10.1080/10635150701607033">10.1080/10635150701607033</a>
 
 </li>
-<li><span id="FitzJohn2010">FitzJohn R.G. 2010. Quantitative Traits and Diversification. Systematic Biology. 59:619–633.</span>
-
-<a href="https://doi.org/10.1093/sysbio/syq053">10.1093/sysbio/syq053</a>
-
-</li>
-<li><span id="Goldberg2011">Goldberg E.E., Lancaster L.T., Ree R.H. 2011. Phylogenetic Inference of Reciprocal Effects between Geographic Range Evolution and Diversification. Systematic Biology. 60:451–465.</span>
-
-<a href="https://doi.org/10.1093/sysbio/syr046">10.1093/sysbio/syr046</a>
-
-</li>
-<li><span id="Goldberg2012">Goldberg E.E., Igić B. 2012. Tempo and Mode in Plant Breeding System Evolution. Evolution. 66:3701–3709.</span>
-
-<a href="https://doi.org/10.1111/j.1558-5646.2012.01730.x">10.1111/j.1558-5646.2012.01730.x</a>
-
-</li>
-<li><span id="MagnusonFord2012">Magnuson-Ford K., Otto S.P. 2012. Linking the Investigations of Character Evolution and Species Diversification. The American Naturalist. 180:225–245.</span>
-
-<a href="https://doi.org/10.1086/666649">10.1086/666649</a>
-
-</li>
-<li><span id="FitzJohn2012">FitzJohn R.G. 2012. Diversitree: Comparative Phylogenetic Analyses of Diversification in R. Methods in Ecology and Evolution. 3:1084–1092.</span>
-
-<a href="https://doi.org/10.1111/j.2041-210X.2012.00234.x">10.1111/j.2041-210X.2012.00234.x</a>
-
-</li>
-<li><span id="Beaulieu2016">Beaulieu J.M., O’Meara B.C. 2016. Detecting hidden diversification shifts in models of trait-dependent speciation and extinction. Systematic Biology. 65:583–601.</span>
-
-<a href="https://doi.org/10.1093/sysbio/syw022">10.1093/sysbio/syw022</a>
-
-</li>
-<li><span id="Freyman2017">Freyman W.A., Höhna S. 2017. Cladogenetic and anagenetic models of chromosome number evolution: a Bayesian model averaging approach. SYSBIO. syx065.</span>
-
-<a href="https://doi.org/10.1093/sysbio/syx065">10.1093/sysbio/syx065</a>
-
-</li>
 <li><span id="Maddison2006b">Maddison W.P. 2006. Confounding Asymmetries in Evolutionary Diversification and Character Change. Evolution. 60:1743–1746.</span>
 
 <a href="https://doi.org/10.1111/j.0014-3820.2006.tb00517.x">10.1111/j.0014-3820.2006.tb00517.x</a>
@@ -1156,6 +1118,11 @@ How does this affect the ancestral state estimate?</p>
 <a href="https://doi.org/10.1086/284840">10.1086/284840</a>
 
 </li>
+<li><span id="FitzJohn2012">FitzJohn R.G. 2012. Diversitree: Comparative Phylogenetic Analyses of Diversification in R. Methods in Ecology and Evolution. 3:1084–1092.</span>
+
+<a href="https://doi.org/10.1111/j.2041-210X.2012.00234.x">10.1111/j.2041-210X.2012.00234.x</a>
+
+</li>
 <li><span id="FitzJohn2009">FitzJohn R.G., Maddison W.P., Otto S.P. 2009. Estimating trait-dependent speciation and extinction rates from incompletely resolved phylogenies. Systematic Biology. 58:595–611.</span>
 
 <a href="https://doi.org/10.1093/sysbio/syp067">10.1093/sysbio/syp067</a>
@@ -1164,6 +1131,21 @@ How does this affect the ancestral state estimate?</p>
 <li><span id="Goldberg2008">Goldberg E.E., Igić B. 2008. On Phylogenetic Tests of Irreversible Evolution. Evolution. 62:2727–2741.</span>
 
 <a href="https://doi.org/10.1111/j.1558-5646.2008.00505.x">10.1111/j.1558-5646.2008.00505.x</a>
+
+</li>
+<li><span id="Goldberg2012">Goldberg E.E., Igić B. 2012. Tempo and Mode in Plant Breeding System Evolution. Evolution. 66:3701–3709.</span>
+
+<a href="https://doi.org/10.1111/j.1558-5646.2012.01730.x">10.1111/j.1558-5646.2012.01730.x</a>
+
+</li>
+<li><span id="Goldberg2011">Goldberg E.E., Lancaster L.T., Ree R.H. 2011. Phylogenetic Inference of Reciprocal Effects between Geographic Range Evolution and Diversification. Systematic Biology. 60:451–465.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syr046">10.1093/sysbio/syr046</a>
+
+</li>
+<li><span id="Freyman2017">Freyman W.A., Höhna S. 2017. Cladogenetic and anagenetic models of chromosome number evolution: a Bayesian model averaging approach. SYSBIO. syx065.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syx065">10.1093/sysbio/syx065</a>
 
 </li></ol>
 
