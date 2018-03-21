@@ -814,4 +814,3 @@ all of your existing run files).
 
 -   ‘\$ rb RevBayes_scripts coalmine_accidents.Rev‘\
 
-Version dated:

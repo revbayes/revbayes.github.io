@@ -1435,7 +1435,6 @@ a different way to view the tree.
 
 [fig:IcyTreeScreenshort]
 
-Version dated:
 
 [^1]: In section [subsub:Req-Software] we offer a recommendation for a
     text editor.

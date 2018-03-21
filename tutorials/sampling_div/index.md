@@ -776,4 +776,3 @@ Exercise 3
 
 -   How does the new sampling assumption influence your estimated rates?
 
-Version dated:

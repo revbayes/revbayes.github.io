@@ -1508,4 +1508,3 @@ Exercise
     and calculate Bayes factors to see which model fits the data better.
     How does this affect the ancestral state estimate?
 
-Version dated:

@@ -599,4 +599,3 @@ Exercise 4
 3.  Increase the number of arrows shot. How does this change the shape
     and scale of the posterior distribution?
 
-Version dated:

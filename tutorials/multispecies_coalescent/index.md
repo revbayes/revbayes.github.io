@@ -542,4 +542,3 @@ Given the acceptance ratios of some of the moves, would you be tempted
 to change the frequency at which they are tried? If so how?\
 What other improvements could be made to the script?
 
-Version dated:

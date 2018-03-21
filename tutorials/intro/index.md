@@ -61,7 +61,7 @@ on a single line.
     1 + 1; 2 + 2                    # Multiple statements in one line
 
 Here you can see that comments always start with the hash symbol (`#`).
-Everything after the ‘`#`’-symbol will be ignored. In addition to these
+Everything after the `#`-symbol will be ignored. In addition to these
 simple mathematical operations, provides some standard math functions
 which can be called by:
 
@@ -151,7 +151,7 @@ Distributions and Random Numbers
 --------------------------------
 {:.subsection}
 
-provides functions for common statistical distributions. We’ll
+provides functions for common statistical distributions. We'll
 demonstrate by generating random exponential numbers as we did in
 lecture. Recall that we can transform a random variable $u$ sampled from
 a Uniform(0,1) distribution into an exponential distribution with rate

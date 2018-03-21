@@ -208,7 +208,7 @@ All command-line text, including all Rev syntax, are given in
 `monotype font`. Furthermore, blocks of Rev code that are needed to
 build the model, specify the analysis, or execute the run are given in
 separate shaded boxes. For example, we will instruct you to create a
-constant node called `example` that is equal to `1.0` using the `&lt;-`
+constant node called `example` that is equal to `1.0` using the `<-`
 operator like this:
 
     example <- 1.0
@@ -269,7 +269,7 @@ Open your text editor and create the master Rev file called in the
 Enter the Rev code provided in this section in the new model file.
 
 The file you will begin in this section will be the one you load into
-RevBayes when you`ve completed all of the components of the analysis.
+RevBayes when you've completed all of the components of the analysis.
 In this section you will begin the file and write the Rev commands for
 loading in the taxon list and managing the data matrices. Then, starting
 in section [subsect:Exercise-MkModel], you will move on to writing
@@ -293,7 +293,7 @@ Import the morphological character matrix and assign it to the variable
 Before we begin writing the Rev scripts for each of the model
 components, we need to instantiate a couple “helper variables” that will
 be used by downstream parts of our model specification files. These
-variables will be used in more than one of the module files so it`s best
+variables will be used in more than one of the module files so it's best
 to initialize them in the master file.
 
 Create a new constant node called `n_taxa` that is equal to the number
@@ -313,7 +313,7 @@ value of `1`.
 
 One important distinction here is that `mvi` is part of the RevBayes
 workspace and not the hierarchical model. Thus, we use the workspace
-assignment operator `=` instead of the constant node assignment `&lt;-`.
+assignment operator `=` instead of the constant node assignment `<-`.
 
 Save your current working version of `mcmc_Mk.Rev` in the `scripts`
 directory.
@@ -445,11 +445,11 @@ our `phylogeny` variable in the arguments.
 
 The third monitor we will add to our analysis will print information to
 the screen. Like with `mnFile` we must tell `mnScreen` which parameters
-we`d like to see updated on the screen.
+we'd like to see updated on the screen.
 
     monitors[mni++] = mnScreen(printgen=10)
 
-Finally, we`ll create an ancestral state monitor, which is described in
+Finally, we'll create an ancestral state monitor, which is described in
 more detail in Section [sec:anc_states].
 
     monitors[mni++] = mnJointConditionalAncestralState(
@@ -571,7 +571,7 @@ distribution has two parameters, $\alpha$ and $\beta$. These two
 parameters specify the shape of the distribution. State frequencies will
 be evaluated according to this distribution, in the same way that rate
 variation is evaluated according to the Gamma distribution. The
-discretized distribution is split into multiple classes, each with it`s
+discretized distribution is split into multiple classes, each with it's
 own set of frequencies for the 0 and 1 characters. The number of classes
 can vary; we have chosen 4 for tractability.
 
@@ -608,7 +608,7 @@ a parameter. We will, therefore, use the `fnF81` function.
         Q[i] := fnF81(simplex(abs(1-cats[i]), cats[i]))
     }
 
-Once we`ve made the our vector of matrices, we specified moves on our
+Once we've made the our vector of matrices, we specified moves on our
 matrix vector:
 
     matrix_probs ~ dnDirichlet(v(1,1,1,1))
@@ -677,7 +677,7 @@ Modifying the MCMC File
 -----------------------
 
 At each place in which the output files are specified in the MCMC file,
-change the output path so you don`t overwrite the output from the
+change the output path so you don't overwrite the output from the
 previous exercise. For example, you might call your output file
 `output/mk_hyperprior.log` and `output/mk_hyperprior.trees`. We will
 also monitor Q_morpho and pi. Add Q_morpho and pi to the `mnScreen`.
@@ -834,7 +834,7 @@ the MRCT, while poorly support clades with $p \leq 0.5$ are shown as
 unresolved polytomies. Poor phylogenetic resolution might be caused by
 having too few phylogenetically informative characters, or it might be
 due to conflicting signals for certain species relationships. Because
-phylogenetic information is generated through model choice, let`s
+phylogenetic information is generated through model choice, let's
 compare our topological estimates across models.
 
 [fig:mk_discretized_majrule]
@@ -851,10 +851,9 @@ inflated without the +v correction, just as we saw when comparing the
 posterior tree length densities. In general, it is important to assess
 whether your results are sensitive to model assumptions, such as the
 degree of model complexity, and any mechanistic assumptions that
-motivate the model`s design. In this case, our tree estimate appears to
+motivate the model's design. In this case, our tree estimate appears to
 be robust to model complexity.
 
-Version dated:
 
 [^1]: In section [subsub:Req-Software] we offer a recommendation for a
     text editor.

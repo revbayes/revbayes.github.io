@@ -644,4 +644,3 @@ Using a method like this, and combining it with the MPI call above, you
 can scale this process up to multiple genes and spread the computational
 time across several cores to speed it up.
 
-Version dated:

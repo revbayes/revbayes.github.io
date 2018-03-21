@@ -65,7 +65,7 @@ Overview of the Dispersal-Extinction-Cladogenesis model {#sec:bg_intro2}
 =======================================================
 
 The Dispersal-Extinction-Cladogenesis (DEC) process models range
-evolution as a discrete-valued process {% cite Ree2005} {% cite Ree2008 %}. There are
+evolution as a discrete-valued process {% cite Ree2005 Ree2008 %}. There are
 three key components to understanding the DEC model: range characters,
 anagenetic range evolution, and cladogenetic range evolution (Figure
 [fig:dec_cartoon]).
@@ -98,7 +98,7 @@ species is observed or not observed across multiple discrete areas. For
 example, say there are three areas, A, B, and C. If a species is present
 in areas A and C, then its range equals AC, which can also be encoded
 into the length-3 bit vector, 101. Bit vectors may also be transformed
-into (decimal) integers, *e.g.,*the binary
+into (decimal) integers, *e.g.*, the binary
 number 101 equals the decimal number 5.
 
   Range           Bits  Size   State
@@ -162,7 +162,7 @@ dispersal rates between areas. Notice that the sum of rates leaving the
 null range ($\emptyset$) is zero, meaning any lineage that loses all
 areas in its range remains that way permanently.
 
-To build our intuition, let’s construct a DEC rate matrix in RevBayes.
+To build our intuition, let's construct a DEC rate matrix in RevBayes.
 Assume you have three areas
 
     n_areas <- 3
@@ -176,7 +176,7 @@ $d_{AB} = d_{AC} = \ldots = d_{CB} = 1$.
         }
     }
 
-Next, let’s create the extirpation rates with values $e_A=e_B=e_C=1$
+Next, let's create the extirpation rates with values $e_A=e_B=e_C=1$
 
     for (i in 1:n_areas) {
         for (j in 1:n_areas) {
@@ -238,14 +238,14 @@ and has probability 0.005.
 Also note that the probability of entering or leaving the null range is
 zero. By default, the RevBayes conditions the anagenetic range
 evolution process on never entering the null range when computing the
-transition probabilities (nullRange=“CondSurv”). This
+transition probabilities (nullRange="CondSurv"). This
 allows the model to both simulate and infer using the same transition
 probabilities. @Massana2015 first noted that the null range—an
 unobserved absorbing state—results in abnormal extirpation rate and
 range size estimates. Their proposed solution to eliminate the null
 range from the state space is enabled with the
-nullRange=“Exclude” setting. The
-nullRange=“Include” setting provides no special handling of
+nullRange="Exclude" setting. The
+nullRange="Include" setting provides no special handling of
 the null range, and produces the raw probabilities of @Ree2005.
 
 Cladogenetic range evolution
@@ -287,10 +287,10 @@ Make the cladogenetic probability event matrix
                              numCharacters=n_areas)
 
 `clado_event_types` defines what cladogenetic event types
-are used. “a” and “s” indicate allopatry and
+are used. "a" and "s" indicate allopatry and
 subset sympatry, as described in {% cite Ree2005 %}. Other cladogenetic events
-include jump dispersal [“j”] {% cite Matzke2014 %} and full sympatry
-[“f”} {% cite Landis2013a %}. The cladogenetic event probability
+include jump dispersal ["j"] {% cite Matzke2014 %} and full sympatry
+["f"} {% cite Landis2013a %}. The cladogenetic event probability
 matrix will assume that eventProbs and
 eventTypes share the same order.
 
@@ -333,7 +333,7 @@ cladogenesis for the left lineage, and after cladogenesis for the right
 lineage. Like above, for three areas, there are 8 states, and
 $8 \times 8 \times 8 = 512$ cladogenetic probability terms.
 
-Of course, this model can be specified for more than three areas. Let’s
+Of course, this model can be specified for more than three areas. Let's
 consider what happens to the size of **Q** when the number of areas,
 $N$, becomes large. For three areas, **Q** is size $8 \times 8$. For ten
 areas, **Q** is size $2^{10} \times 2^{10} = 1024 \times 1024$, which
@@ -390,8 +390,8 @@ remaining Hawaiian islands (R); and the North American mainland (Z).
 
 {:.figure}
 
-For this tutorial we’ll focus entirely on the silversword alliance and
-the modern Hawaiian archipelago. To begin, we’ll use just four areas, K,
+For this tutorial we'll focus entirely on the silversword alliance and
+the modern Hawaiian archipelago. To begin, we'll use just four areas, K,
 O, M, and H, and include areas R and Z in later analyses (Figure
 [fig:hawaii_areas]). The species ranges used in this exercise follow
 @Gillespie2009.
@@ -456,7 +456,7 @@ numbers
 {:.rev-output}
 
 
-We’ll want to record the relationship between range states and range
+We'll want to record the relationship between range states and range
 labels when producing an ancestral range estimate figure. First, store
 the vector of range state descriptions
 
@@ -471,25 +471,25 @@ then write it to file
     }
     write(state_desc_str, file=out_fn+".state_labels.txt")
 
-For this tutorial we’ll assume we know the dated species phylogeny
+For this tutorial we'll assume we know the dated species phylogeny
 without error.
 
     tree <- readTrees(tree_fn)[1]
 
-Next, we’ll build the anagenetic rate matrix for the DEC model. In its
+Next, we'll build the anagenetic rate matrix for the DEC model. In its
 simplest form, the rate matrix requires a dispersal rate and an
-extirpation rate. For this analysis, we’ll assume that all pairs of
+extirpation rate. For this analysis, we'll assume that all pairs of
 areas share the same dispersal rate and all areas share the same
 extirpation rate. To gain greater control to observe and manage prior
-sensitivity, we’ll reparameterize the DEC rate matrix to report the
+sensitivity, we'll reparameterize the DEC rate matrix to report the
 *relative* rates of dispersal versus extirpation events. In
 order for anagenetic event rates to be measured on an absolute time
-scale (e.g. in millions of years), we will also introduce a a
+scale (*e.g.*, in millions of years), we will also introduce a a
 biogeographic rate parameter, similar to the molecular clock parameter
 used in dating analyses.
 
 First, create a parameter for the arrival rate of anagenetic range
-evolution events. We’ll apply an uninformative prior to the rate’s
+evolution events. We'll apply an uninformative prior to the rate's
 magnitude by first assigning a uniform distribution to the log$_{10}$
 rate.
 
@@ -540,7 +540,7 @@ then create a matrix of extirpation rates
     }
 
 Note that er is a diagonal matrix whose diagonal values are
-determined (:=) by the stochastic variable,
+determined (`:=`) by the stochastic variable,
 extirpation_rate. We can now create our relative rate
 matrix, Q_DEC, with the fnDECRateMatrix
 function.
@@ -603,7 +603,7 @@ Add the monitors.
 The mnJointConditionalAncestralState monitor samples
 ancestral states from the phylogeny, tree, according to the
 model of evolution, m_bg, and stores it to the file named
-“simple.states.log”. Each row in the states file lists the
+"simple.states.log". Each row in the states file lists the
 joint sample of ancestral states conditioned on the tip values for the
 entire tree (i.e. a *joint* ancestral state sample
 *conditional* on the tip states). Each column corresponds
@@ -632,11 +632,11 @@ Results {#results .unnumbered}
 The script located at scripts/make_anc_states.Rev
 contains code to construct an ancestral state tree. Like all RevBayes
 scripts, this script may be executed from the command line. Because this
-is the first time using the script, we’ll enter the code manually. To
+is the first time using the script, we'll enter the code manually. To
 use it for future analyses, just modify the out_str
 variable to match the prefix of the target analysis, save the file, then
-execute the script by typing “rb
-scripts/make_anc_states.Rev” into the command line.
+execute the script by typing "rb
+scripts/make_anc_states.Rev" into the command line.
 
 
 > ![](figures/fig_simple_FigTree_ase.png) 
@@ -649,7 +649,7 @@ ancestral state on the tipwards end of the branch.
 {:.figure}
 
 After opening a new RevBayes session, create helper variables for
-files we’ll work with.
+files we'll work with.
 
     out_str = "output/simple"
     out_state_fn = out_str + ".states.log"
@@ -711,7 +711,7 @@ script with the source function
 
 > ![](figures/fig_simple_RevGadgets_ase.png) 
 > Tree with
-ancestral state estimates for the “simple” analysis. Nodes are annotated
+ancestral state estimates for the "simple" analysis. Nodes are annotated
 with ancestral states before and after cladogenetic events. The
 ancestral range with the highest posterior probability is shown. Colors
 of markers indicate the range state. 
@@ -728,7 +728,7 @@ presented here.
 An improved DEC analysis {#sec:bg_epoch}
 ========================
 
-In this section, we’ll introduce a suite of model features that lend
+In this section, we'll introduce a suite of model features that lend
 towards more realistic biogeographic analyses. Topics include applying
 range size constraints, stratified (or epoch) models of
 paleoconnectivity, function-valued dispersal rates, and incorporating
@@ -737,7 +737,7 @@ should produce more realistic ancestral range estimates, e.g. that a
 volcanic island may only be colonized once it has formed, and that
 distance should have some bearing on dispersal rate.
 
-To accomplish this, we’ll incorporate (paleo-)geographical data for the
+To accomplish this, we'll incorporate (paleo-)geographical data for the
 Hawaiian archipelago, summarized in Table [tab:paleogeo]. Even though
 we will continue to use four areas (K, O, M, H) in this section, we will
 use all six areas (R, K, O, M, H, Z) in Section [sec:bg_phylo], hence
@@ -756,7 +756,7 @@ the full table is given for future reference.
   [fig:hawaii_areas]. Ages $a_{max}$ and $a_{min}$ report the maximum
   and minimum origination times for the given island [adapted from
   @Neall2008]. Distances $g_{ij}$ report the shortest geographical
-  distance from the coast of the row’s area to the column’s area
+  distance from the coast of the row's area to the column's area
   (measured at present).<span data-label="tab:paleogeo">
 
 Analysis
@@ -826,12 +826,12 @@ Record the complete list of range descriptions to file
     }
     write(state_desc_str, file=out_fn+".state_labels.txt")
 
-As with the previous analysis, we’ll brazenly assume we know the dated
+As with the previous analysis, we'll brazenly assume we know the dated
 species phylogeny without error.
 
     tree <- readTrees(tree_fn)[1]
 
-Next, we’ll read and structure our paleogeographic data. Read in the
+Next, we'll read and structure our paleogeographic data. Read in the
 list of minimum and maximum ages of island formation
 
     time_bounds <- readDataDelimitedFile(file=times_fn, delimiter=" ")
@@ -884,7 +884,7 @@ and, if we assume the relative distance between islands remains roughly
 constant over time, then one set of distances is suitable for use for
 all four epochs.
 
-Next, we’ll build an enhanced DEC model. Like before, we’ll define the
+Next, we'll build an enhanced DEC model. Like before, we'll define the
 rate matrix in terms of relative rates, then rescale the entire matrix
 with the biogeographic rate scaling parameter rate_bg.
 
@@ -914,7 +914,7 @@ notice we now have an outer loop over the number of epochs,
 n_epochs. This is used to construct a vector of dispersal
 matrices, one matrix per epoch. It is crucial to note that all of
 elements are assigned the value 0.0 unless the if-statement
-“if (connectivity[i][j][k] &gt; 0)”  evaluates to
+"if (connectivity[i][j][k] &gt; 0)"  evaluates to
 true. That is, dispersal rates between areas j
 and k for epoch i are non-zero if and only if
 the connectivity matrix element connectivity[i][j][k]
@@ -953,7 +953,7 @@ and then provide the appropriate extirpation matrix structure
 
 Now we have a vector of dispersal rates, dr, and an vector
 of extirpation rates, er, in stored in the RevBayes
-workspace. We’ll use these to create a vector of four DEC rate matrices,
+workspace. We'll use these to create a vector of four DEC rate matrices,
 one for each epoch.
 
     for (i in 1:n_epochs) {
@@ -963,7 +963,7 @@ one for each epoch.
     }
 
 Next, we need to define breakpoints for when the underlying
-paleogeographic state/connectivity changes. In our case, we’ll define
+paleogeographic state/connectivity changes. In our case, we'll define
 the epoch breakpoints as uniformly distributed random variables that are
 bounded by the minimum and maximum age estimates for when each new
 island complex formed (Table [tab:paleogeo]). This is easily done
@@ -983,7 +983,7 @@ the final epoch as the present.
 
 Now that we have variables for the timing (epoch_times)
 and character (Q_DEC via connectivity) of
-paleogeographic change throughout the Hawaiian archipelago, we’re ready
+paleogeographic change throughout the Hawaiian archipelago, we're ready
 to unify these objects with the fnEpoch function. This
 function requires a vector of rate matrices, a vector of epoch end
 times, and a vector of rate multipliers as arguments. Internally, the
@@ -1041,7 +1041,7 @@ Attach the observed range data to the distribution
 
     m_bg.clamp(dat_range_n)
 
-And the rest we’ve done before...
+And the rest we've done before...
 
     monitors[mni++] = mnScreen(printgen=100, rate_bg, extirpation_rate, distance_scale)
     monitors[mni++] = mnModel(file=out_fn+".model.log", printgen=10)
@@ -1070,7 +1070,7 @@ Results
 *Example results are located at
 output_example/epoch.\**
 
-When compared to the ancestral state estimates from the “simple”
+When compared to the ancestral state estimates from the "simple"
 analysis (Figure [fig:simple_RevGadgets_ase]), these results are far
 more consonant with what we understand about the origination times of
 the islands (Table [tab:paleogeo]). First, this reconstruction asserts
@@ -1115,7 +1115,7 @@ nested within the subtribe *Madiinae*, alongside the
 tarweeds, a clade of plants inhabiting in western North America. Fossil
 pollen evidence indicates that *Madiinae* diversified
 during a period of aridification from 15–5 Ma in the western regions of
-North America {% cite Baldwin1991 %}. It’s clear that silverswords colonized
+North America {% cite Baldwin1991 %}. It's clear that silverswords colonized
 Hawaii from western North America, but the timing of the event is
 difficult to estimate. Even though the oldest Hawaiian island they
 inhabit is Kauai, it is possible that silverswords first colonized older
@@ -1181,16 +1181,16 @@ Thus, adding these two areas allows the silversword origin time to
 precede the formation of Kauai when the dispersal rate is large.
 
 Additionally, we will add three tarweed taxa to our dataset, increasing
-the total number of taxa to 38. We’ll use a molecular alignment for the
+the total number of taxa to 38. We'll use a molecular alignment for the
 internal transcribed spacer (ITS) to estimate the phylogeny, which is a
 657bp non-coding locus that is historically important for plant
 systematics. Because the locus is relatively short, it will also leave
 us with a fair amount of phylogenetic uncertainty in branch length and
-topology estimates. However, because we’re estimating phylogeny and
+topology estimates. However, because we're estimating phylogeny and
 biogeography, it will be correctly incorporated into our ancestral range
 estimates.
 
-As usual, we’ll begin by creating variables to manage our input and
+As usual, we'll begin by creating variables to manage our input and
 output files
 
     range_fn = "data/n6/silversword.n6.range.nex"
@@ -1275,7 +1275,7 @@ taxa, and the number of branches in the tree
 
 Because we will estimate the topology and branch lengths parameters, the
 tree variable must be declared as a stochastic node with a
-prior distribution. For this, we’ll use a constant rate birth-death
+prior distribution. For this, we'll use a constant rate birth-death
 process.
 
 Assign root age with a maximum age of 15Ma to reflect the fossil pollen
@@ -1344,7 +1344,7 @@ clock model in the absence of data.
         branch_rates[i] := rate_mol * branch_rate_multiplier[i]
     }
 
-Now we’ll create an HKY rate matrix. First, we create a
+Now we'll create an HKY rate matrix. First, we create a
 Gamma-distributed transition-transversion (Ts/Tv) rate ratio with prior
 with mean equal to one
 
@@ -1362,7 +1362,7 @@ the rate matrix
 
     Q_mol := fnHKY(kappa, bf)
 
-Next, we’ll create a $+\Gamma4$ across-site rate variation model. First,
+Next, we'll create a $+\Gamma4$ across-site rate variation model. First,
 we need a parameter to control the amount of site rate variation
 
     alpha ~ dnUniform(0,50)
@@ -1378,7 +1378,7 @@ amount of site rate heterogeneity increases. When alpha is
 large, the variance shrinks to zero, and the site rate multipliers of
 site_rates converge to the value 1.
 
-Finally, we’ll create our molecular model of substitution
+Finally, we'll create our molecular model of substitution
 
     m_mol ~ dnPhyloCTMC(Q=Q_mol, tree=tree, branchRates=branch_rates, siteRates=site_rates, type="DNA", nSites=dat_mol.nchar())
 
@@ -1501,7 +1501,7 @@ Attach the species range dataset to the model
     m_bg.clamp(dat_range_n)
 
 To easily identify interactions between the posterior estimates of
-island ages and divergence times, we’ll create a deterministic node to
+island ages and divergence times, we'll create a deterministic node to
 monitor the age of the silversword radiation. First, create a
 deterministic node to monitor the crown age of the silversword radiation
 
@@ -1565,9 +1565,9 @@ divergence time estimation, it is important to run addition analyses
 with alternative settings. Scripts to jointly estimate molecular
 evolution, historical biogeographic, and phylogenetic parameters are
 available as scripts/run_simple_phy.Rev and
-scripts/run_epoch_phy.Rev. The “epoch” analysis is
-identical to the analysis just described. The “simple” analysis is
-similar to the “epoch” analysis, except it substitutes the
+scripts/run_epoch_phy.Rev. The "epoch" analysis is
+identical to the analysis just described. The "simple" analysis is
+similar to the "epoch" analysis, except it substitutes the
 paleogeography-aware model of range evolution (see Section
 [sec:bg_epoch]) for a paleogeography-naive model (see Section
 [sec:bg_simple]).
@@ -1586,7 +1586,7 @@ in the simple_phy.mcc.tre and
 simple_phy.model.log files.) The simple model also infers
 Kauai+Maui (KM) as the ancestral range of living silverswords and a
 crown age of 7.2 (HPD95% 2.5, 13.5) Ma, which is impossibly ancient
-given the islands’ ages.
+given the islands' ages.
 
 The epoch analysis (Figure [fig:epoch_phy]) produces more sensible
 ancestral range estimates, with Kauai being colonized first, and younger
@@ -1634,8 +1634,8 @@ formation of Maui, but after the formation of Kauai.
 
   : Posterior probability that the age of crown silverswords ($a_s$) is
   older than the origination times of K, O, M, and H
-  ($a_K, a_O, a_M, a_H$, respectively). The “simple” model (Left)
-  ignores paleogeography while the “epoch” model (Right) conditions on
+  ($a_K, a_O, a_M, a_H$, respectively). The "simple" model (Left)
+  ignores paleogeography while the "epoch" model (Right) conditions on
   it.<span data-label="tab:epoch_ages">
 
 By tabulating the results of the deterministic variable
@@ -1648,4 +1648,3 @@ the formation of Kauai, $P(a_s > a_K) = 0.02 < 1-0.95$ and weak support
 that they originated after the formation of Oahu,
 $P(a_s > a_O) = 0.26 > 1-0.95$.
 
-Version dated:

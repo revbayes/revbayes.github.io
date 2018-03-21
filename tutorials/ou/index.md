@@ -259,4 +259,3 @@ You may want to monitor and then visualize the branch-specific jumps
 
     monitors[4] = mnExtNewick(filename="output/primates_mass_OU_rate_jumps.trees", isNodeParameter=FALSE, printgen=10, separator = TAB, tree=psi, nodeOptim, optimChange)
 
-Version dated:

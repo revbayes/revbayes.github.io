@@ -1,7 +1,7 @@
 ---
 title: Alignment concatenation
 subtitle: Species tree estimation from multiple concatenated gene sequence alignments
-authors:  Bastien Boussau and Sebastian H&#246;hna
+authors:  Bastien Boussau and Sebastian Höhna
 level: 1
 prerequisites:
 - intro
@@ -16,7 +16,7 @@ redirect: true
 Overview: Gene tree-species tree models
 =======================================
 
-Ever since @Zuckerkandl1965a, researchers have acknowledged that
+Ever since {% cite Zuckerkandl1965a %}, researchers have acknowledged that
 phylogenies reconstructed from homologous gene sequences could differ
 from species phylogenies. As molecular sequences accumulated, the link
 between gene trees and species trees started to be modeled. The first
@@ -29,7 +29,7 @@ in complexity, to model biological processes with increasing realism, to
 accommodate several processes at the same time, or to handle
 genome-scale data sets. In this overview we will not detail these
 models, and we invite the interested reader to take a look at recent
-reviews (*e.g.,*{% cite Szollosi28072014 %}).
+reviews (*e.g.*, {% cite Szollosi28072014 %}).
 
 Processes of discord
 --------------------
@@ -61,9 +61,9 @@ for instance by allowing different sets of parameters for different
 branches of the species tree. This is useful to model differences in
 rates of duplication, loss or transfer among species, or to model
 different effective population sizes in a species tree. In
-`RevBayes` so far only models of incomplete lineage sorting
+RevBayes so far only models of incomplete lineage sorting
 have been implemented (models of duplication and loss and transfer will
-soon be added). Thanks to `RevBayes` modular design, there
+soon be added). Thanks to RevBayes' modular design, there
 is quite a lot of flexibility in specifying the model, for instance by
 associating different parameters to different branches of the species
 tree, or by combining the gene tree-species tree model to other types of
@@ -119,7 +119,7 @@ tree models.
     know have taken a part in generating the data, thus possibly
     improving the accuracy and robustness of our inferences. Further,
     these models can be combined with
-    *e.g.,*models of sequence evolution,
+    *e.g.*, models of sequence evolution,
     models of co-evolution between gene trees, or models of trait
     evolution. However, these models are computationally challenging to
     use, because they require estimating jointly gene trees, species
@@ -314,4 +314,3 @@ Scripts are all placed in
 
         mapTree(treetrace,"output/primates_concatenation_root_calibration")
 
-Version dated:

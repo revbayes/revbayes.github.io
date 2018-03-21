@@ -780,4 +780,3 @@ performing an analysis of those trees.
 Save and close the file called in the `scripts` directory. Then, execute
 the MCMC analysis using:
 
-Version dated:

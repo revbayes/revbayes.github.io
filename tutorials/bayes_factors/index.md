@@ -38,32 +38,32 @@ tutorials:
 -   [Getting
     started](https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Getting_Started/RB_Getting_Started.pdf)
 
--   [‘Rev‘
+-   [`Rev`
     basics](https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Intro_Tutorial/RB_Intro_Tutorial.pdf)
 
--   [‘Rev‘
+-   [`Rev`
     syntax](https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Rev_Tutorial/RB_Rev_Tutorial.pdf)
 
 -   [Substitution
     models](https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_CTMC_Tutorial/RB_CTMC_Tutorial.pdf)
 
-Note that the [‘Rev‘ basics
+Note that the [`Rev` basics
 tutorial](https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Intro_Tutorial/RB_Intro_Tutorial.pdf)
-introduces the basic syntax of ‘Rev‘ but does not cover any phylogenetic
+introduces the basic syntax of `Rev` but does not cover any phylogenetic
 models. We tried to keep this tutorial very basic and introduce all the
-language concepts and theory on the way. You may only need the [‘Rev‘
+language concepts and theory on the way. You may only need the [`Rev`
 syntax
 tutorial](https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Rev_Tutorial/RB_Rev_Tutorial.pdf)
-for a more in-depth discussion of concepts in ‘Rev‘.
+for a more in-depth discussion of concepts in `Rev`.
 
 Data and files
 ==============
 
 We provide the data file that we will use in this tutorial. Of course,
-you may want to use your own dataset instead. In the ‘data‘ folder, you
+you may want to use your own dataset instead. In the `data` folder, you
 will find the following file:
 
--   ‘primates_and_galeopterus_cytb.nex‘: Alignment of the *cytochrome
+-   `primates_and_galeopterus_cytb.nex`: Alignment of the *cytochrome
     b* subunit from 23 primates representing 14 of the 16 families
     (*Indriidae* and *Callitrichidae* are missing).
 
@@ -75,8 +75,8 @@ models of varying complexity are plausible *a priori*. We therefore need
 a way to objectively identify the model that balances estimation bias
 and inflated error variance associated with under- and
 over-parameterized models, respectively. Increasingly, model selection
-is based on *Bayes factors* [*e.g.,*
-@Suchard2001} {% cite Lartillot2006} {% cite Xie2011} {% cite Baele2012} {% cite Baele2013], which
+is based on *Bayes factors* [*e.g.*, 
+{% citet Suchard2001 Lartillot2006 Xie2011 Baele2012 Baele2013 %}], which
 involves first calculating the marginal likelihood of each candidate
 model and then comparing the ratio of the marginal likelihoods for the
 set of candidate models.
@@ -99,7 +99,7 @@ Note that interpreting Bayes factors involves some subjectivity. That
 is, it is up to *you* to decide the degree of your belief in $M_0$
 relative to $M_1$. Despite the absence of an absolutely objective
 model-selection threshold, we can refer to the scale [outlined by
-@Jeffreys1961] that provides a “rule-of-thumb” for interpreting these
+@Jeffreys1961] that provides a "rule-of-thumb" for interpreting these
 measures (Table [bftable]).
 
 l c c c & & &\
@@ -137,8 +137,8 @@ for calculating marginal likelihoods are not known for phylogenetic
 models (see equation [margeLike]), thus we must resort to numerical
 integration methods to estimate or approximate these values. In this
 exercise, we will estimate the marginal likelihood for each partition
-scheme using both the stepping-stone {% cite Xie2011} {% cite Fan2011 %} and path
-sampling estimators {% cite Lartillot2006} {% cite Baele2012 %}.
+scheme using both the stepping-stone {% cite Xie2011 Fan2011 %} and path
+sampling estimators {% cite Lartillot2006 Baele2012 %}.
 
 Substitution Models
 -------------------
@@ -163,7 +163,7 @@ Estimating the Marginal Likelihood
 ----------------------------------
 
 We will estimate the marginal likelihood of a given model using a
-‘stepping-stone’ (or ‘path-sampling’) algorithm. These algorithms are
+'stepping-stone' (or 'path-sampling') algorithm. These algorithms are
 similar to the familiar MCMC algorithms, which are intended to sample
 from (and estimate) the joint posterior probability of the model
 parameters. Stepping-stone algorithms are like a series of MCMC
@@ -173,7 +173,7 @@ prior probability distributions. The basic idea is to estimate the
 probability of the data for all points between the posterior and the
 prior—effectively summing the probability of the data over the prior
 probability of the parameters to estimate the marginal likelihood.
-Technically, the steps correspond to a series of ‘powerPosteriors()‘,
+Technically, the steps correspond to a series of `powerPosteriors()`,
 where the likelihood is iteratively raised to a series of numbers
 between 1 and 0 (Figure [fig:ss]). When the likelihood is raised to
 the power of 1 (typically the first stepping stone), samples are drawn
@@ -182,12 +182,12 @@ raised to the power of 0 (typically the last stepping stone), samples
 are drawn from the prior. To perform a stepping-stone simulation, we
 need to specify (1) the number of stepping stones (power posteriors)
 that we will use to traverse the path between the posterior and the
-prior (*e.g.,*we specify 50 or 100 stones),
+prior (*e.g.*, we specify 50 or 100 stones),
 (2) the spacing of the stones between the posterior and prior
-(*e.g.,*we may specify that the stones are
+(*e.g.*, we may specify that the stones are
 distributed according to a beta distribution), (3) the number of samples
 (and their thinning) to be drawn from each stepping stone, and (4) the
-direction we will take (*i.e.,*from the
+direction we will take (*i.e.*, from the
 posterior to the prior or vice versa).
 
 > ![](figures/ss.png) 
@@ -214,7 +214,7 @@ sampling the likelihood close to the posterior and incrementally
 sampling closer and closer to the prior as the power decreases.
 
 Just to be safe, it is better to clear the workspace (if you did not
-just restart ‘RevBayes‘):
+just restart RevBayes):
 
     clear()
 
@@ -223,7 +223,7 @@ the simple Jukes-Cantor substitution model. Setting up the model
 requires:
 
 1.  Loading the data and retrieving useful variables about it
-    (*e.g.,*number of sequences and
+    (*e.g.*, number of sequences and
     taxon names).
 
 2.  Specifying the instantaneous-rate matrix of the substitution model.
@@ -231,7 +231,7 @@ requires:
 3.  Specifying the tree model including branch-length variables.
 
 4.  Creating a random variable for the sequences that evolved under
-    the ‘PhyloCTMC‘.
+    the `PhyloCTMC`.
 
 5.  Clamping the data.
 
@@ -240,10 +240,10 @@ requires:
 7.  Specifying the moves for parameter updates.
 
 The following procedure for estimating marginal likelihoods is valid for
-any model in ‘RevBayes‘. You will need to repeat this later for other
+any model in RevBayes. You will need to repeat this later for other
 models. First, we create the variable containing the power-posterior
 analysis. This requires that we provide a model and vector of moves, as
-well as an output file name. The ‘cats‘ argument sets the number of
+well as an output file name. The `cats` argument sets the number of
 stepping stones.
 
     pow_p = powerPosterior(mymodel, moves, monitors, "output/model1.out", cats=50) 
@@ -255,7 +255,7 @@ from some random point.
 
     pow_p.burnin(generations=10000,tuningInterval=1000)
 
-Now execute the run with the ‘.run()‘ function:
+Now execute the run with the `.run()` function:
 
     pow_p.run(generations=1000)  
 
@@ -268,7 +268,7 @@ compute the marginal likelihood using stepping-stone sampling.
 These commands will execute a stepping-stone simulation with 50 stepping
 stones, sampling 1000 states from each step. Compute the marginal
 likelihood under stepping-stone sampling using the member function
-‘marginal()‘ of the ‘ss‘ variable and record the value in Table
+`marginal()` of the `ss` variable and record the value in Table
 [tab:ml_cytb].
 
     ss.marginal() 
@@ -279,7 +279,7 @@ takes the same power posteriors as input.
     ps = pathSampler(file="output/model1.out", powerColumnName="power", likelihoodColumnName="likelihood")
 
 Compute the marginal likelihood under stepping-stone sampling using the
-member function ‘marginal()‘ of the ‘ps‘ variable and record the value
+member function `marginal()` of the `ps` variable and record the value
 in Table [tab:ml_cytb].
 
     ps.marginal() 
@@ -292,7 +292,7 @@ We have kept this description of how to use stepping-stone-sampling and
 path-sampling very generic and did not provide the information about the
 model here. Our main motivation is to show that the marginal likelihood
 estimation algorithms are independent of the model. Thus, you can apply
-these algorithms to any model, *e.g.,*relaxed
+these algorithms to any model, *e.g.*, relaxed
 clock models and birth-death models, as well.
 
 Exercises
@@ -365,15 +365,22 @@ the likelihood values to avoid
 multiplying likelihoods (numbers $< 1$) generates numbers that are too
 small to be held in computer memory. Accordingly, we need to use a
 different form of equation [bfFormula] to calculate the ln-Bayes
-factor (we will denote this value $\mathcal{K}$): $$\begin{aligned}
+factor (we will denote this value $\mathcal{K}$): 
+
+$$\begin{aligned}
 \label{LNbfFormula}
 \mathcal{K}=\ln[BF(M_0,M_1)] = \ln[\mathbb{P}(\mathbf X \mid M_0)]-\ln[\mathbb{P}(\mathbf X \mid M_1)],\end{aligned}$$
+
 where $\ln[\mathbb{P}(\mathbf X \mid M_0)]$ is the *marginal lnL*
 estimate for model $M_0$. The value resulting from equation
 [LNbfFormula] can be converted to a raw Bayes factor by simply taking
-the exponent of $\cal{K}$ $$\begin{aligned}
+the exponent of $\cal{K}$ 
+
+$$\begin{aligned}
 \label{LNbfFormula2}
-BF(M_0,M_1) = e^{\cal{K}}.\end{aligned}$$ Alternatively, you can
+BF(M_0,M_1) = e^{\cal{K}}.\end{aligned}$$ 
+
+Alternatively, you can
 directly interpret the strength of evidence in favor of $M_0$ in log
 space by comparing the values of $\cal{K}$ to the appropriate scale
 (Table [bftable], second column). In this case, we evaluate $\cal{K}$
@@ -398,9 +405,9 @@ log-likelihoods.
 For your consideration...
 =========================
 
-In this tutorial you have learned how to use ‘RevBayes‘ to assess the
+In this tutorial you have learned how to use RevBayes to assess the
 *relative* fit of a pool of candidate substitution models to a given
-sequence alignment. Typically, once we have identified the “best”
+sequence alignment. Typically, once we have identified the "best"
 substitution model for our alignment, we would then proceed to use this
 model for inference. Technically, this is a decision to condition our
 inferences on the selected model, which explicitly assumes that it
@@ -412,19 +419,19 @@ Accommodating Model Uncertainty
 -------------------------------
 
 In some or many situations the number of possible models to compare is
-large, *e.g.,*choosing all possible
+large, *e.g.*, choosing all possible
 combinations of substitution models {% cite Huelsenbeck2004 %}. Furthermore,
 imagine, for example, that there are several (possibly many) alternative
 models that provide a similarly good fit to our given dataset. In such
 scenarios, conditioning inference on *any* single model (even the
-‘best’) ignores uncertainty in the chosen model, which can cause
+'best') ignores uncertainty in the chosen model, which can cause
 estimates to be biased. This is the issue of *model uncertainty*. The
 Bayesian framework provides a natural approach for accommodating model
 uncertainty by means of *model averaging*; we simply adopt the
 perspective that models (like standard parameters) are random variables,
 and integrate the inference over the distribution of candidate models.
 We will demonstrate how to accommodate model uncertainty using
-‘RevBayes‘ in a separate tutorial, RB_ModelAveraging_Tutorial.
+RevBayes in a separate tutorial, RB_ModelAveraging_Tutorial.
 
 Assessing Model Adequacy
 ------------------------
@@ -442,7 +449,6 @@ approach is based on the following premise: if the candidate model
 provides a reasonable description of the process that gave rise to our
 dataset, then we should be able to generate data under this model that
 resemble our observed data. We will demonstrate how to assess model
-adequacy using ‘RevBayes‘ in a separate tutorial,
+adequacy using RevBayes in a separate tutorial,
 RB_ModelAdequacy_Tutorial.
 
-Version dated:

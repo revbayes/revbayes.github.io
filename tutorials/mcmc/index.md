@@ -17,7 +17,7 @@ Overview
 ========
 
 This tutorial demonstrates how to diagnose the performance of MCMC
-simulations, such as the output from `RevBayes`. You will create a
+simulations, such as the output from RevBayes. You will create a
 phylogenetic model for the evolution of DNA sequences under a JC, HKY85,
 GTR, GTR+Gamma and GTR+Gamma+I substitution model. For all these models
 you will perform an MCMC run to estimate phylogeny and other model
@@ -107,14 +107,14 @@ The ability to rigorously diagnose MCMC performance requires familiarity
 with some basic concepts from probability theory (discussed last time)
 and a strong intuitive understanding of the underlying mechanics—we need
 to know how the algorithms work in order to understand when they are not
-working. In this installment we’ll briefly cover the mechanics of the
+working. In this installment we'll briefly cover the mechanics of the
 Metropolis Hastings MCMC algorithm.
 
 Recall that Bayesian inference is focused on the posterior probability
 density of parameters. The posterior probability of the parameters can,
-in principle, be solved using Bayes’ theorem. However, (most)
+in principle, be solved using Bayes' theorem. However, (most)
 phylogenetic problems cannot be solved analytically, owing mainly to the
-denominator of Bayes’ theorem—the marginal likelihood requires solving
+denominator of Bayes' theorem—the marginal likelihood requires solving
 multiple integrals (for all of the continuous parameters, such as branch
 lengths, substitution rates, stationary frequencies, etc.) for each
 tree, and summing over all trees.
@@ -127,8 +127,8 @@ etc.—we will consider the Metropolis Hastings (MH) algorithm because it
 is commonly used for phylogenetic problems, and because it is similar to
 many other variants (which we will cover elsewhere). Note that MCMC and
 Bayesian inference are distinct animals: they have a relationship
-similar to that between ’optimization algorithms’ and
-‘maximum-likelihood estimation.’ Some Bayesian inference can be
+similar to that between 'optimization algorithms' and
+'maximum-likelihood estimation.' Some Bayesian inference can be
 accomplished without MCMC algorithms, and MCMC algorithms can be used to
 solve problems in non-Bayesian statistical frameworks.
 
@@ -160,11 +160,11 @@ elevation, latitude, longitude, etc.) in a log. If we allow our robot to
 wander long enough, his log is guaranteed to provide an arbitrarily
 precise description of the topography of the terrain.
 
-Let’s consider a slightly more formal description of the
+Let's consider a slightly more formal description of the
 Metropolis-Hastings MCMC algorithm. First some preliminaries. This
 algorithm entails simulating a Markov chain that has a stationary
 distribution that is the joint posterior probability density of
-phylogenetic model parameters. The ‘state’ of the chain is a set of
+phylogenetic model parameters. The 'state' of the chain is a set of
 parameter values that fully specify phylogenetic model:
 *e.g.*, a tree topology, a vector of branch lengths, and a
 set of parameters specifying the stochastic model of trait change
@@ -191,9 +191,9 @@ Now, on to the MH algorithm:
     corresponding prior probability density for each parameter.
 
 2.  Select a single parameter (or set of parameters) to alter
-    according to its proposal probability. For the moment, we won’t
+    according to its proposal probability. For the moment, we won't
     worry about the details of these proposal mechanisms—they basically
-    involve different ways of ‘poking’ the current parameter value,
+    involve different ways of 'poking' the current parameter value,
     $\theta$, to generate a new (proposed) parameter value,
     $\theta ^{\prime}$. The important question at the moment is: Where
     do these proposal probabilities come from? The answer is:
@@ -219,11 +219,11 @@ Now, on to the MH algorithm:
     between zero and infinity, so is better described using a uniform
     prior probability density. Different kinds of prior probability
     densities will have specific proposal mechanisms—for example, there
-    is something called a ‘Dirichlet’ proposal mechanism that is used to
+    is something called a 'Dirichlet' proposal mechanism that is used to
     propose new values for parameters described by a Dirichlet prior,
-    and something called a ‘Slider’ proposal mechanism that is used to
+    and something called a 'Slider' proposal mechanism that is used to
     propose new values for parameters described by a uniform prior.
-    (Again, we’ll go into the gory details of these proposal mechanisms
+    (Again, we'll go into the gory details of these proposal mechanisms
     another time. The main idea for now is that the proposal mechanisms
     generate a new parameter value by poking the current
     parameter value.)
@@ -234,7 +234,7 @@ Now, on to the MH algorithm:
     mechanisms must meet. All proposal mechanisms must be:
 
     1.  stochastic (new parameter values must be proposed
-        ‘randomly’)
+        'randomly')
 
     2.  irreducible (all parameter values must be potentially
         accessible by the chain)
@@ -248,7 +248,7 @@ Now, on to the MH algorithm:
     R = \text{min}\Bigg[1, \underbrace{\frac{P(X \mid \theta ^{\prime})}{P(X \mid \theta )}}_{\text{likelihood ratio}} \cdot \underbrace{\frac{ P(\theta ^{\prime})}{P(\theta)}}_\text{prior ratio} \cdot \underbrace{\frac{P(\theta \mid \theta ^{\prime})}{P(\theta ^{\prime} \mid \theta)}}_\text{proposal ratio} \Bigg]\end{aligned}$$
 
     The acceptance probability, $R$, is either equal to one or the
-    product of three ratios’ so long as that product is less than one
+    product of three ratios' so long as that product is less than one
     (because $R$ is a probability, so it cannot be greater than one).
     So, what are these three ratios?
 
@@ -261,7 +261,7 @@ Now, on to the MH algorithm:
 
     **Prior ratio:** in Bayesian inference, each parameter is a random
     variable, and so is described by a prior probability density.
-    Accordingly, we can ‘look up’ (calculate) the prior probability of
+    Accordingly, we can 'look up' (calculate) the prior probability of
     any specific parameter value. The prior ratio is simply the prior
     probability of the proposed and current parameter values.
 
@@ -273,15 +273,15 @@ Now, on to the MH algorithm:
     probability of proposing a step from point A to point B in the
     terrain is equal to the probability of proposing a step from point B
     to point A. For inference problems in which the dimensions of the
-    model are static, the proposal ratio is usually equal to one (we’ll
+    model are static, the proposal ratio is usually equal to one (we'll
     discuss exceptions to this in the context of reversible-jump MCMC in
     a future post).
 
     Note that if the proposal ratio is equal to one, the acceptance
     probability, $R$ is based only on the product of the likelihood and
-    prior ratios. Does that ring a bell? [Hint: think of Bayes’
-    theorem.] [Hint 2: think of the right side of Bayes’ theorem.]
-    [Hint 3: think of the numerator of the right side of Bayes’
+    prior ratios. Does that ring a bell? [Hint: think of Bayes'
+    theorem.] [Hint 2: think of the right side of Bayes' theorem.]
+    [Hint 3: think of the numerator of the right side of Bayes'
     theorem.] That is, the posterior probability is proportional to the
     product of the likelihood and prior probability. Accordingly, the
     acceptance probability is the posterior probability of the proposed
@@ -296,18 +296,18 @@ Now, on to the MH algorithm:
 5.  Generate a uniform random number between zero and one,
     $U[0,1]$. If $U<R$, accept the proposed change; otherwise, the
     current state of the chain becomes the next state of the chain.
-    Downhill moves will be accepted ‘randomly’ in proportion to the
+    Downhill moves will be accepted 'randomly' in proportion to the
     difference in elevation.
 
-6.  Repeat steps $2-5$ an ‘adequate’ number of times.
+6.  Repeat steps $2-5$ an 'adequate' number of times.
 
-**That’s it!** Notice that the decision to accept or reject proposed
+**That's it!** Notice that the decision to accept or reject proposed
 steps in the MCMC (and thus to sample from the joint posterior
 probability density) is based exclusively on the likelihood and prior
 probability of the proposed and current states—two quantities that are
 easy to calculate. The beautiful, fantabulous achievement of the
 Metropolis-Hastings algorithm is the slaying of the beastly denominator
-of Bayes’ theorem. Specifically, the algorithm allows us to do inference
+of Bayes' theorem. Specifically, the algorithm allows us to do inference
 while entirely avoiding the need to calculate the (completely
 intractable) marginal likelihood!
 
@@ -368,10 +368,10 @@ Running Markov chain Monte Carlo Simulations & Assessing Output {#secUnif}
 ### Data & Model
 
 We provide the data file(s) which we will use in this tutorial. You may
-want to use your own data instead. In the ‘data‘ folder, you will find
+want to use your own data instead. In the 'data' folder, you will find
 the following files
 
--   ‘primates_and_galeopterus_cytb.nex‘: Alignment of the *cytochrome
+-   'primates_and_galeopterus_cytb.nex': Alignment of the *cytochrome
     b* subunit from 23 primates representing 14 of the 16 families
     (*Indriidae* and *Callitrichidae* are missing). Note that there is
     one outgroup species included: *Galeopterus variegatus*.
@@ -385,7 +385,7 @@ Look at Model file & MCMC file in a text editor.
 
 Let us now explore the behavior of our Markov chain. The aim here in
 these exercises is to visually inspect the output generated by
-`RevBayes`. You should look at the trace plots using `Tracer`. Watch out
+RevBayes. You should look at the trace plots using `Tracer`. Watch out
 for badly mixing chains, poor performance of the MCMC and correlated
 parameter estimates.
 
@@ -416,7 +416,7 @@ Now let us open the generated output file in `Tracer`. The file should
 be called output/primates_cytb_test1.log.
 
 What you may notice is that the ESS are very low and the MCMC is mixing
-very poor. This is not good. We’ll try a new analysis but instead run
+very poor. This is not good. We'll try a new analysis but instead run
 multiple moves per iteration. The new setting is:
 
 -   uniform GTR+I+G
@@ -429,19 +429,19 @@ multiple moves per iteration. The new setting is:
 
 -   no-pre-burnin
 
-We achieve this by setting ‘moveschedule=“random”‘ (which is the
+We achieve this by setting `moveschedule=“random”` (which is the
 default) as an argument for the MCMC algorithm. You can run this
-analysis in `RevBayes` using
+analysis in RevBayes using
 
     source("scripts/mcmc_run2.Rev")
 
 Look at the output in `Tracer` again. You should see that the ESS values
 are still very low and the chain is still not mixing well.
 
-One issue that you see is that shape and rate parameter ‘alpha‘ for the
+One issue that you see is that shape and rate parameter 'alpha' for the
 among-site-rate-variation is updated not often enough. It is quite
 likely that our move proposed too many bad new parameters. So let us
-change the window size for the scaling move applied on ‘alpha‘ from
+change the window size for the scaling move applied on 'alpha' from
 
     moves[++mvi] = mvScale(alpha, lambda=50.0, weight=2.0)
 
@@ -455,7 +455,7 @@ This will give us now the following set-up:
 
 -   multiple moves per cycle
 
--   *smaller proposals for ‘alpha‘*
+-   *smaller proposals for 'alpha'*
 
 -   flat & low proposal weights
 
@@ -471,10 +471,10 @@ ESS values and better mixing of the MCMC.
 
 That worked quite well but it seems to be cumbersome to adjust all the
 tuning parameters of the moves manually. Instead, let us allow
-`RevBayes` to auto-tune the moves. Just change ‘tune=true‘ for all moves
-where it was ‘tune=false‘ before. Now, also include a pre-burnin. The
+RevBayes to auto-tune the moves. Just change `tune=true` for all moves
+where it was `tune=false` before. Now, also include a pre-burnin. The
 pre-burnin runs if you say
-‘mymcmc.burnin(generations=1000,tuningInterval=100)‘. This runs a chain
+`mymcmc.burnin(generations=1000,tuningInterval=100)`. This runs a chain
 for 1000 iterations and updates the tuning parameters, such as the
 window size, so that you achieve a good acceptance rate. That means, if
 previously a move accepted too few proposal it will decrease the window
@@ -490,7 +490,7 @@ Here is the new model set-up:
 
 -   *pre-burnin (with scale adjusted from previous)*
 
-Run the analysis in `RevBayes`:
+Run the analysis in RevBayes:
 
     source("scripts/mcmc_run4.Rev")
 
@@ -502,12 +502,12 @@ better.
 Comparing your output to the prior
 ----------------------------------
 
-Next, let’s compare it to the prior. Here we want to see how much
+Next, let's compare it to the prior. Here we want to see how much
 information we actually have from the data and how much our prior
 influenced our posterior estimates. Run now an analysis that does not
-use the data. You can do this in `RevBayes` the exact same way as
+use the data. You can do this in RevBayes the exact same way as
 running an MCMC on the exact same model, you only need to call
-‘mymcmc.run(1000,underPrior=true)‘.
+'mymcmc.run(1000,underPrior=true)'.
 
     source("scripts/mcmc_run_prior.Rev")
 
@@ -531,7 +531,7 @@ especially for more complex models. The R package bonsai performs a
 standard set of diagnostics on MCMC output and generates a report that
 highlights potentially pathological MCMC behaviors. To use bonsai,
 download the package source from
-<https://github.com/mikeryanmay/bonsai>, launch the R console, and
+[https://github.com/mikeryanmay/bonsai](https://github.com/mikeryanmay/bonsai), launch the R console, and
 install the package from source by following the instructions on the
 bonsai main page (making sure to install the packages that bonsai relies
 on as well):
@@ -562,7 +562,7 @@ Check the flags generated by bonsai (Figure [fig:flags]; your results
 may differ). Many of these flags may be innocuous; it is up to the user
 to decide whether a particular flag is truly problematic. For example, a
 correlation between `Likelihood` and `Posterior` is not problematic;
-however, a significant p-value for Geweke’s diagnostic for `pi[3]`
+however, a significant p-value for Geweke's diagnostic for `pi[3]`
 indicates that this parameter has not converged to its stationary
 distribution.
 
@@ -577,4 +577,3 @@ There are additional bonsai reports for more complex models
 demonstrating a wider array of MCMC pathologies in the
 `.../RB_MCMC_Tutorial/bonsai_pre_cooked` directory.
 
-Version dated:

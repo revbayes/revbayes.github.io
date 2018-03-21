@@ -161,7 +161,7 @@ mvi = 1
 mni = 1
 ```
 
-You may have noticed that we used the `=` operator to create the move index. This simply means that the variable is not part of the model. You will later see that we use this operator more often, *e.g.,* when we create moves and monitors.
+You may have noticed that we used the `=` operator to create the move index. This simply means that the variable is not part of the model. You will later see that we use this operator more often, *e.g.*,  when we create moves and monitors.
 
 With the data loaded, we can now proceed to specify our Jukes-Cantor substitution model.
 
@@ -199,7 +199,7 @@ Tree Topology and Branch Lengths
 
 The tree topology and branch lengths are stochastic nodes in our phylogenetic model. In Figure {% ref jc_graphical_model %}, the tree topology is denoted $\Psi$ and the length of the branch leading to node $i$ is $bl_i$.
 
-We will assume that all possible labeled, unrooted tree topologies have equal probability. This is the `dnUniformTopology()` distribution in RevBayes. Note that in RevBayes it is advisable to specify the outgroup for your study system if you use an unrooted tree prior, whereas other software, *e.g.,* MrBayes uses the first taxon in the data matrix file as the outgroup. Specify the `topology` stochastic node by passing in the tip labels `names` to the `dnUniformTopology()` distribution:
+We will assume that all possible labeled, unrooted tree topologies have equal probability. This is the `dnUniformTopology()` distribution in RevBayes. Note that in RevBayes it is advisable to specify the outgroup for your study system if you use an unrooted tree prior, whereas other software, *e.g.*,  MrBayes uses the first taxon in the data matrix file as the outgroup. Specify the `topology` stochastic node by passing in the tip labels `names` to the `dnUniformTopology()` distribution:
 
 ```
 out_group = clade("Galeopterus_variegatus")
@@ -231,7 +231,7 @@ TL := sum(br_lens)
 ```
 
 **Alternative branch-length priors**
-Some studies, *e.g.,* {% cite Brown2010 %} {% cite Rannala2012 %}, have criticized the exponential prior distribution for branch lengths because it induces a gamma-dsitributed tree-length and the mean of this gamma distribution grows with the number of taxa. For example, we can use instead a specific gamma prior distribution (or any other distribution defined on a positive real variable) for the tree length, and then use a Dirichlet prior distribution to break the tree length into the corresponding branch lengths {% cite Zhang2012 %}.
+Some studies, *e.g.*,  {% cite Brown2010 %} {% cite Rannala2012 %}, have criticized the exponential prior distribution for branch lengths because it induces a gamma-dsitributed tree-length and the mean of this gamma distribution grows with the number of taxa. For example, we can use instead a specific gamma prior distribution (or any other distribution defined on a positive real variable) for the tree length, and then use a Dirichlet prior distribution to break the tree length into the corresponding branch lengths {% cite Zhang2012 %}.
 
 ```
 # specify a prior distribution on the tree length with your desired mean
@@ -402,7 +402,7 @@ create our MCMC object:
 mymcmc = mcmc(mymodel, monitors, moves)
 ```
 
-Notice that we also specified `nruns=2` which means that `RevBayes` will automatically run 2 independent MCMC runs. You will find that the output is created in two files with extension `_run_1` and `_run_2` for each replicate and additionally the samples from both runs are combined into one file for more convenient post-processing. We may wish to run the `.burnin()` member function. Recall that this function **does not** specify the number of states that we wish to discard from the MCMC analysis as burnin (*i.e.,* the samples collected before the chain converges to the stationary distribution). Instead, the `.burnin()` function specifies a *completely separate* preliminary MCMC analysis that is used to tune the scale of the moves to improve mixing of the MCMC analysis.
+Notice that we also specified `nruns=2` which means that `RevBayes` will automatically run 2 independent MCMC runs. You will find that the output is created in two files with extension `_run_1` and `_run_2` for each replicate and additionally the samples from both runs are combined into one file for more convenient post-processing. We may wish to run the `.burnin()` member function. Recall that this function **does not** specify the number of states that we wish to discard from the MCMC analysis as burnin (*i.e.*,  the samples collected before the chain converges to the stationary distribution). Instead, the `.burnin()` function specifies a *completely separate* preliminary MCMC analysis that is used to tune the scale of the moves to improve mixing of the MCMC analysis.
 
 ```
 mymcmc.burnin(generations=10000,tuningInterval=200)
@@ -418,7 +418,7 @@ When the analysis is complete, you will have the monitored files in your output 
 
 Methods for visualizing the marginal densities of parameter values are not currently available in `RevBayes` itself. Thus, it is important to use programs like `Tracer` {% cite Rambaut2011 %} to evaluate mixing and non-convergence.
 
-Look at the file called `output/primates_cytb_JC.log` in `Tracer`. There you see the posterior distribution of the continuous parameters, *e.g.,* the tree length variable `TL`.
+Look at the file called `output/primates_cytb_JC.log` in `Tracer`. There you see the posterior distribution of the continuous parameters, *e.g.*,  the tree length variable `TL`.
 
 
 {% figure jc_trace_tl %}
@@ -661,7 +661,7 @@ named `er` ($\theta$ in {% ref gtr_graphical_model %}):
 er ~ dnDirichlet(er_prior)
 ```
 
-The Dirichlet distribution assigns probability densities to a group of parameters: *e.g.,* those that measure proportions and must sum to 1. Here, we have specified a six-parameter Dirichlet prior, where each value describes one of the six relative rates of the GTR model: (1) $A\leftrightarrows C$; (2) $A\leftrightarrows G$; (3) $A\leftrightarrows T$; (4) $C\leftrightarrows G$; (5) $C\leftrightarrows T$; (6) $G\leftrightarrows T$. The input parameters of a Dirichlet distribution are called shape (or concentration) parameters. The expectation and variance for each variable are related to the sum of the shape parameters. The prior we specified above is a ‘flat’ or symmetric Dirichlet distribution; all of the shape parameters are equal (1,1,1,1,1,1). This describes a model that allows for equal rates of change between nucleotides, such that the expected rate for each is equal to $\frac{1}{6}$ ({% ref dirichletFig %} a). We might also parameterize the Dirichlet distribution such that all of the shape parameters were equal to 100, which would also specify a prior with an expectation of equal exchangeability rates ({% ref dirichletFig %} b). However, by increasing the values of the shape parameters, `er_prior <- v(100,100,100,100,100,100)`, the Dirichlet distribution will more strongly favor equal exchangeability rates; (*i.e.*, a relatively informative prior). Alternatively, we might consider an asymmetric Dirichlet parameterization that could reflect a strong prior belief that transition and transversion substitutions occur at different rates. For example, we might specify the prior density `er_prior <- v(4,8,4,4,8,4)`. Under this model, the expected rate for transversions would be $\frac{4}{32}$ and that for transitions would be $\frac{8}{32}$, and there would be greater prior probability on sets of GTR rates that matched this configuration ({% ref dirichletFig %} c). Yet another aymmetric prior could specify that each of the six GTR rates had a different value conforming to a Dirichlet(2,4,6,8,10,12). This would lead to a different prior probability density for each rate parameter ({% ref dirichletFig %} d). Without strong prior knowledge about the pattern of relative rates, however, we can better reflect our uncertainty by using a vague prior on the GTR rates. Notably, all patterns of relative rates have the same probability density under `er_prior <- v(1,1,1,1,1,1)`.
+The Dirichlet distribution assigns probability densities to a group of parameters: *e.g.*,  those that measure proportions and must sum to 1. Here, we have specified a six-parameter Dirichlet prior, where each value describes one of the six relative rates of the GTR model: (1) $A\leftrightarrows C$; (2) $A\leftrightarrows G$; (3) $A\leftrightarrows T$; (4) $C\leftrightarrows G$; (5) $C\leftrightarrows T$; (6) $G\leftrightarrows T$. The input parameters of a Dirichlet distribution are called shape (or concentration) parameters. The expectation and variance for each variable are related to the sum of the shape parameters. The prior we specified above is a ‘flat’ or symmetric Dirichlet distribution; all of the shape parameters are equal (1,1,1,1,1,1). This describes a model that allows for equal rates of change between nucleotides, such that the expected rate for each is equal to $\frac{1}{6}$ ({% ref dirichletFig %} a). We might also parameterize the Dirichlet distribution such that all of the shape parameters were equal to 100, which would also specify a prior with an expectation of equal exchangeability rates ({% ref dirichletFig %} b). However, by increasing the values of the shape parameters, `er_prior <- v(100,100,100,100,100,100)`, the Dirichlet distribution will more strongly favor equal exchangeability rates; (*i.e.*, a relatively informative prior). Alternatively, we might consider an asymmetric Dirichlet parameterization that could reflect a strong prior belief that transition and transversion substitutions occur at different rates. For example, we might specify the prior density `er_prior <- v(4,8,4,4,8,4)`. Under this model, the expected rate for transversions would be $\frac{4}{32}$ and that for transitions would be $\frac{8}{32}$, and there would be greater prior probability on sets of GTR rates that matched this configuration ({% ref dirichletFig %} c). Yet another aymmetric prior could specify that each of the six GTR rates had a different value conforming to a Dirichlet(2,4,6,8,10,12). This would lead to a different prior probability density for each rate parameter ({% ref dirichletFig %} d). Without strong prior knowledge about the pattern of relative rates, however, we can better reflect our uncertainty by using a vague prior on the GTR rates. Notably, all patterns of relative rates have the same probability density under `er_prior <- v(1,1,1,1,1,1)`.
 
 {% figure dirichletFig %}
 ![]( figures/dirichlet_rates.png) 
