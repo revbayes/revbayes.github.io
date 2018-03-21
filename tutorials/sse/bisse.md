@@ -6,11 +6,7 @@ level: 2
 prerequisites:
 - archery
 - clocks
-include_files:
-- sse/data/primates_tree.nex
-- sse/data/primates_morph.nex
-- sse/data/primates_biogeo.tre
-- sse/data/primates_biogeo.tsv
+- sse/bisse-intro
 index: false
 ---
 
@@ -19,22 +15,17 @@ index: false
 {% section Introduction | introduction %}
 
 This tutorial describes how to specify character state-dependent
-branching process models in RevBayes. Frequently referred to as
-state-dependent speciation and extinction (SSE) models, these models are
-a birth-death process where the diversification rates are dependent on
-the state of an evolving character. The original model of this type
-considered a binary character (a trait with two discrete state values;
-called BiSSE, {% cite Maddison2007 %}. Several variants have also been developed
-for other types of traits
-{% cite FitzJohn2010 Goldberg2011 Goldberg2012 MagnusonFord2012 FitzJohn2012 Beaulieu2016 Freyman2017 %}.
+branching process models in RevBayes. For more details on the theory behind these models, please see the 
+introductory page: {% page_ref sse/bisse-intro %}.
 
-We will outline the theory behind this method, and then you will fit it
+This tutorial will explain how to fit the BiSSE model
 to data using Markov chain Monte Carlo (MCMC). RevBayes is a powerful
-tool for SSE analyses. After working through this tutorial you should be
+tool for SSE analyses. 
+<!-- After working through this tutorial you should be
 able to set up custom SSE models and use them to infer
 character-dependent diversification rates and ancestral states. We also
 provide examples of how to plot the results using the `Rev`Gadgets R
-package.
+package. -->
 
 
 {% section Getting Set Up | thedata %}

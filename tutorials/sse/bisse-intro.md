@@ -29,9 +29,9 @@ for other types of traits
 {% cite FitzJohn2010 Goldberg2011 Goldberg2012 MagnusonFord2012 FitzJohn2012 Beaulieu2016 Freyman2017 %}.
 
 
-{% section The theory behind state-dependent diversification models | BiSSE_Theory %}
+{% section Background: The BiSSE Model | BiSSE_background %}
 
-The Binary State Speciation and Extinction model (BiSSE} {% cite Maddison2007 %}
+The binary state speciation and extinction model (BiSSE} {% cite Maddison2007 %}
 was introduced because of two problems identified by {% cite Maddison2006b %}.
 First, inferences about character state transitions based on simple
 transition models [like {% citet Pagel1999 %}] can be thrown off if the character
@@ -44,20 +44,25 @@ of speciation or extinction.
 
 RevBayes implements the extension of BiSSE to any number of discrete
 states--*i.e.*, the MuSSE model in [diversitree](http://www.zoology.ubc.ca/prog/diversitree/);
-{% citet FitzJohn2012 %}. We will first describe the general theory about the
+{% cite FitzJohn2012 %}. We will first describe the general theory about the
 model.
+
+{% section The theory behind state-dependent diversification models | bisse_theory%}
 
 
 {% figure model_fig %}
-<img src="figures/BiSSE.png" >
+<img src="figures/BiSSE.png" width="75%">
 {% figcaption %}
-Estimated ancestral states for the
-activity period of primates.
+A schematic overview of the BiSSE model.
+Each lineage has a binary trait associated with it, so it is either in state 0 (blue) or state 1 (red).
+When a lineage is in state 0, it can either (a) speciate with rate $\lambda_0$ which results into two descendant lineage both being in state 0; (b) go extinct with rate $\mu_0$; or (c) transition to state 1 with rate $q_{01}$.
+The same types of events are possible when a lineage is in state 1 but with rates $\lambda_1$, $\mu_1$, and $q_{10}$, respectively.
 {% endfigcaption %}
 {% endfigure %}
 
 
-{% subsection General approach %}
+
+{% subsection General approach | general_approach %}
 
 The BiSSE model assumes two discrete states
 (*i.e.,* a binary character), and that the
@@ -69,7 +74,7 @@ related models is to derive a set of ordinary differential equations
 changes along a branch in the observed phylogeny. Each equation in this
 set describes how the probability of observing a clade changes through
 time if it is in a particular state over that time period; collectively,
-these equations are called $\frac{ \mathrm{d}D_{N,i}(t)}{\mathrm{d}t}$,
+these equations are called $\frac{\mathrm{d}D_{N,i}(t)}{\mathrm{d}t}$,
 where $i$ is the state of a lineage at time $t$ and $N$ is the clade
 descended from that lineage.
 
@@ -115,9 +120,9 @@ equations in the following sections.
 The derivation here follows the original description in {% cite Maddison2007 %}.
 Consider a (time-independent) birth-death process with two possible
 states (a binary character), with diversification rates
-$\{\lambda_0, \mu_0\}$ and $\{\lambda_1, \mu_1\}$.
+$$\{\lambda_0, \mu_0\}$$ and $$\{\lambda_1, \mu_1\}$$.
 
-### Clade probabilities, $D_{N, i}$
+#### **Clade probabilities, $D_{N, i}$**
 
 We define $D_{N,0}(t)$ as the probability of observing lineage $N$
 descending from a particular branch at time $t$, given that the lineage
@@ -148,7 +153,8 @@ between $t$ and $t + \Delta t$.
 {% figure bisse_events %}
 <img src="figures/BiSSE_Events_D.png">
 {% figcaption %}
-Estimated ancestral states for the activity period of primates.
+Possible events along a branch in the BiSSE model, used for deriving $D_{N,0}(t + \Delta t)$.
+This is Figure 2 in {% citet Maddison2007 %}.
 {% endfigcaption %}
 {% endfigure %}
 
@@ -170,7 +176,7 @@ take the limit $\Delta t \rightarrow 0$. With the notation that $i$ can
 be either state 0 or state 1, and $j$ is the other state, this yields:
 
 $$\frac{\mathrm{d}D_{N,i}(t)}{\mathrm{d}t} = - \left(\lambda_i + \mu_i + q_{ij} \right) D_{N,i}(t) + q_{ij} D_{N,j}(t) + 2 \lambda_i E_i(t) D_{N,i}(t)
-\label{eq:BiSSE_D}$$
+\tag{1}\label{eq:one}$$
 
 ### Extinction probabilities, $E_i$
 
@@ -216,7 +222,7 @@ To convert these difference equations into differential equations, we
 again take the limit $\Delta t \rightarrow 0$:
 
 $$\frac{\mathrm{d}E_i(t)}{\mathrm{d}t} = \mu_i - \left(\lambda_i + \mu_i + q_{ij} \right)E_i(t) + q_{ij} E_j(t) + \lambda_i E_i(t)^2
-\label{eq:BiSSE_E}$$
+\tag{2}\label{eq:two}$$
 
 ### Initial values: tips and sampling
 
@@ -239,7 +245,7 @@ sampling assumes that any species is equally likely to be on the tree
 
 ### At nodes
 
-Equations ([eq:BiSSE_D]) and ([eq:BiSSE_E]) are the BiSSE ODEs,
+Equations \eqref{eq:one} and \eqref{eq:two} are the BiSSE ODEs,
 describing probabilities along the branches of a phylogeny. We also need
 to specify what happens with the clade probabilities (the $D$s) at the
 nodes of the tree. BiSSE assumes the ancestor (called $A$) and
@@ -251,13 +257,13 @@ daughter branches coming out of that node, times the instantaneous
 speciation rate (to account for the observed speciation event):
 
 $$D_{A, i}(t_A) = D_{N, i}(t_A) D_{M, i}(t_A) \lambda_i
-\label{eq:BiSSE_node}$$
+\tag{3}\label{eq:three}$$
 
 ### At the root
 
-After we integrate Equations ([eq:BiSSE_D]) and ([eq:BiSSE_E])
+After we integrate equations \eqref{eq:one} and \eqref{eq:two}
 from the tips to the root, dealing with nodes along the way via
-Equation ([eq:BiSSE_node]), we arrive at the root with the $D$ values
+equation \eqref{eq:three}, we arrive at the root with the $D$ values
 (called $D_{R, i}$), one for each state. These need to be combined
 somehow to get the overall likelihood of the data:
 
