@@ -60,8 +60,8 @@ level: 0
 
 The `level` attribute is used to group tutorials with similar levels of complexity in the [tutorial index]({% page_url tutorials %}).
 At the moment, only these levels are recognized:
-{% assign tutorial_index = site.pages | where:"url","/tutorials/" | first %}
-{% for level in tutorial_index.levels %}
+{% assign tutorials_index = "tutorials" | match_page %}
+{% for level in tutorials_index.levels %}
 `level: {% increment counter %}` is for *{{level}}*
 {% endfor %}
 
@@ -169,6 +169,21 @@ exclude_files:
     - data/useless_file.nex
 ```
 
+{% section Including script snippets %}
+
+You can dynamically include snippets from your script files using the `snippet` filter. You can extract a range of line numbers using the `lines` option, or you can extract a block of text using the `block` option. You will need to obtain a Liquid variable instance of your script file from the `page.files` array, or using the `match_file` filter.
+
+{% preview %}
+Here are lines 1-7 of `{{ page.files[1].name }}`
+```
+{{ page.files[1] | snippet:"lines","1-7" }}
+```
+
+Here is the third block of text from `example.Rev`
+```
+{{ "example.Rev" | match_file | snippet:"block","3" }}
+```
+{% endpreview %}
 
 {% section Formatting code %}
 
@@ -302,7 +317,7 @@ In this example, there are two versions of the tutorial, both of which will get 
 
 {% subsection Linking to other tutorials | linking %}
 
-You can reference another tutorial using the `page_ref` and `page_url` Liquid tags, or with the `match_page` filter. As with [Prerequisites](#includeing-prerequisites), tutorials can be referred to by any unique path identifier, ignoring `index.md` and `.md` suffixes.
+You can reference another tutorial using the `page_ref` and `page_url` Liquid tags, or with the `match_page` filter. As with [Prerequisites](#including-prerequisites), tutorials can be referred to by any unique path identifier, ignoring `index.md` and `.md` suffixes.
 
 
 {% preview %}
