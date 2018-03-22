@@ -7,6 +7,7 @@ module RevBayes
 
       def match_file(file_identifier)
         site = @context.registers[:site]
+        page = @context.registers[:page]
 
         if file_identifier.match(VARIABLE_SYNTAX)
           partial = site
@@ -19,20 +20,18 @@ module RevBayes
 
         file_string = file_identifier.sub(/^(?!\/)/,'/').sub(/^(\/tutorials)?\//,'/').gsub(/\//,'\/')
         
-        tag_string = @tag_name ? "tag '"+@tag_name+"'" : "filter 'match_file'"
-
-        matches = site.static_files.find_all {|file| file.relative_path.match(Regexp.new(file_string)) }
+        matches = page['files'].find_all {|file| file.relative_path.match(Regexp.new(file_string)) }
 
         if matches.size > 1
           raise ArgumentError, <<-MSG
-Multiple files match '#{file_identifier}' in #{tag_string}
+Multiple files match '#{file_identifier}'
 MSG
         elsif matches.size > 0
           return matches[0]
         end
         
         raise ArgumentError, <<-MSG
-Could not find file '#{file_identifier}' in #{tag_string}
+Could not find file '#{file_identifier}'
 MSG
       end
 
@@ -69,6 +68,10 @@ MSG
 
       def snippet(file,type,number)
         site = @context.registers[:site]
+
+        if not file.instance_of? Jekyll::Drops::StaticFileDrop
+          file = match_file(file)
+        end
 
         content = File.read(site.in_source_dir(file.path))
 
