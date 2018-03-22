@@ -43,6 +43,8 @@ We provide the data files which we will use in this tutorial:
     randomly resolved the polytomies using the method of {% citet Kuhn2011 %}.
 -   [primates_activity_period.nex](data/primates_activity_period.nex):
     A file with the coded character states for primate species activity time. This character has just two states: `0` = diurnal and `1` = nocturnal.
+-   [primates_habitat.nex](data/primates_habitat.nex):
+    A file with the coded character states for primate species habitat type. This character has just two states: `0` = forest and `1` = savanna.
 
 > Create a new directory on your computer called `RB_bisse_tutorial`.
 > 
@@ -113,7 +115,8 @@ character with a different number of states, essentially changing out
 model from BiSSE {% cite Maddison2007 %} to MuSSE {% cite FitzJohn2012 %}. 
 
 
-{% subsection Specify the model | subsec_specifymodel %}
+{% subsection Specify the Model | subsec_specifymodel %}
+
 
 The basic idea behind the model in this example is that speciation and
 extinction rates are dependent on a binary character, and the character
@@ -367,3 +370,23 @@ Comparing posterior samples of the speciation rates associated with daily activi
 {% cite Rambaut2011 %}.
 {% endfigcaption %}
 {% endfigure %}
+
+{% subsection Evaluate Habitat-Type Dependent Speciation & Extinction | exercise2 %}
+
+Now that you have completed the BiSSE analysis for the timing of activity for all primates,
+perform the same analysis using a different character. Your `data` directory should 
+contain the file [`primates_habitat.nex`](data/primates_habitat.nex), which has the 
+coded states for each species habitat type. This is also a _binary_ character, where the states
+are `0` = forest and `1` = savanna. 
+
+> Complete the BiSSE analysis for habitat type using the same commands given above. 
+> This time, however, substitute the character data file name so that you read in
+> `data/primates_habitat.nex` instead of `primates_activity_period.nex`.
+>
+> It is **important** that you remember to also change the output file names.
+>
+> View the parameter log file in Tracer.
+>
+> What is the rate of speciation associated with forest habitat (`speciation[1]`)? What about
+> for savanna-dwelling lineages (`speciation[2]`)?
+{:.instruction}
