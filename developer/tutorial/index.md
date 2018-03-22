@@ -169,6 +169,21 @@ exclude_files:
     - data/useless_file.nex
 ```
 
+{% section Including script snippets %}
+
+You can dynamically include snippets from your script files using the `snippet` filter. You can extract a range of line numbers using the `lines` option, or you can extract a block of text using the `block` option. You will need to obtain a Liquid variable instance of your script file from the `page.files` array, or using the `match_file` filter.
+
+{% preview %}
+Here are lines 1-7 of `{{ page.files[1].name }}`
+```
+{{ page.files[1] | snippet:"lines","1-7" }}
+```
+
+Here is the third block of text from `example.Rev`
+```
+{{ "example.Rev" | match_file | snippet:"block","3" }}
+```
+{% endpreview %}
 
 {% section Formatting code %}
 
