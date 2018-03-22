@@ -302,7 +302,7 @@ In this example, there are two versions of the tutorial, both of which will get 
 
 {% subsection Linking to other tutorials | linking %}
 
-You can reference another tutorial using the `page_ref` and `page_url` Liquid tags, or with the `match_page` filter. As with [Prerequisites](#includeing-prerequisites), tutorials can be referred to by any unique path identifier, ignoring `index.md` and `.md` suffixes.
+You can reference another tutorial using the `page_ref` and `page_url` Liquid tags, or with the `match_page` filter. As with [Prerequisites](#including-prerequisites), tutorials can be referred to by any unique path identifier, ignoring `index.md` and `.md` suffixes.
 
 
 {% preview %}
