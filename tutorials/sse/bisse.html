@@ -92,7 +92,7 @@
         
           <li><a href="/revbayes-site/tutorials/sse/data/primates_activity_period.nex">primates_activity_period.nex</a></li>
         
-          <li><a href="/revbayes-site/tutorials/sse/data/primates_habitat.nex">primates_habitat.nex</a></li>
+          <li><a href="/revbayes-site/tutorials/sse/data/primates_solitariness.nex">primates_solitariness.nex</a></li>
         
           <li><a href="/revbayes-site/tutorials/sse/data/primates_tree.nex">primates_tree.nex</a></li>
         
@@ -111,12 +111,7 @@ introductory page: <a href="/revbayes-site/tutorials/sse/bisse-intro.html">Backg
 
 <p>This tutorial will explain how to fit the BiSSE model
 to data using Markov chain Monte Carlo (MCMC). RevBayes is a powerful
-tool for SSE analyses. 
-<!-- After working through this tutorial you should be
-able to set up custom SSE models and use them to infer
-character-dependent diversification rates and ancestral states. We also
-provide examples of how to plot the results using the `Rev`Gadgets R
-package. --></p>
+tool for SSE analyses.</p>
 
 <h2 class="section" id="thedata">Getting Set Up</h2>
 <hr />
@@ -130,18 +125,22 @@ is from <a href="#MagnusonFord2012">Magnuson-Ford and Otto (2012)</a>, who took 
 randomly resolved the polytomies using the method of <a href="#Kuhn2011">Kuhn et al. (2011)</a>.</li>
   <li><a href="data/primates_activity_period.nex">primates_activity_period.nex</a>:
 A file with the coded character states for primate species activity time. This character has just two states: <code class="highlighter-rouge">0</code> = diurnal and <code class="highlighter-rouge">1</code> = nocturnal.</li>
-  <li><a href="data/primates_habitat.nex">primates_habitat.nex</a>:
-A file with the coded character states for primate species habitat type. This character has just two states: <code class="highlighter-rouge">0</code> = forest and <code class="highlighter-rouge">1</code> = savanna.</li>
+  <li><a href="data/primates_solitariness.nex">primates_solitariness.nex</a>:
+A file with the coded character states for primate species social system type. This character has just two states: <code class="highlighter-rouge">0</code> = group living and <code class="highlighter-rouge">1</code> = solitary.</li>
 </ul>
+
+<!-- -   [primates_mating_system.nex](data/primates_mating_system.nex):
+    A file with the coded character states for primate species mating-system type. This character has four states: `0` = monogamy, `1` = polygyny, `2` = polygynandry, and `3` = polyandry.
+ -->
 
 <blockquote class="instruction">
   <p>Create a new directory on your computer called <code class="highlighter-rouge">RB_bisse_tutorial</code>.</p>
 
   <p>Within the <code class="highlighter-rouge">RB_bisse_tutorial</code> directory, create a subdirectory called <code class="highlighter-rouge">data</code>. 
-Then, dowload the provided files and place them in the <code class="highlighter-rouge">data</code> folder.</p>
+Then, download the provided files and place them in the <code class="highlighter-rouge">data</code> folder.</p>
 </blockquote>
 
-<h2 class="section" id="sec_CDBDP">Estimating State-Dependent Speciation and Extinction in RevBayes</h2>
+<h2 class="section" id="sec_CDBDP">Estimating State-Dependent Speciation and Extinction under the BiSSE Model</h2>
 <hr />
 
 <p>Now let’s start to analyze an example in RevBayes using the BiSSE
@@ -207,7 +206,8 @@ that the observed character has:</p>
 
 <p>Using this variable allows us to easily change our script and use a different
 character with a different number of states, essentially changing out
-model from BiSSE <a href="#Maddison2007">(Maddison et al. 2007)</a> to MuSSE <a href="#FitzJohn2012">(FitzJohn 2012)</a>.</p>
+model from BiSSE <a href="#Maddison2007">(Maddison et al. 2007)</a> to one that allows for more than 2 states–<em>i.e.</em>, 
+the MuSSE model <a href="#FitzJohn2012">(FitzJohn 2012)</a>.</p>
 
 <h3 class="subsection" id="subsec_specifymodel">Specify the Model</h3>
 
@@ -231,7 +231,7 @@ and $t_{root}$ is the age of the root of the tree.</p>
 
 <p>Now we can specify our character-specific speciation and extinction rate
 parameters. Because we will use the same prior for each rate, it’s easy
-to specify them all in a <code class="highlighter-rouge">for</code>-loop. We will use an exponetial distribution as a prior
+to specify them all in a <code class="highlighter-rouge">for</code>-loop. We will use an exponential distribution as a prior
 on the speciation and extinction rates. The loop also allows us to apply moves to each
 of the rates we are estimating and create a vector of deterministic nodes
 representing the rate of diversification ($\lambda - \mu$) associated with each
@@ -384,7 +384,7 @@ program <a href="https://www.graphviz.org/">Graphviz</a> (<a href="#graphviz"></
 
 <figure id="graphviz"><p><img src="figures/bisse_dag.svg" width="95%" /></p>
 <figcaption>The probabilistic graphical model of the character-state-dependent diversification model.
-This image was generated by running the <code class="highlighter-rouge">.graph()</code> method fo the model object and opening the
+This image was generated by running the <code class="highlighter-rouge">.graph()</code> method of the model object and opening the
 resulting file in the program <a href="https://www.graphviz.org/">Graphviz</a>.</figcaption>
 </figure>
 
@@ -472,26 +472,65 @@ of both speciation rates.</p>
 <a href="#Rambaut2011">(Rambaut and Drummond 2011)</a>.</figcaption>
 </figure>
 
-<h3 class="subsection" id="exercise2">Evaluate Habitat-Type Dependent Speciation &amp; Extinction</h3>
+<h2 class="section" id="exercise2">Evaluate Social-System-Type Dependent Speciation &amp; Extinction under the BiSSE Model</h2>
+<hr />
 
 <p>Now that you have completed the BiSSE analysis for the timing of activity for all primates,
 perform the same analysis using a different character. Your <code class="highlighter-rouge">data</code> directory should 
-contain the file <a href="data/primates_habitat.nex"><code class="highlighter-rouge">primates_habitat.nex</code></a>, which has the 
+contain the file <a href="data/primates_solitariness.nex"><code class="highlighter-rouge">primates_solitariness.nex</code></a>, which has the 
 coded states for each species habitat type. This is also a <em>binary</em> character, where the states
 are <code class="highlighter-rouge">0</code> = forest and <code class="highlighter-rouge">1</code> = savanna.</p>
 
 <blockquote class="instruction">
   <p>Complete the BiSSE analysis for habitat type using the same commands given above. 
-This time, however, substitute the character data file name so that you read in
-<code class="highlighter-rouge">data/primates_habitat.nex</code> instead of <code class="highlighter-rouge">primates_activity_period.nex</code>.</p>
+Remember it is useful to <em>clear</em> the RevBayes console before starting another analysis. Do this
+using the <code class="highlighter-rouge">clear()</code> function.</p>
+
+  <p>While you are setting up your new analysis, substitute the character data file name so that you read in
+<code class="highlighter-rouge">data/primates_solitariness.nex</code> instead of <code class="highlighter-rouge">primates_activity_period.nex</code>.</p>
 
   <p>It is <strong>important</strong> that you remember to also change the output file names.</p>
 
-  <p>View the parameter log file in Tracer.</p>
+  <p>View the parameter log file in Tracer after your MCMC is complete.</p>
 
-  <p>What is the rate of speciation associated with forest habitat (<code class="highlighter-rouge">speciation[1]</code>)? What about
-for savanna-dwelling lineages (<code class="highlighter-rouge">speciation[2]</code>)?</p>
+  <p>What is the rate of speciation associated with group living (<code class="highlighter-rouge">speciation[1]</code>)? What about
+for solitary lineages (<code class="highlighter-rouge">speciation[2]</code>)?</p>
 </blockquote>
+
+<blockquote class="discussion">
+  <h2 id="discussion-compare-the-rate-estimates">Discussion: Compare the rate estimates</h2>
+  <p>Compare the rates estimated when the activity time is the focal character versus when solitariness is the dependent character. 
+You can do this by opening <em>both</em> files in the same tracer window. If you managed to give all the parameters the same name,
+it is possible to compare the estimates in the Tracer window by highlighting both files.</p>
+
+  <p>Explore the estimates of the various parameters. Are any different? Are any the same?</p>
+
+  <p>Why do you think you might be seeing this pattern?</p>
+</blockquote>
+
+<!-- 
+<h2 class="section" id="exercise3">Evaluate Mating-System-Type Dependent Speciation &amp; Extinction under the MuSSE Model</h2><hr>
+
+In RevBayes it is trivial to change the BiSSE analysis you did in the exercises above to a multi-state model that is not limited to just 
+binary characters. That is because the model is effectively the same, just with the variable `NUM_STATES` changed. 
+For this final exercise, we will use the MuSSE model <a href="#FitzJohn2012">(FitzJohn 2012)</a> to estimate the rates of speciation and extinction
+associated with the mating system state for each primate lineage. 
+
+Your `data` directory should contain a file called [`primates_mating_system.nex`](/data/primates_mating_system.nex). This is a four-state
+character where the states are: `0` = monogamy, `1` = polygyny, `2` = polygynandry, and `3` = polyandry.
+
+> Modify the analysis you completed for the binary state characters in the [BiSSE Exercise](#sec_CDBDP) to accommodate a 4-state character. 
+> This means that you must no only change the data file that you input (`primates_mating_system.nex`),
+> but you also need to specify `NUM_STATES = 4`.
+>
+> It is **important** that you remember to also change the output file names.
+>
+> View the parameter log file in Tracer after your MCMC is complete.
+>
+> What is the diversification rate associated with each state (`diversification`)? 
+{:.instruction}
+ -->
+
 
 <ol class="bibliography"><li><span id="MagnusonFord2012">Magnuson-Ford K., Otto S.P. 2012. Linking the Investigations of Character Evolution and Species Diversification. The American Naturalist. 180:225–245.</span>
 
