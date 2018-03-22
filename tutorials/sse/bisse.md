@@ -81,7 +81,7 @@ hypothesis.
 Once you execute RevBayes, you will be in the console. The rest of this tutorial will proceed 
 using the interactive console.
 
-{% subsection Read in the data | subsec_readdata %}
+{% subsection Read in the Data | subsec_readdata %}
 
 For this tutorial, we are assuming that the tree is "observed" and considered _data_. 
 Thus, we will read in the dated phylogeny first.
