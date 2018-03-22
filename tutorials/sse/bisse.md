@@ -1,6 +1,6 @@
 ---
-title: State-dependent diversification rate estimation
-subtitle: Inference using state-dependent speciation and extinction (SSE) branching processes
+title: State-dependent diversification rate estimation in RevBayes
+subtitle: Inference using the binary state-dependent speciation and extinction (BiSSE) branching process
 authors:  Sebastian Höhna, Will Freyman, and Emma Goldberg
 level: 2
 prerequisites:
