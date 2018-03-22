@@ -304,16 +304,16 @@ This is a reference to {% ref subsection1 %}
 <h2 class="section" id="including-script-snippets">Including script snippets</h2>
 <hr />
 
-<p>You can dynamically include snippets from your script files using the <code class="highlighter-rouge">snippet</code> filter. You can extract a range of line numbers using the <code class="highlighter-rouge">lines</code> option, or you can extract a block of text using the <code class="highlighter-rouge">block</code> option. You will need to obtain a Liquid variable instance of your script file from the <code class="highlighter-rouge">page.files</code> array, or using the <code class="highlighter-rouge">match_file</code> filter.</p>
+<p>You can dynamically include snippets from your script files using the <code class="highlighter-rouge">snippet</code> filter. You can extract a range of line numbers using the <code class="highlighter-rouge">lines</code> option, or you can extract a block of text using the <code class="highlighter-rouge">block</code> option. You can refer to the script file by name, or you can use a Liquid variable, for instance obtained from the <code class="highlighter-rouge">page.files</code> array.</p>
 
-<blockquote class="preview"><div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Here are lines 1-7 of <span class="sb">`{{ page.files[1].name }}`</span>
+<blockquote class="preview"><div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Here are lines 1-7 of <span class="sb">`example.Rev`</span>
 ```
-{{ page.files<span class="p">[</span><span class="nv">1</span><span class="p">]</span> | snippet:"lines","1-7" }}
+{{ "example.Rev" | snippet:"lines","1-7" }}
 ```
 
-Here is the third block of text from <span class="sb">`example.Rev`</span>
+Here is the third block of text from <span class="sb">`{{ page.files[1].name }}`</span>
 ```
-{{ "example.Rev" | match_file | snippet:"block","3" }}
+{{ page.files<span class="p">[</span><span class="nv">1</span><span class="p">]</span> | snippet:"block","3" }}
 ```
 </code></pre></div></div>
 <br /><p>Here are lines 1-7 of <code class="highlighter-rouge">example.Rev</code></p>
