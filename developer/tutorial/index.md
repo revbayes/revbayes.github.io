@@ -60,8 +60,8 @@ level: 0
 
 The `level` attribute is used to group tutorials with similar levels of complexity in the [tutorial index]({% page_url tutorials %}).
 At the moment, only these levels are recognized:
-{% assign tutorial_index = site.pages | where:"url","/tutorials/" | first %}
-{% for level in tutorial_index.levels %}
+{% assign tutorials_index = "tutorials" | match_page %}
+{% for level in tutorials_index.levels %}
 `level: {% increment counter %}` is for *{{level}}*
 {% endfor %}
 
