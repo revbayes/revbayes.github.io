@@ -51,7 +51,7 @@ We provide the data files which we will use in this tutorial:
 {:.instruction}
 
 
-{% section Estimating State-Dependent Speciation and Extinction in RevBAyes | sec_CDBDP %}
+{% section Estimating State-Dependent Speciation and Extinction in RevBayes | sec_CDBDP %}
 
 Now let's start to analyze an example in RevBayes using the BiSSE
 model. In RevBayes, it's called `CDBDP`, meaning *character dependent
