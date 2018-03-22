@@ -301,6 +301,38 @@ This is a reference to {% ref subsection1 %}
     <span class="pi">-</span> <span class="s">data/useless_file.nex</span>
 </code></pre></div></div>
 
+<h2 class="section" id="including-script-snippets">Including script snippets</h2>
+<hr />
+
+<p>You can dynamically include snippets from your script files using the <code class="highlighter-rouge">snippet</code> filter. You can extract a range of line numbers using the <code class="highlighter-rouge">lines</code> option, or you can extract a block of text using the <code class="highlighter-rouge">block</code> option. You will need to obtain a Liquid variable instance of your script file from the <code class="highlighter-rouge">page.files</code> array, or using the <code class="highlighter-rouge">match_file</code> filter.</p>
+
+<blockquote class="preview"><div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Here are lines 1-7 of <span class="sb">`{{ page.files[1].name }}`</span>
+```
+{{ page.files<span class="p">[</span><span class="nv">1</span><span class="p">]</span> | snippet:"lines","1-7" }}
+```
+
+Here is the third block of text from <span class="sb">`example.Rev`</span>
+```
+{{ "example.Rev" | match_file | snippet:"block","3" }}
+```
+</code></pre></div></div>
+<br /><p>Here are lines 1-7 of <code class="highlighter-rouge">example.Rev</code></p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># this is an example Rev script
+# this is line 2
+a ~ dnExp(1)
+
+# this is the second block
+# this is line 6
+b ~ dnBeta(1,1)
+</code></pre></div></div>
+
+<p>Here is the third block of text from <code class="highlighter-rouge">example.Rev</code></p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># this is the third block
+# this is line 10
+c := a + b
+</code></pre></div></div>
+</blockquote>
+
 <h2 class="section" id="formatting-code">Formatting code</h2>
 <hr />
 
@@ -487,7 +519,7 @@ new_tutorial
 
 <h3 class="subsection" id="linking">Linking to other tutorials</h3>
 
-<p>You can reference another tutorial using the <code class="highlighter-rouge">page_ref</code> and <code class="highlighter-rouge">page_url</code> Liquid tags, or with the <code class="highlighter-rouge">match_page</code> filter. As with <a href="#includeing-prerequisites">Prerequisites</a>, tutorials can be referred to by any unique path identifier, ignoring <code class="highlighter-rouge">index.md</code> and <code class="highlighter-rouge">.md</code> suffixes.</p>
+<p>You can reference another tutorial using the <code class="highlighter-rouge">page_ref</code> and <code class="highlighter-rouge">page_url</code> Liquid tags, or with the <code class="highlighter-rouge">match_page</code> filter. As with <a href="#including-prerequisites">Prerequisites</a>, tutorials can be referred to by any unique path identifier, ignoring <code class="highlighter-rouge">index.md</code> and <code class="highlighter-rouge">.md</code> suffixes.</p>
 
 <blockquote class="preview"><div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>This is a reference to the {% page_ref intro %} tutorial.
 
