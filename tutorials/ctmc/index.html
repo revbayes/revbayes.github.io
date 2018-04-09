@@ -98,7 +98,8 @@
 </div>
 <h1 class="section" id="overview">Overview</h1>
 
-<p>This tutorial provides the first protocol from our recent publication <a href="#Hoehna2017a">(Höhna et al. 2017)</a>. The second protocol is described in the <a href="/revbayes-site/tutorials/partition/">Partitioned data analysis</a> tutorial and the third protocol is described in the <a href="/revbayes-site/tutorials/bayes_factors/">Model selection</a>.</p>
+<p>This tutorial provides the first protocol from our recent publication <a href="#Hoehna2017a">(Höhna et al. 2017)</a>. 
+The second protocol is described in the <a href="/revbayes-site/tutorials/partition/">Partitioned data analysis</a> tutorial and the third protocol is described in the <a href="/revbayes-site/tutorials/bayes_factors/">Model selection</a>.</p>
 
 <p>The present tutorial demonstrates how to set up and perform analyses
 using common nucleotide substitution models. The substitution models
@@ -139,23 +140,63 @@ parameters. We will provide comments on how to modify the tutorial if
 you wish to estimate rooted, clock-like trees. All the assumptions will
 be covered in more detail later in this tutorial.</p>
 
+<figure id="tab_subst_models"><table>
+  <thead>
+    <tr>
+      <th style="text-align: center"><strong>Model</strong></th>
+      <th style="text-align: center"><strong>Reference</strong></th>
+      <th style="text-align: center"><strong>Function</strong></th>
+      <th style="text-align: center"><strong>Parameters</strong></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">Jukes-Cantor</td>
+      <td style="text-align: center"><a href="#Jukes1969">(Jukes and Cantor 1969)</a></td>
+      <td style="text-align: center">fnJC</td>
+      <td style="text-align: center">-</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">Felsenstein-81</td>
+      <td style="text-align: center"><a href="#Felsenstein1981">(Felsenstein 1981)</a></td>
+      <td style="text-align: center">fnF81</td>
+      <td style="text-align: center">$\pi$</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">HKY</td>
+      <td style="text-align: center"><a href="#Hasegawa1985">(Hasegawa et al. 1985)</a></td>
+      <td style="text-align: center">fnHKY</td>
+      <td style="text-align: center">$\pi$, $\kappa$</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">GTR</td>
+      <td style="text-align: center"><a href="#Tavare1986">(Tavaré 1986)</a></td>
+      <td style="text-align: center">fnGTR</td>
+      <td style="text-align: center">$\pi$, $\epsilon$</td>
+    </tr>
+  </tbody>
+</table>
+
+<figcaption>Specific functions for substitution models available in RevBayes.</figcaption>
+</figure>
+
 <h1 class="section" id="example-character-evolution-under-the-jukes-cantor-substitution-model">Example: Character Evolution under the Jukes-Cantor Substitution Model</h1>
 
 <h2 id="getting-started">Getting Started</h2>
 
-<p>The first section of this exercise involves: (1) setting up a
-Jukes-Cantor (JC) substitution model for an alignment of the cytochrome
-b subunit; (2) approximating the posterior probability of the tree
-topology and node ages (and all other parameters) using MCMC, and; (3)
-summarizing the MCMC output by computing the maximum <em>a posteriori</em>
-tree.</p>
+<p>The first section of this exercise involves:</p>
+<ol>
+  <li>setting up a Jukes-Cantor (JC) substitution model for an alignment of the cytochrome b subunit;</li>
+  <li>approximating the posterior probability of the tree topology and node ages (and all other parameters) using MCMC, and;</li>
+  <li>summarizing the MCMC output by computing the maximum <em>a posteriori</em> tree.</li>
+</ol>
 
 <figure id="jc_graphical_model"><p><img src="figures/jc_graphical_model.png" /></p>
-<figcaption>Graphical model representation of a simple phylogenetic model. The graphical model shows the dependencies between the parameters.Here, the rate matrix $Q$ is a constant variable because it is fixed and does not depend on any parameters.The only free parameters of this model, the Jukes-Cantor model, are the tree $\Psi$ including the node ages.</figcaption>
+<figcaption>Graphical model representation of a simple phylogenetic model. The graphical model shows the dependencies between the parameters <a href="#Hoehna2014b">(Höhna et al. 2014)</a>. Here, the rate matrix $Q$ is a constant variable because it is fixed and does not depend on any parameter.The only free parameters of this model, the Jukes-Cantor model, are the tree $\Psi$ including the branch lengths.</figcaption>
 </figure>
 
-<p>We first consider the simplest substitution model described by
-<a href="#Jukes1969">(Jukes and Cantor 1969)</a>. The instantaneous-rate matrix for the JC substitution
+<p>We first consider the simplest substitution model described by Jukes and Cantor
+<a href="#Jukes1969">(1969)</a>. The instantaneous-rate matrix for the JC substitution
 model is defined as</p>
 
 <script type="math/tex; mode=display">% <![CDATA[
@@ -204,14 +245,14 @@ type the variable name and press enter. For the <code class="highlighter-rouge">
 provides information about the alignment:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data
-
-   DNA character matrix with 23 taxa and 1141 characters
+</code></pre></div></div>
+<div class="Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   DNA character matrix with 23 taxa and 1141 characters
    =====================================================
    Origination:                      primates_and_galeopterus_cytb.nex
    Number of taxa:                   23
    Number of included taxa:          23
    Number of characters:             1141
-   Number of included characters: 1141
+   Number of included characters:    1141
    Datatype:                         DNA
 </code></pre></div></div>
 
@@ -249,8 +290,8 @@ instantaneous-rate matrix:</p>
 <p>You can see the rates of the $Q$ matrix by typing</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q
-
-   [ [ -1.0000, 0.3333, 0.3333, 0.3333 ] ,
+</code></pre></div></div>
+<div class="Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   [ [ -1.0000, 0.3333, 0.3333, 0.3333 ] ,
      0.3333, -1.0000, 0.3333, 0.3333 ] ,
      0.3333, 0.3333, -1.0000, 0.3333 ] ,
      0.3333, 0.3333, 0.3333, -1.0000 ] ]
@@ -270,8 +311,8 @@ topology ~ dnUniformTopology(taxa, outgroup=out_group)
 
 <p>Some types of stochastic nodes can be updated by a number of alternative moves. Different moves may explore parameter space in different ways, and it is possible to use multiple different moves for a given parameter to improve mixing (the efficiency of the MCMC simulation). In the case of our unrooted tree topology, for example, we can use both a nearest-neighbor interchange move (<code class="highlighter-rouge">mvNNI</code>) and a subtree-prune and regrafting move (<code class="highlighter-rouge">mvSPR</code>). These moves do not have tuning parameters associated with them, thus you only need to pass in the <code class="highlighter-rouge">topology</code> node and proposal <code class="highlighter-rouge">weight</code>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvNNI(topology, weight=1.0)
-moves[mvi++] = mvSPR(topology, weight=1.0)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvNNI(topology, weight=n_species)
+moves[mvi++] = mvSPR(topology, weight=n_species/10.0)
 </code></pre></div></div>
 
 <p>The weight specifies how often the move will be applied either on average per iteration or relative to all other moves. Have a look at the MCMC Diagnosis tutorial for more details about moves and MCMC strategies (found in <a href="/revbayes-site/tutorials/">Tutorials</a>).</p>
@@ -289,70 +330,89 @@ moves[mvi++] = mvSPR(topology, weight=1.0)
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>TL := sum(br_lens)
 </code></pre></div></div>
 
-<p><strong>Alternative branch-length priors</strong>
-Some studies, <em>e.g.</em>,  <a href="#Brown2010">(Brown et al. 2010)</a> <a href="#Rannala2012">(Rannala et al. 2012)</a>, have criticized the exponential prior distribution for branch lengths because it induces a gamma-dsitributed tree-length and the mean of this gamma distribution grows with the number of taxa. For example, we can use instead a specific gamma prior distribution (or any other distribution defined on a positive real variable) for the tree length, and then use a Dirichlet prior distribution to break the tree length into the corresponding branch lengths <a href="#Zhang2012">(Zhang et al. 2012)</a>.</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># specify a prior distribution on the tree length with your desired mean
-TL ~ dnGamma(2,4)
-moves[mvi++] = mvScale(TL) 
-
-# now create a random variable for the relative branch lengths
-rel_branch_lengths ~ dnDirichlet( rep(1.0,n_branches) )
-moves[mvi++] = mvBetaSimplex(rel_branch_lengths, weight=n_branches)
-moves[mvi++] = mvDirichletSimplex(rel_branch_lengths, weight=n_branches/10.0)
-
-# finally, transform the relative branch lengths into actual branch lengths
-br_lens := rel_branch_lengths * TL
-</code></pre></div></div>
-
 <p>Finally, we can create a <em>phylogram</em> (a phylogeny in which the branch lengths are proportional to the expected number of substitutions/site) by combining the tree topology and branch lengths. We do this using the <code class="highlighter-rouge">treeAssembly()</code> function, which applies the value of the $i^{th}$ member of the <code class="highlighter-rouge">br_lens</code> vector to the branch leading to the $i^{th}$ node in <code class="highlighter-rouge">topology</code>. Thus, the <code class="highlighter-rouge">psi</code> variable is a deterministic node:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psi := treeAssembly(topology, br_lens)
 </code></pre></div></div>
 
-<p><strong>Alternative Analysis Prior on Time-Trees: Tree Topology and Node Ages</strong>
-Alternatively, you may want to specify a prior on time-trees. Here we
-will briefly indicate how to specify such an prior which will lead to
-inference of time trees.</p>
+<blockquote>
+  <p><strong>Alternative tree priors</strong>
+For large phylogenetic trees, i.e., with more than 200 taxa, it might be easier to specify a combined topology and branch length prior distribution.
+We can achieve this by simple using the distribution <code class="highlighter-rouge">dnUniformTopologyBranchLength()</code>.</p>
+  <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>br_len_lambda &lt;- 10.0
+psi ~ dnUniformTopologyBranchLength(taxa, branchLengthDistribution=dnExponential(br_len_lambda))
+moves[mvi++] = mvNNI(psi, weight=n_species)
+moves[mvi++] = mvSPR(psi, weight=n_species/10.0)
+moves[mvi++] = mvBranchLengthScale(psi, weight=n_branches)
+</code></pre></div>  </div>
+  <p>You might think that this approach is in fact simpler than the <code class="highlighter-rouge">for</code> loop that we explained above.
+We still think that it is pedagogical to specify the prior on each branch length separately in this tutorial to emphasize all components of the model.</p>
+</blockquote>
 
-<p>The tree (the topology and node ages) is a stochastic node in our
-phylogenetic model. For simplicity, we will assume a uniform prior on
-both topologies and node ages. The distribution in RevBayes is <code class="highlighter-rouge">dnUniformTimeTree()</code>.</p>
+<blockquote>
+  <p><strong>Alternative branch-length priors</strong>
+Some studies, <em>e.g.</em>,  <a href="#Brown2010">(Brown et al. 2010)</a> <a href="#Rannala2012">(Rannala et al. 2012)</a>, have criticized the exponential prior distribution for branch lengths because it induces a gamma-dsitributed tree-length and the mean of this gamma distribution grows with the number of taxa. For example, we can use instead a specific gamma prior distribution (or any other distribution defined on a positive real variable) for the tree length, and then use a Dirichlet prior distribution to break the tree length into the corresponding branch lengths <a href="#Zhang2012">(Zhang et al. 2012)</a>.</p>
 
-<p>Fore more information on tree priors, such as birth-death
-processes, please read the <a href="/revbayes-site/tutorials/div/">Diversification rate estimation</a>.</p>
+  <p>First, specify a prior distribution on the tree length with your desired mean.
+For example, we use a gamma distribution as our prior on the tree length.</p>
+  <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>TL ~ dnGamma(2,4)
+moves[mvi++] = mvScale(TL) 
+</code></pre></div>  </div>
 
-<p>First, we need to specify the age of the tree:</p>
+  <p>Now we create a random variable for the relative branch lengths.</p>
+  <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rel_branch_lengths ~ dnDirichlet( rep(1.0,n_branches) )
+moves[mvi++] = mvBetaSimplex(rel_branch_lengths, weight=n_branches)
+moves[mvi++] = mvDirichletSimplex(rel_branch_lengths, weight=n_branches/10.0)
+</code></pre></div>  </div>
+  <p>Finally, transform the relative branch lengths into actual branch lengths</p>
+  <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>br_lens := rel_branch_lengths * TL
+</code></pre></div>  </div>
+</blockquote>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root_age &lt;- 10.0
-</code></pre></div></div>
+<blockquote>
+  <p><strong>Alternative Analysis Prior on Time-Trees: Tree Topology and Node Ages</strong>
+Alternatively, you may want to specify a prior on time-trees. 
+Here we will briefly indicate how to specify such an prior which will lead to inference of time trees.</p>
 
-<p>Here we simply assumed that the tree is 10.0 time units old. We could also specify a prior on the root age if we have fossil calibrations (see <a href="/revbayes-site/tutorials/clocks/">Relaxed Clocks &amp; Time Trees</a>). Next, we specify the <code class="highlighter-rouge">tree</code> stochastic variable by passing in the taxon information <code class="highlighter-rouge">taxa</code> to the <code class="highlighter-rouge">dnUniformTimeTree()</code> distribution:</p>
+  <p>The tree (the topology and node ages) is a stochastic node in our phylogenetic model. 
+For simplicity, we will assume a uniform prior on both topologies and node ages. 
+The distribution in RevBayes is <code class="highlighter-rouge">dnUniformTimeTree()</code>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psi ~ dnUniformTimeTree(rootAge=root_age, taxa=taxa)
-</code></pre></div></div>
+  <p>Fore more information on tree priors, such as birth-death processes, please read the <a href="/revbayes-site/tutorials/div/">Diversification rate estimation</a>.</p>
 
-<p>Some types of stochastic nodes can be updated by a number of alternative moves. Different moves may explore parameter space in different ways,and it is possible to use multiple different moves for a given parameter to improve mixing (the efficiency of the MCMC simulation). In the case of our rooted tree, for example, we can use both a nearest-neighbor interchange move without and with changing the node ages (<code class="highlighter-rouge">mvNarrow</code> and <code class="highlighter-rouge">mvNNI</code>) and a fixed-nodeheight subtree-prune and regrafting move (<code class="highlighter-rouge">mvFNPR</code>) and its Metropolized-Gibbs variant (<code class="highlighter-rouge">mvGPR</code>) (missing reference). We also need moves that change the ages of the internal nodes, for example, <code class="highlighter-rouge">mvSubtreeScale</code> and <code class="highlighter-rouge">mvNodeTimeSlideUniform</code>. These moves do not have tuning parameters associated with them, thus you only need to pass in the <code class="highlighter-rouge">psi</code> node and proposal <code class="highlighter-rouge">weight</code>.</p>
+  <p>First, we need to specify the age of the tree:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvNarrow(psi, weight=5.0)
-moves[mvi++] = mvNNI(psi, weight=1.0)
-moves[mvi++] = mvFNPR(psi, weight=3.0)
-moves[mvi++] = mvGPR(psi, weight=3.0)
-moves[mvi++] = mvSubtreeScale(psi, weight=3.0)
-moves[mvi++] = mvNodeTimeSlideUniform(psi, weight=15.0)
-</code></pre></div></div>
+  <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root_age &lt;- 10.0
+</code></pre></div>  </div>
 
-<p>The weight specifies how often the move will be applied either on average per iteration or relative to all other moves. Have a look at the <a href="/tutorials/">MCMC tutorial</a> for more details about moves and MCMC strategies.</p>
+  <p>Here we simply assumed that the tree is 10.0 time units old. We could also specify a prior on the root age if we have fossil calibrations (see <a href="/revbayes-site/tutorials/clocks/">Relaxed Clocks &amp; Time Trees</a>). Next, we specify the <code class="highlighter-rouge">tree</code> stochastic variable by passing in the taxon information <code class="highlighter-rouge">taxa</code> to the <code class="highlighter-rouge">dnUniformTimeTree()</code> distribution:</p>
 
-<p><strong>Molecular clock</strong>
+  <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psi ~ dnUniformTimeTree(rootAge=root_age, taxa=taxa)
+</code></pre></div>  </div>
+
+  <p>Some types of stochastic nodes can be updated by a number of alternative moves. Different moves may explore parameter space in different ways,and it is possible to use multiple different moves for a given parameter to improve mixing (the efficiency of the MCMC simulation). In the case of our rooted tree, for example, we can use both a nearest-neighbor interchange move without and with changing the node ages (<code class="highlighter-rouge">mvNarrow</code> and <code class="highlighter-rouge">mvNNI</code>) and a fixed-nodeheight subtree-prune and regrafting move (<code class="highlighter-rouge">mvFNPR</code>) and its Metropolized-Gibbs variant (<code class="highlighter-rouge">mvGPR</code>) (missing reference). We also need moves that change the ages of the internal nodes, for example, <code class="highlighter-rouge">mvSubtreeScale</code> and <code class="highlighter-rouge">mvNodeTimeSlideUniform</code>. These moves do not have tuning parameters associated with them, thus you only need to pass in the <code class="highlighter-rouge">psi</code> node and proposal <code class="highlighter-rouge">weight</code>.</p>
+
+  <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvNarrow(psi, weight=n_species)
+moves[mvi++] = mvNNI(psi, weight=n_species/5.0)
+moves[mvi++] = mvFNPR(psi, weight=n_species/3.0)
+moves[mvi++] = mvGPR(psi, weight=n_species/30.0)
+moves[mvi++] = mvSubtreeScale(psi, weight=n_species/3.0)
+moves[mvi++] = mvNodeTimeSlideUniform(psi, weight=n_species)
+</code></pre></div>  </div>
+
+  <p>The weight specifies how often the move will be applied either on average per iteration or relative to all other moves. Have a look at the <a href="/tutorials/">MCMC tutorial</a> for more details about moves and MCMC strategies.</p>
+
+  <p><strong>Molecular clock</strong>
 Additionally, in the case of time-calibrated trees, we need to add a molecular clock rate parameter. For example, we know from empirical estimates that the molecular clock rate is about 0.01 (=1%) per million years per site. Nevertheless, we can estimate it here because we fixed the root age. We use a uniform prior on the log-transform clock rate. This specifies our lack of prior knowledge on the magnitude of the clock rate.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log_clock_rate ~ dnUniform(-6,1)
+  <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log_clock_rate ~ dnUniform(-6,1)
 moves[mvi++] = mvSlide(log_clock_rate, weight=2.0)
 clock_rate := 10^log_clock_rate
-</code></pre></div></div>
+</code></pre></div>  </div>
 
-<p>Instead, you could also fix the clock rate and estimate the root age. For more information on molecular clocks please read the <a href="/tutorials/clocks/">Divergence Time Tutorial</a></p>
+  <p>Instead, you could also fix the clock rate and estimate the root age. 
+For more information on molecular clocks please read the <a href="/tutorials/clocks/">Divergence Time Tutorial</a></p>
+</blockquote>
 
 <h2 id="putting-it-all-together">Putting it All Together</h2>
 
@@ -362,19 +422,19 @@ that describes how the sequence data evolved over the tree with branch
 lengths. Collectively, these parameters comprise a distribution called
 the <em>phylogenetic continuous-time Markov chain</em>, and we use the
 <code class="highlighter-rouge">dnPhyloCTMC</code> constructor function to create this node. This
-distribution requires several input arguments: (1) the <code class="highlighter-rouge">tree</code> with
-branch lengths; (2) the instantaneous-rate matrix <code class="highlighter-rouge">Q</code>; (3) the <code class="highlighter-rouge">type</code> of
-character data.</p>
+distribution requires several input arguments:</p>
+<ol>
+  <li>the <code class="highlighter-rouge">tree</code> with branch lengths;</li>
+  <li>the instantaneous-rate matrix <code class="highlighter-rouge">Q</code>;</li>
+  <li>the <code class="highlighter-rouge">type</code> of character data.</li>
+</ol>
 
 <p>Build the random variable for the character data (sequence alignment).</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># the sequence evolution model
-seq ~ dnPhyloCTMC(tree=psi, Q=Q, type="DNA")
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>seq ~ dnPhyloCTMC(tree=psi, Q=Q, type="DNA")
 </code></pre></div></div>
 
-<p>Once the <code class="highlighter-rouge">PhyloCTMC</code> model has been created, we can attach our sequence
+<p>Once the <code class="highlighter-rouge">PhyloCTMC</code> model has been created, we can attach our sequence 
 data to the tip nodes in the tree.</p>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>seq.clamp(data)
 </code></pre></div></div>
 
@@ -441,24 +501,22 @@ can now set up the MCMC algorithm that will sample parameter values in
 proportion to their posterior probability. The <code class="highlighter-rouge">mcmc()</code> function will
 create our MCMC object:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
 </code></pre></div></div>
 
-<p>Notice that we also specified <code class="highlighter-rouge">nruns=2</code> which means that <code class="highlighter-rouge">RevBayes</code> will automatically run 2 independent MCMC runs. You will find that the output is created in two files with extension <code class="highlighter-rouge">_run_1</code> and <code class="highlighter-rouge">_run_2</code> for each replicate and additionally the samples from both runs are combined into one file for more convenient post-processing. We may wish to run the <code class="highlighter-rouge">.burnin()</code> member function. Recall that this function <strong>does not</strong> specify the number of states that we wish to discard from the MCMC analysis as burnin (<em>i.e.</em>,  the samples collected before the chain converges to the stationary distribution). Instead, the <code class="highlighter-rouge">.burnin()</code> function specifies a <em>completely separate</em> preliminary MCMC analysis that is used to tune the scale of the moves to improve mixing of the MCMC analysis.</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.burnin(generations=10000,tuningInterval=200)
-</code></pre></div></div>
-
-<p>Now, run the MCMC:</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=30000)
+<p>Notice that we also specified <code class="highlighter-rouge">nruns=2</code> which means that <code class="highlighter-rouge">RevBayes</code> will automatically run 2 independent MCMC runs. 
+You will find that the output is created in two files with extension <code class="highlighter-rouge">_run_1</code> and <code class="highlighter-rouge">_run_2</code> for each replicate and additionally the samples from both runs are combined into one file for more convenient post-processing. 
+Now, run the MCMC:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=30000,tuningInterval=200)
 </code></pre></div></div>
 
 <p>When the analysis is complete, you will have the monitored files in your output directory.</p>
 
-<p>Methods for visualizing the marginal densities of parameter values are not currently available in <code class="highlighter-rouge">RevBayes</code> itself. Thus, it is important to use programs like <code class="highlighter-rouge">Tracer</code> <a href="#Rambaut2011">(Rambaut and Drummond 2011)</a> to evaluate mixing and non-convergence.</p>
+<p>Methods for visualizing the marginal densities of parameter values are not currently available in <code class="highlighter-rouge">RevBayes</code> itself. 
+Thus, it is important to use programs like <code class="highlighter-rouge">Tracer</code> <a href="#Rambaut2011">(Rambaut and Drummond 2011)</a> to evaluate mixing and non-convergence.</p>
 
-<p>Look at the file called <code class="highlighter-rouge">output/primates_cytb_JC.log</code> in <code class="highlighter-rouge">Tracer</code>. There you see the posterior distribution of the continuous parameters, <em>e.g.</em>,  the tree length variable <code class="highlighter-rouge">TL</code>.</p>
+<p>Look at the file called <code class="highlighter-rouge">output/primates_cytb_JC.log</code> in <code class="highlighter-rouge">Tracer</code>. 
+There you see the posterior distribution of the continuous parameters, <em>e.g.</em>, the tree length variable <code class="highlighter-rouge">TL</code>.</p>
 
 <figure id="jc_trace_tl"><p><img src="figures/primates_cytb_JC_TL_Trace.png" width="500" /> <img src="figures/primates_cytb_JC_TL_Distribution.png" width="500" />``</p>
 <figcaption><strong>Left:</strong> Trace of tree-length samples for one MCMC run. The caterpillar-like look is a good sign.You will also see that the effective sample size is comparably large, i.e., much larger than 200. <strong>Right:</strong> Posterior distribution of the tree length of the primate phylogeny under a Jukes-Cantor substitution model.</figcaption>
@@ -981,6 +1039,24 @@ run an analysis.</p>
 <a href="https://doi.org/10.1016/B978-1-4832-3211-9.50009-7">10.1016/B978-1-4832-3211-9.50009-7</a>
 
 </li>
+<li><span id="Felsenstein1981">Felsenstein J. 1981. Evolutionary Trees from DNA Sequences: a Maximum Likelihood Approach. Journal of Molecular Evolution. 17:368–376.</span>
+
+<a href="https://doi.org/10.1007/BF01734359">10.1007/BF01734359</a>
+
+</li>
+<li><span id="Hasegawa1985">Hasegawa M., Kishino H., Yano T. 1985. Dating of the Human-Ape Splitting by a molecular Clock of Mitochondrial DNA. Journal of Molecular Evolution. 22:160–174.</span>
+
+<a href="https://doi.org/10.1007/BF02101694">10.1007/BF02101694</a>
+
+</li>
+<li><span id="Tavare1986">Tavaré S. 1986. Some Probabilistic and Statistical Problems in the Analysis of DNA Sequences. Some Mathematical Questions in Biology: DNA Sequence Analysis. 17:57–86.</span>
+
+</li>
+<li><span id="Hoehna2014b">Höhna S., Heath T.A., Boussau B., Landis M.J., Ronquist F., Huelsenbeck J.P. 2014. Probabilistic Graphical Model Representation in Phylogenetics. Systematic Biology. 63:753–771.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syu039">10.1093/sysbio/syu039</a>
+
+</li>
 <li><span id="Brown2010">Brown J.M., Hedtke S.M., Lemmon A.R., Lemmon E.M. 2010. When Trees Grow Too Long: Investigating the Causes of Highly Inaccurate Bayesian Branch-Length Estimates. Systematic Biology. 59:145–161.</span>
 
 <a href="https://doi.org/10.1093/sysbio/syp081">10.1093/sysbio/syp081</a>
@@ -996,19 +1072,6 @@ run an analysis.</p>
 
 
 <a href="http://tree.bio.ed.ac.uk/software/tracer/">http://tree.bio.ed.ac.uk/software/tracer/</a>
-</li>
-<li><span id="Hasegawa1985">Hasegawa M., Kishino H., Yano T. 1985. Dating of the Human-Ape Splitting by a molecular Clock of Mitochondrial DNA. Journal of Molecular Evolution. 22:160–174.</span>
-
-<a href="https://doi.org/10.1007/BF02101694">10.1007/BF02101694</a>
-
-</li>
-<li><span id="Felsenstein1981">Felsenstein J. 1981. Evolutionary Trees from DNA Sequences: a Maximum Likelihood Approach. Journal of Molecular Evolution. 17:368–376.</span>
-
-<a href="https://doi.org/10.1007/BF01734359">10.1007/BF01734359</a>
-
-</li>
-<li><span id="Tavare1986">Tavaré S. 1986. Some Probabilistic and Statistical Problems in the Analysis of DNA Sequences. Some Mathematical Questions in Biology: DNA Sequence Analysis. 17:57–86.</span>
-
 </li>
 <li><span id="Yang1994a">Yang Z. 1994. Maximum Likelihood Phylogenetic Estimation from DNA Sequences with Variable Rates Over Sites: Approximate Methods. Journal of Molecular Evolution. 39:306–314.</span>
 
