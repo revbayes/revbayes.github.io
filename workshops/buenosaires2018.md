@@ -18,8 +18,6 @@ lessons:
 - div
 - branch_specific_div
 
-Short Course: RevBayes
-Topics covered include: 
 Day 1
 Introduction to Bayesian inference and MCMC
 Probabilistic graphical models in phylogenetics
