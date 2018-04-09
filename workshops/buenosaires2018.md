@@ -13,7 +13,8 @@ instructors:
 - Sebastian Höhna
 - Luis Palazzesi
 
-getting to MACN:
+venue:
+- The address of the MACN (Museo Argentino de Ciencias Naturales) is Angel Gallardo 470 (the closest Metro station is Angel Gallardo, from the B line). A security officer will be at this staff entrance. He will give you directions to get to the "Salón de Actos", where the workshop will take place. It is located on the first floor, next to the Museología department. If you have any issues to get in, please contact us +54 91144341130 (Luis Palazzesi)
 
 lessons:
 - intro
