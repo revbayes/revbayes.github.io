@@ -10,6 +10,7 @@ We are pleased to announce a new intensive short course on the use of RevBayes�
 Nos complace anunciar un nuevo curso intensivo, con modalidad de taller, destinado a estudiantes de grado y posgrado, acerca del uso de RevBayes—el nuevo MrBayes—enfocado en la inferencia de árboles filogenéticos y en la estimación de tasas de diversificación. El curso será gratuito, tendrá una duración de tres días, y se dictará en el Museo Argentino de Ciencias Naturales "Bernardino Rivadavia" (MACN-CONICET), entre los días 16 y 18 de Abril de 2018. Este curso estará  financiado por BAYLAT (Alemania), y contará con el apoyo del MACN-CONICET.  El curso será dictado principalmente en inglés.  Las solicitudes pueden estar escritas en inglés o en español y deben ser completadas online aquí  antes del 15 de Marzo de 2018. Se dará preferencia a estudiantes con conocimientos de filogenética y que estén desarrollando investigaciones relacionadas a los temas del curso. Se espera que todos los estudiantes tengan un nivel básico de inglés científico. 
 instructors:
 - Sebastian Höhna and Luis Palazzesi
+location:
 lessons:
 - intro
 - ctmc
