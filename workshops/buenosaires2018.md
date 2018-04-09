@@ -13,7 +13,7 @@ description:
 instructors:
 - Sebastian Höhna and Luis Palazzesi
 
-Getting to MACN:
+getting to MACN:
 
 lessons:
 - intro
