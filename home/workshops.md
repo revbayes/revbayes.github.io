@@ -14,14 +14,14 @@ Throughout the year, the members of the RevBayes development team and our collab
 {% for workshop in workshops %}
 	{% capture startdate %}{{ workshop.startdate | date: '%s'}}{% endcapture %}
 
-{% capture event %}
-<tr>
-<td>{{ workshop.startdate | date: "%B %-d, %Y" }}</td>
-<td><a href="{{ site.baseurl }}{{ workshop.url }}">{{ workshop.title }}</a></td>
-<td>{{ workshop.location }}</td>
-<td>{{ workshop.instructors | join: ", " }}</td>
-</tr>
-{% endcapture %}
+	{% capture event %}
+		<tr>
+		<td>{{ workshop.startdate | date: "%B %-d, %Y" }}</td>
+		<td><a href="{{ site.baseurl }}{{ workshop.url }}">{{ workshop.title }}</a></td>
+		<td>{{ workshop.location }}</td>
+		<td>{{ workshop.instructors | join: ", " }}</td>
+		</tr>
+	{% endcapture %}
 
 	{% if startdate > nowunix %}
 		{% assign future = future | append: event %}
