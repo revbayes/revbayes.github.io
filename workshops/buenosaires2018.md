@@ -19,7 +19,7 @@ venue:
 lessons:
 - intro
 - ctmc
-- partition
+#- partition
 - tefbd
 - div
 - branch_specific_div
