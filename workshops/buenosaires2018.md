@@ -10,8 +10,8 @@ description:
 
 
 instructors:
-- <a href="mailto:hoehna@bio.lmu.de">Sebastian Höhna</a>
-- <a href="mailto:lpalazzesi@macn.gov.ar">Luis Palazzesi</a>
+- <a href="mailto:hoehna@bio.lmu.de?subject=RevBayes%20Workshop%20Buenos%20Aires%202018">Sebastian Höhna</a>
+- <a href="mailto:lpalazzesi@macn.gov.ar?subject=RevBayes%20Workshop%20Buenos%20Aires%202018">Luis Palazzesi</a>
 - Femke Thon
 
 venue:
