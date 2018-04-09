@@ -1,9 +1,9 @@
+---
 layout: workshop
 title: RevBayes Workshop
 location: Buenos Aires, Argentina
 startdate: 2018-04-16
 enddate: 2018-04-18
----
 ## Description
 We are pleased to announce a new intensive short course on the use of RevBayes—the new MrBayes—focused on Bayesian phylogenetic tree inference and diversification rate estimation. The course will be free of charge,  three full days in length and, and will take place at Museo Argentino de Ciencias Naturales (MACN-CONICET), Buenos Aires, Argentina from the 16th to the 18th of April, 2018. This course is primarily funded by the BAYLAT (Germany), with  support from the MACN-CONICET.  The course will be primarily taught in English. Applications may be written in English or Spanish and should be submitted online here by March 15th, 2018. Preference will go towards students with background in phylogenetics and a compelling motivation for taking the course.
 
