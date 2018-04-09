@@ -19,7 +19,8 @@ Overview
 ========
 {:.section}
 
-This tutorial provides the first protocol from our recent publication {% cite Hoehna2017a %}. The second protocol is described in the {% page_ref partition %} tutorial and the third protocol is described in the {% page_ref bayes_factors %}.
+This tutorial provides the first protocol from our recent publication {% cite Hoehna2017a %}. 
+The second protocol is described in the {% page_ref partition %} tutorial and the third protocol is described in the {% page_ref bayes_factors %}.
 
 The present tutorial demonstrates how to set up and perform analyses
 using common nucleotide substitution models. The substitution models
@@ -58,6 +59,21 @@ parameters. We will provide comments on how to modify the tutorial if
 you wish to estimate rooted, clock-like trees. All the assumptions will
 be covered in more detail later in this tutorial.
 
+{% figure tab_subst_models %}
+
+ |  **Model**     |      **Reference**     |  **Function**   |   **Parameters** |
+ |:--------------:|:----------------------:|:---------------:|:----------------:|
+ | Jukes-Cantor   |  {% cite Jukes1969 %}  |      fnJC       |          -       |
+ | Felsenstein-81 | {% cite Felsenstein1981 %} |   fnF81     |        $\pi$     |
+ |       HKY      | {% cite Hasegawa1985 %} |     fnHKY      | $\pi$, $\kappa$  |
+ |       GTR      | {% cite Tavare1986 %}  |      fnGTR      | $\pi$, $\epsilon$  |
+
+{% figcaption %}
+Specific functions for substitution models available in RevBayes.
+{% endfigcaption %}
+{% endfigure %}
+
+
 
 Example: Character Evolution under the Jukes-Cantor Substitution Model
 ======================================================================
@@ -66,23 +82,21 @@ Example: Character Evolution under the Jukes-Cantor Substitution Model
 Getting Started
 ---------------
 
-The first section of this exercise involves: (1) setting up a
-Jukes-Cantor (JC) substitution model for an alignment of the cytochrome
-b subunit; (2) approximating the posterior probability of the tree
-topology and node ages (and all other parameters) using MCMC, and; (3)
-summarizing the MCMC output by computing the maximum *a posteriori*
-tree.
+The first section of this exercise involves: 
+1. setting up a Jukes-Cantor (JC) substitution model for an alignment of the cytochrome b subunit; 
+2. approximating the posterior probability of the tree topology and node ages (and all other parameters) using MCMC, and; 
+3. summarizing the MCMC output by computing the maximum *a posteriori* tree.
 
 
 {% figure jc_graphical_model %}
 <img src="figures/jc_graphical_model.png" /> 
 {% figcaption %} 
-Graphical model representation of a simple phylogenetic model. The graphical model shows the dependencies between the parameters.Here, the rate matrix $Q$ is a constant variable because it is fixed and does not depend on any parameters.The only free parameters of this model, the Jukes-Cantor model, are the tree $\Psi$ including the node ages.
+Graphical model representation of a simple phylogenetic model. The graphical model shows the dependencies between the parameters {% cite Hoehna2014b %}. Here, the rate matrix $Q$ is a constant variable because it is fixed and does not depend on any parameter.The only free parameters of this model, the Jukes-Cantor model, are the tree $\Psi$ including the branch lengths.
 {% endfigcaption %}
 {% endfigure %}
 
-We first consider the simplest substitution model described by
-{% cite Jukes1969 %}. The instantaneous-rate matrix for the JC substitution
+We first consider the simplest substitution model described by Jukes and Cantor
+{% cite Jukes1969 -A %}. The instantaneous-rate matrix for the JC substitution
 model is defined as
 
 $$Q_{JC69} = \begin{pmatrix} 
@@ -134,17 +148,18 @@ provides information about the alignment:
 
 ```
 data
-
+```
+```
    DNA character matrix with 23 taxa and 1141 characters
    =====================================================
    Origination:                      primates_and_galeopterus_cytb.nex
    Number of taxa:                   23
    Number of included taxa:          23
    Number of characters:             1141
-   Number of included characters: 1141
+   Number of included characters:    1141
    Datatype:                         DNA
 ```
-
+{:.Rev-output}
 
 Next we will specify some useful variables based on our dataset. The variable `data` has *member functions* that we can use to retrieve information about the dataset. These include, for example, the number of species and the taxa. We will need that taxon information for setting up different parts of our model.
 
@@ -185,12 +200,14 @@ You can see the rates of the $Q$ matrix by typing
 
 ```
 Q
-
+```
+```
    [ [ -1.0000, 0.3333, 0.3333, 0.3333 ] ,
      0.3333, -1.0000, 0.3333, 0.3333 ] ,
      0.3333, 0.3333, -1.0000, 0.3333 ] ,
      0.3333, 0.3333, 0.3333, -1.0000 ] ]
 ```
+{:.Rev-output}
 
 As you can see, all substitution rates are equal.
 
@@ -209,8 +226,8 @@ topology ~ dnUniformTopology(taxa, outgroup=out_group)
 Some types of stochastic nodes can be updated by a number of alternative moves. Different moves may explore parameter space in different ways, and it is possible to use multiple different moves for a given parameter to improve mixing (the efficiency of the MCMC simulation). In the case of our unrooted tree topology, for example, we can use both a nearest-neighbor interchange move (`mvNNI`) and a subtree-prune and regrafting move (`mvSPR`). These moves do not have tuning parameters associated with them, thus you only need to pass in the `topology` node and proposal `weight`.
 
 ```
-moves[mvi++] = mvNNI(topology, weight=1.0)
-moves[mvi++] = mvSPR(topology, weight=1.0)
+moves[mvi++] = mvNNI(topology, weight=n_species)
+moves[mvi++] = mvSPR(topology, weight=n_species/10.0)
 ```
 
 The weight specifies how often the move will be applied either on average per iteration or relative to all other moves. Have a look at the MCMC Diagnosis tutorial for more details about moves and MCMC strategies (found in {% page_ref tutorials %}).
@@ -230,77 +247,94 @@ It is convenient for monitoring purposes to add the tree length as deterministic
 TL := sum(br_lens)
 ```
 
-**Alternative branch-length priors**
-Some studies, *e.g.*,  {% cite Brown2010 %} {% cite Rannala2012 %}, have criticized the exponential prior distribution for branch lengths because it induces a gamma-dsitributed tree-length and the mean of this gamma distribution grows with the number of taxa. For example, we can use instead a specific gamma prior distribution (or any other distribution defined on a positive real variable) for the tree length, and then use a Dirichlet prior distribution to break the tree length into the corresponding branch lengths {% cite Zhang2012 %}.
-
-```
-# specify a prior distribution on the tree length with your desired mean
-TL ~ dnGamma(2,4)
-moves[mvi++] = mvScale(TL) 
-
-# now create a random variable for the relative branch lengths
-rel_branch_lengths ~ dnDirichlet( rep(1.0,n_branches) )
-moves[mvi++] = mvBetaSimplex(rel_branch_lengths, weight=n_branches)
-moves[mvi++] = mvDirichletSimplex(rel_branch_lengths, weight=n_branches/10.0)
-
-# finally, transform the relative branch lengths into actual branch lengths
-br_lens := rel_branch_lengths * TL
-```
-
 Finally, we can create a *phylogram* (a phylogeny in which the branch lengths are proportional to the expected number of substitutions/site) by combining the tree topology and branch lengths. We do this using the `treeAssembly()` function, which applies the value of the $i^{th}$ member of the `br_lens` vector to the branch leading to the $i^{th}$ node in `topology`. Thus, the `psi` variable is a deterministic node:
 
 ```
 psi := treeAssembly(topology, br_lens)
 ```
 
-**Alternative Analysis Prior on Time-Trees: Tree Topology and Node Ages**
-Alternatively, you may want to specify a prior on time-trees. Here we
-will briefly indicate how to specify such an prior which will lead to
-inference of time trees.
-
-The tree (the topology and node ages) is a stochastic node in our
-phylogenetic model. For simplicity, we will assume a uniform prior on
-both topologies and node ages. The distribution in RevBayes is `dnUniformTimeTree()`.
-
-Fore more information on tree priors, such as birth-death
-processes, please read the {% page_ref div %}.
-
-First, we need to specify the age of the tree:
-
+> **Alternative tree priors**
+> For large phylogenetic trees, i.e., with more than 200 taxa, it might be easier to specify a combined topology and branch length prior distribution.
+> We can achieve this by simple using the distribution `dnUniformTopologyBranchLength()`.
+>```
+br_len_lambda <- 10.0
+psi ~ dnUniformTopologyBranchLength(taxa, branchLengthDistribution=dnExponential(br_len_lambda))
+moves[mvi++] = mvNNI(psi, weight=n_species)
+moves[mvi++] = mvSPR(psi, weight=n_species/10.0)
+moves[mvi++] = mvBranchLengthScale(psi, weight=n_branches)
 ```
+> You might think that this approach is in fact simpler than the `for` loop that we explained above.
+> We still think that it is pedagogical to specify the prior on each branch length separately in this tutorial to emphasize all components of the model.
+
+> **Alternative branch-length priors**
+>Some studies, *e.g.*,  {% cite Brown2010 %} {% cite Rannala2012 %}, have criticized the exponential prior distribution for branch lengths because it induces a gamma-dsitributed tree-length and the mean of this gamma distribution grows with the number of taxa. For example, we can use instead a specific gamma prior distribution (or any other distribution defined on a positive real variable) for the tree length, and then use a Dirichlet prior distribution to break the tree length into the corresponding branch lengths {% cite Zhang2012 %}.
+>
+>First, specify a prior distribution on the tree length with your desired mean.
+>For example, we use a gamma distribution as our prior on the tree length.
+```
+TL ~ dnGamma(2,4)
+moves[mvi++] = mvScale(TL) 
+```
+>
+>Now we create a random variable for the relative branch lengths.
+```
+rel_branch_lengths ~ dnDirichlet( rep(1.0,n_branches) )
+moves[mvi++] = mvBetaSimplex(rel_branch_lengths, weight=n_branches)
+moves[mvi++] = mvDirichletSimplex(rel_branch_lengths, weight=n_branches/10.0)
+```
+>Finally, transform the relative branch lengths into actual branch lengths
+```
+br_lens := rel_branch_lengths * TL
+```
+
+
+>**Alternative Analysis Prior on Time-Trees: Tree Topology and Node Ages**
+>Alternatively, you may want to specify a prior on time-trees. 
+>Here we will briefly indicate how to specify such an prior which will lead to inference of time trees.
+>
+>The tree (the topology and node ages) is a stochastic node in our phylogenetic model. 
+>For simplicity, we will assume a uniform prior on both topologies and node ages. 
+>The distribution in RevBayes is `dnUniformTimeTree()`.
+>
+>Fore more information on tree priors, such as birth-death processes, please read the {% page_ref div %}.
+>
+>First, we need to specify the age of the tree:
+>
+>```
 root_age <- 10.0
 ```
-
-Here we simply assumed that the tree is 10.0 time units old. We could also specify a prior on the root age if we have fossil calibrations (see {% page_ref clocks %}). Next, we specify the `tree` stochastic variable by passing in the taxon information `taxa` to the `dnUniformTimeTree()` distribution:
-
+>
+>Here we simply assumed that the tree is 10.0 time units old. We could also specify a prior on the root age if we have fossil calibrations (see {% page_ref clocks %}). Next, we specify the `tree` stochastic variable by passing in the taxon information `taxa` to the `dnUniformTimeTree()` distribution:
+>
 ```
 psi ~ dnUniformTimeTree(rootAge=root_age, taxa=taxa)
 ```
-
-Some types of stochastic nodes can be updated by a number of alternative moves. Different moves may explore parameter space in different ways,and it is possible to use multiple different moves for a given parameter to improve mixing (the efficiency of the MCMC simulation). In the case of our rooted tree, for example, we can use both a nearest-neighbor interchange move without and with changing the node ages (`mvNarrow` and `mvNNI`) and a fixed-nodeheight subtree-prune and regrafting move (`mvFNPR`) and its Metropolized-Gibbs variant (`mvGPR`) {% cite Hoehna2008} {% cite Hoehna2012 %}. We also need moves that change the ages of the internal nodes, for example, `mvSubtreeScale` and `mvNodeTimeSlideUniform`. These moves do not have tuning parameters associated with them, thus you only need to pass in the `psi` node and proposal `weight`.
-
+>
+>Some types of stochastic nodes can be updated by a number of alternative moves. Different moves may explore parameter space in different ways,and it is possible to use multiple different moves for a given parameter to improve mixing (the efficiency of the MCMC simulation). In the case of our rooted tree, for example, we can use both a nearest-neighbor interchange move without and with changing the node ages (`mvNarrow` and `mvNNI`) and a fixed-nodeheight subtree-prune and regrafting move (`mvFNPR`) and its Metropolized-Gibbs variant (`mvGPR`) {% cite Hoehna2008} {% cite Hoehna2012 %}. We also need moves that change the ages of the internal nodes, for example, `mvSubtreeScale` and `mvNodeTimeSlideUniform`. These moves do not have tuning parameters associated with them, thus you only need to pass in the `psi` node and proposal `weight`.
+>
 ```
-moves[mvi++] = mvNarrow(psi, weight=5.0)
-moves[mvi++] = mvNNI(psi, weight=1.0)
-moves[mvi++] = mvFNPR(psi, weight=3.0)
-moves[mvi++] = mvGPR(psi, weight=3.0)
-moves[mvi++] = mvSubtreeScale(psi, weight=3.0)
-moves[mvi++] = mvNodeTimeSlideUniform(psi, weight=15.0)
+moves[mvi++] = mvNarrow(psi, weight=n_species)
+moves[mvi++] = mvNNI(psi, weight=n_species/5.0)
+moves[mvi++] = mvFNPR(psi, weight=n_species/3.0)
+moves[mvi++] = mvGPR(psi, weight=n_species/30.0)
+moves[mvi++] = mvSubtreeScale(psi, weight=n_species/3.0)
+moves[mvi++] = mvNodeTimeSlideUniform(psi, weight=n_species)
 ```
-
-
-The weight specifies how often the move will be applied either on average per iteration or relative to all other moves. Have a look at the [MCMC tutorial]({{ base.url }}/tutorials/) for more details about moves and MCMC strategies.
-
-**Molecular clock**
-Additionally, in the case of time-calibrated trees, we need to add a molecular clock rate parameter. For example, we know from empirical estimates that the molecular clock rate is about 0.01 (=1%) per million years per site. Nevertheless, we can estimate it here because we fixed the root age. We use a uniform prior on the log-transform clock rate. This specifies our lack of prior knowledge on the magnitude of the clock rate.
-
+>
+>
+>The weight specifies how often the move will be applied either on average per iteration or relative to all other moves. Have a look at the [MCMC tutorial]({{ base.url }}/tutorials/) for more details about moves and MCMC strategies.
+>
+>**Molecular clock**
+>Additionally, in the case of time-calibrated trees, we need to add a molecular clock rate parameter. For example, we know from empirical estimates that the molecular clock rate is about 0.01 (=1%) per million years per site. Nevertheless, we can estimate it here because we fixed the root age. We use a uniform prior on the log-transform clock rate. This specifies our lack of prior knowledge on the magnitude of the clock rate.
+>
 ```
 log_clock_rate ~ dnUniform(-6,1)
 moves[mvi++] = mvSlide(log_clock_rate, weight=2.0)
 clock_rate := 10^log_clock_rate
 ```
-
-Instead, you could also fix the clock rate and estimate the root age. For more information on molecular clocks please read the [Divergence Time Tutorial]({{ base.url }}/tutorials/clocks/)
+>
+>Instead, you could also fix the clock rate and estimate the root age. 
+>For more information on molecular clocks please read the [Divergence Time Tutorial]({{ base.url }}/tutorials/clocks/)
 
 Putting it All Together
 -----------------------
@@ -311,20 +345,18 @@ that describes how the sequence data evolved over the tree with branch
 lengths. Collectively, these parameters comprise a distribution called
 the *phylogenetic continuous-time Markov chain*, and we use the
 `dnPhyloCTMC` constructor function to create this node. This
-distribution requires several input arguments: (1) the `tree` with
-branch lengths; (2) the instantaneous-rate matrix `Q`; (3) the `type` of
-character data.
+distribution requires several input arguments: 
+1. the `tree` with branch lengths; 
+2. the instantaneous-rate matrix `Q`; 
+3. the `type` of character data.
 
 Build the random variable for the character data (sequence alignment).
-
 ```
-# the sequence evolution model
 seq ~ dnPhyloCTMC(tree=psi, Q=Q, type="DNA")
 ```
 
-Once the `PhyloCTMC` model has been created, we can attach our sequence
+Once the `PhyloCTMC` model has been created, we can attach our sequence 
 data to the tip nodes in the tree.
-
 ```
 seq.clamp(data)
 ```
@@ -399,26 +431,23 @@ proportion to their posterior probability. The `mcmc()` function will
 create our MCMC object:
 
 ```
-mymcmc = mcmc(mymodel, monitors, moves)
+mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
 ```
 
-Notice that we also specified `nruns=2` which means that `RevBayes` will automatically run 2 independent MCMC runs. You will find that the output is created in two files with extension `_run_1` and `_run_2` for each replicate and additionally the samples from both runs are combined into one file for more convenient post-processing. We may wish to run the `.burnin()` member function. Recall that this function **does not** specify the number of states that we wish to discard from the MCMC analysis as burnin (*i.e.*,  the samples collected before the chain converges to the stationary distribution). Instead, the `.burnin()` function specifies a *completely separate* preliminary MCMC analysis that is used to tune the scale of the moves to improve mixing of the MCMC analysis.
-
-```
-mymcmc.burnin(generations=10000,tuningInterval=200)
-```
-
+Notice that we also specified `nruns=2` which means that `RevBayes` will automatically run 2 independent MCMC runs. 
+You will find that the output is created in two files with extension `_run_1` and `_run_2` for each replicate and additionally the samples from both runs are combined into one file for more convenient post-processing. 
 Now, run the MCMC:
-
 ```
-mymcmc.run(generations=30000)
+mymcmc.run(generations=30000,tuningInterval=200)
 ```
 
 When the analysis is complete, you will have the monitored files in your output directory.
 
-Methods for visualizing the marginal densities of parameter values are not currently available in `RevBayes` itself. Thus, it is important to use programs like `Tracer` {% cite Rambaut2011 %} to evaluate mixing and non-convergence.
+Methods for visualizing the marginal densities of parameter values are not currently available in `RevBayes` itself. 
+Thus, it is important to use programs like `Tracer` {% cite Rambaut2011 %} to evaluate mixing and non-convergence.
 
-Look at the file called `output/primates_cytb_JC.log` in `Tracer`. There you see the posterior distribution of the continuous parameters, *e.g.*,  the tree length variable `TL`.
+Look at the file called `output/primates_cytb_JC.log` in `Tracer`. 
+There you see the posterior distribution of the continuous parameters, *e.g.*, the tree length variable `TL`.
 
 
 {% figure jc_trace_tl %}
