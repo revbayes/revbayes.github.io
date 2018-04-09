@@ -36,6 +36,69 @@ to {{ page.enddate | date: "%-m/%-d" }}, {{ page.enddate | date: "%Y" }}
 
 {% endif %}
 
+{% if page.software.size > 0 %}
+<h2>Software</h2>
+Before the course starts, please install the following software on your compute:
+<div class="row">
+    <div class="col-md-9">
+        <ul>
+          {% for program in page.software %}
+            <li>{{ program }}</li>
+          {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endif %}
+
+{% if page.papers.size > 0 %}
+<h2>Papers</h2>
+We recommend some selected papers for you to read prior to the workshop. These are not required and we will explain all the content throughout the workshop. However, some prior background knowledge will help to successfully work through the material.
+<div class="row">
+    <div class="col-md-9">
+        <ul>
+          {% for paper in page.papers %}
+            <li>{{ paper }}</li>
+          {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endif %}
+
+{% if page.schedule.size > 0 %}
+<h2>Schedule</h2>
+{% for session in page.schedule %}
+
+	{% capture event %}
+		<tr>
+		<td>{{ session.starttime | date: "%A" }}</td>
+		<td>{{ session.starttime | date: "%R" }}-{{ session.endtime | date: "%R" }}</td>
+		<td>{{ session.topic }}</td>
+		<td>{% if session.lesson.size > 0 %}<li>{% page_ref {{ session.lesson }} %}</li>{% endif %}</td>
+		<td>{{ session.instructors | join: ", " }}</td>
+		</tr>
+	{% endcapture %}
+
+	{% assign schedule = schedule | append: event %}
+
+{% endfor %}
+
+{% capture schedule_table %}
+<table class="table table-striped" style="width:100%">
+<tr>
+<td width="15%"><b>Date</b></td>
+<td width="15%"><b>Time</b></td>
+<td width="25%"><b>Topic</b></td>
+<td width="25%"><b>Material</b></td>
+<td width="25%"><b>Instructors</b></td>
+</tr>
+{{ schedule }}
+</table>
+{% endcapture %}
+{% endif %}
+{% if schedule_table %}
+{{ schedule_table }}
+{% endif %}
+
 {% if page.lessons.size > 0 %}
 <h2>Lessons</h2>
 
