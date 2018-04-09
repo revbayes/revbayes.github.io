@@ -10,8 +10,8 @@ description:
 
 
 instructors:
-- [Sebastian Höhna](mailto:hoehna@bio.lmu.de)
-- [Luis Palazzesi](mailto:lpalazzesi@macn.gov.ar)
+- Sebastian Höhna
+- Luis Palazzesi
 - Femke Thon
 
 venue:
