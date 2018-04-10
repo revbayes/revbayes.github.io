@@ -5,9 +5,12 @@ authors:  Sebastian Höhna, Michael Landis, Brian Moore and Tracy Heath
 level: 1
 prerequisites:
 - intro
+- rev
 - archery
+- binomial
 order: 0
 index: true
+software: true
 title-old: RB_CTMC_Tutorial
 redirect: false
 ---
@@ -214,16 +217,28 @@ As you can see, all substitution rates are equal.
 Tree Topology and Branch Lengths 
 --------------------------------
 
-The tree topology and branch lengths are stochastic nodes in our phylogenetic model. In Figure {% ref jc_graphical_model %}, the tree topology is denoted $\Psi$ and the length of the branch leading to node $i$ is $bl_i$.
+The tree topology and branch lengths are stochastic nodes in our phylogenetic model. 
+In Figure {% ref jc_graphical_model %}, the tree topology is denoted $\Psi$ and the 
+length of the branch leading to node $i$ is $bl_i$.
 
-We will assume that all possible labeled, unrooted tree topologies have equal probability. This is the `dnUniformTopology()` distribution in RevBayes. Note that in RevBayes it is advisable to specify the outgroup for your study system if you use an unrooted tree prior, whereas other software, *e.g.*,  MrBayes uses the first taxon in the data matrix file as the outgroup. Specify the `topology` stochastic node by passing in the tip labels `names` to the `dnUniformTopology()` distribution:
+We will assume that all possible labeled, unrooted tree topologies have equal probability. 
+This is the `dnUniformTopology()` distribution in RevBayes. 
+Note that in RevBayes it is advisable to specify the outgroup for your study system 
+if you use an unrooted tree prior, whereas other software, *e.g.*,  
+MrBayes uses the first taxon in the data matrix file as the outgroup. 
+Specify the `topology` stochastic node by passing in the list of `taxa` 
+to the `dnUniformTopology()` distribution:
 
 ```
 out_group = clade("Galeopterus_variegatus")
 topology ~ dnUniformTopology(taxa, outgroup=out_group)
 ```
 
-Some types of stochastic nodes can be updated by a number of alternative moves. Different moves may explore parameter space in different ways, and it is possible to use multiple different moves for a given parameter to improve mixing (the efficiency of the MCMC simulation). In the case of our unrooted tree topology, for example, we can use both a nearest-neighbor interchange move (`mvNNI`) and a subtree-prune and regrafting move (`mvSPR`). These moves do not have tuning parameters associated with them, thus you only need to pass in the `topology` node and proposal `weight`.
+Some types of stochastic nodes can be updated by a number of alternative moves. 
+Different moves may explore parameter space in different ways, 
+and it is possible to use multiple different moves for a given parameter to improve mixing 
+(the efficiency of the MCMC simulation). 
+In the case of our unrooted tree topology, for example, we can use both a nearest-neighbor interchange move (`mvNNI`) and a subtree-prune and regrafting move (`mvSPR`). These moves do not have tuning parameters associated with them, thus you only need to pass in the `topology` node and proposal `weight`.
 
 ```
 moves[mvi++] = mvNNI(topology, weight=n_species)
@@ -310,7 +325,16 @@ root_age <- 10.0
 psi ~ dnUniformTimeTree(rootAge=root_age, taxa=taxa)
 ```
 >
->Some types of stochastic nodes can be updated by a number of alternative moves. Different moves may explore parameter space in different ways,and it is possible to use multiple different moves for a given parameter to improve mixing (the efficiency of the MCMC simulation). In the case of our rooted tree, for example, we can use both a nearest-neighbor interchange move without and with changing the node ages (`mvNarrow` and `mvNNI`) and a fixed-nodeheight subtree-prune and regrafting move (`mvFNPR`) and its Metropolized-Gibbs variant (`mvGPR`) {% cite Hoehna2008} {% cite Hoehna2012 %}. We also need moves that change the ages of the internal nodes, for example, `mvSubtreeScale` and `mvNodeTimeSlideUniform`. These moves do not have tuning parameters associated with them, thus you only need to pass in the `psi` node and proposal `weight`.
+>Some types of stochastic nodes can be updated by a number of alternative moves. 
+>Different moves may explore parameter space in different ways,and it is possible to use 
+>multiple different moves for a given parameter to improve mixing 
+>(the efficiency of the MCMC simulation). In the case of our rooted tree, 
+>for example, we can use both a nearest-neighbor interchange move without and with changing 
+>the node ages (`mvNarrow` and `mvNNI`) and a fixed-nodeheight subtree-prune and regrafting 
+>move (`mvFNPR`) and its Metropolized-Gibbs variant (`mvGPR`) {% cite Hoehna2008 Hoehna2012 %}. 
+>We also need moves that change the ages of the internal nodes, for example, `mvSubtreeScale` 
+>and `mvNodeTimeSlideUniform`. These moves do not have tuning parameters associated with 
+>them, thus you only need to pass in the `psi` node and proposal `weight`.
 >
 ```
 moves[mvi++] = mvNarrow(psi, weight=n_species)
@@ -508,30 +532,30 @@ treetrace.cladeProbability( Lemuroidea )
 
 {% figure tab_primates %}
 
- |  **Species**     |  **Family**     |   **Parvorder**   |   **Suborder** |
-  --------------- |:---------------:|:-------------------:|:---------------:|
- | Aotus trivirgatus     |        Aotidae     |        Platyrrhini (NWM)   | Haplorrhini
- | Callicebus donacophilus     |   Pitheciidae     |   Platyrrhini (NWM)   | Haplorrhini  |
-|  Cebus albifrons       |      Cebidae     |       Platyrrhini (NWM)  |  Haplorrhini |
- | Cheirogaleus major    |         Cheirogaleidae  |   Lemuroidea  |         Strepsirrhini |
- | Chlorocebus aethiops |          Cercopithecoidea  |  Catarrhini  |        Haplorrhini |
-|  Colobus guereza     |           Cercopithecoidea  |  Catarrhini |         Haplorrhini |
- | Daubentonia madagascariensis  |  Daubentoniidae  |   Lemuroidea  |        Strepsirrhini |
- | Galago senegalensis     |       Galagidae     |     Lorisidae  |         Strepsirrhini |
- | Hylobates lar   |               Hylobatidea   |     Catarrhini  |         Haplorrhini  |
- | Lemur catta   |                 Lemuridae    |      Lemuroidea   |      Strepsirrhini |
- | Lepilemur hubbardorum    |      Lepilemuridae   |   Lemuroidea  |        Strepsirrhini |
- | Loris tardigradus        |      Lorisidae      |    Lorisidae    |    Strepsirrhini  |
- | Macaca mulatta      |          Cercopithecoidea  |  Catarrhini  |         Haplorrhini |
- | Microcebus murinus      |       Cheirogaleidae  |   Lemuroidea  |        Strepsirrhini |
- | Nycticebus coucang      |       Lorisidae     |     Lorisidae   |        Strepsirrhini |
- | Otolemur crassicaudatus  |      Galagidae    |      Lorisidae   |        Strepsirrhini |
- | Pan paniscus        |           Hominoidea    |     Catarrhini   |       Haplorrhini  |
- | Perodicticus potto     |        Lorisidae    |      Lorisidae    |       Strepsirrhini  |
- | Propithecus coquereli    |      Indriidae    |      Lemuroidea   |       Strepsirrhini  |
- | Saimiri sciureus      |         Cebidae      |      Platyrrhini (NWM) |  Haplorrhini |
- | Tarsius syrichta     |          Tarsiidae    |    | Haplorrhini  |  
- | Varecia variegata variegata  |  Lemuridae    |     Lemuroidea   |       Strepsirrhini  |
+ |  **Species**     |  **Family**     |   **Parvorder**   |   **Suborder** |  **Posterior Probability** |
+  --------------- |:---------------:|:-------------------:|:---------------:|:---------------:|
+ | Aotus trivirgatus     |        Aotidae     |        Platyrrhini (NWM)   | Haplorrhini  |     |
+ | Callicebus donacophilus     |   Pitheciidae     |   Platyrrhini (NWM)   | Haplorrhini  |     |
+ |  Cebus albifrons       |      Cebidae     |       Platyrrhini (NWM)  |  Haplorrhini |     |
+ | Cheirogaleus major    |         Cheirogaleidae  |   Lemuroidea  |         Strepsirrhini |     |
+ | Chlorocebus aethiops |          Cercopithecoidea  |  Catarrhini  |        Haplorrhini |     |
+ |  Colobus guereza     |           Cercopithecoidea  |  Catarrhini |         Haplorrhini |     |
+ | Daubentonia madagascariensis  |  Daubentoniidae  |   Lemuroidea  |        Strepsirrhini |     |
+ | Galago senegalensis     |       Galagidae     |     Lorisidae  |         Strepsirrhini |     |
+ | Hylobates lar   |               Hylobatidea   |     Catarrhini  |         Haplorrhini  |     |
+ | Lemur catta   |                 Lemuridae    |      Lemuroidea   |      Strepsirrhini |     |
+ | Lepilemur hubbardorum    |      Lepilemuridae   |   Lemuroidea  |        Strepsirrhini |     |
+ | Loris tardigradus        |      Lorisidae      |    Lorisidae    |    Strepsirrhini  |     |
+ | Macaca mulatta      |          Cercopithecoidea  |  Catarrhini  |         Haplorrhini |     |
+ | Microcebus murinus      |       Cheirogaleidae  |   Lemuroidea  |        Strepsirrhini |     |
+ | Nycticebus coucang      |       Lorisidae     |     Lorisidae   |        Strepsirrhini |     |
+ | Otolemur crassicaudatus  |      Galagidae    |      Lorisidae   |        Strepsirrhini |     |
+ | Pan paniscus        |           Hominoidea    |     Catarrhini   |       Haplorrhini  |     |
+ | Perodicticus potto     |        Lorisidae    |      Lorisidae    |       Strepsirrhini  |     |
+ | Propithecus coquereli    |      Indriidae    |      Lemuroidea   |       Strepsirrhini  |     |
+ | Saimiri sciureus      |         Cebidae      |      Platyrrhini (NWM) |  Haplorrhini |     |
+ | Tarsius syrichta     |          Tarsiidae    |    | Haplorrhini  |       |
+ | Varecia variegata variegata  |  Lemuridae    |     Lemuroidea   |       Strepsirrhini  |     |
 
 {% figcaption %}
 Primate and species relationships.
@@ -655,8 +679,8 @@ The instantaneous-rate matrix for the GTR substitution model is:
 $$ Q_{GTR} = \begin{pmatrix}
 {\cdot}	   & {r_{AC}\pi_C} & {r_{AG}\pi_G} & {r_{AT}\pi_T} \\
 {r_{AC}\pi_A} & {\cdot}       & {r_{CG}\pi_G} & {r_{CT}\pi_T} \\
-{r_{AC}\pi_A} & {r_{CG}\pi_C} & {\cdot}       & {r_{GT}\pi_T} \\
-{r_{AC}\pi_A} & {r_{CT}\pi_C} & {r_{GT}\pi_G} & {\cdot}       \\
+{r_{AG}\pi_A} & {r_{CG}\pi_C} & {\cdot}       & {r_{GT}\pi_T} \\
+{r_{AT}\pi_A} & {r_{CT}\pi_C} & {r_{GT}\pi_G} & {\cdot}       \\
 \end{pmatrix} \mbox{  ,} $$
 
 where the six exchangeability parameters, $r_{ij}$, specify the relative
@@ -755,11 +779,14 @@ The probability density of mean-one gamma-distributed rates for different values
 {% endfigcaption %}
 {% endfigure %}
 
-We typically lack prior knowledge regarding the degree of ASRV for a given alignment. Accordingly, rather than specifying a precise value of $\alpha$, we can instead estimate the value of the $\alpha$-shape parameter from the data. This requires that we specify a diffuse (relatively [‘uninformative’](http://andrewgelman.com/2013/11/21/hidden-dangers-noninformative-priors/)) prior on the $\alpha$-shape parameter. For this analysis, we will use a lognormal distribution with a mean parameter, `alpha_prior_mean`, equal to `5.0`, and standard deviation, `alpha_prior_sd`, equal to 0.587405 (thus, 95% of the prior density spans exactly one order of magnitude).
+We typically lack prior knowledge regarding the degree of ASRV for a given alignment. 
+Accordingly, rather than specifying a precise value of $\alpha$, we can instead estimate the value of the $\alpha$-shape parameter from the data. This requires that we specify a diffuse (relatively [‘uninformative’](http://andrewgelman.com/2013/11/21/hidden-dangers-noninformative-priors/)) prior on the $\alpha$-shape parameter. For this analysis, we will use a lognormal distribution with a mean parameter, `alpha_prior_mean`, equal to `5.0`, and standard deviation, `alpha_prior_sd`, equal to 0.587405 (thus, 95% of the prior density spans exactly one order of magnitude).
 
-This approach for accommodating ASRV is another example of a hierarchical model ({% ref gtrg %}). That is, variation in substitution rates across sites is addressed by applying a site-specific rate multiplier to each of the $j$ sites, $r_j$. These rate-multipliers are drawn from a discrete, mean-one gamma distribution; the shape of this prior distribution (and the corresponding degree of ASRV) is governed by the $\alpha$-shape parameter. The $\alpha$-shape parameter, in turn, is treated as a lognormal distributed random variable. Finally, the shape of the lognormal prior is governed by the mean and standard deviation parameters, which are set to fixed values.
+This approach for accommodating ASRV is another example of a hierarchical model ({% ref fig_gtrg %}). 
+That is, variation in substitution rates across sites is addressed by applying a site-specific rate multiplier to each of the $j$ sites, $r_j$. 
+These rate-multipliers are drawn from a discrete, mean-one gamma distribution; the shape of this prior distribution (and the corresponding degree of ASRV) is governed by the $\alpha$-shape parameter. The $\alpha$-shape parameter, in turn, is treated as a lognormal distributed random variable. Finally, the shape of the lognormal prior is governed by the mean and standard deviation parameters, which are set to fixed values.
 
-{% figure grtrg %}
+{% figure fig_gtrg %}
 ![]( figures/gtrg_graphical_model.png) 
 {% figcaption %}
 Graphical model representation of the General Time Reversible (GTR) + Gamma phylogenetic model with invariable sites.

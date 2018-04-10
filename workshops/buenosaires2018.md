@@ -24,7 +24,7 @@ software:
 - <a href="https://github.com/revbayes/RevGadgets">RevGadgets</a>
 - <a href="http://tree.bio.ed.ac.uk/software/tracer/">Tracer</a>
 - <a href="http://tree.bio.ed.ac.uk/software/figtree/">FigTree</a>
-- A simple text editor, such as NotePad, TextWrangler or BBEdit
+- A simple text editor, such as <a href="https://notepad-plus-plus.org">NotePad++</a>, TextWrangler or BBEdit
 
 papers:
 - <a href="https://academic.oup.com/sysbio/article/65/4/726/1753608">Höhna et al. (2016). RevBayes&#58; Bayesian Phylogenetic Inference Using Graphical Models and an Interactive Model-Specification Language.</a>
