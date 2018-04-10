@@ -20,6 +20,7 @@ venue:
 
 software:
 - <a href="https://revbayes.github.io/revbayes-site/software">RevBayes v1.0.8</a>
+- <a href="https://www.r-project.org">R</a>
 - <a href="https://github.com/revbayes/RevGadgets">RevGadgets</a>
 - <a href="http://tree.bio.ed.ac.uk/software/tracer/">Tracer</a>
 - <a href="http://tree.bio.ed.ac.uk/software/figtree/">FigTree</a>
