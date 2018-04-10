@@ -30,7 +30,7 @@ This tutorial will provide a general overview of divergence time
 estimation using fossil calibration and relaxed-clock model comparison
 in a Bayesian framework. The exercise will guide you through the steps
 necessary for estimating phylogenetic relationships and dating species
-divergences using the program [RevBayes](http://revbayes.github.io/).
+divergences using the program [RevBayes](http://revbayes.github.io/) {% cite Hoehna2014b Hoehna2016b %}.
 
 Getting Started 
 ---------------
