@@ -67,7 +67,15 @@
           
             <li><a href="/revbayes-site/tutorials/intro/">Rev Language Syntax</a></li>
           
+            <li><a href="/revbayes-site/tutorials/rev/">Basic introduction to Rev & MCMC</a></li>
+          
+            <li><a href="/revbayes-site/tutorials/archery/">Introduction to MCMC using RevBayes</a></li>
+          
+            <li><a href="/revbayes-site/tutorials/binomial/">Introduction to MCMC using RevBayes</a></li>
+          
             <li><a href="/revbayes-site/tutorials/ctmc/">Substitution Models</a></li>
+          
+            <li><a href="/revbayes-site/tutorials/partition/">Partitioned data analysis</a></li>
           
           </ul>
         
@@ -80,149 +88,160 @@
 
 
 
+<blockquote class="tutorial_files" id="tutorial_files">
+    <h2>Data files and scripts</h2>
+    
+        
+        <strong>Data Files</strong>
+        <ul id="data_files">
+        
+        
+          <li><a href="/revbayes-site/tutorials/tefbd/data/bears_taxa.tsv">bears_taxa.tsv</a></li>
+        
+          <li><a href="/revbayes-site/tutorials/tefbd/data/bears_fossil_intervals.tsv">bears_fossil_intervals.tsv</a></li>
+        
+          <li><a href="/revbayes-site/tutorials/tefbd/data/bears_morphology.nex">bears_morphology.nex</a></li>
+        
+          <li><a href="/revbayes-site/tutorials/tefbd/data/bears_cytb.nex">bears_cytb.nex</a></li>
+        
+        </ul>
+    
+        
+        <strong>Scripts</strong>
+        <ul id="scripts">
+        
+        
+          <li><a href="/revbayes-site/tutorials/tefbd/scripts/model_Morph_TEFBD.Rev">model_Morph_TEFBD.Rev</a></li>
+        
+          <li><a href="/revbayes-site/tutorials/tefbd/scripts/model_UExp_TEFBD.Rev">model_UExp_TEFBD.Rev</a></li>
+        
+          <li><a href="/revbayes-site/tutorials/tefbd/scripts/summarize_TEFBD.Rev">summarize_TEFBD.Rev</a></li>
+        
+          <li><a href="/revbayes-site/tutorials/tefbd/scripts/mcmc_TEFBD.Rev">mcmc_TEFBD.Rev</a></li>
+        
+          <li><a href="/revbayes-site/tutorials/tefbd/scripts/model_FBDP_TEFBD.Rev">model_FBDP_TEFBD.Rev</a></li>
+        
+          <li><a href="/revbayes-site/tutorials/tefbd/scripts/model_GTRG_TEFBD.Rev">model_GTRG_TEFBD.Rev</a></li>
+        
+        </ul>
+    
+</blockquote>
+
+
 </div>
+
+
+<h2>Required Software</h2>
+
+For our tutorials we recommend that you download and install the latest release
+of ‘RevBayes‘ <a href="#Hoehna2016b">(Höhna et al. 2016)</a>, which is available for Mac OS X, Windows,
+and Linux operating systems. Directions for downloading and installing
+the software are available on the program webpage:
+[http://revbayes.com](http://revbayes.com/). The exercises provided often also
+require additional programs for editing text files and visualizing
+output. The following are very useful tools for working with ‘RevBayes‘:
+
+<ul>
+<li>Some of the output can be automatically visualized using pre-made 
+    <a href="https://www.r-project.org">R</a> functions provided by 
+    our R-package <a href="https://github.com/revbayes/RevGadgets">RevGadgets</a>. 
+    You should make sure that you have a recent release of 
+    <a href="https://www.r-project.org">R</a> and 
+    <a href="https://github.com/revbayes/RevGadgets">RevGadgets</a> installed.
+</li>
+<li>A good text editor – if you do not already have one that you like,
+    we recommend one that has features for syntax coloring, easy
+    navigation between different files, line numbers, etc. Good options
+    include <a href="http://www.sublimetext.com/">Sublime Text</a>, 
+    <a href="https://atom.io/">Atom</a> or <a href="https://notepad-plus-plus.org">NotePad++</a>, which are available for Mac OSX, Windows,
+    and Linux.
+</li>
+<li><a href="http://tree.bio.ed.ac.uk/software/tracer/">Tracer</a> – for
+    visualizing and assessing numerical parameter samples from
+    ‘RevBayes‘
+</li>
+<li><a href="http://tgvaughan.github.io/icytree/">IcyTree</a> – a web-hosted
+    phylogenetic tree visualization tool that is supported for
+    <a href="https://www.mozilla.org/en-US/firefox/products/">Firefox</a> or
+    <a href="https://www.google.com/chrome/">Google Chrome</a> browsers
+
+<li><a href="http://tree.bio.ed.ac.uk/software/figtree/">FigTree</a> – a tree
+    visualization program
+</li>
+</ul>
+
+
+
 <h1 id="sect:Overview">Overview</h1>
 
 <p>This tutorial demonstrates how to specify the models used in a Bayesian
 “total-evidence” phylogenetic analysis of extant and fossil species,
 combining morphological and molecular data as well as stratigraphic
-range data from the fossil record [<em>e.g.,</em>
-@Ronquist2012a} (missing reference) and use Markov chain Monte Carlo (MCMC) to
+range data from the fossil record [<em>e.g.,</em> 
+<a href="#Ronquist2012a">(Ronquist et al. 2012; Zhang et al. 2016; Gavryushkina et al. 2016)</a>]. 
+We begin with a concise
+introduction to the models used in this analysis in <a href="#Introduction">Section Introduction</a>, 
+followed by a detailed example analysis in
+<a href="#Exercise">Section Exercise</a> demonstrating how to apply these models in
+‘RevBayes‘ <a href="#Hoehna2017a">(Höhna et al. 2017)</a> and use Markov chain Monte Carlo (MCMC) to
 estimate the posterior distribution of dated phylogenies for data
 collected from living and fossil bears (family Ursidae).</p>
 
-<h2 id="subsect:Overview-Requirements">Requirements</h2>
-
-<h3 id="subsub:Req-Software">Required Software</h3>
-
-<p>This tutorial requires that you download and install the latest release
-of ‘RevBayes‘ <a href="#Hoehna2017a">(Höhna et al. 2017)</a>, which is available for Mac OS X, Windows,
-and Linux operating systems. Directions for downloading and installing
-the software are available on the program webpage:
-<a href="http://revbayes.com/">http://revbayes.com</a>. The exercise provided also
-requires additional programs for editing text files and visualizing
-output. The following are very useful tools for working with ‘RevBayes‘:</p>
-
-<ul>
-  <li>
-    <p>A good text editor – if you do not already have one that you like,
-we recommend one that has features for syntax coloring, easy
-navigation between different files, line numbers, etc. Good options
-include <a href="http://www.sublimetext.com/">Sublime Text</a> or
-<a href="https://atom.io/">Atom</a>, which are available for Mac OSX, Windows,
-and Linux.</p>
-  </li>
-  <li>
-    <p><a href="http://tree.bio.ed.ac.uk/software/tracer/">Tracer</a> – for
-visualizing and assessing numerical parameter samples from
-‘RevBayes‘</p>
-  </li>
-  <li>
-    <p><a href="http://tgvaughan.github.io/icytree/">IcyTree</a> – a web-hosted
-phylogenetic tree visualization tool that is supported for
-<a href="https://www.mozilla.org/en-US/firefox/products/">Firefox</a> or
-<a href="https://www.google.com/chrome/">Google Chrome</a> browsers</p>
-  </li>
-  <li>
-    <p><a href="http://tree.bio.ed.ac.uk/software/figtree/">FigTree</a> – a tree
-visualization program</p>
-  </li>
-</ul>
-
-<h3 id="prerequisite-tutorials">Prerequisite Tutorials</h3>
-
-<p>In addition to installing the software, this tutorial assumes that you
-have read and completed the following tutorials:</p>
-
-<ul>
-  <li>
-    <p><a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Intro_Tutorial/RB_Intro_Tutorial.pdf">Very Basic Introduction to
-‘Rev‘</a></p>
-  </li>
-  <li>
-    <p><a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Rev_Tutorial/RB_Rev_Tutorial.pdf">General Introduction to the ‘Rev‘
-syntax</a></p>
-  </li>
-  <li>
-    <p><a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_MCMC_Archery_Tutorial/RB_MCMC_Archery_Tutorial.pdf">General Introduction to MCMC using an archery
-example</a></p>
-  </li>
-  <li>
-    <p><a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_MCMC_Binomial_Tutorial/RB_MCMC_Binomial_Tutorial.pdf">General Introduction to MCMC using a coin-flipping
-example</a></p>
-  </li>
-  <li>
-    <p><a href="https://github.com/revbayes/revbayes_tutorial/blob/master/tutorial_TeX/RB_CTMC_Tutorial/RB_CTMC_Tutorial.pdf"><strong><em>Substitution
-Models</em></strong></a></p>
-  </li>
-  <li>
-    <p><a href="https://github.com/revbayes/revbayes_tutorial/blob/master/tutorial_TeX/RB_Partition_Tutorial/RB_Partition_Tutorial.pdf"><strong><em>Partitioned Data
-Analysis</em></strong></a></p>
-  </li>
-</ul>
-
-<h1 id="sect:Introduction">Introduction</h1>
+<h1 id="introduction"><a href="#sect:Introduction">Introduction</a></h1>
 
 <p>The “total-evidence” analysis described in this tutorial uses a
 probabilistic graphical model <a href="#Hoehna2014b">(Höhna et al. 2014)</a> integrating three separate
-likelihood components or data partitions (Fig. [fig:module-gm]): one
-for molecular data (section [subsect:Intro-GTR]), one for
-morphological data (section [subsect:Intro-Morpho]), and one for
+likelihood components or data partitions (<a href="#fig_module_gm"></a>): one
+for molecular data (<a href="#Intro-GTR">Section GTR</a>), one for
+morphological data (<a href="#Intro-Morpho">Section Morpho</a>), and one for
 fossil stratigraphic range data (section [subsect:Intro-TipSampling]).
 In addition, all likelihood components are conditioned on a tree
 topology with divergence times, which is modeled according to a separate
-prior component (section [subsect:Intro-FBD]).</p>
+prior component (<a href="#Intro-FBD">Section FBD</a>).</p>
 
-<p>[fig:module-gm]</p>
+<figure id="fig_module_gm"><p><img src="figures/tikz/full_model_modular.png" /></p>
+<figcaption>Modular components of the graphical model used in the “total-evidence” 
+analysis described in this tutorial.</figcaption>
+</figure>
 
-<p><img src="figures/tikz/full_model_modular.png" alt="" /></p>
-<blockquote>
-  <p>Modular components of
-the graphical model used in the “total-evidence” analysis described in
-this tutorial</p>
-</blockquote>
-
-<p>In figure [fig:example-tree] we provide an example of the type of tree
+<p>In figure <a href="#fig_example_tree"></a> we provide an example of the type of tree
 estimated from a total-evidence analysis. This example shows the
-complete tree (Fig. [fig:example-tree]A) and the sampled or
-reconstructed tree (Fig. [fig:example-tree]B). Importantly, we are
+complete tree (<a href="#fig_example_tree"></a>A) and the sampled or
+reconstructed tree (<a href="#fig_example_tree"></a>B). Importantly, we are
 interested in estimating the topology, divergence times, and fossil
-sample times of the <em>reconstructed tree</em> (Fig. [fig:example-tree]B).
-We will describe the distinction between these two trees in section
-[subsect:Intro-FBD].</p>
+sample times of the <em>reconstructed tree</em> (<a href="#fig_example_tree"></a>B).
+We will describe the distinction between these two trees in <a href="#Intro-FBD">Section FBD</a>.</p>
 
-<p>[fig:example-tree]</p>
-
-<p><img src="figures/tree_plot_with_fossils.png" alt="" /> <img src="figures/tree_plot_with_fossils_reconstructed.png" alt="" /></p>
-<blockquote>
-  <p>One possible
+<figure id="fig_example_tree"><p><img src="figures/tree_plot_with_fossils.png" /> 
+<img src="figures/tree_plot_with_fossils_reconstructed.png" /></p>
+<figcaption>One possible
 realization of the fossilized birth-death (described in section
 [subsect:Intro-FBD]) process starting at origin time $\phi$, showing
 fossil sampling events (red circles), and 15 sampled extant taxa (black
 circles). (A) The complete tree shows all lineages both sampled (solid
 lines) and unsampled (dotted lines). (B) The reconstructed tree (also
-called the sampled tree) shows only the sampled lineages</p>
-</blockquote>
+called the sampled tree) shows only the sampled lineages</figcaption>
+</figure>
 
-<h2 id="subsect:Intro-FBD">Lineage Diversification and Sampling</h2>
+<h2 id="lineage-diversification-and-sampling"><a href="#subsect:Intro-FBD">Lineage Diversification and Sampling</a></h2>
 
 <p>The joint prior distribution on tree topologies and divergence times of
 living and extinct species used in this tutorial is described by the
-<em>fossilized birth-death</em> (FBD) process (missing reference). This
+<em>fossilized birth-death</em> (FBD) process <a href="#Stadler2010">(Stadler 2010; Heath et al. 2014)</a>. This
 model simply treats the fossil observations as part of the process
 governing the tree topology and branch times (the node in
-Fig. [fig:module-gm]). The fossilized birth-death process provides a
+<a href="#fig_module_gm"></a>). The fossilized birth-death process provides a
 model for the distribution of speciation times, tree topology, and
 lineage samples before the present
 (<em>e.g.,</em>non-contemporaneous samples like
-fossils or viruses). This type of tree is shown in figure
-[fig:example-tree]. Importantly, this model can be used <em>with or
+fossils or viruses). This type of tree is shown in <a href="#fig_example_tree"></a>. 
+Importantly, this model can be used <em>with or
 without</em> character data for the historical samples. Thus, it provides a
 reasonable prior distribution for analyses combining morphological or
 DNA data for both extant and fossil
 taxa—<em>i.e.,</em>the so-called “total-evidence”
-approaches described by @Ronquist2012a and extended by @Zhang2016 and
-@Gavryushkina2016. When matrices of discrete morphological characters
+approaches described by <a href="#Ronquist2012a">(Ronquist et al. 2012)</a> and extended by <a href="#Zhang2016">(Zhang et al. 2016)</a> and
+<a href="#Gavryushkina2016">(Gavryushkina et al. 2016)</a>. When matrices of discrete morphological characters
 for both living and fossil species are unavailable, the fossilized
 birth-death model imposes a time structure on the tree by
 <a href="https://en.wikipedia.org/wiki/Marginal_distribution"><em>marginalizing</em></a>
@@ -230,7 +249,7 @@ over all possible attachment points for the fossils on the extant tree
 <a href="#Heath2014">(Heath et al. 2014)</a>, therefore, some prior knowledge of phylogenetic
 relationships is important.</p>
 
-<p>The FBD model (Fig. [fig:fbd_gm]) describes the probability of the
+<p>The FBD model (<a href="#fig_fbd_gm"></a>) describes the probability of the
 tree and fossils conditional on the birth-death parameters:
 $f[\mathcal{T} \mid \lambda, \mu, \rho, \psi, \phi]$, where
 $\mathcal{T}$ denotes the tree topology, divergence times, fossil
@@ -243,13 +262,10 @@ probability parameter $\rho$ represents the <em>probability</em> that an extant
 species is sampled, and $\phi$ represents the time at which the process
 originated.</p>
 
-<p>[fig:fbd_gm]</p>
-
-<p><img src="figures/tikz/fbd_gm.png" alt="" /></p>
-<blockquote>
-  <p>A graphical model of the fossilized
-birth-death model describing the generation of the time tree ( in
-Fig. [fig:module-gm]) used in this tutorial. The parameters of the
+<figure id="fig_fbd_gm"><p><img src="figures/tikz/fbd_gm.png" /></p>
+<figcaption>A graphical model of the fossilized
+birth-death model describing the generation of the time tree (in
+<a href="#fig_module_gm"></a>) used in this tutorial. The parameters of the
 fossilized birth-death process are labeled in orange. The speciation,
 extinction and fossilization rates are stochastic nodes (circles) drawn
 from exponential distributions, while the origin time is uniformly
@@ -257,23 +273,22 @@ distributed. The sampling probability is constant node (square) and
 equal to one. The represents the phylogenetic continuous-time Markov
 chain that links the tree model to the other model components and the
 observed sequence data.For more information on probabilistic graphical
-models and their notation, please see @Hoehna2014b.</p>
-</blockquote>
+models and their notation, please see <a href="#Hoehna2014b">(Höhna et al. 2014)</a>.</figcaption>
+</figure>
 
-<p>In the example FBD tree shown in figure [fig:example-tree], the
+<p>In the example FBD tree shown in <a href="#fig_example_tree"></a>, the
 diversification process originates at time $\phi$, giving rise to $n=20$
 species in the present, with both sampled fossils (red circles) and
-extant species (black circles). All of the lineages represented in
-figure [fig:example-tree]A (both solid and dotted lines) show the
+extant species (black circles). All of the lineages represented in <a href="#fig_example_tree"></a>A (both solid and dotted lines) show the
 <em>complete tree</em>. This is the tree of all extant <em>and</em> extinct lineages
 generated by the process. The complete tree is distinct from the
-<em>reconstructed tree</em> (Fig. [fig:example-tree]B) which is the tree
+<em>reconstructed tree</em> (<a href="#fig_example_tree"></a>B) which is the tree
 representing only the lineages sampled as extant taxa or fossils. Fossil
-observations (red circles in figure [fig:example-tree]) are recovered
+observations (red circles in <a href="#fig_example_tree"></a>) are recovered
 over the lifetime of the process along the lineages of the complete
 tree. If a lineage does not have any descendants sampled in the present,
-it is lost and cannot be observed, these are the dotted lines in figure
-[fig:example-tree]A. The probability must be conditioned on the origin
+it is lost and cannot be observed, these are the dotted lines in 
+<a href="#fig_example_tree"></a>A. The probability must be conditioned on the origin
 time of the process $\phi$. The origin ($\phi$) of a birth-death process
 is the starting time of the <em>stem</em> lineage, thus this conditions on a
 single lineage giving rise to the tree.</p>
@@ -285,11 +300,11 @@ the probability of sampling fossils that are ancestors to taxa sampled
 at a later date is correlated with the turnover rate ($r=\mu/\lambda$)
 and the fossil recovery rate ($\psi$). This feature is important,
 particularly for datasets with many sampled fossils. In the example
-(Fig. [fig:example-tree]), several of the fossils have sampled
+(<a href="#fig_example_tree"></a>), several of the fossils have sampled
 descendants. These fossils have solid black lines leading to the
 present.</p>
 
-<h2 id="subsect:Intro-TipSampling">Incorporating Fossil Occurrence Time Uncertainty</h2>
+<h2 id="incorporating-fossil-occurrence-time-uncertainty"><a href="#subsect:Intro-TipSampling">Incorporating Fossil Occurrence Time Uncertainty</a></h2>
 
 <p>In order to account for uncertainty in the ages of our fossil species,
 we can incorporate intervals on the ages of our represented fossil
@@ -312,20 +327,16 @@ if the inferred age is consistent with the data observed. We can
 represent this likelihood in ‘RevBayes‘ using a distribution that is
 proportional to the likelihood,
 <em>i.e.,</em>non-zero when the likelihood is equal
-to one (Fig. [fig:tipsampling_gm]). This model component represents
-the observed in the modular graphical model shown in figure
-[fig:module-gm].</p>
+to one (<a href="#fig_tipsampling_gm"></a>). This model component represents
+the observed in the modular graphical model shown in <a href="#fig_module_gm"></a>.</p>
 
-<p>[fig:tipsampling_gm]</p>
-
-<p><img src="figures/tikz/tipsampling_gm.png" alt="" /></p>
-<blockquote>
-  <p>A graphical model of the
+<figure id="fig_tipsampling_gm"><p><img src="figures/tikz/tipsampling_gm.png" /></p>
+<figcaption>A graphical model of the
 fossil age likelihood model used in this tutorial. The likelihood of
 fossil observation $\mathcal{F}_i$ is uniform and non-zero when the
 inferred fossil age $t_i$ falls within the observed time interval
-$(a_i,b_i)$</p>
-</blockquote>
+$(a_i,b_i)$.</figcaption>
+</figure>
 
 <p>It is worth noting that this is not technically the appropriate way to
 model fossil data that are actually observed as stratigraphic ranges. In
@@ -334,20 +345,19 @@ between the first and last appearences of a fossilized species. Thus,
 this range typically represents multiple fossil specimens observed at
 different times along a single lineage. An extension of the fossilized
 birth-death process that is a distribution on stratigraphic ranges has
-been described by @Stadler2017. This model is not yet fully implemented
+been described by <a href="#Stadler2017">(Stadler et al. 2017)</a>. This model is not yet fully implemented
 in ‘RevBayes‘.</p>
 
-<h2 id="subsect:Intro-GTR">Nucleotide Sequence Evolution</h2>
+<h2 id="nucleotide-sequence-evolution"><a href="#subsect:Intro-GTR">Nucleotide Sequence Evolution</a></h2>
 
 <p>The model component for the molecular data uses a general
 time-reversible model of nucleotide evolution and gamma-distributed rate
-heterogeneity across sites (the and in Fig. [fig:module-gm]). This
+heterogeneity across sites (the and in <a href="#fig_module_gm"></a>). This
 model of sequence evolution is covered thoroughly in the
-<a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_CTMC_Tutorial/RB_CTMC_Tutorial.pdf"><strong><em>Substitution
-Models</em></strong></a>
+<a href="/revbayes-site/tutorials/ctmc">Substitution Models</a>
 tutorial.</p>
 
-<h3 id="subsub:Intro-GTR-UExp">Lineage-Specific Rates of Sequence Evolution</h3>
+<h3 id="lineage-specific-rates-of-sequence-evolution"><a href="#subsub:Intro-GTR-UExp">Lineage-Specific Rates of Sequence Evolution</a></h3>
 
 <p>Rates of nucleotide sequence evolution can vary widely among lineages,
 and so models that account for this variation by relaxing the assumption
@@ -358,13 +368,28 @@ lineage-specific substitution rates are independent or “uncorrelated”.
 One example of such an uncorrelated relaxed model is the uncorrelated
 <em>exponential</em> relaxed clock, in which the substitution rate for each
 lineage is assumed to be independent and identically distributed
-according to an exponential density (Fig. [fig:uexp_gm]). This is the
-for the (<em>i.e.,</em>Fig. [fig:module-gm]) that
-we will use in this tutorial. Another possible uncorrelated relaxed
+according to an exponential density (<a href="#fig_uexp_gm"></a>). This is the
+for the (<em>i.e.,</em> <a href="#fig_module_gm"></a>) that we will use in this tutorial. 
+Another possible uncorrelated relaxed
 clock model is the uncorrelated lognormal model, described in the
-<a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Dating_Tutorial/RB_Dating_Tutorial.pdf"><strong><em>Relaxed
-Clocks</em></strong></a>
-tutorial [also see @Thorne2002} (missing reference) uses a generalized Jukes-Cantor
+<a href="/revbayes-site/tutorials/clocks">relaxed Clocks</a>
+tutorial [also see <a href="#Thorne2002">(Thorne and Kishino 2002)</a>].</p>
+
+<figure id="fig_uexp_gm"><p><img src="figures/tikz/uexp_gm.png" /></p>
+<figcaption>A graphical model of the
+uncorrelated exponential relaxed clock model. In this model, the clock
+rate on each branch is independent and identically distributed according
+to an exponential density with mean drawn from an exponential hyperprior
+distribution.</figcaption>
+</figure>
+
+<h2 id="morphological-character-evolution"><a href="#subsect:Intro-Morpho">Morphological Character Evolution</a></h2>
+
+<p>For the vast majority of extinct species, fossil morphology is the
+primary source of phylogenetically informative characters. Therefore, an
+appropriate model of morphological character evolution is needed to
+reliably infer the positions of these species in a phylogenetic
+analysis. The Mk model <a href="#Lewis2001">(Lewis 2001)</a> uses a generalized Jukes-Cantor
 matrix to allow for the incorporation of morphology into likelihood and
 Bayesian analyses. In its simplest form, this model assumes that
 characters change states symmetrically—that a given character is as
@@ -380,7 +405,7 @@ probability of being in a 1 state is equal to $1/2$.</p>
 <p>In this tutorial, we will apply a single-rate Mk model as a prior on
 binary morphological character change. If you are interested extensions
 of the Mk model that relax the assumptions of symmetric state change,
-please see <a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Discrete_Morphology_Tutorial/RB_Discrete_Morphology.pdf">Discrete Morphology
+please see <a href="/revbayes-site/tutorials/morph">Discrete Morphology
 tutorial</a>.</p>
 
 <p>Because of the way morphological data are collected, we need to exercise
@@ -393,41 +418,38 @@ do not contain invariant characters or
 <a href="https://en.wikipedia.org/wiki/Autapomorphy">autapomorphies</a>, as these
 are not parsimony informative. However, by excluding these slow-evolving
 characters, estimates of the branch lengths can be inflated
-(missing reference). Therefore, it is important to use models
+<a href="#Felsenstein1992">(Felsenstein 1992; Lewis 2001)</a>. Therefore, it is important to use models
 that can condition on this data-acquisition bias. ‘RevBayes‘ has two
 ways of doing this: one is used for datasets in which only parsimony
 informative characters are observed; the other is for datasets in which
 parsimony informative characters and parsimony uninformative variable
 characters (such as autapomorphies) are observed.</p>
 
-<h3 id="subsub:Intro-MorphClock">The Morphological Clock</h3>
+<h3 id="the-morphological-clock"><a href="#subsub:Intro-MorphClock">The Morphological Clock</a></h3>
 
-<p>Just like with the molecular data (section [subsub:Intro-GTR-UExp]),
+<p>Just like with the molecular data (<a href="#Intro-GTR-UExp">Section UCE</a>),
 our observations of discrete morphological characters are conditional on
 the rate of change along each branch in the tree. This model component
-defines the of the in the generalized graphical model shown in figure
-[fig:module-gm]. The relaxed clock model we described for the
-molecular data in section [subsub:Intro-GTR-UExp] it allows the
+defines the of the in the generalized graphical model shown in 
+<a href="#fig_module_gm"></a>. The relaxed clock model we described for the
+molecular data in <a href="#Intro-GTR-UExp">Section UCE</a> it allows the
 substitution rate to vary through time and among lineages. For the
 morphological data, we will instead use a “strict clock” model
 <a href="#Zuckerkandl1962">(Zuckerkandl and Pauling 1962)</a>, in which the rate of discrete character change is
 assumed to be constant throughout the tree. The strict clock is the
 simplest morphological branch rate model we can construct (graphical
-model shown in Fig. [fig:morph_clock_gm]).</p>
+model shown in <a href="#fig_morph_clock_gm"></a>).</p>
 
-<p>[fig:morph_clock_gm]</p>
-
-<p><img src="figures/tikz/morph_clock_gm.png" alt="" /></p>
-<blockquote>
-  <p>The graphical-model
+<figure id="fig_morph_clock_gm"><p><img src="figures/tikz/morph_clock_gm.png" /></p>
+<figcaption>The graphical-model
 representation of the branch-rate model governing the evolution of
 morphological characters. This model is consistent with a strict
 morphological clock, where every branch has the same rate of change
 ($c$) and that rate is drawn from an exponential distribution with a
-rate parameter of $\delta_c$</p>
-</blockquote>
+rate parameter of $\delta_c$.</figcaption>
+</figure>
 
-<h1 id="sect:Exercise">Example: Estimating the Phylogeny and Divergence Times of Fossil and Extant Bears</h1>
+<h1 id="example-estimating-the-phylogeny-and-divergence-times-of-fossil-and-extant-bears"><a href="#sect:Exercise">Example: Estimating the Phylogeny and Divergence Times of Fossil and Extant Bears</a></h1>
 
 <p>In this exercise, we will combine different types of data from 22
 species of extant and extinct bears to estimate a posterior distribution
@@ -442,7 +464,7 @@ occurrence times are obtained from the literature or fossil databases
 like the <a href="http://fossilworks.org/">Fossilworks PaleoDB</a> or the <a href="http://fossilcalibrations.org/">Fossil
 Calibration Database</a>, or from your own
 paleontological expertise. The 14 fossil species used in this analysis
-are listed in Table [bearFossilTable] along with the age range for the
+are listed in <a href="#tab_bear_fossils"></a> along with the age range for the
 species and relevant citation. Finally, there are two fossil species
 (<em>Parictis montanus, Ursus abstrusus</em>) for which we do not have
 morphological character data (or molecular data) and we must use prior
@@ -450,35 +472,90 @@ information about their phylogenetic relationships to incorporate these
 taxa in our analysis. This information will be applied using clade
 constraints.</p>
 
-<p>@l c c c r &amp; &amp; &amp; &amp;\</p>
+<figure id="tab_bear_fossils"><table>
+  <thead>
+    <tr>
+      <th><strong>Fossil Species</strong></th>
+      <th style="text-align: center"><strong>Age</strong></th>
+      <th style="text-align: center"><strong>Reference</strong></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>Parictis montanus</em></td>
+      <td style="text-align: center">33.9–37.2</td>
+      <td style="text-align: center"><a href="#clark1972">(Clark and Guensburg 1972; Krause et al. 2008)</a></td>
+    </tr>
+    <tr>
+      <td><em>Zaragocyon daamsi</em></td>
+      <td style="text-align: center">20–22.8</td>
+      <td style="text-align: center"><a href="#ginsburg1995">(Ginsburg and Morales 1995; Abella et al. 2012)</a></td>
+    </tr>
+    <tr>
+      <td><em>Ballusia elmensis</em></td>
+      <td style="text-align: center">13.7–16</td>
+      <td style="text-align: center"><a href="#ginsburg1998">(Ginsburg and Morales 1998; Abella et al. 2012)</a></td>
+    </tr>
+    <tr>
+      <td><em>Ursavus primaevus</em></td>
+      <td style="text-align: center">13.65–15.97</td>
+      <td style="text-align: center"><a href="#andrews1977">(Andrews and Tobien 1977; Abella et al. 2012)</a></td>
+    </tr>
+    <tr>
+      <td><em>Ursavus brevihinus</em></td>
+      <td style="text-align: center">15.97–16.9</td>
+      <td style="text-align: center"><a href="#heizmann1980">(Heizmann et al. 1980; Abella et al. 2012)</a></td>
+    </tr>
+    <tr>
+      <td><em>Indarctos vireti</em></td>
+      <td style="text-align: center">7.75–8.7</td>
+      <td style="text-align: center"><a href="#montoya2001">(Montoya et al. 2001; Abella et al. 2012)</a></td>
+    </tr>
+    <tr>
+      <td><em>Indarctos arctoides</em></td>
+      <td style="text-align: center">8.7–9.7</td>
+      <td style="text-align: center"><a href="#geraads2005">(Geraads et al. 2005; Abella et al. 2012)</a></td>
+    </tr>
+    <tr>
+      <td><em>Indarctos punjabiensis</em></td>
+      <td style="text-align: center">4.9–9.7</td>
+      <td style="text-align: center"><a href="#baryshnikov2002">(Baryshnikov 2002; Abella et al. 2012)</a></td>
+    </tr>
+    <tr>
+      <td><em>Ailurarctos lufengensis</em></td>
+      <td style="text-align: center">5.8–8.2</td>
+      <td style="text-align: center"><a href="#jin2007">(Jin et al. 2007; Abella et al. 2012)</a></td>
+    </tr>
+    <tr>
+      <td><em>Agriarctos spp.</em></td>
+      <td style="text-align: center">4.9–7.75</td>
+      <td style="text-align: center"><a href="#abella2011">(Abella et al. 2011; Abella et al. 2012)</a></td>
+    </tr>
+    <tr>
+      <td><em>Kretzoiarctos beatrix</em></td>
+      <td style="text-align: center">11.2–11.8</td>
+      <td style="text-align: center"><a href="#abella2011">(Abella et al. 2011; Abella et al. 2012)</a></td>
+    </tr>
+    <tr>
+      <td><em>Arctodus simus</em></td>
+      <td style="text-align: center">0.012–2.588</td>
+      <td style="text-align: center"><a href="#churcher1993">(Churcher et al. 1993; Krause et al. 2008)</a></td>
+    </tr>
+    <tr>
+      <td><em>Ursus abstrusus</em></td>
+      <td style="text-align: center">1.8–5.3</td>
+      <td style="text-align: center"><a href="#bjork1970">(Bjork 1970; Krause et al. 2008)</a></td>
+    </tr>
+    <tr>
+      <td><em>Ursus spelaeus</em></td>
+      <td style="text-align: center">0.027–0.25</td>
+      <td style="text-align: center"><a href="#loreille2001">(Loreille et al. 2001; Krause et al. 2008)</a></td>
+    </tr>
+  </tbody>
+</table>
 
-<p><em>Parictis montanus</em> &amp; &amp; 33.9–37.2 &amp; &amp; (missing reference)\</p>
-
-<p><em>Zaragocyon daamsi</em> &amp; &amp; 20–22.8 &amp; &amp; (missing reference)\</p>
-
-<p><em>Ballusia elmensis</em> &amp; &amp; 13.7–16 &amp; &amp; (missing reference)\</p>
-
-<p><em>Ursavus primaevus</em> &amp; &amp; 13.65–15.97 &amp; &amp; (missing reference)\</p>
-
-<p><em>Ursavus brevihinus</em> &amp; &amp; 15.97–16.9 &amp; &amp; (missing reference)\</p>
-
-<p><em>Indarctos vireti</em> &amp; &amp; 7.75–8.7 &amp; &amp; (missing reference)\</p>
-
-<p><em>Indarctos arctoides</em> &amp; &amp; 8.7–9.7 &amp; &amp; (missing reference)\</p>
-
-<p><em>Indarctos punjabiensis</em> &amp; &amp; 4.9–9.7 &amp; &amp; (missing reference)\</p>
-
-<p><em>Ailurarctos lufengensis</em> &amp; &amp; 5.8–8.2 &amp; &amp; (missing reference)\</p>
-
-<p><em>Agriarctos spp.</em> &amp; &amp; 4.9–7.75 &amp;&amp; (missing reference)\</p>
-
-<p><em>Kretzoiarctos beatrix</em> &amp; &amp; 11.2–11.8 &amp; &amp; (missing reference)\</p>
-
-<p><em>Arctodus simus</em> &amp; &amp; 0.012–2.588 &amp; &amp; (missing reference)\</p>
-
-<p><em>Ursus abstrusus</em> &amp; &amp; 1.8–5.3 &amp; &amp; (missing reference)\</p>
-
-<p><em>Ursus spelaeus</em> &amp; &amp; 0.027–0.25 &amp; &amp; (missing reference)\</p>
+<figcaption>Ages of fossil bears.</figcaption>
+</figure>
 
 <h2 id="subsect:Exercise-Format">Tutorial Format</h2>
 
@@ -502,23 +579,13 @@ operator like this:</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rho &lt;- 1.0
 </code></pre></div></div>
 
-<p>It is important to be aware that some PDF viewers may render some
-characters given as differently. Thus, if you copy and paste text from
-this PDF, you may introduce some incorrect characters. Because of this,
-we recommend that you type the instructions in this tutorial or copy
-them from the scripts provided.</p>
+<h2 id="data-and-files"><a href="#subsect:Exercise-DataFiles">Data and Files</a></h2>
 
-<h2 id="subsect:Exercise-DataFiles">Data and Files</h2>
-
-<p>On your own computer or your remote machine, create a directory called
+<p>On your own computer or your remote machine, create a directory called <em>RB_TotalEvidenceDating_FBD_Tutorial</em>
 (or any name you like).</p>
 
-<p>In this directory download and unzip the archive containing the data
-files:
-<a href="https://github.com/revbayes/revbayes_tutorial/raw/master/RB_TotalEvidenceDating_FBD_Tutorial/data.zip">‘data.zip‘</a>.</p>
-
-<p>This will create a folder called ‘data‘ that contains the files
-necessary to complete this exercise.</p>
+<p>In this directory, create another directory called <em>data</em>, and download the data
+files which you can find at the top of this page.</p>
 
 <p>In the ‘data‘ folder, you will find the following files:</p>
 
@@ -548,25 +615,24 @@ fossil bears.</p>
   </li>
 </ul>
 
-<h2 id="subsect:Exercise-GetStart">Getting Started</h2>
+<h2 id="getting-started"><a href="#subsect:Exercise-GetStart">Getting Started</a></h2>
 
 <p>Create a new directory (in ‘RB_TotalEvidenceDating_FBD_Tutorial‘)
-called . (If you do not have this folder, please refer to the directions
-in section [subsect:Exercise-DataFiles].)</p>
+called <em>scripts</em>.</p>
 
 <p>When you execute ‘RevBayes‘ in this exercise, you will do so within the
 main directory you created, ‘RB_TotalEvidenceDating_FBD_Tutorial‘,
 thus, if you are using a Unix-based operating system, we recommend that
 you add the ‘RevBayes‘ binary to your path.</p>
 
-<h2 id="subsect:Exercise-CreatingFiles">Creating ‘Rev‘ Files</h2>
+<h2 id="creating-rev-files"><a href="#subsect:Exercise-CreatingFiles">Creating ‘Rev‘ Files</a></h2>
 
 <p>For complex models and analyses, it is best to create ‘Rev‘ script files
 that will contain all of the model parameters, moves, and functions. In
-this exercise, you will work primarily in your text editor<sup id="fnref:1"><a href="#fn:1" class="footnote">1</a></sup> and
+this exercise, you will work primarily in your text editor and
 create a set of modular files that will be easily managed and
 interchanged. You will write the following files from scratch and save
-them in the ‘scripts‘ directory:</p>
+them in the <em>scripts</em> directory:</p>
 
 <ul>
   <li>
@@ -597,13 +663,14 @@ morphological clock.</p>
 </ul>
 
 <p>All of the files that you will create are also provided in the
-‘RevBayes‘ tutorial repository<sup id="fnref:2"><a href="#fn:2" class="footnote">2</a></sup>. Please refer to these files to
+‘RevBayes‘ tutorial at the top of the page to download. 
+Please refer to these files to
 verify or troubleshoot your own scripts.</p>
 
-<h2 id="subsect:Exercise-StartMasterRev">Start the Master ‘Rev‘ File and Import Data</h2>
+<h2 id="start-the-master-rev-file-and-import-data"><a href="#subsect:Exercise-StartMasterRev">Start the Master ‘Rev‘ File and Import Data</a></h2>
 
 <p>Open your text editor and create the master ‘Rev‘ file called in the
-‘scripts‘ directory.</p>
+<em>scripts</em> directory.</p>
 
 <p>Enter the ‘Rev‘ code provided in this section in the new model file.</p>
 
@@ -617,7 +684,7 @@ complete, you will return to editing ‘mcmc_TEFBD.Rev‘ and complete the
 ‘Rev‘ script with the instructions given in section
 [subsect:Exercise-CompleteMCMC].</p>
 
-<h3 id="subsub:Exercise-TaxList">Load Taxon List</h3>
+<h3 id="load-taxon-list"><a href="#subsub:Exercise-TaxList">Load Taxon List</a></h3>
 
 <p>Begin the ‘Rev‘ script by loading in the list of taxon names from the
 ‘bears_taxa.tsv‘ file using the ‘readTaxonData()‘ function.</p>
@@ -701,7 +768,7 @@ directory.</p>
 <p>We will now move on to the next ‘Rev‘ file and will complete
 ‘mcmc_TEFBD.Rev‘ in section [subsect:Exercise-CompleteMCMC].</p>
 
-<h2 id="subsect:Exercise-ModelFBD">The Fossilized Birth-Death Process</h2>
+<h2 id="the-fossilized-birth-death-process"><a href="#subsect:Exercise-ModelFBD">The Fossilized Birth-Death Process</a></h2>
 
 <p>Open your text editor and create the fossilized birth-death model file
 called in the ‘scripts‘ directory.</p>
@@ -714,7 +781,7 @@ necessary, please review the graphical models depicted for the
 fossilized birth-death process (Fig. [fig:fbd_gm]) and the likelihood
 of the tip sampling process (Fig. [fig:tipsampling_gm]).</p>
 
-<h3 id="subsub:Exercise-FBD-SpeciationExtinction">Speciation and Extinction Rates</h3>
+<h3 id="speciation-and-extinction-rates"><a href="#subsub:Exercise-FBD-SpeciationExtinction">Speciation and Extinction Rates</a></h3>
 
 <p>Two key parameters of the FBD process are the speciation rate (the rate
 at which lineages are added to the tree, denoted by $\lambda$ in
@@ -765,17 +832,16 @@ to be performed at each MCMC cycle. The way that we will run our MCMC
 for this tutorial will be to execute a <em>schedule</em> of moves at each step
 in our chain instead of just one move per step, as is done in
 MrBayes <a href="#Ronquist2003">(Ronquist and Huelsenbeck 2003)</a> or BEAST
-(missing reference). Here, if we were to run our MCMC with
+<a href="#Drummond2012">(Drummond et al. 2012; Bouckaert et al. 2014)</a>. Here, if we were to run our MCMC with
 our current vector of 6 moves, then our move schedule would perform 6
 moves at each cycle. Within a cycle, an individual move is chosen from
 the move list in proportion to its weight. Therefore, with all six moves
 assigned ‘weight=1‘, each has an equal probability of being executed and
 will be performed on average one time per MCMC cycle. For more
 information on moves and how they are performed in ‘RevBayes‘, please
-refer to the <a href="https://github.com/revbayes/revbayes_tutorial/blob/master/tutorial_TeX/RB_MCMC_Binomial_Tutorial/RB_MCMC_Binomial_Tutorial.pdf"><strong><em>Introduction to
-MCMC</em></strong></a>
-and <a href="https://github.com/ssb2017/revbayes_intro/blob/master/tutorials/RB_CTMC_Tutorial.pdf"><strong><em>Substitution
-Models</em></strong></a>
+refer to the 
+<a href="/revbayes-site/tutorials/binomial">Introduction to MCMC</a>
+and <a href="/revbayes-site/tutorials/ctmc">Substitution Models</a>
 tutorials.</p>
 
 <p>In addition to the speciation ($\lambda$) and extinction ($\mu$) rates,
@@ -790,7 +856,7 @@ the ‘:=‘ operator.</p>
 turnover := extinction_rate/speciation_rate
 </code></pre></div></div>
 
-<h3 id="subsub:Exercise-FBD-Rho">Probability of Sampling Extant Taxa</h3>
+<h3 id="probability-of-sampling-extant-taxa"><a href="#subsub:Exercise-FBD-Rho">Probability of Sampling Extant Taxa</a></h3>
 
 <p>All extant bears are represented in this dataset. Therefore, we will fix
 the probability of sampling an extant lineage ($\rho$ in
@@ -803,7 +869,7 @@ constant node using the ‘&lt;-‘ operator.</p>
 <p>Because $\rho$ is a constant node, we do not have to assign a move to
 this parameter.</p>
 
-<h3 id="subsub:Exercise-FBD-Psi">The Fossil Sampling Rate</h3>
+<h3 id="the-fossil-sampling-rate"><a href="#subsub:Exercise-FBD-Psi">The Fossil Sampling Rate</a></h3>
 
 <p>Since our data set includes serially sampled lineages, we must also
 account for the rate of sampling back in time. This is the fossil
@@ -820,7 +886,7 @@ moves[mvi++] = mvScale(psi, lambda=0.1,  weight=1)
 moves[mvi++] = mvScale(psi, lambda=1,    weight=1)
 </code></pre></div></div>
 
-<h3 id="subsub:Exercise-FBD-Origin">The Origin Time</h3>
+<h3 id="the-origin-time"><a href="#subsub:Exercise-FBD-Origin">The Origin Time</a></h3>
 
 <p>We will condition the FBD process on the origin time ($\phi$ in
 Fig. [fig:fbd_gm]) of bears, and we will specify a uniform
@@ -843,7 +909,7 @@ stochastic nodes. This means that our move schedule will propose five
 times as many updates to ‘origin_time‘ than it will to
 ‘speciation_rate‘, ‘extinction_rate‘, or ‘psi‘.</p>
 
-<h3 id="subsub:Exercise-FBD-dnFBD">The FBD Distribution Object</h3>
+<h3 id="the-fbd-distribution-object"><a href="#subsub:Exercise-FBD-dnFBD">The FBD Distribution Object</a></h3>
 
 <p>All the parameters of the FBD process have now been specified. The next
 step is to use these parameters to define the FBD tree prior
@@ -852,7 +918,7 @@ distribution, which we will call ‘fbd_dist‘.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fbd_dist = dnFBDP(origin=origin_time, lambda=speciation_rate, mu=extinction_rate, psi=psi, rho=rho, taxa=taxa)
 </code></pre></div></div>
 
-<h3 id="subsub:Exercise-FBD-Constraints">Clade Constraints</h3>
+<h3 id="clade-constraints"><a href="#subsub:Exercise-FBD-Constraints">Clade Constraints</a></h3>
 
 <p>Note that we created the distribution as a workspace variable using the
 workspace assignment operator ‘=‘. This is because we still need to
@@ -895,7 +961,7 @@ may propose to place this taxon anywhere in the tree (except within the
 clade constraint we made above). This allows us to account for the
 maximum amount of uncertainty in the placement of <em>P. montanus</em>.</p>
 
-<h3 id="subsub:Exercise-FBD-TreeMoves">Moves on the Tree Topology and Node Ages</h3>
+<h3 id="moves-on-the-tree-topology-and-node-ages"><a href="#subsub:Exercise-FBD-TreeMoves">Moves on the Tree Topology and Node Ages</a></h3>
 
 <p>Next, in order to sample from the posterior distribution of trees, we
 need to specify moves that propose changes to the topology (‘mvFNPR‘)
@@ -913,7 +979,7 @@ moves[mvi++] = mvNodeTimeSlideUniform(fbd_tree, weight=40.0)
 moves[mvi++] = mvRootTimeSlideUniform(fbd_tree, origin_time, weight=5.0)
 </code></pre></div></div>
 
-<h3 id="subsub:Exercise-FBD-TipSampling">Sampling Fossil Occurrence Ages</h3>
+<h3 id="sampling-fossil-occurrence-ages"><a href="#subsub:Exercise-FBD-TipSampling">Sampling Fossil Occurrence Ages</a></h3>
 
 <p>Next, we need to account for uncertainty in the age estimates of our
 fossils using the observed minimum and maximum stratigraphic ages
@@ -954,7 +1020,7 @@ tree.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvFossilTimeSlideUniform(fbd_tree, origin_time, weight=5.0)
 </code></pre></div></div>
 
-<h3 id="subsub:Exercise-FBD-DetNodes">Monitoring Parameters of Interest using Deterministic Nodes</h3>
+<h3 id="monitoring-parameters-of-interest-using-deterministic-nodes"><a href="#subsub:Exercise-FBD-DetNodes">Monitoring Parameters of Interest using Deterministic Nodes</a></h3>
 
 <p>There are additional parameters that may be of particular interest to us
 that are not directly inferred as part of this graphical model. As with
@@ -1013,7 +1079,7 @@ the ‘scripts‘ directory.</p>
 
 <p>We will now move on to the next model file.</p>
 
-<h2 id="subsect:Exercise-ModelUExp">The Uncorrelated Exponential Relaxed-Clock Model</h2>
+<h2 id="the-uncorrelated-exponential-relaxed-clock-model"><a href="#subsect:Exercise-ModelUExp">The Uncorrelated Exponential Relaxed-Clock Model</a></h2>
 
 <p>Open your text editor and create the lineage-specific branch-rate model
 file called in the ‘scripts‘ directory.</p>
@@ -1075,7 +1141,7 @@ called in the ‘scripts‘ directory.</p>
 
 <p>For our nucleotide sequence evolution model, we need to define a general
 time-reversible (GTR) instantaneous-rate matrix
-(<em>i.e.,</em>$Q$-matrix). A nucleotide GTR matrix
+(<em>i.e.,</em> $Q$-matrix). A nucleotide GTR matrix
 is defined by a set of 4 stationary frequencies, and 6 exchangeability
 rates. We create stochastic nodes for these variables, each drawn from a
 uniform Dirichlet prior distribution.</p>
@@ -1139,7 +1205,7 @@ the ‘scripts‘ directory.</p>
 
 <p>We will now move on to the next model file.</p>
 
-<h2 id="subsect:Exercise-ModelMorph">Modeling the Evolution of Binary Morphological Characters</h2>
+<h2 id="modeling-the-evolution-of-binary-morphological-characters"><a href="#subsect:Exercise-ModelMorph">Modeling the Evolution of Binary Morphological Characters</a></h2>
 
 <p>Open your text editor and create the morphological character model file
 called in the ‘scripts‘ directory.</p>
@@ -1195,14 +1261,14 @@ the ‘scripts‘ directory.</p>
 
 <p>We will now move on to the next model file.</p>
 
-<h2 id="subsect:Exercise-CompleteMCMC">Complete Master ‘Rev‘ File</h2>
+<h2 id="complete-master-rev-file"><a href="#subsect:Exercise-CompleteMCMC">Complete Master ‘Rev‘ File</a></h2>
 
 <p>Return to the master ‘Rev‘ file you created in section
 [subsect:Exercise-StartMasterRev] called in the ‘scripts‘ directory.</p>
 
 <p>Enter the ‘Rev‘ code provided in this section in this file.</p>
 
-<h3 id="subsub:Exercise-SourceMods">Source Model Scripts</h3>
+<h3 id="source-model-scripts"><a href="#subsub:Exercise-SourceMods">Source Model Scripts</a></h3>
 
 <p>‘RevBayes‘ uses the ‘source()‘ function to load commands from ‘Rev‘
 files into the workspace. Use this function to load in the model scripts
@@ -1217,7 +1283,7 @@ source("scripts/model_GTRG_TEFBD.Rev")
 source("scripts/model_Morph_TEFBD.Rev")
 </code></pre></div></div>
 
-<h3 id="subsub:Exercise-ModObj">Create Model Object</h3>
+<h3 id="create-model-object"><a href="#subsub:Exercise-ModObj">Create Model Object</a></h3>
 
 <p>We can now create our workspace model variable with our fully specified
 model DAG. We will do this with the ‘model()‘ function and provide a
@@ -1230,7 +1296,7 @@ single node in the graph (‘sf‘).</p>
 allows us to pass the model to various functions that are specific to
 our MCMC analysis.</p>
 
-<h3 id="subsub:Exercise-Monitors">Specify Monitors and Output Filenames</h3>
+<h3 id="specify-monitors-and-output-filenames"><a href="#subsub:Exercise-Monitors">Specify Monitors and Output Filenames</a></h3>
 
 <p>The next important step for our master ‘Rev‘ file is to specify the
 monitors and output file names. For this, we create a vector called
@@ -1303,7 +1369,7 @@ Tell the program to quit using the ‘q()‘ function.</p>
 
 <p>You made it! Save all of your files.</p>
 
-<h2 id="subsect:Exercise-RunMCMC">Execute the MCMC Analysis</h2>
+<h2 id="execute-the-mcmc-analysis"><a href="#subsect:Exercise-RunMCMC">Execute the MCMC Analysis</a></h2>
 
 <p>With all the parameters specified and all analysis components in place,
 you are now ready to run your analysis. The ‘Rev‘ scripts you just
@@ -1328,9 +1394,9 @@ following in your terminal (if the ‘RevBayes‘ binary is in your path):</p>
 new directory called ‘output‘ that will contain all of the files you
 specified with the monitors (Sect. [subsub:Exercise-Monitors]).</p>
 
-<h2 id="subsect:Exercise-SummarizeResults">Evaluate and Summarize Your Results</h2>
+<h2 id="evaluate-and-summarize-your-results"><a href="#subsect:Exercise-SummarizeResults">Evaluate and Summarize Your Results</a></h2>
 
-<h3 id="subsub:Exercise-EvalMCMC">Evaluate MCMC</h3>
+<h3 id="evaluate-mcmc"><a href="#subsub:Exercise-EvalMCMC">Evaluate MCMC</a></h3>
 
 <p>In this section, we will evaluate the <em>mixing</em> and <em>convergence</em> of our
 MCMC simulation using the program Tracer. We can also
@@ -1358,15 +1424,14 @@ Fig. [fig:tracer]).</p>
 
 <p><img src="figures/tracer_fig_posterior_short.png" alt="" /></p>
 <blockquote>
-  <p>The
-<strong><em>Estimates</em></strong> window in Tracer showing the
-histogram of the <strong><em>Posterior</em></strong></p>
+  <p>The <strong>Estimates</strong> window in Tracer showing the
+histogram of the <strong>Posterior</strong></p>
 </blockquote>
 
 <p>Immediately upon loading your file (see Fig. [fig:tracer-post-ests]),
-you will see the list of <strong><em>Trace Files</em></strong> on the left-hand
+you will see the list of <strong>Trace Files</strong> on the left-hand
 side (you can load multiple files). The bottom left section, called
-<strong><em>Traces</em></strong>, provides a list of every parameter in the log
+<strong>Traces</strong>, provides a list of every parameter in the log
 file, along with the mean and the effective sample size (ESS) for the
 posterior sample of that parameter. The ESS statistic provides a measure
 of the number of independent draws in our sample for a given parameter.
@@ -1379,10 +1444,10 @@ parameters. A much longer analysis is provided in the ‘output‘
 directory.</p>
 
 <p>The inspection window for your selected parameter is the
-<strong><em>Estimates</em></strong> window, which shows a histogram and summary
+<strong>Estimates</strong> window, which shows a histogram and summary
 statistics of the values sampled by the Markov chain. Figure
 [fig:tracer-post-ests] shows the marginal distribution of the
-<strong><em>Posterior</em></strong> statistic for the ‘bears.log‘ file in the
+<strong>Posterior</strong> statistic for the ‘bears.log‘ file in the
 ‘output‘ directory.</p>
 
 <p><img src="figures/samplewindow.png" alt="" /></p>
@@ -1393,12 +1458,11 @@ visualizes the distribution of samples.</p>
 </blockquote>
 
 <p>Look through the various parameters and statistics in the list of
-<strong><em>Traces</em></strong>.</p>
+<strong>Traces</strong>.</p>
 
-<p>Are there any parameters that
-have really low ESS? Why do you think that might be?</p>
+<p>Are there any parameters that have really low ESS? Why do you think that might be?</p>
 
-<p>Next, we can click over to the <strong><em>Trace</em></strong> window. This
+<p>Next, we can click over to the <strong>Trace</strong> window. This
 window shows us the samples for a given parameter at each iteration of
 the MCMC. The left side of the chain has a shaded portion that has been
 excluded as “burn-in”. Samples taken near the beginning of chain are
@@ -1434,19 +1498,18 @@ Algorithms</em></strong></a>.</p>
 
 <p>Look through the traces for your parameters.</p>
 
-<p>Are there any parameters in your
-log files that show trends or large leaps? What steps might you take to
-solve these issues?</p>
+<p>Are there any parameters in your log files that show trends or large leaps? 
+ What steps might you take to solve these issues?</p>
 
 <p>In Tracer you can view the marginal probability
-distributions of your parameters in the <strong><em>Marginal Prob
-Distribution</em></strong> window. Using this tool, you can compare the
+distributions of your parameters in the 
+<strong>Marginal Prob Distribution</strong> window. Using this tool, you can compare the
 distributions of several different parameters (by selecting them both).</p>
 
-<p>Go to the ‘diversification‘ parameter in the <strong><em>Marginal Prob
-Distribution</em></strong> window.</p>
+<p>Go to the ‘diversification‘ parameter in the 
+<strong>Marginal Prob Distribution</strong> window.</p>
 
-<p>What is the mean value estimated
+<p>⇨ What is the mean value estimated
 for the net diversification rate ($d$)? What does the marginal
 distribution tell you about the net diversification? (Hint:
 $d = \lambda - \mu$)</p>
@@ -1457,11 +1520,10 @@ estimate, including the net diversification rate. Tracer
 allows us to view the summaries of these parameters since they appear in
 our log files.</p>
 
-<p>Go to the ‘age_extant‘ parameter in the <strong><em>Estimates</em></strong>
+<p>Go to the ‘age_extant‘ parameter in the <strong>Estimates</strong>
 window.</p>
 
-<p>What is the mean and 95% highest
-posterior density of the age of the MRCA for all living bears?</p>
+<p><strong>→</strong> What is the mean and 95% highest posterior density of the age of the MRCA for all living bears?</p>
 
 <p>Since you have evaluated several of the parameters by viewing the trace
 files and the ESS values, you may be aware that the MCMC analysis you
@@ -1470,11 +1532,9 @@ posterior distribution of phylogenetic parameters. More explicitly,
 <em>your run has not converged</em>. It is not advisable to base your
 conclusions on such a run and it will be critical to perform multiple,
 independent runs for many more MCMC cycles. For further discussion of
-recommended MCMC practices in ‘RevBayes‘, please see the <a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_MCMC_Binomial_Tutorial/RB_MCMC_Binomial_Tutorial.pdf"><strong><em>Intro
-to
-MCMC</em></strong></a>
-and <a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_MCMC_Tutorial/RB_MCMC_Tutorial.pdf"><strong><em>MCMC
-Algorithms</em></strong></a>
+recommended MCMC practices in ‘RevBayes‘, please see the 
+<a href="revbayes-site/tutorials/binomial">Intro to MCMC</a>
+and <a href="revbayes-site/tutorials/mcmc">MCMC Algorithms</a>
 tutorials.</p>
 
 <h3 id="subsub:Exercise-SummarizeTree">Summarize Tree</h3>
@@ -1526,7 +1586,7 @@ use of a browser-based tree viewer called
 Vaughan</a>. IcyTree has many
 unique options for visualizing phylogenetic trees and can produce
 publication-quality vector image files
-(<em>i.e.,</em>SVG). Additionally, it correctly
+(<em>i.e.,</em> SVG). Additionally, it correctly
 represents sampled ancestors on the tree as nodes, each with only one
 descendant (Fig. [fig:IcyTreeSumm]).</p>
 
@@ -1562,19 +1622,21 @@ a different way to view the tree.</p>
 
 <p>[fig:IcyTreeScreenshort]</p>
 
-<div class="footnotes">
-  <ol>
-    <li id="fn:1">
-      <p>In section [subsub:Req-Software] we offer a recommendation for a
-text editor. <a href="#fnref:1" class="reversefootnote">&#8617;</a></p>
-    </li>
-    <li id="fn:2">
-      <p><a href="https://github.com/revbayes/revbayes_tutorial/tree/master/RB_TotalEvidenceDating_FBD_Tutorial/scripts">https://github.com/revbayes/revbayes_tutorial/tree/master/RB_TotalEvidenceDating_FBD_Tutorial/scripts</a> <a href="#fnref:2" class="reversefootnote">&#8617;</a></p>
-    </li>
-  </ol>
-</div>
 
-<ol class="bibliography"><li><span id="Hoehna2017a">Höhna S., Landis M.J., Heath T.A. 2017. Phylogenetic Inference using RevBayes. Current Protocols in Bioinformatics.</span>
+<ol class="bibliography"><li><span id="Ronquist2012a">Ronquist F., Klopfstein S., Vilhelmsen L., Schulmeister S., Murray D.L., Rasnitsyn A.P. 2012. A total-evidence approach to dating with fossils, applied to the early radiation of the Hymenoptera. Systematic Biology. 61:973–999.</span>
+
+</li>
+<li><span id="Zhang2016">Zhang C., Stadler T., Klopfstein S., Heath T.A., Ronquist F. 2016. Total-Evidence Dating under the Fossilized Birth-Death Process. Systematic Biology. 65:228–249.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syv080">10.1093/sysbio/syv080</a>
+
+</li>
+<li><span id="Gavryushkina2016">Gavryushkina A., Heath T.A., Ksepka D.T., Stadler T., Welch D., Drummond A.J. 2016. Bayesian Total-Evidence Dating Reveals the Recent Crown Radiation of Penguins. Systematic Biology.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syw060">10.1093/sysbio/syw060</a>
+
+</li>
+<li><span id="Hoehna2017a">Höhna S., Landis M.J., Heath T.A. 2017. Phylogenetic Inference using RevBayes. Current Protocols in Bioinformatics.</span>
 
 <a href="https://doi.org/10.1002/cpbi.22">10.1002/cpbi.22</a>
 
@@ -1582,6 +1644,11 @@ text editor. <a href="#fnref:1" class="reversefootnote">&#8617;</a></p>
 <li><span id="Hoehna2014b">Höhna S., Heath T.A., Boussau B., Landis M.J., Ronquist F., Huelsenbeck J.P. 2014. Probabilistic Graphical Model Representation in Phylogenetics. Systematic Biology. 63:753–771.</span>
 
 <a href="https://doi.org/10.1093/sysbio/syu039">10.1093/sysbio/syu039</a>
+
+</li>
+<li><span id="Stadler2010">Stadler T. 2010. Sampling-through-time in birth-death trees. Journal of Theoretical Biology. 267:396–404.</span>
+
+<a href="https://doi.org/10.1016/j.jtbi.2010.09.010">10.1016/j.jtbi.2010.09.010</a>
 
 </li>
 <li><span id="Heath2014">Heath T.A., Huelsenbeck J.P., Stadler T. 2014. The fossilized birth-death process for coherent calibration of divergence-time estimates. Proceedings of the National Academy of Sciences. 111:E2957–E2966.</span>
@@ -1594,6 +1661,9 @@ text editor. <a href="#fnref:1" class="reversefootnote">&#8617;</a></p>
 <a href="https://doi.org/10.1017/S0094837300016146">10.1017/S0094837300016146</a>
 
 </li>
+<li><span id="Stadler2017">Stadler T., Gavryushkina A., Warnock R., Drummond A.J., Heath T.A. 2017. The fossilized birth-death model for the analysis of stratigraphic range data under different speciation concepts. arXiv preprint arXiv:1706.10106.</span>
+
+</li>
 <li><span id="Zuckerkandl1962">Zuckerkandl E., Pauling L. 1962. Molecular disease, evolution, and genetic heterogeneity. Horizons in Biochemistry.:189–225.</span>
 
 </li>
@@ -1602,15 +1672,81 @@ text editor. <a href="#fnref:1" class="reversefootnote">&#8617;</a></p>
 <a href="https://doi.org/10.1371/journal.pbio.0040088">10.1371/journal.pbio.0040088</a>
 
 </li>
+<li><span id="Thorne2002">Thorne J.L., Kishino H. 2002. Divergence time and evolutionary rate estimation with multilocus data. Systematic Biology. 51:689–702.</span>
+
+<a href="https://doi.org/10.1080/10635150290102456">10.1080/10635150290102456</a>
+
+</li>
+<li><span id="Lewis2001">Lewis P.O. 2001. A Likelihood Approach to Estimating Phylogeny from Discrete Morphological Character Data. Systematic Biology. 50:913–925.</span>
+
+<a href="https://doi.org/10.1080/106351501753462876">10.1080/106351501753462876</a>
+
+</li>
+<li><span id="Felsenstein1992">Felsenstein J. 1992. Phylogenies from Restriction Sites: A Maximum-Likelihood Approach. Evolution. 46:159–173.</span>
+
+<a href="https://doi.org/10.1111/j.1558-5646.1992.tb01991.x">10.1111/j.1558-5646.1992.tb01991.x</a>
+
+</li>
 <li><span id="krause2008">Krause J., Unger T., Noçon A., Malaspinas A.-S., Kolokotronis S.-O., Stiller M., Soibelzon L., Spriggs H., Dear P.H., Briggs A.W., others. 2008. Mitochondrial genomes reveal an explosive radiation of extinct and extant bears near the Miocene-Pliocene boundary. BMC Evolutionary Biology. 8:220.</span>
 
 </li>
 <li><span id="abella12">Abella J., Alba D.M., Robles J.M., Valenciano A., Rotgers C., Carmona R., Montoya P., Morales J. 2012. \textitKretzoiarctos gen. nov., the Oldest Member of the Giant Panda Clade. PLoS One. 17:e48985.</span>
 
 </li>
+<li><span id="clark1972">Clark J., Guensburg T.E. 1972. Arctoid Genetic Characters as Related to the Genus \emphParictis. Chicago, Ill.: Field Museum of Natural History.</span>
+
+</li>
+<li><span id="ginsburg1995">Ginsburg L., Morales J. 1995. \textitZaragocyon daamsi n. gen. sp. nov., Ursidae primitif du Miocène inférieur d’Espagne. Comptes Rendus de l’Académie des Sciences. Série 2. Sciences de la Terre et des Planètes. 321:811–815.</span>
+
+</li>
+<li><span id="ginsburg1998">Ginsburg L., Morales J. 1998. Les Hemicyoninae (Ursidae, Carnivora, Mammalia) et les formes apparentées du Miocène inférieur et moyen d’Europe occidentale. Annales de Paléontologie. 84:71–123.</span>
+
+</li>
+<li><span id="andrews1977">Andrews P., Tobien H. 1977. New Miocene locality in Turkey with evidence on the origin of \textitRamapithecus and \textitSivapithecus. Nature. 268:699.</span>
+
+</li>
+<li><span id="heizmann1980">Heizmann E., Ginsburg L., Bulot C. 1980. \textitProsansanosmilus peregrinus, ein neuer machairodontider Felidae aus dem Miozän Deutschlands und Frankreichs. Stuttgarter Beitr. Naturk. B. 58:1–27.</span>
+
+</li>
+<li><span id="montoya2001">Montoya P., Alcalá L., Morales J. 2001. \textitIndarctos (Ursidae, Mammalia) from the Spanish Turolian (Upper Miocene). Scripta Geologica. 122:123–151.</span>
+
+</li>
+<li><span id="geraads2005">Geraads D., Kaya T., Mayda S., others. 2005. Late Miocene large mammals from Yulafli, Thrace region, Turkey, and their biogeographic implications. Acta Palaeontologica Polonica. 50:523–544.</span>
+
+</li>
+<li><span id="baryshnikov2002">Baryshnikov G.F. 2002. Late Miocene \textitIndarctos punjabiensis atticus (Carnivora, Ursidae) in Ukraine with survey of \textitIndarctos records from the former USSR. Russian J. Theriol. 1:83–89.</span>
+
+</li>
+<li><span id="jin2007">Jin C., Ciochon R.L., Dong W., Hunt R.M., Liu J., Jaeger M., Zhu Q. 2007. The first skull of the earliest giant panda. Proceedings of the National Academy of Sciences. 104:10932–10937.</span>
+
+<a href="https://doi.org/10.1073/pnas.0704198104">10.1073/pnas.0704198104</a>
+
+</li>
+<li><span id="abella2011">Abella J., Montoya P., Morales J. 2011. Una nueva especie de \textitAgriarctos (Ailuropodinae, Ursidae, Carnivora) en la localidad de Nombrevilla 2 (Zaragoza, España). Estudios Geológicos. 67:187–191.</span>
+
+</li>
+<li><span id="churcher1993">Churcher C.S., Morgan A.V., Carter L.D. 1993. \textitArctodus simus from the Alaskan Arctic slope. Canadian Journal of Earth Sciences. 30:1007–1013.</span>
+
+</li>
+<li><span id="bjork1970">Bjork P.R. 1970. The Carnivora of the Hagerman local fauna (late Pliocene) of Southwestern Idaho. Transactions of the American Philosophical Society. 60:3–54.</span>
+
+</li>
+<li><span id="loreille2001">Loreille O., Orlando L., Patou-Mathis M., Philippe M., Taberlet P., Hänni C. 2001. Ancient DNA analysis reveals divergence of the cave bear, \textitUrsus spelaeus, and brown bear, \textitUrsus arctos, lineages. Current Biology. 11:200–203.</span>
+
+</li>
 <li><span id="Ronquist2003">Ronquist F., Huelsenbeck J.P. 2003. MrBayes 3: Bayesian phylogenetic inference under mixed models. Bioinformatics. 19:1572–1574.</span>
 
 <a href="https://doi.org/10.1093/bioinformatics/btg180">10.1093/bioinformatics/btg180</a>
+
+</li>
+<li><span id="Drummond2012">Drummond A.J., Suchard M.A., Xie D., Rambaut A. 2012. Bayesian phylogenetics with BEAUti and the BEAST 1.7. Molecular Biology and Evolution. 29:1969–1973.</span>
+
+<a href="https://doi.org/10.1093/molbev/mss075">10.1093/molbev/mss075</a>
+
+</li>
+<li><span id="Bouckaert2014">Bouckaert R., Heled J., Kühnert D., Vaughan T., Wu C.-H., Xie D., Suchard M.A., Rambaut A., Drummond A.J. 2014. BEAST 2: a software platform for Bayesian evolutionary analysis. PLoS Computational Biology. 10:e1003537.</span>
+
+<a href="https://doi.org/10.1371/journal.pcbi.1003537">10.1371/journal.pcbi.1003537</a>
 
 </li>
 <li><span id="Rambaut2011">Rambaut A., Drummond A.J. 2011. Tracer v1.5. .</span>
@@ -1621,12 +1757,12 @@ text editor. <a href="#fnref:1" class="reversefootnote">&#8617;</a></p>
 <li><span id="Warren2016">Warren D.L., Geneva A., Swofford D.L., Lanfear R. 2016. rwty: R We There Yet. A package for visualizing MCMC convergence in phylogenetics.</span>
 
 </li>
-<li><span id="Gavryushkina2016">Gavryushkina A., Heath T.A., Ksepka D.T., Stadler T., Welch D., Drummond A.J. 2016. Bayesian Total-Evidence Dating Reveals the Recent Crown Radiation of Penguins. Systematic Biology.</span>
-
-<a href="https://doi.org/10.1093/sysbio/syw060">10.1093/sysbio/syw060</a>
+<li><span id="Jovanovic2016">Jovanovic N., Mikheyev A.S. 2016. Interactive web-based visualization of phylogenetic trees using Phylogeny. IO. PeerJ Preprints. 4:e2579v1.</span>
 
 </li>
-<li><span id="Jovanovic2016">Jovanovic N., Mikheyev A.S. 2016. Interactive web-based visualization of phylogenetic trees using Phylogeny. IO. PeerJ Preprints. 4:e2579v1.</span>
+<li><span id="Hoehna2016b">Höhna S., Landis M.J., Heath T.A., Boussau B., Lartillot N., Moore B.R., Huelsenbeck J.P., Ronquist F. 2016. RevBayes: Bayesian Phylogenetic Inference Using Graphical Models and an Interactive Model-Specification Language. Systematic Biology. 65:726–736.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syw021">10.1093/sysbio/syw021</a>
 
 </li></ol>
 

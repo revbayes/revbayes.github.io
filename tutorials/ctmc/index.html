@@ -67,7 +67,11 @@
           
             <li><a href="/revbayes-site/tutorials/intro/">Rev Language Syntax</a></li>
           
+            <li><a href="/revbayes-site/tutorials/rev/">Basic introduction to Rev & MCMC</a></li>
+          
             <li><a href="/revbayes-site/tutorials/archery/">Introduction to MCMC using RevBayes</a></li>
+          
+            <li><a href="/revbayes-site/tutorials/binomial/">Introduction to MCMC using RevBayes</a></li>
           
           </ul>
         
@@ -109,6 +113,49 @@
 
 
 </div>
+
+
+<h2>Required Software</h2>
+
+For our tutorials we recommend that you download and install the latest release
+of ‘RevBayes‘ <a href="#Hoehna2016b">(Höhna et al. 2016)</a>, which is available for Mac OS X, Windows,
+and Linux operating systems. Directions for downloading and installing
+the software are available on the program webpage:
+[http://revbayes.com](http://revbayes.com/). The exercises provided often also
+require additional programs for editing text files and visualizing
+output. The following are very useful tools for working with ‘RevBayes‘:
+
+<ul>
+<li>Some of the output can be automatically visualized using pre-made 
+    <a href="https://www.r-project.org">R</a> functions provided by 
+    our R-package <a href="https://github.com/revbayes/RevGadgets">RevGadgets</a>. 
+    You should make sure that you have a recent release of 
+    <a href="https://www.r-project.org">R</a> and 
+    <a href="https://github.com/revbayes/RevGadgets">RevGadgets</a> installed.
+</li>
+<li>A good text editor – if you do not already have one that you like,
+    we recommend one that has features for syntax coloring, easy
+    navigation between different files, line numbers, etc. Good options
+    include <a href="http://www.sublimetext.com/">Sublime Text</a>, 
+    <a href="https://atom.io/">Atom</a> or <a href="https://notepad-plus-plus.org">NotePad++</a>, which are available for Mac OSX, Windows,
+    and Linux.
+</li>
+<li><a href="http://tree.bio.ed.ac.uk/software/tracer/">Tracer</a> – for
+    visualizing and assessing numerical parameter samples from
+    ‘RevBayes‘
+</li>
+<li><a href="http://tgvaughan.github.io/icytree/">IcyTree</a> – a web-hosted
+    phylogenetic tree visualization tool that is supported for
+    <a href="https://www.mozilla.org/en-US/firefox/products/">Firefox</a> or
+    <a href="https://www.google.com/chrome/">Google Chrome</a> browsers
+
+<li><a href="http://tree.bio.ed.ac.uk/software/figtree/">FigTree</a> – a tree
+    visualization program
+</li>
+</ul>
+
+
+
 <h1 class="section" id="overview">Overview</h1>
 
 <p>This tutorial provides the first protocol from our recent publication <a href="#Hoehna2017a">(Höhna et al. 2017)</a>. 
@@ -314,15 +361,27 @@ instantaneous-rate matrix:</p>
 
 <h2 id="tree-topology-and-branch-lengths">Tree Topology and Branch Lengths</h2>
 
-<p>The tree topology and branch lengths are stochastic nodes in our phylogenetic model. In Figure <a href="#jc_graphical_model"></a>, the tree topology is denoted $\Psi$ and the length of the branch leading to node $i$ is $bl_i$.</p>
+<p>The tree topology and branch lengths are stochastic nodes in our phylogenetic model. 
+In Figure <a href="#jc_graphical_model"></a>, the tree topology is denoted $\Psi$ and the 
+length of the branch leading to node $i$ is $bl_i$.</p>
 
-<p>We will assume that all possible labeled, unrooted tree topologies have equal probability. This is the <code class="highlighter-rouge">dnUniformTopology()</code> distribution in RevBayes. Note that in RevBayes it is advisable to specify the outgroup for your study system if you use an unrooted tree prior, whereas other software, <em>e.g.</em>,  MrBayes uses the first taxon in the data matrix file as the outgroup. Specify the <code class="highlighter-rouge">topology</code> stochastic node by passing in the tip labels <code class="highlighter-rouge">names</code> to the <code class="highlighter-rouge">dnUniformTopology()</code> distribution:</p>
+<p>We will assume that all possible labeled, unrooted tree topologies have equal probability. 
+This is the <code class="highlighter-rouge">dnUniformTopology()</code> distribution in RevBayes. 
+Note that in RevBayes it is advisable to specify the outgroup for your study system 
+if you use an unrooted tree prior, whereas other software, <em>e.g.</em>,<br />
+MrBayes uses the first taxon in the data matrix file as the outgroup. 
+Specify the <code class="highlighter-rouge">topology</code> stochastic node by passing in the list of <code class="highlighter-rouge">taxa</code> 
+to the <code class="highlighter-rouge">dnUniformTopology()</code> distribution:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>out_group = clade("Galeopterus_variegatus")
 topology ~ dnUniformTopology(taxa, outgroup=out_group)
 </code></pre></div></div>
 
-<p>Some types of stochastic nodes can be updated by a number of alternative moves. Different moves may explore parameter space in different ways, and it is possible to use multiple different moves for a given parameter to improve mixing (the efficiency of the MCMC simulation). In the case of our unrooted tree topology, for example, we can use both a nearest-neighbor interchange move (<code class="highlighter-rouge">mvNNI</code>) and a subtree-prune and regrafting move (<code class="highlighter-rouge">mvSPR</code>). These moves do not have tuning parameters associated with them, thus you only need to pass in the <code class="highlighter-rouge">topology</code> node and proposal <code class="highlighter-rouge">weight</code>.</p>
+<p>Some types of stochastic nodes can be updated by a number of alternative moves. 
+Different moves may explore parameter space in different ways, 
+and it is possible to use multiple different moves for a given parameter to improve mixing 
+(the efficiency of the MCMC simulation). 
+In the case of our unrooted tree topology, for example, we can use both a nearest-neighbor interchange move (<code class="highlighter-rouge">mvNNI</code>) and a subtree-prune and regrafting move (<code class="highlighter-rouge">mvSPR</code>). These moves do not have tuning parameters associated with them, thus you only need to pass in the <code class="highlighter-rouge">topology</code> node and proposal <code class="highlighter-rouge">weight</code>.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvNNI(topology, weight=n_species)
 moves[mvi++] = mvSPR(topology, weight=n_species/10.0)
@@ -403,7 +462,16 @@ The distribution in RevBayes is <code class="highlighter-rouge">dnUniformTimeTre
   <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psi ~ dnUniformTimeTree(rootAge=root_age, taxa=taxa)
 </code></pre></div>  </div>
 
-  <p>Some types of stochastic nodes can be updated by a number of alternative moves. Different moves may explore parameter space in different ways,and it is possible to use multiple different moves for a given parameter to improve mixing (the efficiency of the MCMC simulation). In the case of our rooted tree, for example, we can use both a nearest-neighbor interchange move without and with changing the node ages (<code class="highlighter-rouge">mvNarrow</code> and <code class="highlighter-rouge">mvNNI</code>) and a fixed-nodeheight subtree-prune and regrafting move (<code class="highlighter-rouge">mvFNPR</code>) and its Metropolized-Gibbs variant (<code class="highlighter-rouge">mvGPR</code>) (missing reference). We also need moves that change the ages of the internal nodes, for example, <code class="highlighter-rouge">mvSubtreeScale</code> and <code class="highlighter-rouge">mvNodeTimeSlideUniform</code>. These moves do not have tuning parameters associated with them, thus you only need to pass in the <code class="highlighter-rouge">psi</code> node and proposal <code class="highlighter-rouge">weight</code>.</p>
+  <p>Some types of stochastic nodes can be updated by a number of alternative moves. 
+Different moves may explore parameter space in different ways,and it is possible to use 
+multiple different moves for a given parameter to improve mixing 
+(the efficiency of the MCMC simulation). In the case of our rooted tree, 
+for example, we can use both a nearest-neighbor interchange move without and with changing 
+the node ages (<code class="highlighter-rouge">mvNarrow</code> and <code class="highlighter-rouge">mvNNI</code>) and a fixed-nodeheight subtree-prune and regrafting 
+move (<code class="highlighter-rouge">mvFNPR</code>) and its Metropolized-Gibbs variant (<code class="highlighter-rouge">mvGPR</code>) <a href="#Hoehna2008">(Höhna et al. 2008; Höhna and Drummond 2012)</a>. 
+We also need moves that change the ages of the internal nodes, for example, <code class="highlighter-rouge">mvSubtreeScale</code> 
+and <code class="highlighter-rouge">mvNodeTimeSlideUniform</code>. These moves do not have tuning parameters associated with 
+them, thus you only need to pass in the <code class="highlighter-rouge">psi</code> node and proposal <code class="highlighter-rouge">weight</code>.</p>
 
   <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvNarrow(psi, weight=n_species)
 moves[mvi++] = mvNNI(psi, weight=n_species/5.0)
@@ -581,6 +649,7 @@ treetrace.cladeProbability( Lemuroidea )
       <th style="text-align: center"><strong>Family</strong></th>
       <th style="text-align: center"><strong>Parvorder</strong></th>
       <th style="text-align: center"><strong>Suborder</strong></th>
+      <th style="text-align: center"><strong>Posterior Probability</strong></th>
     </tr>
   </thead>
   <tbody>
@@ -589,132 +658,154 @@ treetrace.cladeProbability( Lemuroidea )
       <td style="text-align: center">Aotidae</td>
       <td style="text-align: center">Platyrrhini (NWM)</td>
       <td style="text-align: center">Haplorrhini</td>
+      <td style="text-align: center"> </td>
     </tr>
     <tr>
       <td>Callicebus donacophilus</td>
       <td style="text-align: center">Pitheciidae</td>
       <td style="text-align: center">Platyrrhini (NWM)</td>
       <td style="text-align: center">Haplorrhini</td>
+      <td style="text-align: center"> </td>
     </tr>
     <tr>
       <td>Cebus albifrons</td>
       <td style="text-align: center">Cebidae</td>
       <td style="text-align: center">Platyrrhini (NWM)</td>
       <td style="text-align: center">Haplorrhini</td>
+      <td style="text-align: center"> </td>
     </tr>
     <tr>
       <td>Cheirogaleus major</td>
       <td style="text-align: center">Cheirogaleidae</td>
       <td style="text-align: center">Lemuroidea</td>
       <td style="text-align: center">Strepsirrhini</td>
+      <td style="text-align: center"> </td>
     </tr>
     <tr>
       <td>Chlorocebus aethiops</td>
       <td style="text-align: center">Cercopithecoidea</td>
       <td style="text-align: center">Catarrhini</td>
       <td style="text-align: center">Haplorrhini</td>
+      <td style="text-align: center"> </td>
     </tr>
     <tr>
       <td>Colobus guereza</td>
       <td style="text-align: center">Cercopithecoidea</td>
       <td style="text-align: center">Catarrhini</td>
       <td style="text-align: center">Haplorrhini</td>
+      <td style="text-align: center"> </td>
     </tr>
     <tr>
       <td>Daubentonia madagascariensis</td>
       <td style="text-align: center">Daubentoniidae</td>
       <td style="text-align: center">Lemuroidea</td>
       <td style="text-align: center">Strepsirrhini</td>
+      <td style="text-align: center"> </td>
     </tr>
     <tr>
       <td>Galago senegalensis</td>
       <td style="text-align: center">Galagidae</td>
       <td style="text-align: center">Lorisidae</td>
       <td style="text-align: center">Strepsirrhini</td>
+      <td style="text-align: center"> </td>
     </tr>
     <tr>
       <td>Hylobates lar</td>
       <td style="text-align: center">Hylobatidea</td>
       <td style="text-align: center">Catarrhini</td>
       <td style="text-align: center">Haplorrhini</td>
+      <td style="text-align: center"> </td>
     </tr>
     <tr>
       <td>Lemur catta</td>
       <td style="text-align: center">Lemuridae</td>
       <td style="text-align: center">Lemuroidea</td>
       <td style="text-align: center">Strepsirrhini</td>
+      <td style="text-align: center"> </td>
     </tr>
     <tr>
       <td>Lepilemur hubbardorum</td>
       <td style="text-align: center">Lepilemuridae</td>
       <td style="text-align: center">Lemuroidea</td>
       <td style="text-align: center">Strepsirrhini</td>
+      <td style="text-align: center"> </td>
     </tr>
     <tr>
       <td>Loris tardigradus</td>
       <td style="text-align: center">Lorisidae</td>
       <td style="text-align: center">Lorisidae</td>
       <td style="text-align: center">Strepsirrhini</td>
+      <td style="text-align: center"> </td>
     </tr>
     <tr>
       <td>Macaca mulatta</td>
       <td style="text-align: center">Cercopithecoidea</td>
       <td style="text-align: center">Catarrhini</td>
       <td style="text-align: center">Haplorrhini</td>
+      <td style="text-align: center"> </td>
     </tr>
     <tr>
       <td>Microcebus murinus</td>
       <td style="text-align: center">Cheirogaleidae</td>
       <td style="text-align: center">Lemuroidea</td>
       <td style="text-align: center">Strepsirrhini</td>
+      <td style="text-align: center"> </td>
     </tr>
     <tr>
       <td>Nycticebus coucang</td>
       <td style="text-align: center">Lorisidae</td>
       <td style="text-align: center">Lorisidae</td>
       <td style="text-align: center">Strepsirrhini</td>
+      <td style="text-align: center"> </td>
     </tr>
     <tr>
       <td>Otolemur crassicaudatus</td>
       <td style="text-align: center">Galagidae</td>
       <td style="text-align: center">Lorisidae</td>
       <td style="text-align: center">Strepsirrhini</td>
+      <td style="text-align: center"> </td>
     </tr>
     <tr>
       <td>Pan paniscus</td>
       <td style="text-align: center">Hominoidea</td>
       <td style="text-align: center">Catarrhini</td>
       <td style="text-align: center">Haplorrhini</td>
+      <td style="text-align: center"> </td>
     </tr>
     <tr>
       <td>Perodicticus potto</td>
       <td style="text-align: center">Lorisidae</td>
       <td style="text-align: center">Lorisidae</td>
       <td style="text-align: center">Strepsirrhini</td>
+      <td style="text-align: center"> </td>
     </tr>
     <tr>
       <td>Propithecus coquereli</td>
       <td style="text-align: center">Indriidae</td>
       <td style="text-align: center">Lemuroidea</td>
       <td style="text-align: center">Strepsirrhini</td>
+      <td style="text-align: center"> </td>
     </tr>
     <tr>
       <td>Saimiri sciureus</td>
       <td style="text-align: center">Cebidae</td>
       <td style="text-align: center">Platyrrhini (NWM)</td>
       <td style="text-align: center">Haplorrhini</td>
+      <td style="text-align: center"> </td>
     </tr>
     <tr>
       <td>Tarsius syrichta</td>
       <td style="text-align: center">Tarsiidae</td>
       <td style="text-align: center"> </td>
       <td style="text-align: center">Haplorrhini</td>
+      <td style="text-align: center"> </td>
     </tr>
     <tr>
       <td>Varecia variegata variegata</td>
       <td style="text-align: center">Lemuridae</td>
       <td style="text-align: center">Lemuroidea</td>
       <td style="text-align: center">Strepsirrhini</td>
+      <td style="text-align: center"> </td>
     </tr>
   </tbody>
 </table>
@@ -840,8 +931,8 @@ exchangeability rates to differ (<a href="#gtr_graphical_model"></a>).</p>
 Q_{GTR} = \begin{pmatrix}
 {\cdot}	   & {r_{AC}\pi_C} & {r_{AG}\pi_G} & {r_{AT}\pi_T} \\
 {r_{AC}\pi_A} & {\cdot}       & {r_{CG}\pi_G} & {r_{CT}\pi_T} \\
-{r_{AC}\pi_A} & {r_{CG}\pi_C} & {\cdot}       & {r_{GT}\pi_T} \\
-{r_{AC}\pi_A} & {r_{CT}\pi_C} & {r_{GT}\pi_G} & {\cdot}       \\
+{r_{AG}\pi_A} & {r_{CG}\pi_C} & {\cdot}       & {r_{GT}\pi_T} \\
+{r_{AT}\pi_A} & {r_{CT}\pi_C} & {r_{GT}\pi_G} & {\cdot}       \\
 \end{pmatrix} \mbox{  ,} %]]></script>
 
 <p>where the six exchangeability parameters, $r_{ij}$, specify the relative
@@ -927,11 +1018,14 @@ GTR substitution model.</p>
 <figcaption>The probability density of mean-one gamma-distributed rates for different values of the $\alpha$-shape parameter.</figcaption>
 </figure>
 
-<p>We typically lack prior knowledge regarding the degree of ASRV for a given alignment. Accordingly, rather than specifying a precise value of $\alpha$, we can instead estimate the value of the $\alpha$-shape parameter from the data. This requires that we specify a diffuse (relatively <a href="http://andrewgelman.com/2013/11/21/hidden-dangers-noninformative-priors/">‘uninformative’</a>) prior on the $\alpha$-shape parameter. For this analysis, we will use a lognormal distribution with a mean parameter, <code class="highlighter-rouge">alpha_prior_mean</code>, equal to <code class="highlighter-rouge">5.0</code>, and standard deviation, <code class="highlighter-rouge">alpha_prior_sd</code>, equal to 0.587405 (thus, 95% of the prior density spans exactly one order of magnitude).</p>
+<p>We typically lack prior knowledge regarding the degree of ASRV for a given alignment. 
+Accordingly, rather than specifying a precise value of $\alpha$, we can instead estimate the value of the $\alpha$-shape parameter from the data. This requires that we specify a diffuse (relatively <a href="http://andrewgelman.com/2013/11/21/hidden-dangers-noninformative-priors/">‘uninformative’</a>) prior on the $\alpha$-shape parameter. For this analysis, we will use a lognormal distribution with a mean parameter, <code class="highlighter-rouge">alpha_prior_mean</code>, equal to <code class="highlighter-rouge">5.0</code>, and standard deviation, <code class="highlighter-rouge">alpha_prior_sd</code>, equal to 0.587405 (thus, 95% of the prior density spans exactly one order of magnitude).</p>
 
-<p>This approach for accommodating ASRV is another example of a hierarchical model (<a href="#gtrg"></a>). That is, variation in substitution rates across sites is addressed by applying a site-specific rate multiplier to each of the $j$ sites, $r_j$. These rate-multipliers are drawn from a discrete, mean-one gamma distribution; the shape of this prior distribution (and the corresponding degree of ASRV) is governed by the $\alpha$-shape parameter. The $\alpha$-shape parameter, in turn, is treated as a lognormal distributed random variable. Finally, the shape of the lognormal prior is governed by the mean and standard deviation parameters, which are set to fixed values.</p>
+<p>This approach for accommodating ASRV is another example of a hierarchical model (<a href="#fig_gtrg"></a>). 
+That is, variation in substitution rates across sites is addressed by applying a site-specific rate multiplier to each of the $j$ sites, $r_j$. 
+These rate-multipliers are drawn from a discrete, mean-one gamma distribution; the shape of this prior distribution (and the corresponding degree of ASRV) is governed by the $\alpha$-shape parameter. The $\alpha$-shape parameter, in turn, is treated as a lognormal distributed random variable. Finally, the shape of the lognormal prior is governed by the mean and standard deviation parameters, which are set to fixed values.</p>
 
-<figure id="grtrg"><p><img src="figures/gtrg_graphical_model.png" alt="" /></p>
+<figure id="fig_gtrg"><p><img src="figures/gtrg_graphical_model.png" alt="" /></p>
 <figcaption>Graphical model representation of the General Time Reversible (GTR) + Gamma phylogenetic model with invariable sites.</figcaption>
 </figure>
 
@@ -1081,6 +1175,12 @@ run an analysis.</p>
 <li><span id="Zhang2012">Zhang C., Rannala B., Yang Z. 2012. Robustness of Compound Dirichlet Priors for Bayesian Inference of Branch Lengths. Systematic Biology. 61:779–784.</span>
 
 </li>
+<li><span id="Hoehna2008">Höhna S., Defoin-Platel M., Drummond A.J. 2008. Clock-Constrained Tree Proposal Operators in Bayesian Phylogenetic Inference. 8th IEEE International Conference on BioInformatics and BioEngineering, 2008. BIBE 2008.:1–7.</span>
+
+</li>
+<li><span id="Hoehna2012">Höhna S., Drummond A.J. 2012. Guided Tree Topology Proposals for Bayesian Phylogenetic Inference. Systematic Biology. 61:1–11.</span>
+
+</li>
 <li><span id="Rambaut2011">Rambaut A., Drummond A.J. 2011. Tracer v1.5. .</span>
 
 
@@ -1089,6 +1189,11 @@ run an analysis.</p>
 <li><span id="Yang1994a">Yang Z. 1994. Maximum Likelihood Phylogenetic Estimation from DNA Sequences with Variable Rates Over Sites: Approximate Methods. Journal of Molecular Evolution. 39:306–314.</span>
 
 <a href="https://doi.org/10.1007/BF00160154">10.1007/BF00160154</a>
+
+</li>
+<li><span id="Hoehna2016b">Höhna S., Landis M.J., Heath T.A., Boussau B., Lartillot N., Moore B.R., Huelsenbeck J.P., Ronquist F. 2016. RevBayes: Bayesian Phylogenetic Inference Using Graphical Models and an Interactive Model-Specification Language. Systematic Biology. 65:726–736.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syw021">10.1093/sysbio/syw021</a>
 
 </li></ol>
 
