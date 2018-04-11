@@ -858,7 +858,7 @@ samples. Use the ‘fnPruneTree()‘ function to create a deterministic tree
 variable ‘pruned_tree‘ from which these taxa have been pruned. We will
 monitor this tree instead of ‘fbd_tree‘.
 
-    pruned_tree := fnPruneTree(fbd_tree, pruneTaxa=v(taxa[17],taxa[20]))
+    pruned_tree := fnPruneTree(fbd_tree, prune=v(taxa[17],taxa[20]))
 
 You have completed the FBD model file. Save ‘model_FBD_TEFBD.Rev‘ in
 the ‘scripts‘ directory.
