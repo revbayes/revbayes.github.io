@@ -220,7 +220,7 @@ in ‘RevBayes‘.
 
 The model component for the molecular data uses a general
 time-reversible model of nucleotide evolution and gamma-distributed rate
-heterogeneity across sites (the and in {% ref fig_module_gm %}). This
+heterogeneity across sites (the *Substitution Model* and *Sites Model* in {% ref fig_module_gm %}). This
 model of sequence evolution is covered thoroughly in the
 [Substitution Models](/revbayes-site/tutorials/ctmc)
 tutorial.
