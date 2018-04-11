@@ -515,6 +515,23 @@ Look at the file called `output/primates_cytb_JC_MAP.tree` in
 
 Fill in the following table as you go through the tutorial.
 
+{% figure tab_primates_posterior %}
+
+ |    **Model**   |   **Lemuroidea**   |   **Lorisoidea**   |   **Platyrrhini**   |   **Catarrhini**    |
+  ---------------:|:------------------:|:------------------:|:-------------------:|:-------------------:|
+ |  Jukes-Cantor  |                    |                    |                     |                     |
+ |     HKY85      |                    |                    |                     |                     |
+ |     F81        |                    |                    |                     |                     |
+ |     GTR        |                    |                    |                     |                     |
+ |    GTR+Gamma   |                    |                    |                     |                     |
+ |   GTR+Gamma+I  |                    |                    |                     |                     |
+
+{% figcaption %}
+Posterior probabilities under different analyses
+{% endfigcaption %}
+{% endfigure %}
+
+
 Note, you can query the posterior probability of a clade being
 monophyletic using the following command:
 
@@ -532,30 +549,30 @@ treetrace.cladeProbability( Lemuroidea )
 
 {% figure tab_primates %}
 
- |  **Species**     |  **Family**     |   **Parvorder**   |   **Suborder** |  **Posterior Probability** |
-  --------------- |:---------------:|:-------------------:|:---------------:|:---------------:|
- | Aotus trivirgatus     |        Aotidae     |        Platyrrhini (NWM)   | Haplorrhini  |     |
- | Callicebus donacophilus     |   Pitheciidae     |   Platyrrhini (NWM)   | Haplorrhini  |     |
- |  Cebus albifrons       |      Cebidae     |       Platyrrhini (NWM)  |  Haplorrhini |     |
- | Cheirogaleus major    |         Cheirogaleidae  |   Lemuroidea  |         Strepsirrhini |     |
- | Chlorocebus aethiops |          Cercopithecoidea  |  Catarrhini  |        Haplorrhini |     |
- |  Colobus guereza     |           Cercopithecoidea  |  Catarrhini |         Haplorrhini |     |
- | Daubentonia madagascariensis  |  Daubentoniidae  |   Lemuroidea  |        Strepsirrhini |     |
- | Galago senegalensis     |       Galagidae     |     Lorisidae  |         Strepsirrhini |     |
- | Hylobates lar   |               Hylobatidea   |     Catarrhini  |         Haplorrhini  |     |
- | Lemur catta   |                 Lemuridae    |      Lemuroidea   |      Strepsirrhini |     |
- | Lepilemur hubbardorum    |      Lepilemuridae   |   Lemuroidea  |        Strepsirrhini |     |
- | Loris tardigradus        |      Lorisidae      |    Lorisidae    |    Strepsirrhini  |     |
- | Macaca mulatta      |          Cercopithecoidea  |  Catarrhini  |         Haplorrhini |     |
- | Microcebus murinus      |       Cheirogaleidae  |   Lemuroidea  |        Strepsirrhini |     |
- | Nycticebus coucang      |       Lorisidae     |     Lorisidae   |        Strepsirrhini |     |
- | Otolemur crassicaudatus  |      Galagidae    |      Lorisidae   |        Strepsirrhini |     |
- | Pan paniscus        |           Hominoidea    |     Catarrhini   |       Haplorrhini  |     |
- | Perodicticus potto     |        Lorisidae    |      Lorisidae    |       Strepsirrhini  |     |
- | Propithecus coquereli    |      Indriidae    |      Lemuroidea   |       Strepsirrhini  |     |
- | Saimiri sciureus      |         Cebidae      |      Platyrrhini (NWM) |  Haplorrhini |     |
- | Tarsius syrichta     |          Tarsiidae    |    | Haplorrhini  |       |
- | Varecia variegata variegata  |  Lemuridae    |     Lemuroidea   |       Strepsirrhini  |     |
+ |            **Species**          |     **Family**     |     **Parvorder**   |   **Suborder**  |
+  -------------------------------- |:------------------:|:-------------------:|:---------------:|
+ |        Aotus trivirgatus        |       Aotidae      |  Platyrrhini (NWM)  |   Haplorrhini   |
+ |      Callicebus donacophilus    |    Pitheciidae     |  Platyrrhini (NWM)  |   Haplorrhini   |
+ |         Cebus albifrons         |       Cebidae      |  Platyrrhini (NWM)  |   Haplorrhini   |
+ |        Cheirogaleus major       |   Cheirogaleidae   |       Lemuroidea    |   Strepsirrhini |
+ |       Chlorocebus aethiops      |  Cercopithecoidea  |       Catarrhini    |   Haplorrhini   |
+ |         Colobus guereza         |  Cercopithecoidea  |       Catarrhini    |   Haplorrhini   |
+ |   Daubentonia madagascariensis  |   Daubentoniidae   |       Lemuroidea    |   Strepsirrhini |
+ |        Galago senegalensis      |      Galagidae     |        Lorisidae    |   Strepsirrhini |
+ |           Hylobates lar         |      Hylobatidea   |       Catarrhini    |   Haplorrhini   |
+ |            Lemur catta          |       Lemuridae    |       Lemuroidea    |   Strepsirrhini |
+ |       Lepilemur hubbardorum     |    Lepilemuridae   |       Lemuroidea    |   Strepsirrhini |
+ |        Loris tardigradus        |     Lorisidae      |        Lorisidae    |   Strepsirrhini |
+ |           Macaca mulatta        |  Cercopithecoidea  |       Catarrhini    |   Haplorrhini   |
+ |         Microcebus murinus      |    Cheirogaleidae  |       Lemuroidea    |   Strepsirrhini |
+ |         Nycticebus coucang      |      Lorisidae     |        Lorisidae    |   Strepsirrhini |
+ |      Otolemur crassicaudatus    |      Galagidae     |        Lorisidae    |   Strepsirrhini |
+ |           Pan paniscus          |     Hominoidea     |       Catarrhini    |   Haplorrhini   |
+ |         Perodicticus potto      |      Lorisidae     |        Lorisidae    |   Strepsirrhini |
+ |       Propithecus coquereli     |      Indriidae     |       Lemuroidea    |   Strepsirrhini |
+ |         Saimiri sciureus        |       Cebidae      |  Platyrrhini (NWM)  |   Haplorrhini   |
+ |         Tarsius syrichta        |       Tarsiidae    |                     |   Haplorrhini   |
+ |    Varecia variegata variegata  |       Lemuridae    |       Lemuroidea    |   Strepsirrhini |
 
 {% figcaption %}
 Primate and species relationships.
