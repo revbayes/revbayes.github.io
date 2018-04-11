@@ -236,8 +236,8 @@ lineage-specific substitution rates are independent or “uncorrelated”.
 One example of such an uncorrelated relaxed model is the uncorrelated
 *exponential* relaxed clock, in which the substitution rate for each
 lineage is assumed to be independent and identically distributed
-according to an exponential density ({% ref fig_uexp_gm %}). This is the
-for the (*i.e.,* {% ref fig_module_gm %}) that we will use in this tutorial. 
+according to an exponential density ({% ref fig_uexp_gm %}). This is *Branch Rates Model* 
+for the *Molecular Data* (*i.e.,* {% ref fig_module_gm %}) that we will use in this tutorial. 
 Another possible uncorrelated relaxed
 clock model is the uncorrelated lognormal model, described in the
 [relaxed Clocks](/revbayes-site/tutorials/clocks)
