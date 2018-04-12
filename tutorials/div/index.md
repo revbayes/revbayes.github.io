@@ -3,8 +3,6 @@ title: Diversification rate estimation
 subtitle: Comparing different constant-rate models of lineage diversification
 authors:  Sebastian Höhna and Tracy Heath
 level: 1
-prerequisites:
-- intro
 data_files:
 - primates_tree.nex
 order: 0
