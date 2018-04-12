@@ -26,7 +26,7 @@ Throughout the year, the members of the RevBayes development team and our collab
 	{% if startdate > nowunix %}
 		{% assign future = future | append: event %}
 	{% else %}
-		{% assign past = past | append: event %}
+		{% assign past = past | prepend: event %}
 	{% endif %}
 {% endfor %}
 
