@@ -5,9 +5,6 @@ authors:  Sebastian Höhna and Tracy Heath
 level: 1
 prerequisites:
 - intro
-- rev
-- archery
-- binomial
 data_files:
 - primates_tree.nex
 order: 0
