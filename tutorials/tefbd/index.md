@@ -8,7 +8,6 @@ prerequisites:
 - rev
 - archery
 - binomial
-- ctmc
 - partition
 index: true
 software: true
@@ -710,7 +709,7 @@ times as many updates to ‘origin_time‘ than it will to
 
 All the parameters of the FBD process have now been specified. The next
 step is to use these parameters to define the FBD tree prior
-distribution, which we will call ‘fbd_dist‘.
+distribution, which we will call ‘fbd_dist‘. 
 
     fbd_dist = dnFBDP(origin=origin_time, lambda=speciation_rate, mu=extinction_rate, psi=psi, rho=rho, taxa=taxa)
 
