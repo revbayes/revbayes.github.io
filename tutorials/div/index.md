@@ -1,4 +1,4 @@
----
+﻿---
 title: Diversification rate estimation
 subtitle: Comparing different constant-rate models of lineage diversification
 authors:  Sebastian Höhna and Tracy Heath
@@ -9,6 +9,7 @@ data_files:
 - primates_tree.nex
 order: 0
 index: true
+software:true
 title-old: RB_DiversificationRate_Tutorial
 redirect: true
 ---
@@ -18,6 +19,7 @@ redirect: true
 
 Overview: Diversification Rate Estimation {#sec:diversification_rate_overview}
 =========================================
+{:.section}
 
 Models of speciation and extinction are fundamental to any phylogenetic
 analysis of macroevolutionary processes
@@ -137,6 +139,7 @@ higher) diversification rate than if the organism is in state 1
 
 Diversification Rate Models {#sec:models}
 ===========================
+{:.section}
 
 We begin this section with a general introduction to the stochastic
 birth-death branching process that underlies inference of
@@ -252,6 +255,7 @@ overview for different diversification models is given in @Hoehna2015a.
 
 Estimating Constant Speciation & Extinction Rates
 =================================================
+{:.section}
 
 Outline
 -------
@@ -301,6 +305,7 @@ Open the tree `data/primates_tree.nex` in FigTree.
 
 Pure-Birth (Yule) Model {#yuleModSec}
 =======================
+{:.section}
 
 Before evaluating the relative support for different models, we must
 first specify them in `Rev`. In this section, we will walk through
@@ -519,6 +524,7 @@ The `Rev` file for performing this analysis:
 
 Exercise 1
 ----------
+{:.subsection}
 
 -   Run an MCMC simulation to estimate the posterior distribution of the
     speciation rate (`birth_rate`).
@@ -600,7 +606,7 @@ The `Rev` file for performing this analysis:
 
 Exercise 2
 ----------
-
+{:.subsection}
 -   Compute the marginal likelihood under the Yule model.
 
 -   Enter the estimate in the table below.
@@ -627,6 +633,7 @@ Supported model? &
 
 Birth-Death Process {#birthDeathSec}
 ===================
+{:.section}
 
 The pure-birth model does not account for extinction, thus it assumes
 that every lineage at the start of the process will have sampled
@@ -721,6 +728,7 @@ extinction rate $\mu$.
 
 Exercise 3
 ----------
+{:.subsection}
 
 -   Run an MCMC simulation to compute the posterior distribution of the
     diversification and turnover rate.
