@@ -171,19 +171,20 @@ with rate $d(t)$ (Figure [fig:BirthDeathShift] and
 Figure [fig:BDP]). Note that although each lineage evolves
 independently, all lineages share both a common (tree-wide) speciation
 rate $b(t)$ and a common extinction rate $d(t)$
-{% cite Nee1994b } {% cite Hoehna2015a }. Additionally, at certain times,
+{% citet Nee1994b } {% citet Hoehna2015a }. Additionally, at certain times,
 $t_{\mathbb{M}}$, a mass-extinction event occurs and each species
 existing at that time has the same probability, $\rho$, of survival.
 Finally, all extinct lineages are pruned and only the reconstructed tree
 remains (Figure [fig:BirthDeathShift]).
 
-![](figures/BirthDeathShift.png)
+
+![]( figures/BirthDeathShift.png)
 > A realization of the birth-death process with mass extinction. 
 > Lineages that have no extant or sampled descendant are shown in gray and
 > surviving lineages are shown in a thicker black line.
 
 
-![](figures/birth-death-sketch.png)
+![]( figures/birth-death-sketch.png)
 > **Examples of trees produced under a birth-death
 > process.** The process is initiated at the first speciation event (the 'crown-age' of the MRCA)
 > when there are two initial lineages. At each speciation event the ancestral lineage is replaced by two
