@@ -1,5 +1,5 @@
 ﻿---
-title: Diversification rate estimation
+title: Diversification rate estimation 123
 subtitle: Comparing different constant-rate models of lineage diversification
 authors:  Sebastian Höhna and Tracy Heath
 level: 1
@@ -12,7 +12,7 @@ order: 0
 index: true
 software: true
 title-old: RB_DiversificationRate_Tutorial
-redirect: true
+redirect: false
 ---
 
 

@@ -12,7 +12,7 @@ order: 0
 index: true
 software: true
 title-old: RB_CTMC_Tutorial
-redirect: true
+redirect: false
 ---
 
 

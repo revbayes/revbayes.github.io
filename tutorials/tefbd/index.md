@@ -13,7 +13,7 @@ prerequisites:
 index: true
 software: true
 title-old: RB_TotalEvidenceDating_FBD_Tutorial
-redirect: true
+redirect: false
 ---
 
 
