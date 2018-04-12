@@ -1,4 +1,4 @@
-﻿---
+---
 title: Substitution Models
 subtitle: Phylogenetic inference of nucleotide data using RevBayes
 authors:  Sebastian Höhna, Michael Landis, Brian Moore and Tracy Heath
@@ -917,5 +917,3 @@ Exercise 5
 -   What is the estimated probability of invariable sites now?
 
 -   Complete the table of the phylogenetic relationship of primates.
-
-Version dated:
