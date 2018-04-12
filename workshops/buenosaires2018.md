@@ -172,7 +172,7 @@ schedule:
   - starttime: 2018-04-18T13:00:00Z
     endtime: 2018-04-18T15:00:00Z
     topic: Practical on diversification rate estimation (Part I)
-    lesson: div
+    lesson: ctmc
     instructors: 
     - Luis Palazzesi
     - Femke Thon
@@ -192,29 +192,5 @@ schedule:
     - Luis Palazzesi
     - Femke Thon
     - Sebastian Höhna
-
-#Day 1
-#Introduction to Bayesian inference and MCMC
-#Probabilistic graphical models in phylogenetics
-#The Rev language
-#MCMC Tutorial
-#Inferring phylogenies in RevBayes
-#CTMC Tutorial
-
-#Day 2
-#Estimating species divergence times
-#Node Calibrations
-#Stochastic branching processes as tree priors, with particular emphasis on the fossilized birth-death (FBD)
-#FBDP Tutorial / Tip-Dating
-#Models of lineage-specific substitution rates (clock models)
-#Relaxed Clock Tutorial
-
-#Day 3
-#Estimating diversification (speciation and extinction) rates
-#Rate-through time models
-#Estimating character-dependent diversification rates
-#BiSSE tutorial
-#Estimating lineage-specific diversification rates
-#Birth-Death-Shift model tutorial
 
 ---

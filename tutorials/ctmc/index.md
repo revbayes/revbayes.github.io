@@ -311,7 +311,7 @@ br_lens := rel_branch_lengths * TL
 >For simplicity, we will assume a uniform prior on both topologies and node ages. 
 >The distribution in RevBayes is `dnUniformTimeTree()`.
 >
->Fore more information on tree priors, such as birth-death processes, please read the {% page_ref div %}.
+>Fore more information on tree priors, such as birth-death processes, please read the {% page_ref clocks %}.
 >
 >First, we need to specify the age of the tree:
 >
