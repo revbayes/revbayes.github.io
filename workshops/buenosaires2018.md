@@ -172,7 +172,7 @@ schedule:
   - starttime: 2018-04-18T13:00:00Z
     endtime: 2018-04-18T15:00:00Z
     topic: Practical on diversification rate estimation (Part I)
-    lesson: ctmc
+    lesson: diversification-rate-simple
     instructors: 
     - Luis Palazzesi
     - Femke Thon
