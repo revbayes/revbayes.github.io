@@ -10,7 +10,7 @@ prerequisites:
 - binomial
 order: 0
 index: true
-software:true
+software: true
 title-old: RB_DiversificationRate_Tutorial
 redirect: true
 ---
