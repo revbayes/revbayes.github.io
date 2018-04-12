@@ -8,8 +8,6 @@ prerequisites:
 - rev
 - archery
 - binomial
-data_files:
-- primates_tree.nex
 order: 0
 index: true
 software:true
