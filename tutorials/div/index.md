@@ -24,7 +24,7 @@ Overview: Diversification Rate Estimation {#sec:diversification_rate_overview}
 
 Models of speciation and extinction are fundamental to any phylogenetic
 analysis of macroevolutionary processes
-(*e.g.,*divergence time estimation,
+(*e.g.,* divergence time estimation,
 diversification rate estimation, continuous and discrete trait
 evolution, and historical biogeography). First, a prior model describing
 the distribution of speciation events over time is critical to
