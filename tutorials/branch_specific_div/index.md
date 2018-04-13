@@ -1,4 +1,4 @@
----
+﻿---
 title: Branch-Specific Diversification Rate Estimation
 subtitle: How to estimate branch-specific shifts in diversification rates 
 authors:  Sebastian H&#246;hna and Michael R. May
@@ -81,7 +81,7 @@ constant across lineages and through time;
 *i.e.*, under a constant-rate birth-death
 stochastic-branching process model {% cite Nee1994b %}. Extensions to the
 (basic) constant-rate models include diversification-rate variation
-through time {% cite Stadler2011} {% cite Hoehna2015a %}. First, we might ask whether
+through time {% cite Stadler2011 %} {% cite Hoehna2015a %}. First, we might ask whether
 there is evidence of an episodic, tree-wide increase in diversification
 rates (associated with a sudden increase in speciation rate and/or
 decrease in extinction rate), as might occur during an episode of
@@ -109,7 +109,7 @@ across the branches of my study group?* Models have been developed to
 detect departures from rate constancy across lineages; these tests are
 analogous to methods that test for departures from a molecular
 clock—*i.e.*, to assess whether substitution
-rates vary significantly across lineages {% cite Alfaro2009} {% cite Rabosky2014a %}.
+rates vary significantly across lineages {% cite Alfaro2009 %} {% cite Rabosky2014a %}.
 These models are important for assessing whether a given tree violates
 the assumptions of rate homogeneity among lineages. Furthermore, these
 models are important to answer questions such as: *What are the
@@ -160,41 +160,28 @@ descendant from each of these initial two lineages; otherwise $t_1$
 would not correspond to the $t_\text{MRCA}$ of our study group. Each
 lineage evolves independently of all other lineages, giving rise to
 exactly one new lineage with rate $b(t)$ and losing one existing lineage
-with rate $d(t)$ (Figure [fig:BirthDeathShift] and
-Figure [fig:BDP]). Note that although each lineage evolves
+with rate $d(t)$ ({% ref BirthDeathShift %} and
+{% ref birth-death-sketch %}). Note that although each lineage evolves
 independently, all lineages share both a common (tree-wide) speciation
 rate $b(t)$ and a common extinction rate $d(t)$
-{% cite Nee1994b} {% cite Hoehna2015a %}. Additionally, at certain times,
+{% cite Nee1994b %} {% cite Hoehna2015a %}. Additionally, at certain times,
 $t_{\mathbb{M}}$, a mass-extinction event occurs and each species
 existing at that time has the same probability, $\rho$, of survival.
 Finally, all extinct lineages are pruned and only the reconstructed tree
-remains (Figure [fig:BirthDeathShift]).
+remains ({% ref BirthDeathShift %}).
 
-![A realization of the birth-death process with mass extinction.
+{% figure BirthDeathShift %}
+<img src="figures/BirthDeathShift.pdf" width="800" /> 
+{% figcaption %}
+A realization of the birth-death process with mass extinction.
 Lineages that have no extant or sampled descendant are shown in gray and
-surviving lineages are shown in a thicker black line.<span
-data-label="fig:BirthDeathShift">](\ResourcePath figures/BirthDeathShift.pdf){width="80.00000%"}
+surviving lineages are shown in a thicker black line.{% endfigcaption %}
+{% endfigure %}
 
-> ![](figures/BirthDeathShift.png) 
-> A realization of the
-birth-death process with mass extinction. Lineages that have no extant
-or sampled descendant are shown in gray and surviving lineages are shown
-in a thicker black line. 
-{:.figure}
-
-![ The process is initiated at the first speciation event (the
-`crown-age' of the MRCA) when there are two initial lineages. At each
-speciation event the ancestral lineage is replaced by two descendant
-lineages. At an extinction event one lineage simply terminates. (A) A
-complete tree including extinct lineages. (B) The reconstructed tree of
-tree from A with extinct lineages pruned away. (C) A *uniform* subsample
-of the tree from B, where each species was sampled with equal
-probability, $\rho$. (D) A *diversified* subsample of the tree from B,
-where the species were selected so as to maximize diversity.<span
-data-label="fig:BDP">](\ResourcePath figures/birth-death-sketch.pdf){width="\textwidth"}
-
-> ![](figures/birth-death-sketch.png) 
-> **Examples of
+{% figure birth-death-sketch%}
+<img src="figures/birth-death-sketch.png" width="800" /> 
+{% figcaption %}
+**Examples of
 trees produced under a birth-death process.** The process is
 initiated at the first speciation event (the `crown-age' of the MRCA)
 when there are two initial lineages. At each speciation event the
@@ -205,7 +192,7 @@ with extinct lineages pruned away. (C) A *uniform* subsample of the tree
 from B, where each species was sampled with equal probability, $\rho$.
 (D) A *diversified* subsample of the tree from B, where the species were
 selected so as to maximize diversity. 
-{:.figure}
+{% endfigure %}
 
 To condition the probability of observing the branching times on the
 survival of both lineages that descend from the root, we divide by
@@ -229,8 +216,8 @@ P(\Psi) = \; & \frac{2^{n-1}}{n!(n-1)!} \times \left( \frac{P(N(T) > 0 \mid N(0)
 		\label{eq:tree_probability_substitution}\end{aligned}$$ For a detailed
 description of this substitution, see {% cite Hoehna2015a %}. Additional
 information regarding the underlying birth-death process can be found in
-@Thompson1975 [Equation 3.4.6] and {% cite Nee1994b %} for constant rates and
-{% cite Hoehna2013} {% cite Hoehna2014a} {% cite Hoehna2015a %} for arbitrary rate functions.
+{% cite Thompson1975 %} [Equation 3.4.6] and {% cite Nee1994b %} for constant rates and
+{% cite Hoehna2013 %} {% cite Hoehna2014a %} {% cite Hoehna2015a %} for arbitrary rate functions.
 
 To compute the equation above we need to know the rate function,
 $r(t,s) = \int_t^s d(x)-b(x) dx$, and the probability of survival,
@@ -293,7 +280,7 @@ tutorials:
 Note that the RB_Basics_Tutorial introduces the basic syntax of `Rev`
 but does not cover any phylogenetic models. You may skip the
 RB_Basics_Tutorial if you have some familiarity with `R`.
-The RB_BayesFactor_Tutorial introduces Bayesian model selection by
+The [RB_BayesFactor_Tutorial](https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_BayesFactor_Tutorial/RB_BayesFactor_Tutorial.pdf) introduces Bayesian model selection by
 means of Bayes factors, which can be skipped by readers familiar with
 Bayesian model selection. We tried to keep this tutorial very basic and
 introduce all the language concepts and theory on the way. You may only
@@ -314,24 +301,18 @@ Open the tree `data/primates_tree.nex` in FigTree.
 
 Branch-Specific Birth-Death Model
 =================================
-
-> ![](figures/stochastic_process_figure.png) 
-> Cartoon of a
+{% figure stochastic_process_figure %}
+<img src="figures/stochastic_process_figure.png" width="800" /> 
+{% figcaption %}
+Cartoon of a
 branch-specific birth-death process. On the left we see the full
 process. On the right we only see the branches of the reconstructed
 tree, thus missing one rate-shift event. 
-{:.figure}
-
-> ![](figures/stochastic_process_figure.png) 
-> Cartoon of a
-branch-specific birth-death process. On the left we see the full
-process. On the right we only see the branches of the reconstructed
-tree, thus missing one rate-shift event. 
-{:.figure}
+{% endfigure %}
 
 The basic idea behind the model is that speciation and extinction rates
-are allowed to vary across branches of the tree (see Figure
-[fig:BSBD]). Unfortunately, it is not possible to model rates drawn
+are allowed to vary across branches of the tree (see 
+{% ref BirthDeathShift %}). Unfortunately, it is not possible to model rates drawn
 from a continuous distribution directly, as done for example in
 `BAMM`, because in that case one needs to integrate over
 any number of possible rate shifts, any time of these shifts and most
@@ -339,23 +320,19 @@ importantly over all possible new rates. This is unfeasible to do and
 failure to do so has been shown to make parameter estimates unreliable
 {% cite Moore2016 %}.
 
-> ![](figures/likelihood_figure.png) 
-> Cartoon of the
+{% figure likelihood_figure %}
+<img src="figures/likelihood_figure.png" width="800" /> 
+{% figcaption %} 
+Cartoon of the
 likelihood computation using numerical integration. 
-{:.figure}
-
-> ![](figures/likelihood_figure.png) 
-> Cartoon of the
-likelihood computation using numerical integration. 
-{:.figure}
+{% endfigure %}
 
 Here we adopt an approach using (few) discrete rate categories instead.
 This allows us to numerically integrate over all possible rate
 categories using a system of differential equation originally described
 by {% cite Maddison2007 %} (see also {% cite FitzJohn2009 %} and {% cite FitzJohn2010 %}). The
 numerical procedure beaks time into very small time intervals and sums
-over all possible events occurring in that interval (see Figure
-[fig:BSBD_likelihood]).
+over all possible events occurring in that interval (see {% ref likelihood_figure %}).
 
 You don't need to worry about any of the technical details. It is
 important for you to realize that this model assumes that new rates at a
@@ -548,7 +525,7 @@ with a value of 233 / 367.
 
 The birth-death process requires a parameter for the root age. In this
 exercise we use a fix tree and thus we know the age of the tree. Hence,
-we can get the value for the root from the @MagnusonFord2012 tree. This
+we can get the value for the root from the {% cite MagnusonFord2012 %} tree. This
 is done using our global variable `root` defined above and nothing else
 has to be done here.
 
@@ -820,7 +797,7 @@ with a value of 233 / 367.
 
 The birth-death process requires a parameter for the root age. In this
 exercise we use a fix tree and thus we know the age of the tree. Hence,
-we can get the value for the root from the @MagnusonFord2012 tree. This
+we can get the value for the root from the {% cite MagnusonFord2012 %} tree. This
 is done using our global variable `root` defined above and nothing else
 has to be done here.
 
