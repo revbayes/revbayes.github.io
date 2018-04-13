@@ -9,7 +9,6 @@ prerequisites:
 - mcmc_archery
 - mcmc_binomial
 - ctmc
-- partition
 index: true
 software: true
 title-old: RB_TotalEvidenceDating_FBD_Tutorial
