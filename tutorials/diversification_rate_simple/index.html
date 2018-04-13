@@ -605,64 +605,47 @@ specified variables to the screen with <code class="highlighter-rouge">mnScreen<
 can now set up the MCMC algorithm that will sample parameter values in
 proportion to their posterior probability. The <code class="highlighter-rouge">mcmc()</code> function will
 create our MCMC object:</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    mymcmc = mcmc(mymodel, monitors, moves)
 </code></pre></div></div>
-
 <p>We may wish to run the <code class="highlighter-rouge">.burnin()</code> member function,
 <em>i.e.</em>, if we wish to pre-run the chain and
 discard the initial states. Recall that the <code class="highlighter-rouge">.burnin()</code> function
 specifies a <em>completely separate</em> preliminary MCMC analysis that is used
 to tune the scale of the moves to improve mixing of the MCMC analysis.</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.burnin(generations=10000,tuningInterval=200)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    mymcmc.burnin(generations=10000,tuningInterval=200)
 </code></pre></div></div>
-
 <p>Now, run the MCMC:</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=50000)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    mymcmc.run(generations=50000)
 </code></pre></div></div>
-
 <p>When the analysis is complete, you will have the monitored files in your
 output directory.</p>
 
-<p>The <code class="highlighter-rouge">Rev</code> file for performing this analysis:
-<a href="https://github.com/revbayes/revbayes_tutorial/raw/master/RB_DiversificationRate_Tutorial/RevBayes_scripts/mcmc_Yule.Rev"><code class="highlighter-rouge">mcmc_Yule.Rev</code></a>.</p>
+<p>⇨ The <code class="highlighter-rouge">Rev</code> file for performing this analysis: <code class="highlighter-rouge">mcmc_Yule.Rev</code></p>
 
 <h2 class="subsection" id="exercise-1">Exercise 1</h2>
 
 <ul>
-  <li>
-    <p>Run an MCMC simulation to estimate the posterior distribution of the
-speciation rate (<code class="highlighter-rouge">birth_rate</code>).</p>
-  </li>
-  <li>
-    <p>Load the generated output file into <code class="highlighter-rouge">Tracer</code>: What is
+  <li>Run an MCMC simulation to estimate the posterior distribution of the
+speciation rate (<code class="highlighter-rouge">birth_rate</code>).</li>
+  <li>Load the generated output file into <code class="highlighter-rouge">Tracer</code>: What is
 the mean posterior estimate of the <code class="highlighter-rouge">birth_rate</code> and what is the
-estimated HPD?</p>
-  </li>
-  <li>
-    <p>Compare the prior mean with the posterior mean. (<strong>Hint:</strong> Use the
+estimated HPD?</li>
+  <li>Compare the prior mean with the posterior mean. (<strong>Hint:</strong> Use the
 optional argument <code class="highlighter-rouge">underPrior=TRUE</code> in the function <code class="highlighter-rouge">mymcmc.run()</code>)
-Are they different
-(<em>e.g.,</em>Figure [fig:prior_posterior])?
-Is the posterior mean outside the prior 95% probability interval?</p>
-  </li>
-  <li>
-    <p>Repeat the analysis and allow for two orders of magnitude of
-prior uncertainty.</p>
-  </li>
+Are they different (<em>e.g.,</em> <a href="#fig_prior_posterior"></a>)?
+Is the posterior mean outside the prior 95% probability interval?</li>
+  <li>Repeat the analysis and allow for two orders of magnitude of
+prior uncertainty.</li>
 </ul>
 
-<p><img src="figures/birth_rate_prior_posterior.png" alt="" /></p>
-<blockquote>
-  <p>Estimates of the
+<figure id="fig_prior_posterior"><p><img src="figures/birth_rate_prior_posterior.png" height="50%" width="50%" /></p>
+<figcaption>Estimates of the
 posterior and prior distribution of the <code class="highlighter-rouge">birth_rate</code> visualized in
 <code class="highlighter-rouge">Tracer</code>. The prior (black curve) shows the lognormal
-distribution that we chose as the prior distribution.</p>
-</blockquote>
+distribution that we chose as the prior distribution.</figcaption>
+</figure>
 
-<h1 id="estimating-the-marginal-likelihood-of-the-model">Estimating the marginal likelihood of the model</h1>
+<h1 class="subsection" id="estimating-the-marginal-likelihood-of-the-model">Estimating the marginal likelihood of the model</h1>
 
 <p>With a fully specified model, we can set up the <code class="highlighter-rouge">powerPosterior()</code>
 analysis to create a file of ‘powers’ and likelihoods from which we can
@@ -673,55 +656,41 @@ that power. In this implementation, the vector of powers starts with 1,
 sampling the likelihood close to the posterior and incrementally
 sampling closer and closer to the prior as the power decreases. For more
 information on marginal likelihood estimation please read the
-<a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_BayesFactor_Tutorial/RB_BayesFactor_Tutorial.pdf">RB_BayesFactor_Tutorial</a>.</p>
+<a href="/tutorials/model_selection_bayes_factor/">Bayesian Model Selection Tutorial</a></p>
 
 <p>First, we create the variable containing the power posterior. This
 requires us to provide a model and vector of moves, as well as an output
 file name. The <code class="highlighter-rouge">cats</code> argument sets the number of power steps.</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pow_p = powerPosterior(mymodel, moves, monitors, "output/Yule_powp.out", cats=100, sampleFreq=10)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    pow_p = powerPosterior(mymodel, moves, monitors, "output/Yule_powp.out", cats=100, sampleFreq=10)
 </code></pre></div></div>
-
 <p>We can start the power posterior by first burning in the chain and and
 discarding the first 10000 states.</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pow_p.burnin(generations=10000,tuningInterval=200)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    pow_p.burnin(generations=10000,tuningInterval=200)
 </code></pre></div></div>
-
 <p>Now execute the run with the <code class="highlighter-rouge">.run()</code> function:</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pow_p.run(generations=10000)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    pow_p.run(generations=10000)
 </code></pre></div></div>
-
 <p>Once the power posteriors have been saved to file, create a
 stepping-stone sampler. This function can read any file of power
 posteriors and compute the marginal likelihood using stepping-stone
 sampling.</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ss = steppingStoneSampler(file="output/Yule_powp.out", powerColumnName="power", likelihoodColumnName="likelihood")
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    ss = steppingStoneSampler(file="output/Yule_powp.out", powerColumnName="power", likelihoodColumnName="likelihood")
 </code></pre></div></div>
-
 <p>Compute the marginal likelihood under stepping-stone sampling using the
 member function <code class="highlighter-rouge">marginal()</code> of the <code class="highlighter-rouge">ss</code> variable and record the value
 in Table [ssTable].</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ss.marginal()
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    ss.marginal()
 </code></pre></div></div>
-
 <p>Path sampling is an alternative to stepping-stone sampling and also
 takes the same power posteriors as input.</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ps = pathSampler(file="output/Yule_powp.out", powerColumnName="power", likelihoodColumnName="likelihood")
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    ps = pathSampler(file="output/Yule_powp.out", powerColumnName="power", likelihoodColumnName="likelihood")
 </code></pre></div></div>
-
 <p>Compute the marginal likelihood under stepping-stone sampling using the
 member function <code class="highlighter-rouge">marginal()</code> of the <code class="highlighter-rouge">ps</code> variable and record the value
 in Table [ssTable].</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ps.marginal()
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    ps.marginal()
 </code></pre></div></div>
-
-<p>The <code class="highlighter-rouge">Rev</code> file for performing this analysis: <code class="highlighter-rouge">ml_Yule.Rev</code>.</p>
+<p>⇨ The <code class="highlighter-rouge">Rev</code> file for performing this analysis: <code class="highlighter-rouge">ml_Yule.Rev</code>.</p>
 
 <h2 class="subsection" id="exercise-2">Exercise 2</h2>
 <ul>
