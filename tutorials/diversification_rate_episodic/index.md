@@ -2,7 +2,7 @@
 title: Episodic Diversification Rate Estimation
 subtitle: Estimating episodic, tree-wide changes in diversification rates
 authors:  Sebastian H&#246;hna
-level: 2
+level: 4
 index: true
 prerequisites:
 - intro

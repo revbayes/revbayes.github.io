@@ -2,7 +2,7 @@
 title: Substitution Models
 subtitle: Phylogenetic inference of nucleotide data using RevBayes
 authors:  Sebastian Höhna, Michael Landis, Brian Moore and Tracy Heath
-level: 3
+level: 2
 prerequisites:
 - intro
 - rev
