@@ -160,7 +160,7 @@ The birth-death branching process
 {:.subsection}
 
 {% figure fig_birth_death_shift %}
-<img src="figures/BirthDeathShift.png" height="240" width="480" /> 
+<img src="figures/BirthDeathShift.png" width="50%" height="50%" /> 
 {% figcaption %} 
 A realization of the birth-death process with mass extinction. 
 Lineages that have no extant or sampled descendant are shown in gray and
@@ -190,7 +190,7 @@ Finally, all extinct lineages are pruned and only the reconstructed tree
 remains ({% ref fig_birth_death_shift %}).
 
 {% figure fig_bdp %}
-<img src="figures/birth-death-sketch.png" height="190" width="1040" /> 
+<img src="figures/birth-death-sketch.png" width="75%" height="75%" /> 
 {% figcaption %} 
 **Examples of trees produced under a birth-death process.** 
 The process is initiated at the first speciation event (the 'crown-age' of the MRCA)
@@ -274,12 +274,13 @@ An overview for different diversification models is given in {% cite Hoehna2015a
 {:.discussion}
 
 
-Estimating Constant Speciation & Extinction Rates
+[Estimating Constant Speciation & Extinction Rates](#sec:bdp_rate_estimation)
 =================================================
 {:.section}
 
 Outline
 -------
+{:.subsection}
 
 This tutorial describes how to specify basic branching-process models in
 RevBayes; two variants of the constant-rate birth-death process
@@ -291,7 +292,7 @@ will estimate the marginal likelihood of the model and evaluate the
 relative support using Bayes factors.
 
 
-Pure-Birth (Yule) Model {#yuleModSec}
+[Pure-Birth (Yule) Model](#sec:yuleModSec)
 =======================
 {:.section}
 
@@ -308,7 +309,7 @@ the speciation rate remains constant over time. As a result, the waiting
 time between speciation events is exponential, where the rate of the
 exponential distribution is the product of the number of extant lineages
 ($n$) at that time and the speciation rate: $n\lambda$
-{% cite Yule1925} {% cite Aldous2001} {% cite Hoehna2014a %}. The pure-birth branching model
+{% cite Yule1925 Aldous2001 Hoehna2014a %}. The pure-birth branching model
 does not allow for lineage extinction
 (*i.e.*, the extinction rate $\mu=0$). However,
 the model depends on a second parameter, $\rho$, which is the
@@ -317,74 +318,91 @@ on the time of the start of the process, whether that is the origin time
 or root age. Therefore, the probabilistic graphical model of the
 pure-birth process is quite simple, where the observed time tree
 topology and node ages are conditional on the speciation rate, sampling
-probability, and root age (Fig. [fig:yule_gm]).
+probability, and root age ({% ref fig_yule_gm %}).
 
-![]( figures/yule_gm.png) 
-> The graphical model representation of
-the pure-birth (Yule) process.
+{% figure fig_yule_gm %}
+<img src="figures/yule_gm.png" width="50%" height="50%" /> 
+{% figcaption %} 
+The graphical model representation of the pure-birth (Yule) process. 
+For more information about graphical model representations see {% cite Hoehna2014b %}.
+{% endfigcaption %}
+{% endfigure %}
 
 We can add hierarchical structure to this model and account for
 uncertainty in the value of the speciation rate by placing a hyperprior
-on $\lambda$ (Fig. [fig:yule_gm2]). The graphical models in Figures
-[fig:yule_gm] and [fig:yule_gm2] demonstrate the simplicity of the
+on $\lambda$ ({% ref fig_yule_gm2 %}). The graphical models in {% ref fig_yule_gm %} 
+and {% ref fig_yule_gm2 %} demonstrate the simplicity of the
 Yule model. Ultimately, the pure birth model is just a special case of
 the birth-death process, where the extinction rate (typically denoted
 $\mu$) is a constant node with the value 0.
 
-![]( figures/yule_gm2.png) 
-> The graphical model representation
+{% figure fig_yule_gm2 %}
+<img src="figures/yule_gm2.png" width="50%" height="50%" /> 
+{% figcaption %} 
+The graphical model representation
 of the pure-birth (Yule) process, where the speciation rate is treated
 as a random variable drawn from a lognormal distribution.
+{% endfigcaption %}
+{% endfigure %}
 
 For this exercise, we will specify a Yule model, such that the
 speciation rate is a stochastic node, drawn from a lognormal
-distribution as in Figure [fig:yule_gm2]. In a Bayesian framework, we
+distribution as in {% ref fig_yule_gm2 %}. In a Bayesian framework, we
 are interested in estimating the posterior probability of $\lambda$
-given that we observe a time tree. $$\begin{aligned}
-\label{bayesTher}
-\mathbb{P}(\lambda \mid \Psi) &= \frac{\mathbb{P}(\Psi \mid \lambda)\mathbb{P}(\lambda \mid \nu)}{\mathbb{P}(\Psi)}\end{aligned}$$
+given that we observe a time tree. 
+
+$$
+\begin{equation}
+\mathbb{P}(\lambda \mid \Psi) = \frac{\mathbb{P}(\Psi \mid \lambda)\mathbb{P}(\lambda \mid \nu)}{\mathbb{P}(\Psi)} 
+\tag{Bayes Theorem}\label{eq:bayes_thereom}
+\end{equation}
+$$
+
 In this example, we have a phylogeny of 233 primates. We are treating
 the time tree $\Psi$ as an observation, thus clamping the model with an
 observed value. The time tree we are conditioning the process on is
-taken from the analysis by @MagnusonFord2012. Furthermore, there are
+taken from the analysis by {% cite MagnusonFord2012 %}. Furthermore, there are
 approximately 367 described primates species, so we will fix the
 parameter $\rho$ to $233/367$.
 
--   The full Yule-model specification is in the file called
-    [`Yule.Rev`](https://github.com/revbayes/revbayes_tutorial/raw/master/RB_DiversificationRate_Tutorial/RevBayes_scripts/Yule.Rev)
-    on the RevBayes tutorial repository.\
+&#8680; The full Yule-model specification is in the file called `Yule.Rev`.
 
 Read the tree
 -------------
+{:.subsection}
 
 Begin by reading in the observed tree.
-
+```
     T <- readTrees("data/primates_tree.nex")[1]
-
+```
 From this tree, we can get some helpful variables:
-
+```
     taxa <- T.taxa()
-
+```
 Additionally, we can initialize an iterator variable for our vector of
 moves:
-
+```
     mvi = 0
     mni = 0
+```
 
 Specifying the model
 --------------------
+{:.subsection}
 
 ### Birth rate
+{:.subsubsection}
 
 The model we are specifying only has three nodes
-(Fig. [fig:yule_gm2]). We can specify the birth rate $\lambda$, the
+({% ref fig_yule_gm2 %}). We can specify the birth rate $\lambda$, the
 mean and standard deviation of the lognormal hyperprior on $\lambda$,
 and the conditional dependency of the two parameters all in one line of
 `Rev` code.
-
+```
     birth_rate_mean <- ln( ln(367/2) / T.rootAge() )
     birth_rate_sd <- 0.587405
     birth_rate ~ dnLognormal(mean=birth_rate_mean,sd=birth_rate_sd)
+```
 
 Here, the stochastic node called `birth_rate` represents the speciation
 rate $\lambda$. `birth_rate_mean` and `birth_rate_sd` are the prior
@@ -395,7 +413,7 @@ Yule process will thus be equal to the observed number of species) and a
 prior standard deviation of 0.587405 which creates a lognormal
 distribution with 95% prior probability spanning exactly one order of
 magnitude. If you want to represent more prior uncertainty by,
-*e.g.,*allowing for two orders of magnitude in
+*e.g.,* allowing for two orders of magnitude in
 the 95% prior probability then you can simply multiply `birth_rate_sd`
 by a factor of 2.
 
@@ -404,18 +422,22 @@ operate on this node. In RevBayes these MCMC sampling algorithms are
 called *moves*. We need to create a vector of moves and we can do this
 by using vector indexing and our pre-initialized iterator `mi`. We will
 use a scaling move on $\lambda$ called `mvScale`.
-
+```
     moves[++mvi] = mvScale(birth_rate,lambda=1,tune=true,weight=3)
+```
 
 ### Sampling probability
+{:.subsubsection}
 
 Our prior belief is that we have sampled 233 out of 367 living primate
 species. To account for this we can set the sampling parameter as a
 constant node with a value of 233/367
-
+```
     rho <- T.ntips()/367
+```
 
 ### Root age
+{:.subsubsection}
 
 Any stochastic branching process must be conditioned on a time that
 represents the start of the process. Typically, this parameter is the
@@ -427,27 +449,29 @@ origin time. To accommodate this, we can condition on the age of the
 root by assuming the process started with *two* lineages that both
 originate at the time of the root.
 
-We can get the value for the root from the @MagnusonFord2012 tree.
-
+We can get the value for the root from the {% cite MagnusonFord2012 %} tree.
+```
     root_time <- T.rootAge()
+```
 
 ### The time tree
+{:.subsubsection}
 
 Now we have all of the parameters we need to specify the full pure-birth
 model. We can initialize the stochastic node representing the time tree.
 Note that we set the `mu` parameter to the constant value `0.0`.
-
+```
     timetree ~ dnBDP(lambda=birth_rate, mu=0.0, rho=rho, rootAge=root_time, samplingStrategy="uniform", condition="survival", taxa=taxa)
-
-If you refer back to Equation [bayesTher] and Figure
-[fig:yule_gm2], the time tree $\Psi$ is the variable we observe,
+```
+If you refer back to Equation \eqref{eq:bayes_thereom} and {% ref fig_yule_gm2 %}, 
+the time tree $\Psi$ is the variable we observe,
 *i.e.*, the data. We can set this in `Rev` by
 using the `clamp()` function.
-
+```
     timetree.clamp(T)
-
+```
 Here we are fixing the value of the time tree to our observed tree from
-@MagnusonFord2012.
+{% cite MagnusonFord2012 %}.
 
 Finally, we can create a workspace object of our whole model using the
 `model()` function. Workspace objects are initialized using the `=`
@@ -458,16 +482,18 @@ creates a wrapper around our model DAG. Because our model is a directed,
 acyclic graph (DAG), we only need to give the model wrapper function a
 single node and it does the work to find all the other nodes through
 their connections.
-
+```
     mymodel = model(birth_rate)
-
+```
 The `model()` function traverses all of the connections and finds all of
 the nodes we specified.
 
 Running an MCMC analysis
 ------------------------
+{:.subsection}
 
 ### Specifying Monitors
+{:.subsubsection}
 
 For our MCMC analysis, we need to set up a vector of *monitors* to
 record the states of our Markov chain. The monitor functions are all
@@ -475,15 +501,17 @@ called `mn\*`, where `\*` is the wildcard representing the monitor type.
 First, we will initialize the model monitor using the `mnModel`
 function. This creates a new monitor variable that will output the
 states for all model parameters when passed into a MCMC function.
-
+```
     monitors[++mni] = mnModel(filename="output/primates_Yule.log",printgen=10, separator = TAB)
-
+```
 Additionally, create a screen monitor that will report the states of
 specified variables to the screen with `mnScreen`:
-
+```
     monitors[++mni] = mnScreen(printgen=1000, birth_rate)
+```
 
 ### Initializing and Running the MCMC Simulation
+{:.subsubsection}
 
 With a fully specified model, a set of monitors, and a set of moves, we
 can now set up the MCMC algorithm that will sample parameter values in
