@@ -18,6 +18,7 @@ redirect: true
 
 Overview: Diversification Rate Estimation {#sec:diversification_rate_overview}
 =========================================
+{:.section}
 
 Models of speciation and extinction are fundamental to any phylogenetic
 analysis of macroevolutionary processes
@@ -137,6 +138,7 @@ higher) diversification rate than if the organism is in state 1
 
 Diversification Rate Models {#sec:models}
 ===========================
+{:.section}
 
 We begin this section with a general introduction to the stochastic
 birth-death branching process that underlies inference of
@@ -151,6 +153,7 @@ diversification-rate models that can be specified in RevBayes.
 
 The birth-death branching process
 ---------------------------------
+{:.subsection}
 
 Our approach is based on the *reconstructed evolutionary process*
 described by {% cite Nee1994b %}; a birth-death process in which only sampled,
@@ -255,6 +258,7 @@ divergence times.
 
 Estimating Branch-Specific Speciation & Extinction Rates
 ========================================================
+{:.section}
 
 Outline
 -------
@@ -304,6 +308,8 @@ Open the tree `data/primates_tree.nex` in FigTree.
 
 Branch-Specific Birth-Death Model
 =================================
+{:.subsection}
+
 {% figure stochastic_process_figure %}
 <img src="figures/stochastic_process_figure.png" width="800" /> 
 {% figcaption %}
@@ -353,6 +359,7 @@ between the analysis but also to make the sections independent.
 
 Testing for Branch-Specific-Diversification Rates
 =================================================
+{:.subsection}
 
 In this first exercise we are interested in knowing if there is
 diversification-rate variation among branches for our study tree. That
@@ -554,6 +561,7 @@ the nodes we specified.
 
 Running a marginal likelihood estimation
 ----------------------------------------
+{:.subsection}
 
 ### Specifying Monitors
 
@@ -616,6 +624,7 @@ The `Rev` file for performing this analysis:
 
 Exercise 1
 ----------
+{:.subsection}
 
 -   Enter the marginal likelihood estimate from the previous exercise on
     the constant-rate birth-death process in the table below.
@@ -914,6 +923,7 @@ The `Rev` file for performing this analysis:
 
 Exercise
 --------
+{:.subsection}
 
 -   Run an MCMC simulation to estimate the posterior distribution of the
     speciation rate and extinction rate.
