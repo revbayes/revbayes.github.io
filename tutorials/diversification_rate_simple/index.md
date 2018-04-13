@@ -181,7 +181,7 @@ Finally, all extinct lineages are pruned and only the reconstructed tree
 remains ({% ref fig_birth_death_shift %}).
 
 {% figure fig_birth_death_shift %}
-<img src="figures/BirthDeathShift.png" /> 
+<img src="figures/BirthDeathShift.png" height="240" width="120" /> 
 {% figcaption %} 
 A realization of the birth-death process with mass extinction. 
 Lineages that have no extant or sampled descendant are shown in gray and
