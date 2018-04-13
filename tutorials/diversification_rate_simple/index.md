@@ -517,26 +517,25 @@ With a fully specified model, a set of monitors, and a set of moves, we
 can now set up the MCMC algorithm that will sample parameter values in
 proportion to their posterior probability. The `mcmc()` function will
 create our MCMC object:
-
+```
     mymcmc = mcmc(mymodel, monitors, moves)
-
+```
 We may wish to run the `.burnin()` member function,
 *i.e.*, if we wish to pre-run the chain and
 discard the initial states. Recall that the `.burnin()` function
 specifies a *completely separate* preliminary MCMC analysis that is used
 to tune the scale of the moves to improve mixing of the MCMC analysis.
-
+```
     mymcmc.burnin(generations=10000,tuningInterval=200)
-
+```
 Now, run the MCMC:
-
+```
     mymcmc.run(generations=50000)
-
+```
 When the analysis is complete, you will have the monitored files in your
 output directory.
 
-The `Rev` file for performing this analysis:
-[`mcmc_Yule.Rev`](https://github.com/revbayes/revbayes_tutorial/raw/master/RB_DiversificationRate_Tutorial/RevBayes_scripts/mcmc_Yule.Rev).
+&#8680; The `Rev` file for performing this analysis: `mcmc_Yule.Rev`
 
 Exercise 1
 ----------
@@ -544,28 +543,30 @@ Exercise 1
 
 -   Run an MCMC simulation to estimate the posterior distribution of the
     speciation rate (`birth_rate`).
-
 -   Load the generated output file into `Tracer`: What is
     the mean posterior estimate of the `birth_rate` and what is the
     estimated HPD?
-
 -   Compare the prior mean with the posterior mean. (**Hint:** Use the
     optional argument `underPrior=TRUE` in the function `mymcmc.run()`)
-    Are they different
-    (*e.g.,*Figure [fig:prior_posterior])?
+    Are they different (*e.g.,* {% ref fig_prior_posterior %})?
     Is the posterior mean outside the prior 95% probability interval?
-
 -   Repeat the analysis and allow for two orders of magnitude of
     prior uncertainty.
 
-![]( figures/birth_rate_prior_posterior.png) 
-> Estimates of the
+{% figure fig_prior_posterior %}
+<img src="figures/birth_rate_prior_posterior.png" height="50%" width="50%" /> 
+{% figcaption %} 
+Estimates of the
 posterior and prior distribution of the `birth_rate` visualized in
 `Tracer`. The prior (black curve) shows the lognormal
 distribution that we chose as the prior distribution.
+{% endfigcaption %}
+{% endfigure %}
+
 
 Estimating the marginal likelihood of the model
 ===============================================
+{:.subsection}
 
 With a fully specified model, we can set up the `powerPosterior()`
 analysis to create a file of 'powers' and likelihoods from which we can
@@ -576,48 +577,48 @@ that power. In this implementation, the vector of powers starts with 1,
 sampling the likelihood close to the posterior and incrementally
 sampling closer and closer to the prior as the power decreases. For more
 information on marginal likelihood estimation please read the
-[RB_BayesFactor_Tutorial](https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_BayesFactor_Tutorial/RB_BayesFactor_Tutorial.pdf).
+[Bayesian Model Selection Tutorial]({{ base.url }}/tutorials/model_selection_bayes_factor/)
 
 First, we create the variable containing the power posterior. This
 requires us to provide a model and vector of moves, as well as an output
 file name. The `cats` argument sets the number of power steps.
-
+```
     pow_p = powerPosterior(mymodel, moves, monitors, "output/Yule_powp.out", cats=100, sampleFreq=10)
-
+```
 We can start the power posterior by first burning in the chain and and
 discarding the first 10000 states.
-
+```
     pow_p.burnin(generations=10000,tuningInterval=200)
-
+```
 Now execute the run with the `.run()` function:
-
+```
     pow_p.run(generations=10000)
-
+```
 Once the power posteriors have been saved to file, create a
 stepping-stone sampler. This function can read any file of power
 posteriors and compute the marginal likelihood using stepping-stone
 sampling.
-
+```
     ss = steppingStoneSampler(file="output/Yule_powp.out", powerColumnName="power", likelihoodColumnName="likelihood")
-
+```
 Compute the marginal likelihood under stepping-stone sampling using the
 member function `marginal()` of the `ss` variable and record the value
 in Table [ssTable].
-
+```
     ss.marginal()
-
+```
 Path sampling is an alternative to stepping-stone sampling and also
 takes the same power posteriors as input.
-
+```
     ps = pathSampler(file="output/Yule_powp.out", powerColumnName="power", likelihoodColumnName="likelihood")
-
+```
 Compute the marginal likelihood under stepping-stone sampling using the
 member function `marginal()` of the `ps` variable and record the value
 in Table [ssTable].
-
+```
     ps.marginal()
-
-The `Rev` file for performing this analysis: `ml_Yule.Rev`.
+```
+&#8680; The `Rev` file for performing this analysis: `ml_Yule.Rev`.
 
 
 Exercise 2
