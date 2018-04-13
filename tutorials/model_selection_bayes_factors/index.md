@@ -6,6 +6,8 @@ level: 1
 prerequisites:
 - intro
 - intro_rev
+- mcmc_archery
+- mcmc_binomial
 index: true
 title-old: RB_BayesFactor_Tutorial
 redirect: true
@@ -18,11 +20,10 @@ Overview
 ========
 
 This tutorial provides the third protocol from our recent publication
-{% cite Hoehna2017a %}. The first protocol is described in the [Substitution
-model
-tutorial](https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_CTMC_Tutorial/RB_CTMC_Tutorial.pdf)
-and the second protocol is described in the [Partitioned data analysis
-tutorial](https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Partition_Tutorial/RB_Partition_Tutorial.pdf).
+{% cite Hoehna2017a %}. The first protocol is described in the 
+[Substitution model tutorial]({{ base.url }}/tutorials/ctmc/)
+and the second protocol is described in the 
+[Partitioned data analysis tutorial](https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Partition_Tutorial/RB_Partition_Tutorial.pdf).
 
 This tutorial demonstrates some general principles of Bayesian model
 comparison, which is based on estimating the marginal likelihood of
@@ -30,43 +31,6 @@ competing models and then comparing their relative fit to the data using
 Bayes factors. We consider the specific case of calculating Bayes
 factors to select among different substitution models.
 
-Requirements
-------------
-
-We assume that you have read and hopefully completed the following
-tutorials:
-
--   [Getting
-    started](https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Getting_Started/RB_Getting_Started.pdf)
-
--   [`Rev`
-    basics](https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Intro_Tutorial/RB_Intro_Tutorial.pdf)
-
--   [`Rev`
-    syntax](https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Rev_Tutorial/RB_Rev_Tutorial.pdf)
-
--   [Substitution
-    models](https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_CTMC_Tutorial/RB_CTMC_Tutorial.pdf)
-
-Note that the [`Rev` basics
-tutorial](https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Intro_Tutorial/RB_Intro_Tutorial.pdf)
-introduces the basic syntax of `Rev` but does not cover any phylogenetic
-models. We tried to keep this tutorial very basic and introduce all the
-language concepts and theory on the way. You may only need the [`Rev`
-syntax
-tutorial](https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Rev_Tutorial/RB_Rev_Tutorial.pdf)
-for a more in-depth discussion of concepts in `Rev`.
-
-Data and files
-==============
-
-We provide the data file that we will use in this tutorial. Of course,
-you may want to use your own dataset instead. In the `data` folder, you
-will find the following file:
-
--   `primates_and_galeopterus_cytb.nex`: Alignment of the *cytochrome
-    b* subunit from 23 primates representing 14 of the 16 families
-    (*Indriidae* and *Callitrichidae* are missing).
 
 Introduction
 ============
