@@ -189,6 +189,21 @@ surviving lineages are shown in a thicker black line.
 {% endfigcaption %}
 {% endfigure %}
 
+{% figure fig_bdp %}
+<img src="figures/birth-death-sketch.png" /> 
+{% figcaption %} 
+**Examples of trees produced under a birth-death process.** 
+The process is initiated at the first speciation event (the 'crown-age' of the MRCA)
+when there are two initial lineages. At each speciation event the ancestral lineage is replaced by two
+descendant lineages. At an extinction event one lineage simply
+terminates. (A) A complete tree including extinct lineages. (B) The
+reconstructed tree of tree from A with extinct lineages pruned away. (C)
+A *uniform* subsample of the tree from B, where each species was sampled
+with equal probability, $\rho$. (D) A *diversified* subsample of the
+tree from B, where the species were selected so as to maximize diversity.
+{% endfigcaption %}
+{% endfigure %}
+
 
 To condition the probability of observing the branching times on the
 survival of both lineages that descend from the root, we divide by
