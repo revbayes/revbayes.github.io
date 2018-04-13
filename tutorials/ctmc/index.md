@@ -1,4 +1,4 @@
-﻿---
+---
 title: Substitution Models
 subtitle: Phylogenetic inference of nucleotide data using RevBayes
 authors:  Sebastian Höhna, Michael Landis, Brian Moore and Tracy Heath
@@ -282,7 +282,13 @@ moves[mvi++] = mvBranchLengthScale(psi, weight=n_branches)
 > We still think that it is pedagogical to specify the prior on each branch length separately in this tutorial to emphasize all components of the model.
 
 > **Alternative branch-length priors**
->Some studies, *e.g.*,  {% cite Brown2010 %} {% cite Rannala2012 %}, have criticized the exponential prior distribution for branch lengths because it induces a gamma-dsitributed tree-length and the mean of this gamma distribution grows with the number of taxa. For example, we can use instead a specific gamma prior distribution (or any other distribution defined on a positive real variable) for the tree length, and then use a Dirichlet prior distribution to break the tree length into the corresponding branch lengths {% cite Zhang2012 %}.
+>Some studies, *e.g.*,  {% cite Brown2010 %} {% cite Rannala2012 %}, 
+>have criticized the exponential prior distribution for branch lengths 
+>because it induces a gamma-dsitributed tree-length and the mean of this gamma distribution
+>grows with the number of taxa. For example, we can use instead a specific gamma prior distribution 
+>(or any other distribution defined on a positive real variable) for the tree length, 
+>and then use a Dirichlet prior distribution to break the tree length into 
+>the corresponding branch lengths {% cite Zhang2012 %}.
 >
 >First, specify a prior distribution on the tree length with your desired mean.
 >For example, we use a gamma distribution as our prior on the tree length.
