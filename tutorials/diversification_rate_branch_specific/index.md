@@ -1,23 +1,28 @@
 ﻿---
 title: Branch-Specific Diversification Rate Estimation
 subtitle: How to estimate branch-specific shifts in diversification rates 
-authors:  Sebastian H&#246;hna and Michael R. May
+authors:  Sebastian Höhna and Michael R. May
 level: 4
+order: 0
 index: true
 prerequisites:
 - intro
 - intro_rev
 - mcmc_archery
 - mcmc_binomial
+- diversification_rate_simple
 title-old: RB_DiversificationRate_BranchSpecific_Tutorial
-redirect: true
+redirect: false
 ---
 
 
+<<<<<<< HEAD
+=======
 
 
 Overview: Diversification Rate Estimation {#sec:diversification_rate_overview}
 =========================================
+{:.section}
 
 Models of speciation and extinction are fundamental to any phylogenetic
 analysis of macroevolutionary processes
@@ -137,6 +142,7 @@ higher) diversification rate than if the organism is in state 1
 
 Diversification Rate Models {#sec:models}
 ===========================
+{:.section}
 
 We begin this section with a general introduction to the stochastic
 birth-death branching process that underlies inference of
@@ -151,6 +157,7 @@ diversification-rate models that can be specified in RevBayes.
 
 The birth-death branching process
 ---------------------------------
+{:.subsection}
 
 Our approach is based on the *reconstructed evolutionary process*
 described by {% cite Nee1994b %}; a birth-death process in which only sampled,
@@ -253,8 +260,10 @@ without error. For publication quality analysis you should always
 estimate the diversification rates jointly with the phylogeny and
 divergence times.
 
+>>>>>>> 6736d93b01ff8107bd82b4cb79a8cc9f527e505c
 Estimating Branch-Specific Speciation & Extinction Rates
 ========================================================
+{:.section}
 
 Outline
 -------
@@ -266,6 +275,8 @@ The probabilistic graphical model is given for each component of this
 tutorial. The goal is to obtain estimate of branch-specific
 diversification rates using Markov chain Monte Carlo (MCMC).
 
+<<<<<<< HEAD
+=======
 Requirements
 ------------
 
@@ -304,6 +315,8 @@ Open the tree `data/primates_tree.nex` in FigTree.
 
 Branch-Specific Birth-Death Model
 =================================
+{:.subsection}
+
 {% figure stochastic_process_figure %}
 <img src="figures/stochastic_process_figure.png" width="800" /> 
 {% figcaption %}
@@ -353,6 +366,7 @@ between the analysis but also to make the sections independent.
 
 Testing for Branch-Specific-Diversification Rates
 =================================================
+{:.subsection}
 
 In this first exercise we are interested in knowing if there is
 diversification-rate variation among branches for our study tree. That
@@ -554,6 +568,7 @@ the nodes we specified.
 
 Running a marginal likelihood estimation
 ----------------------------------------
+{:.subsection}
 
 ### Specifying Monitors
 
@@ -616,6 +631,7 @@ The `Rev` file for performing this analysis:
 
 Exercise 1
 ----------
+{:.subsection}
 
 -   Enter the marginal likelihood estimate from the previous exercise on
     the constant-rate birth-death process in the table below.
@@ -914,6 +930,7 @@ The `Rev` file for performing this analysis:
 
 Exercise
 --------
+{:.subsection}
 
 -   Run an MCMC simulation to estimate the posterior distribution of the
     speciation rate and extinction rate.
@@ -930,3 +947,4 @@ Exercise
     and log-turnover rate and then estimate the diversification rates
     through time. Do you see any differences in the estimates?
 
+>>>>>>> 6736d93b01ff8107bd82b4cb79a8cc9f527e505c
