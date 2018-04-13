@@ -277,7 +277,7 @@ diversification rates. Then, if the organism is in state 0
 higher) diversification rate than if the organism is in state 1
 (<em>e.g.,</em> carnivorous) <a href="#Maddison2007">(Maddison et al. 2007)</a>.</p>
 
-<h1 class="section" id="diversification-rate-models"><a href="#sec:models">Diversification Rate Models</a></h1>
+<h1 id="sec:models" class="section">Diversification Rate Models</h1>
 
 <p>We begin this section with a general introduction to the stochastic
 birth-death branching process that underlies inference of
@@ -314,7 +314,11 @@ with rate $d(t)$ (<a href="#fig_birth_death_shift"></a> and
 <a href="#fig_bdp"></a>). Note that although each lineage evolves
 independently, all lineages share both a common (tree-wide) speciation
 rate $b(t)$ and a common extinction rate $d(t)$
-(missing reference)).</p>
+<a href="#Nee1994b">(Nee et al. 1994)</a> <a href="#Hoehna2015a">(Höhna 2015)</a>. Additionally, at certain times,
+$t_{\mathbb{M}}$, a mass-extinction event occurs and each species
+existing at that time has the same probability, $\rho$, of survival.
+Finally, all extinct lineages are pruned and only the reconstructed tree
+remains (<a href="#fig_birth_death_shift"></a>).</p>
 
 <figure id="fig_bdp"><p><img src="figures/birth-death-sketch.png" width="75%" height="75%" /></p>
 <figcaption><strong>Examples of trees produced under a birth-death process.</strong> 
@@ -401,7 +405,7 @@ estimate the diversification rates jointly with the phylogeny and
 divergence times.</p>
 </blockquote>
 
-<h1 class="section" id="estimating-constant-speciation--extinction-rates"><a href="#sec:bdp_rate_estimation">Estimating Constant Speciation &amp; Extinction Rates</a></h1>
+<h1 id="sec:bdp_rate_estimation" class="section">Estimating Constant Speciation &amp; Extinction Rates</h1>
 
 <h2 class="subsection" id="outline">Outline</h2>
 
@@ -414,7 +418,7 @@ and extinction rates using Markov chain Monte Carlo (MCMC). Finally, you
 will estimate the marginal likelihood of the model and evaluate the
 relative support using Bayes factors.</p>
 
-<h1 class="section" id="pure-birth-yule-model"><a href="#sec:yuleModSec">Pure-Birth (Yule) Model</a></h1>
+<h1 id="sec:yuleModSec" class="section">Pure-Birth (Yule) Model</h1>
 
 <p>Before evaluating the relative support for different models, we must
 first specify them in <code class="highlighter-rouge">Rev</code>. In this section, we will walk through
@@ -678,7 +682,7 @@ sampling.</p>
 </code></pre></div></div>
 <p>Compute the marginal likelihood under stepping-stone sampling using the
 member function <code class="highlighter-rouge">marginal()</code> of the <code class="highlighter-rouge">ss</code> variable and record the value
-in Table [ssTable].</p>
+in <a href="#tab_ml_yule"></a>.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    ss.marginal()
 </code></pre></div></div>
 <p>Path sampling is an alternative to stepping-stone sampling and also
@@ -687,7 +691,7 @@ takes the same power posteriors as input.</p>
 </code></pre></div></div>
 <p>Compute the marginal likelihood under stepping-stone sampling using the
 member function <code class="highlighter-rouge">marginal()</code> of the <code class="highlighter-rouge">ps</code> variable and record the value
-in Table [ssTable].</p>
+in <a href="#tab_ml_yule"></a>.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    ps.marginal()
 </code></pre></div></div>
 <p>⇨ The <code class="highlighter-rouge">Rev</code> file for performing this analysis: <code class="highlighter-rouge">ml_Yule.Rev</code>.</p>
@@ -728,7 +732,7 @@ in Table [ssTable].</p>
 <figcaption>Marginal likelihoods of the Yule and Birth-death models.</figcaption>
 </figure>
 
-<h1 class="section" id="birth-death-process"><a href="#sec:birth_death">Birth-Death Process</a></h1>
+<h1 id="sec:birth_death" class="section">Birth-Death Process</h1>
 
 <p>The pure-birth model does not account for extinction, thus it assumes
 that every lineage at the start of the process will have sampled
@@ -740,9 +744,11 @@ called the <em>birth-death process</em>. Under this model, at any instant in
 time, every lineage has the same rate of speciation $\lambda$ and the
 same rate of extinction $\mu$. This is the <em>constant-rate</em> birth-death
 process, which considers the rates constant over time and over the tree
-<a href="#Nee1994b">(Nee et al. 1994; Höhna 2015)</a>.</p>
+<a href="#Nee1994b">(Nee et al. 1994)</a> <a href="#Hoehna2015a">(Höhna 2015)</a>.</p>
 
-<p>(missing reference)) (see also <a href="#Stadler2009">(Stadler 2009)</a> and <a href="#Hoehna2014a">(Höhna 2014)</a>). Under
+<p><a href="#Yang1997">(Yang and Rannala 1997)</a> derived the probability of time trees under an extension of
+the birth-death model that accounts for incomplete sampling of the tips
+(<a href="#fig_bdp_gm"></a>) (see also <a href="#Stadler2009">(Stadler 2009)</a> and <a href="#Hoehna2014a">(Höhna 2014)</a>). Under
 this model, the parameter $\rho$ accounts for the probability of
 sampling in the present time, and because it is a probability, this
 parameter can only take values between 0 and 1.</p>
