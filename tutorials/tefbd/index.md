@@ -5,9 +5,9 @@ authors:  Tracy A. Heath, April M. Wright, and Walker Pett
 level: 3
 prerequisites:
 - intro
-- rev
-- archery
-- binomial
+- intro_rev
+- mcmc_archery
+- mcmc_binomial
 - ctmc
 - partition
 index: true

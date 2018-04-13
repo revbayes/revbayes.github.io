@@ -5,9 +5,9 @@ authors:  Sebastian Höhna, Michael Landis, Brian Moore and Tracy Heath
 level: 2
 prerequisites:
 - intro
-- rev
-- archery
-- binomial
+- intro_rev
+- mcmc_archery
+- mcmc_binomial
 order: 0
 index: true
 software: true

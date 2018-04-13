@@ -6,6 +6,9 @@ level: 4
 index: true
 prerequisites:
 - intro
+- intro_rev
+- mcmc_archery
+- mcmc_binomial
 title-old: RB_DiversificationRate_BranchSpecific_Tutorial
 redirect: true
 ---

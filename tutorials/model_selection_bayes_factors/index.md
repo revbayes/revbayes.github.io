@@ -5,6 +5,7 @@ authors:  Sebastian Höhna, Michael J Landis, Tracy A Heath and Brian R Moore
 level: 1
 prerequisites:
 - intro
+- intro_rev
 index: true
 title-old: RB_BayesFactor_Tutorial
 redirect: true
