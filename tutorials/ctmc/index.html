@@ -407,9 +407,9 @@ moves[mvi++] = mvSPR(topology, weight=n_species/10.0)
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psi := treeAssembly(topology, br_lens)
 </code></pre></div></div>
 
-<blockquote>
-  <p><strong>Alternative tree priors</strong>
-For large phylogenetic trees, i.e., with more than 200 taxa, it might be easier to specify a combined topology and branch length prior distribution.
+<blockquote class="discussion">
+  <h2 id="alternative-tree-priors">Alternative tree priors</h2>
+  <p>For large phylogenetic trees, i.e., with more than 200 taxa, it might be easier to specify a combined topology and branch length prior distribution.
 We can achieve this by simple using the distribution <code class="highlighter-rouge">dnUniformTopologyBranchLength()</code>.</p>
   <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>br_len_lambda &lt;- 10.0
 psi ~ dnUniformTopologyBranchLength(taxa, branchLengthDistribution=dnExponential(br_len_lambda))
@@ -421,9 +421,9 @@ moves[mvi++] = mvBranchLengthScale(psi, weight=n_branches)
 We still think that it is pedagogical to specify the prior on each branch length separately in this tutorial to emphasize all components of the model.</p>
 </blockquote>
 
-<blockquote>
-  <p><strong>Alternative branch-length priors</strong>
-Some studies, <em>e.g.</em>,  <a href="#Brown2010">(Brown et al. 2010)</a> <a href="#Rannala2012">(Rannala et al. 2012)</a>, 
+<blockquote class="discussion">
+  <h2 id="alternative-branch-length-priors">Alternative branch-length priors</h2>
+  <p>Some studies, <em>e.g.</em>,  <a href="#Brown2010">(Brown et al. 2010)</a> <a href="#Rannala2012">(Rannala et al. 2012)</a>, 
 have criticized the exponential prior distribution for branch lengths 
 because it induces a gamma-dsitributed tree-length and the mean of this gamma distribution
 grows with the number of taxa. For example, we can use instead a specific gamma prior distribution 
@@ -447,9 +447,9 @@ moves[mvi++] = mvDirichletSimplex(rel_branch_lengths, weight=n_branches/10.0)
 </code></pre></div>  </div>
 </blockquote>
 
-<blockquote>
-  <p><strong>Alternative Analysis Prior on Time-Trees: Tree Topology and Node Ages</strong>
-Alternatively, you may want to specify a prior on time-trees. 
+<blockquote class="discussion">
+  <h2 id="alternative-analysis-prior-on-time-trees-tree-topology-and-node-ages">Alternative Analysis Prior on Time-Trees: Tree Topology and Node Ages</h2>
+  <p>Alternatively, you may want to specify a prior on time-trees. 
 Here we will briefly indicate how to specify such an prior which will lead to inference of time trees.</p>
 
   <p>The tree (the topology and node ages) is a stochastic node in our phylogenetic model. 

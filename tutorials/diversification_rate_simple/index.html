@@ -293,6 +293,12 @@ specified in RevBayes.</p>
 
 <h2 class="subsection" id="the-birth-death-branching-process">The birth-death branching process</h2>
 
+<figure id="fig_birth_death_shift"><p><img src="figures/BirthDeathShift.png" height="240" width="480" /></p>
+<figcaption>A realization of the birth-death process with mass extinction. 
+Lineages that have no extant or sampled descendant are shown in gray and
+surviving lineages are shown in a thicker black line.</figcaption>
+</figure>
+
 <p>Our approach is based on the <em>reconstructed evolutionary process</em>
 described by <a href="#Nee1994b">(Nee et al. 1994)</a>; a birth-death process in which only sampled,
 extant lineages are observed. Let $N(t)$ denote the number of species at
@@ -310,13 +316,7 @@ independently, all lineages share both a common (tree-wide) speciation
 rate $b(t)$ and a common extinction rate $d(t)$
 (missing reference)).</p>
 
-<figure id="fig_birth_death_shift"><p><img src="figures/BirthDeathShift.png" height="240" width="120" /></p>
-<figcaption>A realization of the birth-death process with mass extinction. 
-Lineages that have no extant or sampled descendant are shown in gray and
-surviving lineages are shown in a thicker black line.</figcaption>
-</figure>
-
-<figure id="fig_bdp"><p><img src="figures/birth-death-sketch.png" /></p>
+<figure id="fig_bdp"><p><img src="figures/birth-death-sketch.png" height="190" width="1040" /></p>
 <figcaption><strong>Examples of trees produced under a birth-death process.</strong> 
 The process is initiated at the first speciation event (the ‘crown-age’ of the MRCA)
 when there are two initial lineages. At each speciation event the ancestral lineage is replaced by two
@@ -333,33 +333,55 @@ survival of both lineages that descend from the root, we divide by
 $P(N(T) &gt; 0 | N(0) = 1)^2$. Then, the probability density of the
 branching times, $\mathbb{T}$, becomes</p>
 
+<script type="math/tex; mode=display">\begin{aligned}
+P(\mathbb{T}) = \frac{\overbrace{P(N(T) = 1 \mid N(0) = 1)^2}^{\text{both initial lineages have one descendant}}}{ \underbrace{P(N(T) > 0 \mid N(0) = 1)^2}_{\text{both initial lineages survive}} } \times \prod_{i=2}^{n-1} \overbrace{i \times b(t_i)}^{\text{speciation rate}} \times \overbrace{P(N(T) = 1 \mid N(t_i) = 1)}^\text{lineage has one descendant},
+\end{aligned}</script>
+
+<p>and the probability density of the reconstructed tree (topology and branching times) is then</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{aligned}
+P(\Psi) = \; & \frac{2^{n-1}}{n!(n-1)!} \times \left( \frac{P(N(T) = 1 \mid N(0) = 1)}{P(N(T) > 0 \mid N(0) = 1)} \right)^2 \nonumber\\
+		  \; & \times \prod_{i=2}^{n-1} i \times b(t_i) \times P(N(T) = 1 \mid N(t_i) = 1)
+\end{aligned} %]]></script>
+
 <p>We can expand Equation ([eq:tree_probability]) by substituting
 $P(N(T) &gt; 0 \mid N(t) =1)^2 \exp(r(t,T))$ for
 $P(N(T) = 1 \mid N(t) = 1)$, where $r(u,v) = \int^v_u d(t)-b(t)dt$; the
-above equation becomes <script type="math/tex">% <![CDATA[
+above equation becomes</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
 \begin{aligned}
 P(\Psi) = \; & \frac{2^{n-1}}{n!(n-1)!} \times \left( \frac{P(N(T) > 0 \mid N(0) =1 )^2 \exp(r(0,T))}{P(N(T) > 0 \mid N(0) = 1)} \right)^2 \nonumber\\
 		  \; & \times \prod_{i=2}^{n-1} i \times b(t_i) \times P(N(T) > 0 \mid N(t_i) = 1)^2 \exp(r(t_i,T)) \nonumber\\
 		= \; & \frac{2^{n-1}}{n!} \times \Big(P(N(T) > 0 \mid N(0) =1 ) \exp(r(0,T))\Big)^2 \nonumber\\
 		  \; & \times \prod_{i=2}^{n-1} b(t_i) \times P(N(T) > 0 \mid N(t_i) = 1)^2 \exp(r(t_i,T)).
-		\label{eq:tree_probability_substitution}\end{aligned} %]]></script> For a detailed
-description of this substitution, see @Hoehna2015a. Additional
+		\label{eq:tree_probability_substitution}
+\end{aligned} %]]></script>
+
+<p>For a detailed description of this substitution, see <a href="#Hoehna2015a">(Höhna 2015)</a>. Additional
 information regarding the underlying birth-death process can be found in
-@Thompson1975 [Equation 3.4.6] and @Nee1994b for constant rates and
-@Hoehna2013 (missing reference) for arbitrary rate functions.</p>
+<a href="#Thompson1975">(Thompson 1975)</a> [Equation 3.4.6] and <a href="#Nee1994b">(Nee et al. 1994)</a> for constant rates and
+<a href="#Hoehna2013">(Höhna 2013; Höhna 2014; Höhna 2015)</a> for arbitrary rate functions.</p>
 
 <p>To compute the equation above we need to know the rate function,
 $r(t,s) = \int_t^s d(x)-b(x) dx$, and the probability of survival,
-$P(N(T)!&gt;!0|N(t)!=!1)$. @Yule1925 and later @Kendall1948 derived the
+$P(N(T)!&gt;!0|N(t)!=!1)$. 
+<a href="#Yule1925">(Yule 1925)</a> and later <a href="#Kendall1948">(Kendall 1948)</a> derived the
 probability that a process survives ($N(T) &gt; 0$) and the probability of
 obtaining exactly $n$ species at time $T$ ($N(T) = n$) when the process
 started at time $t$ with one species. Kendall’s results were summarized
-in Equation (3) and Equation (24) in @Nee1994b <script type="math/tex">% <![CDATA[
+in Equation (3) and Equation (24) in <a href="#Nee1994b">(Nee et al. 1994)</a></p>
+
+<script type="math/tex; mode=display">% <![CDATA[
 \begin{aligned}
 P(N(T)\!>\!0|N(t)\!=\!1) & = & \left(1+\int\limits_t^{T} \bigg(\mu(s) \exp(r(t,s))\bigg) ds\right)^{-1} \label{eq:survival} \\ \nonumber \\
 P(N(T)\!=\!n|N(t)\!=\!1) & = & (1-P(N(T)\!>\!0|N(t)\!=\!1)\exp(r(t,T)))^{n-1} \nonumber\\
-& & \times P(N(T)\!>\!0|N(t)\!=\!1)^2 \exp(r(t,T)) \label{eq:N} %]]></script> An
-overview for different diversification models is given in @Hoehna2015a.</p>
+& & \times P(N(T)\!>\!0|N(t)\!=\!1)^2 \exp(r(t,T)) \label{eq:N} %\\
+%P(N(T)\!=\!1|N(t)\!=\!1) & = & P(N(T)\!>\!0|N(t)\!=\!1)^2 \exp(r(t,T)) \label{eq:1}
+\end{aligned} %]]></script>
+
+<p>An overview for different diversification models is given in <a href="#Hoehna2015a">(Höhna 2015)</a>.</p>
 
 <blockquote class="discussion">
   <h2 id="phylogenetic-trees-as-observations">Phylogenetic trees as observations</h2>
@@ -953,15 +975,20 @@ times the relative death rate?</p>
 <a href="https://doi.org/10.1080/10635150701607033">10.1080/10635150701607033</a>
 
 </li>
+<li><span id="Thompson1975">Thompson E.A. 1975. Human evolutionary trees. Cambridge University Press Cambridge.</span>
+
+</li>
+<li><span id="Hoehna2013">Höhna S. 2013. Fast simulation of reconstructed phylogenies under global time-dependent birth-death processes. Bioinformatics. 29:1367–1374.</span>
+
+<a href="https://doi.org/10.1093/bioinformatics/btt153">10.1093/bioinformatics/btt153</a>
+
+</li>
 <li><span id="Yule1925">Yule G.U. 1925. A mathematical theory of evolution, based on the conclusions of Dr. JC Willis, FRS. Philosophical Transactions of the Royal Society of London. Series B, Containing Papers of a Biological Character. 213:21–87.</span>
 
 </li>
 <li><span id="Kendall1948">Kendall D.G. 1948. On the Generalized "Birth-and-Death" Process. The Annals of Mathematical Statistics. 19:1–15.</span>
 
 <a href="https://doi.org/10.1214/aoms/1177730285">10.1214/aoms/1177730285</a>
-
-</li>
-<li><span id="Thompson1975">Thompson E.A. 1975. Human evolutionary trees. Cambridge University Press Cambridge.</span>
 
 </li>
 <li><span id="Rannala1996">Rannala B., Yang Z. 1996. Probability distribution of molecular evolutionary trees: A new method of phylogenetic inference. Journal of Molecular Evolution. 43:304–311.</span>
