@@ -10,7 +10,7 @@ instructors:
 - Tracy Heath
 lessons:
 - intro
-- archery
+- mcmc_archery
 - ctmc
 ---
 
