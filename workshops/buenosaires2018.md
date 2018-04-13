@@ -134,7 +134,7 @@ schedule:
   - starttime: 2018-04-17T15:15:00Z
     endtime: 2018-04-17T17:30:00Z
     topic: Practical on tip-dating and the fossilized-birth-death model
-    lesson: ctmc
+    lesson: tefbd
     instructors: 
     - Femke Thon
     - Sebastian Höhna
@@ -172,7 +172,7 @@ schedule:
   - starttime: 2018-04-18T13:00:00Z
     endtime: 2018-04-18T15:00:00Z
     topic: Practical on diversification rate estimation (Part I)
-    lesson: ctmc
+    lesson: diversification_rate_simple
     instructors: 
     - Luis Palazzesi
     - Femke Thon
@@ -187,7 +187,7 @@ schedule:
   - starttime: 2018-04-18T15:15:00Z
     endtime: 2018-04-18T17:30:00Z
     topic: Practical on diversification rate estimation (Part II)
-    lesson: ctmc
+    lesson: diversification_rate_simple
     instructors: 
     - Luis Palazzesi
     - Femke Thon
