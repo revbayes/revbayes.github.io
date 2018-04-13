@@ -180,6 +180,15 @@ existing at that time has the same probability, $\rho$, of survival.
 Finally, all extinct lineages are pruned and only the reconstructed tree
 remains ({% ref fig_birth_death_shift %}).
 
+{% figure fig_birth_death_shift %}
+<img src="figures/BirthDeathShift.png" /> 
+{% figcaption %} 
+A realization of the birth-death process with mass extinction. 
+Lineages that have no extant or sampled descendant are shown in gray and
+surviving lineages are shown in a thicker black line.
+{% endfigcaption %}
+{% endfigure %}
+
 
 To condition the probability of observing the branching times on the
 survival of both lineages that descend from the root, we divide by
