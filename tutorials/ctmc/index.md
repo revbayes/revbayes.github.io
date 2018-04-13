@@ -23,7 +23,7 @@ Overview
 {:.section}
 
 This tutorial provides the first protocol from our recent publication {% cite Hoehna2017a %}. 
-The second protocol is described in the {% page_ref partition %} tutorial and the third protocol is described in the {% page_ref bayes_factors %}.
+The second protocol is described in the ??? tutorial and the third protocol is described in the ???.
 
 The present tutorial demonstrates how to set up and perform analyses
 using common nucleotide substitution models. The substitution models
