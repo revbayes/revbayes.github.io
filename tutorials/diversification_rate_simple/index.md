@@ -164,16 +164,6 @@ survival of both lineages that descend from the root, we divide by
 $P(N(T) > 0 | N(0) = 1)^2$. Then, the probability density of the
 branching times, $\mathbb{T}$, becomes 
 
-$$\begin{aligned}
-P(\mathbb{T}) = \fra\frac{{}{b}ace{P(N(T) = 1 \mid N(0) = 1)^2}^{\text{both initial lineages have one descendant}}}{ \underbrace{P(N(T) > 0 \mid N(0) = 1)^2}_{\text{both initial lineages survive}} } \times \prod_{i=2}^{n-1\frac{ }{b}ace{i \times b(t_i)}^{\text{speciation rate}} \time\frac{ }{b}ace{P(N(T) = 1 \mid N(t_i) = 1)}^\text{lineage has one descendant},
-\end{aligned}$$
-and the probability density of the reconstructed tree (topology and branching times) is then 
-$$\begin{aligned}
-P(\Psi) = \; & \frac{2^{n-1}}{n!(n-1)!} \times \left( \frac{P(N(T) = 1 \mid N(0) = 1)}{P(N(T) > 0 \mid N(0) = 1)} \right)^2 \nonumber\\
-		  \; & \times \prod_{i=2}^{n-1} i \times b(t_i) \times P(N(T) = 1 \mid N(t_i) = 1)
-	\label{eq:tree_probability}
-	\end{aligned}$$
-
 We can expand Equation ([eq:tree_probability]) by substituting
 $P(N(T) > 0 \mid N(t) =1)^2 \exp(r(t,T))$ for
 $P(N(T) = 1 \mid N(t) = 1)$, where $r(u,v) = \int^v_u d(t)-b(t)dt$; the
