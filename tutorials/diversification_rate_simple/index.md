@@ -174,24 +174,11 @@ with rate $d(t)$ ({% ref fig_birth_death_shift %} and
 {% ref fig_bdp %}). Note that although each lineage evolves
 independently, all lineages share both a common (tree-wide) speciation
 rate $b(t)$ and a common extinction rate $d(t)$
-{% citet Nee1994b } {% cite Hoehna2015a }. Additionally, at certain times,
+{% cite Nee1994b } {% cite Hoehna2015a }. Additionally, at certain times,
 $t_{\mathbb{M}}$, a mass-extinction event occurs and each species
 existing at that time has the same probability, $\rho$, of survival.
 Finally, all extinct lineages are pruned and only the reconstructed tree
 remains ({% ref fig_birth_death_shift %}).
-
-
-{% figure fig_birth_death_shift %}
-<img src="figures/BirthDeathShift.png" /> 
-{% figcaption %} 
-A realization of the birth-death process with mass extinction. 
-Lineages that have no extant or sampled descendant are shown in gray and
-surviving lineages are shown in a thicker black line.
-{% endfigcaption %}
-{% endfigure %}
-
-
-
 
 To condition the probability of observing the branching times on the
 survival of both lineages that descend from the root, we divide by
