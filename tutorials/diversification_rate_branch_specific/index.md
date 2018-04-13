@@ -54,8 +54,7 @@ failure to do so has been shown to make parameter estimates unreliable
 {% figure fig_likelihood %}
 <img src="figures/likelihood_figure.pdf" width="800" /> 
 {% figcaption %} 
-Cartoon of the
-likelihood computation using numerical integration. 
+Cartoon of the likelihood computation using numerical integration. 
 {% endfigcaption %}
 {% endfigure %}
 
