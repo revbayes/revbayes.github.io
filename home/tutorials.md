@@ -4,7 +4,7 @@ title: Tutorials
 subtitle: RevBayes Tutorials
 permalink: /tutorials/
 levels:
-- Introduction to MCMC and RevBayes
+- Introduction to RevBayes and MCMC
 - Model Selection and Testing
 - Standard tree inference
 - Complex hierarchical models for phylogenetic inference
