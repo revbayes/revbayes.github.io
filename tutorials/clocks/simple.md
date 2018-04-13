@@ -4,7 +4,7 @@ subtitle: Comparing diversification models using Bayes factors and estimating a 
 authors:  Tracy A. Heath
 level: 1
 prerequisites:
-- archery
+- mcmc_archery
 order: 2
 index: false
 ---
