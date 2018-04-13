@@ -32,7 +32,7 @@ extinction rates. These inferences allow us to investigate key questions
 in evolutionary biology.
 
 Diversification-rate parameters may be included as nuisance parameters
-of other phylogenetic models—*i.e.*,  where
+of other phylogenetic models—*i.e.*, where
 these diversification-rate parameters are not of direct interest. For
 example, many methods for estimating species divergence times—such as
 `BEAST` {% cite Drummond2012 %},
@@ -49,7 +49,7 @@ of the diversification-rate parameters, as they accommodate uncertainty
 in the other phylogenetic-model parameters (including the tree topology,
 divergence-time estimates, and the other relaxed-clock model
 parameters). More recent work,
-*e.g.*, {% citet Heath2014 %}, uses macroevolutionary
+*e.g.*, {% cite Heath2014 %}, uses macroevolutionary
 models (the fossilized birth-death process) to calibrate phylogenies and
 thus to infer dated trees.
 
@@ -139,7 +139,7 @@ higher) diversification rate than if the organism is in state 1
 
 
 
-Diversification Rate Models {#sec:models}
+[Diversification Rate Models](#sec:models)
 ===========================
 {:.section}
 
@@ -157,9 +157,10 @@ specified in RevBayes.
 
 The birth-death branching process
 ---------------------------------
+{:.subsection}
 
 Our approach is based on the *reconstructed evolutionary process*
-described by {% citet Nee1994b %}; a birth-death process in which only sampled,
+described by {% cite Nee1994b %}; a birth-death process in which only sampled,
 extant lineages are observed. Let $N(t)$ denote the number of species at
 time $t$. Assume the process starts at time $t_1$ (the 'crown' age of
 the most recent common ancestor of the study group, $t_\text{MRCA}$)
@@ -169,34 +170,41 @@ descendant from each of these initial two lineages; otherwise $t_1$
 would not correspond to the $t_\text{MRCA}$ of our study group. Each
 lineage evolves independently of all other lineages, giving rise to
 exactly one new lineage with rate $b(t)$ and losing one existing lineage
-with rate $d(t)$ (Figure [fig:BirthDeathShift] and
-Figure [fig:BDP]). Note that although each lineage evolves
+with rate $d(t)$ ({% ref fig_birth_death_shift %} and
+{% ref fig_bdp %}). Note that although each lineage evolves
 independently, all lineages share both a common (tree-wide) speciation
 rate $b(t)$ and a common extinction rate $d(t)$
-{% citet Nee1994b } {% citet Hoehna2015a }. Additionally, at certain times,
+{% citet Nee1994b } {% cite Hoehna2015a }. Additionally, at certain times,
 $t_{\mathbb{M}}$, a mass-extinction event occurs and each species
 existing at that time has the same probability, $\rho$, of survival.
 Finally, all extinct lineages are pruned and only the reconstructed tree
 remains (Figure [fig:BirthDeathShift]).
 
 
-![]( figures/BirthDeathShift.png)
-> A realization of the birth-death process with mass extinction. 
-> Lineages that have no extant or sampled descendant are shown in gray and
-> surviving lineages are shown in a thicker black line.
+{% figure fig_birth_death_shift %}
+<img src="figures/BirthDeathShift.png" /> 
+{% figcaption %} 
+A realization of the birth-death process with mass extinction. 
+Lineages that have no extant or sampled descendant are shown in gray and
+surviving lineages are shown in a thicker black line.
+{% endfigcaption %}
+{% endfigure %}
 
+{% figure fig_bdp %}
+<img src="figures/birth-death-sketch.png" /> 
+{% figcaption %} 
+**Examples of trees produced under a birth-death process.** 
+The process is initiated at the first speciation event (the 'crown-age' of the MRCA)
+when there are two initial lineages. At each speciation event the ancestral lineage is replaced by two
+descendant lineages. At an extinction event one lineage simply
+terminates. (A) A complete tree including extinct lineages. (B) The
+reconstructed tree of tree from A with extinct lineages pruned away. (C)
+A *uniform* subsample of the tree from B, where each species was sampled
+with equal probability, $\rho$. (D) A *diversified* subsample of the
+tree from B, where the species were selected so as to maximize diversity.
+{% endfigcaption %}
+{% endfigure %}
 
-![]( figures/birth-death-sketch.png)
-> **Examples of trees produced under a birth-death
-> process.** The process is initiated at the first speciation event (the 'crown-age' of the MRCA)
-> when there are two initial lineages. At each speciation event the ancestral lineage is replaced by two
-> descendant lineages. At an extinction event one lineage simply
-> terminates. (A) A complete tree including extinct lineages. (B) The
-> reconstructed tree of tree from A with extinct lineages pruned away. (C)
-> A *uniform* subsample of the tree from B, where each species was sampled
-> with equal probability, $\rho$. (D) A *diversified* subsample of the
-> tree from B, where the species were selected so as to maximize
-> diversity.
 
 
 
@@ -206,12 +214,14 @@ $P(N(T) > 0 | N(0) = 1)^2$. Then, the probability density of the
 branching times, $\mathbb{T}$, becomes 
 
 $$\begin{aligned}
-P(\mathbb{T}) = \fra\frac{{}{b}ace{P(N(T) = 1 \mid N(0) = 1)^2}^{\text{both initial lineages have one descendant}}}{ \underbrace{P(N(T) > 0 \mid N(0) = 1)^2}_{\text{both initial lineages survive}} } \times \prod_{i=2}^{n-1\frac{ }{b}ace{i \times b(t_i)}^{\text{speciation rate}} \time\frac{ }{b}ace{P(N(T) = 1 \mid N(t_i) = 1)}^\text{lineage has one descendant},\end{aligned}$$
-and the probability density of the reconstructed tree (topology and
-branching times) is then $$\begin{aligned}
+P(\mathbb{T}) = \fra\frac{{}{b}ace{P(N(T) = 1 \mid N(0) = 1)^2}^{\text{both initial lineages have one descendant}}}{ \underbrace{P(N(T) > 0 \mid N(0) = 1)^2}_{\text{both initial lineages survive}} } \times \prod_{i=2}^{n-1\frac{ }{b}ace{i \times b(t_i)}^{\text{speciation rate}} \time\frac{ }{b}ace{P(N(T) = 1 \mid N(t_i) = 1)}^\text{lineage has one descendant},
+\end{aligned}$$
+and the probability density of the reconstructed tree (topology and branching times) is then 
+$$\begin{aligned}
 P(\Psi) = \; & \frac{2^{n-1}}{n!(n-1)!} \times \left( \frac{P(N(T) = 1 \mid N(0) = 1)}{P(N(T) > 0 \mid N(0) = 1)} \right)^2 \nonumber\\
 		  \; & \times \prod_{i=2}^{n-1} i \times b(t_i) \times P(N(T) = 1 \mid N(t_i) = 1)
-	\label{eq:tree_probability}\end{aligned}$$
+	\label{eq:tree_probability}
+	\end{aligned}$$
 
 We can expand Equation ([eq:tree_probability]) by substituting
 $P(N(T) > 0 \mid N(t) =1)^2 \exp(r(t,T))$ for
