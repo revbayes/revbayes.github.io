@@ -159,27 +159,6 @@ The birth-death branching process
 ---------------------------------
 {:.subsection}
 
-Our approach is based on the *reconstructed evolutionary process*
-described by {% cite Nee1994b %}; a birth-death process in which only sampled,
-extant lineages are observed. Let $N(t)$ denote the number of species at
-time $t$. Assume the process starts at time $t_1$ (the 'crown' age of
-the most recent common ancestor of the study group, $t_\text{MRCA}$)
-when there are two species. Thus, the process is initiated with two
-species, $N(t_1) = 2$. We condition the process on sampling at least one
-descendant from each of these initial two lineages; otherwise $t_1$
-would not correspond to the $t_\text{MRCA}$ of our study group. Each
-lineage evolves independently of all other lineages, giving rise to
-exactly one new lineage with rate $b(t)$ and losing one existing lineage
-with rate $d(t)$ ({% ref fig_birth_death_shift %} and
-{% ref fig_bdp %}). Note that although each lineage evolves
-independently, all lineages share both a common (tree-wide) speciation
-rate $b(t)$ and a common extinction rate $d(t)$
-{% cite Nee1994b } {% cite Hoehna2015a }. Additionally, at certain times,
-$t_{\mathbb{M}}$, a mass-extinction event occurs and each species
-existing at that time has the same probability, $\rho$, of survival.
-Finally, all extinct lineages are pruned and only the reconstructed tree
-remains ({% ref fig_birth_death_shift %}).
-
 To condition the probability of observing the branching times on the
 survival of both lineages that descend from the root, we divide by
 $P(N(T) > 0 | N(0) = 1)^2$. Then, the probability density of the
