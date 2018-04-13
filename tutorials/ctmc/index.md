@@ -268,10 +268,10 @@ Finally, we can create a *phylogram* (a phylogeny in which the branch lengths ar
 psi := treeAssembly(topology, br_lens)
 ```
 
-> **Alternative tree priors**
+> ## Alternative tree priors
 > For large phylogenetic trees, i.e., with more than 200 taxa, it might be easier to specify a combined topology and branch length prior distribution.
 > We can achieve this by simple using the distribution `dnUniformTopologyBranchLength()`.
->```
+```
 br_len_lambda <- 10.0
 psi ~ dnUniformTopologyBranchLength(taxa, branchLengthDistribution=dnExponential(br_len_lambda))
 moves[mvi++] = mvNNI(psi, weight=n_species)
@@ -280,36 +280,38 @@ moves[mvi++] = mvBranchLengthScale(psi, weight=n_branches)
 ```
 > You might think that this approach is in fact simpler than the `for` loop that we explained above.
 > We still think that it is pedagogical to specify the prior on each branch length separately in this tutorial to emphasize all components of the model.
+{:.discussion}
 
-> **Alternative branch-length priors**
->Some studies, *e.g.*,  {% cite Brown2010 %} {% cite Rannala2012 %}, 
->have criticized the exponential prior distribution for branch lengths 
->because it induces a gamma-dsitributed tree-length and the mean of this gamma distribution
->grows with the number of taxa. For example, we can use instead a specific gamma prior distribution 
->(or any other distribution defined on a positive real variable) for the tree length, 
->and then use a Dirichlet prior distribution to break the tree length into 
->the corresponding branch lengths {% cite Zhang2012 %}.
+> ## Alternative branch-length priors
+> Some studies, *e.g.*,  {% cite Brown2010 %} {% cite Rannala2012 %}, 
+> have criticized the exponential prior distribution for branch lengths 
+> because it induces a gamma-dsitributed tree-length and the mean of this gamma distribution
+> grows with the number of taxa. For example, we can use instead a specific gamma prior distribution 
+> (or any other distribution defined on a positive real variable) for the tree length, 
+> and then use a Dirichlet prior distribution to break the tree length into 
+> the corresponding branch lengths {% cite Zhang2012 %}.
 >
->First, specify a prior distribution on the tree length with your desired mean.
->For example, we use a gamma distribution as our prior on the tree length.
+> First, specify a prior distribution on the tree length with your desired mean.
+> For example, we use a gamma distribution as our prior on the tree length.
 ```
 TL ~ dnGamma(2,4)
 moves[mvi++] = mvScale(TL) 
 ```
 >
->Now we create a random variable for the relative branch lengths.
+> Now we create a random variable for the relative branch lengths.
 ```
 rel_branch_lengths ~ dnDirichlet( rep(1.0,n_branches) )
 moves[mvi++] = mvBetaSimplex(rel_branch_lengths, weight=n_branches)
 moves[mvi++] = mvDirichletSimplex(rel_branch_lengths, weight=n_branches/10.0)
 ```
->Finally, transform the relative branch lengths into actual branch lengths
+> Finally, transform the relative branch lengths into actual branch lengths
 ```
 br_lens := rel_branch_lengths * TL
 ```
+{:.discussion}
 
 
->**Alternative Analysis Prior on Time-Trees: Tree Topology and Node Ages**
+> ## Alternative Analysis Prior on Time-Trees: Tree Topology and Node Ages
 >Alternatively, you may want to specify a prior on time-trees. 
 >Here we will briefly indicate how to specify such an prior which will lead to inference of time trees.
 >
@@ -365,6 +367,7 @@ clock_rate := 10^log_clock_rate
 >
 >Instead, you could also fix the clock rate and estimate the root age. 
 >For more information on molecular clocks please read the [Divergence Time Tutorial]({{ base.url }}/tutorials/clocks/)
+{:.discussion}
 
 Putting it All Together
 -----------------------

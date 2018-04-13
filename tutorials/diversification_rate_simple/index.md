@@ -159,6 +159,15 @@ The birth-death branching process
 ---------------------------------
 {:.subsection}
 
+{% figure fig_birth_death_shift %}
+<img src="figures/BirthDeathShift.png" height="240" width="480" /> 
+{% figcaption %} 
+A realization of the birth-death process with mass extinction. 
+Lineages that have no extant or sampled descendant are shown in gray and
+surviving lineages are shown in a thicker black line.
+{% endfigcaption %}
+{% endfigure %}
+
 Our approach is based on the *reconstructed evolutionary process*
 described by {% cite Nee1994b %}; a birth-death process in which only sampled,
 extant lineages are observed. Let $N(t)$ denote the number of species at
@@ -180,17 +189,8 @@ existing at that time has the same probability, $\rho$, of survival.
 Finally, all extinct lineages are pruned and only the reconstructed tree
 remains ({% ref fig_birth_death_shift %}).
 
-{% figure fig_birth_death_shift %}
-<img src="figures/BirthDeathShift.png" height="240" width="120" /> 
-{% figcaption %} 
-A realization of the birth-death process with mass extinction. 
-Lineages that have no extant or sampled descendant are shown in gray and
-surviving lineages are shown in a thicker black line.
-{% endfigcaption %}
-{% endfigure %}
-
 {% figure fig_bdp %}
-<img src="figures/birth-death-sketch.png" /> 
+<img src="figures/birth-death-sketch.png" height="190" width="1040" /> 
 {% figcaption %} 
 **Examples of trees produced under a birth-death process.** 
 The process is initiated at the first speciation event (the 'crown-age' of the MRCA)
@@ -204,37 +204,57 @@ tree from B, where the species were selected so as to maximize diversity.
 {% endfigcaption %}
 {% endfigure %}
 
-
 To condition the probability of observing the branching times on the
 survival of both lineages that descend from the root, we divide by
 $P(N(T) > 0 | N(0) = 1)^2$. Then, the probability density of the
 branching times, $\mathbb{T}$, becomes 
 
+$$\begin{aligned}
+P(\mathbb{T}) = \frac{\overbrace{P(N(T) = 1 \mid N(0) = 1)^2}^{\text{both initial lineages have one descendant}}}{ \underbrace{P(N(T) > 0 \mid N(0) = 1)^2}_{\text{both initial lineages survive}} } \times \prod_{i=2}^{n-1} \overbrace{i \times b(t_i)}^{\text{speciation rate}} \times \overbrace{P(N(T) = 1 \mid N(t_i) = 1)}^\text{lineage has one descendant},
+\end{aligned}$$
+
+and the probability density of the reconstructed tree (topology and branching times) is then 
+
+$$\begin{aligned}
+P(\Psi) = \; & \frac{2^{n-1}}{n!(n-1)!} \times \left( \frac{P(N(T) = 1 \mid N(0) = 1)}{P(N(T) > 0 \mid N(0) = 1)} \right)^2 \nonumber\\
+		  \; & \times \prod_{i=2}^{n-1} i \times b(t_i) \times P(N(T) = 1 \mid N(t_i) = 1)
+\end{aligned}$$
+
 We can expand Equation ([eq:tree_probability]) by substituting
 $P(N(T) > 0 \mid N(t) =1)^2 \exp(r(t,T))$ for
 $P(N(T) = 1 \mid N(t) = 1)$, where $r(u,v) = \int^v_u d(t)-b(t)dt$; the
-above equation becomes $$\begin{aligned}
+above equation becomes 
+
+$$\begin{aligned}
 P(\Psi) = \; & \frac{2^{n-1}}{n!(n-1)!} \times \left( \frac{P(N(T) > 0 \mid N(0) =1 )^2 \exp(r(0,T))}{P(N(T) > 0 \mid N(0) = 1)} \right)^2 \nonumber\\
 		  \; & \times \prod_{i=2}^{n-1} i \times b(t_i) \times P(N(T) > 0 \mid N(t_i) = 1)^2 \exp(r(t_i,T)) \nonumber\\
 		= \; & \frac{2^{n-1}}{n!} \times \Big(P(N(T) > 0 \mid N(0) =1 ) \exp(r(0,T))\Big)^2 \nonumber\\
 		  \; & \times \prod_{i=2}^{n-1} b(t_i) \times P(N(T) > 0 \mid N(t_i) = 1)^2 \exp(r(t_i,T)).
-		\label{eq:tree_probability_substitution}\end{aligned}$$ For a detailed
-description of this substitution, see @Hoehna2015a. Additional
+		\label{eq:tree_probability_substitution}
+\end{aligned}$$ 
+
+For a detailed description of this substitution, see {% cite Hoehna2015a %}. Additional
 information regarding the underlying birth-death process can be found in
-@Thompson1975 [Equation 3.4.6] and @Nee1994b for constant rates and
-@Hoehna2013 {% cite Hoehna2014a} {% cite Hoehna2015a %} for arbitrary rate functions.
+{% cite Thompson1975 %} [Equation 3.4.6] and {% cite Nee1994b %} for constant rates and
+{% cite Hoehna2013 Hoehna2014a Hoehna2015a %} for arbitrary rate functions.
 
 To compute the equation above we need to know the rate function,
 $r(t,s) = \int_t^s d(x)-b(x) dx$, and the probability of survival,
-$P(N(T)\!>\!0|N(t)\!=\!1)$. @Yule1925 and later @Kendall1948 derived the
+$P(N(T)\!>\!0|N(t)\!=\!1)$. 
+{% cite Yule1925 %} and later {% cite Kendall1948 %} derived the
 probability that a process survives ($N(T) > 0$) and the probability of
 obtaining exactly $n$ species at time $T$ ($N(T) = n$) when the process
 started at time $t$ with one species. Kendall's results were summarized
-in Equation (3) and Equation (24) in @Nee1994b $$\begin{aligned}
+in Equation (3) and Equation (24) in {% cite Nee1994b %} 
+
+$$\begin{aligned}
 P(N(T)\!>\!0|N(t)\!=\!1) & = & \left(1+\int\limits_t^{T} \bigg(\mu(s) \exp(r(t,s))\bigg) ds\right)^{-1} \label{eq:survival} \\ \nonumber \\
 P(N(T)\!=\!n|N(t)\!=\!1) & = & (1-P(N(T)\!>\!0|N(t)\!=\!1)\exp(r(t,T)))^{n-1} \nonumber\\
-& & \times P(N(T)\!>\!0|N(t)\!=\!1)^2 \exp(r(t,T)) \label{eq:N} $$ An
-overview for different diversification models is given in @Hoehna2015a.
+& & \times P(N(T)\!>\!0|N(t)\!=\!1)^2 \exp(r(t,T)) \label{eq:N} %\\
+%P(N(T)\!=\!1|N(t)\!=\!1) & = & P(N(T)\!>\!0|N(t)\!=\!1)^2 \exp(r(t,T)) \label{eq:1}
+\end{aligned}$$ 
+
+An overview for different diversification models is given in {% cite Hoehna2015a %}.
 
 > ## Phylogenetic trees as observations
 > The branching processes used here describe probability distributions on
