@@ -64,12 +64,12 @@ be covered in more detail later in this tutorial.
 
 {% figure tab_subst_models %}
 
- |  **Model**     |      **Reference**     |  **Function**   |   **Parameters** |
- |:--------------:|:----------------------:|:---------------:|:----------------:|
- | Jukes-Cantor   |  {% cite Jukes1969 %}  |      fnJC       |          -       |
- | Felsenstein-81 | {% cite Felsenstein1981 %} |   fnF81     |        $\pi$     |
- |       HKY      | {% cite Hasegawa1985 %} |     fnHKY      | $\pi$, $\kappa$  |
- |       GTR      | {% cite Tavare1986 %}  |      fnGTR      | $\pi$, $\epsilon$  |
+ |  **Model**     |        **Reference**        |  **Function**   |    **Parameters**    |
+ |:--------------:|:---------------------------:|:---------------:|:--------------------:|
+ | Jukes-Cantor   |    {% cite Jukes1969 %}     |      fnJC       |          -           |
+ | Felsenstein-81 | {% cite Felsenstein1981 %}  |      fnF81      |        $\pi$         |
+ |       HKY      |   {% cite Hasegawa1985 %}   |      fnHKY      |   $\pi$, $\kappa$    |
+ |       GTR      |    {% cite Tavare1986 %}    |      fnGTR      |   $\pi$, $\epsilon$  |
 
 {% figcaption %}
 Specific functions for substitution models available in RevBayes.

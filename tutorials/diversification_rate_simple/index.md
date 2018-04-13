@@ -625,32 +625,22 @@ Exercise 2
 ----------
 {:.subsection}
 -   Compute the marginal likelihood under the Yule model.
-
 -   Enter the estimate in the table below.
 
-l c c c c & & & &\
-Marginal likelihood Yule ($M_0$) &
+{% figure tab_ml_yule %}
 
-& &
+ |                  **Model**                |   **Path-Sampling**   |   **Stepping-Stone-Sampling**   |
+  ------------------------------------------:|:---------------------:|:-------------------------------:|
+ |     Marginal likelihood Yule ($M_0$)      |                       |                                 |
+ |  Marginal likelihood birth-death ($M_1$)  |                       |                                 |
+ |              Supported model?             |                       |                                 |
 
-&\
-Marginal likelihood birth-death ($M_1$) &
+{% figcaption %}
+Marginal likelihoods of the Yule and Birth-death models.
+{% endfigcaption %}
+{% endfigure %}
 
-& &
-
-&\
-Supported model? &
-
-& &
-
-&\
-\
-
-[ssTable]
-
-
-
-Birth-Death Process {#birthDeathSec}
+[Birth-Death Process](#sec:birth_death)
 ===================
 {:.section}
 
@@ -666,17 +656,20 @@ same rate of extinction $\mu$. This is the *constant-rate* birth-death
 process, which considers the rates constant over time and over the tree
 {% cite Nee1994b Hoehna2015a %}.
 
-@Yang1997 derived the probability of time trees under an extension of
+{% cite Yang1997 %] derived the probability of time trees under an extension of
 the birth-death model that accounts for incomplete sampling of the tips
-(Fig. [bdrGMFig1]) (see also {% cite Stadler2009 %} and {% cite Hoehna2014a %}). Under
+({% ref fig_bdp_gm %}) (see also {% cite Stadler2009 %} and {% cite Hoehna2014a %}). Under
 this model, the parameter $\rho$ accounts for the probability of
 sampling in the present time, and because it is a probability, this
 parameter can only take values between 0 and 1.
 
-![]( figures/simple_BD_gm_root.png) 
-> The graphical model
-representation of the birth-death process with uniform sampling and
+{% figure fig_bdp_gm %}
+<img src="figures/simple_BD_gm_root.png" height="50%" width="50%" /> 
+{% figcaption %} 
+The graphical model representation of the birth-death process with uniform sampling and
 conditioned on the root age.
+{% endfigcaption %}
+{% endfigure %}
 
 In principle, we can specify a model with prior distributions on
 speciation and extinction rates directly. One possibility is to specify
@@ -686,10 +679,13 @@ distributions on a transformation of the speciation and extinction rate
 because, for example, we want to enforce that the speciation rate is
 always larger than the extinction rate.
 
-![]( figures/cBDR_gm.png) 
-> The graphical model representation of
-the birth-death process with uniform sampling parameterized using the
-diversification and turnover.
+{% figure fig_bdp_div_turn_gm %}
+<img src="figures/cBDR_gm.png" height="50%" width="50%" /> 
+{% figcaption %} 
+The graphical model representation of the birth-death process 
+with uniform sampling parameterized using the diversification and turnover.
+{% endfigcaption %}
+{% endfigure %}
 
 In the following subsections we will only provide the key command that
 are different for the constant-rate birth-death process. All other
@@ -700,50 +696,55 @@ previous results!
 
 Diversification and turnover
 ----------------------------
+{:.subsection}
 
 We have some good prior information about the magnitude of the
 diversification. The diversification rate represent the rate at which
 the species diversity increases. Thus, we just use the same prior for
 the diversification rate as we used before for the birth rate.
-
+```
     diversification_mean <- ln( ln(367.0/2.0) / T.rootAge() )
     diversification_sd <- 0.587405
     diversification ~ dnLognormal(mean=diversification_mean,sd=diversification_sd)
     moves[++mvi] = mvScale(diversification,lambda=1.0,tune=true,weight=3.0)
-
+```
 Unfortunately, we have less prior information about the turnover rate.
 The turnover rate is the rate at which one species is replaced by
 another species due to a birth plus death event. Hence, the turnover
 rate represent the longevity of a species. For simplicity we use the
 same prior on the turnover rate but with two orders of magnitude prior
 uncertainty.
-
+```
     turnover_mean <- ln( ln(367.0/2.0) / T.rootAge() )
     turnover_sd <- 0.587405*2
     turnover ~ dnLognormal(mean=turnover_mean,sd=turnover_sd)
     moves[++mvi] = mvScale(turnover,lambda=1.0,tune=true,weight=3.0)
+```
 
 Birth rate and death rate
 -------------------------
+{:.subsection}
 
 The birth and death rates are both deterministic nodes. We compute them
 by simple parameter transformation. Note that the death rate is in fact
 equal to the turnover rate.
-
+```
     birth_rate := diversification + turnover
     death_rate := turnover
-
+```
 All other parameters, such as the sampling probability and the root age
 are kept the same as in the analysis above.
 
 The time tree
 -------------
+{:.subsection}
 
 Initialize the stochastic node representing the time tree. The main
 difference now is that we provide a stochastic parameter for the
 extinction rate $\mu$.
-
+```
     timetree ~ dnBDP(lambda=birth_rate, mu=death_rate, rho=rho, rootAge=root_time, samplingStrategy="uniform", condition="survival", taxa=taxa)
+```
 
 Exercise 3
 ----------
@@ -751,23 +752,17 @@ Exercise 3
 
 -   Run an MCMC simulation to compute the posterior distribution of the
     diversification and turnover rate.
-
 -   Look at the parameter estimates in `Tracer`. What can
     you say about the diversification, turnover, speciation and
     extinction rates? How high is the extinction rate compared with the
     speciation rate?
-
 -   Compute the marginal likelihood under the BD model. Which model is
     supported by the data?
-
 -   Enter the estimate in the table above.
-
 -   Can you modify the script to use a prior on the birth drawn from a
     lognormal distribution and relative death rate drawn from a beta
     distribution so that the extinction rate is equal to the birth rate
     times the relative death rate?
-
     1.  Do the parameter estimates change?
-
     2.  What about the marginal likelihood estimates?
 
