@@ -5,8 +5,12 @@ subtitle: RevBayes Tutorials
 permalink: /tutorials/
 levels:
 - Introduction to MCMC and RevBayes
-- Standard tree inference and comparative methods
+- Model Selection and Testing
+- Standard tree inference
 - Complex hierarchical models for phylogenetic inference
+- Diversification Rate Estimation
+- Comparative methods
+- Biogeography
 ---
 
 Several tutorials have been written for RevBayes. Each one explicitly walks you through model specification and analysis set-up for different phylogenetic methods.
