@@ -338,8 +338,8 @@ the exponent of $\cal{K}$
 
 $$
 \begin{equation}
-\label{LNbfFormula2}
 BF(M_0,M_1) = e^{\cal{K}}.
+\label{LNbfFormula2}
 \end{equation}$$ 
 
 Alternatively, you can directly interpret the strength of evidence in favor of $M_0$ in log
@@ -347,10 +347,8 @@ space by comparing the values of $\cal{K}$ to the appropriate scale
 (Table [bftable], second column). In this case, we evaluate $\cal{K}$
 in favor of model $M_0$ against model $M_1$ so that:
 
-  --------------------------------------------------
-  if $\mathcal{K} > 1$, model $M_0$ is preferred
-  if $\mathcal{K} < -1$, model $M_1$ is preferred.
-  --------------------------------------------------
+> if $\mathcal{K} > 1$, model $M_0$ is preferred<br>
+> if $\mathcal{K} < -1$, model $M_1$ is preferred.
 
 Thus, values of $\mathcal{K}$ around 0 indicate that there is no
 preference for either model.
