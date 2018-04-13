@@ -410,23 +410,16 @@ Specifying the model
 
 ### Priors on rates
 
-> ![](figures/discretized_lognormal.png) 
-> Discretization of
+{% figure likelihood_figure %}
+<img src="figures/discretized_lognormal.png" width="800" /> 
+{% figcaption %} 
+Discretization of
 a lognormal distribution. The two left figures have 4 rate categories
 and the two right plots have 10 rate categories. The top plots have the
 95% probability interval spanning one order of magnitude (`sd`
 $=0.587405$) and the bottom plots have the 95% probability interval
 spanning two orders of magnitude (`sd` $=2*0.587405$) 
-{:.figure}
-
-> ![](figures/discretized_lognormal.png) 
-> Discretization of
-a lognormal distribution. The two left figures have 4 rate categories
-and the two right plots have 10 rate categories. The top plots have the
-95% probability interval spanning one order of magnitude (`sd`
-$=0.587405$) and the bottom plots have the 95% probability interval
-spanning two orders of magnitude (`sd` $=2*0.587405$) 
-{:.figure}
+{% endfigure %}
 
 Instead of using a continuous probability distribution we will use a
 discrete approximation of the distribution, as done for modeling rate
