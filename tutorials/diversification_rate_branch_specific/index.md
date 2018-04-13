@@ -1,19 +1,23 @@
 ﻿---
 title: Branch-Specific Diversification Rate Estimation
 subtitle: How to estimate branch-specific shifts in diversification rates 
-authors:  Sebastian H&#246;hna and Michael R. May
+authors:  Sebastian Höhna and Michael R. May
 level: 4
+order: 0
 index: true
 prerequisites:
 - intro
 - intro_rev
 - mcmc_archery
 - mcmc_binomial
+- diversification_rate_simple
 title-old: RB_DiversificationRate_BranchSpecific_Tutorial
-redirect: true
+redirect: false
 ---
 
 
+<<<<<<< HEAD
+=======
 
 
 Overview: Diversification Rate Estimation {#sec:diversification_rate_overview}
@@ -256,6 +260,7 @@ without error. For publication quality analysis you should always
 estimate the diversification rates jointly with the phylogeny and
 divergence times.
 
+>>>>>>> 6736d93b01ff8107bd82b4cb79a8cc9f527e505c
 Estimating Branch-Specific Speciation & Extinction Rates
 ========================================================
 {:.section}
@@ -270,6 +275,8 @@ The probabilistic graphical model is given for each component of this
 tutorial. The goal is to obtain estimate of branch-specific
 diversification rates using Markov chain Monte Carlo (MCMC).
 
+<<<<<<< HEAD
+=======
 Requirements
 ------------
 
@@ -933,3 +940,4 @@ Exercise
     and log-turnover rate and then estimate the diversification rates
     through time. Do you see any differences in the estimates?
 
+>>>>>>> 6736d93b01ff8107bd82b4cb79a8cc9f527e505c
