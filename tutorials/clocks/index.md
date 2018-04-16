@@ -296,7 +296,7 @@ Then, we will add moves that will propose changes to the tree topology.
     moves[mvi++] = mvNarrow(timetree, weight=8.0)
     moves[mvi++] = mvFNPR(timetree, weight=8.0)
 
-Now save and close the file called . This file, with all the model
+Now save and close the file. This file, with all the model
 specifications will be loaded by other `Rev` files.
 
 Specifying Branch-Rate Models
@@ -311,12 +311,13 @@ marginal-likelihood analysis.
 ### The Global Molecular Clock Model {#globalClockSec}
 
 The global molecular clock assumes that the rate of substitution is
-constant over the tree and over time (Fig. [m_GMC:fig]).
+constant over the tree and over time{% comment %} (Fig. [m_GMC:fig]) {% endcomment %}
+.
 
-![]( RB_Dating_Tutorial/figures/gmc_gm.eps) 
+{% comment %} ![]( RB_Dating_Tutorial/figures/gmc_gm.eps) 
 > The graphical
 model representation of the global molecular clock model used in this
-exercise.
+exercise. {% endcomment %}
 
 ***Create the Rev File***
 
@@ -340,7 +341,7 @@ The clock-rate parameter is a stochastic node from a gamma distribution.
 Specify the parameters of the GTR model and the moves to operate on
 them.
 
-    sf ~ dnDirichlet(v(1,1,1,1))
+   sf ~ dnDirichlet(v(1,1,1,1))
     er ~ dnDirichlet(v(1,1,1,1,1,1))
     Q := fnGTR(er,sf)
     moves[mvi++] = mvSimplexElementScale(er, alpha=10.0, tune=true, weight=3.0)
@@ -441,14 +442,15 @@ Now load your RevBayes analysis:
     source("scripts/mlnl_GMC_bears.Rev")
 
 Once you have completed this analysis, record the marginal likelihoods
-under the global molecular clock model in Table [ssTable].
+under the global molecular clock model in Table {% ref ssTable %}.
 
 ### The Uncorrelated Lognormal Rates Model {#UCLNModelSec}
 
 The uncorrelated lognormal (UCLN) model relaxes the assumption of a
 single-rate molecular clock. Under this model, the rate associated with
 each branch in the tree is a stochastic node. Each branch-rate variable
-is drawn from the same lognormal distribution (Fig. [m_UCLN:fig]).
+is drawn from the same lognormal distribution{% comment %} (Fig. [m_UCLN:fig]){% endcomment %}
+.
 
 Given that we might not have prior information on the parameters of the
 lognormal distribution, we can assign hyper priors to these variables.
@@ -459,13 +461,13 @@ is exponentially distributed and as is the stochastic node representing
 the standard deviation. With these two parameters, we can get the
 location parameter of the lognormal by:
 $$\mu = \log(M) - \frac{\sigma^2}{2}.$$ Thus, $\mu$ is a deterministic
-node, which is a function of $M$ and $\sigma$. In Figure
-[m_UCLN:fig], we can represent the vector of $N$ branch rates using
+node, which is a function of $M$ and $\sigma$. {% comment %}In Figure
+[m_UCLN:fig], {% endcomment %}We can represent the vector of $N$ branch rates using
 the plate notation.
 
-![]( RB_Dating_Tutorial/figures/ucln_gm.eps) 
+{% comment %}![]( RB_Dating_Tutorial/figures/ucln_gm.eps) 
 > The graphical
-model representation of the UCLN model used in this exercise.
+model representation of the UCLN model used in this exercise.{% endcomment %}
 
 ***Create the Rev File***
 
@@ -484,8 +486,9 @@ how many branches exist in the tree.
 
     n_branches <- 2 * n_taxa - 2
 
-We will start with the mean of the lognormal distribution, $M$ in Figure
-[m_UCLN:fig].
+We will start with the mean of the lognormal distribution{% comment %}, $M$ in Figure
+[m_UCLN:fig] {% endcomment %}
+.
 
     ucln_mean ~ dnExponential(2.0)
 
@@ -585,7 +588,7 @@ relevant places (e.g., your output file for the `powerPosterior()`
 function should be and be sure to `source()` the correct model file ).
 
 Once you have completed this analysis, record the marginal likelihoods
-under the UCLN model in Table [ssTable].
+under the UCLN model in Table {% ref ssTable %}.
 
 Compute Bayes Factors and Select Model
 --------------------------------------
@@ -593,71 +596,73 @@ Compute Bayes Factors and Select Model
 
 Now that we have estimates of the marginal likelihood under each of our
 different models, we can evaluate their relative plausibility using
-Bayes factors. Use Table [ssTable] to summarize the marginal
+Bayes factors. Use Table {% ref ssTable %} to summarize the marginal
 log-likelihoods estimated using the stepping-stone and path-sampling
 methods.
 
-l c c c c & &\
-& & & &\
-[globalClockSec] Global molecular clock ($M_0$) &
+{% figure ssTable %}
 
-& &
-
-&\
-[UCLNModelSec] Uncorrelated lognormal ($M_1$) &
-
-& &
-
-&\
-\
-
-[ssTable]
+ |                  **Model**                        |   **Path-Sampling**   |   **Stepping-Stone-Sampling**   |
+  --------------------------------------------------:|:---------------------:|:-------------------------------:|
+ | [Global molecular clock ($M_0$)](#globalClockSec) |                       |                                 |
+ | [Uncorrelated lognormal](#UCLNModelSec)           |                       |                                 |
+ |              Supported model?                     |                       |                                 |
+ 
+{% figcaption %}
+Marginal likelihoods of the lobal molecular clock and uncorrelated lognormal models.
+{% endfigcaption %}
+{% endfigure %}
 
 Phylogenetics software programs log-transform the likelihood to avoid
 [underflow](http://en.wikipedia.org/wiki/Arithmetic_underflow), because
 multiplying likelihoods results in numbers that are too small to be held
 in computer memory. Thus, we must calculate the ln-Bayes factor (we will
-denote this value $\mathcal{K}$): $$\begin{aligned}
+denote this value $\mathcal{K}$): 
+
+$$\begin{equation}
+\mathcal{K}=\ln[BF(M_0,M_1)] = \ln[\mathbb{P}(\mathbf X \mid M_0)]-\ln[\mathbb{P}(\mathbf X \mid M_1)],
 \label{LNbfFormula}
-\mathcal{K}=\ln[BF(M_0,M_1)] = \ln[\mathbb{P}(\mathbf X \mid M_0)]-\ln[\mathbb{P}(\mathbf X \mid M_1)],\end{aligned}$$
+\end{equation}$$
+
 where $\ln[\mathbb{P}(\mathbf X \mid M_0)]$ is the *marginal lnL*
 estimate for model $M_0$. The value resulting from equation
-[LNbfFormula] can be converted to a raw Bayes factor by simply taking
-the exponent of $\cal{K}$ $$\begin{aligned}
+{% ref LNbfFormula %} can be converted to a raw Bayes factor by simply taking
+the exponent of $\cal{K}$ 
+
+$$
+\begin{equation}
+BF(M_0,M_1) = e^{\cal{K}}.
 \label{LNbfFormula2}
-BF(M_0,M_1) = e^{\cal{K}}.\end{aligned}$$ Alternatively, you can
-interpret the strength of evidence in favor of $M_0$ using the $\cal{K}$
-and skip equation [LNbfFormula2]. In this case, we evaluate the
-$\cal{K}$ in favor of model $M_0$ against model $M_1$ so that:
+\end{equation}$$ 
 
-  -----------------------------------------------
-  if $\mathcal{K} > 1$, then model $M_0$ wins
-  if $\mathcal{K} < -1$, then model $M_1$ wins.
-  -----------------------------------------------
+Alternatively, you can directly interpret the strength of evidence in favor of $M_0$ in log
+space by comparing the values of $\cal{K}$ to the appropriate scale
+(Table {% ref bfTable %}, second column). In this case, we evaluate $\cal{K}$
+in favor of model $M_0$ against model $M_1$ so that:
 
-Thus, values of $\mathcal{K}$ around 0 indicate ambiguous support.
+> if $\mathcal{K} > 1$, model $M_0$ is preferred<br>
+> if $\mathcal{K} < -1$, model $M_1$ is preferred.
 
-Using the values you entered in Table [ssTable] and equation
-[LNbfFormula], calculate the ln-Bayes factors (using $\mathcal{K}$)
+Thus, values of $\mathcal{K}$ around 0 indicate that there is no
+preference for either model.
+
+Using the values you entered in Table {% ref ssTable %} and equation
+{% ref LNbfFormula %}, calculate the ln-Bayes factors (using $\mathcal{K}$)
 for the different model comparisons. Enter your answers in Table
-[bfTable] using the stepping-stone and the path-sampling estimates of
+{% ref bfTable %} using the stepping-stone and the path-sampling estimates of
 the marginal log likelihoods.
 
-l c c c c & &\
-& & & &\
-$M_0,M_1$ &
+{% figure bfTable %}
 
-& &
+ |                  **Model**                      |   **Path-Sampling**   |   **Stepping-Stone-Sampling**   |
+  ------------------------------------------------:|:---------------------:|:-------------------------------:|
+ | $M_0,M_1$                                       |                       |                                 |
+ |              Supported model?                   |                       |                                 |
 
-&\
-Supported model? &
-
-& &
-
-&\
-\
-
-[bfTable]
+{% figcaption %}
+Marginal likelihoods of the lobal molecular clock and uncorrelated lognormal models.
+{% endfigcaption %}
+{% endfigure %}
 
 Estimate the Topology and Branch Times
 --------------------------------------
@@ -725,7 +730,7 @@ In fact, we use the file monitor for saving the sampled chronograms to
 file. It is important that you *do not* save the sampled trees in the
 same file with other numerical parameters you would like to summarize.
 That is because tools for reading MCMC log files—like
-[Tracer](http://tree.bio.ed.ac.uk/software/tracer/) {% cite rambaut09 %}—cannot
+[Tracer](http://tree.bio.ed.ac.uk/software/tracer/) {% cite Rambaut2011 %} —cannot
 load files with non-numerical states. Therefore, you must save the
 sampled trees to a different file.
 
