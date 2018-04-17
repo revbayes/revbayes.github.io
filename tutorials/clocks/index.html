@@ -312,15 +312,12 @@ the <code class="highlighter-rouge">scripts</code> directory.</p>
 can be used as a starting tree or if there are nodes in the tree from
 the previous study that we wish to compare our estimates to. We will
 read in the tree estimated by <a href="#DosReis2012">(dos Reis et al. 2012)</a>.</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>T &lt;- readTrees("data/bears_dosReis.tre")[1]
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    T &lt;- readTrees("data/bears_dosReis.tre")[1]
 </code></pre></div></div>
-
 <p>From the tree we can initialize some useful variables. (These can also
 be created from the data matrix using the same methods.)</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_taxa &lt;- T.ntips()
-taxa &lt;- T.taxa()
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    n_taxa &lt;- T.ntips()
+    taxa &lt;- T.taxa()
 </code></pre></div></div>
 
 <h3 id="birth-death-parameters">Birth-Death Parameters</h3>
@@ -342,17 +339,15 @@ tutorial.</p>
 
 <p>Diversification ($d$) is the speciation rate ($\lambda$) minus the
 extinction rate ($\mu$): $d = \lambda - \mu$.</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>diversification ~ dnExponential(10.0) 
-moves[mvi++] = mvScale(diversification, lambda=1.0, tune=true, weight=3.0)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    diversification ~ dnExponential(10.0) 
+    moves[mvi++] = mvScale(diversification, lambda=1.0, tune=true, weight=3.0)
 </code></pre></div></div>
 
 <p><strong><em>Turnover</em></strong></p>
 
 <p>Turnover is: $r = \mu / \lambda$.</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>turnover ~ dnBeta(2.0, 2.0) 
-moves[mvi++] = mvSlide(turnover,delta=1.0,tune=true,weight=3.0)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    turnover ~ dnBeta(2.0, 2.0) 
+    moves[mvi++] = mvSlide(turnover,delta=1.0,tune=true,weight=3.0)
 </code></pre></div></div>
 
 <p><strong><em>Deterministic Nodes for Birth and Death Rates</em></strong></p>
@@ -495,19 +490,16 @@ moves[mvi++] = mvScale(clock_rate,lambda=0.5,tune=true,weight=5.0)
 
 <p>Specify the parameters of the GTR model and the moves to operate on
 them.</p>
-
-<p>sf ~ dnDirichlet(v(1,1,1,1))
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    sf ~ dnDirichlet(v(1,1,1,1))
     er ~ dnDirichlet(v(1,1,1,1,1,1))
     Q := fnGTR(er,sf)
     moves[mvi++] = mvSimplexElementScale(er, alpha=10.0, tune=true, weight=3.0)
-    moves[mvi++] = mvSimplexElementScale(sf, alpha=10.0, tune=true, weight=3.0)</p>
-
-<p>And instantiate the phyloCTMC.</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phySeq ~ dnPhyloCTMC(tree=timetree, Q=Q, branchRates=clock_rate, nSites=n_sites, type="DNA")
-phySeq.clamp(D)
+    moves[mvi++] = mvSimplexElementScale(sf, alpha=10.0, tune=true, weight=3.0)
 </code></pre></div></div>
-
+<p>And instantiate the phyloCTMC.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    phySeq ~ dnPhyloCTMC(tree=timetree, Q=Q, branchRates=clock_rate, nSites=n_sites, type="DNA")
+    phySeq.clamp(D)
+</code></pre></div></div>
 <p>This is all we will include in the global molecular clock model file.</p>
 
 <p>Save and close the file called in the <code class="highlighter-rouge">scripts</code> directory.</p>
