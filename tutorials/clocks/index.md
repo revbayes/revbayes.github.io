@@ -12,7 +12,7 @@ order: 1
 index: true
 software: true
 title-old: RB_ClockModels_Tutorial
-redirect: true
+redirect: false
 ---
 
 <!-- category: Standard -->
@@ -166,14 +166,15 @@ Sometimes it is convienent to read in a tree from a previous study. This
 can be used as a starting tree or if there are nodes in the tree from
 the previous study that we wish to compare our estimates to. We will
 read in the tree estimated by {% cite DosReis2012 %}.
-
+```
     T <- readTrees("data/bears_dosReis.tre")[1]
-
+```
 From the tree we can initialize some useful variables. (These can also
 be created from the data matrix using the same methods.)
-
+```
     n_taxa <- T.ntips()
     taxa <- T.taxa()
+```
 
 ### Birth-Death Parameters
 
@@ -194,16 +195,18 @@ tutorial.
 
 Diversification ($d$) is the speciation rate ($\lambda$) minus the
 extinction rate ($\mu$): $d = \lambda - \mu$.
-
+```
     diversification ~ dnExponential(10.0) 
     moves[mvi++] = mvScale(diversification, lambda=1.0, tune=true, weight=3.0)
+```
 
 ***Turnover***
 
 Turnover is: $r = \mu / \lambda$.
-
+```
     turnover ~ dnBeta(2.0, 2.0) 
     moves[mvi++] = mvSlide(turnover,delta=1.0,tune=true,weight=3.0)
+```
 
 ***Deterministic Nodes for Birth and Death Rates***
 
@@ -340,18 +343,18 @@ The clock-rate parameter is a stochastic node from a gamma distribution.
 
 Specify the parameters of the GTR model and the moves to operate on
 them.
-
-   sf ~ dnDirichlet(v(1,1,1,1))
+```
+    sf ~ dnDirichlet(v(1,1,1,1))
     er ~ dnDirichlet(v(1,1,1,1,1,1))
     Q := fnGTR(er,sf)
     moves[mvi++] = mvSimplexElementScale(er, alpha=10.0, tune=true, weight=3.0)
     moves[mvi++] = mvSimplexElementScale(sf, alpha=10.0, tune=true, weight=3.0)
-
+```
 And instantiate the phyloCTMC.
-
+```
     phySeq ~ dnPhyloCTMC(tree=timetree, Q=Q, branchRates=clock_rate, nSites=n_sites, type="DNA")
     phySeq.clamp(D)
-
+```
 This is all we will include in the global molecular clock model file.
 
 Save and close the file called in the `scripts` directory.
