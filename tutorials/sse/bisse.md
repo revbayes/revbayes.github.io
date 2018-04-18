@@ -1,13 +1,12 @@
 ---
-title: Co-estimating state-dependent diversification rates and ancestral states in RevBayes
+title: State-dependent diversification rate estimation in RevBayes
 subtitle: Inference using the binary state-dependent speciation and extinction (BiSSE) branching process
 authors:  Sebastian Höhna, Will Freyman, and Emma Goldberg
-level: 2
+level: 4
 prerequisites:
 - mcmc_archery
 - clocks
-- diversification_rate_sse/bisse-intro
-- diversification_rate_sse/bisse
+- sse/bisse-intro
 exclude_files: 
 - data/primates_biogeo.tre
 - data/primates_biogeo.tsv
@@ -21,8 +20,8 @@ index: false
 {% section Introduction | introduction %}
 
 This tutorial describes how to specify character state-dependent
-branching process models in RevBayes while also estimating ancestral states. For more details on the theory behind these models, please see the 
-introductory page: {% page_ref diversification_rate_sse/bisse-intro %}.
+branching process models in RevBayes. For more details on the theory behind these models, please see the 
+introductory page: {% page_ref sse/bisse-intro %}.
 
 This tutorial will explain how to fit the BiSSE model
 to data using Markov chain Monte Carlo (MCMC). RevBayes is a powerful
@@ -39,7 +38,12 @@ We provide the data files which we will use in this tutorial:
     randomly resolved the polytomies using the method of {% citet Kuhn2011 %}.
 -   [primates_activity_period.nex](data/primates_activity_period.nex):
     A file with the coded character states for primate species activity time. This character has just two states: `0` = diurnal and `1` = nocturnal.
+-   [primates_solitariness.nex](data/primates_solitariness.nex):
+    A file with the coded character states for primate species social system type. This character has just two states: `0` = group living and `1` = solitary.
 
+<!-- -   [primates_mating_system.nex](data/primates_mating_system.nex):
+    A file with the coded character states for primate species mating-system type. This character has four states: `0` = monogamy, `1` = polygyny, `2` = polygynandry, and `3` = polyandry.
+ -->
 
 > Create a new directory on your computer called `RB_bisse_tutorial`.
 > 
@@ -301,14 +305,6 @@ run.
 
     monitors[mni++] = mnScreen(printgen=100, rate_12, rate_21, speciation, extinction)
 
-_Monitoring Ancestral States_
-
-An important additional monitor is one that records the state of each internal node in the tree.
-The file produced by this monitor can be summarized so that we can visualize the estimates of ancestral states.
-
-    monitors[mni++] = mnJointConditionalAncestralState(tree=timetree, cdbdp=timetree, type="Standard", printgen=10, withTips=true, withStartStates=false, filename="output/anc_states_primates_BiSSE.log")
-
-
 #### **Initializing and Running the MCMC Simulation**
 
 With a fully specified model, a set of monitors, and a set of moves, we
@@ -326,118 +322,6 @@ values from the posterior distribution.
 Now, run the MCMC:
 
     mymcmc.run(generations=10000)
-
-{% subsection Summarize Sampled Ancestral States | subsec_ancsum %}
-
-Before we can visualize the estimated ancestral states, we have to summarize the values in 
-RevBayes. 
-
-To do this, we first have to read in the ancestral state log file. This uses a specific function called `readAncestralStateTrace()`.
-
-    anc_states = readAncestralStateTrace("output/anc_states_primates_BiSSE.log")
-
-Now, we can write an annotated tree to a file. This function will write a tree with each
-node labeled with the maximum a posteriori (MAP) state and the posterior probabilities for each
-state. 
-
-    anc_tree = ancestralStateTree(tree=T, ancestral_state_trace_vector=anc_states, include_start_states=false, file="output/anc_states_primates_BiSSE_results.tree", burnin=0, summary_statistic="MAP", site=0)
-
-
-{% subsection Visualize Estimated Ancestral States | subsec_ancviz %}
-
-To visualize the posterior probabilities of ancestral states, we will use the `ggtree` package
-in R {% cite Yu2017ggtree %}. 
-
-
->Open R.
-{:.instruction}
-
-
-
-First, install and load the `ggtree` package:
-
-<pre>
-source("https://bioconductor.org/biocLite.R")
-biocLite("ggtree")
-library(ggtree)
-</pre>
-
-Then we can read in our annotated tree file:
-
-<pre>
-tf = "output/anc_states_primates_BiSSE_results.tree"
-tree <- read.beast(tf)
-</pre>
-
-Extract the node data from the tree:
-
-<pre>
-tree_data <- fortify(tree)
-</pre>
-
-In `ggtree`, we only want the information for the internal nodes:
-
-<pre>
-col_dat <- tree_data[,c("anc_state_1","anc_state_1_pp","anc_state_2_pp","node")]
-node_col_dat <- col_dat[234:465,]
-</pre>
-
-The ancestral state summary method in RevBayes writes the information to the following values:
-
-* `anc_state_1`: the maximum a posteriori state for the node. For this dataset, the node will have the value `0` or `1`.
-* `anc_state_1_pp`: the posterior probability of the state in `anc_state_1`. 
-* `anc_state_2_pp`: the posterior probability for the other state, i.e., for this _binary_ character `anc_state_2_pp` = 1 - `anc_state_1_pp`.
-
-To get the node data into a format that we can plot on the tree, we have to loop have a column
-where the values equal the posterior probability for state `0` and another column for the
-posterior probability of state `1` for each node. We can then put these data into a dataframe.
-
-<pre>
-pp_st1 <- rep(0,nrow(node_col_dat))
-pp_st2 <- rep(0,nrow(node_col_dat))
-for (row in 1:nrow(node_col_dat)){
-  state <- node_col_dat[row, "anc_state_1"]
-  state_pp <- node_col_dat[row, "anc_state_1_pp"]
-  if(state == 0){
-    pp_st1[row] <- state_pp
-    pp_st2[row] <- 1.0 - state_pp
-  }
-  else{
-    pp_st2[row] <- state_pp
-    pp_st1[row] <- 1.0 - state_pp
-  }
-}
-
-dat <- data.frame(pp_st1=pp_st1,pp_st2=pp_st2,node=node_col_dat$node)
-</pre>
-
-The `ggtree` package uses a function called `nodepie()` to generate a set of pie charts
-that will decorate the nodes.
-
-<pre>
-pies <- nodepie(dat,cols=1:2,alpha = 0.6)
-</pre>
-
-Now create a `ggtree` object and plot the tree.
-
-<pre>
-gt <- ggtree(tree)
-gt
-</pre>
-
-Using the `inset()` function, add the pie charts to the nodes.
-
-<pre>
-inset(gt,pies)
-</pre>
-
-{% figure ggtree %}
-<img src="figures/ggtree.png" width="75%">
-{% figcaption %}
-A visualization of the ancestral states estimated under the BiSSE model. This plot was generated using `ggtree` {% cite Yu2017ggtree %}.
-{% endfigcaption %}
-{% endfigure %}
-
 
 {% subsection Summarizing Parameter Estimates | subsec_summary %}
 
