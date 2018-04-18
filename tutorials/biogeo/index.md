@@ -2,10 +2,12 @@
 title: Historical biogeography
 subtitle: Phylogeographic analysis under the dispersal-extinction-cladogenesis process
 authors:  Michael J. Landis
-level: 2
+level: 6
 prerequisites:
 - intro
-- archery
+- intro_rev
+- mcmc_archery
+- mcmc_binomial
 index: true
 title-old: RB_Biogeography_Tutorial
 redirect: true
@@ -47,19 +49,6 @@ The Historical Biogeography guide contains several tutorials
 
 -   Section [sec:bg_phylo]: Biogeographic dating using DEC
 
-Recommended tutorials {#recommended-tutorials .unnumbered}
----------------------
-
-The Historical Biogeography tutorials assume the reader is familiar with
-the content covered in the following RevBayes tutorials
-
--   **Rev Basics**
-
--   **Molecular Models of Character Evolution**
-
--   **Running and Diagnosing an MCMC Analysis**
-
--   **Divergence Time Estimation and Node Calibrations**
 
 Overview of the Dispersal-Extinction-Cladogenesis model {#sec:bg_intro2}
 =======================================================

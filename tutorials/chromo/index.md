@@ -2,7 +2,7 @@
 title: Chromosome Evolution
 subtitle: Phylogenetic analysis with ChromoSSE models
 authors:  William A. Freyman and Sebastian Höhna
-level: 2
+level: 4
 prerequisites:
 - intro
 index: true
