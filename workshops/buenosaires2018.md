@@ -15,7 +15,7 @@ instructors:
 - <a href="mailto:f.thon@student.rug.nl?subject=RevBayes%20Workshop%20Buenos%20Aires%202018">Femke Thon</a>
 
 venue:
-- The address of the MACN (Museo Argentino de Ciencias Naturales) is <a href="https://www.google.com/maps/place/Av.+Ángel+Gallardo+470,+C1405DJR+CABA/@-34.6048398,-58.4399141,17z/data=!3m1!4b1!4m5!3m4!1s0x95bcca6d73459b81:0xf340c0225cc7bc13!8m2!3d-34.6048398!4d-58.4377254" title="Map">Angel Gallardo 470</a>. The closest Metro station is Angel Gallardo, from the B line (<a href="/revbayes-site/images/Buenos_Aires_MACN_Location.png" alt="Metro" height="420" width="420">Small Map</a>). A security officer will be at this staff <a href="/revbayes-site/images/Buenos_Aires_MACN_Entrance.png" alt="MACN Entrance" height="420" width="420">entrance</a>. He will give you directions to get to the "Salón de Actos", where the workshop will take place. It is located on the first floor, next to the Museología department. If you have any issues to get in, please contact us +54 91144341130 (Luis Palazzesi)
+- The address of the MACN (Museo Argentino de Ciencias Naturales) is <a href="https://www.google.com/maps/place/Av.+Ángel+Gallardo+470,+C1405DJR+CABA/@-34.6048398,-58.4399141,17z/data=!3m1!4b1!4m5!3m4!1s0x95bcca6d73459b81:0xf340c0225cc7bc13!8m2!3d-34.6048398!4d-58.4377254" title="Map">Angel Gallardo 470</a>. The closest Metro station is Angel Gallardo, from the B line (<a href="/revbayes-site/assets/img/Buenos_Aires_MACN_Location.png" alt="Metro" height="420" width="420">Small Map</a>). A security officer will be at this staff <a href="/revbayes-site/assets/img/Buenos_Aires_MACN_Entrance.png" alt="MACN Entrance" height="420" width="420">entrance</a>. He will give you directions to get to the "Salón de Actos", where the workshop will take place. It is located on the first floor, next to the Museología department. If you have any issues to get in, please contact us +54 91144341130 (Luis Palazzesi)
 
 
 software:
@@ -172,7 +172,7 @@ schedule:
   - starttime: 2018-04-18T13:00:00Z
     endtime: 2018-04-18T15:00:00Z
     topic: Practical on diversification rate estimation (Part I)
-    lesson: diversification_rate_simple
+    lesson: div
     instructors: 
     - Luis Palazzesi
     - Femke Thon
@@ -187,7 +187,7 @@ schedule:
   - starttime: 2018-04-18T15:15:00Z
     endtime: 2018-04-18T17:30:00Z
     topic: Practical on diversification rate estimation (Part II)
-    lesson: diversification_rate_simple
+    lesson: div
     instructors: 
     - Luis Palazzesi
     - Femke Thon

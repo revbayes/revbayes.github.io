@@ -8,7 +8,7 @@ prerequisites:
 - intro_rev
 - mcmc_archery
 - mcmc_binomial
-- diversification_rate_simple
+- div
 order: 0
 index: true
 software: true
