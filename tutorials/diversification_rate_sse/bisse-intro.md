@@ -4,7 +4,7 @@ subtitle: An introduction to inference using state-dependent speciation and exti
 authors:  Sebastian Höhna, Will Freyman, and Emma Goldberg
 level: 2
 prerequisites:
-  - archery
+  - mcmc_archery
   - clocks
 exclude_files:
   - data/primates_tree.nex

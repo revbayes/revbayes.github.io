@@ -4,10 +4,10 @@ subtitle: Inference using the binary state-dependent speciation and extinction (
 authors:  Sebastian Höhna, Will Freyman, and Emma Goldberg
 level: 2
 prerequisites:
-- archery
+- mcmc_archery
 - clocks
-- sse/bisse-intro
-- sse/bisse
+- diversification_rate_sse/bisse-intro
+- diversification_rate_sse/bisse
 exclude_files: 
 - data/primates_biogeo.tre
 - data/primates_biogeo.tsv
@@ -22,7 +22,7 @@ index: false
 
 This tutorial describes how to specify character state-dependent
 branching process models in RevBayes while also estimating ancestral states. For more details on the theory behind these models, please see the 
-introductory page: {% page_ref sse/bisse-intro %}.
+introductory page: {% page_ref diversification_rate_sse/bisse-intro %}.
 
 This tutorial will explain how to fit the BiSSE model
 to data using Markov chain Monte Carlo (MCMC). RevBayes is a powerful
