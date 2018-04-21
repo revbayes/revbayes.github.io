@@ -2,8 +2,7 @@
 layout: workshop
 title: RevBayes Demonstration and Mini Workshop
 location: Montana State University, Bozeman, MT USA
-startdate: 2018-04-11
-enddate: 2018-04-12
+startdate: 2018-04-12
 description: 
 - This workshop will introduce RevBayes and the Rev language. We will focus on the basics of the software and hierarchical Bayesian modeling. We will work together through one tutorial. I will walk through setting up a phylogenetic analysis of fossil and molecular data. Then we will discuss the other models and methods available in RevBayes.
 instructors:
