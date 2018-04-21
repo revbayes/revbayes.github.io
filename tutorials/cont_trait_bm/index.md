@@ -2,7 +2,7 @@
 title: Continuous trait evolution and Brownian motion
 subtitle: Phylogenetic analysis of continous characters and the comparative method
 authors:  Nicolas Lartillot and Sebastian Höhna
-level: 1
+level: 5
 prerequisites:
 - intro
 index: true

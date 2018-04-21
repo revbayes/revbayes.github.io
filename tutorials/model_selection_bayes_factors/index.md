@@ -5,23 +5,24 @@ authors:  Sebastian Höhna, Michael J Landis, Tracy A Heath and Brian R Moore
 level: 1
 prerequisites:
 - intro
+- intro_rev
+- mcmc_archery
+- mcmc_binomial
 index: true
 title-old: RB_BayesFactor_Tutorial
-redirect: true
+redirect: false
 ---
-
-
 
 
 Overview
 ========
+{:.section}
 
 This tutorial provides the third protocol from our recent publication
-{% cite Hoehna2017a %}. The first protocol is described in the [Substitution
-model
-tutorial](https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_CTMC_Tutorial/RB_CTMC_Tutorial.pdf)
-and the second protocol is described in the [Partitioned data analysis
-tutorial](https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Partition_Tutorial/RB_Partition_Tutorial.pdf).
+{% cite Hoehna2017a %}. The first protocol is described in the 
+[Substitution model tutorial]({{ base.url }}/tutorials/ctmc/)
+and the second protocol is described in the 
+[Partitioned data analysis tutorial](https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Partition_Tutorial/RB_Partition_Tutorial.pdf).
 
 This tutorial demonstrates some general principles of Bayesian model
 comparison, which is based on estimating the marginal likelihood of
@@ -29,46 +30,10 @@ competing models and then comparing their relative fit to the data using
 Bayes factors. We consider the specific case of calculating Bayes
 factors to select among different substitution models.
 
-Requirements
-------------
-
-We assume that you have read and hopefully completed the following
-tutorials:
-
--   [Getting
-    started](https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Getting_Started/RB_Getting_Started.pdf)
-
--   [`Rev`
-    basics](https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Intro_Tutorial/RB_Intro_Tutorial.pdf)
-
--   [`Rev`
-    syntax](https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Rev_Tutorial/RB_Rev_Tutorial.pdf)
-
--   [Substitution
-    models](https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_CTMC_Tutorial/RB_CTMC_Tutorial.pdf)
-
-Note that the [`Rev` basics
-tutorial](https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Intro_Tutorial/RB_Intro_Tutorial.pdf)
-introduces the basic syntax of `Rev` but does not cover any phylogenetic
-models. We tried to keep this tutorial very basic and introduce all the
-language concepts and theory on the way. You may only need the [`Rev`
-syntax
-tutorial](https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Rev_Tutorial/RB_Rev_Tutorial.pdf)
-for a more in-depth discussion of concepts in `Rev`.
-
-Data and files
-==============
-
-We provide the data file that we will use in this tutorial. Of course,
-you may want to use your own dataset instead. In the `data` folder, you
-will find the following file:
-
--   `primates_and_galeopterus_cytb.nex`: Alignment of the *cytochrome
-    b* subunit from 23 primates representing 14 of the 16 families
-    (*Indriidae* and *Callitrichidae* are missing).
 
 Introduction
 ============
+{:.section}
 
 For most sequence alignments, several (possibly many) substitution
 models of varying complexity are plausible *a priori*. We therefore need
@@ -76,43 +41,63 @@ a way to objectively identify the model that balances estimation bias
 and inflated error variance associated with under- and
 over-parameterized models, respectively. Increasingly, model selection
 is based on *Bayes factors* [*e.g.*, 
-{% citet Suchard2001 Lartillot2006 Xie2011 Baele2012 Baele2013 %}], which
+{% cite Suchard2001 Lartillot2006 Xie2011 Baele2012 Baele2013 %}], which
 involves first calculating the marginal likelihood of each candidate
 model and then comparing the ratio of the marginal likelihoods for the
 set of candidate models.
 
 Given two models, $M_0$ and $M_1$, the Bayes-factor comparison assessing
 the relative fit of each model to the data, $BF(M_0,M_1)$, is:
-$$BF(M_0,M_1) = \frac{\mbox{posterior odds}}{\mbox{prior odds}}.$$ The
-posterior odds is the posterior probability of $M_0$ given the data,
+
+$$BF(M_0,M_1) = \frac{\mbox{posterior odds}}{\mbox{prior odds}}.$$ 
+
+The posterior odds is the posterior probability of $M_0$ given the data,
 $\mathbf X$, divided by the posterior odds of $M_1$ given the data:
+
 $$\mbox{posterior odds} = \frac{\mathbb{P}(M_0 \mid \mathbf X)}{\mathbb{P}(M_1 \mid \mathbf X)},$$
+
 and the prior odds is the prior probability of $M_0$ divided by the
 prior probability of $M_1$:
-$$\mbox{prior odds} = \frac{\mathbb{P}(M_0)}{\mathbb{P}(M_1)}.$$ Thus,
-the Bayes factor measures the degree to which the data alter our belief
+
+$$\mbox{prior odds} = \frac{\mathbb{P}(M_0)}{\mathbb{P}(M_1)}.$$ 
+
+Thus, the Bayes factor measures the degree to which the data alter our belief
 regarding the support for $M_0$ relative to $M_1$ {% cite Lavine1999 %}:
-$$\begin{aligned}
-\label{BFeq1}
-BF(M_0,M_1) = \frac{\mathbb{P}(M_0 \mid \mathbf X, \theta_0)}{\mathbb{P}(M_1 \mid \mathbf X, \theta_1)} \div \frac{\mathbb{P}(M_0)}{\mathbb{P}(M_1)}. \end{aligned}$$
+
+$$\begin{equation}
+BF(M_0,M_1) = \frac{\mathbb{P}(M_0 \mid \mathbf X, \theta_0)}{\mathbb{P}(M_1 \mid \mathbf X, \theta_1)} \div \frac{\mathbb{P}(M_0)}{\mathbb{P}(M_1)}. 
+\tag{Bayes Factor}\label{eq:BF}
+\end{equation}$$
+
 Note that interpreting Bayes factors involves some subjectivity. That
 is, it is up to *you* to decide the degree of your belief in $M_0$
 relative to $M_1$. Despite the absence of an absolutely objective
 model-selection threshold, we can refer to the scale [outlined by
-@Jeffreys1961] that provides a "rule-of-thumb" for interpreting these
-measures (Table [bftable]).
+{%cite Jeffreys1961 %}] that provides a "rule-of-thumb" for interpreting these
+measures ({% ref tab_bf %}).
 
-l c c c & & &\
-Negative (supports $M_1$) & $<1$ & $<0$ & $<0$\
-Barely worth mentioning & $1$ to $3.2$ & $0$ to $1.16$ & $0$ to $0.5$\
-Substantial & $3.2$ to $10$ & $1.16$ to $2.3$ & $0.5$ to $1$\
-Strong & $10$ to $100$ & $2.3$ to $4.6$ & $1$ to $2$\
-Decisive& $>100$ & $>4.6$ & $>2$\
+{% figure tab_bf %}
+ |   **Strength of evidence**   |   BF($M_0$,$M_1$)**  | **log(BF($M_0$,$M_1$))** | **$log_{10}(BF(M_0$,$M_1))$**  |
+  -----------------------------:|:--------------------:|:------------------------:|:------------------------------:|
+ |   Negative (supports $M_1$)  |         $<1$         |            $<0$          |             $<0$               |
+ |    Barely worth mentioning   |     $1$ to $3.2$     |         $0$ to $1.16$    |          $0$ to $0.5$          |
+ |          Substantial         |     $3.2$ to $10$    |      $1.16$ to $2.3$     |        $0.5$ to $1$            |
+ |            Strong            |    $10$ to $100$     |      $2.3$  to $4.6$     |        $1$ to $2$              |
+ |           Decisive           |        $>100$        |            $>4.6$        |             $>2$               |
+
+{% figcaption %}
+The scale for interpreting Bayes factors by Harold {%cite Jeffreys1961 %}.
+{% endfigcaption %}
+{% endfigure %}
 
 Unfortunately, it is generally not possible to directly calculate the
 posterior odds to prior odds ratios. However, we can further define the
-posterior odds ratio as: $$\begin{aligned}
-\frac{\mathbb{P}(M_0 \mid \mathbf X)}{\mathbb{P}(M_1 \mid \mathbf X)} = \frac{\mathbb{P}(M_0)}{\mathbb{P}(M_1)} \frac{\mathbb{P}(\mathbf X \mid M_0)}{\mathbb{P}(\mathbf X \mid M_1)},\end{aligned}$$
+posterior odds ratio as: 
+
+$$\begin{aligned}
+\frac{\mathbb{P}(M_0 \mid \mathbf X)}{\mathbb{P}(M_1 \mid \mathbf X)} = \frac{\mathbb{P}(M_0)}{\mathbb{P}(M_1)} \frac{\mathbb{P}(\mathbf X \mid M_0)}{\mathbb{P}(\mathbf X \mid M_1)},
+\end{aligned}$$
+
 where $\mathbb{P}(\mathbf X \mid M_i)$ is the *marginal likelihood* of
 the data (this may be familiar to you as the denominator of Bayes
 Theorem, which is variously referred to as the *model evidence* or
@@ -120,21 +105,28 @@ Theorem, which is variously referred to as the *model evidence* or
 probability of the observed data ($\mathbf X$) under a given model
 ($M_i$) that is averaged over all possible values of the parameters of
 the model ($\theta_i$) with respect to the prior density on $\theta_i$
-$$\begin{aligned}
-\label{margeLike}
-\mathbb{P}(\mathbf X \mid M_i) = \int \mathbb{P}(\mathbf X \mid \theta_i) \mathbb{P}(\theta_i)dt.\end{aligned}$$
+
+$$\begin{equation}
+\mathbb{P}(\mathbf X \mid M_i) = \int \mathbb{P}(\mathbf X \mid \theta_i) \mathbb{P}(\theta_i)dt.
+\tag{Marginal Likelihood}\label{eq:marginal_likelihood}
+\end{equation}$$
+
 This makes it clear that more complex (parameter-rich) models are
 penalized by virtue of the associated prior: each additional parameter
 entails integration of the likelihood over the corresponding prior
-density. If you refer back to equation [BFeq1], you can see that, with
+density. If you refer back to equation \eqref{eq:BF}, you can see that, with
 very little algebra, the ratio of marginal likelihoods is equal to the
-Bayes factor: $$\begin{aligned}
-\label{bfFormula}
-BF(M_0,M_1) = \frac{\mathbb{P}(\mathbf X \mid M_0)}{\mathbb{P}(\mathbf X \mid M_1)} = \frac{\mathbb{P}(M_0 \mid \mathbf X, \theta_0)}{\mathbb{P}(M_1 \mid \mathbf X, \theta_1)} \div \frac{\mathbb{P}(M_0)}{\mathbb{P}(M_1)}. \end{aligned}$$
+Bayes factor: 
+
+$$\begin{equation}
+BF(M_0,M_1) = \frac{\mathbb{P}(\mathbf X \mid M_0)}{\mathbb{P}(\mathbf X \mid M_1)} = \frac{\mathbb{P}(M_0 \mid \mathbf X, \theta_0)}{\mathbb{P}(M_1 \mid \mathbf X, \theta_1)} \div \frac{\mathbb{P}(M_0)}{\mathbb{P}(M_1)}. 
+\label{eq:bf_Formula}
+\end{equation}$$
+
 Therefore, we can perform a Bayes factor comparison of two models by
 calculating the marginal likelihood for each one. Alas, exact solutions
 for calculating marginal likelihoods are not known for phylogenetic
-models (see equation [margeLike]), thus we must resort to numerical
+models (see equation \eqref{eq:marginal_likelihood}), thus we must resort to numerical
 integration methods to estimate or approximate these values. In this
 exercise, we will estimate the marginal likelihood for each partition
 scheme using both the stepping-stone {% cite Xie2011 Fan2011 %} and path
@@ -142,6 +134,7 @@ sampling estimators {% cite Lartillot2006 Baele2012 %}.
 
 Substitution Models
 -------------------
+{:.section}
 
 The models we use here are equivalent to the models described in the
 previous exercise on substitution models (continuous time Markov
@@ -150,17 +143,14 @@ Specifically, you will need to specify the following substitution
 models:
 
 -   Jukes-Cantor (JC) substitution model {% cite Jukes1969 %}
-
 -   Hasegawa-Kishino-Yano (HKY) substitution model {% cite Hasegawa1985 %}
-
 -   General-Time-Reversible (GTR) substitution model {% cite Tavare1986 %}
-
 -   Gamma (+G) model for among-site rate variation {% cite Yang1994a %}
-
 -   Invariable-sites (+I) model {% cite Hasegawa1985 %}
 
 Estimating the Marginal Likelihood
 ----------------------------------
+{:.section}
 
 We will estimate the marginal likelihood of a given model using a
 'stepping-stone' (or 'path-sampling') algorithm. These algorithms are
@@ -225,18 +215,12 @@ requires:
 1.  Loading the data and retrieving useful variables about it
     (*e.g.*, number of sequences and
     taxon names).
-
 2.  Specifying the instantaneous-rate matrix of the substitution model.
-
 3.  Specifying the tree model including branch-length variables.
-
 4.  Creating a random variable for the sequences that evolved under
     the `PhyloCTMC`.
-
 5.  Clamping the data.
-
 6.  Creating a model object.
-
 7.  Specifying the moves for parameter updates.
 
 The following procedure for estimating marginal likelihoods is valid for
@@ -245,46 +229,46 @@ models. First, we create the variable containing the power-posterior
 analysis. This requires that we provide a model and vector of moves, as
 well as an output file name. The `cats` argument sets the number of
 stepping stones.
-
+```
     pow_p = powerPosterior(mymodel, moves, monitors, "output/model1.out", cats=50) 
-
+```
 We can start the power-posterior analysis by first burning in the chain
 and and discarding the first 10000 states. This will help ensure that
 analysis starts from a region of high posterior probability, rather than
 from some random point.
-
+```
     pow_p.burnin(generations=10000,tuningInterval=1000)
-
+```
 Now execute the run with the `.run()` function:
-
+```
     pow_p.run(generations=1000)  
-
+```
 Once the power posteriors have been saved to file, create a stepping
 stone sampler. This function can read any file of power posteriors and
 compute the marginal likelihood using stepping-stone sampling.
-
+```
     ss = steppingStoneSampler(file="output/model1.out", powerColumnName="power", likelihoodColumnName="likelihood")
-
+```
 These commands will execute a stepping-stone simulation with 50 stepping
 stones, sampling 1000 states from each step. Compute the marginal
 likelihood under stepping-stone sampling using the member function
 `marginal()` of the `ss` variable and record the value in Table
 [tab:ml_cytb].
-
+```
     ss.marginal() 
-
+```
 Path sampling is an alternative to stepping-stone sampling and also
 takes the same power posteriors as input.
-
+```
     ps = pathSampler(file="output/model1.out", powerColumnName="power", likelihoodColumnName="likelihood")
-
+```
 Compute the marginal likelihood under stepping-stone sampling using the
 member function `marginal()` of the `ps` variable and record the value
 in Table [tab:ml_cytb].
-
+```
     ps.marginal() 
+```
 
-\
 As an example we provide the file
 **RevBayes_scripts/marginalLikelihood_JukesCantor.Rev**.
 
@@ -297,65 +281,40 @@ clock models and birth-death models, as well.
 
 Exercises
 ---------
+{:.subsection}
 
 -   Compute the marginal likelihoods of the *cytb* alignment for the
     following substitution models:
-
-    -   Jukes-Cantor (JC) substitution model
-
-    -   Hasegawa-Kishino-Yano (HKY) substitution model
-
-    -   General-Time-Reversible (GTR) substitution model
-
-    -   GTR with gamma distributed-rate model (GTR+G)
-
-    -   GTR with invariable-sites model (GTR+I)
-
-    -   GTR+I+G model
-
+    1.  Jukes-Cantor (JC) substitution model
+    2.  Hasegawa-Kishino-Yano (HKY) substitution model
+    3.  General-Time-Reversible (GTR) substitution model
+    4.  GTR with gamma distributed-rate model (GTR+G)
+    5.  GTR with invariable-sites model (GTR+I)
+    6.  GTR+I+G model
 -   Enter the marginal likelihood estimate for each model in the
     corresponding cell of Table [tab:ml_cytb].
-
 -   Which is the best fitting substitution model?
 
-l c c c c & &\
-& & & &\
-JC ($M_1$) &
+{% figure tab_ml_subst_models %}
 
-& &
+ |       **Model**        |   **Path-Sampling**   |   **Stepping-Stone-Sampling**   |
+  -----------------------:|:---------------------:|:-------------------------------:|
+ |        JC ($M_1$)      |                       |                                 |
+ |       HKY ($M_2$)      |                       |                                 |
+ |       GTR ($M_3$)      |                       |                                 |
+ |  GTR+$\Gamma$ ($M_4$)  |                       |                                 |
+ |      GTR+I ($M_5$)     |                       |                                 |
+ | GTR+$\Gamma$+I ($M_6$) |                       |                                 |
 
-&\
-HKY ($M_2$) &
+{% figcaption %}
+Marginal likelihoods for different substitution models.
+{% endfigcaption %}
+{% endfigure %}
 
-& &
-
-&\
-GTR ($M_3$) &
-
-& &
-
-&\
-GTR+$\Gamma$ ($M_4$) &
-
-& &
-
-&\
-GTR+I ($M_5$) &
-
-& &
-
-&\
-GTR+$\Gamma$+I ($M_6$) &
-
-& &
-
-&\
-\
-
-[tab:ml_cytb]
 
 Computing Bayes Factors and Model Selection
 ===========================================
+{:.section}
 
 Now that we have estimates of the marginal likelihood for each of our
 the candidate substitution models, we can evaluate their relative fit to
@@ -367,29 +326,29 @@ small to be held in computer memory. Accordingly, we need to use a
 different form of equation [bfFormula] to calculate the ln-Bayes
 factor (we will denote this value $\mathcal{K}$): 
 
-$$\begin{aligned}
+$$\begin{equation}
+\mathcal{K}=\ln[BF(M_0,M_1)] = \ln[\mathbb{P}(\mathbf X \mid M_0)]-\ln[\mathbb{P}(\mathbf X \mid M_1)],
 \label{LNbfFormula}
-\mathcal{K}=\ln[BF(M_0,M_1)] = \ln[\mathbb{P}(\mathbf X \mid M_0)]-\ln[\mathbb{P}(\mathbf X \mid M_1)],\end{aligned}$$
+\end{equation}$$
 
 where $\ln[\mathbb{P}(\mathbf X \mid M_0)]$ is the *marginal lnL*
 estimate for model $M_0$. The value resulting from equation
 [LNbfFormula] can be converted to a raw Bayes factor by simply taking
 the exponent of $\cal{K}$ 
 
-$$\begin{aligned}
+$$
+\begin{equation}
+BF(M_0,M_1) = e^{\cal{K}}.
 \label{LNbfFormula2}
-BF(M_0,M_1) = e^{\cal{K}}.\end{aligned}$$ 
+\end{equation}$$ 
 
-Alternatively, you can
-directly interpret the strength of evidence in favor of $M_0$ in log
+Alternatively, you can directly interpret the strength of evidence in favor of $M_0$ in log
 space by comparing the values of $\cal{K}$ to the appropriate scale
 (Table [bftable], second column). In this case, we evaluate $\cal{K}$
 in favor of model $M_0$ against model $M_1$ so that:
 
-  --------------------------------------------------
-  if $\mathcal{K} > 1$, model $M_0$ is preferred
-  if $\mathcal{K} < -1$, model $M_1$ is preferred.
-  --------------------------------------------------
+> if $\mathcal{K} > 1$, model $M_0$ is preferred<br>
+> if $\mathcal{K} < -1$, model $M_1$ is preferred.
 
 Thus, values of $\mathcal{K}$ around 0 indicate that there is no
 preference for either model.
@@ -404,6 +363,7 @@ log-likelihoods.
 
 For your consideration...
 =========================
+{:.section}
 
 In this tutorial you have learned how to use RevBayes to assess the
 *relative* fit of a pool of candidate substitution models to a given
@@ -417,6 +377,7 @@ proceeding along these lines, which we briefly mention below.
 
 Accommodating Model Uncertainty
 -------------------------------
+{:.subsection}
 
 In some or many situations the number of possible models to compare is
 large, *e.g.*, choosing all possible
@@ -435,6 +396,7 @@ RevBayes in a separate tutorial, RB_ModelAveraging_Tutorial.
 
 Assessing Model Adequacy
 ------------------------
+{:.subsection}
 
 In this tutorial, we used Bayes factors to assess the fit of various
 substitution models to our sequence data, effectively establishing the

@@ -4,7 +4,7 @@ subtitle: Inference using the binary state-dependent speciation and extinction (
 authors:  Sebastian Höhna, Will Freyman, and Emma Goldberg
 level: 2
 prerequisites:
-- archery
+- mcmc_archery
 - clocks
 - sse/bisse-intro
 - sse/bisse

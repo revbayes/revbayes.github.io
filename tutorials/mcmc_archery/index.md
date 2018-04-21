@@ -11,8 +11,9 @@ title-old: RB_MCMC_Archery_Tutorial
 redirect: false
 ---
 
-Overview {#sect:Overview}
+Overview
 ========
+{:.section}
 
 This tutorial is intended to provide a introduction to the basics of
 Markov chain Monte Caro (MCMC) using the Metropolis-Hastings algorithm.
@@ -23,31 +24,9 @@ and the distance those arrows land from the center. We will simulate
 data using this example and attempt to estimate the posterior
 distribution using a variety of MCMC moves.
 
-Requirements {#subsect:Overview-Requirements}
-------------
-
-### Required Software {#subsub:Req-Software}
-
-This tutorial requires that you download and install the latest release
-of RevBayes {% cite Hoehna2017a %}, which is available for Mac OS X, Windows,
-and Linux operating systems. Directions for downloading and installing
-the software are available under {% page_ref software %}. The exercise provided also
-requires additional programs for editing text files and visualizing
-output. The following are very useful tools for working with RevBayes:
-
--   A good text editor – if you do not already have one that you like,
-    we recommend one that has features for syntax coloring, easy
-    navigation between different files, line numbers, etc. Good options
-    include [Sublime Text](http://www.sublimetext.com/) or
-    [Atom](https://atom.io/), which are available for Mac OSX, Windows,
-    and Linux.
-
--   [Tracer](http://tree.bio.ed.ac.uk/software/tracer/) – for
-    visualizing and assessing numerical parameter samples from
-    RevBayes
-
-Modeling an Archer’s Shots on a Target {#sect:Exercise}
+Modeling an Archer’s Shots on a Target
 ======================================
+{:.section}
 
 {% figure target %}
 <img src="figures/target.png" width="200" />  
@@ -117,11 +96,13 @@ We’ll use a simple exponential distribution as a prior on the parameter of the
 {% endfigcaption %}
 {% endfigure %}
 
-Writing MCMC from Scratch {#sect:MCMC-scratch}
+Writing MCMC from Scratch
 =========================
+{:.section}
 
 Tutorial Format {#subsect:Exercise-Format}
 ---------------
+{:.subsection}
 
 This tutorial follows a specific format for issuing instructions and
 information.
@@ -136,13 +117,15 @@ All command-line text, including all `Rev` syntax, are given in `monotype font`.
 
 Create Your Script File
 -----------------------
+{:.subsection}
 
 Make yourself familiar with the example script called [`archery_MH.Rev`](https://raw.githubusercontent.com/revbayes/revbayes_tutorial/master/RB_MCMC_Archery_Tutorial/archery_MH.Rev) which shows the code for the following sections. Then, start a new and empty script in your text editor and follow each step provided as below.
 
 Name the script file `my_archery_MH.Rev` or anything you’d like.
 
-The Metropolis-Hastings Algorithm {#sect:MH_algorithm}
+The Metropolis-Hastings Algorithm
 ---------------------------------
+{:.subsection}
 
 Though RevBayes implements efficient and easy-to-use Markov chain Monte Carlo (MCMC) algorithms, we’ll begin by writing one ourselves to gain a better understanding of the moving parts. The Metropolis-Hastings MCMC algorithm {% cite Metropolis1953} {% cite Hastings1970 %} proceeds as follows:
 
@@ -178,6 +161,7 @@ Though RevBayes implements efficient and easy-to-use Markov chain Monte Carlo (M
 
 Reading in the data
 -------------------
+{:.subsection}
 
 Since we do not have access to archery data, we will simulate the the shots of our archer using the simulation tools in RevBayes. By simulating the data, we can also evaluate how well our moves and prior model perform—*i.e.,* how robust and accurate our estimators are. After completing this exercise, feel free to repeat it and alter the true values to see how they influence the posterior distribution.
 
@@ -198,6 +182,7 @@ first element of the vector returned by that function.
 
 Initializing the Markov chain
 -----------------------------
+{:.subsection}
 
 We have to start the MCMC off with some initial values for all of the
 parameters. One way to do this is to randomly draw values of the
@@ -271,6 +256,7 @@ print(0,mu)
 
 Writing the Metropolis-Hastings Algorithm
 -----------------------------------------
+{:.subsection}
 
 At long last, we can write our MCMC algorithm. First, we define how
 often we print to file (*i.e.,* monitor); this is called thinning if we do not choose to save every value of our parameter to file. If we set the variable `printgen=1`, then we will store the parameter values at every iteration; if we instead choose `printgen=10`, then we’ll only save the values every $10^{th}$ step in our Markov chain.
@@ -356,6 +342,7 @@ source("my_archery_MH.Rev")
 
 Exercise 1
 ----------
+{:.section}
 
 1.  Write and execute the script outlined above, which you can give any
     name you like (there is also an example file
@@ -383,8 +370,9 @@ The *Trace* of sample from an MCMC simulation. Right: The approximated posterior
 {% endfigcaption %}
 {% endfigure %}
 
-More on Moves: Tuning and Weights {#sect:More_on_Moves}
+More on Moves: Tuning and Weights
 =================================
+{:.section}
 
 In the previous example we hard coded a single move updating the
 variable $\mu$ by drawing a new value from a sliding window. There are
@@ -396,6 +384,7 @@ which we name `move_slide` for simplicity, that performs the move:
 
 Slide move
 ----------
+{:.subsection}
 
 Now we need to actually write the `move_slide` function. We mostly just
 copy the code we had before into a dedicated function
@@ -417,6 +406,7 @@ There is, *a priori*, no good method for knowing what values of `delta` are most
 
 Scaling move
 ------------
+{:.subsection}
 
 As another move we will write a scaling move. The scaling move proposes
 an update by drawing a random number from a $Uniform(-0.5,0.5)$
@@ -434,6 +424,7 @@ The sliding-window and scaling moves are very common and popular moves in RevBay
 
 Exercise 2
 ----------
+{:.section}
 
 1.  Rewrite your previous script to include these two different moves,
     and re-run the script to estimate the posterior distribution of
@@ -450,6 +441,7 @@ Exercise 2
 
 The Metropolis-Hastings Algorithm with the *Real* RevBayes
 ============================================================
+{:.section}
 
 We’ll now specify the exact same model in `Rev` using the built-in
 modeling functionality and moves. It turns out that the ‘Rev‘ code to
@@ -538,6 +530,7 @@ hacked together in our own algorithm).
 
 Exercise 3
 ----------
+{:.section}
 
 1.  Run the built-in MCMC and compare the results to your own MCMC. Are
     the posterior estimates the same? Are the acceptance rates of the
@@ -552,6 +545,7 @@ Exercise 3
 
 Influence of the Prior
 ======================
+{:.section}
 
 So far we have used a fairly simple exponential prior with $\alpha = 1$.
 However, we have not explored what impact this prior has on our estimate
@@ -589,6 +583,7 @@ our example by increasing the number of arrows we shoot.
 
 Exercise 4
 ----------
+{:.section}
 
 1.  Increase the true mean arrow distance so that it is significantly
     larger than $\alpha$. How does this impact your estimate of $\mu$?
