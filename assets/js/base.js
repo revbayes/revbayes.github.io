@@ -123,6 +123,16 @@ $("figure").each(function(index) {
     }
 });
 
+$(".table").each(function(index) {
+  if( this.id !=  null ) {
+    var els = document.querySelectorAll("a[href=\"#"+this.id+"\"]");
+    if(els.length > 0){
+      for (var i = 0, element; element = els[i]; i++)
+        els[i].innerHTML= "Table " + (index+1);
+    }
+  }
+});
+
 // Add section titles to section references
 $(".section, .subsection").each(function(index) {
     if( this.id != null ) {
