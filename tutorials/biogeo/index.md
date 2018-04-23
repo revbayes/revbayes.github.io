@@ -82,7 +82,7 @@ in areas A and C, then its range equals AC, which can also be encoded
 into the length-3 bit vector, 101. Bit vectors may also be transformed
 into (decimal) integers, *e.g.*, the binary
 number 101 equals the decimal number 5.
-
+{% table table1 %}
   |    Range    | Bits  | Size | State |
   |-------------|-------|------|-------|
   |$\emptyset$  |  000  |  0   |   0   |
@@ -94,8 +94,11 @@ number 101 equals the decimal number 5.
   |BC           |  011  |  2   |   6   |
   |ABC          |  111  |  3   |   7   |
 
+   {% tabcaption %}
   : Example of discrete range representations for an analysis with areas
   A, B, and C.
+  {% endtabcaption %}
+{% endtable %}
 
 The decimal representation of range states is rarely used in discussion,
 but it is useful to keep in mind when considering the total number of

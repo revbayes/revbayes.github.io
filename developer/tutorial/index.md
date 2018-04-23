@@ -70,7 +70,7 @@ Any other level is for *Miscellaneous tutorials*
 {% subsection Front matter attributes %}
 
 Here is a glossary of all the tutorial attributes used by this site.
-
+{% table glossary %}
  Attribute  |  Description
 ----------- | -----------
  `title`    | Tutorial title displayed in the title header and the [tutorial index]({% page_url tutorials %})
@@ -86,6 +86,7 @@ Here is a glossary of all the tutorial attributes used by this site.
  `title-old`| Name of the corresponding tutorial in the deprecated [Latex repository](https://github.com/revbayes/revbayes_tutorial)
  `redirect` | Automatically redirect to the deprecated Latex tutorial? Used for tutorials not yet updated for this site.
  `permalink` | Address relative to `{% raw %}{{ baseurl }}{% endraw %}` where you want the tutorial to be accessible on the internet. You may identify the primary version of your tutorial by setting this to the relative path of your tutorial's home directory.
+{% endtable %}
 
 {% section Filling in the overview box %}
 
@@ -352,6 +353,32 @@ This is an example figure caption. You can include *Markdown* and $\LaTeX$.
 {% endfigure %}
   
 This is a reference to {% ref example %}
+{% endpreview %}
+
+{% section Tables %}
+
+Table can be included in *Markdown* using the `table` and `tabcaption` Liquid tags. Tables are referenced using the `ref` Liquid tag.
+
+{% preview %}
+
+{% table exampletable %}
+  |    Range    | Bits  | Size | State |
+  |-------------|-------|------|-------|
+  |$\emptyset$  |  000  |  0   |   0   |
+  |A            |  100  |  1   |   1   |
+  |B            |  010  |  1   |   2   |
+  |C            |  001  |  1   |   3   |
+  |AB           |  110  |  2   |   4   |
+  |AC           |  101  |  2   |   5   |
+  |BC           |  011  |  2   |   6   |
+  |ABC          |  111  |  3   |   7   |
+
+   {% tabcaption %}
+    Example table caption
+   {% endtabcaption %}
+{% endtable %}
+  
+This is a reference to {% ref exampletable %}
 {% endpreview %}
 
 {% section Printing to PDF %}
