@@ -104,24 +104,23 @@ tractable for inference. This tutorial provides a brief background in
 some of these models, then describes how to perform Bayesian inference
 of historical biogeography using RevBayes.</p>
 
-<h2 class="section" id="setup">Getting Set Up</h2>
-<hr />
+<!-- <h2 class="section" id="setup">Getting Set Up</h2><hr>
 
-<p>This first exercise will not require you to use any data. However, it may still be
-useful to work within a single directory.</p>
+This first exercise will not require you to use any data. However, it may still be
+useful to work within a single directory.
 
-<blockquote class="instruction">
-  <p>Create a new directory on your computer called <code class="highlighter-rouge">RB_biogeo_tutorial</code>.</p>
+> Create a new directory on your computer called `RB_biogeo_tutorial`.
+> 
+> Navigate to the `RB_biogeo_tutorial` directory and execute the `rb` binary. 
+> One option for doing this is to move the `rb` executable to the `RB_biogeo_tutorial`
+> directory.
+> 
+> Alternatively, if you are on a Unix system, and have added RevBayes to your path, 
+> you simply have to type `rb` in your Terminal to run the program. 
+{:.instruction}
+ -->
 
-  <p>Navigate to the <code class="highlighter-rouge">RB_biogeo_tutorial</code> directory and execute the <code class="highlighter-rouge">rb</code> binary. 
-One option for doing this is to move the <code class="highlighter-rouge">rb</code> executable to the <code class="highlighter-rouge">RB_biogeo_tutorial</code>
-directory.</p>
-
-  <p>Alternatively, if you are on a Unix system, and have added RevBayes to your path, 
-you simply have to type <code class="highlighter-rouge">rb</code> in your Terminal to run the program.</p>
-</blockquote>
-
-<h2 class="section" id="bg_intro2">Overview of the Dispersal-Extinction-Cladogenesis model</h2>
+<h2 class="section" id="bg_intro2">Overview of the Dispersal-Extinction-Cladogenesis Model</h2>
 <hr />
 
 <p>The Dispersal-Extinction-Cladogenesis (DEC) process models range
@@ -149,7 +148,7 @@ daughter inherits the ancestral range while the other daughter inherits
 a new unoccupied area.</figcaption>
 </figure>
 
-<h3 class="subsection" id="disc_range_char">Discrete range characters</h3>
+<h3 class="subsection" id="disc_range_char">Discrete Range Characters</h3>
 
 <p>DEC interprets taxon ranges as presence-absence data, that is, where a
 species is observed or not observed across multiple discrete areas. For
@@ -159,7 +158,7 @@ into the length-3 bit vector, 101. Bit vectors may also be transformed
 into (decimal) integers, <em>e.g.</em>, the binary
 number 101 equals the decimal number 5.</p>
 
-<table>
+<figure id="table1" class="table"><table>
   <thead>
     <tr>
       <th>Range</th>
@@ -220,14 +219,15 @@ number 101 equals the decimal number 5.</p>
   </tbody>
 </table>
 
-<p>: Example of discrete range representations for an analysis with areas
-  A, B, and C.</p>
+<figcaption class="table">: Example of discrete range representations for an analysis with areas
+  A, B, and C.</figcaption>
+</figure>
 
 <p>The decimal representation of range states is rarely used in discussion,
 but it is useful to keep in mind when considering the total number of
 possible ranges for a species and when processing output.</p>
 
-<h3 class="subsection" id="anagenetic">Anagenetic range evolution</h3>
+<h3 class="subsection" id="anagenetic">Anagenetic Range Evolution</h3>
 
 <p>In the context of the DEC model, anagenesis refers to range evolution
 that occurs between speciation events within lineages. There are two
@@ -270,8 +270,20 @@ dispersal rates between areas. Notice that the sum of rates leaving the
 null range ($\emptyset$) is zero, meaning any lineage that loses all
 areas in its range remains that way permanently.</p>
 
-<p>To build our intuition, let’s construct a DEC rate matrix in RevBayes.
-Assume you have three areas</p>
+<p>To build our intuition, let’s construct a DEC rate matrix in RevBayes.</p>
+
+<blockquote class="instruction">
+  <p>Create a new directory on your computer called <code class="highlighter-rouge">RB_biogeo_tutorial</code>.</p>
+
+  <p>Navigate to the <code class="highlighter-rouge">RB_biogeo_tutorial</code> directory and execute the <code class="highlighter-rouge">rb</code> binary. 
+One option for doing this is to move the <code class="highlighter-rouge">rb</code> executable to the <code class="highlighter-rouge">RB_biogeo_tutorial</code>
+directory.</p>
+
+  <p>Alternatively, if you are on a Unix system, and have added RevBayes to your path, 
+you simply have to type <code class="highlighter-rouge">rb</code> in your Terminal to run the program.</p>
+</blockquote>
+
+<p>Assume you have three areas</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_areas &lt;- 3
 </code></pre></div></div>
@@ -355,7 +367,7 @@ range from the state space is enabled with the
 <code class="highlighter-rouge">nullRange="Include"</code> setting provides no special handling of
 the null range, and produces the raw probabilities of <a href="#Ree2005">Ree et al. (2005)</a>.</p>
 
-<h3 class="subsection" id="cladogenetic">Cladogenetic range evolution</h3>
+<h3 class="subsection" id="cladogenetic">Cladogenetic Range Evolution</h3>
 
 <p>The cladogenetic component of the DEC model describes evolutionary
 change accompanying speciation events (<a href="#dec_cartoon"></a>c–g).
@@ -423,7 +435,7 @@ the probability associated with that event. Since these are proper
 probabilities, the sum of probabilities for a given ancestral state over
 all possible cladogenetic outcomes equals one.</p>
 
-<h3 class="subsection" id="things-to-consider">Things to consider</h3>
+<h3 class="subsection" id="things-to-consider">Things to Consider</h3>
 
 <p>The probabilities of anagenetic change along lineages must account for
 all combinations of starting states and ending states. For 3 areas,
