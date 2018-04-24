@@ -73,7 +73,7 @@ We recommend some selected papers for you to read prior to the workshop. These a
 		<td>{{ session.starttime | date: "%A" }}</td>
 		<td>{{ session.starttime | date: "%R" }}-{{ session.endtime | date: "%R" }}</td>
 		<td>{{ session.topic }}</td>
-		<td>{% if session.lesson.size > 0 %}<li>{% page_ref {{ session.lesson }} %}</li>{% endif %}</td>
+		<td>{% if session.lesson %}{% page_ref {{ session.lesson }} %}{% endif %}</td>
 		<td>{{ session.instructors | join: ", " }}</td>
 		</tr>
 	{% endcapture %}
