@@ -1,0 +1,54 @@
+taxa = readTaxonData(file = "bears_taxa.tsv")
+
+intervals = v(1.8,5.3,23.8,34)
+
+
+mvi = 1
+mni = 1
+
+for(i in 1:intervals.size())
+{
+	if(i < intervals.size())
+	{
+		timeline[i] = intervals[i]
+	}
+
+	mu[i] ~ dnExp(10)
+	lambda[i] ~ dnExp(10)
+	psi[i] ~ dnExp(10)
+
+	moves[mvi++] = mvScale(mu[i], lambda = 0.01)
+	moves[mvi++] = mvScale(mu[i], lambda = 0.1)
+	moves[mvi++] = mvScale(mu[i], lambda = 1)
+
+	moves[mvi++] = mvScale(lambda[i], lambda = 0.01)
+	moves[mvi++] = mvScale(lambda[i], lambda = 0.1)
+	moves[mvi++] = mvScale(lambda[i], lambda = 1)
+
+	moves[mvi++] = mvScale(psi[i], lambda = 0.01)
+	moves[mvi++] = mvScale(psi[i], lambda = 0.1)
+	moves[mvi++] = mvScale(psi[i], lambda = 1)
+}
+
+# model 2
+bd ~ dnFBDPRange(taxa=taxa, lambda=lambda, mu=mu, psi=psi, timeline=timeline)
+
+moves[mvi++] = mvMatrixElementScale(bd, lambda = 0.01, weight=taxa.size())
+moves[mvi++] = mvMatrixElementScale(bd, lambda = 0.1, weight=taxa.size())
+moves[mvi++] = mvMatrixElementScale(bd, lambda = 1, weight=taxa.size())
+
+moves[mvi++] = mvMatrixElementSlide(bd, delta = 0.01, weight=taxa.size())
+moves[mvi++] = mvMatrixElementSlide(bd, delta = 0.1, weight=taxa.size())
+moves[mvi++] = mvMatrixElementSlide(bd, delta = 1, weight=taxa.size())
+
+origin := max(bd)
+
+mymodel = model(bd)
+
+# add monitors
+monitors[mni++] = mnScreen(lambda, mu, psi, printgen=100)
+monitors[mni++] = mnModel(filename="model2.log",printgen=100)
+
+# run the analysis
+mymcmc = mcmc(mymodel, moves, monitors, moveschedule="random")
+mymcmc.run(1000000)
