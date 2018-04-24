@@ -61,7 +61,7 @@ tractable for inference. This tutorial provides a brief background in
 some of these models, then describes how to perform Bayesian inference
 of historical biogeography using RevBayes.
 
-{% section Getting Set Up | setup %}
+<!-- {% section Getting Set Up | setup %}
 
 This first exercise will not require you to use any data. However, it may still be
 useful to work within a single directory.
@@ -75,10 +75,10 @@ useful to work within a single directory.
 > Alternatively, if you are on a Unix system, and have added RevBayes to your path, 
 > you simply have to type `rb` in your Terminal to run the program. 
 {:.instruction}
+ -->
 
 
-
-{% section Overview of the Dispersal-Extinction-Cladogenesis model | bg_intro2 %}
+{% section Overview of the Dispersal-Extinction-Cladogenesis Model | bg_intro2 %}
 
 The Dispersal-Extinction-Cladogenesis (DEC) process models range
 evolution as a discrete-valued process {% cite Ree2005 Ree2008 %}. There are
@@ -108,7 +108,7 @@ a new unoccupied area.
 {% endfigcaption %}
 {% endfigure %}
 
-{% subsection Discrete range characters | disc_range_char %}
+{% subsection Discrete Range Characters | disc_range_char %}
 
 DEC interprets taxon ranges as presence-absence data, that is, where a
 species is observed or not observed across multiple discrete areas. For
@@ -118,6 +118,7 @@ into the length-3 bit vector, 101. Bit vectors may also be transformed
 into (decimal) integers, *e.g.*, the binary
 number 101 equals the decimal number 5.
 
+{% table table1 %}
   |    Range    | Bits  | Size | State |
   |-------------|-------|------|-------|
   |$\emptyset$  |  000  |  0   |   0   |
@@ -129,14 +130,17 @@ number 101 equals the decimal number 5.
   |BC           |  011  |  2   |   6   |
   |ABC          |  111  |  3   |   7   |
 
+   {% tabcaption %}
   : Example of discrete range representations for an analysis with areas
   A, B, and C.
+  {% endtabcaption %}
+{% endtable %}
 
 The decimal representation of range states is rarely used in discussion,
 but it is useful to keep in mind when considering the total number of
 possible ranges for a species and when processing output.
 
-{% subsection Anagenetic range evolution | anagenetic %}
+{% subsection Anagenetic Range Evolution | anagenetic %}
 
 In the context of the DEC model, anagenesis refers to range evolution
 that occurs between speciation events within lineages. There are two
@@ -179,6 +183,17 @@ null range ($\emptyset$) is zero, meaning any lineage that loses all
 areas in its range remains that way permanently.
 
 To build our intuition, let's construct a DEC rate matrix in RevBayes.
+
+> Create a new directory on your computer called `RB_biogeo_tutorial`.
+> 
+> Navigate to the `RB_biogeo_tutorial` directory and execute the `rb` binary. 
+> One option for doing this is to move the `rb` executable to the `RB_biogeo_tutorial`
+> directory.
+> 
+> Alternatively, if you are on a Unix system, and have added RevBayes to your path, 
+> you simply have to type `rb` in your Terminal to run the program. 
+{:.instruction}
+
 Assume you have three areas
 
     n_areas <- 3
@@ -264,7 +279,7 @@ range from the state space is enabled with the
 `nullRange="Include"` setting provides no special handling of
 the null range, and produces the raw probabilities of {% citet Ree2005 %}.
 
-{% subsection Cladogenetic range evolution | cladogenetic %}
+{% subsection Cladogenetic Range Evolution | cladogenetic %}
 
 The cladogenetic component of the DEC model describes evolutionary
 change accompanying speciation events ({% ref dec_cartoon %}c–g).
@@ -335,7 +350,7 @@ the probability associated with that event. Since these are proper
 probabilities, the sum of probabilities for a given ancestral state over
 all possible cladogenetic outcomes equals one.
 
-{% subsection Things to consider %}
+{% subsection Things to Consider %}
 
 The probabilities of anagenetic change along lineages must account for
 all combinations of starting states and ending states. For 3 areas,
