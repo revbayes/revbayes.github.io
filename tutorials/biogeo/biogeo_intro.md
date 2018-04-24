@@ -372,6 +372,7 @@ not viable. Thus, selecting the discrete areas for a DEC analysis should
 be done with regard to what one hopes to learn through the analysis
 itself.
 
+<!-- 
 >Some questions
 >--------------
 >
@@ -396,4 +397,4 @@ itself.
 >subset sympatric events, and 12 allopatric cladogenesis events. What
 >proportion of terms in the cladogenesis matrix are zero?
 {:.discussion}
-
+ -->
