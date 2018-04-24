@@ -305,8 +305,8 @@ lineages inherit the ancestral range, $ABC$ ({% ref dec_cartoon %}f).
 jump dispersal cladogenesis results in one daughter lineage inheriting
 the ancestral range $A$, and the other daughter lineage inheriting a
 previously uninhabited area, $B$ or $C$ ({% ref dec_cartoon %}g).
-See {% citet Matzke2014 %} for an excellent overview of the cladogenetic state
-transitions described in the literature.
+See {% citet Matzke2012 %} for an excellent overview of the cladogenetic state
+transitions described in the literature (specifically see this [figure](http://phylo.wikidot.com/biogeobears#BioGeoBEARS_supermodel_graphic)).
 
 Make the cladogenetic probability event matrix
 
