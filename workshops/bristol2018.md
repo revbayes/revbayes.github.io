@@ -19,7 +19,7 @@ venue: Anson Rooms 2 training space at the <a href="https://www.google.co.uk/sea
 
 
 software:
-- <a href="https://revbayes.github.io/revbayes-site/software">RevBayes v1.0.8</a>
+- <a href="https://revbayes.github.io/revbayes-site/software">RevBayes v1.0.9</a>
 - <a href="http://tree.bio.ed.ac.uk/software/tracer/">Tracer</a>
 - <a href="http://tree.bio.ed.ac.uk/software/figtree/">FigTree</a>
 - A simple text editor, such as <a href="https://notepad-plus-plus.org">NotePad++</a>, SublimeText, TextWrangler or BBEdit

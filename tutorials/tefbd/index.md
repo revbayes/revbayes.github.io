@@ -41,7 +41,7 @@ morphological data ({% ref Intro-Morpho %}), and one for
 fossil stratigraphic range data (section {% ref Intro-TipSampling %}
 ).
 In addition, all likelihood components are conditioned on a tree
-topology with divergence times, which is modeled according to a separate
+topology with divergence ti.e. which is modeled according to a separate
 prior component ({% ref Intro-FBD %}).
 
 
@@ -58,7 +58,7 @@ In figure {% ref fig_example_tree %} we provide an example of the type of tree
 estimated from a total-evidence analysis. This example shows the
 complete tree ({% ref fig_example_tree %}A) and the sampled or
 reconstructed tree ({% ref fig_example_tree %}B). Importantly, we are
-interested in estimating the topology, divergence times, and fossil
+interested in estimating the topology, divergence ti.e. and fossil
 sample times of the *reconstructed tree* ({% ref fig_example_tree %}B).
 We will describe the distinction between these two trees in {% ref Intro-FBD %}.
 
@@ -85,7 +85,7 @@ living and extinct species used in this tutorial is described by the
 model simply treats the fossil observations as part of the process
 governing the tree topology and branch times (the node in
 {% ref fig_module_gm %}). The fossilized birth-death process provides a
-model for the distribution of speciation times, tree topology, and
+model for the distribution of speciation ti.e. tree topology, and
 lineage samples before the present
 (*e.g.,*non-contemporaneous samples like
 fossils or viruses). This type of tree is shown in {% ref fig_example_tree %}. 
@@ -93,7 +93,7 @@ Importantly, this model can be used *with or
 without* character data for the historical samples. Thus, it provides a
 reasonable prior distribution for analyses combining morphological or
 DNA data for both extant and fossil
-taxa—*i.e.,*the so-called “total-evidence”
+taxa—*i.e.* the so-called “total-evidence”
 approaches described by {% cite Ronquist2012a %} and extended by {% cite Zhang2016 %} and
 {% cite Gavryushkina2016 %}. When matrices of discrete morphological characters
 for both living and fossil species are unavailable, the fossilized
@@ -106,8 +106,8 @@ relationships is important.
 The FBD model ({% ref fig_fbd_gm %}) describes the probability of the
 tree and fossils conditional on the birth-death parameters:
 $f[\mathcal{T} \mid \lambda, \mu, \rho, \psi, \phi]$, where
-$\mathcal{T}$ denotes the tree topology, divergence times, fossil
-occurrence times, and the times at which the fossils attach to the tree.
+$\mathcal{T}$ denotes the tree topology, divergence ti.e. fossil
+occurrence ti.e. and the times at which the fossils attach to the tree.
 The birth-death parameters $\lambda$ and $\mu$ denote the speciation and
 extinction rates, respectively. The “fossilization rate” or “fossil
 recovery rate” is denoted $\psi$ and describes the rate at which fossils
@@ -176,14 +176,17 @@ data given the tree parameter. Specifically, we assume the likelihood of
 a particular fossil observation $\mathcal{F}_i$ is equal to one if the
 fossil’s inferred age on the tree $t_i$ falls within its observed time
 interval $(a_i,b_i)$, and zero otherwise:
+
 $$f[\mathcal{F}_i \mid a_i, b_i, t_i] = \begin{cases}
 1 & \text{if } a_i < t_i < b_i\\
 0 & \text{otherwise}
-\end{cases}$$ In other words, we assume the likelihood is equal to one
+\end{cases}$$
+
+In other words, we assume the likelihood is equal to one
 if the inferred age is consistent with the data observed. We can
 represent this likelihood in RevBayes using a distribution that is
 proportional to the likelihood,
-*i.e.,*non-zero when the likelihood is equal
+*i.e.* non-zero when the likelihood is equal
 to one ({% ref fig_tipsampling_gm %}). This model component represents
 the observed in the modular graphical model shown in {% ref fig_module_gm %}.
 
@@ -229,7 +232,7 @@ One example of such an uncorrelated relaxed model is the uncorrelated
 *exponential* relaxed clock, in which the substitution rate for each
 lineage is assumed to be independent and identically distributed
 according to an exponential density ({% ref fig_uexp_gm %}). This is *Branch Rates Model* 
-for the *Molecular Data* (*i.e.,* {% ref fig_module_gm %}) that we will use in this tutorial. 
+for the *Molecular Data* ({% ref fig_module_gm %}) that we will use in this tutorial. 
 Another possible uncorrelated relaxed
 clock model is the uncorrelated lognormal model, described in the
 {% page_ref clocks %}
@@ -258,7 +261,7 @@ Bayesian analyses. In its simplest form, this model assumes that
 characters change states symmetrically—that a given character is as
 likely to transition from a one state to another as it is to reverse. In
 this tutorial we will consider only binary morphological characters,
-*i.e.,*characters that are observed in one of
+*i.e.* characters that are observed in one of
 two states, 0 or 1. For example, the assumption of the single-rate Mk
 model applied to our binary character would mean that a change from a 0
 state to a 1 state is as likely as a change from a 1 state to a 0 state.
@@ -405,11 +408,11 @@ interchanged. You will write the following files from scratch and save
 them in the `scripts` directory:
 
 -   `mcmc_TEFBD.Rev`: the master Rev file that loads the data, the
-    separate model files, and specifies the monitors and MCMC sampler.
+    separate model fi.e. and specifies the monitors and MCMC sampler.
 
 -   `model_FBDP_TEFBD.Rev`: specifies the model parameters and moves
     required for the fossilized birth-death prior on the tree topology,
-    divergence times, fossil occurrence times, and
+    divergence ti.e. fossil occurrence ti.e. and
     diversification dynamics.
 
 -   `model_UExp_TEFBD.Rev`: specifies the components of the
@@ -482,7 +485,7 @@ In the descriptions of the files in section
 {% ref Exercise-DataFiles %}, we mentioned that the two data matrices
 have different numbers of taxa. Thus, we must add any taxa that are not
 found in the molecular (`cytb`) partition
-(*i.e.,*are only found in the fossil data) to
+(*i.e.* are only found in the fossil data) to
 that data matrix as missing data (with `?` in place of all characters),
 and do the same with the morphological data partition (`morpho`). In
 order for all the taxa to appear on the same tree, they all need to be
@@ -563,7 +566,7 @@ a stochastic node, then it will not be estimated, but fixed to its
 initial value.
 
 The rate parameters for extinction and speciation are both positive,
-real numbers (*i.e.,*non-negative floating
+real numbers (*i.e.* non-negative floating
 point variables). For both of these nodes, we will use a scaling move
 (`mvScale`), which proposes multiplicative changes to a parameter.
 Many moves also require us to set a *tuning value*, called `lambda` for
@@ -687,7 +690,7 @@ Then we can specify the final constrained tree prior distribution by
 creating a vector of constraints, and providing it along with the
 workspace FBD distribution to the constrained topology distribution.
 Here we use the stochastic assignment operator `~` to create a
-stochastic node for our constrained, FBD-tree variable (called
+stochastic node for our constrai.e. FBD-tree variable (called
 `fbd_tree`).
 
     constraints = v(clade_ursinae)
@@ -777,7 +780,7 @@ We are also interested in the age of the most-recent-common ancestor
 sample, we must use the `clade` function to identify the node.
 Importantly, since we did not include this clade in our constraints that
 defined `fbd_tree`, this clade will not be constrained to be
-monophyletic. Once this clade is defined, we can instantiate a
+monophyletic. Once this clade is defi.e. we can instantiate a
 deterministic node called `age_extant` with the `tmrca` function that
 will record the age of the MRCA of all living bears.
 
@@ -873,7 +876,7 @@ Enter the Rev code provided in this section in the new model file.
 
 For our nucleotide sequence evolution model, we need to define a general
 time-reversible (GTR) instantaneous-rate matrix
-(*i.e.,* $Q$-matrix). A nucleotide GTR matrix
+(*i.e.* $Q$-matrix). A nucleotide GTR matrix
 is defined by a set of 4 stationary frequencies, and 6 exchangeability
 rates. We create stochastic nodes for these variables, each drawn from a
 uniform Dirichlet prior distribution.
@@ -1125,7 +1128,7 @@ window. To add data, click on the “+” sign, highlighted in red above
 {% endfigure %}
 
 Open Tracer and import the `bears.log` file in the
-***FileImport New Trace File***. Or click the button on the
+***FileImport New Trace Fi.e.* *. Or click the button on the
 left-hand side of the screen to add your log file (see {% ref fig_tracer %}).
 
 {% figure tracer_post_ests %}
@@ -1137,7 +1140,7 @@ histogram of the **Posterior**
 {% endfigure %}
 
 Immediately upon loading your file (see {% ref tracer_post_ests %}),
-you will see the list of **Trace Files** on the left-hand
+you will see the list of **Trace Fi.e.* * on the left-hand
 side (you can load multiple files). The bottom left section, called
 **Traces**, provides a list of every parameter in the log
 file, along with the mean and the effective sample size (ESS) for the
@@ -1256,7 +1259,7 @@ to consider approaches for assessing the performance of the MCMC with
 respect to the tree topology.
 
 Ultimately, we are interested in summarizing the sampled trees and
-branch times, given that our MCMC has sampled all of the important
+branch ti.e. given that our MCMC has sampled all of the important
 parameters in proportion to their posterior probabilities. RevBayes
 includes some functions for summarizing the tree topology and other tree
 parameters.
@@ -1291,7 +1294,7 @@ use of a browser-based tree viewer called
 Vaughan](https://github.com/tgvaughan). IcyTree has many
 unique options for visualizing phylogenetic trees and can produce
 publication-quality vector image files
-(*i.e.,* SVG). Additionally, it correctly
+(*i.e.* SVG). Additionally, it correctly
 represents sampled ancestors on the tree as nodes, each with only one
 descendant ({% ref summary_tree %}).
 
