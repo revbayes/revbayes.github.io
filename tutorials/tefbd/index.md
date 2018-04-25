@@ -188,7 +188,7 @@ to one ({% ref fig_tipsampling_gm %}). This model component represents
 the observed in the modular graphical model shown in {% ref fig_module_gm %}.
 
 {% figure fig_tipsampling_gm %}
-<img src="figures/tikz/tipsampling_gm.png" width="500" /> 
+<img src="figures/tikz/tipsampling_gm.png" width="400" /> 
 {% figcaption %} 
 A graphical model of the
 fossil age likelihood model used in this tutorial. The likelihood of
@@ -236,7 +236,7 @@ clock model is the uncorrelated lognormal model, described in the
 tutorial [also see {% cite Thorne2002 %}].
 
 {% figure fig_uexp_gm %}
-<img src="figures/tikz/uexp_gm.png" width="500" /> 
+<img src="figures/tikz/uexp_gm.png" width="400" /> 
 {% figcaption %} 
 A graphical model of the
 uncorrelated exponential relaxed clock model. In this model, the clock
@@ -303,7 +303,7 @@ simplest morphological branch rate model we can construct (graphical
 model shown in {% ref fig_morph_clock_gm %}).
 
 {% figure fig_morph_clock_gm %}
-<img src="figures/tikz/morph_clock_gm.png" width="500" /> 
+<img src="figures/tikz/morph_clock_gm.png" width="300" /> 
 {% figcaption %} 
 The graphical-model
 representation of the branch-rate model governing the evolution of
@@ -339,6 +339,9 @@ constraints.
 
 
 {% table tab_bear_fossils %}
+{% tabcaption %}
+Age ranges of fossil bears.
+{% endtabcaption %}
 
  |     **Fossil Species**     |    **Age**     |        **Reference**       |
   --------------------------- |:--------------:|:--------------------------:|
@@ -357,9 +360,6 @@ constraints.
  |      *Ursus abstrusus*     |     1.8–5.3    | {% cite bjork1970 krause2008 %}     |
  |      *Ursus spelaeus*      |   0.027–0.25   | {% cite loreille2001 krause2008 %}  |
  
-{% tabcaption %}
-Ages of fossil bears.
-{% endtabcaption %}
 {% endtable %}
 
 
@@ -388,7 +388,7 @@ In the `data` folder, you will find the following files:
 
 {% subsection Getting Started | Exercise-GetStart %}
 
-Create a new directory called *scripts*. 
+Create a new directory called `scripts`. 
 
 When you execute RevBayes in this exercise, you will do so within the
 main directory you created. 
@@ -402,7 +402,7 @@ that will contain all of the model parameters, moves, and functions. In
 this exercise, you will work primarily in your text editor and
 create a set of modular files that will be easily managed and
 interchanged. You will write the following files from scratch and save
-them in the *scripts* directory:
+them in the `scripts` directory:
 
 -   `mcmc_TEFBD.Rev`: the master Rev file that loads the data, the
     separate model files, and specifies the monitors and MCMC sampler.
@@ -432,7 +432,7 @@ verify or troubleshoot your own scripts.
 {% subsection Start the Master Rev File and Import Data | Exercise-StartMasterRev %}
 
 Open your text editor and create the master Rev file called in the
-*scripts* directory.
+`scripts` directory.
 
 Enter the Rev code provided in this section in the new model file.
 
@@ -728,18 +728,12 @@ to explicitly sample the root age (`mvRootTimeSlideUniform`).
 ### Sampling Fossil Occurrence Ages {#subsub:Exercise-FBD-TipSampling}
 
 Next, we need to account for uncertainty in the age estimates of our
-fossils using the observed minimum and maximum stratigraphic ages
-provided in the file `bears_fossil_intervals.tsv`. First, we read this
-file into a matrix called `intervals`.
-
-    intervals = readDataDelimitedFile(file="data/bears_fossil_intervals.tsv", header=true)
-
-Next, we loop over this matrix. For each fossil observation, we create a
+fossils using the observed minimum and maximum stratigraphic ages.
+First, we loop over the the list of taxa. For each fossil observation, we create a
 uniform random variable representing the likelihood. Remember, we can
 represent the fossil likelihood using any uniform distribution that is
 non-zero when the likelihood is equal to one
-(Sect. {% ref Intro-TipSampling %}
-).
+(see {% ref Intro-TipSampling %}).
 
 For example, if $t_i$ is the inferred fossil age and $(a_i,b_i)$ is the
 observed stratigraphic interval, we know the likelihood is equal to one
@@ -747,16 +741,18 @@ when $a_i < t_i < b_i$, or equivalently $t_i - b_i < 0 < t_i - a_i$. So
 let’s represent the likelihood using a uniform random variable uniformly
 distributed in $(t_i - b_i, t_i - a_i)$ and clamped at zero.
 
-    for(i in 1:intervals.size())
+    for(i in 1:taxa.size())
     {
-        taxon  = intervals[i][1]
-        a_i = intervals[i][2]
-        b_i = intervals[i][3]
-        
-        t[i] := tmrca(fbd_tree, clade(taxon))
-            
-        fossil[i] ~ dnUniform(t[i] - b_i, t[i] - a_i)
-        fossil[i].clamp( 0 )
+        a_i = taxa[i].getMinAge()
+        b_i = taxa[i].getMaxAge()
+
+        if(a_i > 0)
+        {
+	        t[i] := tmrca(fbd_tree, clade(taxa[i]))
+	            
+	        fossil[i] ~ dnUniform(t[i] - b_i, t[i] - a_i)
+	        fossil[i].clamp( 0 )
+	    }
     }
 
 Finally, we add a move that samples the ages of the fossil nodes on the
@@ -1204,10 +1200,8 @@ the output in figure {% ref tracer_extinction_rate_trace_short %} shows reasonab
 there long intervals where the statistic does not change. The presence
 of a trend or large leaps in a parameter value might indicate that your
 MCMC is not mixing well. You can read more about MCMC tuning and
-improving mixing in the tutorials [***Intro to
-MCMC***](https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_MCMC_Binomial_Tutorial/RB_MCMC_Binomial_Tutorial.pdf)
-and [***MCMC
-Algorithms***](https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_MCMC_Tutorial/RB_MCMC_Tutorial.pdf).
+improving mixing in the tutorials {% page_ref mcmc_binomial %}
+and {% page_ref mcmc %}.
 
 Look through the traces for your parameters.
 
