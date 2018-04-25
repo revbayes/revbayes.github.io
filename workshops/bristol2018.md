@@ -12,7 +12,7 @@ instructors:
 - <a href="mailto:hoehna@bio.lmu.de?subject=RevBayes%20Workshop%20Bristol%202018">Sebastian Höhna</a>
 - <a href="mailto:willpett@iastate.edu?subject=RevBayes%20Workshop%20Bristol%202018">Walker Pett</a>
 - <a href="mailto:rachel.warnock@bsse.ethz.ch?subject=RevBayes%20Workshop%20Bristol%202018">Rachel Warnock</a>
-- <a href="mailto:joe.oreilly@bristol.ac.uk?subject=RevBayes%20Workshop%20Bristol%202018">Joe O'Reilley</a>
+- <a href="mailto:joe.oreilly@bristol.ac.uk?subject=RevBayes%20Workshop%20Bristol%202018">Joe O'Reilly</a>
 - <a href="mailto:marknputtick@gmail.com?subject=RevBayes%20Workshop%20Bristol%202018">Mark Puttick</a>
 
 venue: Anson Rooms 2 training space at the <a href="https://www.google.co.uk/search?rlz=1C1GGRV_enGB785GB785&q=anson+rooms+student+union+MAP&npsic=0&rflfq=1&rlha=0&rllag=51457532,-2607996,361&tbm=lcl&ved=0ahUKEwj-16KClcTaAhVEOMAKHYI8DIEQtgMIKw&tbs=lrf:!2m4!1e17!4m2!17m1!1e2!2m1!1e2!2m1!1e3!3sIAE,lf:1,lf_ui:2&rldoc=1#rlfi=hd:;si:;mv:!1m3!1d1359.5388556555495!2d-2.6079966000000003!3d51.45789975!2m3!1f0!2f0!3f0!3m2!1i262!2i105!4f13.1;tbs:lrf:!2m1!1e2!2m1!1e3!2m4!1e17!4m2!17m1!1e2!3sIAE,lf:1,lf_ui:2" title="Map">University of Bristol Students' Union, The Richmond Building, 105 Queens Road, Clifton, Bristol BS8 1LN</a>
