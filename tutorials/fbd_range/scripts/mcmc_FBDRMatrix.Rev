@@ -1,5 +1,7 @@
 taxa = readTaxonData(file = "bears_taxa.tsv")
 
+k = readDataDelimitedFile(file = "presence.absence.txt", header=true, rownames=true)
+
 intervals = v(1.8,5.3,23.8,34)
 
 
@@ -30,8 +32,12 @@ for(i in 1:intervals.size())
 	moves[mvi++] = mvScale(psi[i], lambda = 1)
 }
 
+# model 1
+#bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, timeline=timeline, k=k)
 # model 2
 bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, timeline=timeline)
+# model 3
+#bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, timeline=timeline, k=k, binary=true)
 
 moves[mvi++] = mvMatrixElementScale(bd, lambda = 0.01, weight=taxa.size())
 moves[mvi++] = mvMatrixElementScale(bd, lambda = 0.1, weight=taxa.size())
