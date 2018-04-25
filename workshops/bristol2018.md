@@ -5,13 +5,15 @@ location: University of Bristol, United Kingdom
 startdate: 2018-05-01
 enddate: 2018-05-03
 description:
-- This intensive short course will introduce students to the use of RevBayes for macroevolutionary analysis of paleontological data. The course will be three full days in length and will take place at the University of Bristol Students' Union, Bristol, England from the 1st to the 3rd of May, 2018. The course will be primarily taught in English.
+- This intensive short course will introduce students to the use of RevBayes for macroevolutionary analysis of paleontological data. The course will be three full days in length and will take place at the University of Bristol Students' Union, Bristol, England from the 1st to the 3rd of May, 2018.
 
 
 instructors:
 - <a href="mailto:hoehna@bio.lmu.de?subject=RevBayes%20Workshop%20Bristol%202018">Sebastian Höhna</a>
 - <a href="mailto:willpett@iastate.edu?subject=RevBayes%20Workshop%20Bristol%202018">Walker Pett</a>
 - <a href="mailto:rachel.warnock@bsse.ethz.ch?subject=RevBayes%20Workshop%20Bristol%202018">Rachel Warnock</a>
+- <a href="mailto:joe.oreilly@bristol.ac.uk?subject=RevBayes%20Workshop%20Bristol%202018">Joe O'Reilley</a>
+- <a href="mailto:marknputtick@gmail.com?subject=RevBayes%20Workshop%20Bristol%202018">Mark Puttick</a>
 
 venue: Anson Rooms 2 training space at the <a href="https://www.google.co.uk/search?rlz=1C1GGRV_enGB785GB785&q=anson+rooms+student+union+MAP&npsic=0&rflfq=1&rlha=0&rllag=51457532,-2607996,361&tbm=lcl&ved=0ahUKEwj-16KClcTaAhVEOMAKHYI8DIEQtgMIKw&tbs=lrf:!2m4!1e17!4m2!17m1!1e2!2m1!1e2!2m1!1e3!3sIAE,lf:1,lf_ui:2&rldoc=1#rlfi=hd:;si:;mv:!1m3!1d1359.5388556555495!2d-2.6079966000000003!3d51.45789975!2m3!1f0!2f0!3f0!3m2!1i262!2i105!4f13.1;tbs:lrf:!2m1!1e2!2m1!1e3!2m4!1e17!4m2!17m1!1e2!3sIAE,lf:1,lf_ui:2" title="Map">University of Bristol Students' Union, The Richmond Building, 105 Queens Road, Clifton, Bristol BS8 1LN</a>
 
@@ -54,8 +56,6 @@ schedule:
     lesson:
     instructors:
     - Sebastian Höhna
-    - Joe O'Reilley
-    - Mark Puttick
 
   - starttime: 2018-05-01T12:00:00Z
     endtime: 2018-05-01T13:00:00Z
@@ -69,8 +69,6 @@ schedule:
     lesson: ctmc
     instructors: 
     - Sebastian Höhna
-    - Joe O'Reilley
-    - Mark Puttick
 
   - starttime: 2018-05-01T15:00:00Z
     endtime: 2018-05-01T15:15:00Z
@@ -84,8 +82,6 @@ schedule:
     lesson: ctmc
     instructors: 
     - Sebastian Höhna
-    - Joe O'Reilley
-    - Mark Puttick
     
   - starttime: 2018-05-01T9:00:00Z
     endtime: 2018-05-01T9:30:00Z
@@ -95,9 +91,11 @@ schedule:
     
   - starttime: 2018-05-02T9:30:00Z
     endtime: 2018-05-02T10:15:00Z
-    topic: Divergence time estimation
+    topic: Morphological models
     lesson: 
-    instructors: Walker Pett
+    instructors:
+    - Joe O'Reilley
+    - Mark Puttick
 
   - starttime: 2018-05-02T10:15:00Z
     endtime: 2018-05-02T10:30:00Z
@@ -107,7 +105,7 @@ schedule:
 
   - starttime: 2018-05-02T10:30:00Z
     endtime: 2018-05-02T12:00:00Z
-    topic: The fossilized birth-death model
+    topic: Divergence time estimation using the fossilized birth-death model
     lesson: 
     instructors: Walker Pett
 
@@ -115,15 +113,13 @@ schedule:
     endtime: 2018-05-02T13:00:00Z
     topic: Lunch break
     lesson: 
-    instructors: 
+    instructors:
 
   - starttime: 2018-05-02T13:00:00Z
     endtime: 2018-05-02T15:00:00Z
     topic: Practical on divergence time estimation using the fossilized birth-death model (Part I)
     lesson: tefbd
-    instructors: 
-    - Walker Pett
-    - Rachel Warnock
+    instructors: Walker Pett
 
   - starttime: 2018-05-02T15:00:00Z
     endtime: 2018-05-02T15:15:00Z
@@ -135,9 +131,7 @@ schedule:
     endtime: 2018-05-02T17:30:00Z
     topic: Practical on divergence time estimation using the fossilized birth-death model (Part II)
     lesson: tefbd
-    instructors: 
-    - Walker Pett
-    - Rachel Warnock
+    instructors: Walker Pett
     
   - starttime: 2018-05-03T9:00:00Z
     endtime: 2018-05-03T9:30:00Z
@@ -149,7 +143,7 @@ schedule:
     endtime: 2018-05-03T10:15:00Z
     topic: Diversification rate estimation (Part I)
     lesson: 
-    instructors: Rachel Warnock
+    instructors: Sebastian Höhna
 
   - starttime: 2018-05-03T10:15:00Z
     endtime: 2018-05-03T10:30:00Z
@@ -171,11 +165,13 @@ schedule:
 
   - starttime: 2018-05-03T13:00:00Z
     endtime: 2018-05-03T15:00:00Z
-    topic: Practical on diversification rate estimation (Part I)
-    lesson: fbd_range
+    topic: Choice of practical on diversification rate estimation (Part I)
+    lesson:
+    - fbd_range
+    - div
     instructors: 
     - Rachel Warnock
-    - Walker Pett
+    - Sebastian Höhna
 
   - starttime: 2018-05-03T15:00:00Z
     endtime: 2018-05-03T15:15:00Z
@@ -185,10 +181,12 @@ schedule:
 
   - starttime: 2018-05-03T15:15:00Z
     endtime: 2018-05-03T17:30:00Z
-    topic: Practical on diversification rate estimation (Part II)
-    lesson: fbd_range
+    topic: Choice of practical on diversification rate estimation (Part II)
+    lesson:
+    - fbd_range
+    - div
     instructors: 
     - Rachel Warnock
-    - Walker Pett
+    - Sebastian Höhna
 
 ---
