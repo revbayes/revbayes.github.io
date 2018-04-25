@@ -23,9 +23,9 @@ combining morphological and molecular data as well as stratigraphic
 range data from the fossil record [*e.g.,* 
 {% cite Ronquist2012a Zhang2016 Gavryushkina2016 %}]. 
 We begin with a concise
-introduction to the models used in this analysis in [Section Introduction](#Introduction), 
+introduction to the models used in this analysis in {% ref Introduction %}, 
 followed by a detailed example analysis in
-[Section Exercise](#Exercise) demonstrating how to apply these models in
+{% ref Exercise %} demonstrating how to apply these models in
 RevBayes {% cite Hoehna2017a %} and use Markov chain Monte Carlo (MCMC) to
 estimate the posterior distribution of dated phylogenies for data
 collected from living and fossil bears (family Ursidae). 
@@ -36,13 +36,13 @@ collected from living and fossil bears (family Ursidae).
 The “total-evidence” analysis described in this tutorial uses a
 probabilistic graphical model {% cite Hoehna2014b %} integrating three separate
 likelihood components or data partitions ({% ref fig_module_gm %}): one
-for molecular data ([Section GTR](#Intro-GTR)), one for
-morphological data ([Section Morpho](#Intro-Morpho)), and one for
+for molecular data ({% ref Intro-GTR %}), one for
+morphological data ({% ref Intro-Morpho %}), and one for
 fossil stratigraphic range data (section {% ref Intro-TipSampling %}
 ).
 In addition, all likelihood components are conditioned on a tree
 topology with divergence times, which is modeled according to a separate
-prior component ([Section FBD](#Intro-FBD)).
+prior component ({% ref Intro-FBD %}).
 
 
 {% figure fig_module_gm %}
@@ -60,7 +60,7 @@ complete tree ({% ref fig_example_tree %}A) and the sampled or
 reconstructed tree ({% ref fig_example_tree %}B). Importantly, we are
 interested in estimating the topology, divergence times, and fossil
 sample times of the *reconstructed tree* ({% ref fig_example_tree %}B).
-We will describe the distinction between these two trees in [Section FBD](#Intro-FBD).
+We will describe the distinction between these two trees in {% ref Intro-FBD %}.
 
 {% figure fig_example_tree %}
 <img src="figures/tree_plot_with_fossils.png" width="500" /> 
@@ -214,7 +214,7 @@ The model component for the molecular data uses a general
 time-reversible model of nucleotide evolution and gamma-distributed rate
 heterogeneity across sites (the *Substitution Model* and *Sites Model* in {% ref fig_module_gm %}). This
 model of sequence evolution is covered thoroughly in the
-[Substitution Models](/revbayes-site/tutorials/ctmc)
+{% page_ref ctmc %}
 tutorial.
 
 ### Lineage-Specific Rates of Sequence Evolution {#subsub:Intro-GTR-UExp}
@@ -232,7 +232,7 @@ according to an exponential density ({% ref fig_uexp_gm %}). This is *Branch Rat
 for the *Molecular Data* (*i.e.,* {% ref fig_module_gm %}) that we will use in this tutorial. 
 Another possible uncorrelated relaxed
 clock model is the uncorrelated lognormal model, described in the
-[relaxed Clocks](/revbayes-site/tutorials/clocks)
+{% page_ref clocks %}
 tutorial [also see {% cite Thorne2002 %}].
 
 {% figure fig_uexp_gm %}
@@ -289,12 +289,12 @@ characters (such as autapomorphies) are observed.
 
 ### The Morphological Clock {#subsub:Intro-MorphClock}
 
-Just like with the molecular data ([Section UCE](#Intro-GTR-UExp)),
+Just like with the molecular data ([Lineage-Specific Rates of Sequence Evolution](#subsub:Intro-GTR-UExp)),
 our observations of discrete morphological characters are conditional on
 the rate of change along each branch in the tree. This model component
 defines the of the in the generalized graphical model shown in 
 {% ref fig_module_gm %}. The relaxed clock model we described for the
-molecular data in [Section UCE](#Intro-GTR-UExp) it allows the
+molecular data in [Lineage-Specific Rates of Sequence Evolution](#subsub:Intro-GTR-UExp) it allows the
 substitution rate to vary through time and among lineages. For the
 morphological data, we will instead use a “strict clock” model
 {% cite Zuckerkandl1962 %}, in which the rate of discrete character change is
@@ -628,7 +628,7 @@ account for the rate of sampling back in time. This is the fossil
 sampling (or recovery) rate ($\psi$ in {% ref fig_fbd_gm %}), which we
 will instantiate as a stochastic node (named `psi`). As with the
 speciation and extinction rates
-([Speciation and Extinction Rates](#subsub:Exercise-FBD-SpeciationExtinction)), we will use an
+(see [Speciation and Extinction Rates](#subsub:Exercise-FBD-SpeciationExtinction)), we will use an
 exponential prior on this parameter and use scale moves to sample values
 from the posterior distribution.
 
@@ -768,7 +768,7 @@ tree.
 
 There are additional parameters that may be of particular interest to us
 that are not directly inferred as part of this graphical model. As with
-the diversification and turnover nodes specified in section
+the diversification and turnover nodes specified in
 [Speciation and Extinction Rates](#subsub:Exercise-FBD-SpeciationExtinction), we can create
 deterministic nodes to sample the posterior distributions of these
 parameters. Create a deterministic node called `num_samp_anc` that
@@ -800,7 +800,7 @@ recording. We will monitor the marginal distribution of the age of
 Finally, we will monitor the tree after removing taxa for which we did
 not have any molecular or morphological data. The phylogenetic placement
 of these taxa is based only on their occurrence times and any clade
-constraints we applied (section [Clade Constraints](#subsub:Exercise-FBD-Constraints)).
+constraints we applied (see [Clade Constraints](#subsub:Exercise-FBD-Constraints)).
 Because no data are available to resolve their relationships to other
 lineages, we will treat their placement as [*nuisance
 parameters*](https://en.wikipedia.org/wiki/Nuisance_parameter) and
@@ -827,7 +827,7 @@ file called in the `scripts` directory.
 Enter the Rev code provided in this section in the new model file.
 
 For our hierarchical, uncorrelated exponential relaxed clock model
-(described in section [Section UCE](#Intro-GTR-UExp) and shown in
+(described in section [Lineage-Specific Rates of Sequence Evolution](#subsub:Intro-GTR-UExp) and shown in
 {% ref fig_uexp_gm %}), we first define the mean branch rate as an
 exponential random variable. Then, we specify scale proposal moves on
 the mean rate parameter.
@@ -942,7 +942,7 @@ called in the `scripts` directory.
 
 Enter the Rev code provided in this section in the new model file.
 
-As stated in the introduction (section [[Section Morpho](#Intro-Morpho)) we will
+As stated in the introduction ({% ref Intro-Morpho %}) we will
 use Mk to model our data. Because the Mk model is a generalization of
 the Mk model, we will initialize our Q matrix from a Jukes-Cantor
 matrix.
@@ -962,7 +962,7 @@ heterogeneity among sites.
 The phylogenetic model also assumes that each branch has a rate of
 morphological character change. For simplicity, we will assume a strict
 exponential clock—meaning that every branch has the same rate drawn from
-an exponential distribution (section [The Morphological Clock](#subsub:Intro-MorphClock)).
+an exponential distribution (see [The Morphological Clock](#subsub:Intro-MorphClock)).
 
     clock_morpho ~ dnExponential(1.0)
     moves[mvi++] = mvScale(clock_morpho, lambda=0.01, weight=4.0)
@@ -977,7 +977,7 @@ You will notice that we have an option called `coding`. This option
 allows us to condition on biases in the way the morphological data were
 collected (ascertainment bias). The option `coding=variable` specifies
 that we should correct for coding only variable characters (discussed in
-[[Section Morpho](#Intro-Morpho)).
+{% ref Intro-Morpho %}).
 
     phyMorpho ~ dnPhyloCTMC(tree=fbd_tree, siteRates=rates_morpho, branchRates=clock_morpho, Q=Q_morpho, type="Standard", coding="variable")
     phyMorpho.clamp(morpho)
@@ -1051,7 +1051,7 @@ monitor to write a smaller and simpler output file. Since the tree
 topology is not included in the `mnModel` monitor (because it is not
 numerical), we will use `mnFile` to write the tree to file by specifying
 our `pruned_tree` variable in the arguments. Remember, we are
-monitoring the tree with nuisance taxa pruned out (section
+monitoring the tree with nuisance taxa pruned out (see
 [Monitoring Parameters of Interest using Deterministic Nodes](#subsub:Exercise-FBD-DetNodes)).
 
     monitors[mni++] = mnFile(filename="output/bears.trees", printgen=10, pruned_tree)
@@ -1107,7 +1107,7 @@ This will execute the analysis and you should see the following output
 
 When the analysis is complete, RevBayes will quit and you will have a
 new directory called `output` that will contain all of the files you
-specified with the monitors (Sect. [Specify Monitors and Output Filenames](#subsub:Exercise-Monitors)).
+specified with the monitors (see [Specify Monitors and Output Filenames](#subsub:Exercise-Monitors)).
 
 {% subsection Evaluate and Summarize Your Results | Exercise-SummarizeResults %}
 
@@ -1118,7 +1118,7 @@ interested in. [Tracer](http://tree.bio.ed.ac.uk/software/tracer/)
 {% cite Rambaut2011 %} is a tool for visualizing parameters sampled by MCMC.
 This program is limited to numerical parameters, however, and cannot be
 used to summarize or analyze MCMC samples of the tree topology (this
-will be discussed further in section [summarize tree](#subsub:Exercise-SummarizeTree)).
+will be discussed further in [Summarize Tree](#subsub:Exercise-SummarizeTree)).
 
 {% figure fig_tracer %}
 <img src="figures/tracer_load_file.png" width="900" /> 
@@ -1246,8 +1246,8 @@ posterior distribution of phylogenetic parameters. More explicitly,
 conclusions on such a run and it will be critical to perform multiple,
 independent runs for many more MCMC cycles. For further discussion of
 recommended MCMC practices in RevBayes, please see the 
-[Intro to MCMC](revbayes-site/tutorials/binomial)
-and [MCMC Algorithms](revbayes-site/tutorials/mcmc)
+{% page_ref mcmc_binomial %}
+and {% page_ref mcmc %}
 tutorials.
 
 ### Summarize Tree {#subsub:Exercise-SummarizeTree}
