@@ -94,8 +94,6 @@
         
           <li><a href="/revbayes-site/tutorials/tefbd/data/bears_taxa.tsv">bears_taxa.tsv</a></li>
         
-          <li><a href="/revbayes-site/tutorials/tefbd/data/bears_fossil_intervals.tsv">bears_fossil_intervals.tsv</a></li>
-        
           <li><a href="/revbayes-site/tutorials/tefbd/data/bears_morphology.nex">bears_morphology.nex</a></li>
         
           <li><a href="/revbayes-site/tutorials/tefbd/data/bears_cytb.nex">bears_cytb.nex</a></li>
@@ -107,6 +105,8 @@
         <ul id="scripts">
         
         
+          <li><a href="/revbayes-site/tutorials/tefbd/scripts/model_GTRG_TEFBD.Rev">model_GTRG_TEFBD.Rev</a></li>
+        
           <li><a href="/revbayes-site/tutorials/tefbd/scripts/model_Morph_TEFBD.Rev">model_Morph_TEFBD.Rev</a></li>
         
           <li><a href="/revbayes-site/tutorials/tefbd/scripts/model_UExp_TEFBD.Rev">model_UExp_TEFBD.Rev</a></li>
@@ -116,8 +116,6 @@
           <li><a href="/revbayes-site/tutorials/tefbd/scripts/mcmc_TEFBD.Rev">mcmc_TEFBD.Rev</a></li>
         
           <li><a href="/revbayes-site/tutorials/tefbd/scripts/model_FBDP_TEFBD.Rev">model_FBDP_TEFBD.Rev</a></li>
-        
-          <li><a href="/revbayes-site/tutorials/tefbd/scripts/model_GTRG_TEFBD.Rev">model_GTRG_TEFBD.Rev</a></li>
         
         </ul>
     
@@ -286,7 +284,7 @@ proportional to the likelihood,
 to one (<a href="#fig_tipsampling_gm"></a>). This model component represents
 the observed in the modular graphical model shown in <a href="#fig_module_gm"></a>.</p>
 
-<figure id="fig_tipsampling_gm"><p><img src="figures/tikz/tipsampling_gm.png" width="500" /></p>
+<figure id="fig_tipsampling_gm"><p><img src="figures/tikz/tipsampling_gm.png" width="400" /></p>
 <figcaption>A graphical model of the
 fossil age likelihood model used in this tutorial. The likelihood of
 fossil observation $\mathcal{F}_i$ is uniform and non-zero when the
@@ -331,7 +329,7 @@ clock model is the uncorrelated lognormal model, described in the
 <a href="/revbayes-site/tutorials/clocks/">Relaxed Clocks &amp; Time Trees</a>
 tutorial [also see <a href="#Thorne2002">(Thorne and Kishino 2002)</a>].</p>
 
-<figure id="fig_uexp_gm"><p><img src="figures/tikz/uexp_gm.png" width="500" /></p>
+<figure id="fig_uexp_gm"><p><img src="figures/tikz/uexp_gm.png" width="400" /></p>
 <figcaption>A graphical model of the
 uncorrelated exponential relaxed clock model. In this model, the clock
 rate on each branch is independent and identically distributed according
@@ -395,7 +393,7 @@ assumed to be constant throughout the tree. The strict clock is the
 simplest morphological branch rate model we can construct (graphical
 model shown in <a href="#fig_morph_clock_gm"></a>).</p>
 
-<figure id="fig_morph_clock_gm"><p><img src="figures/tikz/morph_clock_gm.png" width="500" /></p>
+<figure id="fig_morph_clock_gm"><p><img src="figures/tikz/morph_clock_gm.png" width="300" /></p>
 <figcaption>The graphical-model
 representation of the branch-rate model governing the evolution of
 morphological characters. This model is consistent with a strict
@@ -428,7 +426,9 @@ information about their phylogenetic relationships to incorporate these
 taxa in our analysis. This information will be applied using clade
 constraints.</p>
 
-<figure id="tab_bear_fossils" class="table"><table>
+<figure id="tab_bear_fossils" class="table"><figcaption class="table">Age ranges of fossil bears.</figcaption>
+
+<table>
   <thead>
     <tr>
       <th><strong>Fossil Species</strong></th>
@@ -509,8 +509,6 @@ constraints.</p>
     </tr>
   </tbody>
 </table>
-
-<figcaption class="table">Ages of fossil bears.</figcaption>
 </figure>
 
 <h3 class="subsection" id="Exercise-DataFiles">Data and Files</h3>
@@ -544,7 +542,7 @@ extant bears.</p>
 
 <h3 class="subsection" id="Exercise-GetStart">Getting Started</h3>
 
-<p>Create a new directory called <em>scripts</em>.</p>
+<p>Create a new directory called <code class="highlighter-rouge">scripts</code>.</p>
 
 <p>When you execute RevBayes in this exercise, you will do so within the
 main directory you created. 
@@ -558,7 +556,7 @@ that will contain all of the model parameters, moves, and functions. In
 this exercise, you will work primarily in your text editor and
 create a set of modular files that will be easily managed and
 interchanged. You will write the following files from scratch and save
-them in the <em>scripts</em> directory:</p>
+them in the <code class="highlighter-rouge">scripts</code> directory:</p>
 
 <ul>
   <li>
@@ -596,7 +594,7 @@ verify or troubleshoot your own scripts.</p>
 <h3 class="subsection" id="Exercise-StartMasterRev">Start the Master Rev File and Import Data</h3>
 
 <p>Open your text editor and create the master Rev file called in the
-<em>scripts</em> directory.</p>
+<code class="highlighter-rouge">scripts</code> directory.</p>
 
 <p>Enter the Rev code provided in this section in the new model file.</p>
 
@@ -908,19 +906,12 @@ moves[mvi++] = mvRootTimeSlideUniform(fbd_tree, origin_time, weight=5.0)
 <h3 id="subsub:Exercise-FBD-TipSampling">Sampling Fossil Occurrence Ages</h3>
 
 <p>Next, we need to account for uncertainty in the age estimates of our
-fossils using the observed minimum and maximum stratigraphic ages
-provided in the file <code class="highlighter-rouge">bears_fossil_intervals.tsv</code>. First, we read this
-file into a matrix called <code class="highlighter-rouge">intervals</code>.</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>intervals = readDataDelimitedFile(file="data/bears_fossil_intervals.tsv", header=true)
-</code></pre></div></div>
-
-<p>Next, we loop over this matrix. For each fossil observation, we create a
+fossils using the observed minimum and maximum stratigraphic ages.
+First, we loop over the the list of taxa. For each fossil observation, we create a
 uniform random variable representing the likelihood. Remember, we can
 represent the fossil likelihood using any uniform distribution that is
 non-zero when the likelihood is equal to one
-(Sect. <a href="#Intro-TipSampling"></a>
-).</p>
+(see <a href="#Intro-TipSampling"></a>).</p>
 
 <p>For example, if $t_i$ is the inferred fossil age and $(a_i,b_i)$ is the
 observed stratigraphic interval, we know the likelihood is equal to one
@@ -928,16 +919,18 @@ when $a_i &lt; t_i &lt; b_i$, or equivalently $t_i - b_i &lt; 0 &lt; t_i - a_i$.
 let’s represent the likelihood using a uniform random variable uniformly
 distributed in $(t_i - b_i, t_i - a_i)$ and clamped at zero.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for(i in 1:intervals.size())
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for(i in 1:taxa.size())
 {
-    taxon  = intervals[i][1]
-    a_i = intervals[i][2]
-    b_i = intervals[i][3]
-    
-    t[i] := tmrca(fbd_tree, clade(taxon))
-        
-    fossil[i] ~ dnUniform(t[i] - b_i, t[i] - a_i)
-    fossil[i].clamp( 0 )
+    a_i = taxa[i].getMinAge()
+    b_i = taxa[i].getMaxAge()
+
+    if(a_i &gt; 0)
+    {
+        t[i] := tmrca(fbd_tree, clade(taxa[i]))
+            
+        fossil[i] ~ dnUniform(t[i] - b_i, t[i] - a_i)
+        fossil[i].clamp( 0 )
+    }
 }
 </code></pre></div></div>
 
@@ -1403,10 +1396,8 @@ the output in figure <a href="#tracer_extinction_rate_trace_short"></a> shows re
 there long intervals where the statistic does not change. The presence
 of a trend or large leaps in a parameter value might indicate that your
 MCMC is not mixing well. You can read more about MCMC tuning and
-improving mixing in the tutorials <a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_MCMC_Binomial_Tutorial/RB_MCMC_Binomial_Tutorial.pdf"><strong><em>Intro to
-MCMC</em></strong></a>
-and <a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_MCMC_Tutorial/RB_MCMC_Tutorial.pdf"><strong><em>MCMC
-Algorithms</em></strong></a>.</p>
+improving mixing in the tutorials <a href="/revbayes-site/tutorials/mcmc_binomial/">Introduction to MCMC using RevBayes</a>
+and <a href="/revbayes-site/tutorials/mcmc/">Diagnosing MCMC performance</a>.</p>
 
 <p>Look through the traces for your parameters.</p>
 
