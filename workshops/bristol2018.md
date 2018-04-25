@@ -83,8 +83,8 @@ schedule:
     instructors: 
     - Sebastian Höhna
     
-  - starttime: 2018-05-01T9:00:00Z
-    endtime: 2018-05-01T9:30:00Z
+  - starttime: 2018-05-02T9:00:00Z
+    endtime: 2018-05-02T9:30:00Z
     topic: Recap MCMC and Substitution Models
     lesson: 
     instructors: Sebastian Höhna

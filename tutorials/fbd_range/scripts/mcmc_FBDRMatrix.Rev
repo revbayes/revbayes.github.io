@@ -31,7 +31,7 @@ for(i in 1:intervals.size())
 }
 
 # model 2
-bd ~ dnFBDPRange(taxa=taxa, lambda=lambda, mu=mu, psi=psi, timeline=timeline)
+bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, timeline=timeline)
 
 moves[mvi++] = mvMatrixElementScale(bd, lambda = 0.01, weight=taxa.size())
 moves[mvi++] = mvMatrixElementScale(bd, lambda = 0.1, weight=taxa.size())
