@@ -73,18 +73,14 @@ moves[mvi++] = mvRootTimeSlideUniform(fbd_tree, origin_time, weight=5.0)
 ### Use stratigraphic range data to explicitly sample the fossil occurence times ###
 # Use a for loop to create a uniform distribution on the occurence time for each fossil #
 # The boundaries of the uniform distribution are specified in the tsv file #
-for(i in 1:taxa.size())
-{
-    a_i = taxa[i].getMinAge()
-    b_i = taxa[i].getMaxAge()
 
-    if(a_i > 0)
-    {
-        t[i] := tmrca(fbd_tree, clade(taxa[i]))
+fossils = fbd_tree.getFossils()
+for(i in 1:fossils.size())
+{
+    t[i] := tmrca(fbd_tree, clade(fossils[i]))
             
-        fossil[i] ~ dnUniform(t[i] - b_i, t[i] - a_i)
-        fossil[i].clamp( 0 )
-    }
+    F[i] ~ dnUniform(t[i] - fossils[i].getMaxAge(), t[i] - fossils[i].getMinAge())
+    F[i].clamp( 0 )
 }
 
 # Add a move to sample the fossil times #

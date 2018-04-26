@@ -744,19 +744,10 @@ when $a_i < t_i < b_i$, or equivalently $t_i - b_i < 0 < t_i - a_i$. So
 let’s represent the likelihood using a uniform random variable uniformly
 distributed in $(t_i - b_i, t_i - a_i)$ and clamped at zero.
 
-    for(i in 1:taxa.size())
-    {
-        a_i = taxa[i].getMinAge()
-        b_i = taxa[i].getMaxAge()
-
-        if(a_i > 0)
-        {
-	        t[i] := tmrca(fbd_tree, clade(taxa[i]))
-	            
-	        fossil[i] ~ dnUniform(t[i] - b_i, t[i] - a_i)
-	        fossil[i].clamp( 0 )
-	    }
-    }
+{% assign fbd_script = "model_FBDP_TEFBD.Rev" %}
+```
+{{ fbd_script | snippet:"block","16" }}
+```
 
 Finally, we add a move that samples the ages of the fossil nodes on the
 tree.
