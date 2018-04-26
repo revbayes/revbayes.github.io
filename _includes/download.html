@@ -15,7 +15,8 @@
         <strong>Other</strong>
         <ul id="other_files">
         {% endif %}
-        {% for file in type.items %}
+        {% assign sorted = type.items | sort:"name" %}
+        {% for file in sorted %}
           <li><a href="{{ site.baseurl }}{{ file.path }}">{{ file.name }}</a></li>
         {% endfor %}
         </ul>
