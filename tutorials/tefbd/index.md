@@ -746,7 +746,7 @@ distributed in $(t_i - b_i, t_i - a_i)$ and clamped at zero.
 
 {% assign fbd_script = "model_FBDP_TEFBD.Rev" %}
 ```
-{{ fbd_script | snippet:"block","16" }}
+{{ fbd_script | snippet:"block","16-18" }}
 ```
 
 Finally, we add a move that samples the ages of the fossil nodes on the

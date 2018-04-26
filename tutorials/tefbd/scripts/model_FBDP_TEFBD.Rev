@@ -78,8 +78,11 @@ fossils = fbd_tree.getFossils()
 for(i in 1:fossils.size())
 {
     t[i] := tmrca(fbd_tree, clade(fossils[i]))
-            
-    F[i] ~ dnUniform(t[i] - fossils[i].getMaxAge(), t[i] - fossils[i].getMinAge())
+
+    a_i = fossils[i].getMinAge()
+    b_i = fossils[i].getMaxAge()
+
+    F[i] ~ dnUniform(t[i] - b_i, t[i] - a_i)
     F[i].clamp( 0 )
 }
 
