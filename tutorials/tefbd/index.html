@@ -92,11 +92,12 @@
         <ul id="data_files">
         
         
-          <li><a href="/revbayes-site/tutorials/tefbd/data/bears_taxa.tsv">bears_taxa.tsv</a></li>
+        
+          <li><a href="/revbayes-site/tutorials/tefbd/data/bears_cytb.nex">bears_cytb.nex</a></li>
         
           <li><a href="/revbayes-site/tutorials/tefbd/data/bears_morphology.nex">bears_morphology.nex</a></li>
         
-          <li><a href="/revbayes-site/tutorials/tefbd/data/bears_cytb.nex">bears_cytb.nex</a></li>
+          <li><a href="/revbayes-site/tutorials/tefbd/data/bears_taxa.tsv">bears_taxa.tsv</a></li>
         
         </ul>
     
@@ -105,6 +106,11 @@
         <ul id="scripts">
         
         
+        
+          <li><a href="/revbayes-site/tutorials/tefbd/scripts/mcmc_TEFBD.Rev">mcmc_TEFBD.Rev</a></li>
+        
+          <li><a href="/revbayes-site/tutorials/tefbd/scripts/model_FBDP_TEFBD.Rev">model_FBDP_TEFBD.Rev</a></li>
+        
           <li><a href="/revbayes-site/tutorials/tefbd/scripts/model_GTRG_TEFBD.Rev">model_GTRG_TEFBD.Rev</a></li>
         
           <li><a href="/revbayes-site/tutorials/tefbd/scripts/model_Morph_TEFBD.Rev">model_Morph_TEFBD.Rev</a></li>
@@ -112,10 +118,6 @@
           <li><a href="/revbayes-site/tutorials/tefbd/scripts/model_UExp_TEFBD.Rev">model_UExp_TEFBD.Rev</a></li>
         
           <li><a href="/revbayes-site/tutorials/tefbd/scripts/summarize_TEFBD.Rev">summarize_TEFBD.Rev</a></li>
-        
-          <li><a href="/revbayes-site/tutorials/tefbd/scripts/mcmc_TEFBD.Rev">mcmc_TEFBD.Rev</a></li>
-        
-          <li><a href="/revbayes-site/tutorials/tefbd/scripts/model_FBDP_TEFBD.Rev">model_FBDP_TEFBD.Rev</a></li>
         
         </ul>
     
@@ -922,18 +924,13 @@ when $a_i &lt; t_i &lt; b_i$, or equivalently $t_i - b_i &lt; 0 &lt; t_i - a_i$.
 let’s represent the likelihood using a uniform random variable uniformly
 distributed in $(t_i - b_i, t_i - a_i)$ and clamped at zero.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for(i in 1:taxa.size())
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fossils = fbd_tree.getFossils()
+for(i in 1:fossils.size())
 {
-    a_i = taxa[i].getMinAge()
-    b_i = taxa[i].getMaxAge()
-
-    if(a_i &gt; 0)
-    {
-        t[i] := tmrca(fbd_tree, clade(taxa[i]))
+    t[i] := tmrca(fbd_tree, clade(fossils[i]))
             
-        fossil[i] ~ dnUniform(t[i] - b_i, t[i] - a_i)
-        fossil[i].clamp( 0 )
-    }
+    F[i] ~ dnUniform(t[i] - fossils[i].getMaxAge(), t[i] - fossils[i].getMinAge())
+    F[i].clamp( 0 )
 }
 </code></pre></div></div>
 
