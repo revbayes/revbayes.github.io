@@ -1,5 +1,5 @@
 ---
-title: Historical Biogeography Analysis using a Simple DEC Model
+title: Historical Biogeographic Analysis using a Simple DEC Model
 subtitle: Ancestral range estimation of the silverswords under the dispersal-extinction-cladogenesis process
 authors:  Michael J. Landis
 level: 6
@@ -35,19 +35,15 @@ title-old: RB_Biogeography_Tutorial
 redirect: false 
 ---
 
-{% section Getting Set Up | setup %}
+{% section Introduction | intro %}
 
-This first exercise will not require you to use any data. However, it may still be
-useful to work within a single directory.
-
-> Create a new directory on your computer called `RB_biogeo_tutorial` or navigate to an existing directory.
-> 
->  
-{:.instruction}
+In the {% page_ref biogeo/biogeo_intro %} tutorial, we went through the exercise of setting up the
+instantaneous rate matrix and cladogenetic transition probabilities for a simple 
+DEC model.
+In this tutorial, we will complete a biogeographic analysis using an empirical dataset: the Hawaiian silverswords.
 
 
-
-{% section Simple DEC analysis | bg_simple %}
+{% section A Simple DEC Analysis | bg_simple %}
 
 The following series of tutorials will estimate the ancestral ranges of
 the silversword alliance (Tribe *Madiinae*), a young and
@@ -57,10 +53,10 @@ tarweeds, which are native to western continental North America
 {% cite Baldwin1991 %}. The size and age of the silversword clade, combined with
 our knowledge of Hawaiian island formation, makes it an ideal system to
 explore concepts in historical biogeography and phylogeny. For further
-reading, consult: {% cite Carlquist1959 Baldwin1998 %}.
+reading, consult: {% citet Carlquist1959 %} and {% citet Baldwin1998 %}.
 
 {% figure hawaii_areas %}
-<img src="figures/fig_hawaii_areas.png" width="75%">
+<img src="figures/fig_hawaii_areas.png" width="55%">
 {% figcaption %}
 A beautiful figure of the discrete areas for the tutorial. Six areas are shown: Kauai and Niihau (K); Oahu (O); Maui-Nui, Lanai, and Molokai (M); Hawaii (H); the remaining Hawaiian islands (R); and the North American mainland (Z).
 {% endfigcaption %}
@@ -71,6 +67,7 @@ the modern Hawaiian archipelago. To begin, we'll use just four areas, K,
 O, M, and H, and include areas R and Z in later analyses ({% ref hawaii_areas %}). The species ranges used in this exercise follow
 {% cite Gillespie2009 %}.
 
+{% table table1 %}
   |   Range     | Areas |  Size |  State  |
   |-------------|-------|-------|---------|
   |$\emptyset$  | 0000  |    0  |     0   |
@@ -90,15 +87,42 @@ O, M, and H, and include areas R and Z in later analyses ({% ref hawaii_areas %}
   |OMH          | 0111  |    3  |    14   |
   |KOMH         | 1111  |    4  |    15   |
 
-  : Area coding used for four areas: K is Kauai and Nihoa; O is Oahu; M
+{% tabcaption %}
+  Area coding used for four areas: K is Kauai and Nihoa; O is Oahu; M
   is Maui Nui, Lanai, and Molokai; H is Hawaii island.
+{% endtabcaption %}
+{% endtable %}
+
+{% subsection Getting Set Up | setup %}
+
+We have provided the following data files for this tutorial:
+
+-   [silversword.tre](data/n4/silversword.tre):
+    Dated phylogeny of the silversword alliance.
+-   [silversword.n4.range.nex](data/n4/silversword.n4.range.nex):
+    A data matrix with the coded ranges for each species.
+
+
+> Navigate to the directory on your computer that you would like to work from. 
+> You may want to create a new director (e.g., call it `RB_biogeo_tutorial`).
+> 
+> Once inside your working directory create a new folder called `data`. 
+> This is where we will save all of our data files for this tutorial.
+> 
+> Download the files provided into your `data` folder.
+>
+> Once you have all of the files, open RevBayes and ensure that your working directory 
+> is the top directory above the `data` folder (e.g., `RB_biogeo_tutorial`).
+{:.instruction}
+
+
 
 {% subsection Analysis | analysis_simple %}
 
 First, create file management variables for input and output
 
-    range_fn = "data/n4/silversword.n4.range.nex"
-    tree_fn = "data/n4/silversword.tre"
+    range_fn = "data/silversword.n4.range.nex"
+    tree_fn = "data/silversword.tre"
     out_fn = "output/simple"
 
 then read in our character data as binary presence-absence characters
@@ -107,7 +131,7 @@ then read in our character data as binary presence-absence characters
 
 then encode the species ranges into natural numbers
 
-    dat_range_n    = formatDiscreteCharacterData(dat_range_01, "DEC")
+    dat_range_n = formatDiscreteCharacterData(dat_range_01, "DEC")
 
 Record the number of areas (characters) from the discrete character data
 object
@@ -115,15 +139,22 @@ object
     n_areas = dat_range_01.nchar()
 
 You can view the taxon data to see how characters are coded both as
-human-readable presence-absence data and as computer-readable natural
-numbers
+human-readable presence-absence data 
 
     dat_range_01[1]
 
 ~~~
       Argyroxiphium_grayanum_East_Maui:
         0010
+~~~
+{:.rev-output}
+
+And as computer-readable natural
+numbers
+
     dat_range_n[1]
+
+~~~
       Argyroxiphium_grayanum_East_Maui:
         3
 ~~~
@@ -139,8 +170,7 @@ the vector of range state descriptions
 then write it to file
 
     state_desc_str = "state,range\n"
-    for (i in 1:state_desc.size())
-    {
+    for (i in 1:state_desc.size()){
         state_desc_str += (i-1) + "," + state_desc[i] + "\n"
     }
     write(state_desc_str, file=out_fn+".state_labels.txt")
@@ -158,14 +188,15 @@ extirpation rate. To gain greater control to observe and manage prior
 sensitivity, we'll reparameterize the DEC rate matrix to report the
 *relative* rates of dispersal versus extirpation events. In
 order for anagenetic event rates to be measured on an absolute time
-scale (*e.g.*, in millions of years), we will also introduce a a
+scale (*e.g.*, in millions of years), we will also introduce a 
 biogeographic rate parameter, similar to the molecular clock parameter
 used in dating analyses.
 
 First, create a parameter for the arrival rate of anagenetic range
 evolution events. We'll apply an uninformative prior to the rate's
-magnitude by first assigning a uniform distribution to the log$_{10}$
+magnitude by first assigning a uniform distribution to the $log_{10}$
 rate.
+
 
     log10_rate_bg ~ dnUniform(-4,2)
     log10_rate_bg.setValue(-2)
@@ -373,17 +404,19 @@ ancestral states along with their posterior probabilities. When the tree
 is a random variable, as it is in later exercises, additional
 information about phylogenetic uncertainty is reported.
 
-Finally, we can also generate a figure with ancestral states that is
+Finally, it is possible to generate a figure with ancestral states that is
 suitable for publication using the `R` package
-RevGadgets ({% ref simple_RevGadgets_ase %}). The
+[RevGadgets](https://github.com/revbayes/RevGadgets) ({% ref simple_RevGadgets_ase %}). 
+
+<!-- The
 script is easily modified for use with different datasets. To create
 build a figure, open an `R` session and load the plotting
 script with the source function
 
-    source("plot_anc_state.simple.R")
+    source("plot_anc_state.simple.R") -->
 
-{% figure simple_RevGadgers_ase %}
-![](figures/fig_simple_RevGadgets_ase.png) 
+{% figure simple_RevGadgets_ase %}
+<img src="figures/fig_simple_RevGadgets_ase.png" >
 {% figcaption %}
 Tree with ancestral state estimates for the "simple" analysis. Nodes are annotated
 with ancestral states before and after cladogenetic events. The
