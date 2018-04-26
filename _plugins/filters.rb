@@ -77,48 +77,45 @@ MSG
 
         ret = ""
 
-        if type == "lines"
-          from,to = number.split('-')
-          to = from if to == nil
+        from,to = number.split('-')
+        to = from if to == nil
 
-          from,to = from.to_i,to.to_i
+        from,to = from.to_i,to.to_i
 
-          if from > to
-            raise ArgumentError, <<-MSG
+        if from > to
+          raise ArgumentError, <<-MSG
 Line number from > to in 'snippet' filter
 MSG
-          end
+        end
 
+        range = from..to
+
+        if type == "lines"
           if to > content.lines.count
             raise ArgumentError, <<-MSG
 Line number out of range in 'snippet' filter
 MSG
           end
 
-          range = from..to
           i = 1
           for line in content.each_line do
             ret += line if range.include? i
             i += 1
           end
         elsif type == "block"
-          block_no = number.to_i
 
           i=1
           for block in content.gsub(/\n\n+/m,"\n\n").each_line("\n\n") do
-            if i == block_no
-              ret = block.strip
-              break
-            end
+            ret += block if range.include? i
             i += 1
           end
+
+          ret.sub(/\n*\z/,'')
         else
           raise ArgumentError, <<-MSG
 Unknown option '#{type}' for 'snippet' filter
 MSG
         end
-
-        ret.sub(/\n\z/,'')
       end
   end
 end
