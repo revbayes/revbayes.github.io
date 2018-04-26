@@ -331,7 +331,7 @@ variables, and run the MCMC analysis.
 
 {% subsection Results | results_simple %}
 
-*Example results are located at* 
+<!-- *Example results are located at* 
 
 The script located at `scripts/make_anc_states.Rev`
 contains code to construct an ancestral state tree. Like all RevBayes
@@ -339,7 +339,7 @@ scripts, this script may be executed from the command line. Because this
 is the first time using the script, we'll enter the code manually. To
 use it for future analyses, just modify the out_str
 variable to match the prefix of the target analysis, save the file, then
-execute the script by typing `rb scripts/make_anc_states.Rev` into the command line.
+execute the script by typing `rb scripts/make_anc_states.Rev` into the command line. -->
 
 {% figure simple_FigTree_ase %}
 ![](figures/fig_simple_FigTree_ase.png) 
