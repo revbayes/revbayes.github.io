@@ -518,10 +518,9 @@ constraints.</p>
 
 <h3 class="subsection" id="Exercise-DataFiles">Data and Files</h3>
 
-<p>On your own computer or your remote machine, create a directory called <em>RB_TotalEvidenceDating_FBD_Tutorial</em>
-(or any name you like).</p>
+<p>On your own computer or your remote machine, create a directory for this tutorial.</p>
 
-<p>In this directory, create another directory called <em>data</em>, and download the data
+<p>In this directory, create another directory called <code class="highlighter-rouge">data</code>, and download the data
 files which you can find at the top of this page.</p>
 
 <p>In the <code class="highlighter-rouge">data</code> folder, you will find the following files:</p>
@@ -598,8 +597,8 @@ verify or troubleshoot your own scripts.</p>
 
 <h3 class="subsection" id="Exercise-StartMasterRev">Start the Master Rev File and Import Data</h3>
 
-<p>Open your text editor and create the master Rev file called in the
-<code class="highlighter-rouge">scripts</code> directory.</p>
+<p>Open your text editor and create the master Rev
+file called <code class="highlighter-rouge">mcmc_TEFBD.Rev</code> in the <code class="highlighter-rouge">scripts</code> directory.</p>
 
 <p>Enter the Rev code provided in this section in the new model file.</p>
 
@@ -637,7 +636,7 @@ used for both molecular sequences and discrete morphological characters.</p>
 <p>Load the cytochrome-b sequences from file and assign the data matrix to
 a variable called <code class="highlighter-rouge">cytb</code>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cytb &lt;- readDiscreteCharacterData("data/bears_cytb.nex") 
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cytb &lt;- readDiscreteCharacterData("data/bears_cytb.nex")
 </code></pre></div></div>
 
 <p>Next, import the morphological character matrix and assign it to the
@@ -700,7 +699,7 @@ directory.</p>
 <h3 class="subsection" id="Exercise-ModelFBD">The Fossilized Birth-Death Process</h3>
 
 <p>Open your text editor and create the fossilized birth-death model file
-called in the <code class="highlighter-rouge">scripts</code> directory.</p>
+called <code class="highlighter-rouge">model_FBDP_TEFBD.Rev</code> in the <code class="highlighter-rouge">scripts</code> directory.</p>
 
 <p>Enter the Rev code provided in this section in the new model file.</p>
 
@@ -810,6 +809,7 @@ exponential prior on this parameter and use scale moves to sample values
 from the posterior distribution.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psi ~ dnExponential(10) 
+
 moves[mvi++] = mvScale(psi, lambda=0.01, weight=1)
 moves[mvi++] = mvScale(psi, lambda=0.1,  weight=1)
 moves[mvi++] = mvScale(psi, lambda=1,    weight=1)
@@ -827,6 +827,7 @@ overlap zero. However, for parameters such as the origin age, there is
 little risk of this being an issue.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>origin_time ~ dnUnif(37.0, 55.0)
+
 moves[mvi++] = mvSlide(origin_time, delta=0.01, weight=5.0)
 moves[mvi++] = mvSlide(origin_time, delta=0.1,  weight=5.0)
 moves[mvi++] = mvSlide(origin_time, delta=1,    weight=5.0)
@@ -862,6 +863,7 @@ Ursinae, so we define a clade for the total group Ursinae including
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clade_ursinae = clade("Melursus_ursinus", "Ursus_arctos", "Ursus_maritimus", 
                       "Helarctos_malayanus", "Ursus_americanus", "Ursus_thibetanus", 
                       "Ursus_abstrusus", "Ursus_spelaeus")
+constraints = v(clade_ursinae)
 </code></pre></div></div>
 
 <p>Then we can specify the final constrained tree prior distribution by
@@ -871,8 +873,7 @@ Here we use the stochastic assignment operator <code class="highlighter-rouge">~
 stochastic node for our constrai.e. FBD-tree variable (called
 <code class="highlighter-rouge">fbd_tree</code>).</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>constraints = v(clade_ursinae)
-fbd_tree ~ dnConstrainedTopology(fbd_dist, constraints=constraints)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fbd_tree ~ dnConstrainedTopology(fbd_dist, constraints=constraints)
 </code></pre></div></div>
 
 <p>It is important to recognize that we do not know if <em>Ursus abstrusus</em> is
@@ -904,6 +905,7 @@ to explicitly sample the root age (<code class="highlighter-rouge">mvRootTimeSli
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvFNPR(fbd_tree, weight=15.0)
 moves[mvi++] = mvCollapseExpandFossilBranch(fbd_tree, origin_time, weight=6.0)
+
 moves[mvi++] = mvNodeTimeSlideUniform(fbd_tree, weight=40.0)
 moves[mvi++] = mvRootTimeSlideUniform(fbd_tree, origin_time, weight=5.0)
 </code></pre></div></div>
@@ -953,7 +955,7 @@ deterministic nodes to sample the posterior distributions of these
 parameters. Create a deterministic node called <code class="highlighter-rouge">num_samp_anc</code> that
 will compute the number of sampled ancestors in our <code class="highlighter-rouge">fbd_tree</code>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>num_samp_anc := fbd_tree.numSampledAncestors()
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>num_samp_anc := fbd_tree.numSampledAncestors();
 </code></pre></div></div>
 
 <p>We are also interested in the age of the most-recent-common ancestor
@@ -1005,7 +1007,7 @@ the <code class="highlighter-rouge">scripts</code> directory.</p>
 <h3 class="subsection" id="Exercise-ModelUExp">The Uncorrelated Exponential Relaxed-Clock Model</h3>
 
 <p>Open your text editor and create the lineage-specific branch-rate model
-file called in the <code class="highlighter-rouge">scripts</code> directory.</p>
+file called <code class="highlighter-rouge">model_UExp_TEFBD.Rev</code> in the <code class="highlighter-rouge">scripts</code> directory.</p>
 
 <p>Enter the Rev code provided in this section in the new model file.</p>
 
@@ -1016,6 +1018,7 @@ exponential random variable. Then, we specify scale proposal moves on
 the mean rate parameter.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>branch_rates_mean ~ dnExponential(10.0)
+
 moves[mvi++] = mvScale(branch_rates_mean, lambda=0.01, weight=1.0)
 moves[mvi++] = mvScale(branch_rates_mean, lambda=0.1,  weight=1.0)
 moves[mvi++] = mvScale(branch_rates_mean, lambda=1.0,  weight=1.0)
@@ -1050,7 +1053,7 @@ moves[mvi++] = mvVectorScale(branch_rates, lambda=0.1,  weight=4.0)
 moves[mvi++] = mvVectorScale(branch_rates, lambda=1.0,  weight=4.0)
 </code></pre></div></div>
 
-<p>You have completed the FBD model file. Save <code class="highlighter-rouge">model_UExp_TEFBD.Rev</code> in
+<p>You have completed the molecular relaxed clock model file. Save <code class="highlighter-rouge">model_UExp_TEFBD.Rev</code> in
 the <code class="highlighter-rouge">scripts</code> directory.</p>
 
 <p>We will now move on to the next model file.</p>
@@ -1058,7 +1061,7 @@ the <code class="highlighter-rouge">scripts</code> directory.</p>
 <h3 class="subsection" id="Exercise-ModelGTRG">The General Time-Reversible + Gamma Model of Nucleotide Sequence Evolution</h3>
 
 <p>Open your text editor and create the molecular substitution model file
-called in the <code class="highlighter-rouge">scripts</code> directory.</p>
+called <code class="highlighter-rouge">model_GTRG_TEFBD.Rev</code> in the <code class="highlighter-rouge">scripts</code> directory.</p>
 
 <p>Enter the Rev code provided in this section in the new model file.</p>
 
@@ -1099,6 +1102,7 @@ exponential parameter $\alpha$ for the shape of the gamma distribution,
 along with scale proposals.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha_cytb ~ dnExponential( 1.0 )
+
 moves[mvi++] = mvScale(alpha_cytb, lambda=0.01, weight=1.0)
 moves[mvi++] = mvScale(alpha_cytb, lambda=0.1,  weight=1.0)
 moves[mvi++] = mvScale(alpha_cytb, lambda=1,    weight=1.0)
@@ -1123,7 +1127,7 @@ part of the likelihood using the <code class="highlighter-rouge">clamp</code> me
 phySeq.clamp(cytb)
 </code></pre></div></div>
 
-<p>You have completed the FBD model file. Save <code class="highlighter-rouge">model_GTRG_TEFBD.Rev</code> in
+<p>You have completed the GTR model file. Save <code class="highlighter-rouge">model_GTRG_TEFBD.Rev</code> in
 the <code class="highlighter-rouge">scripts</code> directory.</p>
 
 <p>We will now move on to the next model file.</p>
@@ -1131,7 +1135,7 @@ the <code class="highlighter-rouge">scripts</code> directory.</p>
 <h3 class="subsection" id="Exercise-ModelMorph">Modeling the Evolution of Binary Morphological Characters</h3>
 
 <p>Open your text editor and create the morphological character model file
-called in the <code class="highlighter-rouge">scripts</code> directory.</p>
+called <code class="highlighter-rouge">model_Morph_TEFBD.Rev</code> in the <code class="highlighter-rouge">scripts</code> directory.</p>
 
 <p>Enter the Rev code provided in this section in the new model file.</p>
 
@@ -1140,7 +1144,7 @@ use Mk to model our data. Because the Mk model is a generalization of
 the Mk model, we will initialize our Q matrix from a Jukes-Cantor
 matrix.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q_morpho &lt;- fnJC(2)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q_morpho := fnJC(2)
 </code></pre></div></div>
 
 <p>As in the molecular data partition, we will allow gamma-distributed rate
@@ -1149,8 +1153,8 @@ heterogeneity among sites.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha_morpho ~ dnExponential( 1.0 )
 rates_morpho := fnDiscretizeGamma( alpha_morpho, alpha_morpho, 4 )
 
-moves[mvi++] = mvScale(alpha_morpho, lambda=0.01, weight=1.0)
-moves[mvi++] = mvScale(alpha_morpho, lambda=0.1,  weight=1.0)
+moves[mvi++] = mvScale(alpha_morpho, lambda=0.01, weight=5.0)
+moves[mvi++] = mvScale(alpha_morpho, lambda=0.1,  weight=3.0)
 moves[mvi++] = mvScale(alpha_morpho, lambda=1,    weight=1.0)
 </code></pre></div></div>
 
@@ -1160,6 +1164,7 @@ exponential clock—meaning that every branch has the same rate drawn from
 an exponential distribution (see <a href="#subsub:Intro-MorphClock">The Morphological Clock</a>).</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clock_morpho ~ dnExponential(1.0)
+
 moves[mvi++] = mvScale(clock_morpho, lambda=0.01, weight=4.0)
 moves[mvi++] = mvScale(clock_morpho, lambda=0.1,  weight=4.0)
 moves[mvi++] = mvScale(clock_morpho, lambda=1,    weight=4.0)
@@ -1179,7 +1184,7 @@ that we should correct for coding only variable characters (discussed in
 phyMorpho.clamp(morpho)
 </code></pre></div></div>
 
-<p>You have completed the FBD model file. Save <code class="highlighter-rouge">model_Morph_TEFBD.Rev</code> in
+<p>You have completed the morphology model file. Save <code class="highlighter-rouge">model_Morph_TEFBD.Rev</code> in
 the <code class="highlighter-rouge">scripts</code> directory.</p>
 
 <p>We will now move on to the next model file.</p>
@@ -1187,7 +1192,7 @@ the <code class="highlighter-rouge">scripts</code> directory.</p>
 <h3 class="subsection" id="Exercise-CompleteMCMC">Complete Master Rev File</h3>
 
 <p>Return to the master Rev file you created in section
-<a href="#Exercise-StartMasterRev"></a> called in the <code class="highlighter-rouge">scripts</code> directory.</p>
+<a href="#Exercise-StartMasterRev"></a> called <code class="highlighter-rouge">mcmc_TEFBD.Rev</code> in the <code class="highlighter-rouge">scripts</code> directory.</p>
 
 <p>Enter the Rev code provided in this section in this file.</p>
 
@@ -1197,13 +1202,13 @@ the <code class="highlighter-rouge">scripts</code> directory.</p>
 files into the workspace. Use this function to load in the model scripts
 we have written in the text editor and saved in the <code class="highlighter-rouge">scripts</code> directory.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/model_FBDP_TEFBD.Rev")
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/model_FBDP_TEFBD.Rev") # FBD tree prior
 
-source("scripts/model_UExp_TEFBD.Rev")
+source("scripts/model_UExp_TEFBD.Rev") # UExp relaxed clock
 
-source("scripts/model_GTRG_TEFBD.Rev")
+source("scripts/model_GTRG_TEFBD.Rev") # Molecular substitution model (GTR+G)
 
-source("scripts/model_Morph_TEFBD.Rev")
+source("scripts/model_Morph_TEFBD.Rev") # Morphological character change model
 </code></pre></div></div>
 
 <h3 id="subsub:Exercise-ModObj">Create Model Object</h3>
@@ -1510,8 +1515,7 @@ ancestor</figcaption>
 Singletons</em></strong>) Why might a node with a sampled ancestor be
 referred to as a singleton?</p>
 
-<p>How can you see the names of the
-fossils that are putative sampled ancestors?</p>
+<p>How can you see the names of the fossils that are putative sampled ancestors?</p>
 
 <p>Try mousing over different
 branches (see <a href="#highlight"></a>. What are the fields

@@ -317,21 +317,15 @@ This is a reference to {% ref subsection1 %}
 <p>You can dynamically include snippets from your script files using the <code class="highlighter-rouge">snippet</code> filter. You can extract a range of line numbers using the <code class="highlighter-rouge">lines</code> option, or you can extract a block of text using the <code class="highlighter-rouge">block</code> option. You can refer to the script file by name, or you can use a Liquid variable, for instance, obtained from the <code class="highlighter-rouge">page.files</code> array, or using the <code class="highlighter-rouge">match_file</code> filter.</p>
 
 <blockquote class="preview"><div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Here are lines 1-7 of <span class="sb">`example.Rev`</span>
-```
-{{ "example.Rev" | snippet:"lines","1-7" }}
-```
+{{ "example.Rev" | snippet:"line","1-7" }}
 
 Here is the third block of text from <span class="sb">`{{ page.files[1].name }}`</span>
-```
 {{ page.files<span class="p">[</span><span class="nv">1</span><span class="p">]</span> | snippet:"block","3" }}
-```
 
 {% assign example_script = "example.Rev" | match_file %}
 
-Here is the second block of text from <span class="sb">`{{ example_script.name }}`</span>
-```
-{{ example_script | snippet:"block","2" }}
-```
+Here are the second and third blocks of text from <span class="sb">`{{ example_script.name }}`</span>
+{{ example_script | snippet:"block#","2-3" }}
 </code></pre></div></div>
 <br /><p>Here are lines 1-7 of <code class="highlighter-rouge">example.Rev</code></p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># this is an example Rev script
@@ -341,10 +335,6 @@ a ~ dnExp(1)
 # this is the second block
 # this is line 6
 b ~ dnBeta(1,1)
-
-# this is the third block
-# this is line 10
-c := a + b
 </code></pre></div></div>
 
 <p>Here is the third block of text from <code class="highlighter-rouge">example.Rev</code></p>
@@ -353,10 +343,10 @@ c := a + b
 c := a + b
 </code></pre></div></div>
 
-<p>Here is the second block of text from <code class="highlighter-rouge">example.Rev</code></p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># this is the second block
-# this is line 6
-b ~ dnBeta(1,1)
+<p>Here are the second and third blocks of text from <code class="highlighter-rouge">example.Rev</code></p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>b ~ dnBeta(1,1)
+
+c := a + b
 </code></pre></div></div>
 </blockquote>
 

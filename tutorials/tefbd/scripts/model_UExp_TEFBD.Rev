@@ -23,6 +23,7 @@ for(i in 1:n_branches){
     moves[mvi++] = mvScale(branch_rates[i], lambda=0.1,  weight=1.0)
     moves[mvi++] = mvScale(branch_rates[i], lambda=0.01, weight=1.0)
 }
+
 # add a move on the branch rate vector
 moves[mvi++] = mvVectorScale(branch_rates, lambda=0.01, weight=4.0) 
 moves[mvi++] = mvVectorScale(branch_rates, lambda=0.1,  weight=4.0) 
