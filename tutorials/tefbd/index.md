@@ -346,16 +346,16 @@ constraints.
 Age range data for fossil and extant bear species.
 {% endtabcaption %}
 
- | **Fossil Species**         | **Age**        | **Reference**              |
- |--------------------------- |:--------------:|---------------------------:|
- | *Ailuropoda melanoleuca*	  | 0.0-1.24       | {% cite abella12 %}        |
- | *Helarctos malayanus*      | 0.0-1.78       | {% cite abella12 %}        |
- | *Melursus ursinus*         | 0.0-1.8        | {% cite abella12 %}        |
- | *Tremarctos ornatus*       | 0.0-0.0        | {% cite abella12 %}        |
- | *Ursus americanus*         | 0.0-1.84       | {% cite abella12 %}        |
- | *Ursus arctos*             | 0.0-1.71       | {% cite abella12 %}        |
- | *Ursus maritimus*          | 0.0-0.65       | {% cite abella12 %}        |
- | *Ursus thibetanus*         | 0.0-1.18       | {% cite abella12 %}        |
+ | **Fossil Species**         | **Age**        | **Reference**                       |
+ |--------------------------- |:--------------:|------------------------------------:|
+ | *Ailuropoda melanoleuca*	  | 0.0-1.24       | {% cite abella12 %}                 |
+ | *Helarctos malayanus*      | 0.0-1.78       | {% cite abella12 %}                 |
+ | *Melursus ursinus*         | 0.0-1.8        | {% cite abella12 %}                 |
+ | *Tremarctos ornatus*       | 0.0-0.0        | {% cite abella12 %}                 |
+ | *Ursus americanus*         | 0.0-1.84       | {% cite abella12 %}                 |
+ | *Ursus arctos*             | 0.0-1.71       | {% cite abella12 %}                 |
+ | *Ursus maritimus*          | 0.0-0.65       | {% cite abella12 %}                 |
+ | *Ursus thibetanus*         | 0.0-1.18       | {% cite abella12 %}                 |
  | *Agriarctos spp.*          | 4.9–7.75       | {% cite abella2011 abella12 %}      |
  | *Ailurarctos lufengensis*  | 5.8–8.2        | {% cite jin2007 abella12 %}         |
  | *Arctodus simus*           | 0.012–2.588    | {% cite churcher1993 krause2008 %}  |
