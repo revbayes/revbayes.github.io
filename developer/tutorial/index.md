@@ -176,21 +176,15 @@ You can dynamically include snippets from your script files using the `snippet` 
 
 {% preview %}
 Here are lines 1-7 of `example.Rev`
-```
-{{ "example.Rev" | snippet:"lines","1-7" }}
-```
+{{ "example.Rev" | snippet:"line","1-7" }}
 
 Here is the third block of text from `{{ page.files[1].name }}`
-```
 {{ page.files[1] | snippet:"block","3" }}
-```
 
 {% assign example_script = "example.Rev" | match_file %}
 
-Here is the second block of text from `{{ example_script.name }}`
-```
-{{ example_script | snippet:"block","2" }}
-```
+Here are the second and third blocks of text from `{{ example_script.name }}`
+{{ example_script | snippet:"block#","2-3" }}
 {% endpreview %}
 
 {% section Formatting code %}

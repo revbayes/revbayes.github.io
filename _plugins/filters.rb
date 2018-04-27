@@ -90,7 +90,7 @@ MSG
 
         range = from..to
 
-        if type == "lines"
+        if type =~ /^line/
           if to > content.lines.count
             raise ArgumentError, <<-MSG
 Line number out of range in 'snippet' filter
@@ -102,15 +102,23 @@ MSG
             ret += line if range.include? i
             i += 1
           end
-        elsif type == "block"
 
-          i=1
+          "```\n"+ret+"```"
+        elsif type =~ /^block/
+          i = 1
+          
+          if m = type.match(/block(.)$/)
+            content = content.gsub(Regexp.new('^\s*'+m[1]+'.*'),'')
+          end
+
+          content = content.gsub(/\A\n*/m,'')
+
           for block in content.gsub(/\n\n+/m,"\n\n").each_line("\n\n") do
             ret += block if range.include? i
             i += 1
           end
 
-          ret.sub(/\n*\z/,'')
+          "```\n"+ret.sub(/\n*\z/,'')+"\n```"
         else
           raise ArgumentError, <<-MSG
 Unknown option '#{type}' for 'snippet' filter

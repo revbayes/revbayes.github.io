@@ -368,10 +368,9 @@ Age ranges of fossil bears.
 
 {% subsection Data and Files | Exercise-DataFiles %}
 
-On your own computer or your remote machine, create a directory called *RB_TotalEvidenceDating_FBD_Tutorial*
-(or any name you like).
+On your own computer or your remote machine, create a directory for this tutorial.
 
-In this directory, create another directory called *data*, and download the data
+In this directory, create another directory called `data`, and download the data
 files which you can find at the top of this page.
 
 In the `data` folder, you will find the following files:
@@ -434,8 +433,10 @@ verify or troubleshoot your own scripts.
 
 {% subsection Start the Master Rev File and Import Data | Exercise-StartMasterRev %}
 
-Open your text editor and create the master Rev file called in the
-`scripts` directory.
+Open your text editor and create the master Rev
+file called `mcmc_TEFBD.Rev` in the `scripts` directory.
+
+{% assign mcmc_script = "mcmc_TEFBD.Rev" %}
 
 Enter the Rev code provided in this section in the new model file.
 
@@ -454,7 +455,7 @@ you will move on to writing the {% ref Exercise-CompleteMCMC %}.
 Begin the Rev script by loading in the list of taxon names from the
 `bears_taxa.tsv` file using the `readTaxonData` function.
 
-    taxa <- readTaxonData("data/bears_taxa.tsv")
+{{ mcmc_script | snippet:"block#","1" }}
 
 This function reads a tab-delimited file and creates a variable called
 `taxa` that is a list of all of the taxon names relevant to this
@@ -472,12 +473,12 @@ used for both molecular sequences and discrete morphological characters.
 Load the cytochrome-b sequences from file and assign the data matrix to
 a variable called `cytb`.
 
-    cytb <- readDiscreteCharacterData("data/bears_cytb.nex") 
+{{ mcmc_script | snippet:"block#","2" }}
 
 Next, import the morphological character matrix and assign it to the
 variable `morpho`.
 
-    morpho <- readDiscreteCharacterData("data/bears_morphology.nex")
+{{ mcmc_script | snippet:"block#","3" }}
 
 ### Add Missing Taxa {#subsub:Exercise-AddMissing}
 
@@ -493,8 +494,7 @@ part of the same dataset, as opposed to present in separate datasets.
 This ensures that there is a unified taxon set that contains all of our
 tips.
 
-    cytb.addMissingTaxa( taxa )
-    morpho.addMissingTaxa( taxa )
+{{ mcmc_script | snippet:"block#","4" }}
 
 ### Create Helper Variables {#subsub:Exercise-mviVar}
 
@@ -530,7 +530,9 @@ We will now move on to the next Rev file and will complete
 {% subsection The Fossilized Birth-Death Process | Exercise-ModelFBD %}
 
 Open your text editor and create the fossilized birth-death model file
-called in the `scripts` directory.
+called `model_FBDP_TEFBD.Rev` in the `scripts` directory.
+
+{% assign fbd_script = "model_FBDP_TEFBD.Rev" %}
 
 Enter the Rev code provided in this section in the new model file.
 
@@ -556,8 +558,7 @@ distribution with $\delta = 10$ has an expected value (mean) of $1/10$.
 Create the exponentially distributed stochastic nodes for the
 `speciation_rate` and `extinction_rate` using the `~` operator.
 
-    speciation_rate ~ dnExponential(10)
-    extinction_rate ~ dnExponential(10)
+{{ fbd_script | snippet:"block#","1" }}
 
 For every stochastic node we declare, we must also specify proposal
 algorithms (called *moves*) to sample the value of the parameter in
@@ -575,13 +576,7 @@ will use three scale moves for each parameter with different values of
 lambda. By using multiple moves for a single parameter, we will improve
 the mixing of the Markov chain.
 
-    moves[mvi++] = mvScale(speciation_rate, lambda=0.01, weight=1)
-    moves[mvi++] = mvScale(speciation_rate, lambda=0.1,  weight=1)
-    moves[mvi++] = mvScale(speciation_rate, lambda=1.0,  weight=1)
-
-    moves[mvi++] = mvScale(extinction_rate, lambda=0.01, weight=1)
-    moves[mvi++] = mvScale(extinction_rate, lambda=0.1,  weight=1)
-    moves[mvi++] = mvScale(extinction_rate, lambda=1,    weight=1)
+{{ fbd_script | snippet:"block#","2-3" }}
 
 You will also notice that each move has a specified `weight`. This
 option allows you to indicate how many times you would like a given move
@@ -609,8 +604,7 @@ we can monitor (that is, track the values of these parameters, and print
 them to a file) their values by creating two deterministic nodes using
 the `:=` operator.
 
-    diversification := speciation_rate - extinction_rate
-    turnover := extinction_rate/speciation_rate
+{{ fbd_script | snippet:"block#","4" }}
 
 ### Probability of Sampling Extant Taxa {#subsub:Exercise-FBD-Rho}
 
@@ -619,7 +613,7 @@ the probability of sampling an extant lineage ($\rho$ in
 {% ref fig_fbd_gm %}) to 1. The parameter `rho` will be specified as a
 constant node using the `<-` operator.
 
-    rho <- 1.0
+{{ fbd_script | snippet:"block#","5" }}
 
 Because $\rho$ is a constant node, we do not have to assign a move to
 this parameter.
@@ -635,10 +629,7 @@ speciation and extinction rates
 exponential prior on this parameter and use scale moves to sample values
 from the posterior distribution.
 
-    psi ~ dnExponential(10) 
-    moves[mvi++] = mvScale(psi, lambda=0.01, weight=1)
-    moves[mvi++] = mvScale(psi, lambda=0.1,  weight=1)
-    moves[mvi++] = mvScale(psi, lambda=1,    weight=1)
+{{ fbd_script | snippet:"block#","6-7" }}
 
 ### The Origin Time {#subsub:Exercise-FBD-Origin}
 
@@ -651,10 +642,7 @@ Sliding window moves can be tricky for small values, as the window may
 overlap zero. However, for parameters such as the origin age, there is
 little risk of this being an issue.
 
-    origin_time ~ dnUnif(37.0, 55.0)
-    moves[mvi++] = mvSlide(origin_time, delta=0.01, weight=5.0)
-    moves[mvi++] = mvSlide(origin_time, delta=0.1,  weight=5.0)
-    moves[mvi++] = mvSlide(origin_time, delta=1,    weight=5.0)
+{{ fbd_script | snippet:"block#","8-9" }}
 
 Note that we specified a higher move `weight` for each of the proposals
 operating on `origin_time` than we did for the three previous
@@ -668,7 +656,7 @@ All the parameters of the FBD process have now been specified. The next
 step is to use these parameters to define the FBD tree prior
 distribution, which we will call `fbd_dist`.
 
-    fbd_dist = dnFBDP(origin=origin_time, lambda=speciation_rate, mu=extinction_rate, psi=psi, rho=rho, taxa=taxa)
+{{ fbd_script | snippet:"block#","10" }}
 
 ### Clade Constraints {#subsub:Exercise-FBD-Constraints}
 
@@ -682,9 +670,7 @@ it belongs. In this case, *Ursus abstrusus* belongs to the subfamily
 Ursinae, so we define a clade for the total group Ursinae including
 *Ursus abstrusus*.
 
-    clade_ursinae = clade("Melursus_ursinus", "Ursus_arctos", "Ursus_maritimus", 
-                          "Helarctos_malayanus", "Ursus_americanus", "Ursus_thibetanus", 
-                          "Ursus_abstrusus", "Ursus_spelaeus")
+{{ fbd_script | snippet:"block#","11" }}
 
 Then we can specify the final constrained tree prior distribution by
 creating a vector of constraints, and providing it along with the
@@ -693,8 +679,7 @@ Here we use the stochastic assignment operator `~` to create a
 stochastic node for our constrai.e. FBD-tree variable (called
 `fbd_tree`).
 
-    constraints = v(clade_ursinae)
-    fbd_tree ~ dnConstrainedTopology(fbd_dist, constraints=constraints)
+{{ fbd_script | snippet:"block#","12" }}
 
 It is important to recognize that we do not know if *Ursus abstrusus* is
 a *crown* or *stem* Ursinae. Because of this, we defined this clade
@@ -723,10 +708,7 @@ Sect. {% ref Intro-FBD %}) so that it is on its own branch and vice
 versa. In addition, when conditioning on the origin time, we also need
 to explicitly sample the root age (`mvRootTimeSlideUniform`).
 
-    moves[mvi++] = mvFNPR(fbd_tree, weight=15.0)
-    moves[mvi++] = mvCollapseExpandFossilBranch(fbd_tree, origin_time, weight=6.0)
-    moves[mvi++] = mvNodeTimeSlideUniform(fbd_tree, weight=40.0)
-    moves[mvi++] = mvRootTimeSlideUniform(fbd_tree, origin_time, weight=5.0)
+{{ fbd_script | snippet:"block#","13-14" }}
 
 ### Sampling Fossil Occurrence Ages {#subsub:Exercise-FBD-TipSampling}
 
@@ -744,15 +726,12 @@ when $a_i < t_i < b_i$, or equivalently $t_i - b_i < 0 < t_i - a_i$. So
 let’s represent the likelihood using a uniform random variable uniformly
 distributed in $(t_i - b_i, t_i - a_i)$ and clamped at zero.
 
-{% assign fbd_script = "model_FBDP_TEFBD.Rev" %}
-```
-{{ fbd_script | snippet:"block","16-18" }}
-```
+{{ fbd_script | snippet:"block#","15-17" }}
 
 Finally, we add a move that samples the ages of the fossil nodes on the
 tree.
 
-    moves[mvi++] = mvFossilTimeSlideUniform(fbd_tree, origin_time, weight=5.0)
+{{ fbd_script | snippet:"block#","18" }}
 
 ### Monitoring Parameters of Interest using Deterministic Nodes {#subsub:Exercise-FBD-DetNodes}
 
@@ -764,7 +743,7 @@ deterministic nodes to sample the posterior distributions of these
 parameters. Create a deterministic node called `num_samp_anc` that
 will compute the number of sampled ancestors in our `fbd_tree`.
 
-    num_samp_anc := fbd_tree.numSampledAncestors()
+{{ fbd_script | snippet:"block#","19" }}
 
 We are also interested in the age of the most-recent-common ancestor
 (MRCA) of all living bears. To monitor the age of this node in our MCMC
@@ -775,17 +754,14 @@ monophyletic. Once this clade is defi.e. we can instantiate a
 deterministic node called `age_extant` with the `tmrca` function that
 will record the age of the MRCA of all living bears.
 
-    clade_extant = clade("Ailuropoda_melanoleuca","Tremarctos_ornatus","Melursus_ursinus",
-                        "Ursus_arctos","Ursus_maritimus","Helarctos_malayanus",
-                        "Ursus_americanus","Ursus_thibetanus")
-    age_extant := tmrca(fbd_tree, clade_extant)
+{{ fbd_script | snippet:"block#","20" }}
 
 In the same way we monitored the MRCA of the extant bears, we can also
 monitor the age of a fossil taxon that we may be interested in
 recording. We will monitor the marginal distribution of the age of
 *Kretzoiarctos beatrix*, which is between 11.2–11.8 My.
 
-    age_Kretzoiarctos_beatrix   := tmrca(fbd_tree, clade("Kretzoiarctos_beatrix"))
+{{ fbd_script | snippet:"block#","21" }}
 
 Finally, we will monitor the tree after removing taxa for which we did
 not have any molecular or morphological data. The phylogenetic placement
@@ -802,7 +778,7 @@ samples. Use the `fnPruneTree` function to create a deterministic tree
 variable `pruned_tree` from which these taxa have been pruned. We will
 monitor this tree instead of `fbd_tree`.
 
-    pruned_tree := fnPruneTree(fbd_tree, prune=v(taxa[17],taxa[20]))
+{{ fbd_script | snippet:"block#","22" }}
 
 You have completed the FBD model file. Save `model_FBD_TEFBD.Rev` in
 the `scripts` directory.
@@ -812,7 +788,9 @@ We will now move on to the next model file.
 {% subsection The Uncorrelated Exponential Relaxed-Clock Model | Exercise-ModelUExp %}
 
 Open your text editor and create the lineage-specific branch-rate model
-file called in the `scripts` directory.
+file called `model_UExp_TEFBD.Rev` in the `scripts` directory.
+
+{% assign uexp_script = "model_UExp_TEFBD.Rev" %}
 
 Enter the Rev code provided in this section in the new model file.
 
@@ -822,38 +800,28 @@ For our hierarchical, uncorrelated exponential relaxed clock model
 exponential random variable. Then, we specify scale proposal moves on
 the mean rate parameter.
 
-    branch_rates_mean ~ dnExponential(10.0)
-    moves[mvi++] = mvScale(branch_rates_mean, lambda=0.01, weight=1.0)
-    moves[mvi++] = mvScale(branch_rates_mean, lambda=0.1,  weight=1.0)
-    moves[mvi++] = mvScale(branch_rates_mean, lambda=1.0,  weight=1.0)
+{{ uexp_script | snippet:"block#","1-2" }}
 
 Before creating a rate parameter for each branch, we need to get the
 number of branches in the tree. For rooted trees with $n$ taxa, the
 number of branches is $2n-2$.
 
-    n_branches <- 2 * n_taxa - 2
+{{ uexp_script | snippet:"block#","3" }}
 
 Then, use a for loop to define a rate for each branch. The branch rates
 are independent and identically exponentially distributed with mean
 equal to the mean branch rate parameter we specified above. For each
 rate parameter we also create scale proposal moves.
 
-    for(i in 1:n_branches){
-        branch_rates[i] ~ dnExp(1/branch_rates_mean)
-        moves[mvi++] = mvScale(branch_rates[i], lambda=1.0,  weight=1.0)
-        moves[mvi++] = mvScale(branch_rates[i], lambda=0.1,  weight=1.0)
-        moves[mvi++] = mvScale(branch_rates[i], lambda=0.01, weight=1.0)
-    }
+{{ uexp_script | snippet:"block#","4" }}
 
 Lastly, we use a vector scale move to propose changes to all branch
 rates simultaneously. This way we can sample the total branch rate
 independently of each individual rate, which can improve mixing.
 
-    moves[mvi++] = mvVectorScale(branch_rates, lambda=0.01, weight=4.0) 
-    moves[mvi++] = mvVectorScale(branch_rates, lambda=0.1,  weight=4.0) 
-    moves[mvi++] = mvVectorScale(branch_rates, lambda=1.0,  weight=4.0)
+{{ uexp_script | snippet:"block#","5" }}
 
-You have completed the FBD model file. Save `model_UExp_TEFBD.Rev` in
+You have completed the molecular relaxed clock model file. Save `model_UExp_TEFBD.Rev` in
 the `scripts` directory.
 
 We will now move on to the next model file.
@@ -861,7 +829,9 @@ We will now move on to the next model file.
 {% subsection The General Time-Reversible + Gamma Model of Nucleotide Sequence Evolution | Exercise-ModelGTRG %}
 
 Open your text editor and create the molecular substitution model file
-called in the `scripts` directory.
+called `model_GTRG_TEFBD.Rev` in the `scripts` directory.
+
+{% assign gtrg_script = "model_GTRG_TEFBD.Rev" %}
 
 Enter the Rev code provided in this section in the new model file.
 
@@ -872,11 +842,7 @@ is defined by a set of 4 stationary frequencies, and 6 exchangeability
 rates. We create stochastic nodes for these variables, each drawn from a
 uniform Dirichlet prior distribution.
 
-    sf_hp <- v(1,1,1,1)
-    sf ~ dnDirichlet(sf_hp)
-
-    er_hp <- v(1,1,1,1,1,1)
-    er ~ dnDirichlet(er_hp)
+{{ gtrg_script | snippet:"block#","1-2" }}
 
 We need special moves to propose changes to a Dirichlet random variable,
 also known as a simplex (a vector constrained sum to one). Here, we use
@@ -886,29 +852,25 @@ parameter `alpha` specifies how conservative the proposal should be,
 with larger values of `alpha` leading to proposals closer to the current
 value.
 
-    moves[mvi++] = mvSimplexElementScale(er, alpha=10.0, weight=5.0)
-    moves[mvi++] = mvSimplexElementScale(sf, alpha=10.0, weight=5.0)
+{{ gtrg_script | snippet:"block#","3" }}
 
 Then we can define a deterministic node for our GTR $Q$-matrix using the
 special GTR matrix function (`fnGTR`).
 
-    Q_cytb := fnGTR(er,sf)
+{{ gtrg_script | snippet:"block#","4" }}
 
 Next, in order to model gamma-distributed rates across, we create an
 exponential parameter $\alpha$ for the shape of the gamma distribution,
 along with scale proposals.
 
-    alpha_cytb ~ dnExponential( 1.0 )
-    moves[mvi++] = mvScale(alpha_cytb, lambda=0.01, weight=1.0)
-    moves[mvi++] = mvScale(alpha_cytb, lambda=0.1,  weight=1.0)
-    moves[mvi++] = mvScale(alpha_cytb, lambda=1,    weight=1.0)
+{{ gtrg_script | snippet:"block#","5-6" }}
 
 Then we create a Gamma$(\alpha,\alpha)$ distribution, discretized into 4
 rate categories using the `fnDiscretizeGamma` function. Here,
 `rates_cytb` is a deterministic vector of rates computed as the mean of
 each category.
 
-    rates_cytb := fnDiscretizeGamma( alpha_cytb, alpha_cytb, 4 )
+{{ gtrg_script | snippet:"block#","7" }}
 
 Finally, we can create the phylogenetic continuous time Markov chain
 (PhyloCTMC) distribution for our sequence data, including the
@@ -917,10 +879,9 @@ defined as part of our exponential relaxed clock. We set the value of
 this distribution equal to our observed data and identify it as a static
 part of the likelihood using the `clamp` method.
 
-    phySeq ~ dnPhyloCTMC(tree=fbd_tree, Q=Q_cytb, siteRates=rates_cytb, branchRates=branch_rates, type="DNA")
-    phySeq.clamp(cytb)
+{{ gtrg_script | snippet:"block#","8" }}
 
-You have completed the FBD model file. Save `model_GTRG_TEFBD.Rev` in
+You have completed the GTR model file. Save `model_GTRG_TEFBD.Rev` in
 the `scripts` directory.
 
 We will now move on to the next model file.
@@ -928,7 +889,9 @@ We will now move on to the next model file.
 {% subsection Modeling the Evolution of Binary Morphological Characters | Exercise-ModelMorph %}
 
 Open your text editor and create the morphological character model file
-called in the `scripts` directory.
+called `model_Morph_TEFBD.Rev` in the `scripts` directory.
+
+{% assign morph_script = "model_Morph_TEFBD.Rev" %}
 
 Enter the Rev code provided in this section in the new model file.
 
@@ -937,27 +900,19 @@ use Mk to model our data. Because the Mk model is a generalization of
 the Mk model, we will initialize our Q matrix from a Jukes-Cantor
 matrix.
 
-    Q_morpho <- fnJC(2)
+{{ morph_script | snippet:"block#","1" }}
 
 As in the molecular data partition, we will allow gamma-distributed rate
 heterogeneity among sites.
 
-    alpha_morpho ~ dnExponential( 1.0 )
-    rates_morpho := fnDiscretizeGamma( alpha_morpho, alpha_morpho, 4 )
-
-    moves[mvi++] = mvScale(alpha_morpho, lambda=0.01, weight=1.0)
-    moves[mvi++] = mvScale(alpha_morpho, lambda=0.1,  weight=1.0)
-    moves[mvi++] = mvScale(alpha_morpho, lambda=1,    weight=1.0)
+{{ morph_script | snippet:"block#","2-3" }}
 
 The phylogenetic model also assumes that each branch has a rate of
 morphological character change. For simplicity, we will assume a strict
 exponential clock—meaning that every branch has the same rate drawn from
 an exponential distribution (see [The Morphological Clock](#subsub:Intro-MorphClock)).
 
-    clock_morpho ~ dnExponential(1.0)
-    moves[mvi++] = mvScale(clock_morpho, lambda=0.01, weight=4.0)
-    moves[mvi++] = mvScale(clock_morpho, lambda=0.1,  weight=4.0)
-    moves[mvi++] = mvScale(clock_morpho, lambda=1,    weight=4.0)
+{{ morph_script | snippet:"block#","4-5" }}
 
 As in our molecular data partition, we now combine our data and our
 model in the phylogenetic CTMC distribution. There are some unique
@@ -969,10 +924,9 @@ collected (ascertainment bias). The option `coding=variable` specifies
 that we should correct for coding only variable characters (discussed in
 {% ref Intro-Morpho %}).
 
-    phyMorpho ~ dnPhyloCTMC(tree=fbd_tree, siteRates=rates_morpho, branchRates=clock_morpho, Q=Q_morpho, type="Standard", coding="variable")
-    phyMorpho.clamp(morpho)
+{{ morph_script | snippet:"block#","6" }}
 
-You have completed the FBD model file. Save `model_Morph_TEFBD.Rev` in
+You have completed the morphology model file. Save `model_Morph_TEFBD.Rev` in
 the `scripts` directory.
 
 We will now move on to the next model file.
@@ -980,7 +934,7 @@ We will now move on to the next model file.
 {% subsection Complete Master Rev File | Exercise-CompleteMCMC %}
 
 Return to the master Rev file you created in section
-{% ref Exercise-StartMasterRev %} called in the `scripts` directory.
+{% ref Exercise-StartMasterRev %} called `mcmc_TEFBD.Rev` in the `scripts` directory.
 
 Enter the Rev code provided in this section in this file.
 
@@ -990,13 +944,7 @@ RevBayes uses the `source` function to load commands from Rev
 files into the workspace. Use this function to load in the model scripts
 we have written in the text editor and saved in the `scripts` directory.
 
-    source("scripts/model_FBDP_TEFBD.Rev")
-
-    source("scripts/model_UExp_TEFBD.Rev")
-
-    source("scripts/model_GTRG_TEFBD.Rev")
-
-    source("scripts/model_Morph_TEFBD.Rev")
+{{ mcmc_script | snippet:"block#","7-10" }}
 
 ### Create Model Object {#subsub:Exercise-ModObj}
 
@@ -1004,7 +952,7 @@ We can now create our workspace model variable with our fully specified
 model DAG. We will do this with the `model` function and provide a
 single node in the graph (`sf`).
 
-    mymodel = model(sf)
+{{ mcmc_script | snippet:"block#","11" }}
 
 The object `mymodel` is a wrapper around the entire model graph and
 allows us to pass the model to various functions that are specific to
@@ -1019,7 +967,7 @@ monitors and output file names. For this, we create a vector called
 First, we will specify a workspace variable to iterate over the
 `monitors` vector.
 
-    mni = 1
+{{ mcmc_script | snippet:"block#","12" }}
 	
 The first monitor we will create will monitor every named random
 variable in our model graph. This will include every stochastic and
@@ -1031,7 +979,7 @@ accessory programs for evaluating such parameters. We will also name the
 output file for this monitor and indicate that we wish to sample our
 MCMC every 10 cycles.
 
-    monitors[mni++] = mnModel(filename="output/bears.log", printgen=10)
+{{ mcmc_script | snippet:"block#","13" }}
 
 The `mnFile` monitor writes any parameter we specify to file. Thus, if
 we only cared about the speciation rate and nothing else (this is not a
@@ -1044,7 +992,7 @@ our `pruned_tree` variable in the arguments. Remember, we are
 monitoring the tree with nuisance taxa pruned out (see
 [Monitoring Parameters of Interest using Deterministic Nodes](#subsub:Exercise-FBD-DetNodes)).
 
-    monitors[mni++] = mnFile(filename="output/bears.trees", printgen=10, pruned_tree)
+{{ mcmc_script | snippet:"block#","14" }}
 
 The last monitor we will add to our analysis will print information to
 the screen. Like with `mnFile` we must tell `mnScreen` which parameters
@@ -1052,7 +1000,7 @@ we’d like to see updated on the screen. We will choose the age of the
 MCRCA of living bears (`age_extant`), the number of sampled ancestors
 (`num_samp_anc`), and the origin time (`origin_time`).
 
-    monitors[mni++] = mnScreen(printgen=10, age_extant, num_samp_anc, origin_time)
+{{ mcmc_script | snippet:"block#","15" }}
 
 ### Set-Up the MCMC
 
@@ -1264,7 +1212,7 @@ binary is in your path):
 
 Read in the MCMC sample of trees from file.
 
-    trace = readTreeTrace("output/bears.trees")
+{{ "summarize_TEFBD.Rev" | snippet:"block#","1" }}
 
 By default, a burn-in of 25% is used when creating the tree trace (250
 trees in our case). You can specify a different burn-in fraction, say
@@ -1276,7 +1224,7 @@ product of the posterior clade probabilities. When considering trees
 with sampled ancestors, we refer to the maximum sampled ancestor clade
 credibility (MSACC) tree {% cite Gavryushkina2016 %}.
 
-    mccTree(trace, file="output/bears.mcc.tre" )
+{{ "summarize_TEFBD.Rev" | snippet:"block#","2" }}
 
 When there are sampled ancestors present in the tree, visualizing the
 tree can be fairly difficult in traditional tree viewers. We will make
@@ -1306,8 +1254,7 @@ Try to replicate the tree in . {% ref summary_tree %} (Hint: ***StyleMark
 Singletons***) Why might a node with a sampled ancestor be
 referred to as a singleton?
 
-How can you see the names of the
-fossils that are putative sampled ancestors?
+How can you see the names of the fossils that are putative sampled ancestors?
 
 Try mousing over different
 branches (see {% ref highlight %}. What are the fields
