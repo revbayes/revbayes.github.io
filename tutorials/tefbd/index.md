@@ -343,26 +343,34 @@ constraints.
 
 {% table tab_bear_fossils %}
 {% tabcaption %}
-Age ranges of fossil bears.
+Age range data for fossil and extant bear species.
 {% endtabcaption %}
 
- |     **Fossil Species**     |    **Age**     |        **Reference**       |
-  --------------------------- |:--------------:|:--------------------------:|
- |    *Parictis montanus*     |    33.9–37.2   | {% cite clark1972 krause2008 %}     |
- |    *Zaragocyon daamsi*     |      20–22.8   | {% cite ginsburg1995 abella12 %}    |
- |    *Ballusia elmensis*     |    13.7–16     | {% cite ginsburg1998 abella12 %}    |
- |    *Ursavus primaevus*     |   13.65–15.97  | {% cite andrews1977 abella12 %}     |
- |    *Ursavus brevihinus*    |   15.97–16.9   | {% cite heizmann1980 abella12 %}    |
- |    *Indarctos vireti*      |    7.75–8.7    | {% cite montoya2001 abella12 %}     |
- |    *Indarctos arctoides*   |     8.7–9.7    | {% cite geraads2005 abella12 %}     |
- |  *Indarctos punjabiensis*  |     4.9–9.7    | {% cite baryshnikov2002 abella12 %} |
- | *Ailurarctos lufengensis*  |     5.8–8.2    | {% cite jin2007 abella12 %}         |
- |      *Agriarctos spp.*     |     4.9–7.75   | {% cite abella2011 abella12 %}      |
- |  *Kretzoiarctos beatrix*   |    11.2–11.8   | {% cite abella2011 abella12 %}      |
- |       *Arctodus simus*     |   0.012–2.588  | {% cite churcher1993 krause2008 %}  |
- |      *Ursus abstrusus*     |     1.8–5.3    | {% cite bjork1970 krause2008 %}     |
- |      *Ursus spelaeus*      |   0.027–0.25   | {% cite loreille2001 krause2008 %}  |
- 
+ | **Fossil Species**         | **Age**        | **Reference**              |
+ |--------------------------- |:--------------:|---------------------------:|
+ | *Ailuropoda melanoleuca*	  | 0.0-1.24       | {% cite abella12 %}        |
+ | *Helarctos malayanus*      | 0.0-1.78       | {% cite abella12 %}        |
+ | *Melursus ursinus*         | 0.0-1.8        | {% cite abella12 %}        |
+ | *Tremarctos ornatus*       | 0.0-0.0        | {% cite abella12 %}        |
+ | *Ursus americanus*         | 0.0-1.84       | {% cite abella12 %}        |
+ | *Ursus arctos*             | 0.0-1.71       | {% cite abella12 %}        |
+ | *Ursus maritimus*          | 0.0-0.65       | {% cite abella12 %}        |
+ | *Ursus thibetanus*         | 0.0-1.18       | {% cite abella12 %}        |
+ | *Agriarctos spp.*          | 4.9–7.75       | {% cite abella2011 abella12 %}      |
+ | *Ailurarctos lufengensis*  | 5.8–8.2        | {% cite jin2007 abella12 %}         |
+ | *Arctodus simus*           | 0.012–2.588    | {% cite churcher1993 krause2008 %}  |
+ | *Ballusia elmensis*        | 13.7–16        | {% cite ginsburg1998 abella12 %}    |
+ | *Indarctos vireti*         | 7.75–8.7       | {% cite montoya2001 abella12 %}     |
+ | *Indarctos arctoides*      | 8.7–9.7        | {% cite geraads2005 abella12 %}     |
+ | *Indarctos punjabiensis*   | 4.9–9.7        | {% cite baryshnikov2002 abella12 %} |
+ | *Kretzoiarctos beatrix*    | 11.2–11.8      | {% cite abella2011 abella12 %}      |
+ | *Parictis montanus*        | 33.9–37.2      | {% cite clark1972 krause2008 %}     |
+ | *Ursavus primaevus*        | 13.65–15.97    | {% cite andrews1977 abella12 %}     |
+ | *Ursavus brevihinus*       | 15.97–16.9     | {% cite heizmann1980 abella12 %}    |
+ | *Ursus abstrusus*          | 1.8–5.3        | {% cite bjork1970 krause2008 %}     |
+ | *Ursus spelaeus*           | 0.027–0.25     | {% cite loreille2001 krause2008 %}  |
+ | *Zaragocyon daamsi*        | 20–22.8        | {% cite ginsburg1995 abella12 %}    |
+
 {% endtable %}
 
 
