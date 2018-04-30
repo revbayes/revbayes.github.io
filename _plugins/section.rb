@@ -14,7 +14,7 @@ module Liquid
 			end
 			
 			@tag_name = tag_name
-			@h = (tag_name == 'section' ? '2' : '3')
+			@h = (tag_name == 'section' ? '2' : tag_name == 'subsection' ? '3' : '4')
 		end
 
 		def render(context)
@@ -27,9 +27,7 @@ module Liquid
 
 			output = "<h#{@h} class=\"#{@tag_name}\" id=\"#{@id}\">#{content}</h#{@h}>"
 
-			if @h == '2'
-				output += "<hr>"
-			end
+			output += "<hr class=\"#{@tag_name}\">"
 			
 			output
 		end
@@ -38,3 +36,4 @@ end
 
 Liquid::Template.register_tag('section', Liquid::Section)
 Liquid::Template.register_tag('subsection', Liquid::Section)
+Liquid::Template.register_tag('subsubsection', Liquid::Section)

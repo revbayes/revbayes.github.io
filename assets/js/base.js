@@ -11,7 +11,7 @@ $(".overview").each(function() {
     //h2.append("<span class='fold-unfold glyphicon glyphicon-collapse-down'></span>");
 
     // var _sections = document.getElementsByClassName('section');
-    var _sections = document.querySelectorAll(':not(.preview) > .section, :not(.preview) > .subsection');
+    var _sections = document.querySelectorAll(':not(.preview) > :not(hr).section, :not(.preview) > :not(hr).subsection');
     
     if( _sections.length > 0 ) {
 
@@ -134,7 +134,7 @@ $(".table").each(function(index) {
 });
 
 // Add section titles to section references
-$(".section, .subsection").each(function(index) {
+$(".section, .subsection, .subsubsection").each(function(index) {
     if( this.id != null ) {
       var els = document.querySelectorAll("a[href=\"#"+this.id+"\"]");
       if(els.length > 0) {
