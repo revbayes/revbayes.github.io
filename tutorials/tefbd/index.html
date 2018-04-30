@@ -570,7 +570,7 @@ them in the <code class="highlighter-rouge">scripts</code> directory:</p>
 <ul>
   <li>
     <p><code class="highlighter-rouge">mcmc_TEFBD.Rev</code>: the master Rev file that loads the data, the
-separate model fi.e. and specifies the monitors and MCMC sampler.</p>
+separate model files and specifies the monitors and MCMC sampler.</p>
   </li>
   <li>
     <p><code class="highlighter-rouge">model_FBDRP_TEFBD.Rev</code>: specifies the model parameters and moves
@@ -603,14 +603,17 @@ verify or troubleshoot your own scripts.</p>
 <h3 class="subsection" id="Exercise-StartMasterRev">Start the Master Rev File and Import Data</h3>
 <hr class="subsection" />
 
-<p>Open your text editor and create the master Rev
+<p>In this section you will begin the master file that you will load into
+RevBayes when you’ve completed all of the components of the analysis.</p>
+
+<blockquote class="instruction">
+  <p>Open your text editor and create the master Rev
 file called <code class="highlighter-rouge">mcmc_TEFBD.Rev</code> in the <code class="highlighter-rouge">scripts</code> directory.</p>
 
-<p>Enter the Rev code provided in this section in the new model file.</p>
+  <p>Enter the Rev code provided in this section in the new model file.</p>
+</blockquote>
 
-<p>The file you will begin in this section will be the one you load into
-RevBayes when you’ve completed all of the components of the analysis.
-In this section you will begin the file and write the Rev commands for
+<p>In this file you will write the Rev commands for
 loading in the taxon list and managing the data matrices. Then, starting
 in section <a href="#Exercise-ModelFBD"></a>, you will move on to writing
 module files for each of the model components. Once the model files are
@@ -700,8 +703,9 @@ value of 1.</p>
 workspace and not the hierarchical model. Thus, we use the workspace
 assignment operator <code class="highlighter-rouge">=</code> instead of the constant node assignment <code class="highlighter-rouge">&lt;-</code>.</p>
 
-<p>Save your current working version of <code class="highlighter-rouge">mcmc_TEFBD.Rev</code> in the <code class="highlighter-rouge">scripts</code>
-directory.</p>
+<blockquote class="instruction">
+  <p>Save your current working version of <code class="highlighter-rouge">mcmc_TEFBD.Rev</code> in the <code class="highlighter-rouge">scripts</code> directory.</p>
+</blockquote>
 
 <p>We will now move on to the next Rev file and will complete
 <code class="highlighter-rouge">mcmc_TEFBD.Rev</code> in section <a href="#Exercise-CompleteMCMC"></a>.</p>
@@ -709,15 +713,15 @@ directory.</p>
 <h3 class="subsection" id="Exercise-ModelFBD">The Fossilized Birth-Death Process</h3>
 <hr class="subsection" />
 
-<p>Open your text editor and create the fossilized birth-death model file
-called <code class="highlighter-rouge">model_FBDRP_TEFBD.Rev</code> in the <code class="highlighter-rouge">scripts</code> directory.</p>
-
-<p>Enter the Rev code provided in this section in the new model file.</p>
-
-<p>This file will define the models described in sections
+<p>In this section we will define the models described in sections
 <a href="#Intro-FBD"></a> and <a href="#Intro-TipSampling"></a> above. If
 necessary, please review the graphical models depicted for the
 fossilized birth-death process (<a href="#fig_fbd_gm"></a>).</p>
+
+<blockquote class="instruction">
+  <p>Open your text editor and create the fossilized birth-death model file
+called <code class="highlighter-rouge">model_FBDRP_TEFBD.Rev</code> in the <code class="highlighter-rouge">scripts</code> directory.</p>
+</blockquote>
 
 <h4 class="subsubsection" id="Exercise-FBD-SpeciationExtinction">Speciation and Extinction Rates</h4>
 <hr class="subsubsection" />
@@ -889,7 +893,7 @@ constraints = v(clade_ursinae)
 creating a vector of constraints, and providing it along with the
 workspace FBD distribution to the constrained topology distribution.
 Here we use the stochastic assignment operator <code class="highlighter-rouge">~</code> to create a
-stochastic node for our constrai.e. FBD-tree variable (called
+stochastic node for our constrained FBD tree variable (called
 <code class="highlighter-rouge">fbd_tree</code>).</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fbd_tree ~ dnConstrainedTopology(fbd_dist, constraints=constraints)
@@ -954,7 +958,7 @@ will compute the number of sampled ancestors in our <code class="highlighter-rou
 sample, we must use the <code class="highlighter-rouge">clade</code> function to identify the node.
 Importantly, since we did not include this clade in our constraints that
 defined <code class="highlighter-rouge">fbd_tree</code>, this clade will not be constrained to be
-monophyletic. Once this clade is defi.e. we can instantiate a
+monophyletic. Once this clade is defined we can instantiate a
 deterministic node called <code class="highlighter-rouge">age_extant</code> with the <code class="highlighter-rouge">tmrca</code> function that
 will record the age of the MRCA of all living bears.</p>
 
@@ -993,15 +997,15 @@ monitor this tree instead of <code class="highlighter-rouge">fbd_tree</code>.</p
 <p>You have completed the FBD model file. Save <code class="highlighter-rouge">model_FBD_TEFBD.Rev</code> in
 the <code class="highlighter-rouge">scripts</code> directory.</p>
 
-<p>We will now move on to the next model file.</p>
-
-<h3 class="subsection" id="Exercise-ModelUExp">The Uncorrelated Exponential Relaxed-Clock Model</h3>
+<h3 class="subsection" id="Exercise-ModelUExp">The Uncorrelated Exponential Relaxed Clock Model</h3>
 <hr class="subsection" />
 
-<p>Open your text editor and create the lineage-specific branch-rate model
-file called <code class="highlighter-rouge">model_UExp_TEFBD.Rev</code> in the <code class="highlighter-rouge">scripts</code> directory.</p>
+<p>We will now define the molecular relaxed clock model.</p>
 
-<p>Enter the Rev code provided in this section in the new model file.</p>
+<blockquote class="instruction">
+  <p>Open your text editor and create the lineage-specific branch-rate model
+file called <code class="highlighter-rouge">model_UExp_TEFBD.Rev</code> in the <code class="highlighter-rouge">scripts</code> directory.</p>
+</blockquote>
 
 <p>For our hierarchical, uncorrelated exponential relaxed clock model
 (described in section <a href="#Intro-GTR-UExp"></a> and shown in
@@ -1048,15 +1052,15 @@ moves[mvi++] = mvVectorScale(branch_rates, lambda=1.0,  weight=4.0)
 <p>You have completed the molecular relaxed clock model file. Save <code class="highlighter-rouge">model_UExp_TEFBD.Rev</code> in
 the <code class="highlighter-rouge">scripts</code> directory.</p>
 
-<p>We will now move on to the next model file.</p>
-
 <h3 class="subsection" id="Exercise-ModelGTRG">The General Time-Reversible + Gamma Model of Nucleotide Sequence Evolution</h3>
 <hr class="subsection" />
 
-<p>Open your text editor and create the molecular substitution model file
-called <code class="highlighter-rouge">model_GTRG_TEFBD.Rev</code> in the <code class="highlighter-rouge">scripts</code> directory.</p>
+<p>In this section we will define our nucleotide sequence evolution model.</p>
 
-<p>Enter the Rev code provided in this section in the new model file.</p>
+<blockquote class="instruction">
+  <p>Open your text editor and create the molecular substitution model file
+called <code class="highlighter-rouge">model_GTRG_TEFBD.Rev</code> in the <code class="highlighter-rouge">scripts</code> directory.</p>
+</blockquote>
 
 <p>For our nucleotide sequence evolution model, we need to define a general
 time-reversible (GTR) instantaneous-rate matrix
@@ -1128,10 +1132,12 @@ the <code class="highlighter-rouge">scripts</code> directory.</p>
 <h3 class="subsection" id="Exercise-ModelMorph">Modeling the Evolution of Binary Morphological Characters</h3>
 <hr class="subsection" />
 
-<p>Open your text editor and create the morphological character model file
-called <code class="highlighter-rouge">model_Morph_TEFBD.Rev</code> in the <code class="highlighter-rouge">scripts</code> directory.</p>
+<p>In this section we will define the model of morphological character evolution.</p>
 
-<p>Enter the Rev code provided in this section in the new model file.</p>
+<blockquote class="instruction">
+  <p>Open your text editor and create the morphological character model file
+called <code class="highlighter-rouge">model_Morph_TEFBD.Rev</code> in the <code class="highlighter-rouge">scripts</code> directory.</p>
+</blockquote>
 
 <p>As stated in the introduction (<a href="#Intro-Morpho"></a>) we will
 use Mk to model our data. Because the Mk model is a generalization of
@@ -1186,10 +1192,10 @@ the <code class="highlighter-rouge">scripts</code> directory.</p>
 <h3 class="subsection" id="Exercise-CompleteMCMC">Complete Master Rev File</h3>
 <hr class="subsection" />
 
-<p>Return to the master Rev file you created in section
+<blockquote class="instruction">
+  <p>Return to the master Rev file you created in section
 <a href="#Exercise-StartMasterRev"></a> called <code class="highlighter-rouge">mcmc_TEFBD.Rev</code> in the <code class="highlighter-rouge">scripts</code> directory.</p>
-
-<p>Enter the Rev code provided in this section in this file.</p>
+</blockquote>
 
 <h4 class="subsubsection" id="Exercise-SourceMods">Source Model Scripts</h4>
 <hr class="subsubsection" />
@@ -1339,7 +1345,7 @@ window. To add data, click on the “+” sign, highlighted in red above</figcap
 </figure>
 
 <p>Open Tracer and import the <code class="highlighter-rouge">bears.log</code> file in the
-<em>**FileImport New Trace Fi.e.</em> *. Or click the button on the
+<strong><em>File &gt; Import New Trace Files</em></strong>. Or click the button on the
 left-hand side of the screen to add your log file (see <a href="#fig_tracer"></a>).</p>
 
 <figure id="tracer_post_ests"><p><img src="figures/tracer_fig_posterior_short.png" width="900" /></p>
@@ -1348,9 +1354,9 @@ histogram of the <strong>Posterior</strong></figcaption>
 </figure>
 
 <p>Immediately upon loading your file (see <a href="#tracer_post_ests"></a>),
-you will see the list of <strong>Trace Fi.e.* * on the left-hand
+you will see the list of <strong>Trace Files</strong> on the left-hand
 side (you can load multiple files). The bottom left section, called
-**Traces</strong>, provides a list of every parameter in the log
+<strong>Traces</strong>, provides a list of every parameter in the log
 file, along with the mean and the effective sample size (ESS) for the
 posterior sample of that parameter. The ESS statistic provides a measure
 of the number of independent draws in our sample for a given parameter.
@@ -1375,10 +1381,12 @@ window provides mean and ESS of the chain. The right-hand window
 visualizes the distribution of samples.</figcaption>
 </figure>
 
-<p>Look through the various parameters and statistics in the list of
+<blockquote class="instruction">
+  <p>Look through the various parameters and statistics in the list of
 <strong>Traces</strong>.</p>
 
-<p>Are there any parameters that have really low ESS? Why do you think that might be?</p>
+  <p>Are there any parameters that have really low ESS? Why do you think that might be?</p>
+</blockquote>
 
 <p>Next, we can click over to the <strong>Trace</strong> window. This
 window shows us the samples for a given parameter at each iteration of
@@ -1408,10 +1416,12 @@ MCMC is not mixing well. You can read more about MCMC tuning and
 improving mixing in the tutorials <a href="/revbayes-site/tutorials/mcmc_binomial/">Introduction to MCMC using RevBayes</a>
 and <a href="/revbayes-site/tutorials/mcmc/">Diagnosing MCMC performance</a>.</p>
 
-<p>Look through the traces for your parameters.</p>
+<blockquote class="instruction">
+  <p>Look through the traces for your parameters.</p>
 
-<p>Are there any parameters in your log files that show trends or large leaps? 
- What steps might you take to solve these issues?</p>
+  <p>Are there any parameters in your log files that show trends or large leaps? 
+What steps might you take to solve these issues?</p>
+</blockquote>
 
 <p>In Tracer you can view the marginal probability
 distributions of your parameters in the 
@@ -1435,7 +1445,7 @@ our log files.</p>
 <p>Go to the <code class="highlighter-rouge">age_extant</code> parameter in the <strong>Estimates</strong>
 window.</p>
 
-<p><strong>→</strong> What is the mean and 95% highest posterior density of the age of the MRCA for all living bears?</p>
+<p>⇨ What is the mean and 95% highest posterior density of the age of the MRCA for all living bears?</p>
 
 <p>Since you have evaluated several of the parameters by viewing the trace
 files and the ESS values, you may be aware that the MCMC analysis you
@@ -1513,16 +1523,22 @@ ancestor</figcaption>
 <p>Navigate to <a href="http://tgvaughan.github.io/icytree">http://tgvaughan.github.io/icytree</a> and open the file
 <code class="highlighter-rouge">output/bears.mcc.tre</code> in IcyTree.</p>
 
-<p>Try to replicate the tree in . <a href="#summary_tree"></a> (Hint: <strong><em>StyleMark
+<blockquote class="instruction">
+  <p>Try to replicate the tree in . <a href="#summary_tree"></a> (Hint: <strong><em>Style &gt; Mark
 Singletons</em></strong>) Why might a node with a sampled ancestor be
 referred to as a singleton?</p>
+</blockquote>
 
-<p>How can you see the names of the fossils that are putative sampled ancestors?</p>
+<blockquote class="instruction">
+  <p>How can you see the names of the fossils that are putative sampled ancestors?</p>
+</blockquote>
 
-<p>Try mousing over different
+<blockquote class="instruction">
+  <p>Try mousing over different
 branches (see <a href="#highlight"></a>. What are the fields
 telling you?  What is the
 posterior probability that <em>Zaragocyon daamsi</em> is a sampled ancestor?</p>
+</blockquote>
 
 <p>Another newly available web-based tree viewer is
 <a href="http://phylogeny.io/">Phylogeny.IO</a> <a href="#Jovanovic2016">(Jovanovic and Mikheyev 2016)</a>. Try this site for
