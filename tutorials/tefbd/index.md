@@ -372,7 +372,7 @@ interchanged. You will write the following files from scratch and save
 them in the `scripts` directory:
 
 -   `{{ mcmc_script }}`: the master Rev file that loads the data, the
-    separate model fi.e. and specifies the monitors and MCMC sampler.
+    separate model files and specifies the monitors and MCMC sampler.
 
 -   `{{ fbdr_script }}`: specifies the model parameters and moves
     required for the fossilized birth-death range process prior on the tree topology,
@@ -398,14 +398,16 @@ verify or troubleshoot your own scripts.
 
 {% subsection Start the Master Rev File and Import Data | Exercise-StartMasterRev %}
 
-Open your text editor and create the master Rev
-file called `{{ mcmc_script }}` in the `scripts` directory.
-
-Enter the Rev code provided in this section in the new model file.
-
-The file you will begin in this section will be the one you load into
+In this section you will begin the master file that you will load into
 RevBayes when you’ve completed all of the components of the analysis.
-In this section you will begin the file and write the Rev commands for
+
+> Open your text editor and create the master Rev
+> file called `{{ mcmc_script }}` in the `scripts` directory.
+>
+> Enter the Rev code provided in this section in the new model file.
+{:.instruction}
+
+In this file you will write the Rev commands for
 loading in the taxon list and managing the data matrices. Then, starting
 in section {% ref Exercise-ModelFBD %}, you will move on to writing
 module files for each of the model components. Once the model files are
@@ -484,23 +486,22 @@ One important distinction here is that `mvi` is part of the RevBayes
 workspace and not the hierarchical model. Thus, we use the workspace
 assignment operator `=` instead of the constant node assignment `<-`.
 
-Save your current working version of `mcmc_TEFBD.Rev` in the `scripts`
-directory.
+> Save your current working version of `mcmc_TEFBD.Rev` in the `scripts` directory.
+{:.instruction}
 
 We will now move on to the next Rev file and will complete
 `mcmc_TEFBD.Rev` in section {% ref Exercise-CompleteMCMC %}.
 
 {% subsection The Fossilized Birth-Death Process | Exercise-ModelFBD %}
 
-Open your text editor and create the fossilized birth-death model file
-called `{{ fbdr_script }}` in the `scripts` directory.
-
-Enter the Rev code provided in this section in the new model file.
-
-This file will define the models described in sections
+In this section we will define the models described in sections
 {% ref Intro-FBD %} and {% ref Intro-TipSampling %} above. If
 necessary, please review the graphical models depicted for the
 fossilized birth-death process ({% ref fig_fbd_gm %}).
+
+> Open your text editor and create the fossilized birth-death model file
+> called `{{ fbdr_script }}` in the `scripts` directory.
+{:.instruction}
 
 {% subsubsection Speciation and Extinction Rates | Exercise-FBD-SpeciationExtinction %}
 
@@ -639,7 +640,7 @@ Then we can specify the final constrained tree prior distribution by
 creating a vector of constraints, and providing it along with the
 workspace FBD distribution to the constrained topology distribution.
 Here we use the stochastic assignment operator `~` to create a
-stochastic node for our constrai.e. FBD-tree variable (called
+stochastic node for our constrained FBD tree variable (called
 `fbd_tree`).
 
 {{ fbdr_script | snippet:"block#","12" }}
@@ -696,7 +697,7 @@ We are also interested in the age of the most-recent-common ancestor
 sample, we must use the `clade` function to identify the node.
 Importantly, since we did not include this clade in our constraints that
 defined `fbd_tree`, this clade will not be constrained to be
-monophyletic. Once this clade is defi.e. we can instantiate a
+monophyletic. Once this clade is defined we can instantiate a
 deterministic node called `age_extant` with the `tmrca` function that
 will record the age of the MRCA of all living bears.
 
@@ -729,14 +730,13 @@ monitor this tree instead of `fbd_tree`.
 You have completed the FBD model file. Save `model_FBD_TEFBD.Rev` in
 the `scripts` directory.
 
-We will now move on to the next model file.
+{% subsection The Uncorrelated Exponential Relaxed Clock Model | Exercise-ModelUExp %}
 
-{% subsection The Uncorrelated Exponential Relaxed-Clock Model | Exercise-ModelUExp %}
+We will now define the molecular relaxed clock model.
 
-Open your text editor and create the lineage-specific branch-rate model
-file called `{{ uexp_script }}` in the `scripts` directory.
-
-Enter the Rev code provided in this section in the new model file.
+> Open your text editor and create the lineage-specific branch-rate model
+> file called `{{ uexp_script }}` in the `scripts` directory.
+{:.instruction}
 
 For our hierarchical, uncorrelated exponential relaxed clock model
 (described in section {% ref Intro-GTR-UExp %} and shown in
@@ -768,14 +768,13 @@ independently of each individual rate, which can improve mixing.
 You have completed the molecular relaxed clock model file. Save `model_UExp_TEFBD.Rev` in
 the `scripts` directory.
 
-We will now move on to the next model file.
-
 {% subsection The General Time-Reversible + Gamma Model of Nucleotide Sequence Evolution | Exercise-ModelGTRG %}
 
-Open your text editor and create the molecular substitution model file
-called `{{ gtrg_script }}` in the `scripts` directory.
+In this section we will define our nucleotide sequence evolution model.
 
-Enter the Rev code provided in this section in the new model file.
+> Open your text editor and create the molecular substitution model file
+> called `{{ gtrg_script }}` in the `scripts` directory.
+{:.instruction}
 
 For our nucleotide sequence evolution model, we need to define a general
 time-reversible (GTR) instantaneous-rate matrix
@@ -830,10 +829,11 @@ We will now move on to the next model file.
 
 {% subsection Modeling the Evolution of Binary Morphological Characters | Exercise-ModelMorph %}
 
-Open your text editor and create the morphological character model file
-called `{{ morph_script }}` in the `scripts` directory.
+In this section we will define the model of morphological character evolution.
 
-Enter the Rev code provided in this section in the new model file.
+> Open your text editor and create the morphological character model file
+> called `{{ morph_script }}` in the `scripts` directory.
+{:.instruction}
 
 As stated in the introduction ({% ref Intro-Morpho %}) we will
 use Mk to model our data. Because the Mk model is a generalization of
@@ -873,10 +873,9 @@ We will now move on to the next model file.
 
 {% subsection Complete Master Rev File | Exercise-CompleteMCMC %}
 
-Return to the master Rev file you created in section
-{% ref Exercise-StartMasterRev %} called `{{ mcmc_script }}` in the `scripts` directory.
-
-Enter the Rev code provided in this section in this file.
+> Return to the master Rev file you created in section
+> {% ref Exercise-StartMasterRev %} called `{{ mcmc_script }}` in the `scripts` directory.
+{:.instruction}
 
 {% subsubsection Source Model Scripts | Exercise-SourceMods %}
 
@@ -1007,7 +1006,7 @@ window. To add data, click on the “+” sign, highlighted in red above
 {% endfigure %}
 
 Open Tracer and import the `bears.log` file in the
-***FileImport New Trace Fi.e.* *. Or click the button on the
+***File > Import New Trace Files***. Or click the button on the
 left-hand side of the screen to add your log file (see {% ref fig_tracer %}).
 
 {% figure tracer_post_ests %}
@@ -1019,7 +1018,7 @@ histogram of the **Posterior**
 {% endfigure %}
 
 Immediately upon loading your file (see {% ref tracer_post_ests %}),
-you will see the list of **Trace Fi.e.* * on the left-hand
+you will see the list of **Trace Files** on the left-hand
 side (you can load multiple files). The bottom left section, called
 **Traces**, provides a list of every parameter in the log
 file, along with the mean and the effective sample size (ESS) for the
@@ -1049,10 +1048,11 @@ visualizes the distribution of samples.
 {% endfigcaption %}
 {% endfigure %}
 
-Look through the various parameters and statistics in the list of
+> Look through the various parameters and statistics in the list of
 **Traces**.
-
-Are there any parameters that have really low ESS? Why do you think that might be?
+>
+> Are there any parameters that have really low ESS? Why do you think that might be?
+{:.instruction}
 
 Next, we can click over to the **Trace** window. This
 window shows us the samples for a given parameter at each iteration of
@@ -1085,10 +1085,11 @@ MCMC is not mixing well. You can read more about MCMC tuning and
 improving mixing in the tutorials {% page_ref mcmc_binomial %}
 and {% page_ref mcmc %}.
 
-Look through the traces for your parameters.
-
- Are there any parameters in your log files that show trends or large leaps? 
- What steps might you take to solve these issues?
+> Look through the traces for your parameters.
+> 
+> Are there any parameters in your log files that show trends or large leaps? 
+> What steps might you take to solve these issues?
+{:.instruction}
 
 In Tracer you can view the marginal probability
 distributions of your parameters in the 
@@ -1112,7 +1113,7 @@ our log files.
 Go to the `age_extant` parameter in the **Estimates**
 window.
 
-**&rarr;** What is the mean and 95% highest posterior density of the age of the MRCA for all living bears?
+&#8680; What is the mean and 95% highest posterior density of the age of the MRCA for all living bears?
 
 Since you have evaluated several of the parameters by viewing the trace
 files and the ESS values, you may be aware that the MCMC analysis you
@@ -1190,16 +1191,19 @@ ancestor
 Navigate to <http://tgvaughan.github.io/icytree> and open the file
 `output/bears.mcc.tre` in IcyTree.
 
-Try to replicate the tree in . {% ref summary_tree %} (Hint: ***StyleMark
-Singletons***) Why might a node with a sampled ancestor be
-referred to as a singleton?
+> Try to replicate the tree in . {% ref summary_tree %} (Hint: ***Style > Mark
+> Singletons***) Why might a node with a sampled ancestor be
+> referred to as a singleton?
+{:.instruction}
 
-How can you see the names of the fossils that are putative sampled ancestors?
+> How can you see the names of the fossils that are putative sampled ancestors?
+{:.instruction}
 
-Try mousing over different
-branches (see {% ref highlight %}. What are the fields
-telling you?  What is the
-posterior probability that *Zaragocyon daamsi* is a sampled ancestor?
+> Try mousing over different
+> branches (see {% ref highlight %}. What are the fields
+> telling you?  What is the
+> posterior probability that *Zaragocyon daamsi* is a sampled ancestor?
+{:.instruction}
 
 Another newly available web-based tree viewer is
 [Phylogeny.IO](http://phylogeny.io/) {% cite Jovanovic2016 %}. Try this site for
