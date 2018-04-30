@@ -13,15 +13,14 @@ levels:
 - Biogeography
 ---
 
-Several tutorials have been written for RevBayes. Each one explicitly walks you through model specification and analysis set-up for different phylogenetic methods.
-
-
-### Available Tutorials
-
-This list shows all of the RevBayes tutorials for learning various aspects of RevBayes and Bayesian phylogenetic analysis. 
+This list shows all of the RevBayes tutorials for learning various aspects of RevBayes and Bayesian phylogenetic analysis.
+Each one explicitly walks you through model specification and analysis set-up for different phylogenetic methods.
 These tutorials have been written for new users to learn RevBayes at home, at workshops, and in courses taught at the undergraduate and graduate levels. 
 You may find that the styles are somewhat different between tutorials and that some  have overlapping content. 
-The tutorials all follow the same format. Please see the {% page_ref format %} guide for details about how to read the tutorials.
+
+Please see the {% page_ref format %} guide for details about how to read the tutorials.
+
+Please see {% page_ref recommended %} for links to various software programs you may need to download in order to follow the tutorials.
 
 <a href="{% page_url tutorial %}" class="btn btn-warning" role="button">Contribute!</a>
 
