@@ -1,7 +1,7 @@
 ---
 layout: home
-title: "Citation"
-subtitle: "Citing RevBayes"
+title: Citation
+subtitle: Citing RevBayes
 permalink: /citation
 ---
 
