@@ -85,6 +85,9 @@ function get_files() {
 
   var path = window.location.pathname.split('/');
   var name = "revbayes_"+path[path.length-2];
+  var page = path[path.length-1].replace(".html","")
+  if( page != '' && page != 'index')
+    name += "_"+page
 
   var zip = new JSZip().folder(name);
   var d = zip.folder("data");
