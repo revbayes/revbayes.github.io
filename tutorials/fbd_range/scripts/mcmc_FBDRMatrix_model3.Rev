@@ -1,23 +1,24 @@
-taxa = readTaxonData(file = "bears_taxa.tsv")
+# read stratigraphic ranges
+taxa = readTaxonData(file = "dinosaur_ranges.tsv")
 
-k = readDataDelimitedFile(file = "presence.absence.txt", header=true, rownames=true)
+# read fossil counts
+k = readDataDelimitedFile(file = "dinosaur_fossils.txt", header = true, rownames = true)
 
-intervals = v(1.8,5.3,23.8,34)
-
+# interval boundaries
+timeline = v(100, 145, 201, 252) - 66
 
 mvi = 1
-mni = 1
 
-for(i in 1:intervals.size())
+# specify FBDR model parameters
+for(i in 1:(timeline.size()+1))
 {
-	if(i < intervals.size())
-	{
-		timeline[i] = intervals[i]
-	}
 
 	mu[i] ~ dnExp(10)
 	lambda[i] ~ dnExp(10)
 	psi[i] ~ dnExp(10)
+	
+	div[i] := lambda[i] - mu[i]
+	turnover[i] := mu[i]/lambda[i]
 
 	moves[mvi++] = mvScale(mu[i], lambda = 0.01)
 	moves[mvi++] = mvScale(mu[i], lambda = 0.1)
@@ -32,12 +33,10 @@ for(i in 1:intervals.size())
 	moves[mvi++] = mvScale(psi[i], lambda = 1)
 }
 
-# model 1
-#bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, timeline=timeline, k=k)
-# model 2
-bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, timeline=timeline)
+rho=0
+
 # model 3
-#bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, timeline=timeline, k=k, binary=true)
+bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, rho=rho, timeline=timeline, k=k, binary=true)
 
 moves[mvi++] = mvMatrixElementScale(bd, lambda = 0.01, weight=taxa.size())
 moves[mvi++] = mvMatrixElementScale(bd, lambda = 0.1, weight=taxa.size())
@@ -47,14 +46,16 @@ moves[mvi++] = mvMatrixElementSlide(bd, delta = 0.01, weight=taxa.size())
 moves[mvi++] = mvMatrixElementSlide(bd, delta = 0.1, weight=taxa.size())
 moves[mvi++] = mvMatrixElementSlide(bd, delta = 1, weight=taxa.size())
 
-origin := max(bd)
-
 mymodel = model(bd)
 
 # add monitors
+mni = 1
+
 monitors[mni++] = mnScreen(lambda, mu, psi, printgen=100)
-monitors[mni++] = mnModel(filename="model2.log",printgen=100)
+monitors[mni++] = mnModel(filename="model3.log",printgen=100)
 
 # run the analysis
 mymcmc = mcmc(mymodel, moves, monitors, moveschedule="random")
-mymcmc.run(1000000)
+mymcmc.run(30000)
+
+q()
