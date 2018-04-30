@@ -104,7 +104,7 @@
 
 </div>
 <h2 class="section" id="introduction">Introduction</h2>
-<hr />
+<hr class="section" />
 
 <p>This tutorial describes how to specify character state-dependent
 branching process models in RevBayes. For more details on the theory behind these models, please see the 
@@ -115,7 +115,7 @@ to data using Markov chain Monte Carlo (MCMC). RevBayes is a powerful
 tool for SSE analyses.</p>
 
 <h2 class="section" id="thedata">Getting Set Up</h2>
-<hr />
+<hr class="section" />
 
 <p>We provide the data files which we will use in this tutorial:</p>
 
@@ -142,7 +142,7 @@ Then, download the provided files and place them in the <code class="highlighter
 </blockquote>
 
 <h2 class="section" id="sec_CDBDP">Estimating State-Dependent Speciation and Extinction under the BiSSE Model</h2>
-<hr />
+<hr class="section" />
 
 <p>Now let’s start to analyze an example in RevBayes using the BiSSE
 model. In RevBayes, it’s called <code class="highlighter-rouge">CDBDP</code>, meaning <em>character dependent
@@ -173,6 +173,7 @@ hypothesis.</p>
 using the interactive console.</p>
 
 <h3 class="subsection" id="subsec_readdata">Read in the Data</h3>
+<hr class="subsection" />
 
 <p>For this tutorial, we are assuming that the tree is “observed” and considered <em>data</em>. 
 Thus, we will read in the dated phylogeny first.</p>
@@ -211,6 +212,7 @@ model from BiSSE <a href="#Maddison2007">(Maddison et al. 2007)</a> to one that 
 the MuSSE model <a href="#FitzJohn2012">(FitzJohn 2012)</a>.</p>
 
 <h3 class="subsection" id="subsec_specifymodel">Specify the Model</h3>
+<hr class="subsection" />
 
 <p>The basic idea behind the model in this example is that speciation and
 extinction rates are dependent on a binary character, and the character
@@ -391,6 +393,7 @@ resulting file can be opened in the program <a href="https://www.graphviz.org/">
 </figure>
 
 <h3 class="subsection" id="subsec_runningmcmc">Running an MCMC analysis</h3>
+<hr class="subsection" />
 
 <h4 id="specifying-monitors"><strong>Specifying Monitors</strong></h4>
 
@@ -430,6 +433,7 @@ values from the posterior distribution.</p>
 </code></pre></div></div>
 
 <h3 class="subsection" id="subsec_summary">Summarizing Parameter Estimates</h3>
+<hr class="subsection" />
 
 <p>Our MCMC analysis generated a tab-delimited file called <code class="highlighter-rouge">primates_activTime_BiSSE_mcmc.log</code> that contains
 the samples of all the numerical parameters in our model. There are a lot of tools available
@@ -475,7 +479,7 @@ of both speciation rates.</p>
 </figure>
 
 <h2 class="section" id="exercise2">Evaluate Social-System-Type Dependent Speciation &amp; Extinction under the BiSSE Model</h2>
-<hr />
+<hr class="section" />
 
 <p>Now that you have completed the BiSSE analysis for the timing of activity for all primates,
 perform the same analysis using a different character. Your <code class="highlighter-rouge">data</code> directory should 
@@ -511,7 +515,7 @@ it is possible to compare the estimates in the Tracer window by highlighting bot
 </blockquote>
 
 <!-- 
-<h2 class="section" id="exercise3">Evaluate Mating-System-Type Dependent Speciation &amp; Extinction under the MuSSE Model</h2><hr>
+<h2 class="section" id="exercise3">Evaluate Mating-System-Type Dependent Speciation &amp; Extinction under the MuSSE Model</h2><hr class="section">
 
 In RevBayes it is trivial to change the BiSSE analysis you did in the exercises above to a multi-state model that is not limited to just 
 binary characters. That is because the model is effectively the same, just with the variable `NUM_STATES` changed. 

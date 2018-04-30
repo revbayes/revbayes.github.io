@@ -63,7 +63,7 @@
 </div>
 
 <h2 class="section" id="getting-started">Getting started</h2>
-<hr />
+<hr class="section" />
 
 <p>This tutorial will take you through the steps of contributing a new RevBayes tutorial to this website.</p>
 
@@ -72,6 +72,7 @@
 <p>This website is generated from simple plain-text files in <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet">Markdown</a> format with <a href="http://camel.readthedocs.io/en/latest/yamlref.html">YAML</a> front matter, with additional support for accessing/modifying page attribute data using <a href="https://help.shopify.com/themes/liquid">Liquid</a> templates. This tutorial presumes the reader is already at least somewhat familiar with these markup tools.</p>
 
 <h3 class="subsection" id="tutorial-directory-organization">Tutorial directory organization</h3>
+<hr class="subsection" />
 
 <p>Each tutorial follows the same general file organization:</p>
 
@@ -88,6 +89,7 @@ revbayes.github.io
 <p>Specifically, your new RevBayes tutorial should be placed in its own directory (e.g. <code class="highlighter-rouge">new_tutorial</code>) under the <code class="highlighter-rouge">tutorials</code> directory of the root website repository. The main text of the tutorial should be written in a Markdown file named <code class="highlighter-rouge">index.md</code> (although any unique name will work). If the tutorial uses additional data, scripts or image files they should be stored in the subdirectories <code class="highlighter-rouge">data</code>, <code class="highlighter-rouge">scripts</code> and <code class="highlighter-rouge">figures</code> respectively. Your tutorial can include additional pages or other files, but the above basic components are used in integrating your tutorial with the rest of the website.</p>
 
 <h3 class="subsection" id="writing-tutorial-front-matter">Writing tutorial front matter</h3>
+<hr class="subsection" />
 
 <p>In order for Jekyll to process your tutorial’s page, it must include YAML front matter, indicated by</p>
 
@@ -127,6 +129,7 @@ At the moment, only these levels are recognized:</p>
 <p>Any other level is for <em>Miscellaneous tutorials</em></p>
 
 <h3 class="subsection" id="front-matter-attributes">Front matter attributes</h3>
+<hr class="subsection" />
 
 <p>Here is a glossary of all the tutorial attributes used by this site.</p>
 <figure id="glossary" class="table"><table>
@@ -194,11 +197,12 @@ At the moment, only these levels are recognized:</p>
 </figure>
 
 <h2 class="section" id="filling-in-the-overview-box">Filling in the overview box</h2>
-<hr />
+<hr class="section" />
 
 <p>At the top of each tutorial, an <strong>Overview</strong> box is displayed with a list of prerequisite tutorials and a table of contents. Take another look at the <a href="#overview">overview for this tutorial</a>.</p>
 
 <h3 class="subsection" id="including-prerequisites">Including prerequisites</h3>
+<hr class="subsection" />
 
 <p>If you would like to refer users to prequisite tutorials in the tutorial’s overview section, list the names of the prequisite tutorials in the <code class="highlighter-rouge">prerequisites</code> YAML attribute. Tutorials can be referred to by any unique path identifier, ignoring <code class="highlighter-rouge">index.md</code> and <code class="highlighter-rouge">.md</code> suffixes.</p>
 
@@ -209,6 +213,7 @@ At the moment, only these levels are recognized:</p>
 </code></pre></div></div>
 
 <h3 class="subsection" id="filling-in-the-table-of-contents">Filling in the table of contents</h3>
+<hr class="subsection" />
 
 <p>To create a heading that will be included in the table of contents, you can use the <code class="highlighter-rouge">section</code> and <code class="highlighter-rouge">subection</code> Liquid tags, which take the heading text and anchor id as arguments, separated by a pipe <code class="highlighter-rouge">|</code>. Sections are referenced using the <code class="highlighter-rouge">ref</code> Liquid tag.</p>
 
@@ -217,7 +222,7 @@ At the moment, only these levels are recognized:</p>
 This is a reference to {% ref section1 %}
 </code></pre></div></div>
 <br /><h2 class="section" id="section1">This is a section header</h2>
-<hr />
+<hr class="section" />
 
 <p>This is a reference to <a href="#section1"></a></p>
 </blockquote>
@@ -227,11 +232,13 @@ This is a reference to {% ref section1 %}
 This is a reference to {% ref subsection1 %}
 </code></pre></div></div>
 <br /><h3 class="subsection" id="subsection1">This is a subsection header</h3>
+<hr class="subsection" />
 
 <p>This is a reference to <a href="#subsection1"></a></p>
 </blockquote>
 
 <h3 class="subsection" id="manually-tagging-sections">Manually tagging sections</h3>
+<hr class="subsection" />
 
 <p>You can also create a manually-formatted section/subsection heading by tagging it with the HTML class <code class="highlighter-rouge">section</code> or <code class="highlighter-rouge">subection</code>. In general, any block of text can be manually tagged with any class using the <code class="highlighter-rouge">{:.class}</code> syntax.</p>
 
@@ -274,7 +281,7 @@ This is a reference to {% ref subsection1 %}
 </blockquote>
 
 <h2 class="section" id="including-data-files-and-scripts">Including data files and scripts</h2>
-<hr />
+<hr class="section" />
 
 <p>At the top of each tutorial, the <strong>Data files and scripts</strong> box contains a list of files that can be downloaded by clicking the <span class="glyphicon glyphicon-download"></span> icon.</p>
 
@@ -312,7 +319,7 @@ This is a reference to {% ref subsection1 %}
 </code></pre></div></div>
 
 <h2 class="section" id="including-script-snippets">Including script snippets</h2>
-<hr />
+<hr class="section" />
 
 <p>You can dynamically include snippets from your script files using the <code class="highlighter-rouge">snippet</code> filter. You can extract a range of line numbers using the <code class="highlighter-rouge">lines</code> option, or you can extract a block of text using the <code class="highlighter-rouge">block</code> option. You can refer to the script file by name, or you can use a Liquid variable, for instance, obtained from the <code class="highlighter-rouge">page.files</code> array, or using the <code class="highlighter-rouge">match_file</code> filter.</p>
 
@@ -351,7 +358,7 @@ c := a + b
 </blockquote>
 
 <h2 class="section" id="formatting-code">Formatting code</h2>
-<hr />
+<hr class="section" />
 
 <p>You can format code using the <code>```</code> or <code>~~~</code> fenced code delimiters. By default, tutorial code is formatted for Rev</p>
 <blockquote class="preview"><div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>```
@@ -382,6 +389,7 @@ sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
 </blockquote>
 
 <h3 class="subsection" id="other-formatting-options">Other formatting options</h3>
+<hr class="subsection" />
 
 <p>Other code formats can be assigned using the <code class="highlighter-rouge">{:.}</code> syntax.</p>
 
@@ -435,7 +443,7 @@ sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
 </blockquote>
 
 <h2 class="section" id="math-notation">Math notation</h2>
-<hr />
+<hr class="section" />
 
 <p>Mathematical notation using $\LaTeX$ symbols are rendered with <a href="https://www.mathjax.org/">MathJax</a>. You can write inline math using the <code class="highlighter-rouge">$...$</code>, <code class="highlighter-rouge">$$...$$</code> or <code class="highlighter-rouge">\\(...\\)</code> delimiters, while display math uses <code class="highlighter-rouge">\\[...\\]</code>.
 You can alternatively write display math using <code class="highlighter-rouge">$$...$$</code> if it is separated from the previous text by a line break.</p>
@@ -466,6 +474,7 @@ is cool</p>
 </blockquote>
 
 <h3 class="subsection" id="referencing-equations">Referencing equations</h3>
+<hr class="subsection" />
 
 <p>You can number and reference equations using the <code class="highlighter-rouge">\label</code>, <code class="highlighter-rouge">\tag</code> and <code class="highlighter-rouge">\ref</code> Latex commands.</p>
 
@@ -487,7 +496,7 @@ This is a reference to Equation $<span class="se">\r</span>ef{equation1}$. This 
 </blockquote>
 
 <h2 class="section" id="modularizing-your-tutorial">Modularizing your tutorial</h2>
-<hr />
+<hr class="section" />
 
 <p>You can modularize your tutorial by putting major sections in separate markdown files in your tutorial directory. These can be included in the main text using the <code class="highlighter-rouge">include_relative</code> Liquid tag. Make sure that <em>only</em> the main text Markdown file contains YAML front matter.</p>
 
@@ -513,6 +522,7 @@ without <a href="http://camel.readthedocs.io/en/latest/yamlref.html">YAML</a> fr
 </blockquote>
 
 <h3 class="subsection" id="making-alternative-versions-of-your-tutorial">Making alternative versions of your tutorial</h3>
+<hr class="subsection" />
 
 <p>Any Markdown file in your tutorial directory will be rendered as a separate tutorial as long as it has YAML front matter. For example, if we make a copy of the same external file (say <code class="highlighter-rouge">external_file-yaml.md</code>) and simply add an empty front matter section, then Jekyll will automatically generate <a href="external_file-yaml.html">this page</a> when building the website.</p>
 
@@ -535,6 +545,7 @@ new_tutorial
 <p>In this example, there are two versions of the tutorial, both of which will get listed on the main <a href="/revbayes-site/tutorials/">Tutorials</a> page. If you do not want your tutorial listed in the <a href="/revbayes-site/tutorials/">Tutorials</a> index, use the <code class="highlighter-rouge">index: false</code> attribute in the YAML front matter.</p>
 
 <h3 class="subsection" id="linking">Linking to other tutorials</h3>
+<hr class="subsection" />
 
 <p>You can reference another tutorial using the <code class="highlighter-rouge">page_ref</code> and <code class="highlighter-rouge">page_url</code> Liquid tags, or with the <code class="highlighter-rouge">match_page</code> filter. As with <a href="#including-prerequisites">Prerequisites</a>, tutorials can be referred to by any unique path identifier, ignoring <code class="highlighter-rouge">index.md</code> and <code class="highlighter-rouge">.md</code> suffixes.</p>
 
@@ -558,7 +569,7 @@ The relative URL of the <span class="sb">`{{ var }}`</span> tutorial is <span cl
 </blockquote>
 
 <h2 class="section" id="figures">Figures</h2>
-<hr />
+<hr class="section" />
 
 <p>Figures can be included from the <code class="highlighter-rouge">figures</code> subdirectory (or elsewhere) using the <code class="highlighter-rouge">figure</code> and <code class="highlighter-rouge">figcaption</code> Liquid tags. Figures are referenced using the <code class="highlighter-rouge">ref</code> Liquid tag.</p>
 
@@ -579,7 +590,7 @@ This is a reference to {% ref example %}
 </blockquote>
 
 <h2 class="section" id="tables">Tables</h2>
-<hr />
+<hr class="section" />
 
 <p>Table can be included in <em>Markdown</em> using the <code class="highlighter-rouge">table</code> and <code class="highlighter-rouge">tabcaption</code> Liquid tags. Tables are referenced using the <code class="highlighter-rouge">ref</code> Liquid tag.</p>
 
@@ -671,12 +682,12 @@ This is a reference to {% ref exampletable %}
 </blockquote>
 
 <h2 class="section" id="printing-to-pdf">Printing to PDF</h2>
-<hr />
+<hr class="section" />
 
 <p>You can prevent any element from being printed when the tutorial is sent to PDF or a printer by tagging it with <code class="highlighter-rouge">{:.no-print}</code>.</p>
 
 <h2 class="section" id="citations-and-bibliography">Citations and bibliography</h2>
-<hr />
+<hr class="section" />
 
 <p>You can include a citation using the <code class="highlighter-rouge">cite</code> and <code class="highlighter-rouge">citet</code> Liquid tags.</p>
 

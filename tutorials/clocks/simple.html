@@ -130,7 +130,7 @@
 - bears_irbp.nex -->
 
 <h2 class="section" id="introduction">Introduction</h2>
-<hr />
+<hr class="section" />
 
 <p>This tutorial describes how to perform a simple analysis that compares three different birth-death models using Bayes factors. 
 The selected model will be used as a tree prior to estimate a new dated phylogeny of all living bears.</p>
@@ -138,7 +138,7 @@ The selected model will be used as a tree prior to estimate a new dated phylogen
 <p>For details about the format of this tutorial, please see the <a href="../format">Tutorial Format Guide</a>.</p>
 
 <h2 class="section" id="thedata">Getting Set Up</h2>
-<hr />
+<hr class="section" />
 
 <h3 id="software">Software</h3>
 
@@ -177,7 +177,7 @@ you simply have to type <code class="highlighter-rouge">rb</code> in your Termin
 using the interactive console.</p>
 
 <h2 class="section" id="secdiv">Comparing Two Diversification Models using Bayes Factors</h2>
-<hr />
+<hr class="section" />
 
 <p>In this first section, we will evaluate two different diversification models: (1) the Yule process and (2) the birth-death process.
 To compare the relative fit of the two models, we can use <a href="https://en.wikipedia.org/wiki/Bayes_factor"><em>Bayes factors</em></a> <a href="#Suchard2001">(Suchard et al. 2001; Lartillot 2006; Xie et al. 2011; Baele et al. 2012; Baele et al. 2013)</a>.
@@ -285,6 +285,7 @@ posterior to the prior or vice versa).</p>
 Of course, it is not possible to observe a diversification process spanning over 30 My, but it is not unreasonable to use a well-supported phylogeny to compare models before analysis of a new dataset.</p>
 
 <h3 class="subsection" id="yulesec">The Yule Model</h3>
+<hr class="subsection" />
 
 <p><a href="#Yule1925">Yule (1925)</a> described a stochastic process as a generating model for living taxa. 
 This model makes the very simple assumption that over the course of diversification, 
@@ -491,6 +492,7 @@ and print it to our screen.</p>
 <p><strong>Write down the value displayed. This is the marginal likelihood of the Yule model ($M_0$).</strong></p>
 
 <h3 class="subsection" id="bdsec">The Birth-Death Model</h3>
+<hr class="subsection" />
 
 <p>The Yule model is a simple version of a more general stochastic branching process called the <em>birth-death process</em> <a href="#Kendall1948">(Kendall 1948; Nee et al. 1994; Gernhard 2008)</a>.
 Under the birth-death process, extinction is assumed to be greater than 0.</p>
@@ -604,6 +606,7 @@ ss.marginal()
 <p><strong>Write down the value displayed. This is the marginal likelihood of the birth-death model ($M_1$).</strong></p>
 
 <h3 class="subsection" id="bayfacsec">Bayes Factors for Comparing Two Models</h3>
+<hr class="subsection" />
 
 <p>Now that we have estimates of the marginal likelihood for each of our
 the candidate substitution models, we can evaluate their relative fit to
@@ -645,7 +648,7 @@ preference for either model.</p>
 <p><em>Which is the model preferred after your analysis?</em></p>
 
 <h2 class="section" id="clocktreesec">Estimate a Rooted Tree &amp; Divergence Times</h2>
-<hr />
+<hr class="section" />
 
 <p>Now that we have selected a prior tree model. We can use this model to estimate a 
 dated phylogeny using molecular data (presumably the data are different from those used to generate the tree used in the previous sections).</p>
@@ -672,6 +675,7 @@ We will use the <code class="highlighter-rouge">readDiscreteCharacterData()</cod
 </code></pre></div></div>
 
 <h3 class="subsection" id="treemodel">The Tree Model</h3>
+<hr class="subsection" />
 
 <p>Assuming our previous analysis indicated that the birth-death process is the preferred model, 
 we can use the same model specification as in the <a href="#bdsec"></a> section.</p>
@@ -757,6 +761,7 @@ moves[mvi++] = mvFNPR(timetree, weight=8.0)
 </code></pre></div></div>
 
 <h3 class="subsection" id="clockmodel">The Relaxed Clock Model</h3>
+<hr class="subsection" />
 
 <p>Next we must specify a model describing how substitution rates vary among branches. Under
 these models we will create a stochastic node for every branch. We will assume an <strong>uncorrelated</strong> model where the substitution rate for each branch is drawn independently from an exponential distribution.</p>
@@ -799,6 +804,7 @@ to parameters can help with mixing.</p>
 </code></pre></div></div>
 
 <h3 class="subsection" id="gtrmodelsec">The Substitution Model</h3>
+<hr class="subsection" />
 
 <p>Now let’s define our substitution model. We will use a GTR model that assumes that each
 type of substitution has a different rate of exchangeability and that the stationary frequencies
@@ -836,6 +842,7 @@ matrix.</p>
 <a href="../ctmc#the-general-time-reversible-gtr-substitution-model">Substitution Model Tutorial</a>.</p>
 
 <h3 class="subsection" id="phyloctmcsec">Putting it All Together</h3>
+<hr class="subsection" />
 
 <p>Now we can link all of the elements in our graphical model. We will define a stochastic node
 representing the sequence alignment. The distribution that generated our sequence data is 
@@ -877,6 +884,7 @@ resulting file in the program <a href="https://www.graphviz.org/">Graphviz</a>.<
 </figure>
 
 <h3 class="subsection" id="mcmcsec">Run the MCMC</h3>
+<hr class="subsection" />
 
 <p>Now that we have our full model, we can set up and run our MCMC. First, we will define a list 
 monitors for our parameters. Since we are now dealing with a tree object, we have to 
@@ -929,6 +937,7 @@ Iter        |      Posterior   |     Likelihood   |          Prior   |      root
 </code></pre></div></div>
 
 <h3 class="subsection" id="summarysec">Summarize the MCMC</h3>
+<hr class="subsection" />
 
 <h4 id="inspect-the-mcmc">Inspect the MCMC</h4>
 

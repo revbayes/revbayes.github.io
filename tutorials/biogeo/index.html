@@ -152,7 +152,7 @@
 
 </div>
 <h2 class="section" id="introduction">Introduction</h2>
-<hr />
+<hr class="section" />
 
 <p>Many fundamental evolutionary processes, such as adaptation, speciation,
 and extinction, operate in a spatial context. When the historical aspect
@@ -171,7 +171,7 @@ some of these models, then describes how to perform Bayesian inference
 of historical biogeography using RevBayes.</p>
 
 <h2 class="section" id="contents">Contents</h2>
-<hr />
+<hr class="section" />
 
 <p>The Historical Biogeography guide contains several tutorials</p>
 
@@ -183,7 +183,7 @@ of historical biogeography using RevBayes.</p>
 </ul>
 
 <h2 class="section" id="bg_intro2">Overview of the Dispersal-Extinction-Cladogenesis model</h2>
-<hr />
+<hr class="section" />
 
 <p>The Dispersal-Extinction-Cladogenesis (DEC) process models range
 evolution as a discrete-valued process <a href="#Ree2005">(Ree et al. 2005; Ree and Smith 2008)</a>. There are
@@ -211,6 +211,7 @@ a new unoccupied area.</figcaption>
 </figure>
 
 <h3 class="subsection" id="disc_range_char">Discrete range characters</h3>
+<hr class="subsection" />
 
 <p>DEC interprets taxon ranges as presence-absence data, that is, where a
 species is observed or not observed across multiple discrete areas. For
@@ -289,6 +290,7 @@ but it is useful to keep in mind when considering the total number of
 possible ranges for a species and when processing output.</p>
 
 <h3 class="subsection" id="anagenetic">Anagenetic range evolution</h3>
+<hr class="subsection" />
 
 <p>In the context of the DEC model, anagenesis refers to range evolution
 that occurs between speciation events within lineages. There are two
@@ -417,6 +419,7 @@ range from the state space is enabled with the
 the null range, and produces the raw probabilities of <a href="#Ree2005">(Ree et al. 2005)</a>.</p>
 
 <h3 class="subsection" id="cladogenetic">Cladogenetic range evolution</h3>
+<hr class="subsection" />
 
 <p>The cladogenetic component of the DEC model describes evolutionary
 change accompanying speciation events (<a href="#dec_cartoon"></a>c–g).
@@ -485,6 +488,7 @@ probabilities, the sum of probabilities for a given ancestral state over
 all possible cladogenetic outcomes equals one.</p>
 
 <h3 class="subsection" id="things-to-consider">Things to consider</h3>
+<hr class="subsection" />
 
 <p>The probabilities of anagenetic change along lineages must account for
 all combinations of starting states and ending states. For 3 areas,
@@ -532,7 +536,7 @@ proportion of terms in the cladogenesis matrix are zero?</p>
 </blockquote>
 
 <h2 class="section" id="bg_simple">Simple DEC analysis</h2>
-<hr />
+<hr class="section" />
 
 <p>The following series of tutorials will estimate the ancestral ranges of
 the silversword alliance (Tribe <em>Madiinae</em>), a young and
@@ -666,6 +670,7 @@ O, M, and H, and include areas R and Z in later analyses (<a href="#hawaii_areas
   is Maui Nui, Lanai, and Molokai; H is Hawaii island.</p>
 
 <h3 class="subsection" id="analysis_simple">Analysis</h3>
+<hr class="subsection" />
 
 <p>First, create file management variables for input and output</p>
 
@@ -889,6 +894,7 @@ mymcmc.run(3000)
 </code></pre></div></div>
 
 <h3 class="subsection" id="results_simple">Results</h3>
+<hr class="subsection" />
 
 <p><em>Example results are located at</em></p>
 
@@ -992,7 +998,7 @@ remaining tutorials will focus on improvements to the simple DEC model
 presented here.</p>
 
 <h2 class="section" id="bg_epoch">An improved DEC analysis</h2>
-<hr />
+<hr class="section" />
 
 <p>In this section, we’ll introduce a suite of model features that lend
 towards more realistic biogeographic analyses. Topics include applying
@@ -1108,6 +1114,7 @@ the full table is given for future reference.</p>
   (measured at present).<span data-label="tab:paleogeo"></span></p>
 
 <h3 class="subsection" id="analysis">Analysis</h3>
+<hr class="subsection" />
 
 <p>Start by creating variables for the tree file, the range data, and the
 output prefix</p>
@@ -1429,6 +1436,7 @@ mymcmc.run(5000)
 </code></pre></div></div>
 
 <h3 class="subsection" id="results">Results</h3>
+<hr class="subsection" />
 
 <p><strong>Example results are located at <code class="highlighter-rouge">output_example/epoch</code>.</strong></p>
 
@@ -1460,7 +1468,7 @@ posterior probability of that state.</figcaption>
 </figure>
 
 <h2 class="section" id="bg_phylo">Biogeographic dating using DEC</h2>
-<hr />
+<hr class="section" />
 
 <p>This analysis will jointly estimate phylogeny and biogeography. One
 benefit is that the biogeographic analysis will intrinsically
@@ -1524,6 +1532,7 @@ we are adding a birth-death process and a molecular substitution process
 to the model graph.</p>
 
 <h3 class="subsection" id="analysis">Analysis</h3>
+<hr class="subsection" />
 
 <p>To use date the silversword radiation using biogeography, it is
 necessary that we transition from our simpler 4-area model to a richer
@@ -1641,6 +1650,7 @@ n_branches = 2 * n_taxa - 2
 </code></pre></div></div>
 
 <h3 class="subsection" id="the-tree-model">The Tree Model</h3>
+<hr class="subsection" />
 
 <p>Because we will estimate the topology and branch lengths parameters, the
 tree variable must be declared as a stochastic node with a
@@ -1693,6 +1703,7 @@ root_age.setValue(tree_init.rootAge())
 </code></pre></div></div>
 
 <h3 class="subsection" id="the-molecular-model">The molecular model</h3>
+<hr class="subsection" />
 
 <p>To inform our branch lengths (in relative time units) and our topology,
 we will specify a simple HKY+$\Gamma4$+UCLN model of molecular
@@ -1771,6 +1782,7 @@ large, the variance shrinks to zero, and the site rate multipliers of
 </code></pre></div></div>
 
 <h3 class="subsection" id="the-biogeographic-model">The biogeographic model</h3>
+<hr class="subsection" />
 
 <p>The biogeographic model is identical to that described in Section <a href="#bg_epoch"></a>, so redundant details are omitted here.</p>
 
@@ -1955,6 +1967,7 @@ mymcmc.run(n_gen)
 </figure>
 
 <h3 class="subsection" id="results">Results</h3>
+<hr class="subsection" />
 
 <p><strong>Example results are located at and</strong></p>
 
