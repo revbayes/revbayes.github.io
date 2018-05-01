@@ -8,7 +8,7 @@ $("table").addClass("table");
 // Add section hyperlinks
 $(".overview").each(function() {
     var h2 = $("h2:first", this);
-    //h2.append("<span class='fold-unfold glyphicon glyphicon-collapse-down'></span>");
+    //h2.prepend("<span class='glyphicon glyphicon-eye-open'></span>");
 
     // var _sections = document.getElementsByClassName('section');
     var _sections = document.querySelectorAll(':not(.preview) > :not(hr).section, :not(.preview) > :not(hr).subsection');
@@ -53,19 +53,19 @@ $(".overview").each(function() {
 });
 
 // Handle foldable challenges and solutions (on click and at start).
-$(".discussion").click(function(event) {
+$(".aside").click(function(event) {
     var trigger = $(event.target).has(".fold-unfold").size() > 0
                || $(event.target).filter(".fold-unfold").size() > 0;
     if (trigger) {
-        $(">*:not(h2)", this).toggle(400);
-        $(">h2>span.fold-unfold", this).toggleClass("glyphicon-collapse-down glyphicon-collapse-up");
+        $(">*:not(h2:first)", this).toggle(400);
+        $(" span.fold-unfold", this).toggleClass("glyphicon-chevron-right glyphicon-chevron-down");
         event.stopPropagation();
     }
 });
-$(".discussion").each(function() {
-    $(">*:not(h2)", this).toggle();
+$(".aside").each(function() {
+    $(">*:not(h2:first)", this).toggle();
     var h2 = $("h2:first", this);
-    h2.append("<span class='fold-unfold glyphicon glyphicon-collapse-down'></span>");
+    h2.prepend("<span class='fold-unfold glyphicon glyphicon-chevron-right'></span>");
 });
 
 // Handle downloadable data files and scripts (on click and at start).

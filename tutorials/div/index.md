@@ -256,22 +256,22 @@ P(N(T)\!=\!n|N(t)\!=\!1) & = & (1-P(N(T)\!>\!0|N(t)\!=\!1)\exp(r(t,T)))^{n-1} \n
 
 An overview for different diversification models is given in {% cite Hoehna2015a %}.
 
-> ## Phylogenetic trees as observations
-> The branching processes used here describe probability distributions on
-> phylogenetic trees. This probability distribution can be used to infer
-> diversification rates given an “observed” phylogenetic tree. In reality
-> we never observe a phylogenetic tree itself. Instead, phylogenetic trees
-> themselves are estimated from actual observations, such as DNA
-> sequences. These phylogenetic tree estimates, especially the divergence
-> times, can have considerable uncertainty associated with them. Thus, the
-> correct approach for estimating diversification rates is to include the
-> uncertainty in the phylogeny by, for example, jointly estimating the
-> phylogeny and diversification rates. For the simplicity of the following
-> tutorials, we take a shortcut and assume that we know the phylogeny
-> without error. For publication quality analysis you should always
-> estimate the diversification rates jointly with the phylogeny and
-> divergence times.
-{:.discussion}
+{% aside Phylogenetic trees as observations %}
+The branching processes used here describe probability distributions on
+phylogenetic trees. This probability distribution can be used to infer
+diversification rates given an “observed” phylogenetic tree. In reality
+we never observe a phylogenetic tree itself. Instead, phylogenetic trees
+themselves are estimated from actual observations, such as DNA
+sequences. These phylogenetic tree estimates, especially the divergence
+times, can have considerable uncertainty associated with them. Thus, the
+correct approach for estimating diversification rates is to include the
+uncertainty in the phylogeny by, for example, jointly estimating the
+phylogeny and diversification rates. For the simplicity of the following
+tutorials, we take a shortcut and assume that we know the phylogeny
+without error. For publication quality analysis you should always
+estimate the diversification rates jointly with the phylogeny and
+divergence times.
+{% endaside %}
 
 
 Estimating Constant Speciation & Extinction Rates {#sec:bdp_rate_estimation}

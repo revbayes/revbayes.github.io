@@ -395,15 +395,15 @@ are `0` = forest and `1` = savanna.
 > for solitary lineages (`speciation[2]`)?
 {:.instruction}
 
-> ## Discussion: Compare the Rate Estimates
-> Compare the rates estimated when the activity time is the focal character versus when solitariness is the dependent character. 
-> You can do this by opening _both_ files in the same tracer window. If you managed to give all the parameters the same name,
-> it is possible to compare the estimates in the Tracer window by highlighting both files. 
-> 
-> Explore the estimates of the various parameters. Are any different? Are any the same?
->
-> Why do you think you might be seeing this pattern?
-{:.discussion}
+{% aside Compare the Rate Estimates %}
+Compare the rates estimated when the activity time is the focal character versus when solitariness is the dependent character. 
+You can do this by opening _both_ files in the same tracer window. If you managed to give all the parameters the same name,
+it is possible to compare the estimates in the Tracer window by highlighting both files. 
+
+Explore the estimates of the various parameters. Are any different? Are any the same?
+
+Why do you think you might be seeing this pattern?
+{% endaside %}
 
 <!-- 
 {% section Evaluate Mating-System-Type Dependent Speciation & Extinction under the MuSSE Model | exercise3 %}

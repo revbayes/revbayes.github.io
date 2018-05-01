@@ -7,7 +7,7 @@ prerequisites:
 - intro
 index: true
 title-old: RB_PosteriorPrediction_Tutorial
-redirect: true
+redirect: false
 ---
 
 
