@@ -8,3 +8,316 @@ prerequisites:
 index: true
 software: true
 ---
+
+# Overview
+{:.section}
+
+This tutorial demonstrates how to estimate speciation, extinction and sampling rates from stratigraphic range data in a Bayesian framework using the fossilized birth-death range model {% cite Stadler2018 %}.
+We begin with a brief description of three available models, which take different information from the fossil record as input in [Section Introduction](#introduction), followed by a detailed example analysis in
+[Section Exercise](#exercise) demonstrating how to apply these models in
+**RevBayes** {% cite Hoehna2017a %} and use Markov chain Monte Carlo (MCMC) to estimate the posterior distribution of model parameters for a dataset of Mesozoic dinosaur occurrences downloaded from the [Paleobiology Database](https://paleobiodb.org/).
+
+# Introduction
+{:.section}
+
+Speciation (or origination) and extinction rates are key parameters in macroevolution, and are useful for addressing a wide range of questions in evolutionary biology and paleontology. 
+Knowledge of speciation and extinction rates can help tell us whether a clade was expanding or declining during different geological intervals and provide a starting point for linking diversification parameters to other environmental variables.
+
+Paleontological estimates of speciation and extinction rates are typically obtained from information about fossil sampling times, using a wide range of different methods.
+A given taxon may be represented by one or more fossil occurrences sampled from discrete geological intervals, and the duration between the first and last appearance is known as the *stratigraphic range* of the taxon. 
+Of course, the true duration that a taxon existed for over geological time extends beyond the observed stratigraphic range, beginning and ending with the speciation and extinction times of the taxon.
+
+In many stratigraphic range datasets, the phylogenetic relationships between ranges may be unknown (*e.g.,* because no morphological character data has been collected), however, it is reasonable to assume that an underlying phylogenetic brith-death process gave rise to the observed ranges.
+Furthermore, the distribution of stratigraphic range ages is informative about the underlying phylogenetic parameters, including the rates of speciation, extinction and fossil recovery.
+In this tutorial we will apply a fossilized birth-death range skyline model to infer these parameters during different geological intervals using stratigraphic ranges as input.
+The model is closely related to the fossilized birth-death (FBD) model {% cite Stadler2010 %} and the fossilized birth-death range (FBDR) model {% cite Stadler2018 %} that can be used as a *tree prior* in a phylogenetic analysis incorporating character data, where the goal is to infer the topology and divergence times, along with the diversification and fossil recovery parameters [*e.g.,* {% cite Heath2014 Gavryushkina2016 Zhang2016%}]. For more information about these models see the tutorial [Total-Evidence Analysis and the Fossilized Birth-Death Process](https://revbayes.github.io/revbayes-site/tutorials/tefbd/). 
+The model described in this tutorial is referred to as the *FBDR Matrix model*, since this model takes as input a matrix of stratigraphic range ages and no information about the underlying phylogenetic relationships (*e.g.,* a character alignment or topological constraints).
+
+An important feature of any paleontological datababse is that we are typically missing an enormous amount of information, since sampling of the geological record is incomplete, highly non-uniform over time and many extinct organisms are never preserved or sampled.
+A central advantage of applying the FBD (or related) models to the analysis of fossil data is that it explicitly incorporates incomplete species and fossil sampling, and can allow for variation in fossil recovery rates across different geological intervals.
+
+## The fossilized birth-death range skyline model
+{:.subsection id="intro-fbd"}
+
+### Model assumming the total fossil count is known 
+{:.subsubsection fbdr-model1}
+
+The fossilized birth-death range (FBDR) process described here provides a model for the distribution stratigraphic ranges, which can include extant samples, along with the total lineage duration times ({% ref fig_fbdr_tree %}).
+
+{% figure fig_fbdr_tree %}
+<Place holder for the moment.>
+{% figcaption %} 
+Place holder for the moment.
+{% endfigcaption %}
+{% endfigure %}
+
+We can use this model ({% ref fig_fbdr_gm %}) to describe the probability of a set of ranges conditional on the birth-death parameters:
+$f[\mathcal{D} \mid \bar\lambda, \bar\mu, \bar\psi, \rho]$, where
+$\mathcal{D}$ denotes a summary of the fossil occurrence data and is described in more detail below. 
+The birth-death parameters $\lambda$ and $\mu$ denote the speciation and extinction rates, respectively.
+The “fossilization rate” or “fossil recovery rate” is denoted $\psi$ and is the rate at which fossils are sampled along lineages. 
+The sampling probability parameter $\rho$ represents the *probability* that an extant species is sampled.
+The FBDR skyline model allows rates to vary in a piece-wise manner across different geological intervals and we use $\bar\lambda$, $\bar\mu$ and $\bar\psi$ to denote the vector for each set of rates.
+The total number of intervals, $l$, and the length of each interval will vary depending on the available stratigraphic data (*e.g.,* total number of fossils and/or ranges) and the biological questions of interest.
+
+{% figure fig_fbdr_gm %}
+<Place holder for the moment.>
+{% figcaption %} 
+Place holder for the moment.
+{% endfigcaption %}
+{% endfigure %}
+
+The data we observe are fossil occurrences and we use $n$ to denote the total number of sampled ranges. 
+For a given stratigraphic range $i$, the first and last appearance are denoted $o_i$ and $y_i$, respectively.
+If the first and last appearance are the same (*i.e.,* the species is a singleton), $o_i = y_i$.
+In addition, each lineage begins and ends at time $b_i$ and $d_i$, respectively.
+If a species is extant, $y_i = d_i = 0$, and if a species is only sampled at the present, $o_i = y_i = d_i = 0$.
+Note that for a given range, lineage duration begins at the point at which the range attaches in an *incompletely sampled tree*, which is not equivalent to the true origination time of the species represented by the range (see {% ref fig_fbdr_tree %}).
+In constrast, lineage duration ends at the extinction time of the speices.
+
+To account for uncertainty in the relationships among sampled ranges we [*marginalize*](https://en.wikipedia.org/wiki/Marginal_distribution)
+over all possible attachment points for each range {% cite Heath2014 %}.
+For range $i$, we define $\gamma_i$, which is the number of co-existing lineages at time $b_i$. 
+This allows us to account for topological uncertainty without explicitly sampling the underlying topology.
+
+The data summary for this first model, $\mathcal{D} = ( \\{ k_{i,j}, b_i, d_i, o_i \\}_{i \in 1...n, j \in 1...l})$, includes per interval fossil counts $ k_i,j$, lineage duration times, $b_i$ and $y_i$, and first appearance time $o_i$ for each range.
+Typically, we do not have information about times $b_i$ and $y_i$, but we can sample these using Markov Chain Monte Carlo (MCMC), thus accounting for the uncertainty associated with these ages.
+Although the age of the last appearance is not included in our data summary and is not required to calculate the likelihood, it is used to provide an upper limit (maximum age) for the extinction times $y_i$.
+
+
+### Stratigraphic age uncertainty
+{:.subsubsection id="strat-age"}
+
+In most cases the age of a given occurrence will not be known precisely and instead will be known to within some stratigraphic interval.
+The length of this interval is highly variable but it is an important source of uncertainty in any phylogenetic analysis incorporating fossil data. 
+
+In the model described above, only the age of the first appearance, $o_i$, is used in the likelihood calculation. 
+We can account for specimen age uncertainty in RevBayes by placing a hyperprior on the age of the first appearance, and sample the age of $o_i$ during MCMC.
+As noted above, the last appearance time, $y_i$, is only used to provide an upper (maximum) bound on the extinction time, $d_i$. 
+Thus, the *oldest possible* age of the last appearance (*i.e.,* the maximum stratigraphic age associated with the fossil) may be used to specify $y_i$. All other occurrences only contribute to the per-interal fossil count, $k_i$, and so need to be dated at this level of precision.
+
+### Marginalising over the number of fossils within a stratigraphic range
+{:.subsubsection id="fbdr-model2"}
+
+In the above model, some knowledge about the total number of samples collected during each interval, $k_i$, is required. However, in some cases we may only the age of the first and last appearance times ($o_i, y_i$), but not the number of occurrences sampled inbetween. In other cases, the number that $k_i$ represents may not be obvious. We can take care of this uncertainty by marginalizing over the total number of fossils between the first and last appearance times for each range. In this version of the model, per-interval fossil counts, $k_i$, are not required. 
+Instead, we define ${\kappa_i^\prime}$, which denotes the total number of occurrences representing first and last appearances within each interval, and the data summary, $\mathcal{D^\prime} = ( \\{ \kappa_{i,j}^\prime, b_i, d_i, o_i \\}_{i \in 1...n, j \in 1...l})$.
+
+### Marginalising over the number of fossils within a stratigraphic interval 
+{:.subsubsection id="fbdr-model3"}
+
+For some datasets, the age and/or the number of fossil occurrences sampled during each interval may not be known very precisely. 
+Instead we may only know whether a given range was sampled or not within a given interval, but not how many times it was sampled.
+We refer to this as presence-absence (1/0) sampling. 
+To account for this type of data, we can marginalize over the total number of fossils within each interval, along with the age of first appearance, $o_i$.
+
+We use $\kappa_{S_{i,j}}$ to indicate whether species $i$ was sampled during interval $j$ or not, such that $\kappa_{S_{i,j}} = 1$ if $k_i,j>0$ and $\kappa_{S_{i,j}} = 0$ otherwise. Within each interval for which we record a species as having been sampled (*i.e.,* $\kappa_{S_{i,j}} = 1$) we also define $L_{S_{i,j}}$, which is the duration that the species exists within that interval. We denote the data summary, $\mathcal{D_S} = (\\{ \kappa_{S_{i,j}}, L_{S_i,j}, b_i, d_i \\}_{i \in 1...n, j \in 1...l})$.
+
+More details of the models described above are available [here](math.pdf).
+
+# Exercise
+{:.section}
+
+For this exercise we will be estimating speciation, extinction and fossil recovery rates for a dataset of dinosaur fossil occurrences, under three variants of the FBDR Matrix model. The goal of this analysis is to examine broad diversification dynamics in this clade during the Mesozoic. 
+
+### PBDB occurrence Data
+{:.subsubsection}
+
+Dinosaur occurrences were downloaded from the [Paleobiology Database](https://paleobiodb.org/).
+The models described in this tutorial can be computationally expensive, especially given a large number of intervals and ranges, so to ensure the analysis runs within a reasonable timeframe, available occurrence data has been subsampled.
+Specially, we took a random subsample of 116 species that were >66 Ma, associated with <5 Myr stratigraphic age uncertainty and identified at the species level. 
+Fossil ages were also treated as known, taking the mid point between the minimum and maximum age associated with the specimen.
+Specimens were binned into four intervals of interest: the Early and Cretaceous, the Jurassic and the Triassic.
+Finally, we rescaled the timeline, such that the Cretaceous-Paleogene boundary = the present (*i.e.,* 66 Ma = 0 Ma).
+This allows us to avoid estimating rates during any interval younger than Cretaceous, which is outwith our period of interest.
+The script used to generate this dataset is at the top of this page.
+
+- \todo Anything else to add here?
+- \todo Add the R data script
+
+## Input files
+{:.subsection}
+
+On your own computer, create a directory called *RB\_FBDRMatrix\_Tutorial* (or any name you like). When you execute RevBayes in this exercise, you will do so within this directory. 
+If you are using a Unix-based operating system, we recommend that you add the RevBayes binary to your path.
+
+Download the data files `dinosaur_ranges.tsv` and `dinosaur_fossil_counts.tsv`, which you can find at the top of this page, and place them in this directory.
+
+These files contain the following data:
+
+-   `dinosaur_ranges.tsv`: a tab-delimited table listing first and last appearance times for each range. Each row represents a seperate species. Note that for singletons the first and last appearance times will be the same. For extant ranges, including extant singletons, the last appearance time would be 0.0. __Important__: fossil ages have been rescaled such that 66 Ma = 0 Ma (see above section [PBDB occurrence data](#pbdb-occurrence-data) for details).
+
+-   `dinosaur_fossil_counts.tsv`: a tab-delimited table of fossil occurrence counts. Each row represents a seperate species and each column represents a seperate time interval, from youngest to oldest. Each cell contains information about species sampling during each interval - this can be the absolute number of times a species was sampled during each interval (required for model 1) or a binary character indicating whether a species was sampled (= "1") or not (= "0") during each interval (required for model 3). This file is not required for model 2.
+
+## Setting up the analysis
+{:.subsection}
+
+In this exercise you will create a single Rev script for each of the three models described [above](#intro-fbd): `mcmc_FBDRMatrix_model1.Rev`, `mcmc_FBDRMatrix_model2.Rev` and `mcmc_FBDRMatrix_model3.Rev`. Each file will contain all the commands needed to read the data and run the MCMC analysis.
+
+### Loading the data
+{:.subsubsection}
+
+Begin the first Rev script (`mcmc_FBDRMatrix_model1.Rev`) by loading the stratigraphic ranges from the `dinosaur_ranges.tsv` using the `readTaxonData` function.
+
+    taxa = readTaxonData(file = "dinosaur_ranges.tsv")
+
+This file contains the taxon names, along with the first and last appearance times.
+For the purposes of the tutorial, these times will be treated as known.
+
+Next, load the matrix of fossil counts from `dinosaur_fossil_counts.tsv` using the `readDataDelimitedFile` function.
+    
+    k = readDataDelimitedFile(file = "dinosaur_fossil_counts.tsv", header = true, rownames = true)
+
+### Specifying interval ages
+{:.subsubsection}
+
+In this analysis, our period of interest ends at 66 Ma, which we will rescale to the present day (*i.e.,* 66 Ma = 0 Ma).
+
+Create a vector called `timeline` for the maximum age of each interval, from youngest to oldest. 
+RevBayes will assume that the age of the youngest interval = 0.
+
+    timeline = v(100, 145, 201, 252) - 66
+
+These ages represent the boundary between the Early Cretaceous, the Late Cretaceous, the Jurassic, the Triassic and the Permian.     
+
+### Specifying the priors and moves on the FBDR model parameters
+{:.subsubsection}
+
+The FBDR model parameters speciation, extinction and fossil recovery rates ($\bar\lambda, \bar\mu, \bar\psi$) are our key parameters of interest.
+Here, we will use the same prior distributions for all rate parameters across all intervals and the same scale moves to sample values from the posterior distribution.
+
+Each rate during each interval is assumed to be drawn independently from a different exponential distribution.
+For each rate parameter, we will create an exponentially distributed stochastic node using the `~` operator and the `dnExp` function, with rate parameter = 10, which has an expected value (mean) of 0.1.
+
+To sample the parameters during MCMC you will assign three scaling moves (`mvScale`) to each stochastic node, each with a different tuning value (called `lambda` for `mvScale`).
+The tuning value determines the size of the proposed change and using multiple moves for a single parameter will improve the mixing of the MCMC.
+
+It may also be useful to keep track of the diversification ($\lambda - \mu$) and turnover ($\mu/\lambda$) parameters. 
+Since these parameters can be expressed as a deterministic transformation of the speciation and extinction rates, we can also monitor these values (that is, track the values of these parameters, and print them to a file) by creating two deterministic nodes for these parameters for each interval using the `:=` operator.
+
+Before specifying the moves and priors on the model parameters, create a workspace variable called `mvi`. 
+This variable is an iterator that will build a vector containing all of the MCMC moves used to propose new states for every stochastic node in the model graph. 
+Each time a new move is added to the vector, `mvi` will be incremented by a value of 1.
+
+    mvi = 1
+    
+Next, write a loop that specifys the priors and moves on the rates during each interval.
+
+    for(i in 1:(timeline()+1))
+    {
+	    mu[i] ~ dnExp(10)
+	    lambda[i] ~ dnExp(10)
+	    psi[i] ~ dnExp(10)
+	    
+	    div[i] := lambda[i] - mu[i]
+	    turnover[i] := mu[i]/lambda[i]
+
+	    moves[mvi++] = mvScale(mu[i], lambda = 0.01)
+	    moves[mvi++] = mvScale(mu[i], lambda = 0.1)
+	    moves[mvi++] = mvScale(mu[i], lambda = 1)
+
+	    moves[mvi++] = mvScale(lambda[i], lambda = 0.01)
+	    moves[mvi++] = mvScale(lambda[i], lambda = 0.1)
+	    moves[mvi++] = mvScale(lambda[i], lambda = 1)
+
+	    moves[mvi++] = mvScale(psi[i], lambda = 0.01)
+	    moves[mvi++] = mvScale(psi[i], lambda = 0.1)
+	    moves[mvi++] = mvScale(psi[i], lambda = 1)
+    }
+
+Note that this loop specifies parameters for an additional interval (`timeline()+1`).
+This is for the period older than the maximium user-specified interval (in this case, Permian) and $\infty$. 
+
+For this analysis we will fix the extant species sampling probability ($\rho$) to zero to avoid having to make any assumptions about lineages that may have survived beyond the KPg boundary.
+
+    rho = 0    
+
+Because $\rho$ is a constant node, we do not have to assign a move to this parameter.
+       
+\todo anything else to add here?
+
+### Specifying the FBDR Matrix model
+{:.subsubsection}
+
+All three models described in the [Section Introduction](#introduction) can be specified using the same distribution function `dnFBDRMatrix` in RevBayes.
+The model used to calculate the likelihood will depend on the data and commands passed to this function. 
+
+- What is the formal definition of `bd`?
+
+The `dnFBDRMatrix` function always takes as input the stratigraphic ranges (`taxa`), the FBDR model parameters (`lambda, mu, psi, rho`), and the vector of interval ages (`timeline`). 
+The function can optionally take as input the matrix of per-interval fossil counts (`k`), used by model 1 and 3 only.
+The option `binary` is used to indicate whether the data in matrix `k` should be interpreted as absolute fossil counts (as in model 1) or presence/absence (1/0) data (as in model 3).
+If `binary = FALSE` the function will implement model 1 and interpret the data in `k` as absolute fossil counts, which is the default.
+If `binary = TRUE` the function will implement model 3 and use 1/0 data.
+If the matrix `k` contains cells with $k_i,j > 1$, the function will interpret this as $\kappa_{i,j} = 1$. 
+
+Model 1 requires both stratigraphic range ages and per-interval fossil counts.
+To use model 1 simply include the matrix `k`, along with the other model parameters and leave `binary = FALSE` (excluding this argument from the function call is equivalent to specifying the default option).
+
+    bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, rho=rho, timeline=timeline, k=k)
+
+Model 2 requires stratigraphic range ages only and no information about per-interval fossil counts
+To use model 2 simply exclude the matrix `k` from the function call.
+
+    bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, rho=rho, timeline=timeline)
+
+Model 3 requires both stratigraphic range ages and per-interval 1/0 data, which can also be represented by `k`.
+To use model 3 simply include the matrix `k`, along with the other model parameters and specify `binary = TRUE`. 
+
+    bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, rho=rho, timeline=timeline, k=k, binary=true)
+
+Add the options for model 1 to your script `mcmc_FBDRMatrix_model1.Rev`.
+
+    # model 1
+    bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, rho=rho, timeline=timeline, k=k)
+
+Next specify scale moves to propose changes to the stratigraphic range start and end times (*i.e.,* $b_i$ and $d_i$).
+
+    moves[mvi++] = mvMatrixElementScale(bd, lambda = 0.01, weight=taxa.size())
+    moves[mvi++] = mvMatrixElementScale(bd, lambda = 0.1, weight=taxa.size())
+    moves[mvi++] = mvMatrixElementScale(bd, lambda = 1, weight=taxa.size())
+
+    moves[mvi++] = mvMatrixElementSlide(bd, delta = 0.01, weight=taxa.size())
+    moves[mvi++] = mvMatrixElementSlide(bd, delta = 0.1, weight=taxa.size())
+    moves[mvi++] = mvMatrixElementSlide(bd, delta = 1, weight=taxa.size())
+
+Finally, specify a workspace model variable (`mymodel`) using the `model` function.
+
+    mymodel = model(bd)
+
+The object `mymodel` represents the entire graphical model and allows us to pass the model to the next set of functions specific to our MCMC analysis.
+
+### Specifying monitors and setting up the MCMC
+{:.subsubsection}
+
+Next you will specify the monitors and output file names. For this, we create a vector called `monitors` that will each sample and record or output our MCMC.
+
+First, create a workspace variable to iterate over the
+`monitors` vector.
+This variable will build a vector containing all of the monitors. 
+Each time a new monitor is added to the vector, `mni` will be incremented by a value of 1.
+    
+    mni = 1
+
+Next, create monitors for the FBDR model parameters speciation, extinction and fossil recovery, along with diversification and turnover.
+
+    monitors[mni++] = mnScreen(lambda, mu, psi, div, turnover, printgen=100)
+    monitors[mni++] = mnModel(filename="model1.log", printgen=100)    
+
+The `mnScreen` monitor writes the parameters we specify to the screen, in this case, every 100 MCMC generations.
+The `mnFile` monitor writes the parameters we specify to file.     
+
+To run the analysis we have to create a workspace variable that defines our MCMC run using the `mcmc` function. This function takes the three main analysis components as arguments and we set the move schedule to `"random"`, meaning moves will be chosen at random during the analysis. 
+
+    mymcmc = mcmc(mymodel, moves, monitors, moveschedule="random")
+    
+Finally, we can execute our MCMC analysis and we will set the chain length to `30000 ` cycles.
+    
+    mymcmc.run(30000)
+    q()
+    
+Adding `q()` to the end of the script means the program will exit at the end of the MCMC run.
+
+You're now ready to run the first analysis!
+
+ 
+
