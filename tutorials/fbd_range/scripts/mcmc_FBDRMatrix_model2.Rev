@@ -1,5 +1,5 @@
 # read stratigraphic ranges
-taxa = readTaxonData(file = "dinosaur_ranges.tsv")
+taxa = readTaxonData(file = "data/dinosaur_ranges.tsv")
 
 # interval boundaries
 timeline = v(100, 145, 201, 252) - 66
@@ -49,7 +49,7 @@ mymodel = model(bd)
 mni = 1
 
 monitors[mni++] = mnScreen(lambda, mu, psi, printgen=100)
-monitors[mni++] = mnModel(filename="model2.log",printgen=100)
+monitors[mni++] = mnModel(filename="output/model2.log",printgen=100)
 
 # run the analysis
 mymcmc = mcmc(mymodel, moves, monitors, moveschedule="random")
