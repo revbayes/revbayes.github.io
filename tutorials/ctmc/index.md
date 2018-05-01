@@ -302,7 +302,7 @@ br_lens := rel_branch_lengths * TL
 ```
 {% endaside %}
 
-{% aside Alternative Analysis Prior on Time-Trees: Tree Topology and Node Ages %}
+{% aside Alternative Prior on Time-Trees: Tree Topology and Node Ages %}
 Alternatively, you may want to specify a prior on time-trees. 
 Here we will briefly indicate how to specify such an prior which will lead to inference of time trees.
 
@@ -347,7 +347,7 @@ moves[mvi++] = mvNodeTimeSlideUniform(psi, weight=n_species)
 
 The weight specifies how often the move will be applied either on average per iteration or relative to all other moves. Have a look at the [MCMC tutorial]({{ base.url }}/tutorials/) for more details about moves and MCMC strategies.
 
-{% subsubsection Molecular clock %}
+#### Molecular clock {:.subsubsection}
 Additionally, in the case of time-calibrated trees, we need to add a molecular clock rate parameter. For example, we know from empirical estimates that the molecular clock rate is about 0.01 (=1%) per million years per site. Nevertheless, we can estimate it here because we fixed the root age. We use a uniform prior on the log-transform clock rate. This specifies our lack of prior knowledge on the magnitude of the clock rate.
 
 ```
