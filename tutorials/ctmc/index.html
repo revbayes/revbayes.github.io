@@ -366,23 +366,19 @@ moves[mvi++] = mvSPR(topology, weight=n_species/10.0)
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psi := treeAssembly(topology, br_lens)
 </code></pre></div></div>
 
-<blockquote class="discussion">
-  <h2 id="alternative-tree-priors">Alternative tree priors</h2>
-  <p>For large phylogenetic trees, i.e., with more than 200 taxa, it might be easier to specify a combined topology and branch length prior distribution.
+<blockquote class="aside"><h2>Alternative tree priors</h2><p>For large phylogenetic trees, i.e., with more than 200 taxa, it might be easier to specify a combined topology and branch length prior distribution.
 We can achieve this by simple using the distribution <code class="highlighter-rouge">dnUniformTopologyBranchLength()</code>.</p>
-  <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>br_len_lambda &lt;- 10.0
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>br_len_lambda &lt;- 10.0
 psi ~ dnUniformTopologyBranchLength(taxa, branchLengthDistribution=dnExponential(br_len_lambda))
 moves[mvi++] = mvNNI(psi, weight=n_species)
 moves[mvi++] = mvSPR(psi, weight=n_species/10.0)
 moves[mvi++] = mvBranchLengthScale(psi, weight=n_branches)
-</code></pre></div>  </div>
-  <p>You might think that this approach is in fact simpler than the <code class="highlighter-rouge">for</code> loop that we explained above.
+</code></pre></div></div>
+<p>You might think that this approach is in fact simpler than the <code class="highlighter-rouge">for</code> loop that we explained above.
 We still think that it is pedagogical to specify the prior on each branch length separately in this tutorial to emphasize all components of the model.</p>
 </blockquote>
 
-<blockquote class="discussion">
-  <h2 id="alternative-branch-length-priors">Alternative branch-length priors</h2>
-  <p>Some studies, <em>e.g.</em>,  <a href="#Brown2010">(Brown et al. 2010)</a> <a href="#Rannala2012">(Rannala et al. 2012)</a>, 
+<blockquote class="aside"><h2>Alternative branch-length priors</h2><p>Some studies, <em>e.g.</em> <a href="#Brown2010">(Brown et al. 2010)</a> <a href="#Rannala2012">(Rannala et al. 2012)</a>, 
 have criticized the exponential prior distribution for branch lengths 
 because it induces a gamma-dsitributed tree-length and the mean of this gamma distribution
 grows with the number of taxa. For example, we can use instead a specific gamma prior distribution 
@@ -390,44 +386,42 @@ grows with the number of taxa. For example, we can use instead a specific gamma 
 and then use a Dirichlet prior distribution to break the tree length into 
 the corresponding branch lengths <a href="#Zhang2012">(Zhang et al. 2012)</a>.</p>
 
-  <p>First, specify a prior distribution on the tree length with your desired mean.
+<p>First, specify a prior distribution on the tree length with your desired mean.
 For example, we use a gamma distribution as our prior on the tree length.</p>
-  <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>TL ~ dnGamma(2,4)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>TL ~ dnGamma(2,4)
 moves[mvi++] = mvScale(TL) 
-</code></pre></div>  </div>
+</code></pre></div></div>
 
-  <p>Now we create a random variable for the relative branch lengths.</p>
-  <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rel_branch_lengths ~ dnDirichlet( rep(1.0,n_branches) )
+<p>Now we create a random variable for the relative branch lengths.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rel_branch_lengths ~ dnDirichlet( rep(1.0,n_branches) )
 moves[mvi++] = mvBetaSimplex(rel_branch_lengths, weight=n_branches)
 moves[mvi++] = mvDirichletSimplex(rel_branch_lengths, weight=n_branches/10.0)
-</code></pre></div>  </div>
-  <p>Finally, transform the relative branch lengths into actual branch lengths</p>
-  <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>br_lens := rel_branch_lengths * TL
-</code></pre></div>  </div>
+</code></pre></div></div>
+<p>Finally, transform the relative branch lengths into actual branch lengths</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>br_lens := rel_branch_lengths * TL
+</code></pre></div></div>
 </blockquote>
 
-<blockquote class="discussion">
-  <h2 id="alternative-analysis-prior-on-time-trees-tree-topology-and-node-ages">Alternative Analysis Prior on Time-Trees: Tree Topology and Node Ages</h2>
-  <p>Alternatively, you may want to specify a prior on time-trees. 
+<blockquote class="aside"><h2>Alternative Analysis Prior on Time-Trees: Tree Topology and Node Ages</h2><p>Alternatively, you may want to specify a prior on time-trees. 
 Here we will briefly indicate how to specify such an prior which will lead to inference of time trees.</p>
 
-  <p>The tree (the topology and node ages) is a stochastic node in our phylogenetic model. 
+<p>The tree (the topology and node ages) is a stochastic node in our phylogenetic model. 
 For simplicity, we will assume a uniform prior on both topologies and node ages. 
 The distribution in RevBayes is <code class="highlighter-rouge">dnUniformTimeTree()</code>.</p>
 
-  <p>Fore more information on tree priors, such as birth-death processes, please read the <a href="/revbayes-site/tutorials/clocks/">Relaxed Clocks &amp; Time Trees</a>.</p>
+<p>Fore more information on tree priors, such as birth-death processes, please read the <a href="/revbayes-site/tutorials/clocks/">Relaxed Clocks &amp; Time Trees</a>.</p>
 
-  <p>First, we need to specify the age of the tree:</p>
+<p>First, we need to specify the age of the tree:</p>
 
-  <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root_age &lt;- 10.0
-</code></pre></div>  </div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root_age &lt;- 10.0
+</code></pre></div></div>
 
-  <p>Here we simply assumed that the tree is 10.0 time units old. We could also specify a prior on the root age if we have fossil calibrations (see <a href="/revbayes-site/tutorials/clocks/">Relaxed Clocks &amp; Time Trees</a>). Next, we specify the <code class="highlighter-rouge">tree</code> stochastic variable by passing in the taxon information <code class="highlighter-rouge">taxa</code> to the <code class="highlighter-rouge">dnUniformTimeTree()</code> distribution:</p>
+<p>Here we simply assumed that the tree is 10.0 time units old. We could also specify a prior on the root age if we have fossil calibrations (see <a href="/revbayes-site/tutorials/clocks/">Relaxed Clocks &amp; Time Trees</a>). Next, we specify the <code class="highlighter-rouge">tree</code> stochastic variable by passing in the taxon information <code class="highlighter-rouge">taxa</code> to the <code class="highlighter-rouge">dnUniformTimeTree()</code> distribution:</p>
 
-  <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psi ~ dnUniformTimeTree(rootAge=root_age, taxa=taxa)
-</code></pre></div>  </div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psi ~ dnUniformTimeTree(rootAge=root_age, taxa=taxa)
+</code></pre></div></div>
 
-  <p>Some types of stochastic nodes can be updated by a number of alternative moves. 
+<p>Some types of stochastic nodes can be updated by a number of alternative moves. 
 Different moves may explore parameter space in different ways,and it is possible to use 
 multiple different moves for a given parameter to improve mixing 
 (the efficiency of the MCMC simulation). In the case of our rooted tree, 
@@ -438,25 +432,25 @@ We also need moves that change the ages of the internal nodes, for example, <cod
 and <code class="highlighter-rouge">mvNodeTimeSlideUniform</code>. These moves do not have tuning parameters associated with 
 them, thus you only need to pass in the <code class="highlighter-rouge">psi</code> node and proposal <code class="highlighter-rouge">weight</code>.</p>
 
-  <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvNarrow(psi, weight=n_species)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvNarrow(psi, weight=n_species)
 moves[mvi++] = mvNNI(psi, weight=n_species/5.0)
 moves[mvi++] = mvFNPR(psi, weight=n_species/3.0)
 moves[mvi++] = mvGPR(psi, weight=n_species/30.0)
 moves[mvi++] = mvSubtreeScale(psi, weight=n_species/3.0)
 moves[mvi++] = mvNodeTimeSlideUniform(psi, weight=n_species)
-</code></pre></div>  </div>
+</code></pre></div></div>
 
-  <p>The weight specifies how often the move will be applied either on average per iteration or relative to all other moves. Have a look at the <a href="/tutorials/">MCMC tutorial</a> for more details about moves and MCMC strategies.</p>
+<p>The weight specifies how often the move will be applied either on average per iteration or relative to all other moves. Have a look at the <a href="/tutorials/">MCMC tutorial</a> for more details about moves and MCMC strategies.</p>
 
-  <p><strong>Molecular clock</strong>
-Additionally, in the case of time-calibrated trees, we need to add a molecular clock rate parameter. For example, we know from empirical estimates that the molecular clock rate is about 0.01 (=1%) per million years per site. Nevertheless, we can estimate it here because we fixed the root age. We use a uniform prior on the log-transform clock rate. This specifies our lack of prior knowledge on the magnitude of the clock rate.</p>
+<h3 id="molecular-clock">Molecular clock</h3>
+<p>Additionally, in the case of time-calibrated trees, we need to add a molecular clock rate parameter. For example, we know from empirical estimates that the molecular clock rate is about 0.01 (=1%) per million years per site. Nevertheless, we can estimate it here because we fixed the root age. We use a uniform prior on the log-transform clock rate. This specifies our lack of prior knowledge on the magnitude of the clock rate.</p>
 
-  <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log_clock_rate ~ dnUniform(-6,1)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log_clock_rate ~ dnUniform(-6,1)
 moves[mvi++] = mvSlide(log_clock_rate, weight=2.0)
 clock_rate := 10^log_clock_rate
-</code></pre></div>  </div>
+</code></pre></div></div>
 
-  <p>Instead, you could also fix the clock rate and estimate the root age. 
+<p>Instead, you could also fix the clock rate and estimate the root age. 
 For more information on molecular clocks please read the <a href="/tutorials/clocks/">Divergence Time Tutorial</a></p>
 </blockquote>
 

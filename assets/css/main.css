@@ -95,7 +95,7 @@ html {
   border: 1px solid;
   border-color: #f4fd9c;
   padding-bottom: 5px; }
-  .tutorial_files h2 {
+  .tutorial_files > h2:first-child {
     padding-top: 5px;
     padding-bottom: 5px;
     font-size: 20px;
@@ -103,7 +103,7 @@ html {
     border-color: #f4fd9c;
     margin-top: 0px;
     margin-left: -5px; }
-  .tutorial_files h2:before {
+  .tutorial_files > h2:first-child:before {
     font-family: 'Glyphicons Halflings';
     content: "";
     float: left;
@@ -120,7 +120,7 @@ html {
   border: 1px solid;
   border-color: #b7cfed;
   padding-bottom: 5px; }
-  .overview h2 {
+  .overview > h2:first-child {
     padding-top: 5px;
     padding-bottom: 5px;
     font-size: 20px;
@@ -128,7 +128,7 @@ html {
     border-color: #b7cfed;
     margin-top: 0px;
     margin-left: -5px; }
-  .overview h2:before {
+  .overview > h2:first-child:before {
     font-family: 'Glyphicons Halflings';
     content: "";
     float: left;
@@ -137,7 +137,7 @@ html {
     display: inline-block;
     -webkit-font-smoothing: antialiased; }
 
-.discussion {
+.info {
   padding-left: 5px;
   padding-top: 0;
   padding-bottom: 0;
@@ -145,7 +145,7 @@ html {
   border: 1px solid;
   border-color: #eec275;
   padding-bottom: 5px; }
-  .discussion h2 {
+  .info > h2:first-child {
     padding-top: 5px;
     padding-bottom: 5px;
     font-size: 20px;
@@ -153,7 +153,7 @@ html {
     border-color: #eec275;
     margin-top: 0px;
     margin-left: -5px; }
-  .discussion h2:before {
+  .info > h2:first-child:before {
     font-family: 'Glyphicons Halflings';
     content: "";
     float: left;
@@ -161,6 +161,39 @@ html {
     padding-right: 5px;
     display: inline-block;
     -webkit-font-smoothing: antialiased; }
+
+.aside {
+  padding-left: 5px;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-right: 0;
+  border: 1px solid;
+  border-color: #eee0e5;
+  padding-bottom: 5px; }
+  .aside > h2:first-child {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-size: 20px;
+    background: linear-gradient(to bottom, #eee0e5, #f0e3e8);
+    border-color: #eee0e5;
+    margin-top: 0px;
+    margin-left: -5px; }
+  .aside > h2:first-child:before {
+    font-family: 'Glyphicons Halflings';
+    content: "";
+    float: left;
+    padding-left: 5px;
+    padding-right: 5px;
+    display: inline-block;
+    -webkit-font-smoothing: antialiased; }
+
+.aside span.fold-unfold:first-child {
+  cursor: pointer;
+  float: left;
+  padding-left: 5px;
+  padding-right: 5px;
+  display: inline-block;
+  -webkit-font-smoothing: antialiased; }
 
 .download_files {
   cursor: pointer;
@@ -355,10 +388,6 @@ img.navbar-logo {
 ul,
 ol {
   padding-left: 1em; }
-
-span.fold-unfold {
-  margin-left: 1em;
-  opacity: 0.5; }
 
 blockquote div:not(:last-child) {
   margin-bottom: 10px; }
