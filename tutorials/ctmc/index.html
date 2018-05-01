@@ -408,7 +408,7 @@ moves[mvi++] = mvDirichletSimplex(rel_branch_lengths, weight=n_branches/10.0)
 </code></pre></div></div>
 </blockquote>
 
-<blockquote class="aside"><h2>Alternative Analysis Prior on Time-Trees: Tree Topology and Node Ages</h2><p>Alternatively, you may want to specify a prior on time-trees. 
+<blockquote class="aside"><h2>Alternative Prior on Time-Trees: Tree Topology and Node Ages</h2><p>Alternatively, you may want to specify a prior on time-trees. 
 Here we will briefly indicate how to specify such an prior which will lead to inference of time trees.</p>
 
 <p>The tree (the topology and node ages) is a stochastic node in our phylogenetic model. 
@@ -448,9 +448,7 @@ moves[mvi++] = mvNodeTimeSlideUniform(psi, weight=n_species)
 
 <p>The weight specifies how often the move will be applied either on average per iteration or relative to all other moves. Have a look at the <a href="/tutorials/">MCMC tutorial</a> for more details about moves and MCMC strategies.</p>
 
-<h4 class="subsubsection" id="molecular-clock">Molecular clock</h4>
-<hr class="subsubsection" />
-
+<h4 id="molecular-clock-subsubsection">Molecular clock {:.subsubsection}</h4>
 <p>Additionally, in the case of time-calibrated trees, we need to add a molecular clock rate parameter. For example, we know from empirical estimates that the molecular clock rate is about 0.01 (=1%) per million years per site. Nevertheless, we can estimate it here because we fixed the root age. We use a uniform prior on the log-transform clock rate. This specifies our lack of prior knowledge on the magnitude of the clock rate.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log_clock_rate ~ dnUniform(-6,1)
