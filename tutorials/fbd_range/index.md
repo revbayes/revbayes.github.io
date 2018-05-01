@@ -45,9 +45,13 @@ A central advantage of applying the FBD (or related) models to the analysis of f
 The fossilized birth-death range (FBDR) process described here provides a model for the distribution stratigraphic ranges, which can include extant samples, along with the total lineage duration times ({% ref fig_fbdr_tree %}).
 
 {% figure fig_fbdr_tree %}
-<Place holder for the moment.>
+<img src="figures/rangeplot.png" width="500" />
 {% figcaption %} 
-Place holder for the moment.
+One possible realization of the fossilized birth-death range model.
+Sampled lineages are represented by solid black lines.
+Stratigraphic ranges are shown in purple. Black diamonds represent first and last appearances.
+Singletons (*i.e.,* ranges known from a single fossil specimen) are represented by a single diamond.
+Unsampled lineages are represented by dashed lines.
 {% endfigcaption %}
 {% endfigure %}
 
@@ -72,7 +76,7 @@ For a given stratigraphic range $i$, the first and last appearance are denoted $
 If the first and last appearance are the same (*i.e.,* the species is a singleton), $o_i = y_i$.
 In addition, each lineage begins and ends at time $b_i$ and $d_i$, respectively.
 If a species is extant, $y_i = d_i = 0$, and if a species is only sampled at the present, $o_i = y_i = d_i = 0$.
-Note that for a given range, lineage duration begins at the point at which the range attaches in an *incompletely sampled tree*, which is not equivalent to the true origination time of the species represented by the range (see {% ref fig_fbdr_tree %}).
+Note that for a given range, lineage duration begins at the point at which the range attaches in an *incompletely sampled tree*, which is not equivalent to the true origination time of the species represented by the range.
 In constrast, lineage duration ends at the extinction time of the speices.
 
 To account for uncertainty in the relationships among sampled ranges we [*marginalize*](https://en.wikipedia.org/wiki/Marginal_distribution)
