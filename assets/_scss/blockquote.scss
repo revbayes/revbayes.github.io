@@ -13,7 +13,7 @@ $codeblock-padding: 5px !default;
   border-color: $color;
   padding-bottom: $codeblock-padding;
 
-  h2 {
+  >h2:first-child {
     padding-top: $codeblock-padding;
     padding-bottom: $codeblock-padding;
     font-size: 20px;
@@ -22,7 +22,7 @@ $codeblock-padding: 5px !default;
     margin-top: 0px;
     margin-left: -$codeblock-padding; // to move back to the left margin of the enclosing blockquote
   }
-  h2:before {
+  >h2:first-child:before {
     font-family: 'Glyphicons Halflings';
     content: $glyph;
     float: left;
@@ -36,7 +36,17 @@ $codeblock-padding: 5px !default;
 
 .tutorial_files{ @include bkSetup($color-files, ""); }
 .overview{ @include bkSetup($color-overview, "\e105"); }
-.discussion{ @include bkSetup($color-discussion, "\e086"); }
+.info { @include bkSetup($color-info, "\e086"); }
+.aside { @include bkSetup($color-aside, ""); }
+
+.aside span.fold-unfold:first-child {
+  cursor: pointer;
+  float: left;
+  padding-left: $codeblock-padding;
+  padding-right: $codeblock-padding;
+  display: inline-block;
+  -webkit-font-smoothing: antialiased;
+}
 
 .download_files {
   cursor: pointer;

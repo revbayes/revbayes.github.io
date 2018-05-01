@@ -268,9 +268,9 @@ Finally, we can create a *phylogram* (a phylogeny in which the branch lengths ar
 psi := treeAssembly(topology, br_lens)
 ```
 
-> ## Alternative tree priors
-> For large phylogenetic trees, i.e., with more than 200 taxa, it might be easier to specify a combined topology and branch length prior distribution.
-> We can achieve this by simple using the distribution `dnUniformTopologyBranchLength()`.
+{% aside Alternative tree priors %}
+For large phylogenetic trees, i.e., with more than 200 taxa, it might be easier to specify a combined topology and branch length prior distribution.
+We can achieve this by simple using the distribution `dnUniformTopologyBranchLength()`.
 ```
 br_len_lambda <- 10.0
 psi ~ dnUniformTopologyBranchLength(taxa, branchLengthDistribution=dnExponential(br_len_lambda))
@@ -278,72 +278,71 @@ moves[mvi++] = mvNNI(psi, weight=n_species)
 moves[mvi++] = mvSPR(psi, weight=n_species/10.0)
 moves[mvi++] = mvBranchLengthScale(psi, weight=n_branches)
 ```
-> You might think that this approach is in fact simpler than the `for` loop that we explained above.
-> We still think that it is pedagogical to specify the prior on each branch length separately in this tutorial to emphasize all components of the model.
-{:.discussion}
+You might think that this approach is in fact simpler than the `for` loop that we explained above.
+We still think that it is pedagogical to specify the prior on each branch length separately in this tutorial to emphasize all components of the model.
+{% endaside %}
 
-> ## Alternative branch-length priors
-> Some studies, *e.g.*,  {% cite Brown2010 %} {% cite Rannala2012 %}, 
-> have criticized the exponential prior distribution for branch lengths 
-> because it induces a gamma-dsitributed tree-length and the mean of this gamma distribution
-> grows with the number of taxa. For example, we can use instead a specific gamma prior distribution 
-> (or any other distribution defined on a positive real variable) for the tree length, 
-> and then use a Dirichlet prior distribution to break the tree length into 
-> the corresponding branch lengths {% cite Zhang2012 %}.
->
-> First, specify a prior distribution on the tree length with your desired mean.
-> For example, we use a gamma distribution as our prior on the tree length.
+{% aside Alternative branch-length priors %}
+Some studies, *e.g.* {% cite Brown2010 %} {% cite Rannala2012 %}, 
+have criticized the exponential prior distribution for branch lengths 
+because it induces a gamma-dsitributed tree-length and the mean of this gamma distribution
+grows with the number of taxa. For example, we can use instead a specific gamma prior distribution 
+(or any other distribution defined on a positive real variable) for the tree length, 
+and then use a Dirichlet prior distribution to break the tree length into 
+the corresponding branch lengths {% cite Zhang2012 %}.
+
+First, specify a prior distribution on the tree length with your desired mean.
+For example, we use a gamma distribution as our prior on the tree length.
 ```
 TL ~ dnGamma(2,4)
 moves[mvi++] = mvScale(TL) 
 ```
->
-> Now we create a random variable for the relative branch lengths.
+
+Now we create a random variable for the relative branch lengths.
 ```
 rel_branch_lengths ~ dnDirichlet( rep(1.0,n_branches) )
 moves[mvi++] = mvBetaSimplex(rel_branch_lengths, weight=n_branches)
 moves[mvi++] = mvDirichletSimplex(rel_branch_lengths, weight=n_branches/10.0)
 ```
-> Finally, transform the relative branch lengths into actual branch lengths
+Finally, transform the relative branch lengths into actual branch lengths
 ```
 br_lens := rel_branch_lengths * TL
 ```
-{:.discussion}
+{% endaside %}
 
+{% aside Alternative Analysis Prior on Time-Trees: Tree Topology and Node Ages %}
+Alternatively, you may want to specify a prior on time-trees. 
+Here we will briefly indicate how to specify such an prior which will lead to inference of time trees.
 
-> ## Alternative Analysis Prior on Time-Trees: Tree Topology and Node Ages
->Alternatively, you may want to specify a prior on time-trees. 
->Here we will briefly indicate how to specify such an prior which will lead to inference of time trees.
->
->The tree (the topology and node ages) is a stochastic node in our phylogenetic model. 
->For simplicity, we will assume a uniform prior on both topologies and node ages. 
->The distribution in RevBayes is `dnUniformTimeTree()`.
->
->Fore more information on tree priors, such as birth-death processes, please read the {% page_ref clocks %}.
->
->First, we need to specify the age of the tree:
->
->```
+The tree (the topology and node ages) is a stochastic node in our phylogenetic model. 
+For simplicity, we will assume a uniform prior on both topologies and node ages. 
+The distribution in RevBayes is `dnUniformTimeTree()`.
+
+Fore more information on tree priors, such as birth-death processes, please read the {% page_ref clocks %}.
+
+First, we need to specify the age of the tree:
+
+```
 root_age <- 10.0
 ```
->
->Here we simply assumed that the tree is 10.0 time units old. We could also specify a prior on the root age if we have fossil calibrations (see {% page_ref clocks %}). Next, we specify the `tree` stochastic variable by passing in the taxon information `taxa` to the `dnUniformTimeTree()` distribution:
->
+
+Here we simply assumed that the tree is 10.0 time units old. We could also specify a prior on the root age if we have fossil calibrations (see {% page_ref clocks %}). Next, we specify the `tree` stochastic variable by passing in the taxon information `taxa` to the `dnUniformTimeTree()` distribution:
+
 ```
 psi ~ dnUniformTimeTree(rootAge=root_age, taxa=taxa)
 ```
->
->Some types of stochastic nodes can be updated by a number of alternative moves. 
->Different moves may explore parameter space in different ways,and it is possible to use 
->multiple different moves for a given parameter to improve mixing 
->(the efficiency of the MCMC simulation). In the case of our rooted tree, 
->for example, we can use both a nearest-neighbor interchange move without and with changing 
->the node ages (`mvNarrow` and `mvNNI`) and a fixed-nodeheight subtree-prune and regrafting 
->move (`mvFNPR`) and its Metropolized-Gibbs variant (`mvGPR`) {% cite Hoehna2008 Hoehna2012 %}. 
->We also need moves that change the ages of the internal nodes, for example, `mvSubtreeScale` 
->and `mvNodeTimeSlideUniform`. These moves do not have tuning parameters associated with 
->them, thus you only need to pass in the `psi` node and proposal `weight`.
->
+
+Some types of stochastic nodes can be updated by a number of alternative moves. 
+Different moves may explore parameter space in different ways,and it is possible to use 
+multiple different moves for a given parameter to improve mixing 
+(the efficiency of the MCMC simulation). In the case of our rooted tree, 
+for example, we can use both a nearest-neighbor interchange move without and with changing 
+the node ages (`mvNarrow` and `mvNNI`) and a fixed-nodeheight subtree-prune and regrafting 
+move (`mvFNPR`) and its Metropolized-Gibbs variant (`mvGPR`) {% cite Hoehna2008 Hoehna2012 %}. 
+We also need moves that change the ages of the internal nodes, for example, `mvSubtreeScale` 
+and `mvNodeTimeSlideUniform`. These moves do not have tuning parameters associated with 
+them, thus you only need to pass in the `psi` node and proposal `weight`.
+
 ```
 moves[mvi++] = mvNarrow(psi, weight=n_species)
 moves[mvi++] = mvNNI(psi, weight=n_species/5.0)
@@ -352,22 +351,22 @@ moves[mvi++] = mvGPR(psi, weight=n_species/30.0)
 moves[mvi++] = mvSubtreeScale(psi, weight=n_species/3.0)
 moves[mvi++] = mvNodeTimeSlideUniform(psi, weight=n_species)
 ```
->
->
->The weight specifies how often the move will be applied either on average per iteration or relative to all other moves. Have a look at the [MCMC tutorial]({{ base.url }}/tutorials/) for more details about moves and MCMC strategies.
->
->**Molecular clock**
->Additionally, in the case of time-calibrated trees, we need to add a molecular clock rate parameter. For example, we know from empirical estimates that the molecular clock rate is about 0.01 (=1%) per million years per site. Nevertheless, we can estimate it here because we fixed the root age. We use a uniform prior on the log-transform clock rate. This specifies our lack of prior knowledge on the magnitude of the clock rate.
->
+
+
+The weight specifies how often the move will be applied either on average per iteration or relative to all other moves. Have a look at the [MCMC tutorial]({{ base.url }}/tutorials/) for more details about moves and MCMC strategies.
+
+### Molecular clock
+Additionally, in the case of time-calibrated trees, we need to add a molecular clock rate parameter. For example, we know from empirical estimates that the molecular clock rate is about 0.01 (=1%) per million years per site. Nevertheless, we can estimate it here because we fixed the root age. We use a uniform prior on the log-transform clock rate. This specifies our lack of prior knowledge on the magnitude of the clock rate.
+
 ```
 log_clock_rate ~ dnUniform(-6,1)
 moves[mvi++] = mvSlide(log_clock_rate, weight=2.0)
 clock_rate := 10^log_clock_rate
 ```
->
->Instead, you could also fix the clock rate and estimate the root age. 
->For more information on molecular clocks please read the [Divergence Time Tutorial]({{ base.url }}/tutorials/clocks/)
-{:.discussion}
+
+Instead, you could also fix the clock rate and estimate the root age. 
+For more information on molecular clocks please read the [Divergence Time Tutorial]({{ base.url }}/tutorials/clocks/)
+{% endaside %}
 
 Putting it All Together
 -----------------------

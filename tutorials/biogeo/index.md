@@ -325,30 +325,28 @@ not viable. Thus, selecting the discrete areas for a DEC analysis should
 be done with regard to what one hopes to learn through the analysis
 itself.
 
->Some questions
->--------------
->
-> For the three-area DEC rate matrix above, what is the rate of
->leaving state AC in terms of dispersal and extinction
->parameters?
->
-> What series of transition events might explain a lineage
->evolving from range $ABC$ to range $A$? From range $AB$ to range $C$?
->(Hint: more than one event is needed!)
->
-> Imagine a DEC rate matrix with four areas, $ABCD$. What would
->be the dispersal rate for $Q_{BC,BCD}$? How many states does a DEC rate
->matrix with four areas have? What is the relationship between the number
->of areas and the number of states under the DEC model?
->
-> Given the state is $AB$ before cladogenesis, and allowing
->subset sympatry, widespread sympatry, and allopatry, what are the 7
->possible states in the daughter lineages after cladogenesis?
->
-> For three areas, there are three narrow, four widespread, 18
->subset sympatric events, and 12 allopatric cladogenesis events. What
->proportion of terms in the cladogenesis matrix are zero?
-{:.discussion}
+{% aside Some questions %}
+ For the three-area DEC rate matrix above, what is the rate of
+leaving state AC in terms of dispersal and extinction
+parameters?
+
+ What series of transition events might explain a lineage
+evolving from range $ABC$ to range $A$? From range $AB$ to range $C$?
+(Hint: more than one event is needed!)
+
+ Imagine a DEC rate matrix with four areas, $ABCD$. What would
+be the dispersal rate for $Q_{BC,BCD}$? How many states does a DEC rate
+matrix with four areas have? What is the relationship between the number
+of areas and the number of states under the DEC model?
+
+ Given the state is $AB$ before cladogenesis, and allowing
+subset sympatry, widespread sympatry, and allopatry, what are the 7
+possible states in the daughter lineages after cladogenesis?
+
+ For three areas, there are three narrow, four widespread, 18
+subset sympatric events, and 12 allopatric cladogenesis events. What
+proportion of terms in the cladogenesis matrix are zero?
+{% endaside %}
 
 {% section Simple DEC analysis | bg_simple %}
 

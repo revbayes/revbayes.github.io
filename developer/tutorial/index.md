@@ -230,13 +230,22 @@ grep phylogenetics tutorial.md
 {:.instruction}
 {% endpreview %}
 
-`{:.discussion}` - Optional discussion information box
+`{% raw %}{% aside %}{% endraw %}` - Aside box
 
 {% preview %}
-> ## Discussion header
+{% aside Aside header %}
+Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+{% endaside %}
+{% endpreview %}
+
+`{:.info}` - Optional information box
+
+{% preview %}
+> ## Info header
 > Lorem ipsum dolor sit amet, consectetur adipiscing elit,
 > sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-{:.discussion}
+{:.info}
 {% endpreview %}
 
 **Blockquote**
