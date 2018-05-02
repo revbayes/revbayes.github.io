@@ -22,8 +22,8 @@ T <- readTrees("data/primates_tree.nex")[1]
 taxa <- T.taxa()
 
 # set my move index
-mvi = 0
-mni = 0
+mvi = 1
+mni = 1
 
 
 ######################
@@ -35,12 +35,12 @@ mni = 0
 diversification_mean <- ln( ln(367.0/2.0) / T.rootAge() )
 diversification_sd <- 0.587405
 diversification ~ dnLognormal(mean=diversification_mean,sd=diversification_sd)
-moves[++mvi] = mvScale(diversification,lambda=1.0,tune=true,weight=3.0)
+moves[mvi++] = mvScale(diversification,lambda=1.0,tune=true,weight=3.0)
 
 turnover_mean <- ln( ln(367.0/2.0) / T.rootAge() )
 turnover_sd <- 0.587405*2
 turnover ~ dnLognormal(mean=turnover_mean,sd=turnover_sd)
-moves[++mvi] = mvScale(turnover,lambda=1.0,tune=true,weight=3.0)
+moves[mvi++] = mvScale(turnover,lambda=1.0,tune=true,weight=3.0)
 
 ### Transform the parameters
 birth_rate := diversification + turnover
@@ -71,8 +71,8 @@ timetree.clamp(T)
 mymodel = model(birth_rate)
 
 ### set up the monitors that will output parameter values to file and screen
-monitors[1] = mnModel(filename="output/primates_BD.log",printgen=10, separator = TAB)
-monitors[2] = mnScreen(printgen=1000, birth_rate, death_rate)
+monitors[mni++] = mnModel(filename="output/primates_BD.log",printgen=10, separator = TAB)
+monitors[mni++] = mnScreen(printgen=1000, birth_rate, death_rate)
 
 
 

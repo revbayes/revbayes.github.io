@@ -105,7 +105,7 @@ prerequisites:
 
 {% subsection Filling in the table of contents %}
 
-To create a heading that will be included in the table of contents, you can use the `section` and `subection` Liquid tags, which take the heading text and anchor id as arguments, separated by a pipe `|`. Sections are referenced using the `ref` Liquid tag.
+To create a heading that will be included in the table of contents, you can use the `section` and `subsection` Liquid tags, which take the heading text and anchor id as arguments, separated by a pipe `|`. Sections are referenced using the `ref` Liquid tag.
 
 {% preview %}
 {% section This is a section header | section1 %}
@@ -119,6 +119,7 @@ This is a reference to {% ref section1 %}
 This is a reference to {% ref subsection1 %}
 {% endpreview %}
 
+<!---
 {% subsection Manually tagging sections %}
 
 You can also create a manually-formatted section/subsection heading by tagging it with the HTML class `section` or `subection`. In general, any block of text can be manually tagged with any class using the `{:.class}` syntax.
@@ -154,6 +155,8 @@ Again, you must link to this heading manually.
 {% preview %}
 [Subsection heading with custom id](#heading1)
 {% endpreview %}
+
+--->
 
 {% section Including data files and scripts %}
 

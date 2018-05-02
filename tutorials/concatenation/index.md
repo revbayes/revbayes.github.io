@@ -2,7 +2,7 @@
 title: Alignment concatenation
 subtitle: Species tree estimation from multiple concatenated gene sequence alignments
 authors:  Bastien Boussau and Sebastian Höhna
-level: 1
+level: 2
 prerequisites:
 - intro
 index: true
