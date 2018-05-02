@@ -90,13 +90,13 @@ Although the age of the last appearance is not included in our data summary and 
 
 
 ### Stratigraphic age uncertainty
-{:.subsubsection id="strat-age"}
+{:.aside id="strat-age"}
 
 In most cases the age of a given occurrence will not be known precisely and instead will be known to within some stratigraphic interval.
 The length of this interval is highly variable but it is an important source of uncertainty in any phylogenetic analysis incorporating fossil data. 
 
 In the model described above, only the age of the first appearance, $o_i$, is used in the posterior probability. 
-We can account for specimen age uncertainty in RevBayes by placing a hyperprior on the age of the first appearance, and sample the age of $o_i$ during MCMC.
+We can potentially account for specimen age uncertainty in RevBayes by placing a hyperprior on the age of the first appearance, and sample the age of $o_i$ during MCMC.
 As noted above, the last appearance time, $y_i$, is only used to provide an upper (maximum) bound on the extinction time, $d_i$. 
 Thus, the *oldest possible* age of the last appearance (*i.e.,* the maximum stratigraphic age associated with the fossil) may be used to specify $y_i$. All other occurrences only contribute to the per-interal fossil count, $k_i$, and so need to be dated at this level of precision.
 
