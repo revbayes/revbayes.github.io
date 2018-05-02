@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="/revbayes-site/assets/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="/revbayes-site/assets/css/bootstrap-theme.css" />
     <link rel="stylesheet" type="text/css" href="/revbayes-site/assets/css/main.css" />
-    <title>RevBayes: Total-Evidence Analysis and the Fossilized Birth-Death Process</title>
+    <title>RevBayes: Combined-Evidence Analysis and the Fossilized Birth-Death Process</title>
   </head>
   <body>
     <div class="container">
@@ -49,7 +49,7 @@
 </nav>
 
       <div class="titlebar">
-	<h1 class="maintitle">Total-Evidence Analysis and the Fossilized Birth-Death Process</h1>
+	<h1 class="maintitle">Combined-Evidence Analysis and the Fossilized Birth-Death Process</h1>
 	<h3 class="subtitle">Joint inference of divergence times and phylogenetic relationships of fossil and extant taxa</h3>
 	<h4 class="authors">Tracy A. Heath, April M. Wright, and Walker Pett</h4>
 </div>
@@ -131,7 +131,7 @@
 <hr class="section" />
 
 <p>This tutorial demonstrates how to specify the models used in a Bayesian
-“total-evidence” phylogenetic analysis of extant and fossil species,
+“combined-evidence” phylogenetic analysis of extant and fossil species,
 combining morphological and molecular data as well as stratigraphic
 range data from the fossil record [<em>e.g.,</em> 
 <a href="#Ronquist2012a">(Ronquist et al. 2012; Zhang et al. 2016; Gavryushkina et al. 2016)</a>]. 
@@ -146,7 +146,7 @@ collected from living and fossil bears (family Ursidae).</p>
 <h2 class="section" id="introduction">Introduction</h2>
 <hr class="section" />
 
-<p>The “total-evidence” analysis described in this tutorial uses a
+<p>The “combined-evidence” analysis described in this tutorial uses a
 probabilistic graphical model <a href="#Hoehna2014b">(Höhna et al. 2014)</a> integrating three separate
 likelihood components or data partitions (<a href="#fig_module_gm"></a>): one
 for molecular data (<a href="#Intro-GTR"></a>), one for
@@ -158,12 +158,12 @@ topology with divergence times which is modeled according to a separate
 prior component (<a href="#Intro-FBD"></a>).</p>
 
 <figure id="fig_module_gm"><p><img src="figures/tikz/full_model_modular.png" width="700" /></p>
-<figcaption>Modular components of the graphical model used in the “total-evidence” 
+<figcaption>Modular components of the graphical model used in the “combined-evidence” 
 analysis described in this tutorial.</figcaption>
 </figure>
 
 <p>In figure <a href="#fig_example_tree"></a> we provide an example of a type of tree
-estimated from a total-evidence analysis. This example shows the
+estimated from a combined-evidence analysis. This example shows the
 complete tree (<a href="#fig_example_tree"></a>A) and the “reconstructed tree”
 (<a href="#fig_example_tree"></a>B).
 We will describe the distinction between these two trees in <a href="#Intro-FBD"></a>.</p>
@@ -194,7 +194,7 @@ Importantly, this model can be used <em>with or
 without</em> character data for the historical samples. Thus, it provides a
 reasonable prior distribution for analyses combining morphological or
 DNA data for both extant and fossil
-taxa—<em>i.e.</em> the so-called “total-evidence”
+taxa—<em>i.e.</em> the so-called “combined-evidence”
 approaches described by <a href="#Ronquist2012a">(Ronquist et al. 2012)</a> and extended by <a href="#Zhang2016">(Zhang et al. 2016)</a> and
 <a href="#Gavryushkina2016">(Gavryushkina et al. 2016)</a>. When matrices of discrete morphological characters
 for both living and fossil species are unavailable, the fossilized
