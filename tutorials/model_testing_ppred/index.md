@@ -2,7 +2,7 @@
 title: Assessing Phylogenetic Reliability Using RevBayes and $P^{3}$
 subtitle: Model adequacy testing using posterior prediction
 authors:  Lyndon M. Coghill, Will Freyman, Sebastian H&#246;hna and Jeremy M. Brown
-level: 2
+level: 3
 prerequisites:
 - intro
 index: true
