@@ -5,7 +5,7 @@ taxa = readTaxonData(file = "data/dinosaur_ranges.tsv")
 k = readDataDelimitedFile(file = "data/dinosaur_fossil_counts.tsv", header = true, rownames = true)
 
 # interval boundaries
-timeline = v(100, 145, 201) - 66
+timeline <- v(100, 145, 201) - 66
 
 mvi = 1
 
@@ -33,7 +33,7 @@ for(i in 1:(timeline.size()+1))
 	moves[mvi++] = mvScale(psi[i], lambda = 1)
 }
 
-rho=0
+rho <- 0
 
 # model 1
 bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, rho=rho, timeline=timeline, k=k)
@@ -54,8 +54,16 @@ mni = 1
 monitors[mni++] = mnScreen(lambda, mu, psi, printgen=100)
 monitors[mni++] = mnModel(filename="output/model1.log",printgen=10)
 
+# monitors to print RevGagets input
+monitors[mni++] = mnFile(filename="output/model1_speciation_rates.log",lambda,printgen=10)
+monitors[mni++] = mnFile(filename="output/model1_speciation_times.log",timeline,printgen=10)
+monitors[mni++] = mnFile(filename="output/model1_extinction_rates.log",mu,printgen=10)
+monitors[mni++] = mnFile(filename="output/model1_extinction_times.log",timeline,printgen=10)
+monitors[mni++] = mnFile(filename="output/model1_sampling_rates.log",psi,printgen=10)
+monitors[mni++] = mnFile(filename="output/model1_sampling_times.log",timeline,printgen=10)
+
 # run the analysis
 mymcmc = mcmc(mymodel, moves, monitors, moveschedule="random")
-mymcmc.run(30000)
+mymcmc.run(1000)
 
 q()
