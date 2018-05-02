@@ -45,12 +45,12 @@ A central advantage of applying the FBD (or related) models to the analysis of f
 The fossilized birth-death range (FBDR) process described here provides a model for the distribution stratigraphic ranges, which can include extant samples, along with the total lineage duration times ({% ref fig_fbdr_tree %}).
 
 {% figure fig_fbdr_tree %}
-<img src="figures/rangeplot.png" width="500" />
+<img src="figures/FBD7.pdf" width="700pt" />
 {% figcaption %} 
 One possible realization of the fossilized birth-death range model.
 Sampled lineages are represented by solid black lines.
-Stratigraphic ranges are shown in purple. Black diamonds represent first and last appearances.
-Singletons (*i.e.,* ranges known from a single fossil specimen) are represented by a single diamond.
+Stratigraphic ranges are shown in purple. Red circles represent first and last appearances.
+Singletons (*i.e.,* ranges known from a single fossil specimen) are represented by a single circle.
 Unsampled lineages are represented by dashed lines.
 {% endfigcaption %}
 {% endfigure %}
@@ -95,7 +95,7 @@ Although the age of the last appearance is not included in our data summary and 
 In most cases the age of a given occurrence will not be known precisely and instead will be known to within some stratigraphic interval.
 The length of this interval is highly variable but it is an important source of uncertainty in any phylogenetic analysis incorporating fossil data. 
 
-In the model described above, only the age of the first appearance, $o_i$, is used in the likelihood calculation. 
+In the model described above, only the age of the first appearance, $o_i$, is used in the posterior probability. 
 We can account for specimen age uncertainty in RevBayes by placing a hyperprior on the age of the first appearance, and sample the age of $o_i$ during MCMC.
 As noted above, the last appearance time, $y_i$, is only used to provide an upper (maximum) bound on the extinction time, $d_i$. 
 Thus, the *oldest possible* age of the last appearance (*i.e.,* the maximum stratigraphic age associated with the fossil) may be used to specify $y_i$. All other occurrences only contribute to the per-interal fossil count, $k_i$, and so need to be dated at this level of precision.
@@ -103,8 +103,8 @@ Thus, the *oldest possible* age of the last appearance (*i.e.,* the maximum stra
 ### Marginalising over the number of fossils within a stratigraphic range
 {:.subsubsection id="fbdr-model2"}
 
-In the above model, some knowledge about the total number of samples collected during each interval, $k_i$, is required. However, in some cases we may only the age of the first and last appearance times ($o_i, y_i$), but not the number of occurrences sampled inbetween. In other cases, the number that $k_i$ represents may not be obvious. We can take care of this uncertainty by marginalizing over the total number of fossils between the first and last appearance times for each range. In this version of the model, per-interval fossil counts, $k_i$, are not required. 
-Instead, we define ${\kappa_i^\prime}$, which denotes the total number of occurrences representing first and last appearances within each interval, and the data summary, $\mathcal{D^\prime} = ( \\{ \kappa_{i,j}^\prime, b_i, d_i, o_i \\}_{i \in 1...n, j \in 1...l})$.
+In the above model, some knowledge about the total number of samples collected during each interval, $k_i$, is required. However, in some cases we may only know the age of the first and last appearance times ($o_i, y_i$), but not the number of occurrences sampled inbetween. In other cases, the number that $k_i$ represents may not be obvious. We can take care of this uncertainty by marginalizing over the total number of fossils between the first and last appearance times for each range. In this version of the model, per-interval fossil counts, $k_i$, are not required. 
+Instead, we define ${\kappa_i^\prime}$, which denotes the total number of occurrences representing first and last appearances within each interval, and the data summary, $\mathcal{D_r} = ( \\{ \kappa_{i,j}^\prime, b_i, d_i, o_i \\}_{i \in 1...n, j \in 1...l})$.
 
 ### Marginalising over the number of fossils within a stratigraphic interval 
 {:.subsubsection id="fbdr-model3"}
@@ -114,9 +114,9 @@ Instead we may only know whether a given range was sampled or not within a given
 We refer to this as presence-absence (1/0) sampling. 
 To account for this type of data, we can marginalize over the total number of fossils within each interval, along with the age of first appearance, $o_i$.
 
-We use $\kappa_{S_{i,j}}$ to indicate whether species $i$ was sampled during interval $j$ or not, such that $\kappa_{S_{i,j}} = 1$ if $k_{i,j}>0$ and $\kappa_{S_{i,j}} = 0$ otherwise. Within each interval for which we record a species as having been sampled (*i.e.,* $\kappa_{S_{i,j}} = 1$) we also define $L_{S_{i,j}}$, which is the duration that the species exists within that interval. We denote the data summary, $\mathcal{D_S} = (\\{ \kappa_{S_{i,j}}, L_{S_i,j}, b_i, d_i \\}_{i \in 1...n, j \in 1...l})$.
+We use $\kappa_{S_{i,j}}$ to indicate whether species $i$ was sampled during interval $j$ or not, such that $\kappa_{S_{i,j}} = 1$ if $k_{i,j}>0$ and $\kappa_{S_{i,j}} = 0$ otherwise. Within each interval for which we record a species as having been sampled (*i.e.,* $\kappa_{S_{i,j}} = 1$) we also define $L_{S_{i,j}}$, which is the duration that the species exists within that interval. We denote the data summary, $\mathcal{D_l} = (\\{ \kappa_{S_{i,j}}, L_{S_i,j}, b_i, d_i \\}_{i \in 1...n, j \in 1...l})$.
 
-More details of the models described above are available [here](math.pdf).
+More details of the models described above are available [here](FBD_skyline_maths.pdf).
 
 # Exercise
 {:.section}
@@ -135,9 +135,6 @@ Finally, we rescaled the timeline, such that the Cretaceous-Paleogene boundary =
 This allows us to avoid estimating rates during any interval younger than Cretaceous, which is outwith our period of interest.
 The script used to generate this dataset is at the top of this page.
 
-- \todo Anything else to add here?
-- \todo Add the R data script
-
 ## Input files
 {:.subsection}
 
@@ -150,7 +147,7 @@ These files contain the following data:
 
 -   `dinosaur_ranges.tsv`: a tab-delimited table listing first and last appearance times for each range. Each row represents a seperate species. Note that for singletons the first and last appearance times will be the same. For extant ranges, including extant singletons, the last appearance time would be 0.0. __Important__: fossil ages have been rescaled such that 66 Ma = 0 Ma (see above section [PBDB occurrence data](#pbdb-occurrence-data) for details).
 
--   `dinosaur_fossil_counts.tsv`: a tab-delimited table of fossil occurrence counts. Each row represents a seperate species and each column represents a seperate time interval, from youngest to oldest (*i.e.,* left to right). Each cell contains information about species sampling during each interval - this can be the absolute number of times a species was sampled during each interval (required for model 1) or a binary character indicating whether a species was sampled (= "1") or not (= "0") during each interval (required for model 3). This file is not required for model 2.
+-   `dinosaur_fossil_counts.tsv`: a tab-delimited table of fossil occurrence counts. Each row represents a seperate species and each column represents a seperate time interval, from youngest to oldest (that is, left to right). Each cell contains information about species sampling during each interval - this can be the absolute number of times a species was sampled during each interval (required for model 1) or a binary character indicating whether a species was sampled (= "1") or not (= "0") during each interval (required for model 3). This file is not required for model 2.
 
 ## Setting up the analysis
 {:.subsection}
@@ -179,9 +176,10 @@ In this analysis, our period of interest ends at 66 Ma, which we will rescale to
 Create a vector called `timeline` for the maximum age of each interval, from youngest to oldest. 
 RevBayes will assume that the age of the youngest interval = 0.
 
-    timeline = v(100, 145, 201, 252) - 66
+    timeline = v(100, 145, 201) - 66
 
-These ages represent the boundary between the Early Cretaceous, the Late Cretaceous, the Jurassic, the Triassic and the Permian.     
+These ages represent the boundary between the Early Cretaceous, the Late Cretaceous, and the Jurassic.
+The oldest occurrence in our dataset is from the Triassic and we will treat the time prior to the Jurassic as a single interval (*i.e.,* 252 Ma - infinity).
 
 ### Specifying the priors and moves on the FBDR model parameters
 {:.subsubsection}
@@ -196,7 +194,7 @@ To sample the parameters during MCMC you will assign three scaling moves (`mvSca
 The tuning value determines the size of the proposed change and using multiple moves for a single parameter will improve the mixing of the MCMC.
 
 It may also be useful to keep track of the diversification ($\lambda - \mu$) and turnover ($\mu/\lambda$) parameters. 
-Since these parameters can be expressed as a deterministic transformation of the speciation and extinction rates, we can also monitor these values (that is, track the values of these parameters, and print them to a file) by creating two deterministic nodes for these parameters for each interval using the `:=` operator.
+Since these parameters can be expressed as a deterministic transformation of the speciation and extinction rates, we can also monitor these values (that is, keep track of them during MCMC, and print them to a file) by creating deterministic nodes for these parameters for each interval using the `:=` operator.
 
 Before specifying the moves and priors on the model parameters, create a workspace variable called `mvi`. 
 This variable is an iterator that will build a vector containing all of the MCMC moves used to propose new states for every stochastic node in the model graph. 
@@ -229,15 +227,13 @@ Next, write a loop that specifys the priors and moves on the rates during each i
     }
 
 Note that this loop specifies parameters for an additional interval (`timeline()+1`).
-This is for the period older than the maximium user-specified interval (in this case, Permian) and $\infty$. 
+This is for the interval prior to the Jurassic. 
 
-For this analysis we will fix the extant species sampling probability ($\rho$) to zero to avoid having to make any assumptions about lineages that may have survived beyond the KPg boundary.
+For this analysis we will fix the extant species sampling probability ($\rho$) to zero to avoid having to make any assumptions about lineages that may have survived beyond the Cretaceous-Paleogene boundary.
 
     rho = 0    
 
 Because $\rho$ is a constant node, we do not have to assign a move to this parameter.
-       
-\todo anything else to add here?
 
 ### Specifying the FBDR Matrix model
 {:.subsubsection id="fbdr-model-specify"}
@@ -245,7 +241,7 @@ Because $\rho$ is a constant node, we do not have to assign a move to this param
 All three models described in the [Section Introduction](#introduction) can be specified using the same distribution function `dnFBDRMatrix` in RevBayes.
 The model used to calculate the likelihood will depend on the data and commands passed to this function. 
 
-- What is the formal definition of `bd`?
+- \todo what is the formal definition of `bd`?
 
 The `dnFBDRMatrix` function always takes as input the stratigraphic ranges (`taxa`), the FBDR model parameters (`lambda, mu, psi, rho`), and the vector of interval ages (`timeline`). 
 The function can optionally take as input the matrix of per-interval fossil counts (`k`), used by model 1 and 3 only.
@@ -265,7 +261,7 @@ To use model 2 simply exclude the matrix `k` from the function call.
     bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, rho=rho, timeline=timeline)
 
 Model 3 requires both stratigraphic range ages and per-interval 1/0 data, which can also be represented by `k`.
-To use model 3 simply include the matrix `k`, along with the other model parameters and specify `binary = TRUE`. 
+To use model 3 simply include the matrix `k`, along with the other model parameters and specify `binary = TRUE`.
 
     bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, rho=rho, timeline=timeline, k=k, binary=true)
 
@@ -305,10 +301,10 @@ Each time a new monitor is added to the vector, `mni` will be incremented by a v
 Next, create monitors for the FBDR model parameters speciation, extinction and fossil recovery, along with diversification and turnover.
 
     monitors[mni++] = mnScreen(lambda, mu, psi, div, turnover, printgen=100)
-    monitors[mni++] = mnModel(filename="model1.log", printgen=100)    
+    monitors[mni++] = mnModel(filename="model1.log", printgen=10)    
 
-The `mnScreen` monitor writes the parameters we specify to the screen, in this case, every 100 MCMC generations.
-The `mnFile` monitor writes the parameters we specify to file.     
+The `mnScreen` monitor writes the parameters we specify to the screen every 100 MCMC generations.
+The `mnFile` monitor writes the parameters we specify to file every 10 MCMC generations.     
 
 To run the analysis we have to create a workspace variable that defines our MCMC run using the `mcmc` function. This function takes the three main analysis components as arguments and we set the move schedule to `"random"`, meaning moves will be chosen at random during the analysis. 
 
@@ -333,7 +329,7 @@ Provided that you started RevBayes from the correct directory, you can then use 
 
     source("mcmc_FBDRMatrix_model1.Rev")
 
-This analysis will take around 13 minutes. While you're waiting for this analysis to run, create the files you need to run the analysis using models 2 and 3: `mcmc_FBDRMatrix_model2.Rev` and `mcmc_FBDRMatrix_model3.Rev`.
+This analysis will take around 10 minutes. While you're waiting for this analysis to run, create the files you need to run the analysis using models 2 and 3: `mcmc_FBDRMatrix_model2.Rev` and `mcmc_FBDRMatrix_model3.Rev`.
 You can just copy and paste your exisiting script for model 1.
 Recall from Section [Specifying the FBDR Matrix model](#fbdr-model-specify) that to use the alternative models you only need to change the arguments passed to the distribution function `dnFBDRMatrix`. 
 
@@ -398,7 +394,7 @@ While you're waiting for model 2 and 3 to run you can examine  the output from m
 >     mni = 1
 > 
 >     monitors[mni++] = mnScreen(lambda, mu, psi, printgen=100)
->     monitors[mni++] = mnModel(filename="model0.log",printgen=100)
+>     monitors[mni++] = mnModel(filename="model0.log",printgen=10)
 > 
 >     mymcmc = mcmc(mymodel, moves, monitors, moveschedule="random")
 >     mymcmc.run(30000)
@@ -414,35 +410,42 @@ During the MCMC analysis RevBayes will output parameters of interest (defined us
 ### Tracer
 {:.subsubsection}
 
-We can examine the log files in the program [Tracer](http://beast.community/tracer).
+We can examine the log files in the program [**Tracer**](http://beast.community/tracer).
 Once you open this program, you can open the log files using the "File > Import Tracer File" option, navigate to the directory in which you ran the analysis (*RB\_FBDRMatrix\_Tutorial*) and select the relevant log file.
-Or you can simply drag and drop the files into the "Trace Files" (the white box on the upper left of the program).
-Let's take a look at the output obtained for model 1.
+Or you can simply drag and drop the files into the "Trace Files" (the empty white box on the upper left of the program).
+Take a look at the output obtained for model 1.
 
 {% figure fig_tracer1 %}
-<img src="figures/tracer_m1.png" width="100" />
-{% figcaption %} 
-Place holder for the moment.
+<img src="figures/tracer1.png" width="1000" />
+{% figcaption %}
+The Estimates window. The left-hand window provides mean and ESS of the chain. The right-hand window visualizes the distribution of samples.
 {% endfigcaption %}
 {% endfigure %}
 
-RevBayes outputs the parameter estiamtes for each interval from youngest and to oldest. 
+RevBayes outputs the parameter estiamtes for each interval from youngest and to oldest.
 This is the same order they were specified in the vector (`timeline`) [above](#specify-intervals), and also the order in which the intervals appear in the input file `dinosaur_fossil_counts.tsv`.
 In this analysis the youngest interval (the Cretaceous) is denoted 1 and the oldest interval (the Permian) is denoted 5.
-
-Note that the ESS values for some parameters are a little low. 
-Ideally, we would run the MCMC for longer. Scroll through the parmeters and take a look at the values estimated for each 
-
-Let's look at our estimates of speciation, extinction and fossil recover.
-
-In Tracer, we can select multiple
+In Tracer, we can select multiple parameters simultaneously.
+If we select all the estimates  for `lambda`, we can look at the 95% HPD intervals obtained for each interval.
 
 {% figure fig_tracer2 %}
-<Place holder for the moment.>
+<img src="figures/tracer2.png" width="1000" />
 {% figcaption %} 
-Place holder for the moment.
+The Estimates window, showing 95% HPDs for multiple parameters (in this case extinction), highlighted on the lower left.
+The youngest interval appears on the lefthand side.
 {% endfigcaption %}
 {% endfigure %}
+
+We can also examine multiple log files simultaneously in Tracer and examine the overlap between estimates obtained using different models. If you load all three log files into Tracer and navigate to the "Marginal Prob Distribution" window at the top and at the bottom of the appliaction select the "Colour by > Trace file" option, you can see the marginal posterior obtained for using each model in different colours.
+
+{% figure fig_tracer3 %}
+<img src="figures/tracer3.png" width="1000" />
+{% figcaption %}
+The "Marginal Prob Distribution" window, showing estimates of the same parameter (in this case speciation during the youngest interval) obtained using different models and therefore output to different logfiles, highlighted on the upper left. 
+{% endfigcaption %}
+{% endfigure %}
+
+You can also assess the mixing of the MCMC in Tracer, taking advantage of the "Trace" window. Note that the ESS values for some parameters are a little low. Ideally, we would run the MCMC for longer. 
 
 ### Skyline plots using R
 {:.subsubsection}
@@ -450,7 +453,7 @@ Place holder for the moment.
 We can also examine and manipulate the log files using other software, such as R. 
 At the top of the page you will find an R script `skyline_plots_FBDRMatrix.R`. 
 This script contains commands that can be used to generate so-called skyline plots. 
-These plots show the posterior rates estimated during each interval. 
+These plots show the posterior rates estimated during each interval.
 
 Open R and set the working directory to the directory in which you performed the analyis, *RB\_FBDRMatrix\_Tutorial*. 
 Run the commands in this script to produce a set plots for each model that you ran.
@@ -464,7 +467,7 @@ Place holder for the moment.
 
 ### Discussion points
 
-* Different results
+* The estimates we obtained for speciation, extinction and sampling using different models are quite different. Why do you think this might be? What does this mean in terms of interpreting your results?
 
 * Note that the key FBDR model parameters - speication, extinction and fossil recovery rates ($\lambda, \mu, \psi$) - appear to be elevated during interval 1 (*i.e.,* the Cretaceous). Does this seem like a reasonable result? Are there any bio/geological reasons that we would expect to see this? How could we go about further testing this?
 
