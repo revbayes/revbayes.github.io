@@ -168,7 +168,7 @@ schedule:
     topic: Choice of practical on diversification rate estimation (Part I)
     lesson:
     - fbd_range
-    - div
+    - div/simple
     instructors: 
     - Rachel Warnock
     - Sebastian Höhna
@@ -184,7 +184,7 @@ schedule:
     topic: Choice of practical on diversification rate estimation (Part II)
     lesson:
     - fbd_range
-    - div
+    - div/simple
     instructors: 
     - Rachel Warnock
     - Sebastian Höhna
