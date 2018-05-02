@@ -1,5 +1,5 @@
 ---
-title: Total-Evidence Analysis and the Fossilized Birth-Death Process
+title: Combined-Evidence Analysis and the Fossilized Birth-Death Process
 subtitle: Joint inference of divergence times and phylogenetic relationships of fossil and extant taxa
 authors:  Tracy A. Heath, April M. Wright, and Walker Pett
 level: 3
@@ -17,7 +17,7 @@ redirect: false
 {% section Overview | overview %}
 
 This tutorial demonstrates how to specify the models used in a Bayesian
-“total-evidence” phylogenetic analysis of extant and fossil species,
+“combined-evidence” phylogenetic analysis of extant and fossil species,
 combining morphological and molecular data as well as stratigraphic
 range data from the fossil record [*e.g.,* 
 {% cite Ronquist2012a Zhang2016 Gavryushkina2016 %}]. 
@@ -32,7 +32,7 @@ collected from living and fossil bears (family Ursidae).
 
 {% section Introduction | introduction %}
 
-The “total-evidence” analysis described in this tutorial uses a
+The “combined-evidence” analysis described in this tutorial uses a
 probabilistic graphical model {% cite Hoehna2014b %} integrating three separate
 likelihood components or data partitions ({% ref fig_module_gm %}): one
 for molecular data ({% ref Intro-GTR %}), one for
@@ -47,14 +47,14 @@ prior component ({% ref Intro-FBD %}).
 {% figure fig_module_gm %}
 <img src="figures/tikz/full_model_modular.png" width="700" /> 
 {% figcaption %} 
-Modular components of the graphical model used in the “total-evidence” 
+Modular components of the graphical model used in the “combined-evidence” 
 analysis described in this tutorial.
 {% endfigcaption %}
 {% endfigure %}
 
 
 In figure {% ref fig_example_tree %} we provide an example of a type of tree
-estimated from a total-evidence analysis. This example shows the
+estimated from a combined-evidence analysis. This example shows the
 complete tree ({% ref fig_example_tree %}A) and the "reconstructed tree"
 ({% ref fig_example_tree %}B).
 We will describe the distinction between these two trees in {% ref Intro-FBD %}.
@@ -88,7 +88,7 @@ Importantly, this model can be used *with or
 without* character data for the historical samples. Thus, it provides a
 reasonable prior distribution for analyses combining morphological or
 DNA data for both extant and fossil
-taxa—*i.e.* the so-called “total-evidence”
+taxa—*i.e.* the so-called “combined-evidence”
 approaches described by {% cite Ronquist2012a %} and extended by {% cite Zhang2016 %} and
 {% cite Gavryushkina2016 %}. When matrices of discrete morphological characters
 for both living and fossil species are unavailable, the fossilized
