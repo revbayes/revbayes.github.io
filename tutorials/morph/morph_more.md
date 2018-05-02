@@ -2,7 +2,7 @@
 title: Discrete morphology
 subtitle: Phylogenetic inference with discrete morphological data
 authors:  April M. Wright and Michael J. Landis
-level: 1
+level: 2
 prerequisites:
 - intro
 index: true

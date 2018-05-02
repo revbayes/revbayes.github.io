@@ -1,5 +1,5 @@
 ---
-title: Total-Evidence Analysis and the Fossilized Birth-Death Process
+title: Combined-Evidence Analysis and the Fossilized Birth-Death Process
 subtitle: Joint inference of divergence times and phylogenetic relationships of fossil and extant taxa
 authors:  Tracy A. Heath, April M. Wright, and Walker Pett
 level: 3
@@ -14,11 +14,10 @@ title-old: RB_TotalEvidenceDating_FBD_Tutorial
 redirect: false
 ---
 
-
 {% section Overview | overview %}
 
 This tutorial demonstrates how to specify the models used in a Bayesian
-“total-evidence” phylogenetic analysis of extant and fossil species,
+“combined-evidence” phylogenetic analysis of extant and fossil species,
 combining morphological and molecular data as well as stratigraphic
 range data from the fossil record [*e.g.,* 
 {% cite Ronquist2012a Zhang2016 Gavryushkina2016 %}]. 
@@ -33,7 +32,7 @@ collected from living and fossil bears (family Ursidae).
 
 {% section Introduction | introduction %}
 
-The “total-evidence” analysis described in this tutorial uses a
+The “combined-evidence” analysis described in this tutorial uses a
 probabilistic graphical model {% cite Hoehna2014b %} integrating three separate
 likelihood components or data partitions ({% ref fig_module_gm %}): one
 for molecular data ({% ref Intro-GTR %}), one for
@@ -48,31 +47,27 @@ prior component ({% ref Intro-FBD %}).
 {% figure fig_module_gm %}
 <img src="figures/tikz/full_model_modular.png" width="700" /> 
 {% figcaption %} 
-Modular components of the graphical model used in the “total-evidence” 
+Modular components of the graphical model used in the “combined-evidence” 
 analysis described in this tutorial.
 {% endfigcaption %}
 {% endfigure %}
 
 
-In figure {% ref fig_example_tree %} we provide an example of the type of tree
-estimated from a total-evidence analysis. This example shows the
-complete tree ({% ref fig_example_tree %}A) and the sampled or
-reconstructed tree ({% ref fig_example_tree %}B). Importantly, we are
-interested in estimating the topology, divergence times and fossil
-sample times of the *reconstructed tree* ({% ref fig_example_tree %}B).
+In figure {% ref fig_example_tree %} we provide an example of a type of tree
+estimated from a combined-evidence analysis. This example shows the
+complete tree ({% ref fig_example_tree %}A) and the "reconstructed tree"
+({% ref fig_example_tree %}B).
 We will describe the distinction between these two trees in {% ref Intro-FBD %}.
 
 {% figure fig_example_tree %}
-<img src="figures/tree_plot_with_fossils.png" width="500" /> 
-<img src="figures/tree_plot_with_fossils_reconstructed.png" width="500" /> 
+<img src="figures/complete_tree.png" width="400" />
+<img src="figures/reconstructed_tree.png" width="400" /> 
 {% figcaption %} 
 One possible
-realization of the fossilized birth-death (described in section
-{% ref Intro-FBD %}) process starting at origin time $\phi$, showing
-fossil sampling events (red circles), and 15 sampled extant taxa (black
-circles). (A) The complete tree shows all lineages both sampled (solid
-lines) and unsampled (dotted lines). (B) The reconstructed tree (also
-called the sampled tree) shows only the sampled lineages
+realization of the specimen-level fossilized birth-death (described in section
+{% ref Intro-FBD %}) (A) The complete tree shows all lineages both sampled (solid
+lines) and unsampled (dotted lines).
+(B) The reconstructed tree shows only the sampled specimens, both fossil and extant.
 {% endfigcaption %}
 {% endfigure %}
  
@@ -81,7 +76,7 @@ called the sampled tree) shows only the sampled lineages
 
 The joint prior distribution on tree topologies and divergence times of
 living and extinct species used in this tutorial is described by the
-*fossilized birth-death* (FBD) process {% cite Stadler2010 Heath2014 %}. This
+*fossilized birth-death* (FBD) process {% cite Stadler2010 Heath2014 Stadler2018 %}. This
 model simply treats the fossil observations as part of the process
 governing the tree topology and branch times (the node in
 {% ref fig_module_gm %}). The fossilized birth-death process provides a
@@ -93,7 +88,7 @@ Importantly, this model can be used *with or
 without* character data for the historical samples. Thus, it provides a
 reasonable prior distribution for analyses combining morphological or
 DNA data for both extant and fossil
-taxa—*i.e.* the so-called “total-evidence”
+taxa—*i.e.* the so-called “combined-evidence”
 approaches described by {% cite Ronquist2012a %} and extended by {% cite Zhang2016 %} and
 {% cite Gavryushkina2016 %}. When matrices of discrete morphological characters
 for both living and fossil species are unavailable, the fossilized
@@ -134,11 +129,12 @@ models and their notation, please see {% cite Hoehna2014b %}.
 {% endfigure %}
 
 In the example FBD tree shown in {% ref fig_example_tree %}, the
-diversification process originates at time $\phi$, giving rise to $n=20$
-species in the present, with both sampled fossils (red circles) and
-extant species (black circles). All of the lineages represented in {% ref fig_example_tree %}A (both solid and dotted lines) show the
+diversification process originates at time $\phi$, giving rise to $n=10$
+species in the present, with both sampled fossils and
+extant species. All of the lineages represented in {% ref fig_example_tree %}A (both solid and dotted lines) show the
 *complete tree*. This is the tree of all extant *and* extinct lineages
-generated by the process. The complete tree is distinct from the
+generated by the process.
+The complete tree is distinct from the
 *reconstructed tree* ({% ref fig_example_tree %}B) which is the tree
 representing only the lineages sampled as extant taxa or fossils. Fossil
 observations (red circles in {% ref fig_example_tree %}) are recovered
@@ -161,7 +157,34 @@ particularly for datasets with many sampled fossils. In the example
 descendants. These fossils have solid black lines leading to the
 present.
 
-{% subsubsection Assignment of fossil specimens to species ranges | Intro-Taxonomy %}
+{% subsection Assignment of fossil specimens to taxonomic species | Intro-Taxonomy %}
+
+The most basic version of the FBD treats individual fossil specimens as separate taxonomic entities. This is the standard specimen-level "Fossilized Birth Death Process" (implemented as `FBDP` in RevBayes).
+However, in most cases taxonomic species are represented in the fossil record by multiple fossil specimens sampled at
+different stratigraphic ages. In order to compute the density of the FBD while accounting for this stratigraphic species range data, we need to assume some model of speciation that will allow us to assign fossil specimens to species. {% citet Stadler2018 %} describe an extension to the FBD which assigns lineages to taxonomic species through a process of asymmetric or "budding" speciation. This model assumes that at each asymmetric speciation event, one descendant species represents a new species, while the other descendant represents the continuation of the parent species. In this way, each lineage (and therefore all the fossil specimens sampled along that lineage) can be mapped to a unique species. An example realization of such a speciation process is shown in {% ref fig_budding %}
+
+{% figure fig_budding %}
+<img src="figures/budding1.png" width="400" />
+$$\implies$$
+<img src="figures/budding2.png" width="400" /> 
+{% figcaption %} 
+One possible realization of asymmetric speciation (light blue) along one lineage of the fossilized birth 
+death tree from {% ref fig_example_tree %}.
+(A) The highlighted lineage originates through an asymmetric speciation event by branching upward,
+and then continues past additional speciation events by downward branching.
+Fossil specimens lying along this path are assigned to the same taxonomic species.
+(B) The same lineage is highlighted in the oriented tree with lineages representing the same species collapsed into straight lines.
+{% endfigcaption %}
+{% endfigure %}
+
+{% citet Stadler2018 %} show how to compute the density of the "sampled tree", which is obtained by pruning all unsampled lineages after asymmetric species identities have been assigned in the complete tree ({% ref fig_sampled %}). This gives rise to the "Fossilized Birth Death Range Process" (implemented as `FBDRP` in RevBayes). This is the model we will be using in this tutorial. It is important to note that the tips in the sampled tree represent the age of the youngest sample for each species.
+
+{% figure fig_sampled %}
+<img src="figures/sampled_tree.png" width="400" /> 
+{% figcaption %} 
+The "sampled tree" is produced by pruning unsampled lineages from the oriented tree in {% ref fig_budding %}B and collapsing intermediate fossil samples other than the first and last occurrences into stratigraphic ranges.
+{% endfigcaption %}
+{% endfigure %}
 
 {% subsection Nucleotide Sequence Evolution | Intro-GTR %}
 
@@ -425,9 +448,7 @@ Begin the Rev script by loading in the list of taxon names from the
 This function reads a tab-delimited file and creates a variable called
 `taxa` that is a list of all of the taxon names relevant to this
 analysis. This list includes all of the fossil and extant bear species
-names in the first columns and a single age value in the second column.
-The ages provided are either 0.0 for extant species or the average of
-the age range for fossil species (see {% ref tab_bear_fossils %}).
+names in the first columns and minimum/maximum ages in the second/third columns.
 
 {% subsubsection Load Data Matrices | Exercise-LoadData %}
 
@@ -676,9 +697,70 @@ to explicitly sample the root age (`mvRootTimeSlideUniform`).
 
 {% assign fbd_script = "model_FBDP_TEFBD.Rev" %}
 
-> ## Sampling Fossil Specimen Ages
->
-{:.discussion}
+{% aside Incorporating Specimen-Level Fossil Age Uncertainty %}
+If we are using the specimen-level `FBDP` distribution (see {% ref Intro-Taxonomy %}),
+in order to account for uncertainty in the ages of fossil specimens,
+we can incorporate intervals on the fossil ages.
+These intervals can represent, for example, stratigraphic ranges or measurement error.
+We do this by assuming each fossil can occur with
+uniform probability anywhere within its observed interval. This is
+somewhat different from the typical approach to node calibration. Here,
+instead of treating the calibration density as an additional prior
+distribution on the tree, we treat it as the *likelihood* of our fossil
+data given the tree parameter. Specifically, we assume the likelihood of
+a particular fossil observation $\mathcal{F}_i$ is equal to one if the
+fossil’s inferred age on the tree $t_i$ falls within its observed time
+interval $(a_i,b_i)$, and zero otherwise:
+
+> 
+$$f[\mathcal{F}_i \mid a_i, b_i, t_i] = \begin{cases}
+1 & \text{if } a_i < t_i < b_i\\
+0 & \text{otherwise}
+\end{cases}$$
+
+In other words, we assume the likelihood is equal to one
+if the inferred age is consistent with the observed data. We can
+represent this likelihood in RevBayes using a distribution that is
+proportional to the likelihood,
+*i.e.* non-zero when the likelihood is equal
+to one. This model component represents
+the observed in the modular graphical model shown in {% ref fig_module_gm %}.
+
+{% figure fig_tipsampling_gm %}
+<img src="figures/tikz/tipsampling_gm.png" width="400" /> 
+{% figcaption %} 
+A graphical model of the
+fossil age likelihood model used in this tutorial. The likelihood of
+fossil observation $\mathcal{F}_i$ is uniform and non-zero when the
+inferred fossil age $t_i$ falls within the observed time interval
+$(a_i,b_i)$.
+{% endfigcaption %}
+{% endfigure %}
+
+#### Sampling Fossil Specimen Ages
+When using the specimen-level FBD distribution `FBDP`, 
+we can account for uncertainty in the age estimates of our
+fossils specimens using the observed minimum and maximum stratigraphic ages.
+First, we loop over the the list of taxa. For each fossil observation, we create a
+uniform random variable representing the likelihood. Remember, we can
+represent the fossil likelihood using any uniform distribution that is
+non-zero when the likelihood is equal to one.
+
+For example, if $t_i$ is the inferred fossil age and $(a_i,b_i)$ is the
+observed stratigraphic interval, we know the likelihood is equal to one
+when $a_i < t_i < b_i$, or equivalently $t_i - b_i < 0 < t_i - a_i$. So
+let’s represent the likelihood using a uniform random variable uniformly
+distributed in $(t_i - b_i, t_i - a_i)$ and clamped at zero.
+
+{{ fbd_script | snippet:"block#","15-17" }}
+
+Finally, we add a move that samples the ages of the fossil nodes on the
+tree.
+
+{{ fbd_script | snippet:"block#","18" }}
+
+{% endaside %}
+{:id="specimen-level"}
 
 {% subsubsection Monitoring Parameters of Interest using Deterministic Nodes | Exercise-FBD-DetNodes %}
 
@@ -703,13 +785,6 @@ will record the age of the MRCA of all living bears.
 
 {{ fbdr_script | snippet:"block#","16" }}
 
-In the same way we monitored the MRCA of the extant bears, we can also
-monitor the age of a fossil taxon that we may be interested in
-recording. We will monitor the marginal distribution of the age of
-*Kretzoiarctos beatrix*, which is between 11.2–11.8 My.
-
-{{ fbdr_script | snippet:"block#","17" }}
-
 Finally, we will monitor the tree after removing taxa for which we did
 not have any molecular or morphological data. The phylogenetic placement
 of these taxa is based only on their occurrence times and any clade
@@ -725,7 +800,7 @@ samples. Use the `fnPruneTree` function to create a deterministic tree
 variable `pruned_tree` from which these taxa have been pruned. We will
 monitor this tree instead of `fbd_tree`.
 
-{{ fbdr_script | snippet:"block#","18" }}
+{{ fbdr_script | snippet:"block#","17" }}
 
 You have completed the FBD model file. Save `model_FBD_TEFBD.Rev` in
 the `scripts` directory.
@@ -837,7 +912,7 @@ In this section we will define the model of morphological character evolution.
 
 As stated in the introduction ({% ref Intro-Morpho %}) we will
 use Mk to model our data. Because the Mk model is a generalization of
-the Mk model, we will initialize our Q matrix from a Jukes-Cantor
+the Jukes-Cantor model, we will initialize our Q matrix from a Jukes-Cantor
 matrix.
 
 {{ morph_script | snippet:"block#","1" }}
