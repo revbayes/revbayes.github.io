@@ -8,7 +8,7 @@ prerequisites:
 - intro_rev
 - mcmc_archery
 - mcmc_binomial
-- div
+- div/simple
 order: 0
 index: true
 software: true
