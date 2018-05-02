@@ -161,7 +161,7 @@ present.
 
 The most basic version of the FBD treats individual fossil specimens as separate taxonomic entities. This is the standard specimen-level "Fossilized Birth Death Process" (implemented as `FBDP` in RevBayes).
 However, in most cases taxonomic species are represented in the fossil record by multiple fossil specimens sampled at
-different stratigraphic ages. In order to compute the density of the FBD while accounting for this stratigraphic species range data, we need to assume some model of speciation that will allow us to assign fossil specimens to species. {% citet Stadler2018 %} describe an extension to the FBD which assigns lineages to taxonomic species through a process of asymmetric or "budding" speciation. This model assumes that at each asymmetric speciation event, one descendant species represents a new taxonomic species, while the other descendant represents the continuation of the parent species. In this way, each lineage (and therefore all the fossil specimens sampled along that lineage) can be mapped to a unique species. An example realization of such a speciation process is shown in {% ref fig_budding %}
+different stratigraphic ages. In order to compute the density of the FBD while accounting for this stratigraphic species range data, we need to assume some model of speciation that will allow us to assign fossil specimens to species. {% citet Stadler2018 %} describe an extension to the FBD which assigns lineages to taxonomic species through a process of asymmetric or "budding" speciation. This model assumes that at each asymmetric speciation event, one descendant species represents a new species, while the other descendant represents the continuation of the parent species. In this way, each lineage (and therefore all the fossil specimens sampled along that lineage) can be mapped to a unique species. An example realization of such a speciation process is shown in {% ref fig_budding %}
 
 {% figure fig_budding %}
 <img src="figures/budding1.png" width="400" />
@@ -170,20 +170,19 @@ $$\implies$$
 {% figcaption %} 
 One possible realization of asymmetric speciation (light blue) along one lineage of the fossilized birth 
 death tree from {% ref fig_example_tree %}.
-The highlighted lineage originates through an asymmetric speciation event by branching upward,
+(A) The highlighted lineage originates through an asymmetric speciation event by branching upward,
 and then continues past additional speciation events by downward branching.
 Fossil specimens lying along this path are assigned to the same taxonomic species.
-The same lineage is highlighted in the oriented tree with lineages representing the same taxonomic species collapsed into straight lines.
+(B) The same lineage is highlighted in the oriented tree with lineages representing the same species collapsed into straight lines.
 {% endfigcaption %}
 {% endfigure %}
 
-{% citet Stadler2018 %} show how to compute the density of the "sampled tree", which is obtained by pruning all unsampled lineages after asymmetric species identities have been assigned in the complete tree ({% ref fig_sampled %}). This gives rise to the "Fossilized Birth Death Range Process" (implemented as `FBDRP` in RevBayes). This is the model we will be using in this tutorial. Therefore, we will infer the "sampled" trees. It is important to note that the tips in the sampled tree represent the age of the youngest sample for each species.
+{% citet Stadler2018 %} show how to compute the density of the "sampled tree", which is obtained by pruning all unsampled lineages after asymmetric species identities have been assigned in the complete tree ({% ref fig_sampled %}). This gives rise to the "Fossilized Birth Death Range Process" (implemented as `FBDRP` in RevBayes). This is the model we will be using in this tutorial. It is important to note that the tips in the sampled tree represent the age of the youngest sample for each species.
 
 {% figure fig_sampled %}
 <img src="figures/sampled_tree.png" width="400" /> 
 {% figcaption %} 
-The "sampled tree" is produced by pruning unsampled lineages from the oriented tree in {% ref fig_budding %} and collapsing intermediate fossil samples other than the first and last occurrences into stratigraphic ranges.
-(Right)
+The "sampled tree" is produced by pruning unsampled lineages from the oriented tree in {% ref fig_budding %}B and collapsing intermediate fossil samples other than the first and last occurrences into stratigraphic ranges.
 {% endfigcaption %}
 {% endfigure %}
 
