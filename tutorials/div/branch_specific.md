@@ -3,7 +3,7 @@ title: Branch-Specific Diversification Rate Estimation
 subtitle: How to estimate branch-specific shifts in diversification rates 
 authors:  Sebastian Höhna and Michael R. May
 level: 4
-order: 4
+order: 3
 prerequisites:
 - intro
 - intro_rev

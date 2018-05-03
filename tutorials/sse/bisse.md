@@ -12,7 +12,7 @@ exclude_files:
 - data/primates_biogeo.tsv
 - data/primates_morph.nex
 - data/primates_morph_description.txt
-index: false
+index: true
 ---
 
 
