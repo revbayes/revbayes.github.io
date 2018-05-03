@@ -61,9 +61,11 @@ The FBDR skyline model allows rates to vary in a piece-wise manner across differ
 The total number of intervals, $l$, and the length of each interval will vary depending on the available stratigraphic data (*e.g.,* total number of fossils and/or ranges) and the biological questions of interest.
 
 {% figure fig_fbdr_gm %}
-<Place holder for the moment.>
+<img src="figures/fbdr_gm.pdf" width="500pt" />
 {% figcaption %} 
-Place holder for the moment.
+A graphical model of the fossilized birth-death range model describing the generation of the stratigraphic ranges (in {% ref fig_module_gm %}) used in this tutorial. The parameters of the fossilized birth-death process are labeled in orange. The speciation,
+extinction and fossilization rates are stochastic nodes (circles) drawn from exponential distributions. The sampling probability is constant node (square) and
+equal to one. For more information on probabilistic graphical models and their notation, please see {% cite Hoehna2014b %}.
 {% endfigcaption %}
 {% endfigure %}
 
