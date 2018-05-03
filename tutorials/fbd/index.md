@@ -1266,7 +1266,7 @@ ancestor
 Navigate to <http://tgvaughan.github.io/icytree> and open the file
 `output/bears.mcc.tre` in IcyTree.
 
-> Try to replicate the tree in . {% ref summary_tree %} (Hint: ***Style > Mark
+> Try to replicate the tree in {% ref summary_tree %} (Hint: ***Style > Mark
 > Singletons***) Why might a node with a sampled ancestor be
 > referred to as a singleton?
 {:.instruction}

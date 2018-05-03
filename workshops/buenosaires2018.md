@@ -134,7 +134,7 @@ schedule:
   - starttime: 2018-04-17T15:15:00Z
     endtime: 2018-04-17T17:30:00Z
     topic: Practical on tip-dating and the fossilized-birth-death model
-    lesson: tefbd
+    lesson: fbd
     instructors: 
     - Femke Thon
     - Sebastian Höhna

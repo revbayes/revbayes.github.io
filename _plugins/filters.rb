@@ -20,7 +20,7 @@ module RevBayes
 
         file_string = file_identifier.sub(/^(?!\/)/,'/').sub(/^(\/tutorials)?\//,'/').gsub(/\//,'\/')
         
-        matches = page['files'].find_all {|file| file.relative_path.match(Regexp.new(file_string)) }
+        matches = site.static_files.find_all {|file| file.relative_path.match(Regexp.new(file_string)) }
 
         if matches.size > 1
           raise ArgumentError, <<-MSG
