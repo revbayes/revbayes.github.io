@@ -4,7 +4,9 @@ library(RevGadgets)
 
 offset = 66
 
-prefix = "output/model1"
+#prefix = "output/model1"
+
+prefix = "/Users/Rachel/Documents/projects/dinos/FBD_range_model/revbayes_files/output2/m1_un5"
 
 rev_out <- rev.process.div.rates(speciation_times_file = paste0(prefix, "_speciation_times.log"),
                                  speciation_rates_file = paste0(prefix, "_speciation_rates.log"),
