@@ -414,6 +414,17 @@ monitors[mni++] = mnModel(filename="model1.log", printgen=10)
 <p>The <code class="highlighter-rouge">mnScreen</code> monitor writes the parameters we specify to the screen every 100 MCMC generations.
 The <code class="highlighter-rouge">mnFile</code> monitor writes the parameters we specify to file every 10 MCMC generations.</p>
 
+<p>We can also add some additional monitors to generate output that can be used with the R package <strong>RevGadets</strong>.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># monitors to print RevGagets input
+monitors[mni++] = mnFile(filename="output/model1_speciation_rates.log",lambda,printgen=10)
+monitors[mni++] = mnFile(filename="output/model1_speciation_times.log",timeline,printgen=10)
+monitors[mni++] = mnFile(filename="output/model1_extinction_rates.log",mu,printgen=10)
+monitors[mni++] = mnFile(filename="output/model1_extinction_times.log",timeline,printgen=10)
+monitors[mni++] = mnFile(filename="output/model1_sampling_rates.log",psi,printgen=10)
+monitors[mni++] = mnFile(filename="output/model1_sampling_times.log",timeline,printgen=10)
+</code></pre></div></div>
+
 <p>To run the analysis we have to create a workspace variable that defines our MCMC run using the <code class="highlighter-rouge">mcmc</code> function. This function takes the three main analysis components as arguments and we set the move schedule to <code class="highlighter-rouge">"random"</code>, meaning moves will be chosen at random during the analysis.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, moves, monitors, moveschedule="random")
