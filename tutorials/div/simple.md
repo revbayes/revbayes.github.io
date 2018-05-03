@@ -3,6 +3,7 @@ title: Simple Diversification Rate Estimation
 subtitle: Comparing different constant-rate models of lineage diversification
 authors:  Sebastian Höhna and Tracy Heath
 level: 4
+order: 0
 prerequisites:
 - intro
 - intro_rev
@@ -13,6 +14,11 @@ index: true
 software: true
 title-old: RB_DiversificationRate_Tutorial
 redirect: false
+exclude_files:
+- scripts/mcmc_EBD.Rev
+- scripts/mcmc_IRC_BDSP.Rev
+- scripts/mcmc_MRBD.Rev
+- scripts/ml_MRBD.Rev
 ---
 
 {% include_relative modules/simple_overview.md %}

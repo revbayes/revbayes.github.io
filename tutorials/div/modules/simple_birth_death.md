@@ -95,3 +95,6 @@ extinction rate $\mu$.
 ```
 timetree ~ dnBDP(lambda=birth_rate, mu=death_rate, rho=rho, rootAge=root_time, samplingStrategy="uniform", condition="survival", taxa=taxa)
 ```
+
+
+&#8680; The `Rev` file for performing this analysis: `mcmc_BD.Rev`
