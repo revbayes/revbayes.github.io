@@ -86,6 +86,7 @@ Here is a glossary of all the tutorial attributes used by this site.
  `title-old`| Name of the corresponding tutorial in the deprecated [Latex repository](https://github.com/revbayes/revbayes_tutorial)
  `redirect` | Automatically redirect to the deprecated Latex tutorial? Used for tutorials not yet updated for this site.
  `permalink` | Address relative to `{% raw %}{{ baseurl }}{% endraw %}` where you want the tutorial to be accessible on the internet. You may identify the primary version of your tutorial by setting this to the relative path of your tutorial's home directory.
+ `include_all` | Automatically include files in the `data` and `scripts` tutorial subdirectories?
 {% endtable %}
 
 {% section Filling in the overview box %}
