@@ -3,9 +3,13 @@ title: State-dependent diversification rate estimation in RevBayes
 subtitle: Inference using the binary state-dependent speciation and extinction (BiSSE) branching process
 authors:  Sebastian Höhna, Will Freyman, and Emma Goldberg
 level: 4
+order: 5
 prerequisites:
+- intro
+- intro_rev
 - mcmc_archery
-- clocks
+- mcmc_binomial
+- div/simple
 - sse/bisse-intro
 exclude_files: 
 - data/primates_biogeo.tre
