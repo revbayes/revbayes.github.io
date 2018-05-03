@@ -61,9 +61,11 @@ The FBDR skyline model allows rates to vary in a piece-wise manner across differ
 The total number of intervals, $l$, and the length of each interval will vary depending on the available stratigraphic data (*e.g.,* total number of fossils and/or ranges) and the biological questions of interest.
 
 {% figure fig_fbdr_gm %}
-<Place holder for the moment.>
+<img src="figures/fbdr_gm.pdf" width="500pt" />
 {% figcaption %} 
-Place holder for the moment.
+A graphical model of the fossilized birth-death range model describing the generation of the stratigraphic ranges (in {% ref fig_module_gm %}) used in this tutorial. The parameters of the fossilized birth-death process are labeled in orange. The speciation,
+extinction and fossilization rates are stochastic nodes (circles) drawn from exponential distributions. The sampling probability is constant node (square) and
+equal to one. For more information on probabilistic graphical models and their notation, please see {% cite Hoehna2014b %}.
 {% endfigcaption %}
 {% endfigure %}
 
@@ -424,15 +426,15 @@ Open R and set the working directory to the directory in which you performed the
 Run the commands in this script to produce a set plots for each model that you ran.
 
 {% figure fig_skyline %}
-<Place holder for the moment.>
+<img src="figures/model1.pdf" width="1000" />
 {% figcaption %} 
-Place holder for the moment.
+Time series plots illustrating the rates obtained for $\lambda, \mu, \psi$ between 66-252 Ma.
 {% endfigcaption %}
 {% endfigure %}
 
 > ## Discussion points
 >
-> * The estimates we obtained for speciation, extinction and sampling using different models are quite different. Why > do you think this might be? What does this mean in terms of interpreting your results?
+> * The estimates we obtained for speciation, extinction and sampling using different models are quite different. Why do you think this might be? What does this mean in terms of interpreting our results?
 >
 > * Note that the key FBDR model parameters - speication, extinction and fossil recovery rates ($\lambda, \mu, \psi$ - appear to be elevated during interval 1 (*i.e.,* the Cretaceous). Does this seem like a reasonable result? Are there any bio/geological reasons that we would expect to see this? How could we go about further testing this?
 {:.info}
