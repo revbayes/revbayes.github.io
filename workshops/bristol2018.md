@@ -185,7 +185,9 @@ schedule:
     - fbd_range
     - div/ebd
     - div/branch_specific
+    - sse/bisse-intro
     - sse/bisse
+    - sse/bisse-ancestor
     instructors: 
     - Rachel Warnock
     - Sebastian Höhna

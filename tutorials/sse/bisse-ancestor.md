@@ -2,7 +2,8 @@
 title: Co-estimating state-dependent diversification rates and ancestral states in RevBayes
 subtitle: Inference using the binary state-dependent speciation and extinction (BiSSE) branching process
 authors:  Sebastian Höhna, Will Freyman, and Emma Goldberg
-level: 2
+level: 4
+order: 6
 prerequisites:
 - mcmc_archery
 - clocks
@@ -13,7 +14,7 @@ exclude_files:
 - data/primates_biogeo.tsv
 - data/primates_morph.nex
 - data/primates_morph_description.txt
-index: false
+index: true
 ---
 
 
