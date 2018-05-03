@@ -10,7 +10,6 @@ prerequisites:
 - mcmc_binomial
 order: 0
 index: true
-software: true
 title-old: RB_CTMC_Tutorial
 redirect: false
 ---

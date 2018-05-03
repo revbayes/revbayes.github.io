@@ -11,7 +11,6 @@ prerequisites:
 - mcmc_binomial
 order: 0
 index: true
-software: true
 title-old: RB_DiversificationRate_Tutorial
 redirect: false
 exclude_files:

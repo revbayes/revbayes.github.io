@@ -12,7 +12,6 @@ prerequisites:
 - div/simple
 order: 1
 index: true
-software: true
 title-old: RB_DiversificationRate_Episodic_Tutorial
 redirect: false
 exclude_files:

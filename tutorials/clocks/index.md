@@ -10,7 +10,6 @@ prerequisites:
 - ctmc
 order: 1
 index: true
-software: true
 title-old: RB_ClockModels_Tutorial
 redirect: false
 ---
