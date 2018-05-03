@@ -12,8 +12,7 @@ software: true
 {% section Overview %}
 
 This tutorial demonstrates how to estimate speciation, extinction and sampling rates from stratigraphic range data in a Bayesian framework using the fossilized birth-death range model {% cite Stadler2018 %}.
-We begin with a brief description of three available models, which take different information from the fossil record as input in [Section Introduction](#introduction), followed by a detailed example analysis in
-[Section Exercise](#exercise) demonstrating how to apply these models in
+We begin with a brief description of three available models, which take different information from the fossil record as input in the {% ref introduction %}, followed by a detailed example analysis in {% ref exercise %} demonstrating how to apply these models in
 **RevBayes** {% cite Hoehna2017a %} and use Markov chain Monte Carlo (MCMC) to estimate the posterior distribution of model parameters for a dataset of Mesozoic dinosaur occurrences downloaded from the [Paleobiology Database](https://paleobiodb.org/).
 
 {% section Introduction %}
@@ -61,7 +60,7 @@ The FBDR skyline model allows rates to vary in a piece-wise manner across differ
 The total number of intervals, $l$, and the length of each interval will vary depending on the available stratigraphic data (*e.g.,* total number of fossils and/or ranges) and the biological questions of interest.
 
 {% figure fig_fbdr_gm %}
-<img src="figures/fbdr_gm.pdf" width="500pt" />
+<img src="figures/fbdr_gm.png" width="500pt" />
 {% figcaption %} 
 A graphical model of the fossilized birth-death range model describing the generation of the stratigraphic ranges (in {% ref fig_module_gm %}) used in this tutorial. The parameters of the fossilized birth-death process are labeled in orange. The speciation,
 extinction and fossilization rates are stochastic nodes (circles) drawn from exponential distributions. The sampling probability is constant node (square) and
@@ -137,13 +136,13 @@ Download the data files `dinosaur_ranges.tsv` and `dinosaur_fossil_counts.tsv`, 
 
 These files contain the following data:
 
--   `dinosaur_ranges.tsv`: a tab-delimited table listing first and last appearance times for each range. Each row represents a seperate species. Note that for singletons the first and last appearance times will be the same. For extant ranges, including extant singletons, the last appearance time would be 0.0. __Important__: fossil ages have been rescaled such that 66 Ma = 0 Ma (see above section [PBDB occurrence data](#pbdb-occurrence-data) for details).
+-   `dinosaur_ranges.tsv`: a tab-delimited table listing first and last appearance times for each range. Each row represents a seperate species. Note that for singletons the first and last appearance times will be the same. For extant ranges, including extant singletons, the last appearance time would be 0.0. __Important__: fossil ages have been rescaled such that 66 Ma = 0 Ma (see {% ref pbdb-occurrence-data %} for details).
 
 -   `dinosaur_fossil_counts.tsv`: a tab-delimited table of fossil occurrence counts. Each row represents a seperate species and each column represents a seperate time interval, from youngest to oldest (that is, left to right). Each cell contains information about species sampling during each interval - this can be the absolute number of times a species was sampled during each interval (required for model 1) or a binary character indicating whether a species was sampled (= "1") or not (= "0") during each interval (required for model 3). This file is not required for model 2.
 
 {% subsection Setting up the analysis %}
 
-In this exercise you will create a single Rev script for each of the three models described [above](#intro-fbd): `mcmc_FBDRMatrix_model1.Rev`, `mcmc_FBDRMatrix_model2.Rev` and `mcmc_FBDRMatrix_model3.Rev`. Each file will contain all the commands needed to read the data and run the MCMC analysis.
+In this exercise you will create a single Rev script for each of the three models described in {% ref intro-fbd %}: `mcmc_FBDRMatrix_model1.Rev`, `mcmc_FBDRMatrix_model2.Rev` and `mcmc_FBDRMatrix_model3.Rev`. Each file will contain all the commands needed to read the data and run the MCMC analysis.
 
 {% subsubsection Loading the data %}
 
@@ -229,7 +228,7 @@ Because $\rho$ is a constant node, we do not have to assign a move to this param
 
 {% subsubsection Specifying the FBDR Matrix model | fbdr-model-specify %}
 
-All three models described in the [Section Introduction](#introduction) can be specified using the same distribution function `dnFBDRMatrix` in RevBayes.
+All three models described in the {% ref introduction %} can be specified using the same distribution function `dnFBDRMatrix` in RevBayes.
 The model used to calculate the likelihood will depend on the data and commands passed to this function. 
 
 - \todo what is the formal definition of `bd`?
@@ -330,7 +329,7 @@ Provided that you started RevBayes from the correct directory, you can then use 
 
 This analysis will take around 10 minutes. While you're waiting for this analysis to run, create the files you need to run the analysis using models 2 and 3: `mcmc_FBDRMatrix_model2.Rev` and `mcmc_FBDRMatrix_model3.Rev`.
 You can just copy and paste your exisiting script for model 1.
-Recall from Section [Specifying the FBDR Matrix model](#fbdr-model-specify) that to use the alternative models you only need to change the arguments passed to the distribution function `dnFBDRMatrix`. 
+Recall from Section {% ref fbdr-model-specify %} that to use the alternative models you only need to change the arguments passed to the distribution function `dnFBDRMatrix`. 
 
 To use model 2 just remove the argument that passes the fossil count matrix to the function, `k=k`, since this model doesn't use any information about the number of fossils sampled during different intervals.
 
@@ -391,7 +390,7 @@ The Estimates window. The left-hand window provides mean and ESS of the chain. T
 {% endfigure %}
 
 RevBayes outputs the parameter estiamtes for each interval from youngest and to oldest.
-This is the same order they were specified in the vector (`timeline`) [above](#specify-intervals), and also the order in which the intervals appear in the input file `dinosaur_fossil_counts.tsv`.
+This is the same order they were specified in the vector (`timeline`) in {% ref specify-intervals %}, and also the order in which the intervals appear in the input file `dinosaur_fossil_counts.tsv`.
 In this analysis the youngest interval (the Cretaceous) is denoted 1 and the oldest interval (the Permian) is denoted 5.
 In Tracer, we can select multiple parameters simultaneously.
 If we select all the estimates  for `lambda`, we can look at the 95% HPD intervals obtained for each interval.
@@ -426,7 +425,7 @@ Open R and set the working directory to the directory in which you performed the
 Run the commands in this script to produce a set plots for each model that you ran.
 
 {% figure fig_skyline %}
-<img src="figures/model1.pdf" width="1000" />
+<img src="figures/model1.png" width="700pt" />
 {% figcaption %} 
 Time series plots illustrating the rates obtained for $\lambda, \mu, \psi$ between 66-252 Ma.
 {% endfigcaption %}
