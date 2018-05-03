@@ -305,6 +305,16 @@ Next, create monitors for the FBDR model parameters speciation, extinction and f
 The `mnScreen` monitor writes the parameters we specify to the screen every 100 MCMC generations.
 The `mnFile` monitor writes the parameters we specify to file every 10 MCMC generations.     
 
+We can also add some additional monitors to generate output that can be used with the R package **RevGadets**.
+
+    # monitors to print RevGagets input
+    monitors[mni++] = mnFile(filename="output/model1_speciation_rates.log",lambda,printgen=10)
+    monitors[mni++] = mnFile(filename="output/model1_speciation_times.log",timeline,printgen=10)
+    monitors[mni++] = mnFile(filename="output/model1_extinction_rates.log",mu,printgen=10)
+    monitors[mni++] = mnFile(filename="output/model1_extinction_times.log",timeline,printgen=10)
+    monitors[mni++] = mnFile(filename="output/model1_sampling_rates.log",psi,printgen=10)
+    monitors[mni++] = mnFile(filename="output/model1_sampling_times.log",timeline,printgen=10)
+
 To run the analysis we have to create a workspace variable that defines our MCMC run using the `mcmc` function. This function takes the three main analysis components as arguments and we set the move schedule to `"random"`, meaning moves will be chosen at random during the analysis. 
 
     mymcmc = mcmc(mymodel, moves, monitors, moveschedule="random")
