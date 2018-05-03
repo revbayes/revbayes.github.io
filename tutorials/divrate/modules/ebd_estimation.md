@@ -237,7 +237,7 @@ dev.off()
 
 
 {% figure fig_EBD_Results %}
-<img src="figures/EBD_10_Result.pdf" width="75%" height="75%" /> 
+<img src="figures/EBD_10_Result.png" width="75%" height="75%" /> 
 {% figcaption %} 
 Resulting diversification rate estimations when using 10 intervals. 
 You should obtain similar results when you use 10 intervals. 

@@ -78,7 +78,7 @@ This equation constitutes an analytical solution for a birth-death process where
 
 
 {% figure fig_rejfreq %}
-<img src="figures/rejection_freq.eps" width="800" /> 
+<img src="figures/rejection_freq.png" width="800" /> 
 {% figcaption %}
 The fraction of the time simulations are rejected under the birth-death-shift process 
 because a shift event occurred along an extinct lineage. 
