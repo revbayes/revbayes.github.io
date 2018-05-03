@@ -434,7 +434,7 @@ Time series plots illustrating the rates obtained for $\lambda, \mu, \psi$ betwe
 
 > ## Discussion points
 >
-> * The estimates we obtained for speciation, extinction and sampling using different models are quite different. Why > do you think this might be? What does this mean in terms of interpreting your results?
+> * The estimates we obtained for speciation, extinction and sampling using different models are quite different. Why do you think this might be? What does this mean in terms of interpreting our results?
 >
 > * Note that the key FBDR model parameters - speication, extinction and fossil recovery rates ($\lambda, \mu, \psi$ - appear to be elevated during interval 1 (*i.e.,* the Cretaceous). Does this seem like a reasonable result? Are there any bio/geological reasons that we would expect to see this? How could we go about further testing this?
 {:.info}
