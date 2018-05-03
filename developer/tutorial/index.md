@@ -80,13 +80,13 @@ Here is a glossary of all the tutorial attributes used by this site.
  `prerequisites` | List of prerequisite tutorials.
  `include_files` | List of file name patterns that should be included in the tutorial file download.
  `exclude_files` | List of file name patterns that should not be included in the download (overrides matching `include_files`).
+ `include_all` | Automatically include files in the `data` and `scripts` tutorial subdirectories?
  `index` | Boolean indicating whether the tutorial should be included in the main [tutorial index]({% page_url tutorials %})
  `order` | Number indicating the order in which this tutorial should appear in its level in the [tutorial index]({% page_url tutorials %}).
  `keywords` | List of keywords for grouping tutorials with related subject matter.
  `title-old`| Name of the corresponding tutorial in the deprecated [Latex repository](https://github.com/revbayes/revbayes_tutorial)
  `redirect` | Automatically redirect to the deprecated Latex tutorial? Used for tutorials not yet updated for this site.
  `permalink` | Address relative to `{% raw %}{{ baseurl }}{% endraw %}` where you want the tutorial to be accessible on the internet. You may identify the primary version of your tutorial by setting this to the relative path of your tutorial's home directory.
- `include_all` | Automatically include files in the `data` and `scripts` tutorial subdirectories?
 {% endtable %}
 
 {% section Filling in the overview box %}

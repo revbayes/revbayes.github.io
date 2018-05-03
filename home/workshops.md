@@ -216,7 +216,7 @@ Throughout the year, the members of the RevBayes development team and our collab
 {% endif %}
 
 {% if current_table %}
-### Workshops Currently in Session
+### Workshops Currently in Progress
 {{ current_table }}
 {% endif %}
 
