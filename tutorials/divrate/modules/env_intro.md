@@ -4,7 +4,7 @@
 The fundamental idea of this model is the question if diversification rates are correlated with an environmental variable.
 Examples of environmental variables are $\text{CO}_2$ and temperature.
 {% figure fig_CO2 %}
-<img src="figures/Historical_CO2.pdf" width="75%" height="75%" /> 
+<img src="figures/Historical_CO2.png" width="75%" height="75%" /> 
 {% figcaption %} 
 Estimates of historical $\text{CO}_2$ values. These estimates are obtained from XXX. The unit of $\text{CO}_2$ represents XXX
 {% endfigcaption %}
@@ -13,7 +13,7 @@ Have a look at {% ref fig_CO2 %} which shows the historical value $\text{CO}_2$ 
 We can clearly see that the $\text{CO}_2$ dropped drastically around 30 million years ago.
 
 {% figure fig_EBD_estimates %}
-<img src="figures/EBD_Results.pdf" width="75%" height="75%" /> 
+<img src="figures/EBD_Results.png" width="75%" height="75%" /> 
 {% figcaption %} 
 Estimated diversification rates through time. These estimates are taken from the episodic birth-death model with autocorrelated (Brownian motion) rate as described in the {% page_ref divrate/ebd %}.
 {% endfigcaption %}

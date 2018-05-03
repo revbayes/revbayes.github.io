@@ -11,7 +11,7 @@ diversification rates using Markov chain Monte Carlo (MCMC).
 {% subsection The Birth-Death-Shift Process %}
 
 {% figure fig_augmented %}
-<img src="figures/augmented.eps" width="800" /> 
+<img src="figures/augmented.png" width="800" /> 
 {% figcaption %}
 An example of a tree with a single event of diversification rate change, from
 $(\lambda_1, \mu_1)$ to $(\lambda_2, \mu_2)$. a) A tree showing the complete cladogenetic process, including
@@ -48,7 +48,7 @@ When an extinction event occurs, the lineage is terminated at the event time.
 
 
 {% figure fig_conditioning %}
-<img src="figures/conditioning.eps" width="800" /> 
+<img src="figures/conditioning.png" width="800" /> 
 {% figcaption %}
 Samples of an MCMC analysis under a *Birth-Death-Shift* model. The colors
 represent different classes of rates for the speciation and extinction rates ($\lambda$ and

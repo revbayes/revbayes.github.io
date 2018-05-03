@@ -8,7 +8,7 @@ An overview of the underlying theory of the specific model and implementation
 is given in {% cite Hoehna2015a %}.
 
 {% figure fig_EBD %}
-<img src="figures/EBD_scenarios.pdf" width="75%" height="75%" /> 
+<img src="figures/EBD_scenarios.png" width="75%" height="75%" /> 
 {% figcaption %} 
 Two scenarios of birth-death models. On the left we show constant diversification. 
 On the right we show an example of an episodic birth-death process where rates 
@@ -26,7 +26,7 @@ Thus, we model (log-transformed) diversification rates by a Brownian motion.
 The assumption of autocorrelated rates does not only makes sense biologically but also improves our ability to estimate parameters.
 
 {% figure fig_EBD_GM %}
-<img src="figures/graphical_model_EBD.pdf" width="75%" height="75%" /> 
+<img src="figures/graphical_model_EBD.png" width="75%" height="75%" /> 
 {% figcaption %} 
 A graphical model with the outline of the `Rev` code. On the left we see the graphical model 
 describing the correlated (Brownian motion) model for rate-variation through time. 

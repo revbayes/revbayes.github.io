@@ -280,10 +280,10 @@ dev.off()
 {% subsection A brief discussion on estimated diversification rates %}
 
 {% figure fig_EBD_Results %}
-<img src="figures/EBD_Corr_1.pdf" width="40%" height="40%" /> 
-<img src="figures/EBD_Corr_2.pdf" width="40%" height="40%" /> 
-<img src="figures/EBD_Corr_3.pdf" width="40%" height="40%" /> 
-<img src="figures/EBD_Corr_4.pdf" width="40%" height="40%" /> 
+<img src="figures/EBD_Corr_1.png" width="40%" height="40%" /> 
+<img src="figures/EBD_Corr_2.png" width="40%" height="40%" /> 
+<img src="figures/EBD_Corr_3.png" width="40%" height="40%" /> 
+<img src="figures/EBD_Corr_4.png" width="40%" height="40%" /> 
 {% figcaption %} 
 Resulting diversification rate estimations.
 {% endfigcaption %}
