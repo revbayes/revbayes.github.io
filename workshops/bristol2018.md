@@ -118,7 +118,7 @@ schedule:
   - starttime: 2018-05-02T13:00:00Z
     endtime: 2018-05-02T15:00:00Z
     topic: Practical on divergence time estimation using the fossilized birth-death model (Part I)
-    lesson: tefbd
+    lesson: fbd
     instructors: Walker Pett
 
   - starttime: 2018-05-02T15:00:00Z
@@ -130,7 +130,7 @@ schedule:
   - starttime: 2018-05-02T15:15:00Z
     endtime: 2018-05-02T17:30:00Z
     topic: Practical on divergence time estimation using the fossilized birth-death model (Part II)
-    lesson: tefbd
+    lesson: fbd
     instructors: Walker Pett
     
   - starttime: 2018-05-03T9:00:00Z

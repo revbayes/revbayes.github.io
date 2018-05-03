@@ -4,7 +4,7 @@ subtitle: Inference of diversification rates using the fossilized birth-death ra
 authors:  Rachel Warnock and Walker Pett
 level: 4
 prerequisites:
-- tefbd
+- fbd
 index: true
 software: true
 ---
