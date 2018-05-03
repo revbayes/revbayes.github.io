@@ -9,13 +9,15 @@ timeline = v(100, 145, 201) - 66
 
 mvi = 1
 
+alpha <- 10
+
 # specify FBDR model parameters
 for(i in 1:(timeline.size()+1))
 {
 
-	mu[i] ~ dnExp(10)
-	lambda[i] ~ dnExp(10)
-	psi[i] ~ dnExp(10)
+	mu[i] ~ dnExp(alpha)
+	lambda[i] ~ dnExp(alpha)
+	psi[i] ~ dnExp(alpha)
 	
 	div[i] := lambda[i] - mu[i]
 	turnover[i] := mu[i]/lambda[i]
@@ -46,7 +48,7 @@ moves[mvi++] = mvMatrixElementSlide(bd, delta = 0.01, weight=taxa.size())
 moves[mvi++] = mvMatrixElementSlide(bd, delta = 0.1, weight=taxa.size())
 moves[mvi++] = mvMatrixElementSlide(bd, delta = 1, weight=taxa.size())
 
-mymodel = model(bd)
+mymodel = model(alpha)
 
 # add monitors
 mni = 1
