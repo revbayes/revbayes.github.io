@@ -155,7 +155,7 @@ For the purposes of the tutorial, these times will be treated as known.
 
 Next, load the matrix of fossil counts from `dinosaur_fossil_counts.tsv` using the `readDataDelimitedFile` function.
     
-    k = readDataDelimitedFile(file = "dinosaur_fossil_counts.tsv", header = true, rownames = true)
+    k <- readDataDelimitedFile(file = "dinosaur_fossil_counts.tsv", header = true, rownames = true)
 
 {% subsubsection Specifying interval ages %}
 
