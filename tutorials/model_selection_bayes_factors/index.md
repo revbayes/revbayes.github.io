@@ -3,6 +3,7 @@ title: Model selection
 subtitle: Comparing relative model fit with Bayes factors
 authors:  Sebastian Höhna, Michael J Landis, Tracy A Heath and Brian R Moore
 level: 1
+order: 0
 prerequisites:
 - intro
 - intro_rev

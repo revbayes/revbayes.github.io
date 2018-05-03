@@ -188,7 +188,7 @@ initialize `mvi` before calling
 
 We will use the parameterization of the birth-death process specifying
 the diversification and turnover. For a more detailed tutorial on the
-simple birth-death model, please refer to the <a href="../div">Basic Diversification Rate Estimation</a>
+simple birth-death model, please refer to the <a href="../div/simple">Basic Diversification Rate Estimation</a>
 tutorial.
 
 ***Diversification***
