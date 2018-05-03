@@ -33,7 +33,7 @@ for(i in 1:(timeline.size()+1))
 	moves[mvi++] = mvScale(psi[i], lambda = 1)
 }
 
-rho=0
+rho <- 0
 
 # model 3
 bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, rho=rho, timeline=timeline, k=k, binary=true)
@@ -54,8 +54,16 @@ mni = 1
 monitors[mni++] = mnScreen(lambda, mu, psi, printgen=100)
 monitors[mni++] = mnModel(filename="output/model3.log",printgen=10)
 
+# monitors to print RevGagets input
+monitors[mni++] = mnFile(filename="output/model3_speciation_rates.log",lambda,printgen=10)
+monitors[mni++] = mnFile(filename="output/model3_speciation_times.log",timeline,printgen=10)
+monitors[mni++] = mnFile(filename="output/model3_extinction_rates.log",mu,printgen=10)
+monitors[mni++] = mnFile(filename="output/model3_extinction_times.log",timeline,printgen=10)
+monitors[mni++] = mnFile(filename="output/model3_sampling_rates.log",psi,printgen=10)
+monitors[mni++] = mnFile(filename="output/model3_sampling_times.log",timeline,printgen=10)
+
 # run the analysis
 mymcmc = mcmc(mymodel, moves, monitors, moveschedule="random")
-mymcmc.run(30000)
+mymcmc.run(10000)
 
 q()

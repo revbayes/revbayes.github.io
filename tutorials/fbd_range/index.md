@@ -89,16 +89,15 @@ Typically, we do not have information about times $b_i$ and $y_i$, but we can sa
 Although the age of the last appearance is not included in our data summary and is not required to calculate the probability of observing our data, it is used to provide an upper limit (maximum age) for the extinction times $y_i$.
 
 
-### Stratigraphic age uncertainty
-{:.subsubsection id="strat-age"}
+>### Stratigraphic age uncertainty
+>In most cases the age of a given occurrence will not be known precisely and instead will be known to within some stratigraphic interval.
+>The length of this interval is highly variable but it is an important source of uncertainty in any phylogenetic analysis incorporating fossil data. 
 
-In most cases the age of a given occurrence will not be known precisely and instead will be known to within some stratigraphic interval.
-The length of this interval is highly variable but it is an important source of uncertainty in any phylogenetic analysis incorporating fossil data. 
-
-In the model described above, only the age of the first appearance, $o_i$, is used in the posterior probability. 
-We can account for specimen age uncertainty in RevBayes by placing a hyperprior on the age of the first appearance, and sample the age of $o_i$ during MCMC.
-As noted above, the last appearance time, $y_i$, is only used to provide an upper (maximum) bound on the extinction time, $d_i$. 
-Thus, the *oldest possible* age of the last appearance (*i.e.,* the maximum stratigraphic age associated with the fossil) may be used to specify $y_i$. All other occurrences only contribute to the per-interal fossil count, $k_i$, and so need to be dated at this level of precision.
+>In the model described above, only the age of the first appearance, $o_i$, is used in the posterior probability. 
+>We can potentially account for specimen age uncertainty in RevBayes by placing a hyperprior on the age of the first appearance, and sample the age of $o_i$ during MCMC.
+>As noted above, the last appearance time, $y_i$, is only used to provide an upper (maximum) bound on the extinction time, $d_i$. 
+>Thus, the *oldest possible* age of the last appearance (*i.e.,* the maximum stratigraphic age associated with the fossil) may be used to specify $y_i$. All other occurrences only contribute to the per-interal fossil count, $k_i$, and so need to be dated at this level of precision.
+{:.aside id="strat-age"}
 
 ### Marginalising over the number of fossils within a stratigraphic range
 {:.subsubsection id="fbdr-model2"}
@@ -305,6 +304,16 @@ Next, create monitors for the FBDR model parameters speciation, extinction and f
 
 The `mnScreen` monitor writes the parameters we specify to the screen every 100 MCMC generations.
 The `mnFile` monitor writes the parameters we specify to file every 10 MCMC generations.     
+
+We can also add some additional monitors to generate output that can be used with the R package **RevGadets**.
+
+    # monitors to print RevGagets input
+    monitors[mni++] = mnFile(filename="output/model1_speciation_rates.log",lambda,printgen=10)
+    monitors[mni++] = mnFile(filename="output/model1_speciation_times.log",timeline,printgen=10)
+    monitors[mni++] = mnFile(filename="output/model1_extinction_rates.log",mu,printgen=10)
+    monitors[mni++] = mnFile(filename="output/model1_extinction_times.log",timeline,printgen=10)
+    monitors[mni++] = mnFile(filename="output/model1_sampling_rates.log",psi,printgen=10)
+    monitors[mni++] = mnFile(filename="output/model1_sampling_times.log",timeline,printgen=10)
 
 To run the analysis we have to create a workspace variable that defines our MCMC run using the `mcmc` function. This function takes the three main analysis components as arguments and we set the move schedule to `"random"`, meaning moves will be chosen at random during the analysis. 
 
