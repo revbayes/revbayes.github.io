@@ -9,10 +9,11 @@ Throughout the year, the members of the RevBayes development team and our collab
 
 {% assign workshops = site.pages | where:"layout","workshop" | sort: "startdate" %}
 
-{% capture nowunix %}{{'now' | date: '%s'}}{% endcapture %}
+{% capture nowunix %}{{'now' | date: '%s' | divided_by: 3600 | divided_by: 24 }}{% endcapture %}
 
 {% for workshop in workshops %}
-	{% capture startdate %}{{ workshop.startdate | date: '%s'}}{% endcapture %}
+	{% capture startdate %}{{ workshop.startdate | date: '%s' | divided_by: 3600 | divided_by: 24 }}{% endcapture %}
+    {% capture enddate %}{{ workshop.enddate | date: '%s' | divided_by: 3600 | divided_by: 24 }}{% endcapture %}
 
 	{% capture event %}
 		<tr>
@@ -25,8 +26,10 @@ Throughout the year, the members of the RevBayes development team and our collab
 
 	{% if startdate > nowunix %}
 		{% assign future = future | append: event %}
-	{% else %}
+	{% elsif enddate < nowunix %}
 		{% assign past = past | prepend: event %}
+    {% else %}
+        {% assign current = current | append: event %}
 	{% endif %}
 {% endfor %}
 
@@ -39,6 +42,18 @@ Throughout the year, the members of the RevBayes development team and our collab
 <td width="25%"><b>Instructors</b></td>
 </tr>
 {{ future }}
+</table>
+{% endcapture %}
+
+{% capture current_table %}
+<table class="table table-striped" style="width:100%">
+<tr>
+<td width="15%"><b>Date</b></td>
+<td width="25%"><b>Course Title</b></td>
+<td width="25%"><b>Location</b></td>
+<td width="25%"><b>Instructors</b></td>
+</tr>
+{{ current }}
 </table>
 {% endcapture %}
 
@@ -198,6 +213,11 @@ Throughout the year, the members of the RevBayes development team and our collab
 {{ future_table }}
 {% else %}
 **No upcoming workshops**
+{% endif %}
+
+{% if current_table %}
+### Workshops Currently in Session
+{{ current_table }}
 {% endif %}
 
 ### Past Workshops
