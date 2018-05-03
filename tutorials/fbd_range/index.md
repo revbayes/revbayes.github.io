@@ -426,9 +426,9 @@ Open R and set the working directory to the directory in which you performed the
 Run the commands in this script to produce a set plots for each model that you ran.
 
 {% figure fig_skyline %}
-<Place holder for the moment.>
+<img src="figures/model1.pdf" width="1000" />
 {% figcaption %} 
-Place holder for the moment.
+Time series plots illustrating the rates obtained for $\lambda, \mu, \psi$ between 66-252 Ma.
 {% endfigcaption %}
 {% endfigure %}
 
