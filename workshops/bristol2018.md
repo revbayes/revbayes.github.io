@@ -184,6 +184,7 @@ schedule:
     lesson:
     - fbd_range
     - div/ebd
+    - div/env
     - div/branch_specific
     - sse/bisse-intro
     - sse/bisse
