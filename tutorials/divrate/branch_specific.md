@@ -9,7 +9,7 @@ prerequisites:
 - intro_rev
 - mcmc_archery
 - mcmc_binomial
-- div/simple
+- divrate/simple
 order: 0
 index: true
 title-old: RB_DiversificationRate_BranchSpecific_Tutorial

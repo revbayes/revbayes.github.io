@@ -15,10 +15,10 @@ We can clearly see that the $\text{CO}_2$ dropped drastically around 30 million 
 {% figure fig_EBD_estimates %}
 <img src="figures/EBD_Results.pdf" width="75%" height="75%" /> 
 {% figcaption %} 
-Estimated diversification rates through time. These estimates are taken from the episodic birth-death model with autocorrelated (Brownian motion) rate as described in the {% page_ref div/ebd %}.
+Estimated diversification rates through time. These estimates are taken from the episodic birth-death model with autocorrelated (Brownian motion) rate as described in the {% page_ref divrate/ebd %}.
 {% endfigcaption %}
 {% endfigure %}
-In our previous {% page_ref div/ebd %} we estimated diversification as shown in {% ref fig_EBD_estimates %}.
+In our previous {% page_ref divrate/ebd %} we estimated diversification as shown in {% ref fig_EBD_estimates %}.
 We clearly see that diversification rates were not constant through time.
 Now we wonder if perhaps the diversification rates are correlated with $\text{CO}_2$.
 

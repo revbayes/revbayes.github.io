@@ -9,8 +9,8 @@ prerequisites:
 - intro_rev
 - mcmc_archery
 - mcmc_binomial
-- div/simple
-- div/ebd
+- divrate/simple
+- divrate/ebd
 index: true
 software: true
 title-old: RB_DiversificationRate_Environmental_Tutorial

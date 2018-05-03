@@ -167,7 +167,7 @@ schedule:
     endtime: 2018-05-03T15:00:00Z
     topic: Choice of practical on diversification rate estimation (Part I)
     lesson:
-    - div/simple
+    - divrate/simple
     instructors: 
     - Rachel Warnock
     - Sebastian Höhna
@@ -183,9 +183,9 @@ schedule:
     topic: Choice of practical on diversification rate estimation (Part II)
     lesson:
     - fbd_range
-    - div/ebd
-    - div/env
-    - div/branch_specific
+    - divrate/ebd
+    - divrate/env
+    - divrate/branch_specific
     - sse/bisse-intro
     - sse/bisse
     - sse/bisse-ancestor
