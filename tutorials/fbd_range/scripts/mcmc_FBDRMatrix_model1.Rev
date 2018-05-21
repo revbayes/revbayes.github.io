@@ -48,7 +48,7 @@ moves[mvi++] = mvMatrixElementSlide(bd, delta = 0.01, weight=taxa.size())
 moves[mvi++] = mvMatrixElementSlide(bd, delta = 0.1, weight=taxa.size())
 moves[mvi++] = mvMatrixElementSlide(bd, delta = 1, weight=taxa.size())
 
-mymodel = model(alpha)
+mymodel = model(bd)
 
 # add monitors
 mni = 1
@@ -66,6 +66,6 @@ monitors[mni++] = mnFile(filename="output/model1_sampling_times.log",timeline,pr
 
 # run the analysis
 mymcmc = mcmc(mymodel, moves, monitors, moveschedule="random")
-mymcmc.run(1000)
+mymcmc.run(30000)
 
 q()
