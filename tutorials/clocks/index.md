@@ -10,7 +10,6 @@ prerequisites:
 - ctmc
 order: 1
 index: true
-software: true
 title-old: RB_ClockModels_Tutorial
 redirect: false
 ---
@@ -188,7 +187,7 @@ initialize `mvi` before calling
 
 We will use the parameterization of the birth-death process specifying
 the diversification and turnover. For a more detailed tutorial on the
-simple birth-death model, please refer to the <a href="../div/simple">Basic Diversification Rate Estimation</a>
+simple birth-death model, please refer to the {% page_ref divrate/simple %}
 tutorial.
 
 ***Diversification***

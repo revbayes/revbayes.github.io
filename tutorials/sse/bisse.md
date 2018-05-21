@@ -9,7 +9,7 @@ prerequisites:
 - intro_rev
 - mcmc_archery
 - mcmc_binomial
-- div/simple
+- divrate/simple
 - sse/bisse-intro
 exclude_files: 
 - data/primates_biogeo.tre

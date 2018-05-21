@@ -6,7 +6,6 @@ level: 4
 prerequisites:
 - fbd
 index: true
-software: true
 ---
 
 {% section Overview %}
@@ -155,7 +154,7 @@ For the purposes of the tutorial, these times will be treated as known.
 
 Next, load the matrix of fossil counts from `dinosaur_fossil_counts.tsv` using the `readDataDelimitedFile` function.
     
-    k = readDataDelimitedFile(file = "dinosaur_fossil_counts.tsv", header = true, rownames = true)
+    k <- readDataDelimitedFile(file = "dinosaur_fossil_counts.tsv", header = true, rownames = true)
 
 {% subsubsection Specifying interval ages %}
 
@@ -164,7 +163,7 @@ In this analysis, our period of interest ends at 66 Ma, which we will rescale to
 Create a vector called `timeline` for the maximum age of each interval, from youngest to oldest. 
 RevBayes will assume that the age of the youngest interval = 0.
 
-    timeline = v(100, 145, 201) - 66
+    timeline <- v(100, 145, 201) - 66
 
 These ages represent the boundary between the Early Cretaceous, the Late Cretaceous, and the Jurassic.
 The oldest occurrence in our dataset is from the Triassic and we will treat the time prior to the Jurassic as a single interval (*i.e.,* 252 Ma - infinity).
@@ -222,7 +221,7 @@ This is for the interval prior to the Jurassic.
 
 For this analysis we will fix the extant species sampling probability ($\rho$) to zero to avoid having to make any assumptions about lineages that may have survived beyond the Cretaceous-Paleogene boundary.
 
-    rho = 0    
+    rho <- 0    
 
 Because $\rho$ is a constant node, we do not have to assign a move to this parameter.
 

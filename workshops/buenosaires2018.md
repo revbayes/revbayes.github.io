@@ -172,7 +172,7 @@ schedule:
   - starttime: 2018-04-18T13:00:00Z
     endtime: 2018-04-18T15:00:00Z
     topic: Practical on diversification rate estimation (Part I)
-    lesson: div/simple
+    lesson: divrate/simple
     instructors: 
     - Luis Palazzesi
     - Femke Thon
@@ -187,7 +187,7 @@ schedule:
   - starttime: 2018-04-18T15:15:00Z
     endtime: 2018-04-18T17:30:00Z
     topic: Practical on diversification rate estimation (Part II)
-    lesson: div/branch_specific
+    lesson: divrate/branch_specific
     instructors: 
     - Luis Palazzesi
     - Femke Thon
