@@ -26,10 +26,10 @@ Of course, the true duration that a taxon existed for over geological time exten
 In many stratigraphic range datasets, the phylogenetic relationships between ranges may be unknown (*e.g.,* because no morphological character data has been collected), however, it is reasonable to assume that an underlying phylogenetic brith-death process gave rise to the observed ranges.
 Furthermore, the distribution of stratigraphic range ages is informative about the underlying phylogenetic parameters, including the rates of speciation, extinction and fossil recovery.
 In this tutorial we will apply a fossilized birth-death range skyline model to infer these parameters during different geological intervals using stratigraphic ranges as input.
-The model is closely related to the fossilized birth-death (FBD) model {% cite Stadler2010 %} and the fossilized birth-death range (FBDR) model {% cite Stadler2018 %} that can be used as a *tree prior* in a phylogenetic analysis incorporating character data, where the goal is to infer the topology and divergence times, along with the diversification and fossil recovery parameters [*e.g.,* {% cite Heath2014 Gavryushkina2016 Zhang2016%}]. For more information about these models see the tutorial [Total-Evidence Analysis and the Fossilized Birth-Death Process](https://revbayes.github.io/revbayes-site/tutorials/tefbd/). 
+The model is closely related to the fossilized birth-death (FBD) model {% cite Stadler2010 %} and the fossilized birth-death range (FBDR) model {% cite Stadler2018 %} that can be used as a *tree prior* in a phylogenetic analysis incorporating character data, where the goal is to infer the topology and divergence times, along with the diversification and fossil recovery parameters (*e.g.,* {% cite Heath2014 Gavryushkina2016 Zhang2016%}). For more information about these models see the tutorial [Total-Evidence Analysis and the Fossilized Birth-Death Process](https://revbayes.github.io/revbayes-site/tutorials/tefbd/). 
 The model described in this tutorial is referred to as the *FBDR Matrix model*, since this model takes as input a matrix of stratigraphic range ages and no information about the underlying phylogenetic relationships (*e.g.,* a character alignment or topological constraints).
 
-An important feature of any paleontological datababse is that we are typically missing an enormous amount of information, since sampling of the geological record is incomplete, highly non-uniform over time and many extinct organisms are never preserved or sampled.
+An important feature of any paleontological database is that we are typically missing an enormous amount of information, since sampling of the geological record is incomplete, highly non-uniform over time and space, and many extinct organisms are never preserved or sampled.
 A central advantage of applying the FBD (or related) models to the analysis of fossil data is that it explicitly incorporates incomplete species and fossil sampling, and can allow for variation in fossil recovery rates across different geological intervals.
 
 {% subsection The fossilized birth-death range skyline model | intro-fbd %}
@@ -61,7 +61,7 @@ The total number of intervals, $l$, and the length of each interval will vary de
 {% figure fig_fbdr_gm %}
 <img src="figures/fbdr_gm.png" width="500pt" />
 {% figcaption %} 
-A graphical model of the fossilized birth-death range model describing the generation of the stratigraphic ranges (in {% ref fig_module_gm %}) used in this tutorial. The parameters of the fossilized birth-death process are labeled in orange. The speciation,
+A graphical model of the fossilized birth-death range model describing the generation of the stratigraphic ranges used in this tutorial. The parameters of the fossilized birth-death process are labeled in orange. The speciation,
 extinction and fossilization rates are stochastic nodes (circles) drawn from exponential distributions. The sampling probability is constant node (square) and
 equal to one. For more information on probabilistic graphical models and their notation, please see {% cite Hoehna2014b %}.
 {% endfigcaption %}
@@ -90,7 +90,7 @@ In most cases the age of a given occurrence will not be known precisely and inst
 The length of this interval is highly variable but it is an important source of uncertainty in any phylogenetic analysis incorporating fossil data. 
 
 In the model described above, only the age of the first appearance, $o_i$, is used in the posterior probability. 
-We can potentially account for specimen age uncertainty in RevBayes by placing a hyperprior on the age of the first appearance, and sample the age of $o_i$ during MCMC.
+We can potentially account for specimen age uncertainty in RevBayes by placing a hyperprior on the age of the first appearance, and sample the age of $o_i$ during MCMC (although this is not yet possible using this model).
 As noted above, the last appearance time, $y_i$, is only used to provide an upper (maximum) bound on the extinction time, $d_i$. 
 Thus, the *oldest possible* age of the last appearance (*i.e.,* the maximum stratigraphic age associated with the fossil) may be used to specify $y_i$. All other occurrences only contribute to the per-interal fossil count, $k_i$, and so need to be dated at this level of precision.
 {% endaside %}
