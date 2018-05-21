@@ -37,7 +37,15 @@ rho <- 0
 # model 2
 bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, rho=rho, timeline=timeline)
 
-mymodel = model(alpha)
+moves[mvi++] = mvMatrixElementScale(bd, lambda = 0.01, weight=taxa.size())
+moves[mvi++] = mvMatrixElementScale(bd, lambda = 0.1, weight=taxa.size())
+moves[mvi++] = mvMatrixElementScale(bd, lambda = 1, weight=taxa.size())
+
+moves[mvi++] = mvMatrixElementSlide(bd, delta = 0.01, weight=taxa.size())
+moves[mvi++] = mvMatrixElementSlide(bd, delta = 0.1, weight=taxa.size())
+moves[mvi++] = mvMatrixElementSlide(bd, delta = 1, weight=taxa.size())
+
+mymodel = model(bd)
 
 # add monitors
 mni = 1

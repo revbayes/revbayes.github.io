@@ -120,8 +120,8 @@ For this exercise we will be estimating speciation, extinction and fossil recove
 Dinosaur occurrences were downloaded from the [Paleobiology Database](https://paleobiodb.org/).
 The models described in this tutorial can be computationally expensive, especially given a large number of intervals and ranges, so to ensure the analysis runs within a reasonable timeframe, available occurrence data has been subsampled.
 Specially, we took a random subsample of 116 species that were >66 Ma, associated with <5 Myr stratigraphic age uncertainty and identified at the species level. 
-Fossil ages were also treated as known, taking the mid point between the minimum and maximum age associated with the specimen.
-Specimens were binned into four intervals of interest: the Early and Cretaceous, the Jurassic and the Triassic.
+Fossil ages were also treated as known, taking the mid point between the minimum and maximum age associated with each specimen.
+Specimens were binned into four intervals of interest: the Early and Late Cretaceous, the Jurassic and the Triassic.
 Finally, we rescaled the timeline, such that the Cretaceous-Paleogene boundary = the present (*i.e.,* 66 Ma = 0 Ma).
 This allows us to avoid estimating rates during any interval younger than Cretaceous, which is outwith our period of interest.
 The script used to generate this dataset is at the top of this page.
@@ -166,7 +166,7 @@ RevBayes will assume that the age of the youngest interval = 0.
     timeline <- v(100, 145, 201) - 66
 
 These ages represent the boundary between the Early Cretaceous, the Late Cretaceous, and the Jurassic.
-The oldest occurrence in our dataset is from the Triassic and we will treat the time prior to the Jurassic as a single interval (*i.e.,* 252 Ma - infinity).
+The oldest occurrence in our dataset is from the Triassic and we will treat the time prior to the Jurassic as a single interval (*i.e.,* 201 Ma - infinity).
 
 {% subsubsection Specifying the priors and moves on the FBDR model parameters %}
 
@@ -188,7 +188,7 @@ Each time a new move is added to the vector, `mvi` will be incremented by a valu
 
     mvi = 1
     
-Next define a constant node representing the rate hyperparameter of the exponential prior distributions on your diversification parameters
+Next define a constant node representing the rate hyperparameter of the exponential prior distributions on your diversification parameters.
 
 	alpha <- 10
 
@@ -230,21 +230,19 @@ Because $\rho$ is a constant node, we do not have to assign a move to this param
 All three models described in the {% ref introduction %} can be specified using the same distribution function `dnFBDRMatrix` in RevBayes.
 The model used to calculate the likelihood will depend on the data and commands passed to this function. 
 
-- \todo what is the formal definition of `bd`?
-
 The `dnFBDRMatrix` function always takes as input the stratigraphic ranges (`taxa`), the FBDR model parameters (`lambda, mu, psi, rho`), and the vector of interval ages (`timeline`). 
 The function can optionally take as input the matrix of per-interval fossil counts (`k`), used by model 1 and 3 only.
 The option `binary` is used to indicate whether the data in matrix `k` should be interpreted as absolute fossil counts (as in model 1) or presence/absence (1/0) data (as in model 3).
 If `binary = FALSE` the function will implement model 1 and interpret the data in `k` as absolute fossil counts, which is the default.
 If `binary = TRUE` the function will implement model 3 and use 1/0 data.
-If the matrix `k` contains cells with $k_i,j > 1$, the function will interpret this as $\kappa_{i,j} = 1$. 
+If the matrix `k` contains cells with $$k_{i,j} > 1$$, the function will interpret this as $\kappa_{i,j} = 1$. 
 
 Model 1 requires both stratigraphic range ages and per-interval fossil counts.
 To use model 1 simply include the matrix `k`, along with the other model parameters and leave `binary = FALSE` (excluding this argument from the function call is equivalent to specifying the default option).
 
     bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, rho=rho, timeline=timeline, k=k)
 
-Model 2 requires stratigraphic range ages only and no information about per-interval fossil counts
+Model 2 requires stratigraphic range ages only and no information about per-interval fossil counts.
 To use model 2 simply exclude the matrix `k` from the function call.
 
     bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, rho=rho, timeline=timeline)
@@ -308,7 +306,7 @@ To run the analysis we have to create a workspace variable that defines our MCMC
 
     mymcmc = mcmc(mymodel, moves, monitors, moveschedule="random")
     
-Finally, we can execute our MCMC analysis and we will set the chain length to `30000 ` cycles.
+Finally, we can execute our MCMC analysis and we will set the chain length to `30000` cycles.
     
     mymcmc.run(30000)
     q()
@@ -321,6 +319,11 @@ You're now ready to run the first analysis!
 
 Begin by running the RevBayes executable. In Unix systems, type the
 following in your terminal (if the RevBayes binary is in your path):
+
+```
+rb
+```
+{:.bash}
 
 Provided that you started RevBayes from the correct directory, you can then use the `source` function to feed RevBayes your script and run the analysis.
 
@@ -339,22 +342,21 @@ Make these modifications in `mcmc_FBDRMatrix_model2.Rev`, and when model 1 is do
 
     source("mcmc_FBDRMatrix_model2.Rev")
 
-To use model 3, we still include the argument that passes the fossil count matrix to function, `k=k`, and switch the argument `binary=true` to `binary=false`, since this model uses 1/0 sampling information, rather than absolute occurrence counts. The `k` matrix is still required for this model.
+To use model 3, we still include the argument that passes the fossil count matrix to the function, `k=k`, and switch the argument `binary=true` to `binary=false`, since this model uses 1/0 sampling information, rather than absolute occurrence counts. The `k` matrix is still required for this model.
 
     bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, rho=rho, timeline=timeline, k=k, binary=true)
 
-Make these modifications in `mcmc_FBDRMatrix_model3.Rev`, and when you're ready run the analysis as before.
+Make these modifications in `mcmc_FBDRMatrix_model3.Rev`, and when you're ready, run the analysis as before.
 
     source("mcmc_FBDRMatrix_model3.Rev")
 
-While you're waiting for model 2 and 3 to run you can examine  the output from model 1.
+While you're waiting for model 2 and 3 to run you can examine the output from model 1.
 
 {% aside Running this model under the prior %}
- \todo add details of the distinction betweent this and other models
 
 To run this model under the prior, we can't use the conventional approach in RevBayes of passing the argument `runUnderPrior=true` to the `mymcmc.run` command.
 
-Instead, we will simply comment out the creation of the `bd` stochastic node and its associated moves
+Instead, we will simply comment out the creation of the `bd` stochastic node and its associated moves, and instead create a workspace model variable by passing `alpha` to the `model` function.
 
 ```markdown
 #bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, rho=rho, timeline=timeline, k=k, binary=true)
@@ -367,6 +369,9 @@ Instead, we will simply comment out the creation of the `bd` stochastic node and
 #moves[mvi++] = mvMatrixElementSlide(bd, delta = 0.1, weight=taxa.size())
 #moves[mvi++] = mvMatrixElementSlide(bd, delta = 1, weight=taxa.size())
 ```
+
+    mymodel = model(alpha)
+
 This allows us to sample the prior distribution on our FBDR model parameters.
 {% endaside %}
 
@@ -378,7 +383,7 @@ During the MCMC analysis RevBayes will output parameters of interest (defined us
 
 We can examine the log files in the program [**Tracer**](http://beast.community/tracer).
 Once you open this program, you can open the log files using the "File > Import Tracer File" option, navigate to the directory in which you ran the analysis (*RB\_FBDRMatrix\_Tutorial*) and select the relevant log file (*e.g.,* *model1.log*).
-Or you can simply drag and drop the files into the "Trace Files" (the empty white box on the upper left of the program).
+Or you can simply drag and drop the files into "Trace Files" (the empty white box on the upper left of the program).
 Take a look at the output obtained for model 1.
 
 {% figure fig_tracer1 %}
@@ -389,10 +394,10 @@ The Estimates window. The left-hand window provides mean and ESS of the chain. T
 {% endfigure %}
 
 RevBayes outputs the parameter estiamtes for each interval from youngest and to oldest.
-This is the same order they were specified in the vector (`timeline`) in {% ref specify-intervals %}, and also the order in which the intervals appear in the input file `dinosaur_fossil_counts.tsv`.
-In this analysis the youngest interval (the Cretaceous) is denoted 1 and the oldest interval (the Permian) is denoted 5.
+This is the same order they were specified in the vector (`timeline`) in {% ref specifying-interval-ages %}, and also the order in which the intervals appear in the input file `dinosaur_fossil_counts.tsv`.
+In this analysis the youngest interval (the Cretaceous) is denoted 1 and the oldest interval is denoted 4.
 In Tracer, we can select multiple parameters simultaneously.
-If we select all the estimates  for `lambda`, we can look at the 95% HPD intervals obtained for each interval.
+If we select all the estimates  for `mu`, we can look at the 95% HPD intervals obtained for each interval.
 
 {% figure fig_tracer2 %}
 <img src="figures/tracer2.png" width="1000" />
@@ -402,7 +407,7 @@ The youngest interval appears on the lefthand side.
 {% endfigcaption %}
 {% endfigure %}
 
-We can also examine multiple log files simultaneously in Tracer and examine the overlap between estimates obtained using different models. If you load all three log files into Tracer and navigate to the "Marginal Prob Distribution" window at the top and at the bottom of the appliaction select the "Colour by > Trace file" option, you can see the marginal posterior obtained for using each model in different colours.
+We can also examine multiple log files simultaneously in Tracer and examine the overlap between estimates obtained using different models. If you load all three log files into Tracer and navigate to the "Marginal Prob Distribution" window at the top and at the bottom of the appliaction select the "Colour by > Trace File" option, you can see the marginal posterior obtained for a given parameter using each model in different colours.
 
 {% figure fig_tracer3 %}
 <img src="figures/tracer3.png" width="1000" />
