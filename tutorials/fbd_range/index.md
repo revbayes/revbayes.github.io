@@ -378,7 +378,7 @@ During the MCMC analysis RevBayes will output parameters of interest (defined us
 {% subsubsection Tracer %}
 
 We can examine the log files in the program [**Tracer**](http://beast.community/tracer).
-Once you open this program, you can open the log files using the "File > Import Tracer File" option, navigate to the directory in which you ran the analysis (*RB\_FBDRMatrix\_Tutorial*) and select the relevant log file.
+Once you open this program, you can open the log files using the "File > Import Tracer File" option, navigate to the directory in which you ran the analysis (*RB\_FBDRMatrix\_Tutorial*) and select the relevant log file (*e.g.,* *model1.log*).
 Or you can simply drag and drop the files into the "Trace Files" (the empty white box on the upper left of the program).
 Take a look at the output obtained for model 1.
 
