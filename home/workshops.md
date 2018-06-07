@@ -7,16 +7,18 @@ permalink: /workshops/
 
 Throughout the year, the members of the RevBayes development team and our collaborators teach workshops on molecular evolution, phylogenetics, and Bayesian inference using RevBayes. Additionally, we have occasional <a href="{{ site.baseurl }}{% link workshops/hackathons.md %}">hackathons</a> which bring together developers to work on the software and methods for phylogenetic analysis. 
 
-{% assign workshops = site.pages | where:"layout","workshop" | sort: "startdate" %}
-
-{% capture nowunix %}{{'now' | date: '%s' | divided_by: 3600 | divided_by: 24 }}{% endcapture %}
+{% assign workshops = site.pages | where:"layout","workshop" | sort: "startdate" | reverse %}
 
 {% for workshop in workshops %}
 	{% capture startdate %}{{ workshop.startdate | date: '%s' | divided_by: 3600 | divided_by: 24 }}{% endcapture %}
-    {% capture enddate %}{{ workshop.enddate | date: '%s' | divided_by: 3600 | divided_by: 24 }}{% endcapture %}
+    {% if workshop.enddate %}
+        {% capture enddate %}{{ workshop.enddate | date: '%s' | divided_by: 3600 | divided_by: 24 }}{% endcapture %}
+    {% else %}
+        {% assign enddate = startdate %}
+    {% endif %}
 
 	{% capture event %}
-		<tr>
+		<tr class="event" id="{{ startdate }}-{{ enddate }}">
 		<td>{{ workshop.startdate | date: "%B %-d, %Y" }}</td>
 		<td><a href="{{ site.baseurl }}{{ workshop.url }}">{{ workshop.title }}</a></td>
 		<td>{{ workshop.location }}</td>
@@ -24,48 +26,18 @@ Throughout the year, the members of the RevBayes development team and our collab
 		</tr>
 	{% endcapture %}
 
-	{% if startdate > nowunix %}
-		{% assign future = future | append: event %}
-	{% elsif enddate < nowunix %}
-		{% assign past = past | prepend: event %}
-    {% else %}
-        {% assign current = current | append: event %}
-	{% endif %}
+	{% assign events = events | append: event %}
 {% endfor %}
 
-{% capture future_table %}
+<div id="workshops">
 <table class="table table-striped" style="width:100%">
-<tr>
+<tr class="header">
 <td width="15%"><b>Date</b></td>
 <td width="25%"><b>Course Title</b></td>
 <td width="25%"><b>Location</b></td>
 <td width="25%"><b>Instructors</b></td>
 </tr>
-{{ future }}
-</table>
-{% endcapture %}
-
-{% capture current_table %}
-<table class="table table-striped" style="width:100%">
-<tr>
-<td width="15%"><b>Date</b></td>
-<td width="25%"><b>Course Title</b></td>
-<td width="25%"><b>Location</b></td>
-<td width="25%"><b>Instructors</b></td>
-</tr>
-{{ current }}
-</table>
-{% endcapture %}
-
-{% capture past_table %}
-<table class="table table-striped" style="width:100%">
-<tr>
-<td width="15%"><b>Date</b></td>
-<td width="25%"><b>Course Title</b></td>
-<td width="25%"><b>Location</b></td>
-<td width="25%"><b>Instructors</b></td>
-</tr>
-{{ past }}
+{{ events }}
 <tr>
     <td>May 31, 2018</td>
     <td><a href="https://revbayes.github.io/revbayes-site/tutorials/model_testing_ppred_inf/">PPS with Revbayes and P3</a></td>
@@ -211,25 +183,7 @@ Throughout the year, the members of the RevBayes development team and our collab
     <td></td>
 </tr>
 </table>
-{% endcapture %}
+</div>
 
-### Future Workshops
-
-{% if future_table %}
-{{ future_table }}
-{% else %}
-**No upcoming workshops**
-{% endif %}
-
-{% if current_table %}
-### Workshops Currently in Progress
-{{ current_table }}
-{% endif %}
-
-### Past Workshops
-
-{% if past_table %}
-{{ past_table }}
-{% else %}
-**No past workshops**
-{% endif %}
+<script type="text/javascript" src="{{ site.baseurl }}/assets/js/vendor/jquery.min.js"></script>
+<script type="text/javascript" src="{{ site.baseurl }}{% link assets/js/workshops.js %}"></script>
