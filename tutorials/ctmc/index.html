@@ -1,16 +1,16 @@
 <!doctype html>
 <html lang="en">
-<link rel="icon" type="image/png" href="//assets/img/favicon.png" >
+<link rel="icon" type="image/png" href="/assets/img/favicon.png" >
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="search-domain" value="https://revbayes.github.io/">
     <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
-    <link rel="stylesheet" href="//assets/css/syntax.css">
-    <link rel="stylesheet" type="text/css" href="//assets/css/bootstrap.css" />
-    <link rel="stylesheet" type="text/css" href="//assets/css/bootstrap-theme.css" />
-    <link rel="stylesheet" type="text/css" href="//assets/css/main.css" />
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
     <title>RevBayes: Substitution Models</title>
   </head>
   <body>
@@ -18,9 +18,9 @@
       <nav class="navbar navbar-default">
   <div class="container-fluid">
     <div class="navbar-header">
-      <a href="//" class="pull-left">
+      <a href="/" class="pull-left">
         
-        <img class="navbar-logo" src="//assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
         
       </a>
       
@@ -34,10 +34,10 @@
     </div>
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-        <li><a href="//software">Software</a></li>
-        <li><a href="//tutorials/">Tutorials</a></li>
-        <li><a href="//workshops/">Workshops</a></li>
-        <li><a href="//developer/">Developer</a></li>
+        <li><a href="/software">Software</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/developer/">Developer</a></li>
       </ul>
       <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
         <div class="form-group">
@@ -65,13 +65,13 @@
         
           <ul id="prerequisites">
           
-            <li><a href="//tutorials/intro/">Rev Language Syntax</a></li>
+            <li><a href="/tutorials/intro/">Rev Language Syntax</a></li>
           
-            <li><a href="//tutorials/intro_rev/">Basic introduction to Rev & MCMC</a></li>
+            <li><a href="/tutorials/intro_rev/">Basic introduction to Rev & MCMC</a></li>
           
-            <li><a href="//tutorials/mcmc_archery/">Introduction to MCMC using RevBayes</a></li>
+            <li><a href="/tutorials/mcmc_archery/">Introduction to MCMC using RevBayes</a></li>
           
-            <li><a href="//tutorials/mcmc_binomial/">Introduction to MCMC using RevBayes</a></li>
+            <li><a href="/tutorials/mcmc_binomial/">Introduction to MCMC using RevBayes</a></li>
           
           </ul>
         
@@ -93,7 +93,7 @@
         
         
         
-          <li><a href="//tutorials/ctmc/data/primates_and_galeopterus_cytb.nex">primates_and_galeopterus_cytb.nex</a></li>
+          <li><a href="/tutorials/ctmc/data/primates_and_galeopterus_cytb.nex">primates_and_galeopterus_cytb.nex</a></li>
         
         </ul>
     
@@ -103,11 +103,11 @@
         
         
         
-          <li><a href="//tutorials/ctmc/scripts/mcmc_GTR.Rev">mcmc_GTR.Rev</a></li>
+          <li><a href="/tutorials/ctmc/scripts/mcmc_GTR.Rev">mcmc_GTR.Rev</a></li>
         
-          <li><a href="//tutorials/ctmc/scripts/mcmc_GTR_Gamma_Inv.Rev">mcmc_GTR_Gamma_Inv.Rev</a></li>
+          <li><a href="/tutorials/ctmc/scripts/mcmc_GTR_Gamma_Inv.Rev">mcmc_GTR_Gamma_Inv.Rev</a></li>
         
-          <li><a href="//tutorials/ctmc/scripts/mcmc_JC.Rev">mcmc_JC.Rev</a></li>
+          <li><a href="/tutorials/ctmc/scripts/mcmc_JC.Rev">mcmc_JC.Rev</a></li>
         
         </ul>
     
@@ -352,7 +352,7 @@ In the case of our unrooted tree topology, for example, we can use both a neares
 moves[mvi++] = mvSPR(topology, weight=n_species/10.0)
 </code></pre></div></div>
 
-<p>The weight specifies how often the move will be applied either on average per iteration or relative to all other moves. Have a look at the MCMC Diagnosis tutorial for more details about moves and MCMC strategies (found in <a href="//tutorials/">Tutorials</a>).</p>
+<p>The weight specifies how often the move will be applied either on average per iteration or relative to all other moves. Have a look at the MCMC Diagnosis tutorial for more details about moves and MCMC strategies (found in <a href="/tutorials/">Tutorials</a>).</p>
 
 <p>Next we have to create a stochastic node for each of the $2N - 3$ branches in our tree (where $N=$ <code class="highlighter-rouge">n_species</code>). We can do this using a <code class="highlighter-rouge">for</code> loop — this is a plate in our graphical model. In this loop, we can create each of the branch-length nodes and assign each move. Copy this entire block of Rev code into the console:</p>
 
@@ -415,14 +415,14 @@ Here we will briefly indicate how to specify such an prior which will lead to in
 For simplicity, we will assume a uniform prior on both topologies and node ages. 
 The distribution in RevBayes is <code class="highlighter-rouge">dnUniformTimeTree()</code>.</p>
 
-<p>Fore more information on tree priors, such as birth-death processes, please read the <a href="//tutorials/clocks/">Relaxed Clocks &amp; Time Trees</a>.</p>
+<p>Fore more information on tree priors, such as birth-death processes, please read the <a href="/tutorials/clocks/">Relaxed Clocks &amp; Time Trees</a>.</p>
 
 <p>First, we need to specify the age of the tree:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root_age &lt;- 10.0
 </code></pre></div></div>
 
-<p>Here we simply assumed that the tree is 10.0 time units old. We could also specify a prior on the root age if we have fossil calibrations (see <a href="//tutorials/clocks/">Relaxed Clocks &amp; Time Trees</a>). Next, we specify the <code class="highlighter-rouge">tree</code> stochastic variable by passing in the taxon information <code class="highlighter-rouge">taxa</code> to the <code class="highlighter-rouge">dnUniformTimeTree()</code> distribution:</p>
+<p>Here we simply assumed that the tree is 10.0 time units old. We could also specify a prior on the root age if we have fossil calibrations (see <a href="/tutorials/clocks/">Relaxed Clocks &amp; Time Trees</a>). Next, we specify the <code class="highlighter-rouge">tree</code> stochastic variable by passing in the taxon information <code class="highlighter-rouge">taxa</code> to the <code class="highlighter-rouge">dnUniformTimeTree()</code> distribution:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psi ~ dnUniformTimeTree(rootAge=root_age, taxa=taxa)
 </code></pre></div></div>
@@ -1225,7 +1225,7 @@ for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
   <div class="container">
   <div class="row">
     <div class="col-sm-12" align="center">
-      <a href="https://github.com/revbayes">GitHub</a> | <a href="//license">License</a> | <a href="//citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
     </div>
   </div>
   <br>
@@ -1233,10 +1233,10 @@ for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
 </footer>
 
     </div>
-    <script src="//assets/js/vendor/jquery.min.js"></script>
-<script src="//assets/js/vendor/FileSaver.min.js"></script>
-<script src="//assets/js/vendor/jszip.min.js"></script>
-<script src="//assets/js/vendor/bootstrap.min.js"></script>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
 
 <script type="text/javascript">
 // Add default language
@@ -1256,7 +1256,7 @@ $(":not(code).highlighter-rouge").each(function() {
 // });
 </script>
 
-<script src="//assets/js/base.js"></script>
+<script src="/assets/js/base.js"></script>
 
 <script type="text/javascript"
     src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
