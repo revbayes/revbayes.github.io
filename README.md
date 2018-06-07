@@ -10,12 +10,12 @@ The static version of this site is stored on branch `master`, while the source f
 
 First, you should clone the `source` branch
 
-	git clone https://github.com/revbayes/revbayes-site.git
+	git clone https://github.com/revbayes/revbayes.github.io
 
 After first cloning this repository, you will be on the `source` branch. Then, you should clone the `master` branch into the `_site` directory.
 
-	cd revbayes-site
-	git clone -b master git@github.com:revbayes/revbayes-site.git _site
+	cd revbayes.github.io
+	git clone -b master git@github.com:revbayes/revbayes.github.io.git _site
 
 In order to build the site you will need `jekyll`, see instructions below to install.
 
@@ -44,7 +44,7 @@ in your home folder using:
 NOTE: You may get errors here that you need to update ruby to install these
 gems. 
 
-Next, move into the `revbayes-site` repo directory, and install required gems via:
+Next, move into the `revbayes.github.io` repo directory, and install required gems via:
 
     bundle install
 
