@@ -1,6 +1,6 @@
 var url = window.location.href;
 
-var res = url.replace("revbayes-site/", "");
+var res = url.replace("/revbayes-site", "");
 
 if( res != url )
 {
