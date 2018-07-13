@@ -1,3 +1,5 @@
+require './_plugins/filters.rb'
+
 module RevBayes
   module Tags
   	class PageRef < Liquid::Tag
