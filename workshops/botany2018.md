@@ -11,7 +11,7 @@ description:
 instructors:
 - <a href="http://willfreyman.org">Will Freyman</a>
 - <a href="https://rzenil.wordpress.com/">Rosana Zenil-Ferguson</a>
-- <a href="http://phylo.bio.ku.edu/content/jordan-koch">Jordan Koch</a>
+- <a href="mailto:jkoch@umn.edu?subject=RevBayes%20Workshop%202018">Jordan Koch</a>
 
 software:
 - <a href="https://revbayes.github.io/revbayes-site/software">RevBayes v1.0.8</a>
