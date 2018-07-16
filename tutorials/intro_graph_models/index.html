@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: Introduction to Graphical Models</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
+      </a>
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/software">Software</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/developer/">Developer</a></li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <div class="titlebar">
+	<h1 class="maintitle">Introduction to Graphical Models</h1>
+	<h3 class="subtitle">An introduction to graphical models, probabilistic programming, and MCMC using a simple linear regression example.</h3>
+	<h4 class="authors">Will Freyman</h4>
+</div>
+
+
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul id="prerequisites">
+          
+            <li><a href="/tutorials/intro/">Rev Language Syntax</a></li>
+          
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+
+
+
+
+<blockquote class="tutorial_files" id="tutorial_files">
+    <h2>Data files and scripts</h2>
+    
+        
+        <strong>Data Files</strong>
+        <ul id="data_files">
+        
+        
+        
+          <li><a href="/tutorials/intro_graph_models/data/x.csv">x.csv</a></li>
+        
+          <li><a href="/tutorials/intro_graph_models/data/y.csv">y.csv</a></li>
+        
+        </ul>
+    
+</blockquote>
+
+
+</div>
+<h1 class="section" id="overview">Overview</h1>
+
+<p><a href="http://revbayes.com">RevBayes</a> uses a <em>graphical model</em> framework in
+which all probabilistic models, including phylogenetic models,
+are comprised of modular components that can be assembled in a myriad of ways.
+<a href="http://revbayes.com">RevBayes</a> provides a highly flexible language called <code class="highlighter-rouge">Rev</code>
+that users employ to specify their own custom graphical models.</p>
+
+<p>This tutorial is intended to be a gentle introduction on how to use <code class="highlighter-rouge">Rev</code> to specify graphical models.
+Additionally we’ll cover how to use <code class="highlighter-rouge">Rev</code> to specify the Markov chain Monte Carlo (MCMC) 
+algorithms used to perform inference with the model.
+We will focus on a simple linear regression example,
+and use <a href="http://revbayes.com">RevBayes</a> to estimate the posterior distributions of our parameters.</p>
+
+<h1 class="section" id="why-graphical-models">Why Graphical Models?</h1>
+
+<p><a href="http://revbayes.com">RevBayes</a> is a fundamental reconception of phylogenetic software.
+Most phylogenetic software have default settings that allow a user to run an analysis
+without truly understanding the assumptions of the model.
+<a href="http://revbayes.com">RevBayes</a>, on the other hand, has no defaults and is a complete
+blank slate when started. <a href="http://revbayes.com">RevBayes</a> requires users to 
+fully specify the model they want to use for their analysis.
+This means the learning curve is steep, however there are a number of benefits:</p>
+
+<ol>
+  <li>
+    <p>Transparency:</p>
+  </li>
+  <li>
+    <p>Flexibility:</p>
+  </li>
+  <li>
+    <p>Modularity:</p>
+  </li>
+</ol>
+
+<h1 class="section" id="what-is-a-graphical-model">What is a Graphical Model?</h1>
+
+<figure id="graphicalmodel"><p><img src="figures/graphical_model.png" width="400" /></p>
+<figcaption><em>Left: a graphical model in which 
+the observed data points $X_i$ are conditionally independent given $\theta$.
+Right: the same graphical model using plate notation to represent the $N$ repeated $X_i$.
+These graphical models represents the joint probability distribution
+<script type="math/tex">p(\theta,X_1,\dots,X_N)</script>.
+Image from Murphy <a href="#murphy2012machine">(2012)</a></em></figcaption>
+</figure>
+
+<p>A <em>graphical model</em> is a way to represent a joint multivariate probability distribution as a graph.
+Here we mean <em>graph</em> in the mathematical sense of a set of nodes (vertices) and edges.</p>
+
+<p><a href="#graphicalmodel"></a> illustrates the graphical model that represents the joint probability distribution</p>
+
+<script type="math/tex; mode=display">\begin{aligned}
+p(\theta,\mathcal{D}) = p(\theta) \Big[ \displaystyle\prod^N_{i=1} p(X_i|\theta) \Big],
+\end{aligned}</script>
+
+<p>where <script type="math/tex">\mathcal{D}</script> is the vector of observed data points <script type="math/tex">X_1,\dots,X_N</script>.</p>
+
+<h1 class="section" id="probabilistic-programming">Probabilistic Programming</h1>
+
+<h1 class="section" id="linear-regression-example">Linear Regression Example</h1>
+
+<h2 id="subsect:Exercise-Format" class="subsection">Tutorial Format</h2>
+
+<p>This tutorial follows a specific format for issuing instructions and
+information.</p>
+
+<p>The boxed instructions guide you to complete tasks that are not part of the RevBayes syntax, but rather direct you to create directories or files or similar.</p>
+
+<p>Information describing the commands and instructions will be written in paragraph-form before or after they are issued.</p>
+
+<p>All command-line text, including all <code class="highlighter-rouge">Rev</code> syntax, are given in <code class="highlighter-rouge">monotype font</code>. Furthermore, blocks of <code class="highlighter-rouge">Rev</code> code that are needed to build the model, specify the analysis, or execute the run are given in separate shaded boxes. For example, we will instruct you to create a new variable called <code class="highlighter-rouge">n</code> that is equal to <code class="highlighter-rouge">10</code> using the <code class="highlighter-rouge">=</code> operator like this:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n = 10
+</code></pre></div></div>
+
+<h2 class="subsection" id="create-your-script-file">Create Your Script File</h2>
+
+<p>Make yourself familiar with the example script called <a href="https://raw.githubusercontent.com/revbayes/"><code class="highlighter-rouge">linear_regression.Rev</code></a> which shows the code for the following sections. Then, start a new and empty script in your text editor and follow each step provided as below.</p>
+
+<p>Name the script file <code class="highlighter-rouge">my_linear_regression.Rev</code> or anything you’d like.</p>
+
+<h2 class="subsection" id="rev-script-structure"><code class="highlighter-rouge">Rev</code> Script Structure</h2>
+
+<p>Metropolis-Hastings MCMC algorithm <a href="#Metropolis1953">(Metropolis et al. 1953; Hastings 1970)</a></p>
+
+<ol>
+  <li>
+    <p>model specification</p>
+  </li>
+  <li>
+    <p>MCMC algorithm</p>
+  </li>
+</ol>
+
+<h2 class="subsection" id="bayesian-linear-regression">Bayesian Linear Regression</h2>
+
+<h3 id="read-in-data">Read in data</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>x_obs &lt;- readDataDelimitedFile(file="data/x.csv", header=FALSE, delimiter=",")[1]
+y_obs &lt;- readDataDelimitedFile(file="data/y.csv", header=FALSE, delimiter=",")[1]
+</code></pre></div></div>
+
+<h1 class="section" id="improving-mcmc-mixing">Improving MCMC Mixing</h1>
+
+<h1 class="section" id="prior-sensitivity">Prior Sensitivity</h1>
+
+<h1 class="section" id="generative-vs-discriminative-models">Generative vs Discriminative Models</h1>
+
+
+<ol class="bibliography"><li><span id="Hastings1970">Hastings W.K. 1970. Monte Carlo Sampling Methods Using Markov Chains and Their Applications. Biometrika. 57:97–109.</span>
+
+</li>
+<li><span id="Metropolis1953">Metropolis N., Rosenbluth A.W., Rosenbluth M.N., Teller A.H., Teller E. 1953. Equation of State Calculations by Fast Computing Machines. Journal of Chemical Physics. 21:1087–1092.</span>
+
+<a href="https://doi.org/10.1063/1.1699114">10.1063/1.1699114</a>
+
+</li>
+<li><span id="murphy2012machine">Murphy K.P. 2012. Machine learning: a probabilistic approach. .</span>
+
+</li></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+
+<script src="/assets/js/base.js"></script>
+
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+  });
+</script>
+
+  </body>
+</html>
