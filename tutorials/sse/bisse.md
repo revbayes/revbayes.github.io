@@ -1,6 +1,6 @@
 ---
 title: State-dependent diversification rate estimation in RevBayes
-subtitle: Inference using the binary state-dependent speciation and extinction (BiSSE) branching process
+subtitle: Inference using the binary/multiple state-dependent speciation and extinction (BiSSE/MuSSE) branching process
 authors:  Sebastian Höhna, Will Freyman, and Emma Goldberg
 level: 4
 order: 5
@@ -199,7 +199,7 @@ For both transition rate variables specify a scaling move.
 Finally, we put the rates into a matrix, because this is what's needed
 by the function for the state-dependent birth-death process.
 
-    rate_matrix := fnFreeBinary( [rate_12, rate_21], rescaled=false)
+    rate_matrix := fnFreeK( [rate_12, rate_21], rescaled=false)
 
 Note that we do not "rescale" the rate matrix. Rate matrices for
 molecular evolution are rescaled to have an average rate of 1.0, but for
@@ -309,6 +309,17 @@ run.
 
     monitors[mni++] = mnScreen(printgen=100, rate_12, rate_21, speciation, extinction)
 
+{% aside Sampling Ancestral States %}
+
+Optionally, we can sample ancestral states during the MCMC analysis. 
+We need to add an additional monitor to record the state of each internal node in the tree.
+The file produced by this monitor can be summarized so that we can visualize the estimates of ancestral states.
+
+    monitors[mni++] = mnJointConditionalAncestralState(tree=timetree, cdbdp=timetree, type="Standard", printgen=10, withTips=true, withStartStates=false, filename="output/anc_states_primates_BiSSE.log")
+
+{% endaside %}
+
+
 #### **Initializing and Running the MCMC Simulation**
 
 With a fully specified model, a set of monitors, and a set of moves, we
@@ -326,6 +337,74 @@ values from the posterior distribution.
 Now, run the MCMC:
 
     mymcmc.run(generations=10000)
+
+
+{% aside Summarize Sampled Ancestral States %}
+
+If we sampled ancestral states during the MCMC analysis, we can use the `RevGadgets` R package
+to plot the ancestral state reconstruction. First, though, we must summarize the sampled values in 
+RevBayes. 
+
+To do this, we first have to read in the ancestral state log file. This uses a specific function called `readAncestralStateTrace()`.
+
+    anc_states = readAncestralStateTrace("output/anc_states_primates_BiSSE.log")
+
+Now, we can write an annotated tree to a file. This function will write a tree with each
+node labeled with the maximum a posteriori (MAP) state and the posterior probabilities for each
+state. 
+
+    anc_tree = ancestralStateTree(tree=T, ancestral_state_trace_vector=anc_states, include_start_states=false, file="output/anc_states_primates_BiSSE_results.tree", burnin=0, summary_statistic="MAP", site=0)
+
+
+{% subsection Visualize Estimated Ancestral States | subsec_ancviz %}
+
+To visualize the posterior probabilities of ancestral states, we will use the `RevGadgets` R package.
+
+
+>Open R.
+{:.instruction}
+
+
+`RevGadgets` requires the `ggtree` package {% cite Yu2017ggtree %}. 
+First, install the `ggtree` and `RevGadgets` packages:
+
+<pre>
+install.packages("devtools")
+library(devtools)
+install_github("GuangchuangYu/ggtree")
+install_github("revbayes/RevGadgets")
+</pre>
+
+Run this code:
+
+<pre>
+library(RevGadgets)
+
+tree_file = "output/anc_states_primates_BiSSE_results.tree"
+
+plot_ancestral_states(tree_file, summary_statistic="MAP",
+					  tip_label_size=0,
+                      xlim_visible=NULL,
+                      node_label_size=0,
+                      show_posterior_legend=TRUE,
+                      node_size_range=c(2, 6),
+                      alpha=0.75)
+
+output_file = "RevBayes_Anc_States_BiSSE.pdf"
+ggsave(output_file, width = 11, height = 9)
+</pre>
+
+{% figure ggtree %}
+<img src="figures/RevBayes_Anc_States_BiSSE.png" width="75%">
+{% figcaption %}
+A visualization of the ancestral states estimated under the BiSSE model.
+{% endfigcaption %}
+{% endfigure %}
+
+
+{% endaside %}
+
+
 
 {% subsection Summarizing Parameter Estimates | subsec_summary %}
 
@@ -376,7 +455,7 @@ Comparing posterior samples of the speciation rates associated with daily activi
 {% endfigcaption %}
 {% endfigure %}
 
-{% section Evaluate Social-System-Type Dependent Speciation & Extinction under the BiSSE Model | exercise2 %}
+{% section Evaluate Social System under the BiSSE Model | exercise2 %}
 
 Now that you have completed the BiSSE analysis for the timing of activity for all primates,
 perform the same analysis using a different character. Your `data` directory should 
@@ -399,7 +478,7 @@ are `0` = forest and `1` = savanna.
 > for solitary lineages (`speciation[2]`)?
 {:.instruction}
 
-{% aside Compare the Rate Estimates %}
+{% aside Compare the rate estimates %}
 Compare the rates estimated when the activity time is the focal character versus when solitariness is the dependent character. 
 You can do this by opening _both_ files in the same tracer window. If you managed to give all the parameters the same name,
 it is possible to compare the estimates in the Tracer window by highlighting both files. 
@@ -409,8 +488,7 @@ Explore the estimates of the various parameters. Are any different? Are any the 
 Why do you think you might be seeing this pattern?
 {% endaside %}
 
-<!-- 
-{% section Evaluate Mating-System-Type Dependent Speciation & Extinction under the MuSSE Model | exercise3 %}
+{% section Evaluate Mating System under the MuSSE Model | exercise3 %}
 
 In RevBayes it is trivial to change the BiSSE analysis you did in the exercises above to a multi-state model that is not limited to just 
 binary characters. That is because the model is effectively the same, just with the variable `NUM_STATES` changed. 
@@ -430,5 +508,4 @@ character where the states are: `0` = monogamy, `1` = polygyny, `2` = polygynand
 >
 > What is the diversification rate associated with each state (`diversification`)? 
 {:.instruction}
- -->
 
