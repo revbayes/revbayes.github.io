@@ -1,8 +1,8 @@
 ---
 title: Chromosome Evolution
-subtitle: Phylogenetic analysis with ChromoSSE models
+subtitle: Phylogenetic analysis with ChromEvol, BiChroM, and ChromoSSE models
 authors:  William A. Freyman and Sebastian Höhna
-level: 4
+level: 5
 prerequisites:
 - intro
 index: true
