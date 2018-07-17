@@ -2,7 +2,7 @@
 layout: workshop
 title: RevBayes for Botanists
 location: Botany 2018 Conference, Rochester, MN USA
-startdate: 2018-07-21
+startdate: 2018-07-22
 registration: http://2018.botanyconference.org
 
 description: 
@@ -21,54 +21,54 @@ software:
 - Please be familiar with command line basics such as in <a href="https://tutorial.djangogirls.org/en/intro_to_command_line/">this very short tutorial</a>.
 
 schedule:
-  - starttime: 2018-07-21T8:00
-    endtime: 2018-07-21T8:45
+  - starttime: 2018-07-22T8:00
+    endtime: 2018-07-22T8:45
     topic: Intro to Bayesian inference
     lesson: 
     instructors: Rosana Zenil-Ferguson
 
-  - starttime: 2018-07-21T8:45
-    endtime: 2018-07-21T9:00
+  - starttime: 2018-07-22T8:45
+    endtime: 2018-07-22T9:00
     topic: Break
 
-  - starttime: 2018-07-21T9:00
-    endtime: 2018-07-21T11:00
+  - starttime: 2018-07-22T9:00
+    endtime: 2018-07-22T11:00
     topic: Intro to graphical models and RevBayes
     lesson: 
     instructors: Will Freyman
 
-  - starttime: 2018-07-21T11:00
-    endtime: 2018-07-21T11:15
+  - starttime: 2018-07-22T11:00
+    endtime: 2018-07-22T11:15
     topic: Break
 
-  - starttime: 2018-07-21T11:15
-    endtime: 2018-07-21T12:00
+  - starttime: 2018-07-22T11:15
+    endtime: 2018-07-22T12:00
     topic: Phylogenetic tree inference
     lesson: 
     instructors: Rosana Zenil-Ferguson
   
-  - starttime: 2018-07-21T12:00
-    endtime: 2018-07-21T1:00
+  - starttime: 2018-07-22T12:00
+    endtime: 2018-07-22T1:00
     topic: Lunch
   
-  - starttime: 2018-07-21T1:00
-    endtime: 2018-07-21T3:00
+  - starttime: 2018-07-22T1:00
+    endtime: 2018-07-22T3:00
     topic: Phylogenetic tree inference in RevBayes
     lesson: ctmc
     instructors: Will Freyman
   
-  - starttime: 2018-07-21T3:00
-    endtime: 2018-07-21T3:10
+  - starttime: 2018-07-22T3:00
+    endtime: 2018-07-22T3:10
     topic: Break
   
-  - starttime: 2018-07-21T3:10
-    endtime: 2018-07-21T3:40
+  - starttime: 2018-07-22T3:10
+    endtime: 2018-07-22T3:40
     topic: Models linking trait evolution to diversification
     lesson: 
     instructors: Rosana Zenil-Ferguson
 
-  - starttime: 2018-07-21T3:40
-    endtime: 2018-07-21T5:00
+  - starttime: 2018-07-22T3:40
+    endtime: 2018-07-22T5:00
     topic: State-dependent speciation and extinction models
     lesson: bisse
     instructors: Will Freyman
