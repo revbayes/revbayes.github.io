@@ -96,10 +96,9 @@ Next, we will read in the observed character states for primate activity period.
 
     data <- readCharacterData("data/primates_activity_period.nex")
 
-It will be convenient to pull out the list of tip names `taxa` and the number of sampled
+It will be convenient to get the number of sampled
 species `num_taxa` from the tree:
 
-    taxa <- T.taxa()
     num_taxa <- T.ntips()
 
 Our vectors of moves and monitors will be defined later, but here we
@@ -149,13 +148,13 @@ character state.
 
     for (i in 1:NUM_STATES) {
         
-    speciation[i] ~ dnExponential( 1.0 / rate_mean )
-    moves[mvi++] = mvSlide(speciation[i], delta=0.20, tune=true, weight=3.0)
+        speciation[i] ~ dnExponential( 1.0 / rate_mean )
+        moves[mvi++] = mvSlide(speciation[i], weight=3.0)
 
-    extinction[i] ~ dnExponential( 1.0 / rate_mean )
-    moves[mvi++] = mvSlide(extinction[i], delta=0.20, tune=true, weight=3.0)
+        extinction[i] ~ dnExponential( 1.0 / rate_mean )
+        moves[mvi++] = mvSlide(extinction[i], weight=3.0)
 
-    diversification[i] := speciation[i] - extinction[i]
+        diversification[i] := speciation[i] - extinction[i]
 
     }
 
@@ -208,15 +207,13 @@ scale as the diversification rates.
 
 #### **Prior on the Root State**
 
-Create a variable with the prior probabilities of each rate category at
-the root. We are using a flat [Dirichlet distribution](https://en.wikipedia.org/wiki/Dirichlet_distribution) as the prior on
-each state. In this case we are actually estimating the prior
-frequencies of the root states. There has been some discussion about
+Create a variable for the root state frequencies. We are using a flat [Dirichlet distribution](https://en.wikipedia.org/wiki/Dirichlet_distribution) as the prior on
+each state. There has been some discussion about
 this in {% cite FitzJohn2009 %}. You could also fix the prior probabilities for
 the root states to be equal (generally not recommended), or use
 empirical state frequencies.
 
-    rate_cat_probs ~ dnDirichlet( rep(1, NUM_STATES) )
+    root_state_freq ~ dnDirichlet( rep(1, NUM_STATES) )
 
 Note that we use the `rep()` function which generates a vector of length `NUM_STATES`
 with each position in the vector set to `1`. Using this function and the `NUM_STATES`
@@ -225,7 +222,7 @@ using a character with more than two states.
 
 We will use a special move for objects that are drawn from a Dirichlet distribution:
 
-    moves[mvi++] = mvDirichletSimplex(rate_cat_probs, tune=true, weight=2)
+    moves[mvi++] = mvDirichletSimplex(root_state_freq, weight=2)
 
 #### **The Probability of Sampling an Extant Species**
 
@@ -257,9 +254,8 @@ representing the time tree and we create this node using the `dnCDBDP()` functio
                         speciationRates   = speciation,
                         extinctionRates   = extinction, 
                         Q                 = rate_matrix,
-                        pi                = rate_cat_probs,
-                        rho               = sampling,
-                        condition         = "survival" )
+                        pi                = root_state_freq,
+                        rho               = sampling )
 
 Now, we will fix the BiSSE time-tree to the observed values from our data files. We use
 the standard `.clamp()` method to give the observed tree and branch times:
@@ -274,7 +270,7 @@ Finally, we create a workspace object of our whole model. The `model()`
 function traverses all of the connections and finds all of the nodes we
 specified.
 
-    mymodel = model(rate_matrix)
+    mymodel = model(timetree)
 
 You can use the `.graph()` method of the model object to visualize the graphical model you
 have just constructed . This function writes the model DAG to a file 
@@ -307,7 +303,7 @@ extinction, and transition.
 Then, we add a screen monitor showing some updates during the MCMC
 run.
 
-    monitors[mni++] = mnScreen(printgen=100, rate_12, rate_21, speciation, extinction)
+    monitors[mni++] = mnScreen(printgen=10, rate_12, rate_21, speciation, extinction)
 
 {% aside Sampling Ancestral States %}
 
@@ -353,7 +349,7 @@ Now, we can write an annotated tree to a file. This function will write a tree w
 node labeled with the maximum a posteriori (MAP) state and the posterior probabilities for each
 state. 
 
-    anc_tree = ancestralStateTree(tree=T, ancestral_state_trace_vector=anc_states, include_start_states=false, file="output/anc_states_primates_BiSSE_results.tree", burnin=0, summary_statistic="MAP", site=0)
+    anc_tree = ancestralStateTree(tree=T, ancestral_state_trace_vector=anc_states, include_start_states=false, file="output/anc_states_primates_BiSSE_results.tree", burnin=0, summary_statistic="MAP", site=1)
 
 
 {% subsection Visualize Estimated Ancestral States | subsec_ancviz %}
@@ -499,8 +495,8 @@ Your `data` directory should contain a file called [`primates_mating_system.nex`
 character where the states are: `0` = monogamy, `1` = polygyny, `2` = polygynandry, and `3` = polyandry.
 
 > Modify the analysis you completed for the binary state characters in the [BiSSE Exercise](#sec_CDBDP) to accommodate a 4-state character. 
-> This means that you must no only change the data file that you input (`primates_mating_system.nex`),
-> but you also need to specify `NUM_STATES = 4`.
+> This means that you must not only change the input data file (`primates_mating_system.nex`),
+> but you also need to specify `NUM_STATES = 4`. The `rate_matrix` must also be modified to accommodate 4 states.
 >
 > It is **important** that you remember to also change the output file names.
 >
