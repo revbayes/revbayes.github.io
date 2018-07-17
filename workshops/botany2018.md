@@ -14,7 +14,7 @@ instructors:
 - <a href="mailto:jkoch@umn.edu?subject=RevBayes%20Workshop%202018">Jordan Koch</a>
 
 software:
-- <a href="https://revbayes.github.io/revbayes-site/software">RevBayes v1.0.8</a>
+- <a href="https://revbayes.github.io/revbayes-site/software">RevBayes v1.0.8</a> -- we strongly recommend that you work through <a href="https://revbayes.github.io/tutorials/intro/">this short intro tutorial to RevBayes</a>
 - <a href="http://tree.bio.ed.ac.uk/software/tracer/">Tracer</a>
 - <a href="http://tree.bio.ed.ac.uk/software/figtree/">FigTree</a>
 - A simple text editor, such as Sublime Text, NotePad++, TextWrangler, BBEdit, vim, or emacs 
