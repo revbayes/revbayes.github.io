@@ -1,20 +1,21 @@
 ---
 title: Chromosome Evolution
-subtitle: Phylogenetic analysis with ChromEvol, BiChroM, and ChromoSSE models
+subtitle: Modeling chromosome evolution with ChromEvol, BiChroM, and ChromoSSE
 authors:  William A. Freyman and Sebastian Höhna
 level: 5
 prerequisites:
 - intro
+- ctmc
+- sse/bisse-intro
 index: true
 title-old: RB_Chromosome_Evolution_Tutorial
-redirect: true
+redirect: false
 ---
 
 
 
 
-Introduction {#introduction .unnumbered}
-============
+{% section Introduction | introduction %}
 
 A central organizing component of the higher-order architecture of the
 genome is chromosome number, and changes in chromosome number have long
@@ -22,26 +23,27 @@ been understood to play a fundamental role in evolution. This tutorial
 will introduce phylogenetic models of chromosome number evolution, and
 demonstrate how to use RevBayes to estimate the rates of chromosome
 number change and ancestral chromosome numbers. We will also show how to
-use the `Rev`Gadgets R package to make plots of ancestral chromosome
+use the `RevGadgets` R package to make plots of ancestral chromosome
 number estimates and stochastic character maps of chromosome evolution.
 
 We will begin by providing an overview of the basic ChromEvol model
 {% cite mayrose2010probabilistic %} and an example RevBayes analysis. This is
 followed by a discussion of a number of model extensions that enable
 joint inference of phylogeny and chromosome numbers, tests for
-correlated rates of phenotype and chromosome evolution [the BiChroM
-model} {% cite zenil2017testing %}], and incorporating cladogenetic changes in
+correlated rates of phenotype and chromosome evolution with the BiChroM
+model {% cite zenil2017testing %}, and incorporating cladogenetic changes in
 chromosome number. Next, we will introduce the ChromoSSE model
-{% cite freyman2016cladogenetic %} which jointly estimates diversification rates
+{% cite Freyman2017 %} which jointly estimates diversification rates
 and chromosome number evolution. We also briefly discuss testing
 hypotheses of chromosome evolution by comparing different models using
 reversible-jump MCMC and Bayes factors.
 
 If you use RevBayes for chromosome evolution analyses, please cite the
 original papers that describe the chromosome evolution models as well as
-{% citet freyman2016cladogenetic %} which describes in detail the RevBayes
+{% citet Freyman2017 %} which describes in detail the RevBayes
 implementation of these models.
 
+<!--
 Contents {#contents .unnumbered}
 --------
 
@@ -71,17 +73,17 @@ The Chromosome Number Evolution tutorial contains several sections:
 -   Section [sec:chromosse_intro]: Overview of the ChromoSSE model
 
 -   Section [sec:chromosse_analysis]: A simple ChromoSSE analysis
+-->
 
-Example scripts and data {#example-scripts-and-data .unnumbered}
-------------------------
+{% section Example scripts and data | exampledata %}
 
 The data and the full scripts used for all the examples can be found on
 the RevBayes website:
 
--   [`scripts.zip`](http://rawgit.com/revbayes/revbayes_tutorial/master/RB_Chromosome_Evolution_Tutorial/scripts.zip)
+- [`scripts.zip`](http://rawgit.com/revbayes/revbayes_tutorial/master/RB_Chromosome_Evolution_Tutorial/scripts.zip)
+- [`data.zip`](http://rawgit.com/revbayes/revbayes_tutorial/master/RB_Chromosome_Evolution_Tutorial/data.zip)
 
--   [`data.zip`](http://rawgit.com/revbayes/revbayes_tutorial/master/RB_Chromosome_Evolution_Tutorial/data.zip)
-
+<!--
 Recommended tutorials {#recommended-tutorials .unnumbered}
 ---------------------
 
@@ -95,9 +97,9 @@ the following RevBayes tutorials:
 -   **Discrete Morphology Models of Character Evolution**
 
 -   **Running and Diagnosing an MCMC Analysis**
+-->
 
-Overview of Chromosome Number Evolution Models {#sec:chromo_basic_intro}
-==============================================
+{% section Overview of chromosome number evolution models | chromobasicintro %}
 
 Chromosome changes represent major evolutionary mechanisms that have
 long been a focal point of study. Changes in chromosome number such as
@@ -109,16 +111,16 @@ Recently, evolutionary biologists have increasingly studied the
 macroevolutionary consequences of chromosome changes within a molecular
 phylogenetic framework, mostly utilizing the likelihood-based ChromEvol
 models of chromosome number evolution introduced by
-@mayrose2010probabilistic. The ChromEvol models have permitted
+{% citet mayrose2010probabilistic %}. The ChromEvol models have permitted
 phylogenetic studies of ancient whole genome duplication events, rapid
 "catastrophic" chromosome speciation, major reevaluations of the
 evolution of angiosperms, and new insights into the fate of polyploid
-lineages [e.g.
-{% cite pires2008renaissance mayrose2011recently tank2015nested %}]. The basic
+lineages 
+{% cite pires2008renaissance mayrose2011recently tank2015nested %}. The basic
 ChromEvol model has been extended to examine the association of
-phenotype with chromosome evolution [BiChroM} {% cite zenil2017testing %}, and to
-incorporate cladogenetic changes and diversification rates [ChromoSSE;
-{% cite freyman2016cladogenetic %}.
+phenotype with chromosome evolution {% cite zenil2017testing %}, and to
+incorporate cladogenetic changes and diversification rates 
+{% cite Freyman2017 %}.
 
 Here we describe the ChromEvol model as implemented in RevBayes, which
 except for one detail noted below is the same mathematical model
@@ -126,8 +128,7 @@ introduced in {% cite mayrose2010probabilistic %}. In further sections, we will
 show how to set up extensions such as BiChroM and ChromoSSE which build
 on the useful but basic ChromEvol model of chromosome number evolution.
 
-The ChromEvol Model
--------------------
+{% subsection The ChromEvol model | chromevol %}
 
 In ChromEvol the evolution of chromosome number is represented as a
 continuous-time Markov process, similar to models of molecular evolution
@@ -181,9 +182,9 @@ and if $\gamma_m < 0$ then $\gamma_a e^{\gamma_m (i - 1)} \leq \gamma_a$
 Note that this parameterization differs slightly from the original
 ChromEvol model; here we assume the rates of chromosome change can vary
 exponentially as a function of the current chromosome number, whereas
-ChromEvol as originally described by @mayrose2010probabilistic assumes a
+ChromEvol as originally described by {% citet mayrose2010probabilistic %} assumes a
 linear function. The theoretical reasons for this difference are
-described in @freyman2016cladogenetic, however in practice on most
+described in {% citet Freyman2017 %}, however in practice on most
 empirical datasets the difference appears insignificant.
 
 Demi-polyploidization is the union of a reduced and an unreduced gametes
@@ -206,8 +207,7 @@ the extant lineages, this model can be used in either a maximum
 likelihood or Bayesian inference framework to estimate the rates of
 chromosome change and the ancestral chromosome numbers.
 
-Hypothesis Testing and Model Uncertainty
-----------------------------------------
+{% subsection Hypothesis testing and model uncertainty | hypothesis %}
 
 The ChromEvol model described above is actually a class of models; for
 example we could exclude demi-polyploidization by fixing it's rate to 0.
@@ -220,8 +220,7 @@ two different models, one allowing cladogenetic polyploidization (see
 Section [subsect:clado_simple]) and a second using a model with only
 anagenetic polyploidization (like the ChromEvol model described above).
 One could then calculate a Bayes factor to compare which model better
-explained the observed data. See the RevBayes tutorial **Compute
-Marginal Likelihoods to Select Between Models** for more information on
+explained the observed data. See the RevBayes tutorial {% page_ref model_selection_bayes_factors %} for more information on
 how to calculate Bayes factors in RevBayes.
 
 Another option in RevBayes is to use Bayesian model averaging. Out of
@@ -237,9 +236,8 @@ incorporates model uncertainty by permitting model-averaged inferences
 that do not condition on a single model; we draw estimates of ancestral
 chromosome numbers and rates of chromosome evolution from all possible
 models weighted by their posterior probability. For general reviews of
-this approach to model averaging see {% cite madigan1994model %},
-{% cite hoeting1999bayesian %}, {% cite kass1995bayes %}, and for its use in
-phylogenetics see @posada2004model. Averaging over all models has been
+this approach to model averaging see {% cite madigan1994model hoeting1999bayesian kass1995bayes %}, and for its use in
+phylogenetics see {% citet posada2004model %}. Averaging over all models has been
 shown to provide a better average predictive ability than conditioning
 on a single model {% cite madigan1994model %}. Conditioning on a single model
 ignores model uncertainty, which can lead to an underestimation in the
@@ -247,35 +245,34 @@ uncertainty of inferences made from that model {% cite hoeting1999bayesian %}.
 In our case, this can lead to overconfidence in estimates of ancestral
 chromosome numbers and chromosome evolution parameter value estimates.
 For details on how to implement Bayesian model averaging in RevBayes
-with chromsome evolution see @freyman2016cladogenetic.
+with chromsome evolution see {% citet Freyman2017 %}.
 
-Next Steps
-----------
+### Next Steps
 
 The basic ChromEvol model as described above can be extended in a number
 of useful ways that will be covered in further sections. In the next
 section, however, we'll set up and run a simple RevBayes analysis
 using the ChromEvol model before moving on to the more complex models.
 
-[fig:chromevol_simple]
-
-![]( figures/ChromEvol_simple.png) 
-> Maximum a posteriori
+{% figure fig:chromevol_simple %}
+<img src="figures/ChromEvol_simple.png"> 
+{% figcaption %}
+Maximum a posteriori
 ancestral chromosome number estimates for *Aristolochia* inferred using
-RevBayes and plotted using the `Rev`Gadgets R package. Section
-[sec:chromo_basic_analysis] describes how to perform this analysis.
+RevBayes and plotted using the `RevGadgets` R package. The section titled
+{% ref chromevolexample %} describes how to perform this analysis.
+{% endfigcaption %}
+{% endfigure %}
 
-Example: A Simple ChromEvol Analysis {#sec:chromo_basic_analysis}
-====================================
+{% section A simple ChromEvol analysis | chromevolexample %}
 
 In this example, we will use molecular sequence data and chromosome
-counts from @ohi2006molecular of the plant genus *Aristolochia*
+counts from {% citet ohi2006molecular %} of the plant genus *Aristolochia*
 (commonly called Dutchman's pipe plants). We will use a simple ChromEvol
 model to infer rates of chromosome evolution and ancestral chromosome
 numbers.
 
-Tutorial Format {#subsect:Exercise-Format}
----------------
+### Tutorial Format
 
 This tutorial follows a specific format for issuing instructions and
 information.
@@ -296,14 +293,8 @@ operator like this:
 
     example <- 1.0
 
-It is important to be aware that some PDF viewers may render some
-characters given as differently. Thus, if you copy and paste text from
-this PDF, you may introduce some incorrect characters. Because of this,
-we recommend that you type the instructions in this tutorial or copy
-them from the scripts provided.
 
-Data and Files {#subsect:Exercise-DataFiles}
---------------
+### Data and Files
 
 On your own computer, create a directory called (or any name you like).
 
@@ -314,8 +305,7 @@ files:
 This will create a folder called `data` that contains the files
 necessary to complete this exercise.
 
-Creating the `Rev` File {#subsect:Exercise-CreatingFiles}
------------------------
+### Creating the `Rev` File 
 
 Create a new directory (in `RB_Chromosome_Evolution_Tutorial`) called
 . (If you do not have this folder, please refer to the directions in
@@ -345,8 +335,7 @@ RevBayes when you've completed all of the components of the analysis.
 The file will contain the `Rev` code to load the data files, set up the
 model, run the MCMC analysis, and summarize the results.
 
-Reading in Data {#subsub:Exercise-LoadData}
----------------
+### Reading in Data 
 
 First, we'll read in the phylogeny. In this example the phylogeny is
 assumed known. In further examples we'll jointly estimate chromosome
@@ -365,8 +354,7 @@ Now we get the observed chromosome counts from a tab-delimited file.
 
     chromo_data = readCharacterDataDelimited("data/aristolochia_chromosome_counts.tsv", stateLabels=(max_chromo + 1), type="NaturalNumbers", delimiter="\t", headers=FALSE)
 
-The Chromosome Evolution Model
-------------------------------
+### The Chromosome Evolution Model
 
 We'll use exponential priors with prior mean 0.1 to model the rates of
 polyploidy and dysploidy events along the branches of the phylogeny.
@@ -418,8 +406,7 @@ into a single model object.
 
     mymodel = model(phylogeny)
 
-Set Up the MCMC {#subsect:Exercise-CompleteMCMC}
----------------
+### Set Up the MCMC
 
 The next important step for our master `Rev` file is to specify the MCMC
 monitors. For this, we create a vector called `monitors` that will each
@@ -448,8 +435,7 @@ you would want to run many more iterations and check for convergence.
     mymcmc = mcmc(mymodel, monitors, moves)
     mymcmc.run(200)
 
-Summarize Ancestral States
---------------------------
+### Summarize Ancestral States
 
 Now we need to add `Rev` code that will summarize the sampled ancestral
 chromosome numbers. First, read in the ancestral state trace generated
@@ -461,7 +447,7 @@ Finally, summarize the values from the traces over the phylogeny. Here
 we do a marginal reconstruction of the ancestral states, discarding the
 first 25% of samples as burnin. This will produce the file
 `ChromEvol_simple_final.tree` that contains the phylogeny along with
-estimated ancestral states. We can use that file with the `Rev`Gadgets R
+estimated ancestral states. We can use that file with the `RevGadgets` R
 package to generate a plot of the ancestral states.
 
     ancestralStateTree(phylogeny, anc_state_trace, "output/ChromEvol_simple_final.tree", burnin=0.25, reconstruction="marginal")
@@ -477,8 +463,7 @@ And now quit RevBayes:
 
 You made it! Be sure to save the file.
 
-Execute the RevBayes Analysis {#subsect:Exercise-RunMCMC}
--------------------------------
+### Execute the RevBayes Analysis 
 
 With all the parameters specified and all analysis components in place,
 you are now ready to run your analysis. The `Rev` scripts you just
@@ -502,25 +487,22 @@ When the analysis is complete, RevBayes will quit and you will have a
 new directory called `output` that will contain all of the files you
 specified with the monitors (Sect. [subsect:Exercise-CompleteMCMC]).
 
-Plotting the Results
---------------------
+### Plotting the Results
 
-Now we will plot the results of the MCMC analysis using the `Rev`Gadgets
+Now we will plot the results of the MCMC analysis using the `RevGadgets`
 R package. Start R and set your working directory to the
 `RB_Chromsome_Evolution_Tutorial` directory. Now run the command to
 generate Figure [fig:chromevol_simple] below. There are many options
 to customize the look of the plot, for options take a look inside the R
 script.
 
-Next Steps
-----------
+### Next Steps
 
 There are many extensions to the basic ChromEvol analysis demonstrated
 here. In the next section we will look at how to set up more complex
 chromosome number evolution analyses.
 
-Basic Extensions of the Chromosome Evolution Model {#sec:chromo_extensions}
-==================================================
+{% section Basic extensions of the ChromEvol model | extensions %}
 
 In this section, we will extend the ChromEvol model in a number of ways.
 First, we will examine another approach for treating chromosome number
@@ -534,8 +516,7 @@ Like before, scripts for these examples are also provided in the
 RevBayes tutorial repository[^2]. Please refer to these files to
 verify or troubleshoot your own scripts.
 
-Improved Root Frequencies {#subsect:root_freq}
--------------------------
+{% subsection Improved root frequencies | root %}
 
 In the last example we assumed the frequency of chromosome numbers at
 the root of the tree were equal. This is equivalent to assigning an
@@ -582,8 +563,7 @@ estimates of the root frequency (you can see this by looking at the
 output in `Tracer`)? Do the estimated ancestral states
 change?
 
-Stochastic Character Mapping of Chromosome Evolution {#subsect:stoch_mapping}
-----------------------------------------------------
+{% subsection Stochastic character mapping of chromosome evolution | stochastic %}
 
 In RevBayes both ancestral states and stochastic character maps can be
 sampled from continuous-time Markov chain (CTMC) and state-dependent
@@ -595,14 +575,15 @@ whole genome duplication events might be of interest. This example is
 performed on a non-ultrametric tree, but the same analysis could be
 performed on time-calibrated trees.
 
-[fig:simmap]
-
-![]( figures/simmap.png) 
-> An example of stochastic character
+{% figure fig:simmap %}
+<img src="figures/simmap.png"> 
+{% figcaption %}
+An example of stochastic character
 mapping applied to chromosome number evolution using RevBayes. Shown
 is the marginal maximum a posteriori chromosome evolution history of
-*Aristolochia* using the simple ChromEvol analysis from Section
-[sec:chromo_basic_analysis].
+*Aristolochia* using the simple ChromEvol analysis from the section titled {% ref chromevolexample %}.
+{% endfigcaption %}
+{% endfigure %}
 
 We have already shown how to sample ancestral states above, and here we
 show the few extra lines of `Rev` code needed to sample stochastic
@@ -639,8 +620,7 @@ Copy the script `ChromoSSE_simple.Rev` and add stochastic character
 mapping monitor. Then, run the analysis and use the script
 `plot_simmap.R` to visualize the character mappings.
 
-Joint Estimation of Phylogeny and Chromosome Evolution {#subsect:joint_estimation}
-------------------------------------------------------
+{% subsection Joint estimation of phylogeny and chromosome evolution | joint %}
 
 In RevBayes the chromosome evolution models can be used jointly with a
 model of molecular evolution enabling joint inference of the phylogeny
@@ -785,11 +765,10 @@ node existing.
 
     ancestralStateTree(map_tree, anc_state_trace, treetrace, "output/ChromEvol_joint_final.tree" burnin=0.25, reconstruction="marginal")
 
-Like before, we can plot the results using the `Rev`Gadgets R package
+Like before, we can plot the results using the `RevGadgets` R package
 using the script `plot_ChromEvol_joint.R`.
 
-Associating Chromosome Evolution with Phenotype: BiChroM {#subsect:bichrom}
---------------------------------------------------------
+{% subsection Association chromosome evolution with phenotype (BiChroM) | bichrom %}
 
 We may be interested in testing whether the rates of chromosome number
 evolution are associated with a certain phenotype. Here we set up a
@@ -797,12 +776,12 @@ binary phenotypic character and estimate separate rates of chromosome
 evolution for each state of the phenotype. We'll use a model that
 describes the joint evolution of both the phenotypic character and
 chromosome evolution. This model (BiChroM) was introduced in
-@zenil2017testing. In RevBayes, the BiChroM model can easily be
+{% citet zenil2017testing %}. In RevBayes, the BiChroM model can easily be
 extended to multistate phenotypes and/or hidden states, plus
 cladogenetic changes could be incorporated into the model.
 
 In this example we will again use chromosome count data from
-@ohi2006molecular for the plant genus *Aristolochia*. For the phenotype
+{% citet ohi2006molecular %} for the plant genus *Aristolochia*. For the phenotype
 we will examine gynostemium morphology. *Aristolochia* flowers have an
 extensively modified perianth that traps and eventually releases
 pollinators to ensure cross pollination (this is why the flowers
@@ -814,9 +793,8 @@ reduced three-lobed gynostemium. Other members of *Aristolochia* have
 gynostemium subdivided into 5 to 24 lobes. We'll test for an association
 of this phenotype with changes in the rates of chromosome evolution.
 
--   phenotype state 0 = 3 lobed gynostemium
-
--   phenotype state 1 = 5 to 24 lobed gynostemium
+- phenotype state 0 = 3 lobed gynostemium
+- phenotype state 1 = 5 to 24 lobed gynostemium
 
 Much of this exercise is a repeat of what was already covered in Section
 [sec:chromo_basic_analysis], so we will only touch on the model
@@ -825,20 +803,22 @@ script `scripts/BiChroM.Rev`. In this example the phylogeny is assumed
 known, however one could combine this with the exercise above to jointly
 infer the phylogeny.
 
-[fig:bichrom_rates]
-
-![]( figures/BiChroM_rates.png) 
-> Results of the example BiChroM
+{% figure fig:bichrom_rates %}
+<img src="figures/BiChroM_rates.png"> 
+{% figcaption %}
+Results of the example BiChroM
 analysis performed in RevBayes. This plot shows the output from `.log`
 files when loaded into `Tracer`. The rates of chromosome
 gains (`gamma`) and losses (`delta`) are higher for *Aristolochia*
 lineages with complex gynostemium subdivided into 5 to 24 lobes (state
 0) compared to lineages with simple 3 lobed gynostemium (state 1).
+{% endfigcaption %}
+{% endfigure %}
 
-[fig:bichrom]
-
-![]( figures/BiChroM.png) 
-> Maximum a posteriori estimates of
+{% figure fig:bichrom %}
+<img src="figures/BiChroM.png"> 
+{% figcaption %}
+Maximum a posteriori estimates of
 ancestral chromosome number and gynostemium morphology for
 *Aristolochia* inferred using the BiChroM model as implemented in
 RevBayes. States 1-26 represent the haploid number $n$ of chromosome
@@ -848,6 +828,8 @@ simple 3 lobed gynostemium. The ancestral state for the common ancestor
 of all *Aristolochia* had a haploid number $n = 8$ and more complex 5 to
 24 lobed gynostemium. An evolutionary reduction to 3 lobes is inferred
 in the lineage leading to the extant Isotrema clade.
+{% endfigcaption %}
+{% endfigure %}
 
 ### Setting up the BiChroM model
 
@@ -970,21 +952,20 @@ leading to the Isotreme clade. The common ancestor for all
 *Aristolochia* is inferred to have complex many lobed gynostemium which
 was reduced to a more simple 3-lobed form in Isotrema.
 
-Incorporating Cladogenetic and Anagenetic Chromosome Changes {#subsect:clado_simple}
-------------------------------------------------------------
+{% subsection Incorporating cladogenetic and anagenetic chromosome change | clado_simple %}
 
 Changes in chromosome number can increase reproductive isolation and may
 drive the diversification of some lineages {% cite stebbins1971chromosomal %}.
 To test for the association of chromosome changes with speciation we
 must extend our models to incorporate cladogenetic changes [for details
-see {% citet freyman2016cladogenetic %}]. Cladogenetic changes are changes that
+see {% citet Freyman2017 %}]. Cladogenetic changes are changes that
 occur only at lineage splitting events. All models of chromosome
 evolution that we have examined so far model only anagenetic changes,
 *i.e.*, changes that occur within a lineage.
 
 We introduce here a simple model of cladogenetic change that handles
 cladogenetic events similarly to the widely used
-Dispersal-Extinction-Cladogenesis [DEC {% citet ree05 ree08 %}] models of
+Dispersal-Extinction-Cladogenesis {% cite ree05 ree08 %} models of
 biogeographic range evolution. A major limitation of such models is that
 they only model cladogenetic changes at the observed speciation events
 on the phylogeny. Many other unobserved speciation events likely
@@ -1003,16 +984,18 @@ have provided a full working example script
 
 ### A Simple Cladogenetic Model
 
-[fig:chromevol_clado]
-
-![]( figures/ChromEvol_clado.png) 
-> Maximum a posteriori
+{% figure fig:chromevol_clado %}
+<img src="figures/ChromEvol_clado.png"> 
+{% figcaption %}
+Maximum a posteriori
 ancestral chromosome numbers for *Aristolochia* estimated using a simple
 cladogenetic and anagenetic chromosome evolution model. The start states
 of each lineage (the state after cladogenesis) are plotted on the
 'shoulders' of each lineage, and show where cladogenetic events
 occurred. This example analysis did not fully converge and shows a very
 high number of cladogenetic events.
+{% endfigcaption %}
+{% endfigure %}
 
 The anagenetic transition rate matrix should be set up just as before.
 The cladogenetic changes, though, are modeled as a vector of
@@ -1071,20 +1054,19 @@ lineage. You may want to try stochastic character mapping for a
 different and possibly better visualization of cladogenetic and
 anagenetic changes.
 
-The ChromoSSE Model {#sec:chromosse_intro}
-===================
+{% section Overview of the ChromoSSE model | chromosse %}
 
 A major challenge for all phylogenetic models of cladogenetic character
 change is accounting for unobserved speciation events due to lineages
 going extinct and not leaving any extant descendants
-{% cite bokma2002detection %}, or due to incomplete sampling of lineages in the
+{% cite Bokma2002 %}, or due to incomplete sampling of lineages in the
 present. Teasing apart the phylogenetic signal for cladogenetic and
 anagenetic processes given unobserved speciation events is a major
 difficulty, and using a naive approach that does not account for
 unobserved speciation (like the ones discussed earlier in Section
 [subsect:clado_simple]) can bias the relative rates of cladogenetic
 and anagenetic change. The Cladogenetic State change Speciation and
-Extinction (ClaSSE) model {% cite goldberg2012tempo %}, on the other hand,
+Extinction (ClaSSE) model {% cite Goldberg2012 %}, on the other hand,
 reduces this bias by explicitly incorporating unobserved speciation
 events. This is achieved by jointly modeling both character evolution
 and the phylogenetic birth-death process. Not only does the ClaSSE
@@ -1092,13 +1074,13 @@ framework enable the modeling of unobserved speciation, but it also
 provides an easily extensible framework for testing state-dependent
 speciation and extinction rates.
 
-[fig:chromosse_ode]
-
-![]( figures/ode_trimmed.png) 
-> An illustration of chromosome
+{% figure fig:chromosse_ode %}
+<img src="figures/ode_trimmed.png"> 
+{% figcaption %}
+An illustration of chromosome
 evolution events that could occur during each small time interval
 $\Delta t$ along the branches of a phylogeny as modeled in ChromoSSE
-{% cite freyman2016cladogenetic %}. The set of differential equations
+{% cite Freyman2017 %}. The set of differential equations
 (subfigures a and b, respectively) sum over each possible chromosome
 evolution event and are numerically integrated backwards through time
 over the phylogeny to calculate the likelihood. The transition rate
@@ -1116,8 +1098,10 @@ event occurred followed eventually by extinction, extinction occurred,
 an anagenetic change occurred followed by extinction, or a speciation
 event with a possible cladogenetic change occurred followed by
 extinction of both daughter lineages.
+{% endfigcaption %}
+{% endfigure %}
 
-The ChromoSSE model {% cite freyman2016cladogenetic %} is a special case of the
+The ChromoSSE model {% cite Freyman2017 %} is a special case of the
 ClaSSE model that models chromosome changes. Compared to the previously
 discussed CTMC models of chromosome evolution, SSE models require
 additional complexity since they must also model the speciation and
@@ -1126,18 +1110,17 @@ explicit tests of different extinction rates for polyploid and diploid
 lineages, and testing different rates of chromosome speciation
 associated with phenotypes or habitat.
 
-The ChromoSSE Likelihood Calculation
-------------------------------------
+{% subsection The ChromoSSE likelihood calculation | chromosselnl %}
 
 All the previous models of chromosome number evolution discussed in the
-tutorial used the standard pruning algorithm {% cite felsenstein81 %} to
+tutorial used the standard pruning algorithm {% cite Felsenstein1981 %} to
 calculate the likelihood of chromosome evolution over the phylogeny. For
 the ChromoSSE model we must use a different approach; here the
 likelihood is calculated using a set of ordinary differential equations
 similar to the Binary State Speciation and Extinction (BiSSE) model
-{% cite maddison2007estimating %}. The BiSSE model was extended to incorporate
-cladogenetic changes by @goldberg2012tempo. Following
-@goldberg2012tempo, we define $D_{Ni}(t)$ as the probability that a
+{% cite Maddison2007 %}. The BiSSE model was extended to incorporate
+cladogenetic changes by {% citet Goldberg2012 %}. Following
+{% citet Goldberg2012 %}, we define $D_{Ni}(t)$ as the probability that a
 lineage with chromosome number $i$ at time $t$ evolves into the observed
 clade $N$. We let $E_i(t)$ be the probability that a lineage with
 chromosome number $i$ at time $t$ goes extinct before the present, or is
@@ -1148,17 +1131,15 @@ number $i$ of the lineage. This can easily be modified in RevBayes to
 allow for different speciation and/or extinction rates depending on
 ploidy or other character states.
 
-Next Steps
-----------
+### Next Steps
 
 In the next section we'll set up and run a RevBayes analysis using the
 ChromoSSE model of cladogenetic and anagenetic chromosome evolution.
 
-Example: A Simple ChromoSSE Analysis {#sec:chromosse_analysis}
-====================================
+{% section A simple ChromoSSE analysis | chromosseexample %}
 
 In this example, we will again use molecular sequence data and
-chromosome counts from @ohi2006molecular of the plant genus
+chromosome counts from {% citet ohi2006molecular %} of the plant genus
 *Aristolochia*. We will use a ChromoSSE model to infer rates of
 chromosome evolution and ancestral chromosome numbers. For more complex
 examples utilizing ChromoSSE with Bayesian model averaging and
@@ -1171,10 +1152,7 @@ up in Section [sec:chromo_basic_analysis]. The full script to run
 this ChromoSSE example is provided in the file
 `scripts/ChromoSSE_simple.Rev`.
 
-The Chromosome Evolution Model
-------------------------------
-
-### A Joint Model of the Tree and Chromosome Numbers
+### The model: a joint model of the tree and chromosome evolution
 
 A major difference between the previously discussed models of chromosome
 number evolution and ChromoSSE is that ChromoSSE jointly describes the
@@ -1284,20 +1262,17 @@ estimated.
 
 Now we construct a variable that describes the evolution of both the
 tree and chromosome numbers drawn from a cladogenetic state-dependent
-birth-death process. The `dnCDCladoBDP` distribution is named for a
-character-dependent cladogenetic birth-death process, which is another
-name for a cladogenetic state-dependent speciation and extinction
-process.
+birth-death process. The `dnCDBDP` distribution is named for a
+character-dependent birth-death process, which is another
+name for a state-dependent speciation and extinction
+process. 
 
-    chromo_bdp ~ dnCDCladoBDP( rootAge            = phylogeny.rootAge(),
-                        cladoEventMap             = clado_matrix,
-                        extinctionRates           = extinction,
-                        Q                         = Q,
-                        delta                     = 1.0,
-                        pi                        = root_frequencies,
-                        rho                       = rho_bd,
-                        condition                 = "time",
-                        taxa                      = taxa )
+    chromo_bdp ~ dnCDBDP( rootAge            = phylogeny.rootAge(),
+                          cladoEventMap      = clado_matrix,
+                          extinctionRates    = extinction,
+                          Q                  = Q,
+                          pi                 = root_frequencies,
+                          rho                = rho_bd )
 
 Since ChromoSSE is a joint model of both the tree and the chromosome
 numbers, we must of course clamp both the observed tree and the
@@ -1306,8 +1281,7 @@ chromosome count data.
     chromo_bdp.clamp(phylogeny)
     chromo_bdp.clampCharData(chromo_data)
 
-Finishing the ChromoSSE Analysis
---------------------------------
+### Finishing the ChromoSSE Analysis
 
 The rest of the analysis is nearly identical to the other examples we
 have worked through, except for one detail when setting up the ancestral
@@ -1321,7 +1295,6 @@ a continuous-time Markov process (`ctmc`) like we use before.
 And that's it! The results can be plotted using the same R script
 demonstrated before to plot the cladogenetic ChromEvol analysis.
 
-Version dated:
 
 [^1]: <http://rawgit.com/revbayes/revbayes_tutorial/master/RB_Chromosome_Evolution_Tutorial/scripts.zip>
 
