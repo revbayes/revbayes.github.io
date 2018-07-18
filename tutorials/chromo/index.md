@@ -217,7 +217,7 @@ at speciation events and possibly driving diversification, or do
 polyploidization events occur within lineages and unassociated with
 lineage splitting? To answer this, one could use RevBayes to set up
 two different models, one allowing cladogenetic polyploidization (see
-Section [subsect:clado_simple]) and a second using a model with only
+the section {% ref clado_simple %}) and a second using a model with only
 anagenetic polyploidization (like the ChromEvol model described above).
 One could then calculate a Bayes factor to compare which model better
 explained the observed data. See the RevBayes tutorial {% page_ref model_selection_bayes_factors %} for more information on
@@ -259,7 +259,7 @@ using the ChromEvol model before moving on to the more complex models.
 {% figcaption %}
 Maximum a posteriori
 ancestral chromosome number estimates for *Aristolochia* inferred using
-RevBayes and plotted using the `RevGadgets` R package. The section titled
+RevBayes and plotted using the `RevGadgets` R package. The section
 {% ref chromevolexample %} describes how to perform this analysis.
 {% endfigcaption %}
 {% endfigure %}
@@ -309,7 +309,7 @@ necessary to complete this exercise.
 
 Create a new directory (in `RB_Chromosome_Evolution_Tutorial`) called
 . (If you do not have this folder, please refer to the directions in
-section [subsect:Exercise-DataFiles].)
+the section {% ref exampledata %}.)
 
 When you execute RevBayes in this exercise, you should do so within
 the main directory you created (`RB_Chromosome_Evolution_Tutorial`),
@@ -485,14 +485,14 @@ This will execute the analysis and you should see output similar to this
 
 When the analysis is complete, RevBayes will quit and you will have a
 new directory called `output` that will contain all of the files you
-specified with the monitors (Sect. [subsect:Exercise-CompleteMCMC]).
+specified with the monitors.
 
 ### Plotting the Results
 
 Now we will plot the results of the MCMC analysis using the `RevGadgets`
 R package. Start R and set your working directory to the
 `RB_Chromsome_Evolution_Tutorial` directory. Now run the command to
-generate Figure [fig:chromevol_simple] below. There are many options
+generate {% ref fig:chromevol_simple %} below. There are many options
 to customize the look of the plot, for options take a look inside the R
 script.
 
@@ -581,7 +581,7 @@ performed on time-calibrated trees.
 An example of stochastic character
 mapping applied to chromosome number evolution using RevBayes. Shown
 is the marginal maximum a posteriori chromosome evolution history of
-*Aristolochia* using the simple ChromEvol analysis from the section titled {% ref chromevolexample %}.
+*Aristolochia* using the simple ChromEvol analysis from the section {% ref chromevolexample %}.
 {% endfigcaption %}
 {% endfigure %}
 
@@ -613,7 +613,7 @@ the posterior probabilities of the entire character history.
 
     characterMapTree(phylogeny, anc_state_trace, character_file="output/character.tree", posterior_file="output/posterior.tree", burnin=5, reconstruction="marginal")
 
-Figure [fig:simmap] is an example stochastic character map of our
+{% ref fig:simmap %} is an example stochastic character map of our
 *Aristolochia* analysis plotted using **phytools**.
 
 Copy the script `ChromoSSE_simple.Rev` and add stochastic character
@@ -633,8 +633,8 @@ phylogeny requires mostly combining elements covered in the **Molecular
 Models of Character Evolution** tutorial with what has already been
 covered in Section [sec:chromo_basic_analysis] of this tutorial. We
 will not repeat how to set up the chromosome model component, but we'll
-step through what must be added to the example in Section
-[sec:chromo_basic_analysis] above. Furthermore, we have provided a
+step through what must be added to the example in the section {% ref chromevolexample %} 
+above. Furthermore, we have provided a
 full working example script `scripts/ChromEvol_joint.Rev`.
 
 ### Reading in Molecular Data and Setting Clade Constraints
@@ -796,8 +796,8 @@ of this phenotype with changes in the rates of chromosome evolution.
 - phenotype state 0 = 3 lobed gynostemium
 - phenotype state 1 = 5 to 24 lobed gynostemium
 
-Much of this exercise is a repeat of what was already covered in Section
-[sec:chromo_basic_analysis], so we will only touch on the model
+Much of this exercise is a repeat of what was already covered in section {% ref chromevolexample %}, 
+so we will only touch on the model
 components that are different. We have provided a full working example
 script `scripts/BiChroM.Rev`. In this example the phylogeny is assumed
 known, however one could combine this with the exercise above to jointly
@@ -935,17 +935,17 @@ And now we populate the matrix with the transition rates.
     }
     Q_b := fnFreeK(Q, rescaled=false)
 
-The rest of the analysis is essentially the same as in Section
-[sec:chromo_basic_analysis]. Just make sure to pass the `Q_b` matrix
+The rest of the analysis is essentially the same as in section
+{% ref chromevolexample %}. Just make sure to pass the `Q_b` matrix
 into the CTMC object.
 
 ### BiChroM Analysis Results
 
-In Figure [fig:bichrom_rates] the rates of chromosome gains and
+In {% ref fig:bichrom_rates %} the rates of chromosome gains and
 losses for each of the phenotype states are plotted. *Aristolochia*
 lineages with complex gynostemium subdivided into many lobes have higher
 rates of dysploid changes than lineages with simple 3-lobed gynostemium.
-In Figure [fig:bichrom] the marginal maximum a posteriori estimates of
+In {% ref fig:bichrom %} the marginal maximum a posteriori estimates of
 ancestral chromosome number and gynostemium morphology are plotted. From
 this we can see that an evolutionary reduction occured on the lineage
 leading to the Isotreme clade. The common ancestor for all
@@ -971,13 +971,13 @@ they only model cladogenetic changes at the observed speciation events
 on the phylogeny. Many other unobserved speciation events likely
 occurred, but are not present in the reconstructed phylogeny due to
 incomplete taxon sampling and lineages going extinct. This can bias the
-relative rates of anagenetic and cladogenetic change. In Section
-[sec:chromosse_intro] we will introduce the ChromoSSE model, which
+relative rates of anagenetic and cladogenetic change. In section
+{% ref chromosse %} we will introduce the ChromoSSE model, which
 removes this bias by explicitly modeling unobserved speciation events
 but at the cost of additional model complexity.
 
-Much of this exercise is a repeat of what was already covered in Section
-[sec:chromo_basic_analysis], so we will only touch on the model
+Much of this exercise is a repeat of what was already covered in section
+{% ref chromevolexample %}, so we will only touch on the model
 components that must be changed to incorporate cladogenetic changes. We
 have provided a full working example script
 `scripts/ChromEvol_clado.Rev`
@@ -1047,7 +1047,7 @@ changes.
 
     ancestralStateTree(phylogeny, anc_state_trace, "output/ChromEvol_clado_final.tree", include_start_states=true, burnin=0.25, reconstruction="marginal")
 
-And that's it! Figure [fig:chromevol_clado] shows the ancestral state
+And that's it! {% ref fig:chromevol_clado %} shows the ancestral state
 estimates plotted on the tree. The start states of each lineage (the
 state after cladogenesis) are plotted on the 'shoulders' of each
 lineage. You may want to try stochastic character mapping for a
@@ -1063,8 +1063,8 @@ going extinct and not leaving any extant descendants
 present. Teasing apart the phylogenetic signal for cladogenetic and
 anagenetic processes given unobserved speciation events is a major
 difficulty, and using a naive approach that does not account for
-unobserved speciation (like the ones discussed earlier in Section
-[subsect:clado_simple]) can bias the relative rates of cladogenetic
+unobserved speciation (like the ones discussed earlier in section
+{% ref clado_simple %}) can bias the relative rates of cladogenetic
 and anagenetic change. The Cladogenetic State change Speciation and
 Extinction (ClaSSE) model {% cite Goldberg2012 %}, on the other hand,
 reduces this bias by explicitly incorporating unobserved speciation
@@ -1084,8 +1084,8 @@ $\Delta t$ along the branches of a phylogeny as modeled in ChromoSSE
 (subfigures a and b, respectively) sum over each possible chromosome
 evolution event and are numerically integrated backwards through time
 over the phylogeny to calculate the likelihood. The transition rate
-matrix for anagenetic changes $Q$ is explained in Section
-[sec:chromo_basic_intro]. a) $D_{Ni}(t)$ is the probability that the
+matrix for anagenetic changes $Q$ is explained in section
+{% ref chromevolexample %}. a) $D_{Ni}(t)$ is the probability that the
 lineage at time $t$ evolves into the observed clade $N$. To calculate
 the change in this probability over $\Delta t$ we sum over three
 possibilities: no event occurred, an anagenetic change in chromosome
@@ -1125,7 +1125,7 @@ lineage with chromosome number $i$ at time $t$ evolves into the observed
 clade $N$. We let $E_i(t)$ be the probability that a lineage with
 chromosome number $i$ at time $t$ goes extinct before the present, or is
 not sampled at the present. These two differential equations are shown
-and explained in Figure [fig:chromosse_ode]. However, unlike the full
+and explained in {% ref fig:chromosse_ode %}. However, unlike the full
 ClaSSE model the extinction rate $\mu$ does not depend on the chromosome
 number $i$ of the lineage. This can easily be modified in RevBayes to
 allow for different speciation and/or extinction rates depending on
@@ -1148,7 +1148,7 @@ reversible-jump MCMC, see the scripts and explanations at
 
 Like in previous examples, we will here only highlight the major
 differences between a ChromoSSE analysis and the ChromEvol analysis set
-up in Section [sec:chromo_basic_analysis]. The full script to run
+up in section {% ref chromevolexample %}. The full script to run
 this ChromoSSE example is provided in the file
 `scripts/ChromoSSE_simple.Rev`.
 
