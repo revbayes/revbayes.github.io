@@ -194,11 +194,10 @@ Thus, we will read in the dated phylogeny first.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data &lt;- readCharacterData("data/primates_activity_period.nex")
 </code></pre></div></div>
 
-<p>It will be convenient to pull out the list of tip names <code class="highlighter-rouge">taxa</code> and the number of sampled
+<p>It will be convenient to get the number of sampled
 species <code class="highlighter-rouge">num_taxa</code> from the tree:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>taxa &lt;- T.taxa()
-num_taxa &lt;- T.ntips()
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>num_taxa &lt;- T.ntips()
 </code></pre></div></div>
 
 <p>Our vectors of moves and monitors will be defined later, but here we
@@ -250,13 +249,13 @@ character state.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:NUM_STATES) {
     
-speciation[i] ~ dnExponential( 1.0 / rate_mean )
-moves[mvi++] = mvSlide(speciation[i], delta=0.20, tune=true, weight=3.0)
+    speciation[i] ~ dnExponential( 1.0 / rate_mean )
+    moves[mvi++] = mvSlide(speciation[i], weight=3.0)
 
-extinction[i] ~ dnExponential( 1.0 / rate_mean )
-moves[mvi++] = mvSlide(extinction[i], delta=0.20, tune=true, weight=3.0)
+    extinction[i] ~ dnExponential( 1.0 / rate_mean )
+    moves[mvi++] = mvSlide(extinction[i], weight=3.0)
 
-diversification[i] := speciation[i] - extinction[i]
+    diversification[i] := speciation[i] - extinction[i]
 
 }
 </code></pre></div></div>
@@ -312,15 +311,13 @@ scale as the diversification rates.</p>
 
 <h4 id="prior-on-the-root-state"><strong>Prior on the Root State</strong></h4>
 
-<p>Create a variable with the prior probabilities of each rate category at
-the root. We are using a flat <a href="https://en.wikipedia.org/wiki/Dirichlet_distribution">Dirichlet distribution</a> as the prior on
-each state. In this case we are actually estimating the prior
-frequencies of the root states. There has been some discussion about
+<p>Create a variable for the root state frequencies. We are using a flat <a href="https://en.wikipedia.org/wiki/Dirichlet_distribution">Dirichlet distribution</a> as the prior on
+each state. There has been some discussion about
 this in <a href="#FitzJohn2009">(FitzJohn et al. 2009)</a>. You could also fix the prior probabilities for
 the root states to be equal (generally not recommended), or use
 empirical state frequencies.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_cat_probs ~ dnDirichlet( rep(1, NUM_STATES) )
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root_state_freq ~ dnDirichlet( rep(1, NUM_STATES) )
 </code></pre></div></div>
 
 <p>Note that we use the <code class="highlighter-rouge">rep()</code> function which generates a vector of length <code class="highlighter-rouge">NUM_STATES</code>
@@ -330,7 +327,7 @@ using a character with more than two states.</p>
 
 <p>We will use a special move for objects that are drawn from a Dirichlet distribution:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvDirichletSimplex(rate_cat_probs, tune=true, weight=2)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvDirichletSimplex(root_state_freq, weight=2)
 </code></pre></div></div>
 
 <h4 id="the-probability-of-sampling-an-extant-species"><strong>The Probability of Sampling an Extant Species</strong></h4>
@@ -365,9 +362,8 @@ representing the time tree and we create this node using the <code class="highli
                     speciationRates   = speciation,
                     extinctionRates   = extinction, 
                     Q                 = rate_matrix,
-                    pi                = rate_cat_probs,
-                    rho               = sampling,
-                    condition         = "survival" )
+                    pi                = root_state_freq,
+                    rho               = sampling )
 </code></pre></div></div>
 
 <p>Now, we will fix the BiSSE time-tree to the observed values from our data files. We use
@@ -385,7 +381,7 @@ the standard <code class="highlighter-rouge">.clamp()</code> method to give the 
 function traverses all of the connections and finds all of the nodes we
 specified.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(rate_matrix)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(timetree)
 </code></pre></div></div>
 
 <p>You can use the <code class="highlighter-rouge">.graph()</code> method of the model object to visualize the graphical model you
@@ -416,7 +412,7 @@ extinction, and transition.</p>
 <p>Then, we add a screen monitor showing some updates during the MCMC
 run.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[mni++] = mnScreen(printgen=100, rate_12, rate_21, speciation, extinction)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[mni++] = mnScreen(printgen=10, rate_12, rate_21, speciation, extinction)
 </code></pre></div></div>
 
 <blockquote class="aside"><h2>Sampling Ancestral States</h2><p>Optionally, we can sample ancestral states during the MCMC analysis. 
@@ -461,7 +457,7 @@ RevBayes.</p>
 node labeled with the maximum a posteriori (MAP) state and the posterior probabilities for each
 state.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>anc_tree = ancestralStateTree(tree=T, ancestral_state_trace_vector=anc_states, include_start_states=false, file="output/anc_states_primates_BiSSE_results.tree", burnin=0, summary_statistic="MAP", site=0)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>anc_tree = ancestralStateTree(tree=T, ancestral_state_trace_vector=anc_states, include_start_states=false, file="output/anc_states_primates_BiSSE_results.tree", burnin=0, summary_statistic="MAP", site=1)
 </code></pre></div></div>
 
 <h3 class="subsection" id="subsec_ancviz">Visualize Estimated Ancestral States</h3>
@@ -600,8 +596,8 @@ character where the states are: <code class="highlighter-rouge">0</code> = monog
 
 <blockquote class="instruction">
   <p>Modify the analysis you completed for the binary state characters in the <a href="#sec_CDBDP">BiSSE Exercise</a> to accommodate a 4-state character. 
-This means that you must no only change the data file that you input (<code class="highlighter-rouge">primates_mating_system.nex</code>),
-but you also need to specify <code class="highlighter-rouge">NUM_STATES = 4</code>.</p>
+This means that you must not only change the input data file (<code class="highlighter-rouge">primates_mating_system.nex</code>),
+but you also need to specify <code class="highlighter-rouge">NUM_STATES = 4</code>. The <code class="highlighter-rouge">rate_matrix</code> must also be modified to accommodate 4 states.</p>
 
   <p>It is <strong>important</strong> that you remember to also change the output file names.</p>
 
