@@ -1,5 +1,5 @@
 ---
-title: State-dependent diversification rate estimation in RevBayes
+title: State-dependent diversification with BiSSE and MuSSE
 subtitle: Inference using the binary/multiple state-dependent speciation and extinction (BiSSE/MuSSE) branching process
 authors:  Sebastian Höhna, Will Freyman, and Emma Goldberg
 level: 4
@@ -27,9 +27,12 @@ This tutorial describes how to specify character state-dependent
 branching process models in RevBayes. For more details on the theory behind these models, please see the 
 introductory page: {% page_ref sse/bisse-intro %}.
 
-This tutorial will explain how to fit the BiSSE model
-to data using Markov chain Monte Carlo (MCMC). RevBayes is a powerful
-tool for SSE analyses. 
+This tutorial will explain how to fit the BiSSE and MuSSE models
+to data using Markov chain Monte Carlo (MCMC). 
+RevBayes is a powerful tool for SSE analyses:
+to specify ClaSSE and HiSSE models, please see
+{% page_ref sse/other-sse %} and for ChromoSSE
+please see {% page_ref chromo %}.
 
 
 {% section Getting Set Up | thedata %}
@@ -374,6 +377,7 @@ install_github("revbayes/RevGadgets")
 Run this code:
 
 <pre>
+library(ggplot2)
 library(RevGadgets)
 
 tree_file = "output/anc_states_primates_BiSSE_results.tree"
@@ -443,7 +447,7 @@ Visualizing posterior samples of parameters in
 {:.instruction}
 
 {% figure tracer2 %}
-<img src="figures/tracer2.png" width="75%">
+<img src="figures/tracer2.png" width="50%">
 {% figcaption %}
 Comparing posterior samples of the speciation rates associated with daily activity time in 
 [Tracer](http://tree.bio.ed.ac.uk/software/tracer/) 
