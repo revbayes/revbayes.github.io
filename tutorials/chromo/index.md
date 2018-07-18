@@ -43,61 +43,13 @@ original papers that describe the chromosome evolution models as well as
 {% citet Freyman2017 %} which describes in detail the RevBayes
 implementation of these models.
 
-<!--
-Contents {#contents .unnumbered}
---------
-
-The Chromosome Number Evolution tutorial contains several sections:
-
--   Section [sec:chromo_basic_intro]: Overview of chromosome number
-    evolution models
-
--   Section [sec:chromo_basic_analysis]: A simple ChromEvol analysis
-
--   Section [sec:chromo_extensions]: Basic extensions of the model
-
-    -   [subsect:root_freq]: Improved root frequences
-
-    -   [subsect:stoch_mapping]: Stochastic character mapping of
-        chromosome evolution
-
-    -   [subsect:joint_estimation]: Joint estimation of phylogeny and
-        chromosome evolution
-
-    -   [subsect:bichrom]: Associating chromosome evolution with
-        phenotype: BiChroM
-
-    -   [subsect:clado_simple]: Incorporating cladogenetic and
-        anagenetic chromosome changes
-
--   Section [sec:chromosse_intro]: Overview of the ChromoSSE model
-
--   Section [sec:chromosse_analysis]: A simple ChromoSSE analysis
--->
 
 {% section Example scripts and data | exampledata %}
 
-The data and the full scripts used for all the examples can be found on
-the RevBayes website:
+The data and the full scripts used for all the examples can be downloaded here:
+- [`scripts.zip`](scripts.zip)
+- [`data.zip`](data.zip)
 
-- [`scripts.zip`](http://rawgit.com/revbayes/revbayes_tutorial/master/RB_Chromosome_Evolution_Tutorial/scripts.zip)
-- [`data.zip`](http://rawgit.com/revbayes/revbayes_tutorial/master/RB_Chromosome_Evolution_Tutorial/data.zip)
-
-<!--
-Recommended tutorials {#recommended-tutorials .unnumbered}
----------------------
-
-This tutorial assumes the reader is familiar with the content covered in
-the following RevBayes tutorials:
-
--   **Rev Basics**
-
--   **Molecular Models of Character Evolution**
-
--   **Discrete Morphology Models of Character Evolution**
-
--   **Running and Diagnosing an MCMC Analysis**
--->
 
 {% section Overview of chromosome number evolution models | chromobasicintro %}
 
@@ -277,13 +229,6 @@ numbers.
 This tutorial follows a specific format for issuing instructions and
 information.
 
-The boxed instructions guide you to complete tasks that are not part of
-the RevBayes syntax, but rather direct you to create directories or
-files or similar.
-
-Information describing the commands and instructions will be written in
-paragraph-form before or after they are issued.
-
 All command-line text, including all `Rev` syntax, are given in
 `monotype font`. Furthermore, blocks of `Rev` code that are needed to
 build the model, specify the analysis, or execute the run are given in
@@ -296,23 +241,22 @@ operator like this:
 
 ### Data and Files
 
-On your own computer, create a directory called (or any name you like).
+On your own computer, create a directory called `chromosome_tutorial` (or any name you like).
 
 In this directory download and unzip the archive containing the data
-files:
-[`data.zip`](http://rawgit.com/revbayes/revbayes_tutorial/master/RB_Chromosome_Evolution_Tutorial/data.zip).
+files: [`data.zip`](data.zip).
 
 This will create a folder called `data` that contains the files
 necessary to complete this exercise.
 
 ### Creating the `Rev` File 
 
-Create a new directory (in `RB_Chromosome_Evolution_Tutorial`) called
+Create a new directory (in `chromosome_tutorial`) called `scripts`
 . (If you do not have this folder, please refer to the directions in
 the section {% ref exampledata %}.)
 
 When you execute RevBayes in this exercise, you should do so within
-the main directory you created (`RB_Chromosome_Evolution_Tutorial`),
+the main directory you created (`chromosome_tutorial`),
 thus, if you are using a Unix-based operating system, we recommend that
 you add the RevBayes binary to your path.
 
@@ -321,17 +265,14 @@ that will contain all of the model parameters, moves, and functions. In
 this first section, you will create a file called from scratch and save
 it in the `scripts` directory.
 
-The full scripts for these examples are also provided in the RevBayes
-tutorial repository[^1]. Please refer to these files to verify or
+The full scripts for these examples are also provided for download as
+[`scripts.zip`](scripts.zip). Please refer to these files to verify or
 troubleshoot your own scripts.
 
-Open your text editor and create the master `Rev` file called in the
-`scripts` directory.
+Open your text editor and enter the `Rev` code provided in this section.
+Save this `Rev` file into your `scripts` directory.
 
-Enter the `Rev` code provided in this section into this file.
-
-The file you will begin in this section will be the one you load into
-RevBayes when you've completed all of the components of the analysis.
+This file will be the one you load into RevBayes to run the analysis.
 The file will contain the `Rev` code to load the data files, set up the
 model, run the MCMC analysis, and summarize the results.
 
@@ -513,7 +454,7 @@ how to set up a BiChroM analysis, and demonstrate one way to add
 cladogenetic changes to a chromosome evolution analysis.
 
 Like before, scripts for these examples are also provided in the
-RevBayes tutorial repository[^2]. Please refer to these files to
+[`scripts.zip`](scripts.zip) file. Please refer to these files to
 verify or troubleshoot your own scripts.
 
 {% subsection Improved root frequencies | root %}
@@ -1296,6 +1237,3 @@ And that's it! The results can be plotted using the same R script
 demonstrated before to plot the cladogenetic ChromEvol analysis.
 
 
-[^1]: <http://rawgit.com/revbayes/revbayes_tutorial/master/RB_Chromosome_Evolution_Tutorial/scripts.zip>
-
-[^2]: <http://rawgit.com/revbayes/revbayes_tutorial/master/RB_Chromosome_Evolution_Tutorial/scripts.zip>
