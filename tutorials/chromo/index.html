@@ -82,6 +82,60 @@
 
 
 
+<blockquote class="tutorial_files" id="tutorial_files">
+    <h2>Data files and scripts</h2>
+    
+        
+        <strong>Data Files</strong>
+        <ul id="data_files">
+        
+        
+        
+          <li><a href="/tutorials/chromo/data/aristolochia-bd.tree">aristolochia-bd.tree</a></li>
+        
+          <li><a href="/tutorials/chromo/data/aristolochia.tree">aristolochia.tree</a></li>
+        
+          <li><a href="/tutorials/chromo/data/aristolochia_bichrom_counts.tsv">aristolochia_bichrom_counts.tsv</a></li>
+        
+          <li><a href="/tutorials/chromo/data/aristolochia_chromosome_counts.tsv">aristolochia_chromosome_counts.tsv</a></li>
+        
+          <li><a href="/tutorials/chromo/data/aristolochia_matK.fasta">aristolochia_matK.fasta</a></li>
+        
+        </ul>
+    
+        
+        <strong>Scripts</strong>
+        <ul id="scripts">
+        
+        
+        
+          <li><a href="/tutorials/chromo/scripts/BiChroM.Rev">BiChroM.Rev</a></li>
+        
+          <li><a href="/tutorials/chromo/scripts/ChromEvol_clado.Rev">ChromEvol_clado.Rev</a></li>
+        
+          <li><a href="/tutorials/chromo/scripts/ChromEvol_joint.Rev">ChromEvol_joint.Rev</a></li>
+        
+          <li><a href="/tutorials/chromo/scripts/ChromEvol_simmap.Rev">ChromEvol_simmap.Rev</a></li>
+        
+          <li><a href="/tutorials/chromo/scripts/ChromEvol_simple.Rev">ChromEvol_simple.Rev</a></li>
+        
+          <li><a href="/tutorials/chromo/scripts/ChromoSSE_simple.Rev">ChromoSSE_simple.Rev</a></li>
+        
+          <li><a href="/tutorials/chromo/scripts/plot_BiChroM.R">plot_BiChroM.R</a></li>
+        
+          <li><a href="/tutorials/chromo/scripts/plot_ChromEvol_clado.R">plot_ChromEvol_clado.R</a></li>
+        
+          <li><a href="/tutorials/chromo/scripts/plot_ChromEvol_joint.R">plot_ChromEvol_joint.R</a></li>
+        
+          <li><a href="/tutorials/chromo/scripts/plot_ChromEvol_simple.R">plot_ChromEvol_simple.R</a></li>
+        
+          <li><a href="/tutorials/chromo/scripts/plot_simmap.R">plot_simmap.R</a></li>
+        
+        </ul>
+    
+</blockquote>
+
+
 </div>
 <h2 class="section" id="introduction">Introduction</h2>
 <hr class="section" />
@@ -112,64 +166,14 @@ original papers that describe the chromosome evolution models as well as
 <a href="#Freyman2017">Freyman and Höhna (2018)</a> which describes in detail the RevBayes
 implementation of these models.</p>
 
-<!--
-Contents {#contents .unnumbered}
---------
-
-The Chromosome Number Evolution tutorial contains several sections:
-
--   Section [sec:chromo_basic_intro]: Overview of chromosome number
-    evolution models
-
--   Section [sec:chromo_basic_analysis]: A simple ChromEvol analysis
-
--   Section [sec:chromo_extensions]: Basic extensions of the model
-
-    -   [subsect:root_freq]: Improved root frequences
-
-    -   [subsect:stoch_mapping]: Stochastic character mapping of
-        chromosome evolution
-
-    -   [subsect:joint_estimation]: Joint estimation of phylogeny and
-        chromosome evolution
-
-    -   [subsect:bichrom]: Associating chromosome evolution with
-        phenotype: BiChroM
-
-    -   [subsect:clado_simple]: Incorporating cladogenetic and
-        anagenetic chromosome changes
-
--   Section [sec:chromosse_intro]: Overview of the ChromoSSE model
-
--   Section [sec:chromosse_analysis]: A simple ChromoSSE analysis
--->
-
 <h2 class="section" id="exampledata">Example scripts and data</h2>
 <hr class="section" />
 
-<p>The data and the full scripts used for all the examples can be found on
-the RevBayes website:</p>
-
+<p>The data and the full scripts used for all the examples can be downloaded here:</p>
 <ul>
-  <li><a href="http://rawgit.com/revbayes/revbayes_tutorial/master/RB_Chromosome_Evolution_Tutorial/scripts.zip"><code class="highlighter-rouge">scripts.zip</code></a></li>
-  <li><a href="http://rawgit.com/revbayes/revbayes_tutorial/master/RB_Chromosome_Evolution_Tutorial/data.zip"><code class="highlighter-rouge">data.zip</code></a></li>
+  <li><a href="scripts.zip"><code class="highlighter-rouge">scripts.zip</code></a></li>
+  <li><a href="data.zip"><code class="highlighter-rouge">data.zip</code></a></li>
 </ul>
-
-<!--
-Recommended tutorials {#recommended-tutorials .unnumbered}
----------------------
-
-This tutorial assumes the reader is familiar with the content covered in
-the following RevBayes tutorials:
-
--   **Rev Basics**
-
--   **Molecular Models of Character Evolution**
-
--   **Discrete Morphology Models of Character Evolution**
-
--   **Running and Diagnosing an MCMC Analysis**
--->
 
 <h2 class="section" id="chromobasicintro">Overview of chromosome number evolution models</h2>
 <hr class="section" />
@@ -352,13 +356,6 @@ numbers.</p>
 <p>This tutorial follows a specific format for issuing instructions and
 information.</p>
 
-<p>The boxed instructions guide you to complete tasks that are not part of
-the RevBayes syntax, but rather direct you to create directories or
-files or similar.</p>
-
-<p>Information describing the commands and instructions will be written in
-paragraph-form before or after they are issued.</p>
-
 <p>All command-line text, including all <code class="highlighter-rouge">Rev</code> syntax, are given in
 <code class="highlighter-rouge">monotype font</code>. Furthermore, blocks of <code class="highlighter-rouge">Rev</code> code that are needed to
 build the model, specify the analysis, or execute the run are given in
@@ -371,23 +368,22 @@ operator like this:</p>
 
 <h3 id="data-and-files">Data and Files</h3>
 
-<p>On your own computer, create a directory called (or any name you like).</p>
+<p>On your own computer, create a directory called <code class="highlighter-rouge">chromosome_tutorial</code> (or any name you like).</p>
 
 <p>In this directory download and unzip the archive containing the data
-files:
-<a href="http://rawgit.com/revbayes/revbayes_tutorial/master/RB_Chromosome_Evolution_Tutorial/data.zip"><code class="highlighter-rouge">data.zip</code></a>.</p>
+files: <a href="data.zip"><code class="highlighter-rouge">data.zip</code></a>.</p>
 
 <p>This will create a folder called <code class="highlighter-rouge">data</code> that contains the files
 necessary to complete this exercise.</p>
 
 <h3 id="creating-the-rev-file">Creating the <code class="highlighter-rouge">Rev</code> File</h3>
 
-<p>Create a new directory (in <code class="highlighter-rouge">RB_Chromosome_Evolution_Tutorial</code>) called
+<p>Create a new directory (in <code class="highlighter-rouge">chromosome_tutorial</code>) called <code class="highlighter-rouge">scripts</code>
 . (If you do not have this folder, please refer to the directions in
 the section <a href="#exampledata"></a>.)</p>
 
 <p>When you execute RevBayes in this exercise, you should do so within
-the main directory you created (<code class="highlighter-rouge">RB_Chromosome_Evolution_Tutorial</code>),
+the main directory you created (<code class="highlighter-rouge">chromosome_tutorial</code>),
 thus, if you are using a Unix-based operating system, we recommend that
 you add the RevBayes binary to your path.</p>
 
@@ -396,17 +392,14 @@ that will contain all of the model parameters, moves, and functions. In
 this first section, you will create a file called from scratch and save
 it in the <code class="highlighter-rouge">scripts</code> directory.</p>
 
-<p>The full scripts for these examples are also provided in the RevBayes
-tutorial repository<sup id="fnref:1"><a href="#fn:1" class="footnote">1</a></sup>. Please refer to these files to verify or
+<p>The full scripts for these examples are also provided for download as
+<a href="scripts.zip"><code class="highlighter-rouge">scripts.zip</code></a>. Please refer to these files to verify or
 troubleshoot your own scripts.</p>
 
-<p>Open your text editor and create the master <code class="highlighter-rouge">Rev</code> file called in the
-<code class="highlighter-rouge">scripts</code> directory.</p>
+<p>Open your text editor and enter the <code class="highlighter-rouge">Rev</code> code provided in this section.
+Save this <code class="highlighter-rouge">Rev</code> file into your <code class="highlighter-rouge">scripts</code> directory.</p>
 
-<p>Enter the <code class="highlighter-rouge">Rev</code> code provided in this section into this file.</p>
-
-<p>The file you will begin in this section will be the one you load into
-RevBayes when you’ve completed all of the components of the analysis.
+<p>This file will be the one you load into RevBayes to run the analysis.
 The file will contain the <code class="highlighter-rouge">Rev</code> code to load the data files, set up the
 model, run the MCMC analysis, and summarize the results.</p>
 
@@ -607,7 +600,7 @@ how to set up a BiChroM analysis, and demonstrate one way to add
 cladogenetic changes to a chromosome evolution analysis.</p>
 
 <p>Like before, scripts for these examples are also provided in the
-RevBayes tutorial repository<sup id="fnref:2"><a href="#fn:2" class="footnote">2</a></sup>. Please refer to these files to
+<a href="scripts.zip"><code class="highlighter-rouge">scripts.zip</code></a> file. Please refer to these files to
 verify or troubleshoot your own scripts.</p>
 
 <h3 class="subsection" id="root">Improved root frequencies</h3>
@@ -1432,16 +1425,6 @@ a continuous-time Markov process (<code class="highlighter-rouge">ctmc</code>) l
 <p>And that’s it! The results can be plotted using the same R script
 demonstrated before to plot the cladogenetic ChromEvol analysis.</p>
 
-<div class="footnotes">
-  <ol>
-    <li id="fn:1">
-      <p><a href="http://rawgit.com/revbayes/revbayes_tutorial/master/RB_Chromosome_Evolution_Tutorial/scripts.zip">http://rawgit.com/revbayes/revbayes_tutorial/master/RB_Chromosome_Evolution_Tutorial/scripts.zip</a> <a href="#fnref:1" class="reversefootnote">&#8617;</a></p>
-    </li>
-    <li id="fn:2">
-      <p><a href="http://rawgit.com/revbayes/revbayes_tutorial/master/RB_Chromosome_Evolution_Tutorial/scripts.zip">http://rawgit.com/revbayes/revbayes_tutorial/master/RB_Chromosome_Evolution_Tutorial/scripts.zip</a> <a href="#fnref:2" class="reversefootnote">&#8617;</a></p>
-    </li>
-  </ol>
-</div>
 
 <ol class="bibliography"><li><span id="Bokma2002">Bokma F. 2002. Detection of punctuated equilibrium from molecular phylogenies. Journal of Evolutionary Biology. 15:1048–1056.</span>
 
