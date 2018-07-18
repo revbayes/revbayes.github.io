@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
-    <title>RevBayes: State-dependent diversification rate estimation in RevBayes</title>
+    <title>RevBayes: State-dependent diversification with BiSSE and MuSSE</title>
   </head>
   <body>
     <div class="container">
@@ -49,7 +49,7 @@
 </nav>
 
       <div class="titlebar">
-	<h1 class="maintitle">State-dependent diversification rate estimation in RevBayes</h1>
+	<h1 class="maintitle">State-dependent diversification with BiSSE and MuSSE</h1>
 	<h3 class="subtitle">Inference using the binary/multiple state-dependent speciation and extinction (BiSSE/MuSSE) branching process</h3>
 	<h4 class="authors">Sebastian Höhna, Will Freyman, and Emma Goldberg</h4>
 </div>
@@ -118,9 +118,12 @@
 branching process models in RevBayes. For more details on the theory behind these models, please see the 
 introductory page: <a href="/tutorials/sse/bisse-intro.html">Background on state-dependent diversification rate estimation</a>.</p>
 
-<p>This tutorial will explain how to fit the BiSSE model
-to data using Markov chain Monte Carlo (MCMC). RevBayes is a powerful
-tool for SSE analyses.</p>
+<p>This tutorial will explain how to fit the BiSSE and MuSSE models
+to data using Markov chain Monte Carlo (MCMC). 
+RevBayes is a powerful tool for SSE analyses:
+to specify ClaSSE and HiSSE models, please see
+<a href="/tutorials/sse/other-sse.html">State-dependent diversification with HiSSE and ClaSSE</a> and for ChromoSSE
+please see <a href="/tutorials/chromo/">Chromosome Evolution</a>.</p>
 
 <h2 class="section" id="thedata">Getting Set Up</h2>
 <hr class="section" />
@@ -482,6 +485,7 @@ install_github("revbayes/RevGadgets")
 <p>Run this code:</p>
 
 <pre>
+library(ggplot2)
 library(RevGadgets)
 
 tree_file = "output/anc_states_primates_BiSSE_results.tree"
@@ -543,7 +547,7 @@ nocturnal lineages <code class="highlighter-rouge">speciation[2]</code>.</p>
 of both speciation rates.</p>
 </blockquote>
 
-<figure id="tracer2"><p><img src="figures/tracer2.png" width="75%" /></p>
+<figure id="tracer2"><p><img src="figures/tracer2.png" width="50%" /></p>
 <figcaption>Comparing posterior samples of the speciation rates associated with daily activity time in 
 <a href="http://tree.bio.ed.ac.uk/software/tracer/">Tracer</a> 
 <a href="#Rambaut2011">(Rambaut and Drummond 2011)</a>.</figcaption>
