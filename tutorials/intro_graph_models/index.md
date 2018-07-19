@@ -38,11 +38,11 @@ blank slate when started. [RevBayes](http://revbayes.com) requires users to
 fully specify the model they want to use for their analysis.
 This means the learning curve is steep, however there are a number of benefits:
 
-1. Transparency:
+1. Transparency: All the modeling assumptions are explicitly specified in [RevBayes](http://revbayes.com). The `Rev` script that runs an analysis makes these assumptions clear and can be easily shared. The assumptions can easily be modified in the `Rev` script and then the analysis can be rerun to see how changes affect the results. There is no reliance on "defaults" that may change with different versions of the software.
 
-2. Flexibility:
+2. Flexibility: Users are not limited by a small set of models the programmers hard coded, instead users can specify their own custom models uniquely tailored to their hypotheses and datasets. 
 
-3. Modularity:
+3. Modularity: Each model component can be combined with others in an endless number of new ways like a LEGO kit. Testing many complex evolutionary hypotheses require tying different models together. For example, suppose you wish to test how the effect of biographic range on trait evolution changes through time. In [RevBayes](http://revbayes.com) you could simultaneously infer a time-calibrated phylogeny and estimate biogeography-dependent trait evolution using molecular data, biogeographic range data, and morphological data from both fossils and extant lineages.
 
 What is a Graphical Model?
 ==========================
@@ -56,13 +56,24 @@ the observed data points $X_i$ are conditionally independent given $\theta$.
 Right: the same graphical model using plate notation to represent the $N$ repeated $X_i$.
 These graphical models represents the joint probability distribution
 $$p(\theta,X_1,\dots,X_N)$$.
-Image from Murphy {% cite murphy2012machine -A %}*
+See {% ref legend %} for a description of the visual symbols.
+Image from {% citet murphy2012machine %}*
 {% endfigcaption %}
 {% endfigure %}
 
 A *graphical model* is a way to represent a joint multivariate probability distribution as a graph.
 Here we mean *graph* in the mathematical sense of a set of nodes (vertices) and edges.
+In a graphical model, the nodes represent variables and the edges represent conditional dependencies among the variables. 
+There are three important types
+of variables:
 
+1. Constant nodes: represents a fixed value that will not change. 
+2. Stochastic nodes: represents a random variable with a value drawn from a probability distribution.
+3. Deterministic nodes: represents a deterministic transformation of the values of other nodes.
+
+In the graphical modeling framework observed data is just another variable.
+To specify that a node has an observed value associated with it we say that the
+node is *clamped*, or fixed, to the observed value.
 {% ref graphicalmodel %} illustrates the graphical model that represents the joint probability distribution
 
 $$
@@ -72,6 +83,48 @@ p(\theta,\mathcal{D}) = p(\theta) \Big[ \displaystyle\prod^N_{i=1} p(X_i|\theta)
 $$
 
 where $$\mathcal{D}$$ is the vector of observed data points $$X_1,\dots,X_N$$.
+
+Nearly any probabilistic model can be represented as a graphical model: neural networks, classification models, time series models, and of course phylogenetic models!
+In some literature the terms Bayesian networks, belief networks, or causal networks are sometimes used to refer to graphical models.
+
+
+Visual Representation
+---------------------
+{:.subsection}
+
+The statistics literature has developed a rich visual representation for graphical models.
+Visually representing graphical models can be useful for communication and pedagogy.
+We will mention the notation used in this visual representation here only briefly 
+(see {% ref legend %}),
+and enourage readers to see {% citet Hoehna2014b %} for more details.
+Representing graphical models in computer code (like the `Rev` language)
+will likely be the most useful aspects of graphical models to most readers.
+
+{% figure legend %}
+<img src="figures/graphical_model_legend.png" width="400" />  
+{% figcaption %}
+*The symbols for a visual representation of a graphical
+model. a) Solid squares represent constant nodes, which specify fixed-
+valued variables. b) Stochastic nodes are represented by solid circles.
+These variables correspond to random variables and may depend on
+other variables. c) Deterministic nodes (dotted circles) indicate variables
+that are determined by a specific function applied to another variable.
+They can be thought of as variable transformations. d) Observed states
+are placed in clamped stochastic nodes, represented by gray-shaded
+circles. e) Replication over a set of variables is indicated by enclosing
+the replicated nodes in a plate (dashed rectangle). f) A tree plate. 
+Represents the different classes of nodes in a phylogeny. 
+The tree topology orders the nodes in the tree plate and
+may be a constant node (as in this example) or a stochastic node (if the
+topology node is a solid circle).
+Image and text modified from {% citet Hoehna2014b %}*
+{% endfigcaption %}
+{% endfigure %}
+
+Phylogenetic Graphical Models
+-----------------------------
+{:.subsection}
+
 
 Probabilistic Programming
 =========================
