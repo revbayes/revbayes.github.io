@@ -190,35 +190,103 @@ This tutorial will show both how to specify linear regression
 as a graphical model, and how to perform Bayesian inference over
 the model using MCMC.
 
+Tutorial Format
+---------------
+{:.subsection}
+
+All command-line text, including all `Rev` syntax, are given in `monotype font`. Furthermore, blocks of `Rev` code that are needed to build the model, specify the analysis, or execute the run are given in separate shaded boxes. For example, we will instruct you to create a new variable called `n` that is equal to `10` using the `<-` operator like this:
+
+    n <- 10
+
+Setup Your Files
+----------------
+{:.subsection}
+
+Make yourself familiar with the example script called [`linear_regression.Rev`](scripts/linear_regression.Rev) which shows the code for the following sections. Then, start a new and empty script in your text editor and follow each step provided as below. Name the script file `my_linear_regression.Rev` or anything you’d like.
+
+You'll also want to download the [`x.csv`](data/x.csv) and [`y.csv`](data/y.csv) data files and place them in a `data` directory.
 
 Linear Regression as a Graphical Model
 --------------------------------------
 {:.subsection}
 
+{% figure linear %}
+<img src="figures/linear_regression.png" width="500"/>
+{% figcaption %}
+*The observed data used in the linear regression example.*
+{% endfigcaption %}
+{% endfigure %}
 
-Tutorial Format {#subsect:Exercise-Format}
----------------
+
+Suppose we observed the data shown in {% ref linear %}.
+We might hypothesize that $x$ and $y$ are related through the linear
+regression model
+
+$$
+\begin{aligned}
+y = \beta x + \alpha + \epsilon.
+\end{aligned}
+$$
+
+In this model $\beta$ and $\alpha$ are the regression variables and
+$\epsilon$ is an error or noise term.
+We can formulate this as the graphical model
+
+$$
+\begin{aligned}
+\mu_y := \beta x + \alpha
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+y \sim \text{Normal}(\mu_y, \sigma_{\epsilon}).
+\end{aligned}
+$$
+
+Here $\mu_y$ is a *deterministic* variable, it is determined by whatever the values
+of $\beta$ and $\alpha$ are. We use the $:=$ assignment operator to designate
+that $\mu_y$ is deterministic. The error or noise term $\epsilon$ is represented
+as a normal distribution where the mean equals $\mu_y$ and the 
+standard deviation is $\sigma_{\epsilon}$.
+$y$ is a stochastic variable, it has a value that is drawn from a probability distribution.
+This is designated by using the $\sim$ assignment operator.
+Since we have observed values for $y$, we will *clamp* $y$ to those observed values.
+
+Bayesian Linear Regression
+--------------------------
 {:.subsection}
 
-This tutorial follows a specific format for issuing instructions and
-information.
+In this model $\beta$, $\alpha$, and $\sigma_{\epsilon}$ are the free variables we wish to estimate.
+To perform Bayesian inference, we need some priors! 
 
-The boxed instructions guide you to complete tasks that are not part of the RevBayes syntax, but rather direct you to create directories or files or similar.
+$$
+\begin{aligned}
+\beta \sim \text{Normal}(\mu=0, \sigma^2=1)
+\end{aligned}
+$$
 
-Information describing the commands and instructions will be written in paragraph-form before or after they are issued.
+$$
+\begin{aligned}
+\alpha \sim \text{Normal}(\mu=0, \sigma^2=1)
+\end{aligned}
+$$
 
-All command-line text, including all `Rev` syntax, are given in `monotype font`. Furthermore, blocks of `Rev` code that are needed to build the model, specify the analysis, or execute the run are given in separate shaded boxes. For example, we will instruct you to create a new variable called `n` that is equal to `10` using the `=` operator like this:
+$$
+\begin{aligned}
+\sigma_{\epsilon} \sim \text{Exponential}(\lambda=1)
+\end{aligned}
+$$
 
-    n = 10
+Again, these are stochastic variables, so we use the $\sim$ assignment operator.
+For now we will accept these as decent uninformative priors.
+Later in the tutorial we will discuss how the choice of a prior 
+can affect the outcome of the analysis.
 
-Create Your Script File
------------------------
+
+Specifying the Model in `Rev`
+-----------------------------
 {:.subsection}
-
-Make yourself familiar with the example script called [`linear_regression.Rev`](https://raw.githubusercontent.com/revbayes/) which shows the code for the following sections. Then, start a new and empty script in your text editor and follow each step provided as below.
-
-Name the script file `my_linear_regression.Rev` or anything you’d like.
-
 
 `Rev` Script Structure
 ----------------------
@@ -231,9 +299,6 @@ Metropolis-Hastings MCMC algorithm {% cite Metropolis1953 Hastings1970 %}
 2.  MCMC algorithm
 
 
-Bayesian Linear Regression
---------------------------
-{:.subsection}
 
 
 ### Read in data
