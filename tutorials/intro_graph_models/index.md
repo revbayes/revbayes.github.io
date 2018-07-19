@@ -71,7 +71,7 @@ of variables:
 2. Stochastic nodes: represents a random variable with a value drawn from a probability distribution.
 3. Deterministic nodes: represents a deterministic transformation of the values of other nodes.
 
-In the graphical modeling framework observed data is just another variable.
+In the graphical modeling framework observed data is simply a variable with an observed value.
 To specify that a node has an observed value associated with it we say that the
 node is *clamped*, or fixed, to the observed value.
 {% ref graphicalmodel %} illustrates the graphical model that represents the joint probability distribution
@@ -125,16 +125,76 @@ Phylogenetic Graphical Models
 -----------------------------
 {:.subsection}
 
+In phylogenetics, observations about different species are not considered independent data points
+due to their shared evolutionary history.
+So in a phylogenetic probabilistic model the topology of the tree determines the conditional dependencies among variables. This can be represented as a graphical model as in {% ref phylo_graph %} (left).   
+
+Phylogenetic models are often highly complex with hundreds of variables. Not only do we model
+the conditional dependencies due to shared evolutionary history (the tree topology), 
+but we also commonly model character evolution (nucleotide substitution models, etc.),
+branching processes that determine the times between speciation events (birth-death processes),
+and many other aspects of the evolutionary process.
+With graphical models we can think of each part of these models as discrete components that can
+be combined in a myriad of ways to assemble different phylogenetic models ({% ref phylo_graph %} right).
+
+{% figure phylo_graph %}
+<img src="figures/phylo_graphical.png" width="400"/><img src="figures/graphical_lego_kit.png" width="400"/>  
+{% figcaption %}
+*Left: In a phylogenetic probabilistic model the topology of the tree determines the conditional dependencies among variables.
+Right: A complex phylogenetic model that includes a clock model, a GTR+$\Gamma$ nucleotide substitution model, and a uniform tree topology model. Here the repeated nodes within the tree are represented by a tree plate.
+Images from {% citet Hoehna2014b %}*
+{% endfigcaption %}
+{% endfigure %}
 
 Probabilistic Programming
 =========================
 {:.section}
 
+To describe complex probabilistic models and perform computational tasks with them,
+we need a way to formally specify the models in a computer. 
+Probabilistic programming languages were designed exactly for this purpose.
+A probabilistic programming language is a tool for probabilistic inference that:
+
+1. formally specifies graphical models, and
+2. specifies the inference algorithms used with the model.
+
+Probabilistic programming languages are being actively developed within
+the statistics and machine learning communities.
+Some of the most common are <a href="http://mc-stan.org/">Stan</a>, <a href="http://mcmc-jags.sourceforge.net/">JAGS</a>, <a href="http://edwardlib.org/">Edward</a>, and <a href="https://docs.pymc.io/">PyMC3</a>.
+While these are all excellent tools, they are all unsuitable for phylogenetic models 
+since the tree topology itself must be treated as a random variable to be inferred.
+
+The `Rev` Probabilistic Programming Language
+--------------------------------------------
+{:.subsection}
+
+[RevBayes](http://revbayes.com) provides its own probabilistic programming language called `Rev`.
+While `Rev` focuses on phylogenetic models, nearly any type of probabilistic
+model can be programmed in `Rev` making it a highly flexible probabilistic computing environment.
+Most `Rev` scripts consist of two different parts:
+
+1. Model specification. This part of the script defines the constant, stochastic, and determinstic nodes that make up the model.
+2. Inference algorithm specification. This part of the script specifies what sort of inference algorithm we want to use with the model. Typically this is a Markov chain Monte Carlo algorithm, and we need to specify what sort of proposals (or moves) will operate on each variable.
+
+In more complex `Rev` scripts, these two different elements (model specification and infernence algorithm specification) will be woven together.
+In the example for this tutorial we will keep the two parts separate.
 
 
 Linear Regression Example
 =========================
 {:.section}
+
+To demonstrate how to use the `Rev` language to specify a graphical model,
+we will start with a simple non-phylogenetic model.
+This tutorial will show both how to specify linear regression
+as a graphical model, and how to perform Bayesian inference over
+the model using MCMC.
+
+
+Linear Regression as a Graphical Model
+--------------------------------------
+{:.subsection}
+
 
 Tutorial Format {#subsect:Exercise-Format}
 ---------------
