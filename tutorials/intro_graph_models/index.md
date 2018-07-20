@@ -54,7 +54,7 @@ What is a Graphical Model?
 *Left: a graphical model in which 
 the observed data points $X_i$ are conditionally independent given $\theta$.
 Right: the same graphical model using plate notation to represent the $N$ repeated $X_i$.
-These graphical models represents the joint probability distribution
+These graphical models represent the joint probability distribution
 $$p(\theta,X_1,\dots,X_N)$$.
 See {% ref legend %} for a description of the visual symbols.
 Image from {% citet murphy2012machine %}*
@@ -112,8 +112,8 @@ that are determined by a specific function applied to another variable.
 They can be thought of as variable transformations. d) Observed states
 are placed in clamped stochastic nodes, represented by gray-shaded
 circles. e) Replication over a set of variables is indicated by enclosing
-the replicated nodes in a plate (dashed rectangle). f) A tree plate. 
-Represents the different classes of nodes in a phylogeny. 
+the replicated nodes in a plate (dashed rectangle). f) Tree plates represent 
+the different classes of nodes in a phylogeny. 
 The tree topology orders the nodes in the tree plate and
 may be a constant node (as in this example) or a stochastic node (if the
 topology node is a solid circle).
@@ -369,12 +369,12 @@ Since our model is a graph in which all the model nodes are connected,
 we can use any model variable and RevBayes will traverse the graph to copy
 the entire model into the variable `mymodel`.
 
-Note that we used the `=` assignment operator. This mean that the variable
+Note that we used the `=` assignment operator. This means that the variable
 `mymodel` is *not* part of the graphical model -- it is not a stochastic, constant, or deterministic
 node. We call this a `Rev` workspace variable. Workspace variables
 are utility variables that we use for any programming task that 
 is not specifically defining the model.
-Note, that unlike in `R`, in `Rev` the `=` and `<-` assignment operators have very different function!
+Note, that unlike in `R`, in `Rev` the `=` and `<-` assignment operators have very different functions!
 
 To sample different values of each variable, we must assign
 an MCMC move to each variable. Each MCMC move will propose new values
@@ -478,13 +478,13 @@ close to 0.
 This sort of prior is appropriate only if we have prior information
 that the parameter's true value is close to 0, so we can call this
 an *informative* prior.
-Using a large standard deviation (10.0) is a highly *uninformative*.
+Using a large standard deviation (10.0) is a highly *uninformative* prior.
 The density is diffuse and nearly uniform, allowing for a wide range of values.
 This is appropriate if we have very little idea what the true value of
 the parameter is.
 
 In [RevBayes](http://revbayes.com) it is easy to modify the priors used in an analysis and rerun the analysis.
-> Try rerunning the linear regression exercise with the highly informative priors (standard deviation set to 0.1) on `beta` and `alpha` as shown below.
+> Try rerunning the linear regression exercise using highly informative priors (standard deviation set to 0.1) on `beta` and `alpha` as shown below.
 {:.instruction}
 ```
 beta ~ dnNormal(0, 0.1)
@@ -502,7 +502,7 @@ The true values were $\alpha = -2$, $\beta = 0.5$, and $\sigma = 0.25$.*
 {% endfigcaption %}
 {% endfigure %}
 
-> Try running the analysis again with highly uninformative prior (10.0).
+> Try running the analysis again with highly uninformative priors (10.0).
 {:.instruction}
 
 ```
@@ -557,9 +557,9 @@ they allow us to compute $p(y|x)$ or $p(x|y)$
 and to simulate both $x$ and $y$.
 
 In phylogenetics we use fully generative models when we:
-- jointly estimating divergence times and the tree topology
-- jointly estimating ancestral states and the tree
-- jointly estimating shifting diversification rates and the tree
+- jointly estimate divergence times and the tree topology
+- jointly estimate ancestral states and the tree
+- jointly estimate shifting diversification rates and the tree
 
 [RevBayes](http://revbayes.com) is unique because it allows us to specify both highly complex fully generative models
 as well as their more simple discriminative forms.
