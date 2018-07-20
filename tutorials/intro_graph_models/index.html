@@ -151,7 +151,7 @@ This means the learning curve is steep, however there are a number of benefits:<
 <figcaption><em>Left: a graphical model in which 
 the observed data points $X_i$ are conditionally independent given $\theta$.
 Right: the same graphical model using plate notation to represent the $N$ repeated $X_i$.
-These graphical models represents the joint probability distribution
+These graphical models represent the joint probability distribution
 <script type="math/tex">p(\theta,X_1,\dots,X_N)</script>.
 See <a href="#legend"></a> for a description of the visual symbols.
 Image from <a href="#murphy2012machine">Murphy (2012)</a></em></figcaption>
@@ -203,8 +203,8 @@ that are determined by a specific function applied to another variable.
 They can be thought of as variable transformations. d) Observed states
 are placed in clamped stochastic nodes, represented by gray-shaded
 circles. e) Replication over a set of variables is indicated by enclosing
-the replicated nodes in a plate (dashed rectangle). f) A tree plate. 
-Represents the different classes of nodes in a phylogeny. 
+the replicated nodes in a plate (dashed rectangle). f) Tree plates represent 
+the different classes of nodes in a phylogeny. 
 The tree topology orders the nodes in the tree plate and
 may be a constant node (as in this example) or a stochastic node (if the
 topology node is a solid circle).
@@ -417,12 +417,12 @@ into a single variable:</p>
 we can use any model variable and RevBayes will traverse the graph to copy
 the entire model into the variable <code class="highlighter-rouge">mymodel</code>.</p>
 
-<p>Note that we used the <code class="highlighter-rouge">=</code> assignment operator. This mean that the variable
+<p>Note that we used the <code class="highlighter-rouge">=</code> assignment operator. This means that the variable
 <code class="highlighter-rouge">mymodel</code> is <em>not</em> part of the graphical model – it is not a stochastic, constant, or deterministic
 node. We call this a <code class="highlighter-rouge">Rev</code> workspace variable. Workspace variables
 are utility variables that we use for any programming task that 
 is not specifically defining the model.
-Note, that unlike in <code class="highlighter-rouge">R</code>, in <code class="highlighter-rouge">Rev</code> the <code class="highlighter-rouge">=</code> and <code class="highlighter-rouge">&lt;-</code> assignment operators have very different function!</p>
+Note, that unlike in <code class="highlighter-rouge">R</code>, in <code class="highlighter-rouge">Rev</code> the <code class="highlighter-rouge">=</code> and <code class="highlighter-rouge">&lt;-</code> assignment operators have very different functions!</p>
 
 <p>To sample different values of each variable, we must assign
 an MCMC move to each variable. Each MCMC move will propose new values
@@ -510,14 +510,14 @@ close to 0.
 This sort of prior is appropriate only if we have prior information
 that the parameter’s true value is close to 0, so we can call this
 an <em>informative</em> prior.
-Using a large standard deviation (10.0) is a highly <em>uninformative</em>.
+Using a large standard deviation (10.0) is a highly <em>uninformative</em> prior.
 The density is diffuse and nearly uniform, allowing for a wide range of values.
 This is appropriate if we have very little idea what the true value of
 the parameter is.</p>
 
 <p>In <a href="http://revbayes.com">RevBayes</a> it is easy to modify the priors used in an analysis and rerun the analysis.</p>
 <blockquote class="instruction">
-  <p>Try rerunning the linear regression exercise with the highly informative priors (standard deviation set to 0.1) on <code class="highlighter-rouge">beta</code> and <code class="highlighter-rouge">alpha</code> as shown below.</p>
+  <p>Try rerunning the linear regression exercise using highly informative priors (standard deviation set to 0.1) on <code class="highlighter-rouge">beta</code> and <code class="highlighter-rouge">alpha</code> as shown below.</p>
 </blockquote>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>beta ~ dnNormal(0, 0.1)
 alpha ~ dnNormal(0, 0.1)
@@ -532,7 +532,7 @@ The true values were $\alpha = -2$, $\beta = 0.5$, and $\sigma = 0.25$.</em></fi
 </figure>
 
 <blockquote class="instruction">
-  <p>Try running the analysis again with highly uninformative prior (10.0).</p>
+  <p>Try running the analysis again with highly uninformative priors (10.0).</p>
 </blockquote>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>beta ~ dnNormal(0, 10.0)
@@ -587,9 +587,9 @@ and to simulate both $x$ and $y$.</p>
 
 <p>In phylogenetics we use fully generative models when we:</p>
 <ul>
-  <li>jointly estimating divergence times and the tree topology</li>
-  <li>jointly estimating ancestral states and the tree</li>
-  <li>jointly estimating shifting diversification rates and the tree</li>
+  <li>jointly estimate divergence times and the tree topology</li>
+  <li>jointly estimate ancestral states and the tree</li>
+  <li>jointly estimate shifting diversification rates and the tree</li>
 </ul>
 
 <p><a href="http://revbayes.com">RevBayes</a> is unique because it allows us to specify both highly complex fully generative models
