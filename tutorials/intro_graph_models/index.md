@@ -288,25 +288,125 @@ Specifying the Model in `Rev`
 -----------------------------
 {:.subsection}
 
-`Rev` Script Structure
-----------------------
-{:.subsection}
 
-Metropolis-Hastings MCMC algorithm {% cite Metropolis1953 Hastings1970 %} 
+Remember that graphical models are made up of three types of nodes: stochastic, constant, and deterministic nodes.
+In `Rev` we specify the type of node by using a specific assignment operator:
+- Stochastic node: `n ~ dnNormal(0, 1)`
+- Constant node: `n <- 5` 
+- Deterministic node: `n := m + 5`
+We wil use each of these assignment operators to set up the linear regression model.
 
-1.  model specification
-
-2.  MCMC algorithm
-
-
-
-
-### Read in data
-
+First, we will read in the observed data as constant nodes:
 ```
 x_obs <- readDataDelimitedFile(file="data/x.csv", header=FALSE, delimiter=",")[1]
 y_obs <- readDataDelimitedFile(file="data/y.csv", header=FALSE, delimiter=",")[1]
 ```
+Take a look at `x_obs`:
+```
+x_obs
+```
+This is the vector of x-coordinates for the points plotted in {% ref linear %}.
+
+Now we will specify the prior distributions for the stochastic nodes.
+These are the variables that we will estimate:
+```
+beta ~ dnNormal(0, 1)
+alpha ~ dnNormal(0, 1)
+sigma ~ dnExponential(1)
+```
+
+Now, for each observed value in $x_obs$
+we will create a deterministic node for $mu_y$ and a stochastic node for $y$:
+```
+for (i in 1:x_obs.size()) {
+    mu_y[i] := (beta * x_obs[i]) + alpha
+    y[i] ~ dnNormal(mu_y[i], sigma)
+}
+```
+Take a look at $y$:
+```
+y
+```
+This produces a vector of simulated values of $y$!
+We have specified a model that describes the process that generates $y$
+conditioned on the observed values of $x$.
+We have not clamped, or fixed, the observed values $y_obs$ to the stochastic nodes $y$.
+In `Rev` all models can be used to both simulate new values and, when clamped to observed values,
+perform parameter inference.
+
+In this case we are not interested in simulating new values of $y$, but instead
+we want to estimate our linear regression parameters. So let's modify the above code
+to clamp the observed values to $y$:
+```
+for (i in 1:x_obs.size()) {
+    mu_y[i] := (beta * x_obs[i]) + alpha
+    y[i] ~ dnNormal(mu_y[i], sigma)
+    y[i].clamp(y_obs[i])
+}
+```
+Note that we have now clamped each observed value $y_obs$ to each stochastic node $y$.
+
+We have now fully specified the model, so we can begin specifying the inference
+algorithm.
+
+Setting up MCMC in `Rev`
+-----------------------
+{:.subsection}
+
+Here we will use the Metropolis-Hastings MCMC algorithm {% cite Metropolis1953 Hastings1970 %} 
+to perform parameter estimation.
+The first step in setting up our MCMC algorithm is wrapping the entire model
+into a single variable:
+```
+mymodel = model(beta)
+```
+Since our model is a graph in which all the model nodes are connected,
+we can use any model variable and RevBayes will traverse the graph to copy
+the entire model into the variable `mymodel`.
+
+Note that we used the `=` assignment operator. This mean that the variable
+`mymodel` is *not* part of the graphical model -- it is not a stochastic, constant, or deterministic
+node. We call this a `Rev` workspace variable. Workspace variables
+are utility variables that we use for any programming task that 
+is not specifically defining the model.
+Note, that unlike in `R`, in `Rev` the `=` and `<-` assignment operators have very different function!
+
+To sample different values of each variable, we must assign
+an MCMC move to each variable. We have three variables,
+so we will have three moves which we will save in a
+vector called `moves`:
+```
+moves[1] = mvSlide(beta, delta=0.001)
+moves[2] = mvSlide(alpha, delta=0.001)
+moves[3] = mvSlide(sigma, delta=0.001)
+```
+Here we used simple slide moves for each variable. 
+The slide move proposes new values for the variable within a sliding window
+determined by the `delta` argument.
+RevBayes provides many other types of moves that you will see in other tutorials.
+
+Next, we need to set up some monitors that will sample values during the MCMC.
+We will use two monitors which we save into a vector called `monitors`.
+The first monitor `mnScreen` prints out values to the screen,
+and the second monitor `mnModel` prints a log file.
+```
+monitors[1] = mnScreen()
+monitors[2] = mnModel("output/linear_regression.log")
+```
+RevBayes provides many other monitors that can be useful for different types of analyses,
+but these are sufficient for this example.
+
+We can now pass the model, moves, and monitors into the `mcmc` function
+to finalize our analysis.
+Then we use the `run` member method to run the MCMC for 10000 iterations.
+```
+mymcmc = mcmc(mymodel, moves, monitors)
+mymcmc.run(10000)
+quit()
+```
+Note that we included the `quit()` command so that RevBayes will automatically quit
+after the MCMC has finished running.
+
 
 
 
@@ -314,6 +414,16 @@ Improving MCMC Mixing
 =====================
 {:.section}
 
+```
+moves[1] = mvSlide(beta, delta=1, weight=5)
+moves[2] = mvSlide(alpha, delta=1, weight=5)
+moves[3] = mvSlide(sigma, delta=1, weight=5)
+```
+```
+mymcmc = mcmc(mymodel, moves, monitors)
+mymcmc.run(10000)
+quit()
+```
 
 Prior Sensitivity
 =================
