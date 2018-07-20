@@ -116,7 +116,7 @@ that the observed character has:
     NUM_STATES = 2
 
 Using this variable allows us to easily change our script and use a different
-character with a different number of states, essentially changing out
+character with a different number of states, essentially changing our
 model from BiSSE {% cite Maddison2007 %} to one that allows for more than 2 states--*i.e.*, 
 the MuSSE model {% cite FitzJohn2012 %}. 
 
@@ -265,7 +265,7 @@ the standard `.clamp()` method to give the observed tree and branch times:
 
     timetree.clamp( T )
 
-And then we use the `.clampCharData()` to set the observed states a the tips of the tree:
+And then we use the `.clampCharData()` to set the observed states at the tips of the tree:
 
     timetree.clampCharData( data )
 
