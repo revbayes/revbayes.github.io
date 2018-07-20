@@ -420,7 +420,8 @@ Improving MCMC Mixing
 =====================
 {:.section}
 
-Now open the file `output/linear_regression.log` in Tracer.
+> Now open the file `output/linear_regression.log` in Tracer.
+{:.instruction}
 You will notice that the MCMC analysis did not converge well:
 {% figure bad %}
 <img src="figures/beta-bad.png" width="400"/>
@@ -439,7 +440,8 @@ moves[1] = mvSlide(beta, delta=1, weight=5)
 moves[2] = mvSlide(alpha, delta=1, weight=5)
 moves[3] = mvSlide(sigma, delta=1, weight=5)
 ```
-Rerun the MCMC analysis and view the log file in Tracer.
+> Rerun the MCMC analysis with these new moves and view the log file in Tracer.
+{:.instruction}
 This analysis looks much better:
 {% figure good %}
 <img src="figures/beta-good.png" width="400"/><img src="figures/param-estimates.png" width="400"/>
@@ -481,9 +483,9 @@ The density is diffuse and nearly uniform, allowing for a wide range of values.
 This is appropriate if we have very little idea what the true value of
 the parameter is.
 
-In RevBayes it is easy to modify the priors used in an analysis and rerun the analysis.
-Try rerunning the linear regression exercise these highly informative priors
-on `beta` and `alpha`:
+In [RevBayes](http://revbayes.com) it is easy to modify the priors used in an analysis and rerun the analysis.
+> Try rerunning the linear regression exercise with the highly informative priors (standard deviation set to 0.1) on `beta` and `alpha` as shown below.
+{:.instruction}
 ```
 beta ~ dnNormal(0, 0.1)
 alpha ~ dnNormal(0, 0.1)
@@ -500,7 +502,9 @@ The true values were $\alpha = -2$, $\beta = 0.5$, and $\sigma = 0.25$.*
 {% endfigcaption %}
 {% endfigure %}
 
-Try running the analysis again with highly uninformative prior (10.0).
+> Try running the analysis again with highly uninformative prior (10.0).
+{:.instruction}
+
 ```
 beta ~ dnNormal(0, 10.0)
 alpha ~ dnNormal(0, 10.0)
@@ -516,3 +520,69 @@ Generative vs Discriminative Models
 ===================================
 {:.section}
 
+Probabilistic models can be understood as either *discriminative* or *generative* models.
+The distinction between the two can be useful in phylogenetics
+where different analyses often make use of these different types of models.
+[RevBayes](http://revbayes.com) enables us to specify both types of models.
+
+### Discriminative Models
+
+Discriminative (or conditional) models
+involve a response variable conditioned on a predictor variable.
+The model represents the conditional distribution $p(y|x)$
+and so makes fewer assumptions about the data: 
+it is not necessary to specify $p(x)$.
+The linear regression example we coded in `Rev` was a discriminative model
+because it conditioned on the observed values of $x$. In other words
+the model could simulate values of $y$ conditioned on the observed values of $x$,
+but it could not simulate values of $x$.
+
+In phylogenetics we often use discriminative models when we condition over a fixed tree (or set of trees):
+- estimating divergence times over a fixed topology
+- estimating ancestral states on a fixed tree
+- estimating shifts in diversification rates over a fixed tree
+
+We can set up all these discriminative models in [RevBayes](http://revbayes.com).
+
+### Generative Models
+
+Generative models
+model the entire process used to generate the data.
+So these models represent the joint distribution $p(x, y)$,
+and therefore they must make more assumptions about the data: 
+we need to define $p(x)$.
+This allows for a richer representation of the relations between variables.
+Additionally these models are more powerful; 
+they allow us to compute $p(y|x)$ or $p(x|y)$
+and to simulate both $x$ and $y$.
+
+In phylogenetics we use fully generative models when we:
+- jointly estimating divergence times and the tree topology
+- jointly estimating ancestral states and the tree
+- jointly estimating shifting diversification rates and the tree
+
+[RevBayes](http://revbayes.com) is unique because it allows us to specify both highly complex fully generative models
+as well as their more simple discriminative forms.
+
+### A Generative Linear Regression Model
+
+
+> Re-write our linear regression example so that it is a fully generative model:
+> - it should simulate values of both $x$ and $y$
+> - both $x$ and $y$ will need to be clamped to the observed data
+> - you will need to specify a prior distribution for $x$
+> - one solution is provided in [`linear_regression_generative.Rev`](scripts/linear_regression_generative.Rev) if you get stuck
+{:.instruction}
+
+The fully generative model enables us to learn something about $x$, for example the mean
+and standard deviation, which we don't get from a discriminative model.
+
+### Conclusion
+
+[RevBayes](http://revbayes.com) gives evolutionary biologists the tools to formalize their 
+hypotheses as custom graphical models that represent the specific process
+that generated their data.
+This enables many evolutionary hypotheses
+to now be tested in a rigorous and quantitative approach.
+Hopefully this tutorial will help readers develop their own custom models
+and not use defaults ever again!
