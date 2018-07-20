@@ -1,12 +1,12 @@
 ---
 title: Introduction to Graphical Models
-subtitle: An introduction to graphical models, probabilistic programming, and MCMC using a simple linear regression example.
+subtitle: A gentle introduction to graphical models, probabilistic programming, and MCMC using a simple linear regression example.
 authors:  Will Freyman
 level: 0
-order: 1
+order: 0.5
 prerequisites:
 - intro
-index: false
+index: true
 redirect: false
 ---
 
