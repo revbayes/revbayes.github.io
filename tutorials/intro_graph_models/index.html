@@ -299,8 +299,8 @@ regression model</p>
 y = \beta x + \alpha + \epsilon.
 \end{aligned}</script>
 
-<p>In this model $\beta$ and $\alpha$ are the regression variables and
-$\epsilon$ is an error or noise term.
+<p>In this model $\beta$ and $\alpha$ are the regression variables (slope and y-intercept, respectively) 
+and $\epsilon$ is an error or noise term.
 We can formulate this as the graphical model</p>
 
 <script type="math/tex; mode=display">\begin{aligned}
@@ -322,7 +322,8 @@ Since we have observed values for $y$, we will <em>clamp</em> $y$ to those obser
 
 <h2 class="subsection" id="bayesian-linear-regression">Bayesian Linear Regression</h2>
 
-<p>In this model $\beta$, $\alpha$, and $\sigma_{\epsilon}$ are the free variables we wish to estimate.
+<p>In our linear regression model $\beta$, $\alpha$, and $\sigma_{\epsilon}$ 
+are the free variables we wish to estimate.
 To perform Bayesian inference, we need some priors!</p>
 
 <script type="math/tex; mode=display">\begin{aligned}
@@ -370,33 +371,33 @@ alpha ~ dnNormal(0, 1)
 sigma ~ dnExponential(1)
 </code></pre></div></div>
 
-<p>Now, for each observed value in $x_obs$
-we will create a deterministic node for $mu_y$ and a stochastic node for $y$:</p>
+<p>Now, for each observed value in <code class="highlighter-rouge">x_obs</code>
+we will create a deterministic node for <code class="highlighter-rouge">mu_y</code> and a stochastic node for <code class="highlighter-rouge">y</code>:</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:x_obs.size()) {
     mu_y[i] := (beta * x_obs[i]) + alpha
     y[i] ~ dnNormal(mu_y[i], sigma)
 }
 </code></pre></div></div>
-<p>Take a look at $y$:</p>
+<p>Take a look at <code class="highlighter-rouge">y</code>:</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>y
 </code></pre></div></div>
-<p>This produces a vector of simulated values of $y$!
-We have specified a model that describes the process that generates $y$
-conditioned on the observed values of $x$.
-We have not clamped, or fixed, the observed values $y_obs$ to the stochastic nodes $y$.
+<p>This produces a vector of simulated values of <code class="highlighter-rouge">y</code>!
+We have specified a model that describes the process that generates <code class="highlighter-rouge">y</code>
+conditioned on the observed values of <code class="highlighter-rouge">x</code>.
+We have not clamped, or fixed, the observed values <code class="highlighter-rouge">y_obs</code> to the stochastic nodes <code class="highlighter-rouge">y</code>.
 In <code class="highlighter-rouge">Rev</code> all models can be used to both simulate new values and, when clamped to observed values,
 perform parameter inference.</p>
 
-<p>In this case we are not interested in simulating new values of $y$, but instead
+<p>In this case we are not interested in simulating new values of <code class="highlighter-rouge">y</code>, but instead
 we want to estimate our linear regression parameters. So let’s modify the above code
-to clamp the observed values to $y$:</p>
+to clamp the observed values to <code class="highlighter-rouge">y</code>:</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:x_obs.size()) {
     mu_y[i] := (beta * x_obs[i]) + alpha
     y[i] ~ dnNormal(mu_y[i], sigma)
     y[i].clamp(y_obs[i])
 }
 </code></pre></div></div>
-<p>Note that we have now clamped each observed value $y_obs$ to each stochastic node $y$.</p>
+<p>Note that we have now clamped each observed value <code class="highlighter-rouge">y_obs</code> to each stochastic node <code class="highlighter-rouge">y</code>.</p>
 
 <p>We have now fully specified the model, so we can begin specifying the inference
 algorithm.</p>
@@ -478,7 +479,7 @@ moves[3] = mvSlide(sigma, delta=1, weight=5)
 </code></pre></div></div>
 <p>Rerun the MCMC analysis and view the log file in Tracer.
 This analysis looks much better:</p>
-<figure id="bad"><p><img src="figures/beta-good.png" width="400" /><img src="figures/param-estimates.png" width="400" /></p>
+<figure id="good"><p><img src="figures/beta-good.png" width="400" /><img src="figures/param-estimates.png" width="400" /></p>
 <figcaption><em>Left: The MCMC trace for the <code class="highlighter-rouge">beta</code> parameter. This analysis has adequately converged;
 all parameter values have ESS values over 200.
 Right: Posterior parameter estimates from the converged MCMC analysis.
@@ -490,12 +491,51 @@ Moreover, -2 and 0.5 were the true values used to simulate the data.</em></figca
 
 <h1 class="section" id="prior-sensitivity">Prior Sensitivity</h1>
 
+<figure id="priors"><p><img src="figures/normal.png" width="400" /></p>
+<figcaption><em>Normal distributions with different values of the standard deviation.</em></figcaption>
+</figure>
+
+<p>Prior distributions are a way to mathematically formalize our
+prior knowledge.
+We used normal distributions as priors for $\alpha$ and $\beta$.
+How did we pick these distributions? 
+<a href="#priors"></a> illustrates the normal distribution with different
+values for the standard deviation.
+Using a smaller standard deviation (0.1) places most of the density
+close to 0. 
+This sort of prior is appropriate only if we have prior information
+that the parameter’s true value is close to 0, so we can call this
+an <em>informative</em> prior.
+Using a large standard deviation (10.0) is a highly <em>uninformative</em>.
+The density is diffuse and nearly uniform, allowing for a wide range of values.
+This is appropriate if we have very little idea what the true value of
+the parameter is.</p>
+
+<p>In RevBayes it is easy to modify the priors used in an analysis and rerun the analysis.
+Try rerunning the linear regression exercise these highly informative priors
+on <code class="highlighter-rouge">beta</code> and <code class="highlighter-rouge">alpha</code>:</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>beta ~ dnNormal(0, 0.1)
 alpha ~ dnNormal(0, 0.1)
 </code></pre></div></div>
+<p><a href="#bad-priors"></a> shows the posterior estimates when using these priors.
+Compare those results with those shown in <a href="#good"></a>.
+Using informative priors that are incorrect can badly bias the results.</p>
+
 <figure id="bad-priors"><p><img src="figures/priors.png" width="400" /></p>
-<figcaption><em>Biased posterior parameter estimates when using overly informative priors.</em></figcaption>
+<figcaption><em>Biased posterior parameter estimates when using overly informative priors.
+The true values were $\alpha = -2$, $\beta = 0.5$, and $\sigma = 0.25$.</em></figcaption>
 </figure>
+
+<p>Try running the analysis again with highly uninformative prior (10.0).</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>beta ~ dnNormal(0, 10.0)
+alpha ~ dnNormal(0, 10.0)
+</code></pre></div></div>
+<p>These results are highly similar to our original estimates
+shown in <a href="#good"></a>. Our original priors (that had a standard deviation of 1.0)
+did not introduce any bias.
+Typically the trade off is between informative priors that may introduce bias
+and uninformative priors that may increase the variance (uncertainty) of our
+estimates.</p>
 
 <h1 class="section" id="generative-vs-discriminative-models">Generative vs Discriminative Models</h1>
 
