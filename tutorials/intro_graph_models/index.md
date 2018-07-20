@@ -228,8 +228,8 @@ y = \beta x + \alpha + \epsilon.
 \end{aligned}
 $$
 
-In this model $\beta$ and $\alpha$ are the regression variables and
-$\epsilon$ is an error or noise term.
+In this model $\beta$ and $\alpha$ are the regression variables (slope and y-intercept, respectively) 
+and $\epsilon$ is an error or noise term.
 We can formulate this as the graphical model
 
 $$
@@ -257,7 +257,8 @@ Bayesian Linear Regression
 --------------------------
 {:.subsection}
 
-In this model $\beta$, $\alpha$, and $\sigma_{\epsilon}$ are the free variables we wish to estimate.
+In our linear regression model $\beta$, $\alpha$, and $\sigma_{\epsilon}$ 
+are the free variables we wish to estimate.
 To perform Bayesian inference, we need some priors! 
 
 $$
@@ -316,28 +317,28 @@ alpha ~ dnNormal(0, 1)
 sigma ~ dnExponential(1)
 ```
 
-Now, for each observed value in $x_obs$
-we will create a deterministic node for $mu_y$ and a stochastic node for $y$:
+Now, for each observed value in `x_obs`
+we will create a deterministic node for `mu_y` and a stochastic node for `y`:
 ```
 for (i in 1:x_obs.size()) {
     mu_y[i] := (beta * x_obs[i]) + alpha
     y[i] ~ dnNormal(mu_y[i], sigma)
 }
 ```
-Take a look at $y$:
+Take a look at `y`:
 ```
 y
 ```
-This produces a vector of simulated values of $y$!
-We have specified a model that describes the process that generates $y$
-conditioned on the observed values of $x$.
-We have not clamped, or fixed, the observed values $y_obs$ to the stochastic nodes $y$.
+This produces a vector of simulated values of `y`!
+We have specified a model that describes the process that generates `y`
+conditioned on the observed values of `x`.
+We have not clamped, or fixed, the observed values `y_obs` to the stochastic nodes `y`.
 In `Rev` all models can be used to both simulate new values and, when clamped to observed values,
 perform parameter inference.
 
-In this case we are not interested in simulating new values of $y$, but instead
+In this case we are not interested in simulating new values of `y`, but instead
 we want to estimate our linear regression parameters. So let's modify the above code
-to clamp the observed values to $y$:
+to clamp the observed values to `y`:
 ```
 for (i in 1:x_obs.size()) {
     mu_y[i] := (beta * x_obs[i]) + alpha
@@ -345,7 +346,7 @@ for (i in 1:x_obs.size()) {
     y[i].clamp(y_obs[i])
 }
 ```
-Note that we have now clamped each observed value $y_obs$ to each stochastic node $y$.
+Note that we have now clamped each observed value `y_obs` to each stochastic node `y`.
 
 We have now fully specified the model, so we can begin specifying the inference
 algorithm.
