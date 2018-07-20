@@ -211,7 +211,7 @@ As you can see, all substitution rates are equal.
 {% subsubsection Tree Topology and Branch Lengths %}
 
 The tree topology and branch lengths are stochastic nodes in our phylogenetic model. 
-In Figure {% ref jc_graphical_model %}, the tree topology is denoted $\Psi$ and the 
+In {% ref jc_graphical_model %}, the tree topology is denoted $\Psi$ and the 
 length of the branch leading to node $i$ is $bl_i$.
 
 We will assume that all possible labeled, unrooted tree topologies have equal probability. 
@@ -413,7 +413,7 @@ mymodel
 
 {% subsubsection Performing an MCMC Analysis Under the Jukes-Cantor Model %}
 
-In this section, will describe how to set up the MCMC sampler and
+In this section, we will describe how to set up the MCMC sampler and
 summarize the resulting posterior distribution of trees.
 
 {% subsubsection Specifying Monitors %}
@@ -648,7 +648,7 @@ This should be all for the HKY model. Don’t forget to change the output file n
 
 {% subsection Exercise 2 %}
 
--   With figure {% ref jc_graphical_model %} as your guide, draw the probabilistic
+-   With {% ref jc_graphical_model %} as your guide, draw the probabilistic
     graphical model of the HKY model.
 
 -   Copy the file called `mcmc_JC.Rev` and modify it by including the
@@ -670,7 +670,7 @@ This should be all for the HKY model. Don’t forget to change the output file n
     has unequal stationary frequencies, but it assumes equal
     transition-transversion rates {% cite Felsenstein1981 %}. Can you set up the F81 model and run an analysis?
 
--   Complete the Table {% ref tab_primates %} by reporting the posterior
+-   Complete the {% ref tab_primates %} by reporting the posterior
     probabilities of phylogenetic relationships.
 
 {% section The General Time-Reversible (GTR) Substitution Model %}
@@ -722,7 +722,13 @@ named `er` ($\theta$ in {% ref gtr_graphical_model %}):
 er ~ dnDirichlet(er_prior)
 ```
 
-The Dirichlet distribution assigns probability densities to a group of parameters: *e.g.*,  those that measure proportions and must sum to 1. Here, we have specified a six-parameter Dirichlet prior, where each value describes one of the six relative rates of the GTR model: (1) $A\leftrightarrows C$; (2) $A\leftrightarrows G$; (3) $A\leftrightarrows T$; (4) $C\leftrightarrows G$; (5) $C\leftrightarrows T$; (6) $G\leftrightarrows T$. The input parameters of a Dirichlet distribution are called shape (or concentration) parameters. The expectation and variance for each variable are related to the sum of the shape parameters. The prior we specified above is a ‘flat’ or symmetric Dirichlet distribution; all of the shape parameters are equal (1,1,1,1,1,1). This describes a model that allows for equal rates of change between nucleotides, such that the expected rate for each is equal to $\frac{1}{6}$ ({% ref dirichletFig %} a). We might also parameterize the Dirichlet distribution such that all of the shape parameters were equal to 100, which would also specify a prior with an expectation of equal exchangeability rates ({% ref dirichletFig %} b). However, by increasing the values of the shape parameters, `er_prior <- v(100,100,100,100,100,100)`, the Dirichlet distribution will more strongly favor equal exchangeability rates; (*i.e.*, a relatively informative prior). Alternatively, we might consider an asymmetric Dirichlet parameterization that could reflect a strong prior belief that transition and transversion substitutions occur at different rates. For example, we might specify the prior density `er_prior <- v(4,8,4,4,8,4)`. Under this model, the expected rate for transversions would be $\frac{4}{32}$ and that for transitions would be $\frac{8}{32}$, and there would be greater prior probability on sets of GTR rates that matched this configuration ({% ref dirichletFig %} c). Yet another aymmetric prior could specify that each of the six GTR rates had a different value conforming to a Dirichlet(2,4,6,8,10,12). This would lead to a different prior probability density for each rate parameter ({% ref dirichletFig %} d). Without strong prior knowledge about the pattern of relative rates, however, we can better reflect our uncertainty by using a vague prior on the GTR rates. Notably, all patterns of relative rates have the same probability density under `er_prior <- v(1,1,1,1,1,1)`.
+The Dirichlet distribution assigns probability densities to a group of parameters: *e.g.*,  those that measure proportions and must sum to 1. Here, we have specified a six-parameter Dirichlet prior, where each value describes one of the six relative rates of the GTR model: (1) $A\leftrightarrows C$; (2) $A\leftrightarrows G$; (3) $A\leftrightarrows T$; (4) $C\leftrightarrows G$; (5) $C\leftrightarrows T$; (6) $G\leftrightarrows T$. The input parameters of a Dirichlet distribution are called shape (or concentration) parameters. The expectation and variance for each variable are related to the sum of the shape parameters. The prior we specified above is a ‘flat’ or symmetric Dirichlet distribution; all of the shape parameters are equal (1,1,1,1,1,1). This describes a model that allows for equal rates of change between nucleotides, such that the expected rate for each is equal to $\frac{1}{6}$ ({% ref dirichletFig %} a). 
+
+We might also parameterize the Dirichlet distribution such that all of the shape parameters were equal to 100, which would also specify a prior with an expectation of equal exchangeability rates ({% ref dirichletFig %} b). However, by increasing the values of the shape parameters, `er_prior <- v(100,100,100,100,100,100)`, the Dirichlet distribution will more strongly favor equal exchangeability rates; (*i.e.*, a relatively informative prior). 
+
+Alternatively, we might consider an asymmetric Dirichlet parameterization that could reflect a strong prior belief that transition and transversion substitutions occur at different rates. For example, we might specify the prior density `er_prior <- v(4,8,4,4,8,4)`. Under this model, the expected rate for transversions would be $\frac{4}{32}$ and that for transitions would be $\frac{8}{32}$, and there would be greater prior probability on sets of GTR rates that matched this configuration ({% ref dirichletFig %} c). 
+
+Yet another asymmetric prior could specify that each of the six GTR rates had a different value conforming to a Dirichlet(2,4,6,8,10,12). This would lead to a different prior probability density for each rate parameter ({% ref dirichletFig %} d). Without strong prior knowledge about the pattern of relative rates, however, we can better reflect our uncertainty by using a vague prior on the GTR rates. Notably, all patterns of relative rates have the same probability density under `er_prior <- v(1,1,1,1,1,1)`.
 
 {% figure dirichletFig %}
 ![]( figures/dirichlet_rates.png) 
@@ -774,7 +780,7 @@ Q := fnGTR(er,pi)
 
 {% section The Discrete Gamma Model of Among Site Rate Variation %}
 
-Members of the GTR family of substitution models assume that rates are homogeneous across sites, an assumption that is often violated by real data. We can accommodate variation in substitution rate among sites (ASRV) by adopting the discrete-gamma model {% cite Yang1994a %}. This model assumes that the substitution rate at each site is a random variable that is described by a discretized gamma distribution, which has two parameters: the shape parameter, $\alpha$, and the rate parameter, $\beta$. In order that we can interpret the branch lengths as the expected number of substitutions per site, this model assumes that the mean site rate is equal to 1. The mean of the gamma is equal to $\alpha/\beta$, so a mean-one gamma is specified by setting the two parameters to be equal, $\alpha=\beta$. This means that we can fully describe the gamma distribution with the single shape parameter, $\alpha$. The degree of among-site substitution rate variation is inversely proportional to the value of the $\alpha$-shape parameter. As the value of the $\alpha$-shape increases, the gamma distribution increasingly resembles a normal distribution with decreasing variance, which therefore corresponds to decreasing levels of ASRV {% ref asrhGammaFig %}. By contrast, when the value of the $\alpha$-shape parameter is $< 1$, the gamma distribution assumes a concave distribution that concentrates most of the prior density on low rates, but retains some prior mass on sites with very high rates, which therefore corresponds to high levels of ASRV {% ref asrhGammaFig %}. Note that, when $\alpha = 1$, the gamma distribution collapses to an exponential distribution with a rate parameter equal to $\beta$.
+Members of the GTR family of substitution models assume that rates are homogeneous across sites, an assumption that is often violated by real data. We can accommodate variation in substitution rate among sites (ASRV) by adopting the discrete-gamma model {% cite Yang1994a %}. This model assumes that the substitution rate at each site is a random variable that is described by a discretized gamma distribution, which has two parameters: the shape parameter, $\alpha$, and the rate parameter, $\beta$. In order that we can interpret the branch lengths as the expected number of substitutions per site, this model assumes that the mean site rate is equal to 1. The mean of the gamma is equal to $\alpha/\beta$, so a mean-one gamma is specified by setting the two parameters to be equal, $\alpha=\beta$. This means that we can fully describe the gamma distribution with the single shape parameter, $\alpha$. The degree of among-site substitution rate variation is inversely proportional to the value of the $\alpha$-shape parameter. As the value of the $\alpha$-shape increases, the gamma distribution increasingly resembles a normal distribution with decreasing variance, which therefore corresponds to decreasing levels of ASRV ({% ref asrhGammaFig %}). By contrast, when the value of the $\alpha$-shape parameter is $< 1$, the gamma distribution assumes a concave distribution that concentrates most of the prior density on low rates, but retains some prior mass on sites with very high rates, which therefore corresponds to high levels of ASRV ({% ref asrhGammaFig %}). Note that, when $\alpha = 1$, the gamma distribution collapses to an exponential distribution with a rate parameter equal to $\beta$.
 
 {% figure asrhGammaFig %}
 <img src="figures/asrh_gamma.png" />
@@ -802,7 +808,7 @@ Graphical model representation of the General Time Reversible (GTR) + Gamma phyl
 Create a constant node called `alpha_prior_mean` for the mean
 parameter and a constant node called `alpha_prior_sd` for the standard
 deviation of the lognormal prior on the gamma-shape parameter (this is
-represented as the constant $m_\alpha$ and $sd_\alpha$ parameters in {% ref gtrg %}):
+represented as the constant $m_\alpha$ and $sd_\alpha$ parameters in {% ref fig_gtrg %}):
 
 ```
 alpha_prior_mean <- ln(5.0)
@@ -811,7 +817,7 @@ alpha_prior_sd <- 0.587405
 
 Then create a stochastic node called `alpha` with a lognormal prior
 (this represents the stochastic node for the $\alpha$-shape parameter in
-{% ref gtrg %}):
+{% ref fig_gtrg %}):
 
 ```
 alpha ~ dnLognormal( alpha_prior_mean, alpha_prior_sd )
@@ -869,7 +875,7 @@ pinvar ~ dnBeta(1,1)
 
 The `Beta(1,1)` distribution is a flat prior distribution that specifies equal probability for all values between 0 and 1.
 
-Then, as usual, we add a move to change this stochastic variable; we’ll used a simple sliding window move.
+Then, as usual, we add a move to change this stochastic variable; we’ll use a simple sliding window move.
 
 ```
 moves[mvi++] = mvSlide(pinvar)
