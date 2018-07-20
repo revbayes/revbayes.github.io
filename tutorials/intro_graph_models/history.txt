@@ -1,0 +1,100 @@
+moves[1] = mvSlide(beta, delta=0.001)
+moves[2] = mvSlide(alpha, delta=0.001)
+moves[3] = mvSlide(sigma, delta=0.001)
+monitors[1] = mnScreen()
+monitors[2] = mnModel("output/linear_regression.log")
+mymcmc = mcmc(mymodel, moves, monitors)
+mymcmc.run(10000)
+quit()
+x_obs <- readDataDelimitedFile(file="data/x.csv", header=FALSE, delimiter=",")[1]
+y_obs <- readDataDelimitedFile(file="data/y.csv", header=FALSE, delimiter=",")[1]
+beta ~ dnNormal(0, 1)
+alpha ~ dnNormal(0, 1)
+sigma ~ dnExponential(1)
+for (i in 1:x_obs.size()) {
+    mu_y[i] := (beta * x_obs[i]) + alpha
+    y[i] ~ dnNormal(mu_y[i], sigma)
+    y[i].clamp(y_obs[i])
+}
+mymodel = model(beta)
+moves[1] = mvSlide(beta, delta=1)
+moves[2] = mvSlide(alpha, delta=1)
+moves[3] = mvSlide(sigma, delta=1)
+monitors[1] = mnScreen()
+monitors[2] = mnModel("output/linear_regression2.log")
+mymcmc = mcmc(mymodel, moves, monitors)
+mymcmc.run(10000)
+x_obs <- readDataDelimitedFile(file="data/x.csv", header=FALSE, delimiter=",")[1]
+y_obs <- readDataDelimitedFile(file="data/y.csv", header=FALSE, delimiter=",")[1]
+beta ~ dnNormal(0, 1)
+alpha ~ dnNormal(0, 1)
+sigma ~ dnExponential(1)
+for (i in 1:x_obs.size()) {
+    mu_y[i] := (beta * x_obs[i]) + alpha
+    y[i] ~ dnNormal(mu_y[i], sigma)
+    y[i].clamp(y_obs[i])
+}
+mymodel = model(beta)
+moves[1] = mvSlide(beta, delta=1)
+moves[2] = mvSlide(alpha, delta=1)
+moves[3] = mvSlide(sigma, delta=1)
+monitors[1] = mnScreen()
+monitors[2] = mnModel("output/linear_regression2.log")
+mymcmc = mcmc(mymodel, moves, monitors)
+mymcmc.run(100000)
+x_obs <- readDataDelimitedFile(file="data/x.csv", header=FALSE, delimiter=",")[1]
+y_obs <- readDataDelimitedFile(file="data/y.csv", header=FALSE, delimiter=",")[1]
+beta ~ dnNormal(0, 1)
+alpha ~ dnNormal(0, 1)
+sigma ~ dnExponential(1)
+for (i in 1:x_obs.size()) {
+    mu_y[i] := (beta * x_obs[i]) + alpha
+    y[i] ~ dnNormal(mu_y[i], sigma)
+    y[i].clamp(y_obs[i])
+}
+mymodel = model(beta)
+moves[1] = mvSlide(beta, delta=1, weight=5)
+moves[2] = mvSlide(alpha, delta=1, weight=5)
+moves[3] = mvSlide(sigma, delta=1, weight=5)
+mymcmc = mcmc(mymodel, moves, monitors)
+monitors[1] = mnScreen()
+monitors[2] = mnModel("output/linear_regression2.log")
+mymcmc = mcmc(mymodel, moves, monitors)
+mymcmc.run(10000)
+x_obs <- readDataDelimitedFile(file="data/x.csv", header=FALSE, delimiter=",")[1]
+y_obs <- readDataDelimitedFile(file="data/y.csv", header=FALSE, delimiter=",")[1]
+beta ~ dnNormal(0, 0.01)
+alpha ~ dnNormal(0, 0.01)
+sigma ~ dnExponential(1)
+for (i in 1:x_obs.size()) {
+    mu_y[i] := (beta * x_obs[i]) + alpha
+    y[i] ~ dnNormal(mu_y[i], sigma)
+    y[i].clamp(y_obs[i])
+}
+mymodel = model(beta)
+moves[1] = mvSlide(beta, delta=1, weight=5)
+moves[2] = mvSlide(alpha, delta=1, weight=5)
+moves[3] = mvSlide(sigma, delta=1, weight=5)
+monitors[1] = mnScreen()
+monitors[2] = mnModel("output/linear_regression.log")
+mymcmc = mcmc(mymodel, moves, monitors)
+mymcmc.run(10000)
+q()
+x_obs <- readDataDelimitedFile(file="data/x.csv", header=FALSE, delimiter=",")[1]
+y_obs <- readDataDelimitedFile(file="data/y.csv", header=FALSE, delimiter=",")[1]
+beta ~ dnNormal(0, 0.1)
+alpha ~ dnNormal(0, 0.1)
+sigma ~ dnExponential(1)
+for (i in 1:x_obs.size()) {
+    mu_y[i] := (beta * x_obs[i]) + alpha
+    y[i] ~ dnNormal(mu_y[i], sigma)
+    y[i].clamp(y_obs[i])
+}
+mymodel = model(beta)
+moves[1] = mvSlide(beta, delta=1, weight=5)
+moves[2] = mvSlide(alpha, delta=1, weight=5)
+moves[3] = mvSlide(sigma, delta=1, weight=5)
+monitors[1] = mnScreen()
+monitors[2] = mnModel("output/linear_regression2.log")
+mymcmc = mcmc(mymodel, moves, monitors)
+mymcmc.run(10000)

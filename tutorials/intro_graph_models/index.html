@@ -93,6 +93,18 @@
         
         </ul>
     
+        
+        <strong>Scripts</strong>
+        <ul id="scripts">
+        
+        
+        
+          <li><a href="/tutorials/intro_graph_models/scripts/linear_regression.Rev">linear_regression.Rev</a></li>
+        
+          <li><a href="/tutorials/intro_graph_models/scripts/linear_regression_generative.Rev">linear_regression_generative.Rev</a></li>
+        
+        </ul>
+    
 </blockquote>
 
 
@@ -123,13 +135,13 @@ This means the learning curve is steep, however there are a number of benefits:<
 
 <ol>
   <li>
-    <p>Transparency:</p>
+    <p>Transparency: All the modeling assumptions are explicitly specified in <a href="http://revbayes.com">RevBayes</a>. The <code class="highlighter-rouge">Rev</code> script that runs an analysis makes these assumptions clear and can be easily shared. The assumptions can easily be modified in the <code class="highlighter-rouge">Rev</code> script and then the analysis can be rerun to see how changes affect the results. There is no reliance on “defaults” that may change with different versions of the software.</p>
   </li>
   <li>
-    <p>Flexibility:</p>
+    <p>Flexibility: Users are not limited by a small set of models the programmers hard coded, instead users can specify their own custom models uniquely tailored to their hypotheses and datasets.</p>
   </li>
   <li>
-    <p>Modularity:</p>
+    <p>Modularity: Each model component can be combined with others in an endless number of new ways like a LEGO kit. Testing many complex evolutionary hypotheses require tying different models together. For example, suppose you wish to test how the effect of biographic range on trait evolution changes through time. In <a href="http://revbayes.com">RevBayes</a> you could simultaneously infer a time-calibrated phylogeny and estimate biogeography-dependent trait evolution using molecular data, biogeographic range data, and morphological data from both fossils and extant lineages.</p>
   </li>
 </ol>
 
@@ -141,13 +153,26 @@ the observed data points $X_i$ are conditionally independent given $\theta$.
 Right: the same graphical model using plate notation to represent the $N$ repeated $X_i$.
 These graphical models represents the joint probability distribution
 <script type="math/tex">p(\theta,X_1,\dots,X_N)</script>.
-Image from Murphy <a href="#murphy2012machine">(2012)</a></em></figcaption>
+See <a href="#legend"></a> for a description of the visual symbols.
+Image from <a href="#murphy2012machine">Murphy (2012)</a></em></figcaption>
 </figure>
 
 <p>A <em>graphical model</em> is a way to represent a joint multivariate probability distribution as a graph.
-Here we mean <em>graph</em> in the mathematical sense of a set of nodes (vertices) and edges.</p>
+Here we mean <em>graph</em> in the mathematical sense of a set of nodes (vertices) and edges.
+In a graphical model, the nodes represent variables and the edges represent conditional dependencies among the variables. 
+There are three important types
+of variables:</p>
 
-<p><a href="#graphicalmodel"></a> illustrates the graphical model that represents the joint probability distribution</p>
+<ol>
+  <li>Constant nodes: represents a fixed value that will not change.</li>
+  <li>Stochastic nodes: represents a random variable with a value drawn from a probability distribution.</li>
+  <li>Deterministic nodes: represents a deterministic transformation of the values of other nodes.</li>
+</ol>
+
+<p>In the graphical modeling framework observed data is simply a variable with an observed value.
+To specify that a node has an observed value associated with it we say that the
+node is <em>clamped</em>, or fixed, to the observed value.
+<a href="#graphicalmodel"></a> illustrates the graphical model that represents the joint probability distribution</p>
 
 <script type="math/tex; mode=display">\begin{aligned}
 p(\theta,\mathcal{D}) = p(\theta) \Big[ \displaystyle\prod^N_{i=1} p(X_i|\theta) \Big],
@@ -155,59 +180,332 @@ p(\theta,\mathcal{D}) = p(\theta) \Big[ \displaystyle\prod^N_{i=1} p(X_i|\theta)
 
 <p>where <script type="math/tex">\mathcal{D}</script> is the vector of observed data points <script type="math/tex">X_1,\dots,X_N</script>.</p>
 
+<p>Nearly any probabilistic model can be represented as a graphical model: neural networks, classification models, time series models, and of course phylogenetic models!
+In some literature the terms Bayesian networks, belief networks, or causal networks are sometimes used to refer to graphical models.</p>
+
+<h2 class="subsection" id="visual-representation">Visual Representation</h2>
+
+<p>The statistics literature has developed a rich visual representation for graphical models.
+Visually representing graphical models can be useful for communication and pedagogy.
+We will mention the notation used in this visual representation here only briefly 
+(see <a href="#legend"></a>),
+and enourage readers to see <a href="#Hoehna2014b">Höhna et al. (2014)</a> for more details.
+Representing graphical models in computer code (like the <code class="highlighter-rouge">Rev</code> language)
+will likely be the most useful aspects of graphical models to most readers.</p>
+
+<figure id="legend"><p><img src="figures/graphical_model_legend.png" width="400" /></p>
+<figcaption><em>The symbols for a visual representation of a graphical
+model. a) Solid squares represent constant nodes, which specify fixed-
+valued variables. b) Stochastic nodes are represented by solid circles.
+These variables correspond to random variables and may depend on
+other variables. c) Deterministic nodes (dotted circles) indicate variables
+that are determined by a specific function applied to another variable.
+They can be thought of as variable transformations. d) Observed states
+are placed in clamped stochastic nodes, represented by gray-shaded
+circles. e) Replication over a set of variables is indicated by enclosing
+the replicated nodes in a plate (dashed rectangle). f) A tree plate. 
+Represents the different classes of nodes in a phylogeny. 
+The tree topology orders the nodes in the tree plate and
+may be a constant node (as in this example) or a stochastic node (if the
+topology node is a solid circle).
+Image and text modified from <a href="#Hoehna2014b">Höhna et al. (2014)</a></em></figcaption>
+</figure>
+
+<h2 class="subsection" id="phylogenetic-graphical-models">Phylogenetic Graphical Models</h2>
+
+<p>In phylogenetics, observations about different species are not considered independent data points
+due to their shared evolutionary history.
+So in a phylogenetic probabilistic model the topology of the tree determines the conditional dependencies among variables. This can be represented as a graphical model as in <a href="#phylo_graph"></a> (left).</p>
+
+<p>Phylogenetic models are often highly complex with hundreds of variables. Not only do we model
+the conditional dependencies due to shared evolutionary history (the tree topology), 
+but we also commonly model character evolution (nucleotide substitution models, etc.),
+branching processes that determine the times between speciation events (birth-death processes),
+and many other aspects of the evolutionary process.
+With graphical models we can think of each part of these models as discrete components that can
+be combined in a myriad of ways to assemble different phylogenetic models (<a href="#phylo_graph"></a> right).</p>
+
+<figure id="phylo_graph"><p><img src="figures/phylo_graphical.png" width="400" /><img src="figures/graphical_lego_kit.png" width="400" /></p>
+<figcaption><em>Left: In a phylogenetic probabilistic model the topology of the tree determines the conditional dependencies among variables.
+Right: A complex phylogenetic model that includes a clock model, a GTR+$\Gamma$ nucleotide substitution model, and a uniform tree topology model. Here the repeated nodes within the tree are represented by a tree plate.
+Images from <a href="#Hoehna2014b">Höhna et al. (2014)</a></em></figcaption>
+</figure>
+
 <h1 class="section" id="probabilistic-programming">Probabilistic Programming</h1>
+
+<p>To describe complex probabilistic models and perform computational tasks with them,
+we need a way to formally specify the models in a computer. 
+Probabilistic programming languages were designed exactly for this purpose.
+A probabilistic programming language is a tool for probabilistic inference that:</p>
+
+<ol>
+  <li>formally specifies graphical models, and</li>
+  <li>specifies the inference algorithms used with the model.</li>
+</ol>
+
+<p>Probabilistic programming languages are being actively developed within
+the statistics and machine learning communities.
+Some of the most common are <a href="http://mc-stan.org/">Stan</a>, <a href="http://mcmc-jags.sourceforge.net/">JAGS</a>, <a href="http://edwardlib.org/">Edward</a>, and <a href="https://docs.pymc.io/">PyMC3</a>.
+While these are all excellent tools, they are all unsuitable for phylogenetic models 
+since the tree topology itself must be treated as a random variable to be inferred.</p>
+
+<h2 class="subsection" id="the-rev-probabilistic-programming-language">The <code class="highlighter-rouge">Rev</code> Probabilistic Programming Language</h2>
+
+<p><a href="http://revbayes.com">RevBayes</a> provides its own probabilistic programming language called <code class="highlighter-rouge">Rev</code>.
+While <code class="highlighter-rouge">Rev</code> focuses on phylogenetic models, nearly any type of probabilistic
+model can be programmed in <code class="highlighter-rouge">Rev</code> making it a highly flexible probabilistic computing environment.
+Most <code class="highlighter-rouge">Rev</code> scripts consist of two different parts:</p>
+
+<ol>
+  <li>Model specification. This part of the script defines the constant, stochastic, and determinstic nodes that make up the model.</li>
+  <li>Inference algorithm specification. This part of the script specifies what sort of inference algorithm we want to use with the model. Typically this is a Markov chain Monte Carlo algorithm, and we need to specify what sort of proposals (or moves) will operate on each variable.</li>
+</ol>
+
+<p>In more complex <code class="highlighter-rouge">Rev</code> scripts, these two different elements (model specification and infernence algorithm specification) will be woven together.
+In the example for this tutorial we will keep the two parts separate.</p>
 
 <h1 class="section" id="linear-regression-example">Linear Regression Example</h1>
 
-<h2 id="subsect:Exercise-Format" class="subsection">Tutorial Format</h2>
+<p>To demonstrate how to use the <code class="highlighter-rouge">Rev</code> language to specify a graphical model,
+we will start with a simple non-phylogenetic model.
+This tutorial will show both how to specify linear regression
+as a graphical model, and how to perform Bayesian inference over
+the model using MCMC.</p>
 
-<p>This tutorial follows a specific format for issuing instructions and
-information.</p>
+<h2 class="subsection" id="tutorial-format">Tutorial Format</h2>
 
-<p>The boxed instructions guide you to complete tasks that are not part of the RevBayes syntax, but rather direct you to create directories or files or similar.</p>
+<p>All command-line text, including all <code class="highlighter-rouge">Rev</code> syntax, are given in <code class="highlighter-rouge">monotype font</code>. Furthermore, blocks of <code class="highlighter-rouge">Rev</code> code that are needed to build the model, specify the analysis, or execute the run are given in separate shaded boxes. For example, we will instruct you to create a new variable called <code class="highlighter-rouge">n</code> that is equal to <code class="highlighter-rouge">10</code> using the <code class="highlighter-rouge">&lt;-</code> operator like this:</p>
 
-<p>Information describing the commands and instructions will be written in paragraph-form before or after they are issued.</p>
-
-<p>All command-line text, including all <code class="highlighter-rouge">Rev</code> syntax, are given in <code class="highlighter-rouge">monotype font</code>. Furthermore, blocks of <code class="highlighter-rouge">Rev</code> code that are needed to build the model, specify the analysis, or execute the run are given in separate shaded boxes. For example, we will instruct you to create a new variable called <code class="highlighter-rouge">n</code> that is equal to <code class="highlighter-rouge">10</code> using the <code class="highlighter-rouge">=</code> operator like this:</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n = 10
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n &lt;- 10
 </code></pre></div></div>
 
-<h2 class="subsection" id="create-your-script-file">Create Your Script File</h2>
+<h2 class="subsection" id="setup-your-files">Setup Your Files</h2>
 
-<p>Make yourself familiar with the example script called <a href="https://raw.githubusercontent.com/revbayes/"><code class="highlighter-rouge">linear_regression.Rev</code></a> which shows the code for the following sections. Then, start a new and empty script in your text editor and follow each step provided as below.</p>
+<p>Make yourself familiar with the example script called <a href="scripts/linear_regression.Rev"><code class="highlighter-rouge">linear_regression.Rev</code></a> which shows the code for the following sections. Then, start a new and empty script in your text editor and follow each step provided as below. Name the script file <code class="highlighter-rouge">my_linear_regression.Rev</code> or anything you’d like.</p>
 
-<p>Name the script file <code class="highlighter-rouge">my_linear_regression.Rev</code> or anything you’d like.</p>
+<p>You’ll also want to download the <a href="data/x.csv"><code class="highlighter-rouge">x.csv</code></a> and <a href="data/y.csv"><code class="highlighter-rouge">y.csv</code></a> data files and place them in a <code class="highlighter-rouge">data</code> directory.</p>
 
-<h2 class="subsection" id="rev-script-structure"><code class="highlighter-rouge">Rev</code> Script Structure</h2>
+<h2 class="subsection" id="linear-regression-as-a-graphical-model">Linear Regression as a Graphical Model</h2>
 
-<p>Metropolis-Hastings MCMC algorithm <a href="#Metropolis1953">(Metropolis et al. 1953; Hastings 1970)</a></p>
+<figure id="linear"><p><img src="figures/linear_regression.png" width="500" /></p>
+<figcaption><em>The observed data used in the linear regression example.</em></figcaption>
+</figure>
 
-<ol>
-  <li>
-    <p>model specification</p>
-  </li>
-  <li>
-    <p>MCMC algorithm</p>
-  </li>
-</ol>
+<p>Suppose we observed the data shown in <a href="#linear"></a>.
+We might hypothesize that $x$ and $y$ are related through the linear
+regression model</p>
+
+<script type="math/tex; mode=display">\begin{aligned}
+y = \beta x + \alpha + \epsilon.
+\end{aligned}</script>
+
+<p>In this model $\beta$ and $\alpha$ are the regression variables and
+$\epsilon$ is an error or noise term.
+We can formulate this as the graphical model</p>
+
+<script type="math/tex; mode=display">\begin{aligned}
+\mu_y := \beta x + \alpha
+\end{aligned}</script>
+
+<script type="math/tex; mode=display">\begin{aligned}
+y \sim \text{Normal}(\mu_y, \sigma_{\epsilon}).
+\end{aligned}</script>
+
+<p>Here $\mu_y$ is a <em>deterministic</em> variable, it is determined by whatever the values
+of $\beta$ and $\alpha$ are. We use the $:=$ assignment operator to designate
+that $\mu_y$ is deterministic. The error or noise term $\epsilon$ is represented
+as a normal distribution where the mean equals $\mu_y$ and the 
+standard deviation is $\sigma_{\epsilon}$.
+$y$ is a stochastic variable, it has a value that is drawn from a probability distribution.
+This is designated by using the $\sim$ assignment operator.
+Since we have observed values for $y$, we will <em>clamp</em> $y$ to those observed values.</p>
 
 <h2 class="subsection" id="bayesian-linear-regression">Bayesian Linear Regression</h2>
 
-<h3 id="read-in-data">Read in data</h3>
+<p>In this model $\beta$, $\alpha$, and $\sigma_{\epsilon}$ are the free variables we wish to estimate.
+To perform Bayesian inference, we need some priors!</p>
 
+<script type="math/tex; mode=display">\begin{aligned}
+\beta \sim \text{Normal}(\mu=0, \sigma^2=1)
+\end{aligned}</script>
+
+<script type="math/tex; mode=display">\begin{aligned}
+\alpha \sim \text{Normal}(\mu=0, \sigma^2=1)
+\end{aligned}</script>
+
+<script type="math/tex; mode=display">\begin{aligned}
+\sigma_{\epsilon} \sim \text{Exponential}(\lambda=1)
+\end{aligned}</script>
+
+<p>Again, these are stochastic variables, so we use the $\sim$ assignment operator.
+For now we will accept these as decent uninformative priors.
+Later in the tutorial we will discuss how the choice of a prior 
+can affect the outcome of the analysis.</p>
+
+<h2 class="subsection" id="specifying-the-model-in-rev">Specifying the Model in <code class="highlighter-rouge">Rev</code></h2>
+
+<p>Remember that graphical models are made up of three types of nodes: stochastic, constant, and deterministic nodes.
+In <code class="highlighter-rouge">Rev</code> we specify the type of node by using a specific assignment operator:</p>
+<ul>
+  <li>Stochastic node: <code class="highlighter-rouge">n ~ dnNormal(0, 1)</code></li>
+  <li>Constant node: <code class="highlighter-rouge">n &lt;- 5</code></li>
+  <li>Deterministic node: <code class="highlighter-rouge">n := m + 5</code></li>
+</ul>
+
+<p>We will use each of these assignment operators to set up the linear regression model.</p>
+
+<p>First, we read in the observed data as constant nodes:</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>x_obs &lt;- readDataDelimitedFile(file="data/x.csv", header=FALSE, delimiter=",")[1]
 y_obs &lt;- readDataDelimitedFile(file="data/y.csv", header=FALSE, delimiter=",")[1]
 </code></pre></div></div>
+<p>Take a look at <code class="highlighter-rouge">x_obs</code>:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>x_obs
+</code></pre></div></div>
+<p>This is the vector of x-coordinates for the points plotted in <a href="#linear"></a>.</p>
+
+<p>Now we will specify the prior distributions for the stochastic nodes.
+These are the variables that we will estimate:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>beta ~ dnNormal(0, 1)
+alpha ~ dnNormal(0, 1)
+sigma ~ dnExponential(1)
+</code></pre></div></div>
+
+<p>Now, for each observed value in $x_obs$
+we will create a deterministic node for $mu_y$ and a stochastic node for $y$:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:x_obs.size()) {
+    mu_y[i] := (beta * x_obs[i]) + alpha
+    y[i] ~ dnNormal(mu_y[i], sigma)
+}
+</code></pre></div></div>
+<p>Take a look at $y$:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>y
+</code></pre></div></div>
+<p>This produces a vector of simulated values of $y$!
+We have specified a model that describes the process that generates $y$
+conditioned on the observed values of $x$.
+We have not clamped, or fixed, the observed values $y_obs$ to the stochastic nodes $y$.
+In <code class="highlighter-rouge">Rev</code> all models can be used to both simulate new values and, when clamped to observed values,
+perform parameter inference.</p>
+
+<p>In this case we are not interested in simulating new values of $y$, but instead
+we want to estimate our linear regression parameters. So let’s modify the above code
+to clamp the observed values to $y$:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:x_obs.size()) {
+    mu_y[i] := (beta * x_obs[i]) + alpha
+    y[i] ~ dnNormal(mu_y[i], sigma)
+    y[i].clamp(y_obs[i])
+}
+</code></pre></div></div>
+<p>Note that we have now clamped each observed value $y_obs$ to each stochastic node $y$.</p>
+
+<p>We have now fully specified the model, so we can begin specifying the inference
+algorithm.</p>
+
+<h2 class="subsection" id="setting-up-mcmc-in-rev">Setting up MCMC in <code class="highlighter-rouge">Rev</code></h2>
+
+<p>Here we will use the Metropolis-Hastings MCMC algorithm <a href="#Metropolis1953">(Metropolis et al. 1953; Hastings 1970)</a> 
+to perform parameter estimation.
+We focus here on providing a simple overview of how to set up and tweak MCMC in RevBayes,
+for a more in depth introduction to MCMC please see the <a href="/tutorials/mcmc_archery/">Introduction to MCMC using RevBayes</a> tutorial.</p>
+
+<p>The first step in setting up our MCMC algorithm is wrapping the entire model
+into a single variable:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(beta)
+</code></pre></div></div>
+<p>Since our model is a graph in which all the model nodes are connected,
+we can use any model variable and RevBayes will traverse the graph to copy
+the entire model into the variable <code class="highlighter-rouge">mymodel</code>.</p>
+
+<p>Note that we used the <code class="highlighter-rouge">=</code> assignment operator. This mean that the variable
+<code class="highlighter-rouge">mymodel</code> is <em>not</em> part of the graphical model – it is not a stochastic, constant, or deterministic
+node. We call this a <code class="highlighter-rouge">Rev</code> workspace variable. Workspace variables
+are utility variables that we use for any programming task that 
+is not specifically defining the model.
+Note, that unlike in <code class="highlighter-rouge">R</code>, in <code class="highlighter-rouge">Rev</code> the <code class="highlighter-rouge">=</code> and <code class="highlighter-rouge">&lt;-</code> assignment operators have very different function!</p>
+
+<p>To sample different values of each variable, we must assign
+an MCMC move to each variable. Each MCMC move will propose new values
+of each parameter. We have three variables,
+so we will have three moves which we will save in a
+vector called <code class="highlighter-rouge">moves</code>:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[1] = mvSlide(beta, delta=0.001, weight=1)
+moves[2] = mvSlide(alpha, delta=0.001, weight=1)
+moves[3] = mvSlide(sigma, delta=0.001, weight=1)
+</code></pre></div></div>
+<p>Here we used simple slide moves for each variable. 
+The slide move proposes new values for the variable by “sliding” its value within a small window
+determined by the <code class="highlighter-rouge">delta</code> argument.
+RevBayes provides many other types of moves that you will see in other tutorials.
+We set the <code class="highlighter-rouge">weight</code> of each move to 1, which means that each
+move will be performed on average once per MCMC iteration.</p>
+
+<p>Next, we need to set up some monitors that will sample values during the MCMC.
+We will use two monitors which we save into a vector called <code class="highlighter-rouge">monitors</code>.
+The first monitor <code class="highlighter-rouge">mnScreen</code> prints out values to the screen,
+and the second monitor <code class="highlighter-rouge">mnModel</code> prints a log file.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[1] = mnScreen()
+monitors[2] = mnModel("output/linear_regression.log")
+</code></pre></div></div>
+<p>RevBayes provides many other monitors that can be useful for different types of analyses,
+but these are sufficient for this example.</p>
+
+<p>We can now pass the model, moves, and monitors into the <code class="highlighter-rouge">mcmc</code> function
+to finalize our analysis.
+Then we use the <code class="highlighter-rouge">run</code> member method to run the MCMC for 10000 iterations.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, moves, monitors)
+mymcmc.run(10000)
+quit()
+</code></pre></div></div>
+<p>Note that we included the <code class="highlighter-rouge">quit()</code> command so that RevBayes will automatically quit
+after the MCMC has finished running.</p>
 
 <h1 class="section" id="improving-mcmc-mixing">Improving MCMC Mixing</h1>
 
+<p>Now open the file <code class="highlighter-rouge">output/linear_regression.log</code> in Tracer.
+You will notice that the MCMC analysis did not converge well:</p>
+<figure id="bad"><p><img src="figures/beta-bad.png" width="400" /></p>
+<figcaption><em>The MCMC trace for the <code class="highlighter-rouge">beta</code> parameter. This analysis never converged.</em></figcaption>
+</figure>
+
+<p>We can fix this by modifying the MCMC moves we use.
+Let’s use a larger sliding window (the <code class="highlighter-rouge">delta</code> argument in <code class="highlighter-rouge">mvSlide</code>).
+We will also increase the <code class="highlighter-rouge">weight</code> of each move to 5.
+This means that each move will be now be performed on average 5 times
+per MCMC iteration.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[1] = mvSlide(beta, delta=1, weight=5)
+moves[2] = mvSlide(alpha, delta=1, weight=5)
+moves[3] = mvSlide(sigma, delta=1, weight=5)
+</code></pre></div></div>
+<p>Rerun the MCMC analysis and view the log file in Tracer.
+This analysis looks much better:</p>
+<figure id="bad"><p><img src="figures/beta-good.png" width="400" /><img src="figures/param-estimates.png" width="400" /></p>
+<figcaption><em>Left: The MCMC trace for the <code class="highlighter-rouge">beta</code> parameter. This analysis has adequately converged;
+all parameter values have ESS values over 200.
+Right: Posterior parameter estimates from the converged MCMC analysis.
+The y-intercept ($\alpha$) was estimated to be about -2 and the slope 
+($\beta$) was estimated to be about 0.5. 
+This closely matches what is observed in <a href="#linear"></a>.
+Moreover, -2 and 0.5 were the true values used to simulate the data.</em></figcaption>
+</figure>
+
 <h1 class="section" id="prior-sensitivity">Prior Sensitivity</h1>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>beta ~ dnNormal(0, 0.1)
+alpha ~ dnNormal(0, 0.1)
+</code></pre></div></div>
+<figure id="bad-priors"><p><img src="figures/priors.png" width="400" /></p>
+<figcaption><em>Biased posterior parameter estimates when using overly informative priors.</em></figcaption>
+</figure>
 
 <h1 class="section" id="generative-vs-discriminative-models">Generative vs Discriminative Models</h1>
 
 
 <ol class="bibliography"><li><span id="Hastings1970">Hastings W.K. 1970. Monte Carlo Sampling Methods Using Markov Chains and Their Applications. Biometrika. 57:97–109.</span>
+
+</li>
+<li><span id="Hoehna2014b">Höhna S., Heath T.A., Boussau B., Landis M.J., Ronquist F., Huelsenbeck J.P. 2014. Probabilistic Graphical Model Representation in Phylogenetics. Systematic Biology. 63:753–771.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syu039">10.1093/sysbio/syu039</a>
 
 </li>
 <li><span id="Metropolis1953">Metropolis N., Rosenbluth A.W., Rosenbluth M.N., Teller A.H., Teller E. 1953. Equation of State Calculations by Fast Computing Machines. Journal of Chemical Physics. 21:1087–1092.</span>
