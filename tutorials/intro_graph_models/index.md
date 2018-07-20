@@ -94,11 +94,12 @@ Visual Representation
 
 The statistics literature has developed a rich visual representation for graphical models.
 Visually representing graphical models can be useful for communication and pedagogy.
-We will mention the notation used in this visual representation here only briefly 
+We explain the notation used in the visual representation of these models only briefly 
 (see {% ref legend %}),
 and enourage readers to see {% citet Hoehna2014b %} for more details.
-Representing graphical models in computer code (like the `Rev` language)
-will likely be the most useful aspects of graphical models to most readers.
+As we will discuss below, representing graphical models in computer code 
+(using the `Rev` language)
+will likely be the most useful aspect of graphical models to most readers.
 
 {% figure legend %}
 <img src="figures/graphical_model_legend.png" width="400" />  
@@ -285,6 +286,30 @@ Later in the tutorial we will discuss how the choice of a prior
 can affect the outcome of the analysis.
 
 
+> **Exercise:** <br><br>
+> Using the sticks-and-arrows visual symbols explained in {% ref legend %}, draw 
+> the linear regression graphical model. See the answer in the expandable box below.
+{:.instruction}
+
+{% aside Answer: Visual Representation of the Linear Regression Model %}
+
+{% figure linear_gm %}
+<img src="figures/tikz/lr.png" width="500"/>
+{% figcaption %}
+*Visual representation of the linear regression graphical model.
+The plate (dashed rectangle) around $x_i$, $\mu_{yi}$ and $y_i$ represent
+the repeated variables for all the observed points.
+$y_i$ is a clamped (observed) stochastic node, so it is shaded.
+$\mu_{yi}$ is a deterministic node, so it is dashed.
+Here we treat $x_i$ as a constant node, so it is square.
+$\alpha$, $\beta$, and $\sigma$ are the stochastic variables we wish
+to estimate, and each of them are assigned priors distributions which
+have constant parameter values (the squares on the top row of the figure).*
+{% endfigcaption %}
+{% endfigure %}
+
+{% endaside %}
+
 Specifying the Model in `Rev`
 -----------------------------
 {:.subsection}
@@ -420,6 +445,7 @@ Improving MCMC Mixing
 =====================
 {:.section}
 
+> **Exercise:** <br><br>
 > Now open the file `output/linear_regression.log` in Tracer.
 {:.instruction}
 You will notice that the MCMC analysis did not converge well:
@@ -440,6 +466,7 @@ moves[1] = mvSlide(beta, delta=1, weight=5)
 moves[2] = mvSlide(alpha, delta=1, weight=5)
 moves[3] = mvSlide(sigma, delta=1, weight=5)
 ```
+> **Exercise:** <br><br>
 > Rerun the MCMC analysis with these new moves and view the log file in Tracer.
 {:.instruction}
 This analysis looks much better:
@@ -484,6 +511,7 @@ This is appropriate if we have very little idea what the true value of
 the parameter is.
 
 In [RevBayes](http://revbayes.com) it is easy to modify the priors used in an analysis and rerun the analysis.
+> **Exercise:** <br><br>
 > Try rerunning the linear regression exercise using highly informative priors (standard deviation set to 0.1) on `beta` and `alpha` as shown below.
 {:.instruction}
 ```
@@ -502,6 +530,7 @@ The true values were $\alpha = -2$, $\beta = 0.5$, and $\sigma = 0.25$.*
 {% endfigcaption %}
 {% endfigure %}
 
+> **Exercise:** <br><br>
 > Try running the analysis again with highly uninformative priors (10.0).
 {:.instruction}
 
@@ -566,16 +595,34 @@ as well as their more simple discriminative forms.
 
 ### A Generative Linear Regression Model
 
+A fully generative linear regression model enables us to learn something about $x$, for example the mean
+and standard deviation, which we don't get from the discriminative form.
+With the generative model:
+- we can simulate values of both $x$ and $y$,
+- both $x$ and $y$ will need to be clamped to the observed data,
+- and we will need to specify a prior distribution for $x$. 
 
-> Re-write our linear regression example so that it is a fully generative model:
-> - it should simulate values of both $x$ and $y$
-> - both $x$ and $y$ will need to be clamped to the observed data
-> - you will need to specify a prior distribution for $x$
-> - one solution is provided in [`linear_regression_generative.Rev`](scripts/linear_regression_generative.Rev) if you get stuck
+> **Exercise:** <br><br>
+> Reformulate our linear regression example so that it is a fully generative model:
+> 1. Draw the sticks-and-arrows diagram for a generative model and compare it to the discriminative form. See the expandable box for one solution.
+> 2. Code up the model in `Rev` and run MCMC. A solution is provided in [`linear_regression_generative.Rev`](scripts/linear_regression_generative.Rev) if you get stuck.
 {:.instruction}
 
-The fully generative model enables us to learn something about $x$, for example the mean
-and standard deviation, which we don't get from a discriminative model.
+{% aside Answer: Visual Representation of the Generative Linear Regression Model %}
+
+{% figure linear_gm_gen %}
+<img src="figures/tikz/lr_generative.png" width="600"/>
+{% figcaption %}
+*Visual representation of the generative linear regression graphical model.
+Compare this to {% ref linear_gm %}.
+The major difference is we now treat $x_i$ as a clamped (observed)
+stochastic node.
+Additionally, we now estimate $\mu_x$ and $\sigma_x$ as stochastic variables.*
+{% endfigcaption %}
+{% endfigure %}
+
+{% endaside %}
+
 
 ### Conclusion
 
