@@ -441,7 +441,7 @@ moves[3] = mvSlide(sigma, delta=1, weight=5)
 ```
 Rerun the MCMC analysis and view the log file in Tracer.
 This analysis looks much better:
-{% figure bad %}
+{% figure good %}
 <img src="figures/beta-good.png" width="400"/><img src="figures/param-estimates.png" width="400"/>
 {% figcaption %}
 *Left: The MCMC trace for the `beta` parameter. This analysis has adequately converged;
@@ -458,16 +458,59 @@ Prior Sensitivity
 =================
 {:.section}
 
+{% figure priors %}
+<img src="figures/normal.png" width="400"/>
+{% figcaption %}
+*Normal distributions with different values of the standard deviation.*
+{% endfigcaption %}
+{% endfigure %}
+
+Prior distributions are a way to mathematically formalize our
+prior knowledge.
+We used normal distributions as priors for $\alpha$ and $\beta$.
+How did we pick these distributions? 
+{%ref priors %} illustrates the normal distribution with different
+values for the standard deviation.
+Using a smaller standard deviation (0.1) places most of the density
+close to 0. 
+This sort of prior is appropriate only if we have prior information
+that the parameter's true value is close to 0, so we can call this
+an *informative* prior.
+Using a large standard deviation (10.0) is a highly *uninformative*.
+The density is diffuse and nearly uniform, allowing for a wide range of values.
+This is appropriate if we have very little idea what the true value of
+the parameter is.
+
+In RevBayes it is easy to modify the priors used in an analysis and rerun the analysis.
+Try rerunning the linear regression exercise these highly informative priors
+on `beta` and `alpha`:
 ```
 beta ~ dnNormal(0, 0.1)
 alpha ~ dnNormal(0, 0.1)
 ```
+{% ref bad-priors %} shows the posterior estimates when using these priors.
+Compare those results with those shown in {% ref good %}.
+Using informative priors that are incorrect can badly bias the results.
+
 {% figure bad-priors %}
 <img src="figures/priors.png" width="400"/>
 {% figcaption %}
-*Biased posterior parameter estimates when using overly informative priors.*
+*Biased posterior parameter estimates when using overly informative priors.
+The true values were $\alpha = -2$, $\beta = 0.5$, and $\sigma = 0.25$.*
 {% endfigcaption %}
 {% endfigure %}
+
+Try running the analysis again with highly uninformative prior (10.0).
+```
+beta ~ dnNormal(0, 10.0)
+alpha ~ dnNormal(0, 10.0)
+```
+These results are highly similar to our original estimates
+shown in {% ref good %}. Our original priors (that had a standard deviation of 1.0)
+did not introduce any bias.
+Typically the trade off is between informative priors that may introduce bias
+and uninformative priors that may increase the variance (uncertainty) of our
+estimates.
 
 Generative vs Discriminative Models
 ===================================
