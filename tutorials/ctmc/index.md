@@ -20,7 +20,9 @@ redirect: false
 {% section Overview %}
 
 This tutorial provides the first protocol from our recent publication {% cite Hoehna2017a %}. 
-The second protocol is described in the {% page_ref partition %} tutorial and the third protocol is described in the {% page_ref model_selection_bayes_factors %} tutorial.
+The second protocol is described in the 
+[Partitioned data analysis tutorial](https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Partition_Tutorial/RB_Partition_Tutorial.pdf)
+tutorial and the third protocol is described in the {% page_ref model_selection_bayes_factors %} tutorial.
 
 The present tutorial demonstrates how to set up and perform analyses
 using common nucleotide substitution models. The substitution models
