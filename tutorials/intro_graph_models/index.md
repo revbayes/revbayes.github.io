@@ -294,9 +294,10 @@ In `Rev` we specify the type of node by using a specific assignment operator:
 - Stochastic node: `n ~ dnNormal(0, 1)`
 - Constant node: `n <- 5` 
 - Deterministic node: `n := m + 5`
-We wil use each of these assignment operators to set up the linear regression model.
 
-First, we will read in the observed data as constant nodes:
+We will use each of these assignment operators to set up the linear regression model.
+
+First, we read in the observed data as constant nodes:
 ```
 x_obs <- readDataDelimitedFile(file="data/x.csv", header=FALSE, delimiter=",")[1]
 y_obs <- readDataDelimitedFile(file="data/y.csv", header=FALSE, delimiter=",")[1]
@@ -355,6 +356,9 @@ Setting up MCMC in `Rev`
 
 Here we will use the Metropolis-Hastings MCMC algorithm {% cite Metropolis1953 Hastings1970 %} 
 to perform parameter estimation.
+We focus here on providing a simple overview of how to set up and tweak MCMC in RevBayes,
+for a more in depth introduction to MCMC please see the {% page_ref mcmc_archery %} tutorial.
+
 The first step in setting up our MCMC algorithm is wrapping the entire model
 into a single variable:
 ```
@@ -372,18 +376,21 @@ is not specifically defining the model.
 Note, that unlike in `R`, in `Rev` the `=` and `<-` assignment operators have very different function!
 
 To sample different values of each variable, we must assign
-an MCMC move to each variable. We have three variables,
+an MCMC move to each variable. Each MCMC move will propose new values
+of each parameter. We have three variables,
 so we will have three moves which we will save in a
 vector called `moves`:
 ```
-moves[1] = mvSlide(beta, delta=0.001)
-moves[2] = mvSlide(alpha, delta=0.001)
-moves[3] = mvSlide(sigma, delta=0.001)
+moves[1] = mvSlide(beta, delta=0.001, weight=1)
+moves[2] = mvSlide(alpha, delta=0.001, weight=1)
+moves[3] = mvSlide(sigma, delta=0.001, weight=1)
 ```
 Here we used simple slide moves for each variable. 
-The slide move proposes new values for the variable within a sliding window
+The slide move proposes new values for the variable by "sliding" its value within a small window
 determined by the `delta` argument.
 RevBayes provides many other types of moves that you will see in other tutorials.
+We set the `weight` of each move to 1, which means that each
+move will be performed on average once per MCMC iteration.
 
 Next, we need to set up some monitors that will sample values during the MCMC.
 We will use two monitors which we save into a vector called `monitors`.
@@ -408,26 +415,58 @@ Note that we included the `quit()` command so that RevBayes will automatically q
 after the MCMC has finished running.
 
 
-
-
 Improving MCMC Mixing
 =====================
 {:.section}
 
+Now open the file `output/linear_regression.log` in Tracer.
+You will notice that the MCMC analysis did not converge well:
+{% figure bad %}
+<img src="figures/beta-bad.png" width="400"/>
+{% figcaption %}
+*The MCMC trace for the `beta` parameter. This analysis never converged.*
+{% endfigcaption %}
+{% endfigure %}
+
+We can fix this by modifying the MCMC moves we use.
+Let's use a larger sliding window (the `delta` argument in `mvSlide`).
+We will also increase the `weight` of each move to 5.
+This means that each move will be now be performed on average 5 times
+per MCMC iteration.
 ```
 moves[1] = mvSlide(beta, delta=1, weight=5)
 moves[2] = mvSlide(alpha, delta=1, weight=5)
 moves[3] = mvSlide(sigma, delta=1, weight=5)
 ```
-```
-mymcmc = mcmc(mymodel, moves, monitors)
-mymcmc.run(10000)
-quit()
-```
+Rerun the MCMC analysis and view the log file in Tracer.
+This analysis looks much better:
+{% figure bad %}
+<img src="figures/beta-good.png" width="400"/><img src="figures/param-estimates.png" width="400"/>
+{% figcaption %}
+*Left: The MCMC trace for the `beta` parameter. This analysis has adequately converged;
+all parameter values have ESS values over 200.
+Right: Posterior parameter estimates from the converged MCMC analysis.
+The y-intercept ($\alpha$) was estimated to be about -2 and the slope 
+($\beta$) was estimated to be about 0.5. 
+This closely matches what is observed in {% ref linear %}.
+Moreover, -2 and 0.5 were the true values used to simulate the data.*
+{% endfigcaption %}
+{% endfigure %}
 
 Prior Sensitivity
 =================
 {:.section}
+
+```
+beta ~ dnNormal(0, 0.1)
+alpha ~ dnNormal(0, 0.1)
+```
+{% figure bad-priors %}
+<img src="figures/priors.png" width="400"/>
+{% figcaption %}
+*Biased posterior parameter estimates when using overly informative priors.*
+{% endfigcaption %}
+{% endfigure %}
 
 Generative vs Discriminative Models
 ===================================
