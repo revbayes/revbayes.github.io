@@ -25,7 +25,7 @@ schedule:
   - starttime: 2018-07-22T09:00
     endtime: 2018-07-22T12:00
     topic: "Lecture: An Introduction to Bayesian Phylogenetics"
-    tutorials: 
+    material: <a href="https://molevol.mbl.edu/index.php/Paul_Lewis">Lecture slides and other materials</a>
     instructors: Paul Lewis
   
   - starttime: 2018-07-22T12:00
