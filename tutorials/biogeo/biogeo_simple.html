@@ -1,0 +1,686 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: Historical Biogeographic Analysis using a Simple DEC Model</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
+      </a>
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/software">Software</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/developer/">Developer</a></li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <div class="titlebar">
+	<h1 class="maintitle">Historical Biogeographic Analysis using a Simple DEC Model</h1>
+	<h3 class="subtitle">Ancestral range estimation of the silverswords under the dispersal-extinction-cladogenesis process</h3>
+	<h4 class="authors">Michael J. Landis</h4>
+</div>
+
+
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul id="prerequisites">
+          
+            <li><a href="/tutorials/biogeo/biogeo_intro.html">Introduction to Historical Biogeography</a></li>
+          
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+
+
+
+
+<blockquote class="tutorial_files" id="tutorial_files">
+    <h2>Data files and scripts</h2>
+    
+        
+        <strong>Data Files</strong>
+        <ul id="data_files">
+        
+        
+        
+          <li><a href="/tutorials/biogeo/data/n4/silversword.n4.range.nex">silversword.n4.range.nex</a></li>
+        
+          <li><a href="/tutorials/biogeo/data/n4/silversword.tre">silversword.tre</a></li>
+        
+        </ul>
+    
+</blockquote>
+
+
+</div>
+<h2 class="section" id="intro">Introduction</h2>
+<hr class="section" />
+
+<p>In the <a href="/tutorials/biogeo/biogeo_intro.html">Introduction to Historical Biogeography</a> tutorial, we went through the exercise of setting up the
+instantaneous rate matrix and cladogenetic transition probabilities for a simple 
+DEC model.
+In this tutorial, we will complete a biogeographic analysis using an empirical dataset: the Hawaiian silverswords.</p>
+
+<h2 class="section" id="bg_simple">A Simple DEC Analysis</h2>
+<hr class="section" />
+
+<p>The following series of tutorials will estimate the ancestral ranges of
+the silversword alliance (Tribe <em>Madiinae</em>), a young and
+diverse clade of about 50 species and subspecies. Although silverswords
+are endemic to Hawaii, they are nested within a larger clade alongside
+tarweeds, which are native to western continental North America
+<a href="#Baldwin1991">(Baldwin et al. 1991)</a>. The size and age of the silversword clade, combined with
+our knowledge of Hawaiian island formation, makes it an ideal system to
+explore concepts in historical biogeography and phylogeny. For further
+reading, consult: <a href="#Carlquist1959">Carlquist (1959)</a> and <a href="#Baldwin1998">Baldwin and Sanderson (1998)</a>.</p>
+
+<figure id="hawaii_areas"><p><img src="figures/fig_hawaii_areas.png" width="55%" /></p>
+<figcaption>A beautiful figure of the discrete areas for the tutorial. Six areas are shown: Kauai and Niihau (K); Oahu (O); Maui-Nui, Lanai, and Molokai (M); Hawaii (H); the remaining Hawaiian islands (R); and the North American mainland (Z).</figcaption>
+</figure>
+
+<p>For this tutorial we’ll focus entirely on the silversword alliance and
+the modern Hawaiian archipelago. To begin, we’ll use just four areas, K,
+O, M, and H, and include areas R and Z in later analyses (<a href="#hawaii_areas"></a>). The species ranges used in this exercise follow
+<a href="#Gillespie2009">(Gillespie and Baldwin 2009)</a>.</p>
+
+<figure id="table1" class="table"><table>
+  <thead>
+    <tr>
+      <th>Range</th>
+      <th>Areas</th>
+      <th>Size</th>
+      <th>State</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$\emptyset$</td>
+      <td>0000</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>K</td>
+      <td>1000</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>O</td>
+      <td>0100</td>
+      <td>1</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>M</td>
+      <td>0010</td>
+      <td>1</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>H</td>
+      <td>0001</td>
+      <td>1</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <td>KO</td>
+      <td>1100</td>
+      <td>2</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <td>KM</td>
+      <td>1010</td>
+      <td>2</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <td>OM</td>
+      <td>0110</td>
+      <td>2</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <td>KH</td>
+      <td>1001</td>
+      <td>2</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <td>OH</td>
+      <td>0101</td>
+      <td>2</td>
+      <td>9</td>
+    </tr>
+    <tr>
+      <td>MH</td>
+      <td>0011</td>
+      <td>2</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <td>KOM</td>
+      <td>1110</td>
+      <td>3</td>
+      <td>11</td>
+    </tr>
+    <tr>
+      <td>KOH</td>
+      <td>1101</td>
+      <td>3</td>
+      <td>12</td>
+    </tr>
+    <tr>
+      <td>KMH</td>
+      <td>1011</td>
+      <td>3</td>
+      <td>13</td>
+    </tr>
+    <tr>
+      <td>OMH</td>
+      <td>0111</td>
+      <td>3</td>
+      <td>14</td>
+    </tr>
+    <tr>
+      <td>KOMH</td>
+      <td>1111</td>
+      <td>4</td>
+      <td>15</td>
+    </tr>
+  </tbody>
+</table>
+
+<figcaption class="table">Area coding used for four areas: K is Kauai and Nihoa; O is Oahu; M
+  is Maui Nui, Lanai, and Molokai; H is Hawaii island.</figcaption>
+</figure>
+
+<h3 class="subsection" id="setup">Getting Set Up</h3>
+<hr class="subsection" />
+
+<p>We have provided the following data files for this tutorial:</p>
+
+<ul>
+  <li><a href="data/n4/silversword.tre">silversword.tre</a>:
+Dated phylogeny of the silversword alliance.</li>
+  <li><a href="data/n4/silversword.n4.range.nex">silversword.n4.range.nex</a>:
+A data matrix with the coded ranges for each species.</li>
+</ul>
+
+<blockquote class="instruction">
+  <p>Navigate to the directory on your computer that you would like to work from. 
+You may want to create a new director (e.g., call it <code class="highlighter-rouge">RB_biogeo_tutorial</code>).</p>
+
+  <p>Once inside your working directory create a new folder called <code class="highlighter-rouge">data</code>. 
+This is where we will save all of our data files for this tutorial.</p>
+
+  <p>Download the files provided into your <code class="highlighter-rouge">data</code> folder.</p>
+
+  <p>Once you have all of the files, open RevBayes and ensure that your working directory 
+is the top directory above the <code class="highlighter-rouge">data</code> folder (e.g., <code class="highlighter-rouge">RB_biogeo_tutorial</code>).</p>
+</blockquote>
+
+<h3 class="subsection" id="analysis_simple">Analysis</h3>
+<hr class="subsection" />
+
+<p>First, create file management variables for input and output</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>range_fn = "data/silversword.n4.range.nex"
+tree_fn = "data/silversword.tre"
+out_fn = "output/simple"
+</code></pre></div></div>
+
+<p>then read in our character data as binary presence-absence characters</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dat_range_01 = readDiscreteCharacterData(range_fn)
+</code></pre></div></div>
+
+<p>then encode the species ranges into natural numbers</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dat_range_n = formatDiscreteCharacterData(dat_range_01, "DEC")
+</code></pre></div></div>
+
+<p>Record the number of areas (characters) from the discrete character data
+object</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_areas = dat_range_01.nchar()
+</code></pre></div></div>
+
+<p>You can view the taxon data to see how characters are coded both as
+human-readable presence-absence data</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dat_range_01[1]
+</code></pre></div></div>
+
+<div class="rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>      Argyroxiphium_grayanum_East_Maui:
+        0010
+</code></pre></div></div>
+
+<p>And as computer-readable natural
+numbers</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dat_range_n[1]
+</code></pre></div></div>
+
+<div class="rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>      Argyroxiphium_grayanum_East_Maui:
+        3
+</code></pre></div></div>
+
+<p>We’ll want to record the relationship between range states and range
+labels when producing an ancestral range estimate figure. First, store
+the vector of range state descriptions</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>state_desc = dat_range_n.getStateDescriptions()
+</code></pre></div></div>
+
+<p>then write it to file</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>state_desc_str = "state,range\n"
+for (i in 1:state_desc.size()){
+    state_desc_str += (i-1) + "," + state_desc[i] + "\n"
+}
+write(state_desc_str, file=out_fn+".state_labels.txt")
+</code></pre></div></div>
+
+<p>For this tutorial we’ll assume we know the dated species phylogeny
+without error.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tree &lt;- readTrees(tree_fn)[1]
+</code></pre></div></div>
+
+<p>Next, we’ll build the anagenetic rate matrix for the DEC model. In its
+simplest form, the rate matrix requires a dispersal rate and an
+extirpation rate. For this analysis, we’ll assume that all pairs of
+areas share the same dispersal rate and all areas share the same
+extirpation rate. To gain greater control to observe and manage prior
+sensitivity, we’ll reparameterize the DEC rate matrix to report the
+<em>relative</em> rates of dispersal versus extirpation events. In
+order for anagenetic event rates to be measured on an absolute time
+scale (<em>e.g.</em>, in millions of years), we will also introduce a 
+biogeographic rate parameter, similar to the molecular clock parameter
+used in dating analyses.</p>
+
+<p>First, create a parameter for the arrival rate of anagenetic range
+evolution events. We’ll apply an uninformative prior to the rate’s
+magnitude by first assigning a uniform distribution to the $log_{10}$
+rate.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log10_rate_bg ~ dnUniform(-4,2)
+log10_rate_bg.setValue(-2)
+moves[1] = mvSlide(log10_rate_bg, weight=4)
+</code></pre></div></div>
+
+<p>then convert the rate from log-scale to linear-scale with a
+deterministic node</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_bg := 10^log10_rate_bg
+</code></pre></div></div>
+
+<p>This yields a uniform prior over orders of magnitude, ranging from
+$10^{-4}$ to $10^2$ events per million years.</p>
+
+<p>Because the rate matrix will describe the relative anagenetic event
+rates, we can safely assume that dispersal occurs at the relative
+(fixed) rate of one.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dispersal_rate &lt;- 1.0
+</code></pre></div></div>
+
+<p>then create the dispersal rate matrix</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:n_areas) {
+  for (j in 1:n_areas) {
+    dr[i][j] &lt;- dispersal_rate
+  }
+}
+</code></pre></div></div>
+
+<p>Next, assign a prior distribution to the relative extirpation rate and
+assign it a move. The prior distribution of extirpation rates is given
+<code class="highlighter-rouge">log_sd</code> and <code class="highlighter-rouge">log_mean</code> values that give the
+prior expected value of one – i.e. the mean rate of area gain and area
+loss are equal under the prior.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log_sd &lt;- 0.5
+log_mean &lt;- ln(1) - 0.5*log_sd^2
+extirpation_rate ~ dnLognormal(mean=log_mean, sd=log_sd)
+moves[2] = mvScale(extirpation_rate, weight=2)
+</code></pre></div></div>
+
+<p>then create a matrix of extirpation rates</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:n_areas) {
+  for (j in 1:n_areas) {
+    er[i][j] &lt;- 0.0       
+  }
+  er[i][i] := extirpation_rate
+}
+</code></pre></div></div>
+
+<p>Note that er is a diagonal matrix whose diagonal values are
+determined (<code class="highlighter-rouge">:=</code>) by the stochastic variable,
+extirpation_rate. We can now create our relative rate
+matrix, <code class="highlighter-rouge">Q_DEC</code>, with the <code class="highlighter-rouge">fnDECRateMatrix</code>
+function.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q_DEC := fnDECRateMatrix(dispersalRates=dr, extirpationRates=er)
+</code></pre></div></div>
+
+<p>Note, <code class="highlighter-rouge">fnDECRateMatrix</code> does not rescale its elements in any
+way, so transition rates share the same time scale as the underlying
+tree. This scaling is in contrast to the standard molecular substitution
+processes that are available in RevBayes, such as <code class="highlighter-rouge">fnGTR</code>,
+whose rates are rescaled such that the process is expected to produce
+one event per site per unit time.</p>
+
+<p>Next, we need to create the cladogenetic probability matrix.
+Cladogenetic event probabilities are given by a transition probability
+matrix, not a rate matrix. First, we will provide the vector to indicate
+that we wish to consider only subset sympatry and allopatry events.
+Next, we will create a vector of prior weights on cladogenesis events
+that fixes all cladogenetic events to be equiprobable.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clado_event_types &lt;- [ "s", "a" ]
+clado_event_probs &lt;- simplex(1, 1)
+P_DEC := fnDECCladoProbs(eventProbs=clado_event_probs,
+                            eventTypes=clado_event_types,
+                            numCharacters=n_areas)
+</code></pre></div></div>
+
+<p>Finally, all our DEC model components are encapsulated in the
+<code class="highlighter-rouge">dnPhyloCTMCClado</code> distribution, which is similar to
+<code class="highlighter-rouge">dnPhyloCTMC</code> except specialized to integrate over
+cladogenetic events. Although this dataset has four areas, it is
+recognized single character with states valued from 1 to $2^4$, hence
+<code class="highlighter-rouge">nSites=1</code>.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>m_bg ~ dnPhyloCTMCClado(tree=tree,
+                           Q=Q_DEC,
+                           cladoProbs=P_DEC,
+                           branchRates=rate_bg,
+                           nSites=1,
+                           type="NaturalNumbers")
+</code></pre></div></div>
+
+<p>Finally, attach the observed ranges to the model. Be sure to use the
+natural number valued range characters, <code class="highlighter-rouge">dat_range_n</code>, and
+not the presence-absence range characters, <code class="highlighter-rouge">dat_range_01</code>.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>m_bg.clamp(dat_range_n)
+</code></pre></div></div>
+
+<p>Add the monitors.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[1] = mnScreen(rate_bg, extirpation_rate, printgen=100)
+monitors[2] = mnModel(file=out_fn+".params.log", printgen=10)
+monitors[3] = mnFile(tree, file=out_fn+".tre", printgen=10)
+monitors[4] = mnJointConditionalAncestralState(tree=tree,
+                                                    ctmc=m_bg,
+                                                    filename=out_fn+".states.log",
+                                                    type="NaturalNumbers",
+                                                    printgen=10,
+                                                    withTips=true,
+                                                    withStartStates=true)
+</code></pre></div></div>
+
+<p>The <code class="highlighter-rouge">mnJointConditionalAncestralState</code> monitor samples
+ancestral states from the phylogeny, tree, according to the
+model of evolution, <code class="highlighter-rouge">m_bg</code>, and stores it to the file named
+“simple.states.log”. Each row in the states file lists the
+joint sample of ancestral states conditioned on the tip values for the
+entire tree (i.e. a <em>joint</em> ancestral state sample
+<em>conditional</em> on the tip states). Each column corresponds
+to the phylogenetic node index for that particular MCMC sample. The
+index is used used to match the state samples with the tree samples,
+which is especially important when the topology is a random variable
+(<a href="#bg_phylo"></a>).</p>
+
+<p>The remaining tasks should be familiar from previous tutorials, so we
+can proceed briskly. Prepare the model graph for analysis by creating a
+Model object.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(m_bg)
+</code></pre></div></div>
+
+<p>Create the MCMC object from the model, moves, and monitors
+variables, and run the MCMC analysis.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, moves, monitors)
+mymcmc.run(3000)
+</code></pre></div></div>
+
+<h3 class="subsection" id="results_simple">Results</h3>
+<hr class="subsection" />
+
+<!-- *Example results are located at* 
+
+The script located at `scripts/make_anc_states.Rev`
+contains code to construct an ancestral state tree. Like all RevBayes
+scripts, this script may be executed from the command line. Because this
+is the first time using the script, we'll enter the code manually. To
+use it for future analyses, just modify the out_str
+variable to match the prefix of the target analysis, save the file, then
+execute the script by typing `rb scripts/make_anc_states.Rev` into the command line. -->
+
+<figure id="simple_FigTree_ase"><p><img src="figures/fig_simple_FigTree_ase.png" alt="" /></p>
+<figcaption>Annotated tree with
+ancestral state estimates in <code class="highlighter-rouge">FigTree</code>.This tree was
+generated by ancestralStateTree in RevBayes.The most
+probable end state of each branch (before cladogenesis) is shown at each
+node. Branches are labeled with the posterior probability for the
+ancestral state on the tipwards end of the branch.</figcaption>
+</figure>
+
+<p>After opening a new RevBayes session, create helper variables for
+files we’ll work with.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>out_str = "output/simple"
+out_state_fn = out_str + ".states.log"
+out_tree_fn = out_str + ".tre"
+out_mcc_fn = out_str + ".mcc.tre" 
+</code></pre></div></div>
+
+<p>Build a maximum clade credibility tree from the posterior tree
+distribution, discarding the first 25% of samples. (Note, this step is
+gratuitous when we assume a fixed phylogeny, but essential when we
+estimate the phylogeny in <a href="#bg_phylo"></a>).</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tree_trace = readTreeTrace(file=out_tree_fn, treetype="clock")
+tree_trace.setBurnin(0.25)
+n_burn = tree_trace.getBurnin()
+</code></pre></div></div>
+
+<p>Compute and save the maximum clade credibility tree</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mcc_tree = mccTree(tree_trace, file=out_mcc_fn)
+</code></pre></div></div>
+
+<p>Get the ancestral state trace from simple.states.log</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>state_trace = readAncestralStateTrace(file=out_state_fn)
+</code></pre></div></div>
+
+<p>Get the ancestral state tree trace from <code class="highlighter-rouge">simple.tre</code>. It is
+important to use <code class="highlighter-rouge">readAncestralTreeTrace</code> and not
+<code class="highlighter-rouge">readTreeTrace</code> to properly annotate the tree with ancestral
+states.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tree_trace = readAncestralStateTreeTrace(file=out_tree_fn, treetype="clock")
+</code></pre></div></div>
+
+<p>Finally, compute and save the ancestral state tree as
+<code class="highlighter-rouge">simple.ase.tre</code>.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>anc_tree = ancestralStateTree(tree=mcc_tree,
+                              ancestral_state_trace_vector=state_trace,
+                              tree_trace=tree_trace,
+                              include_start_states=true,
+                              file=out_str+".ase.tre",
+                              burnin=n_burn,
+                              site=0)
+</code></pre></div></div>
+
+<p>We can review the output from ancestralStateTree in
+<code class="highlighter-rouge">FigTree</code>(<a href="#simple_FigTree_ase"></a>).</p>
+
+<p>Ancestral state trees are annotated with the first three most probable
+ancestral states along with their posterior probabilities. When the tree
+is a random variable, as it is in later exercises, additional
+information about phylogenetic uncertainty is reported.</p>
+
+<p>Finally, it is possible to generate a figure with ancestral states that is
+suitable for publication using the <code class="highlighter-rouge">R</code> package
+<a href="https://github.com/revbayes/RevGadgets">RevGadgets</a> (<a href="#simple_RevGadgets_ase"></a>).</p>
+
+<!-- The
+script is easily modified for use with different datasets. To create
+build a figure, open an `R` session and load the plotting
+script with the source function
+
+    source("plot_anc_state.simple.R") -->
+
+<figure id="simple_RevGadgets_ase"><p><img src="figures/fig_simple_RevGadgets_ase.png" /></p>
+<figcaption>Tree with ancestral state estimates for the “simple” analysis. Nodes are annotated
+with ancestral states before and after cladogenetic events. The
+ancestral range with the highest posterior probability is shown. Colors
+of markers indicate the range state.</figcaption>
+</figure>
+
+<p>Notice that the model infers a widespread ancestral range for the clade
+(KOMH) approximately four million years ago when only Kauai existed.
+Similar geologically unrealistic widespread ranges are estimated for the
+<em>Agyroxiphium</em> clade (KMH) and the <em>D.
+sheriffiana</em> and <em>D. arborea</em> clade (OMH). The
+remaining tutorials will focus on improvements to the simple DEC model
+presented here.</p>
+
+
+<ol class="bibliography"><li><span id="Baldwin1991">Baldwin B.G., Kyhos D.W., Dvorak J., Carr G.D. 1991. Chloroplast DNA evidence for a North American origin of the Hawaiian silversword alliance (Asteraceae). Proceedings of the National Academy of Sciences. 88:1840–1843.</span>
+
+<a href="https://doi.org/10.1073/pnas.88.5.1840">10.1073/pnas.88.5.1840</a>
+
+</li>
+<li><span id="Baldwin1998">Baldwin B.G., Sanderson M.J. 1998. Age and rate of diversification of the Hawaiian silversword alliance (Compositae). Proceedings of the National Academy of Sciences. 95:9402–9406.</span>
+
+<a href="https://doi.org/10.1073/pnas.95.16.9402">10.1073/pnas.95.16.9402</a>
+
+</li>
+<li><span id="Carlquist1959">Carlquist S. 1959. Studies on Madinae: anatomy, cytology, and evolutionary relationships. Aliso. 4:171–236.</span>
+
+<a href="https://doi.org/10.5642/aliso.19590402.02">10.5642/aliso.19590402.02</a>
+
+</li>
+<li><span id="Gillespie2009">Gillespie G.R., Baldwin G.B. 2009. Island Biogeography of Remote Archipelagoes. The Theory of Island Biogeography Revisited.:358–387.</span>
+
+</li></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+
+<script src="/assets/js/base.js"></script>
+
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+  });
+</script>
+
+  </body>
+</html>
