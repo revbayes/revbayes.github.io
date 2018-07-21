@@ -3,7 +3,7 @@ layout: workshop
 title: Bayesian Phylogenetics in RevBayes
 location: Workshop on Molecular Evolution at MBL, Woods Hole, MA
 startdate: 2018-07-20
-enddate: 2018-07-28
+enddate: 2018-07-29
 registration: https://molevol.mbl.edu
 
 description: 
