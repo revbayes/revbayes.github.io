@@ -24,7 +24,7 @@ software:
 schedule:
   - starttime: 2018-07-22T09:00
     endtime: 2018-07-22T12:00
-    topic: An Introduction to Bayesian Phylogenetics
+    topic: "Lecture: An Introduction to Bayesian Phylogenetics"
     lesson: 
     instructors: Paul Lewis
   
@@ -34,7 +34,7 @@ schedule:
   
   - starttime: 2018-07-22T14:00
     endtime: 2018-07-22T17:00
-    topic: Likelihood-based Phylogenetic Inference
+    topic: "Lecture: Likelihood-based Phylogenetic Inference"
     lesson: 
     instructors: John Huelsenbeck
 
@@ -44,7 +44,7 @@ schedule:
 
   - starttime: 2018-07-22T19:00
     endtime: 2018-07-22T20:30
-    topic: Phylogenetic Inference and Graphical Models
+    topic: "Lecture: Phylogenetic Inference and Graphical Models"
     lesson: 
     instructors: Michael Landis
 
@@ -54,13 +54,33 @@ schedule:
 
   - starttime: 2018-07-22T20:45
     endtime: 2018-07-22T22:00
-    topic: Bayesian Divergence-Time Estimation
+    topic: "Lecture: Bayesian Divergence-Time Estimation"
     lesson: 
     instructors: Tracy Heath
 
+  - starttime: 2018-07-23T09:00
+    endtime: 2018-07-23T22:00
+    topic: <a href="https://molevol.mbl.edu/index.php/Schedule">See course schedule</a>
+
+  - starttime: 2018-07-24T09:00
+    endtime: 2018-07-24T22:00
+    topic: <a href="https://molevol.mbl.edu/index.php/Schedule">See course schedule</a>
+
+  - starttime: 2018-07-25T09:00
+    endtime: 2018-07-25T22:00
+    topic: Free Day
+
+  - starttime: 2018-07-26T09:00
+    endtime: 2018-07-26T22:00
+    topic: <a href="https://molevol.mbl.edu/index.php/Schedule">See course schedule</a>
+
+  - starttime: 2018-07-27T09:00
+    endtime: 2018-07-27T22:00
+    topic: <a href="https://molevol.mbl.edu/index.php/Schedule">See course schedule</a>
+
   - starttime: 2018-07-28T09:00
     endtime: 2018-07-28T12:00
-    topic: Phylogenetic Inference in RevBayes
+    topic: "Lab: Phylogenetic Inference in RevBayes"
     lesson: ctmc
     instructors: Michael Landis
   
@@ -70,7 +90,7 @@ schedule:
   
   - starttime: 2018-07-22T14:00
     endtime: 2018-07-22T17:00
-    topic: Divergence-Time Estimation in RevBayes
+    topic: "Lab: Divergence-Time Estimation in RevBayes"
     lesson: fbd
     instructors: Tracy Heath
 ---
