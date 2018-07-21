@@ -24,6 +24,7 @@ schedule:
   - starttime: 2018-07-22T8:00
     endtime: 2018-07-22T8:45
     topic: Intro to Bayesian inference
+    material: <a href="botany2018/lectureBAYESIAN.pdf">Bayesian slides</a><br><a href="botany2018/lectureMCMC.pdf">MCMC slides</a>
     tutorials: 
     instructors: Rosana Zenil-Ferguson
 
@@ -44,6 +45,7 @@ schedule:
   - starttime: 2018-07-22T11:15
     endtime: 2018-07-22T12:00
     topic: Phylogenetic tree inference
+    material: <a href="botany2018/lectureCTMC.pdf">CTMC slides</a>
     tutorials: 
     instructors: Rosana Zenil-Ferguson
   
@@ -64,6 +66,7 @@ schedule:
   - starttime: 2018-07-22T3:10
     endtime: 2018-07-22T3:40
     topic: Models linking trait evolution to diversification
+    material: <a href="botany2018/lectureDIVERSIFICATION.pdf">Diversification slides</a>
     tutorials: 
     instructors: Rosana Zenil-Ferguson
 
