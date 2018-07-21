@@ -73,7 +73,7 @@ We recommend some selected papers for you to read prior to the workshop. These a
 		<td>{{ session.starttime | date: "%A" }}</td>
 		<td>{{ session.starttime | date: "%R" }}-{{ session.endtime | date: "%R" }}</td>
     <td>{{ session.topic }}</td>
-		<td>{% if session.tutorials.first %}
+		<td>{% if session.tutorials.first or session.material %}
           {% for tutorial in session.tutorials %}
             <li>{% page_ref {{ tutorial }} %}</li>
           {% endfor %}
@@ -82,7 +82,7 @@ We recommend some selected papers for you to read prior to the workshop. These a
             {% page_ref {{ tutorial }} %}
           {% endfor %}
         {% endif %}
-        {% if session.material.first %}
+        {% if session.material.first or session.tutorials %}
           {% for item in session.material %}
             <li>{{ item }}</li>
           {% endfor %}
