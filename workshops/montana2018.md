@@ -7,7 +7,7 @@ description:
 - This workshop will introduce RevBayes and the Rev language. We will focus on the basics of the software and hierarchical Bayesian modeling. We will work together through one tutorial. I will walk through setting up a phylogenetic analysis of fossil and molecular data. Then we will discuss the other models and methods available in RevBayes.
 instructors:
 - Tracy Heath
-lessons:
+tutorials:
 - intro
 - mcmc_archery
 - ctmc
