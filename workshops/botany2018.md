@@ -24,7 +24,7 @@ schedule:
   - starttime: 2018-07-22T8:00
     endtime: 2018-07-22T8:45
     topic: Intro to Bayesian inference
-    lesson: 
+    tutorials: 
     instructors: Rosana Zenil-Ferguson
 
   - starttime: 2018-07-22T8:45
@@ -34,7 +34,7 @@ schedule:
   - starttime: 2018-07-22T9:00
     endtime: 2018-07-22T11:00
     topic: Intro to graphical models and RevBayes
-    lesson: intro_graph_models 
+    tutorials: intro_graph_models 
     instructors: Will Freyman
 
   - starttime: 2018-07-22T11:00
@@ -44,7 +44,7 @@ schedule:
   - starttime: 2018-07-22T11:15
     endtime: 2018-07-22T12:00
     topic: Phylogenetic tree inference
-    lesson: 
+    tutorials: 
     instructors: Rosana Zenil-Ferguson
   
   - starttime: 2018-07-22T12:00
@@ -54,7 +54,7 @@ schedule:
   - starttime: 2018-07-22T1:00
     endtime: 2018-07-22T3:00
     topic: Phylogenetic tree inference in RevBayes
-    lesson: ctmc
+    tutorials: ctmc
     instructors: Will Freyman
   
   - starttime: 2018-07-22T3:00
@@ -64,12 +64,12 @@ schedule:
   - starttime: 2018-07-22T3:10
     endtime: 2018-07-22T3:40
     topic: Models linking trait evolution to diversification
-    lesson: 
+    tutorials: 
     instructors: Rosana Zenil-Ferguson
 
   - starttime: 2018-07-22T3:40
     endtime: 2018-07-22T5:00
     topic: State-dependent speciation and extinction models
-    lesson: bisse
+    tutorials: bisse
     instructors: Will Freyman
 ---

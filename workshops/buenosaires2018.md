@@ -38,37 +38,37 @@ schedule:
   - starttime: 2018-04-16T9:00:00Z
     endtime: 2018-04-16T9:30:00Z
     topic: Welcome to the Workshop
-    lesson: 
+    tutorials: 
     instructors: Luis Palazzesi
 
   - starttime: 2018-04-16T9:30:00Z
     endtime: 2018-04-16T10:15:00Z
     topic: RevBayes Introduction
-    lesson: 
+    tutorials: 
     instructors: Sebastian Höhna
 
   - starttime: 2018-04-16T10:15:00Z
     endtime: 2018-04-16T10:30:00Z
     topic: Coffee break
-    lesson: 
+    tutorials: 
     instructors: 
 
   - starttime: 2018-04-16T10:30:00Z
     endtime: 2018-04-16T12:00:00Z
     topic: Substitution Models in Phylogenetics
-    lesson: 
+    tutorials: 
     instructors: Sebastian Höhna
 
   - starttime: 2018-04-16T12:00:00Z
     endtime: 2018-04-16T13:00:00Z
     topic: Lunch break
-    lesson: 
+    tutorials: 
     instructors: 
 
   - starttime: 2018-04-16T13:00:00Z
     endtime: 2018-04-16T15:00:00Z
     topic: Practical on inferring phylogenies (Part I)
-    lesson: ctmc
+    tutorials: ctmc
     instructors: 
     - Sebastian Höhna
     - Luis Palazzesi
@@ -76,13 +76,13 @@ schedule:
   - starttime: 2018-04-16T15:00:00Z
     endtime: 2018-04-16T15:15:00Z
     topic: Coffee break
-    lesson: 
+    tutorials: 
     instructors: 
 
   - starttime: 2018-04-16T15:15:00Z
     endtime: 2018-04-16T17:30:00Z
     topic: Practical on inferring phylogenies (Part II)
-    lesson: ctmc
+    tutorials: ctmc
     instructors: 
     - Sebastian Höhna
     - Luis Palazzesi
@@ -90,37 +90,37 @@ schedule:
   - starttime: 2018-04-17T9:00:00Z
     endtime: 2018-04-17T9:30:00Z
     topic: Recap MCMC and Substitution Models
-    lesson: 
+    tutorials: 
     instructors: Sebastian Höhna
     
   - starttime: 2018-04-17T9:30:00Z
     endtime: 2018-04-17T10:15:00Z
     topic: Divergence time estimation
-    lesson: 
+    tutorials: 
     instructors: Sebastian Höhna
 
   - starttime: 2018-04-17T10:15:00Z
     endtime: 2018-04-17T10:30:00Z
     topic: Coffee break
-    lesson: 
+    tutorials: 
     instructors: 
 
   - starttime: 2018-04-17T10:30:00Z
     endtime: 2018-04-17T12:00:00Z
     topic: Tip-dating and the fossilized-birth-death model
-    lesson: 
+    tutorials: 
     instructors: Sebastian Höhna
 
   - starttime: 2018-04-17T12:00:00Z
     endtime: 2018-04-17T13:00:00Z
     topic: Lunch break
-    lesson: 
+    tutorials: 
     instructors: 
 
   - starttime: 2018-04-17T13:00:00Z
     endtime: 2018-04-17T15:00:00Z
     topic: Divergence time estimation
-    lesson: clocks
+    tutorials: clocks
     instructors: 
     - Femke Thon
     - Sebastian Höhna
@@ -128,13 +128,13 @@ schedule:
   - starttime: 2018-04-17T15:00:00Z
     endtime: 2018-04-17T15:15:00Z
     topic: Coffee break
-    lesson: 
+    tutorials: 
     instructors: 
 
   - starttime: 2018-04-17T15:15:00Z
     endtime: 2018-04-17T17:30:00Z
     topic: Practical on tip-dating and the fossilized-birth-death model
-    lesson: fbd
+    tutorials: fbd
     instructors: 
     - Femke Thon
     - Sebastian Höhna
@@ -142,37 +142,37 @@ schedule:
   - starttime: 2018-04-18T9:00:00Z
     endtime: 2018-04-18T9:30:00Z
     topic: Recap
-    lesson: 
+    tutorials: 
     instructors: Sebastian Höhna
     
   - starttime: 2018-04-18T9:30:00Z
     endtime: 2018-04-18T10:15:00Z
     topic: Diversification rate estimation (Part I)
-    lesson: 
+    tutorials: 
     instructors: Sebastian Höhna
 
   - starttime: 2018-04-18T10:15:00Z
     endtime: 2018-04-18T10:30:00Z
     topic: Coffee break
-    lesson: 
+    tutorials: 
     instructors: 
 
   - starttime: 2018-04-18T10:30:00Z
     endtime: 2018-04-18T12:00:00Z
     topic: Diversification rate estimation (Part II)
-    lesson: 
+    tutorials: 
     instructors: Sebastian Höhna
 
   - starttime: 2018-04-18T12:00:00Z
     endtime: 2018-04-18T13:00:00Z
     topic: Lunch break
-    lesson: 
+    tutorials: 
     instructors: 
 
   - starttime: 2018-04-18T13:00:00Z
     endtime: 2018-04-18T15:00:00Z
     topic: Practical on diversification rate estimation (Part I)
-    lesson: divrate/simple
+    tutorials: divrate/simple
     instructors: 
     - Luis Palazzesi
     - Femke Thon
@@ -181,13 +181,13 @@ schedule:
   - starttime: 2018-04-18T15:00:00Z
     endtime: 2018-04-18T15:15:00Z
     topic: Coffee break
-    lesson: 
+    tutorials: 
     instructors: 
 
   - starttime: 2018-04-18T15:15:00Z
     endtime: 2018-04-18T17:30:00Z
     topic: Practical on diversification rate estimation (Part II)
-    lesson: divrate/branch_specific
+    tutorials: divrate/branch_specific
     instructors: 
     - Luis Palazzesi
     - Femke Thon

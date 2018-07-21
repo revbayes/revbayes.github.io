@@ -25,7 +25,7 @@ schedule:
   - starttime: 2018-07-22T09:00
     endtime: 2018-07-22T12:00
     topic: "Lecture: An Introduction to Bayesian Phylogenetics"
-    lesson: 
+    tutorials: 
     instructors: Paul Lewis
   
   - starttime: 2018-07-22T12:00
@@ -35,7 +35,7 @@ schedule:
   - starttime: 2018-07-22T14:00
     endtime: 2018-07-22T17:00
     topic: "Lecture: Likelihood-based Phylogenetic Inference"
-    lesson: 
+    tutorials: 
     instructors: John Huelsenbeck
 
   - starttime: 2018-07-22T17:00
@@ -45,7 +45,7 @@ schedule:
   - starttime: 2018-07-22T19:00
     endtime: 2018-07-22T20:30
     topic: "Lecture: Phylogenetic Inference and Graphical Models"
-    lesson: 
+    material:
     instructors: Michael Landis
 
   - starttime: 2018-07-22T20:30
@@ -55,7 +55,7 @@ schedule:
   - starttime: 2018-07-22T20:45
     endtime: 2018-07-22T22:00
     topic: "Lecture: Bayesian Divergence-Time Estimation"
-    lesson: 
+    tutorials: 
     instructors: Tracy Heath
 
   - starttime: 2018-07-23T09:00
@@ -81,7 +81,7 @@ schedule:
   - starttime: 2018-07-28T09:00
     endtime: 2018-07-28T12:00
     topic: "Lab: Phylogenetic Inference in RevBayes"
-    lesson: ctmc
+    tutorials: ctmc
     instructors: Michael Landis
   
   - starttime: 2018-07-28T12:00
@@ -91,6 +91,6 @@ schedule:
   - starttime: 2018-07-28T14:00
     endtime: 2018-07-28T17:00
     topic: "Lab: Divergence-Time Estimation in RevBayes"
-    lesson: fbd
+    tutorials: fbd
     instructors: Tracy Heath
 ---
