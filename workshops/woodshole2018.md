@@ -55,7 +55,7 @@ schedule:
   - starttime: 2018-07-22T20:45
     endtime: 2018-07-22T22:00
     topic: "Lecture: Bayesian Divergence-Time Estimation"
-    tutorials: 
+    material: <a href="https://figshare.com/articles/Bayesian_Divergence-Time_Estimation_Lecture/6849005">Lecture slides</a>
     instructors: Tracy Heath
 
   - starttime: 2018-07-23T09:00
