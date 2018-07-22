@@ -35,7 +35,7 @@ schedule:
   - starttime: 2018-07-22T14:00
     endtime: 2018-07-22T17:00
     topic: "Lecture: Likelihood-based Phylogenetic Inference"
-    tutorials: 
+    material: <a href="https://molevol.mbl.edu/index.php/John_Huelsenbeck">Lecture slides and other materials</a> 
     instructors: John Huelsenbeck
 
   - starttime: 2018-07-22T17:00
