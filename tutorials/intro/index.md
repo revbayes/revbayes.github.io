@@ -151,7 +151,7 @@ Distributions and Random Numbers
 --------------------------------
 {:.subsection}
 
-provides functions for common statistical distributions. We'll
+RevBayes provides functions for common statistical distributions. We'll
 demonstrate by generating random exponential numbers as we did in
 lecture. Recall that we can transform a random variable $u$ sampled from
 a Uniform(0,1) distribution into an exponential distribution with rate
