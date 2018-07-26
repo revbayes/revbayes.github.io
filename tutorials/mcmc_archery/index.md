@@ -127,7 +127,7 @@ The Metropolis-Hastings Algorithm
 ---------------------------------
 {:.subsection}
 
-Though RevBayes implements efficient and easy-to-use Markov chain Monte Carlo (MCMC) algorithms, we’ll begin by writing one ourselves to gain a better understanding of the moving parts. The Metropolis-Hastings MCMC algorithm {% cite Metropolis1953} {% cite Hastings1970 %} proceeds as follows:
+Though RevBayes implements efficient and easy-to-use Markov chain Monte Carlo (MCMC) algorithms, we’ll begin by writing one ourselves to gain a better understanding of the moving parts. The Metropolis-Hastings MCMC algorithm {% cite Metropolis1953 %} {% cite Hastings1970 %} proceeds as follows:
 
 1.  Generate initial values for the parameters of the model (in this
     case, $\mu$).
