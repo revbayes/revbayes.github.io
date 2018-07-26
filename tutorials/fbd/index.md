@@ -213,7 +213,7 @@ and so models that account for this variation by relaxing the assumption
 of a strict molecular clock {% cite Zuckerkandl1962 %} can allow for more
 accurate estimates of substitution rates and divergence times
 {% cite Drummond2006 %}. The simplest type of relaxed clock model assumes that
-lineage-specific substitution rates are independent or “uncorrelated”.
+lineage-specific substitution rates are independent or "uncorrelated".
 One example of such an uncorrelated relaxed model is the uncorrelated
 *exponential* relaxed clock, in which the substitution rate for each
 lineage is assumed to be independent and identically distributed
@@ -285,7 +285,7 @@ defines the of the in the generalized graphical model shown in
 {% ref fig_module_gm %}. The relaxed clock model we described for the
 molecular data in {% ref Intro-GTR-UExp %} it allows the
 substitution rate to vary through time and among lineages. For the
-morphological data, we will instead use a “strict clock” model
+morphological data, we will instead use a "strict clock" model
 {% cite Zuckerkandl1962 %}, in which the rate of discrete character change is
 assumed to be constant throughout the tree. The strict clock is the
 simplest morphological branch rate model we can construct (graphical
@@ -496,7 +496,7 @@ tips.
 {% subsubsection Create Helper Variables | Exercise-mviVar %}
 
 Before we begin writing the Rev scripts for each of the model
-components, we need to instantiate a couple “helper variables” that will
+components, we need to instantiate a couple "helper variables" that will
 be used by downstream parts of our model specification files. These
 variables will be used in more than one of the module files so it’s best
 to initialize them in the master file.
@@ -953,7 +953,7 @@ will be discussed further in {% ref Exercise-SummarizeTree %}).
 <img src="figures/tracer_load_file.png" width="900" /> 
 {% figcaption %} 
 The Tracer
-window. To add data, click on the “+” sign, highlighted in red above
+window. To add data, click on the "+" sign, highlighted in red above
 {% endfigcaption %}
 {% endfigure %}
 
@@ -1001,8 +1001,8 @@ statistics of the values sampled by the Markov chain. Figure
 Next, we can click over to the **Trace** window. This
 window shows us the samples for a given parameter at each iteration of
 the MCMC. The left side of the chain has a shaded portion that has been
-excluded as “burn-in”. Samples taken near the beginning of chain are
-often discarded or “burned” because the MCMC may not immediately begin
+excluded as "burn-in". Samples taken near the beginning of chain are
+often discarded or "burned" because the MCMC may not immediately begin
 sampling from the target posterior distribution, particularly if the
 starting condition of the chain is far from the region of highest
 posterior density. Figure {% ref tracer_extinction_rate_trace_short %} shows the
@@ -1014,7 +1014,7 @@ trace for the extinction rate.
 The ***Trace*** window in Tracer. This window
 shows a line plot of every sampled value for the extinction rate that
 was saved to file. The lighter shaded portion is the set of samples
-discarded as “burn-in” and are not used to compute the summary
+discarded as "burn-in" and are not used to compute the summary
 statistics found in the ***Estimates*** window.
 {% endfigcaption %}
 {% endfigure %}
@@ -1040,13 +1040,16 @@ distributions of your parameters in the
 **Marginal Prob Distribution** window. Using this tool, you can compare the
 distributions of several different parameters (by selecting them both).
 
-Go to the `diversification` parameter in the 
-**Marginal Prob Distribution** window.
-
-&#8680; What is the mean value estimated
-for the net diversification rate ($d$)? What does the marginal
-distribution tell you about the net diversification? (Hint:
+>Go to the `diversification` parameter in the 
+>**Marginal Prob Distribution** window.
+>
+>&#8680; What is the mean value estimated
+for the net diversification rate ($d$)? 
+>
+>&#8680; What does the marginal
+>distribution tell you about the net diversification? (Hint:
 $d = \lambda - \mu$)
+{:.instruction}
 
 While specifying the model, remember that we created several
 deterministic nodes that represent parameters that we would like to
@@ -1089,11 +1092,11 @@ includes some functions for summarizing the tree topology and other tree
 parameters.
 
 We will complete this part of the tutorial using RevBayes
-interactively. Begin by running the RevBayes executable. You should do
-this from within the tutorial directory.
+interactively. 
 
-In Unix systems, type the following in your terminal (if the RevBayes
-binary is in your path):
+>Begin by running the RevBayes executable. You should do
+this from within the tutorial directory.
+{:.instruction}
 
 Read in the MCMC sample of trees from file.
 
@@ -1101,7 +1104,7 @@ Read in the MCMC sample of trees from file.
 
 By default, a burn-in of 25% is used when creating the tree trace (250
 trees in our case). You can specify a different burn-in fraction, say
-50%, by typing the command .
+50%, by typing the command `trace.setBurnin(500)`.
 
 Now we will use the `mccTree` function to return a maximum clade
 credibility (MCC) tree. The MCC tree is the tree with the maximum
@@ -1132,7 +1135,7 @@ ancestor
 {% endfigcaption %}
 {% endfigure %}
 
-Navigate to <http://tgvaughan.github.io/icytree> and open the file
+Navigate to <https://icytree.org/> and open the file
 `output/bears.mcc.tre` in IcyTree.
 
 > Try to replicate the tree in {% ref summary_tree %} (Hint: ***Style > Mark
