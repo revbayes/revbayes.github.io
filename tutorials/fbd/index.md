@@ -197,9 +197,9 @@ The "sampled tree" is produced by pruning unsampled lineages from the oriented t
 {% endfigcaption %}
 {% endfigure %}
 
-{% include_relative sec-Intro-GTR.md %}
+{% include_relative sections/sec-Intro-GTR.md %}
 
-{% include_relative sec-Intro-Morpho.md %}
+{% include_relative sections/sec-Intro-Morpho.md %}
 
 
 {% section Example: Estimating the Phylogeny and Divergence Times of Fossil and Extant Bears | Exercise %}

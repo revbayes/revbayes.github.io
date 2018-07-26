@@ -210,10 +210,10 @@ birth-death process that is a distribution on stratigraphic ranges has
 been described by {% cite Stadler2017 %}. This model is not yet fully implemented
 in RevBayes.
 
-{% include_relative sec-Intro-GTR.md %}
+{% include_relative sections/sec-Intro-GTR.md %}
 
 
-{% include_relative sec-Intro-Morpho.md %}
+{% include_relative sections/sec-Intro-Morpho.md %}
 
 
 {% section Example: Estimating the Phylogeny and Divergence Times of Fossil and Extant Bears | Exercise %}
