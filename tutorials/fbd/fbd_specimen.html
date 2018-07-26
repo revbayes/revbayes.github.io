@@ -308,8 +308,14 @@ birth-death process that is a distribution on stratigraphic ranges has
 been described by (missing reference). This model is not yet fully implemented
 in RevBayes.</p>
 
-<h3 class="subsection" id="Intro-GTR">Nucleotide Sequence Evolution</h3>
-<hr class="subsection" />
+<table>
+  <tbody>
+    <tr>
+      <td>% subsection Nucleotide Sequence Evolution</td>
+      <td>Intro-GTR %}</td>
+    </tr>
+  </tbody>
+</table>
 
 <p>The model component for the molecular data uses a general
 time-reversible model of nucleotide evolution and gamma-distributed rate
@@ -318,7 +324,8 @@ model of sequence evolution is covered thoroughly in the
 <a href="/tutorials/ctmc/">Substitution Models</a>
 tutorial.</p>
 
-<h3 id="subsub:Intro-GTR-UExp">Lineage-Specific Rates of Sequence Evolution</h3>
+<h4 class="subsubsection" id="Intro-GTR-UExp">Lineage-Specific Rates of Sequence Evolution</h4>
+<hr class="subsubsection" />
 
 <p>Rates of nucleotide sequence evolution can vary widely among lineages,
 and so models that account for this variation by relaxing the assumption
@@ -386,14 +393,15 @@ informative characters are observed; the other is for datasets in which
 parsimony informative characters and parsimony uninformative variable
 characters (such as autapomorphies) are observed.</p>
 
-<h3 id="subsub:Intro-MorphClock">The Morphological Clock</h3>
+<h4 class="subsubsection" id="Intro-MorphClock">The Morphological Clock</h4>
+<hr class="subsubsection" />
 
-<p>Just like with the molecular data (<a href="#subsub:Intro-GTR-UExp">Lineage-Specific Rates of Sequence Evolution</a>),
+<p>Just like with the molecular data <a href="#Intro-GTR-UExp"></a>,
 our observations of discrete morphological characters are conditional on
 the rate of change along each branch in the tree. This model component
 defines the of the in the generalized graphical model shown in 
 <a href="#fig_module_gm"></a>. The relaxed clock model we described for the
-molecular data in <a href="#subsub:Intro-GTR-UExp">Lineage-Specific Rates of Sequence Evolution</a> it allows the
+molecular data in <a href="#Intro-GTR-UExp"></a> it allows the
 substitution rate to vary through time and among lineages. For the
 morphological data, we will instead use a “strict clock” model
 <a href="#Zuckerkandl1962">(Zuckerkandl and Pauling 1962)</a>, in which the rate of discrete character change is
@@ -1395,8 +1403,9 @@ generations of the chain. In Tracer, poor to fair values
 for the ESS will be colored red and yellow. You will likely see a lot of
 red and yellow numbers because the MCMC runs in this exercise are too
 short to effectively sample the posterior distributions of most
-parameters. A much longer analysis is provided in the <code class="highlighter-rouge">output</code>
-directory.</p>
+parameters. 
+For most MCMC analyses, it is recommended to run the 
+chain for much longer so that you get an adequate sample from the target distribution.</p>
 
 <figure id="tracer_post_ests"><p><img src="figures/tracer_fig_posterior_short_sp.png" width="900" /></p>
 <figcaption>The <strong>Estimates</strong> window in Tracer showing the
@@ -1407,14 +1416,13 @@ histogram of the <strong>Posterior</strong></figcaption>
 <strong>Estimates</strong> window, which shows a histogram and summary
 statistics of the values sampled by the Markov chain. 
 <a href="#tracer_post_ests"></a> shows the marginal distribution of the
-<strong>Posterior</strong> statistic for the <code class="highlighter-rouge">bears.log</code> file in the
-<code class="highlighter-rouge">output</code> directory.</p>
+<strong>Posterior</strong> statistic for the <code class="highlighter-rouge">bears.log</code> file for an analysis run for 10,000 generations.</p>
 
 <blockquote class="instruction">
   <p>Look through the various parameters and statistics in the list of
 <strong>Traces</strong>.</p>
 
-  <p>Are there any parameters that have really low ESS? Why do you think that might be?</p>
+  <p>⇨ Are there any parameters that have really low ESS? Why do you think that might be?</p>
 </blockquote>
 
 <p>Next, we can click over to the <strong>Trace</strong> window. This
@@ -1424,10 +1432,10 @@ excluded as “burn-in”. Samples taken near the beginning of chain are
 often discarded or “burned” because the MCMC may not immediately begin
 sampling from the target posterior distribution, particularly if the
 starting condition of the chain is far from the region of highest
-posterior density. Figure <a href="#tracer_extinction_rate_trace_short"></a> shows the
+posterior density. <a href="#tracer_extinction_rate_trace_short"></a> shows the
 trace for the extinction rate.</p>
 
-<figure id="tracer_extinction_rate_trace_short"><p><img src="figures/tracer_extinction_rate_trace_short.png" width="900" /></p>
+<figure id="tracer_extinction_rate_trace_short"><p><img src="figures/tracer_extinction_rate_trace_short_sp.png" width="900" /></p>
 <figcaption>The <strong><em>Trace</em></strong> window in Tracer. This window
 shows a line plot of every sampled value for the extinction rate that
 was saved to file. The lighter shaded portion is the set of samples
@@ -1445,23 +1453,30 @@ MCMC is not mixing well. You can read more about MCMC tuning and
 improving mixing in the tutorials <a href="/tutorials/mcmc_binomial/">Introduction to MCMC using RevBayes</a>
 and <a href="/tutorials/mcmc/">Diagnosing MCMC performance</a>.</p>
 
-<p>Look through the traces for your parameters.</p>
+<blockquote class="instruction">
+  <p>Look through the traces for your parameters.</p>
 
-<p>Are there any parameters in your log files that show trends or large leaps? 
- What steps might you take to solve these issues?</p>
+  <p>⇨ Are there any parameters in your log files that show trends or large leaps?</p>
+
+  <p>⇨ What steps might you take to solve these issues?</p>
+</blockquote>
 
 <p>In Tracer you can view the marginal probability
 distributions of your parameters in the 
 <strong>Marginal Prob Distribution</strong> window. Using this tool, you can compare the
 distributions of several different parameters (by selecting them both).</p>
 
-<p>Go to the <code class="highlighter-rouge">diversification</code> parameter in the 
+<blockquote class="instruction">
+  <p>Go to the <code class="highlighter-rouge">diversification</code> parameter in the 
 <strong>Marginal Prob Distribution</strong> window.</p>
 
-<p>⇨ What is the mean value estimated
-for the net diversification rate ($d$)? What does the marginal
+  <p>⇨ What is the mean value estimated
+for the net diversification rate ($d$)?</p>
+
+  <p>⇨ What does the marginal
 distribution tell you about the net diversification? (Hint:
 $d = \lambda - \mu$)</p>
+</blockquote>
 
 <p>While specifying the model, remember that we created several
 deterministic nodes that represent parameters that we would like to
@@ -1469,10 +1484,12 @@ estimate, including the net diversification rate. Tracer
 allows us to view the summaries of these parameters since they appear in
 our log files.</p>
 
-<p>Go to the <code class="highlighter-rouge">age_extant</code> parameter in the <strong>Estimates</strong>
+<blockquote class="instruction">
+  <p>Go to the <code class="highlighter-rouge">age_extant</code> parameter in the <strong>Estimates</strong>
 window.</p>
 
-<p><strong>→</strong> What is the mean and 95% highest posterior density of the age of the MRCA for all living bears?</p>
+  <p>⇨ What is the mean and 95% highest posterior density of the age of the MRCA for all living bears?</p>
+</blockquote>
 
 <p>Since you have evaluated several of the parameters by viewing the trace
 files and the ESS values, you may be aware that the MCMC analysis you
@@ -1504,11 +1521,12 @@ includes some functions for summarizing the tree topology and other tree
 parameters.</p>
 
 <p>We will complete this part of the tutorial using RevBayes
-interactively. Begin by running the RevBayes executable. You should do
-this from within the tutorial directory.</p>
+interactively.</p>
 
-<p>In Unix systems, type the following in your terminal (if the RevBayes
-binary is in your path):</p>
+<blockquote class="instruction">
+  <p>Begin by running the RevBayes executable. You should do
+this from within the tutorial directory.</p>
+</blockquote>
 
 <p>Read in the MCMC sample of trees from file.</p>
 
@@ -1517,7 +1535,7 @@ binary is in your path):</p>
 
 <p>By default, a burn-in of 25% is used when creating the tree trace (250
 trees in our case). You can specify a different burn-in fraction, say
-50%, by typing the command .</p>
+50%, by typing the command <code class="highlighter-rouge">trace.setBurnin(500)</code>.</p>
 
 <p>Now we will use the <code class="highlighter-rouge">mccTree</code> function to return a maximum clade
 credibility (MCC) tree. The MCC tree is the tree with the maximum
@@ -1531,7 +1549,7 @@ credibility (MSACC) tree <a href="#Gavryushkina2016">(Gavryushkina et al. 2016)<
 <p>When there are sampled ancestors present in the tree, visualizing the
 tree can be fairly difficult in traditional tree viewers. We will make
 use of a browser-based tree viewer called
-<a href="http://tgvaughan.github.io/icytree/">IcyTree</a>, created by <a href="https://github.com/tgvaughan">Tim
+<a href="https://icytree.org">IcyTree</a>, created by <a href="https://github.com/tgvaughan">Tim
 Vaughan</a>. IcyTree has many
 unique options for visualizing phylogenetic trees and can produce
 publication-quality vector image files
@@ -1539,33 +1557,38 @@ publication-quality vector image files
 represents sampled ancestors on the tree as nodes, each with only one
 descendant (<a href="#summary_tree"></a>).</p>
 
-<figure id="summary_tree"><p><img src="figures/summary_tree.png" width="900" /></p>
+<figure id="summary_tree"><p><img src="figures/summary_tree_sp.png" width="900" /></p>
 <figcaption>Maximum sampled ancestor clade
 credibility (MSACC) tree of bear species used in this tutorial. Numbers
 above fossil nodes indicate the posterior probability of being a sampled
 ancestor</figcaption>
 </figure>
 
-<p>Navigate to <a href="http://tgvaughan.github.io/icytree">http://tgvaughan.github.io/icytree</a> and open the file
+<p>Navigate to <a href="https://icytree.org">https://icytree.org</a> and open the file
 <code class="highlighter-rouge">output/bears.mcc.tre</code> in IcyTree.</p>
 
-<p>Try to replicate the tree in . <a href="#summary_tree"></a> (Hint: <strong><em>StyleMark
-Singletons</em></strong>) Why might a node with a sampled ancestor be
+<blockquote class="instruction">
+  <p>Try to replicate the tree in <a href="#summary_tree"></a> (Hint: <strong><em>Style &gt; Mark
+Singletons</em></strong>)</p>
+
+  <p>⇨ Why might a node with a sampled ancestor be
 referred to as a singleton?</p>
 
-<p>How can you see the names of the
-fossils that are putative sampled ancestors?</p>
+  <p>⇨ How can you see the names of the fossils that are putative sampled ancestors?</p>
 
-<p>Try mousing over different
-branches (see <a href="#highlight"></a>. What are the fields
-telling you?  What is the
+  <p>Try mousing over different
+branches (see <a href="#highlight"></a>). What are the fields
+telling you?</p>
+
+  <p>⇨ What is the
 posterior probability that <em>Zaragocyon daamsi</em> is a sampled ancestor?</p>
+</blockquote>
 
 <p>Another newly available web-based tree viewer is
 <a href="http://phylogeny.io/">Phylogeny.IO</a> <a href="#Jovanovic2016">(Jovanovic and Mikheyev 2016)</a>. Try this site for
 a different way to view the tree.</p>
 
-<figure id="highlight"><p><img src="figures/branch_highlight.png" width="600" /></p>
+<figure id="highlight"><p><img src="figures/branch_highlight_sp.png" width="600" /></p>
 </figure>
 
 <ol class="bibliography"><li><span id="abella2011">Abella J., Montoya P., Morales J. 2011. Una nueva especie de \textitAgriarctos (Ailuropodinae, Ursidae, Carnivora) en la localidad de Nombrevilla 2 (Zaragoza, España). Estudios Geológicos. 67:187–191.</span>
