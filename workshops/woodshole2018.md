@@ -89,6 +89,12 @@ schedule:
     topic: Lunch
   
   - starttime: 2018-07-28T14:00
+    endtime: 2018-07-28T14:20
+    topic: "Lecture: Bayesian Divergence-Time Estimation, continued"
+    material: <a href="https://figshare.com/articles/Bayesian_Divergence-Time_Estimation_Lecture/6849005">Lecture slides</a>
+    instructors: Tracy Heath
+
+  - starttime: 2018-07-28T14:20
     endtime: 2018-07-28T17:00
     topic: "Lab: Divergence-Time Estimation in RevBayes"
     tutorials: fbd
