@@ -151,7 +151,7 @@ for molecular data (<a href="#Intro-GTR"></a>), one for
 morphological data (<a href="#Intro-Morpho"></a>), and one for
 fossil stratigraphic range data (section <a href="#Intro-FBD"></a>).
 In addition, all likelihood components are conditioned on a tree
-topology with divergence ti.e. which is modeled according to a separate
+topology with divergence times which is modeled according to a separate
 prior component (<a href="#Intro-FBD"></a>).</p>
 
 <figure id="fig_module_gm"><p><img src="figures/tikz/full_model_modular.png" width="700" /></p>
@@ -163,7 +163,7 @@ analysis described in this tutorial.</figcaption>
 estimated from a total-evidence analysis. This example shows the
 complete tree (<a href="#fig_example_tree"></a>A) and the sampled or
 reconstructed tree (<a href="#fig_example_tree"></a>B). Importantly, we are
-interested in estimating the topology, divergence ti.e. and fossil
+interested in estimating the topology, divergence times and fossil
 sample times of the <em>reconstructed tree</em> (<a href="#fig_example_tree"></a>B).
 We will describe the distinction between these two trees in <a href="#Intro-FBD"></a>.</p>
 
@@ -187,7 +187,7 @@ living and extinct species used in this tutorial is described by the
 model simply treats the fossil observations as part of the process
 governing the tree topology and branch times (the node in
 <a href="#fig_module_gm"></a>). The fossilized birth-death process provides a
-model for the distribution of speciation ti.e. tree topology, and
+model for the distribution of speciation times tree topology, and
 lineage samples before the present
 (<em>e.g.,</em>non-contemporaneous samples like
 fossils or viruses). This type of tree is shown in <a href="#fig_example_tree"></a>. 
@@ -208,8 +208,8 @@ relationships is important.</p>
 <p>The FBD model (<a href="#fig_fbd_gm"></a>) describes the probability of the
 tree and fossils conditional on the birth-death parameters:
 $f[\mathcal{T} \mid \lambda, \mu, \rho, \psi, \phi]$, where
-$\mathcal{T}$ denotes the tree topology, divergence ti.e. fossil
-occurrence ti.e. and the times at which the fossils attach to the tree.
+$\mathcal{T}$ denotes the tree topology, divergence times fossil
+occurrence times and the times at which the fossils attach to the tree.
 The birth-death parameters $\lambda$ and $\mu$ denote the speciation and
 extinction rates, respectively. The “fossilization rate” or “fossil
 recovery rate” is denoted $\psi$ and describes the rate at which fossils
@@ -572,12 +572,12 @@ them in the <code class="highlighter-rouge">scripts</code> directory:</p>
 <ul>
   <li>
     <p><code class="highlighter-rouge">mcmc_CEFBDP_Specimens.Rev</code>: the master Rev file that loads the data, the
-separate model fi.e. and specifies the monitors and MCMC sampler.</p>
+separate model file and specifies the monitors and MCMC sampler.</p>
   </li>
   <li>
     <p><code class="highlighter-rouge">model_FBDP.Rev</code>: specifies the model parameters and moves
 required for the fossilized birth-death prior on the tree topology,
-divergence ti.e. fossil occurrence ti.e. and
+divergence times fossil occurrence times and
 diversification dynamics.</p>
   </li>
   <li>
@@ -887,7 +887,7 @@ Ursinae, so we define a clade for the total group Ursinae including
 creating a vector of constraints, and providing it along with the
 workspace FBD distribution to the constrained topology distribution.
 Here we use the stochastic assignment operator <code class="highlighter-rouge">~</code> to create a
-stochastic node for our constrai.e. FBD-tree variable (called
+stochastic node for our constrained FBD-tree variable (called
 <code class="highlighter-rouge">fbd_tree</code>).</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>constraints = v(clade_ursinae)
@@ -982,7 +982,7 @@ will compute the number of sampled ancestors in our <code class="highlighter-rou
 sample, we must use the <code class="highlighter-rouge">clade</code> function to identify the node.
 Importantly, since we did not include this clade in our constraints that
 defined <code class="highlighter-rouge">fbd_tree</code>, this clade will not be constrained to be
-monophyletic. Once this clade is defi.e. we can instantiate a
+monophyletic. Once this clade is defined we can instantiate a
 deterministic node called <code class="highlighter-rouge">age_extant</code> with the <code class="highlighter-rouge">tmrca</code> function that
 will record the age of the MRCA of all living bears.</p>
 
@@ -1239,7 +1239,7 @@ the <code class="highlighter-rouge">scripts</code> directory.</p>
 files into the workspace. Use this function to load in the model scripts
 we have written in the text editor and saved in the <code class="highlighter-rouge">scripts</code> directory.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/model_FBDRP.Rev") # FBD tree prior
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/model_FBDP.Rev") # FBD tree prior
 
 source("scripts/model_UExp.Rev") # UExp relaxed clock
 
@@ -1374,24 +1374,19 @@ This program is limited to numerical parameters, however, and cannot be
 used to summarize or analyze MCMC samples of the tree topology (this
 will be discussed further in <a href="#subsub:Exercise-SummarizeTree">Summarize Tree</a>).</p>
 
+<p>Open Tracer and import the <code class="highlighter-rouge">bears.log</code> file in the
+<strong><em>File &gt; Import New Trace Files</em></strong>. Or click the button on the
+left-hand side of the screen to add your log file (see <a href="#fig_tracer"></a>).</p>
+
 <figure id="fig_tracer"><p><img src="figures/tracer_load_file.png" width="900" /></p>
 <figcaption>The Tracer
 window. To add data, click on the “+” sign, highlighted in red above</figcaption>
 </figure>
 
-<p>Open Tracer and import the <code class="highlighter-rouge">bears.log</code> file in the
-<em>**FileImport New Trace Fi.e.</em> *. Or click the button on the
-left-hand side of the screen to add your log file (see <a href="#fig_tracer"></a>).</p>
-
-<figure id="tracer_post_ests"><p><img src="figures/tracer_fig_posterior_short.png" width="900" /></p>
-<figcaption>The <strong>Estimates</strong> window in Tracer showing the
-histogram of the <strong>Posterior</strong></figcaption>
-</figure>
-
 <p>Immediately upon loading your file (see <a href="#tracer_post_ests"></a>),
-you will see the list of <strong>Trace Fi.e.* * on the left-hand
+you will see the list of <strong>Trace Files</strong> on the left-hand
 side (you can load multiple files). The bottom left section, called
-**Traces</strong>, provides a list of every parameter in the log
+<strong>Traces</strong>, provides a list of every parameter in the log
 file, along with the mean and the effective sample size (ESS) for the
 posterior sample of that parameter. The ESS statistic provides a measure
 of the number of independent draws in our sample for a given parameter.
@@ -1403,23 +1398,24 @@ short to effectively sample the posterior distributions of most
 parameters. A much longer analysis is provided in the <code class="highlighter-rouge">output</code>
 directory.</p>
 
+<figure id="tracer_post_ests"><p><img src="figures/tracer_fig_posterior_short_sp.png" width="900" /></p>
+<figcaption>The <strong>Estimates</strong> window in Tracer showing the
+histogram of the <strong>Posterior</strong></figcaption>
+</figure>
+
 <p>The inspection window for your selected parameter is the
 <strong>Estimates</strong> window, which shows a histogram and summary
-statistics of the values sampled by the Markov chain. Figure
+statistics of the values sampled by the Markov chain. 
 <a href="#tracer_post_ests"></a> shows the marginal distribution of the
 <strong>Posterior</strong> statistic for the <code class="highlighter-rouge">bears.log</code> file in the
 <code class="highlighter-rouge">output</code> directory.</p>
 
-<figure id="samplewindow"><p><img src="figures/samplewindow.png" width="900" /></p>
-<figcaption>The Estimates window. The left-hand
-window provides mean and ESS of the chain. The right-hand window
-visualizes the distribution of samples.</figcaption>
-</figure>
-
-<p>Look through the various parameters and statistics in the list of
+<blockquote class="instruction">
+  <p>Look through the various parameters and statistics in the list of
 <strong>Traces</strong>.</p>
 
-<p>Are there any parameters that have really low ESS? Why do you think that might be?</p>
+  <p>Are there any parameters that have really low ESS? Why do you think that might be?</p>
+</blockquote>
 
 <p>Next, we can click over to the <strong>Trace</strong> window. This
 window shows us the samples for a given parameter at each iteration of
@@ -1502,7 +1498,7 @@ to consider approaches for assessing the performance of the MCMC with
 respect to the tree topology.</p>
 
 <p>Ultimately, we are interested in summarizing the sampled trees and
-branch ti.e. given that our MCMC has sampled all of the important
+branch times given that our MCMC has sampled all of the important
 parameters in proportion to their posterior probabilities. RevBayes
 includes some functions for summarizing the tree topology and other tree
 parameters.</p>
