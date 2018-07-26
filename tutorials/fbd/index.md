@@ -991,14 +991,6 @@ statistics of the values sampled by the Markov chain. Figure
 **Posterior** statistic for the `bears.log` file in the
 `output` directory.
 
-{% figure samplewindow %}
-<img src="figures/samplewindow.png" width="900" /> 
-{% figcaption %}
-The Estimates window. The left-hand
-window provides mean and ESS of the chain. The right-hand window
-visualizes the distribution of samples.
-{% endfigcaption %}
-{% endfigure %}
 
 > Look through the various parameters and statistics in the list of
 **Traces**.
