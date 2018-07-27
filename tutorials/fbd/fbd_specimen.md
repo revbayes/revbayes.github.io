@@ -42,7 +42,7 @@ morphological data ({% ref Intro-Morpho %}), and one for
 fossil stratigraphic range data (section {% ref Intro-FBD %}).
 In addition, all likelihood components are conditioned on a tree
 topology with divergence times which is modeled according to a separate
-prior component ({% ref Intro-FBD %}).
+prior component ({% ref Intro-TipSampling %}).
 
 
 {% figure fig_module_gm %}
@@ -93,8 +93,8 @@ without* character data for the historical samples. Thus, it provides a
 reasonable prior distribution for analyses combining morphological or
 DNA data for both extant and fossil
 taxa—*i.e.* the so-called "total-evidence"
-approaches described by {% cite Ronquist2012a %} and extended by {% cite Zhang2016 %} and
-{% cite Gavryushkina2016 %}. When matrices of discrete morphological characters
+approaches described by {% citet Ronquist2012a %} and extended by {% citet Zhang2016 %} and
+{% citet Gavryushkina2016 %}. When matrices of discrete morphological characters
 for both living and fossil species are unavailable, the fossilized
 birth-death model imposes a time structure on the tree by
 [*marginalizing*](https://en.wikipedia.org/wiki/Marginal_distribution)
@@ -620,7 +620,7 @@ and node times (`mvNodeTimeSlideUniform`). Included with these moves is
 a proposal that will collapse or expand a fossil branch
 (`mvCollapseExpandFossilBranch`). This will change a fossil that is a
 sampled ancestor (see {% ref fig_example_tree %} and
-Sect. {% ref Intro-FBD %}) so that it is on its own branch and vice
+{% ref Intro-FBD %}) so that it is on its own branch and vice
 versa. In addition, when conditioning on the origin time, we also need
 to explicitly sample the root age (`mvRootTimeSlideUniform`).
 
@@ -828,7 +828,7 @@ This will execute the analysis and you should see the various parameters you inc
 
 When the analysis is complete, RevBayes will quit and you will have a
 new directory called `output` that will contain all of the files you
-specified with the monitors (see {% ref Exercise-Monitors %})).
+specified with the monitors (see {% ref Exercise-Monitors %}).
 
 {% subsection Evaluate and Summarize Your Results | Exercise-SummarizeResults %}
 
@@ -889,7 +889,7 @@ statistics of the values sampled by the Markov chain.
 
 
 > Look through the various parameters and statistics in the list of
-**Traces**.
+> **Traces**.
 >
 >&#8680; Are there any parameters that have really low ESS? Why do you think that might be?
 {:.instruction}
@@ -939,7 +939,7 @@ distributions of your parameters in the
 distributions of several different parameters (by selecting them both).
 
 >Go to the `diversification` parameter in the 
-**Marginal Prob Distribution** window.
+>**Marginal Prob Distribution** window.
 >
 >&#8680; What is the mean value estimated
 >for the net diversification rate ($d$)? 
@@ -994,7 +994,7 @@ We will complete this part of the tutorial using RevBayes
 interactively. 
 
 >Begin by running the RevBayes executable. You should do
-this from within the tutorial directory.
+>this from within the tutorial directory.
 {:.instruction}
 
 Read in the MCMC sample of trees from file.
@@ -1037,8 +1037,7 @@ ancestor
 Navigate to <https://icytree.org> and open the file
 `output/bears.mcc.tre` in IcyTree.
 
-> Try to replicate the tree in {% ref summary_tree %} (Hint: ***Style > Mark
-> Singletons***) 
+> Try to replicate the tree in {% ref summary_tree %} (Hint: ***Style > Mark Singletons***) 
 >
 >&#8680; Why might a node with a sampled ancestor be
 >referred to as a singleton?
