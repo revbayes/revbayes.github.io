@@ -119,7 +119,7 @@ schedule:
 
 For the tutorials used in this workshop, you may want to use the version of RevBayes on the MBL cluster. 
 
-Now you can use RevBayes from any directory on the cluster by just typing `rb`.
+Once you log in, you can use RevBayes from any directory on the cluster by just typing `rb`.
 
 ```
 rb
