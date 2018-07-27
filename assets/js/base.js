@@ -117,7 +117,7 @@ if(location.search.substring(1) == 'download')
   get_files();
 
 // Add figure titles to figure references
-$("figure").each(function(index) {
+$("figure").not(".table").each(function(index) {
     if( this.id != null ) {
       var els = document.querySelectorAll("a[href=\"#"+this.id+"\"]");
       if(els.length > 0)
@@ -126,7 +126,7 @@ $("figure").each(function(index) {
     }
 });
 
-$(".table").each(function(index) {
+$("figure.table").each(function(index) {
   if( this.id !=  null ) {
     var els = document.querySelectorAll("a[href=\"#"+this.id+"\"]");
     if(els.length > 0){
