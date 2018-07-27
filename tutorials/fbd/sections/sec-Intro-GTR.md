@@ -23,7 +23,7 @@ for the *Molecular Data* ({% ref fig_module_gm %}) that we will use in this tuto
 Another possible uncorrelated relaxed
 clock model is the uncorrelated lognormal model, described in the
 {% page_ref clocks %}
-tutorial [also see {% cite Thorne2002 %}].
+tutorial [also see {% citet Thorne2002 %}].
 
 {% figure fig_uexp_gm %}
 <img src="figures/tikz/uexp_gm.png" width="400" /> 

@@ -152,7 +152,7 @@ morphological data (<a href="#Intro-Morpho"></a>), and one for
 fossil stratigraphic range data (section <a href="#Intro-FBD"></a>).
 In addition, all likelihood components are conditioned on a tree
 topology with divergence times which is modeled according to a separate
-prior component (<a href="#Intro-FBD"></a>).</p>
+prior component (<a href="#Intro-TipSampling"></a>).</p>
 
 <figure id="fig_module_gm"><p><img src="figures/tikz/full_model_modular.png" width="700" /></p>
 <figcaption>Modular components of the graphical model used in the “combined-evidence” 
@@ -196,8 +196,8 @@ without</em> character data for the historical samples. Thus, it provides a
 reasonable prior distribution for analyses combining morphological or
 DNA data for both extant and fossil
 taxa—<em>i.e.</em> the so-called “total-evidence”
-approaches described by <a href="#Ronquist2012a">(Ronquist et al. 2012)</a> and extended by <a href="#Zhang2016">(Zhang et al. 2016)</a> and
-<a href="#Gavryushkina2016">(Gavryushkina et al. 2016)</a>. When matrices of discrete morphological characters
+approaches described by <a href="#Ronquist2012a">Ronquist et al. (2012)</a> and extended by <a href="#Zhang2016">Zhang et al. (2016)</a> and
+<a href="#Gavryushkina2016">Gavryushkina et al. (2016)</a>. When matrices of discrete morphological characters
 for both living and fossil species are unavailable, the fossilized
 birth-death model imposes a time structure on the tree by
 <a href="https://en.wikipedia.org/wiki/Marginal_distribution"><em>marginalizing</em></a>
@@ -336,7 +336,7 @@ for the <em>Molecular Data</em> (<a href="#fig_module_gm"></a>) that we will use
 Another possible uncorrelated relaxed
 clock model is the uncorrelated lognormal model, described in the
 <a href="/tutorials/clocks/">Relaxed Clocks &amp; Time Trees</a>
-tutorial [also see <a href="#Thorne2002">(Thorne and Kishino 2002)</a>].</p>
+tutorial [also see <a href="#Thorne2002">Thorne and Kishino (2002)</a>].</p>
 
 <figure id="fig_uexp_gm"><p><img src="figures/tikz/uexp_gm.png" width="400" /></p>
 <figcaption>A graphical model of the
@@ -937,7 +937,7 @@ and node times (<code class="highlighter-rouge">mvNodeTimeSlideUniform</code>). 
 a proposal that will collapse or expand a fossil branch
 (<code class="highlighter-rouge">mvCollapseExpandFossilBranch</code>). This will change a fossil that is a
 sampled ancestor (see <a href="#fig_example_tree"></a> and
-Sect. <a href="#Intro-FBD"></a>) so that it is on its own branch and vice
+<a href="#Intro-FBD"></a>) so that it is on its own branch and vice
 versa. In addition, when conditioning on the origin time, we also need
 to explicitly sample the root age (<code class="highlighter-rouge">mvRootTimeSlideUniform</code>).</p>
 
@@ -1383,7 +1383,7 @@ following in your terminal (if the RevBayes binary is in your path):</p>
 
 <p>When the analysis is complete, RevBayes will quit and you will have a
 new directory called <code class="highlighter-rouge">output</code> that will contain all of the files you
-specified with the monitors (see <a href="#Exercise-Monitors"></a>)).</p>
+specified with the monitors (see <a href="#Exercise-Monitors"></a>).</p>
 
 <h3 class="subsection" id="Exercise-SummarizeResults">Evaluate and Summarize Your Results</h3>
 <hr class="subsection" />
@@ -1584,8 +1584,7 @@ ancestor</figcaption>
 <code class="highlighter-rouge">output/bears.mcc.tre</code> in IcyTree.</p>
 
 <blockquote class="instruction">
-  <p>Try to replicate the tree in <a href="#summary_tree"></a> (Hint: <strong><em>Style &gt; Mark
-Singletons</em></strong>)</p>
+  <p>Try to replicate the tree in <a href="#summary_tree"></a> (Hint: <strong><em>Style &gt; Mark Singletons</em></strong>)</p>
 
   <p>⇨ Why might a node with a sampled ancestor be
 referred to as a singleton?</p>
