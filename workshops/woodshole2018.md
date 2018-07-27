@@ -79,6 +79,12 @@ schedule:
     topic: <a href="https://molevol.mbl.edu/index.php/Schedule">See course schedule</a>
 
   - starttime: 2018-07-28T09:00
+    endtime: 2018-07-28T9:30
+    topic: "Lab: Introduction to RevBayes and the Rev Language"
+    tutorials: intro
+    instructors: Michael Landis
+
+  - starttime: 2018-07-28T09:30
     endtime: 2018-07-28T12:00
     topic: "Lab: Phylogenetic Inference in RevBayes"
     tutorials: ctmc
