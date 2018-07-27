@@ -79,7 +79,7 @@ Specific functions for substitution models available in RevBayes.
 
 {% section Example: Character Evolution under the Jukes-Cantor Substitution Model %}
 
-{% subsubsection Getting Started %}
+{% subsection Getting Started %}
 
 The first section of this exercise involves: 
 1. setting up a Jukes-Cantor (JC) substitution model for an alignment of the cytochrome b subunit; 
@@ -94,8 +94,8 @@ Graphical model representation of a simple phylogenetic model. The graphical mod
 {% endfigcaption %}
 {% endfigure %}
 
-We first consider the simplest substitution model described by Jukes and Cantor
-{% cite Jukes1969 -A %}. The instantaneous-rate matrix for the JC substitution
+We first consider the simplest substitution model described by 
+{% citet Jukes1969 %}. The instantaneous-rate matrix for the JC substitution
 model is defined as
 
 $$Q_{JC69} = \begin{pmatrix} 
@@ -127,9 +127,53 @@ output the states of the Markov chain once the MCMC analysis begins.
 
 Ultimately, this is how you will execute most analyses in RevBayes, with the full specification of the model and analyses contained in the sourced files. You could easily run this entire analysis on your own data by substituting your data file name for that in the model-specification file. However, it is important to understand the components of the model to be able to take full advantage of the flexibility and richness of RevBayes. Furthermore, without inspecting the Rev scripts sourced in `mcmc_JC.Rev`, you may end up inadvertently performing inappropriate analyses on your dataset, which would be a waste of your time and CPU cycles. The next steps will walk you through the full specification of the model and MCMC analyses.
 
-{% subsubsection Loading the Data %}
+{% subsection Loading the Data %}
 
-Download data and output files (if you don’t have them already).
+>First create a directory for this tutorial and name it `RB_CTMC_Tutorial`, or any name
+>you like.
+>
+>Navigate to this new directory and create a new folder called `data` inside of it.
+>
+>Download the data file called [`primates_and_galeopterus_cytb.nex`](data/primates_and_galeopterus_cytb.nex) 
+>and save it to the `data` directory.
+>
+>Now start RevBayes from your working directory (`RB_CTMC_Tutorial`). 
+{:.instruction}
+
+{% aside Checking and Changing Your Working Directory %}
+For this tutorial and much of the work you will do in RevBayes, you will need to access files.
+It is important that you are aware of your current working directory if you use relative file paths
+in your Rev scripts or in the RevBayes console.
+
+To check your current working directory, use the function `getwd()`.
+
+```
+getwd()
+```
+```
+/Users/tombayes/Work
+```
+{:.Rev-output}
+
+If you want to change the directory, enter the path to your directory in the arguments of the function `setwd()`.
+
+```
+setwd("Tutorials/RB_CTMC_Tutorial")
+```
+```
+Received directory:   Tutorials/RB_CTMC_Tutorial
+```
+{:.Rev-output}
+
+Now check your directory again to make sure you are where you want to be:
+```
+getwd()
+```
+```
+/Users/tombayes/Work/Tutorials/RB_CTMC_Tutorial
+```
+{:.Rev-output}
+{% endaside %}
 
 First load in the sequences using the `readDiscreteCharacterData()`
 function.
@@ -176,9 +220,14 @@ mni = 1
 
 You may have noticed that we used the `=` operator to create the move index. This simply means that the variable is not part of the model. You will later see that we use this operator more often, *e.g.*,  when we create moves and monitors.
 
-With the data loaded, we can now proceed to specify our Jukes-Cantor substitution model.
+With the data loaded, we can now proceed to specify our specifying the model.
 
-{% subsubsection Jukes-Cantor Substitution Model %}
+{% subsection Setting up the Graphical Model and MCMC %}
+
+Estimating an unrooted tree under the JC model requires specification of two main components:
+(1) the {% ref subsub-JCMod %} and (2) the {% ref subsub-TreeBlMod %}.
+
+{% subsubsection Jukes-Cantor Substitution Model | subsub-JCMod %}
 
 A given substitution model is defined by its corresponding
 instantaneous-rate matrix, $Q$. The Jukes-Cantor substitution model does
@@ -208,7 +257,7 @@ Q
 
 As you can see, all substitution rates are equal.
 
-{% subsubsection Tree Topology and Branch Lengths %}
+{% subsubsection Tree Topology and Branch Lengths | subsub-TreeBlMod %}
 
 The tree topology and branch lengths are stochastic nodes in our phylogenetic model. 
 In {% ref jc_graphical_model %}, the tree topology is denoted $\Psi$ and the 
@@ -348,7 +397,8 @@ moves[mvi++] = mvNodeTimeSlideUniform(psi, weight=n_species)
 
 The weight specifies how often the move will be applied either on average per iteration or relative to all other moves. Have a look at the [MCMC tutorial]({{ base.url }}/tutorials/) for more details about moves and MCMC strategies.
 
-#### Molecular clock {:.subsubsection}
+{% subsubsection Molecular Clock %}
+
 Additionally, in the case of time-calibrated trees, we need to add a molecular clock rate parameter. For example, we know from empirical estimates that the molecular clock rate is about 0.01 (=1%) per million years per site. Nevertheless, we can estimate it here because we fixed the root age. We use a uniform prior on the log-transform clock rate. This specifies our lack of prior knowledge on the magnitude of the clock rate.
 
 ```
@@ -474,7 +524,7 @@ There you see the posterior distribution of the continuous parameters, *e.g.*, t
 
 
 {% figure jc_trace_tl %}
-<img src="figures/primates_cytb_JC_TL_Trace.png" width = "500" /> <img src="figures/primates_cytb_JC_TL_Distribution.png" width = "500" />`` 
+<img src="figures/primates_cytb_JC_TL_Trace.png" width = "500" /> <img src="figures/primates_cytb_JC_TL_Distribution.png" width = "500" /> 
 {% figcaption %}
 **Left:** Trace of tree-length samples for one MCMC run. The caterpillar-like look is a good sign.You will also see that the effective sample size is comparably large, i.e., much larger than 200. **Right:** Posterior distribution of the tree length of the primate phylogeny under a Jukes-Cantor substitution model.
 {% endfigcaption %}
@@ -651,7 +701,11 @@ This should be all for the HKY model. Don’t forget to change the output file n
 -   With {% ref jc_graphical_model %} as your guide, draw the probabilistic
     graphical model of the HKY model.
 
--   Copy the file called `mcmc_JC.Rev` and modify it by including the
+-   Download the file called [`mcmc_JC.Rev`](scripts/mcmc_JC.Rev) and rename it
+    `mcmc_HKY.Rev`. Save this file in a directory called `scripts` located in the same
+    directory as your `data` folder.
+
+-   Modify `mcmc_HKY.Rev` by including the
     necessary parameters to specify the HKY substitution model.
 
 -   Run an MCMC analysis to estimate the posterior distribution under
@@ -668,9 +722,10 @@ This should be all for the HKY model. Don’t forget to change the output file n
 
 -   Like the HKY model, the Felsenstein 1981 (F81) substitution model
     has unequal stationary frequencies, but it assumes equal
-    transition-transversion rates {% cite Felsenstein1981 %}. Can you set up the F81 model and run an analysis?
+    transition-transversion rates {% cite Felsenstein1981 %}. 
+    Can you set up the F81 model and run an analysis?
 
--   Complete the {% ref tab_primates %} by reporting the posterior
+-   Complete the {% ref tab_primates_posterior %} by reporting the posterior
     probabilities of phylogenetic relationships.
 
 {% section The General Time-Reversible (GTR) Substitution Model %}
@@ -845,7 +900,9 @@ seq ~ dnPhyloCTMC(tree=psi, Q=Q, siteRates=gamma_rates, type="DNA")
 
 {% subsection Exercise 4 %}
 
-Modify the previous GTR analysis to specify the GTR+Gamma model. Run an MCMC simulation to estimate the posterior distribution.
+
+-   Modify the previous GTR analysis to specify the GTR+Gamma model. 
+    Run an MCMC simulation to estimate the posterior distribution.
 
 -   Is there an impact on the estimated phylogeny compared with the
     previous analyses? Look at the MAP tree and the posterior
