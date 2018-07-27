@@ -404,6 +404,12 @@ This is a citation with multiple sources {% cite Felsenstein1981 Hoehna2016b %}.
 
 Citations are included in the **References** section at the end of each tutorial. References are formatted according to the [CSL](https://github.com/citation-style-language/styles) style for [*Systematic Biology*](https://academic.oup.com/sysbio).
 
+{% section Applying changes to the website %}
+
+New changes to the RevBayes website source files will not be applied automatically. This is because the site uses Jekyll plugins that are not supported by GitHub's gh-pages. 
+
+To apply your changes to the site, you must follow the instructions contained in [README.md](https://github.com/revbayes/revbayes.github.io/blob/source/README.md).
+
 {% include bibliography.html %}
 
 
