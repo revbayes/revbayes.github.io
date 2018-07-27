@@ -159,7 +159,7 @@ parameter $\lambda$:
 
 $$\begin{aligned}
     u &\sim \text{Uniform(0,1)}\\
-    x &= -\frac{1}{\lambda \ln u}\end{aligned}$$
+    x &= -\frac{\ln u}{\lambda} \end{aligned}$$
 
 In RevBayes, we might describe
 $u$ as a stochastic variable, and $x$ as a deterministic variable (since
@@ -173,7 +173,7 @@ it is a function of $u$):
     lambda <- 1.0
 
     # create x as a deterministic function of u
-    x := - 1 / (lambda * ln(u))
+    x := -ln(u) / lambda
     x
 
 Alternatively, we can create $x$ directly as an exponential random
@@ -231,7 +231,7 @@ them into a *second* vector of exponential random numbers.
 
     for (i in 1:100) {
       u[i] ~ dnUniform(0,1)
-      x[i] := - 1.0 / (lambda * ln(u[i]))
+      x[i] := -ln(u[i]) / lambda 
     }
 
 Close using the statement `q()`.
