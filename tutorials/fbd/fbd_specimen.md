@@ -365,7 +365,7 @@ complete, you will return to editing `mcmc_CEFBDP_Specimens.Rev` and complete th
 Rev script with the instructions given in section, 
 you will move on to writing the {% ref Exercise-CompleteMCMC %}.
 
-### Load Taxon List {#subsub:Exercise-TaxList}
+{% subsubsection Load Taxon List | Exercise-TaxList %}
 
 Begin the Rev script by loading in the list of taxon names from the
 `bears_taxa.tsv` file using the `readTaxonData` function.
@@ -379,7 +379,7 @@ names in the first columns and a single age value in the second column.
 The ages provided are either 0.0 for extant species or the average of
 the age range for fossil species (see {% ref tab_bear_fossils %}).
 
-### Load Data Matrices {#subsub:Exercise-LoadData}
+{% subsubsection Load Data Matrices | Exercise-LoadData %}
 
 RevBayes uses the function `readDiscreteCharacterData` to load a
 data matrix to the workspace from a formatted file. This function can be
@@ -395,7 +395,7 @@ variable `morpho`.
 
 {{ mcmc_script | snippet:"block#","3" }}
 
-### Add Missing Taxa {#subsub:Exercise-AddMissing}
+{% subsubsection Add Missing Taxa | Exercise-AddMissing %}
 
 In the descriptions of the files in section
 {% ref Exercise-DataFiles %}, we mentioned that the two data matrices
@@ -411,7 +411,7 @@ tips.
 
 {{ mcmc_script | snippet:"block#","4" }}
 
-### Create Helper Variables {#subsub:Exercise-mviVar}
+{% subsubsection Create Helper Variables | Exercise-mviVar %}
 
 Before we begin writing the Rev scripts for each of the model
 components, we need to instantiate a couple "helper variables" that will
@@ -457,7 +457,7 @@ necessary, please review the graphical models depicted for the
 fossilized birth-death process ({% ref fig_fbd_gm %}) and the likelihood
 of the tip sampling process ({% ref fig_tipsampling_gm %}).
 
-### Speciation and Extinction Rates {#subsub:Exercise-FBD-SpeciationExtinction}
+{% subsubsection Speciation and Extinction Rates | Exercise-FBD-SpeciationExtinction %}
 
 Two key parameters of the FBD process are the speciation rate (the rate
 at which lineages are added to the tree, denoted by $\lambda$ in
@@ -522,7 +522,7 @@ the `:=` operator.
 {{ fbdp_script | snippet:"block#","4" }}
 
 
-### Probability of Sampling Extant Taxa {#subsub:Exercise-FBD-Rho}
+{% subsubsection Probability of Sampling Extant Taxa | Exercise-FBD-Rho %}
 
 All extant bears are represented in this dataset. Therefore, we will fix
 the probability of sampling an extant lineage ($\rho$ in
@@ -534,20 +534,20 @@ constant node using the `<-` operator.
 Because $\rho$ is a constant node, we do not have to assign a move to
 this parameter.
 
-### The Fossil Sampling Rate {#subsub:Exercise-FBD-Psi}
+{% subsubsection The Fossil Sampling Rate | Exercise-FBD-Psi %}
 
 Since our data set includes serially sampled lineages, we must also
 account for the rate of sampling back in time. This is the fossil
 sampling (or recovery) rate ($\psi$ in {% ref fig_fbd_gm %}), which we
 will instantiate as a stochastic node (named `psi`). As with the
 speciation and extinction rates
-(see [Speciation and Extinction Rates](#subsub:Exercise-FBD-SpeciationExtinction)), we will use an
+(see {% ref Exercise-FBD-SpeciationExtinction %}), we will use an
 exponential prior on this parameter and use scale moves to sample values
 from the posterior distribution.
 
 {{ fbdp_script | snippet:"block#","6-7" }}
 
-### The Origin Time {#subsub:Exercise-FBD-Origin}
+{% subsubsection The Origin Time | Exercise-FBD-Origin %}
 
 We will condition the FBD process on the origin time ($\phi$ in
 {% ref fig_fbd_gm %}) of bears, and we will specify a uniform
@@ -566,7 +566,7 @@ stochastic nodes. This means that our move schedule will propose five
 times as many updates to `origin_time` than it will to
 `speciation_rate`, `extinction_rate`, or `psi`.
 
-### The FBD Distribution Object {#subsub:Exercise-FBD-dnFBD}
+{% subsubsection The FBD Distribution Object | Exercise-FBD-dnFBD %}
 
 All the parameters of the FBD process have now been specified. The next
 step is to use these parameters to define the FBD tree prior
@@ -574,7 +574,7 @@ distribution, which we will call `fbd_dist`.
 
 {{ fbdp_script | snippet:"block#","10" }}
 
-### Clade Constraints {#subsub:Exercise-FBD-Constraints}
+{% subsubsection Clade Constraints | Exercise-FBD-Constraints %}
 
 Note that we created the distribution as a workspace variable using the
 workspace assignment operator `=`. This is because we still need to
@@ -612,7 +612,7 @@ may propose to place this taxon anywhere in the tree (except within the
 clade constraint we made above). This allows us to account for the
 maximum amount of uncertainty in the placement of *P. montanus*.
 
-### Moves on the Tree Topology and Node Ages {#subsub:Exercise-FBD-TreeMoves}
+{% subsubsection Moves on the Tree Topology and Node Ages | Exercise-FBD-TreeMoves %}
 
 Next, in order to sample from the posterior distribution of trees, we
 need to specify moves that propose changes to the topology (`mvFNPR`)
@@ -627,7 +627,7 @@ to explicitly sample the root age (`mvRootTimeSlideUniform`).
 {{ fbdp_script | snippet:"block#","13-14" }}
 
 
-### Sampling Fossil Occurrence Ages {#subsub:Exercise-FBD-TipSampling}
+{% subsubsection Sampling Fossil Occurrence Ages | Exercise-FBD-TipSampling %}
 
 Next, we need to account for uncertainty in the age estimates of our
 fossils using the observed minimum and maximum stratigraphic ages.
@@ -652,12 +652,12 @@ tree.
 
 {{ fbdp_script | snippet:"block#","18" }}
 
-### Monitoring Parameters of Interest using Deterministic Nodes {#subsub:Exercise-FBD-DetNodes}
+{% subsubsection Monitoring Parameters of Interest using Deterministic Nodes | Exercise-FBD-DetNodes %}
 
 There are additional parameters that may be of particular interest to us
 that are not directly inferred as part of this graphical model. As with
 the diversification and turnover nodes specified in
-[Speciation and Extinction Rates](#subsub:Exercise-FBD-SpeciationExtinction), we can create
+{% ref Exercise-FBD-SpeciationExtinction %}, we can create
 deterministic nodes to sample the posterior distributions of these
 parameters. Create a deterministic node called `num_samp_anc` that
 will compute the number of sampled ancestors in our `fbd_tree`.
@@ -685,7 +685,7 @@ recording. We will monitor the marginal distribution of the age of
 Finally, we will monitor the tree after removing taxa for which we did
 not have any molecular or morphological data. The phylogenetic placement
 of these taxa is based only on their occurrence times and any clade
-constraints we applied (see [Clade Constraints](#subsub:Exercise-FBD-Constraints)).
+constraints we applied (see {% ref Exercise-FBD-Constraints %}).
 Because no data are available to resolve their relationships to other
 lineages, we will treat their placement as [*nuisance
 parameters*](https://en.wikipedia.org/wiki/Nuisance_parameter) and
@@ -773,7 +773,7 @@ topology is not included in the `mnModel` monitor (because it is not
 numerical), we will use `mnFile` to write the tree to file by specifying
 our `pruned_tree` variable in the arguments. Remember, we are
 monitoring the tree with nuisance taxa pruned out (see
-[Monitoring Parameters of Interest using Deterministic Nodes](#subsub:Exercise-FBD-DetNodes)).
+{% ref Exercise-FBD-DetNodes %}).
 
 {{ mcmc_script | snippet:"block#","14" }}
 
@@ -785,7 +785,7 @@ MCRCA of living bears (`age_extant`), the number of sampled ancestors
 
 {{ mcmc_script | snippet:"block#","15" }}
 
-### Set-Up the MCMC
+{% subsubsection Set-Up the MCMC | Exercise-MCMCSetup %}
 
 Once we have set up our model, moves, and monitors, we can now create
 the workspace variable that defines our MCMC run. We do this using the
@@ -828,7 +828,7 @@ This will execute the analysis and you should see the various parameters you inc
 
 When the analysis is complete, RevBayes will quit and you will have a
 new directory called `output` that will contain all of the files you
-specified with the monitors (see [Specify Monitors and Output Filenames](#subsub:Exercise-Monitors)).
+specified with the monitors (see {% ref Exercise-Monitors %})).
 
 {% subsection Evaluate and Summarize Your Results | Exercise-SummarizeResults %}
 
@@ -839,7 +839,7 @@ interested in. [Tracer](http://tree.bio.ed.ac.uk/software/tracer/)
 {% cite Rambaut2011 %} is a tool for visualizing parameters sampled by MCMC.
 This program is limited to numerical parameters, however, and cannot be
 used to summarize or analyze MCMC samples of the tree topology (this
-will be discussed further in [Summarize Tree](#subsub:Exercise-SummarizeTree)).
+will be discussed further in {% ref Exercise-SummarizeTree %}).
 
 Open Tracer and import the `bears.log` file in the
 ***File > Import New Trace Files***. Or click the button on the
@@ -973,7 +973,7 @@ recommended MCMC practices in RevBayes, please see the
 and {% page_ref mcmc %}
 tutorials.
 
-### Summarize Tree {#subsub:Exercise-SummarizeTree}
+{% subsubsection Summarize Tree | Exercise-SummarizeTree %}
 
 In addition to evaluating the performance and sampling of an MCMC run
 using numerical parameters, it is also important to inspect the sampled
@@ -1054,10 +1054,13 @@ Navigate to <https://icytree.org> and open the file
 {:.instruction}
 
 
+{% figure highlight %}
+<img src="figures/branch_highlight_sp.png" width="600" /> 
+{% figcaption %}
+Highlighting a branch in IcyTree.
+{% endfigcaption %}
+{% endfigure %}
+
 Another newly available web-based tree viewer is
 [Phylogeny.IO](http://phylogeny.io/) {% cite Jovanovic2016 %}. Try this site for
 a different way to view the tree.
-
-{% figure highlight %}
-<img src="figures/branch_highlight_sp.png" width="600" /> 
-{% endfigure %}
