@@ -634,7 +634,8 @@ complete, you will return to editing <code class="highlighter-rouge">mcmc_CEFBDP
 Rev script with the instructions given in section, 
 you will move on to writing the <a href="#Exercise-CompleteMCMC"></a>.</p>
 
-<h3 id="subsub:Exercise-TaxList">Load Taxon List</h3>
+<h4 class="subsubsection" id="Exercise-TaxList">Load Taxon List</h4>
+<hr class="subsubsection" />
 
 <p>Begin the Rev script by loading in the list of taxon names from the
 <code class="highlighter-rouge">bears_taxa.tsv</code> file using the <code class="highlighter-rouge">readTaxonData</code> function.</p>
@@ -649,7 +650,8 @@ names in the first columns and a single age value in the second column.
 The ages provided are either 0.0 for extant species or the average of
 the age range for fossil species (see <a href="#tab_bear_fossils"></a>).</p>
 
-<h3 id="subsub:Exercise-LoadData">Load Data Matrices</h3>
+<h4 class="subsubsection" id="Exercise-LoadData">Load Data Matrices</h4>
+<hr class="subsubsection" />
 
 <p>RevBayes uses the function <code class="highlighter-rouge">readDiscreteCharacterData</code> to load a
 data matrix to the workspace from a formatted file. This function can be
@@ -667,7 +669,8 @@ variable <code class="highlighter-rouge">morpho</code>.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>morpho &lt;- readDiscreteCharacterData("data/bears_morphology.nex")
 </code></pre></div></div>
 
-<h3 id="subsub:Exercise-AddMissing">Add Missing Taxa</h3>
+<h4 class="subsubsection" id="Exercise-AddMissing">Add Missing Taxa</h4>
+<hr class="subsubsection" />
 
 <p>In the descriptions of the files in section
 <a href="#Exercise-DataFiles"></a>, we mentioned that the two data matrices
@@ -685,7 +688,8 @@ tips.</p>
 morpho.addMissingTaxa( taxa )
 </code></pre></div></div>
 
-<h3 id="subsub:Exercise-mviVar">Create Helper Variables</h3>
+<h4 class="subsubsection" id="Exercise-mviVar">Create Helper Variables</h4>
+<hr class="subsubsection" />
 
 <p>Before we begin writing the Rev scripts for each of the model
 components, we need to instantiate a couple “helper variables” that will
@@ -736,7 +740,8 @@ necessary, please review the graphical models depicted for the
 fossilized birth-death process (<a href="#fig_fbd_gm"></a>) and the likelihood
 of the tip sampling process (<a href="#fig_tipsampling_gm"></a>).</p>
 
-<h3 id="subsub:Exercise-FBD-SpeciationExtinction">Speciation and Extinction Rates</h3>
+<h4 class="subsubsection" id="Exercise-FBD-SpeciationExtinction">Speciation and Extinction Rates</h4>
+<hr class="subsubsection" />
 
 <p>Two key parameters of the FBD process are the speciation rate (the rate
 at which lineages are added to the tree, denoted by $\lambda$ in
@@ -811,7 +816,8 @@ the <code class="highlighter-rouge">:=</code> operator.</p>
 turnover := extinction_rate/speciation_rate
 </code></pre></div></div>
 
-<h3 id="subsub:Exercise-FBD-Rho">Probability of Sampling Extant Taxa</h3>
+<h4 class="subsubsection" id="Exercise-FBD-Rho">Probability of Sampling Extant Taxa</h4>
+<hr class="subsubsection" />
 
 <p>All extant bears are represented in this dataset. Therefore, we will fix
 the probability of sampling an extant lineage ($\rho$ in
@@ -824,14 +830,15 @@ constant node using the <code class="highlighter-rouge">&lt;-</code> operator.</
 <p>Because $\rho$ is a constant node, we do not have to assign a move to
 this parameter.</p>
 
-<h3 id="subsub:Exercise-FBD-Psi">The Fossil Sampling Rate</h3>
+<h4 class="subsubsection" id="Exercise-FBD-Psi">The Fossil Sampling Rate</h4>
+<hr class="subsubsection" />
 
 <p>Since our data set includes serially sampled lineages, we must also
 account for the rate of sampling back in time. This is the fossil
 sampling (or recovery) rate ($\psi$ in <a href="#fig_fbd_gm"></a>), which we
 will instantiate as a stochastic node (named <code class="highlighter-rouge">psi</code>). As with the
 speciation and extinction rates
-(see <a href="#subsub:Exercise-FBD-SpeciationExtinction">Speciation and Extinction Rates</a>), we will use an
+(see <a href="#Exercise-FBD-SpeciationExtinction"></a>), we will use an
 exponential prior on this parameter and use scale moves to sample values
 from the posterior distribution.</p>
 
@@ -842,7 +849,8 @@ moves[mvi++] = mvScale(psi, lambda=0.1,  weight=1)
 moves[mvi++] = mvScale(psi, lambda=1,    weight=1)
 </code></pre></div></div>
 
-<h3 id="subsub:Exercise-FBD-Origin">The Origin Time</h3>
+<h4 class="subsubsection" id="Exercise-FBD-Origin">The Origin Time</h4>
+<hr class="subsubsection" />
 
 <p>We will condition the FBD process on the origin time ($\phi$ in
 <a href="#fig_fbd_gm"></a>) of bears, and we will specify a uniform
@@ -866,7 +874,8 @@ stochastic nodes. This means that our move schedule will propose five
 times as many updates to <code class="highlighter-rouge">origin_time</code> than it will to
 <code class="highlighter-rouge">speciation_rate</code>, <code class="highlighter-rouge">extinction_rate</code>, or <code class="highlighter-rouge">psi</code>.</p>
 
-<h3 id="subsub:Exercise-FBD-dnFBD">The FBD Distribution Object</h3>
+<h4 class="subsubsection" id="Exercise-FBD-dnFBD">The FBD Distribution Object</h4>
+<hr class="subsubsection" />
 
 <p>All the parameters of the FBD process have now been specified. The next
 step is to use these parameters to define the FBD tree prior
@@ -875,7 +884,8 @@ distribution, which we will call <code class="highlighter-rouge">fbd_dist</code>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fbd_dist = dnFBDP(origin=origin_time, lambda=speciation_rate, mu=extinction_rate, psi=psi, rho=rho, taxa=taxa)
 </code></pre></div></div>
 
-<h3 id="subsub:Exercise-FBD-Constraints">Clade Constraints</h3>
+<h4 class="subsubsection" id="Exercise-FBD-Constraints">Clade Constraints</h4>
+<hr class="subsubsection" />
 
 <p>Note that we created the distribution as a workspace variable using the
 workspace assignment operator <code class="highlighter-rouge">=</code>. This is because we still need to
@@ -918,7 +928,8 @@ may propose to place this taxon anywhere in the tree (except within the
 clade constraint we made above). This allows us to account for the
 maximum amount of uncertainty in the placement of <em>P. montanus</em>.</p>
 
-<h3 id="subsub:Exercise-FBD-TreeMoves">Moves on the Tree Topology and Node Ages</h3>
+<h4 class="subsubsection" id="Exercise-FBD-TreeMoves">Moves on the Tree Topology and Node Ages</h4>
+<hr class="subsubsection" />
 
 <p>Next, in order to sample from the posterior distribution of trees, we
 need to specify moves that propose changes to the topology (<code class="highlighter-rouge">mvFNPR</code>)
@@ -937,7 +948,8 @@ moves[mvi++] = mvNodeTimeSlideUniform(fbd_tree, weight=40.0)
 moves[mvi++] = mvRootTimeSlideUniform(fbd_tree, origin_time, weight=5.0)
 </code></pre></div></div>
 
-<h3 id="subsub:Exercise-FBD-TipSampling">Sampling Fossil Occurrence Ages</h3>
+<h4 class="subsubsection" id="Exercise-FBD-TipSampling">Sampling Fossil Occurrence Ages</h4>
+<hr class="subsubsection" />
 
 <p>Next, we need to account for uncertainty in the age estimates of our
 fossils using the observed minimum and maximum stratigraphic ages.
@@ -973,12 +985,13 @@ tree.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvFossilTimeSlideUniform(fbd_tree, origin_time, weight=5.0)
 </code></pre></div></div>
 
-<h3 id="subsub:Exercise-FBD-DetNodes">Monitoring Parameters of Interest using Deterministic Nodes</h3>
+<h4 class="subsubsection" id="Exercise-FBD-DetNodes">Monitoring Parameters of Interest using Deterministic Nodes</h4>
+<hr class="subsubsection" />
 
 <p>There are additional parameters that may be of particular interest to us
 that are not directly inferred as part of this graphical model. As with
 the diversification and turnover nodes specified in
-<a href="#subsub:Exercise-FBD-SpeciationExtinction">Speciation and Extinction Rates</a>, we can create
+<a href="#Exercise-FBD-SpeciationExtinction"></a>, we can create
 deterministic nodes to sample the posterior distributions of these
 parameters. Create a deterministic node called <code class="highlighter-rouge">num_samp_anc</code> that
 will compute the number of sampled ancestors in our <code class="highlighter-rouge">fbd_tree</code>.</p>
@@ -1012,7 +1025,7 @@ recording. We will monitor the marginal distribution of the age of
 <p>Finally, we will monitor the tree after removing taxa for which we did
 not have any molecular or morphological data. The phylogenetic placement
 of these taxa is based only on their occurrence times and any clade
-constraints we applied (see <a href="#subsub:Exercise-FBD-Constraints">Clade Constraints</a>).
+constraints we applied (see <a href="#Exercise-FBD-Constraints"></a>).
 Because no data are available to resolve their relationships to other
 lineages, we will treat their placement as <a href="https://en.wikipedia.org/wiki/Nuisance_parameter"><em>nuisance
 parameters</em></a> and
@@ -1306,7 +1319,7 @@ topology is not included in the <code class="highlighter-rouge">mnModel</code> m
 numerical), we will use <code class="highlighter-rouge">mnFile</code> to write the tree to file by specifying
 our <code class="highlighter-rouge">pruned_tree</code> variable in the arguments. Remember, we are
 monitoring the tree with nuisance taxa pruned out (see
-<a href="#subsub:Exercise-FBD-DetNodes">Monitoring Parameters of Interest using Deterministic Nodes</a>).</p>
+<a href="#Exercise-FBD-DetNodes"></a>).</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[mni++] = mnFile(filename="output/bears.trees", printgen=10, pruned_tree)
 </code></pre></div></div>
@@ -1320,7 +1333,8 @@ MCRCA of living bears (<code class="highlighter-rouge">age_extant</code>), the n
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[mni++] = mnScreen(printgen=10, age_extant, num_samp_anc, origin_time)
 </code></pre></div></div>
 
-<h3 id="set-up-the-mcmc">Set-Up the MCMC</h3>
+<h4 class="subsubsection" id="Exercise-MCMCSetup">Set-Up the MCMC</h4>
+<hr class="subsubsection" />
 
 <p>Once we have set up our model, moves, and monitors, we can now create
 the workspace variable that defines our MCMC run. We do this using the
@@ -1369,7 +1383,7 @@ following in your terminal (if the RevBayes binary is in your path):</p>
 
 <p>When the analysis is complete, RevBayes will quit and you will have a
 new directory called <code class="highlighter-rouge">output</code> that will contain all of the files you
-specified with the monitors (see <a href="#subsub:Exercise-Monitors">Specify Monitors and Output Filenames</a>).</p>
+specified with the monitors (see <a href="#Exercise-Monitors"></a>)).</p>
 
 <h3 class="subsection" id="Exercise-SummarizeResults">Evaluate and Summarize Your Results</h3>
 <hr class="subsection" />
@@ -1381,7 +1395,7 @@ interested in. <a href="http://tree.bio.ed.ac.uk/software/tracer/">Tracer</a>
 <a href="#Rambaut2011">(Rambaut and Drummond 2011)</a> is a tool for visualizing parameters sampled by MCMC.
 This program is limited to numerical parameters, however, and cannot be
 used to summarize or analyze MCMC samples of the tree topology (this
-will be discussed further in <a href="#subsub:Exercise-SummarizeTree">Summarize Tree</a>).</p>
+will be discussed further in <a href="#Exercise-SummarizeTree"></a>).</p>
 
 <p>Open Tracer and import the <code class="highlighter-rouge">bears.log</code> file in the
 <strong><em>File &gt; Import New Trace Files</em></strong>. Or click the button on the
@@ -1504,7 +1518,8 @@ recommended MCMC practices in RevBayes, please see the
 and <a href="/tutorials/mcmc/">Diagnosing MCMC performance</a>
 tutorials.</p>
 
-<h3 id="subsub:Exercise-SummarizeTree">Summarize Tree</h3>
+<h4 class="subsubsection" id="Exercise-SummarizeTree">Summarize Tree</h4>
+<hr class="subsubsection" />
 
 <p>In addition to evaluating the performance and sampling of an MCMC run
 using numerical parameters, it is also important to inspect the sampled
@@ -1585,12 +1600,13 @@ telling you?</p>
 posterior probability that <em>Zaragocyon daamsi</em> is a sampled ancestor?</p>
 </blockquote>
 
+<figure id="highlight"><p><img src="figures/branch_highlight_sp.png" width="600" /></p>
+<figcaption>Highlighting a branch in IcyTree.</figcaption>
+</figure>
+
 <p>Another newly available web-based tree viewer is
 <a href="http://phylogeny.io/">Phylogeny.IO</a> <a href="#Jovanovic2016">(Jovanovic and Mikheyev 2016)</a>. Try this site for
 a different way to view the tree.</p>
-
-<figure id="highlight"><p><img src="figures/branch_highlight_sp.png" width="600" /></p>
-</figure>
 
 <ol class="bibliography"><li><span id="abella2011">Abella J., Montoya P., Morales J. 2011. Una nueva especie de \textitAgriarctos (Ailuropodinae, Ursidae, Carnivora) en la localidad de Nombrevilla 2 (Zaragoza, España). Estudios Geológicos. 67:187–191.</span>
 
