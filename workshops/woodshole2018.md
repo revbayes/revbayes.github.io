@@ -7,7 +7,7 @@ enddate: 2018-07-29
 registration: https://molevol.mbl.edu
 
 description: 
-- <p>Instruction in Bayesian phylogenetic inference and divergence-time estimation will be taught at <a href="https://molevol.mbl.edu/index.php/Main_Page">the Workshop on Molecular Evolution</a> at the <a href="http://www.mbl.edu/">Marine Biological Laboratory</a> (MBL). This course was founded in 1988 and is the longest-running workshop serving the field of evolutionary biology. Students work closely with internationally-recognized scientists, receiving (i) high-level instruction in the principles of molecular evolution and evolutionary genomics, (ii) advanced training in statistical methods best suited to modern datasets, and (iii) hands-on experience with the latest software tools (often from the authors of the programs they are using). The material is delivered via lectures, discussions, and bioinformatic exercises motivated by contemporary topics in molecular evolution. A hallmark of this workshop is the direct interaction between students and field-leading scientists. The workshop serves graduate students, postdocs, and established faculty from around the world seeking to apply the principles of molecular evolution to questions of anthropology, conservation genetics, development, behavior, physiology, and ecology. The workshop also welcomes participants from federal agencies and science journalists. A priority of this workshop is to foster an environment where students can learn from each other as well from the course faculty.</p>For the full workshop content, list of faculty, and schedule, please see the <a href="https://molevol.mbl.edu/index.php/Schedule">main course website</a>.
+- <p>Instruction in Bayesian phylogenetic inference and divergence-time estimation will be taught at <a href="https://molevol.mbl.edu/index.php/Main_Page">the Workshop on Molecular Evolution</a> at the <a href="http://www.mbl.edu/">Marine Biological Laboratory</a> (MBL). This course was founded in 1988 and is the longest-running workshop serving the field of evolutionary biology. Students work closely with internationally-recognized scientists, receiving (i) high-level instruction in the principles of molecular evolution and evolutionary genomics, (ii) advanced training in statistical methods best suited to modern datasets, and (iii) hands-on experience with the latest software tools (often from the authors of the programs they are using). The material is delivered via lectures, discussions, and bioinformatic exercises motivated by contemporary topics in molecular evolution. A hallmark of this workshop is the direct interaction between students and field-leading scientists. The workshop serves graduate students, postdocs, and established faculty from around the world seeking to apply the principles of molecular evolution to questions of anthropology, conservation genetics, development, behavior, physiology, and ecology. The workshop also welcomes participants from federal agencies and science journalists. A priority of this workshop is to foster an environment where students can learn from each other as well from the course faculty.</p><p>For the full workshop content, list of faculty, and schedule, please see the <a href="https://molevol.mbl.edu/index.php/Schedule">main course website</a>.</p><p>Instructions for working with the RevBayes tutorials on MBL computing resources are provided below in the section on <a href="woodshole2018#using-revbayes-on-the-mbl-cluster">Using RevBayes on the MBL Cluster</a> below.</p>
 
 instructors:
 - <a href="http://mlandis.github.io/">Michael Landis</a>
@@ -100,3 +100,57 @@ schedule:
     tutorials: fbd/fbd_specimen
     instructors: Tracy Heath
 ---
+
+## Using RevBayes on the MBL Cluster 
+
+### Executing RevBayes
+
+For the tutorials used in this workshop, you may want to use the version of RevBayes on the MBL cluster. 
+
+Now you can use RevBayes from any directory on the cluster by just typing `rb`.
+
+```
+rb
+```
+{:.bash}
+
+
+```
+Build from master (94149b) on Mon Jul 23 15:55:28 EDT 2018
+
+Visit the website www.RevBayes.com for more information about RevBayes.
+
+RevBayes is free software released under the GPL license, version 3. Type 'license()' for details.
+
+To quit RevBayes type 'quit()' or 'q()'.
+
+
+>
+```
+{:.Rev-output}
+
+### Downloading Data Files
+
+Some of the tutorials you will us have data files associated with them. You will find hyperlinks to all of the required files on the tutorial page. These should be listed in the "Data files and scripts" box at the top of the tutorial page below the table of contents.
+
+For this workshop, we recommend that you create a new folder for each tutorial that you work through. 
+Follow the directions in the tutorial for creating your directory structure. 
+Then download the individual files using `wget`.
+
+For example, in the tutorial on divergence times, you will need to download the sequence data file:
+
+```
+wget https://revbayes.github.io/tutorials/fbd/data/bears_cytb.nex
+```
+{:.bash}
+
+### Writing Rev Scripts
+
+Some tutorials require that you write several modular Rev scripts to define your model and MCMC analysis. 
+We reccomend that you compose these files on your own computer or using the text editor on the MBL cluster.
+If you create these files on your personal machine, you will have to upload them to the cluster using `scp` or cyberduck.
+
+
+
+
+

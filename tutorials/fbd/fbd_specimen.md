@@ -200,15 +200,18 @@ $(a_i,b_i)$.
 {% endfigcaption %}
 {% endfigure %}
 
-It is worth noting that this is not technically the appropriate way to
+It is worth noting that this is not necessarily the appropriate way to
 model fossil data that are actually observed as stratigraphic ranges. In
 paleontology, a stratigraphic range represents the interval of time
-between the first and last appearences of a fossilized species. Thus,
+between the first and last appearances of a fossilized species. Thus,
 this range typically represents multiple fossil specimens observed at
 different times along a single lineage. An extension of the fossilized
 birth-death process that is a distribution on stratigraphic ranges has
-been described by {% cite Stadler2017 %}. This model is not yet fully implemented
-in RevBayes.
+been described by {% citet Stadler2018 %}. 
+This model is fully implemented in RevBayes as the "fossilized birth-death *range* process". 
+For a detailed description of analysis under this model, please see the tutorial on {% page_ref fbd %}.
+
+
 
 {% include_relative sections/sec-Intro-GTR.md %}
 
@@ -267,33 +270,37 @@ Age ranges of fossil bears.
 
 {% subsection Data and Files | Exercise-DataFiles %}
 
-On your own computer or your remote machine, create a directory called *RB_TotalEvidenceDating_FBD_Tutorial*
-(or any name you like).
+>On your own computer or your remote machine, create a directory called `RB_CombinedEvidence_Tutorial`
+>(or any name you like).
+>
+>Then, navigate to the folder you created and make a new one called `data`.
+>
+>Download the files listed below into the `data` folder. 
+>Click on the hyperlinked file names below (these files are also listed in the "Data files and scripts" box at the top of this page).
+{:.instruction}
 
-In this directory, create another directory called *data*, and download the data
-files which you can find at the top of this page.
+In the `data` folder, add the following files:
 
-In the `data` folder, you will find the following files:
-
--   `bears_taxa.tsv`: a tab-separated table listing every bear species
+-   [`bears_taxa.tsv`](data/bears_taxa.tsv): a tab-separated table listing every bear species
     (both fossil and extant) and their occurrence age ranges. For extant
     taxa, the minimum age is 0.0
     (*i.e.* the present).
 
--   `bears_cytb.nex`: an alignment in NEXUS format of 1,000 bp of
+-   [`bears_cytb.nex`](data/bears_cytb.tsv): an alignment in NEXUS format of 1,000 bp of
     cytochrome b sequences for 10 bear species. This alignment includes
     8 living bears and 2 extinct sub-fossil bears.
 
--   `bears_morphology.nex`: a matrix of 62 discrete, binary (coded `0`
+-   [`bears_morphology.nex`](data/bears_morphology.tsv): a matrix of 62 discrete, binary (coded `0`
     or `1`) morphological characters for 18 species of fossil and
     extant bears.
 
 {% subsection Getting Started | Exercise-GetStart %}
 
-Create a new directory called `scripts`. 
+>Create a new directory called `scripts`. 
+{:.instruction}
 
 When you execute RevBayes in this exercise, you will do so within the
-main directory you created. 
+main directory you created (*i.e.*, `RB_CombinedEvidence_Tutorial`). 
 Thus, if you are using a Unix-based operating system, we recommend that
 you add the RevBayes binary to your path.
 
@@ -439,7 +446,7 @@ We will now move on to the next Rev file and will complete
 {% subsection The Fossilized Birth-Death Process | Exercise-ModelFBD %}
 
 > Open your text editor and create the fossilized birth-death model file
-> called `{{ fbdr_script }}` in the `scripts` directory.
+> called `{{ fbdp_script }}` in the `scripts` directory.
 >
 >Enter the Rev code provided in this section in the new model file.
 {:.instruction}
@@ -911,7 +918,7 @@ statistics found in the ***Estimates*** window.
 
 The ***Trace*** window allows us to evaluate how well our
 chain is sampling the target distribution. For a fairly short analysis,
-the output in figure {% ref tracer_extinction_rate_trace_short %} shows reasonable
+the output in {% ref tracer_extinction_rate_trace_short %} shows reasonable
 *mixing*—there is no consistent pattern or trend in the samples, nor are
 there long intervals where the statistic does not change. The presence
 of a trend or large leaps in a parameter value might indicate that your

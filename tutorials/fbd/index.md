@@ -885,8 +885,7 @@ directory.
 
 The inspection window for your selected parameter is the
 **Estimates** window, which shows a histogram and summary
-statistics of the values sampled by the Markov chain. Figure
-{% ref tracer_post_ests %} shows the marginal distribution of the
+statistics of the values sampled by the Markov chain. {% ref tracer_post_ests %} shows the marginal distribution of the
 **Posterior** statistic for the `bears.log` file in the
 `output` directory.
 
@@ -904,7 +903,7 @@ excluded as "burn-in". Samples taken near the beginning of chain are
 often discarded or "burned" because the MCMC may not immediately begin
 sampling from the target posterior distribution, particularly if the
 starting condition of the chain is far from the region of highest
-posterior density. Figure {% ref tracer_extinction_rate_trace_short %} shows the
+posterior density. {% ref tracer_extinction_rate_trace_short %} shows the
 trace for the extinction rate.
 
 {% figure tracer_extinction_rate_trace_short %}
@@ -920,7 +919,7 @@ statistics found in the ***Estimates*** window.
 
 The ***Trace*** window allows us to evaluate how well our
 chain is sampling the target distribution. For a fairly short analysis,
-the output in figure {% ref tracer_extinction_rate_trace_short %} shows reasonable
+the output in {% ref tracer_extinction_rate_trace_short %} shows reasonable
 *mixing*—there is no consistent pattern or trend in the samples, nor are
 there long intervals where the statistic does not change. The presence
 of a trend or large leaps in a parameter value might indicate that your

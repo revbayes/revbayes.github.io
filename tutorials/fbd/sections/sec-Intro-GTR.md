@@ -1,4 +1,4 @@
-% subsection Nucleotide Sequence Evolution | Intro-GTR %}
+{% subsection Nucleotide Sequence Evolution | Intro-GTR %}
 
 The model component for the molecular data uses a general
 time-reversible model of nucleotide evolution and gamma-distributed rate
