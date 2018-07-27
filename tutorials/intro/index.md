@@ -191,14 +191,14 @@ Individual variables can have more than one value. Variables that have
 more than one value are called *vectors*. The simplest way to create a
 vector is like this:
 
-    v <- v(1.0,2.0,3.0)              # create a vector
+    z <- v(1.0,2.0,3.0)              # create a vector
 
 You can refer to a specific value in the vector using brackets, `[i]`,
 where `i` is the index of the variable of interest.
 
-    v[1]                             # print the first entry
-    v[1] <- 10                       # change the value of the first entry
-    v
+    z[1]                             # print the first entry
+    z[1] <- 10                       # change the value of the first entry
+    z
 
 `for` loops
 -----------
