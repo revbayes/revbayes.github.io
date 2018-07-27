@@ -571,7 +571,7 @@ Primate and species relationships.
  |         Perodicticus potto      |      Lorisidae     |        Lorisidae    |   Strepsirrhini |
  |       Propithecus coquereli     |      Indriidae     |       Lemuroidea    |   Strepsirrhini |
  |         Saimiri sciureus        |       Cebidae      |  Platyrrhini (NWM)  |   Haplorrhini   |
- |         Tarsius syrichta        |       Tarsiidae    |                     |   Haplorrhini   |
+ |         Tarsius syrichta        |       Tarsiidae    |     Tarsiiformes    |   Haplorrhini   |
  |    Varecia variegata variegata  |       Lemuridae    |       Lemuroidea    |   Strepsirrhini |
 
 {% endtable %}
