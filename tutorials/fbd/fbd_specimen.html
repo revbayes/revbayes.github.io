@@ -298,24 +298,19 @@ inferred fossil age $t_i$ falls within the observed time interval
 $(a_i,b_i)$.</figcaption>
 </figure>
 
-<p>It is worth noting that this is not technically the appropriate way to
+<p>It is worth noting that this is not necessarily the appropriate way to
 model fossil data that are actually observed as stratigraphic ranges. In
 paleontology, a stratigraphic range represents the interval of time
-between the first and last appearences of a fossilized species. Thus,
+between the first and last appearances of a fossilized species. Thus,
 this range typically represents multiple fossil specimens observed at
 different times along a single lineage. An extension of the fossilized
 birth-death process that is a distribution on stratigraphic ranges has
-been described by (missing reference). This model is not yet fully implemented
-in RevBayes.</p>
+been described by <a href="#Stadler2018">Stadler et al. (2018)</a>. 
+This model is fully implemented in RevBayes as the “fossilized birth-death <em>range</em> process”. 
+For a detailed description of analysis under this model, please see the tutorial on <a href="/tutorials/fbd/">Combined-Evidence Analysis and the Fossilized Birth-Death Process for Stratigraphic Range Data</a>.</p>
 
-<table>
-  <tbody>
-    <tr>
-      <td>% subsection Nucleotide Sequence Evolution</td>
-      <td>Intro-GTR %}</td>
-    </tr>
-  </tbody>
-</table>
+<h3 class="subsection" id="Intro-GTR">Nucleotide Sequence Evolution</h3>
+<hr class="subsection" />
 
 <p>The model component for the molecular data uses a general
 time-reversible model of nucleotide evolution and gamma-distributed rate
@@ -530,28 +525,32 @@ constraints.</p>
 <h3 class="subsection" id="Exercise-DataFiles">Data and Files</h3>
 <hr class="subsection" />
 
-<p>On your own computer or your remote machine, create a directory called <em>RB_TotalEvidenceDating_FBD_Tutorial</em>
+<blockquote class="instruction">
+  <p>On your own computer or your remote machine, create a directory called <code class="highlighter-rouge">RB_CombinedEvidence_Tutorial</code>
 (or any name you like).</p>
 
-<p>In this directory, create another directory called <em>data</em>, and download the data
-files which you can find at the top of this page.</p>
+  <p>Then, navigate to the folder you created and make a new one called <code class="highlighter-rouge">data</code>.</p>
 
-<p>In the <code class="highlighter-rouge">data</code> folder, you will find the following files:</p>
+  <p>Download the files listed below into the <code class="highlighter-rouge">data</code> folder. 
+Click on the hyperlinked file names below (these files are also listed in the “Data files and scripts” box at the top of this page).</p>
+</blockquote>
+
+<p>In the <code class="highlighter-rouge">data</code> folder, add the following files:</p>
 
 <ul>
   <li>
-    <p><code class="highlighter-rouge">bears_taxa.tsv</code>: a tab-separated table listing every bear species
+    <p><a href="data/bears_taxa.tsv"><code class="highlighter-rouge">bears_taxa.tsv</code></a>: a tab-separated table listing every bear species
 (both fossil and extant) and their occurrence age ranges. For extant
 taxa, the minimum age is 0.0
 (<em>i.e.</em> the present).</p>
   </li>
   <li>
-    <p><code class="highlighter-rouge">bears_cytb.nex</code>: an alignment in NEXUS format of 1,000 bp of
+    <p><a href="data/bears_cytb.tsv"><code class="highlighter-rouge">bears_cytb.nex</code></a>: an alignment in NEXUS format of 1,000 bp of
 cytochrome b sequences for 10 bear species. This alignment includes
 8 living bears and 2 extinct sub-fossil bears.</p>
   </li>
   <li>
-    <p><code class="highlighter-rouge">bears_morphology.nex</code>: a matrix of 62 discrete, binary (coded <code class="highlighter-rouge">0</code>
+    <p><a href="data/bears_morphology.tsv"><code class="highlighter-rouge">bears_morphology.nex</code></a>: a matrix of 62 discrete, binary (coded <code class="highlighter-rouge">0</code>
 or <code class="highlighter-rouge">1</code>) morphological characters for 18 species of fossil and
 extant bears.</p>
   </li>
@@ -560,10 +559,12 @@ extant bears.</p>
 <h3 class="subsection" id="Exercise-GetStart">Getting Started</h3>
 <hr class="subsection" />
 
-<p>Create a new directory called <code class="highlighter-rouge">scripts</code>.</p>
+<blockquote class="instruction">
+  <p>Create a new directory called <code class="highlighter-rouge">scripts</code>.</p>
+</blockquote>
 
 <p>When you execute RevBayes in this exercise, you will do so within the
-main directory you created. 
+main directory you created (<em>i.e.</em>, <code class="highlighter-rouge">RB_CombinedEvidence_Tutorial</code>). 
 Thus, if you are using a Unix-based operating system, we recommend that
 you add the RevBayes binary to your path.</p>
 
@@ -724,7 +725,7 @@ directory.</p>
 
 <blockquote class="instruction">
   <p>Open your text editor and create the fossilized birth-death model file
-called `` in the <code class="highlighter-rouge">scripts</code> directory.</p>
+called <code class="highlighter-rouge">model_FBDP.Rev</code> in the <code class="highlighter-rouge">scripts</code> directory.</p>
 
   <p>Enter the Rev code provided in this section in the new model file.</p>
 </blockquote>
@@ -1445,7 +1446,7 @@ statistics found in the <strong><em>Estimates</em></strong> window.</figcaption>
 
 <p>The <strong><em>Trace</em></strong> window allows us to evaluate how well our
 chain is sampling the target distribution. For a fairly short analysis,
-the output in figure <a href="#tracer_extinction_rate_trace_short"></a> shows reasonable
+the output in <a href="#tracer_extinction_rate_trace_short"></a> shows reasonable
 <em>mixing</em>—there is no consistent pattern or trend in the samples, nor are
 there long intervals where the statistic does not change. The presence
 of a trend or large leaps in a parameter value might indicate that your
@@ -1707,6 +1708,11 @@ a different way to view the tree.</p>
 <li><span id="Stadler2010">Stadler T. 2010. Sampling-through-time in birth-death trees. Journal of Theoretical Biology. 267:396–404.</span>
 
 <a href="https://doi.org/10.1016/j.jtbi.2010.09.010">10.1016/j.jtbi.2010.09.010</a>
+
+</li>
+<li><span id="Stadler2018">Stadler T., Gavryushkina A., Warnock R.C.M., Drummond A.J., Heath T.A. 2018. The fossilized birth-death model for the analysis of stratigraphic range data under different speciation modes. Journal of Theoretical Biology. 447:41–55.</span>
+
+<a href="https://doi.org/10.1016/j.jtbi.2018.03.005">10.1016/j.jtbi.2018.03.005</a>
 
 </li>
 <li><span id="Thorne2002">Thorne J.L., Kishino H. 2002. Divergence time and evolutionary rate estimation with multilocus data. Systematic Biology. 51:689–702.</span>
