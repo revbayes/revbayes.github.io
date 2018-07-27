@@ -285,11 +285,11 @@ In the `data` folder, add the following files:
     taxa, the minimum age is 0.0
     (*i.e.* the present).
 
--   [`bears_cytb.nex`](data/bears_cytb.tsv): an alignment in NEXUS format of 1,000 bp of
+-   [`bears_cytb.nex`](data/bears_cytb.nex): an alignment in NEXUS format of 1,000 bp of
     cytochrome b sequences for 10 bear species. This alignment includes
     8 living bears and 2 extinct sub-fossil bears.
 
--   [`bears_morphology.nex`](data/bears_morphology.tsv): a matrix of 62 discrete, binary (coded `0`
+-   [`bears_morphology.nex`](data/bears_morphology.nex): a matrix of 62 discrete, binary (coded `0`
     or `1`) morphological characters for 18 species of fossil and
     extant bears.
 
