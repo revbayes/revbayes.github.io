@@ -231,8 +231,7 @@ of the cytochrome-b mitochondrial gene {% cite krause2008 %}. The morphological
 character matrix unites 18 taxa (both fossil and extant) with 62 binary
 (states 0 or 1) characters {% cite abella12 %}. For the fossil species,
 occurrence times are obtained from the literature or fossil databases
-like the [Fossilworks PaleoDB](http://fossilworks.org/) or the [Fossil
-Calibration Database](http://fossilcalibrations.org/), or from your own
+like the [Paleobiology Database](https://paleobiodb.org/) or from your own
 paleontological expertise. The 14 fossil species used in this analysis
 are listed in {% ref tab_bear_fossils %} along with the age range for the
 species and relevant citation. Finally, there are two fossil species
