@@ -173,7 +173,7 @@ it is a function of $u$):
     lambda <- 1.0
 
     # create x as a deterministic function of u
-    x := - 1 / lambda * ln(u)
+    x := - 1 / (lambda * ln(u))
     x
 
 Alternatively, we can create $x$ directly as an exponential random
@@ -231,7 +231,7 @@ them into a *second* vector of exponential random numbers.
 
     for (i in 1:100) {
       u[i] ~ dnUniform(0,1)
-      x[i] := - 1.0 / lambda * ln(u[i])
+      x[i] := - 1.0 / (lambda * ln(u[i]))
     }
 
 Close using the statement `q()`.
