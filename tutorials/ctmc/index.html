@@ -118,12 +118,12 @@
 <h2 class="section" id="overview">Overview</h2>
 <hr class="section" />
 
-<p>This tutorial provides the first protocol from our recent publication <a href="#Hoehna2017a">(Höhna et al. 2017)</a>. 
-The second protocol is described in the 
-<a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Partition_Tutorial/RB_Partition_Tutorial.pdf">Partitioned data analysis tutorial</a>
-tutorial and the third protocol is described in the <a href="/tutorials/model_selection_bayes_factors/">Model selection</a> tutorial.</p>
-
-<p>The present tutorial demonstrates how to set up and perform analyses
+<p>This tutorial provides the first protocol from <a href="#Hoehna2017a">Höhna et al. (2017)</a>. 
+<!-- The second protocol is described in the 
+[Partitioned data analysis tutorial](https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Partition_Tutorial/RB_Partition_Tutorial.pdf)
+tutorial and the third protocol is described in the <a href="/tutorials/model_selection_bayes_factors/">Model selection</a> tutorial.
+-->
+Here, we demonstrate how to set up and perform analyses
 using common nucleotide substitution models. The substitution models
 used in molecular evolution are continuous time Markov models, which are
 fully characterized by their instantaneous-rate matrix:</p>
@@ -155,8 +155,8 @@ instantaneous-rate matrix, $Q$.</p>
 
 <p>In this tutorial you will perform phylogeny inference under common
 models of DNA sequence evolution: JC, F81, HKY85, GTR, GTR+Gamma and
-GTR+Gamma+I. For all of these substitution models, you will perform an
-MCMC analysis to estimate phylogeny and other model parameters. The
+GTR+Gamma+I. For all of these substitution models, you will perform a 
+Markov chain Monte Carlo (MCMC) analysis to estimate phylogeny and other model parameters. The
 estimated trees will be unrooted trees with independent branch-length
 parameters. We will provide comments on how to modify the tutorial if
 you wish to estimate rooted, clock-like trees. All the assumptions will
@@ -556,13 +556,14 @@ DAG:</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel
 </code></pre></div></div>
 
-<h4 class="subsubsection" id="performing-an-mcmc-analysis-under-the-jukes-cantor-model">Performing an MCMC Analysis Under the Jukes-Cantor Model</h4>
-<hr class="subsubsection" />
+<!-- 
+<h4 class="subsubsection" id="performing-an-mcmc-analysis-under-the-jukes-cantor-model">Performing an MCMC Analysis Under the Jukes-Cantor Model</h4><hr class="subsubsection">
 
-<p>In this section, we will describe how to set up the MCMC sampler and
-summarize the resulting posterior distribution of trees.</p>
+In this section, we will describe how to set up the MCMC sampler and
+summarize the resulting posterior distribution of trees.
+ -->
 
-<h4 class="subsubsection" id="specifying-monitors">Specifying Monitors</h4>
+<h4 class="subsubsection" id="specifying-monitors-and-output-files">Specifying Monitors and Output Files</h4>
 <hr class="subsubsection" />
 
 <p>For our MCMC analysis, we need to set up a vector of <em>monitors</em> to
@@ -608,6 +609,9 @@ Now, run the MCMC:</p>
 </code></pre></div></div>
 
 <p>When the analysis is complete, you will have the monitored files in your output directory.</p>
+
+<h4 class="subsubsection" id="summarizing-mcmc-samples">Summarizing MCMC Samples</h4>
+<hr class="subsubsection" />
 
 <p>Methods for visualizing the marginal densities of parameter values are not currently available in RevBayes itself. 
 Thus, it is important to use programs like <a href="http://tree.bio.ed.ac.uk/software/tracer/">Tracer</a> <a href="#Rambaut2011">(Rambaut and Drummond 2011)</a> to evaluate mixing and non-convergence.</p>
@@ -1028,13 +1032,13 @@ named <code class="highlighter-rouge">er</code> ($\theta$ in <a href="#gtr_graph
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>er ~ dnDirichlet(er_prior)
 </code></pre></div></div>
 
-<p>The Dirichlet distribution assigns probability densities to a group of parameters: <em>e.g.</em>,  those that measure proportions and must sum to 1. Here, we have specified a six-parameter Dirichlet prior, where each value describes one of the six relative rates of the GTR model: (1) $A\leftrightarrows C$; (2) $A\leftrightarrows G$; (3) $A\leftrightarrows T$; (4) $C\leftrightarrows G$; (5) $C\leftrightarrows T$; (6) $G\leftrightarrows T$. The input parameters of a Dirichlet distribution are called shape (or concentration) parameters. The expectation and variance for each variable are related to the sum of the shape parameters. The prior we specified above is a ‘flat’ or symmetric Dirichlet distribution; all of the shape parameters are equal (1,1,1,1,1,1). This describes a model that allows for equal rates of change between nucleotides, such that the expected rate for each is equal to $\frac{1}{6}$ (<a href="#dirichletFig"></a> a).</p>
+<p>The Dirichlet distribution assigns probability densities to a group of parameters: <em>e.g.</em>,  those that measure proportions and must sum to 1. Here, we have specified a six-parameter Dirichlet prior, where each value describes one of the six relative rates of the GTR model: (1) $A\leftrightarrows C$; (2) $A\leftrightarrows G$; (3) $A\leftrightarrows T$; (4) $C\leftrightarrows G$; (5) $C\leftrightarrows T$; (6) $G\leftrightarrows T$. The input parameters of a Dirichlet distribution are called shape (or concentration) parameters. The expectation and variance for each variable are related to the sum of the shape parameters. The prior we specified above is a ‘flat’ or symmetric Dirichlet distribution; all of the shape parameters are equal (1,1,1,1,1,1). This describes a model that allows for equal rates of change between nucleotides, such that the expected rate for each is equal to $\frac{1}{6}$ (<a href="#dirichletFig"></a>a).</p>
 
-<p>We might also parameterize the Dirichlet distribution such that all of the shape parameters were equal to 100, which would also specify a prior with an expectation of equal exchangeability rates (<a href="#dirichletFig"></a> b). However, by increasing the values of the shape parameters, <code class="highlighter-rouge">er_prior &lt;- v(100,100,100,100,100,100)</code>, the Dirichlet distribution will more strongly favor equal exchangeability rates; (<em>i.e.</em>, a relatively informative prior).</p>
+<p>We might also parameterize the Dirichlet distribution such that all of the shape parameters were equal to 100, which would also specify a prior with an expectation of equal exchangeability rates (<a href="#dirichletFig"></a>b). However, by increasing the values of the shape parameters, <code class="highlighter-rouge">er_prior &lt;- v(100,100,100,100,100,100)</code>, the Dirichlet distribution will more strongly favor equal exchangeability rates; (<em>i.e.</em>, a relatively informative prior).</p>
 
-<p>Alternatively, we might consider an asymmetric Dirichlet parameterization that could reflect a strong prior belief that transition and transversion substitutions occur at different rates. For example, we might specify the prior density <code class="highlighter-rouge">er_prior &lt;- v(4,8,4,4,8,4)</code>. Under this model, the expected rate for transversions would be $\frac{4}{32}$ and that for transitions would be $\frac{8}{32}$, and there would be greater prior probability on sets of GTR rates that matched this configuration (<a href="#dirichletFig"></a> c).</p>
+<p>Alternatively, we might consider an asymmetric Dirichlet parameterization that could reflect a strong prior belief that transition and transversion substitutions occur at different rates. For example, we might specify the prior density <code class="highlighter-rouge">er_prior &lt;- v(4,8,4,4,8,4)</code>. Under this model, the expected rate for transversions would be $\frac{4}{32}$ and that for transitions would be $\frac{8}{32}$, and there would be greater prior probability on sets of GTR rates that matched this configuration (<a href="#dirichletFig"></a>c).</p>
 
-<p>Yet another asymmetric prior could specify that each of the six GTR rates had a different value conforming to a Dirichlet(2,4,6,8,10,12). This would lead to a different prior probability density for each rate parameter (<a href="#dirichletFig"></a> d). Without strong prior knowledge about the pattern of relative rates, however, we can better reflect our uncertainty by using a vague prior on the GTR rates. Notably, all patterns of relative rates have the same probability density under <code class="highlighter-rouge">er_prior &lt;- v(1,1,1,1,1,1)</code>.</p>
+<p>Yet another asymmetric prior could specify that each of the six GTR rates had a different value conforming to a Dirichlet(2,4,6,8,10,12). This would lead to a different prior probability density for each rate parameter (<a href="#dirichletFig"></a>d). Without strong prior knowledge about the pattern of relative rates, however, we can better reflect our uncertainty by using a vague prior on the GTR rates. Notably, all patterns of relative rates have the same probability density under <code class="highlighter-rouge">er_prior &lt;- v(1,1,1,1,1,1)</code>.</p>
 
 <figure id="dirichletFig"><p><img src="figures/dirichlet_rates.png" /></p>
 <figcaption>Four different examples of Dirichlet priors on exchangeability rates.</figcaption>
