@@ -113,8 +113,10 @@ $$P_{JC69} = \begin{pmatrix} {\frac{1}{4} + \frac{3}{4}e^{-rt}} & {\frac{1}{4} -
 
 where $t$ is the branch length in units of time, and $r$ is the rate (clock) for the process. In the later exercises you will be asked to specify more complex substitution models. **Don’t worry, you won’t have to calculate all of the transition probabilities, because RevBayes will take care of all the computations for you.** Here we only provide some of the equations for the models in case you might be interested in the details. You will be able to complete the exercises without understanding the underlying math.
 
-The files for this example analysis are provided for you, which can
-easily be run using the `source()` function in the RevBayes console:
+The file for this example analysis are provided for you ([`mcmc_JC.Rev`](scripts/mcmc_JC.Rev)).
+If you download this file and place it in a directory called `scripts` inside your main tutorial directory,
+you can
+easily execute this analysis using the `source()` function in the RevBayes console:
 
 ```
 source("scripts/mcmc_JC.Rev")
@@ -327,7 +329,7 @@ We still think that it is pedagogical to specify the prior on each branch length
 {% aside Alternative branch-length priors %}
 Some studies, *e.g.* {% cite Brown2010 %} {% cite Rannala2012 %}, 
 have criticized the exponential prior distribution for branch lengths 
-because it induces a gamma-dsitributed tree-length and the mean of this gamma distribution
+because it induces a gamma-distributed tree-length and the mean of this gamma distribution
 grows with the number of taxa. For example, we can use instead a specific gamma prior distribution 
 (or any other distribution defined on a positive real variable) for the tree length, 
 and then use a Dirichlet prior distribution to break the tree length into 
@@ -379,7 +381,7 @@ Different moves may explore parameter space in different ways,and it is possible
 multiple different moves for a given parameter to improve mixing 
 (the efficiency of the MCMC simulation). In the case of our rooted tree, 
 for example, we can use both a nearest-neighbor interchange move without and with changing 
-the node ages (`mvNarrow` and `mvNNI`) and a fixed-nodeheight subtree-prune and regrafting 
+the node ages (`mvNarrow` and `mvNNI`) and a fixed-node-height subtree-prune and regrafting 
 move (`mvFNPR`) and its Metropolized-Gibbs variant (`mvGPR`) {% cite Hoehna2008 Hoehna2012 %}. 
 We also need moves that change the ages of the internal nodes, for example, `mvSubtreeScale` 
 and `mvNodeTimeSlideUniform`. These moves do not have tuning parameters associated with 
@@ -395,7 +397,7 @@ moves[mvi++] = mvNodeTimeSlideUniform(psi, weight=n_species)
 ```
 
 
-The weight specifies how often the move will be applied either on average per iteration or relative to all other moves. Have a look at the [MCMC tutorial]({{ base.url }}/tutorials/) for more details about moves and MCMC strategies.
+The weight specifies how often the move will be applied either on average per iteration or relative to all other moves. Have a look at the {% page_ref mcmc %} for more details about moves and MCMC strategies.
 
 {% subsubsection Molecular Clock %}
 
@@ -408,7 +410,7 @@ clock_rate := 10^log_clock_rate
 ```
 
 Instead, you could also fix the clock rate and estimate the root age. 
-For more information on molecular clocks please read the [Divergence Time Tutorial]({{ base.url }}/tutorials/clocks/)
+For more information on molecular clocks please read the {% page_ref clocks %} tutorial.
 {% endaside %}
 
 {% subsubsection Putting it All Together %}
@@ -470,7 +472,7 @@ summarize the resulting posterior distribution of trees.
 
 For our MCMC analysis, we need to set up a vector of *monitors* to
 record the states of our Markov chain. The monitor functions are all
-called `mn\*`, where `\*` is the wildcard representing the monitor type.
+called `mn\*`, where `\*` is the wild-card representing the monitor type.
 First, we will initialize the model monitor using the `mnModel`
 function. This creates a new monitor variable that will output the
 states for all model parameters when passed into a MCMC function.
@@ -517,9 +519,9 @@ mymcmc.run(generations=30000,tuningInterval=200)
 When the analysis is complete, you will have the monitored files in your output directory.
 
 Methods for visualizing the marginal densities of parameter values are not currently available in RevBayes itself. 
-Thus, it is important to use programs like `Tracer` {% cite Rambaut2011 %} to evaluate mixing and non-convergence.
+Thus, it is important to use programs like [Tracer](http://tree.bio.ed.ac.uk/software/tracer/) {% cite Rambaut2011 %} to evaluate mixing and non-convergence.
 
-Look at the file called `output/primates_cytb_JC.log` in `Tracer`. 
+Look at the file called `output/primates_cytb_JC.log` in Tracer. 
 There you see the posterior distribution of the continuous parameters, *e.g.*, the tree length variable `TL`.
 
 
@@ -529,6 +531,11 @@ There you see the posterior distribution of the continuous parameters, *e.g.*, t
 **Left:** Trace of tree-length samples for one MCMC run. The caterpillar-like look is a good sign.You will also see that the effective sample size is comparably large, i.e., much larger than 200. **Right:** Posterior distribution of the tree length of the primate phylogeny under a Jukes-Cantor substitution model.
 {% endfigcaption %}
 {% endfigure %}
+
+It is always important to carefully assess the MCMC samples for the various parameters in your analysis.
+You can read more about MCMC tuning and
+evaluating and improving mixing in the tutorials {% page_ref mcmc_binomial %}
+and [Diagnosing MCMC Performance](https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_MCMC_Tutorial/RB_MCMC_Tutorial.pdf). <!-- Update link when that tutorial is updated! -->
 
 {% subsection Exercise 1 %}
 
@@ -750,9 +757,9 @@ where the six exchangeability parameters, $r_{ij}$, specify the relative
 rates of change between states $i$ and $j$.
 
 {% figure gtr_graphical_model %}
-![]( figures/gtr_graphical_model.png)
+<img src="figures/gtr_graphical_model.png" />
 {% figcaption %} 
-Graphical model representation of the General Time Reversible (GTR) phylogenetic model.
+Graphical model representation of the general-time reversible (GTR) phylogenetic model.
 {% endfigcaption %}
 {% endfigure %}
 
@@ -786,7 +793,7 @@ Alternatively, we might consider an asymmetric Dirichlet parameterization that c
 Yet another asymmetric prior could specify that each of the six GTR rates had a different value conforming to a Dirichlet(2,4,6,8,10,12). This would lead to a different prior probability density for each rate parameter ({% ref dirichletFig %} d). Without strong prior knowledge about the pattern of relative rates, however, we can better reflect our uncertainty by using a vague prior on the GTR rates. Notably, all patterns of relative rates have the same probability density under `er_prior <- v(1,1,1,1,1,1)`.
 
 {% figure dirichletFig %}
-![]( figures/dirichlet_rates.png) 
+<img src="figures/dirichlet_rates.png" />
 {% figcaption %}
 Four different examples of Dirichlet priors on exchangeability rates.
 {% endfigcaption %}
@@ -845,7 +852,7 @@ The probability density of mean-one gamma-distributed rates for different values
 {% endfigure %}
 
 We typically lack prior knowledge regarding the degree of ASRV for a given alignment. 
-Accordingly, rather than specifying a precise value of $\alpha$, we can instead estimate the value of the $\alpha$-shape parameter from the data. This requires that we specify a diffuse (relatively [‘uninformative’](http://andrewgelman.com/2013/11/21/hidden-dangers-noninformative-priors/)) prior on the $\alpha$-shape parameter. For this analysis, we will use a lognormal distribution with a mean parameter, `alpha_prior_mean`, equal to `5.0`, and standard deviation, `alpha_prior_sd`, equal to 0.587405 (thus, 95% of the prior density spans exactly one order of magnitude).
+Accordingly, rather than specifying a precise value of $\alpha$, we can instead estimate the value of the $\alpha$-shape parameter from the data. This requires that we specify a diffuse (relatively ['uninformative'](http://andrewgelman.com/2013/11/21/hidden-dangers-noninformative-priors/)) prior on the $\alpha$-shape parameter. For this analysis, we will use a lognormal distribution with a mean parameter, `alpha_prior_mean`, equal to `5.0`, and standard deviation, `alpha_prior_sd`, equal to 0.587405 (thus, 95% of the prior density spans exactly one order of magnitude).
 
 This approach for accommodating ASRV is another example of a hierarchical model ({% ref fig_gtrg %}). 
 That is, variation in substitution rates across sites is addressed by applying a site-specific rate multiplier to each of the $j$ sites, $r_j$. 

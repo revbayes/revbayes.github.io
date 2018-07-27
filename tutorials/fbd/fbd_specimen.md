@@ -923,7 +923,7 @@ there long intervals where the statistic does not change. The presence
 of a trend or large leaps in a parameter value might indicate that your
 MCMC is not mixing well. You can read more about MCMC tuning and
 improving mixing in the tutorials {% page_ref mcmc_binomial %}
-and {% page_ref mcmc %}.
+and [Diagnosing MCMC Performance](https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_MCMC_Tutorial/RB_MCMC_Tutorial.pdf). <!-- Update link when that tutorial is updated! -->
 
 >Look through the traces for your parameters.
 >
