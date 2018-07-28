@@ -538,7 +538,7 @@ distribution. RevBayes can summarize the sampled trees by reading in
 the tree-trace file:
 
 ```
-treetrace = readTreeTrace("output/primates_cytb_JC.trees", treetype="non-clock")
+treetrace = readTreeTrace("output/primates_cytb_JC.trees", treetype="non-clock", outgroup=out_group)
 ```
 
 The `mapTree()` function will summarize the tree samples and write the
