@@ -1040,7 +1040,7 @@ named <code class="highlighter-rouge">er</code> ($\theta$ in <a href="#gtr_graph
 
 <p>Yet another asymmetric prior could specify that each of the six GTR rates had a different value conforming to a Dirichlet(2,4,6,8,10,12). This would lead to a different prior probability density for each rate parameter (<a href="#dirichletFig"></a>d). Without strong prior knowledge about the pattern of relative rates, however, we can better reflect our uncertainty by using a vague prior on the GTR rates. Notably, all patterns of relative rates have the same probability density under <code class="highlighter-rouge">er_prior &lt;- v(1,1,1,1,1,1)</code>.</p>
 
-<figure id="dirichletFig"><p><img src="figures/dirichlet_rates.png" /></p>
+<figure id="dirichletFig"><p><img src="figures/dirichlet_rates.png" width="600" /></p>
 <figcaption>Four different examples of Dirichlet priors on exchangeability rates.</figcaption>
 </figure>
 
@@ -1093,7 +1093,7 @@ GTR substitution model.</p>
 
 <p>Members of the GTR family of substitution models assume that rates are homogeneous across sites, an assumption that is often violated by real data. We can accommodate variation in substitution rate among sites (ASRV) by adopting the discrete-gamma model <a href="#Yang1994a">(Yang 1994)</a>. This model assumes that the substitution rate at each site is a random variable that is described by a discretized gamma distribution, which has two parameters: the shape parameter, $\alpha$, and the rate parameter, $\beta$. In order that we can interpret the branch lengths as the expected number of substitutions per site, this model assumes that the mean site rate is equal to 1. The mean of the gamma is equal to $\alpha/\beta$, so a mean-one gamma is specified by setting the two parameters to be equal, $\alpha=\beta$. This means that we can fully describe the gamma distribution with the single shape parameter, $\alpha$. The degree of among-site substitution rate variation is inversely proportional to the value of the $\alpha$-shape parameter. As the value of the $\alpha$-shape increases, the gamma distribution increasingly resembles a normal distribution with decreasing variance, which therefore corresponds to decreasing levels of ASRV (<a href="#asrhGammaFig"></a>). By contrast, when the value of the $\alpha$-shape parameter is $&lt; 1$, the gamma distribution assumes a concave distribution that concentrates most of the prior density on low rates, but retains some prior mass on sites with very high rates, which therefore corresponds to high levels of ASRV (<a href="#asrhGammaFig"></a>). Note that, when $\alpha = 1$, the gamma distribution collapses to an exponential distribution with a rate parameter equal to $\beta$.</p>
 
-<figure id="asrhGammaFig"><p><img src="figures/asrh_gamma.png" /></p>
+<figure id="asrhGammaFig"><p><img src="figures/asrh_gamma.png" width="600" /></p>
 <figcaption>The probability density of mean-one gamma-distributed rates for different values of the $\alpha$-shape parameter.</figcaption>
 </figure>
 
