@@ -552,6 +552,7 @@ the tree-trace file:
 treetrace = readTreeTrace("output/primates_cytb_JC.trees", treetype="non-clock")
 ```
 
+
 The `mapTree()` function will summarize the tree samples and write the
 maximum *a posteriori* tree to file:
 
