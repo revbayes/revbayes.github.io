@@ -1,5 +1,5 @@
 ---
-title: Combined-Evidence Analysis and the Fossilized Birth-Death Process
+title: Combined-Evidence Analysis and the Fossilized Birth-Death Process for Stratigraphic Range Data
 subtitle: Joint inference of divergence times and phylogenetic relationships of fossil and extant taxa
 authors:  Tracy A. Heath, April M. Wright, and Walker Pett
 level: 3
@@ -8,6 +8,8 @@ prerequisites:
 - intro_rev
 - mcmc_archery
 - ctmc
+exclude_files:
+- mcmc_CEFBDP_Specimens.Rev
 index: true
 title-old: RB_TotalEvidenceDating_FBD_Tutorial
 redirect: false
@@ -16,13 +18,13 @@ redirect: false
 {% section Overview | overview %}
 
 This tutorial demonstrates how to specify the models used in a Bayesian
-“combined-evidence” phylogenetic analysis of extant and fossil species,
+"combined-evidence" phylogenetic analysis of extant and fossil species,
 combining morphological and molecular data as well as stratigraphic
 range data from the fossil record [*e.g.,* 
 {% cite Ronquist2012a Zhang2016 Gavryushkina2016 %}]. 
 We begin with a concise
-introduction to the models used in this analysis in {% ref Introduction %}, 
-followed by a detailed example analysis in
+introduction to the models used in this analysis in the {% ref introduction %} section, 
+followed by a detailed example analysis in 
 {% ref Exercise %} demonstrating how to apply these models in
 RevBayes {% cite Hoehna2017a %} and use Markov chain Monte Carlo (MCMC) to
 estimate the posterior distribution of dated phylogenies for data
@@ -31,32 +33,32 @@ collected from living and fossil bears (family Ursidae).
 
 {% section Introduction | introduction %}
 
-The “combined-evidence” analysis described in this tutorial uses a
+The "combined-evidence" analysis described in this tutorial uses a
 probabilistic graphical model {% cite Hoehna2014b %} integrating three separate
 likelihood components or data partitions ({% ref fig_module_gm %}): one
 for molecular data ({% ref Intro-GTR %}), one for
 morphological data ({% ref Intro-Morpho %}), and one for
-fossil stratigraphic range data (section {% ref Intro-TipSampling %}
-).
+fossil stratigraphic range data ({% ref Intro-FBD %}).
 In addition, all likelihood components are conditioned on a tree
 topology with divergence times which is modeled according to a separate
-prior component ({% ref Intro-FBD %}).
+prior component (defined in {% ref Intro-FBD %}).
 
 
 {% figure fig_module_gm %}
 <img src="figures/tikz/full_model_modular.png" width="700" /> 
 {% figcaption %} 
-Modular components of the graphical model used in the “combined-evidence” 
+Modular components of the graphical model used in the "combined-evidence" 
 analysis described in this tutorial.
 {% endfigcaption %}
 {% endfigure %}
 
 
-In figure {% ref fig_example_tree %} we provide an example of a type of tree
+In {% ref fig_example_tree %} we provide an example of a type of tree
 estimated from a combined-evidence analysis. This example shows the
 complete tree ({% ref fig_example_tree %}A) and the "reconstructed tree"
 ({% ref fig_example_tree %}B).
-We will describe the distinction between these two trees in {% ref Intro-FBD %}.
+We will describe the distinction between these two trees in 
+the section on {% ref Intro-FBD %}.
 
 {% figure fig_example_tree %}
 <img src="figures/complete_tree.png" width="400" />
@@ -77,9 +79,10 @@ The joint prior distribution on tree topologies and divergence times of
 living and extinct species used in this tutorial is described by the
 *fossilized birth-death* (FBD) process {% cite Stadler2010 Heath2014 Stadler2018 %}. This
 model simply treats the fossil observations as part of the process
-governing the tree topology and branch times (the node in
+governing the tree topology and branch times (the 'Time Tree Model' node in
 {% ref fig_module_gm %}). The fossilized birth-death process provides a
-model for the distribution of speciation and sampling events *i.e.* tree topology, and
+model for the distribution of speciation and sampling events *i.e.* tree topology, 
+speciation times, number of sampled living taxa, and
 lineage samples before the present
 (*e.g.* non-contemporaneous samples like
 fossils or viruses). This type of tree is shown in {% ref fig_example_tree %}. 
@@ -87,9 +90,9 @@ Importantly, this model can be used *with or
 without* character data for the historical samples. Thus, it provides a
 reasonable prior distribution for analyses combining morphological or
 DNA data for both extant and fossil
-taxa—*i.e.* the so-called “combined-evidence”
-approaches described by {% cite Ronquist2012a %} and extended by {% cite Zhang2016 %} and
-{% cite Gavryushkina2016 %}. When matrices of discrete morphological characters
+taxa—*i.e.* the so-called "combined-evidence" or "total evidence"
+approaches described by {% citet Ronquist2012a %} and extended by {% citet Zhang2016 %} and
+{% citet Gavryushkina2016 %}. When matrices of discrete morphological characters
 for both living and fossil species are unavailable, the fossilized
 birth-death model imposes a time structure on the tree by
 [*marginalizing*](https://en.wikipedia.org/wiki/Marginal_distribution)
@@ -103,26 +106,29 @@ $f[\mathcal{T} \mid \lambda, \mu, \rho, \psi, \phi]$, where
 $\mathcal{T}$ denotes the tree topology, divergence times fossil
 occurrence times and the times at which the fossils attach to the tree.
 The birth-death parameters $\lambda$ and $\mu$ denote the speciation and
-extinction rates, respectively. The “fossilization rate” or “fossil
-recovery rate” is denoted $\psi$ and describes the rate at which fossils
+extinction rates, respectively. The 'fossil
+recovery rate' is denoted $\psi$ and describes the rate at which fossils
 are sampled along lineages of the complete tree. The sampling
 probability parameter $\rho$ represents the *probability* that an extant
 species is sampled, and $\phi$ represents the time at which the process
-originated.
+originated (called the 'origin time').
 
 
 {% figure fig_fbd_gm %}
 <img src="figures/tikz/fbd_gm.png" width="500"/> 
 {% figcaption %} 
-A graphical model of the fossilized birth-death model describing the generation of the time tree (in
+A graphical model of the fossilized birth-death model describing the 
+generation of the time tree (in
 {% ref fig_module_gm %}) used in this tutorial. The parameters of the
 fossilized birth-death process are labeled in orange. The speciation,
 extinction and fossilization rates are stochastic nodes (circles) drawn
 from exponential distributions, while the origin time is uniformly
 distributed. The sampling probability is constant node (square) and
-equal to one. The represents the phylogenetic continuous-time Markov
+equal to one for the tree in {% ref fig_example_tree %} 
+and for the analysis in the exercise given in this tutorial. 
+This model represents the phylogenetic continuous-time Markov
 chain that links the tree model to the other model components and the
-observed sequence data.For more information on probabilistic graphical
+observed sequence data. For more information on probabilistic graphical
 models and their notation, please see {% cite Hoehna2014b %}.
 {% endfigcaption %}
 {% endfigure %}
@@ -130,15 +136,17 @@ models and their notation, please see {% cite Hoehna2014b %}.
 In the example FBD tree shown in {% ref fig_example_tree %}, the
 diversification process originates at time $\phi$, giving rise to $n=10$
 species in the present, with both sampled fossils and
-extant species. All of the lineages represented in {% ref fig_example_tree %}A (both solid and dotted lines) show the
+extant species. All of the lineages represented in {% ref fig_example_tree %}A 
+(both solid and dotted lines) show the
 *complete tree*. This is the tree of all extant *and* extinct lineages
 generated by the process.
 The complete tree is distinct from the
 *reconstructed tree* ({% ref fig_example_tree %}B) which is the tree
 representing only the lineages sampled as extant taxa or fossils. Fossil
-observations (red circles in {% ref fig_example_tree %}) are recovered
+observations (non-extant red circles in {% ref fig_example_tree %}) are recovered
 over the lifetime of the process along the lineages of the complete
-tree. If a lineage does not have any descendants sampled in the present,
+tree. If a lineage does not have any descendants sampled in the present 
+(or at the moment it goes extinct),
 it is lost and cannot be observed, these are the dotted lines in 
 {% ref fig_example_tree %}A. The probability must be conditioned on the origin
 time of the process $\phi$. The origin ($\phi$) of a birth-death process
@@ -149,8 +157,9 @@ An important characteristic of the FBD model is that it accounts for the
 probability of sampled ancestor-descendant pairs {% cite foote1996 %}. Given
 that fossils are sampled from lineages in the diversification process,
 the probability of sampling fossils that are ancestors to taxa sampled
-at a later date is correlated with the turnover rate ($r=\mu/\lambda$)
-and the fossil recovery rate ($\psi$). This feature is important,
+at a later date is correlated with the turnover rate ($r=\mu/\lambda$),
+the fossil recovery rate ($\psi$), and the probability of sampling an extant taxon ($\rho$). 
+This feature is important,
 particularly for datasets with many sampled fossils. In the example
 ({% ref fig_example_tree %}), several of the fossils have sampled
 descendants. These fossils have solid black lines leading to the
@@ -160,7 +169,10 @@ present.
 
 The most basic version of the FBD treats individual fossil specimens as separate taxonomic entities. This is the standard specimen-level "Fossilized Birth Death Process" (implemented as `FBDP` in RevBayes).
 However, in most cases taxonomic species are represented in the fossil record by multiple fossil specimens sampled at
-different stratigraphic ages. In order to compute the density of the FBD while accounting for this stratigraphic species range data, we need to assume some model of speciation that will allow us to assign fossil specimens to species. {% citet Stadler2018 %} describe an extension to the FBD which assigns lineages to taxonomic species through a process of asymmetric or "budding" speciation. This model assumes that at each asymmetric speciation event, one descendant species represents a new species, while the other descendant represents the continuation of the parent species. In this way, each lineage (and therefore all the fossil specimens sampled along that lineage) can be mapped to a unique species. An example realization of such a speciation process is shown in {% ref fig_budding %}
+different stratigraphic ages. 
+These *stratigraphic ranges* are the first and last occurrences observed for a single morpho-species in the fossil
+record (for extant species, the last occurrence is the present day).
+In order to compute the density of the FBD while accounting for this stratigraphic species range data, we need to assume some model of speciation that will allow us to assign fossil specimens to species. {% citet Stadler2018 %} describe an extension to the FBD which assigns lineages to taxonomic species through a process of asymmetric or "budding" speciation. This model assumes that at each asymmetric speciation event, one descendant species represents a new species, while the other descendant represents the continuation of the parent species. In this way, each lineage (and therefore all the fossil specimens sampled along that lineage) can be mapped to a unique species. An example realization of such a speciation process is shown in {% ref fig_budding %}.
 
 {% figure fig_budding %}
 <img src="figures/budding1.png" width="400" />
@@ -185,111 +197,10 @@ The "sampled tree" is produced by pruning unsampled lineages from the oriented t
 {% endfigcaption %}
 {% endfigure %}
 
-{% subsection Nucleotide Sequence Evolution | Intro-GTR %}
+{% include_relative sections/sec-Intro-GTR.md %}
 
-The model component for the molecular data uses a general
-time-reversible model of nucleotide evolution and gamma-distributed rate
-heterogeneity across sites (the *Substitution Model* and *Sites Model* in {% ref fig_module_gm %}). This
-model of sequence evolution is covered thoroughly in the
-{% page_ref ctmc %}
-tutorial.
+{% include_relative sections/sec-Intro-Morpho.md %}
 
-{% subsubsection Lineage-Specific Rates of Sequence Evolution | Intro-GTR-UExp %}
-
-Rates of nucleotide sequence evolution can vary widely among lineages,
-and so models that account for this variation by relaxing the assumption
-of a strict molecular clock {% cite Zuckerkandl1962 %} can allow for more
-accurate estimates of substitution rates and divergence times
-{% cite Drummond2006 %}. The simplest type of relaxed clock model assumes that
-lineage-specific substitution rates are independent or “uncorrelated”.
-One example of such an uncorrelated relaxed model is the uncorrelated
-*exponential* relaxed clock, in which the substitution rate for each
-lineage is assumed to be independent and identically distributed
-according to an exponential density ({% ref fig_uexp_gm %}). This is *Branch Rates Model* 
-for the *Molecular Data* ({% ref fig_module_gm %}) that we will use in this tutorial. 
-Another possible uncorrelated relaxed
-clock model is the uncorrelated lognormal model, described in the
-{% page_ref clocks %}
-tutorial [also see {% cite Thorne2002 %}].
-
-{% figure fig_uexp_gm %}
-<img src="figures/tikz/uexp_gm.png" width="400" /> 
-{% figcaption %} 
-A graphical model of the
-uncorrelated exponential relaxed clock model. In this model, the clock
-rate on each branch is independent and identically distributed according
-to an exponential density with mean drawn from an exponential hyperprior
-distribution.
-{% endfigcaption %}
-{% endfigure %}
-
-{% subsection Morphological Character Evolution | Intro-Morpho %}
-
-For the vast majority of extinct species, fossil morphology is the
-primary source of phylogenetically informative characters. Therefore, an
-appropriate model of morphological character evolution is needed to
-reliably infer the positions of these species in a phylogenetic
-analysis. The Mk model {% cite Lewis2001 %} uses a generalized Jukes-Cantor
-matrix to allow for the incorporation of morphology into likelihood and
-Bayesian analyses. In its simplest form, this model assumes that
-characters change states symmetrically—that a given character is as
-likely to transition from a one state to another as it is to reverse. In
-this tutorial we will consider only binary morphological characters,
-*i.e.* characters that are observed in one of
-two states, 0 or 1. For example, the assumption of the single-rate Mk
-model applied to our binary character would mean that a change from a 0
-state to a 1 state is as likely as a change from a 1 state to a 0 state.
-This assumption is equivalent to assuming that the stationary
-probability of being in a 1 state is equal to $1/2$.
-
-In this tutorial, we will apply a single-rate Mk model as a prior on
-binary morphological character change. If you are interested extensions
-of the Mk model that relax the assumptions of symmetric state change,
-please see {% page_ref morph %}.
-
-Because of the way morphological data are collected, we need to exercise
-caution in how we model the data. Traditionally, phylogenetic trees were
-built from morphological data using parsimony. Therefore, only parsimony
-informative characters were collected—that is, characters that are
-useful for discriminating between phylogenetic hypotheses under the
-maximum parsimony criterion. This means that many morphological datasets
-do not contain invariant characters or
-[autapomorphies](https://en.wikipedia.org/wiki/Autapomorphy), as these
-are not parsimony informative. However, by excluding these slow-evolving
-characters, estimates of the branch lengths can be inflated
-{% cite Felsenstein1992 Lewis2001 %}. Therefore, it is important to use models
-that can condition on this data-acquisition bias. RevBayes has two
-ways of doing this: one is used for datasets in which only parsimony
-informative characters are observed; the other is for datasets in which
-parsimony informative characters and parsimony uninformative variable
-characters (such as autapomorphies) are observed.
-
-{% subsubsection The Morphological Clock | Intro-MorphClock %}
-
-Just like with the molecular data {% ref Intro-GTR-UExp %},
-our observations of discrete morphological characters are conditional on
-the rate of change along each branch in the tree. This model component
-defines the of the in the generalized graphical model shown in 
-{% ref fig_module_gm %}. The relaxed clock model we described for the
-molecular data in {% ref Intro-GTR-UExp %} it allows the
-substitution rate to vary through time and among lineages. For the
-morphological data, we will instead use a “strict clock” model
-{% cite Zuckerkandl1962 %}, in which the rate of discrete character change is
-assumed to be constant throughout the tree. The strict clock is the
-simplest morphological branch rate model we can construct (graphical
-model shown in {% ref fig_morph_clock_gm %}).
-
-{% figure fig_morph_clock_gm %}
-<img src="figures/tikz/morph_clock_gm.png" width="300" /> 
-{% figcaption %} 
-The graphical-model
-representation of the branch-rate model governing the evolution of
-morphological characters. This model is consistent with a strict
-morphological clock, where every branch has the same rate of change
-($c$) and that rate is drawn from an exponential distribution with a
-rate parameter of $\delta_c$.
-{% endfigcaption %}
-{% endfigure %}
 
 {% section Example: Estimating the Phylogeny and Divergence Times of Fossil and Extant Bears | Exercise %}
 
@@ -380,11 +291,11 @@ you add the RevBayes binary to your path.
 
 {% subsection Creating Rev Files | Exercise-CreatingFiles %}
 
-{% assign mcmc_script = "mcmc_TEFBD.Rev" %}
-{% assign fbdr_script = "model_FBDRP_TEFBD.Rev" %}
-{% assign uexp_script = "model_UExp_TEFBD.Rev" %}
-{% assign gtrg_script = "model_GTRG_TEFBD.Rev" %}
-{% assign morph_script = "model_Morph_TEFBD.Rev" %}
+{% assign mcmc_script = "mcmc_CEFBDRP_Ranges.Rev" %}
+{% assign fbdr_script = "model_FBDRP.Rev" %}
+{% assign uexp_script = "model_UExp.Rev" %}
+{% assign gtrg_script = "model_GTRG.Rev" %}
+{% assign morph_script = "model_Morph.Rev" %}
 
 For complex models and analyses, it is best to create Rev script files
 that will contain all of the model parameters, moves, and functions. In
@@ -433,7 +344,7 @@ In this file you will write the Rev commands for
 loading in the taxon list and managing the data matrices. Then, starting
 in section {% ref Exercise-ModelFBD %}, you will move on to writing
 module files for each of the model components. Once the model files are
-complete, you will return to editing `mcmc_TEFBD.Rev` and complete the
+complete, you will return to editing `mcmc_CEFBDRP_Ranges.Rev` and complete the
 Rev script with the instructions given in section, 
 you will move on to writing the {% ref Exercise-CompleteMCMC %}.
 
@@ -484,7 +395,7 @@ tips.
 {% subsubsection Create Helper Variables | Exercise-mviVar %}
 
 Before we begin writing the Rev scripts for each of the model
-components, we need to instantiate a couple “helper variables” that will
+components, we need to instantiate a couple "helper variables" that will
 be used by downstream parts of our model specification files. These
 variables will be used in more than one of the module files so it’s best
 to initialize them in the master file.
@@ -492,7 +403,7 @@ to initialize them in the master file.
 Create a new constant node called `n_taxa` that is equal to the number
 of species in our analysis (22).
 
-    n_taxa <- taxa.size() 
+{{ mcmc_script | snippet:"block#","5" }}
 
 Next, create a workspace variable called `mvi`. This variable is an
 iterator that will build a vector containing all of the MCMC moves used
@@ -500,22 +411,22 @@ to propose new states for every stochastic node in the model graph. Each
 time a new move is added to the vector, `mvi` will be incremented by a
 value of 1.
 
-    mvi = 1
+{{ mcmc_script | snippet:"block#","6" }}
 
 One important distinction here is that `mvi` is part of the RevBayes
 workspace and not the hierarchical model. Thus, we use the workspace
 assignment operator `=` instead of the constant node assignment `<-`.
 
-> Save your current working version of `mcmc_TEFBD.Rev` in the `scripts` directory.
+> Save your current working version of `mcmc_CEFBDRP_Ranges.Rev` in the `scripts` directory.
 {:.instruction}
 
 We will now move on to the next Rev file and will complete
-`mcmc_TEFBD.Rev` in section {% ref Exercise-CompleteMCMC %}.
+`mcmc_CEFBDRP_Ranges.Rev` in section {% ref Exercise-CompleteMCMC %}.
 
 {% subsection The Fossilized Birth-Death Process | Exercise-ModelFBD %}
 
-In this section we will define the models described in sections
-{% ref Intro-FBD %} and {% ref Intro-TipSampling %} above. If
+In this section we will define the models described in section
+{% ref Intro-FBD %} above. If
 necessary, please review the graphical models depicted for the
 fossilized birth-death process ({% ref fig_fbd_gm %}).
 
@@ -694,7 +605,7 @@ to explicitly sample the root age (`mvRootTimeSlideUniform`).
 
 {{ fbdr_script | snippet:"block#","13-14" }}
 
-{% assign fbd_script = "model_FBDP_TEFBD.Rev" %}
+{% assign fbd_script = "model_FBDP.Rev" %}
 
 {% aside Incorporating Specimen-Level Fossil Age Uncertainty %}
 If we are using the specimen-level `FBDP` distribution (see {% ref Intro-Taxonomy %}),
@@ -801,149 +712,15 @@ monitor this tree instead of `fbd_tree`.
 
 {{ fbdr_script | snippet:"block#","17" }}
 
-You have completed the FBD model file. Save `model_FBD_TEFBD.Rev` in
-the `scripts` directory.
-
-{% subsection The Uncorrelated Exponential Relaxed Clock Model | Exercise-ModelUExp %}
-
-We will now define the molecular relaxed clock model.
-
-> Open your text editor and create the lineage-specific branch-rate model
-> file called `{{ uexp_script }}` in the `scripts` directory.
+>You have completed the FBD model file. Save `model_FBDRP.Rev` in the `scripts` directory.
 {:.instruction}
 
-For our hierarchical, uncorrelated exponential relaxed clock model
-(described in section {% ref Intro-GTR-UExp %} and shown in
-{% ref fig_uexp_gm %}), we first define the mean branch rate as an
-exponential random variable. Then, we specify scale proposal moves on
-the mean rate parameter.
+{% include_relative sections/sec-Exercise-ModelUExp.md %}
 
-{{ uexp_script | snippet:"block#","1-2" }}
+{% include_relative sections/sec-Exercise-ModelGTRG.md %}
 
-Before creating a rate parameter for each branch, we need to get the
-number of branches in the tree. For rooted trees with $n$ taxa, the
-number of branches is $2n-2$.
+{% include_relative sections/sec-Exercise-ModelMorph.md %}
 
-{{ uexp_script | snippet:"block#","3" }}
-
-Then, use a for loop to define a rate for each branch. The branch rates
-are independent and identically exponentially distributed with mean
-equal to the mean branch rate parameter we specified above. For each
-rate parameter we also create scale proposal moves.
-
-{{ uexp_script | snippet:"block#","4" }}
-
-Lastly, we use a vector scale move to propose changes to all branch
-rates simultaneously. This way we can sample the total branch rate
-independently of each individual rate, which can improve mixing.
-
-{{ uexp_script | snippet:"block#","5" }}
-
-You have completed the molecular relaxed clock model file. Save `model_UExp_TEFBD.Rev` in
-the `scripts` directory.
-
-{% subsection The General Time-Reversible + Gamma Model of Nucleotide Sequence Evolution | Exercise-ModelGTRG %}
-
-In this section we will define our nucleotide sequence evolution model.
-
-> Open your text editor and create the molecular substitution model file
-> called `{{ gtrg_script }}` in the `scripts` directory.
-{:.instruction}
-
-For our nucleotide sequence evolution model, we need to define a general
-time-reversible (GTR) instantaneous-rate matrix
-(*i.e.* $Q$-matrix). A nucleotide GTR matrix
-is defined by a set of 4 stationary frequencies, and 6 exchangeability
-rates. We create stochastic nodes for these variables, each drawn from a
-uniform Dirichlet prior distribution.
-
-{{ gtrg_script | snippet:"block#","1-2" }}
-
-We need special moves to propose changes to a Dirichlet random variable,
-also known as a simplex (a vector constrained sum to one). Here, we use
-a `mvSimplexElementScale` move, which scales a single element of a
-simplex and then renormalizes the vector to sum to one. The tuning
-parameter `alpha` specifies how conservative the proposal should be,
-with larger values of `alpha` leading to proposals closer to the current
-value.
-
-{{ gtrg_script | snippet:"block#","3" }}
-
-Then we can define a deterministic node for our GTR $Q$-matrix using the
-special GTR matrix function (`fnGTR`).
-
-{{ gtrg_script | snippet:"block#","4" }}
-
-Next, in order to model gamma-distributed rates across, we create an
-exponential parameter $\alpha$ for the shape of the gamma distribution,
-along with scale proposals.
-
-{{ gtrg_script | snippet:"block#","5-6" }}
-
-Then we create a Gamma$(\alpha,\alpha)$ distribution, discretized into 4
-rate categories using the `fnDiscretizeGamma` function. Here,
-`rates_cytb` is a deterministic vector of rates computed as the mean of
-each category.
-
-{{ gtrg_script | snippet:"block#","7" }}
-
-Finally, we can create the phylogenetic continuous time Markov chain
-(PhyloCTMC) distribution for our sequence data, including the
-gamma-distributed site rate categories, as well as the branch rates
-defined as part of our exponential relaxed clock. We set the value of
-this distribution equal to our observed data and identify it as a static
-part of the likelihood using the `clamp` method.
-
-{{ gtrg_script | snippet:"block#","8" }}
-
-You have completed the GTR model file. Save `model_GTRG_TEFBD.Rev` in
-the `scripts` directory.
-
-We will now move on to the next model file.
-
-{% subsection Modeling the Evolution of Binary Morphological Characters | Exercise-ModelMorph %}
-
-In this section we will define the model of morphological character evolution.
-
-> Open your text editor and create the morphological character model file
-> called `{{ morph_script }}` in the `scripts` directory.
-{:.instruction}
-
-As stated in the introduction ({% ref Intro-Morpho %}) we will
-use Mk to model our data. Because the Mk model is a generalization of
-the Jukes-Cantor model, we will initialize our Q matrix from a Jukes-Cantor
-matrix.
-
-{{ morph_script | snippet:"block#","1" }}
-
-As in the molecular data partition, we will allow gamma-distributed rate
-heterogeneity among sites.
-
-{{ morph_script | snippet:"block#","2-3" }}
-
-The phylogenetic model also assumes that each branch has a rate of
-morphological character change. For simplicity, we will assume a strict
-exponential clock—meaning that every branch has the same rate drawn from
-an exponential distribution (see {% ref Intro-MorphClock %}).
-
-{{ morph_script | snippet:"block#","4-5" }}
-
-As in our molecular data partition, we now combine our data and our
-model in the phylogenetic CTMC distribution. There are some unique
-aspects to doing this for morphology.
-
-You will notice that we have an option called `coding`. This option
-allows us to condition on biases in the way the morphological data were
-collected (ascertainment bias). The option `coding=variable` specifies
-that we should correct for coding only variable characters (discussed in
-{% ref Intro-Morpho %}).
-
-{{ morph_script | snippet:"block#","6" }}
-
-You have completed the morphology model file. Save `model_Morph_TEFBD.Rev` in
-the `scripts` directory.
-
-We will now move on to the next model file.
 
 {% subsection Complete Master Rev File | Exercise-CompleteMCMC %}
 
@@ -1035,7 +812,8 @@ Tell the program to quit using the `q()` function.
 
     q()
 
-You made it! Save all of your files.
+>You made it! Save all of your files.
+{:.instruction}
 
 {% subsection Execute the MCMC Analysis | Exercise-RunMCMC %}
 
@@ -1049,12 +827,11 @@ following in your terminal (if the RevBayes binary is in your path):
 
 Provided that you started RevBayes from the correct directory, you can then use the
 `source` function to feed RevBayes your master script file
-(`mcmc_TEFBD.Rev`).
+(`mcmc_CEFBDRP_Ranges.Rev`).
 
-    source("scripts/mcmc_TEFBD.Rev")
+    source("scripts/mcmc_CEFBDRP_Ranges.Rev")
 
-This will execute the analysis and you should see the following output
-(though not the exact same values):
+This will execute the analysis and you should see the various parameters you included when you created `mnScreen` printed to the screen every 10 generations. 
 
 When the analysis is complete, RevBayes will quit and you will have a
 new directory called `output` that will contain all of the files you
@@ -1075,7 +852,7 @@ will be discussed further in {% ref Exercise-SummarizeTree %}).
 <img src="figures/tracer_load_file.png" width="900" /> 
 {% figcaption %} 
 The Tracer
-window. To add data, click on the “+” sign, highlighted in red above
+window. To add data, click on the "+" sign, highlighted in red above
 {% endfigcaption %}
 {% endfigure %}
 
@@ -1108,19 +885,10 @@ directory.
 
 The inspection window for your selected parameter is the
 **Estimates** window, which shows a histogram and summary
-statistics of the values sampled by the Markov chain. Figure
-{% ref tracer_post_ests %} shows the marginal distribution of the
+statistics of the values sampled by the Markov chain. {% ref tracer_post_ests %} shows the marginal distribution of the
 **Posterior** statistic for the `bears.log` file in the
 `output` directory.
 
-{% figure samplewindow %}
-<img src="figures/samplewindow.png" width="900" /> 
-{% figcaption %}
-The Estimates window. The left-hand
-window provides mean and ESS of the chain. The right-hand window
-visualizes the distribution of samples.
-{% endfigcaption %}
-{% endfigure %}
 
 > Look through the various parameters and statistics in the list of
 **Traces**.
@@ -1131,11 +899,11 @@ visualizes the distribution of samples.
 Next, we can click over to the **Trace** window. This
 window shows us the samples for a given parameter at each iteration of
 the MCMC. The left side of the chain has a shaded portion that has been
-excluded as “burn-in”. Samples taken near the beginning of chain are
-often discarded or “burned” because the MCMC may not immediately begin
+excluded as "burn-in". Samples taken near the beginning of chain are
+often discarded or "burned" because the MCMC may not immediately begin
 sampling from the target posterior distribution, particularly if the
 starting condition of the chain is far from the region of highest
-posterior density. Figure {% ref tracer_extinction_rate_trace_short %} shows the
+posterior density. {% ref tracer_extinction_rate_trace_short %} shows the
 trace for the extinction rate.
 
 {% figure tracer_extinction_rate_trace_short %}
@@ -1144,14 +912,14 @@ trace for the extinction rate.
 The ***Trace*** window in Tracer. This window
 shows a line plot of every sampled value for the extinction rate that
 was saved to file. The lighter shaded portion is the set of samples
-discarded as “burn-in” and are not used to compute the summary
+discarded as "burn-in" and are not used to compute the summary
 statistics found in the ***Estimates*** window.
 {% endfigcaption %}
 {% endfigure %}
 
 The ***Trace*** window allows us to evaluate how well our
 chain is sampling the target distribution. For a fairly short analysis,
-the output in figure {% ref tracer_extinction_rate_trace_short %} shows reasonable
+the output in {% ref tracer_extinction_rate_trace_short %} shows reasonable
 *mixing*—there is no consistent pattern or trend in the samples, nor are
 there long intervals where the statistic does not change. The presence
 of a trend or large leaps in a parameter value might indicate that your
@@ -1170,13 +938,16 @@ distributions of your parameters in the
 **Marginal Prob Distribution** window. Using this tool, you can compare the
 distributions of several different parameters (by selecting them both).
 
-Go to the `diversification` parameter in the 
-**Marginal Prob Distribution** window.
-
-&#8680; What is the mean value estimated
-for the net diversification rate ($d$)? What does the marginal
-distribution tell you about the net diversification? (Hint:
+>Go to the `diversification` parameter in the 
+>**Marginal Prob Distribution** window.
+>
+>&#8680; What is the mean value estimated
+for the net diversification rate ($d$)? 
+>
+>&#8680; What does the marginal
+>distribution tell you about the net diversification? (Hint:
 $d = \lambda - \mu$)
+{:.instruction}
 
 While specifying the model, remember that we created several
 deterministic nodes that represent parameters that we would like to
@@ -1219,19 +990,19 @@ includes some functions for summarizing the tree topology and other tree
 parameters.
 
 We will complete this part of the tutorial using RevBayes
-interactively. Begin by running the RevBayes executable. You should do
-this from within the tutorial directory.
+interactively. 
 
-In Unix systems, type the following in your terminal (if the RevBayes
-binary is in your path):
+>Begin by running the RevBayes executable. You should do
+this from within the tutorial directory.
+{:.instruction}
 
 Read in the MCMC sample of trees from file.
 
-{{ "summarize_TEFBD.Rev" | snippet:"block#","1" }}
+{{ "summarize_CEFBD.Rev" | snippet:"block#","1" }}
 
 By default, a burn-in of 25% is used when creating the tree trace (250
 trees in our case). You can specify a different burn-in fraction, say
-50%, by typing the command .
+50%, by typing the command `trace.setBurnin(500)`.
 
 Now we will use the `mccTree` function to return a maximum clade
 credibility (MCC) tree. The MCC tree is the tree with the maximum
@@ -1239,7 +1010,7 @@ product of the posterior clade probabilities. When considering trees
 with sampled ancestors, we refer to the maximum sampled ancestor clade
 credibility (MSACC) tree {% cite Gavryushkina2016 %}.
 
-{{ "summarize_TEFBD.Rev" | snippet:"block#","2" }}
+{{ "summarize_CEFBD.Rev" | snippet:"block#","2" }}
 
 When there are sampled ancestors present in the tree, visualizing the
 tree can be fairly difficult in traditional tree viewers. We will make
@@ -1262,7 +1033,7 @@ ancestor
 {% endfigcaption %}
 {% endfigure %}
 
-Navigate to <http://tgvaughan.github.io/icytree> and open the file
+Navigate to <https://icytree.org/> and open the file
 `output/bears.mcc.tre` in IcyTree.
 
 > Try to replicate the tree in {% ref summary_tree %} (Hint: ***Style > Mark

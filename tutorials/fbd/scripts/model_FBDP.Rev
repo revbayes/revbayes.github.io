@@ -55,8 +55,8 @@ fbd_dist = dnFBDP(origin=origin_time, lambda=speciation_rate, mu=extinction_rate
 clade_ursinae = clade("Melursus_ursinus", "Ursus_arctos", "Ursus_maritimus", 
                       "Helarctos_malayanus", "Ursus_americanus", "Ursus_thibetanus", 
                       "Ursus_abstrusus", "Ursus_spelaeus")
+
 constraints = v(clade_ursinae)
-#fbd_tree <-  readTrees("data/starting_tree.tre")[1]
 fbd_tree ~ dnConstrainedTopology(fbd_dist, constraints=constraints)
 
 # Specify moves on the tree and node times #

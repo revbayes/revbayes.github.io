@@ -1,6 +1,6 @@
 ---
-title: State-dependent diversification rate estimation in RevBayes
-subtitle: Inference using the binary state-dependent speciation and extinction (BiSSE) branching process
+title: State-dependent diversification with BiSSE and MuSSE
+subtitle: Inference using the binary/multiple state-dependent speciation and extinction (BiSSE/MuSSE) branching process
 authors:  Sebastian Höhna, Will Freyman, and Emma Goldberg
 level: 4
 order: 5
@@ -27,9 +27,12 @@ This tutorial describes how to specify character state-dependent
 branching process models in RevBayes. For more details on the theory behind these models, please see the 
 introductory page: {% page_ref sse/bisse-intro %}.
 
-This tutorial will explain how to fit the BiSSE model
-to data using Markov chain Monte Carlo (MCMC). RevBayes is a powerful
-tool for SSE analyses. 
+This tutorial will explain how to fit the BiSSE and MuSSE models
+to data using Markov chain Monte Carlo (MCMC). 
+RevBayes is a powerful tool for SSE analyses:
+to specify ClaSSE and HiSSE models, please see
+{% page_ref sse/other-sse %} and for ChromoSSE
+please see {% page_ref chromo %}.
 
 
 {% section Getting Set Up | thedata %}
@@ -96,10 +99,9 @@ Next, we will read in the observed character states for primate activity period.
 
     data <- readCharacterData("data/primates_activity_period.nex")
 
-It will be convenient to pull out the list of tip names `taxa` and the number of sampled
+It will be convenient to get the number of sampled
 species `num_taxa` from the tree:
 
-    taxa <- T.taxa()
     num_taxa <- T.ntips()
 
 Our vectors of moves and monitors will be defined later, but here we
@@ -114,7 +116,7 @@ that the observed character has:
     NUM_STATES = 2
 
 Using this variable allows us to easily change our script and use a different
-character with a different number of states, essentially changing out
+character with a different number of states, essentially changing our
 model from BiSSE {% cite Maddison2007 %} to one that allows for more than 2 states--*i.e.*, 
 the MuSSE model {% cite FitzJohn2012 %}. 
 
@@ -149,13 +151,13 @@ character state.
 
     for (i in 1:NUM_STATES) {
         
-    speciation[i] ~ dnExponential( 1.0 / rate_mean )
-    moves[mvi++] = mvSlide(speciation[i], delta=0.20, tune=true, weight=3.0)
+        speciation[i] ~ dnExponential( 1.0 / rate_mean )
+        moves[mvi++] = mvSlide(speciation[i], weight=3.0)
 
-    extinction[i] ~ dnExponential( 1.0 / rate_mean )
-    moves[mvi++] = mvSlide(extinction[i], delta=0.20, tune=true, weight=3.0)
+        extinction[i] ~ dnExponential( 1.0 / rate_mean )
+        moves[mvi++] = mvSlide(extinction[i], weight=3.0)
 
-    diversification[i] := speciation[i] - extinction[i]
+        diversification[i] := speciation[i] - extinction[i]
 
     }
 
@@ -199,7 +201,7 @@ For both transition rate variables specify a scaling move.
 Finally, we put the rates into a matrix, because this is what's needed
 by the function for the state-dependent birth-death process.
 
-    rate_matrix := fnFreeBinary( [rate_12, rate_21], rescaled=false)
+    rate_matrix := fnFreeK( [rate_12, rate_21], rescaled=false)
 
 Note that we do not "rescale" the rate matrix. Rate matrices for
 molecular evolution are rescaled to have an average rate of 1.0, but for
@@ -208,15 +210,13 @@ scale as the diversification rates.
 
 #### **Prior on the Root State**
 
-Create a variable with the prior probabilities of each rate category at
-the root. We are using a flat [Dirichlet distribution](https://en.wikipedia.org/wiki/Dirichlet_distribution) as the prior on
-each state. In this case we are actually estimating the prior
-frequencies of the root states. There has been some discussion about
+Create a variable for the root state frequencies. We are using a flat [Dirichlet distribution](https://en.wikipedia.org/wiki/Dirichlet_distribution) as the prior on
+each state. There has been some discussion about
 this in {% cite FitzJohn2009 %}. You could also fix the prior probabilities for
 the root states to be equal (generally not recommended), or use
 empirical state frequencies.
 
-    rate_cat_probs ~ dnDirichlet( rep(1, NUM_STATES) )
+    root_state_freq ~ dnDirichlet( rep(1, NUM_STATES) )
 
 Note that we use the `rep()` function which generates a vector of length `NUM_STATES`
 with each position in the vector set to `1`. Using this function and the `NUM_STATES`
@@ -225,7 +225,7 @@ using a character with more than two states.
 
 We will use a special move for objects that are drawn from a Dirichlet distribution:
 
-    moves[mvi++] = mvDirichletSimplex(rate_cat_probs, tune=true, weight=2)
+    moves[mvi++] = mvDirichletSimplex(root_state_freq, weight=2)
 
 #### **The Probability of Sampling an Extant Species**
 
@@ -257,16 +257,15 @@ representing the time tree and we create this node using the `dnCDBDP()` functio
                         speciationRates   = speciation,
                         extinctionRates   = extinction, 
                         Q                 = rate_matrix,
-                        pi                = rate_cat_probs,
-                        rho               = sampling,
-                        condition         = "survival" )
+                        pi                = root_state_freq,
+                        rho               = sampling )
 
 Now, we will fix the BiSSE time-tree to the observed values from our data files. We use
 the standard `.clamp()` method to give the observed tree and branch times:
 
     timetree.clamp( T )
 
-And then we use the `.clampCharData()` to set the observed states a the tips of the tree:
+And then we use the `.clampCharData()` to set the observed states at the tips of the tree:
 
     timetree.clampCharData( data )
 
@@ -274,7 +273,7 @@ Finally, we create a workspace object of our whole model. The `model()`
 function traverses all of the connections and finds all of the nodes we
 specified.
 
-    mymodel = model(rate_matrix)
+    mymodel = model(timetree)
 
 You can use the `.graph()` method of the model object to visualize the graphical model you
 have just constructed . This function writes the model DAG to a file 
@@ -307,7 +306,18 @@ extinction, and transition.
 Then, we add a screen monitor showing some updates during the MCMC
 run.
 
-    monitors[mni++] = mnScreen(printgen=100, rate_12, rate_21, speciation, extinction)
+    monitors[mni++] = mnScreen(printgen=10, rate_12, rate_21, speciation, extinction)
+
+{% aside Sampling Ancestral States %}
+
+Optionally, we can sample ancestral states during the MCMC analysis. 
+We need to add an additional monitor to record the state of each internal node in the tree.
+The file produced by this monitor can be summarized so that we can visualize the estimates of ancestral states.
+
+    monitors[mni++] = mnJointConditionalAncestralState(tree=timetree, cdbdp=timetree, type="Standard", printgen=10, withTips=true, withStartStates=false, filename="output/anc_states_primates_BiSSE.log")
+
+{% endaside %}
+
 
 #### **Initializing and Running the MCMC Simulation**
 
@@ -326,6 +336,75 @@ values from the posterior distribution.
 Now, run the MCMC:
 
     mymcmc.run(generations=10000)
+
+
+{% aside Summarize Sampled Ancestral States %}
+
+If we sampled ancestral states during the MCMC analysis, we can use the `RevGadgets` R package
+to plot the ancestral state reconstruction. First, though, we must summarize the sampled values in 
+RevBayes. 
+
+To do this, we first have to read in the ancestral state log file. This uses a specific function called `readAncestralStateTrace()`.
+
+    anc_states = readAncestralStateTrace("output/anc_states_primates_BiSSE.log")
+
+Now, we can write an annotated tree to a file. This function will write a tree with each
+node labeled with the maximum a posteriori (MAP) state and the posterior probabilities for each
+state. 
+
+    anc_tree = ancestralStateTree(tree=T, ancestral_state_trace_vector=anc_states, include_start_states=false, file="output/anc_states_primates_BiSSE_results.tree", burnin=0, summary_statistic="MAP", site=1)
+
+
+{% subsection Visualize Estimated Ancestral States | subsec_ancviz %}
+
+To visualize the posterior probabilities of ancestral states, we will use the `RevGadgets` R package.
+
+
+>Open R.
+{:.instruction}
+
+
+`RevGadgets` requires the `ggtree` package {% cite Yu2017ggtree %}. 
+First, install the `ggtree` and `RevGadgets` packages:
+
+<pre>
+install.packages("devtools")
+library(devtools)
+install_github("GuangchuangYu/ggtree")
+install_github("revbayes/RevGadgets")
+</pre>
+
+Run this code:
+
+<pre>
+library(ggplot2)
+library(RevGadgets)
+
+tree_file = "output/anc_states_primates_BiSSE_results.tree"
+
+plot_ancestral_states(tree_file, summary_statistic="MAP",
+					  tip_label_size=0,
+                      xlim_visible=NULL,
+                      node_label_size=0,
+                      show_posterior_legend=TRUE,
+                      node_size_range=c(2, 6),
+                      alpha=0.75)
+
+output_file = "RevBayes_Anc_States_BiSSE.pdf"
+ggsave(output_file, width = 11, height = 9)
+</pre>
+
+{% figure ggtree %}
+<img src="figures/RevBayes_Anc_States_BiSSE.png" width="75%">
+{% figcaption %}
+A visualization of the ancestral states estimated under the BiSSE model.
+{% endfigcaption %}
+{% endfigure %}
+
+
+{% endaside %}
+
+
 
 {% subsection Summarizing Parameter Estimates | subsec_summary %}
 
@@ -368,7 +447,7 @@ Visualizing posterior samples of parameters in
 {:.instruction}
 
 {% figure tracer2 %}
-<img src="figures/tracer2.png" width="75%">
+<img src="figures/tracer2.png" width="50%">
 {% figcaption %}
 Comparing posterior samples of the speciation rates associated with daily activity time in 
 [Tracer](http://tree.bio.ed.ac.uk/software/tracer/) 
@@ -376,7 +455,7 @@ Comparing posterior samples of the speciation rates associated with daily activi
 {% endfigcaption %}
 {% endfigure %}
 
-{% section Evaluate Social-System-Type Dependent Speciation & Extinction under the BiSSE Model | exercise2 %}
+{% section Evaluate Social System under the BiSSE Model | exercise2 %}
 
 Now that you have completed the BiSSE analysis for the timing of activity for all primates,
 perform the same analysis using a different character. Your `data` directory should 
@@ -399,7 +478,7 @@ are `0` = forest and `1` = savanna.
 > for solitary lineages (`speciation[2]`)?
 {:.instruction}
 
-{% aside Compare the Rate Estimates %}
+{% aside Compare the rate estimates %}
 Compare the rates estimated when the activity time is the focal character versus when solitariness is the dependent character. 
 You can do this by opening _both_ files in the same tracer window. If you managed to give all the parameters the same name,
 it is possible to compare the estimates in the Tracer window by highlighting both files. 
@@ -409,8 +488,7 @@ Explore the estimates of the various parameters. Are any different? Are any the 
 Why do you think you might be seeing this pattern?
 {% endaside %}
 
-<!-- 
-{% section Evaluate Mating-System-Type Dependent Speciation & Extinction under the MuSSE Model | exercise3 %}
+{% section Evaluate Mating System under the MuSSE Model | exercise3 %}
 
 In RevBayes it is trivial to change the BiSSE analysis you did in the exercises above to a multi-state model that is not limited to just 
 binary characters. That is because the model is effectively the same, just with the variable `NUM_STATES` changed. 
@@ -421,8 +499,8 @@ Your `data` directory should contain a file called [`primates_mating_system.nex`
 character where the states are: `0` = monogamy, `1` = polygyny, `2` = polygynandry, and `3` = polyandry.
 
 > Modify the analysis you completed for the binary state characters in the [BiSSE Exercise](#sec_CDBDP) to accommodate a 4-state character. 
-> This means that you must no only change the data file that you input (`primates_mating_system.nex`),
-> but you also need to specify `NUM_STATES = 4`.
+> This means that you must not only change the input data file (`primates_mating_system.nex`),
+> but you also need to specify `NUM_STATES = 4`. The `rate_matrix` must also be modified to accommodate 4 states.
 >
 > It is **important** that you remember to also change the output file names.
 >
@@ -430,5 +508,4 @@ character where the states are: `0` = monogamy, `1` = polygyny, `2` = polygynand
 >
 > What is the diversification rate associated with each state (`diversification`)? 
 {:.instruction}
- -->
 

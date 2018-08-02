@@ -151,7 +151,7 @@ Distributions and Random Numbers
 --------------------------------
 {:.subsection}
 
-provides functions for common statistical distributions. We'll
+RevBayes provides functions for common statistical distributions. We'll
 demonstrate by generating random exponential numbers as we did in
 lecture. Recall that we can transform a random variable $u$ sampled from
 a Uniform(0,1) distribution into an exponential distribution with rate
@@ -159,7 +159,7 @@ parameter $\lambda$:
 
 $$\begin{aligned}
     u &\sim \text{Uniform(0,1)}\\
-    x &= -\frac{1}{\lambda \ln u}\end{aligned}$$
+    x &= -\frac{\ln u}{\lambda} \end{aligned}$$
 
 In RevBayes, we might describe
 $u$ as a stochastic variable, and $x$ as a deterministic variable (since
@@ -173,7 +173,7 @@ it is a function of $u$):
     lambda <- 1.0
 
     # create x as a deterministic function of u
-    x := - 1 / lambda * ln(u)
+    x := -ln(u) / lambda
     x
 
 Alternatively, we can create $x$ directly as an exponential random
@@ -191,14 +191,14 @@ Individual variables can have more than one value. Variables that have
 more than one value are called *vectors*. The simplest way to create a
 vector is like this:
 
-    v <- v(1.0,2.0,3.0)              # create a vector
+    z <- v(1.0,2.0,3.0)              # create a vector
 
 You can refer to a specific value in the vector using brackets, `[i]`,
 where `i` is the index of the variable of interest.
 
-    v[1]                             # print the first entry
-    v[1] <- 10                       # change the value of the first entry
-    v
+    z[1]                             # print the first entry
+    z[1] <- 10                       # change the value of the first entry
+    z
 
 `for` loops
 -----------
@@ -231,7 +231,7 @@ them into a *second* vector of exponential random numbers.
 
     for (i in 1:100) {
       u[i] ~ dnUniform(0,1)
-      x[i] := - 1.0 / lambda * ln(u[i])
+      x[i] := -ln(u[i]) / lambda 
     }
 
 Close using the statement `q()`.

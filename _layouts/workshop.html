@@ -72,8 +72,26 @@ We recommend some selected papers for you to read prior to the workshop. These a
 		<tr>
 		<td>{{ session.starttime | date: "%A" }}</td>
 		<td>{{ session.starttime | date: "%R" }}-{{ session.endtime | date: "%R" }}</td>
-		<td>{{ session.topic }}</td>
-		<td>{% if session.lesson.first %}{% for lesson in session.lesson %}<li>{% page_ref {{ lesson }} %}</li>{% endfor %}{% elsif session.lesson %}{% for lesson in session.lesson %}{% page_ref {{ lesson }} %}{% endfor %}{% endif %}</td>
+    <td>{{ session.topic }}</td>
+		<td>{% if session.tutorials.first or session.material %}
+          {% for tutorial in session.tutorials %}
+            <li>{% page_ref {{ tutorial }} %}</li>
+          {% endfor %}
+        {% elsif session.tutorials %}
+          {% for tutorial in session.tutorials %}
+            {% page_ref {{ tutorial }} %}
+          {% endfor %}
+        {% endif %}
+        {% if session.material.first or session.tutorials %}
+          {% for item in session.material %}
+            <li>{{ item }}</li>
+          {% endfor %}
+        {% elsif session.material %}
+          {% for item in session.material %}
+            {{ item }}
+          {% endfor %}
+        {% endif %}
+    </td>
 		<td>{{ session.instructors | join: ", " }}</td>
 		</tr>
 	{% endcapture %}
@@ -99,14 +117,14 @@ We recommend some selected papers for you to read prior to the workshop. These a
 {{ schedule_table }}
 {% endif %}
 
-{% if page.lessons.size > 0 %}
-<h2>Lessons</h2>
+{% if page.tutorials.size > 0 %}
+<h2>Tutorials</h2>
 
 <div class="row">
     <div class="col-md-9">
         <ul>
-          {% for lesson in page.lessons %}
-            <li>{% page_ref {{ lesson }} %}</li>
+          {% for tutorial in page.tutorial %}
+            <li>{% page_ref {{ tutorial }} %}</li>
           {% endfor %}
         </ul>
     </div>

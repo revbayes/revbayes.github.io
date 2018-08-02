@@ -28,6 +28,11 @@ called BiSSE, {% cite Maddison2007 %}. Several variants have also been developed
 for other types of traits
 {% cite FitzJohn2010 Goldberg2011 Goldberg2012 MagnusonFord2012 FitzJohn2012 Beaulieu2016 Freyman2017 %}.
 
+RevBayes can be used to specify a wide range of SSE models. For specific examples see these other tutorials:
+- BiSSE and MuSSE models: {% page_ref sse/bisse %} 
+- ClaSSE and HiSSE models: {% page_ref sse/other-sse %} 
+- ChromoSSE: {% page_ref chromo %}
+
 
 {% section Background: The BiSSE Model | BiSSE_background %}
 

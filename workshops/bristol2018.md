@@ -35,64 +35,64 @@ schedule:
   - starttime: 2018-05-01T9:00:00Z
     endtime: 2018-05-01T9:30:00Z
     topic: Welcome to the Workshop
-    lesson: 
+    tutorials: 
     instructors: Sebastian Höhna
 
   - starttime: 2018-05-01T9:30:00Z
     endtime: 2018-05-01T10:15:00Z
     topic: RevBayes Introduction
-    lesson: 
+    tutorials: 
     instructors: Sebastian Höhna
 
   - starttime: 2018-05-01T10:15:00Z
     endtime: 2018-05-01T10:30:00Z
     topic: Coffee break
-    lesson: 
+    tutorials: 
     instructors: 
 
   - starttime: 2018-05-01T10:30:00Z
     endtime: 2018-05-01T12:00:00Z
     topic: Substitution Models in Phylogenetics
-    lesson:
+    tutorials:
     instructors:
     - Sebastian Höhna
 
   - starttime: 2018-05-01T12:00:00Z
     endtime: 2018-05-01T13:00:00Z
     topic: Lunch break
-    lesson: 
+    tutorials: 
     instructors: 
 
   - starttime: 2018-05-01T13:00:00Z
     endtime: 2018-05-01T15:00:00Z
     topic: Practical on inferring phylogenies (Part I)
-    lesson: ctmc
+    tutorials: ctmc
     instructors: 
     - Sebastian Höhna
 
   - starttime: 2018-05-01T15:00:00Z
     endtime: 2018-05-01T15:15:00Z
     topic: Coffee break
-    lesson: 
+    tutorials: 
     instructors: 
 
   - starttime: 2018-05-01T15:15:00Z
     endtime: 2018-05-01T17:30:00Z
     topic: Practical on inferring phylogenies (Part II)
-    lesson: ctmc
+    tutorials: ctmc
     instructors: 
     - Sebastian Höhna
     
   - starttime: 2018-05-02T9:00:00Z
     endtime: 2018-05-02T9:30:00Z
     topic: Recap MCMC and Substitution Models
-    lesson: 
+    tutorials: 
     instructors: Sebastian Höhna
     
   - starttime: 2018-05-02T9:30:00Z
     endtime: 2018-05-02T10:15:00Z
     topic: Morphological models
-    lesson: 
+    tutorials: 
     instructors:
     - Joe O'Reilley
     - Mark Puttick
@@ -100,73 +100,73 @@ schedule:
   - starttime: 2018-05-02T10:15:00Z
     endtime: 2018-05-02T10:30:00Z
     topic: Coffee break
-    lesson: 
+    tutorials: 
     instructors: 
 
   - starttime: 2018-05-02T10:30:00Z
     endtime: 2018-05-02T12:00:00Z
     topic: Divergence time estimation using the fossilized birth-death model
-    lesson: 
+    tutorials: 
     instructors: Walker Pett
 
   - starttime: 2018-05-02T12:00:00Z
     endtime: 2018-05-02T13:00:00Z
     topic: Lunch break
-    lesson: 
+    tutorials: 
     instructors:
 
   - starttime: 2018-05-02T13:00:00Z
     endtime: 2018-05-02T15:00:00Z
     topic: Practical on divergence time estimation using the fossilized birth-death model (Part I)
-    lesson: fbd
+    tutorials: fbd
     instructors: Walker Pett
 
   - starttime: 2018-05-02T15:00:00Z
     endtime: 2018-05-02T15:15:00Z
     topic: Coffee break
-    lesson: 
+    tutorials: 
     instructors: 
 
   - starttime: 2018-05-02T15:15:00Z
     endtime: 2018-05-02T17:30:00Z
     topic: Practical on divergence time estimation using the fossilized birth-death model (Part II)
-    lesson: fbd
+    tutorials: fbd
     instructors: Walker Pett
     
   - starttime: 2018-05-03T9:00:00Z
     endtime: 2018-05-03T9:30:00Z
     topic: Recap
-    lesson: 
+    tutorials: 
     instructors: Walker Pett
     
   - starttime: 2018-05-03T9:30:00Z
     endtime: 2018-05-03T10:15:00Z
     topic: Diversification rate estimation (Part I)
-    lesson: 
+    tutorials: 
     instructors: Sebastian Höhna
 
   - starttime: 2018-05-03T10:15:00Z
     endtime: 2018-05-03T10:30:00Z
     topic: Coffee break
-    lesson: 
+    tutorials: 
     instructors: 
 
   - starttime: 2018-05-03T10:30:00Z
     endtime: 2018-05-03T12:00:00Z
     topic: Diversification rate estimation (Part II)
-    lesson: 
+    tutorials: 
     instructors: Rachel Warnock
 
   - starttime: 2018-05-03T12:00:00Z
     endtime: 2018-05-03T13:00:00Z
     topic: Lunch break
-    lesson: 
+    tutorials: 
     instructors: 
 
   - starttime: 2018-05-03T13:00:00Z
     endtime: 2018-05-03T15:00:00Z
     topic: Choice of practical on diversification rate estimation (Part I)
-    lesson:
+    tutorials:
     - divrate/simple
     instructors: 
     - Rachel Warnock
@@ -175,20 +175,19 @@ schedule:
   - starttime: 2018-05-03T15:00:00Z
     endtime: 2018-05-03T15:15:00Z
     topic: Coffee break
-    lesson: 
+    tutorials: 
     instructors: 
 
   - starttime: 2018-05-03T15:15:00Z
     endtime: 2018-05-03T17:30:00Z
     topic: Choice of practical on diversification rate estimation (Part II)
-    lesson:
+    tutorials:
     - fbd_range
     - divrate/ebd
     - divrate/env
     - divrate/branch_specific
     - sse/bisse-intro
     - sse/bisse
-    - sse/bisse-ancestor
     instructors: 
     - Rachel Warnock
     - Sebastian Höhna
