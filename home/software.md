@@ -10,12 +10,12 @@ code_layout: bash
 
 <div class="col-sm-4" align="center">
 <h2>Mac OS X</h2>
-<a href="https://github.com/revbayes/revbayes/releases/download/v1.0.8/RevBayes_OSX_v1.0.8.zip" class="btn btn-info" role="button">Download Executable (10.6+)</a>
+<a href="https://github.com/revbayes/revbayes/releases/download/v1.0.9/RevBayes_OSX_v1.0.9.zip" class="btn btn-info" role="button">Download Executable (10.6+)</a>
 </div>
 
 <div class="col-sm-4" align="center">
 <h2>Windows</h2>
-<a href="https://github.com/revbayes/revbayes/releases/download/v1.0.8/RevBayes_Win_v1.0.8.zip" class="btn btn-info" role="button">Download Executable (7+)</a>
+<a href="https://github.com/revbayes/revbayes/releases/download/v1.0.9/RevBayes_Win_v1.0.9.zip" class="btn btn-info" role="button">Download Executable (7+)</a>
 </div>
 
 <div class="col-sm-4" align="center">
