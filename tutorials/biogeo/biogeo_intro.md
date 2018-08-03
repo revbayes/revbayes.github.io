@@ -43,7 +43,7 @@ exclude_files:
 - scripts/range_colors.txt
 - scripts/run_epoch.Rev
 - scripts/run_simple.Rev
-index: false
+index: true
 title-old: RB_Biogeography_Tutorial
 redirect: false 
 ---
