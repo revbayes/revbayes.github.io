@@ -30,7 +30,7 @@ exclude_files:
 - data/n6/silversword.mol.nex
 - data/n6/silversword.n6.range.nex
 - data/n6/silversword.tre
-index: false
+index: index
 title-old: RB_Biogeography_Tutorial
 redirect: false 
 ---
