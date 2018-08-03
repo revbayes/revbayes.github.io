@@ -175,7 +175,7 @@ The `model()` function traversed all of the connections and found all of the nod
 
 {% subsubsection Specifying Monitors %}
 
-For our MCMC analysis, we need to set up a vector of *monitors8 to record the states of our Markov chain.
+For our MCMC analysis, we need to set up a vector of *monitors* to record the states of our Markov chain.
 First, we will initialize the model monitor using the `mnModel` function. 
 This creates a new monitor variable that will output the states for all model parameters 
 when passed into a MCMC function.
