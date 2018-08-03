@@ -3,7 +3,7 @@ title: Historical Biogeographic Analysis using an epoch DEC Model
 subtitle: Ancestral range estimation of the silverswords under the dispersal-extinction-cladogenesis process
 authors:  Michael J. Landis
 level: 6
-order: 1
+order: 2
 prerequisites:
 - biogeo/biogeo_intro
 - biogeo/biogeo_simple
@@ -42,11 +42,10 @@ redirect: false
 
 {% section Introduction | intro %}
 
-In the {% page_ref biogeo/biogeo_intro %} tutorial, we went through the exercise of setting up the
+In the {% page_ref biogeo/biogeo_simple %} tutorial, we went through the exercise of setting up the
 instantaneous rate matrix and cladogenetic transition probabilities for a simple 
 DEC model.
-In this tutorial, we will complete a biogeographic analysis using an empirical dataset: the Hawaiian silverswords.
-
+In this tutorial, we will set up a more complex model considering the geological histories in the biogeographic inference. We will learn how to set up an epoch model.
 
 {% section An improved DEC analysis | bg_epoch %}
 

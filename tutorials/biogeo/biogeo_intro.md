@@ -3,6 +3,7 @@ title: Introduction to Historical Biogeography
 subtitle: Phylogeographic analysis under the dispersal-extinction-cladogenesis process
 authors:  Michael J. Landis
 level: 6
+order: 0
 prerequisites:
 - intro
 - intro_rev

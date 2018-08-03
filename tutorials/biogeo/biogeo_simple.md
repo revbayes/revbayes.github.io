@@ -3,7 +3,7 @@ title: Historical Biogeographic Analysis using a Simple DEC Model
 subtitle: Ancestral range estimation of the silverswords under the dispersal-extinction-cladogenesis process
 authors:  Michael J. Landis
 level: 6
-order: 0
+order: 1
 prerequisites:
 - biogeo/biogeo_intro
 exclude_files: 
@@ -433,4 +433,8 @@ Similar geologically unrealistic widespread ranges are estimated for the
 sheriffiana* and *D. arborea* clade (OMH). The
 remaining tutorials will focus on improvements to the simple DEC model
 presented here.
+
+
+> Continue to the next tutorial: {% page_ref biogeo/biogeo_epoch %}  
+{:.instruction}
 
