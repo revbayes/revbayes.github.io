@@ -1,0 +1,136 @@
+#!/usr/bin/rb
+
+# filenames
+range_fn = "data/n4/silversword.n4.range.nex"
+tree_fn  = "data/n4/silversword.tre"
+out_fn   = "output/simple"
+
+# read binary (01) presence-absence range data
+dat_range_01 = readDiscreteCharacterData(range_fn)
+
+# convert binary ranges into NaturalNumbers
+dat_range_n = formatDiscreteCharacterData(dat_range_01, "DEC")
+
+
+# compare characters for two taxa
+dat_range_01[1]
+dat_range_n[1]
+
+# data dimensions
+n_areas  = dat_range_01.nchar()
+n_states = floor(2^n_areas)
+
+# move/monitor index
+mvi = 1
+mni = 1
+n_gen = 3000
+
+###############
+# Tree models #
+###############
+
+# read tree
+tree <- readTrees(tree_fn)[1]
+
+
+#######################
+# Biogeography models #
+#######################
+
+# the biogeographic event rate multiplier
+log10_rate_bg ~ dnUniform(-4,2)
+log10_rate_bg.setValue(-2)
+rate_bg := 10^log10_rate_bg
+moves[mvi++] = mvSlide(log10_rate_bg, weight=4)
+
+# the relative dispersal rate
+dispersal_rate <- 1.0
+
+# build the relative dispersal rate matrix
+for (i in 1:n_areas) {
+    for (j in 1:n_areas) {
+        dr[i][j] <- dispersal_rate
+    }
+}
+
+# then the relative extirpation rate (or per-area extinction rates)
+log_sd <- 0.5
+log_mean <- ln(1) - 0.5*log_sd^2
+extirpation_rate ~ dnLognormal(mean=log_mean, sd=log_sd)
+moves[mvi++] = mvScale(extirpation_rate, weight=2)
+
+# build the relative extirpation rate matrix
+for (i in 1:n_areas) {
+    for (j in 1:n_areas) {
+        er[i][j] <- 0.0       
+    }
+    er[i][i] := extirpation_rate
+}
+
+# build the DEC rate matrix
+Q_DEC := fnDECRateMatrix(dispersalRates=dr,
+                         extirpationRates=er)
+                           
+# build cladogenetic transition probabilities
+clado_event_types <- [ "s", "a" ]
+clado_event_probs <- simplex(1,1)
+P_DEC := fnDECCladoProbs(eventProbs=clado_event_probs,
+                         eventTypes=clado_event_types,
+                         numCharacters=n_areas)
+
+# the phylogenetic CTMC with cladogenetic events
+m_bg ~ dnPhyloCTMCClado(tree=tree,
+                           Q=Q_DEC,
+                           cladoProbs=P_DEC,
+                           branchRates=rate_bg,
+                           type="NaturalNumbers",
+                           nSites=1)
+    
+# attach the range data
+m_bg.clamp(dat_range_n)
+
+############
+# Monitors #
+############
+
+monitors[mni++] = mnScreen(printgen=100, rate_bg)
+monitors[mni++] = mnModel(file=out_fn+".model.log", printgen=10)
+monitors[mni++] = mnFile(tree, filename=out_fn+".tre", printgen=10)
+monitors[mni++] = mnJointConditionalAncestralState(tree=tree,
+                                                       ctmc=m_bg,
+                                                       type="NaturalNumbers",
+                                                       withTips=true,
+                                                       withStartStates=true,
+                                                       filename=out_fn+".states.log",
+                                                       printgen=10)
+
+############
+# Analysis #
+############
+
+# build the model analysis object from the model graph
+mymodel = model(m_bg)
+
+# create the MCMC analysis object
+mymcmc = mcmc(mymodel, monitors, moves)
+
+# run the MCMC analysis
+mymcmc.run(n_gen)
+
+#################
+# Post-Analysis #
+#################
+
+# get the converted state descriptions
+state_desc = dat_range_n.getStateDescriptions()
+
+# write the state descriptions to file
+state_desc_str = "state,range\n"
+for (i in 1:state_desc.size())
+{
+    state_desc_str += (i-1) + "," + state_desc[i] + "\n"
+}
+write(state_desc_str, file=out_fn+".state_labels.txt")
+
+# exit
+quit()
