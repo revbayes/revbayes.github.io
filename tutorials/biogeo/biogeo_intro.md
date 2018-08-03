@@ -36,6 +36,13 @@ exclude_files:
 - data/n6/silversword.mol.nex
 - data/n6/silversword.n6.range.nex
 - data/n6/silversword.tre
+- scripts/make_anc_state.Rev
+- scripts/plot_anc_range.epoch.R
+- scripts/plot_anc_range.R
+- scripts/plot_anc_range.simple.R
+- scripts/range_colors.txt
+- scripts/run_epoch.Rev
+- scripts/run_simple.Rev
 index: false
 title-old: RB_Biogeography_Tutorial
 redirect: false 
