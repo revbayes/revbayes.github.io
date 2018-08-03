@@ -3,6 +3,7 @@ title: Historical Biogeographic Analysis using a Simple DEC Model
 subtitle: Ancestral range estimation of the silverswords under the dispersal-extinction-cladogenesis process
 authors:  Michael J. Landis
 level: 6
+order: 0
 prerequisites:
 - biogeo/biogeo_intro
 exclude_files: 
