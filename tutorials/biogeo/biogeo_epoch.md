@@ -8,12 +8,6 @@ prerequisites:
 - biogeo/biogeo_intro
 - biogeo/biogeo_simple
 exclude_files: 
-- data/n4/hawaii.n4.connectivity.1.txt
-- data/n4/hawaii.n4.connectivity.2.txt
-- data/n4/hawaii.n4.connectivity.3.txt
-- data/n4/hawaii.n4.connectivity.4.txt
-- data/n4/hawaii.n4.distances.txt
-- data/n4/hawaii.n4.times.txt
 - data/n4/silversword.bg.nex
 - data/n4/silversword.mcc.tre
 - data/n4/silversword.mol.nex
