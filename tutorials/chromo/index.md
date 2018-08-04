@@ -172,7 +172,7 @@ two different models, one allowing cladogenetic polyploidization (see
 the section {% ref clado_simple %}) and a second using a model with only
 anagenetic polyploidization (like the ChromEvol model described above).
 One could then calculate a Bayes factor to compare which model better
-explained the observed data. See the RevBayes tutorial {% page_ref model_selection_bayes_factors %} for more information on
+explained the observed data. See the RevBayes tutorial {% page_ref model_selection_bayes_factors/bf_intro %} for more information on
 how to calculate Bayes factors in RevBayes.
 
 Another option in RevBayes is to use Bayesian model averaging. Out of

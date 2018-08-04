@@ -20,10 +20,6 @@ redirect: false
 {% section Overview %}
 
 This tutorial provides the first protocol from {% citet Hoehna2017a %}. 
-<!-- The second protocol is described in the 
-[Partitioned data analysis tutorial](https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Partition_Tutorial/RB_Partition_Tutorial.pdf)
-tutorial and the third protocol is described in the {% page_ref model_selection_bayes_factors %} tutorial.
--->
 Here, we demonstrate how to set up and perform analyses
 using common nucleotide substitution models. The substitution models
 used in molecular evolution are continuous time Markov models, which are
@@ -66,12 +62,14 @@ be covered in more detail later in this tutorial.
 Specific functions for substitution models available in RevBayes.
 {% endtabcaption %}
 
- |  **Model**     |        **Reference**        |  **Function**   |    **Parameters**    |
- |:--------------:|:---------------------------:|:---------------:|:--------------------:|
- | Jukes-Cantor   |    {% cite Jukes1969 %}     |      fnJC       |          -           |
- | Felsenstein-81 | {% cite Felsenstein1981 %}  |      fnF81      |        $\pi$         |
- |       HKY      |   {% cite Hasegawa1985 %}   |      fnHKY      |   $\pi$, $\kappa$    |
- |       GTR      |    {% cite Tavare1986 %}    |      fnGTR      |   $\pi$, $\epsilon$  |
+ |   **Model**      |        **Reference**        |  **Function**   |      **Parameters**     |
+ |:----------------:|:---------------------------:|:---------------:|:-----------------------:|
+ |   Jukes-Cantor   |    {% cite Jukes1969 %}     |      fnJC       |           -             |
+ | K80 (a.k.a. K2P) |    {% cite Kimura1980 %}    |      fnK80      |        $\kappa$         |
+ |  Felsenstein-81  | {% cite Felsenstein1981 %}  |      fnF81      |         $\pi$           |
+ |        T92       |    {% cite Tamura1992 %}    |      fnT92      | $\pi_{GC}$, $\kappa$    |
+ |        HKY       |   {% cite Hasegawa1985 %}   |      fnHKY      |     $\pi$, $\kappa$     |
+ |        GTR       |    {% cite Tavare1986 %}    |      fnGTR      |     $\pi$, $\epsilon$   |
 
 {% endtable %}
 
@@ -205,7 +203,9 @@ data
 ```
 {:.Rev-output}
 
-Next we will specify some useful variables based on our dataset. The variable `data` has *member functions* that we can use to retrieve information about the dataset. These include, for example, the number of species and the taxa. We will need that taxon information for setting up different parts of our model.
+Next we will specify some useful variables based on our dataset. The variable `data` has *member functions* 
+that we can use to retrieve information about the dataset. These include, for example, 
+the number of species and the taxa. We will need that taxon information for setting up different parts of our model.
 
 ```
 n_species <- data.ntaxa()
@@ -213,14 +213,20 @@ n_branches <- 2 * n_species - 3
 taxa <- data.taxa()
 ```
 
-Additionally, we set up a counter variable for the number of moves that we already added to our analysis. Recall that moves are algorithms used to propose new parameter values during the MCMC simulation. This will make it much easier if we extend the model or analysis to include additional moves or to remove some moves. Similarly, we set up a counter variable for the number of monitors. Monitors print the values of model parameters to the screen and/or log files during the MCMC analysis.
+Additionally, we set up a counter variable for the number of moves that we already added to our analysis. 
+Recall that moves are algorithms used to propose new parameter values during the MCMC simulation. 
+This will make it much easier if we extend the model or analysis to include additional moves or 
+to remove some moves. Similarly, we set up a counter variable for the number of monitors. 
+Monitors print the values of model parameters to the screen and/or log files during the MCMC analysis.
 
 ```
 mvi = 1 
 mni = 1
 ```
 
-You may have noticed that we used the `=` operator to create the move index. This simply means that the variable is not part of the model. You will later see that we use this operator more often, *e.g.*,  when we create moves and monitors.
+You may have noticed that we used the `=` operator to create the move index. 
+This simply means that the variable is not part of the model. 
+You will later see that we use this operator more often, e.g., when we create moves and monitors.
 
 With the data loaded, we can now proceed to specify our specifying the model.
 
@@ -637,6 +643,30 @@ Primate and species relationships.
  |    Varecia variegata variegata  |       Lemuridae    |       Lemuroidea    |   Strepsirrhini |
 
 {% endtable %}
+    
+{% aside Setting up the Kimura 1980 (K80 or K2P) substitution model %}
+
+The K80 model (AKA the K2P model) allows the rates of transition and transversion substitutions to be unequal {% cite Kimura1980 %}. 
+The parameter $\kappa$ describes the relative rate of transition to transversion substitutions (if $\kappa > 1$, transitions occur at a higher rate than transversions). The instantaneous-rate matrix for the K80 model is defined as:
+
+$$Q_{K80} = \begin{pmatrix}
+                  - 			    & \frac{1}{4} & \frac{\kappa}{4} & \frac{1}{4} \\
+                  \frac{1}{4} & - 			    & \frac{1}{4} & \frac{\kappa}{4} \\
+                  \frac{\kappa}{4} & \frac{1}{4} & - 			    & \frac{1}{4} \\
+                  \frac{1}{4} & \frac{\kappa}{4}	& \frac{1}{4} & -
+\end{pmatrix} \mbox{  .}
+$$
+
+Now, add the parameter $\kappa$ to the substitution model, and create a K80 rate matrix:
+```
+kappa ~ dnExp(1)
+moves[++move_index] = mvScale(kappa, weight=1.0)
+
+Q := fnK80(kappa)
+```
+
+{% endaside %}
+
 
 {% section The Hasegawa-Kishino-Yano (HKY) 1985 Substitution Model %}
 
@@ -739,6 +769,7 @@ This should be all for the HKY model. Don’t forget to change the output file n
 
 -   Complete the {% ref tab_primates_posterior %} by reporting the posterior
     probabilities of phylogenetic relationships.
+
 
 {% section The General Time-Reversible (GTR) Substitution Model %}
 
@@ -872,22 +903,12 @@ Graphical model representation of the General Time Reversible (GTR) + Gamma phyl
 
 {% subsubsection Setting up the Gamma Model in RevBayes %}
 
-Create a constant node called `alpha_prior_mean` for the mean
-parameter and a constant node called `alpha_prior_sd` for the standard
-deviation of the lognormal prior on the gamma-shape parameter (this is
-represented as the constant $m_\alpha$ and $sd_\alpha$ parameters in {% ref fig_gtrg %}):
-
-```
-alpha_prior_mean <- ln(5.0)
-alpha_prior_sd <- 0.587405
-```
-
-Then create a stochastic node called `alpha` with a lognormal prior
+Then create a stochastic node called `alpha` with a uniform prior distribution between 0.0 and $10^8$
 (this represents the stochastic node for the $\alpha$-shape parameter in
 {% ref fig_gtrg %}):
 
 ```
-alpha ~ dnLognormal( alpha_prior_mean, alpha_prior_sd )
+alpha ~ dnUniform( 0.0, 1E8 )
 ```
 
 The way the ASRV model is implemented involves discretizing the mean-one gamma distribution into a set number of rate categories, $k$. Thus, we can analytically marginalize over the uncertainty in the rate at each site. The likelihood of each site is averaged over the $k$ rate categories, where the rate multiplier is the mean (or median) of each of the discrete $k$ categories. To specify this, we need a deterministic node that is a vector that will hold the set of $k$ rates drawn from the gamma distribution with $k$ rate categories. The `fnDiscretizeGamma()` function returns this deterministic node and takes three arguments: the shape and rate of the gamma distribution and the number of categories. Since we want to discretize a mean-one gamma distribution, we can pass in `alpha` for both the shape and rate.

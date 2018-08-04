@@ -1,24 +1,24 @@
 ---
 title: Assessing Phylogenetic Reliability Using RevBayes and $P^{3}$
 subtitle: Model adequacy testing using posterior prediction (Data Version). 
-authors:  Lyndon M. Coghill, Will Freyman, Sebastian H&#246;hna and Jeremy M. Brown
+authors:  Lyndon M. Coghill, Will Freyman, Sebastian Höhna and Jeremy M. Brown
 level: 1
-order: 1
+order: 4
 prerequisites:
 - intro
 - intro_rev
 - mcmc_archery
 - mcmc_binomial
+- ctmc
 index: true
 title-old: RB_PosteriorPrediction_Tutorial
-redirect: true
+redirect: false
 ---
 
 
 
 
-Overview
-========
+{% section Overview %}
 
 This tutorial presents the general principles of assessing the
 reliability of a phylogenetic inference through the use of posterior
@@ -27,56 +27,31 @@ evolutionary model to a given dataset, and analyzing several test
 statistics using a traditional goodness-of-fit framework to help explain
 where a model may be the most inadequate.
 
-Requirements
-------------
 
-We assume that you have read and hopefully completed the following
-tutorials:
 
--   RB_Getting_Started
 
--   RB_Data_Tutorial
-
--   RB_MCMC_Tutorial
-
-This means that we will assume that you know how to execute and load
-data into ‘RevBayes‘, are familiar with some basic commands, and know
-how to perform an analysis of a single-gene dataset (assuming an
-unconstrained/unrooted tree).
-
-Data and files
-==============
-
-We provide the necessary data and scripts that we will use in this
-tutorial. Of course, you may want to use your own dataset instead. In
-the ‘data‘ folder, you will find the following files
-
--   **data/primates_and_galeopterus_cytb.nex**: A simple dataset
-    consisting of 8 taxa with 500 characters simulated under the
-    GTR model.
-
-Introduction
-============
+{% section Introduction %}
 
 Assessing the fit of an evolutionary model to the data is critical as
 using a model with poor fit can lead to spurious conclusions. However, a
 critical evaluation of absolute model fit is rare in evolutionary
 studies. Posterior prediction is a Bayesian approach to assess the fit
 of a model to a given dataset
-{% cite Bollback2002-ki} {% cite Brown2014-jl} {% cite Gelman2014-ay %}, that relies on the
+{% cite Bollback2002 Brown2014 Hoehna2018a %}, that relies on the
 use of the posterior and the posterior predictive distributions. The
 posterior distribution is the standard output from Bayeisan phylogenetic
 inference. The posterior predictive distribution represents a range of
 possible outcomes given the assumptions of the model. The most common
 method to generate these possible outcomes, is to sample parameters from
 the posterior distribution, and use them to simulate new replicate
-datasets (Fig. 1). If these simulated datasets differ from the empirical
+datasets ({% ref pps_schematic %}). If these simulated datasets differ from the empirical
 dataset in a meaningful way, the model is failing to capture some
 salient feature of the evolutionary process.
 
-
-> ![](figures/brown_2014.png) 
-> A schematic presentation of data- versus
+{% figure pps_schematic %}
+<img src="figures/brown_2014.png" /> 
+{% figcaption %} 
+A schematic presentation of data- versus
 inference-based approaches to assessing model plausibility with
 posterior predictivesimulation. Most statistics proposed for testing
 model plausibility compare data-based characteristics of the original
@@ -94,17 +69,18 @@ indicate which MCMC sample was used in its simulation. Subscripts for
 MCMC samples resulting from analysis of a posterior predictive data set
 first indicate the posterior predictive data set that was analyzed and
 next index the MCMC samples from analysis of that particular data set
-$(1, ..., m)$. 
-{:.figure}
+$(1, ..., m)$.{% endfigcaption %}
+{% endfigure %}
+
 
 The framework to construct posterior predictive distributions, and
 compare them to the posterior distribution is conveniently built in to
-‘RevBayes‘. In this tutorial we will walk you through using this
+‘RevBayes‘ {% cite Hoehna2014b Hoehna2016b Hoehna2018a %}. In this tutorial we will walk you through using this
 functionality to perform a complete posterior predictive simulation on
 an example dataset.
 
-Data- Versus Inference-Based Comparisons
-----------------------------------------
+
+{% subsection Data- Versus Inference-Based Comparisons %}
 
 Most statistics proposed for testing model plausibility compare
 data-based characteristics of the original data set to the posterior
@@ -119,13 +95,12 @@ analysis on each simulated data set, and then compare the inferences
 made from the simulated data to the inference made from the empirical
 data.
 
-Due to time constraints, in today’s tutorial we will only cover the
-data-based method of assessing model plausibility. The inference-based
-method can be a powerful tool that you may want to explore at another
+In this tutorial we will only cover the data-based method of assessing model plausibility. 
+The inference-based method can be a powerful tool that you may want to explore at another
 time.
 
-Substitution Models {#secUnif}
--------------------
+
+{% subsection Substitution Models %}
 
 The models we use here are equivalent to the models described in the
 previous exercise on substitution models (continuous time Markov
@@ -134,11 +109,8 @@ Specifically, you will need to specify the following substitution
 models:
 
 -   Jukes-Cantor (JC) substitution model {% cite Jukes1969-jp %}
-
 -   General-Time-Reversible (GTR) substitution model {% cite Tavare1986-ij %}
-
 -   Gamma (+G) model for among-site rate variation {% cite Yang1994-ep %}
-
 -   Invariable-sites (+I) model {% cite Hasegawa1985-ir %}
 
 Assessing Model Fit with Posterior Prediction
