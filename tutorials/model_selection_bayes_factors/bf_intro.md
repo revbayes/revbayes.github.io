@@ -1,5 +1,5 @@
 ---
-title: Model selection
+title: General Introduction to Model selection
 subtitle: Comparing relative model fit with Bayes factors
 authors:  Sebastian Höhna, Michael J Landis, Tracy A Heath and Brian R Moore
 level: 1
@@ -9,15 +9,27 @@ prerequisites:
 - intro_rev
 - mcmc_archery
 - mcmc_binomial
+exclude_files: 
+- data/primates_and_galeopterus_cytb.nex
+- data/fagus_ITS.nex
+- data/fagus_matK.nex
+- data/fagus_rbcL.nex
+- scripts/marginal_likelihood_GTR_Gamma_inv.Rev
+- scripts/marginal_likelihood_JC.Rev
+- scripts/marginal_likelihood_partition_1.Rev
+- scripts/marginal_likelihood_partition_2.Rev
+- scripts/marginal_likelihood_partition_3.Rev
+- scripts/marginal_likelihood_partition_4.Rev
+- scripts/marginal_likelihood_partition_5.Rev
+- scripts/ITS_GTR_RJ.Rev
 index: true
 title-old: RB_BayesFactor_Tutorial
 redirect: false
 ---
 
 
-Overview
-========
-{:.section}
+
+{% section Overview %}
 
 This tutorial provides the third protocol from our recent publication
 {% cite Hoehna2017a %}. The first protocol is described in the 
@@ -28,13 +40,10 @@ and the second protocol is described in the
 This tutorial demonstrates some general principles of Bayesian model
 comparison, which is based on estimating the marginal likelihood of
 competing models and then comparing their relative fit to the data using
-Bayes factors. We consider the specific case of calculating Bayes
-factors to select among different substitution models.
+Bayes factors. 
 
 
-Introduction
-============
-{:.section}
+{% section Introduction %}
 
 For most sequence alignments, several (possibly many) substitution
 models of varying complexity are plausible *a priori*. We therefore need
@@ -133,25 +142,10 @@ exercise, we will estimate the marginal likelihood for each partition
 scheme using both the stepping-stone {% cite Xie2011 Fan2011 %} and path
 sampling estimators {% cite Lartillot2006 Baele2012 %}.
 
-Substitution Models
--------------------
-{:.section}
 
-The models we use here are equivalent to the models described in the
-previous exercise on substitution models (continuous time Markov
-models). To specify the model please consult the previous exercise.
-Specifically, you will need to specify the following substitution
-models:
 
--   Jukes-Cantor (JC) substitution model {% cite Jukes1969 %}
--   Hasegawa-Kishino-Yano (HKY) substitution model {% cite Hasegawa1985 %}
--   General-Time-Reversible (GTR) substitution model {% cite Tavare1986 %}
--   Gamma (+G) model for among-site rate variation {% cite Yang1994a %}
--   Invariable-sites (+I) model {% cite Hasegawa1985 %}
 
-Estimating the Marginal Likelihood
-----------------------------------
-{:.section}
+{% section Estimating the Marginal Likelihood %}
 
 We will estimate the marginal likelihood of a given model using a
 'stepping-stone' (or 'path-sampling') algorithm. These algorithms are
@@ -204,29 +198,8 @@ that power. In this implementation, the vector of powers starts with 1,
 sampling the likelihood close to the posterior and incrementally
 sampling closer and closer to the prior as the power decreases.
 
-Just to be safe, it is better to clear the workspace (if you did not
-just restart RevBayes):
-
-    clear()
-
-Now set up the model as in the previous exercise. You should start with
-the simple Jukes-Cantor substitution model. Setting up the model
-requires:
-
-1.  Loading the data and retrieving useful variables about it
-    (*e.g.*, number of sequences and
-    taxon names).
-2.  Specifying the instantaneous-rate matrix of the substitution model.
-3.  Specifying the tree model including branch-length variables.
-4.  Creating a random variable for the sequences that evolved under
-    the `PhyloCTMC`.
-5.  Clamping the data.
-6.  Creating a model object.
-7.  Specifying the moves for parameter updates.
-
 The following procedure for estimating marginal likelihoods is valid for
-any model in RevBayes. You will need to repeat this later for other
-models. First, we create the variable containing the power-posterior
+any model in RevBayes. First, we create the variable containing the power-posterior
 analysis. This requires that we provide a model and vector of moves, as
 well as an output file name. The `cats` argument sets the number of
 stepping stones.
@@ -253,8 +226,7 @@ compute the marginal likelihood using stepping-stone sampling.
 These commands will execute a stepping-stone simulation with 50 stepping
 stones, sampling 1000 states from each step. Compute the marginal
 likelihood under stepping-stone sampling using the member function
-`marginal()` of the `ss` variable and record the value in Table
-[tab:ml_cytb].
+`marginal()` of the `ss` variable.
 ```
     ss.marginal() 
 ```
@@ -270,9 +242,6 @@ in Table [tab:ml_cytb].
     ps.marginal() 
 ```
 
-As an example we provide the file
-**RevBayes_scripts/marginalLikelihood_JukesCantor.Rev**.
-
 We have kept this description of how to use stepping-stone-sampling and
 path-sampling very generic and did not provide the information about the
 model here. Our main motivation is to show that the marginal likelihood
@@ -280,42 +249,10 @@ estimation algorithms are independent of the model. Thus, you can apply
 these algorithms to any model, *e.g.*, relaxed
 clock models and birth-death models, as well.
 
-Exercises
----------
-{:.subsection}
-
--   Compute the marginal likelihoods of the *cytb* alignment for the
-    following substitution models:
-    1.  Jukes-Cantor (JC) substitution model
-    2.  Hasegawa-Kishino-Yano (HKY) substitution model
-    3.  General-Time-Reversible (GTR) substitution model
-    4.  GTR with gamma distributed-rate model (GTR+G)
-    5.  GTR with invariable-sites model (GTR+I)
-    6.  GTR+I+G model
--   Enter the marginal likelihood estimate for each model in the
-    corresponding cell of Table [tab:ml_cytb].
--   Which is the best fitting substitution model?
-
-{% figure tab_ml_subst_models %}
-
- |       **Model**        |   **Path-Sampling**   |   **Stepping-Stone-Sampling**   |
-  -----------------------:|:---------------------:|:-------------------------------:|
- |        JC ($M_1$)      |                       |                                 |
- |       HKY ($M_2$)      |                       |                                 |
- |       GTR ($M_3$)      |                       |                                 |
- |  GTR+$\Gamma$ ($M_4$)  |                       |                                 |
- |      GTR+I ($M_5$)     |                       |                                 |
- | GTR+$\Gamma$+I ($M_6$) |                       |                                 |
-
-{% figcaption %}
-Marginal likelihoods for different substitution models.
-{% endfigcaption %}
-{% endfigure %}
 
 
-Computing Bayes Factors and Model Selection
-===========================================
-{:.section}
+
+{% section Computing Bayes Factors and Model Selection %}
 
 Now that we have estimates of the marginal likelihood for each of our
 the candidate substitution models, we can evaluate their relative fit to
@@ -360,11 +297,11 @@ for each model comparison. Enter your answers in Table [bfTable2]
 using the stepping-stone and the path-sampling estimates of the marginal
 log-likelihoods.
 
-[bfTable2]
 
-For your consideration...
-=========================
-{:.section}
+
+
+
+{% section For your consideration... %}
 
 In this tutorial you have learned how to use RevBayes to assess the
 *relative* fit of a pool of candidate substitution models to a given
@@ -376,9 +313,8 @@ provides a reasonable description of the process that gave rise to our
 data. However, there are several additional issues to consider before
 proceeding along these lines, which we briefly mention below.
 
-Accommodating Model Uncertainty
--------------------------------
-{:.subsection}
+
+{% subsection Accommodating Model Uncertainty %}
 
 In some or many situations the number of possible models to compare is
 large, *e.g.*, choosing all possible
@@ -393,11 +329,10 @@ uncertainty by means of *model averaging*; we simply adopt the
 perspective that models (like standard parameters) are random variables,
 and integrate the inference over the distribution of candidate models.
 We will demonstrate how to accommodate model uncertainty using
-RevBayes in a separate tutorial, RB_ModelAveraging_Tutorial.
+RevBayes in a separate tutorial, for example, {% page_ref model_selection_bayes_factors/bf_subst_model_rj %}.
 
-Assessing Model Adequacy
-------------------------
-{:.subsection}
+
+{% subsection Assessing Model Adequacy %}
 
 In this tutorial, we used Bayes factors to assess the fit of various
 substitution models to our sequence data, effectively establishing the
@@ -413,5 +348,4 @@ provides a reasonable description of the process that gave rise to our
 dataset, then we should be able to generate data under this model that
 resemble our observed data. We will demonstrate how to assess model
 adequacy using RevBayes in a separate tutorial,
-RB_ModelAdequacy_Tutorial.
-
+{% page_ref model_testing_ppred %}.
