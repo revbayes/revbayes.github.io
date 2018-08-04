@@ -119,10 +119,6 @@
 <hr class="section" />
 
 <p>This tutorial provides the first protocol from <a href="#Hoehna2017a">Höhna et al. (2017)</a>. 
-<!-- The second protocol is described in the 
-[Partitioned data analysis tutorial](https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Partition_Tutorial/RB_Partition_Tutorial.pdf)
-tutorial and the third protocol is described in the <a href="/tutorials/model_selection_bayes_factors/">Model selection</a> tutorial.
--->
 Here, we demonstrate how to set up and perform analyses
 using common nucleotide substitution models. The substitution models
 used in molecular evolution are continuous time Markov models, which are
@@ -181,10 +177,22 @@ be covered in more detail later in this tutorial.</p>
       <td style="text-align: center">-</td>
     </tr>
     <tr>
+      <td style="text-align: center">K80 (a.k.a. K2P)</td>
+      <td style="text-align: center"><a href="#Kimura1980">(Kimura 1980)</a></td>
+      <td style="text-align: center">fnK80</td>
+      <td style="text-align: center">$\kappa$</td>
+    </tr>
+    <tr>
       <td style="text-align: center">Felsenstein-81</td>
       <td style="text-align: center"><a href="#Felsenstein1981">(Felsenstein 1981)</a></td>
       <td style="text-align: center">fnF81</td>
       <td style="text-align: center">$\pi$</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">T92</td>
+      <td style="text-align: center"><a href="#Tamura1992">(Tamura 1992)</a></td>
+      <td style="text-align: center">fnT92</td>
+      <td style="text-align: center">$\pi_{GC}$, $\kappa$</td>
     </tr>
     <tr>
       <td style="text-align: center">HKY</td>
@@ -318,20 +326,28 @@ provides information about the alignment:</p>
    Datatype:                         DNA
 </code></pre></div></div>
 
-<p>Next we will specify some useful variables based on our dataset. The variable <code class="highlighter-rouge">data</code> has <em>member functions</em> that we can use to retrieve information about the dataset. These include, for example, the number of species and the taxa. We will need that taxon information for setting up different parts of our model.</p>
+<p>Next we will specify some useful variables based on our dataset. The variable <code class="highlighter-rouge">data</code> has <em>member functions</em> 
+that we can use to retrieve information about the dataset. These include, for example, 
+the number of species and the taxa. We will need that taxon information for setting up different parts of our model.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_species &lt;- data.ntaxa()
 n_branches &lt;- 2 * n_species - 3
 taxa &lt;- data.taxa()
 </code></pre></div></div>
 
-<p>Additionally, we set up a counter variable for the number of moves that we already added to our analysis. Recall that moves are algorithms used to propose new parameter values during the MCMC simulation. This will make it much easier if we extend the model or analysis to include additional moves or to remove some moves. Similarly, we set up a counter variable for the number of monitors. Monitors print the values of model parameters to the screen and/or log files during the MCMC analysis.</p>
+<p>Additionally, we set up a counter variable for the number of moves that we already added to our analysis. 
+Recall that moves are algorithms used to propose new parameter values during the MCMC simulation. 
+This will make it much easier if we extend the model or analysis to include additional moves or 
+to remove some moves. Similarly, we set up a counter variable for the number of monitors. 
+Monitors print the values of model parameters to the screen and/or log files during the MCMC analysis.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvi = 1 
 mni = 1
 </code></pre></div></div>
 
-<p>You may have noticed that we used the <code class="highlighter-rouge">=</code> operator to create the move index. This simply means that the variable is not part of the model. You will later see that we use this operator more often, <em>e.g.</em>,  when we create moves and monitors.</p>
+<p>You may have noticed that we used the <code class="highlighter-rouge">=</code> operator to create the move index. 
+This simply means that the variable is not part of the model. 
+You will later see that we use this operator more often, e.g., when we create moves and monitors.</p>
 
 <p>With the data loaded, we can now proceed to specify our specifying the model.</p>
 
@@ -875,6 +891,25 @@ treetrace.cladeProbability( Lemuroidea )
 </table>
 </figure>
 
+<blockquote class="aside"><h2>Setting up the Kimura 1980 (K80 or K2P) substitution model</h2><p>The K80 model (AKA the K2P model) allows the rates of transition and transversion substitutions to be unequal <a href="#Kimura1980">(Kimura 1980)</a>. 
+The parameter $\kappa$ describes the relative rate of transition to transversion substitutions (if $\kappa &gt; 1$, transitions occur at a higher rate than transversions). The instantaneous-rate matrix for the K80 model is defined as:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+Q_{K80} = \begin{pmatrix}
+                  - 			    & \frac{1}{4} & \frac{\kappa}{4} & \frac{1}{4} \\
+                  \frac{1}{4} & - 			    & \frac{1}{4} & \frac{\kappa}{4} \\
+                  \frac{\kappa}{4} & \frac{1}{4} & - 			    & \frac{1}{4} \\
+                  \frac{1}{4} & \frac{\kappa}{4}	& \frac{1}{4} & -
+\end{pmatrix} \mbox{  .} %]]></script>
+
+<p>Now, add the parameter $\kappa$ to the substitution model, and create a K80 rate matrix:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kappa ~ dnExp(1)
+moves[++move_index] = mvScale(kappa, weight=1.0)
+
+Q := fnK80(kappa)
+</code></pre></div></div>
+</blockquote>
+
 <h2 class="section" id="the-hasegawa-kishino-yano-hky-1985-substitution-model">The Hasegawa-Kishino-Yano (HKY) 1985 Substitution Model</h2>
 <hr class="section" />
 
@@ -1111,20 +1146,11 @@ These rate-multipliers are drawn from a discrete, mean-one gamma distribution; t
 <h4 class="subsubsection" id="setting-up-the-gamma-model-in-revbayes">Setting up the Gamma Model in RevBayes</h4>
 <hr class="subsubsection" />
 
-<p>Create a constant node called <code class="highlighter-rouge">alpha_prior_mean</code> for the mean
-parameter and a constant node called <code class="highlighter-rouge">alpha_prior_sd</code> for the standard
-deviation of the lognormal prior on the gamma-shape parameter (this is
-represented as the constant $m_\alpha$ and $sd_\alpha$ parameters in <a href="#fig_gtrg"></a>):</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha_prior_mean &lt;- ln(5.0)
-alpha_prior_sd &lt;- 0.587405
-</code></pre></div></div>
-
-<p>Then create a stochastic node called <code class="highlighter-rouge">alpha</code> with a lognormal prior
+<p>Then create a stochastic node called <code class="highlighter-rouge">alpha</code> with a uniform prior distribution between 0.0 and $10^8$
 (this represents the stochastic node for the $\alpha$-shape parameter in
 <a href="#fig_gtrg"></a>):</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha ~ dnLognormal( alpha_prior_mean, alpha_prior_sd )
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha ~ dnUniform( 0.0, 1E8 )
 </code></pre></div></div>
 
 <p>The way the ASRV model is implemented involves discretizing the mean-one gamma distribution into a set number of rate categories, $k$. Thus, we can analytically marginalize over the uncertainty in the rate at each site. The likelihood of each site is averaged over the $k$ rate categories, where the rate multiplier is the mean (or median) of each of the discrete $k$ categories. To specify this, we need a deterministic node that is a vector that will hold the set of $k$ rates drawn from the gamma distribution with $k$ rate categories. The <code class="highlighter-rouge">fnDiscretizeGamma()</code> function returns this deterministic node and takes three arguments: the shape and rate of the gamma distribution and the number of categories. Since we want to discretize a mean-one gamma distribution, we can pass in <code class="highlighter-rouge">alpha</code> for both the shape and rate.</p>
@@ -1255,12 +1281,18 @@ run an analysis.</p>
 <a href="https://doi.org/10.1016/B978-1-4832-3211-9.50009-7">10.1016/B978-1-4832-3211-9.50009-7</a>
 
 </li>
+<li><span id="Kimura1980">Kimura M. 1980. A simple method for estimating evolutionary rates of base substitutions through comparative studies of nucleotide sequences. Journal of Molecular Evolution. 16:111–120.</span>
+
+</li>
 <li><span id="Rambaut2011">Rambaut A., Drummond A.J. 2011. Tracer v1.5. .</span>
 
 
 <a href="http://tree.bio.ed.ac.uk/software/tracer/">http://tree.bio.ed.ac.uk/software/tracer/</a>
 </li>
 <li><span id="Rannala2012">Rannala B., Zhu T., Yang Z. 2012. Tail Paradox, Partial Identifiability, and Influential Priors in Bayesian Branch Length Inference. Molecular Biology and Evolution. 29:325–335.</span>
+
+</li>
+<li><span id="Tamura1992">Tamura K. 1992. Estimation of the number of nucleotide substitutions when there are strong transition-transversion and G+ C-content biases. Molecular Biology and Evolution. 9:678–687.</span>
 
 </li>
 <li><span id="Tavare1986">Tavaré S. 1986. Some Probabilistic and Statistical Problems in the Analysis of DNA Sequences. Some Mathematical Questions in Biology: DNA Sequence Analysis. 17:57–86.</span>

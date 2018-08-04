@@ -1,0 +1,129 @@
+####################
+# Read in the data #
+####################
+
+data_ITS = readDiscreteCharacterData("data/fagus_ITS.nex")
+data_matK = readDiscreteCharacterData("data/fagus_matK.nex")
+data_rbcL = readDiscreteCharacterData("data/fagus_rbcL.nex")
+
+# get some useful information about the data
+taxa = data_ITS.taxa()
+num_taxa = data_ITS.ntaxa()
+num_branches = 2 * num_taxa - 3
+
+# make a move index variable
+mvi = 1
+
+# name the analysis
+name = "partition_1"
+
+#########################################
+# Define the prior on the tree topology #
+#########################################
+
+# We assume a uniform prior on topology.
+topology ~ dnUniformTopology(taxa)
+moves[mvi++] = mvNNI(topology, weight=10.0)
+moves[mvi++] = mvSPR(topology, weight=10.0)
+
+##########################################
+# Define the prior on the branch lengths #
+##########################################
+
+for(i in 1:num_branches){
+  br_lens[i] ~ dnExponential(10.0)
+  moves[mvi++] = mvScale(br_lens[i], weight=1.0)
+}
+TL := sum(br_lens)
+
+################################################
+# Combine the tree topology and branch lengths #
+################################################
+
+phylogeny := treeAssembly(topology, br_lens)
+
+############################################
+# Define the substitution model parameters #
+############################################
+
+# each gene has the same GTR model
+
+pi ~ dnDirichlet(v(1,1,1,1))
+moves[mvi++] = mvBetaSimplex(pi, weight=1.0)
+
+er ~ dnDirichlet(v(1,1,1,1,1,1))
+moves[mvi++] = mvBetaSimplex(er, weight=1.0)
+
+Q := fnGTR(er, pi)
+
+#################################################
+# Define the model of among-site rate variation #
+#################################################
+
+# each gene has the same ASRV model
+
+alpha ~ dnExponential(1)
+moves[mvi++] = mvScale(alpha, weight=1.0)
+
+site_rates := fnDiscretizeGamma(alpha, alpha, 4)
+
+#################################
+# Define the phyloCTMC model    #
+# (AKA the likelihood function) #
+#################################
+
+seq_ITS ~ dnPhyloCTMC(tree=phylogeny, Q=Q, type="DNA", siteRates=site_rates)
+seq_ITS.clamp(data_ITS) # attach the observed data
+
+seq_matK ~ dnPhyloCTMC(tree=phylogeny, Q=Q, type="DNA", siteRates=site_rates)
+seq_matK.clamp(data_matK) # attach the observed data
+
+seq_rbcL ~ dnPhyloCTMC(tree=phylogeny, Q=Q, type="DNA", siteRates=site_rates)
+seq_rbcL.clamp(data_rbcL) # attach the observed data
+
+#########################
+# Make the model object #
+#########################
+
+my_model = model(phylogeny)
+
+#####################
+# Make the monitors #
+#####################
+
+monitors[1] = mnModel(filename="output/" + name + "/posterior_samples.log",printgen=10, separator = TAB)
+monitors[2] = mnFile(filename="output/" + name + "/tree_samples.trees",printgen=10, separator = TAB, phylogeny)
+monitors[3] = mnScreen(printgen=100, TL)
+
+################
+# Run the MCMC #
+################
+
+analysis = mcmc(my_model, monitors, moves)
+analysis.burnin(generations=1000, tuningInterval=100)
+analysis.operatorSummary()
+analysis.run(generations=10000)
+
+#########################################
+# Read in the posterior sample of trees #
+# and compute the MAP tree              #
+#########################################
+
+# start by reading in the tree trace
+treetrace = readTreeTrace("output/" + name + "/tree_samples.trees", treetype="non-clock")
+map_tree = mapTree(treetrace,"output/" + name + "/MAP_tree.tree")
+
+###################################
+# Run the stepping-stone analysis #
+###################################
+
+ss_analysis = powerPosterior(my_model, monitors, moves, "output/" + name + "/ss", cats=20, alpha=0.3)
+ss_analysis.burnin(generations=1000,tuningInterval=100)
+ss_analysis.run(generations=5000)
+
+ss = steppingStoneSampler("output/" + name + "/ss", "power", "likelihood", TAB)
+ss.marginal()
+
+
+# exit the program
+#q()

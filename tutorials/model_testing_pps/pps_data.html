@@ -51,7 +51,7 @@
       <div class="titlebar">
 	<h1 class="maintitle">Assessing Phylogenetic Reliability Using RevBayes and $P^{3}$</h1>
 	<h3 class="subtitle">Model adequacy testing using posterior prediction (Data Version).</h3>
-	<h4 class="authors">Lyndon M. Coghill, Will Freyman, Sebastian H&#246;hna and Jeremy M. Brown</h4>
+	<h4 class="authors">Lyndon M. Coghill, Will Freyman, Sebastian Höhna and Jeremy M. Brown</h4>
 </div>
 
 
@@ -73,6 +73,8 @@
           
             <li><a href="/tutorials/mcmc_binomial/">Introduction to MCMC using RevBayes</a></li>
           
+            <li><a href="/tutorials/ctmc/">Substitution Models</a></li>
+          
           </ul>
         
     </div>
@@ -84,8 +86,51 @@
 
 
 
+<blockquote class="tutorial_files" id="tutorial_files">
+    <h2>Data files and scripts</h2>
+    
+        
+        <strong>Data Files</strong>
+        <ul id="data_files">
+        
+        
+        
+          <li><a href="/tutorials/model_testing_pps/data/primates_and_galeopterus_cytb.nex">primates_and_galeopterus_cytb.nex</a></li>
+        
+        </ul>
+    
+        
+        <strong>Scripts</strong>
+        <ul id="scripts">
+        
+        
+        
+          <li><a href="/tutorials/model_testing_pps/scripts/pps_DataSummary.Rev">pps_DataSummary.Rev</a></li>
+        
+          <li><a href="/tutorials/model_testing_pps/scripts/pps_GTR_Gamma_Inv_Model.Rev">pps_GTR_Gamma_Inv_Model.Rev</a></li>
+        
+          <li><a href="/tutorials/model_testing_pps/scripts/pps_GTR_Inv_Model.Rev">pps_GTR_Inv_Model.Rev</a></li>
+        
+          <li><a href="/tutorials/model_testing_pps/scripts/pps_GTR_Model.Rev">pps_GTR_Model.Rev</a></li>
+        
+          <li><a href="/tutorials/model_testing_pps/scripts/pps_JC_Model.Rev">pps_JC_Model.Rev</a></li>
+        
+          <li><a href="/tutorials/model_testing_pps/scripts/pps_MCMC_Simulation.Rev">pps_MCMC_Simulation.Rev</a></li>
+        
+          <li><a href="/tutorials/model_testing_pps/scripts/pps_PValues.Rev">pps_PValues.Rev</a></li>
+        
+          <li><a href="/tutorials/model_testing_pps/scripts/pps_Simulation.Rev">pps_Simulation.Rev</a></li>
+        
+          <li><a href="/tutorials/model_testing_pps/scripts/pps_analysis_JC.Rev">pps_analysis_JC.Rev</a></li>
+        
+        </ul>
+    
+</blockquote>
+
+
 </div>
-<h1 id="overview">Overview</h1>
+<h2 class="section" id="overview">Overview</h2>
+<hr class="section" />
 
 <p>This tutorial presents the general principles of assessing the
 reliability of a phylogenetic inference through the use of posterior
@@ -94,61 +139,27 @@ evolutionary model to a given dataset, and analyzing several test
 statistics using a traditional goodness-of-fit framework to help explain
 where a model may be the most inadequate.</p>
 
-<h2 id="requirements">Requirements</h2>
-
-<p>We assume that you have read and hopefully completed the following
-tutorials:</p>
-
-<ul>
-  <li>
-    <p>RB_Getting_Started</p>
-  </li>
-  <li>
-    <p>RB_Data_Tutorial</p>
-  </li>
-  <li>
-    <p>RB_MCMC_Tutorial</p>
-  </li>
-</ul>
-
-<p>This means that we will assume that you know how to execute and load
-data into ‘RevBayes‘, are familiar with some basic commands, and know
-how to perform an analysis of a single-gene dataset (assuming an
-unconstrained/unrooted tree).</p>
-
-<h1 id="data-and-files">Data and files</h1>
-
-<p>We provide the necessary data and scripts that we will use in this
-tutorial. Of course, you may want to use your own dataset instead. In
-the ‘data‘ folder, you will find the following files</p>
-
-<ul>
-  <li><strong>data/primates_and_galeopterus_cytb.nex</strong>: A simple dataset
-consisting of 8 taxa with 500 characters simulated under the
-GTR model.</li>
-</ul>
-
-<h1 id="introduction">Introduction</h1>
+<h2 class="section" id="introduction">Introduction</h2>
+<hr class="section" />
 
 <p>Assessing the fit of an evolutionary model to the data is critical as
 using a model with poor fit can lead to spurious conclusions. However, a
 critical evaluation of absolute model fit is rare in evolutionary
 studies. Posterior prediction is a Bayesian approach to assess the fit
 of a model to a given dataset
-(missing reference), that relies on the
+<a href="#Bollback2002">(Bollback 2002; Brown 2014; Höhna et al. 2018)</a>, that relies on the
 use of the posterior and the posterior predictive distributions. The
 posterior distribution is the standard output from Bayeisan phylogenetic
 inference. The posterior predictive distribution represents a range of
 possible outcomes given the assumptions of the model. The most common
 method to generate these possible outcomes, is to sample parameters from
 the posterior distribution, and use them to simulate new replicate
-datasets (Fig. 1). If these simulated datasets differ from the empirical
+datasets (<a href="#pps_schematic"></a>). If these simulated datasets differ from the empirical
 dataset in a meaningful way, the model is failing to capture some
 salient feature of the evolutionary process.</p>
 
-<blockquote class="figure">
-  <p><img src="figures/brown_2014.png" alt="" /> 
-A schematic presentation of data- versus
+<figure id="pps_schematic"><p><img src="figures/pps.png" /></p>
+<figcaption>A schematic presentation of data- versus
 inference-based approaches to assessing model plausibility with
 posterior predictivesimulation. Most statistics proposed for testing
 model plausibility compare data-based characteristics of the original
@@ -166,16 +177,17 @@ indicate which MCMC sample was used in its simulation. Subscripts for
 MCMC samples resulting from analysis of a posterior predictive data set
 first indicate the posterior predictive data set that was analyzed and
 next index the MCMC samples from analysis of that particular data set
-$(1, …, m)$.</p>
-</blockquote>
+$(1, …, m)$.</figcaption>
+</figure>
 
 <p>The framework to construct posterior predictive distributions, and
 compare them to the posterior distribution is conveniently built in to
-‘RevBayes‘. In this tutorial we will walk you through using this
+‘RevBayes‘ <a href="#Hoehna2014b">(Höhna et al. 2014; Höhna et al. 2016; Höhna et al. 2018)</a>. In this tutorial we will walk you through using this
 functionality to perform a complete posterior predictive simulation on
 an example dataset.</p>
 
-<h2 id="data--versus-inference-based-comparisons">Data- Versus Inference-Based Comparisons</h2>
+<h3 class="subsection" id="data--versus-inference-based-comparisons">Data- Versus Inference-Based Comparisons</h3>
+<hr class="subsection" />
 
 <p>Most statistics proposed for testing model plausibility compare
 data-based characteristics of the original data set to the posterior
@@ -190,12 +202,12 @@ analysis on each simulated data set, and then compare the inferences
 made from the simulated data to the inference made from the empirical
 data.</p>
 
-<p>Due to time constraints, in today’s tutorial we will only cover the
-data-based method of assessing model plausibility. The inference-based
-method can be a powerful tool that you may want to explore at another
+<p>In this tutorial we will only cover the data-based method of assessing model plausibility. 
+The inference-based method can be a powerful tool that you may want to explore at another
 time.</p>
 
-<h2 id="secUnif">Substitution Models</h2>
+<h3 class="subsection" id="substitution-models">Substitution Models</h3>
+<hr class="subsection" />
 
 <p>The models we use here are equivalent to the models described in the
 previous exercise on substitution models (continuous time Markov
@@ -204,36 +216,27 @@ Specifically, you will need to specify the following substitution
 models:</p>
 
 <ul>
-  <li>
-    <p>Jukes-Cantor (JC) substitution model (missing reference)</p>
-  </li>
-  <li>
-    <p>General-Time-Reversible (GTR) substitution model (missing reference)</p>
-  </li>
-  <li>
-    <p>Gamma (+G) model for among-site rate variation (missing reference)</p>
-  </li>
-  <li>
-    <p>Invariable-sites (+I) model (missing reference)</p>
-  </li>
+  <li>Jukes-Cantor (JC) substitution model (missing reference)</li>
+  <li>General-Time-Reversible (GTR) substitution model (missing reference)</li>
+  <li>Gamma (+G) model for among-site rate variation (missing reference)</li>
+  <li>Invariable-sites (+I) model (missing reference)</li>
 </ul>
 
-<h1 id="assessing-model-fit-with-posterior-prediction">Assessing Model Fit with Posterior Prediction</h1>
+<h2 class="section" id="assessing-model-fit-with-posterior-prediction">Assessing Model Fit with Posterior Prediction</h2>
+<hr class="section" />
 
 <p>The entire process of posterior prediction can be executed by using the
-<strong>data_pp_analysis_JC.Rev</strong> script in the <strong>scripts</strong> folder. If you
+<strong>pps_analysis_JC.Rev</strong> script in the <strong>scripts</strong> folder. If you
 were to type the following command into ‘RevBayes‘:</p>
 
-<p>[184,207,236]</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/data_pp_analysis_JC.Rev")
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    source("scripts/pps_analysis_JC.Rev")
 </code></pre></div></div>
-
 <p>the entire data-based posterior prediction process would run on the
 example dataset. However, in this tutorial, we will walk through each
-step of this process on an example dataset.</p>
+step of this process on an example dataset to explain what is happening in detail.</p>
 
-<h2 id="empirical-mcmc-analysis">Empirical MCMC Analysis</h2>
+<h3 class="subsection" id="empirical-mcmc-analysis">Empirical MCMC Analysis</h3>
+<hr class="subsection" />
 
 <p>To begin, we first need to generate a posterior distribution from which
 to sample for simulation. This is the normal, and often only, step
@@ -242,154 +245,94 @@ evolutionary model, and run a traditional MCMC analysis.</p>
 
 <p>This code is all in the <strong>data_pp_analysis_JC.Rev</strong> file.</p>
 
-<h3 id="set-up-the-workspace">Set up the workspace</h3>
+<h4 class="subsubsection" id="set-up-the-workspace">Set up the workspace</h4>
+<hr class="subsubsection" />
 
 <p>First, let’s set up some workspace variables we’ll need. We’ll specify a
 general name to apply to your analysis. This will be used for future
 output files, so make sure it’s something clear and easy to understand.</p>
-
-<p>[184,207,236]</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>analysis_name = "pps_example"
-model_name = "JC"
-model_file_name = "scripts/"+model_name+"_Model.Rev"
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    analysis_name = "pps_example"
+    model_name = "JC"
+    model_file_name = "scripts/pps_"+model_name+"_Model.Rev"
 </code></pre></div></div>
 
 <p>Now specify and read in the input file. This is your sequence alignment
 in NEXUS format.</p>
-
-<p>[184,207,236]</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>in_file = "data/primates_and_galeopterus_cytb.nex"
-data &lt;- readDiscreteCharacterData(in_file)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    in_file = "data/primates_and_galeopterus_cytb.nex"
+    data &lt;- readDiscreteCharacterData(in_file)
 </code></pre></div></div>
 
-<h3 id="specify-the-model">Specify the model</h3>
+<h4 class="subsubsection" id="specify-the-model">Specify the model</h4>
+<hr class="subsubsection" />
 
-<p>Now we’ll call a separate script <strong>JC_Model.Rev</strong> that specifies the JC
+<p>Now we’ll call a separate script <strong>pps_JC_Model.Rev</strong> that specifies the JC
 model:</p>
-
-<p>[184,207,236]</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source( model_file_name ) 
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    source( model_file_name ) 
 </code></pre></div></div>
-
-<p>If we open the <strong>JC_Model.Rev</strong> script, most of this script should look
-familiar from the RB_MCMC_Tutorial. There are a couple of specific
-lines we can look at that might be a little different though, as we are
-using a unrooted tree for this analysis.</p>
-
-<p>[184,207,236]</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q &lt;-fnJC(4)
+<p>If we open the <strong>pps_JC_Model.Rev</strong> script, most of this script should look
+familiar from the <a href="/tutorials/ctmc/">Substitution Models</a>. Nevertheless, we will look at some parts 
+of script for a very brief repitition.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    Q &lt;- fnJC(4)
 </code></pre></div></div>
-
 <p>Here we are specifying that we should use the Jukes-Cantor model, and
 have it applied uniformly to all sites in the dataset. While this
 obviously is not likely to be a good fitting model for most datasets, we
 are using it for simplicity of illustrating the process.</p>
-
-<p>[184,207,236]</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>topology ~ dnUniformTopology(names)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    topology ~ dnUniformTopology(names)
 </code></pre></div></div>
-
 <p>This sets a uniform prior on the tree topology.</p>
-
-<p>[184,207,236]</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>br_lens[i] ~ dnExponential(10.0)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    br_lens[i] ~ dnExponential(10.0)
 </code></pre></div></div>
-
 <p>This sets an exponential distribution as the branch length prior.</p>
-
-<p>[184,207,236]</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phylogeny := treeAssembly(topology, br_lens)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    phylogeny := treeAssembly(topology, br_lens)
 </code></pre></div></div>
-
 <p>This builds the tree by combining the topology with branch length
 support values.</p>
 
-<h3 id="run-the-mcmc">Run the MCMC</h3>
+<h4 class="subsubsection" id="run-the-mcmc">Run the MCMC</h4>
+<hr class="subsubsection" />
 
 <p>Now let’s run MCMC on our empirical dataset, just like a normal
 phylogenetic analysis. Here we use the Jukes-Cantor substition model.</p>
-
-<p>[184,207,236]</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mcmc_gen = 10000
-burnin_gen = 2000
-source("scripts/MCMC_Empirical.Rev")
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    source("scripts/pps_MCMC_Simulation.Rev")
 </code></pre></div></div>
-
 <p>After specifying a model, we will conduct the MCMC analysis with the
-script <strong>MCMC_Empirical.Rev</strong>. Much of that script should look familiar
-from the <strong>RB_CTMC_Tutorial</strong>, but let’s take a look at the script and
+script <strong>pps_MCMC_Simulation.Rev</strong>. Much of that script should look familiar
+from the <a href="/tutorials/ctmc/">Substitution Models</a>, but let’s take a look at the script and
 break down and revisit some of the major pieces as a refresher. Much of
-this will be a familiar to you from the <strong>RB_CTMC_Tutorial</strong>.</p>
+this will be a familiar to you from the <a href="/tutorials/ctmc/">Substitution Models</a>.</p>
 
 <p>First we need to specify some monitors.</p>
-
-<p>[184,207,236]</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mni = 0
-monitors[++mni] = mnModel(filename="output" + n + "/" + analysis_name + "_posterior.log",printgen=2500, separator = TAB)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    mni = 0
+    monitors[++mni] = mnModel(filename="output" + n + "/" + analysis_name + "_posterior.log",printgen=10, separator = TAB)
+    monitors[++mni] = mnFile(filename="output" + n + "/" + analysis_name + "_posterior.trees",printgen=10, separator = TAB, phylogeny)
+    monitors[++mni] = mnScreen(printgen=1000, TL)
+    monitors[++mni] = mnStochasticVariable(filename="output" + n + "/" + analysis_name + "_posterior.var",printgen=10)
 </code></pre></div></div>
-
-<p>[184,207,236]</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[++mni] = mnFile(filename="output" + n + "/" + analysis_name + "_posterior.trees",printgen=2500, separator = TAB, phylogeny)
-</code></pre></div></div>
-
-<p>[184,207,236]</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[++mni] = mnScreen(printgen=2500, TL)
-</code></pre></div></div>
-
-<p>[184,207,236]</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[++mni] = mnStochasticVariable(filename="output" + n + "/" + analysis_name + "_posterior.var",printgen=2500)
-</code></pre></div></div>
-
 <p>Here the monitors are just being advanced by the value of mni which is
 being incremented each generation.</p>
 
 <p>Next, we will call the MCMC function, passing it the model, monitors and
 moves we specified above to set to build our mymcmc object.</p>
-
-<p>[184,207,236]</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves, nruns=2)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
 </code></pre></div></div>
-
 <p>Specify a burnin for this run.</p>
-
-<p>[184,207,236]</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.burnin(generations=burnin_gen,tuningInterval=100)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    mymcmc.burnin(generations=2000,tuningInterval=200)
 </code></pre></div></div>
-
 <p>Finally, we will execute the run for a specified number of generations.
-Here we are only using a small number of generations for the tutorial,
-however with empirical data you will most likely need a much larger
-number of generations to get a well mixed sample. The number of
-generations and printed generations is important to consider here for a
+The number of generations and printed generations is important to consider here for a
 variety of reasons, in particular for posterior predictive simulation.
 When we simulate datasets in the next step, we can only simulate 1
 dataset per sample in our posterior. So, while the number of posterior
 samples will almost always be larger than the number of datasets we will
 want to simulate, it’s something to keep in mind.</p>
 
-<p>Now let’s actually run the MCMC in ‘RevBayes‘. This process should take
-approximately 15-20 minutes depending on the speed of your computer.</p>
-
-<p>[184,207,236]</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=mcmc_gen)
+<p>Now let’s actually run the MCMC in ‘RevBayes‘.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    mymcmc.run(generations=10000)
 </code></pre></div></div>
 
-<h3 id="mcmc-output">MCMC output</h3>
+<h4 class="subsubsection" id="mcmc-output">MCMC output</h4>
+<hr class="subsubsection" />
 
 <p>After the process completes, the results can be found in the
 <strong>output_JC</strong> folder. You should see a number of familiar looking
@@ -400,65 +343,50 @@ variable, <strong>pps_example</strong> in this case. Since we set the number of 
 files without any number in their name. These are the combined files of
 the output. These will be the files we use for the rest of the process.
 If you open up one of the combined .var file, you should see that there
-are 200 samples. This was produced by our number of generations
-(250,000) divided by our number of printed generations, (2500) what we
+are 1000 samples. This was produced by our number of generations
+(10,000) divided by our number of printed generations (10), which we
 specified earlier. This is important to note, as we will need to thin
 these samples appropriately in the next step to get the proper number of
 simulated datasets.</p>
 
-<h2 id="posterior-predictive-data-simulation">Posterior Predictive Data Simulation</h2>
+<h2 class="section" id="posterior-predictive-data-simulation">Posterior Predictive Data Simulation</h2>
+<hr class="section" />
 
 <p>The next step of posterior predictive simulation is to simulate new
 datasets by drawing samples and parameters from the posterior
 distribution generated from the empirical MCMC anlaysis.</p>
 
-<p>In the <strong>data_pp_analysis_JC.Rev</strong> script, that is conducted using
+<p>In the <strong>pps_analysis_JC.Rev</strong> script, that is conducted using
 the following lines of RevScript:</p>
-
-<p>[184,207,236]</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/PosteriorPredictive_Simulation.Rev")
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    source("scripts/pps_Simulation.Rev")
 </code></pre></div></div>
-
 <p>Let’s take a look at each of the calls in the
-<strong>PosteriorPredictive_Simulation.Rev</strong> script so that we can understand
+<strong>pps_Simulation.Rev</strong> script so that we can understand
 what is occurring.</p>
 
 <p>First, we read in the trace file of the Posterior Distribution of
 Variables.</p>
-
-<p>[184,207,236]</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>trace = readStochasticVariableTrace("output" + "/" + analysis_name + "_posterior.var", delimiter=TAB)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    trace = readStochasticVariableTrace("output" + "/" + analysis_name + "_posterior.var", delimiter=TAB)
 </code></pre></div></div>
-
 <p>Now we call the <strong>posteriorPredictiveSimulation()</strong> function, which
 accepts any valid model of sequence evolution, and output directory, and
 a trace. For each line in the trace, it will simulate a new dataset
 under the specified model.</p>
-
-<p>[184,207,236]</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pps = posteriorPredictiveSimulation(mymodel, directory="output" + "/" + analysis_name + "_post_sims", trace)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    pps = posteriorPredictiveSimulation(mymodel, directory="output" + "/" + analysis_name + "_post_sims", trace)
 </code></pre></div></div>
-
 <p>Now we run the posterior predictive simulation, generating a new dataset
 for each line in the trace file that was read in. This is the part where
 we need to decide how many simulated datasets we want to generate. If we
 just use the pps.run() command, one dataset will be generated for each
 sample in our posterior distribution. In this case, since we are reading
-in the combined posterior trace file with 200 samples, it would generate
-200 simulated datasets. If you want to generate fewer, say 100 datasets,
+in the combined posterior trace file with 2000 samples, it would generate
+2000 simulated datasets. If you want to generate fewer, say 1000 datasets,
 you need to use the thinning argument as above. In this case, we are
 thinning the output by 2, that is we are dividing our number of samples
-by 2. So that in our example case, we will end up simulating 100 new
+by 2. So that in our example case, we will end up simulating 1000 new
 datasets.</p>
-
-<p>[184,207,236]</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pps.run(thinning=2)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    pps.run(thinning=2)
 </code></pre></div></div>
-
 <p>This process should finish in just a minute or two. If you look in the
 <strong>output_JC</strong> folder, there should be another folder called
 <strong>pps_example_post_sims</strong>. This folder is where the simulated
@@ -468,22 +396,19 @@ simulated dataset. In each of these folders, you should find a seq.nex
 file. If you open one of those files, you’ll see it’s just a basic NEXUS
 file. These will be the datasets we analyze in the next step.</p>
 
-<h2 id="calculating-the-test-statistics">Calculating the Test Statistics</h2>
+<h2 class="section" id="calculating-the-test-statistics">Calculating the Test Statistics</h2>
+<hr class="section" />
 
 <p>Now we will calculate the test statistics from the empirical data and
-the simulated data sets. The part in the <strong>data_pp_analysis_JC.Rev</strong>
+the simulated data sets. The part in the <strong>pps_analysis_JC.Rev</strong>
 script that generates the test statistics is the following line:</p>
-
-<p>[184,207,236]</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>num_post_sims = listFiles(path="output_"+model_name+"/" + analysis_name + "_post_sims").size()
-source("scripts/PosteriorPredictive_DataSummary.Rev")
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    num_post_sims = listFiles(path="output_"+model_name+"/" + analysis_name + "_post_sims").size()
+    source("scripts/pps_DataSummary.Rev")
 </code></pre></div></div>
-
 <p>We will look at the major concepts of the
-<strong>PosteriorPredictive_DataSummary.Rev</strong> to better understand how it
+<strong>pps_DataSummary.Rev</strong> to better understand how it
 works. For a more complete discussion of the statistics involved, please
-review (missing reference). In general, this script and these
+review <a href="#Hoehna2018a">(Höhna et al. 2018)</a>. In general, this script and these
 statistics work by calculating the statistics of interest across each
 posterior distribution from the simulated datasets, and comparing those
 values to the values from the empirical posterior distribution.</p>
@@ -492,39 +417,26 @@ values to the values from the empirical posterior distribution.</p>
 including:</p>
 
 <ul>
-  <li>
-    <p>Number Invariant Sites</p>
-  </li>
-  <li>
-    <p>Max Pairwise Difference</p>
-  </li>
-  <li>
-    <p>Max GC Content</p>
-  </li>
-  <li>
-    <p>Min GC Content</p>
-  </li>
-  <li>
-    <p>Mean GC Content</p>
-  </li>
+  <li>Number Invariant Sites</li>
+  <li>Max Pairwise Difference</li>
+  <li>Max GC Content</li>
+  <li>Min GC Content</li>
+  <li>Mean GC Content</li>
 </ul>
 
 <p>There are functions built-in to ‘RevBayes‘ to calculate these values for
 you. Here are some examples from the
-<strong>PosteriorPredictive_DataSummary.Rev</strong> script:</p>
-
-<p>[184,207,236]</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>max_pd          = sim_data.maxPairwiseDifference( excludeAmbiguous=FALSE )
-mean_gc_1       = sim_data.meanGcContentByCodonPosition(1, excludeAmbiguous=FALSE )
-var_gc_1        = sim_data.varGcContentByCodonPosition(1, excludeAmbiguous=FALSE )
+<strong>pps_DataSummary.Rev</strong> script:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    max_pd          = sim_data.maxPairwiseDifference( excludeAmbiguous=FALSE )
+    mean_gc_1       = sim_data.meanGcContentByCodonPosition(1, excludeAmbiguous=FALSE )
+    var_gc_1        = sim_data.varGcContentByCodonPosition(1, excludeAmbiguous=FALSE )
 </code></pre></div></div>
-
 <p>These same statistics are calculated for both the posterior
 distributions from the simulated datasets and the posterior distribution
 from the empirical dataset.</p>
 
-<h2 id="calculating-p-values-and-effect-sizes">Calculating <em>P</em>-values and effect sizes</h2>
+<h2 class="section" id="calculating-p-values-and-effect-sizes">Calculating <em>P</em>-values and effect sizes</h2>
+<hr class="section" />
 
 <p>Once we have the test statistics calculated for the simulated and
 empirical posterior distributions, we can compare the simulated to the
@@ -532,73 +444,72 @@ empirical to get a goodness-of-fit. One simple way to do this is to
 calculate a posterior predictive <em>P</em>value for each of the test
 statistics of interest. This is done in the
 <strong>data_pp_analysis_JC.Rev</strong> with the following lines :</p>
-
-<p>[184,207,236]</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>emp_pps_file = "results_" + model_name + "/empirical_data_" + analysis_name + ".tsv"
-sim_pps_file = "results_" + model_name + "/simulated_data_" + analysis_name + ".tsv"
-outfileName = "results_" + model_name + "/data_pvalues_effectsizes_" + analysis_name + ".tsv"
-source("scripts/PosteriorPredictive_PValues.Rev")
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    emp_pps_file = "results_" + model_name + "/empirical_data_" + analysis_name + ".tsv"
+    sim_pps_file = "results_" + model_name + "/simulated_data_" + analysis_name + ".tsv"
+    outfileName = "results_" + model_name + "/data_pvalues_effectsizes_" + analysis_name + ".tsv"
+    source("scripts/PosteriorPredictive_PValues.Rev")
 </code></pre></div></div>
-
-<p>The 3 posterior predictive <em>P</em>values currently calculated by ‘RevBayes‘
+<p>The 4 posterior predictive <em>P</em>-values currently calculated by ‘RevBayes‘
 are:</p>
 
 <ul>
-  <li>
-    <p>Lower 1-tailed</p>
-  </li>
-  <li>
-    <p>Upper 1-tailed</p>
-  </li>
-  <li>
-    <p>2-tailed</p>
-  </li>
+  <li>Lower 1-tailed</li>
+  <li>Upper 1-tailed</li>
+  <li>2-tailed</li>
+  <li>Midpoint</li>
 </ul>
 
-<p>The posterior predictive <em>P</em>value for a lower one-tailed test is the
+<p>The posterior predictive <em>P</em>-value for a lower one-tailed test is the
 proportion of samples in the distribution where the value is less than
 or equal to the observed value, calculated as:</p>
 
-<script type="math/tex; mode=display">p_l=p(T(X_{rep})\leqslant T(X)|(X)</script>
+<script type="math/tex; mode=display">p_l=p(T(X_{rep})\leqslant T(X_{emp}))</script>
 
-<p>The posterior predictive <em>P</em>value for a lower one-tailed test is the
+<p>The posterior predictive <em>P</em>-value for a lower one-tailed test is the
 proportion of samples in the distribution where the value is greater
 than or equal to the observed value, calculated as:</p>
 
-<script type="math/tex; mode=display">p_u=p(T(X_{rep})\geqslant T(X)|(X)</script>
+<script type="math/tex; mode=display">p_u=p(T(X_{rep})\geqslant T(X_{emp}))</script>
 
-<p>and the two-tailed posterior predictive <em>P</em>value is simply twice the
+<p>and the two-tailed posterior predictive <em>P</em>-value is simply twice the
 minimum of the corresponding one-tailed tests calculated as:</p>
 
 <script type="math/tex; mode=display">p_2=2min(p_l,p_u)</script>
 
-<p>Let’s take a look at the <strong>PosteriorPredictive_PValues.Rev</strong> script to
+<p>Finally, the midpoint posterior predictive <em>P</em>-value iscalculated as:</p>
+
+<script type="math/tex; mode=display">p_m=p(T(X_{rep})\leqslant T(X_{emp})) + \frac{1}{2} p(T(X_{rep})= T(X_{emp}))</script>
+
+<p>For more a more detailed description please look at <a href="#Hoehna2018a">(Höhna et al. 2018)</a>.</p>
+
+<h3 class="subsection" id="the-pps_pvaluesrev-script">The pps_PValues.Rev script</h3>
+<hr class="subsection" />
+
+<p>Let’s take a look at the <strong>pps_PValues.Rev</strong> script to
 get a better idea of what is happening.</p>
 
 <p>Using the equations outlined above, this script reads in the simulated
 and empirical data we just calculated, and calls a few simple functions
 for each of the test statistics:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    ## Calculate and return a vector of lower, equal, and upper pvalues for a given test statistic
+    p_values &lt;- posteriorPredictiveProbability(numbers, empValue)
 
-<p>[184,207,236]</p>
+    ## 1-tailed
+    lower_p_value &lt;- p_values[1] 
+    equal_p_value &lt;- p_values[2] 
+    upper_p_value &lt;- p_values[3] 
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## Calculate and return a vector of lower, equal, and upper pvalues for a given test statistic
-p_values &lt;- posteriorPredictiveProbability(numbers, empValue)
+    ## mid-point
+    midpoint_p_value = lower_p_value + 0.5*equal_p_value
 
-## 1-tailed
-lower_p_value &lt;- p_values[1] 
-equal_p_value &lt;- p_values[2] 
-upper_p_value &lt;- p_values[3] 
-
-## mid-point
-midpoint_p_value = lower_p_value + 0.5*equal_p_value
-
-## 2-tailed
-two_tail_p_value = 2 * (min(v(lower_p_value, upper_p_value)))
+    ## 2-tailed
+    two_tail_p_value = 2 * (min(v(lower_p_value, upper_p_value)))
 </code></pre></div></div>
-
 <p>these snippets calculate the various p-values of interest to serve as
 our goodness-of-fit test.</p>
+
+<h3 class="subsection" id="posterior-predictive-effect-size">Posterior predictive effect size</h3>
+<hr class="subsection" />
 
 <p>Another way that you can calculate the magnitude of the discrepancy
 between the empirical and PP datasets is by calculating the effect size
@@ -611,16 +522,13 @@ divided by the standard deviation of the posterior predictive
 distribution (missing reference). Effect sizes are calculated automatically
 for the inference based test statistics in the P analysis. The effect
 sizes for each test statistics are stored in the same output file as the
-<em>P</em>values.</p>
-
-<p>[184,207,236]</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>effect_size = abs((m - empValue) / stdev(numbers))
+<em>P</em>-values.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    effect_size = abs((m - empValue) / stdev(numbers))
 </code></pre></div></div>
-
 <p>calculates the effect size of a given test statistic.</p>
 
-<h2 id="viewing-the-results">Viewing the Results</h2>
+<h2 class="section" id="viewing-the-results">Viewing the Results</h2>
+<hr class="section" />
 
 <p>Once execution of the script is complete, you should see a new
 directory, names <strong>results_JC</strong>. In this folder there should be 3
@@ -628,37 +536,26 @@ files. Each of these is a simple tab-delimited (TSV) file containing the
 test statistic calculation output.</p>
 
 <ul>
-  <li>
-    <p>empirical_pps_example.tsv</p>
-  </li>
-  <li>
-    <p>pps_example.tsv</p>
-  </li>
-  <li>
-    <p>pvalues_pps_example.tsv</p>
-  </li>
+  <li>empirical_pps_example.csv</li>
+  <li>pps_example.csv</li>
+  <li>pvalues_pps_example.csv</li>
 </ul>
 
 <p>If you have these 3 files, and there are results in them, you can go
 ahead and quit ‘RevBayes‘.</p>
-
-<p>[184,207,236]</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>q()
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    q()
 </code></pre></div></div>
 
-<blockquote class="figure">
-  <p><img src="figures/mean_gc.png" alt="" /> 
-The distribution of mean GC values calculated
-from the simulated data setsis shown. The dotted line represents the
+<figure id="pps_mean_gc"><p><img src="figures/mean_gc.png" width="50%" /></p>
+<figcaption>The distribution of mean GC values calculated
+from the simulated data set is shown. The dotted line represents the
 mean GC calculated from the empirical data set.The Jukes-Cantor model
 does not adequately describe the empirical data. This plot was generated
-in <code class="highlighter-rouge">R</code>using the <strong>scripts/plot_results.R</strong> script.</p>
-</blockquote>
+in <code class="highlighter-rouge">R</code>using the <strong>scripts/plot_results.R</strong> script.</figcaption>
+</figure>
 
 <p>You can get an estimate of how the model performed by examining the
-<em>P</em>values in the <strong>inference_pvalues_effectsizes_pps_example.csv</strong>
-and <strong>data_pvalues_effectsizes_pps_example.csv</strong> files. In this
+<em>P</em>-values in the  <strong>data_pvalues_effectsizes_pps_example.csv</strong> file. In this
 example, a quick view shows us that most of the statistics show a value
 less than 0.05. This leads to a rejection of the model, suggesting that
 the model employed is not a good fit for the data. This is the result we
@@ -671,17 +568,18 @@ low number of generations will still detect poor fit.</p>
 <code class="highlighter-rouge">R</code>script <strong>scripts/plot_results.R</strong>. This will generate a
 pdf plot for every test statistic.</p>
 
-<h2 id="additional-exercises">Additional Exercises</h2>
+<h2 class="section" id="exercises">Exercises</h2>
+<hr class="section" />
 
 <p>Included in the <strong>scripts</strong> folder is a second model script called
-<strong>GTR_Model.Rev</strong>. As a personal exercise and a good test case, take
+<strong>pps_GTR_Model.Rev</strong>. As a personal exercise and a good test case, take
 some time now, and run the same analysis, substituting the
-<strong>GTR_Model.Rev</strong> model script for the <strong>JC_Model.Rev</strong> script we used
+<strong>pps_GTR_Model.Rev</strong> model script for the <strong>pps_JC_Model.Rev</strong> script we used
 in the earlier example. You should get different results, this is an
 excellent chance to explore the results and think about what they
 suggest about the fit of the specified model to the dataset.</p>
 
-<h3 id="additional-exercises-1">Additional Exercises</h3>
+<h3 id="additional-exercises">Additional Exercises</h3>
 
 <p><strong>Some Questions to Keep in Mind:</strong></p>
 
@@ -694,15 +592,9 @@ JC model is a better fit for our data?</p>
     <p>Which test statistics seem to show the strongest effect from the use
 of a poorly fitting model?</p>
   </li>
-  <li>
-    <p>Other than <em>P</em>values, what other ways might you explore the test
-statistic distributions to identify poor fit?</p>
-  </li>
 </ul>
 
-<h1 id="for-your-consideration">For your consideration…</h1>
-
-<p>In this tutorial you have learned how to use ‘RevBayes‘ to assess the
+<blockquote class="aside"><h2>Batch Processing of Large Datasets</h2><p>In this tutorial you have learned how to use ‘RevBayes‘ to assess the
 fit of a substitution model to a given sequence alignment. As you have
 discovered, the observed data should be plausible under the posterior
 predictive simulation if the model is reasonable. In phylogenetic
@@ -717,8 +609,6 @@ large number of genes by using global summaries to check the posterior
 predictive distributions with a comfortable goodness-of-fit style
 framework.</p>
 
-<h2 id="batch-processing-of-large-datasets">Batch Processing of Large Datasets</h2>
-
 <p>The process described above is for a single gene or alignment. However,
 batch processing a large number of genes with this method is a
 relatively straight forward process.</p>
@@ -728,10 +618,8 @@ than a single processor, or on a cluster is as easy as calling it with
 openmpi.</p>
 
 <p>For example:</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mpirun -np 16 rb-mpi scripts/full_analysis.Rev
-</code></pre></div></div>
-
+<pre><code class="language-{:bash}">    mpirun -np 16 rb-mpi scripts/full_analysis.Rev
+</code></pre>
 <p>would run the entire posterior predictive simulation analysis on a
 single dataset using 16 processors instead of a single processor. Use of
 the MPI version of ‘RevBayes‘ will speed up the process dramatically.</p>
@@ -740,40 +628,53 @@ the MPI version of ‘RevBayes‘ will speed up the process dramatically.</p>
 number of alignments is relatively simple as well. One easy way is to
 provide a list of the data file names, and to loop through them. As an
 example:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    data_file_list = "data_file_list.txt" 
+    data_file_list &lt;- readDiscreteCharacterData(data_file_list)
+    file_count = 0
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data_file_list = "data_file_list.txt" 
-data_file_list &lt;- readDiscreteCharacterData(data_file_list)
-file_count = 0
+    for (n in 1:data_file_list.size()) {
 
-for (n in 1:data_file_list.size()) {
+    FULL_ANALYSIS SCRIPT GOES HERE
 
-FULL_ANALYSIS SCRIPT GOES HERE
-
-file_count = file_count + 1
-}
+    file_count = file_count + 1
+    }
 </code></pre></div></div>
-
-<p>Then, anywhere in the full_analysis portion of the script that the
+<p>Then, anywhere in the full analysis portion of the script that the
 lines</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>inFile = "data/8taxa_500chars_GTR.nex"
-analysis_name = "pps_example"
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    inFile = "data/8taxa_500chars_GTR.nex"
+    analysis_name = "pps_example"
 </code></pre></div></div>
-
 <p>appear, you would replace them with something along the lines of:</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>inFile = n
-analysis_name = "pps_example_" + file_count
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    inFile = n
+    analysis_name = "pps_example_" + file_count
 </code></pre></div></div>
-
 <p>This should loop through all of the data files in the list provided, and
 run the full posterior predictive simulation analysis on each file.
 Using a method like this, and combining it with the MPI call above, you
 can scale this process up to multiple genes and spread the computational
 time across several cores to speed it up.</p>
+</blockquote>
 
 
-<ol class="bibliography"></ol>
+<ol class="bibliography"><li><span id="Bollback2002">Bollback J.P. 2002. Bayesian model adequacy and choice in phylogenetics. Molecular Biology and Evolution. 19:1171–1180.</span>
+
+</li>
+<li><span id="Brown2014">Brown J.M. 2014. Predictive approaches to assessing the fit of evolutionary models. Systematic Biology. 63:289–292.</span>
+
+</li>
+<li><span id="Hoehna2016b">Höhna S., Landis M.J., Heath T.A., Boussau B., Lartillot N., Moore B.R., Huelsenbeck J.P., Ronquist F. 2016. RevBayes: Bayesian Phylogenetic Inference Using Graphical Models and an Interactive Model-Specification Language. Systematic Biology. 65:726–736.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syw021">10.1093/sysbio/syw021</a>
+
+</li>
+<li><span id="Hoehna2018a">Höhna S., Coghill L.M., Mount G.G., Thomson R.C., Brown J.M. 2018. P^3: Phylogenetic Posterior Prediction in RevBayes. Molecular biology and evolution. 35:1028–1034.</span>
+
+</li>
+<li><span id="Hoehna2014b">Höhna S., Heath T.A., Boussau B., Landis M.J., Ronquist F., Huelsenbeck J.P. 2014. Probabilistic Graphical Model Representation in Phylogenetics. Systematic Biology. 63:753–771.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syu039">10.1093/sysbio/syu039</a>
+
+</li></ol>
 
 <script type="text/javascript">
 var _ol = document.querySelectorAll('ol');

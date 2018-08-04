@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: Model selection of common substitution models for one locus</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
+      </a>
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/software">Software</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/developer/">Developer</a></li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <div class="titlebar">
+	<h1 class="maintitle">Model selection of common substitution models for one locus</h1>
+	<h3 class="subtitle">Comparing relative model fit with Bayes factors</h3>
+	<h4 class="authors">Sebastian Höhna, Michael J Landis, Tracy A Heath</h4>
+</div>
+
+
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul id="prerequisites">
+          
+            <li><a href="/tutorials/intro/">Rev Language Syntax</a></li>
+          
+            <li><a href="/tutorials/intro_rev/">Basic introduction to Rev & MCMC</a></li>
+          
+            <li><a href="/tutorials/mcmc_archery/">Introduction to MCMC using RevBayes</a></li>
+          
+            <li><a href="/tutorials/mcmc_binomial/">Introduction to MCMC using RevBayes</a></li>
+          
+            <li><a href="/tutorials/model_selection_bayes_factors/bf_intro.html">General Introduction to Model selection</a></li>
+          
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+
+
+
+
+<blockquote class="tutorial_files" id="tutorial_files">
+    <h2>Data files and scripts</h2>
+    
+        
+        <strong>Data Files</strong>
+        <ul id="data_files">
+        
+        
+        
+          <li><a href="/tutorials/model_selection_bayes_factors/data/primates_and_galeopterus_cytb.nex">primates_and_galeopterus_cytb.nex</a></li>
+        
+        </ul>
+    
+        
+        <strong>Scripts</strong>
+        <ul id="scripts">
+        
+        
+        
+          <li><a href="/tutorials/model_selection_bayes_factors/scripts/marginal_likelihood_GTR_Gamma_inv.Rev">marginal_likelihood_GTR_Gamma_inv.Rev</a></li>
+        
+          <li><a href="/tutorials/model_selection_bayes_factors/scripts/marginal_likelihood_JC.Rev">marginal_likelihood_JC.Rev</a></li>
+        
+        </ul>
+    
+</blockquote>
+
+
+</div>
+<h2 class="section" id="overview">Overview</h2>
+<hr class="section" />
+
+<p>This tutorial provides the third protocol from our recent publication
+<a href="#Hoehna2017a">(Höhna et al. 2017)</a>. The first protocol is described in the 
+<a href="/tutorials/ctmc/">Substitution model tutorial</a>
+and the second protocol is described in the 
+<a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Partition_Tutorial/RB_Partition_Tutorial.pdf">Partitioned data analysis tutorial</a>.</p>
+
+<p>You should read first the <a href="/tutorials/model_selection_bayes_factors/bf_intro.html">General Introduction to Model selection</a> tutorial, which explains the theory and 
+standard algorithms for estimating marginal likelihoods and Bayes factors.</p>
+
+<h2 class="section" id="substitution-models">Substitution Models</h2>
+<hr class="section" />
+
+<p>The models we use here are equivalent to the models described in the
+previous exercise on substitution models (continuous time Markov
+models). To specify the model please consult the previous exercise.
+Specifically, you will need to specify the following substitution
+models:</p>
+
+<ul>
+  <li>Jukes-Cantor (JC) substitution model <a href="#Jukes1969">(Jukes and Cantor 1969)</a></li>
+  <li>Hasegawa-Kishino-Yano (HKY) substitution model <a href="#Hasegawa1985">(Hasegawa et al. 1985)</a></li>
+  <li>General-Time-Reversible (GTR) substitution model <a href="#Tavare1986">(Tavaré 1986)</a></li>
+  <li>Gamma (+G) model for among-site rate variation <a href="#Yang1994a">(Yang 1994)</a></li>
+  <li>Invariable-sites (+I) model <a href="#Hasegawa1985">(Hasegawa et al. 1985)</a></li>
+</ul>
+
+<p>Just to be safe, it is better to clear the workspace (if you did not
+just restart RevBayes):</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    clear()
+</code></pre></div></div>
+<p>Now set up the model as in the previous exercise. You should start with
+the simple Jukes-Cantor substitution model. Setting up the model
+requires:</p>
+
+<ol>
+  <li>Loading the data and retrieving useful variables about it
+(<em>e.g.</em>, number of sequences and
+taxon names).</li>
+  <li>Specifying the instantaneous-rate matrix of the substitution model.</li>
+  <li>Specifying the tree model including branch-length variables.</li>
+  <li>Creating a random variable for the sequences that evolved under
+the <code class="highlighter-rouge">PhyloCTMC</code>.</li>
+  <li>Clamping the data.</li>
+  <li>Creating a model object.</li>
+  <li>Specifying the moves for parameter updates.</li>
+</ol>
+
+<p>The following procedure for estimating marginal likelihoods is valid for
+any model in RevBayes. You will need to repeat this later for other
+models. First, we create the variable containing the power-posterior
+analysis. This requires that we provide a model and vector of moves, as
+well as an output file name. The <code class="highlighter-rouge">cats</code> argument sets the number of
+stepping stones.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    pow_p = powerPosterior(mymodel, moves, monitors, "output/model1.out", cats=50) 
+</code></pre></div></div>
+<p>We can start the power-posterior analysis by first burning in the chain
+and and discarding the first 10000 states. This will help ensure that
+analysis starts from a region of high posterior probability, rather than
+from some random point.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    pow_p.burnin(generations=10000,tuningInterval=1000)
+</code></pre></div></div>
+<p>Now execute the run with the <code class="highlighter-rouge">.run()</code> function:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    pow_p.run(generations=1000)  
+</code></pre></div></div>
+<p>Once the power posteriors have been saved to file, create a stepping
+stone sampler. This function can read any file of power posteriors and
+compute the marginal likelihood using stepping-stone sampling.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    ss = steppingStoneSampler(file="output/model1.out", powerColumnName="power", likelihoodColumnName="likelihood")
+</code></pre></div></div>
+<p>These commands will execute a stepping-stone simulation with 50 stepping
+stones, sampling 1000 states from each step. Compute the marginal
+likelihood under stepping-stone sampling using the member function
+<code class="highlighter-rouge">marginal()</code> of the <code class="highlighter-rouge">ss</code> variable and record the value in Table
+[tab:ml_cytb].</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    ss.marginal() 
+</code></pre></div></div>
+<p>Path sampling is an alternative to stepping-stone sampling and also
+takes the same power posteriors as input.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    ps = pathSampler(file="output/model1.out", powerColumnName="power", likelihoodColumnName="likelihood")
+</code></pre></div></div>
+<p>Compute the marginal likelihood under stepping-stone sampling using the
+member function <code class="highlighter-rouge">marginal()</code> of the <code class="highlighter-rouge">ps</code> variable and record the value
+in Table [tab:ml_cytb].</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    ps.marginal() 
+</code></pre></div></div>
+
+<p>As an example we provide the file
+<strong>RevBayes_scripts/marginalLikelihood_JukesCantor.Rev</strong>.</p>
+
+<p>We have kept this description of how to use stepping-stone-sampling and
+path-sampling very generic and did not provide the information about the
+model here. Our main motivation is to show that the marginal likelihood
+estimation algorithms are independent of the model. Thus, you can apply
+these algorithms to any model, <em>e.g.</em>, relaxed
+clock models and birth-death models, as well.</p>
+
+<h3 class="subsection" id="exercises">Exercises</h3>
+<hr class="subsection" />
+
+<ul>
+  <li>Compute the marginal likelihoods of the <em>cytb</em> alignment for the
+following substitution models:
+    <ol>
+      <li>Jukes-Cantor (JC) substitution model</li>
+      <li>Hasegawa-Kishino-Yano (HKY) substitution model</li>
+      <li>General-Time-Reversible (GTR) substitution model</li>
+      <li>GTR with gamma distributed-rate model (GTR+G)</li>
+      <li>GTR with invariable-sites model (GTR+I)</li>
+      <li>GTR+I+G model</li>
+    </ol>
+  </li>
+  <li>Enter the marginal likelihood estimate for each model in the
+corresponding cell of Table [tab:ml_cytb].</li>
+  <li>Which is the best fitting substitution model?</li>
+</ul>
+
+<figure id="tab_ml_subst_models"><table>
+  <thead>
+    <tr>
+      <th style="text-align: right"><strong>Model</strong></th>
+      <th style="text-align: center"><strong>Path-Sampling</strong></th>
+      <th style="text-align: center"><strong>Stepping-Stone-Sampling</strong></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: right">JC ($M_1$)</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: right">HKY ($M_2$)</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: right">GTR ($M_3$)</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: right">GTR+$\Gamma$ ($M_4$)</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: right">GTR+I ($M_5$)</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: right">GTR+$\Gamma$+I ($M_6$)</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+    </tr>
+  </tbody>
+</table>
+
+<figcaption>Marginal likelihoods for different substitution models.</figcaption>
+</figure>
+
+<blockquote class="instruction">
+  <p>Now you can continue to the next tutorial: <a href="/tutorials/model_selection_bayes_factors/bf_partition_model.html">Model selection of partition models</a> or <a href="/tutorials/model_selection_bayes_factors/bf_subst_model_rj.html">Model averaging of substitution models</a></p>
+</blockquote>
+
+<ol class="bibliography"><li><span id="Hasegawa1985">Hasegawa M., Kishino H., Yano T. 1985. Dating of the Human-Ape Splitting by a molecular Clock of Mitochondrial DNA. Journal of Molecular Evolution. 22:160–174.</span>
+
+<a href="https://doi.org/10.1007/BF02101694">10.1007/BF02101694</a>
+
+</li>
+<li><span id="Hoehna2017a">Höhna S., Landis M.J., Heath T.A. 2017. Phylogenetic Inference using RevBayes. Current Protocols in Bioinformatics.</span>
+
+<a href="https://doi.org/10.1002/cpbi.22">10.1002/cpbi.22</a>
+
+</li>
+<li><span id="Jukes1969">Jukes T.H., Cantor C.R. 1969. Evolution of Protein Molecules. Mammalian Protein Metabolism. 3:21–132.</span>
+
+<a href="https://doi.org/10.1016/B978-1-4832-3211-9.50009-7">10.1016/B978-1-4832-3211-9.50009-7</a>
+
+</li>
+<li><span id="Tavare1986">Tavaré S. 1986. Some Probabilistic and Statistical Problems in the Analysis of DNA Sequences. Some Mathematical Questions in Biology: DNA Sequence Analysis. 17:57–86.</span>
+
+</li>
+<li><span id="Yang1994a">Yang Z. 1994. Maximum Likelihood Phylogenetic Estimation from DNA Sequences with Variable Rates Over Sites: Approximate Methods. Journal of Molecular Evolution. 39:306–314.</span>
+
+<a href="https://doi.org/10.1007/BF00160154">10.1007/BF00160154</a>
+
+</li></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+
+<script src="/assets/js/base.js"></script>
+
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+  });
+</script>
+
+  </body>
+</html>

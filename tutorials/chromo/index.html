@@ -150,20 +150,20 @@ use the <code class="highlighter-rouge">RevGadgets</code> R package to make plot
 number estimates and stochastic character maps of chromosome evolution.</p>
 
 <p>We will begin by providing an overview of the basic ChromEvol model
-<a href="#mayrose2010probabilistic">(Mayrose et al. 2010)</a> and an example RevBayes analysis. This is
+(missing reference) and an example RevBayes analysis. This is
 followed by a discussion of a number of model extensions that enable
 joint inference of phylogeny and chromosome numbers, tests for
 correlated rates of phenotype and chromosome evolution with the BiChroM
-model <a href="#zenil2017testing">(Zenil-Ferguson et al. 2017)</a>, and incorporating cladogenetic changes in
+model (missing reference), and incorporating cladogenetic changes in
 chromosome number. Next, we will introduce the ChromoSSE model
-<a href="#Freyman2017">(Freyman and Höhna 2018)</a> which jointly estimates diversification rates
+<a href="#Freyman2017">(Freyman and Höhna 2017)</a> which jointly estimates diversification rates
 and chromosome number evolution. We also briefly discuss testing
 hypotheses of chromosome evolution by comparing different models using
 reversible-jump MCMC and Bayes factors.</p>
 
 <p>If you use RevBayes for chromosome evolution analyses, please cite the
 original papers that describe the chromosome evolution models as well as
-<a href="#Freyman2017">Freyman and Höhna (2018)</a> which describes in detail the RevBayes
+<a href="#Freyman2017">Freyman and Höhna (2017)</a> which describes in detail the RevBayes
 implementation of these models.</p>
 
 <h2 class="section" id="exampledata">Example scripts and data</h2>
@@ -183,25 +183,25 @@ long been a focal point of study. Changes in chromosome number such as
 the gain or loss of a single chromosome (dysploidy), or the doubling of
 the entire genome (polyploidy), can have phenotypic consequences, affect
 the rates of recombination, and increase reproductive isolation among
-lineages and thus drive diversification <a href="#stebbins1971chromosomal">(Stebbins 1971)</a>.
+lineages and thus drive diversification (missing reference).
 Recently, evolutionary biologists have increasingly studied the
 macroevolutionary consequences of chromosome changes within a molecular
 phylogenetic framework, mostly utilizing the likelihood-based ChromEvol
 models of chromosome number evolution introduced by
-<a href="#mayrose2010probabilistic">Mayrose et al. (2010)</a>. The ChromEvol models have permitted
+(missing reference). The ChromEvol models have permitted
 phylogenetic studies of ancient whole genome duplication events, rapid
 “catastrophic” chromosome speciation, major reevaluations of the
 evolution of angiosperms, and new insights into the fate of polyploid
 lineages 
-<a href="#pires2008renaissance">(Pires and Hertweck 2008; Mayrose et al. 2011; Tank et al. 2015)</a>. The basic
+(missing reference). The basic
 ChromEvol model has been extended to examine the association of
-phenotype with chromosome evolution <a href="#zenil2017testing">(Zenil-Ferguson et al. 2017)</a>, and to
+phenotype with chromosome evolution (missing reference), and to
 incorporate cladogenetic changes and diversification rates 
-<a href="#Freyman2017">(Freyman and Höhna 2018)</a>.</p>
+<a href="#Freyman2017">(Freyman and Höhna 2017)</a>.</p>
 
 <p>Here we describe the ChromEvol model as implemented in RevBayes, which
 except for one detail noted below is the same mathematical model
-introduced in <a href="#mayrose2010probabilistic">(Mayrose et al. 2010)</a>. In further sections, we will
+introduced in (missing reference). In further sections, we will
 show how to set up extensions such as BiChroM and ChromoSSE which build
 on the useful but basic ChromEvol model of chromosome number evolution.</p>
 
@@ -262,9 +262,9 @@ and if $\gamma_m &lt; 0$ then $\gamma_a e^{\gamma_m (i - 1)} \leq \gamma_a$
 Note that this parameterization differs slightly from the original
 ChromEvol model; here we assume the rates of chromosome change can vary
 exponentially as a function of the current chromosome number, whereas
-ChromEvol as originally described by <a href="#mayrose2010probabilistic">Mayrose et al. (2010)</a> assumes a
+ChromEvol as originally described by (missing reference) assumes a
 linear function. The theoretical reasons for this difference are
-described in <a href="#Freyman2017">Freyman and Höhna (2018)</a>, however in practice on most
+described in <a href="#Freyman2017">Freyman and Höhna (2017)</a>, however in practice on most
 empirical datasets the difference appears insignificant.</p>
 
 <p>Demi-polyploidization is the union of a reduced and an unreduced gametes
@@ -301,7 +301,7 @@ two different models, one allowing cladogenetic polyploidization (see
 the section <a href="#clado_simple"></a>) and a second using a model with only
 anagenetic polyploidization (like the ChromEvol model described above).
 One could then calculate a Bayes factor to compare which model better
-explained the observed data. See the RevBayes tutorial <a href="/tutorials/model_selection_bayes_factors/">Model selection</a> for more information on
+explained the observed data. See the RevBayes tutorial <a href="/tutorials/model_selection_bayes_factors/bf_intro.html">General Introduction to Model selection</a> for more information on
 how to calculate Bayes factors in RevBayes.</p>
 
 <p>Another option in RevBayes is to use Bayesian model averaging. Out of
@@ -309,7 +309,7 @@ the class of all chromosome evolution models described here, it is
 possible that no single model will adequately describe the chromosome
 evolution of a given clade. To explore the entire space of all possible
 models of chromosome number evolution one could specify a reversible
-jump Markov chain Monte Carlo <a href="#green1995reversible">(Green 1995)</a> that samples across
+jump Markov chain Monte Carlo (missing reference) that samples across
 models of different dimensionality, drawing samples from chromosome
 evolution models in proportion to their posterior probability and
 enabling Bayes factors for each model to be calculated. This approach
@@ -317,16 +317,16 @@ incorporates model uncertainty by permitting model-averaged inferences
 that do not condition on a single model; we draw estimates of ancestral
 chromosome numbers and rates of chromosome evolution from all possible
 models weighted by their posterior probability. For general reviews of
-this approach to model averaging see <a href="#madigan1994model">(Madigan and Raftery 1994; Hoeting et al. 1999; Kass and Raftery 1995)</a>, and for its use in
-phylogenetics see <a href="#posada2004model">Posada and Buckley (2004)</a>. Averaging over all models has been
+this approach to model averaging see (missing reference), and for its use in
+phylogenetics see (missing reference). Averaging over all models has been
 shown to provide a better average predictive ability than conditioning
-on a single model <a href="#madigan1994model">(Madigan and Raftery 1994)</a>. Conditioning on a single model
+on a single model (missing reference). Conditioning on a single model
 ignores model uncertainty, which can lead to an underestimation in the
-uncertainty of inferences made from that model <a href="#hoeting1999bayesian">(Hoeting et al. 1999)</a>.
+uncertainty of inferences made from that model (missing reference).
 In our case, this can lead to overconfidence in estimates of ancestral
 chromosome numbers and chromosome evolution parameter value estimates.
 For details on how to implement Bayesian model averaging in RevBayes
-with chromsome evolution see <a href="#Freyman2017">Freyman and Höhna (2018)</a>.</p>
+with chromsome evolution see <a href="#Freyman2017">Freyman and Höhna (2017)</a>.</p>
 
 <h3 id="next-steps">Next Steps</h3>
 
@@ -346,7 +346,7 @@ RevBayes and plotted using the <code class="highlighter-rouge">RevGadgets</code>
 <hr class="section" />
 
 <p>In this example, we will use molecular sequence data and chromosome
-counts from <a href="#ohi2006molecular">Ohi-Toma et al. (2006)</a> of the plant genus <em>Aristolochia</em>
+counts from (missing reference) of the plant genus <em>Aristolochia</em>
 (commonly called Dutchman’s pipe plants). We will use a simple ChromEvol
 model to infer rates of chromosome evolution and ancestral chromosome
 numbers.</p>
@@ -687,8 +687,8 @@ the other log files, each row in this file represents a different sample
 from the MCMC. Each column in the file, though, is the character history
 for a different node in the phylogeny. The last column of the file is
 the full stochastic character map of the entire tree in <strong>SIMMAP</strong>
-<a href="#bollback2006simmap">(Bollback 2006)</a> format. These can be plotted using the
-<strong>phytools</strong> R package <a href="#revell2012phytools">(Revell 2012)</a>.</p>
+(missing reference) format. These can be plotted using the
+<strong>phytools</strong> R package (missing reference).</p>
 
 <p>After the MCMC simulation, we can calculate the maximum a posteriori
 <em>marginal</em>, <em>joint</em>, or <em>conditional</em> character history. This process is
@@ -886,12 +886,12 @@ binary phenotypic character and estimate separate rates of chromosome
 evolution for each state of the phenotype. We’ll use a model that
 describes the joint evolution of both the phenotypic character and
 chromosome evolution. This model (BiChroM) was introduced in
-<a href="#zenil2017testing">Zenil-Ferguson et al. (2017)</a>. In RevBayes, the BiChroM model can easily be
+(missing reference). In RevBayes, the BiChroM model can easily be
 extended to multistate phenotypes and/or hidden states, plus
 cladogenetic changes could be incorporated into the model.</p>
 
 <p>In this example we will again use chromosome count data from
-<a href="#ohi2006molecular">Ohi-Toma et al. (2006)</a> for the plant genus <em>Aristolochia</em>. For the phenotype
+(missing reference) for the plant genus <em>Aristolochia</em>. For the phenotype
 we will examine gynostemium morphology. <em>Aristolochia</em> flowers have an
 extensively modified perianth that traps and eventually releases
 pollinators to ensure cross pollination (this is why the flowers
@@ -1070,10 +1070,10 @@ was reduced to a more simple 3-lobed form in Isotrema.</p>
 <hr class="subsection" />
 
 <p>Changes in chromosome number can increase reproductive isolation and may
-drive the diversification of some lineages <a href="#stebbins1971chromosomal">(Stebbins 1971)</a>.
+drive the diversification of some lineages (missing reference).
 To test for the association of chromosome changes with speciation we
 must extend our models to incorporate cladogenetic changes [for details
-see <a href="#Freyman2017">Freyman and Höhna (2018)</a>]. Cladogenetic changes are changes that
+see <a href="#Freyman2017">Freyman and Höhna (2017)</a>]. Cladogenetic changes are changes that
 occur only at lineage splitting events. All models of chromosome
 evolution that we have examined so far model only anagenetic changes,
 <em>i.e.</em>, changes that occur within a lineage.</p>
@@ -1197,7 +1197,7 @@ speciation and extinction rates.</p>
 <figcaption>An illustration of chromosome
 evolution events that could occur during each small time interval
 $\Delta t$ along the branches of a phylogeny as modeled in ChromoSSE
-<a href="#Freyman2017">(Freyman and Höhna 2018)</a>. The set of differential equations
+<a href="#Freyman2017">(Freyman and Höhna 2017)</a>. The set of differential equations
 (subfigures a and b, respectively) sum over each possible chromosome
 evolution event and are numerically integrated backwards through time
 over the phylogeny to calculate the likelihood. The transition rate
@@ -1217,7 +1217,7 @@ event with a possible cladogenetic change occurred followed by
 extinction of both daughter lineages.</figcaption>
 </figure>
 
-<p>The ChromoSSE model <a href="#Freyman2017">(Freyman and Höhna 2018)</a> is a special case of the
+<p>The ChromoSSE model <a href="#Freyman2017">(Freyman and Höhna 2017)</a> is a special case of the
 ClaSSE model that models chromosome changes. Compared to the previously
 discussed CTMC models of chromosome evolution, SSE models require
 additional complexity since they must also model the speciation and
@@ -1257,7 +1257,7 @@ ChromoSSE model of cladogenetic and anagenetic chromosome evolution.</p>
 <hr class="section" />
 
 <p>In this example, we will again use molecular sequence data and
-chromosome counts from <a href="#ohi2006molecular">Ohi-Toma et al. (2006)</a> of the plant genus
+chromosome counts from (missing reference) of the plant genus
 <em>Aristolochia</em>. We will use a ChromoSSE model to infer rates of
 chromosome evolution and ancestral chromosome numbers. For more complex
 examples utilizing ChromoSSE with Bayesian model averaging and
@@ -1309,7 +1309,7 @@ value set to $r$, where $r$ is an approximation of the net
 diversification rate. We calculate this approximation using
 $E(N_t) = N_0 e^{rt}$, which describes the expected number of species
 $N_t$ at time $t$ under a constant rate birth-death process where $N_0$
-is the number of species at $t=0$ <a href="#nee94">(Nee et al. 1994)</a>. The equation can be
+is the number of species at $t=0$ (missing reference). The equation can be
 rearranged to arrive at $r = ( \ln(N_t) - \ln(N_0) ) / t$.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>taxa &lt;- phylogeny.taxa()
@@ -1431,15 +1431,14 @@ demonstrated before to plot the cladogenetic ChromEvol analysis.</p>
 <a href="https://doi.org/10.1046/j.1420-9101.2002.00458.x">10.1046/j.1420-9101.2002.00458.x</a>
 
 </li>
-<li><span id="bollback2006simmap">Bollback J.P. 2006. SIMMAP: stochastic character mapping of discrete traits on phylogenies. BMC Bioinformatics. 7:88.</span>
-
-</li>
 <li><span id="Felsenstein1981">Felsenstein J. 1981. Evolutionary Trees from DNA Sequences: a Maximum Likelihood Approach. Journal of Molecular Evolution. 17:368–376.</span>
 
 <a href="https://doi.org/10.1007/BF01734359">10.1007/BF01734359</a>
 
 </li>
-<li><span id="Freyman2017">Freyman W.A., Höhna S. 2018. Cladogenetic and anagenetic models of chromosome number evolution: a Bayesian model averaging approach. Systematic Biology. 67:195–215.</span>
+<li><span id="Freyman2017">Freyman W.A., Höhna S. 2017. Cladogenetic and anagenetic models of chromosome number evolution: a Bayesian model averaging approach. SYSBIO. syx065.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syx065">10.1093/sysbio/syx065</a>
 
 </li>
 <li><span id="Goldberg2012">Goldberg E.E., Igić B. 2012. Tempo and Mode in Plant Breeding System Evolution. Evolution. 66:3701–3709.</span>
@@ -1447,51 +1446,9 @@ demonstrated before to plot the cladogenetic ChromEvol analysis.</p>
 <a href="https://doi.org/10.1111/j.1558-5646.2012.01730.x">10.1111/j.1558-5646.2012.01730.x</a>
 
 </li>
-<li><span id="green1995reversible">Green P.J. 1995. Reversible jump Markov chain Monte Carlo computation and Bayesian model determination. Biometrika. 82:711–732.</span>
-
-</li>
-<li><span id="hoeting1999bayesian">Hoeting J.A., Madigan D., Raftery A.E., Volinsky C.T. 1999. Bayesian model averaging: a tutorial. Statistical Science. 14:382–401.</span>
-
-</li>
-<li><span id="kass1995bayes">Kass R.E., Raftery A.E. 1995. Bayes factors. Journal of the American Statistical Association. 90:773–795.</span>
-
-</li>
 <li><span id="Maddison2007">Maddison W.P., Midford P.E., Otto S.P. 2007. Estimating a binary character’s effect on speciation and extinction. Systematic Biology. 56:701.</span>
 
 <a href="https://doi.org/10.1080/10635150701607033">10.1080/10635150701607033</a>
-
-</li>
-<li><span id="madigan1994model">Madigan D., Raftery A.E. 1994. Model selection and accounting for model uncertainty in graphical models using Occam’s window. Journal of the American Statistical Association. 89:1535–1546.</span>
-
-</li>
-<li><span id="mayrose2010probabilistic">Mayrose I., Barker M.S., Otto S.P. 2010. Probabilistic models of chromosome number evolution and the inference of polyploidy. Systematic Biology. 59:132–144.</span>
-
-</li>
-<li><span id="mayrose2011recently">Mayrose I., Zhan S.H., Rothfels C.J., Magnuson-Ford K., Barker M.S., Rieseberg L.H., Otto S.P. 2011. Recently formed polyploid plants diversify at lower rates. Science. 333:1257–1257.</span>
-
-</li>
-<li><span id="nee94">Nee S., May R.M., Harvey P.H. 1994. The reconstructed evolutionary process. Philosophical Transactions of the Royal Society of London B. 344:305–311.</span>
-
-</li>
-<li><span id="ohi2006molecular">Ohi-Toma T., Sugawara T., Murata H., Wanke S., Neinhuis C., Murata J. 2006. Molecular phylogeny of Aristolochia sensu lato (Aristolochiaceae) based on sequences of rbcL, matK, and phyA genes, with special reference to differentiation of chromosome numbers. Systematic Botany. 31:481–492.</span>
-
-</li>
-<li><span id="pires2008renaissance">Pires J.C., Hertweck K.L. 2008. A Renaissance of Cytogenetics: Studies in Polyploidy and Chromosomal Evolution. Annals of the Missouri Botanical Garden. 95:275–281.</span>
-
-</li>
-<li><span id="posada2004model">Posada D., Buckley T.R. 2004. Model selection and model averaging in phylogenetics: advantages of Akaike information criterion and Bayesian approaches over likelihood ratio tests. Systematic Biology. 53:793–808.</span>
-
-</li>
-<li><span id="revell2012phytools">Revell L.J. 2012. phytools: an R package for phylogenetic comparative biology (and other things). Methods in Ecology and Evolution. 3:217–223.</span>
-
-</li>
-<li><span id="stebbins1971chromosomal">Stebbins G.L. 1971. Chromosomal evolution in higher plants. Edward Arnold Ltd., London.</span>
-
-</li>
-<li><span id="tank2015nested">Tank D.C., Eastman J.M., Pennell M.W., Soltis P.S., Soltis D.E., Hinchliff C.E., Brown J.W., Sessa E.B., Harmon L.J. 2015. Nested radiations and the pulse of angiosperm diversification: increased diversification rates often follow whole genome duplications. New Phytologist. 207:454–467.</span>
-
-</li>
-<li><span id="zenil2017testing">Zenil-Ferguson R., Ponciano J.M., Burleigh J.G. 2017. Testing the association of phenotypes with polyploidy: An example using herbaceous and woody eudicots. Evolution.</span>
 
 </li></ol>
 

@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
-    <title>RevBayes: Model selection</title>
+    <title>RevBayes: General Introduction to Model selection</title>
   </head>
   <body>
     <div class="container">
@@ -49,7 +49,7 @@
 </nav>
 
       <div class="titlebar">
-	<h1 class="maintitle">Model selection</h1>
+	<h1 class="maintitle">General Introduction to Model selection</h1>
 	<h3 class="subtitle">Comparing relative model fit with Bayes factors</h3>
 	<h4 class="authors">Sebastian Höhna, Michael J Landis, Tracy A Heath and Brian R Moore</h4>
 </div>
@@ -84,36 +84,9 @@
 
 
 
-<blockquote class="tutorial_files" id="tutorial_files">
-    <h2>Data files and scripts</h2>
-    
-        
-        <strong>Data Files</strong>
-        <ul id="data_files">
-        
-        
-        
-          <li><a href="/tutorials/model_selection_bayes_factors/data/primates_and_galeopterus_cytb.nex">primates_and_galeopterus_cytb.nex</a></li>
-        
-        </ul>
-    
-        
-        <strong>Scripts</strong>
-        <ul id="scripts">
-        
-        
-        
-          <li><a href="/tutorials/model_selection_bayes_factors/scripts/marginal_likelihood_GTR_Gamma_inv.Rev">marginal_likelihood_GTR_Gamma_inv.Rev</a></li>
-        
-          <li><a href="/tutorials/model_selection_bayes_factors/scripts/marginal_likelihood_JC.Rev">marginal_likelihood_JC.Rev</a></li>
-        
-        </ul>
-    
-</blockquote>
-
-
 </div>
-<h1 class="section" id="overview">Overview</h1>
+<h2 class="section" id="overview">Overview</h2>
+<hr class="section" />
 
 <p>This tutorial provides the third protocol from our recent publication
 <a href="#Hoehna2017a">(Höhna et al. 2017)</a>. The first protocol is described in the 
@@ -124,10 +97,10 @@ and the second protocol is described in the
 <p>This tutorial demonstrates some general principles of Bayesian model
 comparison, which is based on estimating the marginal likelihood of
 competing models and then comparing their relative fit to the data using
-Bayes factors. We consider the specific case of calculating Bayes
-factors to select among different substitution models.</p>
+Bayes factors.</p>
 
-<h1 class="section" id="introduction">Introduction</h1>
+<h2 class="section" id="introduction">Introduction</h2>
+<hr class="section" />
 
 <p>For most sequence alignments, several (possibly many) substitution
 models of varying complexity are plausible <em>a priori</em>. We therefore need
@@ -258,23 +231,8 @@ exercise, we will estimate the marginal likelihood for each partition
 scheme using both the stepping-stone <a href="#Xie2011">(Xie et al. 2011; Fan et al. 2011)</a> and path
 sampling estimators <a href="#Lartillot2006">(Lartillot 2006; Baele et al. 2012)</a>.</p>
 
-<h2 class="section" id="substitution-models">Substitution Models</h2>
-
-<p>The models we use here are equivalent to the models described in the
-previous exercise on substitution models (continuous time Markov
-models). To specify the model please consult the previous exercise.
-Specifically, you will need to specify the following substitution
-models:</p>
-
-<ul>
-  <li>Jukes-Cantor (JC) substitution model <a href="#Jukes1969">(Jukes and Cantor 1969)</a></li>
-  <li>Hasegawa-Kishino-Yano (HKY) substitution model <a href="#Hasegawa1985">(Hasegawa et al. 1985)</a></li>
-  <li>General-Time-Reversible (GTR) substitution model <a href="#Tavare1986">(Tavaré 1986)</a></li>
-  <li>Gamma (+G) model for among-site rate variation <a href="#Yang1994a">(Yang 1994)</a></li>
-  <li>Invariable-sites (+I) model <a href="#Hasegawa1985">(Hasegawa et al. 1985)</a></li>
-</ul>
-
 <h2 class="section" id="estimating-the-marginal-likelihood">Estimating the Marginal Likelihood</h2>
+<hr class="section" />
 
 <p>We will estimate the marginal likelihood of a given model using a
 ‘stepping-stone’ (or ‘path-sampling’) algorithm. These algorithms are
@@ -328,32 +286,8 @@ that power. In this implementation, the vector of powers starts with 1,
 sampling the likelihood close to the posterior and incrementally
 sampling closer and closer to the prior as the power decreases.</p>
 
-<p>Just to be safe, it is better to clear the workspace (if you did not
-just restart RevBayes):</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clear()
-</code></pre></div></div>
-
-<p>Now set up the model as in the previous exercise. You should start with
-the simple Jukes-Cantor substitution model. Setting up the model
-requires:</p>
-
-<ol>
-  <li>Loading the data and retrieving useful variables about it
-(<em>e.g.</em>, number of sequences and
-taxon names).</li>
-  <li>Specifying the instantaneous-rate matrix of the substitution model.</li>
-  <li>Specifying the tree model including branch-length variables.</li>
-  <li>Creating a random variable for the sequences that evolved under
-the <code class="highlighter-rouge">PhyloCTMC</code>.</li>
-  <li>Clamping the data.</li>
-  <li>Creating a model object.</li>
-  <li>Specifying the moves for parameter updates.</li>
-</ol>
-
 <p>The following procedure for estimating marginal likelihoods is valid for
-any model in RevBayes. You will need to repeat this later for other
-models. First, we create the variable containing the power-posterior
+any model in RevBayes. First, we create the variable containing the power-posterior
 analysis. This requires that we provide a model and vector of moves, as
 well as an output file name. The <code class="highlighter-rouge">cats</code> argument sets the number of
 stepping stones.</p>
@@ -376,8 +310,7 @@ compute the marginal likelihood using stepping-stone sampling.</p>
 <p>These commands will execute a stepping-stone simulation with 50 stepping
 stones, sampling 1000 states from each step. Compute the marginal
 likelihood under stepping-stone sampling using the member function
-<code class="highlighter-rouge">marginal()</code> of the <code class="highlighter-rouge">ss</code> variable and record the value in Table
-[tab:ml_cytb].</p>
+<code class="highlighter-rouge">marginal()</code> of the <code class="highlighter-rouge">ss</code> variable.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    ss.marginal() 
 </code></pre></div></div>
 <p>Path sampling is an alternative to stepping-stone sampling and also
@@ -390,9 +323,6 @@ in Table [tab:ml_cytb].</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    ps.marginal() 
 </code></pre></div></div>
 
-<p>As an example we provide the file
-<strong>RevBayes_scripts/marginalLikelihood_JukesCantor.Rev</strong>.</p>
-
 <p>We have kept this description of how to use stepping-stone-sampling and
 path-sampling very generic and did not provide the information about the
 model here. Our main motivation is to show that the marginal likelihood
@@ -400,71 +330,8 @@ estimation algorithms are independent of the model. Thus, you can apply
 these algorithms to any model, <em>e.g.</em>, relaxed
 clock models and birth-death models, as well.</p>
 
-<h2 class="subsection" id="exercises">Exercises</h2>
-
-<ul>
-  <li>Compute the marginal likelihoods of the <em>cytb</em> alignment for the
-following substitution models:
-    <ol>
-      <li>Jukes-Cantor (JC) substitution model</li>
-      <li>Hasegawa-Kishino-Yano (HKY) substitution model</li>
-      <li>General-Time-Reversible (GTR) substitution model</li>
-      <li>GTR with gamma distributed-rate model (GTR+G)</li>
-      <li>GTR with invariable-sites model (GTR+I)</li>
-      <li>GTR+I+G model</li>
-    </ol>
-  </li>
-  <li>Enter the marginal likelihood estimate for each model in the
-corresponding cell of Table [tab:ml_cytb].</li>
-  <li>Which is the best fitting substitution model?</li>
-</ul>
-
-<figure id="tab_ml_subst_models"><table>
-  <thead>
-    <tr>
-      <th style="text-align: right"><strong>Model</strong></th>
-      <th style="text-align: center"><strong>Path-Sampling</strong></th>
-      <th style="text-align: center"><strong>Stepping-Stone-Sampling</strong></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td style="text-align: right">JC ($M_1$)</td>
-      <td style="text-align: center"> </td>
-      <td style="text-align: center"> </td>
-    </tr>
-    <tr>
-      <td style="text-align: right">HKY ($M_2$)</td>
-      <td style="text-align: center"> </td>
-      <td style="text-align: center"> </td>
-    </tr>
-    <tr>
-      <td style="text-align: right">GTR ($M_3$)</td>
-      <td style="text-align: center"> </td>
-      <td style="text-align: center"> </td>
-    </tr>
-    <tr>
-      <td style="text-align: right">GTR+$\Gamma$ ($M_4$)</td>
-      <td style="text-align: center"> </td>
-      <td style="text-align: center"> </td>
-    </tr>
-    <tr>
-      <td style="text-align: right">GTR+I ($M_5$)</td>
-      <td style="text-align: center"> </td>
-      <td style="text-align: center"> </td>
-    </tr>
-    <tr>
-      <td style="text-align: right">GTR+$\Gamma$+I ($M_6$)</td>
-      <td style="text-align: center"> </td>
-      <td style="text-align: center"> </td>
-    </tr>
-  </tbody>
-</table>
-
-<figcaption>Marginal likelihoods for different substitution models.</figcaption>
-</figure>
-
-<h1 class="section" id="computing-bayes-factors-and-model-selection">Computing Bayes Factors and Model Selection</h1>
+<h2 class="section" id="computing-bayes-factors-and-model-selection">Computing Bayes Factors and Model Selection</h2>
+<hr class="section" />
 
 <p>Now that we have estimates of the marginal likelihood for each of our
 the candidate substitution models, we can evaluate their relative fit to
@@ -510,9 +377,8 @@ for each model comparison. Enter your answers in Table [bfTable2]
 using the stepping-stone and the path-sampling estimates of the marginal
 log-likelihoods.</p>
 
-<p>[bfTable2]</p>
-
-<h1 class="section" id="for-your-consideration">For your consideration…</h1>
+<h2 class="section" id="for-your-consideration">For your consideration…</h2>
+<hr class="section" />
 
 <p>In this tutorial you have learned how to use RevBayes to assess the
 <em>relative</em> fit of a pool of candidate substitution models to a given
@@ -524,7 +390,8 @@ provides a reasonable description of the process that gave rise to our
 data. However, there are several additional issues to consider before
 proceeding along these lines, which we briefly mention below.</p>
 
-<h2 class="subsection" id="accommodating-model-uncertainty">Accommodating Model Uncertainty</h2>
+<h3 class="subsection" id="accommodating-model-uncertainty">Accommodating Model Uncertainty</h3>
+<hr class="subsection" />
 
 <p>In some or many situations the number of possible models to compare is
 large, <em>e.g.</em>, choosing all possible
@@ -539,9 +406,10 @@ uncertainty by means of <em>model averaging</em>; we simply adopt the
 perspective that models (like standard parameters) are random variables,
 and integrate the inference over the distribution of candidate models.
 We will demonstrate how to accommodate model uncertainty using
-RevBayes in a separate tutorial, RB_ModelAveraging_Tutorial.</p>
+RevBayes in a separate tutorial, for example, <a href="/tutorials/model_selection_bayes_factors/bf_subst_model_rj.html">Model averaging of substitution models</a>.</p>
 
-<h2 class="subsection" id="assessing-model-adequacy">Assessing Model Adequacy</h2>
+<h3 class="subsection" id="assessing-model-adequacy">Assessing Model Adequacy</h3>
+<hr class="subsection" />
 
 <p>In this tutorial, we used Bayes factors to assess the fit of various
 substitution models to our sequence data, effectively establishing the
@@ -557,8 +425,7 @@ provides a reasonable description of the process that gave rise to our
 dataset, then we should be able to generate data under this model that
 resemble our observed data. We will demonstrate how to assess model
 adequacy using RevBayes in a separate tutorial,
-RB_ModelAdequacy_Tutorial.</p>
-
+<a href="/tutorials/model_testing_pps/pps_data.html">Assessing Phylogenetic Reliability Using RevBayes and $P^{3}$</a>.</p>
 
 <ol class="bibliography"><li><span id="Baele2012">Baele G., Lemey P., Bedford T., Rambaut A., Suchard M.A., Alekseyenko A.V. 2012. Improving the Accuracy of Demographic and Molecular Clock Model Comparison while Accommodating Phylogenetic Uncertainty. Molecular Biology and Evolution. 29:2157–2167.</span>
 
@@ -571,11 +438,6 @@ RB_ModelAdequacy_Tutorial.</p>
 
 </li>
 <li><span id="Fan2011">Fan Y., Wu R., Chen M.-H., Kuo L., Lewis P.O. 2011. Choosing among Partition Models in Bayesian Phylogenetics. Molecular Biology and Evolution. 28:523–532.</span>
-
-</li>
-<li><span id="Hasegawa1985">Hasegawa M., Kishino H., Yano T. 1985. Dating of the Human-Ape Splitting by a molecular Clock of Mitochondrial DNA. Journal of Molecular Evolution. 22:160–174.</span>
-
-<a href="https://doi.org/10.1007/BF02101694">10.1007/BF02101694</a>
 
 </li>
 <li><span id="Huelsenbeck2004">Huelsenbeck J.P., Larget B., Alfaro M.E. 2004. Bayesian Phylogenetic Model Selection using Reversible Jump Markov Chain Monte Carlo. Molecular Biology and Evolution. 21:1123.</span>
@@ -591,11 +453,6 @@ RB_ModelAdequacy_Tutorial.</p>
 <a href="https://doi.org/10.1038/109132a0">10.1038/109132a0</a>
 
 </li>
-<li><span id="Jukes1969">Jukes T.H., Cantor C.R. 1969. Evolution of Protein Molecules. Mammalian Protein Metabolism. 3:21–132.</span>
-
-<a href="https://doi.org/10.1016/B978-1-4832-3211-9.50009-7">10.1016/B978-1-4832-3211-9.50009-7</a>
-
-</li>
 <li><span id="Lartillot2006">Lartillot N. 2006. Conjugate Gibbs Sampling for Bayesian Phylogenetic Models. Journal of Computational Biology. 13:1701–1722.</span>
 
 </li>
@@ -607,15 +464,7 @@ RB_ModelAdequacy_Tutorial.</p>
 <li><span id="Suchard2001">Suchard M.A., Weiss R.E., Sinsheimer J.S. 2001. Bayesian Selection of Continuous-Time Markov Chain Evolutionary Models. Molecular Biology and Evolution. 18:1001–1013.</span>
 
 </li>
-<li><span id="Tavare1986">Tavaré S. 1986. Some Probabilistic and Statistical Problems in the Analysis of DNA Sequences. Some Mathematical Questions in Biology: DNA Sequence Analysis. 17:57–86.</span>
-
-</li>
 <li><span id="Xie2011">Xie W., Lewis P.O., Fan Y., Kuo L., Chen M.H. 2011. Improving Marginal Likelihood Estimation for Bayesian Phylogenetic Model Selection. Systematic Biology. 60:150–160.</span>
-
-</li>
-<li><span id="Yang1994a">Yang Z. 1994. Maximum Likelihood Phylogenetic Estimation from DNA Sequences with Variable Rates Over Sites: Approximate Methods. Journal of Molecular Evolution. 39:306–314.</span>
-
-<a href="https://doi.org/10.1007/BF00160154">10.1007/BF00160154</a>
 
 </li></ol>
 
