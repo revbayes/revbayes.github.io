@@ -348,4 +348,4 @@ provides a reasonable description of the process that gave rise to our
 dataset, then we should be able to generate data under this model that
 resemble our observed data. We will demonstrate how to assess model
 adequacy using RevBayes in a separate tutorial,
-{% page_ref model_testing_ppred %}.
+{% page_ref model_testing_pps/pps_data %}.

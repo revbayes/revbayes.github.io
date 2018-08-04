@@ -1,8 +1,9 @@
 ---
 title: Assessing Phylogenetic Reliability Using RevBayes and $P^{3}$
 subtitle: Model adequacy testing using posterior prediction (Inference Version).
-authors:  Lyndon M. Coghill, Will Freyman, Sebastian H&#246;hna and Jeremy M. Brown
-level: 2
+authors:  Lyndon M. Coghill, Will Freyman, Sebastian Höhna and Jeremy M. Brown
+level: 1
+order: 5
 prerequisites:
 - intro
 - intro_rev
@@ -27,7 +28,12 @@ where a model may be the most inadequate.
 Preparation
 ========
 
-This tutorial expects you have compelted the prerequisite tutorials listed above. It will also expect you to be reasonably familiar with phylogenetic analyses, command line usage and if you want to explore your results, having at least a basic understanding of ```R```. If you run this tutorial all the way through with the single **full_analysis_JC.Rev** script it takes approximately 20 - 25 minutes depending on your computer. If you work through every line-by-line to get a better understanding it takes approximately 60 minutes.
+This tutorial expects you have compelted the prerequisite tutorials listed above. 
+It will also expect you to be reasonably familiar with phylogenetic analyses, command line usage and 
+if you want to explore your results, having at least a basic understanding of ```R```. 
+If you run this tutorial all the way through with the single **full_analysis_JC.Rev** script 
+it takes approximately 20 - 25 minutes depending on your computer. 
+If you work through every line-by-line to get a better understanding it takes approximately 60 minutes.
 
 Introduction
 ============
@@ -37,7 +43,7 @@ using a model with poor fit can lead to spurious conclusions. However, a
 critical evaluation of absolute model fit is rare in evolutionary
 studies. Posterior prediction is a Bayesian approach to assess the fit
 of a model to a given dataset
-{% cite Bollback2002 %} {% cite Brown2014 %} {% cite Gelman2014 %}, that relies on the
+{% cite Bollback2002  Brown2014 Gelman2014 Hoehna2018a %}, that relies on the
 use of the posterior and the posterior predictive distributions. The
 posterior distribution is the standard output from Bayeisan phylogenetic
 inference. The posterior predictive distribution represents a range of
