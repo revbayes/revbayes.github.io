@@ -21,7 +21,7 @@ exclude_files:
 - scripts/marginal_likelihood_partition_3.Rev
 - scripts/marginal_likelihood_partition_4.Rev
 - scripts/marginal_likelihood_partition_5.Rev
-- scripts/ITS_GTR_RJ.Rev
+- scripts/model_average_primates_cytb.Rev
 index: true
 title-old: RB_BayesFactor_Tutorial
 redirect: false

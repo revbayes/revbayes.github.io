@@ -86,11 +86,12 @@ and another parameter (the indicator) that allows us to move between $Q$ matrice
 
 Including reversible-jump for Gamma-distributed ASRV is more straightforward:
 ```
-alpha ~ dnReversibleJumpMixture(1e8, dnUniform(0,1E8), 0.5)
+alpha ~ dnReversibleJumpMixture(1E8, dnUniform(0,1E8), 0.5)
+alpha.setValue(1.0)
 moves[mvi++] = mvRJSwitch(alpha, weight=10.0)
 moves[mvi++] = mvScale(alpha, weight=10.0)
 
-alpha_indicator := ifelse(alpha == 1e5, 0, 1)
+alpha_indicator := ifelse(alpha == 1E8, 0, 1)
 
 site_rates := fnDiscretizeGamma(alpha, alpha, 4)
 ```
@@ -113,11 +114,11 @@ Using reversible jump, we can actually estimate the posterior probability of eac
 
 {% subsection In-Class Exercises %}
 
-1. Download and run the `ITS_GTR_RJ.Rev` script. 
+1. Download and run the `model_average_primates_cytb.Rev` script. 
 Examine the posterior distributions of the `model_indicator` and `alpha_indicator` parameters in Tracer. 
 What is the posterior probability that our model includes Gamma-distributed rate variation? 
 What is the $Q$ matrix with the highest posterior probability? What substitution models are in the 95% credible set?
-2. Repeat the above exercise for `matK` and `rbcL` by making the appropriate changes to the `ITS_GTR_RJ.Rev` script. 
+2. Repeat the above exercise for `matK` and `rbcL` by making the appropriate changes to the `model_average_primates_cytb.Rev` script. 
 Are these results consistent with the Bayes factors we computed in the first section of the tutorial?
 
 

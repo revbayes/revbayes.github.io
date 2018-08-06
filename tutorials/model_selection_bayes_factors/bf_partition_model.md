@@ -15,7 +15,7 @@ exclude_files:
 - data/primates_and_galeopterus_cytb.nex
 - scripts/marginal_likelihood_GTR_Gamma_inv.Rev
 - scripts/marginal_likelihood_JC.Rev
-- scripts/ITS_GTR_RJ.Rev
+- scripts/model_average_primates_cytb.Rev
 index: true
 redirect: false
 ---

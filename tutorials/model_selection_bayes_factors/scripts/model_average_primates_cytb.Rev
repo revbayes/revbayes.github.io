@@ -1,8 +1,18 @@
+################################################################################
+#
+# RevBayes Example: Bayesian model averaging using reversible-jump MCMC over
+#            substitution models on a single gene.
+#
+# authors: Sebastian Hoehna and Mike May
+#
+################################################################################
+
+
 ####################
 # Read in the data #
 ####################
 
-this_gene = "fagus_ITS"
+this_gene = "primates_and_galeopterus_cytb"
 
 data = readDiscreteCharacterData("data/" + this_gene + ".nex")
 
@@ -23,8 +33,8 @@ name = this_gene + "_" + "RJ"
 
 # We assume a uniform prior on topology.
 topology ~ dnUniformTopology(taxa)
-moves[mvi++] = mvNNI(topology, weight=10.0)
-moves[mvi++] = mvSPR(topology, weight=10.0)
+moves[mvi++] = mvNNI(topology, weight=num_taxa/2.0)
+moves[mvi++] = mvSPR(topology, weight=num_taxa/10.0)
 
 ##########################################
 # Define the prior on the branch lengths #
@@ -68,15 +78,22 @@ moves[mvi++] = mvRandomGeometricWalk(model_indicator, weight=10.0, tune=FALSE)
 
 Q := Q_vec[model_indicator]
 
+
+# Alternative approch
+#Q ~ dnMixture( values=Q_vec, probabilities=simplex(rep(1,Q_vec.size())) )
+#model_indicator := Q.getAllocationIndex()
+#
+#moves[mvi++] = mvGibbsMixtureAllocation(Q, weight=2.0)
+
 #################################################
 # Define the model of among-site rate variation #
 #################################################
 
-alpha ~ dnReversibleJumpMixture(1e5, dnUniform(0,1E8), 0.5)
+alpha ~ dnReversibleJumpMixture(1E8, dnUniform(0,1E8), 0.5)
 moves[mvi++] = mvRJSwitch(alpha, weight=10.0)
 moves[mvi++] = mvScale(alpha, weight=10.0)
 
-alpha_indicator := ifelse(alpha == 1e5, 0, 1)
+alpha_indicator := ifelse(alpha == 1E8, 0, 1)
 
 site_rates := fnDiscretizeGamma(alpha, alpha, 4)
 
@@ -100,16 +117,14 @@ my_model = model(phylogeny)
 
 monitors[1] = mnModel(filename="output/" + name + "/posterior_samples.log",printgen=10, separator = TAB)
 monitors[2] = mnFile(filename="output/" + name + "/tree_samples.trees",printgen=10, separator = TAB, phylogeny)
-monitors[3] = mnScreen(printgen=100, model_indicator, alpha_indicator)
+monitors[3] = mnScreen(printgen=1000, model_indicator, alpha_indicator)
 
 ################
 # Run the MCMC #
 ################
 
-analysis = mcmc(my_model, monitors, moves)
-analysis.burnin(generations=5000, tuningInterval=500)
-analysis.operatorSummary()
-analysis.run(generations=50000)
+mymcmc = mcmc(my_model, moves, monitors, nruns=2, combine="mixed")
+mymcmc.run(generations=20000,tuningInterval=200)
 
 #########################################
 # Read in the posterior sample of trees #

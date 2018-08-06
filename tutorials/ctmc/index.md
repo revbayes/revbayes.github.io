@@ -208,8 +208,8 @@ that we can use to retrieve information about the dataset. These include, for ex
 the number of species and the taxa. We will need that taxon information for setting up different parts of our model.
 
 ```
-n_species <- data.ntaxa()
-n_branches <- 2 * n_species - 3
+num_taxa <- data.ntaxa()
+num_branches <- 2 * num_taxa - 3
 taxa <- data.taxa()
 ```
 
@@ -291,8 +291,8 @@ and it is possible to use multiple different moves for a given parameter to impr
 In the case of our unrooted tree topology, for example, we can use both a nearest-neighbor interchange move (`mvNNI`) and a subtree-prune and regrafting move (`mvSPR`). These moves do not have tuning parameters associated with them, thus you only need to pass in the `topology` node and proposal `weight`.
 
 ```
-moves[mvi++] = mvNNI(topology, weight=n_species)
-moves[mvi++] = mvSPR(topology, weight=n_species/10.0)
+moves[mvi++] = mvNNI(topology, weight=num_taxa)
+moves[mvi++] = mvSPR(topology, weight=num_taxa/10.0)
 ```
 
 The weight specifies how often the move will be applied either on average per iteration or relative to all other moves. Have a look at the MCMC Diagnosis tutorial for more details about moves and MCMC strategies (found in {% page_ref tutorials %}).
@@ -300,7 +300,7 @@ The weight specifies how often the move will be applied either on average per it
 Next we have to create a stochastic node for each of the $2N - 3$ branches in our tree (where $N=$ `n_species`). We can do this using a `for` loop — this is a plate in our graphical model. In this loop, we can create each of the branch-length nodes and assign each move. Copy this entire block of Rev code into the console:
 
 ```
-for (i in 1:n_branches) {
+for (i in 1:num_branches) {
    br_lens[i] ~ dnExponential(10.0)
    moves[mvi++] = mvScale(br_lens[i]) 
 }
@@ -324,9 +324,9 @@ We can achieve this by simple using the distribution `dnUniformTopologyBranchLen
 ```
 br_len_lambda <- 10.0
 psi ~ dnUniformTopologyBranchLength(taxa, branchLengthDistribution=dnExponential(br_len_lambda))
-moves[mvi++] = mvNNI(psi, weight=n_species)
-moves[mvi++] = mvSPR(psi, weight=n_species/10.0)
-moves[mvi++] = mvBranchLengthScale(psi, weight=n_branches)
+moves[mvi++] = mvNNI(psi, weight=num_taxa)
+moves[mvi++] = mvSPR(psi, weight=num_taxa/10.0)
+moves[mvi++] = mvBranchLengthScale(psi, weight=num_branches)
 ```
 You might think that this approach is in fact simpler than the `for` loop that we explained above.
 We still think that it is pedagogical to specify the prior on each branch length separately in this tutorial to emphasize all components of the model.
@@ -350,9 +350,9 @@ moves[mvi++] = mvScale(TL)
 
 Now we create a random variable for the relative branch lengths.
 ```
-rel_branch_lengths ~ dnDirichlet( rep(1.0,n_branches) )
-moves[mvi++] = mvBetaSimplex(rel_branch_lengths, weight=n_branches)
-moves[mvi++] = mvDirichletSimplex(rel_branch_lengths, weight=n_branches/10.0)
+rel_branch_lengths ~ dnDirichlet( rep(1.0,num_branches) )
+moves[mvi++] = mvBetaSimplex(rel_branch_lengths, weight=num_branches)
+moves[mvi++] = mvDirichletSimplex(rel_branch_lengths, weight=num_branches/10.0)
 ```
 Finally, transform the relative branch lengths into actual branch lengths
 ```
@@ -394,12 +394,12 @@ and `mvNodeTimeSlideUniform`. These moves do not have tuning parameters associat
 them, thus you only need to pass in the `psi` node and proposal `weight`.
 
 ```
-moves[mvi++] = mvNarrow(psi, weight=n_species)
-moves[mvi++] = mvNNI(psi, weight=n_species/5.0)
-moves[mvi++] = mvFNPR(psi, weight=n_species/3.0)
-moves[mvi++] = mvGPR(psi, weight=n_species/30.0)
-moves[mvi++] = mvSubtreeScale(psi, weight=n_species/3.0)
-moves[mvi++] = mvNodeTimeSlideUniform(psi, weight=n_species)
+moves[mvi++] = mvNarrow(psi, weight=num_taxa)
+moves[mvi++] = mvNNI(psi, weight=num_taxa/5.0)
+moves[mvi++] = mvFNPR(psi, weight=num_taxa/5.0)
+moves[mvi++] = mvGPR(psi, weight=num_taxa/30.0)
+moves[mvi++] = mvSubtreeScale(psi, weight=num_taxa/3.0)
+moves[mvi++] = mvNodeTimeSlideUniform(psi, weight=num_taxa)
 ```
 
 
