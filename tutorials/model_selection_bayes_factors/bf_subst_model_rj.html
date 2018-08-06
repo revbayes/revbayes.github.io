@@ -103,6 +103,8 @@
         
           <li><a href="/tutorials/model_selection_bayes_factors/data/fagus_rbcL.nex">fagus_rbcL.nex</a></li>
         
+          <li><a href="/tutorials/model_selection_bayes_factors/data/primates_and_galeopterus_cox2.nex">primates_and_galeopterus_cox2.nex</a></li>
+        
         </ul>
     
         
@@ -111,7 +113,7 @@
         
         
         
-          <li><a href="/tutorials/model_selection_bayes_factors/scripts/ITS_GTR_RJ.Rev">ITS_GTR_RJ.Rev</a></li>
+          <li><a href="/tutorials/model_selection_bayes_factors/scripts/model_average_primates_cytb.Rev">model_average_primates_cytb.Rev</a></li>
         
         </ul>
     
@@ -180,11 +182,12 @@ and another parameter (the indicator) that allows us to move between $Q$ matrice
 <hr class="subsection" />
 
 <p>Including reversible-jump for Gamma-distributed ASRV is more straightforward:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha ~ dnReversibleJumpMixture(1e8, dnUniform(0,1E8), 0.5)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha ~ dnReversibleJumpMixture(1E8, dnUniform(0,1E8), 0.5)
+alpha.setValue(1.0)
 moves[mvi++] = mvRJSwitch(alpha, weight=10.0)
 moves[mvi++] = mvScale(alpha, weight=10.0)
 
-alpha_indicator := ifelse(alpha == 1e5, 0, 1)
+alpha_indicator := ifelse(alpha == 1E8, 0, 1)
 
 site_rates := fnDiscretizeGamma(alpha, alpha, 4)
 </code></pre></div></div>
@@ -206,11 +209,11 @@ because, as $\alpha \rightarrow \infty$, the Gamma-model collapse to a spike at 
 <hr class="subsection" />
 
 <ol>
-  <li>Download and run the <code class="highlighter-rouge">ITS_GTR_RJ.Rev</code> script. 
+  <li>Download and run the <code class="highlighter-rouge">model_average_primates_cytb.Rev</code> script. 
 Examine the posterior distributions of the <code class="highlighter-rouge">model_indicator</code> and <code class="highlighter-rouge">alpha_indicator</code> parameters in Tracer. 
 What is the posterior probability that our model includes Gamma-distributed rate variation? 
 What is the $Q$ matrix with the highest posterior probability? What substitution models are in the 95% credible set?</li>
-  <li>Repeat the above exercise for <code class="highlighter-rouge">matK</code> and <code class="highlighter-rouge">rbcL</code> by making the appropriate changes to the <code class="highlighter-rouge">ITS_GTR_RJ.Rev</code> script. 
+  <li>Repeat the above exercise for <code class="highlighter-rouge">matK</code> and <code class="highlighter-rouge">rbcL</code> by making the appropriate changes to the <code class="highlighter-rouge">model_average_primates_cytb.Rev</code> script. 
 Are these results consistent with the Bayes factors we computed in the first section of the tutorial?</li>
 </ol>
 

@@ -330,8 +330,8 @@ provides information about the alignment:</p>
 that we can use to retrieve information about the dataset. These include, for example, 
 the number of species and the taxa. We will need that taxon information for setting up different parts of our model.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_species &lt;- data.ntaxa()
-n_branches &lt;- 2 * n_species - 3
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>num_taxa &lt;- data.ntaxa()
+num_branches &lt;- 2 * num_taxa - 3
 taxa &lt;- data.taxa()
 </code></pre></div></div>
 
@@ -409,15 +409,15 @@ and it is possible to use multiple different moves for a given parameter to impr
 (the efficiency of the MCMC simulation). 
 In the case of our unrooted tree topology, for example, we can use both a nearest-neighbor interchange move (<code class="highlighter-rouge">mvNNI</code>) and a subtree-prune and regrafting move (<code class="highlighter-rouge">mvSPR</code>). These moves do not have tuning parameters associated with them, thus you only need to pass in the <code class="highlighter-rouge">topology</code> node and proposal <code class="highlighter-rouge">weight</code>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvNNI(topology, weight=n_species)
-moves[mvi++] = mvSPR(topology, weight=n_species/10.0)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvNNI(topology, weight=num_taxa)
+moves[mvi++] = mvSPR(topology, weight=num_taxa/10.0)
 </code></pre></div></div>
 
 <p>The weight specifies how often the move will be applied either on average per iteration or relative to all other moves. Have a look at the MCMC Diagnosis tutorial for more details about moves and MCMC strategies (found in <a href="/tutorials/">Tutorials</a>).</p>
 
 <p>Next we have to create a stochastic node for each of the $2N - 3$ branches in our tree (where $N=$ <code class="highlighter-rouge">n_species</code>). We can do this using a <code class="highlighter-rouge">for</code> loop — this is a plate in our graphical model. In this loop, we can create each of the branch-length nodes and assign each move. Copy this entire block of Rev code into the console:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:n_branches) {
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:num_branches) {
    br_lens[i] ~ dnExponential(10.0)
    moves[mvi++] = mvScale(br_lens[i]) 
 }
@@ -437,9 +437,9 @@ moves[mvi++] = mvSPR(topology, weight=n_species/10.0)
 We can achieve this by simple using the distribution <code class="highlighter-rouge">dnUniformTopologyBranchLength()</code>.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>br_len_lambda &lt;- 10.0
 psi ~ dnUniformTopologyBranchLength(taxa, branchLengthDistribution=dnExponential(br_len_lambda))
-moves[mvi++] = mvNNI(psi, weight=n_species)
-moves[mvi++] = mvSPR(psi, weight=n_species/10.0)
-moves[mvi++] = mvBranchLengthScale(psi, weight=n_branches)
+moves[mvi++] = mvNNI(psi, weight=num_taxa)
+moves[mvi++] = mvSPR(psi, weight=num_taxa/10.0)
+moves[mvi++] = mvBranchLengthScale(psi, weight=num_branches)
 </code></pre></div></div>
 <p>You might think that this approach is in fact simpler than the <code class="highlighter-rouge">for</code> loop that we explained above.
 We still think that it is pedagogical to specify the prior on each branch length separately in this tutorial to emphasize all components of the model.</p>
@@ -460,9 +460,9 @@ moves[mvi++] = mvScale(TL)
 </code></pre></div></div>
 
 <p>Now we create a random variable for the relative branch lengths.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rel_branch_lengths ~ dnDirichlet( rep(1.0,n_branches) )
-moves[mvi++] = mvBetaSimplex(rel_branch_lengths, weight=n_branches)
-moves[mvi++] = mvDirichletSimplex(rel_branch_lengths, weight=n_branches/10.0)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rel_branch_lengths ~ dnDirichlet( rep(1.0,num_branches) )
+moves[mvi++] = mvBetaSimplex(rel_branch_lengths, weight=num_branches)
+moves[mvi++] = mvDirichletSimplex(rel_branch_lengths, weight=num_branches/10.0)
 </code></pre></div></div>
 <p>Finally, transform the relative branch lengths into actual branch lengths</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>br_lens := rel_branch_lengths * TL
@@ -499,12 +499,12 @@ We also need moves that change the ages of the internal nodes, for example, <cod
 and <code class="highlighter-rouge">mvNodeTimeSlideUniform</code>. These moves do not have tuning parameters associated with 
 them, thus you only need to pass in the <code class="highlighter-rouge">psi</code> node and proposal <code class="highlighter-rouge">weight</code>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvNarrow(psi, weight=n_species)
-moves[mvi++] = mvNNI(psi, weight=n_species/5.0)
-moves[mvi++] = mvFNPR(psi, weight=n_species/3.0)
-moves[mvi++] = mvGPR(psi, weight=n_species/30.0)
-moves[mvi++] = mvSubtreeScale(psi, weight=n_species/3.0)
-moves[mvi++] = mvNodeTimeSlideUniform(psi, weight=n_species)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvNarrow(psi, weight=num_taxa)
+moves[mvi++] = mvNNI(psi, weight=num_taxa/5.0)
+moves[mvi++] = mvFNPR(psi, weight=num_taxa/5.0)
+moves[mvi++] = mvGPR(psi, weight=num_taxa/30.0)
+moves[mvi++] = mvSubtreeScale(psi, weight=num_taxa/3.0)
+moves[mvi++] = mvNodeTimeSlideUniform(psi, weight=num_taxa)
 </code></pre></div></div>
 
 <p>The weight specifies how often the move will be applied either on average per iteration or relative to all other moves. Have a look at the <a href="/tutorials/mcmc/">Diagnosing MCMC performance</a> for more details about moves and MCMC strategies.</p>
@@ -1151,7 +1151,11 @@ These rate-multipliers are drawn from a discrete, mean-one gamma distribution; t
 <a href="#fig_gtrg"></a>):</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha ~ dnUniform( 0.0, 1E8 )
+alpha.setValue(1.0)
 </code></pre></div></div>
+<p>Note that we initialized the value of <code class="highlighter-rouge">alpha</code> to $1.0$. This is strictly speaking not necessary but helps tremendously the MCMC to converge.
+As a general rule, it is possible to initialize starting values for the MCMC using the <em>setValue( xx )</em> function, which is available for every stochastic variable,
+but it might also make your replicated MCMC runs to be more likely to get stuck in the same local area of parameters.</p>
 
 <p>The way the ASRV model is implemented involves discretizing the mean-one gamma distribution into a set number of rate categories, $k$. Thus, we can analytically marginalize over the uncertainty in the rate at each site. The likelihood of each site is averaged over the $k$ rate categories, where the rate multiplier is the mean (or median) of each of the discrete $k$ categories. To specify this, we need a deterministic node that is a vector that will hold the set of $k$ rates drawn from the gamma distribution with $k$ rate categories. The <code class="highlighter-rouge">fnDiscretizeGamma()</code> function returns this deterministic node and takes three arguments: the shape and rate of the gamma distribution and the number of categories. Since we want to discretize a mean-one gamma distribution, we can pass in <code class="highlighter-rouge">alpha</code> for both the shape and rate.</p>
 

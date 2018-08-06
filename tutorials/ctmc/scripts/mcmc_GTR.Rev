@@ -12,8 +12,8 @@
 data = readDiscreteCharacterData("data/primates_and_galeopterus_cytb.nex")
 
 # Get some useful variables from the data. We need these later on.
-n_species <- data.ntaxa()
-n_branches <- 2 * n_species - 3
+num_taxa <- data.ntaxa()
+num_branches <- 2 * num_taxa - 3
 taxa <- data.taxa()
 
 
@@ -51,11 +51,11 @@ Q := fnGTR(er,pi)
 out_group = clade("Galeopterus_variegatus")
 # Prior distribution on the tree topology
 topology ~ dnUniformTopology(taxa, outgroup=out_group)
-moves[mvi++] = mvNNI(topology, weight=5.0)
-moves[mvi++] = mvSPR(topology, weight=1.0)
+moves[mvi++] = mvNNI(topology, weight=num_taxa/2.0)
+moves[mvi++] = mvSPR(topology, weight=num_taxa/10.0)
 
 # Branch length prior
-for (i in 1:n_branches) {
+for (i in 1:num_branches) {
     bl[i] ~ dnExponential(10.0)
     moves[mvi++] = mvScale(bl[i])
 }
