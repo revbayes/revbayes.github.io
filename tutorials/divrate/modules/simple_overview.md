@@ -3,7 +3,7 @@
 
 Models of speciation and extinction are fundamental to any phylogenetic
 analysis of macroevolutionary processes
-(*e.g.,* divergence time estimation,
+(e.g., divergence time estimation,
 diversification rate estimation, continuous and discrete trait
 evolution, and historical biogeography). First, a prior model describing
 the distribution of speciation events over time is critical to
@@ -45,7 +45,7 @@ divergence times is needed.
 {% subsection Types of Hypotheses for Estimating Diversification Rates %}
 
 Many evolutionary phenomena entail differential rates of diversification
-(speciation – extinction); *e.g.,* adaptive
+(speciation – extinction); e.g., adaptive
 radiation, diversity-dependent diversification, key innovations, and
 mass extinction. The specific study questions regarding lineage
 diversification may be classified within three fundamental categories of
@@ -77,13 +77,13 @@ extinction rates), as might occur because of diversity-dependent
 diversification (*i.e.*,  where competitive
 ecological interactions among the species of a growing tree decrease the
 opportunities for speciation and/or increase the probability of
-extinction, *e.g.,* {% citet Hoehna2014a %}). Third, we
+extinction, e.g., {% citet Hoehna2014a %}). Third, we
 can ask whether changes in diversification rates are correlated with
 environmental factors, such as environmental CO<sub>2</sub> or temperature
 {% cite Condamine2013 %}. A final question in this category asks whether our
 study tree was impacted by a mass-extinction event (where a large
 fraction of the standing species diversity is suddenly lost,
-*e.g.,* {% citet May2016 %}). The common theme of these
+e.g., {% citet May2016 %}). The common theme of these
 studies is that the diversification process is tree-wide, that is, all
 lineages of the study group have the exact same rates at a given time.
 
@@ -114,7 +114,7 @@ continuous morphological traits, geographic range, etc.). For example,
 one can hypothesize that a binary character, say if an organism is
 herbivorous/carnivorous or self-compatible/self-incompatible, impact the
 diversification rates. Then, if the organism is in state 0
-(*e.g.,* is herbivorous) it has a lower (or
+(e.g., is herbivorous) it has a lower (or
 higher) diversification rate than if the organism is in state 1
-(*e.g.,* carnivorous) {% cite Maddison2007 %}.
+(e.g., carnivorous) {% cite Maddison2007 %}.
 

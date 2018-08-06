@@ -48,9 +48,11 @@ Q := fnGTR(er,pi)
 #############################
 
 # among site rate variation, +Gamma4
-alpha_prior_mean <- ln(5.0)
-alpha_prior_sd <- 0.587405
-alpha ~ dnLognormal( alpha_prior_mean, alpha_prior_sd )
+#alpha_prior_mean <- ln(5.0)
+#alpha_prior_sd <- 0.587405
+#alpha ~ dnLognormal( alpha_prior_mean, alpha_prior_sd )
+alpha ~ dnUniform( 0, 1E8 )
+alpha.setValue( 1.0 )
 sr := fnDiscretizeGamma( alpha, alpha, 4, false )
 moves[mvi++] = mvScale(alpha, lambda=1.0, weight=2.0)
 
@@ -106,9 +108,8 @@ monitors[mni++] = mnFile(psi, filename="output/primates_cytb_GTRGI.trees", print
 monitors[mni++] = mnModel(filename="output/primates_cytb_GTRGI.log", printgen=10)
 
 # run the analysis
-mymcmc = mcmc(mymodel, moves, monitors)
-mymcmc.burnin(10000,200)
-mymcmc.run(30000)
+mymcmc = mcmc(mymodel, moves, monitors, nruns=2, combine="mixed")
+mymcmc.run(generations=20000,tuningInterval=200)
 
 
 # summarize output
