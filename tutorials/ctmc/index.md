@@ -521,7 +521,7 @@ Notice that we also specified `nruns=2` which means that RevBayes will automatic
 You will find that the output is created in two files with extension `_run_1` and `_run_2` for each replicate and additionally the samples from both runs are combined into one file for more convenient post-processing. 
 Now, run the MCMC:
 ```
-mymcmc.run(generations=30000,tuningInterval=200)
+mymcmc.run(generations=20000,tuningInterval=200)
 ```
 
 When the analysis is complete, you will have the monitored files in your output directory.
