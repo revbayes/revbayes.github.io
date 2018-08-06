@@ -7,3 +7,7 @@ The probabilistic graphical model is given once at the beginning of this tutoria
 Your goal is to estimate speciation and extinction rates through-time using 
 Markov chain Monte Carlo (MCMC).
 
+You should read first the {% page_ref divrate/div_rate_intro %}
+which explains the theory and gives some general overview of diversification rate estimation 
+and {% page_ref divrate/simple %} which goes through a very simple pure birth and birth-death model
+for estimating diversification rates.

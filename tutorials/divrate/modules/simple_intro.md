@@ -75,6 +75,7 @@ and the probability density of the reconstructed tree (topology and branching ti
 $$\begin{aligned}
 P(\Psi) = \; & \frac{2^{n-1}}{n!(n-1)!} \times \left( \frac{P(N(T) = 1 \mid N(0) = 1)}{P(N(T) > 0 \mid N(0) = 1)} \right)^2 \nonumber\\
 		  \; & \times \prod_{i=2}^{n-1} i \times b(t_i) \times P(N(T) = 1 \mid N(t_i) = 1)
+		  \label{eq:tree_probability}
 \end{aligned}$$
 
 We can expand Equation ([eq:tree_probability]) by substituting
