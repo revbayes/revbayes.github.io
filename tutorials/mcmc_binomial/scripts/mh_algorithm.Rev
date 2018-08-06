@@ -1,0 +1,70 @@
+# Make up some coin flips!
+# Feel free to change these numbers
+n <- 100   # the number of flips
+x <- 63    # the number of heads
+
+# Initialize the chain with starting values
+alpha <- 1
+beta  <- 1
+p <- rbeta(n=1,alpha,beta)[1]
+
+# compute the likelihood
+likelihood <- dbinomial(x, Probability(p), n, log=false)
+
+# compute the prior probability
+prior <- dbeta(Probability(p), alpha, beta, log=false)
+
+# create the monitors
+output_file <- "output/binomial_MH_algorithm.log"
+write("iteration","p","\n",file=output_file)
+write(0,p,"\n",file=output_file,append=TRUE)
+
+# set the thinning
+printgen <- 10
+
+# write the MH algorithm
+reps <- 10000
+for(i in 1:reps){
+
+    # propose a new value of p
+    p_prime <- p + runif(1, -0.2, 0.2)[1]
+
+    # keep p inbounds, if necessary
+    if ( p_prime > 1 ) {
+        p_prime <- 2 - p_prime
+    }
+    if ( p_prime < 0 ) {
+        p_prime <- -p_prime
+    }
+
+    # compute the acceptance probability
+    likelihood_prime <- dbinomial(x, Probability(p_prime), n, log=false)
+    prior_prime <- dbeta(Probability(p_prime), alpha, beta, log=false)
+    R <- ( likelihood_prime / likelihood ) * ( prior_prime / prior )
+
+    # make sure that R is less than or equal to 1
+    if ( R > 1 ) {
+        R <- 1.0
+    }
+
+    # accept or reject the proposal
+    u <- runif(1,0,1)[1]
+    if (u < R) {
+        # Accept the proposal
+        p <- p_prime
+        likelihood <- likelihood_prime
+        prior <- prior_prime
+    } else {
+        # reject the proposal
+        # (we don't have to do anything here)
+    }
+
+    if ( (i % printgen) == 0 ) {
+        # Write the samples to a file
+        "iteration " + i + ", p = " + p
+        write(i,p,"\n",file=output_file,append=TRUE)
+    }
+
+} # end MCMC
+
+q()
