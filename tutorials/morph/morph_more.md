@@ -743,7 +743,7 @@ This function will compute the posterior probabilities of the ancestral states f
 Later we can visuallize our ancestral states.
 ```
 anc_states = readAncestralStateTrace("output/mk.states.txt")
-anc_tree = ancestralStateTree(tree=phylogeny, ancestral_state_trace_vector=anc_states, include_start_states=false, file="output/ase_mk.tree", burnin=0.25, summary_statistic="MAP", site=0)
+anc_tree = ancestralStateTree(tree=phylogeny, ancestral_state_trace_vector=anc_states, include_start_states=false, file="output/ase_mk.tree", burnin=0.25, summary_statistic="MAP", site=1)
 writeNexus( anc_tree, filename="output/ase_mk.tree" )
 ```
 
@@ -807,6 +807,7 @@ Make sure that you have the package installed, using
 
 ```{R}
 library(devtools)
+install_github("GuangchuangYu/ggtree")
 install_github("revbayes/RevGadgets")
 ```
 Now that we have our posterior distribution of ancestral states, we want to visualize those results.

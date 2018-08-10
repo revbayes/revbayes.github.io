@@ -52,12 +52,11 @@ moves[mvi++] = mvBranchLengthScale(phylogeny, weight=num_branches)
 ###########################################
 
 # Specify the number of categories we would like to use to describe our data. For simplicity,
-# we will use 4.
-
-n_cats = 4
+# we will use 2, which generates in total 4 rate matrices because every matrix has its opposites.
+num_cats = 2
 
 dir_alpha ~ dnExponential(1)
-moves[mvi++] = mvScale(dir_alpha, lambda=1, weight=2.0 )
+moves[mvi++] = mvScale(dir_alpha, lambda=1, weight=4.0 )
 
 # Create a vector of how many different state frequencies we will need. We are working with
 # binary data and will only need two. If you were working with multistate data, you could
@@ -68,19 +67,21 @@ pi_prior := v(dir_alpha,dir_alpha)
 # Loop over the categories. For each category, draw state frequencies from a Dirichlet. Use
 # those state values to initialize the Q matrix.
 
-for (i in 1:n_cats) {
+for (i in 1:num_cats) {
 	pi[i] ~ dnDirichlet(pi_prior)
 	freq_zero[i] := pi[i][1]
 	freq_one[i]  := pi[i][2]
-    moves[mvi++] = mvBetaSimplex(pi[i], alpha=10, weight=2.0) 
+    moves[mvi++] = mvBetaSimplex(pi[i], alpha=10, weight=4.0) 
+    
+    # now also set up the opposite rate matrix
+    pi[num_cats+i] := simplex(freq_one[i] , freq_zero[i])
     
     Q_morpho[i] := fnF81(pi[i])
+    Q_morpho[num_cats+i] := fnF81(pi[num_cats+i])
 }
 
 # Tell the model what the probability of a character going into any particular category. 
-# This prior says that a character is equally likely to be put into any category a priori.
-matrix_probs ~ dnDirichlet(v(1,1,1,1))
-moves[mvi++] = mvSimplexElementScale(matrix_probs, alpha=10, weight=2.0) 
+matrix_probs <- simplex( rep(1,2*num_cats) )
 
 
 # We also use a discretized gamma distribution of rate categories #
