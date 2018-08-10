@@ -396,9 +396,9 @@ P_10
 
 {% subsection Covarion %}
 
-Covarion models {% cite tuffley98 %} capture the possibility that a ``hidden'' (unobserved or unmeasurable) states cause evolutionary processes to vary in tempo and modes.
-For example, phylogenetically local clusters of plant lineages appear to transition between herbaceous and woody habits at relatively high rates, so one might want to quantify where these bursts occur {% cite beaulieu2013 %}.
-While similar in structure to the correlated character model of \citet{pagel94}, covarion models do not observe the hidden state that induce the mode-shifts.
+Covarion models {% cite Tuffley1998 %} capture the possibility that a ``hidden'' (unobserved or unmeasurable) states cause evolutionary processes to vary in tempo and modes.
+For example, phylogenetically local clusters of plant lineages appear to transition between herbaceous and woody habits at relatively high rates, so one might want to quantify where these bursts occur {% cite Beaulieu2013 %}.
+While similar in structure to the correlated character model of {% cite Pagel1994 %}, covarion models do not observe the hidden state that induce the mode-shifts.
 Instead, covarion models expand the character's state space by a factor of $K$, and observe the character once for each of the $K$ categories.
 For example, take a binary character modeled with $K=2$ hidden state classes.
 The model would treat a character that is observed as being in state 0 as possibly being in either of the $K=2$ classes (0,1) and (0,2).
@@ -408,7 +408,6 @@ The expanded structure of a simple covarion rate matrix with $K=2$ is
 
 $$
 Q = \left(
-\arraycolsep=6pt\def\arraystretch{2.5}
 \begin{array}{cc|cc}
 - & r_1 q_{01}^{(1)} & s_{12} & 0 \\
 r_1 q_{10}^{(1)} & - & 0 & s_{12} \\
@@ -423,7 +422,6 @@ $$
 This form can be reduced to a simpler block-matrix representation
 $$
 Q = \left(
-\arraycolsep=8pt\def\arraystretch{3.0}
 \begin{array}{c|c}
 r_1 Q^{(1)} & s_{12} I  \\
 \hline
@@ -508,7 +506,10 @@ Visualization of different placenta types. Reproduced from {% cite PrabhuDas2015
 {% endfigcaption %}
 {% endfigure %}
 
-{% subsection The Mk Model %}
+
+
+
+{% subsection Specifying the Mk Model %}
 
 We will start this tutorial with the simple Mk model with three states, $k=3$ {% cite Lewis2001 %}.
 Thus, we will follow the {% page_ref morph %} Tutorial very closely and refer you to that tutorial for more information.
@@ -572,7 +573,7 @@ When you execute RevBayes in this exercise, you will do so within the main direc
 
 For complex models and analyses, it is best to create Rev script files that will contain all of the model parameters, moves, and functions. 
 In this exercise, you will work primarily in your text editor and create a set of files that will be easily managed and interchanged.
-In this first section, you will write the following files from scratch and save them in the \cl{scripts} directory:
+In this first section, you will write the following files from scratch and save them in the `scripts` directory:
 -   `mcmc_ase_mk.Rev`: the Rev-script file that loads the data, specifies the model describing discrete morphological character change (binary characters), and specifies the monitors and MCMC sampler.
 
 All of the files that you will create are also provided in the this RevBayes tutorial. 
@@ -602,7 +603,7 @@ morpho <- readDiscreteCharacterData("data/mammals_thinned_placenta_type.nex")
 Before we begin writing the Rev scripts for each of the model components, we need to instantiate a couple ``helper variables'' that will be used by downstream parts of our model specification files. 
 Create a workspace variable called `mvi`. 
 This variable is an iterator that will build a vector containing all of the MCMC moves used to propose new states for every stochastic node in the model graph. 
-Each time a new move is added to the vector, \cl{mvi} will be incremented by a value of `1`.
+Each time a new move is added to the vector, `mvi` will be incremented by a value of `1`.
 ```
 mvi = 1
 ```
