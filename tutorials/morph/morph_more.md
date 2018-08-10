@@ -1,6 +1,6 @@
 ---
-title: Discrete morphology
-subtitle: Phylogenetic inference with discrete morphological data
+title: Discrete morphology - Ancestral State Estimation
+subtitle: Ancestral State Estimation and Testing for Irreversibility
 authors:  Sebastian Höhna, Will Freyman, April M. Wright and Michael J. Landis
 level: 2
 prerequisites:
