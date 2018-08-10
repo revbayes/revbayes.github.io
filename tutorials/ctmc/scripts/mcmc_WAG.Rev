@@ -1,0 +1,91 @@
+################################################################################
+#
+# RevBayes Example: Bayesian inference of phylogeny using an empirical amino acid
+#            substitution model on a single gene.
+#
+# authors: Sebastian Hoehna
+#
+################################################################################
+
+
+### Read in sequence data for both genes
+data_AA = readDiscreteCharacterData("data/primates_and_galeopterus_cytb_AA.fasta")
+#data_AA = data.translateCharacters("AA")
+
+# Get some useful variables from the data. We need these later on.
+num_taxa <- data_AA.ntaxa()
+num_branches <- 2 * num_taxa - 3
+taxa <- data_AA.taxa()
+
+
+mvi = 1
+mni = 1
+
+
+######################
+# Substitution Model #
+######################
+
+# create a constant variable for the rate matrix
+Q <- fnWAG() 
+
+
+##############
+# Tree model #
+##############
+
+out_group = clade("Galeopterus_variegatus")
+
+# Prior distribution on the tree topology
+br_len_lambda <- 10.0
+psi ~ dnUniformTopologyBranchLength(taxa, branchLengthDistribution=dnExponential(br_len_lambda), outgroup=out_group)
+
+moves[mvi++] = mvNNI(psi, weight=num_taxa)
+moves[mvi++] = mvSPR(psi, weight=num_taxa/10.0)
+moves[mvi++] = mvBranchLengthScale(psi, weight=num_branches)
+
+TL := psi.treeLength()
+
+
+
+###################
+# PhyloCTMC Model #
+###################
+
+# the sequence evolution model
+seq ~ dnPhyloCTMC(tree=psi, Q=Q, type="AA")
+
+# attach the data
+seq.clamp(data_AA)
+
+
+############
+# Analysis #
+############
+
+mymodel = model(psi)
+
+# add monitors
+monitors[mni++] = mnScreen(TL, printgen=1000)
+monitors[mni++] = mnFile(psi, filename="output/primates_cytb_WAG.trees", printgen=10)
+monitors[mni++] = mnModel(filename="output/primates_cytb_WAG.log", printgen=10)
+
+# run the analysis
+mymcmc = mcmc(mymodel, moves, monitors, nruns=2, combine="mixed")
+mymcmc.run(generations=20000,tuningInterval=200)
+
+
+###################
+# Post processing #
+###################
+
+# Now, we will analyze the tree output.
+# Let us start by reading in the tree trace
+treetrace = readTreeTrace("output/primates_cytb_WAG.trees", treetype="non-clock", outgroup=out_group)
+# and then get the MAP tree
+map_tree = mapTree(treetrace,"output/primates_cytb_WAG_MAP.tree")
+
+
+# you may want to quit RevBayes now
+q()
+
