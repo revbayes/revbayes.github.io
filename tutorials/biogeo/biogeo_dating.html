@@ -1,0 +1,867 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: Biogeographic dating analysis</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
+      </a>
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/software">Software</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/developer/">Developer</a></li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <div class="titlebar">
+	<h1 class="maintitle">Biogeographic dating analysis</h1>
+	<h3 class="subtitle">Biogeographic dating analysis under the dispersal-extinction-cladogenesis process</h3>
+	<h4 class="authors">Michael J. Landis</h4>
+</div>
+
+
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul id="prerequisites">
+          
+            <li><a href="/tutorials/biogeo/biogeo_intro.html">Introduction to Historical Biogeography</a></li>
+          
+            <li><a href="/tutorials/biogeo/biogeo_simple.html">Historical Biogeographic Analysis using a Simple DEC Model</a></li>
+          
+            <li><a href="/tutorials/biogeo/biogeo_epoch.html">Historical Biogeographic Analysis using an epoch DEC Model</a></li>
+          
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+
+
+
+
+<blockquote class="tutorial_files" id="tutorial_files">
+    <h2>Data files and scripts</h2>
+    
+        
+        <strong>Data Files</strong>
+        <ul id="data_files">
+        
+        
+        
+          <li><a href="/tutorials/biogeo/data/n6/hawaii.n6.connectivity.1.txt">hawaii.n6.connectivity.1.txt</a></li>
+        
+          <li><a href="/tutorials/biogeo/data/n6/hawaii.n6.connectivity.2.txt">hawaii.n6.connectivity.2.txt</a></li>
+        
+          <li><a href="/tutorials/biogeo/data/n6/hawaii.n6.connectivity.3.txt">hawaii.n6.connectivity.3.txt</a></li>
+        
+          <li><a href="/tutorials/biogeo/data/n6/hawaii.n6.connectivity.4.txt">hawaii.n6.connectivity.4.txt</a></li>
+        
+          <li><a href="/tutorials/biogeo/data/n6/hawaii.n6.connectivity.5.txt">hawaii.n6.connectivity.5.txt</a></li>
+        
+          <li><a href="/tutorials/biogeo/data/n6/hawaii.n6.distances.txt">hawaii.n6.distances.txt</a></li>
+        
+          <li><a href="/tutorials/biogeo/data/n6/hawaii.n6.times.txt">hawaii.n6.times.txt</a></li>
+        
+          <li><a href="/tutorials/biogeo/data/n6/silversword.init.tre">silversword.init.tre</a></li>
+        
+          <li><a href="/tutorials/biogeo/data/n6/silversword.mol.nex">silversword.mol.nex</a></li>
+        
+          <li><a href="/tutorials/biogeo/data/n6/silversword.n6.range.nex">silversword.n6.range.nex</a></li>
+        
+          <li><a href="/tutorials/biogeo/data/n6/silversword.tre">silversword.tre</a></li>
+        
+        </ul>
+    
+        
+        <strong>Scripts</strong>
+        <ul id="scripts">
+        
+        
+        
+          <li><a href="/tutorials/biogeo/scripts/make_anc_state.Rev">make_anc_state.Rev</a></li>
+        
+          <li><a href="/tutorials/biogeo/scripts/plot_anc_range.R">plot_anc_range.R</a></li>
+        
+          <li><a href="/tutorials/biogeo/scripts/plot_anc_range.epoch.R">plot_anc_range.epoch.R</a></li>
+        
+          <li><a href="/tutorials/biogeo/scripts/plot_anc_range.simple.R">plot_anc_range.simple.R</a></li>
+        
+          <li><a href="/tutorials/biogeo/scripts/range_colors.txt">range_colors.txt</a></li>
+        
+          <li><a href="/tutorials/biogeo/scripts/run_epoch_phy.Rev">run_epoch_phy.Rev</a></li>
+        
+          <li><a href="/tutorials/biogeo/scripts/run_simple_phy.Rev">run_simple_phy.Rev</a></li>
+        
+        </ul>
+    
+</blockquote>
+
+
+</div>
+<h2 class="section" id="introduction">Introduction</h2>
+<hr class="section" />
+
+<p>This tutorial describes how to apply a biogeographic dating analysis.
+To do so, we will jointly estimate phylogeny and biogeography. One
+benefit is that the biogeographic analysis will intrinsically
+accommodate phylogenetic uncertainty, both in terms of topology and
+branch lengths. Another is that paleogeographic evidence has the
+potential provide information about the geological timing of speciation
+events in the phylogeny <a href="#Ho2015">(Ho et al. 2015)</a>. Finally, biogeographic data may lend
+support to certain phylogenetic relationships that have poor resolution
+otherwise.</p>
+
+<p>Modeling the interactions between phylogeny, biogeography, and paleogeography should also, somehow, inform our posterior estimates of divergence times throughout the clade.
+After all, an island cannot be colonized before it comes into existence.
+But encoding this intuition into our phylogenetic model requires some special considerations.</p>
+
+<p>As mentioned in the <a href="/tutorials/biogeo/biogeo_simple.html">Simple DEC model tutorial</a>, Hawaiian silverswords are
+nested within the subtribe <em>Madiinae</em>, alongside the
+tarweeds, a clade of plants inhabiting in western North America. Fossil
+pollen evidence indicates that <em>Madiinae</em> diversified
+during a period of aridification from 15–5 Ma in the western regions of
+North America <a href="#Baldwin1991">(Baldwin et al. 1991)</a>. It’s clear that silverswords colonized
+Hawaii from western North America, but the timing of the event is
+difficult to estimate. Even though the oldest Hawaiian island they
+inhabit is Kauai, it is possible that silverswords first colonized older
+islands in the Emperor Island chain that predate the formation of Kauai (ca 5.1 Ma).</p>
+
+<p>This makes the application of standard node-based biogeographic
+calibrations challenging, because it would require a strong assumption
+about when and how many times the oldest silversword lineages colonized
+Kauai. Did silverswords colonize Kauai once directly from the California
+coast? Or did the colonize the younger islands multiple times from older
+islands in the chain? And did the event occur immediately after Kauai
+surfaced or much later? Because we cannot observe the timing and nature
+of this event directly, we will integrate over all possible evolutionary
+histories using process-based biogeographic dating method described in
+<a href="#Landis2017a">(Landis 2017)</a>.</p>
+
+<figure id="fig_biogeo_dating"><p><img src="figures/fig_biogeo_dating.png" alt="" /></p>
+<figcaption>Cartoon of biogeographic
+transition probabilities as functions of geological time, and how that
+relates to speciation times. (a) Areas split, dispersal before split,
+positive probability; (b) Areas split, dispersal after split, zero
+probability; (c) Areas merge, dispersal after merge, positive
+probability; (d) Areas merge, dispersal before merge, zero probabilty.
+Original figure and details regarding cartoon assumptions are found in <a href="#Landis2017a">(Landis 2017)</a>.</figcaption>
+</figure>
+
+<p>The basic idea is that an empirically informed epoch model is capable of
+creating conditions that favor key evolutionary transitions to occur
+during one time interval over another. Unlike the time-homogeneous
+probabilities that arise from, say, a molecular substitution process,
+these age-dependent transition probabilities may identify rate from
+time, and thus generate information about branch lengths in units of
+absolute time (<a href="#fig_biogeo_dating"></a>). A biogeographic
+process that is constrained by paleogeographic connectivity is
+well-suited to this purpose.</p>
+
+<p>Note: like all dating methods, including node calibration methods, tip
+dating methods, and fossilized birth death dating methods, process-based
+biogeographic dating estimates are prior sensitive and dataset
+dependent. Applying this model to alternative data sets should be done
+with care!</p>
+
+<p>Another note: This tutorial describes an analysis that is similar, but not identical, to the analysis conducted in <a href="#Landis2018">(Landis et al. 2018)</a>. This tutorial will be updated following the manuscript’s publication in a peer-reviewed journal.</p>
+
+<p>Much of this tutorial will be similar to the previous sections, except
+we are adding a birth-death process and a molecular substitution process
+to the model graph.</p>
+
+<h3 class="subsection" id="analysis">Analysis</h3>
+<hr class="subsection" />
+
+<p>To use date the silversword radiation using biogeography, it is
+necessary that we transition from our simpler 4-area model to a richer
+6-area model (see <a href="#hawaii_areas"></a>). The mainland area (Z)
+is necessary to force the silversword and tarweed clade to originate
+apart from the islands. The area corresponding to the older island chain
+(R) is necessary because we do not know <em>a priori</em> whether
+silverswords colonized the modern islands directly from the mainland (Z
+$\rightarrow$ K), or first colonized R and only later dispersed into the
+younger islands any number of times (Z $\rightarrow$ R $\rightarrow$ K).
+Thus, adding these two areas allows the silversword origin time to
+precede the formation of Kauai when the dispersal rate is large.</p>
+
+<p>Additionally, we will add three tarweed taxa to our dataset, increasing
+the total number of taxa to 38. We’ll use a molecular alignment for the
+internal transcribed spacer (ITS) to estimate the phylogeny, which is a
+657bp non-coding locus that is historically important for plant
+systematics. Because the locus is relatively short, it will also leave
+us with a fair amount of phylogenetic uncertainty in branch length and
+topology estimates. However, because we’re estimating phylogeny and
+biogeography, it will be correctly incorporated into our ancestral range
+estimates.</p>
+
+<p>As usual, we’ll begin by creating variables to manage our input and
+output files</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>range_fn = "data/n6/silversword.n6.range.nex"
+mol_fn = "data/n6/silversword.mol.nex"
+tree_fn = "data/n6/silversword.tre"
+out_fn = "output/test_epoch_phy"
+geo_fn = "data/n6/hawaii.n6"
+times_fn = geo_fn + ".times.txt"
+dist_fn = geo_fn + ".distances.txt"
+</code></pre></div></div>
+
+<p>Add the analysis helper variables</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvi = 1
+mni = 1
+n_gen = 1e5    # more parameters, longer run!
+</code></pre></div></div>
+
+<p>Read in the molecular alignment</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dat_mol = readDiscreteCharacterData(mol_fn)
+</code></pre></div></div>
+
+<p>Read in the species ranges for six areas</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dat_range_01 = readDiscreteCharacterData(range_fn)
+</code></pre></div></div>
+
+<p>Compute the number of ranges when ranges may only be one or two areas in
+size</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_areas &lt;- dat_range_01.nchar()
+max_areas &lt;- 2
+n_states &lt;- 0
+for (k in 0:max_areas) n_states += choose(n_areas, k)
+</code></pre></div></div>
+
+<p>Then format the dataset for the reduced state space</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dat_range_n = formatDiscreteCharacterData(dat_range_01, "DEC", n_states)
+</code></pre></div></div>
+
+<p>Record the complete list of range descriptions to file</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>state_desc = dat_range_n.getStateDescriptions()
+state_desc_str = "state,range\n"
+for (i in 1:state_desc.size())
+{
+    state_desc_str += (i-1) + "," + state_desc[i] + "\n"
+}
+write(state_desc_str, file=out_fn+".state_labels.txt")
+</code></pre></div></div>
+
+<p>Read the minimum and maximum ages of the island complexes</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>time_bounds &lt;- readDataDelimitedFile(file=times_fn, delimiter=" ")
+n_epochs &lt;- time_bounds.size()
+</code></pre></div></div>
+
+<p>Read in the connectivity matrices between the six areas</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:n_epochs) {
+  epoch_fn[i] = geo_fn + ".connectivity." + i + ".txt"
+  connectivity[i] &lt;- readDataDelimitedFile(file=epoch_fn[i], delimiter=" ")
+}
+</code></pre></div></div>
+
+<p>Read the geographical distances between areas</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>distances &lt;- readDataDelimitedFile(file=dist_fn, delimiter=" ")
+</code></pre></div></div>
+
+<p>Remember that we are estimating the phylogeny as part of this analysis.
+In general, it is possible that certain combinations of phylogeny,
+biogeography, and paleogeography have zero-valued likelihoods should the
+epoch model introduce reducible rate matrix structures [see the
+supplemental of (missing reference)]. The initial MCMC state, however, must have
+a non-zero probability for it to work properly. Although it may not be
+needed, we will provide tree_init as a starting tree for
+the tree variable that we will create to be safe.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tree_init = readTrees(tree_fn)[1]
+</code></pre></div></div>
+
+<p>We will record some basic information about the taxon set, the number of
+taxa, and the number of branches in the tree</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>taxa = tree_init.taxa()
+n_taxa = taxa.size()
+n_branches = 2 * n_taxa - 2
+</code></pre></div></div>
+
+<h3 class="subsection" id="the-tree-model">The Tree Model</h3>
+<hr class="subsection" />
+
+<p>Because we will estimate the topology and branch lengths parameters, the
+tree variable must be declared as a stochastic node with a
+prior distribution. For this, we’ll use a constant rate birth-death
+process.</p>
+
+<p>Assign root age with a maximum age of 15Ma to reflect the fossil pollen
+record for Californian tarweeds <a href="#Baldwin1998">(Baldwin and Sanderson 1998)</a>. No assumption is made
+about the minimum root age.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root_age ~ dnUniform(0, 15)
+moves[mvi++] = mvScale(root_age, weight=2)
+</code></pre></div></div>
+
+<p>Assign the proportion of sampled taxa (we have a non-uniform sampling
+scheme, but this should suffice).</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rho &lt;- 35/50
+</code></pre></div></div>
+
+<p>Assign the birth and death priors. It is important to note that the
+birth and death priors induce a root age distribution through the
+birth-death process. These priors generate a relatively uniform root age
+distribution between 2.5–15 Ma in the absence of data (i.e. running MCMC
+with the <code class="highlighter-rouge">underPrior=true</code> option).</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>birth ~ dnExp(1)
+moves[mvi++] = mvScale(birth)
+death ~ dnExp(1)
+moves[mvi++] = mvScale(death)
+</code></pre></div></div>
+
+<p>Instantiate a tree variable generated by a birth-death process</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tree ~ dnBDP(lambda=birth, mu=death, rho=rho, rootAge=root_age, taxa=taxa)
+</code></pre></div></div>
+
+<p>Add topology and branch length moves</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvNNI(tree, weight=n_branches/2)
+moves[mvi++] = mvFNPR(tree, weight=n_branches/8)
+moves[mvi++] = mvNodeTimeSlideUniform(tree, weight=n_branches/2)
+</code></pre></div></div>
+
+<p>Provide a starting tree to ensure the biogeographic model has non-zero
+likelihood</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tree.setValue(tree_init)
+root_age.setValue(tree_init.rootAge())
+</code></pre></div></div>
+
+<h3 class="subsection" id="the-molecular-model">The molecular model</h3>
+<hr class="subsection" />
+
+<p>To inform our branch lengths (in relative time units) and our topology,
+we will specify a simple HKY+$\Gamma4$+UCLN model of molecular
+substitution <a href="#Hasegawa1985">(Hasegawa et al. 1985; Yang and Nielsen 1998; Drummond et al. 2006)</a>.</p>
+
+<p>First specify a base rate for the molecular clock. This prior is uniform
+over orders of magnitude, between $10^{-6}$ and $10^3$, and was chosen
+to minimize its influence on the tree height.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log10_rate_mol ~ dnUniform(-6, 3)
+log10_rate_mol.setValue(-1)
+moves[mvi++] = mvSlide(log10_rate_mol, weight=5, delta=0.2)
+rate_mol := 10^log10_rate_mol
+</code></pre></div></div>
+
+<p>Assign log-normal relaxed clock rate multipliers to each branch in the
+tree. These priors have a mean of 1 so each branch prefers a strict
+clock model in the absence of data.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>branch_sd &lt;- 1.0
+branch_mean &lt;- 0.0 - 0.5 * branch_sd^2
+for (i in 1:n_branches) {
+    branch_rate_multiplier[i] ~ dnLognormal(mean=branch_mean, sd=branch_sd)
+    moves[mvi++] = mvScale(branch_rate_multiplier[i])
+    branch_rates[i] := rate_mol * branch_rate_multiplier[i]
+}
+</code></pre></div></div>
+
+<p>Now we’ll create an HKY rate matrix. First, we create a
+gamma-distributed transition-transversion (Ts/Tv) rate ratio with prior
+with mean equal to one</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kappa ~ dnGamma(2,2)
+moves[mvi++] = mvScale(kappa)
+</code></pre></div></div>
+
+<p>then create a flat Dirichlet prior on the base frequencies over A, C, G,
+and T</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bf ~ dnDirichlet([1,1,1,1])
+moves[mvi++] = mvSimplexElementScale(bf, alpha=10, weight=2)
+</code></pre></div></div>
+
+<p>and, finally, combine the base frequencies and Ts/Tv rate ratio to build
+the rate matrix</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q_mol := fnHKY(kappa, bf)
+</code></pre></div></div>
+
+<p>Next, we’ll create a $+\Gamma4$ across-site rate variation model. First,
+we need a parameter to control the amount of site rate variation</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha ~ dnUniform(0,50)
+moves[mvi++] = mvScale(alpha)
+</code></pre></div></div>
+
+<p>and a discretized Gamma distribution with four categories</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>site_rates := fnDiscretizeGamma(alpha, alpha, 4)
+</code></pre></div></div>
+
+<p>The distribution of site rates categories has mean equal to one and
+variance equal to $1/\alpha$. When alpha grows small, the
+amount of site rate heterogeneity increases. When alpha is
+large, the variance shrinks to zero, and the site rate multipliers of
+<code class="highlighter-rouge">site_rates</code> converge to the value 1.</p>
+
+<p>Finally, we’ll create our molecular model of substitution</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>m_mol ~ dnPhyloCTMC(Q=Q_mol, tree=tree, branchRates=branch_rates, siteRates=site_rates, type="DNA", nSites=dat_mol.nchar())
+</code></pre></div></div>
+
+<p>and attach the ITS alignment</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>m_mol.clamp(dat_mol)
+</code></pre></div></div>
+
+<h3 class="subsection" id="the-biogeographic-model">The biogeographic model</h3>
+<hr class="subsection" />
+
+<p>The biogeographic model is identical to that described in Section <a href="#bg_epoch"></a>, so redundant details are omitted here.</p>
+
+<p>First, create the biogeographic rate parameter.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log10_rate_bg ~ dnUniform(-4,2)
+log10_rate_bg.setValue(-2)
+rate_bg := 10^log10_rate_bg
+moves[mvi++] = mvSlide(log10_rate_bg, weight=4)
+</code></pre></div></div>
+
+<p>The relative dispersal rate is fixed to 1</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dispersal_rate &lt;- 1.0
+</code></pre></div></div>
+
+<p>the distance scale parameter</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>distance_scale ~ dnUnif(0,20)
+distance_scale.setValue(0.001)
+moves[mvi++] = mvScale(distance_scale, weight=3)
+</code></pre></div></div>
+
+<p>Next, create dispersal rates that are functions of distance between all
+pairs of areas, but between areas that exist during epoch
+i!</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:n_epochs) {
+  for (j in 1:n_areas) {
+    for (k in 1:n_areas) {
+     dr[i][j][k] &lt;- 0.0
+     if (connectivity[i][j][k] &gt; 0) {
+       dr[i][j][k] := dispersal_rate * exp(-distance_scale * distances[j][k])
+     }
+    }
+  }
+}
+</code></pre></div></div>
+
+<p>Create the extirpation rates</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log_sd &lt;- 0.5
+log_mean &lt;- ln(1) - 0.5*log_sd^2
+extirpation_rate ~ dnLognormal(mean=log_mean, sd=log_sd)
+moves[mvi++] = mvScale(extirpation_rate, weight=2)
+
+for (i in 1:n_epochs) {
+  for (j in 1:n_areas) {
+    for (k in 1:n_areas) {
+      er[i][j][k] &lt;- 0.0
+    }
+    er[i][j][j] := extirpation_rate
+  }
+}
+</code></pre></div></div>
+
+<p>Build a rate matrix for each time interval</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:n_epochs) {
+  Q_DEC[i] := fnDECRateMatrix(dispersalRates=dr[i],
+                          extirpationRates=er[i],
+                          maxRangeSize=max_areas)
+}
+</code></pre></div></div>
+
+<p>Treat epoch times as random variables, except the present is always the
+present (or is it?).</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:n_epochs) {
+  time_max[i] &lt;- time_bounds[i][1]
+  time_min[i] &lt;- time_bounds[i][2]
+  if (i != n_epochs) {
+    epoch_times[i] ~ dnUniform(time_min[i], time_max[i])
+    moves[mvi++] = mvSlide(epoch_times[i], delta=(time_bounds[i][1]-time_bounds[i][2])/2)
+  } else {
+    epoch_times[i] &lt;- 0.0
+  }
+}
+</code></pre></div></div>
+
+<p>Wrap the vector of rate matrices with the <code class="highlighter-rouge">fnEpoch</code> rate
+generator function</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q_DEC_epoch := fnEpoch(Q=Q_DEC, times=epoch_times, rates=rep(1, n_epochs))
+</code></pre></div></div>
+
+<p>Here, we treat the probability of different types of cladogenetic events
+as a random variable to be estimate.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clado_event_types &lt;- [ "s", "a" ]
+p_sympatry ~ dnUniform(0,1)
+p_allopatry := abs(1.0 - p_sympatry)
+moves[mvi++] = mvSlide(p_sympatry, delta=0.1, weight=2)
+clado_event_probs := simplex(p_sympatry, p_allopatry)
+P_DEC := fnDECCladoProbs(eventProbs=clado_event_probs,
+                         eventTypes=clado_event_types,
+                         numCharacters=n_areas,
+                         maxRangeSize=max_areas)
+</code></pre></div></div>
+
+<p>Based on fossil pollen evidence, force range state and the root of the
+tree to be the mainland area (Z)</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rf_DEC &lt;- rep(0, n_states)
+rf_DEC[n_areas+1] &lt;- 1  # Mainland (Z) is the only possible starting state
+rf_DEC &lt;- simplex(rf_DEC)
+</code></pre></div></div>
+
+<p>Create the phylogenetic model of range evolution</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>m_bg ~ dnPhyloCTMCClado(tree=tree,
+                           Q=Q_DEC_epoch,
+                           cladoProbs=P_DEC,
+                           branchRates=rate_bg,
+                           rootFrequencies=rf_DEC,
+                           type="NaturalNumbers",
+                           nSites=1)        
+</code></pre></div></div>
+
+<p>Attach the species range dataset to the model</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>m_bg.clamp(dat_range_n)
+</code></pre></div></div>
+
+<p>To easily identify interactions between the posterior estimates of
+island ages and divergence times, we’ll create a deterministic node to
+monitor the age of the silversword radiation. First, create a
+deterministic node to monitor the crown age of the silversword radiation</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ingroup_clade &lt;- clade("Wilkesia_hobdyi",
+                       "Dubautia_reticulata",
+                       "Dubautia_microcephala",
+                       "Argyroxiphium_caliginis")
+
+ingroup_age := tmrca(tree, ingroup_clade)
+</code></pre></div></div>
+
+<p>Next, create a vector of variables to report the posterior probability
+that the clade originates <em>before</em> a given island. When the
+first argument in of the ifelse function returns
+true, the node has value 1 and 0
+otherwise. Thus, the mean of this variable gives the posterior
+probability that the inequality is satisfied.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:n_epochs) {
+  ingroup_older_island[i] := ifelse(ingroup_age &gt; epoch_times[i], 1, 0)
+}
+</code></pre></div></div>
+
+<p>Create the standard monitors. One difference is that the
+mnFile monitor will now record the posterior distribution
+for the tree variable, whereas the previous two tutorials
+assumed tree was fixed.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[mni++] = mnScreen(printgen=100, ingroup_age)
+monitors[mni++] = mnModel(file=out_fn+".model.log", printgen=100)
+monitors[mni++] = mnFile(tree, filename=out_fn+".tre", printgen=100)
+monitors[mni++] = mnJointConditionalAncestralState(tree=tree,
+                                                       ctmc=m_bg,
+                                                       type="NaturalNumbers",
+                                                       withTips=true,
+                                                       withStartStates=true,
+                                                       filename=out_fn+".states.log",
+                                                       printgen=100)
+</code></pre></div></div>
+
+<p>Because ingroup_older_island does not contribute to the
+model likelihood, it must be manually introduced to the model object.
+Compose the model object.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(m_bg, ingroup_older_island)
+</code></pre></div></div>
+
+<p>Create the MCMC object and run the analysis.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, moves, monitors)
+mymcmc.run(n_gen)
+</code></pre></div></div>
+
+<figure id="simple_phy_RevGadgets_ase"><p><img src="figures/fig_simple_phy_RevGadgets_ase.png" width="50%" /></p>
+<figcaption>Joint estimate of phylogeny and biogeography, ignoring paleogeography.</figcaption>
+</figure>
+
+<h3 class="subsection" id="results">Results</h3>
+<hr class="subsection" />
+
+<p><strong>Example results are located at and</strong></p>
+
+<p>To understand the influence of the epoch model on ancestral range and
+divergence time estimation, it is important to run addition analyses
+with alternative settings. Scripts to jointly estimate molecular
+evolution, historical biogeographic, and phylogenetic parameters are
+available as <code class="highlighter-rouge">scripts/run_simple_phy.Rev</code> and
+<code class="highlighter-rouge">scripts/run_epoch_phy.Rev</code>. The “epoch” analysis is
+identical to the analysis just described. The “simple” analysis is
+similar to the “epoch” analysis, except it substitutes the
+paleogeography-aware model of range evolution (see Section <a href="#bg_epoch"></a>) for a paleogeography-naive model (see Section
+<a href="#bg_simple"></a>).</p>
+
+<figure id="epoch_phy"><!--![](figures/fig_epoch_phy_RevGadgets_ase.png) -->
+<p><img src="figures/fig_epoch_phy_RevGadgets_ase.png" width="50%" /></p>
+<figcaption>Joint estimate of phylogeny and biogeography, conditioning on paleogeography through the epoch model.</figcaption>
+</figure>
+
+<p>We see that simple analysis (<a href="#simple_phy"></a>) estimates the
+ancestral range at the root of the clade as Maui+Mainland (MZ). This is
+unrealistic, both because of the extreme distance between those areas,
+but also the simple analysis estimates the root age to be 10.3 (HPD95%
+4.6, 15.0) Ma, well before Maui originated. (Date estimates are reported
+in the <code class="highlighter-rouge">simple_phy.mcc.tre</code> and
+<code class="highlighter-rouge">simple_phy.model.log</code> files.) The simple model also infers
+Kauai+Maui (KM) as the ancestral range of living silverswords and a
+crown age of 7.2 (HPD95% 2.5, 13.5) Ma, which is impossibly ancient
+given the islands’ ages.</p>
+
+<p>The epoch analysis (<a href="#epoch_phy"></a>) produces more sensible
+ancestral range estimates, with Kauai being colonized first, and younger
+islands only being colonized as they become available. The crown age of
+silverswords is estimated as 2.5 (HPD95% 0.7, 4.3) Ma. When comparing
+the results to the earlier fixed-phylogeny epoch results in <a href="#epoch_RevGadgets_ase"></a>, we recover a greater role for
+cladogenesis for the younger speciation events. These two analyses only
+differ in terms of whether the phylogeny is fixed or estimated, so it is
+likely a result of phylogenetic error in the fixed tree.</p>
+
+<figure id="simple_ages"><!--![](figures/fig_simple_ages.png) -->
+<p><img src="figures/fig_simple_ages.png" width="50%" /></p>
+<figcaption>Plot of posterior samples for island ages and the origin time of living silverswords. 
+The colors black, blue, red, orange, and green correspond to the origination times of Kaui, Oahu, Maui, Hawaii, and the silversword clade, respectively.The
+left panel ignores paleogeography, allowing silverswords to originate
+well before the formation of Kauai (<code class="highlighter-rouge">epoch_times[1]</code>).The
+right panel conditions of paleogeography, which prefers a silversword
+crown age that follows the formation of Kauai.</figcaption>
+</figure>
+
+<figure id="epoch_ages"><p><img src="figures/fig_epoch_ages.png" width="50%" /></p>
+<figcaption>Plot of posterior samples for island ages and the origin time of
+living silverswords. The colors black, blue, red, orange, and green
+correspond to the origination times of Kaui, Oahu, Maui, Hawaii, and the
+silversword clade, respectively. The left panel ignores paleogeography,
+allowing silverswords to originate well before the formation of Kauai
+(<code class="highlighter-rouge">epoch_times[1]</code>). The right panel conditions of paleogeography, which prefers a silversword crown age that follows the formation of Kauai.</figcaption>
+</figure>
+
+<p>In Tracer, one can look at the sampled posterior of island ages in
+comparison the origination time of crown silverswords (<a href="#epoch_ages"></a>). The left panel shows the simple analysis, where
+crown silverswords often originate before the formation of Kauai. The
+right panel shows that crown silverswords probably originated before the
+formation of Maui, but after the formation of Kauai.</p>
+
+<figure id="table2" class="table"><table>
+  <thead>
+    <tr>
+      <th>Model</th>
+      <th>$P(a_s&gt;a_K)$</th>
+      <th>$P(a_s&gt;a_O)$</th>
+      <th>$P(a_s&gt;a_M)$</th>
+      <th>$P(a_s&gt;a_H)$</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>simple</td>
+      <td>0.72</td>
+      <td>0.94</td>
+      <td>0.99</td>
+      <td>1.00</td>
+    </tr>
+    <tr>
+      <td>epoch</td>
+      <td>0.02</td>
+      <td>0.26</td>
+      <td>0.84</td>
+      <td>0.99</td>
+    </tr>
+  </tbody>
+</table>
+
+<figcaption class="table">: Posterior probability that the age of crown silverswords ($a_s$) is
+  older than the origination times of K, O, M, and H
+  ($a_K, a_O, a_M, a_H$, respectively). The “simple” model (Left)
+  ignores paleogeography while the “epoch” model (Right) conditions on
+  it.<span data-label="tab:epoch_ages"></span></figcaption>
+</figure>
+
+<p>By tabulating the results of the deterministic variable
+ingroup_older_island, we measure the posterior
+probability that crown silverswords originated before or after each
+particular epoch in the model (Table [tab:epoch_ages]). Treating
+$P=0.95$ as significant support for an evolutionary outcome, the epoch
+model produces strong support that crown silverswords originated after
+the formation of Kauai, $P(a_s &gt; a_K) = 0.02 &lt; 1-0.95$ and weak support
+that they originated after the formation of Oahu,
+$P(a_s &gt; a_O) = 0.26 &gt; 1-0.95$.</p>
+
+
+<ol class="bibliography"><li><span id="Baldwin1991">Baldwin B.G., Kyhos D.W., Dvorak J., Carr G.D. 1991. Chloroplast DNA evidence for a North American origin of the Hawaiian silversword alliance (Asteraceae). Proceedings of the National Academy of Sciences. 88:1840–1843.</span>
+
+<a href="https://doi.org/10.1073/pnas.88.5.1840">10.1073/pnas.88.5.1840</a>
+
+</li>
+<li><span id="Baldwin1998">Baldwin B.G., Sanderson M.J. 1998. Age and rate of diversification of the Hawaiian silversword alliance (Compositae). Proceedings of the National Academy of Sciences. 95:9402–9406.</span>
+
+<a href="https://doi.org/10.1073/pnas.95.16.9402">10.1073/pnas.95.16.9402</a>
+
+</li>
+<li><span id="Drummond2006">Drummond A.J., Ho S.Y.W., Phillips M.J., Rambaut A. 2006. Relaxed Phylogenetics and Dating with Confidence. PLoS Biology. 4:e88.</span>
+
+<a href="https://doi.org/10.1371/journal.pbio.0040088">10.1371/journal.pbio.0040088</a>
+
+</li>
+<li><span id="Hasegawa1985">Hasegawa M., Kishino H., Yano T. 1985. Dating of the Human-Ape Splitting by a molecular Clock of Mitochondrial DNA. Journal of Molecular Evolution. 22:160–174.</span>
+
+<a href="https://doi.org/10.1007/BF02101694">10.1007/BF02101694</a>
+
+</li>
+<li><span id="Ho2015">Ho S.Y.W., Tong K.J., Foster C.S.P., Ritchie A.M., Lo N., Crisp M.D. 2015. Biogeographic calibrations for the molecular clock. Biology Letters. 11:20150194.</span>
+
+<a href="https://doi.org/10.1098/rsbl.2015.0194">10.1098/rsbl.2015.0194</a>
+
+</li>
+<li><span id="Landis2017a">Landis M.J. 2017. Biogeographic dating of speciation times using paleogeographically informed processes. Systematic Biology. 66:128–144.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syw040">10.1093/sysbio/syw040</a>
+
+</li>
+<li><span id="Landis2018">Landis M.J., Freyman W.A., Baldwin B.G. 2018. Retracing the Hawaiian silversword radiation despite phylogenetic, biogeographic, and paleogeographic uncertainty. bioRxiv.:301887.</span>
+
+<a href="https://doi.org/10.1101/301887">10.1101/301887</a>
+
+</li>
+<li><span id="Yang1998">Yang Z., Nielsen R. 1998. Synonymous and nonsynonymous rate variation in nuclear genes of mammals. Journal of Molecular Evolution. 46:409–418.</span>
+
+<a href="https://doi.org/10.1007/PL00006320">10.1007/PL00006320</a>
+
+</li></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+
+<script src="/assets/js/base.js"></script>
+
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+  });
+</script>
+
+  </body>
+</html>
