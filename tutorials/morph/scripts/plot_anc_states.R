@@ -8,10 +8,13 @@
 ################################################################################
 
 # if you do not have RevGadgets installed, then follow these instructions
+#install.packages("devtools")
 #library(devtools)
+#install_github("GuangchuangYu/ggtree")
 #install_github("revbayes/RevGadgets")
 
 library(RevGadgets)
+library(ggplot2)
 
 tree_file = "output/ase_mk.tree"
 g <- plot_ancestral_states(tree_file, summary_statistic="MAP",
