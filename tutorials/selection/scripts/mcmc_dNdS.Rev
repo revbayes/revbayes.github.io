@@ -12,11 +12,7 @@
 # Reading in the Data #
 #######################
 
-###### This just defines a single model for all sites #######
-
-### Read in sequence data for both genes
-
-data = readDiscreteCharacterData("data/Group_1.fasta")
+data = readDiscreteCharacterData("data/TF105351.Eut.3.phy")
 data_codon = data.translateCharacters("Codon")
 
 # Get some useful variables from the data. We need these later on.
@@ -26,8 +22,8 @@ taxa <- data.taxa()
 num_data_subsets = data.size()
 
 # set my move index
-mvi = 0
-mni = 0
+mvi = 1
+mni = 1
 
 
 
@@ -36,26 +32,25 @@ mni = 0
 ##############
 
 # work under fixed topology
-psi <- readTrees("data/5sp_Heliconius_Kozak_2015.nex")[1]
+psi <- readBranchLengthTrees("data/TF105351.Eut.3.53876.tree")[1]
 
 
 ######################
 # Substitution Model #
 ######################
 
-# sigma: variance per unit of time of the Brownian motion
+# the transition/transversion rate ratio
 omega ~ dnLognormal(0,1)
-moves[++mvi] = mvSlide(omega, delta=1.0, tune=true, weight=2.0)
+moves[mvi++] = mvSlide(omega, delta=1.0, tune=true, weight=2.0)
 
 kappa ~ dnLognormal(0,1)
-moves[++mvi] = mvSlide(kappa, delta=1.0, tune=true, weight=2.0)
+moves[mvi++] = mvSlide(kappa, delta=1.0, tune=true, weight=2.0)
 
 pi ~ dnDirichlet( rep(1,4) )
-moves[++mvi] = mvBetaSimplex(pi, alpha=1.0, tune=true, weight=2.0)
-moves[++mvi] = mvDirichletSimplex(pi, alpha=1.0, tune=true, weight=2.0)
+moves[mvi++] = mvBetaSimplex(pi, alpha=1.0, tune=true, weight=2.0)
+moves[mvi++] = mvDirichletSimplex(pi, alpha=1.0, tune=true, weight=2.0)
 
 Q := fnCodonHKY( omega, kappa, pi )
-#Q := fnCodon( omega, pi )
 
 
 # the sequence evolution model
@@ -78,14 +73,13 @@ mymodel = model(psi)
 
 
 
-monitors[++mni] = mnModel(filename="output/dNdS.log",printgen=10, separator = TAB)
-monitors[++mni] = mnScreen(printgen=100, omega, kappa, pi)
+monitors[mni++] = mnModel(filename="output/dNdS.log",printgen=10, separator = TAB)
+monitors[mni++] = mnScreen(printgen=100, omega, kappa, pi)
 
 #mymcmc = mcmcmc(mymodel, monitors, moves, nchain=4, nruns=10)
-mymcmc = mcmc(mymodel, monitors, moves, nruns=1)
+mymcmc = mcmc(mymodel, monitors, moves, nruns=2)
 
-mymcmc.burnin(generations=1000,tuningInterval=200)
-mymcmc.run(generations=3000)
+mymcmc.run(generations=10000,tuningInterval=200)
 
 
 # you may want to quit RevBayes now

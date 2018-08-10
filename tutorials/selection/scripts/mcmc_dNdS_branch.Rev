@@ -1,0 +1,99 @@
+################################################################################
+#
+# RevBayes Analysis: Bayesian inference of dN/dS rates.
+#                    
+# 
+#
+# authors: Sebastian Hoehna
+#
+################################################################################
+
+#######################
+# Reading in the Data #
+#######################
+
+data = readDiscreteCharacterData("data/TF105351.Eut.3.phy")
+data_codon = data.translateCharacters("Codon")
+
+# Get some useful variables from the data. We need these later on.
+num_species <- data.ntaxa()
+num_branches <- 2 * num_species - 3
+taxa <- data.taxa()
+
+num_data_subsets = data.size()
+
+# set my move index
+mvi = 1
+mni = 1
+
+
+
+##############
+# Tree model #
+##############
+
+# work under fixed topology
+psi <- readBranchLengthTrees("data/TF105351.Eut.3.53876.tree")[1]
+
+
+######################
+# Substitution Model #
+######################
+
+# the transition/transversion rate ratio
+omega_background ~ dnLognormal(0,1)
+moves[mvi++] = mvSlide(omega_background, delta=1.0, tune=true, weight=2.0)
+
+kappa ~ dnLognormal(0,1)
+moves[mvi++] = mvSlide(kappa, delta=1.0, tune=true, weight=2.0)
+
+pi ~ dnDirichlet( rep(1,4) )
+moves[mvi++] = mvBetaSimplex(pi, alpha=1.0, tune=true, weight=2.0)
+moves[mvi++] = mvDirichletSimplex(pi, alpha=1.0, tune=true, weight=2.0)
+
+for (i in 1:num_branches ) {
+
+    if ( i == 30 ) {
+        omega_scalar  ~ dnLognormal(0,1)
+        omega_focal := omega_background * omega_scalar
+        prob_inc := ifelse( omega_scalar > 1.0, 1.0, 0.0 )
+        Q[i] := fnCodonHKY( omega_focal, kappa, pi )
+    } else {
+        Q[i] := fnCodonHKY( omega_background, kappa, pi )
+    }
+
+}
+
+# the sequence evolution model
+seq ~ dnPhyloCTMC(tree=psi, Q=Q, rootFreq=simplex(rep(1,61)) , type="Codon")
+
+# attach the data
+seq.clamp(data_codon)
+
+
+
+
+
+#############
+# THE Model #
+#############
+
+# We define our model.
+# We can use any node of our model as a handle, here we chose to use the rate matrix.
+mymodel = model(psi)
+
+
+
+monitors[mni++] = mnModel(filename="output/dNdS_branch.log",printgen=10, separator = TAB)
+monitors[mni++] = mnScreen(printgen=100, omega_background, omega_focal, prob_inc)
+
+#mymcmc = mcmcmc(mymodel, monitors, moves, nchain=4, nruns=10)
+mymcmc = mcmc(mymodel, monitors, moves, nruns=2)
+
+mymcmc.run(generations=10000,underPrior=TRUE)
+#mymcmc.run(generations=10000,tuningInterval=200)
+
+
+# you may want to quit RevBayes now
+q()
+
