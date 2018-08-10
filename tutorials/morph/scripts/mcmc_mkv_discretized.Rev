@@ -55,17 +55,14 @@ moves[mvi++] = mvBranchLengthScale(phylogeny, weight=num_branches)
 # Specify the number of categories we would like to use to describe our data. For simplicity,
 # we will use 4.
 
-n_cats = 4
+num_cats = 4
 
 # Specify the two parameters to the Beta distribution, and the moves on these parameters.
-alpha_ofbeta ~ dnExponential( 0.1 )
-beta_ofbeta  ~ dnExponential( 0.1 )
-moves[mvi++] = mvScale(beta_ofbeta, lambda=1, weight=2.0 )
-moves[mvi++] = mvScale(alpha_ofbeta,lambda=1, weight=2.0 )
+beta_scale ~ dnLognormal( 0.0, sd=2*0.587405 )
+moves[mvi++] = mvScale(beta_scale, lambda=1, weight=5.0 )
 
 # Create the Beta distribution, according to the two parameters and the number of categories.
-cat_offset <- 1.0
-cats := fnDiscretizeBeta(alpha_ofbeta + cat_offset, beta_ofbeta + cat_offset, n_cats)
+cats := fnDiscretizeBeta(beta_scale, beta_scale, num_cats)
 
 # Create the Q matrices. These data are binary, so we initialize the Jukes-Cantor matrix with
 # two states. The matrix is initialized from the median values of out four quantiles from
@@ -78,9 +75,7 @@ for (i in 1:cats.size())
 
 # Tell the model what the probability of a character going into any particular category. 
 # This prior says that a character is equally likely to be put into any category.
-
-matrix_probs ~ dnDirichlet( rep(1,n_cats) )
-moves[mvi++] = mvBetaSimplex(matrix_probs, alpha=10, weight=4.0) 
+matrix_probs <- simplex( rep(1,num_cats) )
 
 # Set up Gamma-distributed rate variation.
 alpha_morpho ~ dnUniform( 0.0, 1E6 )

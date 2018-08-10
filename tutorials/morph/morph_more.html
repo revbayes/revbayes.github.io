@@ -756,7 +756,7 @@ This will execute our analysis and we will set the chain length to <code class="
 This function will compute the posterior probabilities of the ancestral states from the samples.
 Later we can visuallize our ancestral states.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>anc_states = readAncestralStateTrace("output/mk.states.txt")
-anc_tree = ancestralStateTree(tree=phylogeny, ancestral_state_trace_vector=anc_states, include_start_states=false, file="output/ase_mk.tree", burnin=0.25, summary_statistic="MAP", site=0)
+anc_tree = ancestralStateTree(tree=phylogeny, ancestral_state_trace_vector=anc_states, include_start_states=false, file="output/ase_mk.tree", burnin=0.25, summary_statistic="MAP", site=1)
 writeNexus( anc_tree, filename="output/ase_mk.tree" )
 </code></pre></div></div>
 
@@ -814,6 +814,7 @@ Iter        |      Posterior   |     Likelihood   |          Prior   |    elapse
 Make sure that you have the package installed, using</p>
 
 <pre><code class="language-{R}">library(devtools)
+install_github("GuangchuangYu/ggtree")
 install_github("revbayes/RevGadgets")
 </code></pre>
 <p>Now that we have our posterior distribution of ancestral states, we want to visualize those results.

@@ -97,10 +97,6 @@
         
           <li><a href="/tutorials/morph/data/bears.nex">bears.nex</a></li>
         
-          <li><a href="/tutorials/morph/data/mammals_thinned.tree">mammals_thinned.tree</a></li>
-        
-          <li><a href="/tutorials/morph/data/mammals_thinned_placenta_type.nex">mammals_thinned_placenta_type.nex</a></li>
-        
         </ul>
     
         
@@ -429,12 +425,8 @@ the Gamma distribution.</p>
 We see some familiar pieces: tree, $Q$ matrix and site_rates.
 We also have two new keywords: data type and coding. The data type
 argument specifies the type of data - in our case, “Standard”, the
-specification for morphology. Coding specifies what type of
-ascertainment bias is expected. We are using the <code class="highlighter-rouge">variable</code> correction,
-as we have no invariant character in our matrix. If we also lacked
-parsimony non-informative characters, we would use the coding
-<code class="highlighter-rouge">informative</code>.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    phyMorpho ~ dnPhyloCTMC(tree=phylogeny, siteRates=rates_morpho, Q=Q_morpho, type="Standard", coding="variable")
+specification for morphology.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    phyMorpho ~ dnPhyloCTMC(tree=phylogeny, siteRates=rates_morpho, Q=Q_morpho, type="Standard")
     phyMorpho.clamp(morpho)
 </code></pre></div></div>
 <p>All of the components of the model are now specified.</p>
@@ -581,9 +573,11 @@ code provided in this section in this file.</p>
 </blockquote>
 
 <p>In <code class="highlighter-rouge">RevBayes</code> it is actually very simple to add a correction for ascertainment bias. 
-You only need to set the option <code class="highlighter-rouge">coding="variable"</code> in the <code class="highlighter-rouge">dnPhyloCTMC</code>:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phyMorpho ~ dnPhyloCTMC(tree=phylogeny, siteRates=rates_morpho, Q=Q_morpho, type="
-Standard", coding="variable")
+You only need to set the option <code class="highlighter-rouge">coding="variable"</code> in the <code class="highlighter-rouge">dnPhyloCTMC</code>. Coding specifies 
+what type of ascertainment bias is expected. We are using the <code class="highlighter-rouge">variable</code> correction,
+as we have no invariant character in our matrix. If we also lacked
+parsimony non-informative characters, we would use the coding <code class="highlighter-rouge">informative</code>.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phyMorpho ~ dnPhyloCTMC(tree=phylogeny, siteRates=rates_morpho, Q=Q_morpho, type="Standard", coding="variable")
 </code></pre></div></div>
 <blockquote class="instruction">
   <p>Remember to change all filenames for the output, e.g., from <code class="highlighter-rouge">output/mk.log</code> to <code class="highlighter-rouge">output/mkv.log</code>.</p>
@@ -646,21 +640,19 @@ be evaluated according to this distribution, in the same way that rate
 variation is evaluated according to the Gamma distribution. The
 discretized distribution is split into multiple classes, each with it’s
 own set of frequencies for the 0 and 1 characters. The number of classes
-can vary; we have chosen 4 for tractability.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    n_cats = 4
-    alpha_ofbeta ~ dnExponential( 1 )
-    beta_ofbeta ~ dnExponential( 1 )
-    moves[mvi++] = mvScale(alpha_ofbeta, lambda=1, weight=5.0 )
-    moves[mvi++] = mvScale(beta_ofbeta,  lambda=1, weight=5.0 )
+can vary; we have chosen 4 for tractability. Note that we need to make sure that this
+discretization results into a symmetric model, therefore we will use only one parameter
+for the Beta distribution: <code class="highlighter-rouge">beta_scale</code> so that $\alpha = \beta$.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    num_cats = 4
+    beta_scale ~ dnLognormal( 0.0, sd=2*0.587405 )
+    moves[mvi++] = mvScale(beta_scale, lambda=1, weight=5.0 )
 </code></pre></div></div>
 <p>Above, we initialized the number of categories, the parameters to the
 Beta distribution, and the moves on the parameters to the Beta.</p>
 
 <p>Next, we set the categories to each represent a quadrant of the Beta
-distribution specified by the <code class="highlighter-rouge">alpha_ofbeta</code> and <code class="highlighter-rouge">beta_ofbeta</code>. The
-+1 values are added to the beta shape and scale parameters
-to prevent model overfitting.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    cats := fnDiscretizeBeta(alpha_ofbeta+1, beta_ofbeta+1, 4)
+distribution specified by the <code class="highlighter-rouge">beta_scale</code>.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    cats := fnDiscretizeBeta(beta_scale, beta_scale, num_cats)
 </code></pre></div></div>
 <p>If you were to print the <code class="highlighter-rouge">cats</code> variable, you would see a list of state
 frequencies like so:</p>
@@ -674,14 +666,11 @@ a parameter. We will, therefore, use the <code class="highlighter-rouge">fnF81</
         Q[i] := fnF81(simplex(abs(1-cats[i]), cats[i]))
     }
 </code></pre></div></div>
-<p>Once we’ve made the our vector of matrices, we specified moves on our
-matrix vector:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    matrix_probs ~ dnDirichlet(v(1,1,1,1))
-    moves[mvi++] = mvSimplexElementScale(matrix_probs, alpha=10, weight=1.0) 
+<p>Additionally, in RevBayes we need to specify the probablities that a site evolves according to one
+of the $Q$-matrices. For this model the probabilities must be equal because we need to guarantee that
+the model is symmetric. This, we use a <code class="highlighter-rouge">simplex</code> function to create a vector that sums to 1.0.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    matrix_probs &lt;- simplex( rep(1,num_cats) )
 </code></pre></div></div>
-<p>This Dirichlet prior says that no category is expected to have more
-characters than another. If you expected some category to hold more of
-the characters, you could put more weight on that category.</p>
 
 <p>The only other specification that needs to change in the model specification is
 the CTMC:</p>
@@ -698,85 +687,6 @@ the matrix.</p>
 just as you ran the plain Mk file. This estimation will take longer than
 the Mk model, due to increased model complexity.</p>
 
-<h2 class="section" id="dm_dir">Site-Heterogeneous Discrete Morphology Model</h2>
-<hr class="section" />
-
-<figure id="morpho_hyperprior_graphical_model"><p><img src="figures/tikz/morph_hyperprior.png" width="400" /></p>
-<figcaption>Graphical model demonstrating the Dirichlet prior to allow variable state frequencies 
-in both binary and multistate data.</figcaption>
-</figure>
-
-<p>In the previous example, we explored allowing among-character variation
-in state frequencies. This is an excellent start for allowing more
-complex models for morphology. But this approach also has several
-shortcomings. First, because we use a Beta distribution, this model
-really only works for binary data. Secondly, oftentimes, we will not
-have a good idea of the shape of the distribution from which we expect
-state frequencies to be drawn.</p>
-
-<p>To accommodate for these concerns, RevBayes also has a model that is
-similar to the CAT model <a href="#Lartillot2004">(Lartillot and Philippe 2004)</a>.</p>
-
-<p>The site-heterogeneous discrete morphology model (SHDM) uses a
-hyperprior on the prior on state frequencies to mix over different
-possible combinations state frequencies. In this mixture model, F81
-Q-matrices (an extension of the Jukes-Cantor which allows for different
-state frequencies between characters) is initialized from a set of state
-frequencies. The number of Q-matrices initialized is equal to the number
-of user-defined categories, as in the discretized Beta model. The state
-frequencies used to initialize the Q-matrices are drawn from a
-Dirichelet prior distribution, which is generated by drawing values from
-an exponential hyperprior distribution. This model is visualized in 
-<a href="#morpho_hyperprior_graphical_model"></a>.</p>
-
-<h3 class="subsection" id="example-site-heterogeneous-discrete-morphology-model">Example: Site-Heterogeneous Discrete Morphology Model</h3>
-<hr class="subsection" />
-
-<blockquote class="instruction">
-  <p>Make a copy of the Rev file you just made. 
-Call it <code class="highlighter-rouge">mcmc_mk_hyperprior.Rev</code>. 
-It will contain the new model parameters and model.</p>
-</blockquote>
-
-<h4 class="subsubsection" id="modifying-the-rev-script-file">Modifying the Rev Script File</h4>
-<hr class="subsubsection" />
-
-<p>At each place in which the output files are specified in the MCMC file,
-change the output path so you don’t overwrite the output from the
-previous exercise. For example, you might call your output file
-<code class="highlighter-rouge">output/mk_hyperprior.log</code> and <code class="highlighter-rouge">output/mk_hyperprior.trees</code>. We will
-also monitor Q_morpho and pi. Add Q_morpho and pi to the <code class="highlighter-rouge">mnScreen</code>.
-Change source statement to indicate the new model file.</p>
-
-<p>We need to modify the way in which the $Q$-matrix is specified. 
-First, we will create a hyperprior called <code class="highlighter-rouge">dir_alpha</code> and specify a move on it.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    dir_alpha ~ dnExponential(1)
-    moves[mvi++] = mvScale(dir_alpha, lambda=1, weight=2.0 )
-</code></pre></div></div>
-<p>This hyperparameter, dir_alpha, will be used as a parameter to a
-Dirichelet distribution from which our state frequencies will be drawn.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    pi_prior := v(dir_alpha,dir_alpha)
-</code></pre></div></div>
-<p>If you were using multistate data, the dir_alpha can be repeated for
-each state. Next, we will modify our previous loop to use these state
-frequencies to initialize our Q-matrices.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    for(i in 1:n_cats)
-    {
-    	pi[i] ~ dnDirichlet(pi_prior)
-        moves[mvi++] = mvSimplexElementScale(pi[i], alpha=10, weight=1.0) 
-        
-        Q_morpho[i] := fnF81(pi[i])
-    }
-</code></pre></div></div>
-<p>In the above loop, for each of our categories, we make a new draw of
-state frequencies from our Dirichelet distribution (the shape of which
-is determined by our dir_alpha values). We then use <code class="highlighter-rouge">fnF81</code> to make our
-Q-matrices. For each RevBayes iteration, we will have 4 pi values and
-4 Q-matrices, one for each of the number of categories we specified.</p>
-
-<p>No other aspects of the model file need to change. Run the MCMC as
-before.</p>
-
 <h3 class="subsection" id="trace">Evaluate and Summarize Your Results</h3>
 <hr class="subsection" />
 
@@ -785,8 +695,7 @@ before.</p>
 
 <p>We will use <code class="highlighter-rouge">Tracer</code>to evaluate the MCMC samples from our
 three estimations. Load all three of the MCMC logs into the
-<code class="highlighter-rouge">Tracer</code> window. The MCMC chains will not have converged
-because they have not been run very long. Highlight all three files in
+<code class="highlighter-rouge">Tracer</code> window. Highlight all three files in
 the upper left-hand viewer (<a href="#add_files"></a>) by right- or
 command-clicking all three files.</p>
 
@@ -795,9 +704,9 @@ command-clicking all three files.</p>
 </figure>
 
 <p>Once all three trace logs are loaded and highlighted, first look at the
-estimated marginal likelihoods. You will notice that the Mk model, as
+estimated likelihoods. You will notice that the Mk model, as
 originally proposed by <a href="#Lewis2001">(Lewis 2001)</a> is improved by allowing any state
-frequency heterogeneity at all. The discretized model and the Dirichlet
+frequency heterogeneity. The discretized model and the Dirichlet
 model both represent improvements, but are fairly close in likelihood
 score to each other (<a href="#tracer_llik"></a>). Likely, we would need to
 perform stepping stone model assessment to truly tell if the more
@@ -898,6 +807,7 @@ degree of model complexity, and any mechanistic assumptions that
 motivate the model’s design. In this case, our tree estimate appears to
 be robust to model complexity.</p>
 
+
 <ol class="bibliography"><li><span id="abella2011">Abella J., Montoya P., Morales J. 2011. Una nueva especie de \textitAgriarctos (Ailuropodinae, Ursidae, Carnivora) en la localidad de Nombrevilla 2 (Zaragoza, España). Estudios Geológicos. 67:187–191.</span>
 
 </li>
@@ -917,9 +827,6 @@ be robust to model complexity.</p>
 <li><span id="Jukes1969">Jukes T.H., Cantor C.R. 1969. Evolution of Protein Molecules. Mammalian Protein Metabolism. 3:21–132.</span>
 
 <a href="https://doi.org/10.1016/B978-1-4832-3211-9.50009-7">10.1016/B978-1-4832-3211-9.50009-7</a>
-
-</li>
-<li><span id="Lartillot2004">Lartillot N., Philippe H. 2004. A Bayesian mixture model for across-site heterogeneities in the amino-acid replacement process. Molecular Biology and Evolution. 21:1095–1109.</span>
 
 </li>
 <li><span id="Lewis2001">Lewis P.O. 2001. A Likelihood Approach to Estimating Phylogeny from Discrete Morphological Character Data. Systematic Biology. 50:913–925.</span>
