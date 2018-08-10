@@ -849,6 +849,168 @@ then the size of the circles will represent the posterior probability.</p>
 <figcaption>Ancestral state estimation of the placenta type.</figcaption>
 </figure>
 
+<h2 class="section" id="sec_ase_unequal">Example: Unequal Transition Rates</h2>
+<hr class="section" />
+
+<blockquote class="instruction">
+  <p>Make a copy of the MCMC and model files you just made. 
+Call them <code class="highlighter-rouge">mcmc_ase_mk.Rev</code> and `model_ase_FreeK.Rev. 
+These will contain the new model parameters and models.</p>
+</blockquote>
+
+<p>The Mk model makes a number of assumptions, but one that may strike you as unrealistic 
+is the assumption that characters are equally likely to change from any one state to any other state.
+That means that a trait is as likely to be gained as lost.
+While this may hold true for some traits, we expect that it may be untrue for many others.</p>
+
+<p>RevBayes has functionality to allow us to relax this assumption.</p>
+
+<h3 class="subsection" id="modifying-the-mcmc-section">Modifying the MCMC Section</h3>
+<hr class="subsection" />
+
+<p>At each place in which the output files are specified in the MCMC file, change the output path so you don’t overwrite the output from the previous exercise. 
+For example, you might call your output file <code class="highlighter-rouge">output/ase_freeK.log</code>.
+Change source statement to indicate the new model file.</p>
+
+<h3 class="subsection" id="modifying-the-model-section">Modifying the Model Section</h3>
+<hr class="subsection" />
+
+<p>Our goal here is to create a rate matrix with 6 free parameters.
+We will assume an exponential prior distribution for each of the rates.
+Thus, we start be specifying the rate of this exponential prior distribution.
+A good guess might be that 10 events happened along the tree, so the rate should be the tree-length divided by 10.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_pr := phylogeny.treeLength() / 10
+</code></pre></div></div>
+
+<p>Now we can create our six independent rate variables drawn from an identical exponential distribution</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_12 ~ dnExponential(rate_pr)
+rate_13 ~ dnExponential(rate_pr)
+rate_21 ~ dnExponential(rate_pr)
+rate_23 ~ dnExponential(rate_pr)
+rate_31 ~ dnExponential(rate_pr)
+rate_32 ~ dnExponential(rate_pr)
+</code></pre></div></div>
+<p>As usual, we will apply a scaling move to each of the rate variables.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvScale( rate_12, weight=2 )
+moves[mvi++] = mvScale( rate_13, weight=2 )
+moves[mvi++] = mvScale( rate_21, weight=2 )
+moves[mvi++] = mvScale( rate_23, weight=2 )
+moves[mvi++] = mvScale( rate_31, weight=2 )
+moves[mvi++] = mvScale( rate_32, weight=2 )
+</code></pre></div></div>
+<p>Next, we put all the rates together into our rate matrix.
+Don’t forget to say that we do not rescale the rate matrix (<code class="highlighter-rouge">rescale=false</code>).
+We would only rescale if we use relative rates.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q_morpho := fnFreeK( [ rate_12, rate_13, rate_21, rate_23, rate_31, rate_32 ], rescale=false )
+</code></pre></div></div>
+
+<p>In this model, we also decide to specify an additional parameter for the root state frequencies instead of assuming the root state to be drawn from the stationary distribution. 
+We will use a Dirichlet prior distribution for the root state frequencies.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rf_prior &lt;- [1,1,1]
+rf ~ dnDirichlet( rf_prior )
+moves[mvi++] = mvBetaSimplex( rf, weight=2 )
+moves[mvi++] = mvDirichletSimplex( rf, weight=2 )
+</code></pre></div></div>
+
+<p>We need to modify the <code class="highlighter-rouge">dnPhyloCTMC</code> to pass in our new root frequencies parameter.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phyMorpho ~ dnPhyloCTMC(tree=phylogeny, Q=Q_morpho, rootFrequencies=rf, type="Standard")
+</code></pre></div></div>
+
+<blockquote class="instruction">
+  <p>Now you are done with your unequal rates model. Give it a run!</p>
+</blockquote>
+
+<h2 class="section" id="sec_ase_ir_rj">Reversible-jump MCMC to test for irreversibility</h2>
+<hr class="section" />
+
+<p>In the previous section we assumed that there are 6 different rates, which are all $&gt;0$.
+Now, we will apply a reversible-jump MCMC (missing reference) to test if any of the rates is significantly larger than $0$.</p>
+
+<blockquote class="instruction">
+  <p>Make a copy of the Rev script file you just made. 
+Call them `mcmc_ase_freeK_RJ.Rev. 
+This will contain the new model parameters and models.</p>
+</blockquote>
+
+<h3 class="subsection" id="modifying-the-mcmc-section">Modifying the MCMC Section</h3>
+<hr class="subsection" />
+
+<p>At each place in which the output files are specified in the MCMC section, change the output path so you don’t overwrite the output from the previous exercise. 
+For example, you might call your output file <code class="highlighter-rouge">output/freeK_ASE.log</code>.</p>
+
+<h3 class="subsection" id="modifying-the-model-section">Modifying the Model Section</h3>
+<hr class="subsection" />
+
+<p>The only part in the model section that we are going to modify is the prior distributions and moves on the rate parameters.
+We will assume the same rate for the exponential prior distribution as before.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_pr := phylogeny.treeLength() / 10
+</code></pre></div></div>
+<p>Next, we specify that we have a 0.5 probability, <em>a priori</em>, that a rate is equal to 0.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mix_pr &lt;- 0.5
+</code></pre></div></div>
+
+<p>Now we can create our reversible-jump distributions, which take in a constant value, 0.0 in this case, and a distribution.
+Thus, the value is either drawn to be exactly equal to the constant value (0.0 here), or drawn from the base distribution (the exponential distribution in this case).</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_12 ~ dnRJMixture(0.0, dnExponential(rate_pr), p=mix_pr)
+rate_13 ~ dnRJMixture(0.0, dnExponential(rate_pr), p=mix_pr)
+rate_21 ~ dnRJMixture(0.0, dnExponential(rate_pr), p=mix_pr)
+rate_23 ~ dnRJMixture(0.0, dnExponential(rate_pr), p=mix_pr)
+rate_31 ~ dnRJMixture(0.0, dnExponential(rate_pr), p=mix_pr)
+rate_32 ~ dnRJMixture(0.0, dnExponential(rate_pr), p=mix_pr)
+</code></pre></div></div>
+
+<p>Since we are interested in the probability that a rate is equal to 0.0, we want to compute this posterior probability directly.
+Therefore, we will use the <code class="highlighter-rouge">ifelse</code> function, which will return 1.0 if the rate is equal to 0.0, and 0.0 otherwise (if the rate is unequal to 0.0).
+Hence, the frequency with which we sample a 1.0 gives us the posterior probability that a given rate is equal to 0.0.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>prob_rate_12 := ifelse( rate_12 == 0, 1.0, 0.0 )
+prob_rate_13 := ifelse( rate_13 == 0, 1.0, 0.0 )
+prob_rate_21 := ifelse( rate_21 == 0, 1.0, 0.0 )
+prob_rate_23 := ifelse( rate_23 == 0, 1.0, 0.0 )
+prob_rate_31 := ifelse( rate_31 == 0, 1.0, 0.0 )
+prob_rate_32 := ifelse( rate_32 == 0, 1.0, 0.0 )
+</code></pre></div></div>
+
+<p>We also need to specify specific moves that ``jump’’ in parameter dimension.
+We will use the <code class="highlighter-rouge">mvRJSwitch</code> move that changes the value to be either equal to the constant value 
+provided from the <code class="highlighter-rouge">dnRJMixture</code> or a value drawn from the base distribution (the exponential distribution).</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvRJSwitch( rate_12, weight=2 )
+moves[mvi++] = mvRJSwitch( rate_13, weight=2 )
+moves[mvi++] = mvRJSwitch( rate_21, weight=2 )
+moves[mvi++] = mvRJSwitch( rate_23, weight=2 )
+moves[mvi++] = mvRJSwitch( rate_31, weight=2 )
+moves[mvi++] = mvRJSwitch( rate_32, weight=2 )
+</code></pre></div></div>
+
+<p>Additionally, we also need to specify moves that change the rates if they are not equal to 0.0.
+As usual, we use the standard scaling moves.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvScale( rate_12, weight=2 )
+moves[mvi++] = mvScale( rate_13, weight=2 )
+moves[mvi++] = mvScale( rate_21, weight=2 )
+moves[mvi++] = mvScale( rate_23, weight=2 )
+moves[mvi++] = mvScale( rate_31, weight=2 )
+moves[mvi++] = mvScale( rate_32, weight=2 )
+</code></pre></div></div>
+
+<blockquote class="instruction">
+  <p>This is all that you need to do for this ``fancy’’ reversible-jump model. Give it a try!</p>
+</blockquote>
+
+<h2 class="section" id="sec_ase_results">Evaluate and Summarize Your Results</h2>
+<hr class="section" />
+
+<h3 class="subsection" id="subsec_ase_plots">Visualizing Ancestral State Estimates</h3>
+<hr class="subsection" />
+
+<p>We have previously seen in <a href="#fig_mk_anc_states"></a> how the ancestral states of the simple model look.
+You should repeat plotting the ancestral states now also for the <code class="highlighter-rouge">freeK</code> and <code class="highlighter-rouge">freeK_RJ</code> analyses.
+My output is shown in <a href="#fig_mk_anc_states_freeK"></a></p>
+
+<figure id="fig_mk_anc_states_freeK"><p><img src="figures/Mammals_ASE_FreeK.png" /></p>
+<figcaption>Ancestral state estimates of placenta type under the <code class="highlighter-rouge">freeK</code> model.</figcaption>
+</figure>
+
+<p>You should observe that the estimated root states have changed!</p>
+
 
 <ol class="bibliography"><li><span id="Beaulieu2013">Beaulieu J.M., O’Meara B.C., Donoghue M.J. 2013. Identifying hidden rate changes in the evolution of a binary morphological character: the evolution of plant habit in campanulid angiosperms. Systematic Biology. 62:725–737.</span>
 
