@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="search-domain" value="http://localhost:4000/">
+    <meta name="search-domain" value="https://revbayes.github.io/">
     <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
     <link rel="stylesheet" href="/assets/css/syntax.css">
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
@@ -432,9 +432,9 @@ P_10
 <h3 class="subsection" id="covarion">Covarion</h3>
 <hr class="subsection" />
 
-<p>Covarion models (missing reference) capture the possibility that a ``hidden’’ (unobserved or unmeasurable) states cause evolutionary processes to vary in tempo and modes.
-For example, phylogenetically local clusters of plant lineages appear to transition between herbaceous and woody habits at relatively high rates, so one might want to quantify where these bursts occur (missing reference).
-While similar in structure to the correlated character model of \citet{pagel94}, covarion models do not observe the hidden state that induce the mode-shifts.
+<p>Covarion models <a href="#Tuffley1998">(Tuffley and Steel 1998)</a> capture the possibility that a ``hidden’’ (unobserved or unmeasurable) states cause evolutionary processes to vary in tempo and modes.
+For example, phylogenetically local clusters of plant lineages appear to transition between herbaceous and woody habits at relatively high rates, so one might want to quantify where these bursts occur <a href="#Beaulieu2013">(Beaulieu et al. 2013)</a>.
+While similar in structure to the correlated character model of <a href="#Pagel1994">(Pagel 1994)</a>, covarion models do not observe the hidden state that induce the mode-shifts.
 Instead, covarion models expand the character’s state space by a factor of $K$, and observe the character once for each of the $K$ categories.
 For example, take a binary character modeled with $K=2$ hidden state classes.
 The model would treat a character that is observed as being in state 0 as possibly being in either of the $K=2$ classes (0,1) and (0,2).
@@ -444,7 +444,6 @@ In practice, this is done by setting the likelihood of observing those $0k$ stat
 
 <script type="math/tex; mode=display">% <![CDATA[
 Q = \left(
-\arraycolsep=6pt\def\arraystretch{2.5}
 \begin{array}{cc|cc}
 - & r_1 q_{01}^{(1)} & s_{12} & 0 \\
 r_1 q_{10}^{(1)} & - & 0 & s_{12} \\
@@ -458,7 +457,6 @@ s_{21} & 0 & - & r_2 q_{01}^{(2)} \\
 <p>This form can be reduced to a simpler block-matrix representation
 <script type="math/tex">% <![CDATA[
 Q = \left(
-\arraycolsep=8pt\def\arraystretch{3.0}
 \begin{array}{c|c}
 r_1 Q^{(1)} & s_{12} I  \\
 \hline
@@ -526,7 +524,7 @@ Furthermore, we want to know if placenta type is evolving under an equal-rates m
 <figcaption>Visualization of different placenta types. Reproduced from (missing reference).</figcaption>
 </figure>
 
-<h3 class="subsection" id="the-mk-model">The Mk Model</h3>
+<h3 class="subsection" id="specifying-the-mk-model">Specifying the Mk Model</h3>
 <hr class="subsection" />
 
 <p>We will start this tutorial with the simple Mk model with three states, $k=3$ <a href="#Lewis2001">(Lewis 2001)</a>.
@@ -588,7 +586,7 @@ Our actual analysis uses the full dataset of $\sim 5000$ taxa.</p>
 
 <p>For complex models and analyses, it is best to create Rev script files that will contain all of the model parameters, moves, and functions. 
 In this exercise, you will work primarily in your text editor and create a set of files that will be easily managed and interchanged.
-In this first section, you will write the following files from scratch and save them in the \cl{scripts} directory:</p>
+In this first section, you will write the following files from scratch and save them in the <code class="highlighter-rouge">scripts</code> directory:</p>
 <ul>
   <li><code class="highlighter-rouge">mcmc_ase_mk.Rev</code>: the Rev-script file that loads the data, specifies the model describing discrete morphological character change (binary characters), and specifies the monitors and MCMC sampler.</li>
 </ul>
@@ -622,7 +620,7 @@ Import the morphological character matrix and assign it to the variable <code cl
 <p>Before we begin writing the Rev scripts for each of the model components, we need to instantiate a couple ``helper variables’’ that will be used by downstream parts of our model specification files. 
 Create a workspace variable called <code class="highlighter-rouge">mvi</code>. 
 This variable is an iterator that will build a vector containing all of the MCMC moves used to propose new states for every stochastic node in the model graph. 
-Each time a new move is added to the vector, \cl{mvi} will be incremented by a value of <code class="highlighter-rouge">1</code>.</p>
+Each time a new move is added to the vector, <code class="highlighter-rouge">mvi</code> will be incremented by a value of <code class="highlighter-rouge">1</code>.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvi = 1
 </code></pre></div></div>
 <p>One important distinction here is that <code class="highlighter-rouge">mvi</code> is part of the RevBayes workspace and not the hierarchical model. 
@@ -852,7 +850,12 @@ then the size of the circles will represent the posterior probability.</p>
 </figure>
 
 
-<ol class="bibliography"><li><span id="Goldberg2008">Goldberg E.E., Igić B. 2008. On Phylogenetic Tests of Irreversible Evolution. Evolution. 62:2727–2741.</span>
+<ol class="bibliography"><li><span id="Beaulieu2013">Beaulieu J.M., O’Meara B.C., Donoghue M.J. 2013. Identifying hidden rate changes in the evolution of a binary morphological character: the evolution of plant habit in campanulid angiosperms. Systematic Biology. 62:725–737.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syt034">10.1093/sysbio/syt034</a>
+
+</li>
+<li><span id="Goldberg2008">Goldberg E.E., Igić B. 2008. On Phylogenetic Tests of Irreversible Evolution. Evolution. 62:2727–2741.</span>
 
 <a href="https://doi.org/10.1111/j.1558-5646.2008.00505.x">10.1111/j.1558-5646.2008.00505.x</a>
 
@@ -870,6 +873,16 @@ then the size of the circles will represent the posterior probability.</p>
 <li><span id="Lewis2001">Lewis P.O. 2001. A Likelihood Approach to Estimating Phylogeny from Discrete Morphological Character Data. Systematic Biology. 50:913–925.</span>
 
 <a href="https://doi.org/10.1080/106351501753462876">10.1080/106351501753462876</a>
+
+</li>
+<li><span id="Pagel1994">Pagel M. 1994. Detecting correlated evolution on phylogenies: a general method for the comparative analysis of discrete characters. Proceedings of the Royal Society of London B: Biological Sciences. 255:37–45.</span>
+
+<a href="https://doi.org/10.1098/rspb.1994.0006">10.1098/rspb.1994.0006</a>
+
+</li>
+<li><span id="Tuffley1998">Tuffley C., Steel M. 1998. Modeling the covarion hypothesis of nucleotide substitution. Mathematical Biosciences. 147:63–91.</span>
+
+<a href="https://doi.org/10.1016/S0025-5564(97)00081-3">10.1016/S0025-5564(97)00081-3</a>
 
 </li></ol>
 
