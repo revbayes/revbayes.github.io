@@ -10,6 +10,7 @@ prerequisites:
 - mcmc_archery
 - mcmc_binomial
 exclude_files: 
+- data/primates_and_galeopterus_cox2.nex
 - data/primates_and_galeopterus_cytb.nex
 - data/fagus_ITS.nex
 - data/fagus_matK.nex

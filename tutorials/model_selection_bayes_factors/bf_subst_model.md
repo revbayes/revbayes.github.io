@@ -28,11 +28,9 @@ redirect: false
 
 {% section Overview %}
 
-This tutorial provides the third protocol from our recent publication
-{% cite Hoehna2017a %}. The first protocol is described in the 
-[Substitution model tutorial]({{ base.url }}/tutorials/ctmc/)
-and the second protocol is described in the 
-[Partitioned data analysis tutorial](https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Partition_Tutorial/RB_Partition_Tutorial.pdf).
+This tutorial provides the third protocol from our recent publication {% cite Hoehna2017a %}. 
+The first protocol is described in the {% page_ref ctmc %}
+and the second protocol is described in the {% page_ref partition/index %}.
 
 You should read first the {% page_ref model_selection_bayes_factors/bf_intro %} tutorial, which explains the theory and 
 standard algorithms for estimating marginal likelihoods and Bayes factors.
@@ -114,7 +112,7 @@ takes the same power posteriors as input.
 ```
 Compute the marginal likelihood under stepping-stone sampling using the
 member function `marginal()` of the `ps` variable and record the value
-in Table [tab:ml_cytb].
+in Table [tab_ml_subst_models].
 ```
     ps.marginal() 
 ```
