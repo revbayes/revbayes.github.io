@@ -1,0 +1,106 @@
+################################################################################
+#
+# RevBayes Example: Inferring a Phylogeny of Fossil Bears Using the Mk Model
+#                   with ascertainment bias correction.
+# 
+# This file: Runs the full MCMC ...
+#
+# authors:  April M. Wright, Michael J. Landis, Sebastian Höhna
+#
+################################################################################
+
+#######################
+# Reading in the Data #
+#######################
+# Import the morphological character matrix #
+# this file contains only the taxa for which morphological characters are available #
+morpho <- readDiscreteCharacterData("data/bears.nex")
+
+## helpers
+mvi = 1
+mni = 1
+taxa <- morpho.names()
+num_taxa <- taxa.size()
+num_branches <- 2 * num_taxa - 2
+
+
+
+##############
+# Tree model #
+##############
+
+# Set up branch length hyperprior with a move
+br_len_lambda ~ dnExp(0.2)
+moves[mvi++] = mvScale(br_len_lambda, weight=2)
+
+# Define the tree parameter.
+# First, we generate the topology.
+# We assume a uniform prior on topology.
+phylogeny ~ dnUniformTopologyBranchLength(taxa, branchLengthDistribution=dnExponential(br_len_lambda))
+
+# compute the tree length from the phylogeny
+tree_length := phylogeny.treeLength()
+
+moves[mvi++] = mvNNI(phylogeny, weight=num_branches/2.0)
+moves[mvi++] = mvSPR(phylogeny, weight=num_branches/10.0)
+moves[mvi++] = mvBranchLengthScale(phylogeny, weight=num_branches)
+
+
+
+###########################################
+# Binary morphological substitution model #
+###########################################
+
+# Create the Q matrix. These data are binary, so we initialize the Jukes-Cantor matrix with
+# two states
+Q_morpho <- fnJC(2)
+
+# Set up Gamma-distributed rate variation.
+alpha_morpho ~ dnUniform( 0.0, 1E6 )
+alpha_morpho.setValue( 1.0 )
+rates_morpho := fnDiscretizeGamma( alpha_morpho, alpha_morpho, 4 )
+
+# Moves on the parameters to the Gamma distribution.
+moves[mvi++] = mvScale(alpha_morpho, lambda=1, weight=2.0)
+
+#Combine all of our elements into a CTMC. Because we have not observed any invariant sites, 
+# we specify the coding is 'variable'.
+
+phyMorpho ~ dnPhyloCTMC(tree=phylogeny, siteRates=rates_morpho, Q=Q_morpho, type="Standard", coding="variable")
+phyMorpho.clamp(morpho)
+
+
+
+########
+# MCMC #
+########
+
+# initialize the model object #
+mymodel = model(phylogeny)
+# Create a vector of monitors #
+# 1. for the full model #
+monitors[mni++] = mnModel(filename="output/mkv.log", printgen=10)
+# 2. the tree #
+monitors[mni++] = mnFile(filename="output/mkv.trees", printgen=10, phylogeny)
+# 3. and a few select parameters to be printed to the screen #
+monitors[mni++] = mnScreen(printgen=100)
+
+# Initialize the MCMC object #
+mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
+
+# Run the MCMC #
+mymcmc.run(generations=10000, tuningInterval=200)
+
+# check the performance of the MCMC/moves
+mymcmc.operatorSummary()
+
+# Read in the tree trace and construct the consensus tree tree #
+trace = readTreeTrace("output/mkv.trees", treetype="non-clock")
+trace.setBurnin(0.25)
+
+# Summarize tree trace and the consensus tree to file
+mapTree(trace, file="output/mkv.map.tre")
+consensusTree(trace, file="output/mkv.majrule.tre")
+
+# Quit RevBayes #
+q()
