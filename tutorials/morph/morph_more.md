@@ -864,3 +864,183 @@ Ancestral state estimation of the placenta type.
 
 
 
+{% section Example: Unequal Transition Rates | sec_ase_unequal %}
+
+
+
+>Make a copy of the MCMC and model files you just made. 
+>Call them `mcmc_ase_mk.Rev` and `model_ase_FreeK.Rev. 
+>These will contain the new model parameters and models.  
+{:.instruction}
+
+
+The Mk model makes a number of assumptions, but one that may strike you as unrealistic 
+is the assumption that characters are equally likely to change from any one state to any other state.
+That means that a trait is as likely to be gained as lost.
+While this may hold true for some traits, we expect that it may be untrue for many others.
+
+RevBayes has functionality to allow us to relax this assumption.
+
+
+{% subsection Modifying the MCMC Section %}
+
+At each place in which the output files are specified in the MCMC file, change the output path so you don't overwrite the output from the previous exercise. 
+For example, you might call your output file `output/ase_freeK.log`.
+Change source statement to indicate the new model file.
+
+{% subsection Modifying the Model Section %}
+
+Our goal here is to create a rate matrix with 6 free parameters.
+We will assume an exponential prior distribution for each of the rates.
+Thus, we start be specifying the rate of this exponential prior distribution.
+A good guess might be that 10 events happened along the tree, so the rate should be the tree-length divided by 10.
+```
+rate_pr := phylogeny.treeLength() / 10
+```
+
+Now we can create our six independent rate variables drawn from an identical exponential distribution
+```
+rate_12 ~ dnExponential(rate_pr)
+rate_13 ~ dnExponential(rate_pr)
+rate_21 ~ dnExponential(rate_pr)
+rate_23 ~ dnExponential(rate_pr)
+rate_31 ~ dnExponential(rate_pr)
+rate_32 ~ dnExponential(rate_pr)
+```
+As usual, we will apply a scaling move to each of the rate variables.
+```
+moves[mvi++] = mvScale( rate_12, weight=2 )
+moves[mvi++] = mvScale( rate_13, weight=2 )
+moves[mvi++] = mvScale( rate_21, weight=2 )
+moves[mvi++] = mvScale( rate_23, weight=2 )
+moves[mvi++] = mvScale( rate_31, weight=2 )
+moves[mvi++] = mvScale( rate_32, weight=2 )
+```
+Next, we put all the rates together into our rate matrix.
+Don't forget to say that we do not rescale the rate matrix (`rescale=false`).
+We would only rescale if we use relative rates.
+```
+Q_morpho := fnFreeK( [ rate_12, rate_13, rate_21, rate_23, rate_31, rate_32 ], rescale=false )
+```
+
+In this model, we also decide to specify an additional parameter for the root state frequencies instead of assuming the root state to be drawn from the stationary distribution. 
+We will use a Dirichlet prior distribution for the root state frequencies.
+```
+rf_prior <- [1,1,1]
+rf ~ dnDirichlet( rf_prior )
+moves[mvi++] = mvBetaSimplex( rf, weight=2 )
+moves[mvi++] = mvDirichletSimplex( rf, weight=2 )
+```
+
+We need to modify the `dnPhyloCTMC` to pass in our new root frequencies parameter.
+```
+phyMorpho ~ dnPhyloCTMC(tree=phylogeny, Q=Q_morpho, rootFrequencies=rf, type="Standard")
+```
+
+
+
+>Now you are done with your unequal rates model. Give it a run! 
+{:.instruction}
+
+
+
+{% section Reversible-jump MCMC to test for irreversibility | sec_ase_ir_rj %}
+
+In the previous section we assumed that there are 6 different rates, which are all $>0$.
+Now, we will apply a reversible-jump MCMC {% cite Green1995 %} to test if any of the rates is significantly larger than $0$.
+
+
+>Make a copy of the Rev script file you just made. 
+>Call them `mcmc_ase_freeK_RJ.Rev. 
+>This will contain the new model parameters and models. 
+{:.instruction}
+
+
+{% subsection Modifying the MCMC Section %}
+
+At each place in which the output files are specified in the MCMC section, change the output path so you don't overwrite the output from the previous exercise. 
+For example, you might call your output file `output/freeK_ASE.log`.
+
+{% subsection Modifying the Model Section %}
+
+The only part in the model section that we are going to modify is the prior distributions and moves on the rate parameters.
+We will assume the same rate for the exponential prior distribution as before.
+```
+rate_pr := phylogeny.treeLength() / 10
+```
+Next, we specify that we have a 0.5 probability, *a priori*, that a rate is equal to 0.
+```
+mix_pr <- 0.5
+```
+
+Now we can create our reversible-jump distributions, which take in a constant value, 0.0 in this case, and a distribution.
+Thus, the value is either drawn to be exactly equal to the constant value (0.0 here), or drawn from the base distribution (the exponential distribution in this case). 
+```
+rate_12 ~ dnRJMixture(0.0, dnExponential(rate_pr), p=mix_pr)
+rate_13 ~ dnRJMixture(0.0, dnExponential(rate_pr), p=mix_pr)
+rate_21 ~ dnRJMixture(0.0, dnExponential(rate_pr), p=mix_pr)
+rate_23 ~ dnRJMixture(0.0, dnExponential(rate_pr), p=mix_pr)
+rate_31 ~ dnRJMixture(0.0, dnExponential(rate_pr), p=mix_pr)
+rate_32 ~ dnRJMixture(0.0, dnExponential(rate_pr), p=mix_pr)
+```
+
+Since we are interested in the probability that a rate is equal to 0.0, we want to compute this posterior probability directly.
+Therefore, we will use the `ifelse` function, which will return 1.0 if the rate is equal to 0.0, and 0.0 otherwise (if the rate is unequal to 0.0).
+Hence, the frequency with which we sample a 1.0 gives us the posterior probability that a given rate is equal to 0.0.
+```
+prob_rate_12 := ifelse( rate_12 == 0, 1.0, 0.0 )
+prob_rate_13 := ifelse( rate_13 == 0, 1.0, 0.0 )
+prob_rate_21 := ifelse( rate_21 == 0, 1.0, 0.0 )
+prob_rate_23 := ifelse( rate_23 == 0, 1.0, 0.0 )
+prob_rate_31 := ifelse( rate_31 == 0, 1.0, 0.0 )
+prob_rate_32 := ifelse( rate_32 == 0, 1.0, 0.0 )
+```
+
+We also need to specify specific moves that ``jump'' in parameter dimension.
+We will use the `mvRJSwitch` move that changes the value to be either equal to the constant value 
+provided from the `dnRJMixture` or a value drawn from the base distribution (the exponential distribution).
+```
+moves[mvi++] = mvRJSwitch( rate_12, weight=2 )
+moves[mvi++] = mvRJSwitch( rate_13, weight=2 )
+moves[mvi++] = mvRJSwitch( rate_21, weight=2 )
+moves[mvi++] = mvRJSwitch( rate_23, weight=2 )
+moves[mvi++] = mvRJSwitch( rate_31, weight=2 )
+moves[mvi++] = mvRJSwitch( rate_32, weight=2 )
+```
+
+Additionally, we also need to specify moves that change the rates if they are not equal to 0.0.
+As usual, we use the standard scaling moves.
+```
+moves[mvi++] = mvScale( rate_12, weight=2 )
+moves[mvi++] = mvScale( rate_13, weight=2 )
+moves[mvi++] = mvScale( rate_21, weight=2 )
+moves[mvi++] = mvScale( rate_23, weight=2 )
+moves[mvi++] = mvScale( rate_31, weight=2 )
+moves[mvi++] = mvScale( rate_32, weight=2 )
+```
+
+
+>This is all that you need to do for this ``fancy'' reversible-jump model. Give it a try! 
+{:.instruction}
+
+
+
+{% section Evaluate and Summarize Your Results | sec_ase_results %}
+
+{% subsection Visualizing Ancestral State Estimates | subsec_ase_plots %}
+
+We have previously seen in {% ref fig_mk_anc_states %} how the ancestral states of the simple model look.
+You should repeat plotting the ancestral states now also for the `freeK` and `freeK_RJ` analyses.
+My output is shown in {% ref fig_mk_anc_states_freeK %}
+
+
+{% figure fig_mk_anc_states_freeK %}
+<img src="figures/Mammals_ASE_FreeK.png" /> 
+{% figcaption %} 
+Ancestral state estimates of placenta type under the `freeK` model.
+{% endfigcaption %}
+{% endfigure %}
+
+You should observe that the estimated root states have changed!
+
+
