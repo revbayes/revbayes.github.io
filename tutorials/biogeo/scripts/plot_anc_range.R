@@ -5,6 +5,7 @@ if (stable) {
     source("/Users/mlandis/projects/RevGadgets/R/plot_ancestral_states.R")
 }
 library(ggtree)
+library(ggplot2)
 
 # files
 tree_fn = paste(out_str, ".ase.tre", sep="")
@@ -21,6 +22,9 @@ range_labels = sapply(state_descriptions$range[2:nrow(state_descriptions)],
         paste( area_names[present], collapse="")
     })
 
+state_labels = range_labels
+names(state_labels) = as.character(1:15)
+
 # generate colors for ranges
 range_color_list = read.csv(color_fn, header=T, sep=",", colClasses="character")
 range_colors = range_color_list$color[ match(range_labels, range_color_list$range) ]
@@ -32,7 +36,7 @@ plot_ancestral_states(tree_file=tree_fn,
                       shoulder_label_size=1.5,
                       shoulder_label_nudge_x=-0.1*plot_scale,
                       summary_statistic=summary_statistic,
-                      state_labels=range_labels,
+                      state_labels=state_labels,
                       state_colors=range_colors,
                       node_label_size=2,
                       node_size_range=c(2,2),

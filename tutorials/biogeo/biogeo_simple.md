@@ -32,7 +32,6 @@ exclude_files:
 - data/n6/silversword.n6.range.nex
 - data/n6/silversword.tre
 - scripts/plot_anc_range.epoch.R
-- scripts/plot_anc_range.R
 - scripts/range_colors.txt
 - scripts/run_epoch.Rev
 index: index

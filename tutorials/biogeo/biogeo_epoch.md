@@ -26,7 +26,6 @@ exclude_files:
 - data/n6/silversword.mol.nex
 - data/n6/silversword.n6.range.nex
 - data/n6/silversword.tre
-- scripts/plot_anc_range.R
 - scripts/plot_anc_range.simple.R
 - scripts/range_colors.txt
 - scripts/run_simple.Rev
