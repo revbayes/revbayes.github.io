@@ -6,7 +6,7 @@ level: 4
 order: 6.5
 index: true
 title-old: RB_DiversificationRate_CharacterDependent_Tutorial
-redirect: true
+redirect: false
 ---
 
 We are moving the tutorials to a new web-based format, but this tutorial hasn't been updated yet.
