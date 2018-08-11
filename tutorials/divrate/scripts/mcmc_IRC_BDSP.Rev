@@ -36,20 +36,16 @@ H = 0.587405
 
 ### Specify a prior on the speciation and extinction rates
 
-### Create a lognormal distributed variable for the mean speciation rate
-speciation_prior_mean <- ln( ln(NUM_TOTAL_SPECIES/2.0) / root )
-speciation_mean ~ dnLognormal(mean=speciation_prior_mean, sd=H)
-moves[mvi++] = mvScale(speciation_mean,lambda=1,tune=true,weight=5)
+### Create a constant variable for the mean speciation rate
+speciation_mean <- ln(NUM_TOTAL_SPECIES/2.0) / root
+speciation_sd <- H*2
 
 ### Create a deterministic variable for the speciation rate categories
 ### using a discretized lognormal distribution (the N-quantiles of it)
-speciation_sd <- H*2
 speciation := fnDiscretizeDistribution( dnLognormal(ln(speciation_mean), speciation_sd), NUM_RATE_CATEGORIES )
 
 ### Create a lognormal distributed variable for the extinction rate
-extinction_prior_mean <- ln( ln(NUM_TOTAL_SPECIES/2.0) / root )
-extinction_mean ~ dnLognormal(mean=extinction_prior_mean,sd=H*2)
-moves[mvi++] = mvScale(extinction_mean,lambda=1.0,tune=true,weight=3.0)
+extinction_mean <- ln(NUM_TOTAL_SPECIES/2.0) / root
 
 ### Create a deterministic variable for the extinction rate categories
 ### using a discretized lognormal distribution (the N-quantiles of it)
@@ -109,7 +105,7 @@ monitors[mni++] = mnScreen(printgen=10, event_rate, speciation_mean, extinction_
 mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
 
 ### run the MCMC
-mymcmc.run(generations=2000,tuningInterval=200)
+mymcmc.run(generations=5000,tuningInterval=200)
 
 mymcmc.operatorSummary()
 
