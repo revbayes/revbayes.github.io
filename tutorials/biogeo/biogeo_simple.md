@@ -33,7 +33,9 @@ exclude_files:
 - data/n6/silversword.tre
 - scripts/plot_anc_range.epoch.R
 - scripts/range_colors.txt
+- scripts/run_simple_phy.Rev
 - scripts/run_epoch.Rev
+- scripts/run_epoch_phy.Rev
 index: index
 title-old: RB_Biogeography_Tutorial
 redirect: false 

@@ -11,6 +11,14 @@ levels:
 - Diversification Rate Estimation
 - Comparative methods
 - Biogeography
+levels_id:
+- intro
+- model_test
+- phylo_basic
+- phylo_complex
+- phylo_div_rate
+- phylo_trait
+- phylo_biogeo
 ---
 
 This list shows all of the RevBayes tutorials for learning various aspects of RevBayes and Bayesian phylogenetic analysis.
@@ -33,7 +41,7 @@ Please see {% page_ref recommended %} for links to various software programs you
 {% for level in levels %}
 {% assign i = forloop.index | minus: 1 %}
 {% if page.levels[i] %}
-<h3>{{ page.levels[i] }}</h3>
+<h3>{{ page.levels[i] }}</h3>{:id="{{ page.levels_id[i] }}"}
 {% else %}
 <h3>Miscellaneous Tutorials</h3>
 {% endif %}

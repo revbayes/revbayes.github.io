@@ -41,8 +41,10 @@ exclude_files:
 - scripts/plot_anc_range.R
 - scripts/plot_anc_range.simple.R
 - scripts/range_colors.txt
-- scripts/run_epoch.Rev
 - scripts/run_simple.Rev
+- scripts/run_simple_phy.Rev
+- scripts/run_epoch.Rev
+- scripts/run_epoch_phy.Rev
 index: true
 title-old: RB_Biogeography_Tutorial
 redirect: false 
