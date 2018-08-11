@@ -567,30 +567,18 @@ For this we will use the function <code class="highlighter-rouge">fnDiscretizeDi
 in a distribution as its first argument and the number of quantiles as
 the second argument. The return value is a vector of quantiles. We use
 it as a deterministic variable and every time the parameters of the base
-distribution (<em>i.e.</em>, the lognormal
+distribution (i.e., the lognormal
 distribution in our case) change the quantiles will update automatically
 as well. Thus we only need to specify parameters for our base
-distribution, the lognormal distribution. We choose a stochastic
-variable for the mean parameter of the lognormal distribution drawn from
-yet another lognormal prior distribution. We fix the prior mean on this
-mean speciation rate on our expected diversification rate, which is
+distribution, the lognormal distribution. We choose a constant
+variable for the mean parameter of the lognormal distribution fixed on
+our expected diversification rate, which is
 <script type="math/tex">\ln( \ln(\frac{\#Taxa}{2})/age )</script>. Remember that the median of a
 lognormal distribution is equal to the exponential of the mean
 parameter. This is why we used a log-transform of the actual mean. This
 prior density is analogous to the prior on the speciation-rate parameter
 in the constant-rate birth-death process.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>speciation_prior_mean &lt;- ln( ln(NUM_TOTAL_SPECIES/2.0) / root )
-speciation_mean ~ dnLognormal(mean=speciation_prior_mean, sd=H)
-moves[mvi++] = mvScale(speciation_mean,lambda=1,tune=true,weight=5)
-</code></pre></div></div>
-
-<p>Similar the previous section, we will set up the rate categories using
-the exact same model and Rev syntax. Thus, we first create our
-hyper-prior on the mean speciation rate, which is drawn from a lognormal
-distribution.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>speciation_prior_mean &lt;- ln( ln(NUM_TOTAL_SPECIES/2.0) / root_age )
-speciation_mean ~ dnLognormal(mean=speciation_prior_mean, sd=H)
-moves[mvi++] = mvScale(speciation_mean,lambda=1,tune=true,weight=5)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>speciation_mean &lt;- ln(NUM_TOTAL_SPECIES/2.0) / root
 </code></pre></div></div>
 <p>Additionally, we choose a fixed standard deviation of $H * 2$ for the
 speciation rates because it represents two orders of magnitude variance
@@ -599,11 +587,8 @@ in the rate categories.</p>
 speciation := fnDiscretizeDistribution( dnLognormal(ln(speciation_mean), speciation_sd), NUM_RATE_CATEGORIES )
 </code></pre></div></div>
 <p>We define the prior on the extinction rate in the same way as we did for
-the speciation rate, with the only difference that we allow for two
-orders of magnitude of uncertainty.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>extinction_prior_mean &lt;- ln( ln(NUM_TOTAL_SPECIES/2.0) / root_age )
-extinction_mean ~ dnLognormal(mean=extinction_prior_mean,sd=H*2)
-moves[mvi++] = mvScale(extinction_mean,lambda=1.0,tune=true,weight=3.0)
+the speciation rate.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>extinction_mean &lt;- ln(NUM_TOTAL_SPECIES/2.0) / root_age
 </code></pre></div></div>
 <p>However, we assume that extinction rate is the same for all categories.
 Therefore, we simply replicate using the <code class="highlighter-rouge">rep</code> function the extinction rate <code class="highlighter-rouge">NUM_RATE_CATEGORIES</code> times.</p>
@@ -629,7 +614,7 @@ root. We use a uniform prior distribution on the indices 1 to $N^2$
 since we do not have any prior information in which rate category the
 process is at the root. The move for this random variable is a random
 integer walk because the random variable is defined only on the indices
-(<em>i.e.</em>, with real number).</p>
+(i.e., with real number).</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root_category ~ dnUniformNatural(1,NUM_RATE_CATEGORIES)
 moves[mvi++] = mvRandomIntegerWalk(root_category,weight=1)
 </code></pre></div></div>
