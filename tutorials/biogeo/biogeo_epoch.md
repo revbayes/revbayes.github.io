@@ -7,7 +7,7 @@ order: 2
 prerequisites:
 - biogeo/biogeo_intro
 - biogeo/biogeo_simple
-exclude_files: 
+include_files: 
 - data/n4/silversword.bg.nex
 - data/n4/silversword.mcc.tre
 - data/n4/silversword.mol.nex
@@ -18,10 +18,6 @@ exclude_files:
 - data/n6/hawaii.n6.connectivity.5.txt
 - data/n6/hawaii.n6.distances.txt
 - data/n6/hawaii.n6.times.txt
-- data/n6/psychotria.init.tre
-- data/n6/psychotria.mol.nex
-- data/n6/psychotria.n6.range.nex
-- data/n6/psychotria.tre
 - data/n6/silversword.init.tre
 - data/n6/silversword.mol.nex
 - data/n6/silversword.n6.range.nex
