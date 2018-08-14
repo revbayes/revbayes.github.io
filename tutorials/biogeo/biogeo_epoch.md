@@ -8,9 +8,12 @@ prerequisites:
 - biogeo/biogeo_intro
 - biogeo/biogeo_simple
 include_files: 
-- data/n4/silversword.bg.nex
-- data/n4/silversword.mcc.tre
-- data/n4/silversword.mol.nex
+
+- scripts/plot_anc_range.simple.R
+- scripts/range_colors.txt
+
+- scripts/run_epoch_phy.Rev
+exclude_files:
 - data/n6/hawaii.n6.connectivity.1.txt
 - data/n6/hawaii.n6.connectivity.2.txt
 - data/n6/hawaii.n6.connectivity.3.txt
@@ -22,11 +25,11 @@ include_files:
 - data/n6/silversword.mol.nex
 - data/n6/silversword.n6.range.nex
 - data/n6/silversword.tre
-- scripts/plot_anc_range.simple.R
-- scripts/range_colors.txt
+- data/n4/silversword.bg.nex
+- data/n4/silversword.mcc.tre
+- data/n4/silversword.mol.nex
 - scripts/run_simple.Rev
 - scripts/run_simple_phy.Rev
-- scripts/run_epoch_phy.Rev
 index: index
 title-old: RB_Biogeography_Tutorial
 redirect: false 
