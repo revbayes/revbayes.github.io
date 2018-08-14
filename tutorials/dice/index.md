@@ -82,6 +82,7 @@ stationary distribution play a key role in calculating the likelihood.
 
 We will assume the following values for the HKY85 parameters: $\kappa = 5$, $\pi_A = 0.4$, $\pi_C = 0.3$, $\pi_G = 0.2$, and $\pi_T = 0.1$.
 These values result in the following scaled rate matrix:
+
 $$
 {\mathbf Q} = \{q_{ij}\} = \left( \begin{array}{rrrr}
  -0.886 &  0.190 &  0.633 &  0.063 \\
@@ -90,6 +91,7 @@ $$
  0.253 &  0.949 &  0.127 & -1.329 \\
 \end{array} \right)
 $$
+
 The stationary probabilities for this rate matrix are $\pi_A = 0.4$, $\pi_C = 0.3$, $\pi_G = 0.2$, and $\pi_T = 0.1$.
 
 Interpreting the rate matrix
@@ -98,12 +100,14 @@ Interpreting the rate matrix
 
 The rate matrix specifies how changes occur on a phylogenetic tree. Consider the very simple case of a single
 branch on a phylogenetic tree. Let's assume that the branch is $v=0.5$ in length. Our first task is to determine the nucleotide at the root of this tree. Although it is tempting to simply pick a nucleotide at the root of the tree with each nucleotide having a probability of $1/4$, doing so is not consistent with the process we are assuming, as described in the rate matrix, ${\mathbf Q}$. Rather, we should choose the state at the root of the tree from the stationary probabilities. I made four intervals, with the following probabilities:
+
 $$
 0.0 - 0.4 \rightarrow A \\
 0.4 - 0.7 \rightarrow C \\
 0.7 - 0.9 \rightarrow G \\
 0.9 - 1.0 \rightarrow T
 $$
+
 I rolled the die to generate a uniiform(0,1) random number and obtained $u = 0.709$. The nucleotide at the root, then, is the nucleotide $G$.
 The situation we have is something like this, 
 
@@ -112,6 +116,7 @@ The situation we have is something like this,
 in which we have a single branch of length $v = 0.5$ starting in the nucleotide $G$.
 How can we simulate the evolution
 of the site starting from the $G$ at the ancestor? The rate matrix tells us how to do this. First of all, because the current state of the process is $G$,  the only relevant row of the rate matrix is the third one:
+
 $$
 {\mathbf Q} = \{q_{ij}\} = \left( \begin{array}{cccc}
 \cdot   &   \cdot &    \cdot &  \cdot \\
@@ -120,6 +125,7 @@ $$
 \cdot   &   \cdot &    \cdot & \cdot \\
 \end{array} \right)
 $$
+
 The overall rate of change away from nucleotide $G$ is $q_{GA} + q_{GC} + q_{GT} = 1.266 + 0.190 + 0.063 = 1.519$.
 Equivalently, the rate of change away from nucleotide $G$ is simply $-q_{GG} = 1.519$. 
 In a continuous-time Markov model, the waiting time between substitutions is exponentially distributed. 
@@ -146,6 +152,7 @@ is between 0.833 and 0.958 we will say that we had a change from $G$ to $C$. Fin
 between 0.958 and 1.000, we will say we had a change from $G$ to $T$. The next number generated using the die
 was $u = 0.102$, which means the change was from $G$ to $A$. The process is now in a different state (the nucleotide
 $A$) and the relevant row of the rate matrix is
+
 $$
 {\mathbf Q} = \{q_{ij}\} = \left( \begin{array}{cccc}
 -0.886 &  0.190 &  0.633 &  0.063 \\
@@ -154,6 +161,7 @@ $$
 \cdot &  \cdot &  \cdot & \cdot \\
 \end{array} \right)
 $$
+
 We wait an exponentially distributed amount of time with parameter
 $\lambda = 0.886$ until the next substitution occurs. When the substitution occurs, it is to a $C$, $G$, or $T$
 with probabilities ${0.190 \over 0.886} = 0.214$, ${0.633 \over 0.886} = 0.714$, and ${0.063 \over 0.886} = 0.072$,
@@ -266,6 +274,7 @@ Exercises
 {:.subsection}
 
 Simulate a site on the four-species tree described in this lab using the rate matrix.
+
 $$
 {\mathbf Q} = \{q_{ij}\} = \left( \begin{array}{rrrr}
  -0.886 &  0.190 &  0.633 &  0.063 \\
