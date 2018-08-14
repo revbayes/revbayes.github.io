@@ -114,17 +114,17 @@ where $\lambda$ is the rate at which something occurs and $\log$ is the natural 
 
 <p>We will simulate on this tree for no particular reason except that I like this tree. Note the branch lengths on the tree. The branch lengths are in terms of expected number of substitutions per site. Again, the branch lengths were an arbitrary choice that I made.</p>
 
-<p>The last part of the model that must be specified is the rate matrix of the continuous-time Markov process that describes how the DNA sequences change on the tree. We will assume that sequences evolve according to the HKY85 model of DNA substitution, that has rate matrix:
-$$
-{\mathbf Q} = {q_{ij}} = \left( \begin{array}{cccc}</p>
-<ul>
-  <li>&amp;  \pi_C &amp; \kappa \pi_G &amp; \pi_T <br />
-\pi_A &amp; -               &amp; \pi_G &amp; \kappa \pi_T <br />
-\kappa \pi_A &amp; \pi_C &amp; -               &amp; \pi_T <br />
-\pi_A &amp; \kappa \pi_C &amp; \pi_G &amp; -               <br />
-\end{array} \right) \mu
-$$
-We will make a few important points about the rate matrix. First, the rate matrix may have free parameters. For example,
+<p>The last part of the model that must be specified is the rate matrix of the continuous-time Markov process that describes how the DNA sequences change on the tree. We will assume that sequences evolve according to the HKY85 model of DNA substitution, that has rate matrix:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+{\mathbf Q} = \{q_{ij}\} = \left( \begin{array}{cccc}
+\cdot               &  \pi_C & \kappa \pi_G & \pi_T \\
+\pi_A & \cdot               & \pi_G & \kappa \pi_T \\
+\kappa \pi_A & \pi_C & \cdot               & \pi_T \\
+\pi_A & \kappa \pi_C & \pi_G & \cdot               \\
+\end{array} \right) \mu %]]></script>
+
+<p>We will make a few important points about the rate matrix. First, the rate matrix may have free parameters. For example,
 the HKY85 model has the parameters $\kappa$, $\pi_A$, $\pi_C$, $\pi_G$, and $\pi_T$. 
 The parameter $\kappa$ is the transition/transversion rate bias; when $\kappa = 1$ transitions occur at the same rate as transversions.
 Typically, the transition/transversion rate ratio, estimated using maximum likelihood or Bayesian inference, is
@@ -133,14 +133,13 @@ The other parameters – $\pi_A$, $\pi_C$, $\pi_G$, and $\pi_T$ – are the base
 as the frequency of the different nucleotides and are also, incidentally, the stationary probabilities of the process.
 Second, the rate matrix, ${\mathbf Q}$, can be used to calculate
 the transition probabilities and the stationary distribution of the substitution process. The transition probabilities and
-stationary distribution play a key role in calculating the likelihood.</li>
-</ul>
+stationary distribution play a key role in calculating the likelihood.</p>
 
 <p>We will assume the following values for the HKY85 parameters: $\kappa = 5$, $\pi_A = 0.4$, $\pi_C = 0.3$, $\pi_G = 0.2$, and $\pi_T = 0.1$.
 These values result in the following scaled rate matrix:
 <script type="math/tex">% <![CDATA[
 {\mathbf Q} = \{q_{ij}\} = \left( \begin{array}{rrrr}
--0.886 &  0.190 &  0.633 &  0.063 \\
+ -0.886 &  0.190 &  0.633 &  0.063 \\
  0.253 & -0.696 &  0.127 &  0.316 \\
  1.266 &  0.190 & -1.519 &  0.063 \\
  0.253 &  0.949 &  0.127 & -1.329 \\
@@ -900,7 +899,7 @@ and our knowledge of the rate matrix to simulate a single realization of the HKY
 <p>Simulate a site on the four-species tree described in this lab using the rate matrix.
 <script type="math/tex">% <![CDATA[
 {\mathbf Q} = \{q_{ij}\} = \left( \begin{array}{rrrr}
--0.886 &  0.190 &  0.633 &  0.063 \\
+ -0.886 &  0.190 &  0.633 &  0.063 \\
  0.253 & -0.696 &  0.127 &  0.316 \\
  1.266 &  0.190 & -1.519 &  0.063 \\
  0.253 &  0.949 &  0.127 & -1.329 \\
