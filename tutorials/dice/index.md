@@ -9,11 +9,11 @@ prerequisites:
 redirect: true
 ---
 
-Basic Rev Commands
-==============
+Simulating DNA Sequences
+========================
 {:.section}
 
-In this tutorial, you will develop an intuition for continuous-time Markov models of the sort used by RevBayes, as well as by other programs, such as PAUP, MrBayes, PhyloBayes, and others.
+In this tutorial, you will develop an intuition for continuous-time Markov models of the sort used by RevBayes, as well as by other programs, such as PAUP, MrBayes, PhyloBayes, and others. The basic phylogenetic model, used in all of these programs has several components. You are probably familiar with two of them: a phylogenetic tree describing the relationships among the species with the branch lengths specified in terms of expected amount of change. The difficult part of the phylogenetic model is how character change is modeled along the branches of the tree. All of these programs assume that characters evolve along the branches of the tree according to a continuous-time Markov model.
 
 
 
