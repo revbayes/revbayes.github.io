@@ -74,42 +74,42 @@
     <p>Next, we’ll need to create a <strong>new .cpp file</strong> containing the implementation of our new move. As with the header, it’s easiest to copy and rename an existing file, so we’ll use <code class="highlighter-rouge">ScaleProposal.cpp</code> as our template, copy it, and rename to <code class="highlighter-rouge">GammaScaleProposal.cpp</code>. As with the header file, most of the necessary changes involve updating the names of variables and function names. If the move requires access to other math functions, additional header files may need to be included at the top. Explore <code class="highlighter-rouge">src/core/math</code> as needed to find the necessary functions or distributions. In this case, we will need access to methods associated with the Gamma distribution, so we will add <code class="highlighter-rouge">#include "DistributionGamma.h"</code>. For our example, the number and type of variables used by our move are the same as our template based on the Scale move, so we don’t need to modify the constructor or variable initialization, other than updating the constructor name. Similarly for this example, we don’t need to alter the code in the <code class="highlighter-rouge">::cleanProposal</code>, <code class="highlighter-rouge">::clone</code>, <code class="highlighter-rouge">::prepareProposal</code>, <code class="highlighter-rouge">::printParameterSummary</code>, <code class="highlighter-rouge">::undoProposal</code>, <code class="highlighter-rouge">::swapNodeInternal</code>, and <code class="highlighter-rouge">::tune</code> methods as these are common to our template and new moves (and will be identical to many of the scalar moves), but we do need to update the class names associated with the methods (i.e., <code class="highlighter-rouge">ScaleMove::</code> -&gt; <code class="highlighter-rouge">GammaScaleMove::</code>). For the <code class="highlighter-rouge">::getProposalName</code> method, we need to update the string in the method that provides a descriptive name for the move - <code class="highlighter-rouge">name = "Gamma Scaling"</code>. The bulk of the necessary changes for the new move will come in the <code class="highlighter-rouge">::propose</code> method and the help description above the method. For this example, the new <code class="highlighter-rouge">::propose</code> method looks like this:</p>
 
     <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/*
-         * Perform the proposal.
+ * Perform the proposal.
  *
-         * A gamma scaling proposal draws a random number from a gamma distribution u ~ Gamma(lambda,1) and scales the current vale by u
-         * lambda is the tuning parameter of the proposal which influences the size of the proposals by changing the shape of the Gamma.
+ * A gamma scaling proposal draws a random number from a gamma distribution u ~ Gamma(lambda,1) and scales the current vale by u
+ * lambda is the tuning parameter of the proposal which influences the size of the proposals by changing the shape of the Gamma.
  *
-         * \return The hastings ratio.
+ * \return The hastings ratio.
  */</span>
 <span class="kt">double</span> <span class="n">GammaScaleProposal</span><span class="o">::</span><span class="n">propose</span><span class="p">(</span> <span class="kt">double</span> <span class="o">&amp;</span><span class="n">val</span> <span class="p">)</span>
 <span class="p">{</span>
     
-<span class="c1">// Get random number generator
-</span><span class="n">RandomNumberGenerator</span><span class="o">*</span> <span class="n">rng</span>     <span class="o">=</span> <span class="n">GLOBAL_RNG</span><span class="p">;</span>
+    <span class="c1">// Get random number generator
+</span>    <span class="n">RandomNumberGenerator</span><span class="o">*</span> <span class="n">rng</span>     <span class="o">=</span> <span class="n">GLOBAL_RNG</span><span class="p">;</span>
     
-<span class="c1">// copy value
-</span><span class="n">storedValue</span> <span class="o">=</span> <span class="n">val</span><span class="p">;</span>
+    <span class="c1">// copy value
+</span>    <span class="n">storedValue</span> <span class="o">=</span> <span class="n">val</span><span class="p">;</span>
     
-<span class="c1">// Generate new value (no reflection, so we simply abort later if we propose value here outside of support)
-</span><span class="kt">double</span> <span class="n">u</span> <span class="o">=</span> <span class="n">RbStatistics</span><span class="o">::</span><span class="n">Gamma</span><span class="o">::</span><span class="n">rv</span><span class="p">(</span><span class="n">lambda</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="o">*</span><span class="n">rng</span><span class="p">);</span>
-<span class="n">val</span> <span class="o">*=</span> <span class="n">u</span><span class="p">;</span>
+    <span class="c1">// Generate new value (no reflection, so we simply abort later if we propose value here outside of support)
+</span>    <span class="kt">double</span> <span class="n">u</span> <span class="o">=</span> <span class="n">RbStatistics</span><span class="o">::</span><span class="n">Gamma</span><span class="o">::</span><span class="n">rv</span><span class="p">(</span><span class="n">lambda</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="o">*</span><span class="n">rng</span><span class="p">);</span>
+    <span class="n">val</span> <span class="o">*=</span> <span class="n">u</span><span class="p">;</span>
     
-<span class="c1">// compute the Hastings ratio
-</span><span class="kt">double</span> <span class="n">ln_hastings_ratio</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-<span class="k">try</span>
-<span class="p">{</span>
     <span class="c1">// compute the Hastings ratio
-</span>    <span class="kt">double</span> <span class="n">forward</span> <span class="o">=</span> <span class="n">RbStatistics</span><span class="o">::</span><span class="n">Gamma</span><span class="o">::</span><span class="n">lnPdf</span><span class="p">(</span><span class="n">lambda</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">u</span><span class="p">);</span>
-    <span class="kt">double</span> <span class="n">backward</span> <span class="o">=</span> <span class="n">RbStatistics</span><span class="o">::</span><span class="n">Gamma</span><span class="o">::</span><span class="n">lnPdf</span><span class="p">(</span><span class="n">lambda</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="mf">1.0</span><span class="o">/</span><span class="n">u</span><span class="p">));</span>
+</span>    <span class="kt">double</span> <span class="n">ln_hastings_ratio</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">try</span>
+    <span class="p">{</span>
+        <span class="c1">// compute the Hastings ratio
+</span>        <span class="kt">double</span> <span class="n">forward</span> <span class="o">=</span> <span class="n">RbStatistics</span><span class="o">::</span><span class="n">Gamma</span><span class="o">::</span><span class="n">lnPdf</span><span class="p">(</span><span class="n">lambda</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">u</span><span class="p">);</span>
+        <span class="kt">double</span> <span class="n">backward</span> <span class="o">=</span> <span class="n">RbStatistics</span><span class="o">::</span><span class="n">Gamma</span><span class="o">::</span><span class="n">lnPdf</span><span class="p">(</span><span class="n">lambda</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="mf">1.0</span><span class="o">/</span><span class="n">u</span><span class="p">));</span>
         
-    <span class="n">ln_hastings_ratio</span> <span class="o">=</span> <span class="n">backward</span> <span class="o">-</span> <span class="n">forward</span> <span class="o">-</span> <span class="n">log</span><span class="p">(</span><span class="n">u</span><span class="p">);</span>    <span class="c1">// The -log(u) term is the Jacobian
-</span><span class="p">}</span>
-<span class="k">catch</span> <span class="p">(</span><span class="n">RbException</span> <span class="n">e</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="n">ln_hastings_ratio</span> <span class="o">=</span> <span class="n">RbConstants</span><span class="o">::</span><span class="n">Double</span><span class="o">::</span><span class="n">neginf</span><span class="p">;</span>
-<span class="p">}</span>
+        <span class="n">ln_hastings_ratio</span> <span class="o">=</span> <span class="n">backward</span> <span class="o">-</span> <span class="n">forward</span> <span class="o">-</span> <span class="n">log</span><span class="p">(</span><span class="n">u</span><span class="p">);</span>    <span class="c1">// The -log(u) term is the Jacobian
+</span>    <span class="p">}</span>
+    <span class="k">catch</span> <span class="p">(</span><span class="n">RbException</span> <span class="n">e</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">ln_hastings_ratio</span> <span class="o">=</span> <span class="n">RbConstants</span><span class="o">::</span><span class="n">Double</span><span class="o">::</span><span class="n">neginf</span><span class="p">;</span>
+    <span class="p">}</span>
 
-<span class="k">return</span> <span class="n">ln_hastings_ratio</span><span class="p">;</span>
+    <span class="k">return</span> <span class="n">ln_hastings_ratio</span><span class="p">;</span>
 <span class="p">}</span>
 </code></pre></div>    </div>
 
@@ -122,31 +122,27 @@
 
     <p>For our particular example, we also need to make one additional change. Because we’ve only updated the <code class="highlighter-rouge">ScaleProposal</code>, and not the <code class="highlighter-rouge">ScaleProposalContinuous</code>, we need to remove the part of the code in this move that could call <code class="highlighter-rouge">ScaleProposalContinuous</code>. The <code class="highlighter-rouge">::constructInternalObject</code> method now looks like this (compare to the corresponding method from <code class="highlighter-rouge">Move_Scale.cpp</code>):</p>
 
-    <p>```cpp
-void Move_GammaScale::constructInternalObject( void )
-{
-// we free the memory first
-delete value;</p>
-
-    <p>RevBayesCore::Proposal *p = NULL;</p>
-
-    <p>// now allocate a new sliding move
-double d = static_cast&lt;const RealPos &amp;&gt;( lambda-&gt;getRevObject() ).getValue();
-double w = static_cast&lt;const RealPos &amp;&gt;( weight-&gt;getRevObject() ).getValue();
-double r = static_cast&lt;const Probability &amp;&gt;( tuneTarget-&gt;getRevObject() ).getValue();
-RevBayesCore::TypedDagNode<double>* tmp = static_cast&lt;const RealPos &amp;&gt;( x-&gt;getRevObject() ).getDagNode();
-    RevBayesCore::StochasticNode<double> *n = dynamic_cast&lt;RevBayesCore::StochasticNode<double> *&gt;( tmp );
-    p = new RevBayesCore::GammaScaleProposal(n, d, r);
-bool t = static_cast&lt;const RlBoolean &amp;&gt;( tune-&gt;getRevObject() ).getValue();</double></double></double></p>
-
-    <p>value = new RevBayesCore::MetropolisHastingsMove(p, w, t);</p>
+    <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="n">Move_GammaScale</span><span class="o">::</span><span class="n">constructInternalObject</span><span class="p">(</span> <span class="kt">void</span> <span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// we free the memory first
+</span>    <span class="k">delete</span> <span class="n">value</span><span class="p">;</span>
+    
+    <span class="n">RevBayesCore</span><span class="o">::</span><span class="n">Proposal</span> <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    
+    <span class="c1">// now allocate a new sliding move
+</span>    <span class="kt">double</span> <span class="n">d</span> <span class="o">=</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">RealPos</span> <span class="o">&amp;&gt;</span><span class="p">(</span> <span class="n">lambda</span><span class="o">-&gt;</span><span class="n">getRevObject</span><span class="p">()</span> <span class="p">).</span><span class="n">getValue</span><span class="p">();</span>
+    <span class="kt">double</span> <span class="n">w</span> <span class="o">=</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">RealPos</span> <span class="o">&amp;&gt;</span><span class="p">(</span> <span class="n">weight</span><span class="o">-&gt;</span><span class="n">getRevObject</span><span class="p">()</span> <span class="p">).</span><span class="n">getValue</span><span class="p">();</span>
+    <span class="kt">double</span> <span class="n">r</span> <span class="o">=</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">Probability</span> <span class="o">&amp;&gt;</span><span class="p">(</span> <span class="n">tuneTarget</span><span class="o">-&gt;</span><span class="n">getRevObject</span><span class="p">()</span> <span class="p">).</span><span class="n">getValue</span><span class="p">();</span>
+    <span class="n">RevBayesCore</span><span class="o">::</span><span class="n">TypedDagNode</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;*</span> <span class="n">tmp</span> <span class="o">=</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">RealPos</span> <span class="o">&amp;&gt;</span><span class="p">(</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">getRevObject</span><span class="p">()</span> <span class="p">).</span><span class="n">getDagNode</span><span class="p">();</span>
+    <span class="n">RevBayesCore</span><span class="o">::</span><span class="n">StochasticNode</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span> <span class="o">*</span><span class="n">n</span> <span class="o">=</span> <span class="k">dynamic_cast</span><span class="o">&lt;</span><span class="n">RevBayesCore</span><span class="o">::</span><span class="n">StochasticNode</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span> <span class="o">*&gt;</span><span class="p">(</span> <span class="n">tmp</span> <span class="p">);</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RevBayesCore</span><span class="o">::</span><span class="n">GammaScaleProposal</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">r</span><span class="p">);</span>
+    <span class="kt">bool</span> <span class="n">t</span> <span class="o">=</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">RlBoolean</span> <span class="o">&amp;&gt;</span><span class="p">(</span> <span class="n">tune</span><span class="o">-&gt;</span><span class="n">getRevObject</span><span class="p">()</span> <span class="p">).</span><span class="n">getValue</span><span class="p">();</span>
+    
+    <span class="n">value</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RevBayesCore</span><span class="o">::</span><span class="n">MetropolisHastingsMove</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">t</span><span class="p">);</span>
+    
+<span class="p">}</span>
+</code></pre></div>    </div>
   </li>
-</ol>
-
-<p>}
-```</p>
-
-<ol>
   <li>
     <p><em>Updating the Rev language register</em> - The last step in implementing our new move is to make sure that it’s registered in the Rev language. To do this, we will need to update the file <code class="highlighter-rouge">RbRegister_Move.cpp</code> in <code class="highlighter-rouge">src/revlanguage/workspace</code>. In this file, we’ll need to include the header for our new move <code class="highlighter-rouge">#include "Move_GammaScale.h"</code> in the section corresponding to moves on real values. We’ll also need to add the constructor to the workspace by updating the <code class="highlighter-rouge">::initializeMoveGlobalWorkspace</code> method to include <code class="highlighter-rouge">addTypeWithConstructor( new Move_GammaScale() );</code>, again in the section corresponding to moves on real values.</p>
   </li>
