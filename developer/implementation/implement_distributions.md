@@ -18,7 +18,7 @@ For the language side, one of the most important things is the create distributi
 
 * Within every new distribution, you will need to include some functions. For example, each new distribution must have: the get class type, name, and help functions. You may not need to implement these from scratch (if they're dictated by the parent class & are already present), but you will need to implement other functions within your distribution (e.g. cdf, rv, quantile). 
 
-* Distributions have a prefexed DN (dag node), and all moves have a previxed MV. RevBayes takes the name within & creates the DN automatically, so be aware of this. For a refresher on DAG nodes, refer [to this page]({% page_url architecture %}). 
+* Distributions have a prefix `DN` (dag node), and all moves have a prefix `MV`. RevBayes takes the name within & creates the `DN` automatically, so be aware of this. For a refresher on DAG nodes, refer [to this page]({% page_ref architecture %}). 
  
 In the following steps, we'll implement the **Beta Binomial Distribution** as an example, for syntax purposes.
 
