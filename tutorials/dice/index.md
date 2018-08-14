@@ -59,14 +59,16 @@ We will assume the following tree for the simulations:
 We will simulate on this tree for no particular reason except that I like this tree. Note the branch lengths on the tree. The branch lengths are in terms of expected number of substitutions per site. Again, the branch lengths were an arbitrary choice that I made. 
 
 The last part of the model that must be specified is the rate matrix of the continuous-time Markov process that describes how the DNA sequences change on the tree. We will assume that sequences evolve according to the HKY85 model of DNA substitution, that has rate matrix:
+
 $$
 {\mathbf Q} = \{q_{ij}\} = \left( \begin{array}{cccc}
--               &  \pi_C & \kappa \pi_G & \pi_T \\
-\pi_A & -               & \pi_G & \kappa \pi_T \\
-\kappa \pi_A & \pi_C & -               & \pi_T \\
-\pi_A & \kappa \pi_C & \pi_G & -               \\
+\cdot               &  \pi_C & \kappa \pi_G & \pi_T \\
+\pi_A & \cdot               & \pi_G & \kappa \pi_T \\
+\kappa \pi_A & \pi_C & \cdot               & \pi_T \\
+\pi_A & \kappa \pi_C & \pi_G & \cdot               \\
 \end{array} \right) \mu
 $$
+
 We will make a few important points about the rate matrix. First, the rate matrix may have free parameters. For example,
 the HKY85 model has the parameters $\kappa$, $\pi_A$, $\pi_C$, $\pi_G$, and $\pi_T$. 
 The parameter $\kappa$ is the transition/transversion rate bias; when $\kappa = 1$ transitions occur at the same rate as transversions.
@@ -82,7 +84,7 @@ We will assume the following values for the HKY85 parameters: $\kappa = 5$, $\pi
 These values result in the following scaled rate matrix:
 $$
 {\mathbf Q} = \{q_{ij}\} = \left( \begin{array}{rrrr}
--0.886 &  0.190 &  0.633 &  0.063 \\
+ -0.886 &  0.190 &  0.633 &  0.063 \\
  0.253 & -0.696 &  0.127 &  0.316 \\
  1.266 &  0.190 & -1.519 &  0.063 \\
  0.253 &  0.949 &  0.127 & -1.329 \\
@@ -266,7 +268,7 @@ Exercises
 Simulate a site on the four-species tree described in this lab using the rate matrix.
 $$
 {\mathbf Q} = \{q_{ij}\} = \left( \begin{array}{rrrr}
--0.886 &  0.190 &  0.633 &  0.063 \\
+ -0.886 &  0.190 &  0.633 &  0.063 \\
  0.253 & -0.696 &  0.127 &  0.316 \\
  1.266 &  0.190 & -1.519 &  0.063 \\
  0.253 &  0.949 &  0.127 & -1.329 \\
