@@ -9,11 +9,17 @@ prerequisites:
 redirect: true
 ---
 
+Basic Rev Commands
+==============
+{:.section}
+
+In this tutorial, you will develop an intuition for continuous-time Markov models of the sort used by RevBayes, as well as by other programs, such as PAUP, MrBayes, PhyloBayes, and others.
 
 
 
-Generating uniform and exponential random variables with your 10-sided die
-------------
+Generating uniform and exponential random variables
+---------------------------------------------------
+{:.subsection}
 
 If you had a highschool social life as awkward as this author's, you already own a 10-sided die (d10, in the gaming lingo). If you actually had friends in high school, however, you may need to buy such a die. Go to a gaming store and tell them that you want to buy a "d10." Alternatively, buy a 10-sided die from Amazon.
 
@@ -41,7 +47,8 @@ t = -{\log(0.948) \over 10} = 0.00534
 $$
 
 The parameters for the simulation
-------------
+---------------------------------
+{:.subsection}
 
 We now have the machinery needed to generate uniform and exponential random numbers. For the simulation of DNA sequences on a tree, however, we need to choose some simulation parameters. Specifically, we need the tree topology, branch lengths, and rate matrix of the continuous-time Markov model that describes how the DNA sequences change over time.
 
@@ -84,7 +91,8 @@ $$
 The stationary probabilities for this rate matrix are $\pi_A = 0.4$, $\pi_C = 0.3$, $\pi_G = 0.2$, and $\pi_T = 0.1$.
 
 Interpreting the rate matrix
-------------
+----------------------------
+{:.subsection}
 
 The rate matrix specifies how changes occur on a phylogenetic tree. Consider the very simple case of a single
 branch on a phylogenetic tree. Let's assume that the branch is $v=0.5$ in length. Our first task is to determine the nucleotide at the root of this tree. Although it is tempting to simply pick a nucleotide at the root of the tree with each nucleotide having a probability of $1/4$, doing so is not consistent with the process we are assuming, as described in the rate matrix, ${\mathbf Q}$. Rather, we should choose the state at the root of the tree from the stationary probabilities. I made four intervals, with the following probabilities:
@@ -160,7 +168,8 @@ The only non-random part of the entire procedure was the initial choice of the p
 and our knowledge of the rate matrix to simulate a single realization of the HKY85 process of DNA substitution. 
 
 Simulating on a more complicated tree
-------------
+-------------------------------------
+{:.subsection}
 
 Simulating on the tree
 
@@ -172,7 +181,8 @@ is only slightly more complicated than simulating data on the single-branch tree
 - Visit each branch in turn in preorder sequence (that is, from the root to the tips of the tree). If you visit the branches in preorder sequence, you will know the state at the root of the branch.
 
 Pattern probabilities
-------------
+---------------------
+{:.subsection}
 
 The tree we simulate DNA sequence evolution on has only four tips. This means that there are a total of $4^4 = 256$ possible patterns of nucleotides we could have observed at the tips of the tree. For example, one of the possible patterns is GTTC: Species I has the nucletide G, Species II and Species III are assigned the nucleotide T, and Species IV is assigned C.
 
@@ -249,8 +259,9 @@ The probability of simulating any of the 256 patterns is given in the following 
 
 ---
 
-In-class Exercises
-------------
+Exercises
+------------------
+{:.subsection}
 
 Simulate a site on the four-species tree described in this lab using the rate matrix.
 $$
