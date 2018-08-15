@@ -92,12 +92,25 @@ function get_files() {
   var zip = new JSZip().folder(name);
   var d = zip.folder("data");
   var s = zip.folder("scripts");
+  var re = /\".+\"/;
+
 
   if( uld != null) {
     var _li = uld.getElementsByTagName("li");
     for (var i = 0; i < _li.length; ++i) {
-      var file = _li[i].firstChild.innerHTML;
-      d.file(file, $.get("data/"+file));
+      var file = _li[i].firstChild.outerHTML;
+      file = file.match(re);
+      file = file[0].slice(2,-1);
+      var file_path = file.split('/');
+      var full_path_name = "";
+      var save_path_name = "";
+      for (var j = 0; j < file_path.length; ++j) {
+        full_path_name += "/" + file_path[j];
+        if( j > 2 )
+          save_path_name += "/" + file_path[j];
+      }
+      
+      d.file(save_path_name, $.get(full_path_name));
     }
   }
   if( uls != null) {

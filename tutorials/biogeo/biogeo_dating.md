@@ -7,6 +7,18 @@ prerequisites:
 - biogeo/biogeo_intro
 - biogeo/biogeo_simple
 - biogeo/biogeo_epoch
+include_files:
+- data/n6/hawaii.n6.connectivity.1.txt
+- data/n6/hawaii.n6.connectivity.2.txt
+- data/n6/hawaii.n6.connectivity.3.txt
+- data/n6/hawaii.n6.connectivity.4.txt
+- data/n6/hawaii.n6.connectivity.5.txt
+- data/n6/hawaii.n6.distances.txt
+- data/n6/hawaii.n6.times.txt
+- data/n6/silversword.init.tre
+- data/n6/silversword.mol.nex
+- data/n6/silversword.n6.range.nex
+- data/n6/silversword.tre
 exclude_files:
 - data/n4/hawaii.n4.connectivity.1.txt
 - data/n4/hawaii.n4.connectivity.2.txt
@@ -566,25 +578,25 @@ crown silverswords often originate before the formation of Kauai. The
 right panel shows that crown silverswords probably originated before the
 formation of Maui, but after the formation of Kauai.
 
-{% table table2 %}
+{% table tab_epoch_ages %}
   | Model  |  $P(a_s>a_K)$| $P(a_s>a_O)$ | $P(a_s>a_M)$ | $P(a_s>a_H)$ |
   |--------|--------------|--------------|--------------|--------------|
   | simple |     0.72     |     0.94     |     0.99     |     1.00     |
   | epoch  |     0.02     |     0.26     |     0.84     |     0.99     |
 
   {% tabcaption %}
-  : Posterior probability that the age of crown silverswords ($a_s$) is
+  Posterior probability that the age of crown silverswords ($a_s$) is
   older than the origination times of K, O, M, and H
   ($a_K, a_O, a_M, a_H$, respectively). The "simple" model (Left)
   ignores paleogeography while the "epoch" model (Right) conditions on
-  it.<span data-label="tab:epoch_ages">
+  it.
   {% endtabcaption %}
 {% endtable %}
 
 By tabulating the results of the deterministic variable
 ingroup_older_island, we measure the posterior
 probability that crown silverswords originated before or after each
-particular epoch in the model (Table [tab:epoch_ages]). Treating
+particular epoch in the model ({% ref tab_epoch_ages %}). Treating
 $P=0.95$ as significant support for an evolutionary outcome, the epoch
 model produces strong support that crown silverswords originated after
 the formation of Kauai, $P(a_s > a_K) = 0.02 < 1-0.95$ and weak support
