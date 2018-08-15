@@ -27,13 +27,6 @@ that use the RevBayes validation functions to evaluate the coverage of relevant 
 of the validation analyses (*e.g.*, taxon names, number of taxa, alignment length). Data files
 are not necessary for validation of all models.
 
-<!-- {% subsection Best Practices for Writing a Validation Script | bestprac %}
-
-There are a set of standard best practices for writing a validation script to ensure that 
-your methods are correct and work with all of the other approaches developed by other members
-of the RevBayes team.
-
-1. Please write your  -->
 
 
 {% subsection Writing a Validation Script for the Normal Distribution | norma %}
@@ -45,8 +38,10 @@ The model we will use is shown in {% ref fig_mod_gm %}.
 {% figure fig_mod_gm %}
 <img src="figures/model_gm.png" width="300" /> 
 {% figcaption %} 
-A graphical model of a normally distributed parameter with prior distributions on the parameters of the 
-normal distribution.
+A graphical model of describing the generation of $N$ samples, where $x_i \sim Normal(\mu,\sigma)$. 
+Additionally, priors are specified for the parameters of the normal distribution such that
+$\mu \sim Uniform(-10,10)$ and $\sigma \sim Exponential(1)$. The validation tools will 
+assess the coverage probabilities for estimates of $\mu$ and $\sigma$.
 {% endfigcaption %}
 {% endfigure %}
 
