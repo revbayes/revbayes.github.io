@@ -6,7 +6,7 @@ order: 2
 
 ## General info before getting started
 
-The steps to implementing a new move vary slightly, depending on the move's type (e.g., Metropolis-Hastings versus Gibbs). For the purposes of this guide, we will focus on a Metropolis-Hastings move.
+The steps to implementing a new move vary slightly, depending on the move's type (e.g., Metropolis-Hastings versus Gibbs). For the purpose of this guide, we will focus on a Metropolis-Hastings move.
 
 In general, the fastest and easiest way to get help is to find the most similar move already implemented in RevBayes and use it as a guide. Remember that, as with implementing a new distribution or function, you'll need to add relevant code to both the core of RevBayes and the language. Also remember that you'll need to work out the math appropriate for your move (e.g., the Hastings ratio) ahead of time.
 

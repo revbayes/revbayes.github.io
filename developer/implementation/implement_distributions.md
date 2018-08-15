@@ -64,7 +64,7 @@ In the following steps, we'll implement the **Beta Binomial Distribution** as an
     AddDistribution< Natural		>( new Dist_betaBinomial());
     ```
 
-    This adds the distribution to the workspace. Without this step, the beta binomial distribution will not be added to the RevLanguage.
+    This adds the distribution to the workspace. Without this step, the beta binomial distribution will not be added to the `revlanguage`.
     
     **Note:** Depending on the kind of distribution, you may need to change `Natural` to a different type (e.g. `Probability`, `Real`, `RealPos`, etc.).
     
