@@ -52,7 +52,7 @@
 	<h1 class="maintitle">Introduction to Historical Biogeography</h1>
 	<h3 class="subtitle">Phylogeographic analysis under the dispersal-extinction-cladogenesis process</h3>
 	<h4 class="authors">Michael J. Landis</h4>
-  <h5>Last modified on August 10, 2018</h5>
+  <h5>Last modified on August 15, 2018</h5>
 </div>
 
 
@@ -130,23 +130,21 @@ three key components to understanding the DEC model: range characters,
 anagenetic range evolution, and cladogenetic range evolution (<a href="#dec_cartoon"></a>).</p>
 
 <figure id="dec_cartoon"><p><img src="figures/fig_range_evol_events.png" width="75%" /></p>
-<figcaption>Cartoon of behavior
-of the DEC model.Two anagenetic events (a,b) and five cladogenetic (c–g)
-events are shown for a system with two areas.Areas are shaded when
-inhabited by a given lineage and left blank when uninhabited.Time
-proceeds from left to right.(a) Dispersal: a new area to be added to the
-species range.(b) Extirpation (or local extinction): the species range
-loses a previously inhabited area.(c) Narrow sympatry: When the
-ancestral range contains one area, both daughter lineages inherit that
-area.(d) Subset sympatry: When the ancestral range is widespread, one
-daughter inherits the ancestral range and the other daughter inherits
-only one area.(e) Allopatry (or vicariance): When the ancestral range is
-widespread, one daughter lineage a subset of the ancestral areas while
-the other daughter inherits all remaining ancestral areas.(f) Widespread
-sympatry: When the ancestral range is widespread, both daughters inherit
-the ancestral range.(g) Jump dispersal (or founder speciation): One
-daughter inherits the ancestral range while the other daughter inherits
-a new unoccupied area.</figcaption>
+<figcaption>Cartoon of behavior of the DEC model.Two anagenetic events (a,b) and five
+cladogenetic (c–g) events are shown for a system with two areas.Areas are shaded
+when inhabited by a given lineage and left blank when uninhabited.Time proceeds
+from left to right. (a) Dispersal: a new area to be added to the species range.
+(b) Extirpation (or local extinction): the species range loses a previously
+inhabited area. (c) Narrow sympatry: When the ancestral range contains one area,
+both daughter lineages inherit that area. (d) Subset sympatry: When the
+ancestral range is widespread, one daughter inherits the ancestral range and the
+other daughter inherits only one area. (e) Allopatry (or vicariance): When the
+ancestral range is widespread, one daughter lineage inherits a subset of the
+ancestral areas while the other daughter inherits all remaining ancestral areas.
+(f) Widespread sympatry: When the ancestral range is widespread, both daughters
+inherit the ancestral range. (g) Jump dispersal (or founder speciation): One
+daughter inherits the ancestral range while the other daughter inherits a new
+unoccupied area.</figcaption>
 </figure>
 
 <h3 class="subsection" id="disc_range_char">Discrete Range Characters</h3>
@@ -412,7 +410,7 @@ P_DEC := fnDECCladoProbs(eventProbs=clado_event_probs,
 <p><code class="highlighter-rouge">clado_event_types</code> defines what cladogenetic event types
 are used. <code class="highlighter-rouge">"a"</code> and <code class="highlighter-rouge">"s"</code> indicate allopatry and
 subset sympatry, as described in <a href="#Ree2005">Ree et al. (2005)</a>. Other cladogenetic events
-include jump dispersal <code class="highlighter-rouge">["j"]</code> (missing reference) and full sympatry
+include jump dispersal <code class="highlighter-rouge">["j"]</code> <a href="#Matzke2014">(Matzke 2014)</a> and full sympatry
 <code class="highlighter-rouge">["f"]</code> <a href="#Landis2013a">(Landis et al. 2013)</a>. The cladogenetic event probability
 matrix will assume that <code class="highlighter-rouge">eventProbs</code> and <code class="highlighter-rouge">eventTypes</code> share the same order.</p>
 
@@ -452,9 +450,9 @@ lineage. Like above, for three areas, there are 8 states, and
 $8 \times 8 \times 8 = 512$ cladogenetic probability terms.</p>
 
 <p>Of course, this model can be specified for more than three areas. Let’s
-consider what happens to the size of <strong>Q</strong> when the number of areas,
-$N$, becomes large. For three areas, <strong>Q</strong> is size $8 \times 8$. For ten
-areas, <strong>Q</strong> is size $2^{10} \times 2^{10} = 1024 \times 1024$, which
+consider what happens to the size of <strong>Q</strong> when the number of areas
+$N$ becomes large. For three areas, <strong>Q</strong> is of size $8 \times 8$. For ten
+areas, <strong>Q</strong> is of size $2^{10} \times 2^{10} = 1024 \times 1024$, which
 approaches the largest size matrices that can be exponentiated in a
 practical amount of time. For twenty areas, <strong>Q</strong> is size
 $2^{20} \times 2^{20} \approx 10^6 \times 10^6$ and exponentiation is
@@ -474,6 +472,11 @@ itself.</p>
 
 </li>
 <li><span id="Matzke2012">Matzke N.J. 2012. Founder-event speciation in BioGeoBEARS package dramatically improves likelihoods and alters parameter inference in dispersal–extinction–cladogenesis DEC analyses. Frontiers of Biogeography. 4:210.</span>
+
+</li>
+<li><span id="Matzke2014">Matzke N.J. 2014. Model Selection in Historical Biogeography Reveals that Founder-Event Speciation Is a Crucial Process in Island Clades. Systematic Biology. 63:951–970.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syu056">10.1093/sysbio/syu056</a>
 
 </li>
 <li><span id="Ree2005">Ree R.H., Moore B.R., Webb C.O., Donoghue M.J., Crandall K. 2005. A likelihood framework for inferring the evolution of geographic range on phylogenetic trees. Evolution. 59:2299–2311.</span>
