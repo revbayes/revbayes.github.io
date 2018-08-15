@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: Building Graphical Models using tikz (incomplete tutorial)</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
+      </a>
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/software">Software</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/developer/">Developer</a></li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <div class="titlebar">
+	<h1 class="maintitle">Building Graphical Models using tikz (incomplete tutorial)</h1>
+	<h3 class="subtitle">Using the tikz package and LaTeX tools to make figures of graphic models.</h3>
+	<h4 class="authors">Tracy A. Heath</h4>
+  <h5>Last modified on August 15, 2018</h5>
+</div>
+
+
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul id="prerequisites">
+          
+            <li><a href="/tutorials/intro/">Rev Language Syntax</a></li>
+          
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+
+
+
+
+</div>
+<h2 class="section" id="introduction">Introduction</h2>
+<hr class="section" />
+
+<p>This tutorial will demonstrate how to make clean-looking graphical models using 
+<a href="http://www.texample.net/tikz/">TikZ/PGF</a> and LaTeX. These are the tools
+that the RevBayes team use to make figures like those used in papers 
+<a href="#Hoehna2014b">(Höhna et al. 2014; Höhna et al. 2016)</a> and in many of the tutorials and documentation
+for RevBayes (<em>e.g.</em>, <a href="/tutorials/ctmc/">Substitution Models</a>). <a href="#fig_fbd_gm"></a> shows the graphical
+model for the <a href="../fbd">tutorial on the fossilized birth-death process</a>, which was entirely generated
+using tikz. Visualizations of graphical models are incredibly useful for communicating the details
+of the model. These visualizations can be used in scientific papers and when teaching
+statistical modeling.</p>
+
+<figure id="fig_fbd_gm"><p><img src="../fbd/figures/tikz/fbd_gm.png" width="400" /></p>
+<figcaption>A graphical model of the fossilized
+birth-death model describing the generation of the time tree.
+More details about this model can be found in <a href="/tutorials/fbd/">Combined-Evidence Analysis and the Fossilized Birth-Death Process for Stratigraphic Range Data</a></figcaption>
+</figure>
+
+<h2 class="section" id="tools">Tools for Generating TikZ Figures</h2>
+<hr class="section" />
+
+<p>Before you can start building and generating graphs using TikZ, there are a few prerequisites.</p>
+
+<ol>
+  <li>You must have <a href="https://www.latex-project.org/get/">LaTeX installed</a>. This tutorial also assumes
+that you have some understanding of TeX/LaTeX.</li>
+  <li>You may find that a simple tool like <a href="https://www.chachatelier.fr/latexit/">LaTeXiT</a> is the best approach for generating individual, stand-alone
+image files that you can use in different types of documents.</li>
+  <li>If you’d like to create a TikZ figure within your LaTeX document, like in an article or beamer slide-show,
+it is recommended that you use a LaTeX IDE or text editor. Alternatively, you can edit and compile a LaTeX document
+using online editors like <a href="https://www.overleaf.com">Overleaf</a> and <a href="https://www.sharelatex.com/">ShareLaTeX</a>.</li>
+</ol>
+
+<h2 class="section" id="simple1">A Simple Stand-alone Graphical Model using LaTeX</h2>
+<hr class="section" />
+
+<p>To draw a simple graphical model, we can create a custom document in LaTeX. We will do this in a single
+<code class="highlighter-rouge">.tex</code> file.</p>
+
+<blockquote class="instruction">
+  <p>Open your LaTeX IDE (either <a href="https://www.overleaf.com">online</a> or locally) or text editor. You can name this file <code class="highlighter-rouge">simple_model_gm.tex</code>.</p>
+</blockquote>
+
+<p>Now that you have an open file, we can begin by adding the different components.
+This TeX document will begin with the required specification of the document class.</p>
+
+<div class="language-tex highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">\documentclass</span><span class="na">[12pt]</span><span class="p">{</span>article<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Then we can use the <code class="highlighter-rouge">geometry</code> package to set the dimensions of the page. This will make the page
+a 5 by 5 inch square. If you create a very large model, you may have to change the page dimensions in order to
+accommodate the whole graph. We will additionally make it so our document does not have any page numbers.</p>
+
+<div class="language-tex highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">\usepackage</span><span class="na">[paperwidth=5in, paperheight=5in]</span><span class="p">{</span>geometry<span class="p">}</span>
+<span class="k">\pagestyle</span><span class="p">{</span>empty<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Now that we have created the document, we can next specify TikZ-specific settings. First, we will include the <code class="highlighter-rouge">tikz</code>
+package.</p>
+
+<div class="language-tex highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">\usepackage</span><span class="p">{</span>tikz<span class="p">}</span>
+</code></pre></div></div>
+
+<p>TikZ has internal libraries that allow for some nice features. The <code class="highlighter-rouge">calc</code> TikZ library <code class="highlighter-rouge">calc</code> enables us to place elements relative to one another.</p>
+
+<div class="language-tex highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">\usetikzlibrary</span><span class="p">{</span>calc<span class="p">}</span>
+</code></pre></div></div>
+
+
+<ol class="bibliography"><li><span id="Hoehna2016b">Höhna S., Landis M.J., Heath T.A., Boussau B., Lartillot N., Moore B.R., Huelsenbeck J.P., Ronquist F. 2016. RevBayes: Bayesian Phylogenetic Inference Using Graphical Models and an Interactive Model-Specification Language. Systematic Biology. 65:726–736.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syw021">10.1093/sysbio/syw021</a>
+
+</li>
+<li><span id="Hoehna2014b">Höhna S., Heath T.A., Boussau B., Landis M.J., Ronquist F., Huelsenbeck J.P. 2014. Probabilistic Graphical Model Representation in Phylogenetics. Systematic Biology. 63:753–771.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syu039">10.1093/sysbio/syu039</a>
+
+</li></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+
+<script src="/assets/js/base.js"></script>
+
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+  });
+</script>
+
+  </body>
+</html>
