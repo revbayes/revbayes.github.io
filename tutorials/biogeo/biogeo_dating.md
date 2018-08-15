@@ -7,6 +7,18 @@ prerequisites:
 - biogeo/biogeo_intro
 - biogeo/biogeo_simple
 - biogeo/biogeo_epoch
+include_files:
+- data/n6/hawaii.n6.connectivity.1.txt
+- data/n6/hawaii.n6.connectivity.2.txt
+- data/n6/hawaii.n6.connectivity.3.txt
+- data/n6/hawaii.n6.connectivity.4.txt
+- data/n6/hawaii.n6.connectivity.5.txt
+- data/n6/hawaii.n6.distances.txt
+- data/n6/hawaii.n6.times.txt
+- data/n6/silversword.init.tre
+- data/n6/silversword.mol.nex
+- data/n6/silversword.n6.range.nex
+- data/n6/silversword.tre
 exclude_files:
 - data/n4/hawaii.n4.connectivity.1.txt
 - data/n4/hawaii.n4.connectivity.2.txt
