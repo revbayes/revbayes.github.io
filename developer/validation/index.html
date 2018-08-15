@@ -82,14 +82,6 @@ of the validation analyses (<em>e.g.</em>, taxon names, number of taxa, alignmen
 are not necessary for validation of all models.</li>
 </ol>
 
-<!-- <h3 class="subsection" id="bestprac">Best Practices for Writing a Validation Script</h3><hr class="subsection">
-
-There are a set of standard best practices for writing a validation script to ensure that 
-your methods are correct and work with all of the other approaches developed by other members
-of the RevBayes team.
-
-1. Please write your  -->
-
 <h3 class="subsection" id="norma">Writing a Validation Script for the Normal Distribution</h3>
 <hr class="subsection" />
 
@@ -98,8 +90,10 @@ This script will check the coverage probabilities of estimators for parameters o
 The model we will use is shown in <a href="#fig_mod_gm"></a>.</p>
 
 <figure id="fig_mod_gm"><p><img src="figures/model_gm.png" width="300" /></p>
-<figcaption>A graphical model of a normally distributed parameter with prior distributions on the parameters of the 
-normal distribution.</figcaption>
+<figcaption>A graphical model of describing the generation of $N$ samples, where $x_i \sim Normal(\mu,\sigma)$. 
+Additionally, priors are specified for the parameters of the normal distribution such that
+$\mu \sim Uniform(-10,10)$ and $\sigma \sim Exponential(1)$. The validation tools will 
+assess the coverage probabilities for estimates of $\mu$ and $\sigma$.</figcaption>
 </figure>
 
 <p>The outcome of this validation will allow us to determine if the following things are 
