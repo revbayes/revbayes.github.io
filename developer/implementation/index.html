@@ -91,13 +91,13 @@
     <span class="k">class</span> <span class="nc">HyperbolicCosineFunction</span> <span class="o">:</span> <span class="k">public</span> <span class="n">ContinuousFunction</span> <span class="p">{</span>
 
         <span class="k">public</span><span class="o">:</span>
-                                        <span class="n">HyperbolicCosineFunction</span><span class="p">(</span><span class="k">const</span> <span class="n">TypedDagNode</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span> <span class="o">*</span><span class="n">a</span><span class="p">);</span> 
+                                          <span class="n">HyperbolicCosineFunction</span><span class="p">(</span><span class="k">const</span> <span class="n">TypedDagNode</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span> <span class="o">*</span><span class="n">a</span><span class="p">);</span> 
 
             <span class="n">HyperbolicCosineFunction</span><span class="o">*</span>     <span class="n">clone</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span> <span class="c1">//!&lt; creates a clone
-</span>            <span class="kt">void</span>                        <span class="n">update</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span> <span class="c1">//!&lt; recomputes the value
+</span>            <span class="kt">void</span>                          <span class="n">update</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>      <span class="c1">//!&lt; recomputes the value
 </span>
         <span class="k">protected</span><span class="o">:</span>
-            <span class="kt">void</span>                        <span class="n">swapParameterInternal</span><span class="p">(</span><span class="k">const</span> <span class="n">DagNode</span> <span class="o">*</span><span class="n">oldP</span><span class="p">,</span> <span class="k">const</span> <span class="n">DagNode</span> <span class="o">*</span><span class="n">newP</span><span class="p">);</span> <span class="c1">//!&lt; Implementation of swapping parameters
+            <span class="kt">void</span>                          <span class="n">swapParameterInternal</span><span class="p">(</span><span class="k">const</span> <span class="n">DagNode</span> <span class="o">*</span><span class="n">oldP</span><span class="p">,</span> <span class="k">const</span> <span class="n">DagNode</span> <span class="o">*</span><span class="n">newP</span><span class="p">);</span> <span class="c1">//!&lt; Implementation of swapping parameters
 </span>
         <span class="k">private</span><span class="o">:</span>
             <span class="k">const</span> <span class="n">TypedDagNode</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;*</span> <span class="n">x</span><span class="p">;</span>
@@ -382,7 +382,7 @@ The overall naming format remains the same for every distribution in RevBayes. I
     <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">AddDistribution</span><span class="o">&lt;</span> <span class="n">Natural</span>		<span class="o">&gt;</span><span class="p">(</span> <span class="k">new</span> <span class="n">Dist_betaBinomial</span><span class="p">());</span>
 </code></pre></div>    </div>
 
-    <p>This adds the distribution to the workspace. Without this step, the beta binomial distribution will not be added to the RevLanguage.</p>
+    <p>This adds the distribution to the workspace. Without this step, the beta binomial distribution will not be added to the <code class="highlighter-rouge">revlanguage</code>.</p>
 
     <p><strong>Note:</strong> Depending on the kind of distribution, you may need to change <code class="highlighter-rouge">Natural</code> to a different type (e.g. <code class="highlighter-rouge">Probability</code>, <code class="highlighter-rouge">Real</code>, <code class="highlighter-rouge">RealPos</code>, etc.).</p>
 
@@ -400,7 +400,7 @@ The overall naming format remains the same for every distribution in RevBayes. I
 <p class="section maintitle" id="implement_moves">Implementing a Metropolis-Hastings Move</p>
 <h2 id="general-info-before-getting-started">General info before getting started</h2>
 
-<p>The steps to implementing a new move vary slightly, depending on the move’s type (e.g., Metropolis-Hastings versus Gibbs). For the purposes of this guide, we will focus on a Metropolis-Hastings move.</p>
+<p>The steps to implementing a new move vary slightly, depending on the move’s type (e.g., Metropolis-Hastings versus Gibbs). For the purpose of this guide, we will focus on a Metropolis-Hastings move.</p>
 
 <p>In general, the fastest and easiest way to get help is to find the most similar move already implemented in RevBayes and use it as a guide. Remember that, as with implementing a new distribution or function, you’ll need to add relevant code to both the core of RevBayes and the language. Also remember that you’ll need to work out the math appropriate for your move (e.g., the Hastings ratio) ahead of time.</p>
 
