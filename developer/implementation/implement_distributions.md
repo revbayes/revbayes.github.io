@@ -72,6 +72,6 @@ In the following steps, we'll implement the **Beta Binomial Distribution** as an
     
 5.  Before pushing your changes, you should ensure your code is working properly. 
 
-    There are multiple ways to do this. As a best practice, you should first compile it to ensure there are no errors. Once it compiles with no problems, you can test in various ways (e.g. run each individual function within the new Beta Binomial distribution in R, then run the Binomial distribution with a Beta prior in Rev and see if the output matches). For more information, see the section of this Developer's Guide entitled 'Testing/Validating' (TODO).
+    There are multiple ways to do this. As a best practice, you should first compile it to ensure there are no errors. Once it compiles with no problems, you can test in various ways (e.g. run each individual function within the new Beta Binomial distribution in R, then run the Binomial distribution with a Beta prior in Rev and see if the output matches). For more information, see the developer tutorials on [validation](../validation/) and testing. (TODO)
     
     After ensuring your code runs properly, you are ready to add it to the git repo. We recommend reading through the {% page_ref git-flow %} section of the Developer's guide before pushing. 
