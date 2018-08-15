@@ -63,99 +63,6 @@
 
 </div>
 
-<p class="section maintitle" id="implement_distributions">Implementing a distribution</p>
-<h2 id="general-info-before-getting-started">General info before getting started</h2>
-
-<ul>
-  <li>
-    <p>Within the RevBayes <strong>core</strong> directory, there are subdirectories for different categories of distributions. 
-All mathematical distributions that have been implemented exist in <code class="highlighter-rouge">core/distributions/math</code>.</p>
-  </li>
-  <li>
-    <p>Note that when implementing a new distribution, you will need to create <code class="highlighter-rouge">.cpp</code> and <code class="highlighter-rouge">.h</code> files in both the <strong>revlanguage</strong> directory and the <strong>core</strong> directory. (For a refresher on the difference between these two directories, refer to the <a href="/developer/architecture/">Getting familiar with the code</a> section of this Developer’s guide).
-The overall naming format remains the same for every distribution in RevBayes. In the Beta Binomial Distribution example provided below, I specify what naming convention to use when creating each file.</p>
-  </li>
-  <li>
-    <p>It is often helpful to look at/borrow code from existing RevBayes distributions for general help on syntax and organization.</p>
-  </li>
-</ul>
-
-<p>For the language side, one of the most important things is the create distribution function (it converts user-arguments into calculations). Also, the getParameterRules function is important (to get the degrees of freedom &amp; other things). It is often helpful to look at the code of existing distributions for general help on syntax &amp; organization.</p>
-
-<ul>
-  <li>
-    <p>Within every new distribution, you will need to include some functions. For example, each new distribution must have: the get class type, name, and help functions. You may not need to implement these from scratch (if they’re dictated by the parent class &amp; are already present), but you will need to implement other functions within your distribution (e.g. cdf, rv, quantile).</p>
-  </li>
-  <li>
-    <p>Distributions have a prefix <code class="highlighter-rouge">DN</code> (dag node), and all moves have a prefix <code class="highlighter-rouge">MV</code>. RevBayes takes the name within &amp; creates the <code class="highlighter-rouge">DN</code> automatically, so be aware of this. For a refresher on DAG nodes, refer to <a href="/developer/architecture/">Getting familiar with the code</a>.</p>
-  </li>
-</ul>
-
-<p>In the following steps, we’ll implement the <strong>Beta Binomial Distribution</strong> as an example, for syntax purposes.</p>
-
-<h2 id="steps">Steps</h2>
-
-<ol>
-  <li>
-    <p>Create new .cpp &amp; .h files in <code class="highlighter-rouge">revlanguage/distributions/math/</code>, named <code class="highlighter-rouge">Dist_betabinomial.cpp</code> and <code class="highlighter-rouge">Dist_betaBinomial.h</code>. 
-<strong>Note:</strong> all files in this directory will follow this naming format: <code class="highlighter-rouge">Dist_&lt;nameofdistribution&gt;.[cpp|h]</code>.</p>
-
-    <p>To populate these files, look at existing examples of similar distributions for specific info on what to include &amp; on proper syntax.  For example, for the Beta Binomial distribution, I checked the existing Binomial Distribution code for guidance.</p>
-
-    <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//add code here
-</span></code></pre></div>    </div>
-  </li>
-  <li>Test
-    <ol>
-      <li>
-        <p>Create new <code class="highlighter-rouge">.cpp</code> &amp; <code class="highlighter-rouge">.h</code> files in <code class="highlighter-rouge">core/distributions/math/</code>, named <code class="highlighter-rouge">BetaBinomialDistribution.cpp</code> and <code class="highlighter-rouge">BetaBinomialDistribution.h</code>.</p>
-
-        <p><strong>Note:</strong> This is the object oriented wrapper code that references the functions hard-coded in the next step. All files in this directory will follow this naming format: <code class="highlighter-rouge">&lt;NameOfDistribution&gt;Distribution.[cpp|h]</code>.</p>
-      </li>
-      <li>
-        <p>Create new <code class="highlighter-rouge">.cpp</code> and <code class="highlighter-rouge">.h</code> files in <code class="highlighter-rouge">core/math/Distributions/</code>, named <code class="highlighter-rouge">DistributionBetaBinomial.cpp</code> and <code class="highlighter-rouge">DistributionBetaBinomial.h</code>.</p>
-
-        <p>These are the raw procedural functions in the RevBayes namespace (e.g. pdf, cdf, quantile); they are not derived functions. <code class="highlighter-rouge">RbStatistics</code> is a namespace. To populate these files, look at existing examples of similar distributions to get an idea of what functions to include, what variables are needed, and the proper syntax.</p>
-
-        <p><strong>Note:</strong> This is the most time-consuming step in the entire process of implementing a new distribution. All files in this directory will follow this naming format: <code class="highlighter-rouge">Distribution&lt;NameOfDistribution&gt;.[cpp|h]</code></p>
-      </li>
-    </ol>
-  </li>
-  <li>
-    <p>Navigate to <code class="highlighter-rouge">revlanguage/workspace/RbRegister_Dist.cpp</code></p>
-
-    <p><strong>Every</strong> new implementation must be registered in RevBayes. All register files are located in the <code class="highlighter-rouge">revlanguage/workspace</code> directory, and there are different files for the different types of implementations (<code class="highlighter-rouge">RbRegister_Func.cpp</code> is for registering functions; <code class="highlighter-rouge">RbRegister_Move</code> is for registering moves; etc.).  We are implementing a distribution, so we will edit the <code class="highlighter-rouge">RbRegister_Dist.cpp</code> file.</p>
-  </li>
-  <li>
-    <p>You need to have an include statement at the top of the <code class="highlighter-rouge">RbRegister</code> script, to effectively add your distribution to the RevBayes language. You also need to add code to the bottom of this file, and give it a type and a <em>new</em> constructor. Generally, you can look within the file for an idea of proper syntax to use.</p>
-
-    <p>For the Beta Binomial distribution, we navigate to the section in the file with the header ‘Distributions’ and then look for the sub-header dealing with ‘math distributions’. Then, add the following line of code:</p>
-
-    <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include "Dist_betaBinomial.h"
-</span></code></pre></div>    </div>
-
-    <p>This step registers the header file for the beta binomial distribution, effectively adding it to RevBayes.</p>
-
-    <p>Next, navigate to the section of the file that initializes the global workspace. This section defines the workspace class, which houses info on all distributions. Then, add the following line of code:</p>
-
-    <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">AddDistribution</span><span class="o">&lt;</span> <span class="n">Natural</span>		<span class="o">&gt;</span><span class="p">(</span> <span class="k">new</span> <span class="n">Dist_betaBinomial</span><span class="p">());</span>
-</code></pre></div>    </div>
-
-    <p>This adds the distribution to the workspace. Without this step, the beta binomial distribution will not be added to the RevLanguage.</p>
-
-    <p><strong>Note:</strong> Depending on the kind of distribution, you may need to change <code class="highlighter-rouge">Natural</code> to a different type (e.g. <code class="highlighter-rouge">Probability</code>, <code class="highlighter-rouge">Real</code>, <code class="highlighter-rouge">RealPos</code>, etc.).</p>
-
-    <p>After registering your distribution, you are ready to test your code.</p>
-  </li>
-  <li>
-    <p>Before pushing your changes, you should ensure your code is working properly.</p>
-
-    <p>There are multiple ways to do this. As a best practice, you should first compile it to ensure there are no errors. Once it compiles with no problems, you can test in various ways (e.g. run each individual function within the new Beta Binomial distribution in R, then run the Binomial distribution with a Beta prior in Rev and see if the output matches). For more information, see the section of this Developer’s Guide entitled ‘Testing/Validating’ (TODO).</p>
-
-    <p>After ensuring your code runs properly, you are ready to add it to the git repo. We recommend reading through the <a href="/developer/git-flow.html">Git Workflow Best Practices</a> section of the Developer’s guide before pushing.</p>
-  </li>
-</ol>
-
 <p class="section maintitle" id="implement_functions">Implementing a function</p>
 <p>There are two main classes of functions in RevBayes: member functions and typed functions. Member functions are functions used inside of deterministic nodes and allow access to member methods of a member object. Typed functions are either values within directed acyclic graph (DAG) nodes (i.e. random variables of some distribution), or are associated with a deterministic node. All deterministic nodes hold a function, the value of these deterministic nodes are returned by a call to that function. This has the advantage of simply modifying the value instead of creating a new object.</p>
 
@@ -397,6 +304,99 @@ Here we are implementing our hyperbolic cosine function as its own class that is
 
 <p>Finally, we need to include the hyperbolic cosine function in the <code class="highlighter-rouge">RbRegister_Func.cpp</code> file located in the <code class="highlighter-rouge">/revlanguage/workspace/</code> directory. To do this go to the <code class="highlighter-rouge">RbRegister_Func.cpp</code> file and locate the math functions and type <code class="highlighter-rouge">#include Func_hyperbolicCosine.h</code> in the correct alphabetical order for that group. Now scroll down in that file until you find the math functions and add the line <code class="highlighter-rouge">addFunction( new Func_hyperbolicCosine());</code></p>
 
+<p class="section maintitle" id="implement_distributions">Implementing a distribution</p>
+<h2 id="general-info-before-getting-started">General info before getting started</h2>
+
+<ul>
+  <li>
+    <p>Within the RevBayes <strong>core</strong> directory, there are subdirectories for different categories of distributions. 
+All mathematical distributions that have been implemented exist in <code class="highlighter-rouge">core/distributions/math</code>.</p>
+  </li>
+  <li>
+    <p>Note that when implementing a new distribution, you will need to create <code class="highlighter-rouge">.cpp</code> and <code class="highlighter-rouge">.h</code> files in both the <strong>revlanguage</strong> directory and the <strong>core</strong> directory. (For a refresher on the difference between these two directories, refer to the <a href="/developer/architecture/">Getting familiar with the code</a> section of this Developer’s guide).
+The overall naming format remains the same for every distribution in RevBayes. In the Beta Binomial Distribution example provided below, I specify what naming convention to use when creating each file.</p>
+  </li>
+  <li>
+    <p>It is often helpful to look at/borrow code from existing RevBayes distributions for general help on syntax and organization.</p>
+  </li>
+</ul>
+
+<p>For the language side, one of the most important things is the create distribution function (it converts user-arguments into calculations). Also, the getParameterRules function is important (to get the degrees of freedom &amp; other things). It is often helpful to look at the code of existing distributions for general help on syntax &amp; organization.</p>
+
+<ul>
+  <li>
+    <p>Within every new distribution, you will need to include some functions. For example, each new distribution must have: the get class type, name, and help functions. You may not need to implement these from scratch (if they’re dictated by the parent class &amp; are already present), but you will need to implement other functions within your distribution (e.g. cdf, rv, quantile).</p>
+  </li>
+  <li>
+    <p>Distributions have a prefix <code class="highlighter-rouge">DN</code> (dag node), and all moves have a prefix <code class="highlighter-rouge">MV</code>. RevBayes takes the name within &amp; creates the <code class="highlighter-rouge">DN</code> automatically, so be aware of this. For a refresher on DAG nodes, refer to <a href="/developer/architecture/">Getting familiar with the code</a>.</p>
+  </li>
+</ul>
+
+<p>In the following steps, we’ll implement the <strong>Beta Binomial Distribution</strong> as an example, for syntax purposes.</p>
+
+<h2 id="steps">Steps</h2>
+
+<ol>
+  <li>
+    <p>Create new .cpp &amp; .h files in <code class="highlighter-rouge">revlanguage/distributions/math/</code>, named <code class="highlighter-rouge">Dist_betabinomial.cpp</code> and <code class="highlighter-rouge">Dist_betaBinomial.h</code>. 
+<strong>Note:</strong> all files in this directory will follow this naming format: <code class="highlighter-rouge">Dist_&lt;nameofdistribution&gt;.[cpp|h]</code>.</p>
+
+    <p>To populate these files, look at existing examples of similar distributions for specific info on what to include &amp; on proper syntax.  For example, for the Beta Binomial distribution, I checked the existing Binomial Distribution code for guidance.</p>
+
+    <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//add code here
+</span></code></pre></div>    </div>
+  </li>
+  <li>Test
+    <ol>
+      <li>
+        <p>Create new <code class="highlighter-rouge">.cpp</code> &amp; <code class="highlighter-rouge">.h</code> files in <code class="highlighter-rouge">core/distributions/math/</code>, named <code class="highlighter-rouge">BetaBinomialDistribution.cpp</code> and <code class="highlighter-rouge">BetaBinomialDistribution.h</code>.</p>
+
+        <p><strong>Note:</strong> This is the object oriented wrapper code that references the functions hard-coded in the next step. All files in this directory will follow this naming format: <code class="highlighter-rouge">&lt;NameOfDistribution&gt;Distribution.[cpp|h]</code>.</p>
+      </li>
+      <li>
+        <p>Create new <code class="highlighter-rouge">.cpp</code> and <code class="highlighter-rouge">.h</code> files in <code class="highlighter-rouge">core/math/Distributions/</code>, named <code class="highlighter-rouge">DistributionBetaBinomial.cpp</code> and <code class="highlighter-rouge">DistributionBetaBinomial.h</code>.</p>
+
+        <p>These are the raw procedural functions in the RevBayes namespace (e.g. pdf, cdf, quantile); they are not derived functions. <code class="highlighter-rouge">RbStatistics</code> is a namespace. To populate these files, look at existing examples of similar distributions to get an idea of what functions to include, what variables are needed, and the proper syntax.</p>
+
+        <p><strong>Note:</strong> This is the most time-consuming step in the entire process of implementing a new distribution. All files in this directory will follow this naming format: <code class="highlighter-rouge">Distribution&lt;NameOfDistribution&gt;.[cpp|h]</code></p>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <p>Navigate to <code class="highlighter-rouge">revlanguage/workspace/RbRegister_Dist.cpp</code></p>
+
+    <p><strong>Every</strong> new implementation must be registered in RevBayes. All register files are located in the <code class="highlighter-rouge">revlanguage/workspace</code> directory, and there are different files for the different types of implementations (<code class="highlighter-rouge">RbRegister_Func.cpp</code> is for registering functions; <code class="highlighter-rouge">RbRegister_Move</code> is for registering moves; etc.).  We are implementing a distribution, so we will edit the <code class="highlighter-rouge">RbRegister_Dist.cpp</code> file.</p>
+  </li>
+  <li>
+    <p>You need to have an include statement at the top of the <code class="highlighter-rouge">RbRegister</code> script, to effectively add your distribution to the RevBayes language. You also need to add code to the bottom of this file, and give it a type and a <em>new</em> constructor. Generally, you can look within the file for an idea of proper syntax to use.</p>
+
+    <p>For the Beta Binomial distribution, we navigate to the section in the file with the header ‘Distributions’ and then look for the sub-header dealing with ‘math distributions’. Then, add the following line of code:</p>
+
+    <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include "Dist_betaBinomial.h"
+</span></code></pre></div>    </div>
+
+    <p>This step registers the header file for the beta binomial distribution, effectively adding it to RevBayes.</p>
+
+    <p>Next, navigate to the section of the file that initializes the global workspace. This section defines the workspace class, which houses info on all distributions. Then, add the following line of code:</p>
+
+    <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">AddDistribution</span><span class="o">&lt;</span> <span class="n">Natural</span>		<span class="o">&gt;</span><span class="p">(</span> <span class="k">new</span> <span class="n">Dist_betaBinomial</span><span class="p">());</span>
+</code></pre></div>    </div>
+
+    <p>This adds the distribution to the workspace. Without this step, the beta binomial distribution will not be added to the RevLanguage.</p>
+
+    <p><strong>Note:</strong> Depending on the kind of distribution, you may need to change <code class="highlighter-rouge">Natural</code> to a different type (e.g. <code class="highlighter-rouge">Probability</code>, <code class="highlighter-rouge">Real</code>, <code class="highlighter-rouge">RealPos</code>, etc.).</p>
+
+    <p>After registering your distribution, you are ready to test your code.</p>
+  </li>
+  <li>
+    <p>Before pushing your changes, you should ensure your code is working properly.</p>
+
+    <p>There are multiple ways to do this. As a best practice, you should first compile it to ensure there are no errors. Once it compiles with no problems, you can test in various ways (e.g. run each individual function within the new Beta Binomial distribution in R, then run the Binomial distribution with a Beta prior in Rev and see if the output matches). For more information, see the section of this Developer’s Guide entitled ‘Testing/Validating’ (TODO).</p>
+
+    <p>After ensuring your code runs properly, you are ready to add it to the git repo. We recommend reading through the <a href="/developer/git-flow.html">Git Workflow Best Practices</a> section of the Developer’s guide before pushing.</p>
+  </li>
+</ol>
+
 <p class="section maintitle" id="implement_moves">Implementing a Metropolis-Hastings Move</p>
 <h2 id="general-info-before-getting-started">General info before getting started</h2>
 
@@ -494,6 +494,217 @@ Here we are implementing our hyperbolic cosine function as its own class that is
     <p><em>Testing the performance of the new move</em> - If properly implemented, a new move can be validated by running an MCMC analysis where the data are ignored and one tries to sample only the prior. This can be done in RevBayes by adding the <code class="highlighter-rouge">underPrior=TRUE</code> option as an argument to the <code class="highlighter-rouge">.run()</code> method of an <code class="highlighter-rouge">mcmc</code> object. The recommended strategy is to implement the simplest possible model that uses a variable of the type appropriate for the new move, and assigning that variable an easily validated prior (e.g., a uniform). Run the analysis with only the new move operating on that variable and then plot the variable’s marginal distribution to make sure it matches the prior.</p>
   </li>
 </ol>
+
+<p class="section maintitle" id="implement_help">Implementing a help entry</p>
+<h2 id="adding-basic-help-sections">Adding basic help sections</h2>
+
+<p>For each new function, distrubution or move you add in RevBayes you should always create a corresponding help entry.</p>
+
+<p>As an example we will look at the documentation associated with the normal distributon function.
+The functions used to generate the help entry are in the <code class="highlighter-rouge">Dist_norm.cpp</code> and <code class="highlighter-rouge">Dist_norm.h</code> files in the directory <code class="highlighter-rouge">/revlanguage/distributions/math</code>.</p>
+
+<p>The basic help fields and assocaited functions are listed in the table below and are output to screen in the same order.</p>
+
+<figure id="help_sections" class="table"><table>
+  <thead>
+    <tr>
+      <th>Help section</th>
+      <th>Association RevBayes function</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Title</td>
+      <td><code class="highlighter-rouge">getHelpTitle</code></td>
+    </tr>
+    <tr>
+      <td>Aliases</td>
+      <td><code class="highlighter-rouge">getDistributionFunctionAliases</code></td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="highlighter-rouge">getFunctionNameAliases</code></td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="highlighter-rouge">getMoveAliases</code></td>
+    </tr>
+    <tr>
+      <td>Description</td>
+      <td><code class="highlighter-rouge">getHelpDescription</code></td>
+    </tr>
+    <tr>
+      <td>Constructor</td>
+      <td>(autogenerated)</td>
+    </tr>
+    <tr>
+      <td>Return Type</td>
+      <td>(autogenerated; only Functions, Distributions)</td>
+    </tr>
+    <tr>
+      <td>Details</td>
+      <td><code class="highlighter-rouge">getHelpDetails</code></td>
+    </tr>
+    <tr>
+      <td>Example</td>
+      <td><code class="highlighter-rouge">getHelpExample</code></td>
+    </tr>
+    <tr>
+      <td>Methods</td>
+      <td>(autogenerated)</td>
+    </tr>
+    <tr>
+      <td>Authors</td>
+      <td><code class="highlighter-rouge">getHelpAuthor</code></td>
+    </tr>
+    <tr>
+      <td>References</td>
+      <td><code class="highlighter-rouge">getHelpReferences</code></td>
+    </tr>
+    <tr>
+      <td>See Also</td>
+      <td><code class="highlighter-rouge">getHelpSeeAlso</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<figcaption class="table">Help fields and associatd functions</figcaption>
+</figure>
+
+<p>Note the <em>Constructor</em>, <em>Return Type</em> and <em>Methods</em> fields are generated automatically. All the other fields must be populated manually.</p>
+
+<p>The help functions are <em>protected functions</em> included in the header file <code class="highlighter-rouge">Dist_norm.h</code>.</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">protected:</span>
+    
+  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span>                        <span class="n">getHelpAuthor</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>  <span class="c1">//!&lt; Get the author(s) of this function
+</span>  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span>                        <span class="n">getHelpDescription</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>  <span class="c1">//!&lt; Get the description for this function
+</span>  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span>                        <span class="n">getHelpDetails</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span> <span class="c1">//!&lt; Get the more detailed description of the function
+</span>  <span class="n">std</span><span class="o">::</span><span class="n">string</span>                                     <span class="n">getHelpExample</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span> <span class="c1">//!&lt; Get an executable and instructive example
+</span>  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">RevBayesCore</span><span class="o">::</span><span class="n">RbHelpReference</span><span class="o">&gt;</span>      <span class="n">getHelpReferences</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span> <span class="c1">//!&lt; Get some references/citations for this function
+</span>  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span>                        <span class="n">getHelpSeeAlso</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span> <span class="c1">//!&lt; Get suggested other functions
+</span>  <span class="n">std</span><span class="o">::</span><span class="n">string</span>                                     <span class="n">getHelpTitle</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span> <span class="c1">//!&lt; Get the title of this help entry
+</span></code></pre></div></div>
+<p>The information for the helps fields should be filled out in the source file <code class="highlighter-rouge">Dist_norm.cpp</code>.</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+ * Get the author(s) of this function so they can receive credit (and blame) for it.
+ */</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">Dist_norm</span><span class="o">::</span><span class="n">getHelpAuthor</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span>
+<span class="p">{</span>
+    <span class="c1">// create a vector of authors for this function
+</span>    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">authors</span><span class="p">;</span>
+    <span class="n">authors</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span> <span class="s">"Sebastian Hoehna"</span> <span class="p">);</span>
+
+    <span class="k">return</span> <span class="n">authors</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+<span class="cm">/**
+ * Get the (brief) description for this function
+ */</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">Dist_norm</span><span class="o">::</span><span class="n">getHelpDescription</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span>
+<span class="p">{</span>
+    <span class="c1">// create a variable for the description of the function
+</span>    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">descriptions</span><span class="p">;</span>
+    <span class="n">descriptions</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span> <span class="s">"Normal (gaussian) distribution with mean equal to ‘mean’ and standard deviation equal to ‘sd’."</span> <span class="p">);</span>
+
+    <span class="k">return</span> <span class="n">descriptions</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+<span class="cm">/**
+ * Get the more detailed description of the function
+ */</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">Dist_norm</span><span class="o">::</span><span class="n">getHelpDetails</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span>
+<span class="p">{</span>
+    <span class="c1">// create a variable for the description of the function
+</span>    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">details</span><span class="p">;</span>
+
+    <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">details_1</span> <span class="o">=</span> <span class="s">""</span><span class="p">;</span>
+    <span class="n">details_1</span> <span class="o">+=</span> <span class="s">"The normal distribution has density:"</span><span class="p">;</span>
+
+    <span class="n">details</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span> <span class="n">details_1</span> <span class="p">);</span>
+
+    <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">details_2</span> <span class="o">=</span> <span class="s">""</span><span class="p">;</span>
+    <span class="n">details_2</span> <span class="o">+=</span> <span class="s">"f(x) = 1/(sqrt(2 pi) sigma) e^-((x - mu)^2/(2 sigma^2))"</span><span class="p">;</span>
+
+    <span class="n">details</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span> <span class="n">details_2</span> <span class="p">);</span>
+
+    <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">details_3</span> <span class="o">=</span> <span class="s">""</span><span class="p">;</span>
+    <span class="n">details_3</span> <span class="o">+=</span> <span class="s">"where mu is the mean of the distribution and sigma the standard deviation."</span><span class="p">;</span>
+
+    <span class="n">details</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span> <span class="n">details_3</span> <span class="p">);</span>
+
+
+    <span class="k">return</span> <span class="n">details</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+<span class="cm">/**
+ * Get an executable and instructive example.
+ * These example should help the users to show how this function works but
+ * are also used to test if this function still works.
+ */</span>
+<span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">Dist_norm</span><span class="o">::</span><span class="n">getHelpExample</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span>
+<span class="p">{</span>
+    <span class="c1">// create an example as a single string variable.
+</span>    <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">example</span> <span class="o">=</span> <span class="s">""</span><span class="p">;</span>
+
+    <span class="n">example</span> <span class="o">+=</span> <span class="s">"# we simulate some observations</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+    <span class="n">example</span> <span class="o">+=</span> <span class="s">"x &lt;- rnorm(n=10,mean=5,sd=10)</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+    <span class="n">example</span> <span class="o">+=</span> <span class="s">"# let's see what the minimum is (you could do the max too)</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+    <span class="n">example</span> <span class="o">+=</span> <span class="s">"min(x)</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+    <span class="n">example</span> <span class="o">+=</span> <span class="s">"# let's also see what the mean and the variance are</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+    <span class="n">example</span> <span class="o">+=</span> <span class="s">"mean(x)</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+    <span class="n">example</span> <span class="o">+=</span> <span class="s">"var(x)</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+    <span class="n">example</span> <span class="o">+=</span> <span class="s">"sd(x)</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+
+    <span class="k">return</span> <span class="n">example</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+<span class="cm">/**
+ * Get some references/citations for this function
+ *
+ */</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">RevBayesCore</span><span class="o">::</span><span class="n">RbHelpReference</span><span class="o">&gt;</span> <span class="n">Dist_norm</span><span class="o">::</span><span class="n">getHelpReferences</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span>
+<span class="p">{</span>
+    <span class="c1">// create an entry for each reference
+</span>    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">RevBayesCore</span><span class="o">::</span><span class="n">RbHelpReference</span><span class="o">&gt;</span> <span class="n">references</span><span class="p">;</span>
+
+
+    <span class="k">return</span> <span class="n">references</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+<span class="cm">/**
+ * Get the names of similar and suggested other functions
+ */</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">Dist_norm</span><span class="o">::</span><span class="n">getHelpSeeAlso</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span>
+<span class="p">{</span>
+    <span class="c1">// create an entry for each suggested function
+</span>    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">see_also</span><span class="p">;</span>
+    <span class="n">see_also</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span> <span class="s">"dnLognormal"</span> <span class="p">);</span>
+
+
+    <span class="k">return</span> <span class="n">see_also</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+<span class="cm">/**
+ * Get the title of this help entry
+ */</span>
+<span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">Dist_norm</span><span class="o">::</span><span class="n">getHelpTitle</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span>
+<span class="p">{</span>
+    <span class="c1">// create a title variable
+</span>    <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">title</span> <span class="o">=</span> <span class="s">"Normal Distribution"</span><span class="p">;</span>
+
+    <span class="k">return</span> <span class="n">title</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Once you recompile RevBayes, be careful to double check the screen output!</p>
 
 
 <ol class="bibliography"></ol>
