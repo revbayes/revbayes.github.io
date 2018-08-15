@@ -154,12 +154,11 @@ volcanic island may only be colonized once it has formed, and that
 distance should have some bearing on dispersal rate.</p>
 
 <p>To accomplish this, we’ll incorporate (paleo-)geographical data for the
-Hawaiian archipelago, summarized in Table [tab:paleogeo]. Even though
+Hawaiian archipelago, summarized in <a href="#paleogeo"></a>. Even though
 we will continue to use four areas (K, O, M, H) in this section, we will
 use all six areas (R, K, O, M, H, Z) in <a href="#bg_phylo"></a>, hence
 the full table is given for future reference.</p>
-
-<table>
+<figure id="paleogeo" class="table"><table>
   <thead>
     <tr>
       <th>area</th>
@@ -250,12 +249,13 @@ the full table is given for future reference.</p>
   </tbody>
 </table>
 
-<p>: Hawaiian paleogeographic data. The six areas are given in <a href="#hawaii_areas"></a>.
+<figcaption class="table">Hawaiian paleogeographic data. The six areas are given in <a href="#hawaii_areas"></a>.
    Ages $a_{max}$ and $a_{min}$ report the maximum
   and minimum origination times for the given island [adapted from
   (missing reference)]. Distances $g_{ij}$ report the shortest geographical
   distance from the coast of the row’s area to the column’s area
-  (measured at present).<span data-label="tab:paleogeo"></span></p>
+  (measured at present).</figcaption>
+</figure>
 
 <h3 class="subsection" id="analysis">Analysis</h3>
 <hr class="subsection" />
@@ -268,7 +268,7 @@ tree_fn = "data/n4/silversword.tre"
 out_fn = "output/epoch"
 </code></pre></div></div>
 
-<p>The paleogeographical information from Table [tab:paleogeo] is encoded
+<p>The paleogeographical information from <a href="#paleogeo"></a> is encoded
 in three files named <code class="highlighter-rouge">hawaii.n4.times.txt</code>,
 <code class="highlighter-rouge">hawaii.n4.distances.txt</code>, and
 <code class="highlighter-rouge">hawaii.n4.connectivity.\*.txt</code>.</p>
@@ -474,7 +474,7 @@ one for each epoch.</p>
 paleogeographic state/connectivity changes. In our case, we’ll define
 the epoch breakpoints as uniformly distributed random variables that are
 bounded by the minimum and maximum age estimates for when each new
-island complex formed (Table [tab:paleogeo]). This is easily done
+island complex formed (<a href="#paleogeo"></a>). This is easily done
 using a for loop over the number of epochs. Note, we define the end of
 the final epoch as the present.</p>
 
@@ -587,7 +587,7 @@ mymcmc.run(5000)
 <p>When compared to the ancestral state estimates from the “simple”
 analysis (<a href="#simple_RevGadgets_ase"></a>), these results are far
 more consonant with what we understand about the origination times of
-the islands (Table [tab:paleogeo]). First, this reconstruction asserts
+the islands (<a href="#paleogeo"></a>). First, this reconstruction asserts
 that the clade originated in the modern Hawaiian islands at a time when
 only Kauai was above sea level. Similarly, the <em>D.
 sheriffiana</em> and <em>D. arborea</em> clade no longer
