@@ -9,7 +9,7 @@ code_layout: Rev
         <ul class="list-unstyled components">
         {% for category in site.data.help %}
         <h3 id="types" class="sidebar_header">{{ category[0] }}</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         {% for item in category[1] %}
         <li class="sidebar_item"><a href="{{ site.baseurl }}/docs/{{ category[0] }}/{{ item.name }}.html">{{ item.name }}</a></li>
         {% endfor %}
@@ -22,27 +22,107 @@ code_layout: Rev
 <div class="help col-sm-8">
     {% if page.entry %}
         <p>{{ page.entry.name }}</p>
-        {% if page.entry.name %}
-            <h2>{{ page.entry.title }}</h2>
+        {% if page.entry.title %}
+            <h2 class="help-title">{{ page.entry.title }}</h2>
         {% endif %}
-        {% if page.entry.constructor %}
-            <h3>Constructor</h3>
-            {% for constructor in page.entry.constructor %}
-            {{ constructor.usage }}
+
+        {% if page.entry.aliases %}
+            <h3 class="help-section-header">Aliases</h3>
+            <div class="help-section-body">
+            <ul class="list-unstyled">
+            {% for alias in page.entry.aliases %}
+            <li>{{ alias }}</li>
             {% endfor %}
+            </ul>
+            </div>
         {% endif %}
+
         {% if page.entry.description %}
-            <h3>Description</h3>
+            <h3 class="help-section-header">Description</h3>
+            <div class="help-section-body">
             {% for description in page.entry.description %}
             {{ description }}
             {% endfor %}
+            </div>
         {% endif %}
+
+        {% if page.entry.constructor %}
+            <h3 class="help-section-header">Usage</h3>
+            {% assign constructor = page.entry.constructor[0] %}
+            <div class="help-section-body">
+            {{ constructor.usage }}
+            </div>
+            <h3 class="help-section-header">Arguments</h3>
+            <div class="help-section-body">
+            <table class="arguments">
+                {% for argument in constructor.arguments %}
+                <tr class="argument">
+                    <td class="lhs">{{ argument.label }} : </td>
+                    <td class="rhs">{{ argument.value_type }} ({% if argument.dag_type != "<any>" %}{{ argument.dag_type | escape }} {% endif %}pass by {{ argument.pass_by }})</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">{{ argument.description }}</td>
+                </tr>
+                {% if argument.default %}
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : {{ argument.default }}</td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </table>
+            </div>
+        {% endif %}
+
+        {% if page.entry.domain %}
+            <h3 class="help-section-header">Domain Type</h3>
+            <div class="help-section-body">
+            {{ page.entry.domain }}
+            </div>
+        {% elsif page.entry.return_type %}
+            <h3 class="help-section-header">Return Type</h3>
+            <div class="help-section-body">
+            {{ page.entry.return_type }}
+            </div>
+        {% endif %}
+
+        {% if page.entry.details %}
+            <h3 class="help-section-header">Details</h3>
+            <div class="help-section-body">
+            {% for detail in page.entry.details %}
+            {{ detail }}
+            {% endfor %}
+            </div>
+        {% endif %}
+
         {% if page.entry.example %}
-            <h3>Example</h3>
+            <h3 class="help-section-header">Example</h3>
             {% capture example %}```
 {{ page.entry.example }}```{% endcapture %}
             {{ example | markdownify }}
         {% endif %}
+
+        {% if page.entry.methods %}
+            <h3 class="help-section-header">Methods</h3>
+            <div class="help-section-body">
+            <ul class="list-unstyled">
+            {% for method in page.entry.methods %}
+            <li>{{ method.usage }}</li>
+            {% endfor %}
+            </ul>
+            </div>
+        {% endif %}
+
+        {% if page.entry.see_also %}
+            <h3 class="help-section-header">See Also</h3>
+            <div class="help-section-body">
+            <ul class="list-unstyled">
+            {% for ref in page.entry.see_also %}
+            <li>{{ ref }}</li>
+            {% endfor %}
+            </ul>
+            </div>
+        {% endif %}
+
     {% else %}
     {{ content }}
     {% endif %}

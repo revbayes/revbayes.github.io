@@ -7,6 +7,7 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real'
+      default:
       options:
   title:
   aliases:
@@ -56,12 +57,14 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Integer[]'
+      default:
       options:
     - label: 'index'
       description: 'The index.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Natural'
+      default:
       options:
   title:
   aliases:
@@ -80,6 +83,7 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real'
+      default:
       options:
   title: 'Absolute value of a number'
   aliases:
@@ -97,8 +101,8 @@
   authors: 'Sebastian Hoehna'
   see_also:
     - 'ceil'
-    - 'ceil'
-    - 'ceil'
+    - 'floor'
+    - 'round'
   references:
 - name: 'ancestralStateTree'
   return_type: 'Tree'
@@ -109,65 +113,75 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Tree'
+      default:
       options:
     - label: 'ancestral_state_trace_vector'
       description: 'A vector of ancestral state traces.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'AncestralStateTrace[]'
+      default:
       options:
     - label: 'tree_trace'
       description: 'A trace of tree samples.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'TraceTree'
+      default: 'NULL'
       options:
     - label: 'include_start_states'
       description: 'Annotate start states as well as end states for each branch. Only applicable for cladogenetic processes.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'FALSE'
       options:
     - label: 'file'
       description: 'The name of the file to store the annotated tree.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default:
       options:
     - label: 'burnin'
       description: 'The fraction/number of samples to discard as burnin.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Probability'
+      default: '0.25'
       options:
     - label: 'summary_statistic'
       description: 'The statistic used to summarize ancestral states. ''MAP'' displays the 3 states with highest posterior probabilities. ''mean'' displays the mean value and 95% CI.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default: 'MAP'
       options:
         - 'MAP'
-        - 'MAP'
+        - 'mean'
     - label: 'reconstruction'
       description: '''joint'' and ''conditional'' should only be used to summarize ancestral states sampled from the joint distribution. ''marginal'' can be used for states sampled from the joint or marginal distribution.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default: 'marginal'
       options:
         - 'conditional'
-        - 'conditional'
-        - 'conditional'
+        - 'joint'
+        - 'marginal'
     - label: 'site'
       description: 'The character site to be summarized.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Integer'
+      default: '1'
       options:
     - label: 'verbose'
       description: 'Printing verbose output'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'TRUE'
       options:
   title:
   aliases:
@@ -186,60 +200,70 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Tree'
+      default:
       options:
     - label: 'trace'
       description: 'The sample trace.'
       dag_type: '<any>'
       pass_by: 'reference'
       value_type: 'TraceTree'
+      default:
       options:
     - label: 'file'
       description: 'The name of the file where to store the tree.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default:
       options:
     - label: 'ages'
       description: 'Annotate node ages?'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'TRUE'
       options:
     - label: 'ccAges'
       description: 'Annotate conditional clade ages?'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'FALSE'
       options:
     - label: 'ccp'
       description: 'Annotate conditional clade probabilities?'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'FALSE'
       options:
     - label: 'conditionalAges'
       description: 'Annotate node ages conditional on the input topology?'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'FALSE'
       options:
     - label: 'hpd'
       description: 'The probability mass of the highest posterior density node age interval.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Probability'
+      default: '0.95'
       options:
     - label: 'mean'
       description: 'Annotate node ages using the mean age instead of the median?'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'TRUE'
       options:
     - label: 'sampledAncestors'
       description: 'Annotate sampled ancestor probs?'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'FALSE'
       options:
   title:
   aliases:
@@ -258,12 +282,14 @@
       dag_type: '<any>'
       pass_by: 'reference'
       value_type: 'Integer[]'
+      default:
       options:
     - label: 'x'
       description: 'The value that we append.'
       dag_type: '<any>'
       pass_by: 'reference'
       value_type: 'Integer'
+      default:
       options:
   title: 'Append a value'
   aliases:
@@ -285,12 +311,14 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Tree'
+      default:
       options:
     - label: 'tree2'
       description: 'The second tree.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Tree'
+      default:
       options:
   title:
   aliases:
@@ -309,6 +337,7 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real'
+      default:
       options:
   title: 'Ceiling value of a number'
   aliases:
@@ -326,8 +355,8 @@
   authors: 'Sebastian Hoehna'
   see_also:
     - 'abs'
-    - 'abs'
-    - 'abs'
+    - 'floor'
+    - 'round'
   references:
 - name: 'characterMapTree'
   return_type: 'Tree'
@@ -338,57 +367,66 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Tree'
+      default:
       options:
     - label: 'ancestral_state_trace_vector'
       description: 'A vector of ancestral state traces.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'AncestralStateTrace[]'
+      default:
       options:
     - label: 'tree_trace'
       description: 'A trace of tree samples.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'TraceTree'
+      default: 'NULL'
       options:
     - label: 'character_file'
       description: 'The name of the file to store the tree annotated with the MAP character history.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default:
       options:
     - label: 'posterior_file'
       description: 'The name of the file to store the tree annotated with the posterior probabilities for the MAP character history.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default:
       options:
     - label: 'burnin'
       description: 'The fraction/number of samples to discard as burnin.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Probability'
+      default: '0.25'
       options:
     - label: 'reconstruction'
       description: '''joint'' and ''conditional'' should only be used to summarize character maps sampled from the joint distribution. ''marginal'' can be used for character maps sampled from the joint or marginal distribution.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default: 'marginal'
       options:
         - 'conditional'
-        - 'conditional'
-        - 'conditional'
+        - 'joint'
+        - 'marginal'
     - label: 'num_time_slices'
       description: 'The number of time slices to discretize the character history. Should be the same as used for the numeric ODE.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Integer'
+      default: '500'
       options:
     - label: 'verbose'
       description: 'Printing verbose output'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'TRUE'
       options:
   title:
   aliases:
@@ -407,12 +445,14 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'TimeTree'
+      default:
       options:
     - label: 'constraints'
       description: 'The constraints on relative node ages that need to be tested on the tree.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'RlRelativeNodeAgeConstraints'
+      default:
       options:
   title:
   aliases:
@@ -431,12 +471,14 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Natural'
+      default:
       options:
     - label: 'k'
       description: 'Number of chosen elements.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Natural'
+      default:
       options:
   title:
   aliases:
@@ -458,6 +500,7 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RevObject'
+      default:
       options:
   title: 'Clear the current workspace'
   aliases:
@@ -487,18 +530,21 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'TimeTree'
+      default:
       options:
     - label: 'constraints'
       description: 'The constraints on relative node ages that are needed to compute the score of the tree.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'RlRelativeNodeAgeWeightedConstraints'
+      default:
       options:
     - label: 'beta'
       description: 'The beta weight for the constraints.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'RealPos'
+      default:
       options:
   title:
   aliases:
@@ -517,27 +563,31 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'AbstractHomologousDiscreteCharacterData'
+      default:
       options:
     - label: 'b'
       description: 'Second character data object.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'AbstractHomologousDiscreteCharacterData'
+      default:
       options:
     - label:
       description: 'Additional character data objects.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'AbstractHomologousDiscreteCharacterData'
+      default:
       options:
     - label: 'merge'
       description: 'How to merge differing taxa'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default: 'Taxa must match'
       options:
         - 'union'
-        - 'union'
+        - 'intersection'
   title:
   aliases:
   description:
@@ -555,47 +605,54 @@
       dag_type: '<any>'
       pass_by: 'reference'
       value_type: 'TraceTree'
+      default:
       options:
     - label: 'cutoff'
       description: 'The minimum threshold for clade probabilities.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Probability'
+      default: '0.5'
       options:
     - label: 'file'
       description: 'The name of the file for storing the tree.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default:
       options:
     - label: 'hpd'
       description: 'The probability mass of the highest posterior density node age interval.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Probability'
+      default: '0.95'
       options:
     - label: 'mean'
       description: 'Annotate node ages using the mean age instead of the median?'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'FALSE'
       options:
     - label: 'sampledAncestors'
       description: 'Annotate sampled ancestor probs?'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'TRUE'
       options:
     - label: 'positiveBranchLengths'
       description: 'Force negative branch lengths to be short but positive?'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'FALSE'
       options:
   title:
   aliases:
     - 'conTree'
-    - 'conTree'
+    - 'sumt'
   description: 'Calculates the majority-rule consensus topology from a trace of trees and summarizes branch lengths.'
   details:
   example: |
@@ -606,14 +663,14 @@
     map_tree = consensusTree(trace=tree_trace, cutoff=0.5, file="consensus.tree")
   authors:
     - 'Seraina Klopfstein'
-    - 'Seraina Klopfstein'
-    - 'Seraina Klopfstein'
-    - 'Seraina Klopfstein'
+    - 'Will Freyman'
+    - 'Will Pett'
+    - 'Sebastian Hoehna'
   see_also:
     - 'mapTree'
-    - 'mapTree'
-    - 'mapTree'
-    - 'mapTree'
+    - 'mccTree'
+    - 'treeTrace'
+    - 'readTreeTrace'
   references:
 - name: 'convertToPhylowood'
   return_type: 'Tree'
@@ -624,47 +681,54 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default:
       options:
     - label: 'treefile'
       description:
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default:
       options:
     - label: 'geofile'
       description:
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default:
       options:
     - label: 'outfile'
       description:
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default:
       options:
     - label: 'burnin'
       description:
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Probability'
+      default: '0.25'
       options:
     - label: 'chartype'
       description:
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default: 'NaturalNumbers'
       options:
         - 'NaturalNumbers'
-        - 'NaturalNumbers'
+        - 'Standard'
     - label: 'bgtype'
       description:
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default: 'Area'
       options:
         - 'Range'
-        - 'Range'
+        - 'Area'
   title:
   aliases:
   description:
@@ -682,6 +746,7 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Natural'
+      default:
       options:
   title:
   aliases:
@@ -700,6 +765,7 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default:
       options:
   title: 'Check whether a variable exists'
   aliases:
@@ -724,6 +790,7 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real'
+      default:
       options:
   title:
   aliases:
@@ -742,6 +809,7 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real'
+      default:
       options:
   title:
   aliases:
@@ -760,36 +828,42 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real'
+      default: '0'
       options:
     - label: 'lossFactor'
       description: 'Multiplicative factor (r'' = r * e^{ n_0 * f }) for characters in context set'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real'
+      default: '0'
       options:
     - label: 'width'
       description: 'Width of context-dependence window'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Natural'
+      default: '1'
       options:
     - label: 'matrix'
       description: 'Weighted character adjacency matrix.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos[][]'
+      default: 'NULL'
       options:
     - label: 'numStates'
       description: 'Number of states'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Natural'
+      default:
       options:
     - label: 'numChars'
       description: 'Number of characters'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Natural'
+      default:
       options:
   title:
   aliases:
@@ -808,30 +882,35 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RateGenerator'
+      default:
       options:
     - label: 'geoRateMod'
       description:
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'CharacterHistoryRateModifier'
+      default: 'NULL'
       options:
     - label: 'root_frequencies'
       description:
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Simplex'
+      default: '[ 0.500, 0.500 ]'
       options:
     - label: 'numAreas'
       description:
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Natural'
+      default:
       options:
     - label: 'forbidExtinction'
       description:
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Bool'
+      default: 'TRUE'
       options:
   title:
   aliases:
@@ -862,42 +941,49 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Natural'
+      default:
       options:
     - label: 'gamma'
       description: 'Rate of gain of a single chromosome.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos'
+      default: '0'
       options:
     - label: 'delta'
       description: 'Rate of loss of a single chromosome.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos'
+      default: '0'
       options:
     - label: 'rho'
       description: 'Rate of polyploidization.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos'
+      default: '0'
       options:
     - label: 'eta'
       description: 'Rate of demi-polyploidization.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos'
+      default: '0'
       options:
     - label: 'gamma_l'
       description: 'Rate modifier for chromosome gains.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real'
+      default: '0'
       options:
     - label: 'delta_l'
       description: 'Rate modifier for chromosome losses.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real'
+      default: '0'
       options:
   title:
   aliases:
@@ -916,18 +1002,21 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos[]'
+      default:
       options:
     - label: 'rate_multipliers'
       description: 'The rate multipliers for hidden rate classes.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos[]'
+      default: 'NULL'
       options:
     - label: 'max_chromosomes'
       description: 'The maximum number of chromosomes.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Natural'
+      default:
       options:
   title:
   aliases:
@@ -946,12 +1035,14 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Simplex'
+      default:
       options:
     - label: 'maxChromosomes'
       description: 'The maximum number of chromosomes.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Natural'
+      default:
       options:
   title:
   aliases:
@@ -970,84 +1061,98 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Natural'
+      default:
       options:
     - label: 'gamma_d'
       description: 'Diploid rate of gain of a single chromosome.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos'
+      default: '0'
       options:
     - label: 'delta_d'
       description: 'Diploid rate of loss of a single chromosome.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos'
+      default: '0'
       options:
     - label: 'rho_d'
       description: 'Diploid rate of polyploidization.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos'
+      default: '0'
       options:
     - label: 'eta_d'
       description: 'Disploid rate of demi-polyploidization.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos'
+      default: '0'
       options:
     - label: 'gamma_dl'
       description: 'Diploid rate modifier for chromosome gains.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real'
+      default: '0'
       options:
     - label: 'delta_dl'
       description: 'Diploid rate modifier for chromosome losses.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real'
+      default: '0'
       options:
     - label: 'gamma_p'
       description: 'Polyploid rate of gain of a single chromosome.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos'
+      default: '0'
       options:
     - label: 'delta_p'
       description: 'Polyploid rate of loss of a single chromosome.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos'
+      default: '0'
       options:
     - label: 'rho_p'
       description: 'Polyploid rate of polyploidization.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos'
+      default: '0'
       options:
     - label: 'eta_p'
       description: 'Polyploid rate of demi-polyploidization.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos'
+      default: '0'
       options:
     - label: 'gamma_pl'
       description: 'Polyploid rate modifier for chromosome gains.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real'
+      default: '0'
       options:
     - label: 'delta_pl'
       description: 'Polyploid rate modifier for chromosome losses.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real'
+      default: '0'
       options:
     - label: 'beta'
       description: 'Rate of rediploidization.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real'
+      default: '0'
       options:
   title:
   aliases:
@@ -1066,12 +1171,14 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos[]'
+      default:
       options:
     - label: 'max_chromosomes'
       description: 'The maximum number of chromosomes.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Natural'
+      default:
       options:
   title:
   aliases:
@@ -1090,24 +1197,28 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'TimeTree'
+      default:
       options:
     - label: 'clades'
       description: 'The character data object.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Clade[]'
+      default:
       options:
     - label: 'baseRates'
       description: 'The branch rates without clade multipliers.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos[]'
+      default:
       options:
     - label: 'cladeRates'
       description: 'The rate multipliers for the clades.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos[]'
+      default:
       options:
   title:
   aliases:
@@ -1126,18 +1237,21 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Natural[][]'
+      default:
       options:
     - label: 'speciation_rates'
       description: 'The speciation rates that correspond to the different cladogenetic event types.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos[]'
+      default:
       options:
     - label: 'num_states'
       description: 'The number of states.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Natural'
+      default:
       options:
   title:
   aliases:
@@ -1156,18 +1270,21 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real[]'
+      default:
       options:
     - label: 'corAnalysis'
       description: 'A correspondence analysis object.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'MatrixReal'
+      default:
       options:
     - label: 'weights'
       description: 'A vector of weight for the coordinates.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'RealPos[]'
+      default:
       options:
   title:
   aliases:
@@ -1189,12 +1306,14 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos'
+      default:
       options:
     - label: 'codonFrequencies'
       description: 'The stationary frequencies.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Simplex'
+      default:
       options:
   title:
   aliases:
@@ -1213,18 +1332,21 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos'
+      default:
       options:
     - label: 'kappa'
       description: 'The transition-transversion rate ratio.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos'
+      default:
       options:
     - label: 'baseFrequencies'
       description: 'The stationary frequencies.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Simplex'
+      default:
       options:
   title:
   aliases:
@@ -1243,24 +1365,28 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RateGenerator[]'
+      default:
       options:
     - label: 'RateScalars'
       description: 'Rate multipliers per state.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos[]'
+      default:
       options:
     - label: 'SwitchRates'
       description: 'Rates between state.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos[][]'
+      default:
       options:
     - label: 'rescaled'
       description: 'Should the matrix be normalized?'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'TRUE'
       options:
   title:
   aliases:
@@ -1279,24 +1405,28 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RateGenerator[]'
+      default:
       options:
     - label: 'switch_rates'
       description: 'The class-switching rate matrix'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RateMatrix'
+      default:
       options:
     - label: 'clock_rates'
       description: 'The rate multipliers per class'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos[]'
+      default:
       options:
     - label: 'rescaled'
       description: 'Should the matrix be normalized?'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'TRUE'
       options:
   title:
   aliases:
@@ -1327,50 +1457,58 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Simplex'
+      default:
       options:
     - label: 'numCharacters'
       description: 'The number of characters.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Natural'
+      default:
       options:
     - label: 'maxRangeSize'
       description: 'The maximum range size.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Natural'
+      default: '0'
       options:
     - label: 'probType'
       description: 'Assign event weights over classes of patterns or over specific patterns'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default: 'pattern'
       options:
         - 'pattern'
-        - 'pattern'
+        - 'class'
     - label: 'widespreadAllopatry'
       description: 'Allopatry may result in both daughter ranges being larger than size 1.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'FALSE'
       options:
     - label: 'eventTypes'
       description: 'Vector of cladogenetic event types.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String[]'
+      default:
       options:
     - label: 'connectivityGraph'
       description: 'Connectivity graph of allowed ranges.'
       dag_type: '<constant>'
       pass_by: 'value'
       value_type: 'RealPos[][]'
+      default: '[ ]'
       options:
     - label: 'vicarianceGraph'
       description: 'Graph to model vicariance events.'
       dag_type: '<constant>'
       pass_by: 'value'
       value_type: 'RealPos[][]'
+      default: '[ ]'
       options:
   title:
   aliases: 'fnCladoProbs'
@@ -1389,33 +1527,38 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos[][]'
+      default:
       options:
     - label: 'extirpationRates'
       description: 'Matrix of extirpation rates.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos[][]'
+      default:
       options:
     - label: 'rangeSize'
       description: 'Relative proportions of range sizes.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Simplex'
+      default: '[ ]'
       options:
     - label: 'nullRange'
       description: 'How should DEC handle the null range?'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default: 'CondSurv'
       options:
         - 'CondSurv'
-        - 'CondSurv'
-        - 'CondSurv'
+        - 'Exclude'
+        - 'Include'
     - label: 'maxRangeSize'
       description: 'Maximum range size.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Natural'
+      default: '0'
       options:
   title:
   aliases:
@@ -1434,18 +1577,21 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos[][]'
+      default:
       options:
     - label: 'extinctionRates'
       description:
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos[]'
+      default:
       options:
     - label: 'maxRangeSize'
       description:
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Natural'
+      default: '2147483647'
       options:
   title:
   aliases:
@@ -1464,12 +1610,14 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos[]'
+      default:
       options:
     - label: 'rangeSize'
       description:
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Simplex'
+      default: 'NULL'
       options:
   title:
   aliases:
@@ -1500,12 +1648,14 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos[]'
+      default:
       options:
     - label: 'correlationCoefficients'
       description: 'A matrix of correlation coefficients.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'MatrixReal'
+      default:
       options:
   title:
   aliases:
@@ -1524,24 +1674,28 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos'
+      default:
       options:
     - label: 'beta'
       description: 'The beta parameter of the beta distribution'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos'
+      default:
       options:
     - label: 'numCats'
       description: 'The number of categories.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Natural'
+      default:
       options:
     - label: 'median'
       description: 'Should we use the median or mean?'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'FALSE'
       options:
   title:
   aliases:
@@ -1560,18 +1714,21 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos'
+      default:
       options:
     - label: 'beta'
       description: 'The beta parameter of the beta distribution'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos'
+      default:
       options:
     - label: 'numCats'
       description: 'The number of categories.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Integer'
+      default:
       options:
   title:
   aliases:
@@ -1590,12 +1747,14 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'ContinuousDistribution'
+      default:
       options:
     - label: 'num_cats'
       description: 'The number of categories into which this distribution is categorize.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Integer'
+      default:
       options:
   title:
   aliases:
@@ -1614,24 +1773,28 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos'
+      default:
       options:
     - label: 'rate'
       description: 'The rate parameter (rate = 1/scale) of the gamma distribution'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos'
+      default:
       options:
     - label: 'numCats'
       description: 'The number of categories.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Integer'
+      default:
       options:
     - label: 'median'
       description: 'Should we use the median or mean?'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'FALSE'
       options:
   title:
   aliases:
@@ -1650,18 +1813,21 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos'
+      default:
       options:
     - label: 'rate'
       description: 'The rate parameter (rate = 1/scale) of the Gamma distribution'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos'
+      default:
       options:
     - label: 'numCats'
       description: 'The number of categories.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Integer'
+      default:
       options:
   title:
   aliases:
@@ -1680,18 +1846,21 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real'
+      default:
       options:
     - label: 'sd'
       description: 'The standard deviation (in log-space) of the Lognormal distribution.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos'
+      default:
       options:
     - label: 'numCats'
       description: 'The number of categories.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Integer'
+      default:
       options:
   title:
   aliases:
@@ -1710,24 +1879,28 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos[][]'
+      default:
       options:
     - label: 'distancePower'
       description:
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real'
+      default: '1e-05'
       options:
     - label: 'useDistances'
       description:
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Bool'
+      default: 'TRUE'
       options:
     - label: 'useAvailable'
       description:
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Bool'
+      default: 'FALSE'
       options:
   title:
   aliases:
@@ -1746,12 +1919,14 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'RealPos'
+      default:
       options:
     - label: 'numElements'
       description: 'Total number of elements.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Natural'
+      default:
       options:
   title:
   aliases:
@@ -1770,12 +1945,14 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'RealPos'
+      default:
       options:
     - label: 'numElements'
       description: 'The number of elements of the DPP.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'RealPos'
+      default:
       options:
   title:
   aliases:
@@ -1794,18 +1971,21 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'TimeTree'
+      default:
       options:
     - label: 'sigma'
       description: 'The rate of drift.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos'
+      default:
       options:
     - label: 'lambda'
       description: 'The rate of change through time.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos'
+      default:
       options:
   title:
   aliases:
@@ -1824,18 +2004,21 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RateGenerator[]'
+      default:
       options:
     - label: 'times'
       description: 'The times of the epochs.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos[]'
+      default:
       options:
     - label: 'rates'
       description: 'The rate multipliers per epoch.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos[]'
+      default:
       options:
   title:
   aliases:
@@ -1854,12 +2037,14 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'CladogeneticProbabilityMatrix[]'
+      default:
       options:
     - label: 'times'
       description: 'The vector of epoch end ages.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos[]'
+      default:
       options:
   title:
   aliases:
@@ -1878,6 +2063,7 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'TimeTree'
+      default:
       options:
   title:
   aliases:
@@ -1896,6 +2082,7 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Simplex'
+      default:
       options:
   title:
   aliases:
@@ -1914,12 +2101,14 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real[]'
+      default:
       options:
     - label: 'rescaled'
       description: 'Should the matrix be normalized?'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'TRUE'
       options:
   title:
   aliases:
@@ -1938,24 +2127,27 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos[][]'
+      default:
       options:
     - label: 'rescaled'
       description: 'Should the matrix be normalized?'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'TRUE'
       options:
     - label: 'matrixExponentialMethod'
       description: 'The method used to compute the matrix exponential.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default: 'eigen'
       options:
         - 'scalingAndSquaring'
-        - 'scalingAndSquaring'
-        - 'scalingAndSquaring'
-        - 'scalingAndSquaring'
-        - 'scalingAndSquaring'
+        - 'scalingAndSquaringPade'
+        - 'scalingAndSquaringTaylor'
+        - 'uniformization'
+        - 'eigen'
   title:
   aliases:
   description:
@@ -1973,24 +2165,27 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos[]'
+      default:
       options:
     - label: 'rescaled'
       description: 'Should the matrix be normalized?'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'TRUE'
       options:
     - label: 'matrixExponentialMethod'
       description: 'The method used to compute the matrix exponential.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default: 'scalingAndSquaring'
       options:
         - 'scalingAndSquaring'
-        - 'scalingAndSquaring'
-        - 'scalingAndSquaring'
-        - 'scalingAndSquaring'
-        - 'scalingAndSquaring'
+        - 'scalingAndSquaringPade'
+        - 'scalingAndSquaringTaylor'
+        - 'uniformization'
+        - 'eigen'
   title:
   aliases:
   description:
@@ -2008,12 +2203,14 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Simplex'
+      default:
       options:
     - label: 'baseFrequencies'
       description: 'The stationary frequencies of the states.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Simplex'
+      default:
       options:
   title:
   aliases:
@@ -2032,24 +2229,28 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real'
+      default:
       options:
     - label: 'lon1'
       description: 'The longitude for the first coordinate.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real'
+      default:
       options:
     - label: 'lat2'
       description: 'The latitude for the second coordinate.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real'
+      default:
       options:
     - label: 'lon2'
       description: 'The longitude for the second coordinate.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real'
+      default:
       options:
   title:
   aliases:
@@ -2068,12 +2269,14 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos'
+      default:
       options:
     - label: 'baseFrequencies'
       description: 'The stationary frequencies.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Simplex'
+      default:
       options:
   title:
   aliases:
@@ -2092,18 +2295,21 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos[][]'
+      default:
       options:
     - label: 'hidden_transition_rates'
       description: 'Transition rates between hidden states.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos[][]'
+      default:
       options:
     - label: 'rescaled'
       description: 'Should the matrix be normalized?'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'TRUE'
       options:
   title:
   aliases:
@@ -2122,12 +2328,14 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Tree'
+      default:
       options:
     - label: 'gainScale'
       description: 'Scales phylogenetic distance depending on gain type.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos[]'
+      default:
       options:
   title:
   aliases:
@@ -2146,6 +2354,7 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Natural'
+      default: '2'
       options:
   title:
   aliases:
@@ -2164,6 +2373,7 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Natural'
+      default:
       options:
   title:
   aliases:
@@ -2194,6 +2404,7 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos'
+      default:
       options:
   title:
   aliases: 'fnKimura80'
@@ -2212,18 +2423,21 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos'
+      default:
       options:
     - label: 'kappa2'
       description: 'The transversion rate from pyrimidine to purine.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos'
+      default:
       options:
     - label: 'baseFrequencies'
       description: 'The stationary frequencies of the states.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Simplex'
+      default: '[ 0.250, 0.250, 0.250, 0.250 ]'
       options:
   title:
   aliases: 'fnKimura81'
@@ -2254,6 +2468,7 @@
       dag_type: '<stochastic>'
       pass_by: 'reference'
       value_type: 'Real'
+      default:
       options:
   title:
   aliases:
@@ -2272,12 +2487,14 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'CladogeneticProbabilityMatrix[]'
+      default:
       options:
     - label: 'mixtureWeights'
       description: 'The mixture probabilities.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Simplex'
+      default:
       options:
   title:
   aliases:
@@ -2320,12 +2537,14 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Distribution__Real'
+      default:
       options:
     - label: 'numCategories'
       description: 'How many discrete categories?'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Integer'
+      default:
       options:
   title:
   aliases:
@@ -2344,6 +2563,7 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real[]'
+      default:
       options:
   title:
   aliases:
@@ -2362,18 +2582,21 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Natural'
+      default:
       options:
     - label: 'lambda'
       description: 'The rate of gain.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos'
+      default: '1'
       options:
     - label: 'mu'
       description: 'The rate of loss.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos'
+      default: '1'
       options:
   title:
   aliases:
@@ -2392,24 +2615,28 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Tree'
+      default:
       options:
     - label: 'sample'
       description:
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Clade'
+      default:
       options:
     - label: 'includeRoot'
       description:
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'FALSE'
       options:
     - label: 'weights'
       description:
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'RealPos[]'
+      default: '[ ]'
       options:
   title:
   aliases:
@@ -2428,6 +2655,7 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'MatrixReal'
+      default:
       options:
   title:
   aliases:
@@ -2446,30 +2674,35 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default:
       options:
     - label: 'p2'
       description:
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default:
       options:
     - label: 'p3'
       description:
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default:
       options:
     - label: 'outgroup'
       description:
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default:
       options:
     - label: 'data'
       description:
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'AbstractHomologousDiscreteCharacterData'
+      default:
       options:
   title:
   aliases:
@@ -2488,24 +2721,28 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'TimeTree'
+      default:
       options:
     - label: 'data'
       description: 'The character data object.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'ContinuousCharacterData'
+      default:
       options:
     - label: 'site'
       description: 'The site for which we compute the contrasts.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Natural'
+      default:
       options:
     - label: 'normalized'
       description: 'If we should normalize the contrasts by their standard deviations.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Bool'
+      default:
       options:
   title:
   aliases: 'fnPIC'
@@ -2524,30 +2761,35 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'TimeTree'
+      default:
       options:
     - label: 'data'
       description: 'The character data object.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'ContinuousCharacterData'
+      default:
       options:
     - label: 'site'
       description: 'The site for which we compute the contrasts.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Natural'
+      default:
       options:
     - label: 'taxa'
       description: 'The vector of taxa which have species and individual names.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Taxon[]'
+      default:
       options:
     - label: 'normalized'
       description: 'If we should normalize the contrasts by their standard deviations.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Bool'
+      default:
       options:
   title:
   aliases: 'fnPIC'
@@ -2566,18 +2808,21 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RateGenerator'
+      default:
       options:
     - label: 'fitness'
       description:
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real[]'
+      default:
       options:
     - label: 'virtualNe'
       description:
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Natural'
+      default:
       options:
   title:
   aliases:
@@ -2596,18 +2841,21 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Tree'
+      default:
       options:
     - label: 'prune/retain'
       description: 'Taxon set to prune/retain in the tree.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Taxon[]'
+      default:
       options:
     - label: 'pruneFossils'
       description: 'Prune all fossils from tree?'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Bool'
+      default: 'FALSE'
       options:
   title:
   aliases:
@@ -2626,24 +2874,28 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real'
+      default: '0'
       options:
     - label: 'lossFactor'
       description: 'Multiplicative factor (r'' = r * e^{ n_0 * f }) for characters in context set'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real'
+      default: '0'
       options:
     - label: 'matrix'
       description: 'Weighted character adjacency matrix.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real[][]'
+      default: 'NULL'
       options:
     - label: 'numChars'
       description: 'Number of characters'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Natural'
+      default:
       options:
   title:
   aliases:
@@ -2662,18 +2914,21 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RateGenerator'
+      default:
       options:
     - label: 'numChars'
       description: 'The number of characters.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Natural'
+      default:
       options:
     - label: 'rateModifiers'
       description: 'The sequence-wide context-dependent rate modifiers.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'CharacterHistoryRateModifier[]'
+      default: 'NULL'
       options:
   title:
   aliases:
@@ -2692,18 +2947,21 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Simplex'
+      default:
       options:
     - label: 'exchangeRates'
       description:
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real[]'
+      default:
       options:
     - label: 'virtualNe'
       description: 'The virtual population size'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Natural'
+      default:
       options:
   title:
   aliases:
@@ -2734,24 +2992,28 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RateGenerator'
+      default:
       options:
     - label: 'cladogeneticProbabilities'
       description: 'The cladogenetic event probabilities'
       dag_type: '<deterministic>'
       pass_by: 'const reference'
       value_type: 'MatrixReal'
+      default:
       options:
     - label: 'tree'
       description: 'The time-tree variable containtain the sampled speciation events'
       dag_type: '<stochastic>'
       pass_by: 'reference'
       value_type: 'TimeTree'
+      default:
       options:
     - label: 'clock'
       description: 'The anagenetic clock rate'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos'
+      default: '1'
       options:
   title:
   aliases:
@@ -2770,12 +3032,14 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'AbstractHomologousDiscreteCharacterData'
+      default:
       options:
     - label: 'excludeAmbiguous'
       description: 'Should we exclude ambiguous or missing characters?'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Bool'
+      default: 'FALSE'
       options:
   title:
   aliases:
@@ -2794,12 +3058,14 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Natural[][]'
+      default:
       options:
     - label: 'distances'
       description: 'The distance matrix.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos[][]'
+      default: 'NULL'
       options:
   title:
   aliases:
@@ -2818,18 +3084,21 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos[][]'
+      default:
       options:
     - label: 'eventClasses'
       description: 'Assigns event classes to rate matrix events.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Natural[][]'
+      default:
       options:
     - label: 'siteClasses'
       description: 'Assigns classes to the sites.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Natural[]'
+      default:
       options:
   title:
   aliases:
@@ -2848,12 +3117,14 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real[]'
+      default:
       options:
     - label: 'numChars'
       description: 'Number of characters'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Natural'
+      default:
       options:
   title:
   aliases:
@@ -2872,21 +3143,24 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default: 'first'
       options:
         - 'first'
-        - 'first'
-        - 'first'
+        - 'lnFirst'
+        - 'second'
     - label: 'n'
       description:
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Natural'
+      default:
       options:
     - label: 'k'
       description:
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Natural'
+      default:
       options:
   title:
   aliases:
@@ -2905,18 +3179,21 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Tree'
+      default:
       options:
     - label: 'patchClades'
       description: 'The patch clade variables.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'TimeTree[]'
+      default:
       options:
     - label: 'patchTaxa'
       description: 'The taxa per patch clade to be stitched on to the backbone tree. Shares order with patchClades.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Taxon[][]'
+      default:
       options:
   title:
   aliases:
@@ -2935,12 +3212,14 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos'
+      default:
       options:
     - label: 'gc'
       description: 'The frequency of GC.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Probability'
+      default:
       options:
   title:
   aliases:
@@ -2959,12 +3238,14 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Simplex'
+      default:
       options:
     - label: 'baseFrequencies'
       description: 'The stationary frequencies of the states.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Simplex'
+      default:
       options:
   title:
   aliases:
@@ -2983,12 +3264,14 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Simplex'
+      default:
       options:
     - label: 'baseFrequencies'
       description: 'The stationary frequencies of the states.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Simplex'
+      default:
       options:
   title:
   aliases:
@@ -3007,12 +3290,14 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'AbstractHomologousDiscreteCharacterData'
+      default:
       options:
     - label: 'excludeAmbiguous'
       description: 'Should we exclude ambiguous or amissing characters?'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Bool'
+      default: 'FALSE'
       options:
   title:
   aliases:
@@ -3031,18 +3316,21 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'AbstractHomologousDiscreteCharacterData'
+      default:
       options:
     - label: 'perSite'
       description: 'Is the statistic normalized per site?'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Bool'
+      default: 'TRUE'
       options:
     - label: 'excludeAmbiguous'
       description: 'Should we exclude ambiguous or missing characters?'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Bool'
+      default: 'FALSE'
       options:
   title:
   aliases:
@@ -3061,18 +3349,21 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos'
+      default:
       options:
     - label: 'kappa2'
       description: 'The second transition rate (C<->T).'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos'
+      default:
       options:
     - label: 'baseFrequencies'
       description: 'The stationary frequencies of the states.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Simplex'
+      default: '[ 0.250, 0.250, 0.250, 0.250 ]'
       options:
   title:
   aliases: 'fnTamuraNei'
@@ -3091,12 +3382,14 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Tree'
+      default:
       options:
     - label: 'brlens'
       description: 'The vector of branch lengths.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos[]'
+      default:
       options:
   title:
   aliases: 'treeAssembly'
@@ -3115,6 +3408,7 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Tree'
+      default:
       options:
   title:
   aliases:
@@ -3133,6 +3427,7 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Tree'
+      default:
       options:
   title:
   aliases:
@@ -3151,18 +3446,21 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos'
+      default:
       options:
     - label: 'tree'
       description: 'The tree which will be re-scaled.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'TimeTree'
+      default:
       options:
     - label: 'tipAges'
       description: 'A vector of ages for the tips.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos'
+      default: '0'
       options:
   title:
   aliases:
@@ -3181,6 +3479,7 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'MatrixReal'
+      default:
       options:
   title:
   aliases:
@@ -3211,12 +3510,14 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos[]'
+      default:
       options:
     - label: 'correlationCoefficients'
       description: 'The correlation coefficients.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real[]'
+      default:
       options:
   title:
   aliases:
@@ -3247,18 +3548,21 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'AbstractHomologousDiscreteCharacterData'
+      default:
       options:
     - label: 'perSite'
       description: 'Should we normalize per site?'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Bool'
+      default: 'TRUE'
       options:
     - label: 'excludeAmbiguous'
       description: 'Should we exclude ambiguous or missing characters?'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Bool'
+      default: 'FALSE'
       options:
   title:
   aliases:
@@ -3277,18 +3581,21 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'AbstractHomologousDiscreteCharacterData'
+      default:
       options:
     - label: 'format'
       description: 'The data format.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default: 'DEC'
       options:
     - label: 'numStates'
       description: 'The number of states (format=="DEC" only).'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Natural'
+      default: '0'
       options:
   title:
   aliases:
@@ -3307,6 +3614,7 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real'
+      default:
       options:
   title:
   aliases:
@@ -3325,6 +3633,7 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default:
       options:
   title: 'Get a global RevBayes option'
   aliases:
@@ -3371,6 +3680,7 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'String'
+      default:
       options:
   title: 'Get help with RevBayes'
   aliases:
@@ -3393,18 +3703,21 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Bool'
+      default:
       options:
     - label: 'a'
       description: 'The value if the statement is true.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Natural'
+      default:
       options:
     - label: 'b'
       description: 'The value if the statement is false.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Natural'
+      default:
       options:
   title: 'If-else statement as a function'
   aliases:
@@ -3442,24 +3755,28 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default: '.'
       options:
     - label: 'allFiles'
       description: 'Should special files be returned.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'FALSE'
       options:
     - label: 'recursive'
       description: 'Should we search directories recursively.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'FALSE'
       options:
     - label: 'includeDirs'
       description: 'Should we re return directory names in recursive search.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'FALSE'
       options:
   title:
   aliases:
@@ -3481,7 +3798,7 @@
   authors: 'Will Freyman'
   see_also:
     - 'setOption'
-    - 'setOption'
+    - 'getOption'
   references:
 - name: 'ln'
   return_type: 'Real'
@@ -3492,6 +3809,7 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos'
+      default:
       options:
   title: 'Natural log function'
   aliases:
@@ -3519,12 +3837,14 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos'
+      default:
       options:
     - label: 'base'
       description: 'The base of the logarithm.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos'
+      default:
       options:
   title:
   aliases:
@@ -3543,6 +3863,7 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real'
+      default:
       options:
   title:
   aliases:
@@ -3561,25 +3882,27 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'FALSE'
       options:
     - label: 'filter'
       description: 'List objects for the provided type.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default: 'all'
       options:
         - 'all'
-        - 'all'
-        - 'all'
-        - 'all'
-        - 'all'
-        - 'all'
-        - 'all'
-        - 'all'
-        - 'all'
-        - 'all'
-        - 'all'
-        - 'all'
+        - 'utility'
+        - 'math'
+        - 'distribution'
+        - 'function'
+        - 'datatype'
+        - 'move'
+        - 'monitor'
+        - 'analysis'
+        - 'file'
+        - 'summary'
+        - 'uncategorized'
   title: 'List workspace content'
   aliases:
   description: 'Show the content of the workspace.'
@@ -3594,7 +3917,7 @@
   authors: 'Sebastian Hoehna'
   see_also:
     - 'clear'
-    - 'clear'
+    - 'exists'
   references:
 - name: 'mapTree'
   return_type: 'Tree'
@@ -3605,54 +3928,63 @@
       dag_type: '<any>'
       pass_by: 'reference'
       value_type: 'TraceTree'
+      default:
       options:
     - label: 'file'
       description: 'The name of the file where to store the tree.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default:
       options:
     - label: 'ccAges'
       description: 'Annotate conditional clade ages?'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'FALSE'
       options:
     - label: 'ccp'
       description: 'Annotate conditional clade probabilities?'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'FALSE'
       options:
     - label: 'conditionalAges'
       description: 'Annotate node ages conditional on the topology?'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'FALSE'
       options:
     - label: 'hpd'
       description: 'The probability mass of the highest posterior density node age interval.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Probability'
+      default: '0.95'
       options:
     - label: 'mean'
       description: 'Annotate node ages using the mean age instead of the median?'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'TRUE'
       options:
     - label: 'sampledAncestors'
       description: 'Annotate sampled ancestor probs?'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'TRUE'
       options:
     - label: 'positiveBranchLengths'
       description: 'Force negative branch lengths to be short but positive?'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'FALSE'
       options:
   title:
   aliases:
@@ -3666,12 +3998,12 @@
     map_tree = mapTree(trace=tree_trace, file="map.tree")
   authors:
     - 'Will Freyman'
-    - 'Will Freyman'
+    - 'Sebastian Hoehna'
   see_also:
     - 'consensusTree'
-    - 'consensusTree'
-    - 'consensusTree'
-    - 'consensusTree'
+    - 'mccTree'
+    - 'treeTrace'
+    - 'readTreeTrace'
   references:
 - name: 'matrix'
   return_type: 'MatrixReal'
@@ -3682,6 +4014,7 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real[][]'
+      default:
       options:
   title:
   aliases:
@@ -3700,6 +4033,7 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real[]'
+      default:
       options:
   title:
   aliases:
@@ -3718,6 +4052,7 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'TimeTree[]'
+      default:
       options:
   title: 'Maximum tree function to build a species tree.'
   aliases:
@@ -3769,54 +4104,63 @@
       dag_type: '<any>'
       pass_by: 'reference'
       value_type: 'TraceTree'
+      default:
       options:
     - label: 'file'
       description: 'The name of the file where to store the tree.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default:
       options:
     - label: 'ccAges'
       description: 'Annotate conditional clade ages?'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'FALSE'
       options:
     - label: 'ccp'
       description: 'Annotate conditional clade probabilities?'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'FALSE'
       options:
     - label: 'conditionalAges'
       description: 'Annotate node ages conditional on the topology?'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'FALSE'
       options:
     - label: 'hpd'
       description: 'The probability mass of the highest posterior density node age interval.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Probability'
+      default: '0.95'
       options:
     - label: 'mean'
       description: 'Annotate node ages using the mean age instead of the median?'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'TRUE'
       options:
     - label: 'sampledAncestors'
       description: 'Annotate sampled ancestor probs?'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'TRUE'
       options:
     - label: 'positiveBranchLengths'
       description: 'Force negative branch lengths to be short but positive?'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'FALSE'
       options:
   title:
   aliases:
@@ -3830,12 +4174,12 @@
     map_tree = mccTree(trace=tree_trace, file="mcc.tree")
   authors:
     - 'Will Pett'
-    - 'Will Pett'
+    - 'Sebastian Hoehna'
   see_also:
     - 'consensusTree'
-    - 'consensusTree'
-    - 'consensusTree'
-    - 'consensusTree'
+    - 'mapTree'
+    - 'treeTrace'
+    - 'readTreeTrace'
   references:
 - name: 'mean'
   return_type: 'Real'
@@ -3846,6 +4190,7 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real[]'
+      default:
       options:
   title:
   aliases:
@@ -3864,6 +4209,7 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real[]'
+      default:
       options:
   title:
   aliases:
@@ -3882,6 +4228,7 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real[]'
+      default:
       options:
   title:
   aliases:
@@ -3900,18 +4247,21 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default:
       options:
     - label: 'namespace'
       description: 'Namespace used to rescue variables from overwriting.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default: 'NULL'
       options:
     - label:
       description: 'Additinal variables passed into the module.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RevObject'
+      default:
       options:
   title:
   aliases:
@@ -3930,12 +4280,14 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'TimeTree'
+      default:
       options:
     - label: 'clade'
       description: 'The clade for which the MRCA is searched.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Clade'
+      default:
       options:
   title:
   aliases:
@@ -3954,18 +4306,21 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'TimeTree'
+      default:
       options:
     - label: 'nodeID'
       description: 'The node index.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Natural'
+      default:
       options:
     - label: 'stemAge'
       description: 'Do we want the stem age or crown age?'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'FALSE'
       options:
   title:
   aliases:
@@ -3984,12 +4339,14 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos[]'
+      default:
       options:
     - label: 'sum'
       description: 'The sum the vector will have after normalization.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos'
+      default: '1'
       options:
   title:
   aliases:
@@ -4008,24 +4365,28 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Simplex'
+      default:
       options:
     - label: 'root_polymorphism_proportion'
       description:
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real'
+      default:
       options:
     - label: 'mutation_rate_matrix'
       description:
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RateGenerator'
+      default:
       options:
     - label: 'virtualNe'
       description:
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Natural'
+      default:
       options:
   title:
   aliases:
@@ -4044,18 +4405,21 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'AbstractHomologousDiscreteCharacterData'
+      default:
       options:
     - label: 'virtualNe'
       description:
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Natural'
+      default:
       options:
     - label: 'taxa'
       description:
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Taxon[]'
+      default:
       options:
   title:
   aliases:
@@ -4074,12 +4438,14 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real[]'
+      default:
       options:
     - label: 'x'
       description: 'The opbserved value.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real'
+      default:
       options:
   title:
   aliases:
@@ -4098,12 +4464,14 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real'
+      default:
       options:
     - label: 'exponent'
       description: 'The exponent.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real'
+      default:
       options:
   title:
   aliases:
@@ -4140,12 +4508,14 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real[]'
+      default:
       options:
     - label: 'k'
       description: 'The kth quantile of vector x.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Probability'
+      default:
       options:
   title:
   aliases:
@@ -4179,12 +4549,14 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Integer'
+      default:
       options:
     - label: 'last'
       description: 'Upper value.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Integer'
+      default:
       options:
   title: 'A range of consecutive integer numbers'
   aliases:
@@ -4199,7 +4571,7 @@
   authors: 'Sebastian Hoehna'
   see_also:
     - 'seq'
-    - 'seq'
+    - 'rep'
   references:
 - name: 'readAncestralStateTrace'
   return_type: 'AncestralStateTrace[]'
@@ -4210,12 +4582,14 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default:
       options:
     - label: 'separator'
       description: 'The separater between sampled values.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default: ''
       options:
   title:
   aliases:
@@ -4234,26 +4608,30 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default:
       options:
     - label: 'treetype'
       description: 'The type of tree.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default: 'clock'
       options:
         - 'clock'
-        - 'clock'
+        - 'non-clock'
     - label: 'separator'
       description: 'The separater/delimiter between values.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default: ''
       options:
     - label: 'burnin'
       description: 'The fraction/number of samples to discard as burnin.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Probability'
+      default: '0.25'
       options:
   title:
   aliases:
@@ -4272,6 +4650,7 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default:
       options:
   title:
   aliases:
@@ -4290,6 +4669,7 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default:
       options:
   title:
   aliases:
@@ -4308,12 +4688,14 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default:
       options:
     - label: 'alwaysReturnAsVector'
       description: 'Should the value be returned as a vector even it is only a single matrix?'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'FALSE'
       options:
   title:
   aliases:
@@ -4332,34 +4714,39 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default:
       options:
     - label: 'type'
       description: 'The type of data.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default: 'NaturalNumbers'
       options:
         - 'NaturalNumbers'
-        - 'NaturalNumbers'
-        - 'NaturalNumbers'
-        - 'NaturalNumbers'
+        - 'Bitset'
+        - 'Standard'
+        - 'Continuous'
     - label: 'stateLabels'
       description: 'The state labels (for standard states) or max number for NaturalNumbers.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default:
       options:
     - label: 'delimiter'
       description: 'The delimiter between columns.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default: ''
       options:
     - label: 'headers'
       description: 'Has this file a header line?'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'TRUE'
       options:
   title:
   aliases:
@@ -4378,12 +4765,14 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default:
       options:
     - label: 'alwaysReturnAsVector'
       description: 'Should we return this object as a vector even if it is just a single matrix?'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'FALSE'
       options:
   title:
   aliases:
@@ -4402,24 +4791,28 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default:
       options:
     - label: 'header'
       description: 'Skip first line?'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'FALSE'
       options:
     - label: 'delimiter'
       description: 'The delimiter between columns.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default: ''
       options:
     - label: 'rownames'
       description: 'Skip first column?'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'FALSE'
       options:
   title:
   aliases: 'readTable'
@@ -4438,12 +4831,14 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default:
       options:
     - label: 'alwaysReturnAsVector'
       description: 'Should we always return the character data matrix as a vector of matrices even if there is only one?'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'FALSE'
       options:
   title:
   aliases:
@@ -4462,6 +4857,7 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default:
       options:
   title:
   aliases:
@@ -4480,12 +4876,14 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default:
       options:
     - label: 'delimiter'
       description: 'The delimiter between columns.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default: ''
       options:
   title:
   aliases:
@@ -4504,12 +4902,14 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default:
       options:
     - label: 'virtualPopulationSize'
       description:
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Natural'
+      default:
       options:
   title:
   aliases:
@@ -4528,6 +4928,7 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default:
       options:
   title:
   aliases:
@@ -4546,12 +4947,14 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default:
       options:
     - label: 'threshold'
       description: 'weight threshold below which constraints are ignored.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Real'
+      default:
       options:
   title:
   aliases:
@@ -4570,12 +4973,14 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default:
       options:
     - label: 'delimiter'
       description: 'The delimiter used between the output of variables.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default: ''
       options:
   title:
   aliases:
@@ -4594,12 +4999,14 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default:
       options:
     - label: 'delimiter'
       description: 'Delimiter between columns.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default: ''
       options:
   title:
   aliases:
@@ -4618,18 +5025,21 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default:
       options:
     - label: 'delimiter'
       description: 'The delimiter between columns (e.g., the iteration number and the trees).'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default: ''
       options:
     - label: 'burnin'
       description: 'The fraction/number of samples to discard as burnin.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Probability'
+      default: '0.25'
       options:
   title:
   aliases:
@@ -4648,38 +5058,44 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default:
       options:
     - label: 'treetype'
       description: 'The type of trees.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default: 'clock'
       options:
         - 'clock'
-        - 'clock'
+        - 'non-clock'
     - label: 'outgroup'
       description: 'The clade (consisting of one or more taxa) used as an outgroup.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Clade'
+      default: 'NULL'
       options:
     - label: 'separator'
       description: 'The separator/delimiter between values in the file.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default: ''
       options:
     - label: 'burnin'
       description: 'The fraction/number of samples to discard as burnin.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Probability'
+      default: '0.25'
       options:
     - label: 'thinning'
       description: 'The frequency of samples to read, i.e., we will only used every n-th sample where n is defined by this argument.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Natural'
+      default: '1'
       options:
   title:
   aliases:
@@ -4698,21 +5114,24 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default:
       options:
     - label: 'text'
       description: 'A string containing one or several newick trees, separated by end of lines.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default:
       options:
     - label: 'treetype'
       description: 'The type of trees.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default: 'clock'
       options:
         - 'clock'
-        - 'clock'
+        - 'non-clock'
   title: 'Function to read in trees.'
   aliases:
   description: 'Reads trees from a file containing trees (Nexus, Phylip or Newick accepted), or from a string containing Newick representations of trees.'
@@ -4723,13 +5142,13 @@
   authors: 'Bastien Boussau'
   see_also:
     - 'write'
-    - 'write'
-    - 'write'
-    - 'write'
-    - 'write'
-    - 'write'
-    - 'write'
-    - 'write'
+    - 'readBranchLengthTrees'
+    - 'readCharacterData'
+    - 'readCharacterDataDelimited'
+    - 'readContinuousCharacterData'
+    - 'readDiscreteCharacterData'
+    - 'readDataDelimitedFile'
+    - 'readCharacterData'
   references:
 - name: 'rep'
   return_type: 'Integer[]'
@@ -4740,12 +5159,14 @@
       dag_type: '<any>'
       pass_by: 'reference'
       value_type: 'Integer'
+      default:
       options:
     - label: 'n'
       description: 'How often we replicate the value.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Natural'
+      default:
       options:
   title: 'Replicate a value'
   aliases: 'replicate'
@@ -4756,7 +5177,7 @@
   authors: 'Sebastian Hoehna'
   see_also:
     - 'simplex'
-    - 'simplex'
+    - 'v'
   references:
 - name: 'rootedTripletDist'
   return_type: 'RootedTripletDistribution'
@@ -4767,18 +5188,21 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Tree'
+      default:
       options:
     - label: 'speciesNames'
       description:
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'String[]'
+      default:
       options:
     - label: 'keepBranchLengths'
       description:
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Bool'
+      default:
       options:
   title:
   aliases:
@@ -4797,6 +5221,7 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real'
+      default:
       options:
   title:
   aliases:
@@ -4815,6 +5240,7 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Natural'
+      default:
       options:
   title:
   aliases:
@@ -4833,18 +5259,21 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Integer'
+      default:
       options:
     - label: 'to'
       description: 'The last value of the sequence.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Integer'
+      default:
       options:
     - label: 'by'
       description: 'The step-size between value.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Integer'
+      default:
       options:
   title: 'Create a sequence values'
   aliases:
@@ -4864,12 +5293,14 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default:
       options:
     - label: 'value'
       description: 'The new value.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default:
       options:
   title: 'Set a global RevBayes option'
   aliases:
@@ -4896,6 +5327,7 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default:
       options:
   title: 'Set and print the working directory'
   aliases:
@@ -4922,24 +5354,28 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Taxon[]'
+      default:
       options:
     - label: 'rootAge'
       description: 'The root age.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos'
+      default:
       options:
     - label: 'lambda'
       description: 'The speciation rate.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos'
+      default:
       options:
     - label: 'mu'
       description: 'The extinction rate.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos'
+      default:
       options:
   title:
   aliases:
@@ -4958,15 +5394,17 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Natural'
+      default:
       options:
     - label: 'type'
       description: 'The type of the shape of the topology.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default: 'balanced'
       options:
         - 'balanced'
-        - 'balanced'
+        - 'caterpillar'
   title:
   aliases:
   description:
@@ -4984,18 +5422,21 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos'
+      default:
       options:
     - label: 'x2'
       description: 'second value'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos'
+      default:
       options:
     - label:
       description: 'additional values'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos'
+      default:
       options:
   title:
   aliases:
@@ -5014,6 +5455,7 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real'
+      default:
       options:
   title:
   aliases:
@@ -5032,12 +5474,14 @@
       dag_type: '<any>'
       pass_by: 'reference'
       value_type: 'Real[]'
+      default:
       options:
     - label: 'ascending'
       description: 'Sort in ascending order?.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'TRUE'
       options:
   title:
   aliases:
@@ -5056,12 +5500,14 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default:
       options:
     - label: 'echo.on'
       description: 'Should we print the commands from the file on the screen?'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'FALSE'
       options:
   title:
   aliases:
@@ -5080,6 +5526,7 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RealPos'
+      default:
       options:
   title:
   aliases:
@@ -5098,6 +5545,7 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real[]'
+      default:
       options:
   title:
   aliases:
@@ -5116,12 +5564,14 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RevObject'
+      default:
       options:
     - label: 'verbose'
       description: 'Do you want all the information?'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'FALSE'
       options:
   title: 'The structure of a variable'
   aliases: 'str'
@@ -5149,6 +5599,7 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real[]'
+      default:
       options:
   title:
   aliases:
@@ -5167,42 +5618,49 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Tree'
+      default: 'NULL'
       options:
     - label: 'character_map_trace_vector'
       description: 'A vector of stochastic character map traces.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'AncestralStateTrace[]'
+      default:
       options:
     - label: 'tree_trace'
       description: 'A trace of tree samples.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'TraceTree'
+      default: 'NULL'
       options:
     - label: 'file'
       description: 'The name of the file to store the summarized character histories.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default:
       options:
     - label: 'burnin'
       description: 'The fraction/number of samples to discard as burnin.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Probability'
+      default: '0.25'
       options:
     - label: 'separator'
       description: 'The delimiter between variables. 	 by default.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default: ''
       options:
     - label: 'verbose'
       description: 'Printing verbose output'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'TRUE'
       options:
   title:
   aliases:
@@ -5221,12 +5679,14 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Tree'
+      default:
       options:
     - label: 'tree2'
       description: 'The second tree.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Tree'
+      default:
       options:
   title:
   aliases: 'symDiff'
@@ -5245,6 +5705,7 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default:
       options:
   title: 'Execute a system command.'
   aliases:
@@ -5266,6 +5727,7 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real'
+      default:
       options:
   title:
   aliases:
@@ -5284,12 +5746,13 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default: 'fromBeginning'
       options:
         - 'year'
-        - 'year'
-        - 'year'
-        - 'year'
-        - 'year'
+        - 'day'
+        - 'seconds'
+        - 'milliseconds'
+        - 'fromBeginning'
   title: 'Get the time information'
   aliases:
   description: 'Get the current system time in milliseconds.'
@@ -5314,18 +5777,21 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'TimeTree'
+      default:
       options:
     - label: 'clade'
       description: 'The clade.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Clade'
+      default:
       options:
     - label: 'stemAge'
       description: 'Do we want the stem age or crown age?'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'FALSE'
       options:
   title:
   aliases:
@@ -5344,12 +5810,14 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'TimeTree[]'
+      default:
       options:
     - label: 'burnin'
       description: 'The fraction/number of samples to discard as burnin.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Probability'
+      default: '0.25'
       options:
   title:
   aliases:
@@ -5370,9 +5838,9 @@
   authors: 'Will Freyman'
   see_also:
     - 'mvEmpiricalTree'
-    - 'mvEmpiricalTree'
-    - 'mvEmpiricalTree'
-    - 'mvEmpiricalTree'
+    - 'treeTrace'
+    - 'readTreeTrace'
+    - 'readTrees'
   references:
 - name: 'trunc'
   return_type: 'Integer'
@@ -5383,6 +5851,7 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real'
+      default:
       options:
   title:
   aliases:
@@ -5401,6 +5870,7 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'RevObject'
+      default:
       options:
   title: 'The value type of a variable'
   aliases:
@@ -5424,12 +5894,14 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Integer'
+      default:
       options:
     - label:
       description: 'More values ...'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Integer'
+      default:
       options:
   title: 'Create a vector'
   aliases:
@@ -5449,7 +5921,7 @@
   authors: 'Michael Landis'
   see_also:
     - 'simplex'
-    - 'simplex'
+    - 'rep'
   references:
 - name: 'var'
   return_type: 'RealPos'
@@ -5460,6 +5932,7 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real[]'
+      default:
       options:
   title:
   aliases:
@@ -5478,6 +5951,7 @@
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'Real[][]'
+      default:
       options:
   title:
   aliases:
@@ -5496,30 +5970,35 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'RevObject'
+      default:
       options:
     - label:
       description: 'Additional variables to write.'
       dag_type: '<any>'
       pass_by: 'const reference'
       value_type: 'RevObject'
+      default:
       options:
     - label: 'filename'
       description: 'Writing to this file, or to the screen if name is empty.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default:
       options:
     - label: 'append'
       description: 'Append or overwrite existing file?'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Bool'
+      default: 'FALSE'
       options:
     - label: 'separator'
       description: 'How to separate values between variables.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default: ''
       options:
   title:
   aliases: 'print'
@@ -5538,18 +6017,21 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default:
       options:
     - label: 'data'
       description: 'The character data object.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'AbstractHomologousDiscreteCharacterData'
+      default:
       options:
     - label: 'delimiter'
       description: 'The delimiter between columns.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default: ''
       options:
   title:
   aliases:
@@ -5568,12 +6050,14 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default:
       options:
     - label: 'data'
       description: 'The character data object.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'AbstractHomologousDiscreteCharacterData'
+      default:
       options:
   title:
   aliases:
@@ -5592,12 +6076,14 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
+      default:
       options:
     - label: 'data'
       description: 'The character data matrix to print.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'AbstractHomologousDiscreteCharacterData'
+      default:
       options:
   title:
   aliases:

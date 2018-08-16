@@ -3,10 +3,10 @@
   aliases:
   description:
     - 'The adaptive variance multivariate-normal proposal of Baele et al. 2017, uses MCMC samples to fit covariance matrix to parameters.'
-    - 'The adaptive variance multivariate-normal proposal of Baele et al. 2017, uses MCMC samples to fit covariance matrix to parameters.'
-    - 'The adaptive variance multivariate-normal proposal of Baele et al. 2017, uses MCMC samples to fit covariance matrix to parameters.'
-    - 'The adaptive variance multivariate-normal proposal of Baele et al. 2017, uses MCMC samples to fit covariance matrix to parameters.'
-    - 'The adaptive variance multivariate-normal proposal of Baele et al. 2017, uses MCMC samples to fit covariance matrix to parameters.'
+    - 'After user-defined waiting time, proposes using covariance matrix epsilon * I + (1 - epsilon) * sigmaSquared * empirical_matrix.'
+    - 'Internally transforms variables based on whether variables are (finitely) bounded, strictly positive, or simplexed.'
+    - 'Non-simplex-valued vector random variables are untransformed.'
+    - 'Add random variables to the move directly (e.g. branch_rates[1], not branch_rates).'
   details:
   example:
   authors:
@@ -19,48 +19,56 @@
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'epsilon'
           description: 'The mixture weight of the post-learning move on a simple identity matrix.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '0.05'
           options:
         - label: 'waitBeforeLearning'
           description: 'The number of move attempts to wait before tracking the covariance of the variables.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Natural'
+          default: '2500'
           options:
         - label: 'waitBeforeUsing'
           description: 'The number of move attempts to wait before using the learned covariance matrix.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Natural'
+          default: '5000'
           options:
         - label: 'maxUpdates'
           description: 'The maximum number of updates to the empirical covariance matrix (matrix is only updated when MCMC tunes).'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Natural'
+          default: '10000'
           options:
         - label: 'tune'
           description: 'Should we tune the scaling factor during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
     - name: 'addVariable'
@@ -72,6 +80,7 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'Real'
+          default:
           options:
     - name: 'addVariable'
       return_type: 'void'
@@ -82,6 +91,7 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'Simplex'
+          default:
           options:
     - name: 'addVariable'
       return_type: 'void'
@@ -92,6 +102,7 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'Real[]'
+          default:
           options:
     - name: 'removeVariable'
       return_type: 'void'
@@ -102,6 +113,7 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'Real'
+          default:
           options:
     - name: 'removeVariable'
       return_type: 'void'
@@ -112,6 +124,7 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'Simplex'
+          default:
           options:
     - name: 'removeVariable'
       return_type: 'void'
@@ -122,6 +135,7 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'Real[]'
+          default:
           options:
   references:
 - name: 'mvAddRemoveTip'
@@ -140,36 +154,42 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'TimeTree'
+          default:
           options:
         - label: 'extant'
           description: 'Should we add/remove extant tips?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'extinct'
           description: 'Should we add/remove extinct tips?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'FALSE'
           options:
         - label: 'sa'
           description: 'Should we add/remove extinct tips as sampled ancestors?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'FALSE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -189,36 +209,42 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'Probability'
+          default:
           options:
         - label: 'delta'
           description: 'The concentration parameter on the current value.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'offset'
           description: 'The offset used to center proposals around 0.5.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '0'
           options:
         - label: 'tune'
           description: 'Should we tune the concentration parameter during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -238,30 +264,35 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'Simplex'
+          default:
           options:
         - label: 'alpha'
           description: 'The concentration parameter on the current value.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tune'
           description: 'Should we tune the concentration parameter during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -281,18 +312,21 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'Natural'
+          default:
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -312,18 +346,21 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'TimeTree'
+          default:
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -343,18 +380,21 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'TimeTree'
+          default:
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -374,18 +414,21 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'TimeTree'
+          default:
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -405,30 +448,35 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'BranchLengthTree'
+          default:
           options:
         - label: 'delta'
           description: 'The scaling factor (strength) of the proposal.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tune'
           description: 'Should we tune the scaling factor during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -448,18 +496,21 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'TimeTree'
+          default:
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -479,55 +530,63 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'AbstractHomologousDiscreteCharacterData'
+          default:
           options:
         - label: 'qmap_site'
           description: 'Per-site rate generator.'
           dag_type: '<any>'
           pass_by: 'reference'
           value_type: 'RateGenerator'
+          default: 'NULL'
           options:
         - label: 'qmap_seq'
           description: 'Per-sequence rate generator.'
           dag_type: '<any>'
           pass_by: 'reference'
           value_type: 'RateGeneratorSequence'
+          default: 'NULL'
           options:
         - label: 'lambda'
           description: 'Tuning probability to propose new site history.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '1'
           options:
         - label: 'graph'
           description:
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'String'
+          default: 'node'
           options:
             - 'node'
-            - 'node'
-            - 'node'
-            - 'node'
+            - 'branch'
+            - 'cladogenetic'
+            - 'cladogenetic2'
         - label: 'proposal'
           description:
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'String'
+          default: 'rejection'
           options:
             - 'rejection'
-            - 'rejection'
-            - 'rejection'
+            - 'rejection_shift'
+            - 'uniformization'
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -547,24 +606,28 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'TimeTree'
+          default:
           options:
         - label: 'origin'
           description: 'The variable for the origin of the process giving a maximum age for the new fossil attachement time.'
           dag_type: '<any>'
           pass_by: 'reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -584,18 +647,21 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'MatrixRealSymmetric'
+          default:
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -615,30 +681,35 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'ContinuousCharacterData'
+          default:
           options:
         - label: 'delta'
           description: 'The sliding window width parameter.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tune'
           description: 'Should we tune this move during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -658,30 +729,35 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'TimeTree'
+          default:
           options:
         - label: 'lambda'
           description: 'The scaling factor (strength) of the proposal.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tune'
           description: 'Should we tune the scaling factor during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -707,18 +783,21 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'MatrixReal'
+          default:
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -738,30 +817,35 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'MatrixReal'
+          default:
           options:
         - label: 'sigma'
           description: 'The standard deviation of the normal distribution to draw from.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '0.1'
           options:
         - label: 'tune'
           description: 'Should we tune the scaling factor during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -781,30 +865,35 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'MatrixReal'
+          default:
           options:
         - label: 'alpha'
           description: 'The shape of the beta distribution to draw from.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '10'
           options:
         - label: 'tune'
           description: 'Should we tune the scaling factor during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -824,42 +913,49 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'MatrixReal'
+          default:
           options:
         - label: 'row'
           description: 'The row of the variable on which this move operates.'
           dag_type: '<any>'
           pass_by: 'reference'
           value_type: 'Natural'
+          default:
           options:
         - label: 'col'
           description: 'The column of the variable on which this move operates.'
           dag_type: '<any>'
           pass_by: 'reference'
           value_type: 'Natural'
+          default:
           options:
         - label: 'alpha'
           description: 'The shape of the beta distribution to draw from.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '10'
           options:
         - label: 'tune'
           description: 'Should we tune the scaling factor during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -879,36 +975,42 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'MatrixReal'
+          default:
           options:
         - label: 's'
           description: 'The vector of variances needed to complete the move.'
           dag_type: '<any>'
           pass_by: 'reference'
           value_type: 'RealPos[]'
+          default:
           options:
         - label: 'lambda'
           description: 'The scaling factor (strength) of the proposal.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tune'
           description: 'Should we tune the scaling factor during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -928,24 +1030,28 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'Real[]'
+          default:
           options:
         - label: 'numAux'
           description: 'The number of auxillary categories.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Integer'
+          default: '4'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -965,42 +1071,49 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'numDPPCats'
           description:
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Integer'
+          default:
           options:
         - label: 'gammaShape'
           description:
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'gammaRate'
           description:
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'numElements'
           description:
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -1020,18 +1133,21 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'Simplex[]'
+          default:
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -1051,18 +1167,21 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'RealPos[]'
+          default:
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -1082,48 +1201,56 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'Simplex'
+          default:
           options:
         - label: 'alpha'
           description: 'The concentration parameter on the previous value.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'numCats'
           description: 'The number of categories changed per move.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Natural'
+          default: '1'
           options:
         - label: 'offset'
           description: 'The offset of the current value to center new proposals (x+offset).'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '0'
           options:
         - label: 'kappa'
           description: 'The offset of tuning parameter (x * alpha + kappa).'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '0'
           options:
         - label: 'tune'
           description: 'Should we tune this move during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -1143,18 +1270,21 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'TimeTree'
+          default:
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -1174,24 +1304,28 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'Simplex'
+          default:
           options:
         - label: 'tune'
           description: 'Should we tune the concentration parameter during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -1211,42 +1345,49 @@
           dag_type: '<deterministic>'
           pass_by: 'reference'
           value_type: 'RealPos[]'
+          default:
           options:
         - label: 'mu'
           description: 'Log-mean parameter of distribution.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Real'
+          default:
           options:
         - label: 'sigma'
           description: 'Log-sd parameter of distribution.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'window'
           description: 'The anglular window (steps-size) of proposals, a value in the interval (0,2*pi].'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '6.283185'
           options:
         - label: 'tune'
           description: 'Should we tune the move during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -1266,30 +1407,35 @@
           dag_type: '<deterministic>'
           pass_by: 'reference'
           value_type: 'Real[]'
+          default:
           options:
         - label: 'window'
           description: 'The anglular window (steps-size) of proposals, a value in the interval (0,2*pi].'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '6.283185'
           options:
         - label: 'tune'
           description: 'Should we tune the move during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -1309,13 +1455,13 @@
     moves[1] = mvEmpiricalTree(tree)
   authors:
     - 'Will Freyman'
-    - 'Will Freyman'
-    - 'Will Freyman'
-    - 'Will Freyman'
+    - 'Sebastian Hoehna'
+    - 'Will Pett'
+    - 'Jiansi Gao'
   see_also:
     - 'mvEmpiricalTree'
-    - 'mvEmpiricalTree'
-    - 'mvEmpiricalTree'
+    - 'treeTrace'
+    - 'readTreeTrace'
   constructor:
     - usage:
       arguments:
@@ -1324,24 +1470,28 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'Tree'
+          default:
           options:
         - label: 'metropolisHastings'
           description: 'If TRUE, use the regular Metropolis-Hastings acceptance ratio. If FALSE, always accept this move and sample every tree uniformly.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -1361,36 +1511,42 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'TimeTree'
+          default:
           options:
         - label: 'delta'
           description: 'The concentration parameter.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'offset'
           description: 'The offset for the proposal density.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '2'
           options:
         - label: 'tune'
           description: 'Should we tune the concentration parameter during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -1410,30 +1566,35 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'TimeTree'
+          default:
           options:
         - label: 'delta'
           description: 'The concentration parameter.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tune'
           description: 'Should we tune the concentration parameter during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -1453,18 +1614,21 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'TimeTree'
+          default:
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -1484,30 +1648,35 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'normals'
           description: 'The vector of Normal RVs defining the field'
           dag_type: '<deterministic>'
           pass_by: 'reference'
           value_type: 'Real[]'
+          default:
           options:
         - label: 'zeta'
           description: 'The value controlling the shrinkage of the field, a scale by which x is multiplied, effectively making x ~ halfCauchy(0,zeta).'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -1527,36 +1696,42 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'normals'
           description: 'The vector of Normal RVs defining the field'
           dag_type: '<deterministic>'
           pass_by: 'reference'
           value_type: 'Real[]'
+          default:
           options:
         - label: 'grid'
           description: 'The space between i and i-1.'
           dag_type: '<deterministic>'
           pass_by: 'reference'
           value_type: 'RealPos[]'
+          default:
           options:
         - label: 'zeta'
           description: 'The value controlling the shrinkage of the field, a scale by which x is multiplied, effectively making x ~ halfCauchy(0,zeta).'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -1576,18 +1751,21 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'TimeTree'
+          default:
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -1607,30 +1785,35 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'lambda'
           description: 'The strength of the proposal.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tune'
           description: 'Should we tune lambda during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -1650,18 +1833,21 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'TimeTree'
+          default:
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -1681,18 +1867,21 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'Real'
+          default:
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -1712,48 +1901,56 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'MatrixRealSymmetric'
+          default:
           options:
         - label: 'r_set'
           description: 'Rate that is equal to the expected number of vertex-sets to perturb (min 1).'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'p_vertex'
           description: 'Probability of including a vertex in a vertex-set (min 2 vertices/set).'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.1'
           options:
         - label: 'p_edge'
           description: 'Probability of forcing edge to consensus value (0,1) in a vertex-set.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '1'
           options:
         - label: 'vertices'
           description: 'A vector of vertices to target with this proposal. An empty vector is interpretted as the full list of vertices.'
           dag_type: '<any>'
           pass_by: 'reference'
           value_type: 'Natural[]'
+          default: '[ ]'
           options:
         - label: 'tune'
           description: 'Should we tune the scaling factor during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -1773,36 +1970,42 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'MatrixRealSymmetric'
+          default:
           options:
         - label: 'p'
           description: 'The probability of flipping each edge in edges (min flips == 1).'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0'
           options:
         - label: 'edges'
           description: 'A vector of [i,j] edges to target with this proposal. An empty vector is interpretted as the full list of edges.'
           dag_type: '<any>'
           pass_by: 'reference'
           value_type: 'Natural[][]'
+          default: '[ ]'
           options:
         - label: 'tune'
           description: 'Should we tune the scaling factor during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -1822,36 +2025,42 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'MatrixRealSymmetric'
+          default:
           options:
         - label: 'p'
           description: 'The probability of flipping each edge in edges.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '1'
           options:
         - label: 'vertices'
           description: 'A vector of vertices to target with this proposal. An empty vector is interpretted as the full list of vertices.'
           dag_type: '<any>'
           pass_by: 'reference'
           value_type: 'Natural[]'
+          default: '[ ]'
           options:
         - label: 'tune'
           description: 'Should we tune the scaling factor during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -1871,36 +2080,42 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'ls'
           description: 'The local scales variables on which this move operates.'
           dag_type: '<deterministic>'
           pass_by: 'reference'
           value_type: 'RealPos[]'
+          default:
           options:
         - label: 'normals'
           description: 'The vector of Normal RVs defining the field'
           dag_type: '<deterministic>'
           pass_by: 'reference'
           value_type: 'Real[]'
+          default:
           options:
         - label: 'zeta'
           description: 'The value controlling the shrinkage of the field.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -1920,42 +2135,49 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'ls'
           description: 'The local scales variables on which this move operates.'
           dag_type: '<deterministic>'
           pass_by: 'reference'
           value_type: 'RealPos[]'
+          default:
           options:
         - label: 'normals'
           description: 'The vector of Normal RVs defining the field'
           dag_type: '<deterministic>'
           pass_by: 'reference'
           value_type: 'Real[]'
+          default:
           options:
         - label: 'grid'
           description: 'The space between i and i-1.'
           dag_type: '<deterministic>'
           pass_by: 'reference'
           value_type: 'RealPos[]'
+          default:
           options:
         - label: 'zeta'
           description: 'The value controlling the shrinkage of the field.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -1975,36 +2197,42 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'TimeTree'
+          default:
           options:
         - label: 'proposal'
           description: 'The proposal topology distribution.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Distribution__Tree'
+          default:
           options:
         - label: 'rates'
           description: 'The vector of branch-specific substitution rates.'
           dag_type: '<any>'
           pass_by: 'reference'
           value_type: 'RealPos[]'
+          default: 'NULL'
           options:
         - label: 'outgroup'
           description: 'Outgroup used to root the proposal topologies.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Clade'
+          default: 'NA'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -2073,30 +2301,35 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'TimeTree'
+          default:
           options:
         - label: 'lambda'
           description: 'The strength of the proposal.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tune'
           description: 'Should we tune lambda during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -2116,30 +2349,35 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'Real'
+          default:
           options:
         - label: 'delta'
           description: 'The window size of the proposals.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tune'
           description: 'Should we tune during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -2159,36 +2397,42 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'Real'
+          default:
           options:
         - label: 'value_2'
           description:
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'Real'
+          default:
           options:
         - label: 'slide'
           description:
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tune'
           description:
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'FALSE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -2208,30 +2452,35 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'RealPos[][]'
+          default:
           options:
         - label: 'lambda'
           description: 'The scaling factor (strength) of the proposal.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tune'
           description: 'Should we tune the scaling factor during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -2251,30 +2500,35 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'RealPos[][]'
+          default:
           options:
         - label: 'delta'
           description: 'The scaling factor (strength) of the proposal.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tune'
           description: 'Should we tune the scaling factor during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -2294,24 +2548,28 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'Real'
+          default:
           options:
         - label: 'delta'
           description: 'The window of how many categories to propose left and right.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Natural'
+          default: '0'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -2331,36 +2589,42 @@
           dag_type: '<deterministic>'
           pass_by: 'reference'
           value_type: 'RealPos[]'
+          default:
           options:
         - label: 'numToMove'
           description: 'The number of vector elements changed per move.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Natural'
+          default: '1'
           options:
         - label: 'lambda'
           description: 'The scaling factor (strength) of the proposal.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tune'
           description: 'Should we tune the scaling factor during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -2380,18 +2644,21 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'TimeTree'
+          default:
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -2411,18 +2678,21 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'TimeTree'
+          default:
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -2442,24 +2712,28 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'TimeTree'
+          default:
           options:
         - label: 'rateMatrices'
           description: 'The branch-specific rate matrices.'
           dag_type: '<deterministic>'
           pass_by: 'const reference'
           value_type: 'RateGenerator[]'
+          default:
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -2479,24 +2753,28 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'TimeTree'
+          default:
           options:
         - label: 'rates'
           description: 'The vector of branch-specific substitution rates.'
           dag_type: '<any>'
           pass_by: 'reference'
           value_type: 'RealPos[]'
+          default:
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -2516,24 +2794,28 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'TimeTree'
+          default:
           options:
         - label: 'lambda'
           description: 'The scaling factor (strength) of the proposals.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -2553,36 +2835,42 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'TimeTree'
+          default:
           options:
         - label: 'delta'
           description: 'The concentration parameter.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'offset'
           description: 'The offset for the proposal density.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '2'
           options:
         - label: 'tune'
           description: 'Should we tune the concentration parameter during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -2602,36 +2890,42 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'TimeTree'
+          default:
           options:
         - label: 'sigma'
           description: 'The sd of the proposal.'
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'TimeTree'
+          default: '1'
           options:
         - label: 'scaleByAge'
           description: 'Should we additionally use age of node to adjust sd?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'tune'
           description: 'Should we tune sigma during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -2651,18 +2945,21 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'TimeTree'
+          default:
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -2682,24 +2979,28 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'TimeTree'
+          default:
           options:
         - label: 'constraints'
           description: 'The age constraints.'
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'Clade[]'
+          default:
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -2719,18 +3020,21 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'Real'
+          default:
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -2739,7 +3043,7 @@
   aliases:
   description:
     - 'The multiplicative proposal of Dutta 2012, allows for long-distance moves.'
-    - 'The multiplicative proposal of Dutta 2012, allows for long-distance moves.'
+    - 'Useful for fat-tailed distributions, possibly for bimoodal distributions.'
   details:
   example:
   authors:
@@ -2752,30 +3056,35 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'Real'
+          default:
           options:
         - label: 'delta'
           description: 'The tuning parameter, larger values for bolder moves.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tune'
           description: 'Should we tune the window size during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -2795,30 +3104,35 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'Integer'
+          default:
           options:
         - label: 'alpha'
           description: 'The success probability of the geometric distribution.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.5'
           options:
         - label: 'tune'
           description: 'Should we tune the success probability during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -2838,18 +3152,21 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'Natural'
+          default:
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -2869,36 +3186,42 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'Tree'
+          default:
           options:
         - label: 'rates'
           description: 'The vector of per-branch rates (from a relaxed clock).'
           dag_type: '<deterministic>'
           pass_by: 'reference'
           value_type: 'RealPos[]'
+          default:
           options:
         - label: 'delta'
           description: 'The concentration of the move on the previous age.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tune'
           description: 'Should we tune this move during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -2918,18 +3241,21 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'TimeTree'
+          default:
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -2949,24 +3275,28 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'TimeTree'
+          default:
           options:
         - label: 'origin'
           description: 'The maximum root age.'
           dag_type: '<any>'
           pass_by: 'reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -2986,18 +3316,21 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'BranchLengthTree'
+          default:
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -3017,30 +3350,35 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'Real'
+          default:
           options:
         - label: 'lambda'
           description: 'The strength of the proposal.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tune'
           description: 'Should we tune lambda during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -3060,30 +3398,35 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'lambda'
           description: 'The strength of the proposal.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tune'
           description: 'Should we tune lambda during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -3103,30 +3446,35 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'lambda'
           description: 'The strength of the proposal.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tune'
           description: 'Should we tune lambda during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -3146,36 +3494,42 @@
           dag_type: '<deterministic>'
           pass_by: 'reference'
           value_type: 'Real[]'
+          default:
           options:
         - label: 'sd'
           description: 'The standard deviation parameter if available.'
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'RealPos'
+          default: 'NULL'
           options:
         - label: 'lambda'
           description: 'The scaling factor (strength) of the proposal.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tune'
           description: 'Should we tune the scaling factor during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -3195,30 +3549,35 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'Real'
+          default:
           options:
         - label: 'window'
           description: 'The window (steps-size) of proposals.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tune'
           description: 'Should we tune the move during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -3238,30 +3597,35 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'Real'
+          default:
           options:
         - label: 'delta'
           description: 'The window size parameter.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tune'
           description: 'Should we tune the window size during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -3281,30 +3645,35 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'Real'
+          default:
           options:
         - label: 'sigma'
           description: 'The scale parameter.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tune'
           description: 'Should we tune sigma during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -3366,9 +3735,9 @@
   authors: 'Sebastian Hoehna, Bastien Boussau'
   see_also:
     - 'mvSpeciesSubtreeScale'
-    - 'mvSpeciesSubtreeScale'
-    - 'mvSpeciesSubtreeScale'
-    - 'mvSpeciesSubtreeScale'
+    - 'mvSpeciesSubtreeScaleBeta'
+    - 'mvSpeciesNodeTimeSlideUniform'
+    - 'mvSpeciesTreeScale'
   constructor:
     - usage:
       arguments:
@@ -3377,18 +3746,21 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'TimeTree'
+          default:
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
     - name: 'addGeneTreeVariable'
@@ -3400,6 +3772,7 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'TimeTree'
+          default:
           options:
   references:
     - citation: 'Guided Tree Topology Proposals for Bayesian Phylogenetic Inference. Sebastian Höhna, Alexei J. Drummond. Syst Biol (2012) 61 (1): 1-11.'
@@ -3466,9 +3839,9 @@
   authors: 'Sebastian Hoehna, Bastien Boussau'
   see_also:
     - 'mvSpeciesSubtreeScale'
-    - 'mvSpeciesSubtreeScale'
-    - 'mvSpeciesSubtreeScale'
-    - 'mvSpeciesSubtreeScale'
+    - 'mvSpeciesSubtreeScaleBeta'
+    - 'mvSpeciesNarrow'
+    - 'mvSpeciesTreeScale'
   constructor:
     - usage:
       arguments:
@@ -3477,18 +3850,21 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'TimeTree'
+          default:
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
     - name: 'addGeneTreeVariable'
@@ -3500,6 +3876,7 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'TimeTree'
+          default:
           options:
   references:
     - citation: 'Guided Tree Topology Proposals for Bayesian Phylogenetic Inference. Sebastian Höhna, Alexei J. Drummond. Syst Biol (2012) 61 (1): 1-11.'
@@ -3566,9 +3943,9 @@
   authors: 'Sebastian Hoehna, Bastien Boussau'
   see_also:
     - 'mvSpeciesNodeTimeSlideUniform'
-    - 'mvSpeciesNodeTimeSlideUniform'
-    - 'mvSpeciesNodeTimeSlideUniform'
-    - 'mvSpeciesNodeTimeSlideUniform'
+    - 'mvSpeciesSubtreeScaleBeta'
+    - 'mvSpeciesNarrow'
+    - 'mvSpeciesTreeScale'
   constructor:
     - usage:
       arguments:
@@ -3577,18 +3954,21 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'TimeTree'
+          default:
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
     - name: 'addGeneTreeVariable'
@@ -3600,6 +3980,7 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'TimeTree'
+          default:
           options:
   references:
     - citation: 'Guided Tree Topology Proposals for Bayesian Phylogenetic Inference. Sebastian Höhna, Alexei J. Drummond. Syst Biol (2012) 61 (1): 1-11.'
@@ -3666,9 +4047,9 @@
   authors: 'Sebastian Hoehna, Bastien Boussau'
   see_also:
     - 'mvSpeciesNodeTimeSlideUniform'
-    - 'mvSpeciesNodeTimeSlideUniform'
-    - 'mvSpeciesNodeTimeSlideUniform'
-    - 'mvSpeciesNodeTimeSlideUniform'
+    - 'mvSpeciesSubtreeScale'
+    - 'mvSpeciesNarrow'
+    - 'mvSpeciesTreeScale'
   constructor:
     - usage:
       arguments:
@@ -3677,30 +4058,35 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'TimeTree'
+          default:
           options:
         - label: 'alpha'
           description: 'The concentration parameter.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '10'
           options:
         - label: 'tune'
           description: 'Should we tune the concentration parameter during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
     - name: 'addGeneTreeVariable'
@@ -3712,6 +4098,7 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'TimeTree'
+          default:
           options:
   references:
     - citation: 'Guided Tree Topology Proposals for Bayesian Phylogenetic Inference. Sebastian Höhna, Alexei J. Drummond. Syst Biol (2012) 61 (1): 1-11.'
@@ -3779,9 +4166,9 @@
   authors: 'Sebastian Hoehna, Bastien Boussau'
   see_also:
     - 'mvSpeciesNodeTimeSlideUniform'
-    - 'mvSpeciesNodeTimeSlideUniform'
-    - 'mvSpeciesNodeTimeSlideUniform'
-    - 'mvSpeciesNodeTimeSlideUniform'
+    - 'mvSpeciesSubtreeScaleBeta'
+    - 'mvSpeciesNarrow'
+    - 'mvSpeciesSubtreeScale'
   constructor:
     - usage:
       arguments:
@@ -3790,36 +4177,42 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'TimeTree'
+          default:
           options:
         - label: 'rootAge'
           description: 'The root age variable.'
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'delta'
           description: 'The strength of the proposal'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tune'
           description: 'Should we tune the strength during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
     - name: 'addGeneTreeVariable'
@@ -3831,6 +4224,7 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'TimeTree'
+          default:
           options:
   references:
     - citation: 'Guided Tree Topology Proposals for Bayesian Phylogenetic Inference. Sebastian Höhna, Alexei J. Drummond. Syst Biol (2012) 61 (1): 1-11.'
@@ -3855,18 +4249,21 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'TimeTree'
+          default:
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -3886,30 +4283,35 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'MatrixRealSymmetric'
+          default:
           options:
         - label: 'delta'
           description: 'The sliding window size.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tune'
           description: 'Should we tune the move during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -3929,36 +4331,42 @@
           dag_type: '<deterministic>'
           pass_by: 'reference'
           value_type: 'Real[][]'
+          default:
           options:
         - label: 'element'
           description: 'The index or indices of the element to scale.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Natural'
+          default:
           options:
         - label: 'lambda'
           description: 'The scaling factor (strength) of this move.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tune'
           description: 'Should we tune the scaling factor during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -3978,24 +4386,28 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'TimeTree'
+          default:
           options:
         - label: 'origin'
           description: 'The variable for the origin of the process giving a maximum age.'
           dag_type: '<any>'
           pass_by: 'reference'
           value_type: 'RealPos'
+          default: 'NULL'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -4015,36 +4427,42 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'TimeTree'
+          default:
           options:
         - label: 'rootAge'
           description: 'The root age variable.'
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'RealPos'
+          default: 'NULL'
           options:
         - label: 'delta'
           description: 'The scaling factor (strength) of the proposal.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tune'
           description: 'Should we tune the scaling factor during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -4064,18 +4482,21 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'RealPos[]'
+          default:
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -4095,24 +4516,28 @@
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tune'
           description: 'Should we tune the scaling factor during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
     - name: 'addVariable'
@@ -4124,12 +4549,14 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'TimeTree'
+          default:
           options:
         - label: 'up'
           description: 'Scaling up or down?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default:
           options:
     - name: 'addVariable'
       return_type: 'void'
@@ -4140,12 +4567,14 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'Real'
+          default:
           options:
         - label: 'up'
           description: 'Scaling up or down?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default:
           options:
     - name: 'addVariable'
       return_type: 'void'
@@ -4156,12 +4585,14 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'Real[]'
+          default:
           options:
         - label: 'up'
           description: 'Scaling up or down?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default:
           options:
     - name: 'addVariable'
       return_type: 'void'
@@ -4172,12 +4603,14 @@
           dag_type: '<deterministic>'
           pass_by: 'reference'
           value_type: 'Real[]'
+          default:
           options:
         - label: 'up'
           description: 'Scaling up or down?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default:
           options:
     - name: 'addVariable'
       return_type: 'void'
@@ -4188,12 +4621,14 @@
           dag_type: '<deterministic>'
           pass_by: 'reference'
           value_type: 'RealPos[]'
+          default:
           options:
         - label: 'up'
           description: 'Scaling up or down?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default:
           options:
     - name: 'removeVariable'
       return_type: 'void'
@@ -4204,12 +4639,14 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'TimeTree'
+          default:
           options:
         - label: 'up'
           description: 'The variable to scale'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default:
           options:
     - name: 'removeVariable'
       return_type: 'void'
@@ -4220,12 +4657,14 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'Real'
+          default:
           options:
         - label: 'up'
           description: 'The variable to scale'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default:
           options:
     - name: 'removeVariable'
       return_type: 'void'
@@ -4236,12 +4675,14 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'Real[]'
+          default:
           options:
         - label: 'up'
           description: 'The variable to scale'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default:
           options:
     - name: 'removeVariable'
       return_type: 'void'
@@ -4252,12 +4693,14 @@
           dag_type: '<deterministic>'
           pass_by: 'reference'
           value_type: 'Real[]'
+          default:
           options:
         - label: 'up'
           description: 'The variable to scale'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default:
           options:
     - name: 'removeVariable'
       return_type: 'void'
@@ -4268,12 +4711,14 @@
           dag_type: '<deterministic>'
           pass_by: 'reference'
           value_type: 'RealPos[]'
+          default:
           options:
         - label: 'up'
           description: 'The variable to scale'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default:
           options:
   references:
 - name: 'mvUpDownSlide'
@@ -4292,24 +4737,28 @@
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tune'
           description: 'Should we tune the scaling factor during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
     - name: 'addVariable'
@@ -4321,12 +4770,14 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'Real'
+          default:
           options:
         - label: 'up'
           description: 'Scaling up or down?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default:
           options:
     - name: 'addVariable'
       return_type: 'void'
@@ -4337,12 +4788,14 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'Real[]'
+          default:
           options:
         - label: 'up'
           description: 'Scaling up or down?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default:
           options:
     - name: 'addVariable'
       return_type: 'void'
@@ -4353,12 +4806,14 @@
           dag_type: '<deterministic>'
           pass_by: 'reference'
           value_type: 'Real[]'
+          default:
           options:
         - label: 'up'
           description: 'Scaling up or down?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default:
           options:
     - name: 'addVariable'
       return_type: 'void'
@@ -4369,12 +4824,14 @@
           dag_type: '<deterministic>'
           pass_by: 'reference'
           value_type: 'RealPos[]'
+          default:
           options:
         - label: 'up'
           description: 'Scaling up or down?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default:
           options:
     - name: 'removeVariable'
       return_type: 'void'
@@ -4385,12 +4842,14 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'Real'
+          default:
           options:
         - label: 'up'
           description: 'The variable to scale'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default:
           options:
     - name: 'removeVariable'
       return_type: 'void'
@@ -4401,12 +4860,14 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'Real[]'
+          default:
           options:
         - label: 'up'
           description: 'The variable to scale'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default:
           options:
     - name: 'removeVariable'
       return_type: 'void'
@@ -4417,12 +4878,14 @@
           dag_type: '<deterministic>'
           pass_by: 'reference'
           value_type: 'Real[]'
+          default:
           options:
         - label: 'up'
           description: 'The variable to scale'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default:
           options:
     - name: 'removeVariable'
       return_type: 'void'
@@ -4433,12 +4896,14 @@
           dag_type: '<deterministic>'
           pass_by: 'reference'
           value_type: 'RealPos[]'
+          default:
           options:
         - label: 'up'
           description: 'The variable to scale'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default:
           options:
   references:
 - name: 'mvUpDownSlideBactrian'
@@ -4457,24 +4922,28 @@
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tune'
           description: 'Should we tune the scaling factor during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
     - name: 'addVariable'
@@ -4486,12 +4955,14 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'Real'
+          default:
           options:
         - label: 'up'
           description: 'Scaling up or down?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default:
           options:
     - name: 'addVariable'
       return_type: 'void'
@@ -4502,12 +4973,14 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'Real[]'
+          default:
           options:
         - label: 'up'
           description: 'Scaling up or down?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default:
           options:
     - name: 'addVariable'
       return_type: 'void'
@@ -4518,12 +4991,14 @@
           dag_type: '<deterministic>'
           pass_by: 'reference'
           value_type: 'Real[]'
+          default:
           options:
         - label: 'up'
           description: 'Scaling up or down?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default:
           options:
     - name: 'addVariable'
       return_type: 'void'
@@ -4534,12 +5009,14 @@
           dag_type: '<deterministic>'
           pass_by: 'reference'
           value_type: 'RealPos[]'
+          default:
           options:
         - label: 'up'
           description: 'Scaling up or down?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default:
           options:
     - name: 'removeVariable'
       return_type: 'void'
@@ -4550,12 +5027,14 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'Real'
+          default:
           options:
         - label: 'up'
           description: 'The variable to scale'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default:
           options:
     - name: 'removeVariable'
       return_type: 'void'
@@ -4566,12 +5045,14 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'Real[]'
+          default:
           options:
         - label: 'up'
           description: 'The variable to scale'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default:
           options:
     - name: 'removeVariable'
       return_type: 'void'
@@ -4582,12 +5063,14 @@
           dag_type: '<deterministic>'
           pass_by: 'reference'
           value_type: 'Real[]'
+          default:
           options:
         - label: 'up'
           description: 'The variable to scale'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default:
           options:
     - name: 'removeVariable'
       return_type: 'void'
@@ -4598,12 +5081,14 @@
           dag_type: '<deterministic>'
           pass_by: 'reference'
           value_type: 'RealPos[]'
+          default:
           options:
         - label: 'up'
           description: 'The variable to scale'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default:
           options:
   references:
 - name: 'mvVectorBinarySwitch'
@@ -4622,36 +5107,42 @@
           dag_type: '<deterministic>'
           pass_by: 'reference'
           value_type: 'Natural[]'
+          default:
           options:
         - label: 'p'
           description: 'The probability of applying the move to each element.'
           dag_type: '<any>'
           pass_by: 'reference'
           value_type: 'Probability'
+          default: '1'
           options:
         - label: 'elements'
           description: 'The indices of elements. All are used if this is empty.'
           dag_type: '<any>'
           pass_by: 'reference'
           value_type: 'Natural[]'
+          default: '[ ]'
           options:
         - label: 'tune'
           description: 'Should we tune the window size during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -4671,36 +5162,42 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'Real[]'
+          default:
           options:
         - label: 'lambda'
           description: 'The scaling factor (strength) of this move.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tune'
           description: 'Should we tune the scaling factor during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'element'
           description: 'The index of the element to scale.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Natural'
+          default: '1'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -4720,30 +5217,35 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'RealPos[]'
+          default:
           options:
         - label: 'lambda'
           description: 'The scaling parameter (strength) of the move.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tune'
           description: 'Should we tune the scaling parameter during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -4763,30 +5265,35 @@
           dag_type: '<deterministic>'
           pass_by: 'reference'
           value_type: 'RealPos[]'
+          default:
           options:
         - label: 'lambda'
           description: 'The scaling factor (strength) of this move.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tune'
           description: 'Should we tune the scaling factor during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -4806,30 +5313,35 @@
           dag_type: '<deterministic>'
           pass_by: 'reference'
           value_type: 'Real[]'
+          default:
           options:
         - label: 'lambda'
           description: 'The scaling factor (or strength) of the proposals.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tune'
           description: 'Should we auto tune during burning?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -4849,36 +5361,42 @@
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'Real[]'
+          default:
           options:
         - label: 'elements'
           description: 'The indices of elements. All are used if this is empty.'
           dag_type: '<any>'
           pass_by: 'reference'
           value_type: 'Natural[]'
+          default: '[ ]'
           options:
         - label: 'delta'
           description: 'The window size parameter.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tune'
           description: 'Should we tune the window size during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:
@@ -4898,36 +5416,42 @@
           dag_type: '<deterministic>'
           pass_by: 'reference'
           value_type: 'Real[]'
+          default:
           options:
         - label: 'mean'
           description: 'The mean parameter of the variables.'
           dag_type: '<stochastic>'
           pass_by: 'reference'
           value_type: 'Real'
+          default:
           options:
         - label: 'delta'
           description: 'The window size parameter.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tune'
           description: 'Should we tune the scaling factor during burnin?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tuneTarget'
           description: 'The acceptance probability targeted by auto-tuning.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Probability'
+          default: '0.44'
           options:
   methods:
   references:

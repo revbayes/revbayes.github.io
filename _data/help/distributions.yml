@@ -24,6 +24,7 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Probability'
+          default:
           options:
   methods:
   references:
@@ -53,12 +54,14 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'beta'
           description: 'The beta shape parameter.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
   methods:
   references:
@@ -80,7 +83,7 @@
   authors: 'Sebastian Hoehna'
   see_also:
     - 'dnBimodalNormal'
-    - 'dnBimodalNormal'
+    - 'dnLognormal'
   domain: 'RealPos'
   constructor:
     - usage: 'dnBimodalLognormal(Real<any> mean1, Real<any> mean2, RealPos<any> sd1, RealPos<any> sd2, Probability<any> p)'
@@ -90,30 +93,35 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Real'
+          default:
           options:
         - label: 'mean2'
           description: 'The mean (in log-space) of the second lognormal distribution.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Real'
+          default:
           options:
         - label: 'sd1'
           description: 'The standard deviation of the first lognormal distribution.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'sd2'
           description: 'The standard deviation of the secind lognormal distribution.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'p'
           description: 'The probability to belong to the first distribution.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Probability'
+          default:
           options:
   methods:
   references:
@@ -135,7 +143,7 @@
   authors: 'Sebastian Hoehna'
   see_also:
     - 'dnBimodalLognormal'
-    - 'dnBimodalLognormal'
+    - 'dnNormal'
   domain: 'Real'
   constructor:
     - usage: 'dnBimodalNormal(Real<any> mean1, Real<any> mean2, RealPos<any> sd1, RealPos<any> sd2, Probability<any> p)'
@@ -145,30 +153,35 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Real'
+          default:
           options:
         - label: 'mean2'
           description: 'Mean of the second normal distribution.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Real'
+          default:
           options:
         - label: 'sd1'
           description: 'Standard deviation of the first normal distributin.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'sd2'
           description: 'Standard deviation of the second normal distribution.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'p'
           description: 'Probability that the value belongs to the first normal distribution.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Probability'
+          default:
           options:
   methods:
   references:
@@ -198,12 +211,14 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Probability'
+          default:
           options:
         - label: 'n'
           description: 'Number of trials.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Natural'
+          default:
           options:
   methods:
   references:
@@ -224,53 +239,61 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'mu'
           description: 'The extinction rate.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default: '0'
           options:
         - label: 'rho'
           description: 'The taxon sampling fraction.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Probability'
+          default: '1'
           options:
         - label: 'rootAge'
           description: 'The time of the process starting at the root, if applicable.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'samplingStrategy'
           description: 'The sampling strategy of including taxa at the present.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'String'
+          default: 'uniform'
           options:
             - 'uniform'
-            - 'uniform'
+            - 'diversified'
         - label: 'condition'
           description: 'The condition of the process.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'String'
+          default: 'time'
           options:
             - 'time'
-            - 'time'
-            - 'time'
+            - 'survival'
+            - 'nTaxa'
         - label: 'taxa'
           description: 'The taxa used for initialization.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Taxon[]'
+          default:
           options:
         - label: 'incompleteClades'
           description: 'Vector of incompletely sampled clades with number of missing species.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Clade[]'
+          default: 'NULL'
           options:
   methods:
   references:
@@ -291,65 +314,75 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'mu'
           description: 'The piecewise-constant extinction rate.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'beta'
           description: 'The constant extinction rate change times.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Probability'
+          default:
           options:
         - label: 'burstTime'
           description: 'The constant extinction rate change times.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'rho'
           description: 'The taxon sampling fraction(s).'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Probability'
+          default: '1'
           options:
         - label: 'rootAge'
           description: 'The time of the process starting at the root, if applicable.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'samplingStrategy'
           description: 'The sampling strategy of including taxa at the present.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'String'
+          default: 'uniform'
           options:
             - 'uniform'
-            - 'uniform'
+            - 'diversified'
         - label: 'condition'
           description: 'The condition of the process.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'String'
+          default: 'time'
           options:
             - 'time'
-            - 'time'
-            - 'time'
+            - 'survival'
+            - 'nTaxa'
         - label: 'taxa'
           description: 'The taxa used for initialization.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Taxon[]'
+          default:
           options:
         - label: 'incompleteClades'
           description: 'Vector of incompletely sampled clades with number of missing species.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Clade[]'
+          default: 'NULL'
           options:
   methods:
   references:
@@ -370,56 +403,65 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'rootLambda'
           description: 'The speciation rate at the root.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'rootMu'
           description: 'The extinction rate at the root.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'lambda'
           description: 'The prior distribution for the speciation rates.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Distribution__RealPos'
+          default: 'NULL'
           options:
         - label: 'mu'
           description: 'The prior distribution for the extinction rates.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Distribution__RealPos'
+          default: 'NULL'
           options:
         - label: 'delta'
           description: 'The rate of jumping between rate categories.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'rho'
           description: 'The taxon sampling probability.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Probability'
+          default:
           options:
         - label: 'condition'
           description: 'The condition of the birth-death process.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'String'
+          default: 'survival'
           options:
             - 'time'
-            - 'time'
+            - 'survival'
         - label: 'taxa'
           description: 'The taxon names used for initialization.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Taxon[]'
+          default:
           options:
   methods:
   references:
@@ -427,9 +469,9 @@
   title:
   aliases:
     - 'dnCDSSBDP'
-    - 'dnCDSSBDP'
-    - 'dnCDSSBDP'
-    - 'dnCDSSBDP'
+    - 'dnCDFBDP'
+    - 'dnBirthDeathMultiRate'
+    - 'dnCDCladoBDP'
   description:
   details:
   example:
@@ -444,101 +486,117 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'speciationRates/lambda/cladoEventMap'
           description: 'The vector of speciation rates (for anagenetic-only models), or the map of speciation rates to cladogenetic event types.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'CladogeneticSpeciationRateMatrix'
+          default:
           options:
         - label: 'extinctionRates/mu'
           description: 'The vector of extinction rates.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos[]'
+          default:
           options:
         - label: 'psi/phi'
           description: 'The vector of serial sampling rates.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos[]'
+          default: 'NULL'
           options:
         - label: 'Q'
           description: 'The rate matrix of jumping between rate categories.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RateGenerator'
+          default: 'NULL'
           options:
         - label: 'delta'
           description: 'The rate-factor of jumping between rate categories.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'pi'
           description: 'State frequencies at the root.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Simplex'
+          default: 'NULL'
           options:
         - label: 'rho'
           description: 'The taxon sampling probability.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Probability'
+          default: '1'
           options:
         - label: 'condition'
           description: 'The condition of the birth-death process.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'String'
+          default: 'time'
           options:
             - 'time'
-            - 'time'
+            - 'survival'
         - label: 'nTimeSlices'
           description: 'The number of time slices for the numeric ODE.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '500'
           options:
         - label: 'simulateCondition'
           description: 'The conditions under which to simulate.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'String'
+          default: 'startTime'
           options:
             - 'startTime'
-            - 'startTime'
-            - 'startTime'
+            - 'numTips'
+            - 'tipStates'
         - label: 'minNumLineages'
           description: 'The minimum number of lineages to simulate; applied under the startTime condition.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Natural'
+          default: '0'
           options:
         - label: 'maxNumLineages'
           description: 'The maximum number of lineages to simulate; applied under the startTime condition.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Natural'
+          default: '500'
           options:
         - label: 'exactNumLineages'
           description: 'The exact number of lineages to simulate; applied under the numTips condition.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Natural'
+          default: '100'
           options:
         - label: 'maxTime'
           description: 'Maximum time for lineages to coalesce when simulating; applied under the numTips and tipStates condition.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '1000'
           options:
         - label: 'pruneExtinctLineages'
           description: 'When simulating should extinct lineages be pruned off?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
   methods:
   references:
@@ -548,7 +606,7 @@
   description: 'The categorical distribution, sometimes referred to as the generalized Bernoulli distribution. It describes the probability of one of K different outcomes, labeled from 1 to K, with each outcome probability separately specified.'
   details:
     - 'The argument to the constructor is a simplex containing the probabilities of the outcomes. The outcomes are labeled from 1 to K, where K is the number of elements in the simplex. Outcome i has probability specified by component i in the simplex.'
-    - 'The argument to the constructor is a simplex containing the probabilities of the outcomes. The outcomes are labeled from 1 to K, where K is the number of elements in the simplex. Outcome i has probability specified by component i in the simplex.'
+    - 'A typical scenario where a categorical variable is used is in the definition of a variable drawn from a mixture. A vector of mixture components is set up first, and then a stochastic variable drawn from a categorical distribution is used as an index in a deterministic assignment that points to a component in the mixture. See example below.'
   example: |
     # Define a stochastic variable x that is drawn from
     # a categorical distribution with 4 categories, each
@@ -583,6 +641,7 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Simplex'
+          default:
           options:
   methods:
   references:
@@ -592,7 +651,7 @@
   description: 'Cauchy distribution with location equal to ‘location’ and scale equal to ‘scale’.'
   details:
     - 'The Cauchy distribution has density:'
-    - 'The Cauchy distribution has density:'
+    - 'f(x) = 1/(pi * scale) * 1/(1 + x-(location/scale)^2)'
   example: |
     # we simulate some obversations
     x <- rCauchy(n=10,location=0,scale=1)
@@ -612,12 +671,14 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Real'
+          default:
           options:
         - label: 'scale'
           description: 'The scale parameter.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
   methods:
   references:
@@ -644,6 +705,7 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Natural'
+          default:
           options:
   methods:
   references:
@@ -664,18 +726,21 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'names'
           description: 'The taxon names used when drawing a random tree.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'String[]'
+          default:
           options:
         - label: 'constraints'
           description: 'The topological constraints strictly enforced.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Clade[]'
+          default: '[ ]'
           options:
   methods:
   references:
@@ -696,33 +761,38 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos[]'
+          default:
           options:
         - label: 'times'
           description: 'A vector of times for the intervals, if applicable.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos[]'
+          default: 'NULL'
           options:
         - label: 'method'
           description: 'The method how intervals are defined.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'String'
+          default: 'events'
           options:
             - 'events'
-            - 'events'
-            - 'events'
+            - 'uniform'
+            - 'specified'
         - label: 'names'
           description: 'The names of the taxa used for simulation.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'String[]'
+          default:
           options:
         - label: 'constraints'
           description: 'The strictly enforced topology constraints.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Clade[]'
+          default: '[ ]'
           options:
   methods:
   references:
@@ -743,33 +813,38 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'lambda'
           description: 'The constant speciation rate.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'mu'
           description: 'The constant extinction rate.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default: '0'
           options:
         - label: 'condition'
           description: 'The condition of the process.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'String'
+          default: 'time'
           options:
             - 'time'
-            - 'time'
-            - 'time'
+            - 'survival'
+            - 'nTaxa'
         - label: 'taxa'
           description: 'The taxa used for initialization.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Taxon[]'
+          default:
           options:
   methods:
   references:
@@ -790,12 +865,14 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Distribution__TimeTree'
+          default:
           options:
         - label: 'constraints'
           description: 'The node Age constraints.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Clade[][]'
+          default:
           options:
   methods:
   references:
@@ -816,12 +893,14 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Distribution__TimeTree'
+          default:
           options:
         - label: 'constraints'
           description: 'The node order constraints.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RlRelativeNodeAgeConstraints'
+          default:
           options:
   methods:
   references:
@@ -842,24 +921,28 @@
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Distribution__TimeTree'
+          default:
           options:
         - label: 'constraints'
           description: 'The topological constraints.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Clade[]'
+          default: '[ ]'
           options:
         - label: 'backbone'
           description: 'The backbone topological constraints.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'TimeTree'
+          default: 'NULL'
           options:
         - label: 'inverse'
           description: 'Should the constraint be inverted?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'FALSE'
           options:
   methods:
   references:
@@ -880,18 +963,21 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'mu'
           description: 'The mean of the normal distribution'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Real'
+          default:
           options:
         - label: 'sigma'
           description: 'The standard deviation of the normal distribution'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
   methods:
   references:
@@ -912,18 +998,21 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'baseDistribution'
           description: 'The base distribution for the per category values.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Distribution__Real'
+          default:
           options:
         - label: 'numElements'
           description: 'The number of elements drawn from this distribution.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Natural'
+          default:
           options:
   methods:
   references:
@@ -944,30 +1033,35 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'MatrixRealSymmetric'
+          default: '[ [ 0.0000 ] ]'
           options:
         - label: 'diagonal'
           description:
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos[]'
+          default: '[ ]'
           options:
         - label: 'df'
           description:
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Natural'
+          default: '0'
           options:
         - label: 'kappa'
           description:
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default: '0'
           options:
         - label: 'dim'
           description:
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Natural'
+          default: '0'
           options:
   methods:
   references:
@@ -994,6 +1088,7 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos[]'
+          default:
           options:
   methods:
   references:
@@ -1014,33 +1109,38 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'capacity'
           description: 'The carrying capacity.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Natural'
+          default:
           options:
         - label: 'rootAge'
           description: 'The time of the process since the root, if applicable.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'condition'
           description: 'The condition of the process.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'String'
+          default: 'survival'
           options:
             - 'time'
-            - 'time'
-            - 'time'
+            - 'survival'
+            - 'nTaxa'
         - label: 'taxa'
           description: 'The names of the taxa used for simulation.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Taxon[]'
+          default:
           options:
   methods:
   references:
@@ -1050,7 +1150,7 @@
   description: 'Multispecies coalescent distribution describing how gene trees can be generated from within a species tree given a constant effective population size. Requires an ultrametric species tree, a single effective population size (a single real positive), and taxa with species and individual names.'
   details:
     - 'The species tree must be ultrametric.'
-    - 'The species tree must be ultrametric.'
+    - 'The effective population size is constant across the species tree.'
   example: |
     # We are going to save the trees we simulate in the folder simulatedTrees:
     dataFolder = "simulatedTrees/" 
@@ -1087,7 +1187,7 @@
   authors: 'Sebastian Hoehna, Bastien Boussau, Dominik ...'
   see_also:
     - 'dnMultiSpeciesCoalescentUniformPrior'
-    - 'dnMultiSpeciesCoalescentUniformPrior'
+    - 'dnMultiSpeciesCoalescentInverseGamma'
   domain: 'TimeTree'
   constructor:
     - usage: 'dnDuplicationLoss(TimeTree<any> individualTree, RealPos|RealPos[]<any> lambda, RealPos|RealPos[]<any> mu, Taxon[]<any> taxa)'
@@ -1097,24 +1197,28 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'TimeTree'
+          default:
           options:
         - label: 'lambda'
           description: 'The duplication rate(s).'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'mu'
           description: 'The loss rate(s).'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'taxa'
           description: 'The vector of taxa which have species and individual names.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Taxon[]'
+          default:
           options:
   methods:
   references:
@@ -1138,6 +1242,7 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Distribution__TimeTree'
+          default:
           options:
   methods:
   references:
@@ -1157,12 +1262,12 @@
     moves[1] = mvEmpiricalTree(tree)
   authors:
     - 'Will Freyman'
-    - 'Will Freyman'
-    - 'Will Freyman'
+    - 'Sebastian Hoehna'
+    - 'Will Pett'
   see_also:
     - 'mvEmpiricalTree'
-    - 'mvEmpiricalTree'
-    - 'mvEmpiricalTree'
+    - 'treeTrace'
+    - 'readTreeTrace'
   domain: 'Tree'
   constructor:
     - usage: 'dnEmpiricalTree(TraceTree<any> trace, Trace<any> density)'
@@ -1172,12 +1277,14 @@
           dag_type: '<any>'
           pass_by: 'reference'
           value_type: 'TraceTree'
+          default:
           options:
         - label: 'density'
           description: 'Optional trace of probability density values for each tree.'
           dag_type: '<any>'
           pass_by: 'reference'
           value_type: 'Trace'
+          default: 'NULL'
           options:
   methods:
   references:
@@ -1198,65 +1305,75 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'lambdaTimes'
           description: 'The speciation rate change times.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default: '[ ]'
           options:
         - label: 'muRates'
           description: 'The piecewise-constant extinction rate.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'muTimes'
           description: 'The constant extinction rate change times.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default: '[ ]'
           options:
         - label: 'rho'
           description: 'The taxon sampling fraction(s).'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Probability'
+          default: '1'
           options:
         - label: 'rootAge'
           description: 'The time of the process starting at the root, if applicable.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'samplingStrategy'
           description: 'The sampling strategy of including taxa at the present.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'String'
+          default: 'uniform'
           options:
             - 'uniform'
-            - 'uniform'
+            - 'diversified'
         - label: 'condition'
           description: 'The condition of the process.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'String'
+          default: 'time'
           options:
             - 'time'
-            - 'time'
-            - 'time'
+            - 'survival'
+            - 'nTaxa'
         - label: 'taxa'
           description: 'The taxa used for initialization.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Taxon[]'
+          default:
           options:
         - label: 'incompleteClades'
           description: 'Vector of incompletely sampled clades with number of missing species.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Clade[]'
+          default: 'NULL'
           options:
   methods:
   references:
@@ -1277,12 +1394,14 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Distribution__Natural'
+          default:
           options:
         - label: 'valueDistribution'
           description: 'The base distribution for the per category values.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Distribution__Real'
+          default:
           options:
   methods:
   references:
@@ -1303,6 +1422,7 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default: '1'
           options:
   methods:
   references:
@@ -1323,68 +1443,79 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'lambda'
           description: 'The speciation rate(s).'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'mu'
           description: 'The extinction rate(s).'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default: '0'
           options:
         - label: 'psi'
           description: 'The fossil sampling rate(s).'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default: '0'
           options:
         - label: 'rho'
           description: 'The extant sampling fraction.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Probability'
+          default: '1'
           options:
         - label: 'timeline'
           description: 'The rate interval change times of the piecewise constant process.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos[]'
+          default: 'NULL'
           options:
         - label: 'k'
           description: 'The fossil observation counts (total or [interval] or [interval][species]).'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Natural'
+          default: 'NULL'
           options:
         - label: 'condition'
           description: 'The condition of the process.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'String'
+          default: 'time'
           options:
             - 'time'
-            - 'time'
+            - 'survival'
         - label: 'taxa'
           description: 'The taxa used for initialization.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Taxon[]'
+          default:
           options:
         - label: 'binary'
           description: 'Treat fossil counts as binary presence/absence data?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'FALSE'
           options:
         - label: 'extended'
           description: 'Treat tip nodes as extinction events?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'FALSE'
           options:
   methods:
   references:
@@ -1405,56 +1536,65 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'mu'
           description: 'The extinction rate(s).'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default: '0'
           options:
         - label: 'psi'
           description: 'The fossil sampling rate(s).'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default: '0'
           options:
         - label: 'rho'
           description: 'The extant sampling fraction.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Probability'
+          default: '1'
           options:
         - label: 'timeline'
           description: 'The rate interval change times of the piecewise constant process (from oldest to youngest).'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos[]'
+          default: 'NULL'
           options:
         - label: 'k'
           description: 'The fossil observation counts (total or [interval] or [interval][species]).'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Natural'
+          default: 'NULL'
           options:
         - label: 'condition'
           description: 'The condition of the process.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'String'
+          default: 'time'
           options:
             - 'time'
-            - 'time'
+            - 'survival'
         - label: 'taxa'
           description: 'The taxa with stratigraphic ranges used for initialization.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Taxon[]'
+          default:
           options:
         - label: 'binary'
           description: 'Treat fossil counts as binary presence/absence data?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'FALSE'
           options:
   methods:
   references:
@@ -1483,12 +1623,14 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'rate'
           description: 'The rate parameter (rate = 1/scale).'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
   methods:
   references:
@@ -1510,7 +1652,7 @@
   authors: 'Sebastian Hoehna'
   see_also:
     - 'dnPoisson'
-    - 'dnPoisson'
+    - 'mvRandomIntegerWalk'
   domain: 'Natural'
   constructor:
     - usage: 'dnGeometric(Probability<any> p)'
@@ -1520,6 +1662,7 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Probability'
+          default:
           options:
   methods:
   references:
@@ -1540,12 +1683,14 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'n'
           description: 'The dimensions of the correlation matrix.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Natural'
+          default:
           options:
   methods:
   references:
@@ -1566,56 +1711,65 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'rootState'
           description: 'The index of the rate category at the root.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Natural'
+          default:
           options:
         - label: 'lambda'
           description: 'The vector of speciation rates.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos[]'
+          default:
           options:
         - label: 'mu'
           description: 'The vector of extinction rates.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos[]'
+          default:
           options:
         - label: 'delta'
           description: 'The rate of jumping between rate categories.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'rho'
           description: 'The taxon sampling probability.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Probability'
+          default:
           options:
         - label: 'condition'
           description: 'The condition of the birth-death process.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'String'
+          default: 'survival'
           options:
             - 'time'
-            - 'time'
+            - 'survival'
         - label: 'allowSameCategory'
           description: 'Do we allow shifts into the same category'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'taxa'
           description: 'The taxon names used for initialization.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Taxon[]'
+          default:
           options:
   methods:
   references:
@@ -1625,7 +1779,7 @@
   description: 'Half-Cauchy distribution with location equal to ‘location’ and scale equal to ‘scale’.'
   details:
     - 'The half-Cauchy distribution has density:'
-    - 'The half-Cauchy distribution has density:'
+    - 'f(x) = 2/(pi * sigma) * 1/(1 + x-(location/scale)^2)'
   example: |
     # we simulate some obversations
     x <- rHalfCauchy(n=10,location=0,scale=1)
@@ -1647,12 +1801,14 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Real'
+          default:
           options:
         - label: 'scale'
           description: 'The scale parameter.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
   methods:
   references:
@@ -1662,8 +1818,8 @@
   description: 'half-normal (gaussian) distribution with offset equal to ‘offset’ and standard deviation equal to ‘sd’.'
   details:
     - 'The half-normal distribution has density: f(x) = 2/(sqrt(2 pi) sigma) e^-((x - offset)^2/(2 sigma^2)) where offset is the offset of the distribution and sigma the standard deviation.'
-    - 'The half-normal distribution has density: f(x) = 2/(sqrt(2 pi) sigma) e^-((x - offset)^2/(2 sigma^2)) where offset is the offset of the distribution and sigma the standard deviation.'
-    - 'The half-normal distribution has density: f(x) = 2/(sqrt(2 pi) sigma) e^-((x - offset)^2/(2 sigma^2)) where offset is the offset of the distribution and sigma the standard deviation.'
+    - 'f(x) = 2/(sqrt(2 pi) sigma) e^-((x - offset)^2/(2 sigma^2))'
+    - 'where offset is the offset of the distribution and sigma the standard deviation.'
   example: |
     # we simulate some oversations
     x <- rhalfNormal(n=10,offset=0,sd=10)
@@ -1677,7 +1833,7 @@
   authors: 'Andrew Magee'
   see_also:
     - 'dnNormal'
-    - 'dnNormal'
+    - 'dnLognormal'
   domain: 'Real'
   constructor:
     - usage: 'dnHalfNormal(Real<any> offset, RealPos<any> sd)'
@@ -1687,12 +1843,14 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Real'
+          default:
           options:
         - label: 'sd'
           description: 'The standard deviation parameter.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
   methods:
   references:
@@ -1713,18 +1871,21 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'taxa'
           description: 'The taxon names used for initialization.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Taxon[]'
+          default:
           options:
         - label: 'constraints'
           description: 'The topological constraints strictly enforced.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Clade[]'
+          default: '[ ]'
           options:
   methods:
   references:
@@ -1745,33 +1906,38 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos[]'
+          default:
           options:
         - label: 'times'
           description: 'A vector of times for the intervals, if applicable.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos[]'
+          default: 'NULL'
           options:
         - label: 'method'
           description: 'The method how intervals are defined.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'String'
+          default: 'events'
           options:
             - 'events'
-            - 'events'
-            - 'events'
+            - 'uniform'
+            - 'specified'
         - label: 'taxa'
           description: 'The taxon names used for initialization.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Taxon[]'
+          default:
           options:
         - label: 'constraints'
           description: 'The strictly enforced topology constraints.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Clade[]'
+          default: '[ ]'
           options:
   methods:
   references:
@@ -1800,12 +1966,14 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'rate'
           description: 'The rate parameter (rate = 1/scale).'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
   methods:
   references:
@@ -1826,30 +1994,35 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'MatrixRealSymmetric'
+          default: 'NULL'
           options:
         - label: 'diagonal'
           description:
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos[]'
+          default: 'NULL'
           options:
         - label: 'df'
           description:
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Natural'
+          default: 'NULL'
           options:
         - label: 'kappa'
           description:
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default: 'NULL'
           options:
         - label: 'dim'
           description:
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Natural'
+          default: 'NULL'
           options:
   methods:
   references:
@@ -1859,8 +2032,8 @@
   description: 'The LKJ (Lewandowski-Kurowicka-Joe) distribution on correlation matrices with concentration parameter eta.'
   details:
     - 'The LKJ distribution is uniform over positive-definite correlation matrices when eta=1.'
-    - 'The LKJ distribution is uniform over positive-definite correlation matrices when eta=1.'
-    - 'The LKJ distribution is uniform over positive-definite correlation matrices when eta=1.'
+    - 'The probability density of a correlation matrix under the LKJ distribution is:'
+    - 'f(x) = det(x)^(eta - 1)'
   example: |
     
     # we simulate a correlation matrix.
@@ -1879,12 +2052,14 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'dim'
           description: 'The dimensions of the correlation matrix.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Natural'
+          default:
           options:
   methods:
   references:
@@ -1897,8 +2072,8 @@
   description: 'The LKJ (Lewandowski-Kurowicka-Joe) distribution (on the partial correlation matrix) with concentration parameter eta.'
   details:
     - 'The LKJPartial distribution is uniform over positive-definite correlation matrices when eta=1.'
-    - 'The LKJPartial distribution is uniform over positive-definite correlation matrices when eta=1.'
-    - 'The LKJPartial distribution is uniform over positive-definite correlation matrices when eta=1.'
+    - 'The probability density of a correlation matrix under the LKJ distribution is:'
+    - 'f(x) = det(x)^(eta - 1)'
   example: |
     
     # we simulate a partial correlation matrix.
@@ -1917,12 +2092,14 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'dim'
           description: 'The dimensions of the correlation matrix.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Natural'
+          default:
           options:
   methods:
   references:
@@ -1935,13 +2112,13 @@
   description: 'Laplace distribution with mean equal to ‘mean’ and scale equal to ‘scale’.'
   details:
     - 'The Laplace distribution has density:'
-    - 'The Laplace distribution has density:'
-    - 'The Laplace distribution has density:'
+    - 'f(x) = 1/(2 b) e^-(abs(x-mu)/b)'
+    - 'where mu is the mean of the distribution and b the scale.'
   example:
   authors: 'Will Freyman'
   see_also:
     - 'dnExponential'
-    - 'dnExponential'
+    - 'dnNormal'
   domain: 'Real'
   constructor:
     - usage: 'dnLaplace(Real<any> mean, RealPos<any> scale)'
@@ -1951,12 +2128,14 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Real'
+          default: '0'
           options:
         - label: 'scale'
           description: 'The scale parameter.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default: '1'
           options:
   methods:
   references:
@@ -1966,7 +2145,7 @@
   description: 'A real number x has a log-Exponential distribution if y = exp(x) has Exponential distribution.'
   details:
     - 'The log-Exponential distribution is defined over real numbers. Saying that x is log-Exponential is equivalent to saying that y = exp(x) is Exponential. The log-Exponential distribution therefore expresses lack of information about the order of magnitude of a scale parameter:  if x has a log-Exponential distribution, then it has equal chance to be contained by any of the intervals of the form (10^k, 10^(k+1)) within the allowed range.'
-    - 'The log-Exponential distribution is defined over real numbers. Saying that x is log-Exponential is equivalent to saying that y = exp(x) is Exponential. The log-Exponential distribution therefore expresses lack of information about the order of magnitude of a scale parameter:  if x has a log-Exponential distribution, then it has equal chance to be contained by any of the intervals of the form (10^k, 10^(k+1)) within the allowed range.'
+    - 'The density is p(x) = ???, which can be seen by defining x = ln(y) where y has Exponential distribution and apply the change-of-variable formula.'
   example: |
     # a log-Exponential prior over the rate of change of a Brownian trait (or a Brownian relaxed clock)
     trueTree = readTrees("data/primates.tree")[1]
@@ -1985,6 +2164,7 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
   methods:
   references:
@@ -2005,12 +2185,14 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Real'
+          default:
           options:
         - label: 'sd'
           description: 'The standard deviation in log-space.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
   methods:
   references:
@@ -2020,8 +2202,8 @@
   description: 'A strictly positive real number x has a log-uniform distribution over interval (min,max) if its logarithm y = ln(x) has uniform distribution over interval (ln(min),ln(max)).'
   details:
     - 'The log-uniform distribution is defined over strictly positive real numbers. Saying that x is log-uniform is equivalent to saying that y = ln(x) is uniform. The log-uniform distribution therefore expresses lack of information about the order of magnitude of a scale parameter:  if x has a log-uniform distribution, then it has equal chance to be contained by any of the intervals of the form (10^k, 10^(k+1)) within the allowed range.'
-    - 'The log-uniform distribution is defined over strictly positive real numbers. Saying that x is log-uniform is equivalent to saying that y = ln(x) is uniform. The log-uniform distribution therefore expresses lack of information about the order of magnitude of a scale parameter:  if x has a log-uniform distribution, then it has equal chance to be contained by any of the intervals of the form (10^k, 10^(k+1)) within the allowed range.'
-    - 'The log-uniform distribution is defined over strictly positive real numbers. Saying that x is log-uniform is equivalent to saying that y = ln(x) is uniform. The log-uniform distribution therefore expresses lack of information about the order of magnitude of a scale parameter:  if x has a log-uniform distribution, then it has equal chance to be contained by any of the intervals of the form (10^k, 10^(k+1)) within the allowed range.'
+    - 'The density is p(x) = 1/x, which can be seen by defining x = exp(y) where y has uniform distribution and apply the change-of-variable formula.'
+    - 'The log-uniform distribution is improper when defined over the entire positive real line. To always make it proper, in RevBayes, a min and a max should always be specified.'
   example: |
     # a log-uniform prior over the rate of change of a Brownian trait (or a Brownian relaxed clock)
     trueTree = readTrees("data/primates.tree")[1]
@@ -2039,12 +2221,14 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'max'
           description: 'The upper bound.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
   methods:
   references:
@@ -2065,12 +2249,14 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Real[]'
+          default:
           options:
         - label: 'probabilities'
           description: 'The probabilitoes for each value.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Simplex'
+          default:
           options:
   methods:
   references:
@@ -2080,7 +2266,7 @@
   description: 'Multispecies coalescent distribution describing how gene trees can be generated from within a species tree given a constant effective population size. Requires an ultrametric species tree, a single effective population size (a single real positive), and taxa with species and individual names.'
   details:
     - 'The species tree must be ultrametric.'
-    - 'The species tree must be ultrametric.'
+    - 'The effective population size is constant across the species tree.'
   example: |
     # We are going to save the trees we simulate in the folder simulatedTrees:
     dataFolder = "simulatedTrees/" 
@@ -2117,7 +2303,7 @@
   authors: 'Sebastian Hoehna, Bastien Boussau'
   see_also:
     - 'dnMultiSpeciesCoalescentUniformPrior'
-    - 'dnMultiSpeciesCoalescentUniformPrior'
+    - 'dnMultiSpeciesCoalescentInverseGamma'
   domain: 'TimeTree'
   constructor:
     - usage: 'dnMultiSpeciesCoalescent(TimeTree<any> speciesTree, RealPos|RealPos[]<any> Ne, Taxon[]<any> taxa)'
@@ -2127,18 +2313,21 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'TimeTree'
+          default:
           options:
         - label: 'Ne'
           description: 'The effective population size(s).'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'taxa'
           description: 'The vector of taxa which have species and individual names.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Taxon[]'
+          default:
           options:
   methods:
   references:
@@ -2151,10 +2340,10 @@
   description: 'Multispecies coalescent distribution describing how gene trees can be generated from within a species tree given effective population sizes. Requires an ultrametric species tree, parameters of an inverse gamma prior on effective population sizes, and taxa with species and individual names.'
   details:
     - 'The species tree must be ultrametric.'
-    - 'The species tree must be ultrametric.'
-    - 'The species tree must be ultrametric.'
-    - 'The species tree must be ultrametric.'
-    - 'The species tree must be ultrametric.'
+    - 'Parameters of an inverse gamma prior on effective population sizes must be provided.'
+    - 'This distribution uses a conjugate prior on effective population sizes.'
+    - 'As a consequence, effective population sizes are integrated out and treated as nuisance parameters.'
+    - 'If you are interested in reconstructing ancestral effective population sizes, use dnMultiSpeciesCoalescent.'
   example: |
     # We are going to save the trees we simulate in the folder simulatedTrees:
     dataFolder = "simulatedTrees/" 
@@ -2192,7 +2381,7 @@
   authors: 'Sebastian Hoehna, Bastien Boussau'
   see_also:
     - 'dnMultiSpeciesCoalescent'
-    - 'dnMultiSpeciesCoalescent'
+    - 'dnMultiSpeciesCoalescentUniformPrior'
   domain: 'TimeTree'
   constructor:
     - usage: 'dnMultiSpeciesCoalescentInverseGamma(TimeTree<any> speciesTree, RealPos<any> shape, RealPos<any> rate, Taxon[]<any> taxa)'
@@ -2202,24 +2391,28 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'TimeTree'
+          default:
           options:
         - label: 'shape'
           description: 'The shape of the inverse gamma prior distribution on the effective population sizes.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'rate'
           description: 'The rate of the inverse gamma prior distribution on the effective population sizes.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'taxa'
           description: 'The vector of taxa which have species and individual names.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Taxon[]'
+          default:
           options:
   methods:
   references:
@@ -2232,7 +2425,7 @@
   description: 'Multispecies coalescent distribution describing how gene trees can be generated from within a species tree given effective population sizes. Requires an ultrametric species tree, effective population size(s) (a single real positive or a vector of real positives), and taxa with species and individual names.'
   details:
     - 'The species tree must be ultrametric.'
-    - 'The species tree must be ultrametric.'
+    - 'Effective population sizes can be constant across the species tree, if a single real positive is provided, or branchwise, if a vector is provided.'
   example: |
     # We are going to save the trees we simulate in the folder simulatedTrees:
     dataFolder = "simulatedTrees/" 
@@ -2269,7 +2462,7 @@
   authors: 'Sebastian Hoehna, Bastien Boussau'
   see_also:
     - 'dnMultiSpeciesCoalescent'
-    - 'dnMultiSpeciesCoalescent'
+    - 'dnMultiSpeciesCoalescentInverseGamma'
   domain: 'TimeTree'
   constructor:
     - usage: 'dnMultiSpeciesCoalescentUniformPrior(TimeTree<any> speciesTree, RealPos<any> max, Taxon[]<any> taxa)'
@@ -2279,18 +2472,21 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'TimeTree'
+          default:
           options:
         - label: 'max'
           description: 'The maximum effective population size.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'taxa'
           description: 'The vector of taxa which have species and individual names.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Taxon[]'
+          default:
           options:
   methods:
   references:
@@ -2327,12 +2523,14 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Simplex'
+          default:
           options:
         - label: 'n'
           description: 'The number of draws.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Natural'
+          default:
           options:
   methods:
   references:
@@ -2353,24 +2551,28 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Real[]'
+          default:
           options:
         - label: 'covariance'
           description: 'The variance-covariance matrix.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'MatrixRealSymmetric'
+          default: 'NULL'
           options:
         - label: 'precision'
           description: 'The precision matrix.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'MatrixRealSymmetric'
+          default: 'NULL'
           options:
         - label: 'scale'
           description: 'The scaling factor of the variance matrix.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default: '1'
           options:
   methods:
     - name: 'clampAt'
@@ -2382,12 +2584,14 @@
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Natural'
+          default:
           options:
         - label: 'value'
           description: 'The observed value.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Real'
+          default:
           options:
   references:
 - name: 'dnNbinomial'
@@ -2416,12 +2620,14 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Natural'
+          default:
           options:
         - label: 'p'
           description: 'Probability of success.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Probability'
+          default:
           options:
   methods:
   references:
@@ -2431,8 +2637,8 @@
   description: 'Normal (gaussian) distribution with mean equal to ‘mean’ and standard deviation equal to ‘sd’.'
   details:
     - 'The normal distribution has density:'
-    - 'The normal distribution has density:'
-    - 'The normal distribution has density:'
+    - 'f(x) = 1/(sqrt(2 pi) sigma) e^-((x - mu)^2/(2 sigma^2))'
+    - 'where mu is the mean of the distribution and sigma the standard deviation.'
   example: |
     # we simulate some observations
     x <- rnorm(n=10,mean=5,sd=10)
@@ -2453,12 +2659,14 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Real'
+          default: '0'
           options:
         - label: 'sd'
           description: 'The standard deviation parameter.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default: '1'
           options:
   methods:
   references:
@@ -2488,30 +2696,35 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Real'
+          default:
           options:
         - label: 'theta'
           description: 'The location of the optimum parameter.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Real'
+          default:
           options:
         - label: 'alpha'
           description: 'The attraction to the optimum parameter.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'sigma'
           description: 'The scaling parameter of the time.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'time'
           description: 'The duration of the process.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
   methods:
   references:
@@ -2532,81 +2745,93 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'mu'
           description: 'The constant extinction rate.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default: '0'
           options:
         - label: 'rhoIngroup'
           description: 'The ingroup sampling probability.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Probability'
+          default: '1'
           options:
         - label: 'rhoOutgroup'
           description: 'The outgroup sampling probability.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Probability'
+          default: '1'
           options:
         - label: 'taxaOutgroup'
           description: 'The taxa used for initialization.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Taxon[]'
+          default:
           options:
         - label: 'samplingStrategyOutgroup'
           description: 'The sampling strategy of including outgroup taxa at the present.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'String'
+          default: 'uniform'
           options:
             - 'uniform'
-            - 'uniform'
+            - 'diversified'
         - label: 'samplingStrategyIngroup'
           description: 'The sampling strategy of including ingroup taxa at the present.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'String'
+          default: 'uniform'
           options:
             - 'uniform'
-            - 'uniform'
+            - 'diversified'
         - label: 'rootAge'
           description: 'The time of the process starting at the root, if applicable.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'samplingStrategy'
           description: 'The sampling strategy of including taxa at the present.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'String'
+          default: 'uniform'
           options:
             - 'uniform'
-            - 'uniform'
+            - 'diversified'
         - label: 'condition'
           description: 'The condition of the process.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'String'
+          default: 'time'
           options:
             - 'time'
-            - 'time'
-            - 'time'
+            - 'survival'
+            - 'nTaxa'
         - label: 'taxa'
           description: 'The taxa used for initialization.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Taxon[]'
+          default:
           options:
         - label: 'incompleteClades'
           description: 'Vector of incompletely sampled clades with number of missing species.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Clade[]'
+          default: 'NULL'
           options:
   methods:
   references:
@@ -2627,18 +2852,21 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'TimeTree'
+          default:
           options:
         - label: 'sigma'
           description: 'The branch-length multiplier to scale the variance of the Brownian motion.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'drift'
           description: 'The drift parameter of the Brownian motion.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Real'
+          default: '0'
           options:
   methods:
   references:
@@ -2659,30 +2887,35 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Tree'
+          default:
           options:
         - label: 'branchRates'
           description: 'The rate of evolution along a branch.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'siteRates'
           description: 'The rate of evolution per site.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'rootStates'
           description: 'The vector of root states.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Real'
+          default: '0'
           options:
         - label: 'nSites'
           description: 'The number of sites which is used for the initialized (random draw) from this distribution.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Natural'
+          default: '10'
           options:
   methods:
   references:
@@ -2703,36 +2936,42 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Tree'
+          default:
           options:
         - label: 'branchRates'
           description: 'The per branch rate-multiplier(s).'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'withinSpeciesVariances'
           description: 'The per species within-species variances.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos[]'
+          default:
           options:
         - label: 'siteRates'
           description: 'The per site rate-multiplier(s).'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'taxa'
           description: 'The vector of taxa which have species and individual names.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Taxon[]'
+          default:
           options:
         - label: 'nSites'
           description: 'The number of sites used for simulation.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Natural'
+          default: '10'
           options:
   methods:
   references:
@@ -2753,12 +2992,14 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'TimeTree'
+          default:
           options:
         - label: 'sigma'
           description: 'The variance-covariance matrix.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'MatrixRealSymmetric'
+          default:
           options:
   methods:
   references:
@@ -2779,24 +3020,28 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Tree'
+          default:
           options:
         - label: 'branchRates'
           description: 'The per branch rate-multiplier(s).'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'siteRates'
           description: 'The per site rate-multiplier(s).'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'nSites'
           description: 'The number of sites used for simulation.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Natural'
+          default: '10'
           options:
   methods:
   references:
@@ -2817,94 +3062,108 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Tree'
+          default:
           options:
         - label: 'Q'
           description: 'The global, branch-specific or site-mixture rate matrices.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RateGenerator'
+          default:
           options:
         - label: 'rootFrequencies'
           description: 'The root specific frequencies of the characters, if applicable.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Simplex'
+          default: 'NULL'
           options:
         - label: 'branchRates'
           description: 'The global or branch-specific rate multipliers.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'siteMatrices'
           description: 'Simplex of site matrix mixture probabilities. Treats Q as vector of site mixture categories instead of branch-specific matrices.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Simplex'
+          default: 'NULL'
           options:
         - label: 'siteRates'
           description: 'The rate categories for the sites.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos[]'
+          default: '[ ]'
           options:
         - label: 'siteRatesProbs'
           description: 'The probability weights of rate categories for the sites.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Simplex'
+          default: 'NULL'
           options:
         - label: 'pInv'
           description: 'The probability of a site being invariant.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Probability'
+          default: '0'
           options:
         - label: 'nSites'
           description: 'The number of sites, used for simulation.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Natural'
+          default: '0'
           options:
         - label: 'type'
           description: 'The data type, used for simulation and initialization.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'String'
+          default: 'DNA'
           options:
             - 'DNA'
-            - 'DNA'
-            - 'DNA'
-            - 'DNA'
-            - 'DNA'
-            - 'DNA'
-            - 'DNA'
-            - 'DNA'
-            - 'DNA'
-            - 'DNA'
+            - 'RNA'
+            - 'AA'
+            - 'Codon'
+            - 'Pomo'
+            - 'Protein'
+            - 'Standard'
+            - 'NaturalNumbers'
+            - 'Binary'
+            - 'Restriction'
         - label: 'treatAmbiguousAsGap'
           description: 'Should we treat ambiguous characters as gaps/missing?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'FALSE'
           options:
         - label: 'coding'
           description:
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'String'
+          default: 'all'
           options:
         - label: 'storeInternalNodes'
           description: 'Should we store internal node states in the character matrix?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'FALSE'
           options:
         - label: 'gapMatchClamped'
           description: 'Should we set the simulated character to be gap or missing if the corresponding character in the clamped matrix is gap or missing?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
   methods:
   references:
@@ -2925,79 +3184,91 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Tree'
+          default:
           options:
         - label: 'Q'
           description:
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RateGenerator'
+          default:
           options:
         - label: 'cladoProbs'
           description:
           dag_type: '<deterministic>'
           pass_by: 'const reference'
           value_type: 'CladogeneticProbabilityMatrix'
+          default:
           options:
         - label: 'rootFrequencies'
           description:
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Simplex'
+          default: 'NULL'
           options:
         - label: 'branchRates'
           description:
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'siteRates'
           description:
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos[]'
+          default: '[ ]'
           options:
         - label: 'pInv'
           description:
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Probability'
+          default: '0'
           options:
         - label: 'nSites'
           description:
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Natural'
+          default: '10'
           options:
         - label: 'type'
           description:
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'String'
+          default: 'NaturalNumbers'
           options:
             - 'DNA'
-            - 'DNA'
-            - 'DNA'
-            - 'DNA'
-            - 'DNA'
-            - 'DNA'
-            - 'DNA'
+            - 'RNA'
+            - 'AA'
+            - 'Pomo'
+            - 'Protein'
+            - 'Standard'
+            - 'NaturalNumbers'
         - label: 'treatAmbiguousAsGap'
           description:
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'FALSE'
           options:
         - label: 'storeInternalNodes'
           description: 'Should we store internal node states in the character matrix?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'FALSE'
           options:
         - label: 'gapMatchClamped'
           description: 'Should we set the simulated character to gap or missing if the corresponding character in the clamped matrix is gap or missing?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
   methods:
   references:
@@ -3018,74 +3289,85 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Tree'
+          default:
           options:
         - label: 'Q'
           description: 'The global or branch-specific rate matrices.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RateGeneratorSequence'
+          default:
           options:
         - label: 'cladoProbs'
           description:
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'CladogeneticProbabilityMatrix'
+          default: 'NULL'
           options:
         - label: 'rootFrequencies'
           description: 'The root specific frequencies of the characters, if applicable.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Simplex'
+          default: 'NULL'
           options:
         - label: 'branchRates'
           description: 'The global or branch-specific rate multipliers.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'siteRates'
           description: 'The rate categories for the sites.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos[]'
+          default: '[ ]'
           options:
         - label: 'pInv'
           description: 'The probability of a site being invariant.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Probability'
+          default: '0'
           options:
         - label: 'nSites'
           description: 'The number of sites, used for simulation.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Natural'
+          default: '10'
           options:
         - label: 'type'
           description: 'The data type, used for simulation and initialization.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'String'
+          default: 'DNA'
           options:
             - 'DNA'
-            - 'DNA'
-            - 'DNA'
-            - 'DNA'
-            - 'DNA'
-            - 'DNA'
-            - 'DNA'
-            - 'DNA'
+            - 'RNA'
+            - 'AA'
+            - 'Pomo'
+            - 'Protein'
+            - 'Standard'
+            - 'NaturalNumbers'
+            - 'Restriction'
         - label: 'treatAmbiguousAsGap'
           description: 'Should we treat ambiguous characters as gaps/missing?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'FALSE'
           options:
         - label: 'coding'
           description:
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'String'
+          default: 'all'
           options:
   methods:
   references:
@@ -3106,68 +3388,78 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Tree'
+          default:
           options:
         - label: 'Q'
           description: 'The global or branch-specific rate matrices.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RateGenerator'
+          default:
           options:
         - label: 'rootFrequencies'
           description: 'The root specific frequencies of the characters, if applicable.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Simplex'
+          default: 'NULL'
           options:
         - label: 'branchRates'
           description: 'The global or branch-specific rate multipliers.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'siteRates'
           description: 'The rate categories for the sites.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos[]'
+          default: '[ ]'
           options:
         - label: 'pInv'
           description: 'The probability of a site being invariant.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Probability'
+          default: '0'
           options:
         - label: 'nSites'
           description: 'The number of sites, used for simulation.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Natural'
+          default: '10'
           options:
         - label: 'type'
           description: 'The data type, used for simulation and initialization.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'String'
+          default: 'DNA'
           options:
             - 'DNA'
-            - 'DNA'
-            - 'DNA'
-            - 'DNA'
-            - 'DNA'
-            - 'DNA'
-            - 'DNA'
-            - 'DNA'
+            - 'RNA'
+            - 'AA'
+            - 'Pomo'
+            - 'Protein'
+            - 'Standard'
+            - 'NaturalNumbers'
+            - 'Restriction'
         - label: 'treatAmbiguousAsGap'
           description: 'Should we treat ambiguous characters as gaps/missing?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'FALSE'
           options:
         - label: 'coding'
           description:
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'String'
+          default: 'all'
           options:
   methods:
   references:
@@ -3188,63 +3480,73 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Tree'
+          default:
           options:
         - label: 'Q'
           description: 'The global or branch-specific rate matrices.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RateGenerator'
+          default: 'NULL'
           options:
         - label: 'deathRate'
           description: 'The Dollo character death rate'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'rootFrequencies'
           description: 'The root specific frequencies of the characters, if applicable.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Simplex'
+          default: 'NULL'
           options:
         - label: 'branchRates'
           description: 'The global or branch-specific rate multipliers.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'siteRates'
           description: 'The rate categories for the sites.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos[]'
+          default: '[ ]'
           options:
         - label: 'nSites'
           description: 'The number of sites, used for simulation.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Natural'
+          default: '0'
           options:
         - label: 'type'
           description: 'The data type, used for simulation and initialization.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'String'
+          default: 'Standard'
           options:
             - 'Standard'
-            - 'Standard'
-            - 'Standard'
+            - 'Binary'
+            - 'Restriction'
         - label: 'normalize'
           description: 'Should we normalize the Dollo substitution matrices?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'coding'
           description:
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'String'
+          default: 'noabsencesites'
           options:
   methods:
   references:
@@ -3265,24 +3567,28 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Tree'
+          default:
           options:
         - label: 'distanceMatrix'
           description:
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'DistanceMatrix'
+          default:
           options:
         - label: 'varianceMatrix'
           description:
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'DistanceMatrix'
+          default:
           options:
         - label: 'names'
           description:
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'String[]'
+          default:
           options:
   methods:
   references:
@@ -3303,48 +3609,56 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Tree'
+          default:
           options:
         - label: 'alpha'
           description: 'The rate of attraction/selection (per branch).'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'theta'
           description: 'The optimum value (per branch).'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Real'
+          default: '1'
           options:
         - label: 'sigma'
           description: 'The rate of random drift (per branch).'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'withinSpeciesVariances'
           description: 'The per species within-species variances.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos[]'
+          default:
           options:
         - label: 'rootStates'
           description: 'The vector of root states.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Real'
+          default: '0'
           options:
         - label: 'nSites'
           description: 'The number of sites which is used for the initialized (random draw) from this distribution.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Natural'
+          default: '10'
           options:
         - label: 'taxa'
           description: 'The vector of taxa which have species and individual names.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Taxon[]'
+          default:
           options:
   methods:
   references:
@@ -3365,48 +3679,56 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Tree'
+          default:
           options:
         - label: 'alpha'
           description: 'The rate of attraction/selection (per branch).'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'theta'
           description: 'The optimum value (per branch).'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Real'
+          default: '1'
           options:
         - label: 'sigma'
           description: 'The rate of random drift (per branch).'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'withinSpeciesVariances'
           description: 'The per species within-species variances.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos[]'
+          default:
           options:
         - label: 'rootStates'
           description: 'The vector of root states.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Real'
+          default: '0'
           options:
         - label: 'nSites'
           description: 'The number of sites which is used for the initialized (random draw) from this distribution.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Natural'
+          default: '10'
           options:
         - label: 'taxa'
           description: 'The vector of taxa which have species and individual names.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Taxon[]'
+          default:
           options:
   methods:
   references:
@@ -3428,10 +3750,10 @@
     x
   authors:
     - 'Michael R. May'
-    - 'Michael R. May'
+    - 'Nicolai Vetr'
   see_also:
     - 'dnPhyloBrownianREML'
-    - 'dnPhyloBrownianREML'
+    - 'dnPhyloBrownianMVN'
   domain: 'ContinuousCharacterData'
   constructor:
     - usage: 'dnPhyloMultivariateBrownianREML(Tree<any> tree, RealPos|RealPos[]<any> branchRates, MatrixRealSymmetric|MatrixReal<any> rateMatrix)'
@@ -3441,18 +3763,21 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Tree'
+          default:
           options:
         - label: 'branchRates'
           description: 'The per branch rate-multiplier(s).'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'rateMatrix'
           description: 'The variance-covariance matrix.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'MatrixRealSymmetric'
+          default:
           options:
   methods:
   references:
@@ -3490,36 +3815,42 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Tree'
+          default:
           options:
         - label: 'alpha'
           description: 'The rate of attraction/selection (per branch).'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'theta'
           description: 'The optimum value (per branch).'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Real'
+          default: '1'
           options:
         - label: 'sigma'
           description: 'The rate of random drift (per branch).'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'rootStates'
           description: 'The vector of root states.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Real'
+          default: '0'
           options:
         - label: 'nSites'
           description: 'The number of sites which is used for the initialized (random draw) from this distribution.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Natural'
+          default: '10'
           options:
   methods:
   references:
@@ -3540,36 +3871,42 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Tree'
+          default:
           options:
         - label: 'alpha'
           description: 'The rate of attraction/selection (per branch).'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'theta'
           description: 'The optimum value (per branch).'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Real'
+          default: '1'
           options:
         - label: 'sigma'
           description: 'The rate of random drift (per branch).'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'rootStates'
           description: 'The vector of root states.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Real'
+          default: '0'
           options:
         - label: 'nSites'
           description: 'The number of sites which is used for the initialized (random draw) from this distribution.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Natural'
+          default: '10'
           options:
   methods:
   references:
@@ -3590,36 +3927,42 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Tree'
+          default:
           options:
         - label: 'alpha'
           description: 'The rate of attraction/selection (per branch).'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'theta'
           description: 'The optimum value (per branch).'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Real'
+          default: '1'
           options:
         - label: 'sigma'
           description: 'The rate of random drift (per branch).'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'rootStates'
           description: 'The vector of root states.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Real'
+          default: '0'
           options:
         - label: 'nSites'
           description: 'The number of sites which is used for the initialized (random draw) from this distribution.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Natural'
+          default: '10'
           options:
   methods:
   references:
@@ -3640,12 +3983,14 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'TimeTree'
+          default:
           options:
         - label: 'sigma'
           description: 'The standard deviation.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
   methods:
   references:
@@ -3675,6 +4020,7 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
   methods:
   references:
@@ -3695,18 +4041,21 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Real'
+          default:
           options:
         - label: 'baseDistribution'
           description: 'The distribution from which the value is alternatively drawn.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Distribution__Real'
+          default:
           options:
         - label: 'p'
           description: 'The probability of being the fixed value.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Probability'
+          default:
           options:
   methods:
   references:
@@ -3727,30 +4076,35 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'lambda'
           description: 'The vector of speciation rates.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'mu'
           description: 'The vector of extinction rates.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'rho'
           description: 'The taxon sampling probability.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Probability'
+          default:
           options:
         - label: 'taxa'
           description: 'The taxa used for simulation.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Taxon[]'
+          default:
           options:
   methods:
   references:
@@ -3769,7 +4123,7 @@
   authors: 'Andrew Magee'
   see_also:
     - 'dnDirichlet'
-    - 'dnDirichlet'
+    - 'simplex'
   domain: 'Simplex'
   constructor:
     - usage: 'dnScaledDirichlet(RealPos[]<any> alpha, RealPos[]<any> beta)'
@@ -3779,12 +4133,14 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos[]'
+          default:
           options:
         - label: 'beta'
           description: 'The rate parameter.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos[]'
+          default:
           options:
   methods:
   references:
@@ -3792,8 +4148,8 @@
   title:
   aliases:
     - 'dnSSBDP'
-    - 'dnSSBDP'
-    - 'dnSSBDP'
+    - 'dnFBDP'
+    - 'dnSkylineBDP'
   description:
   details:
   example:
@@ -3808,74 +4164,86 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'lambda'
           description: 'The speciation rate(s).'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'mu'
           description: 'The extinction rate(s).'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default: '0'
           options:
         - label: 'psi'
           description: 'The serial sampling rate(s).'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default: '0'
           options:
         - label: 'rho'
           description: 'The episodic taxon sampling fraction(s).'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Probability'
+          default: '1'
           options:
         - label: 'timeline'
           description: 'The rate interval change times of the piecewise constant process.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos[]'
+          default: 'NULL'
           options:
         - label: 'lambdaTimes'
           description: 'The speciation rate change times.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos[]'
+          default: 'NULL'
           options:
         - label: 'muTimes'
           description: 'The extinction rate change times.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos[]'
+          default: 'NULL'
           options:
         - label: 'psiTimes'
           description: 'The serial sampling rate change times.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos[]'
+          default: 'NULL'
           options:
         - label: 'rhoTimes'
           description: 'The episodic taxon sampling fraction change times.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos[]'
+          default: 'NULL'
           options:
         - label: 'condition'
           description: 'The condition of the process.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'String'
+          default: 'time'
           options:
             - 'time'
-            - 'time'
+            - 'survival'
         - label: 'taxa'
           description: 'The taxa used for initialization.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Taxon[]'
+          default:
           options:
   methods:
   references:
@@ -3905,24 +4273,28 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Real'
+          default:
           options:
         - label: 'max'
           description: 'The max value of the uniform distribution.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Real'
+          default:
           options:
         - label: 'sd'
           description: 'The standard deviation of the normal distribution.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'p'
           description: 'The probability of being within the uniform distribution.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Probability'
+          default:
           options:
   methods:
   references:
@@ -3930,8 +4302,8 @@
   title: 'Student T Distribution'
   aliases:
     - 'dnStudentT'
-    - 'dnStudentT'
-    - 'dnStudentT'
+    - 'dnT'
+    - 'dnGossetT'
   description: 'The student''s t probability distribution.'
   details:
   example: |
@@ -3952,6 +4324,7 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Natural'
+          default:
           options:
   methods:
   references:
@@ -3972,86 +4345,100 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'speciationRates/lambda/cladoEventMap'
           description: 'The vector of speciation rates (for anagenetic-only models), or the map of speciation rates to cladogenetic event types.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'CladogeneticSpeciationRateMatrix'
+          default:
           options:
         - label: 'extinctionRates/mu'
           description: 'The vector of extinction rates.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos[][]'
+          default:
           options:
         - label: 'psi/phi'
           description: 'The vector of serial sampling rates.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos[][]'
+          default: 'NULL'
           options:
         - label: 'epochs'
           description: 'The time intervals when the diversification and transition rates change.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos[]'
+          default:
           options:
         - label: 'Q'
           description: 'The rate matrix of jumping between rate categories.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RateGenerator[]'
+          default: 'NULL'
           options:
         - label: 'delta'
           description: 'The rate-factor of jumping between rate categories.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'pi'
           description: 'State frequencies at the root.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Simplex'
+          default: 'NULL'
           options:
         - label: 'rho'
           description: 'The taxon sampling probability.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Probability'
+          default: '1'
           options:
         - label: 'condition'
           description: 'The condition of the birth-death process.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'String'
+          default: 'time'
           options:
             - 'time'
-            - 'time'
+            - 'survival'
         - label: 'nTimeSlices'
           description: 'The number of time slices for the numeric ODE.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default: '500'
           options:
         - label: 'minNumLineages'
           description: 'The minimum number of lineages to simulate.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Natural'
+          default: '0'
           options:
         - label: 'maxNumLineages'
           description: 'The maximum number of lineages to simulate.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Natural'
+          default: '500'
           options:
         - label: 'pruneExtinctLineages'
           description: 'When simulating should extinct lineages be pruned off?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
   methods:
   references:
@@ -4072,12 +4459,14 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos[]'
+          default:
           options:
         - label: 'include_zero'
           description: 'Should the partitions also include zero values?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'TRUE'
           options:
   methods:
   references:
@@ -4098,24 +4487,28 @@
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Distribution__TimeTree'
+          default:
           options:
         - label: 'ratePrior'
           description: 'The prior distribution for the branch rates.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Distribution__RealPos'
+          default:
           options:
         - label: 'rootAge'
           description: 'The root age variable.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'trees'
           description: 'The trace of tree samples.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'TraceTree'
+          default:
           options:
   methods:
   references:
@@ -4136,12 +4529,14 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Real'
+          default:
           options:
         - label: 'upper'
           description: 'The upper bound.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Real'
+          default:
           options:
   methods:
   references:
@@ -4162,12 +4557,14 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Integer'
+          default:
           options:
         - label: 'upper'
           description: 'The upper bound.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Integer'
+          default:
           options:
   methods:
   references:
@@ -4188,12 +4585,14 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Natural'
+          default:
           options:
         - label: 'upper'
           description: 'The upper bound.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Natural'
+          default:
           options:
   methods:
   references:
@@ -4214,12 +4613,14 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'taxa'
           description: 'The taxa used for simulation.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Taxon[]'
+          default:
           options:
   methods:
   references:
@@ -4240,24 +4641,28 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Taxon[]'
+          default:
           options:
         - label: 'outgroup'
           description: 'The clade (consisting of one or more taxa) used as an outgroup.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Clade'
+          default: 'NULL'
           options:
         - label: 'constraints'
           description: 'The topological constraints that will be enforced.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Clade[]'
+          default: 'NULL'
           options:
         - label: 'rooted'
           description: 'Is the distribution over rooted topologies?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
+          default: 'FALSE'
           options:
   methods:
   references:
@@ -4278,18 +4683,21 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Taxon[]'
+          default:
           options:
         - label: 'outgroup'
           description: 'The clade (consisting of one or more taxa) used as an outgroup.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Clade'
+          default: 'NULL'
           options:
         - label: 'branchLengthDistribution'
           description: 'The base distribution for the branch lengths.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Distribution__RealPos'
+          default:
           options:
   methods:
   references:
@@ -4299,8 +4707,8 @@
   description: 'Variance-gamma distribution with location ‘mu’.'
   details:
     - 'The variance-gamma distribution has density:'
-    - 'The variance-gamma distribution has density:'
-    - 'The variance-gamma distribution has density:'
+    - 'f(x) = 1/(sqrt(2 pi) sigma) e^-((x - mu)^2/(2 sigma^2))'
+    - 'where mu is the mean of the distribution and sigma the standard deviation.'
   example: |
     # we simulate some oversations
     x <- rnorm(n=10,mean=5,sd=10)
@@ -4321,24 +4729,28 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Real'
+          default: '0'
           options:
         - label: 'kappa'
           description: 'The standard deviation parameter.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'tau'
           description: 'The standard deviation parameter.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default: '1'
           options:
         - label: 'time'
           description: 'The duration of time for the process.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default: '1'
           options:
   methods:
   references:
@@ -4359,18 +4771,21 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Distribution__TimeTree'
+          default:
           options:
         - label: 'constraints'
           description: 'The node order constraints.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RlRelativeNodeAgeWeightedConstraints'
+          default:
           options:
         - label: 'beta'
           description: 'The beta weight for the constraints.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default:
           options:
   methods:
   references:
@@ -4391,12 +4806,14 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Distribution__TimeTree'
+          default:
           options:
         - label: 'numSamples'
           description: 'The number of samples in the weighted average.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Natural'
+          default: '0'
           options:
   methods:
   references:
@@ -4425,18 +4842,21 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'sigma'
           description: 'The standard deviation of the process.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'time'
           description: 'The time that the process has run.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
   methods:
   references:
@@ -4457,18 +4877,21 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Natural'
+          default:
           options:
         - label: 'kappa'
           description: 'The scaling parameter.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
+          default:
           options:
         - label: 'dim'
           description: 'The dimension of the distribution.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Natural'
+          default:
           options:
   methods:
   references:
