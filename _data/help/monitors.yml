@@ -1,0 +1,955 @@
+- name: 'mnAncestralState'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'tree'
+          description: 'The tree which we monitor.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Tree'
+          options:
+        - label: 'ctmc'
+          description: 'The CTMC process.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'RevObject'
+          options:
+        - label: 'filename'
+          description: 'The name of the file for storing the samples.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          options:
+        - label: 'type'
+          description: 'The type of data to store.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          options:
+        - label: 'printgen'
+          description: 'The frequency how often to sample.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          options:
+        - label: 'separator'
+          description: 'The separator between columns in the file.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          options:
+        - label: 'append'
+          description: 'Should we append or overwrite if the file exists?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'version'
+          description: 'Should we record the software version?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+  methods:
+    - name: 'addVariable'
+      return_type: 'void'
+      usage: 'addVariable(RevObject<any> x)'
+      arguments:
+        - label: 'x'
+          description: 'A variable you want to monitor.'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'RevObject'
+          options:
+  references:
+- name: 'mnCharHistoryNewick'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'filename'
+          description:
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          options:
+        - label: 'ctmc'
+          description:
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'AbstractHomologousDiscreteCharacterData'
+          options:
+        - label: 'tree'
+          description:
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'TimeTree'
+          options:
+        - label: 'printgen'
+          description:
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          options:
+        - label: 'separator'
+          description:
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          options:
+        - label: 'posterior'
+          description:
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'likelihood'
+          description:
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'prior'
+          description:
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'append'
+          description:
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'style'
+          description:
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          options:
+            - 'events'
+            - 'events'
+        - label: 'type'
+          description:
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          options: 'biogeo'
+  methods:
+    - name: 'addVariable'
+      return_type: 'void'
+      usage: 'addVariable(RevObject<any> x)'
+      arguments:
+        - label: 'x'
+          description: 'A variable you want to monitor.'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'RevObject'
+          options:
+  references:
+- name: 'mnCharHistoryNhx'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'filename'
+          description:
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          options:
+        - label: 'ctmc'
+          description:
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'AbstractHomologousDiscreteCharacterData'
+          options:
+        - label: 'tree'
+          description:
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'TimeTree'
+          options:
+        - label: 'atlas'
+          description:
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RlAtlas'
+          options:
+        - label: 'samplegen'
+          description:
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          options:
+        - label: 'maxgen'
+          description:
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          options:
+        - label: 'burnin'
+          description:
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+        - label: 'separator'
+          description:
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          options:
+        - label: 'posterior'
+          description:
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'likelihood'
+          description:
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'prior'
+          description:
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'type'
+          description:
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          options: 'biogeo'
+  methods:
+    - name: 'addVariable'
+      return_type: 'void'
+      usage: 'addVariable(RevObject<any> x)'
+      arguments:
+        - label: 'x'
+          description: 'A variable you want to monitor.'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'RevObject'
+          options:
+  references:
+- name: 'mnExtNewick'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'filename'
+          description: 'The name of the file.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          options:
+        - label: 'tree'
+          description: 'The tree variable.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'TimeTree'
+          options:
+        - label:
+          description: 'Variables at nodes or branches.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RevObject'
+          options:
+        - label: 'isNodeParameter'
+          description: 'Is this a node or branch parameter?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'printgen'
+          description: 'How frequently do we print.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          options:
+        - label: 'separator'
+          description: 'The separator between variables.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          options:
+        - label: 'posterior'
+          description: 'Should we print the posterior probability as well.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'likelihood'
+          description: 'Should we print the likelihood as well?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'prior'
+          description: 'Should we print the prior probability as well?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'version'
+          description: 'Should we record the software version?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+  methods:
+    - name: 'addVariable'
+      return_type: 'void'
+      usage: 'addVariable(RevObject<any> x)'
+      arguments:
+        - label: 'x'
+          description: 'A variable you want to monitor.'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'RevObject'
+          options:
+  references:
+- name: 'mnFile'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label:
+          description: 'Variables to monitor'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RevObject'
+          options:
+        - label: 'filename'
+          description: 'The name of the file.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          options:
+        - label: 'printgen'
+          description: 'How often should we print.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          options:
+        - label: 'separator'
+          description: 'The separator/delimiter between values.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          options:
+        - label: 'posterior'
+          description: 'Should we print the posterior probability as well?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'likelihood'
+          description: 'Should we print the likelihood as well?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'prior'
+          description: 'Should we print the prior probability as well?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'append'
+          description: 'Should we append or overwrite if the file exists?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'version'
+          description: 'Should we record the software version?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+  methods:
+    - name: 'addVariable'
+      return_type: 'void'
+      usage: 'addVariable(RevObject<any> x)'
+      arguments:
+        - label: 'x'
+          description: 'A variable you want to monitor.'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'RevObject'
+          options:
+  references:
+- name: 'mnJointConditionalAncestralState'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'tree'
+          description:
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'Tree'
+          options:
+        - label: 'ctmc'
+          description:
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'AbstractHomologousDiscreteCharacterData'
+          options:
+        - label: 'cdbdp'
+          description:
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'TimeTree'
+          options:
+        - label: 'filename'
+          description:
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          options:
+        - label: 'type'
+          description:
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          options:
+        - label: 'printgen'
+          description:
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          options:
+        - label: 'separator'
+          description:
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          options:
+        - label: 'append'
+          description:
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'withTips'
+          description:
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'withStartStates'
+          description:
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'version'
+          description: 'Should we record the software version?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+  methods:
+    - name: 'addVariable'
+      return_type: 'void'
+      usage: 'addVariable(RevObject<any> x)'
+      arguments:
+        - label: 'x'
+          description: 'A variable you want to monitor.'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'RevObject'
+          options:
+  references:
+- name: 'mnModel'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'filename'
+          description: 'The name of the file where to store the values.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          options:
+        - label: 'printgen'
+          description: 'The frequency how often to sample values.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          options:
+        - label: 'separator'
+          description: 'The separator between different variables.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          options:
+        - label: 'posterior'
+          description: 'Should we print the joint posterior probability?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'likelihood'
+          description: 'Should we print the likelihood?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'prior'
+          description: 'Should we print the joint prior probability?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'append'
+          description: 'Should we append to an existing file?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'stochasticOnly'
+          description: 'Should we monitor stochastic variables only?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'version'
+          description: 'Should we record the software version?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+  methods:
+    - name: 'addVariable'
+      return_type: 'void'
+      usage: 'addVariable(RevObject<any> x)'
+      arguments:
+        - label: 'x'
+          description: 'A variable you want to monitor.'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'RevObject'
+          options:
+  references:
+- name: 'mnProbability'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'filename'
+          description: 'The name of the file where to store the values.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          options:
+        - label: 'printgen'
+          description: 'The frequency how often to sample values.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          options:
+        - label: 'separator'
+          description: 'The separator between different variables.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          options:
+        - label: 'posterior'
+          description: 'Should we print the joint posterior probability?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'likelihood'
+          description: 'Should we print the likelihood?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'prior'
+          description: 'Should we print the joint prior probability?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'append'
+          description: 'Should we append to an existing file?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'version'
+          description: 'Should we record the software version?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+  methods:
+    - name: 'addVariable'
+      return_type: 'void'
+      usage: 'addVariable(RevObject<any> x)'
+      arguments:
+        - label: 'x'
+          description: 'A variable you want to monitor.'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'RevObject'
+          options:
+  references:
+- name: 'mnScreen'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label:
+          description: 'Variables to monitor.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RevObject'
+          options:
+        - label: 'printgen'
+          description: 'The frequency how often the variables are monitored.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          options:
+        - label: 'posterior'
+          description: 'Monitor the joint posterior probability.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'likelihood'
+          description: 'Monitor the joint likelihood.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'prior'
+          description: 'Monitor the joint prior probability.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+  methods:
+    - name: 'addVariable'
+      return_type: 'void'
+      usage: 'addVariable(RevObject<any> x)'
+      arguments:
+        - label: 'x'
+          description: 'A variable you want to monitor.'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'RevObject'
+          options:
+  references:
+- name: 'mnStochasticBranchRate'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'cdbdp'
+          description: 'The character dependent birth-death process to monitor.'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'TimeTree'
+          options:
+        - label: 'filename'
+          description: 'The file to save sampled character histories.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          options:
+        - label: 'printgen'
+          description: 'How frequently (in number of iterations) should we save sampled character histories? 1 by default.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          options:
+        - label: 'separator'
+          description: 'The delimiter between variables. 	 by default.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          options:
+        - label: 'append'
+          description: 'Should we append to an existing file? False by default.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'version'
+          description: 'Should we record the software version?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+  methods:
+    - name: 'addVariable'
+      return_type: 'void'
+      usage: 'addVariable(RevObject<any> x)'
+      arguments:
+        - label: 'x'
+          description: 'A variable you want to monitor.'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'RevObject'
+          options:
+  references:
+- name: 'mnStochasticBranchStateTimes'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'cdbdp'
+          description: 'The character dependent birth-death process to monitor.'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'TimeTree'
+          options:
+        - label: 'filename'
+          description: 'The file to save sampled character histories.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          options:
+        - label: 'printgen'
+          description: 'How frequently (in number of iterations) should we save sampled character histories? 1 by default.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          options:
+        - label: 'separator'
+          description: 'The delimiter between variables. 	 by default.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          options:
+        - label: 'append'
+          description: 'Should we append to an existing file? False by default.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'version'
+          description: 'Should we record the software version?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+  methods:
+    - name: 'addVariable'
+      return_type: 'void'
+      usage: 'addVariable(RevObject<any> x)'
+      arguments:
+        - label: 'x'
+          description: 'A variable you want to monitor.'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'RevObject'
+          options:
+  references:
+- name: 'mnStochasticCharacterMap'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'ctmc'
+          description: 'The continuous-time Markov process to monitor.'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'AbstractHomologousDiscreteCharacterData'
+          options:
+        - label: 'cdbdp'
+          description: 'The character dependent birth-death process to monitor.'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'TimeTree'
+          options:
+        - label: 'filename'
+          description: 'The file to save sampled character histories.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          options:
+        - label: 'include_simmap'
+          description: 'Should we log SIMMAP/phytools compatible newick strings? True by default.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'use_simmap_default'
+          description: 'Should we use the default SIMMAP/phytools event ordering? True by default.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'printgen'
+          description: 'How frequently (in number of iterations) should we save sampled character histories? 1 by default.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          options:
+        - label: 'separator'
+          description: 'The delimiter between variables. 	 by default.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          options:
+        - label: 'append'
+          description: 'Should we append to an existing file? False by default.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'version'
+          description: 'Should we record the software version?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+  methods:
+    - name: 'addVariable'
+      return_type: 'void'
+      usage: 'addVariable(RevObject<any> x)'
+      arguments:
+        - label: 'x'
+          description: 'A variable you want to monitor.'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'RevObject'
+          options:
+  references:
+- name: 'mnStochasticVariable'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'filename'
+          description: 'The name of the file.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          options:
+        - label: 'printgen'
+          description: 'The frequency how often we print.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          options:
+        - label: 'separator'
+          description: 'The delimiter between variables.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          options:
+        - label: 'append'
+          description: 'Should we append or overwrite if the file exists?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'version'
+          description: 'Should we record the software version?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+  methods:
+    - name: 'addVariable'
+      return_type: 'void'
+      usage: 'addVariable(RevObject<any> x)'
+      arguments:
+        - label: 'x'
+          description: 'A variable you want to monitor.'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'RevObject'
+          options:
+  references:

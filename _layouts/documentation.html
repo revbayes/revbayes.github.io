@@ -1,0 +1,50 @@
+---
+layout: home
+subtitle: Rev Language Reference
+code_layout: Rev
+---
+<div class="row">
+<div class="col-sm-4">
+    <nav class="sidebar_nav">
+        <ul class="list-unstyled components">
+        {% for category in site.data.help %}
+        <h3 id="types" class="sidebar_header">{{ category[0] }}</h3>
+        <ul class="sidebar_links">
+        {% for item in category[1] %}
+        <li class="sidebar_item"><a href="{{ site.baseurl }}/docs/{{ category[0] }}/{{ item.name }}.html">{{ item.name }}</a></li>
+        {% endfor %}
+        </ul>
+        {% endfor %}
+        </ul>
+    </nav>
+</div>
+
+<div class="help col-sm-8">
+    {% if page.entry %}
+        <p>{{ page.entry.name }}</p>
+        {% if page.entry.name %}
+            <h2>{{ page.entry.title }}</h2>
+        {% endif %}
+        {% if page.entry.constructor %}
+            <h3>Constructor</h3>
+            {% for constructor in page.entry.constructor %}
+            {{ constructor.usage }}
+            {% endfor %}
+        {% endif %}
+        {% if page.entry.description %}
+            <h3>Description</h3>
+            {% for description in page.entry.description %}
+            {{ description }}
+            {% endfor %}
+        {% endif %}
+        {% if page.entry.example %}
+            <h3>Example</h3>
+            {% capture example %}```
+{{ page.entry.example }}```{% endcapture %}
+            {{ example | markdownify }}
+        {% endif %}
+    {% else %}
+    {{ content }}
+    {% endif %}
+</div>
+</div>

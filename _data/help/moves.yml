@@ -1,0 +1,4933 @@
+- name: 'mvAVMVN'
+  title:
+  aliases:
+  description:
+    - 'The adaptive variance multivariate-normal proposal of Baele et al. 2017, uses MCMC samples to fit covariance matrix to parameters.'
+    - 'The adaptive variance multivariate-normal proposal of Baele et al. 2017, uses MCMC samples to fit covariance matrix to parameters.'
+    - 'The adaptive variance multivariate-normal proposal of Baele et al. 2017, uses MCMC samples to fit covariance matrix to parameters.'
+    - 'The adaptive variance multivariate-normal proposal of Baele et al. 2017, uses MCMC samples to fit covariance matrix to parameters.'
+    - 'The adaptive variance multivariate-normal proposal of Baele et al. 2017, uses MCMC samples to fit covariance matrix to parameters.'
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'sigmaSquared'
+          description: 'The scaling factor (strength) of the proposal.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'epsilon'
+          description: 'The mixture weight of the post-learning move on a simple identity matrix.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'waitBeforeLearning'
+          description: 'The number of move attempts to wait before tracking the covariance of the variables.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          options:
+        - label: 'waitBeforeUsing'
+          description: 'The number of move attempts to wait before using the learned covariance matrix.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          options:
+        - label: 'maxUpdates'
+          description: 'The maximum number of updates to the empirical covariance matrix (matrix is only updated when MCMC tunes).'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          options:
+        - label: 'tune'
+          description: 'Should we tune the scaling factor during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+    - name: 'addVariable'
+      return_type: 'void'
+      usage: 'addVariable(Real<stochastic> var)'
+      arguments:
+        - label: 'var'
+          description: 'The variable to move'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'Real'
+          options:
+    - name: 'addVariable'
+      return_type: 'void'
+      usage: 'addVariable(Simplex<stochastic> var)'
+      arguments:
+        - label: 'var'
+          description: 'The variable to move'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'Simplex'
+          options:
+    - name: 'addVariable'
+      return_type: 'void'
+      usage: 'addVariable(Real[]<stochastic> var)'
+      arguments:
+        - label: 'var'
+          description: 'The variable to move'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'Real[]'
+          options:
+    - name: 'removeVariable'
+      return_type: 'void'
+      usage: 'removeVariable(Real<stochastic> var)'
+      arguments:
+        - label: 'var'
+          description: 'The variable to move'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'Real'
+          options:
+    - name: 'removeVariable'
+      return_type: 'void'
+      usage: 'removeVariable(Simplex<stochastic> var)'
+      arguments:
+        - label: 'var'
+          description: 'The variable to move'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'Simplex'
+          options:
+    - name: 'removeVariable'
+      return_type: 'void'
+      usage: 'removeVariable(Real[]<stochastic> var)'
+      arguments:
+        - label: 'var'
+          description: 'The variable to move'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'Real[]'
+          options:
+  references:
+- name: 'mvAddRemoveTip'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'tree'
+          description: 'The tree on which this moves operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'TimeTree'
+          options:
+        - label: 'extant'
+          description: 'Should we add/remove extant tips?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'extinct'
+          description: 'Should we add/remove extinct tips?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'sa'
+          description: 'Should we add/remove extinct tips as sampled ancestors?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvBetaProbability'
+  title:
+  aliases: 'mvProbabilityElementScale'
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'x'
+          description: 'The variable this move operates on.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'Probability'
+          options:
+        - label: 'delta'
+          description: 'The concentration parameter on the current value.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'offset'
+          description: 'The offset used to center proposals around 0.5.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tune'
+          description: 'Should we tune the concentration parameter during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvBetaSimplex'
+  title:
+  aliases: 'mvSimplexElementScale'
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'x'
+          description: 'The variable this move operates on.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'Simplex'
+          options:
+        - label: 'alpha'
+          description: 'The concentration parameter on the current value.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tune'
+          description: 'Should we tune the concentration parameter during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvBinarySwitch'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'x'
+          description: 'The variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'Natural'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvBirthDeathEvent'
+  title:
+  aliases: 'mvBirthDeathEventDiscrete'
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'tree'
+          description: 'The time-tree variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'TimeTree'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvBirthDeathEventContinuous'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'tree'
+          description: 'The time-tree variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'TimeTree'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvBirthDeathFromAgeEvent'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'tree'
+          description: 'The time-tree variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'TimeTree'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvBranchLengthScale'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'tree'
+          description: 'The tree variable the move operates on.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'BranchLengthTree'
+          options:
+        - label: 'delta'
+          description: 'The scaling factor (strength) of the proposal.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tune'
+          description: 'Should we tune the scaling factor during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvBurstEvent'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'tree'
+          description: 'The tree on which this moves operates on. It should be a fossil tree!'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'TimeTree'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvCharacterHistory'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'ctmc'
+          description: 'The PhyloCTMC variable.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'AbstractHomologousDiscreteCharacterData'
+          options:
+        - label: 'qmap_site'
+          description: 'Per-site rate generator.'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'RateGenerator'
+          options:
+        - label: 'qmap_seq'
+          description: 'Per-sequence rate generator.'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'RateGeneratorSequence'
+          options:
+        - label: 'lambda'
+          description: 'Tuning probability to propose new site history.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+        - label: 'graph'
+          description:
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          options:
+            - 'node'
+            - 'node'
+            - 'node'
+            - 'node'
+        - label: 'proposal'
+          description:
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          options:
+            - 'rejection'
+            - 'rejection'
+            - 'rejection'
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvCollapseExpandFossilBranch'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'tree'
+          description: 'The tree on which this moves operates on. It should be a fossil tree!'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'TimeTree'
+          options:
+        - label: 'origin'
+          description: 'The variable for the origin of the process giving a maximum age for the new fossil attachement time.'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'RealPos'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvConjugateInverseWishart'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'x'
+          description: 'The variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'MatrixRealSymmetric'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvContinuousCharacterDataSlide'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'x'
+          description: 'The variable this move operators on.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'ContinuousCharacterData'
+          options:
+        - label: 'delta'
+          description: 'The sliding window width parameter.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tune'
+          description: 'Should we tune this move during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvContinuousEventScale'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'tree'
+          description: 'The time-tree variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'TimeTree'
+          options:
+        - label: 'lambda'
+          description: 'The scaling factor (strength) of the proposal.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tune'
+          description: 'Should we tune the scaling factor during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvCorrelationMatrixElementSwap'
+  title: 'Correlation Matrix element swap move.'
+  aliases:
+  description: 'Swaps elements i and j of the correlation matrix (i != j).'
+  details:
+  example: |
+    
+    # we draw a correlation matrix from an LKJ distribution
+    R ~ dnLKJ(eta=1, dim=5)
+    
+    # we specify an element swap move
+    moves[1] = mvCorrelationMatrixElementSwap(R)
+  authors: 'Michael R. May'
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'x'
+          description: 'The variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'MatrixReal'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvCorrelationMatrixRandomWalk'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'x'
+          description: 'The variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'MatrixReal'
+          options:
+        - label: 'sigma'
+          description: 'The standard deviation of the normal distribution to draw from.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tune'
+          description: 'Should we tune the scaling factor during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvCorrelationMatrixSingleElementBeta'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'x'
+          description: 'The variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'MatrixReal'
+          options:
+        - label: 'alpha'
+          description: 'The shape of the beta distribution to draw from.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tune'
+          description: 'Should we tune the scaling factor during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvCorrelationMatrixSpecificElementBeta'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'x'
+          description: 'The variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'MatrixReal'
+          options:
+        - label: 'row'
+          description: 'The row of the variable on which this move operates.'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'Natural'
+          options:
+        - label: 'col'
+          description: 'The column of the variable on which this move operates.'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'Natural'
+          options:
+        - label: 'alpha'
+          description: 'The shape of the beta distribution to draw from.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tune'
+          description: 'Should we tune the scaling factor during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvCorrelationMatrixUpdate'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'r'
+          description: 'The correlation matrix on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'MatrixReal'
+          options:
+        - label: 's'
+          description: 'The vector of variances needed to complete the move.'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'RealPos[]'
+          options:
+        - label: 'lambda'
+          description: 'The scaling factor (strength) of the proposal.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tune'
+          description: 'Should we tune the scaling factor during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvDPPAllocateAuxGibbs'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'x'
+          description: 'The variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'Real[]'
+          options:
+        - label: 'numAux'
+          description: 'The number of auxillary categories.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Integer'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvDPPGibbsConcentration'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'concentration'
+          description:
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'RealPos'
+          options:
+        - label: 'numDPPCats'
+          description:
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Integer'
+          options:
+        - label: 'gammaShape'
+          description:
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          options:
+        - label: 'gammaRate'
+          description:
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          options:
+        - label: 'numElements'
+          description:
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvDPPValueBetaSimplex'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'x'
+          description: 'The variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'Simplex[]'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvDPPValueScaling'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'x'
+          description: 'The variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'RealPos[]'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvDirichletSimplex'
+  title:
+  aliases: 'mvSimplex'
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'x'
+          description: 'The simplex on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'Simplex'
+          options:
+        - label: 'alpha'
+          description: 'The concentration parameter on the previous value.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'numCats'
+          description: 'The number of categories changed per move.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          options:
+        - label: 'offset'
+          description: 'The offset of the current value to center new proposals (x+offset).'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'kappa'
+          description: 'The offset of tuning parameter (x * alpha + kappa).'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tune'
+          description: 'Should we tune this move during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvDiscreteEventCategoryRandomWalk'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'tree'
+          description: 'The time-tree variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'TimeTree'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvElementSwapSimplex'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'x'
+          description: 'The variable this move operates on.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'Simplex'
+          options:
+        - label: 'tune'
+          description: 'Should we tune the concentration parameter during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvEllipticalSliceSamplingLognormalIID'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'x'
+          description: 'The variable on which this move operates'
+          dag_type: '<deterministic>'
+          pass_by: 'reference'
+          value_type: 'RealPos[]'
+          options:
+        - label: 'mu'
+          description: 'Log-mean parameter of distribution.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Real'
+          options:
+        - label: 'sigma'
+          description: 'Log-sd parameter of distribution.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          options:
+        - label: 'window'
+          description: 'The anglular window (steps-size) of proposals, a value in the interval (0,2*pi].'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tune'
+          description: 'Should we tune the move during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvEllipticalSliceSamplingSimple'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'x'
+          description: 'The variable on which this move operates'
+          dag_type: '<deterministic>'
+          pass_by: 'reference'
+          value_type: 'Real[]'
+          options:
+        - label: 'window'
+          description: 'The anglular window (steps-size) of proposals, a value in the interval (0,2*pi].'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tune'
+          description: 'Should we tune the move during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvEmpiricalTree'
+  title:
+  aliases:
+  description: 'An MCMC move that operates on empirical tree distributions.'
+  details:
+  example: |
+    # Read in tree trace
+    tree_trace = readTreeTrace("output/my.trees", burnin=0.25)
+    
+    # Create a distribution of trees
+    tree ~ dnEmpiricalTree(tree_trace)
+    
+    # Add an MCMC move
+    moves[1] = mvEmpiricalTree(tree)
+  authors:
+    - 'Will Freyman'
+    - 'Will Freyman'
+    - 'Will Freyman'
+    - 'Will Freyman'
+  see_also:
+    - 'mvEmpiricalTree'
+    - 'mvEmpiricalTree'
+    - 'mvEmpiricalTree'
+  constructor:
+    - usage:
+      arguments:
+        - label: 'tree'
+          description: 'The stochastic tree variable on which this moves operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'Tree'
+          options:
+        - label: 'metropolisHastings'
+          description: 'If TRUE, use the regular Metropolis-Hastings acceptance ratio. If FALSE, always accept this move and sample every tree uniformly.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvEventTimeBeta'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'tree'
+          description: 'The time-tree variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'TimeTree'
+          options:
+        - label: 'delta'
+          description: 'The concentration parameter.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'offset'
+          description: 'The offset for the proposal density.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tune'
+          description: 'Should we tune the concentration parameter during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvEventTimeSlide'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'tree'
+          description: 'The time-tree variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'TimeTree'
+          options:
+        - label: 'delta'
+          description: 'The concentration parameter.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tune'
+          description: 'Should we tune the concentration parameter during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvFNPR'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'tree'
+          description: 'The time-tree variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'TimeTree'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvGMRFHyperpriorGibbs'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'x'
+          description: 'The variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'RealPos'
+          options:
+        - label: 'normals'
+          description: 'The vector of Normal RVs defining the field'
+          dag_type: '<deterministic>'
+          pass_by: 'reference'
+          value_type: 'Real[]'
+          options:
+        - label: 'zeta'
+          description: 'The value controlling the shrinkage of the field, a scale by which x is multiplied, effectively making x ~ halfCauchy(0,zeta).'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvGMRFUnevenGridHyperpriorGibbs'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'x'
+          description: 'The variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'RealPos'
+          options:
+        - label: 'normals'
+          description: 'The vector of Normal RVs defining the field'
+          dag_type: '<deterministic>'
+          pass_by: 'reference'
+          value_type: 'Real[]'
+          options:
+        - label: 'grid'
+          description: 'The space between i and i-1.'
+          dag_type: '<deterministic>'
+          pass_by: 'reference'
+          value_type: 'RealPos[]'
+          options:
+        - label: 'zeta'
+          description: 'The value controlling the shrinkage of the field, a scale by which x is multiplied, effectively making x ~ halfCauchy(0,zeta).'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvGPR'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'tree'
+          description: 'The tree variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'TimeTree'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvGammaScale'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'x'
+          description: 'The variable this move operates on.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'RealPos'
+          options:
+        - label: 'lambda'
+          description: 'The strength of the proposal.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tune'
+          description: 'Should we tune lambda during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvGibbsDrawCharacterHistory'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'tree'
+          description: 'The time-tree variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'TimeTree'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvGibbsMixtureAllocation'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'x'
+          description: 'The variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'Real'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvGraphFlipClique'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'x'
+          description: 'The variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'MatrixRealSymmetric'
+          options:
+        - label: 'r_set'
+          description: 'Rate that is equal to the expected number of vertex-sets to perturb (min 1).'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'p_vertex'
+          description: 'Probability of including a vertex in a vertex-set (min 2 vertices/set).'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+        - label: 'p_edge'
+          description: 'Probability of forcing edge to consensus value (0,1) in a vertex-set.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+        - label: 'vertices'
+          description: 'A vector of vertices to target with this proposal. An empty vector is interpretted as the full list of vertices.'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'Natural[]'
+          options:
+        - label: 'tune'
+          description: 'Should we tune the scaling factor during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvGraphFlipEdge'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'x'
+          description: 'The variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'MatrixRealSymmetric'
+          options:
+        - label: 'p'
+          description: 'The probability of flipping each edge in edges (min flips == 1).'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+        - label: 'edges'
+          description: 'A vector of [i,j] edges to target with this proposal. An empty vector is interpretted as the full list of edges.'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'Natural[][]'
+          options:
+        - label: 'tune'
+          description: 'Should we tune the scaling factor during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvGraphShiftEdge'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'x'
+          description: 'The variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'MatrixRealSymmetric'
+          options:
+        - label: 'p'
+          description: 'The probability of flipping each edge in edges.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+        - label: 'vertices'
+          description: 'A vector of vertices to target with this proposal. An empty vector is interpretted as the full list of vertices.'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'Natural[]'
+          options:
+        - label: 'tune'
+          description: 'Should we tune the scaling factor during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvHSRFHyperpriorsGibbs'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'gs'
+          description: 'The global scale variable on which this move operates'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'RealPos'
+          options:
+        - label: 'ls'
+          description: 'The local scales variables on which this move operates.'
+          dag_type: '<deterministic>'
+          pass_by: 'reference'
+          value_type: 'RealPos[]'
+          options:
+        - label: 'normals'
+          description: 'The vector of Normal RVs defining the field'
+          dag_type: '<deterministic>'
+          pass_by: 'reference'
+          value_type: 'Real[]'
+          options:
+        - label: 'zeta'
+          description: 'The value controlling the shrinkage of the field.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvHSRFUnevenGridHyperpriorsGibbs'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'gs'
+          description: 'The global scale variable on which this move operates'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'RealPos'
+          options:
+        - label: 'ls'
+          description: 'The local scales variables on which this move operates.'
+          dag_type: '<deterministic>'
+          pass_by: 'reference'
+          value_type: 'RealPos[]'
+          options:
+        - label: 'normals'
+          description: 'The vector of Normal RVs defining the field'
+          dag_type: '<deterministic>'
+          pass_by: 'reference'
+          value_type: 'Real[]'
+          options:
+        - label: 'grid'
+          description: 'The space between i and i-1.'
+          dag_type: '<deterministic>'
+          pass_by: 'reference'
+          value_type: 'RealPos[]'
+          options:
+        - label: 'zeta'
+          description: 'The value controlling the shrinkage of the field.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvIndependentTopology'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'tree'
+          description: 'The stochastic time tree variable on which this moves operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'TimeTree'
+          options:
+        - label: 'proposal'
+          description: 'The proposal topology distribution.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Distribution__Tree'
+          options:
+        - label: 'rates'
+          description: 'The vector of branch-specific substitution rates.'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'RealPos[]'
+          options:
+        - label: 'outgroup'
+          description: 'Outgroup used to root the proposal topologies.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Clade'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvLayeredScaleProposal'
+  title: 'Rescales all the subtrees below some age.'
+  aliases:
+  description: 'Makes a subtree scale move on all subtrees below a given age in the tree. Tree topology is not altered.'
+  details:
+  example: |
+    # We are going to save the trees we simulate in the folder simulatedTrees:
+    dataFolder = "simulatedTrees/" 
+    # Let’s simulate a species tree with 10 taxa, 2 gene trees, 3 alleles per species:
+    n_species <- 10
+    n_genes <- 2
+    n_alleles <- 3
+    # we simulate an ultrametric species tree:
+    # Species names:
+    for (i in 1:n_species) {
+            species[i] <- taxon(taxonName="Species_"+i, speciesName="Species_"+i)
+    }
+    spTree ~ dnBirthDeath(lambda=0.3, mu=0.2, rootAge=10, rho=1, samplingStrategy="uniform", condition="nTaxa", taxa=species)
+    print(spTree)
+    # let's pick a constant effective population size of 50:
+    popSize <- 50
+    # let's simulate gene trees now:
+    # taxa names:
+    for (g in 1:n_genes) {
+      for (i in 1:n_species) {
+        for (j in 1:n_alleles) {
+            taxons[g][(i-1)*n_alleles+j] <- taxon(taxonName="Species_"+i+"_"+j, speciesName="Species_"+i)
+        }
+      }
+      geneTrees[g] ~ dnMultiSpeciesCoalescent(speciesTree=spTree, Ne=popSize, taxa=taxons[g])
+      print(geneTrees[g])
+    }
+    # We can save the species tree and the gene trees: 
+    write(spTree, filename=dataFolder+"speciesTree")
+    # Saving the gene trees
+    for (i in 1:(n_genes)) {
+      write(geneTrees[i], filename=dataFolder+"geneTree_"+i+".tree")
+    }
+    # set my move index
+    mi = 0
+    move_species_subtree_scale = mvLayeredScaleProposal( speciesTree=spTree, weight=5 )
+    for (i in 1:n_genes) {
+       move_species_subtree_scale.addGeneTreeVariable( geneTrees[i] )
+    }
+    moves[++mi] = move_species_subtree_scale
+    # We get a handle on our model.
+    # We can use any node of our model as a handle, here we choose to use the topology.
+    mymodel = model(spTree)
+    # Monitors to check the progression of the program
+    monitors[1] = mnScreen(printgen=10, spTree)
+    # Here we use a plain MCMC. You could also set nruns=2 for a replicated analysis
+    # or use mcmcmc with heated chains.
+    mymcmc = mcmc(mymodel, monitors, moves, nruns=4)
+    mymcmc.run(generations=1000)
+    mymcmc.operatorSummary()
+  authors: 'Bastien Boussau'
+  see_also: 'mvSubTreeScale'
+  constructor:
+    - usage:
+      arguments:
+        - label: 'tree'
+          description: 'The tree on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'TimeTree'
+          options:
+        - label: 'lambda'
+          description: 'The strength of the proposal.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tune'
+          description: 'Should we tune lambda during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvLevyJump'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'x'
+          description: 'The variable this move operates on.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'Real'
+          options:
+        - label: 'delta'
+          description: 'The window size of the proposals.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tune'
+          description: 'Should we tune during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvLevyJumpSum'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'value_1'
+          description:
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'Real'
+          options:
+        - label: 'value_2'
+          description:
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'Real'
+          options:
+        - label: 'slide'
+          description:
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tune'
+          description:
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvMatrixElementScale'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'x'
+          description: 'The variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'RealPos[][]'
+          options:
+        - label: 'lambda'
+          description: 'The scaling factor (strength) of the proposal.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tune'
+          description: 'Should we tune the scaling factor during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvMatrixElementSlide'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'x'
+          description: 'The variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'RealPos[][]'
+          options:
+        - label: 'delta'
+          description: 'The scaling factor (strength) of the proposal.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tune'
+          description: 'Should we tune the scaling factor during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvMixtureAllocation'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'x'
+          description: 'The variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'Real'
+          options:
+        - label: 'delta'
+          description: 'The window of how many categories to propose left and right.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvMultipleElementVectorScale'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'x'
+          description: 'The variable on which the move operates.'
+          dag_type: '<deterministic>'
+          pass_by: 'reference'
+          value_type: 'RealPos[]'
+          options:
+        - label: 'numToMove'
+          description: 'The number of vector elements changed per move.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          options:
+        - label: 'lambda'
+          description: 'The scaling factor (strength) of the proposal.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tune'
+          description: 'Should we tune the scaling factor during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvNNI'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'tree'
+          description: 'The tree on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'TimeTree'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvNarrow'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'tree'
+          description: 'The tree variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'TimeTree'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvNarrowExchangeRateMatrix'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'tree'
+          description: 'The tree variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'TimeTree'
+          options:
+        - label: 'rateMatrices'
+          description: 'The branch-specific rate matrices.'
+          dag_type: '<deterministic>'
+          pass_by: 'const reference'
+          value_type: 'RateGenerator[]'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvNodeRateTimeSlideUniform'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'tree'
+          description: 'The tree on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'TimeTree'
+          options:
+        - label: 'rates'
+          description: 'The vector of branch-specific substitution rates.'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'RealPos[]'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvNodeTimeScale'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'tree'
+          description: 'The tree on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'TimeTree'
+          options:
+        - label: 'lambda'
+          description: 'The scaling factor (strength) of the proposals.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvNodeTimeSlideBeta'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'tree'
+          description: 'The tree variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'TimeTree'
+          options:
+        - label: 'delta'
+          description: 'The concentration parameter.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'offset'
+          description: 'The offset for the proposal density.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tune'
+          description: 'Should we tune the concentration parameter during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvNodeTimeSlidePathTruncatedNormal'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'tree'
+          description: 'The tree on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'TimeTree'
+          options:
+        - label: 'sigma'
+          description: 'The sd of the proposal.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'TimeTree'
+          options:
+        - label: 'scaleByAge'
+          description: 'Should we additionally use age of node to adjust sd?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'tune'
+          description: 'Should we tune sigma during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvNodeTimeSlideUniform'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'tree'
+          description: 'The tree on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'TimeTree'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvNodeTimeSlideUniformAgeConstrained'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'tree'
+          description: 'The tree on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'TimeTree'
+          options:
+        - label: 'constraints'
+          description: 'The age constraints.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'Clade[]'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvRJSwitch'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'x'
+          description: 'The variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'Real'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvRandomDive'
+  title:
+  aliases:
+  description:
+    - 'The multiplicative proposal of Dutta 2012, allows for long-distance moves.'
+    - 'The multiplicative proposal of Dutta 2012, allows for long-distance moves.'
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'x'
+          description: 'The variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'Real'
+          options:
+        - label: 'delta'
+          description: 'The tuning parameter, larger values for bolder moves.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tune'
+          description: 'Should we tune the window size during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvRandomGeometricWalk'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'x'
+          description: 'The variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'Integer'
+          options:
+        - label: 'alpha'
+          description: 'The success probability of the geometric distribution.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+        - label: 'tune'
+          description: 'Should we tune the success probability during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvRandomIntegerWalk'
+  title:
+  aliases: 'mvRandomNaturalWalk'
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'x'
+          description: 'The variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'Natural'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvRateAgeBetaShift'
+  title:
+  aliases: 'mvNodeRateTimeSlideBeta'
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'tree'
+          description: 'The tree on which this move operates on.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'Tree'
+          options:
+        - label: 'rates'
+          description: 'The vector of per-branch rates (from a relaxed clock).'
+          dag_type: '<deterministic>'
+          pass_by: 'reference'
+          value_type: 'RealPos[]'
+          options:
+        - label: 'delta'
+          description: 'The concentration of the move on the previous age.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tune'
+          description: 'Should we tune this move during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvRootTimeScaleBactrian'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'tree'
+          description: 'The tree on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'TimeTree'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvRootTimeSlideUniform'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'tree'
+          description: 'The tree on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'TimeTree'
+          options:
+        - label: 'origin'
+          description: 'The maximum root age.'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'RealPos'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvSPR'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'tree'
+          description: 'The tree variable this move operates on.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'BranchLengthTree'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvScale'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'x'
+          description: 'The variable this move operates on.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'Real'
+          options:
+        - label: 'lambda'
+          description: 'The strength of the proposal.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tune'
+          description: 'Should we tune lambda during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvScaleBactrian'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'x'
+          description: 'The variable this move operates on.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'RealPos'
+          options:
+        - label: 'lambda'
+          description: 'The strength of the proposal.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tune'
+          description: 'Should we tune lambda during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvScaleBactrianCauchy'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'x'
+          description: 'The variable this move operates on.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'RealPos'
+          options:
+        - label: 'lambda'
+          description: 'The strength of the proposal.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tune'
+          description: 'Should we tune lambda during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvShrinkExpand'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'x'
+          description: 'The variable on which the move operates.'
+          dag_type: '<deterministic>'
+          pass_by: 'reference'
+          value_type: 'Real[]'
+          options:
+        - label: 'sd'
+          description: 'The standard deviation parameter if available.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'RealPos'
+          options:
+        - label: 'lambda'
+          description: 'The scaling factor (strength) of the proposal.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tune'
+          description: 'Should we tune the scaling factor during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvSlice'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'x'
+          description: 'The variable on which this move operates'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'Real'
+          options:
+        - label: 'window'
+          description: 'The window (steps-size) of proposals.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tune'
+          description: 'Should we tune the move during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvSlide'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'x'
+          description: 'The variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'Real'
+          options:
+        - label: 'delta'
+          description: 'The window size parameter.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tune'
+          description: 'Should we tune the window size during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvSlideBactrian'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'x'
+          description: 'The variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'Real'
+          options:
+        - label: 'sigma'
+          description: 'The scale parameter.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tune'
+          description: 'Should we tune sigma during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvSpeciesNarrow'
+  title: 'Narrow-exchange joint move on species tree and gene trees for multispecies coalescent models.'
+  aliases:
+  description: 'Makes a narrow-exchange move both in the species tree and in the gene trees that contain nodes of the relevant populations.'
+  details:
+  example: |
+    # We are going to save the trees we simulate in the folder simulatedTrees:
+    dataFolder = "simulatedTrees/" 
+    # Let’s simulate a species tree with 10 taxa, 2 gene trees, 3 alleles per species:
+    n_species <- 10
+    n_genes <- 2
+    n_alleles <- 3
+    # we simulate an ultrametric species tree:
+    # Species names:
+    for (i in 1:n_species) {
+            species[i] <- taxon(taxonName="Species_"+i, speciesName="Species_"+i)
+    }
+    spTree ~ dnBirthDeath(lambda=0.3, mu=0.2, rootAge=10, rho=1, samplingStrategy="uniform", condition="nTaxa", taxa=species)
+    print(spTree)
+    # let's pick a constant effective population size of 50:
+    popSize <- 50
+    # let's simulate gene trees now:
+    # taxa names:
+    for (g in 1:n_genes) {
+      for (i in 1:n_species) {
+        for (j in 1:n_alleles) {
+            taxons[g][(i-1)*n_alleles+j] <- taxon(taxonName="Species_"+i+"_"+j, speciesName="Species_"+i)
+        }
+      }
+      geneTrees[g] ~ dnMultiSpeciesCoalescent(speciesTree=spTree, Ne=popSize, taxa=taxons[g])
+      print(geneTrees[g])
+    }
+    # We can save the species tree and the gene trees: 
+    write(spTree, filename=dataFolder+"speciesTree")
+    # Saving the gene trees
+    for (i in 1:(n_genes)) {
+      write(geneTrees[i], filename=dataFolder+"geneTree_"+i+".tree")
+    }
+    # set my move index
+    mi = 0
+    move_species_narrow_exchange = mvSpeciesNarrow( speciesTree=spTree, weight=5 )
+    for (i in 1:n_genes) {
+       move_species_narrow_exchange.addGeneTreeVariable( geneTrees[i] )
+    }
+    moves[++mi] = move_species_narrow_exchange
+    # We get a handle on our model.
+    # We can use any node of our model as a handle, here we choose to use the topology.
+    mymodel = model(spTree)
+    # Monitors to check the progression of the program
+    monitors[1] = mnScreen(printgen=10, spTree)
+    # Here we use a plain MCMC. You could also set nruns=2 for a replicated analysis
+    # or use mcmcmc with heated chains.
+    mymcmc = mcmc(mymodel, monitors, moves, nruns=4)
+    mymcmc.run(generations=1000)
+    mymcmc.operatorSummary()
+  authors: 'Sebastian Hoehna, Bastien Boussau'
+  see_also:
+    - 'mvSpeciesSubtreeScale'
+    - 'mvSpeciesSubtreeScale'
+    - 'mvSpeciesSubtreeScale'
+    - 'mvSpeciesSubtreeScale'
+  constructor:
+    - usage:
+      arguments:
+        - label: 'speciesTree'
+          description: 'The species tree variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'TimeTree'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+    - name: 'addGeneTreeVariable'
+      return_type: 'void'
+      usage: 'addGeneTreeVariable(TimeTree<stochastic> geneTree)'
+      arguments:
+        - label: 'geneTree'
+          description: 'A gene tree.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'TimeTree'
+          options:
+  references:
+    - citation: 'Guided Tree Topology Proposals for Bayesian Phylogenetic Inference. Sebastian Höhna, Alexei J. Drummond. Syst Biol (2012) 61 (1): 1-11.'
+      doi: 'https://doi.org/10.1093/sysbio/syr074'
+      url: 'https://academic.oup.com/sysbio/article-lookup/doi/10.1093/sysbio/syr074'
+    - citation: 'Algorithmic improvements to species delimitation and phylogeny estimation under the multispecies coalescent. Graham Jones.  Journal of Mathematical Biology, 2016.'
+      doi: 'https://doi.org/10.1007/s00285-016-1034-0'
+      url: 'http://link.springer.com/article/10.1007/s00285-016-1034-0'
+- name: 'mvSpeciesNodeTimeSlideUniform'
+  title: 'Node time slide joint move on species tree and gene trees for multispecies coalescent models.'
+  aliases:
+  description: 'Makes a node time slide move both in the species tree and in the gene trees that contain nodes of the relevant populations. Tree topologies are not altered.'
+  details:
+  example: |
+    # We are going to save the trees we simulate in the folder simulatedTrees:
+    dataFolder = "simulatedTrees" 
+    # Let’s simulate a species tree with 10 taxa, 2 gene trees, 3 alleles per species:
+    n_species <- 10
+    n_genes <- 2
+    n_alleles <- 3
+    # we simulate an ultrametric species tree:
+    # Species names:
+    for (i in 1:n_species) {
+            species[i] <- taxon(taxonName="Species_"+i, speciesName="Species_"+i)
+    }
+    spTree ~ dnBirthDeath(lambda=0.3, mu=0.2, rootAge=10, rho=1, samplingStrategy="uniform", condition="nTaxa", taxa=species)
+    print(spTree)
+    # let's pick a constant effective population size of 50:
+    popSize <- 50
+    # let's simulate gene trees now:
+    # taxa names:
+    for (g in 1:n_genes) {
+      for (i in 1:n_species) {
+        for (j in 1:n_alleles) {
+            taxons[g][(i-1)*n_alleles+j] <- taxon(taxonName="Species_"+i+"_"+j, speciesName="Species_"+i)
+        }
+      }
+      geneTrees[g] ~ dnMultiSpeciesCoalescent(speciesTree=spTree, Ne=popSize, taxa=taxons[g])
+      print(geneTrees[g])
+    }
+    # We can save the species tree and the gene trees: 
+    write(spTree, filename=dataFolder+"speciesTree")
+    # Saving the gene trees
+    for (i in 1:(n_genes)) {
+      write(geneTrees[i], filename=dataFolder+"geneTree_"+i+".tree")
+    }
+    # set my move index
+    mi = 0
+    move_species_node_time_slide = mvSpeciesNodeTimeSlideUniform( speciesTree=spTree, weight=5 )
+    for (i in 1:n_genes) {
+       move_species_node_time_slide.addGeneTreeVariable( geneTrees[i] )
+    }
+    moves[++mi] = move_species_node_time_slide
+    # We get a handle on our model.
+    # We can use any node of our model as a handle, here we choose to use the topology.
+    mymodel = model(spTree)
+    # Monitors to check the progression of the program
+    monitors[1] = mnScreen(printgen=10, spTree)
+    # Here we use a plain MCMC. You could also set nruns=2 for a replicated analysis
+    # or use mcmcmc with heated chains.
+    mymcmc = mcmc(mymodel, monitors, moves, nruns=4)
+    mymcmc.run(generations=1000)
+    mymcmc.operatorSummary()
+  authors: 'Sebastian Hoehna, Bastien Boussau'
+  see_also:
+    - 'mvSpeciesSubtreeScale'
+    - 'mvSpeciesSubtreeScale'
+    - 'mvSpeciesSubtreeScale'
+    - 'mvSpeciesSubtreeScale'
+  constructor:
+    - usage:
+      arguments:
+        - label: 'speciesTree'
+          description: 'The ultrametric species tree on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'TimeTree'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+    - name: 'addGeneTreeVariable'
+      return_type: 'void'
+      usage: 'addGeneTreeVariable(TimeTree<stochastic> geneTree)'
+      arguments:
+        - label: 'geneTree'
+          description: 'A gene tree.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'TimeTree'
+          options:
+  references:
+    - citation: 'Guided Tree Topology Proposals for Bayesian Phylogenetic Inference. Sebastian Höhna, Alexei J. Drummond. Syst Biol (2012) 61 (1): 1-11.'
+      doi: 'https://doi.org/10.1093/sysbio/syr074'
+      url: 'https://academic.oup.com/sysbio/article-lookup/doi/10.1093/sysbio/syr074'
+    - citation: 'Algorithmic improvements to species delimitation and phylogeny estimation under the multispecies coalescent. Graham Jones.  Journal of Mathematical Biology, 2016.'
+      doi: 'https://doi.org/10.1007/s00285-016-1034-0'
+      url: 'http://link.springer.com/article/10.1007/s00285-016-1034-0'
+- name: 'mvSpeciesSubtreeScale'
+  title: 'Subtree scale move on species tree and gene trees for multispecies coalescent models.'
+  aliases:
+  description: 'Makes a subtree scale move both in the species tree and in the gene trees that contain nodes of the relevant populations. Tree topologies are not altered.'
+  details:
+  example: |
+    # We are going to save the trees we simulate in the folder simulatedTrees:
+    dataFolder = "simulatedTrees/" 
+    # Let’s simulate a species tree with 10 taxa, 2 gene trees, 3 alleles per species:
+    n_species <- 10
+    n_genes <- 2
+    n_alleles <- 3
+    # we simulate an ultrametric species tree:
+    # Species names:
+    for (i in 1:n_species) {
+            species[i] <- taxon(taxonName="Species_"+i, speciesName="Species_"+i)
+    }
+    spTree ~ dnBirthDeath(lambda=0.3, mu=0.2, rootAge=10, rho=1, samplingStrategy="uniform", condition="nTaxa", taxa=species)
+    print(spTree)
+    # let's pick a constant effective population size of 50:
+    popSize <- 50
+    # let's simulate gene trees now:
+    # taxa names:
+    for (g in 1:n_genes) {
+      for (i in 1:n_species) {
+        for (j in 1:n_alleles) {
+            taxons[g][(i-1)*n_alleles+j] <- taxon(taxonName="Species_"+i+"_"+j, speciesName="Species_"+i)
+        }
+      }
+      geneTrees[g] ~ dnMultiSpeciesCoalescent(speciesTree=spTree, Ne=popSize, taxa=taxons[g])
+      print(geneTrees[g])
+    }
+    # We can save the species tree and the gene trees: 
+    write(spTree, filename=dataFolder+"speciesTree")
+    # Saving the gene trees
+    for (i in 1:(n_genes)) {
+      write(geneTrees[i], filename=dataFolder+"geneTree_"+i+".tree")
+    }
+    # set my move index
+    mi = 0
+    move_species_subtree_scale = mvSpeciesSubtreeScale( speciesTree=spTree, weight=5 )
+    for (i in 1:n_genes) {
+       move_species_subtree_scale.addGeneTreeVariable( geneTrees[i] )
+    }
+    moves[++mi] = move_species_subtree_scale
+    # We get a handle on our model.
+    # We can use any node of our model as a handle, here we choose to use the topology.
+    mymodel = model(spTree)
+    # Monitors to check the progression of the program
+    monitors[1] = mnScreen(printgen=10, spTree)
+    # Here we use a plain MCMC. You could also set nruns=2 for a replicated analysis
+    # or use mcmcmc with heated chains.
+    mymcmc = mcmc(mymodel, monitors, moves, nruns=4)
+    mymcmc.run(generations=1000)
+    mymcmc.operatorSummary()
+  authors: 'Sebastian Hoehna, Bastien Boussau'
+  see_also:
+    - 'mvSpeciesNodeTimeSlideUniform'
+    - 'mvSpeciesNodeTimeSlideUniform'
+    - 'mvSpeciesNodeTimeSlideUniform'
+    - 'mvSpeciesNodeTimeSlideUniform'
+  constructor:
+    - usage:
+      arguments:
+        - label: 'speciesTree'
+          description: 'The species variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'TimeTree'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+    - name: 'addGeneTreeVariable'
+      return_type: 'void'
+      usage: 'addGeneTreeVariable(TimeTree<stochastic> geneTree)'
+      arguments:
+        - label: 'geneTree'
+          description: 'A gene tree to scale.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'TimeTree'
+          options:
+  references:
+    - citation: 'Guided Tree Topology Proposals for Bayesian Phylogenetic Inference. Sebastian Höhna, Alexei J. Drummond. Syst Biol (2012) 61 (1): 1-11.'
+      doi: 'https://doi.org/10.1093/sysbio/syr074'
+      url: 'https://academic.oup.com/sysbio/article-lookup/doi/10.1093/sysbio/syr074'
+    - citation: 'Algorithmic improvements to species delimitation and phylogeny estimation under the multispecies coalescent. Graham Jones.  Journal of Mathematical Biology, 2016.'
+      doi: 'https://doi.org/10.1007/s00285-016-1034-0'
+      url: 'http://link.springer.com/article/10.1007/s00285-016-1034-0'
+- name: 'mvSpeciesSubtreeScaleBeta'
+  title: 'Subtree scale move on species tree and gene trees for multispecies coalescent models.'
+  aliases:
+  description: 'Makes a subtree scale move both in the species tree and in the gene trees that contain nodes of the relevant populations. Tree topologies are not altered. Uses a beta distribution to propose a new age value.'
+  details:
+  example: |
+    # We are going to save the trees we simulate in the folder simulatedTrees:
+    dataFolder = "simulatedTrees/" 
+    # Let’s simulate a species tree with 10 taxa, 2 gene trees, 3 alleles per species:
+    n_species <- 10
+    n_genes <- 2
+    n_alleles <- 3
+    # we simulate an ultrametric species tree:
+    # Species names:
+    for (i in 1:n_species) {
+            species[i] <- taxon(taxonName="Species_"+i, speciesName="Species_"+i)
+    }
+    spTree ~ dnBirthDeath(lambda=0.3, mu=0.2, rootAge=10, rho=1, samplingStrategy="uniform", condition="nTaxa", taxa=species)
+    print(spTree)
+    # let's pick a constant effective population size of 50:
+    popSize <- 50
+    # let's simulate gene trees now:
+    # taxa names:
+    for (g in 1:n_genes) {
+      for (i in 1:n_species) {
+        for (j in 1:n_alleles) {
+            taxons[g][(i-1)*n_alleles+j] <- taxon(taxonName="Species_"+i+"_"+j, speciesName="Species_"+i)
+        }
+      }
+      geneTrees[g] ~ dnMultiSpeciesCoalescent(speciesTree=spTree, Ne=popSize, taxa=taxons[g])
+      print(geneTrees[g])
+    }
+    # We can save the species tree and the gene trees: 
+    write(spTree, filename=dataFolder+"speciesTree")
+    # Saving the gene trees
+    for (i in 1:(n_genes)) {
+      write(geneTrees[i], filename=dataFolder+"geneTree_"+i+".tree")
+    }
+    # set my move index
+    mi = 0
+    move_species_subtree_scale_beta = mvSpeciesSubtreeScaleBeta( speciesTree=spTree, weight=5 )
+    for (i in 1:n_genes) {
+       move_species_subtree_scale_beta.addGeneTreeVariable( geneTrees[i] )
+    }
+    moves[++mi] = move_species_subtree_scale_beta
+    # We get a handle on our model.
+    # We can use any node of our model as a handle, here we choose to use the topology.
+    mymodel = model(spTree)
+    # Monitors to check the progression of the program
+    monitors[1] = mnScreen(printgen=10, spTree)
+    # Here we use a plain MCMC. You could also set nruns=2 for a replicated analysis
+    # or use mcmcmc with heated chains.
+    mymcmc = mcmc(mymodel, monitors, moves, nruns=4)
+    mymcmc.run(generations=1000)
+    mymcmc.operatorSummary()
+  authors: 'Sebastian Hoehna, Bastien Boussau'
+  see_also:
+    - 'mvSpeciesNodeTimeSlideUniform'
+    - 'mvSpeciesNodeTimeSlideUniform'
+    - 'mvSpeciesNodeTimeSlideUniform'
+    - 'mvSpeciesNodeTimeSlideUniform'
+  constructor:
+    - usage:
+      arguments:
+        - label: 'speciesTree'
+          description: 'The species tree on which this move operates on.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'TimeTree'
+          options:
+        - label: 'alpha'
+          description: 'The concentration parameter.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tune'
+          description: 'Should we tune the concentration parameter during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+    - name: 'addGeneTreeVariable'
+      return_type: 'void'
+      usage: 'addGeneTreeVariable(TimeTree<stochastic> geneTree)'
+      arguments:
+        - label: 'geneTree'
+          description: 'A gene tree.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'TimeTree'
+          options:
+  references:
+    - citation: 'Guided Tree Topology Proposals for Bayesian Phylogenetic Inference. Sebastian Höhna, Alexei J. Drummond. Syst Biol (2012) 61 (1): 1-11.'
+      doi: 'https://doi.org/10.1093/sysbio/syr074'
+      url: 'https://academic.oup.com/sysbio/article-lookup/doi/10.1093/sysbio/syr074'
+    - citation: 'Algorithmic improvements to species delimitation and phylogeny estimation under the multispecies coalescent. Graham Jones.  Journal of Mathematical Biology, 2016.'
+      doi: 'https://doi.org/10.1007/s00285-016-1034-0'
+      url: 'http://link.springer.com/article/10.1007/s00285-016-1034-0'
+- name: 'mvSpeciesTreeScale'
+  title: 'Tree scale move on species tree and gene trees for multispecies coalescent models.'
+  aliases:
+  description: 'Makes a tree scale move both in the species tree and in the gene trees. Tree topologies are not altered.'
+  details:
+  example: |
+    # We are going to save the trees we simulate in the folder simulatedTrees:
+    dataFolder = "simulatedTrees/" 
+    # Let’s simulate a species tree with 10 taxa, 2 gene trees, 3 alleles per species:
+    n_species <- 10
+    n_genes <- 2
+    n_alleles <- 3
+    # we simulate an ultrametric species tree:
+    # Species names:
+    for (i in 1:n_species) {
+            species[i] <- taxon(taxonName="Species_"+i, speciesName="Species_"+i)
+    }
+    root ~  dnNormal(mean=75,sd=2.5,min=0.0, max=Inf)
+    spTree ~ dnBirthDeath(lambda=0.3, mu=0.2, rootAge=root, rho=1, samplingStrategy="uniform", condition="nTaxa", taxa=species)
+    print(spTree)
+    # let's pick a constant effective population size of 50:
+    popSize <- 50
+    # let's simulate gene trees now:
+    # taxa names:
+    for (g in 1:n_genes) {
+      for (i in 1:n_species) {
+        for (j in 1:n_alleles) {
+            taxons[g][(i-1)*n_alleles+j] <- taxon(taxonName="Species_"+i+"_"+j, speciesName="Species_"+i)
+        }
+      }
+      geneTrees[g] ~ dnMultiSpeciesCoalescent(speciesTree=spTree, Ne=popSize, taxa=taxons[g])
+      print(geneTrees[g])
+    }
+    # We can save the species tree and the gene trees: 
+    write(spTree, filename=dataFolder+"speciesTree")
+    # Saving the gene trees
+    for (i in 1:(n_genes)) {
+      write(geneTrees[i], filename=dataFolder+"geneTree_"+i+".tree")
+    }
+    # set my move index
+    mi = 0
+    move_species_tree_scale = mvSpeciesTreeScale( speciesTree=spTree, root=root, weight=5 )
+    for (i in 1:n_genes) {
+       move_species_tree_scale.addGeneTreeVariable( geneTrees[i] )
+    }
+    moves[++mi] = move_species_tree_scale
+    # We get a handle on our model.
+    # We can use any node of our model as a handle, here we choose to use the topology.
+    mymodel = model(spTree)
+    # Monitors to check the progression of the program
+    monitors[1] = mnScreen(printgen=10, spTree)
+    # Here we use a plain MCMC. You could also set nruns=2 for a replicated analysis
+    # or use mcmcmc with heated chains.
+    mymcmc = mcmc(mymodel, monitors, moves, nruns=4)
+    mymcmc.run(generations=1000)
+    mymcmc.operatorSummary()
+  authors: 'Sebastian Hoehna, Bastien Boussau'
+  see_also:
+    - 'mvSpeciesNodeTimeSlideUniform'
+    - 'mvSpeciesNodeTimeSlideUniform'
+    - 'mvSpeciesNodeTimeSlideUniform'
+    - 'mvSpeciesNodeTimeSlideUniform'
+  constructor:
+    - usage:
+      arguments:
+        - label: 'speciesTree'
+          description: 'The species tree on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'TimeTree'
+          options:
+        - label: 'rootAge'
+          description: 'The root age variable.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'RealPos'
+          options:
+        - label: 'delta'
+          description: 'The strength of the proposal'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tune'
+          description: 'Should we tune the strength during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+    - name: 'addGeneTreeVariable'
+      return_type: 'void'
+      usage: 'addGeneTreeVariable(TimeTree<stochastic> geneTree)'
+      arguments:
+        - label: 'geneTree'
+          description: 'A gene tree variable.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'TimeTree'
+          options:
+  references:
+    - citation: 'Guided Tree Topology Proposals for Bayesian Phylogenetic Inference. Sebastian Höhna, Alexei J. Drummond. Syst Biol (2012) 61 (1): 1-11.'
+      doi: 'https://doi.org/10.1093/sysbio/syr074'
+      url: 'https://academic.oup.com/sysbio/article-lookup/doi/10.1093/sysbio/syr074'
+    - citation: 'Algorithmic improvements to species delimitation and phylogeny estimation under the multispecies coalescent. Graham Jones.  Journal of Mathematical Biology, 2016.'
+      doi: 'https://doi.org/10.1007/s00285-016-1034-0'
+      url: 'http://link.springer.com/article/10.1007/s00285-016-1034-0'
+- name: 'mvSubtreeScale'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'tree'
+          description: 'The tree variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'TimeTree'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvSymmetricMatrixElementSlide'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'x'
+          description: 'The matrix variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'MatrixRealSymmetric'
+          options:
+        - label: 'delta'
+          description: 'The sliding window size.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tune'
+          description: 'Should we tune the move during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvSynchronizedVectorFixedSingleElementSlide'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'x'
+          description: 'The variable (a deterministic variable holding the vector of stochastic variable) on which this move operates.'
+          dag_type: '<deterministic>'
+          pass_by: 'reference'
+          value_type: 'Real[][]'
+          options:
+        - label: 'element'
+          description: 'The index or indices of the element to scale.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          options:
+        - label: 'lambda'
+          description: 'The scaling factor (strength) of this move.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tune'
+          description: 'Should we tune the scaling factor during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvTipTimeSlideUniform'
+  title:
+  aliases: 'mvFossilTimeSlideUniform'
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'tree'
+          description: 'The tree on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'TimeTree'
+          options:
+        - label: 'origin'
+          description: 'The variable for the origin of the process giving a maximum age.'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'RealPos'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvTreeScale'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'tree'
+          description: 'The tree variable the move operates on.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'TimeTree'
+          options:
+        - label: 'rootAge'
+          description: 'The root age variable.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'RealPos'
+          options:
+        - label: 'delta'
+          description: 'The scaling factor (strength) of the proposal.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tune'
+          description: 'Should we tune the scaling factor during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvUPPAllocation'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'x'
+          description: 'The variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'RealPos[]'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvUpDownScale'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'lambda'
+          description: 'The scaling factor (strength) of the proposal.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tune'
+          description: 'Should we tune the scaling factor during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+    - name: 'addVariable'
+      return_type: 'void'
+      usage: 'addVariable(TimeTree<stochastic> tree, Bool<any> up)'
+      arguments:
+        - label: 'tree'
+          description: 'The tree variable to scale.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'TimeTree'
+          options:
+        - label: 'up'
+          description: 'Scaling up or down?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+    - name: 'addVariable'
+      return_type: 'void'
+      usage: 'addVariable(Real<stochastic> var, Bool<any> up)'
+      arguments:
+        - label: 'var'
+          description: 'The variable to scale'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'Real'
+          options:
+        - label: 'up'
+          description: 'Scaling up or down?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+    - name: 'addVariable'
+      return_type: 'void'
+      usage: 'addVariable(Real[]<stochastic> var, Bool<any> up)'
+      arguments:
+        - label: 'var'
+          description: 'The variable to scale'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'Real[]'
+          options:
+        - label: 'up'
+          description: 'Scaling up or down?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+    - name: 'addVariable'
+      return_type: 'void'
+      usage: 'addVariable(Real[]<deterministic> var, Bool<any> up)'
+      arguments:
+        - label: 'var'
+          description: 'The variable to scale'
+          dag_type: '<deterministic>'
+          pass_by: 'reference'
+          value_type: 'Real[]'
+          options:
+        - label: 'up'
+          description: 'Scaling up or down?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+    - name: 'addVariable'
+      return_type: 'void'
+      usage: 'addVariable(RealPos[]<deterministic> var, Bool<any> up)'
+      arguments:
+        - label: 'var'
+          description: 'The variable to scale'
+          dag_type: '<deterministic>'
+          pass_by: 'reference'
+          value_type: 'RealPos[]'
+          options:
+        - label: 'up'
+          description: 'Scaling up or down?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+    - name: 'removeVariable'
+      return_type: 'void'
+      usage: 'removeVariable(TimeTree<stochastic> tree, Bool<any> up)'
+      arguments:
+        - label: 'tree'
+          description: 'The tree variable to scale.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'TimeTree'
+          options:
+        - label: 'up'
+          description: 'The variable to scale'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+    - name: 'removeVariable'
+      return_type: 'void'
+      usage: 'removeVariable(Real<stochastic> var, Bool<any> up)'
+      arguments:
+        - label: 'var'
+          description: 'Scaling up or down?'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'Real'
+          options:
+        - label: 'up'
+          description: 'The variable to scale'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+    - name: 'removeVariable'
+      return_type: 'void'
+      usage: 'removeVariable(Real[]<stochastic> var, Bool<any> up)'
+      arguments:
+        - label: 'var'
+          description: 'Scaling up or down?'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'Real[]'
+          options:
+        - label: 'up'
+          description: 'The variable to scale'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+    - name: 'removeVariable'
+      return_type: 'void'
+      usage: 'removeVariable(Real[]<deterministic> var, Bool<any> up)'
+      arguments:
+        - label: 'var'
+          description: 'Scaling up or down?'
+          dag_type: '<deterministic>'
+          pass_by: 'reference'
+          value_type: 'Real[]'
+          options:
+        - label: 'up'
+          description: 'The variable to scale'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+    - name: 'removeVariable'
+      return_type: 'void'
+      usage: 'removeVariable(RealPos[]<deterministic> var, Bool<any> up)'
+      arguments:
+        - label: 'var'
+          description: 'Scaling up or down?'
+          dag_type: '<deterministic>'
+          pass_by: 'reference'
+          value_type: 'RealPos[]'
+          options:
+        - label: 'up'
+          description: 'The variable to scale'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+  references:
+- name: 'mvUpDownSlide'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'lambda'
+          description: 'The scaling factor (strength) of the proposal.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tune'
+          description: 'Should we tune the scaling factor during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+    - name: 'addVariable'
+      return_type: 'void'
+      usage: 'addVariable(Real<stochastic> var, Bool<any> up)'
+      arguments:
+        - label: 'var'
+          description: 'The variable to scale'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'Real'
+          options:
+        - label: 'up'
+          description: 'Scaling up or down?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+    - name: 'addVariable'
+      return_type: 'void'
+      usage: 'addVariable(Real[]<stochastic> var, Bool<any> up)'
+      arguments:
+        - label: 'var'
+          description: 'The variable to scale'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'Real[]'
+          options:
+        - label: 'up'
+          description: 'Scaling up or down?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+    - name: 'addVariable'
+      return_type: 'void'
+      usage: 'addVariable(Real[]<deterministic> var, Bool<any> up)'
+      arguments:
+        - label: 'var'
+          description: 'The variable to scale'
+          dag_type: '<deterministic>'
+          pass_by: 'reference'
+          value_type: 'Real[]'
+          options:
+        - label: 'up'
+          description: 'Scaling up or down?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+    - name: 'addVariable'
+      return_type: 'void'
+      usage: 'addVariable(RealPos[]<deterministic> var, Bool<any> up)'
+      arguments:
+        - label: 'var'
+          description: 'The variable to scale'
+          dag_type: '<deterministic>'
+          pass_by: 'reference'
+          value_type: 'RealPos[]'
+          options:
+        - label: 'up'
+          description: 'Scaling up or down?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+    - name: 'removeVariable'
+      return_type: 'void'
+      usage: 'removeVariable(Real<stochastic> var, Bool<any> up)'
+      arguments:
+        - label: 'var'
+          description: 'Scaling up or down?'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'Real'
+          options:
+        - label: 'up'
+          description: 'The variable to scale'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+    - name: 'removeVariable'
+      return_type: 'void'
+      usage: 'removeVariable(Real[]<stochastic> var, Bool<any> up)'
+      arguments:
+        - label: 'var'
+          description: 'Scaling up or down?'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'Real[]'
+          options:
+        - label: 'up'
+          description: 'The variable to scale'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+    - name: 'removeVariable'
+      return_type: 'void'
+      usage: 'removeVariable(Real[]<deterministic> var, Bool<any> up)'
+      arguments:
+        - label: 'var'
+          description: 'Scaling up or down?'
+          dag_type: '<deterministic>'
+          pass_by: 'reference'
+          value_type: 'Real[]'
+          options:
+        - label: 'up'
+          description: 'The variable to scale'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+    - name: 'removeVariable'
+      return_type: 'void'
+      usage: 'removeVariable(RealPos[]<deterministic> var, Bool<any> up)'
+      arguments:
+        - label: 'var'
+          description: 'Scaling up or down?'
+          dag_type: '<deterministic>'
+          pass_by: 'reference'
+          value_type: 'RealPos[]'
+          options:
+        - label: 'up'
+          description: 'The variable to scale'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+  references:
+- name: 'mvUpDownSlideBactrian'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'lambda'
+          description: 'The scaling factor (strength) of the proposal.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tune'
+          description: 'Should we tune the scaling factor during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+    - name: 'addVariable'
+      return_type: 'void'
+      usage: 'addVariable(Real<stochastic> var, Bool<any> up)'
+      arguments:
+        - label: 'var'
+          description: 'The variable to scale'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'Real'
+          options:
+        - label: 'up'
+          description: 'Scaling up or down?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+    - name: 'addVariable'
+      return_type: 'void'
+      usage: 'addVariable(Real[]<stochastic> var, Bool<any> up)'
+      arguments:
+        - label: 'var'
+          description: 'The variable to scale'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'Real[]'
+          options:
+        - label: 'up'
+          description: 'Scaling up or down?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+    - name: 'addVariable'
+      return_type: 'void'
+      usage: 'addVariable(Real[]<deterministic> var, Bool<any> up)'
+      arguments:
+        - label: 'var'
+          description: 'The variable to scale'
+          dag_type: '<deterministic>'
+          pass_by: 'reference'
+          value_type: 'Real[]'
+          options:
+        - label: 'up'
+          description: 'Scaling up or down?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+    - name: 'addVariable'
+      return_type: 'void'
+      usage: 'addVariable(RealPos[]<deterministic> var, Bool<any> up)'
+      arguments:
+        - label: 'var'
+          description: 'The variable to scale'
+          dag_type: '<deterministic>'
+          pass_by: 'reference'
+          value_type: 'RealPos[]'
+          options:
+        - label: 'up'
+          description: 'Scaling up or down?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+    - name: 'removeVariable'
+      return_type: 'void'
+      usage: 'removeVariable(Real<stochastic> var, Bool<any> up)'
+      arguments:
+        - label: 'var'
+          description: 'Scaling up or down?'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'Real'
+          options:
+        - label: 'up'
+          description: 'The variable to scale'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+    - name: 'removeVariable'
+      return_type: 'void'
+      usage: 'removeVariable(Real[]<stochastic> var, Bool<any> up)'
+      arguments:
+        - label: 'var'
+          description: 'Scaling up or down?'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'Real[]'
+          options:
+        - label: 'up'
+          description: 'The variable to scale'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+    - name: 'removeVariable'
+      return_type: 'void'
+      usage: 'removeVariable(Real[]<deterministic> var, Bool<any> up)'
+      arguments:
+        - label: 'var'
+          description: 'Scaling up or down?'
+          dag_type: '<deterministic>'
+          pass_by: 'reference'
+          value_type: 'Real[]'
+          options:
+        - label: 'up'
+          description: 'The variable to scale'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+    - name: 'removeVariable'
+      return_type: 'void'
+      usage: 'removeVariable(RealPos[]<deterministic> var, Bool<any> up)'
+      arguments:
+        - label: 'var'
+          description: 'Scaling up or down?'
+          dag_type: '<deterministic>'
+          pass_by: 'reference'
+          value_type: 'RealPos[]'
+          options:
+        - label: 'up'
+          description: 'The variable to scale'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+  references:
+- name: 'mvVectorBinarySwitch'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'x'
+          description: 'The variable on which this move operates.'
+          dag_type: '<deterministic>'
+          pass_by: 'reference'
+          value_type: 'Natural[]'
+          options:
+        - label: 'p'
+          description: 'The probability of applying the move to each element.'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'Probability'
+          options:
+        - label: 'elements'
+          description: 'The indices of elements. All are used if this is empty.'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'Natural[]'
+          options:
+        - label: 'tune'
+          description: 'Should we tune the window size during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvVectorFixedSingleElementSlide'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'x'
+          description: 'The variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'Real[]'
+          options:
+        - label: 'lambda'
+          description: 'The scaling factor (strength) of this move.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tune'
+          description: 'Should we tune the scaling factor during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'element'
+          description: 'The index of the element to scale.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvVectorScale'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'x'
+          description: 'The variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'RealPos[]'
+          options:
+        - label: 'lambda'
+          description: 'The scaling parameter (strength) of the move.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tune'
+          description: 'Should we tune the scaling parameter during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvVectorSingleElementScale'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'x'
+          description: 'The variable on which this move operates.'
+          dag_type: '<deterministic>'
+          pass_by: 'reference'
+          value_type: 'RealPos[]'
+          options:
+        - label: 'lambda'
+          description: 'The scaling factor (strength) of this move.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tune'
+          description: 'Should we tune the scaling factor during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvVectorSingleElementSlide'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'x'
+          description: 'The variable on which this move operates.'
+          dag_type: '<deterministic>'
+          pass_by: 'reference'
+          value_type: 'Real[]'
+          options:
+        - label: 'lambda'
+          description: 'The scaling factor (or strength) of the proposals.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tune'
+          description: 'Should we auto tune during burning?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvVectorSlide'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'x'
+          description: 'The variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'Real[]'
+          options:
+        - label: 'elements'
+          description: 'The indices of elements. All are used if this is empty.'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'Natural[]'
+          options:
+        - label: 'delta'
+          description: 'The window size parameter.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tune'
+          description: 'Should we tune the window size during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
+- name: 'mvVectorSlideRecenter'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  constructor:
+    - usage:
+      arguments:
+        - label: 'x'
+          description: 'The variable on which the move operates.'
+          dag_type: '<deterministic>'
+          pass_by: 'reference'
+          value_type: 'Real[]'
+          options:
+        - label: 'mean'
+          description: 'The mean parameter of the variables.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'Real'
+          options:
+        - label: 'delta'
+          description: 'The window size parameter.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tune'
+          description: 'Should we tune the scaling factor during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          options:
+  methods:
+  references:
