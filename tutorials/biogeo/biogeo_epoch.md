@@ -7,10 +7,13 @@ order: 2
 prerequisites:
 - biogeo/biogeo_intro
 - biogeo/biogeo_simple
-exclude_files: 
-- data/n4/silversword.bg.nex
-- data/n4/silversword.mcc.tre
-- data/n4/silversword.mol.nex
+include_files: 
+
+- scripts/plot_anc_range.simple.R
+- scripts/range_colors.txt
+
+- scripts/run_epoch_phy.Rev
+exclude_files:
 - data/n6/hawaii.n6.connectivity.1.txt
 - data/n6/hawaii.n6.connectivity.2.txt
 - data/n6/hawaii.n6.connectivity.3.txt
@@ -18,19 +21,15 @@ exclude_files:
 - data/n6/hawaii.n6.connectivity.5.txt
 - data/n6/hawaii.n6.distances.txt
 - data/n6/hawaii.n6.times.txt
-- data/n6/psychotria.init.tre
-- data/n6/psychotria.mol.nex
-- data/n6/psychotria.n6.range.nex
-- data/n6/psychotria.tre
 - data/n6/silversword.init.tre
 - data/n6/silversword.mol.nex
 - data/n6/silversword.n6.range.nex
 - data/n6/silversword.tre
-- scripts/plot_anc_range.simple.R
-- scripts/range_colors.txt
+- data/n4/silversword.bg.nex
+- data/n4/silversword.mcc.tre
+- data/n4/silversword.mol.nex
 - scripts/run_simple.Rev
 - scripts/run_simple_phy.Rev
-- scripts/run_epoch_phy.Rev
 index: index
 title-old: RB_Biogeography_Tutorial
 redirect: false 
@@ -58,11 +57,11 @@ volcanic island may only be colonized once it has formed, and that
 distance should have some bearing on dispersal rate.
 
 To accomplish this, we'll incorporate (paleo-)geographical data for the
-Hawaiian archipelago, summarized in Table [tab:paleogeo]. Even though
+Hawaiian archipelago, summarized in {% ref paleogeo %}. Even though
 we will continue to use four areas (K, O, M, H) in this section, we will
 use all six areas (R, K, O, M, H, Z) in {% ref bg_phylo %}, hence
 the full table is given for future reference.
-
+{% table paleogeo %}
   |     area      | code | $a_{max}$ | $a_{min}$  | $g_{\bullet R}$ | $g_{\bullet K}$ | $g_{\bullet O}$ | $g_{\bullet M}$ | $g_{\bullet H}$ | $g_{\bullet Z}$ |
   |---------------|------|-----------|------------|----------------|-----------------|-----------------|-----------------|-----------------|-----------------|
   | Older islands |   R  |      -    |      -     |        -       |        261      |        406      |        500      |        680      |       3900      |
@@ -72,12 +71,15 @@ the full table is given for future reference.
   | Hawaii        |   H  |     0.7   |     0.3    |        -       |         -       |         -       |         -       |         -       |       3900      |
   | Mainland      |   Z  |      -    |      -     |        -       |         -       |         -       |         -       |         -       |         -       |
 
-  : Hawaiian paleogeographic data. The six areas are given in {% ref hawaii_areas %}.
+  {% tabcaption %}
+  Hawaiian paleogeographic data. The six areas are given in {% ref hawaii_areas %}.
    Ages $a_{max}$ and $a_{min}$ report the maximum
   and minimum origination times for the given island [adapted from
   {% cite Neal2008 %}]. Distances $g_{ij}$ report the shortest geographical
   distance from the coast of the row's area to the column's area
-  (measured at present).<span data-label="tab:paleogeo">
+  (measured at present).
+  {% endtabcaption %}
+{% endtable %}
 
 {% subsection Analysis %}
 
@@ -88,7 +90,7 @@ output prefix
     tree_fn = "data/n4/silversword.tre"
     out_fn = "output/epoch"
 
-The paleogeographical information from Table [tab:paleogeo] is encoded
+The paleogeographical information from {% ref paleogeo %} is encoded
 in three files named `hawaii.n4.times.txt`,
 `hawaii.n4.distances.txt`, and
 `hawaii.n4.connectivity.\*.txt`.
@@ -285,7 +287,7 @@ Next, we need to define breakpoints for when the underlying
 paleogeographic state/connectivity changes. In our case, we'll define
 the epoch breakpoints as uniformly distributed random variables that are
 bounded by the minimum and maximum age estimates for when each new
-island complex formed (Table [tab:paleogeo]). This is easily done
+island complex formed ({% ref paleogeo %}). This is easily done
 using a for loop over the number of epochs. Note, we define the end of
 the final epoch as the present.
 
@@ -390,7 +392,7 @@ then build and run MCMC
 When compared to the ancestral state estimates from the "simple"
 analysis ({% ref simple_RevGadgets_ase %}), these results are far
 more consonant with what we understand about the origination times of
-the islands (Table [tab:paleogeo]). First, this reconstruction asserts
+the islands ({% ref paleogeo %}). First, this reconstruction asserts
 that the clade originated in the modern Hawaiian islands at a time when
 only Kauai was above sea level. Similarly, the *D.
 sheriffiana* and *D. arborea* clade no longer

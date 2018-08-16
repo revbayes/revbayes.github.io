@@ -32,13 +32,13 @@ namespace RevBayesCore {
     class HyperbolicCosineFunction : public ContinuousFunction {
 
         public:
-                                        HyperbolicCosineFunction(const TypedDagNode<double> *a); 
+                                          HyperbolicCosineFunction(const TypedDagNode<double> *a); 
 
             HyperbolicCosineFunction*     clone(void) const; //!< creates a clone
-            void                        update(void); //!< recomputes the value
+            void                          update(void);      //!< recomputes the value
 
         protected:
-            void                        swapParameterInternal(const DagNode *oldP, const DagNode *newP); //!< Implementation of swapping parameters
+            void                          swapParameterInternal(const DagNode *oldP, const DagNode *newP); //!< Implementation of swapping parameters
 
         private:
             const TypedDagNode<double>* x;

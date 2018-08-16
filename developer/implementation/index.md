@@ -8,7 +8,7 @@ category: Developer
 {:style='width: 100%;'}
 
 {% assign developer = site.pages | where:"layout", "developer" %}
-{% assign implementations = developer | where:"category", "implementation" | sort: "index" %}
+{% assign implementations = developer | where:"category", "implementation" | sort: "order" %}
 
 {% for x in implementations %}
 {{ x.title }}

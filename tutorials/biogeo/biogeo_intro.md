@@ -50,9 +50,6 @@ title-old: RB_Biogeography_Tutorial
 redirect: false 
 ---
 
-
-
-
 {% section Introduction | introduction %}
 
 Many fundamental evolutionary processes, such as adaptation, speciation,
@@ -87,7 +84,6 @@ useful to work within a single directory.
 {:.instruction}
  -->
 
-
 {% section Overview of the Dispersal-Extinction-Cladogenesis Model | bg_intro2 %}
 
 The Dispersal-Extinction-Cladogenesis (DEC) process models range
@@ -98,23 +94,21 @@ anagenetic range evolution, and cladogenetic range evolution ({% ref dec_cartoon
 {% figure dec_cartoon %}
 <img src="figures/fig_range_evol_events.png" width="75%">
 {% figcaption %}
-Cartoon of behavior
-of the DEC model.Two anagenetic events (a,b) and five cladogenetic (c–g)
-events are shown for a system with two areas.Areas are shaded when
-inhabited by a given lineage and left blank when uninhabited.Time
-proceeds from left to right.(a) Dispersal: a new area to be added to the
-species range.(b) Extirpation (or local extinction): the species range
-loses a previously inhabited area.(c) Narrow sympatry: When the
-ancestral range contains one area, both daughter lineages inherit that
-area.(d) Subset sympatry: When the ancestral range is widespread, one
-daughter inherits the ancestral range and the other daughter inherits
-only one area.(e) Allopatry (or vicariance): When the ancestral range is
-widespread, one daughter lineage a subset of the ancestral areas while
-the other daughter inherits all remaining ancestral areas.(f) Widespread
-sympatry: When the ancestral range is widespread, both daughters inherit
-the ancestral range.(g) Jump dispersal (or founder speciation): One
-daughter inherits the ancestral range while the other daughter inherits
-a new unoccupied area. 
+Cartoon of behavior of the DEC model.Two anagenetic events (a,b) and five
+cladogenetic (c–g) events are shown for a system with two areas.Areas are shaded
+when inhabited by a given lineage and left blank when uninhabited.Time proceeds
+from left to right. (a) Dispersal: a new area to be added to the species range.
+(b) Extirpation (or local extinction): the species range loses a previously
+inhabited area. (c) Narrow sympatry: When the ancestral range contains one area,
+both daughter lineages inherit that area. (d) Subset sympatry: When the
+ancestral range is widespread, one daughter inherits the ancestral range and the
+other daughter inherits only one area. (e) Allopatry (or vicariance): When the
+ancestral range is widespread, one daughter lineage inherits a subset of the
+ancestral areas while the other daughter inherits all remaining ancestral areas.
+(f) Widespread sympatry: When the ancestral range is widespread, both daughters
+inherit the ancestral range. (g) Jump dispersal (or founder speciation): One
+daughter inherits the ancestral range while the other daughter inherits a new
+unoccupied area.
 {% endfigcaption %}
 {% endfigure %}
 
@@ -372,9 +366,9 @@ lineage. Like above, for three areas, there are 8 states, and
 $8 \times 8 \times 8 = 512$ cladogenetic probability terms.
 
 Of course, this model can be specified for more than three areas. Let's
-consider what happens to the size of **Q** when the number of areas,
-$N$, becomes large. For three areas, **Q** is size $8 \times 8$. For ten
-areas, **Q** is size $2^{10} \times 2^{10} = 1024 \times 1024$, which
+consider what happens to the size of **Q** when the number of areas
+$N$ becomes large. For three areas, **Q** is of size $8 \times 8$. For ten
+areas, **Q** is of size $2^{10} \times 2^{10} = 1024 \times 1024$, which
 approaches the largest size matrices that can be exponentiated in a
 practical amount of time. For twenty areas, **Q** is size
 $2^{20} \times 2^{20} \approx 10^6 \times 10^6$ and exponentiation is
