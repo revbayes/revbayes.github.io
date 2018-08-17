@@ -580,8 +580,8 @@ The functions used to generate the help entry are in the <code class="highlighte
 <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">protected:</span>
     
   <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span>                        <span class="n">getHelpAuthor</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>  <span class="c1">//!&lt; Get the author(s) of this function
-</span>  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span>                        <span class="n">getHelpDescription</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>  <span class="c1">//!&lt; Get the description for this function
-</span>  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span>                        <span class="n">getHelpDetails</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span> <span class="c1">//!&lt; Get the more detailed description of the function
+</span>  <span class="n">std</span><span class="o">::</span><span class="n">string</span>                                     <span class="n">getHelpDescription</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>  <span class="c1">//!&lt; Get the description for this function
+</span>  <span class="n">std</span><span class="o">::</span><span class="n">string</span>                                     <span class="n">getHelpDetails</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span> <span class="c1">//!&lt; Get the more detailed description of the function
 </span>  <span class="n">std</span><span class="o">::</span><span class="n">string</span>                                     <span class="n">getHelpExample</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span> <span class="c1">//!&lt; Get an executable and instructive example
 </span>  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">RevBayesCore</span><span class="o">::</span><span class="n">RbHelpReference</span><span class="o">&gt;</span>      <span class="n">getHelpReferences</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span> <span class="c1">//!&lt; Get some references/citations for this function
 </span>  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span>                        <span class="n">getHelpSeeAlso</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span> <span class="c1">//!&lt; Get suggested other functions
@@ -605,39 +605,23 @@ The functions used to generate the help entry are in the <code class="highlighte
 <span class="cm">/**
  * Get the (brief) description for this function
  */</span>
-<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">Dist_norm</span><span class="o">::</span><span class="n">getHelpDescription</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span>
+<span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">Dist_norm</span><span class="o">::</span><span class="n">getHelpDescription</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span>
 <span class="p">{</span>
-    <span class="c1">// create a variable for the description of the function
-</span>    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">descriptions</span><span class="p">;</span>
-    <span class="n">descriptions</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span> <span class="s">"Normal (gaussian) distribution with mean equal to ‘mean’ and standard deviation equal to ‘sd’."</span> <span class="p">);</span>
-
-    <span class="k">return</span> <span class="n">descriptions</span><span class="p">;</span>
+    <span class="c1">// return the description
+</span>    <span class="k">return</span> <span class="s">"Normal (gaussian) distribution with mean equal to ‘mean’ and standard deviation equal to ‘sd’."</span><span class="p">;</span>
 <span class="p">}</span>
 
 
 <span class="cm">/**
  * Get the more detailed description of the function
  */</span>
-<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">Dist_norm</span><span class="o">::</span><span class="n">getHelpDetails</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span>
+<span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">Dist_norm</span><span class="o">::</span><span class="n">getHelpDetails</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span>
 <span class="p">{</span>
-    <span class="c1">// create a variable for the description of the function
-</span>    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">details</span><span class="p">;</span>
-
-    <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">details_1</span> <span class="o">=</span> <span class="s">""</span><span class="p">;</span>
-    <span class="n">details_1</span> <span class="o">+=</span> <span class="s">"The normal distribution has density:"</span><span class="p">;</span>
-
-    <span class="n">details</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span> <span class="n">details_1</span> <span class="p">);</span>
-
-    <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">details_2</span> <span class="o">=</span> <span class="s">""</span><span class="p">;</span>
-    <span class="n">details_2</span> <span class="o">+=</span> <span class="s">"f(x) = 1/(sqrt(2 pi) sigma) e^-((x - mu)^2/(2 sigma^2))"</span><span class="p">;</span>
-
-    <span class="n">details</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span> <span class="n">details_2</span> <span class="p">);</span>
-
-    <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">details_3</span> <span class="o">=</span> <span class="s">""</span><span class="p">;</span>
-    <span class="n">details_3</span> <span class="o">+=</span> <span class="s">"where mu is the mean of the distribution and sigma the standard deviation."</span><span class="p">;</span>
-
-    <span class="n">details</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span> <span class="n">details_3</span> <span class="p">);</span>
-
+  <span class="c1">// create a details variable
+</span>    <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">details</span><span class="p">;</span>
+    <span class="n">details</span> <span class="o">+=</span> <span class="s">"The normal distribution has density:</span><span class="se">\n\n</span><span class="s">"</span><span class="p">;</span>
+    <span class="n">details</span> <span class="o">+=</span> <span class="s">"f(x) = 1/(sqrt(2 pi) sigma) e^-((x - mu)^2/(2 sigma^2))</span><span class="se">\n\n</span><span class="s">"</span><span class="p">;</span>
+    <span class="n">details</span> <span class="o">+=</span> <span class="s">"where mu is the mean of the distribution and sigma the standard deviation."</span><span class="p">;</span>
 
     <span class="k">return</span> <span class="n">details</span><span class="p">;</span>
 <span class="p">}</span>
