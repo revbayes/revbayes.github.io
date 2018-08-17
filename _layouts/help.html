@@ -9,7 +9,7 @@ code_layout: Rev
     <nav class="sidebar_nav">
         <ul class="list-unstyled">
         {% for item in site.data.help %}
-        <li class="sidebar_item"><a href="{{ site.baseurl }}/{{ site.helpdir }}/{{ item.name }}.html">{{ item.name }}</a></li>
+        <li class="sidebar_item"><a href="{{ site.baseurl }}/{{ site.helpdir }}/{{ item.name | replace: '[', '%5B' | replace: ']', '%5D' }}.html">{{ item.name }}</a></li>
         {% endfor %}
         </ul>
     </nav>
@@ -17,11 +17,9 @@ code_layout: Rev
 
 <div class="help col-sm-8">
     {% if page.entry %}
-        <p>{{ page.entry.name }}</p>
-        {% if page.entry.title %}
-            <h2 class="help-title">{{ page.entry.title }}</h2>
-        {% endif %}
-
+        {% capture name %}```{{ page.entry.name }}```{% if page.entry.title %} - {{ page.entry.title }}{% endif %}{% endcapture %}
+        <h2 class="help-title">{{ name | markdownify }}</h2>
+        
         {% if page.entry.aliases %}
             <h3 class="help-section-header">Aliases</h3>
             <div class="help-section-body">
@@ -34,8 +32,7 @@ code_layout: Rev
         {% endif %}
 
         {% if page.entry.description %}
-            <h3 class="help-section-header">Description</h3>
-            <div class="help-section-body">
+            <div class="help-description">
             {{ page.entry.description }}
             </div>
         {% endif %}
@@ -50,7 +47,7 @@ code_layout: Rev
             <div class="help-section-body">
             {{ page.entry.usage }}
             </div>
-            <h3 class="help-section-header">Arguments</h3>
+            <h3 class="help-section-header arguments">Arguments</h3>
             <div class="help-section-body">
             <table class="arguments">
                 {% for argument in function.arguments %}
@@ -105,7 +102,7 @@ code_layout: Rev
         {% if page.entry.methods %}
             <h3 class="help-section-header">Methods</h3>
             <div class="help-section-body">
-            <ul class="list-unstyled">
+            <ul class="list-unstyled methods">
             {% for method in page.entry.methods %}
             <li>{{ method.usage }}</li>
             {% endfor %}
