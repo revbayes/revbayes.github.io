@@ -62,7 +62,7 @@ Rev Language Reference
         <ul class="list-unstyled components">
         
         <h3 id="types" class="sidebar_header">distributions</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/distributions/dnBernoulli.html">dnBernoulli</a></li>
         
@@ -261,7 +261,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">functions</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/functions/Probability.html">Probability</a></li>
         
@@ -660,7 +660,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">monitors</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/monitors/mnAncestralState.html">mnAncestralState</a></li>
         
@@ -691,7 +691,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">moves</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/moves/mvAVMVN.html">mvAVMVN</a></li>
         
@@ -890,7 +890,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">types</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/types/AbstractHomologousDiscreteCharacterData.html">AbstractHomologousDiscreteCharacterData</a></li>
         
@@ -986,22 +986,96 @@ Rev Language Reference
     
         <p>dnMultiSpeciesCoalescentInverseGamma</p>
         
-            <h2>Multispecies coalescent Distribution with inverse gamma prior on effective population sizes</h2>
+            <h2 class="help-title">Multispecies coalescent Distribution with inverse gamma prior on effective population sizes</h2>
         
+
         
-            <h3>Constructor</h3>
-            
-            dnMultiSpeciesCoalescentInverseGamma(TimeTree<any> speciesTree, RealPos<any> shape, RealPos<any> rate, Taxon[]<any> taxa)
-            
+
         
-        
-            <h3>Description</h3>
+            <h3 class="help-section-header">Description</h3>
+            <div class="help-section-body">
             
             Multispecies coalescent distribution describing how gene trees can be generated from within a species tree given effective population sizes. Requires an ultrametric species tree, parameters of an inverse gamma prior on effective population sizes, and taxa with species and individual names.
             
+            </div>
         
+
         
-            <h3>Example</h3>
+            <h3 class="help-section-header">Usage</h3>
+            
+            <div class="help-section-body">
+            dnMultiSpeciesCoalescentInverseGamma(TimeTree<any> speciesTree, RealPos<any> shape, RealPos<any> rate, Taxon[]<any> taxa)
+            </div>
+            <h3 class="help-section-header">Arguments</h3>
+            <div class="help-section-body">
+            <table class="arguments">
+                
+                <tr class="argument">
+                    <td class="lhs">speciesTree : </td>
+                    <td class="rhs">TimeTree (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The species tree in which the gene trees evolve.</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">shape : </td>
+                    <td class="rhs">RealPos (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The shape of the inverse gamma prior distribution on the effective population sizes.</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">rate : </td>
+                    <td class="rhs">RealPos (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The rate of the inverse gamma prior distribution on the effective population sizes.</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">taxa : </td>
+                    <td class="rhs">Taxon[] (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The vector of taxa which have species and individual names.</td>
+                </tr>
+                
+                
+            </table>
+            </div>
+        
+
+        
+            <h3 class="help-section-header">Domain Type</h3>
+            <div class="help-section-body">
+            TimeTree
+            </div>
+        
+
+        
+            <h3 class="help-section-header">Details</h3>
+            <div class="help-section-body">
+            
+            The species tree must be ultrametric.
+            
+            Parameters of an inverse gamma prior on effective population sizes must be provided.
+            
+            This distribution uses a conjugate prior on effective population sizes.
+            
+            As a consequence, effective population sizes are integrated out and treated as nuisance parameters.
+            
+            If you are interested in reconstructing ancestral effective population sizes, use dnMultiSpeciesCoalescent.
+            
+            </div>
+        
+
+        
+            <h3 class="help-section-header">Example</h3>
             
             <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># We are going to save the trees we simulate in the folder simulatedTrees:
 dataFolder = "simulatedTrees/" 
@@ -1039,6 +1113,22 @@ for (i in 1:(n_genes)) {
 </code></pre></div></div>
 
         
+
+        
+
+        
+            <h3 class="help-section-header">See Also</h3>
+            <div class="help-section-body">
+            <ul class="list-unstyled">
+            
+            <li>dnMultiSpeciesCoalescent</li>
+            
+            <li>dnMultiSpeciesCoalescentUniformPrior</li>
+            
+            </ul>
+            </div>
+        
+
     
 </div>
 </div>

@@ -62,7 +62,7 @@ Rev Language Reference
         <ul class="list-unstyled components">
         
         <h3 id="types" class="sidebar_header">distributions</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/distributions/dnBernoulli.html">dnBernoulli</a></li>
         
@@ -261,7 +261,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">functions</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/functions/Probability.html">Probability</a></li>
         
@@ -660,7 +660,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">monitors</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/monitors/mnAncestralState.html">mnAncestralState</a></li>
         
@@ -691,7 +691,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">moves</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/moves/mvAVMVN.html">mvAVMVN</a></li>
         
@@ -890,7 +890,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">types</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/types/AbstractHomologousDiscreteCharacterData.html">AbstractHomologousDiscreteCharacterData</a></li>
         
@@ -986,16 +986,166 @@ Rev Language Reference
     
         <p>dnPhyloCTMCDollo</p>
         
-            <h2></h2>
+
         
+
         
-            <h3>Constructor</h3>
+
+        
+            <h3 class="help-section-header">Usage</h3>
             
+            <div class="help-section-body">
             dnPhyloCTMCDollo(Tree<any> tree, RateGenerator|RateGenerator[]<any> Q, RealPos<any> deathRate, Simplex<any> rootFrequencies, RealPos|RealPos[]<any> branchRates, RealPos[]<any> siteRates, Natural<any> nSites, String<any> type {valid options: "Standard"|"Binary"|"Restriction"}, Bool<any> normalize, String<any> coding)
-            
+            </div>
+            <h3 class="help-section-header">Arguments</h3>
+            <div class="help-section-body">
+            <table class="arguments">
+                
+                <tr class="argument">
+                    <td class="lhs">tree : </td>
+                    <td class="rhs">Tree (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The tree along which the process evolves.</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">Q : </td>
+                    <td class="rhs">RateGenerator (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The global or branch-specific rate matrices.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : NULL</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">deathRate : </td>
+                    <td class="rhs">RealPos (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The Dollo character death rate</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 1</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">rootFrequencies : </td>
+                    <td class="rhs">Simplex (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The root specific frequencies of the characters, if applicable.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : NULL</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">branchRates : </td>
+                    <td class="rhs">RealPos (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The global or branch-specific rate multipliers.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 1</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">siteRates : </td>
+                    <td class="rhs">RealPos[] (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The rate categories for the sites.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : [ ]</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">nSites : </td>
+                    <td class="rhs">Natural (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The number of sites, used for simulation.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 0</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">type : </td>
+                    <td class="rhs">String (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The data type, used for simulation and initialization.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : Standard</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">normalize : </td>
+                    <td class="rhs">Bool (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">Should we normalize the Dollo substitution matrices?</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : TRUE</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">coding : </td>
+                    <td class="rhs">String (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs"></td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : noabsencesites</td>
+                </tr>
+                
+                
+            </table>
+            </div>
         
+
         
+            <h3 class="help-section-header">Domain Type</h3>
+            <div class="help-section-body">
+            AbstractHomologousDiscreteCharacterData
+            </div>
         
+
+        
+
+        
+
+        
+
+        
+
     
 </div>
 </div>

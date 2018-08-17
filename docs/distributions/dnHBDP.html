@@ -62,7 +62,7 @@ Rev Language Reference
         <ul class="list-unstyled components">
         
         <h3 id="types" class="sidebar_header">distributions</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/distributions/dnBernoulli.html">dnBernoulli</a></li>
         
@@ -261,7 +261,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">functions</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/functions/Probability.html">Probability</a></li>
         
@@ -660,7 +660,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">monitors</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/monitors/mnAncestralState.html">mnAncestralState</a></li>
         
@@ -691,7 +691,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">moves</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/moves/mvAVMVN.html">mvAVMVN</a></li>
         
@@ -890,7 +890,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">types</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/types/AbstractHomologousDiscreteCharacterData.html">AbstractHomologousDiscreteCharacterData</a></li>
         
@@ -986,16 +986,129 @@ Rev Language Reference
     
         <p>dnHBDP</p>
         
-            <h2></h2>
+
         
+
         
-            <h3>Constructor</h3>
+
+        
+            <h3 class="help-section-header">Usage</h3>
             
+            <div class="help-section-body">
             dnHBDP(RealPos<any> rootAge, Natural<any> rootState, RealPos[]<any> lambda, RealPos[]<any> mu, RealPos<any> delta, Probability<any> rho, String<any> condition {valid options: "time"|"survival"}, Bool<any> allowSameCategory, Taxon[]<any> taxa)
-            
+            </div>
+            <h3 class="help-section-header">Arguments</h3>
+            <div class="help-section-body">
+            <table class="arguments">
+                
+                <tr class="argument">
+                    <td class="lhs">rootAge : </td>
+                    <td class="rhs">RealPos (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The age of the root.</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">rootState : </td>
+                    <td class="rhs">Natural (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The index of the rate category at the root.</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">lambda : </td>
+                    <td class="rhs">RealPos[] (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The vector of speciation rates.</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">mu : </td>
+                    <td class="rhs">RealPos[] (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The vector of extinction rates.</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">delta : </td>
+                    <td class="rhs">RealPos (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The rate of jumping between rate categories.</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">rho : </td>
+                    <td class="rhs">Probability (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The taxon sampling probability.</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">condition : </td>
+                    <td class="rhs">String (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The condition of the birth-death process.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : survival</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">allowSameCategory : </td>
+                    <td class="rhs">Bool (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">Do we allow shifts into the same category</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : TRUE</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">taxa : </td>
+                    <td class="rhs">Taxon[] (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The taxon names used for initialization.</td>
+                </tr>
+                
+                
+            </table>
+            </div>
         
+
         
+            <h3 class="help-section-header">Domain Type</h3>
+            <div class="help-section-body">
+            TimeTree
+            </div>
         
+
+        
+
+        
+
+        
+
+        
+
     
 </div>
 </div>

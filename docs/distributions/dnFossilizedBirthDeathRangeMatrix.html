@@ -62,7 +62,7 @@ Rev Language Reference
         <ul class="list-unstyled components">
         
         <h3 id="types" class="sidebar_header">distributions</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/distributions/dnBernoulli.html">dnBernoulli</a></li>
         
@@ -261,7 +261,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">functions</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/functions/Probability.html">Probability</a></li>
         
@@ -660,7 +660,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">monitors</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/monitors/mnAncestralState.html">mnAncestralState</a></li>
         
@@ -691,7 +691,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">moves</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/moves/mvAVMVN.html">mvAVMVN</a></li>
         
@@ -890,7 +890,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">types</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/types/AbstractHomologousDiscreteCharacterData.html">AbstractHomologousDiscreteCharacterData</a></li>
         
@@ -986,16 +986,158 @@ Rev Language Reference
     
         <p>dnFossilizedBirthDeathRangeMatrix</p>
         
-            <h2></h2>
+
         
-        
-            <h3>Constructor</h3>
+            <h3 class="help-section-header">Aliases</h3>
+            <div class="help-section-body">
+            <ul class="list-unstyled">
             
+            <li>dnFBDRMatrix</li>
+            
+            </ul>
+            </div>
+        
+
+        
+
+        
+            <h3 class="help-section-header">Usage</h3>
+            
+            <div class="help-section-body">
             dnFossilizedBirthDeathRangeMatrix(RealPos|RealPos[]<any> lambda, RealPos|RealPos[]<any> mu, RealPos|RealPos[]<any> psi, Probability<any> rho, RealPos[]<any> timeline, Natural|Natural[]|Natural[][]<any> k, String<any> condition {valid options: "time"|"survival"}, Taxon[]<any> taxa, Bool<any> binary)
-            
+            </div>
+            <h3 class="help-section-header">Arguments</h3>
+            <div class="help-section-body">
+            <table class="arguments">
+                
+                <tr class="argument">
+                    <td class="lhs">lambda : </td>
+                    <td class="rhs">RealPos (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The speciation rate(s).</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">mu : </td>
+                    <td class="rhs">RealPos (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The extinction rate(s).</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 0</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">psi : </td>
+                    <td class="rhs">RealPos (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The fossil sampling rate(s).</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 0</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">rho : </td>
+                    <td class="rhs">Probability (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The extant sampling fraction.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 1</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">timeline : </td>
+                    <td class="rhs">RealPos[] (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The rate interval change times of the piecewise constant process (from oldest to youngest).</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : NULL</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">k : </td>
+                    <td class="rhs">Natural (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The fossil observation counts (total or [interval] or [interval][species]).</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : NULL</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">condition : </td>
+                    <td class="rhs">String (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The condition of the process.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : time</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">taxa : </td>
+                    <td class="rhs">Taxon[] (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The taxa with stratigraphic ranges used for initialization.</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">binary : </td>
+                    <td class="rhs">Bool (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">Treat fossil counts as binary presence/absence data?</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : FALSE</td>
+                </tr>
+                
+                
+            </table>
+            </div>
         
+
         
+            <h3 class="help-section-header">Domain Type</h3>
+            <div class="help-section-body">
+            MatrixReal
+            </div>
         
+
+        
+
+        
+
+        
+
+        
+
     
 </div>
 </div>

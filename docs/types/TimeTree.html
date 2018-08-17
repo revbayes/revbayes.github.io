@@ -62,7 +62,7 @@ Rev Language Reference
         <ul class="list-unstyled components">
         
         <h3 id="types" class="sidebar_header">distributions</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/distributions/dnBernoulli.html">dnBernoulli</a></li>
         
@@ -261,7 +261,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">functions</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/functions/Probability.html">Probability</a></li>
         
@@ -660,7 +660,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">monitors</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/monitors/mnAncestralState.html">mnAncestralState</a></li>
         
@@ -691,7 +691,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">moves</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/moves/mvAVMVN.html">mvAVMVN</a></li>
         
@@ -890,7 +890,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">types</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/types/AbstractHomologousDiscreteCharacterData.html">AbstractHomologousDiscreteCharacterData</a></li>
         
@@ -986,16 +986,128 @@ Rev Language Reference
     
         <p>TimeTree</p>
         
-            <h2>Tree datatype</h2>
+            <h2 class="help-title">Tree datatype</h2>
         
+
         
+
         
-            <h3>Description</h3>
+            <h3 class="help-section-header">Description</h3>
+            <div class="help-section-body">
             
             The Tree datatype stores information to describe the shared ancestryof a taxon set. Information includes taxon labels, topology, nodecount, and branch lengths. Tree objects also possess several usefulmethods to traverse and manipulate the Tree's value.
             
+            </div>
         
+
         
+
+        
+
+        
+
+        
+
+        
+            <h3 class="help-section-header">Methods</h3>
+            <div class="help-section-body">
+            <ul class="list-unstyled">
+            
+            <li>branchLength(Natural<any> node)</li>
+            
+            <li>calculateEDR()</li>
+            
+            <li>calculateMNTD(AbstractHomologousDiscreteCharacterData<any> characters, Natural<any> stateIndex, Natural<any> site, Bool<any> zScore, Bool<any> useBranchLengths, Natural<any> randomizations)</li>
+            
+            <li>calculateMPD(AbstractHomologousDiscreteCharacterData<any> characters, Natural<any> stateIndex, Natural<any> site, Bool<any> zScore, Bool<any> useBranchLengths, Natural<any> randomizations)</li>
+            
+            <li>child(Natural<any> node, Natural<any> index)</li>
+            
+            <li>collapseNegativeBranches(RealPos<any> length)</li>
+            
+            <li>colless()</li>
+            
+            <li>containsClade(Clade<any> clade)</li>
+            
+            <li>dropFossils()</li>
+            
+            <li>dropTip(String|Taxon<any> node)</li>
+            
+            <li>fitchScore(AbstractHomologousDiscreteCharacterData<any> characters)</li>
+            
+            <li>gammaStatistic()</li>
+            
+            <li>getClade(Taxon[]<any> clade)</li>
+            
+            <li>getFossils()</li>
+            
+            <li>getInverseES()</li>
+            
+            <li>getPSSP(AbstractHomologousDiscreteCharacterData<any> characters, Natural<any> stateIndex)</li>
+            
+            <li>hasSameTopology(Tree<any> tree)</li>
+            
+            <li>isBinary()</li>
+            
+            <li>isContainedInClade(Natural<any> node, Clade<any> clade)</li>
+            
+            <li>isInternal(Natural<any> node)</li>
+            
+            <li>isRoot(Natural<any> node)</li>
+            
+            <li>makeUltrametric()</li>
+            
+            <li>meanInverseES(AbstractHomologousDiscreteCharacterData<any> characters, Natural<any> stateIndex)</li>
+            
+            <li>names()</li>
+            
+            <li>nnodes()</li>
+            
+            <li>nodeAge(Natural<any> node)</li>
+            
+            <li>nodeName(Natural<any> node)</li>
+            
+            <li>ntips()</li>
+            
+            <li>numSampledAncestors()</li>
+            
+            <li>offset(RealPos<any> factor)</li>
+            
+            <li>parent(Natural<any> node)</li>
+            
+            <li>removeDuplicateTaxa()</li>
+            
+            <li>rescale(RealPos<any> factor)</li>
+            
+            <li>rootAge()</li>
+            
+            <li>setNegativeConstraint(Bool<any> flag)</li>
+            
+            <li>setTaxonName(String<any> current, String<any> new)</li>
+            
+            <li>taxa()</li>
+            
+            <li>tipIndex(String|Taxon<any> name)</li>
+            
+            <li>treeLength()</li>
+            
+            </ul>
+            </div>
+        
+
+        
+            <h3 class="help-section-header">See Also</h3>
+            <div class="help-section-body">
+            <ul class="list-unstyled">
+            
+            <li>TimeTree</li>
+            
+            <li>BranchLengthTree</li>
+            
+            </ul>
+            </div>
+        
+
     
 </div>
 </div>

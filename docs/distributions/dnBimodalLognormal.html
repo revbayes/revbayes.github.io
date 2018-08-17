@@ -62,7 +62,7 @@ Rev Language Reference
         <ul class="list-unstyled components">
         
         <h3 id="types" class="sidebar_header">distributions</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/distributions/dnBernoulli.html">dnBernoulli</a></li>
         
@@ -261,7 +261,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">functions</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/functions/Probability.html">Probability</a></li>
         
@@ -660,7 +660,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">monitors</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/monitors/mnAncestralState.html">mnAncestralState</a></li>
         
@@ -691,7 +691,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">moves</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/moves/mvAVMVN.html">mvAVMVN</a></li>
         
@@ -890,7 +890,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">types</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/types/AbstractHomologousDiscreteCharacterData.html">AbstractHomologousDiscreteCharacterData</a></li>
         
@@ -986,22 +986,90 @@ Rev Language Reference
     
         <p>dnBimodalLognormal</p>
         
-            <h2>Bimodal Lognormal Distribution</h2>
+            <h2 class="help-title">Bimodal Lognormal Distribution</h2>
         
+
         
-            <h3>Constructor</h3>
-            
-            dnBimodalLognormal(Real<any> mean1, Real<any> mean2, RealPos<any> sd1, RealPos<any> sd2, Probability<any> p)
-            
+
         
-        
-            <h3>Description</h3>
+            <h3 class="help-section-header">Description</h3>
+            <div class="help-section-body">
             
             A bimodal lognormal distribution, that is, with probability p a value is distributed according to the first lognormal distribution and with probability 1-p from the second lognormal distribution.
             
+            </div>
         
+
         
-            <h3>Example</h3>
+            <h3 class="help-section-header">Usage</h3>
+            
+            <div class="help-section-body">
+            dnBimodalLognormal(Real<any> mean1, Real<any> mean2, RealPos<any> sd1, RealPos<any> sd2, Probability<any> p)
+            </div>
+            <h3 class="help-section-header">Arguments</h3>
+            <div class="help-section-body">
+            <table class="arguments">
+                
+                <tr class="argument">
+                    <td class="lhs">mean1 : </td>
+                    <td class="rhs">Real (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The mean (in log-space) of the first lognormal distribution.</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">mean2 : </td>
+                    <td class="rhs">Real (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The mean (in log-space) of the second lognormal distribution.</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">sd1 : </td>
+                    <td class="rhs">RealPos (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The standard deviation of the first lognormal distribution.</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">sd2 : </td>
+                    <td class="rhs">RealPos (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The standard deviation of the secind lognormal distribution.</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">p : </td>
+                    <td class="rhs">Probability (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The probability to belong to the first distribution.</td>
+                </tr>
+                
+                
+            </table>
+            </div>
+        
+
+        
+            <h3 class="help-section-header">Domain Type</h3>
+            <div class="help-section-body">
+            RealPos
+            </div>
+        
+
+        
+
+        
+            <h3 class="help-section-header">Example</h3>
             
             <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>p ~ dnBeta(1.0,1.0)
 x ~ dnBimodalLognormal(mean1=-1,mean2=1,sd1=0.1,sd2=0.1,p=p)
@@ -1015,6 +1083,22 @@ mymcmc.run(generations=200000)
 </code></pre></div></div>
 
         
+
+        
+
+        
+            <h3 class="help-section-header">See Also</h3>
+            <div class="help-section-body">
+            <ul class="list-unstyled">
+            
+            <li>dnBimodalNormal</li>
+            
+            <li>dnLognormal</li>
+            
+            </ul>
+            </div>
+        
+
     
 </div>
 </div>

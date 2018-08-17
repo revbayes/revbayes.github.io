@@ -62,7 +62,7 @@ Rev Language Reference
         <ul class="list-unstyled components">
         
         <h3 id="types" class="sidebar_header">distributions</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/distributions/dnBernoulli.html">dnBernoulli</a></li>
         
@@ -261,7 +261,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">functions</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/functions/Probability.html">Probability</a></li>
         
@@ -660,7 +660,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">monitors</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/monitors/mnAncestralState.html">mnAncestralState</a></li>
         
@@ -691,7 +691,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">moves</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/moves/mvAVMVN.html">mvAVMVN</a></li>
         
@@ -890,7 +890,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">types</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/types/AbstractHomologousDiscreteCharacterData.html">AbstractHomologousDiscreteCharacterData</a></li>
         
@@ -986,22 +986,72 @@ Rev Language Reference
     
         <p>dnCategorical</p>
         
-            <h2>The Categorical Distribution</h2>
+            <h2 class="help-title">The Categorical Distribution</h2>
         
+
         
-            <h3>Constructor</h3>
+            <h3 class="help-section-header">Aliases</h3>
+            <div class="help-section-body">
+            <ul class="list-unstyled">
             
-            dnCategorical(Simplex<any> p)
+            <li>dnCat</li>
             
+            </ul>
+            </div>
         
+
         
-            <h3>Description</h3>
+            <h3 class="help-section-header">Description</h3>
+            <div class="help-section-body">
             
             The categorical distribution, sometimes referred to as the generalized Bernoulli distribution. It describes the probability of one of K different outcomes, labeled from 1 to K, with each outcome probability separately specified.
             
+            </div>
         
+
         
-            <h3>Example</h3>
+            <h3 class="help-section-header">Usage</h3>
+            
+            <div class="help-section-body">
+            dnCategorical(Simplex<any> p)
+            </div>
+            <h3 class="help-section-header">Arguments</h3>
+            <div class="help-section-body">
+            <table class="arguments">
+                
+                <tr class="argument">
+                    <td class="lhs">p : </td>
+                    <td class="rhs">Simplex (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The probability for each category.</td>
+                </tr>
+                
+                
+            </table>
+            </div>
+        
+
+        
+            <h3 class="help-section-header">Domain Type</h3>
+            <div class="help-section-body">
+            Natural
+            </div>
+        
+
+        
+            <h3 class="help-section-header">Details</h3>
+            <div class="help-section-body">
+            
+            The argument to the constructor is a simplex containing the probabilities of the outcomes. The outcomes are labeled from 1 to K, where K is the number of elements in the simplex. Outcome i has probability specified by component i in the simplex.
+            
+            A typical scenario where a categorical variable is used is in the definition of a variable drawn from a mixture. A vector of mixture components is set up first, and then a stochastic variable drawn from a categorical distribution is used as an index in a deterministic assignment that points to a component in the mixture. See example below.
+            
+            </div>
+        
+
+        
+            <h3 class="help-section-header">Example</h3>
             
             <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Define a stochastic variable x that is drawn from
 # a categorical distribution with 4 categories, each
@@ -1028,6 +1078,20 @@ y := rates[x]
 </code></pre></div></div>
 
         
+
+        
+
+        
+            <h3 class="help-section-header">See Also</h3>
+            <div class="help-section-body">
+            <ul class="list-unstyled">
+            
+            <li>dnBinomial</li>
+            
+            </ul>
+            </div>
+        
+
     
 </div>
 </div>

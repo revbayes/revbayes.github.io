@@ -62,7 +62,7 @@ Rev Language Reference
         <ul class="list-unstyled components">
         
         <h3 id="types" class="sidebar_header">distributions</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/distributions/dnBernoulli.html">dnBernoulli</a></li>
         
@@ -261,7 +261,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">functions</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/functions/Probability.html">Probability</a></li>
         
@@ -660,7 +660,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">monitors</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/monitors/mnAncestralState.html">mnAncestralState</a></li>
         
@@ -691,7 +691,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">moves</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/moves/mvAVMVN.html">mvAVMVN</a></li>
         
@@ -890,7 +890,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">types</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/types/AbstractHomologousDiscreteCharacterData.html">AbstractHomologousDiscreteCharacterData</a></li>
         
@@ -986,16 +986,149 @@ Rev Language Reference
     
         <p>clade</p>
         
-            <h2></h2>
+
         
+
         
-            <h3>Constructor</h3>
+
+        
+            <h3 class="help-section-header">Usage</h3>
             
+            <div class="help-section-body">
             clade(String ..., String[] ..., Clade ..., Taxon ..., Taxon[] ..., RealPos<any> age, Natural<any> missing, Bool<any> negative, Bool<any> optional_match)
+            </div>
+            <h3 class="help-section-header">Arguments</h3>
+            <div class="help-section-body">
+            <table class="arguments">
+                
+                <tr class="argument">
+                    <td class="lhs"> : </td>
+                    <td class="rhs">String (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">Taxon names as string values.</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs"> : </td>
+                    <td class="rhs">String[] (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">Taxon names as a vector of string values.</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs"> : </td>
+                    <td class="rhs">Clade (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">Taxa as clade objects.</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs"> : </td>
+                    <td class="rhs">Taxon (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">Taxon names as taxon values</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs"> : </td>
+                    <td class="rhs">Taxon[] (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">Taxon names as a vector of taxons</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">age : </td>
+                    <td class="rhs">RealPos (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The age of the clade (optional).</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : NULL</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">missing : </td>
+                    <td class="rhs">Natural (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">Number of missing taxa in the clade (optional).</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : NULL</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">negative : </td>
+                    <td class="rhs">Bool (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">Is this a negative clade constraint?</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : FALSE</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">optional_match : </td>
+                    <td class="rhs">Bool (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">Clade constraint satisfied when any Clade argument matched</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : FALSE</td>
+                </tr>
+                
+                
+            </table>
+            </div>
+        
+
+        
+
+        
+
+        
+
+        
+            <h3 class="help-section-header">Methods</h3>
+            <div class="help-section-body">
+            <ul class="list-unstyled">
             
+            <li>getNumberOfTaxaMissing()</li>
+            
+            <li>getTaxon(Natural<any> node)</li>
+            
+            <li>getTaxonName(Natural<any> node)</li>
+            
+            <li>setNumberOfTaxaMissing(Natural<any> n)</li>
+            
+            <li>size()</li>
+            
+            </ul>
+            </div>
         
+
         
-        
+
     
 </div>
 </div>

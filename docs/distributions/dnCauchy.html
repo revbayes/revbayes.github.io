@@ -62,7 +62,7 @@ Rev Language Reference
         <ul class="list-unstyled components">
         
         <h3 id="types" class="sidebar_header">distributions</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/distributions/dnBernoulli.html">dnBernoulli</a></li>
         
@@ -261,7 +261,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">functions</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/functions/Probability.html">Probability</a></li>
         
@@ -660,7 +660,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">monitors</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/monitors/mnAncestralState.html">mnAncestralState</a></li>
         
@@ -691,7 +691,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">moves</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/moves/mvAVMVN.html">mvAVMVN</a></li>
         
@@ -890,7 +890,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">types</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/types/AbstractHomologousDiscreteCharacterData.html">AbstractHomologousDiscreteCharacterData</a></li>
         
@@ -986,22 +986,81 @@ Rev Language Reference
     
         <p>dnCauchy</p>
         
-            <h2>Cauchy Distribution</h2>
+            <h2 class="help-title">Cauchy Distribution</h2>
         
+
         
-            <h3>Constructor</h3>
+            <h3 class="help-section-header">Aliases</h3>
+            <div class="help-section-body">
+            <ul class="list-unstyled">
             
-            dnCauchy(Real<any> location, RealPos<any> scale)
+            <li>dnLorentz</li>
             
+            </ul>
+            </div>
         
+
         
-            <h3>Description</h3>
+            <h3 class="help-section-header">Description</h3>
+            <div class="help-section-body">
             
             Cauchy distribution with location equal to ‘location’ and scale equal to ‘scale’.
             
+            </div>
         
+
         
-            <h3>Example</h3>
+            <h3 class="help-section-header">Usage</h3>
+            
+            <div class="help-section-body">
+            dnCauchy(Real<any> location, RealPos<any> scale)
+            </div>
+            <h3 class="help-section-header">Arguments</h3>
+            <div class="help-section-body">
+            <table class="arguments">
+                
+                <tr class="argument">
+                    <td class="lhs">location : </td>
+                    <td class="rhs">Real (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The location parameter.</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">scale : </td>
+                    <td class="rhs">RealPos (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The scale parameter.</td>
+                </tr>
+                
+                
+            </table>
+            </div>
+        
+
+        
+            <h3 class="help-section-header">Domain Type</h3>
+            <div class="help-section-body">
+            Real
+            </div>
+        
+
+        
+            <h3 class="help-section-header">Details</h3>
+            <div class="help-section-body">
+            
+            The Cauchy distribution has density:
+            
+            f(x) = 1/(pi * scale) * 1/(1 + x-(location/scale)^2)
+            
+            </div>
+        
+
+        
+            <h3 class="help-section-header">Example</h3>
             
             <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># we simulate some obversations
 x &lt;- rCauchy(n=10,location=0,scale=1)
@@ -1013,6 +1072,11 @@ sd(x)
 </code></pre></div></div>
 
         
+
+        
+
+        
+
     
 </div>
 </div>

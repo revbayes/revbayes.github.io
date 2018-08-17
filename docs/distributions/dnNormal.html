@@ -62,7 +62,7 @@ Rev Language Reference
         <ul class="list-unstyled components">
         
         <h3 id="types" class="sidebar_header">distributions</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/distributions/dnBernoulli.html">dnBernoulli</a></li>
         
@@ -261,7 +261,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">functions</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/functions/Probability.html">Probability</a></li>
         
@@ -660,7 +660,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">monitors</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/monitors/mnAncestralState.html">mnAncestralState</a></li>
         
@@ -691,7 +691,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">moves</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/moves/mvAVMVN.html">mvAVMVN</a></li>
         
@@ -890,7 +890,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">types</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/types/AbstractHomologousDiscreteCharacterData.html">AbstractHomologousDiscreteCharacterData</a></li>
         
@@ -986,22 +986,91 @@ Rev Language Reference
     
         <p>dnNormal</p>
         
-            <h2>Normal Distribution</h2>
+            <h2 class="help-title">Normal Distribution</h2>
         
+
         
-            <h3>Constructor</h3>
+            <h3 class="help-section-header">Aliases</h3>
+            <div class="help-section-body">
+            <ul class="list-unstyled">
             
-            dnNormal(Real<any> mean, RealPos<any> sd)
+            <li>dnNorm</li>
             
+            </ul>
+            </div>
         
+
         
-            <h3>Description</h3>
+            <h3 class="help-section-header">Description</h3>
+            <div class="help-section-body">
             
             Normal (gaussian) distribution with mean equal to ‘mean’ and standard deviation equal to ‘sd’.
             
+            </div>
         
+
         
-            <h3>Example</h3>
+            <h3 class="help-section-header">Usage</h3>
+            
+            <div class="help-section-body">
+            dnNormal(Real<any> mean, RealPos<any> sd)
+            </div>
+            <h3 class="help-section-header">Arguments</h3>
+            <div class="help-section-body">
+            <table class="arguments">
+                
+                <tr class="argument">
+                    <td class="lhs">mean : </td>
+                    <td class="rhs">Real (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The mean parameter.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 0</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">sd : </td>
+                    <td class="rhs">RealPos (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The standard deviation parameter.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 1</td>
+                </tr>
+                
+                
+            </table>
+            </div>
+        
+
+        
+            <h3 class="help-section-header">Domain Type</h3>
+            <div class="help-section-body">
+            Real
+            </div>
+        
+
+        
+            <h3 class="help-section-header">Details</h3>
+            <div class="help-section-body">
+            
+            The normal distribution has density:
+            
+            f(x) = 1/(sqrt(2 pi) sigma) e^-((x - mu)^2/(2 sigma^2))
+            
+            where mu is the mean of the distribution and sigma the standard deviation.
+            
+            </div>
+        
+
+        
+            <h3 class="help-section-header">Example</h3>
             
             <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># we simulate some observations
 x &lt;- rnorm(n=10,mean=5,sd=10)
@@ -1014,6 +1083,20 @@ sd(x)
 </code></pre></div></div>
 
         
+
+        
+
+        
+            <h3 class="help-section-header">See Also</h3>
+            <div class="help-section-body">
+            <ul class="list-unstyled">
+            
+            <li>dnLognormal</li>
+            
+            </ul>
+            </div>
+        
+
     
 </div>
 </div>

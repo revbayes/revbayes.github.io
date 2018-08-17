@@ -62,7 +62,7 @@ Rev Language Reference
         <ul class="list-unstyled components">
         
         <h3 id="types" class="sidebar_header">distributions</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/distributions/dnBernoulli.html">dnBernoulli</a></li>
         
@@ -261,7 +261,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">functions</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/functions/Probability.html">Probability</a></li>
         
@@ -660,7 +660,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">monitors</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/monitors/mnAncestralState.html">mnAncestralState</a></li>
         
@@ -691,7 +691,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">moves</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/moves/mvAVMVN.html">mvAVMVN</a></li>
         
@@ -890,7 +890,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">types</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/types/AbstractHomologousDiscreteCharacterData.html">AbstractHomologousDiscreteCharacterData</a></li>
         
@@ -986,22 +986,165 @@ Rev Language Reference
     
         <p>mcmc</p>
         
-            <h2>MCMC analysis object</h2>
+            <h2 class="help-title">MCMC analysis object</h2>
         
+
         
-            <h3>Constructor</h3>
-            
-            mcmc(Model<any> model, Monitor[]<any> monitors, Move[]<any> moves, String<any> moveschedule {valid options: "sequential"|"random"|"single"}, Natural<any> nruns, String<any> combineTraces {valid options: "sequential"|"mixed"}, Natural<any> ntries, RealPos<any> priorHeat, RealPos<any> likelihoodHeat, RealPos<any> posteriorHeat)
-            
+
         
-        
-            <h3>Description</h3>
+            <h3 class="help-section-header">Description</h3>
+            <div class="help-section-body">
             
             The MCMC analysis object keeps a model and the associated moves and monitors. The object is used to run Markov chain Monte Carlo (MCMC) simulation on the model, using the provided moves, to obtain a sample of the posterior probability distribution. During the analysis, the monitors are responsible for sampling model parameters of interest.
             
+            </div>
         
+
         
-            <h3>Example</h3>
+            <h3 class="help-section-header">Usage</h3>
+            
+            <div class="help-section-body">
+            mcmc(Model<any> model, Monitor[]<any> monitors, Move[]<any> moves, String<any> moveschedule {valid options: "sequential"|"random"|"single"}, Natural<any> nruns, String<any> combineTraces {valid options: "sequential"|"mixed"}, Natural<any> ntries, RealPos<any> priorHeat, RealPos<any> likelihoodHeat, RealPos<any> posteriorHeat)
+            </div>
+            <h3 class="help-section-header">Arguments</h3>
+            <div class="help-section-body">
+            <table class="arguments">
+                
+                <tr class="argument">
+                    <td class="lhs">model : </td>
+                    <td class="rhs">Model (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The model graph.</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">monitors : </td>
+                    <td class="rhs">Monitor[] (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The monitors used for this analysis.</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">moves : </td>
+                    <td class="rhs">Move[] (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The moves used for this analysis.</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">moveschedule : </td>
+                    <td class="rhs">String (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The strategy how the moves are used.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : random</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">nruns : </td>
+                    <td class="rhs">Natural (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The number of replicate analyses.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 1</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">combineTraces : </td>
+                    <td class="rhs">String (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The way how we combine the traces ones the simulation is finished.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : sequential</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">ntries : </td>
+                    <td class="rhs">Natural (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The number of initialization attempts.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 1000</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">priorHeat : </td>
+                    <td class="rhs">RealPos (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The power that the prior will be raised to.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 1</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">likelihoodHeat : </td>
+                    <td class="rhs">RealPos (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The power that the likelihood will be raised to.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 1</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">posteriorHeat : </td>
+                    <td class="rhs">RealPos (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The power that the posterior will be raised to.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 1</td>
+                </tr>
+                
+                
+            </table>
+            </div>
+        
+
+        
+
+        
+            <h3 class="help-section-header">Details</h3>
+            <div class="help-section-body">
+            
+            The MCMC analysis object produced by a call to this function keeps copies of the model and the associated moves and monitors. The MCMC analysis object is used to run Markov chain Monte Carlo (MCMC) simulation on the model, using the provided moves, to obtain a sample of the posterior probability distribution. During the analysis, the monitors are responsible for sampling model parameters of interest.
+            
+            </div>
+        
+
+        
+            <h3 class="help-section-header">Example</h3>
             
             <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Create a simple model (unclamped)
 a ~ exponential(1)
@@ -1023,6 +1166,35 @@ mymcmcObject.operatorSummary()
 </code></pre></div></div>
 
         
+
+        
+            <h3 class="help-section-header">Methods</h3>
+            <div class="help-section-body">
+            <ul class="list-unstyled">
+            
+            <li>burnin(Natural<any> generations, Natural<any> tuningInterval, Bool<any> underPrior)</li>
+            
+            <li>initializeFromTrace(ModelTrace[]<any> trace)</li>
+            
+            <li>operatorSummary(Bool<any> currentPeriod)</li>
+            
+            <li>run(Natural<any> generations, StoppingRule[]<any> rules, Natural<any> tuningInterval, Bool<any> underPrior)</li>
+            
+            </ul>
+            </div>
+        
+
+        
+            <h3 class="help-section-header">See Also</h3>
+            <div class="help-section-body">
+            <ul class="list-unstyled">
+            
+            <li>mcmcmc</li>
+            
+            </ul>
+            </div>
+        
+
     
 </div>
 </div>

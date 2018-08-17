@@ -62,7 +62,7 @@ Rev Language Reference
         <ul class="list-unstyled components">
         
         <h3 id="types" class="sidebar_header">distributions</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/distributions/dnBernoulli.html">dnBernoulli</a></li>
         
@@ -261,7 +261,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">functions</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/functions/Probability.html">Probability</a></li>
         
@@ -660,7 +660,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">monitors</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/monitors/mnAncestralState.html">mnAncestralState</a></li>
         
@@ -691,7 +691,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">moves</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/moves/mvAVMVN.html">mvAVMVN</a></li>
         
@@ -890,7 +890,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">types</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/types/AbstractHomologousDiscreteCharacterData.html">AbstractHomologousDiscreteCharacterData</a></li>
         
@@ -986,22 +986,243 @@ Rev Language Reference
     
         <p>mcmcmc</p>
         
-            <h2>Metropolis-Coupled MCMC analysis object</h2>
+            <h2 class="help-title">Metropolis-Coupled MCMC analysis object</h2>
         
+
         
-            <h3>Constructor</h3>
-            
-            mcmcmc(Model<any> model, Monitor[]<any> monitors, Move[]<any> moves, String<any> moveschedule {valid options: "sequential"|"random"|"single"}, Natural<any> nruns, String<any> combineTraces {valid options: "sequential"|"mixed"}, Natural<any> ntries, Natural<any> nchains, Natural<any> swapInterval, RealPos<any> deltaHeat, Probability[]<any> heats, Bool<any> tuneHeat, Probability<any> tuneHeatTarget, String<any> swapMethod {valid options: "neighbor"|"random"|"both"}, Natural<any> swapInterval2, String<any> swapMode {valid options: "single"|"multiple"})
-            
+
         
-        
-            <h3>Description</h3>
+            <h3 class="help-section-header">Description</h3>
+            <div class="help-section-body">
             
             The Mcmcmc analysis object keeps a model and the associated moves and monitors. The object is used to run Metropolis Couped Markov chain Monte Carlo (Mcmcmc) simulation on the model, using the provided moves, to obtain a sample of the posterior probability distribution. During the analysis, the monitors are responsible for sampling model parameters of interest.
             
+            </div>
         
+
         
-            <h3>Example</h3>
+            <h3 class="help-section-header">Usage</h3>
+            
+            <div class="help-section-body">
+            mcmcmc(Model<any> model, Monitor[]<any> monitors, Move[]<any> moves, String<any> moveschedule {valid options: "sequential"|"random"|"single"}, Natural<any> nruns, String<any> combineTraces {valid options: "sequential"|"mixed"}, Natural<any> ntries, Natural<any> nchains, Natural<any> swapInterval, RealPos<any> deltaHeat, Probability[]<any> heats, Bool<any> tuneHeat, Probability<any> tuneHeatTarget, String<any> swapMethod {valid options: "neighbor"|"random"|"both"}, Natural<any> swapInterval2, String<any> swapMode {valid options: "single"|"multiple"})
+            </div>
+            <h3 class="help-section-header">Arguments</h3>
+            <div class="help-section-body">
+            <table class="arguments">
+                
+                <tr class="argument">
+                    <td class="lhs">model : </td>
+                    <td class="rhs">Model (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The model graph.</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">monitors : </td>
+                    <td class="rhs">Monitor[] (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The monitors used for this analysis.</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">moves : </td>
+                    <td class="rhs">Move[] (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The moves used for this analysis.</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">moveschedule : </td>
+                    <td class="rhs">String (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The strategy how the moves are used.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : random</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">nruns : </td>
+                    <td class="rhs">Natural (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The number of replicate analyses.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 1</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">combineTraces : </td>
+                    <td class="rhs">String (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The way how we combine the traces ones the simulation is finished.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : sequential</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">ntries : </td>
+                    <td class="rhs">Natural (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The number of initialization attempts.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 1000</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">nchains : </td>
+                    <td class="rhs">Natural (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The number of chains to run.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 4</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">swapInterval : </td>
+                    <td class="rhs">Natural (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The interval at which swaps (between neighbor chains if the swapMethod is neighbor or both, or between chains chosen randomly if the swapMethod is random) will be attempted.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 10</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">deltaHeat : </td>
+                    <td class="rhs">RealPos (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The delta parameter for the heat function.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 0.2</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">heats : </td>
+                    <td class="rhs">Probability[] (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The heats of chains, starting from the cold chain to hotter chains so the first value must be 1.0. If heats are specified directly then the delta parameter would be ignored.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : NULL</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">tuneHeat : </td>
+                    <td class="rhs">Bool (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">Should we tune the heats during burnin?</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : FALSE</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">tuneHeatTarget : </td>
+                    <td class="rhs">Probability (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The acceptance probability of adjacent chain swaps targeted by heats auto-tuning.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 0.23</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">swapMethod : </td>
+                    <td class="rhs">String (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The method used to swap chains.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : neighbor</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">swapInterval2 : </td>
+                    <td class="rhs">Natural (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The interval at which swaps between randomly chosen chains will be attempted (if the swapMethod is specified as both; otherwise it would be the same as swapInterval if not provided).</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : NULL</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">swapMode : </td>
+                    <td class="rhs">String (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">Whether make a single attempt per swap interval or attempt multiple (= nchains-1 or choose(nchains,2) for neighbor or random swaps, respectively) times.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : single</td>
+                </tr>
+                
+                
+            </table>
+            </div>
+        
+
+        
+
+        
+            <h3 class="help-section-header">Details</h3>
+            <div class="help-section-body">
+            
+            The Mcmcmc analysis object produced by a call to this function keeps copies of the model and the associated moves and monitors. The Mcmcmc analysis object is used to run Markov chain Monte Carlo (Mcmcmc) simulation on the model, using the provided moves, to obtain a sample of the posterior probability distribution. During the analysis, the monitors are responsible for sampling model parameters of interest.
+            
+            </div>
+        
+
+        
+            <h3 class="help-section-header">Example</h3>
             
             <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Create a simple model (unclamped)
 a ~ exponential(1)
@@ -1023,6 +1244,35 @@ myMcmcmcObject.operatorSummary()
 </code></pre></div></div>
 
         
+
+        
+            <h3 class="help-section-header">Methods</h3>
+            <div class="help-section-body">
+            <ul class="list-unstyled">
+            
+            <li>burnin(Natural<any> generations, Natural<any> tuningInterval, Bool<any> underPrior)</li>
+            
+            <li>initializeFromTrace(ModelTrace[]<any> trace)</li>
+            
+            <li>operatorSummary(Bool<any> currentPeriod)</li>
+            
+            <li>run(Natural<any> generations, StoppingRule[]<any> rules, Natural<any> tuningInterval, Bool<any> underPrior)</li>
+            
+            </ul>
+            </div>
+        
+
+        
+            <h3 class="help-section-header">See Also</h3>
+            <div class="help-section-body">
+            <ul class="list-unstyled">
+            
+            <li>mcmc</li>
+            
+            </ul>
+            </div>
+        
+
     
 </div>
 </div>

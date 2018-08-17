@@ -62,7 +62,7 @@ Rev Language Reference
         <ul class="list-unstyled components">
         
         <h3 id="types" class="sidebar_header">distributions</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/distributions/dnBernoulli.html">dnBernoulli</a></li>
         
@@ -261,7 +261,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">functions</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/functions/Probability.html">Probability</a></li>
         
@@ -660,7 +660,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">monitors</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/monitors/mnAncestralState.html">mnAncestralState</a></li>
         
@@ -691,7 +691,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">moves</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/moves/mvAVMVN.html">mvAVMVN</a></li>
         
@@ -890,7 +890,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">types</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/types/AbstractHomologousDiscreteCharacterData.html">AbstractHomologousDiscreteCharacterData</a></li>
         
@@ -986,16 +986,215 @@ Rev Language Reference
     
         <p>dnTimeVaryingStateDependentSpeciationExtinction</p>
         
-            <h2></h2>
+
         
-        
-            <h3>Constructor</h3>
+            <h3 class="help-section-header">Aliases</h3>
+            <div class="help-section-body">
+            <ul class="list-unstyled">
             
+            <li>dnTVSSE</li>
+            
+            </ul>
+            </div>
+        
+
+        
+
+        
+            <h3 class="help-section-header">Usage</h3>
+            
+            <div class="help-section-body">
             dnTimeVaryingStateDependentSpeciationExtinction(RealPos<any> rootAge/originAge, CladogeneticSpeciationRateMatrix|RealPos[][]<any> speciationRates/lambda/cladoEventMap, RealPos[][]<any> extinctionRates/mu, RealPos[][]<any> psi/phi, RealPos[]<any> epochs, RateGenerator[]<any> Q, RealPos<any> delta, Simplex<any> pi, Probability<any> rho, String<any> condition {valid options: "time"|"survival"}, RealPos<any> nTimeSlices, Natural<any> minNumLineages, Natural<any> maxNumLineages, Bool<any> pruneExtinctLineages)
-            
+            </div>
+            <h3 class="help-section-header">Arguments</h3>
+            <div class="help-section-body">
+            <table class="arguments">
+                
+                <tr class="argument">
+                    <td class="lhs">rootAge/originAge : </td>
+                    <td class="rhs">RealPos (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The start time of the process.</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">speciationRates/lambda/cladoEventMap : </td>
+                    <td class="rhs">CladogeneticSpeciationRateMatrix (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The vector of speciation rates (for anagenetic-only models), or the map of speciation rates to cladogenetic event types.</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">extinctionRates/mu : </td>
+                    <td class="rhs">RealPos[][] (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The vector of extinction rates.</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">psi/phi : </td>
+                    <td class="rhs">RealPos[][] (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The vector of serial sampling rates.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : NULL</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">epochs : </td>
+                    <td class="rhs">RealPos[] (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The time intervals when the diversification and transition rates change.</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">Q : </td>
+                    <td class="rhs">RateGenerator[] (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The rate matrix of jumping between rate categories.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : NULL</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">delta : </td>
+                    <td class="rhs">RealPos (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The rate-factor of jumping between rate categories.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 1</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">pi : </td>
+                    <td class="rhs">Simplex (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">State frequencies at the root.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : NULL</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">rho : </td>
+                    <td class="rhs">Probability (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The taxon sampling probability.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 1</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">condition : </td>
+                    <td class="rhs">String (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The condition of the birth-death process.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : time</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">nTimeSlices : </td>
+                    <td class="rhs">RealPos (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The number of time slices for the numeric ODE.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 500</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">minNumLineages : </td>
+                    <td class="rhs">Natural (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The minimum number of lineages to simulate.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 0</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">maxNumLineages : </td>
+                    <td class="rhs">Natural (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The maximum number of lineages to simulate.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 500</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">pruneExtinctLineages : </td>
+                    <td class="rhs">Bool (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">When simulating should extinct lineages be pruned off?</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : TRUE</td>
+                </tr>
+                
+                
+            </table>
+            </div>
         
+
         
+            <h3 class="help-section-header">Domain Type</h3>
+            <div class="help-section-body">
+            TimeTree
+            </div>
         
+
+        
+
+        
+
+        
+
+        
+
     
 </div>
 </div>

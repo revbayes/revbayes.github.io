@@ -62,7 +62,7 @@ Rev Language Reference
         <ul class="list-unstyled components">
         
         <h3 id="types" class="sidebar_header">distributions</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/distributions/dnBernoulli.html">dnBernoulli</a></li>
         
@@ -261,7 +261,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">functions</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/functions/Probability.html">Probability</a></li>
         
@@ -660,7 +660,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">monitors</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/monitors/mnAncestralState.html">mnAncestralState</a></li>
         
@@ -691,7 +691,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">moves</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/moves/mvAVMVN.html">mvAVMVN</a></li>
         
@@ -890,7 +890,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">types</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/types/AbstractHomologousDiscreteCharacterData.html">AbstractHomologousDiscreteCharacterData</a></li>
         
@@ -986,16 +986,147 @@ Rev Language Reference
     
         <p>powerPosterior</p>
         
-            <h2></h2>
+
         
+
         
-            <h3>Constructor</h3>
+
+        
+            <h3 class="help-section-header">Usage</h3>
             
+            <div class="help-section-body">
             powerPosterior(Model<any> model, Move[]<any> moves, Monitor[]<any> monitors, String<any> filename, RealPos[]<any> powers, Natural<any> cats, RealPos<any> alpha, Natural<any> sampleFreq, Natural<any> procPerLikelihood)
+            </div>
+            <h3 class="help-section-header">Arguments</h3>
+            <div class="help-section-body">
+            <table class="arguments">
+                
+                <tr class="argument">
+                    <td class="lhs">model : </td>
+                    <td class="rhs">Model (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The model graph.</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">moves : </td>
+                    <td class="rhs">Move[] (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The vector moves to use.</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">monitors : </td>
+                    <td class="rhs">Monitor[] (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The monitors to call. Do not provide a screen monitor.</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">filename : </td>
+                    <td class="rhs">String (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The name of the file for the likelihood samples.</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">powers : </td>
+                    <td class="rhs">RealPos[] (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">A vector of powers.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : NULL</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">cats : </td>
+                    <td class="rhs">Natural (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The number of categories if no powers are specified.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 100</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">alpha : </td>
+                    <td class="rhs">RealPos (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The alpha parameter of the beta distribution if no powers are specified.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 0.2</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">sampleFreq : </td>
+                    <td class="rhs">Natural (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The sampling frequency of the likelihood values.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 100</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">procPerLikelihood : </td>
+                    <td class="rhs">Natural (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">Number of processors used to compute the likelihood.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 1</td>
+                </tr>
+                
+                
+            </table>
+            </div>
+        
+
+        
+
+        
+
+        
+
+        
+            <h3 class="help-section-header">Methods</h3>
+            <div class="help-section-body">
+            <ul class="list-unstyled">
             
+            <li>burnin(Natural<any> generations, Natural<any> tuningInterval)</li>
+            
+            <li>run(Natural<any> generations)</li>
+            
+            </ul>
+            </div>
         
+
         
-        
+
     
 </div>
 </div>

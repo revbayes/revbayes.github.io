@@ -62,7 +62,7 @@ Rev Language Reference
         <ul class="list-unstyled components">
         
         <h3 id="types" class="sidebar_header">distributions</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/distributions/dnBernoulli.html">dnBernoulli</a></li>
         
@@ -261,7 +261,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">functions</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/functions/Probability.html">Probability</a></li>
         
@@ -660,7 +660,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">monitors</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/monitors/mnAncestralState.html">mnAncestralState</a></li>
         
@@ -691,7 +691,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">moves</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/moves/mvAVMVN.html">mvAVMVN</a></li>
         
@@ -890,7 +890,7 @@ Rev Language Reference
         </ul>
         
         <h3 id="types" class="sidebar_header">types</h3>
-        <ul class="sidebar_links">
+        <ul class="list-unstyled">
         
         <li class="sidebar_item"><a href="/docs/types/AbstractHomologousDiscreteCharacterData.html">AbstractHomologousDiscreteCharacterData</a></li>
         
@@ -986,29 +986,173 @@ Rev Language Reference
     
         <p>mvAVMVN</p>
         
-            <h2></h2>
+
         
+
         
-            <h3>Constructor</h3>
-            
-            
-            
-        
-        
-            <h3>Description</h3>
+            <h3 class="help-section-header">Description</h3>
+            <div class="help-section-body">
             
             The adaptive variance multivariate-normal proposal of Baele et al. 2017, uses MCMC samples to fit covariance matrix to parameters.
             
-            The adaptive variance multivariate-normal proposal of Baele et al. 2017, uses MCMC samples to fit covariance matrix to parameters.
+            After user-defined waiting time, proposes using covariance matrix epsilon * I + (1 - epsilon) * sigmaSquared * empirical_matrix.
             
-            The adaptive variance multivariate-normal proposal of Baele et al. 2017, uses MCMC samples to fit covariance matrix to parameters.
+            Internally transforms variables based on whether variables are (finitely) bounded, strictly positive, or simplexed.
             
-            The adaptive variance multivariate-normal proposal of Baele et al. 2017, uses MCMC samples to fit covariance matrix to parameters.
+            Non-simplex-valued vector random variables are untransformed.
             
-            The adaptive variance multivariate-normal proposal of Baele et al. 2017, uses MCMC samples to fit covariance matrix to parameters.
+            Add random variables to the move directly (e.g. branch_rates[1], not branch_rates).
             
+            </div>
         
+
         
+            <h3 class="help-section-header">Usage</h3>
+            
+            <div class="help-section-body">
+            
+            </div>
+            <h3 class="help-section-header">Arguments</h3>
+            <div class="help-section-body">
+            <table class="arguments">
+                
+                <tr class="argument">
+                    <td class="lhs">sigmaSquared : </td>
+                    <td class="rhs">RealPos (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The scaling factor (strength) of the proposal.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 1</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">epsilon : </td>
+                    <td class="rhs">RealPos (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The mixture weight of the post-learning move on a simple identity matrix.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 0.05</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">waitBeforeLearning : </td>
+                    <td class="rhs">Natural (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The number of move attempts to wait before tracking the covariance of the variables.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 2500</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">waitBeforeUsing : </td>
+                    <td class="rhs">Natural (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The number of move attempts to wait before using the learned covariance matrix.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 5000</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">maxUpdates : </td>
+                    <td class="rhs">Natural (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The maximum number of updates to the empirical covariance matrix (matrix is only updated when MCMC tunes).</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 10000</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">tune : </td>
+                    <td class="rhs">Bool (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">Should we tune the scaling factor during burnin?</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : TRUE</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">weight : </td>
+                    <td class="rhs">RealPos (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The weight how often on average this move will be used per iteration.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 1</td>
+                </tr>
+                
+                
+                <tr class="argument">
+                    <td class="lhs">tuneTarget : </td>
+                    <td class="rhs">Probability (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The acceptance probability targeted by auto-tuning.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 0.44</td>
+                </tr>
+                
+                
+            </table>
+            </div>
+        
+
+        
+
+        
+
+        
+
+        
+            <h3 class="help-section-header">Methods</h3>
+            <div class="help-section-body">
+            <ul class="list-unstyled">
+            
+            <li>addVariable(Real<stochastic> var)</li>
+            
+            <li>addVariable(Simplex<stochastic> var)</li>
+            
+            <li>addVariable(Real[]<stochastic> var)</li>
+            
+            <li>removeVariable(Real<stochastic> var)</li>
+            
+            <li>removeVariable(Simplex<stochastic> var)</li>
+            
+            <li>removeVariable(Real[]<stochastic> var)</li>
+            
+            </ul>
+            </div>
+        
+
+        
+
     
 </div>
 </div>
