@@ -3,17 +3,13 @@ layout: home
 subtitle: Rev Language Reference
 code_layout: Rev
 ---
+
 <div class="row">
 <div class="col-sm-4">
     <nav class="sidebar_nav">
-        <ul class="list-unstyled components">
-        {% for category in site.data.help %}
-        <h3 id="types" class="sidebar_header">{{ category[0] }}</h3>
         <ul class="list-unstyled">
-        {% for item in category[1] %}
-        <li class="sidebar_item"><a href="{{ site.baseurl }}/docs/{{ category[0] }}/{{ item.name }}.html">{{ item.name }}</a></li>
-        {% endfor %}
-        </ul>
+        {% for item in site.data.help %}
+        <li class="sidebar_item"><a href="{{ site.baseurl }}/{{ site.helpdir }}/{{ item.name }}.html">{{ item.name }}</a></li>
         {% endfor %}
         </ul>
     </nav>
@@ -40,25 +36,27 @@ code_layout: Rev
         {% if page.entry.description %}
             <h3 class="help-section-header">Description</h3>
             <div class="help-section-body">
-            {% for description in page.entry.description %}
-            {{ description }}
-            {% endfor %}
+            {{ page.entry.description }}
             </div>
         {% endif %}
 
-        {% if page.entry.constructor %}
+        {% if page.entry.usage %}
             <h3 class="help-section-header">Usage</h3>
-            {% assign constructor = page.entry.constructor[0] %}
+            {% if page.entry.constructor %}
+            {% assign function = page.entry.constructor[0] %}
+            {% else %}
+            {% assign function = page.entry %}
+            {% endif %}
             <div class="help-section-body">
-            {{ constructor.usage }}
+            {{ page.entry.usage }}
             </div>
             <h3 class="help-section-header">Arguments</h3>
             <div class="help-section-body">
             <table class="arguments">
-                {% for argument in constructor.arguments %}
-                <tr class="argument">
-                    <td class="lhs">{{ argument.label }} : </td>
-                    <td class="rhs">{{ argument.value_type }} ({% if argument.dag_type != "<any>" %}{{ argument.dag_type | escape }} {% endif %}pass by {{ argument.pass_by }})</td>
+                {% for argument in function.arguments %}
+                <tr>
+                    <td class="lhs argument">{{ argument.label }} : </td>
+                    <td class="rhs argument">{{ argument.value_type }} ({% if argument.dag_type != "<any>" %}{{ argument.dag_type | escape }} {% endif %}pass by {{ argument.pass_by }})</td>
                 </tr>
                 <tr>
                     <td class="lhs"/><td class="rhs">{{ argument.description }}</td>
@@ -66,6 +64,11 @@ code_layout: Rev
                 {% if argument.default %}
                 <tr>
                     <td class="lhs"/><td class="rhs">Default : {{ argument.default }}</td>
+                </tr>
+                {% endif %}
+                {% if argument.options %}
+                <tr>
+                    <td class="lhs"/><td class="rhs">Options : {{ argument.options | join: "|" }}</td>
                 </tr>
                 {% endif %}
                 {% endfor %}
@@ -88,9 +91,7 @@ code_layout: Rev
         {% if page.entry.details %}
             <h3 class="help-section-header">Details</h3>
             <div class="help-section-body">
-            {% for detail in page.entry.details %}
-            {{ detail }}
-            {% endfor %}
+            {{ page.entry.details }}
             </div>
         {% endif %}
 
