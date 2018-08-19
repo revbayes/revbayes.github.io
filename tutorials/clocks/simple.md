@@ -9,11 +9,9 @@ order: 2
 index: false
 ---
 
-<!-- category: Standard -->
+<!-- This tutorial was used for Tracy Heath's Macroevolution 2018 Course -->
 
-<!-- data_files: 
-- bears_dosReis.tre
-- bears_irbp.nex -->
+
 
 {% section Introduction | introduction %}
 
