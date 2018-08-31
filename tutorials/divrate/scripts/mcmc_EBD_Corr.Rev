@@ -13,7 +13,7 @@
 #######################
 
 ### Read in the "observed" tree
-T <- readTrees("data/primates_Springer.tre")[1]
+T <- readTrees("data/primates.tre")[1]
 
 # Get some useful variables from the data. We need these later on.
 taxa <- T.taxa()
@@ -64,6 +64,13 @@ log_extinction[1].setValue( ln(0.4) )
 # apply moves on the rates
 moves[++mvi] = mvSlide(log_speciation[1], weight=2)
 moves[++mvi] = mvSlide(log_extinction[1], weight=2)
+
+
+# we need to create some "dummy" variables for the expected speciation and extinction
+# for the initial interval. This is only because RevBayes needs vectors to be filled
+# from the first element on (you cannot start with index 2).
+expected_speciation[1] := log_speciation[1]
+expected_extinction[1] := log_extinction[1]
 
 
 speciation[1] := exp( log_speciation[1] )
