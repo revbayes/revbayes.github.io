@@ -33,7 +33,7 @@ Configure the RevBayes project
 You will need to configure your Eclipse project so it correctly compiles the revbayes CMake project.
 
 ### Configure the PATH environment variable
-If you installed the CMake command line tools in the default location `/usr/local/bin`, you must add it to the PATH environment variable of your Eclipse project.
+If you installed the CMake command line tools in the default location `:/usr/local/bin`, you must add it to the PATH environment variable of your Eclipse project.
 
 1. In the *Project Explorer* view, highlight your revbayes project directory
 <img src="figures/eclipse-explorer.png" width="50%">
