@@ -19,7 +19,13 @@ code_layout: Rev
     {% if page.entry %}
         {% capture name %}```{{ page.entry.name }}```{% if page.entry.title %} - {{ page.entry.title }}{% endif %}{% endcapture %}
         <h2 class="help-title">{{ name | markdownify }}</h2>
-        
+
+        {% if page.entry.description %}
+            <div class="help-description">
+            {{ page.entry.description }}
+            </div>
+        {% endif %}
+
         {% if page.entry.aliases %}
             <h3 class="help-section-header">Aliases</h3>
             <div class="help-section-body">
@@ -28,12 +34,6 @@ code_layout: Rev
             <li>{{ alias }}</li>
             {% endfor %}
             </ul>
-            </div>
-        {% endif %}
-
-        {% if page.entry.description %}
-            <div class="help-description">
-            {{ page.entry.description }}
             </div>
         {% endif %}
 
