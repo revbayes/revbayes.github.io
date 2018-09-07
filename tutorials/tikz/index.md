@@ -1,6 +1,6 @@
 ---
-title: Building Graphical Models using tikz (incomplete tutorial)
-subtitle: Using the tikz package and LaTeX tools to make figures of graphic models. 
+title: Building Graphical Models using TikZ (incomplete tutorial)
+subtitle: Using the TikZ/PGF package and LaTeX tools to make figures of graphical models. 
 authors:  Tracy A. Heath
 level: 0
 order: 0.75
