@@ -50,6 +50,20 @@ Before the course starts, please install the following software on your own comp
 </div>
 {% endif %}
 
+{% if page.prerequisites.size > 0 %}
+<h2>Pre-workshop Materials</h2>
+Please review the following materials before the workshop:
+<div class="row">
+    <div class="col-md-9">
+        <ul>
+          {% for preq in page.prerequisites %}
+            <li>{{ preq }}</li>
+          {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endif %}
+
 {% if page.papers.size > 0 %}
 <h2>Papers</h2>
 We recommend some selected papers for you to read prior to the workshop. These are not required and we will explain all the content throughout the workshop. However, some prior background knowledge will help to successfully work through the material.
