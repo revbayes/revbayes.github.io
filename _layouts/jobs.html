@@ -1,0 +1,34 @@
+---
+layout: default
+---
+
+<h1>{{ page.title }}</h1>
+
+<b>Location:</b> {{ page.location }} <br>
+
+<b>PI:</b> {{ page.pi | join: ", " }} <br>
+
+<b>Application Deadline:</b> {{ page.appldate | date: "%-m/%-d" }}, {{ page.appldate | date: "%Y" }}<br>
+
+<b>Expected Startdate:</b> {{ page.startdate | date: "%-m/%-d" }}, {{ page.startdate | date: "%Y" }}<br>
+
+<b>Length of contract:</b> {{ page.duration }} <br>
+
+<b>Requirements:</b> {{ page.requirements }} <br>
+
+<b>Salary:</b> {{ page.salary }} <br>
+
+<h2>Description</h2>
+
+<p>{{ page.description | join: "</p><p>" }}</p>
+
+
+{% if page.website.size > 0 %}
+<h2>Job Website</h2>
+
+<a href="{{ page.website }}">{{ page.website  }}</a><br>
+
+{% endif %}
+
+
+{{content}}
