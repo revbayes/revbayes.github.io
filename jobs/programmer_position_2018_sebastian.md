@@ -16,7 +16,7 @@ requirements:
 - Master’s degree or a PhD in computer science or a related field.
 
 description:
-- I invite applications for a programmer (software developer) position to support the development of our software RevBayes in my research group at the GeoBio-Center of the Ludwig-Maximilians-Universität (LMU), München. The position is funded by the DFG Emmy Noether program, and is initially available for 2 years, with a further 3 years of funding available dependent on progress and interests. The position should start on 1 January 2018 or as soon as possible thereafter.
+- I invite applications for a programmer (software developer) position to support the development of our software RevBayes in my research group at the GeoBio-Center of the Ludwig-Maximilians-Universität (LMU), München. The position is funded by the DFG Emmy Noether program, and is initially available for 2 years, with a further 3 years of funding available dependent on progress and interests. The position should start on 1 January 2019 or as soon as possible thereafter.
 
 - My group is broadly working on theory and computational methods for Bayesian inference of phylogeny (<a href="http://www.evol.bio.lmu.de/research/hoehna">http://www.evol.bio.lmu.de/research/hoehna</a>). All of our methods are implemented in the open-source program <a href="http://www.RevBayes.com">RevBayes</a>. The successful applicant will be part of our vibrant RevBayes group and will contribute to further development of the program. There will be opportunities for the successful applicant to work with and visit the research groups of my collaborators in Europe and the USA. Furthermore, I expect the candidate to become actively involved in our RevBayes workshops and hackathons.
 
