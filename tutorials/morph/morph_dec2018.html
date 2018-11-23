@@ -1,0 +1,850 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: Discrete morphology - Tree Inference</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
+      </a>
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/software">Software</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/jobs/">Jobs</a></li>
+        <li><a href="/developer/">Developer</a></li>
+        
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <div class="titlebar">
+	<h1 class="maintitle">Discrete morphology - Tree Inference</h1>
+	<h3 class="subtitle">Phylogenetic inference with discrete morphological data</h3>
+	<h4 class="authors">April M. Wright, Michael J. Landis and Sebastian Höhna</h4>
+  <h5>Last modified on November 23, 2018</h5>
+</div>
+
+
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul id="prerequisites">
+          
+            <li><a href="/tutorials/intro/">Rev Language Syntax</a></li>
+          
+            <li><a href="/tutorials/intro_rev/">Basic introduction to Rev & MCMC</a></li>
+          
+            <li><a href="/tutorials/mcmc_archery/">Introduction to MCMC using RevBayes</a></li>
+          
+            <li><a href="/tutorials/mcmc_binomial/">Introduction to MCMC using RevBayes</a></li>
+          
+            <li><a href="/tutorials/ctmc/">Substitution Models</a></li>
+          
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+
+
+
+
+<blockquote class="tutorial_files" id="tutorial_files">
+    <h2>Data files and scripts</h2>
+    
+        
+        <strong>Data Files</strong>
+        <ul id="data_files">
+        
+        
+        
+          <li><a href="/tutorials/morph/data/bears.nex">bears.nex</a></li>
+        
+        </ul>
+    
+        
+        <strong>Scripts</strong>
+        <ul id="scripts">
+        
+        
+        
+          <li><a href="/tutorials/morph/scripts/mcmc_mk.Rev">mcmc_mk.Rev</a></li>
+        
+          <li><a href="/tutorials/morph/scripts/mcmc_mkv.Rev">mcmc_mkv.Rev</a></li>
+        
+          <li><a href="/tutorials/morph/scripts/mcmc_mkv_discretized.Rev">mcmc_mkv_discretized.Rev</a></li>
+        
+        </ul>
+    
+</blockquote>
+
+
+</div>
+<h2 class="section" id="introduction">Introduction</h2>
+<hr class="section" />
+
+<p>While molecular data have become the default for building phylogenetic
+trees for many types of evolutionary analysis, morphological data
+remains important, particularly for analyses involving fossils. The use
+of morphological data raises special considerations for model-based
+methods for phylogenetic inference. Morphological data are typically
+collected to maximize the number of parsimony-informative characters -
+that is, the characters that may provide information in favor of one
+topology over another. Morphological characters also do not carry common
+meanings from one character in a matrix to the next; character codings
+are made arbitrarily. These two factors require extensions to our
+existing phylogenetic models. Accounting for the complexity of
+morphological characters remains challenging. This tutorial will provide
+a discussion of modeling morphological characters, and will demonstrate
+how to perform Bayesian phylogenetic analysis with morphology using
+RevBayes <a href="#Hoehna2016b">(Höhna et al. 2016)</a>.</p>
+
+<h3 class="subsection" id="overview-of-discrete-morphology-models">Overview of Discrete Morphology Models</h3>
+<hr class="subsection" />
+
+<figure id="mk_graphical_model"><p><img src="figures/tikz/Mk_model.png" /></p>
+<figcaption>Graphical model showing the Mk model (left panel). 
+Rev code specifying the Mk model is on the right-hand panel.</figcaption>
+</figure>
+
+<p>Molecular data forms the basis of most phylogenetic analyses today.
+However, morphological characters remain relevant. Fossils often provide
+our only direct observation of extinct biodiversity. DNA degradation can
+make it difficult or impossible to obtain sufficient molecular data from
+fragile museum specimens. Using morphological data can help researchers
+include specimens in their phylogeny that might be left out of a
+molecular tree.</p>
+
+<p>To understand how morphological characters are modeled, it is important
+to understand how characters are collected. Unlike in molecular data,
+for which homology is algorithmically determined, homology in a morphological character is typically assessed by an expert. Biologists will typically decide what characters are homologous by looking across specimens at the same structure in multiple taxa; they may also look at the developmental origin of structures in making this assessment <a href="#Phillips06">(Phillips 2006)</a>. Once homology is determined, characters are broken down into states, or different forms a single character can take. The state <code class="highlighter-rouge">0</code> commonly refers to absence, meaning that character is not present. In some
+codings, absence will mean that character has not evolved in that group.
+In others, absence means that that character has not evolved in that
+group, and/or that that character has been lost in that group
+<a href="#freudenstein05">(Freudenstein 2005)</a>. This type of coding is arbitrary, but both
+<em>non-random</em> and <em>meaningful</em>, and poses challenges for how we model
+the data.</p>
+
+<p>Historically, most phylogenetic analyses using morphological characters
+have been performed using the maximum parsimony optimality criterion.
+Maximum parsimony analysis involves proposing trees from the
+morphological data. Each tree is evaluated according to how many changes
+it implied in the data, and the tree that requires the fewest changes is
+preferred. In this way of estimating a tree, a character that does not
+change, or changes only in one taxon, cannot be used to discriminate
+between trees (i.e., it does not favor a topology). Therefore, workers
+with parsimony typically do not collect characters that are parsimony
+uninformative.</p>
+
+<p>In 2001, Paul Lewis <a href="#Lewis2001">(Lewis 2001)</a> introduced a generalization of the
+Jukes-Cantor model of sequence evolution for use with morphological
+data. This model, called the Mk (Markov model, assuming each character
+is in one of <em>k</em> states) model provided a mathematical formulation that
+could be used to estimate trees from morphological data in both
+likelihood and Bayesian frameworks. While this model is a useful step
+forward, as a generalization of the Jukes-Cantor, it still makes fairly
+simplistic assumptions. This tutorial will guide you through estimating
+a phylogeny with the Mk model, and two useful extensions to the model.</p>
+
+<h3 class="subsection" id="subsec_Mk_model">The Mk Model</h3>
+<hr class="subsection" />
+
+<p>The Mk model is a generalization of the Jukes-Cantor model of nucleotide
+sequence evolution, which we discussed in <a href="/tutorials/ctmc/">Substitution Models</a>. 
+The Q-matrix for a two-state Mk model looks like so:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+Q = \begin{pmatrix} -\mu_0 & \mu_{01} \\
+\mu_{10} & -\mu_1  &\\
+\end{pmatrix} \mbox{  ,} %]]></script>
+
+<p>This matrix can be expanded to accommodate multi-state data, as well:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+Q = \begin{pmatrix} -\mu_0 & \mu_{01} & \mu_{02} & \mu_{03} \\
+\mu_{10} & -\mu_1  & \mu_{12} & \mu_{13} \\
+\mu_{20} & \mu_{21} & -\mu_2  & \mu_{23} \\
+\mu_{30} & \mu_{31} & \mu_{32} & -\mu_3 
+\end{pmatrix} \mbox{  ,} %]]></script>
+
+<p>However, the Mk model sets transitions to be equal from any state to any
+other state. In that sense, our multistate matrix really looks like
+this:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+Q = \begin{pmatrix} -(k-1)\mu & \mu & \mu & \mu \\
+\mu & -(k-1)\mu  & \mu & \mu \\
+\mu & \mu & -(k-1)\mu  & \mu \\
+\mu & \mu & \mu & -(k-1)\mu \\
+\end{pmatrix} \mbox{  ,} %]]></script>
+
+<p>Because this is a Jukes-Cantor-like model <a href="#Jukes1969">(Jukes and Cantor 1969)</a>, state
+frequencies do not vary as a model parameter. These assumptions may seem
+unrealistic. However, all models are a compromise between reality and
+generalizability. Prior work has demonstrated that, in many conditions,
+the model does perform adequately <a href="#Wright2014">(Wright and Hillis 2014)</a>. Because morphological
+characters do not carry common meaning across sites in a matrix in the
+way that nucleotide characters do, making assumptions that fit all
+characters is challenging. A visualization of this simple model can be
+seen in <a href="#mk_graphical_model"></a>.</p>
+
+<p>We will first perform a phylogenetic analysis using the Mk model. In
+further sections, we will explore how to relax key assumptions of the Mk
+model.</p>
+
+<h2 class="section" id="sec_mk_model_analysis">Example: Inferring a Phylogeny of Fossil Bears Using the Mk Model</h2>
+<hr class="section" />
+
+<p>In this example, we will use morphological character data from 18 taxa
+of extinct bears <a href="#abella2011">(Abella et al. 2011)</a>. The dataset contains 62 binary
+characters, a fairly typical dataset size for morphological characters.</p>
+
+<h3 class="subsection" id="tutorial-format">Tutorial Format</h3>
+<hr class="subsection" />
+
+<p>This tutorial follows a specific format for issuing instructions and
+information.</p>
+
+<blockquote class="instruction">
+  <p>The boxed instructions guide you to complete tasks that are not part of
+the RevBayes syntax, but rather direct you to create directories or
+files or similar.</p>
+</blockquote>
+
+<p>Information describing the commands and instructions will be written in
+paragraph-form before or after they are issued.</p>
+
+<p>All command-line text, including all Rev syntax, are given in
+<code class="highlighter-rouge">monotype font</code>. Furthermore, blocks of Rev code that are needed to
+build the model, specify the analysis, or execute the run are given in
+separate shaded boxes. For example, we will instruct you to create a
+constant node called <code class="highlighter-rouge">example</code> that is equal to <code class="highlighter-rouge">1.0</code> using the <code class="highlighter-rouge">&lt;-</code>
+operator like this:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    example &lt;- 1.0
+</code></pre></div></div>
+
+<p>If you copy and paste text from the browser, beware of introducing incorrect characters!</p>
+
+<h3 class="subsection" id="subsec_data_files">Data and Files</h3>
+<hr class="subsection" />
+
+<blockquote class="instruction">
+  <p>On your own computer, create a directory for the tutorial called <code class="highlighter-rouge">RB_DiscreteMorphology_Tutorial</code> (or whatever you want) and within this directory create a subdirectory called <strong>data</strong>.
+In this directory download the data files: <a href="data/bears.nex"><code class="highlighter-rouge">bears.nex</code></a>.</p>
+</blockquote>
+
+<h3 class="subsection" id="getting-started">Getting Started</h3>
+<hr class="subsection" />
+
+<blockquote class="instruction">
+  <p>Create a new subdirectory (in <strong>RB_DiscreteMorphology_Tutorial</strong>) called <strong>scripts</strong>.</p>
+</blockquote>
+
+<p>When you execute RevBayes in this exercise, you will do so within the
+main directory you created (<strong>RB_DiscreteMorphology_Tutorial</strong>), thus,
+if you are using a Unix-based operating system, we recommend that you
+add the RevBayes binary to your path. Alternatively make sure that you set the working directory to, for example, <strong>RB_DiscreteMorphology_Tutorial</strong> if this is the directory you stored the scripts and data in.</p>
+
+<h3 class="subsection" id="subsec_creating_files">Creating Rev Files</h3>
+<hr class="subsection" />
+
+<p>In this exercise, you will work primarily in your text editor and
+create a set of files that will be easily managed and interchanged. 
+In this first section, you will write the following file
+from scratch and save them in the <strong>scripts</strong> directory:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">mcmc_mk.Rev</code>: the Rev file that loads the data, 
+specifies the model describing discrete morphological
+character change (binary characters), 
+and specifies the monitors and MCMC sampler.</li>
+</ul>
+
+<p>All of the files that you will create are also provided in the
+RevBayes tutorial here (see the top of this webpage). 
+Please refer to these files to verify or troubleshoot your own scripts.</p>
+
+<blockquote class="instruction">
+  <p>Open your text editor and create the Rev-script file called <code class="highlighter-rouge">mcmc_Mk.Rev</code> in the
+<strong>scripts</strong> directory.</p>
+
+  <p>Enter the Rev code provided in this section in the new file.</p>
+</blockquote>
+
+<p>In this section you will begin the file and write the Rev commands for
+loading in the taxon list and managing the data matrices. Then, starting
+in section <a href="#subsec_Mk_model"></a>, you will move on to specifying each of 
+the model components. Once the model specifications are
+complete, you will complete the script with the instructions given in section
+<a href="#subsec_complete_MCMC"></a>.</p>
+
+<h3 class="subsection" id="subsec_load_data">Load Data Matrix</h3>
+<hr class="subsection" />
+
+<p>RevBayes uses the function <code class="highlighter-rouge">readDiscreteCharacterData()</code> to load a
+data matrix to the workspace from a formatted file. This function can be
+used for both molecular sequences and discrete morphological characters.
+Import the morphological character matrix and assign it to the variable
+<code class="highlighter-rouge">morpho</code>.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    morpho &lt;- readDiscreteCharacterData("data/bears.nex")
+</code></pre></div></div>
+
+<h3 class="subsection" id="subsec_mvi_var">Create Helper Variables</h3>
+<hr class="subsection" />
+
+<p>Before we begin writing the Rev scripts for each of the models, 
+we need to instantiate a couple “helper variables” that will
+be used by downstream parts of our model specification.</p>
+
+<p>Create a new constant node called <code class="highlighter-rouge">num_taxa</code> that is equal to the number
+of species in our analysis (18) and a constant node called <code class="highlighter-rouge">num_branches</code> representing
+the number of branches in the tree. We will also create a constant node of
+the taxon names. This list will be used to initialize the tree.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    taxa &lt;- morpho.names()
+    num_taxa &lt;- morpho.size() 
+    num_branches &lt;- 2 * num_taxa - 2
+</code></pre></div></div>
+<p>Next, create two workspace variables called <code class="highlighter-rouge">mvi</code> and <code class="highlighter-rouge">mni</code>. These variables are iterators that will build a vector containing all of the MCMC moves used to propose new states for every stochastic node in the model graph. Each time a new move is added to the vector, <code class="highlighter-rouge">mvi</code> will be incremented by a value of <code class="highlighter-rouge">1</code>.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    mvi = 1
+    mni = 1
+</code></pre></div></div>
+<p>One important distinction here is that <code class="highlighter-rouge">mvi</code> is part of the RevBayes
+workspace and not the hierarchical model. Thus, we use the workspace
+assignment operator <code class="highlighter-rouge">=</code> instead of the constant node assignment <code class="highlighter-rouge">&lt;-</code>.</p>
+
+<h3 class="subsection" id="subsec_Mk_model">The Mk Model</h3>
+<hr class="subsection" />
+
+<p>First, we will create a joint prior on the branch lengths and tree topology. This should be familiar from the <a href="/tutorials/ctmc/">Substitution Models</a>.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    br_len_lambda ~ dnExp(0.2)
+    moves[mvi++] = mvScale(br_len_lambda, weight=2)
+
+    phylogeny ~ dnUniformTopologyBranchLength(taxa, branchLengthDistribution=dnExponential(br_len_lambda))
+    moves[mvi++] = mvNNI(phylogeny, weight=num_branches/2.0)
+    moves[mvi++] = mvSPR(phylogeny, weight=num_branches/10.0)
+    moves[mvi++] = mvBranchLengthScale(phylogeny, weight=num_branches)
+    
+    tree_length := phylogeny.treeLength()
+</code></pre></div></div>
+<p>Next, we will create a Q-matrix. Recall that the Mk model is simply a
+generalization of the JC model. Therefore, we will create a 2x2 Q-matrix
+using <code class="highlighter-rouge">fnJC</code>, which initializes Q-matrices with equal transition
+probabilities between all states.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    Q_morpho &lt;- fnJC(2)
+</code></pre></div></div>
+<p>Now that we have the basics of the model specified, we will add
+gamma-distributed rate variation and specify moves on the parameter of
+the gamma distribution, <code class="highlighter-rouge">alpha_morpho</code>.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    alpha_morpho ~ dnUniform( 0, 1E6 )
+    rates_morpho := fnDiscretizeGamma( alpha_morpho, alpha_morpho, 4 )
+
+    # Moves on the parameters of the gamma distribution
+    moves[mvi++] = mvScale(alpha_morpho, lambda=1, weight=2.0)
+</code></pre></div></div>
+
+<p>Lastly, we set up the CTMC. This should also be familiar from the <a href="/tutorials/ctmc/">Substitution Models</a>. 
+We see some familiar pieces: the tree, Q-matrix and site rates.
+We also have two new keywords: data type and coding. The data type
+argument specifies the type of data - in our case, “Standard”, the
+specification for morphology. (The role of the <code class="highlighter-rouge">coding</code> argument will be described in the next section <a href="#sec_ascertainment_bias"></a>.)</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    phyMorpho ~ dnPhyloCTMC(tree=phylogeny, siteRates=rates_morpho, Q=Q_morpho, type="Standard")
+    phyMorpho.clamp(morpho)
+</code></pre></div></div>
+<p>All of the components of the model are now specified.</p>
+
+<h3 class="subsection" id="subsec_complete_MCMC">Complete MCMC Analysis</h3>
+<hr class="subsection" />
+
+<h4 class="subsubsection" id="subsec_Mod_Obj">Create Model Object</h4>
+<hr class="subsubsection" />
+
+<p>We can now create our workspace model variable with our fully specified
+model DAG. We will do this with the <code class="highlighter-rouge">model()</code> function and provide a
+single node from the graph (<code class="highlighter-rouge">phylogeny</code>).</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    mymodel = model(phylogeny)
+</code></pre></div></div>
+<p>The object <code class="highlighter-rouge">mymodel</code> is a wrapper around the entire model graph and
+allows us to pass the model to various functions that are specific to
+our MCMC analysis.</p>
+
+<h4 class="subsubsection" id="subsubsec_Monitors">Specify Monitors and Output Filenames</h4>
+<hr class="subsubsection" />
+
+<p>The next important step for our Rev-script is to specify the
+monitors and output file names. For this, we create a vector called
+<code class="highlighter-rouge">monitors</code> that will each sample and record or output our MCMC.</p>
+
+<p>The first monitor we will create will monitor every named random
+variable in our model graph. This will include every stochastic and
+deterministic node using the <code class="highlighter-rouge">mnModel</code> monitor. The only parameter that
+is not included in the <code class="highlighter-rouge">mnModel</code> is the tree topology. Therefore, the
+parameters in the file written by this monitor are all numerical
+parameters. This file will be a tab-separated text file that can be opened by accessory programs for evaluating such parameters. We will also name the output file for this monitor and indicate that we wish to sample our
+MCMC every 10 cycles.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    monitors[mni++] = mnModel(filename="output/mk.log", printgen=10)
+</code></pre></div></div>
+<p>The <code class="highlighter-rouge">mnFile</code> monitor writes any parameter we specify to file. Thus, if
+we only cared about the branch lengths and nothing else (this is not a
+typical or recommended attitude for an analysis this complex) we
+wouldn’t use the <code class="highlighter-rouge">mnModel</code> monitor above and just use the <code class="highlighter-rouge">mnFile</code>
+monitor to write a smaller and simpler output file. Since the tree
+topology is not included in the <code class="highlighter-rouge">mnModel</code> monitor (because it is not
+numerical), we will use <code class="highlighter-rouge">mnFile</code> to write the tree to file by specifying
+our <code class="highlighter-rouge">phylogeny</code> variable in the arguments.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    monitors[mni++] = mnFile(filename="output/mk.trees", printgen=10, phylogeny)
+</code></pre></div></div>
+<p>The third monitor we will add to our analysis will print information to
+the screen.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    monitors[mni++] = mnScreen(printgen=100)
+</code></pre></div></div>
+
+<h4 class="subsubsection" id="set-up-the-mcmc">Set-Up the MCMC</h4>
+<hr class="subsubsection" />
+
+<p>Once we have set up our model, moves, and monitors, we can now create
+the workspace variable that defines our MCMC run. We do this using the
+<code class="highlighter-rouge">mcmc()</code> function that takes the three main analysis components
+as arguments.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
+</code></pre></div></div>
+<p>The MCMC object that we named <code class="highlighter-rouge">mymcmc</code> has a member method called
+<code class="highlighter-rouge">.run()</code>. This will execute our analysis and we will set the chain
+length to <code class="highlighter-rouge">20000</code> cycles using the <code class="highlighter-rouge">generations</code> option.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    mymcmc.run(generations=20000, tuningInterval=200)
+</code></pre></div></div>
+<p>Once our Markov chain has terminated, we will want RevBayes to close.
+Tell the program to quit using the <code class="highlighter-rouge">q()</code> function.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    q()
+</code></pre></div></div>
+
+<blockquote class="instruction">
+  <p>You made it! Save all of your files.</p>
+</blockquote>
+
+<h3 class="subsection" id="subsec_run_MCMC">Execute the MCMC Analysis</h3>
+<hr class="subsection" />
+
+<p>With all the parameters specified and all analysis components in place,
+you are now ready to run your analysis. The Rev scripts you just
+created will all be used by RevBayes.</p>
+
+<blockquote class="instruction">
+  <p>Begin by running the RevBayes executable. In Unix systems, type the
+following in your terminal (if the RevBayes binary is in your path):
+rb</p>
+</blockquote>
+
+<p>Provided that you started RevBayes from the correct directory
+(<strong>RB_DiscreteMorphology_Tutorial</strong>), you can then use the <code class="highlighter-rouge">source()</code>
+function to feed RevBayes your Rev-script file (<code class="highlighter-rouge">mcmc_mk.Rev</code>).</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    source("scripts/mcmc_mk.Rev")
+</code></pre></div></div>
+<p>This will execute the analysis and you should see the following output
+(though not the exact same values):</p>
+<div class="Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   Processing file "scripts/mcmc_mk.Rev"
+   Successfully read one character matrix from file 'data/bears.nex'
+
+   Running MCMC simulation
+   This simulation runs 2 independent replicates.
+   The simulator uses 5 different moves in a random move schedule with 58.4 moves per iteration
+
+Iter        |      Posterior   |     Likelihood   |          Prior   |    elapsed   |        ETA   |
+----------------------------------------------------------------------------------------------------
+0           |       -680.054   |       -649.452   |       -30.6022   |   00:00:00   |   --:--:--   |
+100         |       -419.885   |       -414.047   |       -5.83883   |   00:00:01   |   --:--:--   |
+200         |       -427.028   |       -417.426   |       -9.60277   |   00:00:01   |   00:00:49   |
+300         |       -421.585   |        -417.96   |        -3.6253   |   00:00:02   |   00:01:04   |
+400         |       -431.561   |       -427.124   |       -4.43711   |   00:00:03   |   00:01:12   |
+500         |       -423.507   |       -422.002   |       -1.50428   |   00:00:04   |   00:01:16   |
+600         |       -418.061   |       -419.644   |        1.58298   |   00:00:05   |   00:01:18   |
+700         |       -427.552   |       -423.884   |       -3.66793   |   00:00:05   |   00:01:06   |
+800         |        -437.39   |       -424.302   |       -13.0876   |   00:00:06   |   00:01:09   |
+900         |       -418.405   |       -413.872   |        -4.5323   |   00:00:07   |   00:01:10   |
+1000        |       -425.641   |       -411.291   |       -14.3491   |   00:00:08   |   00:01:12   |
+
+...
+</code></pre></div></div>
+
+<p>When the analysis is complete, RevBayes will quit and you will have a
+new directory called <strong>output</strong> that will contain all of the files you
+specified with the monitors (<a href="#subsubsec_Monitors"></a>).</p>
+
+<h3 class="subsection" id="exercises">Exercises</h3>
+<hr class="subsection" />
+
+<ol>
+  <li>Run the MCMC analysis in RevBayes.</li>
+  <li>Look at the resulting files <strong>mk_run_1.log</strong> and <strong>mk_run_2.log</strong> in Tracer and check for convergence.</li>
+  <li>Look at the majority rule consensus tree stored in <strong>mk.majrule.tre</strong> and the MAP tree stored in <strong>mk.map.tre</strong> in FigTree.</li>
+</ol>
+
+<h2 class="section" id="sec_ascertainment_bias">Example: Correcting for Ascertainment Bias</h2>
+<hr class="section" />
+
+<p>When Lewis first introduced the Mk model, he observed that branch
+lengths on the trees were greatly inflated. The reason for this is that
+when morphological characters are collected, characters that do not
+vary, or vary in a non-parsimony-informative way (such as
+autapomorphies) are excluded. Excluding these low-rate characters causes
+the overall amount of evolution to be over-estimated. This causes an
+inflation in the branch lengths <a href="#Lewis2001">(Lewis 2001)</a>.</p>
+
+<p>Therefore, when performing a morphological phylogenetic analysis, it is
+important to correct for this bias. There are numerous statistically
+valid ways to perform this correction <a href="#allman08b">(Allman and Rhodes 2008)</a>. Original corrections simulated invariant and non-parsimony informative characters along the proposed tree. The likelihood of these characters would then be
+calculated and used to normalize the total likelihood value. RevBayes
+implements a dynamic programming approach that calculates the same
+likelihood, but does so faster.</p>
+
+<h3 class="subsection" id="modifying-the-rev-script">Modifying the Rev-script</h3>
+<hr class="subsection" />
+
+<blockquote class="instruction">
+  <p>Create a copy of your previous Rev script, and call it <em>mcmc_Mkv.Rev</em>. 
+You will need to modify the Rev.
+code provided in this section in this file.</p>
+</blockquote>
+
+<p>In RevBayes it is actually very simple to add a correction for ascertainment bias. 
+You only need to set the option <code class="highlighter-rouge">coding="variable"</code> in the <code class="highlighter-rouge">dnPhyloCTMC</code>. Coding specifies what type of ascertainment bias is expected. We are using the <code class="highlighter-rouge">variable</code> correction, as we have no invariant character in our matrix. If we also lacked parsimony non-informative characters, we would use the coding <code class="highlighter-rouge">informative</code> (there are actually 4 parsimony non-informative characters in our matrix).</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phyMorpho ~ dnPhyloCTMC(tree=phylogeny, siteRates=rates_morpho, Q=Q_morpho, type="Standard", coding="variable")
+</code></pre></div></div>
+<blockquote class="instruction">
+  <p>Remember to change all filenames for the output, e.g., from <code class="highlighter-rouge">output/mk.log</code> to <code class="highlighter-rouge">output/mkv.log</code>.</p>
+</blockquote>
+
+<blockquote>
+  <p class="instruction">That’s all you need to do! Now run this script in RevBayes.</p>
+</blockquote>
+
+<h2 class="section" id="sec_disc_analysis">Example: Relaxing the Assumption of Equal Transition Probabilities</h2>
+<hr class="section" />
+
+<p>The Mk model makes a number of assumptions, but one that may strike you
+as particularly unrealistic is the assumption that characters are equally likely to change from any one state to any other. That means that a trait is as likely to be gained as lost. While this may hold true for some
+traits, we expect that it may be untrue for many others.</p>
+
+<p>RevBayes has functionality to allow us to relax this assumption. We do
+this by specifying a beta prior on state frequencies. Remember from the
+<a href="/tutorials/ctmc/">Substitution Models</a> lesson that stationary frequencies impact how likely we are to see changes in a character. For example, it may be very likely, in a character, to change from 0 to 1. But if the frequency of 0 is very low, we will still seldom see this change.</p>
+
+<p>We can exploit the relationship between state frequencies and observed
+changes to allow for variable Q-matrices across characters (<a href="#morpho_graphical_model"></a>). To do this, we generate a beta distribution on state frequencies, and use the state frequencies from that distribution to generate a series of Q-matrices used to evaluate our data <a href="#Pagel2004">(Pagel and Meade 2004)</a>.</p>
+
+<p>This type of model is called a <strong>mixture model</strong>. There are assumed to
+be subdivisions in the data, which may require different parameters (in
+this case, state frequencies). These subdivisions are not defined <em>a
+priori</em>. This model has previously been shown to be effective for a
+range of empirical and simulated datasets <a href="#Wright2016">(Wright et al. 2016)</a>.</p>
+
+<figure id="morpho_graphical_model"><p><img src="figures/tikz/morpho_gm.png" width="400" /></p>
+<figcaption>Graphical model demonstrating the
+discretized beta distribution for allowing variable state frequencies.</figcaption>
+</figure>
+
+<h3 class="subsection" id="modifying-the-rev-script">Modifying the Rev-script</h3>
+<hr class="subsection" />
+
+<blockquote class="instruction">
+  <p>Make a copy of the Rev script you made earlier. Call it
+<code class="highlighter-rouge">mcmc_mk_dicretized.Rev</code>. This new script will
+contain the new model parameters and models.</p>
+</blockquote>
+
+<p>We will use a discretized beta distribution to place a prior on the state frequencies. 
+The beta distribution has two parameters, $\alpha$ and $\beta$. These two
+parameters specify the shape of the distribution. State frequencies will
+be evaluated according to this distribution, in the same way that rate
+variation is evaluated according to the gamma distribution. The
+discretized distribution is split into multiple classes, each with it’s
+own set of frequencies for the 0 and 1 characters. The number of classes
+can vary; we have chosen 4 for tractability. Note that we need to make sure that this discretization results in a symmetric model, therefore we will use only one parameter for the beta distribution: <code class="highlighter-rouge">beta_scale</code> such that $\alpha = \beta$.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    num_cats = 4
+    beta_scale ~ dnLognormal( 0.0, sd=2*0.587405 )
+    moves[mvi++] = mvScale(beta_scale, lambda=1, weight=5.0 )
+</code></pre></div></div>
+<p>Above, we initialized the number of categories, the parameters of the
+beta distribution, and the moves on these parameters.</p>
+
+<p>Next, we set the categories to each represent a quadrant of the beta
+distribution specified by <code class="highlighter-rouge">beta_scale</code>.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    cats := fnDiscretizeBeta(beta_scale, beta_scale, num_cats)
+</code></pre></div></div>
+<p>If you were to print the <code class="highlighter-rouge">cats</code> variable, you would see a list of state
+frequencies like so:</p>
+
+<div class="Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   [ 0.011, 0.236, 0.764, 0.989 ]
+</code></pre></div></div>
+
+<p>Using these state frequencies, we will generate a new vector of Q-matrices. Because we are varying the state frequencies, we must use a Q-matrix generation function that allows for state frequencies to vary as
+a parameter. We will, therefore, use the <code class="highlighter-rouge">fnF81</code> function.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    for (i in 1:cats.size())
+    {
+        Q[i] := fnF81(simplex(abs(1-cats[i]), cats[i]))
+    }
+</code></pre></div></div>
+<p>Additionally, in RevBayes we need to specify the probabilities that a site evolves according to one
+of the Q-matrices. For this model the probabilities must be equal because we need to guarantee that
+the model is symmetric. Thus, we use a <code class="highlighter-rouge">simplex</code> function to create a vector that sums to 1.0.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    matrix_probs &lt;- simplex( rep(1,num_cats) )
+</code></pre></div></div>
+
+<p>The only other specification that needs to change in the model specification is
+the CTMC:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    phyMorpho ~ dnPhyloCTMC(tree=phylogeny, siteRates=rates_morpho, Q=Q, type="Standard", coding="variable", siteMatrices=matrix_probs)
+</code></pre></div></div>
+<p>You will notice that we have added a command to tell the CTMC that we have
+multiple site matrices that will be applied to different characters in
+the matrix.</p>
+
+<blockquote class="instruction">
+  <p>Remember to change all filenames for the output, e.g., from <code class="highlighter-rouge">output/mkv.log</code> to <code class="highlighter-rouge">output/mkv_discretized.log</code>.</p>
+</blockquote>
+
+<blockquote>
+  <p>The MCMC chain set-up does not need to change. Run the new MCMC file,
+just as you ran the previous MCMC analyses. This estimation will take longer than the Mk model, due to increased model complexity.</p>
+</blockquote>
+
+<h2 class="section" id="trace">Evaluate and Summarize Your Results</h2>
+<hr class="section" />
+
+<h4 class="subsubsection" id="evaluating-the-mcmc">Evaluating the MCMC</h4>
+<hr class="subsubsection" />
+
+<p>We will use <code class="highlighter-rouge">Tracer</code>to evaluate the MCMC samples from our
+three estimations. Load all three of the MCMC logs into the
+<code class="highlighter-rouge">Tracer</code> window. Highlight all three files in
+the upper left-hand viewer (<a href="#add_files"></a>) by right- or
+command-clicking all three files.</p>
+
+<figure id="add_files"><p><img src="figures/results_mk_mkv_mkvd/AddFiles_mk_mkv_mkvd.png" width="50%" /></p>
+<figcaption>Highlight all three files for model comparison.</figcaption>
+</figure>
+
+<p>Once all three trace logs are loaded and highlighted, first look at the
+estimated likelihoods. You will notice that the Mk model (<code class="highlighter-rouge">mk.log</code>), as
+originally proposed by <a href="#Lewis2001">(Lewis 2001)</a> is improved by adding the correction for ascertainment bias.
+The <code class="highlighter-rouge">mkv</code> and the <code class="highlighter-rouge">mkv_discretized</code> analyses both represent improvements, but are fairly close in likelihoodscore to each other (<a href="#tracer_llik"></a>). 
+Likely, we would need to perform stepping stone model assessment to truly tell if the more complicated model is statistically justified. 
+This analysis is too complicated and time-consuming for this tutorial period, but you will find instructions for performing the analysis in
+<a href="/tutorials/model_selection_bayes_factors/bf_intro.html">General Introduction to Model selection</a>.</p>
+
+<figure id="tracer_llik"><p><img src="figures/results_mk_mkv_mkvd/Likelihood_mk_mkv_mkvd.png" width="100%" /></p>
+<figcaption>Comparison of likelihood scores for all three models.</figcaption>
+</figure>
+
+<p>Next, click on the <code class="highlighter-rouge">Trace</code> tab. In the lower left hand corner, you will
+notice an option to color each trace by the file it came from. Choose
+this option (you may need to expand the window slightly to see it). Next
+to this option, you can also see an option to add a legend to your trace
+window. The results of this coloring can be seen in
+<a href="#coltrace"></a>. 
+You will see that the models are mixing quite well, but we may want to run the MCMC chains longer if we were to use these analyses in a paper.</p>
+
+<figure id="coltrace"><p><img src="figures/results_mk_mkv_mkvd/Coltrace_mk_mkv_mkvd.png" width="100%" /></p>
+<figcaption>The Trace window. The traces are colored by which version of the Mk model 
+they correspond to.</figcaption>
+</figure>
+
+<p>We are interested in two aspects of the posterior distribution. First,
+the <code class="highlighter-rouge">mkv</code> and <code class="highlighter-rouge">mkv_discretized</code> analyses incorporated a correction for the biased sampling of variable characters, while the <code class="highlighter-rouge">mk</code> analysis does not. In this case, we expect the <code class="highlighter-rouge">tree_length</code> variable to be greater for the <code class="highlighter-rouge">mk</code> analysis, because in reality our data are enriched for variation (i.e. the model overestimates variation). Click on the “Marginal Density” tab and select the <code class="highlighter-rouge">tree_length</code> parameter.
+<a href="#tracer_tree_length"></a> shows that <code class="highlighter-rouge">tree_length</code> is approximately 20% greater for the <code class="highlighter-rouge">mk</code>.</p>
+
+<figure id="tracer_tree_length"><p><img src="figures/results_mk_mkv_mkvd/Treelength_mk_mkv_mkvd.png" width="100%" /></p>
+<figcaption>Posterior tree length estimates.</figcaption>
+</figure>
+
+<p>Second, we are interested in characterizing the degree of heterogeneity
+estimated by the beta discretized model. If the data were distributed by
+a single morphological rate matrix, then we would expect to see very
+little variation among the different <code class="highlighter-rouge">cats</code> value estimates, and
+a very large value for the <code class="highlighter-rouge">beta_scale</code> parameter of the
+discretized beta distribution. For example, if beta_scale =
+1000, then that would cause all discretized beta categories to have values approaching 0.5, which approximates a symmetric Mk model.
+Examine the output for <code class="highlighter-rouge">beta_scale</code> in Tracer (<a href="#tracer_alpha_beta"></a>).</p>
+
+<figure id="tracer_alpha_beta"><p><img src="figures/results_mk_mkv_mkvd/beta_scale.png" width="100%" /></p>
+<figcaption>Beta scale parameter of the discretized beta model.</figcaption>
+</figure>
+
+<p><a href="#tracer_cats"></a> shows that the four discretized beta state
+frequencies do not all have the exact same value. To replicate this figure in Tracer select the <code class="highlighter-rouge">cats[i]</code> estimates, click on the Marginal Density tab and select Colour by: “Trace and Trace File” and Display: “Box and whisker”.</p>
+
+<figure id="tracer_cats"><p><img src="figures/results_mk_mkv_mkvd/cats_boxplot.png" width="100%" /></p>
+<figcaption>Posterior discretized state frequencies for the discretized beta model.</figcaption>
+</figure>
+
+<h4 class="subsubsection" id="summarizing-trees">Summarizing Trees</h4>
+<hr class="subsubsection" />
+
+<p>The trees estimated in the above sections are summarized using a majority rule consensus tree (MRCT). Clades appearing in $p&gt;0.5$ of posterior samples are resolved in the MRCT, while poorly support clades with $p \leq 0.5$ are shown as unresolved polytomies. Poor phylogenetic resolution might be caused by having too few phylogenetically informative characters, or conflicting signals for certain species relationships. Let’s compare our topological estimates across models.</p>
+
+<figure id="mk_discretized_majrule"><p><img src="figures/results/mk_discretized_majrule_tre.png" width="75%" /></p>
+<figcaption>Majority rule consensus tree for the beta-discretized Mkv analysis.</figcaption>
+</figure>
+
+<p>The MRCTs for the Mk model with and without the +v correction are
+very similar to that for the discretized-beta model
+(<a href="#mk_discretized_majrule"></a>). 
+Click on “Branch Labels” to show the branch lengths. 
+Note that the branch lengths differ - the tree length is inflated without the +v correction, just as we saw when comparing the
+posterior tree length densities. In general, it is important to assess
+whether your results are sensitive to model assumptions, such as the
+degree of model complexity, and any mechanistic assumptions that
+motivate the model’s design. In this case, our tree estimate appears to
+be relatively robust to model complexity.</p>
+
+
+<ol class="bibliography"><li><span id="abella2011">Abella J., Montoya P., Morales J. 2011. Una nueva especie de \textitAgriarctos (Ailuropodinae, Ursidae, Carnivora) en la localidad de Nombrevilla 2 (Zaragoza, España). Estudios Geológicos. 67:187–191.</span>
+
+</li>
+<li><span id="allman08b">Allman E.S., Rhodes J.A. 2008. Identifying evolutionary trees and substitution parameters for the general Markov model with invariable sites. Mathematical Biosciences. 211:18–33.</span>
+
+</li>
+<li><span id="freudenstein05">Freudenstein J.V. 2005. Characters, States and Homology. Systematic Biology. 54:965.</span>
+
+<a href="https://doi.org/10.1080/10635150500354654">10.1080/10635150500354654</a>
+
+</li>
+<li><span id="Hoehna2016b">Höhna S., Landis M.J., Heath T.A., Boussau B., Lartillot N., Moore B.R., Huelsenbeck J.P., Ronquist F. 2016. RevBayes: Bayesian Phylogenetic Inference Using Graphical Models and an Interactive Model-Specification Language. Systematic Biology. 65:726–736.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syw021">10.1093/sysbio/syw021</a>
+
+</li>
+<li><span id="Jukes1969">Jukes T.H., Cantor C.R. 1969. Evolution of Protein Molecules. Mammalian Protein Metabolism. 3:21–132.</span>
+
+<a href="https://doi.org/10.1016/B978-1-4832-3211-9.50009-7">10.1016/B978-1-4832-3211-9.50009-7</a>
+
+</li>
+<li><span id="Lewis2001">Lewis P.O. 2001. A Likelihood Approach to Estimating Phylogeny from Discrete Morphological Character Data. Systematic Biology. 50:913–925.</span>
+
+<a href="https://doi.org/10.1080/106351501753462876">10.1080/106351501753462876</a>
+
+</li>
+<li><span id="Pagel2004">Pagel M., Meade A. 2004. A Phylogenetic Mixture Model for Detecting Pattern-Heterogeneity in Gene Sequence or Character-State Data. Systematic Biology. 53:571–581.</span>
+
+<a href="https://doi.org/10.1080/10635150490468675">10.1080/10635150490468675</a>
+
+</li>
+<li><span id="Phillips06">Phillips A.J. 2006. Homology assessment and molecular sequence alignment. Journal of Biomedical Informatics. 39:18–33.</span>
+
+<a href="https://doi.org/10.1016/j.jbi.2005.11.005">10.1016/j.jbi.2005.11.005</a>
+
+</li>
+<li><span id="Wright2014">Wright A.M., Hillis D.M. 2014. Bayesian analysis using a simple likelihood model outperforms parsimony for estimation of phylogeny from discrete morphological data. PLoS One. 9:e109210.</span>
+
+<a href="https://doi.org/10.1371/journal.pone.0109210">10.1371/journal.pone.0109210</a>
+
+</li>
+<li><span id="Wright2016">Wright A.M., Lloyd G.T., Hillis D.M. 2016. Modeling Character Change Heterogeneity in Phylogenetic Analyses of Morphology through the Use of Priors. Systematic Biology. 65:602–611.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syv122">10.1093/sysbio/syv122</a>
+
+</li></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+
+<script src="/assets/js/base.js"></script>
+
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+  });
+</script>
+
+  </body>
+</html>
