@@ -18,7 +18,7 @@ exclude_files:
 - scripts/plot_anc_states.R
 - data/mammals_thinned_placenta_type.nex
 - data/mammals_thinned.tree
-index: true
+index: false
 title-old: RB_DiscreteMorphology_Tutorial
 redirect: false
 ---
