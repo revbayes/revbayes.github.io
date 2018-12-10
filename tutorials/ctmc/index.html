@@ -54,7 +54,7 @@
 	<h1 class="maintitle">Substitution Models</h1>
 	<h3 class="subtitle">Phylogenetic inference of nucleotide data using RevBayes</h3>
 	<h4 class="authors">Sebastian Höhna, Michael Landis, Brian Moore and Tracy Heath</h4>
-  <h5>Last modified on August 10, 2018</h5>
+  <h5>Last modified on December 10, 2018</h5>
 </div>
 
 
@@ -302,9 +302,7 @@ in your Rev scripts or in the RevBayes console.</p>
 
 <p>If you want to change the directory, enter the path to your directory in the arguments of the function <code class="highlighter-rouge">setwd()</code>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>setwd("Tutorials/RB_CTMC_Tutorial")
-</code></pre></div></div>
-<div class="Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Received directory:   Tutorials/RB_CTMC_Tutorial
+<div class="Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>setwd("Tutorials/RB_CTMC_Tutorial")
 </code></pre></div></div>
 
 <p>Now check your directory again to make sure you are where you want to be:</p>
@@ -346,14 +344,13 @@ num_branches &lt;- 2 * num_taxa - 3
 taxa &lt;- data.taxa()
 </code></pre></div></div>
 
-<p>Additionally, we set up a counter variable for the number of moves that we already added to our analysis. 
+<p>Additionally, we set up a (vector) variable that holds all the moves for our analysis. 
 Recall that moves are algorithms used to propose new parameter values during the MCMC simulation. 
-This will make it much easier if we extend the model or analysis to include additional moves or 
-to remove some moves. Similarly, we set up a counter variable for the number of monitors. 
+Similarly, we set up a variable for the monitors. 
 Monitors print the values of model parameters to the screen and/or log files during the MCMC analysis.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvi = 1 
-mni = 1
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
+monitors = VectorMonitors()
 </code></pre></div></div>
 
 <p>You may have noticed that we used the <code class="highlighter-rouge">=</code> operator to create the move index. 
@@ -420,8 +417,8 @@ and it is possible to use multiple different moves for a given parameter to impr
 (the efficiency of the MCMC simulation). 
 In the case of our unrooted tree topology, for example, we can use both a nearest-neighbor interchange move (<code class="highlighter-rouge">mvNNI</code>) and a subtree-prune and regrafting move (<code class="highlighter-rouge">mvSPR</code>). These moves do not have tuning parameters associated with them, thus you only need to pass in the <code class="highlighter-rouge">topology</code> node and proposal <code class="highlighter-rouge">weight</code>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvNNI(topology, weight=num_taxa)
-moves[mvi++] = mvSPR(topology, weight=num_taxa/10.0)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvNNI(topology, weight=num_taxa) )
+moves.append( mvSPR(topology, weight=num_taxa/10.0) )
 </code></pre></div></div>
 
 <p>The weight specifies how often the move will be applied either on average per iteration or relative to all other moves. Have a look at the MCMC Diagnosis tutorial for more details about moves and MCMC strategies (found in <a href="/tutorials/">Tutorials</a>).</p>
@@ -430,7 +427,7 @@ moves[mvi++] = mvSPR(topology, weight=num_taxa/10.0)
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:num_branches) {
    br_lens[i] ~ dnExponential(10.0)
-   moves[mvi++] = mvScale(br_lens[i]) 
+   moves.append( mvScale(br_lens[i]) )
 }
 </code></pre></div></div>
 
@@ -448,9 +445,9 @@ moves[mvi++] = mvSPR(topology, weight=num_taxa/10.0)
 We can achieve this by simple using the distribution <code class="highlighter-rouge">dnUniformTopologyBranchLength()</code>.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>br_len_lambda &lt;- 10.0
 psi ~ dnUniformTopologyBranchLength(taxa, branchLengthDistribution=dnExponential(br_len_lambda))
-moves[mvi++] = mvNNI(psi, weight=num_taxa)
-moves[mvi++] = mvSPR(psi, weight=num_taxa/10.0)
-moves[mvi++] = mvBranchLengthScale(psi, weight=num_branches)
+moves.append( mvNNI(psi, weight=num_taxa) )
+moves.append( mvSPR(psi, weight=num_taxa/10.0) )
+moves.append( mvBranchLengthScale(psi, weight=num_branches) )
 </code></pre></div></div>
 <p>You might think that this approach is in fact simpler than the <code class="highlighter-rouge">for</code> loop that we explained above.
 We still think that it is pedagogical to specify the prior on each branch length separately in this tutorial to emphasize all components of the model.</p>
@@ -467,13 +464,13 @@ the corresponding branch lengths <a href="#Zhang2012">(Zhang et al. 2012)</a>.</
 <p>First, specify a prior distribution on the tree length with your desired mean.
 For example, we use a gamma distribution as our prior on the tree length.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>TL ~ dnGamma(2,4)
-moves[mvi++] = mvScale(TL) 
+moves.append( mvScale(TL) )
 </code></pre></div></div>
 
 <p>Now we create a random variable for the relative branch lengths.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rel_branch_lengths ~ dnDirichlet( rep(1.0,num_branches) )
-moves[mvi++] = mvBetaSimplex(rel_branch_lengths, weight=num_branches)
-moves[mvi++] = mvDirichletSimplex(rel_branch_lengths, weight=num_branches/10.0)
+moves.append( mvBetaSimplex(rel_branch_lengths, weight=num_branches) )
+moves.append( mvDirichletSimplex(rel_branch_lengths, weight=num_branches/10.0) )
 </code></pre></div></div>
 <p>Finally, transform the relative branch lengths into actual branch lengths</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>br_lens := rel_branch_lengths * TL
@@ -510,12 +507,12 @@ We also need moves that change the ages of the internal nodes, for example, <cod
 and <code class="highlighter-rouge">mvNodeTimeSlideUniform</code>. These moves do not have tuning parameters associated with 
 them, thus you only need to pass in the <code class="highlighter-rouge">psi</code> node and proposal <code class="highlighter-rouge">weight</code>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvNarrow(psi, weight=num_taxa)
-moves[mvi++] = mvNNI(psi, weight=num_taxa/5.0)
-moves[mvi++] = mvFNPR(psi, weight=num_taxa/5.0)
-moves[mvi++] = mvGPR(psi, weight=num_taxa/30.0)
-moves[mvi++] = mvSubtreeScale(psi, weight=num_taxa/3.0)
-moves[mvi++] = mvNodeTimeSlideUniform(psi, weight=num_taxa)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvNarrow(psi, weight=num_taxa) )
+moves.append( mvNNI(psi, weight=num_taxa/5.0) )
+moves.append( mvFNPR(psi, weight=num_taxa/5.0) )
+moves.append( mvGPR(psi, weight=num_taxa/30.0) )
+moves.append( mvSubtreeScale(psi, weight=num_taxa/3.0) )
+moves.append( mvNodeTimeSlideUniform(psi, weight=num_taxa) )
 </code></pre></div></div>
 
 <p>The weight specifies how often the move will be applied either on average per iteration or relative to all other moves. Have a look at the <a href="/tutorials/mcmc/">Diagnosing MCMC performance</a> for more details about moves and MCMC strategies.</p>
@@ -526,7 +523,7 @@ moves[mvi++] = mvNodeTimeSlideUniform(psi, weight=num_taxa)
 <p>Additionally, in the case of time-calibrated trees, we need to add a molecular clock rate parameter. For example, we know from empirical estimates that the molecular clock rate is about 0.01 (=1%) per million years per site. Nevertheless, we can estimate it here because we fixed the root age. We use a uniform prior on the log-transform clock rate. This specifies our lack of prior knowledge on the magnitude of the clock rate.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log_clock_rate ~ dnUniform(-6,1)
-moves[mvi++] = mvSlide(log_clock_rate, weight=2.0)
+moves.append( mvSlide(log_clock_rate, weight=2.0) )
 clock_rate := 10^log_clock_rate
 </code></pre></div></div>
 
@@ -600,20 +597,20 @@ First, we will initialize the model monitor using the <code class="highlighter-r
 function. This creates a new monitor variable that will output the
 states for all model parameters when passed into a MCMC function.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[mni++] = mnModel(filename="output/primates_cytb_JC.log", printgen=10)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/primates_cytb_JC.log", printgen=10) )
 </code></pre></div></div>
 
 <p>The <code class="highlighter-rouge">mnFile</code> monitor will record the states for only the parameters
 passed in as arguments. We use this monitor to specify the output for
 our sampled trees and branch lengths.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[mni++] = mnFile(filename="output/primates_cytb_JC.trees", printgen=10, psi)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnFile(filename="output/primates_cytb_JC.trees", printgen=10, psi) )
 </code></pre></div></div>
 
 <p>Finally, create a screen monitor that will report the states of
 specified variables to the screen with <code class="highlighter-rouge">mnScreen</code>:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[mni++] = mnScreen(printgen=1000, TL)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(printgen=1000, TL) )
 </code></pre></div></div>
 
 <p>This monitor mostly helps us to see the progress of the MCMC run.</p>
@@ -915,7 +912,7 @@ Q_{K80} = \begin{pmatrix}
 
 <p>Now, add the parameter $\kappa$ to the substitution model, and create a K80 rate matrix:</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kappa ~ dnExp(1)
-moves[++move_index] = mvScale(kappa, weight=1.0)
+moves.append( mvScale(kappa, weight=1.0) )
 
 Q := fnK80(kappa)
 </code></pre></div></div>
@@ -962,8 +959,8 @@ from the simplex, proposes a new value for it drawn from a Beta
 distribution, and then rescales all values of the simplex to sum to 1
 again.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvBetaSimplex(pi, weight=2)
-moves[mvi++] = mvDirichletSimplex(pi, weight=1)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvBetaSimplex(pi, weight=2) )
+moves.append( mvDirichletSimplex(pi, weight=1) )
 </code></pre></div></div>
 
 <p>The second new variable is $\kappa$, which specifies the ratio of
@@ -977,7 +974,7 @@ the lognormal distribution:</p>
 <p>Again, we need to specify a move for this new stochastic variable. A
 simple scaling move should do the job.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvScale(kappa)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale(kappa) )
 </code></pre></div></div>
 
 <p>Finally, we need to create the HKY instantaneous-rate matrix using the
@@ -1092,8 +1089,8 @@ named <code class="highlighter-rouge">er</code> ($\theta$ in <a href="#gtr_graph
 
 <p>For each stochastic node in our model, we must also specify a proposal mechanism if we wish to estimate that parameter. The Dirichlet prior on our parameter <code class="highlighter-rouge">er</code> creates a <a href="http://en.wikipedia.org/wiki/Simplex"><em>simplex</em></a> of values that sum to 1.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvBetaSimplex(er, weight=3)
-moves[mvi++] = mvDirichletSimplex(er, weight=1)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvBetaSimplex(er, weight=3) )
+moves.append( mvDirichletSimplex(er, weight=1) )
 </code></pre></div></div>
 
 <p>We can use the same type of distribution as a prior on the 4 stationary
@@ -1107,8 +1104,8 @@ pi ~ dnDirichlet(pi_prior)
 
 <p>The node <code class="highlighter-rouge">pi</code> represents the $\pi$ node in <a href="#gtr_graphical_model"></a>. Now add the simplex scale move on the stationary frequencies to the moves vector:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvBetaSimplex(pi, weight=2)
-moves[mvi++] = mvDirichletSimplex(pi, weight=1)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvBetaSimplex(pi, weight=2) )
+moves.append( mvDirichletSimplex(pi, weight=1) )
 </code></pre></div></div>
 
 <p>We can finish setting up this part of the model by creating a deterministic node for the GTR instantaneous-rate matrix <code class="highlighter-rouge">Q</code>. The <code class="highlighter-rouge">fnGTR()</code> function takes a set of exchangeability rates and a set of base frequencies to compute the instantaneous-rate matrix used when calculating the likelihood of our model.</p>
@@ -1177,7 +1174,7 @@ but it might also make your replicated MCMC runs to be more likely to get stuck 
 
 <p>Note that here, by convention, we set $k = 4$. The random variable that controls the rate variation is the stochastic node <code class="highlighter-rouge">alpha</code>. We will apply a simple scale move to this parameter.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvScale(alpha, weight=2.0)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale(alpha, weight=2.0) )
 </code></pre></div></div>
 
 <p>Remember that you need to call the <code class="highlighter-rouge">PhyloCTMC</code> constructor to include the new site-rate parameter:</p>
@@ -1226,7 +1223,7 @@ probabilities of the clades.</p>
 
 <p>Then, as usual, we add a move to change this stochastic variable; we’ll use a simple sliding window move.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvSlide(pinvar)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvSlide(pinvar) )
 </code></pre></div></div>
 
 <p>Finally, you need to call the <code class="highlighter-rouge">PhyloCTMC</code> constructor to include the

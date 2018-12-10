@@ -110,6 +110,8 @@
         
         
         
+          <li><a href="/tutorials/divrate/scripts/mcmc_BDS.Rev">mcmc_BDS.Rev</a></li>
+        
           <li><a href="/tutorials/divrate/scripts/mcmc_Yule.Rev">mcmc_Yule.Rev</a></li>
         
           <li><a href="/tutorials/divrate/scripts/ml_Yule.Rev">ml_Yule.Rev</a></li>
@@ -210,10 +212,10 @@ parameter $\rho$ to $233/367$.</p>
 <p>From this tree, we can get some helpful variables:</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>taxa &lt;- T.taxa()
 </code></pre></div></div>
-<p>Additionally, we can initialize an iterator variable for our vector of
-moves:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvi = 1
-mni = 1
+<p>Additionally, we can initialize a variable for our vector of
+moves and monitors:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
+monitors = VectorMonitors()
 </code></pre></div></div>
 
 <h3 class="subsection" id="specifying-the-model">Specifying the model</h3>
@@ -250,7 +252,7 @@ operate on this node. In RevBayes these MCMC sampling algorithms are
 called <em>moves</em>. We need to create a vector of moves and we can do this
 by using vector indexing and our pre-initialized iterator <code class="highlighter-rouge">mi</code>. We will
 use a scaling move on $\lambda$ called <code class="highlighter-rouge">mvScale</code>.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvScale(birth_rate,lambda=1,tune=true,weight=3)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale(birth_rate,lambda=1,tune=true,weight=3) )
 </code></pre></div></div>
 
 <h4 class="subsubsection" id="sampling-probability">Sampling probability</h4>
@@ -322,11 +324,11 @@ called <code class="highlighter-rouge">mn\*</code>, where <code class="highlight
 First, we will initialize the model monitor using the <code class="highlighter-rouge">mnModel</code>
 function. This creates a new monitor variable that will output the
 states for all model parameters when passed into a MCMC function.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[mni++] = mnModel(filename="output/primates_Yule.log",printgen=10, separator = TAB)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/primates_Yule.log",printgen=10, separator = TAB) )
 </code></pre></div></div>
 <p>Additionally, create a screen monitor that will report the states of
 specified variables to the screen with <code class="highlighter-rouge">mnScreen</code>:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[mni++] = mnScreen(printgen=1000, birth_rate)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(printgen=1000, birth_rate) )
 </code></pre></div></div>
 
 <h4 class="subsubsection" id="initializing-and-running-the-mcmc-simulation">Initializing and Running the MCMC Simulation</h4>

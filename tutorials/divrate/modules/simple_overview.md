@@ -57,9 +57,9 @@ rates.
 
 {% subsubsection (1) Diversification-rate through time estimation %}
 
-*What is the (constant) rate of diversification in my study group?* The
+*What is the global rate of diversification in my study group?* The
 most basic models estimate parameters of the stochastic-branching
-process (*i.e.*,  rates of speciation and
+process (*i.e.*, rates of speciation and
 extinction, or composite parameters such as net-diversification and
 relative-extinction rates) under the assumption that rates have remained
 constant across lineages and through time;
@@ -77,10 +77,8 @@ extinction rates), as might occur because of diversity-dependent
 diversification (*i.e.*,  where competitive
 ecological interactions among the species of a growing tree decrease the
 opportunities for speciation and/or increase the probability of
-extinction, e.g., {% citet Hoehna2014a %}). Third, we
-can ask whether changes in diversification rates are correlated with
-environmental factors, such as environmental CO<sub>2</sub> or temperature
-{% cite Condamine2013 %}. A final question in this category asks whether our
+extinction, e.g., {% citet Hoehna2014a %}). 
+A final question in this category asks whether our
 study tree was impacted by a mass-extinction event (where a large
 fraction of the standing species diversity is suddenly lost,
 e.g., {% citet May2016 %}). The common theme of these
@@ -88,7 +86,19 @@ studies is that the diversification process is tree-wide, that is, all
 lineages of the study group have the exact same rates at a given time.
 
 
-{% subsubsection (2) Diversification-rate variation across branches estimation %}
+{% subsubsection (2) Diversification-rate through time estimation %}
+
+*Are diversification rates correlated with some abiotic (e.g., environmental) variable in my study
+group?*
+If we have found evidence in the previous section that diversification rates vary
+through time, then we can start asking the question whether these changes in diversification
+rates are driven by some abiotic factors. 
+For example, we can ask whether changes in diversification rates are correlated with
+environmental factors, such as environmental CO<sub>2</sub> or temperature
+{% cite Condamine2013 %}. 
+
+
+{% subsubsection (3) Diversification-rate variation across branches estimation %}
 
 *Is there evidence that diversification rates have varied significantly
 across the branches of my study group?* Models have been developed to
@@ -104,9 +114,9 @@ significant diversification-rate shifts along branches in my study
 group, and if so, how many shifts, what magnitude of rate-shifts and
 along which branches?*
 
-{% subsubsection (3) Character-dependent diversification-rate estimation %}
+{% subsubsection (4) Character-dependent diversification-rate estimation %}
 
-*Are diversification rates correlated with some variable in my study
+*Are diversification rates correlated with some biotic (e.g., morphological) variable in my study
 group?* Character-dependent diversification-rate models aim to identify
 overall correlations between diversification rates and organismal
 features (binary and multi-state discrete morphological traits,
