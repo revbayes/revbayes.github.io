@@ -30,10 +30,6 @@ exclude_files:
 
 {% include_relative modules/branch_specific_overview.md %}
 
-{% include_relative modules/branch_specific_cbdsp.md %}
+{% include_relative modules/branch_specific_bds.md %}
 
 {% include_relative modules/branch_specific_exercise_1.md %}
-
-{% include_relative modules/branch_specific_frcbdsp.md %}
-
-{% include_relative modules/branch_specific_exercise_2.md %}
