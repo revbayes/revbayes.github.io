@@ -191,7 +191,7 @@ This is because, in the context of node dating, the calibration information is r
 >Click below to begin the next exercise!
 {:.instruction}
 
-* [Estimating speciation times using the FBD model]({{ base.url }}/tutorials/dating/fbd)
+* [Estimating speciation times using the fossilized birth-death range model]({{ base.url }}/tutorials/dating/fbdr)
 
 For further options and information about the models used in this exercise see Tracy Heath & Sebastian Höhna's tutorial [Divergence Time Calibration](https://github.com/revbayes/revbayes_tutorial/blob/master/tutorial_TeX/RB_DivergenceTime_Calibration_Tutorial/).
 
