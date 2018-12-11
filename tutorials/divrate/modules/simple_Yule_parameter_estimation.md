@@ -83,11 +83,11 @@ From this tree, we can get some helpful variables:
 ```
 taxa <- T.taxa()
 ```
-Additionally, we can initialize an iterator variable for our vector of
-moves:
+Additionally, we can initialize a variable for our vector of
+moves and monitors:
 ```
-mvi = 1
-mni = 1
+moves    = VectorMoves()
+monitors = VectorMonitors()
 ```
 
 
@@ -125,7 +125,7 @@ called *moves*. We need to create a vector of moves and we can do this
 by using vector indexing and our pre-initialized iterator `mi`. We will
 use a scaling move on $\lambda$ called `mvScale`.
 ```
-moves[mvi++] = mvScale(birth_rate,lambda=1,tune=true,weight=3)
+moves.append( mvScale(birth_rate,lambda=1,tune=true,weight=3) )
 ```
 
 {% subsubsection Sampling probability %}
@@ -199,12 +199,12 @@ First, we will initialize the model monitor using the `mnModel`
 function. This creates a new monitor variable that will output the
 states for all model parameters when passed into a MCMC function.
 ```
-monitors[mni++] = mnModel(filename="output/primates_Yule.log",printgen=10, separator = TAB)
+monitors.append( mnModel(filename="output/primates_Yule.log",printgen=10, separator = TAB) )
 ```
 Additionally, create a screen monitor that will report the states of
 specified variables to the screen with `mnScreen`:
 ```
-monitors[mni++] = mnScreen(printgen=1000, birth_rate)
+monitors.append( mnScreen(printgen=1000, birth_rate) )
 ```
 
 

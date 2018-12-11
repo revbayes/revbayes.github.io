@@ -160,9 +160,6 @@ If you want to change the directory, enter the path to your directory in the arg
 ```
 setwd("Tutorials/RB_CTMC_Tutorial")
 ```
-```
-Received directory:   Tutorials/RB_CTMC_Tutorial
-```
 {:.Rev-output}
 
 Now check your directory again to make sure you are where you want to be:
@@ -213,15 +210,14 @@ num_branches <- 2 * num_taxa - 3
 taxa <- data.taxa()
 ```
 
-Additionally, we set up a counter variable for the number of moves that we already added to our analysis. 
+Additionally, we set up a (vector) variable that holds all the moves for our analysis. 
 Recall that moves are algorithms used to propose new parameter values during the MCMC simulation. 
-This will make it much easier if we extend the model or analysis to include additional moves or 
-to remove some moves. Similarly, we set up a counter variable for the number of monitors. 
+Similarly, we set up a variable for the monitors. 
 Monitors print the values of model parameters to the screen and/or log files during the MCMC analysis.
 
 ```
-mvi = 1 
-mni = 1
+moves    = VectorMoves()
+monitors = VectorMonitors()
 ```
 
 You may have noticed that we used the `=` operator to create the move index. 
@@ -291,8 +287,8 @@ and it is possible to use multiple different moves for a given parameter to impr
 In the case of our unrooted tree topology, for example, we can use both a nearest-neighbor interchange move (`mvNNI`) and a subtree-prune and regrafting move (`mvSPR`). These moves do not have tuning parameters associated with them, thus you only need to pass in the `topology` node and proposal `weight`.
 
 ```
-moves[mvi++] = mvNNI(topology, weight=num_taxa)
-moves[mvi++] = mvSPR(topology, weight=num_taxa/10.0)
+moves.append( mvNNI(topology, weight=num_taxa) )
+moves.append( mvSPR(topology, weight=num_taxa/10.0) )
 ```
 
 The weight specifies how often the move will be applied either on average per iteration or relative to all other moves. Have a look at the MCMC Diagnosis tutorial for more details about moves and MCMC strategies (found in {% page_ref tutorials %}).
@@ -302,7 +298,7 @@ Next we have to create a stochastic node for each of the $2N - 3$ branches in ou
 ```
 for (i in 1:num_branches) {
    br_lens[i] ~ dnExponential(10.0)
-   moves[mvi++] = mvScale(br_lens[i]) 
+   moves.append( mvScale(br_lens[i]) )
 }
 ```
 
@@ -324,9 +320,9 @@ We can achieve this by simple using the distribution `dnUniformTopologyBranchLen
 ```
 br_len_lambda <- 10.0
 psi ~ dnUniformTopologyBranchLength(taxa, branchLengthDistribution=dnExponential(br_len_lambda))
-moves[mvi++] = mvNNI(psi, weight=num_taxa)
-moves[mvi++] = mvSPR(psi, weight=num_taxa/10.0)
-moves[mvi++] = mvBranchLengthScale(psi, weight=num_branches)
+moves.append( mvNNI(psi, weight=num_taxa) )
+moves.append( mvSPR(psi, weight=num_taxa/10.0) )
+moves.append( mvBranchLengthScale(psi, weight=num_branches) )
 ```
 You might think that this approach is in fact simpler than the `for` loop that we explained above.
 We still think that it is pedagogical to specify the prior on each branch length separately in this tutorial to emphasize all components of the model.
@@ -345,14 +341,14 @@ First, specify a prior distribution on the tree length with your desired mean.
 For example, we use a gamma distribution as our prior on the tree length.
 ```
 TL ~ dnGamma(2,4)
-moves[mvi++] = mvScale(TL) 
+moves.append( mvScale(TL) )
 ```
 
 Now we create a random variable for the relative branch lengths.
 ```
 rel_branch_lengths ~ dnDirichlet( rep(1.0,num_branches) )
-moves[mvi++] = mvBetaSimplex(rel_branch_lengths, weight=num_branches)
-moves[mvi++] = mvDirichletSimplex(rel_branch_lengths, weight=num_branches/10.0)
+moves.append( mvBetaSimplex(rel_branch_lengths, weight=num_branches) )
+moves.append( mvDirichletSimplex(rel_branch_lengths, weight=num_branches/10.0) )
 ```
 Finally, transform the relative branch lengths into actual branch lengths
 ```
@@ -394,12 +390,12 @@ and `mvNodeTimeSlideUniform`. These moves do not have tuning parameters associat
 them, thus you only need to pass in the `psi` node and proposal `weight`.
 
 ```
-moves[mvi++] = mvNarrow(psi, weight=num_taxa)
-moves[mvi++] = mvNNI(psi, weight=num_taxa/5.0)
-moves[mvi++] = mvFNPR(psi, weight=num_taxa/5.0)
-moves[mvi++] = mvGPR(psi, weight=num_taxa/30.0)
-moves[mvi++] = mvSubtreeScale(psi, weight=num_taxa/3.0)
-moves[mvi++] = mvNodeTimeSlideUniform(psi, weight=num_taxa)
+moves.append( mvNarrow(psi, weight=num_taxa) )
+moves.append( mvNNI(psi, weight=num_taxa/5.0) )
+moves.append( mvFNPR(psi, weight=num_taxa/5.0) )
+moves.append( mvGPR(psi, weight=num_taxa/30.0) )
+moves.append( mvSubtreeScale(psi, weight=num_taxa/3.0) )
+moves.append( mvNodeTimeSlideUniform(psi, weight=num_taxa) )
 ```
 
 
@@ -411,7 +407,7 @@ Additionally, in the case of time-calibrated trees, we need to add a molecular c
 
 ```
 log_clock_rate ~ dnUniform(-6,1)
-moves[mvi++] = mvSlide(log_clock_rate, weight=2.0)
+moves.append( mvSlide(log_clock_rate, weight=2.0) )
 clock_rate := 10^log_clock_rate
 ```
 
@@ -486,7 +482,7 @@ function. This creates a new monitor variable that will output the
 states for all model parameters when passed into a MCMC function.
 
 ```
-monitors[mni++] = mnModel(filename="output/primates_cytb_JC.log", printgen=10)
+monitors.append( mnModel(filename="output/primates_cytb_JC.log", printgen=10) )
 ```
 
 The `mnFile` monitor will record the states for only the parameters
@@ -494,14 +490,14 @@ passed in as arguments. We use this monitor to specify the output for
 our sampled trees and branch lengths.
 
 ```
-monitors[mni++] = mnFile(filename="output/primates_cytb_JC.trees", printgen=10, psi)
+monitors.append( mnFile(filename="output/primates_cytb_JC.trees", printgen=10, psi) )
 ```
 
 Finally, create a screen monitor that will report the states of
 specified variables to the screen with `mnScreen`:
 
 ```
-monitors[mni++] = mnScreen(printgen=1000, TL)
+monitors.append( mnScreen(printgen=1000, TL) )
 ```
 
 This monitor mostly helps us to see the progress of the MCMC run.
@@ -660,7 +656,7 @@ $$
 Now, add the parameter $\kappa$ to the substitution model, and create a K80 rate matrix:
 ```
 kappa ~ dnExp(1)
-moves[++move_index] = mvScale(kappa, weight=1.0)
+moves.append( mvScale(kappa, weight=1.0) )
 
 Q := fnK80(kappa)
 ```
@@ -709,8 +705,8 @@ distribution, and then rescales all values of the simplex to sum to 1
 again.
 
 ```
-moves[mvi++] = mvBetaSimplex(pi, weight=2)
-moves[mvi++] = mvDirichletSimplex(pi, weight=1)
+moves.append( mvBetaSimplex(pi, weight=2) )
+moves.append( mvDirichletSimplex(pi, weight=1) )
 ```
 
 The second new variable is $\kappa$, which specifies the ratio of
@@ -726,7 +722,7 @@ Again, we need to specify a move for this new stochastic variable. A
 simple scaling move should do the job.
 
 ```
-moves[mvi++] = mvScale(kappa)
+moves.append( mvScale(kappa) )
 ```
 
 Finally, we need to create the HKY instantaneous-rate matrix using the
@@ -838,8 +834,8 @@ Four different examples of Dirichlet priors on exchangeability rates.
 For each stochastic node in our model, we must also specify a proposal mechanism if we wish to estimate that parameter. The Dirichlet prior on our parameter `er` creates a [*simplex*](http://en.wikipedia.org/wiki/Simplex) of values that sum to 1.
 
 ```
-moves[mvi++] = mvBetaSimplex(er, weight=3)
-moves[mvi++] = mvDirichletSimplex(er, weight=1)
+moves.append( mvBetaSimplex(er, weight=3) )
+moves.append( mvDirichletSimplex(er, weight=1) )
 ```
 
 We can use the same type of distribution as a prior on the 4 stationary
@@ -855,8 +851,8 @@ pi ~ dnDirichlet(pi_prior)
 The node `pi` represents the $\pi$ node in {% ref gtr_graphical_model %}. Now add the simplex scale move on the stationary frequencies to the moves vector:
 
 ```
-moves[mvi++] = mvBetaSimplex(pi, weight=2)
-moves[mvi++] = mvDirichletSimplex(pi, weight=1)
+moves.append( mvBetaSimplex(pi, weight=2) )
+moves.append( mvDirichletSimplex(pi, weight=1) )
 ```
 
 We can finish setting up this part of the model by creating a deterministic node for the GTR instantaneous-rate matrix `Q`. The `fnGTR()` function takes a set of exchangeability rates and a set of base frequencies to compute the instantaneous-rate matrix used when calculating the likelihood of our model.
@@ -926,7 +922,7 @@ gamma_rates := fnDiscretizeGamma( alpha, alpha, 4 )
 Note that here, by convention, we set $k = 4$. The random variable that controls the rate variation is the stochastic node `alpha`. We will apply a simple scale move to this parameter.
 
 ```
-moves[mvi++] = mvScale(alpha, weight=2.0)
+moves.append( mvScale(alpha, weight=2.0) )
 ```
 
 Remember that you need to call the `PhyloCTMC` constructor to include the new site-rate parameter:
@@ -972,7 +968,7 @@ The `Beta(1,1)` distribution is a flat prior distribution that specifies equal p
 Then, as usual, we add a move to change this stochastic variable; we’ll use a simple sliding window move.
 
 ```
-moves[mvi++] = mvSlide(pinvar)
+moves.append( mvSlide(pinvar) )
 ```
 
 Finally, you need to call the `PhyloCTMC` constructor to include the
