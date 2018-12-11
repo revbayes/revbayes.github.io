@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: Molecular dating</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
+      </a>
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/software">Software</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/jobs/">Jobs</a></li>
+        <li><a href="/developer/">Developer</a></li>
+        
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <div class="titlebar">
+	<h1 class="maintitle">Molecular dating</h1>
+	<h3 class="subtitle">Estimating speciation times using node dating</h3>
+	<h4 class="authors">Rachel Warnock, Sebastian Höhna, Tracy Heath, April  Wright and Walker Pett</h4>
+  <h5>Last modified on December 11, 2018</h5>
+</div>
+
+
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul id="prerequisites">
+          
+            <li><a href="/tutorials/intro/">Rev Language Syntax</a></li>
+          
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+
+
+
+
+<blockquote class="tutorial_files" id="tutorial_files">
+    <h2>Data files and scripts</h2>
+    
+        
+        <strong>Data Files</strong>
+        <ul id="data_files">
+        
+        
+        
+          <li><a href="/tutorials/dating/data/bears_cytb.nex">bears_cytb.nex</a></li>
+        
+          <li><a href="/tutorials/dating/data/bears_taxa.tsv">bears_taxa.tsv</a></li>
+        
+        </ul>
+    
+        
+        <strong>Scripts</strong>
+        <ul id="scripts">
+        
+        
+        
+          <li><a href="/tutorials/dating/scripts/MCMC_dating_ex2.Rev">MCMC_dating_ex2.Rev</a></li>
+        
+          <li><a href="/tutorials/dating/scripts/clock_relaxed.Rev">clock_relaxed.Rev</a></li>
+        
+          <li><a href="/tutorials/dating/scripts/sub_GTRG.Rev">sub_GTRG.Rev</a></li>
+        
+          <li><a href="/tutorials/dating/scripts/tree_BD_nodedate.Rev">tree_BD_nodedate.Rev</a></li>
+        
+        </ul>
+    
+</blockquote>
+
+
+</div>
+<h1 class="section" id="exercise-3">Exercise 3</h1>
+
+<p>In <a href="/tutorials/dating/global">exercises 1</a> and <a href="/tutorials/dating/relaxed">2</a> we inferred the phylogeny of extant bears and relative speciation times assuming a molecular clock model. However, it would be much more useful to have estimates of speciation times in the context of geological time.</p>
+
+<p>In this exercise we will use information from the fossil record to calibrate the molecular substitution rate to absolute time using node dating. This approach involves assigning probability densities that incorporate temporal information from the fossil record to particular nodes in the tree.</p>
+
+<h3 id="the-data">The data</h3>
+
+<p>The molecular data used in this exercise is the same as the previous exercise (<strong>bears_cytb.nex</strong>). We will also use the same substitution and clock models (the GTR + $\Gamma$ model and the uncorrelated exponential clock model).</p>
+
+<p>We will also use the same tree model (the constant rate birth-death process), however, we will add calibration information from the fossil record to generate timetrees on a non-arbitrary timescale.
+The file <strong>bears_taxa.tsv</strong> contains information about the stratigraphic ranges for 20 bear species, including 12 extinct species. We’re not going to use all of the information from this file in this exercise, because the node dating approach to calibration limits the amount of data we can take advantage of, but we’ll use some of this information to constrain the age of two nodes. In this file <code class="highlighter-rouge">max</code> is the age of the first appearance (i.e. the oldest) of each species and <code class="highlighter-rouge">min</code> is the age of the last appearance (i.e. the youngest) (t = 0.0 represents the present).</p>
+
+<p>Again, there are just three steps you need to complete before running the analysis in this exercise. First, we need to create a script for the tree model and add our calibration information.
+Second, we need to switch out the tree model in our master script and update the name of the output files, so we don’t overwrite the output generated in the previous exercise.</p>
+
+<h3 id="the-tree-model">The tree model</h3>
+
+<p>We are going to add our calibrations to the script that incorporates the tree model.</p>
+
+<blockquote class="instruction">
+  <p>Create a copy of <strong>tree_BD.Rev</strong>, call it <strong>tree_BD_nodedate.Rev</strong> and open it in your text editor.</p>
+</blockquote>
+
+<p>Node calibrations are used to specify the age of monophyletic groups that are defined <em>a priori</em>.
+Since the age of the node will not be known precisely, we can use evidence from the fossil record to define minimum (or maximum) bounds, and use a probability density (distribution) to reflect prior uncertainty in the age of that node.
+We’re going to add two node calibrations: one on the root and one on the internal node for the clade Ursinae, which we defined in exercise 1.</p>
+
+<h4 id="root-calibration">Root calibration</h4>
+
+<p>The oldest first appearance of a <em>crown group</em> bear in our dataset is <em>Ursus americanus</em> at 1.84 Ma. This means that the last common ancestor of all living bears can not be younger that this. Fossil calibrations exert a large influence on Bayesian posterior estimates of speciation times and should not be selected arbitrarily. In practice it is very challenging to select distributions and parameters objectively. In this instance, we will take advantage of a previous estimate ($\sim$49 Ma) for the age of caniforms, which is the clade containing bears and other “dog-like” mammals, from <a href="#DosReis2012">(dos Reis et al. 2012)</a>. We will assume that the age of crown bears can not be older than this.</p>
+
+<p>First, specify the prior on the root. The following commands will replace <code class="highlighter-rouge">extant_mrca &lt;- 1.0</code> in your tree model script, before the the <code class="highlighter-rouge">tree_dist</code> variable is specified.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>extant_mrca_min &lt;- 1.84
+extant_mrca_max &lt;- 49.0
+
+extant_mrca ~ dnUniform(extant_mrca_min, extant_mrca_max)
+
+moves[mvi++] = mvScale(extant_mrca, lambda=1, tune=true, weight=5.0)
+</code></pre></div></div>
+
+<p>Here, we have specified the minimum and maximum constraints described above and stochastic node for the age of the root <code class="highlighter-rouge">extant_mrca</code>. Finally, we define a move to sample the age of this parameter.</p>
+
+<h4 id="internal-node-calibration">Internal node calibration</h4>
+
+<p>The second calibration will apply to the clade Ursinae that we defined previously. In addition to being the oldest crown group bear, the first appearance of <em>Ursus americanus</em> is also the first appearance of the group Ursinae. We’ll use a diffuse exponential prior offset by the age of this fossil to constrain the age of this node.</p>
+
+<p>In RevBayes, calibrated internal nodes are treated differently than  other Bayesian programs for estimating species divergence times (e.g. BEAST).
+This is because the graphical model structure used in RevBayes does not allow a stochastic node to be assigned more than one prior distribution. 
+By contrast, the common approach to applying calibration densities as used in other dating software leads to incoherence in the calibration prior.
+Basically, common calibration approaches assume that the age of a calibrated node is modelled by the tree-wide diversification process (e.g. birth-death model) <em>and</em> a parametric density parameterized by the occurrence time of a fossil (or other external prior information).
+This can induce a calibration prior density that is not consistent with the birth-death process or the parametric prior distribution. 
+For much more information about this see <a href="#Warnock2012">(Warnock et al. 2012; Heled and Drummond 2012; Heath et al. 2014)</a>.
+Approaches that condition the birth-death process on the calibrated nodes are more statistically coherent <a href="#Yang2006">(Yang and Rannala 2006)</a>.</p>
+
+<p>In RevBayes, calibration densities are applied in a different way, treating fossil observation times like data. 
+The age of the calibration node (i.e. the internal node specified as the MRCA of the fossil and a set of living species) is a deterministic node – e.g. denoted $o_1$ for fossil $\mathcal{F}_1$ – and acts as an offset on the stochastic node representing the age of the fossil specimen.
+The fossil age, $\mathcal{F}_i$, is specified as a stochastic node and clamped to its <em>observed</em> age in the fossil record. 
+The node $\mathcal{F}_i$ is modelled using a distribution that describes the waiting time from the speciation event to the appearance of the observed fossil. 
+Thus, if the MCMC samples any state for which the age of $\mathcal{F}_i$ has a probability of 0, then that state will always be rejected, effectively calibrating the birth-death process without applying multiple prior densities to any calibrated node.</p>
+
+<p>From your script, you’ll recall that we previously defined the Ursinae clade and used it to generate a constrained tree topology. We also created a deterministic node <code class="highlighter-rouge">age_ursinae</code> to keep track of the age of this node.</p>
+
+<p>To calibrate the age of this node we will specify a diffuse exponential density with an expected value (mean) = 1.0, offset by the age of fossil.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>obs_age_ursinae ~ dnExponential(1.0, offset = -age_ursinae)
+obs_age_ursinae.clamp(-1.84)
+</code></pre></div></div>
+
+<p>(Note from Rachel: I don’t really understand why the units have to be negative for this distribution, we’ll have to check with Sebastian.)</p>
+
+<h3 id="the-master-rev-script">The master Rev script</h3>
+
+<blockquote class="instruction">
+  <p>Copy the master script from the previous exercise and call it <strong>MCMC_dating_ex3.Rev</strong>.</p>
+</blockquote>
+
+<p>First, change the file used to specify the tree model from <strong>tree_BD.Rev</strong> to <strong>tree_BD_nodedate.Rev</strong>.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/tree_BD_nodedate.Rev")
+</code></pre></div></div>
+
+<p>Second, update the name of the output files.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[mni++] = mnModel(filename="output/bears_nodedate.log", printgen=10)
+monitors[mni++] = mnFile(filename="output/bears_nodedate.trees", printgen=10, timetree)
+</code></pre></div></div>
+
+<p>Don’t forget to update the commands used to generate the summary tree.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>trace = readTreeTrace("output/bears_nodedate.trees")
+mccTree(trace, file="output/bears_nodedate.mcc.tre" )
+</code></pre></div></div>
+
+<p>That’s all you need to do!</p>
+
+<blockquote class="instruction">
+  <p>Run your MCMC analysis!</p>
+</blockquote>
+
+<p>Note that the root age is no longer a constant number (= 1) and scale of the diversification parameter may have changed.</p>
+
+<h3 id="running-the-analysis-under-the-prior">Running the analysis under the prior</h3>
+
+<p>It is always useful to examine the output of your MCMC analysis in the absence of information from the sequence data (i.e. without calculating the likelihood that comes from the substitution model). Setting this up in RevBayes is very easy. Let’s do this while the above analysis is still running.</p>
+
+<blockquote class="instruction">
+  <p>Copy the master script you just created and call it <strong>MCMC_dating_ex3_prior.Rev</strong>.</p>
+</blockquote>
+
+<p>We just need to add the argument <code class="highlighter-rouge">underPrior=TRUE</code> when we set up the MCMC run.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=20000, underPrior=TRUE)
+</code></pre></div></div>
+
+<p>Again, we need to rename the output files.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[mni++] = mnModel(filename="output/bears_nodedate_prior.log", printgen=10)
+</code></pre></div></div>
+
+<p>We’re not going to bother summarizing the trees, so if you want you can simply remove/comment out the second monitor (<code class="highlighter-rouge">mnFile</code>) and the tree summary functions (<code class="highlighter-rouge">readTreeTrace</code> and <code class="highlighter-rouge">mccTree</code>).</p>
+
+<p>This analysis will show you the estimates of node ages obtained under the tree model in combination with the constraint applied at the root of the tree. Note that although this step is often called “running the model under the prior”, the distinction between the prior and posterior varies between programs and becomes less clear once we incorporate fossil data into the tree.</p>
+
+<blockquote class="instruction">
+  <p>When the above analysis is done, run the MCMC analysis under the prior!</p>
+</blockquote>
+
+<h3 id="examining-the-output">Examining the output</h3>
+
+<p>Let’s examine the output in Tracer.</p>
+
+<blockquote class="instruction">
+  <p>Open the program Tracer and load the log files <strong>bears_nodedate.log</strong> and <strong>bears_nodedate_prior.log</strong>.</p>
+</blockquote>
+
+<p>Select both log files and compare the age estimates obtained for the root (<code class="highlighter-rouge">extant_mrca</code>) and the MRCA of Ursinae (<code class="highlighter-rouge">age_ursinae</code>). To reproduce the Tracer images shown below, click on the node of interest and select Colour by: Trace file and Legend: Top-Right.</p>
+
+<figure id="fig_trace1"><p><img src="figures/bears_nodedate_trace1.png" width="700" /></p>
+<figcaption>The Marginal Density panel in Tracer showing the marginal estimates for the age of the root.</figcaption>
+</figure>
+
+<figure id="fig_trace2"><p><img src="figures/bears_nodedate_trace2.png" width="700" /></p>
+<figcaption>The Marginal Density panel in Tracer showing the marginal estimates for the age of Ursinae.</figcaption>
+</figure>
+
+<p>You’ll notice that including sequence data and the internal node calibration in our analysis reduces the uncertainty in our prior estimates.
+However, there is still a large degree of uncertainty in our posterior node ages – the 95% HPD interval for root age spans nearly 46 Myr, which is basically the width of the uniform prior that we used to constrain the age of this node in the first place!</p>
+
+<h4 id="the-tree-output">The tree output</h4>
+
+<p>Take a look at the posterior MCC tree in FigTree. In the case of this analysis, the scale bar is actually meaningful and represents time in units of Myr.
+Try to produce the image shown below including the 95% HPDs.</p>
+
+<figure id="fig_trace2"><p><img src="figures/bears_nodedate.mcc.tre.png" width="700" /></p>
+<figcaption>The FigTree window. To open your tree you can use File &gt; Open. Select Node Labels to view the absolute node ages and Node Bars to display the 95% HPDs.</figcaption>
+</figure>
+
+<p>If you wanted to visualise the impact of the internal node calibrations, without the influence of the sequence data, you could run the MCMC analysis under the posterior and use an empty sequence alignment (this would be equivalent to running the analysis under the prior in BEAST and MCMCTree).</p>
+
+<h3 id="next">Next</h3>
+
+<p>Note that there are many more fossil species in the file <strong>bears_taxa.tsv</strong> with associated age information that we didn’t use in this exercise.
+This is because, in the context of node dating, the calibration information is redundant with information already utilised (e.g. all other Urisinae species are younger than the fossil we used to constrain the age of this clade) or because we don’t have good prior knowledge about the phylogenetic position of the species.</p>
+
+<blockquote class="instruction">
+  <p>Click below to begin the next exercise!</p>
+</blockquote>
+
+<ul>
+  <li><a href="/tutorials/dating/fbdr">Estimating speciation times using the fossilized birth-death range model</a></li>
+</ul>
+
+<p>For further options and information about the models used in this exercise see Tracy Heath &amp; Sebastian Höhna’s tutorial <a href="https://github.com/revbayes/revbayes_tutorial/blob/master/tutorial_TeX/RB_DivergenceTime_Calibration_Tutorial/">Divergence Time Calibration</a>.</p>
+
+
+<ol class="bibliography"><li><span id="Heath2014">Heath T.A., Huelsenbeck J.P., Stadler T. 2014. The fossilized birth-death process for coherent calibration of divergence-time estimates. Proceedings of the National Academy of Sciences. 111:E2957–E2966.</span>
+
+<a href="https://doi.org/10.1073/pnas.1319091111">10.1073/pnas.1319091111</a>
+
+</li>
+<li><span id="Heled2012">Heled J., Drummond A.J. 2012. Calibrated tree priors for relaxed phylogenetics and divergence time estimation. Systematic Biology. 61:138–149.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syr087">10.1093/sysbio/syr087</a>
+
+</li>
+<li><span id="Warnock2012">Warnock R.C.M., Yang Z., Donoghue P.C.J. 2012. Exploring uncertainty in the calibration of the molecular clock. Biology letters. 8:156–159.</span>
+
+<a href="https://doi.org/10.1098/rsbl.2011.0710">10.1098/rsbl.2011.0710</a>
+
+</li>
+<li><span id="Yang2006">Yang Z., Rannala B. 2006. Bayesian Estimation of Species Divergence Times Under a Molecular Clock Using Multiple Fossil Calibrations with Soft Bounds. Molecular Biology and Evolution. 23:212–226.</span>
+
+<a href="https://doi.org/10.1093/molbev/msj024">10.1093/molbev/msj024</a>
+
+</li>
+<li><span id="DosReis2012">dos Reis M., Inoue J., Hasegawa M., Asher R.J., Donoghue P.C.J., Yang Z. 2012. Phylogenomic datasets provide both precision and accuracy in estimating the timescale of placental mammal phylogeny. Proceedings of the Royal Society B: Biological Sciences. 279:3491–3500.</span>
+
+<a href="https://doi.org/10.1098/rspb.2012.0683">10.1098/rspb.2012.0683</a>
+
+</li></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+
+<script src="/assets/js/base.js"></script>
+
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+  });
+</script>
+
+  </body>
+</html>

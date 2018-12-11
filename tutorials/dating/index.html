@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: Molecular dating</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
+      </a>
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/software">Software</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/jobs/">Jobs</a></li>
+        <li><a href="/developer/">Developer</a></li>
+        
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <div class="titlebar">
+	<h1 class="maintitle">Molecular dating</h1>
+	<h3 class="subtitle">Estimating species divergence times using RevBayes</h3>
+	<h4 class="authors">Rachel Warnock, Sebastian Höhna, Tracy Heath, April  Wright and Walker Pett</h4>
+  <h5>Last modified on December 11, 2018</h5>
+</div>
+
+
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul id="prerequisites">
+          
+            <li><a href="/tutorials/intro/">Rev Language Syntax</a></li>
+          
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+
+
+
+
+<blockquote class="tutorial_files" id="tutorial_files">
+    <h2>Data files and scripts</h2>
+    
+        
+        <strong>Data Files</strong>
+        <ul id="data_files">
+        
+        
+        
+          <li><a href="/tutorials/dating/data/bears_cytb.nex">bears_cytb.nex</a></li>
+        
+          <li><a href="/tutorials/dating/data/bears_morphology.nex">bears_morphology.nex</a></li>
+        
+          <li><a href="/tutorials/dating/data/bears_taxa.tsv">bears_taxa.tsv</a></li>
+        
+        </ul>
+    
+        
+        <strong>Scripts</strong>
+        <ul id="scripts">
+        
+        
+        
+          <li><a href="/tutorials/dating/scripts/MCMC_dating_ex1.Rev">MCMC_dating_ex1.Rev</a></li>
+        
+          <li><a href="/tutorials/dating/scripts/MCMC_dating_ex2.Rev">MCMC_dating_ex2.Rev</a></li>
+        
+          <li><a href="/tutorials/dating/scripts/MCMC_dating_ex3.Rev">MCMC_dating_ex3.Rev</a></li>
+        
+          <li><a href="/tutorials/dating/scripts/MCMC_dating_ex4.Rev">MCMC_dating_ex4.Rev</a></li>
+        
+          <li><a href="/tutorials/dating/scripts/MCMC_dating_ex5.Rev">MCMC_dating_ex5.Rev</a></li>
+        
+          <li><a href="/tutorials/dating/scripts/clock_global.Rev">clock_global.Rev</a></li>
+        
+          <li><a href="/tutorials/dating/scripts/clock_morpho.Rev">clock_morpho.Rev</a></li>
+        
+          <li><a href="/tutorials/dating/scripts/clock_relaxed.Rev">clock_relaxed.Rev</a></li>
+        
+          <li><a href="/tutorials/dating/scripts/sub_GTRG.Rev">sub_GTRG.Rev</a></li>
+        
+          <li><a href="/tutorials/dating/scripts/sub_Mk.Rev">sub_Mk.Rev</a></li>
+        
+          <li><a href="/tutorials/dating/scripts/tree_BD.Rev">tree_BD.Rev</a></li>
+        
+          <li><a href="/tutorials/dating/scripts/tree_BD_nodedate.Rev">tree_BD_nodedate.Rev</a></li>
+        
+          <li><a href="/tutorials/dating/scripts/tree_FBD.Rev">tree_FBD.Rev</a></li>
+        
+          <li><a href="/tutorials/dating/scripts/tree_TEFBD.Rev">tree_TEFBD.Rev</a></li>
+        
+        </ul>
+    
+</blockquote>
+
+
+</div>
+<h1 class="section" id="overview">Overview</h1>
+
+<p>This tutorial aims to guide you through different options for calibrating species divergences to time using <a href="http://revbayes.com">RevBayes</a>. The exercises are based on a dataset of bears (family Ursidae) for which we have molecular sequence data for extant species, morphological data for extant and fossil species, and information about fossil sampling times. The material used in this tutorial is directly taken from three others that explore some of the topics in more detail.</p>
+
+<ul>
+  <li><a href="/tutorials/clocks/">Relaxed Clocks &amp; Time Trees</a> written by Tracy Heath</li>
+  <li><a href="https://github.com/revbayes/revbayes_tutorial/blob/master/tutorial_TeX/RB_DivergenceTime_Calibration_Tutorial/">Divergence Time Calibration</a> written by Tracy Heath and Sebastian Höhna</li>
+  <li><a href="/tutorials/fbd/">Combined-Evidence Analysis and the Fossilized Birth-Death Process for Stratigraphic Range Data</a> written by Tracy Heath, April Wright and Walker Pett</li>
+</ul>
+
+<p>In <a href="/tutorials/dating/global">exercises 1</a> and <a href="/tutorials/dating/relaxed">2</a> we’ll use the molecular sequence data to infer the relationships among living species and transform the branch lengths assuming a strict or relaxed clock model. Since these analyses don’t incorporate any information from the geological record, this approach can only be used to infer the <em>relative</em> age of speciation events.</p>
+
+<p>In <a href="/tutorials/dating/nodedate">exercises 3</a> and <a href="/tutorials/dating/fbdr">4</a> we’ll use information from the fossil record to calibrate the tree to <em>absolute</em> time using two different approaches to calibration (node dating versus the fossilized birth-death process). Finally, in <a href="/tutorials/dating/tefbd">exercise 5</a> we’ll also incorporate the morphological data to infer the relationships and divergence times among living and fossil bear species (total-evidence dating).</p>
+
+<h3 id="the-data">The data</h3>
+
+<blockquote class="instruction">
+  <p>Create a directory on your computer for this tutorial.
+In this directory, create a subdirectory called <strong>data</strong>, and download the data files that you can find on the left of this page.</p>
+</blockquote>
+
+<p>In the <strong>data</strong> folder, you should now have the following files:</p>
+
+<ul>
+  <li>
+    <p><strong>bears_cytb.nex</strong>: an alignment in NEXUS format of 1,000 bp of
+cytochrome b sequences for 8 living bear species.</p>
+  </li>
+  <li>
+    <p><strong>bears_morphology.nex</strong>: a matrix of 62 discrete, binary (coded <code class="highlighter-rouge">0</code>
+or <code class="highlighter-rouge">1</code>) morphological characters for 18 species of fossil and
+extant bears.</p>
+  </li>
+  <li>
+    <p><strong>bears_taxa.tsv</strong>: a tab-separated table listing every bear species
+(both fossil and extant) and their stratigraphic age ranges. For extant taxa, the minimum age is 0.0 (i.e. the present).</p>
+  </li>
+</ul>
+
+<h3 id="scripts">Scripts</h3>
+
+<p>For more complex models and analyses, it’s useful to create separate Rev scripts that contain all the model parameters, moves, and functions for different model components (e.g. the substitution model and the clock model).</p>
+
+<blockquote class="instruction">
+  <p>Create another subdirectory called <strong>scripts</strong>.</p>
+</blockquote>
+
+<p>In this tutorial, you will work primarily in your text editor and create a set of modular files that can be easily managed and interchanged. Examples of all the commands used to perform each analysis are also provided at the top of this page under <strong>Scripts</strong> but try to write the complete scripts yourself from the beginning to ensure you understand all the steps involved and the differences between setting up each analysis.</p>
+
+<h3 id="exercises">Exercises</h3>
+
+<blockquote class="instruction">
+  <p>Click on the first exercise to begin!</p>
+</blockquote>
+
+<ol>
+  <li><a href="/tutorials/dating/global">The global molecular clock model</a></li>
+  <li><a href="/tutorials/dating/relaxed">The uncorrelated exponential relaxed clock model</a></li>
+  <li><a href="/tutorials/dating/nodedate">Estimating speciation times using node dating</a></li>
+  <li><a href="/tutorials/dating/fbdr">Estimating speciation times using the fossilized birth-death range process</a></li>
+  <li><a href="/tutorials/dating/tefbd">Estimating speciation times using total-evidence dating</a></li>
+</ol>
+
+<ol class="bibliography"></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+
+<script src="/assets/js/base.js"></script>
+
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+  });
+</script>
+
+  </body>
+</html>

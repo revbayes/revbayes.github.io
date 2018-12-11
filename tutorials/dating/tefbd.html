@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: Molecular dating</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
+      </a>
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/software">Software</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/jobs/">Jobs</a></li>
+        <li><a href="/developer/">Developer</a></li>
+        
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <div class="titlebar">
+	<h1 class="maintitle">Molecular dating</h1>
+	<h3 class="subtitle">Estimating speciation times using total-evidence dating</h3>
+	<h4 class="authors">Rachel Warnock, Sebastian Höhna, Tracy Heath, April  Wright and Walker Pett</h4>
+  <h5>Last modified on December 11, 2018</h5>
+</div>
+
+
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul id="prerequisites">
+          
+            <li><a href="/tutorials/intro/">Rev Language Syntax</a></li>
+          
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+
+
+
+
+<blockquote class="tutorial_files" id="tutorial_files">
+    <h2>Data files and scripts</h2>
+    
+        
+        <strong>Data Files</strong>
+        <ul id="data_files">
+        
+        
+        
+          <li><a href="/tutorials/dating/data/bears_cytb.nex">bears_cytb.nex</a></li>
+        
+          <li><a href="/tutorials/dating/data/bears_morphology.nex">bears_morphology.nex</a></li>
+        
+          <li><a href="/tutorials/dating/data/bears_taxa.tsv">bears_taxa.tsv</a></li>
+        
+        </ul>
+    
+        
+        <strong>Scripts</strong>
+        <ul id="scripts">
+        
+        
+        
+          <li><a href="/tutorials/dating/scripts/MCMC_dating_ex5.Rev">MCMC_dating_ex5.Rev</a></li>
+        
+          <li><a href="/tutorials/dating/scripts/clock_morpho.Rev">clock_morpho.Rev</a></li>
+        
+          <li><a href="/tutorials/dating/scripts/clock_relaxed.Rev">clock_relaxed.Rev</a></li>
+        
+          <li><a href="/tutorials/dating/scripts/sub_GTRG.Rev">sub_GTRG.Rev</a></li>
+        
+          <li><a href="/tutorials/dating/scripts/sub_Mk.Rev">sub_Mk.Rev</a></li>
+        
+          <li><a href="/tutorials/dating/scripts/tree_TEFBD.Rev">tree_TEFBD.Rev</a></li>
+        
+        </ul>
+    
+</blockquote>
+
+
+</div>
+<h1 class="section" id="exercise-5">Exercise 5</h1>
+
+<p>In <a href="/tutorials/dating/fbdr">exercise 4</a> we inferred the phylogeny of extant bears and a timeline for their evolution using the fossized birth-death range process. This tree model explictly incorporates the fossil recovery process, meaning we can directly include extinct samples as part of the tree. Using this model we can take advantage of fossils with and without character data. This is because the fossil sampling times are informative about the FBD model parameters and speciation times, even if their phylogenetic position remains unknown or unresolved. In the previous exercise, we didn’t include any character data for our extinct samples, so we could not infer their phylogenetic relationship and pruned the fossils from the output. In this exercise we will infer the phylogeny of extant and fossil bear species by including morphological character data in our analysis, which is available for both extant and extinct species, in addition to the molecular data, which is available for living species only. This approach to dating can be referred to as <em>tip-dating</em>, <em>combined-evidence</em> or <em>total-evidence</em> dating <a href="#Ronquist2012a">(Ronquist et al. 2012; Zhang et al. 2016; Gavryushkina et al. 2016)</a> (although it does not technically use <em>all</em> the evidence we could potentially incorporate into our dating analyses).</p>
+
+<figure id="fig_module_gm"><p><img src="figures/tikz/full_model_modular.png" width="700" /></p>
+<figcaption>Modular components of the graphical model used in the “combined-evidence” analysis described in this tutorial.</figcaption>
+</figure>
+
+<h3 id="the-data">The data</h3>
+
+<p>The data used in this exercise will still include the molecular data used in the previous exercises (<strong>bears_cytb.nex</strong>). We will also use the same substitution and clock models (the GTR + $\Gamma$ model and the uncorrelated exponential relaxed clock model).</p>
+
+<p>For this exercise we’ll also use a matrix of 62 discrete, binary (coded “0” or “1”) morphological characters for 18 species of fossil and extant bears. <strong>bears_cytb.nex</strong> contains the matrix in NEXUS format. We’ll analyse this data using the Mk + v model.</p>
+
+<p>Again, we’ll take advantage of all the stratigraphic age information in <strong>bears_taxa.tsv</strong> and use the fossized birth-death range process as our tree model. Note that there are two fossil species not included in our character matrix – these are still valuable to include in our analysis but we will prune these taxa from the output trees.</p>
+
+<p>To complete this exercise, we need to create a script for the substitution and clock model that will be applied to the morphological character data. We’ll also need to make some small changes to the master and the tree model scripts.</p>
+
+<h3 id="the-master-rev-script">The master Rev script</h3>
+
+<p>Again, we’ll start by making some changes to the master Rev script.</p>
+
+<blockquote class="instruction">
+  <p>Copy the master script from the previous exercise and call it <strong>MCMC_dating_ex5.Rev</strong>.</p>
+</blockquote>
+
+<p>Write the commands to read the morphological character data and add missing character data (i.e. for the two species for which character data is unvailable).</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>morpho &lt;- readDiscreteCharacterData("data/bears_morphology.nex")
+
+morpho.addMissingTaxa( taxa )
+</code></pre></div></div>
+
+<p>Now you will have two character partitions, each with missing data for differing number of taxa.</p>
+
+<h3 id="the-tree-model">The tree model</h3>
+
+<blockquote class="instruction">
+  <p>Creating a copy of your <strong>tree_FBD.Rev</strong> script, call it <strong>tree_TEFBD.Rev</strong> and open it in your text editor.</p>
+</blockquote>
+
+<h4 id="monitoring-parameters-of-interest-using-deterministic-nodes">Monitoring parameters of interest using deterministic nodes</h4>
+
+<p>The only change we need to make in this file is to <code class="highlighter-rouge">fnPruneTree</code> There are two fossil species for which we do not have any morphological characters <em>Parictis montanus</em> and <em>Ursus abstrusus</em>, so we will not be able to resolve their tolopological position and we should keep them pruned from the tree. We do not want to remove the other species this time because we are interested in there topological placement.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pruned_tree := fnPruneTree(timetree, prune=v("Parictis_montanus","Ursus_abstrusus")) 
+</code></pre></div></div>
+
+<h3 id="the-morphological-clock-model">The morphological clock model</h3>
+
+<p>We will apply a simple global clock model to our morphological partition.</p>
+
+<blockquote class="instruction">
+  <p>Copy the script for the global clock model <strong>clock_global.Rev</strong> and call it <strong>clock_morpho.Rev</strong>. Open it in your text editor.</p>
+</blockquote>
+
+<p>For the branch-rates parameter we will also use an exponential prior, with parameters <code class="highlighter-rouge">rate</code> = 10. The expected value (or mean) of this distribution is 0.1. The same branch-rate will apply to every branch in the tree.</p>
+
+<p>Simply change the name of <code class="highlighter-rouge">branch_rates</code> to <code class="highlighter-rouge">branch_rates_morpho</code>.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>branch_rates_morpho ~ dnExponential(10.0)
+
+moves[mvi++] = mvScale(branch_rates_morpho,lambda=0.5,tune=true,weight=5.0)
+</code></pre></div></div>
+
+<h3 id="the-mk-model">The Mk model</h3>
+
+<p>The next step is to specify the model that describes how morphological characters evolve along the tree and across sites.</p>
+
+<blockquote class="instruction">
+  <p>Create a script called <strong>sub_Mk.Rev</strong> and open it in your text editor.</p>
+</blockquote>
+
+<p>The Mk model is a generalization of the Jukes-Cantor model, so we will initialize our Q matrix from a Jukes-Cantor matrix.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q_morpho := fnJC(2)
+</code></pre></div></div>
+
+<p>As we did for our molecular data partition, we will allow gamma-distributed rate heterogeneity among sites.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha_morpho ~ dnExponential( 1.0 )
+rates_morpho := fnDiscretizeGamma( alpha_morpho, alpha_morpho, 4 )
+
+moves[mvi++] = mvScale(alpha_morpho, lambda=0.5, tune=true, weight=5.0)
+</code></pre></div></div>
+
+<p>Finally, we can create the phylogenetic continuous time Markov chain (PhyloCTMC) distribution for our sequence data, including the gamma-distributed site rate categories, as well as the branch rates defined as part of our clock model. We set the value of this distribution equal to our observed data and identify it as a static part of the likelihood using the clamp method.</p>
+
+<p>As we did previously for our molecular data partition, we now combine our data and our model in the phylogenetic CTMC distribution. There are some unique aspects to doing this for morphology.
+You will notice that we have an option called <code class="highlighter-rouge">coding</code>. This option allows us to condition on biases in the way the morphological data were collected (ascertainment bias). The option <code class="highlighter-rouge">coding=variable</code> specifies that we should correct for coding only variable characters.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phyMorpho ~ dnPhyloCTMC(tree=timetree, siteRates=rates_morpho, branchRates=branch_rates_morpho, Q=Q_morpho, type="Standard", coding="variable")
+phyMorpho.clamp(morpho)
+</code></pre></div></div>
+
+<h3 id="back-to-the-master-rev-script">Back to the master Rev script</h3>
+
+<p>As before, change the file used to specify the tree model from <strong>tree_FBD.Rev</strong> to <strong>tree_TEFBD.Rev</strong>.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/tree_TEFBD.Rev")
+</code></pre></div></div>
+
+<p>Second, use the <code class="highlighter-rouge">source</code> function to load in the new model scripts you wrote as part of this exercise for the analysis of morphological.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/clock_morpho.Rev") # the morphological clock model
+source("scripts/sub_Mk.Rev") # the Mk model
+</code></pre></div></div>
+
+<p>Finally, update the name of the output files.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[mni++] = mnModel(filename="output/bears_TEFBD.log", printgen=10)
+monitors[mni++] = mnFile(filename="output/bears_TEFBD.trees", printgen=10, pruned_tree)
+</code></pre></div></div>
+
+<p>Don’t forget to update the commands used to generate the summary tree.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>trace = readTreeTrace("output/bears_TEFBD.trees")
+mccTree(trace, file="output/bears_TEFBD.mcc.tre" )
+</code></pre></div></div>
+
+<blockquote class="instruction">
+  <p>Run your MCMC analysis!</p>
+</blockquote>
+
+<h3 id="examining-the-output">Examining the output</h3>
+
+<p>Let’s examine the output in Tracer.</p>
+
+<blockquote class="instruction">
+  <p>Open the program Tracer and load the log files <strong>bears_FBD.log</strong> and <strong>bears_TEFBD.log</strong>.</p>
+</blockquote>
+
+<p>Let’s compare the results we obtained using the FBD and TEFBD analysis. Start by examining the estimates for the MRCA of extant bears.</p>
+
+<figure id="fig_trace"><p><img src="figures/bears_FBD_nodedate.png" width="700" /></p>
+<figcaption>The Marginal Density panel in Tracer showing the posterior estimates for the MRCA of extant bears under the FBD process with (total-evidence dating) and without morphological character data for extant and fossil species. To reproduce this figure select Colour by: Trace file and Legend: Top-Right.</figcaption>
+</figure>
+
+<p>Do you observe any important differences for any other parameters?</p>
+
+<h4 id="sampled-ancestor-trees">Sampled ancestor trees</h4>
+
+<p>When there are sampled ancestors present in the tree, visualizing the tree can be fairly difficult in traditional tree viewers. We will make use of a browser-based tree viewer called <a href="http://tgvaughan.github.io/icytree/">IcyTree</a>, created by Tim Vaughan. IcyTree has many unique options for visualizing phylogenetic trees and can produce publication-quality vector image files (i.e. SVG). Additionally, it correctly represents sampled ancestors on the tree as nodes, each with only one descendant.</p>
+
+<blockquote class="instruction">
+  <p>Navigate to https://icytree.org/ and open the file <strong>bears.mcc.tre</strong> in IcyTree.</p>
+</blockquote>
+
+<p>Try to replicate the tree shown in the figure below. (Hint: Style &gt; Mark Singletons).</p>
+
+<figure id="icy_tree"><p><img src="figures/bears_TEFBD.mcc.IcyTree.png" width="700" /></p>
+<figcaption>The Icy window. To open your tree you can use File &gt; Open. Select Node Labels to view the relative node ages.</figcaption>
+</figure>
+
+<p>Examine the posterior probabilities and ages for the sampled ancestors and node ages.</p>
+
+<h3 id="next">Next</h3>
+
+<p>Hooray! You’ve reached the end of the tutorial!</p>
+
+<p>For further options and information about the tree model used in this exercise see Tracy Heath, April Wright and Walker Pett’s tutorial <a href="/tutorials/fbd/">Combined-Evidence Analysis and the Fossilized Birth-Death Process for Stratigraphic Range Data</a>.</p>
+
+<p>For further information about morphological models of character evolution see April Wright, Michael Landis and Sebastian Höhna’s tutorial <a href="/tutorials/morph/morph_dec2018">Discrete morphology - Tree Inference</a>.</p>
+
+
+<ol class="bibliography"><li><span id="Gavryushkina2016">Gavryushkina A., Heath T.A., Ksepka D.T., Stadler T., Welch D., Drummond A.J. 2016. Bayesian Total-Evidence Dating Reveals the Recent Crown Radiation of Penguins. Systematic Biology.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syw060">10.1093/sysbio/syw060</a>
+
+</li>
+<li><span id="Ronquist2012a">Ronquist F., Klopfstein S., Vilhelmsen L., Schulmeister S., Murray D.L., Rasnitsyn A.P. 2012. A total-evidence approach to dating with fossils, applied to the early radiation of the Hymenoptera. Systematic Biology. 61:973–999.</span>
+
+</li>
+<li><span id="Zhang2016">Zhang C., Stadler T., Klopfstein S., Heath T.A., Ronquist F. 2016. Total-Evidence Dating under the Fossilized Birth-Death Process. Systematic Biology. 65:228–249.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syv080">10.1093/sysbio/syv080</a>
+
+</li></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+
+<script src="/assets/js/base.js"></script>
+
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+  });
+</script>
+
+  </body>
+</html>
