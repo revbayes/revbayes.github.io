@@ -42,6 +42,8 @@ schedule:
     endtime: 2018-12-11T10:15:00Z
     topic: RevBayes Introduction
     tutorials: 
+    - <a href="https://www.dropbox.com/s/pucujjqhw4fknh6/1_RevBayes.pdf?dl=0">RevBayes Intro.</a>
+    - <a href="https://www.dropbox.com/s/pswpocjkvd1d16d/2_Bayesian_inference.pdf?dl=0">RevBayes Intro.</a>
     instructors: Sebastian Höhna
 
   - starttime: 2018-12-11T10:15:00Z
@@ -53,7 +55,7 @@ schedule:
   - starttime: 2018-12-11T10:30:00Z
     endtime: 2018-12-11T12:00:00Z
     topic: Substitution Models in Phylogenetics
-    tutorials:
+    tutorials: <a href="https://www.dropbox.com/s/bulg9e6b1muejki/3_Molecular_Evolution_Models.pdf?dl=0">Substitution Models in Phylogenetics</a>
     instructors:
     - Sebastian Höhna
 
