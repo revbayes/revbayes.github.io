@@ -1,0 +1,75 @@
+########################################################
+#
+# RevBayes Example: Molecular dating
+# 
+# This file: Runs the full MCMC for exercise 1
+#
+# authors: Rachel C. M. Warnock, Sebastian Hoehna
+#
+########################################################
+
+########################################################
+#
+# Exercise 1: the global molecular clock model
+#
+########################################################
+
+#######################
+# Reading in the Data #
+#######################
+
+# Import the molecular sequences #
+# this file contains only the taxa for which sequence data are available #
+cytb <- readDiscreteCharacterData("data/bears_cytb.nex")
+
+## helpers
+n_taxa <- cytb.size()
+taxa <- cytb.taxa()
+
+mvi = 1
+
+# Load the model files
+
+source("scripts/tree_BD.Rev") # BD tree prior
+
+source("scripts/clock_global.Rev") # Global clock model
+
+source("scripts/sub_GTRG.Rev") # Molecular substitution model (GTR+G)
+
+########
+# MCMC #
+########
+
+# initialize the model object #
+mymodel = model(sf)	
+
+mni = 1
+
+# Create a vector of monitors #
+# 1. for the full model #
+monitors[mni++] = mnModel(filename="output/bears_global.log", printgen=10)	
+
+# 2. the tree #
+monitors[mni++] = mnFile(filename="output/bears_global.trees", printgen=10, timetree)
+
+# 3. and a few select parameters to be printed to the screen #
+monitors[mni++] = mnScreen(printgen=10, extant_mrca, diversification)
+
+# Initialize the MCMC object #
+mymcmc = mcmc(mymodel, monitors, moves)
+
+# Run the MCMC #
+mymcmc.run(generations=20000)
+
+########################
+# Summarizing the tree #
+########################
+
+# Read the trace file #
+trace = readTreeTrace("output/bears_global.trees")
+
+# Maximum clade credibility tree #
+mccTree(trace, file="output/bears_global.mcc.tre" )
+
+# Quit RevBayes #
+q()

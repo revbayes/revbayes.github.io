@@ -98,8 +98,8 @@ schedule:
     
   - starttime: 2018-12-12T9:30:00Z
     endtime: 2018-12-12T10:15:00Z
-    topic: Morphological models
-    tutorials: 
+    topic: Introduction to divergence time estimation
+    tutorials: dating
     instructors:
     - Rachel Warnock
 
@@ -111,7 +111,7 @@ schedule:
 
   - starttime: 2018-12-12T10:30:00Z
     endtime: 2018-12-12T12:00:00Z
-    topic: Divergence time estimation using the fossilized birth-death model
+    topic: Node dating
     tutorials: 
     instructors: Rachel Warnock
 
@@ -123,8 +123,8 @@ schedule:
 
   - starttime: 2018-12-12T13:00:00Z
     endtime: 2018-12-12T15:00:00Z
-    topic: Practical on divergence time estimation using the fossilized birth-death model (Part I)
-    tutorials: fbd
+    topic: The fossilized birth-death process
+    tutorials:
     instructors: Rachel Warnock
 
   - starttime: 2018-12-12T15:00:00Z
@@ -135,8 +135,8 @@ schedule:
 
   - starttime: 2018-12-12T15:15:00Z
     endtime: 2018-12-12T17:30:00Z
-    topic: Practical on divergence time estimation using the fossilized birth-death model (Part II)
-    tutorials: fbd
+    topic: Total-evidence dating
+    tutorials:
     instructors: Rachel Warnock
     
   - starttime: 2018-12-13T9:00:00Z
