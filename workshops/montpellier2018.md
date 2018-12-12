@@ -93,7 +93,7 @@ schedule:
   - starttime: 2018-12-12T9:00:00Z
     endtime: 2018-12-12T9:30:00Z
     topic: Recap MCMC and Substitution Models
-    tutorials: 
+    material: <a href="https://www.dropbox.com/s/ayiwjuckxe2vb4r/3_Molecular_Evolution_Models_Recap.pdf?dl=0">Substitution Models in Phylogenetics</a>
     instructors: Sebastian Höhna
     
   - starttime: 2018-12-12T9:30:00Z
