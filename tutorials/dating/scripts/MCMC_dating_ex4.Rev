@@ -31,13 +31,17 @@ cytb.addMissingTaxa( taxa )
 ## helpers
 n_taxa <- cytb.size()
 
-mvi = 1
+
+# Create some vector for the moves and monitors of this analysis
+moves    = VectorMoves()
+monitors = VectorMonitors()
 
 # Load the model files
 
 source("scripts/tree_FBD.Rev") # BD tree prior + node calibrations
 
-source("scripts/clock_relaxed.Rev") # Global clock model
+#source("scripts/clock_relaxed.Rev") # Global clock model
+source("scripts/clock_global.Rev") # Global clock model
 
 source("scripts/sub_GTRG.Rev") # Molecular substitution model (GTR+G)
 
@@ -48,33 +52,34 @@ source("scripts/sub_GTRG.Rev") # Molecular substitution model (GTR+G)
 # initialize the model object #
 mymodel = model(sf)	
 
-mni = 1
-
 # Create a vector of monitors #
 # 1. for the full model #
-monitors[mni++] = mnModel(filename="output/bears_FBD.log", printgen=10)	
+monitors.append( mnModel(filename="output/bears_FBD.log", printgen=1) )
 
 # 2. the tree #
-monitors[mni++] = mnFile(filename="output/bears_FBD.trees", printgen=10, pruned_tree)
+monitors.append( mnFile(filename="output/bears_FBD_all.trees", printgen=1, timetree) )
+monitors.append( mnFile(filename="output/bears_FBD_extant.trees", printgen=1, pruned_tree) )
 
 # 3. and a few select parameters to be printed to the screen #
-monitors[mni++] = mnScreen(printgen=10, extant_mrca, num_samp_anc, diversification)
+monitors.append( mnScreen(printgen=100, diversification) )
 
 # Initialize the MCMC object #
-mymcmc = mcmc(mymodel, monitors, moves)
+mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
 
 # Run the MCMC #
-mymcmc.run(generations=20000)
+mymcmc.run(generations=20000, tuningInterval=200)
 
 ########################
 # Summarizing the tree #
 ########################
 
 # Read the trace file #
-trace = readTreeTrace("output/bears_FBD.trees")
+trace_extant = readTreeTrace("output/bears_FBD_extant.trees")
+trace = readTreeTrace("output/bears_FBD_all.trees")
 
 # Maximum clade credibility tree #
-mccTree(trace, file="output/bears_FBD.mcc.tre" )
+mccTree(trace_extant, file="output/bears_FBD_extant.mcc.tre" )
+mccTree(trace, file="output/bears_FBD_all.mcc.tre" )
 
 # Quit RevBayes #
 q()

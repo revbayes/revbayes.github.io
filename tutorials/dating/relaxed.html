@@ -54,7 +54,7 @@
 	<h1 class="maintitle">Molecular dating</h1>
 	<h3 class="subtitle">The uncorrelated exponential relaxed clock model</h3>
 	<h4 class="authors">Rachel Warnock, Sebastian Höhna, Tracy Heath, April  Wright and Walker Pett</h4>
-  <h5>Last modified on December 11, 2018</h5>
+  <h5>Last modified on December 13, 2018</h5>
 </div>
 
 
@@ -104,6 +104,8 @@
         
           <li><a href="/tutorials/dating/scripts/clock_relaxed.Rev">clock_relaxed.Rev</a></li>
         
+          <li><a href="/tutorials/dating/scripts/clock_relaxed_discrete.Rev">clock_relaxed_discrete.Rev</a></li>
+        
           <li><a href="/tutorials/dating/scripts/sub_GTRG.Rev">sub_GTRG.Rev</a></li>
         
           <li><a href="/tutorials/dating/scripts/tree_BD.Rev">tree_BD.Rev</a></li>
@@ -141,28 +143,21 @@ Second, we need to switch out the global clock model for the relaxed clock model
 <p>We are going to use the uncorrelated exponential relaxed clock model. In this model rates for each branch will be drawn independently from an exponential distribution.</p>
 
 <p>It’s a bit more tricky to set up this clock model. First, we’ll define the mean branch rate as an exponential random variable (<code class="highlighter-rouge">branch_rates_mean</code>). Then, specify a scale proposal move on this parameter.</p>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>branch_rates_mean ~ dnExponential(10.0)
-moves[mvi++] = mvScale(branch_rates_mean, lambda=0.5, tune=true, weight=1.0)
+moves.append( mvScale(branch_rates_mean, lambda=0.5, tune=true, weight=1.0) )
 </code></pre></div></div>
-
 <p>Before creating a rate parameter for each branch, we need to define the number of branches in the tree. For rooted trees with $n$ taxa, the number of branches is $2n−2$.</p>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_branches &lt;- 2 * n_taxa - 2
 </code></pre></div></div>
-
 <p>Then, use a for loop to define a rate for each branch. The branch rates are independent and identically exponentially distributed with mean equal to the mean branch rate parameter we specified above. For each rate parameter we will also create scale proposal moves.</p>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for(i in 1:n_branches){
     branch_rates[i] ~ dnExp(1/branch_rates_mean)
-    moves[mvi++] = mvScale(branch_rates[i], lambda=0.5, tune=true, weight=1.0)
+    moves.append( mvScale(branch_rates[i], lambda=0.5, tune=true, weight=1.0) )
 }
 </code></pre></div></div>
-
 <p>Note that now we have a vector of rates <code class="highlighter-rouge">branch_rates</code>, where each entry corresponds to a different branch in the tree, instead of a single rate that applies to all branches.	
 Lastly, we will use a vector scale move to propose changes to all branch rates simultaneously. This way we can sample the total branch rate independently of each individual rate, which can improve mixing.</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvVectorScale(branch_rates, lambda=0.5, tune=true, weight=4.0) 
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvVectorScale(branch_rates, lambda=0.5, tune=true, weight=4.0) )
 </code></pre></div></div>
 
 <h3 id="the-master-rev-script">The master Rev script</h3>
@@ -172,22 +167,16 @@ Lastly, we will use a vector scale move to propose changes to all branch rates s
 </blockquote>
 
 <p>First, change the file used to specify the clock model from <strong>clock_global.Rev</strong> to <strong>clock_relaxed.Rev</strong>.</p>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/clock_relaxed.Rev")
 </code></pre></div></div>
-
 <p>Second, update the name of all the output files.</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[mni++] = mnModel(filename="output/bears_relaxed.log", printgen=10)
-monitors[mni++] = mnFile(filename="output/bears_relaxed.trees", printgen=10, timetree)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/bears_relaxed.log", printgen=10) )
+monitors.append( mnFile(filename="output/bears_relaxed.trees", printgen=10, timetree) )
 </code></pre></div></div>
-
 <p>Don’t forget to update the commands used to generate the summary tree.</p>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>trace = readTreeTrace("output/bears_relaxed.trees")
 mccTree(trace, file="output/bears_relaxed.mcc.tre" )
 </code></pre></div></div>
-
 <p>That’s all you need to do!</p>
 
 <blockquote class="instruction">

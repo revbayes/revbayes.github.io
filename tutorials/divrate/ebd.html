@@ -192,15 +192,15 @@ the standard deviation of rates between time intervals.</p>
 <p>From this tree, we get some helpful variables, such as the taxon information which we need to instantiate the birth-death process.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>taxa &lt;- T.taxa()
 </code></pre></div></div>
-<p>Additionally, we initialize an iterator variable for our vector of moves and monitors.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvi = 1
-mni = 1
+<p>Additionally, we initialize a variable for our vector of moves and monitors.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
+monitors = VectorMonitors()
 </code></pre></div></div>
 
 <p>Finally, we create a helper variable that specifies the number of intervals.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NUM_INTERVALS = 10
 </code></pre></div></div>
-<p>Using this variable we can easily change our script to break-up time into many (\EG~\cl{NUM_INTERVALS = 100}) or few (\EG~\cl{NUM_INTERVALS = 4}) intervals.</p>
+<p>Using this variable we can easily change our script to break-up time into many (e.g., <code class="highlighter-rouge">NUM_INTERVALS = 100</code>) or few (e.g., <code class="highlighter-rouge">NUM_INTERVALS = 4</code>) intervals.</p>
 
 <h3 class="subsection" id="specifying-the-model">Specifying the model</h3>
 <hr class="subsection" />
@@ -249,8 +249,8 @@ Storing the rate parameters in vectors will be useful and important later when w
 <p>We apply simple sliding window moves for the rates.
 Normally we would use scaling moves but in this case we work on the log-transformed parameters and thus sliding moves perform better.
 (If you are keen you can test the differences.)</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvSlide(log_speciation[1], weight=2)
-moves[mvi++] = mvSlide(log_extinction[1], weight=2)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvSlide(log_speciation[1], weight=2) )
+moves.append( mvSlide(log_extinction[1], weight=2) )
 </code></pre></div></div>
 <p>Now we transform the diversification rate parameters into actual rates using 
 an exponential parameter transformation.</p>
@@ -268,8 +268,8 @@ Remember that we want to model the rates as a Brownian motion, which we achieve 
     log_speciation[index] ~ dnNormal( mean=log_speciation[i], sd=speciation_sd )
     log_extinction[index] ~ dnNormal( mean=log_extinction[i], sd=extinction_sd )
 
-    moves[mvi++] = mvSlide(log_speciation[index], weight=2)
-    moves[mvi++] = mvSlide(log_extinction[index], weight=2)
+    moves.append( mvSlide(log_speciation[index], weight=2) )
+    moves.append( mvSlide(log_extinction[index], weight=2) )
 
     speciation[index] := exp( log_speciation[index] )
     extinction[index] := exp( log_extinction[index] )
@@ -279,14 +279,14 @@ Remember that we want to model the rates as a Brownian motion, which we achieve 
 <p>Finally, we apply moves that slide all values in the rate vectors, 
 <em>i.e.,</em> all speciation or extinction rates.
 We will use an <code class="highlighter-rouge">mvVectorSlide</code> move.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvVectorSlide(log_speciation, weight=10)
-moves[mvi++] = mvVectorSlide(log_extinction, weight=10)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvVectorSlide(log_speciation, weight=10) )
+moves.append( mvVectorSlide(log_extinction, weight=10) )
 </code></pre></div></div>
 
 <p>Additionally, we apply a <code class="highlighter-rouge">mvShrinkExpand</code> move which changes the spread of several variables 
 around their mean.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvShrinkExpand( log_speciation, weight=10 )
-moves[mvi++] = mvShrinkExpand( log_extinction, weight=10 )
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvShrinkExpand( log_speciation, weight=10 ) )
+moves.append( mvShrinkExpand( log_extinction, weight=10 ) )
 </code></pre></div></div>
 <p>Both moves considerably improve the efficiency of our MCMC analysis.</p>
 
@@ -352,20 +352,20 @@ It is possible to change this condition to the <em>time of the process</em> or
 First, we will initialize the model monitor using the <code class="highlighter-rouge">mnModel</code> function. 
 This creates a new monitor variable that will output the states for all model parameters 
 when passed into a MCMC function.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[mni++] = mnModel(filename="output/primates_EBD.log",printgen=10, separator = TAB)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/primates_EBD.log",printgen=10, separator = TAB)
 </code></pre></div></div>
 
 <p>Additionally, we create four separate file monitors, one for each vector of speciation and extinction rates and for each speciation and extinction rate epoch (\IE the times when the interval ends).
 We want to have the speciation and extinction rates stored separately so that we can plot them nicely afterwards.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[mni++] = mnFile(filename="output/primates_EBD_speciation_rates.log",printgen=10, separator = TAB, speciation)
-monitors[mni++] = mnFile(filename="output/primates_EBD_speciation_times.log",printgen=10, separator = TAB, interval_times)
-monitors[mni++] = mnFile(filename="output/primates_EBD_extinction_rates.log",printgen=10, separator = TAB, extinction)
-monitors[mni++] = mnFile(filename="output/primates_EBD_extinction_times.log",printgen=10, separator = TAB, interval_times)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnFile(filename="output/primates_EBD_speciation_rates.log",printgen=10, separator = TAB, speciation) )
+monitors.append( mnFile(filename="output/primates_EBD_speciation_times.log",printgen=10, separator = TAB, interval_times) )
+monitors.append( mnFile(filename="output/primates_EBD_extinction_rates.log",printgen=10, separator = TAB, extinction) )
+monitors.append( mnFile(filename="output/primates_EBD_extinction_times.log",printgen=10, separator = TAB, interval_times) )
 </code></pre></div></div>
 
 <p>Finally, we create a screen monitor that will report the states of specified variables 
 to the screen with <code class="highlighter-rouge">mnScreen</code>:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[mni++] = mnScreen(printgen=1000, extinction_sd, speciation_sd)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(printgen=1000, extinction_sd, speciation_sd) )
 </code></pre></div></div>
 
 <h4 class="subsubsection" id="initializing-and-running-the-mcmc-simulation">Initializing and Running the MCMC Simulation</h4>
@@ -391,7 +391,7 @@ If you don’t have the R-package <code class="highlighter-rouge">RevGadgets</co
 
 </span><span class="n">tree</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">read.nexus</span><span class="p">(</span><span class="s2">"data/primates_tree.nex"</span><span class="p">)</span><span class="w">
 
-</span><span class="n">rev_out</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rev.process.div.rates</span><span class="p">(</span><span class="n">speciation_times_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"output/primates_EBD_speciation_times.log"</span><span class="p">,</span><span class="w"> </span><span class="n">speciation_rates_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"output/primates_EBD_speciation_rates.log"</span><span class="p">,</span><span class="w"> </span><span class="n">extinction_times_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"output/primates_EBD_extinction_times.log"</span><span class="p">,</span><span class="w"> </span><span class="n">extinction_rates_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"output/primates_EBD_extinction_rates.log"</span><span class="p">,</span><span class="w"> </span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="n">burnin</span><span class="o">=</span><span class="m">0.25</span><span class="p">,</span><span class="n">numIntervals</span><span class="o">=</span><span class="m">100</span><span class="p">)</span><span class="w">
+</span><span class="n">rev_out</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rev.process.div.rates</span><span class="p">(</span><span class="n">speciation_times_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"output/primates_EBD_speciation_times.log"</span><span class="p">,</span><span class="w"> </span><span class="n">speciation_rates_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"output/primates_EBD_speciation_rates.log"</span><span class="p">,</span><span class="w"> </span><span class="n">extinction_times_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"output/primates_EBD_extinction_times.log"</span><span class="p">,</span><span class="w"> </span><span class="n">extinction_rates_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"output/primates_EBD_extinction_rates.log"</span><span class="p">,</span><span class="w"> </span><span class="n">tree</span><span class="o">=</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="n">burnin</span><span class="o">=</span><span class="m">0.25</span><span class="p">,</span><span class="n">numIntervals</span><span class="o">=</span><span class="m">100</span><span class="p">)</span><span class="w">
 
 </span><span class="n">pdf</span><span class="p">(</span><span class="s2">"EBD.pdf"</span><span class="p">)</span><span class="w">
 </span><span class="n">par</span><span class="p">(</span><span class="n">mfrow</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="m">2</span><span class="p">,</span><span class="m">2</span><span class="p">))</span><span class="w">

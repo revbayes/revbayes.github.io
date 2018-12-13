@@ -54,7 +54,7 @@
 	<h1 class="maintitle">Simple Diversification Rate Estimation</h1>
 	<h3 class="subtitle">Comparing different constant-rate models of lineage diversification</h3>
 	<h4 class="authors">Sebastian Höhna and Tracy Heath</h4>
-  <h5>Last modified on August  6, 2018</h5>
+  <h5>Last modified on December 13, 2018</h5>
 </div>
 
 
@@ -109,8 +109,6 @@
         <ul id="scripts">
         
         
-        
-          <li><a href="/tutorials/divrate/scripts/mcmc_BDS.Rev">mcmc_BDS.Rev</a></li>
         
           <li><a href="/tutorials/divrate/scripts/mcmc_Yule.Rev">mcmc_Yule.Rev</a></li>
         
@@ -396,7 +394,7 @@ information on marginal likelihood estimation please read the
 <p>First, we create the variable containing the power posterior. This
 requires us to provide a model and vector of moves, as well as an output
 file name. The <code class="highlighter-rouge">cats</code> argument sets the number of power steps.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pow_p = powerPosterior(mymodel, moves, monitors, "output/Yule_powp.out", cats=100, sampleFreq=10)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pow_p = powerPosterior(mymodel, moves, monitors, "output/Yule_powp.out", cats=127, sampleFreq=10)
 </code></pre></div></div>
 <p>We can start the power posterior by first burning in the chain and and
 discarding the first 10000 states.</p>
@@ -414,7 +412,7 @@ sampling.</p>
 <p>Compute the marginal likelihood under stepping-stone sampling using the
 member function <code class="highlighter-rouge">marginal()</code> of the <code class="highlighter-rouge">ss</code> variable and record the value
 in <a href="#tab_ml_yule"></a>.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ss.marginal()
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>write("Stepping stone marginal likelihood:\t", ss.marginal() )
 </code></pre></div></div>
 <p>Path sampling is an alternative to stepping-stone sampling and also
 takes the same power posteriors as input.</p>
@@ -423,7 +421,7 @@ takes the same power posteriors as input.</p>
 <p>Compute the marginal likelihood under stepping-stone sampling using the
 member function <code class="highlighter-rouge">marginal()</code> of the <code class="highlighter-rouge">ps</code> variable and record the value
 in <a href="#tab_ml_yule"></a>.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ps.marginal()
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>write("Path-sampling marginal likelihood:\t", ps.marginal() )
 </code></pre></div></div>
 <p>⇨ The <code class="highlighter-rouge">Rev</code> file for performing this analysis: <code class="highlighter-rouge">ml_Yule.Rev</code>.</p>
 
@@ -522,7 +520,7 @@ the diversification rate as we used before for the birth rate.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>diversification_mean &lt;- ln( ln(367.0/2.0) / T.rootAge() )
 diversification_sd &lt;- 0.587405
 diversification ~ dnLognormal(mean=diversification_mean,sd=diversification_sd)
-moves[mvi++] = mvScale(diversification,lambda=1.0,tune=true,weight=3.0)
+moves.append( mvScale(diversification,lambda=1.0,tune=true,weight=3.0) )
 </code></pre></div></div>
 <p>Unfortunately, we have less prior information about the turnover rate.
 The turnover rate is the rate at which one species is replaced by
@@ -533,7 +531,7 @@ uncertainty.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>turnover_mean &lt;- ln( ln(367.0/2.0) / T.rootAge() )
 turnover_sd &lt;- 0.587405*2
 turnover ~ dnLognormal(mean=turnover_mean,sd=turnover_sd)
-moves[mvi++] = mvScale(turnover,lambda=1.0,tune=true,weight=3.0)
+moves.append( mvScale(turnover,lambda=1.0,tune=true,weight=3.0) )
 </code></pre></div></div>
 
 <h3 class="subsection" id="birth-rate-and-death-rate">Birth rate and death rate</h3>
