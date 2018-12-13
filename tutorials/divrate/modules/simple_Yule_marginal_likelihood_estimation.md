@@ -9,7 +9,7 @@ that power. In this implementation, the vector of powers starts with 1,
 sampling the likelihood close to the posterior and incrementally
 sampling closer and closer to the prior as the power decreases. For more
 information on marginal likelihood estimation please read the
-[Bayesian Model Selection Tutorial]({{ base.url }}/tutorials/model_selection_bayes_factor/)
+[Bayesian Model Selection Tutorial]({{ base.url }}/tutorials/model_selection_bayes_factor/bf_intro)
 
 First, we create the variable containing the power posterior. This
 requires us to provide a model and vector of moves, as well as an output
