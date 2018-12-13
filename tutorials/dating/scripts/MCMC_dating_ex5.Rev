@@ -38,11 +38,12 @@ morpho.addMissingTaxa( taxa )
 n_taxa <- cytb.size()
 #taxa <- cytb.taxa()
 
-mvi = 1
+
+# Create some vector for the moves and monitors of this analysis
+moves    = VectorMoves()
+monitors = VectorMonitors()
 
 # Load the model files
-
-#source("scripts/tree_TEFBD.Rev") # FBD tree prior
 
 source("scripts/tree_TEFBD.Rev") # FBD tree prior
 
@@ -65,19 +66,19 @@ mni = 1
 
 # Create a vector of monitors #
 # 1. for the full model #
-monitors[mni++] = mnModel(filename="output/bears_TEFBD.log", printgen=10)	
+monitors.append( mnModel(filename="output/bears_TEFBD.log", printgen=10) )
 
 # 2. the tree #
-monitors[mni++] = mnFile(filename="output/bears_TEFBD.trees", printgen=10, pruned_tree)
+monitors.append( mnFile(filename="output/bears_TEFBD.trees", printgen=10, pruned_tree) )
 
 # 3. and a few select parameters to be printed to the screen #
-monitors[mni++] = mnScreen(printgen=10, extant_mrca, num_samp_anc, diversification)
+monitors.append( mnScreen(printgen=10, extant_mrca, num_samp_anc, diversification) )
 
 # Initialize the MCMC object #
-mymcmc = mcmc(mymodel, monitors, moves)
+mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
 
 # Run the MCMC #
-mymcmc.run(generations=20000)
+mymcmc.run(generations=20000, tuningInterval=200)
 
 ########################
 # Summarizing the tree #

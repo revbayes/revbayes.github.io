@@ -2,8 +2,8 @@
 title: Molecular dating
 subtitle: The uncorrelated exponential relaxed clock model
 authors:  Rachel Warnock, Sebastian Höhna, Tracy Heath, April  Wright and Walker Pett
-level: 0
-order: 0.5
+level: 2
+order: 0.52
 prerequisites:
 - intro
 exclude_files:
@@ -56,25 +56,27 @@ Remember the clock (or branch-rate) model describes how rates of substitution va
 We are going to use the uncorrelated exponential relaxed clock model. In this model rates for each branch will be drawn independently from an exponential distribution. 
 
 It's a bit more tricky to set up this clock model. First, we'll define the mean branch rate as an exponential random variable (`branch_rates_mean`). Then, specify a scale proposal move on this parameter.
-
-	branch_rates_mean ~ dnExponential(10.0)
-	moves[mvi++] = mvScale(branch_rates_mean, lambda=0.5, tune=true, weight=1.0)
-
+```
+branch_rates_mean ~ dnExponential(10.0)
+moves.append( mvScale(branch_rates_mean, lambda=0.5, tune=true, weight=1.0) )
+```
 Before creating a rate parameter for each branch, we need to define the number of branches in the tree. For rooted trees with $n$ taxa, the number of branches is $2n−2$.
-	
-	n_branches <- 2 * n_taxa - 2
-	
+```
+n_branches <- 2 * n_taxa - 2
+```
 Then, use a for loop to define a rate for each branch. The branch rates are independent and identically exponentially distributed with mean equal to the mean branch rate parameter we specified above. For each rate parameter we will also create scale proposal moves.
-
-	for(i in 1:n_branches){
-	    branch_rates[i] ~ dnExp(1/branch_rates_mean)
-	    moves[mvi++] = mvScale(branch_rates[i], lambda=0.5, tune=true, weight=1.0)
-	}
-	
+```
+for(i in 1:n_branches){
+    branch_rates[i] ~ dnExp(1/branch_rates_mean)
+    moves.append( mvScale(branch_rates[i], lambda=0.5, tune=true, weight=1.0) )
+}
+```	
 Note that now we have a vector of rates `branch_rates`, where each entry corresponds to a different branch in the tree, instead of a single rate that applies to all branches.	
 Lastly, we will use a vector scale move to propose changes to all branch rates simultaneously. This way we can sample the total branch rate independently of each individual rate, which can improve mixing.
+```
+moves.append( mvVectorScale(branch_rates, lambda=0.5, tune=true, weight=4.0) )
+```
 
-	moves[mvi++] = mvVectorScale(branch_rates, lambda=0.5, tune=true, weight=4.0) 
 
 ### The master Rev script
 
@@ -82,19 +84,19 @@ Lastly, we will use a vector scale move to propose changes to all branch rates s
 {:.instruction}
 
 First, change the file used to specify the clock model from **clock_global.Rev** to **clock_relaxed.Rev**.
-
-	source("scripts/clock_relaxed.Rev")
-
+```
+source("scripts/clock_relaxed.Rev")
+```
 Second, update the name of all the output files.
-
-	monitors[mni++] = mnModel(filename="output/bears_relaxed.log", printgen=10)
-	monitors[mni++] = mnFile(filename="output/bears_relaxed.trees", printgen=10, timetree)
-
+```
+monitors.append( mnModel(filename="output/bears_relaxed.log", printgen=10) )
+monitors.append( mnFile(filename="output/bears_relaxed.trees", printgen=10, timetree) )
+```
 Don't forget to update the commands used to generate the summary tree.
-
-	trace = readTreeTrace("output/bears_relaxed.trees")
-	mccTree(trace, file="output/bears_relaxed.mcc.tre" )
-
+```
+trace = readTreeTrace("output/bears_relaxed.trees")
+mccTree(trace, file="output/bears_relaxed.mcc.tre" )
+```
 That's all you need to do!
 
 >Run your MCMC analysis!
