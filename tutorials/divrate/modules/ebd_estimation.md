@@ -227,7 +227,7 @@ rev_out <- rev.process.div.rates(speciation_times_file = "output/primates_EBD_sp
 
 pdf("EBD.pdf")
 par(mfrow=c(2,2))
-rev.plot.output(rev_out,use.geoscale=FALSE)
+rev.plot.div.rates(rev_out,use.geoscale=FALSE)
 dev.off()
 ```
 

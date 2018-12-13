@@ -90,6 +90,13 @@ timetree ~ dnCDBDP( rootAge           = root,
 timetree.clamp(observed_phylogeny)
 
 
+moves.append( mvGibbsDrawCharacterHistory(timetree, weight=1) )
+branch_lambda := timetree.averageSpeciationRate()
+branch_mu := timetree.averageExtinctionRate()
+branch_net_div := branch_lambda - branch_mu
+branch_rel_ext := branch_mu / branch_lambda
+
+
 #############
 # The Model #
 #############
@@ -100,6 +107,7 @@ mymodel = model(speciation)
 ### set up the monitors that will output parameter values to file and screen
 monitors.append( mnScreen(printgen=10, event_rate, speciation_mean) )
 monitors.append( mnStochasticBranchRate(cdbdp=timetree, printgen=1, filename="output/primates_BDS_rates.log") )
+monitors.append( mnExtNewick(filename="output/primates_BDS_rates.trees", isNodeParameter=FALSE, printgen=1, tree=timetree, branch_lambda, branch_mu, branch_net_div, branch_rel_ext) )
 monitors.append( mnFile(speciation_mean, extinction_mean, rate_sd, event_rate, filename="output/primates_BDS.log",printgen=1, separator = TAB) )
 
 
@@ -112,6 +120,10 @@ mymcmc = mcmc(mymodel, monitors, moves, nruns=1, combine="mixed")
 
 ### run the MCMC
 mymcmc.run(generations=2000, tuningInterval=200)
+
+
+treetrace = readTreeTrace("output/primates_BDS_rates.trees", treetype="clock")
+map_tree = mapTree(treetrace,"output/primates_BDS_rates_MAP.tree")
 
 ## quit ##
 q()
