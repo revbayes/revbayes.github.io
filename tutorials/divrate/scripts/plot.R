@@ -10,7 +10,7 @@ rev_out <- rev.process.div.rates(speciation_times_file = "output/primates_EBD_sp
                                  speciation_rates_file = "output/primates_EBD_speciation_rates.log",
                                  extinction_times_file = "output/primates_EBD_extinction_times.log",
                                  extinction_rates_file = "output/primates_EBD_extinction_rates.log",
-                                 tree,
+                                 tree=tree,
                                  burnin=0.25,numIntervals=1000)
 
 pdf("EBD.pdf")

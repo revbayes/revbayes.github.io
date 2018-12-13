@@ -1,11 +1,8 @@
 {% section Estimating Branch-Specific Diversification Rates %}
 
 In this analysis we are interested in estimating the
-branch-specific diversification rates. We are going to use a very
-similar model to the one described in the previous section. However, now
-we are going to use the `dnHBDP` distribution instead which will require
-some slightly different parameterization and moves. The main difference,
-as mentioned above, is that the `dnHBDP` uses a finite number of rate-categories
+branch-specific diversification rates.
+We are going to use the `dnCBDP` distribution which uses a finite number of rate-categories
 instead of drawing rates from a continuous distribution directly.
 
 Here we adopt an approach using (few) discrete rate categories instead.
@@ -31,18 +28,17 @@ taxa <- observed_phylogeny.taxa()
 root <- observed_phylogeny.rootAge()
 tree_length <- observed_phylogeny.treeLength()
 ```
-Additionally, we can initialize an iterator variable for our vector of
-moves:
+Additionally, we initialize a variable for our vector of moves and monitors.
 ```
-mvi = 0
-mni = 0
+moves    = VectorMoves()
+monitors = VectorMonitors()
 ```
 Finally, we create a helper variable that specifies the number of
 discrete rate categories, another helper variable for the expected
 number of rate-shift events, the total number of species, and the
 variation in rates.
 ```
-NUM_RATE_CATEGORIES = 4
+NUM_RATE_CATEGORIES = 6
 EXPECTED_NUM_EVENTS = 2
 NUM_TOTAL_SPECIES = 367
 H = 0.587405
@@ -78,28 +74,40 @@ it as a deterministic variable and every time the parameters of the base
 distribution (i.e., the lognormal
 distribution in our case) change the quantiles will update automatically
 as well. Thus we only need to specify parameters for our base
-distribution, the lognormal distribution. We choose a constant
-variable for the mean parameter of the lognormal distribution fixed on
-our expected diversification rate, which is
-$$\ln( \ln(\frac{\#Taxa}{2})/age )$$. Remember that the median of a
-lognormal distribution is equal to the exponential of the mean
-parameter. This is why we used a log-transform of the actual mean. This
-prior density is analogous to the prior on the speciation-rate parameter
-in the constant-rate birth-death process.
+distribution, the lognormal distribution. 
+We choose a log-uniform distribution as the prior distribution for the mean parameter of the lognormal distribution.
+ fixed on our expected diversification rate, which is
+$$\ln( \ln(\frac{\#Taxa}{2})/age )$$. 
 ```
-speciation_mean <- ln(NUM_TOTAL_SPECIES/2.0) / root
+speciation_mean ~ dnLoguniform( 1E-6, 1E2)
+moves.append( mvScale(speciation_mean, lambda=1, tune=true, weight=2.0) )
+
 ```
-Additionally, we choose a fixed standard deviation of $H * 2$ for the
+Next, we choose an exponential prior distribution with mean of $H$ for the variation in speciation rates.
+```
+rate_sd ~ dnExponential( 1.0 / H )
+moves.append( mvScale(rate_sd, lambda=1, tune=true, weight=2.0) )
+```
+Now, we can compute the speciation rate categories.
+We will use a lognormal distribution discretized into `NUM_RATE_CATEGORIES` quantiles and the parameters that we should created.
+```
+speciation := fnDiscretizeDistribution( dnLognormal(ln(speciation_mean), rate_sd), NUM_RATE_CATEGORIES )
+```
+
+<!-- Alternatively, we choose a fixed standard deviation of $H * 2$ for the
 speciation rates because it represents two orders of magnitude variance
 in the rate categories.
 ```
 speciation_sd <- H*2
 speciation := fnDiscretizeDistribution( dnLognormal(ln(speciation_mean), speciation_sd), NUM_RATE_CATEGORIES )
 ```
-We define the prior on the extinction rate in the same way as we did for
+-->
+Similarly, we define the prior on the extinction rate in the same way as we did for
 the speciation rate.
 ```
-extinction_mean <- ln(NUM_TOTAL_SPECIES/2.0) / root_age
+extinction_mean ~ dnLoguniform( 1E-6, 1E2)
+extinction_mean.setValue( speciation_mean / 2.0 )
+moves.append( mvScale(extinction_mean, lambda=1, tune=true, weight=2.0) )
 ```
 However, we assume that extinction rate is the same for all categories.
 Therefore, we simply replicate using the `rep` function the extinction rate `NUM_RATE_CATEGORIES` times.
@@ -108,29 +116,21 @@ extinction := rep( extinction_mean, NUM_RATE_CATEGORIES )
 ```
 Next, we need a rate parameter for the rate-shifts events. We do not
 have much prior information about this rate but we can provide some
-realistic ranges. For example, we can specify a mean rate so that the
-resulting number of expected rate-shift events is 2 (as specified in our
-global variable `EXPECTED_NUM_EVENTS`). Furthermore, we can say that
-the 95% prior ranges exactly one order of magnitude. We achieve all this
-by specifying a lognormal prior distribution with mean 
-`ln(EXPECTED_NUM_EVENTS/tree_length )` and standard deviation of `H`.
+realistic ranges. For example, we can specify a uniform distribution that the
+goes from 0 to 100 expected events. 
 Remember that this is only possible if the tree is known and not
 estimated simultaneously because only if the tree is do we also know the
 tree length. As usual for rate parameter, we apply a scaling move to the
 `event_rate` variable.
 ```
-event_rate ~ dnLognormal( ln( EXPECTED_NUM_EVENTS/tree_length ), H)
-moves[mvi++] = mvScale(event_rate,lambda=1,tune=true,weight=5)
+event_rate ~ dnUniform(0.0, 100.0/tree_length)
+event_rate.setValue(EXPECTED_NUM_EVENTS/tree_length)
+moves.append( mvScale(event_rate, lambda=1, tune=true, weight=2.0) )
 ```
-Additionally, we need a parameter for the category of the process at
-root. We use a uniform prior distribution on the indices 1 to $N^2$
-since we do not have any prior information in which rate category the
-process is at the root. The move for this random variable is a random
-integer walk because the random variable is defined only on the indices
-(i.e., with real number).
+Additionally, we need a parameter for probability that the process starts at the root in any of the diversification-rate categories. 
+We use a uniform/equal prior distribution on the diversification-rate categories.
 ```
-root_category ~ dnUniformNatural(1,NUM_RATE_CATEGORIES)
-moves[mvi++] = mvRandomIntegerWalk(root_category,weight=1)
+rate_cat_probs <- simplex( rep(1, NUM_RATE_CATEGORIES) )
 ```
 
 {% aside Shifts in the Extinction Rate %}
@@ -156,8 +156,8 @@ for(i in 1:NUM_RATE_CATEGORIES) {
 ```
 Now we also need to specify a root prior for $N^2$ elements.
 ```
-root_category ~ dnUniformNatural(1,NUM_RATE_CATEGORIES * NUM_RATE_CATEGORIES)
-moves[mvi++] = mvRandomIntegerWalk(root_category,weight=1)
+rate_cat_probs <- simplex( rep(1, NUM_RATE_CATEGORIES * NUM_RATE_CATEGORIES) )
+
 ```
 Note however, that this type of analysis will take significantly longer to run!
 {% endaside %}
@@ -185,40 +185,29 @@ Now we have all of the parameters we need to specify the full
 branch-specific birth-death model. We initialize the stochastic node
 representing the time tree.
 ```
-timetree ~ dnHBDP(lambda=speciation, mu=extinction, rootAge=root, rho=rho, rootState=root_category, delta=event_rate, taxa=taxa )
+timetree ~ dnCDBDP( rootAge           = root,
+                    speciationRates   = speciation,
+                    extinctionRates   = extinction, 
+                    Q                 = fnJC(NUM_RATE_CATEGORIES),
+                    delta             = event_rate, 
+                    pi                = rate_cat_probs,
+                    rho               = rho,
+                    condition         = "time" )
 ```
 And then we attach data to it.
 ```
 timetree.clamp(observed_phylogeny)
 ```
-This specific implementation of the branch-specific birth-death process
-augments the tree with rate-shift events. In order to sample the number,
-the location, and the types of the rate-shift events, we have to apply
-special moves to the tree. These moves will not change the tree but only
-the augmented rate-shift events. We use a `mvBirthDeathEvent` to add and
-remove events, a `mvEventTimeBeta` move to change the time and location
-of the events, and a `mvDiscreteEventCategoryRandomWalk` to change the
-the paired-rate category to which a rate-shift event belongs.
+For summary and plotting purposes, we need to extract the branch-specific diversification rate estimate from the tree.
+We will use a stochastic rate mapping algorithm, which is derived from stochastic character mapping.
 ```
-moves[mvi++] = mvBirthDeathEvent(timetree,weight=2)
-moves[mvi++] = mvEventTimeBeta(timetree,weight=2)
-moves[mvi++] = mvDiscreteEventCategoryRandomWalk(timetree,weight=2)
+moves.append( mvGibbsDrawCharacterHistory(timetree, weight=1) )
+branch_lambda := timetree.averageSpeciationRate()
+branch_mu := timetree.averageExtinctionRate()
+branch_net_div := branch_lambda - branch_mu
+branch_rel_ext := branch_mu / branch_lambda
 ```
-In this analysis, we are interested in the branch-specific
-diversification rates. So far we do not have any variables that directly
-give us the number of rate-shift events per branch or the rates per
-branch. Fortunately, we can construct deterministic variables and query
-these properties from the tree. These function are made available by the
-branch-specific birth-death process distribution.
-```
-num_events := timetree.numberEvents()
-avg_lambda := timetree.averageSpeciationRate()
-avg_mu     := timetree.averageExtinctionRate()
-avg_net    := avg_lambda - avg_mu
-avg_rel    := avg_mu / avg_lambda
 
-total_num_events := sum( num_events )
-```
 Finally, we create a workspace object of our whole model using the
 `model()` function.
 ```
@@ -237,7 +226,7 @@ model monitor using the `mnModel` function. This creates a new monitor
 variable that will output the states for all model parameters when
 passed into a MCMC function.
 ```
-monitors[mni++] = mnModel(filename="output/primates_FRC_BDSP.log",printgen=10, separator = TAB)
+monitors.append( mnModel(filename="output/primates_FRC_BDSP.log",printgen=10, separator = TAB) )
 ```
 Additionally, we create an extended-Newick monitor. The extended-Newick
 monitor writes the tree to a file and adds parameter values to the
@@ -248,12 +237,13 @@ diversification (speciation - extinction) and relative extinction
 need this file later to estimate and visualize the posterior
 distribution of the rates at the branches.
 ```
-monitors[mni++] = mnExtNewick(filename="output/primates_FRC_BDSP.trees", isNodeParameter=FALSE, printgen=10, separator = TAB, tree=timetree, avg_lambda, avg_mu, avg_net, avg_rel)
+monitors.append( mnStochasticBranchRate(cdbdp=timetree, printgen=1, filename="output/primates_BDS_rates.log") )
+monitors.append( mnExtNewick(filename="output/primates_BDS_rates.trees", isNodeParameter=FALSE, printgen=1, tree=timetree, branch_lambda, branch_mu, branch_net_div, branch_rel_ext) )
 ```
 Finally, create a screen monitor that will report the states of
 specified variables to the screen with `mnScreen`:
 ```
-monitors[mni++] = mnScreen(printgen=10, event_rate, mean_speciation, root_category, total_num_events)
+monitors.append( mnScreen(printgen=10, event_rate, mean_speciation, root_category, total_num_events) )
 ```
 
 {% subsubsection Initializing and Running the MCMC Simulation %}
@@ -263,7 +253,7 @@ can now set up the MCMC algorithm that will sample parameter values in
 proportion to their posterior probability. The `mcmc()` function will
 create our MCMC object:
 ```
-mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
+mymcmc = mcmc(mymodel, monitors, moves, nruns=1, combine="mixed")
 ```
 Now, run the MCMC:
 ```
@@ -274,9 +264,9 @@ output directory. You can then visualize the branch-specific rates by
 attaching them to the tree. This is actually done automatically in our
 `mapTree` function.
 ```
-treetrace = readTreeTrace("output/primates_FRC_BDSP.trees", treetype="clock")
-map_tree = mapTree(treetrace,"output/primates_FRC_BDSP_MAP.tree")
+treetrace = readTreeTrace("output/primates_BDS_rates.trees", treetype="clock")
+map_tree = mapTree(treetrace,"output/primates_BDS_rates_MAP.tree")
 ```
 Now you can open the tree in `FigTree`.
 
-&#8680; The `Rev` file for performing this analysis: `mcmc_FRC_BDSP.Rev`
+&#8680; The `Rev` file for performing this analysis: `mcmc_BDS.Rev`
