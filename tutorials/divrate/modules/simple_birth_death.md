@@ -60,7 +60,7 @@ the diversification rate as we used before for the birth rate.
 diversification_mean <- ln( ln(367.0/2.0) / T.rootAge() )
 diversification_sd <- 0.587405
 diversification ~ dnLognormal(mean=diversification_mean,sd=diversification_sd)
-moves[mvi++] = mvScale(diversification,lambda=1.0,tune=true,weight=3.0)
+moves.append( mvScale(diversification,lambda=1.0,tune=true,weight=3.0) )
 ```
 Unfortunately, we have less prior information about the turnover rate.
 The turnover rate is the rate at which one species is replaced by
@@ -72,7 +72,7 @@ uncertainty.
 turnover_mean <- ln( ln(367.0/2.0) / T.rootAge() )
 turnover_sd <- 0.587405*2
 turnover ~ dnLognormal(mean=turnover_mean,sd=turnover_sd)
-moves[mvi++] = mvScale(turnover,lambda=1.0,tune=true,weight=3.0)
+moves.append( mvScale(turnover,lambda=1.0,tune=true,weight=3.0) )
 ```
 
 {% subsection Birth rate and death rate %}

@@ -12,10 +12,11 @@ From this tree, we get some helpful variables, such as the taxon information whi
 taxa <- T.taxa()
 ```
 
-Additionally, we initialize an iterator variable for our vector of moves and monitors.
+Additionally, we can initialize a variable for our vector of
+moves and monitors:
 ```
-mvi = `
-mni = `
+moves    = VectorMoves()
+monitors = VectorMonitors()
 ```
 
 
