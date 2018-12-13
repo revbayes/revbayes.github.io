@@ -7,10 +7,10 @@ speciation_rate ~ dnExponential(10)
 extinction_rate ~ dnExponential(10)
 
 # Specify a scale move on the speciation_rate parameter #
-moves[mvi++] = mvScale(speciation_rate, lambda=0.5,tune=true,weight=3.0)
+moves.append( mvScale(speciation_rate, lambda=0.5,tune=true,weight=3.0) )
 
 # Specify a scale move on the extinction_rate parameter #
-moves[mvi++] = mvScale(extinction_rate, lambda=0.5,tune=true,weight=3.0)
+moves.append( mvScale(extinction_rate, lambda=0.5,tune=true,weight=3.0) )
 
 # Create deterministic nodes for the diversification and turnover rates to monitor these parameters #
 diversification := speciation_rate - extinction_rate
@@ -24,14 +24,14 @@ rho <- 1.0
 psi ~ dnExponential(10) 
 
 # Specify a scale move on the psi parameter #
-moves[mvi++] = mvScale(psi, lambda=0.5, tune=true, weight=1)
+moves.append( mvScale(psi, lambda=0.5, tune=true, weight=1) )
 
 # The FBD is conditioned on a starting time for the process, which is the origin time #
 # Specify a uniform prior on the origin #
 origin_time ~ dnUnif(37.2, 49.0)
 
 # Specify a sliding-window move on the origin_time parameter #
-moves[mvi++] = mvSlide(origin_time, delta=1.0, tune=true, weight=5.0)
+moves.append( mvSlide(origin_time, delta=1.0, tune=true, weight=5.0) )
 
 # Define the tree-prior distribution as the birth-death process #
 tree_dist = dnFBDRP(lambda=speciation_rate, mu=extinction_rate, psi=psi, rho=rho, origin=origin_time, taxa=taxa)
@@ -45,11 +45,12 @@ constraints = v(clade_ursinae)
 timetree ~ dnConstrainedTopology(tree_dist, constraints=constraints)
 
 # Specify moves on the tree and node times #
-moves[mvi++] = mvFNPR(timetree, weight=15.0)
-moves[mvi++] = mvCollapseExpandFossilBranch(timetree, origin_time, weight=6.0)
+moves.append( mvNarrow(timetree, weight=n_taxa) )
+moves.append( mvFNPR(timetree, weight=n_taxa/5.0) )
+moves.append( mvCollapseExpandFossilBranch(timetree, origin_time, weight=6.0) )
 
-moves[mvi++] = mvNodeTimeSlideUniform(timetree, weight=40.0)
-moves[mvi++] = mvRootTimeSlideUniform(timetree, origin_time, weight=5.0)
+moves.append( mvNodeTimeSlideUniform(timetree, weight=n_taxa) )
+moves.append( mvRootTimeSlideUniform(timetree, origin_time, weight=5.0) )
 
 # Monitor the age of Ursinae #
 age_ursinae := tmrca(timetree, clade_ursinae)

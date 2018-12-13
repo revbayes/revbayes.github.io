@@ -93,7 +93,7 @@ schedule:
   - starttime: 2018-12-12T9:00:00Z
     endtime: 2018-12-12T9:30:00Z
     topic: Recap MCMC and Substitution Models
-    tutorials: 
+    material: <a href="https://www.dropbox.com/s/ayiwjuckxe2vb4r/3_Molecular_Evolution_Models_Recap.pdf?dl=0">Substitution Models in Phylogenetics</a>
     instructors: Sebastian Höhna
     
   - starttime: 2018-12-12T9:30:00Z
@@ -148,7 +148,7 @@ schedule:
   - starttime: 2018-12-13T9:30:00Z
     endtime: 2018-12-13T10:15:00Z
     topic: Diversification rate estimation (Part I)
-    tutorials: 
+    tutorials: divrate/simple
     instructors: Sebastian Höhna
 
   - starttime: 2018-12-13T10:15:00Z
@@ -160,7 +160,7 @@ schedule:
   - starttime: 2018-12-13T10:30:00Z
     endtime: 2018-12-13T12:00:00Z
     topic: Diversification rate estimation (Part II)
-    tutorials: 
+    tutorials: divrate/ebd
     instructors: Sebastian Höhna
 
   - starttime: 2018-05-03T12:00:00Z
@@ -171,13 +171,10 @@ schedule:
 
   - starttime: 2018-12-13T13:00:00Z
     endtime: 2018-12-13T15:00:00Z
-    topic: Choice of practical on diversification rate estimation (Part I)
-    tutorials:
-    - divrate/simple
+    topic: Diversification rate estimation (Part III)
+    tutorials: divrate/branch_specific
     instructors: 
-    - Rachel Warnock
     - Sebastian Höhna
-    - Fabien Condamine
 
   - starttime: 2018-12-13T15:00:00Z
     endtime: 2018-12-13T15:15:00Z
@@ -187,17 +184,11 @@ schedule:
 
   - starttime: 2018-12-13T15:15:00Z
     endtime: 2018-12-13T17:30:00Z
-    topic: Choice of practical on diversification rate estimation (Part II)
+    topic: Diversification rate estimation (Part IV)
     tutorials:
-    - fbd_range
-    - divrate/ebd
-    - divrate/env
-    - divrate/branch_specific
     - sse/bisse-intro
     - sse/bisse
     instructors: 
-    - Rachel Warnock
     - Sebastian Höhna
-    - Fabien Condamine
 
 ---

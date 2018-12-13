@@ -74,17 +74,17 @@ monitors.append( mnScreen(printgen=1000, birth_rate) )
 ################
 
 ### compute power posterior distributions
-pow_p = powerPosterior(mymodel, moves, monitors, "output/Yule_powp.out", cats=100, sampleFreq=10)
+pow_p = powerPosterior(mymodel, moves, monitors, "output/Yule_powp.out", cats=127, sampleFreq=10)
 pow_p.burnin(generations=10000,tuningInterval=200)
 pow_p.run(generations=10000)
 
 ### Use stepping-stone sampling to calculate marginal likelihoods
 ss = steppingStoneSampler(file="output/Yule_powp.out", powerColumnName="power", likelihoodColumnName="likelihood")
-ss.marginal()
+write("Stepping stone marginal likelihood:\t", ss.marginal() )
 
 ### Use path-sampling to calculate marginal likelihoods
 ps = pathSampler(file="output/Yule_powp.out", powerColumnName="power", likelihoodColumnName="likelihood")
-ps.marginal()
+write("Path-sampling marginal likelihood:\t", ps.marginal() )
 
 
 

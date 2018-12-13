@@ -1,110 +1,25 @@
-{% section Estimating Branch-Specific Diversification Rates under the Conditional-Birth-Death-Shift Process %}
+{% section Estimating Branch-Specific Diversification Rates %}
 
-In this exercise we are interested in estimating branch-specific diversification rates. 
-To this end, we will assume that the speciation and extinction rates are drawn from a 
-lognormal distribution. Note that the rates are drawn from the full continuous distribution.
-As we mentioned above in Section {% ref birth_death_shift_model %} it is not possible to compute the likelihood
-under this model *if* we allow the diversification rates to be drawn from a continuous distribution
-*and* allow diversification rates to shift at extinct lineages.
+In this analysis we are interested in estimating the
+branch-specific diversification rates. We are going to use a very
+similar model to the one described in the previous section. However, now
+we are going to use the `dnHBDP` distribution instead which will require
+some slightly different parameterization and moves. The main difference,
+as mentioned above, is that the `dnHBDP` uses a finite number of rate-categories
+instead of drawing rates from a continuous distribution directly.
 
+Here we adopt an approach using (few) discrete rate categories instead.
+This allows us to numerically integrate over all possible rate
+categories using a system of differential equation originally described
+by {% citet Maddison2007 %} (see also {% citet FitzJohn2009 %} and {% citet FitzJohn2010 %}). The
+numerical procedure beaks time into very small time intervals and sums
+over all possible events occurring in that interval (see {% ref fig_likelihood %}).
 
-{% subsection The Conditional-Birth-Death-Shift Process %}
+You don't need to worry about any of the technical details. It is
+important for you to realize that this model assumes that new rates at a
+rate-shift event are drawn from a given (discrete) set of rates.
 
-Currently, there is no known probability density function under the birth-death-shift process.
-The complication: One cannot calculate the probability of an 
-extinct lineage that may have experienced any number of 
-rate-shift events to an infinite number of possible new diversification rates {% cite Moore2016 %}.
-One possible solution is to assume that rate-shift events do not occur on lineages destined to become extinct.
-Then, under the assumption of no rate-shift events occurring on extinct lineages, we have observed all rate-shift events.
-This enables us to derive the probability density of an augmented phylogeny under the conditional birth-death-shift process.
-
-First, we break the phylogeny into segments where a segment is defined as a lineage between two consecutive events, either a speciation event or a rate-shift event in the reconstructed phylogeny.
-Thus, within a segment there are no rate shifts and the process itself is a constant-rate birth-death process.
-During the duration of segment $i$ we have the speciation rate $\lambda_i$ and extinction rate $\mu_i$.
-As before, we define the change in the probability over the interval $\Delta t$ as
-
-$$
-D_i(t+\Delta t) = \underbrace{(1-\mu_i \Delta t)}_i \times
-\underbrace{(1-\eta \Delta t)}_{ii}
-\Big[ \underbrace{D_i(t)(1-\lambda_i \Delta t)}_{iii} + 
-\underbrace{D_i(t) \lambda_i \Delta t \,2 \,P_0(t|\lambda_i,\mu_i)}_{iv} \Big] 
-$$
-
-which accounts for the various events that could occur in the interval, $\Delta t$. 
-Specifically, the process does not (*i*) go extinct 
- or (*ii*) experience a rate shift in the interval $\Delta t$ and 
-(*iii*) does not speciate, or 
-(*iv*) there is a speciation event in the interval but one of the two lineages goes extinct before the present, which occurs with probability $P_0(t|\lambda_i,\mu_i)$ (which assumes that the the extinct lineage continues to diversify with rates $\lambda_i$ and $\mu_i$, with no further possibility of a rate shift occurring). 
-Note that  we omit the scenario in which the process goes extinct because we know from our previous elaboration that this scenario has a probability of 0 and thus vanishes from the equation.
-Eliminating terms of order $\Delta t^2$ and restructuring the equation, we get
-
-$$
-D_i(t+\Delta t) = D_i(t) - D_i(t) (\lambda_i+\mu_i+\eta) \Delta t + D_i(t)\lambda \Delta t \, 2 \, P_0(t|\lambda_i,\mu_i)
-$$
-
-Subtracting $D_i(t)$ from $D_i(t+\Delta t)$ and dividing by $\Delta t$ leads to the differential equation
-
-$$
-{d D_i \over dt} = -D_i(t)(\lambda_i+\mu_i+\eta) + 2 D_i(t) \lambda P_0(t|\lambda_i,\mu_i)
-$$
-
-Initializing $D(t=0)=1$ and using a differential equation solver, we obtain
-
-$$\begin{aligned}
-	D(t) & = & {(\lambda - \mu)^2  e^{-(\lambda-\mu)t} \over (\lambda - \mu  e^{-(\lambda-\mu)t})^2} \times \exp(-\eta t)  \nonumber\\
-	& = & P_1(t) \times \exp(-\eta t) \label{eq:segment_prob}
-\end{aligned}$$
-
-In words, the probability of a lineage segment under the conditional birth-death-shift process can be computed as the probability of a lineage under the constant-rate birth-death process, $P_1(t)$, multiplied with the probability that there was no rate-shift event, $\exp(-\eta t)$.
-This equation can readily be applied for terminal segments/branches.
-For internal segments/branches that start at time $t_s$ in the past and end at time $t_e$, with $t_s > t_e$, we need to initialize $D(t=t_e)$ appropriately, which is done by dividing $D(t_e)$. 
-This yields the probability of an internal segment/branch as
-
-$$\begin{aligned}
-	D(t_o,t_y) & = & P_1(t_o) \div P_1(t_y) \times \exp(-\eta(t_o - t_y)) \nonumber\\
-	& = & {(\lambda - \mu)^2  e^{-(\lambda-\mu)t_o} \over (\lambda - \mu  e^{-(\lambda-\mu)t_o})^2} \div {(\lambda - \mu)^2  e^{-(\lambda-\mu)t_y} \over (\lambda - \mu  e^{-(\lambda-\mu)t_y})^2} \times \exp(-\eta(t_o - t_y))
-\end{aligned}$$
-
-Finally, we compute the probability density of a reconstructed phylogeny augmented with rate-shift events.
-Again, let $N$ be the number of observed/sampled species and let $K$ be the number of rate-shift events. 
-Then, we obtain the probability density as
-
-$$
-\label{eq:cond_birth_death_shift_process}
-f(\Psi) \quad = \quad \frac{2^{N-1}}{(N-1)!} \, \times \, \lambda^{N-2} \, \times \, \eta^{K} \, \times \, { [P_1(t_1)]^2  \over (1-P_0(t_1))^2 } \, \times \, \prod_{i=2}^{N+K-1} \, D(t_{b(i)},t_{e(i)})
-$$
-
-This equation constitutes an analytical solution for a birth-death process where diversification rates vary along lineages.
-
-
-{% figure fig_rejfreq %}
-<img src="figures/rejection_freq.png" width="800" /> 
-{% figcaption %}
-The fraction of the time simulations are rejected under the birth-death-shift process 
-because a shift event occurred along an extinct lineage. 
-$f_{\lambda}(\cdot)$ and $f_{\mu}(\cdot)$ were both gamma-distributed random variables 
-with a coefficient of variation of 0.1.
-{% endfigcaption %}
-{% endfigure %}
-
-This is a very strong and possibly problematic assumption. 
-For example, we explored by means of simulations how many realizations under the birth-death-shift process will be rejected
-because of the condition that no rate-shift are allowed to occur on extinct lineages.
-Trivially, no simulations will be rejected if the shift rate ($\eta$) is equal to zero. 
-Of course, if $\eta = 0$, the process is equivalent to the simple birth-death process. 
-Another trivial situation is when the model allows for no opportunity for extinction. 
-A pure-birth model is more interesting because the likelihood could be calculated and the model allows for changes in diversification rates. 
-The non-trivial situations cannot be fully described. 
-In Figure {% ref fig_rejfreq %}, we explored a limited range of parameter values to examine the frequency with which simulation replicates would be rejected. 
-In these simulations, we assume that new speciation and extinction rates are independently drawn from gamma distributions parameterized such that the coefficient of variation is 0.1. 
-The bottom line: shift events occur along lineages that are destined to become extinct frequently enough, especially in biologically realistic situation when the relative extinction rate $\frac{\mu}{\lambda}$ is high, 
-to render the conditional birth-death-shift model particularly problematic as a process model.
-We therefore recommend to compare results to our alternative implementation: the finite-rate-category birth-death-shift process.
-
-{% subsection Setting up the analysis in RevBayes %}
-
-
-{% subsubsection Read the tree %}
+{% subsection Read the tree %}
 
 Begin by reading in the observed tree.
 ```
@@ -117,85 +32,135 @@ root <- observed_phylogeny.rootAge()
 tree_length <- observed_phylogeny.treeLength()
 ```
 Additionally, we can initialize an iterator variable for our vector of
-moves and monitors:
+moves:
 ```
-mvi = 1
-mni = 1
+mvi = 0
+mni = 0
 ```
 Finally, we create a helper variable that specifies the number of
 discrete rate categories, another helper variable for the expected
 number of rate-shift events, the total number of species, and the
 variation in rates.
 ```
+NUM_RATE_CATEGORIES = 4
 EXPECTED_NUM_EVENTS = 2
 NUM_TOTAL_SPECIES = 367
 H = 0.587405
 ```
 Using these variables we can easily change our script, for example, to
-use more or fewer categories and test the impact. For example, setting
-`NUM_RATE_CATEGORIES = 1` gives the constant rate birth-death process.
+use more or fewer categories and test the impact.
 
 {% subsection Specifying the model %}
 
 {% subsubsection Priors on rates %}
 
-We will assume that speciation and extinction rates are drawn from a lognormal distribution.
-Thus, we need to specify a prior mean and standard deviation for this lognormal distribution.
-For the mean parameter we will simply use the expected diversification rate:
+{% figure fig_discretized_lognormal %}
+<img src="figures/discretized_lognormal.png" width="75%" height="75%" /> 
+{% figcaption %}
+**Discretization of a lognormal distribution.**
+The two left figures have 4 rate categories
+and the two right plots have 10 rate categories. The top plots have the
+95% probability interval spanning one order of magnitude (`sd`
+$=0.587405$) and the bottom plots have the 95% probability interval
+spanning two orders of magnitude (`sd` $=2*0.587405$) . 
+{% endfigcaption %}
+{% endfigure %}
+
+Instead of using a continuous probability distribution we will use a
+discrete approximation of the distribution, as done for modeling rate
+variation across sites {% cite Yang1994a %} and for modeling relaxed molecular
+clocks {% cite Drummond2006 %}. That means, we assume that the speciation rates
+are drawn from one of the $N$ quantiles of the lognormal distribution.
+For this we will use the function `fnDiscretizeDistribution` which takes
+in a distribution as its first argument and the number of quantiles as
+the second argument. The return value is a vector of quantiles. We use
+it as a deterministic variable and every time the parameters of the base
+distribution (i.e., the lognormal
+distribution in our case) change the quantiles will update automatically
+as well. Thus we only need to specify parameters for our base
+distribution, the lognormal distribution. We choose a constant
+variable for the mean parameter of the lognormal distribution fixed on
+our expected diversification rate, which is
+$$\ln( \ln(\frac{\#Taxa}{2})/age )$$. Remember that the median of a
+lognormal distribution is equal to the exponential of the mean
+parameter. This is why we used a log-transform of the actual mean. This
+prior density is analogous to the prior on the speciation-rate parameter
+in the constant-rate birth-death process.
 ```
-speciation_prior_mean <- ln( ln(NUM_TOTAL_SPECIES/2.0) / root )
-extinction_prior_mean <- ln( ln(NUM_TOTAL_SPECIES/2.0) / root )
+speciation_mean <- ln(NUM_TOTAL_SPECIES/2.0) / root
 ```
-Additionally, we choose a fixed standard deviation of $2*H$
-($0.587405*2$) for the speciation rates because it represents two orders
-of magnitude variance in the rate categories.
+Additionally, we choose a fixed standard deviation of $H * 2$ for the
+speciation rates because it represents two orders of magnitude variance
+in the rate categories.
 ```
 speciation_sd <- H*2
-extinction_sd <- H*2
+speciation := fnDiscretizeDistribution( dnLognormal(ln(speciation_mean), speciation_sd), NUM_RATE_CATEGORIES )
 ```
-Now we can create the prior distributions on the speciation and extinction rates.
-Note that we achieve this by using the `=` operator and the distribution on the
-right-hand-side. This command will not create a random variable drawn from a lognormal
-distribution but instead a distribution object. We need this distribution object as an argument
-of our conditional-birth-death-shift process.
+We define the prior on the extinction rate in the same way as we did for
+the speciation rate.
 ```
-speciation_rate_prior = dnLognormal(speciation_prior_mean,speciation_sd)
-extinction_rate_prior = dnLognormal(extinction_prior_mean,extinction_sd)
+extinction_mean <- ln(NUM_TOTAL_SPECIES/2.0) / root_age
 ```
-Additionally, we need to create a variable for the speciation and extinction rates
-at the root. In RevBayes, we could have used the same distribution for the rates at root,
-which we actually do here specifically, but we decided to give the user the option to specify another
-prior distribution.
+However, we assume that extinction rate is the same for all categories.
+Therefore, we simply replicate using the `rep` function the extinction rate `NUM_RATE_CATEGORIES` times.
 ```
-speciation_root ~ dnLognormal(speciation_prior_mean,speciation_sd)
-extinction_root ~ dnLognormal(extinction_prior_mean,extinction_sd)
+extinction := rep( extinction_mean, NUM_RATE_CATEGORIES )
 ```
-Again, we use a `scaling-move` to update the speciation and extinction rates at the root.
-```
-moves[mvi++] = mvScale(speciation_root,lambda=1,tune=true,weight=5)
-moves[mvi++] = mvScale(extinction_root,lambda=1,tune=true,weight=5)
-```
-
 Next, we need a rate parameter for the rate-shifts events. We do not
 have much prior information about this rate but we can provide some
 realistic ranges. For example, we can specify a mean rate so that the
 resulting number of expected rate-shift events is 2 (as specified in our
 global variable `EXPECTED_NUM_EVENTS`). Furthermore, we can say that
 the 95% prior ranges exactly one order of magnitude. We achieve all this
-by specifying a lognormal prior distribution with mean `ln(
-EXPECTED_NUM_EVENTS/tree_length )` and standard deviation of `H`.
+by specifying a lognormal prior distribution with mean 
+`ln(EXPECTED_NUM_EVENTS/tree_length )` and standard deviation of `H`.
 Remember that this is only possible if the tree is known and not
 estimated simultaneously because only if the tree is do we also know the
 tree length. As usual for rate parameter, we apply a scaling move to the
-`shift_rate` variable.
+`event_rate` variable.
+```
+event_rate ~ dnLognormal( ln( EXPECTED_NUM_EVENTS/tree_length ), H)
+moves[mvi++] = mvScale(event_rate,lambda=1,tune=true,weight=5)
+```
+Additionally, we need a parameter for the category of the process at
+root. We use a uniform prior distribution on the indices 1 to $N^2$
+since we do not have any prior information in which rate category the
+process is at the root. The move for this random variable is a random
+integer walk because the random variable is defined only on the indices
+(i.e., with real number).
+```
+root_category ~ dnUniformNatural(1,NUM_RATE_CATEGORIES)
+moves[mvi++] = mvRandomIntegerWalk(root_category,weight=1)
+```
 
+{% aside Shifts in the Extinction Rate %}
+We might want to allow the extinction rate to change as well.
+As with the speciation rate, we discretize the lognormal distribution
+into a finite number of rate categories.
 ```
-shift_rate ~ dnLognormal( ln( EXPECTED_NUM_EVENTS/tree_length ), H)
+extinction_categories := fnDiscretizeDistribution( dnLognormal(ln(extinction_mean), H), NUM_RATE_CATEGORIES )
 ```
-As usual, we apply a `scaling-move` on this rate parameter.
+Now, we must create a vector that contains each combination of
+speciation- and extinction-rates. This allows the rate of speciation to
+change without changing the rate of extinction and vice versa. The
+resulting vector should be $N^2$ elements long. We call these the
+`paired' rate categories.
 ```
-moves[mvi++] = mvScale(shift_rate,lambda=1,tune=true,weight=5)
+k = 1
+for(i in 1:NUM_RATE_CATEGORIES) {
+    for(j in 1:NUM_RATE_CATEGORIES) {
+        speciation[k]   := speciation_categories[i]
+        extinction[k++] := extinction_categories[j]
+    }
+}
 ```
+Now we also need to specify a root prior for $N^2$ elements.
+```
+root_category ~ dnUniformNatural(1,NUM_RATE_CATEGORIES * NUM_RATE_CATEGORIES)
+moves[mvi++] = mvRandomIntegerWalk(root_category,weight=1)
+```
+Note however, that this type of analysis will take significantly longer to run!
+{% endaside %}
 
 {% subsubsection Incomplete Taxon Sampling %}
 
@@ -216,44 +181,35 @@ has to be done here.
 
 {% subsubsection The time tree %}
 
-Now we have all of the parameters we need to specify the full episodic
-birth-death model. We initialize the stochastic node representing the
-time tree.
+Now we have all of the parameters we need to specify the full
+branch-specific birth-death model. We initialize the stochastic node
+representing the time tree.
 ```
-timetree ~ dnCBDSP(rootLambda=speciation_root,
-                   rootMu=extinction_root,
-                   lambda=speciation_rate_prior, 
-                   mu=extinction_rate_prior, 
-                   delta=shift_rate, 
-                   rootAge=root, 
-                   rho=rho, 
-                   condition="time",
-                   taxa=taxa )
+timetree ~ dnHBDP(lambda=speciation, mu=extinction, rootAge=root, rho=rho, rootState=root_category, delta=event_rate, taxa=taxa )
 ```
 And then we attach data to it.
 ```
 timetree.clamp(observed_phylogeny)
 ```
-This specific implementation of the *condination-birth-death-shift process*
+This specific implementation of the branch-specific birth-death process
 augments the tree with rate-shift events. In order to sample the number,
 the location, and the types of the rate-shift events, we have to apply
 special moves to the tree. These moves will not change the tree but only
-the augmented rate-shift events. We use a `mvBirthDeathEventContinuous` to add and
-remove events, a `mvEventTimeBeta` and `mvEventTimeSlide` to move to change the time and location
-of the events, and a `mvContinuousEventScale` to change the
-the speciation and extinction rates of the event.
+the augmented rate-shift events. We use a `mvBirthDeathEvent` to add and
+remove events, a `mvEventTimeBeta` move to change the time and location
+of the events, and a `mvDiscreteEventCategoryRandomWalk` to change the
+the paired-rate category to which a rate-shift event belongs.
 ```
-moves[mvi++] = mvBirthDeathEventContinuous(timetree, weight=10)
-moves[mvi++] = mvContinuousEventScale(timetree, lambda=1.0, weight=5)
-moves[mvi++] = mvEventTimeBeta(timetree, delta=0.01, offset=1.0, weight=5,tune=TRUE)
-moves[mvi++] = mvEventTimeSlide(timetree, delta=timetree.treeLength()/10.0, weight=5,tune=false)
+moves[mvi++] = mvBirthDeathEvent(timetree,weight=2)
+moves[mvi++] = mvEventTimeBeta(timetree,weight=2)
+moves[mvi++] = mvDiscreteEventCategoryRandomWalk(timetree,weight=2)
 ```
 In this analysis, we are interested in the branch-specific
 diversification rates. So far we do not have any variables that directly
 give us the number of rate-shift events per branch or the rates per
 branch. Fortunately, we can construct deterministic variables and query
 these properties from the tree. These function are made available by the
-birth-death-shift process distribution.
+branch-specific birth-death process distribution.
 ```
 num_events := timetree.numberEvents()
 avg_lambda := timetree.averageSpeciationRate()
@@ -263,7 +219,6 @@ avg_rel    := avg_mu / avg_lambda
 
 total_num_events := sum( num_events )
 ```
-
 Finally, we create a workspace object of our whole model using the
 `model()` function.
 ```
@@ -271,20 +226,6 @@ mymodel = model(speciation)
 ```
 The `model()` function traversed all of the connections and found all of
 the nodes we specified.
-
-{% subsection Running a MCMC simulation %}
-
-{% subsubsection Specifying Monitors %}
-
-For the marginal likelihood analysis we don't necessarily need monitors
-because we are not going to look into the samples. However, as good
-practice we still define our two standard monitors: the model monitor
-and a screen monitor
-```
-monitors[mni++] = mnModel(filename="output/primates_CBDSP.log",printgen=10, separator = TAB)
-monitors[mni++] = mnExtNewick(filename="output/primates_CBDSP.trees", isNodeParameter=FALSE, printgen=10, separator = TAB, tree=timetree, avg_lambda, avg_mu, avg_net, avg_rel)
-monitors[mni++] = mnScreen(printgen=1000, shift_rate, speciation_root, extinction_root, total_num_events)
-```
 
 {% subsection Running an MCMC analysis %}
 
@@ -296,7 +237,7 @@ model monitor using the `mnModel` function. This creates a new monitor
 variable that will output the states for all model parameters when
 passed into a MCMC function.
 ```
-monitors[mni++] = mnModel(filename="output/primates_CBDSP.log",printgen=10, separator = TAB)
+monitors[mni++] = mnModel(filename="output/primates_FRC_BDSP.log",printgen=10, separator = TAB)
 ```
 Additionally, we create an extended-Newick monitor. The extended-Newick
 monitor writes the tree to a file and adds parameter values to the
@@ -307,12 +248,12 @@ diversification (speciation - extinction) and relative extinction
 need this file later to estimate and visualize the posterior
 distribution of the rates at the branches.
 ```
-monitors[mni++] = mnExtNewick(filename="output/primates_CBDSP.trees", isNodeParameter=FALSE, printgen=10, separator = TAB, tree=timetree, avg_lambda, avg_mu, avg_net, avg_rel)
+monitors[mni++] = mnExtNewick(filename="output/primates_FRC_BDSP.trees", isNodeParameter=FALSE, printgen=10, separator = TAB, tree=timetree, avg_lambda, avg_mu, avg_net, avg_rel)
 ```
 Finally, create a screen monitor that will report the states of
 specified variables to the screen with `mnScreen`:
 ```
-monitors[mni++] = mnScreen(printgen=1000, shift_rate, speciation_root, extinction_root, total_num_events)
+monitors[mni++] = mnScreen(printgen=10, event_rate, mean_speciation, root_category, total_num_events)
 ```
 
 {% subsubsection Initializing and Running the MCMC Simulation %}
@@ -326,16 +267,16 @@ mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
 ```
 Now, run the MCMC:
 ```
-mymcmc.run(generations=10000,tuningInterval=200)
+mymcmc.run(generations=10000,tuning=200)
 ```
 When the analysis is complete, you will have the monitored files in your
 output directory. You can then visualize the branch-specific rates by
 attaching them to the tree. This is actually done automatically in our
 `mapTree` function.
 ```
-treetrace = readTreeTrace("output/primates_CBDSP.trees", treetype="clock")
-map_tree = mapTree(treetrace,"output/primates_CBDSP_MAP.tree")
+treetrace = readTreeTrace("output/primates_FRC_BDSP.trees", treetype="clock")
+map_tree = mapTree(treetrace,"output/primates_FRC_BDSP_MAP.tree")
 ```
 Now you can open the tree in `FigTree`.
 
-&#8680; The `Rev` file for performing this analysis: `mcmc_CBDSP.Rev`
+&#8680; The `Rev` file for performing this analysis: `mcmc_FRC_BDSP.Rev`

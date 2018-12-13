@@ -16,12 +16,10 @@ n_branches <- 2 * n_taxa - 2
 # Each element in the vector represents a branch rate #
 # The indices of the vector correspond to branch indices in the tree #
 # Using a for-loop, initialize the branch rates and assign a move to each one #
+NUM_CATEGORIES = 10
+branch_rate_categories := fnDiscretizeDistribution( dnLognormal(branch_rates_mean,sd=0.587405), NUM_CATEGORIES)
 for(i in 1:n_branches){
-    branch_rates[i] ~ dnLognormal(branch_rates_mean,sd=0.587405)
-    moves.append( mvScale(branch_rates[i], lambda=0.5, tune=true, weight=1.0) )
+    branch_rates[i] ~ dnMixture( branch_rate_categories, p=simplex(rep(1,NUM_CATEGORIES)) )
+    moves.append( mvMixtureAllocation(branch_rates[i], weight=1.0) )
 }
-
-# add a move on the branch rate vector #
-#moves.append( mvVectorScale(branch_rates, lambda=0.5, tune=true, weight=4.0) )
-#moves.append( mvRateAgeBetaShift(tree=timetree, rates=branch_rates, tune=true, weight=n_taxa) )
 

@@ -14,7 +14,6 @@ index: true
 title-old: RB_DiversificationRate_BranchSpecific_Tutorial
 redirect: false
 exclude_files:
-- data/primates_tree.nex
 - data/primates.tre
 - scripts/mcmc_BD.Rev
 - scripts/mcmc_EBD_Corr_RJ.Rev

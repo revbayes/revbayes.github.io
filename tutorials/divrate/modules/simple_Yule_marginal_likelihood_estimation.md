@@ -15,7 +15,7 @@ First, we create the variable containing the power posterior. This
 requires us to provide a model and vector of moves, as well as an output
 file name. The `cats` argument sets the number of power steps.
 ```
-pow_p = powerPosterior(mymodel, moves, monitors, "output/Yule_powp.out", cats=100, sampleFreq=10)
+pow_p = powerPosterior(mymodel, moves, monitors, "output/Yule_powp.out", cats=127, sampleFreq=10)
 ```
 We can start the power posterior by first burning in the chain and and
 discarding the first 10000 states.
@@ -37,7 +37,7 @@ Compute the marginal likelihood under stepping-stone sampling using the
 member function `marginal()` of the `ss` variable and record the value
 in {% ref tab_ml_yule %}.
 ```
-ss.marginal()
+write("Stepping stone marginal likelihood:\t", ss.marginal() )
 ```
 Path sampling is an alternative to stepping-stone sampling and also
 takes the same power posteriors as input.
@@ -48,6 +48,6 @@ Compute the marginal likelihood under stepping-stone sampling using the
 member function `marginal()` of the `ps` variable and record the value
 in {% ref tab_ml_yule %}.
 ```
-ps.marginal()
+write("Path-sampling marginal likelihood:\t", ps.marginal() )
 ```
 &#8680; The `Rev` file for performing this analysis: `ml_Yule.Rev`.
