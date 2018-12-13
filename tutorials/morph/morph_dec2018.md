@@ -41,7 +41,40 @@ a discussion of modeling morphological characters, and will demonstrate
 how to perform Bayesian phylogenetic analysis with morphology using
 RevBayes {% cite Hoehna2016b %}.
 
+{% subsection Graphical Models %}
 
+[RevBayes](http://revbayes.com) uses a *graphical model* framework in
+which all probabilistic models, including phylogenetic models,
+are comprised of modular components that can be assembled in a myriad of ways.
+
+The statistics literature has developed a rich visual representation for graphical models.
+Visually representing graphical models can be useful for communication model assumptions.
+The notation used in the visual representation of these models is briefly explained in {% ref legend %},
+and enourage users to see {% citet Hoehna2014b %} for more details.
+Representing graphical models in computer code 
+(using the `Rev` language) is useful in developing an understanding of phylogenetic models. 
+For more information about this topic see the tutorial [Introduction to Graphical Models]({{ base.url }}/intro_graph_models).
+
+{% figure legend %}
+<img src="figures/graphical_model_legend.png" width="400" />  
+{% figcaption %}
+*The symbols for a visual representation of a graphical
+model. a) Solid squares represent constant nodes, which specify fixed-
+valued variables. b) Stochastic nodes are represented by solid circles.
+These variables correspond to random variables and may depend on
+other variables. c) Deterministic nodes (dotted circles) indicate variables
+that are determined by a specific function applied to another variable.
+They can be thought of as variable transformations. d) Observed states
+are placed in clamped stochastic nodes, represented by gray-shaded
+circles. e) Replication over a set of variables is indicated by enclosing
+the replicated nodes in a plate (dashed rectangle). f) Tree plates represent 
+the different classes of nodes in a phylogeny. 
+The tree topology orders the nodes in the tree plate and
+may be a constant node (as in this example) or a stochastic node (if the
+topology node is a solid circle).
+Image and text modified from {% citet Hoehna2014b %}*
+{% endfigcaption %}
+{% endfigure %}
 
 {% subsection Overview of Discrete Morphology Models %}
 
@@ -257,12 +290,18 @@ assignment operator `=` instead of the constant node assignment `<-`.
 
 {% subsection The Mk Model | subsec_Mk_model %}
 
-First, we will create a joint prior on the branch lengths and tree topology. This should be familiar from the {% page_ref ctmc %}.
+First, we will create a joint prior on the branch lengths and tree topology. This should be familiar from the {% page_ref ctmc %}. In the first step we will specify a stochastic node for the mean of the 
+
+Some types of stochastic nodes can be updated by a number of alternative moves. 
+Different moves may explore parameter space in different ways, 
+and it is possible to use multiple different moves for a given parameter to improve mixing (the efficiency of the MCMC simulation). 
+In the case of our unrooted tree topology, for example, we can use both a nearest-neighbor interchange move (`mvNNI`) and a subtree-prune and regrafting move (`mvSPR`). These moves do not have tuning parameters associated with them, thus you only need to pass in the `topology` node and proposal `weight`.
+
 ```
     br_len_lambda ~ dnExp(0.2)
     moves[mvi++] = mvScale(br_len_lambda, weight=2)
 
-    phylogeny ~ dnUniformTopologyBranchLength(taxa, branchLengthDistribution=dnExponential(br_len_lambda))
+    phylogeny ~ dnUniformTopologyBranchLength(taxa, branchLengthDistribution=dnExp(br_len_lambda))
     moves[mvi++] = mvNNI(phylogeny, weight=num_branches/2.0)
     moves[mvi++] = mvSPR(phylogeny, weight=num_branches/10.0)
     moves[mvi++] = mvBranchLengthScale(phylogeny, weight=num_branches)
