@@ -54,7 +54,7 @@
 	<h1 class="maintitle">Discrete morphology - Tree Inference</h1>
 	<h3 class="subtitle">Phylogenetic inference with discrete morphological data</h3>
 	<h4 class="authors">April M. Wright, Michael J. Landis and Sebastian Höhna</h4>
-  <h5>Last modified on November 23, 2018</h5>
+  <h5>Last modified on December 13, 2018</h5>
 </div>
 
 
@@ -138,6 +138,39 @@ morphological characters remains challenging. This tutorial will provide
 a discussion of modeling morphological characters, and will demonstrate
 how to perform Bayesian phylogenetic analysis with morphology using
 RevBayes <a href="#Hoehna2016b">(Höhna et al. 2016)</a>.</p>
+
+<h3 class="subsection" id="graphical-models">Graphical Models</h3>
+<hr class="subsection" />
+
+<p><a href="http://revbayes.com">RevBayes</a> uses a <em>graphical model</em> framework in
+which all probabilistic models, including phylogenetic models,
+are comprised of modular components that can be assembled in a myriad of ways.</p>
+
+<p>The statistics literature has developed a rich visual representation for graphical models.
+Visually representing graphical models can be useful for communication model assumptions.
+The notation used in the visual representation of these models is briefly explained in <a href="#legend"></a>,
+and enourage users to see <a href="#Hoehna2014b">Höhna et al. (2014)</a> for more details.
+Representing graphical models in computer code 
+(using the <code class="highlighter-rouge">Rev</code> language) is useful in developing an understanding of phylogenetic models. 
+For more information about this topic see the tutorial <a href="/intro_graph_models">Introduction to Graphical Models</a>.</p>
+
+<figure id="legend"><p><img src="figures/graphical_model_legend.png" width="400" /></p>
+<figcaption><em>The symbols for a visual representation of a graphical
+model. a) Solid squares represent constant nodes, which specify fixed-
+valued variables. b) Stochastic nodes are represented by solid circles.
+These variables correspond to random variables and may depend on
+other variables. c) Deterministic nodes (dotted circles) indicate variables
+that are determined by a specific function applied to another variable.
+They can be thought of as variable transformations. d) Observed states
+are placed in clamped stochastic nodes, represented by gray-shaded
+circles. e) Replication over a set of variables is indicated by enclosing
+the replicated nodes in a plate (dashed rectangle). f) Tree plates represent 
+the different classes of nodes in a phylogeny. 
+The tree topology orders the nodes in the tree plate and
+may be a constant node (as in this example) or a stochastic node (if the
+topology node is a solid circle).
+Image and text modified from <a href="#Hoehna2014b">Höhna et al. (2014)</a></em></figcaption>
+</figure>
 
 <h3 class="subsection" id="overview-of-discrete-morphology-models">Overview of Discrete Morphology Models</h3>
 <hr class="subsection" />
@@ -355,11 +388,17 @@ assignment operator <code class="highlighter-rouge">=</code> instead of the cons
 <h3 class="subsection" id="subsec_Mk_model">The Mk Model</h3>
 <hr class="subsection" />
 
-<p>First, we will create a joint prior on the branch lengths and tree topology. This should be familiar from the <a href="/tutorials/ctmc/">Substitution Models</a>.</p>
+<p>First, we will create a joint prior on the branch lengths and tree topology. This should be familiar from the <a href="/tutorials/ctmc/">Substitution Models</a>. In the first step we will specify a stochastic node for the mean of the</p>
+
+<p>Some types of stochastic nodes can be updated by a number of alternative moves. 
+Different moves may explore parameter space in different ways, 
+and it is possible to use multiple different moves for a given parameter to improve mixing (the efficiency of the MCMC simulation). 
+In the case of our unrooted tree topology, for example, we can use both a nearest-neighbor interchange move (<code class="highlighter-rouge">mvNNI</code>) and a subtree-prune and regrafting move (<code class="highlighter-rouge">mvSPR</code>). These moves do not have tuning parameters associated with them, thus you only need to pass in the <code class="highlighter-rouge">topology</code> node and proposal <code class="highlighter-rouge">weight</code>.</p>
+
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    br_len_lambda ~ dnExp(0.2)
     moves[mvi++] = mvScale(br_len_lambda, weight=2)
 
-    phylogeny ~ dnUniformTopologyBranchLength(taxa, branchLengthDistribution=dnExponential(br_len_lambda))
+    phylogeny ~ dnUniformTopologyBranchLength(taxa, branchLengthDistribution=dnExp(br_len_lambda))
     moves[mvi++] = mvNNI(phylogeny, weight=num_branches/2.0)
     moves[mvi++] = mvSPR(phylogeny, weight=num_branches/10.0)
     moves[mvi++] = mvBranchLengthScale(phylogeny, weight=num_branches)
@@ -750,6 +789,11 @@ be relatively robust to model complexity.</p>
 <li><span id="Hoehna2016b">Höhna S., Landis M.J., Heath T.A., Boussau B., Lartillot N., Moore B.R., Huelsenbeck J.P., Ronquist F. 2016. RevBayes: Bayesian Phylogenetic Inference Using Graphical Models and an Interactive Model-Specification Language. Systematic Biology. 65:726–736.</span>
 
 <a href="https://doi.org/10.1093/sysbio/syw021">10.1093/sysbio/syw021</a>
+
+</li>
+<li><span id="Hoehna2014b">Höhna S., Heath T.A., Boussau B., Landis M.J., Ronquist F., Huelsenbeck J.P. 2014. Probabilistic Graphical Model Representation in Phylogenetics. Systematic Biology. 63:753–771.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syu039">10.1093/sysbio/syu039</a>
 
 </li>
 <li><span id="Jukes1969">Jukes T.H., Cantor C.R. 1969. Evolution of Protein Molecules. Mammalian Protein Metabolism. 3:21–132.</span>
