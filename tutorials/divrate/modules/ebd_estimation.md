@@ -10,17 +10,17 @@ From this tree, we get some helpful variables, such as the taxon information whi
 ```
 taxa <- T.taxa()
 ```
-Additionally, we initialize an iterator variable for our vector of moves and monitors.
+Additionally, we initialize a variable for our vector of moves and monitors.
 ```
-mvi = 1
-mni = 1
+moves    = VectorMoves()
+monitors = VectorMonitors()
 ```
 
 Finally, we create a helper variable that specifies the number of intervals.
 ```
 NUM_INTERVALS = 10
 ```
-Using this variable we can easily change our script to break-up time into many (\EG~\cl{NUM\_INTERVALS = 100}) or few (\EG~\cl{NUM\_INTERVALS = 4}) intervals.
+Using this variable we can easily change our script to break-up time into many (e.g., `NUM_INTERVALS = 100`) or few (e.g., `NUM_INTERVALS = 4`) intervals.
 
 
 
@@ -71,8 +71,8 @@ We apply simple sliding window moves for the rates.
 Normally we would use scaling moves but in this case we work on the log-transformed parameters and thus sliding moves perform better.
 (If you are keen you can test the differences.)
 ```
-moves[mvi++] = mvSlide(log_speciation[1], weight=2)
-moves[mvi++] = mvSlide(log_extinction[1], weight=2)
+moves.append( mvSlide(log_speciation[1], weight=2) )
+moves.append( mvSlide(log_extinction[1], weight=2) )
 ```
 Now we transform the diversification rate parameters into actual rates using 
 an exponential parameter transformation.
@@ -92,8 +92,8 @@ for (i in 1:NUM_INTERVALS) {
     log_speciation[index] ~ dnNormal( mean=log_speciation[i], sd=speciation_sd )
     log_extinction[index] ~ dnNormal( mean=log_extinction[i], sd=extinction_sd )
 
-    moves[mvi++] = mvSlide(log_speciation[index], weight=2)
-    moves[mvi++] = mvSlide(log_extinction[index], weight=2)
+    moves.append( mvSlide(log_speciation[index], weight=2) )
+    moves.append( mvSlide(log_extinction[index], weight=2) )
 
     speciation[index] := exp( log_speciation[index] )
     extinction[index] := exp( log_extinction[index] )
@@ -104,15 +104,15 @@ Finally, we apply moves that slide all values in the rate vectors,
 *i.e.,* all speciation or extinction rates.
 We will use an `mvVectorSlide` move.
 ```
-moves[mvi++] = mvVectorSlide(log_speciation, weight=10)
-moves[mvi++] = mvVectorSlide(log_extinction, weight=10)
+moves.append( mvVectorSlide(log_speciation, weight=10) )
+moves.append( mvVectorSlide(log_extinction, weight=10) )
 ```
 
 Additionally, we apply a `mvShrinkExpand` move which changes the spread of several variables 
 around their mean.
 ```
-moves[mvi++] = mvShrinkExpand( log_speciation, weight=10 )
-moves[mvi++] = mvShrinkExpand( log_extinction, weight=10 )
+moves.append( mvShrinkExpand( log_speciation, weight=10 ) )
+moves.append( mvShrinkExpand( log_extinction, weight=10 ) )
 ```
 Both moves considerably improve the efficiency of our MCMC analysis.
 
@@ -180,22 +180,22 @@ First, we will initialize the model monitor using the `mnModel` function.
 This creates a new monitor variable that will output the states for all model parameters 
 when passed into a MCMC function.
 ```
-monitors[mni++] = mnModel(filename="output/primates_EBD.log",printgen=10, separator = TAB)
+monitors.append( mnModel(filename="output/primates_EBD.log",printgen=10, separator = TAB)
 ```
 
 Additionally, we create four separate file monitors, one for each vector of speciation and extinction rates and for each speciation and extinction rate epoch (\IE the times when the interval ends).
 We want to have the speciation and extinction rates stored separately so that we can plot them nicely afterwards.
 ```
-monitors[mni++] = mnFile(filename="output/primates_EBD_speciation_rates.log",printgen=10, separator = TAB, speciation)
-monitors[mni++] = mnFile(filename="output/primates_EBD_speciation_times.log",printgen=10, separator = TAB, interval_times)
-monitors[mni++] = mnFile(filename="output/primates_EBD_extinction_rates.log",printgen=10, separator = TAB, extinction)
-monitors[mni++] = mnFile(filename="output/primates_EBD_extinction_times.log",printgen=10, separator = TAB, interval_times)
+monitors.append( mnFile(filename="output/primates_EBD_speciation_rates.log",printgen=10, separator = TAB, speciation) )
+monitors.append( mnFile(filename="output/primates_EBD_speciation_times.log",printgen=10, separator = TAB, interval_times) )
+monitors.append( mnFile(filename="output/primates_EBD_extinction_rates.log",printgen=10, separator = TAB, extinction) )
+monitors.append( mnFile(filename="output/primates_EBD_extinction_times.log",printgen=10, separator = TAB, interval_times) )
 ```
 
 Finally, we create a screen monitor that will report the states of specified variables 
 to the screen with `mnScreen`:
 ```
-monitors[mni++] = mnScreen(printgen=1000, extinction_sd, speciation_sd)
+monitors.append( mnScreen(printgen=1000, extinction_sd, speciation_sd) )
 ```
 
 {% subsubsection Initializing and Running the MCMC Simulation %}
@@ -223,11 +223,11 @@ library(RevGadgets)
 
 tree <- read.nexus("data/primates_tree.nex")
 
-rev_out <- rev.process.div.rates(speciation_times_file = "output/primates_EBD_speciation_times.log", speciation_rates_file = "output/primates_EBD_speciation_rates.log", extinction_times_file = "output/primates_EBD_extinction_times.log", extinction_rates_file = "output/primates_EBD_extinction_rates.log", tree, burnin=0.25,numIntervals=100)
+rev_out <- rev.process.div.rates(speciation_times_file = "output/primates_EBD_speciation_times.log", speciation_rates_file = "output/primates_EBD_speciation_rates.log", extinction_times_file = "output/primates_EBD_extinction_times.log", extinction_rates_file = "output/primates_EBD_extinction_rates.log", tree=tree, burnin=0.25,numIntervals=100)
 
 pdf("EBD.pdf")
 par(mfrow=c(2,2))
-rev.plot.output(rev_out,use.geoscale=FALSE)
+rev.plot.div.rates(rev_out,use.geoscale=FALSE)
 dev.off()
 ```
 

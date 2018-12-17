@@ -17,7 +17,7 @@ instructors:
 venue: Université de Montpellier
 
 software:
-- <a href="https://revbayes.github.io/revbayes-site/software">RevBayes v1.0.9</a>
+- <a href="https://revbayes.github.io/revbayes-site/software">RevBayes v1.0.10</a>
 - <a href="http://tree.bio.ed.ac.uk/software/tracer/">Tracer</a>
 - <a href="http://tree.bio.ed.ac.uk/software/figtree/">FigTree</a>
 - A simple text editor, such as <a href="https://notepad-plus-plus.org">NotePad++</a>, SublimeText, TextWrangler or BBEdit
@@ -41,7 +41,7 @@ schedule:
   - starttime: 2018-12-11T9:30:00Z
     endtime: 2018-12-11T10:15:00Z
     topic: RevBayes Introduction
-    tutorials: 
+    material: <a href="https://www.dropbox.com/s/pucujjqhw4fknh6/1_RevBayes.pdf?dl=0">RevBayes Intro.</a>
     instructors: Sebastian Höhna
 
   - starttime: 2018-12-11T10:15:00Z
@@ -51,9 +51,16 @@ schedule:
     instructors: 
 
   - starttime: 2018-12-11T10:30:00Z
+    endtime: 2018-12-11T11:00:00Z
+    topic: Substitution Models in Phylogenetics
+    material: <a href="https://www.dropbox.com/s/pswpocjkvd1d16d/2_Bayesian_inference.pdf?dl=0">Bayesian Statistics.</a>
+    instructors:
+    - Sebastian Höhna
+
+  - starttime: 2018-12-11T11:00:00Z
     endtime: 2018-12-11T12:00:00Z
     topic: Substitution Models in Phylogenetics
-    tutorials:
+    material: <a href="https://www.dropbox.com/s/bulg9e6b1muejki/3_Molecular_Evolution_Models.pdf?dl=0">Substitution Models in Phylogenetics</a>
     instructors:
     - Sebastian Höhna
 
@@ -86,13 +93,13 @@ schedule:
   - starttime: 2018-12-12T9:00:00Z
     endtime: 2018-12-12T9:30:00Z
     topic: Recap MCMC and Substitution Models
-    tutorials: 
+    material: <a href="https://www.dropbox.com/s/ayiwjuckxe2vb4r/3_Molecular_Evolution_Models_Recap.pdf?dl=0">Substitution Models in Phylogenetics</a>
     instructors: Sebastian Höhna
     
   - starttime: 2018-12-12T9:30:00Z
     endtime: 2018-12-12T10:15:00Z
-    topic: Morphological models
-    tutorials: 
+    topic: Introduction to divergence time estimation
+    tutorials: dating
     instructors:
     - Rachel Warnock
 
@@ -104,7 +111,7 @@ schedule:
 
   - starttime: 2018-12-12T10:30:00Z
     endtime: 2018-12-12T12:00:00Z
-    topic: Divergence time estimation using the fossilized birth-death model
+    topic: Node dating
     tutorials: 
     instructors: Rachel Warnock
 
@@ -116,8 +123,8 @@ schedule:
 
   - starttime: 2018-12-12T13:00:00Z
     endtime: 2018-12-12T15:00:00Z
-    topic: Practical on divergence time estimation using the fossilized birth-death model (Part I)
-    tutorials: fbd
+    topic: The fossilized birth-death process
+    tutorials:
     instructors: Rachel Warnock
 
   - starttime: 2018-12-12T15:00:00Z
@@ -128,8 +135,8 @@ schedule:
 
   - starttime: 2018-12-12T15:15:00Z
     endtime: 2018-12-12T17:30:00Z
-    topic: Practical on divergence time estimation using the fossilized birth-death model (Part II)
-    tutorials: fbd
+    topic: Total-evidence dating
+    tutorials:
     instructors: Rachel Warnock
     
   - starttime: 2018-12-13T9:00:00Z
@@ -141,7 +148,7 @@ schedule:
   - starttime: 2018-12-13T9:30:00Z
     endtime: 2018-12-13T10:15:00Z
     topic: Diversification rate estimation (Part I)
-    tutorials: 
+    tutorials: divrate/simple
     instructors: Sebastian Höhna
 
   - starttime: 2018-12-13T10:15:00Z
@@ -153,7 +160,7 @@ schedule:
   - starttime: 2018-12-13T10:30:00Z
     endtime: 2018-12-13T12:00:00Z
     topic: Diversification rate estimation (Part II)
-    tutorials: 
+    tutorials: divrate/ebd
     instructors: Sebastian Höhna
 
   - starttime: 2018-05-03T12:00:00Z
@@ -164,13 +171,10 @@ schedule:
 
   - starttime: 2018-12-13T13:00:00Z
     endtime: 2018-12-13T15:00:00Z
-    topic: Choice of practical on diversification rate estimation (Part I)
-    tutorials:
-    - divrate/simple
+    topic: Diversification rate estimation (Part III)
+    tutorials: divrate/branch_specific
     instructors: 
-    - Rachel Warnock
     - Sebastian Höhna
-    - Fabien Condamine
 
   - starttime: 2018-12-13T15:00:00Z
     endtime: 2018-12-13T15:15:00Z
@@ -180,17 +184,11 @@ schedule:
 
   - starttime: 2018-12-13T15:15:00Z
     endtime: 2018-12-13T17:30:00Z
-    topic: Choice of practical on diversification rate estimation (Part II)
+    topic: Diversification rate estimation (Part IV)
     tutorials:
-    - fbd_range
-    - divrate/ebd
-    - divrate/env
-    - divrate/branch_specific
     - sse/bisse-intro
     - sse/bisse
     instructors: 
-    - Rachel Warnock
     - Sebastian Höhna
-    - Fabien Condamine
 
 ---

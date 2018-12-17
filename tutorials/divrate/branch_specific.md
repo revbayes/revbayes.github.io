@@ -14,7 +14,6 @@ index: true
 title-old: RB_DiversificationRate_BranchSpecific_Tutorial
 redirect: false
 exclude_files:
-- data/primates_tree.nex
 - data/primates.tre
 - scripts/mcmc_BD.Rev
 - scripts/mcmc_EBD_Corr_RJ.Rev
@@ -30,10 +29,6 @@ exclude_files:
 
 {% include_relative modules/branch_specific_overview.md %}
 
-{% include_relative modules/branch_specific_cbdsp.md %}
+{% include_relative modules/branch_specific_bds.md %}
 
 {% include_relative modules/branch_specific_exercise_1.md %}
-
-{% include_relative modules/branch_specific_frcbdsp.md %}
-
-{% include_relative modules/branch_specific_exercise_2.md %}

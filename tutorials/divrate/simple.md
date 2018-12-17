@@ -15,12 +15,10 @@ title-old: RB_DiversificationRate_Tutorial
 redirect: false
 exclude_files:
 - scripts/mcmc_BD.Rev
-- scripts/mcmc_CBDSP.Rev
+- scripts/mcmc_BDS.Rev
 - scripts/mcmc_EBD_Corr_RJ.Rev
 - scripts/mcmc_EBD_Corr.Rev
 - scripts/mcmc_EBD.Rev
-- scripts/mcmc_IRC_BDSP.Rev
-- scripts/mcmc_MRBD.Rev
 - scripts/mcmc_Yule_prior.Rev
 - scripts/ml_BD.Rev
 - scripts/ml_MRBD.Rev
