@@ -135,7 +135,7 @@ distributed amount of time with rate 1.519 until the next substitution occurs.
 
 I generated an exponential(1.519) random variable by first generating a uniform(0,1) random number with my die.
 The first number it generated is $u = 0.794$. This means that the next time at which a substitution occurs is
-0.152 up from the root of the tree [i.e., $t = -{1 \over 1.519} \log(0.152)$]. We can now color a portion of the branch because we know the process was in state $G$ from the root of the single-branch tree ($t=0.0$) to $t=0.152$:
+0.152 up from the root of the tree [i.e., $t = -{1 \over 1.519} \log(0.794)$]. We can now color a portion of the branch because we know the process was in state $G$ from the root of the single-branch tree ($t=0.0$) to $t=0.152$:
 
 ![](figures/sim2.png)
 
