@@ -19,7 +19,7 @@ monitors[++mni] = mnStochasticVariable(filename="output_" + model_name + "/" + a
 
 ## setup the MCMC object
 mymcmc = mcmc(mymodel, monitors, moves, nruns=2)
-mymcmc.burnin(generations=2000,tuningInterval=10)
+mymcmc.burnin(generations=200,tuningInterval=200)
 
 ## start the run
-mymcmc.run(generations=10000)
+mymcmc.run(generations=1000)
