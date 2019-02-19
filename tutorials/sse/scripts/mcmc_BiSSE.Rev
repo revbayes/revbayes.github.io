@@ -159,13 +159,12 @@ monitors[++mni] = mnScreen(printgen=10, rate_12, rate_21, speciation, extinction
 ################
 
 ### workspace mcmc
-mymcmc = mcmc(mymodel, monitors, moves, nruns=1, moveschedule="random")
-
-### pre-burnin to tune the proposals
-mymcmc.burnin(generations=10000,tuningInterval=100)
+mymcmc = mcmc(mymodel, monitors, moves, nruns=2, moveschedule="random")
 
 ### run the MCMC
-mymcmc.run(generations=50000)
+mymcmc.run(generations=10000, tuningInterval=200)
+
+
 
 ##############################
 # Summarize ancestral states #
