@@ -44,8 +44,8 @@ The help functions are *protected functions* included in the header file `Dist_n
 protected:
     
   std::vector<std::string>                        getHelpAuthor(void) const;  //!< Get the author(s) of this function
-  std::vector<std::string>                        getHelpDescription(void) const;  //!< Get the description for this function
-  std::vector<std::string>                        getHelpDetails(void) const; //!< Get the more detailed description of the function
+  std::string                                     getHelpDescription(void) const;  //!< Get the description for this function
+  std::string                                     getHelpDetails(void) const; //!< Get the more detailed description of the function
   std::string                                     getHelpExample(void) const; //!< Get an executable and instructive example
   std::vector<RevBayesCore::RbHelpReference>      getHelpReferences(void) const; //!< Get some references/citations for this function
   std::vector<std::string>                        getHelpSeeAlso(void) const; //!< Get suggested other functions
@@ -70,39 +70,23 @@ std::vector<std::string> Dist_norm::getHelpAuthor(void) const
 /**
  * Get the (brief) description for this function
  */
-std::vector<std::string> Dist_norm::getHelpDescription(void) const
+std::string Dist_norm::getHelpDescription(void) const
 {
-    // create a variable for the description of the function
-    std::vector<std::string> descriptions;
-    descriptions.push_back( "Normal (gaussian) distribution with mean equal to ‘mean’ and standard deviation equal to ‘sd’." );
-
-    return descriptions;
+    // return the description
+    return "Normal (gaussian) distribution with mean equal to ‘mean’ and standard deviation equal to ‘sd’.";
 }
 
 
 /**
  * Get the more detailed description of the function
  */
-std::vector<std::string> Dist_norm::getHelpDetails(void) const
+std::string Dist_norm::getHelpDetails(void) const
 {
-    // create a variable for the description of the function
-    std::vector<std::string> details;
-
-    std::string details_1 = "";
-    details_1 += "The normal distribution has density:";
-
-    details.push_back( details_1 );
-
-    std::string details_2 = "";
-    details_2 += "f(x) = 1/(sqrt(2 pi) sigma) e^-((x - mu)^2/(2 sigma^2))";
-
-    details.push_back( details_2 );
-
-    std::string details_3 = "";
-    details_3 += "where mu is the mean of the distribution and sigma the standard deviation.";
-
-    details.push_back( details_3 );
-
+  // create a details variable
+    std::string details;
+    details += "The normal distribution has density:\n\n";
+    details += "f(x) = 1/(sqrt(2 pi) sigma) e^-((x - mu)^2/(2 sigma^2))\n\n";
+    details += "where mu is the mean of the distribution and sigma the standard deviation.";
 
     return details;
 }

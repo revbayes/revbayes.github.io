@@ -109,16 +109,15 @@ We have provided the following data files for this tutorial:
     A data matrix with the coded ranges for each species.
 
 
-> Navigate to the directory on your computer that you would like to work from. 
-> You may want to create a new director (e.g., call it `RB_biogeo_tutorial`).
+> Once you have downloaded the zip file by clicking on the arrow above,
+> Unzip that and navigate inside of that directory.
+> This directory should be called `revbayes_biogeo_biogeo_simple`
+>
+> Once inside you should see two directories: `data` and `scripts`
 > 
-> Once inside your working directory create a new folder called `data`. 
-> This is where we will save all of our data files for this tutorial.
-> 
-> Download the files provided into your `data` folder.
 >
 > Once you have all of the files, open RevBayes and ensure that your working directory 
-> is the top directory above the `data` folder (e.g., `RB_biogeo_tutorial`).
+> is the top directory above the `data` folder (e.g., `revbayes_biogeo_biogeo_simple`).
 {:.instruction}
 
 
@@ -127,8 +126,8 @@ We have provided the following data files for this tutorial:
 
 First, create file management variables for input and output
 
-    range_fn = "data/silversword.n4.range.nex"
-    tree_fn = "data/silversword.tre"
+    range_fn = "data/n4/silversword.n4.range.nex"
+    tree_fn = "data/n4/silversword.tre"
     out_fn = "output/simple"
 
 then read in our character data as binary presence-absence characters
