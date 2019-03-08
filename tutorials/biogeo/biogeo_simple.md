@@ -399,7 +399,7 @@ Finally, compute and save the ancestral state tree as
                                   include_start_states=true,
                                   file=out_str+".ase.tre",
                                   burnin=n_burn,
-                                  site=0)
+                                  site=1)
 
 We can review the output from ancestralStateTree in
 `FigTree`({% ref simple_FigTree_ase %}).
