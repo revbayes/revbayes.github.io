@@ -54,7 +54,7 @@
 	<h1 class="maintitle">Introduction to MCMC using RevBayes</h1>
 	<h3 class="subtitle">A simple Archery example for building a hierarchical model and sampling under Markov Chain Monte Carlo</h3>
 	<h4 class="authors">Wade Dismukes, Tracy A. Heath, Walker Pett</h4>
-  <h5>Last modified on July 24, 2018</h5>
+  <h5>Last modified on March 15, 2019</h5>
 </div>
 
 
@@ -357,8 +357,27 @@ R = ( likelihood(mu_prime)/likelihood(mu) ) * ( prior(mu_prime)/prior(mu) )
 <p>Then, we accept the proposal with probability $R$ and reject otherwise
 (step 4 of the <a href="#sect:MH_algorithm">The Metropolis-Hastings Algorithm Section</a>):</p>
 
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if(u &lt; R){
+# Accept the proposal
+    mu = mu_prime 
+}
+</code></pre></div></div>
+
 <p>Finally, we store the current value of $\mu$ in our log file (step
 5 of the the <a href="#sect:MH_algorithm">The Metropolis-Hastings Algorithm Section</a>). Here, we actually check if we want to store the value during this iteration.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if ( (rep % printgen) == 0 ) {
+    # Write the samples to a file
+    write(rep,mu,"\n",file="archery_MH.log",append=TRUE)
+    # Print the samples to the screen
+    print(rep,mu)
+}
+</code></pre></div></div>
+
+<p>and close the for loop</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>}
+</code></pre></div></div>
 
 <p>Execute the MCMC Analysis {#subsect:Exercise-RunMCMC}</p>
 
