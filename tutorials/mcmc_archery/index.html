@@ -54,7 +54,7 @@
 	<h1 class="maintitle">Introduction to MCMC using RevBayes</h1>
 	<h3 class="subtitle">A simple Archery example for building a hierarchical model and sampling under Markov Chain Monte Carlo</h3>
 	<h4 class="authors">Wade Dismukes, Tracy A. Heath, Walker Pett</h4>
-  <h5>Last modified on March 15, 2019</h5>
+  <h5>Last modified on March 24, 2019</h5>
 </div>
 
 
@@ -107,7 +107,7 @@ each arrow from the bullseye follows an exponential
 distribution—<em>i.e.,</em> $d\sim\mbox{Exp}(\mu^{-1})$. This implies the archer has an inherent ability to shoot arrows at an average distance $\mu$. Then, the probability density of each arrow distance $d_i$ is</p>
 
 <script type="math/tex; mode=display">\begin{aligned}
-P(d_i \mid \mu) = \frac{1}{\mu} e^{-d_i/\mu}
+P(d_i \mid \mu) = \frac{1}{\mu} e^{-d_i/\mu}.
 \end{aligned}</script>
 
 <p>Simple intuition suggests that, given that we observe $n$ arrows, a good
@@ -118,7 +118,7 @@ exponential distribution, it turns out that the observed average
 $\bar d$ follows a gamma distribution, with parameters $n$ and $n/\mu$,</p>
 
 <script type="math/tex; mode=display">\begin{aligned}
-P(\bar d \mid \mu,n) = \frac{(n/\mu)^n}{\Gamma(n)} {\bar d}\,^{n-1}e^{-n\bar d /\mu}
+P(\bar d \mid \mu,n) = \frac{(n/\mu)^n}{\Gamma(n)} {\bar d}\,^{n-1}e^{-n\bar d /\mu}.
 \end{aligned}</script>
 
 <p>In this case, the average $\bar d$ acts as a <em>sufficient statistic</em> for
@@ -230,7 +230,7 @@ mu_true = 1
 arrow_mean = rgamma(1, n, n/mu_true)[1]
 </code></pre></div></div>
 
-<p>The <code class="highlighter-rouge">Rev</code> code above uses the <code class="highlighter-rouge">rgamma()</code> function to simulate a single
+<p>The Rev code above uses the <code class="highlighter-rouge">rgamma()</code> function to simulate a single
 observed <code class="highlighter-rouge">arrow_mean</code> from $n=10$ arrows shot on target. The <code class="highlighter-rouge">[1]</code>
 following the <code class="highlighter-rouge">rgamma()</code> function is needed because this function always
 returns a <em>vector</em> even when we only request a single value. Thus, in

@@ -54,7 +54,7 @@
 	<h1 class="maintitle">Combined-Evidence Analysis and the Fossilized Birth-Death Process for Stratigraphic Range Data</h1>
 	<h3 class="subtitle">Joint inference of divergence times and phylogenetic relationships of fossil and extant taxa</h3>
 	<h4 class="authors">Tracy A. Heath, April M. Wright, and Walker Pett</h4>
-  <h5>Last modified on July 26, 2018</h5>
+  <h5>Last modified on March 24, 2019</h5>
 </div>
 
 
@@ -719,16 +719,15 @@ of species in our analysis (22).</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_taxa &lt;- taxa.size()
 </code></pre></div></div>
 
-<p>Next, create a workspace variable called <code class="highlighter-rouge">mvi</code>. This variable is an
-iterator that will build a vector containing all of the MCMC moves used
+<p>Next, create a workspace variable called <code class="highlighter-rouge">moves</code>. This variable is a vector that will 
+contain all of the MCMC moves used
 to propose new states for every stochastic node in the model graph. Each
-time a new move is added to the vector, <code class="highlighter-rouge">mvi</code> will be incremented by a
-value of 1.</p>
+time a new stochastic node is created in the model, we can append the move to this vector.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvi = 1
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves = VectorMoves()
 </code></pre></div></div>
 
-<p>One important distinction here is that <code class="highlighter-rouge">mvi</code> is part of the RevBayes
+<p>One important distinction here is that <code class="highlighter-rouge">moves</code> is part of the RevBayes
 workspace and not the hierarchical model. Thus, we use the workspace
 assignment operator <code class="highlighter-rouge">=</code> instead of the constant node assignment <code class="highlighter-rouge">&lt;-</code>.</p>
 
@@ -789,13 +788,13 @@ will use three scale moves for each parameter with different values of
 lambda. By using multiple moves for a single parameter, we will improve
 the mixing of the Markov chain.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvScale(speciation_rate, lambda=0.01, weight=1)
-moves[mvi++] = mvScale(speciation_rate, lambda=0.1,  weight=1)
-moves[mvi++] = mvScale(speciation_rate, lambda=1.0,  weight=1)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale(speciation_rate, lambda=0.01, weight=1) )
+moves.append( mvScale(speciation_rate, lambda=0.1,  weight=1) )
+moves.append( mvScale(speciation_rate, lambda=1.0,  weight=1) )
 
-moves[mvi++] = mvScale(extinction_rate, lambda=0.01, weight=1)
-moves[mvi++] = mvScale(extinction_rate, lambda=0.1,  weight=1)
-moves[mvi++] = mvScale(extinction_rate, lambda=1,    weight=1)
+moves.append( mvScale(extinction_rate, lambda=0.01, weight=1) )
+moves.append( mvScale(extinction_rate, lambda=0.1,  weight=1) )
+moves.append( mvScale(extinction_rate, lambda=1,    weight=1) )
 </code></pre></div></div>
 
 <p>You will also notice that each move has a specified <code class="highlighter-rouge">weight</code>. This
@@ -856,9 +855,9 @@ from the posterior distribution.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psi ~ dnExponential(10) 
 
-moves[mvi++] = mvScale(psi, lambda=0.01, weight=1)
-moves[mvi++] = mvScale(psi, lambda=0.1,  weight=1)
-moves[mvi++] = mvScale(psi, lambda=1,    weight=1)
+moves.append( mvScale(psi, lambda=0.01, weight=1) )
+moves.append( mvScale(psi, lambda=0.1,  weight=1) )
+moves.append( mvScale(psi, lambda=1,    weight=1) )
 </code></pre></div></div>
 
 <h4 class="subsubsection" id="Exercise-FBD-Origin">The Origin Time</h4>
@@ -875,9 +874,9 @@ little risk of this being an issue.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>origin_time ~ dnUnif(37.0, 55.0)
 
-moves[mvi++] = mvSlide(origin_time, delta=0.01, weight=5.0)
-moves[mvi++] = mvSlide(origin_time, delta=0.1,  weight=5.0)
-moves[mvi++] = mvSlide(origin_time, delta=1,    weight=5.0)
+moves.append( mvSlide(origin_time, delta=0.01, weight=5.0) )
+moves.append( mvSlide(origin_time, delta=0.1,  weight=5.0) )
+moves.append( mvSlide(origin_time, delta=1,    weight=5.0) )
 </code></pre></div></div>
 
 <p>Note that we specified a higher move <code class="highlighter-rouge">weight</code> for each of the proposals
@@ -956,11 +955,11 @@ Sect. <a href="#Intro-FBD"></a>) so that it is on its own branch and vice
 versa. In addition, when conditioning on the origin time, we also need
 to explicitly sample the root age (<code class="highlighter-rouge">mvRootTimeSlideUniform</code>).</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvFNPR(fbd_tree, weight=15.0)
-moves[mvi++] = mvCollapseExpandFossilBranch(fbd_tree, origin_time, weight=6.0)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvFNPR(fbd_tree, weight=15.0) )
+moves.append( mvCollapseExpandFossilBranch(fbd_tree, origin_time, weight=6.0) )
 
-moves[mvi++] = mvNodeTimeSlideUniform(fbd_tree, weight=40.0)
-moves[mvi++] = mvRootTimeSlideUniform(fbd_tree, origin_time, weight=5.0)
+moves.append( mvNodeTimeSlideUniform(fbd_tree, weight=40.0) )
+moves.append( mvRootTimeSlideUniform(fbd_tree, origin_time, weight=5.0) )
 </code></pre></div></div>
 
 <blockquote class="aside" id="specimen-level"><h2>Incorporating Specimen-Level Fossil Age Uncertainty</h2><p>If we are using the specimen-level <code class="highlighter-rouge">FBDP</code> distribution (see <a href="#Intro-Taxonomy"></a>),
@@ -1033,7 +1032,7 @@ for(i in 1:fossils.size())
 <p>Finally, we add a move that samples the ages of the fossil nodes on the
 tree.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvFossilTimeSlideUniform(fbd_tree, origin_time, weight=5.0)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvFossilTimeSlideUniform(fbd_tree, origin_time, weight=5.0) )
 </code></pre></div></div>
 </blockquote>
 
@@ -1108,9 +1107,9 @@ the mean rate parameter.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>branch_rates_mean ~ dnExponential(10.0)
 
-moves[mvi++] = mvScale(branch_rates_mean, lambda=0.01, weight=1.0)
-moves[mvi++] = mvScale(branch_rates_mean, lambda=0.1,  weight=1.0)
-moves[mvi++] = mvScale(branch_rates_mean, lambda=1.0,  weight=1.0)
+moves.append( mvScale(branch_rates_mean, lambda=0.01, weight=1.0) )
+moves.append( mvScale(branch_rates_mean, lambda=0.1,  weight=1.0) )
+moves.append( mvScale(branch_rates_mean, lambda=1.0,  weight=1.0) )
 </code></pre></div></div>
 
 <p>Before creating a rate parameter for each branch, we need to get the
@@ -1127,9 +1126,9 @@ rate parameter we also create scale proposal moves.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for(i in 1:n_branches){
     branch_rates[i] ~ dnExp(1/branch_rates_mean)
-    moves[mvi++] = mvScale(branch_rates[i], lambda=1.0,  weight=1.0)
-    moves[mvi++] = mvScale(branch_rates[i], lambda=0.1,  weight=1.0)
-    moves[mvi++] = mvScale(branch_rates[i], lambda=0.01, weight=1.0)
+    moves.append( mvScale(branch_rates[i], lambda=1.0,  weight=1.0) )
+    moves.append( mvScale(branch_rates[i], lambda=0.1,  weight=1.0) )
+    moves.append( mvScale(branch_rates[i], lambda=0.01, weight=1.0) )
 }
 </code></pre></div></div>
 
@@ -1137,9 +1136,9 @@ rate parameter we also create scale proposal moves.</p>
 rates simultaneously. This way we can sample the total branch rate
 independently of each individual rate, which can improve mixing.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvVectorScale(branch_rates, lambda=0.01, weight=4.0) 
-moves[mvi++] = mvVectorScale(branch_rates, lambda=0.1,  weight=4.0) 
-moves[mvi++] = mvVectorScale(branch_rates, lambda=1.0,  weight=4.0)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvVectorScale(branch_rates, lambda=0.01, weight=4.0) )
+moves.append( mvVectorScale(branch_rates, lambda=0.1,  weight=4.0) )
+moves.append( mvVectorScale(branch_rates, lambda=1.0,  weight=4.0) )
 </code></pre></div></div>
 
 <p>You have completed the molecular relaxed clock model file. Save <code class="highlighter-rouge">model_UExp.Rev</code> in
@@ -1179,8 +1178,8 @@ parameter <code class="highlighter-rouge">alpha</code> specifies how conservativ
 with larger values of <code class="highlighter-rouge">alpha</code> leading to proposals closer to the current
 value.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvSimplexElementScale(er, alpha=10.0, weight=5.0)
-moves[mvi++] = mvSimplexElementScale(sf, alpha=10.0, weight=5.0)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvSimplexElementScale(er, alpha=10.0, weight=5.0) )
+moves.append( mvSimplexElementScale(sf, alpha=10.0, weight=5.0) )
 </code></pre></div></div>
 
 <p>Then we can define a deterministic node for our GTR $Q$-matrix using the
@@ -1195,9 +1194,9 @@ along with scale proposals.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha_cytb ~ dnExponential( 1.0 )
 
-moves[mvi++] = mvScale(alpha_cytb, lambda=0.01, weight=1.0)
-moves[mvi++] = mvScale(alpha_cytb, lambda=0.1,  weight=1.0)
-moves[mvi++] = mvScale(alpha_cytb, lambda=1,    weight=1.0)
+moves.append( mvScale(alpha_cytb, lambda=0.01, weight=1.0) )
+moves.append( mvScale(alpha_cytb, lambda=0.1,  weight=1.0) )
+moves.append( mvScale(alpha_cytb, lambda=1,    weight=1.0) )
 </code></pre></div></div>
 
 <p>Then we create a Gamma$(\alpha,\alpha)$ distribution, discretized into 4
@@ -1250,9 +1249,9 @@ heterogeneity among sites.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha_morpho ~ dnExponential( 1.0 )
 rates_morpho := fnDiscretizeGamma( alpha_morpho, alpha_morpho, 4 )
 
-moves[mvi++] = mvScale(alpha_morpho, lambda=0.01, weight=5.0)
-moves[mvi++] = mvScale(alpha_morpho, lambda=0.1,  weight=3.0)
-moves[mvi++] = mvScale(alpha_morpho, lambda=1,    weight=1.0)
+moves.append( mvScale(alpha_morpho, lambda=0.01, weight=5.0) )
+moves.append( mvScale(alpha_morpho, lambda=0.1,  weight=3.0) )
+moves.append( mvScale(alpha_morpho, lambda=1,    weight=1.0) )
 </code></pre></div></div>
 
 <p>The phylogenetic model also assumes that each branch has a rate of
@@ -1262,9 +1261,9 @@ an exponential distribution (see <a href="#Intro-MorphClock"></a>).</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clock_morpho ~ dnExponential(1.0)
 
-moves[mvi++] = mvScale(clock_morpho, lambda=0.01, weight=4.0)
-moves[mvi++] = mvScale(clock_morpho, lambda=0.1,  weight=4.0)
-moves[mvi++] = mvScale(clock_morpho, lambda=1,    weight=4.0)
+moves.append( mvScale(clock_morpho, lambda=0.01, weight=4.0) )
+moves.append( mvScale(clock_morpho, lambda=0.1,  weight=4.0) )
+moves.append( mvScale(clock_morpho, lambda=1,    weight=4.0) )
 </code></pre></div></div>
 
 <p>As in our molecular data partition, we now combine our data and our
@@ -1331,10 +1330,7 @@ our MCMC analysis.</p>
 monitors and output file names. For this, we create a vector called
 <code class="highlighter-rouge">monitors</code> that will each sample and record or output our MCMC.</p>
 
-<p>First, we will specify a workspace variable to iterate over the
-<code class="highlighter-rouge">monitors</code> vector.</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mni = 1
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors = VectorMonitors()
 </code></pre></div></div>
 
 <p>The first monitor we will create will monitor every named random
@@ -1347,7 +1343,7 @@ accessory programs for evaluating such parameters. We will also name the
 output file for this monitor and indicate that we wish to sample our
 MCMC every 10 cycles.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[mni++] = mnModel(filename="output/bears.log", printgen=10)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/bears.log", printgen=10) )
 </code></pre></div></div>
 
 <p>The <code class="highlighter-rouge">mnFile</code> monitor writes any parameter we specify to file. Thus, if
@@ -1361,7 +1357,7 @@ our <code class="highlighter-rouge">pruned_tree</code> variable in the arguments
 monitoring the tree with nuisance taxa pruned out (see
 <a href="#Exercise-FBD-DetNodes"></a>).</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[mni++] = mnFile(filename="output/bears.trees", printgen=10, pruned_tree)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnFile(filename="output/bears.trees", printgen=10, pruned_tree) )
 </code></pre></div></div>
 
 <p>The last monitor we will add to our analysis will print information to
@@ -1370,7 +1366,7 @@ we’d like to see updated on the screen. We will choose the age of the
 MCRCA of living bears (<code class="highlighter-rouge">age_extant</code>), the number of sampled ancestors
 (<code class="highlighter-rouge">num_samp_anc</code>), and the origin time (<code class="highlighter-rouge">origin_time</code>).</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[mni++] = mnScreen(printgen=10, age_extant, num_samp_anc, origin_time)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(printgen=10, age_extant, num_samp_anc, origin_time) )
 </code></pre></div></div>
 
 <h4 class="subsubsection" id="set-up-the-mcmc">Set-Up the MCMC</h4>
