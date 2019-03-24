@@ -44,7 +44,7 @@ distribution—*i.e.,* $d\sim\mbox{Exp}(\mu^{-1})$. This implies the archer has 
 
 $$
 \begin{aligned}
-P(d_i \mid \mu) = \frac{1}{\mu} e^{-d_i/\mu}
+P(d_i \mid \mu) = \frac{1}{\mu} e^{-d_i/\mu}.
 \end{aligned}
 $$ 
 
@@ -57,7 +57,7 @@ $\bar d$ follows a gamma distribution, with parameters $n$ and $n/\mu$,
 
 $$
 \begin{aligned}
-P(\bar d \mid \mu,n) = \frac{(n/\mu)^n}{\Gamma(n)} {\bar d}\,^{n-1}e^{-n\bar d /\mu}
+P(\bar d \mid \mu,n) = \frac{(n/\mu)^n}{\Gamma(n)} {\bar d}\,^{n-1}e^{-n\bar d /\mu}.
 \end{aligned}
 $$
 
@@ -173,7 +173,7 @@ Since we do not have access to archery data, we will simulate the the shots of o
     # Simulate the observed mean distance of the arrows shot from a gamma distribution
     arrow_mean = rgamma(1, n, n/mu_true)[1]
 
-The `Rev` code above uses the `rgamma()` function to simulate a single
+The Rev code above uses the `rgamma()` function to simulate a single
 observed `arrow_mean` from $n=10$ arrows shot on target. The `[1]`
 following the `rgamma()` function is needed because this function always
 returns a *vector* even when we only request a single value. Thus, in

@@ -405,15 +405,14 @@ of species in our analysis (22).
 
 {{ mcmc_script | snippet:"block#","5" }}
 
-Next, create a workspace variable called `mvi`. This variable is an
-iterator that will build a vector containing all of the MCMC moves used
+Next, create a workspace variable called `moves`. This variable is a vector that will 
+contain all of the MCMC moves used
 to propose new states for every stochastic node in the model graph. Each
-time a new move is added to the vector, `mvi` will be incremented by a
-value of 1.
+time a new stochastic node is created in the model, we can append the move to this vector.
 
 {{ mcmc_script | snippet:"block#","6" }}
 
-One important distinction here is that `mvi` is part of the RevBayes
+One important distinction here is that `moves` is part of the RevBayes
 workspace and not the hierarchical model. Thus, we use the workspace
 assignment operator `=` instead of the constant node assignment `<-`.
 
@@ -753,9 +752,6 @@ our MCMC analysis.
 The next important step for our master Rev file is to specify the
 monitors and output file names. For this, we create a vector called
 `monitors` that will each sample and record or output our MCMC.
-
-First, we will specify a workspace variable to iterate over the
-`monitors` vector.
 
 {{ mcmc_script | snippet:"block#","12" }}
 	

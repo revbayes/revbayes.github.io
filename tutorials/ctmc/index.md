@@ -19,8 +19,8 @@ redirect: false
 
 {% section Overview %}
 
-This tutorial provides the first protocol from {% citet Hoehna2017a %}. 
-Here, we demonstrate how to set up and perform analyses
+This tutorial covers the first protocol from {% citet Hoehna2017a %}, 
+which demonstrates how to set up and perform analyses
 using common nucleotide substitution models. The substitution models
 used in molecular evolution are continuous time Markov models, which are
 fully characterized by their instantaneous-rate matrix:
@@ -45,7 +45,7 @@ p_{AC}(t) & p_{GC}(t) & p_{CC}(t) & p_{TC}(t) \\
 p_{AT}(t) & p_{GT}(t) & p_{CT}(t) & p_{TT}(t)
 \end{pmatrix} = e^{Qt} = \sum_{j=0}^\infty\frac{tQ^j}{j!} \mbox{  .}$$
 
-Each specific substitution model has a uniquely defined
+Each of the named substitution models (e.g., HKY or GTR) has a uniquely defined
 instantaneous-rate matrix, $Q$.
 
 In this tutorial you will perform phylogeny inference under common
@@ -88,7 +88,7 @@ The first section of this exercise involves:
 {% figure jc_graphical_model %}
 <img src="figures/jc_graphical_model.png" /> 
 {% figcaption %} 
-Graphical model representation of a simple phylogenetic model. The graphical model shows the dependencies between the parameters {% cite Hoehna2014b %}. Here, the rate matrix $Q$ is a constant variable because it is fixed and does not depend on any parameter.The only free parameters of this model, the Jukes-Cantor model, are the tree $\Psi$ including the branch lengths.
+Graphical model representation of a simple phylogenetic model. The graphical model shows the dependencies among parameters {% cite Hoehna2014b %}. Here, the rate matrix $Q$ is a constant variable because it is fixed and does not depend on any parameter. The only free parameters of this model, the Jukes-Cantor model, are the tree $\Psi$ including the branch lengths.
 {% endfigcaption %}
 {% endfigure %}
 
@@ -111,7 +111,7 @@ $$P_{JC69} = \begin{pmatrix} {\frac{1}{4} + \frac{3}{4}e^{-rt}} & {\frac{1}{4} -
 
 where $t$ is the branch length in units of time, and $r$ is the rate (clock) for the process. In the later exercises you will be asked to specify more complex substitution models. **Don’t worry, you won’t have to calculate all of the transition probabilities, because RevBayes will take care of all the computations for you.** Here we only provide some of the equations for the models in case you might be interested in the details. You will be able to complete the exercises without understanding the underlying math.
 
-The file for this example analysis are provided for you ([`mcmc_JC.Rev`](scripts/mcmc_JC.Rev)).
+The files for this example analysis are provided for you ([`mcmc_JC.Rev`](scripts/mcmc_JC.Rev)).
 If you download this file and place it in a directory called `scripts` inside your main tutorial directory,
 you can
 easily execute this analysis using the `source()` function in the RevBayes console:
@@ -272,6 +272,9 @@ This is the `dnUniformTopology()` distribution in RevBayes.
 Note that in RevBayes it is advisable to specify the outgroup for your study system 
 if you use an unrooted tree prior, whereas other software, *e.g.*,  
 MrBayes uses the first taxon in the data matrix file as the outgroup. 
+Providing RevBayes with an outgroup clade will enable the monitor writing the trees
+to file to orient the topologies with the outgroup clade at the base, 
+thus making the trees easier to visualize.
 Specify the `topology` stochastic node by passing in the list of `taxa` 
 to the `dnUniformTopology()` distribution:
 
@@ -293,7 +296,7 @@ moves.append( mvSPR(topology, weight=num_taxa/10.0) )
 
 The weight specifies how often the move will be applied either on average per iteration or relative to all other moves. Have a look at the MCMC Diagnosis tutorial for more details about moves and MCMC strategies (found in {% page_ref tutorials %}).
 
-Next we have to create a stochastic node for each of the $2N - 3$ branches in our tree (where $N=$ `n_species`). We can do this using a `for` loop — this is a plate in our graphical model. In this loop, we can create each of the branch-length nodes and assign each move. Copy this entire block of Rev code into the console:
+Next we have to create a stochastic node representing the length of each of the $2N - 3$ branches in our tree (where $N=$ `n_species`). We can do this using a `for` loop — this is a plate in our graphical model. In this loop, we can create each of the branch-length nodes and assign each move. Copy this entire block of Rev code into the console:
 
 ```
 for (i in 1:num_branches) {
@@ -329,10 +332,10 @@ We still think that it is pedagogical to specify the prior on each branch length
 {% endaside %}
 
 {% aside Alternative branch-length priors %}
-Some studies, *e.g.* {% cite Brown2010 %} {% cite Rannala2012 %}, 
+Some studies, *e.g.* {% citet Brown2010 Rannala2012 %}, 
 have criticized the exponential prior distribution for branch lengths 
 because it induces a gamma-distributed tree-length and the mean of this gamma distribution
-grows with the number of taxa. For example, we can use instead a specific gamma prior distribution 
+grows with the number of taxa. As an alternative, we can instead use a specific gamma prior distribution 
 (or any other distribution defined on a positive real variable) for the tree length, 
 and then use a Dirichlet prior distribution to break the tree length into 
 the corresponding branch lengths {% cite Zhang2012 %}.
@@ -439,15 +442,15 @@ data to the tip nodes in the tree.
 seq.clamp(data)
 ```
 
-[Note that although we assume that our sequence data are random
+Note that although we assume that our sequence data are random
 variables—they are realizations of our phylogenetic model—for the
-purposes of inference, we assume that the sequence data are “clamped”.]
+purposes of inference, we assume that the sequence data are “clamped” to their observed values.
 When this function is called, RevBayes sets each of the stochastic
 nodes representing the tips of the tree to the corresponding nucleotide
 sequence in the alignment. This essentially tells the program that we
 have observed data for the sequences at the tips.
 
-Finally, we wrap the entire model to provide convenient access to the
+Finally, we wrap the entire model in a single object to provide convenient access to the
 DAG. To do this, we only need to give the `model()` function a single
 node. With this node, the `model()` function can find all of the other
 nodes by following the arrows in the graphical model:
@@ -673,7 +676,7 @@ reasonable, so we might wish to consider a more realistic substitution
 model that relaxes some of these assumptions. For example, we might
 allow stationary frequencies, $\pi$, to be unequal, and allow rates of
 transition and transversion substitutions to differ, $\kappa$. This
-corresponds to the substitution model proposed by {% cite Hasegawa1985 %},
+corresponds to the substitution model proposed by {% citet Hasegawa1985 %},
 which is specified with the following instantaneous-rate matrix:
 
 $$Q_{HKY} = \begin{pmatrix} 
@@ -744,9 +747,9 @@ This should be all for the HKY model. Don’t forget to change the output file n
     directory as your `data` folder.
 
 -   Modify `mcmc_HKY.Rev` by including the
-    necessary parameters to specify the HKY substitution model.
+    necessary parameters to specify the HKY substitution model. *Be sure to change the output file names given to the monitors.*
 
--   Run an MCMC analysis to estimate the posterior distribution under
+-   Run a MCMC analysis to estimate the posterior distribution under
     the HKY substitution model.
 
 -   Are the resulting estimates of the base frequencies equal? If not,
@@ -772,8 +775,8 @@ This should be all for the HKY model. Don’t forget to change the output file n
 The HKY substitution model can accommodate unequal base frequencies and
 different rates of transition and transversion substitutions. Despite
 these extensions, the HKY model may still be too simplistic for many
-real datasets. Here, we extend the HKY model to specify the General Time
-Reversible (GTR) substitution model {% cite Tavare1986 %}, which allows all six
+real datasets. Here, we extend the HKY model to specify the general time
+reversible (GTR) substitution model {% cite Tavare1986 %}, which allows all six
 exchangeability rates to differ ({% ref gtr_graphical_model %}).
 
 The instantaneous-rate matrix for the GTR substitution model is:
@@ -864,7 +867,7 @@ Q := fnGTR(er,pi)
 {% subsection Exercise 3 %}
 
 -   Use one of your previous analysis files—either the `mcmc_JC.Rev` or
-    `HKY.Rev`—to specify a GTR analysis in a new file called
+    `mcmc_HKY.Rev`—to specify a GTR analysis in a new file called
     `mcmc_GTR.Rev`. Adapt the old analysis to be performed under the
     GTR substitution model.
 
