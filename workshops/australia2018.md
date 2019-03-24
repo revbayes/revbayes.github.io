@@ -67,7 +67,7 @@ schedule:
   - starttime: 2019-03-26T14:30
     endtime: 2019-03-26T17:30
     topic: "Tutorial: Phylogenetic Inference using RevBayes"
-    ntutorials: ctmc
+    tutorials: ctmc
     instructors: Tracy Heath
 
   - starttime: 2019-03-27T09:30
