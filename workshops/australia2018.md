@@ -38,7 +38,7 @@ schedule:
   - starttime: 2019-03-26T09:30
     endtime: 2019-03-26T10:30
     topic: "Lecture: Hierarchical Bayesian Modeling for Phylogenetic Inference using RevBayes"
-    material: 
+    material: <a href="https://figshare.com/articles/Hierarchical_Modeling_for_Phylogenetic_Inference_using_RevBayes/7886201">Lecture slides</a>
     instructors: Tracy Heath
 
   - starttime: 2019-03-26T10:30
