@@ -313,9 +313,30 @@ R = ( likelihood(mu_prime)/likelihood(mu) ) * ( prior(mu_prime)/prior(mu) )
 Then, we accept the proposal with probability $R$ and reject otherwise
 (step 4 of the [The Metropolis-Hastings Algorithm Section](#sect:MH_algorithm)):
 
+```
+if(u < R){
+# Accept the proposal
+    mu = mu_prime 
+}
+```
+
 Finally, we store the current value of $\mu$ in our log file (step
 5 of the the [The Metropolis-Hastings Algorithm Section](#sect:MH_algorithm)). Here, we actually check if we want to store the value during this iteration.
 
+```
+if ( (rep % printgen) == 0 ) {
+    # Write the samples to a file
+    write(rep,mu,"\n",file="archery_MH.log",append=TRUE)
+    # Print the samples to the screen
+    print(rep,mu)
+}
+```
+
+and close the for loop
+
+```
+}
+```
 
 Execute the MCMC Analysis {#subsect:Exercise-RunMCMC}
 
