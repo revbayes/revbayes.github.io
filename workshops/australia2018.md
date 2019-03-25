@@ -8,9 +8,9 @@ website: http://cba.anu.edu.au/news-events/bayesian-phylogenetics-and-macroevolu
 description: 
 - This workshop will introduce participants to the theory and practice of phylogenetic inference methods for macroevolution using RevBayes. The three-day course is sponsored by the Centre for Biodivesity Analysis at the Australian National University. 
 
-- The program for the three-day will entail&#58; (Day 1) An introduction to RevBayes, MCMC, and basic tree inference; (Day 2) Combining data from fossil and ling taxa and Historical biogeography; (Day 3) Modeling complex processes on trees and discussion/open lab. A (tentative) detailed schedule will be given below. 
+- The program for the three-day will entail&#58; (Day 1) An introduction to RevBayes, MCMC, and basic tree inference; (Day 2) Combining data from fossil and ling taxa and Historical biogeography; (Day 3) Modeling complex processes on trees and discussion/open lab. A detailed schedule is given below. 
 
-- It is recommended that you review the _Pre-workshop Materials_ listed below if you do not already have a strong understanding of likelihood-based phylogenetics, probability, and Bayesian inference. These video lectures are by <a href="https://phylogeny.uconn.edu/">Paul Lewis</a> and provide a clear overview of these topics. Additionally, a list of papers describing RevBayes and graphical models is given as suggested background reading.
+- It is recommended that you review the <i>Pre-workshop Materials</i> listed below if you do not already have a strong understanding of likelihood-based phylogenetics, probability, and Bayesian inference. These video lectures are by <a href="https://phylogeny.uconn.edu/">Paul Lewis</a> and provide a clear overview of these topics. Additionally, a list of papers describing RevBayes and graphical models is provided as suggested background reading.
 
 venue: The Australian National University, Canberra, AUS
 
