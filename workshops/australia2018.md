@@ -48,8 +48,8 @@ schedule:
 
   - starttime: 2019-03-26T11:00
     endtime: 2019-03-26T12:00
-    topic: "Lecture: Introduction to Bayesian Inference and MCMC"
-    material: 
+    topic: "Lecture: Introduction to Bayesian Inference and MCMC in RevBayes"
+    material: <a href="https://figshare.com/articles/Introduction_to_Bayesian_Inference_MCMC_in_RevBayes/7886447">Lecture slides</a>
     instructors: "&#x1F469;&#x1F3FB;&#x200D;&#x1F3EB;"
 
   - starttime: 2019-03-26T12:00
