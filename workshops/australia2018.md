@@ -39,102 +39,126 @@ schedule:
     endtime: 2019-03-26T10:30
     topic: "Lecture: Hierarchical Bayesian Modeling for Phylogenetic Inference using RevBayes"
     material: <a href="https://figshare.com/articles/Hierarchical_Modeling_for_Phylogenetic_Inference_using_RevBayes/7886201">Lecture slides</a>
-    instructors: Tracy Heath
+    instructors: "&#x1F469;&#x1F3FB;&#x200D;&#x1F3EB;"
 
   - starttime: 2019-03-26T10:30
     endtime: 2019-03-26T11:00
-    topic: Break
+    topic: "Morning Tea"
+    material: "&#x2615;"
 
   - starttime: 2019-03-26T11:00
     endtime: 2019-03-26T12:00
     topic: "Lecture: Introduction to Bayesian Inference and MCMC"
     material: 
-    instructors: Tracy Heath
+    instructors: "&#x1F469;&#x1F3FB;&#x200D;&#x1F3EB;"
 
   - starttime: 2019-03-26T12:00
     endtime: 2019-03-26T13:30
     topic: Lunch
+    material: "&#x1F96A;"
 
   - starttime: 2019-03-26T13:30
     endtime: 2019-03-26T14:00
     topic: "Resources for using RevBayes"
-    instructors: Tracy Heath
+    instructors: "&#x1F469;&#x1F3FB;&#x200D;&#x1F3EB;"
 
   - starttime: 2019-03-26T14:00
-    endtime: 2019-03-26T14:30
-    topic: Break
-
-  - starttime: 2019-03-26T14:30
-    endtime: 2019-03-26T17:30
+    endtime: 2019-03-26T15:30
     topic: "Tutorial: Phylogenetic Inference using RevBayes"
     tutorials: ctmc
-    instructors: Tracy Heath
+    instructors: "&#x1F4BB;"
+
+  - starttime: 2019-03-26T15:30
+    endtime: 2019-03-26T16:00
+    topic: "Afternoon Tea"
+    material: "&#x1F375;"
+
+  - starttime: 2019-03-26T16:00
+    endtime: 2019-03-26T17:30
+    topic: "Tutorial: Phylogenetic Inference using RevBayes, continued"
+    tutorials: ctmc
+    instructors: "&#x1F4BB;"
 
   - starttime: 2019-03-27T09:30
     endtime: 2019-03-27T10:30
     topic: "Lecture: Bayesian Divergence-Time Estimation"
-    material: 
-    instructors: Tracy Heath
+    material: <a href="https://figshare.com/articles/Bayesian_Divergence-Time_Estimation_Lecture/6849005">Lecture slides</a>
+    instructors: "&#x1F469;&#x1F3FB;&#x200D;&#x1F3EB;"
 
   - starttime: 2019-03-27T10:30
     endtime: 2019-03-27T11:00
-    topic: Break
+    topic: "Morning Tea"
+    material: "&#x2615;"
 
   - starttime: 2019-03-27T11:30
     endtime: 2019-03-27T12:30
     topic: "Lab: Estimating Trees and Divergence Times"
-    ntutorials: fbd/fbd_specimen
-    instructors: Tracy Heath
+    tutorials: fbd/fbd_specimen
+    instructors: "&#x1F4BB;"
 
   - starttime: 2019-03-27T12:30
     endtime: 2019-03-27T14:00
     topic: Lunch
+    material: "&#x1F35C;"
 
   - starttime: 2019-03-27T14:00
     endtime: 2019-03-27T14:30
     topic: "Lecture: Historical Biogeography"
-    instructors: Tracy Heath
+    instructors: "&#x1F469;&#x1F3FB;&#x200D;&#x1F3EB;"
 
   - starttime: 2019-03-27T14:30
     endtime: 2019-03-27T15:30
     topic: "Tutorial: Historical Biogeography"
     ntutorials: biogeo/biogeo_simple
-    instructors: Tracy Heath
+    instructors: "&#x1F4BB;"
 
   - starttime: 2019-03-27T15:30
     endtime: 2019-03-27T16:00
-    topic: Break
+    topic: "Afternoon Tea"
+    material: "&#x1F375;"
 
   - starttime: 2019-03-27T16:00
     endtime: 2019-03-27T17:30
     topic: "Tutorial: Biogeography with Epoch Models"
     ntutorials: biogeo/biogeo_epoch
-    instructors: Tracy Heath
+    instructors: "&#x1F4BB;"
 
   - starttime: 2019-03-28T09:30
     endtime: 2019-03-28T10:30
     topic: "Lecture: Modeling Branch-Heterogeneous Processes"
     material: 
-    instructors: Tracy Heath
+    instructors: "&#x1F469;&#x1F3FB;&#x200D;&#x1F3EB;"
 
   - starttime: 2019-03-28T10:30
     endtime: 2019-03-28T11:00
-    topic: Break
+    topic: "Morning Tea"
+    material: "&#x2615;"
 
   - starttime: 2019-03-28T11:00
     endtime: 2019-03-28T12:30
     topic: "Tutorial: Inference Under a Branch-specific Substitution Model"
     material: 
-    instructors: Tracy Heath
+    instructors: "&#x1F4BB;"
 
   - starttime: 2019-03-28T12:30
     endtime: 2019-03-28T14:00
     topic: Lunch
+    material: "&#x1F354;"
 
   - starttime: 2019-03-28T14:00
-    endtime: 2019-03-28T17:30
+    endtime: 2019-03-28T15:30
     topic: "Discussion and Open Lab"
-    instructors: Tracy Heath
+    instructors: "&#x1F5E3;"
+
+  - starttime: 2019-03-28T15:30
+    endtime: 2019-03-28T16:00
+    topic: "Afternoon Tea"
+    material: "&#x1F375;"
+
+  - starttime: 2019-03-28T16:00
+    endtime: 2019-03-28T15:30
+    topic: "Discussion and Open Lab, continued"
+    instructors: "&#x1F5E3;"
 
 ---
 
