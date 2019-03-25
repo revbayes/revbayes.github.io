@@ -60,6 +60,7 @@ schedule:
   - starttime: 2019-03-26T13:30
     endtime: 2019-03-26T14:00
     topic: "Resources for using RevBayes"
+    material: <a href="https://revbayes.github.io">https://revbayes.com</a>
     instructors: "&#x1F469;&#x1F3FB;&#x200D;&#x1F3EB;"
 
   - starttime: 2019-03-26T14:00
