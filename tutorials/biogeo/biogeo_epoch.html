@@ -54,7 +54,7 @@
 	<h1 class="maintitle">Historical Biogeographic Analysis using an epoch DEC Model</h1>
 	<h3 class="subtitle">Ancestral range estimation of the silverswords under the dispersal-extinction-cladogenesis process</h3>
 	<h4 class="authors">Michael J. Landis</h4>
-  <h5>Last modified on August 15, 2018</h5>
+  <h5>Last modified on March 27, 2019</h5>
 </div>
 
 
@@ -281,12 +281,11 @@ times_fn = geo_fn + ".times.txt"
 dist_fn = geo_fn + ".distances.txt"
 </code></pre></div></div>
 
-<p>Create move index (mvi) and monitor index
-(mni) variables to populate the elements of our
+<p>Create vectors that will contain all of our
 moves and monitors vectors, respectively.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvi = 1
-mni = 1
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves = VectorMoves()
+monitors = VectorMonitors()
 </code></pre></div></div>
 
 <p>Read in the presence-absence range characters and record the number of
@@ -395,7 +394,7 @@ with the biogeographic rate scaling parameter <code class="highlighter-rouge">ra
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log10_rate_bg ~ dnUniform(-4,2)
 log10_rate_bg.setValue(-2)
 rate_bg := 10^log10_rate_bg
-moves[mvi++] = mvSlide(log10_rate_bg, weight=4)
+moves.append( mvSlide(log10_rate_bg, weight=4) )
 </code></pre></div></div>
 
 <p>Fix the base dispersal rate to 1</p>
@@ -412,7 +411,7 @@ $a=0$. Add a distance scale parameter</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>distance_scale ~ dnUnif(0,20)
 distance_scale.setValue(0.01)
-moves[mvi++] = mvScale(distance_scale, weight=3)
+moves.append( mvScale(distance_scale, weight=3) )
 </code></pre></div></div>
 
 <p>Now we can assign rates that are functions of distance between all pairs
@@ -446,7 +445,7 @@ analysis in the previous section</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log_sd &lt;- 0.5
 log_mean &lt;- ln(1) - 0.5*log_sd^2
 extirpation_rate ~ dnLognormal(mean=log_mean, sd=log_sd)
-moves[mvi++] = mvScale(extirpation_rate, weight=2)
+moves.append( mvScale(extirpation_rate, weight=2) )
 </code></pre></div></div>
 
 <p>and then provide the appropriate extirpation matrix structure</p>
@@ -486,7 +485,7 @@ the final epoch as the present.</p>
   time_min[i] &lt;- time_bounds[i][2]
   if (i != n_epochs) {
       epoch_times[i] ~ dnUniform(time_min[i], time_max[i])
-      moves[mvi++] = mvSlide(epoch_times[i], delta=(time_max[i]-time_min[i])/2)
+      moves.append( mvSlide(epoch_times[i], delta=(time_max[i]-time_min[i])/2) )
   } else {
       epoch_times[i] &lt;- 0.0
   }
@@ -515,7 +514,7 @@ as a random variables to be estimated.</p>
 p_sympatry ~ dnUniform(0,1)
 p_allopatry := abs(1.0 - p_sympatry)
 clado_type_probs := simplex(p_sympatry, p_allopatry)
-moves[mvi++] = mvSlide(p_sympatry, weight=2)
+moves.append( mvSlide(p_sympatry, weight=2) )
 P_DEC := fnDECCladoProbs(eventProbs=clado_type_probs,
                          eventTypes=clado_event_types,
                          numCharacters=n_areas,
@@ -559,16 +558,16 @@ time-heterogeneous probabilities embedded in the epoch rate generator,
 
 <p>And the rest we’ve done before…</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[mni++] = mnScreen(printgen=100, rate_bg, extirpation_rate, distance_scale)
-monitors[mni++] = mnModel(file=out_fn+".model.log", printgen=10)
-monitors[mni++] = mnFile(tree, filename=out_fn+".tre", printgen=10)
-monitors[mni++] = mnJointConditionalAncestralState(tree=tree,
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(printgen=100, rate_bg, extirpation_rate, distance_scale) )
+monitors.append( mnModel(file=out_fn+".model.log", printgen=10) )
+monitors.append( mnFile(tree, filename=out_fn+".tre", printgen=10) )
+monitors.append( mnJointConditionalAncestralState(tree=tree,
                                                        ctmc=m_bg,
                                                        type="NaturalNumbers",
                                                        withTips=true,
                                                        withStartStates=true,
                                                        filename=out_fn+".states.log",
-                                                       printgen=10)
+                                                       printgen=10) )
 </code></pre></div></div>
 
 <p>Wrap the model graph into a model object</p>
