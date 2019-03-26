@@ -99,12 +99,11 @@ in three files named `hawaii.n4.times.txt`,
     times_fn = geo_fn + ".times.txt"
     dist_fn = geo_fn + ".distances.txt"
 
-Create move index (mvi) and monitor index
-(mni) variables to populate the elements of our
+Create vectors that will contain all of our
 moves and monitors vectors, respectively.
 
-    mvi = 1
-    mni = 1
+    moves = VectorMoves()
+    monitors = VectorMonitors()
 
 Read in the presence-absence range characters and record the number of
 areas in the dataset
@@ -212,7 +211,7 @@ with the biogeographic rate scaling parameter `rate_bg`.
     log10_rate_bg ~ dnUniform(-4,2)
     log10_rate_bg.setValue(-2)
     rate_bg := 10^log10_rate_bg
-    moves[mvi++] = mvSlide(log10_rate_bg, weight=4)
+    moves.append( mvSlide(log10_rate_bg, weight=4) )
 
 Fix the base dispersal rate to 1
 
@@ -227,7 +226,7 @@ $a=0$. Add a distance scale parameter
 
     distance_scale ~ dnUnif(0,20)
     distance_scale.setValue(0.01)
-    moves[mvi++] = mvScale(distance_scale, weight=3)
+    moves.append( mvScale(distance_scale, weight=3) )
 
 Now we can assign rates that are functions of distance between all pairs
 of areas, *but also over all epochs*. To accomplish this,
@@ -259,7 +258,7 @@ analysis in the previous section
     log_sd <- 0.5
     log_mean <- ln(1) - 0.5*log_sd^2
     extirpation_rate ~ dnLognormal(mean=log_mean, sd=log_sd)
-    moves[mvi++] = mvScale(extirpation_rate, weight=2)
+    moves.append( mvScale(extirpation_rate, weight=2) )
 
 and then provide the appropriate extirpation matrix structure
 
@@ -296,7 +295,7 @@ the final epoch as the present.
       time_min[i] <- time_bounds[i][2]
       if (i != n_epochs) {
           epoch_times[i] ~ dnUniform(time_min[i], time_max[i])
-          moves[mvi++] = mvSlide(epoch_times[i], delta=(time_max[i]-time_min[i])/2)
+          moves.append( mvSlide(epoch_times[i], delta=(time_max[i]-time_min[i])/2) )
       } else {
           epoch_times[i] <- 0.0
       }
@@ -323,7 +322,7 @@ as a random variables to be estimated.
     p_sympatry ~ dnUniform(0,1)
     p_allopatry := abs(1.0 - p_sympatry)
     clado_type_probs := simplex(p_sympatry, p_allopatry)
-    moves[mvi++] = mvSlide(p_sympatry, weight=2)
+    moves.append( mvSlide(p_sympatry, weight=2) )
     P_DEC := fnDECCladoProbs(eventProbs=clado_type_probs,
                              eventTypes=clado_event_types,
                              numCharacters=n_areas,
@@ -364,16 +363,16 @@ Attach the observed range data to the distribution
 
 And the rest we've done before...
 
-    monitors[mni++] = mnScreen(printgen=100, rate_bg, extirpation_rate, distance_scale)
-    monitors[mni++] = mnModel(file=out_fn+".model.log", printgen=10)
-    monitors[mni++] = mnFile(tree, filename=out_fn+".tre", printgen=10)
-    monitors[mni++] = mnJointConditionalAncestralState(tree=tree,
+    monitors.append( mnScreen(printgen=100, rate_bg, extirpation_rate, distance_scale) )
+    monitors.append( mnModel(file=out_fn+".model.log", printgen=10) )
+    monitors.append( mnFile(tree, filename=out_fn+".tre", printgen=10) )
+    monitors.append( mnJointConditionalAncestralState(tree=tree,
                                                            ctmc=m_bg,
                                                            type="NaturalNumbers",
                                                            withTips=true,
                                                            withStartStates=true,
                                                            filename=out_fn+".states.log",
-                                                           printgen=10)
+                                                           printgen=10) )
                                                            
 
 Wrap the model graph into a model object
