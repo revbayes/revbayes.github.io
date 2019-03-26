@@ -103,14 +103,9 @@ schedule:
     material: "&#x1F35C;"
 
   - starttime: 2019-03-27T14:00
-    endtime: 2019-03-27T14:30
-    topic: "Lecture: Historical Biogeography"
-    instructors: "&#x1F469;&#x1F3FB;&#x200D;&#x1F3EB;"
-
-  - starttime: 2019-03-27T14:30
     endtime: 2019-03-27T15:30
     topic: "Tutorial: Historical Biogeography"
-    ntutorials: biogeo/biogeo_simple
+    tutorials: biogeo/biogeo_simple
     instructors: "&#x1F4BB;"
 
   - starttime: 2019-03-27T15:30
@@ -121,7 +116,7 @@ schedule:
   - starttime: 2019-03-27T16:00
     endtime: 2019-03-27T17:30
     topic: "Tutorial: Biogeography with Epoch Models"
-    ntutorials: biogeo/biogeo_epoch
+    tutorials: biogeo/biogeo_epoch
     instructors: "&#x1F4BB;"
 
   - starttime: 2019-03-28T09:30
