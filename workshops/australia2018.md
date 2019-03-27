@@ -65,7 +65,7 @@ schedule:
 
   - starttime: 2019-03-26T14:00
     endtime: 2019-03-26T15:30
-    topic: "Tutorial: Phylogenetic Inference using RevBayes"
+    topic: "Lab: Phylogenetic Inference using RevBayes"
     tutorials: ctmc
     instructors: "&#x1F4BB;"
 
@@ -76,8 +76,7 @@ schedule:
 
   - starttime: 2019-03-26T16:00
     endtime: 2019-03-26T17:30
-    topic: "Tutorial: Phylogenetic Inference using RevBayes, continued"
-    tutorials: ctmc
+    topic: "Lab: Phylogenetic Inference using RevBayes, continued"
     instructors: "&#x1F4BB;"
 
   - starttime: 2019-03-27T09:30
@@ -93,9 +92,8 @@ schedule:
 
   - starttime: 2019-03-27T11:30
     endtime: 2019-03-27T12:30
-    topic: "Lab: Estimating Trees and Divergence Times"
-    tutorials: fbd/fbd_specimen
-    instructors: "&#x1F4BB;"
+    topic: "Lecture: Bayesian Divergence-Time Estimation, continued"
+    instructors: "&#x1F469;&#x1F3FB;&#x200D;&#x1F3EB;"
 
   - starttime: 2019-03-27T12:30
     endtime: 2019-03-27T14:00
@@ -104,8 +102,8 @@ schedule:
 
   - starttime: 2019-03-27T14:00
     endtime: 2019-03-27T15:30
-    topic: "Tutorial: Historical Biogeography"
-    tutorials: biogeo/biogeo_simple
+    topic: "Lab: Estimating Trees and Divergence Times"
+    tutorials: fbd/fbd_specimen
     instructors: "&#x1F4BB;"
 
   - starttime: 2019-03-27T15:30
@@ -115,15 +113,14 @@ schedule:
 
   - starttime: 2019-03-27T16:00
     endtime: 2019-03-27T17:30
-    topic: "Tutorial: Biogeography with Epoch Models"
-    tutorials: biogeo/biogeo_epoch
+    topic: "Lab: Estimating Trees and Divergence Times, continued"
     instructors: "&#x1F4BB;"
 
   - starttime: 2019-03-28T09:30
     endtime: 2019-03-28T10:30
-    topic: "Lecture: Modeling Branch-Heterogeneous Processes"
-    material: 
-    instructors: "&#x1F469;&#x1F3FB;&#x200D;&#x1F3EB;"
+    topic: "Lab: Historical Biogeography"
+    tutorials: biogeo/biogeo_simple 
+    instructors: "&#x1F4BB;"
 
   - starttime: 2019-03-28T10:30
     endtime: 2019-03-28T11:00
@@ -132,8 +129,8 @@ schedule:
 
   - starttime: 2019-03-28T11:00
     endtime: 2019-03-28T12:30
-    topic: "Tutorial: Inference Under a Branch-specific Substitution Model"
-    material: 
+    topic: "Lab: Modeling Branch-Heterogeneous Processes"
+    tutorials: 
     instructors: "&#x1F4BB;"
 
   - starttime: 2019-03-28T12:30
@@ -143,8 +140,8 @@ schedule:
 
   - starttime: 2019-03-28T14:00
     endtime: 2019-03-28T15:30
-    topic: "Discussion and Open Lab"
-    instructors: "&#x1F5E3;"
+    topic: "Presentations by ANU Researchers"
+    instructors: "&#x1F1E6;&#x1F1FA;"
 
   - starttime: 2019-03-28T15:30
     endtime: 2019-03-28T16:00
@@ -153,7 +150,7 @@ schedule:
 
   - starttime: 2019-03-28T16:00
     endtime: 2019-03-28T15:30
-    topic: "Discussion and Open Lab, continued"
+    topic: "Discussion and Open Lab"
     instructors: "&#x1F5E3;"
 
 ---
