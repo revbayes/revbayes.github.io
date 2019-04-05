@@ -25,10 +25,11 @@ using common nucleotide substitution models. The substitution models
 used in molecular evolution are continuous time Markov models, which are
 fully characterized by their instantaneous-rate matrix:
 
-$$Q = \begin{pmatrix} -\mu_A & \mu_{GA} & \mu_{CA} & \mu_{TA} \\
-\mu_{AG} & -\mu_G  & \mu_{CG} & \mu_{TG} \\
-\mu_{AC} & \mu_{GC} & -\mu_C  & \mu_{TC} \\
-\mu_{AT} & \mu_{GT} & \mu_{CT} & -\mu_T 
+$$Q = \begin{pmatrix}
+-\mu_A & \mu_{AC} & \mu_{AG} & \mu_{AT} \\
+\mu_{CA} & -\mu_C  & \mu_{CG} & \mu_{CT} \\
+\mu_{GA} & \mu_{GC} & -\mu_C  & \mu_{GT} \\
+\mu_{TA} & \mu_{TC} & \mu_{TG} & -\mu_T 
 \end{pmatrix} \mbox{  ,}$$
 
 where $\mu_{ij}$ represents the instantaneous rate of substitution from
@@ -39,11 +40,11 @@ compute the corresponding transition probabilities for a branch of
 length $t$, $P(t)$, by exponentiating the rate matrix:
 
 $$P(t) = \begin{pmatrix}          
-p_{AA}(t) & p_{GA}(t) & p_{CA}(t) & p_{TA}(t) \\
-p_{AG}(t) & p_{GG}(t) & p_{CG}(t) & p_{TG}(t) \\
-p_{AC}(t) & p_{GC}(t) & p_{CC}(t) & p_{TC}(t) \\
-p_{AT}(t) & p_{GT}(t) & p_{CT}(t) & p_{TT}(t)
-\end{pmatrix} = e^{Qt} = \sum_{j=0}^\infty\frac{tQ^j}{j!} \mbox{  .}$$
+p_{AA}(t) & p_{AC}(t) & p_{AG}(t) & p_{AT}(t) \\
+p_{CA}(t) & p_{CC}(t) & p_{CG}(t) & p_{CT}(t) \\
+p_{CG}(t) & p_{CG}(t) & p_{GG}(t) & p_{GT}(t) \\
+p_{CT}(t) & p_{CT}(t) & p_{GT}(t) & p_{TT}(t)
+\end{pmatrix} = e^{Qt} = \sum_{j=0}^\infty\frac{(Qt)^j}{j!} \mbox{  .}$$
 
 Each of the named substitution models (e.g., HKY or GTR) has a uniquely defined
 instantaneous-rate matrix, $Q$.
@@ -520,7 +521,7 @@ Notice that we also specified `nruns=2` which means that RevBayes will automatic
 You will find that the output is created in two files with extension `_run_1` and `_run_2` for each replicate and additionally the samples from both runs are combined into one file for more convenient post-processing. 
 Now, run the MCMC:
 ```
-mymcmc.run(generations=20000,tuningInterval=200)
+mymcmc.run(generations=20000)
 ```
 
 When the analysis is complete, you will have the monitored files in your output directory.
