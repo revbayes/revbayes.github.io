@@ -42,8 +42,8 @@ length $t$, $P(t)$, by exponentiating the rate matrix:
 $$P(t) = \begin{pmatrix}          
 p_{AA}(t) & p_{AC}(t) & p_{AG}(t) & p_{AT}(t) \\
 p_{CA}(t) & p_{CC}(t) & p_{CG}(t) & p_{CT}(t) \\
-p_{CG}(t) & p_{CG}(t) & p_{GG}(t) & p_{GT}(t) \\
-p_{CT}(t) & p_{CT}(t) & p_{GT}(t) & p_{TT}(t)
+p_{GA}(t) & p_{GC}(t) & p_{GG}(t) & p_{GT}(t) \\
+p_{TA}(t) & p_{TC}(t) & p_{TG}(t) & p_{TT}(t)
 \end{pmatrix} = e^{Qt} = \sum_{j=0}^\infty\frac{(Qt)^j}{j!} \mbox{  .}$$
 
 Each of the named substitution models (e.g., HKY or GTR) has a uniquely defined
