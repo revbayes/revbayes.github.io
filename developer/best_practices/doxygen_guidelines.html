@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
-    <title>RevBayes: Jobs</title>
+    <title>RevBayes: Documentation guidelines</title>
   </head>
   <body>
     <div class="container">
@@ -50,52 +50,71 @@
   </div>
 </nav>
 
-      <h1 class="maintitle">
-
-Job advertisements related to RevBayes
-
-</h1>
-<hr>
-
-<p>Throughout the year, the members of the RevBayes development team and our collaborators advertise jobs in our groups related to development in RevBayes.</p>
-
-<div id="jobs">
-<table class="table table-striped" style="width:100%">
-<tr class="header">
-<td width="15%"><b>Application Date</b></td>
-<td width="25%"><b>Job Title</b></td>
-<td width="25%"><b>Location</b></td>
-<td width="25%"><b>PI</b></td>
-</tr>
-
-		<tr class="event" id="17835-Programmer position&#58; Supporting development of RevBayes">
-		<td>October 31, 2018</td>
-		<td><a href="/jobs/programmer_position_2018_sebastian.html">Programmer position&#58; Supporting development of RevBayes</a></td>
-		<td>GeoBio-Center, Ludwig-Maximilians-Universität, München, Germany</td>
-		<td><a href="mailto:phylomatics@gmail.com?subject=PhD-Position">Sebastian Höhna</a></td>
-		</tr>
+      <div class="titlebar">
+	<h1 class="maintitle">Documentation guidelines</h1>
 	
-		<tr class="event" id="17835-Postdoc position&#58; Developing methods and models for gene-tree species-tree estimation">
-		<td>October 31, 2018</td>
-		<td><a href="/jobs/postdoc_position_2018_sebastian.html">Postdoc position&#58; Developing methods and models for gene-tree species-tree estimation</a></td>
-		<td>GeoBio-Center, Ludwig-Maximilians-Universität, München, Germany</td>
-		<td><a href="mailto:phylomatics@gmail.com?subject=Postdoc-Position">Sebastian Höhna</a></td>
-		</tr>
-	
-		<tr class="event" id="17835-PhD position&#58; Developing new methods and models for robust gene-tree estimation">
-		<td>October 31, 2018</td>
-		<td><a href="/jobs/phd_position_2018_sebastian.html">PhD position&#58; Developing new methods and models for robust gene-tree estimation</a></td>
-		<td>GeoBio-Center, Ludwig-Maximilians-Universität, München, Germany</td>
-		<td><a href="mailto:phylomatics@gmail.com?subject=PhD-Position">Sebastian Höhna</a></td>
-		</tr>
-	
-<tr>
+	<h4 class="authors"></h4>
+  <h5>Last modified on April 26, 2019</h5>
+</div>
 
+<p>RevBayes uses Doxygen to compile documentation from the code. Documentation is critical to help other programmers understand the code, so here are some guidelines to get you started.</p>
 
-<script type="text/javascript" src="/assets/js/vendor/jquery.min.js"></script>
-<script type="text/javascript" src="/assets/js/jobs.js"></script>
-</tr></table></div>
+<h2 id="important-notes">Important notes</h2>
+<ul>
+  <li>member functions which reimplement functions from a parent class will automatically inherit their documentation from the parent. Only document these if additional details are required. The @copydoc commands allows to copy documentation from any other class or member.</li>
+  <li>long documentation should always be placed just before the definition it applies to. Brief descriptions can be placed after members.</li>
+</ul>
 
+<h2 id="header-files-h">Header files (.h)</h2>
+<ul>
+  <li>document the class, with references (using the @cite command with a BibTEX reference) if applicable.</li>
+  <li>all members (functions and variables) including the private ones should be followed by a brief description (unless the parent description is adequate).</li>
+</ul>
+
+<h2 id="implementation-files-cpp">Implementation files (.cpp)</h2>
+<ul>
+  <li>detailed descriptions of member functions go there (unless the parent description is adequate).</li>
+  <li>the commands @param, @return and @throw are used to document respectively the parameters, the return value and the exceptions thrown.</li>
+  <li>simple getters and setters do not need detailed documentation.</li>
+</ul>
+
+<h2 id="other-useful-doxygen-commands">Other useful doxygen commands</h2>
+<ul>
+  <li>@todo and @bug to document problematic behavior or missing features</li>
+  <li>@note and @warning to document tricky or unexpected behavior</li>
+  <li>@see to reference other classes/methods</li>
+</ul>
+
+<h2 id="do">Do</h2>
+<ul>
+  <li>include information about memory side-effects of the code, in particular the use of new and delete.</li>
+  <li>document the default values of the parameters, if applicable.</li>
+  <li>inherit documentation or use the @copydoc command instead of copy-pasting whenever possible.</li>
+</ul>
+
+<h2 id="do-not">Do not</h2>
+<ul>
+  <li>replicate information given by git, such as author or modification dates of the files. Exception: code adapted or copied from outside the RevBayes project should be credited to the original author and include licensing information if applicable.</li>
+  <li>restate information easily available in the code, such as the parent class.</li>
+  <li>leave commented-out code unless accompanied by a comment stating what it does and why it was left in.</li>
+</ul>
+
+<ol class="bibliography"></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
       <br>
 <footer>
   <div class="container">
