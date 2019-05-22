@@ -314,6 +314,8 @@ Then, we accept the proposal with probability $R$ and reject otherwise
 (step 4 of the [The Metropolis-Hastings Algorithm Section](#sect:MH_algorithm)):
 
 ```
+# Accept or reject the proposal
+u = runif(1,0,1)[1]
 if(u < R){
 # Accept the proposal
     mu = mu_prime 
