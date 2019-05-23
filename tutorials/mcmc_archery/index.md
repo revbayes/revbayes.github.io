@@ -316,6 +316,7 @@ Then, we accept the proposal with probability $R$ and reject otherwise
 ```
 # Accept or reject the proposal
 u = runif(1,0,1)[1]
+
 if(u < R){
 # Accept the proposal
     mu = mu_prime 
