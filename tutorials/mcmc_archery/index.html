@@ -54,7 +54,7 @@
 	<h1 class="maintitle">Introduction to MCMC using RevBayes</h1>
 	<h3 class="subtitle">A simple Archery example for building a hierarchical model and sampling under Markov Chain Monte Carlo</h3>
 	<h4 class="authors">Wade Dismukes, Tracy A. Heath, Walker Pett</h4>
-  <h5>Last modified on March 24, 2019</h5>
+  <h5>Last modified on May 23, 2019</h5>
 </div>
 
 
@@ -357,7 +357,10 @@ R = ( likelihood(mu_prime)/likelihood(mu) ) * ( prior(mu_prime)/prior(mu) )
 <p>Then, we accept the proposal with probability $R$ and reject otherwise
 (step 4 of the <a href="#sect:MH_algorithm">The Metropolis-Hastings Algorithm Section</a>):</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if(u &lt; R){
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Accept or reject the proposal
+u = runif(1,0,1)[1]
+
+if(u &lt; R){
 # Accept the proposal
     mu = mu_prime 
 }
