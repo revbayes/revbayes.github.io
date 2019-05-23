@@ -23,7 +23,7 @@ Mac and Windows users can download one of the compiled executables below:
 
 <div class="col-sm-4" align="center">
 <h2>Linux</h2>
-<p>Compile: see below.</p> <--a href="http://github.com/revbayes/revbayes" class="btn btn-info" role="button">GitHub Repository</a -->
+<p>Compile: see below.</p>
 </div>
 
 </div>
