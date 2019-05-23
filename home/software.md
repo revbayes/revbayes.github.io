@@ -5,6 +5,9 @@ subtitle: Download and Install RevBayes
 permalink: /software
 code_layout: bash
 ---
+## Download pre-compiled executables
+
+Mac and Windows users can download one of the compiled executables below:
 
 <div class="row">
 
@@ -27,8 +30,12 @@ code_layout: bash
 
 <br>
 
+
 ## Compiling from source
 ----
+
+Mac and Windows users do not need to compile RevBayes from source.  However, compiling RevBayes is relatively simple process:
+
 ### Linux
 
     git clone https://github.com/revbayes/revbayes.git revbayes
