@@ -1,130 +1,100 @@
 {% section Overview: Diversification Rate Estimation | diversification_rate_overview %}
 
 
-Models of speciation and extinction are fundamental to any phylogenetic
-analysis of macroevolutionary processes
-(e.g., divergence time estimation,
-diversification rate estimation, continuous and discrete trait
-evolution, and historical biogeography). First, a prior model describing
-the distribution of speciation events over time is critical to
-estimating phylogenies with branch lengths proportional to time. Second,
-stochastic branching models allow for inference of speciation and
-extinction rates. These inferences allow us to investigate key questions
-in evolutionary biology.
-
-Diversification-rate parameters may be included as nuisance parameters
-of other phylogenetic models—*i.e.*, where
-these diversification-rate parameters are not of direct interest. For
-example, many methods for estimating species divergence times—such as
-`BEAST` {% cite Drummond2012 %},
-`MrBayes` {% cite Ronquist2012 %}, and
-`RevBayes` {% cite Hoehna2016b %}—implement 'relaxed-clock models'
-that include a constant-rate birth-death branching process as a prior
-model on the distribution of tree topologies and node ages. Although the
-parameters of these 'tree priors' are not typically of direct interest,
-they are nevertheless estimated as part of the joint posterior
-probability distribution of the relaxed-clock model, and so can be
-estimated simply by querying the corresponding marginal posterior
-probability densities. In fact, this may provide more robust estimates
-of the diversification-rate parameters, as they accommodate uncertainty
-in the other phylogenetic-model parameters (including the tree topology,
-divergence-time estimates, and the other relaxed-clock model
-parameters). More recent work,
-*e.g.*, {% citet Heath2014 %}, uses macroevolutionary
-models (the fossilized birth-death process) to calibrate phylogenies and
-thus to infer dated trees.
-
-In these tutorials we focus on the different types of macroevolutionary
+Stochastic branching models allow for inference of speciation and
+extinction rates. In these tutorials we focus on the different types of macroevolutionary
 models to study diversification processes and thus the
-diversification-rate parameters themselves. Nevertheless, these
-macroevolutionary models should be used for other evolutionary
-questions, when an appropriate prior distribution on the tree and
-divergence times is needed.
+diversification-rate parameters themselves. 
 
 
 {% subsection Types of Hypotheses for Estimating Diversification Rates %}
 
-Many evolutionary phenomena entail differential rates of diversification
-(speciation – extinction); e.g., adaptive
-radiation, diversity-dependent diversification, key innovations, and
-mass extinction. The specific study questions regarding lineage
-diversification may be classified within three fundamental categories of
-inference problems. Admittedly, this classification scheme is somewhat
-arbitrary, but it is nevertheless useful, as it allows users to navigate
-the ever-increasing number of available phylogenetic methods. Below, we
-describe each of the fundamental questions regarding diversification
-rates.
+Macroevolutionary diversification rate estimation focuses on different key hypothesis,
+which may include:
+adaptive radiation, diversity-dependent and character diversification, key innovations, and
+mass extinction. 
+We classify these hypotheses primarily into questions whether diversification rates vary through time, 
+and if so, whether some external, global factor has driven diversification rate changes, or if
+diversification rates vary among lineages, and if so, whether some species specific factor is correlated with
+the diversification rates.
 
-{% subsubsection (1) Diversification-rate through time estimation %}
+Below, we describe each of the fundamental questions regarding diversification rates.
 
-*What is the global rate of diversification in my study group?* The
-most basic models estimate parameters of the stochastic-branching
-process (*i.e.*, rates of speciation and
-extinction, or composite parameters such as net-diversification and
-relative-extinction rates) under the assumption that rates have remained
-constant across lineages and through time;
-*i.e.*,  under a constant-rate birth-death
-stochastic-branching process model {% cite Nee1994b %}. Extensions to the
-(basic) constant-rate models include diversification-rate variation
-through time {% cite Stadler2011 Hoehna2015a %}. First, we might ask whether
-there is evidence of an episodic, tree-wide increase in diversification
-rates (associated with a sudden increase in speciation rate and/or
-decrease in extinction rate), as might occur during an episode of
-adaptive radiation. A second question asks whether there is evidence of
-a continuous/gradual decrease in diversification rates through time
-(associated with decreasing speciation rates and/or increasing
-extinction rates), as might occur because of diversity-dependent
-diversification (*i.e.*,  where competitive
-ecological interactions among the species of a growing tree decrease the
-opportunities for speciation and/or increase the probability of
-extinction, e.g., {% citet Hoehna2014a %}). 
-A final question in this category asks whether our
-study tree was impacted by a mass-extinction event (where a large
-fraction of the standing species diversity is suddenly lost,
-e.g., {% citet May2016 %}). The common theme of these
-studies is that the diversification process is tree-wide, that is, all
-lineages of the study group have the exact same rates at a given time.
+{% subsubsection (1) Constant diversification-rate estimation %}
+
+*What is the global rate of diversification in my phylogeny?* 
+The most basic models estimate parameters of the birth-death process 
+(*i.e.*, rates of speciation and extinction, or composite parameters 
+such as net-diversification and relative-extinction rates) 
+under the assumption that rates have remained constant across lineages and through time.
+This is the most basic example and should be treated as a primer and introduction into the topic.
+
+For more information, we recommend the {% page_ref divrate/simple %}.
 
 
-{% subsubsection (2) Diversification-rate through time estimation %}
+{% subsubsection (2) Diversification rate variation through time %}
 
-*Are diversification rates correlated with some abiotic (e.g., environmental) variable in my study
-group?*
-If we have found evidence in the previous section that diversification rates vary
-through time, then we can start asking the question whether these changes in diversification
-rates are driven by some abiotic factors. 
+*Is there diversification rate variation through time in my phylogeny?*
+There are several reasons why diversification rates for the entire study group can vary through time, for example:
+adaptive radiation, diversity dependence and mass-extinction events.
+We can detect a signal any of these causes by detecting diversification rate variation through time.
+Thus, we extend the (basic) constant-rate models to diversification-rate variation through time {% cite Stadler2011 Hoehna2015a %}.
+
+The different tutorials references below cover different scenarios for diversification rate variation through time.
+The common theme of these studies is that the diversification process is tree-wide, that is, 
+all lineages of the study group have the exact same rates at a given time.
+
+
+{% subsubsection (2a) Detecting diversification rate variation through time %}
+
+In 'RevBayes' we use an episodic birth-death model to study diversification rate variation through time.
+That is, we assume that diversification rates are constant within an epoch but may shift between episodes ({% citet Stadler2011 Hoehna2015a %}). 
+Then, we are estimating the diversification rates for each episode, and thus diversification rate variation through time.
+
+You can find examples and more information in the {% page_ref divrate/ebd %}.
+
+
+{% subsubsection (2b) Detecting the impact of mass-extinction events on diversification %}
+
+A final question in this category asks whether our study tree was impacted by a mass-extinction event 
+(where a large fraction of the standing species diversity is suddenly lost, e.g., {% citet Hoehna2015a May2016 %}). 
+
+
+
+{% subsubsection (3) Diversification-rate correlation to environmental (e.g., abiotic) factors %}
+
+*Are diversification rates correlated with some abiotic (e.g., environmental) variable in my phylogeny?*
+If we have found evidence in the previous section that diversification rates vary through time, 
+then we can start asking the question whether these changes in diversification
+rates are driven by some abiotic (e.g., environmental) factors. 
 For example, we can ask whether changes in diversification rates are correlated with
-environmental factors, such as environmental CO<sub>2</sub> or temperature
-{% cite Condamine2013 %}. 
+environmental factors, such as environmental CO<sub>2</sub> or temperature {% cite Condamine2013 Condamine2018 %}. 
+
+You can find examples and more information in the {% page_ref divrate/env %}.
 
 
-{% subsubsection (3) Diversification-rate variation across branches estimation %}
+{% subsubsection (4) Diversification-rate variation across branches estimation %}
+*Is there evidence that diversification rates have varied across the branches of my phylogeny?* 
+Have there been significant diversification-rate shifts along branches in my phylogeny, 
+and if so, how many shifts, what magnitude of rate-shifts and along which branches?
+Similarly, one may ask what are the branch-specific diversification rates?
 
-*Is there evidence that diversification rates have varied significantly
-across the branches of my study group?* Models have been developed to
-detect departures from rate constancy across lineages; these tests are
-analogous to methods that test for departures from a molecular
-clock—*i.e.*,  to assess whether substitution
-rates vary significantly across lineages {% cite Alfaro2009 Rabosky2014a %}.
-These models are important for assessing whether a given tree violates
-the assumptions of rate homogeneity among lineages. Furthermore, these
-models are important to answer questions such as: *What are the
-branch-specific diversification rates?*; and *Have there been
-significant diversification-rate shifts along branches in my study
-group, and if so, how many shifts, what magnitude of rate-shifts and
-along which branches?*
+You can study diversification rate variation among lineages using our birth-death-shift process {% cite Hoehna2019 %}. 
+Examples and more information is provided in the {% page_ref divrate/branch_specific %}.
 
-{% subsubsection (4) Character-dependent diversification-rate estimation %}
 
-*Are diversification rates correlated with some biotic (e.g., morphological) variable in my study
-group?* Character-dependent diversification-rate models aim to identify
+{% subsubsection (5) Character-dependent diversification-rate estimation %}
+If we have found that there is rate variation among lineage, then we could ask if 
+diversification rates correlated with some biotic (e.g., morphological) variable.
+This can be addressed by using character-dependent birth-death models 
+(often also called state-dependent speciation and extinction models; SSE models).
+Character-dependent diversification-rate models aim to identify
 overall correlations between diversification rates and organismal
 features (binary and multi-state discrete morphological traits,
 continuous morphological traits, geographic range, etc.). For example,
 one can hypothesize that a binary character, say if an organism is
 herbivorous/carnivorous or self-compatible/self-incompatible, impact the
-diversification rates. Then, if the organism is in state 0
-(e.g., is herbivorous) it has a lower (or
-higher) diversification rate than if the organism is in state 1
-(e.g., carnivorous) {% cite Maddison2007 %}.
+diversification rates. Then, if the organism is in state 0 (e.g., is herbivorous) 
+it has a lower (or higher) diversification rate than if the organism is in state 1 (e.g., carnivorous) {% cite Maddison2007 %}.
 
+You can find examples and more information in the {% page_ref sse/bisse-intro %}.
