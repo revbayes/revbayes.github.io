@@ -13,18 +13,11 @@ prerequisites:
 index: true
 title-old: RB_DiversificationRate_BranchSpecific_Tutorial
 redirect: false
-exclude_files:
-- data/primates.tre
-- scripts/mcmc_BD.Rev
-- scripts/mcmc_EBD_Corr_RJ.Rev
-- scripts/mcmc_EBD_Corr.Rev
-- scripts/mcmc_EBD.Rev
-- scripts/mcmc_MRBD.Rev
-- scripts/mcmc_Yule.Rev
-- scripts/mcmc_Yule_prior.Rev
-- scripts/ml_BD.Rev
-- scripts/ml_Yule.Rev
-- scripts/plot.R
+include_all: false
+include_files:
+- data/primates_tree.nex
+- scripts/mcmc_BDS.Rev
+- scripts/plot_BDS.R
 ---
 
 {% include_relative modules/branch_specific_overview.md %}
