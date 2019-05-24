@@ -27,7 +27,6 @@ monitors = VectorMonitors()
 
 
 # Global parameters for our analysis
-EXPECTED_NUM_EVENTS   = 2
 NUM_TOTAL_SPECIES     = 367
 NUM_RATE_CATEGORIES   = 6
 H = 0.587405
@@ -36,23 +35,20 @@ H = 0.587405
 # Create the rates #
 ####################
 
-
-### rho is the probability of sampling species at the present
-### fix this to 367/367, since there are ~367 described species of primates
-### and we have sampled 367
-rho <- observed_phylogeny.ntips() / NUM_TOTAL_SPECIES
-
 ### Specify a prior on the speciation and extinction rates
 rate_mean <- (NUM_TOTAL_SPECIES-2) / tree_length
-
-
-rate_sd ~ dnExponential( 1.0 / H )
-moves.append( mvScale(rate_sd, lambda=1, tune=true, weight=2.0) )
 
 ### Create a lognormal distributed variable for the mean speciation rate
 speciation_mean ~ dnLoguniform( 1E-6, 1E2)
 speciation_mean.setValue( rate_mean )
 moves.append( mvScale(speciation_mean, lambda=1, tune=true, weight=2.0) )
+
+speciation_sd ~ dnExponential( 1.0 / H )
+moves.append( mvScale(speciation_sd, lambda=1, tune=true, weight=2.0) )
+
+### Create a deterministic variable for the speciation rate categories
+### using a discretized lognormal distribution (the N-quantiles of it)
+speciation := fnDiscretizeDistribution( dnLognormal(ln(speciation_mean), speciation_sd), NUM_RATE_CATEGORIES )
 
 ### Create a lognormal distributed variable for the mean extinction rate
 extinction_mean ~ dnLoguniform( 1E-6, 1E2)
@@ -60,21 +56,22 @@ extinction_mean.setValue( rate_mean / 2.0 )
 moves.append( mvScale(extinction_mean, lambda=1, tune=true, weight=2.0) )
 
 ### Create a deterministic variable for the speciation rate categories
-### using a discretized lognormal distribution (the N-quantiles of it)
-speciation := fnDiscretizeDistribution( dnLognormal(ln(speciation_mean), rate_sd), NUM_RATE_CATEGORIES )
-
-### Create a deterministic variable for the speciation rate categories
 ### Assume that all extinction rates are equal
 extinction := rep(extinction_mean, NUM_RATE_CATEGORIES)
 
 ### Create a exponential distributed variable for the rate of rate-shift events
 event_rate ~ dnUniform(0.0, 100.0/tree_length)
-event_rate.setValue(EXPECTED_NUM_EVENTS/tree_length)
 moves.append( mvScale(event_rate, lambda=1, tune=true, weight=2.0) )
 
 
 ### Create a uniformly distributed variable for the category at the root
 rate_cat_probs <- simplex( rep(1, NUM_RATE_CATEGORIES) )
+
+
+### rho is the probability of sampling species at the present
+### fix this to 367/367, since there are ~367 described species of primates
+### and we have sampled 367
+rho <- observed_phylogeny.ntips() / NUM_TOTAL_SPECIES
 
 #### construct a variable for the tree drawn from a birth death process
 timetree ~ dnCDBDP( rootAge           = root,
@@ -90,13 +87,6 @@ timetree ~ dnCDBDP( rootAge           = root,
 timetree.clamp(observed_phylogeny)
 
 
-moves.append( mvGibbsDrawCharacterHistory(timetree, weight=1) )
-branch_lambda := timetree.averageSpeciationRate()
-branch_mu := timetree.averageExtinctionRate()
-branch_net_div := branch_lambda - branch_mu
-branch_rel_ext := branch_mu / branch_lambda
-
-
 #############
 # The Model #
 #############
@@ -107,8 +97,7 @@ mymodel = model(speciation)
 ### set up the monitors that will output parameter values to file and screen
 monitors.append( mnScreen(printgen=10, event_rate, speciation_mean) )
 monitors.append( mnStochasticBranchRate(cdbdp=timetree, printgen=1, filename="output/primates_BDS_rates.log") )
-monitors.append( mnExtNewick(filename="output/primates_BDS_rates.trees", isNodeParameter=FALSE, printgen=1, tree=timetree, branch_lambda, branch_mu, branch_net_div, branch_rel_ext) )
-monitors.append( mnFile(speciation_mean, extinction_mean, rate_sd, event_rate, filename="output/primates_BDS.log",printgen=1, separator = TAB) )
+monitors.append( mnModel(filename="output/primates_BDS.log",printgen=1, separator = TAB) )
 
 
 ################
@@ -116,14 +105,10 @@ monitors.append( mnFile(speciation_mean, extinction_mean, rate_sd, event_rate, f
 ################
 
 ### workspace mcmc
-mymcmc = mcmc(mymodel, monitors, moves, nruns=1, combine="mixed")
+mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
 
 ### run the MCMC
-mymcmc.run(generations=2000, tuningInterval=200)
-
-
-treetrace = readTreeTrace("output/primates_BDS_rates.trees", treetype="clock")
-map_tree = mapTree(treetrace,"output/primates_BDS_rates_MAP.tree")
+mymcmc.run(generations=2500, tuningInterval=200)
 
 ## quit ##
 q()
