@@ -38,7 +38,6 @@ For more information, we recommend the {% page_ref divrate/simple %}.
 There are several reasons why diversification rates for the entire study group can vary through time, for example:
 adaptive radiation, diversity dependence and mass-extinction events.
 We can detect a signal any of these causes by detecting diversification rate variation through time.
-Thus, we extend the (basic) constant-rate models to diversification-rate variation through time {% cite Stadler2011 Hoehna2015a %}.
 
 The different tutorials references below cover different scenarios for diversification rate variation through time.
 The common theme of these studies is that the diversification process is tree-wide, that is, 
@@ -56,12 +55,12 @@ You can find examples and more information in the {% page_ref divrate/ebd %}.
 
 {% subsubsection (2b) Detecting the impact of mass-extinction events on diversification %}
 
-A final question in this category asks whether our study tree was impacted by a mass-extinction event 
+Another question in this category asks whether our study tree was impacted by a mass-extinction event 
 (where a large fraction of the standing species diversity is suddenly lost, e.g., {% citet Hoehna2015a May2016 %}). 
 
 
 
-{% subsubsection (3) Diversification-rate correlation to environmental (e.g., abiotic) factors %}
+{% subsubsection (2c) Diversification-rate correlation to environmental (e.g., abiotic) factors %}
 
 *Are diversification rates correlated with some abiotic (e.g., environmental) variable in my phylogeny?*
 If we have found evidence in the previous section that diversification rates vary through time, 
@@ -73,7 +72,7 @@ environmental factors, such as environmental CO<sub>2</sub> or temperature {% ci
 You can find examples and more information in the {% page_ref divrate/env %}.
 
 
-{% subsubsection (4) Diversification-rate variation across branches estimation %}
+{% subsubsection (3) Diversification-rate variation across branches estimation %}
 *Is there evidence that diversification rates have varied across the branches of my phylogeny?* 
 Have there been significant diversification-rate shifts along branches in my phylogeny, 
 and if so, how many shifts, what magnitude of rate-shifts and along which branches?
@@ -83,7 +82,7 @@ You can study diversification rate variation among lineages using our birth-deat
 Examples and more information is provided in the {% page_ref divrate/branch_specific %}.
 
 
-{% subsubsection (5) Character-dependent diversification-rate estimation %}
+{% subsubsection (4) Character-dependent diversification-rate estimation %}
 If we have found that there is rate variation among lineage, then we could ask if 
 diversification rates correlated with some biotic (e.g., morphological) variable.
 This can be addressed by using character-dependent birth-death models 

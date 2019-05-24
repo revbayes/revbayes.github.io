@@ -13,28 +13,23 @@ prerequisites:
 index: true
 title-old: RB_DiversificationRate_Tutorial
 redirect: false
-exclude_files:
-- scripts/mcmc_BD.Rev
-- scripts/mcmc_BDS.Rev
-- scripts/mcmc_EBD_Corr_RJ.Rev
-- scripts/mcmc_EBD_Corr.Rev
-- scripts/mcmc_EBD.Rev
-- scripts/mcmc_Yule_prior.Rev
-- scripts/ml_BD.Rev
-- scripts/ml_MRBD.Rev
-- scripts/plot.R
+include_all: false
+include_files:
+- data/primates.tre
+- data/primates_tree.nex
+- scripts/mcmc_Yule.Rev
+- scripts/ml_Yule.Rev
 ---
 
 
 {% section Estimating Constant Speciation & Extinction Rates | bdp_rate_estimation %}
 
-This tutorial describes how to specify basic branching-process models in
-RevBayes; two variants of the constant-rate birth-death process
+This tutorial describes how to specify basic birth-death models in RevBayes.
+Specifically, we will use the pure-birth (Yule) process and the constant-rate birth-death process
 {% cite Yule1925 Kendall1948 Thompson1975 Nee1994b Rannala1996 Yang1997 Hoehna2015a %}.
-The probabilistic graphical model is given for each component of this
-tutorial. After each model is specified, you will estimate speciation
-and extinction rates using Markov chain Monte Carlo (MCMC). Finally, you
-will estimate the marginal likelihood of the model and evaluate the
+The probabilistic graphical model is given for each component of this tutorial. 
+After each model is specified, you will estimate speciation and extinction rates using Markov chain Monte Carlo (MCMC). 
+Finally, you will estimate the marginal likelihood of the model and evaluate the
 relative support using Bayes factors.
 
 You should read first the {% page_ref divrate/div_rate_intro %} tutorial, which explains the theory and 
