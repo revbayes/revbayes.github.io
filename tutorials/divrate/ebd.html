@@ -54,7 +54,7 @@
 	<h1 class="maintitle">Episodic Diversification Rate Estimation</h1>
 	<h3 class="subtitle">Estimating Rate-Variation Through Time in Diversification Rates</h3>
 	<h4 class="authors">Sebastian Höhna</h4>
-  <h5>Last modified on August  6, 2018</h5>
+  <h5>Last modified on May 23, 2019</h5>
 </div>
 
 
@@ -104,6 +104,8 @@
         
           <li><a href="/tutorials/divrate/data/primates_tree.nex">primates_tree.nex</a></li>
         
+          <li><a href="/tutorials/sse/data/primates_tree.nex">primates_tree.nex</a></li>
+        
         </ul>
     
         
@@ -112,13 +114,9 @@
         
         
         
-          <li><a href="/tutorials/divrate/scripts/mcmc_BDS.Rev">mcmc_BDS.Rev</a></li>
-        
           <li><a href="/tutorials/divrate/scripts/mcmc_EBD.Rev">mcmc_EBD.Rev</a></li>
         
-          <li><a href="/tutorials/divrate/scripts/plot.R">plot.R</a></li>
-        
-          <li><a href="/tutorials/divrate/scripts/plot_BDS.R">plot_BDS.R</a></li>
+          <li><a href="/tutorials/divrate/scripts/plot_EBD.R">plot_EBD.R</a></li>
         
         </ul>
     
@@ -129,9 +127,9 @@
 <h2 class="section" id="overview">Overview</h2>
 <hr class="section" />
 
-<p>This tutorial describes how to specify an episodic branching-process model in <code class="highlighter-rouge">RevBayes</code>; 
-a birth-death process where diversification rates vary episodically through time 
-modeled as piecewise-constant rates <a href="#Stadler2011">(Stadler 2011; Höhna 2015)</a>.
+<p>This tutorial describes how to specify an episodic birth-death model in <code class="highlighter-rouge">RevBayes</code>.
+The episodic birth-death model is a process where diversification rates vary episodically through time 
+and are modeled as piecewise-constant rates <a href="#Stadler2011">(Stadler 2011; Höhna 2015)</a>.
 The probabilistic graphical model is given once at the beginning of this tutorial.
 Your goal is to estimate speciation and extinction rates through-time using 
 Markov chain Monte Carlo (MCMC).</p>
@@ -416,9 +414,9 @@ The estimated rates might change when you use a different resolution, <em>i.e.,<
 
 <ul>
   <li>Run an MCMC simulation to estimate the posterior distribution of the speciation rate and extinction rate.</li>
-  <li>Visualize the rate through time using <code class="highlighter-rouge">R</code> and upload the file.</li>
+  <li>Visualize the rate through time using <code class="highlighter-rouge">R</code>.</li>
   <li>Do you see evidence for rate decreases or increases? What is the general trend?</li>
-  <li>Is there evidence for rate variation? Look at the estimates of <code class="highlighter-rouge">speciation_sd</code> and <code class="highlighter-rouge">extinction_sd</code>: Is there information in the data to change the estimates from the prior?</li>
+  <li>Is there evidence for rate variation? Look at the estimates of <code class="highlighter-rouge">speciation_sd</code> and <code class="highlighter-rouge">extinction_sd</code> in <code class="highlighter-rouge">Tracer</code>: Is there information in the data to change the estimates from the prior?</li>
   <li>Run the analysis using a different number of intervals, <em>e.g.,</em> 5 or 50. How do the rates change?</li>
 </ul>
 
@@ -430,7 +428,7 @@ The estimated rates might change when you use a different resolution, <em>i.e.,<
     <ol>
       <li>Remove all previous occurrences of the extinction rates (<em>i.e.,</em> priors, parameters and moves).</li>
       <li>Specify a lognormal prior distribution on the constant extinction rate (<code class="highlighter-rouge">extinction $\sim$ dnLognormal(-5,sd=2*0.587405)</code>)</li>
-      <li>Add a move for the new extinction rate parameter <code class="highlighter-rouge">moves[mvi++] = mvScale(extinction,weight=5.0)</code>.</li>
+      <li>Add a move for the new extinction rate parameter <code class="highlighter-rouge">moves.append( mvScale(extinction,weight=5.0) )</code>.</li>
       <li>Remove the argument <code class="highlighter-rouge">muTimes=interval_times</code> from the birth-death process.</li>
     </ol>
   </li>
@@ -438,14 +436,14 @@ The estimated rates might change when you use a different resolution, <em>i.e.,<
 </ul>
 
 
-<ol class="bibliography"><li><span id="Hoehna2014a">Höhna S. 2014. Likelihood Inference of Non-Constant Diversification Rates with Incomplete Taxon Sampling. PLoS One. 9:e84184.</span>
-
-<a href="https://doi.org/10.1371/journal.pone.0084184">10.1371/journal.pone.0084184</a>
-
-</li>
-<li><span id="Hoehna2015a">Höhna S. 2015. The time-dependent reconstructed evolutionary process with a key-role for mass-extinction events. Journal of Theoretical Biology. 380:321–331.</span>
+<ol class="bibliography"><li><span id="Hoehna2015a">Höhna S. 2015. The time-dependent reconstructed evolutionary process with a key-role for mass-extinction events. Journal of Theoretical Biology. 380:321–331.</span>
 
 <a href="https://doi.org/http://dx.doi.org/10.1016/j.jtbi.2015.06.005">http://dx.doi.org/10.1016/j.jtbi.2015.06.005</a>
+
+</li>
+<li><span id="Hoehna2014a">Höhna S. 2014. Likelihood Inference of Non-Constant Diversification Rates with Incomplete Taxon Sampling. PLoS One. 9:e84184.</span>
+
+<a href="https://doi.org/10.1371/journal.pone.0084184">10.1371/journal.pone.0084184</a>
 
 </li>
 <li><span id="Hoehna2014b">Höhna S., Heath T.A., Boussau B., Landis M.J., Ronquist F., Huelsenbeck J.P. 2014. Probabilistic Graphical Model Representation in Phylogenetics. Systematic Biology. 63:753–771.</span>

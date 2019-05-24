@@ -214,15 +214,7 @@ can now set up the MCMC algorithm that will sample parameter values in
 proportion to their posterior probability. The `mcmc()` function will
 create our MCMC object:
 ```
-mymcmc = mcmc(mymodel, monitors, moves)
-```
-We may wish to run the `.burnin()` member function,
-*i.e.*, if we wish to pre-run the chain and
-discard the initial states. Recall that the `.burnin()` function
-specifies a *completely separate* preliminary MCMC analysis that is used
-to tune the scale of the moves to improve mixing of the MCMC analysis.
-```
-mymcmc.burnin(generations=10000,tuningInterval=200)
+mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
 ```
 Now, run the MCMC:
 ```

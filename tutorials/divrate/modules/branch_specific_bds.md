@@ -1,20 +1,36 @@
 {% section Estimating Branch-Specific Diversification Rates %}
 
-In this analysis we are interested in estimating the
-branch-specific diversification rates.
+In this analysis we are interested in estimating the branch-specific diversification rates.
+We show how to implement and use the model developed by {% citet Hoehna2019 %}
 We are going to use the `dnCBDP` distribution which uses a finite number of rate-categories
 instead of drawing rates from a continuous distribution directly.
 
-Here we adopt an approach using (few) discrete rate categories instead.
-This allows us to numerically integrate over all possible rate
-categories using a system of differential equation originally described
-by {% citet Maddison2007 %} (see also {% citet FitzJohn2009 %} and {% citet FitzJohn2010 %}). The
-numerical procedure beaks time into very small time intervals and sums
+Here we adopt an approach using (few) discrete rate categories.
+This allows us to numerically integrate over all possible rate categories using 
+a system of differential equations originally described by {% citet Maddison2007 %} 
+(see also {% citet FitzJohn2009 %} and {% citet FitzJohn2010 %}). 
+The numerical procedure breaks time into very small time intervals and sums
 over all possible events occurring in that interval (see {% ref fig_likelihood %}).
 
-You don't need to worry about any of the technical details. It is
-important for you to realize that this model assumes that new rates at a
-rate-shift event are drawn from a given (discrete) set of rates.
+{% figure fig_likelihood %}
+<img src="figures/likelihood.png" width="100%" height="100%" /> 
+{% figcaption %}
+**Possible scenarios that could occur over the interval $\Delta t$ along a lineage that is observed at time $t$.**
+To compute the probability under the birth-death-shift process, we traverse the tree from the tips to the root in small time steps, $\Delta t$.
+For each step into the past, from time $t$ to time ($t+\Delta t$), we compute the change in probability of the observed lineage by enumerating all of the possible scenarios that could occur over the interval $\Delta t$:
+    (*i*) nothing happens,
+    (*ii*) a speciation event occurs, where the right descendant survives and the left descendant goes extinct before the present, or
+    (*iii*) a speciation event occurs, where the left descendant survives but the right goes extinct before the present, or
+    (*iv*) a diversification-rate shift from category $i$ to $j$ occurs.
+Color key: segment(s) of the tree within the interval $\Delta t$ are colored blue for state $i$ and/or green for state $j$ to reflect the conditioning of the corresponding scenarios,
+segment(s) of the tree between $t$ and the present are colored gray because we have integrated over the $k$ discrete rate categories (no specific assignment of rate categories), and
+segments of the tree between $t+\Delta t$ and the root are colored gray because we will integrated over the $k$ discrete rate categories.
+{% endfigcaption %}
+{% endfigure %}
+
+You don't need to worry about any of the technical details. 
+It is important for you to realize that this model assumes that new rates at a
+rate-shift event are drawn from a given (discrete) set of rates (see {% ref fig_discretized_lognormal %}).
 
 {% subsection Read the tree %}
 
@@ -34,31 +50,31 @@ moves    = VectorMoves()
 monitors = VectorMonitors()
 ```
 Finally, we create a helper variable that specifies the number of
-discrete rate categories, another helper variable for the expected
-number of rate-shift events, the total number of species, and the
-variation in rates.
+discrete rate categories, another helper variable for the total number of species
+and our constant for specifying the standard deviation of the lognormal distribution.
 ```
 NUM_RATE_CATEGORIES = 6
-EXPECTED_NUM_EVENTS = 2
 NUM_TOTAL_SPECIES = 367
 H = 0.587405
 ```
-Using these variables we can easily change our script, for example, to
-use more or fewer categories and test the impact.
+Using these variables we can easily change our script, for example, 
+to use more or fewer categories and test the impact.
 
 {% subsection Specifying the model %}
 
 {% subsubsection Priors on rates %}
 
 {% figure fig_discretized_lognormal %}
-<img src="figures/discretized_lognormal.png" width="75%" height="75%" /> 
+<img src="figures/discretized_distributions.png" width="100%" height="100%" /> 
 {% figcaption %}
-**Discretization of a lognormal distribution.**
-The two left figures have 4 rate categories
-and the two right plots have 10 rate categories. The top plots have the
-95% probability interval spanning one order of magnitude (`sd`
-$=0.587405$) and the bottom plots have the 95% probability interval
-spanning two orders of magnitude (`sd` $=2*0.587405$) . 
+**Approximation of the continuous base distributions for the diversification-rate parameters using discrete rate categories.**
+From left to right, we show a discretization of a lognormal distribution with k={2,4,6,8,10,20} bins.
+Our approach for computing the probability of the data under the lineage-specific birth-death-shift
+model specifies *k* quantiles of the continuous base distributions for the speciation and extinction rates. 
+We compute probabilities by marginalizing (averaging) over the *k* discrete rate categories, 
+where the diversification rate for a given category is the median of the corresponding quantile (colored dots). 
+This approach provides an efficient alternative to computing the continuous integral, 
+and will provide a reliable approximation of the continuous integral when the number of categories *k* is sufficiently large to resemble the underlying continuous distribution.
 {% endfigcaption %}
 {% endfigure %}
 
@@ -76,22 +92,19 @@ distribution in our case) change the quantiles will update automatically
 as well. Thus we only need to specify parameters for our base
 distribution, the lognormal distribution. 
 We choose a log-uniform distribution as the prior distribution for the mean parameter of the lognormal distribution.
- fixed on our expected diversification rate, which is
-$$\ln( \ln(\frac{\#Taxa}{2})/age )$$. 
 ```
 speciation_mean ~ dnLoguniform( 1E-6, 1E2)
 moves.append( mvScale(speciation_mean, lambda=1, tune=true, weight=2.0) )
-
 ```
 Next, we choose an exponential prior distribution with mean of $H$ for the variation in speciation rates.
 ```
-rate_sd ~ dnExponential( 1.0 / H )
-moves.append( mvScale(rate_sd, lambda=1, tune=true, weight=2.0) )
+speciation_sd ~ dnExponential( 1.0 / H )
+moves.append( mvScale(speciation_sd, lambda=1, tune=true, weight=2.0) )
 ```
 Now, we can compute the speciation rate categories.
 We will use a lognormal distribution discretized into `NUM_RATE_CATEGORIES` quantiles and the parameters that we should created.
 ```
-speciation := fnDiscretizeDistribution( dnLognormal(ln(speciation_mean), rate_sd), NUM_RATE_CATEGORIES )
+speciation := fnDiscretizeDistribution( dnLognormal(ln(speciation_mean), speciation_sd), NUM_RATE_CATEGORIES )
 ```
 
 <!-- Alternatively, we choose a fixed standard deviation of $H * 2$ for the
@@ -119,12 +132,11 @@ have much prior information about this rate but we can provide some
 realistic ranges. For example, we can specify a uniform distribution that the
 goes from 0 to 100 expected events. 
 Remember that this is only possible if the tree is known and not
-estimated simultaneously because only if the tree is do we also know the
+estimated simultaneously because only if the tree is known, then we also know the
 tree length. As usual for rate parameter, we apply a scaling move to the
 `event_rate` variable.
 ```
 event_rate ~ dnUniform(0.0, 100.0/tree_length)
-event_rate.setValue(EXPECTED_NUM_EVENTS/tree_length)
 moves.append( mvScale(event_rate, lambda=1, tune=true, weight=2.0) )
 ```
 Additionally, we need a parameter for probability that the process starts at the root in any of the diversification-rate categories. 
@@ -198,15 +210,6 @@ And then we attach data to it.
 ```
 timetree.clamp(observed_phylogeny)
 ```
-For summary and plotting purposes, we need to extract the branch-specific diversification rate estimate from the tree.
-We will use a stochastic rate mapping algorithm, which is derived from stochastic character mapping.
-```
-moves.append( mvGibbsDrawCharacterHistory(timetree, weight=1) )
-branch_lambda := timetree.averageSpeciationRate()
-branch_mu := timetree.averageExtinctionRate()
-branch_net_div := branch_lambda - branch_mu
-branch_rel_ext := branch_mu / branch_lambda
-```
 
 Finally, we create a workspace object of our whole model using the
 `model()` function.
@@ -226,19 +229,16 @@ model monitor using the `mnModel` function. This creates a new monitor
 variable that will output the states for all model parameters when
 passed into a MCMC function.
 ```
-monitors.append( mnModel(filename="output/primates_FRC_BDSP.log",printgen=10, separator = TAB) )
+monitors.append( mnModel(filename="output/primates_BDS.log",printgen=1, separator = TAB) )
 ```
-Additionally, we create an extended-Newick monitor. The extended-Newick
-monitor writes the tree to a file and adds parameter values to the
-branches and/or nodes of the tree. We can thus print the tree with the
-average speciation and extinction rates, as well as the net
-diversification (speciation - extinction) and relative extinction
-(extinction / speciation) rates, for each branch into a file. We will
-need this file later to estimate and visualize the posterior
+For summary and plotting purposes, we need to obtain the branch-specific diversification rate estimate along the tree.
+We will use a stochastic rate mapping algorithm {% citet Freyman2019 %}.
+Thus, we create an `mnStochasticBranchRate`. The stochastic branch-rate monitor
+draws stochastic character maps and writes the *simulated* branch rates into a file. 
+We will need this file later to estimate and visualize the posterior
 distribution of the rates at the branches.
 ```
 monitors.append( mnStochasticBranchRate(cdbdp=timetree, printgen=1, filename="output/primates_BDS_rates.log") )
-monitors.append( mnExtNewick(filename="output/primates_BDS_rates.trees", isNodeParameter=FALSE, printgen=1, tree=timetree, branch_lambda, branch_mu, branch_net_div, branch_rel_ext) )
 ```
 Finally, create a screen monitor that will report the states of
 specified variables to the screen with `mnScreen`:
@@ -253,20 +253,36 @@ can now set up the MCMC algorithm that will sample parameter values in
 proportion to their posterior probability. The `mcmc()` function will
 create our MCMC object:
 ```
-mymcmc = mcmc(mymodel, monitors, moves, nruns=1, combine="mixed")
+mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
 ```
 Now, run the MCMC:
 ```
-mymcmc.run(generations=10000,tuning=200)
+mymcmc.run(generations=2500,tuning=200)
 ```
-When the analysis is complete, you will have the monitored files in your
-output directory. You can then visualize the branch-specific rates by
-attaching them to the tree. This is actually done automatically in our
-`mapTree` function.
-```
-treetrace = readTreeTrace("output/primates_BDS_rates.trees", treetype="clock")
-map_tree = mapTree(treetrace,"output/primates_BDS_rates_MAP.tree")
-```
-Now you can open the tree in `FigTree`.
 
 &#8680; The `Rev` file for performing this analysis: `mcmc_BDS.Rev`
+
+When the analysis is complete, you will have the monitored files in your
+output directory. You can then visualize the branch-specific rates by
+plotting them using our `R` package `RevGadgets`. 
+
+Just start `R` in the main directory for this analysis and then type the following commands:
+```R
+library(RevGadgets)
+
+my_tree_file = "data/primates_tree.nex"
+my_branch_rates_file = "output/primates_BDS_rates.log"
+tree_plot = plot_branch_rates_tree( tree_file=my_tree_file,
+                                    branch_rates_file=my_branch_rates_file)
+
+ggsave("BDS.pdf", width=15, height=15, units="cm")
+```
+
+{% figure fig_BDS %}
+<img src="figures/BDS.png" width="100%" height="100%" /> 
+{% figcaption %}
+**Estimated branch-specific speciation rates.**
+Here we show the results of our example analysis. You'll see that there is a speciation rate
+increase for the New World Monkeys.
+{% endfigcaption %}
+{% endfigure %}
