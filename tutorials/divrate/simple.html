@@ -54,7 +54,7 @@
 	<h1 class="maintitle">Simple Diversification Rate Estimation</h1>
 	<h3 class="subtitle">Comparing different constant-rate models of lineage diversification</h3>
 	<h4 class="authors">Sebastian Höhna and Tracy Heath</h4>
-  <h5>Last modified on December 13, 2018</h5>
+  <h5>Last modified on May 23, 2019</h5>
 </div>
 
 
@@ -102,6 +102,8 @@
         
           <li><a href="/tutorials/divrate/data/primates_tree.nex">primates_tree.nex</a></li>
         
+          <li><a href="/tutorials/sse/data/primates_tree.nex">primates_tree.nex</a></li>
+        
         </ul>
     
         
@@ -114,8 +116,6 @@
         
           <li><a href="/tutorials/divrate/scripts/ml_Yule.Rev">ml_Yule.Rev</a></li>
         
-          <li><a href="/tutorials/divrate/scripts/plot_BDS.R">plot_BDS.R</a></li>
-        
         </ul>
     
 </blockquote>
@@ -125,13 +125,12 @@
 <h2 class="section" id="bdp_rate_estimation">Estimating Constant Speciation &amp; Extinction Rates</h2>
 <hr class="section" />
 
-<p>This tutorial describes how to specify basic branching-process models in
-RevBayes; two variants of the constant-rate birth-death process
+<p>This tutorial describes how to specify basic birth-death models in RevBayes.
+Specifically, we will use the pure-birth (Yule) process and the constant-rate birth-death process
 <a href="#Yule1925">(Yule 1925; Kendall 1948; Thompson 1975; Nee et al. 1994; Rannala and Yang 1996; Yang and Rannala 1997; Höhna 2015)</a>.
-The probabilistic graphical model is given for each component of this
-tutorial. After each model is specified, you will estimate speciation
-and extinction rates using Markov chain Monte Carlo (MCMC). Finally, you
-will estimate the marginal likelihood of the model and evaluate the
+The probabilistic graphical model is given for each component of this tutorial. 
+After each model is specified, you will estimate speciation and extinction rates using Markov chain Monte Carlo (MCMC). 
+Finally, you will estimate the marginal likelihood of the model and evaluate the
 relative support using Bayes factors.</p>
 
 <p>You should read first the <a href="/tutorials/divrate/div_rate_intro.html">Introduction to Diversification Rate Estimation</a> tutorial, which explains the theory and 
@@ -140,11 +139,10 @@ gives some general overview of diversification rate estimation.</p>
 <h2 class="section" id="pure-birth-yule-model">Pure-Birth (Yule) Model</h2>
 <hr class="section" />
 
-<p>Before evaluating the relative support for different models, we must
-first specify them in <code class="highlighter-rouge">Rev</code>. In this section, we will walk through
-specifying a pure-birth process model and estimating the marginal
-likelihood. The section about the birth-death process will be less
-detailed because it will build up on this section.</p>
+<p>In this section, we will walk through specifying a pure-birth process model and 
+estimating the speciation rate.
+Then, we will continue by estimating the marginal likelihood of the model so that we can perform model comparison. 
+The section about the birth-death process will be less detailed because it will build up on this section.</p>
 
 <p>The simplest branching model is the <em>pure-birth process</em> described by
 <a href="#Yule1925">Yule (1925)</a>. Under this model, we assume at any instant in time, every
@@ -201,7 +199,7 @@ taken from the analysis by <a href="#MagnusonFord2012">Magnuson-Ford and Otto (2
 approximately 367 described primates species, so we will fix the
 parameter $\rho$ to $233/367$.</p>
 
-<p>⇨ The full Yule-model specification is in the file called <code class="highlighter-rouge">Yule.Rev</code>.</p>
+<p>⇨ The full Yule-model specification is in the file called <code class="highlighter-rouge">mcmc_Yule.Rev</code>.</p>
 
 <h3 class="subsection" id="read-the-tree">Read the tree</h3>
 <hr class="subsection" />
@@ -320,7 +318,7 @@ the nodes we specified.</p>
 
 <p>For our MCMC analysis, we need to set up a vector of <em>monitors</em> to
 record the states of our Markov chain. The monitor functions are all
-called <code class="highlighter-rouge">mn\*</code>, where <code class="highlighter-rouge">\*</code> is the wildcard representing the monitor type.
+called <code class="highlighter-rouge">mn*</code>, where <code class="highlighter-rouge">*</code> is the wildcard representing the monitor type.
 First, we will initialize the model monitor using the <code class="highlighter-rouge">mnModel</code>
 function. This creates a new monitor variable that will output the
 states for all model parameters when passed into a MCMC function.</p>
