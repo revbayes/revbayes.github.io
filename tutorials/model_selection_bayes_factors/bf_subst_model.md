@@ -14,6 +14,7 @@ exclude_files:
 - data/fagus_ITS.nex
 - data/fagus_matK.nex
 - data/fagus_rbcL.nex
+- data/primates_galeopterus_cox2.nex
 - scripts/marginal_likelihood_partition_1.Rev
 - scripts/marginal_likelihood_partition_2.Rev
 - scripts/marginal_likelihood_partition_3.Rev

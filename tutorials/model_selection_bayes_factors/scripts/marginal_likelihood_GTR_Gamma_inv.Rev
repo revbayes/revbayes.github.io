@@ -13,7 +13,7 @@
 
 ###### This just defines a single model for all sites #######
 
-### Read in sequence data for both genes
+### Read in sequence data for one gene
 
 data <- readDiscreteCharacterData("data/primates_and_galeopterus_cytb.nex")
 
@@ -114,7 +114,7 @@ monitors[mni++] = mnFile(filename="output/primates_cytb_GTR_Gamma_Inv.trees",pri
 
 
 ### Compute power posterior distributions
-pow_p = powerPosterior(mymodel, moves, monitors, "output/pow_p_GTR_Gamma_Inv.out", cats=127, sampleFreq=10) 
+pow_p = powerPosterior(mymodel, moves, monitors, "output/pow_p_GTR_Gamma_Inv.out", cats=50, sampleFreq=10) 
 pow_p.burnin(generations=10000,tuningInterval=250)
 pow_p.run(generations=1000)  
 
