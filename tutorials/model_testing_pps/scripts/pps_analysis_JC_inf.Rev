@@ -1,0 +1,57 @@
+################################################################################
+#
+# RevBayes Example: Bayesian model testing using posterior predictive simulation
+#
+# authors: Lyndon M. Coghill, Sebastian Hoehna and Jeremy M. Brown
+#
+################################################################################
+
+## EMPIRICAL MCMC
+inFile = "data/primates_and_galeopterus_cytb.nex"
+analysis_name = "pps_example"
+data <- readDiscreteCharacterData(inFile)
+model_name = "JC"
+model_file_name = "scripts/pps_"+model_name+"_Model.Rev"
+source("scripts/pps_MCMC_Simulation.Rev")
+clear()
+
+## POSTERIOR PREDICTIVE DATA SIMULATION
+inFile = "data/primates_and_galeopterus_cytb.nex"
+analysis_name = "pps_example"
+data <- readDiscreteCharacterData(inFile)
+model_name = "JC"
+model_file_name = "scripts/pps_"+model_name+"_Model.Rev"
+source("scripts/pps_Simulation.Rev")
+clear()
+
+## POSTERIOR PREDICTIVE MCMC
+inFile = "data/primates_and_galeopterus_cytb.nex"
+analysis_name = "pps_example"
+data <- readDiscreteCharacterData(inFile)
+model_name = "JC"
+model_file_name = "scripts/pps_"+model_name+"_Model.Rev"
+source("scripts/PosteriorPredictive_MCMC.Rev")
+clear()
+
+## CALCULATE INFERENCE SUMMARY STATISTICS
+inFile = "data/primates_and_galeopterus_cytb.nex"
+analysis_name = "pps_example"
+model_name = "JC"
+model_file_name = "scripts/pps_"+model_name+"_Model.Rev"
+num_post_sims = listFiles(path="output_"+model_name+"/" + analysis_name + "_post_sims").size()
+data <- readDiscreteCharacterData(inFile)
+source("scripts/PosteriorPredictive_TreeSummary.Rev")
+clear()
+
+## CALCULATE INFERENCE P-VALUES
+analysis_name = "pps_example"
+model_name = "JC"
+emp_pps_file = "results_" + model_name + "/empirical_inference_" + analysis_name + ".csv"
+sim_pps_file = "results_" + model_name + "/simulated_inference_" + analysis_name + ".csv"
+outfileName = "results_" + model_name + "/inference_pvalues_effectsizes_" + analysis_name + ".csv"
+statID = v("", "mean_rf", "quantile25", "quantile50", "quantile75", "quantile99", "quantile999", "mean_tl", "var_tl", "entropy")
+source("scripts/PosteriorPredictive_PValues.Rev")
+clear()
+
+# END IT ALL
+q()

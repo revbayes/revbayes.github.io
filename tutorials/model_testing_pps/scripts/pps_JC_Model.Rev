@@ -14,9 +14,9 @@
 #######################
 
 # Get some useful variables from the data. We need these later on.
-n_species <- data.ntaxa()
+n_taxa <- data.ntaxa()
 taxa <- data.taxa()
-n_branches <- 2 * n_species - 3
+n_branches <- 2 * n_taxa - 3
 
 # set my moves vector
 moves = VectorMoves()
@@ -49,7 +49,7 @@ source("scripts/pps_tree_model.Rev")
 
 
 # the sequence evolution model
-seq ~ dnPhyloCTMC(tree=phylogeny, Q=Q, type="DNA")
+seq ~ dnPhyloCTMC(tree=topology, Q=Q, type="DNA")
 
 # attach the data
 seq.clamp(data)
