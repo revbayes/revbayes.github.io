@@ -16,7 +16,7 @@
 ##############
 
 #### Specify a uniform prior on the tree topology #### 
-phylogeny ~ dnUniformTopologyBranchLength(branchLengthDistribution=dnExponential(10.0), taxa)
+topology ~ dnUniformTopologyBranchLength(branchLengthDistribution=dnExponential(10.0), taxa)
 
 # moves on the tree
 moves.append( mvNNI(topology, weight=n_taxa) )
@@ -24,6 +24,6 @@ moves.append( mvSPR(topology, weight=n_taxa/10) )
 moves.append( mvBranchLengthScale(topology, weight=n_taxa) )
 
 
-TL := phylogeny.treeLength()
+TL := topology.treeLength()
 
 

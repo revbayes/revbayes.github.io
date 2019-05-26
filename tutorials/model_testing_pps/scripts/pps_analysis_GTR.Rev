@@ -10,7 +10,7 @@
 inFile = "data/primates_and_galeopterus_cytb.nex"
 analysis_name = "pps_example"
 data <- readDiscreteCharacterData(inFile)
-model_name = "JC"
+model_name = "GTR"
 model_file_name = "scripts/pps_"+model_name+"_Model.Rev"
 source("scripts/pps_MCMC_Simulation.Rev")
 clear()
@@ -19,7 +19,7 @@ clear()
 inFile = "data/primates_and_galeopterus_cytb.nex"
 analysis_name = "pps_example"
 data <- readDiscreteCharacterData(inFile)
-model_name = "JC"
+model_name = "GTR"
 model_file_name = "scripts/pps_"+model_name+"_Model.Rev"
 source("scripts/pps_Simulation.Rev")
 clear()
@@ -27,7 +27,7 @@ clear()
 ## CALCULATE DATA SUMMARY STATISTICS
 inFile = "data/primates_and_galeopterus_cytb.nex"
 analysis_name = "pps_example"
-model_name = "JC"
+model_name = "GTR"
 model_file_name = "scripts/pps_"+model_name+"_Model.Rev"
 num_post_sims = listFiles(path="output_"+model_name+"/" + analysis_name + "_post_sims").size()
 data <- readDiscreteCharacterData(inFile)
@@ -36,7 +36,7 @@ clear()
 
 ## CALCULATE DATA P-VALUES
 analysis_name = "pps_example"
-model_name = "JC"
+model_name = "GTR"
 emp_pps_file = "results_" + model_name + "/empirical_data_" + analysis_name + ".csv"
 sim_pps_file = "results_" + model_name + "/simulated_data_" + analysis_name + ".csv"
 outfileName = "results_" + model_name + "/data_pvalues_effectsizes_" + analysis_name + ".csv"
