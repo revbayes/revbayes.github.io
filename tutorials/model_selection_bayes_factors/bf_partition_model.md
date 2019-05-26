@@ -13,6 +13,7 @@ prerequisites:
 - bf_subst_model
 exclude_files: 
 - data/primates_and_galeopterus_cytb.nex
+- data/primates_and_galeopterus_cox2.nex
 - scripts/marginal_likelihood_GTR_Gamma_inv.Rev
 - scripts/marginal_likelihood_JC.Rev
 - scripts/model_average_primates_cytb.Rev
