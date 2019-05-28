@@ -71,8 +71,8 @@ extinction_sd ~ dnExponential( 1.0 / SD)
 ```
 We apply a simple scaling move on each prior parameter.
 ```
-moves[mvi++] = mvScale(speciation_sd,weight=5.0)
-moves[mvi++] = mvScale(extinction_sd,weight=5.0)
+moves.append( mvScale(speciation_sd,weight=5.0) )
+moves.append( mvScale(extinction_sd,weight=5.0) )
 ```
 
 
@@ -86,8 +86,8 @@ beta_extinction ~ dnNormal(0,1.0)
 ```
 We apply simple sliding-window moves for the two correlation coefficients because they are defined on the whole real line.
 ```
-moves[mvi++] = mvSlide(beta_speciation,delta=1.0,weight=10.0)
-moves[mvi++] = mvSlide(beta_extinction,delta=1.0,weight=10.0)
+moves.append( mvSlide(beta_speciation,delta=1.0,weight=10.0) )
+moves.append( mvSlide(beta_extinction,delta=1.0,weight=10.0) )
 ```
 Additionally, we might be interested in the posterior probability that there is a positive correlation, $\mathbb{P}(\beta>0)$, or a negative correlation, $\mathbb{P}(\beta<0)$, respectively.
 We achieve this using a deterministic variable that is 1 if $\beta<0$
@@ -121,8 +121,8 @@ We apply simple sliding window moves for the rates.
 Normally we would use scaling moves but in this case we work on the log-transformed parameters and thus sliding moves perform better.
 (If you are keen you can test the differences.)
 ```
-moves[mvi++] = mvSlide(log_speciation[1], weight=2)
-moves[mvi++] = mvSlide(log_extinction[1], weight=2)
+moves.append( mvSlide(log_speciation[1], weight=2) )
+moves.append( mvSlide(log_extinction[1], weight=2) )
 ```
 Now we transform the diversification rate parameters into actual rates.
 ```
@@ -144,8 +144,8 @@ for (i in 1:NUM_INTERVALS) {
     log_speciation[index] ~ dnNormal( mean=expected_speciation[index], sd=speciation_sd )
     log_extinction[index] ~ dnNormal( mean=expected_extinction[index], sd=extinction_sd )
 
-    moves[mvi++] = mvSlide(log_speciation[index], weight=2)
-    moves[mvi++] = mvSlide(log_extinction[index], weight=2)
+    moves.append( mvSlide(log_speciation[index], weight=2) )
+    moves.append( mvSlide(log_extinction[index], weight=2) )
 
     speciation[index] := exp( log_speciation[index] )
     extinction[index] := exp( log_extinction[index] )
@@ -155,14 +155,14 @@ for (i in 1:NUM_INTERVALS) {
 Finally, we apply moves that slide all values in the rate vectors, \IE all speciation or extinction rates. 
 We will use an \cl{mvVectorSlide} move.
 ```
-moves[mvi++] = mvVectorSlide(log_speciation, weight=10)
-moves[mvi++] = mvVectorSlide(log_extinction, weight=10)
+moves.append( mvVectorSlide(log_speciation, weight=10) )
+moves.append( mvVectorSlide(log_extinction, weight=10) )
 ```
 
 Additionally, we apply a \cl{mvShrinkExpand} move which changes the spread of several variables around their mean.
 ```
-moves[mvi++] = mvShrinkExpand( log_speciation, sd=speciation_sd, weight=10 )
-moves[mvi++] = mvShrinkExpand( log_extinction, sd=extinction_sd, weight=10 )
+moves.append( mvShrinkExpand( log_speciation, sd=speciation_sd, weight=10 ) )
+moves.append( mvShrinkExpand( log_extinction, sd=extinction_sd, weight=10 ) )
 ```
 Both moves considerably improve the efficiency of our MCMC analysis.
 
@@ -215,21 +215,21 @@ The `model()` function traversed all of the connections and found all of the nod
 For our MCMC analysis, we need to set up a vector of *monitors* to record the states of our Markov chain. 
 First, we will initialize the model monitor using the `mnModel` function. This creates a new monitor variable that will output the states for all model parameters when passed into a MCMC function. 
 ```
-monitors[mni++] = mnModel(filename="output/primates_EBD_Corr.log",printgen=10, separator = TAB)
+monitors.append( mnModel(filename="output/primates_EBD_Corr.log",printgen=10, separator = TAB) )
 ```
 
 Additionally, we create four separate file monitors, one for each vector of speciation and extinction rates and for each speciation and extinction rate epoch (\IE the times when the interval ends).
 We want to have the speciation and extinction rates stored separately so that we can plot them nicely afterwards.
 ```
-monitors[mni++] = mnFile(filename="output/primates_EBD_Corr_speciation_rates.log",printgen=10, separator = TAB, speciation)
-monitors[mni++] = mnFile(filename="output/primates_EBD_Corr_speciation_times.log",printgen=10, separator = TAB, interval_times)
-monitors[mni++] = mnFile(filename="output/primates_EBD_Corr_extinction_rates.log",printgen=10, separator = TAB, extinction)
-monitors[mni++] = mnFile(filename="output/primates_EBD_Corr_extinction_times.log",printgen=10, separator = TAB, interval_times)
+monitors.append( mnFile(filename="output/primates_EBD_Corr_speciation_rates.log",printgen=10, separator = TAB, speciation) )
+monitors.append( mnFile(filename="output/primates_EBD_Corr_speciation_times.log",printgen=10, separator = TAB, interval_times) )
+monitors.append( mnFile(filename="output/primates_EBD_Corr_extinction_rates.log",printgen=10, separator = TAB, extinction) )
+monitors.append( mnFile(filename="output/primates_EBD_Corr_extinction_times.log",printgen=10, separator = TAB, interval_times) )
 ```
 
 Finally, create a screen monitor that will report the states of specified variables to the screen with \cl{mnScreen}:
 ```
-monitors[mni++] = mnScreen(printgen=1000, beta_speciation, beta_extinction)
+monitors.append( mnScreen(printgen=1000, beta_speciation, beta_extinction) )
 ```
 
 {% subsubsection Initializing and Running the MCMC Simulation %}
@@ -323,8 +323,8 @@ beta_extinction ~ dnReversibleJumpMixture(constantValue=0.0, baseDistribution=dn
 Additionally we also need a specific move that switches if the value is equal to the constant value or drawn from the base-distribution.
 This is where we use the reversible-jump move \cl{mvRJSwitch}.
 ```
-moves[mvi++] = mvRJSwitch(beta_speciation, weight=5)
-moves[mvi++] = mvRJSwitch(beta_extinction, weight=5)
+moves.append( mvRJSwitch(beta_speciation, weight=5) )
+moves.append( mvRJSwitch(beta_extinction, weight=5) )
 ```
 Now we can also monitor for convenience what the probability of `beta_speciation` and `beta_extinction` being 0.0 is.
 We will set this up by a deterministic variable that will be 1.0 if $\beta \neq 0$ and will be 0.0 if $\beta = 0.0$.
