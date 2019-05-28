@@ -54,7 +54,7 @@
 	<h1 class="maintitle">Macroevolutionary Analysis of Stratigraphic Range Data</h1>
 	<h3 class="subtitle">Inference of diversification rates using the fossilized birth-death range process</h3>
 	<h4 class="authors">Rachel Warnock and Walker Pett</h4>
-  <h5>Last modified on May 21, 2018</h5>
+  <h5>Last modified on May 28, 2019</h5>
 </div>
 
 
@@ -264,15 +264,12 @@ If you are using a Unix-based operating system, we recommend that you add the Re
 <hr class="subsubsection" />
 
 <p>Begin the first Rev script (<code class="highlighter-rouge">mcmc_FBDRMatrix_model1.Rev</code>) by loading the stratigraphic ranges from the <code class="highlighter-rouge">dinosaur_ranges.tsv</code> using the <code class="highlighter-rouge">readTaxonData</code> function.</p>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>taxa = readTaxonData(file = "dinosaur_ranges.tsv")
 </code></pre></div></div>
-
 <p>This file contains the taxon names, along with the first and last appearance times.
 For the purposes of the tutorial, these times will be treated as known.</p>
 
 <p>Next, load the matrix of fossil counts from <code class="highlighter-rouge">dinosaur_fossil_counts.tsv</code> using the <code class="highlighter-rouge">readDataDelimitedFile</code> function.</p>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>k &lt;- readDataDelimitedFile(file = "dinosaur_fossil_counts.tsv", header = true, rownames = true)
 </code></pre></div></div>
 
@@ -283,10 +280,8 @@ For the purposes of the tutorial, these times will be treated as known.</p>
 
 <p>Create a vector called <code class="highlighter-rouge">timeline</code> for the maximum age of each interval, from youngest to oldest. 
 RevBayes will assume that the age of the youngest interval = 0.</p>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timeline &lt;- v(100, 145, 201) - 66
 </code></pre></div></div>
-
 <p>These ages represent the boundary between the Early Cretaceous, the Late Cretaceous, and the Jurassic.
 The oldest occurrence in our dataset is from the Triassic and we will treat the time prior to the Jurassic as a single interval (<em>i.e.,</em> 201 Ma - infinity).</p>
 
@@ -305,20 +300,16 @@ The tuning value determines the size of the proposed change and using multiple m
 <p>It may also be useful to keep track of the diversification ($\lambda - \mu$) and turnover ($\mu/\lambda$) parameters. 
 Since these parameters can be expressed as a deterministic transformation of the speciation and extinction rates, we can also monitor these values (that is, keep track of them during MCMC, and print them to a file) by creating deterministic nodes for these parameters for each interval using the <code class="highlighter-rouge">:=</code> operator.</p>
 
-<p>Before specifying the moves and priors on the model parameters, create a workspace variable called <code class="highlighter-rouge">mvi</code>. 
-This variable is an iterator that will build a vector containing all of the MCMC moves used to propose new states for every stochastic node in the model graph. 
-Each time a new move is added to the vector, <code class="highlighter-rouge">mvi</code> will be incremented by a value of 1.</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvi = 1
+<p>Before specifying the moves and priors on the model parameters, create a workspace variable called <code class="highlighter-rouge">moves</code>. 
+This variable is a vector containing all of the MCMC moves used to propose new states for every stochastic node in the model graph. 
+Similarly, we need to create a variable to hold all of our monitors</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
+monitors = VectorMonitors()
 </code></pre></div></div>
-
 <p>Next define a constant node representing the rate hyperparameter of the exponential prior distributions on your diversification parameters.</p>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha &lt;- 10
 </code></pre></div></div>
-
 <p>Then, write a loop that specifys the priors and moves on the rates during each interval.</p>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for(i in 1:(timeline.size()+1))
 {
     mu[i] ~ dnExp(alpha)
@@ -328,28 +319,25 @@ Each time a new move is added to the vector, <code class="highlighter-rouge">mvi
     div[i] := lambda[i] - mu[i]
     turnover[i] := mu[i]/lambda[i]
 
-    moves[mvi++] = mvScale(mu[i], lambda = 0.01)
-    moves[mvi++] = mvScale(mu[i], lambda = 0.1)
-    moves[mvi++] = mvScale(mu[i], lambda = 1)
+    moves.append( mvScale(mu[i], lambda = 0.01) )
+    moves.append( mvScale(mu[i], lambda = 0.1) )
+    moves.append( mvScale(mu[i], lambda = 1) )
 
-    moves[mvi++] = mvScale(lambda[i], lambda = 0.01)
-    moves[mvi++] = mvScale(lambda[i], lambda = 0.1)
-    moves[mvi++] = mvScale(lambda[i], lambda = 1)
+    moves.append( mvScale(lambda[i], lambda = 0.01) )
+    moves.append( mvScale(lambda[i], lambda = 0.1) )
+    moves.append( mvScale(lambda[i], lambda = 1) )
 
-    moves[mvi++] = mvScale(psi[i], lambda = 0.01)
-    moves[mvi++] = mvScale(psi[i], lambda = 0.1)
-    moves[mvi++] = mvScale(psi[i], lambda = 1)
+    moves.append( mvScale(psi[i], lambda = 0.01) )
+    moves.append( mvScale(psi[i], lambda = 0.1) )
+    moves.append( mvScale(psi[i], lambda = 1) )
 }
 </code></pre></div></div>
-
 <p>Note that this loop specifies parameters for an additional interval (<code class="highlighter-rouge">timeline()+1</code>).
 This is for the interval prior to the Jurassic.</p>
 
 <p>For this analysis we will fix the extant species sampling probability ($\rho$) to zero to avoid having to make any assumptions about lineages that may have survived beyond the Cretaceous-Paleogene boundary.</p>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rho &lt;- 0    
 </code></pre></div></div>
-
 <p>Because $\rho$ is a constant node, we do not have to assign a move to this parameter.</p>
 
 <h4 class="subsubsection" id="fbdr-model-specify">Specifying the FBDR Matrix model</h4>
@@ -367,90 +355,60 @@ If the matrix <code class="highlighter-rouge">k</code> contains cells with <scri
 
 <p>Model 1 requires both stratigraphic range ages and per-interval fossil counts.
 To use model 1 simply include the matrix <code class="highlighter-rouge">k</code>, along with the other model parameters and leave <code class="highlighter-rouge">binary = FALSE</code> (excluding this argument from the function call is equivalent to specifying the default option).</p>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, rho=rho, timeline=timeline, k=k)
 </code></pre></div></div>
-
 <p>Model 2 requires stratigraphic range ages only and no information about per-interval fossil counts.
 To use model 2 simply exclude the matrix <code class="highlighter-rouge">k</code> from the function call.</p>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, rho=rho, timeline=timeline)
 </code></pre></div></div>
-
 <p>Model 3 requires both stratigraphic range ages and per-interval 1/0 data, which can also be represented by <code class="highlighter-rouge">k</code>.
 To use model 3 simply include the matrix <code class="highlighter-rouge">k</code>, along with the other model parameters and specify <code class="highlighter-rouge">binary = TRUE</code>.</p>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, rho=rho, timeline=timeline, k=k, binary=true)
 </code></pre></div></div>
-
 <p>Add the options for model 1 to your script <code class="highlighter-rouge">mcmc_FBDRMatrix_model1.Rev</code>.</p>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># model 1
 bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, rho=rho, timeline=timeline, k=k)
 </code></pre></div></div>
-
 <p>Next specify scale moves to propose changes to the stratigraphic range start and end times (<em>i.e.,</em> $b_i$ and $d_i$).</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvMatrixElementScale(bd, lambda = 0.01, weight=taxa.size())
+moves.append( mvMatrixElementScale(bd, lambda = 0.1, weight=taxa.size())
+moves.append( mvMatrixElementScale(bd, lambda = 1, weight=taxa.size())
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvMatrixElementScale(bd, lambda = 0.01, weight=taxa.size())
-moves[mvi++] = mvMatrixElementScale(bd, lambda = 0.1, weight=taxa.size())
-moves[mvi++] = mvMatrixElementScale(bd, lambda = 1, weight=taxa.size())
-
-moves[mvi++] = mvMatrixElementSlide(bd, delta = 0.01, weight=taxa.size())
-moves[mvi++] = mvMatrixElementSlide(bd, delta = 0.1, weight=taxa.size())
-moves[mvi++] = mvMatrixElementSlide(bd, delta = 1, weight=taxa.size())
+moves.append( mvMatrixElementSlide(bd, delta = 0.01, weight=taxa.size())
+moves.append( mvMatrixElementSlide(bd, delta = 0.1, weight=taxa.size())
+moves.append( mvMatrixElementSlide(bd, delta = 1, weight=taxa.size())
 </code></pre></div></div>
-
 <p>Finally, specify a workspace model variable (<code class="highlighter-rouge">mymodel</code>) using the <code class="highlighter-rouge">model</code> function.</p>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(alpha)
 </code></pre></div></div>
-
 <p>The object <code class="highlighter-rouge">mymodel</code> represents the entire graphical model and allows us to pass the model to the next set of functions specific to our MCMC analysis.</p>
 
 <h4 class="subsubsection" id="specifying-monitors-and-setting-up-the-mcmc">Specifying monitors and setting up the MCMC</h4>
 <hr class="subsubsection" />
 
-<p>Next you will specify the monitors and output file names. For this, we create a vector called <code class="highlighter-rouge">monitors</code> that will each sample and record or output our MCMC.</p>
-
-<p>First, create a workspace variable to iterate over the
-<code class="highlighter-rouge">monitors</code> vector.
-This variable will build a vector containing all of the monitors. 
-Each time a new monitor is added to the vector, <code class="highlighter-rouge">mni</code> will be incremented by a value of 1.</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mni = 1
-</code></pre></div></div>
-
 <p>Next, create monitors for the FBDR model parameters speciation, extinction and fossil recovery, along with diversification and turnover.</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[mni++] = mnScreen(lambda, mu, psi, div, turnover, printgen=100)
-monitors[mni++] = mnModel(filename="model1.log", printgen=10)    
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(lambda, mu, psi, div, turnover, printgen=100) )
+monitors.append( mnModel(filename="model1.log", printgen=10) )
 </code></pre></div></div>
-
 <p>The <code class="highlighter-rouge">mnScreen</code> monitor writes the parameters we specify to the screen every 100 MCMC generations.
 The <code class="highlighter-rouge">mnFile</code> monitor writes the parameters we specify to file every 10 MCMC generations.</p>
 
 <p>We can also add some additional monitors to generate output that can be used with the R package <strong>RevGadets</strong>.</p>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># monitors to print RevGagets input
-monitors[mni++] = mnFile(filename="output/model1_speciation_rates.log",lambda,printgen=10)
-monitors[mni++] = mnFile(filename="output/model1_speciation_times.log",timeline,printgen=10)
-monitors[mni++] = mnFile(filename="output/model1_extinction_rates.log",mu,printgen=10)
-monitors[mni++] = mnFile(filename="output/model1_extinction_times.log",timeline,printgen=10)
-monitors[mni++] = mnFile(filename="output/model1_sampling_rates.log",psi,printgen=10)
-monitors[mni++] = mnFile(filename="output/model1_sampling_times.log",timeline,printgen=10)
+monitors.append( mnFile(filename="output/model1_speciation_rates.log",lambda,printgen=10) )
+monitors.append( mnFile(filename="output/model1_speciation_times.log",timeline,printgen=10) )
+monitors.append( mnFile(filename="output/model1_extinction_rates.log",mu,printgen=10) )
+monitors.append( mnFile(filename="output/model1_extinction_times.log",timeline,printgen=10) )
+monitors.append( mnFile(filename="output/model1_sampling_rates.log",psi,printgen=10) )
+monitors.append( mnFile(filename="output/model1_sampling_times.log",timeline,printgen=10) )
 </code></pre></div></div>
-
 <p>To run the analysis we have to create a workspace variable that defines our MCMC run using the <code class="highlighter-rouge">mcmc</code> function. This function takes the three main analysis components as arguments and we set the move schedule to <code class="highlighter-rouge">"random"</code>, meaning moves will be chosen at random during the analysis.</p>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, moves, monitors, moveschedule="random")
 </code></pre></div></div>
-
 <p>Finally, we can execute our MCMC analysis and we will set the chain length to <code class="highlighter-rouge">30000</code> cycles.</p>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(30000)
 q()
 </code></pre></div></div>
-
 <p>Adding <code class="highlighter-rouge">q()</code> to the end of the script means the program will exit at the end of the MCMC run.</p>
 
 <p>You’re now ready to run the first analysis!</p>
@@ -465,35 +423,25 @@ following in your terminal (if the RevBayes binary is in your path):</p>
 </code></pre></div></div>
 
 <p>Provided that you started RevBayes from the correct directory, you can then use the <code class="highlighter-rouge">source</code> function to feed RevBayes your script and run the analysis.</p>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("mcmc_FBDRMatrix_model1.Rev")
 </code></pre></div></div>
-
 <p>This analysis will take around 10 minutes. While you’re waiting for this analysis to run, create the files you need to run the analysis using models 2 and 3: <code class="highlighter-rouge">mcmc_FBDRMatrix_model2.Rev</code> and <code class="highlighter-rouge">mcmc_FBDRMatrix_model3.Rev</code>.
 You can just copy and paste your exisiting script for model 1.
 Recall from Section <a href="#fbdr-model-specify"></a> that to use the alternative models you only need to change the arguments passed to the distribution function <code class="highlighter-rouge">dnFBDRMatrix</code>.</p>
 
 <p>To use model 2 just remove the argument that passes the fossil count matrix to the function, <code class="highlighter-rouge">k=k</code>, since this model doesn’t use any information about the number of fossils sampled during different intervals.</p>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, rho=rho, timeline=timeline)
 </code></pre></div></div>
-
 <p>For this model, you also don’t need to read the maxtrix represented by <code class="highlighter-rouge">k</code>, so you can remove the line that reads this file using <code class="highlighter-rouge">readDataDelimitedFile</code> from the script.
 Make these modifications in <code class="highlighter-rouge">mcmc_FBDRMatrix_model2.Rev</code>, and when model 1 is done, open RevBayes and run the analysis as before.</p>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("mcmc_FBDRMatrix_model2.Rev")
 </code></pre></div></div>
-
 <p>To use model 3, we still include the argument that passes the fossil count matrix to the function, <code class="highlighter-rouge">k=k</code>, and switch the argument <code class="highlighter-rouge">binary=true</code> to <code class="highlighter-rouge">binary=false</code>, since this model uses 1/0 sampling information, rather than absolute occurrence counts. The <code class="highlighter-rouge">k</code> matrix is still required for this model.</p>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, rho=rho, timeline=timeline, k=k, binary=true)
 </code></pre></div></div>
-
 <p>Make these modifications in <code class="highlighter-rouge">mcmc_FBDRMatrix_model3.Rev</code>, and when you’re ready, run the analysis as before.</p>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("mcmc_FBDRMatrix_model3.Rev")
 </code></pre></div></div>
-
 <p>While you’re waiting for model 2 and 3 to run you can examine the output from model 1.</p>
 
 <blockquote class="aside"><h2>Running this model under the prior</h2><p>To run this model under the prior, we can’t use the conventional approach in RevBayes of passing the argument <code class="highlighter-rouge">runUnderPrior=true</code> to the <code class="highlighter-rouge">mymcmc.run</code> command.</p>
@@ -502,18 +450,16 @@ Make these modifications in <code class="highlighter-rouge">mcmc_FBDRMatrix_mode
 
 <div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gh">#bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, rho=rho, timeline=timeline, k=k, binary=true)</span>
 
-<span class="gh">#moves[mvi++] = mvMatrixElementScale(bd, lambda = 0.01, weight=taxa.size())</span>
-<span class="gh">#moves[mvi++] = mvMatrixElementScale(bd, lambda = 0.1, weight=taxa.size())</span>
-<span class="gh">#moves[mvi++] = mvMatrixElementScale(bd, lambda = 1, weight=taxa.size())</span>
+<span class="gh">#moves.append( mvMatrixElementScale(bd, lambda = 0.01, weight=taxa.size())</span>
+<span class="gh">#moves.append( mvMatrixElementScale(bd, lambda = 0.1, weight=taxa.size())</span>
+<span class="gh">#moves.append( mvMatrixElementScale(bd, lambda = 1, weight=taxa.size())</span>
 
-<span class="gh">#moves[mvi++] = mvMatrixElementSlide(bd, delta = 0.01, weight=taxa.size())</span>
-<span class="gh">#moves[mvi++] = mvMatrixElementSlide(bd, delta = 0.1, weight=taxa.size())</span>
-<span class="gh">#moves[mvi++] = mvMatrixElementSlide(bd, delta = 1, weight=taxa.size())</span>
+<span class="gh">#moves.append( mvMatrixElementSlide(bd, delta = 0.01, weight=taxa.size())</span>
+<span class="gh">#moves.append( mvMatrixElementSlide(bd, delta = 0.1, weight=taxa.size())</span>
+<span class="gh">#moves.append( mvMatrixElementSlide(bd, delta = 1, weight=taxa.size())</span>
 </code></pre></div></div>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(alpha)
 </code></pre></div></div>
-
 <p>This allows us to sample the prior distribution on our FBDR model parameters.</p>
 </blockquote>
 

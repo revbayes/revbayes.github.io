@@ -54,7 +54,7 @@
 	<h1 class="maintitle">Relaxed Clocks & Time Trees</h1>
 	<h3 class="subtitle">Comparing relaxed clock models & estimating rooted time trees</h3>
 	<h4 class="authors">Tracy A. Heath</h4>
-  <h5>Last modified on May  3, 2018</h5>
+  <h5>Last modified on May 28, 2019</h5>
 </div>
 
 
@@ -274,28 +274,22 @@ the <code class="highlighter-rouge">scripts</code> directory.</p>
 can be used as a starting tree or if there are nodes in the tree from
 the previous study that we wish to compare our estimates to. We will
 read in the tree estimated by <a href="#DosReis2012">(dos Reis et al. 2012)</a>.</p>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>T &lt;- readTrees("data/bears_dosReis.tre")[1]
 </code></pre></div></div>
-
 <p>From the tree we can initialize some useful variables. (These can also
 be created from the data matrix using the same methods.)</p>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_taxa &lt;- T.ntips()
 taxa &lt;- T.taxa()
+</code></pre></div></div>
+<p>Finally, we initialize a variable for our vector of moves and monitors.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
+monitors = VectorMonitors()
 </code></pre></div></div>
 
 <h3 id="birth-death-parameters">Birth-Death Parameters</h3>
 
 <p>We will begin by setting up the model parameters and proposal mechanisms
-of the birth-death model. Note that we have not initialized the
-workspace iterator <code class="highlighter-rouge">mvi</code> yet. Because of this, if you typed these lines
-in the RevBayes console, you would get an error. Since this code is
-intended to be in a sourced <code class="highlighter-rouge">Rev</code> file, we are assuming that you would
-initialize <code class="highlighter-rouge">mvi</code> before calling
-<code class="highlighter-rouge">source("scripts/m_BDP_Tree_bears.Rev")</code>.</p>
-
-<p>We will use the parameterization of the birth-death process specifying
+of the birth-death model. We will use the parameterization of the birth-death process specifying
 the diversification and turnover. For a more detailed tutorial on the
 simple birth-death model, please refer to the <a href="/tutorials/divrate/simple.html">Simple Diversification Rate Estimation</a>
 tutorial.</p>
@@ -304,17 +298,15 @@ tutorial.</p>
 
 <p>Diversification ($d$) is the speciation rate ($\lambda$) minus the
 extinction rate ($\mu$): $d = \lambda - \mu$.</p>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>diversification ~ dnExponential(10.0) 
-moves[mvi++] = mvScale(diversification, lambda=1.0, tune=true, weight=3.0)
+moves.append( mvScale(diversification, lambda=1.0, tune=true, weight=3.0)
 </code></pre></div></div>
 
 <p><strong><em>Turnover</em></strong></p>
 
 <p>Turnover is: $r = \mu / \lambda$.</p>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>turnover ~ dnBeta(2.0, 2.0) 
-moves[mvi++] = mvSlide(turnover,delta=1.0,tune=true,weight=3.0)
+moves.append( mvSlide(turnover,delta=1.0,tune=true,weight=3.0)
 </code></pre></div></div>
 
 <p><strong><em>Deterministic Nodes for Birth and Death Rates</em></strong></p>
@@ -322,13 +314,10 @@ moves[mvi++] = mvSlide(turnover,delta=1.0,tune=true,weight=3.0)
 <p>The birth rate and death rate are deterministic functions of the
 diversification and turnover. First, create a deterministic node for
 $1 - r$, which is the denominator for each formula.</p>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>denom := abs(1.0 - turnover) 
 </code></pre></div></div>
-
 <p>Now, the rates will both be positive real numbers that are variable
 transformations of the stochastic variables.</p>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>birth_rate := diversification / denom
 death_rate := (turnover * diversification) / denom
 </code></pre></div></div>
@@ -338,7 +327,6 @@ death_rate := (turnover * diversification) / denom
 <p>Fix the probability of sampling to a known value. Since there are
 approximately 147 described caniform species, we will create a constant
 node for this parameter that is equal to 10/147.</p>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rho &lt;- 0.068
 </code></pre></div></div>
 
@@ -351,10 +339,8 @@ age being younger than 38 Mya is equal to 0, using this value to offset
 a prior distribution on the root-age.</p>
 
 <p>First specify the occurrence-time of the fossil.</p>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tHesperocyon &lt;- 38.0
 </code></pre></div></div>
-
 <p>We will assume a lognormal prior on the root age that is offset by the
 observed age of <em>Hesperocyon gregarius</em>. We can use the previous
 analysis by <a href="#DosReis2012">(dos Reis et al. 2012)</a> to parameterize the lognormal prior on the root
@@ -406,17 +392,17 @@ monitor its age.</p>
 
 <p>Next, create the vector of moves. These tree moves act on node ages:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvNodeTimeSlideUniform(timetree, weight=30.0)
-moves[mvi++] = mvSlide(root_time, delta=2.0, tune=true, weight=10.0)
-moves[mvi++] = mvScale(root_time, lambda=2.0, tune=true, weight=10.0)
-moves[mvi++] = mvTreeScale(tree=timetree, rootAge=root_time, delta=1.0, tune=true, weight=3.0)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvNodeTimeSlideUniform(timetree, weight=30.0) )
+moves.append( mvSlide(root_time, delta=2.0, tune=true, weight=10.0) )
+moves.append( mvScale(root_time, lambda=2.0, tune=true, weight=10.0) )
+moves.append( mvTreeScale(tree=timetree, rootAge=root_time, delta=1.0, tune=true, weight=3.0) )
 </code></pre></div></div>
 
 <p>Then, we will add moves that will propose changes to the tree topology.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvNNI(timetree, weight=8.0)
-moves[mvi++] = mvNarrow(timetree, weight=8.0)
-moves[mvi++] = mvFNPR(timetree, weight=8.0)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvNNI(timetree, weight=8.0) )
+moves.append( mvNarrow(timetree, weight=8.0) )
+moves.append( mvFNPR(timetree, weight=8.0) )
 </code></pre></div></div>
 
 <p>Now save and close the file. This file, with all the model
@@ -450,7 +436,7 @@ still depend on variable initialized in different files.</p>
 <p>The clock-rate parameter is a stochastic node from a gamma distribution.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clock_rate ~ dnGamma(2.0,4.0)
-moves[mvi++] = mvScale(clock_rate,lambda=0.5,tune=true,weight=5.0)
+moves.append( mvScale(clock_rate,lambda=0.5,tune=true,weight=5.0)
 </code></pre></div></div>
 
 <p><strong><em>The Sequence Model and Phylogenetic CTMC</em></strong></p>
@@ -460,8 +446,8 @@ them.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    sf ~ dnDirichlet(v(1,1,1,1))
     er ~ dnDirichlet(v(1,1,1,1,1,1))
     Q := fnGTR(er,sf)
-    moves[mvi++] = mvSimplexElementScale(er, alpha=10.0, tune=true, weight=3.0)
-    moves[mvi++] = mvSimplexElementScale(sf, alpha=10.0, tune=true, weight=3.0)
+    moves.append( mvSimplexElementScale(er, alpha=10.0, tune=true, weight=3.0)
+    moves.append( mvSimplexElementScale(sf, alpha=10.0, tune=true, weight=3.0)
 </code></pre></div></div>
 <p>And instantiate the phyloCTMC.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    phySeq ~ dnPhyloCTMC(tree=timetree, Q=Q, branchRates=clock_rate, nSites=n_sites, type="DNA")
@@ -629,8 +615,8 @@ lognormal distribution on branch rates.</p>
 model are the lognormal mean ($M$ or <code class="highlighter-rouge">ucln_mean</code>) and the standard
 deviation ($\sigma$ or <code class="highlighter-rouge">ucln_sigma</code>).</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvScale(ucln_mean, lambda=1.0, tune=true, weight=4.0)
-moves[mvi++] = mvScale(ucln_sigma, lambda=0.5, tune=true, weight=4.0)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale(ucln_mean, lambda=1.0, tune=true, weight=4.0)
+moves.append( mvScale(ucln_sigma, lambda=0.5, tune=true, weight=4.0)
 </code></pre></div></div>
 
 <p>With our nodes representing the $\mu$ and $\sigma$ of the lognormal
@@ -640,7 +626,7 @@ move for each branch-rate stochastic node to our moves vector.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for(i in 1:n_branches){
    branch_rates[i] ~ dnLnorm(ucln_mu, ucln_sigma)
-   moves[mvi++] = mvScale(branch_rates[i], lambda=1, tune=true, weight=2.)
+   moves.append( mvScale(branch_rates[i], lambda=1, tune=true, weight=2.)
 }
 </code></pre></div></div>
 
@@ -666,8 +652,8 @@ to apply a range of moves to the variables representing the branch rates
 and branch times. This will help to improve the mixing of our MCMC. Here
 we will add 2 additional types of moves that act on vectors.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvVectorScale(branch_rates,lambda=1.0,tune=true,weight=2.0) 
-moves[mvi++] = mvVectorSingleElementScale(branch_rates,lambda=30.0,tune=true,weight=1.0) 
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvVectorScale(branch_rates,lambda=1.0,tune=true,weight=2.0) 
+moves.append( mvVectorSingleElementScale(branch_rates,lambda=30.0,tune=true,weight=1.0) 
 </code></pre></div></div>
 
 <p>The mean of the branch rates is a convenient deterministic node to
@@ -684,8 +670,8 @@ GTR matrix.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sf ~ dnDirichlet(v(1,1,1,1))
 er ~ dnDirichlet(v(1,1,1,1,1,1))
 Q := fnGTR(er,sf)
-moves[mvi++] = mvSimplexElementScale(er, alpha=10.0, tune=true, weight=3.0)
-moves[mvi++] = mvSimplexElementScale(sf, alpha=10.0, tune=true, weight=3.0)
+moves.append( mvSimplexElementScale(er, alpha=10.0, tune=true, weight=3.0)
+moves.append( mvSimplexElementScale(sf, alpha=10.0, tune=true, weight=3.0)
 </code></pre></div></div>
 
 <p>Now, we can put the whole model together in the phylogenetic CTMC and

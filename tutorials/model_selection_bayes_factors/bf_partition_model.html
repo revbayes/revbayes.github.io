@@ -54,7 +54,7 @@
 	<h1 class="maintitle">Model selection of partition models</h1>
 	<h3 class="subtitle">Comparing relative model fit with Bayes factors</h3>
 	<h4 class="authors">Mike May and Sebastian Höhna</h4>
-  <h5>Last modified on May 26, 2019</h5>
+  <h5>Last modified on May 28, 2019</h5>
 </div>
 
 
@@ -198,7 +198,7 @@ num_sites[2] = data_matK.nchar()
 num_sites[3] = data_rbcL.nchar()
 
 relative_rates ~ dnDirichlet(v(1,1,1))
-moves[mvi++] = mvBetaSimplex(relative_rates, weight=1.0)
+moves.append( mvBetaSimplex(relative_rates, weight=1.0) )
 
 subset_rates := relative_rates * sum(num_sites) / num_sites
 </code></pre></div></div>

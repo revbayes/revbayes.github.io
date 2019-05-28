@@ -18,8 +18,9 @@ num_branches <- 2 * num_taxa - 3
 taxa <- data.taxa()
 
 
-mvi = 1
-mni = 1
+# Create some vector for the moves and monitors of this analysis
+moves    = VectorMoves()
+monitors = VectorMonitors()
 
 
 ######################
@@ -32,22 +33,22 @@ Q_JC <- fnJC(4)
 # specify the stationary frequency parameters
 pi_prior <- v(1,1,1,1) 
 pi ~ dnDirichlet(pi_prior)
-moves[mvi++] = mvBetaSimplex(pi, weight=2.0)
-moves[mvi++] = mvDirichletSimplex(pi, weight=1.0)
+moves.append( mvBetaSimplex(pi, weight=2.0) )
+moves.append( mvDirichletSimplex(pi, weight=1.0) )
 
 
 # specify the exchangeability rate parameters
 er_prior <- v(1,1,1,1,1,1)
 er ~ dnDirichlet(er_prior)
-moves[mvi++] = mvBetaSimplex(er, weight=3.0)
-moves[mvi++] = mvDirichletSimplex(er, weight=1.5)
+moves.append( mvBetaSimplex(er, weight=3.0) )
+moves.append( mvDirichletSimplex(er, weight=1.5) )
 
 
 # create a deterministic variable for the rate matrix, GTR
 Q_GTR := fnGTR(er,pi) 
 
 lambda ~ dnExp(1.0)
-moves[mvi++] = mvScale(lambda)
+moves.append( mvScale(lambda)
 
 Q := fnCovarion(RateMatrices=[Q_JC, Q_GTR],
                 RateScalars=[0.0,1.0],
@@ -65,9 +66,9 @@ out_group = clade("Galeopterus_variegatus")
 br_len_lambda <- 10.0
 psi ~ dnUniformTopologyBranchLength(taxa, branchLengthDistribution=dnExponential(br_len_lambda), outgroup=out_group)
 
-moves[mvi++] = mvNNI(psi, weight=num_taxa)
-moves[mvi++] = mvSPR(psi, weight=num_taxa/10.0)
-moves[mvi++] = mvBranchLengthScale(psi, weight=num_branches)
+moves.append( mvNNI(psi, weight=num_taxa/2.0) )
+moves.append( mvSPR(psi, weight=num_taxa/10.0) )
+moves.append( mvBranchLengthScale(psi, weight=num_branches)
 
 TL := psi.treeLength()
 
@@ -91,9 +92,9 @@ seq.clamp(data)
 mymodel = model(psi)
 
 # add monitors
-monitors[mni++] = mnScreen(TL, printgen=1000)
-monitors[mni++] = mnFile(psi, filename="output/primates_cytb_covariotide.trees", printgen=10)
-monitors[mni++] = mnModel(filename="output/primates_cytb_covariotide.log", printgen=10)
+monitors.append( mnScreen(TL, printgen=1000) )
+monitors.append( mnFile(psi, filename="output/primates_cytb_covariotide.trees", printgen=10) )
+monitors.append( mnModel(filename="output/primates_cytb_covariotide.log", printgen=10) )
 
 # run the analysis
 mymcmc = mcmc(mymodel, moves, monitors, nruns=2, combine="mixed")

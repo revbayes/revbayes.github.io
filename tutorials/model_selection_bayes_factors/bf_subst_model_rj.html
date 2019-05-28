@@ -54,7 +54,7 @@
 	<h1 class="maintitle">Model averaging of substitution models</h1>
 	<h3 class="subtitle">Reversible-jump MCMC over substitution models</h3>
 	<h4 class="authors">Mike May and Sebastian Höhna</h4>
-  <h5>Last modified on May 26, 2019</h5>
+  <h5>Last modified on May 28, 2019</h5>
 </div>
 
 
@@ -156,13 +156,13 @@ models, in particular, we’re going to average over the “named” members of 
 and using a <em>model indicator</em> to indicate which parameters to include in the model. For example:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kappa ~ dnExp(1)
-moves[mvi++] = mvScale(kappa, weight=5.0)
+moves.append( mvScale(kappa, weight=5.0) )
 
 pi ~ dnDirichlet(v(1,1,1,1))
-moves[mvi++] = mvBetaSimplex(pi, weight=5.0)
+moves.append( mvBetaSimplex(pi, weight=5.0) )
 
 er ~ dnDirichlet(v(1,1,1,1,1,1))
-moves[mvi++] = mvBetaSimplex(er, weight=5.0)
+moves.append( mvBetaSimplex(er, weight=5.0) )
 
 Q_JC  &lt;- fnJC(4)
 Q_K80 := fnK80(kappa)
@@ -173,7 +173,7 @@ Q_GTR := fnGTR(er, pi)
 Q_vec := v(Q_JC, Q_K80, Q_F81, Q_HKY, Q_GTR)
 
 model_indicator ~ dnCategorical(simplex(1,1,1,1,1))
-moves[mvi++] = mvRandomGeometricWalk(model_indicator, weight=10.0, tune=FALSE)
+moves.append( mvRandomGeometricWalk(model_indicator, weight=10.0, tune=FALSE)
 
 Q := Q_vec[model_indicator]
 </code></pre></div></div>
@@ -187,8 +187,8 @@ and another parameter (the indicator) that allows us to move between $Q$ matrice
 <p>Including reversible-jump for Gamma-distributed ASRV is more straightforward:</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha ~ dnReversibleJumpMixture(1E8, dnUniform(0,1E8), 0.5)
 alpha.setValue(1.0)
-moves[mvi++] = mvRJSwitch(alpha, weight=10.0)
-moves[mvi++] = mvScale(alpha, weight=10.0)
+moves.append( mvRJSwitch(alpha, weight=10.0) )
+moves.append( mvScale(alpha, weight=10.0) )
 
 alpha_indicator := ifelse(alpha == 1E8, 0, 1)
 
