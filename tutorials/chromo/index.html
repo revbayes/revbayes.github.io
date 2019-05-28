@@ -54,7 +54,7 @@
 	<h1 class="maintitle">Chromosome Evolution</h1>
 	<h3 class="subtitle">Modeling chromosome evolution with ChromEvol, BiChroM, and ChromoSSE</h3>
 	<h4 class="authors">William A. Freyman and Sebastian Höhna</h4>
-  <h5>Last modified on August  4, 2018</h5>
+  <h5>Last modified on May 24, 2019</h5>
 </div>
 
 
@@ -159,14 +159,14 @@ joint inference of phylogeny and chromosome numbers, tests for
 correlated rates of phenotype and chromosome evolution with the BiChroM
 model (missing reference), and incorporating cladogenetic changes in
 chromosome number. Next, we will introduce the ChromoSSE model
-<a href="#Freyman2017">(Freyman and Höhna 2017)</a> which jointly estimates diversification rates
+<a href="#Freyman2018">(Freyman and Höhna 2018)</a> which jointly estimates diversification rates
 and chromosome number evolution. We also briefly discuss testing
 hypotheses of chromosome evolution by comparing different models using
 reversible-jump MCMC and Bayes factors.</p>
 
 <p>If you use RevBayes for chromosome evolution analyses, please cite the
 original papers that describe the chromosome evolution models as well as
-<a href="#Freyman2017">Freyman and Höhna (2017)</a> which describes in detail the RevBayes
+<a href="#Freyman2018">Freyman and Höhna (2018)</a> which describes in detail the RevBayes
 implementation of these models.</p>
 
 <h2 class="section" id="exampledata">Example scripts and data</h2>
@@ -200,7 +200,7 @@ lineages
 ChromEvol model has been extended to examine the association of
 phenotype with chromosome evolution (missing reference), and to
 incorporate cladogenetic changes and diversification rates 
-<a href="#Freyman2017">(Freyman and Höhna 2017)</a>.</p>
+<a href="#Freyman2018">(Freyman and Höhna 2018)</a>.</p>
 
 <p>Here we describe the ChromEvol model as implemented in RevBayes, which
 except for one detail noted below is the same mathematical model
@@ -267,7 +267,7 @@ ChromEvol model; here we assume the rates of chromosome change can vary
 exponentially as a function of the current chromosome number, whereas
 ChromEvol as originally described by (missing reference) assumes a
 linear function. The theoretical reasons for this difference are
-described in <a href="#Freyman2017">Freyman and Höhna (2017)</a>, however in practice on most
+described in <a href="#Freyman2018">Freyman and Höhna (2018)</a>, however in practice on most
 empirical datasets the difference appears insignificant.</p>
 
 <p>Demi-polyploidization is the union of a reduced and an unreduced gametes
@@ -329,7 +329,7 @@ uncertainty of inferences made from that model (missing reference).
 In our case, this can lead to overconfidence in estimates of ancestral
 chromosome numbers and chromosome evolution parameter value estimates.
 For details on how to implement Bayesian model averaging in RevBayes
-with chromsome evolution see <a href="#Freyman2017">Freyman and Höhna (2017)</a>.</p>
+with chromsome evolution see <a href="#Freyman2018">Freyman and Höhna (2018)</a>.</p>
 
 <h3 id="next-steps">Next Steps</h3>
 
@@ -1076,7 +1076,7 @@ was reduced to a more simple 3-lobed form in Isotrema.</p>
 drive the diversification of some lineages (missing reference).
 To test for the association of chromosome changes with speciation we
 must extend our models to incorporate cladogenetic changes [for details
-see <a href="#Freyman2017">Freyman and Höhna (2017)</a>]. Cladogenetic changes are changes that
+see <a href="#Freyman2018">Freyman and Höhna (2018)</a>]. Cladogenetic changes are changes that
 occur only at lineage splitting events. All models of chromosome
 evolution that we have examined so far model only anagenetic changes,
 <em>i.e.</em>, changes that occur within a lineage.</p>
@@ -1200,7 +1200,7 @@ speciation and extinction rates.</p>
 <figcaption>An illustration of chromosome
 evolution events that could occur during each small time interval
 $\Delta t$ along the branches of a phylogeny as modeled in ChromoSSE
-<a href="#Freyman2017">(Freyman and Höhna 2017)</a>. The set of differential equations
+<a href="#Freyman2018">(Freyman and Höhna 2018)</a>. The set of differential equations
 (subfigures a and b, respectively) sum over each possible chromosome
 evolution event and are numerically integrated backwards through time
 over the phylogeny to calculate the likelihood. The transition rate
@@ -1220,7 +1220,7 @@ event with a possible cladogenetic change occurred followed by
 extinction of both daughter lineages.</figcaption>
 </figure>
 
-<p>The ChromoSSE model <a href="#Freyman2017">(Freyman and Höhna 2017)</a> is a special case of the
+<p>The ChromoSSE model <a href="#Freyman2018">(Freyman and Höhna 2018)</a> is a special case of the
 ClaSSE model that models chromosome changes. Compared to the previously
 discussed CTMC models of chromosome evolution, SSE models require
 additional complexity since they must also model the speciation and
@@ -1439,9 +1439,7 @@ demonstrated before to plot the cladogenetic ChromEvol analysis.</p>
 <a href="https://doi.org/10.1007/BF01734359">10.1007/BF01734359</a>
 
 </li>
-<li><span id="Freyman2017">Freyman W.A., Höhna S. 2017. Cladogenetic and anagenetic models of chromosome number evolution: a Bayesian model averaging approach. SYSBIO. syx065.</span>
-
-<a href="https://doi.org/10.1093/sysbio/syx065">10.1093/sysbio/syx065</a>
+<li><span id="Freyman2018">Freyman W.A., Höhna S. 2018. Cladogenetic and anagenetic models of chromosome number evolution: a Bayesian model averaging approach. Systematic Biology. 67:1995–215.</span>
 
 </li>
 <li><span id="Goldberg2012">Goldberg E.E., Igić B. 2012. Tempo and Mode in Plant Breeding System Evolution. Evolution. 66:3701–3709.</span>

@@ -416,6 +416,7 @@ The estimated rates might change when you use a different resolution, <em>i.e.,<
   <li>Run an MCMC simulation to estimate the posterior distribution of the speciation rate and extinction rate.</li>
   <li>Visualize the rate through time using <code class="highlighter-rouge">R</code>.</li>
   <li>Do you see evidence for rate decreases or increases? What is the general trend?</li>
+  <li>How much faster is the <code class="highlighter-rouge">net-diversification</code> rate at the present compared to the most ancient time interval?</li>
   <li>Is there evidence for rate variation? Look at the estimates of <code class="highlighter-rouge">speciation_sd</code> and <code class="highlighter-rouge">extinction_sd</code> in <code class="highlighter-rouge">Tracer</code>: Is there information in the data to change the estimates from the prior?</li>
   <li>Run the analysis using a different number of intervals, <em>e.g.,</em> 5 or 50. How do the rates change?</li>
 </ul>
@@ -427,7 +428,7 @@ The estimated rates might change when you use a different resolution, <em>i.e.,<
   <li>In our results we see that the extinction rate is fairly constant. Modify the model by using a constant-rate for the extinction rate parameter but still let the speciation rate vary through time.
     <ol>
       <li>Remove all previous occurrences of the extinction rates (<em>i.e.,</em> priors, parameters and moves).</li>
-      <li>Specify a lognormal prior distribution on the constant extinction rate (<code class="highlighter-rouge">extinction $\sim$ dnLognormal(-5,sd=2*0.587405)</code>)</li>
+      <li>Specify a lognormal prior distribution on the constant extinction rate (<code class="highlighter-rouge">extinction ~ dnLognormal(-5,sd=2*0.587405)</code>)</li>
       <li>Add a move for the new extinction rate parameter <code class="highlighter-rouge">moves.append( mvScale(extinction,weight=5.0) )</code>.</li>
       <li>Remove the argument <code class="highlighter-rouge">muTimes=interval_times</code> from the birth-death process.</li>
     </ol>
@@ -436,14 +437,14 @@ The estimated rates might change when you use a different resolution, <em>i.e.,<
 </ul>
 
 
-<ol class="bibliography"><li><span id="Hoehna2015a">Höhna S. 2015. The time-dependent reconstructed evolutionary process with a key-role for mass-extinction events. Journal of Theoretical Biology. 380:321–331.</span>
-
-<a href="https://doi.org/http://dx.doi.org/10.1016/j.jtbi.2015.06.005">http://dx.doi.org/10.1016/j.jtbi.2015.06.005</a>
-
-</li>
-<li><span id="Hoehna2014a">Höhna S. 2014. Likelihood Inference of Non-Constant Diversification Rates with Incomplete Taxon Sampling. PLoS One. 9:e84184.</span>
+<ol class="bibliography"><li><span id="Hoehna2014a">Höhna S. 2014. Likelihood Inference of Non-Constant Diversification Rates with Incomplete Taxon Sampling. PLoS One. 9:e84184.</span>
 
 <a href="https://doi.org/10.1371/journal.pone.0084184">10.1371/journal.pone.0084184</a>
+
+</li>
+<li><span id="Hoehna2015a">Höhna S. 2015. The time-dependent reconstructed evolutionary process with a key-role for mass-extinction events. Journal of Theoretical Biology. 380:321–331.</span>
+
+<a href="https://doi.org/http://dx.doi.org/10.1016/j.jtbi.2015.06.005">http://dx.doi.org/10.1016/j.jtbi.2015.06.005</a>
 
 </li>
 <li><span id="Hoehna2014b">Höhna S., Heath T.A., Boussau B., Landis M.J., Ronquist F., Huelsenbeck J.P. 2014. Probabilistic Graphical Model Representation in Phylogenetics. Systematic Biology. 63:753–771.</span>

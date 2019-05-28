@@ -1,0 +1,657 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: State-dependent diversification with HiSSE</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
+      </a>
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/software">Software</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/jobs/">Jobs</a></li>
+        <li><a href="/developer/">Developer</a></li>
+        
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <div class="titlebar">
+	<h1 class="maintitle">State-dependent diversification with HiSSE</h1>
+	<h3 class="subtitle">Inference using the hidden character binary/multiple state-dependent speciation and extinction with (HiSSE) branching process</h3>
+	<h4 class="authors">Sebastian Höhna and Will Freyman</h4>
+  <h5>Last modified on May 28, 2019</h5>
+</div>
+
+
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul id="prerequisites">
+          
+            <li><a href="/tutorials/intro/">Rev Language Syntax</a></li>
+          
+            <li><a href="/tutorials/intro_rev/">Basic introduction to Rev & MCMC</a></li>
+          
+            <li><a href="/tutorials/mcmc_archery/">Introduction to MCMC using RevBayes</a></li>
+          
+            <li><a href="/tutorials/mcmc_binomial/">Introduction to MCMC using RevBayes</a></li>
+          
+            <li><a href="/tutorials/divrate/simple.html">Simple Diversification Rate Estimation</a></li>
+          
+            <li><a href="/tutorials/sse/bisse-intro.html">Background on state-dependent diversification rate estimation</a></li>
+          
+            <li><a href="/tutorials/sse/bisse.html">State-dependent diversification with BiSSE and MuSSE</a></li>
+          
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+
+
+
+
+<blockquote class="tutorial_files" id="tutorial_files">
+    <h2>Data files and scripts</h2>
+    
+        
+        <strong>Data Files</strong>
+        <ul id="data_files">
+        
+        
+        
+          <li><a href="/tutorials/sse/data/primates_activity_period.nex">primates_activity_period.nex</a></li>
+        
+          <li><a href="/tutorials/sse/data/primates_mating_system.nex">primates_mating_system.nex</a></li>
+        
+          <li><a href="/tutorials/sse/data/primates_solitariness.nex">primates_solitariness.nex</a></li>
+        
+          <li><a href="/tutorials/divrate/data/primates_tree.nex">primates_tree.nex</a></li>
+        
+          <li><a href="/tutorials/sse/data/primates_tree.nex">primates_tree.nex</a></li>
+        
+        </ul>
+    
+        
+        <strong>Scripts</strong>
+        <ul id="scripts">
+        
+        
+        
+          <li><a href="/tutorials/sse/scripts/mcmc_HiSSE.Rev">mcmc_HiSSE.Rev</a></li>
+        
+        </ul>
+    
+</blockquote>
+
+
+</div>
+<h2 class="section" id="introduction">Introduction</h2>
+<hr class="section" />
+
+<p>BiSSE and MuSSE are powerful approaches for testing the association of a character with diversification
+rate heterogeneity. However, BiSSE has been shown to be prone to falsely identifying a positive association
+when diversification rate shifts are correlated with a character not included in the model 
+<a href="#Maddison2015">(Maddison and FitzJohn 2015; Rabosky and Goldberg 2015)</a>. One approach to reduce the possibility of falsely associating
+a character with diversification rate heterogeneity is to incorporate a second, unobserved character into the
+model (<em>i.e.,</em> a Hidden State-Dependent Speciation and Extinction (HiSSE) model; see for example <a href="#Beaulieu2016">Beaulieu and O’Meara (2016)</a>). 
+The changes in the unobserved character’s state represent background diversification rate changes
+that are not correlated with the oberved character. See <a href="#fig_hisse"></a> for a schematic overview of the HiSSE
+model, and Table 2 for an explanation of the HiSSE model parameters. Now let’s set up and run a HiSSE
+analysis in RevBayes.</p>
+
+<p>We will keep this tutorial brief and assume that you have work through the <a href="/tutorials/sse/bisse.html">State-dependent diversification with BiSSE and MuSSE</a>.</p>
+
+<figure id="fig_hisse"><p><img src="figures/HiSSE.png" width="75%" /></p>
+<figcaption>A schematic overview of the HiSSE model. Each lineage has an observed binary state associated to it:
+state 0 (blue) or state 1 (red). Furthermore, there is a second, unobserved (hidden), binary character with states A
+or B. The HiSSE model describes jointly the evolution of both of these two characters; a lineage must be in one of
+four different states: 0A, 0B, 1A, or 1B. We estimate separate speciation and extinction rates for each of these four
+states. Note that just like BiSSE can easily be extended to MuSSE, RevBayes allows you to extend HiSSE models
+beyond binary observed and unobserved characters.</figcaption>
+</figure>
+
+<h2 class="section" id="sec_CDBDP">Estimating State-Dependent Speciation and Extinction under the HiSSE Model</h2>
+<hr class="section" />
+
+<p>First, we create some global variables to set-up our analysis. 
+Using this variable we can easily change our script to use a different character with a different number
+of states. We will also use this variable in our second example on hidden-state speciation and extinction
+model.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NUM_TOTAL_SPECIES     = 367
+NUM_STATES            = 2
+NUM_HIDDEN            = 4
+NUM_RATES             = NUM_STATES * NUM_HIDDEN
+H                     = 0.587405
+DATASET               = "activity_period"
+</code></pre></div></div>
+
+<h3 class="subsection" id="subsec_readdata">Read in the Data</h3>
+<hr class="subsection" />
+
+<p>Begin by reading in the observed tree and the character data. 
+We have both stored in separate nexus files.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>observed_phylogeny &lt;- readTrees("data/primates_tree.nex")[1]
+data &lt;- readCharacterData("data/primates_activity_period.nex")
+</code></pre></div></div>
+<p>It will be convenient to get some helper variables with information from the tree:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>taxa &lt;- observed_phylogeny.taxa()
+tree_length &lt;- observed_phylogeny.treeLength()
+</code></pre></div></div>
+<p>For the HiSSE model, we need to expand our characters to the new state space.
+This means, that originally we had the states <code class="highlighter-rouge">0</code> and <code class="highlighter-rouge">1</code>.
+Now, we want to have the states <code class="highlighter-rouge">0A</code>, <code class="highlighter-rouge">0B</code>, <code class="highlighter-rouge">0C</code>, <code class="highlighter-rouge">0D</code> and <code class="highlighter-rouge">1A</code>, <code class="highlighter-rouge">1B</code>, <code class="highlighter-rouge">1C</code>, <code class="highlighter-rouge">1D</code>.
+A character that was originally in state <code class="highlighter-rouge">0</code> will now be ambiguous for all states <code class="highlighter-rouge">0A</code>, <code class="highlighter-rouge">0B</code>, <code class="highlighter-rouge">0C</code> and <code class="highlighter-rouge">0D</code>.
+Instead of coding this up manually, RevBayes provides a simple function for you.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data_exp &lt;- data.expandCharacters( NUM_HIDDEN )
+</code></pre></div></div>
+<p>Finally, we initialize a variable for our vector of moves and monitors.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
+monitors = VectorMonitors()
+</code></pre></div></div>
+
+<h3 class="subsection" id="subsec_specifymodel">Specify the Model</h3>
+<hr class="subsection" />
+
+<h4 id="priors-on-the-rates"><strong>Priors on the Rates</strong></h4>
+
+<p>We start by specifying prior distributions on the diversification rates.
+Here, we will assume an identical prior distribution on each of the
+speciation and extinction rates. Furthermore, we will use a log-uniform
+distribution as the prior distribution on each speciation and
+extinction rate (i.e., a uniform distribution on the log of the rates).</p>
+
+<p><script type="math/tex">\lambda_{ij} = \lambda_{\text{observed},i} * \lambda_{\text{hidden},j}</script>
+For example, we have $\lambda_{0A} = \lambda_{\text{observed},0} * \lambda_{\text{hidden},A}$</p>
+
+<p>Let’s code this up in RevBayes.
+First, we create the vector of hidden speciation rates.
+Following the idea of discretizing a continuous distribution of diversification rates
+(see <a href="/tutorials/divrate/branch_specific.html">Branch-Specific Diversification Rate Estimation</a>), we will specify <code class="highlighter-rouge">NUM_HIDDEN</code> speciation rates
+as the quantiles of a lognormal distribution.
+We need the average rate of the hidden speciation rates to be fixed, because otherwise the model is not identifiable.
+Therefore, we fix the median of the lognormal distribution to 1.0:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ln_speciation_hidden_mean &lt;- ln(1.0)
+</code></pre></div></div>
+<p>Next, we draw the standard deviation of the hidden speciation rates from an exponential distribution with mean <code class="highlighter-rouge">H</code> 
+(so that we expect the 95% interval of the hidden speciation rate to span 1 order of magnitude).</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>speciation_hidden_sd ~ dnExponential( 1.0 / H )
+moves.append( mvScale(speciation_hidden_sd, lambda=1, tune=true, weight=2.0) )
+</code></pre></div></div>
+<p>With the mean and the standard deviation we can specify the distribution on the hidden speciation rates.
+We create a deterministic variable for the hidden speciation rate categories using 
+a discretized lognormal distribution (the N-quantiles of it).</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>speciation_hidden_unormalized := fnDiscretizeDistribution( dnLognormal(ln_speciation_hidden_mean, speciation_hidden_sd), NUM_HIDDEN )
+</code></pre></div></div>
+<p>However, we normalize the hidden speciation rates by dividing the rates with the main 
+(so the mean of the normalized rates equals to 1.0):</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>speciation_hidden := speciation_hidden_unormalized / mean(speciation_hidden_unormalized)
+</code></pre></div></div>
+
+<p>Next, we repeat this same procedure for the hidden extinction rates.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ln_extinction_hidden_mean &lt;- ln(1.0)
+
+extinction_hidden_sd ~ dnExponential( 1.0 / H )
+moves.append( mvScale(extinction_hidden_sd, lambda=1, tune=true, weight=2.0) )
+
+extinction_hidden_unormalized := fnDiscretizeDistribution( dnLognormal(ln_extinction_hidden_mean, extinction_hidden_sd), NUM_HIDDEN )
+extinction_hidden := extinction_hidden_unormalized / mean(extinction_hidden_unormalized)
+</code></pre></div></div>
+
+<p>For the observed speciation and extinction rates, we will apply a different approach.
+We will draw the speciation and extinction rates for the observed characters from identical distribution, 
+so that <em>a priori</em> we expect with probability 0.5 that $\lambda_{\text{observed},0} &gt; \lambda_{\text{observed},1}$,
+and with probability 0.5 we expect $\lambda_{\text{observed},1} &gt; \lambda_{\text{observed},0}$.
+For the lack of prior knowledge, we specify a log-uniform prior distribution on the speciation and extinction rates
+for the observed characters.
+Note that we also initialize the starting states to make the analysis run more efficiently.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:NUM_STATES) {
+    
+    ### Create a loguniform distributed variable for the speciation rate
+    speciation_observed[i] ~ dnLoguniform( 1E-6, 1E2)
+    speciation_observed[i].setValue( (NUM_TOTAL_SPECIES-2) / tree_length )
+    moves.append( mvScale(speciation_observed[i],lambda=1.0,tune=true,weight=3.0) )
+
+    ### Create a loguniform distributed variable for the speciation rate
+    extinction_observed[i] ~ dnLoguniform( 1E-6, 1E2)
+    extinction_observed[i].setValue( speciation_observed[i] / 10.0 )
+    moves.append( mvScale(extinction_observed[i],lambda=1.0,tune=true,weight=3.0) )
+
+}
+</code></pre></div></div>
+<p>We have now specified the diversification rate variables for the observed and hidden states.
+That means, we can now put these two put together.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (j in 1:NUM_HIDDEN) {
+    for (i in 1:NUM_STATES) {
+        index = i+(j*NUM_STATES)-NUM_STATES
+        speciation[index] := speciation_observed[i] * speciation_hidden[j]
+        extinction[index] := extinction_observed[i] * extinction_hidden[j]
+    }
+}
+</code></pre></div></div>
+
+<p>Now we can specify our character-specific speciation and extinction rate
+parameters. Because we will use the same prior for each rate, it’s easy
+to specify them all in a <code class="highlighter-rouge">for</code>-loop. We will use a log-uniform distribution as a prior
+on the speciation and extinction rates. The loop also allows us to apply moves to each
+of the rates we are estimating and create a vector of deterministic nodes
+representing the rate of diversification ($\lambda - \mu$) associated with each
+character state.</p>
+
+<p>The stochastic nodes representing the vector of speciation rates and vector of 
+extinction rates have been instantiated. The software assumes that the rate in position <code class="highlighter-rouge">[1]</code> of each
+vector corresponds to the rate associated with diurnal <code class="highlighter-rouge">0</code> lineages and the rate
+at position <code class="highlighter-rouge">[2]</code> of each vector is the rate associated with nocturnal <code class="highlighter-rouge">1</code> lineages.</p>
+
+<p>Next we specify the transition rates between the states <code class="highlighter-rouge">0</code> and <code class="highlighter-rouge">1</code>:
+$q_{01}$ and $q_{10}$. As a prior, we choose that each transition rate
+is drawn from an exponential distribution with a mean of 10 character
+state transitions over the entire tree. This is reasonable because we
+use this kind of model for traits that transition not-infrequently, and
+it leaves a fair bit of uncertainty. 
+Note that we will actually use a <code class="highlighter-rouge">for</code>-loop to instantiate the transition rates
+so that our script will also work for non-binary characters.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#########################################################
+# Set up the transition rate matrix for observed states #
+#########################################################
+
+# Each transition rate between observed states are drawn
+# from an exponential distribution with a mean of 10
+# character state transitions over the tree. 
+rate_pr := observed_phylogeny.treeLength() / 10
+for ( i in 1:(NUM_STATES*(NUM_STATES-1)) ) {
+    transition_rates[i] ~ dnExp(rate_pr)
+    moves.append( mvScale(transition_rates[i],lambda=0.50,tune=true,weight=3.0) )
+}
+
+
+#########################################################
+# Set up the transition rate matrix for hidden states #
+#########################################################
+
+# We assume the transitions among the hidden states
+# are all equal and drawn from an exponential distriubtion.
+hidden_rate ~ dnExponential(rate_pr)
+moves.append( mvScale(hidden_rate,lambda=0.5,tune=true,weight=5) )
+
+for (i in 1:(NUM_HIDDEN * (NUM_HIDDEN - 1))) {
+    R[i] := hidden_rate
+}
+rate_matrix := fnHiddenStateRateMatrix(transition_rates, R, rescaled=false)
+
+</code></pre></div></div>
+<p>Here, <code class="highlighter-rouge">rate[1]</code> is the rate of transition from state <code class="highlighter-rouge">0</code> (diurnal) to state <code class="highlighter-rouge">1</code> (nocturnal),
+and <code class="highlighter-rouge">rate[2]</code> is the rate of going from nocturnal to diurnal.</p>
+
+<p>Finally, we put the rates into a matrix, because this is what’s needed
+by the function for the state-dependent birth-death process.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_matrix := fnFreeK( transition_rates, rescaled=false)
+</code></pre></div></div>
+<p>Note that we do not “rescale” the rate matrix. Rate matrices for
+molecular evolution are rescaled to have an average rate of 1.0, but for
+this model we want estimates of the transition rates with the same time
+scale as the diversification rates.</p>
+
+<h4 id="prior-on-the-root-state"><strong>Prior on the Root State</strong></h4>
+
+<p>Create a variable for the root state frequencies. We are using a flat <a href="https://en.wikipedia.org/wiki/Dirichlet_distribution">Dirichlet distribution</a> as the prior on
+each state. There has been some discussion about this in <a href="#FitzJohn2009">(FitzJohn et al. 2009)</a>. 
+You could also fix the prior probabilities for the root states to be equal 
+(generally not recommended), or use empirical state frequencies.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_category_prior ~ dnDirichlet( rep(1,NUM_RATES) )
+</code></pre></div></div>
+<p>Note that we use the <code class="highlighter-rouge">rep()</code> function which generates a vector of length <code class="highlighter-rouge">NUM_STATES</code>
+with each position in the vector set to <code class="highlighter-rouge">1</code>. Using this function and the <code class="highlighter-rouge">NUM_STATES</code>
+variable allows us to easily use this Rev script as a template for a different analysis
+using a character with more than two states.</p>
+
+<p>We will use a special move for objects that are drawn from a Dirichlet distribution:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvBetaSimplex(rate_category_prior,tune=true,weight=2) )
+moves.append( mvDirichletSimplex(rate_category_prior,tune=true,weight=2) )
+</code></pre></div></div>
+
+<h4 id="the-probability-of-sampling-an-extant-species"><strong>The Probability of Sampling an Extant Species</strong></h4>
+
+<p>All birth-death processes are conditioned on the probability a taxon is sampled in the present.
+We can get an approximation for this parameter by calculating the <em>proportion</em> of sampled
+species in our analysis.</p>
+
+<p>We know that we have sampled 233 out of 367 living described primate species. To
+account for this we can set the sampling probability as a constant node
+with a value of 233/367.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rho &lt;- observed_phylogeny.ntips()/367
+</code></pre></div></div>
+
+<h4 id="root-age"><strong>Root Age</strong></h4>
+
+<p>The birth-death process also depends on time to the most-recent-common ancestor–<em>i.e.</em>,
+the root. In this
+exercise we use a fixed tree and thus we know the age of the tree.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root &lt;- observed_phylogeny.rootAge()
+</code></pre></div></div>
+
+<h4 id="the-time-tree"><strong>The Time Tree</strong></h4>
+
+<p>Now we have all of the parameters we need to specify the full character
+state-dependent birth-death model. We initialize the stochastic node
+representing the time tree and we create this node using the <code class="highlighter-rouge">dnCDBDP()</code> function.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree ~ dnCDBDP( rootAge           = root,
+                    speciationRates   = speciation,
+                    extinctionRates   = extinction, 
+                    Q                 = rate_matrix,
+                    delta             = 1.0,
+                    pi                = rate_category_prior,
+                    rho               = rho,
+                    condition         = "survival" )
+</code></pre></div></div>
+<p>Now, we will fix the BiSSE time-tree to the observed values from our data files. We use
+the standard <code class="highlighter-rouge">.clamp()</code> method to give the observed tree and branch times:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree.clamp( observed_phylogeny )
+timetree.clampCharData( data_exp )
+</code></pre></div></div>
+<p>And then we use the <code class="highlighter-rouge">.clampCharData()</code> to set the observed states at the tips of the tree:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree.clampCharData( data )
+</code></pre></div></div>
+<p>Finally, we create a workspace object of our whole model. The <code class="highlighter-rouge">model()</code>
+function traverses all of the connections and finds all of the nodes we
+specified.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(timetree)
+</code></pre></div></div>
+<p>You can use the <code class="highlighter-rouge">.graph()</code> method of the model object to visualize the graphical model you
+have just constructed . This function writes the model DAG to a file 
+that can be viewed using the  program <a href="https://www.graphviz.org/">Graphviz</a> (<a href="#graphviz"></a>).</p>
+
+<figure id="graphviz"><p><img src="figures/bisse_dag.svg" width="95%" /></p>
+<figcaption>The probabilistic graphical model of the character-state-dependent diversification model.
+This image was generated by executing the <code class="highlighter-rouge">mymodel.graph("bisse.dot")</code> in RevBayes after specifying the full model DAG.
+Then, the resulting file can be opened in the program <a href="https://www.graphviz.org/">Graphviz</a>.</figcaption>
+</figure>
+
+<h3 class="subsection" id="subsec_runningmcmc">Running an MCMC analysis</h3>
+<hr class="subsection" />
+
+<h4 id="specifying-monitors"><strong>Specifying Monitors</strong></h4>
+
+<p>For our MCMC analysis, we set up a vector of <em>monitors</em> to record the
+states of our Markov chain. The first monitor will model all numerical
+variables; we are particularly interested in the rates of speciation,
+extinction, and transition.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/primates_HiSSE_2.log", printgen=1) )
+</code></pre></div></div>
+<p>Then, we add a screen monitor showing some updates during the MCMC
+run.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(printgen=10, speciation_observed, extinction_observed) )
+</code></pre></div></div>
+
+<blockquote class="aside"><h2>Sampling Ancestral States</h2><p>Optionally, we can sample ancestral states during the MCMC analysis. 
+We need to add an additional monitor to record the state of each internal node in the tree.
+The file produced by this monitor can be summarized so that we can visualize the estimates of ancestral states.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnStochasticCharacterMap(cdbdp=timetree, printgen=10, filename="output/stoch_char_map_primates_HiSSE.log", include_simmap=true) )
+</code></pre></div></div>
+</blockquote>
+
+<h4 id="initializing-and-running-the-mcmc-simulation"><strong>Initializing and Running the MCMC Simulation</strong></h4>
+
+<p>With a fully specified model, a set of monitors, and a set of moves, we
+can now set up the MCMC algorithm that will sample parameter values in
+proportion to their posterior probability. The <code class="highlighter-rouge">mcmc()</code> function will
+create our MCMC object:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
+
+</code></pre></div></div>
+<p>Now, run the MCMC:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=2500, tuningInterval=100)
+</code></pre></div></div>
+
+<blockquote class="aside"><h2>Summarize Sampled Ancestral States</h2><p>If we sampled ancestral states during the MCMC analysis, we can use the <code class="highlighter-rouge">RevGadgets</code> R package
+to plot the ancestral state reconstruction. First, though, we must summarize the sampled values in 
+RevBayes.</p>
+
+<p>To do this, we first have to read in the ancestral state log file. This uses a specific function called <code class="highlighter-rouge">readAncestralStateTrace()</code>.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>burnin=25
+n_time_slices = 500
+
+# read in the sampled character histories
+anc_states = readAncestralStateTrace("output/stoch_char_map_primates_HiSSE.log")
+
+summarizeCharacterMaps(anc_states, observed_phylogeny, file="output/events.tsv", burnin=0.1)
+</code></pre></div></div>
+<p>Now, we can write an annotated tree to a file. This function will write a tree with each
+node labeled with the maximum a posteriori (MAP) state and the posterior probabilities for each
+state.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>char_map_tree = characterMapTree(tree=observed_phylogeny, 
+                 ancestral_state_trace_vector=anc_states, 
+                 character_file="output/marginal_character.tree", 
+                 posterior_file="output/marginal_posterior.tree", 
+                 burnin=burnin, 
+                 num_time_slices=n_time_slices)
+</code></pre></div></div>
+
+<h3 class="subsection" id="subsec_ancviz">Visualize Estimated Ancestral States</h3>
+<hr class="subsection" />
+
+<p>To visualize the posterior probabilities of ancestral states, we will use the <code class="highlighter-rouge">RevGadgets</code> R package.</p>
+
+<blockquote class="instruction">
+  <p>Open R.</p>
+</blockquote>
+
+<p><code class="highlighter-rouge">RevGadgets</code> requires the <code class="highlighter-rouge">ggtree</code> package <a href="#Yu2017ggtree">(Yu et al. 2017)</a>. 
+First, install the <code class="highlighter-rouge">ggtree</code> and <code class="highlighter-rouge">RevGadgets</code> packages:</p>
+
+<pre>
+install.packages("devtools")
+library(devtools)
+install_github("GuangchuangYu/ggtree")
+install_github("revbayes/RevGadgets")
+</pre>
+
+<p>Run this code:</p>
+
+<pre>
+library(ggplot2)
+library(RevGadgets)
+
+tree_file = "output/anc_states_primates_BiSSE_results.tree"
+
+plot_ancestral_states(tree_file, summary_statistic="MAP",
+					  tip_label_size=0,
+                      xlim_visible=NULL,
+                      node_label_size=0,
+                      show_posterior_legend=TRUE,
+                      node_size_range=c(2, 6),
+                      alpha=0.75)
+
+output_file = "RevBayes_Anc_States_BiSSE.pdf"
+ggsave(output_file, width = 11, height = 9)
+</pre>
+
+<figure id="ggtree"><p><img src="figures/RevBayes_Anc_States_BiSSE.png" width="75%" /></p>
+<figcaption>A visualization of the ancestral states estimated under the BiSSE model.</figcaption>
+</figure>
+</blockquote>
+
+<h3 class="subsection" id="subsec_summary">Summarizing Parameter Estimates</h3>
+<hr class="subsection" />
+
+<p>Our MCMC analysis generated a tab-delimited file called <code class="highlighter-rouge">primates_activTime_BiSSE_mcmc.log</code> that contains
+the samples of all the numerical parameters in our model. There are a lot of tools available
+for visualizing files like this (like R or python), which allow you to generate plots and 
+visually explore the posterior distributions of sampled parameters.</p>
+
+<p>We will use the program <a href="http://tree.bio.ed.ac.uk/software/tracer/">Tracer</a> 
+<a href="#Rambaut2011">(Rambaut and Drummond 2011)</a>, which is a tool for easily exploring parameters sampled using MCMC.</p>
+
+<blockquote class="instruction">
+  <p>Open the program Tracer and import your file: <code class="highlighter-rouge">output/primates_activTime_BiSSE_mcmc.log</code>.</p>
+</blockquote>
+
+<p>Tracer opens to a histogram of the <em>Posterior</em> statistic and a list of all the other sampled
+parameters (<a href="#tracer1"></a>).</p>
+
+<figure id="tracer1"><p><img src="figures/tracer1.png" width="95%" /></p>
+<figcaption>Visualizing posterior samples of parameters in 
+<a href="http://tree.bio.ed.ac.uk/software/tracer/">Tracer</a> 
+<a href="#Rambaut2011">(Rambaut and Drummond 2011)</a>.</figcaption>
+</figure>
+
+<blockquote class="instruction">
+  <p>Explore the various options in Tracer.</p>
+
+  <p>Check the <em>Trace</em> view for each parameter. Did the chain “mix” effectively?</p>
+
+  <p>Highlight both of the <em>speciation</em> rates: <code class="highlighter-rouge">speciation[1]</code> and <code class="highlighter-rouge">speciation[2]</code> to 
+compare the <em>Estimates</em> of both parameters.</p>
+
+  <p><strong>Write down</strong> the mean value for the rate of speciation associated with 
+diurnal lineages <code class="highlighter-rouge">speciation[1]</code> and the rate of speciation associated with 
+nocturnal lineages <code class="highlighter-rouge">speciation[2]</code>.</p>
+
+  <p>Now use the <em>Marginal Prob Distribution</em> view to compare the marginal posterior densities
+of both speciation rates.</p>
+</blockquote>
+
+<figure id="tracer2"><p><img src="figures/tracer2.png" width="50%" /></p>
+<figcaption>Comparing posterior samples of the speciation rates associated with daily activity time in 
+<a href="http://tree.bio.ed.ac.uk/software/tracer/">Tracer</a> 
+<a href="#Rambaut2011">(Rambaut and Drummond 2011)</a>.</figcaption>
+</figure>
+
+
+<ol class="bibliography"><li><span id="Beaulieu2016">Beaulieu J.M., O’Meara B.C. 2016. Detecting hidden diversification shifts in models of trait-dependent speciation and extinction. Systematic Biology. 65:583–601.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syw022">10.1093/sysbio/syw022</a>
+
+</li>
+<li><span id="FitzJohn2009">FitzJohn R.G., Maddison W.P., Otto S.P. 2009. Estimating trait-dependent speciation and extinction rates from incompletely resolved phylogenies. Systematic Biology. 58:595–611.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syp067">10.1093/sysbio/syp067</a>
+
+</li>
+<li><span id="Maddison2015">Maddison W.P., FitzJohn R.G. 2015. The Unsolved Challenge to Phylogenetic Correlation Tests for Categorical Characters. Systematic Biology. 64:127–136.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syu070">10.1093/sysbio/syu070</a>
+
+</li>
+<li><span id="Rabosky2015">Rabosky D.L., Goldberg E.E. 2015. Model inadequacy and mistaken inferences of trait-dependent speciation. Systematic Biology. 64:340–355.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syu131">10.1093/sysbio/syu131</a>
+
+</li>
+<li><span id="Rambaut2011">Rambaut A., Drummond A.J. 2011. Tracer v1.5. .</span>
+
+
+<a href="http://tree.bio.ed.ac.uk/software/tracer/">http://tree.bio.ed.ac.uk/software/tracer/</a>
+</li>
+<li><span id="Yu2017ggtree">Yu G., Smith D.K., Zhu H., Guan Y., Lam T.T.-Y. 2017. ggtree: an R package for visualization and annotation of phylogenetic trees with their covariates and other associated data. Methods in Ecology and Evolution. 8:28–36.</span>
+
+</li></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+
+<script src="/assets/js/base.js"></script>
+
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+  });
+</script>
+
+  </body>
+</html>
