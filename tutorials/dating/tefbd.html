@@ -54,7 +54,7 @@
 	<h1 class="maintitle">Molecular dating</h1>
 	<h3 class="subtitle">Estimating speciation times using total-evidence dating</h3>
 	<h4 class="authors">Rachel Warnock, Sebastian Höhna, Tracy Heath, April  Wright and Walker Pett</h4>
-  <h5>Last modified on December 11, 2018</h5>
+  <h5>Last modified on May 28, 2019</h5>
 </div>
 
 
@@ -151,12 +151,10 @@
 </blockquote>
 
 <p>Write the commands to read the morphological character data and add missing character data (i.e. for the two species for which character data is unvailable).</p>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>morpho &lt;- readDiscreteCharacterData("data/bears_morphology.nex")
 
 morpho.addMissingTaxa( taxa )
 </code></pre></div></div>
-
 <p>Now you will have two character partitions, each with missing data for differing number of taxa.</p>
 
 <h3 id="the-tree-model">The tree model</h3>
@@ -168,7 +166,6 @@ morpho.addMissingTaxa( taxa )
 <h4 id="monitoring-parameters-of-interest-using-deterministic-nodes">Monitoring parameters of interest using deterministic nodes</h4>
 
 <p>The only change we need to make in this file is to <code class="highlighter-rouge">fnPruneTree</code> There are two fossil species for which we do not have any morphological characters <em>Parictis montanus</em> and <em>Ursus abstrusus</em>, so we will not be able to resolve their tolopological position and we should keep them pruned from the tree. We do not want to remove the other species this time because we are interested in there topological placement.</p>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pruned_tree := fnPruneTree(timetree, prune=v("Parictis_montanus","Ursus_abstrusus")) 
 </code></pre></div></div>
 
@@ -183,10 +180,9 @@ morpho.addMissingTaxa( taxa )
 <p>For the branch-rates parameter we will also use an exponential prior, with parameters <code class="highlighter-rouge">rate</code> = 10. The expected value (or mean) of this distribution is 0.1. The same branch-rate will apply to every branch in the tree.</p>
 
 <p>Simply change the name of <code class="highlighter-rouge">branch_rates</code> to <code class="highlighter-rouge">branch_rates_morpho</code>.</p>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>branch_rates_morpho ~ dnExponential(10.0)
 
-moves[mvi++] = mvScale(branch_rates_morpho,lambda=0.5,tune=true,weight=5.0)
+moves.append( mvScale(branch_rates_morpho,lambda=0.5,tune=true,weight=5.0) )
 </code></pre></div></div>
 
 <h3 id="the-mk-model">The Mk model</h3>
@@ -198,23 +194,18 @@ moves[mvi++] = mvScale(branch_rates_morpho,lambda=0.5,tune=true,weight=5.0)
 </blockquote>
 
 <p>The Mk model is a generalization of the Jukes-Cantor model, so we will initialize our Q matrix from a Jukes-Cantor matrix.</p>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q_morpho := fnJC(2)
 </code></pre></div></div>
-
 <p>As we did for our molecular data partition, we will allow gamma-distributed rate heterogeneity among sites.</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha_morpho ~ dnExponential( 1.0 )
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha_morpho ~ dnUniform( 0.0, 1E8 )
 rates_morpho := fnDiscretizeGamma( alpha_morpho, alpha_morpho, 4 )
 
-moves[mvi++] = mvScale(alpha_morpho, lambda=0.5, tune=true, weight=5.0)
+moves.append( mvScale(alpha_morpho, lambda=0.5, tune=true, weight=5.0) )
 </code></pre></div></div>
-
 <p>Finally, we can create the phylogenetic continuous time Markov chain (PhyloCTMC) distribution for our sequence data, including the gamma-distributed site rate categories, as well as the branch rates defined as part of our clock model. We set the value of this distribution equal to our observed data and identify it as a static part of the likelihood using the clamp method.</p>
 
 <p>As we did previously for our molecular data partition, we now combine our data and our model in the phylogenetic CTMC distribution. There are some unique aspects to doing this for morphology.
 You will notice that we have an option called <code class="highlighter-rouge">coding</code>. This option allows us to condition on biases in the way the morphological data were collected (ascertainment bias). The option <code class="highlighter-rouge">coding=variable</code> specifies that we should correct for coding only variable characters.</p>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phyMorpho ~ dnPhyloCTMC(tree=timetree, siteRates=rates_morpho, branchRates=branch_rates_morpho, Q=Q_morpho, type="Standard", coding="variable")
 phyMorpho.clamp(morpho)
 </code></pre></div></div>
@@ -222,28 +213,20 @@ phyMorpho.clamp(morpho)
 <h3 id="back-to-the-master-rev-script">Back to the master Rev script</h3>
 
 <p>As before, change the file used to specify the tree model from <strong>tree_FBD.Rev</strong> to <strong>tree_TEFBD.Rev</strong>.</p>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/tree_TEFBD.Rev")
 </code></pre></div></div>
-
 <p>Second, use the <code class="highlighter-rouge">source</code> function to load in the new model scripts you wrote as part of this exercise for the analysis of morphological.</p>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/clock_morpho.Rev") # the morphological clock model
 source("scripts/sub_Mk.Rev") # the Mk model
 </code></pre></div></div>
-
 <p>Finally, update the name of the output files.</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[mni++] = mnModel(filename="output/bears_TEFBD.log", printgen=10)
-monitors[mni++] = mnFile(filename="output/bears_TEFBD.trees", printgen=10, pruned_tree)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/bears_TEFBD.log", printgen=10) )
+monitors.append( mnFile(filename="output/bears_TEFBD.trees", printgen=10, pruned_tree) )
 </code></pre></div></div>
-
 <p>Don’t forget to update the commands used to generate the summary tree.</p>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>trace = readTreeTrace("output/bears_TEFBD.trees")
 mccTree(trace, file="output/bears_TEFBD.mcc.tre" )
 </code></pre></div></div>
-
 <blockquote class="instruction">
   <p>Run your MCMC analysis!</p>
 </blockquote>

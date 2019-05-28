@@ -54,7 +54,7 @@
 	<h1 class="maintitle">Molecular dating</h1>
 	<h3 class="subtitle">Estimating speciation times using node dating</h3>
 	<h4 class="authors">Rachel Warnock, Sebastian Höhna, Tracy Heath, April  Wright and Walker Pett</h4>
-  <h5>Last modified on December 13, 2018</h5>
+  <h5>Last modified on May 28, 2019</h5>
 </div>
 
 
@@ -151,15 +151,13 @@ We’re going to add two node calibrations: one on the root and one on the inter
 <p>The oldest first appearance of a <em>crown group</em> bear in our dataset is <em>Ursus americanus</em> at 1.84 Ma. This means that the last common ancestor of all living bears can not be younger that this. Fossil calibrations exert a large influence on Bayesian posterior estimates of speciation times and should not be selected arbitrarily. In practice it is very challenging to select distributions and parameters objectively. In this instance, we will take advantage of a previous estimate ($\sim$49 Ma) for the age of caniforms, which is the clade containing bears and other “dog-like” mammals, from <a href="#DosReis2012">(dos Reis et al. 2012)</a>. We will assume that the age of crown bears can not be older than this.</p>
 
 <p>First, specify the prior on the root. The following commands will replace <code class="highlighter-rouge">extant_mrca &lt;- 1.0</code> in your tree model script, before the the <code class="highlighter-rouge">tree_dist</code> variable is specified.</p>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>extant_mrca_min &lt;- 1.84
 extant_mrca_max &lt;- 49.0
-
+	
 extant_mrca ~ dnUniform(extant_mrca_min, extant_mrca_max)
-
-moves[mvi++] = mvScale(extant_mrca, lambda=1, tune=true, weight=5.0)
+	
+moves.append( mvScale(extant_mrca, lambda=1, tune=true, weight=5.0) )
 </code></pre></div></div>
-
 <p>Here, we have specified the minimum and maximum constraints described above and stochastic node for the age of the root <code class="highlighter-rouge">extant_mrca</code>. Finally, we define a move to sample the age of this parameter.</p>
 
 <h4 id="internal-node-calibration">Internal node calibration</h4>
@@ -183,11 +181,9 @@ Thus, if the MCMC samples any state for which the age of $\mathcal{F}_i$ has a p
 <p>From your script, you’ll recall that we previously defined the Ursinae clade and used it to generate a constrained tree topology. We also created a deterministic node <code class="highlighter-rouge">age_ursinae</code> to keep track of the age of this node.</p>
 
 <p>To calibrate the age of this node we will specify a diffuse exponential density with an expected value (mean) = 1.0, offset by the age of fossil.</p>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>obs_age_ursinae ~ dnExponential(1.0, offset = -age_ursinae)
 obs_age_ursinae.clamp(-1.84)
 </code></pre></div></div>
-
 <p>(Note from Rachel: I don’t really understand why the units have to be negative for this distribution, we’ll have to check with Sebastian.)</p>
 
 <h3 id="the-master-rev-script">The master Rev script</h3>
@@ -197,22 +193,16 @@ obs_age_ursinae.clamp(-1.84)
 </blockquote>
 
 <p>First, change the file used to specify the tree model from <strong>tree_BD.Rev</strong> to <strong>tree_BD_nodedate.Rev</strong>.</p>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/tree_BD_nodedate.Rev")
 </code></pre></div></div>
-
 <p>Second, update the name of the output files.</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[mni++] = mnModel(filename="output/bears_nodedate.log", printgen=10)
-monitors[mni++] = mnFile(filename="output/bears_nodedate.trees", printgen=10, timetree)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/bears_nodedate.log", printgen=10) )
+monitors.append( mnFile(filename="output/bears_nodedate.trees", printgen=10, timetree) )
 </code></pre></div></div>
-
 <p>Don’t forget to update the commands used to generate the summary tree.</p>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>trace = readTreeTrace("output/bears_nodedate.trees")
 mccTree(trace, file="output/bears_nodedate.mcc.tre" )
 </code></pre></div></div>
-
 <p>That’s all you need to do!</p>
 
 <blockquote class="instruction">
@@ -230,15 +220,11 @@ mccTree(trace, file="output/bears_nodedate.mcc.tre" )
 </blockquote>
 
 <p>We just need to add the argument <code class="highlighter-rouge">underPrior=TRUE</code> when we set up the MCMC run.</p>
-
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=20000, underPrior=TRUE)
 </code></pre></div></div>
-
 <p>Again, we need to rename the output files.</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[mni++] = mnModel(filename="output/bears_nodedate_prior.log", printgen=10)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/bears_nodedate_prior.log", printgen=10) )
 </code></pre></div></div>
-
 <p>We’re not going to bother summarizing the trees, so if you want you can simply remove/comment out the second monitor (<code class="highlighter-rouge">mnFile</code>) and the tree summary functions (<code class="highlighter-rouge">readTreeTrace</code> and <code class="highlighter-rouge">mccTree</code>).</p>
 
 <p>This analysis will show you the estimates of node ages obtained under the tree model in combination with the constraint applied at the root of the tree. Note that although this step is often called “running the model under the prior”, the distinction between the prior and posterior varies between programs and becomes less clear once we incorporate fossil data into the tree.</p>
@@ -292,7 +278,9 @@ This is because, in the context of node dating, the calibration information is r
   <li><a href="/tutorials/dating/fbdr">Estimating speciation times using the fossilized birth-death range model</a></li>
 </ul>
 
-<p>For further options and information about the models used in this exercise see Tracy Heath &amp; Sebastian Höhna’s tutorial <a href="https://github.com/revbayes/revbayes_tutorial/blob/master/tutorial_TeX/RB_DivergenceTime_Calibration_Tutorial/">Divergence Time Calibration</a>.</p>
+<!--
+For further options and information about the models used in this exercise see Tracy Heath & Sebastian Höhna's tutorial [Divergence Time Calibration](https://github.com/revbayes/revbayes_tutorial/blob/master/tutorial_TeX/RB_DivergenceTime_Calibration_Tutorial/).
+-->
 
 
 <ol class="bibliography"><li><span id="Heath2014">Heath T.A., Huelsenbeck J.P., Stadler T. 2014. The fossilized birth-death process for coherent calibration of divergence-time estimates. Proceedings of the National Academy of Sciences. 111:E2957–E2966.</span>
