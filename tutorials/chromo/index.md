@@ -44,13 +44,6 @@ original papers that describe the chromosome evolution models as well as
 implementation of these models.
 
 
-{% section Example scripts and data | exampledata %}
-
-The data and the full scripts used for all the examples can be downloaded here:
-- [`scripts.zip`](scripts.zip)
-- [`data.zip`](data.zip)
-
-
 {% section Overview of chromosome number evolution models | chromobasicintro %}
 
 Chromosome changes represent major evolutionary mechanisms that have
@@ -100,7 +93,8 @@ Q_{ij} =
         \rho_a                                & j = 2i,       \\
         \eta_a                                 & j = 1.5i,     \\
         0                                   & \mbox{otherwise},   
-    \end{cases}$$ 
+    \end{cases}
+$$ 
 
 where $\gamma_a$, $\delta_a$, $\rho_a$, and $\eta_a$
 are the rates of chromosome gains, losses, polyploidizations, and
@@ -120,7 +114,8 @@ Q_{ij} =
         \rho_a                                & j = 2i,       \\
         \eta_a                                 & j = 1.5i,     \\
         0                                   & \mbox{otherwise},   
-    \end{cases}$$ 
+    \end{cases}
+$$ 
 
 where $\gamma_m$ and $\delta_m$ are rate modifiers of
 chromosome gain and loss, respectively, that allow the rates of
@@ -199,6 +194,7 @@ chromosome numbers and chromosome evolution parameter value estimates.
 For details on how to implement Bayesian model averaging in RevBayes
 with chromsome evolution see {% citet Freyman2018 %}.
 
+
 ### Next Steps
 
 The basic ChromEvol model as described above can be extended in a number
@@ -224,6 +220,7 @@ counts from {% citet ohi2006molecular %} of the plant genus *Aristolochia*
 model to infer rates of chromosome evolution and ancestral chromosome
 numbers.
 
+
 ### Tutorial Format
 
 This tutorial follows a specific format for issuing instructions and
@@ -235,8 +232,9 @@ build the model, specify the analysis, or execute the run are given in
 separate shaded boxes. For example, we will instruct you to create a
 constant node called `example` that is equal to `1.0` using the `<-`
 operator like this:
-
-    example <- 1.0
+```
+example <- 1.0
+```
 
 
 ### Data and Files
@@ -248,6 +246,7 @@ files: [`data.zip`](data.zip).
 
 This will create a folder called `data` that contains the files
 necessary to complete this exercise.
+
 
 ### Creating the `Rev` File 
 
@@ -281,19 +280,25 @@ model, run the MCMC analysis, and summarize the results.
 First, we'll read in the phylogeny. In this example the phylogeny is
 assumed known. In further examples we'll jointly estimate chromosome
 evolution and the phylogeny.
-
-    phylogeny <- readBranchLengthTrees("data/aristolochia.tree")[1]
-
+```
+phylogeny <- readBranchLengthTrees("data/aristolochia.tree")[1]
+```
 We need to limit the maximum number of chromosomes allowed in our model,
 so here we use the largest observed chromosome count plus 10. This is an
 arbitrary limit on the size of the state space that could be increased
 if necessary.
-
-    max_chromo = 26 
-
+```
+max_chromo = 26 
+```
 Now we get the observed chromosome counts from a tab-delimited file.
-
-    chromo_data = readCharacterDataDelimited("data/aristolochia_chromosome_counts.tsv", stateLabels=(max_chromo + 1), type="NaturalNumbers", delimiter="\t", headers=FALSE)
+```
+chromo_data = readCharacterDataDelimited("data/aristolochia_chromosome_counts.tsv", stateLabels=(max_chromo + 1), type="NaturalNumbers", delimiter="\t", headers=FALSE)
+```
+Finally, we initialize a variable for our vector of moves and monitors.
+```
+moves    = VectorMoves()
+monitors = VectorMonitors()
+```
 
 ### The Chromosome Evolution Model
 
@@ -301,51 +306,52 @@ We'll use exponential priors with prior mean 0.1 to model the rates of
 polyploidy and dysploidy events along the branches of the phylogeny.
 `gamma` is the rate of chromosome gains, `delta` is the rate of
 chromosome losses, and `rho` is the rate of polyploidization.
-
-    gamma ~ dnExponential(10.0)
-    delta ~ dnExponential(10.0)
-    rho ~ dnExponential(10.0)
-
+```
+gamma ~ dnExponential(10.0)
+delta ~ dnExponential(10.0)
+rho ~ dnExponential(10.0)
+```
 Add MCMC moves for each of the rates.
-
-    mvi = 1
-    moves[mvi++] = mvScale(gamma, lambda=1, weight=1)
-    moves[mvi++] = mvScale(delta, lambda=1, weight=1)
-    moves[mvi++] = mvScale(rho, lambda=1, weight=1)
-
+```
+moves.append( mvScale(gamma, lambda=1, weight=1) )
+moves.append( mvScale(delta, lambda=1, weight=1) )
+moves.append( mvScale(rho, lambda=1, weight=1) )
+```
 Now we create the rate matrix for the chromosome evolution model. Here
 we will use a simple ChromEvol model that includes only the rate of
 chromosome gain, loss, and polyploidization.
-
-    Q := fnChromosomes(max_chromo, gamma, delta, rho)
-
+```
+Q := fnChromosomes(max_chromo, gamma, delta, rho)
+```
 Parameters for demi-polyploidization and rate modifiers could also be
 added at this step for more complex models. For example, we could have
 included the rate of demi-polyploidization `eta` and rate modifiers like
 this:
-
-    Q := fnChromosomes(max_chromo, gamma, delta, rho, eta, gamma_l, delta_l)
-
+```
+Q := fnChromosomes(max_chromo, gamma, delta, rho, eta, gamma_l, delta_l)
+```
 Here we assume an equal prior probability for the frequency of
 chromosome numbers at the root of the tree. This does not mean that the
 frequencies are actually equal, we just give it an equal prior
 probability. Alternatively, we could have treated the root frequencies
 as a free variable and estimated them from the observed data. This
 approach will be illustrated in further examples.
-
-    root_frequencies := simplex(rep(1, max_chromo + 1))
-
+```
+root_frequencies := simplex(rep(1, max_chromo + 1))
+```
 Finally, we create the stochastic node for the chromosome evolution
 continuous-time Markov chain (CTMC). We also clamp the observed
 chromosome count data to the CTMC.
-
-    chromo_ctmc ~ dnPhyloCTMC(Q=Q, tree=phylogeny, rootFreq=root_frequencies, type="NaturalNumbers")
-    chromo_ctmc.clamp(chromo_data)
-
+```
+chromo_ctmc ~ dnPhyloCTMC(Q=Q, tree=phylogeny, rootFreq=root_frequencies, type="NaturalNumbers")
+chromo_ctmc.clamp(chromo_data)
+```
 All of the components of the model are now specified, so now we wrap it
 into a single model object.
+```
+mymodel = model(phylogeny)
+```
 
-    mymodel = model(phylogeny)
 
 ### Set Up the MCMC
 
@@ -353,56 +359,59 @@ The next important step for our master `Rev` file is to specify the MCMC
 monitors. For this, we create a vector called `monitors` that will each
 output MCMC samples. First, a screen monitor that will output every 10
 iterations:
-
-    monitors[1] = mnScreen(printgen=10)
-
+```
+monitors.append( mnScreen(printgen=10) )
+```
 Next, an ancestral state monitor which will sample ancestral states and
 write them to a log file. We could additionally use the
 `mnStochasticCharacterMap` monitor to sample stochastic character maps
 of chromosome evolution (see the next section for an example).
-
-    monitors[2] = mnJointConditionalAncestralState(filename="output/ChromEvol_simple_anc_states.log", printgen=10, tree=phylogeny, ctmc=chromo_ctmc, type="NaturalNumbers")
-
+```
+monitors.append( mnJointConditionalAncestralState(filename="output/ChromEvol_simple_anc_states.log", printgen=10, tree=phylogeny, ctmc=chromo_ctmc, type="NaturalNumbers") )
+```
 And another monitor for logging all the model parameters. This will
 generate a file that can be opened in `Tracer`for checking
 MCMC convergence and parameter estimates.
-
-    monitors[3] = mnModel(filename="output/ChromEvol_simple_model.log", printgen=10)
-
+```
+monitors.append( mnModel(filename="output/ChromEvol_simple_model.log", printgen=10) )
+```
 Now we set up the MCMC and include code to execute the analysis. In this
 example we set the chain length to `200`, however for a real analysis
 you would want to run many more iterations and check for convergence.
+```
+mymcmc = mcmc(mymodel, monitors, moves)
+mymcmc.run(200)
+```
 
-    mymcmc = mcmc(mymodel, monitors, moves)
-    mymcmc.run(200)
 
 ### Summarize Ancestral States
 
 Now we need to add `Rev` code that will summarize the sampled ancestral
 chromosome numbers. First, read in the ancestral state trace generated
 by the ancestral state monitor during the MCMC analysis:
-
-    anc_state_trace = readAncestralStateTrace("output/ChromEvol_simple_anc_states.log")
-
+```
+anc_state_trace = readAncestralStateTrace("output/ChromEvol_simple_anc_states.log")
+```
 Finally, summarize the values from the traces over the phylogeny. Here
 we do a marginal reconstruction of the ancestral states, discarding the
 first 25% of samples as burnin. This will produce the file
 `ChromEvol_simple_final.tree` that contains the phylogeny along with
 estimated ancestral states. We can use that file with the `RevGadgets` R
 package to generate a plot of the ancestral states.
-
-    ancestralStateTree(phylogeny, anc_state_trace, "output/ChromEvol_simple_final.tree", burnin=0.25, reconstruction="marginal")
-
+```
+ancestralStateTree(phylogeny, anc_state_trace, "output/ChromEvol_simple_final.tree", burnin=0.25, reconstruction="marginal")
+```
 Note that we could also have calculated joint or conditional ancestral
 states instead of (or in addition to) the marginal ancestral states. If
 we had sampled stochastic character maps, we would summarize them with
 the `characterMapTree` function.
 
 And now quit RevBayes:
-
-    q()
-
+```
+q()
+```
 You made it! Be sure to save the file.
+
 
 ### Execute the RevBayes Analysis 
 
@@ -418,15 +427,16 @@ Provided that you started RevBayes from the correct directory
 (`RB_Chromsome_Evolution_Tutorial`) the analysis should now run.
 Alternatively, from within RevBayes you could use the `source()`
 function to feed RevBayes your master script file:
-
-    source("scripts/ChromEvol_simple.Rev")
-
+```
+source("scripts/ChromEvol_simple.Rev")
+```
 This will execute the analysis and you should see output similar to this
 (though not the exact same values):
 
 When the analysis is complete, RevBayes will quit and you will have a
 new directory called `output` that will contain all of the files you
 specified with the monitors.
+
 
 ### Plotting the Results
 
@@ -436,6 +446,7 @@ R package. Start R and set your working directory to the
 generate {% ref fig:chromevol_simple %} below. There are many options
 to customize the look of the plot, for options take a look inside the R
 script.
+
 
 ### Next Steps
 
@@ -470,9 +481,9 @@ increased accuracy of ancestral root chromosome numbers estimates.
 To use this approach, the `root_frequencies` parameter must be redefined
 as a stochastic node in our graphical model instead of a deterministic
 node. Remove the following line from your `Rev` script:
-
-    root_frequencies := simplex(rep(1, max_chromo + 1))
-
+```
+root_frequencies := simplex(rep(1, max_chromo + 1))
+```
 We will instead use an uninformative flat Dirichlet prior for the root
 frequencies. First, we create a vector to hold the concentration
 parameters for the Dirichlet distribution. Here we set all concentration
@@ -480,10 +491,10 @@ parameters to 1, which results in all sets of probabilities being
 equally likely. We then pass the vector of concentration parameters into
 the Dirichlet distribution and create the stochastic node representing
 root frequencies.
-
-    root_frequencies_prior <- rep(1, max_chromo + 1)
-    root_frequencies ~ dnDirichlet(root_frequencies_prior)
-
+```
+root_frequencies_prior <- rep(1, max_chromo + 1)
+root_frequencies ~ dnDirichlet(root_frequencies_prior)
+```
 Next, we must specify MCMC moves for the root frequencies. When the
 maximum number of chromosomes is high these parameters can have
 difficulty converging. Therefore, we use two different MCMC moves. The
@@ -492,10 +503,10 @@ first is Beta Simplex move, which selects one element of the
 Beta distribution. The second is Element Swap Simplex move, which
 selects two elements of the `root_frequencies` vector and simply swaps
 their values.
-
-    moves[mvi++] = mvBetaSimplex(root_frequencies, alpha=0.5, weight=10)
-    moves[mvi++] = mvElementSwapSimplex(root_frequencies, weight=10)
-
+```
+moves.append( mvBetaSimplex(root_frequencies, alpha=0.5, weight=10)
+moves.append( mvElementSwapSimplex(root_frequencies, weight=10)
+```
 You can experiment with different weights for each MCMC move.
 
 Make the modifications to the root frequencies in the script
@@ -503,6 +514,7 @@ Make the modifications to the root frequencies in the script
 estimates of the root frequency (you can see this by looking at the
 output in `Tracer`)? Do the estimated ancestral states
 change?
+
 
 {% subsection Stochastic character mapping of chromosome evolution | stochastic %}
 
@@ -530,9 +542,9 @@ We have already shown how to sample ancestral states above, and here we
 show the few extra lines of `Rev` code needed to sample stochastic
 character maps. Stochastic character maps are drawn during the MCMC, so
 we need to include the `mnStochasticCharacterMap` monitor.
-
-    monitors[4] = mnStochasticCharacterMap(ctmc=chromo_ctmc, filename="output/ChromEvol_maps.log", printgen=10)
-
+```
+monitors.append( mnStochasticCharacterMap(ctmc=chromo_ctmc, filename="output/ChromEvol_maps.log", printgen=10) )
+```
 This monitor will create the `output/ChromEvol_maps.log` file. Just like
 the other log files, each row in this file represents a different sample
 from the MCMC. Each column in the file, though, is the character history
@@ -545,21 +557,22 @@ After the MCMC simulation, we can calculate the maximum a posteriori
 *marginal*, *joint*, or *conditional* character history. This process is
 similar to the ancestral state summaries. First we read in the
 stochastic character map trace.
-
-    anc_state_trace = readAncestralStateTrace("output/ChromEvol_maps.log")
-
+```
+anc_state_trace = readAncestralStateTrace("output/ChromEvol_maps.log")
+```
 Then we use the `characterMapTree` function. This generates two SIMMAP
 formatted files: 1) the maximum a posteriori character history, and 2)
 the posterior probabilities of the entire character history.
-
-    characterMapTree(phylogeny, anc_state_trace, character_file="output/character.tree", posterior_file="output/posterior.tree", burnin=5, reconstruction="marginal")
-
+```
+characterMapTree(phylogeny, anc_state_trace, character_file="output/character.tree", posterior_file="output/posterior.tree", burnin=5, reconstruction="marginal")
+```
 {% ref fig:simmap %} is an example stochastic character map of our
 *Aristolochia* analysis plotted using **phytools**.
 
 Copy the script `ChromoSSE_simple.Rev` and add stochastic character
 mapping monitor. Then, run the analysis and use the script
 `plot_simmap.R` to visualize the character mappings.
+
 
 {% subsection Joint estimation of phylogeny and chromosome evolution | joint %}
 
@@ -578,123 +591,130 @@ step through what must be added to the example in the section {% ref chromevolex
 above. Furthermore, we have provided a
 full working example script `scripts/ChromEvol_joint.Rev`.
 
+
 ### Reading in Molecular Data and Setting Clade Constraints
 
 The first major difference from the basic ChromEvol example shown above
 is that we must additionally read in molecular sequence data:
-
-    dna_seq = readDiscreteCharacterData("data/aristolochia_matK.fasta")
-
+```
+dna_seq = readDiscreteCharacterData("data/aristolochia_matK.fasta")
+```
 We will need some useful information about this data as well:
-
-    n_species = dna_seq.ntaxa()
-    n_sites = dna_seq.nchar()
-    taxa = dna_seq.names()
-    n_branches = 2 * n_species - 2
-
+```
+n_species = dna_seq.ntaxa()
+n_sites = dna_seq.nchar()
+taxa = dna_seq.names()
+n_branches = 2 * n_species - 2
+```
 Since we want to jointly infer ancestral states, we need to set an a
 priori rooting constraint on our phylogeny. So here we set an ingroup
 and outgroup.
-
-    outgroup = ["Aristolochia_serpantaria", "Aristolochia_arborea", 
-                "Aristolochia_wardiana", "Aristolochia_californica", 
-                "Aristolochia_saccata", "Aristolochia_mollisima",
-                "Aristolochia_tomentosa", "Aristolochia_neolongifolia_SETS52", 
-                "Aristolochia_neolongifolia_SETS96"]
-
+```
+outgroup = ["Aristolochia_serpantaria", "Aristolochia_arborea", 
+            "Aristolochia_wardiana", "Aristolochia_californica", 
+            "Aristolochia_saccata", "Aristolochia_mollisima",
+            "Aristolochia_tomentosa", "Aristolochia_neolongifolia_SETS52", 
+            "Aristolochia_neolongifolia_SETS96"]
+```
 Here we loop through each taxon and if it is not present in the outgroup
 defined above we add it to the ingroup.
-
-    i = 1
-    for (j in 1:taxa.size()) {
-        found = false
-        for (k in 1:outgroup.size()) {
-            if (outgroup[k] == taxa[j].getSpeciesName()) {
-                found = true
-                break
-            }
-        }
-        if (found == false) {
-            ingroup[i] = taxa[j].getSpeciesName()
-            i += 1
+```
+i = 1
+for (j in 1:taxa.size()) {
+    found = false
+    for (k in 1:outgroup.size()) {
+        if (outgroup[k] == taxa[j].getSpeciesName()) {
+            found = true
+            break
         }
     }
-
+    if (found == false) {
+        ingroup[i] = taxa[j].getSpeciesName()
+        i += 1
+    }
+}
+```
 And now we make the vector of clade objects to constrain our tree
 topology.
+```
+clade_ingroup = clade(ingroup)
+clade_outgroup = clade(outgroup)
+clade_constraints = [clade_ingroup, clade_outgroup]
+```
 
-    clade_ingroup = clade(ingroup)
-    clade_outgroup = clade(outgroup)
-    clade_constraints = [clade_ingroup, clade_outgroup]
 
 ### Tree Model
 
 We will specify a uniform prior on the tree topology, and add a MCMC
 move on the topology.
-
-    topology ~ dnUniformTopology(taxa=taxa, constraints=clade_constraints, rooted=TRUE)
-    moves[mvi++] = mvNNI(topology, weight=10.0)
-
+```
+topology ~ dnUniformTopology(taxa=taxa, constraints=clade_constraints, rooted=TRUE)
+moves.append( mvNNI(topology, weight=10.0) )
+```
 Next, we create a stochastic node for each branch length. Each branch
 length prior will have an exponential distribution with rate 1.0. We'll
 also add a simple scaling move for each branch length.
-
-    for (i in 1:n_branches) {
-        br_lens[i] ~ dnExponential(10.0)
-        moves[mvi++] = mvScale(br_lens[i], lambda=2, weight=1)
-    }
-
+```
+for (i in 1:n_branches) {
+    br_lens[i] ~ dnExponential(10.0)
+    moves.append( mvScale(br_lens[i], lambda=2, weight=1)
+}
+```
 Finally, build the tree by combining the topology with the branch
 lengths.
+```
+phylogeny := treeAssembly(topology, br_lens)
+```
 
-    phylogeny := treeAssembly(topology, br_lens)
 
 ### Molecular Substitution Model
 
 We'll specify the GTR substitution model applied uniformly to all sites.
 Use a flat Dirichlet prior for the exchange rates.
-
-    er_prior <- v(1,1,1,1,1,1)
-    er ~ dnDirichlet(er_prior)
-    moves[mvi++] = mvSimplexElementScale(er, alpha=10, weight=3)
-
+```
+er_prior <- v(1,1,1,1,1,1)
+er ~ dnDirichlet(er_prior)
+moves.append( mvSimplexElementScale(er, alpha=10, weight=3) )
+```
 And also a flat Dirichlet prior for the stationary base frequencies.
-
-    pi_prior <- v(1,1,1,1)
-    pi ~ dnDirichlet(pi_prior)
-    moves[mvi++] = mvSimplexElementScale(pi, alpha=10, weight=2)
-
+```
+pi_prior <- v(1,1,1,1)
+pi ~ dnDirichlet(pi_prior)
+moves.append( mvSimplexElementScale(pi, alpha=10, weight=2) )
+```
 Now create a deterministic variable for the nucleotide substitution rate
 matrix.
-
-    Q_mol := fnGTR(er, pi)
-
+```
+Q_mol := fnGTR(er, pi)
+```
 Create a stochastic node for the sequence evolution continuous-time
 Markov chain (CTMC) and clamp the sequence data. Note we should have two
 CTMC objects in this model: one for the model of molecular evolution and
 one for the model of chromosome evolution.
+```
+dna_ctmc ~ dnPhyloCTMC(tree=phylogeny, Q=Q_mol, branchRates=1.0, type="DNA")
+dna_ctmc.clamp(dna_seq)
+```
 
-    dna_ctmc ~ dnPhyloCTMC(tree=phylogeny, Q=Q_mol, branchRates=1.0, type="DNA")
-    dna_ctmc.clamp(dna_seq)
 
 ### MCMC and Summarizing Results
 
 We set up the MCMC just as before, except here we need to add a file
 monitor to store the sampled trees.
-
-    monitors[2] = mnFile(filename="output/ChromEvol_joint.trees", printgen=10, phylogeny)
-
+```
+monitors.append( mnFile(filename="output/ChromEvol_joint.trees", printgen=10, phylogeny) )
+```
 Summarizing the results of the MCMC analysis are a little different.
 First we will calculate the maximum a posteriori (MAP) tree.
-
-    treetrace = readAncestralStateTreeTrace("output/ChromEvol_joint.trees", treetype="non-clock")
-    map_tree = mapTree(treetrace, "output/ChromEvol_joint_map.tree")
-
+```
+treetrace = readAncestralStateTreeTrace("output/ChromEvol_joint.trees", treetype="non-clock")
+map_tree = mapTree(treetrace, "output/ChromEvol_joint_map.tree")
+```
 Now we'll summarize the ancestral chromosome numbers over the MAP tree.
 Read in the ancestral state trace:
-
-    anc_state_trace = readAncestralStateTrace("output/ChromEvol_joint_states.log")
-
+```
+anc_state_trace = readAncestralStateTrace("output/ChromEvol_joint_states.log")
+```
 Finally, calculate the marginal ancestral states from the traces over
 the MAP tree. Note that this time we have to pass both the tree trace
 and the ancestral state trace to the `ancestralStateTree` function.
@@ -703,11 +723,12 @@ trees, we sampled some ancestral states for nodes that do not exist in
 the MAP tree. Therefore the ancestral state probabilities being
 calculated for the MAP tree are conditional to the probability of the
 node existing.
-
-    ancestralStateTree(map_tree, anc_state_trace, treetrace, "output/ChromEvol_joint_final.tree" burnin=0.25, reconstruction="marginal")
-
+```
+ancestralStateTree(map_tree, anc_state_trace, treetrace, "output/ChromEvol_joint_final.tree" burnin=0.25, reconstruction="marginal")
+```
 Like before, we can plot the results using the `RevGadgets` R package
 using the script `plot_ChromEvol_joint.R`.
+
 
 {% subsection Association chromosome evolution with phenotype (BiChroM) | bichrom %}
 
@@ -772,6 +793,7 @@ in the lineage leading to the extant Isotrema clade.
 {% endfigcaption %}
 {% endfigure %}
 
+
 ### Setting up the BiChroM model
 
 The first step will be to read in the observed data. This is done as
@@ -783,102 +805,102 @@ subdivided in 5 to 24 lobes, and states 27-52 represent the haploid
 number $n + 27$ for lineages with simple 3 lobed gynostemium. Note the
 `stateLabels` argument must now be set to 2 times the maximum number of
 chromosomes.
-
-    chromo_data = readCharacterDataDelimited("data/aristolochia_bichrom_counts.tsv", stateLabels=2*(max_chromo + 1), type="NaturalNumbers", delimiter="\t", headers=FALSE)
-
+```
+chromo_data = readCharacterDataDelimited("data/aristolochia_bichrom_counts.tsv", stateLabels=2*(max_chromo + 1), type="NaturalNumbers", delimiter="\t", headers=FALSE)
+```
 Like before, we'll use exponential priors to model the rates of
 polyploidy and dysploidy events along the branches of the phylogeny.
 However, here we set up two rate parameters for each type of chromosome
 change – one for phenotype state 0 and one for phenotype state 1.
-
-    gamma_0 ~ dnExponential(10.0)
-    gamma_1 ~ dnExponential(10.0)
-    delta_0 ~ dnExponential(10.0)
-    delta_1 ~ dnExponential(10.0)
-    rho_0 ~ dnExponential(10.0)
-    rho_1 ~ dnExponential(10.0)
-
+```
+gamma_0 ~ dnExponential(10.0)
+gamma_1 ~ dnExponential(10.0)
+delta_0 ~ dnExponential(10.0)
+delta_1 ~ dnExponential(10.0)
+rho_0 ~ dnExponential(10.0)
+rho_1 ~ dnExponential(10.0)
+```
 Add MCMC moves for each of the rates.
-
-    mvi = 1
-    moves[mvi++] = mvScale(gamma_0, lambda=1, weight=1)
-    moves[mvi++] = mvScale(delta_0, lambda=1, weight=1)
-    moves[mvi++] = mvScale(rho_0, lambda=1, weight=1)
-    moves[mvi++] = mvScale(gamma_1, lambda=1, weight=1)
-    moves[mvi++] = mvScale(delta_1, lambda=1, weight=1)
-    moves[mvi++] = mvScale(rho_1, lambda=1, weight=1)
-
+```
+moves.append( mvScale(gamma_0, lambda=1, weight=1) )
+moves.append( mvScale(delta_0, lambda=1, weight=1) )
+moves.append( mvScale(rho_0, lambda=1, weight=1) )
+moves.append( mvScale(gamma_1, lambda=1, weight=1) )
+moves.append( mvScale(delta_1, lambda=1, weight=1) )
+moves.append( mvScale(rho_1, lambda=1, weight=1) )
+```
 Now we create the rate matrix for the chromosome evolution model. We
 will set up two rate matrices, one for each phenotype state.
-
-    Q_0 := fnChromosomes(max_chromo, gamma_0, delta_0, rho_0)
-    Q_1 := fnChromosomes(max_chromo, gamma_1, delta_1, rho_1)
-
+```
+Q_0 := fnChromosomes(max_chromo, gamma_0, delta_0, rho_0)
+Q_1 := fnChromosomes(max_chromo, gamma_1, delta_1, rho_1)
+```
 Again, we could have include the rate of demi-polyploidization `eta` and
 rate modifiers like this:
-
-    Q_0 := fnChromosomes(max_chromo, gamma_0, delta_0, rho_0, eta_0, gamma_l_0, delta_l_0) 
-    Q_1 := fnChromosomes(max_chromo, gamma_1, delta_1, rho_1, eta_1, gamma_l_1, delta_l_1) 
-
+```
+Q_0 := fnChromosomes(max_chromo, gamma_0, delta_0, rho_0, eta_0, gamma_l_0, delta_l_0) 
+Q_1 := fnChromosomes(max_chromo, gamma_1, delta_1, rho_1, eta_1, gamma_l_1, delta_l_1) 
+```
 Now we create the rates of transitioning between phenotype states. Any
 model could be used (all rates equal models, Dollo models, etc.) but
 here we estimate a different rate for each transition between states 0
 and 1.
-
-    q_01 ~ dnExponential(10.0)
-    q_10 ~ dnExponential(10.0)
-    moves[mvi++] = mvScale(q_01, lambda=1, weight=1)
-    moves[mvi++] = mvScale(q_10, lambda=1, weight=1)
-
+```
+q_01 ~ dnExponential(10.0)
+q_10 ~ dnExponential(10.0)
+moves.append( mvScale(q_01, lambda=1, weight=1) )
+moves.append( mvScale(q_10, lambda=1, weight=1) )
+```
 And finally we create the transition rate matrix `Q_b` for the joint
 model of phenotypic and chromosome evolution. First we will initialize
 the matrix with all zeros:
-
-    s = Q_0[1].size()
-    for (i in 1:(2 * s)) {
-        for (j in 1:(2 * s)) {
-            Q[i][j] := 0.0
-        }
+```
+s = Q_0[1].size()
+for (i in 1:(2 * s)) {
+    for (j in 1:(2 * s)) {
+        Q[i][j] := 0.0
     }
-
+}
+```
 And now we populate the matrix with the transition rates.
-
-    for (i in 1:(2 * s)) {
-        for (j in 1:(2 * s)) {
-            if (i <= s) {
-                if (j <= s) {
-                    if (i != j) {
-                        # chromosome changes within phenotype state 0
-                        Q[i][j] := abs(Q_0[i][j])
-                    }
-                } else {
-                    if (i == (j - s)) {
-                        # transition from phenotype state 0 to 1
-                        Q[i][j] := q_01
-                    }
+```
+for (i in 1:(2 * s)) {
+    for (j in 1:(2 * s)) {
+        if (i <= s) {
+            if (j <= s) {
+                if (i != j) {
+                    # chromosome changes within phenotype state 0
+                    Q[i][j] := abs(Q_0[i][j])
                 }
             } else {
-                if (j <= s) {
-                    if (i == (j + s)) {
-                        # transition from phenotype state 1 to 0
-                        Q[i][j] := q_10
-                    }
-                } else {
-                    if (i != j) {
-                        # chromosome changes within phenotype state 1
-                        k = i - s
-                        l = j - s
-                        Q[i][j] := abs(Q_1[k][l])
-                    }
+                if (i == (j - s)) {
+                    # transition from phenotype state 0 to 1
+                    Q[i][j] := q_01
+                }
+            }
+        } else {
+            if (j <= s) {
+                if (i == (j + s)) {
+                    # transition from phenotype state 1 to 0
+                    Q[i][j] := q_10
+                }
+            } else {
+                if (i != j) {
+                    # chromosome changes within phenotype state 1
+                    k = i - s
+                    l = j - s
+                    Q[i][j] := abs(Q_1[k][l])
                 }
             }
         }
     }
-    Q_b := fnFreeK(Q, rescaled=false)
-
+}
+Q_b := fnFreeK(Q, rescaled=false)
+```
 The rest of the analysis is essentially the same as in section
 {% ref chromevolexample %}. Just make sure to pass the `Q_b` matrix
 into the CTMC object.
+
 
 ### BiChroM Analysis Results
 
@@ -892,6 +914,7 @@ this we can see that an evolutionary reduction occured on the lineage
 leading to the Isotreme clade. The common ancestor for all
 *Aristolochia* is inferred to have complex many lobed gynostemium which
 was reduced to a more simple 3-lobed form in Isotrema.
+
 
 {% subsection Incorporating cladogenetic and anagenetic chromosome change | clado_simple %}
 
@@ -923,6 +946,7 @@ components that must be changed to incorporate cladogenetic changes. We
 have provided a full working example script
 `scripts/ChromEvol_clado.Rev`
 
+
 ### A Simple Cladogenetic Model
 
 {% figure fig:chromevol_clado %}
@@ -946,48 +970,48 @@ set this up, we'll first draw a 'weight' for each type of cladogenetic
 event from an exponential distribution. To keep the example simple we
 are excluding cladogenetic demi-polyploidization. We then pass each
 'weight' into a simplex to create the vector of probabilities.
-
-    clado_no_change_pr ~ dnExponential(10.0)
-    clado_fission_pr ~ dnExponential(10.0)
-    clado_fusion_pr ~ dnExponential(10.0)
-    clado_polyploid_pr ~ dnExponential(10.0)
-    clado_demipoly_pr <- 0.0
-    clado_type := simplex([clado_no_change_pr, clado_fission_pr, clado_fusion_pr, clado_polyploid_pr, clado_demipoly_pr])
-
+```
+clado_no_change_pr ~ dnExponential(10.0)
+clado_fission_pr ~ dnExponential(10.0)
+clado_fusion_pr ~ dnExponential(10.0)
+clado_polyploid_pr ~ dnExponential(10.0)
+clado_demipoly_pr <- 0.0
+clado_type := simplex([clado_no_change_pr, clado_fission_pr, clado_fusion_pr, clado_polyploid_pr, clado_demipoly_pr])
+```
 The function `fnChromosomesCladoProbs` produces a matrix of cladogenetic
 probabilities. This is a very large and sparse 3 dimensional matrix that
 contains the transition probabilities of every possible state of the
 parent lineage transitioning to every possible combination of states of
 the two daughter lineages.
-
-    clado_prob := fnChromosomesCladoProbs(clado_type, max_chromo)
-
+```
+clado_prob := fnChromosomesCladoProbs(clado_type, max_chromo)
+```
 We can't forget to add moves for each cladogenetic event:
-
-    moves[mvi++] = mvScale(clado_no_change_pr, lambda=1.0, weight=2)
-    moves[mvi++] = mvScale(clado_fission_pr, lambda=1.0, weight=2)
-    moves[mvi++] = mvScale(clado_fusion_pr, lambda=1.0, weight=2)
-    moves[mvi++] = mvScale(clado_polyploid_pr, lambda=1.0, weight=2)
-
+```
+moves.append( mvScale(clado_no_change_pr, lambda=1.0, weight=2) )
+moves.append( mvScale(clado_fission_pr, lambda=1.0, weight=2) )
+moves.append( mvScale(clado_fusion_pr, lambda=1.0, weight=2) )
+moves.append( mvScale(clado_polyploid_pr, lambda=1.0, weight=2) )
+```
 Now we can create the cladogenetic CTMC model. We must pass in both the
 `Q` matrix that represents the anagenetic changes, and the `clado_probs`
 matrix that represents the cladogenetic changes.
-
-    chromo_ctmc ~ dnPhyloCTMCClado(Q=Q, tree=phylogeny, cladoProbs=clado_prob, rootFrequencies=root_frequencies, type="NaturalNumbers", nSites=1)
-
+```
+chromo_ctmc ~ dnPhyloCTMCClado(Q=Q, tree=phylogeny, cladoProbs=clado_prob, rootFrequencies=root_frequencies, type="NaturalNumbers", nSites=1)
+```
 Most of the rest of the analysis is the same. For the ancestral state
 monitor we want to be sure to specify `withStartState=true` so that we
 sample the states both at start and end of each branch. This enables us
 to reconstruct cladogenetic events.
-
-    monitors[2] = mnJointConditionalAncestralState(filename="output/ChromEvol_clado_anc_states.log", printgen=10, tree=phylogeny, ctmc=chromo_ctmc, withStartStates=true, type="NaturalNumbers")
-
+```
+monitors.append( mnJointConditionalAncestralState(filename="output/ChromEvol_clado_anc_states.log", printgen=10, tree=phylogeny, ctmc=chromo_ctmc, withStartStates=true, type="NaturalNumbers") )
+```
 When summarizing the ancestral state results we also want to specify
 `include_start_states=true` so that we summarize the cladogenetic
 changes.
-
-    ancestralStateTree(phylogeny, anc_state_trace, "output/ChromEvol_clado_final.tree", include_start_states=true, burnin=0.25, reconstruction="marginal")
-
+```
+ancestralStateTree(phylogeny, anc_state_trace, "output/ChromEvol_clado_final.tree", include_start_states=true, burnin=0.25, reconstruction="marginal")
+```
 And that's it! {% ref fig:chromevol_clado %} shows the ancestral state
 estimates plotted on the tree. The start states of each lineage (the
 state after cladogenesis) are plotted on the 'shoulders' of each
@@ -1051,6 +1075,7 @@ explicit tests of different extinction rates for polyploid and diploid
 lineages, and testing different rates of chromosome speciation
 associated with phenotypes or habitat.
 
+
 {% subsection The ChromoSSE likelihood calculation | chromosselnl %}
 
 All the previous models of chromosome number evolution discussed in the
@@ -1072,10 +1097,12 @@ number $i$ of the lineage. This can easily be modified in RevBayes to
 allow for different speciation and/or extinction rates depending on
 ploidy or other character states.
 
+
 ### Next Steps
 
 In the next section we'll set up and run a RevBayes analysis using the
 ChromoSSE model of cladogenetic and anagenetic chromosome evolution.
+
 
 {% section A simple ChromoSSE analysis | chromosseexample %}
 
@@ -1093,6 +1120,7 @@ up in section {% ref chromevolexample %}. The full script to run
 this ChromoSSE example is provided in the file
 `scripts/ChromoSSE_simple.Rev`.
 
+
 ### The model: a joint model of the tree and chromosome evolution
 
 A major difference between the previously discussed models of chromosome
@@ -1108,8 +1136,10 @@ the same unit of time as the branch lengths of our tree. In this example
 the node ages are relative, but you could use a fossil-calibrated tree
 with absolute ages if you wanted rates of chromosome change in units of
 millions of years.
+```
+phylogeny <- readTrees("data/aristolochia-bd.tree")[1]
+```
 
-    phylogeny <- readTrees("data/aristolochia-bd.tree")[1]
 
 ### Anagenetic Changes
 
@@ -1117,6 +1147,7 @@ The anagenetic part of the chromosome number evolution model involves
 populating the `Q` transition rate matrix with the rates of anagenetic
 chromosome number changes. This is set up exactly the same as in the
 ChromEvol analyses before.
+
 
 ### Cladogenetic Changes
 
@@ -1133,34 +1164,34 @@ $E(N_t) = N_0 e^{rt}$, which describes the expected number of species
 $N_t$ at time $t$ under a constant rate birth-death process where $N_0$
 is the number of species at $t=0$ {% cite nee94 %}. The equation can be
 rearranged to arrive at $r = ( \ln(N_t) - \ln(N_0) ) / t$.
-
-    taxa <- phylogeny.taxa()
-    speciation_mean <- ln( taxa.size() ) / phylogeny.rootAge()
-    speciation_pr <- 1 / speciation_mean
-
+```
+taxa <- phylogeny.taxa()
+speciation_mean <- ln( taxa.size() ) / phylogeny.rootAge()
+speciation_pr <- 1 / speciation_mean
+```
 Each cladogenetic event type is assigned its own speciation rate. We set
 the rate of demi-polyploidization to 0.0 for simplicity.
-
-    clado_no_change ~ dnExponential(speciation_pr)
-    clado_fission ~ dnExponential(speciation_pr)
-    clado_fusion ~ dnExponential(speciation_pr)
-    clado_polyploid ~ dnExponential(speciation_pr)
-    clado_demipoly <- 0.0
-
+```
+clado_no_change ~ dnExponential(speciation_pr)
+clado_fission ~ dnExponential(speciation_pr)
+clado_fusion ~ dnExponential(speciation_pr)
+clado_polyploid ~ dnExponential(speciation_pr)
+clado_demipoly <- 0.0
+```
 Like usual, we must add MCMC moves for the speciation rates.
-
-    moves[mvi++] = mvScale(clado_no_change, lambda=5.0, weight=1)
-    moves[mvi++] = mvScale(clado_fission, lambda=5.0, weight=1)
-    moves[mvi++] = mvScale(clado_fusion, lambda=5.0, weight=1)
-    moves[mvi++] = mvScale(clado_polyploid, lambda=5.0, weight=1)
-
+```
+moves.append( mvScale(clado_no_change, lambda=5.0, weight=1) )
+moves.append( mvScale(clado_fission, lambda=5.0, weight=1) )
+moves.append( mvScale(clado_fusion, lambda=5.0, weight=1) )
+moves.append( mvScale(clado_polyploid, lambda=5.0, weight=1) )
+```
 We next create a vector to hold the speciation rates, and also create a
 deterministic node `total_speciation` which will be a convenient way to
 monitor the total speciation rate of the birth-death process.
-
-    speciation_rates := [clado_no_change, clado_fission, clado_fusion, clado_polyploid, clado_demipoly]
-    total_speciation := sum(speciation_rates)
-
+```
+speciation_rates := [clado_no_change, clado_fission, clado_fusion, clado_polyploid, clado_demipoly]
+total_speciation := sum(speciation_rates)
+```
 Finally, we map the speciation rates to the chromosome cladogenetic
 events. The function `fnChromosomesCladoEventsBD` produces a matrix of
 speciation rates. This is a very large and sparse 3 dimensional matrix
@@ -1168,8 +1199,10 @@ that contains the speciation rates for all possible cladogenetic events.
 It contains the speciation rate for every possible state of the parent
 lineage transitioning to every possible combination of states of the two
 daughter lineages.
+```
+clado_matrix := fnChromosomesCladoEventsBD(speciation_rates, max_chromo)
+```
 
-    clado_matrix := fnChromosomesCladoEventsBD(speciation_rates, max_chromo)
 
 ### Extinction Rate
 
@@ -1177,18 +1210,20 @@ Next, we create a stochastic variable to represent the
 relative-extinction rate. Here, we define relative-extinction as
 extinction divided by speciation, so we use a uniform prior on the
 interval $\{0,1\}$.
-
-    rel_extinction ~ dnUniform(0, 1.0)
-    rel_extinction(0.4)
-    moves[mvi++] = mvScale(rel_extinction, lambda=5.0, weight=3.0)
-
+```
+rel_extinction ~ dnUniform(0, 1.0)
+rel_extinction(0.4)
+moves.append( mvScale(rel_extinction, lambda=5.0, weight=3.0) )
+```
 We then make a vector of extinction rates for each state. In the basic
 ChromoSSE model we assume all chromosome numbers have the same
 extinction rate.
+```
+for (i in 1:(max_chromo + 1)) {
+    extinction[i] := rel_extinction * total_speciation
+}
+```
 
-    for (i in 1:(max_chromo + 1)) {
-        extinction[i] := rel_extinction * total_speciation
-    }
 
 ### The State-Dependent Speciation and Extinction Model
 
@@ -1198,29 +1233,31 @@ must set the probability of sampling species at the present. We
 artificially use 1.0 here, but you should experiment with more realistic
 settings as this will affect the overall speciation and extinction rates
 estimated.
-
-    rho_bd <- 1.0
-
+```
+rho_bd <- 1.0
+```
 Now we construct a variable that describes the evolution of both the
 tree and chromosome numbers drawn from a cladogenetic state-dependent
 birth-death process. The `dnCDBDP` distribution is named for a
 character-dependent birth-death process, which is another
 name for a state-dependent speciation and extinction
 process. 
-
-    chromo_bdp ~ dnCDBDP( rootAge            = phylogeny.rootAge(),
-                          cladoEventMap      = clado_matrix,
-                          extinctionRates    = extinction,
-                          Q                  = Q,
-                          pi                 = root_frequencies,
-                          rho                = rho_bd )
-
+```
+chromo_bdp ~ dnCDBDP( rootAge            = phylogeny.rootAge(),
+                      cladoEventMap      = clado_matrix,
+                      extinctionRates    = extinction,
+                      Q                  = Q,
+                      pi                 = root_frequencies,
+                      rho                = rho_bd )
+```
 Since ChromoSSE is a joint model of both the tree and the chromosome
 numbers, we must of course clamp both the observed tree and the
 chromosome count data.
+```
+chromo_bdp.clamp(phylogeny)
+chromo_bdp.clampCharData(chromo_data)
+```
 
-    chromo_bdp.clamp(phylogeny)
-    chromo_bdp.clampCharData(chromo_data)
 
 ### Finishing the ChromoSSE Analysis
 
@@ -1230,9 +1267,9 @@ state monitor. Now we must specify that we are using a state-dependent
 speciation and extinction process (as mentioned above this is also
 called a character-dependent birth-death process, or `cdbdp`) instead of
 a continuous-time Markov process (`ctmc`) like we use before.
-
-    monitors[2] = mnJointConditionalAncestralState(filename="output/ChromoSSE_anc_states.log", printgen=10, tree=phylogeny, cdbdp=chromo_bdp, withStartStates=true, type="NaturalNumbers")
-
+```
+monitors.append( mnJointConditionalAncestralState(filename="output/ChromoSSE_anc_states.log", printgen=10, tree=phylogeny, cdbdp=chromo_bdp, withStartStates=true, type="NaturalNumbers") )
+```
 And that's it! The results can be plotted using the same R script
 demonstrated before to plot the cladogenetic ChromEvol analysis.
 
