@@ -21,9 +21,9 @@ taxa <- data.taxa()
 
 num_data_subsets = data.size()
 
-# set my move index
-mvi = 1
-mni = 1
+# Create some vector for the moves and monitors of this analysis
+moves    = VectorMoves()
+monitors = VectorMonitors()
 
 
 
@@ -41,16 +41,16 @@ psi <- readTrees("data/TF105351.Eut.3.53876.tree")[1]
 
 # the transition/transversion rate ratio
 kappa ~ dnLognormal(0,1)
-moves[mvi++] = mvSlide(kappa, delta=1.0, tune=true, weight=2.0)
+moves.append( mvSlide(kappa, delta=1.0, tune=true, weight=2.0) )
 
 # the nucleotide stationary frequencies
 pi ~ dnDirichlet( rep(1,4) )
-moves[mvi++] = mvBetaSimplex(pi, alpha=1.0, tune=true, weight=2.0)
-moves[mvi++] = mvDirichletSimplex(pi, alpha=1.0, tune=true, weight=2.0)
+moves.append( mvBetaSimplex(pi, alpha=1.0, tune=true, weight=2.0) )
+moves.append( mvDirichletSimplex(pi, alpha=1.0, tune=true, weight=2.0) )
 
 # purifying selection
 omega_negative ~ dnBeta(1,1)
-moves[mvi++] = mvSlide(omega_negative, delta=1.0, tune=true, weight=2.0)
+moves.append( mvSlide(omega_negative, delta=1.0, tune=true, weight=2.0) )
 Q_negative := fnCodonHKY( omega_negative, kappa, pi )
 
 # neutral selection
@@ -59,7 +59,7 @@ Q_neutral := fnCodonHKY( omega_neutral, kappa, pi )
 
 # positive selection
 omega_positive ~ dnExponential(1.0, offset=1.0)
-moves[mvi++] = mvSlide(omega_positive, delta=1.0, tune=true, weight=2.0)
+moves.append( mvSlide(omega_positive, delta=1.0, tune=true, weight=2.0) )
 Q_positive := fnCodonHKY( omega_positive, kappa, pi )
 
 Q := [Q_negative, Q_neutral, Q_positive]
@@ -81,8 +81,8 @@ mymodel = model(psi)
 
 
 
-monitors[mni++] = mnModel(filename="output/dNdS_site.log",printgen=10, separator = TAB)
-monitors[mni++] = mnScreen(printgen=100, omega_negative, omega_neutral, omega_positive)
+monitors.append( mnModel(filename="output/dNdS_site.log",printgen=10, separator = TAB) )
+monitors.append( mnScreen(printgen=100, omega_negative, omega_neutral, omega_positive) )
 
 #mymcmc = mcmcmc(mymodel, monitors, moves, nchain=4, nruns=10)
 mymcmc = mcmc(mymodel, monitors, moves, nruns=2)
