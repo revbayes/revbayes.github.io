@@ -10,6 +10,12 @@ prerequisites:
 - mcmc_archery
 - mcmc_binomial
 - ctmc
+exclude_files:
+- scripts/pps_analysis_JC_inf.Rev
+- scripts/pps_analysis_GTR_inf.Rev
+- scripts/PosteriorPredictive_MCMC.Rev
+- scripts/PosteriorPredictive_PValues.Rev
+- scripts/PosteriorPredictive_TreeSummary.Rev
 index: true
 title-old: RB_PosteriorPrediction_Tutorial
 redirect: false

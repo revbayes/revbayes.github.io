@@ -9,6 +9,11 @@ prerequisites:
 - intro_rev
 - mcmc_archery
 - ctmc
+exclude_files: 
+- scripts/pps_analysis_JC.Rev
+- scripts/pps_analysis_GTR.Rev
+- scripts/pps_DataSummary.Rev
+- scripts/pps_PValues.Rev
 index: true
 title-old: RB_PosteriorPrediction_Tutorial
 redirect: false

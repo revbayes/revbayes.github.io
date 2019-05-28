@@ -15,6 +15,11 @@ exclude_files:
 - data/fagus_ITS.nex
 - data/fagus_matK.nex
 - data/fagus_rbcL.nex
+- data/sim_locus1.nex
+- data/sim_locus2.nex
+- data/sim_locus3.nex
+- data/sim_locus4.nex
+- scripts/ml_Partition_model.Bodega.Rev
 - scripts/marginal_likelihood_GTR_Gamma_inv.Rev
 - scripts/marginal_likelihood_JC.Rev
 - scripts/marginal_likelihood_partition_1.Rev
