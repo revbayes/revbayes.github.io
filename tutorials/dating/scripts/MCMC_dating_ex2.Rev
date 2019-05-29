@@ -35,8 +35,7 @@ monitors = VectorMonitors()
 
 source("scripts/tree_BD.Rev") # BD tree prior
 
-source("scripts/clock_relaxed.Rev") # Relaxed clock model
-#source("scripts/clock_relaxed_discrete.Rev") # Relaxed clock model
+source("scripts/clock_relaxed_exponential.Rev") # Relaxed exponential clock model
 
 source("scripts/sub_GTRG.Rev") # Molecular substitution model (GTR+G)
 
@@ -49,10 +48,10 @@ mymodel = model(sf)
 
 # Create a vector of monitors #
 # 1. for the full model #
-monitors.append( mnModel(filename="output/bears_relaxed.log", printgen=10) )
+monitors.append( mnModel(filename="output/bears_relaxed_exponential.log", printgen=10) )
 
 # 2. the tree #
-monitors.append( mnFile(filename="output/bears_relaxed.trees", printgen=10, timetree) )
+monitors.append( mnFile(filename="output/bears_relaxed_exponential.trees", printgen=10, timetree) )
 
 # 3. and a few select parameters to be printed to the screen #
 monitors.append( mnScreen(printgen=100, extant_mrca, diversification) )
@@ -69,10 +68,10 @@ mymcmc.run(generations=20000, tuningInterval=200)
 ########################
 
 # Read the trace file #
-trace = readTreeTrace("output/bears_relaxed.trees")
+trace = readTreeTrace("output/bears_relaxed_exponential.trees")
 
 # Maximum clade credibility tree #
-mccTree(trace, file="output/bears_relaxed.mcc.tre" )
+mccTree(trace, file="output/bears_relaxed_exponential.mcc.tre" )
 
 # Quit RevBayes #
 q()
