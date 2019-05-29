@@ -199,11 +199,6 @@ Change the file used to specify the clock model from **clock_relaxed_exponential
 source("scripts/clock_relaxed_lognormal.Rev")
 ```
 Don't forget to update the filenames of the output (*e.g.,* from `bears_relaxed_exponential` to `bears_relaxed_lognormal`).
-```
-trace = readTreeTrace("output/bears_relaxed_exponential.trees")
-mccTree(trace, file="output/bears_relaxed_exponential.mcc.tre" )
-```
-That's all you need to do!
 
 >Run your MCMC analysis!
 {:.instruction}
