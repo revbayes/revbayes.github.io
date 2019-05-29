@@ -54,7 +54,7 @@
 	<h1 class="maintitle">Molecular dating</h1>
 	<h3 class="subtitle">The uncorrelated exponential relaxed clock model</h3>
 	<h4 class="authors">Rachel Warnock, Sebastian Höhna, Tracy Heath, April  Wright and Walker Pett</h4>
-  <h5>Last modified on December 13, 2018</h5>
+  <h5>Last modified on May 29, 2019</h5>
 </div>
 
 
@@ -102,9 +102,11 @@
         
           <li><a href="/tutorials/dating/scripts/MCMC_dating_ex2.Rev">MCMC_dating_ex2.Rev</a></li>
         
-          <li><a href="/tutorials/dating/scripts/clock_relaxed.Rev">clock_relaxed.Rev</a></li>
+          <li><a href="/tutorials/dating/scripts/clock_relaxed_exponential.Rev">clock_relaxed_exponential.Rev</a></li>
         
-          <li><a href="/tutorials/dating/scripts/clock_relaxed_discrete.Rev">clock_relaxed_discrete.Rev</a></li>
+          <li><a href="/tutorials/dating/scripts/clock_relaxed_lognormal.Rev">clock_relaxed_lognormal.Rev</a></li>
+        
+          <li><a href="/tutorials/dating/scripts/clock_relaxed_lognormal_discrete.Rev">clock_relaxed_lognormal_discrete.Rev</a></li>
         
           <li><a href="/tutorials/dating/scripts/sub_GTRG.Rev">sub_GTRG.Rev</a></li>
         
@@ -137,7 +139,7 @@ Second, we need to switch out the global clock model for the relaxed clock model
 <p>Remember the clock (or branch-rate) model describes how rates of substitution vary (or not) across the tree.</p>
 
 <blockquote class="instruction">
-  <p>Create a script called <strong>clock_relaxed.Rev</strong> and open it in your text editor.</p>
+  <p>Create a script called <strong>clock_relaxed_exponential.Rev</strong> and open it in your text editor.</p>
 </blockquote>
 
 <p>We are going to use the uncorrelated exponential relaxed clock model. In this model rates for each branch will be drawn independently from an exponential distribution.</p>
@@ -156,8 +158,14 @@ moves.append( mvScale(branch_rates_mean, lambda=0.5, tune=true, weight=1.0) )
 }
 </code></pre></div></div>
 <p>Note that now we have a vector of rates <code class="highlighter-rouge">branch_rates</code>, where each entry corresponds to a different branch in the tree, instead of a single rate that applies to all branches.	
-Lastly, we will use a vector scale move to propose changes to all branch rates simultaneously. This way we can sample the total branch rate independently of each individual rate, which can improve mixing.</p>
+Lastly, we will use two more specific moves to help improve MCMC convergence.
+First, we will use a vector scale move to propose changes to all branch rates simultaneously. 
+This way we can sample the total branch rate independently of each individual rate, which can improve mixing.
+Second, we will use a move (<code class="highlighter-rouge">mvRateAgeBetaShift</code>) that changes the node ages and branch rates jointly,
+so that the effective branch length (the product of branch time and branch rate) remains the same.
+Thus, the move is proposing values with same the likelihood but a different prior probability.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvVectorScale(branch_rates, lambda=0.5, tune=true, weight=4.0) )
+moves.append( mvRateAgeBetaShift(tree=timetree, rates=branch_rates, tune=true, weight=n_taxa) )
 </code></pre></div></div>
 
 <h3 id="the-master-rev-script">The master Rev script</h3>
@@ -166,16 +174,16 @@ Lastly, we will use a vector scale move to propose changes to all branch rates s
   <p>Copy the master script from the previous exercise and call it <strong>MCMC_dating_ex2.Rev</strong>.</p>
 </blockquote>
 
-<p>First, change the file used to specify the clock model from <strong>clock_global.Rev</strong> to <strong>clock_relaxed.Rev</strong>.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/clock_relaxed.Rev")
+<p>First, change the file used to specify the clock model from <strong>clock_global.Rev</strong> to <strong>clock_relaxed_exponential.Rev</strong>.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/clock_relaxed_exponential.Rev")
 </code></pre></div></div>
 <p>Second, update the name of all the output files.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/bears_relaxed.log", printgen=10) )
-monitors.append( mnFile(filename="output/bears_relaxed.trees", printgen=10, timetree) )
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/bears_relaxed_exponential.log", printgen=10) )
+monitors.append( mnFile(filename="output/bears_relaxed_exponential.trees", printgen=10, timetree) )
 </code></pre></div></div>
 <p>Don’t forget to update the commands used to generate the summary tree.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>trace = readTreeTrace("output/bears_relaxed.trees")
-mccTree(trace, file="output/bears_relaxed.mcc.tre" )
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>trace = readTreeTrace("output/bears_relaxed_exponential.trees")
+mccTree(trace, file="output/bears_relaxed_exponential.mcc.tre" )
 </code></pre></div></div>
 <p>That’s all you need to do!</p>
 
@@ -188,14 +196,19 @@ mccTree(trace, file="output/bears_relaxed.mcc.tre" )
 <p>Let’s compare the output from the two different clock models in Tracer.</p>
 
 <blockquote class="instruction">
-  <p>Open the program Tracer and load the log files <strong>bears_global.log</strong> and <strong>bears_relaxed.log</strong>.</p>
+  <p>Open the program Tracer and load the log files <strong>bears_global.log</strong> and <strong>bears_relaxed_exponential.log</strong>.</p>
 </blockquote>
 
-<p>You may notice that convergence isn’t as good for this analysis, which is probably caused by having a larger number of parameters.</p>
+<p>You may notice that convergence isn’t as good for this analysis, 
+which is probably caused by having a larger number of parameters.</p>
 
-<p>Have a look at the estimate for the mean branch-rate parameter (<code class="highlighter-rouge">branch_rates_mean</code>) in comparison to the estimate recovered in the previous analysis assuming a global molecular clock (<code class="highlighter-rouge">branch_mean</code>). You’ll notice that median estimates for these parameters differ quite a bit.</p>
+<p>Have a look at the estimate for the mean branch-rate parameter (<code class="highlighter-rouge">branch_rates_mean</code>) in comparison 
+to the estimate recovered in the previous analysis assuming a global molecular clock (<code class="highlighter-rouge">branch_mean</code>). 
+You’ll notice that median estimates for these parameters differ quite a bit.</p>
 
-<p>In Tracer you can also highlight multiple parameters simultaneously, by using the shift key. Have a look at the rates obtained across different branches. You can see that there appears to be signal in the data for variation in rates along different branches.</p>
+<p>In Tracer you can also highlight multiple parameters simultaneously, by using the shift key. 
+Have a look at the rates obtained across different branches. 
+You can see that there appears to be signal in the data for variation in rates along different branches.</p>
 
 <figure id="fig_trace"><p><img src="figures/bears_relaxed_branchrates.png" width="700" /></p>
 <figcaption>The estimates panel in Tracer showing the rates estimated for different branches.</figcaption>
@@ -207,7 +220,12 @@ mccTree(trace, file="output/bears_relaxed.mcc.tre" )
 <figcaption>The estimates panel in Tracer showing the likelihood estimates obtained using two different clock models.</figcaption>
 </figure>
 
-<p>Note that the likelihood obtained using the relaxed clock model is higher than for the global clock model, which hints that it might be a better fit to our data. However, this analysis has quite a lot of additional parameters (i.e. one addition rate parameter for each branch). To work out whether this model really is more appropriate for our data, we would need to use a more robust model testing approach. For more on this topic see Tracy Heath’s tutorial <a href="/tutorials/clocks/">Relaxed Clocks &amp; Time Trees</a>.</p>
+<p>Note that the likelihood obtained using the relaxed clock model is higher than for the global clock model, 
+which hints that it might be a better fit to our data. 
+However, this analysis has quite a lot of additional parameters (i.e. one addition rate parameter for each branch). 
+To work out whether this model really is more appropriate for our data, 
+we would need to use a more robust model testing approach. 
+For more on this topic see Tracy Heath’s tutorial <a href="/tutorials/clocks/">Relaxed Clocks &amp; Time Trees</a>.</p>
 
 <p>Scroll through the other parameter estimates and see if you can spot any differences.</p>
 
@@ -220,6 +238,40 @@ mccTree(trace, file="output/bears_relaxed.mcc.tre" )
 </figure>
 
 <p>If you open the trees generated using the global versus relaxed clock models in FigTree, you can compare them to see whether these models made an important difference to the inferred topology and/or relative node ages. Another useful thing to look at are the posterior probabilities obtained for different nodes. Go to the options under Node Labels and select Display &gt; posterior.</p>
+
+<h4 id="exercise">Exercise</h4>
+
+<p>We have seen above how to specify the UCE (uncorrelated exponential) clock model.
+For this exercise, we want you the change the UCE clock model into a UCLN clock model (uncorrelated relaxed clock).
+That means, we will need to replace the prior on the <code class="highlighter-rouge">branch_rates</code> so that they are drawn from a lognormal distribution.</p>
+
+<blockquote class="instruction">
+  <p>Copy the script called <strong>clock_relaxed_exponential.Rev</strong>, name it <strong>clock_relaxed_lognormal.Rev</strong> and open it in your text editor.</p>
+</blockquote>
+
+<p>Since the lognormal distribution is parameterized by the log of the mean, we transform first the mean into the log mean.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ln_branch_rates_mean := ln( branch_rates_mean )
+</code></pre></div></div>
+<p>Now we can replace the <code class="highlighter-rouge">for</code>-loop and specify that we use a lognormal distribution</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for(i in 1:n_branches){
+    branch_rates[i] ~ dnLognormal(ln_branch_rates_mean,sd=0.587405)
+    moves.append( mvScale(branch_rates[i], lambda=0.5, tune=true, weight=1.0) )
+}
+</code></pre></div></div>
+<p>Next, we are ready to set up the master script to run the analysis.</p>
+
+<blockquote class="instruction">
+  <p>Copy the master script from the previous exercise and call it <strong>MCMC_dating_ex2b.Rev</strong>.</p>
+</blockquote>
+
+<p>Change the file used to specify the clock model from <strong>clock_relaxed_exponential.Rev</strong> to <strong>clock_relaxed_lognormal.Rev</strong>.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/clock_relaxed_lognormal.Rev")
+</code></pre></div></div>
+<p>Don’t forget to update the filenames of the output (<em>e.g.,</em> from <code class="highlighter-rouge">bears_relaxed_exponential</code> to <code class="highlighter-rouge">bears_relaxed_lognormal</code>).</p>
+
+<blockquote class="instruction">
+  <p>Run your MCMC analysis!</p>
+</blockquote>
 
 <h3 id="next">Next</h3>
 

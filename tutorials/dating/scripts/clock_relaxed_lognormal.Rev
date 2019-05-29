@@ -5,6 +5,9 @@
 # The rate along each branch is drawn from an exponential prior #
 branch_rates_mean ~ dnExponential(10.0)
 
+# Transform the branch rate mean into a log of the branch rate mean
+ln_branch_rates_mean := ln( branch_rates_mean )
+
 # The mean will be operated on by a scale move #
 moves.append( mvScale(branch_rates_mean, lambda=0.5, tune=true, weight=1.0) )
 
@@ -17,7 +20,7 @@ n_branches <- 2 * n_taxa - 2
 # The indices of the vector correspond to branch indices in the tree #
 # Using a for-loop, initialize the branch rates and assign a move to each one #
 for(i in 1:n_branches){
-    branch_rates[i] ~ dnLognormal(branch_rates_mean,sd=0.587405)
+    branch_rates[i] ~ dnLognormal(ln_branch_rates_mean,sd=0.587405)
     moves.append( mvScale(branch_rates[i], lambda=0.5, tune=true, weight=1.0) )
 }
 
