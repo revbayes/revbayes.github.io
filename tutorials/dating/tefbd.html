@@ -54,7 +54,7 @@
 	<h1 class="maintitle">Molecular dating</h1>
 	<h3 class="subtitle">Estimating speciation times using total-evidence dating</h3>
 	<h4 class="authors">Rachel Warnock, Sebastian Höhna, Tracy Heath, April  Wright and Walker Pett</h4>
-  <h5>Last modified on May 28, 2019</h5>
+  <h5>Last modified on May 29, 2019</h5>
 </div>
 
 
@@ -92,9 +92,15 @@
         
           <li><a href="/tutorials/dating/data/bears_cytb.nex">bears_cytb.nex</a></li>
         
+          <li><a href="/tutorials/fbd/data/bears_cytb.nex">bears_cytb.nex</a></li>
+        
           <li><a href="/tutorials/dating/data/bears_morphology.nex">bears_morphology.nex</a></li>
         
+          <li><a href="/tutorials/fbd/data/bears_morphology.nex">bears_morphology.nex</a></li>
+        
           <li><a href="/tutorials/dating/data/bears_taxa.tsv">bears_taxa.tsv</a></li>
+        
+          <li><a href="/tutorials/fbd/data/bears_taxa.tsv">bears_taxa.tsv</a></li>
         
         </ul>
     
@@ -106,19 +112,13 @@
         
           <li><a href="/tutorials/dating/scripts/MCMC_dating_ex5.Rev">MCMC_dating_ex5.Rev</a></li>
         
-          <li><a href="/tutorials/dating/scripts/clock_morpho.Rev">clock_morpho.Rev</a></li>
-        
-          <li><a href="/tutorials/dating/scripts/clock_relaxed_exponential.Rev">clock_relaxed_exponential.Rev</a></li>
+          <li><a href="/tutorials/dating/scripts/clock_global.Rev">clock_global.Rev</a></li>
         
           <li><a href="/tutorials/dating/scripts/clock_relaxed_lognormal.Rev">clock_relaxed_lognormal.Rev</a></li>
         
-          <li><a href="/tutorials/dating/scripts/clock_relaxed_lognormal_discrete.Rev">clock_relaxed_lognormal_discrete.Rev</a></li>
-        
           <li><a href="/tutorials/dating/scripts/sub_GTRG.Rev">sub_GTRG.Rev</a></li>
         
-          <li><a href="/tutorials/dating/scripts/sub_Mk.Rev">sub_Mk.Rev</a></li>
-        
-          <li><a href="/tutorials/dating/scripts/tree_TEFBD.Rev">tree_TEFBD.Rev</a></li>
+          <li><a href="/tutorials/dating/scripts/tree_FBD.Rev">tree_FBD.Rev</a></li>
         
         </ul>
     
@@ -189,7 +189,8 @@ moves.append( mvScale(branch_rates_morpho,lambda=0.5,tune=true,weight=5.0) )
 
 <h3 id="the-mk-model">The Mk model</h3>
 
-<p>The next step is to specify the model that describes how morphological characters evolve along the tree and across sites.</p>
+<p>The next step is to specify the model that describes how morphological characters evolve along the tree and across sites.
+You can find a full description about the Mk model in the <a href="/tutorials/morph/">Discrete morphology - Tree Inference</a> Tutorial.</p>
 
 <blockquote class="instruction">
   <p>Create a script called <strong>sub_Mk.Rev</strong> and open it in your text editor.</p>
