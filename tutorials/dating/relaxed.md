@@ -6,21 +6,14 @@ level: 2
 order: 0.52
 prerequisites:
 - intro
-exclude_files:
-- data/inc_subfossils/bears_cytb.nex
-- data/inc_subfossils/bears_taxa.tsv
-- data/bears_morphology.nex
-- data/bears_taxa.tsv
-- scripts/MCMC_dating_ex1.Rev
-- scripts/MCMC_dating_ex3.Rev
-- scripts/MCMC_dating_ex4.Rev
-- scripts/MCMC_dating_ex5.Rev
-- scripts/sub_Mk.Rev
-- scripts/clock_morpho.Rev
+include_all: false 
+include_files:
+- data/bears_cytb.nex
+- scripts/MCMC_dating_ex2.Rev
 - scripts/clock_global.Rev
-- scripts/tree_BD_nodedate.Rev
-- scripts/tree_FBD.Rev
-- scripts/tree_TEFBD.Rev
+- scripts/sub_GTRG.Rev
+- scripts/tree_BD.Rev
+
 index: false
 redirect: false
 ---
