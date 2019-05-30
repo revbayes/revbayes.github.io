@@ -2,7 +2,7 @@
 #
 # RevBayes Example: Bayesian inference of diversification rates under a
 #                   episodic birth-death model
-# 
+#
 #
 # authors: Sebastian Hoehna
 #
@@ -13,7 +13,7 @@
 #######################
 
 ### Read in the "observed" tree
-T <- readTrees("data/primates.tre")[1]
+T <- readTrees("data/primates_tree.nex")[1]
 
 # Get some useful variables from the data. We need these later on.
 taxa <- T.taxa()
@@ -28,40 +28,29 @@ monitors = VectorMonitors()
 # Set up the environmental data #
 #################################
 
-co2 <- v(297.6, 301.36, 304.84, 307.86, 310.36, 312.53, 314.48, 316.31, 317.42, 317.63, 317.74, 318.51, 318.29, 316.5, 315.49, 317.64, 318.61, 316.6, 317.77, 328.27, 351.12, 381.87, 415.47, 446.86, 478.31, 513.77, 550.74, 586.68, 631.48, 684.13, 725.83, 757.81, 789.39, 813.79, 824.25, 812.6, 784.79, 755.25, 738.41, 727.53, 710.48, 693.55, 683.04, 683.99, 690.93, 694.44, 701.62, 718.05, 731.95, 731.56, 717.76)
-#temperature <- v(3.893, 3.708, 3.532, 3.368, 3.214, 3.070, 2.935, 2.811, 2.700, 2.594, 2.488, 2.385, 2.297, 2.224, 2.159, 2.104, 2.063, 2.045, 2.048, 2.053, 2.060, 2.078, 2.102, 2.132, 2.168, 2.202, 2.262, 2.351, 2.429, 2.458, 2.439, 2.398, 2.335, 2.216, 2.051, 1.902, 1.761, 1.602, 1.461, 1.357, 1.266, 1.162, 1.046, 0.929, 0.803, 0.670, 0.533, 0.389, 0.235, 0.074, -0.094)
+var <- v(297.6, 301.36, 304.84, 307.86, 310.36, 312.53, 314.48, 316.31, 317.42, 317.63, 317.74, 318.51, 318.29, 316.5, 315.49, 317.64, 318.61, 316.6, 317.77, 328.27, 351.12, 381.87, 415.47, 446.86, 478.31, 513.77, 550.74, 586.68, 631.48, 684.13, 725.83, 757.81, 789.39, 813.79, 824.25, 812.6, 784.79, 755.25, 738.41, 727.53, 710.48, 693.55, 683.04, 683.99, 690.93, 694.44, 701.62, 718.05, 731.95, 731.56, 717.76)
 MAX_VAR_AGE = 50
-var <- co2
-# If you want to normalize the variable, you could use the following
-#var <- (co2 - mean(co2))
-#var <- (co2 - mean(co2))/(sqrt(sum((co2 - mean(co2))^2) / (co2.size() - 1)))
-
 NUM_INTERVALS = var.size()-1
-
-
 
 ####################
 # Create the rates #
 ####################
 
+SD = abs(0.587405 / NUM_INTERVALS)
+
+
 # first we create the standard deviation of the rates between intervals
-# draw the sd from an exponential distribution
-speciation_sd ~ dnExponential(1.0)
-speciation_sd.setValue( 0.001 )
+speciation_sd ~ dnExponential( 1.0 / SD)
+extinction_sd ~ dnExponential( 1.0 / SD)
+
 moves.append( mvScale(speciation_sd,weight=5.0) )
-
-extinction_sd ~ dnExponential(1.0)
-extinction_sd.setValue( 0.001 )
 moves.append( mvScale(extinction_sd,weight=5.0) )
-
 
 # create a random variable at the present time
 log_speciation[1] ~ dnUniform(-10.0,10.0)
+log_speciation[1].setValue(0.0)
 log_extinction[1] ~ dnUniform(-10.0,10.0)
-
-log_speciation[1].setValue( ln(0.5) )
-log_extinction[1].setValue( ln(0.4) )
-
+log_extinction[1].setValue(-1.0)
 
 # apply moves on the rates
 moves.append( mvSlide(log_speciation[1], weight=2) )
@@ -73,7 +62,6 @@ moves.append( mvSlide(log_extinction[1], weight=2) )
 # from the first element on (you cannot start with index 2).
 expected_speciation[1] := log_speciation[1]
 expected_extinction[1] := log_extinction[1]
-
 
 speciation[1] := exp( log_speciation[1] )
 extinction[1] := exp( log_extinction[1] )
@@ -94,13 +82,13 @@ extinction_corr_pos_prob := ifelse(beta_extinction > 0.0, 1, 0)
 
 for (i in 1:NUM_INTERVALS) {
     index = i+1
-    
+
     # specify normal priors (= Brownian motion) on the log of the rates
-    expected_speciation[index] := log_speciation[i] + beta_speciation * ln( var[index] / var[i] )
-    expected_extinction[index] := log_extinction[i] + beta_extinction * ln( var[index] / var[i] )
-    
-    log_speciation[index] ~ dnNormal( mean=expected_speciation[index], sd=speciation_sd )
-    log_extinction[index] ~ dnNormal( mean=expected_extinction[index], sd=extinction_sd )
+    expected_speciation[i] := log_speciation[i] + beta_speciation * ln( var[index] / var[i] )
+    expected_extinction[i] := log_extinction[i] + beta_extinction * ln( var[index] / var[i] )
+
+    log_speciation[index] ~ dnNormal( mean=expected_speciation[i], sd=speciation_sd )
+    log_extinction[index] ~ dnNormal( mean=expected_extinction[i], sd=extinction_sd )
 
     # apply moves on the rates
     moves.append( mvSlide(log_speciation[index], weight=2) )
@@ -142,7 +130,7 @@ timetree.clamp(T)
 ### workspace model wrapper ###
 mymodel = model(rho)
 
-### set up the monitors that will output parameter values to file and screen 
+### set up the monitors that will output parameter values to file and screen
 monitors.append( mnModel(filename="output/primates_EBD_Corr.log",printgen=10, separator = TAB) )
 monitors.append( mnFile(filename="output/primates_EBD_Corr_speciation_rates.log",printgen=10, separator = TAB, speciation) )
 monitors.append( mnFile(filename="output/primates_EBD_Corr_speciation_times.log",printgen=10, separator = TAB, interval_times) )
