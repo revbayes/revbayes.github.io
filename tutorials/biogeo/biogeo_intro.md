@@ -8,6 +8,7 @@ prerequisites:
 - intro
 - intro_rev
 - mcmc_archery
+include_example_output: false
 exclude_files: 
 - data/n4/hawaii.n4.connectivity.1.txt
 - data/n4/hawaii.n4.connectivity.2.txt

@@ -6,7 +6,11 @@ level: 6
 order: 1
 prerequisites:
 - biogeo/biogeo_intro
+include_example_output: false
 include_files:
+- example_output/simple.tre
+- example_output/simple.states.log
+- example_output/simple.model.log
 exclude_files: 
 - data/n4/hawaii.n4.connectivity.1.txt
 - data/n4/hawaii.n4.connectivity.2.txt
@@ -47,12 +51,6 @@ index: index
 title-old: RB_Biogeography_Tutorial
 redirect: false 
 ---
-
-<!--
-- output_examples/simple.tre
-- output_examples/simple.states.log
-- output_examples/simple.model.log
--->
 
 {% section Introduction | intro %}
 
