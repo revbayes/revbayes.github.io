@@ -11,7 +11,7 @@ alpha_morpho ~ dnExponential( 1.0 )
 rates_morpho := fnDiscretizeGamma( alpha_morpho, alpha_morpho, 4 )
 
 # Moves on the parameters to the Gamma distribution.
-moves[mvi++] = mvScale(alpha_morpho, lambda=0.5, tune=true, weight=5.0)
+moves.append( mvScale(alpha_morpho, lambda=0.5, tune=true, weight=5.0) )
 
 # Create the substitution model and clamp with our observed Standard data #
 # Here we use the option siteMatrices=true to specify that the vector Q #
