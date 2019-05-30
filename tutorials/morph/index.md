@@ -272,7 +272,7 @@ morpho <- readDiscreteCharacterData("data/bears.nex")
 ```
 
 
-{% subsection Create Helper Variables | subsec_mvi_var %}
+{% subsection Create Helper Variables | subsec_var %}
 
 Before we begin writing the Rev scripts for each of the models, 
 we need to instantiate a couple “helper variables” that will
