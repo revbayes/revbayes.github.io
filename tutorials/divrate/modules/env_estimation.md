@@ -2,9 +2,9 @@
 
 {% subsection Read the tree %}
 
-Begin by reading in the ``observed'' tree. 
+Begin by reading in the ``observed'' tree.
 ```
-T <- readTrees("data/primates_springer.tre")[1]
+T <- readTrees("data/primates_tree.nex")[1]
 ```
 
 From this tree, we get some helpful variables, such as the taxon information which we need to instantiate the birth-death process.
@@ -64,9 +64,9 @@ The motivation for an exponential hyperprior is that it has the highest probabil
 The data will tell us if there should be much variation in rates through time.
 (You may want to experiment with this hyperprior if you are interested.)
 ```
-SD = 0.587405 / NUM_INTERVALS
+SD = abs(0.587405 / NUM_INTERVALS)
 
-speciation_sd ~ dnExponential( 1.0 / SD )
+speciation_sd ~ dnExponential( 1.0 / SD)
 extinction_sd ~ dnExponential( 1.0 / SD)
 ```
 We apply a simple scaling move on each prior parameter.
@@ -112,7 +112,9 @@ This actually means that we allow speciation and extinction rates between $e^{-1
 (Note that for diversification rate estimates $e^{-10}$ is virtually 0 since the rate is so slow).
 ```
 log_speciation[1] ~ dnUniform(-10.0,10.0)
-log_speciation[1] ~ dnUniform(-10.0,10.0)
+log_speciation[1].setValue(0.0)
+log_extinction[1] ~ dnUniform(-10.0,10.0)
+log_speciation[1].setValue(-1.0)
 ```
 Notice that we store the diversification rate variables in vectors.
 Storing the rate parameters in vectors will be useful and important later when we pass the rates into the birth-death process.
@@ -137,12 +139,12 @@ Remember that we want to model the rates as a Brownian motion, which we achieve 
 ```
 for (i in 1:NUM_INTERVALS) {
     index = i+1
-    
-    expected_speciation[index] := log_speciation[i] + beta_speciation * ln( var[index] / var[i] )
-    expected_extinction[index] := log_extinction[i] + beta_extinction * ln( var[index] / var[i] )
-    
-    log_speciation[index] ~ dnNormal( mean=expected_speciation[index], sd=speciation_sd )
-    log_extinction[index] ~ dnNormal( mean=expected_extinction[index], sd=extinction_sd )
+
+    expected_speciation[i] := log_speciation[i] + beta_speciation * ln( var[index] / var[i] )
+    expected_extinction[i] := log_extinction[i] + beta_extinction * ln( var[index] / var[i] )
+
+    log_speciation[index] ~ dnNormal( mean=expected_speciation[i], sd=speciation_sd )
+    log_extinction[index] ~ dnNormal( mean=expected_extinction[i], sd=extinction_sd )
 
     moves.append( mvSlide(log_speciation[index], weight=2) )
     moves.append( mvSlide(log_extinction[index], weight=2) )
@@ -152,7 +154,7 @@ for (i in 1:NUM_INTERVALS) {
 
 }
 ```
-Finally, we apply moves that slide all values in the rate vectors, \IE all speciation or extinction rates. 
+Finally, we apply moves that slide all values in the rate vectors, \IE all speciation or extinction rates.
 We will use an \cl{mvVectorSlide} move.
 ```
 moves.append( mvVectorSlide(log_speciation, weight=10) )
@@ -161,14 +163,14 @@ moves.append( mvVectorSlide(log_extinction, weight=10) )
 
 Additionally, we apply a \cl{mvShrinkExpand} move which changes the spread of several variables around their mean.
 ```
-moves.append( mvShrinkExpand( log_speciation, sd=speciation_sd, weight=10 ) )
-moves.append( mvShrinkExpand( log_extinction, sd=extinction_sd, weight=10 ) )
+moves.append( mvShrinkExpand(log_speciation, sd=speciation_sd, weight=10) )
+moves.append( mvShrinkExpand(log_extinction, sd=extinction_sd, weight=10) )
 ```
 Both moves considerably improve the efficiency of our MCMC analysis.
 
 {% subsubsection Incomplete Taxon Sampling %}
 
-We know that we have sampled 367 out of 377 living primate species. 
+We know that we have sampled 367 out of 377 living primate species.
 To account for this we can set the sampling parameter as a constant node with a value of 367/377.
 For simplicity, and since almost all species have been sampled, we assume \emph{uniform} taxon sampling \citep{Hoehna2011,Hoehna2014a},
 ```
@@ -187,7 +189,7 @@ root_time <- T.rootAge()
 
 {% subsubsection The time tree %}
 
-Now we have all of the parameters we need to specify the full episodic birth-death model. 
+Now we have all of the parameters we need to specify the full episodic birth-death model.
 We initialize the stochastic node representing the time tree.
 ```
 timetree ~ dnEpisodicBirthDeath(rootAge=T.rootAge(), lambdaRates=speciation, lambdaTimes=interval_times, muRates=extinction, muTimes=interval_times, rho=rho, samplingStrategy="uniform", condition="survival", taxa=taxa)
@@ -200,20 +202,20 @@ Then we attach data to the `timetree` variable.
 timetree.clamp(T)
 ```
 
-Finally, we create a workspace object of our whole model using the `model()` function. 
+Finally, we create a workspace object of our whole model using the `model()` function.
 ```
 mymodel = model(speciation)
 ```
 
-The `model()` function traversed all of the connections and found all of the nodes we specified. 
+The `model()` function traversed all of the connections and found all of the nodes we specified.
 
 
 {% subsection Running an MCMC analysis %}
 
 {% subsubsection Specifying Monitors %}
 
-For our MCMC analysis, we need to set up a vector of *monitors* to record the states of our Markov chain. 
-First, we will initialize the model monitor using the `mnModel` function. This creates a new monitor variable that will output the states for all model parameters when passed into a MCMC function. 
+For our MCMC analysis, we need to set up a vector of *monitors* to record the states of our Markov chain.
+First, we will initialize the model monitor using the `mnModel` function. This creates a new monitor variable that will output the states for all model parameters when passed into a MCMC function.
 ```
 monitors.append( mnModel(filename="output/primates_EBD_Corr.log",printgen=10, separator = TAB) )
 ```
@@ -252,7 +254,7 @@ If you don't have the R-package \RevGadgets installed, or if you have trouble wi
 Just start `R` in the main directory for this analysis and then type the following commands:
 ```
 library(RevGadgets)
-tree <- read.tree("data/primates_Springer.tre")
+tree <- read.tree("data/primates.tre")
 
 # the CO2 values as a reference in our plot
 co2 <- c(297.6, 301.36, 304.84, 307.86, 310.36, 312.53, 314.48, 316.31, 317.42, 317.63, 317.74, 318.51, 318.29, 316.5, 315.49, 317.64, 318.61, 316.6, 317.77, 328.27, 351.12, 381.87, 415.47, 446.86, 478.31, 513.77, 550.74, 586.68, 631.48, 684.13, 725.83, 757.81, 789.39, 813.79, 824.25, 812.6, 784.79, 755.25, 738.41, 727.53, 710.48, 693.55, 683.04, 683.99, 690.93, 694.44, 701.62, 718.05, 731.95, 731.56, 717.76)
@@ -267,7 +269,7 @@ rev_out <- rev.process.div.rates(speciation_times_file = "output/primates_EBD_Co
                                  speciation_rates_file = "output/primates_EBD_Corr_speciation_rates.log",
                                  extinction_times_file = "output/primates_EBD_Corr_extinction_times.log",
                                  extinction_rates_file = "output/primates_EBD_Corr_extinction_rates.log",
-                                 tree,
+                                 tree=tree,
                                  burnin=0.25,numIntervals=100)
 pdf("EBD_Corr.pdf")
 par(mfrow=c(2,2))
@@ -281,11 +283,11 @@ dev.off()
 {% subsection A brief discussion on estimated diversification rates %}
 
 {% figure fig_EBD_Results %}
-<img src="figures/EBD_Corr_1.png" width="40%" height="40%" /> 
-<img src="figures/EBD_Corr_2.png" width="40%" height="40%" /> 
-<img src="figures/EBD_Corr_3.png" width="40%" height="40%" /> 
-<img src="figures/EBD_Corr_4.png" width="40%" height="40%" /> 
-{% figcaption %} 
+<img src="figures/EBD_Corr_1.png" width="40%" height="40%" />
+<img src="figures/EBD_Corr_2.png" width="40%" height="40%" />
+<img src="figures/EBD_Corr_3.png" width="40%" height="40%" />
+<img src="figures/EBD_Corr_4.png" width="40%" height="40%" />
+{% figcaption %}
 Resulting diversification rate estimations.
 {% endfigcaption %}
 {% endfigure %}
@@ -295,7 +297,7 @@ If you compare these estimates with {% ref fig_EBD_Results %} then you may notic
 This is a good sign for the analysis because it shows that the information in the estimates comes from the data (the tree in this case) and not from the assumed model.
 Thus, we are not artificially forcing the diversification rates to follow our environmental variable but instead estimate if there is a correlation.
 Small deviation between the estimated rates under the different analyses are expected because there will be some interaction between the environmental variable and the diversification rate estimates.
-Additionally, the uncertainty in estimated diversification rates through time is large und minor changes are within this uncertainty. 
+Additionally, the uncertainty in estimated diversification rates through time is large und minor changes are within this uncertainty.
 
 
 
@@ -335,4 +337,3 @@ extinction_corr_prob := ifelse(beta_extinction == 0.0, 0, 1)
 ```
 
 These are the only necessary changes to the above analysis to run a reversible-jump MCMC.
-
