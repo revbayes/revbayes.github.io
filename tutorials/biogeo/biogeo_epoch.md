@@ -10,7 +10,7 @@ prerequisites:
 include_files: 
 - scripts/plot_anc_range.epoch.R
 - scripts/plot_anc_range.util.R
-- data/n4/range_colors.epoch.n4.txt
+- data/n4/range_colors.n4.txt
 - scripts/run_epoch.Rev
 exclude_files:
 - data/n6/hawaii.n6.connectivity.1.txt
