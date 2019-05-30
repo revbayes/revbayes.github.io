@@ -1,6 +1,6 @@
 ---
-title: Divergence Time Estimation Using a Phylogenetic Model of Discrete Biogeography
-subtitle: Estimating divergence times molecular, biogeographic, and paleogeographic evidence under the Dispersal-Extirpation-Cladogenesis (DEC) model
+title: Biogeographic Dating of Divergence Times
+subtitle: Estimating divergence times with molecular, biogeographic, and paleogeographic evidence under the Dispersal-Extirpation-Cladogenesis (DEC) model
 authors:  Michael J. Landis
 level: 6
 prerequisites:
@@ -19,6 +19,12 @@ include_files:
 - data/n6/silversword.mol.nex
 - data/n6/silversword.n6.range.nex
 - data/n6/silversword.tre
+- output_examples/epoch_phy.tre
+- output_examples/epoch_phy.states.log
+- output_examples/epoch_phy.model.log
+- output_examples/simple_phy.tre
+- output_examples/simple_phy.states.log
+- output_examples/simple_phy.model.log
 exclude_files:
 - data/n4/hawaii.n4.connectivity.1.txt
 - data/n4/hawaii.n4.connectivity.2.txt
@@ -261,7 +267,7 @@ Add topology and branch length moves
     moves.append( mvFNPR(tree, weight=n_branches/8) )
     moves.append( mvNodeTimeSlideUniform(tree, weight=n_branches/2) )
     moves.append( mvSubtreeScale(tree, weight=n_branches/8) )
-    moves.append( mvTreeScale(tree, root_Age, weight=n_branches/8) )
+    moves.append( mvTreeScale(tree, root_age, weight=n_branches/8) )
 
 Provide a starting tree to ensure the biogeographic model has non-zero
 likelihood
@@ -308,7 +314,7 @@ then create a flat Dirichlet prior on the base frequencies over A, C, G,
 and T
 
     bf ~ dnDirichlet([1,1,1,1])
-    moves.append( mvSimplexElementScale(bf, alpha=10, weight=2, offset=1) )
+    moves.append( mvSimplexElementScale(bf, alpha=10, weight=2) )
 
 and, finally, combine the base frequencies and Ts/Tv rate ratio to build
 the rate matrix
@@ -333,7 +339,12 @@ large, the variance shrinks to zero, and the site rate multipliers of
 
 Finally, we'll create our molecular model of substitution
 
-    m_mol ~ dnPhyloCTMC(Q=Q_mol, tree=tree, branchRates=branch_rates, siteRates=site_rates, type="DNA", nSites=dat_mol.nchar())
+    m_mol ~ dnPhyloCTMC(Q=Q_mol,
+                        tree=tree,
+                        branchRates=branch_rates,
+                        siteRates=site_rates,
+                        type="DNA",
+                        nSites=dat_mol.nchar())
 
 and attach the ITS alignment
 
@@ -435,9 +446,9 @@ as a random variable to be estimate.
 Based on fossil pollen evidence, force range state and the root of the
 tree to be the mainland area (Z)
 
-    rf_DEC <- rep(0, n_states)
-    rf_DEC[n_areas+1] <- 1  # Mainland (Z) is the only possible starting state
-    rf_DEC <- simplex(rf_DEC)
+    rf_DEC_tmp <- rep(0, n_states)
+    rf_DEC_tmp[n_areas+1] <- 1  # Mainland (Z) is the only possible starting state
+    rf_DEC <- simplex(rf_DEC_tmp)
 
 Create the phylogenetic model of range evolution
 

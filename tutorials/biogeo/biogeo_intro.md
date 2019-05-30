@@ -203,9 +203,9 @@ To build our intuition, let's construct a DEC rate matrix in RevBayes.
 
 > Create a new directory on your computer called `RB_biogeo_tutorial`.
 > 
-> Navigate to the `RB_biogeo_tutorial` directory and execute the `rb` binary. 
-> One option for doing this is to move the `rb` executable to the `RB_biogeo_tutorial`
-> directory.
+> Navigate to your tutorial directory and execute the `rb` binary. 
+> One option for doing this is to move the `rb` executable to the tutorial
+> directory or to create a shortcut to your executable.
 > 
 > Alternatively, if you are on a Unix system, and have added RevBayes to your path, 
 > you simply have to type `rb` in your Terminal to run the program. 

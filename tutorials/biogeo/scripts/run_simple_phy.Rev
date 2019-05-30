@@ -120,7 +120,7 @@ kappa ~ dnGamma(2,2)
 moves.append( mvScale(kappa) )
 
 bf ~ dnDirichlet( [1,1,1,1] )
-moves.append( mvSimplex(bf, alpha=10, weight=2, offset=1) )
+moves.append( mvSimplex(bf, alpha=10, weight=2) )
 
 Q_mol := fnHKY(kappa, bf)
 

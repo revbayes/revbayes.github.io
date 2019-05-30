@@ -6,6 +6,10 @@ level: 6
 order: 1
 prerequisites:
 - biogeo/biogeo_intro
+include_files:
+- output_examples/simple.tre
+- output_examples/simple.states.log
+- output_examples/simple.model.log
 exclude_files: 
 - data/n4/hawaii.n4.connectivity.1.txt
 - data/n4/hawaii.n4.connectivity.2.txt
@@ -303,7 +307,7 @@ not the presence-absence range characters, `dat_range_01`.
 
 Add the monitors.
 
-    monitors = vectorMonitors()
+    monitors = VectorMonitors()
     monitors.append( mnScreen(rate_bg, extirpation_rate, printgen=100) )
     monitors.append( mnModel(file=out_fn+".params.log", printgen=10) )
     monitors.append( mnFile(tree, file=out_fn+".tre", printgen=10) )
@@ -429,7 +433,7 @@ script with the source function
 <img src="figures/fig_simple.range.png" >
 {% figcaption %}
 Tree with ancestral state estimates for the "simple" analysis. Nodes represent ancestral ranges before and after cladogenetic events. Pie slices are proportional to the posterior probability of that ancestral range. Colors
-of markers indicate the range state. Only the first, second, and third most probable ranges are shown, with less probable ranges represented in gray (...).
+of markers indicate the range state. Only the first, second, and third most probable ranges are shown, with less probable ranges represented in gray (...). Vertical dashed lines indicate the range of possible island formation times, however island ages do not influence the model inference for this analysis.
 {% endfigcaption %}
 {% endfigure %}
 

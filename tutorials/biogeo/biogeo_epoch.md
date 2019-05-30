@@ -12,6 +12,9 @@ include_files:
 - scripts/plot_anc_range.util.R
 - data/n4/range_colors.n4.txt
 - scripts/run_epoch.Rev
+- output_examples/epoch.tre
+- output_examples/epoch.states.log
+- output_examples/epoch.model.log
 exclude_files:
 - data/n6/hawaii.n6.connectivity.1.txt
 - data/n6/hawaii.n6.connectivity.2.txt
@@ -214,11 +217,10 @@ rate matrix in terms of relative rates, then rescale the entire matrix
 with the biogeographic rate scaling parameter `rate_bg`.
 
     rate_bg ~ dnLoguniform(1E-4,1E2)
-    rate_bg.setValue(-2)
+    rate_bg.setValue(1E-2)
 
 And create a move to update the base rate of anagenetic change
 
-    moves = VectorMoves()
     moves.append( mvSlide(rate_bg, weight=4) )
 
 Fix the base dispersal rate to 1
@@ -346,9 +348,9 @@ Among the four areas, only Kauai existed at the provided origination
 time of the clade, so will set it as the only valid starting state
 through the root frequency distribution.
 
-    rf_DEC <- rep(0, n_states)
-    rf_DEC[2] <- 1 
-    rf_DEC <- simplex(rf_DEC)
+    rf_DEC_tmp <- rep(0, n_states)
+    rf_DEC_tmp[2] <- 1 
+    rf_DEC <- simplex(rf_DEC_tmp)
 
 We have created all the necessary model variables. Now we can create the
 phylogenetic model of anagenetic and cladogenetic character evolution.
