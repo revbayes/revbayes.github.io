@@ -28,17 +28,22 @@ Using this variable we can easily change our script to break-up time into many (
 
 {% subsubsection Priors on amount of rate variation %}
 We start by specifying prior distributions on the rates.
-Each interval-specific speciation- and extinction-rate will be drawn from a normal distribution.
+Each interval-specific speciation and extinction rate will be drawn from a normal distribution.
 Thus, we need a parameter for the standard deviation of those normal distributions.
-We fix this parameter to 0.587405 divided by `NUM_INTERVALS` so that we expect the 
-rates to vary by one order of magnitude, *i.e.*, we give 95% prior probability to a variance
-of one order of magnitude.
-(You may want to experiment with this to add hyperprior if you are interested.)
+We use an exponential hyperprior with rate `SD = 0.587405 / NUM_INTERVALS` to estimate the standard deviation, but assume that all speciation rates and all extinction rates share the same standard deviation.
+The motivation for an exponential hyperprior is that it has the highest probability density at 0 which would make the variance of rates between consecutive time intervals 0 and thus represent a constant rate process.
+The data will tell us if there should be much variation in rates through time.
+(You may want to experiment with this hyperprior if you are interested.)
 ```
-SD = 0.587405 / NUM_INTERVALS
+SD = abs(0.587405 / NUM_INTERVALS)
 
-speciation_sd <- SD
-extinction_sd <- SD
+speciation_sd ~ dnExponential( 1.0 / SD)
+extinction_sd ~ dnExponential( 1.0 / SD)
+```
+We apply a simple scaling move on each prior parameter.
+```
+moves.append( mvScale(speciation_sd,weight=5.0) )
+moves.append( mvScale(extinction_sd,weight=5.0) )
 ```
 
 
@@ -46,23 +51,25 @@ extinction_sd <- SD
 {% subsubsection Specifying episodic rates %}
 As we mentioned before, we will apply normal distributions as priors for each log-transformed rate.
 We begin with the rate at the present which is our initial rate parameter.
-The rates at the present will be specified slightly differently 
+The rates at the present will be specified slightly differently
 because they are not correlated to any previous rates.
-This is because we are actually modeling rate-changes backwards in time and 
+This is because we are actually modeling rate-changes backwards in time and
 there is no previous rate for the rate at the present.
-Modeling rates backwards in time makes it easier for us if we had some prior information 
-about some event affected diversification sometime before the present, 
+Modeling rates backwards in time makes it easier for us if we had some prior information
+about some event affected diversification sometime before the present,
 *e.g.,* 25 million years ago.
 
-We use a uniform distribution between -10 and 10 because of our lack of prior knowledge 
+We use a uniform distribution between -10 and 10 because of our lack of prior knowledge
 on the diversification rate.
-This actually means that we allow speciation and extinction rates 
+This actually means that we allow speciation and extinction rates
 between $e^{-10}$ and $e^10$, so we should clearly cover the true values.
-(Note that for diversification rate estimates, $e^{-10}$ is virtually 0 
+(Note that for diversification rate estimates, $e^{-10}$ is virtually 0
 since the rate is so slow).
 ```
 log_speciation[1] ~ dnUniform(-10.0,10.0)
-log_speciation[1] ~ dnUniform(-10.0,10.0)
+log_speciation[1].setValue(0.0)
+log_extinction[1] ~ dnUniform(-10.0,10.0)
+log_speciation[1].setValue(-1.0)
 ```
 Notice that we store the diversification rate variables in vectors.
 Storing the rate parameters in vectors will be useful and important later when we pass the rates into the birth-death process.
@@ -74,7 +81,7 @@ Normally we would use scaling moves but in this case we work on the log-transfor
 moves.append( mvSlide(log_speciation[1], weight=2) )
 moves.append( mvSlide(log_extinction[1], weight=2) )
 ```
-Now we transform the diversification rate parameters into actual rates using 
+Now we transform the diversification rate parameters into actual rates using
 an exponential parameter transformation.
 ```
 speciation[1] := exp( log_speciation[1] )
@@ -100,7 +107,7 @@ for (i in 1:NUM_INTERVALS) {
 
 }
 ```
-Finally, we apply moves that slide all values in the rate vectors, 
+Finally, we apply moves that slide all values in the rate vectors,
 *i.e.,* all speciation or extinction rates.
 We will use an `mvVectorSlide` move.
 ```
@@ -108,7 +115,7 @@ moves.append( mvVectorSlide(log_speciation, weight=10) )
 moves.append( mvVectorSlide(log_extinction, weight=10) )
 ```
 
-Additionally, we apply a `mvShrinkExpand` move which changes the spread of several variables 
+Additionally, we apply a `mvShrinkExpand` move which changes the spread of several variables
 around their mean.
 ```
 moves.append( mvShrinkExpand( log_speciation, weight=10 ) )
@@ -117,7 +124,7 @@ moves.append( mvShrinkExpand( log_extinction, weight=10 ) )
 Both moves considerably improve the efficiency of our MCMC analysis.
 
 {% subsubsection Setting up the time intervals %}
-In `RevBayes` you actually have the possibility to specify unequal time intervals 
+In `RevBayes` you actually have the possibility to specify unequal time intervals
 or even different intervals for the speciation and extinction rate.
 This is achieved by providing a vector of times when each interval ends.
 Here we simply break-up the time in equal-length intervals.
@@ -131,7 +138,7 @@ Also, remember that the times of the intervals represent ages going backwards in
 
 We know that we have sampled 233 out of 367 living primate species.
 To account for this we can set the sampling parameter as a constant node with a value of 233/367.
-For simplicity, and since almost all species have been sampled, 
+For simplicity, and since almost all species have been sampled,
 we assume *uniform* taxon sampling {%cite Hoehna2011 Hoehna2014a %},
 ```
 rho <- T.ntips()/367
@@ -155,7 +162,7 @@ We initialize the stochastic node representing the time tree.
 timetree ~ dnEpisodicBirthDeath(rootAge=T.rootAge(), lambdaRates=speciation, lambdaTimes=interval_times, muRates=extinction, muTimes=interval_times, rho=rho, samplingStrategy="uniform", condition="survival", taxa=taxa)
 ```
 You may notice that we explicitly specify that we want to condition on survival.
-It is possible to change this condition to the *time of the process* or 
+It is possible to change this condition to the *time of the process* or
 *the number of sampled taxa* too.
 
 Then we attach data to the `timetree` variable.
@@ -176,11 +183,11 @@ The `model()` function traversed all of the connections and found all of the nod
 {% subsubsection Specifying Monitors %}
 
 For our MCMC analysis, we need to set up a vector of *monitors* to record the states of our Markov chain.
-First, we will initialize the model monitor using the `mnModel` function. 
-This creates a new monitor variable that will output the states for all model parameters 
+First, we will initialize the model monitor using the `mnModel` function.
+This creates a new monitor variable that will output the states for all model parameters
 when passed into a MCMC function.
 ```
-monitors.append( mnModel(filename="output/primates_EBD.log",printgen=10, separator = TAB)
+monitors.append( mnModel(filename="output/primates_EBD.log",printgen=10, separator = TAB) )
 ```
 
 Additionally, we create four separate file monitors, one for each vector of speciation and extinction rates and for each speciation and extinction rate epoch (\IE the times when the interval ends).
@@ -192,7 +199,7 @@ monitors.append( mnFile(filename="output/primates_EBD_extinction_rates.log",prin
 monitors.append( mnFile(filename="output/primates_EBD_extinction_times.log",printgen=10, separator = TAB, interval_times) )
 ```
 
-Finally, we create a screen monitor that will report the states of specified variables 
+Finally, we create a screen monitor that will report the states of specified variables
 to the screen with `mnScreen`:
 ```
 monitors.append( mnScreen(printgen=1000, extinction_sd, speciation_sd) )
@@ -200,8 +207,8 @@ monitors.append( mnScreen(printgen=1000, extinction_sd, speciation_sd) )
 
 {% subsubsection Initializing and Running the MCMC Simulation %}
 
-With a fully specified model, a set of monitors, and a set of moves, 
-we can now set up the MCMC algorithm that will sample parameter values in proportion 
+With a fully specified model, a set of monitors, and a set of moves,
+we can now set up the MCMC algorithm that will sample parameter values in proportion
 to their posterior probability.
 The `mcmc()` function will create our MCMC object:
 ```
@@ -237,13 +244,10 @@ dev.off()
 
 
 {% figure fig_EBD_Results %}
-<img src="figures/EBD_10_Result.png" width="75%" height="75%" /> 
-{% figcaption %} 
-Resulting diversification rate estimations when using 10 intervals. 
-You should obtain similar results when you use 10 intervals. 
+<img src="figures/EBD_10_Result.png" width="75%" height="75%" />
+{% figcaption %}
+Resulting diversification rate estimations when using 10 intervals.
+You should obtain similar results when you use 10 intervals.
 The estimated rates might change when you use a different resolution, *i.e.,* a different number of intervals.
 {% endfigcaption %}
 {% endfigure %}
-
-
-

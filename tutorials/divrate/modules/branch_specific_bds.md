@@ -6,14 +6,14 @@ We are going to use the `dnCBDP` distribution which uses a finite number of rate
 instead of drawing rates from a continuous distribution directly.
 
 Here we adopt an approach using (few) discrete rate categories.
-This allows us to numerically integrate over all possible rate categories using 
-a system of differential equations originally described by {% citet Maddison2007 %} 
-(see also {% citet FitzJohn2009 %} and {% citet FitzJohn2010 %}). 
+This allows us to numerically integrate over all possible rate categories using
+a system of differential equations originally described by {% citet Maddison2007 %}
+(see also {% citet FitzJohn2009 %} and {% citet FitzJohn2010 %}).
 The numerical procedure breaks time into very small time intervals and sums
 over all possible events occurring in that interval (see {% ref fig_likelihood %}).
 
 {% figure fig_likelihood %}
-<img src="figures/likelihood.png" width="100%" height="100%" /> 
+<img src="figures/likelihood.png" width="100%" height="100%" />
 {% figcaption %}
 **Possible scenarios that could occur over the interval $\Delta t$ along a lineage that is observed at time $t$.**
 To compute the probability under the birth-death-shift process, we traverse the tree from the tips to the root in small time steps, $\Delta t$.
@@ -28,7 +28,7 @@ segments of the tree between $t+\Delta t$ and the root are colored gray because 
 {% endfigcaption %}
 {% endfigure %}
 
-You don't need to worry about any of the technical details. 
+You don't need to worry about any of the technical details.
 It is important for you to realize that this model assumes that new rates at a
 rate-shift event are drawn from a given (discrete) set of rates (see {% ref fig_discretized_lognormal %}).
 
@@ -57,7 +57,7 @@ NUM_RATE_CATEGORIES = 6
 NUM_TOTAL_SPECIES = 367
 H = 0.587405
 ```
-Using these variables we can easily change our script, for example, 
+Using these variables we can easily change our script, for example,
 to use more or fewer categories and test the impact.
 
 {% subsection Specifying the model %}
@@ -65,15 +65,15 @@ to use more or fewer categories and test the impact.
 {% subsubsection Priors on rates %}
 
 {% figure fig_discretized_lognormal %}
-<img src="figures/discretized_distributions.png" width="100%" height="100%" /> 
+<img src="figures/discretized_distributions.png" width="100%" height="100%" />
 {% figcaption %}
 **Approximation of the continuous base distributions for the diversification-rate parameters using discrete rate categories.**
 From left to right, we show a discretization of a lognormal distribution with k={2,4,6,8,10,20} bins.
 Our approach for computing the probability of the data under the lineage-specific birth-death-shift
-model specifies *k* quantiles of the continuous base distributions for the speciation and extinction rates. 
-We compute probabilities by marginalizing (averaging) over the *k* discrete rate categories, 
-where the diversification rate for a given category is the median of the corresponding quantile (colored dots). 
-This approach provides an efficient alternative to computing the continuous integral, 
+model specifies *k* quantiles of the continuous base distributions for the speciation and extinction rates.
+We compute probabilities by marginalizing (averaging) over the *k* discrete rate categories,
+where the diversification rate for a given category is the median of the corresponding quantile (colored dots).
+This approach provides an efficient alternative to computing the continuous integral,
 and will provide a reliable approximation of the continuous integral when the number of categories *k* is sufficiently large to resemble the underlying continuous distribution.
 {% endfigcaption %}
 {% endfigure %}
@@ -90,7 +90,7 @@ it as a deterministic variable and every time the parameters of the base
 distribution (i.e., the lognormal
 distribution in our case) change the quantiles will update automatically
 as well. Thus we only need to specify parameters for our base
-distribution, the lognormal distribution. 
+distribution, the lognormal distribution.
 We choose a log-uniform distribution as the prior distribution for the mean parameter of the lognormal distribution.
 ```
 speciation_mean ~ dnLoguniform( 1E-6, 1E2)
@@ -130,7 +130,7 @@ extinction := rep( extinction_mean, NUM_RATE_CATEGORIES )
 Next, we need a rate parameter for the rate-shifts events. We do not
 have much prior information about this rate but we can provide some
 realistic ranges. For example, we can specify a uniform distribution that the
-goes from 0 to 100 expected events. 
+goes from 0 to 100 expected events.
 Remember that this is only possible if the tree is known and not
 estimated simultaneously because only if the tree is known, then we also know the
 tree length. As usual for rate parameter, we apply a scaling move to the
@@ -139,7 +139,7 @@ tree length. As usual for rate parameter, we apply a scaling move to the
 event_rate ~ dnUniform(0.0, 100.0/tree_length)
 moves.append( mvScale(event_rate, lambda=1, tune=true, weight=2.0) )
 ```
-Additionally, we need a parameter for probability that the process starts at the root in any of the diversification-rate categories. 
+Additionally, we need a parameter for probability that the process starts at the root in any of the diversification-rate categories.
 We use a uniform/equal prior distribution on the diversification-rate categories.
 ```
 rate_cat_probs <- simplex( rep(1, NUM_RATE_CATEGORIES) )
@@ -199,9 +199,9 @@ representing the time tree.
 ```
 timetree ~ dnCDBDP( rootAge           = root,
                     speciationRates   = speciation,
-                    extinctionRates   = extinction, 
+                    extinctionRates   = extinction,
                     Q                 = fnJC(NUM_RATE_CATEGORIES),
-                    delta             = event_rate, 
+                    delta             = event_rate,
                     pi                = rate_cat_probs,
                     rho               = rho,
                     condition         = "time" )
@@ -234,7 +234,7 @@ monitors.append( mnModel(filename="output/primates_BDS.log",printgen=1, separato
 For summary and plotting purposes, we need to obtain the branch-specific diversification rate estimate along the tree.
 We will use a stochastic rate mapping algorithm {% citet Freyman2019 %}.
 Thus, we create an `mnStochasticBranchRate`. The stochastic branch-rate monitor
-draws stochastic character maps and writes the *simulated* branch rates into a file. 
+draws stochastic character maps and writes the *simulated* branch rates into a file.
 We will need this file later to estimate and visualize the posterior
 distribution of the rates at the branches.
 ```
@@ -243,7 +243,7 @@ monitors.append( mnStochasticBranchRate(cdbdp=timetree, printgen=1, filename="ou
 Finally, create a screen monitor that will report the states of
 specified variables to the screen with `mnScreen`:
 ```
-monitors.append( mnScreen(printgen=10, event_rate, mean_speciation, root_category, total_num_events) )
+monitors.append( mnScreen(printgen=10, event_rate, speciation_mean, extinction_mean) )
 ```
 
 {% subsubsection Initializing and Running the MCMC Simulation %}
@@ -264,7 +264,7 @@ mymcmc.run(generations=2500,tuning=200)
 
 When the analysis is complete, you will have the monitored files in your
 output directory. You can then visualize the branch-specific rates by
-plotting them using our `R` package `RevGadgets`. 
+plotting them using our `R` package `RevGadgets`.
 
 Just start `R` in the main directory for this analysis and then type the following commands:
 ```R
@@ -279,7 +279,7 @@ ggsave("BDS.pdf", width=15, height=15, units="cm")
 ```
 
 {% figure fig_BDS %}
-<img src="figures/BDS.png" width="100%" height="100%" /> 
+<img src="figures/BDS.png" width="100%" height="100%" />
 {% figcaption %}
 **Estimated branch-specific speciation rates.**
 Here we show the results of our example analysis. You'll see that there is a speciation rate
