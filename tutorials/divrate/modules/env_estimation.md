@@ -71,8 +71,8 @@ extinction_sd ~ dnExponential( 1.0 / SD)
 ```
 We apply a simple scaling move on each prior parameter.
 ```
-moves.append( mvScale(speciation_sd,weight=5.0) )
-moves.append( mvScale(extinction_sd,weight=5.0) )
+moves.append( mvScale(speciation_sd, weight=5.0) )
+moves.append( mvScale(extinction_sd, weight=5.0) )
 ```
 
 
@@ -114,7 +114,7 @@ This actually means that we allow speciation and extinction rates between $e^{-1
 log_speciation[1] ~ dnUniform(-10.0,10.0)
 log_speciation[1].setValue(0.0)
 log_extinction[1] ~ dnUniform(-10.0,10.0)
-log_speciation[1].setValue(-1.0)
+log_extinction[1].setValue(-1.0)
 ```
 Notice that we store the diversification rate variables in vectors.
 Storing the rate parameters in vectors will be useful and important later when we pass the rates into the birth-death process.

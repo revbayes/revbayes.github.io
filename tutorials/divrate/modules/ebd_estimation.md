@@ -69,7 +69,7 @@ since the rate is so slow).
 log_speciation[1] ~ dnUniform(-10.0,10.0)
 log_speciation[1].setValue(0.0)
 log_extinction[1] ~ dnUniform(-10.0,10.0)
-log_speciation[1].setValue(-1.0)
+log_extinction[1].setValue(-1.0)
 ```
 Notice that we store the diversification rate variables in vectors.
 Storing the rate parameters in vectors will be useful and important later when we pass the rates into the birth-death process.
@@ -118,8 +118,8 @@ moves.append( mvVectorSlide(log_extinction, weight=10) )
 Additionally, we apply a `mvShrinkExpand` move which changes the spread of several variables
 around their mean.
 ```
-moves.append( mvShrinkExpand( log_speciation, weight=10 ) )
-moves.append( mvShrinkExpand( log_extinction, weight=10 ) )
+moves.append( mvShrinkExpand( log_speciation, sd=speciation_sd, weight=10 ) )
+moves.append( mvShrinkExpand( log_extinction, sd=extinction_sd, weight=10 ) )
 ```
 Both moves considerably improve the efficiency of our MCMC analysis.
 
