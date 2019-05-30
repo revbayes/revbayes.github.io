@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
-    <title>RevBayes: Biogeographic dating analysis</title>
+    <title>RevBayes: Biogeographic Dating of Divergence Times</title>
   </head>
   <body>
     <div class="container">
@@ -51,10 +51,10 @@
 </nav>
 
       <div class="titlebar">
-	<h1 class="maintitle">Biogeographic dating analysis</h1>
-	<h3 class="subtitle">Biogeographic dating analysis under the dispersal-extinction-cladogenesis process</h3>
+	<h1 class="maintitle">Biogeographic Dating of Divergence Times</h1>
+	<h3 class="subtitle">Estimating divergence times with molecular, biogeographic, and paleogeographic evidence under the Dispersal-Extirpation-Cladogenesis (DEC) model</h3>
 	<h4 class="authors">Michael J. Landis</h4>
-  <h5>Last modified on August 15, 2018</h5>
+  <h5>Last modified on May 30, 2019</h5>
 </div>
 
 
@@ -68,11 +68,11 @@
         
           <ul id="prerequisites">
           
-            <li><a href="/tutorials/biogeo/biogeo_intro.html">Introduction to Historical Biogeography</a></li>
+            <li><a href="/tutorials/biogeo/biogeo_intro.html">Introduction to Phylogenetic Models of Discrete Biogeography</a></li>
           
-            <li><a href="/tutorials/biogeo/biogeo_simple.html">Historical Biogeographic Analysis using a Simple DEC Model</a></li>
+            <li><a href="/tutorials/biogeo/biogeo_simple.html">Simple Phylogenetic Analysis of Historical Biogeography</a></li>
           
-            <li><a href="/tutorials/biogeo/biogeo_epoch.html">Historical Biogeographic Analysis using an epoch DEC Model</a></li>
+            <li><a href="/tutorials/biogeo/biogeo_epoch.html">Advanced Phylogenetic Analysis of Historical Biogeography</a></li>
           
           </ul>
         
@@ -108,6 +108,8 @@
         
           <li><a href="/tutorials/biogeo/data/n6/hawaii.n6.times.txt">hawaii.n6.times.txt</a></li>
         
+          <li><a href="/tutorials/biogeo/data/n6/range_colors.n6.txt">range_colors.n6.txt</a></li>
+        
           <li><a href="/tutorials/biogeo/data/n6/silversword.init.tre">silversword.init.tre</a></li>
         
           <li><a href="/tutorials/biogeo/data/n6/silversword.mol.nex">silversword.mol.nex</a></li>
@@ -115,6 +117,8 @@
           <li><a href="/tutorials/biogeo/data/n6/silversword.n6.range.nex">silversword.n6.range.nex</a></li>
         
           <li><a href="/tutorials/biogeo/data/n6/silversword.tre">silversword.tre</a></li>
+        
+          <li><a href="/tutorials/biogeo/data/n6/state_labels.n6.txt">state_labels.n6.txt</a></li>
         
         </ul>
     
@@ -126,17 +130,35 @@
         
           <li><a href="/tutorials/biogeo/scripts/make_anc_state.Rev">make_anc_state.Rev</a></li>
         
-          <li><a href="/tutorials/biogeo/scripts/plot_anc_range.R">plot_anc_range.R</a></li>
+          <li><a href="/tutorials/biogeo/scripts/plot_anc_range.epoch_phy.R">plot_anc_range.epoch_phy.R</a></li>
         
-          <li><a href="/tutorials/biogeo/scripts/plot_anc_range.epoch.R">plot_anc_range.epoch.R</a></li>
+          <li><a href="/tutorials/biogeo/scripts/plot_anc_range.simple_phy.R">plot_anc_range.simple_phy.R</a></li>
         
-          <li><a href="/tutorials/biogeo/scripts/plot_anc_range.simple.R">plot_anc_range.simple.R</a></li>
-        
-          <li><a href="/tutorials/biogeo/scripts/range_colors.txt">range_colors.txt</a></li>
+          <li><a href="/tutorials/biogeo/scripts/plot_anc_range.util.R">plot_anc_range.util.R</a></li>
         
           <li><a href="/tutorials/biogeo/scripts/run_epoch_phy.Rev">run_epoch_phy.Rev</a></li>
         
           <li><a href="/tutorials/biogeo/scripts/run_simple_phy.Rev">run_simple_phy.Rev</a></li>
+        
+        </ul>
+    
+        
+        <strong>Other</strong>
+        <ul id="other_files">
+        
+        
+        
+          <li><a href="/tutorials/biogeo/output_examples/epoch_phy.model.log">epoch_phy.model.log</a></li>
+        
+          <li><a href="/tutorials/biogeo/output_examples/epoch_phy.states.log">epoch_phy.states.log</a></li>
+        
+          <li><a href="/tutorials/biogeo/output_examples/epoch_phy.tre">epoch_phy.tre</a></li>
+        
+          <li><a href="/tutorials/biogeo/output_examples/simple_phy.model.log">simple_phy.model.log</a></li>
+        
+          <li><a href="/tutorials/biogeo/output_examples/simple_phy.states.log">simple_phy.states.log</a></li>
+        
+          <li><a href="/tutorials/biogeo/output_examples/simple_phy.tre">simple_phy.tre</a></li>
         
         </ul>
     
@@ -166,11 +188,11 @@ nested within the subtribe <em>Madiinae</em>, alongside the
 tarweeds, a clade of plants inhabiting in western North America. Fossil
 pollen evidence indicates that <em>Madiinae</em> diversified
 during a period of aridification from 15–5 Ma in the western regions of
-North America <a href="#Baldwin1991">(Baldwin et al. 1991)</a>. It’s clear that silverswords colonized
+North America <a href="#Baldwin1991">Baldwin et al. (1991)</a>. It’s clear that silverswords colonized
 Hawaii from western North America, but the timing of the event is
 difficult to estimate. Even though the oldest Hawaiian island they
 inhabit is Kauai, it is possible that silverswords first colonized older
-islands in the Emperor Island chain that predate the formation of Kauai (ca 5.1 Ma).</p>
+islands in the Emperor Island chain that predate the formation of Kauai (&gt;5 Ma).</p>
 
 <p>This makes the application of standard node-based biogeographic
 calibrations challenging, because it would require a strong assumption
@@ -179,9 +201,9 @@ Kauai. Did silverswords colonize Kauai once directly from the California
 coast? Or did the colonize the younger islands multiple times from older
 islands in the chain? And did the event occur immediately after Kauai
 surfaced or much later? Because we cannot observe the timing and nature
-of this event directly, we will integrate over all possible evolutionary
+of this dispersal event directly, we will integrate over all possible evolutionary
 histories using process-based biogeographic dating method described in
-<a href="#Landis2017a">(Landis 2017)</a>.</p>
+<a href="#Landis2017a">Landis (2017)</a>.</p>
 
 <figure id="fig_biogeo_dating"><p><img src="figures/fig_biogeo_dating.png" alt="" /></p>
 <figcaption>Cartoon of biogeographic
@@ -190,7 +212,7 @@ relates to speciation times. (a) Areas split, dispersal before split,
 positive probability; (b) Areas split, dispersal after split, zero
 probability; (c) Areas merge, dispersal after merge, positive
 probability; (d) Areas merge, dispersal before merge, zero probabilty.
-Original figure and details regarding cartoon assumptions are found in <a href="#Landis2017a">(Landis 2017)</a>.</figcaption>
+Original figure and details regarding cartoon assumptions are found in <a href="#Landis2017a">Landis (2017)</a>.</figcaption>
 </figure>
 
 <p>The basic idea is that an empirically informed epoch model is capable of
@@ -209,7 +231,7 @@ biogeographic dating estimates are prior sensitive and dataset
 dependent. Applying this model to alternative data sets should be done
 with care!</p>
 
-<p>Another note: This tutorial describes an analysis that is similar, but not identical, to the analysis conducted in <a href="#Landis2018">(Landis et al. 2018)</a>. This tutorial will be updated following the manuscript’s publication in a peer-reviewed journal.</p>
+<p>Another note: This tutorial describes an analysis that is similar, but not identical, to the analysis conducted in <a href="#Landis2018">Landis et al. (2018)</a>.</p>
 
 <p>Much of this tutorial will be similar to the previous sections, except
 we are adding a birth-death process and a molecular substitution process
@@ -246,7 +268,7 @@ output files</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>range_fn = "data/n6/silversword.n6.range.nex"
 mol_fn = "data/n6/silversword.mol.nex"
 tree_fn = "data/n6/silversword.tre"
-out_fn = "output/test_epoch_phy"
+out_fn = "output/epoch_phy"
 geo_fn = "data/n6/hawaii.n6"
 times_fn = geo_fn + ".times.txt"
 dist_fn = geo_fn + ".distances.txt"
@@ -254,9 +276,7 @@ dist_fn = geo_fn + ".distances.txt"
 
 <p>Add the analysis helper variables</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvi = 1
-mni = 1
-n_gen = 1e5    # more parameters, longer run!
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_gen = 25000    # more parameters, longer run!
 </code></pre></div></div>
 
 <p>Read in the molecular alignment</p>
@@ -341,12 +361,16 @@ tree variable must be declared as a stochastic node with a
 prior distribution. For this, we’ll use a constant rate birth-death
 process.</p>
 
-<p>Assign root age with a maximum age of 15Ma to reflect the fossil pollen
-record for Californian tarweeds <a href="#Baldwin1998">(Baldwin and Sanderson 1998)</a>. No assumption is made
+<p>Assign root age with a maximum age of 15 Ma to reflect the ecological root age calibration for Californian tarweeds <a href="#Baldwin1998">(Baldwin and Sanderson 1998)</a>. No assumption is made
 about the minimum root age.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root_age ~ dnUniform(0, 15)
-moves[mvi++] = mvScale(root_age, weight=2)
+</code></pre></div></div>
+
+<p>Add a move to update the root age</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves = VectorMoves()
+moves.append( mvScale(root_age, weight=5) )
 </code></pre></div></div>
 
 <p>Assign the proportion of sampled taxa (we have a non-uniform sampling
@@ -357,14 +381,12 @@ scheme, but this should suffice).</p>
 
 <p>Assign the birth and death priors. It is important to note that the
 birth and death priors induce a root age distribution through the
-birth-death process. These priors generate a relatively uniform root age
-distribution between 2.5–15 Ma in the absence of data (i.e. running MCMC
-with the <code class="highlighter-rouge">underPrior=true</code> option).</p>
+birth-death process.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>birth ~ dnExp(1)
-moves[mvi++] = mvScale(birth)
-death ~ dnExp(1)
-moves[mvi++] = mvScale(death)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>birth ~ dnExp(10)
+moves.append( mvScale(birth, weight=2) )
+death ~ dnExp(10)
+moves.append( mvScale(death, weight=2) )
 </code></pre></div></div>
 
 <p>Instantiate a tree variable generated by a birth-death process</p>
@@ -374,9 +396,11 @@ moves[mvi++] = mvScale(death)
 
 <p>Add topology and branch length moves</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvNNI(tree, weight=n_branches/2)
-moves[mvi++] = mvFNPR(tree, weight=n_branches/8)
-moves[mvi++] = mvNodeTimeSlideUniform(tree, weight=n_branches/2)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvNNI(tree, weight=n_branches/2) )
+moves.append( mvFNPR(tree, weight=n_branches/8) )
+moves.append( mvNodeTimeSlideUniform(tree, weight=n_branches/2) )
+moves.append( mvSubtreeScale(tree, weight=n_branches/8) )
+moves.append( mvTreeScale(tree, root_age, weight=n_branches/8) )
 </code></pre></div></div>
 
 <p>Provide a starting tree to ensure the biogeographic model has non-zero
@@ -397,10 +421,10 @@ substitution <a href="#Hasegawa1985">(Hasegawa et al. 1985; Yang and Nielsen 199
 over orders of magnitude, between $10^{-6}$ and $10^3$, and was chosen
 to minimize its influence on the tree height.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log10_rate_mol ~ dnUniform(-6, 3)
-log10_rate_mol.setValue(-1)
-moves[mvi++] = mvSlide(log10_rate_mol, weight=5, delta=0.2)
-rate_mol := 10^log10_rate_mol
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_mol ~ dnLoguniform(1E-6, 1E0)
+rate_mol.setValue(1E-2)
+moves.append( mvScale(rate_mol, lambda=0.2, weight=4) )
+moves.append( mvScale(rate_mol, lambda=1.0, weight=2) )
 </code></pre></div></div>
 
 <p>Assign log-normal relaxed clock rate multipliers to each branch in the
@@ -411,9 +435,10 @@ clock model in the absence of data.</p>
 branch_mean &lt;- 0.0 - 0.5 * branch_sd^2
 for (i in 1:n_branches) {
     branch_rate_multiplier[i] ~ dnLognormal(mean=branch_mean, sd=branch_sd)
-    moves[mvi++] = mvScale(branch_rate_multiplier[i])
     branch_rates[i] := rate_mol * branch_rate_multiplier[i]
+    moves.append( mvScale(branch_rate_multiplier[i]) )
 }
+moves.append( mvVectorScale(branch_rate_multiplier, weight=3) )
 </code></pre></div></div>
 
 <p>Now we’ll create an HKY rate matrix. First, we create a
@@ -421,14 +446,14 @@ gamma-distributed transition-transversion (Ts/Tv) rate ratio with prior
 with mean equal to one</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kappa ~ dnGamma(2,2)
-moves[mvi++] = mvScale(kappa)
+moves.append( mvScale(kappa) )
 </code></pre></div></div>
 
 <p>then create a flat Dirichlet prior on the base frequencies over A, C, G,
 and T</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bf ~ dnDirichlet([1,1,1,1])
-moves[mvi++] = mvSimplexElementScale(bf, alpha=10, weight=2)
+moves.append( mvSimplexElementScale(bf, alpha=10, weight=2) )
 </code></pre></div></div>
 
 <p>and, finally, combine the base frequencies and Ts/Tv rate ratio to build
@@ -441,7 +466,7 @@ the rate matrix</p>
 we need a parameter to control the amount of site rate variation</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha ~ dnUniform(0,50)
-moves[mvi++] = mvScale(alpha)
+moves.append( mvScale(alpha) )
 </code></pre></div></div>
 
 <p>and a discretized Gamma distribution with four categories</p>
@@ -457,7 +482,12 @@ large, the variance shrinks to zero, and the site rate multipliers of
 
 <p>Finally, we’ll create our molecular model of substitution</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>m_mol ~ dnPhyloCTMC(Q=Q_mol, tree=tree, branchRates=branch_rates, siteRates=site_rates, type="DNA", nSites=dat_mol.nchar())
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>m_mol ~ dnPhyloCTMC(Q=Q_mol,
+                    tree=tree,
+                    branchRates=branch_rates,
+                    siteRates=site_rates,
+                    type="DNA",
+                    nSites=dat_mol.nchar())
 </code></pre></div></div>
 
 <p>and attach the ITS alignment</p>
@@ -472,10 +502,10 @@ large, the variance shrinks to zero, and the site rate multipliers of
 
 <p>First, create the biogeographic rate parameter.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log10_rate_bg ~ dnUniform(-4,2)
-log10_rate_bg.setValue(-2)
-rate_bg := 10^log10_rate_bg
-moves[mvi++] = mvSlide(log10_rate_bg, weight=4)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_bg ~ dnLoguniform(1E-4,1E2)
+rate_bg.setValue(1E-2)
+moves.append( mvScale(rate_bg, lambda=0.2, weight=4) )
+moves.append( mvScale(rate_bg, lambda=1.0, weight=2) )
 </code></pre></div></div>
 
 <p>The relative dispersal rate is fixed to 1</p>
@@ -487,7 +517,7 @@ moves[mvi++] = mvSlide(log10_rate_bg, weight=4)
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>distance_scale ~ dnUnif(0,20)
 distance_scale.setValue(0.001)
-moves[mvi++] = mvScale(distance_scale, weight=3)
+moves.append( mvScale(distance_scale, weight=3) )
 </code></pre></div></div>
 
 <p>Next, create dispersal rates that are functions of distance between all
@@ -511,7 +541,7 @@ i!</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log_sd &lt;- 0.5
 log_mean &lt;- ln(1) - 0.5*log_sd^2
 extirpation_rate ~ dnLognormal(mean=log_mean, sd=log_sd)
-moves[mvi++] = mvScale(extirpation_rate, weight=2)
+moves.append( mvScale(extirpation_rate, weight=2) )
 
 for (i in 1:n_epochs) {
   for (j in 1:n_areas) {
@@ -540,7 +570,8 @@ present (or is it?).</p>
   time_min[i] &lt;- time_bounds[i][2]
   if (i != n_epochs) {
     epoch_times[i] ~ dnUniform(time_min[i], time_max[i])
-    moves[mvi++] = mvSlide(epoch_times[i], delta=(time_bounds[i][1]-time_bounds[i][2])/2)
+    epoch_width = time_bounds[i][1] - time_bounds[i][2]
+    moves.append( mvSlide(epoch_times[i], delta=epoch_width/2) )
   } else {
     epoch_times[i] &lt;- 0.0
   }
@@ -559,7 +590,7 @@ as a random variable to be estimate.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clado_event_types &lt;- [ "s", "a" ]
 p_sympatry ~ dnUniform(0,1)
 p_allopatry := abs(1.0 - p_sympatry)
-moves[mvi++] = mvSlide(p_sympatry, delta=0.1, weight=2)
+moves.append( mvSlide(p_sympatry, delta=0.1, weight=2) )
 clado_event_probs := simplex(p_sympatry, p_allopatry)
 P_DEC := fnDECCladoProbs(eventProbs=clado_event_probs,
                          eventTypes=clado_event_types,
@@ -570,9 +601,9 @@ P_DEC := fnDECCladoProbs(eventProbs=clado_event_probs,
 <p>Based on fossil pollen evidence, force range state and the root of the
 tree to be the mainland area (Z)</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rf_DEC &lt;- rep(0, n_states)
-rf_DEC[n_areas+1] &lt;- 1  # Mainland (Z) is the only possible starting state
-rf_DEC &lt;- simplex(rf_DEC)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rf_DEC_tmp &lt;- rep(0, n_states)
+rf_DEC_tmp[n_areas+1] &lt;- 1  # Mainland (Z) is the only possible starting state
+rf_DEC &lt;- simplex(rf_DEC_tmp)
 </code></pre></div></div>
 
 <p>Create the phylogenetic model of range evolution</p>
@@ -606,7 +637,7 @@ ingroup_age := tmrca(tree, ingroup_clade)
 
 <p>Next, create a vector of variables to report the posterior probability
 that the clade originates <em>before</em> a given island. When the
-first argument in of the ifelse function returns
+first argument in of the <code class="highlighter-rouge">ifelse</code> function returns
 true, the node has value 1 and 0
 otherwise. Thus, the mean of this variable gives the posterior
 probability that the inequality is satisfied.</p>
@@ -617,23 +648,27 @@ probability that the inequality is satisfied.</p>
 </code></pre></div></div>
 
 <p>Create the standard monitors. One difference is that the
-mnFile monitor will now record the posterior distribution
+<code class="highlighter-rouge">mnFile</code> monitor will now record the posterior distribution
 for the tree variable, whereas the previous two tutorials
 assumed tree was fixed.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[mni++] = mnScreen(printgen=100, ingroup_age)
-monitors[mni++] = mnModel(file=out_fn+".model.log", printgen=100)
-monitors[mni++] = mnFile(tree, filename=out_fn+".tre", printgen=100)
-monitors[mni++] = mnJointConditionalAncestralState(tree=tree,
-                                                       ctmc=m_bg,
-                                                       type="NaturalNumbers",
-                                                       withTips=true,
-                                                       withStartStates=true,
-                                                       filename=out_fn+".states.log",
-                                                       printgen=100)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors = VectorMonitors()
+monitors.append( mnScreen(printgen=100, ingroup_age) ) 
+monitors.append( mnModel(file=out_fn+".model.log", printgen=100) )
+monitors.append( mnFile(tree, filename=out_fn+".tre", printgen=100) )
+monitors.append( mnJointConditionalAncestralState(tree=tree,
+                                                  ctmc=m_bg,
+                                                  type="NaturalNumbers",
+                                                  withTips=true,
+                                                  withStartStates=true,
+                                                  filename=out_fn+".states.log",
+                                                  printgen=100) )
+monitors.append( mnStochasticCharacterMap(ctmc=m_bg,
+                                          filename=out_fn+".stoch.log",
+                                          printgen=100) )
 </code></pre></div></div>
 
-<p>Because ingroup_older_island does not contribute to the
+<p>Because <code class="highlighter-rouge">ingroup_older_island</code> does not contribute to the
 model likelihood, it must be manually introduced to the model object.
 Compose the model object.</p>
 
@@ -646,8 +681,9 @@ Compose the model object.</p>
 mymcmc.run(n_gen)
 </code></pre></div></div>
 
-<figure id="simple_phy_RevGadgets_ase"><p><img src="figures/fig_simple_phy_RevGadgets_ase.png" width="50%" /></p>
-<figcaption>Joint estimate of phylogeny and biogeography, ignoring paleogeography.</figcaption>
+<figure id="simple_phy_RevGadgets_ase"><p><img src="figures/fig_simple_phy.range.png" width="50%" /></p>
+<figcaption>Dated maximum clade credibility tree with ancestral state estimates for the “simple_phy” analysis. Nodes represent ancestral ranges before and after cladogenetic events. Pie slices are proportional to the posterior probability of that ancestral range. Colors
+of markers indicate the range state. Only the first, second, and third most probable ranges are shown, with less probable ranges represented in gray (…). Vertical dashed lines indicate the range of possible island formation times.</figcaption>
 </figure>
 
 <h3 class="subsection" id="results">Results</h3>
@@ -667,25 +703,26 @@ paleogeography-aware model of range evolution (see Section <a href="#bg_epoch"><
 <a href="#bg_simple"></a>).</p>
 
 <figure id="epoch_phy"><!--![](figures/fig_epoch_phy_RevGadgets_ase.png) -->
-<p><img src="figures/fig_epoch_phy_RevGadgets_ase.png" width="50%" /></p>
-<figcaption>Joint estimate of phylogeny and biogeography, conditioning on paleogeography through the epoch model.</figcaption>
+<p><img src="figures/fig_epoch_phy.range.png" width="50%" /></p>
+<figcaption>Dated maximum clade credibility tree with ancestral state estimates for the “epoch_phy” analysis. Nodes represent ancestral ranges before and after cladogenetic events. Pie slices are proportional to the posterior probability of that ancestral range. Colors
+of markers indicate the range state. Only the first, second, and third most probable ranges are shown, with less probable ranges represented in gray (…). Vertical dashed lines indicate the range of possible island formation times.</figcaption>
 </figure>
 
 <p>We see that simple analysis (<a href="#simple_phy"></a>) estimates the
-ancestral range at the root of the clade as Maui+Mainland (MZ). This is
+ancestral range at the root of the clade as Maui+Mainland (MZ) or Hawaii+Mainland (HZ). This is
 unrealistic, both because of the extreme distance between those areas,
 but also the simple analysis estimates the root age to be 10.3 (HPD95%
 4.6, 15.0) Ma, well before Maui originated. (Date estimates are reported
 in the <code class="highlighter-rouge">simple_phy.mcc.tre</code> and
 <code class="highlighter-rouge">simple_phy.model.log</code> files.) The simple model also infers
 Kauai+Maui (KM) as the ancestral range of living silverswords and a
-crown age of 7.2 (HPD95% 2.5, 13.5) Ma, which is impossibly ancient
+ingroup crown age of 6.4 (HPD95% 2.2, 11.0) Ma, which is impossibly ancient
 given the islands’ ages.</p>
 
 <p>The epoch analysis (<a href="#epoch_phy"></a>) produces more sensible
 ancestral range estimates, with Kauai being colonized first, and younger
 islands only being colonized as they become available. The crown age of
-silverswords is estimated as 2.5 (HPD95% 0.7, 4.3) Ma. When comparing
+silverswords is estimated as 3.3 (HPD95% 1.6, 5.0) Ma. When comparing
 the results to the earlier fixed-phylogeny epoch results in <a href="#epoch_RevGadgets_ase"></a>, we recover a greater role for
 cladogenesis for the younger speciation events. These two analyses only
 differ in terms of whether the phylogeny is fixed or estimated, so it is
@@ -720,31 +757,31 @@ formation of Maui, but after the formation of Kauai.</p>
   <thead>
     <tr>
       <th>Model</th>
-      <th>$P(a_s&gt;a_K)$</th>
-      <th>$P(a_s&gt;a_O)$</th>
-      <th>$P(a_s&gt;a_M)$</th>
-      <th>$P(a_s&gt;a_H)$</th>
+      <th>$P(a_S&gt;a_K)$</th>
+      <th>$P(a_S&gt;a_O)$</th>
+      <th>$P(a_S&gt;a_M)$</th>
+      <th>$P(a_S&gt;a_H)$</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>simple</td>
-      <td>0.72</td>
+      <td>0.68</td>
       <td>0.94</td>
-      <td>0.99</td>
+      <td>1.00</td>
       <td>1.00</td>
     </tr>
     <tr>
       <td>epoch</td>
-      <td>0.02</td>
-      <td>0.26</td>
-      <td>0.84</td>
+      <td>0.04</td>
+      <td>0.59</td>
       <td>0.99</td>
+      <td>1.00</td>
     </tr>
   </tbody>
 </table>
 
-<figcaption class="table">Posterior probability that the age of crown silverswords ($a_s$) is
+<figcaption class="table">Posterior probability that the age of crown silverswords ($a_S$) is
   older than the origination times of K, O, M, and H
   ($a_K, a_O, a_M, a_H$, respectively). The “simple” model (Left)
   ignores paleogeography while the “epoch” model (Right) conditions on
@@ -752,14 +789,14 @@ formation of Maui, but after the formation of Kauai.</p>
 </figure>
 
 <p>By tabulating the results of the deterministic variable
-ingroup_older_island, we measure the posterior
+<code class="highlighter-rouge">ingroup_older_island</code>, we measure the posterior
 probability that crown silverswords originated before or after each
 particular epoch in the model (<a href="#tab_epoch_ages"></a>). Treating
-$P=0.95$ as significant support for an evolutionary outcome, the epoch
+$Prob&gt;0.95$ as significant support for an evolutionary outcome, the epoch
 model produces strong support that crown silverswords originated after
-the formation of Kauai, $P(a_s &gt; a_K) = 0.02 &lt; 1-0.95$ and weak support
+the formation of Kauai, $Prob(a_S &gt; a_K) = 1.0 - 0.04 &gt; 0.95$ but less support
 that they originated after the formation of Oahu,
-$P(a_s &gt; a_O) = 0.26 &gt; 1-0.95$.</p>
+$Prob(a_S &gt; a_O) = 1.0 - 0.59 &lt; 0.95$.</p>
 
 
 <ol class="bibliography"><li><span id="Baldwin1991">Baldwin B.G., Kyhos D.W., Dvorak J., Carr G.D. 1991. Chloroplast DNA evidence for a North American origin of the Hawaiian silversword alliance (Asteraceae). Proceedings of the National Academy of Sciences. 88:1840–1843.</span>
@@ -787,14 +824,12 @@ $P(a_s &gt; a_O) = 0.26 &gt; 1-0.95$.</p>
 <a href="https://doi.org/10.1098/rsbl.2015.0194">10.1098/rsbl.2015.0194</a>
 
 </li>
+<li><span id="Landis2018">Landis M.J., Freyman W.A., Baldwin B.G. 2018. Retracing the Hawaiian silversword radiation despite phylogenetic, biogeographic, and paleogeographic uncertainty. Evolution. 72:2343–2359.</span>
+
+</li>
 <li><span id="Landis2017a">Landis M.J. 2017. Biogeographic dating of speciation times using paleogeographically informed processes. Systematic Biology. 66:128–144.</span>
 
 <a href="https://doi.org/10.1093/sysbio/syw040">10.1093/sysbio/syw040</a>
-
-</li>
-<li><span id="Landis2018">Landis M.J., Freyman W.A., Baldwin B.G. 2018. Retracing the Hawaiian silversword radiation despite phylogenetic, biogeographic, and paleogeographic uncertainty. bioRxiv.:301887.</span>
-
-<a href="https://doi.org/10.1101/301887">10.1101/301887</a>
 
 </li>
 <li><span id="Yang1998">Yang Z., Nielsen R. 1998. Synonymous and nonsynonymous rate variation in nuclear genes of mammals. Journal of Molecular Evolution. 46:409–418.</span>

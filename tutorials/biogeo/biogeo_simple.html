@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
-    <title>RevBayes: Historical Biogeographic Analysis using a Simple DEC Model</title>
+    <title>RevBayes: Simple Phylogenetic Analysis of Historical Biogeography</title>
   </head>
   <body>
     <div class="container">
@@ -51,10 +51,10 @@
 </nav>
 
       <div class="titlebar">
-	<h1 class="maintitle">Historical Biogeographic Analysis using a Simple DEC Model</h1>
-	<h3 class="subtitle">Ancestral range estimation of the silverswords under the dispersal-extinction-cladogenesis process</h3>
+	<h1 class="maintitle">Simple Phylogenetic Analysis of Historical Biogeography</h1>
+	<h3 class="subtitle">Estimating ancestral ranges using the Dispersal-Extirpation-Cladogenesis (DEC) model</h3>
 	<h4 class="authors">Michael J. Landis</h4>
-  <h5>Last modified on February 19, 2019</h5>
+  <h5>Last modified on May 30, 2019</h5>
 </div>
 
 
@@ -68,7 +68,7 @@
         
           <ul id="prerequisites">
           
-            <li><a href="/tutorials/biogeo/biogeo_intro.html">Introduction to Historical Biogeography</a></li>
+            <li><a href="/tutorials/biogeo/biogeo_intro.html">Introduction to Phylogenetic Models of Discrete Biogeography</a></li>
           
           </ul>
         
@@ -90,9 +90,13 @@
         
         
         
+          <li><a href="/tutorials/biogeo/data/n4/range_colors.n4.txt">range_colors.n4.txt</a></li>
+        
           <li><a href="/tutorials/biogeo/data/n4/silversword.n4.range.nex">silversword.n4.range.nex</a></li>
         
           <li><a href="/tutorials/biogeo/data/n4/silversword.tre">silversword.tre</a></li>
+        
+          <li><a href="/tutorials/biogeo/data/n4/state_labels.simple.n4.txt">state_labels.simple.n4.txt</a></li>
         
         </ul>
     
@@ -104,11 +108,25 @@
         
           <li><a href="/tutorials/biogeo/scripts/make_anc_state.Rev">make_anc_state.Rev</a></li>
         
-          <li><a href="/tutorials/biogeo/scripts/plot_anc_range.R">plot_anc_range.R</a></li>
-        
           <li><a href="/tutorials/biogeo/scripts/plot_anc_range.simple.R">plot_anc_range.simple.R</a></li>
         
+          <li><a href="/tutorials/biogeo/scripts/plot_anc_range.util.R">plot_anc_range.util.R</a></li>
+        
           <li><a href="/tutorials/biogeo/scripts/run_simple.Rev">run_simple.Rev</a></li>
+        
+        </ul>
+    
+        
+        <strong>Other</strong>
+        <ul id="other_files">
+        
+        
+        
+          <li><a href="/tutorials/biogeo/output_examples/simple.model.log">simple.model.log</a></li>
+        
+          <li><a href="/tutorials/biogeo/output_examples/simple.states.log">simple.states.log</a></li>
+        
+          <li><a href="/tutorials/biogeo/output_examples/simple.tre">simple.tre</a></li>
         
         </ul>
     
@@ -119,7 +137,7 @@
 <h2 class="section" id="intro">Introduction</h2>
 <hr class="section" />
 
-<p>In the <a href="/tutorials/biogeo/biogeo_intro.html">Introduction to Historical Biogeography</a> tutorial, we went through the exercise of setting up the
+<p>In the <a href="/tutorials/biogeo/biogeo_intro.html">Introduction to Phylogenetic Models of Discrete Biogeography</a> tutorial, we went through the exercise of setting up the
 instantaneous rate matrix and cladogenetic transition probabilities for a simple 
 DEC model.
 In this tutorial, we will complete a biogeographic analysis using an empirical dataset: the Hawaiian silverswords.</p>
@@ -135,7 +153,7 @@ tarweeds, which are native to western continental North America
 <a href="#Baldwin1991">(Baldwin et al. 1991)</a>. The size and age of the silversword clade, combined with
 our knowledge of Hawaiian island formation, makes it an ideal system to
 explore concepts in historical biogeography and phylogeny. For further
-reading, consult: <a href="#Carlquist1959">Carlquist (1959)</a> and <a href="#Baldwin1998">Baldwin and Sanderson (1998)</a>.</p>
+reading, consult <a href="#Carlquist1959">Carlquist (1959)</a> and <a href="#Baldwin1998">Baldwin and Sanderson (1998)</a>.</p>
 
 <figure id="hawaii_areas"><p><img src="figures/fig_hawaii_areas.png" width="55%" /></p>
 <figcaption>A beautiful figure of the discrete areas for the tutorial. Six areas are shown: Kauai and Niihau (K); Oahu (O); Maui-Nui, Lanai, and Molokai (M); Hawaii (H); the remaining Hawaiian islands (R); and the North American mainland (Z).</figcaption>
@@ -144,7 +162,7 @@ reading, consult: <a href="#Carlquist1959">Carlquist (1959)</a> and <a href="#Ba
 <p>For this tutorial we’ll focus entirely on the silversword alliance and
 the modern Hawaiian archipelago. To begin, we’ll use just four areas, K,
 O, M, and H, and include areas R and Z in later analyses (<a href="#hawaii_areas"></a>). The species ranges used in this exercise follow
-<a href="#Gillespie2009">(Gillespie and Baldwin 2009)</a>.</p>
+<a href="#Gillespie2009">Gillespie and Baldwin (2009)</a>.</p>
 
 <figure id="table1" class="table"><table>
   <thead>
@@ -364,18 +382,16 @@ used in dating analyses.</p>
 
 <p>First, create a parameter for the arrival rate of anagenetic range
 evolution events. We’ll apply an uninformative prior to the rate’s
-magnitude by first assigning a uniform distribution to the $log_{10}$
-rate.</p>
+magnitude by first assigning it a log uniform prior.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log10_rate_bg ~ dnUniform(-4,2)
-log10_rate_bg.setValue(-2)
-moves[1] = mvSlide(log10_rate_bg, weight=4)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_bg ~ dnLoguniform(1E-4,1E2)
+rate_bg.setValue(1E-2)
 </code></pre></div></div>
 
-<p>then convert the rate from log-scale to linear-scale with a
-deterministic node</p>
+<p>Create a moves vector and create a proposal to update the rate parameter.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_bg := 10^log10_rate_bg
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves = VectorMoves()
+moves.append( mvSlide(rate_bg, weight=4) )
 </code></pre></div></div>
 
 <p>This yields a uniform prior over orders of magnitude, ranging from
@@ -406,7 +422,7 @@ loss are equal under the prior.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log_sd &lt;- 0.5
 log_mean &lt;- ln(1) - 0.5*log_sd^2
 extirpation_rate ~ dnLognormal(mean=log_mean, sd=log_sd)
-moves[2] = mvScale(extirpation_rate, weight=2)
+moves.append( mvScale(extirpation_rate, weight=2) )
 </code></pre></div></div>
 
 <p>then create a matrix of extirpation rates</p>
@@ -473,16 +489,20 @@ not the presence-absence range characters, <code class="highlighter-rouge">dat_r
 
 <p>Add the monitors.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[1] = mnScreen(rate_bg, extirpation_rate, printgen=100)
-monitors[2] = mnModel(file=out_fn+".params.log", printgen=10)
-monitors[3] = mnFile(tree, file=out_fn+".tre", printgen=10)
-monitors[4] = mnJointConditionalAncestralState(tree=tree,
-                                                    ctmc=m_bg,
-                                                    filename=out_fn+".states.log",
-                                                    type="NaturalNumbers",
-                                                    printgen=10,
-                                                    withTips=true,
-                                                    withStartStates=true)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors = VectorMonitors()
+monitors.append( mnScreen(rate_bg, extirpation_rate, printgen=100) )
+monitors.append( mnModel(file=out_fn+".params.log", printgen=10) )
+monitors.append( mnFile(tree, file=out_fn+".tre", printgen=10) )
+monitors.append( mnJointConditionalAncestralState(tree=tree,
+                                                  ctmc=m_bg,
+                                                  filename=out_fn+".states.log",
+                                                  type="NaturalNumbers",
+                                                  printgen=10,
+                                                  withTips=true,
+                                                  withStartStates=true) )
+monitors.append( mnStochasticCharacterMap(ctmc=m_bg,
+                                          filename=out_fn+".stoch.log",
+                                          printgen=100) )
 </code></pre></div></div>
 
 <p>The <code class="highlighter-rouge">mnJointConditionalAncestralState</code> monitor samples
@@ -592,32 +612,27 @@ information about phylogenetic uncertainty is reported.</p>
 
 <p>Finally, it is possible to generate a figure with ancestral states that is
 suitable for publication using the <code class="highlighter-rouge">R</code> package
-<a href="https://github.com/revbayes/RevGadgets">RevGadgets</a> (<a href="#simple_RevGadgets_ase"></a>).</p>
+<a href="https://github.com/revbayes/RevGadgets">RevGadgets</a> (<a href="#simple_RevGadgets_ase"></a>). 
+To create build this figure, open an <code class="highlighter-rouge">R</code> session and load the plotting
+script with the source function</p>
 
-<!-- The
-script is easily modified for use with different datasets. To create
-build a figure, open an `R` session and load the plotting
-script with the source function
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/plot_anc_state.simple.R")
+</code></pre></div></div>
 
-    source("plot_anc_state.simple.R") -->
-
-<figure id="simple_RevGadgets_ase"><p><img src="figures/fig_simple_RevGadgets_ase.png" /></p>
-<figcaption>Tree with ancestral state estimates for the “simple” analysis. Nodes are annotated
-with ancestral states before and after cladogenetic events. The
-ancestral range with the highest posterior probability is shown. Colors
-of markers indicate the range state.</figcaption>
+<figure id="simple_RevGadgets_ase"><p><img src="figures/fig_simple.range.png" /></p>
+<figcaption>Tree with ancestral state estimates for the “simple” analysis. Nodes represent ancestral ranges before and after cladogenetic events. Pie slices are proportional to the posterior probability of that ancestral range. Colors
+of markers indicate the range state. Only the first, second, and third most probable ranges are shown, with less probable ranges represented in gray (…). Vertical dashed lines indicate the range of possible island formation times, however island ages do not influence the model inference for this analysis.</figcaption>
 </figure>
 
-<p>Notice that the model infers a widespread ancestral range for the clade
-(KOMH) approximately four million years ago when only Kauai existed.
-Similar geologically unrealistic widespread ranges are estimated for the
-<em>Agyroxiphium</em> clade (KMH) and the <em>D.
-sheriffiana</em> and <em>D. arborea</em> clade (OMH). The
+<p>Notice that the model prefers a widespread ancestral range for the clade
+(KOH, KMH, or KM) approximately four million years ago when only Kauai existed.
+Similar geologically unrealistic ranges are estimated for the
+<em>Agyroxiphium</em> clade (H or MH) and the <em>D. sheriffiana</em> and <em>D. arborea</em> clade (OMH, OM, M) at times when Hawaii and Maui did not exist. The
 remaining tutorials will focus on improvements to the simple DEC model
 presented here.</p>
 
 <blockquote class="instruction">
-  <p>Continue to the next tutorial: <a href="/tutorials/biogeo/biogeo_epoch.html">Historical Biogeographic Analysis using an epoch DEC Model</a></p>
+  <p>Continue to the next tutorial: <a href="/tutorials/biogeo/biogeo_epoch.html">Advanced Phylogenetic Analysis of Historical Biogeography</a></p>
 </blockquote>
 
 

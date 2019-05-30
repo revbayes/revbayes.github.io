@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
-    <title>RevBayes: Historical Biogeographic Analysis using an epoch DEC Model</title>
+    <title>RevBayes: Advanced Phylogenetic Analysis of Historical Biogeography</title>
   </head>
   <body>
     <div class="container">
@@ -51,10 +51,10 @@
 </nav>
 
       <div class="titlebar">
-	<h1 class="maintitle">Historical Biogeographic Analysis using an epoch DEC Model</h1>
-	<h3 class="subtitle">Ancestral range estimation of the silverswords under the dispersal-extinction-cladogenesis process</h3>
+	<h1 class="maintitle">Advanced Phylogenetic Analysis of Historical Biogeography</h1>
+	<h3 class="subtitle">Ancestral range estimates using the Dispersal-Extirpation-Cladogenesis (DEC) model while incorporating time-dependent and region-dependent effects on dispersal rates</h3>
 	<h4 class="authors">Michael J. Landis</h4>
-  <h5>Last modified on March 26, 2019</h5>
+  <h5>Last modified on May 30, 2019</h5>
 </div>
 
 
@@ -68,9 +68,9 @@
         
           <ul id="prerequisites">
           
-            <li><a href="/tutorials/biogeo/biogeo_intro.html">Introduction to Historical Biogeography</a></li>
+            <li><a href="/tutorials/biogeo/biogeo_intro.html">Introduction to Phylogenetic Models of Discrete Biogeography</a></li>
           
-            <li><a href="/tutorials/biogeo/biogeo_simple.html">Historical Biogeographic Analysis using a Simple DEC Model</a></li>
+            <li><a href="/tutorials/biogeo/biogeo_simple.html">Simple Phylogenetic Analysis of Historical Biogeography</a></li>
           
           </ul>
         
@@ -104,9 +104,13 @@
         
           <li><a href="/tutorials/biogeo/data/n4/hawaii.n4.times.txt">hawaii.n4.times.txt</a></li>
         
+          <li><a href="/tutorials/biogeo/data/n4/range_colors.n4.txt">range_colors.n4.txt</a></li>
+        
           <li><a href="/tutorials/biogeo/data/n4/silversword.n4.range.nex">silversword.n4.range.nex</a></li>
         
           <li><a href="/tutorials/biogeo/data/n4/silversword.tre">silversword.tre</a></li>
+        
+          <li><a href="/tutorials/biogeo/data/n4/state_labels.epoch.n4.txt">state_labels.epoch.n4.txt</a></li>
         
         </ul>
     
@@ -118,17 +122,25 @@
         
           <li><a href="/tutorials/biogeo/scripts/make_anc_state.Rev">make_anc_state.Rev</a></li>
         
-          <li><a href="/tutorials/biogeo/scripts/plot_anc_range.R">plot_anc_range.R</a></li>
-        
           <li><a href="/tutorials/biogeo/scripts/plot_anc_range.epoch.R">plot_anc_range.epoch.R</a></li>
         
-          <li><a href="/tutorials/biogeo/scripts/plot_anc_range.simple.R">plot_anc_range.simple.R</a></li>
-        
-          <li><a href="/tutorials/biogeo/scripts/range_colors.txt">range_colors.txt</a></li>
+          <li><a href="/tutorials/biogeo/scripts/plot_anc_range.util.R">plot_anc_range.util.R</a></li>
         
           <li><a href="/tutorials/biogeo/scripts/run_epoch.Rev">run_epoch.Rev</a></li>
         
-          <li><a href="/tutorials/biogeo/scripts/run_epoch_phy.Rev">run_epoch_phy.Rev</a></li>
+        </ul>
+    
+        
+        <strong>Other</strong>
+        <ul id="other_files">
+        
+        
+        
+          <li><a href="/tutorials/biogeo/output_examples/epoch.model.log">epoch.model.log</a></li>
+        
+          <li><a href="/tutorials/biogeo/output_examples/epoch.states.log">epoch.states.log</a></li>
+        
+          <li><a href="/tutorials/biogeo/output_examples/epoch.tre">epoch.tre</a></li>
         
         </ul>
     
@@ -139,7 +151,7 @@
 <h2 class="section" id="intro">Introduction</h2>
 <hr class="section" />
 
-<p>In the <a href="/tutorials/biogeo/biogeo_simple.html">Historical Biogeographic Analysis using a Simple DEC Model</a> tutorial, we went through the exercise of setting up the
+<p>In the <a href="/tutorials/biogeo/biogeo_simple.html">Simple Phylogenetic Analysis of Historical Biogeography</a> tutorial, we went through the exercise of setting up the
 instantaneous rate matrix and cladogenetic transition probabilities for a simple 
 DEC model.
 In this tutorial, we will set up a more complex model considering the geological histories in the biogeographic inference. We will learn how to set up an epoch model.</p>
@@ -252,10 +264,10 @@ the full table is given for future reference.</p>
   </tbody>
 </table>
 
-<figcaption class="table">Hawaiian paleogeographic data. The six areas are given in <a href="#hawaii_areas"></a>.
+<figcaption class="table">Hawaiian paleogeographic data. The six areas are given in <a href="/tutorials/biogeo/biogeo_simple.html">Simple Phylogenetic Analysis of Historical Biogeography</a>.
    Ages $a_{max}$ and $a_{min}$ report the maximum
   and minimum origination times for the given island [adapted from
-  (missing reference)]. Distances $g_{ij}$ report the shortest geographical
+  (missing reference)]. Note that these ages are younger (less conservative) than the ages used in <a href="#Landis2018">Landis et al. (2018)</a>. Distances $g_{ij}$ report the shortest geographical
   distance from the coast of the row’s area to the column’s area
   (measured at present).</figcaption>
 </figure>
@@ -274,7 +286,7 @@ out_fn = "output/epoch"
 <p>The paleogeographical information from <a href="#paleogeo"></a> is encoded
 in three files named <code class="highlighter-rouge">hawaii.n4.times.txt</code>,
 <code class="highlighter-rouge">hawaii.n4.distances.txt</code>, and
-<code class="highlighter-rouge">hawaii.n4.connectivity.\*.txt</code>.</p>
+<code class="highlighter-rouge">hawaii.n4.connectivity.*.txt</code>.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>geo_fn = "data/n4/hawaii.n4"
 times_fn = geo_fn + ".times.txt"
@@ -391,10 +403,13 @@ all four epochs.</p>
 rate matrix in terms of relative rates, then rescale the entire matrix
 with the biogeographic rate scaling parameter <code class="highlighter-rouge">rate_bg</code>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log10_rate_bg ~ dnUniform(-4,2)
-log10_rate_bg.setValue(-2)
-rate_bg := 10^log10_rate_bg
-moves.append( mvSlide(log10_rate_bg, weight=4) )
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_bg ~ dnLoguniform(1E-4,1E2)
+rate_bg.setValue(1E-2)
+</code></pre></div></div>
+
+<p>And create a move to update the base rate of anagenetic change</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvSlide(rate_bg, weight=4) )
 </code></pre></div></div>
 
 <p>Fix the base dispersal rate to 1</p>
@@ -420,7 +435,7 @@ notice we now have an outer loop over the number of epochs,
 n_epochs. This is used to construct a vector of dispersal
 matrices, one matrix per epoch. It is crucial to note that all of
 elements are assigned the value 0.0 unless the if-statement
-<code class="highlighter-rouge">if (connectivity[i][j][k] &amp;gt; 0)</code>  evaluates to
+<code class="highlighter-rouge">if (connectivity[i][j][k] &gt; 0)</code>  evaluates to
 true. That is, dispersal rates between areas j
 and k for epoch i are non-zero if and only if
 the connectivity matrix element <code class="highlighter-rouge">connectivity[i][j][k]</code>
@@ -460,8 +475,8 @@ moves.append( mvScale(extirpation_rate, weight=2) )
 }
 </code></pre></div></div>
 
-<p>Now we have a vector of dispersal rates, dr, and an vector
-of extirpation rates, er, in stored in the RevBayes
+<p>Now we have a vector of dispersal rates, <code class="highlighter-rouge">dr</code>, and an vector
+of extirpation rates, <code class="highlighter-rouge">er</code>, in stored in the RevBayes
 workspace. We’ll use these to create a vector of four DEC rate matrices,
 one for each epoch.</p>
 
@@ -531,9 +546,9 @@ covered in future tutorials.</p>
 time of the clade, so will set it as the only valid starting state
 through the root frequency distribution.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rf_DEC &lt;- rep(0, n_states)
-rf_DEC[2] &lt;- 1 
-rf_DEC &lt;- simplex(rf_DEC)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rf_DEC_tmp &lt;- rep(0, n_states)
+rf_DEC_tmp[2] &lt;- 1 
+rf_DEC &lt;- simplex(rf_DEC_tmp)
 </code></pre></div></div>
 
 <p>We have created all the necessary model variables. Now we can create the
@@ -568,6 +583,9 @@ monitors.append( mnJointConditionalAncestralState(tree=tree,
                                                        withStartStates=true,
                                                        filename=out_fn+".states.log",
                                                        printgen=10) )
+monitors.append( mnStochasticCharacterMap(ctmc=m_bg,
+                                          filename=out_fn+".stoch.log",
+                                          printgen=100) )
 </code></pre></div></div>
 
 <p>Wrap the model graph into a model object</p>
@@ -587,7 +605,7 @@ mymcmc.run(5000)
 <p><strong>Example results are located at <code class="highlighter-rouge">output_example/epoch</code>.</strong></p>
 
 <p>When compared to the ancestral state estimates from the “simple”
-analysis (<a href="#simple_RevGadgets_ase"></a>), these results are far
+analysis (<a href="/tutorials/biogeo/biogeo_simple.html">Simple Phylogenetic Analysis of Historical Biogeography</a>), these results are far
 more consonant with what we understand about the origination times of
 the islands (<a href="#paleogeo"></a>). First, this reconstruction asserts
 that the clade originated in the modern Hawaiian islands at a time when
@@ -595,25 +613,26 @@ only Kauai was above sea level. Similarly, the <em>D.
 sheriffiana</em> and <em>D. arborea</em> clade no longer
 estimates OMH as its ancestral range, since Maui and Hawaii had not yet
 formed 2.4 Ma. The ancestral range for the <em>Agyroxiphium</em>
-clade is Maui (M) with probability 0.41 and Maui+Hawaii (MH) with
-probability 0.33, whereas previously it gave high support to the range
-KMH.</p>
+clade does not have a Hawaiian origin, whereas previously it awarded substantial support for H or MH origins.</p>
 
-<p>It may be that these are relatively accurate historical biogeographic
-estimates, or they may contain artifacts as a result of assuming a fixed
+<p>It may be that these epoch-based estimates are relatively accurate, or they may contain artifacts as a result of assuming a fixed
 and errorless phylogeny. The next tutorials discuss how to jointly
 estimate phylogeny and biogeography, which potentially improves the
 estimation of divergence times, tree topology, and ancestral ranges.</p>
 
-<figure id="epoch_RevGadgets_ase"><p><img src="figures/fig_epoch_RevGadgets_ase.png" alt="" /></p>
-<figcaption>Tree with ancestral
-state estimates. Nodes are annotated with ancestral states before and
-after cladogenetic events. Most probable states are shown. Colors of
-markers indicate the range state. Sizes of markers indicate the
-posterior probability of that state.</figcaption>
+<figure id="epoch_RevGadgets_ase"><p><img src="figures/fig_epoch.range.png" alt="" /></p>
+<figcaption>Tree with ancestral state estimates for the “epoch” analysis. Nodes represent ancestral ranges before and after cladogenetic events. Pie slices are proportional to the posterior probability of that ancestral range. Colors
+of markers indicate the range state. Only the first, second, and third most probable ranges are shown, with less probable ranges represented in gray (…). Vertical dashed lines indicate the range of possible island formation times.</figcaption>
 </figure>
 
-<ol class="bibliography"><li><span id="MacArthur1967">MacArthur R.H., Wilson E.O. 1967. Theory of Island Biogeography. Princeton University Press.</span>
+<blockquote class="instruction">
+  <p>Continue to the next tutorial: <a href="/tutorials/biogeo/biogeo_dating.html">Biogeographic Dating of Divergence Times</a></p>
+</blockquote>
+
+<ol class="bibliography"><li><span id="Landis2018">Landis M.J., Freyman W.A., Baldwin B.G. 2018. Retracing the Hawaiian silversword radiation despite phylogenetic, biogeographic, and paleogeographic uncertainty. Evolution. 72:2343–2359.</span>
+
+</li>
+<li><span id="MacArthur1967">MacArthur R.H., Wilson E.O. 1967. Theory of Island Biogeography. Princeton University Press.</span>
 
 <a href="https://doi.org/10.1515/9781400881376">10.1515/9781400881376</a>
 
