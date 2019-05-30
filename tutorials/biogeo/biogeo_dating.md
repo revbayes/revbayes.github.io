@@ -19,12 +19,6 @@ include_files:
 - data/n6/silversword.mol.nex
 - data/n6/silversword.n6.range.nex
 - data/n6/silversword.tre
-- output_examples/epoch_phy.tre
-- output_examples/epoch_phy.states.log
-- output_examples/epoch_phy.model.log
-- output_examples/simple_phy.tre
-- output_examples/simple_phy.states.log
-- output_examples/simple_phy.model.log
 exclude_files:
 - data/n4/hawaii.n4.connectivity.1.txt
 - data/n4/hawaii.n4.connectivity.2.txt
@@ -49,6 +43,15 @@ index: true
 title-old: RB_Biogeography_Tutorial
 redirect: false 
 ---
+
+<!--
+- output_examples/epoch_phy.tre
+- output_examples/epoch_phy.states.log
+- output_examples/epoch_phy.model.log
+- output_examples/simple_phy.tre
+- output_examples/simple_phy.states.log
+- output_examples/simple_phy.model.log
+-->
 
 {% section Introduction | introduction %}
 
