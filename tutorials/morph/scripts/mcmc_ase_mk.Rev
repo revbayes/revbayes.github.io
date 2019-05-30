@@ -4,7 +4,7 @@
 # 
 # This file: Runs the full MCMC on an Mk model.
 #
-# authors:  Sebastian HÃ¶hna, Will Freyman, April M. Wright, Michael J. Landis
+# authors:  Sebastian Höhna, Will Freyman, April M. Wright, Michael J. Landis
 #
 ################################################################################
 
@@ -17,8 +17,8 @@
 morpho <- readDiscreteCharacterData("data/mammals_thinned_placenta_type.nex")
 
 ## helpers
-mvi = 1
-mni = 1
+moves = VectorMoves()
+monitors = VectorMonitors()
 
 
 
@@ -45,7 +45,7 @@ Q_morpho <- fnJC(3)
 mu_morpho ~ dnExponential( 1.0 )
 
 # Moves on the parameters to the Gamma distribution.
-moves[mvi++] = mvScale(mu_morpho,lambda=1, weight=2.0)
+moves.append( mvScale(mu_morpho,lambda=1, weight=2.0) )
 
 # Combine all of our elements into a CTMC.
 
@@ -62,17 +62,17 @@ phyMorpho.clamp(morpho)
 mymodel = model(phylogeny)
 # Create a vector of monitors #
 # 1. for the full model #
-monitors[mni++] = mnModel(filename="output/mk.log", printgen=1)
+monitors.append( mnModel(filename="output/mk.log", printgen=1) )
 # 2. and a few select parameters to be printed to the screen #
-monitors[mni++] = mnScreen(printgen=100)
+monitors.append( mnScreen(printgen=100) )
 # 3. add an ancestral state monitor
-monitors[mni++] = mnJointConditionalAncestralState(tree=phylogeny,
-                                                   ctmc=phyMorpho,
-                                                   filename="output/mk.states.txt",
-                                                   type="Standard",
-                                                   printgen=1,
-                                                   withTips=true,
-                                                   withStartStates=false)
+monitors.append( mnJointConditionalAncestralState(tree=phylogeny,
+                                                  ctmc=phyMorpho,
+                                                  filename="output/mk.states.txt",
+                                                  type="Standard",
+                                                  printgen=1,
+                                                  withTips=true,
+                                                  withStartStates=false) )
 
 # Initialize the MCMC object #
 mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")

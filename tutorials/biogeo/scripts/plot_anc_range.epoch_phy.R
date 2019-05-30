@@ -2,10 +2,10 @@ source("scripts/plot_anc_range.util.R")
 
 # file names
 fp = "./" # edit to provide an absolute filepath
-plot_fn = paste(fp, "output/simple.range.pdf",sep="")
-tree_fn = paste(fp, "output/simple.ase.tre", sep="")
-label_fn = paste(fp, "data/n4/state_labels.simple.n4.txt", sep="")
-color_fn = paste(fp, "data/n4/range_colors.n4.txt", sep="")
+plot_fn = paste(fp, "output/epoch_phy.range.pdf",sep="")
+tree_fn = paste(fp, "output/epoch_phy.ase.tre", sep="")
+label_fn = paste(fp, "data/state_labels.n6.txt", sep="")
+color_fn = paste(fp, "data/range_colors.n6.txt", sep="")
 
 # get state labels and state colors
 states = make_states(label_fn, color_fn, fp=fp)
@@ -33,7 +33,7 @@ pp=plot_ancestral_states(tree_file=tree_fn,
 # get plot dimensions
 x_phy = max(pp$data$x)       # get height of tree
 x_label = 3.5                # choose space for tip labels
-x_start = 7                  # choose starting age (greater than x_phy)
+x_start = 10                  # choose starting age (greater than x_phy)
 x0 = -(x_start - x_phy)      # determine starting pos for xlim
 x1 = x_phy + x_label         # determine ending pos for xlim
 

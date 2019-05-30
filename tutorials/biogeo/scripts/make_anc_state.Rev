@@ -1,37 +1,38 @@
 # This script may be run from the command line by typing
 # rb make_anc_state.Rev
 
-# After opening a new RevBayes session, create helper variables for files we'll work with.
+# NOTE: modify out_str to use with other analyses!
+#out_str = "output/simple"
+#out_str = "output/epoch"
+#out_str = "output/simple_phy"
+out_str = "output/epoch_phy"
 
-out_str = "output/epoch"
 out_state_fn = out_str + ".states.log"
-out_tree_fn   = out_str + ".tre"
+out_phy_fn   = out_str + ".tre"
 out_mcc_fn   = out_str + ".mcc.tre"
 
-# Build a maximum clade credibility (MCC) tree from the posterior tree distribution, discarding the first 25% samples.
-# This step is not needed when we assume a fixed phylogeny.
-
-tree_trace = readTreeTrace(file=out_tree_fn, treetype="clock")
+# compute MCC tree for "reference tree"
+tree_trace = readTreeTrace(file=out_phy_fn, treetype="clock")
 tree_trace.setBurnin(0.25)
-n_burn = tree_trace.getBurnin()
+mcc_tree = mccTree(tree_trace, file=out_mcc_fn, mean=false)
 
-# Compute and save the maximum clade credibility tree
-mcc_tree = mccTree(tree_trace, file=out_mcc_fn)
-
-# Get the ancestral state trace from epoch.states.log
+# get ancestral state trace
 state_trace = readAncestralStateTrace(file=out_state_fn)
 
-# Get the ancestral state tree trace from epoch.tre
-tree_trace = readAncestralStateTreeTrace(file=out_tree_fn, treetype="clock")
+# get ancestral state tree trace
+state_tree_trace = readAncestralStateTreeTrace(file=out_phy_fn, treetype="clock")
 
+# compute burnin
+n_burn = floor(0.25 * state_tree_trace.getNumberSamples())
 
-# Finally, compute and save the ancestral state tree as simple.ase.tre.
+# compute ancestral state tree
 anc_tree = ancestralStateTree(tree=mcc_tree,
                               ancestral_state_trace_vector=state_trace,
-                              tree_trace=tree_trace,
+                              tree_trace=state_tree_trace,
                               include_start_states=true,
                               file=out_str+".ase.tre",
                               burnin=n_burn,
+                              summary_statistic="MAP",
                               site=1)
 
 # exit RevBayes

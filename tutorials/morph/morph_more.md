@@ -180,22 +180,22 @@ Create two rate parameters, $\lambda$ for gain and $\mu$ loss events.
 lambda ~ dnExponential( 1 )
 mu ~ dnExponential( 1 )
 lambda.setValue( 3 )
-mu( 3 )
+mu.setValue( 1 )
 ```
 
 Create a tridiagonal matrix of transition rates, meaning state $i$ may only transition to states $i-1$ and $i+1$
 
 ```
-rates := [ [  0.0, lambda,    0.0,    0.0],
-           [   mu,    0.0, lambda,    0.0],
-           [  0.0,     mu,    0.0, lambda],
-           [  0.0,    0.0,     mu,    0.0] ]
+diag_rates := [ [  0.0, lambda,    0.0,    0.0],
+                [   mu,    0.0, lambda,    0.0],
+                [  0.0,     mu,    0.0, lambda],
+                [  0.0,    0.0,     mu,    0.0] ]
 ```
 
 Create the rate matrix
 
 ```
-Q := fnFreeK(rates)
+Q := fnFreeK(diag_rates)
 Q
 ```
 ```
@@ -601,14 +601,11 @@ morpho <- readDiscreteCharacterData("data/mammals_thinned_placenta_type.nex")
 {% subsubsection Create Helper Variables | subsubsec_mvi_var %}
 
 Before we begin writing the Rev scripts for each of the model components, we need to instantiate a couple ``helper variables'' that will be used by downstream parts of our model specification files. 
-Create a workspace variable called `mvi`. 
-This variable is an iterator that will build a vector containing all of the MCMC moves used to propose new states for every stochastic node in the model graph. 
-Each time a new move is added to the vector, `mvi` will be incremented by a value of `1`.
+Create vectors of moves and monitors
 ```
-mvi = 1
+moves = VectorMoves()
+monitors = VectorMonitors()
 ```
-One important distinction here is that `mvi` is part of the RevBayes workspace and not the hierarchical model. 
-Thus, we use the workspace assignment operator `=` instead of the constant node assignment `<-`. 
 
 
 
@@ -633,7 +630,7 @@ mu_morpho ~ dnExponential( 1.0 )
 ```
 Since $\mu$ is a rate parameter, we will apply a scaling move to update it.
 ```
-moves[mvi++] = mvScale(mu_morpho,lambda=1, weight=2.0)
+moves.append( mvScale(mu_morpho,lambda=1, weight=2.0) )
 ```
 
 Lastly, we set up the CTMC. 
@@ -665,37 +662,30 @@ The object `mymodel` is a wrapper around the entire model graph and allows us to
 {% subsubsection Specify Monitors and Output Filenames | subsubsec_Monitors %}
 
 The next important step for our Rev script file is to specify the monitors and output file names.
-For this, we create a vector called `monitors` that will each sample and record or output our MCMC. 
-
-First, we will specify a workspace variable to iterate over the `monitors` vector.
-```
-mni = 1
-```
-
 The first monitor we will create will monitor every named random variable in our model graph. 
 This will include every stochastic and deterministic node using the `mnModel` monitor.
 In this case, it will only be our rate variable $\mu$.
 It is still useful to specify the model monitor this way for later extensions of the model.
 We will also name the output file for this monitor and indicate that we wish to sample our MCMC every 10 cycles.
 ```
-monitors[mni++] = mnModel(filename="output/mk.log", printgen=10)
+monitors.append( mnModel(filename="output/mk.log", printgen=10) )
 ```
 
 The second monitor we will add to our analysis will print information to the screen.
 Like with `mnFile` we must tell `mnScreen` which parameters we'd like to see updated on the screen. 
 ```
-monitors[mni++] = mnScreen(printgen=100)
+monitors.append( mnScreen(printgen=100) )
 ```
 
 The third and final monitor might be new to you: the `mnJointConditionalAncestralState` monitor computes and writes the ancestral states to file.
 ```
-monitors[mni++] = mnJointConditionalAncestralState(tree=phylogeny,
+monitors.append( mnJointConditionalAncestralState(tree=phylogeny,
                                                    ctmc=phyMorpho,
                                                    filename="output/mk.states.txt",
                                                    type="Standard",
                                                    printgen=1,
                                                    withTips=true,
-                                                   withStartStates=false)
+                                                   withStartStates=false) )
 ```
 
 The core arguments this monitor needs are a tree object (`tree=phylogeny`), 
@@ -910,12 +900,12 @@ rate_32 ~ dnExponential(rate_pr)
 ```
 As usual, we will apply a scaling move to each of the rate variables.
 ```
-moves[mvi++] = mvScale( rate_12, weight=2 )
-moves[mvi++] = mvScale( rate_13, weight=2 )
-moves[mvi++] = mvScale( rate_21, weight=2 )
-moves[mvi++] = mvScale( rate_23, weight=2 )
-moves[mvi++] = mvScale( rate_31, weight=2 )
-moves[mvi++] = mvScale( rate_32, weight=2 )
+moves.append( mvScale( rate_12, weight=2 ) )
+moves.append( mvScale( rate_13, weight=2 ) )
+moves.append( mvScale( rate_21, weight=2 ) )
+moves.append( mvScale( rate_23, weight=2 ) )
+moves.append( mvScale( rate_31, weight=2 ) )
+moves.append( mvScale( rate_32, weight=2 ) )
 ```
 Next, we put all the rates together into our rate matrix.
 Don't forget to say that we do not rescale the rate matrix (`rescale=false`).
@@ -929,8 +919,8 @@ We will use a Dirichlet prior distribution for the root state frequencies.
 ```
 rf_prior <- [1,1,1]
 rf ~ dnDirichlet( rf_prior )
-moves[mvi++] = mvBetaSimplex( rf, weight=2 )
-moves[mvi++] = mvDirichletSimplex( rf, weight=2 )
+moves.append( mvBetaSimplex( rf, weight=2 ) )
+moves.append( mvDirichletSimplex( rf, weight=2 ) )
 ```
 
 We need to modify the `dnPhyloCTMC` to pass in our new root frequencies parameter.
@@ -1001,23 +991,23 @@ We also need to specify specific moves that ``jump'' in parameter dimension.
 We will use the `mvRJSwitch` move that changes the value to be either equal to the constant value 
 provided from the `dnRJMixture` or a value drawn from the base distribution (the exponential distribution).
 ```
-moves[mvi++] = mvRJSwitch( rate_12, weight=2 )
-moves[mvi++] = mvRJSwitch( rate_13, weight=2 )
-moves[mvi++] = mvRJSwitch( rate_21, weight=2 )
-moves[mvi++] = mvRJSwitch( rate_23, weight=2 )
-moves[mvi++] = mvRJSwitch( rate_31, weight=2 )
-moves[mvi++] = mvRJSwitch( rate_32, weight=2 )
+moves.append( mvRJSwitch( rate_12, weight=2 ) )
+moves.append( mvRJSwitch( rate_13, weight=2 ) )
+moves.append( mvRJSwitch( rate_21, weight=2 ) )
+moves.append( mvRJSwitch( rate_23, weight=2 ) )
+moves.append( mvRJSwitch( rate_31, weight=2 ) )
+moves.append( mvRJSwitch( rate_32, weight=2 ) )
 ```
 
 Additionally, we also need to specify moves that change the rates if they are not equal to 0.0.
 As usual, we use the standard scaling moves.
 ```
-moves[mvi++] = mvScale( rate_12, weight=2 )
-moves[mvi++] = mvScale( rate_13, weight=2 )
-moves[mvi++] = mvScale( rate_21, weight=2 )
-moves[mvi++] = mvScale( rate_23, weight=2 )
-moves[mvi++] = mvScale( rate_31, weight=2 )
-moves[mvi++] = mvScale( rate_32, weight=2 )
+moves.append( mvScale( rate_12, weight=2 ) )
+moves.append( mvScale( rate_13, weight=2 ) )
+moves.append( mvScale( rate_21, weight=2 ) )
+moves.append( mvScale( rate_23, weight=2 ) )
+moves.append( mvScale( rate_31, weight=2 ) )
+moves.append( mvScale( rate_32, weight=2 ) )
 ```
 
 
