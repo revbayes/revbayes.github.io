@@ -6,20 +6,13 @@ level: 2
 order: 0.53
 prerequisites:
 - intro
-exclude_files:
-- data/inc_subfossils/bears_cytb.nex
-- data/inc_subfossils/bears_taxa.tsv
-- data/bears_morphology.nex
-- scripts/MCMC_dating_ex1.Rev
-- scripts/MCMC_dating_ex2.Rev
-- scripts/MCMC_dating_ex4.Rev
-- scripts/MCMC_dating_ex5.Rev
-- scripts/sub_Mk.Rev
-- scripts/clock_morpho.Rev
-- scripts/clock_global.Rev
+include_all: false 
+include_files:
+- data/bears_cytb.nex
+- scripts/MCMC_dating_ex3.Rev
+- scripts/clock_relaxed_lognormal.Rev
+- scripts/sub_GTRG.Rev
 - scripts/tree_BD.Rev
-- scripts/tree_FBD.Rev
-- scripts/tree_TEFBD.Rev
 index: false
 redirect: false
 ---
@@ -58,14 +51,14 @@ We're going to add two node calibrations: one on the root and one on the interna
 The oldest first appearance of a *crown group* bear in our dataset is *Ursus americanus* at 1.84 Ma. This means that the last common ancestor of all living bears can not be younger that this. Fossil calibrations exert a large influence on Bayesian posterior estimates of speciation times and should not be selected arbitrarily. In practice it is very challenging to select distributions and parameters objectively. In this instance, we will take advantage of a previous estimate ($\sim$49 Ma) for the age of caniforms, which is the clade containing bears and other "dog-like" mammals, from {% cite DosReis2012 %}. We will assume that the age of crown bears can not be older than this.
 
 First, specify the prior on the root. The following commands will replace `extant_mrca <- 1.0` in your tree model script, before the the `tree_dist` variable is specified.
-
-	extant_mrca_min <- 1.84
-	extant_mrca_max <- 49.0
+```
+extant_mrca_min <- 1.84
+extant_mrca_max <- 49.0
 	
-	extant_mrca ~ dnUniform(extant_mrca_min, extant_mrca_max)
+extant_mrca ~ dnUniform(extant_mrca_min, extant_mrca_max)
 	
-	moves[mvi++] = mvScale(extant_mrca, lambda=1, tune=true, weight=5.0)
-
+moves.append( mvScale(extant_mrca, lambda=1, tune=true, weight=5.0) )
+```
 Here, we have specified the minimum and maximum constraints described above and stochastic node for the age of the root `extant_mrca`. Finally, we define a move to sample the age of this parameter.
 
 #### Internal node calibration
@@ -89,10 +82,10 @@ Thus, if the MCMC samples any state for which the age of $\mathcal{F}_i$ has a p
 From your script, you'll recall that we previously defined the Ursinae clade and used it to generate a constrained tree topology. We also created a deterministic node `age_ursinae` to keep track of the age of this node.
 
 To calibrate the age of this node we will specify a diffuse exponential density with an expected value (mean) = 1.0, offset by the age of fossil.
-
-	obs_age_ursinae ~ dnExponential(1.0, offset = -age_ursinae)
-	obs_age_ursinae.clamp(-1.84)
-
+```
+obs_age_ursinae ~ dnExponential(1.0, offset = -age_ursinae)
+obs_age_ursinae.clamp(-1.84)
+```
 (Note from Rachel: I don't really understand why the units have to be negative for this distribution, we'll have to check with Sebastian.)
 
 ### The master Rev script
@@ -101,19 +94,19 @@ To calibrate the age of this node we will specify a diffuse exponential density 
 {:.instruction}
 
 First, change the file used to specify the tree model from **tree_BD.Rev** to **tree_BD_nodedate.Rev**.
-
-	source("scripts/tree_BD_nodedate.Rev")
-
+```
+source("scripts/tree_BD_nodedate.Rev")
+```
 Second, update the name of the output files.
-
-	monitors[mni++] = mnModel(filename="output/bears_nodedate.log", printgen=10)
-	monitors[mni++] = mnFile(filename="output/bears_nodedate.trees", printgen=10, timetree)
-
+```
+monitors.append( mnModel(filename="output/bears_nodedate.log", printgen=10) )
+monitors.append( mnFile(filename="output/bears_nodedate.trees", printgen=10, timetree) )
+```
 Don't forget to update the commands used to generate the summary tree.
-
-	trace = readTreeTrace("output/bears_nodedate.trees")
-	mccTree(trace, file="output/bears_nodedate.mcc.tre" )
-
+```
+trace = readTreeTrace("output/bears_nodedate.trees")
+mccTree(trace, file="output/bears_nodedate.mcc.tre" )
+```
 That's all you need to do!
 
 >Run your MCMC analysis!
@@ -129,13 +122,13 @@ It is always useful to examine the output of your MCMC analysis in the absence o
 {:.instruction}
 
 We just need to add the argument `underPrior=TRUE` when we set up the MCMC run. 
-
-	mymcmc.run(generations=20000, underPrior=TRUE)
-
+```
+mymcmc.run(generations=20000, underPrior=TRUE)
+```
 Again, we need to rename the output files.
-
-	monitors[mni++] = mnModel(filename="output/bears_nodedate_prior.log", printgen=10)
-	
+```
+monitors.append( mnModel(filename="output/bears_nodedate_prior.log", printgen=10) )
+```	
 We're not going to bother summarizing the trees, so if you want you can simply remove/comment out the second monitor (`mnFile`) and the tree summary functions (`readTreeTrace` and `mccTree`).
 
 This analysis will show you the estimates of node ages obtained under the tree model in combination with the constraint applied at the root of the tree. Note that although this step is often called "running the model under the prior", the distinction between the prior and posterior varies between programs and becomes less clear once we incorporate fossil data into the tree.
@@ -193,6 +186,7 @@ This is because, in the context of node dating, the calibration information is r
 
 * [Estimating speciation times using the fossilized birth-death range model]({{ base.url }}/tutorials/dating/fbdr)
 
+<!--
 For further options and information about the models used in this exercise see Tracy Heath & Sebastian Höhna's tutorial [Divergence Time Calibration](https://github.com/revbayes/revbayes_tutorial/blob/master/tutorial_TeX/RB_DivergenceTime_Calibration_Tutorial/).
-
+-->
 

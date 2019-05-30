@@ -79,7 +79,7 @@ num_sites[2] = data_matK.nchar()
 num_sites[3] = data_rbcL.nchar()
 
 relative_rates ~ dnDirichlet(v(1,1,1))
-moves[mvi++] = mvBetaSimplex(relative_rates, weight=1.0)
+moves.append( mvBetaSimplex(relative_rates, weight=1.0) )
 
 subset_rates := relative_rates * sum(num_sites) / num_sites
 ```

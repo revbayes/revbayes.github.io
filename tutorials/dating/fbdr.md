@@ -2,24 +2,18 @@
 title: Molecular dating
 subtitle: Estimating speciation times using the fossilized birth-death range process
 authors: Rachel Warnock, Sebastian Höhna, Tracy Heath, April  Wright and Walker Pett
-level: 0
-order: 0.5
+level: 2
+order: 0.54
 prerequisites:
 - intro
-exclude_files:
-- data/inc_subfossils/bears_cytb.nex
-- data/inc_subfossils/bears_taxa.tsv
-- data/bears_morphology.nex
-- scripts/MCMC_dating_ex1.Rev
-- scripts/MCMC_dating_ex2.Rev
-- scripts/MCMC_dating_ex3.Rev
-- scripts/MCMC_dating_ex5.Rev
-- scripts/sub_Mk.Rev
-- scripts/clock_morpho.Rev
-- scripts/clock_global.Rev
+include_all: false 
+include_files:
+- data/bears_cytb.nex
+- data/bears_taxa.tsv
+- scripts/MCMC_dating_ex4.Rev
+- scripts/clock_relaxed_lognormal.Rev
+- scripts/sub_GTRG.Rev
 - scripts/tree_BD.Rev
-- scripts/tree_BD_nodedate.Rev
-- scripts/tree_TEFBD.Rev
 index: false
 redirect: false
 ---
@@ -76,108 +70,122 @@ This time we will start by making some changes to the master Rev script.
 {:.instruction}
 
 First, at the beginning of you script add the command to read the full list of taxon names from the **bears_taxa.tsv** file using the `readTaxonData` function.
-
-	taxa <- readTaxonData("data/bears_taxa.tsv")
-
+```
+taxa <- readTaxonData("data/bears_taxa.tsv")
+```
 This function reads a tab-delimited file and creates a variable called `taxa` that is a list of all of the taxon names relevant to this analysis, including the minimum/maximum ages.
 
 Delete the helper variable `taxa` that we created earlier from the alignment  using the command `taxa <- cytb.taxa()`.
 
+
 #### Add missing taxa
 
 Remember that we only have molecular sequence data for the living species. Thus, we must add any taxa that are not found in the molecular (`cytb`) partition (i.e. are only found in the fossil data) to that data matrix as missing data (with "?" in place of all characters). In order for all the taxa to appear on the same tree, they all need to be part of the same dataset, as opposed to present in separate datasets. This ensures that there is a unified taxon set that contains all of our tips. We can do this using the `cytb.addMissingTaxa` function.
+```
+cytb.addMissingTaxa( taxa )
+```
 
-	cytb.addMissingTaxa( taxa )
 
 ### The tree model
 
 >Start by creating a copy of your **tree_BD.Rev** script, call it **tree_FBD.Rev** and open it in your text editor. 
 {:.instruction}
 
+
 #### The fossilized birth-death process
 
 The FBD model has some additional parameters we need to specify. In addition to speciation ($\lambda$), extinction ($\mu$) and extant species sampling ($\rho$), we need to specify the fossil recovery rate ($\psi$), plus the moves on this parameter. Include the following commands anywhere prior to specifying the `timetree` variable.
-	
-	psi ~ dnExponential(10) 
+```
+psi ~ dnExponential(10) 
 
-	moves[mvi++] = mvScale(psi, lambda=0.5, tune=true, weight=1)
-	
+moves.append( mvScale(psi, lambda=0.5, tune=true, weight=1) )
+```	
 Next delete the command used to specify the root age `extant_mrca`.
 
 We will condition the FBD process on the origin time ($\phi$), and specify a uniform distribution on this parameter, with a minimum equal to the oldest first appearance of bears (= 37.2 Ma) and a maximum equal to a prior estimate for the age of caniforms (= 49.0 Ma) that we used in the previous exercise. 
 
 Create a stochastic node for the origin time parameter. 
-
-	origin_time ~ dnUnif(37.2, 49.0)
-
+```
+origin_time ~ dnUnif(37.2, 49.0)
+```
 For this parameter, we will use a sliding window move (`mvSlide`). A sliding window samples a parameter uniformly within an interval (defined by the half-width delta). Sliding window moves can be tricky for small values, as the window may overlap zero. However, for parameters such as the origin age, there is little risk of this being an issue.
-
-	moves[mvi++] = mvSlide(origin_time, delta=1.0, tune=true, weight=5.0)
-
+```
+moves.append( mvSlide(origin_time, delta=1.0, tune=true, weight=5.0) )
+```
 Note that the biological interpretation of this parameter is not that straightforward, so we can think of this as a nuisance parameter.
 
 Next, we need to change the tree model distribution from the birth-death process to the FBD range process using the `dnFBDRP` command. Note that this function takes a different set of arguments to `dnBDP`.
+```
+tree_dist = dnFBDRP(lambda=speciation_rate, mu=extinction_rate, psi=psi, rho=rho, origin=origin_time, taxa=taxa)
+```
 
-	tree_dist = dnFBDRP(lambda=speciation_rate, mu=extinction_rate, psi=psi, rho=rho, origin=origin_time, taxa=taxa)
 
 #### Clade constraints
 
 Again we'll constrain the clade Ursinae to be monophyletic, but this time we have one fossil species to add this constraint: *Ursus abstrusus*. Add this taxon to your clade constraints before specifying the stochastic `timetree` node.
-
-	clade_ursinae = clade("Melursus_ursinus", "Ursus_arctos", "Ursus_maritimus", 
+```
+clade_ursinae = clade("Melursus_ursinus", "Ursus_arctos", "Ursus_maritimus", 
                   "Helarctos_malayanus", "Ursus_americanus", "Ursus_thibetanus", "Ursus_abstrusus") 
-    constraints = v(clade_ursinae)
+constraints = v(clade_ursinae)
+```
+       
                  
 #### Moves on the tree
 
 In addition to the move we applied previously to sample the tree topology, `mvFNPR`, we also need to add an extra move `mvCollapseExpandFossilBranch` that will change a fossil that is a sampled ancestor so that it is on its own branch and vice versa. 
-
-	moves[mvi++] = mvCollapseExpandFossilBranch(timetree, origin_time, weight=6.0)
-	
+```
+moves.append( mvCollapseExpandFossilBranch(timetree, origin_time, weight=6.0) )
+```	
 In addition, when conditioning on the origin time, we also need to explicitly sample the root age (`mvRootTimeSlideUniform`).
+```
+moves.append( mvRootTimeSlideUniform(timetree, origin_time, weight=5.0) )
+```
 
-	moves[mvi++] = mvRootTimeSlideUniform(timetree, origin_time, weight=5.0)
 
 #### Monitoring parameters of interest using deterministic nodes
 
 We are still interested in the age of the MRCA of all living bears (`extant_mrca`). However, since now we have extinct species in our tree, the root of the tree may not represent the MRCA of all extant species. To monitor the age of this node in our MCMC sample, we must use the `clade` function to define the node. Importantly, since we did not include this clade in our constraints that defined `timetree`, this clade will not be constrained to be monophyletic. Once this clade is defined we can instantiate a deterministic node called `extant_mrca` with the `tmrca` function that will record the age of the MRCA of all living bears.
-
-	clade_extant = clade("Ailuropoda_melanoleuca","Tremarctos_ornatus","Melursus_ursinus",
+```
+clade_extant = clade("Ailuropoda_melanoleuca","Tremarctos_ornatus","Melursus_ursinus",
                     "Ursus_arctos","Ursus_maritimus","Helarctos_malayanus",
                     "Ursus_americanus","Ursus_thibetanus")
-	extant_mrca := tmrca(timetree, clade_extant)
-
+extant_mrca := tmrca(timetree, clade_extant)
+```
 We can also create deterministic node to compute and keep track of the number of sampled ancestors (`num_samp_anc`) in our `timetree`.
-
-	num_samp_anc := timetree.numSampledAncestors()
-
+```
+num_samp_anc := timetree.numSampledAncestors()
+```
 Finally, we will monitor the tree after removing taxa for which we did not include any character data. The phylogenetic placement of these taxa is based only on their occurrence times and any clade constraints we applied. Because no data are available to resolve their relationships relative to other lineages, we will treat their placement as nuisance parameters and remove them from the output. Create a vector of extinct taxa and use the function `fnPruneTree` to create a deterministic node for the tree excluding extinct samples.
+```
+extinct_sp = v("Agriarctos_spp", "Ailurarctos_lufengensis", "Ballusia_elmensis",
+				"Indarctos_arctoides", "Indarctos_punjabiensis", "Indarctos_vireti",
+				"Kretzoiarctos_beatrix", "Parictis_montanus", "Ursavus_brevirhinus",
+				"Ursavus_primaevus", "Ursus_abstrusus", "Zaragocyon_daamsi")
 
-	extinct_sp = v("Agriarctos_spp", "Ailurarctos_lufengensis", "Ballusia_elmensis",
-							"Indarctos_arctoides", "Indarctos_punjabiensis", "Indarctos_vireti",
-							"Kretzoiarctos_beatrix", "Parictis_montanus", "Ursavus_brevirhinus",
-							"Ursavus_primaevus", "Ursus_abstrusus", "Zaragocyon_daamsi")
-							
-	pruned_tree := fnPruneTree(timetree, prune=extinct_sp)
+pruned_tree := fnPruneTree(timetree, prune=extinct_sp)
+```
+
 
 ### Back to the master Rev script
 
 As before, change the file used to specify the tree model from **tree_BD_nodedate.Rev** to **tree_FBD.Rev**.
-
-	source("scripts/tree_FBD.Rev")
-
+```
+source("scripts/tree_FBD.Rev")
+```
 Second, update the name of the output files. We also need to update the name of the tree we're printing to file from the `timetree` variable that incorporates extinct taxa to the `pruned_tree` variable that includes our extant species only.
-
-	monitors[mni++] = mnModel(filename="output/bears_FBD.log", printgen=10)
-	monitors[mni++] = mnFile(filename="output/bears_FBD.trees", printgen=10, pruned_tree)
-	
+```
+monitors.append( mnModel(filename="output/bears_FBD.log", printgen=10) )
+monitors.append( mnFile(filename="output/bears_FBD.trees", printgen=10, pruned_tree) )
+```	
 Don't forget to update the commands used to generate the summary tree.
-
-	trace = readTreeTrace("output/bears_FBD.trees")
-	mccTree(trace, file="output/bears_FBD.mcc.tre" )
+```
+trace = readTreeTrace("output/bears_FBD.trees")
+mccTree(trace, file="output/bears_FBD.mcc.tre" )
+```
 
 >Run your MCMC analysis!
 {:.instruction}
+
 
 ### Examining the output
 
@@ -197,9 +205,11 @@ The Marginal Density panel in Tracer showing the posterior estimates for the MRC
 
 You may also notice that the age recovered for `age_ursinae` is also a bit different but we need to be careful - the estimates obtained for this variable between the node dating and FBD analyses are not directly comparable. Recall that we added an additional fossil taxon to the Ursinae constraint in this analysis. What steps would you have taken to recover an equivalent parameter, without eliminating the `clade_ursinae` constraint? 
 
+
 #### The tree output
 
 Have a quick look at your MCC tree in FigTree. How does it compare the tree your recovered using node dating? 
+
 
 ### Next
 

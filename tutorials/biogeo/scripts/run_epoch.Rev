@@ -8,12 +8,6 @@ geo_fn   = "data/n4/hawaii.n4"
 times_fn = geo_fn + ".times.txt"
 dist_fn  = geo_fn + ".distances.txt"
 
-# move/monitor vectors
-moves = VectorMoves()
-monitors = VectorMonitors()
-n_gen = 5000
-
-
 ########
 # data #
 ########
@@ -43,6 +37,22 @@ for (i in 1:n_epochs) {
 # area distances
 distances <- readDataDelimitedFile(file=dist_fn, delimiter=" ")
 
+# helper variables
+n_gen = 5000
+moves = VectorMoves()
+monitors = VectorMonitors()
+
+# get the converted state descriptions
+state_desc = dat_range_n.getStateDescriptions()
+
+# write the state descriptions to file
+state_desc_str = "state,range\n"
+for (i in 1:state_desc.size())
+{
+    state_desc_str += (i-1) + "," + state_desc[i] + "\n"
+}
+write(state_desc_str, file=out_fn+".state_labels.txt")
+
 
 ###############
 # Tree models #
@@ -56,10 +66,9 @@ tree <- readTrees(tree_fn)[1]
 #######################
 
 # the biogeographic rate scaler
-log10_rate_bg ~ dnUniform(-4,2)
-log10_rate_bg.setValue(-2)
-rate_bg := 10^log10_rate_bg
-moves.append( mvSlide(log10_rate_bg, weight=4) )
+rate_bg ~ dnLoguniform(1E-4,1E2)
+rate_bg.setValue(1E-2)
+moves.append( mvScale(rate_bg, weight=4) )
 
 # relative dispersal rate is fixed to one
 dispersal_rate <- 1.0
@@ -157,16 +166,19 @@ m_bg.clamp(dat_range_n)
 ############
 
 
-monitors[mni++] = mnScreen(printgen=100, rate_bg, extirpation_rate, distance_scale)
-monitors[mni++] = mnModel(file=out_fn+".model.log", printgen=10)
-monitors[mni++] = mnFile(tree, filename=out_fn+".tre", printgen=10)
-monitors[mni++] = mnJointConditionalAncestralState(tree=tree,
+monitors.append( mnScreen(printgen=100, rate_bg, extirpation_rate, distance_scale) )
+monitors.append( mnModel(file=out_fn+".model.log", printgen=10) )
+monitors.append( mnFile(tree, filename=out_fn+".tre", printgen=10) )
+monitors.append( mnJointConditionalAncestralState(tree=tree,
                                                        ctmc=m_bg,
                                                        type="NaturalNumbers",
                                                        withTips=true,
                                                        withStartStates=true,
                                                        filename=out_fn+".states.log",
-                                                       printgen=10)
+                                                       printgen=10) )
+monitors.append( mnStochasticCharacterMap(ctmc=m_bg,
+                                          filename=out_fn+".stoch.log",
+                                          printgen=100) )
 
 ############
 # Analysis #
@@ -180,23 +192,6 @@ mymcmc = mcmc(mymodel, monitors, moves)
 
 # run the MCMC analysis
 mymcmc.run(n_gen)
-
-
-
-#################
-# Post-Analysis #
-#################
-
-# get the converted state descriptions
-state_desc = dat_range_n.getStateDescriptions()
-
-# write the state descriptions to file
-state_desc_str = "state,range\n"
-for (i in 1:state_desc.size())
-{
-    state_desc_str += (i-1) + "," + state_desc[i] + "\n"
-}
-write(state_desc_str, file=out_fn+".state_labels.txt")
 
 # exit
 quit()

@@ -32,7 +32,9 @@ The model described in this tutorial is referred to as the *FBDR Matrix model*, 
 An important feature of any paleontological database is that we are typically missing an enormous amount of information, since sampling of the geological record is incomplete, highly non-uniform over time and space, and many extinct organisms are never preserved or sampled.
 A central advantage of applying the FBD (or related) models to the analysis of fossil data is that it explicitly incorporates incomplete species and fossil sampling, and can allow for variation in fossil recovery rates across different geological intervals.
 
+
 {% subsection The fossilized birth-death range skyline model | intro-fbd %}
+
 
 {% subsubsection Model assumming the total fossil count is known | fbdr-model1 %}
 
@@ -95,10 +97,12 @@ As noted above, the last appearance time, $y_i$, is only used to provide an uppe
 Thus, the *oldest possible* age of the last appearance (*i.e.,* the maximum stratigraphic age associated with the fossil) may be used to specify $y_i$. All other occurrences only contribute to the per-interal fossil count, $k_i$, and so need to be dated at this level of precision.
 {% endaside %}
 
+
 {% subsubsection Marginalising over the number of fossils within a stratigraphic range | fbdr-model2 %}
 
 In the above model, some knowledge about the total number of samples collected during each interval, $k_i$, is required. However, in some cases we may only know the age of the first and last appearance times ($o_i, y_i$), but not the number of occurrences sampled inbetween. In other cases, the number that $k_i$ represents may not be obvious. We can take care of this uncertainty by marginalizing over the total number of fossils between the first and last appearance times for each range. In this version of the model, per-interval fossil counts, $k_i$, are not required. 
 Instead, we define ${\kappa_i^\prime}$, which denotes the total number of occurrences representing first and last appearances within each interval, and the data summary, $\mathcal{D_r} = ( \\{ \kappa_{i,j}^\prime, b_i, d_i, o_i \\}_{i \in 1...n, j \in 1...l})$.
+
 
 {% subsubsection Marginalising over the number of fossils within a stratigraphic interval | fbdr-model3 %}
 
@@ -111,9 +115,11 @@ We use $\kappa_{S_{i,j}}$ to indicate whether species $i$ was sampled during int
 
 More details of the models described above are available [here](FBD_skyline_maths.pdf).
 
+
 {% section Exercise %}
 
 For this exercise we will be estimating speciation, extinction and fossil recovery rates for a dataset of dinosaur fossil occurrences, under three variants of the FBDR Matrix model. The goal of this analysis is to examine broad diversification dynamics in this clade during the Mesozoic. 
+
 
 {% subsubsection PBDB occurrence Data %}
 
@@ -125,6 +131,7 @@ Specimens were binned into four intervals of interest: the Early and Late Cretac
 Finally, we rescaled the timeline, such that the Cretaceous-Paleogene boundary = the present (*i.e.,* 66 Ma = 0 Ma).
 This allows us to avoid estimating rates during any interval younger than Cretaceous, which is outwith our period of interest.
 The script used to generate this dataset is at the top of this page.
+
 
 {% subsection Input files %}
 
@@ -146,15 +153,17 @@ In this exercise you will create a single Rev script for each of the three model
 {% subsubsection Loading the data %}
 
 Begin the first Rev script (`mcmc_FBDRMatrix_model1.Rev`) by loading the stratigraphic ranges from the `dinosaur_ranges.tsv` using the `readTaxonData` function.
-
-    taxa = readTaxonData(file = "dinosaur_ranges.tsv")
-
+```
+taxa = readTaxonData(file = "dinosaur_ranges.tsv")
+```
 This file contains the taxon names, along with the first and last appearance times.
 For the purposes of the tutorial, these times will be treated as known.
 
 Next, load the matrix of fossil counts from `dinosaur_fossil_counts.tsv` using the `readDataDelimitedFile` function.
-    
-    k <- readDataDelimitedFile(file = "dinosaur_fossil_counts.tsv", header = true, rownames = true)
+```
+k <- readDataDelimitedFile(file = "dinosaur_fossil_counts.tsv", header = true, rownames = true)
+```
+
 
 {% subsubsection Specifying interval ages %}
 
@@ -162,11 +171,12 @@ In this analysis, our period of interest ends at 66 Ma, which we will rescale to
 
 Create a vector called `timeline` for the maximum age of each interval, from youngest to oldest. 
 RevBayes will assume that the age of the youngest interval = 0.
-
-    timeline <- v(100, 145, 201) - 66
-
+```
+timeline <- v(100, 145, 201) - 66
+```
 These ages represent the boundary between the Early Cretaceous, the Late Cretaceous, and the Jurassic.
 The oldest occurrence in our dataset is from the Triassic and we will treat the time prior to the Jurassic as a single interval (*i.e.,* 201 Ma - infinity).
+
 
 {% subsubsection Specifying the priors and moves on the FBDR model parameters %}
 
@@ -182,48 +192,50 @@ The tuning value determines the size of the proposed change and using multiple m
 It may also be useful to keep track of the diversification ($\lambda - \mu$) and turnover ($\mu/\lambda$) parameters. 
 Since these parameters can be expressed as a deterministic transformation of the speciation and extinction rates, we can also monitor these values (that is, keep track of them during MCMC, and print them to a file) by creating deterministic nodes for these parameters for each interval using the `:=` operator.
 
-Before specifying the moves and priors on the model parameters, create a workspace variable called `mvi`. 
-This variable is an iterator that will build a vector containing all of the MCMC moves used to propose new states for every stochastic node in the model graph. 
-Each time a new move is added to the vector, `mvi` will be incremented by a value of 1.
-
-    mvi = 1
-    
+Before specifying the moves and priors on the model parameters, create a workspace variable called `moves`. 
+This variable is a vector containing all of the MCMC moves used to propose new states for every stochastic node in the model graph. 
+Similarly, we need to create a variable to hold all of our monitors
+```
+moves    = VectorMoves()
+monitors = VectorMonitors()
+```    
 Next define a constant node representing the rate hyperparameter of the exponential prior distributions on your diversification parameters.
-
-	alpha <- 10
-
+```
+alpha <- 10
+```
 Then, write a loop that specifys the priors and moves on the rates during each interval.
+```
+for(i in 1:(timeline.size()+1))
+{
+    mu[i] ~ dnExp(alpha)
+    lambda[i] ~ dnExp(alpha)
+    psi[i] ~ dnExp(alpha)
+    
+    div[i] := lambda[i] - mu[i]
+    turnover[i] := mu[i]/lambda[i]
 
-    for(i in 1:(timeline.size()+1))
-    {
-	    mu[i] ~ dnExp(alpha)
-	    lambda[i] ~ dnExp(alpha)
-	    psi[i] ~ dnExp(alpha)
-	    
-	    div[i] := lambda[i] - mu[i]
-	    turnover[i] := mu[i]/lambda[i]
+    moves.append( mvScale(mu[i], lambda = 0.01) )
+    moves.append( mvScale(mu[i], lambda = 0.1) )
+    moves.append( mvScale(mu[i], lambda = 1) )
 
-	    moves[mvi++] = mvScale(mu[i], lambda = 0.01)
-	    moves[mvi++] = mvScale(mu[i], lambda = 0.1)
-	    moves[mvi++] = mvScale(mu[i], lambda = 1)
+    moves.append( mvScale(lambda[i], lambda = 0.01) )
+    moves.append( mvScale(lambda[i], lambda = 0.1) )
+    moves.append( mvScale(lambda[i], lambda = 1) )
 
-	    moves[mvi++] = mvScale(lambda[i], lambda = 0.01)
-	    moves[mvi++] = mvScale(lambda[i], lambda = 0.1)
-	    moves[mvi++] = mvScale(lambda[i], lambda = 1)
-
-	    moves[mvi++] = mvScale(psi[i], lambda = 0.01)
-	    moves[mvi++] = mvScale(psi[i], lambda = 0.1)
-	    moves[mvi++] = mvScale(psi[i], lambda = 1)
-    }
-
+    moves.append( mvScale(psi[i], lambda = 0.01) )
+    moves.append( mvScale(psi[i], lambda = 0.1) )
+    moves.append( mvScale(psi[i], lambda = 1) )
+}
+```
 Note that this loop specifies parameters for an additional interval (`timeline()+1`).
 This is for the interval prior to the Jurassic. 
 
 For this analysis we will fix the extant species sampling probability ($\rho$) to zero to avoid having to make any assumptions about lineages that may have survived beyond the Cretaceous-Paleogene boundary.
-
-    rho <- 0    
-
+```
+rho <- 0    
+```
 Because $\rho$ is a constant node, we do not have to assign a move to this parameter.
+
 
 {% subsubsection Specifying the FBDR Matrix model | fbdr-model-specify %}
 
@@ -239,81 +251,74 @@ If the matrix `k` contains cells with $$k_{i,j} > 1$$, the function will interpr
 
 Model 1 requires both stratigraphic range ages and per-interval fossil counts.
 To use model 1 simply include the matrix `k`, along with the other model parameters and leave `binary = FALSE` (excluding this argument from the function call is equivalent to specifying the default option).
-
-    bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, rho=rho, timeline=timeline, k=k)
-
+```
+bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, rho=rho, timeline=timeline, k=k)
+```
 Model 2 requires stratigraphic range ages only and no information about per-interval fossil counts.
 To use model 2 simply exclude the matrix `k` from the function call.
-
-    bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, rho=rho, timeline=timeline)
-
+```
+bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, rho=rho, timeline=timeline)
+```
 Model 3 requires both stratigraphic range ages and per-interval 1/0 data, which can also be represented by `k`.
 To use model 3 simply include the matrix `k`, along with the other model parameters and specify `binary = TRUE`.
-
-    bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, rho=rho, timeline=timeline, k=k, binary=true)
-
+```
+bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, rho=rho, timeline=timeline, k=k, binary=true)
+```
 Add the options for model 1 to your script `mcmc_FBDRMatrix_model1.Rev`.
-
-    # model 1
-    bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, rho=rho, timeline=timeline, k=k)
-
+```
+# model 1
+bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, rho=rho, timeline=timeline, k=k)
+```
 Next specify scale moves to propose changes to the stratigraphic range start and end times (*i.e.,* $b_i$ and $d_i$).
+```
+moves.append( mvMatrixElementScale(bd, lambda = 0.01, weight=taxa.size())
+moves.append( mvMatrixElementScale(bd, lambda = 0.1, weight=taxa.size())
+moves.append( mvMatrixElementScale(bd, lambda = 1, weight=taxa.size())
 
-    moves[mvi++] = mvMatrixElementScale(bd, lambda = 0.01, weight=taxa.size())
-    moves[mvi++] = mvMatrixElementScale(bd, lambda = 0.1, weight=taxa.size())
-    moves[mvi++] = mvMatrixElementScale(bd, lambda = 1, weight=taxa.size())
-
-    moves[mvi++] = mvMatrixElementSlide(bd, delta = 0.01, weight=taxa.size())
-    moves[mvi++] = mvMatrixElementSlide(bd, delta = 0.1, weight=taxa.size())
-    moves[mvi++] = mvMatrixElementSlide(bd, delta = 1, weight=taxa.size())
-
+moves.append( mvMatrixElementSlide(bd, delta = 0.01, weight=taxa.size())
+moves.append( mvMatrixElementSlide(bd, delta = 0.1, weight=taxa.size())
+moves.append( mvMatrixElementSlide(bd, delta = 1, weight=taxa.size())
+```
 Finally, specify a workspace model variable (`mymodel`) using the `model` function.
-
-    mymodel = model(alpha)
-
+```
+mymodel = model(alpha)
+```
 The object `mymodel` represents the entire graphical model and allows us to pass the model to the next set of functions specific to our MCMC analysis.
+
 
 {% subsubsection Specifying monitors and setting up the MCMC %}
 
-Next you will specify the monitors and output file names. For this, we create a vector called `monitors` that will each sample and record or output our MCMC.
-
-First, create a workspace variable to iterate over the
-`monitors` vector.
-This variable will build a vector containing all of the monitors. 
-Each time a new monitor is added to the vector, `mni` will be incremented by a value of 1.
-    
-    mni = 1
-
 Next, create monitors for the FBDR model parameters speciation, extinction and fossil recovery, along with diversification and turnover.
-
-    monitors[mni++] = mnScreen(lambda, mu, psi, div, turnover, printgen=100)
-    monitors[mni++] = mnModel(filename="model1.log", printgen=10)    
-
+```
+monitors.append( mnScreen(lambda, mu, psi, div, turnover, printgen=100) )
+monitors.append( mnModel(filename="model1.log", printgen=10) )
+```
 The `mnScreen` monitor writes the parameters we specify to the screen every 100 MCMC generations.
 The `mnFile` monitor writes the parameters we specify to file every 10 MCMC generations.     
 
 We can also add some additional monitors to generate output that can be used with the R package **RevGadets**.
-
-    # monitors to print RevGagets input
-    monitors[mni++] = mnFile(filename="output/model1_speciation_rates.log",lambda,printgen=10)
-    monitors[mni++] = mnFile(filename="output/model1_speciation_times.log",timeline,printgen=10)
-    monitors[mni++] = mnFile(filename="output/model1_extinction_rates.log",mu,printgen=10)
-    monitors[mni++] = mnFile(filename="output/model1_extinction_times.log",timeline,printgen=10)
-    monitors[mni++] = mnFile(filename="output/model1_sampling_rates.log",psi,printgen=10)
-    monitors[mni++] = mnFile(filename="output/model1_sampling_times.log",timeline,printgen=10)
-
+```
+# monitors to print RevGagets input
+monitors.append( mnFile(filename="output/model1_speciation_rates.log",lambda,printgen=10) )
+monitors.append( mnFile(filename="output/model1_speciation_times.log",timeline,printgen=10) )
+monitors.append( mnFile(filename="output/model1_extinction_rates.log",mu,printgen=10) )
+monitors.append( mnFile(filename="output/model1_extinction_times.log",timeline,printgen=10) )
+monitors.append( mnFile(filename="output/model1_sampling_rates.log",psi,printgen=10) )
+monitors.append( mnFile(filename="output/model1_sampling_times.log",timeline,printgen=10) )
+```
 To run the analysis we have to create a workspace variable that defines our MCMC run using the `mcmc` function. This function takes the three main analysis components as arguments and we set the move schedule to `"random"`, meaning moves will be chosen at random during the analysis. 
-
-    mymcmc = mcmc(mymodel, moves, monitors, moveschedule="random")
-    
+```
+mymcmc = mcmc(mymodel, moves, monitors, moveschedule="random")
+```    
 Finally, we can execute our MCMC analysis and we will set the chain length to `30000` cycles.
-    
-    mymcmc.run(30000)
-    q()
-    
+```
+mymcmc.run(30000)
+q()
+```    
 Adding `q()` to the end of the script means the program will exit at the end of the MCMC run.
 
 You're now ready to run the first analysis!
+
 
 {% subsection Executing the analysis %}
 
@@ -326,31 +331,32 @@ rb
 {:.bash}
 
 Provided that you started RevBayes from the correct directory, you can then use the `source` function to feed RevBayes your script and run the analysis.
-
-    source("mcmc_FBDRMatrix_model1.Rev")
-
+```
+source("mcmc_FBDRMatrix_model1.Rev")
+```
 This analysis will take around 10 minutes. While you're waiting for this analysis to run, create the files you need to run the analysis using models 2 and 3: `mcmc_FBDRMatrix_model2.Rev` and `mcmc_FBDRMatrix_model3.Rev`.
 You can just copy and paste your exisiting script for model 1.
 Recall from Section {% ref fbdr-model-specify %} that to use the alternative models you only need to change the arguments passed to the distribution function `dnFBDRMatrix`. 
 
 To use model 2 just remove the argument that passes the fossil count matrix to the function, `k=k`, since this model doesn't use any information about the number of fossils sampled during different intervals.
-
-    bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, rho=rho, timeline=timeline)
-
+```
+bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, rho=rho, timeline=timeline)
+```
 For this model, you also don't need to read the maxtrix represented by `k`, so you can remove the line that reads this file using `readDataDelimitedFile` from the script.
 Make these modifications in `mcmc_FBDRMatrix_model2.Rev`, and when model 1 is done, open RevBayes and run the analysis as before.
-
-    source("mcmc_FBDRMatrix_model2.Rev")
-
+```
+source("mcmc_FBDRMatrix_model2.Rev")
+```
 To use model 3, we still include the argument that passes the fossil count matrix to the function, `k=k`, and switch the argument `binary=true` to `binary=false`, since this model uses 1/0 sampling information, rather than absolute occurrence counts. The `k` matrix is still required for this model.
-
-    bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, rho=rho, timeline=timeline, k=k, binary=true)
-
+```
+bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, rho=rho, timeline=timeline, k=k, binary=true)
+```
 Make these modifications in `mcmc_FBDRMatrix_model3.Rev`, and when you're ready, run the analysis as before.
-
-    source("mcmc_FBDRMatrix_model3.Rev")
-
+```
+source("mcmc_FBDRMatrix_model3.Rev")
+```
 While you're waiting for model 2 and 3 to run you can examine the output from model 1.
+
 
 {% aside Running this model under the prior %}
 
@@ -361,17 +367,17 @@ Instead, we will simply comment out the creation of the `bd` stochastic node and
 ```markdown
 #bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, rho=rho, timeline=timeline, k=k, binary=true)
 
-#moves[mvi++] = mvMatrixElementScale(bd, lambda = 0.01, weight=taxa.size())
-#moves[mvi++] = mvMatrixElementScale(bd, lambda = 0.1, weight=taxa.size())
-#moves[mvi++] = mvMatrixElementScale(bd, lambda = 1, weight=taxa.size())
+#moves.append( mvMatrixElementScale(bd, lambda = 0.01, weight=taxa.size())
+#moves.append( mvMatrixElementScale(bd, lambda = 0.1, weight=taxa.size())
+#moves.append( mvMatrixElementScale(bd, lambda = 1, weight=taxa.size())
 
-#moves[mvi++] = mvMatrixElementSlide(bd, delta = 0.01, weight=taxa.size())
-#moves[mvi++] = mvMatrixElementSlide(bd, delta = 0.1, weight=taxa.size())
-#moves[mvi++] = mvMatrixElementSlide(bd, delta = 1, weight=taxa.size())
+#moves.append( mvMatrixElementSlide(bd, delta = 0.01, weight=taxa.size())
+#moves.append( mvMatrixElementSlide(bd, delta = 0.1, weight=taxa.size())
+#moves.append( mvMatrixElementSlide(bd, delta = 1, weight=taxa.size())
 ```
-
-    mymodel = model(alpha)
-
+```
+mymodel = model(alpha)
+```
 This allows us to sample the prior distribution on our FBDR model parameters.
 {% endaside %}
 

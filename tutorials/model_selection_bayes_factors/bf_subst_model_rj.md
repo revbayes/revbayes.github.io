@@ -62,13 +62,13 @@ and using a _model indicator_ to indicate which parameters to include in the mod
 
 ```
 kappa ~ dnExp(1)
-moves[mvi++] = mvScale(kappa, weight=5.0)
+moves.append( mvScale(kappa, weight=5.0) )
 
 pi ~ dnDirichlet(v(1,1,1,1))
-moves[mvi++] = mvBetaSimplex(pi, weight=5.0)
+moves.append( mvBetaSimplex(pi, weight=5.0) )
 
 er ~ dnDirichlet(v(1,1,1,1,1,1))
-moves[mvi++] = mvBetaSimplex(er, weight=5.0)
+moves.append( mvBetaSimplex(er, weight=5.0) )
 
 Q_JC  <- fnJC(4)
 Q_K80 := fnK80(kappa)
@@ -79,7 +79,7 @@ Q_GTR := fnGTR(er, pi)
 Q_vec := v(Q_JC, Q_K80, Q_F81, Q_HKY, Q_GTR)
 
 model_indicator ~ dnCategorical(simplex(1,1,1,1,1))
-moves[mvi++] = mvRandomGeometricWalk(model_indicator, weight=10.0, tune=FALSE)
+moves.append( mvRandomGeometricWalk(model_indicator, weight=10.0, tune=FALSE)
 
 Q := Q_vec[model_indicator]
 ```
@@ -93,8 +93,8 @@ Including reversible-jump for Gamma-distributed ASRV is more straightforward:
 ```
 alpha ~ dnReversibleJumpMixture(1E8, dnUniform(0,1E8), 0.5)
 alpha.setValue(1.0)
-moves[mvi++] = mvRJSwitch(alpha, weight=10.0)
-moves[mvi++] = mvScale(alpha, weight=10.0)
+moves.append( mvRJSwitch(alpha, weight=10.0) )
+moves.append( mvScale(alpha, weight=10.0) )
 
 alpha_indicator := ifelse(alpha == 1E8, 0, 1)
 

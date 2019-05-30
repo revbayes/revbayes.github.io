@@ -1,6 +1,6 @@
 ---
-title: Introduction to Historical Biogeography
-subtitle: Phylogeographic analysis under the dispersal-extinction-cladogenesis process
+title: Introduction to Phylogenetic Models of Discrete Biogeography
+subtitle: Overview of the Dispersal-Extirpation-Cladogenesis (DEC) model
 authors:  Michael J. Landis
 level: 6
 order: 0
@@ -8,7 +8,7 @@ prerequisites:
 - intro
 - intro_rev
 - mcmc_archery
-- mcmc_binomial
+include_example_output: false
 exclude_files: 
 - data/n4/hawaii.n4.connectivity.1.txt
 - data/n4/hawaii.n4.connectivity.2.txt
@@ -45,6 +45,20 @@ exclude_files:
 - scripts/run_simple_phy.Rev
 - scripts/run_epoch.Rev
 - scripts/run_epoch_phy.Rev
+- scripts/plot_anc_range.simple.R
+- scripts/plot_anc_range.epoch.R
+- scripts/plot_anc_range.simple_phy.R
+- scripts/plot_anc_range.epoch_phy.R
+- scripts/plot_anc_range.util.R
+- scripts/plot_anc_range.n4.R
+- data/n4/state_labels.epoch.n4.txt
+- data/n4/state_labels.simple.n4.txt
+- data/n4/state_labels.n4.txt
+- data/n6/state_labels.n6.txt
+- data/n4/range_colors.epoch.txt
+- data/n4/range_colors.epoch.n4.txt
+- data/n4/range_colors.n4.txt
+- data/n6/range_colors.n6.txt
 index: true
 title-old: RB_Biogeography_Tutorial
 redirect: false 
@@ -190,9 +204,9 @@ To build our intuition, let's construct a DEC rate matrix in RevBayes.
 
 > Create a new directory on your computer called `RB_biogeo_tutorial`.
 > 
-> Navigate to the `RB_biogeo_tutorial` directory and execute the `rb` binary. 
-> One option for doing this is to move the `rb` executable to the `RB_biogeo_tutorial`
-> directory.
+> Navigate to your tutorial directory and execute the `rb` binary. 
+> One option for doing this is to move the `rb` executable to the tutorial
+> directory or to create a shortcut to your executable.
 > 
 > Alternatively, if you are on a Unix system, and have added RevBayes to your path, 
 > you simply have to type `rb` in your Terminal to run the program. 

@@ -32,13 +32,17 @@ module Tutorials
             type = 'data'
           elsif file.relative_path.match(Regexp.new(Regexp.escape(tutorial_dir+"scripts/")))
             type = 'script'
+          elsif file.relative_path.match(Regexp.new(Regexp.escape(tutorial_dir+"example_output/")))
+            type = 'example_output'
           end
           
           # include the file in its containing tutorial
           if type != nil and tutorial.data['include_all'] != false
-            file.data['type'] = type
-            tutorial.data['files'] = [] if tutorial.data['files'] == nil
-            tutorial.data['files'] << file
+            if type != 'example_output' or tutorial.data['include_example_output'] != false
+              file.data['type'] = type
+              tutorial.data['files'] = [] if tutorial.data['files'] == nil
+              tutorial.data['files'] << file
+            end
           end
         end
       end

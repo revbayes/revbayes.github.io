@@ -53,25 +53,24 @@ Change source statement to indicate the new model file.
 We need to modify the way in which the $Q$-matrix is specified. 
 First, we will create a hyperprior called `dir_alpha` and specify a move on it.
 ```
-    dir_alpha ~ dnExponential(1)
-    moves[mvi++] = mvScale(dir_alpha, lambda=1, weight=2.0 )
+dir_alpha ~ dnExponential(1)
+moves.append( mvScale(dir_alpha, lambda=1, weight=2.0 ) )
 ```
 This hyperparameter, dir_alpha, will be used as a parameter to a
 Dirichelet distribution from which our state frequencies will be drawn.
 ```
-    pi_prior := v(dir_alpha,dir_alpha)
+pi_prior := v(dir_alpha,dir_alpha)
 ```
 If you were using multistate data, the dir_alpha can be repeated for
 each state. Next, we will modify our previous loop to use these state
 frequencies to initialize our Q-matrices.
 ```
-    for(i in 1:n_cats)
-    {
-    	pi[i] ~ dnDirichlet(pi_prior)
-        moves[mvi++] = mvSimplexElementScale(pi[i], alpha=10, weight=1.0) 
-        
-        Q_morpho[i] := fnF81(pi[i])
-    }
+for(i in 1:n_cats) {
+	pi[i] ~ dnDirichlet(pi_prior)
+    moves.append( mvSimplexElementScale(pi[i], alpha=10, weight=1.0) )
+    
+    Q_morpho[i] := fnF81(pi[i])
+}
 ```
 In the above loop, for each of our categories, we make a new draw of
 state frequencies from our Dirichelet distribution (the shape of which

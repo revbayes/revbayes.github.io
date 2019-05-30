@@ -1,18 +1,22 @@
 ---
-title: Historical Biogeographic Analysis using an epoch DEC Model
-subtitle: Ancestral range estimation of the silverswords under the dispersal-extinction-cladogenesis process
+title: Advanced Phylogenetic Analysis of Historical Biogeography
+subtitle: Ancestral range estimates using the Dispersal-Extirpation-Cladogenesis (DEC) model while incorporating time-dependent and region-dependent effects on dispersal rates
 authors:  Michael J. Landis
 level: 6
 order: 2
 prerequisites:
 - biogeo/biogeo_intro
 - biogeo/biogeo_simple
+include_example_output: false
 include_files: 
-
-- scripts/plot_anc_range.simple.R
-- scripts/range_colors.txt
-
-- scripts/run_epoch_phy.Rev
+- scripts/plot_anc_range.epoch.R
+- scripts/plot_anc_range.util.R
+- data/n4/range_colors.n4.txt
+- scripts/run_epoch.Rev
+- example_output/epoch.tre
+- example_output/epoch.stoch.log
+- example_output/epoch.states.log
+- example_output/epoch.model.log
 exclude_files:
 - data/n6/hawaii.n6.connectivity.1.txt
 - data/n6/hawaii.n6.connectivity.2.txt
@@ -28,15 +32,21 @@ exclude_files:
 - data/n4/silversword.bg.nex
 - data/n4/silversword.mcc.tre
 - data/n4/silversword.mol.nex
+- data/n4/range_colors.simple.n4.txt
 - scripts/run_simple.Rev
 - scripts/run_simple_phy.Rev
+- scripts/run_epoch_phy.Rev
+- scripts/plot_anc_range.epoch_phy.R
+- scripts/plot_anc_range.simple_phy.R
+- scripts/plot_anc_range.simple.R
+- data/n4/state_labels.simple.n4.txt
+- data/n6/state_labels.n6.txt
+- data/n6/range_colors.n6.txt
+- data/n4/range_colors.epoch.n4.txt
 index: index
 title-old: RB_Biogeography_Tutorial
 redirect: false 
 ---
-
-
-
 
 {% section Introduction | intro %}
 
@@ -72,10 +82,10 @@ the full table is given for future reference.
   | Mainland      |   Z  |      -    |      -     |        -       |         -       |         -       |         -       |         -       |         -       |
 
   {% tabcaption %}
-  Hawaiian paleogeographic data. The six areas are given in {% ref hawaii_areas %}.
+  Hawaiian paleogeographic data. The six areas are given in {% page_ref biogeo/biogeo_simple %}.
    Ages $a_{max}$ and $a_{min}$ report the maximum
   and minimum origination times for the given island [adapted from
-  {% cite Neal2008 %}]. Distances $g_{ij}$ report the shortest geographical
+  {% cite Neal2008 %}]. Note that these ages are younger (less conservative) than the ages used in {% citet Landis2018 %}. Distances $g_{ij}$ report the shortest geographical
   distance from the coast of the row's area to the column's area
   (measured at present).
   {% endtabcaption %}
@@ -93,7 +103,7 @@ output prefix
 The paleogeographical information from {% ref paleogeo %} is encoded
 in three files named `hawaii.n4.times.txt`,
 `hawaii.n4.distances.txt`, and
-`hawaii.n4.connectivity.\*.txt`.
+`hawaii.n4.connectivity.*.txt`.
 
     geo_fn = "data/n4/hawaii.n4"
     times_fn = geo_fn + ".times.txt"
@@ -208,10 +218,12 @@ Next, we'll build an enhanced DEC model. Like before, we'll define the
 rate matrix in terms of relative rates, then rescale the entire matrix
 with the biogeographic rate scaling parameter `rate_bg`.
 
-    log10_rate_bg ~ dnUniform(-4,2)
-    log10_rate_bg.setValue(-2)
-    rate_bg := 10^log10_rate_bg
-    moves.append( mvSlide(log10_rate_bg, weight=4) )
+    rate_bg ~ dnLoguniform(1E-4,1E2)
+    rate_bg.setValue(1E-2)
+
+And create a move to update the base rate of anagenetic change
+
+    moves.append( mvSlide(rate_bg, weight=4) )
 
 Fix the base dispersal rate to 1
 
@@ -234,7 +246,7 @@ notice we now have an outer loop over the number of epochs,
 n_epochs. This is used to construct a vector of dispersal
 matrices, one matrix per epoch. It is crucial to note that all of
 elements are assigned the value 0.0 unless the if-statement
-`if (connectivity[i][j][k] &gt; 0)`  evaluates to
+`if (connectivity[i][j][k] > 0)`  evaluates to
 true. That is, dispersal rates between areas j
 and k for epoch i are non-zero if and only if
 the connectivity matrix element `connectivity[i][j][k]`
@@ -271,8 +283,8 @@ and then provide the appropriate extirpation matrix structure
       }
     }
 
-Now we have a vector of dispersal rates, dr, and an vector
-of extirpation rates, er, in stored in the RevBayes
+Now we have a vector of dispersal rates, `dr`, and an vector
+of extirpation rates, `er`, in stored in the RevBayes
 workspace. We'll use these to create a vector of four DEC rate matrices,
 one for each epoch.
 
@@ -338,9 +350,9 @@ Among the four areas, only Kauai existed at the provided origination
 time of the clade, so will set it as the only valid starting state
 through the root frequency distribution.
 
-    rf_DEC <- rep(0, n_states)
-    rf_DEC[2] <- 1 
-    rf_DEC <- simplex(rf_DEC)
+    rf_DEC_tmp <- rep(0, n_states)
+    rf_DEC_tmp[2] <- 1 
+    rf_DEC <- simplex(rf_DEC_tmp)
 
 We have created all the necessary model variables. Now we can create the
 phylogenetic model of anagenetic and cladogenetic character evolution.
@@ -373,6 +385,9 @@ And the rest we've done before...
                                                            withStartStates=true,
                                                            filename=out_fn+".states.log",
                                                            printgen=10) )
+    monitors.append( mnStochasticCharacterMap(ctmc=m_bg,
+                                              filename=out_fn+".stoch.log",
+                                              printgen=100) )
                                                            
 
 Wrap the model graph into a model object
@@ -389,7 +404,7 @@ then build and run MCMC
 **Example results are located at `output_example/epoch`.**
 
 When compared to the ancestral state estimates from the "simple"
-analysis ({% ref simple_RevGadgets_ase %}), these results are far
+analysis ({% page_ref biogeo/biogeo_simple %}), these results are far
 more consonant with what we understand about the origination times of
 the islands ({% ref paleogeo %}). First, this reconstruction asserts
 that the clade originated in the modern Hawaiian islands at a time when
@@ -397,23 +412,20 @@ only Kauai was above sea level. Similarly, the *D.
 sheriffiana* and *D. arborea* clade no longer
 estimates OMH as its ancestral range, since Maui and Hawaii had not yet
 formed 2.4 Ma. The ancestral range for the *Agyroxiphium*
-clade is Maui (M) with probability 0.41 and Maui+Hawaii (MH) with
-probability 0.33, whereas previously it gave high support to the range
-KMH.
+clade does not have a Hawaiian origin, whereas previously it awarded substantial support for H or MH origins.
 
-It may be that these are relatively accurate historical biogeographic
-estimates, or they may contain artifacts as a result of assuming a fixed
+It may be that these epoch-based estimates are relatively accurate, or they may contain artifacts as a result of assuming a fixed
 and errorless phylogeny. The next tutorials discuss how to jointly
 estimate phylogeny and biogeography, which potentially improves the
 estimation of divergence times, tree topology, and ancestral ranges.
 
 {% figure epoch_RevGadgets_ase %}
-![](figures/fig_epoch_RevGadgets_ase.png) 
+![](figures/fig_epoch.range.png) 
 {% figcaption %}
-Tree with ancestral
-state estimates. Nodes are annotated with ancestral states before and
-after cladogenetic events. Most probable states are shown. Colors of
-markers indicate the range state. Sizes of markers indicate the
-posterior probability of that state. 
+Tree with ancestral state estimates for the "epoch" analysis. Nodes represent ancestral ranges before and after cladogenetic events. Pie slices are proportional to the posterior probability of that ancestral range. Colors
+of markers indicate the range state. Only the first, second, and third most probable ranges are shown, with less probable ranges represented in gray (...). Vertical dashed lines indicate the range of possible island formation times.
 {% endfigcaption %}
 {% endfigure %}
+
+> Continue to the next tutorial: {% page_ref biogeo/biogeo_dating %}
+{:.instruction}
