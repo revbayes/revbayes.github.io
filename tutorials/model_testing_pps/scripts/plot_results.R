@@ -1,7 +1,7 @@
-model_name <- "GTR_Gamma_Inv"
+model_name <- "JC"
 
 dir <- paste0("results_",model_name,"/")
-dataset_name = "primates"
+dataset_name = "pps_example"
 	
 #for (i in 1:50) {
 
@@ -12,7 +12,7 @@ dataset_name = "primates"
 #    posterior_predictive_data <- read.table(paste0(dir,"simulated_inference_",dataset_name,".csv"),header=TRUE,sep=",")
 #    posterior_original_data   <- read.table(paste0(dir,"empirical_inference_",dataset_name,".csv"),header=TRUE,sep=",")
 
-    posterior_predictive_data <- posterior_predictive_data[,-1]
+  #  posterior_predictive_data <- posterior_predictive_data[,-1]
     names <- colnames( posterior_original_data )
 
     posterior_predictive_data_num <- matrix(data = NA, nrow = dim(posterior_predictive_data)[1], ncol = dim(posterior_predictive_data)[2])
@@ -24,11 +24,12 @@ dataset_name = "primates"
     min_value <- c()
     max_value <- c()
     spread_value <- c()
-#    pdf( paste0(dir,"posterior_predictive_",model_name,"_",dataset_name,"_results.pdf") )
+    pdf( paste0(dir,"posterior_predictive_",model_name,"_",dataset_name,"_results.pdf") )
 
-    for ( i in 1:length(names)) {
+   
+   for ( i in 1:length(names)) {
 
-    pdf( paste0(dir,"posterior_predictive_",model_name,"_",dataset_name,"_",names[i],"_results.pdf") )
+ #   pdf( paste0(dir,"posterior_predictive_",model_name,"_",dataset_name,"_",names[i],"_results.pdf") )
         min_value[i] <- min(posterior_predictive_data_num[,i],posterior_original_data[[i]])
         max_value[i] <- max(posterior_predictive_data_num[,i],posterior_original_data[[i]])
         spread_value[i] <- max_value[i] - min_value[i]
@@ -54,11 +55,11 @@ dataset_name = "primates"
         with(d, polygon(x=c(x[c(x99,x99:x.max,x.max)]), y= c(0, y[x99:x.max], 0), col="darkgray", border="black") )
         abline(v=posterior_original_data[[i]], col="black", lty=3, lwd=3)
         
-        dev.off()
+ #       dev.off()
 
     }
 
-#    dev.off()
+    dev.off()
 
 #}
 

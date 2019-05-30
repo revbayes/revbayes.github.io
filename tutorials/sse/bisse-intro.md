@@ -5,12 +5,7 @@ authors:  Sebastian Höhna, Will Freyman, and Emma Goldberg
 level: 4
 order: 4
 prerequisites:
-  - mcmc_archery
-exclude_files:
-  - data/primates_tree.nex
-  - data/primates_morph.nex
-  - data/primates_biogeo.tre
-  - data/primates_biogeo.tsv
+include_all: false
 index: true
 ---
 
@@ -26,7 +21,7 @@ the state of an evolving character. The original model of this type
 considered a binary character (a trait with two discrete state values;
 called BiSSE, {% cite Maddison2007 %}. Several variants have also been developed
 for other types of traits
-{% cite FitzJohn2010 Goldberg2011 Goldberg2012 MagnusonFord2012 FitzJohn2012 Beaulieu2016 Freyman2017 %}.
+{% cite FitzJohn2010 Goldberg2011 Goldberg2012 MagnusonFord2012 FitzJohn2012 Beaulieu2016 Freyman2018 %}.
 
 RevBayes can be used to specify a wide range of SSE models. For specific examples see these other tutorials:
 - BiSSE and MuSSE models: {% page_ref sse/bisse %} 
@@ -36,8 +31,8 @@ RevBayes can be used to specify a wide range of SSE models. For specific example
 
 {% section Background: The BiSSE Model | BiSSE_background %}
 
-The binary state speciation and extinction model (BiSSE} {% cite Maddison2007 %}
-was introduced because of two problems identified by {% cite Maddison2006b %}.
+The binary state speciation and extinction model (BiSSE) {% cite Maddison2007 %}
+was introduced because of two problems identified by {% citet Maddison2006b %}.
 First, inferences about character state transitions based on simple
 transition models [like {% citet Pagel1999 %}] can be thrown off if the character
 affects rates of speciation or extinction. Second, inferences about
@@ -122,7 +117,7 @@ equations in the following sections.
 
 {% subsection Derivation for the binary state birth-death process %}
 
-The derivation here follows the original description in {% cite Maddison2007 %}.
+The derivation here follows the original description in {% citet Maddison2007 %}.
 Consider a (time-independent) birth-death process with two possible
 states (a binary character), with diversification rates
 $$\{\lambda_0, \mu_0\}$$ and $$\{\lambda_1, \mu_1\}$$.

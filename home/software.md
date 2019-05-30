@@ -5,6 +5,9 @@ subtitle: Download and Install RevBayes
 permalink: /software
 code_layout: bash
 ---
+## Download pre-compiled executables
+
+Mac and Windows users can download one of the compiled executables below:
 
 <div class="row">
 
@@ -19,17 +22,27 @@ code_layout: bash
 </div>
 
 <div class="col-sm-4" align="center">
-<h2>Source code</h2>
-<a href="http://github.com/revbayes/revbayes" class="btn btn-info" role="button">GitHub Repository</a>
+<h2>Linux</h2>
+<p>Compile: see below.</p>
 </div>
 
 </div>
 
 <br>
 
+
 ## Compiling from source
 ----
+
+Mac and Windows users do not need to compile RevBayes from source.  However, compiling RevBayes is relatively simple process.
+
 ### Linux
+
+First you need to install cmake:
+
+    sudo apt install cmake
+
+Then obtain the source and and compile:
 
     git clone https://github.com/revbayes/revbayes.git revbayes
     cd revbayes/projects/cmake

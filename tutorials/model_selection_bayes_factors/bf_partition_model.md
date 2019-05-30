@@ -13,6 +13,7 @@ prerequisites:
 - bf_subst_model
 exclude_files: 
 - data/primates_and_galeopterus_cytb.nex
+- data/primates_and_galeopterus_cox2.nex
 - scripts/marginal_likelihood_GTR_Gamma_inv.Rev
 - scripts/marginal_likelihood_JC.Rev
 - scripts/model_average_primates_cytb.Rev
@@ -78,7 +79,7 @@ num_sites[2] = data_matK.nchar()
 num_sites[3] = data_rbcL.nchar()
 
 relative_rates ~ dnDirichlet(v(1,1,1))
-moves[mvi++] = mvBetaSimplex(relative_rates, weight=1.0)
+moves.append( mvBetaSimplex(relative_rates, weight=1.0) )
 
 subset_rates := relative_rates * sum(num_sites) / num_sites
 ```

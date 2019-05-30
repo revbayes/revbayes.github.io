@@ -14,6 +14,7 @@ module Tutorials
         site.each_site_file do |file|
           # check if this file is one of the page's exclude_files
           exclude = false
+
           if tutorial.data['exclude_files']
             tutorial.data['exclude_files'].each do |exclude_file|
               next unless file.relative_path.match(Regexp.new(Regexp.escape(exclude_file)+"$"))
@@ -57,6 +58,7 @@ module Tutorials
         site.each_site_file do |file|
           # check if this file is one of the page's exclude_files
           exclude = false
+
           if tutorial.data['exclude_files']
             tutorial.data['exclude_files'].each do |exclude_file|
               next unless file.relative_path.match(Regexp.new(Regexp.escape(exclude_file)+"$"))

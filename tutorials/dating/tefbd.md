@@ -2,20 +2,19 @@
 title: Molecular dating
 subtitle: Estimating speciation times using total-evidence dating
 authors:  Rachel Warnock, Sebastian Höhna, Tracy Heath, April  Wright and Walker Pett
-level: 0
-order: 0.5
+level: 2
+order: 0.55
 prerequisites:
 - intro
-exclude_files:
-- data/inc_subfossils/bears_cytb.nex
-- data/inc_subfossils/bears_taxa.tsv
-- scripts/MCMC_dating_ex1.Rev
-- scripts/MCMC_dating_ex2.Rev
-- scripts/MCMC_dating_ex3.Rev
-- scripts/MCMC_dating_ex4.Rev
+include_all: false 
+include_files:
+- data/bears_cytb.nex
+- data/bears_taxa.tsv
+- data/bears_morphology.nex
+- scripts/MCMC_dating_ex5.Rev
+- scripts/clock_relaxed_lognormal.Rev
 - scripts/clock_global.Rev
-- scripts/tree_BD.Rev
-- scripts/tree_BD_nodedate.Rev
+- scripts/sub_GTRG.Rev
 - scripts/tree_FBD.Rev
 index: false
 redirect: false
@@ -44,6 +43,7 @@ Again, we'll take advantage of all the stratigraphic age information in **bears_
 
 To complete this exercise, we need to create a script for the substitution and clock model that will be applied to the morphological character data. We'll also need to make some small changes to the master and the tree model scripts. 
 
+
 ### The master Rev script
 
 Again, we'll start by making some changes to the master Rev script.
@@ -52,23 +52,27 @@ Again, we'll start by making some changes to the master Rev script.
 {:.instruction}
 
 Write the commands to read the morphological character data and add missing character data (i.e. for the two species for which character data is unvailable).
+```
+morpho <- readDiscreteCharacterData("data/bears_morphology.nex")
 
-	morpho <- readDiscreteCharacterData("data/bears_morphology.nex")
-	
-	morpho.addMissingTaxa( taxa )
-
+morpho.addMissingTaxa( taxa )
+```
 Now you will have two character partitions, each with missing data for differing number of taxa. 
+
 
 ### The tree model
 
 >Creating a copy of your **tree_FBD.Rev** script, call it **tree_TEFBD.Rev** and open it in your text editor. 
 {:.instruction}
 
+
 #### Monitoring parameters of interest using deterministic nodes
 
 The only change we need to make in this file is to `fnPruneTree` There are two fossil species for which we do not have any morphological characters *Parictis montanus* and *Ursus abstrusus*, so we will not be able to resolve their tolopological position and we should keep them pruned from the tree. We do not want to remove the other species this time because we are interested in there topological placement.
+```
+pruned_tree := fnPruneTree(timetree, prune=v("Parictis_montanus","Ursus_abstrusus")) 
+```
 
-	pruned_tree := fnPruneTree(timetree, prune=v("Parictis_montanus","Ursus_abstrusus")) 
 
 ### The morphological clock model
 
@@ -80,60 +84,66 @@ We will apply a simple global clock model to our morphological partition.
 For the branch-rates parameter we will also use an exponential prior, with parameters `rate` = 10. The expected value (or mean) of this distribution is 0.1. The same branch-rate will apply to every branch in the tree.
 
 Simply change the name of `branch_rates` to `branch_rates_morpho`.
+```
+branch_rates_morpho ~ dnExponential(10.0)
 
-	branch_rates_morpho ~ dnExponential(10.0)
+moves.append( mvScale(branch_rates_morpho,lambda=0.5,tune=true,weight=5.0) )
+```
 
-	moves[mvi++] = mvScale(branch_rates_morpho,lambda=0.5,tune=true,weight=5.0)
 
 ### The Mk model
 
 The next step is to specify the model that describes how morphological characters evolve along the tree and across sites.
+You can find a full description about the Mk model in the {% page_ref morph %} Tutorial.
 
 >Create a script called **sub_Mk.Rev** and open it in your text editor. 
 {:.instruction}
 
 The Mk model is a generalization of the Jukes-Cantor model, so we will initialize our Q matrix from a Jukes-Cantor matrix.
-
-	Q_morpho := fnJC(2)
-
+```
+Q_morpho := fnJC(2)
+```
 As we did for our molecular data partition, we will allow gamma-distributed rate heterogeneity among sites.
+```
+alpha_morpho ~ dnUniform( 0.0, 1E8 )
+rates_morpho := fnDiscretizeGamma( alpha_morpho, alpha_morpho, 4 )
 
-	alpha_morpho ~ dnExponential( 1.0 )
-	rates_morpho := fnDiscretizeGamma( alpha_morpho, alpha_morpho, 4 )
-
-	moves[mvi++] = mvScale(alpha_morpho, lambda=0.5, tune=true, weight=5.0)
-
+moves.append( mvScale(alpha_morpho, lambda=0.5, tune=true, weight=5.0) )
+```
 Finally, we can create the phylogenetic continuous time Markov chain (PhyloCTMC) distribution for our sequence data, including the gamma-distributed site rate categories, as well as the branch rates defined as part of our clock model. We set the value of this distribution equal to our observed data and identify it as a static part of the likelihood using the clamp method.
 
 As we did previously for our molecular data partition, we now combine our data and our model in the phylogenetic CTMC distribution. There are some unique aspects to doing this for morphology.
 You will notice that we have an option called `coding`. This option allows us to condition on biases in the way the morphological data were collected (ascertainment bias). The option `coding=variable` specifies that we should correct for coding only variable characters.
+```
+phyMorpho ~ dnPhyloCTMC(tree=timetree, siteRates=rates_morpho, branchRates=branch_rates_morpho, Q=Q_morpho, type="Standard", coding="variable")
+phyMorpho.clamp(morpho)
+```
 
-	phyMorpho ~ dnPhyloCTMC(tree=timetree, siteRates=rates_morpho, branchRates=branch_rates_morpho, Q=Q_morpho, type="Standard", coding="variable")
-	phyMorpho.clamp(morpho)
 
 ### Back to the master Rev script
 
 As before, change the file used to specify the tree model from **tree_FBD.Rev** to **tree_TEFBD.Rev**.
-
-	source("scripts/tree_TEFBD.Rev")
-	
+```
+source("scripts/tree_TEFBD.Rev")
+```	
 Second, use the `source` function to load in the new model scripts you wrote as part of this exercise for the analysis of morphological.
-
-	source("scripts/clock_morpho.Rev") # the morphological clock model
-	source("scripts/sub_Mk.Rev") # the Mk model
-
+```
+source("scripts/clock_morpho.Rev") # the morphological clock model
+source("scripts/sub_Mk.Rev") # the Mk model
+```
 Finally, update the name of the output files.
-
-	monitors[mni++] = mnModel(filename="output/bears_TEFBD.log", printgen=10)
-	monitors[mni++] = mnFile(filename="output/bears_TEFBD.trees", printgen=10, pruned_tree)
-
+```
+monitors.append( mnModel(filename="output/bears_TEFBD.log", printgen=10) )
+monitors.append( mnFile(filename="output/bears_TEFBD.trees", printgen=10, pruned_tree) )
+```
 Don't forget to update the commands used to generate the summary tree.
-
-	trace = readTreeTrace("output/bears_TEFBD.trees")
-	mccTree(trace, file="output/bears_TEFBD.mcc.tre" )
-
+```
+trace = readTreeTrace("output/bears_TEFBD.trees")
+mccTree(trace, file="output/bears_TEFBD.mcc.tre" )
+```
 >Run your MCMC analysis!
 {:.instruction}
+
 
 ### Examining the output
 
@@ -153,6 +163,7 @@ The Marginal Density panel in Tracer showing the posterior estimates for the MRC
 
 Do you observe any important differences for any other parameters?
 
+
 #### Sampled ancestor trees
 
 When there are sampled ancestors present in the tree, visualizing the tree can be fairly difficult in traditional tree viewers. We will make use of a browser-based tree viewer called [IcyTree](http://tgvaughan.github.io/icytree/), created by Tim Vaughan. IcyTree has many unique options for visualizing phylogenetic trees and can produce publication-quality vector image files (i.e. SVG). Additionally, it correctly represents sampled ancestors on the tree as nodes, each with only one descendant.
@@ -170,6 +181,7 @@ The Icy window. To open your tree you can use File > Open. Select Node Labels to
 {% endfigure %}
 
 Examine the posterior probabilities and ages for the sampled ancestors and node ages.
+
 
 ### Next
 

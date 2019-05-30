@@ -1,11 +1,10 @@
 {% section Pure-Birth (Yule) Model %}
 
 
-Before evaluating the relative support for different models, we must
-first specify them in `Rev`. In this section, we will walk through
-specifying a pure-birth process model and estimating the marginal
-likelihood. The section about the birth-death process will be less
-detailed because it will build up on this section.
+In this section, we will walk through specifying a pure-birth process model and 
+estimating the speciation rate.
+Then, we will continue by estimating the marginal likelihood of the model so that we can perform model comparison. 
+The section about the birth-death process will be less detailed because it will build up on this section.
 
 The simplest branching model is the *pure-birth process* described by
 {% citet Yule1925 %}. Under this model, we assume at any instant in time, every
@@ -70,7 +69,7 @@ taken from the analysis by {% citet MagnusonFord2012 %}. Furthermore, there are
 approximately 367 described primates species, so we will fix the
 parameter $\rho$ to $233/367$.
 
-&#8680; The full Yule-model specification is in the file called `Yule.Rev`.
+&#8680; The full Yule-model specification is in the file called `mcmc_Yule.Rev`.
 
 
 {% subsection Read the tree %}
@@ -194,7 +193,7 @@ the nodes we specified.
 
 For our MCMC analysis, we need to set up a vector of *monitors* to
 record the states of our Markov chain. The monitor functions are all
-called `mn\*`, where `\*` is the wildcard representing the monitor type.
+called `mn*`, where `*` is the wildcard representing the monitor type.
 First, we will initialize the model monitor using the `mnModel`
 function. This creates a new monitor variable that will output the
 states for all model parameters when passed into a MCMC function.
@@ -215,15 +214,7 @@ can now set up the MCMC algorithm that will sample parameter values in
 proportion to their posterior probability. The `mcmc()` function will
 create our MCMC object:
 ```
-mymcmc = mcmc(mymodel, monitors, moves)
-```
-We may wish to run the `.burnin()` member function,
-*i.e.*, if we wish to pre-run the chain and
-discard the initial states. Recall that the `.burnin()` function
-specifies a *completely separate* preliminary MCMC analysis that is used
-to tune the scale of the moves to improve mixing of the MCMC analysis.
-```
-mymcmc.burnin(generations=10000,tuningInterval=200)
+mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
 ```
 Now, run the MCMC:
 ```

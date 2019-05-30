@@ -22,6 +22,10 @@
 # Read in the data 
 #########################
 
+# Create some vector for the moves and monitors of this analysis
+moves    = VectorMoves()
+monitors = VectorMonitors()
+
 
 # Read in the phylogeny. In this example the phylogeny is assumed known.
 phylogeny <- readTrees("data/aristolochia-bd.tree")[1]
@@ -55,10 +59,9 @@ delta ~ dnExponential(10.0)
 rho ~ dnExponential(10.0)
 
 # Add MCMC moves for each of the rates.
-mvi = 1
-moves[mvi++] = mvScale(gamma, lambda=1, weight=1) 
-moves[mvi++] = mvScale(delta, lambda=1, weight=1) 
-moves[mvi++] = mvScale(rho, lambda=1, weight=1) 
+moves.append( mvScale(gamma, lambda=1, weight=1) )
+moves.append( mvScale(delta, lambda=1, weight=1) )
+moves.append( mvScale(rho, lambda=1, weight=1) )
 
 # Now we create the rate matrix for the chromosome evolution model.
 # Here we will use a simple ChromEvol model that includes
@@ -93,10 +96,10 @@ clado_polyploid ~ dnExponential(speciation_pr)
 clado_demipoly <- 0.0
 
 # MCMC moves for speciation rates
-moves[mvi++] = mvScale(clado_no_change, lambda=5.0, weight=1)
-moves[mvi++] = mvScale(clado_fission, lambda=5.0, weight=1)
-moves[mvi++] = mvScale(clado_fusion, lambda=5.0, weight=1)
-moves[mvi++] = mvScale(clado_polyploid, lambda=5.0, weight=1)
+moves.append( mvScale(clado_no_change, lambda=5.0, weight=1) )
+moves.append( mvScale(clado_fission, lambda=5.0, weight=1) )
+moves.append( mvScale(clado_fusion, lambda=5.0, weight=1) )
+moves.append( mvScale(clado_polyploid, lambda=5.0, weight=1) )
 
 # set a vector to hold the speciation rates
 speciation_rates := [clado_no_change, clado_fission, clado_fusion, clado_polyploid, clado_demipoly]
@@ -108,7 +111,7 @@ clado_matrix := fnChromosomesCladoEventsBD(speciation_rates, max_chromo)
 # a stochastic variable to represent the turnover. 
 turnover ~ dnUniform(0, 1.0)
 turnover.setValue(0.4)
-moves[mvi++] = mvScale(turnover, lambda=5.0, weight=3.0)
+moves.append( mvScale(turnover, lambda=5.0, weight=3.0) )
 
 # Make a vector of extinction rates for each state.
 # In the basic ChromoSSE model we assume all chromosome 
@@ -152,13 +155,13 @@ mymodel = model(phylogeny)
 
 # Create the MCMC monitors:
 # First, a screen monitor with some useful variables:
-monitors[1] = mnScreen(printgen=10)
+monitors.append( mnScreen(printgen=10) )
 
 # The ancestral state monitor for sampling ancestral states:
-monitors[2] = mnJointConditionalAncestralState(filename="output/ChromoSSE_anc_states.log", printgen=10, tree=phylogeny, cdbdp=chromo_bdp, withStartStates=true, type="NaturalNumbers")
+monitors.append( mnJointConditionalAncestralState(filename="output/ChromoSSE_anc_states.log", printgen=10, tree=phylogeny, cdbdp=chromo_bdp, withStartStates=true, type="NaturalNumbers") )
 
 # And another monitor for all the model variables:
-monitors[3] = mnModel(filename="output/ChromoSSE_model.log", printgen=10)
+monitors.append( mnModel(filename="output/ChromoSSE_model.log", printgen=10) )
 
 # Now set up the MCMC.
 mymcmc = mcmc(mymodel, monitors, moves)

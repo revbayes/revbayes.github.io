@@ -165,27 +165,26 @@ Sometimes it is convienent to read in a tree from a previous study. This
 can be used as a starting tree or if there are nodes in the tree from
 the previous study that we wish to compare our estimates to. We will
 read in the tree estimated by {% cite DosReis2012 %}.
-
-    T <- readTrees("data/bears_dosReis.tre")[1]
-
+```
+T <- readTrees("data/bears_dosReis.tre")[1]
+```
 From the tree we can initialize some useful variables. (These can also
 be created from the data matrix using the same methods.)
-
-    n_taxa <- T.ntips()
-    taxa <- T.taxa()
+```
+n_taxa <- T.ntips()
+taxa <- T.taxa()
+```
+Finally, we initialize a variable for our vector of moves and monitors.
+```
+moves    = VectorMoves()
+monitors = VectorMonitors()
+```
 
 
 ### Birth-Death Parameters
 
 We will begin by setting up the model parameters and proposal mechanisms
-of the birth-death model. Note that we have not initialized the
-workspace iterator `mvi` yet. Because of this, if you typed these lines
-in the RevBayes console, you would get an error. Since this code is
-intended to be in a sourced `Rev` file, we are assuming that you would
-initialize `mvi` before calling
-`source("scripts/m_BDP_Tree_bears.Rev")`.
-
-We will use the parameterization of the birth-death process specifying
+of the birth-death model. We will use the parameterization of the birth-death process specifying
 the diversification and turnover. For a more detailed tutorial on the
 simple birth-death model, please refer to the {% page_ref divrate/simple %}
 tutorial.
@@ -194,40 +193,44 @@ tutorial.
 
 Diversification ($d$) is the speciation rate ($\lambda$) minus the
 extinction rate ($\mu$): $d = \lambda - \mu$.
-
-    diversification ~ dnExponential(10.0) 
-    moves[mvi++] = mvScale(diversification, lambda=1.0, tune=true, weight=3.0)
-
+```
+diversification ~ dnExponential(10.0) 
+moves.append( mvScale(diversification, lambda=1.0, tune=true, weight=3.0)
+```
 
 ***Turnover***
 
 Turnover is: $r = \mu / \lambda$.
-
-    turnover ~ dnBeta(2.0, 2.0) 
-    moves[mvi++] = mvSlide(turnover,delta=1.0,tune=true,weight=3.0)
-
+```
+turnover ~ dnBeta(2.0, 2.0) 
+moves.append( mvSlide(turnover,delta=1.0,tune=true,weight=3.0)
+```
 
 ***Deterministic Nodes for Birth and Death Rates***
 
 The birth rate and death rate are deterministic functions of the
 diversification and turnover. First, create a deterministic node for
 $1 - r$, which is the denominator for each formula.
-
-    denom := abs(1.0 - turnover) 
-
+```
+denom := abs(1.0 - turnover) 
+```
 Now, the rates will both be positive real numbers that are variable
 transformations of the stochastic variables.
+```
+birth_rate := diversification / denom
+death_rate := (turnover * diversification) / denom
+```
 
-    birth_rate := diversification / denom
-    death_rate := (turnover * diversification) / denom
 
 ***Sampling Probability***
 
 Fix the probability of sampling to a known value. Since there are
 approximately 147 described caniform species, we will create a constant
 node for this parameter that is equal to 10/147.
+```
+rho <- 0.068
+```
 
-    rho <- 0.068
 
 ### Prior on the Root Node
 
@@ -238,9 +241,9 @@ age being younger than 38 Mya is equal to 0, using this value to offset
 a prior distribution on the root-age.
 
 First specify the occurrence-time of the fossil.
-
-    tHesperocyon <- 38.0
-
+```
+tHesperocyon <- 38.0
+```
 We will assume a lognormal prior on the root age that is offset by the
 observed age of *Hesperocyon gregarius*. We can use the previous
 analysis by {% cite DosReis2012 %} to parameterize the lognormal prior on the root
@@ -287,16 +290,16 @@ monitor its age.
 
 Next, create the vector of moves. These tree moves act on node ages:
 
-    moves[mvi++] = mvNodeTimeSlideUniform(timetree, weight=30.0)
-    moves[mvi++] = mvSlide(root_time, delta=2.0, tune=true, weight=10.0)
-    moves[mvi++] = mvScale(root_time, lambda=2.0, tune=true, weight=10.0)
-    moves[mvi++] = mvTreeScale(tree=timetree, rootAge=root_time, delta=1.0, tune=true, weight=3.0)
+    moves.append( mvNodeTimeSlideUniform(timetree, weight=30.0) )
+    moves.append( mvSlide(root_time, delta=2.0, tune=true, weight=10.0) )
+    moves.append( mvScale(root_time, lambda=2.0, tune=true, weight=10.0) )
+    moves.append( mvTreeScale(tree=timetree, rootAge=root_time, delta=1.0, tune=true, weight=3.0) )
 
 Then, we will add moves that will propose changes to the tree topology.
 
-    moves[mvi++] = mvNNI(timetree, weight=8.0)
-    moves[mvi++] = mvNarrow(timetree, weight=8.0)
-    moves[mvi++] = mvFNPR(timetree, weight=8.0)
+    moves.append( mvNNI(timetree, weight=8.0) )
+    moves.append( mvNarrow(timetree, weight=8.0) )
+    moves.append( mvFNPR(timetree, weight=8.0) )
 
 Now save and close the file. This file, with all the model
 specifications will be loaded by other `Rev` files.
@@ -336,7 +339,7 @@ still depend on variable initialized in different files.
 The clock-rate parameter is a stochastic node from a gamma distribution.
 
     clock_rate ~ dnGamma(2.0,4.0)
-    moves[mvi++] = mvScale(clock_rate,lambda=0.5,tune=true,weight=5.0)
+    moves.append( mvScale(clock_rate,lambda=0.5,tune=true,weight=5.0)
 
 ***The Sequence Model and Phylogenetic CTMC***
 
@@ -346,8 +349,8 @@ them.
     sf ~ dnDirichlet(v(1,1,1,1))
     er ~ dnDirichlet(v(1,1,1,1,1,1))
     Q := fnGTR(er,sf)
-    moves[mvi++] = mvSimplexElementScale(er, alpha=10.0, tune=true, weight=3.0)
-    moves[mvi++] = mvSimplexElementScale(sf, alpha=10.0, tune=true, weight=3.0)
+    moves.append( mvSimplexElementScale(er, alpha=10.0, tune=true, weight=3.0)
+    moves.append( mvSimplexElementScale(sf, alpha=10.0, tune=true, weight=3.0)
 ```
 And instantiate the phyloCTMC.
 ```
@@ -510,8 +513,8 @@ The only stochastic nodes we need to operate on for this part of the
 model are the lognormal mean ($M$ or `ucln_mean`) and the standard
 deviation ($\sigma$ or `ucln_sigma`).
 
-    moves[mvi++] = mvScale(ucln_mean, lambda=1.0, tune=true, weight=4.0)
-    moves[mvi++] = mvScale(ucln_sigma, lambda=0.5, tune=true, weight=4.0)
+    moves.append( mvScale(ucln_mean, lambda=1.0, tune=true, weight=4.0)
+    moves.append( mvScale(ucln_sigma, lambda=0.5, tune=true, weight=4.0)
 
 With our nodes representing the $\mu$ and $\sigma$ of the lognormal
 distribution, we can create the vector of stochastic nodes for each of
@@ -520,7 +523,7 @@ move for each branch-rate stochastic node to our moves vector.
 
     for(i in 1:n_branches){
        branch_rates[i] ~ dnLnorm(ucln_mu, ucln_sigma)
-       moves[mvi++] = mvScale(branch_rates[i], lambda=1, tune=true, weight=2.)
+       moves.append( mvScale(branch_rates[i], lambda=1, tune=true, weight=2.)
     }
 
 ***Sidebar: Other Uncorrelated-Rates Models***
@@ -545,8 +548,8 @@ to apply a range of moves to the variables representing the branch rates
 and branch times. This will help to improve the mixing of our MCMC. Here
 we will add 2 additional types of moves that act on vectors.
 
-    moves[mvi++] = mvVectorScale(branch_rates,lambda=1.0,tune=true,weight=2.0) 
-    moves[mvi++] = mvVectorSingleElementScale(branch_rates,lambda=30.0,tune=true,weight=1.0) 
+    moves.append( mvVectorScale(branch_rates,lambda=1.0,tune=true,weight=2.0) 
+    moves.append( mvVectorSingleElementScale(branch_rates,lambda=30.0,tune=true,weight=1.0) 
 
 The mean of the branch rates is a convenient deterministic node to
 monitor, particularly in the screen output when conducting MCMC.
@@ -561,8 +564,8 @@ GTR matrix.
     sf ~ dnDirichlet(v(1,1,1,1))
     er ~ dnDirichlet(v(1,1,1,1,1,1))
     Q := fnGTR(er,sf)
-    moves[mvi++] = mvSimplexElementScale(er, alpha=10.0, tune=true, weight=3.0)
-    moves[mvi++] = mvSimplexElementScale(sf, alpha=10.0, tune=true, weight=3.0)
+    moves.append( mvSimplexElementScale(er, alpha=10.0, tune=true, weight=3.0)
+    moves.append( mvSimplexElementScale(sf, alpha=10.0, tune=true, weight=3.0)
 
 Now, we can put the whole model together in the phylogenetic CTMC and
 clamp that node with our sequence data.

@@ -82,7 +82,7 @@ monitors.append( mnScreen(printgen=1000, birth_rate, death_rate) )
 ################
 
 ### workspace mcmc ###
-mymcmc = mcmc(mymodel, monitors, moves, nruns=2)
+mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
 
 ### run the MCMC ###
 mymcmc.run(generations=50000, tuningInterval=200)
