@@ -11,8 +11,9 @@ taxa = data_ITS.taxa()
 num_taxa = data_ITS.ntaxa()
 num_branches = 2 * num_taxa - 3
 
-# make a move index variable
-mvi = 1
+# Create some vector for the moves and monitors of this analysis
+moves    = VectorMoves()
+monitors = VectorMonitors()
 
 # name the analysis
 name = "partition_1"
@@ -23,8 +24,8 @@ name = "partition_1"
 
 # We assume a uniform prior on topology.
 topology ~ dnUniformTopology(taxa)
-moves[mvi++] = mvNNI(topology, weight=10.0)
-moves[mvi++] = mvSPR(topology, weight=10.0)
+moves.append( mvNNI(topology, weight=10.0) )
+moves.append( mvSPR(topology, weight=10.0) )
 
 ##########################################
 # Define the prior on the branch lengths #
@@ -32,7 +33,7 @@ moves[mvi++] = mvSPR(topology, weight=10.0)
 
 for(i in 1:num_branches){
   br_lens[i] ~ dnExponential(10.0)
-  moves[mvi++] = mvScale(br_lens[i], weight=1.0)
+  moves.append( mvScale(br_lens[i], weight=1.0) )
 }
 TL := sum(br_lens)
 
@@ -49,10 +50,10 @@ phylogeny := treeAssembly(topology, br_lens)
 # each gene has the same GTR model
 
 pi ~ dnDirichlet(v(1,1,1,1))
-moves[mvi++] = mvBetaSimplex(pi, weight=1.0)
+moves.append( mvBetaSimplex(pi, weight=1.0)
 
 er ~ dnDirichlet(v(1,1,1,1,1,1))
-moves[mvi++] = mvBetaSimplex(er, weight=1.0)
+moves.append( mvBetaSimplex(er, weight=1.0)
 
 Q := fnGTR(er, pi)
 
@@ -62,8 +63,8 @@ Q := fnGTR(er, pi)
 
 # each gene has the same ASRV model
 
-alpha ~ dnExponential(1)
-moves[mvi++] = mvScale(alpha, weight=1.0)
+alpha ~ dnUniform(0,1E8)
+moves.append( mvScale(alpha, weight=1.0)
 
 site_rates := fnDiscretizeGamma(alpha, alpha, 4)
 
@@ -91,9 +92,9 @@ my_model = model(phylogeny)
 # Make the monitors #
 #####################
 
-monitors[1] = mnModel(filename="output/" + name + "/posterior_samples.log",printgen=10, separator = TAB)
-monitors[2] = mnFile(filename="output/" + name + "/tree_samples.trees",printgen=10, separator = TAB, phylogeny)
-monitors[3] = mnScreen(printgen=100, TL)
+monitors.append( mnModel(filename="output/" + name + "/posterior_samples.log",printgen=10, separator = TAB) )
+monitors.append( mnFile(filename="output/" + name + "/tree_samples.trees",printgen=10, separator = TAB, phylogeny) )
+monitors.append( mnScreen(printgen=100, TL) )
 
 ################
 # Run the MCMC #
