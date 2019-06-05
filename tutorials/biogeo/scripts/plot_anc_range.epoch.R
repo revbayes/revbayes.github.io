@@ -46,7 +46,7 @@ pp = pp + labs(x="Age (Ma)")
 pp = pp + coord_cartesian(xlim=c(x0,x1), expand=TRUE)
 
 # plot axis ticks
-island_axis = sec_axis(~ ., breaks=x_phy-c(6.15, 4.15, 2.55, 1.2), labels=c("+K","+O","+M","+H") )
+island_axis = sec_axis(~ ., breaks=x_phy-c(5.1, 2.95, 1.55, 0.5), labels=c("+K","+O","+M","+H") )
 x_breaks = seq(0,x_start,1) + x0
 x_labels = rev(seq(0,x_start,1))
 pp = pp + scale_x_continuous(breaks=x_breaks, labels=x_labels, sec.axis=island_axis)
