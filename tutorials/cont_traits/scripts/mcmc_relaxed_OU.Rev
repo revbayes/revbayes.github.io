@@ -1,0 +1,122 @@
+################################################################################
+#
+# RevBayes Example: Bayesian inference of rates of evolution under a
+#                   constant-rate Brownian-motion model
+#
+#
+# authors: Michael R. May
+#
+################################################################################
+
+#######################
+# Reading in the Data #
+#######################
+
+### Select the dataset to analyze
+dataset <- 1
+
+### Read in the trees
+T <- readTrees("data/trees.nex")[dataset]
+ntips     <- T.ntips()
+nbranches <- 2 * ntips - 2
+
+### Read in the character data
+data <- readContinuousCharacterData("data/traits.nex")[dataset]
+
+# Create some vector for the moves and monitors of this analysis
+moves    = VectorMoves()
+monitors = VectorMonitors()
+
+##########################
+# Specify the tree model #
+##########################
+
+tree <- T
+
+##########################
+# Specify the rate model #
+##########################
+
+# specify the rate parameter
+sigma2 ~ dnLoguniform(1e-3, 1)
+moves.append( mvScale(sigma2, weight=1.0) )
+
+# specify the strength parameter
+alpha ~ dnExponential(10)
+moves.append( mvScale(alpha, weight=1.0) )
+
+# specify theta at the root of the tree
+theta_root ~ dnUniform(-10, 10)
+moves.append( mvSlide(theta_root, weight=1.0) )
+
+# specify the prior on the number of optimum shifts
+expected_number_of_shifts <- 5
+shift_probability    <- expected_number_of_shifts / nbranches
+
+# specify the prior on the magnitude of optimum shifts
+shift_distribution = dnNormal(0, 0.587)
+
+# specify the branch-specific thetas
+for(i in nbranches:1) {
+
+    # draw the theta shift from a mixture distribution
+    branch_deltas[i] ~ dnReversibleJumpMixture(0, shift_distribution, Probability(1 - shift_probability) )
+
+    # compute the theta for the branch
+    if ( tree.isRoot( tree.parent(i) ) ) {
+       branch_thetas[i] := theta_root + branch_deltas[i]
+    } else {
+       branch_thetas[i] := branch_thetas[tree.parent(i)] + branch_deltas[i]
+    }
+
+    # keep track of whether the branch has a shift
+    branch_theta_shift[i] := ifelse( branch_deltas[i] == 0, 0, 1 )
+
+    # use reversible-jump to move between models with and without
+    # shifts on the branch
+    moves.append( mvRJSwitch(branch_deltas[i], weight=1) )
+
+    # include proposals on the shift (when it is not 1)
+    moves.append( mvScale(branch_deltas[i], weight=1) )
+
+}
+
+# keep track of the number of theta shifts
+num_theta_changes := sum( branch_theta_shift )
+
+##########################
+# Specify the BM process #
+##########################
+
+X ~ dnPhyloOrnsteinUhlenbeckREML(tree, alpha, branch_thetas, sigma2^0.5, rootStates=theta_root)
+X.clamp(data)
+
+#############
+# The Model #
+#############
+
+mymodel = model(X)
+
+### set up the monitors that will output parameter values to file and screen
+monitors.append( mnModel(filename="output/relaxed_OU.log", printgen=10) )
+monitors.append( mnScreen(printgen=1000, sigma2, num_theta_changes) )
+
+
+
+
+################
+# The Analysis #
+################
+
+### workspace mcmc ###
+mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
+
+
+### run the MCMC ###
+mymcmc.burnin(generations=1000, tuningInterval=100)
+mymcmc.run(generations=50000)
+
+
+
+## quit ##
+q()

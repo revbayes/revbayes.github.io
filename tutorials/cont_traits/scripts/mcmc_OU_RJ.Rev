@@ -13,7 +13,7 @@
 #######################
 
 ### Select the dataset to analyze
-dataset <- 3
+dataset <- 1
 
 ### Read in the trees
 T <- readTrees("data/trees.nex")[dataset]
@@ -35,10 +35,10 @@ tree <- T
 # Specify the rate model #
 ##########################
 
-sigma ~ dnLoguniform(1e-5, 1e5)
-moves.append( mvScale(sigma, weight=1.0) )
+sigma2 ~ dnLoguniform(1e-3, 1e1)
+moves.append( mvScale(sigma2, weight=1.0) )
 
-alpha ~ dnReversibleJumpMixture(0.0, dnLoguniform(1e-5, 1e5), 0.5)
+alpha ~ dnReversibleJumpMixture(0.0, dnExponential(10), 0.5)
 moves.append( mvRJSwitch(alpha, weight=1.0) )
 moves.append( mvScale(alpha, weight=1.0) )
 
@@ -52,7 +52,7 @@ is_BM := ifelse(alpha == 0.0, 1, 0)
 # Specify the BM process #
 ##########################
 
-char ~ dnPhyloOrnsteinUhlenbeckREML(tree, alpha, theta, sigma, rootStates=theta)
+char ~ dnPhyloOrnsteinUhlenbeckREML(tree, alpha, theta, sigma2^0.5, rootStates=theta)
 char.clamp(X)
 
 
@@ -67,7 +67,7 @@ mymodel = model(tree)
 
 ### set up the monitors that will output parameter values to file and screen
 monitors.append( mnModel(filename="output/simple_OU_RJ.log", printgen=10) )
-monitors.append( mnScreen(printgen=1000, sigma, alpha, theta, is_OU) )
+monitors.append( mnScreen(printgen=1000, sigma2, alpha, theta, is_OU) )
 
 
 

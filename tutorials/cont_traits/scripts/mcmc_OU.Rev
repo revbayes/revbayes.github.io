@@ -19,7 +19,7 @@ dataset <- 1
 T <- readTrees("data/trees.nex")[dataset]
 
 ### Read in the character data
-X <- readContinuousCharacterData("data/traits.nex")[dataset]
+data <- readContinuousCharacterData("data/traits.nex")[dataset]
 
 # Create some vector for the moves and monitors of this analysis
 moves    = VectorMoves()
@@ -35,10 +35,10 @@ tree <- T
 # Specify the rate model #
 ##########################
 
-sigma ~ dnLoguniform(1e-5, 1e5)
-moves.append( mvScale(sigma, weight=1.0) )
+sigma2 ~ dnLoguniform(1e-3, 1e1)
+moves.append( mvScale(sigma2, weight=1.0) )
 
-alpha ~ dnLoguniform(1e-5, 1e5)
+alpha ~ dnExponential(10)
 moves.append( mvScale(alpha, weight=1.0) )
 
 theta ~ dnUniform(-10, 10)
@@ -48,8 +48,8 @@ moves.append( mvSlide(theta, weight=1.0) )
 # Specify the BM process #
 ##########################
 
-char ~ dnPhyloOrnsteinUhlenbeckREML(tree, alpha, theta, sigma, rootStates=theta)
-char.clamp(X)
+X ~ dnPhyloOrnsteinUhlenbeckREML(tree, alpha, theta, sigma2^0.5, rootStates=theta)
+X.clamp(data)
 
 
 
@@ -63,7 +63,7 @@ mymodel = model(tree)
 
 ### set up the monitors that will output parameter values to file and screen
 monitors.append( mnModel(filename="output/simple_OU.log", printgen=10) )
-monitors.append( mnScreen(printgen=1000, sigma, alpha, theta) )
+monitors.append( mnScreen(printgen=1000, sigma2, alpha, theta) )
 
 
 

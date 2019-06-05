@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: Simple Ornstein-Uhlenbeck Models</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
+      </a>
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/software">Software</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/documentation/">Documentation</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/jobs/">Jobs</a></li>
+        <li><a href="/developer/">Developer</a></li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <div class="titlebar">
+	<h1 class="maintitle">Simple Ornstein-Uhlenbeck Models</h1>
+	<h3 class="subtitle">Estimating optima under Ornstein-Uhlenbeck evolution</h3>
+	<h4 class="authors">Michael R. May</h4>
+  <h5>Last modified on June  5, 2019</h5>
+</div>
+
+
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul id="prerequisites">
+          
+            <li><a href="/tutorials/intro/">Rev Language Syntax</a></li>
+          
+            <li><a href="/tutorials/intro_rev/">Basic introduction to Rev & MCMC</a></li>
+          
+            <li><a href="/tutorials/mcmc_archery/">Introduction to MCMC using RevBayes</a></li>
+          
+            <li><a href="/tutorials/mcmc_binomial/">Introduction to MCMC using RevBayes</a></li>
+          
+            <li><a href="/tutorials/cont_traits/cont_trait_intro.html">Introduction to Models of Continuous-Character Evolution</a></li>
+          
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+
+
+
+
+<blockquote class="tutorial_files" id="tutorial_files">
+    <h2>Data files and scripts</h2>
+    
+        
+        <strong>Other</strong>
+        <ul id="other_files">
+        
+        
+        
+          <li><a href="/tutorials/cont_traits/scripts/mcmc_OU.Rev">mcmc_OU.Rev</a></li>
+        
+          <li><a href="/tutorials/cont_traits/data/traits.nex">traits.nex</a></li>
+        
+          <li><a href="/tutorials/cont_traits/data/trees.nex">trees.nex</a></li>
+        
+        </ul>
+    
+</blockquote>
+
+
+</div>
+<h2 class="section" id="estimating-evolutionary-optima">Estimating Evolutionary Optima</h2>
+<hr class="section" />
+
+<p>This tutorial demonstrates how to specify an Ornstein-Uhlenbeck model where the optimal phenotype is assumed to be constant among branches of a time-calibrated phylogeny <a href="#Hansen1997">(Hansen 1997; Butler and King 2004)</a> using the datasets of (log) body-size across vertebrate clades from (missing reference). We provide the probabilistic graphical model representation of each component for this tutorial. After specifying the model, you will estimate the parameters of Ornstein-Uhlenbeck evolution using Markov chain Monte Carlo (MCMC).</p>
+
+<h2 class="section" id="ornstein-uhlenbeck-model">Ornstein-Uhlenbeck Model</h2>
+<hr class="section" />
+
+<p>Under the simple Ornstein-Uhlenbeck (OU) model, a continuous character is assumed to evolve toward an optimal value, $\theta$. The character evolves stochastically according to a drift parameter, $\sigma^2$. The character is pulled toward the optimum by a strength parameter, $\alpha$; larger values of alpha indicate that the character is pulled more strongly toward $\theta$. As the character moves away from $\theta$, the parameter $\alpha$ determines how strongly the character is pulled back. For this reason, $\alpha$ is sometimes referred to as a ‘‘rubber band’’ parameter. When the selection parameter $\alpha = 0$, the OU model collapses to the BM model. The resulting graphical model is quite simple, as the probability of the continuous characters depends only on the phylogeny (which we assume to be known in this tutorial) and the three OU parameter (<a href="#fig_ou_gm"></a>).</p>
+
+<figure id="fig_ou_gm"><p><img src="figures/ou_gm.png" width="50%" height="50%" /></p>
+<figcaption>The graphical model representation of the homogeneous Ornstein-Uhlenbeck (OU) process.
+For more information about graphical model representations see <a href="#Hoehna2014b">Höhna et al. (2014)</a>.</figcaption>
+</figure>
+
+<p>In this tutorial, we use the 66 vertebrate phylogenies and (log) body-size datasets from <a href="#Landis2017b">(Landis and Schraiber 2017)</a>.</p>
+
+<p>⇨ The full OU-model specification is in the file called <code class="highlighter-rouge">mcmc_OU.Rev</code>.</p>
+
+<h3 class="subsection" id="read-the-data">Read the data</h3>
+<hr class="subsection" />
+
+<p>We begin by deciding which of the 66 vertebrate datasets to use. Here, we assume we are analyzing the first dataset (<em>Acanthuridae</em>), but you should feel free to choose any of the datasets.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dataset &lt;- 1
+</code></pre></div></div>
+
+<p>Now, we read in the (time-calibrated) tree corresponding to our chosen dataset.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>T &lt;- readTrees("data/trees.nex")[dataset]
+</code></pre></div></div>
+
+<p>Next, we read in the character data for the same dataset.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data &lt;- readContinuousCharacterData("data/traits.nex")[dataset]
+</code></pre></div></div>
+
+<p>Additionally, we initialize a variable for our vector of
+moves and monitors:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
+monitors = VectorMonitors()
+</code></pre></div></div>
+
+<h3 class="subsection" id="specifying-the-model">Specifying the model</h3>
+<hr class="subsection" />
+
+<h4 class="subsubsection" id="tree-model">Tree model</h4>
+<hr class="subsubsection" />
+
+<p>In this tutorial, we assume the tree is known without area. We create a constant node for the tree that corresponds to the observed phylogeny.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tree &lt;- T
+</code></pre></div></div>
+
+<h4 class="subsubsection" id="rate-parameter">Rate parameter</h4>
+<hr class="subsubsection" />
+
+<p>The stochastic rate of evolution is controlled by the rate parameter, $\sigma^2$. We draw the rate parameter from a loguniform prior. This prior is uniform on the log scale, which means that it is represents ignorance about the <em>order of magnitude</em> of the rate.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sigma2 ~ dnLoguniform(1e-3, 1)
+</code></pre></div></div>
+
+<p>In order to estimate the posterior distribution of $\sigma^2$, we must provide an MCMC proposal mechanism that operates on this node. Because $\sigma^2$ is a rate parameter, and must therefore be positive, we use a scaling move called <code class="highlighter-rouge">mvScale</code>.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale(sigma2, weight=1.0) )
+</code></pre></div></div>
+
+<h4 class="subsubsection" id="strength-parameter">Strength parameter</h4>
+<hr class="subsubsection" />
+
+<p>The strength of selection toward the optimum is determined by the parameter $\alpha$. We draw $\alpha$ from an exponential prior distribution, and place a scale proposal on it.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha ~ dnExponential(10)
+moves.append( mvScale(alpha, weight=1.0) )
+</code></pre></div></div>
+
+<h4 class="subsubsection" id="optimum">Optimum</h4>
+<hr class="subsubsection" />
+
+<p>We draw the optimal value from a vague uniform prior ranging from -10 to 10 (you should change this prior if your character is outside of this range). Because this parameter can be positive or negative, we use a slide move to propose changes during MCMC.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>theta ~ dnUniform(-10, 10)
+moves.append( mvSlide(theta, weight=1.0) )
+</code></pre></div></div>
+
+<h4 class="subsubsection" id="ornstein-uhlenbeck-model">Ornstein-Uhlenbeck model</h4>
+<hr class="subsubsection" />
+
+<p>Now that we have specified the parameters of the model, we can draw the character data from the corresponding phylogenetic OU model. In this example, we use the REML algorithm to efficiently compute the likelihood <a href="#Felsenstein1985a">(Felsenstein 1985)</a>. We assume the character begins at the optimal value at the root of the tree.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>X ~ dnPhyloOrnsteinUhlenbeckREML(tree, alpha, theta, sigma2^0.5, rootStates=theta)
+</code></pre></div></div>
+
+<p>Noting that $X$ is the observed data (<a href="#fig_bm_gm"></a>), we clamp the <code class="highlighter-rouge">data</code> to this stochastic node.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>X.clamp(data)
+</code></pre></div></div>
+
+<p>Finally, we create a workspace object for the entire model with <code class="highlighter-rouge">model()</code>. Remeber that workspace objects are initialized with the <code class="highlighter-rouge">=</code> operator, and are not themselves part of the Bayesian graphical model. The <code class="highlighter-rouge">model()</code> function traverses the entire model graph and finds all the nodes in the model that we specified. This object provides a convenient way to refer to the whole model object, rather than just a single DAG node.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(theta)
+</code></pre></div></div>
+
+<h3 class="subsection" id="running-an-mcmc-analysis">Running an MCMC analysis</h3>
+<hr class="subsection" />
+
+<h4 class="subsubsection" id="specifying-monitors">Specifying Monitors</h4>
+<hr class="subsubsection" />
+
+<p>For our MCMC analysis, we need to set up a vector of <em>monitors</em> to record the states of our Markov chain. The monitor functions are all called <code class="highlighter-rouge">mn*</code>, where <code class="highlighter-rouge">*</code> is the wildcard representing the monitor type. First, we will initialize the model monitor using the <code class="highlighter-rouge">mnModel</code> function. This creates a new monitor variable that will output the states for all model parameters when passed into a MCMC function.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/simple_OU.log", printgen=10) )
+</code></pre></div></div>
+<p>Additionally, create a screen monitor that will report the states of
+specified variables to the screen with <code class="highlighter-rouge">mnScreen</code>:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(printgen=1000, sigma2, alpha, theta) )
+</code></pre></div></div>
+
+<h4 class="subsubsection" id="initializing-and-running-the-mcmc-simulation">Initializing and Running the MCMC Simulation</h4>
+<hr class="subsubsection" />
+
+<p>With a fully specified model, a set of monitors, and a set of moves, we
+can now set up the MCMC algorithm that will sample parameter values in
+proportion to their posterior probability. The <code class="highlighter-rouge">mcmc()</code> function will
+create our MCMC object:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
+</code></pre></div></div>
+<p>Now, run the MCMC:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=50000)
+</code></pre></div></div>
+<p>When the analysis is complete, you will have the monitored files in your
+output directory.</p>
+
+<p>⇨ The <code class="highlighter-rouge">Rev</code> file for performing this analysis: <code class="highlighter-rouge">mcmc_OU.Rev</code></p>
+
+<p>Characters evolving under the OU process will tend toward a stationary distribution, which is a normal distribution with mean $\theta$ and variance $\sigma^2 \div 2\alpha$. Therefore, if rates of evolution are high (or the branches in the tree are relatively long), it can be difficult to estimate $\sigma^2$ and $\alpha$ separately, since they both determine the long-term variance of the process. We can see whether this affects our analysis by examining the <em>joint posterior distribution</em> of the parameters in <code class="highlighter-rouge">Tracer</code>. When the parameters are positively correlated, we should hesitate to interpret their marginal distributions (<em>i.e.</em>, don’t make inferences about the strength parameter or the rate parameter separately).</p>
+
+<figure id="ou_figure"><p><img src="figures/ou_joint_posterior.png" height="50%" width="50%" /></p>
+<figcaption>Estimates of the joint posterior distribution of strength parameter, $\alpha$ (x-axis), and the rate of evolution, $\sigma^2$ (y-axis). Note that these parameters are positively correlated.</figcaption>
+</figure>
+
+<!--  -->
+
+<h3 class="subsection" id="exercise-1">Exercise 1</h3>
+<hr class="subsection" />
+
+<ul>
+  <li>Run an MCMC simulation to estimate the posterior distribution of the OU optimum (<code class="highlighter-rouge">theta</code>).</li>
+  <li>Load the generated output file into <code class="highlighter-rouge">Tracer</code>: What is the mean posterior estimate of <code class="highlighter-rouge">theta</code> and what is the estimated HPD?</li>
+  <li>Use <code class="highlighter-rouge">Tracer</code> to compare the joint posterior distributions of <code class="highlighter-rouge">alpha</code> and <code class="highlighter-rouge">sigma2</code>. Are these parameters correlated or uncorrelated?</li>
+  <li>Compare the prior mean with the posterior mean. (<strong>Hint:</strong> Use the optional argument <code class="highlighter-rouge">underPrior=TRUE</code> in the function <code class="highlighter-rouge">mymcmc.run()</code>) Are they different (<em>e.g.,</em> <a href="#fig_prior_posterior"></a>)? Is the posterior mean outside the prior 95% probability interval?</li>
+</ul>
+
+<h2 class="section" id="comparing-ou-and-bm-models">Comparing OU and BM models</h2>
+<hr class="section" />
+
+<p>Now that we can fit both BM and OU models, we might naturally want to know which model does fits better. In this section, we will learn how to use reversible-jump Markov chain Monte Carlo to compare the fit of OU and BM models.</p>
+
+<h3 class="subsection" id="model-selection-using-reversible-jump-mcmc">Model Selection using Reversible-Jump MCMC</h3>
+<hr class="subsection" />
+
+<p>To test the hypothesis that a character evolves toward a selective optimum, we imagine two models. The first model, where there is no selection, is the case when $\alpha = 0$. The second model corresponds to the OU model with $\alpha &gt; 0$. This works because Brownian motion is a special case of the OU model when the strength of selection is 0. Unfortunately, because $\alpha$ is a continuous parameters, a standard Markov chain will never visit states where each value is exactly equal to 0. Fortunately, we can use reversible jump to allow the Markov chain to consider visiting the Brownian-motion model. This involves specifying the prior probability on each of the two models, and providing the prior distribution for $\alpha$ for the OU model.</p>
+
+<p>Using rjMCMC allows the Markov chain to visit the two models in proportion to their posterior probability. The posterior probability of model $i$ is simply the fraction of samples where the chain was visiting that model. Because we also specify a prior on the models, we can compute a Bayes Factor for the OU model as:</p>
+
+<script type="math/tex; mode=display">\begin{equation}
+    \text{BF}_\text{OU} = \frac{ P( \text{OU model} \mid X) }{ P( \text{BM model} \mid X) } \div \frac{ P( \text{OU model}) }{ P( \text{BM model}) },
+\end{equation}</script>
+
+<p>where $P( \text{OU model} \mid X)$ and $P( \text{OU model})$ are the posterior probability and prior probability of the OU model, respectively.</p>
+
+<h4 class="subsubsection" id="reversible-jump-between-ou-and-bm-models">Reversible-jump between OU and BM models</h4>
+<hr class="subsubsection" />
+
+<p>To enable rjMCMC, we simply have to place a reversible-jump prior on the relevant parameter, $\alpha$. We can modify the prior on <code class="highlighter-rouge">alpha</code> so that it takes either a constant value of 0, or is drawn from a prior distribution. Finally, we specify a prior probability on the OU model of <code class="highlighter-rouge">p = 0.5</code>.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha ~ dnReversibleJumpMixture(0.0, dnExponential(10), 0.5)
+</code></pre></div></div>
+<p>We then provide a reversible-jump proposal on <code class="highlighter-rouge">alpha</code> that proposes changes between the two models.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvRJSwitch(alpha, weight=1.0) )
+</code></pre></div></div>
+<p>Additionally, we provide the normal <code class="highlighter-rouge">mvScale</code> proposal for when the MCMC is visiting the OU model.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale(alpha, weight=1.0) )
+</code></pre></div></div>
+<p>We include a variable that has a value of <code class="highlighter-rouge">1</code> when the chain is visiting the OU model, and a corresponding variable that has value <code class="highlighter-rouge">1</code> when it is visiting the BM model. This will allow us to easily compute the posterior probability of the models because we simply need to compute the posterior mean value of this parameter.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>is_OU := ifelse(alpha != 0.0, 1, 0)
+is_BM := ifelse(alpha == 0.0, 1, 0)
+</code></pre></div></div>
+<p>The fraction of samples for which <code class="highlighter-rouge">is_OU = 1</code> is the posterior probability of the OU model. Alternatively, the posterior mean estimate of this indicator variable corresponds to the posterior probability of the OU model. These values can be used in the Bayes Factor equation above to compute the Bayes Factor support for either model.</p>
+
+<!--  -->
+
+
+<ol class="bibliography"><li><span id="Butler2004">Butler M.A., King A.A. 2004. Phylogenetic comparative analysis: a modeling approach for adaptive evolution. The American Naturalist. 164:683–695.</span>
+
+</li>
+<li><span id="Felsenstein1985a">Felsenstein J. 1985. Phylogenies and the comparative method. The American Naturalist.:1–15.</span>
+
+<a href="https://doi.org/10.1086/284325">10.1086/284325</a>
+
+</li>
+<li><span id="Hansen1997">Hansen T.F. 1997. Stabilizing selection and the comparative analysis of adaptation. Evolution. 51:1341–1351.</span>
+
+</li>
+<li><span id="Hoehna2014b">Höhna S., Heath T.A., Boussau B., Landis M.J., Ronquist F., Huelsenbeck J.P. 2014. Probabilistic Graphical Model Representation in Phylogenetics. Systematic Biology. 63:753–771.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syu039">10.1093/sysbio/syu039</a>
+
+</li>
+<li><span id="Landis2017b">Landis M.J., Schraiber J.G. 2017. Pulsed evolution shaped modern vertebrate body sizes. Proceedings of the National Academy of Sciences. 114:13224–13229.</span>
+
+<a href="https://doi.org/10.1073/pnas.1710920114">10.1073/pnas.1710920114</a>
+
+</li></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+
+<script src="/assets/js/base.js"></script>
+
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+  });
+</script>
+
+  </body>
+</html>
