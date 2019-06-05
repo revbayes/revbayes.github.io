@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: Simple Brownian Rate Estimation</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
+      </a>
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/software">Software</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/documentation/">Documentation</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/jobs/">Jobs</a></li>
+        <li><a href="/developer/">Developer</a></li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <div class="titlebar">
+	<h1 class="maintitle">Simple Brownian Rate Estimation</h1>
+	<h3 class="subtitle">Estimating rates of Brownian-motion evolution</h3>
+	<h4 class="authors">Michael R. May</h4>
+  <h5>Last modified on June  4, 2019</h5>
+</div>
+
+
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul id="prerequisites">
+          
+            <li><a href="/tutorials/intro/">Rev Language Syntax</a></li>
+          
+            <li><a href="/tutorials/intro_rev/">Basic introduction to Rev & MCMC</a></li>
+          
+            <li><a href="/tutorials/mcmc_archery/">Introduction to MCMC using RevBayes</a></li>
+          
+            <li><a href="/tutorials/mcmc_binomial/">Introduction to MCMC using RevBayes</a></li>
+          
+            <li><a href="/tutorials/cont_traits/cont_trait_intro.html">Introduction to Models of Continuous-Character Evolution</a></li>
+          
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+
+
+
+
+<blockquote class="tutorial_files" id="tutorial_files">
+    <h2>Data files and scripts</h2>
+    
+        
+        <strong>Other</strong>
+        <ul id="other_files">
+        
+        
+        
+          <li><a href="/tutorials/cont_traits/scripts/mcmc_BM.Rev">mcmc_BM.Rev</a></li>
+        
+          <li><a href="/tutorials/cont_traits/data/traits.nex">traits.nex</a></li>
+        
+          <li><a href="/tutorials/cont_traits/data/trees.nex">trees.nex</a></li>
+        
+        </ul>
+    
+</blockquote>
+
+
+</div>
+<h2 class="section" id="estimating-constant-rates-of-evolution">Estimating Constant Rates of Evolution</h2>
+<hr class="section" />
+
+<p>This tutorial demonstrates how to specify a Brownian-motion model where the rate of evolution is assumed to be constant among branches of a time-calibrated phylogeny <a href="#Felsenstein1985a">(Felsenstein 1985)</a> using the datasets of (log) body-size across vertebrate clades from (missing reference). We provide the probabilistic graphical model representation of each component for this tutorial. After specifying the model, you will estimate the rate of Brownian-motion evolution using Markov chain Monte Carlo (MCMC).</p>
+
+<h2 class="section" id="brownian-motion-model">Brownian-motion Model</h2>
+<hr class="section" />
+
+<p>Under the simple Brownian-motion (BM) model, the evolution of a continuous character is entirely determined by a single rate parameter, $\sigma^2$. The expected amount of change over a single branch of length $t$ is zero, and the variance in changes is $t \times \sigma^2$. We can estimate the posterior distribution of the rate parameter under this model by placing a prior on $\sigma^2$. The resulting graphical model is quite simple, as the probability of the continuous characters depends only on the phylogeny (which we assume to be known in this tutorial) and the rate parameter (<a href="#fig_bm_gm"></a>).</p>
+
+<figure id="fig_bm_gm"><p><img src="figures/bm_gm2.png" width="50%" height="50%" /></p>
+<figcaption>The graphical model representation of the constant-rate Brownian-motion (BM) process.
+For more information about graphical model representations see <a href="#Hoehna2014b">Höhna et al. (2014)</a>.</figcaption>
+</figure>
+
+<p>For this exercise, we will specify a BM model, such that the rate parameter is a stochastic node, drawn from a Loguniform prior distribution, as depicted in <a href="#fig_bm_gm"></a>. As we are specifying a Bayesian model, we focus on estimating the posterior distribution of the rate parameter given the continuous characters, $X$:</p>
+
+<script type="math/tex; mode=display">\begin{equation}
+    P(\sigma^2 \mid X) = \frac{P(X \mid \sigma^2) P(\sigma^2)}{P(X)}
+\tag{Bayes Theorem}\label{eq:bayes_thereom}
+\end{equation}</script>
+
+<p>In this tutorial, we use the 66 vertebrate phylogenies and (log) body-size datasets from <a href="#Landis2017b">(Landis and Schraiber 2017)</a>.</p>
+
+<p>⇨ The full BM-model specification is in the file called <code class="highlighter-rouge">mcmc_BM.Rev</code>.</p>
+
+<h3 class="subsection" id="read-the-data">Read the data</h3>
+<hr class="subsection" />
+
+<p>We begin by deciding which of the 66 vertebrate datasets to use. Here, we assume we are analyzing the first dataset (<em>Acanthuridae</em>), but you should feel free to choose any of the datasets.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dataset &lt;- 1
+</code></pre></div></div>
+
+<p>Now, we read in the (time-calibrated) tree corresponding to our chosen dataset.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>T &lt;- readTrees("data/trees.nex")[dataset]
+</code></pre></div></div>
+
+<p>Next, we read in the character data for the same dataset.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data &lt;- readContinuousCharacterData("data/traits.nex")[dataset]
+</code></pre></div></div>
+
+<p>Additionally, we initialize a variable for our vector of
+moves and monitors:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
+monitors = VectorMonitors()
+</code></pre></div></div>
+
+<h3 class="subsection" id="specifying-the-model">Specifying the model</h3>
+<hr class="subsection" />
+
+<h4 class="subsubsection" id="tree-model">Tree model</h4>
+<hr class="subsubsection" />
+
+<p>In this tutorial, we assume the tree is known without area. We create a constant node for the tree that corresponds to the observed phylogeny.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tree &lt;- T
+</code></pre></div></div>
+
+<h4 class="subsubsection" id="rate-parameter">Rate parameter</h4>
+<hr class="subsubsection" />
+
+<p>The constant-rate BM model has just one parameter, $\sigma^2$. We draw the rate parameter from a loguniform prior. This prior is uniform on the log scale, which means that it is represents ignorance about the <em>order of magnitude</em> of the rate.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sigma2 ~ dnLoguniform(1e-3, 1)
+</code></pre></div></div>
+
+<p>In order to estimate the posterior distribution of $\sigma^2$, we must provide an MCMC proposal mechanism that operates on this node. Because $\sigma^2$ is a rate parameter, and must therefore be positive, we use a scaling move called <code class="highlighter-rouge">mvScale</code>.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale(sigma2, weight=1.0) )
+</code></pre></div></div>
+
+<h4 class="subsubsection" id="brownian-motion-model">Brownian-motion model</h4>
+<hr class="subsubsection" />
+
+<p>Now that we have specified the parameters of the model, we can draw the character data from the corresponding phylogenetic Brownian-motion model. In this example, we use the REML algorithm to efficiently compute the likelihood <a href="#Felsenstein1985a">(Felsenstein 1985)</a>. We provide the square root of the variance parameter, $\sigma$, to <code class="highlighter-rouge">dnPhyloBrownianREML</code>:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>X ~ dnPhyloBrownianREML(tree, branchRates=sigma2^0.5)
+</code></pre></div></div>
+
+<p>Noting that $X$ is the observed data (<a href="#fig_bm_gm"></a>), we clamp the <code class="highlighter-rouge">data</code> to this stochastic node.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>X.clamp(data)
+</code></pre></div></div>
+
+<p>Finally, we create a workspace object for the entire model with <code class="highlighter-rouge">model()</code>. Remeber that workspace objects are initialized with the <code class="highlighter-rouge">=</code> operator, and are not themselves part of the Bayesian graphical model. The <code class="highlighter-rouge">model()</code> function traverses the entire model graph and finds all the nodes in the model that we specified. This object provides a convenient way to refer to the whole model object, rather than just a single DAG node.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(sigma2)
+</code></pre></div></div>
+
+<h3 class="subsection" id="running-an-mcmc-analysis">Running an MCMC analysis</h3>
+<hr class="subsection" />
+
+<h4 class="subsubsection" id="specifying-monitors">Specifying Monitors</h4>
+<hr class="subsubsection" />
+
+<p>For our MCMC analysis, we need to set up a vector of <em>monitors</em> to record the states of our Markov chain. The monitor functions are all called <code class="highlighter-rouge">mn*</code>, where <code class="highlighter-rouge">*</code> is the wildcard representing the monitor type. First, we will initialize the model monitor using the <code class="highlighter-rouge">mnModel</code> function. This creates a new monitor variable that will output the states for all model parameters when passed into a MCMC function.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/simple_BM.log", printgen=10) )
+</code></pre></div></div>
+<p>Additionally, create a screen monitor that will report the states of
+specified variables to the screen with <code class="highlighter-rouge">mnScreen</code>:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(printgen=1000, sigma2) )
+</code></pre></div></div>
+
+<h4 class="subsubsection" id="initializing-and-running-the-mcmc-simulation">Initializing and Running the MCMC Simulation</h4>
+<hr class="subsubsection" />
+
+<p>With a fully specified model, a set of monitors, and a set of moves, we
+can now set up the MCMC algorithm that will sample parameter values in
+proportion to their posterior probability. The <code class="highlighter-rouge">mcmc()</code> function will
+create our MCMC object:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
+</code></pre></div></div>
+<p>Now, run the MCMC:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=50000)
+</code></pre></div></div>
+<p>When the analysis is complete, you will have the monitored files in your
+output directory.</p>
+
+<p>⇨ The <code class="highlighter-rouge">Rev</code> file for performing this analysis: <code class="highlighter-rouge">mcmc_BM.Rev</code></p>
+
+<h3 class="subsection" id="exercise-1">Exercise 1</h3>
+<hr class="subsection" />
+
+<ul>
+  <li>Run an MCMC simulation to estimate the posterior distribution of the BM rate (<code class="highlighter-rouge">sigma</code>).</li>
+  <li>Load the generated output file into <code class="highlighter-rouge">Tracer</code>: What is the mean posterior estimate of <code class="highlighter-rouge">sigma</code> and what is the estimated HPD?</li>
+  <li>Compare the prior mean with the posterior mean. (<strong>Hint:</strong> Use the optional argument <code class="highlighter-rouge">underPrior=TRUE</code> in the function <code class="highlighter-rouge">mymcmc.run()</code>) Are they different (<em>e.g.,</em> <a href="#fig_prior_posterior"></a>)? Is the posterior mean outside the prior 95% probability interval?</li>
+  <li>Repeat the analysis with a loguniform prior ranging from $1e-10$ to $1e10$.</li>
+</ul>
+
+<figure id="fig_prior_posterior"><p><img src="figures/sigma_prior_posterior.png" height="50%" width="50%" /></p>
+<figcaption>Estimates of the posterior and prior distribution of the <code class="highlighter-rouge">sigma</code> visualized in
+<code class="highlighter-rouge">Tracer</code>. The prior (green curve) shows the loguniform
+distribution that we chose as the prior distribution.</figcaption>
+</figure>
+
+
+<ol class="bibliography"><li><span id="Felsenstein1985a">Felsenstein J. 1985. Phylogenies and the comparative method. The American Naturalist.:1–15.</span>
+
+<a href="https://doi.org/10.1086/284325">10.1086/284325</a>
+
+</li>
+<li><span id="Hoehna2014b">Höhna S., Heath T.A., Boussau B., Landis M.J., Ronquist F., Huelsenbeck J.P. 2014. Probabilistic Graphical Model Representation in Phylogenetics. Systematic Biology. 63:753–771.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syu039">10.1093/sysbio/syu039</a>
+
+</li>
+<li><span id="Landis2017b">Landis M.J., Schraiber J.G. 2017. Pulsed evolution shaped modern vertebrate body sizes. Proceedings of the National Academy of Sciences. 114:13224–13229.</span>
+
+<a href="https://doi.org/10.1073/pnas.1710920114">10.1073/pnas.1710920114</a>
+
+</li></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+
+<script src="/assets/js/base.js"></script>
+
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+  });
+</script>
+
+  </body>
+</html>

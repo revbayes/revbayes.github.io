@@ -1,0 +1,577 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: State-Dependent Brownian Rate Estimation</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
+      </a>
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/software">Software</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/documentation/">Documentation</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/jobs/">Jobs</a></li>
+        <li><a href="/developer/">Developer</a></li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <div class="titlebar">
+	<h1 class="maintitle">State-Dependent Brownian Rate Estimation</h1>
+	<h3 class="subtitle">Estimating state-dependent rates of Brownian-motion evolution</h3>
+	<h4 class="authors">Michael R. May</h4>
+  <h5>Last modified on June  4, 2019</h5>
+</div>
+
+
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul id="prerequisites">
+          
+            <li><a href="/tutorials/intro/">Rev Language Syntax</a></li>
+          
+            <li><a href="/tutorials/intro_rev/">Basic introduction to Rev & MCMC</a></li>
+          
+            <li><a href="/tutorials/mcmc_archery/">Introduction to MCMC using RevBayes</a></li>
+          
+            <li><a href="/tutorials/mcmc_binomial/">Introduction to MCMC using RevBayes</a></li>
+          
+            <li><a href="/tutorials/cont_traits/cont_trait_intro.html">Introduction to Models of Continuous-Character Evolution</a></li>
+          
+            <li><a href="/tutorials/cont_traits/simple_bm.html">Simple Brownian Rate Estimation</a></li>
+          
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+
+
+
+
+<blockquote class="tutorial_files" id="tutorial_files">
+    <h2>Data files and scripts</h2>
+    
+        
+        <strong>Other</strong>
+        <ul id="other_files">
+        
+        
+        
+          <li><a href="/tutorials/cont_traits/data/haemulidae.nex">haemulidae.nex</a></li>
+        
+          <li><a href="/tutorials/cont_traits/data/haemulidae_habitat.nex">haemulidae_habitat.nex</a></li>
+        
+          <li><a href="/tutorials/cont_traits/data/haemulidae_trophic_traits.nex">haemulidae_trophic_traits.nex</a></li>
+        
+          <li><a href="/tutorials/cont_traits/scripts/mcmc_relaxed_state_dependent_BM.Rev">mcmc_relaxed_state_dependent_BM.Rev</a></li>
+        
+          <li><a href="/tutorials/cont_traits/scripts/mcmc_state_dependent_BM.Rev">mcmc_state_dependent_BM.Rev</a></li>
+        
+          <li><a href="/tutorials/cont_traits/scripts/plot_relaxed_state_dependent_BM.R">plot_relaxed_state_dependent_BM.R</a></li>
+        
+        </ul>
+    
+</blockquote>
+
+
+</div>
+<h2 class="section" id="estimating-state-dependent-rates-of-evolution">Estimating State-Dependent Rates of Evolution</h2>
+<hr class="section" />
+
+<p>This tutorial demonstrates how to estimate state-dependent rates of continuous-character evolution. Specifically, we will specify a state-dependent rate model that assigns a Brownian-motion rate parameter for each state of a discrete character. We provide the probabilistic graphical model representation of each component for this tutorial. After specifying the model, you will estimate the state-dependent rates of Brownian-motion evolution using Markov chain Monte Carlo (MCMC).</p>
+
+<p>You should read the <a href="/tutorials/cont_traits/simple_bm.html">Simple Brownian Rate Estimation</a> tutorial, which provides a general introduction to simple Brownian-motion models, and <a href="/tutorials/morph/">Discrete morphology - Tree Inference</a>, which describes models of discrete-character evolution, before using this tutorial.</p>
+
+<h2 class="section" id="a-state-dependent-model-of-brownian-motion-evolution">A State-dependent Model of Brownian-motion Evolution</h2>
+<hr class="section" />
+
+<p>Under a simple Brownian-motion (BM) model, the evolution of a continuous character is entirely determined by a single rate parameter, $\sigma^2$. However, we may be interested in testing hypotheses about whether the state of a discrete character (<em>e.g.</em>, habitat) are associated with differential rates of continuous-character evolution.</p>
+
+<p>In this tutorial, we will specify the state-dependent model described in <a href="#May2019">May and Moore (2019)</a>. Under this model, the rate of continuous-character evolution depends on the state of a discrete character that is also evolving on the phylogeny. We must therefore specify a model that includes both the continuouss characters and the discrete character. For a discrete character with $k$ states, we include $k$ BM rate parameters, $\boldsymbol{\zeta^2} = [\zeta^2_0, \ldots, \zeta^2_k]$ that describe the relative rate of evolution of the continuous character while the discrete character is in each state (these parameters have a mean of 1). We include a parameter that controls the ‘‘average’’ rate of continuous-character evolution, $\beta^2$; because the state-dependent relative rates have a mean of 1, $\beta^2$ controls the overall rate of the Brownian motion process. Finally, we include a continuous-time Markov chain model to describe the evolution of the discrete character, which is defined by the instantaneous-rate matrix $Q$.</p>
+
+<p>Under this model, the changes in the continuous character while the discrete character is in state $j$, $\Delta_j$, are normally distributed with mean 0 and variance $t_j \beta^2 \zeta^2_j$, where $t_j$ is the amount of time spent in state $j$. The total change over the entire branch is a sum of normally distributed random variables:</p>
+
+<script type="math/tex; mode=display">\begin{equation}
+    \Delta \sim \text{Normal}(0, \beta^2 \sum_{j=0}^k t_j \zeta^2_j )
+\end{equation}</script>
+
+<p>Consequently, the rate of evolution on branch $i$ is the weighted average of the state-dependent rates, weighted by the amount of time spent in each state:</p>
+
+<script type="math/tex; mode=display">\begin{equation}
+    \sigma^2_i = \beta^2 \times \sum_{j=0}^k \tau_i(j) \times \zeta^2_j,
+\end{equation}</script>
+
+<p>where $\tau_i(j)$ is the <em>relative</em> amount of time branch $i$ spends in discrete-state $j$ (the relative dwelling time). Given a particular history of the discrete character, which describes the amount of time spent in each state along each branch, we can therefore compute the branch-specific rates of continuous-character evolution over the entire tree. We use data augmentation to map the history of discrete characters across the tree, and use Markov chain Monte Carlo to integrate over all possible histories of the discrete character in proportion to their probability. The probabilistic graphical model for this model is represented in (<a href="#fig_bm_state_dependent_gm"></a>).</p>
+
+<figure id="fig_bm_state_dependent_gm"><p><img src="figures/bm_state_dependent_gm.png" width="75%" height="75%" /></p>
+<figcaption>The graphical model representation of the state-dependent Brownian-motion (BM) process. For more information about graphical model representations see <a href="#Hoehna2014b">Höhna et al. (2014)</a>.</figcaption>
+</figure>
+
+<p>In this tutorial, we use the phylogenies and continuous character datasets from <a href="#Price2013">(Price et al. 2013; May and Moore 2019)</a> to estimate state-dependent rates of continuous-character evolution.</p>
+
+<p>⇨ The full state-dependent BM-model specification is in the file called <code class="highlighter-rouge">mcmc_state_dependent_BM.Rev</code>.</p>
+
+<h3 class="subsection" id="read-the-data">Read the data</h3>
+<hr class="subsection" />
+
+<p>In this tutorial, we will use univariate Brownian motion to analyze the state-dependent rates of a single continuous character. Here, we assume we are analyzing the first character (log body size), but you should feel free to choose any of the 11 characters described in the <code class="highlighter-rouge">haemulidae_trophic_traits.nex</code> file.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>character &lt;- 1
+</code></pre></div></div>
+<p>Now, we read in the (time-calibrated) tree and retrieve some useful information.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>T &lt;- readTrees("data/haemulidae.nex")[1]
+ntips &lt;- T.ntips()
+nbranches &lt;- 2 * ntips - 2
+</code></pre></div></div>
+
+<p>Next, we read in the continuous character data.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cont &lt;- readContinuousCharacterData("data/haemulidae_trophic_traits.nex")
+</code></pre></div></div>
+<p>We include only the chosen character by first excluding <em>all</em> the characters, then re-including the focal character.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cont.excludeAll()
+cont.includeCharacter(character)
+</code></pre></div></div>
+<p>Now, we read in the discrete character data (habitat for each species, coded as reef [1] or non-reef [0]), and record the number of states it has.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>disc &lt;- readDiscreteCharacterData("data/haemulidae_habitat.nex")
+num_disc_states &lt;- disc.getStateDescriptions().size()
+</code></pre></div></div>
+
+<p>Additionally, we initialize a variable for our vector of
+moves and monitors:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
+monitors = VectorMonitors()
+</code></pre></div></div>
+
+<h3 class="subsection" id="specifying-the-model">Specifying the model</h3>
+<hr class="subsection" />
+
+<h4 class="subsubsection" id="tree-model">Tree model</h4>
+<hr class="subsubsection" />
+
+<p>In this tutorial, we assume the tree is known without area. We create a constant node for the tree that corresponds to the observed phylogeny.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tree &lt;- T
+</code></pre></div></div>
+<h4 class="subsubsection" id="discete-character-model">Discete-character model</h4>
+<hr class="subsubsection" />
+
+<p>Here, we assume that the discrete character evolves under a Mk model with rate $\lambda$ <a href="#Lewis2001">(Lewis 2001)</a>. This is equivalent to the Jukes-Cantor model for nucleotide substitution, but with $k$ states. (You may consider a more complex model if you know how to specify it in ‘RevBayes’).</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q &lt;- fnJC(num_disc_states)
+</code></pre></div></div>
+
+<p>We draw the rate parameter, $\lambda$, from a vague log-uniform prior.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>lambda ~ dnLoguniform(1e-3, 1)
+</code></pre></div></div>
+<p>The rate parameter must be positive, so we apply a scaling move to it.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale(lambda, weight=1.0) )
+</code></pre></div></div>
+
+<p>Now, we draw the discrete character data and its character history from a CTMC model.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>X ~ dnPhyloCTMCDASiteIID(tree, Q, branchRates=lambda, type="Standard", nSites=1)
+</code></pre></div></div>
+<p>The distribution <code class="highlighter-rouge">dnPhyloCTMCDASiteIID</code> <em>augments the data</em> to include the complete history of the discrete character(s) along each branch of the phylogeny (the <code class="highlighter-rouge">DA</code> in <code class="highlighter-rouge">dnPhyloCTMCDASiteIID</code> stands for data augmentation). We must apply special MCMC proposals on the character history to average over all possible histories in proportion to their probability.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvCharacterHistory(ctmc=X, qmap_site=Q, graph="node",   proposal="rejection", weight=20.0) )
+moves.append( mvCharacterHistory(ctmc=X, qmap_site=Q, graph="branch", proposal="rejection", weight=20.0) )
+</code></pre></div></div>
+<p>These proposals choose nodes or branches in the tree to update, and then propose a new history using the stochastic mapping algorithm <a href="#Nielsen2002">(Nielsen 2002; Landis et al. 2013)</a>.</p>
+
+<p>Finally, we keep track of the number of discrete-character transitions along each branch, and over the whole phylogeny. This is mostly a sanity check, to make sure we are not inferring extremely unrealistic histories for the discrete character.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for(i in 1:nbranches) {
+    num_changes[i] := sum(X.numCharacterChanges(i))
+}
+total_num_changes := sum(num_changes)
+</code></pre></div></div>
+
+<h4 class="subsubsection" id="continuous-character-model">Continuous-character model</h4>
+<hr class="subsubsection" />
+
+<p>As indicated in the graphical model above (<a href="#fig_bm_state_dependent_gm"></a>), we parameterize the model by separating the <em>average</em> rate of continuous-character evolution (averaged among the discrete-states), $\beta^2$, from the <em>relative</em> rate of state-dependent evolution, $\boldsymbol{\zeta^2}$. The parameter $\beta^2$ gives the Brownian motion process its absolute ‘scale’, so if rates of evolution are high, $\beta^2$ will be high. The absolute rate of evolution in discrete state $i$ is $\beta^2 \times \zeta^2_i$.</p>
+
+<p>We draw the average rate of evolution, $\beta^2$, from a vague loguniform prior. This prior is uniform on the log scale, which means that it is represents ignorance about the <em>order of magnitude</em> of the average rate of evolution. We use a scaling move to propose updates to this parameter.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>beta ~ dnLoguniform(1e-3, 1)
+moves.append( mvScale(beta, weight=1.0) )
+</code></pre></div></div>
+
+<p>Next, we draw the <em>proportional</em> rates of state-dependent evolution from a Dirichlet prior with parameter <code class="highlighter-rouge">concentration &lt;- 1.0</code>. These rates are proportional in the sense that they sum to 1.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>concentration &lt;- 1.0
+relative_zeta ~ dnDirichlet( rep(concentration, num_disc_states) )
+</code></pre></div></div>
+<p>We include a special move for simplex parameters (sets of parameters that sum to 1) called <code class="highlighter-rouge">mvBetaSimplex</code>.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale(beta, weight=1.0) )
+</code></pre></div></div>
+<p>To compute the <em>relative</em> rates (<em>i.e.</em>, the rates that have a mean of 1), we simply multiply the proportional rates by the number of elements.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>zeta := proportional_zeta * num_disc_states
+</code></pre></div></div>
+<p>We can compute the absolute rate of evolution in each of the discrete states by multiplying $\beta \times \zeta$.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>overall_rate := beta * zeta
+</code></pre></div></div>
+
+<p>Now, we compute the rate for each branch given the parameters of the state-dependent model and the history of the discrete character. The method <code class="highlighter-rouge">X.relativeTimeInStates(i,1)</code> computes the relative amount of time spent in each state of the first discrete character (in this case, we have only one character) on branch $i$, <em>i.e.</em>, it computes $\tau_i(j)$. Multiplying $\tau_i(j)$ by the vector $\boldsymbol{\zeta^2}$, and taking the sum, produces the rate of evolution for branch $i$ due to the discrete character history. We compute this for each branch in the tree.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for(i in 1:nbranches) {
+    state_branch_rate[i] := sum(X.relativeTimeInStates(i,1) * zeta)
+}
+</code></pre></div></div>
+
+<p>Finally, we compute the overall branch rates by multiplying the state-dependent branch-rates by the average rate of change.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>branch_rates := state_branch_rate * beta
+</code></pre></div></div>
+
+<h4 class="subsubsection" id="brownian-motion-model">Brownian-motion model</h4>
+<hr class="subsubsection" />
+
+<p>Now that we have specified the branch-specific rate parameters, we can draw the character data from the corresponding phylogenetic Brownian-motion model, just as we did for the simple BM models. In this case, we provide the square root of the branch-specific rates to the <code class="highlighter-rouge">branchRates</code> argument.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Y ~ dnPhyloBrownianREML(tree, branchRates=branch_rates^0.5)
+</code></pre></div></div>
+
+<p>Noting that $Y$ is the observed continuous-character data, we clamp the <code class="highlighter-rouge">cont</code> variable to this stochastic node.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Y.clamp(cont)
+</code></pre></div></div>
+
+<p>Finally, we create a workspace object for the entire model with <code class="highlighter-rouge">model()</code>. Remember that workspace objects are initialized with the <code class="highlighter-rouge">=</code> operator, and are not themselves part of the Bayesian graphical model. The <code class="highlighter-rouge">model()</code> function traverses the entire model graph and finds all the nodes in the model that we specified. This object provides a convenient way to refer to the whole model object, rather than just a single DAG node.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(zeta)
+</code></pre></div></div>
+
+<h3 class="subsection" id="running-an-mcmc-analysis">Running an MCMC analysis</h3>
+<hr class="subsection" />
+
+<h4 class="subsubsection" id="specifying-monitors">Specifying Monitors</h4>
+<hr class="subsubsection" />
+
+<p>For our MCMC analysis, we need to set up a vector of <em>monitors</em> to record the states of our Markov chain. The monitor functions are all called <code class="highlighter-rouge">mn*</code>, where <code class="highlighter-rouge">*</code> is the wildcard representing the monitor type. First, we will initialize the model monitor using the <code class="highlighter-rouge">mnModel</code> function. This creates a new monitor variable that will output the states for all model parameters when passed into a MCMC function.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/state_dependent_BM.log", printgen=10) )
+</code></pre></div></div>
+<p>Additionally, create a screen monitor that will report the states of
+specified variables to the screen with <code class="highlighter-rouge">mnScreen</code>:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(printgen=1000, zeta, total_num_changes) )
+</code></pre></div></div>
+
+<h4 class="subsubsection" id="initializing-and-running-the-mcmc-simulation">Initializing and Running the MCMC Simulation</h4>
+<hr class="subsubsection" />
+
+<p>With a fully specified model, a set of monitors, and a set of moves, we
+can now set up the MCMC algorithm that will sample parameter values in
+proportion to their posterior probability. The <code class="highlighter-rouge">mcmc()</code> function will
+create our MCMC object:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves, nruns=1, combine="mixed")
+</code></pre></div></div>
+<p>Now, run the MCMC:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=50000)
+</code></pre></div></div>
+<p>When the analysis is complete, you will have the monitored files in your output directory.</p>
+
+<p>⇨ The <code class="highlighter-rouge">Rev</code> file for performing this analysis: <code class="highlighter-rouge">mcmc_state_dependent_BM.Rev</code></p>
+
+<p>You can then visualize the absolute rates of state-dependent evolution ($\beta^2 \times \boldsymbol{\zeta^2}$)  in <code class="highlighter-rouge">Tracer</code>.</p>
+
+<figure id="zeta_posterior"><p><img src="figures/zeta_posterior.png" height="75%" width="75%" /></p>
+<figcaption>Estimates of the posterior distribution of the $\beta^2 \times \zeta^2$ visualized in
+<code class="highlighter-rouge">Tracer</code>.</figcaption>
+</figure>
+
+<!--  -->
+
+<h3 class="subsection" id="exercise-1">Exercise 1</h3>
+<hr class="subsection" />
+
+<ul>
+  <li>Run an MCMC simulation to estimate the posterior distribution of the state-depedent rates (<code class="highlighter-rouge">zeta</code>) assuming a <code class="highlighter-rouge">concentration</code> parameter of 1.</li>
+  <li>Repeat the above analysis with a <code class="highlighter-rouge">concentration</code> parameter of 10.</li>
+  <li>Compare the posterior estimates of the state-dependent rates under these two priors in <code class="highlighter-rouge">Tracer</code>. Do the posterior estimates appear prior sensitive?</li>
+</ul>
+
+<h2 class="section" id="testing-hypotheses-about-state-dependent-rates">Testing Hypotheses About State-Dependent Rates</h2>
+<hr class="section" />
+
+<p>In the previous section, we learned how to estimate the posterior distribution of state-dependent rate parameters, $\zeta^2$. However, we might also be interested in explicit hypothesis tests about state-dependent rates, especially if the posterior distributions of the focal parameters are overlapping. In this section, we will learn how to use reversible-jump Markov chain Monte Carlo to test the hypotheses that rates of continuous-character evolution depend on the state of the discrete character.</p>
+
+<h3 class="subsection" id="model-selection-using-reversible-jump-mcmc">Model Selection using Reversible-Jump MCMC</h3>
+<hr class="subsection" />
+
+<p>To test the hypothesis that rates depend on the discrete state, we imagine two models. The first model, where states do not depend on the discrete character, is the case when $\zeta_i^2 = 1$ for all $i$, <em>i.e.</em>, when all of the discrete characters confer the same rate of discrete character evolution. The second model corresponds to the state-dependent model described previously.</p>
+
+<p>Obviously, the state-independent model is a special case of the state-dependent model when $\zeta_i^2 = 1$ for all $i$. Unfortunately, because the $\zeta^2_i$ are continuous parameters, a standard Markov chain will never visit states where each value is exactly equal to 1. Fortunately, we can use reversible jump to allow the Markov chain to consider visiting the state-independent model. This involves specifying the prior probability on each of the two models, and providing the prior distribution for $\boldsymbol{\zeta^2}$ for the state-dependent model.</p>
+
+<p>Using rjMCMC allows the Markov chain to visit the two models in proportion to their posterior probability. The posterior probability of model $i$ is simply the fraction of samples where the chain was visiting that model. Because we also specify a prior on the models, we can compute a Bayes factor for the state-dependent model as:</p>
+
+<script type="math/tex; mode=display">\begin{equation}
+    \text{BF}_\text{state-dependent} = \frac{ P( \text{state-dependent} \mid X, Y) }{ P( \text{state-independent} \mid X, Y) } \div \frac{ P( \text{state-dependent}) }{ P( \text{state-independent}) },
+\end{equation}</script>
+
+<p>where $P( \text{state-dependent} \mid X, Y)$ and $P( \text{state-dependent})$ are the posterior probability and prior probability of state-dependent rates, respectively.</p>
+
+<h4 class="subsubsection" id="reversible-jump-for-state-dependent-rates">Reversible-jump for state-dependent rates</h4>
+<hr class="subsubsection" />
+
+<p>To enable rjMCMC, we simply have to place a reversible-jump prior on the relevant parameter, $\boldsymbol{\zeta^2}$. We can modify the prior on <code class="highlighter-rouge">proportional_zeta</code> so that it takes either a constant value where all rates are equal (<code class="highlighter-rouge">simplex(rep(1, num_disc_states))</code>), or is drawn from a Dirichlet prior distribution, <code class="highlighter-rouge">dnDirichlet( rep(concentration, num_disc_states) )</code>. We specify a prior probability on the state-independent model of <code class="highlighter-rouge">p = 0.5</code>.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>proportional_zeta ~ dnReversibleJumpMixture( simplex(rep(1,num_disc_states)), dnDirichlet( rep(concentration, num_disc_states) ), p=0.5 )
+</code></pre></div></div>
+<p>We then provide a reversible-jump proposal on <code class="highlighter-rouge">proportional_zeta</code> that proposes changes between the two models.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvRJSwitch(proportional_zeta, weight=1.0) )
+</code></pre></div></div>
+<p>Additionally, we provide the normal <code class="highlighter-rouge">mvBetaSimplex</code> proposal for when the MCMC is visiting a state-dependent model.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvBetaSimplex(proportional_zeta, weight=1.0) )
+</code></pre></div></div>
+<p>We include a variable that has a value of <code class="highlighter-rouge">1</code> when the chain is visiting a state-dependent model. This will allow us to easily compute the posterior probability of the state-dependent model because we simply need to compute the posterior mean value of this parameter.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>is_state_dependent := ifelse( proportional_zeta == simplex(rep(1,num_disc_states)), 0.0, 1.0)
+</code></pre></div></div>
+<p>The fraction of samples for which <code class="highlighter-rouge">is_state_dependent = 1</code> is the posterior probability of the state-dependent model. Alternatively, the posterior mean estimate of this indicator variable corresponds to the posterior probability of the state-dependent model.</p>
+
+<!--  -->
+
+<h3 class="subsection" id="exercise-2">Exercise 2</h3>
+<hr class="subsection" />
+
+<ul>
+  <li>Modify the <code class="highlighter-rouge">mcmc_state_dependent_BM</code> script to use reversible-jump MCMC for the state-dependent model.</li>
+  <li>Compute the posterior probability of the state-dependent model assuming a prior on the state-independent model of <code class="highlighter-rouge">p = 0.5</code>.</li>
+  <li>Repeat the analysis, but this time specify a prior corresponding to a $75\%$ prior belief in the state-independent model.</li>
+  <li>For each of the above priors, compute the corresponding posterior probabilities and Bayes factors for the state-dependent model. Are these estimates prior sensitive?</li>
+</ul>
+
+<h2 class="section" id="controlling-for-background-rate-variation">Controlling for Background-Rate Variation</h2>
+<hr class="section" />
+
+<p>The previous models have assumed that, aside from rate variation owing to the state of the discrete character, rates of continuous-character evolution are stochastically constant. We might therefore be worried that inferences about state-dependent rates of evolution might be mislead if rates of evolution vary for reasons other than the focal discrete character, which we call ‘‘background-rate variation’’ <a href="#Rabosky2015">(Rabosky and Goldberg 2015; Beaulieu and O’Meara 2016; May and Moore 2019)</a>.</p>
+
+<p>The state-dependent model allows us to easily build in these alternative sources of rate variation. In this case, we simply relax the assumption that the ‘‘average’’ rate is constant by applying a relaxed morphological clock prior model on $\beta^2$, as described in <a href="/tutorials/cont_traits/relaxed_bm.html">Relaxed Brownian Rate Estimation</a>.</p>
+
+<p>⇨ The state-dependent BM-model with background rate variation is specified in the file called <code class="highlighter-rouge">mcmc_relaxed_state_dependent_BM.Rev</code>. The majority of this script is the same as <code class="highlighter-rouge">mcmc_state_dependent_BM.Rev</code>, except as described below.</p>
+
+<h3 class="subsection" id="relaxing-the-background-rate">Relaxing the background-rate</h3>
+<hr class="subsection" />
+
+<p>To specify the relaxed background-rate model, we specify the background rate at the root of the tree, $\beta^2_R$.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>beta_root ~ dnLoguniform(1e-3, 1)
+moves.append( mvScale(beta_root, weight=1.0) )
+</code></pre></div></div>
+<p>Next, we specify the prior on the expected number of rate shifts.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>expected_number_of_shifts &lt;- 5
+rate_shift_probability    &lt;- expected_number_of_shifts / nbranches
+</code></pre></div></div>
+<p>We must also specify the prior on the magnitude of rate shifts (when they occur). This prior supposes that rate shifts result in changes of rate within one order of magnitude.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sd = 0.578
+rate_shift_distribution = dnLognormal(-sd^2/2, sd)
+</code></pre></div></div>
+<p>Then we draw the rate multiplier from each branch from a <code class="highlighter-rouge">dnReversibleJumpMixture</code> distribution, and compute the background-rate of evolution for each branch.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for(i in nbranches:1) {
+
+    # draw the rate multiplier from a mixture distribution
+    branch_rate_multiplier[i] ~ dnReversibleJumpMixture(1, rate_shift_distribution, Probability(1 - rate_shift_probability) )
+
+    # compute the rate for the branch
+    if ( tree.isRoot( tree.parent(i) ) ) {
+       background_rates[i] := beta_root * branch_rate_multiplier[i]
+    } else {
+       background_rates[i] := background_rates[tree.parent(i)] * branch_rate_multiplier[i]
+    }
+
+    # keep track of whether the branch has a rate shift
+    branch_rate_shift[i] := ifelse( branch_rate_multiplier[i] == 1, 0, 1 )
+
+    # use reversible-jump to move between models with and without
+    # shifts on the branch
+    moves.append( mvRJSwitch(branch_rate_multiplier[i], weight=1) )
+
+    # include proposals on the rate mutliplier (when it is not 1)
+    moves.append( mvScale(branch_rate_multiplier[i], weight=1) )
+
+}
+</code></pre></div></div>
+<p>We may also wish to keep track of the total number of rate shifts.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>num_rate_changes := sum( branch_rate_shift )
+</code></pre></div></div>
+
+<p>Later, when we compute the branch-rates for the <code class="highlighter-rouge">dnPhyloBrownianREML</code> distribution, we simply multiply the state-dependent branch rates by the background branch-rates.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>branch_rates := state_branch_rate * background_rates
+</code></pre></div></div>
+<p>and then provide these rates to <code class="highlighter-rouge">dnPhyloBrownianREML</code>.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Y ~ dnPhyloBrownianREML(tree, branchRates=branch_rates^0.5)
+</code></pre></div></div>
+
+<p>⇨ The <code class="highlighter-rouge">Rev</code> file for performing this analysis: <code class="highlighter-rouge">mcmc_relaxed_state_dependent_BM.Rev</code></p>
+
+<p>You can then visualize the branch-specific rates by plotting them using our <code class="highlighter-rouge">R</code> package <code class="highlighter-rouge">RevGadgets</code>. Importantly, these plots allow you to tease apart the relative contributions of background- and state-dependent-rate variation to overall patterns of rate variation across the tree. Just start R in the main directory for this analysis and then type the following commands:</p>
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">RevGadgets</span><span class="p">)</span><span class="w">
+
+</span><span class="n">my_tree</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">read.nexus</span><span class="p">(</span><span class="s2">"data/haemulidae.nex"</span><span class="p">)</span><span class="w">
+</span><span class="n">my_output_file</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"output/relaxed_state_dependent_BM.log"</span><span class="w">
+
+</span><span class="n">background_plot</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">plot_relaxed_branch_rates_tree</span><span class="p">(</span><span class="n">tree</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="n">my_tree</span><span class="p">,</span><span class="w">
+                                                  </span><span class="n">output_file</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">my_output_file</span><span class="p">,</span><span class="w">
+                                                  </span><span class="n">parameter_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"background_rates"</span><span class="p">)</span><span class="w">
+
+</span><span class="n">state_plot</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">plot_relaxed_branch_rates_tree</span><span class="p">(</span><span class="n">tree</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="n">my_tree</span><span class="p">,</span><span class="w">
+                                             </span><span class="n">output_file</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">my_output_file</span><span class="p">,</span><span class="w">
+                                             </span><span class="n">parameter_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"state_branch_rate"</span><span class="p">)</span><span class="w">
+
+</span><span class="n">overall_plot</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">plot_relaxed_branch_rates_tree</span><span class="p">(</span><span class="n">tree</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="n">my_tree</span><span class="p">,</span><span class="w">
+                                               </span><span class="n">output_file</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">my_output_file</span><span class="p">,</span><span class="w">
+                                               </span><span class="n">parameter_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"branch_rates"</span><span class="p">)</span><span class="w">
+
+</span><span class="n">pdf</span><span class="p">(</span><span class="s2">"relaxed_state_dependent_BM.pdf"</span><span class="p">,</span><span class="w"> </span><span class="n">height</span><span class="o">=</span><span class="m">5</span><span class="p">,</span><span class="w"> </span><span class="n">width</span><span class="o">=</span><span class="m">15</span><span class="p">)</span><span class="w">
+</span><span class="n">grid.arrange</span><span class="p">(</span><span class="n">state_plot</span><span class="p">,</span><span class="w"> </span><span class="n">background_plot</span><span class="p">,</span><span class="w"> </span><span class="n">overall_plot</span><span class="p">,</span><span class="w"> </span><span class="n">nrow</span><span class="o">=</span><span class="m">1</span><span class="p">)</span><span class="w">
+</span><span class="n">dev.off</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<figure id="fig_state_dependent_relaxed_BM"><p><img src="figures/relaxed_state_dependent_BM.png" width="100%" height="100%" /></p>
+<figcaption><strong>Estimated rates of Brownian-motion evolution with state-dependent and background-rate variation.</strong>
+Left) We show the state-dependent rates of continuous-character evolution, indicating that increased rates are strongly associated with living in reefs. Middle) We show the background rates of continuous-character evolution, indicating mild rate variation that cannot be attributed to the state of the discrete character. Right) We show the combined effect of state-dependent and state-independent sources of rate variation.</figcaption>
+</figure>
+
+<!--  -->
+
+<h3 class="subsection" id="exercise-3">Exercise 3</h3>
+<hr class="subsection" />
+
+<ul>
+  <li>Estimate the posterior distribution of the state-dependent rate parameters assuming a relaxed background-rate model.</li>
+  <li>Compare the posterior estimates from the relaxed background-rate model to the posterior estimates from the constant background-rate model (<em>i.e.</em>, <code class="highlighter-rouge">mcmc_state_dependent_BM.Rev</code>). Are our estimates of the state-dependent parameter inflated by excluding sources of rate variation other than the discrete character?</li>
+  <li>Repeat the analysis with background-rate variation, but increase the expected number of rate shifts. Does this impact our estimates of the focal parameter, $\boldsymbol{\zeta^2}$?</li>
+</ul>
+
+
+<ol class="bibliography"><li><span id="Beaulieu2016">Beaulieu J.M., O’Meara B.C. 2016. Detecting hidden diversification shifts in models of trait-dependent speciation and extinction. Systematic Biology. 65:583–601.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syw022">10.1093/sysbio/syw022</a>
+
+</li>
+<li><span id="Hoehna2014b">Höhna S., Heath T.A., Boussau B., Landis M.J., Ronquist F., Huelsenbeck J.P. 2014. Probabilistic Graphical Model Representation in Phylogenetics. Systematic Biology. 63:753–771.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syu039">10.1093/sysbio/syu039</a>
+
+</li>
+<li><span id="Landis2013a">Landis M.J., Matzke N.J., Moore B.R., Huelsenbeck J.P. 2013. Bayesian Analysis of Biogeography when the Number of Areas is Large. Systematic Biology. 62:789–804.</span>
+
+</li>
+<li><span id="Lewis2001">Lewis P.O. 2001. A Likelihood Approach to Estimating Phylogeny from Discrete Morphological Character Data. Systematic Biology. 50:913–925.</span>
+
+<a href="https://doi.org/10.1080/106351501753462876">10.1080/106351501753462876</a>
+
+</li>
+<li><span id="May2019">May M.R., Moore B.R. 2019. A Bayesian Approach for Inferring the Impact of a Discrete Character on Rates of Continuous-Character Evolution in the Presence of Background Rate Variation. bioRxiv.</span>
+
+<a href="https://doi.org/10.1101/576207">10.1101/576207</a>
+
+</li>
+<li><span id="Nielsen2002">Nielsen R. 2002. Mapping mutations on phylogenies. Systematic Biology. 51:729–739.</span>
+
+<a href="https://doi.org/10.1080/10635150290102393">10.1080/10635150290102393</a>
+
+</li>
+<li><span id="Price2013">Price S.A., Tavera J.J., Near T.J., Wainwright P.C. 2013. Elevated rates of morphological and functional diversification in reef-dwelling haemulid fishes. Evolution: International Journal of Organic Evolution. 67:417–428.</span>
+
+</li>
+<li><span id="Rabosky2015">Rabosky D.L., Goldberg E.E. 2015. Model inadequacy and mistaken inferences of trait-dependent speciation. Systematic Biology. 64:340–355.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syu131">10.1093/sysbio/syu131</a>
+
+</li></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+
+<script src="/assets/js/base.js"></script>
+
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+  });
+</script>
+
+  </body>
+</html>

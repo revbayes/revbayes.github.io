@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: Introduction to Models of Continuous-Character Evolution</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
+      </a>
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/software">Software</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/documentation/">Documentation</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/jobs/">Jobs</a></li>
+        <li><a href="/developer/">Developer</a></li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <div class="titlebar">
+	<h1 class="maintitle">Introduction to Models of Continuous-Character Evolution</h1>
+	<h3 class="subtitle">Overview of Analyses, Models and Theory</h3>
+	<h4 class="authors">Michael R. May</h4>
+  <h5>Last modified on June  4, 2019</h5>
+</div>
+
+
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul id="prerequisites">
+          
+            <li><a href="/tutorials/intro/">Rev Language Syntax</a></li>
+          
+            <li><a href="/tutorials/intro_rev/">Basic introduction to Rev & MCMC</a></li>
+          
+            <li><a href="/tutorials/mcmc_archery/">Introduction to MCMC using RevBayes</a></li>
+          
+            <li><a href="/tutorials/mcmc_binomial/">Introduction to MCMC using RevBayes</a></li>
+          
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+
+
+
+
+</div>
+<h2 class="section" id="continuous_char_overview">Overview: Models of Continuous-Character Evolution</h2>
+<hr class="section" />
+
+<p>In these tutorials we will focus on a few types of models that are commonly used to study how continuous characters evolve over a phylogeny.</p>
+
+<h3 class="subsection" id="types-of-questions-for-continuous-character-analyses">Types of Questions for Continuous-Character Analyses</h3>
+<hr class="subsection" />
+
+<p>Models of continuous-character evolution are used to understand many interesting evolutionary phenomena, including: the <em>rate</em> of character evolution, the <em>mode</em> of character evolution, how these vary over time or among lineages, and understanding the biotic and abiotic factors that contribute to this variation.</p>
+
+<h4 class="subsubsection" id="1-brownian-motion-models">(1) Brownian Motion models</h4>
+<hr class="subsubsection" />
+
+<p>The simplest models of continuous-character evolution assume that the character evolves under a Brownian motion model <a href="#Felsenstein1973">(Felsenstein 1973; Felsenstein 1985)</a>. Under this model, the expected amount of character change along a branch is zero, and the <em>variance</em> in character change is proportional to time and a rate parameter, $\sigma^2$.
+These tutorials focus on estimating the rate parameter, $\sigma^2$, as well as how it varies over time and among lineages.</p>
+
+<h4 class="subsubsection" id="1a-estimating-rates-of-evolution">(1a) Estimating rates of evolution</h4>
+<hr class="subsubsection" />
+
+<p><em>What is the (global) rate of evolution for my continuous character?</em></p>
+
+<p>The simplest Brownian-motion model assumes that the continuous character evolves at a constant rate over time and among lineages. While this model is limited in terms of the evolutionary questions it is able to address, it provides a useful introduction to modeling continuous-character evolution in <code class="highlighter-rouge">RevBayes</code>.</p>
+
+<p>You can find examples and more information in the <a href="/tutorials/cont_traits/simple_bm.html">Simple Brownian Rate Estimation</a> tutorial.</p>
+
+<h4 class="subsubsection" id="1b-detecting-variation-in-rates-of-evolution-through-time">(1b) Detecting variation in rates of evolution through time</h4>
+<hr class="subsubsection" />
+
+<p><em>Do rates of evolution vary over time?</em></p>
+
+<p>Many hypotheses can naturally be addressed by asking whether rates of evolution vary over time, for example: are rates of evolution increased early in an adaptive radiation <a href="#Harmon2010">(Harmon et al. 2010)</a>, do rates of evolution increase over time <a href="#Blomberg2003">(Blomberg et al. 2003)</a>, or do rates vary in less predictable ways?</p>
+
+<p><strong>WIP</strong></p>
+
+<!-- You can find examples of these models and more information in the <a href="/tutorials/cont_traits/time_varying_bm.html">Simple Brownian Rate Estimation</a> tutorial. -->
+
+<h4 class="subsubsection" id="1c-detecting-variation-in-rates-of-evolution-among-lineages">(1c) Detecting variation in rates of evolution among lineages</h4>
+<hr class="subsubsection" />
+
+<p><em>Is there evidence for variation in the rate of evolution across the branches of my phylogeny?</em></p>
+
+<p>Identifying the number, location, and magnitude of shifts in rates of continuous character evolution can illuminate many evolutionary questions. Relaxing the assumption that rates are constant requires specifying a model that describes how rates vary (a ‘‘relaxed morphological clock’’). Many such models have been proposed <a href="#Lemey2010">(Lemey et al. 2010; Eastman et al. 2011; Venditti et al. 2011)</a>; we provide an example of relaxing the morphological clock using a ‘‘random local clock’’ model, as described in <a href="#Eastman2011">Eastman et al. (2011)</a>, in the <a href="/tutorials/cont_traits/relaxed_bm.html">Relaxed Brownian Rate Estimation</a> tutorial.</p>
+
+<h4 class="subsubsection" id="1d-detecting-state-dependent-rates-of-evolution">(1d) Detecting state-dependent rates of evolution</h4>
+<hr class="subsubsection" />
+
+<p><em>Are rates of evolution correlated with a discrete variable on my phylogeny?</em></p>
+
+<p>If rates of evolution are found to vary across branches, a natural question to ask is if some focal variable is associated with the rate variation. For example, we can test whether changes in rates are associated with habitat type in reef and non-reef dwelling fishes <a href="#Price2013">(Price et al. 2013; May and Moore 2019)</a>.</p>
+
+<p>We provide an example of fitting the state-dependent model to discrete- and continuous-character data in the <a href="/tutorials/cont_traits/state_dependent_bm.html">State-Dependent Brownian Rate Estimation</a> tutorial.</p>
+
+<h4 class="subsubsection" id="1e-detecting-correlated-evolution">(1e) Detecting correlated evolution</h4>
+<hr class="subsubsection" />
+
+<p><strong>WIP</strong></p>
+
+<h4 class="subsubsection" id="2-ornstein-uhlenbeck-models">(2) Ornstein-Uhlenbeck models</h4>
+<hr class="subsubsection" />
+
+<p><strong>WIP</strong></p>
+
+<h4 class="subsubsection" id="2a-estimating-evolutionary-optima">(2a) Estimating evolutionary optima</h4>
+<hr class="subsubsection" />
+
+<p><strong>WIP</strong></p>
+
+<h4 class="subsubsection" id="2a-detecting-shifts-in-evolutionary-optima">(2a) Detecting shifts in evolutionary optima</h4>
+<hr class="subsubsection" />
+
+<p><strong>WIP</strong></p>
+
+
+<ol class="bibliography"><li><span id="Blomberg2003">Blomberg S.P., Garland T., Ives A.R. 2003. Testing for phylogenetic signal in comparative data: behavioral traits are more labile. Evolution. 57:717–745.</span>
+
+</li>
+<li><span id="Eastman2011">Eastman J.M., Alfaro M.E., Joyce P., Hipp A.L., Harmon L.J. 2011. A novel comparative method for identifying shifts in the rate of character evolution on trees. Evolution. 65:3578–3589.</span>
+
+</li>
+<li><span id="Felsenstein1985a">Felsenstein J. 1985. Phylogenies and the comparative method. The American Naturalist.:1–15.</span>
+
+<a href="https://doi.org/10.1086/284325">10.1086/284325</a>
+
+</li>
+<li><span id="Felsenstein1973">Felsenstein J. 1973. Maximum-likelihood estimation of evolutionary trees from continuous characters. American Journal of Human Genetics. 25:471.</span>
+
+</li>
+<li><span id="Harmon2010">Harmon L.J., Losos J.B., Jonathan Davies T., Gillespie R.G., Gittleman J.L., Bryan Jennings W., Kozak K.H., McPeek M.A., Moreno-Roark F., Near T.J., others. 2010. Early bursts of body size and shape evolution are rare in comparative data. Evolution: International Journal of Organic Evolution. 64:2385–2396.</span>
+
+</li>
+<li><span id="Lemey2010">Lemey P., Rambaut A., Welch J.J., Suchard M.A. 2010. Phylogeography takes a relaxed random walk in continuous space and time. Molecular biology and evolution. 27:1877–1885.</span>
+
+</li>
+<li><span id="May2019">May M.R., Moore B.R. 2019. A Bayesian Approach for Inferring the Impact of a Discrete Character on Rates of Continuous-Character Evolution in the Presence of Background Rate Variation. bioRxiv.</span>
+
+<a href="https://doi.org/10.1101/576207">10.1101/576207</a>
+
+</li>
+<li><span id="Price2013">Price S.A., Tavera J.J., Near T.J., Wainwright P.C. 2013. Elevated rates of morphological and functional diversification in reef-dwelling haemulid fishes. Evolution: International Journal of Organic Evolution. 67:417–428.</span>
+
+</li>
+<li><span id="Venditti2011">Venditti C., Meade A., Pagel M. 2011. Multiple routes to mammalian diversity. Nature. 479:393.</span>
+
+</li></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+
+<script src="/assets/js/base.js"></script>
+
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+  });
+</script>
+
+  </body>
+</html>
