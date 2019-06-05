@@ -21,16 +21,11 @@ make_states = function(label_fn, color_fn, fp="./") {
     # generate colors for ranges
     range_color_list = read.csv(color_fn, header=T, sep=",", colClasses="character")
     
-    print(range_color_list)
-    
     # get area names
     area_names = unlist(sapply(range_color_list$range, function(y) { if (nchar(y)==1) { return(y) } }))
-    print(area_names)
     
     # get state labels
     state_descriptions = read.csv(label_fn, header=T, sep=",", colClasses="character")
-    
-    print(state_descriptions)
     
     # map presence-absence ranges to area names
     range_labels = sapply(state_descriptions$range[2:nrow(state_descriptions)],
