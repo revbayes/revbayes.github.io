@@ -9,7 +9,7 @@ color_fn = paste(fp, "data/n4/range_colors.n4.txt", sep="")
 
 
 # get state labels and state colors
-states = make_states(label_fn, color_fn, fp=fp); states$state_labels
+states = make_states(label_fn, color_fn, fp=fp)
 state_labels = states$state_labels
 state_colors = states$state_colors
 

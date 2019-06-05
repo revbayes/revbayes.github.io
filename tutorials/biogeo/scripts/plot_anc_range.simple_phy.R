@@ -4,8 +4,8 @@ source("scripts/plot_anc_range.util.R")
 fp = "./" # edit to provide an absolute filepath
 plot_fn = paste(fp, "output/simple_phy.range.pdf",sep="")
 tree_fn = paste(fp, "output/simple_phy.ase.tre", sep="")
-label_fn = paste(fp, "data/state_labels.n6.txt", sep="")
-color_fn = paste(fp, "data/range_colors.n6.txt", sep="")
+label_fn = paste(fp, "data/n6/state_labels.n6.txt", sep="")
+color_fn = paste(fp, "data/n6/range_colors.n6.txt", sep="")
 
 # get state labels and state colors
 states = make_states(label_fn, color_fn, fp=fp)
