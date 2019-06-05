@@ -598,7 +598,7 @@ Import the morphological character matrix and assign it to the variable `morpho`
 morpho <- readDiscreteCharacterData("data/mammals_thinned_placenta_type.nex")
 ```
 
-{% subsubsection Create Helper Variables | subsubsec_mvi_var %}
+{% subsubsection Create Helper Variables | subsubsec_var %}
 
 Before we begin writing the Rev scripts for each of the model components, we need to instantiate a couple ``helper variables'' that will be used by downstream parts of our model specification files. 
 Create vectors of moves and monitors

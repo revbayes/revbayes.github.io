@@ -198,7 +198,7 @@ separate shaded boxes. For example, we will instruct you to create a
 constant node called `example` that is equal to `1.0` using the `<-`
 operator like this:
 ```
-    example <- 1.0
+example <- 1.0
 ```
 
 If you copy and paste text from the browser, beware of introducing incorrect characters!
@@ -260,10 +260,10 @@ used for both molecular sequences and discrete morphological characters.
 Import the morphological character matrix and assign it to the variable
 `morpho`.
 ```
-    morpho <- readDiscreteCharacterData("data/bears.nex")
+morpho <- readDiscreteCharacterData("data/bears.nex")
 ```
 
-{% subsection Create Helper Variables | subsec_mvi_var %}
+{% subsection Create Helper Variables | subsec_var %}
 
 Before we begin writing the Rev scripts for each of the models, 
 we need to instantiate a couple “helper variables” that will
@@ -274,16 +274,17 @@ of species in our analysis (18) and a constant node called `num_branches` repres
 the number of branches in the tree. We will also create a constant node of
 the taxon names. This list will be used to initialize the tree.
 ```
-    taxa <- morpho.names()
-    num_taxa <- morpho.size() 
-    num_branches <- 2 * num_taxa - 2
+taxa <- morpho.names()
+num_taxa <- morpho.size() 
+num_branches <- 2 * num_taxa - 2
 ```
-Next, create two workspace variables called `mvi` and `mni`. These variables are iterators that will build a vector containing all of the MCMC moves used to propose new states for every stochastic node in the model graph. Each time a new move is added to the vector, `mvi` will be incremented by a value of `1`.
+Next, create two workspace variables called `moves` and `monitors`. 
+These variables are vectors containing all of the MCMC moves and monitors, respectively. 
 ```
-    mvi = 1
-    mni = 1
+moves    = VectorMoves()
+monitors = VectorMonitors()
 ```
-One important distinction here is that `mvi` is part of the RevBayes
+One important distinction here is that `moves` and `monitors` are part of the RevBayes
 workspace and not the hierarchical model. Thus, we use the workspace
 assignment operator `=` instead of the constant node assignment `<-`.
 
@@ -298,32 +299,32 @@ and it is possible to use multiple different moves for a given parameter to impr
 In the case of our unrooted tree topology, for example, we can use both a nearest-neighbor interchange move (`mvNNI`) and a subtree-prune and regrafting move (`mvSPR`). These moves do not have tuning parameters associated with them, thus you only need to pass in the `topology` node and proposal `weight`.
 
 ```
-    br_len_lambda ~ dnExp(0.2)
-    moves[mvi++] = mvScale(br_len_lambda, weight=2)
+br_len_lambda ~ dnExp(0.2)
+moves.append( mvScale(br_len_lambda, weight=2) )
 
-    phylogeny ~ dnUniformTopologyBranchLength(taxa, branchLengthDistribution=dnExp(br_len_lambda))
-    moves[mvi++] = mvNNI(phylogeny, weight=num_branches/2.0)
-    moves[mvi++] = mvSPR(phylogeny, weight=num_branches/10.0)
-    moves[mvi++] = mvBranchLengthScale(phylogeny, weight=num_branches)
+phylogeny ~ dnUniformTopologyBranchLength(taxa, branchLengthDistribution=dnExp(br_len_lambda))
+moves.append( mvNNI(phylogeny, weight=num_branches/2.0) )
+moves.append( mvSPR(phylogeny, weight=num_branches/10.0) )
+moves.append( mvBranchLengthScale(phylogeny, weight=num_branches) )
     
-    tree_length := phylogeny.treeLength()
+tree_length := phylogeny.treeLength()
 ```
 Next, we will create a Q-matrix. Recall that the Mk model is simply a
 generalization of the JC model. Therefore, we will create a 2x2 Q-matrix
 using `fnJC`, which initializes Q-matrices with equal transition
 probabilities between all states.
 ```
-    Q_morpho <- fnJC(2)
+Q_morpho <- fnJC(2)
 ```
 Now that we have the basics of the model specified, we will add
 gamma-distributed rate variation and specify moves on the parameter of
 the gamma distribution, `alpha_morpho`.
 ```
-    alpha_morpho ~ dnUniform( 0, 1E6 )
-    rates_morpho := fnDiscretizeGamma( alpha_morpho, alpha_morpho, 4 )
+alpha_morpho ~ dnUniform( 0, 1E8 )
+rates_morpho := fnDiscretizeGamma( alpha_morpho, alpha_morpho, 4 )
 
-    # Moves on the parameters of the gamma distribution
-    moves[mvi++] = mvScale(alpha_morpho, lambda=1, weight=2.0)
+# Moves on the parameters of the gamma distribution
+moves.append( mvScale(alpha_morpho, lambda=1, weight=2.0)
 ```
 
 Lastly, we set up the CTMC. This should also be familiar from the {% page_ref ctmc %}. 
@@ -332,8 +333,8 @@ We also have two new keywords: data type and coding. The data type
 argument specifies the type of data - in our case, “Standard”, the
 specification for morphology. (The role of the `coding` argument will be described in the next section {% ref sec_ascertainment_bias %}.)
 ```
-    phyMorpho ~ dnPhyloCTMC(tree=phylogeny, siteRates=rates_morpho, Q=Q_morpho, type="Standard")
-    phyMorpho.clamp(morpho)
+phyMorpho ~ dnPhyloCTMC(tree=phylogeny, siteRates=rates_morpho, Q=Q_morpho, type="Standard")
+phyMorpho.clamp(morpho)
 ```
 All of the components of the model are now specified.
 
@@ -345,7 +346,7 @@ We can now create our workspace model variable with our fully specified
 model DAG. We will do this with the `model()` function and provide a
 single node from the graph (`phylogeny`).
 ```
-    mymodel = model(phylogeny)
+mymodel = model(phylogeny)
 ```
 The object `mymodel` is a wrapper around the entire model graph and
 allows us to pass the model to various functions that are specific to
@@ -366,7 +367,7 @@ parameters in the file written by this monitor are all numerical
 parameters. This file will be a tab-separated text file that can be opened by accessory programs for evaluating such parameters. We will also name the output file for this monitor and indicate that we wish to sample our
 MCMC every 10 cycles.
 ```
-    monitors[mni++] = mnModel(filename="output/mk.log", printgen=10)
+monitors.append( mnModel(filename="output/mk.log", printgen=10) )
 ```
 The `mnFile` monitor writes any parameter we specify to file. Thus, if
 we only cared about the branch lengths and nothing else (this is not a
@@ -377,12 +378,12 @@ topology is not included in the `mnModel` monitor (because it is not
 numerical), we will use `mnFile` to write the tree to file by specifying
 our `phylogeny` variable in the arguments.
 ```
-    monitors[mni++] = mnFile(filename="output/mk.trees", printgen=10, phylogeny)
+monitors.append( mnFile(filename="output/mk.trees", printgen=10, phylogeny) )
 ```
 The third monitor we will add to our analysis will print information to
 the screen.
 ```
-    monitors[mni++] = mnScreen(printgen=100)
+monitors.append( mnScreen(printgen=100) )
 ```
 
 {% subsubsection Set-Up the MCMC %}
@@ -392,18 +393,18 @@ the workspace variable that defines our MCMC run. We do this using the
 `mcmc()` function that takes the three main analysis components
 as arguments.
 ```
-    mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
+mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
 ```
 The MCMC object that we named `mymcmc` has a member method called
 `.run()`. This will execute our analysis and we will set the chain
 length to `20000` cycles using the `generations` option.
 ```
-    mymcmc.run(generations=20000, tuningInterval=200)
+mymcmc.run(generations=20000, tuningInterval=200)
 ```
 Once our Markov chain has terminated, we will want RevBayes to close.
 Tell the program to quit using the `q()` function.
 ```
-    q()
+q()
 ```
 
 >You made it! Save all of your files.
@@ -543,9 +544,9 @@ discretized distribution is split into multiple classes, each with it's
 own set of frequencies for the 0 and 1 characters. The number of classes
 can vary; we have chosen 4 for tractability. Note that we need to make sure that this discretization results in a symmetric model, therefore we will use only one parameter for the beta distribution: `beta_scale` such that $\alpha = \beta$.
 ```
-    num_cats = 4
-    beta_scale ~ dnLognormal( 0.0, sd=2*0.587405 )
-    moves[mvi++] = mvScale(beta_scale, lambda=1, weight=5.0 )
+num_cats = 4
+beta_scale ~ dnLognormal( 0.0, sd=2*0.587405 )
+moves.append( mvScale(beta_scale, lambda=1, weight=5.0 ) )
 ```
 Above, we initialized the number of categories, the parameters of the
 beta distribution, and the moves on these parameters.
@@ -553,35 +554,35 @@ beta distribution, and the moves on these parameters.
 Next, we set the categories to each represent a quadrant of the beta
 distribution specified by `beta_scale`. 
 ```
-    cats := fnDiscretizeBeta(beta_scale, beta_scale, num_cats)
+cats := fnDiscretizeBeta(beta_scale, beta_scale, num_cats)
 ```
 If you were to print the `cats` variable, you would see a list of state
 frequencies like so:
 
 ```
-   [ 0.011, 0.236, 0.764, 0.989 ]
+[ 0.011, 0.236, 0.764, 0.989 ]
 ```
 {:.Rev-output}
 
 Using these state frequencies, we will generate a new vector of Q-matrices. Because we are varying the state frequencies, we must use a Q-matrix generation function that allows for state frequencies to vary as
 a parameter. We will, therefore, use the `fnF81` function.
 ```
-    for (i in 1:cats.size())
-    {
-        Q[i] := fnF81(simplex(abs(1-cats[i]), cats[i]))
-    }
+for (i in 1:cats.size())
+{
+    Q[i] := fnF81(simplex(abs(1-cats[i]), cats[i]))
+}
 ```
 Additionally, in RevBayes we need to specify the probabilities that a site evolves according to one
 of the Q-matrices. For this model the probabilities must be equal because we need to guarantee that
 the model is symmetric. Thus, we use a `simplex` function to create a vector that sums to 1.0.
 ```
-    matrix_probs <- simplex( rep(1,num_cats) )
+matrix_probs <- simplex( rep(1,num_cats) )
 ```
 
 The only other specification that needs to change in the model specification is
 the CTMC:
 ```
-    phyMorpho ~ dnPhyloCTMC(tree=phylogeny, siteRates=rates_morpho, Q=Q, type="Standard", coding="variable", siteMatrices=matrix_probs)
+phyMorpho ~ dnPhyloCTMC(tree=phylogeny, siteRates=rates_morpho, Q=Q, type="Standard", coding="variable", siteMatrices=matrix_probs)
 ```
 You will notice that we have added a command to tell the CTMC that we have
 multiple site matrices that will be applied to different characters in

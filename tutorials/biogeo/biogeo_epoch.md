@@ -7,14 +7,16 @@ order: 2
 prerequisites:
 - biogeo/biogeo_intro
 - biogeo/biogeo_simple
+include_example_output: false
 include_files: 
 - scripts/plot_anc_range.epoch.R
 - scripts/plot_anc_range.util.R
 - data/n4/range_colors.n4.txt
 - scripts/run_epoch.Rev
-- output_examples/epoch.tre
-- output_examples/epoch.states.log
-- output_examples/epoch.model.log
+- example_output/epoch.tre
+- example_output/epoch.stoch.log
+- example_output/epoch.states.log
+- example_output/epoch.model.log
 exclude_files:
 - data/n6/hawaii.n6.connectivity.1.txt
 - data/n6/hawaii.n6.connectivity.2.txt

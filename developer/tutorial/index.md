@@ -81,6 +81,7 @@ Here is a glossary of all the tutorial attributes used by this site.
  `include_files` | List of file name patterns that should be included in the tutorial file download.
  `exclude_files` | List of file name patterns that should not be included in the download (overrides matching `include_files`).
  `include_all` | Automatically include files in the `data` and `scripts` tutorial subdirectories?
+ `include_example_output` | Automatically include example output files from the `example_output` directory in tutorial?
  `index` | Boolean indicating whether the tutorial should be included in the main [tutorial index]({% page_url tutorials %})
  `order` | Number indicating the order in which this tutorial should appear in its level in the [tutorial index]({% page_url tutorials %}).
  `keywords` | List of keywords for grouping tutorials with related subject matter.

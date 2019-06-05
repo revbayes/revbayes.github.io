@@ -116,11 +116,11 @@ taxa <- observed_phylogeny.taxa()
 root <- observed_phylogeny.rootAge()
 tree_length <- observed_phylogeny.treeLength()
 ```
-Additionally, we can initialize an iterator variable for our vector of
-moves and monitors:
+We will also create a workspace variable called `moves` and `monitors`. 
+This variable is a vector containing all of the MCMC moves and monitors respectively.
 ```
-mvi = 1
-mni = 1
+moves    = VectorMoves()
+monitors = VectorMonitors()
 ```
 Finally, we create a helper variable that specifies the number of
 discrete rate categories, another helper variable for the expected
@@ -172,8 +172,8 @@ extinction_root ~ dnLognormal(extinction_prior_mean,extinction_sd)
 ```
 Again, we use a `scaling-move` to update the speciation and extinction rates at the root.
 ```
-moves[mvi++] = mvScale(speciation_root,lambda=1,tune=true,weight=5)
-moves[mvi++] = mvScale(extinction_root,lambda=1,tune=true,weight=5)
+moves.append( mvScale(speciation_root,lambda=1,tune=true,weight=5) )
+moves.append( mvScale(extinction_root,lambda=1,tune=true,weight=5) )
 ```
 
 Next, we need a rate parameter for the rate-shifts events. We do not
@@ -194,7 +194,7 @@ shift_rate ~ dnLognormal( ln( EXPECTED_NUM_EVENTS/tree_length ), H)
 ```
 As usual, we apply a `scaling-move` on this rate parameter.
 ```
-moves[mvi++] = mvScale(shift_rate,lambda=1,tune=true,weight=5)
+moves.append( mvScale(shift_rate,lambda=1,tune=true,weight=5) )
 ```
 
 {% subsubsection Incomplete Taxon Sampling %}
@@ -243,10 +243,10 @@ remove events, a `mvEventTimeBeta` and `mvEventTimeSlide` to move to change the 
 of the events, and a `mvContinuousEventScale` to change the
 the speciation and extinction rates of the event.
 ```
-moves[mvi++] = mvBirthDeathEventContinuous(timetree, weight=10)
-moves[mvi++] = mvContinuousEventScale(timetree, lambda=1.0, weight=5)
-moves[mvi++] = mvEventTimeBeta(timetree, delta=0.01, offset=1.0, weight=5,tune=TRUE)
-moves[mvi++] = mvEventTimeSlide(timetree, delta=timetree.treeLength()/10.0, weight=5,tune=false)
+moves.append( mvBirthDeathEventContinuous(timetree, weight=10) )
+moves.append( mvContinuousEventScale(timetree, lambda=1.0, weight=5) )
+moves.append( mvEventTimeBeta(timetree, delta=0.01, offset=1.0, weight=5,tune=TRUE) )
+moves.append( mvEventTimeSlide(timetree, delta=timetree.treeLength()/10.0, weight=5,tune=false) )
 ```
 In this analysis, we are interested in the branch-specific
 diversification rates. So far we do not have any variables that directly
@@ -281,9 +281,9 @@ because we are not going to look into the samples. However, as good
 practice we still define our two standard monitors: the model monitor
 and a screen monitor
 ```
-monitors[mni++] = mnModel(filename="output/primates_CBDSP.log",printgen=10, separator = TAB)
-monitors[mni++] = mnExtNewick(filename="output/primates_CBDSP.trees", isNodeParameter=FALSE, printgen=10, separator = TAB, tree=timetree, avg_lambda, avg_mu, avg_net, avg_rel)
-monitors[mni++] = mnScreen(printgen=1000, shift_rate, speciation_root, extinction_root, total_num_events)
+monitors.append( mnModel(filename="output/primates_CBDSP.log",printgen=10, separator = TAB) )
+monitors.append( mnExtNewick(filename="output/primates_CBDSP.trees", isNodeParameter=FALSE, printgen=10, separator = TAB, tree=timetree, avg_lambda, avg_mu, avg_net, avg_rel) )
+monitors.append( mnScreen(printgen=1000, shift_rate, speciation_root, extinction_root, total_num_events) )
 ```
 
 {% subsection Running an MCMC analysis %}
@@ -296,7 +296,7 @@ model monitor using the `mnModel` function. This creates a new monitor
 variable that will output the states for all model parameters when
 passed into a MCMC function.
 ```
-monitors[mni++] = mnModel(filename="output/primates_CBDSP.log",printgen=10, separator = TAB)
+monitors.append( mnModel(filename="output/primates_CBDSP.log",printgen=10, separator = TAB) )
 ```
 Additionally, we create an extended-Newick monitor. The extended-Newick
 monitor writes the tree to a file and adds parameter values to the
@@ -307,12 +307,12 @@ diversification (speciation - extinction) and relative extinction
 need this file later to estimate and visualize the posterior
 distribution of the rates at the branches.
 ```
-monitors[mni++] = mnExtNewick(filename="output/primates_CBDSP.trees", isNodeParameter=FALSE, printgen=10, separator = TAB, tree=timetree, avg_lambda, avg_mu, avg_net, avg_rel)
+monitors.append( mnExtNewick(filename="output/primates_CBDSP.trees", isNodeParameter=FALSE, printgen=10, separator = TAB, tree=timetree, avg_lambda, avg_mu, avg_net, avg_rel) )
 ```
 Finally, create a screen monitor that will report the states of
 specified variables to the screen with `mnScreen`:
 ```
-monitors[mni++] = mnScreen(printgen=1000, shift_rate, speciation_root, extinction_root, total_num_events)
+monitors.append( mnScreen(printgen=1000, shift_rate, speciation_root, extinction_root, total_num_events) )
 ```
 
 {% subsubsection Initializing and Running the MCMC Simulation %}

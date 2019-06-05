@@ -76,13 +76,13 @@ rho <- observed_phylogeny.ntips() / NUM_TOTAL_SPECIES
 #### construct a variable for the tree drawn from a birth death process
 timetree ~ dnCDBDP( rootAge           = root,
                     speciationRates   = speciation,
-                    extinctionRates   = extinction, 
+                    extinctionRates   = extinction,
                     Q                 = fnJC(NUM_RATE_CATEGORIES),
-                    delta             = event_rate, 
+                    delta             = event_rate,
                     pi                = rate_cat_probs,
                     rho               = rho,
                     condition         = "time" )
-                    
+
 ### clamp the model with the "observed" tree
 timetree.clamp(observed_phylogeny)
 
@@ -95,7 +95,7 @@ timetree.clamp(observed_phylogeny)
 mymodel = model(speciation)
 
 ### set up the monitors that will output parameter values to file and screen
-monitors.append( mnScreen(printgen=10, event_rate, speciation_mean) )
+monitors.append( mnScreen(printgen=10, event_rate, speciation_mean, extinction_mean) )
 monitors.append( mnStochasticBranchRate(cdbdp=timetree, printgen=1, filename="output/primates_BDS_rates.log") )
 monitors.append( mnModel(filename="output/primates_BDS.log",printgen=1, separator = TAB) )
 

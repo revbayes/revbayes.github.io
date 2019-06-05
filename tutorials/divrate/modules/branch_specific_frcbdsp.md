@@ -31,11 +31,11 @@ taxa <- observed_phylogeny.taxa()
 root <- observed_phylogeny.rootAge()
 tree_length <- observed_phylogeny.treeLength()
 ```
-Additionally, we can initialize an iterator variable for our vector of
-moves:
+We will also create a workspace variable called `moves` and `monitors`. 
+This variable is a vector containing all of the MCMC moves and monitors respectively.
 ```
-mvi = 0
-mni = 0
+moves    = VectorMoves()
+monitors = VectorMonitors()
 ```
 Finally, we create a helper variable that specifies the number of
 discrete rate categories, another helper variable for the expected
@@ -120,7 +120,7 @@ tree length. As usual for rate parameter, we apply a scaling move to the
 `event_rate` variable.
 ```
 event_rate ~ dnLognormal( ln( EXPECTED_NUM_EVENTS/tree_length ), H)
-moves[mvi++] = mvScale(event_rate,lambda=1,tune=true,weight=5)
+moves.append( mvScale(event_rate,lambda=1,tune=true,weight=5) )
 ```
 Additionally, we need a parameter for the category of the process at
 root. We use a uniform prior distribution on the indices 1 to $N^2$
@@ -130,7 +130,7 @@ integer walk because the random variable is defined only on the indices
 (i.e., with real number).
 ```
 root_category ~ dnUniformNatural(1,NUM_RATE_CATEGORIES)
-moves[mvi++] = mvRandomIntegerWalk(root_category,weight=1)
+moves.append( mvRandomIntegerWalk(root_category,weight=1)
 ```
 
 {% aside Shifts in the Extinction Rate %}
@@ -157,7 +157,7 @@ for(i in 1:NUM_RATE_CATEGORIES) {
 Now we also need to specify a root prior for $N^2$ elements.
 ```
 root_category ~ dnUniformNatural(1,NUM_RATE_CATEGORIES * NUM_RATE_CATEGORIES)
-moves[mvi++] = mvRandomIntegerWalk(root_category,weight=1)
+moves.append( mvRandomIntegerWalk(root_category,weight=1) )
 ```
 Note however, that this type of analysis will take significantly longer to run!
 {% endaside %}
@@ -200,9 +200,9 @@ remove events, a `mvEventTimeBeta` move to change the time and location
 of the events, and a `mvDiscreteEventCategoryRandomWalk` to change the
 the paired-rate category to which a rate-shift event belongs.
 ```
-moves[mvi++] = mvBirthDeathEvent(timetree,weight=2)
-moves[mvi++] = mvEventTimeBeta(timetree,weight=2)
-moves[mvi++] = mvDiscreteEventCategoryRandomWalk(timetree,weight=2)
+moves.append( mvBirthDeathEvent(timetree,weight=2) )
+moves.append( mvEventTimeBeta(timetree,weight=2) )
+moves.append( mvDiscreteEventCategoryRandomWalk(timetree,weight=2) )
 ```
 In this analysis, we are interested in the branch-specific
 diversification rates. So far we do not have any variables that directly
@@ -237,7 +237,7 @@ model monitor using the `mnModel` function. This creates a new monitor
 variable that will output the states for all model parameters when
 passed into a MCMC function.
 ```
-monitors[mni++] = mnModel(filename="output/primates_FRC_BDSP.log",printgen=10, separator = TAB)
+monitors.append( mnModel(filename="output/primates_FRC_BDSP.log",printgen=10, separator = TAB) )
 ```
 Additionally, we create an extended-Newick monitor. The extended-Newick
 monitor writes the tree to a file and adds parameter values to the
@@ -248,12 +248,12 @@ diversification (speciation - extinction) and relative extinction
 need this file later to estimate and visualize the posterior
 distribution of the rates at the branches.
 ```
-monitors[mni++] = mnExtNewick(filename="output/primates_FRC_BDSP.trees", isNodeParameter=FALSE, printgen=10, separator = TAB, tree=timetree, avg_lambda, avg_mu, avg_net, avg_rel)
+monitors.append( mnExtNewick(filename="output/primates_FRC_BDSP.trees", isNodeParameter=FALSE, printgen=10, separator = TAB, tree=timetree, avg_lambda, avg_mu, avg_net, avg_rel) )
 ```
 Finally, create a screen monitor that will report the states of
 specified variables to the screen with `mnScreen`:
 ```
-monitors[mni++] = mnScreen(printgen=10, event_rate, mean_speciation, root_category, total_num_events)
+monitors.append( mnScreen(printgen=10, event_rate, mean_speciation, root_category, total_num_events) )
 ```
 
 {% subsubsection Initializing and Running the MCMC Simulation %}

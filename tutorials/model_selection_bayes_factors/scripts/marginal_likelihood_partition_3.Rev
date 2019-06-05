@@ -11,8 +11,9 @@ taxa = data_ITS.taxa()
 num_taxa = data_ITS.ntaxa()
 num_branches = 2 * num_taxa - 3
 
-# make a move index variable
-mvi = 1
+# Create some vector for the moves and monitors of this analysis
+moves    = VectorMoves()
+monitors = VectorMonitors()
 
 # name the analysis
 name = "partition_3"
@@ -23,8 +24,8 @@ name = "partition_3"
 
 # We assume a uniform prior on topology.
 topology ~ dnUniformTopology(taxa)
-moves[mvi++] = mvNNI(topology, weight=10.0)
-moves[mvi++] = mvSPR(topology, weight=10.0)
+moves.append( mvNNI(topology, weight=10.0) )
+moves.append( mvSPR(topology, weight=10.0) )
 
 ##########################################
 # Define the prior on the branch lengths #
@@ -32,7 +33,7 @@ moves[mvi++] = mvSPR(topology, weight=10.0)
 
 for(i in 1:num_branches){
   br_lens[i] ~ dnExponential(10.0)
-  moves[mvi++] = mvScale(br_lens[i], weight=1.0)
+  moves.append( mvScale(br_lens[i], weight=1.0) )
 }
 TL := sum(br_lens)
 
@@ -49,20 +50,20 @@ phylogeny := treeAssembly(topology, br_lens)
 # ITS has GTR
 
 pi_ITS ~ dnDirichlet(v(1,1,1,1))
-moves[mvi++] = mvBetaSimplex(pi_ITS, weight=1.0)
+moves.append( mvBetaSimplex(pi_ITS, weight=1.0) )
 
 er_ITS ~ dnDirichlet(v(1,1,1,1,1,1))
-moves[mvi++] = mvBetaSimplex(er_ITS, weight=1.0)
+moves.append( mvBetaSimplex(er_ITS, weight=1.0) )
 
 Q_ITS := fnGTR(er_ITS, pi_ITS)
 
 # matK and rbcL have GTR
 
 pi_matK_rbcL ~ dnDirichlet(v(1,1,1,1))
-moves[mvi++] = mvBetaSimplex(pi_matK_rbcL, weight=1.0)
+moves.append( mvBetaSimplex(pi_matK_rbcL, weight=1.0) )
 
 er_matK_rbcL ~ dnDirichlet(v(1,1,1,1,1,1))
-moves[mvi++] = mvBetaSimplex(er_matK_rbcL, weight=1.0)
+moves.append( mvBetaSimplex(er_matK_rbcL, weight=1.0) )
 
 Q_matK_rbcL := fnGTR(er_matK_rbcL, pi_matK_rbcL)
 
@@ -72,15 +73,15 @@ Q_matK_rbcL := fnGTR(er_matK_rbcL, pi_matK_rbcL)
 
 # ITS has Gamma
 
-alpha_ITS ~ dnExponential(1)
-moves[mvi++] = mvScale(alpha_ITS, weight=1.0)
+alpha_ITS ~ dnUniform(0,1E8)
+moves.append( mvScale(alpha_ITS, weight=1.0) )
 
 site_rates_ITS := fnDiscretizeGamma(alpha_ITS, alpha_ITS, 4)
 
 # matK and rbcL have Gamma
 
-alpha_matK_rbcL ~ dnExponential(1)
-moves[mvi++] = mvScale(alpha_matK_rbcL, weight=1.0)
+alpha_matK_rbcL ~ dnUniform(0,1E8)
+moves.append( mvScale(alpha_matK_rbcL, weight=1.0) )
 
 site_rates_matK_rbcL := fnDiscretizeGamma(alpha_matK_rbcL, alpha_matK_rbcL, 4)
 
@@ -92,7 +93,7 @@ num_sites[1] = data_ITS.nchar()
 num_sites[2] = data_matK.nchar() + data_rbcL.nchar()
 
 relative_rates ~ dnDirichlet(v(1,1))
-moves[mvi++] = mvBetaSimplex(relative_rates, weight=1.0)
+moves.append( mvBetaSimplex(relative_rates, weight=1.0) )
 
 subset_rates := relative_rates * sum(num_sites) / num_sites
 
@@ -120,9 +121,9 @@ my_model = model(phylogeny)
 # Make the monitors #
 #####################
 
-monitors[1] = mnModel(filename="output/" + name + "/posterior_samples.log",printgen=10, separator = TAB)
-monitors[2] = mnFile(filename="output/" + name + "/tree_samples.trees",printgen=10, separator = TAB, phylogeny)
-monitors[3] = mnScreen(printgen=100, TL)
+monitors.append( mnModel(filename="output/" + name + "/posterior_samples.log",printgen=10, separator = TAB) )
+monitors.append( mnFile(filename="output/" + name + "/tree_samples.trees",printgen=10, separator = TAB, phylogeny) )
+monitors.append( mnScreen(printgen=100, TL) )
 
 ################
 # Run the MCMC #
