@@ -1,0 +1,95 @@
+################################################################################
+#
+# RevBayes Example: Bayesian inference of rates of evolution under a
+#                   accelerating/deceleratings-rate Brownian-motion model
+#
+#
+# authors: Michael R. May
+#
+################################################################################
+
+#######################
+# Reading in the Data #
+#######################
+
+### Select the dataset to analyze
+dataset <- 3
+
+### Read in the trees
+T <- readTrees("data/trees.nex")[dataset]
+
+### Read in the character data
+data <- readContinuousCharacterData("data/traits.nex")[dataset]
+
+# Create some vector for the moves and monitors of this analysis
+moves    = VectorMoves()
+monitors = VectorMonitors()
+
+##########################
+# Specify the tree model #
+##########################
+
+tree <- T
+
+##########################
+# Specify the rate model #
+##########################
+
+initial_time := tree.rootAge()
+
+sigma ~ dnLoguniform(1e-3, 1)
+moves.append( mvScale(sigma, weight=1.0) )
+
+lambda ~ dnNormal(0, 0.5)
+moves.append( mvSlide(lambda, weight=1.0) )
+
+lambda.setValue(0.1)
+
+############################
+# Compute the branch-rates #
+############################
+
+num_tips     <- tree.ntips()
+num_branches <- 2 * num_tips - 2
+
+for(i in 1:num_branches) {
+    branch_rates[i] := sigma * (exp(lambda * (initial_time - tree.nodeAge(i))) - exp(lambda * (initial_time - tree.nodeAge(tree.parent(i))))) / (lambda * tree.branchLength(i))
+}
+
+##########################
+# Specify the BM process #
+##########################
+
+X ~ dnPhyloBrownianREML(tree, branchRates=branch_rates^0.5)
+X.clamp(data)
+
+
+
+#############
+# The Model #
+#############
+
+mymodel = model(sigma)
+
+### set up the monitors that will output parameter values to file and screen
+monitors.append( mnModel(filename="output/BM_ACDC.log", printgen=10) )
+monitors.append( mnScreen(printgen=1000, sigma, lambda) )
+
+
+
+
+
+################
+# The Analysis #
+################
+
+### workspace mcmc ###
+mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
+
+
+### run the MCMC ###
+mymcmc.burnin(generations=1000, tuningInterval=100)
+mymcmc.run(generations=50000)
+
+## quit ##
+q()

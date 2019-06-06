@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+\node[obnode] (nx) at (1,1) {\LARGE $X$};
+\node[constnode] (sigma) at ($(nx)+(0,2)$) {\LARGE $\sigma$};
+\node[constnode] (phylo) at ($(nx)+(-2,0)$) {\Large $\Psi$};
+\draw [taro] (phylo) -- (nx);
+\draw [taro] (sigma) -- (nx);
+\node at ($(nx)+(0,-1)$) {phyloBM};
+\node[white, fill=blue, shape=rectangle, rounded corners] at ($(phylo)+(-0.75,0)$) [left]{phylogeny};
+\node[white, fill=blue, shape=rectangle, rounded corners] at ($(sigma)+(0.75,0)$) [right]{rate};
+\end{tikzpicture}
