@@ -1,0 +1,151 @@
+################################################################################
+#
+# RevBayes Example: Bayesian inference of rates of evolution under a
+#                   state-dependent Brownian-motion model
+#
+#
+# authors: Michael R. May
+#
+################################################################################
+
+#######################
+# Reading in the Data #
+#######################
+
+### Select the character to analyze
+character <- 1
+
+### Read in the tree
+T <- readTrees("data/haemulidae.nex")[1]
+ntips <- T.ntips()
+nbranches <- 2 * ntips - 2
+
+### Read in the continuous-character data
+cont <- readContinuousCharacterData("data/haemulidae_trophic_traits.nex")
+nchar <- cont.nchar()
+
+### Read in the discrete-character data
+disc <- readDiscreteCharacterData("data/haemulidae_habitat.nex")
+num_disc_states <- disc.getStateDescriptions().size()
+
+# Create some vector for the moves and monitors of this analysis
+moves    = VectorMoves()
+monitors = VectorMonitors()
+
+##########################
+# Specify the tree model #
+##########################
+
+tree <- T
+
+########################################
+# Specify the discrete-character model #
+########################################
+
+# make the Q matrix
+Q <- fnJC(num_disc_states)
+
+# make the transition rate parameter
+lambda ~ dnLoguniform(1e-3, 2)
+moves.append( mvScale(lambda, weight=1.0) )
+
+# make the data-augmented CTCM model
+X ~ dnPhyloCTMCDASiteIID(tree, Q, branchRates=lambda, type="Standard", nSites=1)
+X.clamp(disc)
+
+# include proposals for the discrete character history
+moves.append( mvCharacterHistory(ctmc=X, qmap_site=Q, graph="node",   proposal="rejection", weight=20.0) )
+moves.append( mvCharacterHistory(ctmc=X, qmap_site=Q, graph="branch", proposal="rejection", weight=20.0) )
+
+# keep track of the number of transitions
+for(i in 1:nbranches) {
+    num_changes[i] := sum(X.numCharacterChanges(i))
+}
+total_num_changes := sum(num_changes)
+
+
+##########################
+# Specify the rate model #
+##########################
+
+# specify the average rate
+beta ~ dnLoguniform(1e-3, 1)
+moves.append( mvScale(beta, weight=1.0) )
+
+# specify the relative state-dependent rates (with sum 1)
+concentration <- 1.0
+proportional_zeta ~ dnDirichlet( rep(concentration, num_disc_states) )
+moves.append( mvBetaSimplex(proportional_zeta, weight=1.0) )
+
+# compute the state dependent rates (with mean 1)
+zeta := proportional_zeta * num_disc_states
+
+# keep track of the overall rate
+overall_rate := beta * zeta
+
+# compute the state-dependent branch rates
+for(i in 1:nbranches) {
+    state_branch_rate[i] := sum(X.relativeTimeInStates(i,1) * zeta)
+}
+
+# compute the overall branch rates (including the average rate)
+branch_rates := state_branch_rate * beta
+
+# the (marginal) rates among characters
+alpha <- 1.0
+proportional_rates ~ dnDirichlet( rep(alpha, nchar) )
+relative_rates := proportional_rates * nchar
+moves.append( mvBetaSimplex(proportional_rates, weight=2.0) )
+
+# the correlations among characters
+eta <- 1.0
+P ~ dnLKJPartial( eta, nchar )
+
+moves.append( mvCorrelationMatrixRandomWalk(P, weight=3.0) )
+moves.append( mvCorrelationMatrixSingleElementBeta(P, weight=5.0) )
+
+R := fnPartialToCorr(P)
+
+correlations := R.upperTriangle()
+
+# construct the variance-covariance matrix
+V := fnDecompVarCovar( relative_rates^0.5, R )
+
+##########################
+# Specify the BM process #
+##########################
+
+Y ~ dnPhyloMultivariateBrownianREML(tree, branchRates=branch_rates^0.5, rateMatrix=V)
+Y.clamp(cont)
+
+
+
+#############
+# The Model #
+#############
+
+mymodel = model(zeta)
+
+### set up the monitors that will output parameter values to file and screen
+monitors.append( mnModel(filename="output/state_dependent_mvBM.log", printgen=10) )
+monitors.append( mnScreen(printgen=1000, zeta, total_num_changes) )
+
+
+
+
+################
+# The Analysis #
+################
+
+### workspace mcmc ###
+mymcmc = mcmc(mymodel, monitors, moves, nruns=1, combine="mixed")
+
+
+### run the MCMC ###
+mymcmc.burnin(generations=2000, tuningInterval=100)
+mymcmc.run(generations=50000)
+
+
+
+## quit ##
+q()

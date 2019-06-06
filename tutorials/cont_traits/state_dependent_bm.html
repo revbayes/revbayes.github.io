@@ -157,7 +157,7 @@
 <h3 class="subsection" id="read-the-data">Read the data</h3>
 <hr class="subsection" />
 
-<p>In this tutorial, we will use univariate Brownian motion to analyze the state-dependent rates of a single continuous character. Here, we assume we are analyzing the first character (log body size), but you should feel free to choose any of the 11 characters described in the <code class="highlighter-rouge">haemulidae_trophic_traits.nex</code> file.</p>
+<p>In this tutorial, we will use univariate Brownian motion to analyze the state-dependent rates of a single continuous character. Here, we assume we are analyzing the first character (log body size), but you should feel free to choose any of the 9 characters described in the <code class="highlighter-rouge">haemulidae_trophic_traits.nex</code> file.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>character &lt;- 1
 </code></pre></div></div>
 <p>Now, we read in the (time-calibrated) tree and retrieve some useful information.</p>
@@ -173,6 +173,13 @@ nbranches &lt;- 2 * ntips - 2
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cont.excludeAll()
 cont.includeCharacter(character)
 </code></pre></div></div>
+
+<blockquote class="aside"><h2>Alternative: Multivariate model</h2><p>We can also include all of the continuous characters in a multivariate analysis. In this case, we don’t exclude any characters, and instead retrieve the number of characters in the dataset.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cont &lt;- readContinuousCharacterData("data/haemulidae_trophic_traits.nex")
+nchar &lt;- cont.nchar()
+</code></pre></div></div>
+</blockquote>
+
 <p>Now, we read in the discrete character data (habitat for each species, coded as reef [1] or non-reef [0]), and record the number of states it has.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>disc &lt;- readDiscreteCharacterData("data/haemulidae_habitat.nex")
 num_disc_states &lt;- disc.getStateDescriptions().size()
@@ -201,7 +208,7 @@ monitors = VectorMonitors()
 </code></pre></div></div>
 
 <p>We draw the rate parameter, $\lambda$, from a vague log-uniform prior.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>lambda ~ dnLoguniform(1e-3, 1)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>lambda ~ dnLoguniform(1e-3, 2)
 </code></pre></div></div>
 <p>The rate parameter must be positive, so we apply a scaling move to it.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale(lambda, weight=1.0) )
@@ -258,6 +265,30 @@ relative_zeta ~ dnDirichlet( rep(concentration, num_disc_states) )
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>branch_rates := state_branch_rate * beta
 </code></pre></div></div>
 
+<blockquote class="aside"><h2>Alternative: Multivariate model</h2><p>To use multivariate data, we must also specify a prior model for the variance-covariance matrix, $\Sigma$. See the tutorial <a href="/tutorials/cont_traits/multivariate_bm.html">Multivariate Brownian Motion</a> for more information about this model.</p>
+
+<p>First, we specify the relative rates of change among the continuous characters.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha &lt;- 1.0
+proportional_rates ~ dnDirichlet( rep(alpha, nchar) )
+relative_rates := proportional_rates * nchar
+moves.append( mvBetaSimplex(proportional_rates, weight=2.0) )
+</code></pre></div></div>
+<p>Next, we specify an LKJ prior on the partial correlation matrix, $P$, and transform it into a full correlation matrix, $R$.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>eta &lt;- 1.0
+P ~ dnLKJPartial( eta, nchar )
+
+moves.append( mvCorrelationMatrixRandomWalk(P, weight=3.0) )
+moves.append( mvCorrelationMatrixSingleElementBeta(P, weight=5.0) )
+
+R := fnPartialToCorr(P)
+
+correlations := R.upperTriangle()
+</code></pre></div></div>
+<p>Finally, we construct the variance-covariance matrix, $\Sigma$, from the relative rates for each character and the correlation matrix.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>V := fnDecompVarCovar( relative_rates^0.5, R )
+</code></pre></div></div>
+</blockquote>
+
 <h4 class="subsubsection" id="brownian-motion-model">Brownian-motion model</h4>
 <hr class="subsubsection" />
 
@@ -268,6 +299,12 @@ relative_zeta ~ dnDirichlet( rep(concentration, num_disc_states) )
 <p>Noting that $Y$ is the observed continuous-character data, we clamp the <code class="highlighter-rouge">cont</code> variable to this stochastic node.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Y.clamp(cont)
 </code></pre></div></div>
+
+<blockquote class="aside"><h2>Alternative: Multivariate model</h2><p>When performing a multivariate analysis, we replace the <code class="highlighter-rouge">dnPhyloBrownianREML</code> with <code class="highlighter-rouge">dnPhyloMultivariateBrownianREML</code> and provide <code class="highlighter-rouge">V</code> ($\Sigma$) as an additional argument.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Y ~ dnPhyloMultivariateBrownianREML(tree, branchRates=branch_rates^0.5, rateMatrix=V)
+Y.clamp(cont)
+</code></pre></div></div>
+</blockquote>
 
 <p>Finally, we create a workspace object for the entire model with <code class="highlighter-rouge">model()</code>. Remember that workspace objects are initialized with the <code class="highlighter-rouge">=</code> operator, and are not themselves part of the Bayesian graphical model. The <code class="highlighter-rouge">model()</code> function traverses the entire model graph and finds all the nodes in the model that we specified. This object provides a convenient way to refer to the whole model object, rather than just a single DAG node.</p>
 
@@ -304,12 +341,25 @@ create our MCMC object:</p>
 
 <p>⇨ The <code class="highlighter-rouge">Rev</code> file for performing this analysis: <code class="highlighter-rouge">mcmc_state_dependent_BM.Rev</code></p>
 
-<p>You can then visualize the absolute rates of state-dependent evolution ($\beta^2 \times \boldsymbol{\zeta^2}$)  in <code class="highlighter-rouge">Tracer</code>.</p>
+<p>You can then visualize the absolute rates of state-dependent evolution ($\beta^2 \times \boldsymbol{\zeta^2}$) in <code class="highlighter-rouge">Tracer</code>.</p>
 
 <figure id="zeta_posterior"><p><img src="figures/zeta_posterior.png" height="75%" width="75%" /></p>
 <figcaption>Estimates of the posterior distribution of the $\beta^2 \times \zeta^2$ visualized in
 <code class="highlighter-rouge">Tracer</code>.</figcaption>
 </figure>
+
+<blockquote class="aside"><h2>Results: Multivariate model</h2><p>If you ran the multivariate analysis, your posterior distributions for the state-dependent rates will look quite different. In the multivariate analysis, the effect of habitat is more pronounced than it was for the univariate analysis.</p>
+
+<figure id="zeta_posterior_multivariate"><p><img src="figures/zeta_posterior_mvBM.png" height="75%" width="75%" /></p>
+<figcaption>Estimates of the posterior distribution of the $\beta^2 \times \zeta^2$ under the multivariate model.</figcaption>
+</figure>
+
+<p>However, comparing the posterior distribution for the number of habitat transitions under the univariate and multivariate analysis (<a href="#num_transitions_comparison"></a>) reveals that the inferred number of transitions under the multivariate analysis is very unrealistic ($\approx 32$ transitions) compared to the univariate analysis ($\approx 6.5$ transitions). This is a strong indication that there are other sources of rate variation that are causing the multivariate analysis to infer very unrealistic patterns of habitat evolution.</p>
+
+<figure id="num_transitions_comparison"><p><img src="figures/num_transitions_posterior.png" height="75%" width="75%" /></p>
+<figcaption>Estimates of the posterior distribution of the the number of habitat transitions under the univariate model (green) and the multivariate model (blue).</figcaption>
+</figure>
+</blockquote>
 
 <!--  -->
 
@@ -380,7 +430,7 @@ create our MCMC object:</p>
 
 <p>⇨ The state-dependent BM-model with background rate variation is specified in the file called <code class="highlighter-rouge">mcmc_relaxed_state_dependent_BM.Rev</code>. The majority of this script is the same as <code class="highlighter-rouge">mcmc_state_dependent_BM.Rev</code>, except as described below.</p>
 
-<h3 class="subsection" id="relaxing-the-background-rate">Relaxing the background-rate</h3>
+<h3 class="subsection" id="relaxing-the-background-rate-of-evolution">Relaxing the background-rate of evolution</h3>
 <hr class="subsection" />
 
 <p>To specify the relaxed background-rate model, we specify the background rate at the root of the tree, $\beta^2_R$.</p>

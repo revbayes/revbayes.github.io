@@ -36,7 +36,7 @@ In this tutorial, we use the phylogenies and continuous character datasets from 
 
 {% subsection Read the data %}
 
-In this tutorial, we will use univariate Brownian motion to analyze the state-dependent rates of a single continuous character. Here, we assume we are analyzing the first character (log body size), but you should feel free to choose any of the 11 characters described in the `haemulidae_trophic_traits.nex` file.
+In this tutorial, we will use univariate Brownian motion to analyze the state-dependent rates of a single continuous character. Here, we assume we are analyzing the first character (log body size), but you should feel free to choose any of the 9 characters described in the `haemulidae_trophic_traits.nex` file.
 ```
 character <- 1
 ```
@@ -56,6 +56,17 @@ We include only the chosen character by first excluding _all_ the characters, th
 cont.excludeAll()
 cont.includeCharacter(character)
 ```
+
+{% aside Alternative: Multivariate model %}
+
+We can also include all of the continuous characters in a multivariate analysis. In this case, we don't exclude any characters, and instead retrieve the number of characters in the dataset.
+```
+cont <- readContinuousCharacterData("data/haemulidae_trophic_traits.nex")
+nchar <- cont.nchar()
+```
+
+{% endaside %}
+
 Now, we read in the discrete character data (habitat for each species, coded as reef [1] or non-reef [0]), and record the number of states it has.
 ```
 disc <- readDiscreteCharacterData("data/haemulidae_habitat.nex")
@@ -86,7 +97,7 @@ Q <- fnJC(num_disc_states)
 
 We draw the rate parameter, $\lambda$, from a vague log-uniform prior.
 ```
-lambda ~ dnLoguniform(1e-3, 1)
+lambda ~ dnLoguniform(1e-3, 2)
 ```
 The rate parameter must be positive, so we apply a scaling move to it.
 ```
@@ -153,6 +164,36 @@ Finally, we compute the overall branch rates by multiplying the state-dependent 
 branch_rates := state_branch_rate * beta
 ```
 
+{% aside Alternative: Multivariate model %}
+
+To use multivariate data, we must also specify a prior model for the variance-covariance matrix, $\Sigma$. See the tutorial {% page_ref cont_traits/multivariate_bm %} for more information about this model.
+
+First, we specify the relative rates of change among the continuous characters.
+```
+alpha <- 1.0
+proportional_rates ~ dnDirichlet( rep(alpha, nchar) )
+relative_rates := proportional_rates * nchar
+moves.append( mvBetaSimplex(proportional_rates, weight=2.0) )
+```
+Next, we specify an LKJ prior on the partial correlation matrix, $P$, and transform it into a full correlation matrix, $R$.
+```
+eta <- 1.0
+P ~ dnLKJPartial( eta, nchar )
+
+moves.append( mvCorrelationMatrixRandomWalk(P, weight=3.0) )
+moves.append( mvCorrelationMatrixSingleElementBeta(P, weight=5.0) )
+
+R := fnPartialToCorr(P)
+
+correlations := R.upperTriangle()
+```
+Finally, we construct the variance-covariance matrix, $\Sigma$, from the relative rates for each character and the correlation matrix.
+```
+V := fnDecompVarCovar( relative_rates^0.5, R )
+```
+
+{% endaside %}
+
 {% subsubsection Brownian-motion model %}
 
 Now that we have specified the branch-specific rate parameters, we can draw the character data from the corresponding phylogenetic Brownian-motion model, just as we did for the simple BM models. In this case, we provide the square root of the branch-specific rates to the `branchRates` argument.
@@ -164,6 +205,16 @@ Noting that $Y$ is the observed continuous-character data, we clamp the `cont` v
 ```
 Y.clamp(cont)
 ```
+
+{% aside Alternative: Multivariate model %}
+
+When performing a multivariate analysis, we replace the `dnPhyloBrownianREML` with `dnPhyloMultivariateBrownianREML` and provide `V` ($\Sigma$) as an additional argument.
+```
+Y ~ dnPhyloMultivariateBrownianREML(tree, branchRates=branch_rates^0.5, rateMatrix=V)
+Y.clamp(cont)
+```
+
+{% endaside %}
 
 Finally, we create a workspace object for the entire model with `model()`. Remember that workspace objects are initialized with the `=` operator, and are not themselves part of the Bayesian graphical model. The `model()` function traverses the entire model graph and finds all the nodes in the model that we specified. This object provides a convenient way to refer to the whole model object, rather than just a single DAG node.
 
@@ -202,7 +253,7 @@ When the analysis is complete, you will have the monitored files in your output 
 
 &#8680; The `Rev` file for performing this analysis: `mcmc_state_dependent_BM.Rev`
 
-You can then visualize the absolute rates of state-dependent evolution ($\beta^2 \times \boldsymbol{\zeta^2}$)  in `Tracer`.
+You can then visualize the absolute rates of state-dependent evolution ($\beta^2 \times \boldsymbol{\zeta^2}$) in `Tracer`.
 
 {% figure zeta_posterior %}
 <img src="figures/zeta_posterior.png" height="75%" width="75%" />
@@ -212,6 +263,28 @@ Estimates of the posterior distribution of the $\beta^2 \times \zeta^2$ visualiz
 {% endfigcaption %}
 {% endfigure %}
 
+{% aside Results: Multivariate model %}
+
+If you ran the multivariate analysis, your posterior distributions for the state-dependent rates will look quite different. In the multivariate analysis, the effect of habitat is more pronounced than it was for the univariate analysis.
+
+{% figure zeta_posterior_multivariate %}
+<img src="figures/zeta_posterior_mvBM.png" height="75%" width="75%" />
+{% figcaption %}
+Estimates of the posterior distribution of the $\beta^2 \times \zeta^2$ under the multivariate model.
+{% endfigcaption %}
+{% endfigure %}
+
+However, comparing the posterior distribution for the number of habitat transitions under the univariate and multivariate analysis ({% ref num_transitions_comparison %}) reveals that the inferred number of transitions under the multivariate analysis is very unrealistic ($\approx 32$ transitions) compared to the univariate analysis ($\approx 6.5$ transitions). This is a strong indication that there are other sources of rate variation that are causing the multivariate analysis to infer very unrealistic patterns of habitat evolution.
+
+{% figure num_transitions_comparison %}
+<img src="figures/num_transitions_posterior.png" height="75%" width="75%" />
+{% figcaption %}
+Estimates of the posterior distribution of the the number of habitat transitions under the univariate model (green) and the multivariate model (blue).
+{% endfigcaption %}
+{% endfigure %}
+
+
+{% endaside %}
 
 
 
