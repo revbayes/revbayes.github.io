@@ -40,6 +40,7 @@ NUM_INTERVALS = var.size()-1
 ```
 This variable will help us to create the episodic diversification rate using a `for-loop`.
 
+
 {% subsubsection Setting up the time intervals %}
 In `RevBayes` you actually have the possibility to specify unequal time intervals or even different intervals for the speciation and extinction rate.
 This is achieved by providing a vector of times when each interval ends.
@@ -54,7 +55,7 @@ Also, remember that the times of the intervals represent ages going backwards in
 {% subsection Specifying the model %}
 
 {% subsubsection Priors on amount of rate variation %}
-We follow here exactly the prior specification as in the \href{https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_DiversificationRate_Episodic_Tutorial/RB_DiversificationRate_Episodic_Tutorial.pdf}{Diversification Rates Through Time tutorial} because we want our model to collapse to the episodic birth-death if there is no correlation.
+We follow here exactly the prior specification as in the {% page_ref divrate/ebd %} tutorial because we want our model to collapse to the episodic birth-death if there is no correlation.
 
 We start by specifying prior distributions on the rates.
 Each interval-specific speciation and extinction rate will be drawn from a normal distribution.
@@ -97,9 +98,12 @@ extinction_corr_neg_prob := ifelse(beta_extinction < 0.0, 1, 0)
 speciation_corr_pos_prob := ifelse(beta_speciation > 0.0, 1, 0)
 extinction_corr_pos_prob := ifelse(beta_extinction > 0.0, 1, 0)
 ```
-Note that in this model the probability of $\beta$ being 0.0 ($\mathbb{P}(\beta=0)=0$) because we are working with a prior and posterior \emph{density} on $\beta$ and thus any specific value, \EG 0.0, has a probability of 0.0.
+Note that in this model the probability of $\beta$ being 0.0 ($\mathbb{P}(\beta=0)=0$) 
+because we are working with a prior and posterior *density* on $\beta$ and thus any specific value, 
+*e.g.,* 0.0, has a probability of 0.0.
 We will circumvent this issue in the next chapter when we use reversible-jump MCMC to set $\beta$ specifically to 0.0.
-Here you can also check that the posterior probability of \cl{speciation\_corr\_pos\_prob} equals 1-\cl{speciation\_corr\_neg\_prob}.
+Here you can also check that the posterior probability of `speciation_corr_pos_prob` equals `1-speciation_corr_neg_prob`.
+
 
 {% subsubsection Specifying correlated rates %}
 As we mentioned before, we will apply normal distributions as priors for each log-transformed rate.
@@ -108,7 +112,7 @@ The rates at the present will be specified slightly differently because they are
 This is because we are actually modeling rate-changes backwards in time and there is no previous rate for the rate at the present.
 
 We use a uniform distribution between -10 and 10 because of our lack of prior knowledge on the diversification rate.
-This actually means that we allow speciation and extinction rates between $e^{-10}$ and $e^10$ we should clearly cover the true values.
+This actually means that we allow speciation and extinction rates between $e^{-10}$ and $e^{10}$ we should clearly cover the true values.
 (Note that for diversification rate estimates $e^{-10}$ is virtually 0 since the rate is so slow).
 ```
 log_speciation[1] ~ dnUniform(-10.0,10.0)
@@ -135,7 +139,9 @@ extinction[1] := exp( log_extinction[1] )
 Next, we specify the speciation and extinction rates for each time interval (*i.e.*, epoch).
 This can be done efficiently using a `for-loop`.
 We will use a specific index variable so that we can easier refer to the rate at the previous interval.
-Remember that we want to model the rates as a Brownian motion, which we achieve by specify a normal distribution as the prior distribution on the rates centered around the previous rate plus the change in the environmental variable (\IE the mean is equal to the previous rate plus the log-transformed ratio of the environmental variable divided by the previous value).
+Remember that we want to model the rates as a Brownian motion, 
+which we achieve by specify a normal distribution as the prior distribution on the rates centered around the previous rate plus the change in the environmental variable 
+(*i.e.,* the mean is equal to the previous rate plus the log-transformed ratio of the environmental variable divided by the previous value).
 ```
 for (i in 1:NUM_INTERVALS) {
     index = i+1
@@ -154,14 +160,14 @@ for (i in 1:NUM_INTERVALS) {
 
 }
 ```
-Finally, we apply moves that slide all values in the rate vectors, \IE all speciation or extinction rates.
-We will use an \cl{mvVectorSlide} move.
+Finally, we apply moves that slide all values in the rate vectors, *i.e.,* all speciation or extinction rates.
+We will use an `mvVectorSlide` move.
 ```
 moves.append( mvVectorSlide(log_speciation, weight=10) )
 moves.append( mvVectorSlide(log_extinction, weight=10) )
 ```
 
-Additionally, we apply a \cl{mvShrinkExpand} move which changes the spread of several variables around their mean.
+Additionally, we apply a `mvShrinkExpand` move which changes the spread of several variables around their mean.
 ```
 moves.append( mvShrinkExpand(log_speciation, sd=speciation_sd, weight=10) )
 moves.append( mvShrinkExpand(log_extinction, sd=extinction_sd, weight=10) )
@@ -170,11 +176,11 @@ Both moves considerably improve the efficiency of our MCMC analysis.
 
 {% subsubsection Incomplete Taxon Sampling %}
 
-We know that we have sampled 367 out of 377 living primate species.
-To account for this we can set the sampling parameter as a constant node with a value of 367/377.
-For simplicity, and since almost all species have been sampled, we assume \emph{uniform} taxon sampling \citep{Hoehna2011,Hoehna2014a},
+We know that we have sampled 233 out of 367 living primate species.
+To account for this we can set the sampling parameter as a constant node with a value of 233/367.
+For simplicity, and since almost all species have been sampled, we assume *uniform* taxon sampling {% cite Hoehna2011 Hoehna2014a %},
 ```
-rho <- T.ntips()/377
+rho <- T.ntips()/367
 ```
 
 
@@ -182,7 +188,7 @@ rho <- T.ntips()/377
 
 The birth-death process requires a parameter for the root age.
 In this exercise we use a fix tree and thus we know the age of the tree.
-Hence, we can get the value for the root from the {% citet Springer2012 %} tree.
+Hence, we can get the value for the root from the {% citet MagnusonFord2012 %} tree.
 ```
 root_time <- T.rootAge()
 ```
@@ -195,7 +201,7 @@ We initialize the stochastic node representing the time tree.
 timetree ~ dnEpisodicBirthDeath(rootAge=T.rootAge(), lambdaRates=speciation, lambdaTimes=interval_times, muRates=extinction, muTimes=interval_times, rho=rho, samplingStrategy="uniform", condition="survival", taxa=taxa)
 ```
 You may notice that we explicitly specify that we want to condition on survival.
-It is possible to change this condition to the *time of the process* or *the number of sampled taxa8 too.
+It is possible to change this condition to the *time of the process* or *the number of sampled taxa* too.
 
 Then we attach data to the `timetree` variable.
 ```
@@ -220,7 +226,7 @@ First, we will initialize the model monitor using the `mnModel` function. This c
 monitors.append( mnModel(filename="output/primates_EBD_Corr.log",printgen=10, separator = TAB) )
 ```
 
-Additionally, we create four separate file monitors, one for each vector of speciation and extinction rates and for each speciation and extinction rate epoch (\IE the times when the interval ends).
+Additionally, we create four separate file monitors, one for each vector of speciation and extinction rates and for each speciation and extinction rate epoch (*i.e.,* the times when the interval ends).
 We want to have the speciation and extinction rates stored separately so that we can plot them nicely afterwards.
 ```
 monitors.append( mnFile(filename="output/primates_EBD_Corr_speciation_rates.log",printgen=10, separator = TAB, speciation) )
@@ -229,14 +235,15 @@ monitors.append( mnFile(filename="output/primates_EBD_Corr_extinction_rates.log"
 monitors.append( mnFile(filename="output/primates_EBD_Corr_extinction_times.log",printgen=10, separator = TAB, interval_times) )
 ```
 
-Finally, create a screen monitor that will report the states of specified variables to the screen with \cl{mnScreen}:
+Finally, create a screen monitor that will report the states of specified variables to the screen with `mnScreen`:
 ```
 monitors.append( mnScreen(printgen=1000, beta_speciation, beta_extinction) )
 ```
 
 {% subsubsection Initializing and Running the MCMC Simulation %}
 
-With a fully specified model, a set of monitors, and a set of moves, we can now set up the MCMC algorithm that will sample parameter values in proportion to their posterior probability. The \cl{mcmc()} function will create our MCMC object:
+With a fully specified model, a set of monitors, and a set of moves, we can now set up the MCMC algorithm that will sample parameter values in proportion to their posterior probability. 
+The `mcmc()` function will create our MCMC object:
 ```
 mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
 ```
@@ -248,8 +255,8 @@ mymcmc.run(generations=50000, tuningInterval=200)
 ```
 
 When the analysis is complete, you will have the monitored files in your output directory.
-You can then visualize the rates through time using \R using our package \RevGadgets.
-If you don't have the R-package \RevGadgets installed, or if you have trouble with the package, then please read the separate tutorial about the package.
+You can then visualize the rates through time using `R` using our package `RevGadgets`.
+If you don't have the R-package `RevGadgets` installed, or if you have trouble with the package, then please read the separate tutorial about the package.
 
 Just start `R` in the main directory for this analysis and then type the following commands:
 ```
@@ -323,7 +330,7 @@ beta_speciation ~ dnReversibleJumpMixture(constantValue=0.0, baseDistribution=dn
 beta_extinction ~ dnReversibleJumpMixture(constantValue=0.0, baseDistribution=dnNormal(0,1.0), p=0.5)
 ```
 Additionally we also need a specific move that switches if the value is equal to the constant value or drawn from the base-distribution.
-This is where we use the reversible-jump move \cl{mvRJSwitch}.
+This is where we use the reversible-jump move `mvRJSwitch`.
 ```
 moves.append( mvRJSwitch(beta_speciation, weight=5) )
 moves.append( mvRJSwitch(beta_extinction, weight=5) )

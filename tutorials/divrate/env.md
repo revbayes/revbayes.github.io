@@ -15,18 +15,13 @@ index: true
 software: true
 title-old: RB_DiversificationRate_Environmental_Tutorial
 redirect: false
-exclude_files:
-- scripts/mcmc_BD.Rev
-- scripts/mcmc_CBDSP.Rev
+include_all: false
+include_files:
+- data/primates.tre
+- data/primates_tree.nex
 - scripts/mcmc_EBD.Rev
-- scripts/mcmc_IRC_BDSP.Rev
-- scripts/mcmc_MRBD.Rev
-- scripts/mcmc_Yule.Rev
-- scripts/mcmc_Yule_prior.Rev
-- scripts/ml_BD.Rev
-- scripts/ml_MRBD.Rev
-- scripts/ml_Yule.Rev
-- scripts/plot.R
+- scripts/mcmc_EBD_Corr.Rev
+- scripts/plot_EBD.R
 ---
 
 {% include_relative modules/env_overview.md %}
