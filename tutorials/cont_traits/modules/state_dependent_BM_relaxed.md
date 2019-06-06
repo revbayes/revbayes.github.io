@@ -6,7 +6,7 @@ The state-dependent model allows us to easily build in these alternative sources
 
 &#8680; The state-dependent BM-model with background rate variation is specified in the file called `mcmc_relaxed_state_dependent_BM.Rev`. The majority of this script is the same as `mcmc_state_dependent_BM.Rev`, except as described below.
 
-{% subsection Relaxing the background-rate %}
+{% subsection Relaxing the background-rate of evolution %}
 
 To specify the relaxed background-rate model, we specify the background rate at the root of the tree, $\beta^2_R$.
 ```

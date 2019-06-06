@@ -22,8 +22,7 @@ nbranches <- 2 * ntips - 2
 
 ### Read in the continuous-character data
 cont <- readContinuousCharacterData("data/haemulidae_trophic_traits.nex")
-cont.excludeAll()
-cont.includeCharacter(character)
+nchar <- cont.nchar()
 
 ### Read in the discrete-character data
 disc <- readDiscreteCharacterData("data/haemulidae_habitat.nex")
@@ -75,11 +74,8 @@ moves.append( mvScale(beta, weight=1.0) )
 
 # specify the relative state-dependent rates (with sum 1)
 concentration <- 1.0
-proportional_zeta ~ dnReversibleJumpMixture( simplex(rep(1,num_disc_states)), dnDirichlet( rep(concentration, num_disc_states) ), p=0.5 )
-moves.append( mvRJSwitch(proportional_zeta, weight=1.0) )
+proportional_zeta ~ dnDirichlet( rep(concentration, num_disc_states) )
 moves.append( mvBetaSimplex(proportional_zeta, weight=1.0) )
-
-is_state_dependent := ifelse( proportional_zeta == simplex(rep(1,num_disc_states)), 0.0, 1.0)
 
 # compute the state dependent rates (with mean 1)
 zeta := proportional_zeta * num_disc_states
@@ -95,11 +91,31 @@ for(i in 1:nbranches) {
 # compute the overall branch rates (including the average rate)
 branch_rates := state_branch_rate * beta
 
+# the (marginal) rates among characters
+alpha <- 1.0
+proportional_rates ~ dnDirichlet( rep(alpha, nchar) )
+relative_rates := proportional_rates * nchar
+moves.append( mvBetaSimplex(proportional_rates, weight=2.0) )
+
+# the correlations among characters
+eta <- 1.0
+P ~ dnLKJPartial( eta, nchar )
+
+moves.append( mvCorrelationMatrixRandomWalk(P, weight=3.0) )
+moves.append( mvCorrelationMatrixSingleElementBeta(P, weight=5.0) )
+
+R := fnPartialToCorr(P)
+
+correlations := R.upperTriangle()
+
+# construct the variance-covariance matrix
+V := fnDecompVarCovar( relative_rates^0.5, R )
+
 ##########################
 # Specify the BM process #
 ##########################
 
-Y ~ dnPhyloBrownianREML(tree, branchRates=branch_rates^0.5)
+Y ~ dnPhyloMultivariateBrownianREML(tree, branchRates=branch_rates^0.5, rateMatrix=V)
 Y.clamp(cont)
 
 
@@ -111,7 +127,7 @@ Y.clamp(cont)
 mymodel = model(zeta)
 
 ### set up the monitors that will output parameter values to file and screen
-monitors.append( mnModel(filename="output/state_dependent_BM_RJ.log", printgen=10) )
+monitors.append( mnModel(filename="output/state_dependent_mvBM.log", printgen=10) )
 monitors.append( mnScreen(printgen=1000, zeta, total_num_changes) )
 
 
@@ -126,7 +142,7 @@ mymcmc = mcmc(mymodel, monitors, moves, nruns=1, combine="mixed")
 
 
 ### run the MCMC ###
-mymcmc.burnin(generations=1000, tuningInterval=100)
+mymcmc.burnin(generations=2000, tuningInterval=100)
 mymcmc.run(generations=50000)
 
 
