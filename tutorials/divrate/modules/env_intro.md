@@ -13,7 +13,7 @@ Have a look at {% ref fig_CO2 %} which shows the historical value $\text{CO}_2$ 
 We can clearly see that the $\text{CO}_2$ dropped drastically around 30 million years ago.
 
 {% figure fig_EBD_estimates %}
-<img src="figures/EBD_Results.png" width="75%" height="75%" /> 
+<img src="figures/EBD_10_Result.png" width="75%" height="75%" /> 
 {% figcaption %} 
 Estimated diversification rates through time. These estimates are taken from the episodic birth-death model with autocorrelated (Brownian motion) rate as described in the {% page_ref divrate/ebd %}.
 {% endfigcaption %}

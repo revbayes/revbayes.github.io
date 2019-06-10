@@ -111,9 +111,9 @@ moves.append( mvShrinkExpand( log_extinction, sd=extinction_sd, weight=10 ) )
 interval_times <- MAX_VAR_AGE * (1:NUM_INTERVALS) / NUM_INTERVALS
 
 ### rho is the probability of sampling species at the present
-### fix this to 23/377, since there are ~377 described species of primates
+### fix this to 23/367, since there are ~367 described species of primates
 ### and we have sampled 23
-rho <- T.ntips()/377
+rho <- T.ntips()/367
 
 timetree ~ dnEpisodicBirthDeath(rootAge=T.rootAge(), lambdaRates=speciation, lambdaTimes=interval_times, muRates=extinction, muTimes=interval_times, rho=rho, samplingStrategy="uniform", condition="survival", taxa=taxa)
 
