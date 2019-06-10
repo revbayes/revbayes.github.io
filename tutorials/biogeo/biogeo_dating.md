@@ -55,7 +55,7 @@ redirect: false
 
 This tutorial describes how to apply a biogeographic dating analysis.
 To do so, we will jointly estimate phylogeny and biogeography. One
-benefit is that the biogeographic analysis will intrinsically
+benefit of this joint inference strategy is that the biogeographic analysis will intrinsically
 accommodate phylogenetic uncertainty, both in terms of topology and
 branch lengths. Another is that paleogeographic evidence has the
 potential provide information about the geological timing of speciation
