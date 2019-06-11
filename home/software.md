@@ -38,11 +38,15 @@ Mac and Windows users do not need to compile RevBayes from source.  However, com
 
 ### Linux
 
+You can build revbayes using either `cmake` or `meson`.
+
+#### Building with cmake
+
 First you need to install cmake:
 
     sudo apt install cmake
 
-Then obtain the source and and compile:
+Then obtain the source and compile:
 
     git clone https://github.com/revbayes/revbayes.git revbayes
     cd revbayes/projects/cmake
@@ -51,6 +55,28 @@ Then obtain the source and and compile:
 For the MPI version:
 
     ./build.sh -mpi true
+
+#### Building with meson
+
+First you need to install meson and the BOOST libraries:
+
+    sudo apt install meson libboost-dev
+
+Then obtain the source:
+
+    git clone https://github.com/revbayes/revbayes.git revbayes
+    cd revbayes
+    git checkout development
+
+The configure and compile:
+
+    ( cd projects/meson ; ./generate.sh )
+    meson build --prefix=$HOME/Applications/revbayes
+    ninja -C build install
+
+For the MPI version, add `-Dmpi=true` to the `meson` command.
+
+    meson build -Dmpi=true --prefix=$HOME/Applications/revbayes
 
 <br>
 
@@ -89,7 +115,7 @@ cd revbayes/projects/cmake
 ./build.sh -mpi true
 ```
 
-    You will likely some compiler warning (e.g. `clang: warning: optimization flag '-finline-functions' is not supported`). This is normal. 
+    You will likely see some compiler warnings (e.g. `clang: warning: optimization flag '-finline-functions' is not supported`). This is normal. 
 
 <br>
 
