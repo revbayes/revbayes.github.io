@@ -38,13 +38,13 @@ er ~ dnDirichlet(er_prior)
 moves.append( mvSimplexElementScale(er,weight=3) )
 
 
-pi_prior <- v(1,1,1,1) 
+pi_prior <- v(1,1,1,1)
 pi ~ dnDirichlet(pi_prior)
 moves.append( mvSimplexElementScale(pi,weight=2) )
 
 
 #### create a deterministic variable for the rate matrix ####
-Q := fnGTR(er,pi) 
+Q := fnGTR(er,pi)
 
 
 #############################
@@ -75,7 +75,7 @@ moves.append( mvSPR(topology, weight=1.0) )
 # Branch length prior
 for (i in 1:n_branches) {
     bl[i] ~ dnExponential(10.0)
-    moves.append( mvScale(bl[i])
+    moves.append( mvScale(bl[i]) )
 }
 
 TL := sum(bl)
@@ -114,18 +114,17 @@ monitors.append( mnFile(filename="output/primates_cytb_GTR_Gamma_Inv.trees",prin
 
 
 ### Compute power posterior distributions
-pow_p = powerPosterior(mymodel, moves, monitors, "output/pow_p_GTR_Gamma_Inv.out", cats=50, sampleFreq=10) 
+pow_p = powerPosterior(mymodel, moves, monitors, "output/pow_p_GTR_Gamma_Inv.out", cats=50, sampleFreq=10)
 pow_p.burnin(generations=10000,tuningInterval=250)
-pow_p.run(generations=1000)  
+pow_p.run(generations=1000, preburninGenerations=100, tuningInterval=10)
 
 ### Use stepping-stone sampling to calculate marginal likelihoods
 ss = steppingStoneSampler(file="output/pow_p_GTR_Gamma_Inv.out", powerColumnName="power", likelihoodColumnName="likelihood")
-ss.marginal() 
+ss.marginal()
 
 ### Use path-sampling to calculate marginal likelihoods
 ps = pathSampler(file="output/pow_p_GTR_Gamma_Inv.out", powerColumnName="power", likelihoodColumnName="likelihood")
-ps.marginal() 
+ps.marginal()
 
 # you may want to quit RevBayes now
 q()
-

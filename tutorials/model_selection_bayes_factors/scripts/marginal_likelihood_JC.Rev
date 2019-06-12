@@ -34,7 +34,7 @@ monitors = VectorMonitors()
 ######################
 
 #### specify the Jukes-Cantor substitution model applied uniformly to all sites ###
-Q <- fnJC(4) 
+Q <- fnJC(4)
 
 
 ##############
@@ -50,7 +50,7 @@ moves.append( mvSPR(topology, weight=1.0) )
 # Branch length prior
 for (i in 1:n_branches) {
     bl[i] ~ dnExponential(10.0)
-    moves.append( mvScale(bl[i])
+    moves.append( mvScale(bl[i]) )
 }
 
 TL := sum(bl)
@@ -90,18 +90,17 @@ monitors.append( mnFile(filename="output/primates_cytb_JC.trees",printgen=10, se
 
 
 ### Compute power posterior distributions
-pow_p = powerPosterior(mymodel, moves, monitors, "output/pow_p_JC.out", cats=50, sampleFreq=10) 
+pow_p = powerPosterior(mymodel, moves, monitors, "output/pow_p_JC.out", cats=50, sampleFreq=10)
 pow_p.burnin(generations=10000,tuningInterval=250)
-pow_p.run(generations=1000)  
+pow_p.run(generations=1000, preburninGenerations=100, tuningInterval=10)
 
 ### Use stepping-stone sampling to calculate marginal likelihoods
 ss = steppingStoneSampler(file="output/pow_p_JC.out", powerColumnName="power", likelihoodColumnName="likelihood")
-ss.marginal() 
+ss.marginal()
 
 ### Use path-sampling to calculate marginal likelihoods
 ps = pathSampler(file="output/pow_p_JC.out", powerColumnName="power", likelihoodColumnName="likelihood")
-ps.marginal() 
+ps.marginal()
 
 # you may want to quit RevBayes now
 q()
-
