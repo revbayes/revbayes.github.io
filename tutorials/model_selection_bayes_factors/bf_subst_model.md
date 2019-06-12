@@ -10,7 +10,7 @@ prerequisites:
 - mcmc_archery
 - mcmc_binomial
 - bf_intro
-exclude_files: 
+exclude_files:
 - data/fagus_ITS.nex
 - data/fagus_matK.nex
 - data/fagus_rbcL.nex
@@ -34,11 +34,11 @@ redirect: false
 
 {% section Overview %}
 
-This tutorial provides the third protocol from our recent publication {% cite Hoehna2017a %}. 
+This tutorial provides the third protocol from our recent publication {% cite Hoehna2017a %}.
 The first protocol is described in the {% page_ref ctmc %}
 and the second protocol is described in the {% page_ref partition/index %}.
 
-You should read first the {% page_ref model_selection_bayes_factors/bf_intro %} tutorial, which explains the theory and 
+You should read first the {% page_ref model_selection_bayes_factors/bf_intro %} tutorial, which explains the theory and
 standard algorithms for estimating marginal likelihoods and Bayes factors.
 
 
@@ -84,7 +84,7 @@ analysis. This requires that we provide a model and vector of moves, as
 well as an output file name. The `cats` argument sets the number of
 stepping stones.
 ```
-    pow_p = powerPosterior(mymodel, moves, monitors, "output/model1.out", cats=50) 
+    pow_p = powerPosterior(mymodel, moves, monitors, "output/model1.out", cats=50)
 ```
 We can start the power-posterior analysis by first burning in the chain
 and and discarding the first 10000 states. This will help ensure that
@@ -95,7 +95,7 @@ from some random point.
 ```
 Now execute the run with the `.run()` function:
 ```
-    pow_p.run(generations=1000)  
+    pow_p.run(generations=1000, preburninGenerations=100, tuningInterval=10)
 ```
 Once the power posteriors have been saved to file, create a stepping
 stone sampler. This function can read any file of power posteriors and
@@ -109,7 +109,7 @@ likelihood under stepping-stone sampling using the member function
 `marginal()` of the `ss` variable and record the value in Table
 [tab:ml_cytb].
 ```
-    ss.marginal() 
+    ss.marginal()
 ```
 Path sampling is an alternative to stepping-stone sampling and also
 takes the same power posteriors as input.
@@ -120,7 +120,7 @@ Compute the marginal likelihood under stepping-stone sampling using the
 member function `marginal()` of the `ps` variable and record the value
 in Table [tab_ml_subst_models].
 ```
-    ps.marginal() 
+    ps.marginal()
 ```
 
 As an example we provide the file
