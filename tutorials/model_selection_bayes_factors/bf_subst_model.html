@@ -54,7 +54,7 @@
 	<h1 class="maintitle">Model selection of common substitution models for one locus</h1>
 	<h3 class="subtitle">Comparing relative model fit with Bayes factors</h3>
 	<h4 class="authors">Sebastian Höhna, Michael J Landis, Tracy A Heath</h4>
-  <h5>Last modified on May 27, 2019</h5>
+  <h5>Last modified on June 12, 2019</h5>
 </div>
 
 
@@ -121,11 +121,11 @@
 <h2 class="section" id="overview">Overview</h2>
 <hr class="section" />
 
-<p>This tutorial provides the third protocol from our recent publication <a href="#Hoehna2017a">(Höhna et al. 2017)</a>. 
+<p>This tutorial provides the third protocol from our recent publication <a href="#Hoehna2017a">(Höhna et al. 2017)</a>.
 The first protocol is described in the <a href="/tutorials/ctmc/">Substitution Models</a>
 and the second protocol is described in the <a href="/tutorials/partition/">Partitioned data analysis</a>.</p>
 
-<p>You should read first the <a href="/tutorials/model_selection_bayes_factors/bf_intro.html">General Introduction to Model selection</a> tutorial, which explains the theory and 
+<p>You should read first the <a href="/tutorials/model_selection_bayes_factors/bf_intro.html">General Introduction to Model selection</a> tutorial, which explains the theory and
 standard algorithms for estimating marginal likelihoods and Bayes factors.</p>
 
 <h2 class="section" id="substitution-models">Substitution Models</h2>
@@ -172,7 +172,7 @@ models. First, we create the variable containing the power-posterior
 analysis. This requires that we provide a model and vector of moves, as
 well as an output file name. The <code class="highlighter-rouge">cats</code> argument sets the number of
 stepping stones.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    pow_p = powerPosterior(mymodel, moves, monitors, "output/model1.out", cats=50) 
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    pow_p = powerPosterior(mymodel, moves, monitors, "output/model1.out", cats=50)
 </code></pre></div></div>
 <p>We can start the power-posterior analysis by first burning in the chain
 and and discarding the first 10000 states. This will help ensure that
@@ -181,7 +181,7 @@ from some random point.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    pow_p.burnin(generations=10000,tuningInterval=1000)
 </code></pre></div></div>
 <p>Now execute the run with the <code class="highlighter-rouge">.run()</code> function:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    pow_p.run(generations=1000)  
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    pow_p.run(generations=1000, preburninGenerations=100, tuningInterval=10)
 </code></pre></div></div>
 <p>Once the power posteriors have been saved to file, create a stepping
 stone sampler. This function can read any file of power posteriors and
@@ -193,7 +193,7 @@ stones, sampling 1000 states from each step. Compute the marginal
 likelihood under stepping-stone sampling using the member function
 <code class="highlighter-rouge">marginal()</code> of the <code class="highlighter-rouge">ss</code> variable and record the value in Table
 [tab:ml_cytb].</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    ss.marginal() 
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    ss.marginal()
 </code></pre></div></div>
 <p>Path sampling is an alternative to stepping-stone sampling and also
 takes the same power posteriors as input.</p>
@@ -202,7 +202,7 @@ takes the same power posteriors as input.</p>
 <p>Compute the marginal likelihood under stepping-stone sampling using the
 member function <code class="highlighter-rouge">marginal()</code> of the <code class="highlighter-rouge">ps</code> variable and record the value
 in Table [tab_ml_subst_models].</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    ps.marginal() 
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    ps.marginal()
 </code></pre></div></div>
 
 <p>As an example we provide the file
