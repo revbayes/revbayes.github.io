@@ -36,11 +36,9 @@ Mac and Windows users can download one of the compiled executables below:
 
 Mac and Windows users do not need to compile RevBayes from source.  However, compiling RevBayes is relatively simple process.
 
+The standard way to build revbayes is to use `cmake`.  If you want to compile using `meson`, see [revbayes/projects/meson/README.md](https://github.com/revbayes/revbayes/blob/development/projects/meson/README.md).
+
 ### Linux
-
-You can build revbayes using either `cmake` or `meson`.
-
-#### Building with cmake
 
 First you need to install cmake:
 
@@ -55,28 +53,6 @@ Then obtain the source and compile:
 For the MPI version:
 
     ./build.sh -mpi true
-
-#### Building with meson
-
-First you need to install meson and the BOOST libraries:
-
-    sudo apt install meson libboost-dev
-
-Then obtain the source:
-
-    git clone https://github.com/revbayes/revbayes.git revbayes
-    cd revbayes
-    git checkout development
-
-The configure and compile:
-
-    ( cd projects/meson ; ./generate.sh )
-    meson build --prefix=$HOME/Applications/revbayes
-    ninja -C build install
-
-For the MPI version, add `-Dmpi=true` to the `meson` command.
-
-    meson build -Dmpi=true --prefix=$HOME/Applications/revbayes
 
 <br>
 
