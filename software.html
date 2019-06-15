@@ -89,12 +89,16 @@ Download and Install RevBayes
 
 <h3 id="linux">Linux</h3>
 
+<p>You can build revbayes using either <code class="highlighter-rouge">cmake</code> or <code class="highlighter-rouge">meson</code>.</p>
+
+<h4 id="building-with-cmake">Building with cmake</h4>
+
 <p>First you need to install cmake:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo apt install cmake
 </code></pre></div></div>
 
-<p>Then obtain the source and and compile:</p>
+<p>Then obtain the source and compile:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/revbayes/revbayes.git revbayes
 cd revbayes/projects/cmake
@@ -104,6 +108,32 @@ cd revbayes/projects/cmake
 <p>For the MPI version:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./build.sh -mpi true
+</code></pre></div></div>
+
+<h4 id="building-with-meson">Building with meson</h4>
+
+<p>First you need to install meson and the BOOST libraries:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo apt install meson libboost-dev
+</code></pre></div></div>
+
+<p>Then obtain the source:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/revbayes/revbayes.git revbayes
+cd revbayes
+git checkout development
+</code></pre></div></div>
+
+<p>The configure and compile:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>( cd projects/meson ; ./generate.sh )
+meson build --prefix=$HOME/Applications/revbayes
+ninja -C build install
+</code></pre></div></div>
+
+<p>For the MPI version, add <code class="highlighter-rouge">-Dmpi=true</code> to the <code class="highlighter-rouge">meson</code> command.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>meson build -Dmpi=true --prefix=$HOME/Applications/revbayes
 </code></pre></div></div>
 
 <p><br /></p>
@@ -144,7 +174,7 @@ brew install cmake
     <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./build.sh -mpi true
 </code></pre></div>    </div>
 
-    <p>You will likely some compiler warning (e.g. <code class="highlighter-rouge">clang: warning: optimization flag '-finline-functions' is not supported</code>). This is normal.</p>
+    <p>You will likely see some compiler warnings (e.g. <code class="highlighter-rouge">clang: warning: optimization flag '-finline-functions' is not supported</code>). This is normal.</p>
   </li>
 </ol>
 
