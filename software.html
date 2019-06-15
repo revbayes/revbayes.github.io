@@ -87,11 +87,9 @@ Download and Install RevBayes
 
 <p>Mac and Windows users do not need to compile RevBayes from source.  However, compiling RevBayes is relatively simple process.</p>
 
+<p>The standard way to build revbayes is to use <code class="highlighter-rouge">cmake</code>.  If you want to compile using <code class="highlighter-rouge">meson</code>, see <a href="https://github.com/revbayes/revbayes/blob/development/projects/meson/README.md">revbayes/projects/meson/README.md</a>.</p>
+
 <h3 id="linux">Linux</h3>
-
-<p>You can build revbayes using either <code class="highlighter-rouge">cmake</code> or <code class="highlighter-rouge">meson</code>.</p>
-
-<h4 id="building-with-cmake">Building with cmake</h4>
 
 <p>First you need to install cmake:</p>
 
@@ -108,32 +106,6 @@ cd revbayes/projects/cmake
 <p>For the MPI version:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./build.sh -mpi true
-</code></pre></div></div>
-
-<h4 id="building-with-meson">Building with meson</h4>
-
-<p>First you need to install meson and the BOOST libraries:</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo apt install meson libboost-dev
-</code></pre></div></div>
-
-<p>Then obtain the source:</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/revbayes/revbayes.git revbayes
-cd revbayes
-git checkout development
-</code></pre></div></div>
-
-<p>The configure and compile:</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>( cd projects/meson ; ./generate.sh )
-meson build --prefix=$HOME/Applications/revbayes
-ninja -C build install
-</code></pre></div></div>
-
-<p>For the MPI version, add <code class="highlighter-rouge">-Dmpi=true</code> to the <code class="highlighter-rouge">meson</code> command.</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>meson build -Dmpi=true --prefix=$HOME/Applications/revbayes
 </code></pre></div></div>
 
 <p><br /></p>
