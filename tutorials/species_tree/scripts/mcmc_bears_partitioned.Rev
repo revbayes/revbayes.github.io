@@ -1,0 +1,188 @@
+################################################################################
+#
+# RevBayes Example: Species tree inference using partitioned sequences.
+#
+# 
+# This file: specifies a single substitution model for all genes concatenated
+#
+# authors: Sebastian Hoehna and Bastien Boussau
+#
+################################################################################
+
+#######################
+# Reading in the Data #
+#######################
+
+###### This just defines a single model for all sites #######
+# read in each data matrix together which will create a vector of objects
+data = readDiscreteCharacterData("data/")
+
+# Now we get some useful variables from the data. We need these later on.
+num_loci = data.size()
+
+# get the number of species
+num_species <- data[1].ntaxa()
+# get the taxon information (e.g. the taxon names)
+taxa <- data[1].taxa()
+num_branches <- 2 * num_species - 1 # number of branches in a rooted tree
+
+
+moves = VectorMoves()
+monitors = VectorMonitors()
+
+
+######################
+# Species-Tree model #
+######################
+
+# Specify a prior on the speciation and extinction rate
+#speciation ~ dnUniform(0,1000)
+#extinction ~ dnUniform(0,1000)
+
+# all moves are sliding and scaling proposals
+#moves.append( mvScale(speciation,lambda=1,tune=true,weight=2) )
+#moves.append( mvScale(extinction,lambda=1,tune=true,weight=2) )
+
+# now transform the diversification and turnover rates into speciation and extinction rates
+#rel_extinction := extinction / speciation
+#net_diversification := speciation - extinction
+
+# specify that the root age is 1.0, we thus use a relative time tree
+# look into the dating tutorial if you want to combine this with a absolute time estimates
+root <- 1.0
+
+
+# usually we should use
+sampling_fraction <- 1.0
+
+
+# construct a variable for the tree drawn from a birth death process
+psi ~ dnUniformTimeTree(rootAge=root, taxa=taxa )
+
+moves.append( mvNarrow(psi, weight=num_species/2.0) )
+moves.append( mvNNI(psi, weight=num_species/5.0) )
+moves.append( mvFNPR(psi, weight=num_species/10.0) )
+moves.append( mvGPR(psi, weight=num_species/50.0) )
+moves.append( mvSubtreeScale(psi, weight=num_species/5.0) )
+moves.append( mvNodeTimeSlideUniform(psi, weight=num_species) )
+
+
+
+
+###############
+# Clock Model #
+###############
+
+for (i in 1:num_loci) {
+
+    clock_rate[i] ~ dnUniform( 0, 1E2 )
+    clock_rate[i].setValue( 1E-4 )
+    
+    moves.append( mvSlide(clock_rate[i], delta=0.001, weight=1.0) )
+    
+}
+
+######################
+# Substitution Model #
+######################
+
+
+for (i in 1:num_loci) {
+
+    #### specify the GTR substitution model applied uniformly to all sites ###
+    pi_prior[i] <- v(1,1,1,1) 
+    pi[i] ~ dnDirichlet(pi_prior[i])
+    moves.append( mvBetaSimplex(pi[i],weight=2) )
+    moves.append( mvDirichletSimplex(pi[i],weight=1) )
+
+
+    er_prior[i] <- v(1,1,1,1,1,1) 
+    er[i] ~ dnDirichlet(er_prior[i])
+    moves.append( mvBetaSimplex(er[i],weight=3) )
+    moves.append( mvDirichletSimplex(er[i],weight=1) )
+
+
+    #### create a deterministic variable for the rate matrix ####
+    Q[i] := fnGTR(er[i],pi[i]) 
+
+}
+
+
+
+
+
+#############################
+# Among Site Rate Variation #
+#############################
+
+
+for (i in 1:num_loci) {
+
+#    alpha[i] ~ dnUniform( 0, 1E8 )
+#    alpha[i].setValue( 1.0 )
+#    gamma_rates[i] := fnDiscretizeGamma( alpha[i], alpha[i], 4, false )
+#
+#    # add move for the shape parameter
+#    moves.append( mvScale(alpha[i],weight=2) )
+
+
+    p_inv[i] ~ dnBeta(1,1)
+
+    # add move for the proportion of invariant sites parameter
+    moves.append( mvBetaProbability(p_inv[i],weight=2) )
+    
+}
+
+
+###################
+# PhyloCTMC Model #
+###################
+
+
+for (i in 1:num_loci) {
+
+    # the sequence evolution model
+    seq[i] ~ dnPhyloCTMC(tree=psi, Q=Q[i], branchRates=clock_rate[i], pInv=p_inv[i], type="DNA")
+
+    # attach the data
+    seq[i].clamp(data[i])
+
+}
+
+
+
+#############
+# THE Model #
+#############
+
+# We get a handle on our model.
+# We can use any node of our model as a handle, here we choose to use the topology.
+mymodel = model(psi)
+
+# Monitors to check the progression of the program
+monitors.append( mnScreen(printgen=100) )
+monitors.append( mnModel(filename="output/bears_partitioned.log",printgen=1, separator = TAB) )
+monitors.append( mnFile(filename="output/bears_partitioned.trees",printgen=1, separator = TAB, psi) )
+
+# Here we use a plain MCMC. You could also set nruns=2 for a replicated analysis
+# or use mcmcmc with heated chains.
+mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
+
+# This should be sufficient to obtain enough MCMC samples
+mymcmc.run(generations=5000,tuningInterval=100)
+
+# let's see how the MCMC moves performed
+mymcmc.operatorSummary()
+
+
+# Now, we will analyze the tree output.
+# Let us start by reading in the tree trace
+treetrace = readTreeTrace("output/bears_partitioned.trees", treetype="clock")
+# and get the summary of the tree trace
+#treetrace.summarize()
+
+map_tree = mapTree(treetrace,"output/bears_partitioned_MAP.tree")
+
+# you may want to quit RevBayes now
+q()
+
