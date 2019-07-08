@@ -1,0 +1,164 @@
+################################################################################
+#
+# RevBayes Example: Species tree inference using partitioned sequences.
+#
+# 
+# This file: specifies a single substitution model for all genes concatenated
+#
+# authors: Sebastian Hoehna and Bastien Boussau
+#
+################################################################################
+
+#######################
+# Reading in the Data #
+#######################
+
+###### This just defines a single model for all sites #######
+# read in each data matrix together which will create a vector of objects
+data = readDiscreteCharacterData("data/")
+
+# Now we get some useful variables from the data. We need these later on.
+num_loci = data.size()
+
+# get the number of species
+num_species <- data[1].ntaxa()
+# get the taxon information (e.g. the taxon names)
+num_branches <- 2 * num_species - 1 # number of branches in a rooted tree
+
+
+moves = VectorMoves()
+monitors = VectorMonitors()
+
+
+######################
+# Species-Tree model #
+######################
+
+# We need to read in files providing the link between gene names and species names
+taxon_map = readTaxonData("data/bears_species_map.txt")
+species_index = 2
+species_names[1] = taxon_map[1].getSpeciesName()
+taxa[1] = taxon( species_names[1] )
+for (i in 2:taxon_map.size()) {
+    t = taxon_map[i]
+    if ( species_names.contains( t.getSpeciesName() ) == FALSE ) {
+        species_names[species_index] = t.getSpeciesName()
+        taxa[species_index] = taxon( species_names[species_index] )
+        species_index += 1
+    }
+}
+
+# Specify a prior on the speciation and extinction rate
+speciation ~ dnUniform(0,1000)
+extinction ~ dnUniform(0,1000)
+
+# set some starting values so that our MCMC works more efficiently
+speciation.setValue( 0.1 )
+extinction.setValue( 0.01 )
+
+# all moves are sliding and scaling proposals
+moves.append( mvScale(speciation,lambda=1,tune=true,weight=2) )
+moves.append( mvScale(extinction,lambda=1,tune=true,weight=2) )
+
+# now transform the diversification and turnover rates into speciation and extinction rates
+rel_extinction := extinction / speciation
+net_diversification := speciation - extinction
+
+# specify that the root age is 1.0, we thus use a relative time tree
+# look into the dating tutorial if you want to combine this with a absolute time estimates
+root ~ dnUniform( 0.0, 1.0 )
+moves.append( mvScale(root,lambda=1,tune=true,weight=2) )
+moves.append( mvSlide(root,delta=1,tune=true,weight=2) )
+
+
+
+# usually we should use
+sampling_fraction <- 1.0
+
+
+# construct a variable for the tree drawn from a birth death process
+species_tree ~ dnBirthDeath(rootAge=root, lambda=speciation, mu=extinction, rho=sampling_fraction, taxa=taxa )
+
+moves.append( mvNarrow(species_tree, weight=num_species/2.0) )
+moves.append( mvNNI(species_tree, weight=num_species/5.0) )
+moves.append( mvFNPR(species_tree, weight=num_species/10.0) )
+#moves.append( mvGPR(species_tree, weight=num_species/50.0) )
+moves.append( mvSubtreeScale(species_tree, weight=num_species/5.0) )
+moves.append( mvNodeTimeSlideUniform(species_tree, weight=num_species) )
+
+
+###################
+# Gene-Tree model #
+###################
+
+
+# We assume independent effective population size parameters for each branch of the species tree.
+
+# We use a conjugate prior for effective population sizes.
+
+mean_Ne ~ dnGamma(shape=1.0,rate=1.0)
+moves.append( mvScale(mean_Ne, 1 , tune=true, weight=2.0) )
+
+shape <- 3.0
+rate := 2.0 * mean_Ne
+
+## Joint species tree/gene tree moves
+move_species_narrow_exchange = mvSpeciesNarrow( speciesTree=species_tree, weight=num_species/2.0 )
+move_species_subtree_scale_beta = mvSpeciesSubtreeScaleBeta(species_tree, weight=num_species/25.0)
+move_species_subtree_scale = mvSpeciesSubtreeScale(species_tree, weight=num_species/25.0)
+
+for (i in 1:num_loci) {
+
+   # The gene tree from the multispecies coalescent process
+   # Note that if Ne had been a vector of effective population sizes,
+   # allowing 1 parameter per branch of the species tree, the same line would work.
+   gene_tree_dist[i] = dnMultiSpeciesCoalescentInverseGamma(speciesTree=species_tree, shape=shape, rate=rate, taxa=taxon_map)
+   gene_tree_samples[i] ~ dnEmpiricalSample( gene_tree_dist[i] )
+   
+   gene_tree_trace = readTreeTrace("output/bears_gene_"+i+".trees", treetype="clock")
+   gene_tree_samples[i].clamp( gene_tree_trace.getTrees() )
+
+}
+
+
+
+
+#############
+# THE Model #
+#############
+
+# We get a handle on our model.
+# We can use any node of our model as a handle, here we choose to use the topology.
+mymodel = model( species_tree )
+
+# Monitors to check the progression of the program
+monitors.append( mnScreen(printgen=100) )
+monitors.append( mnModel(filename="output/bears_multispecies_coalescent.log",printgen=1, separator = TAB) )
+monitors.append( mnFile(filename="output/bears_multispecies_coalescent_species.trees",printgen=1, separator = TAB, species_tree) )
+
+
+
+# Here we use a plain MCMC. You could also set nruns=2 for a replicated analysis
+# or use mcmcmc with heated chains.
+mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
+
+# This should be sufficient to obtain enough MCMC samples
+mymcmc.run(generations=5000,tuningInterval=100)
+
+# let's see how the MCMC moves performed
+mymcmc.operatorSummary()
+
+
+# Now, we will analyze the tree output.
+# Let us start by reading in the tree trace
+species_treetrace = readTreeTrace("output/bears_multispecies_coalescent_species.trees", treetype="clock")
+# and get the summary of the tree trace
+#treetrace.summarize()
+
+map_species_tree = mapTree(species_treetrace,"output/bears_multispecies_coalescent_species_MAP.tree")
+
+
+
+# you may want to quit RevBayes now
+q()
+
