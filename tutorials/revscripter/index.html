@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: Using RevScripter to Build an Analysis Script</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
+      </a>
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/software">Software</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/documentation/">Documentation</a></li>
+        <li><a href="https://revbayes.github.io/revscripter/">RevScripter</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/jobs/">Jobs</a></li>
+        <li><a href="/developer/">Developer</a></li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <div class="titlebar">
+	<h1 class="maintitle">Using RevScripter to Build an Analysis Script</h1>
+	<h3 class="subtitle">Estimating an unrooted phylogeny under standard substitution models</h3>
+	<h4 class="authors"></h4>
+  <h5>Last modified on July  9, 2019</h5>
+</div>
+
+
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul>
+          <li>None</li>
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+
+
+
+
+<blockquote class="tutorial_files" id="tutorial_files">
+    <h2>Data files and scripts</h2>
+    
+        
+        <strong>Data Files</strong>
+        <ul id="data_files">
+        
+        
+        
+          <li><a href="/tutorials/revscripter/data/bears_cytb.nex">bears_cytb.nex</a></li>
+        
+        </ul>
+    
+</blockquote>
+
+
+</div>
+<h2 class="section" id="overview">Overview</h2>
+<hr class="section" />
+
+<p>This tutorial will guide you through creating a RevBayes script using 
+<a href="https://revbayes.github.io/revscripter/">RevScripter</a>.
+RevScripter is a web-based graphical tool intended to introduce 
+new users to the Rev language and standard analysis methods in RevBayes.</p>
+
+<h2 class="section" id="revscripter-an-introductory-tool-for-creating-revbayes-analysis-scripts">RevScripter: An Introductory Tool for Creating RevBayes Analysis Scripts</h2>
+<hr class="section" />
+
+<p>RevBayes is extremely flexible and the Rev language and graphical model 
+framework enable researchers to apply a very rich set of complex 
+evolutionary models. The development of RevScripter was motivated by a 
+need to provide a familiar introductory interface for RevBayes and the Rev 
+language. It will not be possible to maintain a menu-driven graphical user 
+interface (GUI) that encompasses the wide range of models and methods available in 
+RevBayes. Thus, this tool will be useful for those new to RevBayes to set up 
+standard analyses and easily see how elements of the model are reflected 
+in the generated Rev language script.</p>
+
+<h3 class="subsection" id="design-and-source-code">Design and Source Code</h3>
+<hr class="subsection" />
+
+<p>The design of RevScripter is inspired by the BEAUti tool in the 
+BEAST packages <a href="#Drummond2012">(Drummond et al. 2012; Bouckaert et al. 2014)</a>, as well as the 
+<a href="http://www.rannala.org/software/">graphical user interface for the program BPP</a> 
+<a href="#Flouri2018">(Flouri et al. 2018)</a>. All of these tools are menu-based user interfaces
+for creating complex analysis scripts for Bayesian phylogenetic inference
+programs. These interfaces are dynamic and the available options react to the
+choices made by the user. In many ways, these menu-driven GUIs are also modeled 
+off of PAUP* <a href="#Swofford2001">(Swofford 2001)</a>, the phylogenetic analysis program that 
+is one of the most commonly used tools in the field. 
+Thus, creating a GUI that uses menus and options for the user to choose 
+is a familiar approach among statistical phylogenetics software tools 
+and this type of interface will hopefully make it easier for those new to
+analysis in RevBayes to get started. With the scripts generated by RevScripter,
+you will be able to directly link the choices you made in the graphical tool
+to the Rev language syntax that builds the model and specifies the execution 
+of the analysis.</p>
+
+<p>RevScripter is written in Javascript and uses CSS for the layout and design.
+The source code for RevScripter is hosted on GitHub: 
+<a href="https://github.com/revbayes/revscripter">https://github.com/revbayes/revscripter</a>.</p>
+
+<h3 class="subsection" id="a-graphical-interface-for-revbayes">A Graphical Interface for RevBayes</h3>
+<hr class="subsection" />
+
+<p>RevScripter is intended to provide a gateway for new users interested in building 
+scripts for standard analyses and accessing RevBayes through a familiar
+interface. Ultimately, however, the menu-based design of RevScripter will always
+be limited to just a subset of the available models and methods that are possible
+in RevBayes. Instead, a much more flexible and modular graphical user interface
+is needed for a program like RevBayes. John Huselsenbeck and Sveta Krasikova are 
+currently developing a GUI that is integrated with the RevBayes core, which will
+enable users to access the wide range of possible models and methods available
+in RevBayes with a graphical tool.</p>
+
+<h2 class="section" id="building-your-model-and-analysis-with-revscripter">Building Your Model and Analysis with RevScripter</h2>
+<hr class="section" />
+
+<h3 class="subsection" id="exercise-unrooted-phylogenetic-analysis-under-the-jukes-cantor-substitution-model">Exercise: Unrooted phylogenetic analysis under the Jukes-Cantor substitution model</h3>
+<hr class="subsection" />
+
+
+<ol class="bibliography"><li><span id="Bouckaert2014">Bouckaert R., Heled J., Kühnert D., Vaughan T., Wu C.-H., Xie D., Suchard M.A., Rambaut A., Drummond A.J. 2014. BEAST 2: a software platform for Bayesian evolutionary analysis. PLoS Computational Biology. 10:e1003537.</span>
+
+<a href="https://doi.org/10.1371/journal.pcbi.1003537">10.1371/journal.pcbi.1003537</a>
+
+</li>
+<li><span id="Drummond2012">Drummond A.J., Suchard M.A., Xie D., Rambaut A. 2012. Bayesian phylogenetics with BEAUti and the BEAST 1.7. Molecular Biology and Evolution. 29:1969–1973.</span>
+
+<a href="https://doi.org/10.1093/molbev/mss075">10.1093/molbev/mss075</a>
+
+</li>
+<li><span id="Flouri2018">Flouri T., Jiao X., Rannala B., Yang Z. 2018. Species tree inference with BPP using genomic sequences and the multispecies coalescent. Molecular Biology and Evolution. 35:2585–2593.</span>
+
+</li>
+<li><span id="Swofford2001">Swofford D.L. 2001. PAUP^*: Phylogenetic analysis using parsimony (and other methods) 4.0. B5. .</span>
+
+<a href="https://paup.phylosolutions.com">https://paup.phylosolutions.com</a>
+
+</li></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+
+<script src="/assets/js/base.js"></script>
+
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+  });
+</script>
+
+  </body>
+</html>
