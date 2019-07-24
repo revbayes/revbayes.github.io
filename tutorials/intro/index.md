@@ -231,7 +231,7 @@ them into a *second* vector of exponential random numbers.
 
     for (i in 1:100) {
       u[i] ~ dnUniform(0,1)
-      x[i] := -ln(u[i]) / lambda 
+      z[i] := -ln(u[i]) / lambda 
     }
 
 Close using the statement `q()`.
