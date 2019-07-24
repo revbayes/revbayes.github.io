@@ -447,8 +447,8 @@ calculates the effect size of a given test statistic.
 {% section Viewing the Results %}
 
 Once execution of the script is complete, you should see a new
-directory, names **results_JC**. In this folder there should be 3
-files. Each of these is a simple tab-delimited (TSV) file containing the
+directory, named **results_JC**. In this folder there should be 3
+files. Each of these is a simple comma-delimited (csv) file containing the
 test statistic calculation output.
 
 -   empirical_pps_example.csv
@@ -485,7 +485,7 @@ low number of generations will still detect poor fit.
 
 You can also use `R`to plot the results. Run the
 `R`script **scripts/plot_results.R**. This will generate a
-pdf plot for every test statistic.
+pdf plot for every test statistic. See {% ref pps_mean_gc %} and its legend to learn how to interpret these plots.
 
 
 
