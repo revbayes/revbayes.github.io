@@ -81,7 +81,7 @@ Thus, the Bayes factor measures the degree to which the data alter our belief
 regarding the support for $M_0$ relative to $M_1$ {% cite Lavine1999 %}:
 
 $$\begin{equation}
-BF(M_0,M_1) = \frac{\mathbb{P}(M_0 \mid \mathbf X, \theta_0)}{\mathbb{P}(M_1 \mid \mathbf X, \theta_1)} \div \frac{\mathbb{P}(M_0)}{\mathbb{P}(M_1)}. 
+BF(M_0,M_1) = \frac{\mathbb{P}(M_0 \mid \mathbf X)}{\mathbb{P}(M_1 \mid \mathbf X)} \div \frac{\mathbb{P}(M_0)}{\mathbb{P}(M_1)}. 
 \tag{Bayes Factor}\label{eq:BF}
 \end{equation}$$
 
@@ -135,7 +135,7 @@ very little algebra, the ratio of marginal likelihoods is equal to the
 Bayes factor: 
 
 $$\begin{equation}
-BF(M_0,M_1) = \frac{\mathbb{P}(\mathbf X \mid M_0)}{\mathbb{P}(\mathbf X \mid M_1)} = \frac{\mathbb{P}(M_0 \mid \mathbf X, \theta_0)}{\mathbb{P}(M_1 \mid \mathbf X, \theta_1)} \div \frac{\mathbb{P}(M_0)}{\mathbb{P}(M_1)}. 
+BF(M_0,M_1) = \frac{\mathbb{P}(\mathbf X \mid M_0)}{\mathbb{P}(\mathbf X \mid M_1)} = \frac{\mathbb{P}(M_0 \mid \mathbf X)}{\mathbb{P}(M_1 \mid \mathbf X)} \div \frac{\mathbb{P}(M_0)}{\mathbb{P}(M_1)}. 
 \label{eq:bf_Formula}
 \end{equation}$$
 
