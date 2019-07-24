@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Assessing Phylogenetic Reliability Using RevBayes and $P^{3}$</h1>
 	<h3 class="subtitle">Model adequacy testing using posterior prediction (Data Version).</h3>
 	<h4 class="authors">Lyndon M. Coghill, Will Freyman, Sebastian Höhna and Jeremy M. Brown</h4>
-  <h5>Last modified on May 27, 2019</h5>
+  <h5>Last modified on July 24, 2019</h5>
 </div>
 
 
@@ -268,8 +268,8 @@ output files, so make sure it’s something clear and easy to understand.</p>
 
 <p>Now specify and read in the input file. This is your sequence alignment
 in NEXUS format.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    in_file = "data/primates_and_galeopterus_cytb.nex"
-    data &lt;- readDiscreteCharacterData(in_file)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    inFile = "data/primates_and_galeopterus_cytb.nex"
+    data &lt;- readDiscreteCharacterData(inFile)
 </code></pre></div></div>
 
 <h4 class="subsubsection" id="specify-the-model">Specify the model</h4>
@@ -376,7 +376,7 @@ what is occurring.</p>
 
 <p>First, we read in the trace file of the Posterior Distribution of
 Variables.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    trace = readStochasticVariableTrace("output" + "/" + analysis_name + "_posterior.var", delimiter=TAB)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    trace = readStochasticVariableTrace("output_" + model_name + "/" + analysis_name + "_posterior.var", delimiter=TAB)
 </code></pre></div></div>
 <p>Now we call the <strong>posteriorPredictiveSimulation()</strong> function, which
 accepts any valid model of sequence evolution, and output directory, and
@@ -454,10 +454,10 @@ empirical to get a goodness-of-fit. One simple way to do this is to
 calculate a posterior predictive <em>P</em>value for each of the test
 statistics of interest. This is done in the
 <strong>data_pp_analysis_JC.Rev</strong> with the following lines :</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    emp_pps_file = "results_" + model_name + "/empirical_data_" + analysis_name + ".tsv"
-    sim_pps_file = "results_" + model_name + "/simulated_data_" + analysis_name + ".tsv"
-    outfileName = "results_" + model_name + "/data_pvalues_effectsizes_" + analysis_name + ".tsv"
-    source("scripts/PosteriorPredictive_PValues.Rev")
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    emp_pps_file = "results_" + model_name + "/empirical_data_" + analysis_name + ".csv"
+    sim_pps_file = "results_" + model_name + "/simulated_data_" + analysis_name + ".csv"
+    outfileName = "results_" + model_name + "/data_pvalues_effectsizes_" + analysis_name + ".csv"
+    source("scripts/pps_PValues.Rev")
 </code></pre></div></div>
 <p>The 4 posterior predictive <em>P</em>-values currently calculated by ‘RevBayes‘
 are:</p>
