@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: Setting up CLion for RevBayes development</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
+      </a>
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/software">Software</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/documentation/">Documentation</a></li>
+        <li><a href="https://revbayes.github.io/revscripter/">RevScripter</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/jobs/">Jobs</a></li>
+        <li><a href="/developer/">Developer</a></li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <div class="titlebar">
+	<h1 class="maintitle">Setting up CLion for RevBayes development</h1>
+	
+	<h4 class="authors"></h4>
+  <h5>Last modified on July 26, 2019</h5>
+</div>
+
+<p>CLion is a cross-platform IDE for C and C++ by <a href="https://www.jetbrains.com/clion/">JetBrains</a>. To work in CLion you need
+to install CMake.</p>
+
+<p>First follow the install instructions for <a href="https://revbayes.github.io/software">installing RevBayes</a> from source. First navigate to wherever the revbayes directory is, then go to the <code class="highlighter-rouge">projects/cmake</code> directory. Here you should see that there is a build directory, go to that directory.</p>
+
+<p>To set up CLion we need to use a compilation database which has the name <code class="highlighter-rouge">compile_commands.json</code>. To make this run <code class="highlighter-rouge">cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON</code> in this directory: <code class="highlighter-rouge">&lt;your path to revbayes&gt;/revbayes/projects/cmake/build</code></p>
+
+<p>After running this, within that directory you should have a <code class="highlighter-rouge">compile_commands.json</code> file.</p>
+
+<p>Now open Clion, it should look something like this:</p>
+
+<p>(screenshot)</p>
+
+<p>Go to open and then navigate to the <code class="highlighter-rouge">compile_commands.json</code> file we just created. Click on open as project</p>
+
+<p>This will open your project but right now on the left it should list all of the <code class="highlighter-rouge">.cpp</code> files alphabetically (not ideal).</p>
+
+<p>To fix this, go to Tools -&gt; Compilation Database -&gt; Change Project Root and change that directory to the revbayes directory <code class="highlighter-rouge">&lt;your path to revbayes&gt;/revbayes/</code></p>
+
+<h2 id="making-a-build-configuration-for-revbayes">Making a build configuration for RevBayes</h2>
+
+<p>Open Preferences/Tools -&gt; Build, Execution, Deployment -&gt; Custom Build Targets</p>
+
+<p>Screenshot</p>
+
+<p>Name your configuration and click on the … by Build, then click the + in the window that pops up.</p>
+
+<p>Screenshot</p>
+
+<p>Next to program place the <code class="highlighter-rouge">build.sh</code> file found in <code class="highlighter-rouge">&lt;your path to revbayes&gt;/revbayes/projects/cmake</code></p>
+
+<p>In arguments type <code class="highlighter-rouge">-boost false -debug true</code></p>
+
+<p>Next to executeable find the RevBayes executeable which is in <code class="highlighter-rouge">&lt;your path to revbayes&gt;/revbayes/projects/cmake</code>.</p>
+
+<p>Click OK</p>
+
+<p>Now the screen should looks like this and it should build if you go to Build and clikc Build Project</p>
+
+<p>screenshot</p>
+
+<h2 id="running-and-debugging-configurations">Running and debugging configurations</h2>
+<p>We need to set up CLion to run the executeable for debugging to do this do the following:</p>
+
+<ol>
+  <li>Go to Run -&gt; Edit Configurations</li>
+  <li>Click on the + and go to Custom Build Application</li>
+  <li>For target select the build configuration from above</li>
+  <li>For executeable find the RevBayes program that was built</li>
+  <li>For working directory put the revbayes directory</li>
+  <li>Click Apply and then OK</li>
+</ol>
+
+<p>Now you can run RevBayes by pressing Ctrl + R and set breakpoints and debug with Ctrl + D.</p>
+
+<p>Screenshot</p>
+
+<ol class="bibliography"></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "default highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "default highlighter-rouge";
+//   }
+//   
+// });
+</script>
+
+<script src="/assets/js/base.js"></script>
+
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+  });
+</script>
+
+  </body>
+</html>
