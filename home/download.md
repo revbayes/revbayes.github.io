@@ -1,8 +1,8 @@
 ---
 layout: home
-title: Software
+title: Download
 subtitle: Download and Install RevBayes
-permalink: /software
+permalink: /download
 code_layout: bash
 ---
 ## Download pre-compiled executables
