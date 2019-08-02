@@ -555,7 +555,7 @@ distribution. RevBayes can summarize the sampled trees by reading in
 the tree-trace file:
 
 ```
-treetrace = readTreeTrace("output/primates_cytb_JC.trees", treetype="non-clock", outgroup=out_group)
+treetrace = readTreeTrace("output/primates_cytb_JC.trees", treetype="non-clock")
 ```
 
 
@@ -569,7 +569,7 @@ map_tree = mapTree(treetrace,"output/primates_cytb_JC_MAP.tree")
 {% figure jc_tree %}
 <img src="figures/primates_cytb_JC_tree.png" width="800" /> 
 {% figcaption %}
-Maximum a posteriori estimate of the primate phylogeny under a Jukes-Cantor substitution model. The numbers at the nodes show the posterior probabilities for the clades.We have rooted the tree at the outgroup *Galeopterus_variegatus*
+Maximum a posteriori estimate of the primate phylogeny under a Jukes-Cantor substitution model. The numbers at the nodes show the posterior probabilities for the clades. We have rooted the tree at the outgroup *Galeopterus_variegatus*
 {% endfigcaption %}
 {% endfigure %}
 
