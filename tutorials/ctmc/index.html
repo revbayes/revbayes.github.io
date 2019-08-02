@@ -630,13 +630,11 @@ can now set up the MCMC algorithm that will sample parameter values in
 proportion to their posterior probability. The <code class="highlighter-rouge">mcmc()</code> function will
 create our MCMC object:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves)
 </code></pre></div></div>
 
-<p>Notice that we also specified <code class="highlighter-rouge">nruns=2</code> which means that RevBayes will automatically run 2 independent MCMC runs. 
-You will find that the output is created in two files with extension <code class="highlighter-rouge">_run_1</code> and <code class="highlighter-rouge">_run_2</code> for each replicate and additionally the samples from both runs are combined into one file for more convenient post-processing. 
-Now, run the MCMC:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=20000)
+<p>Now, run the MCMC:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=10000)
 </code></pre></div></div>
 
 <p>When the analysis is complete, you will have the monitored files in your output directory.</p>
@@ -1161,16 +1159,12 @@ These rate-multipliers are drawn from a discrete, mean-one gamma distribution; t
 <h4 class="subsubsection" id="setting-up-the-gamma-model-in-revbayes">Setting up the Gamma Model in RevBayes</h4>
 <hr class="subsubsection" />
 
-<p>Then create a stochastic node called <code class="highlighter-rouge">alpha</code> with a uniform prior distribution between 0.0 and $10^8$
+<p>Then create a stochastic node called <code class="highlighter-rouge">alpha</code> with a uniform prior distribution between 0.0 and $10$
 (this represents the stochastic node for the $\alpha$-shape parameter in
 <a href="#fig_gtrg"></a>):</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha ~ dnUniform( 0.0, 1E8 )
-alpha.setValue(1.0)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha ~ dnUniform( 0.0, 10 )
 </code></pre></div></div>
-<p>Note that we initialized the value of <code class="highlighter-rouge">alpha</code> to $1.0$. This is strictly speaking not necessary but helps tremendously the MCMC to converge.
-As a general rule, it is possible to initialize starting values for the MCMC using the <em>setValue( xx )</em> function, which is available for every stochastic variable,
-but it might also make your replicated MCMC runs to be more likely to get stuck in the same local area of parameters.</p>
 
 <p>The way the ASRV model is implemented involves discretizing the mean-one gamma distribution into a set number of rate categories, $k$. Thus, we can analytically marginalize over the uncertainty in the rate at each site. The likelihood of each site is averaged over the $k$ rate categories, where the rate multiplier is the mean (or median) of each of the discrete $k$ categories. To specify this, we need a deterministic node that is a vector that will hold the set of $k$ rates drawn from the gamma distribution with $k$ rate categories. The <code class="highlighter-rouge">fnDiscretizeGamma()</code> function returns this deterministic node and takes three arguments: the shape and rate of the gamma distribution and the number of categories. Since we want to discretize a mean-one gamma distribution, we can pass in <code class="highlighter-rouge">alpha</code> for both the shape and rate.</p>
 
