@@ -55,7 +55,7 @@
 	<h1 class="maintitle">General Introduction to Model selection</h1>
 	<h3 class="subtitle">Comparing relative model fit with Bayes factors</h3>
 	<h4 class="authors">Sebastian Höhna, Michael J Landis, Tracy A Heath and Brian R Moore</h4>
-  <h5>Last modified on July 24, 2019</h5>
+  <h5>Last modified on August  2, 2019</h5>
 </div>
 
 
@@ -295,36 +295,36 @@ any model in RevBayes. First, we create the variable containing the power-poster
 analysis. This requires that we provide a model and vector of moves, as
 well as an output file name. The <code class="highlighter-rouge">cats</code> argument sets the number of
 stepping stones.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    pow_p = powerPosterior(mymodel, moves, monitors, "output/model1.out", cats=50) 
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pow_p = powerPosterior(mymodel, moves, monitors, "output/model1.out", cats=50) 
 </code></pre></div></div>
 <p>We can start the power-posterior analysis by first burning in the chain
 and and discarding the first 10000 states. This will help ensure that
 analysis starts from a region of high posterior probability, rather than
 from some random point.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    pow_p.burnin(generations=10000,tuningInterval=1000)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pow_p.burnin(generations=10000,tuningInterval=1000)
 </code></pre></div></div>
 <p>Now execute the run with the <code class="highlighter-rouge">.run()</code> function:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    pow_p.run(generations=1000)  
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pow_p.run(generations=1000)  
 </code></pre></div></div>
 <p>Once the power posteriors have been saved to file, create a stepping
 stone sampler. This function can read any file of power posteriors and
 compute the marginal likelihood using stepping-stone sampling.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    ss = steppingStoneSampler(file="output/model1.out", powerColumnName="power", likelihoodColumnName="likelihood")
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ss = steppingStoneSampler(file="output/model1.out", powerColumnName="power", likelihoodColumnName="likelihood")
 </code></pre></div></div>
 <p>These commands will execute a stepping-stone simulation with 50 stepping
 stones, sampling 1000 states from each step. Compute the marginal
 likelihood under stepping-stone sampling using the member function
 <code class="highlighter-rouge">marginal()</code> of the <code class="highlighter-rouge">ss</code> variable.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    ss.marginal() 
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ss.marginal() 
 </code></pre></div></div>
 <p>Path sampling is an alternative to stepping-stone sampling and also
 takes the same power posteriors as input.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    ps = pathSampler(file="output/model1.out", powerColumnName="power", likelihoodColumnName="likelihood")
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ps = pathSampler(file="output/model1.out", powerColumnName="power", likelihoodColumnName="likelihood")
 </code></pre></div></div>
 <p>Compute the marginal likelihood under stepping-stone sampling using the
 member function <code class="highlighter-rouge">marginal()</code> of the <code class="highlighter-rouge">ps</code> variable and record the value
 in Table [tab:ml_cytb].</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    ps.marginal() 
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ps.marginal() 
 </code></pre></div></div>
 
 <p>We have kept this description of how to use stepping-stone-sampling and
