@@ -95,7 +95,7 @@ pow_p.burnin(generations=10000,tuningInterval=1000)
 ```
 Now execute the run with the `.run()` function:
 ```
-pow_p.run(generations=1000, preburninGenerations=100, tuningInterval=10)
+pow_p.run(generations=1000)
 ```
 Once the power posteriors have been saved to file, create a stepping
 stone sampler. This function can read any file of power posteriors and
@@ -122,9 +122,6 @@ in Table [tab_ml_subst_models].
 ```
 ps.marginal()
 ```
-
-As an example we provide the file
-**RevBayes_scripts/marginalLikelihood_JukesCantor.Rev**.
 
 We have kept this description of how to use stepping-stone-sampling and
 path-sampling very generic and did not provide the information about the
