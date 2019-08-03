@@ -84,9 +84,9 @@ living and extinct species used in this tutorial is described by the
 model simply treats the fossil observations as part of the process
 governing the tree topology and branch times (the node in
 {% ref fig_module_gm %}). The fossilized birth-death process provides a
-model for the distribution of speciation times tree topology, and
+model for the distribution of speciation times, tree topology, and
 lineage samples before the present
-(*e.g.,*non-contemporaneous samples like
+(*e.g.*, non-contemporaneous samples like
 fossils or viruses). This type of tree is shown in {% ref fig_example_tree %}. 
 Importantly, this model can be used *with or
 without* character data for the historical samples. Thus, it provides a
