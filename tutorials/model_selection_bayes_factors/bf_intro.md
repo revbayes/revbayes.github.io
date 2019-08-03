@@ -68,7 +68,7 @@ the relative fit of each model to the data, $BF(M_0,M_1)$, is:
 $$BF(M_0,M_1) = \frac{\mbox{posterior odds}}{\mbox{prior odds}}.$$ 
 
 The posterior odds is the posterior probability of $M_0$ given the data,
-$\mathbf X$, divided by the posterior odds of $M_1$ given the data:
+$\mathbf X$, divided by the posterior probability of $M_1$ given the data:
 
 $$\mbox{posterior odds} = \frac{\mathbb{P}(M_0 \mid \mathbf X)}{\mathbb{P}(M_1 \mid \mathbf X)},$$
 
@@ -210,42 +210,42 @@ analysis. This requires that we provide a model and vector of moves, as
 well as an output file name. The `cats` argument sets the number of
 stepping stones.
 ```
-    pow_p = powerPosterior(mymodel, moves, monitors, "output/model1.out", cats=50) 
+pow_p = powerPosterior(mymodel, moves, monitors, "output/model1.out", cats=50) 
 ```
 We can start the power-posterior analysis by first burning in the chain
 and and discarding the first 10000 states. This will help ensure that
 analysis starts from a region of high posterior probability, rather than
 from some random point.
 ```
-    pow_p.burnin(generations=10000,tuningInterval=1000)
+pow_p.burnin(generations=10000,tuningInterval=1000)
 ```
 Now execute the run with the `.run()` function:
 ```
-    pow_p.run(generations=1000)  
+pow_p.run(generations=1000)  
 ```
 Once the power posteriors have been saved to file, create a stepping
 stone sampler. This function can read any file of power posteriors and
 compute the marginal likelihood using stepping-stone sampling.
 ```
-    ss = steppingStoneSampler(file="output/model1.out", powerColumnName="power", likelihoodColumnName="likelihood")
+ss = steppingStoneSampler(file="output/model1.out", powerColumnName="power", likelihoodColumnName="likelihood")
 ```
 These commands will execute a stepping-stone simulation with 50 stepping
 stones, sampling 1000 states from each step. Compute the marginal
 likelihood under stepping-stone sampling using the member function
 `marginal()` of the `ss` variable.
 ```
-    ss.marginal() 
+ss.marginal() 
 ```
 Path sampling is an alternative to stepping-stone sampling and also
 takes the same power posteriors as input.
 ```
-    ps = pathSampler(file="output/model1.out", powerColumnName="power", likelihoodColumnName="likelihood")
+ps = pathSampler(file="output/model1.out", powerColumnName="power", likelihoodColumnName="likelihood")
 ```
 Compute the marginal likelihood under stepping-stone sampling using the
 member function `marginal()` of the `ps` variable and record the value
 in Table [tab:ml_cytb].
 ```
-    ps.marginal() 
+ps.marginal() 
 ```
 
 We have kept this description of how to use stepping-stone-sampling and

@@ -514,14 +514,20 @@ proportion to their posterior probability. The `mcmc()` function will
 create our MCMC object:
 
 ```
+mymcmc = mcmc(mymodel, monitors, moves)
+```
+{% comment %}
+```
 mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
 ```
 
 Notice that we also specified `nruns=2` which means that RevBayes will automatically run 2 independent MCMC runs. 
-You will find that the output is created in two files with extension `_run_1` and `_run_2` for each replicate and additionally the samples from both runs are combined into one file for more convenient post-processing. 
+You will find that the output is created in two files with extension `_run_1` and `_run_2` for each replicate and additionally the samples from both runs are combined into one file for more convenient post-processing.
+{% endcomment %}
+
 Now, run the MCMC:
 ```
-mymcmc.run(generations=20000)
+mymcmc.run(generations=10000)
 ```
 
 When the analysis is complete, you will have the monitored files in your output directory.
@@ -555,7 +561,7 @@ distribution. RevBayes can summarize the sampled trees by reading in
 the tree-trace file:
 
 ```
-treetrace = readTreeTrace("output/primates_cytb_JC.trees", treetype="non-clock", outgroup=out_group)
+treetrace = readTreeTrace("output/primates_cytb_JC.trees", treetype="non-clock")
 ```
 
 
@@ -569,7 +575,7 @@ map_tree = mapTree(treetrace,"output/primates_cytb_JC_MAP.tree")
 {% figure jc_tree %}
 <img src="figures/primates_cytb_JC_tree.png" width="800" /> 
 {% figcaption %}
-Maximum a posteriori estimate of the primate phylogeny under a Jukes-Cantor substitution model. The numbers at the nodes show the posterior probabilities for the clades.We have rooted the tree at the outgroup *Galeopterus_variegatus*
+Maximum a posteriori estimate of the primate phylogeny under a Jukes-Cantor substitution model. The numbers at the nodes show the posterior probabilities for the clades. We have rooted the tree at the outgroup *Galeopterus_variegatus*
 {% endfigcaption %}
 {% endfigure %}
 
@@ -903,6 +909,14 @@ Graphical model representation of the General Time Reversible (GTR) + Gamma phyl
 
 {% subsubsection Setting up the Gamma Model in RevBayes %}
 
+Then create a stochastic node called `alpha` with a uniform prior distribution between 0.0 and $10$
+(this represents the stochastic node for the $\alpha$-shape parameter in
+{% ref fig_gtrg %}):
+
+```
+alpha ~ dnUniform( 0.0, 10 )
+```
+{% comment %}
 Then create a stochastic node called `alpha` with a uniform prior distribution between 0.0 and $10^8$
 (this represents the stochastic node for the $\alpha$-shape parameter in
 {% ref fig_gtrg %}):
@@ -914,6 +928,7 @@ alpha.setValue(1.0)
 Note that we initialized the value of `alpha` to $1.0$. This is strictly speaking not necessary but helps tremendously the MCMC to converge.
 As a general rule, it is possible to initialize starting values for the MCMC using the *setValue( xx )* function, which is available for every stochastic variable,
 but it might also make your replicated MCMC runs to be more likely to get stuck in the same local area of parameters.
+{% endcomment %}
 
 The way the ASRV model is implemented involves discretizing the mean-one gamma distribution into a set number of rate categories, $k$. Thus, we can analytically marginalize over the uncertainty in the rate at each site. The likelihood of each site is averaged over the $k$ rate categories, where the rate multiplier is the mean (or median) of each of the discrete $k$ categories. To specify this, we need a deterministic node that is a vector that will hold the set of $k$ rates drawn from the gamma distribution with $k$ rate categories. The `fnDiscretizeGamma()` function returns this deterministic node and takes three arguments: the shape and rate of the gamma distribution and the number of categories. Since we want to discretize a mean-one gamma distribution, we can pass in `alpha` for both the shape and rate.
 
