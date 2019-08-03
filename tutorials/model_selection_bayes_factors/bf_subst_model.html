@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Model selection of common substitution models for one locus</h1>
 	<h3 class="subtitle">Comparing relative model fit with Bayes factors</h3>
 	<h4 class="authors">Sebastian Höhna, Michael J Landis, Tracy A Heath</h4>
-  <h5>Last modified on August  2, 2019</h5>
+  <h5>Last modified on August  3, 2019</h5>
 </div>
 
 
@@ -182,7 +182,7 @@ from some random point.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pow_p.burnin(generations=10000,tuningInterval=1000)
 </code></pre></div></div>
 <p>Now execute the run with the <code class="highlighter-rouge">.run()</code> function:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pow_p.run(generations=1000, preburninGenerations=100, tuningInterval=10)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pow_p.run(generations=1000)
 </code></pre></div></div>
 <p>Once the power posteriors have been saved to file, create a stepping
 stone sampler. This function can read any file of power posteriors and
@@ -205,9 +205,6 @@ member function <code class="highlighter-rouge">marginal()</code> of the <code c
 in Table [tab_ml_subst_models].</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ps.marginal()
 </code></pre></div></div>
-
-<p>As an example we provide the file
-<strong>RevBayes_scripts/marginalLikelihood_JukesCantor.Rev</strong>.</p>
 
 <p>We have kept this description of how to use stepping-stone-sampling and
 path-sampling very generic and did not provide the information about the
