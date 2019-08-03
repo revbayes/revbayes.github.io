@@ -40,24 +40,36 @@ schedule:
     instructors: Michael Landis
 
   - starttime: 2019-08-04T15:30
+    endtime: 2019-08-04T16:00
+    topic: "Lab: Intro to RevBayes"
+    tutorials: intro
+    instructors: Michael Landis
+
+  - starttime: 2019-08-04T16:00
     endtime: 2019-08-04T17:00
-    topic: "Lab: Phylogenetic Inference in RevBayes"
+    topic: "Lab: Phylogenetic Inference under the JC Model"
     tutorials: ctmc
-    instructors: Walker Pett
+    instructors: Michael Landis
 
   - starttime: 2019-08-04T17:00
     endtime: 2019-08-04T19:00
     topic: Dinner
 
   - starttime: 2019-08-04T19:00
-    endtime: 2019-08-04T20:30
+    endtime: 2019-08-04T20:00
+    topic: "Lab: Phylogenetic Inference under HKY & GTR Models"
+    tutorials: ctmc
+    instructors: Walker Pett
+
+  - starttime: 2019-08-04T20:00
+    endtime: 2019-08-04T21:00
     topic: "Lecture: Bayesian Divergence-Time Estimation"
     material: <a href="https://figshare.com/articles/Bayesian_Divergence-Time_Estimation_Lecture/6849005">Lecture slides</a>
     instructors: Tracy Heath
 
-  - starttime: 2019-08-04T20:30
+  - starttime: 2019-08-04T21:00
     endtime: 2019-08-04T22:00
-    topic: "Lab: Divergence-Time Estimation in RevBayes"
+    topic: "Lab: Divergence-Time Estimation in RevBayes (part 1)"
     tutorials: fbd/fbd_specimen
     instructors: Walker Pett
 
@@ -73,9 +85,9 @@ schedule:
 
   - starttime: 2019-08-05T20:30
     endtime: 2019-08-05T22:00
-    topic: "Lab: Divergence-Time Estimation in RevBayes"
-    tutorials: model_selection_bayes_factors/bf_subst_model
-    instructors: Pett, Landis, Heath
+    topic: "Lab: Divergence-Time Estimation in RevBayes (part 2)"
+    tutorials: fbd/fbd_specimen
+    instructors: Walker Pett
 ---
 
 ## Using RevBayes on the MBL Cluster 
