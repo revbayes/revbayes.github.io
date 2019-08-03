@@ -90,12 +90,12 @@ monitors.append( mnFile(psi, filename="output/primates_cytb_GTR.trees", printgen
 monitors.append( mnModel(filename="output/primates_cytb_GTR.log", printgen=10) )
 
 # run the analysis
-mymcmc = mcmc(mymodel, moves, monitors, nruns=2, combine="mixed")
-mymcmc.run(generations=20000,tuningInterval=200)
+mymcmc = mcmc(mymodel, moves, monitors)
+mymcmc.run(generations=10000)
 
 
 # summarize output
-treetrace = readTreeTrace("output/primates_cytb_GTR.trees", treetype="non-clock", outgroup=out_group)
+treetrace = readTreeTrace("output/primates_cytb_GTR.trees", treetype="non-clock")
 # and then get the MAP tree
 map_tree = mapTree(treetrace,"output/primates_cytb_GTR_MAP.tre")
 
