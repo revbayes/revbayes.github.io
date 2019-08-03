@@ -17,7 +17,7 @@ instructors:
 - <a href="https://phylogeny.uconn.edu/">Paul Lewis</a>
 
 software:
-- <a href="https://revbayes.github.io/download">RevBayes v1.0.11</a> 
+- <a href="https://github.com/revbayes/revbayes/releases/tag/v1.0.10">RevBayes v1.0.10</a> or <a href="https://github.com/revbayes/revbayes/releases/tag/v1.0.12">v1.0.12 (Mac only)</a> 
 - <a href="http://tree.bio.ed.ac.uk/software/tracer/">Tracer</a>
 - <a href="http://tree.bio.ed.ac.uk/software/figtree/">FigTree</a>
 - A simple text editor, such as Sublime Text, NotePad++, TextWrangler, BBEdit, vim, or emacs 
