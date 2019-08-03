@@ -68,7 +68,7 @@ the relative fit of each model to the data, $BF(M_0,M_1)$, is:
 $$BF(M_0,M_1) = \frac{\mbox{posterior odds}}{\mbox{prior odds}}.$$ 
 
 The posterior odds is the posterior probability of $M_0$ given the data,
-$\mathbf X$, divided by the posterior odds of $M_1$ given the data:
+$\mathbf X$, divided by the posterior probability of $M_1$ given the data:
 
 $$\mbox{posterior odds} = \frac{\mathbb{P}(M_0 \mid \mathbf X)}{\mathbb{P}(M_1 \mid \mathbf X)},$$
 
