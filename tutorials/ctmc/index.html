@@ -1158,9 +1158,9 @@ These rate-multipliers are drawn from a discrete, mean-one gamma distribution; t
 
 <p>The way the ASRV model is implemented involves discretizing the mean-one gamma distribution into a set number of rate categories, $k$. Thus, we can analytically marginalize over the uncertainty in the rate at each site. The likelihood of each site is averaged over the $k$ rate categories, where the rate multiplier is the mean (or median) of each of the discrete $k$ categories. To specify this, we need a deterministic node that is a vector that will hold the set of $k$ rates drawn from the gamma distribution with $k$ rate categories. The <code class="highlighter-rouge">fnDiscretizeGamma()</code> function returns this deterministic node and takes three arguments: the shape and rate of the gamma distribution and the number of categories. Since we want to discretize a mean-one gamma distribution, we can pass in <code class="highlighter-rouge">alpha</code> for both the shape and rate.</p>
 
-<p>Initialize the <code class="highlighter-rouge">gamma_rates</code> deterministic node vector using the <code class="highlighter-rouge">fnDiscretizeGamma()</code> function with <code class="highlighter-rouge">4</code> bins:</p>
+<p>Initialize the <code class="highlighter-rouge">sr</code> deterministic node vector using the <code class="highlighter-rouge">fnDiscretizeGamma()</code> function with <code class="highlighter-rouge">4</code> bins:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gamma_rates := fnDiscretizeGamma( alpha, alpha, 4 )
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sr := fnDiscretizeGamma( alpha, alpha, 4 )
 </code></pre></div></div>
 
 <p>Note that here, by convention, we set $k = 4$. The random variable that controls the rate variation is the stochastic node <code class="highlighter-rouge">alpha</code>. We will apply a simple scale move to this parameter.</p>
@@ -1170,7 +1170,7 @@ These rate-multipliers are drawn from a discrete, mean-one gamma distribution; t
 
 <p>Remember that you need to call the <code class="highlighter-rouge">PhyloCTMC</code> constructor to include the new site-rate parameter:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>seq ~ dnPhyloCTMC(tree=psi, Q=Q, siteRates=gamma_rates, type="DNA")
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>seq ~ dnPhyloCTMC(tree=psi, Q=Q, siteRates=sr, type="DNA")
 </code></pre></div></div>
 
 <h3 class="subsection" id="exercise-4">Exercise 4</h3>
@@ -1196,7 +1196,7 @@ probabilities of the clades.</p>
 
 <p>All of the substitution models described so far assume that the sequence data are potentially variable. That is, we assume that the sequence data are random variables; specifically, we assume that they are realizations of the specified <code class="highlighter-rouge">PhyloCTMC</code> distribution. However, some sites may not be free to vary—when the substitution rate of a site is zero, it is said to be <em>invariable</em>. Invariable sites are often confused with <em>invariant</em> sites—when each species exhibits the same state, it is said to be invariant. The concepts are related but distinct. If a site is truly invariable, it will necessarily give rise to an invariant site pattern, as such sites will always have a zero substitution rate. However, an invariant site pattern may be achieved via multiple substitutions that happen to end in the same state for every species.</p>
 
-<p>Here we describe an extension to our phylogenetic model to accommodate invariable sites. Under the invariable-sites model <a href="#Hasegawa1985">(Hasegawa et al. 1985)</a>, each site is invariable with probability <code class="highlighter-rouge">pinvar</code>, and variable with probability $1-$<code class="highlighter-rouge">pinvar</code>.</p>
+<p>Here we describe an extension to our phylogenetic model to accommodate invariable sites. Under the invariable-sites model <a href="#Hasegawa1985">(Hasegawa et al. 1985)</a>, each site is invariable with probability <code class="highlighter-rouge">p_inv</code>, and variable with probability $1-$<code class="highlighter-rouge">p_inv</code>.</p>
 
 <p>First, let’s have a look at the data and see how many invariant sites we have:</p>
 
@@ -1207,20 +1207,20 @@ probabilities of the clades.</p>
 
 <p>Now let’s specify the invariable-sites model in RevBayes. We need to specify the prior probability that a site is invariable. A Beta distribution is a common choice for parameters representing probabilities.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pinvar ~ dnBeta(1,1)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>p_inv ~ dnBeta(1,1)
 </code></pre></div></div>
 
 <p>The <code class="highlighter-rouge">Beta(1,1)</code> distribution is a flat prior distribution that specifies equal probability for all values between 0 and 1.</p>
 
 <p>Then, as usual, we add a move to change this stochastic variable; we’ll use a simple sliding window move.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvSlide(pinvar) )
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvSlide(p_inv) )
 </code></pre></div></div>
 
 <p>Finally, you need to call the <code class="highlighter-rouge">PhyloCTMC</code> constructor to include the
-new <code class="highlighter-rouge">pinvar</code> parameter:</p>
+new <code class="highlighter-rouge">p_inv</code> parameter:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>seq ~ dnPhyloCTMC(tree=psi, Q=Q, siteRates=gamma_rates, pInv=pinvar, type="DNA")
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>seq ~ dnPhyloCTMC(tree=psi, Q=Q, siteRates=sr, pInv=p_inv, type="DNA")
 </code></pre></div></div>
 
 <h3 class="subsection" id="exercise-5">Exercise 5</h3>
