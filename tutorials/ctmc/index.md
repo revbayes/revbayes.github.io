@@ -932,10 +932,10 @@ but it might also make your replicated MCMC runs to be more likely to get stuck 
 
 The way the ASRV model is implemented involves discretizing the mean-one gamma distribution into a set number of rate categories, $k$. Thus, we can analytically marginalize over the uncertainty in the rate at each site. The likelihood of each site is averaged over the $k$ rate categories, where the rate multiplier is the mean (or median) of each of the discrete $k$ categories. To specify this, we need a deterministic node that is a vector that will hold the set of $k$ rates drawn from the gamma distribution with $k$ rate categories. The `fnDiscretizeGamma()` function returns this deterministic node and takes three arguments: the shape and rate of the gamma distribution and the number of categories. Since we want to discretize a mean-one gamma distribution, we can pass in `alpha` for both the shape and rate.
 
-Initialize the `gamma_rates` deterministic node vector using the `fnDiscretizeGamma()` function with `4` bins:
+Initialize the `sr` deterministic node vector using the `fnDiscretizeGamma()` function with `4` bins:
 
 ```
-gamma_rates := fnDiscretizeGamma( alpha, alpha, 4 )
+sr := fnDiscretizeGamma( alpha, alpha, 4 )
 ```
 
 Note that here, by convention, we set $k = 4$. The random variable that controls the rate variation is the stochastic node `alpha`. We will apply a simple scale move to this parameter.
@@ -947,7 +947,7 @@ moves.append( mvScale(alpha, weight=2.0) )
 Remember that you need to call the `PhyloCTMC` constructor to include the new site-rate parameter:
 
 ```
-seq ~ dnPhyloCTMC(tree=psi, Q=Q, siteRates=gamma_rates, type="DNA")
+seq ~ dnPhyloCTMC(tree=psi, Q=Q, siteRates=sr, type="DNA")
 ```
 
 {% subsection Exercise 4 %}
@@ -966,7 +966,7 @@ seq ~ dnPhyloCTMC(tree=psi, Q=Q, siteRates=gamma_rates, type="DNA")
 
 All of the substitution models described so far assume that the sequence data are potentially variable. That is, we assume that the sequence data are random variables; specifically, we assume that they are realizations of the specified `PhyloCTMC` distribution. However, some sites may not be free to vary—when the substitution rate of a site is zero, it is said to be *invariable*. Invariable sites are often confused with *invariant* sites—when each species exhibits the same state, it is said to be invariant. The concepts are related but distinct. If a site is truly invariable, it will necessarily give rise to an invariant site pattern, as such sites will always have a zero substitution rate. However, an invariant site pattern may be achieved via multiple substitutions that happen to end in the same state for every species.
 
-Here we describe an extension to our phylogenetic model to accommodate invariable sites. Under the invariable-sites model {% cite Hasegawa1985 %}, each site is invariable with probability `pinvar`, and variable with probability $1-$`pinvar`.
+Here we describe an extension to our phylogenetic model to accommodate invariable sites. Under the invariable-sites model {% cite Hasegawa1985 %}, each site is invariable with probability `p_inv`, and variable with probability $1-$`p_inv`.
 
 First, let’s have a look at the data and see how many invariant sites we have:
 
@@ -979,7 +979,7 @@ There seem to be a substantial number of invariant sites.
 Now let’s specify the invariable-sites model in RevBayes. We need to specify the prior probability that a site is invariable. A Beta distribution is a common choice for parameters representing probabilities.
 
 ```
-pinvar ~ dnBeta(1,1)
+p_inv ~ dnBeta(1,1)
 ```
 
 The `Beta(1,1)` distribution is a flat prior distribution that specifies equal probability for all values between 0 and 1.
@@ -987,14 +987,14 @@ The `Beta(1,1)` distribution is a flat prior distribution that specifies equal p
 Then, as usual, we add a move to change this stochastic variable; we’ll use a simple sliding window move.
 
 ```
-moves.append( mvSlide(pinvar) )
+moves.append( mvSlide(p_inv) )
 ```
 
 Finally, you need to call the `PhyloCTMC` constructor to include the
-new `pinvar` parameter:
+new `p_inv` parameter:
 
 ```
-seq ~ dnPhyloCTMC(tree=psi, Q=Q, siteRates=gamma_rates, pInv=pinvar, type="DNA")
+seq ~ dnPhyloCTMC(tree=psi, Q=Q, siteRates=sr, pInv=p_inv, type="DNA")
 ```
 
 {% subsection Exercise 5 %}
