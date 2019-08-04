@@ -230,8 +230,8 @@ to create an entire *vector* of uniform random numbers, and transform
 them into a *second* vector of exponential random numbers.
 
     for (i in 1:100) {
-      u[i] ~ dnUniform(0,1)
-      z[i] := -ln(u[i]) / lambda 
+      y[i] ~ dnUniform(0,1)
+      z[i] := -ln(y[i]) / lambda 
     }
 
 Close using the statement `q()`.

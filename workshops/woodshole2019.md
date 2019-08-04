@@ -36,7 +36,7 @@ schedule:
   - starttime: 2019-08-04T14:00
     endtime: 2019-08-04T15:30
     topic: "Lecture: Phylogenetic Inference and Graphical Models"
-    material: <a href="https://molevol.mbl.edu/images/c/cb/Lecture_phylo_pgm_mlandis_WH2018.pdf">Lecture slides</a>
+    material: <a href="https://molevol.mbl.edu/images/4/44/Lecture_phylo_pgm_mlandis_WH2019.pdf">Lecture slides</a>
     instructors: Michael Landis
 
   - starttime: 2019-08-04T15:30
