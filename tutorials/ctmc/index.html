@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
-    <title>RevBayes: Substitution Models</title>
+    <title>RevBayes: Nucleotide substitution Models</title>
   </head>
   <body>
     <div class="container">
@@ -52,10 +52,10 @@
 </nav>
 
       <div class="titlebar">
-	<h1 class="maintitle">Substitution Models</h1>
+	<h1 class="maintitle">Nucleotide substitution Models</h1>
 	<h3 class="subtitle">Phylogenetic inference of nucleotide data using RevBayes</h3>
 	<h4 class="authors">Sebastian Höhna, Michael Landis, Brian Moore and Tracy Heath</h4>
-  <h5>Last modified on August  2, 2019</h5>
+  <h5>Last modified on August  4, 2019</h5>
 </div>
 
 
@@ -118,10 +118,6 @@
           <li><a href="/tutorials/ctmc/scripts/mcmc_GTR_Gamma_Inv.Rev">mcmc_GTR_Gamma_Inv.Rev</a></li>
         
           <li><a href="/tutorials/ctmc/scripts/mcmc_JC.Rev">mcmc_JC.Rev</a></li>
-        
-          <li><a href="/tutorials/ctmc/scripts/mcmc_WAG.Rev">mcmc_WAG.Rev</a></li>
-        
-          <li><a href="/tutorials/ctmc/scripts/mcmc_covariotide.Rev">mcmc_covariotide.Rev</a></li>
         
         </ul>
     
@@ -1146,7 +1142,7 @@ GTR substitution model.</p>
 </figure>
 
 <p>We typically lack prior knowledge regarding the degree of ASRV for a given alignment. 
-Accordingly, rather than specifying a precise value of $\alpha$, we can instead estimate the value of the $\alpha$-shape parameter from the data. This requires that we specify a diffuse (relatively <a href="http://andrewgelman.com/2013/11/21/hidden-dangers-noninformative-priors/">‘uninformative’</a>) prior on the $\alpha$-shape parameter. For this analysis, we will use a lognormal distribution with a mean parameter, <code class="highlighter-rouge">alpha_prior_mean</code>, equal to <code class="highlighter-rouge">5.0</code>, and standard deviation, <code class="highlighter-rouge">alpha_prior_sd</code>, equal to 0.587405 (thus, 95% of the prior density spans exactly one order of magnitude).</p>
+Accordingly, rather than specifying a precise value of $\alpha$, we can instead estimate the value of the $\alpha$-shape parameter from the data. This requires that we specify a diffuse (relatively <a href="http://andrewgelman.com/2013/11/21/hidden-dangers-noninformative-priors/">‘uninformative’</a>) prior on the $\alpha$-shape parameter. For this analysis, we will use a uniform distribution between 0 and 10.</p>
 
 <p>This approach for accommodating ASRV is another example of a hierarchical model (<a href="#fig_gtrg"></a>). 
 That is, variation in substitution rates across sites is addressed by applying a site-specific rate multiplier to each of the $j$ sites, $r_j$. 
