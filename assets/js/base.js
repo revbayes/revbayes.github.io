@@ -58,6 +58,8 @@ $(".aside").click(function(event) {
                || $(event.target).filter(".fold-unfold").size() > 0;
     if (trigger) {
         $(">*:not(h2:first)", this).toggle(400);
+        $(".MathJax", this).toggle(400);
+        $(".MathJax_Preview", this).hide();
         $(" span.fold-unfold", this).toggleClass("glyphicon-chevron-right glyphicon-chevron-down");
         event.stopPropagation();
     }
