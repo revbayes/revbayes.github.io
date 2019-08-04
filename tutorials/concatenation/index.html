@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Alignment concatenation</h1>
 	<h3 class="subtitle">Species tree estimation from multiple concatenated gene sequence alignments</h3>
 	<h4 class="authors">Bastien Boussau and Sebastian Höhna</h4>
-  <h5>Last modified on May  2, 2018</h5>
+  <h5>Last modified on August 11, 2018</h5>
 </div>
 
 
@@ -471,9 +471,6 @@ $(":not(code).highlighter-rouge").each(function() {
 //   
 // });
 </script>
-
-<script src="/assets/js/base.js"></script>
-
 <script type="text/javascript"
     src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
     MathJax.Hub.Config({
@@ -481,8 +478,15 @@ $(":not(code).highlighter-rouge").each(function() {
       inlineMath: [['$','$'], ['\\(','\\)']],
       processEscapes: true
     }
-  });
+    });
+    MathJax.Hub.Queue(function () {
+      $(".aside").each(function() {
+          $(".MathJax", this).hide();
+          $(".MathJax_Preview", this).hide();
+      });
+    });
 </script>
+<script src="/assets/js/base.js"></script>
 
   </body>
 </html>

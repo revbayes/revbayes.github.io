@@ -96,9 +96,9 @@ Also consider attending a RevBayes <a href="/workshops/hackathons.html">hackatho
 </div>
 
 <div class="tutorial">
-<a class="title" href="/developer/validation/"><p>Setting up Validation Scripts in RevBayes</p>
+<a class="title" href="/developer/tutorial/"><p>Contributing a RevBayes tutorial</p>
 </a>
-<p class="subtitle"><p>Ensuring correct performance of models and methods using simulations</p>
+<p class="subtitle"><p>How to write and host a tutorial on this website</p>
 </p>
 </div>
 
@@ -117,9 +117,9 @@ Also consider attending a RevBayes <a href="/workshops/hackathons.html">hackatho
 </div>
 
 <div class="tutorial">
-<a class="title" href="/developer/tutorial/"><p>Contributing a RevBayes tutorial</p>
+<a class="title" href="/developer/validation/"><p>Setting up Validation Scripts in RevBayes</p>
 </a>
-<p class="subtitle"><p>How to write and host a tutorial on this website</p>
+<p class="subtitle"><p>Ensuring correct performance of models and methods using simulations</p>
 </p>
 </div>
 
@@ -160,9 +160,6 @@ $(":not(code).highlighter-rouge").each(function() {
 //   
 // });
 </script>
-
-<script src="/assets/js/base.js"></script>
-
 <script type="text/javascript"
     src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
     MathJax.Hub.Config({
@@ -170,8 +167,15 @@ $(":not(code).highlighter-rouge").each(function() {
       inlineMath: [['$','$'], ['\\(','\\)']],
       processEscapes: true
     }
-  });
+    });
+    MathJax.Hub.Queue(function () {
+      $(".aside").each(function() {
+          $(".MathJax", this).hide();
+          $(".MathJax_Preview", this).hide();
+      });
+    });
 </script>
+<script src="/assets/js/base.js"></script>
 
   </body>
 </html>

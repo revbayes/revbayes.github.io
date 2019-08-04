@@ -66,12 +66,12 @@ Download and Install RevBayes
 
 <div class="col-sm-4" align="center">
 <h2>Mac OS X</h2>
-<a href="https://github.com/revbayes/revbayes/releases/download/v1.0.11/RevBayes_OSX_v1.0.11.zip" class="btn btn-info" role="button">Download Executable (10.6+)</a>
+<a href="https://github.com/revbayes/revbayes/releases/download/v1.0.11/RevBayes_OSX_v1.0.12.zip" class="btn btn-info" role="button">Download Executable (10.6+)</a>
 </div>
 
 <div class="col-sm-4" align="center">
 <h2>Windows</h2>
-<a href="https://github.com/revbayes/revbayes/releases/download/v1.0.11/RevBayes_Win_v1.0.11.zip" class="btn btn-info" role="button">Download Executable (7+)</a>
+<a href="https://github.com/revbayes/revbayes/releases/download/v1.0.11/RevBayes_Win_v1.0.10.zip" class="btn btn-info" role="button">Download Executable (7+)</a>
 </div>
 
 <div class="col-sm-4" align="center">
@@ -225,9 +225,6 @@ $(":not(code).highlighter-rouge").each(function() {
 //   
 // });
 </script>
-
-<script src="/assets/js/base.js"></script>
-
 <script type="text/javascript"
     src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
     MathJax.Hub.Config({
@@ -235,8 +232,15 @@ $(":not(code).highlighter-rouge").each(function() {
       inlineMath: [['$','$'], ['\\(','\\)']],
       processEscapes: true
     }
-  });
+    });
+    MathJax.Hub.Queue(function () {
+      $(".aside").each(function() {
+          $(".MathJax", this).hide();
+          $(".MathJax_Preview", this).hide();
+      });
+    });
 </script>
+<script src="/assets/js/base.js"></script>
 
   </body>
 </html>
