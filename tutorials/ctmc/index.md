@@ -501,7 +501,7 @@ Finally, create a screen monitor that will report the states of
 specified variables to the screen with `mnScreen`:
 
 ```
-monitors.append( mnScreen(printgen=1000, TL) )
+monitors.append( mnScreen(printgen=100, TL) )
 ```
 
 This monitor mostly helps us to see the progress of the MCMC run.
