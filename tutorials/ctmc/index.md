@@ -1,5 +1,5 @@
 ---
-title: Substitution Models
+title: Nucleotide substitution Models
 subtitle: Phylogenetic inference of nucleotide data using RevBayes
 authors:  Sebastian Höhna, Michael Landis, Brian Moore and Tracy Heath
 level: 2
@@ -894,7 +894,7 @@ The probability density of mean-one gamma-distributed rates for different values
 {% endfigure %}
 
 We typically lack prior knowledge regarding the degree of ASRV for a given alignment. 
-Accordingly, rather than specifying a precise value of $\alpha$, we can instead estimate the value of the $\alpha$-shape parameter from the data. This requires that we specify a diffuse (relatively ['uninformative'](http://andrewgelman.com/2013/11/21/hidden-dangers-noninformative-priors/)) prior on the $\alpha$-shape parameter. For this analysis, we will use a lognormal distribution with a mean parameter, `alpha_prior_mean`, equal to `5.0`, and standard deviation, `alpha_prior_sd`, equal to 0.587405 (thus, 95% of the prior density spans exactly one order of magnitude).
+Accordingly, rather than specifying a precise value of $\alpha$, we can instead estimate the value of the $\alpha$-shape parameter from the data. This requires that we specify a diffuse (relatively ['uninformative'](http://andrewgelman.com/2013/11/21/hidden-dangers-noninformative-priors/)) prior on the $\alpha$-shape parameter. For this analysis, we will use a uniform distribution between 0 and 10.
 
 This approach for accommodating ASRV is another example of a hierarchical model ({% ref fig_gtrg %}). 
 That is, variation in substitution rates across sites is addressed by applying a site-specific rate multiplier to each of the $j$ sites, $r_j$. 

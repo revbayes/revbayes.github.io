@@ -48,15 +48,14 @@ Q := fnGTR(er,pi)
 #############################
 
 # among site rate variation, +Gamma4
-alpha ~ dnUniform( 0, 1E8 )
-alpha.setValue( 1.0 )
-sr := fnDiscretizeGamma( alpha, alpha, 4, false )
-moves.append( mvScale(alpha, lambda=1.0, weight=2.0) )
+alpha ~ dnUniform( 0, 10 )
+gamma_rates := fnDiscretizeGamma( alpha, alpha, 4, false )
+moves.append( mvScale(alpha, weight=2.0) )
 
 
 # the probability of a site being invariable, +I
-p_inv ~ dnBeta(1,1)
-moves.append( mvBetaProbability(p_inv, weight=2.0) )
+pinvar ~ dnBeta(1,1)
+moves.append( mvBetaProbability(pinvar, weight=2.0) )
 
 
 ##############
@@ -87,7 +86,7 @@ psi := treeAssembly(topology, bl)
 ###################
 
 # the sequence evolution model
-seq ~ dnPhyloCTMC(tree=psi, Q=Q, siteRates=sr, pInv=p_inv, type="DNA")
+seq ~ dnPhyloCTMC(tree=psi, Q=Q, siteRates=gamma_rates, pInv=pinvar, type="DNA")
 
 # attach the data
 seq.clamp(data)
@@ -100,7 +99,7 @@ seq.clamp(data)
 mymodel = model(psi)
 
 # add monitors
-monitors.append( mnScreen(alpha, p_inv, TL, printgen=1000) )
+monitors.append( mnScreen(alpha, pinvar, TL, printgen=100) )
 monitors.append( mnFile(psi, filename="output/primates_cytb_GTRGI.trees", printgen=10) )
 monitors.append( mnModel(filename="output/primates_cytb_GTRGI.log", printgen=10) )
 
