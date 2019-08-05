@@ -1,5 +1,5 @@
 ---
-title: Nucleotide substitution Models
+title: Nucleotide substitution models
 subtitle: Phylogenetic inference of nucleotide data using RevBayes
 authors:  Sebastian Höhna, Michael Landis, Brian Moore and Tracy Heath
 level: 2
