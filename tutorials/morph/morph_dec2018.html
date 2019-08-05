@@ -77,7 +77,7 @@
           
             <li><a href="/tutorials/mcmc_binomial/">Introduction to MCMC using RevBayes</a></li>
           
-            <li><a href="/tutorials/ctmc/">Nucleotide substitution Models</a></li>
+            <li><a href="/tutorials/ctmc/">Nucleotide substitution models</a></li>
           
           </ul>
         
@@ -224,7 +224,7 @@ a phylogeny with the Mk model, and two useful extensions to the model.</p>
 <hr class="subsection" />
 
 <p>The Mk model is a generalization of the Jukes-Cantor model of nucleotide
-sequence evolution, which we discussed in <a href="/tutorials/ctmc/">Nucleotide substitution Models</a>. 
+sequence evolution, which we discussed in <a href="/tutorials/ctmc/">Nucleotide substitution models</a>. 
 The Q-matrix for a two-state Mk model looks like so:</p>
 
 <script type="math/tex; mode=display">% <![CDATA[
@@ -390,7 +390,7 @@ assignment operator <code class="highlighter-rouge">=</code> instead of the cons
 <h3 class="subsection" id="subsec_Mk_model">The Mk Model</h3>
 <hr class="subsection" />
 
-<p>First, we will create a joint prior on the branch lengths and tree topology. This should be familiar from the <a href="/tutorials/ctmc/">Nucleotide substitution Models</a>. In the first step we will specify a stochastic node for the mean of the</p>
+<p>First, we will create a joint prior on the branch lengths and tree topology. This should be familiar from the <a href="/tutorials/ctmc/">Nucleotide substitution models</a>. In the first step we will specify a stochastic node for the mean of the</p>
 
 <p>Some types of stochastic nodes can be updated by a number of alternative moves. 
 Different moves may explore parameter space in different ways, 
@@ -423,7 +423,7 @@ rates_morpho := fnDiscretizeGamma( alpha_morpho, alpha_morpho, 4 )
 moves.append( mvScale(alpha_morpho, lambda=1, weight=2.0)
 </code></pre></div></div>
 
-<p>Lastly, we set up the CTMC. This should also be familiar from the <a href="/tutorials/ctmc/">Nucleotide substitution Models</a>. 
+<p>Lastly, we set up the CTMC. This should also be familiar from the <a href="/tutorials/ctmc/">Nucleotide substitution models</a>. 
 We see some familiar pieces: the tree, Q-matrix and site rates.
 We also have two new keywords: data type and coding. The data type
 argument specifies the type of data - in our case, “Standard”, the
@@ -607,7 +607,7 @@ traits, we expect that it may be untrue for many others.</p>
 
 <p>RevBayes has functionality to allow us to relax this assumption. We do
 this by specifying a beta prior on state frequencies. Remember from the
-<a href="/tutorials/ctmc/">Nucleotide substitution Models</a> lesson that stationary frequencies impact how likely we are to see changes in a character. For example, it may be very likely, in a character, to change from 0 to 1. But if the frequency of 0 is very low, we will still seldom see this change.</p>
+<a href="/tutorials/ctmc/">Nucleotide substitution models</a> lesson that stationary frequencies impact how likely we are to see changes in a character. For example, it may be very likely, in a character, to change from 0 to 1. But if the frequency of 0 is very low, we will still seldom see this change.</p>
 
 <p>We can exploit the relationship between state frequencies and observed
 changes to allow for variable Q-matrices across characters (<a href="#morpho_graphical_model"></a>). To do this, we generate a beta distribution on state frequencies, and use the state frequencies from that distribution to generate a series of Q-matrices used to evaluate our data <a href="#Pagel2004">(Pagel and Meade 2004)</a>.</p>
