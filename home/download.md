@@ -5,25 +5,24 @@ subtitle: Download and Install RevBayes
 permalink: /download
 code_layout: bash
 ---
-## Download pre-compiled executables
-
-Mac and Windows users can download one of the compiled executables below:
-
 <div class="row">
 
 <div class="col-sm-4" align="center">
+<img src="{{ site.baseurl }}{% link assets/img/apple.png %}" alt="" width="100px" />
 <h2>Mac OS X</h2>
 <a href="https://github.com/revbayes/revbayes/releases/download/v1.0.12/RevBayes_OSX_v1.0.12.zip" class="btn btn-info" role="button">Download Executable (10.6+)</a>
 </div>
 
 <div class="col-sm-4" align="center">
+<img src="{{ site.baseurl }}{% link assets/img/windows.png %}" alt="" width="100px" />
 <h2>Windows</h2>
 <a href="https://github.com/revbayes/revbayes/releases/download/v1.0.10/RevBayes_Win_v1.0.10.zip" class="btn btn-info" role="button">Download Executable (7+)</a>
 </div>
 
 <div class="col-sm-4" align="center">
+<img src="{{ site.baseurl }}{% link assets/img/tux.png %}" alt="" width="100px" />
 <h2>Linux</h2>
-<p>Compile: see below.</p>
+<p>Compile from source</p>
 </div>
 
 </div>
@@ -33,8 +32,6 @@ Mac and Windows users can download one of the compiled executables below:
 
 ## Compiling from source
 ----
-
-Mac and Windows users do not need to compile RevBayes from source.  However, compiling RevBayes is relatively simple process.
 
 The standard way to build revbayes is to use `cmake`.  If you want to compile using `meson`, see [revbayes/projects/meson/README.md](https://github.com/revbayes/revbayes/blob/development/projects/meson/README.md).
 
