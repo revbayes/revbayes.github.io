@@ -150,6 +150,199 @@ brew install cmake
 
 <p><br /></p>
 
+<h3 id="windows-10">Windows 10</h3>
+
+<ol>
+  <li>
+    <p>Download and install 64-bit cygwin (setup-x86_64.exe). Make sure you include the following packages:</p>
+
+    <p>(Cygwin package versions are from when RevBayes 1.0.11 was compiled and newer versions may work, but see special version notes below)</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>package</th>
+          <th>version</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>cmake</td>
+          <td>3.6.2-1</td>
+        </tr>
+        <tr>
+          <td>cmake-debuginfo</td>
+          <td>3.6.2-1</td>
+        </tr>
+        <tr>
+          <td>cmake-doc</td>
+          <td>3.6.2-1</td>
+        </tr>
+        <tr>
+          <td>cmake-gui</td>
+          <td>3.6.2-1</td>
+        </tr>
+        <tr>
+          <td>git</td>
+          <td>2.17.0-1</td>
+        </tr>
+        <tr>
+          <td>make</td>
+          <td>4.2.1-2</td>
+        </tr>
+        <tr>
+          <td>mingw64-x86_64-boost</td>
+          <td>1.60.0-2</td>
+        </tr>
+        <tr>
+          <td>mingw64-x86_64-gcc-core</td>
+          <td>6.4.0-2</td>
+        </tr>
+        <tr>
+          <td>mingw64-x86_64-gcc-g++</td>
+          <td>6.4.0-2</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>For RevStudio you will also need:</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>package</th>
+          <th>version</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>mingw64-x86_64-atk1.0</td>
+          <td>2.26.1-1</td>
+        </tr>
+        <tr>
+          <td>mingw64-x86_64-bzip2</td>
+          <td>1.0.6-4</td>
+        </tr>
+        <tr>
+          <td>mingw64-x86_64-cairo</td>
+          <td>1.14.12-1</td>
+        </tr>
+        <tr>
+          <td>mingw64-x86_64-fribidi</td>
+          <td>0.19.7-1</td>
+        </tr>
+        <tr>
+          <td>mingw64-x86_64-gdk-pixbuf2.0</td>
+          <td>2.36.11-1</td>
+        </tr>
+        <tr>
+          <td>mingw64-x86_64-glib2.0</td>
+          <td>2.54.3-1</td>
+        </tr>
+        <tr>
+          <td>mingw64-x86_64-gtk2.0</td>
+          <td>2.24.31-1</td>
+        </tr>
+        <tr>
+          <td>mingw64-x86_64-gtkmm2.4</td>
+          <td>2.24.5-1</td>
+        </tr>
+        <tr>
+          <td>mingw64-x86_64-pango1.0</td>
+          <td>1.40.14-1</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p><strong>Notes about the versions:</strong></p>
+
+    <p>Boost and CMake:
+ It’s important that the version of Boost that you use be supported by the version of CMake that you use. At the time this was written (RevBayes v1.0.11) CMake 3.6 was the stable version in Cygwin, so mingw64-x86_64-boost had to be downgraded to 1.60.0-2</p>
+
+    <p>https://stackoverflow.com/questions/42123509/cmake-finds-boost-but-the-imported-targets-not-available-for-boost-version</p>
+
+    <p><strong>GCC/G++:</strong></p>
+
+    <p>The newest stable version in Cygwin is 7.4.0, but revbayes doesn’t seem to compile under it. Downgrade to 6.4.0 (important: mingw64-x86_64-gcc-core and mingw64-x86_64-gcc-g++ must be the same version or you will have a bad time)</p>
+  </li>
+  <li>
+    <p>Retrieve the RevBayes sources.</p>
+
+    <ol>
+      <li>Open a cygwin terminal window</li>
+      <li>Clone the git repository:
+        <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> git clone https://github.com/revbayes/revbayes.git revbayes-master
+</code></pre></div>        </div>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <p>Compile RevBayes.</p>
+
+    <ol>
+      <li>Open a cygwin terminal window and go to the RevBayes source directory if you haven’t already done so, e.g.,
+        <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> cd revbayes-master
+</code></pre></div>        </div>
+      </li>
+      <li>Next, go into the projects and then the cmake subdirectory:
+        <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> cd projects/cmake
+</code></pre></div>        </div>
+      </li>
+      <li>Now you can either build the standard version
+        <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> bash build-win.sh
+</code></pre></div>        </div>
+        <p>or the RevStudio version</p>
+        <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> bash build-win.sh -cmd true
+</code></pre></div>        </div>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <p>Library whack-a-mole</p>
+
+    <p>When you try to run the executable you will likely get an error about missing libraries.</p>
+
+    <p>Make a new directory and put the executable in it.</p>
+
+    <p>Then find the library from the error message in /usr/x86_64-w64-mingw32/sys-root/mingw/include/ and copy it to the directory you put the exectuable in. Repeat this until you stop getting error messages.</p>
+
+    <p>At the time this was written (RevBayes v1.0.11), this consisted of:</p>
+
+    <ul>
+      <li>iconv.dll</li>
+      <li>libatk-1.0-0.dll</li>
+      <li>libbz2-1.dll</li>
+      <li>libcairo-2.dll</li>
+      <li>libexpat-1.dll</li>
+      <li>libffi-6.dll</li>
+      <li>libfontconfig-1.dll</li>
+      <li>libfreetype-6.dll</li>
+      <li>libgcc_s_seh-1.dll</li>
+      <li>libgdk_pixbuf-2.0-0.dll</li>
+      <li>libgdk-win32-2.0-0.dll</li>
+      <li>libgio-2.0-0.dll</li>
+      <li>libglib-2.0-0.dll</li>
+      <li>libgmodule-2.0-0.dll</li>
+      <li>libgobject-2.0-0.dll</li>
+      <li>libgtk-win32-2.0-0.dll</li>
+      <li>libharfbuzz-0.dll</li>
+      <li>libintl-8.dll</li>
+      <li>libpango-1.0-0.dll</li>
+      <li>libpangocairo-1.0-0.dll</li>
+      <li>libpangoft2-1.0-0.dll</li>
+      <li>libpangowin32-1.0-0.dll</li>
+      <li>libpcre-1.dll</li>
+      <li>libpixman-1-0.dll</li>
+      <li>libpng16-16.dll</li>
+      <li>libstdc++-6.dll</li>
+      <li>libwinpthread-1.dll</li>
+      <li>zlib1.dll</li>
+    </ul>
+  </li>
+</ol>
+
+<p><br /></p>
+
 <h3 id="troubleshooting">Troubleshooting</h3>
 
 <ul>

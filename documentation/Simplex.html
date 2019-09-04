@@ -15,7 +15,7 @@
   </head>
   <body>
     <div class="container">
-      <nav class="navbar navbar-default">
+      <nav class="navbar navbar-default navbar-fixed-top">
   <div class="container-fluid">
     <div class="navbar-header">
       <a href="/" class="pull-left">
@@ -34,9 +34,10 @@
     </div>
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-        <li><a href="/software">Software</a></li>
+        <li><a href="/download">Download</a></li>
         <li><a href="/tutorials/">Tutorials</a></li>
         <li><a href="/documentation/">Documentation</a></li>
+        <li><a href="https://revbayes.github.io/revscripter/">RevScripter</a></li>
         <li><a href="/workshops/">Workshops</a></li>
         <li><a href="/jobs/">Jobs</a></li>
         <li><a href="/developer/">Developer</a></li>
@@ -1028,9 +1029,6 @@ $(":not(code).highlighter-rouge").each(function() {
 //   
 // });
 </script>
-
-<script src="/assets/js/base.js"></script>
-
 <script type="text/javascript"
     src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
     MathJax.Hub.Config({
@@ -1038,8 +1036,14 @@ $(":not(code).highlighter-rouge").each(function() {
       inlineMath: [['$','$'], ['\\(','\\)']],
       processEscapes: true
     }
-  });
+    });
+    MathJax.Hub.Queue(function () {
+      $(".aside").each(function() {
+          $("div .MathJax", this).hide();
+      });
+    });
 </script>
+<script src="/assets/js/base.js"></script>
 
   </body>
 </html>
