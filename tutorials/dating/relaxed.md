@@ -8,11 +8,8 @@ prerequisites:
 - intro
 include_all: false 
 include_files:
-- data/bears_cytb.nex
-- scripts/MCMC_dating_ex2.Rev
-- scripts/clock_global.Rev
-- scripts/sub_GTRG.Rev
-- scripts/tree_BD.Rev
+- scripts/clock_relaxed_exponential.Rev
+- scripts/clock_relaxed_lognormal.Rev
 
 index: false
 redirect: false
