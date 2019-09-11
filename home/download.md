@@ -16,7 +16,7 @@ code_layout: bash
 <div class="col-sm-4" align="center">
 <img src="{{ site.baseurl }}{% link assets/img/windows.png %}" alt="" width="100px" />
 <h2>Windows</h2>
-<a href="https://github.com/revbayes/revbayes/releases/download/v1.0.10/RevBayes_Win_v1.0.10.zip" class="btn btn-info" role="button">Download Executable (7+)</a>
+<a href="https://github.com/revbayes/revbayes/releases/download/v1.0.10/RevBayes_Win_v1.0.10.zip" class="btn btn-info" role="button">Download Executable (10)</a>
 </div>
 
 <div class="col-sm-4" align="center">
@@ -97,19 +97,19 @@ cd revbayes/projects/cmake
 
 1. Download and install 64-bit cygwin (setup-x86_64.exe). Make sure you include the following packages:
 
-    (Cygwin package versions are from when RevBayes 1.0.11 was compiled and newer versions may work, but see special version notes below)
+    (Cygwin package versions are from 9/2019. Newer versions may work, but see special version notes below)
 
-    | package                 | version  | 
-    |-------------------------|----------| 
-    | cmake                   | 3.6.2-1  | 
-    | cmake-debuginfo         | 3.6.2-1  | 
-    | cmake-doc               | 3.6.2-1  | 
-    | cmake-gui               | 3.6.2-1  | 
-    | git                     | 2.17.0-1 | 
-    | make                    | 4.2.1-2  | 
-    | mingw64-x86_64-boost    | 1.60.0-2 | 
-    | mingw64-x86_64-gcc-core | 6.4.0-2  | 
-    | mingw64-x86_64-gcc-g++  | 6.4.0-2  | 
+    | package                 | version   | 
+    |-------------------------|-----------| 
+    | cmake                   | 3.14.5-1  | 
+    | cmake-debuginfo         | 3.14.5-1  | 
+    | cmake-doc               | 3.14.5-1  | 
+    | cmake-gui               | 3.14.5-1  | 
+    | git                     | 2.21.0-1  | 
+    | make                    | 4.2.1-2   | 
+    | mingw64-x86_64-boost    | 1.66.0-1  | 
+    | mingw64-x86_64-gcc-core | 7.4.0-1   | 
+    | mingw64-x86_64-gcc-g++  | 7.4.0-1   | 
 
 
     For RevStudio you will also need:
@@ -129,14 +129,9 @@ cd revbayes/projects/cmake
 
     **Notes about the versions:**
 
-    Boost and CMake:
-    It's important that the version of Boost that you use be supported by the version of CMake that you use. At the time this was written (RevBayes v1.0.11) CMake 3.6 was the stable version in Cygwin, so mingw64-x86_64-boost had to be downgraded to 1.60.0-2
+    **Boost and CMake:**
 
-    https://stackoverflow.com/questions/42123509/cmake-finds-boost-but-the-imported-targets-not-available-for-boost-version
-
-    **GCC/G++:**
-
-    The newest stable version in Cygwin is 7.4.0, but revbayes doesn't seem to compile under it. Downgrade to 6.4.0 (important: mingw64-x86_64-gcc-core and mingw64-x86_64-gcc-g++ must be the same version or you will have a bad time)
+    It's important that the version of Boost that you use be supported by the version of CMake that you use. You can check this by going to the package source for the CMake version you're using e.g. [3.14.5](https://github.com/Kitware/CMake/blob/v3.14.5/Modules/FindBoost.cmake). Search for `_Boost_KNOWN_VERSIONS` and ensure your boost version appears in the list.
 
 2. Retrieve the RevBayes sources.
 
@@ -171,7 +166,7 @@ cd revbayes/projects/cmake
 
     Make a new directory and put the executable in it. 
 
-    Then find the library from the error message in /usr/x86_64-w64-mingw32/sys-root/mingw/include/ and copy it to the directory you put the exectuable in. Repeat this until you stop getting error messages. 
+    Then find the library from the error message in `/usr/x86_64-w64-mingw32/sys-root/mingw/bin/` and copy it to the directory you put the exectuable in. Repeat this until you stop getting error messages. 
 
     At the time this was written (RevBayes v1.0.11), this consisted of:
 
