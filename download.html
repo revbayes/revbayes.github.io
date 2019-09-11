@@ -69,7 +69,7 @@ Download and Install RevBayes
 <div class="col-sm-4" align="center">
 <img src="/assets/img/windows.png" alt="" width="100px" />
 <h2>Windows</h2>
-<a href="https://github.com/revbayes/revbayes/releases/download/v1.0.10/RevBayes_Win_v1.0.10.zip" class="btn btn-info" role="button">Download Executable (7+)</a>
+<a href="https://github.com/revbayes/revbayes/releases/download/v1.0.10/RevBayes_Win_v1.0.10.zip" class="btn btn-info" role="button">Download Executable (10)</a>
 </div>
 
 <div class="col-sm-4" align="center">
@@ -156,7 +156,7 @@ brew install cmake
   <li>
     <p>Download and install 64-bit cygwin (setup-x86_64.exe). Make sure you include the following packages:</p>
 
-    <p>(Cygwin package versions are from when RevBayes 1.0.11 was compiled and newer versions may work, but see special version notes below)</p>
+    <p>(Cygwin package versions are from 9/2019. Newer versions may work, but see special version notes below)</p>
 
     <table>
       <thead>
@@ -168,23 +168,23 @@ brew install cmake
       <tbody>
         <tr>
           <td>cmake</td>
-          <td>3.6.2-1</td>
+          <td>3.14.5-1</td>
         </tr>
         <tr>
           <td>cmake-debuginfo</td>
-          <td>3.6.2-1</td>
+          <td>3.14.5-1</td>
         </tr>
         <tr>
           <td>cmake-doc</td>
-          <td>3.6.2-1</td>
+          <td>3.14.5-1</td>
         </tr>
         <tr>
           <td>cmake-gui</td>
-          <td>3.6.2-1</td>
+          <td>3.14.5-1</td>
         </tr>
         <tr>
           <td>git</td>
-          <td>2.17.0-1</td>
+          <td>2.21.0-1</td>
         </tr>
         <tr>
           <td>make</td>
@@ -192,15 +192,15 @@ brew install cmake
         </tr>
         <tr>
           <td>mingw64-x86_64-boost</td>
-          <td>1.60.0-2</td>
+          <td>1.66.0-1</td>
         </tr>
         <tr>
           <td>mingw64-x86_64-gcc-core</td>
-          <td>6.4.0-2</td>
+          <td>7.4.0-1</td>
         </tr>
         <tr>
           <td>mingw64-x86_64-gcc-g++</td>
-          <td>6.4.0-2</td>
+          <td>7.4.0-1</td>
         </tr>
       </tbody>
     </table>
@@ -256,14 +256,9 @@ brew install cmake
 
     <p><strong>Notes about the versions:</strong></p>
 
-    <p>Boost and CMake:
- It’s important that the version of Boost that you use be supported by the version of CMake that you use. At the time this was written (RevBayes v1.0.11) CMake 3.6 was the stable version in Cygwin, so mingw64-x86_64-boost had to be downgraded to 1.60.0-2</p>
+    <p><strong>Boost and CMake:</strong></p>
 
-    <p>https://stackoverflow.com/questions/42123509/cmake-finds-boost-but-the-imported-targets-not-available-for-boost-version</p>
-
-    <p><strong>GCC/G++:</strong></p>
-
-    <p>The newest stable version in Cygwin is 7.4.0, but revbayes doesn’t seem to compile under it. Downgrade to 6.4.0 (important: mingw64-x86_64-gcc-core and mingw64-x86_64-gcc-g++ must be the same version or you will have a bad time)</p>
+    <p>It’s important that the version of Boost that you use be supported by the version of CMake that you use. You can check this by going to the package source for the CMake version you’re using e.g. <a href="https://github.com/Kitware/CMake/blob/v3.14.5/Modules/FindBoost.cmake">3.14.5</a>. Search for <code class="highlighter-rouge">_Boost_KNOWN_VERSIONS</code> and ensure your boost version appears in the list.</p>
   </li>
   <li>
     <p>Retrieve the RevBayes sources.</p>
@@ -304,7 +299,7 @@ brew install cmake
 
     <p>Make a new directory and put the executable in it.</p>
 
-    <p>Then find the library from the error message in /usr/x86_64-w64-mingw32/sys-root/mingw/include/ and copy it to the directory you put the exectuable in. Repeat this until you stop getting error messages.</p>
+    <p>Then find the library from the error message in <code class="highlighter-rouge">/usr/x86_64-w64-mingw32/sys-root/mingw/bin/</code> and copy it to the directory you put the exectuable in. Repeat this until you stop getting error messages.</p>
 
     <p>At the time this was written (RevBayes v1.0.11), this consisted of:</p>
 
