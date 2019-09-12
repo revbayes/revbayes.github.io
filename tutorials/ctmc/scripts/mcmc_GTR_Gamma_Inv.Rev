@@ -48,10 +48,9 @@ Q := fnGTR(er,pi)
 #############################
 
 # among site rate variation, +Gamma4
-alpha ~ dnUniform( 0, 1E8 )
-alpha.setValue( 1.0 )
+alpha ~ dnUniform( 0, 10 )
 sr := fnDiscretizeGamma( alpha, alpha, 4, false )
-moves.append( mvScale(alpha, lambda=1.0, weight=2.0) )
+moves.append( mvScale(alpha, weight=2.0) )
 
 
 # the probability of a site being invariable, +I
@@ -100,17 +99,17 @@ seq.clamp(data)
 mymodel = model(psi)
 
 # add monitors
-monitors.append( mnScreen(alpha, p_inv, TL, printgen=1000) )
+monitors.append( mnScreen(alpha, p_inv, TL, printgen=100) )
 monitors.append( mnFile(psi, filename="output/primates_cytb_GTRGI.trees", printgen=10) )
 monitors.append( mnModel(filename="output/primates_cytb_GTRGI.log", printgen=10) )
 
 # run the analysis
-mymcmc = mcmc(mymodel, moves, monitors, nruns=2, combine="mixed")
-mymcmc.run(generations=20000,tuningInterval=200)
+mymcmc = mcmc(mymodel, moves, monitors)
+mymcmc.run(generations=10000)
 
 
 # summarize output
-treetrace = readTreeTrace("output/primates_cytb_GTRGI.trees", treetype="non-clock", outgroup=out_group)
+treetrace = readTreeTrace("output/primates_cytb_GTRGI.trees", treetype="non-clock")
 # and then get the MAP tree
 map_tree = mapTree(treetrace,"output/primates_cytb_GTRGI_MAP.tre")
 

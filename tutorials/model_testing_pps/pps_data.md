@@ -159,8 +159,8 @@ output files, so make sure it’s something clear and easy to understand.
 Now specify and read in the input file. This is your sequence alignment
 in NEXUS format.
 ```
-    in_file = "data/primates_and_galeopterus_cytb.nex"
-    data <- readDiscreteCharacterData(in_file)
+    inFile = "data/primates_and_galeopterus_cytb.nex"
+    data <- readDiscreteCharacterData(inFile)
 ```
 
 
@@ -280,7 +280,7 @@ what is occurring.
 First, we read in the trace file of the Posterior Distribution of
 Variables.
 ```
-    trace = readStochasticVariableTrace("output" + "/" + analysis_name + "_posterior.var", delimiter=TAB)
+    trace = readStochasticVariableTrace("output_" + model_name + "/" + analysis_name + "_posterior.var", delimiter=TAB)
 ```
 Now we call the **posteriorPredictiveSimulation()** function, which
 accepts any valid model of sequence evolution, and output directory, and
@@ -360,10 +360,10 @@ calculate a posterior predictive *P*value for each of the test
 statistics of interest. This is done in the
 **data_pp_analysis_JC.Rev** with the following lines :
 ```
-    emp_pps_file = "results_" + model_name + "/empirical_data_" + analysis_name + ".tsv"
-    sim_pps_file = "results_" + model_name + "/simulated_data_" + analysis_name + ".tsv"
-    outfileName = "results_" + model_name + "/data_pvalues_effectsizes_" + analysis_name + ".tsv"
-    source("scripts/PosteriorPredictive_PValues.Rev")
+    emp_pps_file = "results_" + model_name + "/empirical_data_" + analysis_name + ".csv"
+    sim_pps_file = "results_" + model_name + "/simulated_data_" + analysis_name + ".csv"
+    outfileName = "results_" + model_name + "/data_pvalues_effectsizes_" + analysis_name + ".csv"
+    source("scripts/pps_PValues.Rev")
 ```
 The 4 posterior predictive *P*-values currently calculated by ‘RevBayes‘
 are:
@@ -447,8 +447,8 @@ calculates the effect size of a given test statistic.
 {% section Viewing the Results %}
 
 Once execution of the script is complete, you should see a new
-directory, names **results_JC**. In this folder there should be 3
-files. Each of these is a simple tab-delimited (TSV) file containing the
+directory, named **results_JC**. In this folder there should be 3
+files. Each of these is a simple comma-delimited (csv) file containing the
 test statistic calculation output.
 
 -   empirical_pps_example.csv
@@ -485,7 +485,7 @@ low number of generations will still detect poor fit.
 
 You can also use `R`to plot the results. Run the
 `R`script **scripts/plot_results.R**. This will generate a
-pdf plot for every test statistic.
+pdf plot for every test statistic. See {% ref pps_mean_gc %} and its legend to learn how to interpret these plots.
 
 
 

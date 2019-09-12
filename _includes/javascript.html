@@ -20,9 +20,6 @@ $(":not(code).highlighter-rouge").each(function() {
 //   {% endif %}
 // });
 </script>
-
-<script src="{{ site.baseurl }}{% link assets/js/base.js %}"></script>
-
 <script type="text/javascript"
     src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
     MathJax.Hub.Config({
@@ -30,5 +27,11 @@ $(":not(code).highlighter-rouge").each(function() {
       inlineMath: [['$','$'], ['\\(','\\)']],
       processEscapes: true
     }
-  });
+    });
+    MathJax.Hub.Queue(function () {
+      $(".aside").each(function() {
+          $("div .MathJax", this).hide();
+      });
+    });
 </script>
+<script src="{{ site.baseurl }}{% link assets/js/base.js %}"></script>

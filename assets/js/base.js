@@ -58,12 +58,13 @@ $(".aside").click(function(event) {
                || $(event.target).filter(".fold-unfold").size() > 0;
     if (trigger) {
         $(">*:not(h2:first)", this).toggle(400);
+        $("div .MathJax", this).toggle(400);
         $(" span.fold-unfold", this).toggleClass("glyphicon-chevron-right glyphicon-chevron-down");
         event.stopPropagation();
     }
 });
 $(".aside").each(function() {
-    $(">*:not(h2:first)", this).toggle();
+    $(">*:not(h2:first)", this).hide();
     var h2 = $("h2:first", this);
     h2.prepend("<span class='fold-unfold glyphicon glyphicon-chevron-right'></span>");
 });

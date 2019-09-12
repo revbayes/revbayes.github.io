@@ -1,5 +1,5 @@
 ---
-title: Substitution Models
+title: Nucleotide substitution models
 subtitle: Phylogenetic inference of nucleotide data using RevBayes
 authors:  Sebastian Höhna, Michael Landis, Brian Moore and Tracy Heath
 level: 2
@@ -501,7 +501,7 @@ Finally, create a screen monitor that will report the states of
 specified variables to the screen with `mnScreen`:
 
 ```
-monitors.append( mnScreen(printgen=1000, TL) )
+monitors.append( mnScreen(printgen=100, TL) )
 ```
 
 This monitor mostly helps us to see the progress of the MCMC run.
@@ -514,14 +514,20 @@ proportion to their posterior probability. The `mcmc()` function will
 create our MCMC object:
 
 ```
+mymcmc = mcmc(mymodel, monitors, moves)
+```
+{% comment %}
+```
 mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
 ```
 
 Notice that we also specified `nruns=2` which means that RevBayes will automatically run 2 independent MCMC runs. 
-You will find that the output is created in two files with extension `_run_1` and `_run_2` for each replicate and additionally the samples from both runs are combined into one file for more convenient post-processing. 
+You will find that the output is created in two files with extension `_run_1` and `_run_2` for each replicate and additionally the samples from both runs are combined into one file for more convenient post-processing.
+{% endcomment %}
+
 Now, run the MCMC:
 ```
-mymcmc.run(generations=20000)
+mymcmc.run(generations=10000)
 ```
 
 When the analysis is complete, you will have the monitored files in your output directory.
@@ -555,7 +561,7 @@ distribution. RevBayes can summarize the sampled trees by reading in
 the tree-trace file:
 
 ```
-treetrace = readTreeTrace("output/primates_cytb_JC.trees", treetype="non-clock", outgroup=out_group)
+treetrace = readTreeTrace("output/primates_cytb_JC.trees", treetype="non-clock")
 ```
 
 
@@ -569,7 +575,7 @@ map_tree = mapTree(treetrace,"output/primates_cytb_JC_MAP.tree")
 {% figure jc_tree %}
 <img src="figures/primates_cytb_JC_tree.png" width="800" /> 
 {% figcaption %}
-Maximum a posteriori estimate of the primate phylogeny under a Jukes-Cantor substitution model. The numbers at the nodes show the posterior probabilities for the clades.We have rooted the tree at the outgroup *Galeopterus_variegatus*
+Maximum a posteriori estimate of the primate phylogeny under a Jukes-Cantor substitution model. The numbers at the nodes show the posterior probabilities for the clades. We have rooted the tree at the outgroup *Galeopterus_variegatus*
 {% endfigcaption %}
 {% endfigure %}
 
@@ -888,7 +894,7 @@ The probability density of mean-one gamma-distributed rates for different values
 {% endfigure %}
 
 We typically lack prior knowledge regarding the degree of ASRV for a given alignment. 
-Accordingly, rather than specifying a precise value of $\alpha$, we can instead estimate the value of the $\alpha$-shape parameter from the data. This requires that we specify a diffuse (relatively ['uninformative'](http://andrewgelman.com/2013/11/21/hidden-dangers-noninformative-priors/)) prior on the $\alpha$-shape parameter. For this analysis, we will use a lognormal distribution with a mean parameter, `alpha_prior_mean`, equal to `5.0`, and standard deviation, `alpha_prior_sd`, equal to 0.587405 (thus, 95% of the prior density spans exactly one order of magnitude).
+Accordingly, rather than specifying a precise value of $\alpha$, we can instead estimate the value of the $\alpha$-shape parameter from the data. This requires that we specify a diffuse (relatively ['uninformative'](http://andrewgelman.com/2013/11/21/hidden-dangers-noninformative-priors/)) prior on the $\alpha$-shape parameter. For this analysis, we will use a uniform distribution between 0 and 10.
 
 This approach for accommodating ASRV is another example of a hierarchical model ({% ref fig_gtrg %}). 
 That is, variation in substitution rates across sites is addressed by applying a site-specific rate multiplier to each of the $j$ sites, $r_j$. 
@@ -903,6 +909,14 @@ Graphical model representation of the General Time Reversible (GTR) + Gamma phyl
 
 {% subsubsection Setting up the Gamma Model in RevBayes %}
 
+Then create a stochastic node called `alpha` with a uniform prior distribution between 0.0 and $10$
+(this represents the stochastic node for the $\alpha$-shape parameter in
+{% ref fig_gtrg %}):
+
+```
+alpha ~ dnUniform( 0.0, 10 )
+```
+{% comment %}
 Then create a stochastic node called `alpha` with a uniform prior distribution between 0.0 and $10^8$
 (this represents the stochastic node for the $\alpha$-shape parameter in
 {% ref fig_gtrg %}):
@@ -914,13 +928,14 @@ alpha.setValue(1.0)
 Note that we initialized the value of `alpha` to $1.0$. This is strictly speaking not necessary but helps tremendously the MCMC to converge.
 As a general rule, it is possible to initialize starting values for the MCMC using the *setValue( xx )* function, which is available for every stochastic variable,
 but it might also make your replicated MCMC runs to be more likely to get stuck in the same local area of parameters.
+{% endcomment %}
 
 The way the ASRV model is implemented involves discretizing the mean-one gamma distribution into a set number of rate categories, $k$. Thus, we can analytically marginalize over the uncertainty in the rate at each site. The likelihood of each site is averaged over the $k$ rate categories, where the rate multiplier is the mean (or median) of each of the discrete $k$ categories. To specify this, we need a deterministic node that is a vector that will hold the set of $k$ rates drawn from the gamma distribution with $k$ rate categories. The `fnDiscretizeGamma()` function returns this deterministic node and takes three arguments: the shape and rate of the gamma distribution and the number of categories. Since we want to discretize a mean-one gamma distribution, we can pass in `alpha` for both the shape and rate.
 
-Initialize the `gamma_rates` deterministic node vector using the `fnDiscretizeGamma()` function with `4` bins:
+Initialize the `sr` deterministic node vector using the `fnDiscretizeGamma()` function with `4` bins:
 
 ```
-gamma_rates := fnDiscretizeGamma( alpha, alpha, 4 )
+sr := fnDiscretizeGamma( alpha, alpha, 4 )
 ```
 
 Note that here, by convention, we set $k = 4$. The random variable that controls the rate variation is the stochastic node `alpha`. We will apply a simple scale move to this parameter.
@@ -932,7 +947,7 @@ moves.append( mvScale(alpha, weight=2.0) )
 Remember that you need to call the `PhyloCTMC` constructor to include the new site-rate parameter:
 
 ```
-seq ~ dnPhyloCTMC(tree=psi, Q=Q, siteRates=gamma_rates, type="DNA")
+seq ~ dnPhyloCTMC(tree=psi, Q=Q, siteRates=sr, type="DNA")
 ```
 
 {% subsection Exercise 4 %}
@@ -951,7 +966,7 @@ seq ~ dnPhyloCTMC(tree=psi, Q=Q, siteRates=gamma_rates, type="DNA")
 
 All of the substitution models described so far assume that the sequence data are potentially variable. That is, we assume that the sequence data are random variables; specifically, we assume that they are realizations of the specified `PhyloCTMC` distribution. However, some sites may not be free to vary—when the substitution rate of a site is zero, it is said to be *invariable*. Invariable sites are often confused with *invariant* sites—when each species exhibits the same state, it is said to be invariant. The concepts are related but distinct. If a site is truly invariable, it will necessarily give rise to an invariant site pattern, as such sites will always have a zero substitution rate. However, an invariant site pattern may be achieved via multiple substitutions that happen to end in the same state for every species.
 
-Here we describe an extension to our phylogenetic model to accommodate invariable sites. Under the invariable-sites model {% cite Hasegawa1985 %}, each site is invariable with probability `pinvar`, and variable with probability $1-$`pinvar`.
+Here we describe an extension to our phylogenetic model to accommodate invariable sites. Under the invariable-sites model {% cite Hasegawa1985 %}, each site is invariable with probability `p_inv`, and variable with probability $1-$`p_inv`.
 
 First, let’s have a look at the data and see how many invariant sites we have:
 
@@ -964,7 +979,7 @@ There seem to be a substantial number of invariant sites.
 Now let’s specify the invariable-sites model in RevBayes. We need to specify the prior probability that a site is invariable. A Beta distribution is a common choice for parameters representing probabilities.
 
 ```
-pinvar ~ dnBeta(1,1)
+p_inv ~ dnBeta(1,1)
 ```
 
 The `Beta(1,1)` distribution is a flat prior distribution that specifies equal probability for all values between 0 and 1.
@@ -972,14 +987,14 @@ The `Beta(1,1)` distribution is a flat prior distribution that specifies equal p
 Then, as usual, we add a move to change this stochastic variable; we’ll use a simple sliding window move.
 
 ```
-moves.append( mvSlide(pinvar) )
+moves.append( mvSlide(p_inv) )
 ```
 
 Finally, you need to call the `PhyloCTMC` constructor to include the
-new `pinvar` parameter:
+new `p_inv` parameter:
 
 ```
-seq ~ dnPhyloCTMC(tree=psi, Q=Q, siteRates=gamma_rates, pInv=pinvar, type="DNA")
+seq ~ dnPhyloCTMC(tree=psi, Q=Q, siteRates=sr, pInv=p_inv, type="DNA")
 ```
 
 {% subsection Exercise 5 %}

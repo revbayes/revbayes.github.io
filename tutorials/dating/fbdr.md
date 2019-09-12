@@ -8,12 +8,7 @@ prerequisites:
 - intro
 include_all: false 
 include_files:
-- data/bears_cytb.nex
-- data/bears_taxa.tsv
-- scripts/MCMC_dating_ex4.Rev
-- scripts/clock_relaxed_lognormal.Rev
-- scripts/sub_GTRG.Rev
-- scripts/tree_BD.Rev
+- scripts/tree_FBD.Rev
 index: false
 redirect: false
 ---
