@@ -5,11 +5,9 @@ authors:  John Huelsenbeck and Sebastian Höhna
 level: 2
 prerequisites:
 - intro
-- intro_rev
-- mcmc_archery
-- mcmc_binomial
+- mcmc
 order: 0
-index: true
+index: false
 redirect: false
 ---
 

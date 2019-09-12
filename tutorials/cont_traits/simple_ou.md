@@ -2,13 +2,11 @@
 title: Simple Ornstein-Uhlenbeck Models
 subtitle: Estimating optima under Ornstein-Uhlenbeck evolution
 authors: Michael R. May
-level: 5
+level: 6
 order: 6
 prerequisites:
 - intro
-- intro_rev
-- mcmc_archery
-- mcmc_binomial
+- mcmc
 - cont_traits/cont_trait_intro
 index: true
 redirect: false

@@ -2,11 +2,12 @@
 title: Diversification Rate Estimation with Missing Taxa
 subtitle: How to estimate diversification rates with incomplete taxon sampling
 authors:  Sebastian Höhna, Will Freyman and Mike May
-level: 4
+level: 5
 order: 5
 index: true
 prerequisites:
 - intro
+- mcmc
 - divrate/div_rate_intro
 title-old: RB_DiversificationRate_Sampling_Tutorial
 redirect: false

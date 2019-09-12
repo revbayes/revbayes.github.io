@@ -2,13 +2,11 @@
 title: Model averaging of substitution models
 subtitle: Reversible-jump MCMC over substitution models
 authors:  Mike May and Sebastian Höhna
-level: 1
-order: 2
+level: 2
+order: 0.3
 prerequisites:
 - intro
-- intro_rev
-- mcmc_archery
-- mcmc_binomial
+- mcmc
 - bf_intro
 - bf_subst_model
 exclude_files: 

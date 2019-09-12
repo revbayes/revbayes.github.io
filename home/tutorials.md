@@ -4,7 +4,8 @@ title: Tutorials
 subtitle: RevBayes Tutorials
 permalink: /tutorials/
 levels:
-- Introduction to RevBayes and MCMC
+- Introduction to RevBayes
+- Introduction to MCMC
 - Model Selection and Testing
 - Standard tree inference
 - Complex hierarchical models for phylogenetic inference
@@ -13,6 +14,7 @@ levels:
 - Biogeography
 levels_id:
 - intro
+- mcmc
 - model_test
 - phylo_basic
 - phylo_complex

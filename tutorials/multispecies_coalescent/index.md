@@ -5,7 +5,7 @@ authors:  Bastien Boussau and Sebastian H&#246;hna
 level: 2
 prerequisites:
 - intro
-index: true
+index: false
 title-old: RB_MultispeciesCoalescent_Tutorial
 redirect: true
 ---

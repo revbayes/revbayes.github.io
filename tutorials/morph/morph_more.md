@@ -5,9 +5,7 @@ authors:  Sebastian Höhna, Will Freyman, April M. Wright and Michael J. Landis
 level: 2
 prerequisites:
 - intro
-- intro_rev
-- mcmc_archery
-- mcmc_binomial
+- mcmc
 - ctmc
 - morph
 exclude_files: 

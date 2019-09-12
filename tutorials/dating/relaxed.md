@@ -5,7 +5,7 @@ authors:  Rachel Warnock, Sebastian Höhna, Tracy Heath, April  Wright and Walke
 level: 2
 order: 0.52
 prerequisites:
-- intro
+- dating/global
 include_all: false 
 include_files:
 - scripts/clock_relaxed_exponential.Rev

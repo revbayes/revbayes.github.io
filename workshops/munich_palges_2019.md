@@ -1,7 +1,7 @@
 ---
 layout: workshop
 title: Bayesian phylogenetics and macroevolution in RevBayes
-location: Museum of Paleontology, LMU Munich, Germany
+location: Room D114, Museum of Paleontology, Richard-Wagner Str 10, LMU Munich, Germany
 startdate: 2019-10-17
 enddate: 2019-10-17
 description: 
@@ -11,7 +11,7 @@ description:
 
 - It is recommended that you review the <i>Pre-workshop Materials</i> listed below if you do not already have a strong understanding of likelihood-based phylogenetics, probability, and Bayesian inference. These video lectures are by <a href="https://phylogeny.uconn.edu/">Paul Lewis</a> and provide a clear overview of these topics. Additionally, a list of papers describing RevBayes and graphical models is provided as suggested background reading.
 
-venue: Museum of Paleontology, LMU Munich, Germany
+venue: Room D114, Museum of Paleontology, Richard-Wagner Str 10, LMU Munich, Germany
 
 instructors:
 - <a href="http://hoehna.org/">Sebastian Höhna</a>
@@ -29,6 +29,9 @@ prerequisites:
 - Paul Lewis's Primer on Phylogenetics Part 2 - <a href="https://youtu.be/UsLeY0wZr4Y">Substitution Models</a>
 - Paul Lewis's Primer on Phylogenetics Part 3a - <a href="https://youtu.be/4PWlnNsfz90">Bayesian Statistics & MCMC</a>
 - Paul Lewis's Primer on Phylogenetics Part 3b - <a href="https://youtu.be/TLtOS--YwkU">Bayesian Phylogenetics</a>
+- <a href="https://revbayes.github.io/tutorials/intro/">Getting started with <b><i>RevBayes</i></b>.</a>
+- <a href="https://revbayes.github.io/tutorials/intro/">An introductory tutorial to <b>RevBayes and the RevLanguage</b>.</a>
+- <a href="https://revbayes.github.io/tutorials/intro/">An introductory tutorial to <b>graphical models</b>.</a>
 
 papers:
 - <a href="https://academic.oup.com/sysbio/article/63/5/753/2847897">Höhna et al. (2014). Probabilistic Graphical Model Representation in Phylogenetics.</a>
@@ -81,7 +84,9 @@ schedule:
     topic: "Total-Evidence Analysis"
     material: <a href="">Lecture slides</a>
     tutorials: dating/tefbd
-    instructors: "&#x1F468;&#x200D;&#x1F3EB;"
+    instructors: 
+     - "&#x1F469;&#x1F3FB;&#x200D;&#x1F3EB;"
+     - "&#x1F468;&#x200D;&#x1F3EB;"
 
 ---
 

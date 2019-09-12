@@ -2,13 +2,11 @@
 title: Introduction to Diversification Rate Estimation
 subtitle: Overview of Analyses, Models and Theory 
 authors:  Sebastian Höhna
-level: 4
+level: 5
 order: 0
 prerequisites:
 - intro
-- intro_rev
-- mcmc_archery
-- mcmc_binomial
+- mcmc
 index: true
 title-old: RB_DiversificationRate_Tutorial
 redirect: false

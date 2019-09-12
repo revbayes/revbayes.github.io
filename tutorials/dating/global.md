@@ -5,7 +5,7 @@ authors:  Rachel Warnock, Sebastian Höhna, Tracy Heath, April  Wright and Walke
 level: 2
 order: 0.51
 prerequisites:
-- intro
+- dating
 include_all: false 
 include_files:
 - data/bears_cytb.nex
@@ -90,7 +90,7 @@ The rate parameters for extinction and speciation are both positive, real number
 moves.append( mvScale(speciation_rate, lambda=0.5, tune=true, weight=3.0) )
 moves.append( mvScale(extinction_rate, lambda=0.5, tune=true, weight=3.0) )
 ```
-The `weight` option allows you to indicate how many times you would like a given move to be performed at each MCMC cycle. In this tutorial we will run our MCMC for this tutorial will be to execute a *schedule* of moves at each step in our chain instead of just one move per step. Here, if we were to run our MCMC with our current vector of 6 moves, then our move schedule would perform 6 moves at each cycle. Within a cycle, an individual move is chosen from the move list in proportion to its weight. Therefore, with all six moves assigned `weight=1`, each has an equal probability of being executed and will be performed on average one time per MCMC cycle. For more information on moves and how they are performed in RevBayes, please refer to the {% page_ref mcmc_binomial %} and {% page_ref ctmc %} tutorials.
+The `weight` option allows you to indicate how many times you would like a given move to be performed at each MCMC cycle. In this tutorial we will run our MCMC for this tutorial will be to execute a *schedule* of moves at each step in our chain instead of just one move per step. Here, if we were to run our MCMC with our current vector of 6 moves, then our move schedule would perform 6 moves at each cycle. Within a cycle, an individual move is chosen from the move list in proportion to its weight. Therefore, with all six moves assigned `weight=1`, each has an equal probability of being executed and will be performed on average one time per MCMC cycle. For more information on moves and how they are performed in RevBayes, please refer to the {% page_ref mcmc %} and {% page_ref ctmc %} tutorials.
 
 In addition to the speciation ($\lambda$) and extinction ($\mu$) rates, we may also be interested in inferring diversification ($\lambda - \mu$) and turnover ($\mu/\lambda$). Since these parameters can be expressed as a deterministic transformation of the speciation and extinction rates, we can monitor (that is, track the values of these parameters, and print them to a file) their values by creating two deterministic nodes using the `:=` operator.
 ```

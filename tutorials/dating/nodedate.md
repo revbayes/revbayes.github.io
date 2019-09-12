@@ -5,7 +5,7 @@ authors:  Rachel Warnock, Sebastian Höhna, Tracy Heath, April  Wright and Walke
 level: 2
 order: 0.53
 prerequisites:
-- intro
+- dating/relaxed
 include_all: false 
 include_files:
 - data/bears_taxa.tsv

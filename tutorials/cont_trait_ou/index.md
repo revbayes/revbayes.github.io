@@ -5,7 +5,7 @@ authors:  Sebastian Höhna
 level: 2
 prerequisites:
 - intro
-index: true
+index: false
 title-old: RB_PhyloComparativeAdvanced_Tutorial
 redirect: true
 ---

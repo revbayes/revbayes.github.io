@@ -2,12 +2,12 @@
 title: Introduction to MCMC using RevBayes
 subtitle: A simple Archery example for building a hierarchical model and sampling under Markov Chain Monte Carlo
 authors:  Wade Dismukes, Tracy A. Heath, Walker Pett
-level: 0
-order: 1
+level: 1
+order: 0.3
+include_all: false
 prerequisites:
 - intro
 index: true
-title-old: RB_MCMC_Archery_Tutorial
 redirect: false
 ---
 

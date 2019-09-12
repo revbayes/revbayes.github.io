@@ -2,34 +2,13 @@
 title: General Introduction to Model selection
 subtitle: Comparing relative model fit with Bayes factors
 authors:  Sebastian Höhna, Michael J Landis, Tracy A Heath and Brian R Moore
-level: 1
+level: 2
 order: 0
 prerequisites:
 - intro
-- intro_rev
-- mcmc_archery
-- mcmc_binomial
-exclude_files: 
-- data/primates_and_galeopterus_cox2.nex
-- data/primates_and_galeopterus_cytb.nex
-- data/fagus_ITS.nex
-- data/fagus_matK.nex
-- data/fagus_rbcL.nex
-- data/sim_locus1.nex
-- data/sim_locus2.nex
-- data/sim_locus3.nex
-- data/sim_locus4.nex
-- scripts/ml_Partition_model.Bodega.Rev
-- scripts/marginal_likelihood_GTR_Gamma_inv.Rev
-- scripts/marginal_likelihood_JC.Rev
-- scripts/marginal_likelihood_partition_1.Rev
-- scripts/marginal_likelihood_partition_2.Rev
-- scripts/marginal_likelihood_partition_3.Rev
-- scripts/marginal_likelihood_partition_4.Rev
-- scripts/marginal_likelihood_partition_5.Rev
-- scripts/model_average_primates_cytb.Rev
+- mcmc
+include_all: false
 index: true
-title-old: RB_BayesFactor_Tutorial
 redirect: false
 ---
 

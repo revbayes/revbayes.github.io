@@ -6,6 +6,7 @@ level: 2
 order: 1
 prerequisites:
 - intro
+- mcmc
 - ctmc
 index: true
 title-old: RB_Partition_Tutorial

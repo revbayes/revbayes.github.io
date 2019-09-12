@@ -2,13 +2,11 @@
 title: State-Dependent Brownian Rate Estimation
 subtitle: Estimating state-dependent rates of Brownian-motion evolution
 authors: Michael R. May
-level: 5
+level: 6
 order: 4
 prerequisites:
 - intro
-- intro_rev
-- mcmc_archery
-- mcmc_binomial
+- mcmc
 - cont_traits/cont_trait_intro
 - cont_traits/simple_bm
 index: true

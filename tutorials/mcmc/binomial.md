@@ -2,12 +2,14 @@
 title: Introduction to MCMC using RevBayes
 subtitle: Introduction to MCMC Simulation using a simple Binomial Model
 authors:  Mike May, Brian Moore and Sebastian H&#246;hna
-level: 0
-order: 1
+level: 1
+order: 0.2
 index: true
+include_all: false
+include_files:
+- scripts/mh_algorithm.Rev
 prerequisites:
 - intro
-title-old: RB_MCMC_Binomial_Tutorial
 redirect: true
 ---
 

@@ -2,10 +2,11 @@
 title: Understanding Continuous-Time Markov Models
 subtitle: Simulating DNA sequence evolution with a die
 authors:  John Huelsenbeck
-level: 0
-order: 2
+level: 3
+order: 0.1
 index: true
 prerequisites:
+- intro
 redirect: true
 ---
 

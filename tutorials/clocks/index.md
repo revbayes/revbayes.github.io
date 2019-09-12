@@ -4,9 +4,8 @@ subtitle: Comparing relaxed clock models & estimating rooted time trees
 authors:  Tracy A. Heath
 level: 2
 prerequisites:
-- intro_rev
-- mcmc_archery
-- mcmc_binomial
+- intro
+- mcmc
 - ctmc
 order: 1
 index: true

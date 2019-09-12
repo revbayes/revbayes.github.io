@@ -5,7 +5,7 @@ authors:  Nicolas Lartillot and Sebastian Höhna
 level: 5
 prerequisites:
 - intro
-index: true
+index: false
 title-old: RB_PhyloComparative_Tutorial
 redirect: true
 ---
