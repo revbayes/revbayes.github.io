@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: Rev Language Syntax</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
+      </a>
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/download">Download</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/documentation/">Documentation</a></li>
+        <li><a href="https://revbayes.github.io/revscripter/">RevScripter</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/jobs/">Jobs</a></li>
+        <li><a href="/developer/">Developer</a></li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <div class="titlebar">
+	<h1 class="maintitle">Rev Language Syntax</h1>
+	<h3 class="subtitle">A very short introduction to the Rev language</h3>
+	<h4 class="authors">Mike May and Sebastian Höhna</h4>
+  <h5>Last modified on September 12, 2019</h5>
+</div>
+
+
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul>
+          <li>None</li>
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+
+
+
+
+</div>
+<h1 class="section" id="basic-rev-commands">Basic Rev Commands</h1>
+
+<p>This tutorial demonstrates the basic syntactical features of RevBayes
+and the Rev scripting language. A good reference for probabilistic graphical models for
+Bayesian phylogenetic inference is given in <a href="#Hoehna2014b">(Höhna et al. 2014)</a>. Let’s start with the basic concepts
+for the interactive use of RevBayes with Rev (the language of
+RevBayes). You should try to execute the statements step by step, look
+at the output and try to understand what and why things are happening.</p>
+
+<p>First, open up your terminal and type RevBayes. This should launch RevBayes and give you
+a command prompt (the <code class="highlighter-rouge">&gt;</code> character). This means RevBayes is waiting for input.</p>
+
+<p><img src="figures/terminal.png" alt="image" /></p>
+
+<h2 class="subsection" id="operators-and-functions">Operators and Functions</h2>
+
+<p>Rev is an interpreted language for statistical computing and phylogenetic
+analysis. Therefore, the basics are simple mathematical operations.
+Entering each of the following lines will automatically execute these
+operations.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Simple mathematical operators:
+1 + 1                            # Addition
+10 - 5                           # Subtraction
+5 * 5                            # Multiplication
+10 / 2                           # Division
+2^3                              # Exponentiation
+5%2                              # Modulo
+</code></pre></div></div>
+<p><img src="figures/revbayes_operations.png" alt="image" /></p>
+
+<p>From now on, we will omit images of the terminal.</p>
+
+<p>Each set of operations constitutes a <em>statement</em>. As you work through
+these tutorials, it is helpful to write the statements you enter into a
+blank text file, then copy-and-paste the statements into to execute
+them. This way, you have a complete history of everything you’ve done,
+and can easily start over without having to rewrite everything. We refer
+to the text file containing the list of commands as a <em>script</em>, because
+it describes line-by-line instructions for the program to follow.</p>
+
+<p>You can write multiple statements in the same line if you separate them
+by a semicolon (<code class="highlighter-rouge">;</code>). The statements will execute as if you wrote each
+on a single line.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1 + 1; 2 + 2                    # Multiple statements in one line
+</code></pre></div></div>
+<p>Here you can see that comments always start with the hash symbol (<code class="highlighter-rouge">#</code>).
+Everything after the <code class="highlighter-rouge">#</code>-symbol will be ignored. In addition to these
+simple mathematical operations, provides some standard math functions
+which can be called by:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Math functions
+exp(1)                           # exponential function
+ln(1)                            # logarithmic function with natural base
+sqrt(16)                         # square root function 
+power(2,2)                       # power function: power(a,b) = a^b
+</code></pre></div></div>
+<p>Notice that Rev is case-sensitive. That means, Rev distinguishes upper and lower
+case letter for both variable names and function names. For example,
+only the first of these two calls will work:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>exp(1)                           # correct lower case name
+Exp(1)                           # wrong upper case name
+</code></pre></div></div>
+
+<h2 class="subsection" id="variable-declaration-and-assignment">Variable Declaration and Assignment</h2>
+
+<p>One of the most important features of (or any programming language,
+really) is the ability to declare and assign variables. Variables store
+information to be referenced later, and can change throughout the
+execution of the program. There are three kinds of variables in RevBayes, called
+<em>constant</em>, <em>deterministic</em>, and <em>stochastic</em> variables. Constant
+variables contain values that are not random in your model.
+Deterministic variables are functions of other variables. Stochastic
+variables are random variables in your model, and will change during
+your analysis; importantly, stochastic variables (being random
+variables) are always associated with a particular statistical
+distribution.</p>
+
+<p>Different types of variables differ in how you create them and assign
+values to them. We will begin by creating a constant variable with name
+<code class="highlighter-rouge">a</code> that starts with the value 1. The left arrow assignment (<code class="highlighter-rouge">&lt;-</code>)
+always creates a constant variable, and automatically assigns the
+following value to it.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Variable assignment: constant
+a &lt;- 1                           # assignment of constant node `a'
+</code></pre></div></div>
+<p>You see the value of ‘a’ by just typing in the variable name and
+pressing enter.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>a                                # printing the value of `a'
+</code></pre></div></div>
+<p>Next, we create a deterministic variable <code class="highlighter-rouge">b</code> using the <code class="highlighter-rouge">:=</code> assignment
+computed by <code class="highlighter-rouge">exp(a)</code> and another deterministic variable <code class="highlighter-rouge">c</code> computed by
+<code class="highlighter-rouge">ln(b)</code>. Deterministic variables are always created using the
+colon-equal assignment (<code class="highlighter-rouge">:=</code>).</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Variable assignment: deterministic
+
+# assignment of deterministic node `b' with
+# the exponential function with parameter `a'
+b := exp(a)  
+b
+
+# assignment of deterministic node `c' with
+# logarithmic function with parameter `b'
+c := ln(b)              
+c 
+</code></pre></div></div>
+<p>Finally, we will create the third type of variables in RevBayes: stochastic
+variables. We will create a random variable <code class="highlighter-rouge">x</code> from an exponential
+distribution with parameter <code class="highlighter-rouge">lambda</code>. Stochastic assignments use the
+$\sim$ operation.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Variable assignment: stochastic
+
+# assign constant node `lambda' with value `1'
+lambda &lt;- 1.0
+
+# create stochastic node with exponential 
+# distribution and parameter `lambda'
+x ~ dnExponential(lambda)
+</code></pre></div></div>
+<p>The value of <code class="highlighter-rouge">x</code> is a random draw from the distribution. You can see the
+value and the probability (or log-probability) of the current value
+under the current parameter values by</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>x                                # print value of stochastic node `x'
+x.probability()                  # print the probability if `x'
+x.lnProbability()                # print the log-probability if `x'
+</code></pre></div></div>
+
+<h2 class="subsection" id="distributions-and-random-numbers">Distributions and Random Numbers</h2>
+
+<p>RevBayes provides functions for common statistical distributions. We’ll
+demonstrate by generating random exponential numbers as we did in
+lecture. Recall that we can transform a random variable $u$ sampled from
+a Uniform(0,1) distribution into an exponential distribution with rate
+parameter $\lambda$:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{aligned}
+    u &\sim \text{Uniform(0,1)}\\
+    x &= -\frac{\ln u}{\lambda} 
+\end{aligned} %]]></script>
+
+<p>In RevBayes, we might describe
+$u$ as a stochastic variable, and $x$ as a deterministic variable (since
+it is a function of $u$):</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># create the random variable u
+u ~ dnUniform(0,1)
+u
+
+# determine the rate parameter
+lambda &lt;- 1.0
+
+# create x as a deterministic function of u
+x := -ln(u) / lambda
+x
+</code></pre></div></div>
+<p>Alternatively, we can create $x$ directly as an exponential random
+variable:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># create the random variable x
+x ~ dnExponential(lambda)
+x
+</code></pre></div></div>
+
+<h2 class="subsection" id="vectors">Vectors</h2>
+
+<p>Individual variables can have more than one value. Variables that have
+more than one value are called <em>vectors</em>. The simplest way to create a
+vector is like this:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>z &lt;- v(1.0,2.0,3.0)              # create a vector
+</code></pre></div></div>
+<p>You can refer to a specific value in the vector using brackets, <code class="highlighter-rouge">[i]</code>,
+where <code class="highlighter-rouge">i</code> is the index of the variable of interest.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>z[1]                             # print the first entry
+z[1] &lt;- 10                       # change the value of the first entry
+z
+</code></pre></div></div>
+
+<h2 class="subsection" id="for-loops"><code class="highlighter-rouge">for</code> loops</h2>
+
+<p><code class="highlighter-rouge">for</code> loops are important programming structures that allow you to
+repeat the same statement a number of times on different variables. The
+basic structure of a <code class="highlighter-rouge">for</code> loop is:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># a for loop
+for ([variable] in [set of values]) {
+   [statements using variable]
+}
+</code></pre></div></div>
+<p>The <code class="highlighter-rouge">for</code> statement is followed by a set of parenthesis containing
+<code class="highlighter-rouge">[variable]</code>, which contains the name of the variable being iterated,
+and <code class="highlighter-rouge">[set of values]</code>, which are the values that the variable iterates
+over. The <code class="highlighter-rouge">for</code> loop variable is a special variable that is created by
+the <code class="highlighter-rouge">for</code> loop: you do not have to create it before executing the loop.
+This simple <code class="highlighter-rouge">for</code> loop creates the variable <code class="highlighter-rouge">i</code>, and for each value of
+<code class="highlighter-rouge">i</code> from 1 to 100, prints the value of <code class="highlighter-rouge">i</code> to the screen.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:100) {
+   i
+}
+</code></pre></div></div>
+<p><code class="highlighter-rouge">for</code> loops are very powerful programming tools. We can use a <code class="highlighter-rouge">for</code> loop
+to create an entire <em>vector</em> of uniform random numbers, and transform
+them into a <em>second</em> vector of exponential random numbers.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:100) {
+   y[i] ~ dnUniform(0,1)
+   z[i] := -ln(y[i]) / lambda 
+}
+</code></pre></div></div>
+<p>Close using the statement <code class="highlighter-rouge">q()</code>.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>q()
+</code></pre></div></div>
+
+<ol class="bibliography"><li><span id="Hoehna2014b">Höhna S., Heath T.A., Boussau B., Landis M.J., Ronquist F., Huelsenbeck J.P. 2014. Probabilistic Graphical Model Representation in Phylogenetics. Systematic Biology. 63:753–771.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syu039">10.1093/sysbio/syu039</a>
+
+</li></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+    });
+    MathJax.Hub.Queue(function () {
+      $(".aside").each(function() {
+          $("div .MathJax", this).hide();
+      });
+    });
+</script>
+<script src="/assets/js/base.js"></script>
+
+  </body>
+</html>

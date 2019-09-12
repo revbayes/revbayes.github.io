@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Molecular dating</h1>
 	<h3 class="subtitle">The global molecular clock model</h3>
 	<h4 class="authors">Rachel Warnock, Sebastian Höhna, Tracy Heath, April  Wright and Walker Pett</h4>
-  <h5>Last modified on May 31, 2019</h5>
+  <h5>Last modified on September 12, 2019</h5>
 </div>
 
 
@@ -69,7 +69,7 @@
         
           <ul id="prerequisites">
           
-            <li><a href="/tutorials/intro/">Rev Language Syntax</a></li>
+            <li><a href="/tutorials/dating/">Molecular dating</a></li>
           
           </ul>
         
@@ -91,8 +91,6 @@
         
         
         
-          <li><a href="/tutorials/dating/data/bears_cytb.nex">bears_cytb.nex</a></li>
-        
           <li><a href="/tutorials/fbd/data/bears_cytb.nex">bears_cytb.nex</a></li>
         
           <li><a href="/tutorials/revscripter/data/bears_cytb.nex">bears_cytb.nex</a></li>
@@ -100,12 +98,14 @@
         </ul>
     
         
-        <strong>Scripts</strong>
-        <ul id="scripts">
+        <strong>Other</strong>
+        <ul id="other_files">
         
         
         
           <li><a href="/tutorials/dating/scripts/MCMC_dating_ex1.Rev">MCMC_dating_ex1.Rev</a></li>
+        
+          <li><a href="/tutorials/dating/data/bears_cytb.nex">bears_cytb.nex</a></li>
         
           <li><a href="/tutorials/dating/scripts/clock_global.Rev">clock_global.Rev</a></li>
         
@@ -181,7 +181,7 @@ extinction_rate ~ dnExponential(10)
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale(speciation_rate, lambda=0.5, tune=true, weight=3.0) )
 moves.append( mvScale(extinction_rate, lambda=0.5, tune=true, weight=3.0) )
 </code></pre></div></div>
-<p>The <code class="highlighter-rouge">weight</code> option allows you to indicate how many times you would like a given move to be performed at each MCMC cycle. In this tutorial we will run our MCMC for this tutorial will be to execute a <em>schedule</em> of moves at each step in our chain instead of just one move per step. Here, if we were to run our MCMC with our current vector of 6 moves, then our move schedule would perform 6 moves at each cycle. Within a cycle, an individual move is chosen from the move list in proportion to its weight. Therefore, with all six moves assigned <code class="highlighter-rouge">weight=1</code>, each has an equal probability of being executed and will be performed on average one time per MCMC cycle. For more information on moves and how they are performed in RevBayes, please refer to the <a href="/tutorials/mcmc_binomial/">Introduction to MCMC using RevBayes</a> and <a href="/tutorials/ctmc/">Nucleotide substitution models</a> tutorials.</p>
+<p>The <code class="highlighter-rouge">weight</code> option allows you to indicate how many times you would like a given move to be performed at each MCMC cycle. In this tutorial we will run our MCMC for this tutorial will be to execute a <em>schedule</em> of moves at each step in our chain instead of just one move per step. Here, if we were to run our MCMC with our current vector of 6 moves, then our move schedule would perform 6 moves at each cycle. Within a cycle, an individual move is chosen from the move list in proportion to its weight. Therefore, with all six moves assigned <code class="highlighter-rouge">weight=1</code>, each has an equal probability of being executed and will be performed on average one time per MCMC cycle. For more information on moves and how they are performed in RevBayes, please refer to the <a href="/tutorials/mcmc/">Introduction to Markov chain Monte Carlo (MCMC) Sampling</a> and <a href="/tutorials/ctmc/">Nucleotide substitution models</a> tutorials.</p>
 
 <p>In addition to the speciation ($\lambda$) and extinction ($\mu$) rates, we may also be interested in inferring diversification ($\lambda - \mu$) and turnover ($\mu/\lambda$). Since these parameters can be expressed as a deterministic transformation of the speciation and extinction rates, we can monitor (that is, track the values of these parameters, and print them to a file) their values by creating two deterministic nodes using the <code class="highlighter-rouge">:=</code> operator.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>diversification := speciation_rate - extinction_rate
