@@ -2,8 +2,8 @@
 layout: workshop
 title: Bayesian phylogenetics and macroevolution in RevBayes
 location: Museum of Paleontology, LMU Munich, Germany
-startdate: 2019-10-17
-enddate: 2019-10-17
+startdate: 2019-09-17
+enddate: 2019-09-17
 description: 
 - This workshop will introduce participants to the theory and practice of phylogenetic inference methods for macroevolution using RevBayes. The one-day course is part of the "German Paleontological Society Meeting 2019". 
 
