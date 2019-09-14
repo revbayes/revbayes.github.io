@@ -6,9 +6,7 @@ level: 2
 order: 4
 prerequisites:
 - intro
-- intro_rev
-- mcmc_archery
-- mcmc_binomial
+- mcmc
 - ctmc
 exclude_files: 
 - scripts/mcmc_ase_freeK.Rev

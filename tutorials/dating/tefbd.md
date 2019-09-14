@@ -5,7 +5,7 @@ authors:  Rachel Warnock, Sebastian Höhna, Tracy Heath, April  Wright and Walke
 level: 2
 order: 0.55
 prerequisites:
-- intro
+- dating/fbdr
 include_all: false 
 include_files:
 - data/bears_morphology.nex

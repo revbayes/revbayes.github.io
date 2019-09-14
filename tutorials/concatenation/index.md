@@ -5,7 +5,8 @@ authors:  Bastien Boussau and Sebastian Höhna
 level: 2
 prerequisites:
 - intro
-index: true
+- mcmc
+index: false
 title-old: RB_GeneConcatenation_Tutorial
 redirect: true
 ---

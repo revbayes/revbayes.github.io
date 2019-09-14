@@ -3,7 +3,7 @@ title: Introduction to Graphical Models
 subtitle: A gentle introduction to graphical models, probabilistic programming, and MCMC using a simple linear regression example.
 authors:  Will Freyman
 level: 0
-order: 0.5
+order: 0.3
 prerequisites:
 - intro
 index: true
@@ -26,6 +26,7 @@ algorithms used to perform inference with the model.
 We will focus on a simple linear regression example,
 and use [RevBayes](http://revbayes.com) to estimate the posterior distributions of our parameters.
 
+
 Why Graphical Models?
 =====================
 {:.section}
@@ -43,6 +44,7 @@ This means the learning curve is steep, however there are a number of benefits:
 2. Flexibility: Users are not limited by a small set of models the programmers hard coded, instead users can specify their own custom models uniquely tailored to their hypotheses and datasets. 
 
 3. Modularity: Each model component can be combined with others in an endless number of new ways like a LEGO kit. Testing many complex evolutionary hypotheses require tying different models together. For example, suppose you wish to test how the effect of biographic range on trait evolution changes through time. In [RevBayes](http://revbayes.com) you could simultaneously infer a time-calibrated phylogeny and estimate biogeography-dependent trait evolution using molecular data, biogeographic range data, and morphological data from both fossils and extant lineages.
+
 
 What is a Graphical Model?
 ==========================
@@ -122,6 +124,7 @@ Image and text modified from {% citet Hoehna2014b %}*
 {% endfigcaption %}
 {% endfigure %}
 
+
 Phylogenetic Graphical Models
 -----------------------------
 {:.subsection}
@@ -147,6 +150,7 @@ Images from {% citet Hoehna2014b %}*
 {% endfigcaption %}
 {% endfigure %}
 
+
 Probabilistic Programming
 =========================
 {:.section}
@@ -164,6 +168,7 @@ the statistics and machine learning communities.
 Some of the most common are <a href="http://mc-stan.org/">Stan</a>, <a href="http://mcmc-jags.sourceforge.net/">JAGS</a>, <a href="http://edwardlib.org/">Edward</a>, and <a href="https://docs.pymc.io/">PyMC3</a>.
 While these are all excellent tools, they are all unsuitable for phylogenetic models 
 since the tree topology itself must be treated as a random variable to be inferred.
+
 
 The `Rev` Probabilistic Programming Language
 --------------------------------------------
@@ -191,13 +196,16 @@ This tutorial will show both how to specify linear regression
 as a graphical model, and how to perform Bayesian inference over
 the model using MCMC.
 
+
 Tutorial Format
 ---------------
 {:.subsection}
 
 All command-line text, including all `Rev` syntax, are given in `monotype font`. Furthermore, blocks of `Rev` code that are needed to build the model, specify the analysis, or execute the run are given in separate shaded boxes. For example, we will instruct you to create a new variable called `n` that is equal to `10` using the `<-` operator like this:
+```
+n <- 10
+```
 
-    n <- 10
 
 Setup Your Files
 ----------------
@@ -206,6 +214,7 @@ Setup Your Files
 Make yourself familiar with the example script called [`linear_regression.Rev`](scripts/linear_regression.Rev) which shows the code for the following sections. Then, start a new and empty script in your text editor and follow each step provided as below. Name the script file `my_linear_regression.Rev` or anything you’d like.
 
 You'll also want to download the [`x.csv`](data/x.csv) and [`y.csv`](data/y.csv) data files and place them in a `data` directory.
+
 
 Linear Regression as a Graphical Model
 --------------------------------------
@@ -253,6 +262,7 @@ standard deviation is $\sigma_{\epsilon}$.
 $y$ is a stochastic variable, it has a value that is drawn from a probability distribution.
 This is designated by using the $\sim$ assignment operator.
 Since we have observed values for $y$, we will *clamp* $y$ to those observed values.
+
 
 Bayesian Linear Regression
 --------------------------
@@ -309,6 +319,7 @@ have constant parameter values (the squares on the top row of the figure).*
 {% endfigure %}
 
 {% endaside %}
+
 
 Specifying the Model in `Rev`
 -----------------------------
@@ -376,6 +387,7 @@ Note that we have now clamped each observed value `y_obs` to each stochastic nod
 We have now fully specified the model, so we can begin specifying the inference
 algorithm.
 
+
 Setting up MCMC in `Rev`
 -----------------------
 {:.subsection}
@@ -383,7 +395,7 @@ Setting up MCMC in `Rev`
 Here we will use the Metropolis-Hastings MCMC algorithm {% cite Metropolis1953 Hastings1970 %} 
 to perform parameter estimation.
 We focus here on providing a simple overview of how to set up and tweak MCMC in RevBayes,
-for a more in depth introduction to MCMC please see the {% page_ref mcmc_archery %} tutorial.
+for a more in depth introduction to MCMC please see the {% page_ref mcmc %} tutorial.
 
 The first step in setting up our MCMC algorithm is wrapping the entire model
 into a single variable:
@@ -483,6 +495,7 @@ Moreover, -2 and 0.5 were the true values used to simulate the data.*
 {% endfigcaption %}
 {% endfigure %}
 
+
 Prior Sensitivity
 =================
 {:.section}
@@ -544,6 +557,7 @@ did not introduce any bias.
 Typically the trade off is between informative priors that may introduce bias
 and uninformative priors that may increase the variance (uncertainty) of our
 estimates.
+
 
 Generative vs Discriminative Models
 ===================================

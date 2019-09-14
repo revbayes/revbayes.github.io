@@ -5,6 +5,7 @@ authors:  William A. Freyman and Sebastian Höhna
 level: 5
 prerequisites:
 - intro
+- mcmc
 - ctmc
 - sse/bisse-intro
 index: true

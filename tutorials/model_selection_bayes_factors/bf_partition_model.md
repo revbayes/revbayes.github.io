@@ -2,13 +2,11 @@
 title: Model selection of partition models
 subtitle: Comparing relative model fit with Bayes factors
 authors:  Mike May and Sebastian Höhna
-level: 1
-order: 3
+level: 2
+order: 0.2
 prerequisites:
 - intro
-- intro_rev
-- mcmc_archery
-- mcmc_binomial
+- mcmc
 - bf_intro
 - bf_subst_model
 exclude_files: 

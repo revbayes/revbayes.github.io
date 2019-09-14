@@ -2,13 +2,11 @@
 title: Multivariate Brownian Motion
 subtitle: Accounting for correlations among continuous traits
 authors: Michael R. May
-level: 5
+level: 6
 order: 5
 prerequisites:
 - intro
-- intro_rev
-- mcmc_archery
-- mcmc_binomial
+- mcmc
 - cont_traits/cont_trait_intro
 - cont_traits/simple_bm
 - cont_traits/relaxed_bm

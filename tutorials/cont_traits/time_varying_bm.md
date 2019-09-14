@@ -2,13 +2,11 @@
 title: Simple Brownian Rate Estimation
 subtitle: Estimating rates of Brownian-motion evolution
 authors: Michael R. May
-level: 5
+level: 6
 order: 1
 prerequisites:
 - intro
-- intro_rev
-- mcmc_archery
-- mcmc_binomial
+- mcmc
 - cont_traits/cont_trait_intro
 index: false
 redirect: false

@@ -2,13 +2,11 @@
 title: State-dependent diversification with HiSSE
 subtitle: Inference using the hidden character binary/multiple state-dependent speciation and extinction with (HiSSE) branching process
 authors:  Sebastian Höhna and Will Freyman
-level: 4
+level: 5
 order: 6
 prerequisites:
 - intro
-- intro_rev
-- mcmc_archery
-- mcmc_binomial
+- mcmc
 - divrate/simple
 - sse/bisse-intro
 - sse/bisse

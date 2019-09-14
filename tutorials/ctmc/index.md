@@ -2,13 +2,11 @@
 title: Nucleotide substitution models
 subtitle: Phylogenetic inference of nucleotide data using RevBayes
 authors:  Sebastian Höhna, Michael Landis, Brian Moore and Tracy Heath
-level: 2
-order: 0
+level: 3
+order: 1
 prerequisites:
 - intro
-- intro_rev
-- mcmc_archery
-- mcmc_binomial
+- mcmc
 index: true
 title-old: RB_CTMC_Tutorial
 redirect: false
@@ -550,8 +548,7 @@ There you see the posterior distribution of the continuous parameters, *e.g.*, t
 
 It is always important to carefully assess the MCMC samples for the various parameters in your analysis.
 You can read more about MCMC tuning and
-evaluating and improving mixing in the tutorials {% page_ref mcmc_binomial %}
-and [Diagnosing MCMC Performance](https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_MCMC_Tutorial/RB_MCMC_Tutorial.pdf). <!-- Update link when that tutorial is updated! -->
+evaluating and improving mixing in the tutorials {% page_ref mcmc %}.
 
 {% subsection Exercise 1 %}
 

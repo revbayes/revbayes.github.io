@@ -2,13 +2,11 @@
 title: Episodic Diversification Rate Estimation
 subtitle: Estimating Rate-Variation Through Time in Diversification Rates
 authors:  Sebastian Höhna
-level: 4
+level: 5
 order: 2
 prerequisites:
 - intro
-- intro_rev
-- mcmc_archery
-- mcmc_binomial
+- mcmc
 - divrate/div_rate_intro
 - divrate/simple
 index: true

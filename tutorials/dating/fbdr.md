@@ -5,7 +5,7 @@ authors: Rachel Warnock, Sebastian Höhna, Tracy Heath, April  Wright and Walker
 level: 2
 order: 0.54
 prerequisites:
-- intro
+- dating/nodedate
 include_all: false 
 include_files:
 - scripts/tree_FBD.Rev

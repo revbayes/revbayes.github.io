@@ -2,13 +2,11 @@
 title: State-dependent diversification with BiSSE and MuSSE
 subtitle: Inference using the binary/multiple state-dependent speciation and extinction (BiSSE/MuSSE) branching process
 authors:  Sebastian Höhna, Will Freyman, and Emma Goldberg
-level: 4
+level: 5
 order: 5
 prerequisites:
 - intro
-- intro_rev
-- mcmc_archery
-- mcmc_binomial
+- mcmc
 - divrate/simple
 - sse/bisse-intro
 include_all: false

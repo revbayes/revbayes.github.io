@@ -2,11 +2,10 @@
 title: Combined-Evidence Analysis and the Fossilized Birth-Death Process for Stratigraphic Range Data
 subtitle: Joint inference of divergence times and phylogenetic relationships of fossil and extant taxa
 authors:  Tracy A. Heath, April M. Wright, and Walker Pett
-level: 3
+level: 4
 prerequisites:
 - intro
-- intro_rev
-- mcmc_archery
+- mcmc
 - ctmc
 exclude_files:
 - mcmc_CEFBDP_Specimens.Rev
@@ -483,10 +482,7 @@ the move list in proportion to its weight. Therefore, with all six moves
 assigned `weight=1`, each has an equal probability of being executed and
 will be performed on average one time per MCMC cycle. For more
 information on moves and how they are performed in RevBayes, please
-refer to the 
-{% page_ref mcmc_binomial %}
-and {% page_ref ctmc %}
-tutorials.
+refer to the {% page_ref mcmc %} and {% page_ref ctmc %} tutorials.
 
 In addition to the speciation ($\lambda$) and extinction ($\mu$) rates,
 we may also be interested in inferring diversification ($\lambda - \mu$)
@@ -921,8 +917,7 @@ the output in {% ref tracer_extinction_rate_trace_short %} shows reasonable
 there long intervals where the statistic does not change. The presence
 of a trend or large leaps in a parameter value might indicate that your
 MCMC is not mixing well. You can read more about MCMC tuning and
-improving mixing in the tutorials {% page_ref mcmc_binomial %}
-and {% page_ref mcmc %}.
+improving mixing in the tutorials {% page_ref mcmc %}.
 
 > Look through the traces for your parameters.
 > 
@@ -965,9 +960,7 @@ posterior distribution of phylogenetic parameters. More explicitly,
 conclusions on such a run and it will be critical to perform multiple,
 independent runs for many more MCMC cycles. For further discussion of
 recommended MCMC practices in RevBayes, please see the 
-{% page_ref mcmc_binomial %}
-and {% page_ref mcmc %}
-tutorials.
+{% page_ref mcmc %} tutorials.
 
 {% subsubsection Summarize Tree | Exercise-SummarizeTree %}
 

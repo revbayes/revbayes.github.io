@@ -2,12 +2,11 @@
 title: Introduction to Phylogenetic Models of Discrete Biogeography
 subtitle: Overview of the Dispersal-Extirpation-Cladogenesis (DEC) model
 authors:  Michael J. Landis
-level: 6
+level: 7
 order: 0
 prerequisites:
 - intro
-- intro_rev
-- mcmc_archery
+- mcmc
 include_example_output: false
 exclude_files: 
 - data/n4/hawaii.n4.connectivity.1.txt

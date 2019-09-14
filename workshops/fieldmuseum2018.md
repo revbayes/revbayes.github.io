@@ -31,7 +31,7 @@ schedule:
   - starttime: 2018-10-05T10:00
     endtime: 2018-10-05T11:00
     topic: "Lab: Basic MCMC"
-    tutorials: mcmc_archery
+    tutorials: mcmc/archery
     instructors: Tracy Heath
 
   - starttime: 2018-10-05T11:00

@@ -6,9 +6,8 @@ level: 2
 order: 0.5
 prerequisites:
 - intro
-exclude_files:
-- data/inc_subfossils/bears_cytb.nex
-- data/inc_subfossils/bears_taxa.tsv
+- mcmc
+include_all: false
 index: true
 redirect: false
 ---

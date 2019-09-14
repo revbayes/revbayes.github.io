@@ -35,7 +35,7 @@ schedule:
   - starttime: 2018-07-22T9:00
     endtime: 2018-07-22T11:00
     topic: Intro to graphical models and RevBayes
-    tutorials: intro_graph_models 
+    tutorials: intro/graph_models 
     instructors: Will Freyman
 
   - starttime: 2018-07-22T11:00

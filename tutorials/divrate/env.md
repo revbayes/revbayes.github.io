@@ -2,13 +2,11 @@
 title: Environmental-dependent Speciation & Extinction Rates
 subtitle: Estimating Correlation between Diversification Rates and Environmental Characters
 authors:  Sebastian Höhna and Luis Palazzesi
-level: 4
+level: 5
 order: 3
 prerequisites:
 - intro
-- intro_rev
-- mcmc_archery
-- mcmc_binomial
+- mcmc
 - divrate/simple
 - divrate/ebd
 index: true

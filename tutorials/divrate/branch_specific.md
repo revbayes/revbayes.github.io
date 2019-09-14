@@ -2,13 +2,11 @@
 title: Branch-Specific Diversification Rate Estimation
 subtitle: How to estimate branch-specific shifts in diversification rates 
 authors:  Sebastian Höhna and Michael R. May
-level: 4
+level: 5
 order: 4
 prerequisites:
 - intro
-- intro_rev
-- mcmc_archery
-- mcmc_binomial
+- mcmc
 - divrate/simple
 index: true
 title-old: RB_DiversificationRate_BranchSpecific_Tutorial

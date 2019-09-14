@@ -2,30 +2,13 @@
 title: Model selection of common substitution models for one locus
 subtitle: Comparing relative model fit with Bayes factors
 authors:  Sebastian Höhna, Michael J Landis, Tracy A Heath
-level: 1
-order: 1
+level: 2
+order: 0.1
 prerequisites:
 - intro
-- intro_rev
-- mcmc_archery
-- mcmc_binomial
+- mcmc
 - bf_intro
-exclude_files:
-- data/fagus_ITS.nex
-- data/fagus_matK.nex
-- data/fagus_rbcL.nex
-- data/sim_locus1.nex
-- data/sim_locus2.nex
-- data/sim_locus3.nex
-- data/sim_locus4.nex
-- scripts/ml_Partition_model.Bodega.Rev
-- data/primates_and_galeopterus_cox2.nex
-- scripts/marginal_likelihood_partition_1.Rev
-- scripts/marginal_likelihood_partition_2.Rev
-- scripts/marginal_likelihood_partition_3.Rev
-- scripts/marginal_likelihood_partition_4.Rev
-- scripts/marginal_likelihood_partition_5.Rev
-- scripts/model_average_primates_cytb.Rev
+include_all: false
 index: true
 title-old: RB_BayesFactor_Tutorial
 redirect: false
