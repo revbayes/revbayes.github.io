@@ -2,12 +2,12 @@
 title: Discrete morphology - Ancestral State Estimation
 subtitle: Ancestral State Estimation and Testing for Irreversibility
 authors:  Sebastian Höhna, Will Freyman, April M. Wright and Michael J. Landis
-level: 2
+level: 6
 prerequisites:
 - intro
 - mcmc
 - ctmc
-- morph
+- morph_tree
 exclude_files: 
 - data/bears.nex
 - scripts/mcmc_mk.Rev
@@ -15,7 +15,6 @@ exclude_files:
 - scripts/mcmc_mkv_hyperprior.Rev
 - scripts/mcmc_mkv.Rev
 index: true
-title-old: RB_DiscreteMorphology_Tutorial
 redirect: false
 ---
 
@@ -24,7 +23,7 @@ redirect: false
 {% section Introduction %}
 
 Discrete morphological models are not only useful for tree estimation, 
-as was done in Tutorial {% page_ref morph %}, but also to ask specific questions about 
+as was done in Tutorial {% page_ref morph_tree %}, but also to ask specific questions about 
 the evolution of the morphological character of interest.
 Specifically, there are two types of analyses that we might be interest in. 
 First, we can test different model of morphological evolution, 
@@ -510,7 +509,7 @@ Visualization of different placenta types. Reproduced from {% cite PrabhuDas2015
 {% subsection Specifying the Mk Model %}
 
 We will start this tutorial with the simple Mk model with three states, $k=3$ {% cite Lewis2001 %}.
-Thus, we will follow the {% page_ref morph %} Tutorial very closely and refer you to that tutorial for more information.
+Thus, we will follow the {% page_ref morph_tree %} Tutorial very closely and refer you to that tutorial for more information.
 
 Let us start with defining the rate matrix $Q$ for this 3-state model:
 $$

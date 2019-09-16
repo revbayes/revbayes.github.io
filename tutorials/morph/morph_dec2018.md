@@ -2,7 +2,7 @@
 title: Discrete morphology - Tree Inference
 subtitle: Phylogenetic inference with discrete morphological data
 authors:  April M. Wright, Michael J. Landis and Sebastian Höhna
-level: 2
+level: 6
 order: 4
 prerequisites:
 - intro
