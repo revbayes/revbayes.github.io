@@ -2,8 +2,8 @@
 title: Molecular dating
 subtitle: Estimating species divergence times using RevBayes
 authors:  Rachel Warnock, Sebastian Höhna, Tracy Heath, April  Wright and Walker Pett
-level: 2
-order: 0.5
+level: 3
+order: 3
 prerequisites:
 - intro
 - mcmc

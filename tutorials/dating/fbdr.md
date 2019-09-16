@@ -2,8 +2,8 @@
 title: Molecular dating
 subtitle: Estimating speciation times using the fossilized birth-death range process
 authors: Rachel Warnock, Sebastian Höhna, Tracy Heath, April  Wright and Walker Pett
-level: 2
-order: 0.54
+level: 3
+order: 3.4
 prerequisites:
 - dating/nodedate
 include_all: false 

@@ -2,8 +2,8 @@
 title: Molecular dating
 subtitle: Estimating speciation times using node dating
 authors:  Rachel Warnock, Sebastian Höhna, Tracy Heath, April  Wright and Walker Pett
-level: 2
-order: 0.53
+level: 3
+order: 3.3
 prerequisites:
 - dating/relaxed
 include_all: false 

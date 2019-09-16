@@ -2,8 +2,8 @@
 title: Molecular dating
 subtitle: Estimating speciation times using total-evidence dating
 authors:  Rachel Warnock, Sebastian Höhna, Tracy Heath, April  Wright and Walker Pett
-level: 2
-order: 0.55
+level: 3
+order: 3.5
 prerequisites:
 - dating/fbdr
 include_all: false 
@@ -91,7 +91,7 @@ moves.append( mvScale(branch_rates_morpho,lambda=0.5,tune=true,weight=5.0) )
 ### The Mk model
 
 The next step is to specify the model that describes how morphological characters evolve along the tree and across sites.
-You can find a full description about the Mk model in the {% page_ref morph %} Tutorial.
+You can find a full description about the Mk model in the {% page_ref morph_tree %} Tutorial.
 
 >Create a script called **sub_Mk.Rev** and open it in your text editor. 
 {:.instruction}

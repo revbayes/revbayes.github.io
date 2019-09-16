@@ -2,8 +2,8 @@
 title: Molecular dating
 subtitle: The global molecular clock model
 authors:  Rachel Warnock, Sebastian Höhna, Tracy Heath, April  Wright and Walker Pett
-level: 2
-order: 0.51
+level: 3
+order: 3.1
 prerequisites:
 - dating
 include_all: false 
