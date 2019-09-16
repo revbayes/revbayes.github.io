@@ -15,9 +15,8 @@ sf ~ dnDirichlet(sf_hp)
 er_hp <- v(1,1,1,1,1,1)
 er ~ dnDirichlet(er_hp)
 
-moves.append( mvSimplexElementScale(er, alpha=10.0, weight=4.0) )
-moves.append( mvSimplexElementScale(sf, alpha=10.0, weight=6.0) )
-moves.append( mvSimplex(sf, alpha=10.0, weight=2.0) )
+moves.append( mvSimplexBeta(er, alpha=10.0, weight=2.0) )
+moves.append( mvSimplexBeta(sf, alpha=10.0, weight=3.0) )
 
 # Create the matrix #
 Q_cytb := fnGTR(er,sf)
@@ -27,7 +26,7 @@ Q_cytb := fnGTR(er,sf)
 alpha_cytb ~ dnUniform( 0.0, 1E6 )
 alpha_cytb.setValue( 1.0 )
 
-moves.append( mvScale(alpha_cytb, lambda=0.1,tune=true, weight=3.0) )
+moves.append( mvScale(alpha_cytb, lambda=0.5,tune=true, weight=2.0) )
 
 rates_cytb := fnDiscretizeGamma( alpha_cytb, alpha_cytb, 4 )
 

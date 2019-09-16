@@ -49,7 +49,7 @@ We are going to use the uncorrelated exponential relaxed clock model. In this mo
 It's a bit more tricky to set up this clock model. First, we'll define the mean branch rate as an exponential random variable (`branch_rates_mean`). Then, specify a scale proposal move on this parameter.
 ```
 branch_rates_mean ~ dnExponential(10.0)
-moves.append( mvScale(branch_rates_mean, lambda=0.5, tune=true, weight=1.0) )
+moves.append( mvScale(branch_rates_mean, lambda=0.5, tune=true, weight=3.0) )
 ```
 Before creating a rate parameter for each branch, we need to define the number of branches in the tree. For rooted trees with $n$ taxa, the number of branches is $2n−2$.
 ```

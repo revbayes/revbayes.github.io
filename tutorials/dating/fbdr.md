@@ -93,7 +93,7 @@ The FBD model has some additional parameters we need to specify. In addition to 
 ```
 psi ~ dnExponential(10) 
 
-moves.append( mvScale(psi, lambda=0.5, tune=true, weight=1) )
+moves.append( mvScale(psi, lambda=0.5, tune=true, weight=3) )
 ```	
 Next delete the command used to specify the root age `extant_mrca`.
 
