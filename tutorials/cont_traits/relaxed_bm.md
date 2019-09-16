@@ -3,7 +3,7 @@ title: Relaxed Brownian Rate Estimation
 subtitle: Estimating branch-specific rates of Brownian-motion evolution
 authors: Michael R. May
 level: 6
-order: 3
+order: 1.4
 prerequisites:
 - intro
 - mcmc

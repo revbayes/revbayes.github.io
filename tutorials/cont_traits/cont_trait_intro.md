@@ -3,7 +3,7 @@ title: Introduction to Models of Continuous-Character Evolution
 subtitle: Overview of Standard Models of Continuous-Character Evolution
 authors: Michael R. May
 level: 6
-order: 0
+order: 1
 prerequisites:
 - intro
 - mcmc

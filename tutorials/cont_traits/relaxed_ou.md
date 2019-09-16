@@ -3,7 +3,7 @@ title: Relaxed Ornstein-Uhlenbeck Models
 subtitle: Estimating lineage-specific optima under Ornstein-Uhlenbeck evolution
 authors: Michael R. May
 level: 6
-order: 7
+order: 1.8
 prerequisites:
 - intro
 - mcmc
