@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Molecular dating</h1>
 	<h3 class="subtitle">Estimating speciation times using the fossilized birth-death range process</h3>
 	<h4 class="authors">Rachel Warnock, Sebastian Höhna, Tracy Heath, April  Wright and Walker Pett</h4>
-  <h5>Last modified on September 12, 2019</h5>
+  <h5>Last modified on September 16, 2019</h5>
 </div>
 
 
@@ -172,7 +172,7 @@ models and their notation, please see <a href="#Hoehna2014b">(Höhna et al. 2014
 <p>The FBD model has some additional parameters we need to specify. In addition to speciation ($\lambda$), extinction ($\mu$) and extant species sampling ($\rho$), we need to specify the fossil recovery rate ($\psi$), plus the moves on this parameter. Include the following commands anywhere prior to specifying the <code class="highlighter-rouge">timetree</code> variable.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psi ~ dnExponential(10) 
 
-moves.append( mvScale(psi, lambda=0.5, tune=true, weight=1) )
+moves.append( mvScale(psi, lambda=0.5, tune=true, weight=3) )
 </code></pre></div></div>
 <p>Next delete the command used to specify the root age <code class="highlighter-rouge">extant_mrca</code>.</p>
 

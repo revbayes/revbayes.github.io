@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Molecular dating</h1>
 	<h3 class="subtitle">The uncorrelated exponential relaxed clock model</h3>
 	<h4 class="authors">Rachel Warnock, Sebastian Höhna, Tracy Heath, April  Wright and Walker Pett</h4>
-  <h5>Last modified on September 12, 2019</h5>
+  <h5>Last modified on September 16, 2019</h5>
 </div>
 
 
@@ -129,7 +129,7 @@ Second, we need to switch out the global clock model for the relaxed clock model
 
 <p>It’s a bit more tricky to set up this clock model. First, we’ll define the mean branch rate as an exponential random variable (<code class="highlighter-rouge">branch_rates_mean</code>). Then, specify a scale proposal move on this parameter.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>branch_rates_mean ~ dnExponential(10.0)
-moves.append( mvScale(branch_rates_mean, lambda=0.5, tune=true, weight=1.0) )
+moves.append( mvScale(branch_rates_mean, lambda=0.5, tune=true, weight=3.0) )
 </code></pre></div></div>
 <p>Before creating a rate parameter for each branch, we need to define the number of branches in the tree. For rooted trees with $n$ taxa, the number of branches is $2n−2$.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_branches &lt;- 2 * n_taxa - 2

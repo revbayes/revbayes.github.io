@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Molecular dating</h1>
 	<h3 class="subtitle">Estimating speciation times using total-evidence dating</h3>
 	<h4 class="authors">Rachel Warnock, Sebastian Höhna, Tracy Heath, April  Wright and Walker Pett</h4>
-  <h5>Last modified on September 12, 2019</h5>
+  <h5>Last modified on September 16, 2019</h5>
 </div>
 
 
@@ -100,8 +100,6 @@
         <ul id="other_files">
         
         
-        
-          <li><a href="/tutorials/dating/scripts/MCMC_dating_ex5.Rev">MCMC_dating_ex5.Rev</a></li>
         
           <li><a href="/tutorials/dating/data/bears_morphology.nex">bears_morphology.nex</a></li>
         
@@ -188,7 +186,7 @@ You can find a full description about the Mk model in the <a href="/tutorials/mo
 </blockquote>
 
 <p>The Mk model is a generalization of the Jukes-Cantor model, so we will initialize our Q matrix from a Jukes-Cantor matrix.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q_morpho := fnJC(2)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q_morpho &lt;- fnJC(2)
 </code></pre></div></div>
 <p>As we did for our molecular data partition, we will allow gamma-distributed rate heterogeneity among sites.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha_morpho ~ dnUniform( 0.0, 1E8 )

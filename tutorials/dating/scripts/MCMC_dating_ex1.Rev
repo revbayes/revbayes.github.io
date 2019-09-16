@@ -14,6 +14,7 @@
 #
 ########################################################
 
+
 #######################
 # Reading in the Data #
 #######################
@@ -39,6 +40,8 @@ source("scripts/clock_global.Rev") # Global clock model
 
 source("scripts/sub_GTRG.Rev") # Molecular substitution model (GTR+G)
 
+
+
 ########
 # MCMC #
 ########
@@ -62,6 +65,8 @@ mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
 
 # Run the MCMC #
 mymcmc.run(generations=20000, tuningInterval=200)
+
+
 
 ########################
 # Summarizing the tree #
