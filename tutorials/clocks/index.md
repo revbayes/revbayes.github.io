@@ -2,14 +2,13 @@
 title: Relaxed Clocks & Time Trees
 subtitle: Comparing relaxed clock models & estimating rooted time trees
 authors:  Tracy A. Heath
-level: 2
+level: 3
+order: 4
 prerequisites:
 - intro
 - mcmc
 - ctmc
-order: 1
 index: true
-title-old: RB_ClockModels_Tutorial
 redirect: false
 ---
 

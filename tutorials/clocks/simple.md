@@ -2,11 +2,11 @@
 title: Simple Diversification Models & Estimating Time Trees
 subtitle: Comparing diversification models using Bayes factors and estimating a dated phylogeny
 authors:  Tracy A. Heath
-level: 1
+level: 3
+order: 4.1
 prerequisites:
 - intro
 - mcmc
-order: 2
 index: false
 ---
 
