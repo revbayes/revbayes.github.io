@@ -29,9 +29,9 @@ prerequisites:
 - Paul Lewis's Primer on Phylogenetics Part 2 - <a href="https://youtu.be/UsLeY0wZr4Y">Substitution Models</a>
 - Paul Lewis's Primer on Phylogenetics Part 3a - <a href="https://youtu.be/4PWlnNsfz90">Bayesian Statistics & MCMC</a>
 - Paul Lewis's Primer on Phylogenetics Part 3b - <a href="https://youtu.be/TLtOS--YwkU">Bayesian Phylogenetics</a>
-- <a href="https://revbayes.github.io/tutorials/intro/">Getting started with <b><i>RevBayes</i></b>.</a>
-- <a href="https://revbayes.github.io/tutorials/intro/">An introductory tutorial to <b>RevBayes and the RevLanguage</b>.</a>
-- <a href="https://revbayes.github.io/tutorials/intro/">An introductory tutorial to <b>graphical models</b>.</a>
+- <a href="https://revbayes.github.io/tutorials/intro/getting_started.html">Getting started with <b><i>RevBayes</i></b>.</a>
+- <a href="https://revbayes.github.io/tutorials/intro/rev.html">An introductory tutorial to <b>RevBayes and the RevLanguage</b>.</a>
+- <a href="https://revbayes.github.io/tutorials/intro/graph_models.html">An introductory tutorial to <b>graphical models</b>.</a>
 
 papers:
 - <a href="https://academic.oup.com/sysbio/article/63/5/753/2847897">Höhna et al. (2014). Probabilistic Graphical Model Representation in Phylogenetics.</a>
@@ -42,7 +42,7 @@ schedule:
   - starttime: 2019-09-17T09:40
     endtime: 2019-09-17T10:30
     topic: "Lecture: Introduction to Bayesian Phylogenetics and RevBayes"
-    material: <a href="https://www.dropbox.com/s/vxk31rdpcyeajkj/1_Bayesian_inference.pdf?dl=0">Lecture slides 1</a> and <a href="https://www.dropbox.com/s/p76sdchegs5taxa/2_RevBayes.pdf?dl=0>Lecture slides 2</a>
+    material: <a href="https://www.dropbox.com/s/vxk31rdpcyeajkj/1_Bayesian_inference.pdf?dl=0">Lecture slides 1</a> and <a href="https://www.dropbox.com/s/p76sdchegs5taxa/2_RevBayes.pdf?dl=0">Lecture slides 2</a>
     instructors: "&#x1F468;&#x200D;&#x1F3EB;"
 
   - starttime: 2019-09-17T10:30
@@ -53,14 +53,12 @@ schedule:
   - starttime: 2019-09-17T11:00
     endtime: 2019-09-17T12:20
     topic: "Lecture & Practical: Molecular Clocks"
-    material: 
-    - <a href="https://www.dropbox.com/s/qbpoafld1gj5vcx/3_Molecular_Evolution.pdf?dl=0">Lecture slides 3</a> and <a href="https://www.dropbox.com/s/4s1rmkk47vqfl09/4_Clocks.pdf?dl=0">Lecture slides 4</a>
+    material:  <a href="https://www.dropbox.com/s/qbpoafld1gj5vcx/3_Molecular_Evolution.pdf?dl=0">Lecture slides 3</a> and <a href="https://www.dropbox.com/s/4s1rmkk47vqfl09/4_Clocks.pdf?dl=0">Lecture slides 4</a>
     tutorials: 
-     - dating
      - dating/global
      - dating/relaxed
     instructors: "&#x1F468;&#x200D;&#x1F3EB;"
-
+    
   - starttime: 2019-09-17T12:20
     endtime: 2019-09-17T13:20
     topic: Lunch
@@ -69,7 +67,7 @@ schedule:
   - starttime: 2019-09-17T13:20
     endtime: 2019-09-17T14:40
     topic: "Divergence Time Estimation (Time Calibration)"
-    material: <a href="">Lecture slides 5</a>
+    material: <a href="https://www.dropbox.com/s/k5a6wj6lzbvurb8/5_Time_Calibration.pdf?dl=0">Lecture slides 5</a>
     tutorials: 
      - dating/nodedate
      - dating/fbdr
