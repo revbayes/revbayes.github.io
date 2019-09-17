@@ -44,7 +44,7 @@ schedule:
     topic: "Lecture: Introduction to Bayesian Phylogenetics and RevBayes"
     material: 
     - <a href="https://www.dropbox.com/s/vxk31rdpcyeajkj/1_Bayesian_inference.pdf?dl=0">Lecture slides 1</a>
-    - <a href="https://www.dropbox.com/s/vxk31rdpcyeajkj/2_RevBayes.pdf?dl=0">Lecture slides 2</a>
+    - <a href="https://www.dropbox.com/s/p76sdchegs5taxa/2_RevBayes.pdf?dl=0>Lecture slides 2</a>
     instructors: "&#x1F468;&#x200D;&#x1F3EB;"
 
   - starttime: 2019-09-17T10:30
