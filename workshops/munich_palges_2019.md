@@ -42,9 +42,7 @@ schedule:
   - starttime: 2019-09-17T09:40
     endtime: 2019-09-17T10:30
     topic: "Lecture: Introduction to Bayesian Phylogenetics and RevBayes"
-    material: 
-    - <a href="https://www.dropbox.com/s/vxk31rdpcyeajkj/1_Bayesian_inference.pdf?dl=0">Lecture slides 1</a>
-    - <a href="https://www.dropbox.com/s/p76sdchegs5taxa/2_RevBayes.pdf?dl=0>Lecture slides 2</a>
+    material: <a href="https://www.dropbox.com/s/vxk31rdpcyeajkj/1_Bayesian_inference.pdf?dl=0">Lecture slides 1</a> and <a href="https://www.dropbox.com/s/p76sdchegs5taxa/2_RevBayes.pdf?dl=0>Lecture slides 2</a>
     instructors: "&#x1F468;&#x200D;&#x1F3EB;"
 
   - starttime: 2019-09-17T10:30
@@ -56,7 +54,7 @@ schedule:
     endtime: 2019-09-17T12:20
     topic: "Lecture & Practical: Molecular Clocks"
     material: 
-    - <a href="https://www.dropbox.com/s/qbpoafld1gj5vcx/3_Molecular_Evolution.pdf?dl=0">Lecture slides 3</a>
+    - <a href="https://www.dropbox.com/s/qbpoafld1gj5vcx/3_Molecular_Evolution.pdf?dl=0">Lecture slides 3</a> and <a href="https://www.dropbox.com/s/4s1rmkk47vqfl09/4_Clocks.pdf?dl=0">Lecture slides 4</a>
     tutorials: 
      - dating
      - dating/global
@@ -71,7 +69,7 @@ schedule:
   - starttime: 2019-09-17T13:20
     endtime: 2019-09-17T14:40
     topic: "Divergence Time Estimation (Time Calibration)"
-    material: <a href="">Lecture slides</a>
+    material: <a href="">Lecture slides 5</a>
     tutorials: 
      - dating/nodedate
      - dating/fbdr
@@ -85,8 +83,7 @@ schedule:
   - starttime: 2019-09-17T15:10
     endtime: 2019-09-17T16:30
     topic: "Total-Evidence Analysis"
-    material: 
-    - <a href="https://www.dropbox.com/s/abic5stxas1fxex/6_Total_evidence_dating.pdf?dl=0">Lecture slides 3</a>
+    material: <a href="https://www.dropbox.com/s/abic5stxas1fxex/6_Total_evidence_dating.pdf?dl=0">Lecture slides 6</a>
     tutorials: dating/tefbd
     instructors: 
      - "&#x1F469;&#x1F3FB;&#x200D;&#x1F3EB;"
