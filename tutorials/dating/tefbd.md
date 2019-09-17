@@ -9,7 +9,6 @@ prerequisites:
 include_all: false 
 include_files:
 - data/bears_morphology.nex
-- scripts/MCMC_dating_ex5.Rev
 - scripts/tree_TEFBD.Rev
 - scripts/sub_Mk.Rev
 - scripts/clock_morpho.Rev
@@ -98,7 +97,7 @@ You can find a full description about the Mk model in the {% page_ref morph_tree
 
 The Mk model is a generalization of the Jukes-Cantor model, so we will initialize our Q matrix from a Jukes-Cantor matrix.
 ```
-Q_morpho := fnJC(2)
+Q_morpho <- fnJC(2)
 ```
 As we did for our molecular data partition, we will allow gamma-distributed rate heterogeneity among sites.
 ```

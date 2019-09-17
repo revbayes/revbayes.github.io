@@ -9,7 +9,7 @@ branch_rates_mean ~ dnExponential(10.0)
 ln_branch_rates_mean := ln( branch_rates_mean )
 
 # The mean will be operated on by a scale move #
-moves.append( mvScale(branch_rates_mean, lambda=0.5, tune=true, weight=1.0) )
+moves.append( mvScale(branch_rates_mean, lambda=0.5, tune=true, weight=3.0) )
 
 # Get the number of branches in the tree #
 n_branches <- 2 * n_taxa - 2
@@ -25,6 +25,6 @@ for(i in 1:n_branches){
 }
 
 # add a move on the branch rate vector #
-#moves.append( mvVectorScale(branch_rates, lambda=0.5, tune=true, weight=4.0) )
-#moves.append( mvRateAgeBetaShift(tree=timetree, rates=branch_rates, tune=true, weight=n_taxa) )
+moves.append( mvVectorScale(branch_rates, lambda=0.5, tune=true, weight=4.0) )
+moves.append( mvRateAgeBetaShift(tree=timetree, rates=branch_rates, tune=true, weight=n_taxa) )
 

@@ -138,6 +138,7 @@ The final step in our tree model script is to add the moves for the tree topolog
 moves.append( mvNarrow(timetree, weight=n_taxa) )
 moves.append( mvFNPR(timetree, weight=n_taxa/4) )
 moves.append( mvNodeTimeSlideUniform(timetree, weight=n_taxa) )
+moves.append( mvSubtreeScale(timetree, weight=n_taxa/5.0) )
 ```	
 Note there are lots of moves available for trees in RevBayes that you can use to improve the mixing, which you can learn about in other tutorials, including [Divergence Time Calibration](https://github.com/revbayes/revbayes_tutorial/blob/master/tutorial_TeX/RB_DivergenceTime_Calibration_Tutorial/).
 
@@ -191,8 +192,8 @@ er ~ dnDirichlet(er_hp)
 ```
 We need special moves to propose changes to a Dirichlet random variable, also known as a simplex (a vector constrained to sum to one). Here, we use a `mvSimplexElementScale` move, which scales a single element of a simplex and then renormalises the vector to sum to one. The tuning parameter `alpha` specifies how conservative the proposal should be, with larger values of alpha leading to proposals closer to the current value.
 ```
-moves.append( mvSimplexElementScale(er, alpha=10.0, weight=3.0) )
-moves.append( mvSimplexElementScale(sf, alpha=10.0, weight=2.0) )
+moves.append( mvSimplexBeta(er, alpha=10.0, weight=3.0) )
+moves.append( mvSimplexBeta(sf, alpha=10.0, weight=2.0) )
 ```
 Then we can define a deterministic node for our GTR Q-matrix using the special GTR matrix function (`fnGTR`).
 ```

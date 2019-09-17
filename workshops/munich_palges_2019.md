@@ -2,8 +2,8 @@
 layout: workshop
 title: Bayesian phylogenetics and macroevolution in RevBayes
 location: Room D114, Museum of Paleontology, Richard-Wagner Str 10, LMU Munich, Germany
-startdate: 2019-10-17
-enddate: 2019-10-17
+startdate: 2019-09-17
+enddate: 2019-09-17
 description: 
 - This workshop will introduce participants to the theory and practice of phylogenetic inference methods for macroevolution using RevBayes. The one-day course is part of the "German Paleontological Society Meeting 2019". 
 
@@ -42,7 +42,9 @@ schedule:
   - starttime: 2019-09-17T09:40
     endtime: 2019-09-17T10:30
     topic: "Lecture: Introduction to Bayesian Phylogenetics and RevBayes"
-    material: <a href="">Lecture slides</a>
+    material: 
+    - <a href="https://www.dropbox.com/s/vxk31rdpcyeajkj/1_Bayesian_inference.pdf?dl=0">Lecture slides 1</a>
+    - <a href="https://www.dropbox.com/s/vxk31rdpcyeajkj/2_RevBayes.pdf?dl=0">Lecture slides 2</a>
     instructors: "&#x1F468;&#x200D;&#x1F3EB;"
 
   - starttime: 2019-09-17T10:30
@@ -53,7 +55,8 @@ schedule:
   - starttime: 2019-09-17T11:00
     endtime: 2019-09-17T12:20
     topic: "Lecture & Practical: Molecular Clocks"
-    material: <a href="">Lecture slides</a>
+    material: 
+    - <a href="https://www.dropbox.com/s/qbpoafld1gj5vcx/3_Molecular_Evolution.pdf?dl=0">Lecture slides 3</a>
     tutorials: 
      - dating
      - dating/global
@@ -82,7 +85,8 @@ schedule:
   - starttime: 2019-09-17T15:10
     endtime: 2019-09-17T16:30
     topic: "Total-Evidence Analysis"
-    material: <a href="">Lecture slides</a>
+    material: 
+    - <a href="https://www.dropbox.com/s/abic5stxas1fxex/6_Total_evidence_dating.pdf?dl=0">Lecture slides 3</a>
     tutorials: dating/tefbd
     instructors: 
      - "&#x1F469;&#x1F3FB;&#x200D;&#x1F3EB;"
