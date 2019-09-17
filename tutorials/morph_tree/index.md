@@ -2,21 +2,14 @@
 title: Discrete morphology - Tree Inference
 subtitle: Phylogenetic inference with discrete morphological data
 authors:  April M. Wright, Michael J. Landis and Sebastian Höhna
-level: 2
-order: 4
+level: 3
+order: 2
 prerequisites:
 - intro
 - mcmc
 - ctmc
 exclude_files: 
-- data/mammals_thinned_placenta_type.nex
-- data/mammals_thinned.tree
-- scripts/mcmc_ase_freeK_RJ.Rev
-- scripts/mcmc_ase_freeK.Rev
-- scripts/mcmc_ase_mk.Rev
-- scripts/plot_anc_states.R
 index: true
-title-old: RB_DiscreteMorphology_Tutorial
 redirect: false
 ---
 
