@@ -20,7 +20,7 @@ probability of being in a 1 state is equal to $1/2$.
 In this tutorial, we will apply a single-rate Mk model as a prior on
 binary morphological character change. If you are interested extensions
 of the Mk model that relax the assumptions of symmetric state change,
-please see {% page_ref morph %}.
+please see {% page_ref morph_tree %}.
 
 Because of the way morphological data are collected, we need to exercise
 caution in how we model the data. Traditionally, phylogenetic trees were
