@@ -15,8 +15,8 @@ sf ~ dnDirichlet(sf_hp)
 er_hp <- v(1,1,1,1,1,1)
 er ~ dnDirichlet(er_hp)
 
-moves.append( mvSimplexBeta(er, alpha=10.0, weight=2.0) )
-moves.append( mvSimplexBeta(sf, alpha=10.0, weight=3.0) )
+moves.append( mvBetaSimplex(er, alpha=10.0, weight=2.0) )
+moves.append( mvBetaSimplex(sf, alpha=10.0, weight=3.0) )
 
 # Create the matrix #
 Q_cytb := fnGTR(er,sf)
