@@ -182,7 +182,7 @@ lines) and unsampled (dotted lines).
 
 <p>The joint prior distribution on tree topologies and divergence times of
 living and extinct species used in this tutorial is described by the
-<em>fossilized birth-death</em> (FBD) process (missing reference). This
+<em>fossilized birth-death</em> (FBD) process <a href="#Stadler2010">(Stadler 2010; Heath et al. 2014; Stadler et al. 2018)</a>. This
 model simply treats the fossil observations as part of the process
 governing the tree topology and branch times (the ‘Time Tree Model’ node in
 <a href="#fig_module_gm"></a>). The fossilized birth-death process provides a
@@ -274,7 +274,7 @@ However, in most cases taxonomic species are represented in the fossil record by
 different stratigraphic ages. 
 These <em>stratigraphic ranges</em> are the first and last occurrences observed for a single morpho-species in the fossil
 record (for extant species, the last occurrence is the present day).
-In order to compute the density of the FBD while accounting for this stratigraphic species range data, we need to assume some model of speciation that will allow us to assign fossil specimens to species. (missing reference) describe an extension to the FBD which assigns lineages to taxonomic species through a process of asymmetric or “budding” speciation. This model assumes that at each asymmetric speciation event, one descendant species represents a new species, while the other descendant represents the continuation of the parent species. In this way, each lineage (and therefore all the fossil specimens sampled along that lineage) can be mapped to a unique species. An example realization of such a speciation process is shown in <a href="#fig_budding"></a>.</p>
+In order to compute the density of the FBD while accounting for this stratigraphic species range data, we need to assume some model of speciation that will allow us to assign fossil specimens to species. <a href="#Stadler2018">Stadler et al. (2018)</a> describe an extension to the FBD which assigns lineages to taxonomic species through a process of asymmetric or “budding” speciation. This model assumes that at each asymmetric speciation event, one descendant species represents a new species, while the other descendant represents the continuation of the parent species. In this way, each lineage (and therefore all the fossil specimens sampled along that lineage) can be mapped to a unique species. An example realization of such a speciation process is shown in <a href="#fig_budding"></a>.</p>
 
 <figure id="fig_budding"><p><img src="figures/budding1.png" width="400" />
 <script type="math/tex">\implies</script>
@@ -287,7 +287,7 @@ Fossil specimens lying along this path are assigned to the same taxonomic specie
 (B) The same lineage is highlighted in the oriented tree with lineages representing the same species collapsed into straight lines.</figcaption>
 </figure>
 
-<p>(missing reference) show how to compute the density of the “sampled tree”, which is obtained by pruning all unsampled lineages after asymmetric species identities have been assigned in the complete tree (<a href="#fig_sampled"></a>). This gives rise to the “Fossilized Birth Death Range Process” (implemented as <code class="highlighter-rouge">FBDRP</code> in RevBayes). This is the model we will be using in this tutorial. It is important to note that the tips in the sampled tree represent the age of the youngest sample for each species.</p>
+<p><a href="#Stadler2018">Stadler et al. (2018)</a> show how to compute the density of the “sampled tree”, which is obtained by pruning all unsampled lineages after asymmetric species identities have been assigned in the complete tree (<a href="#fig_sampled"></a>). This gives rise to the “Fossilized Birth Death Range Process” (implemented as <code class="highlighter-rouge">FBDRP</code> in RevBayes). This is the model we will be using in this tutorial. It is important to note that the tips in the sampled tree represent the age of the youngest sample for each species.</p>
 
 <figure id="fig_sampled"><p><img src="figures/sampled_tree.png" width="400" /></p>
 <figcaption>The “sampled tree” is produced by pruning unsampled lineages from the oriented tree in <a href="#fig_budding"></a>B and collapsing intermediate fossil samples other than the first and last occurrences into stratigraphic ranges.</figcaption>
@@ -1741,6 +1741,16 @@ a different way to view the tree.</p>
 
 </li>
 <li><span id="Ronquist2012a">Ronquist F., Klopfstein S., Vilhelmsen L., Schulmeister S., Murray D.L., Rasnitsyn A.P. 2012. A total-evidence approach to dating with fossils, applied to the early radiation of the Hymenoptera. Systematic Biology. 61:973–999.</span>
+
+</li>
+<li><span id="Stadler2010">Stadler T. 2010. Sampling-through-time in birth-death trees. Journal of Theoretical Biology. 267:396–404.</span>
+
+<a href="https://doi.org/10.1016/j.jtbi.2010.09.010">10.1016/j.jtbi.2010.09.010</a>
+
+</li>
+<li><span id="Stadler2018">Stadler T., Gavryushkina A., Warnock R.C.M., Drummond A.J., Heath T.A. 2018. The fossilized birth-death model for the analysis of stratigraphic range data under different speciation modes. Journal of theoretical biology. 447:41–55.</span>
+
+<a href="https://doi.org/10.1016/j.jtbi.2018.03.005">10.1016/j.jtbi.2018.03.005</a>
 
 </li>
 <li><span id="Thorne2002">Thorne J.L., Kishino H. 2002. Divergence time and evolutionary rate estimation with multilocus data. Systematic Biology. 51:689–702.</span>
