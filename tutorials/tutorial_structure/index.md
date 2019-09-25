@@ -258,7 +258,10 @@ This is beyond the scope of this tutorial, but information is readily available 
 {% subsubsection Windows %}
 
 
-We will first launch RevBayes. Note where RevBayes is stored on your computer.
+We will first launch RevBayes.
+Open your terminal application.
+See the aside `Command Line on Windows` for more information on this point.
+Note where RevBayes is stored on your computer.
 
 For example, my copy of RevBayes is stored a software directory in my user home.
 Therefore, to launch my RevBayes, I will type: 
