@@ -72,7 +72,7 @@ Each contained directory is separated by a `/` character.
 The above directory structure would be written out like so:
 
 ```
-utorials/tutorial_structure/
+tutorials/tutorial_structure/
 ```
 {:.bash}
 
@@ -111,12 +111,12 @@ If everything has suceeded, you will see the following output:
 
 {% subsubsection Windows %}
 
-The home directory on a computer on a Windows is labeled with a `c:\`. 
-Each contained directory is separated by a `\` character.
+The home directory on a computer on a Windows is labeled as `c:`. 
+Each contained directory is separated by a `\\` character.
 The above directory structure would be written out like so:
 
 ```
-c:\shared\tutorials\tutorial_structure\
+"c:\\april\\tutorials\\tutorial_structure"
 ```
 {:.bash}
 
@@ -130,7 +130,7 @@ In RevBayes, use the `setwd()` command in conjunction with your path to your tut
 For example, my command will look like so:
 
 ```
-setwd("c:\shared\tutorials\tutorial_structure\")
+setwd("c:\\april\\tutorials\\tutorial_structure")
 ```
 
 Finally, test your working directory like so:
@@ -205,7 +205,7 @@ This is an example of the Macintosh File Viewer. In this instance, I have adirec
 {% endfigure %}
   
 
-{% subsubsection Macintosh, Linux and Windows %}
+{% subsubsection Macintosh and Linux %}
 
 The home directory on a computer on in a terminal is labeled with a `~/`. 
 Each contained directory is separated by a `/` character.
@@ -254,3 +254,41 @@ The `System Path` tells your computer default locations to look for pieces of so
 If a piece of software is added to the path, it can be found and launched from anywhere on the computer.
 This is beyond the scope of this tutorial, but information is readily available on doing this from other sources. If RevBayes is in your path, it can be executed by simply typing `rb` on Windows or `./rb` on Mac or Linux.
 {% endaside %}
+
+{% subsubsection Windows %}
+
+
+We will first launch RevBayes. Note where RevBayes is stored on your computer.
+
+For example, my copy of RevBayes is stored a software directory in my user home.
+Therefore, to launch my RevBayes, I will type: 
+```
+~/software/rb
+```
+
+Next, we will set our working directory. 
+Windows will not pick up file paths from the environment in the same way Mac and Linux will.
+Therefore, we will need to write out our directories, separated by `\\` characters.
+My tutorial directory, as shown in Figure 1, will be written out as:
+
+```
+setwd("c:\\april\\tutorials\\tutorial_structure")
+```
+
+
+Finally, test your working directory like so:
+
+```
+ source("scripts/test.Rev")
+```
+
+If everything has suceeded, you will see the following output:
+
+
+```
+   Processing file "scripts/test.Rev"
+   Hi there! Welcome to RevBayes! I am now going to read in some test data.
+   Successfully read one character matrix from file 'data/primates_and_galeopterus_cytb.nex'
+   Congratulations, you set up your scripts and code directories correctly.
+```
+{:.Rev-output}
