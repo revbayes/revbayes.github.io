@@ -17,7 +17,6 @@ include_files:
 
 This tutorial covers how to set up files and directories to work effectively in RevBayes {% cite Hoehna2014a Hoehna2016b %}.
 This workshop assumes no familiarity with the command line, or programming in general. 
-This tutorial will discuss how to set up data and scripts directories for use with RevBayes.
 The themes of good directory structuring shown in this tutorial will be used in many othe RevBayes tutorials.  
 
 {% section Using your computer's graphical user interface %}
@@ -31,10 +30,13 @@ For each tutorial that you do, you should create a _directory_, sometimes called
 Since we are doing the `tutorial_structure` tutorial, please title your directory `tutorial_structure`.
 In this new directory, create two more directories, one called _data_ and one called _scripts_. 
 
-You will note a box called `Data files and scripts` in the upper left-hand corner of this webapge.
+You will note a box called `Data files and scripts` in the upper left-hand corner of this webpage.
 Please download the files listed in this directory.
 Drag and drop `example_file.nex` into your `data` directory.
 Then, move `test.Rev` into your `scripts` directory.
+Having a directory of data that contains all your data for a project, and a directory of scripts is a good practice. 
+This allows you to stay organized and avoid misplacing crucial scripts in your data analysis pipeline.
+
 
 {% aside Spaces In Filenames %}
 Most scientific programming languages and software does not deal well with spaces in file names.
@@ -42,16 +44,12 @@ If you will be doing much scientific computing, it will be best to get in the ha
 {% endaside %}
 
 
-
-Having a directory of data that contains all your data for a project, and a directory of scripts is a good practice. 
-This allows you to stay organized and avoid misplacing crucial scripts in your data analysis pipeline.
-
 {% subsection Preparing to Run RevBayes %}
 
 In this section of the tutorial, we will focus on running RevBayes from your computer's graphical interface. 
 First, note down the location of your tutorial directory. 
 For example, mine is in my computer's user home, in a directory called `Tutorials`.
-This looks like this:
+A graphic of this is shown in Fig. 1.
 
 
 Computers do not understand the visual information of the directory structure.
@@ -72,7 +70,7 @@ Each contained directory is separated by a `/` character.
 The above directory structure would be written out like so:
 
 ```
-tutorials/tutorial_structure/
+~/tutorials/tutorial_structure/
 ```
 {:.bash}
 
@@ -83,6 +81,7 @@ Do this by double-clicking on `rb`.
 We will now set your working directory. 
 This ensures that RevBayes is aware of where in your computer your code and data are stored.
 By default, RevBayes assumes you are in your user home on your computer.
+Therefore, we can leave off the `~/`, as RevBayes will assume its presence. 
 In RevBayes, use the `setwd()` command in conjunction with your path to your tutorial to set your working directory. 
 For example, my command will look like so:
 
@@ -174,7 +173,7 @@ For each tutorial that you do, you should create a _directory_, sometimes called
 Since we are doing the `tutorial_structure` tutorial, please title your directory `tutorial_structure`.
 In this new directory, create two more directories, one called _data_ and one called _scripts_. 
 
-{% aside Aside header %}
+{% aside Spaces in filenames %}
 Most scientific programming languages and software does not deal well with spaces in file names.
 If you will be doing much scientific computing, it will be best to get in the habit of not using spaces in file and folder names.
 {% endaside %}
