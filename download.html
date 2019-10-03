@@ -89,9 +89,11 @@ Download and Install RevBayes
 
 <h3 id="linux">Linux</h3>
 
+<h4 id="if-you-have-root">If you have root</h4>
+
 <p>First you need to install cmake and boost:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo apt install cmake libboost-all-dev
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo apt install build-essential cmake libboost-all-dev
 </code></pre></div></div>
 
 <p>Then obtain the source and compile:</p>
@@ -104,6 +106,40 @@ cd revbayes/projects/cmake
 <p>For the MPI version:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./build.sh -mpi true
+</code></pre></div></div>
+
+<p><br /></p>
+
+<h4 id="if-you-do-not-have-root">If you do not have root</h4>
+
+<p>You will need your administrator to install build-essential and cmake for you.</p>
+
+<p>Then you can compile boost:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl -O -L https://dl.bintray.com/boostorg/release/1.71.0/source/boost_1_71_0.tar.gz
+tar -xzvf boost_1_71_0.tar.gz
+cd boost_1_71_0.tar.gz
+./bootstrap.sh --with-libraries=atomic,chrono,filesystem,system,regex,thread,date_time,program_options,math,serialization
+./b2 link=static
+</code></pre></div></div>
+
+<p>When it is done, something will like the following will be printed. You will need these paths for the next step.</p>
+
+<blockquote>
+  <p>The following directory should be added to compiler include paths:</p>
+
+  <p>/root/boost_1_71_0</p>
+
+  <p>The following directory should be added to linker library paths:</p>
+
+  <p>/root/boost_1_71_0/stage/lib</p>
+</blockquote>
+
+<p>Now obtain the source for revbayes and compile. Be sure to replace the paths in the last command with those you got from boost in the previous step.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/revbayes/revbayes.git revbayes
+cd revbayes/projects/cmake
+./build.sh -boost_root /root/boost_1_71_0 -boost_lib /root/boost_1_71_0/stage/lib
 </code></pre></div></div>
 
 <p><br /></p>
