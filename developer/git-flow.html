@@ -55,18 +55,12 @@
 	<h1 class="maintitle">Git Workflow Best Practices</h1>
 	
 	<h4 class="authors"></h4>
-  <h5>Last modified on March 10, 2018</h5>
+  <h5>Last modified on October  1, 2019</h5>
 </div>
-
-<h2 class="subsection" id="forking-the-revbayes-repo">Forking the RevBayes repo</h2>
-
-<p>Due to the size of the RevBayes project and the number of developers
-contributing to it, new developers should fork their own copy of the repository
-on GitHub, and contribute their changes via pull request.</p>
 
 <h2 class="subsection" id="branch-organization">Branch organization</h2>
 
-<p>The main branches of the RevBayes repo that should always exist are</p>
+<p>The main branches of the RevBayes repo exist are</p>
 
 <ul>
   <li><code class="highlighter-rouge">master</code></li>
@@ -74,26 +68,26 @@ on GitHub, and contribute their changes via pull request.</p>
 </ul>
 
 <p>The <code class="highlighter-rouge">master</code> branch should always reflect the state of the current release of
-RevBayes.
-The <code class="highlighter-rouge">development</code> branch should contain the working additions/changes to the
-code that are to be included in the next release.
-Under normal circumstances, you should not work on either of these branches
-directly.
-Rather, to make changes or work on a new feature, you should create a separate
-branch off of <code class="highlighter-rouge">development</code>.
-While working on your branch, frequently merge changes from <code class="highlighter-rouge">development</code> to
-stay up to date.
+RevBayes. The <code class="highlighter-rouge">development</code> branch contains the working additions/changes to the
+code that are to be included in the next release.</p>
+
+<p><strong>You should not work on either of these branches directly.</strong> Rather, to make changes or work on a new feature, you should create a separate branch off of <code class="highlighter-rouge">development</code>. While working on your branch, frequently merge changes from <code class="highlighter-rouge">development</code> to stay up to date.
 Once your work is ready, and <em>before</em> you merge your branch into <code class="highlighter-rouge">development</code>,
 make sure to merge any changes from <code class="highlighter-rouge">development</code> and verify the code is
 compiling and tests are passing.
-Never merge a feature branch directly into <code class="highlighter-rouge">master</code>, the only exception being
-hotfixes to the current release.
+Once these checks have been done, create a pull request to merge your branch into <code class="highlighter-rouge">development</code>. You can request reviewers for your pull request directly via GitHub, or by asking on Slack. After your pull request is approved, or if it has not been reviewed within 30 days, it will be merged into <code class="highlighter-rouge">development</code>.</p>
+
+<p>New features should <em>never</em> be merged directly into <code class="highlighter-rouge">master</code>. Only hotfixes to the current release may be merged into <code class="highlighter-rouge">master</code>.
 For hotfixes, create a separate branch from <code class="highlighter-rouge">master</code>, make the fix and verify
 it, and then merge the hotfix branch into <code class="highlighter-rouge">master</code> and <code class="highlighter-rouge">development</code>.</p>
 
 <h2 id="recommended-reading">Recommended reading</h2>
 
 <p><a href="http://nvie.com/posts/a-successful-git-branching-model/">http://nvie.com/posts/a-successful-git-branching-model/</a></p>
+
+<h2 class="subsection" id="forking-the-revbayes-repo">Forking the RevBayes repo</h2>
+
+<p>Forking the RevBayes repository is not mandatory as long as the workflow outlined above is respected. However, occasional developers or people who are considering contributing may fork their own copy of the repository on GitHub in order to keep the total number of branches reasonable. They can then contribute their changes via pull request.</p>
 
 <ol class="bibliography"></ol>
 
