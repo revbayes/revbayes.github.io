@@ -37,9 +37,9 @@ The standard way to build revbayes is to use `cmake`.  If you want to compile us
 
 ### Linux
 
-First you need to install cmake:
+First you need to install cmake and boost:
 
-    sudo apt install cmake
+    sudo apt install cmake libboost-all-dev
 
 Then obtain the source and compile:
 
