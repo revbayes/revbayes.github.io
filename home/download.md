@@ -67,7 +67,7 @@ Then you can compile boost:
     ./bootstrap.sh --with-libraries=atomic,chrono,filesystem,system,regex,thread,date_time,program_options,math,serialization
     ./b2 link=static
 
-When it is done, something will like the following will be printed. You will need these paths for the next step.
+When it is done, something like the following will be printed. You will need these paths for the next step.
 
 >    The following directory should be added to compiler include paths:
 >
@@ -89,11 +89,11 @@ Now obtain the source for revbayes and compile. Be sure to replace the paths in 
 
 1. Make sure that you have a C++ compiler installed on your computer. GCC 4.2 (or higher) and Apple LLVM version 6.0 have both been used successfully. If you don't have a C++ compiler, you should install Xcode.
 
-2. Make sure that you have CMake installed. One option to install CMake is using homebrew:
+2. Make sure that you have CMake and Boost installed. One option to install them is using homebrew:
 
     ``` 
 ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-brew install cmake
+brew install cmake boost
 ```
 
 3. Download RevBayes from our github repository. Clone the repository using git by running the following command in the terminal 
