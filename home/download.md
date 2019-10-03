@@ -37,9 +37,11 @@ The standard way to build revbayes is to use `cmake`.  If you want to compile us
 
 ### Linux
 
+#### If you have root
+
 First you need to install cmake and boost:
 
-    sudo apt install cmake libboost-all-dev
+    sudo apt install build-essential cmake libboost-all-dev
 
 Then obtain the source and compile:
 
@@ -50,6 +52,36 @@ Then obtain the source and compile:
 For the MPI version:
 
     ./build.sh -mpi true
+
+<br>
+
+#### If you do not have root
+
+You will need your administrator to install build-essential and cmake for you.
+
+Then you can compile boost:
+
+    curl -O -L https://dl.bintray.com/boostorg/release/1.71.0/source/boost_1_71_0.tar.gz
+    tar -xzvf boost_1_71_0.tar.gz
+    cd boost_1_71_0.tar.gz
+    ./bootstrap.sh --with-libraries=atomic,chrono,filesystem,system,regex,thread,date_time,program_options,math,serialization
+    ./b2 link=static
+
+When it is done, something will like the following will be printed. You will need these paths for the next step.
+
+>    The following directory should be added to compiler include paths:
+>
+>    /root/boost_1_71_0
+>
+>    The following directory should be added to linker library paths:
+>
+>    /root/boost_1_71_0/stage/lib
+
+Now obtain the source for revbayes and compile. Be sure to replace the paths in the last command with those you got from boost in the previous step.
+
+    git clone https://github.com/revbayes/revbayes.git revbayes
+    cd revbayes/projects/cmake
+    ./build.sh -boost_root /root/boost_1_71_0 -boost_lib /root/boost_1_71_0/stage/lib
 
 <br>
 
