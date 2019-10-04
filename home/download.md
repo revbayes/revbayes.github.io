@@ -266,3 +266,14 @@ export PATH=<your-revbayes-directory>/projects/cmake:$PATH
 
     Then save the file using ctrl^o and hit return, then exit using ctrl^x. Now quit the Terminal app and reopen it and the boost libraries will forever be in your path.
 
+
+* **I am using precompiled boost and getting messages like `undefined reference to boost::program_options` during the link step**
+
+    It's possible that the boost you are using was compiled with an older version of GCC than the one you are trying to use to compile RevBayes. [GCC switched the default ABI in newer versions](https://gcc.gnu.org/onlinedocs/libstdc++/manual/using_dual_abi.html). Try running:
+
+    ```
+    export CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0"
+    ```
+
+    and then run build.sh again
+    
