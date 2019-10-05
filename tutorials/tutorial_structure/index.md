@@ -16,7 +16,7 @@ include_files:
 {% section Overview %}
 
 This tutorial covers how to set up files and directories to work effectively in RevBayes {% cite Hoehna2014a Hoehna2016b %}.
-This workshop assumes no familiarity with the command line, or programming in general. 
+This workshop assumes no familiarity with the command line, or programming in general.
 The themes of good directory structuring shown in this tutorial will be used in many othe RevBayes tutorials.  
 
 {% section Using your computer's graphical user interface %}
@@ -24,17 +24,17 @@ The themes of good directory structuring shown in this tutorial will be used in 
 
 {% subsection Downloading and storing data and scripts %}
 
-Many of the RevBayes tutorials will as you to download data and/or scripts. 
+Many of the RevBayes tutorials will as you to download data and/or scripts.
 Let us begin by downloading the data and scripts associated with this tutorial.
 For each tutorial that you do, you should create a _directory_, sometimes called a folder, somewhere logical on your computer.
 Since we are doing the `tutorial_structure` tutorial, please title your directory `tutorial_structure`.
-In this new directory, create two more directories, one called _data_ and one called _scripts_. 
+In this new directory, create two more directories, one called _data_ and one called _scripts_.
 
 You will note a box called `Data files and scripts` in the upper left-hand corner of this webpage.
 Please download the files listed in this directory.
 Drag and drop `example_file.nex` into your `data` directory.
 Then, move `test.Rev` into your `scripts` directory.
-Having a directory of data that contains all your data for a project, and a directory of scripts is a good practice. 
+Having a directory of data that contains all your data for a project, and a directory of scripts is a good practice.
 This allows you to stay organized and avoid misplacing crucial scripts in your data analysis pipeline.
 
 
@@ -46,8 +46,8 @@ If you will be doing much scientific computing, it will be best to get in the ha
 
 {% subsection Preparing to Run RevBayes %}
 
-In this section of the tutorial, we will focus on running RevBayes from your computer's graphical interface. 
-First, note down the location of your tutorial directory. 
+In this section of the tutorial, we will focus on running RevBayes from your computer's graphical interface.
+First, note down the location of your tutorial directory.
 For example, mine is in my computer's user home, in a directory called `Tutorials`.
 A graphic of this is shown in Fig. 1.
 
@@ -61,11 +61,11 @@ Instead, we will translate this information into text.
 This is an example of the Macintosh File Viewer. In this instance, I have adirectory, `Tutorials` with a subdirectory for this specific tutorial.
 {% endfigcaption %}
 {% endfigure %}
-  
+
 
 {% subsubsection Macintosh %}
 
-The home directory on a computer on a Mac is labeled with a `~/`. 
+The home directory on a computer on a Mac is labeled with a `~/`.
 Each contained directory is separated by a `/` character.
 The above directory structure would be written out like so:
 
@@ -76,13 +76,13 @@ The above directory structure would be written out like so:
 
 Note down where you have your tutorial stored.
 
-Next, we will launch RevBayes. 
+Next, we will launch RevBayes.
 Do this by double-clicking on `rb`.
-We will now set your working directory. 
+We will now set your working directory.
 This ensures that RevBayes is aware of where in your computer your code and data are stored.
 By default, RevBayes assumes you are in your user home on your computer.
-Therefore, we can leave off the `~/`, as RevBayes will assume its presence. 
-In RevBayes, use the `setwd()` command in conjunction with your path to your tutorial to set your working directory. 
+Therefore, we can leave off the `~/`, as RevBayes will assume its presence.
+In RevBayes, use the `setwd()` command in conjunction with your path to your tutorial to set your working directory.
 For example, my command will look like so:
 
 ```
@@ -107,10 +107,13 @@ If everything has suceeded, you will see the following output:
 ```
 {:.Rev-output}
 
+{% aside If something goes wrong %}
+If you were not able to successfully execute the script, the most common culprit is that RevBayes is not executing from where you think. Try running getwd() and making sure that your starting working directory is what you think it is.
+{% endaside %}
 
 {% subsubsection Windows %}
 
-The home directory on a computer on a Windows is labeled as `c:`. 
+The home directory on a computer on a Windows is labeled as `c:`.
 Each contained directory is separated by a `\\` character.
 The above directory structure would be written out like so:
 
@@ -121,11 +124,11 @@ The above directory structure would be written out like so:
 
 Note down where you have your tutorial stored.
 
-Next, we will launch RevBayes. 
+Next, we will launch RevBayes.
 Do this by double-clicking on `rb`.
-We will now set your working directory. 
+We will now set your working directory.
 This ensures that RevBayes is aware of where in your computer your code and data are stored.
-In RevBayes, use the `setwd()` command in conjunction with your path to your tutorial to set your working directory. 
+In RevBayes, use the `setwd()` command in conjunction with your path to your tutorial to set your working directory.
 For example, my command will look like so:
 
 ```
@@ -156,7 +159,7 @@ Linux users must access RevBayes via the command line interface.
 
 {% section Using your computer's terminal interface %}
 
-Many RevBayes users may want to use RevBayes from the `command-line interface`. 
+Many RevBayes users may want to use RevBayes from the `command-line interface`.
 This technology allows users to interact directly with the computer's file system.
 It is the predominant way many remote servers and supercomputers are used.
 
@@ -167,11 +170,11 @@ Linux and Macintosh users have a command line interface by default on their mach
 
 {% subsection Downloading and storing data and scripts %}
 
-Many of the RevBayes tutorials will as you to download data and/or scripts. 
+Many of the RevBayes tutorials will as you to download data and/or scripts.
 Let us begin by downloading the data and scripts associated with this tutorial.
 For each tutorial that you do, you should create a _directory_, sometimes called a folder, somewhere logical on your computer.
 Since we are doing the `tutorial_structure` tutorial, please title your directory `tutorial_structure`.
-In this new directory, create two more directories, one called _data_ and one called _scripts_. 
+In this new directory, create two more directories, one called _data_ and one called _scripts_.
 
 {% aside Spaces in filenames %}
 Most scientific programming languages and software does not deal well with spaces in file names.
@@ -183,13 +186,13 @@ Please download the files listed in this directory.
 Drag and drop `primates_and_galeopterus_cytb.nex` into your `data` directory.
 Then, move `test.Rev` into your `scripts` directory.
 
-Having a directory of data that contains all your data for a project, and a directory of scripts is a good practice. 
+Having a directory of data that contains all your data for a project, and a directory of scripts is a good practice.
 This allows you to stay organized and avoid misplacing crucial scripts in your data analysis pipeline.
 
 {% subsection Preparing to Run RevBayes %}
 
-In this section of the tutorial, we will focus on running RevBayes from your computer's graphical interface. 
-First, note down the location of your tutorial directory. 
+In this section of the tutorial, we will focus on running RevBayes from your computer's graphical interface.
+First, note down the location of your tutorial directory.
 For example, mine is in my laptop's shared drive, in a directory called `tutorials`.
 This can be seen in {% ref Directory %}
 
@@ -202,11 +205,11 @@ Instead, we will translate this information into text.
 This is an example of the Macintosh File Viewer. In this instance, I have adirectory, `tutorials` with a subdirectory for this specific tutorial.
 {% endfigcaption %}
 {% endfigure %}
-  
+
 
 {% subsubsection Macintosh and Linux %}
 
-The home directory on a computer on in a terminal is labeled with a `~/`. 
+The home directory on a computer on in a terminal is labeled with a `~/`.
 Each contained directory is separated by a `/` character.
 The above directory structure would be written out like so:
 
@@ -225,7 +228,7 @@ cd ~/Tutorials/tutorial_structure/
 Next, we will launch RevBayes. First, note where RevBayes is stored on your computer.
 
 For example, my copy of RevBayes is stored a software directory in my user home.
-Therefore, to launch my RevBayes, I will type: 
+Therefore, to launch my RevBayes, I will type:
 ```
 ~/software/rb
 ```
@@ -263,12 +266,12 @@ See the aside `Command Line on Windows` for more information on this point.
 Note where RevBayes is stored on your computer.
 
 For example, my copy of RevBayes is stored a software directory in my user home.
-Therefore, to launch my RevBayes, I will type: 
+Therefore, to launch my RevBayes, I will type:
 ```
 ~/software/rb
 ```
 
-Next, we will set our working directory. 
+Next, we will set our working directory.
 Windows will not pick up file paths from the environment in the same way Mac and Linux will.
 Therefore, we will need to write out our directories, separated by `\\` characters.
 My tutorial directory, as shown in Figure 1, will be written out as:
