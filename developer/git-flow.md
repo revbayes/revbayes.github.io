@@ -1,5 +1,5 @@
 ---
-title: Git Workflow Best Practices
+title: RevBayes Git Workflow
 subtitle: How to contribute code effectively
 category: Developer
 order: 1
