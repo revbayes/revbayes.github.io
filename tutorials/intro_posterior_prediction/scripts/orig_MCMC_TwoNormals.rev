@@ -1,0 +1,57 @@
+# Read in empirical dataset
+# Sexually dimorphic population
+# 100 trait values - 50 from each sex
+
+data <- readTable("../data/data.txt")
+
+# Setting Uniform(0,10) priors on the mean of our two Normal models
+mean_1 ~ dnUnif(0,10)
+mean_2 ~ dnUnif(0,10)
+
+# Setting Uniform(0,10) priors on the standard deviation of our two Normal models
+sd_1 ~ dnUnif(0,10)
+sd_2 ~ dnUnif(0,10)
+
+# NOTE: We are assuming that we've sampled an equal ratio of males and females.
+
+# Defining equal mixture proportions
+mixture_probs ~ dnDirichlet(v(0.5,0.5))
+mixture_probs.setValue(v(0.5,0.5))
+
+# Setting up our two-normal model
+for (i in 1:data.size()){
+	m[i] ~ dnMixture(v(mean_1,mean_2),mixture_probs)
+	s[i] ~ dnMixture(v(sd_1,sd_2),mixture_probs)
+	d[i] ~ dnNormal(m[i],abs(s[i])) # Need to use abs() here to make sure sd is a RealPos
+	d[i].clamp(data[i][1])
+}
+
+# Initializing vector of moves
+moves = VectorMoves()
+
+# Adding slide moves for mean and standard deviation
+moves.append( mvSlide(mean_1, delta=1, weight=1.0) )
+moves.append( mvSlide(mean_2, delta=1, weight=1.0) )
+moves.append( mvSlide(sd_1, delta=1, weight=1.0) )
+moves.append( mvSlide(sd_2, delta=1, weight=1.0) )
+for (i in 1:data.size()){
+	moves.append( mvMixtureAllocation(m[i], weight=1.0) )
+	moves.append( mvMixtureAllocation(s[i], weight=1.0) )
+}
+
+myModel = model( mean_1 )
+
+# Initializing vector of monitors
+monitors = VectorMonitors()
+
+# Adding model and screen monitors
+monitors.append( mnModel(filename="twoNormals_posterior.log",printgen=10,separator="	") )
+monitors.append( mnFile(m,filename="twoNormals_means.log",printgen=10,separator="	",posterior=FALSE,likelihood=FALSE,prior=FALSE) )
+monitors.append( mnFile(s,filename="twoNormals_sds.log",printgen=10,separator="	",posterior=FALSE,likelihood=FALSE,prior=FALSE) )
+monitors.append( mnScreen(printgen=10, mean_1, mean_2, sd_1, sd_2))
+
+# Set up MCMC object
+myMCMC = mcmc(myModel,monitors,moves,nruns=1)
+
+myMCMC.run(generations=10000)
+
