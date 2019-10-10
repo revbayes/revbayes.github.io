@@ -1,0 +1,84 @@
+# Read in model log file from MCMC
+postValMeans <- readMatrix("twoNormals_means.log")
+postValSDs <- readMatrix("twoNormals_sds.log")
+
+# Read in empirical data
+empDataMatrix <- readMatrix("../data/data.txt")
+
+# Convert empirical data format to a vector (hacky)
+for (i in 1:empDataMatrix.size()){
+	empData[i] <- empDataMatrix[i][1] 
+}
+
+# Simulate datasets and store in matrix
+simCounter = 1
+for (gen in 50:postValMeans.size()){
+	for (j in 1:empData.size()){
+		sims[simCounter][j] <- rnorm(n=1, mean=postValMeans[gen][j+1], sd=postValSDs[gen][j+1])[1]
+	}
+	simCounter++
+}
+
+# Sort each simulated dataset
+for ( s in 1:sims.size() ){
+	sims[s] <- sort(sims[s])
+}
+
+# Sort empirical dataset
+empData <- sort(empData)
+
+# Define generic function to calculate a chosen percentile, p
+function percentile(p,nums){
+	pos <- round( (p/100) * nums.size() )
+	return nums[pos]
+}
+
+# Calculate empirical test statistics
+emp_mean <- mean(empData)
+emp_median <- median(empData)
+emp_1st <- percentile(1,empData)
+emp_90th <- percentile(90,empData)
+
+# Calculate simulated data test statistics
+for ( s in 1:sims.size() ){
+	sim_means[s] <- mean(sims[s])
+	sim_medians[s] <- median(sims[s])
+	sim_1sts[s] <- percentile(1,sims[s])
+	sim_90ths[s] <- percentile(90,sims[s])
+}
+
+function pVal(e,s){
+	lessThan <- 0
+	for (i in 1:s.size()){
+		if (e > s[i]){
+			lessThan++
+		}
+	}
+	return lessThan/s.size()
+}
+
+# Calculate posterior predictive p-values
+p_means <- pVal(emp_mean,sim_means)
+p_medians <- pVal(emp_median,sim_medians)
+p_1sts <- pVal(emp_1st,sim_1sts)
+p_90ths <- pVal(emp_90th,sim_90ths)
+
+# Print p-values
+print("P-value mean:",p_means)
+print("P-value median:",p_medians)
+print("P-value 1st percentile:",p_1sts)
+print("P-value 90th percentile:",p_90ths)
+
+# Calculate effect sizes for test statistics
+eff_means <- abs(emp_mean-median(sim_means))/stdev(sim_means)
+eff_medians <- abs(emp_median-median(sim_medians))/stdev(sim_medians)
+eff_1sts <- abs(emp_1st-median(sim_1sts))/stdev(sim_1sts)
+eff_90ths <- abs(emp_90th-median(sim_90ths))/stdev(sim_90ths)
+
+# Print effect sizes
+print("Effect size mean:",eff_means)
+print("Effect size median:",eff_medians)
+print("Effect size 1st percentile:",eff_1sts)
+print("Effect size 90th percentile:",eff_90ths)
+
+

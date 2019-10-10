@@ -1,0 +1,134 @@
+# Read in empirical (original) dataset
+# Sexually dimorphic population
+# 100 trait values - 50 from each sex
+
+data <- readTable("../data/data.txt")
+
+# Reformatting data as a vector
+
+for (i in 1:data.size()){
+	d[i] <- data[i][1]
+}
+
+# Initializing model parameter values at arbitrary values
+
+mean_1 <- 7.0
+mean_2 <- 7.0
+
+sd_1 <- 2.0
+sd_2 <- 2.0
+
+# Defining a function to return prior densities.
+# In this case, we'll assume the same Uniform(0,10) priors on both means and standard deviations
+
+function priorDens(x){
+	return dUniform(x,0,10)
+}
+
+# Defining a function to return likelihoods
+# We are assuming that we've sampled an equal ratio of males and females, so we weight the
+# densities of the two Normal distributions equally. After weighting, we take the log of each
+# composite probability density to avoid underflow (i.e., rounding off to 0).
+
+function likeDens(m1,m2,s1,s2,dat){
+	
+	# Initialize the log-likelihood to 0
+	logLike <- 0
+	
+	# Iterate over the dataset and add the log of the composite probability density to the
+	# overall log-likelihood.
+	for (i in 1:d.size()){
+		logLike <- logLike + ln( dnormal(d[i],m1,s1,log=FALSE)*0.5 + dnormal(d[i],m2,s2,log=FALSE)*0.5 )
+	}
+	
+	return logLike
+}
+
+# Defining a function to propose and evaluate slide moves for all four parameters
+# This function handles proposals and updates under the Metropolis-Hastings algorithm
+
+function slideMoves(m1,m2,s1,s2,dat,width=0.8){
+	
+	# Initialize posterior density	
+	currentPostDens <- likeDens(m1,m2,s1,s2,dat) + priorDens(m1) + priorDens(m2) + priorDens(s1) + priorDens(s2)
+	
+	# Proposal for mean_1
+	new_m1 <- rUniform(1, m1-(width/2), m1+(width/2))[1]
+	newPostDens_m1 <- likeDens(new_m1,m2,s1,s2,dat) + priorDens(new_m1) + priorDens(m2) + priorDens(s1) + priorDens(s2)
+	m1 <- updateP(m1,new_m1,currentPostDens,newPostDens_m1)
+	if (m1 == new_m1){
+		# Reset posterior density
+		currentPostDens <- newPostDens_m1
+	}
+	
+	# Proposal for sd_1
+	new_s1 <- rUniform(1, s1-(width/2), s1+(width/2))[1]
+	if (new_s1 > 0.0){	# Puts 0 prior density on sd values < 0
+		newPostDens_s1 <- likeDens(m1,m2,new_s1,s2,dat) + priorDens(m1) + priorDens(m2) + priorDens(new_s1) + priorDens(s2)
+		s1 <- updateP(s1,new_s1,currentPostDens,newPostDens_s1)
+	}
+	if (s1 == new_s1){
+		# Reset posterior density
+		currentPostDens <- newPostDens_s1
+	}
+	
+	# Proposal for mean_2	
+	new_m2 <- rUniform(1, m2-(width/2), m2+(width/2))[1]
+	newPostDens_m2 <- likeDens(m1,new_m2,s1,s2,dat) + priorDens(m1) + priorDens(new_m2) + priorDens(s1) + priorDens(s2)
+	m2 <- updateP(m2,new_m2,currentPostDens,newPostDens_m2)
+	if (m2 == new_m2){
+		# Reset posterior density
+		currentPostDens <- newPostDens_m2
+	}
+
+	# Proposal for sd_2	
+	new_s2 <- rUniform(1, s2-(width/2), s2+(width/2))[1]
+	if (new_s2 > 0.0){	# Puts 0 prior density on sd values < 0
+		newPostDens_s2 <- likeDens(m1,m2,s1,new_s2,dat) + priorDens(m1) + priorDens(m2) + priorDens(s1) + priorDens(new_s2)
+		s2 <- updateP(s2,new_s2,currentPostDens,newPostDens_s2)
+	}
+	
+	return v(m1,m2,s1,s2)	
+}
+
+# This function evaluates potential updates by comparing proposed and current posterior
+# densities, then choosing whether to accept a proposal by comparing it to a random 
+# U(0,1) draw. This function is called from inside the slideMoves function.
+
+function updateP(p,newP,currentDens,propDens){
+	r <- rUniform(1,0,1)[1]
+	if (r < exp(propDens-currentDens)) {
+		return newP
+	} else {
+		return p
+	}
+}
+
+# This function evaluates the posterior density (likelihood * prior)
+# Used primarily for printing to file
+
+function postDens(p){
+	pd <- likeDens(p[1],p[2],p[3],p[4],d) + priorDens(p[1]) + priorDens(p[2]) + priorDens(p[3]) + priorDens(p[4])
+	return pd
+}
+
+# ----> Run MCMC <----
+
+numGens <- 10000
+params <- v(mean_1,mean_2,sd_1,sd_2)
+
+# Write header to log file
+write("Iteration	Posterior	Likelihood	Prior	mean_1	mean_2	sd_1	sd_2","\n",filename="twoNormals_fullMCMC.log",append=TRUE)
+
+for (g in 1:numGens){
+	
+	# Update parameters with slide move on each
+	params <- slideMoves(params[1],params[2],params[3],params[4],d)
+	
+	# Print parameters to screen and to the log file
+	if (g % 10 == 0){
+		print(params)
+		write(g,postDens(params),likeDens(params[1],params[2],params[3],params[4],d),priorDens(params[1]) + priorDens(params[2]) + priorDens(params[3]) + priorDens(params[4]),params[1],params[2],params[3],params[4],"\n",filename="twoNormals_fullMCMC.log",append=TRUE)
+	}
+}
+
