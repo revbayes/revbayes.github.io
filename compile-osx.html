@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: Compile on Mac OS X</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
+      </a>
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/download">Download</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/documentation/">Documentation</a></li>
+        <li><a href="https://revbayes.github.io/revscripter/">RevScripter</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/jobs/">Jobs</a></li>
+        <li><a href="/developer/">Developer</a></li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <h1 class="maintitle">
+
+Compile on Mac OS X
+
+</h1>
+<hr>
+
+<p>The standard way to build revbayes is to use <code class="highlighter-rouge">cmake</code>.  If you want to compile using <code class="highlighter-rouge">meson</code>, see <a href="https://github.com/revbayes/revbayes/blob/development/projects/meson/README.md">revbayes/projects/meson/README.md</a>.</p>
+
+<h2 id="pre-requisites">Pre-requisites</h2>
+
+<p>You will need to have C++ compiler installed on your computer. GCC 4.2 (or higher) and Apple LLVM version 6.0 have both been used successfully. If you don’t have a C++ compiler, you should install Xcode.</p>
+
+<p>You will also need to have CMake and Boost installed</p>
+
+<h3 id="if-you-have-root">If you have root</h3>
+
+<p>One option to install them is using homebrew:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+brew install cmake boost
+</code></pre></div></div>
+
+<h3 id="if-you-do-not-have-root">If you do not have root</h3>
+
+<p>TODO: <a href="https://cmake.org/install/">Test instructions for installing cmake</a></p>
+
+<p>Then you can compile boost:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl -O -L https://dl.bintray.com/boostorg/release/1.71.0/source/boost_1_71_0.tar.gz
+tar -xzvf boost_1_71_0.tar.gz
+cd boost_1_71_0.tar.gz
+./bootstrap.sh --with-libraries=atomic,chrono,filesystem,system,regex,thread,date_time,program_options,math,serialization
+./b2 link=static
+</code></pre></div></div>
+
+<p>When it is done, something like the following will be printed. You will need these paths for the next step.</p>
+
+<blockquote>
+  <p>The following directory should be added to compiler include paths:</p>
+
+  <p>/root/boost_1_71_0</p>
+
+  <p>The following directory should be added to linker library paths:</p>
+
+  <p>/root/boost_1_71_0/stage/lib</p>
+</blockquote>
+
+<h2 id="compile">Compile</h2>
+
+<p>Download RevBayes from our github repository. Clone the repository using git by running the following command in the terminal</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/revbayes/revbayes.git revbayes
+</code></pre></div></div>
+
+<p>Open a terminal and go to the RevBayes cmake directory:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd revbayes/projects/cmake
+</code></pre></div></div>
+
+<p>Now either build the standard version using the following:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./build.sh
+</code></pre></div></div>
+
+<p>or build the MPI version to produce the rb-mpi executeable:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./build.sh -mpi true
+</code></pre></div></div>
+
+<p>To compile with a locally compiled boost, do the following. Be sure to replace the paths in the build command with those you got from boost in the previous step.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./build.sh -boost_root /root/boost_1_71_0 -boost_lib /root/boost_1_71_0/stage/lib
+</code></pre></div></div>
+
+<p>You will likely see some compiler warnings (e.g. <code class="highlighter-rouge">clang: warning: optimization flag '-finline-functions' is not supported</code>). This is normal.</p>
+
+<h3 id="troubleshooting">Troubleshooting</h3>
+
+<ul>
+  <li>
+    <p><code class="highlighter-rouge">rb: command not found</code></p>
+
+    <p>The problem is that you tried to run RevBayes but your computer doesn’t know where the executable is. The easiest way is to add the directory in which you compiled RevBayes to your system path:</p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export PATH=&lt;your_revbayes_directory&gt;/projects/cmake:$PATH  
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">Error cmake not found!</code></p>
+
+    <p>Please double check that CMake is installed. For OS X, go to step 2 above.</p>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">Error can't find the libboost_filesystem.dylib library or Library not   loaded: libboost_filesystem.dylib</code></p>
+
+    <p>You need to add the boost libraries to your path variable. You may find that you have to export this <code class="highlighter-rouge">DYLD_LIBRARY_PATH</code> every time you open a new terminal window. To get around this, you can add this to your <code class="highlighter-rouge">.bash_profile</code> or <code class="highlighter-rouge">.bashrc</code> file (which lives in your home directory). To change this, open a new terminal window and you should be in the home directory. If you do not have either of these files, use the text editor <code class="highlighter-rouge">nano</code> to create this file type:</p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd ~
+touch .bash_profile
+nano .bash_profile
+</code></pre></div>    </div>
+
+    <p>Then add the following lines, replacing <code class="highlighter-rouge">&lt;your-revbayes-directory&gt;</code> with wherever you put the Revbayes Github repository:</p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export DYLD_LIBRARY_PATH=&lt;your-revbayes-directory&gt;/boost_1_60_0/stage/lib:$DYLD_LIBRARY_PATH
+export PATH=&lt;your-revbayes-directory&gt;/projects/cmake:$PATH  
+</code></pre></div>    </div>
+
+    <p>Then save the file using ctrl^o and hit return, then exit using ctrl^x. Now quit the Terminal app and reopen it and the boost libraries will forever be in your path.</p>
+  </li>
+  <li>
+    <p><strong>I am using precompiled boost and getting messages like <code class="highlighter-rouge">undefined reference to boost::program_options</code> during the link step</strong></p>
+
+    <p>It’s possible that the boost you are using was compiled with an older version of GCC than the one you are trying to use to compile RevBayes. <a href="https://gcc.gnu.org/onlinedocs/libstdc++/manual/using_dual_abi.html">GCC switched the default ABI in newer versions</a>. Try running:</p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  export CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0"
+</code></pre></div>    </div>
+
+    <p>and then run build.sh again</p>
+  </li>
+</ul>
+
+
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "bash highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "bash highlighter-rouge";
+//   }
+//   
+// });
+</script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+    });
+    MathJax.Hub.Queue(function () {
+      $(".aside").each(function() {
+          $("div .MathJax", this).hide();
+      });
+    });
+</script>
+<script src="/assets/js/base.js"></script>
+
+  </body>
+</html>
