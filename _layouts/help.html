@@ -4,16 +4,7 @@ subtitle: Rev Language Reference
 code_layout: Rev
 ---
 
-<div class="row">
-<div class="col-sm-4">
-    <nav class="sidebar_nav">
-        <ul class="list-unstyled">
-        {% for item in site.data.help %}
-        <li class="sidebar_item"><a href="{{ site.baseurl }}/{{ site.helpdir }}/{{ item.name | replace: '[', '%5B' | replace: ']', '%5D' }}.html">{{ item.name }}</a></li>
-        {% endfor %}
-        </ul>
-    </nav>
-</div>
+{% include help_index.html %}
 
 <div class="help col-sm-8">
     {% if page.entry %}
@@ -121,6 +112,14 @@ code_layout: Rev
             </div>
         {% endif %}
 
+        {% if page.entry.derived %}
+            <div class="help-section-body">
+            <ul class="list-unstyled">
+            {% for derived in page.entry.derived %}
+            <li><a href="{{ derived }}.html">{{ derived }}</a></li>
+            {% endfor %}
+            </ul>
+        {% endif %}
     {% else %}
     {{ content }}
     {% endif %}

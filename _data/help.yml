@@ -121,7 +121,7 @@
   references:
 - name: 'ancestralStateTree'
   return_type: 'Tree'
-  usage: 'ancestralStateTree(Tree<any> tree, AncestralStateTrace[]<any> ancestral_state_trace_vector, TraceTree<any> tree_trace, Bool<any> include_start_states, String<any> file, Probability|Integer<any> burnin, String<any> summary_statistic {valid options: "MAP"|"mean"}, String<any> reconstruction {valid options: "conditional"|"joint"|"marginal"}, Integer<any> site, Bool<any> verbose)'
+  usage: 'ancestralStateTree(Tree<any> tree, AncestralStateTrace[]<any> ancestral_state_trace_vector, TraceTree<any> tree_trace, Bool<any> include_start_states, String<any> file, Probability|Integer<any> burnin, String<any> summary_statistic {valid options: "MAP"|"mean"}, String<any> reconstruction {valid options: "conditional"|"joint"|"marginal"}, Integer<any> site, Bool<any> verbose, Natural<any> nStates)'
   arguments:
     - label: 'tree'
       description: 'The input tree to summarize ancestral states over.'
@@ -198,6 +198,13 @@
       value_type: 'Bool'
       default: 'TRUE'
       options:
+    - label: 'nStates'
+      description: 'The number of states for which we compute the posterior probability. By default it will be the best three.'
+      dag_type: '<any>'
+      pass_by: 'value'
+      value_type: 'Natural'
+      default: '3'
+      options:
   title:
   aliases:
   description:
@@ -211,7 +218,7 @@
   references:
 - name: 'annotateTree'
   return_type: 'Tree'
-  usage: 'annotateTree(Tree<any> tree, TraceTree<any> trace, String<any> file, Bool<any> ages, Bool<any> ccAges, Bool<any> ccp, Bool<any> conditionalAges, Probability<any> hpd, Bool<any> mean, Bool<any> sampledAncestors)'
+  usage: 'annotateTree(Tree<any> tree, TraceTree|TraceTree[]<any> trace, String<any> file, Bool<any> ages, Bool<any> ccAges, Bool<any> ccp, Bool<any> conditionalAges, Probability<any> hpd, Bool<any> mean, Bool<any> sampledAncestors)'
   arguments:
     - label: 'tree'
       description: 'The input tree which will be annotated.'
@@ -390,7 +397,7 @@
   references:
 - name: 'characterMapTree'
   return_type: 'Tree'
-  usage: 'characterMapTree(Tree<any> tree, AncestralStateTrace[]<any> ancestral_state_trace_vector, TraceTree<any> tree_trace, String<any> character_file, String<any> posterior_file, Probability|Integer<any> burnin, String<any> reconstruction {valid options: "conditional"|"joint"|"marginal"}, Integer<any> num_time_slices, Bool<any> verbose)'
+  usage: 'characterMapTree(Tree<any> tree, AncestralStateTrace[]<any> ancestral_state_trace_vector, TraceTree<any> tree_trace, String<any> character_file, String<any> posterior_file, String<any> shift_prob_file, Probability|Integer<any> burnin, String<any> reconstruction {valid options: "conditional"|"joint"|"marginal"}, Integer<any> num_time_slices, Bool<any> verbose)'
   arguments:
     - label: 'tree'
       description: 'The input tree to summarize the character history over.'
@@ -426,6 +433,13 @@
       pass_by: 'value'
       value_type: 'String'
       default:
+      options:
+    - label: 'shift_prob_file'
+      description: 'The name of the file to store the tree annotated with the shift probabilities of the character.'
+      dag_type: '<any>'
+      pass_by: 'value'
+      value_type: 'String'
+      default: 'NULL'
       options:
     - label: 'burnin'
       description: 'The fraction/number of samples to discard as burnin.'
@@ -563,6 +577,42 @@
     - 'Function'
     - 'RevObject'
   references:
+- name: 'combineCharacter'
+  return_type: 'AbstractHomologousDiscreteCharacterData'
+  usage: 'combineCharacter(AbstractHomologousDiscreteCharacterData<any> a, AbstractHomologousDiscreteCharacterData<any> b)'
+  arguments:
+    - label: 'a'
+      description: 'First character data object.'
+      dag_type: '<any>'
+      pass_by: 'const reference'
+      value_type: 'AbstractHomologousDiscreteCharacterData'
+      default:
+      options:
+    - label: 'b'
+      description: 'Second character data object.'
+      dag_type: '<any>'
+      pass_by: 'const reference'
+      value_type: 'AbstractHomologousDiscreteCharacterData'
+      default:
+      options:
+  title: 'Concatenate character matrices'
+  aliases:
+  description: 'Creates a new data matrix by concatentating the provided data matrices (by order).'
+  details:
+  example: |
+    # read in character data for locus_1
+    locus_1 = readContinuousCharacterData("locus_1.nex")
+    # read in character data for locus_2
+    locus_2 = readContinuousCharacterData("locus_2.nex")
+    # create concated locus for 1+2 (union of taxa)
+    locus_1_and_2 = concatenate( locus_1, locus_2 )
+  authors: 'Sebastian Hoehna'
+  see_also:
+  type_spec:
+    - 'Procedure'
+    - 'Function'
+    - 'RevObject'
+  references:
 - name: 'computeWeightedNodeOrderConstraintsScore'
   return_type: 'Real'
   usage: 'computeWeightedNodeOrderConstraintsScore(TimeTree<any> tree, RlRelativeNodeAgeWeightedConstraints<any> constraints, RealPos<any> beta)'
@@ -600,7 +650,7 @@
     - 'RevObject'
   references:
 - name: 'concatenate'
-  return_type: 'Bool'
+  return_type: 'AbstractHomologousDiscreteCharacterData'
   usage: 'concatenate(AbstractHomologousDiscreteCharacterData<any> a, AbstractHomologousDiscreteCharacterData<any> b, AbstractHomologousDiscreteCharacterData ..., String<any> merge {valid options: "union"|"intersection"})'
   arguments:
     - label: 'a'
@@ -633,12 +683,18 @@
       options:
         - 'union'
         - 'intersection'
-  title:
+  title: 'Concatenate character matrices'
   aliases:
-  description:
+  description: 'Creates a new data matrix by concatentating the provided data matrices (by order).'
   details:
-  example:
-  authors:
+  example: |
+    # read in character data for locus_1
+    locus_1 = readDiscreteCharacterData("locus_1.nex")
+    # read in character data for locus_2
+    locus_2 = readDiscreteCharacterData("locus_2.nex")
+    # create concated locus for 1+2 (union of taxa)
+    locus_1_and_2 = concatenate( locus_1, locus_2 )
+  authors: 'Michael Landis'
   see_also:
   type_spec:
     - 'Function'
@@ -646,10 +702,10 @@
   references:
 - name: 'consensusTree'
   return_type: 'Tree'
-  usage: 'consensusTree(TraceTree<any> trace, Probability<any> cutoff, String<any> file, Probability<any> hpd, Bool<any> mean, Bool<any> sampledAncestors, Bool<any> positiveBranchLengths)'
+  usage: 'consensusTree(TraceTree|TraceTree[]<any> trace, Probability<any> cutoff, String<any> file, Probability<any> hpd, Bool<any> mean, Bool<any> sampledAncestors, Bool<any> positiveBranchLengths)'
   arguments:
     - label: 'trace'
-      description: 'The trace of tree samples.'
+      description: 'The samples of trees from the posterior.'
       dag_type: '<any>'
       pass_by: 'reference'
       value_type: 'TraceTree'
@@ -942,6 +998,78 @@
     - 'Function'
     - 'RevObject'
   references:
+- name: 'fnBetaBrokenStick'
+  return_type: 'Simplex'
+  usage: 'fnBetaBrokenStick(RealPos<any> alpha, RealPos<any> beta, Natural<any> numCats)'
+  arguments:
+    - label: 'alpha'
+      description: 'The alpha parameter of the beta distribution.'
+      dag_type: '<any>'
+      pass_by: 'const reference'
+      value_type: 'RealPos'
+      default:
+      options:
+    - label: 'beta'
+      description: 'The beta parameter of the beta distribution'
+      dag_type: '<any>'
+      pass_by: 'const reference'
+      value_type: 'RealPos'
+      default:
+      options:
+    - label: 'numCats'
+      description: 'The number of categories.'
+      dag_type: '<any>'
+      pass_by: 'value'
+      value_type: 'Natural'
+      default:
+      options:
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  type_spec:
+    - 'Function'
+    - 'RevObject'
+  references:
+- name: 'fnBinaryMutationCoalescentRateMatrix'
+  return_type: 'RateMatrix'
+  usage: 'fnBinaryMutationCoalescentRateMatrix(Natural<any> n, RealPos<any> mu, RealPos<any> Ne)'
+  arguments:
+    - label: 'n'
+      description: 'The number of samples.'
+      dag_type: '<any>'
+      pass_by: 'const reference'
+      value_type: 'Natural'
+      default:
+      options:
+    - label: 'mu'
+      description: 'The mutation rate.'
+      dag_type: '<any>'
+      pass_by: 'const reference'
+      value_type: 'RealPos'
+      default:
+      options:
+    - label: 'Ne'
+      description: 'The effective population size.'
+      dag_type: '<any>'
+      pass_by: 'const reference'
+      value_type: 'RealPos'
+      default:
+      options:
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  type_spec:
+    - 'Function'
+    - 'RevObject'
+  references:
 - name: 'fnBiogeoDE'
   return_type: 'RateGeneratorSequence'
   usage: 'fnBiogeoDE(RateGenerator<any> gainLossRates, CharacterHistoryRateModifier<any> geoRateMod, Simplex<any> root_frequencies, Natural<any> numAreas, Bool<any> forbidExtinction)'
@@ -980,6 +1108,56 @@
       pass_by: 'const reference'
       value_type: 'Bool'
       default: 'TRUE'
+      options:
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  type_spec:
+    - 'Function'
+    - 'RevObject'
+  references:
+- name: 'fnBiogeographyCladoEventsBD'
+  return_type: 'CladogeneticSpeciationRateMatrix'
+  usage: 'fnBiogeographyCladoEventsBD(RealPos[]<any> speciation_rates, RealPos[]<any> rate_multipliers, RealPos[][]<constant> connectivity_matrix, RealPos[]<any> connectivity_weights, Natural<any> max_range_size)'
+  arguments:
+    - label: 'speciation_rates'
+      description: 'The speciation rates for different cladogenetic event types.'
+      dag_type: '<any>'
+      pass_by: 'const reference'
+      value_type: 'RealPos[]'
+      default:
+      options:
+    - label: 'rate_multipliers'
+      description: 'The rate multipliers for hidden rate classes.'
+      dag_type: '<any>'
+      pass_by: 'const reference'
+      value_type: 'RealPos[]'
+      default: 'NULL'
+      options:
+    - label: 'connectivity_matrix'
+      description: 'The connectivity matrix.'
+      dag_type: '<constant>'
+      pass_by: 'value'
+      value_type: 'RealPos[][]'
+      default: 'NULL'
+      options:
+    - label: 'connectivity_weights'
+      description: 'The speciation rates for different cladogenetic event types.'
+      dag_type: '<any>'
+      pass_by: 'const reference'
+      value_type: 'RealPos[]'
+      default: 'NULL'
+      options:
+    - label: 'max_range_size'
+      description: 'The maximum range size.'
+      dag_type: '<any>'
+      pass_by: 'value'
+      value_type: 'Natural'
+      default:
       options:
   title:
   aliases:
@@ -1265,6 +1443,35 @@
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Natural'
+      default:
+      options:
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  type_spec:
+    - 'Function'
+    - 'RevObject'
+  references:
+- name: 'fnChronoToPhylo'
+  return_type: 'BranchLengthTree'
+  usage: 'fnChronoToPhylo(TimeTree<any> tree, RealPos[]<any> rates)'
+  arguments:
+    - label: 'tree'
+      description: 'The tree variable.'
+      dag_type: '<any>'
+      pass_by: 'const reference'
+      value_type: 'TimeTree'
+      default:
+      options:
+    - label: 'rates'
+      description: 'The branch rates we use to multiply/rescale the branches with.'
+      dag_type: '<any>'
+      pass_by: 'const reference'
+      value_type: 'RealPos[]'
       default:
       options:
   title:
@@ -1909,6 +2116,63 @@
   return_type: 'RealPos[]'
   usage: 'fnDiscretizeGamma(RealPos<any> shape, RealPos<any> rate, Integer<any> numCats, Bool<any> median)'
   arguments:
+    - label: 'shape'
+      description: 'The shape parameter of the gamma distribution.'
+      dag_type: '<any>'
+      pass_by: 'const reference'
+      value_type: 'RealPos'
+      default:
+      options:
+    - label: 'rate'
+      description: 'The rate parameter (rate = 1/scale) of the gamma distribution'
+      dag_type: '<any>'
+      pass_by: 'const reference'
+      value_type: 'RealPos'
+      default:
+      options:
+    - label: 'numCats'
+      description: 'The number of categories.'
+      dag_type: '<any>'
+      pass_by: 'value'
+      value_type: 'Integer'
+      default:
+      options:
+    - label: 'median'
+      description: 'Should we use the median or mean?'
+      dag_type: '<any>'
+      pass_by: 'value'
+      value_type: 'Bool'
+      default: 'FALSE'
+      options:
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  type_spec:
+    - 'Function'
+    - 'RevObject'
+  references:
+- name: 'fnDiscretizeGammaFromBetaQuantiles'
+  return_type: 'RealPos[]'
+  usage: 'fnDiscretizeGammaFromBetaQuantiles(RealPos<any> alpha, RealPos<any> beta, RealPos<any> shape, RealPos<any> rate, Integer<any> numCats, Bool<any> median)'
+  arguments:
+    - label: 'alpha'
+      description: 'The alpha parameter of the beta distribution.'
+      dag_type: '<any>'
+      pass_by: 'const reference'
+      value_type: 'RealPos'
+      default:
+      options:
+    - label: 'beta'
+      description: 'The beta parameter of the beta distribution'
+      dag_type: '<any>'
+      pass_by: 'const reference'
+      value_type: 'RealPos'
+      default:
+      options:
     - label: 'shape'
       description: 'The shape parameter of the gamma distribution.'
       dag_type: '<any>'
@@ -2809,7 +3073,7 @@
   references:
 - name: 'fnOrderedRateMatrix'
   return_type: 'RateMatrix'
-  usage: 'fnOrderedRateMatrix(Natural<any> maxState, RealPos<any> lambda, RealPos<any> mu)'
+  usage: 'fnOrderedRateMatrix(Natural<any> maxState, RealPos<any> lambda, RealPos<any> mu, Bool<any> allowZeroState)'
   arguments:
     - label: 'maxState'
       description: 'The maximum state for this rate matrix.'
@@ -2831,6 +3095,13 @@
       pass_by: 'const reference'
       value_type: 'RealPos'
       default: '1'
+      options:
+    - label: 'allowZeroState'
+      description: 'Can the character go into state 0.'
+      dag_type: '<any>'
+      pass_by: 'value'
+      value_type: 'Bool'
+      default: 'TRUE'
       options:
   title:
   aliases:
@@ -3053,9 +3324,9 @@
     - 'Function'
     - 'RevObject'
   references:
-- name: 'fnPomo'
+- name: 'fnPoMo'
   return_type: 'RateMatrix'
-  usage: 'fnPomo(RateGenerator<any> mutationRates, Real[]<any> fitness, Natural<any> virtualNe)'
+  usage: 'fnPoMo(RateGenerator<any> mutationRates, Real[]<any> fitness, Natural<any> virtualNe)'
   arguments:
     - label: 'mutationRates'
       description:
@@ -3204,9 +3475,9 @@
     - 'Function'
     - 'RevObject'
   references:
-- name: 'fnReversiblePomo'
+- name: 'fnReversiblePoMo'
   return_type: 'RateMatrix'
-  usage: 'fnReversiblePomo(Simplex<any> baseFrequencies, Real[]<any> exchangeRates, Natural<any> virtualNe)'
+  usage: 'fnReversiblePoMo(Simplex<any> baseFrequencies, Real[]<any> exchangeRates, Natural<any> virtualNe)'
   arguments:
     - label: 'baseFrequencies'
       description: 'The stationary frequencies of the 4 DNA states.'
@@ -3865,9 +4136,16 @@
     - 'RevObject'
   references:
 - name: 'fnWAG'
-  return_type: 'RateGenerator'
-  usage: 'fnWAG()'
+  return_type: 'RateMatrix'
+  usage: 'fnWAG(Simplex<any> baseFrequencies)'
   arguments:
+    - label: 'baseFrequencies'
+      description: 'The stationary frequencies of the states.'
+      dag_type: '<any>'
+      pass_by: 'const reference'
+      value_type: 'Simplex'
+      default: '[ 0.087, 0.044, 0.039, 0.057, 0.019, 0.037, 0.058, 0.083, 0.024, 0.048, 0.086, 0.062, 0.020, 0.038, 0.046, 0.070, 0.061, 0.014, 0.035, 0.071 ]'
+      options:
   title:
   aliases:
   description:
@@ -3913,6 +4191,49 @@
   see_also:
   type_spec:
     - 'Function<RealPos>'
+    - 'Function'
+    - 'RevObject'
+  references:
+- name: 'fnassembleContinuousMRF'
+  return_type: 'RealPos[]'
+  usage: 'fnassembleContinuousMRF(Real<any> initialValue, Real[]<any> increments, Bool<any> initialValueIsLogScale, Natural<any> order)'
+  arguments:
+    - label: 'initialValue'
+      description: 'The first value in the MRF.'
+      dag_type: '<any>'
+      pass_by: 'const reference'
+      value_type: 'Real'
+      default:
+      options:
+    - label: 'increments'
+      description: 'The increments of the process, assumed to be on the log-scale.'
+      dag_type: '<any>'
+      pass_by: 'const reference'
+      value_type: 'Real[]'
+      default:
+      options:
+    - label: 'initialValueIsLogScale'
+      description: 'Is valueInitial on the log-scale, like the increments?'
+      dag_type: '<any>'
+      pass_by: 'value'
+      value_type: 'Bool'
+      default:
+      options:
+    - label: 'order'
+      description: 'The order of the MRF (1 or 2).'
+      dag_type: '<any>'
+      pass_by: 'value'
+      value_type: 'Natural'
+      default:
+      options:
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  type_spec:
     - 'Function'
     - 'RevObject'
   references:
@@ -4304,7 +4625,7 @@
   references:
 - name: 'mapTree'
   return_type: 'Tree'
-  usage: 'mapTree(TraceTree<any> trace, String<any> file, Bool<any> ccAges, Bool<any> ccp, Bool<any> conditionalAges, Probability<any> hpd, Bool<any> mean, Bool<any> sampledAncestors, Bool<any> positiveBranchLengths)'
+  usage: 'mapTree(TraceTree|TraceTree[]<any> trace, String<any> file, Bool<any> ccAges, Bool<any> ccp, Bool<any> conditionalAges, Probability<any> hpd, Bool<any> mean, Bool<any> sampledAncestors, Bool<any> positiveBranchLengths)'
   arguments:
     - label: 'trace'
       description: 'The samples of trees from the posterior.'
@@ -4435,6 +4756,33 @@
     - 'Function'
     - 'RevObject'
   references:
+- name: 'maxdiff'
+  return_type: 'Tree'
+  usage: 'maxdiff(TraceTree[]<any> traces)'
+  arguments:
+    - label: 'traces'
+      description: 'The samples of trees from the posterior.'
+      dag_type: '<any>'
+      pass_by: 'reference'
+      value_type: 'TraceTree[]'
+      default:
+      options:
+  title:
+  aliases:
+  description: 'Finds the maximum difference in clade probabilities between two posterior samples.'
+  details:
+  example: |
+    # Read in tree trace
+    tree_trace = readTreeTrace("output/my.trees", burnin=0.25, nruns=2)
+    
+    # Compute the maxdiff statistic
+    maxdiff = maxdiff(traces=tree_trace)
+  authors: 'Will Pett'
+  see_also: 'readTreeTrace'
+  type_spec:
+    - 'Function'
+    - 'RevObject'
+  references:
 - name: 'maximumTree'
   return_type: 'TimeTree'
   usage: 'maximumTree(TimeTree[]<any> geneTrees)'
@@ -4492,7 +4840,7 @@
       url: 'https://link.springer.com/article/10.1007%2Fs00285-009-0260-0'
 - name: 'mccTree'
   return_type: 'Tree'
-  usage: 'mccTree(TraceTree<any> trace, String<any> file, Bool<any> ccAges, Bool<any> ccp, Bool<any> conditionalAges, Probability<any> hpd, Bool<any> mean, Bool<any> sampledAncestors, Bool<any> positiveBranchLengths)'
+  usage: 'mccTree(TraceTree|TraceTree[]<any> trace, String<any> file, Bool<any> ccAges, Bool<any> ccp, Bool<any> conditionalAges, Probability<any> hpd, Bool<any> mean, Bool<any> sampledAncestors, Bool<any> positiveBranchLengths)'
   arguments:
     - label: 'trace'
       description: 'The samples of trees from the posterior.'
@@ -4818,9 +5166,9 @@
     - 'Function'
     - 'RevObject'
   references:
-- name: 'pomoStateConvert'
+- name: 'pomoState4Convert'
   return_type: 'AbstractHomologousDiscreteCharacterData'
-  usage: 'pomoStateConvert(AbstractHomologousDiscreteCharacterData<any> aln, Natural<any> virtualNe, Taxon[]<any> taxa)'
+  usage: 'pomoState4Convert(AbstractHomologousDiscreteCharacterData<any> aln, Natural<any> virtualNe, Taxon[]<any> taxa)'
   arguments:
     - label: 'aln'
       description:
@@ -5369,9 +5717,9 @@
     - 'Function'
     - 'RevObject'
   references:
-- name: 'readPomoCountFile'
+- name: 'readPoMoCountFile'
   return_type: 'AbstractHomologousDiscreteCharacterData'
-  usage: 'readPomoCountFile(String<any> file, Natural<any> virtualPopulationSize)'
+  usage: 'readPoMoCountFile(String<any> file, Natural<any> virtualPopulationSize, Natural<any> numStates)'
   arguments:
     - label: 'file'
       description: 'Relative or absolute name of the file.'
@@ -5386,6 +5734,13 @@
       pass_by: 'value'
       value_type: 'Natural'
       default:
+      options:
+    - label: 'numStates'
+      description: 'The number of states (e.g. 4 for A,C,G and T).'
+      dag_type: '<any>'
+      pass_by: 'value'
+      value_type: 'Natural'
+      default: '4'
       options:
   title:
   aliases:
@@ -5509,7 +5864,7 @@
   references:
 - name: 'readTrace'
   return_type: 'Trace[]'
-  usage: 'readTrace(String<any> file, String<any> delimiter, Probability|Integer<any> burnin)'
+  usage: 'readTrace(String<any> file, String<any> delimiter, Probability|Integer<any> burnin, Natural<any> thinning)'
   arguments:
     - label: 'file'
       description: 'Name of the file.'
@@ -5532,6 +5887,13 @@
       value_type: 'Probability'
       default: '0.25'
       options:
+    - label: 'thinning'
+      description: 'The frequency of samples to read, i.e., we will only used every n-th sample where n is defined by this argument.'
+      dag_type: '<any>'
+      pass_by: 'value'
+      value_type: 'Natural'
+      default: '1'
+      options:
   title:
   aliases:
   description:
@@ -5545,10 +5907,10 @@
   references:
 - name: 'readTreeTrace'
   return_type: 'TraceTree'
-  usage: 'readTreeTrace(String|String[]<any> file, String<any> treetype {valid options: "clock"|"non-clock"}, Clade<any> outgroup, String<any> separator, Probability|Integer<any> burnin, Natural<any> thinning)'
+  usage: 'readTreeTrace(String|String[]<any> file, String<any> treetype {valid options: "clock"|"non-clock"}, Clade<any> outgroup, String<any> separator, Probability|Integer<any> burnin, Natural<any> thinning, Bool<any> nexus, Natural<any> nruns)'
   arguments:
     - label: 'file'
-      description: 'The name of the tree trace file(s).'
+      description: 'The name of the tree trace file(s), or directories containing them.'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'String'
@@ -5586,6 +5948,20 @@
       options:
     - label: 'thinning'
       description: 'The frequency of samples to read, i.e., we will only used every n-th sample where n is defined by this argument.'
+      dag_type: '<any>'
+      pass_by: 'value'
+      value_type: 'Natural'
+      default: '1'
+      options:
+    - label: 'nexus'
+      description: 'Whether the file to read is in NEXUS format.'
+      dag_type: '<any>'
+      pass_by: 'value'
+      value_type: 'Bool'
+      default: 'FALSE'
+      options:
+    - label: 'nruns'
+      description: 'The number of trace files with the same basename (i.e. the number of filenames with pattern <file>_run_<n>.trees'
       dag_type: '<any>'
       pass_by: 'value'
       value_type: 'Natural'
@@ -5646,6 +6022,37 @@
     - 'readDiscreteCharacterData'
     - 'readDataDelimitedFile'
     - 'readCharacterData'
+  type_spec:
+    - 'Function'
+    - 'RevObject'
+  references:
+- name: 'readVCF'
+  return_type: 'AbstractHomologousDiscreteCharacterData'
+  usage: 'readVCF(String<any> file, String<any> type {valid options: "DNA"|"binary"})'
+  arguments:
+    - label: 'file'
+      description: 'Relative or absolute name of the file.'
+      dag_type: '<any>'
+      pass_by: 'value'
+      value_type: 'String'
+      default:
+      options:
+    - label: 'type'
+      description: 'The type of data to be constructed.'
+      dag_type: '<any>'
+      pass_by: 'value'
+      value_type: 'String'
+      default: 'binary'
+      options:
+        - 'DNA'
+        - 'binary'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
   type_spec:
     - 'Function'
     - 'RevObject'
@@ -5866,6 +6273,98 @@
     - 'Function'
     - 'RevObject'
   references:
+- name: 'simBirthDeath'
+  return_type: 'TimeTree'
+  usage: 'simBirthDeath(RealPos[]<any> timeline, RealPos[][]|RealPos[]|RealPos<any> lambda, RealPos[][]|RealPos[]|RealPos<any> mu, RealPos[][]|RealPos[]|RealPos<any> phi, Probability[][]|Probability[]|Probability<any> r, Probability[][]|Probability[]|Probability<any> Lambda, Probability[][]|Probability[]|Probability<any> Mu, Probability[][]|Probability[]|Probability<any> Phi, Probability[][]|Probability[]|Probability<any> R, Simplex<any> rootCategory, RealPos<any> time)'
+  arguments:
+    - label: 'timeline'
+      description: 'The endpoints of the time intervals (episodes). You should include 0 at the end. We use ages before the present.'
+      dag_type: '<any>'
+      pass_by: 'const reference'
+      value_type: 'RealPos[]'
+      default: '[ 0.000 ]'
+      options:
+    - label: 'lambda'
+      description: 'The speciation rates for each interval.'
+      dag_type: '<any>'
+      pass_by: 'const reference'
+      value_type: 'RealPos[][]'
+      default:
+      options:
+    - label: 'mu'
+      description: 'The extinction rates for each interval.'
+      dag_type: '<any>'
+      pass_by: 'const reference'
+      value_type: 'RealPos[][]'
+      default: '0'
+      options:
+    - label: 'phi'
+      description: 'The sampling rates for each interval.'
+      dag_type: '<any>'
+      pass_by: 'const reference'
+      value_type: 'RealPos[][]'
+      default: '0'
+      options:
+    - label: 'r'
+      description: 'The extinction probability when rate-sampling happens for each interval.'
+      dag_type: '<any>'
+      pass_by: 'const reference'
+      value_type: 'Probability[][]'
+      default: '0'
+      options:
+    - label: 'Lambda'
+      description: 'The burst probability at the end of each interval.'
+      dag_type: '<any>'
+      pass_by: 'const reference'
+      value_type: 'Probability[][]'
+      default: '0'
+      options:
+    - label: 'Mu'
+      description: 'The (mass) extinction probability at the end of each interval.'
+      dag_type: '<any>'
+      pass_by: 'const reference'
+      value_type: 'Probability[][]'
+      default: '0'
+      options:
+    - label: 'Phi'
+      description: 'The sampling probability at the end of each interval.'
+      dag_type: '<any>'
+      pass_by: 'const reference'
+      value_type: 'Probability[][]'
+      default: '0'
+      options:
+    - label: 'R'
+      description: 'The extinction probability when event-sampling happens for each interval.'
+      dag_type: '<any>'
+      pass_by: 'const reference'
+      value_type: 'Probability[][]'
+      default: '0'
+      options:
+    - label: 'rootCategory'
+      description: 'The probabilities of the categories for the root.'
+      dag_type: '<any>'
+      pass_by: 'const reference'
+      value_type: 'Simplex'
+      default: '[ 1.000 ]'
+      options:
+    - label: 'time'
+      description: 'The time/age before the present.'
+      dag_type: '<any>'
+      pass_by: 'const reference'
+      value_type: 'RealPos'
+      default:
+      options:
+  title:
+  aliases:
+  description: 'Simulates a tree under a very general birth-death process. Parameters are fed in as a n_cats by n_intervals matrix, such that the ith row is the rate vector for the ith category.'
+  details:
+  example:
+  authors:
+  see_also:
+  type_spec:
+    - 'Function'
+    - 'RevObject'
+  references:
 - name: 'simCompleteTree'
   return_type: 'TimeTree'
   usage: 'simCompleteTree(Taxon[]<any> taxa, RealPos<any> rootAge, RealPos<any> lambda, RealPos<any> mu)'
@@ -5897,6 +6396,35 @@
       pass_by: 'const reference'
       value_type: 'RealPos'
       default:
+      options:
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  type_spec:
+    - 'Function'
+    - 'RevObject'
+  references:
+- name: 'simStartingTree'
+  return_type: 'TimeTree'
+  usage: 'simStartingTree(Taxon[]<any> taxa, Clade[]<any> constraints)'
+  arguments:
+    - label: 'taxa'
+      description: 'The taxa used for initialization.'
+      dag_type: '<any>'
+      pass_by: 'const reference'
+      value_type: 'Taxon[]'
+      default:
+      options:
+    - label: 'constraints'
+      description: 'The topological constraints.'
+      dag_type: '<any>'
+      pass_by: 'value'
+      value_type: 'Clade[]'
+      default: '[ ]'
       options:
   title:
   aliases:
@@ -6736,6 +7264,28 @@
       return_type: 'Real'
       usage: 'computeMultinomialProfileLikelihood()'
       arguments:
+    - name: 'computeSiteFrequencySpectrum'
+      return_type: 'Natural[]'
+      usage: 'computeSiteFrequencySpectrum(Bool<any> folded, String<any> ambiguityTreatment {valid options: "ancestral"|"derived"|"skip"|"rescale"})'
+      arguments:
+        - label: 'folded'
+          description: 'Should we compute the folded SFS?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          default: 'FALSE'
+          options:
+        - label: 'ambiguityTreatment'
+          description: 'How should we treat ambiguous characters as derived?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          default: 'ancestral'
+          options:
+            - 'ancestral'
+            - 'derived'
+            - 'skip'
+            - 'rescale'
     - name: 'computeStateFrequencies'
       return_type: 'MatrixReal'
       usage: 'computeStateFrequencies()'
@@ -7100,6 +7650,24 @@
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Natural[]'
+          default:
+          options:
+    - name: 'setHomeologPhase'
+      return_type: 'void'
+      usage: 'setHomeologPhase(String<any> data_name, String<any> tip_name)'
+      arguments:
+        - label: 'data_name'
+          description: 'The name used in the character alignment.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          default:
+          options:
+        - label: 'tip_name'
+          description: 'The tip name.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
           default:
           options:
     - name: 'setNumStatesPartition'
@@ -8025,6 +8593,24 @@
           value_type: 'String[]'
           default:
           options:
+    - name: 'setHomeologPhase'
+      return_type: 'void'
+      usage: 'setHomeologPhase(String<any> data_name, String<any> tip_name)'
+      arguments:
+        - label: 'data_name'
+          description: 'The name used in the character alignment.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          default:
+          options:
+        - label: 'tip_name'
+          description: 'The tip name.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          default:
+          options:
     - name: 'setTaxonName'
       return_type: 'void'
       usage: 'setTaxonName(String<any> current, String<any> new)'
@@ -8568,6 +9154,31 @@
   type_spec: 'RevObject'
   constructor:
   methods:
+    - name: 'getTransitionProbabilities'
+      return_type: 'RealPos[][]'
+      usage: 'getTransitionProbabilities(RealPos<any> rate, RealPos<any> startAge, RealPos<any> endAge)'
+      arguments:
+        - label: 'rate'
+          description: 'The rate of the process (or duration of the process assuming rate=1).'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          default:
+          options:
+        - label: 'startAge'
+          description: 'The start age of the process.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          default: '1'
+          options:
+        - label: 'endAge'
+          description: 'The end age of the process.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          default: '0'
+          options:
   references:
 - name: 'Real'
   title:
@@ -9147,6 +9758,10 @@
       return_type: 'RealPos'
       usage: 'treeLength()'
       arguments:
+    - name: 'unroot'
+      return_type: 'BranchLengthTree'
+      usage: 'unroot()'
+      arguments:
   references:
 - name: 'Tree'
   title: 'Tree datatype'
@@ -9584,13 +10199,35 @@
           options:
   references:
 - name: 'clade'
-  title:
+  title: 'Clade'
   aliases:
-  description:
-  details:
-  example:
+  description: 'A clade is a subtree within a phylogeny.'
+  details: 'Clades are defined in terms of a taxon set and a shared tree topology. In phylogenetic analyses, clades are generally used (a) to constrain tree topologies to match provided taxon relationships, (b) to identify the most recent common ancestor of a taxon set within a phylogeny, or (c) to apply node age calibrations on particular nodes in the phylogeny.'
+  example: |
+    # read in a tree
+    phy = readTrees("primates.tre")[1]
+    # get taxa from the tree
+    taxa = phy.taxa()
+    # create a clade for (1,2) using taxon objects
+    clade_12 = clade( taxa[1], taxa[2] )
+    # create a clade for (1,2,3)
+    clade_123 = clade( taxa[3], clade_12 )
+    # create a clade for (4,5) using taxon names
+    clade_45 = clade( "Taxon_4", "Taxon_5" )
+    # create a negative clade constraint
+    clade_not_23 = clade( taxa[2], taxa[3], negative=true )
+    # create an optional clade constraint
+    clade_67 = clade( taxa[6], taxa[7] )
+    clade_68 = clade( taxa[6], taxa[8] )
+    clade_67_or_68 = clade( clade_67, clade_68, optional_match=true )
   authors:
+    - 'Will Pett'
+    - 'Sebastian Hoehna'
+    - 'Michael Landis'
   see_also:
+    - 'dnConstrainedTopology'
+    - 'tmrca'
+    - 'mrcaIndex'
   type_spec:
     - 'ModelObject'
     - 'RevObject'
@@ -9661,6 +10298,10 @@
           default: 'FALSE'
           options:
   methods:
+    - name: 'getAge'
+      return_type: 'RealPos'
+      usage: 'getAge()'
+      arguments:
     - name: 'getNumberOfTaxaMissing'
       return_type: 'Natural'
       usage: 'getNumberOfTaxaMissing()'
@@ -9687,6 +10328,17 @@
           value_type: 'Natural'
           default:
           options:
+    - name: 'setAge'
+      return_type: 'void'
+      usage: 'setAge(RealPos<any> a)'
+      arguments:
+        - label: 'a'
+          description: 'The age of the cladea.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          default:
+          options:
     - name: 'setNumberOfTaxaMissing'
       return_type: 'void'
       usage: 'setNumberOfTaxaMissing(Natural<any> n)'
@@ -9702,6 +10354,123 @@
       return_type: 'void'
       usage: 'size()'
       arguments:
+  references:
+- name: 'dfConstant'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  type_spec:
+    - 'DemographicFunction'
+    - 'WorkspaceToCoreWrapperObject'
+    - 'WorkspaceObject'
+    - 'RevObject'
+  constructor:
+    - usage: 'dfConstant(RealPos<any> theta)'
+      arguments:
+        - label: 'theta'
+          description: 'The population size.'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'RealPos'
+          default:
+          options:
+  methods:
+  references:
+- name: 'dfExponential'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  type_spec:
+    - 'DemographicFunction'
+    - 'WorkspaceToCoreWrapperObject'
+    - 'WorkspaceObject'
+    - 'RevObject'
+  constructor:
+    - usage: 'dfExponential(RealPos<any> N0, RealPos<any> N1, RealPos<any> t0, RealPos<any> t1)'
+      arguments:
+        - label: 'N0'
+          description: 'The population size at the beginning of the growth period (towards the present).'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'RealPos'
+          default:
+          options:
+        - label: 'N1'
+          description: 'The population size at the end of the growth period (towards the past).'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'RealPos'
+          default:
+          options:
+        - label: 't0'
+          description: 'The time of the beginning of the growth period (towards the present).'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'RealPos'
+          default:
+          options:
+        - label: 't1'
+          description: 'The time of the end of the growth period (towards the past).'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'RealPos'
+          default:
+          options:
+  methods:
+  references:
+- name: 'dfLinear'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  type_spec:
+    - 'DemographicFunction'
+    - 'WorkspaceToCoreWrapperObject'
+    - 'WorkspaceObject'
+    - 'RevObject'
+  constructor:
+    - usage: 'dfLinear(RealPos<any> N0, RealPos<any> N1, RealPos<any> t0, RealPos<any> t1)'
+      arguments:
+        - label: 'N0'
+          description: 'The population size at the beginning of the growth period (towards the present).'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'RealPos'
+          default:
+          options:
+        - label: 'N1'
+          description: 'The population size at the end of the growth period (towards the past).'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'RealPos'
+          default:
+          options:
+        - label: 't0'
+          description: 'The time of the beginning of the growth period (towards the present).'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'RealPos'
+          default:
+          options:
+        - label: 't1'
+          description: 'The time of the end of the growth period (towards the past).'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'RealPos'
+          default:
+          options:
+  methods:
   references:
 - name: 'dnBernoulli'
   title: 'Bernoulli Distribution'
@@ -10121,6 +10890,173 @@
           options:
   methods:
   references:
+- name: 'dnBirthDeathSamplingTreatment'
+  title:
+  aliases:
+    - 'dnBDSTP'
+    - 'dnSkylineBDP'
+    - 'dnSSBDP'
+    - 'dnSampledAncestorBDP'
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  type_spec:
+    - 'BirthDeathProcess'
+    - 'Distribution__TimeTree'
+    - 'Distribution'
+    - 'RevObject'
+  domain: 'TimeTree'
+  constructor:
+    - usage: 'dnBirthDeathSamplingTreatment(RealPos<any> rootAge/originAge, RealPos|RealPos[]<any> lambda, RealPos|RealPos[]<any> mu, RealPos|RealPos[]<any> phi, RealPos|RealPos[]<any> r, Probability[]<any> Lambda, Probability[]<any> Mu, Probability|Probability[]<any> Phi, RealPos[]<any> timeline, String<any> condition {valid options: "time"|"survival"|"sampleAtLeastOneLineage"}, Taxon[]<any> taxa, TimeTree<any> initialTree)'
+      arguments:
+        - label: 'rootAge/originAge'
+          description: 'The start time of the process.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          default:
+          options:
+        - label: 'lambda'
+          description: 'The birth rate(s).'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          default:
+          options:
+        - label: 'mu'
+          description: 'The death rate(s).'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          default:
+          options:
+        - label: 'phi'
+          description: 'The serial sampling rate(s).'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          default:
+          options:
+        - label: 'r'
+          description: 'The probabilit(y|ies) of death upon sampling (treatment).'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          default:
+          options:
+        - label: 'Lambda'
+          description: 'The episodic birth burst probabilities.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Probability[]'
+          default: 'NULL'
+          options:
+        - label: 'Mu'
+          description: 'The episodic death burst (mass extinction) survival probabilities.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Probability[]'
+          default: 'NULL'
+          options:
+        - label: 'Phi'
+          description: 'The probability of sampling taxa at sampling events (at present only if input is scalar).'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Probability'
+          default: 'NULL'
+          options:
+        - label: 'timeline'
+          description: 'The rate interval change times of the piecewise constant process.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos[]'
+          default: '[ ]'
+          options:
+        - label: 'condition'
+          description: 'The condition of the process.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          default: 'time'
+          options:
+            - 'time'
+            - 'survival'
+            - 'sampleAtLeastOneLineage'
+        - label: 'taxa'
+          description: 'The taxa used for initialization.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Taxon[]'
+          default:
+          options:
+        - label: 'initialTree'
+          description: 'Instead of drawing a tree from the distribution, initialize distribution with this tree.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'TimeTree'
+          default: 'NULL'
+          options:
+  methods:
+  references:
+- name: 'dnBivariatePoisson'
+  title: 'Bivariate Poisson Distribution'
+  aliases:
+  description: 'A Bivariate Poisson distribution defines probabilities for pairs of natural numbers.'
+  details:
+  example: |
+    th1 ~ dnUniform(0.0,10.0)
+    th2 ~ dnUniform(0.0,10.0)
+    th0 ~ dnUniform(0.0,10.0)
+     ~ dnBivariatePoisson(th1, th2, th0)
+    x.clamp([3, 3, 3])
+    oves[1] = mvSlide(th1, delta=0.01, weight=1.0)
+    moves[2] = mvSlide(th2, delta=0.01, weight=1.0)
+    oves[3] = mvSlide(th0, delta=0.01, weight=1.0)
+    monitors[1] = mnScreen(printgen=1000,  th0)
+    ymodel = model(th1)
+    mymcmc = mcmc(mymodel, monitors, moves)
+    ymcmc.burnin(generations=20000,tuningInterval=100)
+    mymcmc.run(generations=200000)
+  authors:
+    - 'Alexander Zarebski'
+    - 'Sebastian Hoehna'
+  see_also: 'dnPoisson'
+  type_spec:
+    - 'Distribution__Natural'
+    - 'Distribution'
+    - 'RevObject'
+  domain: 'Natural[]'
+  constructor:
+    - usage: 'dnBivariatePoisson(RealPos<any> theta1, RealPos<any> theta2, RealPos<any> theta0)'
+      arguments:
+        - label: 'theta1'
+          description:
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          default:
+          options:
+        - label: 'theta2'
+          description:
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          default:
+          options:
+        - label: 'theta0'
+          description:
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          default:
+          options:
+  methods:
+  references:
+    - citation: 'Karlis D, Ntzoufras J (2003). Bayesian and Non-Bayesian Analysis of Soccer Data using Bivariate Poisson Regression Models.'
+      doi:
+      url:
 - name: 'dnCBDSP'
   title:
   aliases:
@@ -10222,7 +11158,7 @@
     - 'RevObject'
   domain: 'TimeTree'
   constructor:
-    - usage: 'dnCDBDP(RealPos<any> rootAge/originAge, CladogeneticSpeciationRateMatrix|RealPos[]<any> speciationRates/lambda/cladoEventMap, RealPos[]<any> extinctionRates/mu, RealPos[]<any> psi/phi, RateGenerator<any> Q, RealPos<any> delta, Simplex<any> pi, Probability<any> rho, String<any> condition {valid options: "time"|"survival"}, RealPos<any> nTimeSlices, String<any> simulateCondition {valid options: "startTime"|"numTips"|"tipStates"}, Natural<any> minNumLineages, Natural<any> maxNumLineages, Natural<any> exactNumLineages, RealPos<any> maxTime, Bool<any> pruneExtinctLineages)'
+    - usage: 'dnCDBDP(RealPos<any> rootAge/originAge, CladogeneticSpeciationRateMatrix|RealPos[]<any> speciationRates/lambda/cladoEventMap, RealPos[]<any> extinctionRates/mu, RealPos[]<any> psi/phi, RateGenerator<any> Q, RealPos<any> delta, Simplex<any> pi, Probability<any> rho, String<any> condition {valid options: "time"|"survival"}, RealPos<any> nTimeSlices, String<any> simulateCondition {valid options: "startTime"|"numTips"|"tipStates"|"tree"}, Natural<any> minNumLineages, Natural<any> maxNumLineages, Natural<any> exactNumLineages, RealPos<any> maxTime, Bool<any> pruneExtinctLineages, Bool<any> allowRateShiftsAtExtinctLineages)'
       arguments:
         - label: 'rootAge/originAge'
           description: 'The start time of the process.'
@@ -10306,6 +11242,7 @@
             - 'startTime'
             - 'numTips'
             - 'tipStates'
+            - 'tree'
         - label: 'minNumLineages'
           description: 'The minimum number of lineages to simulate; applied under the startTime condition.'
           dag_type: '<any>'
@@ -10336,6 +11273,13 @@
           options:
         - label: 'pruneExtinctLineages'
           description: 'When simulating should extinct lineages be pruned off?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          default: 'TRUE'
+          options:
+        - label: 'allowRateShiftsAtExtinctLineages'
+          description: 'Should we allow rate shifts to occur on extinct lineages?'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
@@ -10479,7 +11423,7 @@
     - 'RevObject'
   domain: 'TimeTree'
   constructor:
-    - usage: 'dnCoalescent(RealPos<any> theta, String[]<any> names, Clade[]<any> constraints)'
+    - usage: 'dnCoalescent(RealPos<any> theta, Taxon[]<any> taxa, Clade[]<any> constraints)'
       arguments:
         - label: 'theta'
           description: 'The constant population size.'
@@ -10488,11 +11432,57 @@
           value_type: 'RealPos'
           default:
           options:
-        - label: 'names'
-          description: 'The taxon names used when drawing a random tree.'
+        - label: 'taxa'
+          description: 'The taxa used when drawing a random tree.'
           dag_type: '<any>'
           pass_by: 'value'
-          value_type: 'String[]'
+          value_type: 'Taxon[]'
+          default:
+          options:
+        - label: 'constraints'
+          description: 'The topological constraints strictly enforced.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Clade[]'
+          default: '[ ]'
+          options:
+  methods:
+  references:
+- name: 'dnCoalescentDemography'
+  title:
+  aliases: 'dnHeterochronousCoalescentDemography'
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  type_spec:
+    - 'Distribution__TimeTree'
+    - 'Distribution'
+    - 'RevObject'
+  domain: 'TimeTree'
+  constructor:
+    - usage: 'dnCoalescentDemography(DemographicFunction[]<any> df, RealPos[]<any> changePoints, Taxon[]<any> taxa, Clade[]<any> constraints)'
+      arguments:
+        - label: 'df'
+          description: 'The vector of demographic functions.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'DemographicFunction[]'
+          default:
+          options:
+        - label: 'changePoints'
+          description: 'The times when the demographic function changes.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos[]'
+          default: '[ ]'
+          options:
+        - label: 'taxa'
+          description: 'The taxon names used for initialization.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Taxon[]'
           default:
           options:
         - label: 'constraints'
@@ -10518,7 +11508,7 @@
     - 'RevObject'
   domain: 'TimeTree'
   constructor:
-    - usage: 'dnCoalescentSkyline(RealPos[]<any> theta, RealPos[]<any> times, String<any> method {valid options: "events"|"uniform"|"specified"}, String[]<any> names, Clade[]<any> constraints)'
+    - usage: 'dnCoalescentSkyline(RealPos[]<any> theta, RealPos[]<any> times, String<any> method {valid options: "events"|"uniform"|"specified"}, Taxon[]<any> taxa, Clade[]<any> constraints)'
       arguments:
         - label: 'theta'
           description: 'A vector of per interval population sizes.'
@@ -10544,11 +11534,11 @@
             - 'events'
             - 'uniform'
             - 'specified'
-        - label: 'names'
-          description: 'The names of the taxa used for simulation.'
+        - label: 'taxa'
+          description: 'The taxa used when drawing a random tree.'
           dag_type: '<any>'
           pass_by: 'value'
-          value_type: 'String[]'
+          value_type: 'Taxon[]'
           default:
           options:
         - label: 'constraints'
@@ -11038,18 +12028,18 @@
   authors:
   see_also:
   type_spec:
-    - 'Distribution__TimeTree[]'
+    - 'Distribution__Natural[]'
     - 'Distribution'
     - 'RevObject'
-  domain: 'TimeTree[]'
+  domain: 'Natural[]'
   constructor:
-    - usage: 'dnEmpiricalSample(Distribution__TimeTree<any> baseDistribution)'
+    - usage: 'dnEmpiricalSample(Distribution__Natural<any> baseDistribution)'
       arguments:
         - label: 'baseDistribution'
           description: 'The base distribution for the sampled values.'
           dag_type: '<any>'
           pass_by: 'const reference'
-          value_type: 'Distribution__TimeTree'
+          value_type: 'Distribution__Natural'
           default:
           options:
   methods:
@@ -11227,12 +12217,22 @@
   methods:
   references:
 - name: 'dnExponential'
-  title:
+  title: 'Exponential Distribution'
   aliases: 'dnExp'
-  description:
-  details:
-  example:
-  authors:
+  description: 'Exponential distribution with rate equal to ‘lambda’.'
+  details: |
+    The exponential distribution has density:
+    
+    f(x) = 1/r * exp(-lambda*x)
+    
+    where lambda is the rate parameter.
+  example: |
+    # we set a rate parameter
+    rate <- 10.0# we create an exponentially distributed random variable
+    x ~ dnExponential(lambda=rate)
+    # compute the probability of the variable
+    x.probability()
+  authors: 'Michael Landis'
   see_also:
   type_spec:
     - 'PositiveContinuousDistribution'
@@ -12068,12 +13068,28 @@
   methods:
   references:
 - name: 'dnLognormal'
-  title:
+  title: 'Lognormal Distribution'
   aliases: 'dnLnorm'
-  description:
-  details:
-  example:
-  authors:
+  description: 'Lognormal distribution is the distribution for a log-transformed normally distributed random variable with mean ''mu'' and standard deviation ''sigma''.'
+  details: |
+    The lognormal random variable is defined as
+    
+    :X = exp(mu + sigma Z)
+    
+    where mu is the mean parameter, sigma is the standard deviation, and Z is a standard normal random variable. Note, in effect, the mean and standard deviation provide the location and scale of the exponentiated normal variate, mu + sigma Z.The lognormal distribution has density:
+    
+    f(x) = 1/(x sigma sqrt(2 pi)) e^-((ln x - mu)^2/(2 sigma^2))
+    
+    where mu is the mean of the distribution and sigma the standard deviation.
+  example: |
+    # set an expected value for x
+    expectation_of_x <- 1
+    # set a mean and sd parameter
+    sd <- 0.5
+    mean <- ln(expectation_of_x) - 0.5 * sd^2
+    # create a lognormal distribution with expected value of 1
+    x ~ dnLognormal(mean=mean, sd=sd)
+  authors: 'Michael Landis'
   see_also:
   type_spec:
     - 'PositiveContinuousDistribution'
@@ -12171,6 +13187,45 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Simplex'
+          default:
+          options:
+  methods:
+  references:
+- name: 'dnMixtureVector'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  type_spec:
+    - 'Distribution__Real'
+    - 'Distribution'
+    - 'RevObject'
+  domain: 'Real[]'
+  constructor:
+    - usage: 'dnMixtureVector(Distribution__Real[]<any> baseDistributions, Simplex<any> probabilities, Natural<any> numValues)'
+      arguments:
+        - label: 'baseDistributions'
+          description: 'The base distribution for the per category values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__Real[]'
+          default:
+          options:
+        - label: 'probabilities'
+          description: 'The probabilitoes for each value.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Simplex'
+          default:
+          options:
+        - label: 'numValues'
+          description: 'The number of values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Natural'
           default:
           options:
   methods:
@@ -12423,6 +13478,52 @@
     - citation: 'Bayesian Inference of Species Trees from Multilocus Data. Heled and Drummond Mol. Biol Evol. 27 (3): 570-580, 2010.'
       doi: 'DOI: https://doi.org/10.1093/molbev/msp274'
       url: 'https://academic.oup.com/mbe/article/27/3/570/999753/Bayesian-Inference-of-Species-Trees-from'
+- name: 'dnMultiValueEvent'
+  title: 'MultiValueEvent Distribution'
+  aliases:
+  description: 'A MultiValueEvent distribution.'
+  details:
+  example:
+  authors: 'Sebastian Hoehna'
+  see_also: 'dnEvent'
+  type_spec:
+    - 'Distribution__Natural'
+    - 'Distribution'
+    - 'RevObject'
+  domain: 'MultiValueEvent'
+  constructor:
+    - usage: 'dnMultiValueEvent(Distribution__Natural<any> eventDistribution, Distribution[]<any> valueDistribution, String[]<any> names, Natural[]<any> minNumberEvents)'
+      arguments:
+        - label: 'eventDistribution'
+          description: 'The prior on the number of events.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__Natural'
+          default:
+          options:
+        - label: 'valueDistribution'
+          description: 'The base distribution for the per category values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution[]'
+          default:
+          options:
+        - label: 'names'
+          description: 'The names of the values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'String[]'
+          default:
+          options:
+        - label: 'minNumberEvents'
+          description: 'The minum number of values per value category.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Natural[]'
+          default:
+          options:
+  methods:
+  references:
 - name: 'dnMultinomial'
   title: 'Multinomial Distribution'
   aliases:
@@ -12466,13 +13567,35 @@
   methods:
   references:
 - name: 'dnMultivariateNormal'
-  title: 'Bernoulli Distribution'
+  title: 'Multivariate Normal Distribution'
   aliases:
-  description: 'A multivariate normal distribution.'
+  description: |
+    The multivariate normal distribution has the probability density:
+    
+    f(x) = det(2 pi Sigma)^(-1/2) e^{-(1/2) (x-mu)' Sigma^-1 (x-mu)}
+    
+    where mu is a vector of mean values and Sigma is a covariance matrix. Note, this distribution may also be parameterized in terms of the precision matrix, Sigma^-1.
   details:
-  example:
-  authors: 'Sebastian Hoehna'
-  see_also: 'dnBinomial'
+  example: |
+    dim = 4
+    df = 100
+    kappa <- 2
+    Sigma ~ dnWishart(df, kappa, dim)
+    for (i in 1:dim) { mu[i] ~ dnUnif(-1, 1) }
+    x ~ dnMultivariateNormal( mean=mu, covariance=Sigma )
+    mv[1] = mvCorrelationMatrixElementSwap(Sigma)
+    mv[2] = mvCorrelationMatrixRandomWalk(Sigma)
+    mv[3] = mvCorrelationMatrixSingleElementBeta(Sigma)
+    mv[4] = mvCorrelationMatrixSpecificElementBeta(Sigma)
+    mv[5] = mvCorrelationMatrixUpdate(Sigma)
+    mv[6] = mvVectorSlide(x)
+  authors:
+    - 'Sebastian Hoehna'
+    - 'Michael Landis'
+  see_also:
+    - 'dnNormal'
+    - 'dnWishart'
+    - 'mvCorrelationMatrixUpdate'
   type_spec:
     - 'Distribution__Real[]'
     - 'Distribution'
@@ -13028,7 +14151,7 @@
     - 'RevObject'
   domain: 'AbstractHomologousDiscreteCharacterData'
   constructor:
-    - usage: 'dnPhyloCTMC(Tree<any> tree, RateGenerator|RateGenerator[]<any> Q, Simplex<any> rootFrequencies, RealPos|RealPos[]<any> branchRates, Simplex|Bool<any> siteMatrices, RealPos[]<any> siteRates, Simplex<any> siteRatesProbs, Probability<any> pInv, Natural<any> nSites, String<any> type {valid options: "DNA"|"RNA"|"AA"|"Codon"|"Pomo"|"Protein"|"Standard"|"NaturalNumbers"|"Binary"|"Restriction"}, Bool<any> treatAmbiguousAsGap, String<any> coding, Bool<any> storeInternalNodes, Bool<any> gapMatchClamped)'
+    - usage: 'dnPhyloCTMC(Tree<any> tree, RateGenerator|RateGenerator[]<any> Q, Simplex<any> rootFrequencies, RealPos|RealPos[]<any> branchRates, Simplex|Bool<any> siteMatrices, RealPos[]<any> siteRates, Simplex<any> siteRatesProbs, Probability<any> pInv, Natural<any> nSites, String<any> type {valid options: "DNA"|"RNA"|"AA"|"Codon"|"PoMo"|"Protein"|"Standard"|"NaturalNumbers"|"Binary"|"Restriction"}, Bool<any> treatAmbiguousAsGap, String<any> coding, Bool<any> storeInternalNodes, Bool<any> gapMatchClamped)'
       arguments:
         - label: 'tree'
           description: 'The tree along which the process evolves.'
@@ -13104,7 +14227,7 @@
             - 'RNA'
             - 'AA'
             - 'Codon'
-            - 'Pomo'
+            - 'PoMo'
             - 'Protein'
             - 'Standard'
             - 'NaturalNumbers'
@@ -13153,7 +14276,7 @@
     - 'RevObject'
   domain: 'AbstractHomologousDiscreteCharacterData'
   constructor:
-    - usage: 'dnPhyloCTMCClado(Tree<any> tree, RateGenerator|RateGenerator[]<any> Q, CladogeneticProbabilityMatrix|CladogeneticProbabilityMatrix[]<deterministic> cladoProbs, Simplex<any> rootFrequencies, RealPos|RealPos[]<any> branchRates, RealPos[]<any> siteRates, Probability<any> pInv, Natural<any> nSites, String<any> type {valid options: "DNA"|"RNA"|"AA"|"Pomo"|"Protein"|"Standard"|"NaturalNumbers"}, Bool<any> treatAmbiguousAsGap, Bool<any> storeInternalNodes, Bool<any> gapMatchClamped)'
+    - usage: 'dnPhyloCTMCClado(Tree<any> tree, RateGenerator|RateGenerator[]<any> Q, CladogeneticProbabilityMatrix|CladogeneticProbabilityMatrix[]<deterministic> cladoProbs, Simplex<any> rootFrequencies, RealPos|RealPos[]<any> branchRates, RealPos[]<any> siteRates, Probability<any> pInv, Natural<any> nSites, String<any> type {valid options: "DNA"|"RNA"|"AA"|"PoMo"|"Protein"|"Standard"|"NaturalNumbers"}, Bool<any> treatAmbiguousAsGap, Bool<any> storeInternalNodes, Bool<any> gapMatchClamped)'
       arguments:
         - label: 'tree'
           description:
@@ -13221,7 +14344,7 @@
             - 'DNA'
             - 'RNA'
             - 'AA'
-            - 'Pomo'
+            - 'PoMo'
             - 'Protein'
             - 'Standard'
             - 'NaturalNumbers'
@@ -13261,7 +14384,7 @@
     - 'RevObject'
   domain: 'AbstractHomologousDiscreteCharacterData'
   constructor:
-    - usage: 'dnPhyloCTMCDASequence(Tree<any> tree, RateGeneratorSequence|RateGeneratorSequence[]<any> Q, CladogeneticProbabilityMatrix<any> cladoProbs, Simplex<any> rootFrequencies, RealPos|RealPos[]<any> branchRates, RealPos[]<any> siteRates, Probability<any> pInv, Natural<any> nSites, String<any> type {valid options: "DNA"|"RNA"|"AA"|"Pomo"|"Protein"|"Standard"|"NaturalNumbers"|"Restriction"}, Bool<any> treatAmbiguousAsGap, String<any> coding)'
+    - usage: 'dnPhyloCTMCDASequence(Tree<any> tree, RateGeneratorSequence|RateGeneratorSequence[]<any> Q, CladogeneticProbabilityMatrix<any> cladoProbs, Simplex<any> rootFrequencies, RealPos|RealPos[]<any> branchRates, RealPos[]<any> siteRates, Probability<any> pInv, Natural<any> nSites, String<any> type {valid options: "DNA"|"RNA"|"AA"|"PoMo"|"Protein"|"Standard"|"NaturalNumbers"|"Restriction"}, Bool<any> storeInternalNodes, Bool<any> treatAmbiguousAsGap, String<any> coding)'
       arguments:
         - label: 'tree'
           description: 'The tree along which the process evolves.'
@@ -13329,11 +14452,18 @@
             - 'DNA'
             - 'RNA'
             - 'AA'
-            - 'Pomo'
+            - 'PoMo'
             - 'Protein'
             - 'Standard'
             - 'NaturalNumbers'
             - 'Restriction'
+        - label: 'storeInternalNodes'
+          description: 'Should we store internal node states in the character matrix?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          default: 'FALSE'
+          options:
         - label: 'treatAmbiguousAsGap'
           description: 'Should we treat ambiguous characters as gaps/missing?'
           dag_type: '<any>'
@@ -13363,7 +14493,7 @@
     - 'RevObject'
   domain: 'AbstractHomologousDiscreteCharacterData'
   constructor:
-    - usage: 'dnPhyloCTMCDASiteIID(Tree<any> tree, RateGenerator|RateGenerator[]<any> Q, Simplex<any> rootFrequencies, RealPos|RealPos[]<any> branchRates, RealPos[]<any> siteRates, Probability<any> pInv, Natural<any> nSites, String<any> type {valid options: "DNA"|"RNA"|"AA"|"Pomo"|"Protein"|"Standard"|"NaturalNumbers"|"Restriction"}, Bool<any> treatAmbiguousAsGap, String<any> coding)'
+    - usage: 'dnPhyloCTMCDASiteIID(Tree<any> tree, RateGenerator|RateGenerator[]<any> Q, Simplex<any> rootFrequencies, RealPos|RealPos[]<any> branchRates, RealPos[]<any> siteRates, Probability<any> pInv, Natural<any> nSites, String<any> type {valid options: "DNA"|"RNA"|"AA"|"PoMo"|"Protein"|"Standard"|"NaturalNumbers"|"Restriction"}, Bool<any> treatAmbiguousAsGap, String<any> coding)'
       arguments:
         - label: 'tree'
           description: 'The tree along which the process evolves.'
@@ -13424,7 +14554,7 @@
             - 'DNA'
             - 'RNA'
             - 'AA'
-            - 'Pomo'
+            - 'PoMo'
             - 'Protein'
             - 'Standard'
             - 'NaturalNumbers'
@@ -13727,6 +14857,58 @@
           options:
   methods:
   references:
+- name: 'dnPhyloMultivariateBrownianMultiSampleREML'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  type_spec:
+    - 'Distribution'
+    - 'RevObject'
+  domain: 'ContinuousCharacterData'
+  constructor:
+    - usage: 'dnPhyloMultivariateBrownianMultiSampleREML(Tree<any> tree, RealPos|RealPos[]<any> branchRates, MatrixRealSymmetric|MatrixReal<any> rateMatrix, RealPos[][]<any> withinSpeciesVariances, Taxon[]<any> taxa)'
+      arguments:
+        - label: 'tree'
+          description: 'The tree along which the process evolves.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Tree'
+          default:
+          options:
+        - label: 'branchRates'
+          description: 'The per branch rate-multiplier(s).'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          default: '1'
+          options:
+        - label: 'rateMatrix'
+          description: 'The variance-covariance matrix.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'MatrixRealSymmetric'
+          default:
+          options:
+        - label: 'withinSpeciesVariances'
+          description: 'The per species per site within-species variances.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos[][]'
+          default:
+          options:
+        - label: 'taxa'
+          description: 'The vector of taxa which have species and individual names.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Taxon[]'
+          default:
+          options:
+  methods:
+  references:
 - name: 'dnPhyloMultivariateBrownianREML'
   title: 'Phylogenetic Multivariate Brownian Motion'
   aliases:
@@ -14007,6 +15189,33 @@
           options:
   methods:
   references:
+- name: 'dnPointMass'
+  title: 'Point Mass Distribution'
+  aliases: 'dnDiracDelta'
+  description: 'Point mass distribution.'
+  details: 'The point mass distribution, or Dirac delta function, has density f(x) = 1 when x is equal to the point mass value.'
+  example: |
+    u ~ dnPointMass(1.2)
+  authors: 'Walker Pett'
+  see_also:
+  type_spec:
+    - 'ContinuousDistribution'
+    - 'Distribution__Real'
+    - 'Distribution'
+    - 'RevObject'
+  domain: 'Real'
+  constructor:
+    - usage: 'dnPointMass(Real<any> value)'
+      arguments:
+        - label: 'value'
+          description: 'The value where mass is concentrated.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Real'
+          default:
+          options:
+  methods:
+  references:
 - name: 'dnPoisson'
   title: 'Poisson Distribution'
   aliases: 'dnPois'
@@ -14175,10 +15384,7 @@
   references:
 - name: 'dnSerialSampledBirthDeath'
   title:
-  aliases:
-    - 'dnSSBDP'
-    - 'dnFBDP'
-    - 'dnSkylineBDP'
+  aliases: 'dnFBDP'
   description:
   details:
   example:
@@ -14191,7 +15397,7 @@
     - 'RevObject'
   domain: 'TimeTree'
   constructor:
-    - usage: 'dnSerialSampledBirthDeath(RealPos<any> rootAge/originAge, RealPos|RealPos[]<any> lambda, RealPos|RealPos[]<any> mu, RealPos|RealPos[]<any> psi, Probability|Probability[]<any> rho, RealPos[]<any> timeline, RealPos[]<any> lambdaTimes, RealPos[]<any> muTimes, RealPos[]<any> psiTimes, RealPos[]<any> rhoTimes, String<any> condition {valid options: "time"|"survival"}, Taxon[]<any> taxa)'
+    - usage: 'dnSerialSampledBirthDeath(RealPos<any> rootAge/originAge, RealPos|RealPos[]<any> lambda, RealPos|RealPos[]<any> mu, RealPos|RealPos[]<any> psi, Probability|Probability[]<any> rho, RealPos[]<any> timeline, RealPos[]<any> lambdaTimes, RealPos[]<any> muTimes, RealPos[]<any> psiTimes, RealPos[]<any> rhoTimes, String<any> condition {valid options: "time"|"survival"}, Taxon[]<any> taxa, TimeTree<any> initialTree)'
       arguments:
         - label: 'rootAge/originAge'
           description: 'The start time of the process.'
@@ -14278,6 +15484,13 @@
           pass_by: 'const reference'
           value_type: 'Taxon[]'
           default:
+          options:
+        - label: 'initialTree'
+          description: 'Instead of drawing a tree from the distribution, initialize distribution with this tree.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'TimeTree'
+          default: 'NULL'
           options:
   methods:
   references:
@@ -14534,7 +15747,7 @@
     - 'RevObject'
   domain: 'TimeTree'
   constructor:
-    - usage: 'dnUltrametricTree(Distribution__TimeTree<any> treePrior, Distribution__RealPos<any> ratePrior, RealPos<any> rootAge, TraceTree<any> trees)'
+    - usage: 'dnUltrametricTree(Distribution__TimeTree<any> treePrior, Distribution__RealPos<any> ratePrior, RealPos<any> rootAge, Probability<any> rootBranchFraction, TraceTree<any> trees, Trace<any> density)'
       arguments:
         - label: 'treePrior'
           description: 'The prior distribution for the time tree (divergence times).'
@@ -14553,8 +15766,15 @@
         - label: 'rootAge'
           description: 'The root age variable.'
           dag_type: '<any>'
-          pass_by: 'value'
+          pass_by: 'reference'
           value_type: 'RealPos'
+          default:
+          options:
+        - label: 'rootBranchFraction'
+          description: 'The fraction of how much of the root branch is assigned to the left subtree.'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'Probability'
           default:
           options:
         - label: 'trees'
@@ -14564,15 +15784,28 @@
           value_type: 'TraceTree'
           default:
           options:
+        - label: 'density'
+          description: 'Optional trace of probability density values for each tree.'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'Trace'
+          default: 'NULL'
+          options:
   methods:
   references:
 - name: 'dnUniform'
-  title:
+  title: 'Uniform Distribution'
   aliases: 'dnUnif'
-  description:
-  details:
-  example:
-  authors:
+  description: 'Uniform distribution with lower and uppper bounds.'
+  details: 'The uniform distribution has density, f(x) = 1/(b-a), where b is the upper bound and a is the lower bound.'
+  example: |
+    # set the lower bound
+    a <- -2.5
+    # set the upper bound
+    b <- -3.9
+    # create a stochastic node with a uniform prior
+    u ~ dnUniform(a, b)
+  authors: 'Michael Landis'
   see_also:
   type_spec:
     - 'ContinuousDistribution'
@@ -15028,7 +16261,7 @@
     - 'WorkspaceObject'
     - 'RevObject'
   constructor:
-    - usage: 'mcmc(Model<any> model, Monitor[]<any> monitors, Move[]<any> moves, String<any> moveschedule {valid options: "sequential"|"random"|"single"}, Natural<any> nruns, String<any> combineTraces {valid options: "sequential"|"mixed"}, Natural<any> ntries, RealPos<any> priorHeat, RealPos<any> likelihoodHeat, RealPos<any> posteriorHeat)'
+    - usage: 'mcmc(Model<any> model, Monitor[]<any> monitors, Move[]<any> moves, String<any> moveschedule {valid options: "sequential"|"random"|"single"}, Natural<any> nruns, String<any> combine {valid options: "sequential"|"mixed"|"none"}, Natural<any> ntries, RealPos<any> priorHeat, RealPos<any> likelihoodHeat, RealPos<any> posteriorHeat)'
       arguments:
         - label: 'model'
           description: 'The model graph.'
@@ -15068,15 +16301,16 @@
           value_type: 'Natural'
           default: '1'
           options:
-        - label: 'combineTraces'
-          description: 'The way how we combine the traces ones the simulation is finished.'
+        - label: 'combine'
+          description: 'How should we combine the traces once the simulation is finished.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'String'
-          default: 'sequential'
+          default: 'none'
           options:
             - 'sequential'
             - 'mixed'
+            - 'none'
         - label: 'ntries'
           description: 'The number of initialization attempts.'
           dag_type: '<any>'
@@ -15131,6 +16365,17 @@
           value_type: 'Bool'
           default: 'FALSE'
           options:
+    - name: 'initializeFromCheckpoint'
+      return_type: 'void'
+      usage: 'initializeFromCheckpoint(String<any> checkpointFile)'
+      arguments:
+        - label: 'checkpointFile'
+          description: 'The checkpoint filename.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'String'
+          default:
+          options:
     - name: 'initializeFromTrace'
       return_type: 'void'
       usage: 'initializeFromTrace(ModelTrace[]<any> trace)'
@@ -15155,7 +16400,7 @@
           options:
     - name: 'run'
       return_type: 'void'
-      usage: 'run(Natural<any> generations, StoppingRule[]<any> rules, Natural<any> tuningInterval, Bool<any> underPrior)'
+      usage: 'run(Natural<any> generations, StoppingRule[]<any> rules, Natural<any> tuningInterval, String<any> checkpointFile, Natural<any> checkpointInterval, Bool<any> underPrior)'
       arguments:
         - label: 'generations'
           description: 'The number of generations to run.'
@@ -15173,6 +16418,20 @@
           options:
         - label: 'tuningInterval'
           description: 'The interval when to update the tuning parameters of the moves.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          default: '0'
+          options:
+        - label: 'checkpointFile'
+          description: 'The filename for the checkpoint file.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          default:
+          options:
+        - label: 'checkpointInterval'
+          description: 'The interval when to write parameters values to a files for checkpointing.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Natural'
@@ -15225,7 +16484,7 @@
     - 'WorkspaceObject'
     - 'RevObject'
   constructor:
-    - usage: 'mcmcmc(Model<any> model, Monitor[]<any> monitors, Move[]<any> moves, String<any> moveschedule {valid options: "sequential"|"random"|"single"}, Natural<any> nruns, String<any> combineTraces {valid options: "sequential"|"mixed"}, Natural<any> ntries, Natural<any> nchains, Natural<any> swapInterval, RealPos<any> deltaHeat, Probability[]<any> heats, Bool<any> tuneHeat, Probability<any> tuneHeatTarget, String<any> swapMethod {valid options: "neighbor"|"random"|"both"}, Natural<any> swapInterval2, String<any> swapMode {valid options: "single"|"multiple"})'
+    - usage: 'mcmcmc(Model<any> model, Monitor[]<any> monitors, Move[]<any> moves, String<any> moveschedule {valid options: "sequential"|"random"|"single"}, Natural<any> nruns, String<any> combine {valid options: "sequential"|"mixed"|"none"}, Natural<any> ntries, Natural<any> nchains, Natural<any> swapInterval, RealPos<any> deltaHeat, Probability[]<any> heats, Bool<any> tuneHeat, Probability<any> tuneHeatTarget, String<any> swapMethod {valid options: "neighbor"|"random"|"both"}, Natural<any> swapInterval2, String<any> swapMode {valid options: "single"|"multiple"})'
       arguments:
         - label: 'model'
           description: 'The model graph.'
@@ -15265,15 +16524,16 @@
           value_type: 'Natural'
           default: '1'
           options:
-        - label: 'combineTraces'
-          description: 'The way how we combine the traces ones the simulation is finished.'
+        - label: 'combine'
+          description: 'How should we combine the traces once the simulation is finished.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'String'
-          default: 'sequential'
+          default: 'none'
           options:
             - 'sequential'
             - 'mixed'
+            - 'none'
         - label: 'ntries'
           description: 'The number of initialization attempts.'
           dag_type: '<any>'
@@ -15375,6 +16635,17 @@
           value_type: 'Bool'
           default: 'FALSE'
           options:
+    - name: 'initializeFromCheckpoint'
+      return_type: 'void'
+      usage: 'initializeFromCheckpoint(String<any> checkpointFile)'
+      arguments:
+        - label: 'checkpointFile'
+          description: 'The checkpoint filename.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'String'
+          default:
+          options:
     - name: 'initializeFromTrace'
       return_type: 'void'
       usage: 'initializeFromTrace(ModelTrace[]<any> trace)'
@@ -15399,7 +16670,7 @@
           options:
     - name: 'run'
       return_type: 'void'
-      usage: 'run(Natural<any> generations, StoppingRule[]<any> rules, Natural<any> tuningInterval, Bool<any> underPrior)'
+      usage: 'run(Natural<any> generations, StoppingRule[]<any> rules, Natural<any> tuningInterval, String<any> checkpointFile, Natural<any> checkpointInterval, Bool<any> underPrior)'
       arguments:
         - label: 'generations'
           description: 'The number of generations to run.'
@@ -15417,6 +16688,20 @@
           options:
         - label: 'tuningInterval'
           description: 'The interval when to update the tuning parameters of the moves.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          default: '0'
+          options:
+        - label: 'checkpointFile'
+          description: 'The filename for the checkpoint file.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          default:
+          options:
+        - label: 'checkpointInterval'
+          description: 'The interval when to write parameters values to a files for checkpointing.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Natural'
@@ -15745,6 +17030,114 @@
           default:
           options:
   references:
+- name: 'mnCharacterHistorySummary'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  type_spec:
+    - 'Monitor'
+    - 'WorkspaceToCoreWrapperObject'
+    - 'WorkspaceObject'
+    - 'RevObject'
+  constructor:
+    - usage: 'mnCharacterHistorySummary(String<any> filename, AbstractHomologousDiscreteCharacterData<any> ctmc, TimeTree<any> tree, Natural<any> printgen, String<any> separator, Bool<any> posterior, Bool<any> likelihood, Bool<any> prior, Bool<any> append, String<any> style {valid options: "events"|"counts"}, String<any> type {valid options: "biogeo"})'
+      arguments:
+        - label: 'filename'
+          description:
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          default:
+          options:
+        - label: 'ctmc'
+          description:
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'AbstractHomologousDiscreteCharacterData'
+          default:
+          options:
+        - label: 'tree'
+          description:
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'TimeTree'
+          default:
+          options:
+        - label: 'printgen'
+          description:
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          default: '1'
+          options:
+        - label: 'separator'
+          description:
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          default: ''
+          options:
+        - label: 'posterior'
+          description:
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          default: 'TRUE'
+          options:
+        - label: 'likelihood'
+          description:
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          default: 'TRUE'
+          options:
+        - label: 'prior'
+          description:
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          default: 'TRUE'
+          options:
+        - label: 'append'
+          description:
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          default: 'TRUE'
+          options:
+        - label: 'style'
+          description:
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          default: 'events'
+          options:
+            - 'events'
+            - 'counts'
+        - label: 'type'
+          description:
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          default: 'biogeo'
+          options: 'biogeo'
+  methods:
+    - name: 'addVariable'
+      return_type: 'void'
+      usage: 'addVariable(RevObject<any> x)'
+      arguments:
+        - label: 'x'
+          description: 'A variable you want to monitor.'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'RevObject'
+          default:
+          options:
+  references:
 - name: 'mnExtNewick'
   title:
   aliases:
@@ -15911,6 +17304,77 @@
           options:
         - label: 'append'
           description: 'Should we append or overwrite if the file exists?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          default: 'FALSE'
+          options:
+        - label: 'version'
+          description: 'Should we record the software version?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          default: 'FALSE'
+          options:
+  methods:
+    - name: 'addVariable'
+      return_type: 'void'
+      usage: 'addVariable(RevObject<any> x)'
+      arguments:
+        - label: 'x'
+          description: 'A variable you want to monitor.'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'RevObject'
+          default:
+          options:
+  references:
+- name: 'mnHomeologPhase'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  type_spec:
+    - 'Monitor'
+    - 'WorkspaceToCoreWrapperObject'
+    - 'WorkspaceObject'
+    - 'RevObject'
+  constructor:
+    - usage: 'mnHomeologPhase(AbstractHomologousDiscreteCharacterData<any> ctmc, String<any> filename, Natural<any> printgen, String<any> separator, Bool<any> append, Bool<any> version)'
+      arguments:
+        - label: 'ctmc'
+          description:
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'AbstractHomologousDiscreteCharacterData'
+          default: 'NULL'
+          options:
+        - label: 'filename'
+          description:
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          default:
+          options:
+        - label: 'printgen'
+          description:
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          default: '1'
+          options:
+        - label: 'separator'
+          description:
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          default: ''
+          options:
+        - label: 'append'
+          description:
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'Bool'
@@ -16120,6 +17584,77 @@
           pass_by: 'value'
           value_type: 'Bool'
           default: 'FALSE'
+          options:
+  methods:
+    - name: 'addVariable'
+      return_type: 'void'
+      usage: 'addVariable(RevObject<any> x)'
+      arguments:
+        - label: 'x'
+          description: 'A variable you want to monitor.'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'RevObject'
+          default:
+          options:
+  references:
+- name: 'mnNexus'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  type_spec:
+    - 'Monitor'
+    - 'WorkspaceToCoreWrapperObject'
+    - 'WorkspaceObject'
+    - 'RevObject'
+  constructor:
+    - usage: 'mnNexus(String<any> filename, TimeTree<any> tree, RevObject ..., Bool<any> isNodeParameter, Bool<any> writeTaxa, Natural<any> printgen)'
+      arguments:
+        - label: 'filename'
+          description: 'The name of the file.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          default:
+          options:
+        - label: 'tree'
+          description: 'The tree variable.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'TimeTree'
+          default:
+          options:
+        - label:
+          description: 'Variables at nodes or branches.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RevObject'
+          default:
+          options:
+        - label: 'isNodeParameter'
+          description: 'Is this a node or branch parameter?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          default: 'TRUE'
+          options:
+        - label: 'writeTaxa'
+          description: 'Should a taxa block be written?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          default: 'FALSE'
+          options:
+        - label: 'printgen'
+          description: 'How frequently do we print.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          default: '1'
           options:
   methods:
     - name: 'addVariable'
@@ -16649,7 +18184,7 @@
     
     Non-simplex-valued vector random variables are untransformed.
     
-    Add random variables to the move directly (e.g. branch_rates[1], not branch_rates).
+    Add random variables to the move directly (e.g. branch_rates[1], not branch_rates).WARNING: Disabling tuning disables both tuning of proposal variance and learning of empirical covariance matrix.
   details:
   example:
   authors:
@@ -17578,13 +19113,21 @@
   methods:
   references:
 - name: 'mvCorrelationMatrixSingleElementBeta'
-  title:
+  title: 'Correlation Matrix Beta proposal.'
   aliases:
-  description:
-  details:
-  example:
-  authors:
+  description: 'Beta proposal on a random element of a correlation matrix.'
+  details: 'This move chooses a single element of the correlation matrix at random, and draws a proposed value from a Beta distribution centered on the current value (and stretched to range from -1 to 1).'
+  example: |
+    
+    # we draw a correlation matrix from an LKJ distribution
+    R ~ dnLKJ(eta=1, dim=5)
+    
+    # we specify a beta move on the correlation matrix
+    moves[1] = mvCorrelationMatrixSingleElementBeta(R, alpha=10.0)
+  authors: 'Michael R. May'
   see_also:
+    - 'mvCorrelationMatrixSpecificElementBeta'
+    - 'mvCorrelationMatrixRandomWalk'
   type_spec:
     - 'Move'
     - 'WorkspaceToCoreWrapperObject'
@@ -18107,73 +19650,6 @@
           options:
   methods:
   references:
-- name: 'mvEllipticalSliceSamplingLognormalIID'
-  title:
-  aliases:
-  description:
-  details:
-  example:
-  authors:
-  see_also:
-  type_spec:
-    - 'Move'
-    - 'WorkspaceToCoreWrapperObject'
-    - 'WorkspaceObject'
-    - 'RevObject'
-  constructor:
-    - usage: 'mvEllipticalSliceSamplingLognormalIID(RealPos[]<deterministic> x, Real<any> mu, RealPos<any> sigma, RealPos<any> window, Bool<any> tune, RealPos<any> weight, Probability<any> tuneTarget)'
-      arguments:
-        - label: 'x'
-          description: 'The variable on which this move operates'
-          dag_type: '<deterministic>'
-          pass_by: 'reference'
-          value_type: 'RealPos[]'
-          default:
-          options:
-        - label: 'mu'
-          description: 'Log-mean parameter of distribution.'
-          dag_type: '<any>'
-          pass_by: 'const reference'
-          value_type: 'Real'
-          default:
-          options:
-        - label: 'sigma'
-          description: 'Log-sd parameter of distribution.'
-          dag_type: '<any>'
-          pass_by: 'const reference'
-          value_type: 'RealPos'
-          default:
-          options:
-        - label: 'window'
-          description: 'The anglular window (steps-size) of proposals, a value in the interval (0,2*pi].'
-          dag_type: '<any>'
-          pass_by: 'value'
-          value_type: 'RealPos'
-          default: '6.283185'
-          options:
-        - label: 'tune'
-          description: 'Should we tune the move during burnin?'
-          dag_type: '<any>'
-          pass_by: 'value'
-          value_type: 'Bool'
-          default: 'TRUE'
-          options:
-        - label: 'weight'
-          description: 'The weight how often on average this move will be used per iteration.'
-          dag_type: '<any>'
-          pass_by: 'value'
-          value_type: 'RealPos'
-          default: '1'
-          options:
-        - label: 'tuneTarget'
-          description: 'The acceptance probability targeted by auto-tuning.'
-          dag_type: '<any>'
-          pass_by: 'value'
-          value_type: 'Probability'
-          default: '0.44'
-          options:
-  methods:
-  references:
 - name: 'mvEllipticalSliceSamplingSimple'
   title:
   aliases:
@@ -18188,7 +19664,7 @@
     - 'WorkspaceObject'
     - 'RevObject'
   constructor:
-    - usage: 'mvEllipticalSliceSamplingSimple(Real[]<deterministic> x, RealPos<any> window, Bool<any> tune, RealPos<any> weight, Probability<any> tuneTarget)'
+    - usage: 'mvEllipticalSliceSamplingSimple(Real[]<deterministic> x, RealPos<any> window, Bool<any> tune, Bool<any> forceAccept, RealPos<any> weight, Probability<any> tuneTarget)'
       arguments:
         - label: 'x'
           description: 'The variable on which this move operates'
@@ -18210,6 +19686,13 @@
           pass_by: 'value'
           value_type: 'Bool'
           default: 'TRUE'
+          options:
+        - label: 'forceAccept'
+          description: 'If we hit maximum slice iterations, should we force the sampler to return the initial values (accept a step of size 0)? Not generally recommended.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          default: 'FALSE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
@@ -18454,7 +19937,7 @@
     - 'WorkspaceObject'
     - 'RevObject'
   constructor:
-    - usage: 'mvGMRFHyperpriorGibbs(RealPos<stochastic> x, Real[]<deterministic> normals, RealPos<any> zeta, RealPos<any> weight, Probability<any> tuneTarget)'
+    - usage: 'mvGMRFHyperpriorGibbs(RealPos<stochastic> x, Real[]<deterministic> normals, RealPos<any> zeta, Natural<any> order, RealPos<any> weight, Probability<any> tuneTarget)'
       arguments:
         - label: 'x'
           description: 'The variable on which this move operates.'
@@ -18476,6 +19959,13 @@
           pass_by: 'value'
           value_type: 'RealPos'
           default:
+          options:
+        - label: 'order'
+          description: 'The order of this GMRF model, first (1) or second (2). Defaults to first order.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          default: '1'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
@@ -18595,11 +20085,42 @@
 - name: 'mvGammaScale'
   title:
   aliases:
-  description:
+  description: 'A move to scale a single continuous value by multiplying by a value drawn from a Gamma(lambda,1) distribution. Lambda is the tuning parameter that controls the size of the proposals.'
   details:
-  example:
-  authors:
-  see_also:
+  example: |
+    # Here is a simple example for conducting MCMC on the mean and sd of a Normal distribution.
+    
+    # Uniform(0,1) priors on the mean and sd
+    mean ~ dnUnif(0,1)
+    sd ~ dnUnif(0,1)
+    
+    # Dummy data (will not actually be analyzed)
+    data <- v(0.4,0.5,0.6)
+    
+    # Clamping data
+    for (i in 1:data.size()){ outcomes[i] ~ dnNorm(mean,sd); outcomes[i].clamp(data[i]) }
+    
+    # Initializing move and monitor counters
+    mvi = 1
+    mni = 1
+    
+    # Adding Gamma scale moves for the mean and sd (THIS MOVE IS HERE)
+    moves[mvi++] = mvGammaScale(mean)
+    moves[mvi++] = mvGammaScale(sd)
+    
+    # Instantiating the model
+    mymodel = model(outcomes)
+    
+    # Adding screen monitor for the mean
+    monitors[mni++] = mnScreen(mean, printgen=1000)
+    
+    # Creating MCMC object
+    mymcmc = mcmc(mymodel, moves, monitors)
+    
+    # Running MCMC under the prior
+    mymcmc.run(30000,underPrior=TRUE);
+  authors: 'Jeremy M. Brown'
+  see_also: 'mvScale'
   type_spec:
     - 'Move'
     - 'WorkspaceToCoreWrapperObject'
@@ -18931,7 +20452,7 @@
     - 'WorkspaceObject'
     - 'RevObject'
   constructor:
-    - usage: 'mvHSRFHyperpriorsGibbs(RealPos<stochastic> gs, RealPos[]<deterministic> ls, Real[]<deterministic> normals, RealPos<any> zeta, RealPos<any> weight, Probability<any> tuneTarget)'
+    - usage: 'mvHSRFHyperpriorsGibbs(RealPos<stochastic> gs, RealPos[]<deterministic> ls, Real[]<deterministic> normals, RealPos<any> zeta, Natural<any> order, RealPos<any> weight, Probability<any> tuneTarget)'
       arguments:
         - label: 'gs'
           description: 'The global scale variable on which this move operates'
@@ -18960,6 +20481,13 @@
           pass_by: 'value'
           value_type: 'RealPos'
           default:
+          options:
+        - label: 'order'
+          description: 'The order of this GMRF model, first (1) or second (2). Defaults to first order.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          default: '1'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
@@ -19026,6 +20554,59 @@
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
+          default:
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          default: '1'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          default: '0.44'
+          options:
+  methods:
+  references:
+- name: 'mvHomeologPhase'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  type_spec:
+    - 'Move'
+    - 'WorkspaceToCoreWrapperObject'
+    - 'WorkspaceObject'
+    - 'RevObject'
+  constructor:
+    - usage: 'mvHomeologPhase(AbstractHomologousDiscreteCharacterData<stochastic> ctmc, String<any> tip1, String<any> tip2, RealPos<any> weight, Probability<any> tuneTarget)'
+      arguments:
+        - label: 'ctmc'
+          description: 'The PhyloCTMC variable.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'AbstractHomologousDiscreteCharacterData'
+          default:
+          options:
+        - label: 'tip1'
+          description: 'Tip 1 to switch.'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'String'
+          default:
+          options:
+        - label: 'tip2'
+          description: 'Tip 2 to switch.'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'String'
           default:
           options:
         - label: 'weight'
@@ -19428,6 +21009,182 @@
           options:
   methods:
   references:
+- name: 'mvMirror'
+  title:
+  aliases:
+  description: 'The adaptive mirror (normal) proposal of Thawornwattana et al. 2017, uses MCMC samples to find posterior mean and variance. After user-defined waiting time, proposes moves on opposite side of posterior mean from current location using a normal distribution with the learned posterior standard deviation (scaled by lambda). Before this time, the move uses mu0 as the mean, and lambda as the standard deviation. WARNING: Disabling tuning disables both tuning of proposal variance and learning of empirical mean and variance. To learn the empirical mean and variance without tuning sigma, set adaptOnly=true.'
+  details:
+  example:
+  authors:
+  see_also:
+  type_spec:
+    - 'Move'
+    - 'WorkspaceToCoreWrapperObject'
+    - 'WorkspaceObject'
+    - 'RevObject'
+  constructor:
+    - usage: 'mvMirror(Real<stochastic> x, Natural<any> waitBeforeLearning, Natural<any> waitBeforeUsing, Natural<any> maxUpdates, Real<any> mu0, RealPos<any> sigma, Bool<any> tune, Bool<any> adaptOnly, RealPos<any> weight, Probability<any> tuneTarget)'
+      arguments:
+        - label: 'x'
+          description: 'The variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'Real'
+          default:
+          options:
+        - label: 'waitBeforeLearning'
+          description: 'The number of move attempts to wait before tracking the mean and variance of the variable.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          default: '500'
+          options:
+        - label: 'waitBeforeUsing'
+          description: 'The number of move attempts to wait before using the learned mean and variance.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          default: '1000'
+          options:
+        - label: 'maxUpdates'
+          description: 'The maximum number of updates to the empirical mean and variance.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          default: '10000'
+          options:
+        - label: 'mu0'
+          description: 'Initial guess at posterior mean.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Real'
+          default: '0'
+          options:
+        - label: 'sigma'
+          description: 'The tuning parameter, adjusts variance of proposal.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          default: '1'
+          options:
+        - label: 'tune'
+          description: 'Should we tune the move during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          default: 'TRUE'
+          options:
+        - label: 'adaptOnly'
+          description: 'If true, sigma is not tuned but mean and variance are still learned'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          default: 'FALSE'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          default: '1'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          default: '0.44'
+          options:
+  methods:
+  references:
+- name: 'mvMirrorMultiplier'
+  title:
+  aliases:
+  description: 'The adaptive mirror multiplier (normal) proposal of Thawornwattana et al. 2017, uses MCMC samples to find posterior mean and variance on the log-scale. After user-defined waiting time, proposes moves (on the log-scale) on opposite side of posterior mean from current location using a normal distribution with the learned posterior standard deviation (scaled by lambda). Before this time, the move uses mu0 as the mean, and lambda as the standard deviation. WARNING: Disabling tuning disables both tuning of proposal variance and learning of empirical mean and variance. To learn the empirical mean and variance without tuning sigma, set adaptOnly=true.'
+  details:
+  example:
+  authors:
+  see_also:
+  type_spec:
+    - 'Move'
+    - 'WorkspaceToCoreWrapperObject'
+    - 'WorkspaceObject'
+    - 'RevObject'
+  constructor:
+    - usage: 'mvMirrorMultiplier(Real<stochastic> x, Natural<any> waitBeforeLearning, Natural<any> waitBeforeUsing, Natural<any> maxUpdates, Real<any> mu0, RealPos<any> sigma, Bool<any> tune, Bool<any> adaptOnly, RealPos<any> weight, Probability<any> tuneTarget)'
+      arguments:
+        - label: 'x'
+          description: 'The variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'Real'
+          default:
+          options:
+        - label: 'waitBeforeLearning'
+          description: 'The number of move attempts to wait before tracking the mean and variance of the variable.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          default: '500'
+          options:
+        - label: 'waitBeforeUsing'
+          description: 'The number of move attempts to wait before using the learned mean and variance.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          default: '1000'
+          options:
+        - label: 'maxUpdates'
+          description: 'The maximum number of updates to the empirical mean and variance.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          default: '10000'
+          options:
+        - label: 'mu0'
+          description: 'Initial guess at posterior log-mean.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Real'
+          default: '0'
+          options:
+        - label: 'sigma'
+          description: 'The tuning parameter, adjusts variance of proposal.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          default: '1'
+          options:
+        - label: 'tune'
+          description: 'Should we tune the move during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          default: 'TRUE'
+          options:
+        - label: 'adaptOnly'
+          description: 'If true, sigma is not tuned but mean and variance are still learned'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          default: 'FALSE'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          default: '1'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          default: '0.44'
+          options:
+  methods:
+  references:
 - name: 'mvMixtureAllocation'
   title:
   aliases:
@@ -19457,6 +21214,165 @@
           pass_by: 'value'
           value_type: 'Natural'
           default: '0'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          default: '1'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          default: '0.44'
+          options:
+  methods:
+  references:
+- name: 'mvMultiValueEventBirthDeath'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  type_spec:
+    - 'Move'
+    - 'WorkspaceToCoreWrapperObject'
+    - 'WorkspaceObject'
+    - 'RevObject'
+  constructor:
+    - usage: 'mvMultiValueEventBirthDeath(MultiValueEvent<stochastic> x, RealPos<any> weight, Probability<any> tuneTarget)'
+      arguments:
+        - label: 'x'
+          description: 'The variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'MultiValueEvent'
+          default:
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          default: '1'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          default: '0.44'
+          options:
+  methods:
+  references:
+- name: 'mvMultiValueEventScale'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  type_spec:
+    - 'Move'
+    - 'WorkspaceToCoreWrapperObject'
+    - 'WorkspaceObject'
+    - 'RevObject'
+  constructor:
+    - usage: 'mvMultiValueEventScale(MultiValueEvent<stochastic> x, String<any> name, RealPos<any> lambda, Bool<any> tune, RealPos<any> weight, Probability<any> tuneTarget)'
+      arguments:
+        - label: 'x'
+          description: 'The variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'MultiValueEvent'
+          default:
+          options:
+        - label: 'name'
+          description: 'The name of the value for the multi-variate event object on which this move works.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          default:
+          options:
+        - label: 'lambda'
+          description: 'The scaling factor (strength) of the proposal.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          default: '1'
+          options:
+        - label: 'tune'
+          description: 'Should we auto-tune?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          default: 'TRUE'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          default: '1'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          default: '0.44'
+          options:
+  methods:
+  references:
+- name: 'mvMultiValueEventSlide'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  type_spec:
+    - 'Move'
+    - 'WorkspaceToCoreWrapperObject'
+    - 'WorkspaceObject'
+    - 'RevObject'
+  constructor:
+    - usage: 'mvMultiValueEventSlide(MultiValueEvent<stochastic> x, String<any> name, RealPos<any> lambda, Bool<any> tune, RealPos<any> weight, Probability<any> tuneTarget)'
+      arguments:
+        - label: 'x'
+          description: 'The variable on which this move operates.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'MultiValueEvent'
+          default:
+          options:
+        - label: 'name'
+          description: 'The name of the value for the multi-variate event object on which this move works.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          default:
+          options:
+        - label: 'lambda'
+          description: 'The scaling factor (strength) of the proposal.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          default: '1'
+          options:
+        - label: 'tune'
+          description: 'Should we auto-tune?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          default: 'TRUE'
           options:
         - label: 'weight'
           description: 'The weight how often on average this move will be used per iteration.'
@@ -20547,6 +22463,66 @@
           options:
   methods:
   references:
+- name: 'mvShrinkExpandScale'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  type_spec:
+    - 'Move'
+    - 'WorkspaceToCoreWrapperObject'
+    - 'WorkspaceObject'
+    - 'RevObject'
+  constructor:
+    - usage: 'mvShrinkExpandScale(RealPos[]<deterministic> x, RealPos<stochastic> sd, RealPos<any> lambda, Bool<any> tune, RealPos<any> weight, Probability<any> tuneTarget)'
+      arguments:
+        - label: 'x'
+          description: 'The variable on which the move operates.'
+          dag_type: '<deterministic>'
+          pass_by: 'reference'
+          value_type: 'RealPos[]'
+          default:
+          options:
+        - label: 'sd'
+          description: 'The standard deviation parameter if available.'
+          dag_type: '<stochastic>'
+          pass_by: 'reference'
+          value_type: 'RealPos'
+          default: 'NULL'
+          options:
+        - label: 'lambda'
+          description: 'The scaling factor (strength) of the proposal.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          default: '1'
+          options:
+        - label: 'tune'
+          description: 'Should we tune the scaling factor during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          default: 'TRUE'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          default: '1'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          default: '0.44'
+          options:
+  methods:
+  references:
 - name: 'mvSlice'
   title:
   aliases:
@@ -21488,7 +23464,7 @@
     - 'WorkspaceObject'
     - 'RevObject'
   constructor:
-    - usage: 'mvTipTimeSlideUniform(TimeTree<stochastic> tree, RealPos<any> origin, RealPos<any> weight, Probability<any> tuneTarget)'
+    - usage: 'mvTipTimeSlideUniform(TimeTree<stochastic> tree, RealPos<any> origin, String|Taxon<any> tip, RealPos<any> weight, Probability<any> tuneTarget)'
       arguments:
         - label: 'tree'
           description: 'The tree on which this move operates.'
@@ -21502,6 +23478,13 @@
           dag_type: '<any>'
           pass_by: 'reference'
           value_type: 'RealPos'
+          default: 'NULL'
+          options:
+        - label: 'tip'
+          description: 'The name of a specific tip/taxon.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'String'
           default: 'NULL'
           options:
         - label: 'weight'
@@ -22870,7 +24853,7 @@
           options:
     - name: 'run'
       return_type: 'void'
-      usage: 'run(Natural<any> generations)'
+      usage: 'run(Natural<any> generations, Probability<any> burninFraction, Natural<any> preburninGenerations, Natural<any> tuningInterval)'
       arguments:
         - label: 'generations'
           description: 'The number of generations to run.'
@@ -22878,6 +24861,27 @@
           pass_by: 'value'
           value_type: 'Natural'
           default:
+          options:
+        - label: 'burninFraction'
+          description: 'The fraction of samples to discard.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          default: '0.25'
+          options:
+        - label: 'preburninGenerations'
+          description: 'The number of generations to run as pre-burnin when parameter tuning is done.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          default: 'NULL'
+          options:
+        - label: 'tuningInterval'
+          description: 'The number of generations to run.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          default: '100'
           options:
   references:
 - name: 'srGelmanRubin'
@@ -23200,13 +25204,20 @@
       arguments:
   references:
 - name: 'taxon'
-  title:
+  title: 'Taxon object'
   aliases:
-  description:
-  details:
-  example:
-  authors:
-  see_also:
+  description: 'The taxon function creates a Taxon object.'
+  details: 'Each Taxon object records that taxon''s name in addition to other information, such as age (which is non-zero for fossils). Character matrices and trees contain Taxon vectors (Taxon[]) that are used to match leaf nodes to data entries for phylogenetic analyses. For multispecies coalescent analyses, Taxon objects are also used to assign species memberships to individuals.'
+  example: |
+    # we can create a Taxon object
+    taxon_gorilla = taxon("Gorilla_gorilla")
+    # we can create a dummy vector of Taxon objects for simulation
+    for (i in 1:10) { taxa[i] = taxon("Taxon"+i) }
+    phy ~ dnBDP(lambda=1, mu=0, rootAge=1, taxa=taxa)
+    # retrieve the taxon list for 'phy'
+    phy.taxa()
+  authors: 'Michael Landis'
+  see_also: 'readTaxonData'
   type_spec: 'RevObject'
   constructor:
     - usage: 'taxon(String<any> taxonName, String<any> speciesName, RealPos<any> age/min, RealPos<any> max)'

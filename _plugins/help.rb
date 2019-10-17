@@ -1,23 +1,48 @@
 module Jekyll
   class HelpPage < Page
-    def initialize(site, base, entry)
+    def initialize(site, entry)
       @site = site
-      @base = base
       @dir = site.config['helpdir']
       @name = entry['name']+'.html'
 
       self.process(@name)
-      self.read_yaml(File.join(base, '_layouts'), 'help.html')
+      self.read_yaml(File.join(site.source, '_layouts'), 'help.html')
       self.data['entry'] = entry
+
+      # set the entry type
+      unless entry['type_spec'].nil?
+        if entry['type_spec'].include? 'Function'
+          entry['index'] = 'Function'
+        elsif entry['type_spec'].include? 'Distribution'
+          entry['index'] = 'Distribution'
+        elsif entry['type_spec'].include? 'WorkspaceObject'
+          if entry['type_spec'].include? 'Move'
+            entry['index'] = 'Move'
+          elsif entry['type_spec'].include? 'Monitor'
+            entry['index'] = 'Monitor'
+          else
+            entry['index'] = 'Workspace'
+          end
+        else
+          entry['index'] = 'Type'
+        end
+
+        Array(entry['type_spec']).each do |type|
+          if site.data['hierarchy'][type].nil?
+            site.data['hierarchy'][type] = Hash.new
+            site.data['hierarchy'][type]['derived'] = Array.new
+          end
+
+          site.data['hierarchy'][type]['derived'] << entry['name']
+        end
+      end
 
       # get arguments
       arguments = entry['arguments']
-      usage = entry['usage']
 
       if arguments.nil?
         unless entry['constructor'].nil?
           arguments = entry['constructor'].first['arguments']
-          usage = entry['constructor'].first['usage']
         end
       end
 
@@ -94,8 +119,24 @@ module Jekyll
     safe true
 
     def generate(site)
+      site.data['hierarchy'] = Hash.new
+
+      # find concrete types
       site.data['help'].each do |entry|
-        site.pages << HelpPage.new(site, site.source, entry)
+        site.data['hierarchy'][entry['name']] = Hash.new
+        site.data['hierarchy'][entry['name']]['derived'] = Array.new
+        site.data['hierarchy'][entry['name']]['concrete'] = true
+        site.pages << HelpPage.new(site, entry)
+      end
+
+      # find abstract types
+      site.data['hierarchy'].each_key do |type|
+        unless site.data['hierarchy'][type]['concrete']
+          abstract = Hash.new
+          abstract['name'] = type
+          abstract['derived'] = site.data['hierarchy'][type]['derived']
+          site.pages << HelpPage.new(site, abstract)
+        end
       end
     end
   end
