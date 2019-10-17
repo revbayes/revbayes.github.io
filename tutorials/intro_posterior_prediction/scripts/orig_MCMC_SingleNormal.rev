@@ -1,0 +1,40 @@
+# Read in original dataset
+# Sexually dimorphic population
+# 100 trait values - 50 from each sex
+
+data <- readTable("../data/data.txt")
+
+# Setting a Uniform(0,10) prior on the mean of our single Normal model
+mean ~ dnUnif(0,10)
+
+# Setting a Uniform(0,10) prior on the standard deviation of our single Normal model
+sd ~ dnUnif(0,10)
+
+# Initializing vector of moves
+moves = VectorMoves()
+
+# Adding slide moves for mean and standard deviation
+moves.append( mvSlide(mean, delta=1, weight=1.0) )
+moves.append( mvSlide(sd, delta=1, weight=1.0) )
+
+# Setting up our model
+for (i in 1:data.size() ){
+	d[i] ~ dnNormal(mean,sd)
+	d[i].clamp(data[i][1])
+}
+
+myModel = model( mean )
+
+# Initializing vector of monitors
+monitors = VectorMonitors()
+
+# Adding model and screen monitors
+monitors.append( mnModel(filename="singleNormal_posterior.log",printgen=10,separator="	",stochasticOnly=TRUE) )
+monitors.append( mnScreen(printgen=10, mean, sd))
+
+# Set up MCMC object
+myMCMC = mcmc(myModel,monitors,moves,nruns=1)
+
+# Run MCMC with chosen number of generations
+myMCMC.run(generations=10000)
+
