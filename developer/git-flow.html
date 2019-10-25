@@ -55,7 +55,7 @@
 	<h1 class="maintitle">RevBayes Git Workflow</h1>
 	
 	<h4 class="authors"></h4>
-  <h5>Last modified on October  8, 2019</h5>
+  <h5>Last modified on October 23, 2019</h5>
 </div>
 
 <h2 class="subsection" id="branch-organization">Branch organization</h2>
@@ -77,9 +77,11 @@ make sure to merge any changes from <code class="highlighter-rouge">development<
 compiling and tests are passing.
 Once these checks have been done, create a pull request to merge your branch into <code class="highlighter-rouge">development</code>. You can request reviewers for your pull request directly via GitHub, or by asking on Slack. After your pull request is approved, or if it has not been reviewed within 30 days, it will be merged into <code class="highlighter-rouge">development</code>.</p>
 
+<p>The branch <code class="highlighter-rouge">hotfix-development</code> exists for small (<em>one</em> commit only) changes that are not worth creating a new branch for (for instance, small bugfixes, readme or help files edits, etc.). A pull request can then be created to merge those changes into <code class="highlighter-rouge">development</code>.</p>
+
 <p>New features should <em>never</em> be merged directly into <code class="highlighter-rouge">master</code>. Only hotfixes to the current release may be merged into <code class="highlighter-rouge">master</code>.
 For hotfixes, create a separate branch from <code class="highlighter-rouge">master</code>, make the fix and verify
-it, and then merge the hotfix branch into <code class="highlighter-rouge">master</code> and <code class="highlighter-rouge">development</code>.</p>
+it, and then merge the hotfix branch into <code class="highlighter-rouge">master</code> and <code class="highlighter-rouge">development</code>. Similarly to above, the <code class="highlighter-rouge">hotfix-master</code> branch exists for small (<em>one</em> commit only) bugfixes to the current release. A pull request can then be created to merge those changes into <code class="highlighter-rouge">master</code> and <code class="highlighter-rouge">development</code>.</p>
 
 <h2 id="recommended-reading">Recommended reading</h2>
 
