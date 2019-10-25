@@ -1,16 +1,15 @@
-{% assign types = site.data.help | where: "index", "Type" %}
+{% assign model = site.data.help | where: "index", "ModelObject" %}
 {% assign distributions = site.data.help | where: "index", "Distribution" %}
 {% assign functions = site.data.help | where: "index", "Function" %}
 {% assign moves = site.data.help | where: "index", "Move" %}
 {% assign monitors = site.data.help | where: "index", "Monitor" %}
 {% assign workspace = site.data.help | where: "index", "Workspace" %}
 
-<div class="row">
 <div class="col-sm-4">
     <nav class="sidebar_nav">
     	<h4>Model Objects</h4>
         <ul class="list-unstyled">
-        {% for item in types %}
+        {% for item in model %}
         <li class="sidebar_item"><a href="{{ site.baseurl }}/{{ site.helpdir }}/{{ item.name | replace: '[', '%5B' | replace: ']', '%5D' }}.html">{{ item.name }}</a></li>
         {% endfor %}
         </ul>

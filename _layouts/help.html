@@ -4,6 +4,8 @@ subtitle: Rev Language Reference
 code_layout: Rev
 ---
 
+<div class="row">
+
 {% include help_index.html %}
 
 <div class="help col-sm-8">
@@ -113,15 +115,22 @@ code_layout: Rev
         {% endif %}
 
         {% if page.entry.derived %}
+            <h3 class="help-section-header">Derived Types</h3>
             <div class="help-section-body">
             <ul class="list-unstyled">
             {% for derived in page.entry.derived %}
             <li><a href="{{ derived }}.html">{{ derived }}</a></li>
             {% endfor %}
             </ul>
+            </div>
         {% endif %}
     {% else %}
     {{ content }}
     {% endif %}
+        <h3 class="help-section-header"></h3>
+        <div class="help-section-header">
+        <a href="https://github.com/revbayes/revbayes/edit/help/help/md/{{ page.entry.name }}.md"><img src="{{ site.baseurl }}{% link assets/img/edit.png %}" width="24" height="24" hspace="5">Edit this page</a>
+        </div>
 </div>
+
 </div>

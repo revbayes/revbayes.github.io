@@ -24,16 +24,33 @@ module Jekyll
             entry['index'] = 'Workspace'
           end
         else
-          entry['index'] = 'Type'
+          entry['index'] = 'ModelObject'
         end
 
         Array(entry['type_spec']).each do |type|
           if site.data['hierarchy'][type].nil?
             site.data['hierarchy'][type] = Hash.new
+          end
+
+          if site.data['hierarchy'][type]['derived'].nil?
             site.data['hierarchy'][type]['derived'] = Array.new
           end
 
           site.data['hierarchy'][type]['derived'] << entry['name']
+        end
+      end
+
+      # add domain type
+      unless entry['domain'].nil?
+        if site.data['hierarchy'][entry['domain']].nil?
+          site.data['hierarchy'][entry['domain']] = Hash.new
+        end
+      end
+
+      # add return type
+      unless entry['return_type'].nil?
+        if site.data['hierarchy'][entry['return_type']].nil?
+          site.data['hierarchy'][entry['return_type']] = Hash.new
         end
       end
 
