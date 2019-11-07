@@ -76,22 +76,22 @@ Singularity
 
 <h4 id="to-get-to-an-interative-shell">To get to an interative shell</h4>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>singularity run --app rb revbayes.simg 
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>singularity run --app rb RevBayes_Singularity_v1.0.13.simg 
 </code></pre></div></div>
 
 <h4 id="to-run-a-script-file">To run a script file</h4>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>singularity run --app rb revbayes.simg myscript.rev
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>singularity run --app rb RevBayes_Singularity_v1.0.13.simg myscript.rev
 </code></pre></div></div>
 
-<p>Any arguments after revbayes.simg are passed to the rb command.</p>
+<p>Any arguments after RevBayes_Singularity_v1.0.13.simg are passed to the rb command.</p>
 
 <h3 id="mpi">MPI</h3>
 
 <p>The container also contains the MPI version of RevBayes. This version was built with the ubuntu-provided OpenMPI implementation (3.1.2) and may not work with other MPI versions.</p>
 
 <p>To run a script file:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mpirun singularity run --app rbmpi revbayes.simg myscript.rev
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mpirun singularity run --app rbmpi RevBayes_Singularity_v1.0.13.simg myscript.rev
 </code></pre></div></div>
 
 <p>If it does not work with the version of MPI you have on your cluster, you could ask your administrator to rebuild the image for the appropriate MPI version for your environment (see recipe below). <a href="https://sylabs.io/guides/3.4/user-guide/mpi.html">More information is available here</a>.</p>
