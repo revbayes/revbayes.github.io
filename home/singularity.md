@@ -7,7 +7,7 @@ permalink: /singularity/
 
 ## What is Singularity?
 
-Singularity is a container format designed for use in HPC. 
+Singularity is a container runtime designed for use in HPC. 
 
 Containers can run without root access on any Linux system with Singularity installed. 
 
@@ -45,8 +45,6 @@ mpirun singularity run --app rbmpi revbayes.simg myscript.rev
 ```
 
 If it does not work with the version of MPI you have on your cluster, you could ask your administrator to rebuild the image for the appropriate MPI version for your environment (see recipe below). [More information is available here](https://sylabs.io/guides/3.4/user-guide/mpi.html).
-
-
 
 ### Recipe
 
