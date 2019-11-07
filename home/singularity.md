@@ -15,11 +15,17 @@ Containers can run without root access on any Linux system with Singularity inst
 
 Containers are immutable and directories are mounted to read or write from files. Some directories are mounted automatically when an image is run. [More information is available here](https://sylabs.io/guides/3.4/user-guide/quick_start.html#working-with-files).
 
-## How to get the RevBayes Singularity container image
+## How do I install Singularity?
 
-[Download here](https://github.com/revbayes/revbayes/releases/download/v1.0.13/RevBayes_Singularity_v1.0.13.simg)
+Installing Singularity requires root access to a Linux machine.
+
+Your HPC system may already have it installed.
+
+If not, your HPC staff can get it from a EPEL (CentOS/RHEL) or Debian/Ubuntu repostitory. [More information is available here.](https://sylabs.io/guides/3.4/user-guide/installation.html#distribution-packages-of-singularity)
 
 ## How to use the RevBayes image
+
+First, download the image from the link on the Downloads page.
 
 #### To get to an interative shell
 
