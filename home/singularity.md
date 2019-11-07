@@ -24,16 +24,16 @@ Containers are immutable and directories are mounted to read or write from files
 #### To get to an interative shell
 
 ```
-singularity run --app rb revbayes.simg 
+singularity run --app rb RevBayes_Singularity_v1.0.13.simg 
 ```
 
 #### To run a script file
 
 ```
-singularity run --app rb revbayes.simg myscript.rev
+singularity run --app rb RevBayes_Singularity_v1.0.13.simg myscript.rev
 ```
 
-Any arguments after revbayes.simg are passed to the rb command.
+Any arguments after RevBayes_Singularity_v1.0.13.simg are passed to the rb command.
 
 ### MPI
 
@@ -41,7 +41,7 @@ The container also contains the MPI version of RevBayes. This version was built 
 
 To run a script file:
 ```
-mpirun singularity run --app rbmpi revbayes.simg myscript.rev
+mpirun singularity run --app rbmpi RevBayes_Singularity_v1.0.13.simg myscript.rev
 ```
 
 If it does not work with the version of MPI you have on your cluster, you could ask your administrator to rebuild the image for the appropriate MPI version for your environment (see recipe below). [More information is available here](https://sylabs.io/guides/3.4/user-guide/mpi.html).
