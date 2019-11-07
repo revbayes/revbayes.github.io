@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
-    <title>RevBayes: Download</title>
+    <title>RevBayes: Singularity</title>
   </head>
   <body>
     <div class="container">
@@ -53,36 +53,103 @@
 
       <h1 class="maintitle">
 
-Download and Install RevBayes
+Singularity
 
 </h1>
 <hr>
 
-<div class="row">
+<h2 id="what-is-singularity">What is Singularity?</h2>
 
-<div class="col-sm-4" align="center">
-<img src="/assets/img/apple.png" alt="" width="100px" />
-<h2>Mac OS X</h2>
-<p><a href="https://github.com/revbayes/revbayes/releases/download/v1.0.13/RevBayes_OSX_v1.0.13.zip" class="btn btn-info" role="button">Download Executable (10.6+)</a></p>
-<p>or <a href="/compile-osx">Compile from source</a></p>
-</div>
+<p>Singularity is a container format designed for use in HPC.</p>
 
-<div class="col-sm-4" align="center">
-<img src="/assets/img/windows.png" alt="" width="100px" />
-<h2>Windows</h2>
-<p><a href="https://github.com/revbayes/revbayes/releases/download/v1.0.13/RevBayes_Win_v1.0.13.zip" class="btn btn-info" role="button">Download Executable (10)</a></p>
-<p>or <a href="/compile-windows">Compile from source</a></p>
-</div>
+<p>Containers can run without root access on any Linux system with Singularity installed.</p>
 
-<div class="col-sm-4" align="center">
-<img src="/assets/img/tux.png" alt="" width="100px" />
-<h2>Linux</h2>
-<p><a href="https://github.com/revbayes/revbayes/releases/download/v1.0.13/RevBayes_Singularity_v1.0.13.simg" class="btn btn-info" role="button">Download Singularity Image</a></p>
-<p>or <a href="/compile-linux">Compile from source</a></p>
-<p><a href="/singularity/">(Singularity notes)</a></p>
-</div>
+<p><a href="https://sylabs.io/singularity/faq/">Singularity FAQ</a></p>
 
-</div>
+<p>Containers are immutable and directories are mounted to read or write from files. Some directories are mounted automatically when an image is run. <a href="https://sylabs.io/guides/3.4/user-guide/quick_start.html#working-with-files">More information is available here</a>.</p>
+
+<h2 id="how-to-get-the-revbayes-singularity-container-image">How to get the RevBayes Singularity container image</h2>
+
+<p><a href="https://github.com/revbayes/revbayes/releases/download/v1.0.13/RevBayes_Singularity_v1.0.13.simg">Download here</a></p>
+
+<h2 id="how-to-use-the-revbayes-image">How to use the RevBayes image</h2>
+
+<h4 id="to-get-to-an-interative-shell">To get to an interative shell</h4>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>singularity run --app rb revbayes.simg 
+</code></pre></div></div>
+
+<h4 id="to-run-a-script-file">To run a script file</h4>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>singularity run --app rb revbayes.simg myscript.rev
+</code></pre></div></div>
+
+<p>Any arguments after revbayes.simg are passed to the rb command.</p>
+
+<h3 id="mpi">MPI</h3>
+
+<p>The container also contains the MPI version of RevBayes. This version was built with the ubuntu-provided OpenMPI implementation (3.1.2) and may not work with other MPI versions.</p>
+
+<p>To run a script file:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mpirun singularity run --app rbmpi revbayes.simg myscript.rev
+</code></pre></div></div>
+
+<p>If it does not work with the version of MPI you have on your cluster, you could ask your administrator to rebuild the image for the appropriate MPI version for your environment (see recipe below). <a href="https://sylabs.io/guides/3.4/user-guide/mpi.html">More information is available here</a>.</p>
+
+<h3 id="recipe">Recipe</h3>
+
+<p>Here is the recipe that was used to build the v1.0.13 version of the container image.</p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>BootStrap: library
+From: ubuntu:latest
+
+%post
+
+    mkdir /revbayes
+    
+    echo "Installing required packages..."
+    
+    # revbayes dependencies
+    apt-get update -y
+    apt-get install -y build-essential bash-completion git cmake
+
+    # install boost
+    apt-get install -y software-properties-common
+    add-apt-repository universe
+    apt-get update -y
+    apt-get install -y libboost-all-dev
+
+    # download revbayes
+    git clone https://github.com/revbayes/revbayes.git /revbayes-build
+    cd /revbayes-build
+    git checkout 9afdfe377eaffe0dea467b2ce5520fb055c14563
+
+%environment
+    export PATH=$PATH:/revbayes
+
+%runscript
+    exec rb $@
+
+%appinstall rb
+    cd /revbayes-build/projects/cmake/
+    rm -rf build
+    ./build.sh
+    mv rb /revbayes/rb
+
+%apprun rb
+    exec rb $@
+
+%appinstall rbmpi
+
+    apt-get install -y libopenmpi-dev
+    cd /revbayes-build/projects/cmake/
+    rm -rf build
+    ./build.sh -mpi true
+    mv rb /revbayes/rb-mpi
+
+%apprun rbmpi
+    exec rb-mpi $@
+</code></pre></div></div>
 
       <br>
 <footer>
@@ -107,14 +174,14 @@ Download and Install RevBayes
 $(":not(code).highlighter-rouge").each(function() {
   
   if( this.classList == "highlighter-rouge") {
-    this.classList = "bash highlighter-rouge";
+    this.classList = "default highlighter-rouge";
   }
   
 });
 // $("code.highlighter-rouge").each(function() {
 //   
 //   if( this.classList == "highlighter-rouge") {
-//       this.classList = "bash highlighter-rouge";
+//       this.classList = "default highlighter-rouge";
 //   }
 //   
 // });
