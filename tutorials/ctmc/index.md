@@ -530,6 +530,31 @@ mymcmc.run(generations=10000)
 
 When the analysis is complete, you will have the monitored files in your output directory.
 
+{% aside Saving and restarting analyses %}
+
+MCMC analyses can take a long time to converge, and it is usually difficult to predict how many generations will be needed to obtain results. In addition, many analyses are run on computer clusters with time limits, and so may be stopped by the cluster partway through. For all of these reasons, it is useful to save the state of the chain regularly through the analysis.
+```
+mymcmc.run(generations=100000000, checkpointInterval=100, checkpointFile="output/primates_cytb_JC.state")
+```
+The `checkpointInterval` and `checkpointFile` inputs specify respectively how often, and to which file, the chain should be saved. Three different files will be used for storing the state, with no extension and with extensions `_mcmc` and `_moves`.
+When multiple independent runs are specified, they will automatically be saved in separate files (with extensions `_run_1`, `_run_2`, etc.).
+
+Restarting the chain from a previous run is done by adding this line:
+```
+mymcmc.initializeFromCheckpoint("output/primates_cytb_JC.state")
+```
+before calling the function `mcmc.run()`. The file name should match what was given as `checkpointFile` when running the previous analysis. **NB:** Note that this line will create an error if the state file does not exist yet, and so should be commented out in the first run.
+
+The full MCMC block thus becomes:
+```
+mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
+mymcmc.initializeFromCheckpoint("output/primates_cytb_JC.state") #comment this out for the first run
+
+mymcmc.run(generations=100000000, checkpointInterval=100, checkpointFile="output/primates_cytb_JC.state")
+```
+
+{% endaside %}
+
 {% subsubsection Summarizing MCMC Samples %}
 
 Methods for visualizing the marginal densities of parameter values are not currently available in RevBayes itself. 
