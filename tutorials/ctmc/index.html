@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Nucleotide substitution models</h1>
 	<h3 class="subtitle">Phylogenetic inference of nucleotide data using RevBayes</h3>
 	<h4 class="authors">Sebastian Höhna, Michael Landis, Brian Moore and Tracy Heath</h4>
-  <h5>Last modified on September 12, 2019</h5>
+  <h5>Last modified on November 12, 2019</h5>
 </div>
 
 
@@ -624,6 +624,25 @@ create our MCMC object:</p>
 </code></pre></div></div>
 
 <p>When the analysis is complete, you will have the monitored files in your output directory.</p>
+
+<blockquote class="aside"><h2>Saving and restarting analyses</h2><p>MCMC analyses can take a long time to converge, and it is usually difficult to predict how many generations will be needed to obtain results. In addition, many analyses are run on computer clusters with time limits, and so may be stopped by the cluster partway through. For all of these reasons, it is useful to save the state of the chain regularly through the analysis.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=100000000, checkpointInterval=100, checkpointFile="output/primates_cytb_JC.state")
+</code></pre></div></div>
+<p>The <code class="highlighter-rouge">checkpointInterval</code> and <code class="highlighter-rouge">checkpointFile</code> inputs specify respectively how often, and to which file, the chain should be saved. Three different files will be used for storing the state, with no extension and with extensions <code class="highlighter-rouge">_mcmc</code> and <code class="highlighter-rouge">_moves</code>.
+When multiple independent runs are specified, they will automatically be saved in separate files (with extensions <code class="highlighter-rouge">_run_1</code>, <code class="highlighter-rouge">_run_2</code>, etc.).</p>
+
+<p>Restarting the chain from a previous run is done by adding this line:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.initializeFromCheckpoint("output/primates_cytb_JC.state")
+</code></pre></div></div>
+<p>before calling the function <code class="highlighter-rouge">mcmc.run()</code>. The file name should match what was given as <code class="highlighter-rouge">checkpointFile</code> when running the previous analysis. <strong>NB:</strong> Note that this line will create an error if the state file does not exist yet, and so should be commented out in the first run.</p>
+
+<p>The full MCMC block thus becomes:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
+mymcmc.initializeFromCheckpoint("output/primates_cytb_JC.state") #comment this out for the first run
+
+mymcmc.run(generations=100000000, checkpointInterval=100, checkpointFile="output/primates_cytb_JC.state")
+</code></pre></div></div>
+</blockquote>
 
 <h4 class="subsubsection" id="summarizing-mcmc-samples">Summarizing MCMC Samples</h4>
 <hr class="subsubsection" />
