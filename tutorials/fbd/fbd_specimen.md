@@ -171,17 +171,17 @@ somewhat different from the typical approach to node calibration. Here,
 instead of treating the calibration density as an additional prior
 distribution on the tree, we treat it as the *likelihood* of our fossil
 data given the tree parameter. Specifically, we assume the likelihood of
-a particular fossil observation $\mathcal{F}_i$ is equal to one if the
+a particular fossil's observed stratigraphic range $F_i = (a_i, b_i)$ is equal to one if the
 fossil’s inferred age on the tree $t_i$ falls within its observed time
-interval $(a_i,b_i)$, and zero otherwise:
+interval, and zero otherwise:
 
-$$f[\mathcal{F}_i \mid a_i, b_i, t_i] = \begin{cases}
+$$f[F_i \mid t_i] = \begin{cases}
 1 & \text{if } a_i < t_i < b_i\\
 0 & \text{otherwise}
 \end{cases}$$
 
 In other words, we assume the likelihood is equal to one
-if the inferred age is consistent with the data observed. We can
+if the inferred age is consistent with the observed data. We can
 represent this likelihood in RevBayes using a distribution that is
 proportional to the likelihood,
 *i.e.* non-zero when the likelihood is equal
