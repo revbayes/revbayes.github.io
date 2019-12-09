@@ -18,18 +18,13 @@ taxa <- readTaxonData("data/bears_taxa.tsv")
 # this file contains only the taxa for which morphological characters are available #
 morpho <- readDiscreteCharacterData("data/bears_morphology.nex")
 
-# Add the missing taxa to each data partition #
-morpho.addMissingTaxa( taxa )
-
 ## helpers
 n_taxa <- taxa.size()
 moves = VectorMoves()
 
-
 ##########################################################################################
 # Joint Fossilized Birth-Death Process prior on the topology and fossil occurrence times #
 ##########################################################################################
-
 
 # Define exponential priors on the birth rate and death rate #
 speciation_rate ~ dnExponential(10)
@@ -51,6 +46,7 @@ moves.append( mvScale(extinction_rate, lambda=1,    weight=1) )
 diversification := speciation_rate - extinction_rate
 turnover := extinction_rate/speciation_rate
 
+
 # Fix the probability of sampling parameter (rho) to 1, #
 # because all extant bears are represented in this analysis #
 rho <- 1.0
@@ -63,6 +59,7 @@ psi ~ dnExponential(10)
 moves.append( mvScale(psi, lambda=0.01, weight=1) )
 moves.append( mvScale(psi, lambda=0.1,  weight=1) )
 moves.append( mvScale(psi, lambda=1,    weight=1) )
+
 
 # The FBD is conditioned on a starting time for the process, which is the origin time #
 # Specify a uniform prior on the origin #
@@ -77,15 +74,6 @@ moves.append( mvSlide(origin_time, delta=1,    weight=5.0) )
 
 ### Define the tree-prior distribution as the fossilized birth-death process ###
 fbd_dist = dnFBDP(origin=origin_time, lambda=speciation_rate, mu=extinction_rate, psi=psi, rho=rho, taxa=taxa)
-
-# The will be a random variable of a constrained topology distribution that is governed by the FBD #
-# this distribution will generate FBD trees that match the monophyly constraints defined above #
-clade_ursinae = clade("Melursus_ursinus", "Ursus_arctos", "Ursus_maritimus", 
-                      "Helarctos_malayanus", "Ursus_americanus", "Ursus_thibetanus", 
-                      "Ursus_abstrusus", "Ursus_spelaeus")
-
-constraints = v(clade_ursinae)
-fbd_tree ~ dnConstrainedTopology(fbd_dist, constraints=constraints)
 
 # Specify moves on the tree and node times #
 # These moves update the tree topology 
@@ -130,9 +118,6 @@ age_extant := tmrca(fbd_tree, clade_extant)
 
 # Monitor the age of a particular fossil #
 age_Kretzoiarctos_beatrix := tmrca(fbd_tree, clade("Kretzoiarctos_beatrix"))
-
-# Monitor the tree, pruning fossil taxa for which we do not have morphological or molecular data #
-pruned_tree := fnPruneTree(fbd_tree, prune=v(taxa[17],taxa[20]))
 
 
 ########
