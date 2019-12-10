@@ -98,6 +98,7 @@ Set up the XCode Project with an external build system
         * `revbayes/src/libs`
     * Click **Add**.
 7. At this point, if everything has been setup correctly, you should be able to build the project. You can try by clicking on **Product - Build** or by using **&#8984;+B**.
-8. Once revbayes has built go to **Product->Scheme->Edit Scheme**, it should bring a window like this: [figures/xcode-exe.png]()
+8. Once revbayes has built go to **Product->Scheme->Edit Scheme**, it should bring a window like this:
+![](figures/xcode-exe.png)
 9. Click on info, then go to executable and locate the newly built revbayes executable.
 10. Now you should be able to click the play button or **&#8984;+R**, and you should see the revbayes command line prompt in the loading screen.
