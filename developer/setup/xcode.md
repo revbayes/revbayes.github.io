@@ -84,11 +84,13 @@ Set up the XCode Project with an external build system
 
 ### Configure the build
 
-1. After clicking **Next** as directed above, you should see a screen that looks like this: [figures/xcode-info.png]()
+1. After clicking **Next** as directed above, you should see a screen that looks like this:
+![](figures/xcode-info.png)
 2. On this screen, under **Arguments** type `$(ACTION) -boost true -debug true`, or if you haven't built the boost libraries in RevBayes already. If you have then type `$(ACTION) -boost false -debug true`.
 3. Under **Directory** put `/<path-to-revbayes>/revbayes/projects/cmake/`.
 4. Add the source files by selecting the appropriate directory and going to the **File** pull-down menu and selecting **Add Files to <xcode-rb-project-name>**.
-5. This should open a screen that looks like this: [figures/xcode-adding.png]()
+5. This should open a screen that looks like this:
+![](figures/xcode-adding.png)
 6. Click on **Options** at the button of the window, and under the ***Added Folders*** heading, select **Create as Folder References**, and add to the target that was created in Step 2.
     * Select the following directories from the `revbayes` directory:
         * `revbayes/src/revlanguage`
