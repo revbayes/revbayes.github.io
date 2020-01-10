@@ -13,7 +13,6 @@ index: true
 
 Extant ecological interactions are the result of a long history of coevolution between interacting lineages. In the case of host-parasite systems, species associations are continuously evolving via gains and losses of hosts. Given that parasites are usually specialized to their hosts, most methods developed to study coevolution focus on congruence between host and parasite phylogenies and use cospeciation as the null expectation {% cite Brooks1979 Huelsenbeck:1997kx deVienne:2013fu %}. Recent years have seen increasing evidence that parasites change what hosts they target much more often than previously thought. Thus, new methods are required to appropriately reconstruct coevolutionary histories. Below, we describe a model of host-parasite coevolution that was introduced in {% citet Braga2019 %}, which is based on the Dispersal-Extinction-Cladogenesis approach {% citet Ree2005 %} used to model geographic range evolution (see {% page_ref biogeo/biogeo_intro %} for an overview of the DEC model). However, in this first version, the model does not include evolutionary changes during parasite cladogenesis. This tutorial reviews the modeling concepts developed in {% citet Braga2019 %} then describes how to model host repertoire evolution and reproduce the results published in the paper.
 
-(Note about BioRxiv and SystBio )
 
 {% section Model Overview | overview %}
 
