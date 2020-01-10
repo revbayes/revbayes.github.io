@@ -1,0 +1,592 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: Reconstructing Host Repertoire Evolution</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
+      </a>
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/download">Download</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/documentation/">Documentation</a></li>
+        <li><a href="https://revbayes.github.io/revscripter/">RevScripter</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/jobs/">Jobs</a></li>
+        <li><a href="/developer/">Developer</a></li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <div class="titlebar">
+	<h1 class="maintitle">Reconstructing Host Repertoire Evolution</h1>
+	<h3 class="subtitle">Inference of ancestral ecological interactions</h3>
+	<h4 class="authors">Mariana P. Braga and Michael J. Landis</h4>
+  <h5>Last modified on January 10, 2020</h5>
+</div>
+
+
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul id="prerequisites">
+          
+            <li><a href="/tutorials/intro/">Getting Started with RevBayes and Rev Language Syntax</a></li>
+          
+            <li><a href="/tutorials/mcmc/">Introduction to Markov chain Monte Carlo (MCMC) Sampling</a></li>
+          
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+
+
+
+
+<blockquote class="tutorial_files" id="tutorial_files">
+    <h2>Data files and scripts</h2>
+    
+        
+        <strong>Data Files</strong>
+        <ul id="data_files">
+        
+        
+        
+          <li><a href="/tutorials/host_rep/data/Nymphalini.phy">Nymphalini.phy</a></li>
+        
+          <li><a href="/tutorials/host_rep/data/angio_25tips_bl1.phy">angio_25tips_bl1.phy</a></li>
+        
+          <li><a href="/tutorials/host_rep/data/angio_25tips_time.phy">angio_25tips_time.phy</a></li>
+        
+          <li><a href="/tutorials/host_rep/data/interaction_matrix.nex">interaction_matrix.nex</a></li>
+        
+          <li><a href="/tutorials/host_rep/data/out.bl1.log">out.bl1.log</a></li>
+        
+          <li><a href="/tutorials/host_rep/data/out.time.log">out.time.log</a></li>
+        
+        </ul>
+    
+        
+        <strong>Scripts</strong>
+        <ul id="scripts">
+        
+        
+        
+          <li><a href="/tutorials/host_rep/scripts/ancestral_states.R">ancestral_states.R</a></li>
+        
+          <li><a href="/tutorials/host_rep/scripts/run_nymphalini.Rev">run_nymphalini.Rev</a></li>
+        
+        </ul>
+    
+</blockquote>
+
+
+</div>
+<h2 class="section" id="introduction">Introduction</h2>
+<hr class="section" />
+
+<p>Extant ecological interactions are the result of a long history of coevolution between interacting lineages. In the case of host-parasite systems, species associations are continuously evolving via gains and losses of hosts. Given that parasites are usually specialized to their hosts, most methods developed to study coevolution focus on congruence between host and parasite phylogenies and use cospeciation as the null expectation <a href="#Brooks1979">(Brooks 1979; Huelsenbeck et al. 1997; de Vienne et al. 2013)</a>. Recent years have seen increasing evidence that parasites change what hosts they target much more often than previously thought. Thus, new methods are required to appropriately reconstruct coevolutionary histories. Below, we describe a model of host-parasite coevolution that was introduced in <a href="#Braga2019">Braga et al. (2019)</a>, which is based on the Dispersal-Extinction-Cladogenesis approach <a href="#Ree2005">Ree et al. (2005)</a> used to model geographic range evolution (see <a href="/tutorials/biogeo/biogeo_intro.html">Introduction to Phylogenetic Models of Discrete Biogeography</a> for an overview of the DEC model). However, in this first version, the model does not include evolutionary changes during parasite cladogenesis. This tutorial reviews the modeling concepts developed in <a href="#Braga2019">Braga et al. (2019)</a> then describes how to model host repertoire evolution and reproduce the results published in the paper.</p>
+
+<p>(Note about BioRxiv and SystBio )</p>
+
+<h2 class="section" id="overview">Model Overview</h2>
+<hr class="section" />
+
+<p>We wish to model the co-evolution of ecological interactions between <em>M</em> extant parasite taxa and <em>N</em> host taxa in a phylogenetic context. Each parasite uses one or more hosts, which we encode as a character set called the <em>host repertoire</em>. During the course of evolution, any parasite lineage may gain or lose a host from its repertoire or modify whether a host is actually or potentially used by the parasite. Furthermore, it is likely that parasites have a phylogenetic preference when expanding their host repertoires, favoring species that are closely related to species they parasitize over distantly related species.</p>
+
+<p>This tutorial follows the modeling strategy developed in <a href="#Braga2019">Braga et al. (2019)</a>, which identifies three central challenges to modeling host repertoire evolution: (1) defining the host repertoire character, (2) defining an event-based model for how host repertoires evolve in terms of gain and loss rates and phylogenetic distances among hosts in the repertoire, and (3) designing an inference method to fit our model to data. The next sections gives context to possible solutions to these problems.</p>
+
+<h3 class="subsection" id="repertoire">Hosts, parasites, and their interactions</h3>
+<hr class="subsection" />
+
+<p>Rooted and time-calibrated phylogenetic trees describe the evolutionary relationships among the <em>M</em> parasite taxa and among the <em>N</em> host taxa. In this tutorial, the trees are considered to be known without error.</p>
+
+<p>Each parasite taxon has a host repertoire, which is represented by a vector of length <em>N</em>. At any given time, each host taxon can assume one of three states with respect to a parasite lineage: 0 (non host), 1 (potential host), or 2 (actual host).  We call the set of all potential and actual hosts fundamental repertoire, and the set of only actual hosts, realized repertoire (analogous to fundamental and realized niche). For example, say there are two hosts, A and B.</p>
+
+<figure id="table1" class="table"><table>
+  <thead>
+    <tr>
+      <th>Repertoire<br />(set)</th>
+      <th>Repertoire<br />(vector)</th>
+      <th>Size of fundamental<br />repertoire</th>
+      <th>Size of realized<br />repertoire</th>
+      <th>State</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$\emptyset$</td>
+      <td>00</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>a</td>
+      <td>10</td>
+      <td>1</td>
+      <td>0</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>A</td>
+      <td>20</td>
+      <td>1</td>
+      <td>1</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>b</td>
+      <td>01</td>
+      <td>1</td>
+      <td>0</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <td>B</td>
+      <td>02</td>
+      <td>1</td>
+      <td>1</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <td>ab</td>
+      <td>11</td>
+      <td>2</td>
+      <td>0</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <td>Ab</td>
+      <td>21</td>
+      <td>2</td>
+      <td>1</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <td>aB</td>
+      <td>12</td>
+      <td>2</td>
+      <td>1</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <td>AB</td>
+      <td>22</td>
+      <td>2</td>
+      <td>2</td>
+      <td>9</td>
+    </tr>
+  </tbody>
+</table>
+
+<figcaption class="table">Example of host repertoire representations for an analysis with hosts A and B. Lowercase indicates potential hosts and uppercase, actual hosts.</figcaption>
+</figure>
+
+<p>We only allow host repertoires in which the parasite has at least one actual host (states 3, 5, 7-9 in this example).</p>
+
+<h3 class="subsection" id="changes">Host gain and loss</h3>
+<hr class="subsection" />
+
+<p>The transition from state 0 to state 1 represents the gain of the ability to use the host, and the transition from state 1 to state 2 happens when the parasite actually starts to use the host in nature. If we assume that gains and losses of hosts occur according to a continuous-time Markov chain, the probability of a given coevolutionary history can be easily calculated based on a matrix, <strong>Q</strong>, containing the instantaneous rates of change between all pairs of host repertoires, and thus describing the Markov chain (see <a href="/tutorials/biogeo/biogeo_intro.html">Introduction to Phylogenetic Models of Discrete Biogeography</a> for more details).</p>
+
+<p>Another new feature of our model is the ability to infer the effect of host phylogenetic relatedness on colonizations, i.e. the gain of a host depends on the phylogenetic distance between the given host and those currently used by a lineage. To formalize these dynamics, let <em>q</em><sub><strong>y,z</strong></sub><sup>($a$)</sup> be the rate of change from host repertoire <strong>y</strong> to repertoire <strong>z</strong> by changing the state of host <em>a</em>. Also, let $\lambda_{ij}$ be the rate at which an individual host changes from state $i$ to state $j$, and $\eta({\bf y},a,\beta)$ be a phylogenetic-distance rate modifier. We define the instantaneous rate of change as</p>
+
+<figure id="cartoon"><p><img src="figures/Qmatrix.png" width="70%" /></p>
+</figure>
+
+<p>and the phylogenetic-distance rate modifier function as</p>
+
+<script type="math/tex; mode=display">\begin{aligned}
+    \eta({\bf y},a,\beta) = e^{-\beta d/\overline{d}},    
+\end{aligned}</script>
+
+<p>where $\beta$ controls the effect of $d$, the average pairwise phylogenetic distance between the new host, $a$, and the hosts currently occupied in <strong>y</strong>; and $\overline{d}$ is the average phylogenetic distance between all pairs of hosts. Pairwise phylogenetic distance is defined as the sum of branch lengths separating two leaf nodes.</p>
+
+<figure id="cartoon"><p><img src="figures/hr_evolution.pdf" width="60%" /></p>
+<figcaption>Cartoon of the model of host repertoire evolution within a parasite lineage. Parasites can have potential (lowercase) or actual (uppercase) interactions with host lineages A, B, and C, whose phylogeny is known (<em>left</em>). For example, the parasite begins with the host repertoire bC, which corresponds to the vector 012 (see <code class="highlighter-rouge">Table 1</code>). Time proceeds from left to right. Only anagenetic events are modeled, <em>i.e.</em> repertoires are identically inherited during cladogenesis. In this example, a repertoire of three hosts changes along a branch of the parasite tree. Gain rates are multiplied by the phylogenetic-distance rate modifier function, $\eta$, using the host phylogeny.</figcaption>
+</figure>
+
+<p>Let’s calculate the instantaneous rate for the second gain event in <strong>Figure 1</strong> for two different values of $\beta$. Say $\mu = 0.5$, $\lambda_{12} = 0.2$, $d_{\bf AC}=10$ and $\overline{d}=8$. In this case,</p>
+
+<script type="math/tex; mode=display">\begin{aligned}
+  q_{\bf aC,AC} = q_{102,202} = 0.5 \times 0.2 \times e^{-1.25\beta}
+\end{aligned}</script>
+
+<p>If $\beta = 0$,  $q_{102,202} = 0.5 \times 0.2 \times 1 = 0.1$.</p>
+
+<p>Whereas if $\beta = 2$,  $q_{102,202} = 0.5 \times 0.2 \times 0.28 = 0.028$.</p>
+
+<p>What about the rate of gain of <strong>b</strong>? Calculate $q_{002,012}$ for $\beta = 0$ and $\beta =1$, given that $d_{\bf BC}=4$ and $\lambda_{01} = 0.1$.</p>
+
+<h2 class="section" id="dataset---butterfly-plant-interactions">Dataset - Butterfly-plant interactions</h2>
+<hr class="section" />
+
+<p>In this tutorial, we will go through the inference of host repertoire evolution in Nymphalini butterflies conducted in <a href="#Braga2019">Braga et al. (2019)</a>. The data set includes 34 butterflies species and plants from 25 angiosperm families. For each butterfly species, host plants used in nature were coded as <em>actual hosts</em>, plants that are not used in nature, but there’s evidence that the larvae can feed on were coded as <em>potential hosts</em>, and those plants that the larvae do not eat were coded as <em>non hosts</em>.</p>
+
+<figure id="nymphalini"><p><img src="figures/extant_net_phylos.pdf" width="50%" /></p>
+<figcaption>Interactions between Nymphalini butterflies (rows) and their Angiosperm host plants (columns). Black squares represent actual interactions and grey squares, potential interactions.</figcaption>
+</figure>
+
+<blockquote class="info">
+  <h2 id="download-data">Download data</h2>
+  <p>We have provided data and script files for this tutorial (see top of the page)</p>
+
+  <p>Once you have downloaded the zip file by clicking on the arrow above,
+unzip that and navigate inside of that directory.
+This directory should be called <code class="highlighter-rouge">revbayes_host_rep</code></p>
+
+  <p>Once inside, you should see two directories: <code class="highlighter-rouge">data</code> and <code class="highlighter-rouge">scripts</code></p>
+
+  <p>Once you have all of the files, open RevBayes and ensure that your working directory 
+is the top directory above the <code class="highlighter-rouge">data</code> folder (e.g., <code class="highlighter-rouge">revbayes_host_rep</code>).</p>
+</blockquote>
+
+<p>In this tutorial we are going to perform the analysis with two different host trees: the time-calibrated tree (<code class="highlighter-rouge">angio_25tips_time.phy</code>), and a tree where all branch lengths were set to 1 (<code class="highlighter-rouge">angio_25tips_bl1.phy</code>). This is because we wanted to test if cladogenetic distances and anagenetic distances between host families have different effects on host colonization. Note that the columns in the nexus file containing the interaction data are ordered by the</p>
+
+<h2 class="section" id="analysis---butterfly-plant-interactions">Analysis - Butterfly-plant interactions</h2>
+<hr class="section" />
+
+<p>Now, let’s begin.</p>
+
+<p>First, create file management variables for input</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phy_host_fn = "data/angio_25tips_time.phy"
+phy_parasite_fn = "data/Nymphalini.phy"
+dat_parasite_fn = "data/interaction_matrix.nex"
+</code></pre></div></div>
+
+<p>then read in our character data</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dat_parasite &lt;- readDiscreteCharacterData(dat_parasite_fn)
+</code></pre></div></div>
+
+<p>For this tutorial we’ll assume we know the host and parasite phylogenies without error. Note that our host repertoire inference method uses a root branch length to estimate the stationary probabilities at the root node. Our parasite tree file (<code class="highlighter-rouge">Nymphalini.phy</code>) is modified to have a branch length assigned to the root node. If you provide a tree without a root branch length, the software will consider it to be the same length as the tree height.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phy_parasite &lt;- readTrees(phy_parasite_fn)[1]
+</code></pre></div></div>
+
+<p>Here is where you can change the host tree to <code class="highlighter-rouge">angio_25tips_bl1.phy</code> when you repeat the analysis</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phy_host &lt;- readTrees(phy_host_fn)[1]
+</code></pre></div></div>
+
+<p>Retrieve dataset dimensions</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_host_tips &lt;- phy_host.ntips()
+n_host_branches &lt;- 2 * n_host_tips - 2
+n_parasite_branches &lt;- 2 * phy_parasite.ntips() - 2
+n_sites &lt;- dat_parasite.nchar()
+</code></pre></div></div>
+
+<p>Add more information to the name of output files</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>out_str = "out.time"
+out_fn = "output/" + out_str    
+</code></pre></div></div>
+
+<p>We need to create vectors of <em>moves</em> and <em>monitors</em> to later inform how our Markov chain Monte Carlo (MCMC) analysis needs to propose and sample new model parameters and host repertoire histories. Also, we use monitors to record the information we want to use</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves = VectorMoves()
+monitors = VectorMonitors()
+</code></pre></div></div>
+
+<p>Next, we’ll build the transition rate matrix for the model. In this example, the rate matrix requires four rates: two gain rates (0-&gt;1 and 1-&gt;2) and two loss rates (1-&gt;0 and 2-&gt;1).</p>
+
+<p>First, create a vector containing all transition rates and assign it a move</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>switch_rates_pos ~ dnDirichlet( [1,1,1,1] )
+moves.append( mvSimplex(switch_rates_pos, alpha=10, weight=2, tune=false) )
+</code></pre></div></div>
+
+<p>We’ll now create a set of deterministic nodes to help us map our simplex of transition rates onto specific host gain and loss events</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>switch_rate_0_to_1 := switch_rates_pos[1]
+switch_rate_0_to_2 := 0.
+switch_rate_1_to_0 := switch_rates_pos[2]
+switch_rate_1_to_2 := switch_rates_pos[3]
+switch_rate_2_to_0 := 0.
+switch_rate_2_to_1 := switch_rates_pos[4]
+</code></pre></div></div>
+
+<p>Next, we assemble our named rate variables into a vector</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>switch_rates := v( switch_rate_0_to_1, switch_rate_0_to_2, switch_rate_1_to_0, switch_rate_1_to_2, switch_rate_2_to_0, switch_rate_2_to_1 )
+</code></pre></div></div>
+
+<p>We then construct a rate matrix for three states (0: non-host, 1: potential host, 2: actual host) using our vector of named rates. We found that the MCMC mixes better when the Q matrix is not rescaled such that the expected number of events per unit time per character is 1 (<code class="highlighter-rouge">rescaled=false</code>)</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q_char := fnFreeK( transition_rates=switch_rates, rescaled=false )
+</code></pre></div></div>
+
+<p>Note that <code class="highlighter-rouge">Q_char</code> is a rate matrix for a single character, which would define the rates of host repertoire evolution if all hosts were gained and lost at rates independent of what other hosts were in the repertoire.
+To let host gain and loss rates be modified by other hosts in the repertoire, we must define how host usage evolves interdependently using a rate modifier function.
+In this analysis, we wish to model how the average phylogenetic distance between a new possible host and currently parasitized hosts might increase or decrease the rate of that host gain event.</p>
+
+<p>To this end, we now create the phylogenetic distance rate modifier function (effect of host phylogeny on gain rate). First, we define a parameter (<code class="highlighter-rouge">beta</code>) that defines how influential phylogenetic distances should be on host repertoire evolution. The <code class="highlighter-rouge">beta</code> parameter is a vector with two values: the first for the gain 0-&gt;1 and the second for 1-&gt;2. In this tutorial, we assume they are equal</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>beta[1] ~ dnExp(1)
+beta[2] := beta[1]
+</code></pre></div></div>
+
+<p>Because the value of <code class="highlighter-rouge">beta[2]</code> is determined to be equal to <code class="highlighter-rouge">beta[1]</code>, we only need to create a single move to update <code class="highlighter-rouge">beta[1]</code></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale( beta[1], weight=1 ) )
+</code></pre></div></div>
+
+<p>Next, we pass our <code class="highlighter-rouge">beta</code> parameter into a special function called <code class="highlighter-rouge">fnHostSwitchRateModifier</code> that rescales the host gain rate accordingly</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_modifiers[1] := fnHostSwitchRateModifier(tree=phy_host, gainScale=beta)
+</code></pre></div></div>
+
+<p>Now we can build the rate matrix for all characters (= number of hosts) based on the gain and loss rates and the phylogenetic distance rate modifier</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q_host := fnRateGeneratorSequence(Q=Q_char,
+                                  numChars=n_host_tips,
+                                  rateModifiers=rate_modifiers)
+</code></pre></div></div>
+
+<p>We then rescale all rates in $\lambda$ with $\mu$. We refer to $\mu$ as the maximum rate (or rate, for short) of host repertoire evolution, since $0 \leq \mu \lambda_{ij} \leq \mu$.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mu ~ dnExp(10)
+moves.append( mvScale(mu, weight=2) )
+</code></pre></div></div>
+
+<p>Next, set uniform subroot state priors over the states (0,1,2). The subroot is the start of the branch leading to the root node.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rf_host &lt;- simplex(1,1,1)
+</code></pre></div></div>
+
+<p>We have fully specified all of the parameters of our phylogenetic model. Our model components are then encapsulated in a distribution called the <em>phylogenetic continuous-time Markov chain for data-augmented character sequences</em>, and we use the <code class="highlighter-rouge">dnPhyloCTMCDASequence</code> constructor function to create this node. This distribution is similar to dnPhyloCTMC except specialized to use data-augmented histories under the non-iid model to integrate over coevolutionary histories. For more details on how this distribution computes the probability of a specific coevolutionary history, see <a href="#Braga2019">Braga et al. (2019)</a>.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>m_host ~ dnPhyloCTMCDASequence(tree=phy_parasite,
+                               Q=Q_host,
+                               branchRates=mu,
+                               rootFrequencies=rf_host,
+                               nSites=n_host_tips,
+                               type="Standard")
+</code></pre></div></div>
+
+<p>Once the <code class="highlighter-rouge">PhyloCTMCDASequence</code> variable has been created, we can attach our observed host repertoires (interaction matrix) to the tip nodes in the parasite tree</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>m_host.clamp(dat_parasite)
+</code></pre></div></div>
+
+<p>Let’s add the remaining moves to update the character histories. These moves share several arguments to configure how they update histories. <code class="highlighter-rouge">ctmc</code> and <code class="highlighter-rouge">qmap_seq</code> indicate which model variables are relevant to the move. The <code class="highlighter-rouge">lambda</code> argument assigns the probability of proposing a new history for any individual character, e.g. if <code class="highlighter-rouge">lambda=0.2</code>and <code class="highlighter-rouge">n_host_tips</code> equals 25, then we would expect the move to propose 5 new host interaction histories per update. The <code class="highlighter-rouge">graph</code> argument specifies whether the move performs on a single branch (<code class="highlighter-rouge">graph="branch"</code>) or on a single node and its three incident branches (<code class="highlighter-rouge">graph="node"</code>). The <code class="highlighter-rouge">proposal</code> argument controls which MCMC proposal algorithm we use to sample and propose new branch histories; in our case, we use the rejection sampling algorithm of <a href="#Nielsen2002">Nielsen (2002)</a> (<code class="highlighter-rouge">proposal="rejection"</code>). Finally, the <code class="highlighter-rouge">weight</code> argument controls the relative number of times that move is sampled per MCMC iteration. 
+First we create a move to update character histories along a random branch</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvCharacterHistory(ctmc=m_host,
+                                 qmap_seq=Q_host,
+                                 lambda=0.2,
+                                 graph="branch",
+                                 proposal="rejection",
+                                 weight=n_parasite_branches*2) )
+</code></pre></div></div>
+
+<p>Then, we create a move to update the character histories for a random node and the three incident branches</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvCharacterHistory(ctmc=m_host,
+                                 qmap_seq=Q_host,
+                                 lambda=0.2,
+                                 graph="node",
+                                 proposal="rejection",
+                                 weight=n_parasite_branches) )
+</code></pre></div></div>
+
+<p>Before we can start the analysis, we need to define the number of generations and the sampling frequency of the MCMC</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_gen = 1e6
+sample_freq = 50
+</code></pre></div></div>
+
+<p>We also need to set up a vector of <em>monitors</em> to record the states of our Markov chain. All the monitor functions start with <code class="highlighter-rouge">mn</code>. First, we will initialize the screen monitor that will report the states of specified variables to the screen. This monitor mostly helps us see the progress of the MCMC run.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(mu, beta, printgen=sample_freq) )
+</code></pre></div></div>
+
+<p>Then we create a new monitor variable that will output the states for all model parameters when passed into a MCMC function.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(printgen=sample_freq, filename=out_fn + ".log") )
+</code></pre></div></div>
+
+<p>The <code class="highlighter-rouge">mnFile</code> monitor will record the states for only the parameters passed in as arguments. We use this monitor to output the parasite tree, even though the parasite tree value remains constant. This is useful for mapping the indices of internal nodes onto the tree. These indices will also be used in the next monitor, which outputs all sampled coevolutionary histories</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnFile( phy_parasite, filename=out_fn + ".tre", printgen=sample_freq) )
+monitors.append( mnCharacterHistorySummary( filename=out_fn + ".history.txt",
+                                            ctmc=m_host,
+                                            tree=phy_parasite,
+                                            printgen=sample_freq ) )
+</code></pre></div></div>
+
+<p>Finally, we wrap the entire model in a single object. To do this, we only need to give the <code class="highlighter-rouge">model()</code> function a single node and it will find all of the other nodes in the model</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">model</span> <span class="p">=</span> <span class="k">model</span><span class="p">(</span><span class="n">m_host</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Create MCMC object from the model, moves, and monitors variables.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ch = mcmc(model, monitors, moves)
+</code></pre></div></div>
+
+<p>Then run the MCMC analysis, which will sample parameter values and character histories in proportion to their posterior probability</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ch.run(n_gen)
+</code></pre></div></div>
+
+<p>Now you can repeat the analysis using the host tree <code class="highlighter-rouge">angio_25tips_bl1.phy</code>. Remember to change the output file name!</p>
+
+<h2 class="section" id="results">Results</h2>
+<hr class="section" />
+
+<p>You can use the output files <code class="highlighter-rouge">out.time.log</code> and <code class="highlighter-rouge">out.bl1.log</code> to plot the posterior distributions for the four transition rates, the overall clock, and the phylogenetic distance rate modifier. We can examine the log files in the program <a href="http://beast.community/tracer"><strong>Tracer</strong></a>. Once you open this program, you can open the log files using the “File &gt; Import Tracer File” option, navigate to the directory in which you ran the analysis and select the relevant log file. Or you can simply drag and drop the files into “Trace Files” (the empty white box on the upper left of the program).</p>
+
+<p>Take a look at the output obtained for the analysis with the time-calibrated host tree (<code class="highlighter-rouge">out.time.log</code>) and with the host tree with branch lengths set to 1 (<code class="highlighter-rouge">out.bl1.log</code>). Let’s focus on the posterior distributions of $\beta$.</p>
+
+<figure id="ancestral-plot"><p><img src="figures/tracer.png" width="80%" /></p>
+<figcaption>Marginal density in Tracer. The left-hand window provides mean and ESS of the chain. The right-hand window shows the distribution of samples.</figcaption>
+</figure>
+
+<blockquote class="info">
+  <h2 id="discussion-point">Discussion point</h2>
+  <p>As we have seen above, we estimate different values of $\beta$ when using different host trees. Which host tree has a stronger effect on host gains? What does that mean in terms of evolution of plant traits that are used by the butterflies?</p>
+</blockquote>
+
+<p>Now let’s move on to ancestral state reconstruction. To get the ancestral states, use the R script <a href="scripts/ancestral_states.R">ancestral_states.R</a>. This script produces a dataframe containing the posterior probability of potential and actual interactions between hosts and parasites (internal nodes in the parasite phylogeny). With that information, you can generate a figure like the one below.</p>
+
+<figure id="ancestral-plot"><p><img src="figures/anc_state_nymp.pdf" width="60%" /></p>
+<figcaption>Ancestral state reconstruction of host repertoire across the Nymphalini phylogeny. Each square color represents one interaction with a given host family (only interactions with &gt;90% posterior probability). Some parasite nodes don’t display an ancestral state because no host interaction was estimated with probability higher than 90%. The x-axis shows time before present in millions of years.</figcaption>
+</figure>
+
+
+<ol class="bibliography"><li><span id="Braga2019">Braga M.P., Landis M., Nylin S., Janz N., Ronquist F. 2019. Bayesian inference of ancestral host-parasite interactions under a phylogenetic model of host repertoire evolution. BioRxiv.</span>
+
+</li>
+<li><span id="Brooks1979">Brooks D.R. 1979. Testing the Context and Extent of Host-Parasite Coevolution. Systematic Biology. 28:299–307.</span>
+
+</li>
+<li><span id="Huelsenbeck:1997kx">Huelsenbeck J.P., Rannala B., Yang Z.H. 1997. Statistical tests of host-parasite cospeciation. Evolution. 51:410–419.</span>
+
+</li>
+<li><span id="Nielsen2002">Nielsen R. 2002. Mapping mutations on phylogenies. Systematic Biology. 51:729–739.</span>
+
+<a href="https://doi.org/10.1080/10635150290102393">10.1080/10635150290102393</a>
+
+</li>
+<li><span id="Ree2005">Ree R.H., Moore B.R., Webb C.O., Donoghue M.J., Crandall K. 2005. A likelihood framework for inferring the evolution of geographic range on phylogenetic trees. Evolution. 59:2299–2311.</span>
+
+<a href="https://doi.org/10.1111/j.0014-3820.2005.tb00940.x">10.1111/j.0014-3820.2005.tb00940.x</a>
+
+</li>
+<li><span id="deVienne:2013fu">Vienne D.M. de, Refregier G., Lopez-Villavicencio M., Tellier A., Hood M.E., Giraud T. 2013. Cospeciation vs host-shift speciation: methods for testing, evidence from natural associations and relation to coevolution. New Phytologist. 198:347–385.</span>
+
+</li></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+    });
+    MathJax.Hub.Queue(function () {
+      $(".aside").each(function() {
+          $("div .MathJax", this).hide();
+      });
+    });
+</script>
+<script src="/assets/js/base.js"></script>
+
+  </body>
+</html>

@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Setting up XCode for RevBayes development</h1>
 	
 	<h4 class="authors"></h4>
-  <h5>Last modified on July 26, 2019</h5>
+  <h5>Last modified on December 10, 2019</h5>
 </div>
 
 <p>XCode is an IDE for Mac OSX. XCode does not keep track of files, so each time you open your RevBayes project in Xcode you must pull the RevBayes master branch from git &amp; remove reference to all of the source. Eclipse Oxygen does a cleaner job of managing the files; you do not need to pull from git each time you work in it.</p>
@@ -167,11 +167,13 @@
 <h3 id="configure-the-build">Configure the build</h3>
 
 <ol>
-  <li>After clicking <strong>Next</strong> as directed above, you should see a screen that looks like this: <a href="">figures/xcode-info.png</a></li>
+  <li>After clicking <strong>Next</strong> as directed above, you should see a screen that looks like this:
+<img src="figures/xcode-info.png" alt="" /></li>
   <li>On this screen, under <strong>Arguments</strong> type <code class="highlighter-rouge">$(ACTION) -boost true -debug true</code>, or if you haven’t built the boost libraries in RevBayes already. If you have then type <code class="highlighter-rouge">$(ACTION) -boost false -debug true</code>.</li>
   <li>Under <strong>Directory</strong> put <code class="highlighter-rouge">/&lt;path-to-revbayes&gt;/revbayes/projects/cmake/</code>.</li>
   <li>Add the source files by selecting the appropriate directory and going to the <strong>File</strong> pull-down menu and selecting **Add Files to <xcode-rb-project-name>**.</xcode-rb-project-name></li>
-  <li>This should open a screen that looks like this: <a href="">figures/xcode-adding.png</a></li>
+  <li>This should open a screen that looks like this:
+<img src="figures/xcode-adding.png" alt="" /></li>
   <li>Click on <strong>Options</strong> at the button of the window, and under the <strong><em>Added Folders</em></strong> heading, select <strong>Create as Folder References</strong>, and add to the target that was created in Step 2.
     <ul>
       <li>Select the following directories from the <code class="highlighter-rouge">revbayes</code> directory:
@@ -185,7 +187,8 @@
     </ul>
   </li>
   <li>At this point, if everything has been setup correctly, you should be able to build the project. You can try by clicking on <strong>Product - Build</strong> or by using <strong>⌘+B</strong>.</li>
-  <li>Once revbayes has built go to <strong>Product-&gt;Scheme-&gt;Edit Scheme</strong>, it should bring a window like this: <a href="">figures/xcode-exe.png</a></li>
+  <li>Once revbayes has built go to <strong>Product-&gt;Scheme-&gt;Edit Scheme</strong>, it should bring a window like this:
+<img src="figures/xcode-exe.png" alt="" /></li>
   <li>Click on info, then go to executable and locate the newly built revbayes executable.</li>
   <li>Now you should be able to click the play button or <strong>⌘+R</strong>, and you should see the revbayes command line prompt in the loading screen.</li>
 </ol>
