@@ -5,9 +5,7 @@ authors:  Mariana P. Braga and Michael J. Landis
 level: 6
 prerequisites:
 - intro
-- intro_rev
-- mcmc_archery
-- mcmc_binomial
+- mcmc
 index: true 
 ---
 
