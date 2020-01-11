@@ -67,7 +67,7 @@ $$\begin{aligned}
 where $\beta$ controls the effect of $d$, the average pairwise phylogenetic distance between the new host, $a$, and the hosts currently occupied in **y**; and $\overline{d}$ is the average phylogenetic distance between all pairs of hosts. Pairwise phylogenetic distance is defined as the sum of branch lengths separating two leaf nodes.
 
 {% figure cartoon %}
-<img src="figures/hr_evolution.pdf" width="60%">
+<img src="figures/hr_evolution.png" width="60%">
 {% figcaption %}
 Cartoon of the model of host repertoire evolution within a parasite lineage. Parasites can have potential (lowercase) or actual (uppercase) interactions with host lineages A, B, and C, whose phylogeny is known (*left*). For example, the parasite begins with the host repertoire bC, which corresponds to the vector 012 (see `Table 1`). Time proceeds from left to right. Only anagenetic events are modeled, *i.e.* repertoires are identically inherited during cladogenesis. In this example, a repertoire of three hosts changes along a branch of the parasite tree. Gain rates are multiplied by the phylogenetic-distance rate modifier function, $\eta$, using the host phylogeny.
 {% endfigcaption %}
@@ -92,7 +92,7 @@ What about the rate of gain of **b**? Calculate $q_{002,012}$ for $\beta = 0$ an
 In this tutorial, we will go through the inference of host repertoire evolution in Nymphalini butterflies conducted in {% citet Braga2019 %}. The data set includes 34 butterflies species and plants from 25 angiosperm families. For each butterfly species, host plants used in nature were coded as *actual hosts*, plants that are not used in nature, but there's evidence that the larvae can feed on were coded as *potential hosts*, and those plants that the larvae do not eat were coded as *non hosts*. 
 
 {% figure nymphalini %}
-<img src="figures/extant_net_phylos.pdf" width="50%">
+<img src="figures/extant_net_phylos.png" width="50%">
 {% figcaption %}
 Interactions between Nymphalini butterflies (rows) and their Angiosperm host plants (columns). Black squares represent actual interactions and grey squares, potential interactions.
 {% endfigcaption %}
@@ -309,7 +309,7 @@ Marginal density in Tracer. The left-hand window provides mean and ESS of the ch
 Now let's move on to ancestral state reconstruction. To get the ancestral states, use the R script [ancestral_states.R](scripts/ancestral_states.R). This script produces a dataframe containing the posterior probability of potential and actual interactions between hosts and parasites (internal nodes in the parasite phylogeny). With that information, you can generate a figure like the one below.
 
 {% figure ancestral-plot %}
-<img src="figures/anc_state_nymp.pdf" width="60%">
+<img src="figures/anc_state_nymp.png" width="60%">
 {% figcaption %}
 Ancestral state reconstruction of host repertoire across the Nymphalini phylogeny. Each square color represents one interaction with a given host family (only interactions with >90% posterior probability). Some parasite nodes don't display an ancestral state because no host interaction was estimated with probability higher than 90%. The x-axis shows time before present in millions of years. 
 {% endfigcaption %}
