@@ -242,7 +242,7 @@
 
 <p>where $\beta$ controls the effect of $d$, the average pairwise phylogenetic distance between the new host, $a$, and the hosts currently occupied in <strong>y</strong>; and $\overline{d}$ is the average phylogenetic distance between all pairs of hosts. Pairwise phylogenetic distance is defined as the sum of branch lengths separating two leaf nodes.</p>
 
-<figure id="cartoon"><p><img src="figures/hr_evolution.pdf" width="60%" /></p>
+<figure id="cartoon"><p><img src="figures/hr_evolution.png" width="60%" /></p>
 <figcaption>Cartoon of the model of host repertoire evolution within a parasite lineage. Parasites can have potential (lowercase) or actual (uppercase) interactions with host lineages A, B, and C, whose phylogeny is known (<em>left</em>). For example, the parasite begins with the host repertoire bC, which corresponds to the vector 012 (see <code class="highlighter-rouge">Table 1</code>). Time proceeds from left to right. Only anagenetic events are modeled, <em>i.e.</em> repertoires are identically inherited during cladogenesis. In this example, a repertoire of three hosts changes along a branch of the parasite tree. Gain rates are multiplied by the phylogenetic-distance rate modifier function, $\eta$, using the host phylogeny.</figcaption>
 </figure>
 
@@ -263,7 +263,7 @@
 
 <p>In this tutorial, we will go through the inference of host repertoire evolution in Nymphalini butterflies conducted in <a href="#Braga2019">Braga et al. (2019)</a>. The data set includes 34 butterflies species and plants from 25 angiosperm families. For each butterfly species, host plants used in nature were coded as <em>actual hosts</em>, plants that are not used in nature, but there’s evidence that the larvae can feed on were coded as <em>potential hosts</em>, and those plants that the larvae do not eat were coded as <em>non hosts</em>.</p>
 
-<figure id="nymphalini"><p><img src="figures/extant_net_phylos.pdf" width="50%" /></p>
+<figure id="nymphalini"><p><img src="figures/extant_net_phylos.png" width="50%" /></p>
 <figcaption>Interactions between Nymphalini butterflies (rows) and their Angiosperm host plants (columns). Black squares represent actual interactions and grey squares, potential interactions.</figcaption>
 </figure>
 
@@ -492,7 +492,7 @@ monitors.append( mnCharacterHistorySummary( filename=out_fn + ".history.txt",
 
 <p>Now let’s move on to ancestral state reconstruction. To get the ancestral states, use the R script <a href="scripts/ancestral_states.R">ancestral_states.R</a>. This script produces a dataframe containing the posterior probability of potential and actual interactions between hosts and parasites (internal nodes in the parasite phylogeny). With that information, you can generate a figure like the one below.</p>
 
-<figure id="ancestral-plot"><p><img src="figures/anc_state_nymp.pdf" width="60%" /></p>
+<figure id="ancestral-plot"><p><img src="figures/anc_state_nymp.png" width="60%" /></p>
 <figcaption>Ancestral state reconstruction of host repertoire across the Nymphalini phylogeny. Each square color represents one interaction with a given host family (only interactions with &gt;90% posterior probability). Some parasite nodes don’t display an ancestral state because no host interaction was estimated with probability higher than 90%. The x-axis shows time before present in millions of years.</figcaption>
 </figure>
 
