@@ -64,7 +64,7 @@ This component models quickly each branch evolves relative to one another. Each 
 
 The assumption of a strict clock can be relaxed. Usage of an uncorrelated clock is shown here. 
 
-{% subsection Site Rate Model %}
+{% subsubsection Site Rate Model %}
 
 The site rate model describes how quickly each trait evolves relative to one another. Similar to the branch rate model in that scalars are used to modulate rates of change, however, instead of giving a scalar to each branch, a scalar is given to each trait to model the disparity between their rates of evolution. In our case we will assume that each trait will belong to one of four rate categories of the discretized gamma distribution. In our case, the discretized gamma distribution is parameterized by shape parameter $\alpha$ and number of rate categories **n**. Normally a gamma distribution requires a shape $\alpha$ and rate $\beta$ parameters, however, we want our site rates to have a mean of one and this occurs only when $\alpha$**=**$\beta$, thus eliminating the rate parameter. The parameter **n** breaks the gamma distribution into **n** equiprobable groups where the value mass of each group is equal to the mean value within that group. 
 
@@ -220,9 +220,39 @@ In the same way we monitored the MRCA of the extant bears, we can also monitor t
 
 {{  mcmc_script | snippet:"block#","22" }}
 
-{% subsection The morphological substitution model %}
+{% subsection Modeling the Evolution of Binary Morphological Characters | Exercise-ModelMorph %}
 
-{% subsection The morphological clock model %}
+In this section we will define the model of morphological character evolution.
+
+As stated in the introduction we will
+use Mk to model our data. Because the Mk model is a generalization of
+the Jukes-Cantor model, we will initialize our Q matrix from a Jukes-Cantor
+matrix.
+
+{{ mcmc_script | snippet:"block#","23" }}
+
+We will allow gamma-distributed rate heterogeneity among sites.
+
+{{ mcmc_script | snippet:"block#","24-25" }}
+
+The phylogenetic model also assumes that each branch has a rate of
+morphological character change. For simplicity, we will assume a strict
+exponential clock—meaning that every branch has the same rate drawn from
+an exponential distribution (see ).
+
+{{ mcmc_script | snippet:"block#","26-27" }}
+
+We now combine our data and our
+model in the phylogenetic CTMC distribution. There are some unique
+aspects to doing this for morphology.
+
+You will notice that we have an option called `coding`. This option
+allows us to condition on biases in the way the morphological data were
+collected (ascertainment bias). The option `coding=variable` specifies
+that we should correct for coding only variable characters (discussed in
+).
+
+{{ mcmc_script | snippet:"block#","28" }}
 
 {% subsection Monitoring variables %}
 
