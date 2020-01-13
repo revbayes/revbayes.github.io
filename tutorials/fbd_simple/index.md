@@ -231,8 +231,7 @@ matrix.
 
 {{ mcmc_script | snippet:"block#","23" }}
 
-As in the molecular data partition, we will allow gamma-distributed rate
-heterogeneity among sites.
+We will allow gamma-distributed rate heterogeneity among sites.
 
 {{ mcmc_script | snippet:"block#","24-25" }}
 
@@ -243,7 +242,7 @@ an exponential distribution (see ).
 
 {{ mcmc_script | snippet:"block#","26-27" }}
 
-As in our molecular data partition, we now combine our data and our
+We now combine our data and our
 model in the phylogenetic CTMC distribution. There are some unique
 aspects to doing this for morphology.
 
