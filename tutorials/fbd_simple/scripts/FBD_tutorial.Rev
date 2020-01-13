@@ -65,7 +65,7 @@ moves.append( mvSlide(origin_time, weight=5.0) )
 
 
 ### Define the tree-prior distribution as the fossilized birth-death process ###
-fbd_dist = dnFBDP(origin=origin_time, lambda=speciation_rate, mu=extinction_rate, psi=psi, rho=rho, taxa=taxa)
+fbd_tree ~ dnFBDP(origin=origin_time, lambda=speciation_rate, mu=extinction_rate, psi=psi, rho=rho, taxa=taxa)
 
 # Specify moves on the tree and node times #
 # These moves update the tree topology 
@@ -139,9 +139,6 @@ phyMorpho ~ dnPhyloCTMC(tree=fbd_tree, siteRates=rates_morpho, branchRates=clock
 phyMorpho.clamp(morpho)
 
 
-
-
-
 ########
 # MCMC #
 ########
@@ -156,7 +153,7 @@ monitors = VectorMonitors()
 monitors.append( mnModel(filename="output/bears.log", printgen=10) )
 
 # 2. the tree #
-monitors.append( mnFile(filename="output/bears.trees", printgen=10, pruned_tree) )
+monitors.append( mnFile(filename="output/bears.trees", printgen=10, fbd_tree) )
 
 # 3. and a few select parameters to be printed to the screen #
 monitors.append( mnScreen(printgen=10, age_extant, num_samp_anc, origin_time) )
