@@ -64,7 +64,7 @@ This component models quickly each branch evolves relative to one another. Each 
 
 The assumption of a strict clock can be relaxed. Usage of an uncorrelated clock is shown here. 
 
-{% Site Rate Model %}
+{% subsubsection Site Rate Model %}
 
 The site rate model describes how quickly each trait evolves relative to one another. Similar to the branch rate model in that scalars are used to modulate rates of change, however, instead of giving a scalar to each branch, a scalar is given to each trait to model the disparity between their rates of evolution. In our case we will assume that each trait will belong to one of four rate categories of the discretized gamma distribution. In our case, the discretized gamma distribution is parameterized by shape parameter $\alpha$ and number of rate categories **n**. Normally a gamma distribution requires a shape $\alpha$ and rate $\beta$ parameters, however, we want our site rates to have a mean of one and this occurs only when $\alpha$**=**$\beta$, thus eliminating the rate parameter. The parameter **n** breaks the gamma distribution into **n** equiprobable groups where the value mass of each group is equal to the mean value within that group. 
 
