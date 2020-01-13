@@ -28,7 +28,8 @@ code_layout: bash
 <p><a href="{% page_url singularity %}">(Singularity notes)</a></p>
 <p>Available as a <a href="https://spack.readthedocs.io/en/latest/">Spack</a> package (<a href="https://github.com/spack/spack/blob/develop/var/spack/repos/builtin/packages/revbayes/package.py">source</a>)</p>
 <p>or <a href="{% page_url compile_linux %}">Compile from source</a></p>
-
 </div>
-
+</div>
+<div class="one-half"  align="center">
+<p>or <a href="{% page_url gui_setup %}">Click here for information on RevBayes Graphical Interfaces</a></p>
 </div>
