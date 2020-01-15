@@ -30,11 +30,11 @@ These two components, or modules, will create the backbone of our inference mode
 
 {% subsection Time Tree Model: The Fossilized Birth-Death Process %}
 
-The fossilized birth death process (FBD) provides a joint distribution on the divergence times of living and extinct species, the tree topology, and the sampling of fossils. The FBD can be broken into two sub processes, the birth-death process and the fossilization process.
+The fossilized birth death process (FBD) provides a joint distribution on the divergence times of living and extinct species, the tree topology, and the sampling of fossils {% cite Stadler2010 Heath2014 %}. The FBD can be broken into two sub processes, the birth-death process and the fossilization process.
 
 {% subsubsection Birth-Death Process %}
 
-We will consider a constant-rate birth-death process. Every lineage has the same constant rate of speciation lambda and rate of extinction mu at any moment in time. Speciation and extinction events along a lineage follow a Poisson process with parameters $\lambda$ and $\mu$ respectively. This means that the time between either speciation or extinction events along a given lineage is exponentially distributed with parameter ($\lambda$ + $\mu$). Then given an event occurred, the probability of the event being a speciation is ($\lambda$ / ($\lambda$+$\mu$)) while the probability of the event being an extinction is ($\mu$ / ($\lambda$+$\mu$)). 
+We will consider a constant-rate birth-death process {% cite Kendall1948 %}. Specifically, we will assume every lineage has the same constant rate of speciation $\lambda$ and rate of extinction $\mu$ at any moment in time {% cite Need1994b Hoehna2015a %}. Speciation and extinction events along a lineage follow a Poisson process with parameters $\lambda$ and $\mu$ respectively. This means that the time between either speciation or extinction events along a given lineage is exponentially distributed with parameter ($\lambda$ + $\mu$). Then given an event occurred, the probability of the event being a speciation is ($\lambda$ / ($\lambda$+$\mu$)) while the probability of the event being an extinction is ($\mu$ / ($\lambda$+$\mu$)). 
 
 The birth-death process depends on two other parameters as well, the root age and the sampling probability. The root age or origin time, denoted $\phi$, represents the starting time of the stem lineage. The sampling probability, denoted $\rho$, gives the probability that an extant species is sampled.
 
@@ -42,11 +42,11 @@ The assumption that, at any given time, each lineage has the same speciation rat
 
 {% subsubsection Fossilization Process %}
 
-Given a phylogeny, in this case a phylogeny from the birth-death process, the fossilization process provides a distribution for the fossil sampling on the phylogenetic tree. Much like speciation and extinction, fossil sampling is modeled Poisson process with rate parameter $\psi$. This means that each lineage has the same constant rate of producing a fossil. As a result, along a given lineage, the time between fossilization events is exponentially distributed with rate $\psi$.
+Given a phylogeny, in this case a phylogeny from the birth-death process, the fossilization process provides a distribution for the fossil sampling on the phylogenetic tree {% cite Heath2014 %}. Much like speciation and extinction, fossil sampling is modeled Poisson process with rate parameter $\psi$. This means that each lineage has the same constant rate of producing a fossil. As a result, along a given lineage, the time between fossilization events is exponentially distributed with rate $\psi$.
 
 **Talk about how uncertainty in the fossil occurrence data is modeled!**
 
-One key assumption of the FBD model is that each fossil sample is taken to be a different taxonomic entity. However, if certain taxa persist thru time and fossilize particularly well then the same taxa may be sampled at different stratigraphic ages. In this case one might want to consider the fossilized birth-death range process in RevBayes to model the stratigraphic ranges of fossil occurrences. 
+One key assumption of the FBD model is that each fossil sample is taken to be a different taxonomic entity. However, if certain taxa persist thru time and fossilize particularly well then the same taxa may be sampled at different stratigraphic ages. In this case one might want to consider the fossilized birth-death range process {% cite Stadlet2018 %} in RevBayes to model the stratigraphic ranges of fossil occurrences. 
 
 {% subsection Morphological Trait Evolution Model %}
 
@@ -54,29 +54,29 @@ Given a phylogeny, the morphological trait evolution model will model how traits
 
 {% subsubsection Substitution Model %}
 
- The substitution model describes how traits transition from one character to another. We will be using the Mk model, a generalization of the Jukes-Cantor model. However, since our characters have only two states we specifically using the Mk2 model. The Mk models assume that each trait has an equal rate of transitioning from one to any other state, in our case a transition from 0 to 1 is equally as likely as a transition from 1 to 0.
+ The substitution model describes how traits transition from one character to another. We will be using the Mk model {% cite Lewis2001 %}, a generalization of the Jukes-Cantor model. However, since our characters have only two states we specifically using the Mk2 model. The Mk models assume that each trait has an equal rate of transitioning from one to any other state, in our case a transition from 0 to 1 is equally as likely as a transition from 1 to 0.
 
-It is known that when some traits transition into a certain state that it is rare for it to transition back, this likely means that the assumption of symmetric rates is broken. Alternatively, asymmetric transition rates for each state can be specified in RevBayes. Traits can also be partitioned into if different substitution models better describe each group.
+For some traits, they transition into a certain state and rarely transition back, this likely means that the assumption of symmetric rates is broken. Alternatively, asymmetric transition rates for each state can be specified in RevBayes. Traits can also be partitioned into if different substitution models better describe each group.
 
 {% subsubsection Branch Rate Model %}
 
-This component models quickly each branch evolves relative to one another. Each tree branch can be given a non-negative real value that acts as a scalar for the rate of trait evolution. In our case we assume each branch has the same rate of evolution, this is known as the strict clock.
+This component models quickly each branch evolves relative to one another. Each tree branch can be given a non-negative real value that acts as a scalar for the rate of trait evolution. In our case we assume each branch has the same rate of evolution, this is known as the strict clock {% cite Zuckerkandl1962 %}.
 
-The assumption of a strict clock can be relaxed. Usage of an uncorrelated clock is shown here. 
+The assumption of a strict clock can be relaxed to assume correlated or uncorrelated clocks. Usage of an uncorrelated clock is shown here. 
 
 {% subsubsection Site Rate Model %}
 
-The site rate model describes how quickly each trait evolves relative to one another. Similar to the branch rate model in that scalars are used to modulate rates of change, however, instead of giving a scalar to each branch, a scalar is given to each trait to model the disparity between their rates of evolution. In our case we will assume that each trait will belong to one of four rate categories of the discretized gamma distribution. In our case, the discretized gamma distribution is parameterized by shape parameter $\alpha$ and number of rate categories **n**. Normally a gamma distribution requires a shape $\alpha$ and rate $\beta$ parameters, however, we want our site rates to have a mean of one and this occurs only when $\alpha$**=**$\beta$, thus eliminating the rate parameter. The parameter **n** breaks the gamma distribution into **n** equiprobable groups where the value mass of each group is equal to the mean value within that group. 
+The site rate model describes how quickly each trait evolves relative to one another. Similar to the branch rate model in that scalars are used to modulate rates of change, however, instead of giving a scalar to each branch, a scalar is given to each trait to model the disparity between their rates of evolution. In our case we will assume that each trait will belong to one of four rate categories from the discretized gamma distribution {% cite Yang1994 %}. In our case, the discretized gamma distribution is parameterized by shape parameter $\alpha$ and number of rate categories **n**. Normally a gamma distribution requires a shape $\alpha$ and rate $\beta$ parameters, however, we want our site rates to have a mean of one and this occurs only when $\alpha$**=**$\beta$, thus eliminating the rate parameter. The parameter **n** breaks the gamma distribution into **n** equiprobable groups where the value mass of each group is equal to the mean value within that group. 
 
 **Talk about what a low/high alpha does as well as discuss how people justified their chosen n value **
 
 {% subsection Putting the model together %}
 
-We have outlined the specific processes used to model the time tree component and morphological trait evolution component of our model along with their affiliated parameters. Fig _A shows our model as a probabilistic graph that we can use for inference. If we knew all of the associated parameters all we would need to do is fit our data to the model to estimate the reconstructed phylogeny of sampled living and fossilized taxa. However, in practice these parameters are not known and must be estimated with the phylogeny. We need to model each parameter from a prior distribution that reflects our beliefs about how that parameter value was generated (model with priors shown in Fig_ B). 
+We have outlined the specific processes used to model the time tree component and morphological trait evolution component of our model along with their affiliated parameters. Fig _A shows our model as a probabilistic graph that we can use for inference (See {% citet Hoehna2014b %} for more on graphical models). If we knew all of the associated parameters all we would need to do is fit our data to the model to estimate the reconstructed phylogeny of sampled living and fossilized taxa. However, in practice these parameters are not known and must be estimated with the phylogeny. We need to model each parameter from a prior distribution that reflects our beliefs about how that parameter value was generated (model with priors shown in Fig_ B). 
 
 {% subsection Creating other models %}
 
-Although our model choices were relatively simplistic, the modular design of RevBayes allows for certain model choices to easy be swapped out with perhaps more biologically relevant processes for a given system. RevBayes also allows for other modules to describe other types of data (e.g. nucleotide sequences, historical biogeographic ranges) and can integrate different modules together for a “combined- evidence” approach. Ultimately, the design of the model should reflect the data and which processes are believed to generate the model. 
+Although our model choices were relatively simplistic, the modular design of RevBayes allows for certain model choices to easy be swapped out with perhaps more biologically relevant processes for a given system. RevBayes also allows for other modules to describe other types of data (e.g. nucleotide sequences, historical biogeographic ranges) and can integrate different modules together for a “combined- evidence” approach  {% cite Ronquist2012a Zhang2016 Gavryushkina2016 %} . Ultimately, the design of the model should reflect the data and which processes are believed to generate the model. 
 
 {% section Setting up the analysis | analysis %}
 
