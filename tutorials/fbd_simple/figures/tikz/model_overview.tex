@@ -1,0 +1,14 @@
+\begin{tikzpicture}
+\node[obmod] (c) at (8,0) {\large Morphological Data};
+\node[smod] (crm) at ($(c)+(5,1.35)$) {\large Substitution Model};
+\node[smod] (csr) at ($(c)+(4.5,0)$) {\large Site Rate Model};
+\node[smod] (cbr) at ($(c)+(5,-1.35)$) {\large Branch Rate Model};
+\draw[taro] (crm) -> (c);
+\draw[taro] (csr) -> (c);
+\draw[taro] (cbr) -> (c);
+\node[obmod] (f) at (0,0) {\large Fossil Occurrence Time Data};
+\node (mid) at ($(f)!0.5!(c)$) { };
+\node[smod] (tree) at ($(mid)+(0,3)$) {\large Time Tree Model};
+\draw[taro] (tree) edge[bend right=-35] (c);
+\draw[taro] (tree) edge[bend left=-35] (f);
+\end{tikzpicture}

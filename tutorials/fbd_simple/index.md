@@ -19,14 +19,20 @@ This tutorial shows a simple phylogenetic analysis of extant and fossil bear spe
 
 {% section Introduction | introduction %}
 
-In this section we will describe and build the model we use for the phylogenetic analysis.
+To get an overview of the model, it is useful to think of the model as a generating process for our data. Suppose we would like to simulate our fossil and morphological data; we would consider two components ({% ref fig_overview_gm %}):
 
-First to get an overview of the model, it can be useful to first think of the model as a generating process for our data. Suppose we were trying to simulate our fossil and morphological data; we would consider two components:
+- **Time tree model**: This is the diversification process that describes the how a phylogeny is generated as well as when fossils are sampled along each lineage on the phylogeny.  This component generates the phylogeny, divergence times, and the fossil occurrence data. The tree topology and node ages are parameters of the model that generates our morphological characters.
+- **Discrete morphological character change model**: This model describes how discrete morphological character states change over time on the phylogeny. The generation of observed morphological data is governed by other model components including the substitution process, how rates vary among characters in our matrix and among branches on the tree.
 
-- **Time tree model**: This is the diversification process that describes the how a phylogeny is generated as well as when fossils are sampled along each lineage on the phylogeny.  This component generates the phylogeny, the fossil occurrence data, and is used downstream in the trait evolution model.
-- **Morphological trait evolution model**: The trait evolution model describes how the morphological characters change over time on the phylogeny. This component is used along with the time tree component to generate morphological data for both the extant taxa and fossils. 
+These two components, or modules, will create the backbone of our inference model and reflect our prior beliefs on how the tree, fossil data, and morphological trait data occur. We will provide a brief overview of the specific models used within each component while pointing to other tutorials that implement alternative models. 
 
-These two components, or modules, will create the backbone of our inference model and reflect our prior beliefs on how the tree, fossil data, and morphological trait data occur. There are numerous specific processes that can be used in both of the components. We will provide a brief overview of the specific models used within each component while pointing to other tutorials that implement different models. 
+{% figure fig_overview_gm %}
+<img src="figures/tikz/model_overview.png" width="700" /> 
+{% figcaption %} 
+Modular components of the graphical model used in the 
+analysis described in this tutorial.
+{% endfigcaption %}
+{% endfigure %}
 
 {% subsection Time Tree Model: The Fossilized Birth-Death Process %}
 
@@ -34,19 +40,20 @@ The fossilized birth death process (FBD) provides a joint distribution on the di
 
 {% subsubsection Birth-Death Process %}
 
-We will consider a constant-rate birth-death process {% cite Kendall1948 %}. Specifically, we will assume every lineage has the same constant rate of speciation $\lambda$ and rate of extinction $\mu$ at any moment in time {% cite Need1994b Hoehna2015a %}. Speciation and extinction events along a lineage follow a Poisson process with parameters $\lambda$ and $\mu$ respectively. This means that the time between either speciation or extinction events along a given lineage is exponentially distributed with parameter ($\lambda$ + $\mu$). Then given an event occurred, the probability of the event being a speciation is ($\lambda$ / ($\lambda$+$\mu$)) while the probability of the event being an extinction is ($\mu$ / ($\lambda$+$\mu$)). 
+We will consider a constant-rate birth-death process {% cite Kendall1948 %}. Specifically, we will assume every lineage has the same constant rate of speciation $\lambda$ and rate of extinction $\mu$ at any moment in time {% cite Nee1994b Hoehna2015a %}. Speciation and extinction events along a lineage follow a Poisson process with parameters $\lambda$ and $\mu$ respectively. This means that the time between either speciation or extinction events along a given lineage is exponentially distributed with parameter ($\lambda$ + $\mu$). Then, given an event occurred, the probability of the event being a speciation is ($\lambda$ / ($\lambda$+$\mu$)) while the probability of the event being an extinction is ($\mu$ / ($\lambda$+$\mu$)). 
 
-The birth-death process depends on two other parameters as well, the root age and the sampling probability. The root age or origin time, denoted $\phi$, represents the starting time of the stem lineage. The sampling probability, denoted $\rho$, gives the probability that an extant species is sampled.
+The birth-death process depends on two other parameters as well, the origin time and the sampling probability. The origin time, denoted $\phi$, represents the starting time of the stem lineage, which is the age of the entire process. The sampling probability, denoted $\rho$, gives the probability that an extant species is sampled.
 
 The assumption that, at any given time, each lineage has the same speciation rate and extinction rate may not be realistic or valid in some systems. RevBayes currently allows for this assumption to be violated in numerous ways such as, episodic diversification rates, environmental-dependent diversification rates, branch-specific diversification rates, or having diversification rates tied to an evolving species trait. 
 
 {% subsubsection Fossilization Process %}
 
-Given a phylogeny, in this case a phylogeny from the birth-death process, the fossilization process provides a distribution for the fossil sampling on the phylogenetic tree {% cite Heath2014 %}. Much like speciation and extinction, fossil sampling is modeled Poisson process with rate parameter $\psi$. This means that each lineage has the same constant rate of producing a fossil. As a result, along a given lineage, the time between fossilization events is exponentially distributed with rate $\psi$.
+Given a phylogeny, in this case a phylogeny generated by a birth-death process, the fossilization process provides a distribution for sampling fossilized occurrences of lineages in the tree {% cite Heath2014 %}. Much like speciation and extinction, fossil sampling is modeled according to a Poisson process with rate parameter $\psi$. This means that each lineage has the same constant rate of producing a fossil. As a result, along a given lineage, the time between fossilization events is exponentially distributed with rate $\psi$.
+
+One key assumption of the FBD model is that each fossil represents a distinct fossil specimen. However, if certain taxa persist through time and fossilize particularly well then the same taxon may be sampled at different stratigraphic ages. These fossil data are typically represented by only the first and last appearances of a fossil morphospecies. In this case one might want to consider the fossilized birth-death range process {% cite Stadler2018 %} in RevBayes to model the stratigraphic ranges of fossil occurrences. 
 
 **Talk about how uncertainty in the fossil occurrence data is modeled!**
 
-One key assumption of the FBD model is that each fossil sample is taken to be a different taxonomic entity. However, if certain taxa persist thru time and fossilize particularly well then the same taxa may be sampled at different stratigraphic ages. In this case one might want to consider the fossilized birth-death range process {% cite Stadlet2018 %} in RevBayes to model the stratigraphic ranges of fossil occurrences. 
 
 {% subsection Morphological Trait Evolution Model %}
 
@@ -68,11 +75,11 @@ The assumption of a strict clock can be relaxed to assume correlated or uncorrel
 
 The site rate model describes how quickly each trait evolves relative to one another. Similar to the branch rate model in that scalars are used to modulate rates of change, however, instead of giving a scalar to each branch, a scalar is given to each trait to model the disparity between their rates of evolution. In our case we will assume that each trait will belong to one of four rate categories from the discretized gamma distribution {% cite Yang1994 %}. In our case, the discretized gamma distribution is parameterized by shape parameter $\alpha$ and number of rate categories **n**. Normally a gamma distribution requires a shape $\alpha$ and rate $\beta$ parameters, however, we want our site rates to have a mean of one and this occurs only when $\alpha$**=**$\beta$, thus eliminating the rate parameter. The parameter **n** breaks the gamma distribution into **n** equiprobable groups where the value mass of each group is equal to the mean value within that group. 
 
-**Talk about what a low/high alpha does as well as discuss how people justified their chosen n value **
+**Talk about what a low/high alpha does as well as discuss how people justified their chosen n value**
 
 {% subsection Putting the model together %}
 
-We have outlined the specific processes used to model the time tree component and morphological trait evolution component of our model along with their affiliated parameters. Fig _A shows our model as a probabilistic graph that we can use for inference (See {% citet Hoehna2014b %} for more on graphical models). If we knew all of the associated parameters all we would need to do is fit our data to the model to estimate the reconstructed phylogeny of sampled living and fossilized taxa. However, in practice these parameters are not known and must be estimated with the phylogeny. We need to model each parameter from a prior distribution that reflects our beliefs about how that parameter value was generated (model with priors shown in Fig_ B). 
+We have outlined the specific processes used to model the time tree component and morphological trait evolution component of our model along with their affiliated parameters. Fig A shows our model as a probabilistic graph that we can use for inference (See {% citet Hoehna2014b %} for more on graphical models). If we knew all of the associated parameters all we would need to do is fit our data to the model to estimate the reconstructed phylogeny of sampled living and fossilized taxa. However, in practice these parameters are not known and must be estimated with the phylogeny. We need to model each parameter from a prior distribution that reflects our beliefs about how that parameter value was generated (model with priors shown in Fig B). 
 
 {% subsection Creating other models %}
 
