@@ -162,14 +162,14 @@ joint inference of phylogeny and chromosome numbers, tests for
 correlated rates of phenotype and chromosome evolution with the BiChroM
 model (missing reference), and incorporating cladogenetic changes in
 chromosome number. Next, we will introduce the ChromoSSE model
-<a href="#Freyman2018">(Freyman and Höhna 2018)</a> which jointly estimates diversification rates
+<a class="citation" href="#Freyman2018">(Freyman and Höhna 2018)</a> which jointly estimates diversification rates
 and chromosome number evolution. We also briefly discuss testing
 hypotheses of chromosome evolution by comparing different models using
 reversible-jump MCMC and Bayes factors.</p>
 
 <p>If you use RevBayes for chromosome evolution analyses, please cite the
 original papers that describe the chromosome evolution models as well as
-<a href="#Freyman2018">Freyman and Höhna (2018)</a> which describes in detail the RevBayes
+<a class="citation" href="#Freyman2018">Freyman and Höhna (2018)</a> which describes in detail the RevBayes
 implementation of these models.</p>
 
 <h2 class="section" id="chromobasicintro">Overview of chromosome number evolution models</h2>
@@ -194,7 +194,7 @@ lineages
 ChromEvol model has been extended to examine the association of
 phenotype with chromosome evolution (missing reference), and to
 incorporate cladogenetic changes and diversification rates 
-<a href="#Freyman2018">(Freyman and Höhna 2018)</a>.</p>
+<a class="citation" href="#Freyman2018">(Freyman and Höhna 2018)</a>.</p>
 
 <p>Here we describe the ChromEvol model as implemented in RevBayes, which
 except for one detail noted below is the same mathematical model
@@ -261,7 +261,7 @@ ChromEvol model; here we assume the rates of chromosome change can vary
 exponentially as a function of the current chromosome number, whereas
 ChromEvol as originally described by (missing reference) assumes a
 linear function. The theoretical reasons for this difference are
-described in <a href="#Freyman2018">Freyman and Höhna (2018)</a>, however in practice on most
+described in <a class="citation" href="#Freyman2018">Freyman and Höhna (2018)</a>, however in practice on most
 empirical datasets the difference appears insignificant.</p>
 
 <p>Demi-polyploidization is the union of a reduced and an unreduced gametes
@@ -323,7 +323,7 @@ uncertainty of inferences made from that model (missing reference).
 In our case, this can lead to overconfidence in estimates of ancestral
 chromosome numbers and chromosome evolution parameter value estimates.
 For details on how to implement Bayesian model averaging in RevBayes
-with chromsome evolution see <a href="#Freyman2018">Freyman and Höhna (2018)</a>.</p>
+with chromsome evolution see <a class="citation" href="#Freyman2018">Freyman and Höhna (2018)</a>.</p>
 
 <h3 id="next-steps">Next Steps</h3>
 
@@ -981,7 +981,7 @@ was reduced to a more simple 3-lobed form in Isotrema.</p>
 drive the diversification of some lineages (missing reference).
 To test for the association of chromosome changes with speciation we
 must extend our models to incorporate cladogenetic changes [for details
-see <a href="#Freyman2018">Freyman and Höhna (2018)</a>]. Cladogenetic changes are changes that
+see <a class="citation" href="#Freyman2018">Freyman and Höhna (2018)</a>]. Cladogenetic changes are changes that
 occur only at lineage splitting events. All models of chromosome
 evolution that we have examined so far model only anagenetic changes,
 <em>i.e.</em>, changes that occur within a lineage.</p>
@@ -1074,14 +1074,14 @@ anagenetic changes.</p>
 <p>A major challenge for all phylogenetic models of cladogenetic character
 change is accounting for unobserved speciation events due to lineages
 going extinct and not leaving any extant descendants
-<a href="#Bokma2002">(Bokma 2002)</a>, or due to incomplete sampling of lineages in the
+<a class="citation" href="#Bokma2002">(Bokma 2002)</a>, or due to incomplete sampling of lineages in the
 present. Teasing apart the phylogenetic signal for cladogenetic and
 anagenetic processes given unobserved speciation events is a major
 difficulty, and using a naive approach that does not account for
 unobserved speciation (like the ones discussed earlier in section
 <a href="#clado_simple"></a>) can bias the relative rates of cladogenetic
 and anagenetic change. The Cladogenetic State change Speciation and
-Extinction (ClaSSE) model <a href="#Goldberg2012">(Goldberg and Igić 2012)</a>, on the other hand,
+Extinction (ClaSSE) model <a class="citation" href="#Goldberg2012">(Goldberg and Igić 2012)</a>, on the other hand,
 reduces this bias by explicitly incorporating unobserved speciation
 events. This is achieved by jointly modeling both character evolution
 and the phylogenetic birth-death process. Not only does the ClaSSE
@@ -1093,7 +1093,7 @@ speciation and extinction rates.</p>
 <figcaption>An illustration of chromosome
 evolution events that could occur during each small time interval
 $\Delta t$ along the branches of a phylogeny as modeled in ChromoSSE
-<a href="#Freyman2018">(Freyman and Höhna 2018)</a>. The set of differential equations
+<a class="citation" href="#Freyman2018">(Freyman and Höhna 2018)</a>. The set of differential equations
 (subfigures a and b, respectively) sum over each possible chromosome
 evolution event and are numerically integrated backwards through time
 over the phylogeny to calculate the likelihood. The transition rate
@@ -1113,7 +1113,7 @@ event with a possible cladogenetic change occurred followed by
 extinction of both daughter lineages.</figcaption>
 </figure>
 
-<p>The ChromoSSE model <a href="#Freyman2018">(Freyman and Höhna 2018)</a> is a special case of the
+<p>The ChromoSSE model <a class="citation" href="#Freyman2018">(Freyman and Höhna 2018)</a> is a special case of the
 ClaSSE model that models chromosome changes. Compared to the previously
 discussed CTMC models of chromosome evolution, SSE models require
 additional complexity since they must also model the speciation and
@@ -1126,14 +1126,14 @@ associated with phenotypes or habitat.</p>
 <hr class="subsection" />
 
 <p>All the previous models of chromosome number evolution discussed in the
-tutorial used the standard pruning algorithm <a href="#Felsenstein1981">(Felsenstein 1981)</a> to
+tutorial used the standard pruning algorithm <a class="citation" href="#Felsenstein1981">(Felsenstein 1981)</a> to
 calculate the likelihood of chromosome evolution over the phylogeny. For
 the ChromoSSE model we must use a different approach; here the
 likelihood is calculated using a set of ordinary differential equations
 similar to the Binary State Speciation and Extinction (BiSSE) model
-<a href="#Maddison2007">(Maddison et al. 2007)</a>. The BiSSE model was extended to incorporate
-cladogenetic changes by <a href="#Goldberg2012">Goldberg and Igić (2012)</a>. Following
-<a href="#Goldberg2012">Goldberg and Igić (2012)</a>, we define $D_{Ni}(t)$ as the probability that a
+<a class="citation" href="#Maddison2007">(Maddison et al. 2007)</a>. The BiSSE model was extended to incorporate
+cladogenetic changes by <a class="citation" href="#Goldberg2012">Goldberg and Igić (2012)</a>. Following
+<a class="citation" href="#Goldberg2012">Goldberg and Igić (2012)</a>, we define $D_{Ni}(t)$ as the probability that a
 lineage with chromosome number $i$ at time $t$ evolves into the observed
 clade $N$. We let $E_i(t)$ be the probability that a lineage with
 chromosome number $i$ at time $t$ goes extinct before the present, or is

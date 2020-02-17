@@ -134,12 +134,12 @@
 “combined-evidence” phylogenetic analysis of extant and fossil species,
 combining morphological and molecular data as well as stratigraphic
 range data from the fossil record [<em>e.g.,</em> 
-<a href="#Ronquist2012a">(Ronquist et al. 2012; Zhang et al. 2016; Gavryushkina et al. 2016)</a>]. 
+<a class="citation" href="#Ronquist2012a">(Ronquist et al. 2012; Zhang et al. 2016; Gavryushkina et al. 2016)</a>]. 
 We begin with a concise
 introduction to the models used in this analysis in the <a href="#introduction"></a> section, 
 followed by a detailed example analysis in 
 <a href="#Exercise"></a> demonstrating how to apply these models in
-RevBayes <a href="#Hoehna2017a">(Höhna et al. 2017)</a> and use Markov chain Monte Carlo (MCMC) to
+RevBayes <a class="citation" href="#Hoehna2017a">(Höhna et al. 2017)</a> and use Markov chain Monte Carlo (MCMC) to
 estimate the posterior distribution of dated phylogenies for data
 collected from living and fossil bears (family Ursidae).</p>
 
@@ -147,7 +147,7 @@ collected from living and fossil bears (family Ursidae).</p>
 <hr class="section" />
 
 <p>The “combined-evidence” analysis described in this tutorial uses a
-probabilistic graphical model <a href="#Hoehna2014b">(Höhna et al. 2014)</a> integrating three separate
+probabilistic graphical model <a class="citation" href="#Hoehna2014b">(Höhna et al. 2014)</a> integrating three separate
 likelihood components or data partitions (<a href="#fig_module_gm"></a>): one
 for molecular data (<a href="#Intro-GTR"></a>), one for
 morphological data (<a href="#Intro-Morpho"></a>), and one for
@@ -182,7 +182,7 @@ lines) and unsampled (dotted lines).
 
 <p>The joint prior distribution on tree topologies and divergence times of
 living and extinct species used in this tutorial is described by the
-<em>fossilized birth-death</em> (FBD) process <a href="#Stadler2010">(Stadler 2010; Heath et al. 2014; Stadler et al. 2018)</a>. This
+<em>fossilized birth-death</em> (FBD) process <a class="citation" href="#Stadler2010">(Stadler 2010; Heath et al. 2014; Stadler et al. 2018)</a>. This
 model simply treats the fossil observations as part of the process
 governing the tree topology and branch times (the ‘Time Tree Model’ node in
 <a href="#fig_module_gm"></a>). The fossilized birth-death process provides a
@@ -196,13 +196,13 @@ without</em> character data for the historical samples. Thus, it provides a
 reasonable prior distribution for analyses combining morphological or
 DNA data for both extant and fossil
 taxa—<em>i.e.</em> the so-called “combined-evidence” or “total evidence”
-approaches described by <a href="#Ronquist2012a">Ronquist et al. (2012)</a> and extended by <a href="#Zhang2016">Zhang et al. (2016)</a> and
-<a href="#Gavryushkina2016">Gavryushkina et al. (2016)</a>. When matrices of discrete morphological characters
+approaches described by <a class="citation" href="#Ronquist2012a">Ronquist et al. (2012)</a> and extended by <a class="citation" href="#Zhang2016">Zhang et al. (2016)</a> and
+<a class="citation" href="#Gavryushkina2016">Gavryushkina et al. (2016)</a>. When matrices of discrete morphological characters
 for both living and fossil species are unavailable, the fossilized
 birth-death model imposes a time structure on the tree by
 <a href="https://en.wikipedia.org/wiki/Marginal_distribution"><em>marginalizing</em></a>
 over all possible attachment points for the fossils on the extant tree
-<a href="#Heath2014">(Heath et al. 2014)</a>, therefore, some prior knowledge of phylogenetic
+<a class="citation" href="#Heath2014">(Heath et al. 2014)</a>, therefore, some prior knowledge of phylogenetic
 relationships is important.</p>
 
 <p>The FBD model (<a href="#fig_fbd_gm"></a>) describes the probability of the
@@ -231,7 +231,7 @@ and for the analysis in the exercise given in this tutorial.
 This model represents the phylogenetic continuous-time Markov
 chain that links the tree model to the other model components and the
 observed sequence data. For more information on probabilistic graphical
-models and their notation, please see <a href="#Hoehna2014b">(Höhna et al. 2014)</a>.</figcaption>
+models and their notation, please see <a class="citation" href="#Hoehna2014b">(Höhna et al. 2014)</a>.</figcaption>
 </figure>
 
 <p>In the example FBD tree shown in <a href="#fig_example_tree"></a>, the
@@ -255,7 +255,7 @@ is the starting time of the <em>stem</em> lineage, thus this conditions on a
 single lineage giving rise to the tree.</p>
 
 <p>An important characteristic of the FBD model is that it accounts for the
-probability of sampled ancestor-descendant pairs <a href="#foote1996">(Foote 1996)</a>. Given
+probability of sampled ancestor-descendant pairs <a class="citation" href="#foote1996">(Foote 1996)</a>. Given
 that fossils are sampled from lineages in the diversification process,
 the probability of sampling fossils that are ancestors to taxa sampled
 at a later date is correlated with the turnover rate ($r=\mu/\lambda$),
@@ -274,7 +274,7 @@ However, in most cases taxonomic species are represented in the fossil record by
 different stratigraphic ages. 
 These <em>stratigraphic ranges</em> are the first and last occurrences observed for a single morpho-species in the fossil
 record (for extant species, the last occurrence is the present day).
-In order to compute the density of the FBD while accounting for this stratigraphic species range data, we need to assume some model of speciation that will allow us to assign fossil specimens to species. <a href="#Stadler2018">Stadler et al. (2018)</a> describe an extension to the FBD which assigns lineages to taxonomic species through a process of asymmetric or “budding” speciation. This model assumes that at each asymmetric speciation event, one descendant species represents a new species, while the other descendant represents the continuation of the parent species. In this way, each lineage (and therefore all the fossil specimens sampled along that lineage) can be mapped to a unique species. An example realization of such a speciation process is shown in <a href="#fig_budding"></a>.</p>
+In order to compute the density of the FBD while accounting for this stratigraphic species range data, we need to assume some model of speciation that will allow us to assign fossil specimens to species. <a class="citation" href="#Stadler2018">Stadler et al. (2018)</a> describe an extension to the FBD which assigns lineages to taxonomic species through a process of asymmetric or “budding” speciation. This model assumes that at each asymmetric speciation event, one descendant species represents a new species, while the other descendant represents the continuation of the parent species. In this way, each lineage (and therefore all the fossil specimens sampled along that lineage) can be mapped to a unique species. An example realization of such a speciation process is shown in <a href="#fig_budding"></a>.</p>
 
 <figure id="fig_budding"><p><img src="figures/budding1.png" width="400" />
 <script type="math/tex">\implies</script>
@@ -287,7 +287,7 @@ Fossil specimens lying along this path are assigned to the same taxonomic specie
 (B) The same lineage is highlighted in the oriented tree with lineages representing the same species collapsed into straight lines.</figcaption>
 </figure>
 
-<p><a href="#Stadler2018">Stadler et al. (2018)</a> show how to compute the density of the “sampled tree”, which is obtained by pruning all unsampled lineages after asymmetric species identities have been assigned in the complete tree (<a href="#fig_sampled"></a>). This gives rise to the “Fossilized Birth Death Range Process” (implemented as <code class="highlighter-rouge">FBDRP</code> in RevBayes). This is the model we will be using in this tutorial. It is important to note that the tips in the sampled tree represent the age of the youngest sample for each species.</p>
+<p><a class="citation" href="#Stadler2018">Stadler et al. (2018)</a> show how to compute the density of the “sampled tree”, which is obtained by pruning all unsampled lineages after asymmetric species identities have been assigned in the complete tree (<a href="#fig_sampled"></a>). This gives rise to the “Fossilized Birth Death Range Process” (implemented as <code class="highlighter-rouge">FBDRP</code> in RevBayes). This is the model we will be using in this tutorial. It is important to note that the tips in the sampled tree represent the age of the youngest sample for each species.</p>
 
 <figure id="fig_sampled"><p><img src="figures/sampled_tree.png" width="400" /></p>
 <figcaption>The “sampled tree” is produced by pruning unsampled lineages from the oriented tree in <a href="#fig_budding"></a>B and collapsing intermediate fossil samples other than the first and last occurrences into stratigraphic ranges.</figcaption>
@@ -308,9 +308,9 @@ tutorial.</p>
 
 <p>Rates of nucleotide sequence evolution can vary widely among lineages,
 and so models that account for this variation by relaxing the assumption
-of a strict molecular clock <a href="#Zuckerkandl1962">(Zuckerkandl and Pauling 1962)</a> can allow for more
+of a strict molecular clock <a class="citation" href="#Zuckerkandl1962">(Zuckerkandl and Pauling 1962)</a> can allow for more
 accurate estimates of substitution rates and divergence times
-<a href="#Drummond2006">(Drummond et al. 2006)</a>. The simplest type of relaxed clock model assumes that
+<a class="citation" href="#Drummond2006">(Drummond et al. 2006)</a>. The simplest type of relaxed clock model assumes that
 lineage-specific substitution rates are independent or “uncorrelated”.
 One example of such an uncorrelated relaxed model is the uncorrelated
 <em>exponential</em> relaxed clock, in which the substitution rate for each
@@ -320,7 +320,7 @@ for the <em>Molecular Data</em> (<a href="#fig_module_gm"></a>) that we will use
 Another possible uncorrelated relaxed
 clock model is the uncorrelated lognormal model, described in the
 <a href="/tutorials/clocks/">Relaxed Clocks &amp; Time Trees</a>
-tutorial [also see <a href="#Thorne2002">Thorne and Kishino (2002)</a>].</p>
+tutorial [also see <a class="citation" href="#Thorne2002">Thorne and Kishino (2002)</a>].</p>
 
 <figure id="fig_uexp_gm"><p><img src="figures/tikz/uexp_gm.png" width="400" /></p>
 <figcaption>A graphical model of the
@@ -337,7 +337,7 @@ distribution.</figcaption>
 primary source of phylogenetically informative characters. Therefore, an
 appropriate model of morphological character evolution is needed to
 reliably infer the positions of these species in a phylogenetic
-analysis. The Mk model <a href="#Lewis2001">(Lewis 2001)</a> uses a generalized Jukes-Cantor
+analysis. The Mk model <a class="citation" href="#Lewis2001">(Lewis 2001)</a> uses a generalized Jukes-Cantor
 matrix to allow for the incorporation of morphology into likelihood and
 Bayesian analyses. In its simplest form, this model assumes that
 characters change states symmetrically—that a given character is as
@@ -365,7 +365,7 @@ do not contain invariant characters or
 <a href="https://en.wikipedia.org/wiki/Autapomorphy">autapomorphies</a>, as these
 are not parsimony informative. However, by excluding these slow-evolving
 characters, estimates of the branch lengths can be inflated
-<a href="#Felsenstein1992">(Felsenstein 1992; Lewis 2001)</a>. Therefore, it is important to use models
+<a class="citation" href="#Felsenstein1992">(Felsenstein 1992; Lewis 2001)</a>. Therefore, it is important to use models
 that can condition on this data-acquisition bias. RevBayes has two
 ways of doing this: one is used for datasets in which only parsimony
 informative characters are observed; the other is for datasets in which
@@ -383,7 +383,7 @@ defines the of the in the generalized graphical model shown in
 molecular data in <a href="#Intro-GTR-UExp"></a> it allows the
 substitution rate to vary through time and among lineages. For the
 morphological data, we will instead use a “strict clock” model
-<a href="#Zuckerkandl1962">(Zuckerkandl and Pauling 1962)</a>, in which the rate of discrete character change is
+<a class="citation" href="#Zuckerkandl1962">(Zuckerkandl and Pauling 1962)</a>, in which the rate of discrete character change is
 assumed to be constant throughout the tree. The strict clock is the
 simplest morphological branch rate model we can construct (graphical
 model shown in <a href="#fig_morph_clock_gm"></a>).</p>
@@ -406,9 +406,9 @@ of calibrated time trees for this group. We have molecular sequence data
 for ten species, which represent all of the eight living bears and two
 extinct species sequenced from sub-fossil specimens (<em>Arctodus simus,
 Ursus spelaeus</em>). The sequence alignment provided is a 1,000 bp fragment
-of the cytochrome-b mitochondrial gene <a href="#krause2008">(Krause et al. 2008)</a>. The morphological
+of the cytochrome-b mitochondrial gene <a class="citation" href="#krause2008">(Krause et al. 2008)</a>. The morphological
 character matrix unites 18 taxa (both fossil and extant) with 62 binary
-(states 0 or 1) characters <a href="#abella12">(Abella et al. 2012)</a>. For the fossil species,
+(states 0 or 1) characters <a class="citation" href="#abella12">(Abella et al. 2012)</a>. For the fossil species,
 occurrence times are obtained from the literature or fossil databases
 like the <a href="http://fossilworks.org/">Fossilworks PaleoDB</a> or the <a href="http://fossilcalibrations.org/">Fossil
 Calibration Database</a>, or from your own
@@ -464,112 +464,112 @@ extant bears.</p>
     <tr>
       <td><em>Ailuropoda melanoleuca</em></td>
       <td style="text-align: center">0.0-1.24</td>
-      <td style="text-align: right"><a href="#abella12">(Abella et al. 2012)</a></td>
+      <td style="text-align: right"><a class="citation" href="#abella12">(Abella et al. 2012)</a></td>
     </tr>
     <tr>
       <td><em>Helarctos malayanus</em></td>
       <td style="text-align: center">0.0-1.78</td>
-      <td style="text-align: right"><a href="#abella12">(Abella et al. 2012)</a></td>
+      <td style="text-align: right"><a class="citation" href="#abella12">(Abella et al. 2012)</a></td>
     </tr>
     <tr>
       <td><em>Melursus ursinus</em></td>
       <td style="text-align: center">0.0-1.8</td>
-      <td style="text-align: right"><a href="#abella12">(Abella et al. 2012)</a></td>
+      <td style="text-align: right"><a class="citation" href="#abella12">(Abella et al. 2012)</a></td>
     </tr>
     <tr>
       <td><em>Tremarctos ornatus</em></td>
       <td style="text-align: center">0.0-0.0</td>
-      <td style="text-align: right"><a href="#abella12">(Abella et al. 2012)</a></td>
+      <td style="text-align: right"><a class="citation" href="#abella12">(Abella et al. 2012)</a></td>
     </tr>
     <tr>
       <td><em>Ursus americanus</em></td>
       <td style="text-align: center">0.0-1.84</td>
-      <td style="text-align: right"><a href="#abella12">(Abella et al. 2012)</a></td>
+      <td style="text-align: right"><a class="citation" href="#abella12">(Abella et al. 2012)</a></td>
     </tr>
     <tr>
       <td><em>Ursus arctos</em></td>
       <td style="text-align: center">0.0-1.71</td>
-      <td style="text-align: right"><a href="#abella12">(Abella et al. 2012)</a></td>
+      <td style="text-align: right"><a class="citation" href="#abella12">(Abella et al. 2012)</a></td>
     </tr>
     <tr>
       <td><em>Ursus maritimus</em></td>
       <td style="text-align: center">0.0-0.65</td>
-      <td style="text-align: right"><a href="#abella12">(Abella et al. 2012)</a></td>
+      <td style="text-align: right"><a class="citation" href="#abella12">(Abella et al. 2012)</a></td>
     </tr>
     <tr>
       <td><em>Ursus thibetanus</em></td>
       <td style="text-align: center">0.0-1.18</td>
-      <td style="text-align: right"><a href="#abella12">(Abella et al. 2012)</a></td>
+      <td style="text-align: right"><a class="citation" href="#abella12">(Abella et al. 2012)</a></td>
     </tr>
     <tr>
       <td><em>Agriarctos spp.</em></td>
       <td style="text-align: center">4.9–7.75</td>
-      <td style="text-align: right"><a href="#abella2011">(Abella et al. 2011; Abella et al. 2012)</a></td>
+      <td style="text-align: right"><a class="citation" href="#abella2011">(Abella et al. 2011; Abella et al. 2012)</a></td>
     </tr>
     <tr>
       <td><em>Ailurarctos lufengensis</em></td>
       <td style="text-align: center">5.8–8.2</td>
-      <td style="text-align: right"><a href="#jin2007">(Jin et al. 2007; Abella et al. 2012)</a></td>
+      <td style="text-align: right"><a class="citation" href="#jin2007">(Jin et al. 2007; Abella et al. 2012)</a></td>
     </tr>
     <tr>
       <td><em>Arctodus simus</em></td>
       <td style="text-align: center">0.012–2.588</td>
-      <td style="text-align: right"><a href="#churcher1993">(Churcher et al. 1993; Krause et al. 2008)</a></td>
+      <td style="text-align: right"><a class="citation" href="#churcher1993">(Churcher et al. 1993; Krause et al. 2008)</a></td>
     </tr>
     <tr>
       <td><em>Ballusia elmensis</em></td>
       <td style="text-align: center">13.7–16</td>
-      <td style="text-align: right"><a href="#ginsburg1998">(Ginsburg and Morales 1998; Abella et al. 2012)</a></td>
+      <td style="text-align: right"><a class="citation" href="#ginsburg1998">(Ginsburg and Morales 1998; Abella et al. 2012)</a></td>
     </tr>
     <tr>
       <td><em>Indarctos vireti</em></td>
       <td style="text-align: center">7.75–8.7</td>
-      <td style="text-align: right"><a href="#montoya2001">(Montoya et al. 2001; Abella et al. 2012)</a></td>
+      <td style="text-align: right"><a class="citation" href="#montoya2001">(Montoya et al. 2001; Abella et al. 2012)</a></td>
     </tr>
     <tr>
       <td><em>Indarctos arctoides</em></td>
       <td style="text-align: center">8.7–9.7</td>
-      <td style="text-align: right"><a href="#geraads2005">(Geraads et al. 2005; Abella et al. 2012)</a></td>
+      <td style="text-align: right"><a class="citation" href="#geraads2005">(Geraads et al. 2005; Abella et al. 2012)</a></td>
     </tr>
     <tr>
       <td><em>Indarctos punjabiensis</em></td>
       <td style="text-align: center">4.9–9.7</td>
-      <td style="text-align: right"><a href="#baryshnikov2002">(Baryshnikov 2002; Abella et al. 2012)</a></td>
+      <td style="text-align: right"><a class="citation" href="#baryshnikov2002">(Baryshnikov 2002; Abella et al. 2012)</a></td>
     </tr>
     <tr>
       <td><em>Kretzoiarctos beatrix</em></td>
       <td style="text-align: center">11.2–11.8</td>
-      <td style="text-align: right"><a href="#abella2011">(Abella et al. 2011; Abella et al. 2012)</a></td>
+      <td style="text-align: right"><a class="citation" href="#abella2011">(Abella et al. 2011; Abella et al. 2012)</a></td>
     </tr>
     <tr>
       <td><em>Parictis montanus</em></td>
       <td style="text-align: center">33.9–37.2</td>
-      <td style="text-align: right"><a href="#clark1972">(Clark and Guensburg 1972; Krause et al. 2008)</a></td>
+      <td style="text-align: right"><a class="citation" href="#clark1972">(Clark and Guensburg 1972; Krause et al. 2008)</a></td>
     </tr>
     <tr>
       <td><em>Ursavus primaevus</em></td>
       <td style="text-align: center">13.65–15.97</td>
-      <td style="text-align: right"><a href="#andrews1977">(Andrews and Tobien 1977; Abella et al. 2012)</a></td>
+      <td style="text-align: right"><a class="citation" href="#andrews1977">(Andrews and Tobien 1977; Abella et al. 2012)</a></td>
     </tr>
     <tr>
       <td><em>Ursavus brevihinus</em></td>
       <td style="text-align: center">15.97–16.9</td>
-      <td style="text-align: right"><a href="#heizmann1980">(Heizmann et al. 1980; Abella et al. 2012)</a></td>
+      <td style="text-align: right"><a class="citation" href="#heizmann1980">(Heizmann et al. 1980; Abella et al. 2012)</a></td>
     </tr>
     <tr>
       <td><em>Ursus abstrusus</em></td>
       <td style="text-align: center">1.8–5.3</td>
-      <td style="text-align: right"><a href="#bjork1970">(Bjork 1970; Krause et al. 2008)</a></td>
+      <td style="text-align: right"><a class="citation" href="#bjork1970">(Bjork 1970; Krause et al. 2008)</a></td>
     </tr>
     <tr>
       <td><em>Ursus spelaeus</em></td>
       <td style="text-align: center">0.027–0.25</td>
-      <td style="text-align: right"><a href="#loreille2001">(Loreille et al. 2001; Krause et al. 2008)</a></td>
+      <td style="text-align: right"><a class="citation" href="#loreille2001">(Loreille et al. 2001; Krause et al. 2008)</a></td>
     </tr>
     <tr>
       <td><em>Zaragocyon daamsi</em></td>
       <td style="text-align: center">20–22.8</td>
-      <td style="text-align: right"><a href="#ginsburg1995">(Ginsburg and Morales 1995; Abella et al. 2012)</a></td>
+      <td style="text-align: right"><a class="citation" href="#ginsburg1995">(Ginsburg and Morales 1995; Abella et al. 2012)</a></td>
     </tr>
   </tbody>
 </table>
@@ -799,8 +799,8 @@ option allows you to indicate how many times you would like a given move
 to be performed at each MCMC cycle. The way that we will run our MCMC
 for this tutorial will be to execute a <em>schedule</em> of moves at each step
 in our chain instead of just one move per step, as is done in
-MrBayes <a href="#Ronquist2003">(Ronquist and Huelsenbeck 2003)</a> or BEAST
-<a href="#Drummond2012">(Drummond et al. 2012; Bouckaert et al. 2014)</a>. Here, if we were to run our MCMC with
+MrBayes <a class="citation" href="#Ronquist2003">(Ronquist and Huelsenbeck 2003)</a> or BEAST
+<a class="citation" href="#Drummond2012">(Drummond et al. 2012; Bouckaert et al. 2014)</a>. Here, if we were to run our MCMC with
 our current vector of 6 moves, then our move schedule would perform 6
 moves at each cycle. Within a cycle, an individual move is chosen from
 the move list in proportion to its weight. Therefore, with all six moves
@@ -1422,7 +1422,7 @@ specified with the monitors (see <a href="#Exercise-Monitors"></a>).</p>
 MCMC simulation using the program Tracer. We can also
 summarize the marginal distributions for particular parameters we’re
 interested in. <a href="http://tree.bio.ed.ac.uk/software/tracer/">Tracer</a>
-<a href="#Rambaut2011">(Rambaut and Drummond 2011)</a> is a tool for visualizing parameters sampled by MCMC.
+<a class="citation" href="#Rambaut2011">(Rambaut and Drummond 2011)</a> is a tool for visualizing parameters sampled by MCMC.
 This program is limited to numerical parameters, however, and cannot be
 used to summarize or analyze MCMC samples of the tree topology (this
 will be discussed further in <a href="#Exercise-SummarizeTree"></a>).</p>
@@ -1548,7 +1548,7 @@ recommended MCMC practices in RevBayes, please see the
 using numerical parameters, it is also important to inspect the sampled
 topology and tree parameters. This is a difficult endeavor, however. One
 tool for evaluating convergence and mixing of the tree samples is
-<a href="https://github.com/danlwarren/RWTY">RWTY</a> <a href="#Warren2016">(Warren et al. 2016)</a>. In this
+<a href="https://github.com/danlwarren/RWTY">RWTY</a> <a class="citation" href="#Warren2016">(Warren et al. 2016)</a>. In this
 tutorial, we will only summarize the sampled trees, but we encourage you
 to consider approaches for assessing the performance of the MCMC with
 respect to the tree topology.</p>
@@ -1580,7 +1580,7 @@ trees in our case). You can specify a different burn-in fraction, say
 credibility (MCC) tree. The MCC tree is the tree with the maximum
 product of the posterior clade probabilities. When considering trees
 with sampled ancestors, we refer to the maximum sampled ancestor clade
-credibility (MSACC) tree <a href="#Gavryushkina2016">(Gavryushkina et al. 2016)</a>.</p>
+credibility (MSACC) tree <a class="citation" href="#Gavryushkina2016">(Gavryushkina et al. 2016)</a>.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mccTree(trace, file="output/bears.mcc.tre" )
 </code></pre></div></div>
@@ -1624,22 +1624,22 @@ posterior probability that <em>Zaragocyon daamsi</em> is a sampled ancestor?</p>
 </blockquote>
 
 <p>Another newly available web-based tree viewer is
-<a href="http://phylogeny.io/">Phylogeny.IO</a> <a href="#Jovanovic2016">(Jovanovic and Mikheyev 2016)</a>. Try this site for
+<a href="http://phylogeny.io/">Phylogeny.IO</a> <a class="citation" href="#Jovanovic2016">(Jovanovic and Mikheyev 2016)</a>. Try this site for
 a different way to view the tree.</p>
 
 <figure id="highlight"><p><img src="figures/branch_highlight.png" width="600" /></p>
 </figure>
 
-<ol class="bibliography"><li><span id="abella2011">Abella J., Montoya P., Morales J. 2011. Una nueva especie de \textitAgriarctos (Ailuropodinae, Ursidae, Carnivora) en la localidad de Nombrevilla 2 (Zaragoza, España). Estudios Geológicos. 67:187–191.</span>
+<ol class="bibliography"><li><span id="abella2011">Abella J., Montoya P., Morales J. 2011. Una nueva especie de <i>Agriarctos</i> (Ailuropodinae, Ursidae, Carnivora) en la localidad de Nombrevilla 2 (Zaragoza, España). Estudios Geológicos. 67:187–191.</span>
 
 </li>
-<li><span id="abella12">Abella J., Alba D.M., Robles J.M., Valenciano A., Rotgers C., Carmona R., Montoya P., Morales J. 2012. \textitKretzoiarctos gen. nov., the Oldest Member of the Giant Panda Clade. PLoS One. 17:e48985.</span>
+<li><span id="abella12">Abella J., Alba D.M., Robles J.M., Valenciano A., Rotgers C., Carmona R., Montoya P., Morales J. 2012. <i>Kretzoiarctos</i> gen. nov., the Oldest Member of the Giant Panda Clade. PLoS One. 17:e48985.</span>
 
 </li>
-<li><span id="andrews1977">Andrews P., Tobien H. 1977. New Miocene locality in Turkey with evidence on the origin of \textitRamapithecus and \textitSivapithecus. Nature. 268:699.</span>
+<li><span id="andrews1977">Andrews P., Tobien H. 1977. New Miocene locality in Turkey with evidence on the origin of <i>Ramapithecus</i> and <i>Sivapithecus</i>. Nature. 268:699.</span>
 
 </li>
-<li><span id="baryshnikov2002">Baryshnikov G.F. 2002. Late Miocene \textitIndarctos punjabiensis atticus (Carnivora, Ursidae) in Ukraine with survey of \textitIndarctos records from the former USSR. Russian J. Theriol. 1:83–89.</span>
+<li><span id="baryshnikov2002">Baryshnikov G.F. 2002. Late Miocene <i>Indarctos punjabiensis atticus</i> (Carnivora, Ursidae) in Ukraine with survey of <i>Indarctos</i> records from the former USSR. Russian J. Theriol. 1:83–89.</span>
 
 </li>
 <li><span id="bjork1970">Bjork P.R. 1970. The Carnivora of the Hagerman local fauna (late Pliocene) of Southwestern Idaho. Transactions of the American Philosophical Society. 60:3–54.</span>
@@ -1650,10 +1650,10 @@ a different way to view the tree.</p>
 <a href="https://doi.org/10.1371/journal.pcbi.1003537">10.1371/journal.pcbi.1003537</a>
 
 </li>
-<li><span id="churcher1993">Churcher C.S., Morgan A.V., Carter L.D. 1993. \textitArctodus simus from the Alaskan Arctic slope. Canadian Journal of Earth Sciences. 30:1007–1013.</span>
+<li><span id="churcher1993">Churcher C.S., Morgan A.V., Carter L.D. 1993. <i>Arctodus simus</i> from the Alaskan Arctic slope. Canadian Journal of Earth Sciences. 30:1007–1013.</span>
 
 </li>
-<li><span id="clark1972">Clark J., Guensburg T.E. 1972. Arctoid Genetic Characters as Related to the Genus \emphParictis. Chicago, Ill.: Field Museum of Natural History.</span>
+<li><span id="clark1972">Clark J., Guensburg T.E. 1972. Arctoid Genetic Characters as Related to the Genus <i>Parictis</i>. Chicago, Ill.: Field Museum of Natural History.</span>
 
 </li>
 <li><span id="Drummond2012">Drummond A.J., Suchard M.A., Xie D., Rambaut A. 2012. Bayesian phylogenetics with BEAUti and the BEAST 1.7. Molecular Biology and Evolution. 29:1969–1973.</span>
@@ -1684,7 +1684,7 @@ a different way to view the tree.</p>
 <li><span id="geraads2005">Geraads D., Kaya T., Mayda S., others. 2005. Late Miocene large mammals from Yulafli, Thrace region, Turkey, and their biogeographic implications. Acta Palaeontologica Polonica. 50:523–544.</span>
 
 </li>
-<li><span id="ginsburg1995">Ginsburg L., Morales J. 1995. \textitZaragocyon daamsi n. gen. sp. nov., Ursidae primitif du Miocène inférieur d’Espagne. Comptes Rendus de l’Académie des Sciences. Série 2. Sciences de la Terre et des Planètes. 321:811–815.</span>
+<li><span id="ginsburg1995">Ginsburg L., Morales J. 1995. <i>Zaragocyon daamsi n. gen. sp. nov.</i>, Ursidae primitif du Miocène inférieur d’Espagne. Comptes Rendus de l’Académie des Sciences. Série 2. Sciences de la Terre et des Planètes. 321:811–815.</span>
 
 </li>
 <li><span id="ginsburg1998">Ginsburg L., Morales J. 1998. Les Hemicyoninae (Ursidae, Carnivora, Mammalia) et les formes apparentées du Miocène inférieur et moyen d’Europe occidentale. Annales de Paléontologie. 84:71–123.</span>
@@ -1695,7 +1695,7 @@ a different way to view the tree.</p>
 <a href="https://doi.org/10.1073/pnas.1319091111">10.1073/pnas.1319091111</a>
 
 </li>
-<li><span id="heizmann1980">Heizmann E., Ginsburg L., Bulot C. 1980. \textitProsansanosmilus peregrinus, ein neuer machairodontider Felidae aus dem Miozän Deutschlands und Frankreichs. Stuttgarter Beitr. Naturk. B. 58:1–27.</span>
+<li><span id="heizmann1980">Heizmann E., Ginsburg L., Bulot C. 1980. <i>Prosansanosmilus peregrinus</i>, ein neuer machairodontider Felidae aus dem Miozän Deutschlands und Frankreichs. Stuttgarter Beitr. Naturk. B. 58:1–27.</span>
 
 </li>
 <li><span id="Hoehna2014b">Höhna S., Heath T.A., Boussau B., Landis M.J., Ronquist F., Huelsenbeck J.P. 2014. Probabilistic Graphical Model Representation in Phylogenetics. Systematic Biology. 63:753–771.</span>
@@ -1724,10 +1724,10 @@ a different way to view the tree.</p>
 <a href="https://doi.org/10.1080/106351501753462876">10.1080/106351501753462876</a>
 
 </li>
-<li><span id="loreille2001">Loreille O., Orlando L., Patou-Mathis M., Philippe M., Taberlet P., Hänni C. 2001. Ancient DNA analysis reveals divergence of the cave bear, \textitUrsus spelaeus, and brown bear, \textitUrsus arctos, lineages. Current Biology. 11:200–203.</span>
+<li><span id="loreille2001">Loreille O., Orlando L., Patou-Mathis M., Philippe M., Taberlet P., Hänni C. 2001. Ancient DNA analysis reveals divergence of the cave bear, <i>Ursus spelaeus</i>, and brown bear, <i>Ursus arctos</i>, lineages. Current Biology. 11:200–203.</span>
 
 </li>
-<li><span id="montoya2001">Montoya P., Alcalá L., Morales J. 2001. \textitIndarctos (Ursidae, Mammalia) from the Spanish Turolian (Upper Miocene). Scripta Geologica. 122:123–151.</span>
+<li><span id="montoya2001">Montoya P., Alcalá L., Morales J. 2001. <i>Indarctos</i> (Ursidae, Mammalia) from the Spanish Turolian (Upper Miocene). Scripta Geologica. 122:123–151.</span>
 
 </li>
 <li><span id="Rambaut2011">Rambaut A., Drummond A.J. 2011. Tracer v1.5. .</span>

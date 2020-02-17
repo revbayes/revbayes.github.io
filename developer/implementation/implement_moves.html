@@ -88,26 +88,26 @@
 <span class="kt">double</span> <span class="n">GammaScaleProposal</span><span class="o">::</span><span class="n">propose</span><span class="p">(</span> <span class="kt">double</span> <span class="o">&amp;</span><span class="n">val</span> <span class="p">)</span>
 <span class="p">{</span>
     
-    <span class="c1">// Get random number generator
-</span>    <span class="n">RandomNumberGenerator</span><span class="o">*</span> <span class="n">rng</span>     <span class="o">=</span> <span class="n">GLOBAL_RNG</span><span class="p">;</span>
+    <span class="c1">// Get random number generator</span>
+    <span class="n">RandomNumberGenerator</span><span class="o">*</span> <span class="n">rng</span>     <span class="o">=</span> <span class="n">GLOBAL_RNG</span><span class="p">;</span>
     
-    <span class="c1">// copy value
-</span>    <span class="n">storedValue</span> <span class="o">=</span> <span class="n">val</span><span class="p">;</span>
+    <span class="c1">// copy value</span>
+    <span class="n">storedValue</span> <span class="o">=</span> <span class="n">val</span><span class="p">;</span>
     
-    <span class="c1">// Generate new value (no reflection, so we simply abort later if we propose value here outside of support)
-</span>    <span class="kt">double</span> <span class="n">u</span> <span class="o">=</span> <span class="n">RbStatistics</span><span class="o">::</span><span class="n">Gamma</span><span class="o">::</span><span class="n">rv</span><span class="p">(</span><span class="n">lambda</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="o">*</span><span class="n">rng</span><span class="p">);</span>
+    <span class="c1">// Generate new value (no reflection, so we simply abort later if we propose value here outside of support)</span>
+    <span class="kt">double</span> <span class="n">u</span> <span class="o">=</span> <span class="n">RbStatistics</span><span class="o">::</span><span class="n">Gamma</span><span class="o">::</span><span class="n">rv</span><span class="p">(</span><span class="n">lambda</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="o">*</span><span class="n">rng</span><span class="p">);</span>
     <span class="n">val</span> <span class="o">*=</span> <span class="n">u</span><span class="p">;</span>
     
-    <span class="c1">// compute the Hastings ratio
-</span>    <span class="kt">double</span> <span class="n">ln_hastings_ratio</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="c1">// compute the Hastings ratio</span>
+    <span class="kt">double</span> <span class="n">ln_hastings_ratio</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
     <span class="k">try</span>
     <span class="p">{</span>
-        <span class="c1">// compute the Hastings ratio
-</span>        <span class="kt">double</span> <span class="n">forward</span> <span class="o">=</span> <span class="n">RbStatistics</span><span class="o">::</span><span class="n">Gamma</span><span class="o">::</span><span class="n">lnPdf</span><span class="p">(</span><span class="n">lambda</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">u</span><span class="p">);</span>
+        <span class="c1">// compute the Hastings ratio</span>
+        <span class="kt">double</span> <span class="n">forward</span> <span class="o">=</span> <span class="n">RbStatistics</span><span class="o">::</span><span class="n">Gamma</span><span class="o">::</span><span class="n">lnPdf</span><span class="p">(</span><span class="n">lambda</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">u</span><span class="p">);</span>
         <span class="kt">double</span> <span class="n">backward</span> <span class="o">=</span> <span class="n">RbStatistics</span><span class="o">::</span><span class="n">Gamma</span><span class="o">::</span><span class="n">lnPdf</span><span class="p">(</span><span class="n">lambda</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="mf">1.0</span><span class="o">/</span><span class="n">u</span><span class="p">));</span>
         
-        <span class="n">ln_hastings_ratio</span> <span class="o">=</span> <span class="n">backward</span> <span class="o">-</span> <span class="n">forward</span> <span class="o">-</span> <span class="n">log</span><span class="p">(</span><span class="n">u</span><span class="p">);</span>    <span class="c1">// The -log(u) term is the Jacobian
-</span>    <span class="p">}</span>
+        <span class="n">ln_hastings_ratio</span> <span class="o">=</span> <span class="n">backward</span> <span class="o">-</span> <span class="n">forward</span> <span class="o">-</span> <span class="n">log</span><span class="p">(</span><span class="n">u</span><span class="p">);</span>    <span class="c1">// The -log(u) term is the Jacobian</span>
+    <span class="p">}</span>
     <span class="k">catch</span> <span class="p">(</span><span class="n">RbException</span> <span class="n">e</span><span class="p">)</span>
     <span class="p">{</span>
         <span class="n">ln_hastings_ratio</span> <span class="o">=</span> <span class="n">RbConstants</span><span class="o">::</span><span class="n">Double</span><span class="o">::</span><span class="n">neginf</span><span class="p">;</span>
@@ -128,13 +128,13 @@
 
     <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="n">Move_GammaScale</span><span class="o">::</span><span class="n">constructInternalObject</span><span class="p">(</span> <span class="kt">void</span> <span class="p">)</span>
 <span class="p">{</span>
-    <span class="c1">// we free the memory first
-</span>    <span class="k">delete</span> <span class="n">value</span><span class="p">;</span>
+    <span class="c1">// we free the memory first</span>
+    <span class="k">delete</span> <span class="n">value</span><span class="p">;</span>
     
     <span class="n">RevBayesCore</span><span class="o">::</span><span class="n">Proposal</span> <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
     
-    <span class="c1">// now allocate a new sliding move
-</span>    <span class="kt">double</span> <span class="n">d</span> <span class="o">=</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">RealPos</span> <span class="o">&amp;&gt;</span><span class="p">(</span> <span class="n">lambda</span><span class="o">-&gt;</span><span class="n">getRevObject</span><span class="p">()</span> <span class="p">).</span><span class="n">getValue</span><span class="p">();</span>
+    <span class="c1">// now allocate a new sliding move</span>
+    <span class="kt">double</span> <span class="n">d</span> <span class="o">=</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">RealPos</span> <span class="o">&amp;&gt;</span><span class="p">(</span> <span class="n">lambda</span><span class="o">-&gt;</span><span class="n">getRevObject</span><span class="p">()</span> <span class="p">).</span><span class="n">getValue</span><span class="p">();</span>
     <span class="kt">double</span> <span class="n">w</span> <span class="o">=</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">RealPos</span> <span class="o">&amp;&gt;</span><span class="p">(</span> <span class="n">weight</span><span class="o">-&gt;</span><span class="n">getRevObject</span><span class="p">()</span> <span class="p">).</span><span class="n">getValue</span><span class="p">();</span>
     <span class="kt">double</span> <span class="n">r</span> <span class="o">=</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">Probability</span> <span class="o">&amp;&gt;</span><span class="p">(</span> <span class="n">tuneTarget</span><span class="o">-&gt;</span><span class="n">getRevObject</span><span class="p">()</span> <span class="p">).</span><span class="n">getValue</span><span class="p">();</span>
     <span class="n">RevBayesCore</span><span class="o">::</span><span class="n">TypedDagNode</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;*</span> <span class="n">tmp</span> <span class="o">=</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">RealPos</span> <span class="o">&amp;&gt;</span><span class="p">(</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">getRevObject</span><span class="p">()</span> <span class="p">).</span><span class="n">getDagNode</span><span class="p">();</span>

@@ -94,16 +94,16 @@
      */</span>
     <span class="k">class</span> <span class="nc">HyperbolicCosineFunction</span> <span class="o">:</span> <span class="k">public</span> <span class="n">ContinuousFunction</span> <span class="p">{</span>
 
-        <span class="k">public</span><span class="o">:</span>
+        <span class="nl">public:</span>
                                           <span class="n">HyperbolicCosineFunction</span><span class="p">(</span><span class="k">const</span> <span class="n">TypedDagNode</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span> <span class="o">*</span><span class="n">a</span><span class="p">);</span> 
 
-            <span class="n">HyperbolicCosineFunction</span><span class="o">*</span>     <span class="n">clone</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span> <span class="c1">//!&lt; creates a clone
-</span>            <span class="kt">void</span>                          <span class="n">update</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>      <span class="c1">//!&lt; recomputes the value
-</span>
-        <span class="k">protected</span><span class="o">:</span>
-            <span class="kt">void</span>                          <span class="n">swapParameterInternal</span><span class="p">(</span><span class="k">const</span> <span class="n">DagNode</span> <span class="o">*</span><span class="n">oldP</span><span class="p">,</span> <span class="k">const</span> <span class="n">DagNode</span> <span class="o">*</span><span class="n">newP</span><span class="p">);</span> <span class="c1">//!&lt; Implementation of swapping parameters
-</span>
-        <span class="k">private</span><span class="o">:</span>
+            <span class="n">HyperbolicCosineFunction</span><span class="o">*</span>     <span class="n">clone</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span> <span class="c1">//!&lt; creates a clone</span>
+            <span class="kt">void</span>                          <span class="n">update</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>      <span class="c1">//!&lt; recomputes the value</span>
+
+        <span class="nl">protected:</span>
+            <span class="kt">void</span>                          <span class="n">swapParameterInternal</span><span class="p">(</span><span class="k">const</span> <span class="n">DagNode</span> <span class="o">*</span><span class="n">oldP</span><span class="p">,</span> <span class="k">const</span> <span class="n">DagNode</span> <span class="o">*</span><span class="n">newP</span><span class="p">);</span> <span class="c1">//!&lt; Implementation of swapping parameters</span>
+
+        <span class="nl">private:</span>
             <span class="k">const</span> <span class="n">TypedDagNode</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;*</span> <span class="n">x</span><span class="p">;</span>
 
     <span class="p">};</span>
@@ -120,7 +120,7 @@ Here we are implementing our hyperbolic cosine function as its own class that is
 </span>
 <span class="k">using</span> <span class="k">namespace</span> <span class="n">RevBayesCore</span><span class="p">;</span>
 
-<span class="n">HyperbolicCosineFunction</span><span class="o">::</span><span class="n">HyperbolicCosineFunction</span><span class="p">(</span><span class="k">const</span> <span class="n">TypedDagNode</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span> <span class="o">*</span><span class="n">a</span><span class="p">)</span> <span class="o">:</span> <span class="n">ContinuousFunction</span><span class="p">(</span> <span class="k">new</span> <span class="kt">double</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span> <span class="p">),</span>
+<span class="n">HyperbolicCosineFunction</span><span class="o">::</span><span class="n">HyperbolicCosineFunction</span><span class="p">(</span><span class="k">const</span> <span class="n">TypedDagNode</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span> <span class="o">*</span><span class="n">a</span><span class="p">)</span> <span class="o">:</span> <span class="n">ContinuousFunction</span><span class="p">(</span> <span class="k">new</span> <span class="nf">double</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span> <span class="p">),</span>
 <span class="n">x</span><span class="p">(</span> <span class="n">a</span> <span class="p">)</span>
 <span class="p">{</span>
     <span class="n">addParameter</span><span class="p">(</span> <span class="n">a</span> <span class="p">);</span>
@@ -146,8 +146,8 @@ Here we are implementing our hyperbolic cosine function as its own class that is
 <span class="kt">void</span> <span class="n">HyperbolicCosineFunction</span><span class="o">::</span><span class="n">update</span><span class="p">(</span> <span class="kt">void</span> <span class="p">)</span>
 <span class="p">{</span>
     
-    <span class="c1">// recompute and set the internal value
-</span>    <span class="kt">double</span> <span class="n">myValue</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="n">getValue</span><span class="p">();</span>
+    <span class="c1">// recompute and set the internal value</span>
+    <span class="kt">double</span> <span class="n">myValue</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="n">getValue</span><span class="p">();</span>
     <span class="kt">double</span> <span class="n">x1</span> <span class="o">=</span> <span class="n">exp</span><span class="p">(</span><span class="n">myValue</span><span class="p">)</span> <span class="o">+</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">myValue</span><span class="p">);</span>
     <span class="o">*</span><span class="n">value</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">x1</span><span class="p">;</span>
 
@@ -184,20 +184,20 @@ Here we are implementing our hyperbolic cosine function as its own class that is
      */</span>
     <span class="k">class</span> <span class="nc">Func_hyperbolicCosine</span> <span class="o">:</span>  <span class="k">public</span> <span class="n">TypedFunction</span><span class="o">&lt;</span><span class="n">Real</span><span class="o">&gt;</span> <span class="p">{</span>
         
-    <span class="k">public</span><span class="o">:</span>
+    <span class="nl">public:</span>
         <span class="n">Func_hyperbolicCosine</span><span class="p">(</span> <span class="kt">void</span> <span class="p">);</span>
         
-        <span class="c1">// Basic utility functions
-</span>        <span class="n">Func_hyperbolicCosine</span><span class="o">*</span>                         <span class="n">clone</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>                                          <span class="c1">//!&lt; Clone the object
-</span>        <span class="k">static</span> <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span>                       <span class="n">getClassType</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>                                         <span class="c1">//!&lt; Get Rev type
-</span>        <span class="k">static</span> <span class="k">const</span> <span class="n">TypeSpec</span><span class="o">&amp;</span>                          <span class="n">getClassTypeSpec</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>                                     <span class="c1">//!&lt; Get class type spec
-</span>        <span class="n">std</span><span class="o">::</span><span class="n">string</span>                                     <span class="n">getFunctionName</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>                                <span class="c1">//!&lt; Get the primary name of the function in Rev
-</span>        <span class="k">const</span> <span class="n">TypeSpec</span><span class="o">&amp;</span>                                 <span class="n">getTypeSpec</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>                                    <span class="c1">//!&lt; Get the type spec of the instance
-</span>        
-        <span class="c1">// Function functions you have to override
-</span>        <span class="n">RevBayesCore</span><span class="o">::</span><span class="n">TypedFunction</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;*</span>            <span class="n">createFunction</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>                                 <span class="c1">//!&lt; Create internal function object
-</span>        <span class="k">const</span> <span class="n">ArgumentRules</span><span class="o">&amp;</span>                            <span class="n">getArgumentRules</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>                               <span class="c1">//!&lt; Get argument rules
-</span>        
+        <span class="c1">// Basic utility functions</span>
+        <span class="n">Func_hyperbolicCosine</span><span class="o">*</span>                         <span class="n">clone</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>                                          <span class="c1">//!&lt; Clone the object</span>
+        <span class="k">static</span> <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span>                       <span class="n">getClassType</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>                                         <span class="c1">//!&lt; Get Rev type</span>
+        <span class="k">static</span> <span class="k">const</span> <span class="n">TypeSpec</span><span class="o">&amp;</span>                          <span class="n">getClassTypeSpec</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>                                     <span class="c1">//!&lt; Get class type spec</span>
+        <span class="n">std</span><span class="o">::</span><span class="n">string</span>                                     <span class="n">getFunctionName</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>                                <span class="c1">//!&lt; Get the primary name of the function in Rev</span>
+        <span class="k">const</span> <span class="n">TypeSpec</span><span class="o">&amp;</span>                                 <span class="n">getTypeSpec</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>                                    <span class="c1">//!&lt; Get the type spec of the instance</span>
+        
+        <span class="c1">// Function functions you have to override</span>
+        <span class="n">RevBayesCore</span><span class="o">::</span><span class="n">TypedFunction</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;*</span>            <span class="n">createFunction</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>                                 <span class="c1">//!&lt; Create internal function object</span>
+        <span class="k">const</span> <span class="n">ArgumentRules</span><span class="o">&amp;</span>                            <span class="n">getArgumentRules</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>                               <span class="c1">//!&lt; Get argument rules</span>
+        
     <span class="p">};</span>
     
 <span class="p">}</span>
@@ -290,8 +290,8 @@ Here we are implementing our hyperbolic cosine function as its own class that is
  */</span>
 <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">Func_hyperbolicCosine</span><span class="o">::</span><span class="n">getFunctionName</span><span class="p">(</span> <span class="kt">void</span> <span class="p">)</span> <span class="k">const</span>
 <span class="p">{</span>
-    <span class="c1">// create a name variable that is the same for all instance of this class
-</span>    <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">f_name</span> <span class="o">=</span> <span class="s">"cosh"</span><span class="p">;</span>
+    <span class="c1">// create a name variable that is the same for all instance of this class</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">f_name</span> <span class="o">=</span> <span class="s">"cosh"</span><span class="p">;</span>
     
     <span class="k">return</span> <span class="n">f_name</span><span class="p">;</span>
 <span class="p">}</span>
@@ -347,8 +347,8 @@ The overall naming format remains the same for every distribution in RevBayes. I
 
     <p>To populate these files, look at existing examples of similar distributions for specific info on what to include &amp; on proper syntax.  For example, for the Beta Binomial distribution, I checked the existing Binomial Distribution code for guidance.</p>
 
-    <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//add code here
-</span></code></pre></div>    </div>
+    <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//add code here</span>
+</code></pre></div>    </div>
   </li>
   <li>Test
     <ol>
@@ -383,7 +383,7 @@ The overall naming format remains the same for every distribution in RevBayes. I
 
     <p>Next, navigate to the section of the file that initializes the global workspace. This section defines the workspace class, which houses info on all distributions. Then, add the following line of code:</p>
 
-    <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">AddDistribution</span><span class="o">&lt;</span> <span class="n">Natural</span>		<span class="o">&gt;</span><span class="p">(</span> <span class="k">new</span> <span class="n">Dist_betaBinomial</span><span class="p">());</span>
+    <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">AddDistribution</span><span class="o">&lt;</span> <span class="n">Natural</span>		<span class="o">&gt;</span><span class="p">(</span> <span class="k">new</span> <span class="nf">Dist_betaBinomial</span><span class="p">());</span>
 </code></pre></div>    </div>
 
     <p>This adds the distribution to the workspace. Without this step, the beta binomial distribution will not be added to the <code class="highlighter-rouge">revlanguage</code>.</p>
@@ -432,26 +432,26 @@ The overall naming format remains the same for every distribution in RevBayes. I
 <span class="kt">double</span> <span class="n">GammaScaleProposal</span><span class="o">::</span><span class="n">propose</span><span class="p">(</span> <span class="kt">double</span> <span class="o">&amp;</span><span class="n">val</span> <span class="p">)</span>
 <span class="p">{</span>
     
-    <span class="c1">// Get random number generator
-</span>    <span class="n">RandomNumberGenerator</span><span class="o">*</span> <span class="n">rng</span>     <span class="o">=</span> <span class="n">GLOBAL_RNG</span><span class="p">;</span>
+    <span class="c1">// Get random number generator</span>
+    <span class="n">RandomNumberGenerator</span><span class="o">*</span> <span class="n">rng</span>     <span class="o">=</span> <span class="n">GLOBAL_RNG</span><span class="p">;</span>
     
-    <span class="c1">// copy value
-</span>    <span class="n">storedValue</span> <span class="o">=</span> <span class="n">val</span><span class="p">;</span>
+    <span class="c1">// copy value</span>
+    <span class="n">storedValue</span> <span class="o">=</span> <span class="n">val</span><span class="p">;</span>
     
-    <span class="c1">// Generate new value (no reflection, so we simply abort later if we propose value here outside of support)
-</span>    <span class="kt">double</span> <span class="n">u</span> <span class="o">=</span> <span class="n">RbStatistics</span><span class="o">::</span><span class="n">Gamma</span><span class="o">::</span><span class="n">rv</span><span class="p">(</span><span class="n">lambda</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="o">*</span><span class="n">rng</span><span class="p">);</span>
+    <span class="c1">// Generate new value (no reflection, so we simply abort later if we propose value here outside of support)</span>
+    <span class="kt">double</span> <span class="n">u</span> <span class="o">=</span> <span class="n">RbStatistics</span><span class="o">::</span><span class="n">Gamma</span><span class="o">::</span><span class="n">rv</span><span class="p">(</span><span class="n">lambda</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="o">*</span><span class="n">rng</span><span class="p">);</span>
     <span class="n">val</span> <span class="o">*=</span> <span class="n">u</span><span class="p">;</span>
     
-    <span class="c1">// compute the Hastings ratio
-</span>    <span class="kt">double</span> <span class="n">ln_hastings_ratio</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="c1">// compute the Hastings ratio</span>
+    <span class="kt">double</span> <span class="n">ln_hastings_ratio</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
     <span class="k">try</span>
     <span class="p">{</span>
-        <span class="c1">// compute the Hastings ratio
-</span>        <span class="kt">double</span> <span class="n">forward</span> <span class="o">=</span> <span class="n">RbStatistics</span><span class="o">::</span><span class="n">Gamma</span><span class="o">::</span><span class="n">lnPdf</span><span class="p">(</span><span class="n">lambda</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">u</span><span class="p">);</span>
+        <span class="c1">// compute the Hastings ratio</span>
+        <span class="kt">double</span> <span class="n">forward</span> <span class="o">=</span> <span class="n">RbStatistics</span><span class="o">::</span><span class="n">Gamma</span><span class="o">::</span><span class="n">lnPdf</span><span class="p">(</span><span class="n">lambda</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">u</span><span class="p">);</span>
         <span class="kt">double</span> <span class="n">backward</span> <span class="o">=</span> <span class="n">RbStatistics</span><span class="o">::</span><span class="n">Gamma</span><span class="o">::</span><span class="n">lnPdf</span><span class="p">(</span><span class="n">lambda</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="mf">1.0</span><span class="o">/</span><span class="n">u</span><span class="p">));</span>
         
-        <span class="n">ln_hastings_ratio</span> <span class="o">=</span> <span class="n">backward</span> <span class="o">-</span> <span class="n">forward</span> <span class="o">-</span> <span class="n">log</span><span class="p">(</span><span class="n">u</span><span class="p">);</span>    <span class="c1">// The -log(u) term is the Jacobian
-</span>    <span class="p">}</span>
+        <span class="n">ln_hastings_ratio</span> <span class="o">=</span> <span class="n">backward</span> <span class="o">-</span> <span class="n">forward</span> <span class="o">-</span> <span class="n">log</span><span class="p">(</span><span class="n">u</span><span class="p">);</span>    <span class="c1">// The -log(u) term is the Jacobian</span>
+    <span class="p">}</span>
     <span class="k">catch</span> <span class="p">(</span><span class="n">RbException</span> <span class="n">e</span><span class="p">)</span>
     <span class="p">{</span>
         <span class="n">ln_hastings_ratio</span> <span class="o">=</span> <span class="n">RbConstants</span><span class="o">::</span><span class="n">Double</span><span class="o">::</span><span class="n">neginf</span><span class="p">;</span>
@@ -472,13 +472,13 @@ The overall naming format remains the same for every distribution in RevBayes. I
 
     <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="n">Move_GammaScale</span><span class="o">::</span><span class="n">constructInternalObject</span><span class="p">(</span> <span class="kt">void</span> <span class="p">)</span>
 <span class="p">{</span>
-    <span class="c1">// we free the memory first
-</span>    <span class="k">delete</span> <span class="n">value</span><span class="p">;</span>
+    <span class="c1">// we free the memory first</span>
+    <span class="k">delete</span> <span class="n">value</span><span class="p">;</span>
     
     <span class="n">RevBayesCore</span><span class="o">::</span><span class="n">Proposal</span> <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
     
-    <span class="c1">// now allocate a new sliding move
-</span>    <span class="kt">double</span> <span class="n">d</span> <span class="o">=</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">RealPos</span> <span class="o">&amp;&gt;</span><span class="p">(</span> <span class="n">lambda</span><span class="o">-&gt;</span><span class="n">getRevObject</span><span class="p">()</span> <span class="p">).</span><span class="n">getValue</span><span class="p">();</span>
+    <span class="c1">// now allocate a new sliding move</span>
+    <span class="kt">double</span> <span class="n">d</span> <span class="o">=</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">RealPos</span> <span class="o">&amp;&gt;</span><span class="p">(</span> <span class="n">lambda</span><span class="o">-&gt;</span><span class="n">getRevObject</span><span class="p">()</span> <span class="p">).</span><span class="n">getValue</span><span class="p">();</span>
     <span class="kt">double</span> <span class="n">w</span> <span class="o">=</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">RealPos</span> <span class="o">&amp;&gt;</span><span class="p">(</span> <span class="n">weight</span><span class="o">-&gt;</span><span class="n">getRevObject</span><span class="p">()</span> <span class="p">).</span><span class="n">getValue</span><span class="p">();</span>
     <span class="kt">double</span> <span class="n">r</span> <span class="o">=</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">Probability</span> <span class="o">&amp;&gt;</span><span class="p">(</span> <span class="n">tuneTarget</span><span class="o">-&gt;</span><span class="n">getRevObject</span><span class="p">()</span> <span class="p">).</span><span class="n">getValue</span><span class="p">();</span>
     <span class="n">RevBayesCore</span><span class="o">::</span><span class="n">TypedDagNode</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;*</span> <span class="n">tmp</span> <span class="o">=</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">RealPos</span> <span class="o">&amp;&gt;</span><span class="p">(</span> <span class="n">x</span><span class="o">-&gt;</span><span class="n">getRevObject</span><span class="p">()</span> <span class="p">).</span><span class="n">getDagNode</span><span class="p">();</span>
@@ -498,201 +498,6 @@ The overall naming format remains the same for every distribution in RevBayes. I
     <p><em>Testing the performance of the new move</em> - If properly implemented, a new move can be validated by running an MCMC analysis where the data are ignored and one tries to sample only the prior. This can be done in RevBayes by adding the <code class="highlighter-rouge">underPrior=TRUE</code> option as an argument to the <code class="highlighter-rouge">.run()</code> method of an <code class="highlighter-rouge">mcmc</code> object. The recommended strategy is to implement the simplest possible model that uses a variable of the type appropriate for the new move, and assigning that variable an easily validated prior (e.g., a uniform). Run the analysis with only the new move operating on that variable and then plot the variable’s marginal distribution to make sure it matches the prior.</p>
   </li>
 </ol>
-
-<p class="section maintitle" id="implement_help">Implementing a help entry</p>
-<h2 id="adding-basic-help-sections">Adding basic help sections</h2>
-
-<p>For each new function, distrubution or move you add in RevBayes you should always create a corresponding help entry.</p>
-
-<p>As an example we will look at the documentation associated with the normal distributon function.
-The functions used to generate the help entry are in the <code class="highlighter-rouge">Dist_norm.cpp</code> and <code class="highlighter-rouge">Dist_norm.h</code> files in the directory <code class="highlighter-rouge">/revlanguage/distributions/math</code>.</p>
-
-<p>The basic help fields and assocaited functions are listed in the table below and are output to screen in the same order.</p>
-
-<figure id="help_sections" class="table"><table>
-  <thead>
-    <tr>
-      <th>Help section</th>
-      <th>Association RevBayes function</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Title</td>
-      <td><code class="highlighter-rouge">getHelpTitle</code></td>
-    </tr>
-    <tr>
-      <td>Aliases</td>
-      <td><code class="highlighter-rouge">getDistributionFunctionAliases</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td><code class="highlighter-rouge">getFunctionNameAliases</code></td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td><code class="highlighter-rouge">getMoveAliases</code></td>
-    </tr>
-    <tr>
-      <td>Description</td>
-      <td><code class="highlighter-rouge">getHelpDescription</code></td>
-    </tr>
-    <tr>
-      <td>Constructor</td>
-      <td>(autogenerated)</td>
-    </tr>
-    <tr>
-      <td>Return Type</td>
-      <td>(autogenerated; only Functions, Distributions)</td>
-    </tr>
-    <tr>
-      <td>Details</td>
-      <td><code class="highlighter-rouge">getHelpDetails</code></td>
-    </tr>
-    <tr>
-      <td>Example</td>
-      <td><code class="highlighter-rouge">getHelpExample</code></td>
-    </tr>
-    <tr>
-      <td>Methods</td>
-      <td>(autogenerated)</td>
-    </tr>
-    <tr>
-      <td>Authors</td>
-      <td><code class="highlighter-rouge">getHelpAuthor</code></td>
-    </tr>
-    <tr>
-      <td>References</td>
-      <td><code class="highlighter-rouge">getHelpReferences</code></td>
-    </tr>
-    <tr>
-      <td>See Also</td>
-      <td><code class="highlighter-rouge">getHelpSeeAlso</code></td>
-    </tr>
-  </tbody>
-</table>
-
-<figcaption class="table">Help fields and associatd functions</figcaption>
-</figure>
-
-<p>Note the <em>Constructor</em>, <em>Return Type</em> and <em>Methods</em> fields are generated automatically. All the other fields must be populated manually.</p>
-
-<p>The help functions are <em>protected functions</em> included in the header file <code class="highlighter-rouge">Dist_norm.h</code>.</p>
-
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">protected:</span>
-    
-  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span>                        <span class="n">getHelpAuthor</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>  <span class="c1">//!&lt; Get the author(s) of this function
-</span>  <span class="n">std</span><span class="o">::</span><span class="n">string</span>                                     <span class="n">getHelpDescription</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>  <span class="c1">//!&lt; Get the description for this function
-</span>  <span class="n">std</span><span class="o">::</span><span class="n">string</span>                                     <span class="n">getHelpDetails</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span> <span class="c1">//!&lt; Get the more detailed description of the function
-</span>  <span class="n">std</span><span class="o">::</span><span class="n">string</span>                                     <span class="n">getHelpExample</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span> <span class="c1">//!&lt; Get an executable and instructive example
-</span>  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">RevBayesCore</span><span class="o">::</span><span class="n">RbHelpReference</span><span class="o">&gt;</span>      <span class="n">getHelpReferences</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span> <span class="c1">//!&lt; Get some references/citations for this function
-</span>  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span>                        <span class="n">getHelpSeeAlso</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span> <span class="c1">//!&lt; Get suggested other functions
-</span>  <span class="n">std</span><span class="o">::</span><span class="n">string</span>                                     <span class="n">getHelpTitle</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span> <span class="c1">//!&lt; Get the title of this help entry
-</span></code></pre></div></div>
-<p>The information for the helps fields should be filled out in the source file <code class="highlighter-rouge">Dist_norm.cpp</code>.</p>
-
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
- * Get the author(s) of this function so they can receive credit (and blame) for it.
- */</span>
-<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">Dist_norm</span><span class="o">::</span><span class="n">getHelpAuthor</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span>
-<span class="p">{</span>
-    <span class="c1">// create a vector of authors for this function
-</span>    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">authors</span><span class="p">;</span>
-    <span class="n">authors</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span> <span class="s">"Sebastian Hoehna"</span> <span class="p">);</span>
-
-    <span class="k">return</span> <span class="n">authors</span><span class="p">;</span>
-<span class="p">}</span>
-
-
-<span class="cm">/**
- * Get the (brief) description for this function
- */</span>
-<span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">Dist_norm</span><span class="o">::</span><span class="n">getHelpDescription</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span>
-<span class="p">{</span>
-    <span class="c1">// return the description
-</span>    <span class="k">return</span> <span class="s">"Normal (gaussian) distribution with mean equal to ‘mean’ and standard deviation equal to ‘sd’."</span><span class="p">;</span>
-<span class="p">}</span>
-
-
-<span class="cm">/**
- * Get the more detailed description of the function
- */</span>
-<span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">Dist_norm</span><span class="o">::</span><span class="n">getHelpDetails</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span>
-<span class="p">{</span>
-  <span class="c1">// create a details variable
-</span>    <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">details</span><span class="p">;</span>
-    <span class="n">details</span> <span class="o">+=</span> <span class="s">"The normal distribution has density:</span><span class="se">\n\n</span><span class="s">"</span><span class="p">;</span>
-    <span class="n">details</span> <span class="o">+=</span> <span class="s">"f(x) = 1/(sqrt(2 pi) sigma) e^-((x - mu)^2/(2 sigma^2))</span><span class="se">\n\n</span><span class="s">"</span><span class="p">;</span>
-    <span class="n">details</span> <span class="o">+=</span> <span class="s">"where mu is the mean of the distribution and sigma the standard deviation."</span><span class="p">;</span>
-
-    <span class="k">return</span> <span class="n">details</span><span class="p">;</span>
-<span class="p">}</span>
-
-
-<span class="cm">/**
- * Get an executable and instructive example.
- * These example should help the users to show how this function works but
- * are also used to test if this function still works.
- */</span>
-<span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">Dist_norm</span><span class="o">::</span><span class="n">getHelpExample</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span>
-<span class="p">{</span>
-    <span class="c1">// create an example as a single string variable.
-</span>    <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">example</span> <span class="o">=</span> <span class="s">""</span><span class="p">;</span>
-
-    <span class="n">example</span> <span class="o">+=</span> <span class="s">"# we simulate some observations</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
-    <span class="n">example</span> <span class="o">+=</span> <span class="s">"x &lt;- rnorm(n=10,mean=5,sd=10)</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
-    <span class="n">example</span> <span class="o">+=</span> <span class="s">"# let's see what the minimum is (you could do the max too)</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
-    <span class="n">example</span> <span class="o">+=</span> <span class="s">"min(x)</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
-    <span class="n">example</span> <span class="o">+=</span> <span class="s">"# let's also see what the mean and the variance are</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
-    <span class="n">example</span> <span class="o">+=</span> <span class="s">"mean(x)</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
-    <span class="n">example</span> <span class="o">+=</span> <span class="s">"var(x)</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
-    <span class="n">example</span> <span class="o">+=</span> <span class="s">"sd(x)</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
-
-    <span class="k">return</span> <span class="n">example</span><span class="p">;</span>
-<span class="p">}</span>
-
-
-<span class="cm">/**
- * Get some references/citations for this function
- *
- */</span>
-<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">RevBayesCore</span><span class="o">::</span><span class="n">RbHelpReference</span><span class="o">&gt;</span> <span class="n">Dist_norm</span><span class="o">::</span><span class="n">getHelpReferences</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span>
-<span class="p">{</span>
-    <span class="c1">// create an entry for each reference
-</span>    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">RevBayesCore</span><span class="o">::</span><span class="n">RbHelpReference</span><span class="o">&gt;</span> <span class="n">references</span><span class="p">;</span>
-
-
-    <span class="k">return</span> <span class="n">references</span><span class="p">;</span>
-<span class="p">}</span>
-
-
-<span class="cm">/**
- * Get the names of similar and suggested other functions
- */</span>
-<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">Dist_norm</span><span class="o">::</span><span class="n">getHelpSeeAlso</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span>
-<span class="p">{</span>
-    <span class="c1">// create an entry for each suggested function
-</span>    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">see_also</span><span class="p">;</span>
-    <span class="n">see_also</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span> <span class="s">"dnLognormal"</span> <span class="p">);</span>
-
-
-    <span class="k">return</span> <span class="n">see_also</span><span class="p">;</span>
-<span class="p">}</span>
-
-
-<span class="cm">/**
- * Get the title of this help entry
- */</span>
-<span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">Dist_norm</span><span class="o">::</span><span class="n">getHelpTitle</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span>
-<span class="p">{</span>
-    <span class="c1">// create a title variable
-</span>    <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">title</span> <span class="o">=</span> <span class="s">"Normal Distribution"</span><span class="p">;</span>
-
-    <span class="k">return</span> <span class="n">title</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></div></div>
-
-<p>Once you recompile RevBayes, be careful to double check the screen output!</p>
 
 
 <ol class="bibliography"></ol>

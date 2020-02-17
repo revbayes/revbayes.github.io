@@ -104,7 +104,7 @@ existing phylogenetic models. Accounting for the complexity of
 morphological characters remains challenging. This tutorial will provide
 a discussion of modeling morphological characters, and will demonstrate
 how to perform Bayesian phylogenetic analysis with morphology using
-RevBayes <a href="#Hoehna2016b">(Höhna et al. 2016)</a>.</p>
+RevBayes <a class="citation" href="#Hoehna2016b">(Höhna et al. 2016)</a>.</p>
 
 <h3 class="subsection" id="graphical-models">Graphical Models</h3>
 <hr class="subsection" />
@@ -116,7 +116,7 @@ are comprised of modular components that can be assembled in a myriad of ways.</
 <p>The statistics literature has developed a rich visual representation for graphical models.
 Visually representing graphical models can be useful for communication model assumptions.
 The notation used in the visual representation of these models is briefly explained in <a href="#legend"></a>,
-and enourage users to see <a href="#Hoehna2014b">Höhna et al. (2014)</a> for more details.
+and enourage users to see <a class="citation" href="#Hoehna2014b">Höhna et al. (2014)</a> for more details.
 Representing graphical models in computer code 
 (using the <code class="highlighter-rouge">Rev</code> language) is useful in developing an understanding of phylogenetic models. 
 For more information about this topic see the tutorial <a href="/intro_graph_models">Introduction to Graphical Models</a>.</p>
@@ -136,7 +136,7 @@ the different classes of nodes in a phylogeny.
 The tree topology orders the nodes in the tree plate and
 may be a constant node (as in this example) or a stochastic node (if the
 topology node is a solid circle).
-Image and text modified from <a href="#Hoehna2014b">Höhna et al. (2014)</a></em></figcaption>
+Image and text modified from <a class="citation" href="#Hoehna2014b">Höhna et al. (2014)</a></em></figcaption>
 </figure>
 
 <h3 class="subsection" id="overview-of-discrete-morphology-models">Overview of Discrete Morphology Models</h3>
@@ -157,11 +157,11 @@ molecular tree.</p>
 
 <p>To understand how morphological characters are modeled, it is important
 to understand how characters are collected. Unlike in molecular data,
-for which homology is algorithmically determined, homology in a morphological character is typically assessed by an expert. Biologists will typically decide what characters are homologous by looking across specimens at the same structure in multiple taxa; they may also look at the developmental origin of structures in making this assessment <a href="#Phillips06">(Phillips 2006)</a>. Once homology is determined, characters are broken down into states, or different forms a single character can take. The state <code class="highlighter-rouge">0</code> commonly refers to absence, meaning that character is not present. In some
+for which homology is algorithmically determined, homology in a morphological character is typically assessed by an expert. Biologists will typically decide what characters are homologous by looking across specimens at the same structure in multiple taxa; they may also look at the developmental origin of structures in making this assessment <a class="citation" href="#Phillips06">(Phillips 2006)</a>. Once homology is determined, characters are broken down into states, or different forms a single character can take. The state <code class="highlighter-rouge">0</code> commonly refers to absence, meaning that character is not present. In some
 codings, absence will mean that character has not evolved in that group.
 In others, absence means that that character has not evolved in that
 group, and/or that that character has been lost in that group
-<a href="#freudenstein05">(Freudenstein 2005)</a>. This type of coding is arbitrary, but both
+<a class="citation" href="#freudenstein05">(Freudenstein 2005)</a>. This type of coding is arbitrary, but both
 <em>non-random</em> and <em>meaningful</em>, and poses challenges for how we model
 the data.</p>
 
@@ -176,7 +176,7 @@ between trees (i.e., it does not favor a topology). Therefore, workers
 with parsimony typically do not collect characters that are parsimony
 uninformative.</p>
 
-<p>In 2001, Paul Lewis <a href="#Lewis2001">(Lewis 2001)</a> introduced a generalization of the
+<p>In 2001, Paul Lewis <a class="citation" href="#Lewis2001">(Lewis 2001)</a> introduced a generalization of the
 Jukes-Cantor model of sequence evolution for use with morphological
 data. This model, called the Mk (Markov model, assuming each character
 is in one of <em>k</em> states) model provided a mathematical formulation that
@@ -218,11 +218,11 @@ Q = \begin{pmatrix} -(k-1)\mu & \mu & \mu & \mu \\
 \mu & \mu & \mu & -(k-1)\mu \\
 \end{pmatrix} \mbox{  ,} %]]></script>
 
-<p>Because this is a Jukes-Cantor-like model <a href="#Jukes1969">(Jukes and Cantor 1969)</a>, state
+<p>Because this is a Jukes-Cantor-like model <a class="citation" href="#Jukes1969">(Jukes and Cantor 1969)</a>, state
 frequencies do not vary as a model parameter. These assumptions may seem
 unrealistic. However, all models are a compromise between reality and
 generalizability. Prior work has demonstrated that, in many conditions,
-the model does perform adequately <a href="#Wright2014">(Wright and Hillis 2014)</a>. Because morphological
+the model does perform adequately <a class="citation" href="#Wright2014">(Wright and Hillis 2014)</a>. Because morphological
 characters do not carry common meaning across sites in a matrix in the
 way that nucleotide characters do, making assumptions that fit all
 characters is challenging. A visualization of this simple model can be
@@ -236,7 +236,7 @@ model.</p>
 <hr class="section" />
 
 <p>In this example, we will use morphological character data from 18 taxa
-of extinct bears <a href="#abella2011">(Abella et al. 2011)</a>. The dataset contains 62 binary
+of extinct bears <a class="citation" href="#abella2011">(Abella et al. 2011)</a>. The dataset contains 62 binary
 characters, a fairly typical dataset size for morphological characters.</p>
 
 <h3 class="subsection" id="tutorial-format">Tutorial Format</h3>
@@ -534,11 +534,11 @@ when morphological characters are collected, characters that do not
 vary, or vary in a non-parsimony-informative way (such as
 autapomorphies) are excluded. Excluding these low-rate characters causes
 the overall amount of evolution to be over-estimated. This causes an
-inflation in the branch lengths <a href="#Lewis2001">(Lewis 2001)</a>.</p>
+inflation in the branch lengths <a class="citation" href="#Lewis2001">(Lewis 2001)</a>.</p>
 
 <p>Therefore, when performing a morphological phylogenetic analysis, it is
 important to correct for this bias. There are numerous statistically
-valid ways to perform this correction <a href="#allman08b">(Allman and Rhodes 2008)</a>. Original corrections simulated invariant and non-parsimony informative characters along the proposed tree. The likelihood of these characters would then be
+valid ways to perform this correction <a class="citation" href="#allman08b">(Allman and Rhodes 2008)</a>. Original corrections simulated invariant and non-parsimony informative characters along the proposed tree. The likelihood of these characters would then be
 calculated and used to normalize the total likelihood value. RevBayes
 implements a dynamic programming approach that calculates the same
 likelihood, but does so faster.</p>
@@ -576,13 +576,13 @@ this by specifying a beta prior on state frequencies. Remember from the
 <a href="/tutorials/ctmc/">Nucleotide substitution models</a> lesson that stationary frequencies impact how likely we are to see changes in a character. For example, it may be very likely, in a character, to change from 0 to 1. But if the frequency of 0 is very low, we will still seldom see this change.</p>
 
 <p>We can exploit the relationship between state frequencies and observed
-changes to allow for variable Q-matrices across characters (<a href="#morpho_graphical_model"></a>). To do this, we generate a beta distribution on state frequencies, and use the state frequencies from that distribution to generate a series of Q-matrices used to evaluate our data <a href="#Pagel2004">(Pagel and Meade 2004)</a>.</p>
+changes to allow for variable Q-matrices across characters (<a href="#morpho_graphical_model"></a>). To do this, we generate a beta distribution on state frequencies, and use the state frequencies from that distribution to generate a series of Q-matrices used to evaluate our data <a class="citation" href="#Pagel2004">(Pagel and Meade 2004)</a>.</p>
 
 <p>This type of model is called a <strong>mixture model</strong>. There are assumed to
 be subdivisions in the data, which may require different parameters (in
 this case, state frequencies). These subdivisions are not defined <em>a
 priori</em>. This model has previously been shown to be effective for a
-range of empirical and simulated datasets <a href="#Wright2016">(Wright et al. 2016)</a>.</p>
+range of empirical and simulated datasets <a class="citation" href="#Wright2016">(Wright et al. 2016)</a>.</p>
 
 <figure id="morpho_graphical_model"><p><img src="figures/tikz/morpho_gm.png" width="400" /></p>
 <figcaption>Graphical model demonstrating the
@@ -671,7 +671,7 @@ command-clicking all three files.</p>
 
 <p>Once all three trace logs are loaded and highlighted, first look at the
 estimated likelihoods. You will notice that the Mk model (<code class="highlighter-rouge">mk.log</code>), as
-originally proposed by <a href="#Lewis2001">(Lewis 2001)</a> is improved by adding the correction for ascertainment bias.
+originally proposed by <a class="citation" href="#Lewis2001">(Lewis 2001)</a> is improved by adding the correction for ascertainment bias.
 The <code class="highlighter-rouge">mkv</code> and the <code class="highlighter-rouge">mkv_discretized</code> analyses both represent improvements, but are fairly close in likelihoodscore to each other (<a href="#tracer_llik"></a>). 
 Likely, we would need to perform stepping stone model assessment to truly tell if the more complicated model is statistically justified. 
 This analysis is too complicated and time-consuming for this tutorial period, but you will find instructions for performing the analysis in
@@ -743,7 +743,7 @@ motivate the model’s design. In this case, our tree estimate appears to
 be relatively robust to model complexity.</p>
 
 
-<ol class="bibliography"><li><span id="abella2011">Abella J., Montoya P., Morales J. 2011. Una nueva especie de \textitAgriarctos (Ailuropodinae, Ursidae, Carnivora) en la localidad de Nombrevilla 2 (Zaragoza, España). Estudios Geológicos. 67:187–191.</span>
+<ol class="bibliography"><li><span id="abella2011">Abella J., Montoya P., Morales J. 2011. Una nueva especie de <i>Agriarctos</i> (Ailuropodinae, Ursidae, Carnivora) en la localidad de Nombrevilla 2 (Zaragoza, España). Estudios Geológicos. 67:187–191.</span>
 
 </li>
 <li><span id="allman08b">Allman E.S., Rhodes J.A. 2008. Identifying evolutionary trees and substitution parameters for the general Markov model with invariable sites. Mathematical Biosciences. 211:18–33.</span>

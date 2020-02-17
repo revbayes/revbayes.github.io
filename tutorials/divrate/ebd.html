@@ -126,7 +126,7 @@
 
 <p>This tutorial describes how to specify an episodic birth-death model in <code class="highlighter-rouge">RevBayes</code>.
 The episodic birth-death model is a process where diversification rates vary episodically through time 
-and are modeled as piecewise-constant rates <a href="#Stadler2011">(Stadler 2011; Höhna 2015)</a>.
+and are modeled as piecewise-constant rates <a class="citation" href="#Stadler2011">(Stadler 2011; Höhna 2015)</a>.
 The probabilistic graphical model is given once at the beginning of this tutorial.
 Your goal is to estimate speciation and extinction rates through-time using 
 Markov chain Monte Carlo (MCMC).</p>
@@ -143,7 +143,7 @@ for estimating diversification rates.</p>
 within time intervals but can be different between time intervals.
 Thus, we will divide time into equally sized intervals.
 An overview of the underlying theory of the specific model and implementation 
-is given in <a href="#Hoehna2015a">(Höhna 2015)</a>.</p>
+is given in <a class="citation" href="#Hoehna2015a">(Höhna 2015)</a>.</p>
 
 <figure id="fig_EBD"><p><img src="figures/EBD_scenarios.png" width="75%" height="75%" /></p>
 <figcaption>Two scenarios of birth-death models. On the left we show constant diversification. 
@@ -172,7 +172,7 @@ in <a href="#fig_EBD_GM"></a>.
 This graphical model shows you which variables are included in the model, 
 and the dependency between the variables.
 Thus, it makes the structure and assumption of the model clear and 
-visible instead of a black-box <a href="#Hoehna2014b">(Höhna et al. 2014)</a>.
+visible instead of a black-box <a class="citation" href="#Hoehna2014b">(Höhna et al. 2014)</a>.
 For example, you see how the speciation and extinction rates in each time interval 
 depend on the rates of the previous interval, and that we use a hyperprior for 
 the standard deviation of rates between time intervals.</p>
@@ -311,7 +311,7 @@ Also, remember that the times of the intervals represent ages going backwards in
 <p>We know that we have sampled 233 out of 367 living primate species.
 To account for this we can set the sampling parameter as a constant node with a value of 233/367.
 For simplicity, and since almost all species have been sampled,
-we assume <em>uniform</em> taxon sampling <a href="#Hoehna2011">(Höhna et al. 2011; Höhna 2014)</a>,</p>
+we assume <em>uniform</em> taxon sampling <a class="citation" href="#Hoehna2011">(Höhna et al. 2011; Höhna 2014)</a>,</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rho &lt;- T.ntips()/367
 </code></pre></div></div>
 
@@ -320,7 +320,7 @@ we assume <em>uniform</em> taxon sampling <a href="#Hoehna2011">(Höhna et al. 2
 
 <p>The birth-death process requires a parameter for the root age.
 In this exercise we use a fixed tree and thus we know the age of the tree.
-Hence, we can get the value for the root from the <a href="#MagnusonFord2012">Magnuson-Ford and Otto (2012)</a> tree.</p>
+Hence, we can get the value for the root from the <a class="citation" href="#MagnusonFord2012">Magnuson-Ford and Otto (2012)</a> tree.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root_time &lt;- T.rootAge()
 </code></pre></div></div>
 

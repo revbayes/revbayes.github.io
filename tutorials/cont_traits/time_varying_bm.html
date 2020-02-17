@@ -109,7 +109,7 @@
 </div>
 <p>This tutorial demonstrates how to specify a Brownian-motion model where the rate of 
 evolution is assumed to be constant among branches of a time-calibrated phylogeny 
-<a href="#Felsenstein1985a">(Felsenstein 1985)</a> using the datasets of (log) body-size across vertebrate 
+<a class="citation" href="#Felsenstein1985a">(Felsenstein 1985)</a> using the datasets of (log) body-size across vertebrate 
 clades from (missing reference). We provide the probabilistic graphical model 
 representation of each component for this tutorial. After specifying the model, you 
 will estimate the rate of Brownian-motion evolution using Markov chain Monte Carlo (MCMC).</p>
@@ -121,7 +121,7 @@ will estimate the rate of Brownian-motion evolution using Markov chain Monte Car
 
 <figure id="fig_bm_gm"><p><img src="figures/bm_gm2.png" width="50%" height="50%" /></p>
 <figcaption>The graphical model representation of the constant-rate Brownian-motion (BM) process.
-For more information about graphical model representations see <a href="#Hoehna2014b">Höhna et al. (2014)</a>.</figcaption>
+For more information about graphical model representations see <a class="citation" href="#Hoehna2014b">Höhna et al. (2014)</a>.</figcaption>
 </figure>
 
 <p>For this exercise, we will specify a BM model, such that the rate parameter is a stochastic node, drawn from a Loguniform prior distribution, as depicted in <a href="#fig_bm_gm"></a>. As we are specifying a Bayesian model, we focus on estimating the posterior distribution of the rate parameter given the continuous characters, $X$:</p>
@@ -131,7 +131,7 @@ For more information about graphical model representations see <a href="#Hoehna2
 \tag{Bayes Theorem}\label{eq:bayes_thereom}
 \end{equation}</script>
 
-<p>In this tutorial, we use the 66 vertebrate phylogenies and (log) body-size datasets from <a href="#Landis2017b">(Landis and Schraiber 2017)</a>.</p>
+<p>In this tutorial, we use the 66 vertebrate phylogenies and (log) body-size datasets from <a class="citation" href="#Landis2017b">(Landis and Schraiber 2017)</a>.</p>
 
 <p>⇨ The full BM-model specification is in the file called <code class="highlighter-rouge">mcmc_BM.Rev</code>.</p>
 
@@ -182,7 +182,7 @@ monitors = VectorMonitors()
 <h4 class="subsubsection" id="brownian-motion-model">Brownian-motion model</h4>
 <hr class="subsubsection" />
 
-<p>Now that we have specified the parameters of the model, we can draw the character data from the corresponding phylogenetic Brownian-motion model. In this example, we use the REML algorithm to efficiently compute the likelihood <a href="#Felsenstein1985a">(Felsenstein 1985)</a>. We provide the square root of the variance parameter, $\sigma$, to <code class="highlighter-rouge">dnPhyloBrownianREML</code>:</p>
+<p>Now that we have specified the parameters of the model, we can draw the character data from the corresponding phylogenetic Brownian-motion model. In this example, we use the REML algorithm to efficiently compute the likelihood <a class="citation" href="#Felsenstein1985a">(Felsenstein 1985)</a>. We provide the square root of the variance parameter, $\sigma$, to <code class="highlighter-rouge">dnPhyloBrownianREML</code>:</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>X ~ dnPhyloBrownianREML(tree, branchRates=sigma2^0.5)
 </code></pre></div></div>
 

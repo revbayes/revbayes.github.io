@@ -110,7 +110,7 @@
 <h2 class="section" id="estimating-evolutionary-optima">Estimating Evolutionary Optima</h2>
 <hr class="section" />
 
-<p>This tutorial demonstrates how to specify an Ornstein-Uhlenbeck model where the optimal phenotype is assumed to be constant among branches of a time-calibrated phylogeny <a href="#Hansen1997">(Hansen 1997; Butler and King 2004)</a> using the datasets of (log) body-size across vertebrate clades from (missing reference). We provide the probabilistic graphical model representation of each component for this tutorial. After specifying the model, you will estimate the parameters of Ornstein-Uhlenbeck evolution using Markov chain Monte Carlo (MCMC).</p>
+<p>This tutorial demonstrates how to specify an Ornstein-Uhlenbeck model where the optimal phenotype is assumed to be constant among branches of a time-calibrated phylogeny <a class="citation" href="#Hansen1997">(Hansen 1997; Butler and King 2004)</a> using the datasets of (log) body-size across vertebrate clades from (missing reference). We provide the probabilistic graphical model representation of each component for this tutorial. After specifying the model, you will estimate the parameters of Ornstein-Uhlenbeck evolution using Markov chain Monte Carlo (MCMC).</p>
 
 <h2 class="section" id="ornstein-uhlenbeck-model">Ornstein-Uhlenbeck Model</h2>
 <hr class="section" />
@@ -119,10 +119,10 @@
 
 <figure id="fig_ou_gm"><p><img src="figures/ou_gm.png" width="50%" height="50%" /></p>
 <figcaption>The graphical model representation of the homogeneous Ornstein-Uhlenbeck (OU) process.
-For more information about graphical model representations see <a href="#Hoehna2014b">Höhna et al. (2014)</a>.</figcaption>
+For more information about graphical model representations see <a class="citation" href="#Hoehna2014b">Höhna et al. (2014)</a>.</figcaption>
 </figure>
 
-<p>In this tutorial, we use the 66 vertebrate phylogenies and (log) body-size datasets from <a href="#Landis2017b">(Landis and Schraiber 2017)</a>.</p>
+<p>In this tutorial, we use the 66 vertebrate phylogenies and (log) body-size datasets from <a class="citation" href="#Landis2017b">(Landis and Schraiber 2017)</a>.</p>
 
 <p>⇨ The full OU-model specification is in the file called <code class="highlighter-rouge">mcmc_OU.Rev</code>.</p>
 
@@ -189,7 +189,7 @@ moves.append( mvSlide(theta, weight=1.0) )
 <h4 class="subsubsection" id="ornstein-uhlenbeck-model">Ornstein-Uhlenbeck model</h4>
 <hr class="subsubsection" />
 
-<p>Now that we have specified the parameters of the model, we can draw the character data from the corresponding phylogenetic OU model. In this example, we use the REML algorithm to efficiently compute the likelihood <a href="#Felsenstein1985a">(Felsenstein 1985)</a>. We assume the character begins at the optimal value at the root of the tree.</p>
+<p>Now that we have specified the parameters of the model, we can draw the character data from the corresponding phylogenetic OU model. In this example, we use the REML algorithm to efficiently compute the likelihood <a class="citation" href="#Felsenstein1985a">(Felsenstein 1985)</a>. We assume the character begins at the optimal value at the root of the tree.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>X ~ dnPhyloOrnsteinUhlenbeckREML(tree, alpha, theta, sigma2^0.5, rootStates=theta)
 </code></pre></div></div>
 

@@ -145,8 +145,8 @@ and for ChromoSSE please see <a href="/tutorials/chromo/">Chromosome Evolution</
 <ul>
   <li><a href="data/primates_tree.nex">primates_tree.nex</a>:
 Dated primate phylogeny including 233 out of 367 species. This tree
-is from <a href="#MagnusonFord2012">Magnuson-Ford and Otto (2012)</a>, who took it from <a href="#Vos2006">Vos and Mooers (2006)</a> and then
-randomly resolved the polytomies using the method of <a href="#Kuhn2011">Kuhn et al. (2011)</a>.</li>
+is from <a class="citation" href="#MagnusonFord2012">Magnuson-Ford and Otto (2012)</a>, who took it from <a class="citation" href="#Vos2006">Vos and Mooers (2006)</a> and then
+randomly resolved the polytomies using the method of <a class="citation" href="#Kuhn2011">Kuhn et al. (2011)</a>.</li>
   <li><a href="data/primates_activity_period.nex">primates_activity_period.nex</a>:
 A file with the coded character states for primate species activity time. This character has just two states: <code class="highlighter-rouge">0</code> = diurnal and <code class="highlighter-rouge">1</code> = nocturnal.</li>
   <li><a href="data/primates_solitariness.nex">primates_solitariness.nex</a>:
@@ -217,15 +217,15 @@ that the observed character has:</p>
 </code></pre></div></div>
 <p>Using this variable allows us to easily change our script and use a different
 character with a different number of states, essentially changing our
-model from BiSSE <a href="#Maddison2007">(Maddison et al. 2007)</a> to one that allows for more than 2 states–<em>i.e.</em>, 
-the MuSSE model <a href="#FitzJohn2012">(FitzJohn 2012)</a>.</p>
+model from BiSSE <a class="citation" href="#Maddison2007">(Maddison et al. 2007)</a> to one that allows for more than 2 states–<em>i.e.</em>, 
+the MuSSE model <a class="citation" href="#FitzJohn2012">(FitzJohn 2012)</a>.</p>
 
 <h3 class="subsection" id="subsec_specifymodel">Specify the Model</h3>
 <hr class="subsection" />
 
 <p>The basic idea behind the model in this example is that speciation and
 extinction rates are dependent on a binary character, and the character
-transitions between its two possible states <a href="#Maddison2007">(Maddison et al. 2007)</a>.</p>
+transitions between its two possible states <a class="citation" href="#Maddison2007">(Maddison et al. 2007)</a>.</p>
 
 <h4 id="priors-on-the-rates"><strong>Priors on the Rates</strong></h4>
 
@@ -305,7 +305,7 @@ scale as the diversification rates.</p>
 <h4 id="prior-on-the-root-state"><strong>Prior on the Root State</strong></h4>
 
 <p>Create a variable for the root state frequencies. We are using a flat <a href="https://en.wikipedia.org/wiki/Dirichlet_distribution">Dirichlet distribution</a> as the prior on
-each state. There has been some discussion about this in <a href="#FitzJohn2009">(FitzJohn et al. 2009)</a>. 
+each state. There has been some discussion about this in <a class="citation" href="#FitzJohn2009">(FitzJohn et al. 2009)</a>. 
 You could also fix the prior probabilities for the root states to be equal 
 (generally not recommended), or use empirical state frequencies.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root_state_freq ~ dnDirichlet( rep(1, NUM_STATES) )
@@ -431,7 +431,7 @@ state.</p>
   <p>Open R.</p>
 </blockquote>
 
-<p><code class="highlighter-rouge">RevGadgets</code> requires the <code class="highlighter-rouge">ggtree</code> package <a href="#Yu2017ggtree">(Yu et al. 2017)</a>. 
+<p><code class="highlighter-rouge">RevGadgets</code> requires the <code class="highlighter-rouge">ggtree</code> package <a class="citation" href="#Yu2017ggtree">(Yu et al. 2017)</a>. 
 First, install the <code class="highlighter-rouge">ggtree</code> and <code class="highlighter-rouge">RevGadgets</code> packages:</p>
 
 <pre>
@@ -475,7 +475,7 @@ for visualizing files like this (like R or python), which allow you to generate 
 visually explore the posterior distributions of sampled parameters.</p>
 
 <p>We will use the program <a href="http://tree.bio.ed.ac.uk/software/tracer/">Tracer</a> 
-<a href="#Rambaut2011">(Rambaut and Drummond 2011)</a>, which is a tool for easily exploring parameters sampled using MCMC.</p>
+<a class="citation" href="#Rambaut2011">(Rambaut and Drummond 2011)</a>, which is a tool for easily exploring parameters sampled using MCMC.</p>
 
 <blockquote class="instruction">
   <p>Open the program Tracer and import your file: <code class="highlighter-rouge">output/primates_activTime_BiSSE_mcmc.log</code>.</p>
@@ -487,7 +487,7 @@ parameters (<a href="#tracer1"></a>).</p>
 <figure id="tracer1"><p><img src="figures/tracer1.png" width="95%" /></p>
 <figcaption>Visualizing posterior samples of parameters in 
 <a href="http://tree.bio.ed.ac.uk/software/tracer/">Tracer</a> 
-<a href="#Rambaut2011">(Rambaut and Drummond 2011)</a>.</figcaption>
+<a class="citation" href="#Rambaut2011">(Rambaut and Drummond 2011)</a>.</figcaption>
 </figure>
 
 <blockquote class="instruction">
@@ -509,7 +509,7 @@ of both speciation rates.</p>
 <figure id="tracer2"><p><img src="figures/tracer2.png" width="50%" /></p>
 <figcaption>Comparing posterior samples of the speciation rates associated with daily activity time in 
 <a href="http://tree.bio.ed.ac.uk/software/tracer/">Tracer</a> 
-<a href="#Rambaut2011">(Rambaut and Drummond 2011)</a>.</figcaption>
+<a class="citation" href="#Rambaut2011">(Rambaut and Drummond 2011)</a>.</figcaption>
 </figure>
 
 <h2 class="section" id="exercise2">Evaluate Social System under the BiSSE Model</h2>
@@ -551,7 +551,7 @@ it is possible to compare the estimates in the Tracer window by highlighting bot
 
 <p>In RevBayes it is trivial to change the BiSSE analysis you did in the exercises above to a multi-state model that is not limited to just 
 binary characters. That is because the model is effectively the same, just with the variable <code class="highlighter-rouge">NUM_STATES</code> changed. 
-For this final exercise, we will use the MuSSE model <a href="#FitzJohn2012">(FitzJohn 2012)</a> to estimate the rates of speciation and extinction
+For this final exercise, we will use the MuSSE model <a class="citation" href="#FitzJohn2012">(FitzJohn 2012)</a> to estimate the rates of speciation and extinction
 associated with the mating system state for each primate lineage.</p>
 
 <p>Your <code class="highlighter-rouge">data</code> directory should contain a file called <a href="/data/primates_mating_system.nex"><code class="highlighter-rouge">primates_mating_system.nex</code></a>. This is a four-state

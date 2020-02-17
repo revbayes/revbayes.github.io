@@ -131,9 +131,9 @@
 <p>BiSSE and MuSSE are powerful approaches for testing the association of a character with diversification
 rate heterogeneity. However, BiSSE has been shown to be prone to falsely identifying a positive association
 when diversification rate shifts are correlated with a character not included in the model 
-<a href="#Maddison2015">(Maddison and FitzJohn 2015; Rabosky and Goldberg 2015)</a>. One approach to reduce the possibility of falsely associating
+<a class="citation" href="#Maddison2015">(Maddison and FitzJohn 2015; Rabosky and Goldberg 2015)</a>. One approach to reduce the possibility of falsely associating
 a character with diversification rate heterogeneity is to incorporate a second, unobserved character into the
-model (<em>i.e.,</em> a Hidden State-Dependent Speciation and Extinction (HiSSE) model; see for example <a href="#Beaulieu2016">Beaulieu and O’Meara (2016)</a>). 
+model (<em>i.e.,</em> a Hidden State-Dependent Speciation and Extinction (HiSSE) model; see for example <a class="citation" href="#Beaulieu2016">Beaulieu and O’Meara (2016)</a>). 
 The changes in the unobserved character’s state represent background diversification rate changes
 that are not correlated with the oberved character. See <a href="#fig_hisse"></a> for a schematic overview of the HiSSE
 model, and Table 2 for an explanation of the HiSSE model parameters. Now let’s set up and run a HiSSE
@@ -335,7 +335,7 @@ scale as the diversification rates.</p>
 <h4 id="prior-on-the-root-state"><strong>Prior on the Root State</strong></h4>
 
 <p>Create a variable for the root state frequencies. We are using a flat <a href="https://en.wikipedia.org/wiki/Dirichlet_distribution">Dirichlet distribution</a> as the prior on
-each state. There has been some discussion about this in <a href="#FitzJohn2009">(FitzJohn et al. 2009)</a>. 
+each state. There has been some discussion about this in <a class="citation" href="#FitzJohn2009">(FitzJohn et al. 2009)</a>. 
 You could also fix the prior probabilities for the root states to be equal 
 (generally not recommended), or use empirical state frequencies.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_category_prior ~ dnDirichlet( rep(1,NUM_RATES) )
@@ -476,7 +476,7 @@ state.</p>
   <p>Open R.</p>
 </blockquote>
 
-<p><code class="highlighter-rouge">RevGadgets</code> requires the <code class="highlighter-rouge">ggtree</code> package <a href="#Yu2017ggtree">(Yu et al. 2017)</a>. 
+<p><code class="highlighter-rouge">RevGadgets</code> requires the <code class="highlighter-rouge">ggtree</code> package <a class="citation" href="#Yu2017ggtree">(Yu et al. 2017)</a>. 
 First, install the <code class="highlighter-rouge">ggtree</code> and <code class="highlighter-rouge">RevGadgets</code> packages:</p>
 
 <pre>
@@ -520,7 +520,7 @@ for visualizing files like this (like R or python), which allow you to generate 
 visually explore the posterior distributions of sampled parameters.</p>
 
 <p>We will use the program <a href="http://tree.bio.ed.ac.uk/software/tracer/">Tracer</a> 
-<a href="#Rambaut2011">(Rambaut and Drummond 2011)</a>, which is a tool for easily exploring parameters sampled using MCMC.</p>
+<a class="citation" href="#Rambaut2011">(Rambaut and Drummond 2011)</a>, which is a tool for easily exploring parameters sampled using MCMC.</p>
 
 <blockquote class="instruction">
   <p>Open the program Tracer and import your file: <code class="highlighter-rouge">output/primates_activTime_BiSSE_mcmc.log</code>.</p>
@@ -532,7 +532,7 @@ parameters (<a href="#tracer1"></a>).</p>
 <figure id="tracer1"><p><img src="figures/tracer1.png" width="95%" /></p>
 <figcaption>Visualizing posterior samples of parameters in 
 <a href="http://tree.bio.ed.ac.uk/software/tracer/">Tracer</a> 
-<a href="#Rambaut2011">(Rambaut and Drummond 2011)</a>.</figcaption>
+<a class="citation" href="#Rambaut2011">(Rambaut and Drummond 2011)</a>.</figcaption>
 </figure>
 
 <blockquote class="instruction">
@@ -554,7 +554,7 @@ of both speciation rates.</p>
 <figure id="tracer2"><p><img src="figures/tracer2.png" width="50%" /></p>
 <figcaption>Comparing posterior samples of the speciation rates associated with daily activity time in 
 <a href="http://tree.bio.ed.ac.uk/software/tracer/">Tracer</a> 
-<a href="#Rambaut2011">(Rambaut and Drummond 2011)</a>.</figcaption>
+<a class="citation" href="#Rambaut2011">(Rambaut and Drummond 2011)</a>.</figcaption>
 </figure>
 
 

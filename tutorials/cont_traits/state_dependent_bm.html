@@ -134,7 +134,7 @@ which describes models of discrete-character evolution, before using this tutori
 
 <p>Under a simple Brownian-motion (BM) model, the evolution of a continuous character is entirely determined by a single rate parameter, $\sigma^2$. However, we may be interested in testing hypotheses about whether the state of a discrete character (<em>e.g.</em>, habitat) are associated with differential rates of continuous-character evolution.</p>
 
-<p>In this tutorial, we will specify the state-dependent model described in <a href="#May2019">May and Moore (2019)</a>. Under this model, the rate of continuous-character evolution depends on the state of a discrete character that is also evolving on the phylogeny. We must therefore specify a model that includes both the continuouss characters and the discrete character. For a discrete character with $k$ states, we include $k$ BM rate parameters, $\boldsymbol{\zeta^2} = [\zeta^2_0, \ldots, \zeta^2_k]$ that describe the relative rate of evolution of the continuous character while the discrete character is in each state (these parameters have a mean of 1). We include a parameter that controls the ‘‘average’’ rate of continuous-character evolution, $\beta^2$; because the state-dependent relative rates have a mean of 1, $\beta^2$ controls the overall rate of the Brownian motion process. Finally, we include a continuous-time Markov chain model to describe the evolution of the discrete character, which is defined by the instantaneous-rate matrix $Q$.</p>
+<p>In this tutorial, we will specify the state-dependent model described in <a class="citation" href="#May2019">May and Moore (2019)</a>. Under this model, the rate of continuous-character evolution depends on the state of a discrete character that is also evolving on the phylogeny. We must therefore specify a model that includes both the continuouss characters and the discrete character. For a discrete character with $k$ states, we include $k$ BM rate parameters, $\boldsymbol{\zeta^2} = [\zeta^2_0, \ldots, \zeta^2_k]$ that describe the relative rate of evolution of the continuous character while the discrete character is in each state (these parameters have a mean of 1). We include a parameter that controls the ‘‘average’’ rate of continuous-character evolution, $\beta^2$; because the state-dependent relative rates have a mean of 1, $\beta^2$ controls the overall rate of the Brownian motion process. Finally, we include a continuous-time Markov chain model to describe the evolution of the discrete character, which is defined by the instantaneous-rate matrix $Q$.</p>
 
 <p>Under this model, the changes in the continuous character while the discrete character is in state $j$, $\Delta_j$, are normally distributed with mean 0 and variance $t_j \beta^2 \zeta^2_j$, where $t_j$ is the amount of time spent in state $j$. The total change over the entire branch is a sum of normally distributed random variables:</p>
 
@@ -151,10 +151,10 @@ which describes models of discrete-character evolution, before using this tutori
 <p>where $\tau_i(j)$ is the <em>relative</em> amount of time branch $i$ spends in discrete-state $j$ (the relative dwelling time). Given a particular history of the discrete character, which describes the amount of time spent in each state along each branch, we can therefore compute the branch-specific rates of continuous-character evolution over the entire tree. We use data augmentation to map the history of discrete characters across the tree, and use Markov chain Monte Carlo to integrate over all possible histories of the discrete character in proportion to their probability. The probabilistic graphical model for this model is represented in (<a href="#fig_bm_state_dependent_gm"></a>).</p>
 
 <figure id="fig_bm_state_dependent_gm"><p><img src="figures/bm_state_dependent_gm.png" width="75%" height="75%" /></p>
-<figcaption>The graphical model representation of the state-dependent Brownian-motion (BM) process. For more information about graphical model representations see <a href="#Hoehna2014b">Höhna et al. (2014)</a>.</figcaption>
+<figcaption>The graphical model representation of the state-dependent Brownian-motion (BM) process. For more information about graphical model representations see <a class="citation" href="#Hoehna2014b">Höhna et al. (2014)</a>.</figcaption>
 </figure>
 
-<p>In this tutorial, we use the phylogenies and continuous character datasets from <a href="#Price2013">(Price et al. 2013; May and Moore 2019)</a> to estimate state-dependent rates of continuous-character evolution.</p>
+<p>In this tutorial, we use the phylogenies and continuous character datasets from <a class="citation" href="#Price2013">(Price et al. 2013; May and Moore 2019)</a> to estimate state-dependent rates of continuous-character evolution.</p>
 
 <p>⇨ The full state-dependent BM-model specification is in the file called <code class="highlighter-rouge">mcmc_state_dependent_BM.Rev</code>.</p>
 
@@ -207,7 +207,7 @@ monitors = VectorMonitors()
 <h4 class="subsubsection" id="discete-character-model">Discete-character model</h4>
 <hr class="subsubsection" />
 
-<p>Here, we assume that the discrete character evolves under a Mk model with rate $\lambda$ <a href="#Lewis2001">(Lewis 2001)</a>. This is equivalent to the Jukes-Cantor model for nucleotide substitution, but with $k$ states. (You may consider a more complex model if you know how to specify it in ‘RevBayes’).</p>
+<p>Here, we assume that the discrete character evolves under a Mk model with rate $\lambda$ <a class="citation" href="#Lewis2001">(Lewis 2001)</a>. This is equivalent to the Jukes-Cantor model for nucleotide substitution, but with $k$ states. (You may consider a more complex model if you know how to specify it in ‘RevBayes’).</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q &lt;- fnJC(num_disc_states)
 </code></pre></div></div>
 
@@ -225,7 +225,7 @@ monitors = VectorMonitors()
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvCharacterHistory(ctmc=X, qmap_site=Q, graph="node",   proposal="rejection", weight=20.0) )
 moves.append( mvCharacterHistory(ctmc=X, qmap_site=Q, graph="branch", proposal="rejection", weight=20.0) )
 </code></pre></div></div>
-<p>These proposals choose nodes or branches in the tree to update, and then propose a new history using the stochastic mapping algorithm <a href="#Nielsen2002">(Nielsen 2002; Landis et al. 2013)</a>.</p>
+<p>These proposals choose nodes or branches in the tree to update, and then propose a new history using the stochastic mapping algorithm <a class="citation" href="#Nielsen2002">(Nielsen 2002; Landis et al. 2013)</a>.</p>
 
 <p>Finally, we keep track of the number of discrete-character transitions along each branch, and over the whole phylogeny. This is mostly a sanity check, to make sure we are not inferring extremely unrealistic histories for the discrete character.</p>
 
@@ -428,7 +428,7 @@ create our MCMC object:</p>
 <h2 class="section" id="controlling-for-background-rate-variation">Controlling for Background-Rate Variation</h2>
 <hr class="section" />
 
-<p>The previous models have assumed that, aside from rate variation owing to the state of the discrete character, rates of continuous-character evolution are stochastically constant. We might therefore be worried that inferences about state-dependent rates of evolution might be mislead if rates of evolution vary for reasons other than the focal discrete character, which we call ‘‘background-rate variation’’ <a href="#Rabosky2015">(Rabosky and Goldberg 2015; Beaulieu and O’Meara 2016; May and Moore 2019)</a>.</p>
+<p>The previous models have assumed that, aside from rate variation owing to the state of the discrete character, rates of continuous-character evolution are stochastically constant. We might therefore be worried that inferences about state-dependent rates of evolution might be mislead if rates of evolution vary for reasons other than the focal discrete character, which we call ‘‘background-rate variation’’ <a class="citation" href="#Rabosky2015">(Rabosky and Goldberg 2015; Beaulieu and O’Meara 2016; May and Moore 2019)</a>.</p>
 
 <p>The state-dependent model allows us to easily build in these alternative sources of rate variation. In this case, we simply relax the assumption that the ‘‘average’’ rate is constant by applying a relaxed morphological clock prior model on $\beta^2$, as described in <a href="/tutorials/cont_traits/relaxed_bm.html">Relaxed Brownian Rate Estimation</a>.</p>
 

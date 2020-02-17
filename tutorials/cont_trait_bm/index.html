@@ -164,7 +164,7 @@ thus, we will assume that the Brownian process describing body mass
 evolution runs along a fixed time-calibrated phylogeny (with fixed
 divergence times), such as specified in the file <code class="highlighter-rouge">primates.tree</code>.</p>
 
-<p>\
+<p><br />
 You may want to take the time to visualize the tree given in
 <code class="highlighter-rouge">primates.tree</code> as well as the matrix of quantitative traits specified
 by the <code class="highlighter-rouge">primates_lhtlog.nex</code> file, before going into the modeling work
@@ -214,7 +214,7 @@ evolution— along a phylogeny is that we do not know the values of the
 traits at the internal nodes. That means, that we need to treat the
 states at the internal nodes as additional parameters of the model. For
 discrete characters we use the sum-product (a.k.a. pruning) algorithm
-<a href="#Felsenstein1981">(Felsenstein 1981)</a> to analytically integrate over all possible states at
+<a class="citation" href="#Felsenstein1981">(Felsenstein 1981)</a> to analytically integrate over all possible states at
 the internal nodes. For continuous characters (traits) similar methods
 have been proposed. In RevBayes you have three main ways of specifying
 this model and running an analysis on it. The three approaches are: (1)
@@ -230,7 +230,7 @@ rate estimation.</p>
 <p>The reduced or restricted maximum likelihood (REML) method computes the
 probability of observing the continuous character at the tips by an
 analytical solution to integrate over the internal states
-<a href="#Felsenstein1985">(Felsenstein 1985)</a>. This analytical solution is very fast to compute and
+<a class="citation" href="#Felsenstein1985">(Felsenstein 1985)</a>. This analytical solution is very fast to compute and
 thus can be applied to large phylogenies and/or many independent
 characters. However, the REML method looses the information about the
 location of the root state and thus you cannot infer which state the
@@ -301,7 +301,7 @@ simple example a fixed tree that we assume is known without uncertainty.</p>
 psi &lt;- treeArray[1]
 </code></pre></div></div>
 
-<p>\
+<p><br />
 You may want to look at this tree before by loading the <code class="highlighter-rouge">primates.tree</code>
 in FigTree or any other tree visualization software.</p>
 
@@ -405,7 +405,7 @@ computationally intensive. That means, that the phylogenetic covariance
 matrix approach may take long for very large data sets (at least in its
 current implementation).</p>
 
-<p>\
+<p><br />
 Copy the file <code class="highlighter-rouge">primatesMass_BM_REML.Rev</code>, name it for example
 <code class="highlighter-rouge">primatesMass_BM_Cov.Rev</code> and start editing it.</p>
 
@@ -445,7 +445,7 @@ instead.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[2] = mnFile(filename="output/primates_mass_Cov.log", printgen=10, separator = TAB, sigma, rootlogmass)
 </code></pre></div></div>
 
-<p>\
+<p><br />
 Don’t forget to change the output file names in the monitors, otherwise
 your old analyses files will be overwritten.</p>
 
@@ -484,7 +484,7 @@ although the likelihood computation is very fast. The problem is the
 mixing of the MCMC because proposing new trees involves proposing new
 good values for the states at the internal nodes.</p>
 
-<p>\
+<p><br />
 Copy the file <code class="highlighter-rouge">primatesMass_BM_REML.Rev</code>, name it for example
 <code class="highlighter-rouge">primatesMass_BM_DA.Rev</code> and start editing it.</p>
 
@@ -573,7 +573,7 @@ monitors[3] = mnExtNewick(filename="output/primates_mass_DA_ext.trees", isNodePa
 map_tree = mapTree(treetrace,"output/primates_mass_DA_ext_MAP.tree")
 </code></pre></div></div>
 
-<p>\
+<p><br />
 Don’t forget to change the output file names in the monitors, otherwise
 your old analyses files will be overwritten.</p>
 
@@ -773,7 +773,7 @@ Therefore, we will perform a marginal likelihood estimation for all
 three model: 1) the equal rates, 2) the independent rates, and 3) the
 shared rates.</p>
 
-<p>\
+<p><br />
 You need to adopt the three scripts of your previous analysis.</p>
 
 <p>Previously you created an <code class="highlighter-rouge">mymcmc</code> object using the <code class="highlighter-rouge">mcmc</code> function.
@@ -919,7 +919,7 @@ later.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[3] = mnFile(filename="output/primates_mass_multiBM_tree.trees", printgen=100, separator = TAB, psi)
 </code></pre></div></div>
 
-<p>\
+<p><br />
 A short analysis of 50 000 iterations will be sufficient.</p>
 
 <h2 id="exercises-exercises-7-unnumbered">Exercises {#exercises-7 .unnumbered}</h2>
@@ -953,7 +953,7 @@ the first and second analysis?</p>
 
 <p>Starting from the model implemented in the last section, we now want to
 account for phylogenetic uncertainty using information contained in
-molecular data. As first pointed out by <a href="#Huelsenbeck2003">(Huelsenbeck and Rannala 2003)</a>, this can
+molecular data. As first pointed out by <a class="citation" href="#Huelsenbeck2003">(Huelsenbeck and Rannala 2003)</a>, this can
 easily be done in a Bayesian framework, through the use of a joint model
 combining sequence data and quantitative traits. Specifically:</p>
 

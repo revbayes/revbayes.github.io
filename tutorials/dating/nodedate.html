@@ -141,7 +141,7 @@ We’re going to add two node calibrations: one on the root and one on the inter
 
 <h4 id="root-calibration">Root calibration</h4>
 
-<p>The oldest first appearance of a <em>crown group</em> bear in our dataset is <em>Ursus americanus</em> at 1.84 Ma. This means that the last common ancestor of all living bears can not be younger that this. Fossil calibrations exert a large influence on Bayesian posterior estimates of speciation times and should not be selected arbitrarily. In practice it is very challenging to select distributions and parameters objectively. In this instance, we will take advantage of a previous estimate ($\sim$49 Ma) for the age of caniforms, which is the clade containing bears and other “dog-like” mammals, from <a href="#DosReis2012">(dos Reis et al. 2012)</a>. We will assume that the age of crown bears can not be older than this.</p>
+<p>The oldest first appearance of a <em>crown group</em> bear in our dataset is <em>Ursus americanus</em> at 1.84 Ma. This means that the last common ancestor of all living bears can not be younger that this. Fossil calibrations exert a large influence on Bayesian posterior estimates of speciation times and should not be selected arbitrarily. In practice it is very challenging to select distributions and parameters objectively. In this instance, we will take advantage of a previous estimate ($\sim$49 Ma) for the age of caniforms, which is the clade containing bears and other “dog-like” mammals, from <a class="citation" href="#DosReis2012">(dos Reis et al. 2012)</a>. We will assume that the age of crown bears can not be older than this.</p>
 
 <p>First, specify the prior on the root. The following commands will replace <code class="highlighter-rouge">extant_mrca &lt;- 1.0</code> in your tree model script, before the the <code class="highlighter-rouge">tree_dist</code> variable is specified.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>extant_mrca_min &lt;- 1.84
@@ -162,8 +162,8 @@ This is because the graphical model structure used in RevBayes does not allow a 
 By contrast, the common approach to applying calibration densities as used in other dating software leads to incoherence in the calibration prior.
 Basically, common calibration approaches assume that the age of a calibrated node is modelled by the tree-wide diversification process (e.g. birth-death model) <em>and</em> a parametric density parameterized by the occurrence time of a fossil (or other external prior information).
 This can induce a calibration prior density that is not consistent with the birth-death process or the parametric prior distribution. 
-For much more information about this see <a href="#Warnock2012">(Warnock et al. 2012; Heled and Drummond 2012; Heath et al. 2014)</a>.
-Approaches that condition the birth-death process on the calibrated nodes are more statistically coherent <a href="#Yang2006">(Yang and Rannala 2006)</a>.</p>
+For much more information about this see <a class="citation" href="#Warnock2012">(Warnock et al. 2012; Heled and Drummond 2012; Heath et al. 2014)</a>.
+Approaches that condition the birth-death process on the calibrated nodes are more statistically coherent <a class="citation" href="#Yang2006">(Yang and Rannala 2006)</a>.</p>
 
 <p>In RevBayes, calibration densities are applied in a different way, treating fossil observation times like data. 
 The age of the calibration node (i.e. the internal node specified as the MRCA of the fossil and a set of living species) is a deterministic node – e.g. denoted $o_1$ for fossil $\mathcal{F}_1$ – and acts as an offset on the stochastic node representing the age of the fossil specimen.

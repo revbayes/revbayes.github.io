@@ -124,7 +124,7 @@ useful to work within a single directory.
 <hr class="section" />
 
 <p>The Dispersal-Extinction-Cladogenesis (DEC) process models range
-evolution as a discrete-valued process <a href="#Ree2005">(Ree et al. 2005; Ree and Smith 2008)</a>. There are
+evolution as a discrete-valued process <a class="citation" href="#Ree2005">(Ree et al. 2005; Ree and Smith 2008)</a>. There are
 three key components to understanding the DEC model: range characters,
 anagenetic range evolution, and cladogenetic range evolution (<a href="#dec_cartoon"></a>).</p>
 
@@ -310,7 +310,7 @@ $d_{AB} = d_{AC} = \ldots = d_{CB} = 1$.</p>
 
 <p>When the extirpation rate matrix is a diagonal matrix (i.e. all
 non-diagonal entries are zero), extirpation rates are mutually
-independent as in <a href="#Ree2005">(Ree et al. 2005)</a>. More complex models that penalize
+independent as in <a class="citation" href="#Ree2005">(Ree et al. 2005)</a>. More complex models that penalize
 widespread ranges that span disconnected areas are explored in later
 sections.</p>
 
@@ -359,13 +359,13 @@ zero. By default, the RevBayes conditions the anagenetic range
 evolution process on never entering the null range when computing the
 transition probabilities (<code class="highlighter-rouge">nullRange="CondSurv"</code>). This
 allows the model to both simulate and infer using the same transition
-probabilities. <a href="#Massana2015">Massana et al. (2015)</a> first noted that the null range—an
+probabilities. <a class="citation" href="#Massana2015">Massana et al. (2015)</a> first noted that the null range—an
 unobserved absorbing state—results in abnormal extirpation rate and
 range size estimates. Their proposed solution to eliminate the null
 range from the state space is enabled with the
 <code class="highlighter-rouge">nullRange="Exclude"</code> setting. The
 <code class="highlighter-rouge">nullRange="Include"</code> setting provides no special handling of
-the null range, and produces the raw probabilities of <a href="#Ree2005">Ree et al. (2005)</a>.</p>
+the null range, and produces the raw probabilities of <a class="citation" href="#Ree2005">Ree et al. (2005)</a>.</p>
 
 <h3 class="subsection" id="cladogenetic">Cladogenetic Range Evolution</h3>
 <hr class="subsection" />
@@ -394,7 +394,7 @@ lineages inherit the ancestral range, $ABC$ (<a href="#dec_cartoon"></a>f).
 jump dispersal cladogenesis results in one daughter lineage inheriting
 the ancestral range $A$, and the other daughter lineage inheriting a
 previously uninhabited area, $B$ or $C$ (<a href="#dec_cartoon"></a>g).
-See <a href="#Matzke2012">Matzke (2012)</a> for an excellent overview of the cladogenetic state
+See <a class="citation" href="#Matzke2012">Matzke (2012)</a> for an excellent overview of the cladogenetic state
 transitions described in the literature (specifically see this <a href="http://phylo.wikidot.com/biogeobears#BioGeoBEARS_supermodel_graphic">figure</a>).</p>
 
 <p>Make the cladogenetic probability event matrix</p>
@@ -408,9 +408,9 @@ P_DEC := fnDECCladoProbs(eventProbs=clado_event_probs,
 
 <p><code class="highlighter-rouge">clado_event_types</code> defines what cladogenetic event types
 are used. <code class="highlighter-rouge">"a"</code> and <code class="highlighter-rouge">"s"</code> indicate allopatry and
-subset sympatry, as described in <a href="#Ree2005">Ree et al. (2005)</a>. Other cladogenetic events
-include jump dispersal <code class="highlighter-rouge">["j"]</code> <a href="#Matzke2014">(Matzke 2014)</a> and full sympatry
-<code class="highlighter-rouge">["f"]</code> <a href="#Landis2013a">(Landis et al. 2013)</a>. The cladogenetic event probability
+subset sympatry, as described in <a class="citation" href="#Ree2005">Ree et al. (2005)</a>. Other cladogenetic events
+include jump dispersal <code class="highlighter-rouge">["j"]</code> <a class="citation" href="#Matzke2014">(Matzke 2014)</a> and full sympatry
+<code class="highlighter-rouge">["f"]</code> <a class="citation" href="#Landis2013a">(Landis et al. 2013)</a>. The cladogenetic event probability
 matrix will assume that <code class="highlighter-rouge">eventProbs</code> and <code class="highlighter-rouge">eventTypes</code> share the same order.</p>
 
 <p>Print the cladogenetic transition probabilities</p>

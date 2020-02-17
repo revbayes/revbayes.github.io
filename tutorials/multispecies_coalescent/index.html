@@ -158,7 +158,7 @@ presented above conspire to make gene trees different from the
 species tree. In practice, this matters: simulation studies have
 found that in the presence of incomplete lineage sorting, in some
 particular areas of the parameter space, concatenation will often
-return an incorrect species tree <a href="#Leache2011">(Leaché and Rannala 2011)</a>. Concatenation may
+return an incorrect species tree <a class="citation" href="#Leache2011">(Leaché and Rannala 2011)</a>. Concatenation may
 also be a questionable approach in prokaryotic phylogenetics, where
 the quest for a tree of life has been difficult, to the point that
 some doubted that one could find a meaningful species tree
@@ -217,7 +217,7 @@ alleles that have been sampled (at best), not the history of the
 species.</p>
 
 <p>In 2003, Rannala and Yang proposed a powerful way to model the sorting
-of alleles along a phylogeny of several species <a href="#Rannala2003">(Rannala and Yang 2003)</a>, the
+of alleles along a phylogeny of several species <a class="citation" href="#Rannala2003">(Rannala and Yang 2003)</a>, the
 multispecies coalescent (Fig. [fig2]). This model is at the origin of
 most model-based approaches to reconstruct gene and species trees
 (missing reference). The multispecies coalescent models the
@@ -395,18 +395,18 @@ tree, gene trees and other parameters, it is advisable to start from
 reasonable starting values for the species tree and the gene trees.
 In our case, we have already reconstructed candidate gene trees
 using RevBayes. These gene trees have been produced using the
-scripts:\
+scripts:<br />
 <em>$tutorials/RB_MultispeciesCoalescent_Tutorial/scripts/mcmc_GeneTree.Rev$</em>
-and\
+and<br />
 <em>$tutorials/RB_MultispeciesCoalescent_Tutorial/construct_all_GeneTrees.sh$</em>).
 They have been placed in the folder
 <em>$tutorials/RB_MultispeciesCoalescent_Tutorial/output_GeneTrees$</em>,
 and Maximum A Posteriori (MAP) trees have been constructed. These
 MAP trees will provide good starting gene trees, and will also be
 used to generate a starting species tree using a function that
-computes a maximum tree <a href="#Edwards2007">(Edwards et al. 2007)</a>. The maximum tree “is the
+computes a maximum tree <a class="citation" href="#Edwards2007">(Edwards et al. 2007)</a>. The maximum tree “is the
 tree with the largest possible speciation times in the space of
-species trees restricted by available gene trees” <a href="#Liu2010">(Liu et al. 2010)</a>.
+species trees restricted by available gene trees” <a class="citation" href="#Liu2010">(Liu et al. 2010)</a>.
 Conveniently, tip names in the gene trees correspond to the species
 names: we can thus use the maximum tree function on these trees
 without worrying about potential name inconsistencies.</p>
@@ -638,11 +638,11 @@ mapTree(treetrace,output_folder+"posterior_MSC_primates_MAP.tree")
 
 <h1 id="things-to-think-about">Things to think about</h1>
 
-<p>Do you find that the full multispecies coalescent mixes well?\
-Is the mixing markedly different when the model is run under the prior?\
-What is the impact of species tree moves on the mixing?\
+<p>Do you find that the full multispecies coalescent mixes well?<br />
+Is the mixing markedly different when the model is run under the prior?<br />
+What is the impact of species tree moves on the mixing?<br />
 Given the acceptance ratios of some of the moves, would you be tempted
-to change the frequency at which they are tried? If so how?\
+to change the frequency at which they are tried? If so how?<br />
 What other improvements could be made to the script?</p>
 
 

@@ -118,7 +118,7 @@
 <h2 class="section" id="overview">Overview</h2>
 <hr class="section" />
 
-<p>This tutorial covers the first protocol from <a href="#Hoehna2017a">Höhna et al. (2017)</a>, 
+<p>This tutorial covers the first protocol from <a class="citation" href="#Hoehna2017a">Höhna et al. (2017)</a>, 
 which demonstrates how to set up and perform analyses
 using common nucleotide substitution models. The substitution models
 used in molecular evolution are continuous time Markov models, which are
@@ -173,37 +173,37 @@ be covered in more detail later in this tutorial.</p>
   <tbody>
     <tr>
       <td style="text-align: center">Jukes-Cantor</td>
-      <td style="text-align: center"><a href="#Jukes1969">(Jukes and Cantor 1969)</a></td>
+      <td style="text-align: center"><a class="citation" href="#Jukes1969">(Jukes and Cantor 1969)</a></td>
       <td style="text-align: center">fnJC</td>
       <td style="text-align: center">-</td>
     </tr>
     <tr>
       <td style="text-align: center">K80 (a.k.a. K2P)</td>
-      <td style="text-align: center"><a href="#Kimura1980">(Kimura 1980)</a></td>
+      <td style="text-align: center"><a class="citation" href="#Kimura1980">(Kimura 1980)</a></td>
       <td style="text-align: center">fnK80</td>
       <td style="text-align: center">$\kappa$</td>
     </tr>
     <tr>
       <td style="text-align: center">Felsenstein-81</td>
-      <td style="text-align: center"><a href="#Felsenstein1981">(Felsenstein 1981)</a></td>
+      <td style="text-align: center"><a class="citation" href="#Felsenstein1981">(Felsenstein 1981)</a></td>
       <td style="text-align: center">fnF81</td>
       <td style="text-align: center">$\pi$</td>
     </tr>
     <tr>
       <td style="text-align: center">T92</td>
-      <td style="text-align: center"><a href="#Tamura1992">(Tamura 1992)</a></td>
+      <td style="text-align: center"><a class="citation" href="#Tamura1992">(Tamura 1992)</a></td>
       <td style="text-align: center">fnT92</td>
       <td style="text-align: center">$\pi_{GC}$, $\kappa$</td>
     </tr>
     <tr>
       <td style="text-align: center">HKY</td>
-      <td style="text-align: center"><a href="#Hasegawa1985">(Hasegawa et al. 1985)</a></td>
+      <td style="text-align: center"><a class="citation" href="#Hasegawa1985">(Hasegawa et al. 1985)</a></td>
       <td style="text-align: center">fnHKY</td>
       <td style="text-align: center">$\pi$, $\kappa$</td>
     </tr>
     <tr>
       <td style="text-align: center">GTR</td>
-      <td style="text-align: center"><a href="#Tavare1986">(Tavaré 1986)</a></td>
+      <td style="text-align: center"><a class="citation" href="#Tavare1986">(Tavaré 1986)</a></td>
       <td style="text-align: center">fnGTR</td>
       <td style="text-align: center">$\pi$, $\epsilon$</td>
     </tr>
@@ -225,11 +225,11 @@ be covered in more detail later in this tutorial.</p>
 </ol>
 
 <figure id="jc_graphical_model"><p><img src="figures/jc_graphical_model.png" /></p>
-<figcaption>Graphical model representation of a simple phylogenetic model. The graphical model shows the dependencies among parameters <a href="#Hoehna2014b">(Höhna et al. 2014)</a>. Here, the rate matrix $Q$ is a constant variable because it is fixed and does not depend on any parameter. The only free parameters of this model, the Jukes-Cantor model, are the tree $\Psi$ including the branch lengths.</figcaption>
+<figcaption>Graphical model representation of a simple phylogenetic model. The graphical model shows the dependencies among parameters <a class="citation" href="#Hoehna2014b">(Höhna et al. 2014)</a>. Here, the rate matrix $Q$ is a constant variable because it is fixed and does not depend on any parameter. The only free parameters of this model, the Jukes-Cantor model, are the tree $\Psi$ including the branch lengths.</figcaption>
 </figure>
 
 <p>We first consider the simplest substitution model described by 
-<a href="#Jukes1969">Jukes and Cantor (1969)</a>. The instantaneous-rate matrix for the JC substitution
+<a class="citation" href="#Jukes1969">Jukes and Cantor (1969)</a>. The instantaneous-rate matrix for the JC substitution
 model is defined as</p>
 
 <script type="math/tex; mode=display">% <![CDATA[
@@ -446,13 +446,13 @@ moves.append( mvBranchLengthScale(psi, weight=num_branches) )
 We still think that it is pedagogical to specify the prior on each branch length separately in this tutorial to emphasize all components of the model.</p>
 </blockquote>
 
-<blockquote class="aside"><h2>Alternative branch-length priors</h2><p>Some studies, <em>e.g.</em> <a href="#Brown2010">Brown et al. (2010), Rannala et al. (2012)</a>, 
+<blockquote class="aside"><h2>Alternative branch-length priors</h2><p>Some studies, <em>e.g.</em> <a class="citation" href="#Brown2010">Brown et al. (2010), Rannala et al. (2012)</a>, 
 have criticized the exponential prior distribution for branch lengths 
 because it induces a gamma-distributed tree-length and the mean of this gamma distribution
 grows with the number of taxa. As an alternative, we can instead use a specific gamma prior distribution 
 (or any other distribution defined on a positive real variable) for the tree length, 
 and then use a Dirichlet prior distribution to break the tree length into 
-the corresponding branch lengths <a href="#Zhang2012">(Zhang et al. 2012)</a>.</p>
+the corresponding branch lengths <a class="citation" href="#Zhang2012">(Zhang et al. 2012)</a>.</p>
 
 <p>First, specify a prior distribution on the tree length with your desired mean.
 For example, we use a gamma distribution as our prior on the tree length.</p>
@@ -495,7 +495,7 @@ multiple different moves for a given parameter to improve mixing
 (the efficiency of the MCMC simulation). In the case of our rooted tree, 
 for example, we can use both a nearest-neighbor interchange move without and with changing 
 the node ages (<code class="highlighter-rouge">mvNarrow</code> and <code class="highlighter-rouge">mvNNI</code>) and a fixed-node-height subtree-prune and regrafting 
-move (<code class="highlighter-rouge">mvFNPR</code>) and its Metropolized-Gibbs variant (<code class="highlighter-rouge">mvGPR</code>) <a href="#Hoehna2008">(Höhna et al. 2008; Höhna and Drummond 2012)</a>. 
+move (<code class="highlighter-rouge">mvFNPR</code>) and its Metropolized-Gibbs variant (<code class="highlighter-rouge">mvGPR</code>) <a class="citation" href="#Hoehna2008">(Höhna et al. 2008; Höhna and Drummond 2012)</a>. 
 We also need moves that change the ages of the internal nodes, for example, <code class="highlighter-rouge">mvSubtreeScale</code> 
 and <code class="highlighter-rouge">mvNodeTimeSlideUniform</code>. These moves do not have tuning parameters associated with 
 them, thus you only need to pass in the <code class="highlighter-rouge">psi</code> node and proposal <code class="highlighter-rouge">weight</code>.</p>
@@ -648,7 +648,7 @@ mymcmc.run(generations=100000000, checkpointInterval=100, checkpointFile="output
 <hr class="subsubsection" />
 
 <p>Methods for visualizing the marginal densities of parameter values are not currently available in RevBayes itself. 
-Thus, it is important to use programs like <a href="http://tree.bio.ed.ac.uk/software/tracer/">Tracer</a> <a href="#Rambaut2011">(Rambaut and Drummond 2011)</a> to evaluate mixing and non-convergence.</p>
+Thus, it is important to use programs like <a href="http://tree.bio.ed.ac.uk/software/tracer/">Tracer</a> <a class="citation" href="#Rambaut2011">(Rambaut and Drummond 2011)</a> to evaluate mixing and non-convergence.</p>
 
 <p>Look at the file called <code class="highlighter-rouge">output/primates_cytb_JC.log</code> in Tracer. 
 There you see the posterior distribution of the continuous parameters, <em>e.g.</em>, the tree length variable <code class="highlighter-rouge">TL</code>.</p>
@@ -908,7 +908,7 @@ treetrace.cladeProbability( Lemuroidea )
 </table>
 </figure>
 
-<blockquote class="aside"><h2>Setting up the Kimura 1980 (K80 or K2P) substitution model</h2><p>The K80 model (AKA the K2P model) allows the rates of transition and transversion substitutions to be unequal <a href="#Kimura1980">(Kimura 1980)</a>. 
+<blockquote class="aside"><h2>Setting up the Kimura 1980 (K80 or K2P) substitution model</h2><p>The K80 model (AKA the K2P model) allows the rates of transition and transversion substitutions to be unequal <a class="citation" href="#Kimura1980">(Kimura 1980)</a>. 
 The parameter $\kappa$ describes the relative rate of transition to transversion substitutions (if $\kappa &gt; 1$, transitions occur at a higher rate than transversions). The instantaneous-rate matrix for the K80 model is defined as:</p>
 
 <script type="math/tex; mode=display">% <![CDATA[
@@ -937,7 +937,7 @@ reasonable, so we might wish to consider a more realistic substitution
 model that relaxes some of these assumptions. For example, we might
 allow stationary frequencies, $\pi$, to be unequal, and allow rates of
 transition and transversion substitutions to differ, $\kappa$. This
-corresponds to the substitution model proposed by <a href="#Hasegawa1985">Hasegawa et al. (1985)</a>,
+corresponds to the substitution model proposed by <a class="citation" href="#Hasegawa1985">Hasegawa et al. (1985)</a>,
 which is specified with the following instantaneous-rate matrix:</p>
 
 <script type="math/tex; mode=display">% <![CDATA[
@@ -1029,7 +1029,7 @@ rate of transversion substitutions? If so, by how much?</p>
   <li>
     <p>Like the HKY model, the Felsenstein 1981 (F81) substitution model
 has unequal stationary frequencies, but it assumes equal
-transition-transversion rates <a href="#Felsenstein1981">(Felsenstein 1981)</a>. 
+transition-transversion rates <a class="citation" href="#Felsenstein1981">(Felsenstein 1981)</a>. 
 Can you set up the F81 model and run an analysis?</p>
   </li>
   <li>
@@ -1045,7 +1045,7 @@ probabilities of phylogenetic relationships.</p>
 different rates of transition and transversion substitutions. Despite
 these extensions, the HKY model may still be too simplistic for many
 real datasets. Here, we extend the HKY model to specify the general time
-reversible (GTR) substitution model <a href="#Tavare1986">(Tavaré 1986)</a>, which allows all six
+reversible (GTR) substitution model <a class="citation" href="#Tavare1986">(Tavaré 1986)</a>, which allows all six
 exchangeability rates to differ (<a href="#gtr_graphical_model"></a>).</p>
 
 <p>The instantaneous-rate matrix for the GTR substitution model is:</p>
@@ -1143,7 +1143,7 @@ GTR substitution model.</p>
 <h2 class="section" id="the-discrete-gamma-model-of-among-site-rate-variation">The Discrete Gamma Model of Among Site Rate Variation</h2>
 <hr class="section" />
 
-<p>Members of the GTR family of substitution models assume that rates are homogeneous across sites, an assumption that is often violated by real data. We can accommodate variation in substitution rate among sites (ASRV) by adopting the discrete-gamma model <a href="#Yang1994a">(Yang 1994)</a>. This model assumes that the substitution rate at each site is a random variable that is described by a discretized gamma distribution, which has two parameters: the shape parameter, $\alpha$, and the rate parameter, $\beta$. In order that we can interpret the branch lengths as the expected number of substitutions per site, this model assumes that the mean site rate is equal to 1. The mean of the gamma is equal to $\alpha/\beta$, so a mean-one gamma is specified by setting the two parameters to be equal, $\alpha=\beta$. This means that we can fully describe the gamma distribution with the single shape parameter, $\alpha$. The degree of among-site substitution rate variation is inversely proportional to the value of the $\alpha$-shape parameter. As the value of the $\alpha$-shape increases, the gamma distribution increasingly resembles a normal distribution with decreasing variance, which therefore corresponds to decreasing levels of ASRV (<a href="#asrhGammaFig"></a>). By contrast, when the value of the $\alpha$-shape parameter is $&lt; 1$, the gamma distribution assumes a concave distribution that concentrates most of the prior density on low rates, but retains some prior mass on sites with very high rates, which therefore corresponds to high levels of ASRV (<a href="#asrhGammaFig"></a>). Note that, when $\alpha = 1$, the gamma distribution collapses to an exponential distribution with a rate parameter equal to $\beta$.</p>
+<p>Members of the GTR family of substitution models assume that rates are homogeneous across sites, an assumption that is often violated by real data. We can accommodate variation in substitution rate among sites (ASRV) by adopting the discrete-gamma model <a class="citation" href="#Yang1994a">(Yang 1994)</a>. This model assumes that the substitution rate at each site is a random variable that is described by a discretized gamma distribution, which has two parameters: the shape parameter, $\alpha$, and the rate parameter, $\beta$. In order that we can interpret the branch lengths as the expected number of substitutions per site, this model assumes that the mean site rate is equal to 1. The mean of the gamma is equal to $\alpha/\beta$, so a mean-one gamma is specified by setting the two parameters to be equal, $\alpha=\beta$. This means that we can fully describe the gamma distribution with the single shape parameter, $\alpha$. The degree of among-site substitution rate variation is inversely proportional to the value of the $\alpha$-shape parameter. As the value of the $\alpha$-shape increases, the gamma distribution increasingly resembles a normal distribution with decreasing variance, which therefore corresponds to decreasing levels of ASRV (<a href="#asrhGammaFig"></a>). By contrast, when the value of the $\alpha$-shape parameter is $&lt; 1$, the gamma distribution assumes a concave distribution that concentrates most of the prior density on low rates, but retains some prior mass on sites with very high rates, which therefore corresponds to high levels of ASRV (<a href="#asrhGammaFig"></a>). Note that, when $\alpha = 1$, the gamma distribution collapses to an exponential distribution with a rate parameter equal to $\beta$.</p>
 
 <figure id="asrhGammaFig"><p><img src="figures/asrh_gamma.png" width="600" /></p>
 <figcaption>The probability density of mean-one gamma-distributed rates for different values of the $\alpha$-shape parameter.</figcaption>
@@ -1210,7 +1210,7 @@ probabilities of the clades.</p>
 
 <p>All of the substitution models described so far assume that the sequence data are potentially variable. That is, we assume that the sequence data are random variables; specifically, we assume that they are realizations of the specified <code class="highlighter-rouge">PhyloCTMC</code> distribution. However, some sites may not be free to vary—when the substitution rate of a site is zero, it is said to be <em>invariable</em>. Invariable sites are often confused with <em>invariant</em> sites—when each species exhibits the same state, it is said to be invariant. The concepts are related but distinct. If a site is truly invariable, it will necessarily give rise to an invariant site pattern, as such sites will always have a zero substitution rate. However, an invariant site pattern may be achieved via multiple substitutions that happen to end in the same state for every species.</p>
 
-<p>Here we describe an extension to our phylogenetic model to accommodate invariable sites. Under the invariable-sites model <a href="#Hasegawa1985">(Hasegawa et al. 1985)</a>, each site is invariable with probability <code class="highlighter-rouge">p_inv</code>, and variable with probability $1-$<code class="highlighter-rouge">p_inv</code>.</p>
+<p>Here we describe an extension to our phylogenetic model to accommodate invariable sites. Under the invariable-sites model <a class="citation" href="#Hasegawa1985">(Hasegawa et al. 1985)</a>, each site is invariable with probability <code class="highlighter-rouge">p_inv</code>, and variable with probability $1-$<code class="highlighter-rouge">p_inv</code>.</p>
 
 <p>First, let’s have a look at the data and see how many invariant sites we have:</p>
 

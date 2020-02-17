@@ -122,7 +122,7 @@
 
 <p>This tutorial describes how to specify a branch-specific
 branching-process models in RevBayes; a birth-death process where
-diversification rates vary among branches, similar to <a href="#Rabosky2014a">Rabosky (2014)</a>.
+diversification rates vary among branches, similar to <a class="citation" href="#Rabosky2014a">Rabosky (2014)</a>.
 The probabilistic graphical model is given for each component of this
 tutorial. The goal is to obtain estimate of branch-specific
 diversification rates using Markov chain Monte Carlo (MCMC).</p>
@@ -176,14 +176,14 @@ and $(\lambda’’’,\mu’’’)$.</figcaption>
 <hr class="section" />
 
 <p>In this analysis we are interested in estimating the branch-specific diversification rates.
-We show how to implement and use the model developed by <a href="#Hoehna2019">Höhna et al. (2019)</a>
+We show how to implement and use the model developed by <a class="citation" href="#Hoehna2019">Höhna et al. (2019)</a>
 We are going to use the <code class="highlighter-rouge">dnCBDP</code> distribution which uses a finite number of rate-categories
 instead of drawing rates from a continuous distribution directly.</p>
 
 <p>Here we adopt an approach using (few) discrete rate categories.
 This allows us to numerically integrate over all possible rate categories using
-a system of differential equations originally described by <a href="#Maddison2007">Maddison et al. (2007)</a>
-(see also <a href="#FitzJohn2009">FitzJohn et al. (2009)</a> and <a href="#FitzJohn2010">FitzJohn (2010)</a>).
+a system of differential equations originally described by <a class="citation" href="#Maddison2007">Maddison et al. (2007)</a>
+(see also <a class="citation" href="#FitzJohn2009">FitzJohn et al. (2009)</a> and <a class="citation" href="#FitzJohn2010">FitzJohn (2010)</a>).
 The numerical procedure breaks time into very small time intervals and sums
 over all possible events occurring in that interval (see <a href="#fig_likelihood"></a>).</p>
 
@@ -248,8 +248,8 @@ and will provide a reliable approximation of the continuous integral when the nu
 
 <p>Instead of using a continuous probability distribution we will use a
 discrete approximation of the distribution, as done for modeling rate
-variation across sites <a href="#Yang1994a">(Yang 1994)</a> and for modeling relaxed molecular
-clocks <a href="#Drummond2006">(Drummond et al. 2006)</a>. That means, we assume that the speciation rates
+variation across sites <a class="citation" href="#Yang1994a">(Yang 1994)</a> and for modeling relaxed molecular
+clocks <a class="citation" href="#Drummond2006">(Drummond et al. 2006)</a>. That means, we assume that the speciation rates
 are drawn from one of the $N$ quantiles of the lognormal distribution.
 For this we will use the function <code class="highlighter-rouge">fnDiscretizeDistribution</code> which takes
 in a distribution as its first argument and the number of quantiles as
@@ -345,7 +345,7 @@ with a value of 233 / 367.</p>
 
 <p>The birth-death process requires a parameter for the root age. In this
 exercise we use a fix tree and thus we know the age of the tree. Hence,
-we can get the value for the root from the <a href="#MagnusonFord2012">(Magnuson-Ford and Otto 2012)</a> tree. This
+we can get the value for the root from the <a class="citation" href="#MagnusonFord2012">(Magnuson-Ford and Otto 2012)</a> tree. This
 is done using our global variable <code class="highlighter-rouge">root</code> defined above and nothing else
 has to be done here.</p>
 
@@ -389,7 +389,7 @@ passed into a MCMC function.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/primates_BDS.log",printgen=1, separator = TAB) )
 </code></pre></div></div>
 <p>For summary and plotting purposes, we need to obtain the branch-specific diversification rate estimate along the tree.
-We will use a stochastic rate mapping algorithm <a href="#Freyman2019">Freyman and Höhna (2019)</a>.
+We will use a stochastic rate mapping algorithm <a class="citation" href="#Freyman2019">Freyman and Höhna (2019)</a>.
 Thus, we create an <code class="highlighter-rouge">mnStochasticBranchRate</code>. The stochastic branch-rate monitor
 draws stochastic character maps and writes the <em>simulated</em> branch rates into a file.
 We will need this file later to estimate and visualize the posterior

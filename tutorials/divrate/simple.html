@@ -124,7 +124,7 @@
 
 <p>This tutorial describes how to specify basic birth-death models in RevBayes.
 Specifically, we will use the pure-birth (Yule) process and the constant-rate birth-death process
-<a href="#Yule1925">(Yule 1925; Kendall 1948; Thompson 1975; Nee et al. 1994; Rannala and Yang 1996; Yang and Rannala 1997; Höhna 2015)</a>.
+<a class="citation" href="#Yule1925">(Yule 1925; Kendall 1948; Thompson 1975; Nee et al. 1994; Rannala and Yang 1996; Yang and Rannala 1997; Höhna 2015)</a>.
 The probabilistic graphical model is given for each component of this tutorial. 
 After each model is specified, you will estimate speciation and extinction rates using Markov chain Monte Carlo (MCMC). 
 Finally, you will estimate the marginal likelihood of the model and evaluate the
@@ -142,13 +142,13 @@ Then, we will continue by estimating the marginal likelihood of the model so tha
 The section about the birth-death process will be less detailed because it will build up on this section.</p>
 
 <p>The simplest branching model is the <em>pure-birth process</em> described by
-<a href="#Yule1925">Yule (1925)</a>. Under this model, we assume at any instant in time, every
+<a class="citation" href="#Yule1925">Yule (1925)</a>. Under this model, we assume at any instant in time, every
 lineage has the same speciation rate, $\lambda$. In its simplest form,
 the speciation rate remains constant over time. As a result, the waiting
 time between speciation events is exponential, where the rate of the
 exponential distribution is the product of the number of extant lineages
 ($n$) at that time and the speciation rate: $n\lambda$
-<a href="#Yule1925">(Yule 1925; Aldous 2001; Höhna 2014)</a>. The pure-birth branching model
+<a class="citation" href="#Yule1925">(Yule 1925; Aldous 2001; Höhna 2014)</a>. The pure-birth branching model
 does not allow for lineage extinction
 (<em>i.e.</em>, the extinction rate $\mu=0$). However,
 the model depends on a second parameter, $\rho$, which is the
@@ -161,7 +161,7 @@ probability, and root age (<a href="#fig_yule_gm"></a>).</p>
 
 <figure id="fig_yule_gm"><p><img src="figures/yule_gm.png" width="50%" height="50%" /></p>
 <figcaption>The graphical model representation of the pure-birth (Yule) process. 
-For more information about graphical model representations see <a href="#Hoehna2014b">Höhna et al. (2014)</a>.</figcaption>
+For more information about graphical model representations see <a class="citation" href="#Hoehna2014b">Höhna et al. (2014)</a>.</figcaption>
 </figure>
 
 <p>We can add hierarchical structure to this model and account for
@@ -192,7 +192,7 @@ given that we observe a time tree.</p>
 <p>In this example, we have a phylogeny of 233 primates. We are treating
 the time tree $\Psi$ as an observation, thus clamping the model with an
 observed value. The time tree we are conditioning the process on is
-taken from the analysis by <a href="#MagnusonFord2012">Magnuson-Ford and Otto (2012)</a>. Furthermore, there are
+taken from the analysis by <a class="citation" href="#MagnusonFord2012">Magnuson-Ford and Otto (2012)</a>. Furthermore, there are
 approximately 367 described primates species, so we will fix the
 parameter $\rho$ to $233/367$.</p>
 
@@ -272,7 +272,7 @@ origin time. To accommodate this, we can condition on the age of the
 root by assuming the process started with <em>two</em> lineages that both
 originate at the time of the root.</p>
 
-<p>We can get the value for the root from the <a href="#MagnusonFord2012">Magnuson-Ford and Otto (2012)</a> tree.</p>
+<p>We can get the value for the root from the <a class="citation" href="#MagnusonFord2012">Magnuson-Ford and Otto (2012)</a> tree.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root_time &lt;- T.rootAge()
 </code></pre></div></div>
 
@@ -291,7 +291,7 @@ using the <code class="highlighter-rouge">clamp()</code> function.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree.clamp(T)
 </code></pre></div></div>
 <p>Here we are fixing the value of the time tree to our observed tree from
-<a href="#MagnusonFord2012">Magnuson-Ford and Otto (2012)</a>.</p>
+<a class="citation" href="#MagnusonFord2012">Magnuson-Ford and Otto (2012)</a>.</p>
 
 <p>Finally, we can create a workspace object of our whole model using the
 <code class="highlighter-rouge">model()</code> function. Workspace objects are initialized using the <code class="highlighter-rouge">=</code>
@@ -460,17 +460,17 @@ in <a href="#tab_ml_yule"></a>.</p>
 that every lineage at the start of the process will have sampled
 descendants at time 0. This assumption is fairly unrealistic for most
 phylogenetic datasets on a macroevolutionary time scale since the fossil
-record provides evidence of extinct lineages. <a href="#Kendall1948">Kendall (1948)</a> described a
+record provides evidence of extinct lineages. <a class="citation" href="#Kendall1948">Kendall (1948)</a> described a
 more general branching process model to account for lineage extinction
 called the <em>birth-death process</em>. Under this model, at any instant in
 time, every lineage has the same rate of speciation $\lambda$ and the
 same rate of extinction $\mu$. This is the <em>constant-rate</em> birth-death
 process, which considers the rates constant over time and over the tree
-<a href="#Nee1994b">(Nee et al. 1994; Höhna 2015)</a>.</p>
+<a class="citation" href="#Nee1994b">(Nee et al. 1994; Höhna 2015)</a>.</p>
 
-<p><a href="#Yang1997">Yang and Rannala (1997)</a> derived the probability of time trees under an extension of
+<p><a class="citation" href="#Yang1997">Yang and Rannala (1997)</a> derived the probability of time trees under an extension of
 the birth-death model that accounts for incomplete sampling of the tips
-(<a href="#fig_bdp_gm"></a>) (see also <a href="#Stadler2009">Stadler (2009)</a> and <a href="#Hoehna2014a">Höhna (2014)</a>). Under
+(<a href="#fig_bdp_gm"></a>) (see also <a class="citation" href="#Stadler2009">Stadler (2009)</a> and <a class="citation" href="#Hoehna2014a">Höhna (2014)</a>). Under
 this model, the parameter $\rho$ accounts for the probability of
 sampling in the present time, and because it is a probability, this
 parameter can only take values between 0 and 1.</p>

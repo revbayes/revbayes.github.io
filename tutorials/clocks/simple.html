@@ -145,7 +145,7 @@ The selected model will be used as a tree prior to estimate a new dated phylogen
 <h3 id="software">Software</h3>
 
 <p>This tutorial requires that you <a href="../../software">download and install</a> the current version of RevBayes. 
-Additionally, you will need to download and install the program <a href="http://tree.bio.ed.ac.uk/software/tracer/">Tracer</a> <a href="#Rambaut2011">(Rambaut and Drummond 2011)</a>.</p>
+Additionally, you will need to download and install the program <a href="http://tree.bio.ed.ac.uk/software/tracer/">Tracer</a> <a class="citation" href="#Rambaut2011">(Rambaut and Drummond 2011)</a>.</p>
 
 <h3 id="the-data">The Data</h3>
 
@@ -182,7 +182,7 @@ using the interactive console.</p>
 <hr class="section" />
 
 <p>In this first section, we will evaluate two different diversification models: (1) the Yule process and (2) the birth-death process.
-To compare the relative fit of the two models, we can use <a href="https://en.wikipedia.org/wiki/Bayes_factor"><em>Bayes factors</em></a> <a href="#Suchard2001">(Suchard et al. 2001; Lartillot 2006; Xie et al. 2011; Baele et al. 2012; Baele et al. 2013)</a>.
+To compare the relative fit of the two models, we can use <a href="https://en.wikipedia.org/wiki/Bayes_factor"><em>Bayes factors</em></a> <a class="citation" href="#Suchard2001">(Suchard et al. 2001; Lartillot 2006; Xie et al. 2011; Baele et al. 2012; Baele et al. 2013)</a>.
 In Bayesian inference, the Bayes factor is used as a method for model comparison,
 allowing us to evaluate the relative support for different models given a single dataset.</p>
 
@@ -201,7 +201,7 @@ $\mathbf X$, divided by the posterior odds of $M_1$ given the data:</p>
 prior probability of $M_1$:
 <script type="math/tex">\mbox{prior odds} = \frac{\mathbb{P}(M_0)}{\mathbb{P}(M_1)}.</script> Thus,
 the Bayes factor measures the degree to which the data alter our belief
-regarding the support for $M_0$ relative to $M_1$ <a href="#Lavine1999">(Lavine and Schervish 1999)</a>:</p>
+regarding the support for $M_0$ relative to $M_1$ <a class="citation" href="#Lavine1999">(Lavine and Schervish 1999)</a>:</p>
 
 <script type="math/tex; mode=display">\begin{equation}
 BF(M_0,M_1) = \frac{\mathbb{P}(M_0 \mid \mathbf X, \theta_0)}{\mathbb{P}(M_1 \mid \mathbf X, \theta_1)} \div \frac{\mathbb{P}(M_0)}{\mathbb{P}(M_1)} \tag{1}\label{eq:one}
@@ -211,7 +211,7 @@ BF(M_0,M_1) = \frac{\mathbb{P}(M_0 \mid \mathbf X, \theta_0)}{\mathbb{P}(M_1 \mi
 is, it is up to <em>you</em> to decide the degree of your belief in $M_0$
 relative to $M_1$. Despite the absence of an absolutely objective
 model-selection threshold, we can refer to the scale, outlined by
-<a href="#Jeffreys1961">Jeffreys (1961)</a>,  that provides a “<a href="https://en.wikipedia.org/wiki/Bayes_factor#Interpretation">rule-of-thumb</a>” for interpreting these
+<a class="citation" href="#Jeffreys1961">Jeffreys (1961)</a>,  that provides a “<a href="https://en.wikipedia.org/wiki/Bayes_factor#Interpretation">rule-of-thumb</a>” for interpreting these
 measures.</p>
 
 <p>Unfortunately, it is generally not possible to directly calculate the
@@ -253,7 +253,7 @@ integration methods to estimate or approximate these values.</p>
 
 <p>In this
 exercise, we will estimate the marginal likelihood for each partition
-scheme using both the stepping-stone <a href="#Xie2011">(Xie et al. 2011; Fan et al. 2011)</a> estimator.
+scheme using both the stepping-stone <a class="citation" href="#Xie2011">(Xie et al. 2011; Fan et al. 2011)</a> estimator.
 These algorithms are
 similar to the familiar MCMC algorithms, which are intended to sample
 from (and estimate) the joint posterior probability of the model
@@ -283,13 +283,13 @@ posterior to the prior or vice versa).</p>
 
 <!-- TODO: ^Move this to a reference to the BF tutorial -->
 
-<p>This analysis will assume that the phylogeny of the 8 extant bear species and their speciation times estimated in the study by <a href="#DosReis2012">dos Reis et al. (2012)</a> are observed data. 
+<p>This analysis will assume that the phylogeny of the 8 extant bear species and their speciation times estimated in the study by <a class="citation" href="#DosReis2012">dos Reis et al. (2012)</a> are observed data. 
 Of course, it is not possible to observe a diversification process spanning over 30 My, but it is not unreasonable to use a well-supported phylogeny to compare models before analysis of a new dataset.</p>
 
 <h3 class="subsection" id="yulesec">The Yule Model</h3>
 <hr class="subsection" />
 
-<p><a href="#Yule1925">Yule (1925)</a> described a stochastic process as a generating model for living taxa. 
+<p><a class="citation" href="#Yule1925">Yule (1925)</a> described a stochastic process as a generating model for living taxa. 
 This model makes the very simple assumption that over the course of diversification, 
 there is a constant rate of speciation and the rate of extinction is 0.0.</p>
 
@@ -398,7 +398,7 @@ time tree (let’s call it <code class="highlighter-rouge">timetree</code>).</p>
 </code></pre></div></div>
 
 <p>Like other stochastic nodes, RevBayes initializes the value of <code class="highlighter-rouge">timetree</code> by drawing a state from the prior. 
-Since we are treating the tree from <a href="#DosReis2012">dos Reis et al. (2012)</a> as an “observation”, we now 
+Since we are treating the tree from <a class="citation" href="#DosReis2012">dos Reis et al. (2012)</a> as an “observation”, we now 
 have to fix the value of <code class="highlighter-rouge">timetree</code> to be the same as the published phylogeny. 
 To do this, we use the member method <code class="highlighter-rouge">.clamp()</code> that is specific to stochastic nodes.
 This is how we tell RevBayes that we have observed the value of a stochastic node and it
@@ -496,7 +496,7 @@ and print it to our screen.</p>
 <h3 class="subsection" id="bdsec">The Birth-Death Model</h3>
 <hr class="subsection" />
 
-<p>The Yule model is a simple version of a more general stochastic branching process called the <em>birth-death process</em> <a href="#Kendall1948">(Kendall 1948; Nee et al. 1994; Gernhard 2008)</a>.
+<p>The Yule model is a simple version of a more general stochastic branching process called the <em>birth-death process</em> <a class="citation" href="#Kendall1948">(Kendall 1948; Nee et al. 1994; Gernhard 2008)</a>.
 Under the birth-death process, extinction is assumed to be greater than 0.</p>
 
 <p>We will specify this model and also change the prior assumed for the speciation rate. 
@@ -703,7 +703,7 @@ The first thing we need to do is create a stochastic node for the root of the tr
 The prior distribution on the root age will come from our previous knowledge about that node.</p>
 
 <p>The oldest crown fossil bear is <em>Kretzoiarctos beatrix</em>, a member of the giant panda clade 
-<a href="#abella12">(Abella et al. 2012)</a> that is approximately 11.2 to 11.8 My old. Thus, we can use 
+<a class="citation" href="#abella12">(Abella et al. 2012)</a> that is approximately 11.2 to 11.8 My old. Thus, we can use 
 this age as a minimum bound on the age of the root 
 of the tree. We will start by making a variable called <code class="highlighter-rouge">tKretzoiarctos</code> and assigning it the value of <code class="highlighter-rouge">11.2</code>.</p>
 
@@ -712,7 +712,7 @@ of the tree. We will start by making a variable called <code class="highlighter-
 
 <p>Let’s use a <a href="https://en.wikipedia.org/wiki/Log-normal_distribution">log-normal distribution</a> as a prior on the root time. For this, we can specify 
 parameters for the mean of the distribution and the standard deviation.
-In the paper by <a href="#DosReis2012">dos Reis et al. (2012)</a>, they estimated the age of the MRCA of all bears to be 33.24. 
+In the paper by <a class="citation" href="#DosReis2012">dos Reis et al. (2012)</a>, they estimated the age of the MRCA of all bears to be 33.24. 
 We will use an “off-set” lognormal distribution, so then we have to set the mean ($M$) to be $M = 33.24 - 11.2$, where 11.2 is the age of the oldest crown fossil.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mean_ra &lt;- 33.24 - tKretzoiarctos
@@ -945,7 +945,7 @@ Iter        |      Posterior   |     Likelihood   |          Prior   |      root
 
 <p>Now that our MCMC has completed, we need to evaluate the output. The first thing we can do is 
 to visually inspect the sampled numerical parameters in our <code class="highlighter-rouge">TimeTree_bears_mcmc.log</code> file. To 
-do this, we can use the handy program <a href="http://tree.bio.ed.ac.uk/software/tracer/">Tracer</a> <a href="#Rambaut2011">(Rambaut and Drummond 2011)</a>.</p>
+do this, we can use the handy program <a href="http://tree.bio.ed.ac.uk/software/tracer/">Tracer</a> <a class="citation" href="#Rambaut2011">(Rambaut and Drummond 2011)</a>.</p>
 
 <blockquote class="instruction">
   <p>Open the program Tracer and load the <code class="highlighter-rouge">TimeTree_bears_mcmc.log</code> from the <code class="highlighter-rouge">output</code> folder</p>
@@ -1011,7 +1011,7 @@ posterior probability.</figcaption>
 </figure>
 
 
-<ol class="bibliography"><li><span id="abella12">Abella J., Alba D.M., Robles J.M., Valenciano A., Rotgers C., Carmona R., Montoya P., Morales J. 2012. \textitKretzoiarctos gen. nov., the Oldest Member of the Giant Panda Clade. PLoS One. 17:e48985.</span>
+<ol class="bibliography"><li><span id="abella12">Abella J., Alba D.M., Robles J.M., Valenciano A., Rotgers C., Carmona R., Montoya P., Morales J. 2012. <i>Kretzoiarctos</i> gen. nov., the Oldest Member of the Giant Panda Clade. PLoS One. 17:e48985.</span>
 
 </li>
 <li><span id="Baele2012">Baele G., Lemey P., Bedford T., Rambaut A., Suchard M.A., Alekseyenko A.V. 2012. Improving the Accuracy of Demographic and Molecular Clock Model Comparison while Accommodating Phylogenetic Uncertainty. Molecular Biology and Evolution. 29:2157–2167.</span>
