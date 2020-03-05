@@ -57,13 +57,17 @@ Use `devtools` to install RevKnitr:
 devtools::install_github("revbayes/RevKnitr")
 ```
 
-Once installation is complete, restart RStudio. `rb` should now be available as an RMarkdown language. For more information see.
+Once installation is complete, restart RStudio. `rb` should now be available as an RMarkdown language.
 
-If you are on Mac, you may need to start your RStudio session from the terminal with
+For ease of use, you might consider adding an RMarkdown chunk to the beginning of any RevMarkdown files that specifies
+the current working directory and where RevBayes is stored. For example, a markdown cell containing the following information:
 
 ```
-open -a RStudio
+```{r setup}
+knitr::opts_chunk$set(root.dir = "~/projects/RevBayesWork")
+knitr::opts_chunk$set(engine.pat="~/software/rb")
 ```
 
-in order for RStudio to find the RevBayes executeable.
-
+Would tell RMarkdown that the home, or current working directory, is in a directory called "RevBayesWork",
+and that the executeable itself is in a folder called software. In this way, the working directory is set
+for the entire document.
