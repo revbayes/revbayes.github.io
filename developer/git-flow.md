@@ -29,6 +29,8 @@ New features should *never* be merged directly into `master`. Only hotfixes to t
 For hotfixes, create a separate branch from `master`, make the fix and verify
 it, and then merge the hotfix branch into `master` and `development`. Similarly to above, the `hotfix-master` branch exists for small (*one* commit only) bugfixes to the current release. A pull request can then be created to merge those changes into `master` and `development`.
 
+For more information, please follow this illustrated [guide](Git_flow_illustrated.pdf).
+
 ## Recommended reading
 
 <http://nvie.com/posts/a-successful-git-branching-model/>
