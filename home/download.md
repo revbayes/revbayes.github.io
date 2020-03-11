@@ -26,8 +26,17 @@ code_layout: bash
 <h2>Linux</h2>
 <p><a href="https://github.com/revbayes/revbayes.archive/releases/download/v1.0.13/RevBayes_Singularity_v1.0.13.simg" class="btn btn-info" role="button">Download Singularity Image</a></p>
 <p><a href="{% page_url singularity %}">(Singularity notes)</a></p>
-<p>Available as a <a href="https://spack.readthedocs.io/en/latest/">Spack</a> package (<a href="https://github.com/spack/spack/blob/develop/var/spack/repos/builtin/packages/revbayes/package.py">source</a>)</p>
-<p>or <a href="{% page_url compile_linux %}">Compile from source</a></p>
+<hr>
+<h3>Compile from source with <a href="https://spack.readthedocs.io/en/latest/">Spack</a></h3>
+
+<pre style="text-align: left">
+git clone https://github.com/spack/spack.git
+cd spack/bin
+./spack install revbayes ~mpi
+</pre>
+
+<hr>
+<p>or <a href="{% page_url compile_linux %}">Compile from source manually</a></p>
 
 </div>
 
