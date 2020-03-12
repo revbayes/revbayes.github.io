@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Reconstructing Host Repertoire Evolution</h1>
 	<h3 class="subtitle">Inference of ancestral ecological interactions</h3>
 	<h4 class="authors">Mariana P. Braga and Michael J. Landis</h4>
-  <h5>Last modified on January 10, 2020</h5>
+  <h5>Last modified on January 11, 2020</h5>
 </div>
 
 
@@ -126,14 +126,14 @@
 <h2 class="section" id="introduction">Introduction</h2>
 <hr class="section" />
 
-<p>Extant ecological interactions are the result of a long history of coevolution between interacting lineages. In the case of host-parasite systems, species associations are continuously evolving via gains and losses of hosts. Given that parasites are usually specialized to their hosts, most methods developed to study coevolution focus on congruence between host and parasite phylogenies and use cospeciation as the null expectation <a class="citation" href="#Brooks1979">(Brooks 1979; Huelsenbeck et al. 1997; de Vienne et al. 2013)</a>. Recent years have seen increasing evidence that parasites change what hosts they target much more often than previously thought. Thus, new methods are required to appropriately reconstruct coevolutionary histories. Below, we describe a model of host-parasite coevolution that was introduced in <a class="citation" href="#Braga2019">Braga et al. (2019)</a>, which is based on the Dispersal-Extinction-Cladogenesis approach <a class="citation" href="#Ree2005">Ree et al. (2005)</a> used to model geographic range evolution (see <a href="/tutorials/biogeo/biogeo_intro.html">Introduction to Phylogenetic Models of Discrete Biogeography</a> for an overview of the DEC model). However, in this first version, the model does not include evolutionary changes during parasite cladogenesis. This tutorial reviews the modeling concepts developed in <a class="citation" href="#Braga2019">Braga et al. (2019)</a> then describes how to model host repertoire evolution and reproduce the results published in the paper.</p>
+<p>Extant ecological interactions are the result of a long history of coevolution between interacting lineages. In the case of host-parasite systems, species associations are continuously evolving via gains and losses of hosts. Given that parasites are usually specialized to their hosts, most methods developed to study coevolution focus on congruence between host and parasite phylogenies and use cospeciation as the null expectation (missing reference). Recent years have seen increasing evidence that parasites change what hosts they target much more often than previously thought. Thus, new methods are required to appropriately reconstruct coevolutionary histories. Below, we describe a model of host-parasite coevolution that was introduced in (missing reference), which is based on the Dispersal-Extinction-Cladogenesis approach <a class="citation" href="#Ree2005">Ree et al. (2005)</a> used to model geographic range evolution (see <a href="/tutorials/biogeo/biogeo_intro.html">Introduction to Phylogenetic Models of Discrete Biogeography</a> for an overview of the DEC model). However, in this first version, the model does not include evolutionary changes during parasite cladogenesis. This tutorial reviews the modeling concepts developed in (missing reference) then describes how to model host repertoire evolution and reproduce the results published in the paper.</p>
 
 <h2 class="section" id="overview">Model Overview</h2>
 <hr class="section" />
 
 <p>We wish to model the co-evolution of ecological interactions between <em>M</em> extant parasite taxa and <em>N</em> host taxa in a phylogenetic context. Each parasite uses one or more hosts, which we encode as a character set called the <em>host repertoire</em>. During the course of evolution, any parasite lineage may gain or lose a host from its repertoire or modify whether a host is actually or potentially used by the parasite. Furthermore, it is likely that parasites have a phylogenetic preference when expanding their host repertoires, favoring species that are closely related to species they parasitize over distantly related species.</p>
 
-<p>This tutorial follows the modeling strategy developed in <a class="citation" href="#Braga2019">Braga et al. (2019)</a>, which identifies three central challenges to modeling host repertoire evolution: (1) defining the host repertoire character, (2) defining an event-based model for how host repertoires evolve in terms of gain and loss rates and phylogenetic distances among hosts in the repertoire, and (3) designing an inference method to fit our model to data. The next sections gives context to possible solutions to these problems.</p>
+<p>This tutorial follows the modeling strategy developed in (missing reference), which identifies three central challenges to modeling host repertoire evolution: (1) defining the host repertoire character, (2) defining an event-based model for how host repertoires evolve in terms of gain and loss rates and phylogenetic distances among hosts in the repertoire, and (3) designing an inference method to fit our model to data. The next sections gives context to possible solutions to these problems.</p>
 
 <h3 class="subsection" id="repertoire">Hosts, parasites, and their interactions</h3>
 <hr class="subsection" />
@@ -261,7 +261,7 @@
 <h2 class="section" id="dataset---butterfly-plant-interactions">Dataset - Butterfly-plant interactions</h2>
 <hr class="section" />
 
-<p>In this tutorial, we will go through the inference of host repertoire evolution in Nymphalini butterflies conducted in <a class="citation" href="#Braga2019">Braga et al. (2019)</a>. The data set includes 34 butterflies species and plants from 25 angiosperm families. For each butterfly species, host plants used in nature were coded as <em>actual hosts</em>, plants that are not used in nature, but there’s evidence that the larvae can feed on were coded as <em>potential hosts</em>, and those plants that the larvae do not eat were coded as <em>non hosts</em>.</p>
+<p>In this tutorial, we will go through the inference of host repertoire evolution in Nymphalini butterflies conducted in (missing reference). The data set includes 34 butterflies species and plants from 25 angiosperm families. For each butterfly species, host plants used in nature were coded as <em>actual hosts</em>, plants that are not used in nature, but there’s evidence that the larvae can feed on were coded as <em>potential hosts</em>, and those plants that the larvae do not eat were coded as <em>non hosts</em>.</p>
 
 <figure id="nymphalini"><p><img src="figures/extant_net_phylos.png" width="50%" /></p>
 <figcaption>Interactions between Nymphalini butterflies (rows) and their Angiosperm host plants (columns). Black squares represent actual interactions and grey squares, potential interactions.</figcaption>
@@ -396,7 +396,7 @@ moves.append( mvScale(mu, weight=2) )
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rf_host &lt;- simplex(1,1,1)
 </code></pre></div></div>
 
-<p>We have fully specified all of the parameters of our phylogenetic model. Our model components are then encapsulated in a distribution called the <em>phylogenetic continuous-time Markov chain for data-augmented character sequences</em>, and we use the <code class="highlighter-rouge">dnPhyloCTMCDASequence</code> constructor function to create this node. This distribution is similar to dnPhyloCTMC except specialized to use data-augmented histories under the non-iid model to integrate over coevolutionary histories. For more details on how this distribution computes the probability of a specific coevolutionary history, see <a class="citation" href="#Braga2019">Braga et al. (2019)</a>.</p>
+<p>We have fully specified all of the parameters of our phylogenetic model. Our model components are then encapsulated in a distribution called the <em>phylogenetic continuous-time Markov chain for data-augmented character sequences</em>, and we use the <code class="highlighter-rouge">dnPhyloCTMCDASequence</code> constructor function to create this node. This distribution is similar to dnPhyloCTMC except specialized to use data-augmented histories under the non-iid model to integrate over coevolutionary histories. For more details on how this distribution computes the probability of a specific coevolutionary history, see (missing reference).</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>m_host ~ dnPhyloCTMCDASequence(tree=phy_parasite,
                                Q=Q_host,
@@ -497,16 +497,7 @@ monitors.append( mnCharacterHistorySummary( filename=out_fn + ".history.txt",
 </figure>
 
 
-<ol class="bibliography"><li><span id="Braga2019">Braga M.P., Landis M., Nylin S., Janz N., Ronquist F. 2019. Bayesian inference of ancestral host-parasite interactions under a phylogenetic model of host repertoire evolution. BioRxiv.</span>
-
-</li>
-<li><span id="Brooks1979">Brooks D.R. 1979. Testing the Context and Extent of Host-Parasite Coevolution. Systematic Biology. 28:299–307.</span>
-
-</li>
-<li><span id="Huelsenbeck:1997kx">Huelsenbeck J.P., Rannala B., Yang Z.H. 1997. Statistical tests of host-parasite cospeciation. Evolution. 51:410–419.</span>
-
-</li>
-<li><span id="Nielsen2002">Nielsen R. 2002. Mapping mutations on phylogenies. Systematic Biology. 51:729–739.</span>
+<ol class="bibliography"><li><span id="Nielsen2002">Nielsen R. 2002. Mapping mutations on phylogenies. Systematic Biology. 51:729–739.</span>
 
 <a href="https://doi.org/10.1080/10635150290102393">10.1080/10635150290102393</a>
 
@@ -514,9 +505,6 @@ monitors.append( mnCharacterHistorySummary( filename=out_fn + ".history.txt",
 <li><span id="Ree2005">Ree R.H., Moore B.R., Webb C.O., Donoghue M.J., Crandall K. 2005. A likelihood framework for inferring the evolution of geographic range on phylogenetic trees. Evolution. 59:2299–2311.</span>
 
 <a href="https://doi.org/10.1111/j.0014-3820.2005.tb00940.x">10.1111/j.0014-3820.2005.tb00940.x</a>
-
-</li>
-<li><span id="deVienne:2013fu">Vienne D.M. de, Refregier G., Lopez-Villavicencio M., Tellier A., Hood M.E., Giraud T. 2013. Cospeciation vs host-shift speciation: methods for testing, evidence from natural associations and relation to coevolution. New Phytologist. 198:347–385.</span>
 
 </li></ol>
 

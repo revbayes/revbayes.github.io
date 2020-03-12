@@ -261,37 +261,21 @@ Now, if you set the active configuration to <em>Debug</em>, RevBayes will be com
       <li><em>Note:</em> On some versions of XCode, you may need to click on the “Options” Tab, and choose “Create Groups” for the import to work properly. This is the default behavior on most XCode installs.</li>
     </ul>
   </li>
-  <li>Add the boost library to your Xcode project - There are currently two options for doing this:
-    <ol>
-      <li>Using the boost library packaged with RevBayes
+  <li>Add the boost library to your Xcode project:
+    <ul>
+      <li>You have to install boost from another source and point your Xcode project to that version. If you use Homebrew as a package management system on your Mac, you can install boost using <code class="highlighter-rouge">brew install boost</code>. This will install the boost libraries in your <code class="highlighter-rouge">/usr/local</code> directory. To enable this version in your Xcode project, simply change these search paths:
         <ul>
-          <li>Select the RevBayes project and go to the <strong>Build Settings</strong>.</li>
-          <li>Search for or Scroll down to the <strong>Search Paths</strong> heading and find the sub-heading named <strong>Header Search Paths</strong>.
-            <ul>
-              <li>Double click the heading, click the <strong>+</strong>, and add the value: <code class="highlighter-rouge">&lt;path to revbayes repository&gt;/revbayes/boost_1_60_0</code>.</li>
-              <li>where <code class="highlighter-rouge">&lt;path to revbayes repository&gt;</code> = the location of the revbayes repository on your machine.</li>
-            </ul>
-          </li>
-          <li>Now do the same for the <strong>Library Search Paths</strong>, but make sure that you add the path to the lib directory in boost <code class="highlighter-rouge">&lt;path to revbayes repository&gt;/revbayes/boost_1_60_0/stage/lib</code>
- <img src="figures/xcode-finding_boost.png" alt="" /></li>
+          <li><strong>Header Search Paths</strong>: <code class="highlighter-rouge">/usr/local/include</code></li>
+          <li><strong>Library Search Paths</strong>: <code class="highlighter-rouge">/usr/local/lib</code>
+<img src="figures/xcode-adding_files.png" alt="" /></li>
         </ul>
       </li>
-      <li>Using the boost library from Homebrew (or alternative install)
-        <ul>
-          <li>You can install boost from another source and point your Xcode project to that version. It is likely that this will be the way RevBayes will use boost in the near future. If you use Homebrew as a package management system on your Mac, you can install boost using <code class="highlighter-rouge">brew install boost</code>. This will install the boost libraries in your <code class="highlighter-rouge">/usr/local</code> directory. To enable this version in your Xcode project, simply change these search paths:
-            <ul>
-              <li><strong>Header Search Paths</strong>: <code class="highlighter-rouge">/usr/local/include</code></li>
-              <li><strong>Library Search Paths</strong>: <code class="highlighter-rouge">/usr/local/lib</code></li>
-            </ul>
-          </li>
-        </ul>
-      </li>
-    </ol>
+    </ul>
   </li>
   <li>Add the boost linker flag
     <ul>
       <li>Scroll to the <strong>Linking</strong> section in the <strong>Build Settings</strong></li>
-      <li>Go to <strong>Other Linker Flags</strong> and double click on the space. This will bring up a box where you can add the flag <code class="highlighter-rouge">-lboost_program_options</code>. 
+      <li>Go to <strong>Other Linker Flags</strong> and double click on the space. This will bring up a box where you can add the flag <code class="highlighter-rouge">-lboost_program_options</code>.
 <img src="figures/xcode-linking.png" alt="" /></li>
     </ul>
   </li>
