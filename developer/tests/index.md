@@ -136,3 +136,15 @@ At the end, you will receive the results as the output:
 ```
 {:.Rev-output}
 Yeah, all tests passed!
+
+Try now write your own integration test!
+
+
+
+{% section Frequently Asked Questions | FAQ %}
+
+
+{% subsection The MPI version fails the test | MPI %}
+
+Yes, the MPI version uses a different sequence of random numbers, and thus the expected output will look different.
+We are currently working on a solution for this problem.
