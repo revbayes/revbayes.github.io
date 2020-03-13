@@ -20,6 +20,11 @@ Install these using your distribution's package manager
 
     sudo apt install build-essential cmake libboost-all-dev
 
+#### CentOS 8
+
+    sudo yum group install "Development Tools"
+    sudo yum install cmake boost-devel
+
 ### If you do not have root
 
 You will need your administrator to install build-essential (or equivalent package containing gcc) for you. If possible, ask them to install cmake as well.
