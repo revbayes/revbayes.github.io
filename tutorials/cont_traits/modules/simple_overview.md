@@ -51,7 +51,7 @@ In the {% page_ref cont_traits/multivariate_bm %} tutorial, we will provide exam
 
 {% subsection Ornstein-Uhlenbeck models %}
 
-Another major class of Gaussian models are the Ornstein-Uhlenbeck models, sometimes referred to as the Hansen models {% cite Hansen1997 Butler2004 %}. These models describe the evolution of a continuous character under selection. These tutorials focus on estimating the optimum parameter, $\theta$, as well as how it varies among lineages.
+Another major class of Gaussian models are the Ornstein-Uhlenbeck models, sometimes referred to as the Hansen models {% cite Hansen1997 Butler2004 %}. These models can describe the evolution of a continuous character under stabilizing selection. These tutorials focus on estimating the optimum parameter, $\theta$, as well as how it varies among lineages.
 
 {% subsubsection (1) Estimating evolutionary optima %}
 
