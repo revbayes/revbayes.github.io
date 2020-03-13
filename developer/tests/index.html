@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
-    <title>RevBayes: Validation Scripts in RevBayes</title>
+    <title>RevBayes: Integration Tests in RevBayes</title>
   </head>
   <body>
     <div class="container">
@@ -52,187 +52,154 @@
 </nav>
 
       <div class="titlebar">
-	<h1 class="maintitle">Validation Scripts in RevBayes</h1>
+	<h1 class="maintitle">Integration Tests in RevBayes</h1>
 	
 	<h4 class="authors"></h4>
-  <h5>Last modified on March 12, 2020</h5>
+  <h5>Last modified on March 13, 2020</h5>
 </div>
 
 <h2 class="section" id="introduction">Introduction</h2>
 <hr class="section" />
 
-<p>We use a procedure that is called <em>Simulation-Based Calibration</em> (SBC) <a class="citation" href="#Talts2018">(Talts et al. 2018)</a> to test the implementation of our models (i.e., likelihood functions and parameter transformations) and MCMC algorithm (i.e., moves).
-The idea behind SBC</p>
+<p>RevBayes is an extremely large and function rich software.
+It is not possible to foresee if any code changes that you do might affect other functions.
+This especially scares new developer who do not want to break existing code.
+For this reason we have design a suite of so called <em>integration tests</em>.
+In this document we will explain how these <em>integration tests</em> tests work in RevBayes.</p>
 
-<p>We use simulated datasets to validate that our models and methods are performing correctly.
-In RevBayes, we have a specific way of doing this and the scripts for validation are contained
-in the <a href="https://github.com/revbayes/revbayes">public repository</a>. This way if you implement a new
-move, distribution, function, etc., you can be certain that models and methods developed by other
-members of the project are not affected and that your new method works.</p>
+<p>The basic idea behind our integration tests is to used something closer to high level testing instead of unit testing.
+That is, an integration test in RevBayes consists of a standard analysis, or even only reading in data and extracting information, and printing some output.
+The output is then compared to the expected output using the common tool <strong>diff</strong>.
+An integration test passes if the output exactly matches the expected output.</p>
 
-<h2 class="section" id="validation">Creating and Executing a Validation Script</h2>
+<p>Hence, integration tests ensure that the software does not change (at least from a user perspective).
+However, the integration test does not guarantee that the software works correctly.
+You should always make sure that the implementation is correct, for example, by running some <a href="/developer/validation">validation using simulation-based calibration</a>.
+Once you have established that the implementation is correct, you should use the integration tests to <strong>freeze</strong> the functionality which enforce that you can always rely on the code producing the output you expected at this time.
+(Note, no test if perfect and sometimes changes to the functionality could be missed.)</p>
+
+<p>Since MCMC analyses in RevBayes and other software are intrinsically stochastic, a naive approach would expect different output every singly time you run an analysis.
+For example, if you run again an MCMC analysis in RevBayes, you should never get exactly the same trace of parameter samples.
+Thus, to enable exactly predictable output, you have to specify the random number seed at the very beginning of your analysis.
+In the end, all of our algorithms are deterministic given a sequence of random numbers ;)</p>
+
+<h2 class="section" id="validation">Creating and Executing an <strong>Integration Test</strong></h2>
 <hr class="section" />
 
 <h3 class="subsection" id="dirstruct">Directory Structure</h3>
 <hr class="subsection" />
 
-<p>In the RevBayes GitHub repository, the validation scripts are all located within the folder
-called <a href="https://github.com/revbayes/revbayes/tree/master/validation"><code class="highlighter-rouge">validation</code></a>.
-In this directory there are two subdirectories:</p>
+<p>In the RevBayes GitHub repository, the validation scripts are all located within the folder called <a href="https://github.com/revbayes/revbayes/tree/master/tests">tests</a>.</p>
 
-<ol>
-  <li><code class="highlighter-rouge">scripts</code>: containing the Rev scripts defining different models and analyses
-that use the RevBayes validation functions to evaluate the coverage of relevant parameters.</li>
-  <li><code class="highlighter-rouge">data</code>: containing the data files used to determine the dimensions of the simulations for some
-of the validation analyses (<em>e.g.</em>, taxon names, number of taxa, alignment length). Data files
-are not necessary for validation of all models.</li>
-</ol>
-
-<h3 class="subsection" id="norma">Writing a Validation Script for the Normal Distribution</h3>
-<hr class="subsection" />
-
-<p>We can write a simple validation script that checks the performance of the <a href="https://github.com/revbayes/revbayes/blob/master/validation/scripts/Validation_normal.Rev">normal distribution</a>.
-This script will check the coverage probabilities of estimators for parameters of the normal distribution.
-The model we will use is shown in <a href="#fig_mod_gm"></a>.</p>
-
-<figure id="fig_mod_gm"><p><img src="figures/model_gm.png" width="300" /></p>
-<figcaption>A graphical model of describing the generation of $N$ samples, where $x_i \sim Normal(\mu,\sigma)$.
-Additionally, priors are specified for the parameters of the normal distribution such that
-$\mu \sim Uniform(-10,10)$ and $\sigma \sim Exponential(1)$. The validation tools will
-assess the coverage probabilities for estimates of $\mu$ and $\sigma$.</figcaption>
+<figure id="fig_dir"><p><img src="figures/test_dir_structure.png" width="400" /></p>
+<figcaption>The directory structure within RevBayes highlighting where the integration tests can be found. Note specifically the bash script <code class="highlighter-rouge">run_integration_tests.sh</code>.</figcaption>
 </figure>
 
-<p>The outcome of this validation will allow us to determine if the following things are
-behaving correctly in RevBayes:</p>
+<p>Within the <strong>tests</strong> directory, there is one bash script call <code class="highlighter-rouge">run_integration_tests.sh</code>.
+This is the bash script that runs <em>all</em> integration tests.
+Additionally, there is a <strong>data</strong> directory where all the data needs to be stored.
+You must not store data for your integration elsewhere.</p>
 
-<ul>
-  <li>the functions for drawing random variates under the uniform, exponential, and normal distributions</li>
-  <li>the calculation of the probability densities under each distribution</li>
-  <li>the scale and slide moves</li>
-  <li>and all of the machinery that puts these components together.</li>
-</ul>
+<p>Then, each integration test has its own directory which must start with <strong>test_</strong>.
+If an integration test should excluded from the automatic testing, then simply prepend the directory with a <strong><em>**, for example, **_test_DEC_DA**.
+Our bash script <code class="highlighter-rouge">run_integration_tests.sh</code> traverses the **tests** directory and searches for all subdirectories starting with **test</em></strong>.
+Hence, if you add your new integration test by creating a new directory called, for example, <strong>test_my_first_test</strong>, then your new integration test if automatically included in our test suite.
+So far not too difficult ;)</p>
 
-<p>The validation methods in RevBayes will take a model and set of moves, simulate true values for stochastic nodes
-and an observed data,
-estimate the values for the stochastic nodes conditioned on the simulated data,
-and compare whether the true values fall within a given credible
-interval (the default value is 90%) for each stochastic random variable.
-This routine is performed for many simulation replicates
-(set in the validation script) and the coverage probability across replicates is summarized and
-reported to the screen.</p>
+<figure id="fig_dir_test"><p><img src="figures/integration_test_dir.png" width="600" /></p>
+<figcaption>The directory structure within a specific integration tests. There should always be at least the two subdirectories called <strong>output_expected</strong> and <strong>scripts</strong>.</figcaption>
+</figure>
 
-<p>The complete validation script for the Normal distribution can be found in the RevBayes GitHub
-repository:
-<a href="https://github.com/revbayes/revbayes/blob/master/validation/scripts/Validation_normal.Rev"><code class="highlighter-rouge">Validation_normal.Rev</code></a>.
-If you view this script, you will see that it begins with a header in comments that provide details about the script:</p>
-
+<p>Next, within a specific integration test, you need to have at least two subdirectories:</p>
 <ol>
-  <li><code class="highlighter-rouge"># RevBayes Validation Test: Normal Distribution</code> – the name of the validation test.</li>
-  <li><code class="highlighter-rouge"># Model: Just a single random variable from a normal distribution.</code> – a brief description of what the validation script is testing.</li>
-  <li><code class="highlighter-rouge">authors: Sebastian Hoehna</code> – the author of the script and the person you should contact if you implement any new functionality in RevBayes that break their validation test.</li>
+  <li><strong>scripts</strong>: containing the <code class="highlighter-rouge">Rev</code> scripts one for each integration test analysis. There could be multiple files as long as each is its own analysis because we assume that each script can be run by itself.</li>
+  <li><strong>output_expected</strong>: containing the expected output which basically is a copy of the output from your successful benchmark.</li>
 </ol>
 
-<h4 class="subsubsection" id="model">Specify the model</h4>
-<hr class="subsubsection" />
+<h3 class="subsection" id="norma">Writing an integration test</h3>
+<hr class="subsection" />
 
-<p>The first part of the script specifies the model DAG (<em>i.e.</em>, random variables and conditional dependency) and its dimensions (<em>i.e.</em> the number of samples).</p>
+<p>Let us look at a simple integration test as an example.
+Look at the file <a href="https://github.com/revbayes/revbayes/blob/master/test/test_BM/scripts/mcmc_BM.Rev">test/scripts/test_BM/scripts/mcmc_BM.Rev</a>.
+This script will run a standard Brownian motion analysis for a single continuous trait evolving along a phylogeny.
+The only estimated parameter here is the rate of evolution <code class="highlighter-rouge">sigma</code>.
+The details of the model are not important because they will differ for your analysis.
+In the end, an integration test a <em>almost</em> a standard analysis.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_samples = 10
+<p>The main differences and important aspects to consider/follow are:</p>
+<ul>
+  <li><code class="highlighter-rouge">seed(12345)</code>: We specify the seed of the random number generator at the very beginning of the script.</li>
+  <li><strong>data</strong>: We always assume that your data is stored in the common data directory, so we can share the data among tests.</li>
+  <li><strong>output</strong>: The results of the analysis will be stored in one or multiple files within the directory <strong>output</strong>. The is absolutely necessary because we run a <code class="highlighter-rouge">diff</code> on the directories <strong>output</strong> and <strong>output_expected</strong>.</li>
+  <li><strong>printgen</strong>: often it makes sense to print every iteration. Here we are not interested in convergence but instead in the correct sequence of MCMC steps which only occurs if the likelihoods and MCMC moves are still working exactly the same way.</li>
+  <li><strong>runtime</strong> Your integration test should not run longer than 5 seconds on your lousy laptop so that we can run hundreds of integration tests in less than 5 minutes. Therefore:
+    <ul>
+      <li>use a small toy dataset</li>
+      <li>run the MCMC only for very few iterations</li>
+      <li>use <code class="highlighter-rouge">moveschedule="single"</code> within the MCMC command to only use one move per generation.</li>
+    </ul>
+  </li>
+</ul>
 
-mi = 0
+<h3 class="subsection" id="run">Running the integration tests locally</h3>
+<hr class="subsection" />
 
-mu ~ dnUniform( -10, 10 )
-sigma ~ dnExponential( 1.0 )
-
-moves[ ++mi ] = mvSlide( mu )
-moves[ ++mi ] = mvScale( sigma )
-
-for (i in 1:n_samples ) {
-   x[i] ~ dnNormal(mu,sigma)
-   x[i].clamp( 0.0 )
-}
+<p>You can run the integration tests locally using (assuming your RevBayes GitHub directory is called <strong>revbayes</strong>)</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd revbayes/tests
+./run_integration_tests.sh "$PWD/../projects/cmake/rb"
 </code></pre></div></div>
+<p>This will run all the integration tests which can take a few minutes, but currently it should be less than 2 minutes.
+At the end, you will receive the results as the output:</p>
+<div class="Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#### Checking output from tests...
+#### Test passed: BM
+#### Test passed: BM_MVN
+#### Test passed: BP
+#### Test passed: CBDSP
+#### Test passed: ChromoSSE
+#### Test passed: Coal_const
+#### Test passed: Coal_skyline
+&gt;&gt;&gt;&gt; Test failed: DEC (expected)
+	mismatch: mcmc_DEC.out
+#### Test passed: EBD
+&gt;&gt;&gt;&gt; Test failed: FBDP (expected)
+	mismatch: mcmc_FBDP.out
+	mismatch: mcmc_FBDP.trees
+	mismatch: mcmc_FBDP_mcc.tre
+#### Test passed: HSMRF_BDP
+#### Test passed: JC_BDP
+#### Test passed: JC_EBD
+#### Test passed: JC_unrooted
+#### Test passed: MVN_move
+#### Test passed: OU
+#### Test passed: Partition
+#### Test passed: UCLD_noncentered
+#### Test passed: basics
+#### Test passed: multiple_mcmc
+#### Test passed: mvBM
+#### Test passed: skygrid
+#### Test passed: steppingstone
 
-<p>Note that in this script, the data node is clamped: <code class="highlighter-rouge">x[i].clamp( 0.0 )</code>. This is particularly necessary since
-the validation methods will change the clamped value to the simulated data value for each simulation replicate.
-It also doesn’t hurt to clamp the nodes in this case if you prefer to do so.</p>
 
-<p>Once the model DAG is set up, you can create a model workspace variable:</p>
+#### Success! unexpected failures: 0   expected failures: 2   total tests: 23
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(mu)
+
+
+#### All tests passed.
 </code></pre></div></div>
+<p>Yeah, all tests passed!</p>
 
-<h4 class="subsubsection" id="MCMC">Specify the MCMC object</h4>
-<hr class="subsubsection" />
+<p>Try now write your own integration test!</p>
 
-<p>Before using the validation functions, you need to first have an MCMC workspace variable. Because the <code class="highlighter-rouge">mcmc()</code>
-function requires a list of monitors, we must then create at least 1 monitor to satisfy the required arguments
-of that function. Ultimately, the validation functions will not actually use this monitor because a new ones
-will be created for each simulation replicate.</p>
+<h2 class="section" id="FAQ">Frequently Asked Questions</h2>
+<hr class="section" />
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[1] = mnModel(filename="output/normal_test.log",printgen=10, separator = TAB)
-</code></pre></div></div>
+<h3 class="subsection" id="MPI">The MPI version fails the test</h3>
+<hr class="subsection" />
 
-<p>The MCMC object is initialized just like in any normal MCMC analysis.</p>
+<p>Yes, the MPI version uses a different sequence of random numbers, and thus the expected output will look different.
+We are currently working on a solution for this problem.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves)
-</code></pre></div></div>
-
-<h4 class="subsubsection" id="valid">Specify the validation analysis</h4>
-<hr class="subsubsection" />
-
-<p>The first step in specifying the validation analysis is to create a workspace object using
-the <code class="highlighter-rouge">validationAnalysis()</code> function. This function takes 2 argments: (1) and MCMC object and (2) the number of
-simulation replicates you want it to perform.</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>validation = validationAnalysis( mymcmc, 1000 )
-</code></pre></div></div>
-
-<p>For this validation, note that we chose 1000 replicates. For very large numbers of replicates, you will have a
-better approximation of the coverage probability. However, there is a substantial trade-off when it comes to
-run-times. Some of the validation scripts can take quite a long time to run. Importantly, this can be alleviated
-if you compile the MPI version of RevBayes, which will run the individual replicates in parallel.</p>
-
-<p>Next, you can specify a burn-in period, which will run the MCMC for each replicate for a specified number
-of MCMC cycles, while re-tuning the moves.</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>validation.burnin(generations=10000,tuningInterval=1000)
-</code></pre></div></div>
-
-<p>Now you can run the validation MCMC. (As previously mentioned, it is best to compile the MPI version of RevBayes.)
-The number of generations should be chosen at your discretion, but this should be a sufficient number of samples
-so that you can ensure your MCMC has effectively sampled the target distribution.</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>validation.run(generations=30000)
-</code></pre></div></div>
-
-<h4 class="subsubsection" id="summarize">Validation summary</h4>
-<hr class="subsubsection" />
-
-<p>Once the validation run is complete, you can use the <code class="highlighter-rouge">.summarize()</code> method of the validation object.</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>validation.summarize()
-</code></pre></div></div>
-
-<div class="Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Summarizing analysis ...
-
-The validation analysis ran 1000 simulations to validate the implementation.
-This analysis used a 0.9 credible interval.
-Coverage frequencies should be between 0.881 and 0.918 in 95% of the simulations.
-
-Coverage frequencies of parameters in validation analysis:
-==========================================================
-mu                  		0.917
-sigma               		0.882
-</code></pre></div></div>
-
-<p>At this point, you should conduct a visual inspection of the coverage frequencies for the parameters of your model.
-Do the coverage frequencies fall withing the interval calculated by the validation analysis to a reasonable degree?
-In the example output above, the interval is 0.881 to 0.918.</p>
-
-<ol class="bibliography"><li><span id="Talts2018">Talts S., Betancourt M., Simpson D., Vehtari A., Gelman A. 2018. Validating Bayesian inference algorithms with simulation-based calibration. arXiv preprint arXiv:1804.06788.</span>
-
-</li></ol>
+<ol class="bibliography"></ol>
 
 <script type="text/javascript">
 var _ol = document.querySelectorAll('ol');
