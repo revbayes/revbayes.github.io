@@ -5,14 +5,15 @@ subtitle: Download and Install RevBayes
 permalink: /download
 code_layout: bash
 ---
+<h2>Command Line Interface</h2>
 <div class="row">
 <table class="table col-md-12">
     <thead>
         <tr>
             <th></th>
-            <th style="text-align: center"><img src="{{ site.baseurl }}{% link assets/img/apple.png %}" alt="Apple" width="100px" /><h2>Mac OS X</h2></th>
-            <th style="text-align: center"><img src="{{ site.baseurl }}{% link assets/img/windows.png %}" alt="Windows" width="100px" /><h2>Windows</h2></th>
-            <th style="text-align: center"><img src="{{ site.baseurl }}{% link assets/img/tux.png %}" alt="Linux" width="100px" /><h2>Linux</h2></th>
+            <th style="text-align: center"><img src="{{ site.baseurl }}{% link assets/img/apple.png %}" alt="Apple" width="100px" /><h3>Mac OS X</h3></th>
+            <th style="text-align: center"><img src="{{ site.baseurl }}{% link assets/img/windows.png %}" alt="Windows" width="100px" /><h3>Windows</h3></th>
+            <th style="text-align: center"><img src="{{ site.baseurl }}{% link assets/img/tux.png %}" alt="Linux" width="100px" /><h3>Linux</h3></th>
         </tr>
     </thead>
     <tbody>
@@ -47,4 +48,12 @@ code_layout: bash
         </tr>
     </tbody>
 </table>
+</div>
+<div class="row">
+<div class="col-md-12">
+<h2>Graphical Interface</h2>
+<ul>
+<li><a href="{% page_url gui_setup %}">Integration with Jupyter and RStudio</a></li>
+</ul>
+</div>
 </div>
