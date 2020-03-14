@@ -115,7 +115,7 @@
 <h2 class="section" id="ornstein-uhlenbeck-model">Ornstein-Uhlenbeck Model</h2>
 <hr class="section" />
 
-<p>Under the simple Ornstein-Uhlenbeck (OU) model, a continuous character is assumed to evolve toward an optimal value, $\theta$. The character evolves stochastically according to a drift parameter, $\sigma^2$. The character is pulled toward the optimum by a strength parameter, $\alpha$; larger values of alpha indicate that the character is pulled more strongly toward $\theta$. As the character moves away from $\theta$, the parameter $\alpha$ determines how strongly the character is pulled back. For this reason, $\alpha$ is sometimes referred to as a ‘‘rubber band’’ parameter. When the selection parameter $\alpha = 0$, the OU model collapses to the BM model. The resulting graphical model is quite simple, as the probability of the continuous characters depends only on the phylogeny (which we assume to be known in this tutorial) and the three OU parameter (<a href="#fig_ou_gm"></a>).</p>
+<p>Under the simple Ornstein-Uhlenbeck (OU) model, a continuous character is assumed to evolve toward an optimal value, $\theta$. The character evolves stochastically according to a drift parameter, $\sigma^2$. The character is pulled toward the optimum by the rate of adaptation, $\alpha$; larger values of alpha indicate that the character is pulled more strongly toward $\theta$. As the character moves away from $\theta$, the parameter $\alpha$ determines how strongly the character is pulled back. For this reason, $\alpha$ is sometimes referred to as a ‘‘rubber band’’ parameter. When the rate of adaptation parameter $\alpha = 0$, the OU model collapses to the BM model. The resulting graphical model is quite simple, as the probability of the continuous characters depends only on the phylogeny (which we assume to be known in this tutorial) and the three OU parameter (<a href="#fig_ou_gm"></a>).</p>
 
 <figure id="fig_ou_gm"><p><img src="figures/ou_gm.png" width="50%" height="50%" /></p>
 <figcaption>The graphical model representation of the homogeneous Ornstein-Uhlenbeck (OU) process.
@@ -170,10 +170,10 @@ monitors = VectorMonitors()
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale(sigma2, weight=1.0) )
 </code></pre></div></div>
 
-<h4 class="subsubsection" id="strength-parameter">Strength parameter</h4>
+<h4 class="subsubsection" id="adaptation-parameter">Adaptation parameter</h4>
 <hr class="subsubsection" />
 
-<p>The strength of selection toward the optimum is determined by the parameter $\alpha$. We draw $\alpha$ from an exponential prior distribution, and place a scale proposal on it.</p>
+<p>The rate of adaptation toward the optimum is determined by the parameter $\alpha$. We draw $\alpha$ from an exponential prior distribution, and place a scale proposal on it.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha ~ dnExponential(10)
 moves.append( mvScale(alpha, weight=1.0) )
 </code></pre></div></div>
@@ -233,10 +233,10 @@ output directory.</p>
 
 <p>⇨ The <code class="highlighter-rouge">Rev</code> file for performing this analysis: <code class="highlighter-rouge">mcmc_OU.Rev</code></p>
 
-<p>Characters evolving under the OU process will tend toward a stationary distribution, which is a normal distribution with mean $\theta$ and variance $\sigma^2 \div 2\alpha$. Therefore, if rates of evolution are high (or the branches in the tree are relatively long), it can be difficult to estimate $\sigma^2$ and $\alpha$ separately, since they both determine the long-term variance of the process. We can see whether this affects our analysis by examining the <em>joint posterior distribution</em> of the parameters in <code class="highlighter-rouge">Tracer</code>. When the parameters are positively correlated, we should hesitate to interpret their marginal distributions (<em>i.e.</em>, don’t make inferences about the strength parameter or the rate parameter separately).</p>
+<p>Characters evolving under the OU process will tend toward a stationary distribution, which is a normal distribution with mean $\theta$ and variance $\sigma^2 \div 2\alpha$. Therefore, if rates of evolution are high (or the branches in the tree are relatively long), it can be difficult to estimate $\sigma^2$ and $\alpha$ separately, since they both determine the long-term variance of the process. We can see whether this affects our analysis by examining the <em>joint posterior distribution</em> of the parameters in <code class="highlighter-rouge">Tracer</code>. When the parameters are positively correlated, we should hesitate to interpret their marginal distributions (<em>i.e.</em>, don’t make inferences about the rate of adaptation or the variance parameter separately).</p>
 
 <figure id="ou_figure"><p><img src="figures/ou_joint_posterior.png" height="50%" width="50%" /></p>
-<figcaption>Estimates of the joint posterior distribution of strength parameter, $\alpha$ (x-axis), and the rate of evolution, $\sigma^2$ (y-axis). Note that these parameters are positively correlated.</figcaption>
+<figcaption>Estimates of the joint posterior distribution of the rate of adaptation, $\alpha$ (x-axis), and the variance parameter, $\sigma^2$ (y-axis). Note that these parameters are positively correlated.</figcaption>
 </figure>
 
 <!--  -->
@@ -259,7 +259,7 @@ output directory.</p>
 <h3 class="subsection" id="model-selection-using-reversible-jump-mcmc">Model Selection using Reversible-Jump MCMC</h3>
 <hr class="subsection" />
 
-<p>To test the hypothesis that a character evolves toward a selective optimum, we imagine two models. The first model, where there is no selection, is the case when $\alpha = 0$. The second model corresponds to the OU model with $\alpha &gt; 0$. This works because Brownian motion is a special case of the OU model when the strength of selection is 0. Unfortunately, because $\alpha$ is a continuous parameters, a standard Markov chain will never visit states where each value is exactly equal to 0. Fortunately, we can use reversible jump to allow the Markov chain to consider visiting the Brownian-motion model. This involves specifying the prior probability on each of the two models, and providing the prior distribution for $\alpha$ for the OU model.</p>
+<p>To test the hypothesis that a character evolves toward a selective optimum, we imagine two models. The first model, where there is no adaptation towards the optimum, is the case when $\alpha = 0$. The second model corresponds to the OU model with $\alpha &gt; 0$. This works because Brownian motion is a special case of the OU model when the rate of adaptation is 0. Unfortunately, because $\alpha$ is a continuous parameters, a standard Markov chain will never visit states where each value is exactly equal to 0. Fortunately, we can use reversible jump to allow the Markov chain to consider visiting the Brownian-motion model. This involves specifying the prior probability on each of the two models, and providing the prior distribution for $\alpha$ for the OU model.</p>
 
 <p>Using rjMCMC allows the Markov chain to visit the two models in proportion to their posterior probability. The posterior probability of model $i$ is simply the fraction of samples where the chain was visiting that model. Because we also specify a prior on the models, we can compute a Bayes Factor for the OU model as:</p>
 

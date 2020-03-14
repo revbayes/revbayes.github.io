@@ -1,6 +1,6 @@
 {% section Ornstein-Uhlenbeck Model %}
 
-Under the simple Ornstein-Uhlenbeck (OU) model, a continuous character is assumed to evolve toward an optimal value, $\theta$. The character evolves stochastically according to a drift parameter, $\sigma^2$. The character is pulled toward the optimum by a strength parameter, $\alpha$; larger values of alpha indicate that the character is pulled more strongly toward $\theta$. As the character moves away from $\theta$, the parameter $\alpha$ determines how strongly the character is pulled back. For this reason, $\alpha$ is sometimes referred to as a ''rubber band'' parameter. When the selection parameter $\alpha = 0$, the OU model collapses to the BM model. The resulting graphical model is quite simple, as the probability of the continuous characters depends only on the phylogeny (which we assume to be known in this tutorial) and the three OU parameter ({% ref fig_ou_gm %}).
+Under the simple Ornstein-Uhlenbeck (OU) model, a continuous character is assumed to evolve toward an optimal value, $\theta$. The character evolves stochastically according to a drift parameter, $\sigma^2$. The character is pulled toward the optimum by the rate of adaptation, $\alpha$; larger values of alpha indicate that the character is pulled more strongly toward $\theta$. As the character moves away from $\theta$, the parameter $\alpha$ determines how strongly the character is pulled back. For this reason, $\alpha$ is sometimes referred to as a ''rubber band'' parameter. When the rate of adaptation parameter $\alpha = 0$, the OU model collapses to the BM model. The resulting graphical model is quite simple, as the probability of the continuous characters depends only on the phylogeny (which we assume to be known in this tutorial) and the three OU parameter ({% ref fig_ou_gm %}).
 
 {% figure fig_ou_gm %}
 <img src="figures/ou_gm.png" width="50%" height="50%" />
@@ -61,9 +61,9 @@ In order to estimate the posterior distribution of $\sigma^2$, we must provide a
 moves.append( mvScale(sigma2, weight=1.0) )
 ```
 
-{% subsubsection Strength parameter %}
+{% subsubsection Adaptation parameter %}
 
-The strength of selection toward the optimum is determined by the parameter $\alpha$. We draw $\alpha$ from an exponential prior distribution, and place a scale proposal on it.
+The rate of adaptation toward the optimum is determined by the parameter $\alpha$. We draw $\alpha$ from an exponential prior distribution, and place a scale proposal on it.
 ```
 alpha ~ dnExponential(10)
 moves.append( mvScale(alpha, weight=1.0) )
@@ -127,12 +127,12 @@ output directory.
 
 &#8680; The `Rev` file for performing this analysis: `mcmc_OU.Rev`
 
-Characters evolving under the OU process will tend toward a stationary distribution, which is a normal distribution with mean $\theta$ and variance $\sigma^2 \div 2\alpha$. Therefore, if rates of evolution are high (or the branches in the tree are relatively long), it can be difficult to estimate $\sigma^2$ and $\alpha$ separately, since they both determine the long-term variance of the process. We can see whether this affects our analysis by examining the _joint posterior distribution_ of the parameters in `Tracer`. When the parameters are positively correlated, we should hesitate to interpret their marginal distributions (_i.e._, don't make inferences about the strength parameter or the rate parameter separately).
+Characters evolving under the OU process will tend toward a stationary distribution, which is a normal distribution with mean $\theta$ and variance $\sigma^2 \div 2\alpha$. Therefore, if rates of evolution are high (or the branches in the tree are relatively long), it can be difficult to estimate $\sigma^2$ and $\alpha$ separately, since they both determine the long-term variance of the process. We can see whether this affects our analysis by examining the _joint posterior distribution_ of the parameters in `Tracer`. When the parameters are positively correlated, we should hesitate to interpret their marginal distributions (_i.e._, don't make inferences about the rate of adaptation or the variance parameter separately).
 
 {% figure ou_figure %}
 <img src="figures/ou_joint_posterior.png" height="50%" width="50%" />
 {% figcaption %}
-Estimates of the joint posterior distribution of strength parameter, $\alpha$ (x-axis), and the rate of evolution, $\sigma^2$ (y-axis). Note that these parameters are positively correlated.
+Estimates of the joint posterior distribution of the rate of adaptation, $\alpha$ (x-axis), and the variance parameter, $\sigma^2$ (y-axis). Note that these parameters are positively correlated.
 {% endfigcaption %}
 {% endfigure %}
 

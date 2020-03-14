@@ -85,13 +85,20 @@ sudo yum install cmake boost-devel
 
 <p>If you need to compile CMake yourself:</p>
 
-<p>TODO: <a href="https://cmake.org/install/">Test instructions for installing cmake</a></p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl -O -L https://github.com/Kitware/CMake/releases/download/v3.17.0-rc3/cmake-3.17.0-rc3.tar.gz
+tar -xzvf cmake-3.17.0-rc3.tar.gz
+cd cmake-3.17.0-rc3/
+./configure
+make
+</code></pre></div></div>
+
+<p>When this is completed, you will notice that there is now a <code class="highlighter-rouge">/bin</code> directory in the cmake directory. This contains the cmake executable. You may replace the call to cmake on line 45 of <code class="highlighter-rouge">build.sh</code> with this path to use your custom cmake installation.</p>
 
 <p>Then you can compile boost:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl -O -L https://dl.bintray.com/boostorg/release/1.71.0/source/boost_1_71_0.tar.gz
 tar -xzvf boost_1_71_0.tar.gz
-cd boost_1_71_0.tar.gz
+cd boost_1_71_0
 ./bootstrap.sh --with-libraries=atomic,chrono,filesystem,system,regex,thread,date_time,program_options,math,serialization
 ./b2 link=static
 </code></pre></div></div>
@@ -131,6 +138,12 @@ cd boost_1_71_0.tar.gz
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./build.sh -mpi true
 </code></pre></div></div>
+
+<p>Note that to compile the MPI version requires that an MPI library is installed. If you have root, openmpi can be install with apt or yum. If not, if can be <a href="https://www.open-mpi.org/">downloaded</a> and compiled.</p>
+
+<h2 id="a-note-on-compiling-revbayes-on-high-performance-compute-clusters">A note on compiling RevBayes on high-performance compute clusters</h2>
+
+<p>Most high-performance compute clusters have software available as “modules”. Cmake, GCC and boost are all commonly used in computational research. Using the <code class="highlighter-rouge">module avail</code> command followed by the name of the library will tell you if there is already a version installed, thus saving you the effort of performing these steps yourself.</p>
 
 <h2 id="troubleshooting">Troubleshooting</h2>
 
@@ -174,10 +187,15 @@ export PATH=&lt;your-revbayes-directory&gt;/projects/cmake:$PATH
     <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  export CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0"
 </code></pre></div>    </div>
 
-    <p>and then run build.sh again</p>
+    <p>and then run build.sh again. If this does not fix the issue, you may consider recompiling boost with your current version of GCC.</p>
+  </li>
+  <li>
+    <p><strong>I am using MPI RevBayes and receiving an ORTE transport error</strong></p>
+
+    <p>This typically occurs if the version of MPI that is in your environment is not the same as the one you used to compile RevBayes. For example, if you compiled RevBayes
+  with OpenMPI, but later installed Anaconda Python, which installs a Python MPI. If you receive this error, you might consider removing alternative MPI versions from your system path while running RevBayes. You can check which version of MPI you are using with the command <code class="highlighter-rouge">mpirun --version.</code> Note that you may want to remove the build directory before restarting your build.</p>
   </li>
 </ul>
-
 
       <br>
 <footer>

@@ -176,10 +176,10 @@ monitors = VectorMonitors()
 moves.append( mvScale(sigma2, weight=1.0) )
 </code></pre></div></div>
 
-<h4 class="subsubsection" id="strength-parameter">Strength parameter</h4>
+<h4 class="subsubsection" id="adaptation-parameter">Adaptation parameter</h4>
 <hr class="subsubsection" />
 
-<p>The strength of selection toward the optimum is determined by the parameter $\alpha$. We draw $\alpha$ from an exponential prior distribution, and place a scale proposal on it. This parameter is assumed to be constant across the tree (even though the optimum will vary).</p>
+<p>The rate of adaptation toward the optimum is determined by the parameter $\alpha$. We draw $\alpha$ from an exponential prior distribution, and place a scale proposal on it. This parameter is assumed to be constant across the tree (even though the optimum will vary).</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha ~ dnExponential(10)
 moves.append( mvScale(alpha, weight=1.0) )
 </code></pre></div></div>
