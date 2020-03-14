@@ -63,9 +63,9 @@ sigma2 ~ dnLoguniform(1e-3, 1)
 moves.append( mvScale(sigma2, weight=1.0) )
 ```
 
-{% subsubsection Strength parameter %}
+{% subsubsection Adaptation parameter %}
 
-The strength of selection toward the optimum is determined by the parameter $\alpha$. We draw $\alpha$ from an exponential prior distribution, and place a scale proposal on it. This parameter is assumed to be constant across the tree (even though the optimum will vary).
+The rate of adaptation toward the optimum is determined by the parameter $\alpha$. We draw $\alpha$ from an exponential prior distribution, and place a scale proposal on it. This parameter is assumed to be constant across the tree (even though the optimum will vary).
 ```
 alpha ~ dnExponential(10)
 moves.append( mvScale(alpha, weight=1.0) )
