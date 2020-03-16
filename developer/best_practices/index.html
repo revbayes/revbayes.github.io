@@ -72,40 +72,44 @@
 
 <h2 id="important-notes">Important notes</h2>
 <ul>
-  <li>member functions which reimplement functions from a parent class will automatically inherit their documentation from the parent. Only document these if additional details are required. The @copydoc commands allows to copy documentation from any other class or member.</li>
+  <li>member functions which reimplement functions from a parent class will automatically inherit their documentation from the parent. Only document these if additional details are required. The <code class="highlighter-rouge">@copydoc</code> commands allows to copy documentation from any other class or member.</li>
   <li>long documentation should always be placed just before the definition it applies to. Brief descriptions can be placed after members.</li>
 </ul>
 
 <h2 id="header-files-h">Header files (.h)</h2>
 <ul>
-  <li>document the class, with references (using the @cite command with a BibTEX reference) if applicable.</li>
+  <li>document the class, with references (using the <code class="highlighter-rouge">@cite</code> command with a BibTEX reference) if applicable.</li>
   <li>all members (functions and variables) including the private ones should be followed by a brief description (unless the parent description is adequate).</li>
+  <li>the <code class="highlighter-rouge">@file</code> annotation should be used only when the file contains no classes, otherwise classes should be documented rather than files.</li>
 </ul>
 
 <h2 id="implementation-files-cpp">Implementation files (.cpp)</h2>
 <ul>
   <li>detailed descriptions of member functions go there (unless the parent description is adequate).</li>
-  <li>the commands @param, @return and @throw are used to document respectively the parameters, the return value and the exceptions thrown.</li>
+  <li>the commands <code class="highlighter-rouge">@param</code>, <code class="highlighter-rouge">@return</code> and <code class="highlighter-rouge">@throw</code> are used to document respectively the parameters, the return value and the exceptions thrown.</li>
   <li>simple getters and setters do not need detailed documentation.</li>
 </ul>
 
 <h2 id="other-useful-doxygen-commands">Other useful doxygen commands</h2>
 <ul>
-  <li>@todo and @bug to document problematic behavior or missing features</li>
-  <li>@note and @warning to document tricky or unexpected behavior</li>
-  <li>@see to reference other classes/methods</li>
+  <li>LateX-style formulas can be included using the <code class="highlighter-rouge">@f$</code> annotation for inline text (example: <code class="highlighter-rouge">@f$n^2@f$</code>), and the <code class="highlighter-rouge">@f[</code> and <code class="highlighter-rouge">@f]</code> annotations for equations (example: <code class="highlighter-rouge">@f[ x = sum_{i=1}^n y^i @f]</code>)</li>
+  <li><code class="highlighter-rouge">@todo</code> and <code class="highlighter-rouge">@bug</code> to document problematic behavior or missing features</li>
+  <li><code class="highlighter-rouge">@note</code> and <code class="highlighter-rouge">@warning</code> to document tricky or unexpected behavior</li>
+  <li><code class="highlighter-rouge">@see</code> to reference other classes/methods</li>
 </ul>
 
 <h2 id="do">Do</h2>
 <ul>
   <li>include information about memory side-effects of the code, in particular the use of new and delete.</li>
   <li>document the default values of the parameters, if applicable.</li>
-  <li>inherit documentation or use the @copydoc command instead of copy-pasting whenever possible.</li>
+  <li>document private members.</li>
+  <li>inherit documentation or use the <code class="highlighter-rouge">@copydoc</code> command instead of copy-pasting whenever possible.</li>
+  <li>run Doxygen and check the output before submitting your new documentation.</li>
 </ul>
 
 <h2 id="do-not">Do not</h2>
 <ul>
-  <li>replicate information given by git, such as author or modification dates of the files. Exception: code adapted or copied from outside the RevBayes project should be credited to the original author and include licensing information if applicable.</li>
+  <li>replicate information given by git, such as author, license or modification dates of the files. Exception: code adapted or copied from outside the RevBayes project should be credited to the original author and include licensing information if applicable.</li>
   <li>restate information easily available in the code, such as the parent class.</li>
   <li>leave commented-out code unless accompanied by a comment stating what it does and why it was left in.</li>
 </ul>

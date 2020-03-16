@@ -58,29 +58,126 @@ Compile with Spack
 </h1>
 <hr>
 
-<p>Works on OSX and Linux.</p>
+<h2 id="what-is-spack">What is Spack?</h2>
 
-<p>Note: The instructions below will compile version 1.0.13. It is possible to compile the development branch with spack, but the spack package currently needs updated to reflect changes to the build process on the development branch. This page will be updated soon after that is complete.</p>
+<p><a href="https://spack.readthedocs.io/en/latest/index.html">Spack</a> is a package management tool designed to support multiple versions and configurations of software on a wide variety of platforms and environments. It was designed for large supercomputing centers, where many users and application teams share common installations of software on clusters with exotic architectures, using libraries that do not have a standard ABI.</p>
 
-<h2 id="compile-and-run-without-mpi">Compile and run without MPI</h2>
+<p>For RevBayes, it handles installing and linking the Boost and MPI dependencies for you. It also handles differences in the build process between versions of RevBayes.</p>
+
+<h2 id="pre-requisites">Pre-requisites</h2>
+
+<p>You will need to have C++ compiler installed on your computer, along with <code class="highlighter-rouge">git</code>, <code class="highlighter-rouge">make</code>, <code class="highlighter-rouge">curl</code>, and <code class="highlighter-rouge">python</code>. On OSX, <a href="https://apps.apple.com/us/app/xcode/id497799835?mt=12">XCode</a> is required.</p>
+
+<h2 id="set-up">Set up</h2>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/spack/spack.git
-cd spack/bin
-./spack compiler find
-./spack install revbayes ~mpi
-./spack load revbayes
+cd spack
+./share/spack/setup-env.sh
+spack compiler find
+</code></pre></div></div>
+
+<h2 id="compile-and-run">Compile and Run</h2>
+
+<h3 id="latest-stable-version">Latest stable version</h3>
+
+<h4 id="without-mpi">Without MPI</h4>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>spack install revbayes ~mpi
+spack load revbayes
 rb
 </code></pre></div></div>
 
-<h2 id="compile-and-run-with-mpi">Compile and run with MPI</h2>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/spack/spack.git
-cd spack/bin
-./spack compiler find
-./spack install revbayes +mpi
-./spack load revbayes
+<h4 id="with-mpi">With MPI</h4>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>spack install revbayes +mpi
+spack load revbayes
 mpirun rb-mpi
 </code></pre></div></div>
+
+<h3 id="development-version">Development version</h3>
+
+<p>Note: Due to build process changes on the development branch, this doesn’t quite work yet. It will after <a href="https://github.com/spack/spack/pull/15485">this pull request</a> is merged. This comment will be removed after that happens.</p>
+
+<h4 id="without-mpi-1">Without MPI</h4>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>spack install revbayes@develop ~mpi
+spack load revbayes
+rb
+</code></pre></div></div>
+
+<h4 id="with-mpi-1">With MPI</h4>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>spack install revbayes@develop +mpi
+spack load revbayes
+mpirun rb-mpi
+</code></pre></div></div>
+
+<h3 id="older-version">Older version</h3>
+
+<p>You can install older versions by replacing <code class="highlighter-rouge">@develop</code> in the development version commands with <code class="highlighter-rouge">@version</code>. E.g.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>spack install revbayes@1.0.12 ~mpi`.
+</code></pre></div></div>
+
+<p>To get a list of available versions run:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>spack info revbayes
+</code></pre></div></div>
+
+<h2 id="troubleshooting">Troubleshooting</h2>
+
+<h3 id="error-revbayesdevelop-matches-multiple-packages"><code class="highlighter-rouge">Error: revbayes@develop matches multiple packages.</code></h3>
+
+<p>The error message should have a list of of packages like so:</p>
+
+<blockquote>
+  <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Matching packages:
+    abe2xnq revbayes@develop%gcc@9.2.1 arch=linux-fedora31-skylake
+    l6sv4oz revbayes@develop%gcc@9.2.1 arch=linux-fedora31-skylake
+</code></pre></div>  </div>
+</blockquote>
+
+<p>The text before <code class="highlighter-rouge">revbayes</code> in each line is the has for the package. You can get more information by doing <code class="highlighter-rouge">spack find --deps /hash</code>. E.g.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>spack find --deps /abe2xnq
+</code></pre></div></div>
+
+<p>Which shows</p>
+
+<blockquote>
+  <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> -- linux-fedora31-skylake / gcc@9.2.1 ---------------------------
+ revbayes@develop
+     boost@1.72.0
+         bzip2@1.0.8
+         zlib@1.2.11
+</code></pre></div>  </div>
+</blockquote>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>spack find --deps /l6sv4oz
+</code></pre></div></div>
+
+<p>Which shows</p>
+
+<blockquote>
+  <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> ==&gt; 1 installed package
+ -- linux-fedora31-skylake / gcc@9.2.1 ---------------------------
+ revbayes@develop
+     boost@1.72.0
+         bzip2@1.0.8
+         zlib@1.2.11
+     openmpi@3.1.5
+         hwloc@1.11.11
+             libpciaccess@0.13.5
+             libxml2@2.9.9
+                 libiconv@1.16
+                 xz@5.2.4
+             numactl@2.0.12
+</code></pre></div>  </div>
+</blockquote>
+
+<p>The difference here is that l6sv4oz was compiled with mpi support.</p>
+
+<p>We can load it with</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>spack load /l6sv4oz
+</code></pre></div></div>
+
 
       <br>
 <footer>
