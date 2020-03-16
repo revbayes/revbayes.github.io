@@ -29,5 +29,5 @@ cd spack/bin
 ./spack compiler find
 ./spack install revbayes +mpi
 ./spack load revbayes
-rb
+mpirun rb-mpi
 ```
