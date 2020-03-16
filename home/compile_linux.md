@@ -87,6 +87,8 @@ Most high-performance compute clusters have software available as "modules". Cma
 
 ## Troubleshooting
 
+### General
+
 * `rb: command not found`
 
     The problem is that you tried to run RevBayes but your computer doesn't know where the executable is. The easiest way is to add the directory in which you compiled RevBayes to your system path:
@@ -98,6 +100,8 @@ export PATH=<your_revbayes_directory>/projects/cmake:$PATH
 * `Error cmake not found!`  
 
    Please double check that CMake is installed.
+
+### Boost
 
 * `Error can't find the libboost_filesystem.so library or Library not   loaded: libboost_filesystem.so`
 
@@ -128,6 +132,8 @@ export PATH=<your-revbayes-directory>/projects/cmake:$PATH
     ```
 
     and then run build.sh again. If this does not fix the issue, you may consider recompiling boost with your current version of GCC.
+
+### MPI
 
 * **I am using MPI RevBayes and receiving an ORTE transport error**
 
