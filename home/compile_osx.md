@@ -79,7 +79,9 @@ To compile with a locally compiled boost, do the following. Be sure to replace t
 
 You will likely see some compiler warnings (e.g. `clang: warning: optimization flag '-finline-functions' is not supported`). This is normal. 
 
-### Troubleshooting
+## Troubleshooting
+
+### General
 
 * `rb: command not found`
     
@@ -92,6 +94,8 @@ export PATH=<your_revbayes_directory>/projects/cmake:$PATH
 * `Error cmake not found!`  
    
    Please double check that CMake is installed. For OS X, go to step 2 above.
+
+### Boost
 
 * `Error can't find the libboost_filesystem.dylib library or Library not   loaded: libboost_filesystem.dylib` 
    
