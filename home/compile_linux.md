@@ -63,7 +63,7 @@ When it is done, something like the following will be printed. You will need the
 
 Then obtain the source:
 
-    git clone https://github.com/revbayes/revbayes.git revbayes
+    git clone --branch development https://github.com/revbayes/revbayes.git revbayes
 
 To compile with system boost:
 

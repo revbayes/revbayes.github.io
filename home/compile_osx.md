@@ -52,7 +52,7 @@ When it is done, something like the following will be printed. You will need the
 Download RevBayes from our github repository. Clone the repository using git by running the following command in the terminal 
 
 ``` 
-git clone https://github.com/revbayes/revbayes.git revbayes
+git clone --branch development https://github.com/revbayes/revbayes.git revbayes
 ```
 
 Open a terminal and go to the RevBayes cmake directory:
