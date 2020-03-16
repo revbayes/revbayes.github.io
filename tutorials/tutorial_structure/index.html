@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Setting Up RevBayes</h1>
 	<h3 class="subtitle">Preparing your computer to work with phylogenetic data in RevBayes</h3>
 	<h4 class="authors">April Wright</h4>
-  <h5>Last modified on October  5, 2019</h5>
+  <h5>Last modified on March 15, 2020</h5>
 </div>
 
 
@@ -149,7 +149,7 @@ A graphic of this is shown in Fig. 1.</p>
 Instead, we will translate this information into text.</p>
 
 <figure id="example"><p><img src="figures/Directory.png" width="600" /></p>
-<figcaption>This is an example of the Macintosh File Viewer. In this instance, I have adirectory, <code class="highlighter-rouge">Tutorials</code> with a subdirectory for this specific tutorial.</figcaption>
+<figcaption>This is an example of the Macintosh File Viewer. In this instance, I have a directoy, <code class="highlighter-rouge">Tutorials</code> with a subdirectory for this specific tutorial.</figcaption>
 </figure>
 
 <h4 class="subsubsection" id="macintosh">Macintosh</h4>
@@ -275,7 +275,7 @@ This can be seen in <a href="#Directory"></a></p>
 Instead, we will translate this information into text.</p>
 
 <figure id="Directory"><p><img src="figures/Directory.png" width="600" /></p>
-<figcaption>This is an example of the Macintosh File Viewer. In this instance, I have adirectory, <code class="highlighter-rouge">tutorials</code> with a subdirectory for this specific tutorial.</figcaption>
+<figcaption>This is an example of the Macintosh File Viewer. In this instance, I have a directoy, <code class="highlighter-rouge">tutorials</code> with a subdirectory for this specific tutorial.</figcaption>
 </figure>
 
 <h4 class="subsubsection" id="macintosh-and-linux">Macintosh and Linux</h4>
@@ -344,13 +344,96 @@ My tutorial directory, as shown in Figure 1, will be written out as:</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> source("scripts/test.Rev")
 </code></pre></div></div>
 
-<p>If everything has suceeded, you will see the following output:</p>
+<p>If everything has succeeded, you will see the following output:</p>
 
 <div class="Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   Processing file "scripts/test.Rev"
    Hi there! Welcome to RevBayes! I am now going to read in some test data.
    Successfully read one character matrix from file 'data/primates_and_galeopterus_cytb.nex'
    Congratulations, you set up your scripts and code directories correctly.
 </code></pre></div></div>
+
+<h2 class="section" id="rstudio">RStudio</h2>
+<hr class="section" />
+
+<p>Many RevBayes users may want to use RevBayes through RStudio (missing reference), a popular graphical interface for R.
+R is a fairly common computing language in biology.
+In this section of the tutorial, we will focus on running RevBayes from RStudio. Once you’ve followed the RStudio instructions on the <a href="https://revbayes.github.io/gui-setup">installs page</a>, you can run use Rev language as you would in a standard RMarkown document.</p>
+
+<p>RStudio has an interface with four panes: the editor (upper left), console (lower left), environment (upper right), and files (lower right).
+This can be seen below</p>
+<figure id="Rstudio"><p><img src="figures/RStudio.png" width="800" /></p>
+<figcaption>A sample RStudio window.</figcaption>
+</figure>
+
+<p>In the upper-right hand panel, start a new RMarkdown document. RMarkdown is used via “chunks”, or  lines of code. In a new RMarkdown notebook, the first cell is shown in <a href="#markdownsetup"></a></p>
+
+<figure id="markdownsetup"><p><img src="figures/RSetup.png" width="600" /></p>
+<figcaption>The first cell of an RMarkdown notebook.</figcaption>
+</figure>
+
+<p>We will edit this cell to add two variables, the root directory and the engine.path. The working directory tells R what directory you want to work in. We will set this equal to the directory to which we downloaded the data and scripts. For example, if the directory structure if as shown in figure <a href="#example"></a>, this line will be <code class="highlighter-rouge">knitr::opts_chunk$set(root.dir = "~/projects/tutorials/tutorial_structure/)</code> on Mac and Linux. On PC, it will be <code class="highlighter-rouge">setwd("c:\\april\\tutorials\\tutorial_structure")</code>.</p>
+
+<p>The engine.path is where RevBayes is on your computer. If my copy of RevBayes is in a directory called “software” in my user home, my enine path will be <code class="highlighter-rouge">knitr::opts_chunk$set(engine.pat="~/software/rb")</code> on Mac and Linux or <code class="highlighter-rouge">knitr::opts_chunk$set(engine.path="c:\\april\\software\\rb")</code> on PC.</p>
+
+<p>The appearance of the setup cell can be seen below.</p>
+
+<figure id="CompletedSetup"><p><img src="figures/CompletedSetup.png" width="400" /></p>
+<figcaption>This setup cell shows an example of setting the work directory and the engine path (to tell R where RevBayes is located).</figcaption>
+</figure>
+
+<p>Run this chunk by clicking the green arrow in the upper-left hand corner of the cell.</p>
+
+<p>Next, you will note other RMarkdown chunks in the document. By changing the <code class="highlighter-rouge">r</code> in the curly braces to <code class="highlighter-rouge">rb</code>, we can run RevBayes in a markdown document. By choosing <code class="highlighter-rouge">r</code> or <code class="highlighter-rouge">rb</code>, we can use both the R programming language and RevBayes in the same notebook.</p>
+
+<figure id="RBMkd"><p><img src="figures/RbMarkdown.png" width="300" /></p>
+<figcaption>This is an example of a Rev Markdown cell inside an RMarkdown document.</figcaption>
+</figure>
+
+<pre><code class="language-{rb}">variable &lt;- "Hi there! Welcome to RevBayes! I am now going to read in some test data."
+
+variable
+</code></pre>
+
+<p>Run it by clicking the green arrow. If this execute correctly, you will receive the message.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   Processing file "scripts/test.Rev"
+   Hi there! Welcome to RevBayes! I am now going to read in some test data.
+</code></pre></div></div>
+
+<p>Now, we’ll actually read in the data. Start a new Markdown chunk and enter:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>molecular &lt;- readDiscreteCharacterData("data/example_file.nex")
+
+success &lt;- "Congratulations, you set up your scripts and code directories correctly."
+
+success
+q()
+</code></pre></div></div>
+
+<p>If this executes correctly, you will receive the output:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   Successfully read one character matrix from file 'data/primates_and_galeopterus_cytb.nex'
+   Congratulations, you set up your scripts and code directories correctly.
+</code></pre></div></div>
+
+<p>If you have made a mistake and need to erase previous output, you can add a flag to the markdown cells that refreshes previously-entered commands, as shown in figure <a href="#mistake"></a>.</p>
+
+<figure id="mistake"><p><img src="figures/freshchunkrb.png" width="300" /></p>
+<figcaption>This is an example of how to reset after making a mistake.</figcaption>
+</figure>
+
+<p>Lastly, the entire document can be <code class="highlighter-rouge">knitted</code> to an output file. At the top of your screen, there is a button labeled Knit. This allows you to run all of your code and save the text, output, and figures to html, PDF, and other formats.</p>
+
+<h2 class="section" id="using-jupyter">Using Jupyter</h2>
+<hr class="section" />
+
+<p>Jupyter (missing reference) is a popular interface for programming in python, though it implements numerous other languages. Once you have completed the instructions on the <a href="https://revbayes.github.io/gui-setup">installs page</a>, you will be able to choose RevBayes as a possible language. An example of this is below.</p>
+
+<figure id="mistake"><p><img src="figures/Jupyter.png" width="800" /></p>
+<figcaption>This is a Jupyter notebook with the language set to Rev.</figcaption>
+</figure>
+
+<p>Once the language is set to Rev, all cells in the notebook will execute using RevBayes. Example notebooks can be found in the <a href="https://github.com/revbayes/RevNotebooks">notebooks</a> repository.</p>
 
 <ol class="bibliography"><li><span id="Hoehna2016b">Höhna S., Landis M.J., Heath T.A., Boussau B., Lartillot N., Moore B.R., Huelsenbeck J.P., Ronquist F. 2016. RevBayes: Bayesian Phylogenetic Inference Using Graphical Models and an Interactive Model-Specification Language. Systematic Biology. 65:726–736.</span>
 
