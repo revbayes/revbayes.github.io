@@ -126,36 +126,38 @@ mpirun rb-mpi
 
 <p>The error message should have a list of of packages like so:</p>
 
-<blockquote>
-  <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Matching packages:
+<pre>
+Matching packages:
     abe2xnq revbayes@develop%gcc@9.2.1 arch=linux-fedora31-skylake
     l6sv4oz revbayes@develop%gcc@9.2.1 arch=linux-fedora31-skylake
-</code></pre></div>  </div>
-</blockquote>
+</pre>
 
-<p>The text before <code class="highlighter-rouge">revbayes</code> in each line is the hash for the package. You can get more information by doing <code class="highlighter-rouge">spack find --deps /hash</code>. E.g.</p>
+<p>The text before <code class="highlighter-rouge">revbayes</code> in each line is the hash for the package. You can get more information on the difference between the two packages by doing:</p>
+
+<p>Package 1:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>spack find --deps /abe2xnq
 </code></pre></div></div>
 
 <p>Which shows</p>
 
-<blockquote>
-  <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-- linux-fedora31-skylake / gcc@9.2.1 ---------------------------
+<pre>
+-- linux-fedora31-skylake / gcc@9.2.1 ---------------------------
 revbayes@develop
     boost@1.72.0
         bzip2@1.0.8
         zlib@1.2.11
-</code></pre></div>  </div>
-</blockquote>
+</pre>
+
+<p>Package 2:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>spack find --deps /l6sv4oz
 </code></pre></div></div>
 
 <p>Which shows</p>
 
-<blockquote>
-  <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>==&gt; 1 installed package
+<pre>
+==&gt; 1 installed package
 -- linux-fedora31-skylake / gcc@9.2.1 ---------------------------
 revbayes@develop
     boost@1.72.0
@@ -168,8 +170,7 @@ revbayes@develop
                 libiconv@1.16
                 xz@5.2.4
             numactl@2.0.12
-</code></pre></div>  </div>
-</blockquote>
+</pre>
 
 <p>The difference here is that l6sv4oz was compiled with mpi support.</p>
 
@@ -177,7 +178,6 @@ revbayes@develop
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>spack load /l6sv4oz
 </code></pre></div></div>
-
 
       <br>
 <footer>
