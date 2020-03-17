@@ -1,30 +1,30 @@
 ---
 title: A simple FBD analysis
 subtitle: Joint inference of divergence times and phylogenetic relationships of fossil and extant taxa from morphological data
-authors:  Tracy A. Heath, Josh Justison, Joëlle Barido-Sottani, and Walker Pett
+authors:  Joëlle Barido-Sottani, Josh Justison, Walker Pett, and Tracy Heath
 level: 1
 order: 15
 prerequisites:
 - intro
 - mcmc
 exclude_files:
-index: true
+index: false
 redirect: false
 ---
 
 
 {% section Overview | overview %}
 
-This tutorial shows a simple phylogenetic analysis of extant and fossil bear species (family Ursidae), using morphological data as well as fossil occurrence data from the fossil record. 
+This tutorial provides a guide to using RevBayes to perform a simple phylogenetic analysis of extant and fossil bear species (family Ursidae), using morphological data as well as the occurrence times of lineages from the fossil record. 
 
 {% section Introduction | introduction %}
 
 To get an overview of the model, it is useful to think of the model as a generating process for our data. Suppose we would like to simulate our fossil and morphological data; we would consider two components ({% ref fig_overview_gm %}):
 
 - **Time tree model**: This is the diversification process that describes the how a phylogeny is generated as well as when fossils are sampled along each lineage on the phylogeny.  This component generates the phylogeny, divergence times, and the fossil occurrence data. The tree topology and node ages are parameters of the model that generates our morphological characters.
-- **Discrete morphological character change model**: This model describes how discrete morphological character states change over time on the phylogeny. The generation of observed morphological data is governed by other model components including the substitution process, how rates vary among characters in our matrix and among branches on the tree.
+- **Discrete morphological character change model**: This model describes how discrete morphological character states change over time on the phylogeny. The generation of observed morphological character states is governed by other model components including the substitution process and variation among characters in our matrix and among branches on the tree.
 
-These two components, or modules, will create the backbone of our inference model and reflect our prior beliefs on how the tree, fossil data, and morphological trait data occur. We will provide a brief overview of the specific models used within each component while pointing to other tutorials that implement alternative models. 
+These two components, or modules, form the backbone of the inference model and reflect our prior beliefs on how the tree, fossil data, and morphological trait data are generated. We will provide a brief overview of the specific models used within each component while pointing to other tutorials that implement alternative models. 
 
 {% figure fig_overview_gm %}
 <img src="figures/tikz/model_overview.png" width="700" /> 
@@ -36,7 +36,7 @@ analysis described in this tutorial.
 
 {% subsection Time Tree Model: The Fossilized Birth-Death Process %}
 
-The fossilized birth death process (FBD) provides a joint distribution on the divergence times of living and extinct species, the tree topology, and the sampling of fossils {% cite Stadler2010 Heath2014 %}. The FBD can be broken into two sub processes, the birth-death process and the fossilization process.
+The fossilized birth death (FBD) process provides a joint distribution on the divergence times of living and extinct species, the tree topology, and the sampling of fossils {% cite Stadler2010 Heath2014 %}. The FBD model can be broken into two sub processes, the birth-death process and the fossilization process.
 
 {% subsubsection Birth-Death Process %}
 
@@ -44,7 +44,7 @@ The birth-death process is a branching process that provides a distribution for 
 
 The birth-death process depends on two other parameters as well, the origin time and the sampling probability. The origin time, denoted $\phi$, represents the starting time of the stem lineage, which is the age of the entire process. The sampling probability, denoted $\rho$, gives the probability that an extant species is sampled.
 
-The assumption that, at any given time, each lineage has the same speciation rate and extinction rate may not be realistic or valid in some systems. RevBayes currently allows for this assumption to be violated in numerous ways such as, [episodic diversification rates]({% page_url divrate/ebd %}), [environment-dependent diversification rates]({% page_url divrate/env %}), [branch-specific diversification rates]({% page_url divrate/branch_specific %}), or [diversification rates tied to a species trait]({% page_url sse/bisse-intro %}). 
+The assumption that, at any given time, each lineage has the same speciation rate and extinction rate may not be realistic or valid in some systems. Several models are currently implemented in RevBayes that relax the assumption of constant rates such as, [episodic diversification rates]({% page_url divrate/ebd %}), [environment-dependent diversification rates]({% page_url divrate/env %}), [branch-specific diversification rates]({% page_url divrate/branch_specific %}), or [diversification rates tied to a species trait]({% page_url sse/bisse-intro %}). 
 
 {% subsubsection Fossilization Process %}
 
@@ -83,27 +83,31 @@ $(a_i,b_i)$.
 
 {% subsection Discrete Morphological Character Change Model %}
 
-Given a phylogeny, the discrete morphological character change model will describe how traits change along each lineage, resulting in the observed morphologies of fossils and living species. In our case, the phylogeny and fossil occurrences are generated from the FBD process and we will be modelling the evolution of discrete morphological characters with two states. There are three main components to consider with modeling discrete morphological traits: the substitution model, the branch rate model, and the site rate model. 
+Given a phylogeny, the discrete morphological character change model will describe how traits change along each lineage, resulting in the observed character states of fossils and living species. In our case, the phylogeny and fossil occurrences are generated from the FBD process and we will be modeling the evolution of discrete morphological characters with two states. There are three main components to consider with modeling discrete morphological traits: the substitution model, the branch rate model, and the site rate model. 
 
 {% subsubsection Substitution Model %}
 
- The substitution model describes how traits transition from one character to another. We will be using the Mk model {% cite Lewis2001 %}, a generalization of the Jukes-Cantor model. However, since our characters have only two states, we will specifically be using the Mk2 model. The Mk models assume that each trait has an equal rate of transitioning to any other state. For an Mk2 model, a transition from 0 to 1 is equally as likely as a transition from 1 to 0.
+ The substitution model describes how discrete morphological characters evolve over time. We will be using the Mk model {% cite Lewis2001 %}, a generalization of the Jukes-Cantor model described for nucleotide substitutions. The Mk model assumes that all transitions from one state to another occur at the same rate, for all $k$ states. Since the characters used in this tutorial all have two states, we will specifically be using a model where $k=2$. Thus, a transition from state 0 to state 1 is equally as likely as a transition from state 1 to state 0.
 
-Once some traits transition into a certain state they rarely transition back, this likely means that the assumption of symmetric rates is broken. Alternatively, in Revbayes [asymmetric transition rates] ({% page_url morph_tree %}) for each state can be specified. Additionally, if some characters change symetrically while other change asymetrically, they can  be [partitioned into groups]({% page_url partition %}) with different substitution models.
+Once some characters transition to certain state, they rarely transition back, this likely means that the assumption of symmetric rates is violated. We can accommodate [asymmetric transition rates]({% page_url morph_tree %}) for each state using alternative models in RevBayes. Additionally, if some characters change symmetrically while others change asymmetrically, it is possible to [partition]({% page_url partition %}) the character matrix to account for model heterogeneity in the matrix.
 
 {% subsubsection Branch Rate Model %}
 
-This component models quickly each branch evolves relative to one another. Each tree branch can be given a non-negative real value that acts as a scalar for the rate of trait evolution. In our case we assume each branch has the same rate of evolution, this is known as the strict clock {% cite Zuckerkandl1962 %}.
+The branch-rate model describes how rates of morphological state transitions vary among branches in the tree. Each lineage in the phylogeny is assigned a value that acts as a scalar for the rate of character evolution. In our case we assume each branch has the same rate of evolution, this is a strict morphological clock {% cite Zuckerkandl1962 %}.
 
-The assumption of a strict clock can be relaxed to assume correlated or uncorrelated clocks. Usage of an uncorrelated clock is shown here. 
+It is also possible to account for variation in rates among branches. These "relaxed-clock" models are commonly applied to molecular datasets and are currently implemented in RevBayes.
 
 {% subsubsection Site Rate Model %}
 
-The site rate model describes how quickly each trait evolves relative to one another. Similar to the branch rate model in that scalars are used to modulate rates of change, however, instead of giving a scalar to each branch, a scalar is given to each trait to model the disparity between their rates of evolution. In our case we will assume that each trait will belong to one of four rate categories from the discretized gamma distribution {% cite Yang1994 %}. In our case, the discretized gamma distribution is parameterized by shape parameter $\alpha$ and number of rate categories $n$. Normally a gamma distribution requires a shape $\alpha$ and rate $\beta$ parameters, however, we want our site rates to have a mean of one and this occurs only when $\alpha$**=**$\beta$, thus eliminating the rate parameter. The parameter $n$ breaks the gamma distribution into $n$ equiprobable groups where the value of each group is equal to the mean value within that group. 
+The rate of character evolution can often vary from one column in the matrix to another. Under this model, a scalar is applied to each character to account for variation in relative rates. In our case we will assume that each trait will belong to one of four rate categories from the discretized gamma distribution {% cite Yang1994 %}, which is parameterized by shape parameter $\alpha$ and number of rate categories $n$. Normally a gamma distribution requires a shape $\alpha$ and rate $\beta$ parameters, however, because we want our site rates to have a mean of one and this occurs only when $\alpha=\beta$, thus eliminating the second parameter. The parameter $n$ breaks the gamma distribution into $n$ equiprobable bins where the rate value of each bin is equal to its mean. 
 
 {% subsection Putting The Model Together %}
 
-We have outlined the specific processes used to model the time tree component and morphological trait evolution component of our model along with their affiliated parameters. Fig A shows our model as a probabilistic graph that we can use for inference (See {% citet Hoehna2014b %} for more on graphical models). If we knew all of the associated parameters all we would need to do is fit our data to the model to estimate the reconstructed phylogeny of sampled living and fossilized taxa. However, in practice these parameters are not known and must be estimated with the phylogeny. We need to model each parameter from a prior distribution that reflects our beliefs about how that parameter value was generated (model with priors shown in Fig B). 
+We have outlined the specific processes forming the time tree module and morphological character evolution module of the complete phylogenetic model. Fig A shows our model as a probabilistic graph that we can use for inference (See {% citet Hoehna2014b %} for more on graphical models). 
+
+	TODO: add figure
+
+If we knew the values of the associated parameters all we would need to do is fit our data to the model to estimate the reconstructed phylogeny of sampled living and fossilized taxa. However, in practice these parameters are not known and must be estimated with the phylogeny. We need to model each parameter from a prior distribution that reflects our beliefs about how that parameter value was generated (model with priors shown in Fig B). 
 
 {% subsection Creating Other Models %}
 
