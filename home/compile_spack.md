@@ -81,11 +81,15 @@ spack info revbayes
 
 The error message should have a list of of packages like so:
 
->     Matching packages:
->         abe2xnq revbayes@develop%gcc@9.2.1 arch=linux-fedora31-skylake
->         l6sv4oz revbayes@develop%gcc@9.2.1 arch=linux-fedora31-skylake
+<pre>
+Matching packages:
+    abe2xnq revbayes@develop%gcc@9.2.1 arch=linux-fedora31-skylake
+    l6sv4oz revbayes@develop%gcc@9.2.1 arch=linux-fedora31-skylake
+</pre>
 
-The text before `revbayes` in each line is the hash for the package. You can get more information by doing `spack find --deps /hash`. E.g.
+The text before `revbayes` in each line is the hash for the package. You can get more information on the difference between the two packages by doing:
+
+Package 1:
 
 ```
 spack find --deps /abe2xnq
@@ -93,11 +97,15 @@ spack find --deps /abe2xnq
 
 Which shows 
 
->     -- linux-fedora31-skylake / gcc@9.2.1 ---------------------------
->     revbayes@develop
->         boost@1.72.0
->             bzip2@1.0.8
->             zlib@1.2.11
+<pre>
+-- linux-fedora31-skylake / gcc@9.2.1 ---------------------------
+revbayes@develop
+    boost@1.72.0
+        bzip2@1.0.8
+        zlib@1.2.11
+</pre>
+
+Package 2:
 
 ```
 spack find --deps /l6sv4oz
@@ -105,20 +113,21 @@ spack find --deps /l6sv4oz
 
 Which shows
 
->     ==> 1 installed package
->     -- linux-fedora31-skylake / gcc@9.2.1 ---------------------------
->     revbayes@develop
->         boost@1.72.0
->             bzip2@1.0.8
->             zlib@1.2.11
->         openmpi@3.1.5
->             hwloc@1.11.11
->                 libpciaccess@0.13.5
->                 libxml2@2.9.9
->                     libiconv@1.16
->                     xz@5.2.4
->                 numactl@2.0.12
-
+<pre>
+==> 1 installed package
+-- linux-fedora31-skylake / gcc@9.2.1 ---------------------------
+revbayes@develop
+    boost@1.72.0
+        bzip2@1.0.8
+        zlib@1.2.11
+    openmpi@3.1.5
+        hwloc@1.11.11
+            libpciaccess@0.13.5
+            libxml2@2.9.9
+                libiconv@1.16
+                xz@5.2.4
+            numactl@2.0.12
+</pre>
 
 The difference here is that l6sv4oz was compiled with mpi support.
 
@@ -127,6 +136,3 @@ We can load it with
 ```
 spack load /l6sv4oz
 ```
-
-
-
