@@ -1,0 +1,55 @@
+\definecolor{shc}{RGB}{238,224,229}
+\definecolor{shc2}{RGB}{182,152,195}
+\definecolor{brnt}{RGB}{221,132,13}
+\begin{tikzpicture}
+\node[snode] (tree) at (1,1) {\LARGE $\mathcal{T}$};
+\node[snode] (lambda) at ($(tree)+(-3,0)$) {\LARGE $\lambda$};
+\node[snode] (mu) at ($(tree)+(-2,2)$) {\LARGE $\mu$};
+\node[snode] (psi) at ($(tree)+(0,3)$) {\LARGE $\psi$};
+\node[constnode] (nul) at ($(lambda)+(-1.5,0)$) {\Large {\tt 10}};
+\node[constnode] (num) at ($(mu)+(-1.5,1.5)$) {\Large {\tt 10}};
+\node[constnode] (nup) at ($(psi)+(0,1.5)$) {\Large {\tt 10}};
+%\node[white, fill=brnt, shape=rectangle, rounded corners] at ($(lambda)+(0,-1)$) {speciation rate};
+%\node[white, fill=brnt, shape=rectangle, rounded corners] at ($(mu)+(0.6,0)$) [right]{extinction rate};
+%\node[white, fill=brnt, shape=rectangle, rounded corners] at ($(psi)+(0,-1)$) [centered]{fossilization rate};
+%\node at ($(lambda)+(0,0.75)$) {\scriptsize exponential};
+%\node at ($(mu)+(0,0.75)$) {\scriptsize exponential};
+%\node at ($(psi)+(0,0.75)$) {\scriptsize exponential};
+\draw [taro] (lambda) -- (tree);
+\draw [taro] (mu) -- (tree);
+\draw [taro] (psi) -- (tree);
+\draw [taro] (nul) -- (lambda);
+\draw [taro] (num) -- (mu);
+\draw [taro] (nup) -- (psi);
+%\node at ($(nx)+(0,-1)$) {time tree};
+%\node at ($(nx)+(0,-1.75)$) {Node ages};
+\node[constnode] (rho) at ($(tree)+(2,2)$) {\LARGE $\rho$};
+\draw[taro] (rho) -- (tree) ;
+%\node[white, fill=brnt, shape=rectangle, rounded corners] at ($(rho)+(0,-1)$) {sampling probability};
+\node[snode] (origin) at ($(tree)+(-2.5,-2.5)$) {\large $\phi$};
+%\node at ($(origin)+(0,0.75)$) {\scriptsize uniform};
+\draw[taro] (origin) -- (tree) ;
+\node[constnode] (min) at ($(origin)+(-1.5,0.75)$) {\large {\tt 37}};
+\node[constnode] (max) at ($(origin)+(-1.5,-0.75)$) {\large {\tt 55}};
+\draw[taro] (min) -- (origin) ;
+\draw[taro] (max) -- (origin) ;
+%\node[white, fill=brnt, shape=rectangle, rounded corners] at ($(origin)+(0,-1)$) {origin time};
+\node[obnode] (ddd) at ($(tree)+(6,-4)$) {\LARGE $\mathcal{S}$};
+\draw[taro] (tree) -- (ddd) ;
+\node[obnode] (foss) at ($(tree)+(0,-4)$) {\LARGE $\mathcal{F}$};
+\draw[taro] (tree) -- (foss) ;
+\node[constnode] (qm) at ($(ddd)+(3,0)$) {\LARGE $Q$};
+\draw[taro] (qm) -- (ddd) ;
+\node[snode] (clock) at ($(ddd)+(0,3)$) {\large $c$};
+\node[constnode] (clockpar) at ($(clock)+(0,1.75)$) {\large {\tt 1}};
+\draw[taro] (clock) -- (ddd) ;
+\draw[taro] (clockpar) -- (clock) ;
+\node[detnode] (sr) at ($(ddd)+(2.5,2.5)$) {\large $r_i$};
+\node[snode] (alph) at ($(sr)+(0,2)$) {\large $\alpha$};
+\node[constnode] (alphpar) at ($(alph)+(0,1.75)$) {\large {\tt 1}};
+\node[rectangle,dashed, very thick, inner sep=7mm, draw=black!100, fit = (sr)] (siteplate) {};
+\node[anchor=south east,inner sep=7pt] at (siteplate.south east) {\small $i \in 2n-2$};
+\draw[taro] (sr) -- (ddd) ;
+\draw[taro] (alph) -- (sr) ;
+\draw[taro] (alphpar) -- (alph) ;
+\end{tikzpicture}
