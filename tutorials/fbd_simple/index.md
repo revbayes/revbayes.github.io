@@ -63,7 +63,7 @@ $$f[\mathcal{F}_i \mid a_i, b_i, t_i] = \begin{cases}
 0 & \text{otherwise}
 \end{cases}$$
 
-The incorporation of uncertainty around the fossil occurence data is shown graphically as a part of our model in {% ref fig_module_gm %}.  
+The incorporation of uncertainty around the fossil occurrence data is shown graphically as a part of our model in {% ref fig_module_gm %}.  
 
 {% figure fig_tipsampling_gm %}
 <img src="figures/tikz/tipsampling_gm.png" width="400" /> 
@@ -103,9 +103,15 @@ The rate of character evolution can often vary from one column in the matrix to 
 
 {% subsection Putting The Model Together %}
 
-We have outlined the specific processes forming the time tree module and morphological character evolution module of the complete phylogenetic model. Fig A shows our model as a probabilistic graph that we can use for inference (See {% citet Hoehna2014b %} for more on graphical models). 
+We have outlined the specific components forming the processes governing the generation of the time tree and morphological character data; and together these modules make up the complete phylogenetic model. {% ref fig_full_model_gm %} shows our model as a probabilistic graph that we can use for inference (See {% citet Hoehna2014b %} for more on graphical models). 
 
-	TODO: add figure
+{% figure fig_full_model_gm %}
+<img src="figures/tikz/fullmod.png" width="800" />
+{% figcaption %} 
+The complete graphical model used in the 
+analysis described in this tutorial.
+{% endfigcaption %}
+{% endfigure %}
 
 If we knew the values of the associated parameters all we would need to do is fit our data to the model to estimate the reconstructed phylogeny of sampled living and fossilized taxa. However, in practice these parameters are not known and must be estimated with the phylogeny. We need to model each parameter from a prior distribution that reflects our beliefs about how that parameter value was generated (model with priors shown in Fig B). 
 

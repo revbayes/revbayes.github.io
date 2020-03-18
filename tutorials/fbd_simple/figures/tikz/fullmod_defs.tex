@@ -1,0 +1,38 @@
+\definecolor{shc}{RGB}{238,224,229}
+\definecolor{shc2}{RGB}{182,152,195}
+\definecolor{brnt}{RGB}{221,132,13}
+\definecolor{shc3}{RGB}{192,255,204}
+\begin{tikzpicture}
+\node (la) at (-0.5,0) [left]{origin time};
+\node (ll) at (-0.5,-8.75) [left]{likelihood of morphological character data};
+\node[rectangle, fill=shc3,inner sep=3mm, rounded corners,  fit = (la) (ll)] (siteplate) {};
+\node (origin) at (0,0) [right]{$\psi\sim$ Uniform({\tt 37}, {\tt 55})};
+\node (la) at (-0.5,0) [left]{origin time};
+\node (lambda) at (0,-0.75) [right]{$\lambda\sim$ Exponential({\tt 10})};
+\node (lb) at (-0.5,-0.75) [left]{speciation rate};
+\node (mu) at (0,-1.5) [right]{$\mu\sim$ Exponential({\tt 10})};
+\node (lc) at (-0.5,-1.5) [left]{extinction rate};
+\node (psi) at (0,-2.25) [right]{$\psi\sim$ Exponential({\tt 10})};
+\node (ld) at (-0.5,-2.25) [left]{fossilization rate};
+\node (rho) at (0,-3) [right]{$\rho =$ {\tt 1}};
+\node (le) at (-0.5,-3) [left]{sampling probability};
+\node (tree) at (0,-3.75) [right]{$\mathcal{T}\sim$ FBD($\phi, \lambda, \mu, \psi, \rho)$};
+\node (lf) at (-0.5,-3.75) [left]{tree topology \& divergence times};
+\node (clock) at (0,-4.5) [right]{$c \sim$ Exponential({\tt 1})};
+\node (lg) at (-0.5,-4.5) [left]{strict clock rate};
+\node (alph) at (0,-5.25) [right]{$\alpha \sim$ Exponential({\tt 1})};
+\node (lh) at (-0.5,-5.25) [left]{gamma shape parameter};
+\node (sr) at (0,-6) [right]{$\mathbf{R} :=$ Discretized Gamma($\alpha,\alpha, 4$)};
+\node (li) at (-0.5,-6) [left]{4 site-rate categories};
+\node (qm) at (0,-6.75) [right]{$Q = \begin{bmatrix}
+  -1 & 1\\ 
+  1 & -1
+\end{bmatrix}$ 
+};
+\node (lj) at (-0.5,-6.75) [left]{2-state Mk rate matrix};
+\node (foss) at (0,-8) [right]{$f(\mathcal{F}\mid \mathcal{T},\phi, \lambda, \mu, \psi, \rho)$};
+\node (lk) at (-0.5,-8) [left]{likelihood of fossil occurrence data};
+\node (ddd) at (0,-8.75) [right]{$f(\mathcal{S} \mid \mathcal{T}, c, \mathbf{R}, Q)$};
+\node (ll) at (-0.5,-8.75) [left]{likelihood of morphological character data};
+\node[rectangle, very thick, inner sep=3mm, draw=black!100, rounded corners, fit = (siteplate) (sr)] (boarder) {};
+\end{tikzpicture}
