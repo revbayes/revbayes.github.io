@@ -45,8 +45,6 @@ mpirun rb-mpi
 
 ### Development version
 
-**Note: Due to build process changes on the development branch, this doesn't quite work yet. It will after [this pull request](https://github.com/spack/spack/pull/15485) is merged.**
-
 #### Without MPI
 ```
 spack install revbayes@develop ~mpi
