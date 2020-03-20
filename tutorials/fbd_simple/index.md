@@ -108,7 +108,7 @@ We have outlined the specific components forming the processes governing the gen
 <img src="figures/tikz/fullmod.png" width="800" />
 {% figcaption %} 
 The complete graphical model used in the 
-analysis described in this tutorial.
+analysis described in this tutorial. This explicit representation of the model expands on the modular version depicted in {% ref fig_overview_gm %}. The model components are defined in the box on the right. To simplify the model, we do not represent the components accounting for fossil age uncertainty illustrated in {% ref fig_tipsampling_gm %}.
 {% endfigcaption %}
 {% endfigure %}
 
@@ -118,8 +118,10 @@ For each of these parameters, we assume a prior distribution that describes our 
 {% subsection Alternative Models and Analyses %}
 
 The model choices and analysis in this tutorial focus on a simple example. 
-Importantly, the modular design of RevBayes allows for certain model choices to easy be swapped out with more complex or biologically relevant processes for a given system. 
-RevBayes also for analysis of a wide range of data types (e.g. [nucleotide sequences]({% page_url ctmc %}) , [historical biogeographic ranges]({% page_url biogeo/biogeo_dating %})) and can fully integrate models describing the generation of data from different sources like in the [“combined-evidence" approach]({% page_url fbd/fbd_specimen %}) {% cite Ronquist2012a Zhang2016 Gavryushkina2016 %}. Ultimately, the design of the model should reflect the data and which processes are believed to generate the model. 
+Importantly, the modular design of RevBayes allows for certain model choices to be swapped with more complex or biologically relevant processes for a given system. 
+Analysis of a wide range of data types are also implemented in RevBayes (e.g. [nucleotide sequences]({% page_url ctmc %}) , [historical biogeographic ranges]({% page_url biogeo/biogeo_dating %})) 
+Moreover, it is possible to fully integrate models describing the generation of data from different sources like in the [“combined-evidence" approach]({% page_url fbd/fbd_specimen %}) {% cite Ronquist2012a Zhang2016 Gavryushkina2016 %} in a single, hierarchical Bayesian model.
+Ultimately, for any statistical analysis of empirical data, it is important to consider the processes governing the generation of those data and how they can be represented in a hierarchical model. 
 
 {% section Exercise: Phylogenetic Inference under the Fossilized Birth-Death Process | analysis %}
 
@@ -185,52 +187,66 @@ One important distinction here is that `moves` is part of the RevBayes workspace
 
 {% subsubsection Speciation and Extinction Rates | FBD-SpeciationExtinction %}
 
-Two key parameters of the FBD process are the speciation rate (the rate at which lineages are added to the tree, denoted by $\lambda$ in {% ref fig_fbd_gm %}) and the extinction rate (the rate at which lineages are removed from the tree, $\mu$ in {% ref fig_fbd_gm %}).
-We will place exponential priors on both of these values, meaning each parameter will be assumed to be drawn independently from a different exponential distribution with rates $\delta_{\lambda} = 10$ and $\delta_{\mu} = 10$ respectively. Note that an exponential
-distribution with $\delta = 10$ has an expected value (mean) of $1/10$.
+Two key parameters of the FBD process are the speciation rate (the rate at which lineages are added to the tree, denoted by $\lambda$ in {% ref fig_full_model_gm %}) and the extinction rate (the rate at which lineages are removed from the tree, $\mu$ in {% ref fig_full_model_gm %}).
+We will place exponential priors on both of these values, meaning we assume each parameter is drawn independently from a different exponential distribution, where each distribution has a rate parameter equal to `10`.
+An exponential distribution with a rate of `10` has an expected value (mean) of `1/10`.
 
-We will create the exponentially distributed stochastic nodes for the `speciation_rate` and `extinction_rate` using the `~` stochastic assignment operator.
+Create the exponentially distributed stochastic nodes for the `speciation_rate` and `extinction_rate` using the `~` stochastic assignment operator.
 
 {{ mcmc_script | snippet:"block#","4" }}
 
-For every stochastic node we declare, we must also specify proposal algorithms (called *moves*) to sample the value of the parameter in proportion to its posterior probability. If a move is not specified for a stochastic node, then it will not be estimated, but fixed to its initial value.
+The `~` operator in Rev instantiates a stochastic node in the model (i.e., a solid circle in {% ref fig_full_model_gm %}). Every stochastic node must be defined by a distribution. In this case, we use the Exponential. 
+In the Rev language, every distribution has the prefix `dn` to make it easier to locate the various distributions in the Rev language documentation ([https://revbayes.com/documentation](https://revbayes.github.io/documentation/)).
+When a stochastic node is created in the model, the distribution function assigns it an initial value by drawing a random value from the prior distribution and assigns the node to the named variable. 
 
-The extinction rate and speciation rate are both positive, real numbers (*i.e.* non-negative floating point variables). For both of these nodes, we will use a scaling move (`mvScale`), which proposes multiplicative changes to a parameter.
-Many moves also require us to set a *tuning value*, called `lambda` for `mvScale`, which determine the size of the proposed change. Here, we will use three scale moves for each parameter with different values of lambda. Using multiple moves for a single parameter will improve the mixing of the Markov chain.
+For every stochastic node we declare, we must also specify proposal algorithms (called *moves*) to sample the value of the parameter in proportion to its posterior probability. 
+If a move is not specified for a stochastic node, then it will not be estimated, but fixed to its initial value.
+
+The extinction rate and speciation rate are both positive, real numbers (*i.e.* non-negative floating point variables). 
+For both of these nodes, we will use a scaling move (`mvScale`), which proposes multiplicative changes to a parameter.
 
 {{ mcmc_script | snippet:"block#","5-6" }}
 
-You will also notice that each move has a specified `weight`. This option indicates at which frequency a given move will be performed in each MCMC cycle. In RevBayes, the MCMC is executed by default with a *schedule* of moves at each step of the chain, instead of just one move per step, as is done in MrBayes {% cite Ronquist2003 %} or BEAST {% cite Drummond2012 Bouckaert2014 %}. 
-Here, if we were to run our MCMC with our current vector of 6 moves, then our move schedule would perform 6 moves at each cycle. Within a cycle, an individual move is chosen from the move list in proportion to its weight. Therefore, with all six moves assigned `weight=1`, each has an equal probability of being executed and will be performed on average one time per MCMC cycle. 
+You will also notice that each move has a specified `weight`. 
+This option indicates the frequency a given move will be performed in each MCMC cycle. 
+In RevBayes, the MCMC is executed by default with a *schedule* of moves at each step of the chain, instead of just one move per step, as is done in MrBayes {% cite Ronquist2003 %} or BEAST {% cite Drummond2012 Bouckaert2014 %}. 
+Here, if we were to run our MCMC with our current vector of 2 moves each with a weight of `1`, then our move schedule would perform 2 moves at each cycle. Within a cycle, an individual move is chosen from the move list in proportion to its weight. Therefore, with both moves assigned `weight=1`, each has an equal probability of being executed and will be performed on average one time per MCMC cycle. 
 For more information on moves and how they are performed in RevBayes, please refer to the {% page_ref mcmc %} and {% page_ref ctmc %} tutorials.
 
-In addition to the speciation ($\lambda$) and extinction ($\mu$) rates, we may also be interested in inferring the diversification rate ($\lambda - \mu$) and the turnover ($\mu/\lambda$). Since these parameters can be expressed as a deterministic transformation of the speciation and extinction rates, we can monitor their values (i.e. track their values and print them to a file) by creating two deterministic nodes using the `:=` deterministic assignment operator.
+In addition to the speciation ($\lambda$) and extinction ($\mu$) rates, we may also be interested in inferring the net diversification rate ($\lambda - \mu$) and the turnover ($\mu/\lambda$). 
+Since these parameters can each be expressed as a deterministic transformation of the speciation and extinction rates, we can monitor their values (i.e. track their values and print them to a file) by creating two deterministic nodes using the `:=` deterministic assignment operator.
 
 {{ mcmc_script | snippet:"block#","7" }}
+
+Deterministic nodes are represented by circles with dotted borders in a probabilistic graphical model. To improve the simplicity of the model in {% ref fig_full_model_gm %}, the diversification rate and turnover are not shown. 
 
 
 {% subsubsection  Extant Sampling Probability | FBD-Rho %}
 
-All extant bears are represented in this dataset. Therefore, we will fix the probability of sampling an extant lineage ($\rho$ in {% ref fig_fbd_gm %}) to 1. The parameter `rho` will be specified as a constant node using the `<-` constant assignment operator.
+Every extant bear species is represented in this dataset. Therefore, we will fix the probability of sampling an extant lineage ($\rho$ in {% ref fig_full_model_gm %}) to 1. The parameter `rho` will be specified as a constant node using the `<-` constant assignment operator.
+
 
 {{  mcmc_script | snippet:"block#","8" }}
 
-Because $\rho$ is a constant node, we do not have to assign a move to this parameter.
+Because $\rho$ is a constant node, we do not have to assign a move to this parameter because we assume the value is known and fixed.
 
 {% subsubsection Fossil Sampling Rate | FBD-Psi %}
 
-Since our data set includes serially sampled lineages, we must also account for the rate of sampling through time. This is the fossil sampling (or recovery) rate ($\psi$ in {% ref fig_fbd_gm %}), which we will instantiate as a stochastic node (named `psi`). As with the speciation and extinction rates (see {% ref FBD-SpeciationExtinction %}), we will use an exponential prior on this parameter and use scale moves to sample values from the posterior distribution.
+Since our data set includes serially sampled lineages, we must also account for the rate of sampling through time. This is the fossil sampling (or recovery) rate ($\psi$ in {% ref fig_full_model_gm %}), which we will instantiate as a stochastic node named `psi`. 
+As with the speciation and extinction rates (see {% ref FBD-SpeciationExtinction %}), we will use an exponential prior on this parameter and apply scale moves to sample values from the posterior distribution.
 
 {{  mcmc_script | snippet:"block#","9-10" }}
 
 {% subsubsection Origin Time | FBD-Origin %}
 
-The FBD process is conditioned on the origin time ($\phi$ in {% ref fig_fbd_gm %}), so we need to specify the origin of the bears clade. We will set a uniform distribution on the origin age, with the lower bound set at the age of the oldest bear fossil and the higher bound set to **justification for the higher bound ?**. 
+The FBD process is conditioned on the origin time ($\phi$ in {% ref fig_full_model_gm %}), so we need to specify a node representing the age of the clade. 
+We will set a uniform distribution on the origin age, with the lower bound set at the age of the oldest bear fossil (37 Million years) and the higher bound set to the age of the most recent common ancestor of bears and their sister lineages (mustelids and seals) estimated by recent studies. 
 For the move, we will use a sliding window move (`mvSlide`), which samples a parameter uniformly within an interval (defined by the half-width `delta`). Sliding window moves can be problematic for small values, as the window may overlap zero. However, our prior on the origin age excludes values $\leq 37.0$, so this is not an issue.
 
 {{  mcmc_script | snippet:"block#","11-12" }}
 
-Note that we specified a higher move `weight` for each of the proposals operating on `origin_time` than we did for the three previous stochastic nodes. This means that our move schedule will propose five times as many updates to `origin_time` as it will to `speciation_rate`, `extinction_rate`, or `psi`. **Missing: justification for the higher weight**
+
+
 
 {% subsubsection The FBD Distribution | FBD-dnFBD %}
 
@@ -242,11 +258,19 @@ Next, in order to sample from the posterior distribution of trees, we need to sp
 
 {{  mcmc_script | snippet:"block#","14-15" }}
 
+Note that we specified a higher move `weight` for each of the proposals operating on `fbd_tree` than we did for the previous stochastic nodes. 
+This means that our move schedule will propose fifteen times as many new topologies via the `mvFNPR` move as it will new values of `speciation_rate` using `mvScale`. 
+By increasing the number of times new values are proposed for a parameter, we are increasing the sampling intensity for that parameter.
+Typically, we do this for parameters that we are particularly interested in or for parameters that tend to induce long mixing times.
+A node like $\mathcal{T}$ in our graphical model ({% ref fig_full_model_gm %}) represents a complex set of variables: the tree topology and all divergence times. 
+Moreover, the likelihoods of our fossil occurrence data and the morphological character data are both conditionally dependent on the time tree. 
+Such complex variables require more extensive sampling than other nodes. 
+
 {% subsubsection Sampling Fossil Occurrence Times | FBD-TipSampling %}
 
 Next, we need to account for uncertainty in the age estimates of our fossils using the observed minimum and maximum stratigraphic ages. Remember, we can represent the fossil likelihood using any uniform distribution that is non-zero when the likelihood is equal to one (see {% ref Intro-TipSampling %}). For example, if $t_i$ is the inferred fossil age and $(a_i,b_i)$ is the observed stratigraphic interval, we know the likelihood is equal to one when $a_i < t_i < b_i$, or equivalently $t_i - b_i < 0 < t_i - a_i$. So we can represent this likelihood using a uniform random variable,  uniformly distributed in $(t_i - b_i, t_i - a_i)$ and clamped at zero.
 
-To do this, we will get all the fossils from the tree and use a `for` loop to iterate over them. For each fossil observation, we will create a uniform random variable representing the likelihood, based on the minimum and maximum ages specified in the file [`bears_taxa.tsv`]. 
+To do this, we will get all the fossils from the tree and use a `for` loop to iterate over them. For each fossil observation, we will create a uniform random variable representing the likelihood, based on the minimum and maximum ages specified in the file `bears_taxa.tsv`. 
 
 {{  mcmc_script | snippet:"block#","16-18" }}
 
