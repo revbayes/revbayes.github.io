@@ -1,0 +1,56 @@
+################################################################################
+#
+# RevBayes Example: Inferring a Phylogeny of Fossil Echinoderms Using the Mk Model
+#
+# This file: Runs the full MCMC ...
+#
+# authors:  April M. Wright, Michael J. Landis, Sebastian Höhna
+#
+################################################################################
+
+#######################
+# Reading in the Data #
+#######################
+# Import the morphological character matrix #
+# this file contains only the taxa for which morphological characters are available #
+morpho <- readDiscreteCharacterData("data/Cinctans.nex")
+
+# helpers
+taxa <- morpho.names()
+num_taxa <- taxa.size()
+num_branches <- 2 * num_taxa - 2
+
+
+# create some vector for the moves and monitors of this analysis
+moves    = VectorMoves()
+monitors = VectorMonitors()
+
+# load the model scripts
+source("scripts/mk_model_tree.Rev")
+source("scripts/mk_model_gamma.Rev")
+#source("scripts/mkv_model_gamma_discretized_multistate.Rev")
+#source("scripts/mkv_model_gamma_discretized.Rev")
+
+
+########
+# MCMC #
+########
+
+# initialize the model object #
+mymodel = model(phylogeny)
+# Create a vector of monitors #
+# 1. for the full model #
+monitors.append( mnModel(filename="output/mk_gamma.log", printgen=10) )
+# 2. the tree #
+monitors.append( mnFile(filename="output/mk_gamma.trees", printgen=10, phylogeny) )
+# 3. and a few select parameters to be printed to the screen #
+monitors.append( mnScreen(printgen=100) )
+
+# Initialize the MCMC object #
+mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
+
+# Run the MCMC #
+mymcmc.run(generations=10000, tuningInterval=200)
+
+# Quit RevBayes #
+q()

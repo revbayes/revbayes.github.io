@@ -1,0 +1,25 @@
+################################################################################
+#
+# RevBayes Example: Inferring a Phylogeny of Fossil Echinoderms Using the Mk Model
+#
+# This file: Specifies the tree model  ...
+#
+# authors:  April M. Wright, Michael J. Landis, Sebastian Höhna
+#
+################################################################################
+
+# Set up branch length hyperprior with a move
+br_len_lambda ~ dnExp(0.2)
+moves.append( mvScale(br_len_lambda, weight=2) )
+
+# Define the tree parameter.
+# First, we generate the topology.
+# We assume a uniform prior on topology.
+phylogeny ~ dnUniformTopologyBranchLength(taxa, branchLengthDistribution=dnExponential(br_len_lambda))
+moves.append( mvNNI(phylogeny, weight=num_branches/2.0) )
+moves.append( mvSPR(phylogeny, weight=num_branches/10.0) )
+moves.append( mvBranchLengthScale(phylogeny, weight=num_branches) )
+
+
+# compute the tree length from the phylogeny
+tree_length := phylogeny.treeLength()
