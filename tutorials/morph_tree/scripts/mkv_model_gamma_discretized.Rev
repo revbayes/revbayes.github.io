@@ -1,0 +1,54 @@
+################################################################################
+#
+# RevBayes Example: Inferring a Phylogeny of Fossil Echinoderms Using the Mk Model
+#
+# This file: Specifies the discretized morphological substitution model  ...
+#
+# authors:  April M. Wright, Michael J. Landis, Sebastian Höhna
+#
+################################################################################
+################################################################################
+# We will use binary data for this part of the Analysis
+morpho.setNumStatesPartition(2)
+
+# Specify the number of categories we would like to use to describe our data. For simplicity,
+# we will use 4.
+
+num_cats = 4
+
+# Specify the two parameters to the Beta distribution, and the moves on these parameters.
+beta_scale ~ dnLognormal( 0.0, sd=2*0.587405 )
+moves.append( mvScale(beta_scale, lambda=1, weight=5.0 ) )
+
+# Create the Beta distribution, according to the two parameters and the number of categories.
+cats := fnDiscretizeBeta(beta_scale, beta_scale, num_cats)
+
+# Create the Q matrices. These data are binary, so we initialize the Jukes-Cantor matrix with
+# two states. The matrix is initialized from the median values of out four quantiles from
+# the Beta.
+
+for (i in 1:cats.size())
+{
+    Q[i] := fnF81(simplex(abs(1-cats[i]), cats[i]))
+}
+
+# Tell the model what the probability of a character going into any particular category.
+# This prior says that a character is equally likely to be put into any category.
+mat_prior <- rep(1,num_cats)
+matrix_probs ~ dnDirichlet(mat_prior)
+
+moves.append( mvBetaSimplex(matrix_probs, weight=3.0) )
+moves.append( mvDirichletSimplex(matrix_probs, weight=1.5) )
+
+# Set up Gamma-distributed rate variation.
+alpha_morpho ~ dnUniform( 0.0, 1E6 )
+rates_morpho := fnDiscretizeGamma( alpha_morpho, alpha_morpho, 4 )
+
+# Moves on the parameters to the Gamma distribution.
+moves.append( mvScale(alpha_morpho, lambda=1, weight=2.0) )
+
+# Combine all of our elements into a CTMC. Because we have not observed any invariant sites,
+# we specify the coding is 'variable'. Note that we are now feeding the site matrices to the CTMC.
+
+phyMorpho ~ dnPhyloCTMC(tree=phylogeny, siteRates=rates_morpho, Q=Q, type="Standard", coding="variable", siteMatrices=matrix_probs)
+phyMorpho.clamp(morpho)
