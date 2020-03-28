@@ -84,19 +84,19 @@ $(a_i,b_i)$.
 
 Given a phylogeny, the discrete morphological character change model will describe how traits change along each lineage, resulting in the observed character states of fossils and living species. In our case, the phylogeny and fossil occurrences are generated from the FBD process and we will be modeling the evolution of discrete morphological characters with two states. There are three main components to consider with modeling discrete morphological traits: the substitution model, the branch rate model, and the site rate model. 
 
-{% subsubsection Substitution Model %}
+{% subsubsection Substitution Model | Intro-Subst-Mod %}
 
  The substitution model describes how discrete morphological characters evolve over time. We will be using the Mk model {% cite Lewis2001 %}, a generalization of the Jukes-Cantor model described for nucleotide substitutions. The Mk model assumes that all transitions from one state to another occur at the same rate, for all $k$ states. Since the characters used in this tutorial all have two states, we will specifically be using a model where $k=2$. Thus, a transition from state 0 to state 1 is equally as likely as a transition from state 1 to state 0.
 
 Once some characters transition to certain state, they rarely transition back, this likely means that the assumption of symmetric rates is violated. We can accommodate [asymmetric transition rates]({% page_url morph_tree %}) for each state using alternative models in RevBayes. Additionally, if some characters change symmetrically while others change asymmetrically, it is possible to [partition]({% page_url partition %}) the character matrix to account for model heterogeneity in the matrix.
 
-{% subsubsection Branch-Rate Model %}
+{% subsubsection Branch-Rate Model | Intro-BranchRate %}
 
 The branch-rate model describes how rates of morphological state transitions vary among branches in the tree. Each lineage in the phylogeny is assigned a value that acts as a scalar for the rate of character evolution. In our case we assume each branch has the same rate of evolution, this is a strict morphological clock {% cite Zuckerkandl1962 %}.
 
 It is also possible to account for variation in rates among branches. These "relaxed-clock" models are commonly applied to molecular datasets and are currently implemented in RevBayes.
 
-{% subsubsection Site-Rate Model %}
+{% subsubsection Site-Rate Model | Intro-SiteRate %}
 
 The rate of character evolution can often vary from one column in the matrix to another. Under this model, a scalar is applied to each character to account for variation in relative rates. In our case we will assume that each trait will belong to one of four rate categories from the discretized gamma distribution {% cite Yang1994 %}, which is parameterized by shape parameter $\alpha$ and number of rate categories $n$. Normally a gamma distribution requires a shape $\alpha$ and rate $\beta$ parameters, however, because we want our site rates to have a mean of one and this occurs only when $\alpha=\beta$, thus eliminating the second parameter. The parameter $n$ breaks the gamma distribution into $n$ equiprobable bins where the rate value of each bin is equal to its mean. 
 
@@ -271,8 +271,10 @@ Such complex variables require more extensive sampling than other nodes.
 
 {% subsubsection Sampling Fossil Occurrence Times | FBD-TipSampling %}
 
-Next, we need to account for uncertainty in the age estimates of our fossils using the observed minimum and maximum stratigraphic ages. 
-We can represent the fossil likelihood using any uniform distribution that is non-zero when the likelihood is equal to one (see {% ref Intro-Foss-Samp %}). For example, if $t_i$ is the inferred fossil age and $(a_i,b_i)$ is the observed stratigraphic interval, we know the likelihood is equal to one when $a_i < t_i < b_i$, or equivalently $t_i - b_i < 0 < t_i - a_i$. So we can represent this likelihood using a uniform random variable,  uniformly distributed in $(t_i - b_i, t_i - a_i)$ and clamped at zero.
+Next, we need to account for uncertainty in the age estimates of our fossils using the observed minimum and maximum stratigraphic ages that are provided in the file `bears_taxa.tsv`. 
+We can represent the fossil likelihood using any uniform distribution that is non-zero when the likelihood is equal to one (see {% ref Intro-Foss-Samp %}). 
+For example, if $t_i$ is the inferred fossil age and $(a_i,b_i)$ is the observed stratigraphic interval, we know the likelihood is equal to one when $a_i < t_i < b_i$, or equivalently $t_i - b_i < 0 < t_i - a_i$. 
+So we can represent this likelihood using a uniform random variable,  uniformly distributed in $(t_i - b_i, t_i - a_i)$ and clamped at zero.
 
 To do this, we will get all the fossils from the tree and use a `for` loop to iterate over them. For each fossil observation, we will create a uniform random variable representing the likelihood, based on the minimum and maximum ages specified in the file `bears_taxa.tsv`. 
 
@@ -284,11 +286,15 @@ Finally, we will add a move that samples the ages of all the fossils on the tree
 
 {% subsubsection Monitoring Parameters of Interest | FBD-DetNodes %}
 
-There are additional parameters that may be of particular interest to us that are not directly sampled as part of the graphical model defined here. As with the diversification and turnover nodes specified in {% ref FBD-SpeciationExtinction %}, we can create deterministic nodes to sample the posterior distributions of these parameters. Here we will create a deterministic node called `num_samp_anc` that will compute the number of sampled ancestors in our `fbd_tree`.
+There are additional parameters that may be of particular interest to us that are not directly sampled as part of the graphical model defined thus far. 
+As with the diversification and turnover nodes specified in {% ref FBD-SpeciationExtinction %}, we can create deterministic nodes to sample the posterior distributions of these parameters. 
+Here we will create a deterministic node called `num_samp_anc` that will compute the number of sampled ancestors in our `fbd_tree`.
 
 {{  mcmc_script | snippet:"block#","20" }}
 
-We are also interested in the age of the most-recent-common ancestor (MRCA) of all living bears. To monitor this age in our MCMC sample, we must use the `clade` function to identify the node corresponding to the MRCA. Once this clade is defined we can instantiate a deterministic node called `age_extant` that will record the age of the MRCA of all living bears, using the `tmrca` function.
+We are also interested in the age of the most-recent-common ancestor (MRCA) of all living bears. 
+To monitor this age in our MCMC sample, we must use the `clade` function to identify the node corresponding to the MRCA. 
+Once this clade is defined we can instantiate a deterministic node called `age_extant` that will record the age of the MRCA of all living bears, using the `tmrca` function.
 
 {{  mcmc_script | snippet:"block#","21" }}
 
@@ -296,39 +302,69 @@ In the same way we monitored the MRCA of the extant bears, we can also monitor t
 
 {{  mcmc_script | snippet:"block#","22" }}
 
+
 {% subsection Modeling the Evolution of Binary Morphological Characters | Exercise-ModelMorph %}
 
-In this section we will define the model of morphological character evolution.
+The next part of the graphical model we will define specifies the model of morphological character evolution.
+These components include the substitution model, the model of rate variation among characters, and the model of 
+rate variation among branches ({% ref fig_full_model_gm %}).
 
-As stated in the introduction we will
-use Mk to model our data. Because the Mk model is a generalization of
+As stated in the {% ref Intro-Subst-Mod %} section, we will
+use Mk to model our data. 
+Because the Mk model is a generalization of
 the Jukes-Cantor model, we will initialize our Q matrix from a Jukes-Cantor
 matrix.
+The constant node `Q_morpho` corresponds to the two-state rate matrix $Q$ in {% ref fig_full_model_gm %}. 
 
 {{ mcmc_script | snippet:"block#","23" }}
 
-We will allow gamma-distributed rate heterogeneity among sites.
+
+We will assume that rates vary among characters in our data matrix according to a discretized gamma distribution (described in the section on {% ref Intro-SiteRate %}).
 
 {{ mcmc_script | snippet:"block#","24-25" }}
 
 The phylogenetic model also assumes that each branch has a rate of
-morphological character change. For simplicity, we will assume a strict
+morphological character change. 
+For simplicity, we will assume a strict
 exponential clock—meaning that every branch has the same rate drawn from
-an exponential distribution (see ).
+an exponential distribution (see the {% ref Intro-BranchRate %} section).
 
 {{ mcmc_script | snippet:"block#","26-27" }}
 
-We now combine our data and our
-model in the phylogenetic CTMC distribution. There are some unique
-aspects to doing this for morphology.
+{% subsubsection The Phylogenetic CTMC %}
 
-You will notice that we have an option called `coding`. This option
+If you refer to {% ref fig_full_model_gm %}, you will see that we have defined almost all of the components of the 
+complete model except for the observed node representing 
+our morphological character data ($\mathcal{M}$).
+The character matrix is a clamped stochastic node that
+is generated by a phylogenetic continuous-time Markov chain (CTMC) distribution. 
+This node is conditinally dependent on the time tree ($\mathcal{T}$: `fbd_tree`), clock rate ($c$: `clock_morpho`), site rates ($\mathbf{R}$: `rates_morpho`), and the two-state Mk rate matrix ($Q$: `Q_morpho`).
+With all of these nodes instantiated in the graphical model,
+we can now connect the components by defining the 
+node representing our observed morphological data.
+
+There are some unique
+aspects to specifying a phylogenetic CTMC for morphological
+data.
+You will notice that we have an option called `coding`. 
+This option
 allows us to condition on biases in the way the morphological data were
-collected (ascertainment bias). The option `coding=variable` specifies
-that we should correct for coding only variable characters (discussed in
-).
+collected (i.e., ascertainment bias). 
+By setting `coding=variable` we can correct for coding only variable characters (discussed in **NEED REFERENCE**).
 
 {{ mcmc_script | snippet:"block#","28" }}
+
+Now we have defined our complete model, we can create a workspace variable that packages the entire model graph.
+This makes it easy to pass the whole model to functions that
+will set up our MCMC analysis.
+This variable is created using the `model()` function, which
+takes only a single node in the graph. 
+We will use the `fbd_tree` node, but you can try this with an alternative node (e.g., `clock_morpho`, `rho`, etc.).
+As long as you have established all of the connections among the model parameters, the `model()` function will find every 
+other node by traversing the edges of the graph ({% ref fig_full_model_gm %}).
+
+{{ mcmc_script | snippet:"block#","29" }}
+
 
 {% subsection Monitoring Variables %}
 
