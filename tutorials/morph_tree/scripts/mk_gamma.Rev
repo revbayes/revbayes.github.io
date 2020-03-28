@@ -1,0 +1,54 @@
+n_max_states <- 4
+
+# branch lengths
+nbr <- 2*taxa.size() - 3
+
+for (b in 1:nbr){
+    br_lens[b] ~ dnExponential(5.0)
+    moves[mvi++] = mvScale(br_lens[b])
+}
+# We also use a discretized gamma distribution of rate categories #
+# again, the shape parameter is drawn from an exponential prior #
+alpha_morpho ~ dnExponential( 1.0 )
+rates_morpho := fnDiscretizeGamma( alpha_morpho, alpha_morpho, 4 )
+
+moves[mvi++] = mvScale(alpha_morpho, lambda=0.01, weight=1.0)
+moves[mvi++] = mvScale(alpha_morpho, lambda=0.1,  weight=1.0)
+moves[mvi++] = mvScale(alpha_morpho, lambda=1,    weight=1.0)
+
+tau ~ dnUniformTopology(taxa)
+tree := treeAssembly(tau, br_lens)
+moves[mvi++] = mvNNI(tau, weight=2*nbr)
+moves[mvi++] = mvSPR(tau, weight=nbr)
+
+idx = 1
+morpho_bystate[1] <- morpho
+for (i in 2:n_max_states) {
+    i
+    # make local tmp copy of data
+    # only keep character blocks with state space equal to size i
+    morpho_bystate[i] <- morpho
+    morpho_bystate[i].setNumStatesPartition(i)
+    morpho_bystate[i]
+	# get number of characters per character size wth i-sized states
+    nc = morpho_bystate[i].nchar()
+    # for non-empty character blocks
+    if (nc > 0) {
+        # make i-by-i rate matrix
+        q[idx] <- fnJC(i)
+       q[idx]
+# create model of evolution for the character block
+        m_morph[idx] ~ dnPhyloCTMC( tree=tree,
+                                    Q=q[idx],
+                                    nSites=nc,
+                                    siteRates=rates_morpho,
+                                    type="Standard")
+
+        # attach the data
+	m_morph[idx].clamp(morpho_bystate[i])
+
+        # increment counter
+        idx = idx + 1
+idx
+}
+}

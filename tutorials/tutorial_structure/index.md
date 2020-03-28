@@ -58,7 +58,7 @@ Instead, we will translate this information into text.
 {% figure example %}
 <img src="figures/Directory.png" width="600">
 {% figcaption %}
-This is an example of the Macintosh File Viewer. In this instance, I have adirectory, `Tutorials` with a subdirectory for this specific tutorial.
+This is an example of the Macintosh File Viewer. In this instance, I have a directoy, `Tutorials` with a subdirectory for this specific tutorial.
 {% endfigcaption %}
 {% endfigure %}
 
@@ -202,7 +202,7 @@ Instead, we will translate this information into text.
 {% figure Directory %}
 <img src="figures/Directory.png" width="600">
 {% figcaption %}
-This is an example of the Macintosh File Viewer. In this instance, I have adirectory, `tutorials` with a subdirectory for this specific tutorial.
+This is an example of the Macintosh File Viewer. In this instance, I have a directoy, `tutorials` with a subdirectory for this specific tutorial.
 {% endfigcaption %}
 {% endfigure %}
 
@@ -287,7 +287,7 @@ Finally, test your working directory like so:
  source("scripts/test.Rev")
 ```
 
-If everything has suceeded, you will see the following output:
+If everything has succeeded, you will see the following output:
 
 
 ```
@@ -297,3 +297,115 @@ If everything has suceeded, you will see the following output:
    Congratulations, you set up your scripts and code directories correctly.
 ```
 {:.Rev-output}
+
+
+{% section RStudio %}
+
+Many RevBayes users may want to use RevBayes through RStudio {% cite RStudio %}, a popular graphical interface for R.
+R is a fairly common computing language in biology.
+In this section of the tutorial, we will focus on running RevBayes from RStudio. Once you've followed the RStudio instructions on the [installs page](https://revbayes.github.io/gui-setup), you can run use Rev language as you would in a standard RMarkown document.
+
+RStudio has an interface with four panes: the editor (upper left), console (lower left), environment (upper right), and files (lower right).
+This can be seen below
+{% figure Rstudio %}
+<img src="figures/RStudio.png" width="800">
+{% figcaption %}
+A sample RStudio window.
+{% endfigcaption %}
+{% endfigure %}
+
+
+In the upper-right hand panel, start a new RMarkdown document. RMarkdown is used via "chunks", or  lines of code. In a new RMarkdown notebook, the first cell is shown in {% ref markdownsetup %}
+
+{% figure markdownsetup %}
+<img src="figures/RSetup.png" width="600">
+{% figcaption %}
+The first cell of an RMarkdown notebook.
+{% endfigcaption %}
+{% endfigure %}
+
+We will edit this cell to add two variables, the root directory and the engine.path. The working directory tells R what directory you want to work in. We will set this equal to the directory to which we downloaded the data and scripts. For example, if the directory structure if as shown in figure {% ref example %}, this line will be `knitr::opts_chunk$set(root.dir = "~/projects/tutorials/tutorial_structure/)` on Mac and Linux. On PC, it will be `setwd("c:\\april\\tutorials\\tutorial_structure")`.
+
+The engine.path is where RevBayes is on your computer. If my copy of RevBayes is in a directory called "software" in my user home, my enine path will be `knitr::opts_chunk$set(engine.pat="~/software/rb")` on Mac and Linux or `knitr::opts_chunk$set(engine.path="c:\\april\\software\\rb")` on PC.
+
+The appearance of the setup cell can be seen below.
+
+{% figure CompletedSetup %}
+<img src="figures/CompletedSetup.png" width="400">
+{% figcaption %}
+This setup cell shows an example of setting the work directory and the engine path (to tell R where RevBayes is located).
+{% endfigcaption %}
+{% endfigure %}
+
+
+
+Run this chunk by clicking the green arrow in the upper-left hand corner of the cell.
+
+Next, you will note other RMarkdown chunks in the document. By changing the `r` in the curly braces to `rb`, we can run RevBayes in a markdown document. By choosing `r` or `rb`, we can use both the R programming language and RevBayes in the same notebook.
+
+{% figure RBMkd %}
+<img src="figures/RbMarkdown.png" width="300">
+{% figcaption %}
+This is an example of a Rev Markdown cell inside an RMarkdown document.
+{% endfigcaption %}
+{% endfigure %}
+
+
+```{rb}
+variable <- "Hi there! Welcome to RevBayes! I am now going to read in some test data."
+
+variable
+```
+
+Run it by clicking the green arrow. If this execute correctly, you will receive the message.
+
+```
+   Processing file "scripts/test.Rev"
+   Hi there! Welcome to RevBayes! I am now going to read in some test data.
+```
+
+
+Now, we'll actually read in the data. Start a new Markdown chunk and enter:
+
+```
+molecular <- readDiscreteCharacterData("data/example_file.nex")
+
+success <- "Congratulations, you set up your scripts and code directories correctly."
+
+success
+q()
+```
+
+If this executes correctly, you will receive the output:
+
+```
+   Successfully read one character matrix from file 'data/primates_and_galeopterus_cytb.nex'
+   Congratulations, you set up your scripts and code directories correctly.
+```
+
+If you have made a mistake and need to erase previous output, you can add a flag to the markdown cells that refreshes previously-entered commands, as shown in figure {% ref mistake %}.
+
+
+{% figure mistake %}
+<img src="figures/freshchunkrb.png" width="300">
+{% figcaption %}
+This is an example of how to reset after making a mistake.
+{% endfigcaption %}
+{% endfigure %}
+
+
+Lastly, the entire document can be `knitted` to an output file. At the top of your screen, there is a button labeled Knit. This allows you to run all of your code and save the text, output, and figures to html, PDF, and other formats.
+
+{% section Using Jupyter %}
+
+Jupyter {% cite Jupyter %} is a popular interface for programming in python, though it implements numerous other languages. Once you have completed the instructions on the [installs page](https://revbayes.github.io/gui-setup), you will be able to choose RevBayes as a possible language. An example of this is below.
+
+{% figure mistake %}
+<img src="figures/Jupyter.png" width="800">
+{% figcaption %}
+This is a Jupyter notebook with the language set to Rev.
+{% endfigcaption %}
+{% endfigure %}
+
+
+Once the language is set to Rev, all cells in the notebook will execute using RevBayes. Example notebooks can be found in the [notebooks](https://github.com/revbayes/RevNotebooks) repository.
