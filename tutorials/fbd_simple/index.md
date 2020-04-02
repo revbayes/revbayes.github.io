@@ -518,7 +518,7 @@ Progress:
 
 By default, a burn-in of 25% is used when reading in the tree trace (250 trees in our case). You can specify a different burn-in fraction, say 50%, by typing the command `trace.setBurnin(500)`.
 
-Now we will use the mccTree function to return a maximum clade credibility (MCC) tree. The MCC tree is the tree with the maximum product of the posterior clade probabilities. When considering trees with sampled ancestors, we refer to the maximum sampled ancestor clade credibility (MSACC) tree {% cite Gavryushkina2016 %}.
+Now we will use the `mccTree()` function to return a maximum clade credibility (MCC) tree. The MCC tree is the tree with the maximum product of the posterior clade probabilities. When considering trees with sampled ancestors, we refer to the maximum sampled ancestor clade credibility (MSACC) tree {% cite Gavryushkina2016 %}.
 
 ```
 mccTree(trace, file="output/bears.mcc.tre" )
