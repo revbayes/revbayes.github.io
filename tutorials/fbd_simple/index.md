@@ -433,6 +433,54 @@ member method to start our MCMC sampler.
 
 {{ mcmc_script | snippet:"block#","35" }}
 
+Finally, since we are going to save this analysis in a script file and run it in RevBayes, it is useful to include a statement that will quit the program when the run is complete.
+
+{{ mcmc_script | snippet:"block#","35" }}
+
+> Your script is now complete! 
+>
+> Save the `FBD_tutorial.Rev` file in the `RB_FBD_Tutorial` directory.
+{:.instruction}
+
+
+{% subsection Execute the Analysis Script in RevBayes %}
+
+With your script complete and data files in the proper locations, you can execute the `FBD_tutorial.Rev` script 
+in RevBayes.
+
+> Run the RevByes executable.  
+>
+> On Unix systems, if the RevBayes is in your path, you simply need to navigate to the `RB_FBD_Tutorial` directory and type `rb`.
+>
+> If the RevBayes executable is not in your path, you can execute it and then change your working directory using the `setwd()` function which takes the absolute path to your directory as an argument.
+> 
+> ```
+> setwd("<path to>/RB_FBD_Tutorial")
+> ```
+{:.instruction}
+
+
+Once RevBayes is in the correct directory (`RB_FBD_Tutorial`), you can then use the `source()` function to feed RevBayes your master script file (`FBD_tutorial.Rev`).
+
+```
+source("FBD_tutorial.Rev")
+```
+
+```
+   Processing file "FBD_tutorial.Rev"
+   Successfully read one character matrix from file 'data/bears_morphology.nex'
+
+   Running MCMC simulation
+   This simulation runs 1 independent replicate.
+   The simulator uses 11 different moves in a random move schedule with 26 moves per iteration
+   ...
+```
+{:.Rev-output}
+
+This will execute the analysis and you should see the various parameters you included when you created mnScreen printed to the screen every 10 generations.
+
+When the analysis is complete, RevBayes will quit and you will have a new directory called output that will contain all of the files you specified with the monitors.
+
 
 
 {% section Results %}
