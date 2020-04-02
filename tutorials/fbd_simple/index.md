@@ -482,9 +482,56 @@ This will execute the analysis and you should see the various parameters you inc
 When the analysis is complete, RevBayes will quit and you will have a new directory called output that will contain all of the files you specified with the monitors.
 
 
-
 {% section Results %}
+
+
 
 {% subsection Evaluating Convergence %}
 
 {% subsection Summarizing the Tree %}
+
+We can now summarize the tree topology, branch times, and fossil ages from our MCMC sample that was saved to `output/bears.trees` using some built-in RevBayes functions.
+
+> Run the RevByes executable. And be sure that the working directory is `RB_FBD_Tutorial`.
+{:.instruction}
+
+The file `bears.trees` contains the trees and associated parameters that 
+were sampled every 10 generations by our monitor. 
+In RevBayes, we often refer to a set of samples from our MCMC
+as a "trace". 
+
+Begin by loading the tree trace into RevBayes from the `bears.trees` file.
+
+```
+trace = readTreeTrace("output/bears.trees")
+```
+
+```
+   Processing file "<path to>/RB_FBD_Tutorial/output/bears.trees"
+
+Progress:
+0---------------25---------------50---------------75--------------100
+********************************************************************
+
+```
+{:.Rev-output}
+
+By default, a burn-in of 25% is used when reading in the tree trace (250 trees in our case). You can specify a different burn-in fraction, say 50%, by typing the command `trace.setBurnin(500)`.
+
+Now we will use the mccTree function to return a maximum clade credibility (MCC) tree. The MCC tree is the tree with the maximum product of the posterior clade probabilities. When considering trees with sampled ancestors, we refer to the maximum sampled ancestor clade credibility (MSACC) tree {% cite Gavryushkina2016 %}.
+
+```
+mccTree(trace, file="output/bears.mcc.tre" )
+```
+
+When there are sampled ancestors present in the tree, visualizing the tree can be fairly difficult in traditional tree viewers. 
+We will make use of a browser-based tree viewer called IcyTree {% cite Vaughan2017 %}, which can be accessed at [https://icytree.org](https://icytree.org). 
+IcyTree has many unique options for visualizing phylogenetic trees and can produce publication-quality vector image files (i.e. SVG). Additionally, it correctly represents sampled ancestors on the tree as nodes, each with only one descendant ({% ref icytree_fig %}).
+
+{% figure icytree_fig %}
+<img src="figures/icytree.png" width="700" />
+{% figcaption %}
+Maximum sampled ancestor clade credibility (MSACC) tree of bear species used in this tutorial. 
+{% endfigcaption %}
+{% endfigure %}
+
