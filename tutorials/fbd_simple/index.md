@@ -21,7 +21,7 @@ This tutorial provides a guide to using RevBayes to perform a simple phylogeneti
 
 To get an overview of the model, it is useful to think of the model as a generating process for our data. Suppose we would like to simulate our fossil and morphological data; we would consider two components ({% ref fig_overview_gm %}):
 
-- **Time tree model**: This is the diversification process that describes the how a phylogeny is generated as well as when fossils are sampled along each lineage on the phylogeny.  This component generates the phylogeny, divergence times, and the fossil occurrence data. The tree topology and node ages are parameters of the model that generates our morphological characters.
+- **Time tree model**: This is the diversification process that describes how a phylogeny is generated, as well as when fossils are sampled along each lineage on the phylogeny.  This component generates the phylogeny, divergence times, and the fossil occurrence data. The tree topology and node ages are parameters of the model that generates our morphological characters.
 - **Discrete morphological character change model**: This model describes how discrete morphological character states change over time on the phylogeny. The generation of observed morphological character states is governed by other model components including the substitution process and variation among characters in our matrix and among branches on the tree.
 
 These two components, or modules, form the backbone of the inference model and reflect our prior beliefs on how the tree, fossil data, and morphological trait data are generated. We will provide a brief overview of the specific models used within each component while pointing to other tutorials that implement alternative models.
@@ -36,7 +36,7 @@ analysis described in this tutorial.
 
 {% subsection Time Tree Model: The Fossilized Birth-Death Process %}
 
-The fossilized birth death (FBD) process provides a joint distribution on the divergence times of living and extinct species, the tree topology, and the sampling of fossils {% cite Stadler2010 Heath2014 %}. The FBD model can be broken into two sub processes, the birth-death process and the fossilization process.
+The fossilized birth death (FBD) process provides a joint distribution on the divergence times of living and extinct species, the tree topology, and the sampling of fossils {% cite Stadler2010 Heath2014 %}. The FBD model can be broken into two sub-processes, the birth-death process and the fossilization process.
 
 {% subsubsection Birth-Death Process %}
 
@@ -388,7 +388,9 @@ workspace variable called `monitors` that is a vector containing the three monit
 Then, we can append our first monitor to the `monitors` vector.
 This will create a file called `bears.log` in a directory called `output` (if this directory does not already exist, RevBayes will create it).
 The function `mnModel()` initializes a monitor that saves all of the numerical parameters in the model to a tab-delineated file.
-This file is useful for summarizing marginal posteriors in statistical plotting tools like Tracer (**NEED REF**) or R (**NEED REF**).
+This file is useful for summarizing marginal posteriors in statistical plotting tools like Tracer {% cite Rambaut2018 %} or R {% cite R2020 %}. 
+We will exclude the `F` vector from logging, as it is purely used as an auxiliary variable for estimating fossil ages, and is clamped to 0.
+
 Importantly, we also specify how frequently we sample our Markov chain by setting the `printgen` option.
 We will sample every `10` cycles of our MCMC.
 
@@ -484,9 +486,21 @@ When the analysis is complete, RevBayes will quit and you will have a new direct
 
 {% section Results %}
 
-
-
 {% subsection Evaluating Convergence %}
+
+The first step when analyzing the output of an MCMC run is to check whether the chain has converged. This can be done by loading the parameter log, in our case the file `bears.log`, in a software such as Tracer, shown in {% ref tracer_fig %}.
+
+{% figure tracer_fig %}
+<img src="figures/tracer.png" width="1000" />
+{% figcaption %}
+Analysis in Tracer of the parameter estimates obtained on the bears dataset.
+{% endfigcaption %}
+{% endfigure %}
+
+On the left side is a panel summarizing all the parameters which appear in the log, with their mean estimate and their ESS (effective sample size). This last measure determines whether the chain has converged on the associated parameter: values above 200 are considered "good", whereas values below 200, highlighted by Tracer in yellow or red, indicate convergence issues. 
+
+Here we can see that the chain has converged on some parameters, but not others. In particular, it probably has not converged yet on the tree topology, as shown by the low ESS on the origin time (`origin_time`) and the ages of some fossil tips (`t[1]`, `t[9]` and `t[10]`).
+
 
 {% subsection Summarizing the Tree %}
 
@@ -516,7 +530,7 @@ Progress:
 ```
 {:.Rev-output}
 
-By default, a burn-in of 25% is used when reading in the tree trace (250 trees in our case). You can specify a different burn-in fraction, say 50%, by typing the command `trace.setBurnin(500)`.
+By default, a burn-in of 25% is used when reading in the tree trace (250 trees in our case). *NB:* note that this is different from Tracer, which uses a burn-in fraction of 10% by default. You can specify a different burn-in fraction, say 50%, by typing the command `trace.setBurnin(500)`.
 
 Now we will use the `mccTree()` function to return a maximum clade credibility (MCC) tree. The MCC tree is the tree with the maximum product of the posterior clade probabilities. When considering trees with sampled ancestors, we refer to the maximum sampled ancestor clade credibility (MSACC) tree {% cite Gavryushkina2016 %}.
 
