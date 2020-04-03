@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Introduction to MCMC using RevBayes</h1>
 	<h3 class="subtitle">Introduction to MCMC Simulation using a simple Binomial Model</h3>
 	<h4 class="authors">Mike May, Brian Moore and Sebastian H&#246;hna</h4>
-  <h5>Last modified on September 12, 2019</h5>
+  <h5>Last modified on March 19, 2020</h5>
 </div>
 
 
@@ -126,9 +126,8 @@ assume the probability the coin comes up heads is
 $\frac{70}{100} = 0.7$. This is indeed the maximum likelihood estimate!</p>
 
 <p>From Bayes’ theorem, the <em>posterior distribution</em> of $p$ given $x$,
-$P(p \mid x)$, is: <script type="math/tex">\begin{aligned\frac{
-}{b}ace{P(p \mid x)}^{\text{posterior distribution}} = \frac\frac{ }{b}ace{P(x \mid p)}^{\text{likelihood}} \time\frac{ }{b}ace{P(p)}^{\text{prior}}}{\underbrace{P(x)}_{\text{marginal likelihood}}}\end{aligned}</script>
-The take-home message here is that, if we’re interested in doing
+$P(p \mid x)$, is: <script type="math/tex">\begin{aligned} \overbrace{P(p \mid x)}^{\text{posterior distribution}} = \frac{\overbrace{P(x \mid p)}^{\text{likelihood}} \times \overbrace{P(p)}^{\text{prior}}}{\underbrace{P(x)}_{\text{marginal likelihood}}} \end{aligned}</script>
+The take-home message here is that if we’re interested in doing
 Bayesian inference for the coin flipping model, we need to specify a
 <em>likelihood function</em> and a <em>prior distribution</em> for $p$. In virtually
 all practical cases, we cannot compute the posterior distribution
@@ -139,21 +138,18 @@ posterior probability.</p>
 
 <p>We’ll use a simple beta distribution as a prior on the parameter of the
 model, $p$. The beta distribution has two parameters, $\alpha$ and
-$\beta$ (Figure [fig:beta_distribution]). Different choices for
+$\beta$ (<a href="#fig:beta_distribution"></a>). Different choices for
 $\alpha$ and $\beta$ represent different prior beliefs.</p>
 
-<p>[fig:beta_distribution]</p>
-
-<blockquote class="figure">
-  <p><img src="figures/beta.png" alt="" /> 
-distribution with two parameters,
+<figure id="fig:beta_distribution"><p><img src="figures/beta.png" width="900pt" /></p>
+<figcaption>Distribution with two parameters,
 $\alpha$ and $\beta$. This distribution is used as a prior distribution
 on the probability parameter $p$ of observing a head. Here we show
 different curves for the beta distribution when using different
-parameters.</p>
-</blockquote>
+parameters.</figcaption>
+</figure>
 
-<p>Figure [fig:binomial_model] shows the graphical model for the
+<p><a href="#fig:binomial_model"></a> shows the graphical model for the
 binomial model. This nicely visualizes the dependency structure in the
 model. We see that the two parameters $\alpha$ and $\beta$ are drawn in
 solid squares, representing that these variables are constant. From
@@ -167,20 +163,16 @@ parameters $p$ and $n$, as can be seen by the arrows going into $x$.
 Furthermore, the solid circle of $x$ is shaded which means that the
 variable has data attached to it.</p>
 
-<p>[fig:binomial_model]</p>
-
-<blockquote class="figure">
-  <p><img src="figures/binomial_graphical_model.png" alt="" /> 
-ical model
-for the binomial model.</p>
-</blockquote>
+<figure id="fig:binomial_model"><p><img src="figures/binomial_graphical_model.png" width="200pt" /></p>
+<figcaption>Graphical model for the binomial model.</figcaption>
+</figure>
 
 <h1 id="writing-an-mcmc-from-scratch">Writing an MCMC from Scratch</h1>
 
 <p>Make yourself familiar with the example script called
 <em>Binomial_MH_algorithm.Rev</em> which shows the code for the following
 sections. Then, start a new and empty script and follow each step
-provided in the .</p>
+provided in this tutorial.</p>
 
 <h2 id="the-metropolis-hastings-algorithm">The Metropolis-Hastings Algorithm</h2>
 
@@ -360,21 +352,17 @@ actually check if we want to store the value during this iteration.</p>
 <h2 id="visualizing-the-samples-of-an-mcmc-simulation">Visualizing the samples of an MCMC simulation</h2>
 
 <p>Below we show an example of the obtained output in
-<code class="highlighter-rouge">Tracer</code>. Specifically, Figure [fig:mcmc_samples] shows
+<code class="highlighter-rouge">Tracer</code>. Specifically, <a href="#fig:mcmc_samples"></a> shows
 the sample trace (left) and the estimated posterior distribution of $p$
 (right). There are other parameters, such as the posterior mean and the
 95% HPD (highest posterior density) interval, that you can obtain from
 <code class="highlighter-rouge">Tracer</code>.</p>
 
-<p>[fig:mcmc_samples]</p>
-
-<blockquote class="figure">
-  <p><img src="figures/binomial_MCMC_Trace.png" alt="" /> &gt;
-<img src="figures/binomial_MCMC_distribution.png" alt="" /> 
-he <em>Trace</em> of
-sample from an MCMC simulation. Right: The approximated posterior
-probability distribution for $p$.</p>
-</blockquote>
+<figure id="fig:mcmc_samples"><p><img src="figures/binomial_MCMC_Trace.png" width="400pt" />
+  <img src="figures/binomial_MCMC_distribution.png" width="400pt" /></p>
+<figcaption>Left: the <em>Trace</em> of samples from an MCMC simulation. Right: the approximated posterior
+probability distribution for $p$.</figcaption>
+</figure>
 
 <h1 id="more-on-moves-tuning-and-weights">More on Moves: Tuning and weights</h1>
 
@@ -619,7 +607,7 @@ familiar with it. All the commands should be explained in the text
 of the tutorial.</p>
   </li>
   <li>
-    <p>Execute the script <em>Binomial_MH_algorithm.Rev</em>).</p>
+    <p>Execute the script <em>Binomial_MH_algorithm.Rev</em>.</p>
   </li>
   <li>
     <p>The <code class="highlighter-rouge">.log</code> file will contain samples from the posterior distribution
@@ -628,8 +616,7 @@ various features of the posterior distribution, for example: the
 posterior mean or the 95% credible interval.</p>
   </li>
   <li>
-    <p>Save the MCMC trace plot and posterior distribution into a PDF file
-and upload the files. Write here the name of your file:\</p>
+    <p>Save the MCMC trace plot and posterior distribution into a PDF file.</p>
   </li>
 </ol>
 
@@ -649,11 +636,11 @@ this tutorial.</p>
   </li>
   <li>
     <p>Use only a single move and set <code class="highlighter-rouge">printgen=1</code>. Which move has the best
-ESS? Enter the ESS values for the different moves here:\</p>
+ESS?</p>
   </li>
   <li>
     <p>How does the ESS change if you use a <code class="highlighter-rouge">delta=10</code> for the
-sliding-window move?\</p>
+sliding-window move?</p>
   </li>
   <li>
     <p>Add to each move a counter variable that counts how often the move
@@ -668,7 +655,7 @@ was accepted. For example:</p>
   </li>
   <li>
     <p>Have a look at how the acceptance rate changes for different values
-of the tuning parameters.\</p>
+of the tuning parameters.</p>
   </li>
 </ol>
 
@@ -678,16 +665,13 @@ of the tuning parameters.\</p>
   <li>
     <p>Run the built-in MCMC (<em>Binomial_MCMC.Rev</em>) and compare the results
 to your own MCMC. Are the posterior estimates the same? Are the ESS
-values similar? Which script was the fastest?\</p>
+values similar? Which script was the fastest?</p>
   </li>
   <li>
     <p>Next, add a second move <code class="highlighter-rouge">moves[2] =
 mvScale(p,lambda=0.1,tune=true,weight=1.0)</code> just after the
-first one.</p>
-  </li>
-  <li>
-    <p>Run the analysis again and upload your trace file. Write here the
-name of your file:\</p>
+first one. Run the analysis again and compare it to the original one.
+Did the second move help with mixing?</p>
   </li>
   <li>
     <p>Finally, run a pre-burnin using
@@ -698,7 +682,7 @@ so that the acceptance ratio is between 0.4 and 0.5.</p>
   </li>
   <li>
     <p>What are the tuned values for <code class="highlighter-rouge">delta</code> and <code class="highlighter-rouge">lambda</code>? Did the
-auto-tuning increase the ESS?\</p>
+auto-tuning increase the ESS?</p>
   </li>
 </ol>
 
@@ -711,14 +695,14 @@ every 100 samples to the file.</p>
 <ol>
   <li>
     <p>What is the posterior mean estimate of p? The 95% credible
-interval?\</p>
+interval?</p>
   </li>
   <li>
     <p>Pretend you flipped the coin 900 more times, for a total of
 1000 flips. Among those 1000 flips, you observed 340 heads (change
 your script accordingly!). What is your posterior mean estimate of p
 now? How has the 95% credible interval changed? Provide an intuitive
-explanation for this change.\</p>
+explanation for this change.</p>
   </li>
 </ol>
 
@@ -734,7 +718,7 @@ change if you change the prior model parameters, $\alpha$ and $\beta$
 the prior sensitivity depend on the sample size? Are the posterior
 estimates sensitive to the length of the MCMC? Do you think this MCMC
 has been run sufficiently long, or should you run it longer? Try to
-answer some of these questions and explain your finding here:\</p>
+answer some of these questions and explain your findings.</p>
 
 
 <ol class="bibliography"></ol>

@@ -8,16 +8,17 @@
 #
 ################################################################################
 ################################################################################
+
+# Specify the two parameters to the Beta distribution, and the moves on these parameters.
+beta_scale ~ dnLognormal( 0.0, sd=2*0.587405 )
+moves.append( mvScale(beta_scale, lambda=1, weight=5.0 ) )
+
 # Set up Gamma-distributed rate variation.
 alpha_morpho ~ dnUniform( 0.0, 1E6 )
 rates_morpho := fnDiscretizeGamma( alpha_morpho, alpha_morpho, 4 )
 
 # Moves on the parameters to the Gamma distribution.
-moves.append( mvScale(alpha_morpho,lambda=1, weight=2.0) )
-
-# Specify the two parameters to the Beta distribution, and the moves on these parameters.
-beta_scale ~ dnLognormal( 0.0, sd=2*0.587405 )
-moves.append( mvScale(beta_scale, lambda=1, weight=5.0 ) )
+moves.append( mvScale(alpha_morpho, lambda=1, weight=2.0) )
 
 n_max_states <- 7
 idx = 1
@@ -51,4 +52,3 @@ for (i in 2:n_max_states) {
       idx
     }
 }
-

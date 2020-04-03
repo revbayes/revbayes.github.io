@@ -1,0 +1,879 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: A simple FBD analysis</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
+      </a>
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/download">Download</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/documentation/">Documentation</a></li>
+        <li><a href="https://revbayes.github.io/revscripter/">RevScripter</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/jobs/">Jobs</a></li>
+        <li><a href="/developer/">Developer</a></li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <div class="titlebar">
+	<h1 class="maintitle">A simple FBD analysis</h1>
+	<h3 class="subtitle">Joint inference of divergence times and phylogenetic relationships of fossil and extant taxa from morphological data</h3>
+	<h4 class="authors">Joëlle Barido-Sottani, Joshua Justison, Walker Pett, April M. Wright, Rachel C. M. Warnock and Tracy A. Heath</h4>
+  <h5>Last modified on April  3, 2020</h5>
+</div>
+
+
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul id="prerequisites">
+          
+            <li><a href="/tutorials/intro/">Getting Started with RevBayes and Rev Language Syntax</a></li>
+          
+            <li><a href="/tutorials/mcmc/">Introduction to Markov chain Monte Carlo (MCMC) Sampling</a></li>
+          
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+
+
+
+
+<blockquote class="tutorial_files" id="tutorial_files">
+    <h2>Data files and scripts</h2>
+    
+        
+        <strong>Data Files</strong>
+        <ul id="data_files">
+        
+        
+        
+          <li><a href="/tutorials/fbd_simple/data/bears_morphology.nex">bears_morphology.nex</a></li>
+        
+          <li><a href="/tutorials/fbd_simple/data/bears_taxa.tsv">bears_taxa.tsv</a></li>
+        
+        </ul>
+    
+        
+        <strong>Scripts</strong>
+        <ul id="scripts">
+        
+        
+        
+          <li><a href="/tutorials/fbd_simple/scripts/FBD_tutorial.Rev">FBD_tutorial.Rev</a></li>
+        
+        </ul>
+    
+</blockquote>
+
+
+</div>
+<h2 class="section" id="overview">Overview</h2>
+<hr class="section" />
+
+<p>This tutorial provides a guide to using RevBayes to perform a simple phylogenetic analysis of extant and fossil bear species (family Ursidae), using morphological data as well as the occurrence times of lineages from the fossil record.</p>
+
+<h2 class="section" id="introduction">Introduction</h2>
+<hr class="section" />
+
+<p>To get an overview of the model, it is useful to think of the model as a generating process for our data. Suppose we would like to simulate our fossil and morphological data; we would consider two components (<a href="#fig_overview_gm"></a>):</p>
+
+<ul>
+  <li><strong>Time tree model</strong>: This is the diversification process that describes how a phylogeny is generated, as well as when fossils are sampled along each lineage on the phylogeny.  This component generates the phylogeny, divergence times, and the fossil occurrence data. The tree topology and node ages are parameters of the model that generates our morphological characters.</li>
+  <li><strong>Discrete morphological character change model</strong>: This model describes how discrete morphological character states change over time on the phylogeny. The generation of observed morphological character states is governed by other model components including the substitution process and variation among characters in our matrix and among branches on the tree.</li>
+</ul>
+
+<p>These two components, or modules, form the backbone of the inference model and reflect our prior beliefs on how the tree, fossil data, and morphological trait data are generated. We will provide a brief overview of the specific models used within each component while pointing to other tutorials that implement alternative models.</p>
+
+<figure id="fig_overview_gm"><p><img src="figures/tikz/model_overview.png" width="700" /></p>
+<figcaption>Modular components of the graphical model used in the
+analysis described in this tutorial.</figcaption>
+</figure>
+
+<h3 class="subsection" id="time-tree-model-the-fossilized-birth-death-process">Time Tree Model: The Fossilized Birth-Death Process</h3>
+<hr class="subsection" />
+
+<p>The fossilized birth death (FBD) process provides a joint distribution on the divergence times of living and extinct species, the tree topology, and the sampling of fossils <a class="citation" href="#Stadler2010">(Stadler 2010; Heath et al. 2014)</a>. The FBD model can be broken into two sub-processes, the birth-death process and the fossilization process.</p>
+
+<h4 class="subsubsection" id="birth-death-process">Birth-Death Process</h4>
+<hr class="subsubsection" />
+
+<p>The birth-death process is a branching process that provides a distribution for the tree topology and divergence times on the tree. We will consider a constant-rate birth-death process <a class="citation" href="#Kendall1948">(Kendall 1948)</a>. Specifically, we will assume every lineage has the same constant rate of speciation $\lambda$ and rate of extinction $\mu$ at any moment in time <a class="citation" href="#Nee1994b">(Nee et al. 1994; Höhna 2015)</a>. Speciation and extinction events along a lineage follow a Poisson process with parameters $\lambda$ and $\mu$ respectively. This means that the time between either speciation or extinction events along a given lineage is exponentially distributed with parameter ($\lambda$ + $\mu$). Then, given an event occurred, the probability of the event being a speciation is ($\lambda$ / ($\lambda$+$\mu$)) while the probability of the event being an extinction is ($\mu$ / ($\lambda$+$\mu$)).</p>
+
+<p>The birth-death process depends on two other parameters as well, the origin time and the sampling probability. The origin time, denoted $\phi$, represents the starting time of the stem lineage, which is the age of the entire process. The sampling probability, denoted $\rho$, gives the probability that an extant species is sampled.</p>
+
+<p>The assumption that, at any given time, each lineage has the same speciation rate and extinction rate may not be realistic or valid in some systems. Several models are currently implemented in RevBayes that relax the assumption of constant rates such as, <a href="/tutorials/divrate/ebd.html">episodic diversification rates</a>, <a href="/tutorials/divrate/env.html">environment-dependent diversification rates</a>, <a href="/tutorials/divrate/branch_specific.html">branch-specific diversification rates</a>, or <a href="/tutorials/sse/bisse-intro.html">diversification rates tied to a species trait</a>.</p>
+
+<h4 class="subsubsection" id="fossilization-process">Fossilization Process</h4>
+<hr class="subsubsection" />
+
+<p>Given a phylogeny, in this case a phylogeny generated by a birth-death process, the fossilization process provides a distribution for sampling fossilized occurrences of lineages in the tree <a class="citation" href="#Heath2014">(Heath et al. 2014)</a>. Much like speciation and extinction, fossil sampling is modeled according to a Poisson process with rate parameter $\psi$. This means that each lineage has the same constant rate of producing a fossil. As a result, along a given lineage, the time between fossilization events is exponentially distributed with rate $\psi$.</p>
+
+<p>One key assumption of the FBD model is that each fossil represents a distinct fossil specimen. However, if certain taxa persist through time and fossilize particularly well then the same taxon may be sampled at different stratigraphic ages. These fossil data are typically represented by only the first and last appearances of a fossil morphospecies. In this case one might want to consider the <a href="/tutorials/fbd_range/">fossilized birth-death range process</a>  (missing reference) in RevBayes to model the stratigraphic ranges of fossil occurrences.</p>
+
+<h4 class="subsubsection" id="Intro-Foss-Samp">Accounting for Fossil Age Uncertainty</h4>
+<hr class="subsubsection" />
+
+<p>Often there is uncertainty around the age of each fossil, typically represented as an interval of the minimum and maximum possible ages. RevBayes allows fossil occurrence time uncertainty to be modeled by directly treating it as part of the likelihood of the fossil data given the time tree. We model this by assuming the likelihood of a particular fossil occurrence $\mathcal{F}_i$ is zero if the inferred age $t_i$ occurs outside the time interval $(a_i,b_i)$ and some non-zero likelihood when the fossil is placed within the interval. Specifically, we will assume the fossil could occur anywhere within the observed interval with uniform probability, this means that the likelihood is equal to one if the inferred fossil age is consistent with the observed fossil interval:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+f[\mathcal{F}_i \mid a_i, b_i, t_i] = \begin{cases}
+1 & \text{if } a_i < t_i < b_i\\
+0 & \text{otherwise}
+\end{cases} %]]></script>
+
+<p>The incorporation of uncertainty around the fossil occurrence data is shown graphically as a part of our model in <a href="#fig_tipsampling_gm"></a>.</p>
+
+<figure id="fig_tipsampling_gm"><p><img src="figures/tikz/tipsampling_gm.png" width="400" /></p>
+<figcaption>A graphical model of the
+fossil age likelihood model used in this tutorial. The likelihood of
+fossil observation $\mathcal{F}_i$ is uniform and non-zero when the
+inferred fossil age $t_i$ falls within the observed time interval
+$(a_i,b_i)$.</figcaption>
+</figure>
+
+<h3 class="subsection" id="modeling-discrete-morphological-character-change">Modeling Discrete Morphological Character Change</h3>
+<hr class="subsection" />
+
+<p>Given a phylogeny, the discrete morphological character change model will describe how traits change along each lineage, resulting in the observed character states of fossils and living species. In our case, the phylogeny and fossil occurrences are generated from the FBD process and we will be modeling the evolution of discrete morphological characters with two states. There are three main components to consider with modeling discrete morphological traits: the substitution model, the branch rate model, and the site rate model.</p>
+
+<h4 class="subsubsection" id="Intro-Subst-Mod">Substitution Model</h4>
+<hr class="subsubsection" />
+
+<p>The substitution model describes how discrete morphological characters evolve over time. We will be using the Mk model <a class="citation" href="#Lewis2001">(Lewis 2001)</a>, a generalization of the Jukes-Cantor model described for nucleotide substitutions. The Mk model assumes that all transitions from one state to another occur at the same rate, for all $k$ states. Since the characters used in this tutorial all have two states, we will specifically be using a model where $k=2$. Thus, a transition from state 0 to state 1 is equally as likely as a transition from state 1 to state 0. RevBayes can accommodate <a href="/tutorials/morph_tree/V2.html">multistate characters</a> as well.</p>
+
+<p>Once some characters transition to certain state, they rarely transition back, which means that the assumption of symmetric rates is likely violated. We can accommodate <a href="/tutorials/morph_tree/">asymmetric transition rates</a> for each state using alternative models in RevBayes. Additionally, if some characters change symmetrically while others change asymmetrically, it is possible to <a href="/tutorials/partition/">partition</a> the character matrix to account for model heterogeneity in the matrix.</p>
+
+<h4 class="subsubsection" id="Intro-BranchRate">Branch-Rate Model</h4>
+<hr class="subsubsection" />
+
+<p>The branch-rate model describes how rates of morphological state transitions vary among branches in the tree. Each lineage in the phylogeny is assigned a value that acts as a scalar for the rate of character evolution. In our case we assume each branch has the same rate of evolution, this is a strict morphological clock <a class="citation" href="#Zuckerkandl1962">(Zuckerkandl and Pauling 1962)</a>.</p>
+
+<p>It is also possible to account for variation in rates among branches. These “relaxed-clock” models are commonly applied to molecular datasets and are <a href="/tutorials/clocks/">currently implemented</a> in RevBayes.</p>
+
+<h4 class="subsubsection" id="Intro-SiteRate">Site-Rate Model</h4>
+<hr class="subsubsection" />
+
+<p>The rate of character evolution can often vary from site to site, i.e. from one column in the matrix to another. Under the site-rate model, a scalar is applied to each character to account for variation in relative rates. In our case we will assume that each character belongs to one of four rate categories from the discretized gamma distribution (missing reference), which is parameterized by shape parameter $\alpha$ and number of rate categories $n$. Normally a gamma distribution requires shape $\alpha$ and rate $\beta$ parameters, however we set our site rates to have a mean of one, which results in the constraint $\alpha=\beta$, thus eliminating the second parameter. The parameter $n$ breaks the gamma distribution into $n$ equiprobable bins where the rate value of each bin is equal to its mean.</p>
+
+<h3 class="subsection" id="putting-together-the-complete-phylogenetic-model">Putting Together the Complete Phylogenetic Model</h3>
+<hr class="subsection" />
+
+<p>We have outlined the specific components forming the processes governing the generation of the time tree and morphological character data; and together these modules make up the complete phylogenetic model. <a href="#fig_full_model_gm"></a> shows the complete probabilistic graphical model that includes all of the parameters we will use in this tutorial (see <a class="citation" href="#Hoehna2014b">Höhna et al. (2014)</a> for more on graphical models for statistical phylogenetics).</p>
+
+<figure id="fig_full_model_gm"><p><img src="figures/tikz/fullmod.png" width="800" /></p>
+<figcaption>The complete graphical model used in the
+analysis described in this tutorial. This explicit representation of the model expands on the modular version depicted in <a href="#fig_overview_gm"></a>. The model components are defined in the box on the right. To simplify the model, we do not represent the components accounting for fossil age uncertainty illustrated in <a href="#fig_tipsampling_gm"></a>.</figcaption>
+</figure>
+
+<p>The parameters represented as stochastic nodes (solid white circles) in <a href="#fig_full_model_gm"></a> are unknown random variables that are estimated in our analysis.
+For each of these parameters, we assume a prior distribution that describes our uncertainty in that parameter’s value. For example, we apply an exponential distribution with a rate of 10 as a prior on the mutation rate $\mu$: $\mu\sim$ Exponential(10).</p>
+
+<p>The parameters represented as constant nodes (white boxes) are fixed in the analysis.</p>
+
+<h3 class="subsection" id="alternative-models-and-analyses">Alternative Models and Analyses</h3>
+<hr class="subsection" />
+
+<p>The model choices and analysis in this tutorial focus on a simple example.
+Importantly, the modular design of RevBayes allows for many model choices to be swapped with more complex or biologically relevant processes for a given system.
+Analyses of a wide range of data types are also implemented in RevBayes (e.g. <a href="/tutorials/ctmc/">nucleotide sequences</a> , <a href="/tutorials/biogeo/biogeo_dating.html">historical biogeographic ranges</a>).
+Moreover, it is possible to fully integrate models describing the generation of data from different sources like in the <a href="/tutorials/fbd/fbd_specimen.html">“combined-evidence” approach</a> <a class="citation" href="#Ronquist2012a">(Ronquist et al. 2012; Zhang et al. 2016; Gavryushkina et al. 2017)</a> in a single, hierarchical Bayesian model.
+Ultimately, for any statistical analysis of empirical data, it is important to consider the processes governing the generation of those data and how they can be represented in a hierarchical model.</p>
+
+<h2 class="section" id="analysis">Exercise: Phylogenetic Inference under the Fossilized Birth-Death Process</h2>
+<hr class="section" />
+
+<p>In this section, we will create a script in Rev, the interpreted programming language used by RevBayes. This script can be executed in RevBayes to complete the full analysis.</p>
+
+<h3 class="subsection" id="data-and-files">Data and Files</h3>
+<hr class="subsection" />
+
+<blockquote class="instruction">
+  <p>On your own computer or your remote machine, create a directory called <code class="highlighter-rouge">RB_FBD_Tutorial</code>
+(or any name you like).</p>
+
+  <p>Then, navigate to the folder you created and make a new one called <code class="highlighter-rouge">data</code>.</p>
+
+  <p>In the <code class="highlighter-rouge">data</code> folder, add the following files (click on the hyperlinked file names to download):</p>
+  <ul>
+    <li><a href="data/bears_taxa.tsv"><code class="highlighter-rouge">bears_taxa.tsv</code></a>: a tab-separated table listing the 18 bear species in our analysis (both fossil and extant) and their occurrence age ranges (minimum and maximum ages). For extant taxa, the minimum age is 0.0 (<em>i.e.</em> the present).</li>
+    <li><a href="data/bears_morphology.nex"><code class="highlighter-rouge">bears_morphology.nex</code></a>: a matrix of 62 discrete, binary (coded <code class="highlighter-rouge">0</code> or <code class="highlighter-rouge">1</code>) morphological characters for our 18 species of fossil and extant bears.</li>
+  </ul>
+</blockquote>
+
+<p>Now you can create a separate file for the Rev script.</p>
+
+<blockquote class="instruction">
+  <p>In the <code class="highlighter-rouge">RB_FBD_Tutorial</code> directory created above, create a blank file called <code class="highlighter-rouge">FBD_tutorial.Rev</code> and open it in a text editor.</p>
+
+  <p>It is also possible to execute this entire tutorial in the RevBayes console.</p>
+</blockquote>
+
+<p>The file <code class="highlighter-rouge">FBD_tutorial.Rev</code> will contain all of the instructions required to load the data, assemble the different model components used in the analysis, and configure and run the Markov chain Monte Carlo (MCMC) analysis.</p>
+
+<h3 class="subsection" id="importing-data-into-revbayes">Importing Data into RevBayes</h3>
+<hr class="subsection" />
+
+<p>We will begin our Rev script by loading in the two data files that were downloaded and saved to the <code class="highlighter-rouge">data</code> directory.
+In RevBayes, we use functions to read the contents of files and assign them to variables in our workspace.
+First, we will create a variable called <code class="highlighter-rouge">taxa</code> that will contain the data from <code class="highlighter-rouge">bears_taxa.tsv</code>.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>taxa &lt;- readTaxonData("data/bears_taxa.tsv")
+</code></pre></div></div>
+
+<p>The file <code class="highlighter-rouge">bears_taxa.tsv</code> contains a table with all of the fossil and extant bear species names in the first column, their minimum age in the second column and their maximum age in the third column.
+We use the function <code class="highlighter-rouge">readTaxonData</code> to load this table into the workspace.</p>
+
+<p>Next, we will import the morphological character matrix from <code class="highlighter-rouge">bears_morphology.nex</code> and assign it to the variable <code class="highlighter-rouge">morpho</code>.
+In this exercise, we are using a NEXUS-formatted data file, but it is worth noting that several other file-types are acceptable depending on the kind of data (e.g., FASTA for molecular data).</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>morpho &lt;- readDiscreteCharacterData("data/bears_morphology.nex")
+</code></pre></div></div>
+
+<p>Here, we use the function <code class="highlighter-rouge">readDiscreteCharacterData</code> to load a data matrix to the workspace from a formatted file. This function can be used for discrete morphological data as well as molecular sequence data (e.g., nucleotides, amino acids).</p>
+
+<h3 class="subsection" id="helper-variables">Helper Variables</h3>
+<hr class="subsection" />
+
+<p>Before we begin specifying the hierarchical model, it is useful to instantiate some “helper variables” that will be used in our model and MCMC specification throughout our script.</p>
+
+<p>First, we will create a new constant node called <code class="highlighter-rouge">n_taxa</code> that is equal to the number of species in our analysis (18).</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_taxa &lt;- taxa.size()
+</code></pre></div></div>
+
+<p>Next, we will create a workspace variable called <code class="highlighter-rouge">moves</code>, which is a vector that will contain all of the MCMC moves used to propose new states for every stochastic node in the model graph. Each time a new stochastic node is created in the model, we can append the corresponding moves to this vector.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves = VectorMoves()
+</code></pre></div></div>
+
+<p>One important distinction here is that <code class="highlighter-rouge">moves</code> is part of the RevBayes workspace and not the hierarchical model. Thus, we use the workspace assignment operator <code class="highlighter-rouge">=</code> instead of the constant node assignment <code class="highlighter-rouge">&lt;-</code>.</p>
+
+<h3 class="subsection" id="the-fossilized-birth-death-process">The Fossilized Birth-Death Process</h3>
+<hr class="subsection" />
+
+<h4 class="subsubsection" id="FBD-SpeciationExtinction">Speciation and Extinction Rates</h4>
+<hr class="subsubsection" />
+
+<p>Two key parameters of the FBD process are the speciation rate (the rate at which lineages are added to the tree, denoted by $\lambda$ in <a href="#fig_full_model_gm"></a>) and the extinction rate (the rate at which lineages are removed from the tree, $\mu$ in <a href="#fig_full_model_gm"></a>).
+We will place exponential priors on both of these values, meaning we assume each parameter is drawn independently from a different exponential distribution, where each distribution has a rate parameter equal to <code class="highlighter-rouge">10</code>.
+An exponential distribution with a rate of <code class="highlighter-rouge">10</code> has an expected value (mean) of <code class="highlighter-rouge">1/10</code>.</p>
+
+<p>Create the exponentially distributed stochastic nodes for the <code class="highlighter-rouge">speciation_rate</code> and <code class="highlighter-rouge">extinction_rate</code> using the <code class="highlighter-rouge">~</code> stochastic assignment operator.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>speciation_rate ~ dnExponential(10)
+extinction_rate ~ dnExponential(10)
+</code></pre></div></div>
+
+<p>The <code class="highlighter-rouge">~</code> operator in Rev instantiates a stochastic node in the model (i.e., a solid circle in <a href="#fig_full_model_gm"></a>). Every stochastic node must be defined by a distribution. In this case, we use the Exponential.
+In the Rev language, every distribution has the prefix <code class="highlighter-rouge">dn</code> to make it easier to locate the various distributions in the Rev language documentation (<a href="https://revbayes.github.io/documentation/">https://revbayes.com/documentation</a>).
+When a stochastic node is created in the model, the distribution function assigns it an initial value by drawing a random value from the prior distribution and assigns the node to the named variable.</p>
+
+<p>For every stochastic node we declare, we must also specify proposal algorithms (called <em>moves</em>) to sample the value of the parameter in proportion to its posterior probability.
+If a move is not specified for a stochastic node, then it will not be estimated, but fixed to its initial value.</p>
+
+<p>The extinction rate and speciation rate are both positive, real numbers (<em>i.e.</em> non-negative floating point variables).
+For both of these nodes, we will use a scaling move (<code class="highlighter-rouge">mvScale</code>), which proposes multiplicative changes to a parameter.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale(speciation_rate, weight=1) )
+
+moves.append( mvScale(extinction_rate, weight=1) )
+</code></pre></div></div>
+
+<p>You will also notice that each move has a specified <code class="highlighter-rouge">weight</code>.
+This option indicates the frequency a given move will be performed in each MCMC cycle.
+In RevBayes, the MCMC is executed by default with a <em>schedule</em> of moves at each step of the chain, instead of just one move per step, as is done in MrBayes <a class="citation" href="#Ronquist2003">(Ronquist and Huelsenbeck 2003)</a> or BEAST <a class="citation" href="#Drummond2012">(Drummond et al. 2012; Bouckaert et al. 2014)</a>.
+Here, if we were to run our MCMC with our current vector of 2 moves each with a weight of <code class="highlighter-rouge">1</code>, then our move schedule would perform 2 moves in each cycle. Within a cycle, an individual move is chosen from the move list in proportion to its weight. Therefore, with both moves assigned <code class="highlighter-rouge">weight=1</code>, each has an equal probability of being executed and will be performed on average one time per MCMC cycle.
+For more information on moves and how they are performed in RevBayes, please refer to the <a href="/tutorials/mcmc/">Introduction to Markov chain Monte Carlo (MCMC) Sampling</a> and <a href="/tutorials/ctmc/">Nucleotide substitution models</a> tutorials.</p>
+
+<p>In addition to the speciation ($\lambda$) and extinction ($\mu$) rates, we may also be interested in inferring the net diversification rate ($\lambda - \mu$) and the turnover ($\mu/\lambda$).
+Since these parameters can each be expressed as a deterministic transformation of the speciation and extinction rates, we can monitor their values (i.e. track their values and print them to a file) by creating two deterministic nodes using the <code class="highlighter-rouge">:=</code> deterministic assignment operator.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>diversification := speciation_rate - extinction_rate
+turnover := extinction_rate/speciation_rate
+</code></pre></div></div>
+
+<p>Deterministic nodes are represented by circles with dotted borders in a probabilistic graphical model. To improve the simplicity of the model in <a href="#fig_full_model_gm"></a>, the diversification rate and turnover are not shown.</p>
+
+<h4 class="subsubsection" id="FBD-Rho">Extant Sampling Probability</h4>
+<hr class="subsubsection" />
+
+<p>Every extant bear species is represented in this dataset. Therefore, we will fix the probability of sampling an extant lineage ($\rho$ in <a href="#fig_full_model_gm"></a>) to 1. The parameter <code class="highlighter-rouge">rho</code> will be specified as a constant node (new values for <code class="highlighter-rouge">rho</code> will not be sampled in the MCMC) using the <code class="highlighter-rouge">&lt;-</code> constant assignment operator.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rho &lt;- 1.0
+</code></pre></div></div>
+
+<p>Because $\rho$ is a constant node, we do not have to assign a move to this parameter because we assume the value is known and fixed.</p>
+
+<h4 class="subsubsection" id="FBD-Psi">Fossil Sampling Rate</h4>
+<hr class="subsubsection" />
+
+<p>Since our data set includes serially sampled lineages, we must also account for the rate of sampling through time. This is the fossil sampling (or recovery) rate ($\psi$ in <a href="#fig_full_model_gm"></a>), which we will instantiate as a stochastic node named <code class="highlighter-rouge">psi</code>.
+As with the speciation and extinction rates (see <a href="#FBD-SpeciationExtinction"></a>), we will use an exponential prior on this parameter and apply a scale move to sample values from the posterior distribution.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psi ~ dnExponential(10) 
+
+moves.append( mvScale(psi, weight=1) )
+</code></pre></div></div>
+
+<h4 class="subsubsection" id="FBD-Origin">Origin Time</h4>
+<hr class="subsubsection" />
+
+<p>The FBD process is conditioned on the origin time ($\phi$ in <a href="#fig_full_model_gm"></a>), which requires specification of a node representing the age of the clade.
+We will set a uniform distribution on the origin age, with the lower bound set at the age of the oldest bear fossil (37 My) and the higher bound of 55 My set to the age of the most recent common ancestor of crown Carnivora estimated by recent studies <a class="citation" href="#DosReis2012">(dos Reis et al. 2012)</a>.
+For the move, we will use a sliding window move (<code class="highlighter-rouge">mvSlide</code>), which samples a parameter uniformly within an interval (defined by the half-width <code class="highlighter-rouge">delta</code>, which is set to <code class="highlighter-rouge">1</code> by default). Sliding window moves can be problematic for small values, as the window may overlap zero. However, our prior on the origin age excludes values $\leq 37.0$, so this is not an issue.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>origin_time ~ dnUnif(37.0, 55.0)
+
+moves.append( mvSlide(origin_time, weight=1.0) )
+</code></pre></div></div>
+
+<h4 class="subsubsection" id="FBD-dnFBD">The FBD Tree</h4>
+<hr class="subsubsection" />
+
+<p>Now that we have specified all of the parameters of the FBD process ($\lambda$, $\mu$, $\phi$, $\psi$), we will use these parameters to instantiate the stochastic node representing the time-calibrated tree that we will call <code class="highlighter-rouge">fbd_tree</code>.
+The <code class="highlighter-rouge">fbd_tree</code> ($\mathcal{T}$ in <a href="#fig_full_model_gm"></a>) is generated by a fossilized birth-death distribution and is conditionally dependent on $\lambda$, $\mu$, $\phi$, and $\psi$.
+The FBD distribution function <code class="highlighter-rouge">fnFBDP</code> takes the FBD parameters as arguments as well as the <code class="highlighter-rouge">taxa</code> variable which specifies the number of terminal taxa as well as the taxon labels.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fbd_tree ~ dnFBDP(origin=origin_time, lambda=speciation_rate, mu=extinction_rate, psi=psi, rho=rho, taxa=taxa)
+</code></pre></div></div>
+
+<p>Next, in order to sample from the posterior distribution of trees, we need to specify moves that propose changes to the topology (e.g. <code class="highlighter-rouge">mvFNPR</code>) and node times (e.g. <code class="highlighter-rouge">mvNodeTimeSlideUniform</code>). We also include a proposal that will collapse or expand a fossil branch (<code class="highlighter-rouge">mvCollapseExpandFossilBranch</code>), thus sampling trees where a given fossil is either a sampled ancestor or a sampled tip.
+In addition, when conditioning on the origin time, we also need to explicitly sample the root age (<code class="highlighter-rouge">mvRootTimeSlideUniform</code>).</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvFNPR(fbd_tree, weight=15.0) )
+moves.append( mvCollapseExpandFossilBranch(fbd_tree, origin_time, weight=6.0) )
+
+moves.append( mvNodeTimeSlideUniform(fbd_tree, weight=40.0) )
+moves.append( mvRootTimeSlideUniform(fbd_tree, origin_time, weight=5.0) )
+</code></pre></div></div>
+
+<p>Note that we specified a higher move <code class="highlighter-rouge">weight</code> for each of the proposals operating on <code class="highlighter-rouge">fbd_tree</code> than we did for the previous stochastic nodes.
+This means that our move schedule will propose fifteen times as many new topologies via the <code class="highlighter-rouge">mvFNPR</code> move as it will new values of <code class="highlighter-rouge">speciation_rate</code> using <code class="highlighter-rouge">mvScale</code>, for example.
+By increasing the number of times new values are proposed for a parameter, we are increasing the sampling intensity for that parameter.
+Typically, we do this for parameters that we are particularly interested in or for parameters that tend to induce long mixing times.
+A node like $\mathcal{T}$ in our graphical model (<a href="#fig_full_model_gm"></a>) represents a complex set of variables: the tree topology and all divergence times.
+Moreover, the likelihoods of our fossil occurrence data and the morphological character data are both conditionally dependent on the time tree.
+Such complex variables require more extensive sampling than other nodes.</p>
+
+<h4 class="subsubsection" id="FBD-TipSampling">Sampling Fossil Occurrence Times</h4>
+<hr class="subsubsection" />
+
+<p>Next, we need to account for uncertainty in the age estimates of our fossils using the observed minimum and maximum stratigraphic ages that are provided in the file <code class="highlighter-rouge">bears_taxa.tsv</code>.
+We can represent the fossil likelihood using any uniform distribution that is non-zero when the likelihood is equal to one (see <a href="#Intro-Foss-Samp"></a>).
+For example, if $t_i$ is the inferred fossil age and $(a_i,b_i)$ is the observed stratigraphic interval, we know the likelihood is equal to one when $a_i &lt; t_i &lt; b_i$, or equivalently $t_i - b_i &lt; 0 &lt; t_i - a_i$.
+So we can represent this likelihood using a uniform random variable,  uniformly distributed in $(t_i - b_i, t_i - a_i)$ and clamped at zero.</p>
+
+<p>To do this, we will get all the fossils from the tree and use a <code class="highlighter-rouge">for</code> loop to iterate over them. For each fossil observation, we will create a uniform random variable representing the likelihood, based on the minimum and maximum ages specified in the file <code class="highlighter-rouge">bears_taxa.tsv</code>.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fossils = fbd_tree.getFossils()
+for(i in 1:fossils.size())
+{
+    t[i] := tmrca(fbd_tree, clade(fossils[i]))
+
+    a_i = fossils[i].getMinAge()
+    b_i = fossils[i].getMaxAge()
+
+    F[i] ~ dnUniform(t[i] - b_i, t[i] - a_i)
+    F[i].clamp( 0 )
+}
+</code></pre></div></div>
+
+<p>Finally, we will add a move that samples the ages of all the fossils on the tree.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvFossilTimeSlideUniform(fbd_tree, origin_time, weight=5.0) )
+</code></pre></div></div>
+
+<h4 class="subsubsection" id="FBD-DetNodes">Monitoring Parameters of Interest</h4>
+<hr class="subsubsection" />
+
+<p>There are additional parameters that may be of particular interest to us that are not directly sampled as part of the graphical model defined thus far.
+As with the diversification and turnover nodes specified in <a href="#FBD-SpeciationExtinction"></a>, we can create deterministic nodes to sample the posterior distributions of these parameters.
+Here we will create a deterministic node called <code class="highlighter-rouge">num_samp_anc</code> that will compute the number of sampled ancestors in our <code class="highlighter-rouge">fbd_tree</code>.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>num_samp_anc := fbd_tree.numSampledAncestors();
+</code></pre></div></div>
+
+<p>We are also interested in the age of the most-recent-common ancestor (MRCA) of all living bears.
+To monitor this age in our MCMC sample, we must use the <code class="highlighter-rouge">clade</code> function to identify the node corresponding to the MRCA.
+Once this clade is defined we can instantiate a deterministic node called <code class="highlighter-rouge">age_extant</code> that will record the age of the MRCA of all living bears, using the <code class="highlighter-rouge">tmrca</code> function.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clade_extant = clade("Ailuropoda_melanoleuca","Tremarctos_ornatus","Melursus_ursinus",
+                    "Ursus_arctos","Ursus_maritimus","Helarctos_malayanus",
+                    "Ursus_americanus","Ursus_thibetanus")
+age_extant := tmrca(fbd_tree, clade_extant)
+</code></pre></div></div>
+
+<p>In the same way we monitored the MRCA of the extant bears, we can also monitor the age of a fossil taxon that we may be interested in recording. We will monitor the marginal distribution of the age of <em>Kretzoiarctos beatrix</em>, which is sampled between 11.2–11.8 My.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>age_Kretzoiarctos_beatrix := tmrca(fbd_tree, clade("Kretzoiarctos_beatrix"))
+</code></pre></div></div>
+
+<h3 class="subsection" id="Exercise-ModelMorph">Modeling the Evolution of Binary Morphological Characters</h3>
+<hr class="subsection" />
+
+<p>The next part of the graphical model we will define specifies the model of morphological character evolution.
+This component includes the substitution model, the model of rate variation among characters, and the model of
+rate variation among branches (<a href="#fig_full_model_gm"></a>).</p>
+
+<p>As stated in the <a href="#Intro-Subst-Mod"></a> section, we will
+use the Mk model to model our data.
+Because the Mk model is a generalization of
+the Jukes-Cantor model, we will initialize our Q matrix from a Jukes-Cantor
+matrix.
+The constant node <code class="highlighter-rouge">Q_morpho</code> corresponds to the two-state rate matrix $Q$ in <a href="#fig_full_model_gm"></a>.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q_morpho := fnJC(2)
+</code></pre></div></div>
+
+<p>We will assume that rates vary among characters in our data matrix according to a discretized gamma distribution (described in the section on <a href="#Intro-SiteRate"></a>).</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha_morpho ~ dnExponential( 1.0 )
+rates_morpho := fnDiscretizeGamma( alpha_morpho, alpha_morpho, 4 )
+
+moves.append( mvScale(alpha_morpho, weight=5.0) )
+</code></pre></div></div>
+
+<p>The phylogenetic model also assumes that each branch has a rate of
+morphological character change.
+For simplicity, we will assume a strict
+exponential clock — meaning that every branch has the same rate drawn from
+an exponential distribution (see the <a href="#Intro-BranchRate"></a> section).</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clock_morpho ~ dnExponential(1.0)
+
+moves.append( mvScale(clock_morpho, weight=4.0) )
+</code></pre></div></div>
+
+<h4 class="subsubsection" id="the-phylogenetic-ctmc">The Phylogenetic CTMC</h4>
+<hr class="subsubsection" />
+
+<p>If you refer to <a href="#fig_full_model_gm"></a>, you will see that we have defined almost all of the components of the
+complete model except for the observed node representing
+our morphological character data ($\mathcal{M}$).
+The character matrix is a clamped stochastic node that
+is generated by a phylogenetic continuous-time Markov chain (CTMC) distribution.
+This node is conditionally dependent on the time tree ($\mathcal{T}$: <code class="highlighter-rouge">fbd_tree</code>), clock rate ($c$: <code class="highlighter-rouge">clock_morpho</code>), site rates ($\mathbf{R}$: <code class="highlighter-rouge">rates_morpho</code>), and the two-state Mk rate matrix ($Q$: <code class="highlighter-rouge">Q_morpho</code>).
+With all of these nodes instantiated in the graphical model,
+we can now connect the components by defining the
+node representing our observed morphological data.</p>
+
+<p>There are some unique
+aspects to specifying a phylogenetic CTMC for morphological
+data.
+You will notice that we have an option called <code class="highlighter-rouge">coding</code>.
+This option
+allows us to condition on biases in the way the morphological data were
+collected (i.e., ascertainment bias).
+By setting <code class="highlighter-rouge">coding=variable</code> we can correct for coding only variable characters (discussed in (missing reference)).</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phyMorpho ~ dnPhyloCTMC(tree=fbd_tree, siteRates=rates_morpho, branchRates=clock_morpho, Q=Q_morpho, type="Standard", coding="variable")
+phyMorpho.clamp(morpho)
+</code></pre></div></div>
+
+<p>Now that we have defined our complete model, we can create a workspace variable that packages the entire model graph.
+This makes it easy to pass the whole model to functions that
+will set up our MCMC analysis.
+This variable is created using the <code class="highlighter-rouge">model()</code> function, which
+takes only a single node in the graph.
+We will use the <code class="highlighter-rouge">fbd_tree</code> node, but you can try this with an alternative node (e.g., <code class="highlighter-rouge">clock_morpho</code>, <code class="highlighter-rouge">rho</code>, etc.).
+As long as you have established all of the connections among the model parameters, the <code class="highlighter-rouge">model()</code> function will find every
+other node by traversing the edges of the graph (<a href="#fig_full_model_gm"></a>).</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(fbd_tree)
+</code></pre></div></div>
+
+<h3 class="subsection" id="monitoring-variables">Monitoring Variables</h3>
+<hr class="subsection" />
+
+<p>We have defined the full probabilistic graphical model
+shown in <a href="#fig_full_model_gm"></a> and we are now ready to
+specify our MCMC analysis.
+The first step in setting up the analysis is to
+create <em>monitors</em> that will record the values of
+each parameter in our model for every sampled cycle of
+the MCMC.
+The sampled values are saved to file (or printed to screen) and can be summarized when our MCMC simulation is complete.</p>
+
+<p>We will create three different monitors of this analysis.
+To manage the monitors in RevBayes, we create another
+workspace variable called <code class="highlighter-rouge">monitors</code> that is a vector containing the three monitor variables.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors = VectorMonitors()
+</code></pre></div></div>
+
+<p>Then, we can append our first monitor to the <code class="highlighter-rouge">monitors</code> vector.
+This will create a file called <code class="highlighter-rouge">bears.log</code> in a directory called <code class="highlighter-rouge">output</code> (if this directory does not already exist, RevBayes will create it).
+The function <code class="highlighter-rouge">mnModel()</code> initializes a monitor that saves all of the numerical parameters in the model to a tab-delineated file.
+This file is useful for summarizing marginal posteriors in statistical plotting tools like Tracer <a class="citation" href="#Rambaut2018">(Rambaut et al. 2018)</a> or R <a class="citation" href="#R2020">(R Core Team 2020)</a>. 
+We will exclude the <code class="highlighter-rouge">F</code> vector from logging, as it is purely used as an auxiliary variable for estimating fossil ages, and is clamped to 0.</p>
+
+<p>Importantly, we also specify how frequently we sample our Markov chain by setting the <code class="highlighter-rouge">printgen</code> option.
+We will sample every <code class="highlighter-rouge">10</code> cycles of our MCMC.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/bears.log", printgen=10, exclude = ["F"]) )
+</code></pre></div></div>
+
+<p>You may think that sampling every 10 generations may be too frequent to avoid correlation between samples in our MCMC.
+However, recall that a single “generation” in RevBayes performs a schedule of moves that is determined by the number of moves in the <code class="highlighter-rouge">moves</code> vector and the weights assigned to those moves (see the <a href="#FBD-SpeciationExtinction"></a> section).
+Thus, a single generation in this analysis will involve 26 moves, so if we record every 10 generations, there will be
+260 moves between each sample.</p>
+
+<p>We want to create a separate file containing samples of
+the tree and branch lengths since these will not be
+saved by the monitor defined above.
+To save the tree parameter, we can use the
+<code class="highlighter-rouge">mnFile()</code> function that saves specific parameters
+to a file.
+We indicate the parameters by including them in the function’s options.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnFile(filename="output/bears.trees", printgen=10, fbd_tree) )
+</code></pre></div></div>
+
+<p>The final monitor will print updates of our MCMC to the screen.
+The screen monitor function, <code class="highlighter-rouge">mnScreen()</code> allows us to add
+parameters in our model that will be displayed along with
+a few default values (including the current iteration, posterior, likelihood, and prior).
+We will monitor the age of the MRCA of the living bears, the number of sampled ancestors, and the origin time.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(printgen=10, age_extant, num_samp_anc, origin_time) )
+</code></pre></div></div>
+
+<h3 class="subsection" id="setting-up-and-running-the-mcmc-sampler">Setting up and Running the MCMC Sampler</h3>
+<hr class="subsection" />
+
+<p>Our Rev script specifies the three major parts of our
+MCMC analysis: a model (<code class="highlighter-rouge">mymodel</code>), a list of MCMC proposals (<code class="highlighter-rouge">moves</code>), and a way to save the values sampled by our Markov chain (<code class="highlighter-rouge">monitors</code>).
+With these three components, we can set up our analysis using the <code class="highlighter-rouge">mcmc()</code> function.
+This function creates a workspace variable that we can use
+to execute the MCMC simulation.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves)
+</code></pre></div></div>
+
+<p>Using our variable <code class="highlighter-rouge">mymcmc</code>, we can execute the <code class="highlighter-rouge">run()</code>
+member method to start our MCMC sampler.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=10000)
+</code></pre></div></div>
+
+<p>Finally, since we are going to save this analysis in a script file and run it in RevBayes, it is useful to include a statement that will quit the program when the run is complete.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>q()
+</code></pre></div></div>
+
+<blockquote class="instruction">
+  <p>Your script is now complete!</p>
+
+  <p>Save the <code class="highlighter-rouge">FBD_tutorial.Rev</code> file in the <code class="highlighter-rouge">RB_FBD_Tutorial</code> directory.</p>
+</blockquote>
+
+<h3 class="subsection" id="execute-the-analysis-script-in-revbayes">Execute the Analysis Script in RevBayes</h3>
+<hr class="subsection" />
+
+<p>With your script complete and data files in the proper locations, you can execute the <code class="highlighter-rouge">FBD_tutorial.Rev</code> script 
+in RevBayes.</p>
+
+<blockquote class="instruction">
+  <p>Run the RevByes executable.</p>
+
+  <p>On Unix systems, if the RevBayes is in your path, you simply need to navigate to the <code class="highlighter-rouge">RB_FBD_Tutorial</code> directory and type <code class="highlighter-rouge">rb</code>.</p>
+
+  <p>If the RevBayes executable is not in your path, you can execute it and then change your working directory using the <code class="highlighter-rouge">setwd()</code> function which takes the absolute path to your directory as an argument.</p>
+
+  <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>setwd("&lt;path to&gt;/RB_FBD_Tutorial")
+</code></pre></div>  </div>
+</blockquote>
+
+<p>Once RevBayes is in the correct directory (<code class="highlighter-rouge">RB_FBD_Tutorial</code>), you can then use the <code class="highlighter-rouge">source()</code> function to feed RevBayes your master script file (<code class="highlighter-rouge">FBD_tutorial.Rev</code>).</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("FBD_tutorial.Rev")
+</code></pre></div></div>
+
+<div class="Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   Processing file "FBD_tutorial.Rev"
+   Successfully read one character matrix from file 'data/bears_morphology.nex'
+
+   Running MCMC simulation
+   This simulation runs 1 independent replicate.
+   The simulator uses 11 different moves in a random move schedule with 26 moves per iteration
+   ...
+</code></pre></div></div>
+
+<p>This will execute the analysis and you should see the various parameters you included when you created mnScreen printed to the screen every 10 generations.</p>
+
+<p>When the analysis is complete, RevBayes will quit and you will have a new directory called output that will contain all of the files you specified with the monitors.</p>
+
+<h2 class="section" id="results">Results</h2>
+<hr class="section" />
+
+<h3 class="subsection" id="evaluating-convergence">Evaluating Convergence</h3>
+<hr class="subsection" />
+
+<p>The first step when analyzing the output of an MCMC run is to check whether the chain has converged. This can be done by loading the parameter log, in our case the file <code class="highlighter-rouge">bears.log</code>, in a software such as Tracer, shown in <a href="#tracer_fig"></a>.</p>
+
+<figure id="tracer_fig"><p><img src="figures/tracer.png" width="1000" /></p>
+<figcaption>Analysis in Tracer of the parameter estimates obtained on the bears dataset.</figcaption>
+</figure>
+
+<p>On the left side is a panel summarizing all the parameters which appear in the log, with their mean estimate and their ESS (effective sample size). This last measure determines whether the chain has converged on the associated parameter: values above 200 are considered “good”, whereas values below 200, highlighted by Tracer in yellow or red, indicate convergence issues.</p>
+
+<p>Here we can see that the chain has converged on some parameters, but not others. In particular, it probably has not converged yet on the tree topology, as shown by the low ESS on the origin time (<code class="highlighter-rouge">origin_time</code>) and the ages of some fossil tips (<code class="highlighter-rouge">t[1]</code>, <code class="highlighter-rouge">t[9]</code> and <code class="highlighter-rouge">t[10]</code>).</p>
+
+<h3 class="subsection" id="summarizing-the-tree">Summarizing the Tree</h3>
+<hr class="subsection" />
+
+<p>We can now summarize the tree topology, branch times, and fossil ages from our MCMC sample that was saved to <code class="highlighter-rouge">output/bears.trees</code> using some built-in RevBayes functions.</p>
+
+<blockquote class="instruction">
+  <p>Run the RevByes executable. And be sure that the working directory is <code class="highlighter-rouge">RB_FBD_Tutorial</code>.</p>
+</blockquote>
+
+<p>The file <code class="highlighter-rouge">bears.trees</code> contains the trees and associated parameters that 
+were sampled every 10 generations by our monitor. 
+In RevBayes, we often refer to a set of samples from our MCMC
+as a “trace”.</p>
+
+<p>Begin by loading the tree trace into RevBayes from the <code class="highlighter-rouge">bears.trees</code> file.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>trace = readTreeTrace("output/bears.trees")
+</code></pre></div></div>
+
+<div class="Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   Processing file "&lt;path to&gt;/RB_FBD_Tutorial/output/bears.trees"
+
+Progress:
+0---------------25---------------50---------------75--------------100
+********************************************************************
+
+</code></pre></div></div>
+
+<p>By default, a burn-in of 25% is used when reading in the tree trace (250 trees in our case). <em>NB:</em> note that this is different from Tracer, which uses a burn-in fraction of 10% by default. You can specify a different burn-in fraction, say 50%, by typing the command <code class="highlighter-rouge">trace.setBurnin(500)</code>.</p>
+
+<p>Now we will use the <code class="highlighter-rouge">mccTree()</code> function to return a maximum clade credibility (MCC) tree. The MCC tree is the tree with the maximum product of the posterior clade probabilities. When considering trees with sampled ancestors, we refer to the maximum sampled ancestor clade credibility (MSACC) tree <a class="citation" href="#Gavryushkina2016">(Gavryushkina et al. 2017)</a>.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mccTree(trace, file="output/bears.mcc.tre" )
+</code></pre></div></div>
+
+<p>When there are sampled ancestors present in the tree, visualizing the tree can be fairly difficult in traditional tree viewers. 
+We will make use of a browser-based tree viewer called IcyTree <a class="citation" href="#Vaughan2017">(Vaughan 2017)</a>, which can be accessed at <a href="https://icytree.org">https://icytree.org</a>. 
+IcyTree has many unique options for visualizing phylogenetic trees and can produce publication-quality vector image files (i.e. SVG). Additionally, it correctly represents sampled ancestors on the tree as nodes, each with only one descendant (<a href="#icytree_fig"></a>).</p>
+
+<blockquote class="instruction">
+  <p>Navigate to <a href="https://icytree.org">https://icytree.org</a> and open the file <code class="highlighter-rouge">output/bears.mcc.tre</code> in IcyTree.</p>
+
+  <p>Try to replicate the tree in <a href="#icytree_fig"></a> (Hint: <strong><em>Style &gt; Mark Singletons</em></strong>)</p>
+
+  <p>⇨ Why might a node with a sampled ancestor be
+referred to as a singleton?</p>
+
+  <p>⇨ How can you see the names of the fossils that are putative sampled ancestors?</p>
+
+  <p>⇨ What is the
+posterior probability that <em>Zaragocyon daamsi</em> is a sampled ancestor?</p>
+</blockquote>
+
+<figure id="icytree_fig"><p><img src="figures/icytree.png" width="700" /></p>
+<figcaption>Maximum sampled ancestor clade credibility (MSACC) tree of bear species used in this tutorial.</figcaption>
+</figure>
+
+
+<ol class="bibliography"><li><span id="Bouckaert2014">Bouckaert R., Heled J., Kühnert D., Vaughan T., Wu C.-H., Xie D., Suchard M.A., Rambaut A., Drummond A.J. 2014. BEAST 2: a software platform for Bayesian evolutionary analysis. PLoS Computational Biology. 10:e1003537.</span>
+
+<a href="https://doi.org/10.1371/journal.pcbi.1003537">10.1371/journal.pcbi.1003537</a>
+
+</li>
+<li><span id="Drummond2012">Drummond A.J., Suchard M.A., Xie D., Rambaut A. 2012. Bayesian phylogenetics with BEAUti and the BEAST 1.7. Molecular Biology and Evolution. 29:1969–1973.</span>
+
+<a href="https://doi.org/10.1093/molbev/mss075">10.1093/molbev/mss075</a>
+
+</li>
+<li><span id="Gavryushkina2016">Gavryushkina A., Heath T.A., Ksepka D.T., Stadler T., Welch D., Drummond A.J. 2017. Bayesian Total-Evidence Dating Reveals the Recent Crown Radiation of Penguins. Systematic Biology. 66:57–73.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syw060">10.1093/sysbio/syw060</a>
+
+</li>
+<li><span id="Heath2014">Heath T.A., Huelsenbeck J.P., Stadler T. 2014. The fossilized birth-death process for coherent calibration of divergence-time estimates. Proceedings of the National Academy of Sciences. 111:E2957–E2966.</span>
+
+<a href="https://doi.org/10.1073/pnas.1319091111">10.1073/pnas.1319091111</a>
+
+</li>
+<li><span id="Hoehna2015a">Höhna S. 2015. The time-dependent reconstructed evolutionary process with a key-role for mass-extinction events. Journal of Theoretical Biology. 380:321–331.</span>
+
+<a href="https://doi.org/http://dx.doi.org/10.1016/j.jtbi.2015.06.005">http://dx.doi.org/10.1016/j.jtbi.2015.06.005</a>
+
+</li>
+<li><span id="Hoehna2014b">Höhna S., Heath T.A., Boussau B., Landis M.J., Ronquist F., Huelsenbeck J.P. 2014. Probabilistic Graphical Model Representation in Phylogenetics. Systematic Biology. 63:753–771.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syu039">10.1093/sysbio/syu039</a>
+
+</li>
+<li><span id="Kendall1948">Kendall D.G. 1948. On the Generalized "Birth-and-Death" Process. The Annals of Mathematical Statistics. 19:1–15.</span>
+
+<a href="https://doi.org/10.1214/aoms/1177730285">10.1214/aoms/1177730285</a>
+
+</li>
+<li><span id="Lewis2001">Lewis P.O. 2001. A Likelihood Approach to Estimating Phylogeny from Discrete Morphological Character Data. Systematic Biology. 50:913–925.</span>
+
+<a href="https://doi.org/10.1080/106351501753462876">10.1080/106351501753462876</a>
+
+</li>
+<li><span id="Nee1994b">Nee S., May R.M., Harvey P.H. 1994. The Reconstructed Evolutionary Process. Philosophical Transactions: Biological Sciences. 344:305–311.</span>
+
+<a href="https://doi.org/10.1098/rstb.1994.0068">10.1098/rstb.1994.0068</a>
+
+</li>
+<li><span id="Rambaut2018">Rambaut A., Drummond A.J., Xie D., Baele G., Suchard M.A. 2018. Posterior Summarization in Bayesian Phylogenetics Using Tracer 1.7. Systematic Biology. 67:901–904.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syy032">10.1093/sysbio/syy032</a>
+
+</li>
+<li><span id="Ronquist2003">Ronquist F., Huelsenbeck J.P. 2003. MrBayes 3: Bayesian phylogenetic inference under mixed models. Bioinformatics. 19:1572–1574.</span>
+
+<a href="https://doi.org/10.1093/bioinformatics/btg180">10.1093/bioinformatics/btg180</a>
+
+</li>
+<li><span id="Ronquist2012a">Ronquist F., Klopfstein S., Vilhelmsen L., Schulmeister S., Murray D.L., Rasnitsyn A.P. 2012. A total-evidence approach to dating with fossils, applied to the early radiation of the Hymenoptera. Systematic Biology. 61:973–999.</span>
+
+</li>
+<li><span id="Stadler2010">Stadler T. 2010. Sampling-through-time in birth-death trees. Journal of Theoretical Biology. 267:396–404.</span>
+
+<a href="https://doi.org/10.1016/j.jtbi.2010.09.010">10.1016/j.jtbi.2010.09.010</a>
+
+</li>
+<li><span id="Vaughan2017">Vaughan T.G. 2017. IcyTree: rapid browser-based visualization for phylogenetic trees and networks. Bioinformatics. 33:2392–2394.</span>
+
+<a href="https://doi.org/10.1093/bioinformatics/btx155">10.1093/bioinformatics/btx155</a>
+
+</li>
+<li><span id="Zhang2016">Zhang C., Stadler T., Klopfstein S., Heath T.A., Ronquist F. 2016. Total-Evidence Dating under the Fossilized Birth-Death Process. Systematic Biology. 65:228–249.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syv080">10.1093/sysbio/syv080</a>
+
+</li>
+<li><span id="Zuckerkandl1962">Zuckerkandl E., Pauling L. 1962. Molecular disease, evolution, and genetic heterogeneity. Horizons in Biochemistry.:189–225.</span>
+
+</li>
+<li><span id="R2020">R Core Team. 2020. R: A Language and Environment for Statistical
+                  Computing. Vienna, Austria: R Foundation for Statistical Computing.</span>
+
+<a href="https://www.R-project.org">https://www.R-project.org</a>
+
+</li>
+<li><span id="DosReis2012">dos Reis M., Inoue J., Hasegawa M., Asher R.J., Donoghue P.C.J., Yang Z. 2012. Phylogenomic datasets provide both precision and accuracy in estimating the timescale of placental mammal phylogeny. Proceedings of the Royal Society B: Biological Sciences. 279:3491–3500.</span>
+
+<a href="https://doi.org/10.1098/rspb.2012.0683">10.1098/rspb.2012.0683</a>
+
+</li></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+    });
+    MathJax.Hub.Queue(function () {
+      $(".aside").each(function() {
+          $("div .MathJax", this).hide();
+      });
+    });
+</script>
+<script src="/assets/js/base.js"></script>
+
+  </body>
+</html>
