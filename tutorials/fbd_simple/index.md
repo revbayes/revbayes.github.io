@@ -79,7 +79,6 @@ $(a_i,b_i)$.
 
 
 
-
 {% subsection Modeling Discrete Morphological Character Change %}
 
 Given a phylogeny, the discrete morphological character change model will describe how traits change along each lineage, resulting in the observed character states of fossils and living species. In our case, the phylogeny and fossil occurrences are generated from the FBD process and we will be modeling the evolution of discrete morphological characters with two states. There are three main components to consider with modeling discrete morphological traits: the substitution model, the branch rate model, and the site rate model.
