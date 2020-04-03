@@ -86,9 +86,9 @@ Given a phylogeny, the discrete morphological character change model will descri
 
 {% subsubsection Substitution Model | Intro-Subst-Mod %}
 
- The substitution model describes how discrete morphological characters evolve over time. We will be using the Mk model {% cite Lewis2001 %}, a generalization of the Jukes-Cantor model described for nucleotide substitutions. The Mk model assumes that all transitions from one state to another occur at the same rate, for all $k$ states. Since the characters used in this tutorial all have two states, we will specifically be using a model where $k=2$. Thus, a transition from state 0 to state 1 is equally as likely as a transition from state 1 to state 0. RevBayes can accommodate [multistate characters]{% page_url morph_tree/V2 %}), as well.
+ The substitution model describes how discrete morphological characters evolve over time. We will be using the Mk model {% cite Lewis2001 %}, a generalization of the Jukes-Cantor model described for nucleotide substitutions. The Mk model assumes that all transitions from one state to another occur at the same rate, for all $k$ states. Since the characters used in this tutorial all have two states, we will specifically be using a model where $k=2$. Thus, a transition from state 0 to state 1 is equally as likely as a transition from state 1 to state 0. RevBayes can accommodate [multistate characters]({% page_url morph_tree/V2 %}) as well.
 
-Once some characters transition to certain state, they rarely transition back, this likely means that the assumption of symmetric rates is violated. We can accommodate [asymmetric transition rates]({% page_url morph_tree %}) for each state using alternative models in RevBayes. Additionally, if some characters change symmetrically while others change asymmetrically, it is possible to [partition]({% page_url partition %}) the character matrix to account for model heterogeneity in the matrix.
+Once some characters transition to certain state, they rarely transition back, which means that the assumption of symmetric rates is likely violated. We can accommodate [asymmetric transition rates]({% page_url morph_tree %}) for each state using alternative models in RevBayes. Additionally, if some characters change symmetrically while others change asymmetrically, it is possible to [partition]({% page_url partition %}) the character matrix to account for model heterogeneity in the matrix.
 
 {% subsubsection Branch-Rate Model | Intro-BranchRate %}
 
@@ -98,7 +98,7 @@ It is also possible to account for variation in rates among branches. These "rel
 
 {% subsubsection Site-Rate Model | Intro-SiteRate %}
 
-The rate of character evolution can often vary from one column in the matrix to another. Under this model, a scalar is applied to each character to account for variation in relative rates. In our case we will assume that each trait will belong to one of four rate categories from the discretized gamma distribution {% cite Yang1994 %}, which is parameterized by shape parameter $\alpha$ and number of rate categories $n$. Normally a gamma distribution requires a shape $\alpha$ and rate $\beta$ parameters, however, because we want our site rates to have a mean of one and this occurs only when $\alpha=\beta$, thus eliminating the second parameter. The parameter $n$ breaks the gamma distribution into $n$ equiprobable bins where the rate value of each bin is equal to its mean.
+The rate of character evolution can often vary from site to site, i.e. from one column in the matrix to another. Under the site-rate model, a scalar is applied to each character to account for variation in relative rates. In our case we will assume that each character belongs to one of four rate categories from the discretized gamma distribution {% cite Yang1994 %}, which is parameterized by shape parameter $\alpha$ and number of rate categories $n$. Normally a gamma distribution requires shape $\alpha$ and rate $\beta$ parameters, however we set our site rates to have a mean of one, which results in the constraint $\alpha=\beta$, thus eliminating the second parameter. The parameter $n$ breaks the gamma distribution into $n$ equiprobable bins where the rate value of each bin is equal to its mean.
 
 {% subsection Putting Together the Complete Phylogenetic Model%}
 
@@ -115,11 +115,13 @@ analysis described in this tutorial. This explicit representation of the model e
 The parameters represented as stochastic nodes (solid white circles) in {% ref fig_full_model_gm %} are unknown random variables that are estimated in our analysis.
 For each of these parameters, we assume a prior distribution that describes our uncertainty in that parameter's value. For example, we apply an exponential distribution with a rate of 10 as a prior on the mutation rate $\mu$: $\mu\sim$ Exponential(10).
 
+The parameters represented as constant nodes (white boxes) are fixed in the analysis.
+
 {% subsection Alternative Models and Analyses %}
 
 The model choices and analysis in this tutorial focus on a simple example.
-Importantly, the modular design of RevBayes allows for certain model choices to be swapped with more complex or biologically relevant processes for a given system.
-Analysis of a wide range of data types are also implemented in RevBayes (e.g. [nucleotide sequences]({% page_url ctmc %}) , [historical biogeographic ranges]({% page_url biogeo/biogeo_dating %}))
+Importantly, the modular design of RevBayes allows for many model choices to be swapped with more complex or biologically relevant processes for a given system.
+Analyses of a wide range of data types are also implemented in RevBayes (e.g. [nucleotide sequences]({% page_url ctmc %}) , [historical biogeographic ranges]({% page_url biogeo/biogeo_dating %})).
 Moreover, it is possible to fully integrate models describing the generation of data from different sources like in the [“combined-evidence" approach]({% page_url fbd/fbd_specimen %}) {% cite Ronquist2012a Zhang2016 Gavryushkina2016 %} in a single, hierarchical Bayesian model.
 Ultimately, for any statistical analysis of empirical data, it is important to consider the processes governing the generation of those data and how they can be represented in a hierarchical model.
 
@@ -159,7 +161,7 @@ First, we will create a variable called `taxa` that will contain the data from `
 {{ mcmc_script | snippet:"block#","1" }}
 
 The file `bears_taxa.tsv` contains a table with all of the fossil and extant bear species names in the first column, their minimum age in the second column and their maximum age in the third column.
-We use the function `readTaxonData` to create an object that will hold all these data and assign it to a variable we will call `taxa`.
+We use the function `readTaxonData` to load this table into the workspace.
 
 
 Next, we will import the morphological character matrix from `bears_morphology.nex` and assign it to the variable `morpho`.
@@ -173,11 +175,11 @@ Here, we use the function `readDiscreteCharacterData` to load a data matrix to t
 
 Before we begin specifying the hierarchical model, it is useful to instantiate some "helper variables" that will be used in our model and MCMC specification throughout our script.
 
-First, create a new constant node called `n_taxa` that is equal to the number of species in our analysis (18).
+First, we will create a new constant node called `n_taxa` that is equal to the number of species in our analysis (18).
 
 {{ mcmc_script | snippet:"line","22" }}
 
-Next, we will create a workspace variable called `moves`, which is a vector that will contain all of the MCMC moves used to propose new states for every stochastic node in the model graph. Each time a new stochastic node is created in the model, we can append the move to this vector.
+Next, we will create a workspace variable called `moves`, which is a vector that will contain all of the MCMC moves used to propose new states for every stochastic node in the model graph. Each time a new stochastic node is created in the model, we can append the corresponding moves to this vector.
 
 {{ mcmc_script | snippet:"line","23" }}
 
@@ -210,7 +212,7 @@ For both of these nodes, we will use a scaling move (`mvScale`), which proposes 
 You will also notice that each move has a specified `weight`.
 This option indicates the frequency a given move will be performed in each MCMC cycle.
 In RevBayes, the MCMC is executed by default with a *schedule* of moves at each step of the chain, instead of just one move per step, as is done in MrBayes {% cite Ronquist2003 %} or BEAST {% cite Drummond2012 Bouckaert2014 %}.
-Here, if we were to run our MCMC with our current vector of 2 moves each with a weight of `1`, then our move schedule would perform 2 moves at each cycle. Within a cycle, an individual move is chosen from the move list in proportion to its weight. Therefore, with both moves assigned `weight=1`, each has an equal probability of being executed and will be performed on average one time per MCMC cycle.
+Here, if we were to run our MCMC with our current vector of 2 moves each with a weight of `1`, then our move schedule would perform 2 moves in each cycle. Within a cycle, an individual move is chosen from the move list in proportion to its weight. Therefore, with both moves assigned `weight=1`, each has an equal probability of being executed and will be performed on average one time per MCMC cycle.
 For more information on moves and how they are performed in RevBayes, please refer to the {% page_ref mcmc %} and {% page_ref ctmc %} tutorials.
 
 In addition to the speciation ($\lambda$) and extinction ($\mu$) rates, we may also be interested in inferring the net diversification rate ($\lambda - \mu$) and the turnover ($\mu/\lambda$).
@@ -233,7 +235,7 @@ Because $\rho$ is a constant node, we do not have to assign a move to this param
 {% subsubsection Fossil Sampling Rate | FBD-Psi %}
 
 Since our data set includes serially sampled lineages, we must also account for the rate of sampling through time. This is the fossil sampling (or recovery) rate ($\psi$ in {% ref fig_full_model_gm %}), which we will instantiate as a stochastic node named `psi`.
-As with the speciation and extinction rates (see {% ref FBD-SpeciationExtinction %}), we will use an exponential prior on this parameter and apply scale moves to sample values from the posterior distribution.
+As with the speciation and extinction rates (see {% ref FBD-SpeciationExtinction %}), we will use an exponential prior on this parameter and apply a scale move to sample values from the posterior distribution.
 
 {{  mcmc_script | snippet:"block#","9-10" }}
 
@@ -246,8 +248,6 @@ For the move, we will use a sliding window move (`mvSlide`), which samples a par
 {{  mcmc_script | snippet:"block#","11-12" }}
 
 
-
-
 {% subsubsection The FBD Tree | FBD-dnFBD %}
 
 Now that we have specified all of the parameters of the FBD process ($\lambda$, $\mu$, $\phi$, $\psi$), we will use these parameters to instantiate the stochastic node representing the time-calibrated tree that we will call `fbd_tree`.
@@ -256,7 +256,7 @@ The FBD distribution function `fnFBDP` takes the FBD parameters as arguments as 
 
 {{  mcmc_script | snippet:"block#","13" }}
 
-Next, in order to sample from the posterior distribution of trees, we need to specify moves that propose changes to the topology (e.g. `mvFNPR`) and node times (e.g. `mvNodeTimeSlideUniform`). We also include a proposal that will collapse or expand a fossil branch (`mvCollapseExpandFossilBranch`), thus sampling trees where a given fossil is a sampled ancestor and/or a sampled tip.
+Next, in order to sample from the posterior distribution of trees, we need to specify moves that propose changes to the topology (e.g. `mvFNPR`) and node times (e.g. `mvNodeTimeSlideUniform`). We also include a proposal that will collapse or expand a fossil branch (`mvCollapseExpandFossilBranch`), thus sampling trees where a given fossil is either a sampled ancestor or a sampled tip.
 In addition, when conditioning on the origin time, we also need to explicitly sample the root age (`mvRootTimeSlideUniform`).
 
 {{  mcmc_script | snippet:"block#","14-15" }}
@@ -306,11 +306,11 @@ In the same way we monitored the MRCA of the extant bears, we can also monitor t
 {% subsection Modeling the Evolution of Binary Morphological Characters | Exercise-ModelMorph %}
 
 The next part of the graphical model we will define specifies the model of morphological character evolution.
-These components include the substitution model, the model of rate variation among characters, and the model of
+This component includes the substitution model, the model of rate variation among characters, and the model of
 rate variation among branches ({% ref fig_full_model_gm %}).
 
 As stated in the {% ref Intro-Subst-Mod %} section, we will
-use Mk to model our data.
+use the Mk model to model our data.
 Because the Mk model is a generalization of
 the Jukes-Cantor model, we will initialize our Q matrix from a Jukes-Cantor
 matrix.
@@ -326,7 +326,7 @@ We will assume that rates vary among characters in our data matrix according to 
 The phylogenetic model also assumes that each branch has a rate of
 morphological character change.
 For simplicity, we will assume a strict
-exponential clock—meaning that every branch has the same rate drawn from
+exponential clock — meaning that every branch has the same rate drawn from
 an exponential distribution (see the {% ref Intro-BranchRate %} section).
 
 {{ mcmc_script | snippet:"block#","26-27" }}
@@ -354,7 +354,7 @@ By setting `coding=variable` we can correct for coding only variable characters 
 
 {{ mcmc_script | snippet:"block#","28" }}
 
-Now we have defined our complete model, we can create a workspace variable that packages the entire model graph.
+Now that we have defined our complete model, we can create a workspace variable that packages the entire model graph.
 This makes it easy to pass the whole model to functions that
 will set up our MCMC analysis.
 This variable is created using the `model()` function, which
@@ -380,7 +380,7 @@ the MCMC.
 The sampled values are saved to file (or printed to screen) and can be summarized when our MCMC simulation is complete.
 
 We will create three different monitors of this analysis.
-To manage the monitors in RevBayes, we can create another
+To manage the monitors in RevBayes, we create another
 workspace variable called `monitors` that is a vector containing the three monitor variables.
 
 {{ mcmc_script | snippet:"block#","30" }}
@@ -437,7 +437,7 @@ member method to start our MCMC sampler.
 
 Finally, since we are going to save this analysis in a script file and run it in RevBayes, it is useful to include a statement that will quit the program when the run is complete.
 
-{{ mcmc_script | snippet:"block#","35" }}
+{{ mcmc_script | snippet:"block#","36" }}
 
 > Your script is now complete! 
 >
