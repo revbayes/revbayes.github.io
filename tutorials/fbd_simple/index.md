@@ -57,13 +57,13 @@ One key assumption of the FBD model is that each fossil represents a distinct fo
 
 Often there is uncertainty around the age of each fossil, typically represented as an interval of the minimum and maximum possible ages. RevBayes allows fossil occurrence time uncertainty to be modeled by directly treating it as part of the likelihood of the fossil data given the time tree. We model this by assuming the likelihood of a particular fossil occurrence $\mathcal{F}_i$ is zero if the inferred age $t_i$ occurs outside the time interval $(a_i,b_i)$ and some non-zero likelihood when the fossil is placed within the interval. Specifically, we will assume the fossil could occur anywhere within the observed interval with uniform probability, this means that the likelihood is equal to one if the inferred fossil age is consistent with the observed fossil interval:
 
->
+
 $$f[\mathcal{F}_i \mid a_i, b_i, t_i] = \begin{cases}
 1 & \text{if } a_i < t_i < b_i\\
 0 & \text{otherwise}
 \end{cases}$$
 
-The incorporation of uncertainty around the fossil occurrence data is shown graphically as a part of our model in {% ref fig_module_gm %}.  
+The incorporation of uncertainty around the fossil occurrence data is shown graphically as a part of our model in {% ref fig_tipsampling_gm %}.  
 
 {% figure fig_tipsampling_gm %}
 <img src="figures/tikz/tipsampling_gm.png" width="400" />
