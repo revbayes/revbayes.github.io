@@ -1,7 +1,7 @@
 ---
 title: A simple FBD analysis
 subtitle: Joint inference of divergence times and phylogenetic relationships of fossil and extant taxa from morphological data
-authors:  Joëlle Barido-Sottani, Joshua Justison, Walker Pett, and Tracy A. Heath
+authors:  Joëlle Barido-Sottani, Joshua Justison, Walker Pett, April M. Wright, Rachel C. M. Warnock and Tracy A. Heath
 level: 1
 order: 15
 prerequisites:
@@ -542,10 +542,24 @@ When there are sampled ancestors present in the tree, visualizing the tree can b
 We will make use of a browser-based tree viewer called IcyTree {% cite Vaughan2017 %}, which can be accessed at [https://icytree.org](https://icytree.org). 
 IcyTree has many unique options for visualizing phylogenetic trees and can produce publication-quality vector image files (i.e. SVG). Additionally, it correctly represents sampled ancestors on the tree as nodes, each with only one descendant ({% ref icytree_fig %}).
 
+> Navigate to <https://icytree.org> and open the file `output/bears.mcc.tre` in IcyTree.
+>
+> Try to replicate the tree in {% ref icytree_fig %} (Hint: ***Style > Mark Singletons***) 
+>
+>&#8680; Why might a node with a sampled ancestor be
+>referred to as a singleton?
+>
+>&#8680; How can you see the names of the fossils that are putative sampled ancestors?
+>
+> &#8680; What is the
+> posterior probability that *Zaragocyon daamsi* is a sampled ancestor?
+{:.instruction}
+
 {% figure icytree_fig %}
 <img src="figures/icytree.png" width="700" />
 {% figcaption %}
 Maximum sampled ancestor clade credibility (MSACC) tree of bear species used in this tutorial. 
 {% endfigcaption %}
 {% endfigure %}
+
 
