@@ -85,7 +85,7 @@ Given a phylogeny, the discrete morphological character change model will descri
 
 {% subsubsection Substitution Model | Intro-Subst-Mod %}
 
- The substitution model describes how discrete morphological characters evolve over time. We will be using the Mk model {% cite Lewis2001 %}, a generalization of the Jukes-Cantor model described for nucleotide substitutions. The Mk model assumes that all transitions from one state to another occur at the same rate, for all $k$ states. Since the characters used in this tutorial all have two states, we will specifically be using a model where $k=2$. Thus, a transition from state 0 to state 1 is equally as likely as a transition from state 1 to state 0. RevBayes can accommodate [multistate characters]({% page_url morph_tree/V2 %}) as well.
+The substitution model describes how discrete morphological characters evolve over time. We will be using the Mk model {% cite Lewis2001 %}, a generalization of the Jukes-Cantor model described for nucleotide substitutions. The Mk model assumes that all transitions from one state to another occur at the same rate, for all $k$ states. Since the characters used in this tutorial all have two states, we will specifically be using a model where $k=2$. Thus, a transition from state 0 to state 1 is equally as likely as a transition from state 1 to state 0. RevBayes can accommodate [multistate characters]({% page_url morph_tree/V2 %}) as well.
 
 Once some characters transition to certain state, they rarely transition back, which means that the assumption of symmetric rates is likely violated. We can accommodate [asymmetric transition rates]({% page_url morph_tree %}) for each state using alternative models in RevBayes. Additionally, if some characters change symmetrically while others change asymmetrically, it is possible to [partition]({% page_url partition %}) the character matrix to account for model heterogeneity in the matrix.
 
@@ -113,7 +113,6 @@ analysis described in this tutorial. This explicit representation of the model e
 
 The parameters represented as stochastic nodes (solid white circles) in {% ref fig_full_model_gm %} are unknown random variables that are estimated in our analysis.
 For each of these parameters, we assume a prior distribution that describes our uncertainty in that parameter's value. For example, we apply an exponential distribution with a rate of 10 as a prior on the mutation rate $\mu$: $\mu\sim$ Exponential(10).
-
 The parameters represented as constant nodes (white boxes) are fixed in the analysis.
 
 {% subsection Alternative Models and Analyses %}
