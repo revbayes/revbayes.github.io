@@ -348,7 +348,7 @@ You will notice that we have an option called `coding`.
 This option
 allows us to condition on biases in the way the morphological data were
 collected (i.e., ascertainment bias).
-By setting `coding=variable` we can correct for coding only variable characters (discussed in {% cite lewis2001 %}).
+By setting `coding=variable` we can correct for coding only variable characters (discussed in {% cite Lewis2001 %}).
 
 {{ mcmc_script | snippet:"block#","28" }}
 
@@ -477,7 +477,7 @@ source("FBD_tutorial.Rev")
 ```
 {:.Rev-output}
 
-This will execute the analysis and you should see the various parameters you included when you created mnScreen printed to the screen every 10 generations.
+This will execute the analysis and you should see the various parameters you included when you created `mnScreen` printed to the screen every 10 generations.
 
 When the analysis is complete, RevBayes will quit and you will have a new directory called output that will contain all of the files you specified with the monitors.
 
