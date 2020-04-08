@@ -1,5 +1,5 @@
 ---
-title: Combined-Evidence Analysis and the Fossilized Birth-Death Process for Analysis of Fossil and Extant Specimens
+title: Combined-Evidence Analysis and the Fossilized Birth-Death Process for Analysis of Extant Taxa and Fossil Specimens
 subtitle: Joint inference of divergence times and phylogenetic relationships of fossil and extant taxa
 authors:  Tracy A. Heath, April M. Wright, and Walker Pett
 level: 4
