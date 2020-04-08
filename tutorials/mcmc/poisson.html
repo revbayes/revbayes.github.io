@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Introduction to MCMC</h1>
 	<h3 class="subtitle">A simple Poisson regression example</h3>
 	<h4 class="authors">Sebastian H&#246;hna</h4>
-  <h5>Last modified on September 12, 2019</h5>
+  <h5>Last modified on April  8, 2020</h5>
 </div>
 
 
@@ -95,19 +95,44 @@ performing standard Bayesian inference.</p>
 
 <h2 id="model-and-data">Model and Data</h2>
 
-<p>We will use the data example from <a class="citation" href="#Gelman2003">(Gelman et al. 2003)</a>. A summary is given in
-Table [tab:airlineFatalities].</p>
+<p>We will use the data example from <a class="citation" href="#Gelman2003">Gelman et al. (2003)</a>. A summary is given in
+<a href="#airlineFatalities"></a>.</p>
 
-<hr />
-<dl>
-  <dt>Year           1976   1977   1978   1979   1980   1981   1982   1983   1984   1985</dt>
-  <dt>  Fatalities       24     25     31     31     22     21     26     20     16     22</dt>
-  <dt>  ———— —— —— —— —— —— —— —— —— —— ——</dt>
-  <dd>
-    <p>Airline fatalities from 1976 to 1985. Reproduced from @Gelman2003
-  [Table 2.2 on p. 69].<span data-label="tab:airlineFatalities"></span></p>
-  </dd>
-</dl>
+<figure id="airlineFatalities" class="table"><table>
+  <thead>
+    <tr>
+      <th>Year</th>
+      <th style="text-align: right">1976</th>
+      <th style="text-align: right">1977</th>
+      <th style="text-align: right">1978</th>
+      <th style="text-align: right">1979</th>
+      <th style="text-align: right">1980</th>
+      <th style="text-align: right">1981</th>
+      <th style="text-align: right">1982</th>
+      <th style="text-align: right">1983</th>
+      <th style="text-align: right">1984</th>
+      <th style="text-align: right">1985</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Fatalities</td>
+      <td style="text-align: right">24</td>
+      <td style="text-align: right">25</td>
+      <td style="text-align: right">31</td>
+      <td style="text-align: right">31</td>
+      <td style="text-align: right">22</td>
+      <td style="text-align: right">21</td>
+      <td style="text-align: right">26</td>
+      <td style="text-align: right">20</td>
+      <td style="text-align: right">16</td>
+      <td style="text-align: right">22</td>
+    </tr>
+  </tbody>
+</table>
+
+<figcaption class="table">Airline fatalities from 1976 to 1985. Reproduced from <a class="citation" href="#Gelman2003">Gelman et al. (2003)</a> [Table 2.2 on p. 69].</figcaption>
+</figure>
 
 <p>These data can be loaded into <code class="highlighter-rouge">RevBayes</code> by typing:</p>
 
@@ -121,11 +146,14 @@ parameters $\alpha$ and $\beta$</p>
 <script type="math/tex; mode=display">y \sim \text{Poisson}(\exp(\alpha+\beta*x))</script>
 
 <p>where $y$ is the number of fatal accidents in year $x$. For simplicity,
-we choose uniform priors for $\alpha$ and $\beta$. <script type="math/tex">% <![CDATA[
+we choose uniform priors for $\alpha$ and $\beta$.</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
 \begin{aligned}
-\alpha & \sim & \text{Uniform}(-10,10)\\
-\beta &  \sim & \text{Uniform}(-10,10)\end{aligned} %]]></script> The probability
-density can be computed in <code class="highlighter-rouge">RevBayes</code> for a single year by</p>
+\alpha & \sim \text{Uniform}(-10,10)\\
+\beta &  \sim \text{Uniform}(-10,10)\end{aligned} %]]></script>
+
+<p>The probability density can be computed in <code class="highlighter-rouge">RevBayes</code> for a single year by</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dpoisson(y[i],exp(alpha+beta*x[i]))
 </code></pre></div></div>
@@ -330,29 +358,26 @@ object, the vector of monitors and the vector of moves.</p>
 
 <h3 id="posterior-distribution-of-alpha-and-beta">Posterior Distribution of $\alpha$ and $\beta$</h3>
 
-<p>Report the posterior mean and 95% credible intervals for $\alpha$ and
-$\beta$. Additionally, plot the posterior distribution of $\alpha$ and
-$\beta$ by plotting a histogram of the samples. Plot the curve of
-$m(x) = \text{E}[\exp(\alpha+\beta<em>x)|y]$ for $x = [1976,1985]$. You can
-generate draws from the posterior distribution of the expected value for
+<ul>
+  <li>Report the posterior mean and 95% credible intervals for $\alpha$ and $\beta$.</li>
+  <li>Additionally, plot the posterior distribution of $\alpha$ and $\beta$ by plotting a histogram of the samples.</li>
+  <li>Plot the curve of <script type="math/tex">m(x) = \text{E}[\exp(\alpha+\beta*x) |y]</script> for $x = [1976,1985]$. You can generate draws from the posterior distribution of the expected value for
 a specific $x$ by recording the current expected value at a iteration
-$i$ of the Metropolis algorithm
-$m_sample(x)[i] = \text{E}[\exp(\alpha[i]+\beta[i]</em>x)|y]$ and taking
-the mean of those samples (‘m(x) = ) afterwards. Since <code class="highlighter-rouge">RevBayes</code>
+$i$ of the Metropolis algorithm 
+<script type="math/tex">m_{sample}(x)[i] = \text{E}[\exp(\alpha[i]+\beta[i]*x) |y]</script> and taking
+the mean of those samples ($\bar{m}_{sample}(x)$) afterwards. Since <code class="highlighter-rouge">RevBayes</code>
 provides you with the samples of
-$m(x) = \text{E}[\exp(\alpha+\beta*x)|y] = \lambda_x$ you can simply
-plot these posterior curves.</p>
-
-<p>Produce a histogram of the predictive distribution of the number of
+<script type="math/tex">m(x) = \text{E}[\exp(\alpha+\beta*x) |y] = \lambda_x</script> you can simply
+plot these posterior curves.</li>
+  <li>Produce a histogram of the predictive distribution of the number of
 fatalities in 2014 and estimate the posterior mean. The predictive
 distribution can be approximated simultaneously with the Metropolis
 algorithm. This means, for any iteration $i$ you simulate draws from the
 conditional distribution for $x = 2014$ and the current values of
-$\alpha[i]$ and $\beta[i]$.</p>
-
-<p>Estimate the distribution of the mean of the posterior predictive
-distribution of the the number of fatalities in 2014. Therefore, let us
-denote the expected value of the posterior distribution by $\mu$. Since
+$\alpha[i]$ and $\beta[i]$.</li>
+  <li>Estimate the distribution of the mean of the posterior predictive
+distribution of the number of fatalities in 2014.</li>
+  <li>Let us denote the expected value of the posterior distribution by $\mu$. Since
 we do not know this value $\mu$ exactly, we can follow the Bayesian
 approach and associate a probability for each value $m$ as being the
 true expected value of the posterior distribution, given the
@@ -361,11 +386,11 @@ by recording the expected value for the number of fatalities in 2014
 ($\text{E}[\exp(\alpha+\beta*x)|y]$) in each iteration $i$ of the
 Metropolis algorithm. Plot a histogram of the expected values, compute
 the mean of the expected values and compare it to the previously
-obtained estimate of the mean of the posterior predictive distribution.</p>
-
-<p>Follow the same approach as for the posterior predictive distribution
+obtained estimate of the mean of the posterior predictive distribution.</li>
+  <li>Follow the same approach as for the posterior predictive distribution
 for $x = 2014$, but this time for $x = 2016$ and estimate the
-probability of no fatality.</p>
+probability of no fatality.</li>
+</ul>
 
 <h1 id="exercise-poisson-regression-model-for-coal-mine-accidents">Exercise: Poisson Regression Model for Coal-mine Accidents</h1>
 
@@ -386,24 +411,24 @@ unknown to us. Thus, the observation distribution of our model is
 $y_t \sim Poisson(\lambda_t)$ with $t = 1851,\ldots,1962$ and
 <script type="math/tex">% <![CDATA[
 \begin{aligned}
-\lambda_t & = & \begin{cases}
+\lambda_t = & \begin{cases}
 \beta & \mbox{if } t < \theta \\
 \gamma & \mbox{if } t \geq \theta
 \end{cases}\end{aligned} %]]></script> Thus, the rate $\lambda_t$ is defined by
 three unknown parameters: $\beta$, $\gamma$ and $\theta$. A hierarchical
 choice of priors is given by <script type="math/tex">% <![CDATA[
 \begin{aligned}
- \eta & \sim & Gamma(10.0;20.0) \\ 
- \beta & \sim & Gamma(2.0;\eta) \\
- \gamma & \sim &Gamma(2.0;\eta) \\
- \theta & \sim & Uniform(1852,\ldots,1962)\end{aligned} %]]></script> which brings
+ \eta & \sim Gamma(10.0;20.0) \\ 
+ \beta & \sim Gamma(2.0;\eta) \\
+ \gamma & \sim Gamma(2.0;\eta) \\
+ \theta & \sim Uniform(1852,\ldots,1962)\end{aligned} %]]></script> which brings
 an additional parameter $\eta$ in the model. For $\theta$ we have used a
 uniform prior over the years, but excluded year 1851 in order to make
 sure at least one year has rate $\beta$. The hierarchical prior carries
 the belief that $\beta$ and $\gamma$ are somewhat similar in size, since
 they both depend on $\eta$.</p>
 
-<h2 id="the-model-in-rev-the-model-in-rev-unnumbered">The model in <code class="highlighter-rouge">Rev</code> {#the-model-in-rev .unnumbered}</h2>
+<h2 id="the-model-in-rev">The model in <code class="highlighter-rouge">Rev</code></h2>
 
 <p>We start as usual by loading in the data.</p>
 
@@ -463,22 +488,10 @@ for you.</p>
 you execute the ‘rb‘ binary in your unix terminal (this will overwrite
 all of your existing run files).</p>
 
-<ul>
-  <li>‘$ rb RevBayes_scripts airline_fatalities_part1.Rev‘\</li>
-</ul>
-
-<!-- -->
-
-<ul>
-  <li>‘$ rb RevBayes_scripts airline_fatalities_part2.Rev‘\</li>
-</ul>
-
-<!-- -->
-
-<ul>
-  <li>‘$ rb RevBayes_scripts coalmine_accidents.Rev‘\</li>
-</ul>
-
+<div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rb RevBayes_scripts airline_fatalities_part1.Rev
+rb RevBayes_scripts airline_fatalities_part2.Rev
+rb RevBayes_scripts coalmine_accidents.Rev
+</code></pre></div></div>
 
 <ol class="bibliography"><li><span id="Gelman2003">Gelman A., Carlin J.B., Stern H.S., Rubin D.B. 2003. Bayesian Data Analysis. Chapman &amp; Hall/CRC.</span>
 
