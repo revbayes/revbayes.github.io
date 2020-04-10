@@ -6,7 +6,7 @@ permalink: /compile-windows
 code_layout: bash
 ---
 
-**NOTE: These instructions are for compiling the master branch.**
+**NOTE: These instructions are for compiling the development branch.**
 
 The standard way to build revbayes is to use `cmake`. Cross-compiling for Windows from Linux is also possible using `meson`, see [revbayes/projects/meson/README.md](https://github.com/revbayes/revbayes/blob/development/projects/meson/README.md).
 
@@ -53,14 +53,14 @@ The standard way to build revbayes is to use `cmake`. Cross-compiling for Window
     1. Open a cygwin terminal window
     2. Clone the git repository:
         ```
-        git clone https://github.com/revbayes/revbayes.git revbayes-master
+        git clone https://github.com/revbayes/revbayes.git revbayes
         ```
 
 3. Compile RevBayes.
 
     1. Open a cygwin terminal window and go to the RevBayes source directory if you haven't already done so, e.g., 
         ```
-        cd revbayes-master
+        cd revbayes
         ```
     2. Next, go into the projects and then the cmake subdirectory: 
         ```
@@ -68,11 +68,11 @@ The standard way to build revbayes is to use `cmake`. Cross-compiling for Window
         ```
     3. Now you can either build the standard version
         ```
-        bash build-win.sh
+        bash build.sh -DCMAKE_TOOLCHAIN_FILE=../mingw64_toolchain.cmake
         ```
         or the RevStudio version
         ```
-        bash build-win.sh -cmd true
+        bash build.sh -DCMAKE_TOOLCHAIN_FILE=../mingw64_toolchain.cmake -cmd true
         ```
 
 4. Library whack-a-mole
