@@ -58,7 +58,7 @@ Compile on Windows
 </h1>
 <hr>
 
-<p><strong>NOTE: These instructions are for compiling the master branch.</strong></p>
+<p><strong>NOTE: These instructions are for compiling the development branch.</strong></p>
 
 <p>The standard way to build revbayes is to use <code class="highlighter-rouge">cmake</code>. Cross-compiling for Windows from Linux is also possible using <code class="highlighter-rouge">meson</code>, see <a href="https://github.com/revbayes/revbayes/blob/development/projects/meson/README.md">revbayes/projects/meson/README.md</a>.</p>
 
@@ -176,7 +176,7 @@ Compile on Windows
     <ol>
       <li>Open a cygwin terminal window</li>
       <li>Clone the git repository:
-        <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> git clone https://github.com/revbayes/revbayes.git revbayes-master
+        <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> git clone https://github.com/revbayes/revbayes.git revbayes
 </code></pre></div>        </div>
       </li>
     </ol>
@@ -186,7 +186,7 @@ Compile on Windows
 
     <ol>
       <li>Open a cygwin terminal window and go to the RevBayes source directory if you haven’t already done so, e.g.,
-        <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> cd revbayes-master
+        <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> cd revbayes
 </code></pre></div>        </div>
       </li>
       <li>Next, go into the projects and then the cmake subdirectory:
@@ -194,10 +194,10 @@ Compile on Windows
 </code></pre></div>        </div>
       </li>
       <li>Now you can either build the standard version
-        <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> bash build-win.sh
+        <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> bash build.sh -DCMAKE_TOOLCHAIN_FILE=../mingw64_toolchain.cmake
 </code></pre></div>        </div>
         <p>or the RevStudio version</p>
-        <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> bash build-win.sh -cmd true
+        <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> bash build.sh -DCMAKE_TOOLCHAIN_FILE=../mingw64_toolchain.cmake -cmd true
 </code></pre></div>        </div>
       </li>
     </ol>
