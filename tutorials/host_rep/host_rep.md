@@ -81,7 +81,7 @@ $$\begin{aligned}
 
 If $\beta = 0$,  $q_{102,202} = 0.5 \times 0.2 \times 1 = 0.1$. 
 
-Whereas if $\beta = 2$,  $q_{102,202} = 0.5 \times 0.2 \times 0.28 = 0.028$. 
+Whereas if $\beta = 1$,  $q_{102,202} = 0.5 \times 0.2 \times 0.29 = 0.029$. 
 
 What about the rate of gain of **b**? Calculate $q_{002,012}$ for $\beta = 0$ and $\beta =1$, given that $d_{\bf BC}=4$ and $\lambda_{01} = 0.1$.
 
