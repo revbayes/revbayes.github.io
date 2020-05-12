@@ -12,7 +12,7 @@ The standard way to build revbayes is to use `cmake`. Cross-compiling for Window
 
 1. Download and install 64-bit cygwin (setup-x86_64.exe). Make sure you include the following packages:
 
-    (Cygwin package versions are from 9/2019. Newer versions may work, but see special version notes below)
+    (Cygwin package versions are from 5/20202. Newer versions may work, but see special version notes below)
 
     | package                 | version   | 
     |-------------------------|-----------| 
@@ -21,10 +21,10 @@ The standard way to build revbayes is to use `cmake`. Cross-compiling for Window
     | cmake-doc               | 3.14.5-1  | 
     | cmake-gui               | 3.14.5-1  | 
     | git                     | 2.21.0-1  | 
-    | make                    | 4.2.1-2   | 
+    | make                    | 4.3-1     | 
     | mingw64-x86_64-boost    | 1.66.0-1  | 
-    | mingw64-x86_64-gcc-core | 7.4.0-1   | 
-    | mingw64-x86_64-gcc-g++  | 7.4.0-1   | 
+    | mingw64-x86_64-gcc-core | 9.2.0-2   | 
+    | mingw64-x86_64-gcc-g++  | 9.2.0-2   | 
 
 
     For RevStudio you will also need:
@@ -83,10 +83,13 @@ The standard way to build revbayes is to use `cmake`. Cross-compiling for Window
 
     Then find the library from the error message in `/usr/x86_64-w64-mingw32/sys-root/mingw/bin/` and copy it to the directory you put the exectuable in. Repeat this until you stop getting error messages. 
 
-    At the time this was written (RevBayes v1.0.11), this consisted of:
+    At the time this was written (RevBayes v1.1.0), this consisted of:
 
     * iconv.dll
     * libatk-1.0-0.dll
+    * libboost_filesystem-mt.dll
+    * libboost_program_options-mt.dll
+    * libboost_system-mt.dll
     * libbz2-1.dll
     * libcairo-2.dll
     * libexpat-1.dll
