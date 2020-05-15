@@ -2,7 +2,6 @@
 # Files.
 
 time_tree_file="data/time.tree"
-calibration_file="scripts/calibrations.rev"
 constraints_file="scripts/constraints.rev"
 mean_tree_file="output/alignment.fasta.trees_meanBL.nex"
 var_tree_file="output/alignment.fasta.trees_varBL.nex"
@@ -15,33 +14,29 @@ constrain = true
 mcmc_length = 50000
 mcmc_burnin = 10000
 
+################################################################################
+# Variables used later.
 moves = VectorMoves()
 monitors = VectorMonitors()
 
-################################################################################
-# Get the original time tree.
-
-# Tree.
 tree <- readTrees(time_tree_file)[1]
 print ("Root age : " + tree.rootAge())
 
-# Number of branches.
 n_species <- tree.ntips()
 n_branches <- 2*n_species - 2
 
-# Taxa.
 taxa <- tree.taxa()
 
 ################################################################################
-# Root prior.
+# Root age.
 
-age_fossil_root <- tree.rootAge()
-width_age_prior_root <- age_fossil_root / 5
-root_age_min <- age_fossil_root - width_age_prior_root
-root_age_max <- age_fossil_root + width_age_prior_root
+root_age <- tree.rootAge()
+root_age_delta <- root_age / 5
+root_age_min <- root_age - root_age_delta
+root_age_max <- root_age + root_age_delta
 root_time_real ~ dnUniform(root_age_min, root_age_max)
-root_time := abs( root_time_real )
 root_time_real.setValue(tree.rootAge())
+root_time := abs( root_time_real )
 
 ################################################################################
 # Constraints.
@@ -50,58 +45,98 @@ if (constrain) {
   out_bn = out_bn + "_cons"
   constraints <- readRelativeNodeAgeConstraints(file=constraints_file);
 }
+
 ################################################################################
 # Tree model.
 
-diversification ~ dnExp(1)
-turnover ~ dnExp(1)
-birth_rate := diversification + turnover
-death_rate := turnover
-moves.append(mvScale(diversification,lambda=1.0,tune=true,weight=3.0))
-moves.append(mvScale(turnover,lambda=1.0,tune=true,weight=3.0))
+birth_rate ~ dnExp(1)
+moves.append(mvScale(birth_rate, lambda=1.0, tune=true, weight=3.0))
 
-if (!constrain) psi ~ dnBDP(lambda=birth_rate, mu=death_rate, rho=1.0, rootAge=root_time, samplingStrategy="uniform", condition="survival", taxa=taxa)
-if (constrain) psi ~  dnConstrainedNodeOrder(dnBDP(lambda=birth_rate, mu=death_rate, rho=1.0, rootAge=root_time, samplingStrategy="uniform", condition="survival", taxa=taxa),constraints)
+if (!constrain) psi ~ dnBDP(lambda=birth_rate, mu=0, rho=1.0, rootAge=root_time, samplingStrategy="uniform", condition="survival", taxa=taxa)
+if (constrain) psi ~  dnConstrainedNodeOrder(dnBDP(lambda=birth_rate, mu=0, rho=1.0, rootAge=root_time, samplingStrategy="uniform", condition="survival", taxa=taxa), constraints)
 
-# Move ages of nodes.
+psi.setValue(tree)
+print(psi)
+
 moves.append(mvScale(root_time_real, weight=1.0, lambda=0.1))
 moves.append(mvSubtreeScale(psi, weight=1.0*n_branches))
 moves.append(mvNodeTimeSlideUniform(psi, weight=1.0*n_branches))
 moves.append(mvLayeredScaleProposal(tree=psi, lambda=0.1, tune=true, weight=1.0*n_branches))
 
-# The tree is fixed.
-psi.setValue(tree)
-print(psi)
+################################################################################
+# Calibrations.
+
+# Node calibrations provide information about the ages of the MRCA.
+
+# The MRCAs of the following clades are calibrated.
+clade_0 = clade("T_3","T_4","T_5")
+clade_1 = clade("T_14","T_15","T_16","T_17")
+
+# Clade 0.
+tmrca_clade_0 := tmrca(psi, clade_0)
+age_clade_0 <- tmrca(psi, clade_0)
+age_clade_0_delta <- tmrca_clade_0 / 5
+age_clade_0_mean <- tmrca_clade_0
+age_clade_0_prior ~ dnSoftBoundUniformNormal(min=age_clade_0 - age_clade_0_delta, max=age_clade_0 + age_clade_0_delta, sd=2.5, p=0.95)
+age_clade_0_prior.clamp( age_clade_0_mean)
+
+# Clade 1.
+tmrca_clade_1 := tmrca(psi, clade_1)
+age_clade_1 <- tmrca(psi, clade_1)
+age_clade_1_delta <- tmrca_clade_1 / 5
+age_clade_1_mean <- tmrca_clade_1
+age_clade_1_prior ~ dnSoftBoundUniformNormal(min=age_clade_1 - age_clade_1_delta, max=age_clade_1 + age_clade_1_delta, sd=2.5, p=0.95)
+age_clade_1_prior.clamp( age_clade_1_mean)
 
 ################################################################################
 # Obtain means and variances of branch lengths from first step.
 
 mean_tree <- readTrees(mean_tree_file)[1]
+mean_tree_root_age=mean_tree.rootAge()
 var_tree <- readTrees(var_tree_file)[1]
 
-mean_tree_root_age=mean_tree.rootAge()
+# Get indices of left child and right child of root.
+left_i <- tree.child(tree.nnodes(),1)
+right_i <- tree.child(tree.nnodes(),2)
 
+# Set mean and variance for all branches except the branches leading to the
+# root.
 for(i in 1:n_branches) {
-  mean_bl[i] <- mean_tree.branchLength(i)
-  var_bl[i] := var_tree.branchLength(i)
+  if(i != left_i && i != right_i) {
+    mean_bl[i] <- mean_tree.branchLength(i)
+    var_bl[i] := var_tree.branchLength(i)
+    if (var_bl[i]<1e-10) var_bl[i]:=1e-10
+  }
 }
 
-for(i in 1:n_branches) {
-  if (mean_bl[i]<1e-10) mean_bl[i]:=1e-10
-  if (var_bl[i]<1e-10) var_bl[i]:=1e-10
-}
+# TODO: Bastien or Gergely. This code does not work yet, because the root branch
+# length is set to 0, and then the likelihood of the birth and death process is
+# NaN.
+#
+# Why is i set here, and then not used below?
+if (left_i<right_i)  i <- left_i
+if (left_i>=right_i) i <-right_i
 
-################################################################################
-# Calibrations.
+mean_bl[left_i]  <- mean_tree.branchLength(left_i)
+mean_bl[right_i] <- mean_tree.branchLength(right_i)
 
-source(calibration_file)
+# # THIS CODE WORKS BUT DOES NOT HANDLE THE ROOTED/UNROOTED PROBLEM.
+# for(i in 1:n_branches) {
+#   mean_bl[i] <- mean_tree.branchLength(i)
+#   var_bl[i] := var_tree.branchLength(i)
+# }
+
+# for(i in 1:n_branches) {
+#   if (mean_bl[i]<1e-10) mean_bl[i]:=1e-10
+#   if (var_bl[i]<1e-10) var_bl[i]:=1e-10
+# }
 
 ################################################################################
 # Molecular clock UGAM model.
 
 global_rate_mean ~ dnExp(1)
 global_rate_mean.setValue(mean_tree_root_age/tree.rootAge());
-print("global_rate_mean: " + global_rate_mean)
+print("Mean of global rate of molecular clock: " + global_rate_mean)
 sigma ~ dnExp(10.0)
 
 first_gamma_param := 1/sigma
@@ -111,45 +146,82 @@ moves.append(mvScaleBactrian(global_rate_mean, lambda=0.5, weight=10.0))
 moves.append(mvScaleBactrian(sigma, lambda=0.5, weight=10.0))
 
 # Use a Gamma distribution on rates.
-for (j in n_branches:1)
-{
+for (j in n_branches:1) {
   times[j]=psi.branchLength(j)
   rel_branch_rates[j] ~ dnGamma(first_gamma_param,second_gamma_param)
   rel_branch_rates[j].setValue(mean_bl[j]/times[j]/global_rate_mean)
   moves.append(mvScale(rel_branch_rates[j], lambda=0.5, weight=1.0,tune=true))
 }
 
-for (j in n_branches:1)
-{
- branch_rates[j] := global_rate_mean * rel_branch_rates[j]
+for (j in n_branches:1) {
+  branch_rates[j] := global_rate_mean * rel_branch_rates[j]
 }
-
-mean_rt := mean(branch_rates)
-var_rt := var(branch_rates)
-print(psi)
 
 ################################################################################
 # CTMC.
 
+# TODO: Gergely or Bastien.
 if (type(branch_rates) == "RealPos") {
-  for(i in 1:n_branches) {
+  for(i in 1:n_branches)
+  {
+  if(i != left_i && i != right_i) {
     times[i] := psi.branchLength(i)
-    mean_bl[i] := times[i]*branch_rates
-    bls[i] ~ dnNormal(mean_bl[i] ,sqrt(var_bl[i]))
+    meanbl[i] := times[i]*branch_rates
+    bls[i] ~ dnNormal(meanbl[i] ,sqrt(var_bl[i]))
     bls[i].clamp(mean_bl[i])
+    }
   }
-  bls[i] ~ dnNormal(mean_bl[i], sqrt(var_bl[i]))
+
+  if (left_i<right_i) i <- left_i
+  if (left_i>=right_i) i<-right_i
+
+  times[left_i] := psi.branchLength(left_i)
+  times[right_i] := psi.branchLength(right_i)
+  meanbl[i] := times[left_i]*branch_rates+times[right_i]*branch_rates
+
+  bls[i] ~ dnNormal(meanbl[i] ,sqrt(var_bl[i]))
   bls[i].clamp(mean_bl[i])
 } else {
   for(i in 1:n_branches) {
+  if(i != left_i && i != right_i) {
     times[i] := psi.branchLength(i)
-    mean_bl[i] := times[i]*branch_rates[i]
-    bls[i] ~ dnNormal(mean_bl[i] ,sqrt(var_bl[i]))
+    meanbl[i] := times[i]*branch_rates[i]
+    bls[i] ~ dnNormal(meanbl[i] ,sqrt(var_bl[i]))
     bls[i].clamp(mean_bl[i])
     }
-  bls[i] ~ dnNormal(mean_bl[i] ,sqrt(var_bl[i]))
+  }
+
+  if (left_i<right_i) i <- left_i
+  if (left_i>=right_i) i<-right_i
+
+  times[left_i] := psi.branchLength(left_i)
+  times[right_i] := psi.branchLength(right_i)
+  meanbl[i] := times[left_i]*branch_rates[left_i]+times[right_i]*branch_rates[right_i]
+
+  bls[i] ~ dnNormal(meanbl[i] ,sqrt(var_bl[i]))
   bls[i].clamp(mean_bl[i])
 }
+
+# THIS CODE WORKS BUT DOES NOT HANDLE THE ROOTED/UNROOTED PROBLEM.
+# if (type(branch_rates) == "RealPos") {
+#   for(i in 1:n_branches) {
+#     times[i] := psi.branchLength(i)
+#     mean_bl[i] := times[i]*branch_rates
+#     bls[i] ~ dnNormal(mean_bl[i] ,sqrt(var_bl[i]))
+#     bls[i].clamp(mean_bl[i])
+#   }
+#   bls[i] ~ dnNormal(mean_bl[i], sqrt(var_bl[i]))
+#   bls[i].clamp(mean_bl[i])
+# } else {
+#   for(i in 1:n_branches) {
+#     times[i] := psi.branchLength(i)
+#     mean_bl[i] := times[i]*branch_rates[i]
+#     bls[i] ~ dnNormal(mean_bl[i] ,sqrt(var_bl[i]))
+#     bls[i].clamp(mean_bl[i])
+#     }
+#   bls[i] ~ dnNormal(mean_bl[i] ,sqrt(var_bl[i]))
+#   bls[i].clamp(mean_bl[i])
+# }
 
 ################################################################################
 # Log and monitors.

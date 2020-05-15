@@ -77,3 +77,6 @@ Computation of posterior mean and variance of branch lengths:
 ```
  rb ./scripts/compute_branch_lengths.rev
 ```
+
+TODO: Mean and variance at the root have to be split up (or the sum has to be
+taken). This was bugged when combining the scripts of Bastien and Gergely.
