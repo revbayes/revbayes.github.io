@@ -3,7 +3,7 @@
 
 time_tree_file="data/time.tree"
 calibration_file="scripts/calibrations.rev"
-constraint_file="scripts/constraints.rev"
+constraints_file="scripts/constraints.rev"
 mean_tree_file="output/alignment.fasta.trees_meanBL.nex"
 var_tree_file="output/alignment.fasta.trees_varBL.nex"
 out_bn="alignments.fasta.dating"
@@ -21,11 +21,15 @@ monitors = VectorMonitors()
 ################################################################################
 # Get the original time tree.
 
+# Tree.
 tree <- readTrees(time_tree_file)[1]
 print ("Root age : " + tree.rootAge())
 
+# Number of branches.
 n_species <- tree.ntips()
 n_branches <- 2*n_species - 2
+
+# Taxa.
 taxa <- tree.taxa()
 
 ################################################################################
@@ -43,10 +47,9 @@ root_time_real.setValue(tree.rootAge())
 # Constraints.
 
 if (constrain) {
-  extension=extension + "_cons"
+  out_bn = out_bn + "_cons"
   constraints <- readRelativeNodeAgeConstraints(file=constraints_file);
 }
-
 ################################################################################
 # Tree model.
 
@@ -78,27 +81,15 @@ var_tree <- readTrees(var_tree_file)[1]
 
 mean_tree_root_age=mean_tree.rootAge()
 
-left_i <- tree.child(tree.nnodes(),1)
-right_i <- tree.child(tree.nnodes(),2)
-
-for(i in 1:n_branches)
-{
-if(i != left_i && i != right_i)
-     {
-
-  observedBls[i] <- mean_tree.branchLength(i) # input tree, constant
-  varbl[i] := var_tree.branchLength(i)
-  if (varbl[i]<1e-10) varbl[i]:=1e-10
-  }
+for(i in 1:n_branches) {
+  mean_bl[i] <- mean_tree.branchLength(i)
+  var_bl[i] := var_tree.branchLength(i)
 }
-if (left_i<right_i) i <- left_i
-if (left_i>=right_i) i<-right_i
 
-observedBls[left_i] <- mean_tree.branchLength(left_i) # input tree, constant
-observedBls[right_i] <- mean_tree.branchLength(right_i) # input tree, constant
-
-varbl[i] := var_tree.branchLength(i)
-if (varbl[i]<1e-10) varbl[i]:=1e-10
+for(i in 1:n_branches) {
+  if (mean_bl[i]<1e-10) mean_bl[i]:=1e-10
+  if (var_bl[i]<1e-10) var_bl[i]:=1e-10
+}
 
 ################################################################################
 # Calibrations.
@@ -124,7 +115,7 @@ for (j in n_branches:1)
 {
   times[j]=psi.branchLength(j)
   rel_branch_rates[j] ~ dnGamma(first_gamma_param,second_gamma_param)
-  rel_branch_rates[j].setValue(observedBls[j]/times[j]/global_rate_mean)
+  rel_branch_rates[j].setValue(mean_bl[j]/times[j]/global_rate_mean)
   moves.append(mvScale(rel_branch_rates[j], lambda=0.5, weight=1.0,tune=true))
 }
 
@@ -140,52 +131,24 @@ print(psi)
 ################################################################################
 # CTMC.
 
-if (type(branch_rates) == "RealPos")
-{
-  for(i in 1:n_branches)
-  {
-  if(i != left_i && i != right_i)
-      {
-             times[i] := psi.branchLength(i) # chronogram we sample
-              meanbl[i] := times[i]*branch_rates
-        bls[i] ~ dnNormal(meanbl[i] ,sqrt(varbl[i]))
-        bls[i].clamp(observedBls[i])
-      }
+if (type(branch_rates) == "RealPos") {
+  for(i in 1:n_branches) {
+    times[i] := psi.branchLength(i)
+    mean_bl[i] := times[i]*branch_rates
+    bls[i] ~ dnNormal(mean_bl[i] ,sqrt(var_bl[i]))
+    bls[i].clamp(mean_bl[i])
   }
-
-  if (left_i<right_i) i <- left_i
-  if (left_i>=right_i) i<-right_i
-
-  times[left_i] := psi.branchLength(left_i) # chronogram we sample
-  times[right_i] := psi.branchLength(right_i) # chronogram we sample
-  meanbl[i] := times[left_i]*branch_rates+times[right_i]*branch_rates
-
-  bls[i] ~ dnNormal(meanbl[i] ,sqrt(varbl[i]))
-
-  bls[i].clamp(observedBls[i])
-} else
-{
-  for(i in 1:n_branches)
-  {
-  if(i != left_i && i != right_i)
-      {
-             times[i] := psi.branchLength(i) # chronogram we sample
-              meanbl[i] := times[i]*branch_rates[i]
-        bls[i] ~ dnNormal(meanbl[i] ,sqrt(varbl[i]))
-        bls[i].clamp(observedBls[i])
-      }
-  }
-
-  if (left_i<right_i) i <- left_i
-  if (left_i>=right_i) i<-right_i
-
-  times[left_i] := psi.branchLength(left_i) # chronogram we sample
-  times[right_i] := psi.branchLength(right_i) # chronogram we sample
-  meanbl[i] := times[left_i]*branch_rates[left_i]+times[right_i]*branch_rates[right_i]
-
-  bls[i] ~ dnNormal(meanbl[i] ,sqrt(varbl[i]))
-
-  bls[i].clamp(observedBls[i])
+  bls[i] ~ dnNormal(mean_bl[i], sqrt(var_bl[i]))
+  bls[i].clamp(mean_bl[i])
+} else {
+  for(i in 1:n_branches) {
+    times[i] := psi.branchLength(i)
+    mean_bl[i] := times[i]*branch_rates[i]
+    bls[i] ~ dnNormal(mean_bl[i] ,sqrt(var_bl[i]))
+    bls[i].clamp(mean_bl[i])
+    }
+  bls[i] ~ dnNormal(mean_bl[i] ,sqrt(var_bl[i]))
+  bls[i].clamp(mean_bl[i])
 }
 
 ################################################################################
@@ -202,7 +165,7 @@ print(ages_true)
 monitors.append(mnModel(filename="output/"+out_bn+".log",printgen=10, separator = TAB))
 monitors.append(mnStochasticVariable(filename="output/"+out_bn+"_Stoch.log",printgen=10))
 monitors.append(mnExtNewick(filename="output/"+out_bn+".trees", isNodeParameter=FALSE, printgen=10, separator = TAB, tree=psi, branch_rates))
-monitors.append(mnScreen(printgen=100, root_time, ages_psi[103], ages_psi[110], ages_psi[150]))
+monitors.append(mnScreen(printgen=100, root_time, ages_psi[10], ages_psi[15], ages_psi[20]))
 
 ################################################################################
 # MC3 Model.

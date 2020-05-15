@@ -2,7 +2,7 @@
 
 # The MRCAs of the following clades are calibrated.
 clade_0 = clade("T_3","T_4","T_5")
-clade_1 = clade("14","15","16","17")
+clade_1 = clade("T_14","T_15","T_16","T_17")
 
 # Clade 0.
 tmrca_clade_0 := tmrca(psi, clade_0)
@@ -12,7 +12,7 @@ age_clade_0_delta <- tmrca_clade_0 / 5
 age_clade_0_mean <- tmrca_clade_0
 # Prior.
 age_clade_0_prior ~ dnSoftBoundUniformNormal(min=age_clade_0 - age_clade_0_delta, max=age_clade_0 + age_clade_0_delta, sd=2.5, p=0.95)
-obs_age_clade_0.clamp( age_clade_0_prior)
+age_clade_0_prior.clamp( age_clade_0_mean)
 
 # Clade 1.
 tmrca_clade_1 := tmrca(psi, clade_1)
@@ -22,4 +22,4 @@ age_clade_1_delta <- tmrca_clade_1 / 5
 age_clade_1_mean <- tmrca_clade_1
 # Prior.
 age_clade_1_prior ~ dnSoftBoundUniformNormal(min=age_clade_1 - age_clade_1_delta, max=age_clade_1 + age_clade_1_delta, sd=2.5, p=0.95)
-obs_age_clade_1.clamp( age_clade_1_prior)
+age_clade_1_prior.clamp( age_clade_1_mean)
