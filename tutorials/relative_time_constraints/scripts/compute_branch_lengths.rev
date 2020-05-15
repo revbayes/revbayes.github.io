@@ -22,7 +22,7 @@ for (i in 1:tre.size()) {
 print("Number of trees after thinning: ")
 print(trees.size())
 
-MAPtree = readBranchLengthTrees(trees_only)[1]
+MAPtree = readBranchLengthTrees(outdir+trees_only)[1]
 num_branches = trees[1].nnodes()-1
 bl_means <- rep(0.0,num_branches)
 bl_squaredmeans <- rep(0.0,num_branches)
@@ -60,3 +60,5 @@ for (j in 1:num_branches ) {
 
 writeNexus(outdir+tree_file+"_varBL.nex", MAPtree)
 print("The tree with variance branch lengths has been saved.")
+
+q()
