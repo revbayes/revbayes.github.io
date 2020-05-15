@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+# Time-like tree.
+tlynx -f -o time simulate -t 1 -n 18 -H 0.3 -S "[0]"
+
+# Substitution-like tree.
+cmd="./alterBranchLengths.py time.tree 0.01 0.05 0.5 0.2 0.01 substitution.tree y"
+echo $cmd > substitution.log
+$cmd >> substitution.log
+
+# Alignment.
+slynx -f -o alignment simulate -t substitution.tree -s JC -l 5000 -S "[0]"
+

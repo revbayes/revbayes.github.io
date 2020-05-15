@@ -1,0 +1,82 @@
+# Node calibrations provide information about the ages of the MRCA.
+
+# The MRCAs of the following clades are calibrated.
+clade_0 = clade("3","4","5")
+clade_1 = clade("14","15","16","17")
+
+# Clade 0.
+tmrca_clade_0 := tmrca(psi, clade_1)
+age_clade_0 <- tmrca(psi, clade_1)
+# Uncertainty of the calibration.
+age_clade_0_delta <- tmrca_clade_1 / 5
+age_clade_0_mean <- tmrca_clade_1
+# Prior.
+age_clade_0_prior ~ dnSoftBoundUniformNormal(min=age_clade_0 - age_clade_0_delta, max=age_clade_0 + age_clade_0_delta, sd=2.5, p=0.95)
+obs_age_clade_0.clamp( age_clade_0_prior)
+
+### we create a deterministic node for the age of the MRCA of each clade with a fossil calibration
+tmrca_clade_1 := tmrca(psi,clade_1)
+age_fossil_clade_1 <- tmrca(psi,clade_1)
+width_age_prior_clade_1 <- tmrca_clade_1 / 5  # By default we decide that the width of the calibration interval is fossil_age/5
+mean_age_prior_clade_1 <- tmrca_clade_1
+obs_age_clade_1 ~ dnSoftBoundUniformNormal(min=age_fossil_clade_1 - width_age_prior_clade_1, max=age_fossil_clade_1 + width_age_prior_clade_1, sd=2.5, p=0.95)
+obs_age_clade_1.clamp( mean_age_prior_clade_1)
+### we create a deterministic node for the age of the MRCA of each clade with a fossil calibration
+tmrca_clade_2 := tmrca(psi,clade_2)
+age_fossil_clade_2 <- tmrca(psi,clade_2)
+width_age_prior_clade_2 <- tmrca_clade_2 / 5  # By default we decide that the width of the calibration interval is fossil_age/5
+mean_age_prior_clade_2 <- tmrca_clade_2
+obs_age_clade_2 ~ dnSoftBoundUniformNormal(min=age_fossil_clade_2 - width_age_prior_clade_2, max=age_fossil_clade_2 + width_age_prior_clade_2, sd=2.5, p=0.95)
+obs_age_clade_2.clamp( mean_age_prior_clade_2)
+### we create a deterministic node for the age of the MRCA of each clade with a fossil calibration
+tmrca_clade_3 := tmrca(psi,clade_3)
+age_fossil_clade_3 <- tmrca(psi,clade_3)
+width_age_prior_clade_3 <- tmrca_clade_3 / 5  # By default we decide that the width of the calibration interval is fossil_age/5
+mean_age_prior_clade_3 <- tmrca_clade_3
+obs_age_clade_3 ~ dnSoftBoundUniformNormal(min=age_fossil_clade_3 - width_age_prior_clade_3, max=age_fossil_clade_3 + width_age_prior_clade_3, sd=2.5, p=0.95)
+obs_age_clade_3.clamp( mean_age_prior_clade_3)
+### we create a deterministic node for the age of the MRCA of each clade with a fossil calibration
+tmrca_clade_4 := tmrca(psi,clade_4)
+age_fossil_clade_4 <- tmrca(psi,clade_4)
+width_age_prior_clade_4 <- tmrca_clade_4 / 5  # By default we decide that the width of the calibration interval is fossil_age/5
+mean_age_prior_clade_4 <- tmrca_clade_4
+obs_age_clade_4 ~ dnSoftBoundUniformNormal(min=age_fossil_clade_4 - width_age_prior_clade_4, max=age_fossil_clade_4 + width_age_prior_clade_4, sd=2.5, p=0.95)
+obs_age_clade_4.clamp( mean_age_prior_clade_4)
+### we create a deterministic node for the age of the MRCA of each clade with a fossil calibration
+tmrca_clade_5 := tmrca(psi,clade_5)
+age_fossil_clade_5 <- tmrca(psi,clade_5)
+width_age_prior_clade_5 <- tmrca_clade_5 / 5  # By default we decide that the width of the calibration interval is fossil_age/5
+mean_age_prior_clade_5 <- tmrca_clade_5
+obs_age_clade_5 ~ dnSoftBoundUniformNormal(min=age_fossil_clade_5 - width_age_prior_clade_5, max=age_fossil_clade_5 + width_age_prior_clade_5, sd=2.5, p=0.95)
+obs_age_clade_5.clamp( mean_age_prior_clade_5)
+### we create a deterministic node for the age of the MRCA of each clade with a fossil calibration
+tmrca_clade_6 := tmrca(psi,clade_6)
+age_fossil_clade_6 <- tmrca(psi,clade_6)
+width_age_prior_clade_6 <- tmrca_clade_6 / 5  # By default we decide that the width of the calibration interval is fossil_age/5
+mean_age_prior_clade_6 <- tmrca_clade_6
+obs_age_clade_6 ~ dnSoftBoundUniformNormal(min=age_fossil_clade_6 - width_age_prior_clade_6, max=age_fossil_clade_6 + width_age_prior_clade_6, sd=2.5, p=0.95)
+obs_age_clade_6.clamp( mean_age_prior_clade_6)
+### we create a deterministic node for the age of the MRCA of each clade with a fossil calibration
+tmrca_clade_7 := tmrca(psi,clade_7)
+age_fossil_clade_7 <- tmrca(psi,clade_7)
+width_age_prior_clade_7 <- tmrca_clade_7 / 5  # By default we decide that the width of the calibration interval is fossil_age/5
+mean_age_prior_clade_7 <- tmrca_clade_7
+obs_age_clade_7 ~ dnSoftBoundUniformNormal(min=age_fossil_clade_7 - width_age_prior_clade_7, max=age_fossil_clade_7 + width_age_prior_clade_7, sd=2.5, p=0.95)
+obs_age_clade_7.clamp( mean_age_prior_clade_7)
+### we create a deterministic node for the age of the MRCA of each clade with a fossil calibration
+tmrca_clade_8 := tmrca(psi,clade_8)
+age_fossil_clade_8 <- tmrca(psi,clade_8)
+width_age_prior_clade_8 <- tmrca_clade_8 / 5  # By default we decide that the width of the calibration interval is fossil_age/5
+mean_age_prior_clade_8 <- tmrca_clade_8
+obs_age_clade_8 ~ dnSoftBoundUniformNormal(min=age_fossil_clade_8 - width_age_prior_clade_8, max=age_fossil_clade_8 + width_age_prior_clade_8, sd=2.5, p=0.95)
+obs_age_clade_8.clamp( mean_age_prior_clade_8)
+### we create a deterministic node for the age of the MRCA of each clade with a fossil calibration
+tmrca_clade_9 := tmrca(psi,clade_9)
+age_fossil_clade_9 <- tmrca(psi,clade_9)
+width_age_prior_clade_9 <- tmrca_clade_9 / 5  # By default we decide that the width of the calibration interval is fossil_age/5
+mean_age_prior_clade_9 <- tmrca_clade_9
+obs_age_clade_9 ~ dnSoftBoundUniformNormal(min=age_fossil_clade_9 - width_age_prior_clade_9, max=age_fossil_clade_9 + width_age_prior_clade_9, sd=2.5, p=0.95)
+obs_age_clade_9.clamp( mean_age_prior_clade_9)
+
+############Random calibrations
+####### Internal node calibrations #######
