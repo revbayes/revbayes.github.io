@@ -1,6 +1,7 @@
 ################################################################################
 # Files.
-tree_file="data/time.tree"
+
+time_tree_file="data/time.tree"
 calibration_file="scripts/calibrations.rev"
 constraint_file="scripts/constraints.rev"
 mean_tree_file="output/alignment.fasta.trees_meanBL.nex"
@@ -10,16 +11,18 @@ out_bn="alignments.fasta.dating"
 ################################################################################
 # Options.
 
-constrain=true
-
+constrain = true
 mcmc_length = 50000
 mcmc_burnin = 10000
 
-tree <- readTrees(tree_file)[1]
-print ("Root age : " + tree.rootAge())
-
 moves = VectorMoves()
 monitors = VectorMonitors()
+
+################################################################################
+# Get the original time tree.
+
+tree <- readTrees(time_tree_file)[1]
+print ("Root age : " + tree.rootAge())
 
 n_species <- tree.ntips()
 n_branches <- 2*n_species - 2
@@ -28,23 +31,19 @@ taxa <- tree.taxa()
 ################################################################################
 # Root prior.
 
-age_fossil_root <- tree.rootAge() # constant node corresponding to the (true) age of the root
-width_age_prior_root <- age_fossil_root / 5  # By default we decide that the width of the calibration interval is fossil_age/5
-
+age_fossil_root <- tree.rootAge()
+width_age_prior_root <- age_fossil_root / 5
 root_age_min <- age_fossil_root - width_age_prior_root
 root_age_max <- age_fossil_root + width_age_prior_root
-
 root_time_real ~ dnUniform(root_age_min, root_age_max)
-
 root_time := abs( root_time_real )
-
 root_time_real.setValue(tree.rootAge())
 
 ################################################################################
 # Constraints.
 
 if (constrain) {
-  extension=extension+"_cons"
+  extension=extension + "_cons"
   constraints <- readRelativeNodeAgeConstraints(file=constraints_file);
 }
 
@@ -55,17 +54,17 @@ diversification ~ dnExp(1)
 turnover ~ dnExp(1)
 birth_rate := diversification + turnover
 death_rate := turnover
-moves[mvi++] = mvScale(diversification,lambda=1.0,tune=true,weight=3.0);
-moves[mvi++] = mvScale(turnover,lambda=1.0,tune=true,weight=3.0);
+moves.append(mvScale(diversification,lambda=1.0,tune=true,weight=3.0))
+moves.append(mvScale(turnover,lambda=1.0,tune=true,weight=3.0))
 
 if (!constrain) psi ~ dnBDP(lambda=birth_rate, mu=death_rate, rho=1.0, rootAge=root_time, samplingStrategy="uniform", condition="survival", taxa=taxa)
 if (constrain) psi ~  dnConstrainedNodeOrder(dnBDP(lambda=birth_rate, mu=death_rate, rho=1.0, rootAge=root_time, samplingStrategy="uniform", condition="survival", taxa=taxa),constraints)
 
 # Move ages of nodes.
-moves[mvi++] = mvScale(root_time_real, weight=1.0, lambda=0.1)
-moves[mvi++] = mvSubtreeScale(psi, weight=1.0*n_branches)
-moves[mvi++] = mvNodeTimeSlideUniform(psi, weight=1.0*n_branches)
-moves[mvi++] = mvLayeredScaleProposal(tree=psi, lambda=0.1, tune=true, weight=1.0*n_branches)
+moves.append(mvScale(root_time_real, weight=1.0, lambda=0.1))
+moves.append(mvSubtreeScale(psi, weight=1.0*n_branches))
+moves.append(mvNodeTimeSlideUniform(psi, weight=1.0*n_branches))
+moves.append(mvLayeredScaleProposal(tree=psi, lambda=0.1, tune=true, weight=1.0*n_branches))
 
 # The tree is fixed.
 psi.setValue(tree)
@@ -111,22 +110,22 @@ source(calibration_file)
 
 global_rate_mean ~ dnExp(1)
 global_rate_mean.setValue(mean_tree_root_age/tree.rootAge());
-print("global_rate_mean: "+global_rate_mean)
+print("global_rate_mean: " + global_rate_mean)
 sigma ~ dnExp(10.0)
 
 first_gamma_param := 1/sigma
 second_gamma_param := 1/sigma
 
-moves[mvi++] = mvScaleBactrian(global_rate_mean, lambda=0.5, weight=10.0);
-moves[mvi++] = mvScaleBactrian(sigma, lambda=0.5, weight=10.0);
+moves.append(mvScaleBactrian(global_rate_mean, lambda=0.5, weight=10.0))
+moves.append(mvScaleBactrian(sigma, lambda=0.5, weight=10.0))
 
 # Use a Gamma distribution on rates.
 for (j in n_branches:1)
 {
   times[j]=psi.branchLength(j)
   rel_branch_rates[j] ~ dnGamma(first_gamma_param,second_gamma_param)
-  rel_branch_rates[j].setValue(observedBls[j]/times[j]/global_rate_mean);
-  moves[mvi++] = mvScale(rel_branch_rates[j], lambda=0.5, weight=1.0,tune=true);
+  rel_branch_rates[j].setValue(observedBls[j]/times[j]/global_rate_mean)
+  moves.append(mvScale(rel_branch_rates[j], lambda=0.5, weight=1.0,tune=true))
 }
 
 for (j in n_branches:1)
@@ -194,16 +193,16 @@ if (type(branch_rates) == "RealPos")
 
 for(i in 1:n_branches)
 {
-  ages[i] := psi.nodeAge(i)
-  ages2[i] := tree.nodeAge(i)
+  ages_psi[i] := psi.nodeAge(i)
+  ages_true[i] := tree.nodeAge(i)
 }
-print(ages)
-print(ages2)
+print(ages_psi)
+print(ages_true)
 
-monitors[++mni] = mnModel(filename=out_file+".log",printgen=10, separator = TAB)
-monitors[++mni] = mnStochasticVariable(filename=out_file+"_Stoch.log",printgen=10)
-monitors[++mni] = mnExtNewick(filename=out_file+".trees", isNodeParameter=FALSE, printgen=10, separator = TAB, tree=psi, branch_rates)
-monitors[++mni] = mnScreen(printgen=100, root_time, ages[103], ages[110], ages[150])
+monitors.append(mnModel(filename="output/"+out_bn+".log",printgen=10, separator = TAB))
+monitors.append(mnStochasticVariable(filename="output/"+out_bn+"_Stoch.log",printgen=10))
+monitors.append(mnExtNewick(filename="output/"+out_bn+".trees", isNodeParameter=FALSE, printgen=10, separator = TAB, tree=psi, branch_rates))
+monitors.append(mnScreen(printgen=100, root_time, ages_psi[103], ages_psi[110], ages_psi[150]))
 
 ################################################################################
 # MC3 Model.
