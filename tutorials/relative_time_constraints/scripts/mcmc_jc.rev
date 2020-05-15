@@ -23,7 +23,7 @@ Q <- fnJC(4)
 
 #############
 # Tree model.
-tree <- readBranchLengthTrees(data_dir+tree_file)[1]
+tree <- readBranchLengthTrees(data_dir + tree_file)[1]
 num_branches <- tree.nnodes() - 1
 
 # Branch length prior.
@@ -48,8 +48,8 @@ seq.clamp(data)
 
 # Monitors.
 monitors.append( mnScreen(TL, printgen=100) )
-monitors.append( mnFile(psi, filename="output/"+aln_file+".trees", printgen=10) )
-monitors.append( mnModel(filename="output/"+aln_file+".log", printgen=10) )
+monitors.append( mnFile(psi, filename="output/" + aln_file+".trees", printgen=10) )
+monitors.append( mnModel(filename="output/" + aln_file+".log", printgen=10) )
 
 print(data.names())
 print(psi.names())
@@ -60,7 +60,7 @@ mymcmc.run(generations = num_generations)
 
 ##################
 # Post processing.
-treetrace = readTreeTrace("output/"+aln_file+".trees", treetype="non-clock")
-map_tree = mapTree(treetrace, aln_file+".tree")
+treetrace = readTreeTrace("output/" + aln_file+".trees", treetype="non-clock")
+map_tree = mapTree(treetrace, "output/" + aln_file + ".tree")
 
 q()
