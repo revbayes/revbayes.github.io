@@ -38,7 +38,9 @@ Getting Started
 ------------------
 {:.section}
 
-Similar to other RevBayes tutorials, we suggest using the following directory structure:
+This tutorial was tested against RevBayes version 1.1.0 released on May
+13, 2020. Similar to other RevBayes tutorials, we suggest using the following
+directory structure:
 ```
 .
 ├── data
@@ -58,8 +60,20 @@ TODO: The following RevBayes script files are available:
 
 TODO: Create figures with calibrations and constraints.
 
-Two-step process.
+TODO: Describe two-step process.
 
-First step: Inference of posterior distribution of branch lengths.
+First step: Inference of posterior distribution of branch lengths using the
+Jukes-Cantor model. When analyzing real data, a more complicated substitution
+model should be used.
 
-echo "aln_file=\"Alignments/proposedTree_rescaled_altered_unrooted.dnd.fasta\"; tree_file=\"SimulatedTrees/proposedTree_rescaled_altered_unrooted.dnd\"; source(\"Scripts/mcmc_JC.Rev\");" | rb
+TODO: Discuss, tree not available, has to be inferred.
+
+```bash
+ rb ./scripts/mcmc_jc.rev
+
+```
+
+Computation of posterior mean and variance of branch lengths:
+```
+ rb ./scripts/compute_branch_lengths.rev
+```

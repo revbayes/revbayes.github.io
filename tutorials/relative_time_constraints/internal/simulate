@@ -1,7 +1,12 @@
 #!/usr/bin/env bash
 
+set -e
+
 # Time-like tree.
 tlynx -f -o time simulate -t 1 -n 18 -H 0.3 -S "[0]"
+
+./renameTips.py time.tree
+mv time_renamed.dnd time.tree
 
 # Substitution-like tree.
 cmd="./alterBranchLengths.py time.tree 0.01 0.05 0.5 0.2 0.01 substitution.tree y"

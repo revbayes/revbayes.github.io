@@ -2,12 +2,13 @@
 # on a single alignment, with a fixed tree topology.
 
 num_generations = 20000
-aln_file = "data/alignment.fasta"
-tree_file = "data/substitution.tree"
+data_dir = "data/"
+aln_file = "alignment.fasta"
+tree_file = "substitution.tree"
 
 ################
 # Sequence data.
-data = readDiscreteCharacterData(aln_file)
+data = readDiscreteCharacterData(data_dir+aln_file)
 print ("\n\tRead alignment")
 
 # Get some useful variables from the data. We need these later on.
@@ -22,7 +23,7 @@ Q <- fnJC(4)
 
 #############
 # Tree model.
-tree <- readBranchLengthTrees(tree_file)[1]
+tree <- readBranchLengthTrees(data_dir+tree_file)[1]
 num_branches <- tree.nnodes() - 1
 
 # Branch length prior.
@@ -47,8 +48,8 @@ seq.clamp(data)
 
 # Monitors.
 monitors.append( mnScreen(TL, printgen=100) )
-monitors.append( mnFile(psi, filename="output/"aln_file+".trees", printgen=10) )
-monitors.append( mnModel(filename="output/"aln_file+".log", printgen=10) )
+monitors.append( mnFile(psi, filename="output/"+aln_file+".trees", printgen=10) )
+monitors.append( mnModel(filename="output/"+aln_file+".log", printgen=10) )
 
 print(data.names())
 print(psi.names())
@@ -59,7 +60,7 @@ mymcmc.run(generations = num_generations)
 
 ##################
 # Post processing.
-treetrace = readTreeTrace(aln_file+".trees", treetype="non-clock")
+treetrace = readTreeTrace("output/"+aln_file+".trees", treetype="non-clock")
 map_tree = mapTree(treetrace, aln_file+".tree")
 
 q()

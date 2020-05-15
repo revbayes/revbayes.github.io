@@ -1,0 +1,62 @@
+outdir="output/"
+tree_file="alignment.fasta.trees"
+thinning = 5
+
+trees_only = tree_file + "_trees_only.nxs"
+tree_trace = readTreeTrace(outdir+tree_file)
+writeNexus(outdir+trees_only, tree_trace.getTrees())
+
+tre = readBranchLengthTrees(outdir+trees_only)
+
+print("Number of trees before thinning: ")
+print(tre.size())
+
+index = 1
+for (i in 1:tre.size()) {
+  if (i % thinning == 0) {
+    trees[index] = tre[i]
+    index = index + 1
+  }
+}
+
+print("Number of trees after thinning: ")
+print(trees.size())
+
+MAPtree = readBranchLengthTrees(trees_only)[1]
+num_branches = trees[1].nnodes()-1
+bl_means <- rep(0.0,num_branches)
+bl_squaredmeans <- rep(0.0,num_branches)
+
+for (i in 1:(trees.size())) {
+  for (j in 1:num_branches ) {
+    bl_means[j] <- bl_means[j] + trees[i].branchLength(j)
+    bl_squaredmeans[j] <- bl_squaredmeans[j] + trees[i].branchLength(j)^2
+    }
+}
+
+for (j in 1:num_branches ) {
+  bl_means[j] <- bl_means[j] / (trees.size())
+  bl_squaredmeans[j] <- bl_squaredmeans[j] / (trees.size())
+}
+
+print("MAP tree before changing branch lengths")
+print(MAPtree)
+
+for (j in 1:num_branches ) {
+  MAPtree.setBranchLength(j, bl_means[j])
+}
+
+print("MAP tree after changing branch lengths")
+print(MAPtree)
+
+writeNexus(outdir+tree_file+"_meanBL.nex", MAPtree)
+print("The tree with mean branch lengths has been saved.")
+
+print ("Computing variance tree")
+for (j in 1:num_branches ) {
+  MAPtree.setBranchLength(j, abs ( bl_squaredmeans[j] - bl_means[j]^2) )
+  print("VAR: " + bl_squaredmeans[j] + " ; " +  bl_means[j] +" ; " +  bl_means[j]^2 +" ; " + abs ( bl_squaredmeans[j] - bl_means[j]^2))
+}
+
+writeNexus(outdir+tree_file+"_varBL.nex", MAPtree)
+print("The tree with variance branch lengths has been saved.")
