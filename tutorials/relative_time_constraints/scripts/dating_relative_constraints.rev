@@ -10,9 +10,16 @@ out_bn="alignments.fasta.dating"
 ################################################################################
 # Options.
 
+# Show some debug output.
+debug = true
+# Use relative constraints.
 constrain = true
+# Length of Markov chain.
 mcmc_length = 50000
-mcmc_burnin = 10000
+mcmc_burnin = 100
+# The posterior branch length distribution of some branches of the first run has
+# zero variance. In this case, set the variance to the following value.
+var_min = 1e-6
 
 ################################################################################
 # Variables used later.
@@ -20,7 +27,7 @@ moves = VectorMoves()
 monitors = VectorMonitors()
 
 tree <- readTrees(time_tree_file)[1]
-print ("Root age : " + tree.rootAge())
+if (debug == true) print ("Root age of the original time tree: " + tree.rootAge())
 
 n_species <- tree.ntips()
 n_branches <- 2*n_species - 2
@@ -52,11 +59,11 @@ if (constrain) {
 birth_rate ~ dnExp(1)
 moves.append(mvScale(birth_rate, lambda=1.0, tune=true, weight=3.0))
 
-if (!constrain) psi ~ dnBDP(lambda=birth_rate, mu=0, rho=1.0, rootAge=root_time, samplingStrategy="uniform", condition="survival", taxa=taxa)
-if (constrain) psi ~  dnConstrainedNodeOrder(dnBDP(lambda=birth_rate, mu=0, rho=1.0, rootAge=root_time, samplingStrategy="uniform", condition="survival", taxa=taxa), constraints)
+if (!constrain) psi ~ dnBDP(lambda=birth_rate, mu=0.1, rho=1.0, rootAge=root_time, samplingStrategy="uniform", condition="survival", taxa=taxa)
+if (constrain) psi ~  dnConstrainedNodeOrder(dnBDP(lambda=birth_rate, mu=0.1, rho=1.0, rootAge=root_time, samplingStrategy="uniform", condition="survival", taxa=taxa), constraints)
 
 psi.setValue(tree)
-print(psi)
+if (debug == true) print(psi)
 
 moves.append(mvScale(root_time_real, weight=1.0, lambda=0.1))
 moves.append(mvSubtreeScale(psi, weight=1.0*n_branches))
@@ -103,8 +110,11 @@ var_tree <- readTrees(var_tree_file)[1]
 # Get indices of left child and right child of root.
 i_left <- tree.child(tree.nnodes(),1)
 i_right <- tree.child(tree.nnodes(),2)
-print("Index of left branch: " + i_left)
-print("Index of right branch: " + i_right)
+if (debug == true) {
+  print("")
+  print("Index of left daughter branch of root: " + i_left)
+  print("Index of right daughter branch of root: " + i_right)
+}
 
 # Get posterior means and variances of all branches except the branches leading
 # to the root.
@@ -112,27 +122,44 @@ for(i in 1:n_branches) {
   if(i != i_left && i != i_right) {
     posterior_mean_bl[i] <- mean_tree.branchLength(i)
     posterior_var_bl[i] := var_tree.branchLength(i)
-    if (posterior_var_bl[i]<1e-10) posterior_var_bl[i]:=1e-10
+    if (posterior_var_bl[i]<var_min) posterior_var_bl[i]:=var_min
   }
 }
 
-# Get the mean and variance of the branch containing the root.
+# Get the index of the root in the time tree.
 if (i_left<i_right)  i_root <- i_left
 if (i_left>=i_right) i_root <- i_right
+
+# Get the mean and variance of the branch containing the root.
 posterior_mean_bl_root <- mean_tree.branchLength(i_root)
 posterior_var_bl_root <- var_tree.branchLength(i_root)
-if (posterior_var_bl_root<1e-10) posterior_var_bl_root:=1e-10
+if (posterior_var_bl_root<var_min) posterior_var_bl_root:=var_min
 
 # Avoid RevBayes error; we need to set all array values, even if they are not used.
 posterior_mean_bl[i_root] := -1.0
 posterior_var_bl[i_root] := -1.0
+
+if (debug == true) {
+  print("")
+  print("Index, mean and variance of the branches of the unrooted tree obtained from step one.")
+  print("The branch containing the root of the time tree is excluded.")
+  for (i in 1:n_branches) {
+    if(i != i_left && i != i_right) print(i, posterior_mean_bl[i], posterior_var_bl[i])
+  }
+  print("")
+  print("Index, mean and variance of the branch containing the root of the time tree.")
+  print(i_root, posterior_mean_bl_root, posterior_var_bl_root)
+}
 
 ################################################################################
 # Molecular clock UGAM model.
 
 global_rate_mean ~ dnExp(1)
 global_rate_mean.setValue(mean_tree_root_age/tree.rootAge());
-print("Mean of global rate of molecular clock: " + global_rate_mean)
+if (debug == true) {
+  print("")
+  print("Mean of global rate of molecular clock: " + global_rate_mean)
+}
 sigma ~ dnExp(10.0)
 
 first_gamma_param := 1/sigma
@@ -207,12 +234,13 @@ for(i in 1:n_branches)
   ages_psi[i] := psi.nodeAge(i)
   ages_true[i] := tree.nodeAge(i)
 }
-# print(ages_psi)
-# print(ages_true)
+if (debug == true) print ("True node ages: " + ages_true)
+if (debug == true) print ("Node ages of state of Markov chain: " + ages_psi)
 
 monitors.append(mnModel(filename="output/"+out_bn+".log",printgen=10, separator = TAB))
 monitors.append(mnStochasticVariable(filename="output/"+out_bn+"_Stoch.log",printgen=10))
 monitors.append(mnExtNewick(filename="output/"+out_bn+".trees", isNodeParameter=FALSE, printgen=10, separator = TAB, tree=psi, branch_rates))
+# Add some randoma age monitors.
 monitors.append(mnScreen(printgen=100, root_time, ages_psi[20], ages_psi[25], ages_psi[27]))
 
 ################################################################################
