@@ -64,8 +64,6 @@ moves.append(mvNodeTimeSlideUniform(psi, weight=1.0*n_branches))
 moves.append(mvLayeredScaleProposal(tree=psi, lambda=0.1, tune=true, weight=1.0*n_branches))
 
 ################################################################################
-# Calibrations.
-
 # Node calibrations provide information about the ages of the MRCA.
 
 # The MRCAs of the following clades are calibrated.
@@ -91,45 +89,37 @@ age_clade_1_prior.clamp( age_clade_1_mean)
 ################################################################################
 # Obtain means and variances of branch lengths from first step.
 
+# This step harbors a complication. During the first step, a reversible
+# substitution model was used to estimate the posterior means and variances of
+# the branch lengths of an unrooted tree. Now, we estimate a rooted time tree.
+# Hence, the two branches leading to the root of the time tree correspond to a
+# single branch of the unrooted tree from the first step. We have to take this
+# into account when approximating the phylogenetic likelihood.
+
 mean_tree <- readTrees(mean_tree_file)[1]
 mean_tree_root_age=mean_tree.rootAge()
 var_tree <- readTrees(var_tree_file)[1]
 
 # Get indices of left child and right child of root.
-left_i <- tree.child(tree.nnodes(),1)
-right_i <- tree.child(tree.nnodes(),2)
+i_left <- tree.child(tree.nnodes(),1)
+i_right <- tree.child(tree.nnodes(),2)
 
-# Set mean and variance for all branches except the branches leading to the
-# root.
+# Get posterior means and variances of all branches except the branches leading
+# to the root.
 for(i in 1:n_branches) {
-  if(i != left_i && i != right_i) {
+  if(i != i_left && i != i_right) {
     mean_bl[i] <- mean_tree.branchLength(i)
     var_bl[i] := var_tree.branchLength(i)
     if (var_bl[i]<1e-10) var_bl[i]:=1e-10
   }
 }
 
-# TODO: Bastien or Gergely. This code does not work yet, because the root branch
-# length is set to 0, and then the likelihood of the birth and death process is
-# NaN.
-#
-# Why is i set here, and then not used below?
-if (left_i<right_i)  i <- left_i
-if (left_i>=right_i) i <-right_i
-
-mean_bl[left_i]  <- mean_tree.branchLength(left_i)
-mean_bl[right_i] <- mean_tree.branchLength(right_i)
-
-# # THIS CODE WORKS BUT DOES NOT HANDLE THE ROOTED/UNROOTED PROBLEM.
-# for(i in 1:n_branches) {
-#   mean_bl[i] <- mean_tree.branchLength(i)
-#   var_bl[i] := var_tree.branchLength(i)
-# }
-
-# for(i in 1:n_branches) {
-#   if (mean_bl[i]<1e-10) mean_bl[i]:=1e-10
-#   if (var_bl[i]<1e-10) var_bl[i]:=1e-10
-# }
+# Get the mean and variance of the branch containing the root.
+if (i_left<i_right)  i_root <- i_left
+if (i_left>=i_right) i_root <- i_right
+mean_bl_root <- mean_tree.branchLength(i_root)
+var_bl_root <- var_tree.branchLength(i_root)
+if (var_bl_root<1e-10) var_bl_root:=1e-10
 
 ################################################################################
 # Molecular clock UGAM model.
@@ -149,7 +139,13 @@ moves.append(mvScaleBactrian(sigma, lambda=0.5, weight=10.0))
 for (j in n_branches:1) {
   times[j]=psi.branchLength(j)
   rel_branch_rates[j] ~ dnGamma(first_gamma_param,second_gamma_param)
-  rel_branch_rates[j].setValue(mean_bl[j]/times[j]/global_rate_mean)
+  # Exclude the branches leading to the root (see above).
+  if(i != i_left && i != i_right) {
+    rel_branch_rates[j].setValue(mean_bl[j]/times[j]/global_rate_mean)
+  } else {
+    # And set them to half of the branch length in the unrooted tree.
+    rel_branch_rates[j].setValue(mean_bl_root/2/times[j]/global_rate_mean)
+  }
   moves.append(mvScale(rel_branch_rates[j], lambda=0.5, weight=1.0,tune=true))
 }
 
@@ -160,11 +156,10 @@ for (j in n_branches:1) {
 ################################################################################
 # CTMC.
 
-# TODO: Gergely or Bastien.
 if (type(branch_rates) == "RealPos") {
   for(i in 1:n_branches)
   {
-  if(i != left_i && i != right_i) {
+  if(i != i_left && i != i_right) {
     times[i] := psi.branchLength(i)
     meanbl[i] := times[i]*branch_rates
     bls[i] ~ dnNormal(meanbl[i] ,sqrt(var_bl[i]))
@@ -172,18 +167,18 @@ if (type(branch_rates) == "RealPos") {
     }
   }
 
-  if (left_i<right_i) i <- left_i
-  if (left_i>=right_i) i<-right_i
+  if (i_left<i_right) i <- i_left
+  if (i_left>=i_right) i<-i_right
 
-  times[left_i] := psi.branchLength(left_i)
-  times[right_i] := psi.branchLength(right_i)
-  meanbl[i] := times[left_i]*branch_rates+times[right_i]*branch_rates
+  times[i_left] := psi.branchLength(i_left)
+  times[i_right] := psi.branchLength(i_right)
+  meanbl[i] := times[i_left]*branch_rates+times[i_right]*branch_rates
 
   bls[i] ~ dnNormal(meanbl[i] ,sqrt(var_bl[i]))
   bls[i].clamp(mean_bl[i])
 } else {
   for(i in 1:n_branches) {
-  if(i != left_i && i != right_i) {
+  if(i != i_left && i != i_right) {
     times[i] := psi.branchLength(i)
     meanbl[i] := times[i]*branch_rates[i]
     bls[i] ~ dnNormal(meanbl[i] ,sqrt(var_bl[i]))
@@ -191,12 +186,12 @@ if (type(branch_rates) == "RealPos") {
     }
   }
 
-  if (left_i<right_i) i <- left_i
-  if (left_i>=right_i) i<-right_i
+  if (i_left<i_right) i <- i_left
+  if (i_left>=i_right) i<-i_right
 
-  times[left_i] := psi.branchLength(left_i)
-  times[right_i] := psi.branchLength(right_i)
-  meanbl[i] := times[left_i]*branch_rates[left_i]+times[right_i]*branch_rates[right_i]
+  times[i_left] := psi.branchLength(i_left)
+  times[i_right] := psi.branchLength(i_right)
+  meanbl[i] := times[i_left]*branch_rates[i_left]+times[i_right]*branch_rates[i_right]
 
   bls[i] ~ dnNormal(meanbl[i] ,sqrt(var_bl[i]))
   bls[i].clamp(mean_bl[i])
