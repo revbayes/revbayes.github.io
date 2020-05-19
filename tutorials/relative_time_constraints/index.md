@@ -69,14 +69,22 @@ model should be used.
 TODO: Discuss, tree not available, has to be inferred.
 
 ```bash
- rb ./scripts/mcmc_jc.rev
+ rb ./scripts/1_mcmc_jc.rev
 
 ```
+
+TODO: State that the approximation of the likelihood using posterior means and
+variances is optional (but recommended for reasons of computational efficiency).
 
 Computation of posterior mean and variance of branch lengths:
 ```
- rb ./scripts/compute_branch_lengths.rev
+ rb ./scripts/1_summarize_branch_lengths.rev
 ```
 
 TODO: Mean and variance at the root have to be split up (or the sum has to be
 taken). This was bugged when combining the scripts of Bastien and Gergely.
+
+Finally, we can estimate the time tree using relative constraints.
+```
+rb ./scripts/2_mcmc_dating.rev
+```

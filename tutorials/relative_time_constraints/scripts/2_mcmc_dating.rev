@@ -2,10 +2,10 @@
 # Files.
 
 time_tree_file="data/time.tree"
-constraints_file="scripts/constraints.rev"
+constraints_file="data/constraints.txt"
 mean_tree_file="output/alignment.fasta.trees_meanBL.nex"
 var_tree_file="output/alignment.fasta.trees_varBL.nex"
-out_bn="alignments.fasta.dating"
+out_bn="alignment.fasta.approx.dating"
 
 ################################################################################
 # Options.
@@ -35,7 +35,7 @@ n_branches <- 2*n_species - 2
 taxa <- tree.taxa()
 
 ################################################################################
-# Root age.
+# Prior on root age. Similar to a calibration, but always needed.
 
 root_age <- tree.rootAge()
 root_age_delta <- root_age / 5
@@ -59,11 +59,17 @@ if (constrain) {
 birth_rate ~ dnExp(1)
 moves.append(mvScale(birth_rate, lambda=1.0, tune=true, weight=3.0))
 
-if (!constrain) psi ~ dnBDP(lambda=birth_rate, mu=0.1, rho=1.0, rootAge=root_time, samplingStrategy="uniform", condition="survival", taxa=taxa)
-if (constrain) psi ~  dnConstrainedNodeOrder(dnBDP(lambda=birth_rate, mu=0.1, rho=1.0, rootAge=root_time, samplingStrategy="uniform", condition="survival", taxa=taxa), constraints)
+# TODO: Mu set to 0.9.
+if (!constrain) psi ~ dnBDP(lambda=birth_rate, mu=0.9, rho=1.0, rootAge=root_time, samplingStrategy="uniform", condition="survival", taxa=taxa)
+if (constrain) psi ~  dnConstrainedNodeOrder(dnBDP(lambda=birth_rate, mu=0.9, rho=1.0, rootAge=root_time, samplingStrategy="uniform", condition="survival", taxa=taxa), constraints)
 
 psi.setValue(tree)
-if (debug == true) print(psi)
+if (debug == true) {
+  print("The original time tree:")
+  print(tree)
+  print("The tree used in the Markov chain:")
+  print(psi)
+}
 
 moves.append(mvScale(root_time_real, weight=1.0, lambda=0.1))
 moves.append(mvSubtreeScale(psi, weight=1.0*n_branches))
@@ -79,22 +85,20 @@ clade_1 = clade("T_14","T_15","T_16","T_17")
 
 # Clade 0.
 tmrca_clade_0 := tmrca(psi, clade_0)
-age_clade_0 <- tmrca(psi, clade_0)
-age_clade_0_delta <- tmrca_clade_0 / 5
-age_clade_0_mean <- tmrca_clade_0
-age_clade_0_prior ~ dnSoftBoundUniformNormal(min=age_clade_0 - age_clade_0_delta, max=age_clade_0 + age_clade_0_delta, sd=2.5, p=0.95)
-age_clade_0_prior.clamp( age_clade_0_mean)
+age_clade_0_mean <- tmrca(psi, clade_0)
+age_clade_0_delta <- age_clade_0_mean / 5
+age_clade_0_prior ~ dnSoftBoundUniformNormal(min=age_clade_0_mean-age_clade_0_delta, max=age_clade_0_mean+age_clade_0_delta, sd=2.5, p=0.95)
+age_clade_0_prior.clamp(age_clade_0_mean)
 
 # Clade 1.
 tmrca_clade_1 := tmrca(psi, clade_1)
-age_clade_1 <- tmrca(psi, clade_1)
-age_clade_1_delta <- tmrca_clade_1 / 5
-age_clade_1_mean <- tmrca_clade_1
-age_clade_1_prior ~ dnSoftBoundUniformNormal(min=age_clade_1 - age_clade_1_delta, max=age_clade_1 + age_clade_1_delta, sd=2.5, p=0.95)
-age_clade_1_prior.clamp( age_clade_1_mean)
+age_clade_1_mean <- tmrca(psi, clade_1)
+age_clade_1_delta <- age_clade_1_mean / 5
+age_clade_1_prior ~ dnSoftBoundUniformNormal(min=age_clade_1_mean-age_clade_1_delta, max=age_clade_1_mean+age_clade_1_delta, sd=2.5, p=0.95)
+age_clade_1_prior.clamp(age_clade_1_mean)
 
 ################################################################################
-# Obtain means and variances of branch lengths from first step.
+# Obtain posterior means and variances of branch lengths from first step.
 
 # This step harbors a complication. During the first step, a reversible
 # substitution model was used to estimate the posterior means and variances of
@@ -104,8 +108,13 @@ age_clade_1_prior.clamp( age_clade_1_mean)
 # into account when approximating the phylogenetic likelihood.
 
 mean_tree <- readTrees(mean_tree_file)[1]
-mean_tree_root_age=mean_tree.rootAge()
 var_tree <- readTrees(var_tree_file)[1]
+if (debug == true) {
+  print("The tree with posterior means as branch lengths:")
+  print(mean_tree)
+  print("The tree with posterior variances as branch lengths:")
+  print(var_tree)
+}
 
 # Get indices of left child and right child of root.
 i_left <- tree.child(tree.nnodes(),1)
@@ -154,6 +163,7 @@ if (debug == true) {
 ################################################################################
 # Molecular clock UGAM model.
 
+mean_tree_root_age := mean_tree.rootAge()
 global_rate_mean ~ dnExp(1)
 global_rate_mean.setValue(mean_tree_root_age/tree.rootAge());
 if (debug == true) {
@@ -201,7 +211,6 @@ if (type(branch_rates) == "RealPos") {
       mean_bl[i] := times[i]*branch_rates
       bls[i] ~ dnNormal(posterior_mean_bl[i] ,sqrt(posterior_var_bl[i]))
       bls[i].clamp(mean_bl[i])
-    } else {
     }
   }
   # The two branches leading to the root of the time tree both contribute to the
@@ -217,7 +226,6 @@ if (type(branch_rates) == "RealPos") {
       mean_bl[i] := times[i]*branch_rates[i]
       bls[i] ~ dnNormal(posterior_mean_bl[i] ,sqrt(posterior_var_bl[i]))
       bls[i].clamp(mean_bl[i])
-    } else {
     }
   }
   # See above.
