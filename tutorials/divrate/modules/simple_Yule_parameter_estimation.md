@@ -74,20 +74,12 @@ parameter $\rho$ to $233/367$.
 
 {% subsection Read the tree %}
 
-Begin by reading in the observed tree.
-```
-T <- readTrees("data/primates_tree.nex")[1]
-```
-From this tree, we can get some helpful variables:
-```
-taxa <- T.taxa()
-```
+Begin by reading in the observed tree and get some useful variables. We will need these later on.
+{{ "mcmc_Yule.Rev" | snippet:"line","19-22" }}
+
 Additionally, we can initialize a variable for our vector of
 moves and monitors:
-```
-moves    = VectorMoves()
-monitors = VectorMonitors()
-```
+{{ "mcmc_Yule.Rev" | snippet:"line","26-27" }}
 
 
 {% subsection Specifying the model %}
@@ -99,11 +91,7 @@ The model we are specifying only has three nodes
 mean and standard deviation of the lognormal hyperprior on $\lambda$,
 and the conditional dependency of the two parameters all in one line of
 `Rev` code.
-```
-birth_rate_mean <- ln( ln(367/2) / T.rootAge() )
-birth_rate_sd <- 0.587405
-birth_rate ~ dnLognormal(mean=birth_rate_mean,sd=birth_rate_sd)
-```
+{{ "mcmc_Yule.Rev" | snippet:"line","36-38" }}
 
 Here, the stochastic node called `birth_rate` represents the speciation
 rate $\lambda$. `birth_rate_mean` and `birth_rate_sd` are the prior
@@ -123,18 +111,14 @@ operate on this node. In RevBayes these MCMC sampling algorithms are
 called *moves*. We need to create a vector of moves and we can do this
 by using vector indexing and our pre-initialized iterator `mi`. We will
 use a scaling move on $\lambda$ called `mvScale`.
-```
-moves.append( mvScale(birth_rate,lambda=1,tune=true,weight=3) )
-```
+{{ "mcmc_Yule.Rev" | snippet:"line","39" }}
 
 {% subsubsection Sampling probability %}
 
 Our prior belief is that we have sampled 233 out of 367 living primate
 species. To account for this we can set the sampling parameter as a
 constant node with a value of 233/367
-```
-rho <- T.ntips()/367
-```
+{{ "mcmc_Yule.Rev" | snippet:"line","44" }}
 
 {% subsubsection Root age %}
 
@@ -149,25 +133,19 @@ root by assuming the process started with *two* lineages that both
 originate at the time of the root.
 
 We can get the value for the root from the {% citet MagnusonFord2012 %} tree.
-```
-root_time <- T.rootAge()
-```
+{{ "mcmc_Yule.Rev" | snippet:"line","47" }}
 
 {% subsubsection The time tree %}
 
 Now we have all of the parameters we need to specify the full pure-birth
 model. We can initialize the stochastic node representing the time tree.
 Note that we set the `mu` parameter to the constant value `0.0`.
-```
-timetree ~ dnBDP(lambda=birth_rate, mu=0.0, rho=rho, rootAge=root_time, samplingStrategy="uniform", condition="survival", taxa=taxa)
-```
+{{ "mcmc_Yule.Rev" | snippet:"line","51" }}
 If you refer back to Equation \eqref{eq:bayes_thereom} and {% ref fig_yule_gm2 %}, 
 the time tree $\Psi$ is the variable we observe,
 *i.e.*, the data. We can set this in `Rev` by
 using the `clamp()` function.
-```
-timetree.clamp(T)
-```
+{{ "mcmc_Yule.Rev" | snippet:"line","54" }}
 Here we are fixing the value of the time tree to our observed tree from
 {% citet MagnusonFord2012 %}.
 
@@ -197,14 +175,10 @@ called `mn*`, where `*` is the wildcard representing the monitor type.
 First, we will initialize the model monitor using the `mnModel`
 function. This creates a new monitor variable that will output the
 states for all model parameters when passed into a MCMC function.
-```
-monitors.append( mnModel(filename="output/primates_Yule.log",printgen=10, separator = TAB) )
-```
+{{ "mcmc_Yule.Rev" | snippet:"line","67" }}
 Additionally, create a screen monitor that will report the states of
 specified variables to the screen with `mnScreen`:
-```
-monitors.append( mnScreen(printgen=1000, birth_rate) )
-```
+{{ "mcmc_Yule.Rev" | snippet:"line","68" }}
 
 
 {% subsubsection Initializing and Running the MCMC Simulation %}
@@ -213,13 +187,9 @@ With a fully specified model, a set of monitors, and a set of moves, we
 can now set up the MCMC algorithm that will sample parameter values in
 proportion to their posterior probability. The `mcmc()` function will
 create our MCMC object:
-```
-mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
-```
+{{ "mcmc_Yule.Rev" | snippet:"line","77" }}
 Now, run the MCMC:
-```
-mymcmc.run(generations=50000)
-```
+{{ "mcmc_Yule.Rev" | snippet:"line","80" }}
 When the analysis is complete, you will have the monitored files in your
 output directory.
 
