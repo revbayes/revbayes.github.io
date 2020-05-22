@@ -25,6 +25,7 @@ code_layout: bash
 <img src="{{ site.baseurl }}{% link assets/img/tux.png %}" alt="" width="100px" />
 <h2>Linux</h2>
 <p><a href="{% page_url singularity %}" class="btn btn-info" role="button">Download Singularity Image</a></p>
+<p>or <a href="{% page_url compile_linux %}">Compile from source</a></p>
 </div>
 
 </div>
