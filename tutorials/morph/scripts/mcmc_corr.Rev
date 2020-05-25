@@ -1,0 +1,98 @@
+################################################################################
+#
+# RevBayes Example: Inferring ancestral states and rates of morphological evolution
+# 
+# This file: Runs the full MCMC on an Mk model.
+#
+# authors:  Sebastian Hoehna, Will Freyman, April M. Wright, Michael J. Landis
+#
+################################################################################
+
+#######################
+# Reading in the Data #
+#######################
+
+# Import the morphological character matrix #
+# this file contains only the taxa for which morphological characters are available #
+morpho_activity       <- readDiscreteCharacterData("data/primates_activity_period.nex")
+morpho_solitariness   <- readDiscreteCharacterData("data/primates_solitariness.nex")
+
+morpho = combineCharacter( morpho_activity, morpho_solitariness )
+
+writeNexus("test.nex",morpho)
+
+# Create some vector for the moves and monitors of this analysis
+moves    = VectorMoves()
+monitors = VectorMonitors()
+
+
+
+##############
+# Tree model #
+##############
+
+# Here we use a fixed tree topology of mammals on a family level sampling
+# Note that the readTrees function always returns a vector of trees, 
+# so we simple take the first tree
+phylogeny <- readTrees("data/primates_tree.nex")[1]
+
+
+
+###########################################
+# Binary morphological substitution model #
+###########################################
+
+# Create the Q matrix. These data are binary, so we initialize the Jukes-Cantor matrix with
+# three states
+Q_morpho <- fnJC(4)
+
+# Specify a prior on the rate of morphological evolution
+mu_morpho ~ dnExponential( 1.0 )
+
+# Moves on the parameters to the Gamma distribution.
+moves.append( mvScale(mu_morpho,lambda=1, weight=2.0) )
+
+# Combine all of our elements into a CTMC.
+
+phyMorpho ~ dnPhyloCTMC(tree=phylogeny, branchRates=mu_morpho, Q=Q_morpho, type="NaturalNumbers")
+phyMorpho.clamp(morpho)
+
+
+
+########
+# MCMC #
+########
+
+# initialize the model object #
+mymodel = model(phylogeny)
+# Create a vector of monitors #
+# 1. for the full model #
+monitors.append( mnModel(filename="output/mk.log", printgen=1) )
+# 2. and a few select parameters to be printed to the screen #
+monitors.append( mnScreen(printgen=100) )
+# 3. add an ancestral state monitor
+monitors.append( mnJointConditionalAncestralState(tree=phylogeny,
+                                                  ctmc=phyMorpho,
+                                                  filename="output/mk.states.txt",
+                                                  type="NaturalNumbers",
+                                                  printgen=1,
+                                                  withTips=true,
+                                                  withStartStates=false) )
+
+# Initialize the MCMC object #
+mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
+
+# Run the MCMC #
+mymcmc.run(generations=5000, tuningInterval=200)
+
+# check the performance of the MCMC/moves
+mymcmc.operatorSummary()
+
+
+# Read in the tree trace and construct the ancestral states (ASE) #
+anc_states = readAncestralStateTrace("output/mk.states.txt")
+anc_tree = ancestralStateTree(tree=phylogeny, ancestral_state_trace_vector=anc_states, include_start_states=false, file="output/ase_mk.tree", burnin=0.25, summary_statistic="MAP", site=1)
+writeNexus( anc_tree, filename="output/ase_mk.tree" )
+
+# Quit RevBayes #
+q()
