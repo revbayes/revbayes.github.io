@@ -1,4 +1,4 @@
-sed -i.bak 's/generations=10000/generations=1/g' scripts/MCMC_dating_ex2.Rev
+sed -i.bak 's/generations=20000/generations=1/g' scripts/MCMC_dating_ex2.Rev
 ${rb_exec} -b scripts/MCMC_dating_ex2.Rev
 res="$?"
 mv scripts/MCMC_dating_ex2.Rev.bak scripts/MCMC_dating_ex2.Rev
