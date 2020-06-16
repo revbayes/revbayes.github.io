@@ -1,5 +1,6 @@
 ---
 layout: workshop
+type: workshop
 title: Phylogenomics and Population Genomics&#58; Inference and Applications
 location: University of Barcelona, Barcelona, Spain
 startdate: 2019-07-02

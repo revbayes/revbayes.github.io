@@ -1,5 +1,6 @@
 ---
 layout: workshop
+type: workshop
 title: Bayesian Phylogenetics in RevBayes
 location: The Field Museum, Chicago, IL USA
 startdate: 2018-10-05
