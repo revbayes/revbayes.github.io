@@ -19,5 +19,5 @@ schedule:
 - "August 17-19 (tentative): Q&A sessions"
 - Session times will be set depending on participants' timezones.
 
-registration: opens June 1st
+registration: opens June 19th
 ---
