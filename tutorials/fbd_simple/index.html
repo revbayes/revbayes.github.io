@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Estimating a Time-Calibrated Phylogeny of Fossil and Extant Taxa using Morphological Data</h1>
 	<h3 class="subtitle">A simplified analysis under the fossilized birth-death model for joint inference of divergence times and phylogenetic relationships</h3>
 	<h4 class="authors">Joëlle Barido-Sottani, Joshua Justison, April M. Wright, Rachel C. M. Warnock, Walker Pett, and Tracy A. Heath</h4>
-  <h5>Last modified on April  8, 2020</h5>
+  <h5>Last modified on June 24, 2020</h5>
 </div>
 
 
@@ -113,7 +113,9 @@
 
 
 </div>
-<h2 class="section" id="overview">Overview</h2>
+<p>This tutorial comes with a recorded video walkthrough. The video corresponding to each section of the exercise is linked next to the section title. The full playlist is available here: <a href="https://www.youtube.com/playlist?list=PLztACvN0g42t5ji1PRUdOPbhWoBwKe6Ve"><img src="/assets/img/YouTube_icon.svg" alt="Walkthrough playlist" height="36" width="36" /></a></p>
+
+<h2 class="section" id="overview">Overview <a href="https://youtu.be/7O6Dtdg71wE"><img src="/assets/img/YouTube_icon.svg" alt="Walkthrough video" height="36" width="36" /></a></h2>
 <hr class="section" />
 
 <p>This tutorial provides a guide to using RevBayes to perform a simple phylogenetic analysis of extant and fossil bear species (family Ursidae), using morphological data as well as the occurrence times of lineages from the fossil record.
@@ -311,7 +313,7 @@ RevBayes, that defines the model outlined above and specifies the details of the
 This script can be executed in RevBayes to complete the full analysis.
 We conclude the exercise by evaluating the performance of the MCMC and summarizing the results.</p>
 
-<h3 class="subsection" id="data-and-files">Data and Files</h3>
+<h3 class="subsection" id="data-files">Data and Files <a href="https://youtu.be/XBPmrwhpTBU"><img src="/assets/img/YouTube_icon.svg" alt="Walkthrough video" height="36" width="36" /></a></h3>
 <hr class="subsection" />
 
 <blockquote class="instruction">
@@ -339,7 +341,7 @@ We conclude the exercise by evaluating the performance of the MCMC and summarizi
 different model components used in the analysis, and configure and run the Markov chain Monte Carlo (MCMC) analysis.
 Once you finish writing this file, you can compare your script with the example provide with this tutorial (see links above).</p>
 
-<h3 class="subsection" id="importing-data-into-revbayes">Importing Data into RevBayes</h3>
+<h3 class="subsection" id="data-import">Importing Data into RevBayes <a href="https://youtu.be/PqfdPc_QhwU"><img src="/assets/img/YouTube_icon.svg" alt="Walkthrough video" height="36" width="36" /></a></h3>
 <hr class="subsection" />
 
 <p>We will begin our Rev script by loading in the two data files that were downloaded and saved to the <code class="highlighter-rouge">data</code> directory.
@@ -360,7 +362,7 @@ In this exercise, we are using a NEXUS-formatted data file, but it is worth noti
 
 <p>Here, we use the function <code class="highlighter-rouge">readDiscreteCharacterData</code> to load a data matrix to the workspace from a formatted file. This function can be used for discrete morphological data as well as molecular sequence data (e.g., nucleotides, amino acids).</p>
 
-<h3 class="subsection" id="helper-variables">Helper Variables</h3>
+<h3 class="subsection" id="helper-variables">Helper Variables <a href="https://youtu.be/V_NwUYU5u3E"><img src="/assets/img/YouTube_icon.svg" alt="Walkthrough video" height="36" width="36" /></a></h3>
 <hr class="subsection" />
 
 <p>Before we begin specifying the hierarchical model, it is useful to instantiate some “helper variables” that will be used in our model and MCMC specification throughout our script.</p>
@@ -378,7 +380,7 @@ time a new stochastic node is created in the model, we can append the correspond
 
 <p>One important distinction here is that <code class="highlighter-rouge">moves</code> is part of the RevBayes workspace and not the hierarchical model. Thus, we use the workspace assignment operator <code class="highlighter-rouge">=</code> instead of the constant node assignment <code class="highlighter-rouge">&lt;-</code>.</p>
 
-<h3 class="subsection" id="the-fossilized-birth-death-process">The Fossilized Birth-Death Process</h3>
+<h3 class="subsection" id="FBD-process">The Fossilized Birth-Death Process <a href="https://youtu.be/NlpMDLrdamc"><img src="/assets/img/YouTube_icon.svg" alt="Walkthrough video" height="36" width="36" /></a></h3>
 <hr class="subsection" />
 
 <h4 class="subsubsection" id="FBD-SpeciationExtinction">Speciation and Extinction Rates</h4>
@@ -460,7 +462,7 @@ For the move, we will use a sliding window move (<code class="highlighter-rouge"
 moves.append( mvSlide(origin_time, weight=1.0) )
 </code></pre></div></div>
 
-<h4 class="subsubsection" id="FBD-dnFBD">The FBD Tree</h4>
+<h4 class="subsubsection" id="FBD-dnFBD">The FBD Tree <a href="https://youtu.be/qfJq4oDCtKM"><img src="/assets/img/YouTube_icon.svg" alt="Walkthrough video" height="36" width="36" /></a></h4>
 <hr class="subsubsection" />
 
 <p>Now that we have specified all of the parameters of the FBD process ($\lambda$, $\mu$, $\phi$, $\psi$), we will use these parameters to instantiate the stochastic node representing the time-calibrated tree that we will call <code class="highlighter-rouge">fbd_tree</code>.
@@ -488,7 +490,7 @@ A node like $\mathcal{T}$ in our graphical model (<a href="#fig_full_model_gm"><
 Moreover, the likelihoods of our fossil occurrence data and the morphological character data are both conditionally dependent on the time tree.
 Such complex variables require more extensive sampling than other nodes.</p>
 
-<h4 class="subsubsection" id="FBD-TipSampling">Sampling Fossil Occurrence Times</h4>
+<h4 class="subsubsection" id="FBD-TipSampling">Sampling Fossil Occurrence Times <a href="https://youtu.be/eE5iRWa_z9s"><img src="/assets/img/YouTube_icon.svg" alt="Walkthrough video" height="36" width="36" /></a></h4>
 <hr class="subsubsection" />
 
 <p>We need to account for uncertainty in the age estimates of our fossils using the observed 
@@ -518,7 +520,7 @@ for(i in 1:fossils.size())
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvFossilTimeSlideUniform(fbd_tree, origin_time, weight=5.0) )
 </code></pre></div></div>
 
-<h4 class="subsubsection" id="FBD-DetNodes">Monitoring Parameters of Interest</h4>
+<h4 class="subsubsection" id="FBD-DetNodes">Monitoring Parameters of Interest <a href="https://youtu.be/hz8DYrjHoZQ"><img src="/assets/img/YouTube_icon.svg" alt="Walkthrough video" height="36" width="36" /></a></h4>
 <hr class="subsubsection" />
 
 <p>There are additional parameters that may be of particular interest to us that are not directly sampled as part of the graphical model defined thus far.
@@ -545,7 +547,7 @@ We will monitor the marginal distribution of the age of <em>Kretzoiarctos beatri
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>age_Kretzoiarctos_beatrix := tmrca(fbd_tree, clade("Kretzoiarctos_beatrix"))
 </code></pre></div></div>
 
-<h3 class="subsection" id="Exercise-ModelMorph">Modeling the Evolution of Binary Morphological Characters</h3>
+<h3 class="subsection" id="Exercise-ModelMorph">Modeling the Evolution of Binary Morphological Characters <a href="https://youtu.be/OiJF8ar5pfY"><img src="/assets/img/YouTube_icon.svg" alt="Walkthrough video" height="36" width="36" /></a></h3>
 <hr class="subsection" />
 
 <p>The next part of the graphical model we will define specifies the model of morphological character evolution.
@@ -624,7 +626,7 @@ other node by traversing the edges of the graph (<a href="#fig_full_model_gm"></
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(fbd_tree)
 </code></pre></div></div>
 
-<h3 class="subsection" id="monitoring-variables">Monitoring Variables</h3>
+<h3 class="subsection" id="monitors">Monitoring Variables <a href="https://youtu.be/e1UBesbaho0"><img src="/assets/img/YouTube_icon.svg" alt="Walkthrough video" height="36" width="36" /></a></h3>
 <hr class="subsection" />
 
 <p>We have defined the full probabilistic graphical model
@@ -681,7 +683,7 @@ We will monitor the age of the MRCA of the living bears, the number of sampled a
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(printgen=10, age_extant, num_samp_anc, origin_time) )
 </code></pre></div></div>
 
-<h3 class="subsection" id="setting-up-and-running-the-mcmc-sampler">Setting up and Running the MCMC Sampler</h3>
+<h3 class="subsection" id="MCMC-sampler">Setting up and Running the MCMC Sampler <a href="https://youtu.be/elCMLkITUsA"><img src="/assets/img/YouTube_icon.svg" alt="Walkthrough video" height="36" width="36" /></a></h3>
 <hr class="subsection" />
 
 <p>Our Rev script specifies the three major parts of our
@@ -710,7 +712,7 @@ member method to start our MCMC sampler.</p>
   <p>Save the <code class="highlighter-rouge">FBD_tutorial.Rev</code> file in the <code class="highlighter-rouge">RB_FBD_Tutorial</code> directory.</p>
 </blockquote>
 
-<h3 class="subsection" id="execute-the-analysis-script-in-revbayes">Execute the Analysis Script in RevBayes</h3>
+<h3 class="subsection" id="run-analysis">Execute the Analysis Script in RevBayes <a href="https://youtu.be/4XfOVY_YmZo"><img src="/assets/img/YouTube_icon.svg" alt="Walkthrough video" height="36" width="36" /></a></h3>
 <hr class="subsection" />
 
 <p>With your script complete and data files in the proper locations, you can execute the <code class="highlighter-rouge">FBD_tutorial.Rev</code> script 
@@ -745,7 +747,7 @@ in RevBayes.</p>
 When the analysis is complete, RevBayes will quit and you will have a new directory called output that 
 will contain all of the files you specified with the monitors.</p>
 
-<h3 class="subsection" id="results">Results</h3>
+<h3 class="subsection" id="results">Results <a href="https://youtu.be/3cq0osodIaA"><img src="/assets/img/YouTube_icon.svg" alt="Walkthrough video" height="36" width="36" /></a></h3>
 <hr class="subsection" />
 
 <p>Two files are created by the monitors in the <a href="#section_monitors"></a> section. 
