@@ -57,10 +57,16 @@ In R, type the commands:
 
 First, download the files listed as data files on the top of this page. Save them in a folder called data.
 These files are the output from a phylogenetic analysis performed with a datset from bears. The nucleotide substitution model was GTR+$\Gamma$+I and the MCMC was set to run 2 independent runs.
-The function `checkConvergence` takes the output from a folder and performs the convergence assessment pipeline.
-Let's run this function with our example output (this step may take a few minutes):
+The function `checkConvergence` takes the output from a phylogenetic analysis performed on RevBayes and works through the convergence assessment pipeline.
+This function can take either a directory with all the output files from a single analysis or a list of files.
+
+Let's run this function with our example output in a directory(this step may take a few minutes):
 
   > `check_bears <- checkConvergence("data/")` <br />
+
+We can also list the names of the files:
+
+  > `check_bears <- checkConvergence( list_files = c("bears_cytb_GTR_run_1.log", "bears_cytb_GTR_run_1.trees", "bears_cytb_GTR_run_2.log", "bears_cytb_GTR_run_2.trees") )` <br />
 
 Now, let's see what is the output:
 
