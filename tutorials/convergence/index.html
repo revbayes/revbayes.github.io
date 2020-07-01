@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: Convergence assessment</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
+      </a>
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/download">Download</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/documentation/">Documentation</a></li>
+        <li><a href="https://revbayes.github.io/revscripter/">RevScripter</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/jobs/">Jobs</a></li>
+        <li><a href="/developer/">Developer</a></li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <div class="titlebar">
+	<h1 class="maintitle">Convergence assessment</h1>
+	<h3 class="subtitle">Phylogenetic convergence assessment using R package Convenience</h3>
+	<h4 class="authors">Luiza Fabreti, Sebastian Höhna and Tracy Heath</h4>
+  <h5>Last modified on July  1, 2020</h5>
+</div>
+
+
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul id="prerequisites">
+          
+            <li><a href="/tutorials/intro/">Getting Started with RevBayes and Rev Language Syntax</a></li>
+          
+            <li><a href="/tutorials/mcmc/">Introduction to Markov chain Monte Carlo (MCMC) Sampling</a></li>
+          
+            <li><a href="/tutorials/ctmc/">Nucleotide substitution models</a></li>
+          
+            <li><a href="/tutorials/fbd/">Combined-Evidence Analysis and the Fossilized Birth-Death Process for Stratigraphic Range Data</a></li>
+          
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+
+
+
+
+<blockquote class="tutorial_files" id="tutorial_files">
+    <h2>Data files and scripts</h2>
+    
+        
+        <strong>Data Files</strong>
+        <ul id="data_files">
+        
+        
+        
+          <li><a href="/tutorials/convergence/data/bears_cytb_GTR_run_1.log">bears_cytb_GTR_run_1.log</a></li>
+        
+          <li><a href="/tutorials/convergence/data/bears_cytb_GTR_run_1.trees">bears_cytb_GTR_run_1.trees</a></li>
+        
+          <li><a href="/tutorials/convergence/data/bears_cytb_GTR_run_2.log">bears_cytb_GTR_run_2.log</a></li>
+        
+          <li><a href="/tutorials/convergence/data/bears_cytb_GTR_run_2.trees">bears_cytb_GTR_run_2.trees</a></li>
+        
+        </ul>
+    
+</blockquote>
+
+
+</div>
+<h2 class="section" id="overview">Overview</h2>
+<hr class="section" />
+
+<p>This tutorial covers convergence assessment of Bayesian phylogenetics analysis using the R package Convenience.
+Convergence of MCMC analysis is crucial to assure that the chain had sampled from the stationary distribution. This is done by analyzing the output from the MCMC for lack of convergence, since analytical solutions are yet to be developed.
+In the phylogenetics field the output to be analyzed consists of two types of parameters:</p>
+<ol>
+  <li>Continuous parameters: the evolutionary model parameters and the tree length;</li>
+  <li>Discrete parameters: the phylogenetic tree.</li>
+</ol>
+
+<p>To assess convergence for these parameters, the Convenience package evaluates:</p>
+<ol>
+  <li>The Effective Sample Size (ESS);</li>
+  <li>Comparison between windows of the same run;</li>
+  <li>Comparison between different runs.</li>
+</ol>
+
+<p>For the continuous parameters, the comparison is made with the Kolmogorov-Smirnov (KS) test, a non-parametric statistical test for equality of probability distributions. Two distributions will be equal when the KS value is below a given threshold.
+The phylogenetic tree is evaluated regarding the bipartitions or splits. Therefore, the comparisons are made using the frequency of a given split between intervals of the same run or between different runs.</p>
+
+<h3 class="subsection" id="thresholds">Thresholds</h3>
+<hr class="subsection" />
+
+<p>The threshold for the ESS value is based on the precision of the mean of a normal distribution. If we set up the precision to be a percentage of the 95% interval of the distribution, we can calculate the ESS with:</p>
+
+<script type="math/tex; mode=display">ESS > \frac{1}{(4 \times x)^2}</script>
+
+<p>where x is the choosen precision. For x = 1%, the ESS threshold is 625. That is the default value for the convenience package.</p>
+
+<p>For the KS test, the threshold is the critical value for $\alpha$ = 0.001.</p>
+
+<p>The threshold for the split frequencies is the mean absolute difference between two variables drawn independently from the same binomial distribution.</p>
+
+<script type="math/tex; mode=display">{E}[\Delta^{sf}_{p}] = \sum\limits_{i=0}^N \left(|\frac{i}{N} - p| \times P_{binom}(i|N,p) \right)</script>
+
+<h2 class="section" id="install">Install</h2>
+<hr class="section" />
+
+<p>To install Convenience, we need first to install the package devtools.
+In R, type the commands:</p>
+
+<blockquote>
+  <p><code class="highlighter-rouge">install.packages("devtools")</code> <br />
+<code class="highlighter-rouge">library(devtools)</code> <br />
+<code class="highlighter-rouge">install_github("lfabreti/convenience")</code> <br />
+<code class="highlighter-rouge">library(convenience)</code> <br /></p>
+</blockquote>
+
+<h2 class="section" id="example">Example</h2>
+<hr class="section" />
+
+<p>First, download the files listed as data files on the top of this page. Save them in a folder called data.
+These files are the output from a phylogenetic analysis performed with a datset from bears. The nucleotide substitution model was GTR+$\Gamma$+I and the MCMC was set to run 2 independent runs.
+The function <code class="highlighter-rouge">checkConvergence</code> takes the output from a folder and performs the convergence assessment pipeline.
+Let’s run this function with our example output (this step may take a few minutes):</p>
+
+<blockquote>
+  <p><code class="highlighter-rouge">check_bears &lt;- checkConvergence("data/")</code> <br /></p>
+</blockquote>
+
+<p>Now, let’s see what is the output:</p>
+
+<figure id="output_example.png"><p><img src="figures/output_example.png" /></p>
+<figcaption>The output stored in check_bears</figcaption>
+</figure>
+
+<p>We can see that <code class="highlighter-rouge">check_bears</code> has 4 elements: <code class="highlighter-rouge">message</code>, <code class="highlighter-rouge">converged</code>, <code class="highlighter-rouge">continuous_parameters</code> and <code class="highlighter-rouge">tree_parameters</code>.</p>
+
+<ol>
+  <li><code class="highlighter-rouge">message</code>: a string with a message if the analysis has converged or not;</li>
+  <li><code class="highlighter-rouge">converged</code>: a boolean that has TRUE if the analysis converged and FALSE if it did not converge;</li>
+  <li><code class="highlighter-rouge">continuous_parameters</code>: a list with ESS, KS-scores between windows of the same run and KS-scores between runs;</li>
+  <li><code class="highlighter-rouge">tree_parameters</code>: a list with ESS, split frequencies between windows of the same run and split frequencies between runs.</li>
+</ol>
+
+<p>In case the analysis has failed to converge, another element will be on the output list: <code class="highlighter-rouge">failed</code> with the parameters that failed the criteria for convergence.</p>
+
+<p>We can check <code class="highlighter-rouge">continuous_parameters</code>and <code class="highlighter-rouge">tree_parameters</code> with the commands:</p>
+
+<blockquote>
+  <p><code class="highlighter-rouge">check_bears$continuous_parameters</code> <br />
+<code class="highlighter-rouge">check_bears$tree_parameters</code> <br /></p>
+</blockquote>
+
+<figure id="list_parameters.png"><p><img src="figures/list_parameters.png" /></p>
+<figcaption>The lists of what is stored in the <code class="highlighter-rouge">check_bears$continuous_parameters</code> and <code class="highlighter-rouge">check_bears$tree_parameters</code></figcaption>
+</figure>
+
+<p>Both lists have 3 elements: ESS, comparison of windows and comparison of runs. Let’s see each component:</p>
+
+<ol>
+  <li>Continuous parameters</li>
+</ol>
+
+<blockquote>
+  <p><code class="highlighter-rouge">check_bears$continuous_parameters$ess</code> <br />
+<code class="highlighter-rouge">check_bears$continuous_parameters$compare_windows</code> <br />
+<code class="highlighter-rouge">check_bears$continuous_parameters$compare_runs</code> <br /></p>
+</blockquote>
+
+<p>We can check values for ESS and KS-scores for all continuous parameters of our phylogenetic analysis.</p>
+
+<ol>
+  <li>Tree parameters</li>
+</ol>
+
+<blockquote>
+  <p><code class="highlighter-rouge">check_bears$tree_parameters$ess</code> <br />
+<code class="highlighter-rouge">check_bears$tree_parameters$compare_windows</code> <br />
+<code class="highlighter-rouge">check_bears$tree_parameters$compare_runs</code> <br /></p>
+</blockquote>
+
+<p>Here we can check ESS, mean split frequencies and difference of split frequencies for the splits sampled throughout our MCMC.</p>
+
+<p>Now that we learned how to use the package and how to interpret the results, let’s practice with some exercises.</p>
+
+<h3 class="subsection" id="exercise-1">Exercise 1</h3>
+<hr class="subsection" />
+
+<p>Check for convergence in the output generated in the <code class="highlighter-rouge">Nucleotide substitution models</code> tutorial.</p>
+
+<ol class="bibliography"></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+    });
+    MathJax.Hub.Queue(function () {
+      $(".aside").each(function() {
+          $("div .MathJax", this).hide();
+      });
+    });
+</script>
+<script src="/assets/js/base.js"></script>
+
+  </body>
+</html>
