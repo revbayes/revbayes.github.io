@@ -45,3 +45,13 @@ prerequisites:
 - Paul Lewis's Primer on Phylogenetics Part 3b - <a href="https://youtu.be/TLtOS--YwkU">Bayesian Phylogenetics</a>
 
 ---
+
+## Tutorials
+
+- [Introduction to MCMC using RevBayes]({{ site.baseurl }}/tutorials/mcmc/binomial.html)
+- [Nucleotide substitution models]({{ site.baseurl }}/tutorials/ctmc)
+- [Partitioned data analysis]({{ site.baseurl }}/tutorials/partition)
+- [Convergence assessment]({{ site.baseurl }}/tutorials/convergence)
+- [Estimating a Time-Calibrated Phylogeny of Fossil and Extant Taxa using Morphological Data]({{ site.baseurl }}/tutorials/fbd_simple)
+- [Introduction to Posterior Prediction]({{ site.baseurl }}/tutorials/intro_posterior_prediction)
+ 
