@@ -43,7 +43,7 @@ To assess convergence for these parameters, the Convenience package evaluates:
 
 For the continuous parameters, the comparison is made with the two-sample Kolmogorov-Smirnov (KS) test, a non-parametric statistical test for equality of probability distributions. Two samples will be equal when the KS value is below a given threshold. The KS value (D) is calculated:
 
-$$ {D}_{m,n} = \max_{x} |{F_{1,m}(x) - G_{2,n}(x)} $$
+$$ {D}_{m,n} = \max_{x} |{F_{1,m}(x) - G_{2,n}(x)}| $$
 
 F(x) and G(x) are the empirical distribution functions for the first and second sample, respectively.
 The two samples will be drawn from different distributions, at level $\alpha$, when:
@@ -99,10 +99,14 @@ In R, type the commands:
 
 {% section Example %}
 
-First, download the files listed as data files on the top of this page. Save them in a folder called data.
-These files are the output from a phylogenetic analysis performed with a datset from bears. The nucleotide substitution model was GTR+$\Gamma$+I and the MCMC was set to run 2 independent runs.
+First, download the files listed as data files on the top left of this page. Save them in a folder called data.
+These files are the output from a phylogenetic analysis performed with a dataset from bears. The nucleotide substitution model was GTR+$\Gamma$+I and the MCMC was set to run 2 independent runs.
 The function `checkConvergence` takes the output from a phylogenetic analysis performed on RevBayes and works through the convergence assessment pipeline.
 This function can take either a directory with all the output files from a single analysis or a list of files.
+The function has 3 arguments: 
+1. `path`: for when a path to a directory is provided
+2. `list_files`: for when a list of files is provided
+3. `control`: a function to set the burnin size, the precision of the standard error of the mean and the continuous parameters to exclude from the assessment. Default values are burnin = 10%, precision = 1%, namesToExclude = "br_lens, bl, Iteration, Likelihood, Posterior, Prior".
 
 Let's run this function with our example output in a directory(this step may take a few minutes):
 
@@ -150,19 +154,16 @@ Both lists have 3 elements: ESS, comparison of windows and comparison of runs. L
   > `check_bears$continuous_parameters$compare_windows` <br />
   > `check_bears$continuous_parameters$compare_runs` <br />
 
-We can check values for ESS and KS-scores for all continuous parameters of our phylogenetic analysis.
-
-
 2. Tree parameters
   
   > `check_bears$tree_parameters$ess` <br />
   > `check_bears$tree_parameters$compare_windows` <br />
   > `check_bears$tree_parameters$compare_runs` <br />
 
-Here we can check ESS, mean split frequencies and difference of split frequencies for the splits sampled throughout our MCMC.
+Each of these elements can be accessed to check all the values calculated in the package.
 
 Now that we learned how to use the package and how to interpret the results, let's practice with some exercises.
 
 {% subsection Exercise 1 %}
 
-Check for convergence in the output generated in the `Nucleotide substitution models` tutorial.
+Check for convergence in the output generated in the [Nucleotide Substitution Models]({{ base.url }}/tutorials/ctmc/) tutorial.
