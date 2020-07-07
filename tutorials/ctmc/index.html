@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Nucleotide substitution models</h1>
 	<h3 class="subtitle">Phylogenetic inference of nucleotide data using RevBayes</h3>
 	<h4 class="authors">Sebastian Höhna, Michael Landis, Brian Moore and Tracy Heath</h4>
-  <h5>Last modified on November 12, 2019</h5>
+  <h5>Last modified on July  7, 2020</h5>
 </div>
 
 
@@ -620,7 +620,7 @@ create our MCMC object:</p>
 </code></pre></div></div>
 
 <p>Now, run the MCMC:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=10000)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=20000)
 </code></pre></div></div>
 
 <p>When the analysis is complete, you will have the monitored files in your output directory.</p>
@@ -942,10 +942,10 @@ which is specified with the following instantaneous-rate matrix:</p>
 
 <script type="math/tex; mode=display">% <![CDATA[
 Q_{HKY} = \begin{pmatrix} 
-{\cdot} 			& {\pi_C} 	& {\kappa\pi_G} 			& {\pi_T} \\ 
-{\pi_A} 		& {\cdot} 			& {\pi_C} 			& {\kappa\pi_T} \\ 
-{\kappa\pi_A} 			& {\pi_C} 			& {\cdot} 			& {\pi_T} \\ 
-{\pi_A} 			& {\kappa\pi_C} 			& {\pi_G} 	& {\cdot}  
+{\cdot} 			& {\pi_C}       	& {\kappa\pi_G} 	& {\pi_T} \\ 
+{\pi_A}      		& {\cdot} 			& {\pi_G} 			& {\kappa\pi_T} \\ 
+{\kappa\pi_A} 		& {\pi_C} 			& {\cdot} 			& {\pi_T} \\ 
+{\pi_A} 			& {\kappa\pi_C} 	& {\pi_G} 	        & {\cdot}  
 \end{pmatrix} \mbox{  ,} %]]></script>
 
 <p>where the diagonal ${\cdot}$ entries are equal to the negative sum of the
@@ -957,7 +957,7 @@ elements in the corresponding row.</p>
 variable <code class="highlighter-rouge">pi</code> for the stationary frequencies that are drawn from a flat
 Dirichlet distribution by</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pi_prior &lt;- v(1,1,1,1) 
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pi_prior &lt;- v(1,1,1,1)
 pi ~ dnDirichlet(pi_prior)
 </code></pre></div></div>
 
@@ -1071,7 +1071,7 @@ distribution. As we did previously for the Dirichlet prior on base
 frequencies, we first define a constant node specifying the vector of
 concentration-parameter values using the <code class="highlighter-rouge">v()</code> function:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>er_prior &lt;- v(1,1,1,1,1,1) 
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>er_prior &lt;- v(1,1,1,1,1,1)
 </code></pre></div></div>
 
 <p>This node defines the concentration-parameter values of the Dirichlet
@@ -1107,7 +1107,7 @@ frequencies ($\pi_A, \pi_C, \pi_G, \pi_T$) since these parameters also
 represent proportions. Specify a flat Dirichlet prior density on the
 base frequencies:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pi_prior &lt;- v(1,1,1,1) 
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pi_prior &lt;- v(1,1,1,1)
 pi ~ dnDirichlet(pi_prior)
 </code></pre></div></div>
 
@@ -1149,11 +1149,11 @@ GTR substitution model.</p>
 <figcaption>The probability density of mean-one gamma-distributed rates for different values of the $\alpha$-shape parameter.</figcaption>
 </figure>
 
-<p>We typically lack prior knowledge regarding the degree of ASRV for a given alignment. 
+<p>We typically lack prior knowledge regarding the degree of ASRV for a given alignment.
 Accordingly, rather than specifying a precise value of $\alpha$, we can instead estimate the value of the $\alpha$-shape parameter from the data. This requires that we specify a diffuse (relatively <a href="http://andrewgelman.com/2013/11/21/hidden-dangers-noninformative-priors/">‘uninformative’</a>) prior on the $\alpha$-shape parameter. For this analysis, we will use a uniform distribution between 0 and 10.</p>
 
-<p>This approach for accommodating ASRV is another example of a hierarchical model (<a href="#fig_gtrg"></a>). 
-That is, variation in substitution rates across sites is addressed by applying a site-specific rate multiplier to each of the $j$ sites, $r_j$. 
+<p>This approach for accommodating ASRV is another example of a hierarchical model (<a href="#fig_gtrg"></a>).
+That is, variation in substitution rates across sites is addressed by applying a site-specific rate multiplier to each of the $j$ sites, $r_j$.
 These rate-multipliers are drawn from a discrete, mean-one gamma distribution; the shape of this prior distribution (and the corresponding degree of ASRV) is governed by the $\alpha$-shape parameter. The $\alpha$-shape parameter, in turn, is treated as a lognormal distributed random variable. Finally, the shape of the lognormal prior is governed by the mean and standard deviation parameters, which are set to fixed values.</p>
 
 <figure id="fig_gtrg"><p><img src="figures/gtrg_graphical_model.png" alt="" /></p>
@@ -1192,7 +1192,7 @@ These rate-multipliers are drawn from a discrete, mean-one gamma distribution; t
 
 <ul>
   <li>
-    <p>Modify the previous GTR analysis to specify the GTR+Gamma model. 
+    <p>Modify the previous GTR analysis to specify the GTR+Gamma model.
 Run an MCMC simulation to estimate the posterior distribution.</p>
   </li>
   <li>
