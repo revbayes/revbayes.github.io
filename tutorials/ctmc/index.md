@@ -525,7 +525,7 @@ You will find that the output is created in two files with extension `_run_1` an
 
 Now, run the MCMC:
 ```
-mymcmc.run(generations=10000)
+mymcmc.run(generations=20000)
 ```
 
 When the analysis is complete, you will have the monitored files in your output directory.
@@ -709,10 +709,10 @@ corresponds to the substitution model proposed by {% citet Hasegawa1985 %},
 which is specified with the following instantaneous-rate matrix:
 
 $$Q_{HKY} = \begin{pmatrix} 
-{\cdot} 			& {\pi_C} 	& {\kappa\pi_G} 			& {\pi_T} \\ 
-{\pi_A} 		& {\cdot} 			& {\pi_C} 			& {\kappa\pi_T} \\ 
-{\kappa\pi_A} 			& {\pi_C} 			& {\cdot} 			& {\pi_T} \\ 
-{\pi_A} 			& {\kappa\pi_C} 			& {\pi_G} 	& {\cdot}  
+{\cdot} 			& {\pi_C}       	& {\kappa\pi_G} 	& {\pi_T} \\ 
+{\pi_A}      		& {\cdot} 			& {\pi_G} 			& {\kappa\pi_T} \\ 
+{\kappa\pi_A} 		& {\pi_C} 			& {\cdot} 			& {\pi_T} \\ 
+{\pi_A} 			& {\kappa\pi_C} 	& {\pi_G} 	        & {\cdot}  
 \end{pmatrix} \mbox{  ,}$$
 
 where the diagonal ${\cdot}$ entries are equal to the negative sum of the
@@ -725,7 +725,7 @@ variable `pi` for the stationary frequencies that are drawn from a flat
 Dirichlet distribution by
 
 ```
-pi_prior <- v(1,1,1,1) 
+pi_prior <- v(1,1,1,1)
 pi ~ dnDirichlet(pi_prior)
 ```
 
@@ -822,7 +822,7 @@ rates of change between states $i$ and $j$.
 
 {% figure gtr_graphical_model %}
 <img src="figures/gtr_graphical_model.png" />
-{% figcaption %} 
+{% figcaption %}
 Graphical model representation of the general-time reversible (GTR) phylogenetic model.
 {% endfigcaption %}
 {% endfigure %}
@@ -834,7 +834,7 @@ frequencies, we first define a constant node specifying the vector of
 concentration-parameter values using the `v()` function:
 
 ```
-er_prior <- v(1,1,1,1,1,1) 
+er_prior <- v(1,1,1,1,1,1)
 ```
 
 This node defines the concentration-parameter values of the Dirichlet
@@ -848,11 +848,11 @@ named `er` ($\theta$ in {% ref gtr_graphical_model %}):
 er ~ dnDirichlet(er_prior)
 ```
 
-The Dirichlet distribution assigns probability densities to a group of parameters: *e.g.*,  those that measure proportions and must sum to 1. Here, we have specified a six-parameter Dirichlet prior, where each value describes one of the six relative rates of the GTR model: (1) $A\leftrightarrows C$; (2) $A\leftrightarrows G$; (3) $A\leftrightarrows T$; (4) $C\leftrightarrows G$; (5) $C\leftrightarrows T$; (6) $G\leftrightarrows T$. The input parameters of a Dirichlet distribution are called shape (or concentration) parameters. The expectation and variance for each variable are related to the sum of the shape parameters. The prior we specified above is a ‘flat’ or symmetric Dirichlet distribution; all of the shape parameters are equal (1,1,1,1,1,1). This describes a model that allows for equal rates of change between nucleotides, such that the expected rate for each is equal to $\frac{1}{6}$ ({% ref dirichletFig %}a). 
+The Dirichlet distribution assigns probability densities to a group of parameters: *e.g.*,  those that measure proportions and must sum to 1. Here, we have specified a six-parameter Dirichlet prior, where each value describes one of the six relative rates of the GTR model: (1) $A\leftrightarrows C$; (2) $A\leftrightarrows G$; (3) $A\leftrightarrows T$; (4) $C\leftrightarrows G$; (5) $C\leftrightarrows T$; (6) $G\leftrightarrows T$. The input parameters of a Dirichlet distribution are called shape (or concentration) parameters. The expectation and variance for each variable are related to the sum of the shape parameters. The prior we specified above is a ‘flat’ or symmetric Dirichlet distribution; all of the shape parameters are equal (1,1,1,1,1,1). This describes a model that allows for equal rates of change between nucleotides, such that the expected rate for each is equal to $\frac{1}{6}$ ({% ref dirichletFig %}a).
 
-We might also parameterize the Dirichlet distribution such that all of the shape parameters were equal to 100, which would also specify a prior with an expectation of equal exchangeability rates ({% ref dirichletFig %}b). However, by increasing the values of the shape parameters, `er_prior <- v(100,100,100,100,100,100)`, the Dirichlet distribution will more strongly favor equal exchangeability rates; (*i.e.*, a relatively informative prior). 
+We might also parameterize the Dirichlet distribution such that all of the shape parameters were equal to 100, which would also specify a prior with an expectation of equal exchangeability rates ({% ref dirichletFig %}b). However, by increasing the values of the shape parameters, `er_prior <- v(100,100,100,100,100,100)`, the Dirichlet distribution will more strongly favor equal exchangeability rates; (*i.e.*, a relatively informative prior).
 
-Alternatively, we might consider an asymmetric Dirichlet parameterization that could reflect a strong prior belief that transition and transversion substitutions occur at different rates. For example, we might specify the prior density `er_prior <- v(4,8,4,4,8,4)`. Under this model, the expected rate for transversions would be $\frac{4}{32}$ and that for transitions would be $\frac{8}{32}$, and there would be greater prior probability on sets of GTR rates that matched this configuration ({% ref dirichletFig %}c). 
+Alternatively, we might consider an asymmetric Dirichlet parameterization that could reflect a strong prior belief that transition and transversion substitutions occur at different rates. For example, we might specify the prior density `er_prior <- v(4,8,4,4,8,4)`. Under this model, the expected rate for transversions would be $\frac{4}{32}$ and that for transitions would be $\frac{8}{32}$, and there would be greater prior probability on sets of GTR rates that matched this configuration ({% ref dirichletFig %}c).
 
 Yet another asymmetric prior could specify that each of the six GTR rates had a different value conforming to a Dirichlet(2,4,6,8,10,12). This would lead to a different prior probability density for each rate parameter ({% ref dirichletFig %}d). Without strong prior knowledge about the pattern of relative rates, however, we can better reflect our uncertainty by using a vague prior on the GTR rates. Notably, all patterns of relative rates have the same probability density under `er_prior <- v(1,1,1,1,1,1)`.
 
@@ -876,7 +876,7 @@ represent proportions. Specify a flat Dirichlet prior density on the
 base frequencies:
 
 ```
-pi_prior <- v(1,1,1,1) 
+pi_prior <- v(1,1,1,1)
 pi ~ dnDirichlet(pi_prior)
 ```
 
@@ -915,15 +915,15 @@ The probability density of mean-one gamma-distributed rates for different values
 {% endfigcaption %}
 {% endfigure %}
 
-We typically lack prior knowledge regarding the degree of ASRV for a given alignment. 
+We typically lack prior knowledge regarding the degree of ASRV for a given alignment.
 Accordingly, rather than specifying a precise value of $\alpha$, we can instead estimate the value of the $\alpha$-shape parameter from the data. This requires that we specify a diffuse (relatively ['uninformative'](http://andrewgelman.com/2013/11/21/hidden-dangers-noninformative-priors/)) prior on the $\alpha$-shape parameter. For this analysis, we will use a uniform distribution between 0 and 10.
 
-This approach for accommodating ASRV is another example of a hierarchical model ({% ref fig_gtrg %}). 
-That is, variation in substitution rates across sites is addressed by applying a site-specific rate multiplier to each of the $j$ sites, $r_j$. 
+This approach for accommodating ASRV is another example of a hierarchical model ({% ref fig_gtrg %}).
+That is, variation in substitution rates across sites is addressed by applying a site-specific rate multiplier to each of the $j$ sites, $r_j$.
 These rate-multipliers are drawn from a discrete, mean-one gamma distribution; the shape of this prior distribution (and the corresponding degree of ASRV) is governed by the $\alpha$-shape parameter. The $\alpha$-shape parameter, in turn, is treated as a lognormal distributed random variable. Finally, the shape of the lognormal prior is governed by the mean and standard deviation parameters, which are set to fixed values.
 
 {% figure fig_gtrg %}
-![]( figures/gtrg_graphical_model.png) 
+![]( figures/gtrg_graphical_model.png)
 {% figcaption %}
 Graphical model representation of the General Time Reversible (GTR) + Gamma phylogenetic model with invariable sites.
 {% endfigcaption %}
@@ -975,7 +975,7 @@ seq ~ dnPhyloCTMC(tree=psi, Q=Q, siteRates=sr, type="DNA")
 {% subsection Exercise 4 %}
 
 
--   Modify the previous GTR analysis to specify the GTR+Gamma model. 
+-   Modify the previous GTR analysis to specify the GTR+Gamma model.
     Run an MCMC simulation to estimate the posterior distribution.
 
 -   Is there an impact on the estimated phylogeny compared with the
