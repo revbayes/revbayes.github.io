@@ -54,8 +54,8 @@
       <div class="titlebar">
 	<h1 class="maintitle">Convergence assessment</h1>
 	<h3 class="subtitle">Phylogenetic convergence assessment using R package Convenience</h3>
-	<h4 class="authors">Luiza Fabreti, Sebastian Höhna and Tracy Heath</h4>
-  <h5>Last modified on July  6, 2020</h5>
+	<h4 class="authors">Luiza Fabreti and Sebastian Höhna</h4>
+  <h5>Last modified on July  8, 2020</h5>
 </div>
 
 
@@ -128,6 +128,9 @@ Precision can be evaluated by comparing parts of the chain for similarity. Repro
 
 <p>One last concept we need to keep in mind is the Effective Sample Size (ESS), the number of independent samples in our chain. The ESS takes into account the correlation between samples within a chain. Low ESS values represent high autocorrelation in the chain. The higher the autocorrelation, higher the uncertainty in our estimates.</p>
 
+<h2 class="section" id="criteria-for-convergence">Criteria for Convergence</h2>
+<hr class="section" />
+
 <p>Now that we learned about convergence, let’s take a look into the criteria in the Convenience package:</p>
 
 <p>In the phylogenetics field the output to be analyzed consists of two types of parameters:</p>
@@ -145,6 +148,15 @@ Precision can be evaluated by comparing parts of the chain for similarity. Repro
   <li>Comparison between different runs.</li>
 </ol>
 
+<p>The comparison between windows of the same run works by dividing the full length of the run into 5 windows (subsets) and comparing the third and fifth window. In the following figure we can see a trace plot for the tree length from the example provided in this tutorial. The trace plot shows the sampled values over the iterations of the MCMC. The highlighted areas of the figure show the third and fifth window of the run.</p>
+
+<figure id="windows"><p><img src="figures/windows.png" /></p>
+<figcaption>Trace plot of the tree length for our example analysis. The shaded areas show the third and fifth windows of the run.</figcaption>
+</figure>
+
+<h3 class="subsection" id="how-do-we-compare-windows-and-runs">How do we compare windows and runs?</h3>
+<hr class="subsection" />
+
 <p>For the continuous parameters, the comparison is made with the two-sample Kolmogorov-Smirnov (KS) test, a non-parametric statistical test for equality of probability distributions. Two samples will be equal when the KS value is below a given threshold. The KS value (D) is calculated:</p>
 
 <script type="math/tex; mode=display">{D}_{m,n} = \max_{x} |{F_{1,m}(x) - G_{2,n}(x)}|</script>
@@ -160,7 +172,7 @@ The two samples will be drawn from different distributions, at level $\alpha$, w
 
 <p>The phylogenetic tree is evaluated regarding the bipartitions or splits. Therefore, the comparisons are made using the frequency of a given split between intervals of the same run or between different runs.</p>
 
-<figure id="splits.png"><p><img src="figures/splits.png" /></p>
+<figure id="splits"><p><img src="figures/splits.png" /></p>
 <figcaption>Two example trees with tips A, B, C, D and the splits seen at each tree.</figcaption>
 </figure>
 
@@ -207,9 +219,12 @@ In R, type the commands:</p>
 
 <p>First, download the files listed as data files on the top left of this page. Save them in a folder called data.
 These files are the output from a phylogenetic analysis performed with a dataset from bears. The nucleotide substitution model was GTR+$\Gamma$+I and the MCMC was set to run 2 independent runs.
-The function <code class="highlighter-rouge">checkConvergence</code> takes the output from a phylogenetic analysis performed on RevBayes and works through the convergence assessment pipeline.
-This function can take either a directory with all the output files from a single analysis or a list of files.
-The function has 3 arguments:</p>
+The package also works if your analysis has only one run of the MCMC. But the part to compare runs will not be evaluated. Therefore, it is not possible to say that your MCMC result is reproducible. We strongly advise on running more than 1 run.</p>
+
+<p>The function <code class="highlighter-rouge">checkConvergence</code> takes the output from a phylogenetic analysis performed on RevBayes and works through the convergence assessment pipeline.
+This function can take either a directory with all the output files from a single analysis or a list of files.</p>
+
+<p>The function has 3 arguments:</p>
 <ol>
   <li><code class="highlighter-rouge">path</code>: for when a path to a directory is provided</li>
   <li><code class="highlighter-rouge">list_files</code>: for when a list of files is provided</li>
@@ -230,7 +245,7 @@ The function has 3 arguments:</p>
 
 <p>Now, let’s see what is the output:</p>
 
-<figure id="output_example.png"><p><img src="figures/output_example.png" /></p>
+<figure id="output_example"><p><img src="figures/output_example.png" /></p>
 <figcaption>The output stored in check_bears</figcaption>
 </figure>
 
@@ -252,31 +267,28 @@ The function has 3 arguments:</p>
 <code class="highlighter-rouge">check_bears$tree_parameters</code> <br /></p>
 </blockquote>
 
-<figure id="list_parameters.png"><p><img src="figures/list_parameters.png" /></p>
+<figure id="list_parameters"><p><img src="figures/list_parameters.png" /></p>
 <figcaption>The lists of what is stored in the <code class="highlighter-rouge">check_bears$continuous_parameters</code> and <code class="highlighter-rouge">check_bears$tree_parameters</code></figcaption>
 </figure>
 
 <p>Both lists have 3 elements: ESS, comparison of windows and comparison of runs. Let’s see each component:</p>
 
 <ol>
-  <li>Continuous parameters</li>
-</ol>
-
-<blockquote>
-  <p><code class="highlighter-rouge">check_bears$continuous_parameters$ess</code> <br />
+  <li>Continuous parameters
+    <blockquote>
+      <p><code class="highlighter-rouge">check_bears$continuous_parameters$ess</code> <br />
 <code class="highlighter-rouge">check_bears$continuous_parameters$compare_windows</code> <br />
 <code class="highlighter-rouge">check_bears$continuous_parameters$compare_runs</code> <br /></p>
-</blockquote>
-
-<ol>
-  <li>Tree parameters</li>
-</ol>
-
-<blockquote>
-  <p><code class="highlighter-rouge">check_bears$tree_parameters$ess</code> <br />
+    </blockquote>
+  </li>
+  <li>Tree parameters
+    <blockquote>
+      <p><code class="highlighter-rouge">check_bears$tree_parameters$ess</code> <br />
 <code class="highlighter-rouge">check_bears$tree_parameters$compare_windows</code> <br />
 <code class="highlighter-rouge">check_bears$tree_parameters$compare_runs</code> <br /></p>
-</blockquote>
+    </blockquote>
+  </li>
+</ol>
 
 <p>Each of these elements can be accessed to check all the values calculated in the package.</p>
 
@@ -286,6 +298,62 @@ The function has 3 arguments:</p>
 <hr class="subsection" />
 
 <p>Check for convergence in the output generated in the <a href="/tutorials/ctmc/">Nucleotide Substitution Models</a> tutorial.</p>
+
+<p>Which analysis have converged?</p>
+
+<h3 class="subsection" id="convergence-failure">Convergence failure</h3>
+<hr class="subsection" />
+
+<p>You can see that the output is different when we have a failure in convergence. We have 2 extra elements <code class="highlighter-rouge">failed</code> and <code class="highlighter-rouge">failed_names</code>.
+The element <code class="highlighter-rouge">failed</code> has a summary text of what failed in our analysis. 
+The element <code class="highlighter-rouge">failed_names</code> has the specifics about the parameters that failed, like the name of the parameter or the split and if it failed in checking for the ESS, the comparison between windows or between runs.</p>
+
+<p><a href="#failed"></a> shows the results from the convergence assessment on the analysis from Exercise 1 with the GTR+$\Gamma$+I nucleotide substitution model.</p>
+
+<figure id="failed"><p><img src="figures/failed.png" /></p>
+<figcaption>The output of a convergence assessment that has failed. On the left, we see the output with 6 elements. On the right, it’s the summary of the parameters that failed.</figcaption>
+</figure>
+
+<h3 class="subsection" id="exercise-2">Exercise 2</h3>
+<hr class="subsection" />
+
+<ul>
+  <li>Rerun the MCMC with the GTR+$\Gamma$+I model from <a href="/tutorials/ctmc/">Nucleotide Substitution Models</a>, but increase the number of iterations to 50000.</li>
+  <li>Check the new results for convergence.</li>
+</ul>
+
+<h3 class="subsection" id="what-to-do">What to do</h3>
+<hr class="subsection" />
+
+<figure id="what_to_do" class="table"><figcaption class="table">What to do in case of failure of convergence for each criteria</figcaption>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left"><strong>Criterion</strong></th>
+      <th style="text-align: center"><strong>What we can try</strong></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Combination of criteria</td>
+      <td style="text-align: center">Get more samples</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">ESS</td>
+      <td style="text-align: center">Get more samples</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Comparison between windows</td>
+      <td style="text-align: center">Increase burn-in</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Comparison between runs</td>
+      <td style="text-align: center">Add more weight to the moves</td>
+    </tr>
+  </tbody>
+</table>
+</figure>
 
 <ol class="bibliography"></ol>
 
