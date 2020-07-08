@@ -83,9 +83,9 @@ over all possible attachment points for each range {% cite Heath2014 %}.
 For range $i$, we define $\gamma_i$, which is the number of co-existing lineages at time $b_i$. 
 This allows us to account for topological uncertainty without explicitly sampling the underlying topology.
 
-The data summary for this first model, $\mathcal{D} = ( \\{ k_{i,j}, b_i, d_i, o_i \\}_{i \in 1...n, j \in 1...l})$, includes per interval fossil counts $$k_{i,j}$$, lineage duration times, $b_i$ and $y_i$, and first appearance time $o_i$ for each range.
-Typically, we do not have information about times $b_i$ and $y_i$, but we can sample these using Markov Chain Monte Carlo (MCMC), thus accounting for the uncertainty associated with these ages.
-Although the age of the last appearance is not included in our data summary and is not required to calculate the probability of observing our data, it is used to provide an upper limit (maximum age) for the extinction times $y_i$.
+The data summary for this first model, $\mathcal{D} = ( \\{ k_{i,j}, b_i, d_i, o_i \\}_{i \in 1...n, j \in 1...l})$, includes per interval fossil counts $$k_{i,j}$$, lineage duration times, $b_i$ and $d_i$, and first appearance time $o_i$ for each range.
+Typically, we do not have information about times $b_i$ and $d_i$, but we can sample these using Markov Chain Monte Carlo (MCMC), thus accounting for the uncertainty associated with these ages.
+Although the age of the last appearance is not included in our data summary and is not required to calculate the probability of observing our data, it is used to provide an upper limit (maximum age) for the extinction times $d_i$.
 
 
 {% aside Stratigraphic age uncertainty %}
