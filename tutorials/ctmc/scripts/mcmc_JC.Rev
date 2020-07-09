@@ -25,7 +25,7 @@ monitors = VectorMonitors()
 ######################
 
 # create a constant variable for the rate matrix
-Q <- fnJC(4) 
+Q <- fnJC(4)
 
 
 ##############
@@ -33,10 +33,10 @@ Q <- fnJC(4)
 ##############
 
 out_group = clade("Galeopterus_variegatus")
-# Prior distribution on the tree topology    
+# Prior distribution on the tree topology
 topology ~ dnUniformTopology(taxa, outgroup=out_group)
-moves.append( mvNNI(topology, weight=num_taxa/2.0) )
-moves.append( mvSPR(topology, weight=num_taxa/10.0) )
+moves.append( mvNNI(topology, weight=num_taxa/1.0) )
+moves.append( mvSPR(topology, weight=num_taxa/2.0) )
 
 # Branch length prior
 for (i in 1:num_branches) {
@@ -45,7 +45,7 @@ for (i in 1:num_branches) {
 }
 
 TL := sum(bl)
-    
+
 psi := treeAssembly(topology, bl)
 
 
@@ -69,12 +69,12 @@ mymodel = model(psi)
 
 # add monitors
 monitors.append( mnScreen(TL, printgen=100) )
-monitors.append( mnFile(psi, filename="output/primates_cytb_JC.trees", printgen=10) )
-monitors.append( mnModel(filename="output/primates_cytb_JC.log", printgen=10) )
+monitors.append( mnFile(psi, filename="output/primates_cytb_JC.trees", printgen=1) )
+monitors.append( mnModel(filename="output/primates_cytb_JC.log", printgen=1) )
 
 # run the analysis
-mymcmc = mcmc(mymodel, moves, monitors)
-mymcmc.run(generations=10000)
+mymcmc = mcmc(mymodel, moves, monitors, nruns=2, combine="mixed")
+mymcmc.run(generations=20000, tuningInterval=100)
 
 
 ###################
@@ -90,4 +90,3 @@ map_tree = mapTree(treetrace,"output/primates_cytb_JC_MAP.tree")
 
 # you may want to quit RevBayes now
 q()
-
