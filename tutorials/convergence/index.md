@@ -70,7 +70,7 @@ $$ c(\alpha) = \sqrt{-\ln({\frac{\alpha}{2})\times \frac{1}{2}}} $$
 The phylogenetic tree is evaluated regarding the bipartitions or splits. Therefore, the comparisons are made using the frequency of a given split between intervals of the same run or between different runs.
 
 {% figure splits.png %}
-<img src="figures/splits.png" width="400" />
+<img src="figures/splits.png"/>
 {% figcaption %}
 Two example trees with tips A, B, C, D and the splits seen at each tree.
 {% endfigcaption %}
@@ -105,7 +105,7 @@ We are currently still evaluating the choice of $\alpha$ on the power and false-
 To date, the most often test to assess convergence of split frequencies is the *average standard deviation of split frequencies* (ASDSF) {% cite Nylander2008 %}. The frequency of each split is computed for two separate MCMC runs and the difference between the two split frequency estimates is used. The ASDSF is problematic for two reasons: (1) for large trees with many splits that have posterior probabilities close to 0.0 or 1.0 will overwhelm the ASDSF and hence even a single split that is present in all samples in run 1 (thus a posterior probability of 1.0) and is never present in any sample in run 2 (thus a posterior probability of 0.0) might not be detected, and (2) the expected difference in split frequency depends on the true split frequency (see Figure {% ref difference_split_frequencies %}).
 
 {% figure difference_split_frequencies %}
-<img src="figures/difference_split_frequencies.png" />
+<img src="figures/difference_split_frequencies.png" width="400"  />
 {% figcaption %}
 The expected difference in split frequencies for ESS of 100, 200 and 625. The x-axis is the true value of the split frequency. The y-axis is the expected difference in split frequencies. The effect of increasing the ESS is the decrease of differences in frequency of sampled splits.
 {% endfigcaption %}
