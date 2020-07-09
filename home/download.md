@@ -10,25 +10,28 @@ code_layout: bash
 <div class="col-sm-4" align="center">
 <img src="{{ site.baseurl }}{% link assets/img/apple.png %}" alt="" width="100px" />
 <h2>Mac OS X</h2>
-<p><a href="https://github.com/revbayes/revbayes.archive/releases/download/v1.0.13/RevBayes_OSX_v1.0.13.zip" class="btn btn-info" role="button">Download Executable (10.6+)</a></p>
+<p><a href="https://github.com/revbayes/revbayes/releases/download/1.1.0/RevBayes_OSX_1.1.0.zip" class="btn btn-info" role="button">Download Executable (10.6+)</a></p>
 <p>or <a href="{% page_url compile_osx %}">Compile from source</a></p>
 </div>
 
 <div class="col-sm-4" align="center">
 <img src="{{ site.baseurl }}{% link assets/img/windows.png %}" alt="" width="100px" />
 <h2>Windows</h2>
-<p><a href="https://github.com/revbayes/revbayes.archive/releases/download/v1.0.13/RevBayes_Win_v1.0.13.zip" class="btn btn-info" role="button">Download Executable (10)</a></p>
+<p><a href="https://github.com/revbayes/revbayes/releases/download/1.1.0/RevBayes_Win_1.1.0.zip" class="btn btn-info" role="button">Download Executable (10)</a></p>
 <p>or <a href="{% page_url compile_windows %}">Compile from source</a></p>
 </div>
 
 <div class="col-sm-4" align="center">
 <img src="{{ site.baseurl }}{% link assets/img/tux.png %}" alt="" width="100px" />
 <h2>Linux</h2>
-<p><a href="https://github.com/revbayes/revbayes.archive/releases/download/v1.0.13/RevBayes_Singularity_v1.0.13.simg" class="btn btn-info" role="button">Download Singularity Image</a></p>
-<p><a href="{% page_url singularity %}">(Singularity notes)</a></p>
-<p>Available as a <a href="https://spack.readthedocs.io/en/latest/">Spack</a> package (<a href="https://github.com/spack/spack/blob/develop/var/spack/repos/builtin/packages/revbayes/package.py">source</a>)</p>
+<p><a href="{% page_url singularity %}" class="btn btn-info" role="button">Download Singularity Image</a></p>
 <p>or <a href="{% page_url compile_linux %}">Compile from source</a></p>
+</div>
 
 </div>
 
+<br><br>
+<div class="row">
+<p><a href="{% page_url gui_setup %}">Integration with Jupyter and RStudio</a></p>
+<p><a href="{% page_url compile_spack %}">Compile with Spack</a></p>
 </div>

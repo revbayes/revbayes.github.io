@@ -1,5 +1,6 @@
 ---
 layout: workshop
+type: workshop
 title: RevBayes Demonstration and Mini Workshop
 location: Montana State University, Bozeman, MT USA
 startdate: 2018-04-12

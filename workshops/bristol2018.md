@@ -1,5 +1,6 @@
 ---
 layout: workshop
+type: workshop
 title: Analysing Macroevolutionary Processes using RevBayes
 location: University of Bristol, United Kingdom
 startdate: 2018-05-01

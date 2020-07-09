@@ -10,10 +10,7 @@ module RevBayes
         page = @context.registers[:page]
 
         if file_identifier.match(VARIABLE_SYNTAX)
-          partial = site
-            .liquid_renderer
-            .file("(variable)")
-            .parse(file_identifier)
+          partial = Liquid::Template.parse(file_identifier)
 
           file_identifier = partial.render!(@context)
         end
@@ -39,10 +36,7 @@ MSG
         site = @context.registers[:site]
 
         if page_identifier.match(VARIABLE_SYNTAX)
-          partial = site
-            .liquid_renderer
-            .file("(variable)")
-            .parse(page_identifier)
+          partial = Liquid::Template.parse(page_identifier)
 
           page_identifier = partial.render!(@context)
         end

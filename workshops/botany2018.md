@@ -1,5 +1,6 @@
 ---
 layout: workshop
+type: workshop
 title: RevBayes for Botanists
 location: Botany 2018 Conference, Rochester, MN USA
 startdate: 2018-07-22

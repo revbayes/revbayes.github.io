@@ -6,6 +6,8 @@ permalink: /compile-osx
 code_layout: bash
 ---
 
+**NOTE: These instructions are for compiling the development branch.**
+
 The standard way to build revbayes is to use `cmake`.  If you want to compile using `meson`, see [revbayes/projects/meson/README.md](https://github.com/revbayes/revbayes/blob/development/projects/meson/README.md).
 
 ## Pre-requisites
@@ -25,13 +27,13 @@ brew install cmake boost
 
 ### If you do not have root
 
-TODO: [Test instructions for installing cmake](https://cmake.org/install/)
+First you will need to [install cmake](https://cmake.org/install/)
 
 Then you can compile boost:
 
     curl -O -L https://dl.bintray.com/boostorg/release/1.71.0/source/boost_1_71_0.tar.gz
     tar -xzvf boost_1_71_0.tar.gz
-    cd boost_1_71_0.tar.gz
+    cd boost_1_71_0
     ./bootstrap.sh --with-libraries=atomic,chrono,filesystem,system,regex,thread,date_time,program_options,math,serialization
     ./b2 link=static
 
@@ -50,7 +52,7 @@ When it is done, something like the following will be printed. You will need the
 Download RevBayes from our github repository. Clone the repository using git by running the following command in the terminal 
 
 ``` 
-git clone https://github.com/revbayes/revbayes.git revbayes
+git clone --branch development https://github.com/revbayes/revbayes.git revbayes
 ```
 
 Open a terminal and go to the RevBayes cmake directory:
@@ -79,7 +81,9 @@ To compile with a locally compiled boost, do the following. Be sure to replace t
 
 You will likely see some compiler warnings (e.g. `clang: warning: optimization flag '-finline-functions' is not supported`). This is normal. 
 
-### Troubleshooting
+## Troubleshooting
+
+### General
 
 * `rb: command not found`
     
@@ -92,6 +96,8 @@ export PATH=<your_revbayes_directory>/projects/cmake:$PATH
 * `Error cmake not found!`  
    
    Please double check that CMake is installed. For OS X, go to step 2 above.
+
+### Boost
 
 * `Error can't find the libboost_filesystem.dylib library or Library not   loaded: libboost_filesystem.dylib` 
    

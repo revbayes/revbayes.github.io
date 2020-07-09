@@ -27,16 +27,19 @@ performing standard Bayesian inference.
 Model and Data
 --------------
 
-We will use the data example from {% cite Gelman2003 %}. A summary is given in
-Table [tab:airlineFatalities].
+We will use the data example from {% citet Gelman2003 %}. A summary is given in
+{% ref airlineFatalities %}.
 
-  ------------ ------ ------ ------ ------ ------ ------ ------ ------ ------ ------
-  Year           1976   1977   1978   1979   1980   1981   1982   1983   1984   1985
-  Fatalities       24     25     31     31     22     21     26     20     16     22
-  ------------ ------ ------ ------ ------ ------ ------ ------ ------ ------ ------
+{% table airlineFatalities %}
 
-  : Airline fatalities from 1976 to 1985. Reproduced from @Gelman2003
-  [Table 2.2 on p. 69].<span data-label="tab:airlineFatalities">
+  | Year       | 1976 | 1977 | 1978 | 1979 | 1980 | 1981 | 1982 | 1983 | 1984 | 1985 |
+  |------------|-----:|-----:|-----:|-----:|-----:|-----:|-----:|-----:|-----:|-----:|
+  | Fatalities |  24  |  25  |  31  |  31  |  22  |  21  |  26  |  20  |  16  |  22  |
+
+  {% tabcaption %}
+  Airline fatalities from 1976 to 1985. Reproduced from {% citet Gelman2003 %} [Table 2.2 on p. 69].
+  {% endtabcaption %}
+{% endtable %}
 
 These data can be loaded into `RevBayes` by typing:
 
@@ -49,10 +52,13 @@ parameters $\alpha$ and $\beta$
 $$y \sim \text{Poisson}(\exp(\alpha+\beta*x))$$
 
 where $y$ is the number of fatal accidents in year $x$. For simplicity,
-we choose uniform priors for $\alpha$ and $\beta$. $$\begin{aligned}
-\alpha & \sim & \text{Uniform}(-10,10)\\
-\beta &  \sim & \text{Uniform}(-10,10)\end{aligned}$$ The probability
-density can be computed in `RevBayes` for a single year by
+we choose uniform priors for $\alpha$ and $\beta$.
+
+$$\begin{aligned}
+\alpha & \sim \text{Uniform}(-10,10)\\
+\beta &  \sim \text{Uniform}(-10,10)\end{aligned}$$ 
+
+The probability density can be computed in `RevBayes` for a single year by
 
     dpoisson(y[i],exp(alpha+beta*x[i]))
 
@@ -236,29 +242,25 @@ And now we are done
 
 ### Posterior Distribution of $\alpha$ and $\beta$
 
-Report the posterior mean and 95% credible intervals for $\alpha$ and
-$\beta$. Additionally, plot the posterior distribution of $\alpha$ and
-$\beta$ by plotting a histogram of the samples. Plot the curve of
-$m(x) = \text{E}[\exp(\alpha+\beta*x)|y]$ for $x = [1976,1985]$. You can
-generate draws from the posterior distribution of the expected value for
+ * Report the posterior mean and 95% credible intervals for $\alpha$ and $\beta$. 
+ * Additionally, plot the posterior distribution of $\alpha$ and $\beta$ by plotting a histogram of the samples. 
+ * Plot the curve of $$m(x) = \text{E}[\exp(\alpha+\beta*x) |y]$$ for $x = [1976,1985]$. You can generate draws from the posterior distribution of the expected value for
 a specific $x$ by recording the current expected value at a iteration
-$i$ of the Metropolis algorithm
-$m_sample(x)[i] = \text{E}[\exp(\alpha[i]+\beta[i]*x)|y]$ and taking
-the mean of those samples (‘m(x) = ) afterwards. Since `RevBayes`
+$i$ of the Metropolis algorithm 
+$$m_{sample}(x)[i] = \text{E}[\exp(\alpha[i]+\beta[i]*x) |y]$$ and taking
+the mean of those samples ($\bar{m}_{sample}(x)$) afterwards. Since `RevBayes`
 provides you with the samples of
-$m(x) = \text{E}[\exp(\alpha+\beta*x)|y] = \lambda_x$ you can simply
+$$m(x) = \text{E}[\exp(\alpha+\beta*x) |y] = \lambda_x$$ you can simply
 plot these posterior curves.
-
-Produce a histogram of the predictive distribution of the number of
+ * Produce a histogram of the predictive distribution of the number of
 fatalities in 2014 and estimate the posterior mean. The predictive
 distribution can be approximated simultaneously with the Metropolis
 algorithm. This means, for any iteration $i$ you simulate draws from the
 conditional distribution for $x = 2014$ and the current values of
 $\alpha[i]$ and $\beta[i]$.
-
-Estimate the distribution of the mean of the posterior predictive
-distribution of the the number of fatalities in 2014. Therefore, let us
-denote the expected value of the posterior distribution by $\mu$. Since
+ * Estimate the distribution of the mean of the posterior predictive
+distribution of the number of fatalities in 2014. 
+ * Let us denote the expected value of the posterior distribution by $\mu$. Since
 we do not know this value $\mu$ exactly, we can follow the Bayesian
 approach and associate a probability for each value $m$ as being the
 true expected value of the posterior distribution, given the
@@ -268,8 +270,7 @@ by recording the expected value for the number of fatalities in 2014
 Metropolis algorithm. Plot a histogram of the expected values, compute
 the mean of the expected values and compare it to the previously
 obtained estimate of the mean of the posterior predictive distribution.
-
-Follow the same approach as for the posterior predictive distribution
+ * Follow the same approach as for the posterior predictive distribution
 for $x = 2014$, but this time for $x = 2016$ and estimate the
 probability of no fatality.
 
@@ -293,23 +294,23 @@ for different rates before and after year $\theta$, where $\theta$ is
 unknown to us. Thus, the observation distribution of our model is
 $y_t \sim Poisson(\lambda_t)$ with $t = 1851,\ldots,1962$ and
 $$\begin{aligned}
-\lambda_t & = & \begin{cases}
+\lambda_t = & \begin{cases}
 \beta & \mbox{if } t < \theta \\
 \gamma & \mbox{if } t \geq \theta
 \end{cases}\end{aligned}$$ Thus, the rate $\lambda_t$ is defined by
 three unknown parameters: $\beta$, $\gamma$ and $\theta$. A hierarchical
 choice of priors is given by $$\begin{aligned}
- \eta & \sim & Gamma(10.0;20.0) \\ 
- \beta & \sim & Gamma(2.0;\eta) \\
- \gamma & \sim &Gamma(2.0;\eta) \\
- \theta & \sim & Uniform(1852,\ldots,1962)\end{aligned}$$ which brings
+ \eta & \sim Gamma(10.0;20.0) \\ 
+ \beta & \sim Gamma(2.0;\eta) \\
+ \gamma & \sim Gamma(2.0;\eta) \\
+ \theta & \sim Uniform(1852,\ldots,1962)\end{aligned}$$ which brings
 an additional parameter $\eta$ in the model. For $\theta$ we have used a
 uniform prior over the years, but excluded year 1851 in order to make
 sure at least one year has rate $\beta$. The hierarchical prior carries
 the belief that $\beta$ and $\gamma$ are somewhat similar in size, since
 they both depend on $\eta$.
 
-The model in `Rev` {#the-model-in-rev .unnumbered}
+The model in `Rev` 
 ------------------
 
 We start as usual by loading in the data.
@@ -366,13 +367,9 @@ You can carry out these batch commands by providing the file name when
 you execute the ‘rb‘ binary in your unix terminal (this will overwrite
 all of your existing run files).
 
--   ‘\$ rb RevBayes_scripts airline_fatalities_part1.Rev‘\
-
-<!-- -->
-
--   ‘\$ rb RevBayes_scripts airline_fatalities_part2.Rev‘\
-
-<!-- -->
-
--   ‘\$ rb RevBayes_scripts coalmine_accidents.Rev‘\
-
+```
+rb RevBayes_scripts airline_fatalities_part1.Rev
+rb RevBayes_scripts airline_fatalities_part2.Rev
+rb RevBayes_scripts coalmine_accidents.Rev
+```
+{:.bash}

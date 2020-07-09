@@ -1,5 +1,6 @@
 ---
 layout: workshop
+type: workshop
 title: MadPhylo&#58; Madrid Workshop on Phylogenetics
 location: Royal Botanical Garden, Madrid, Spain
 startdate: 2019-06-10
