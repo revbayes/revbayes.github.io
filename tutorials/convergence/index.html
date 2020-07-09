@@ -53,9 +53,9 @@
 
       <div class="titlebar">
 	<h1 class="maintitle">Convergence assessment</h1>
-	<h3 class="subtitle">Phylogenetic convergence assessment using R package Convenience</h3>
+	<h3 class="subtitle">Phylogenetic convergence assessment using the R package Convenience</h3>
 	<h4 class="authors">Luiza Fabreti and Sebastian Höhna</h4>
-  <h5>Last modified on July  8, 2020</h5>
+  <h5>Last modified on July  9, 2020</h5>
 </div>
 
 
@@ -114,29 +114,29 @@
 <h2 class="section" id="overview">Overview</h2>
 <hr class="section" />
 
-<p>This tutorial covers convergence assessment of Bayesian phylogenetics analysis using the R package Convenience.</p>
+<p>This tutorial covers convergence assessment of a Bayesian phylogenetic analysis using the R package Convenience.</p>
 
-<p>Convergence of MCMC analysis is crucial to assure that the chain had sampled from the stationary distribution. That is, the MCMC has explored the parameter space long enough to reach the true distribution of the parameter and the values we are sampling belong to that distribution. Theory says that a chain that runs through an infinite time, will reach convergence. For our practical problem, we need to make a decision of when we have sampled enough to take a good estimate of the desired parameters.</p>
+<p>Convergence of an MCMC analysis is crucial to assure that the chain has sampled from the stationary distribution and that we have sufficiently many samples to approximate the posterior distribution. That is, the MCMC has explored the parameter space long enough to reach the true posterior distribution of the parameters and the values we are sampling belong to that distribution. Theory says that a chain that runs through an infinite time, will reach convergence. For our practical problem, we need to make a decision of when we have sampled enough to take a good estimate of the desired parameters. Here we will show how to test if we have enough samples or not.</p>
 
-<p>An ideal solution would be to analytically calculate the number of steps needed to reach convergence. The problem is that this involves sophisticated mathematics that are very specific for the model taken to the MCMC, moreover, the methods developed so far led to impractical number of iterations.</p>
+<p>An ideal solution would be to analytically calculate the number of steps needed to reach convergence. This, however, has turned out to be unfeasible because the number of samples depends on the specific model, the specific moves applied within the MCMC simulation, and the given dataset.</p>
 
-<p>Since we lack a theoretical convergence assessment, what is broadly done in the MCMC field is analyze the output from the MCMC for lack of convergence. 
-To do so, we have to keep in mind two aspects of an analysis that has reached convergence: precision and reproducibility. Precision means that if we run the chain longer, we do not change the estimates. While reproducibility means that if we run another independent chain, we get the same estimates.
-Precision can be evaluated by comparing parts of the chain for similarity. Reproducibility, on the other hand, by comparing independent chains run under the same model. Therefore, it’s recommended to run at least two replicates when performing MCMC.</p>
+<p>Since we lack a theoretical convergence assessment, what is broadly done in the MCMC field is analyze the output from the MCMC for lack of convergence.
+To do so, we have to keep in mind two aspects of an analysis that has reached convergence: <strong>precision</strong> and <strong>reproducibility</strong>. Precision means that if we run the chain longer, we do not change the estimates (e.g., the posterior mean estimate). While reproducibility means that if we run another independent chain, we get the same estimates.
+Precision can be evaluated by checking that we have sufficiently many samples because more samples lead to less variance in the estimates (e.g., the standard error of the mean). Reproducibility, on the other hand, can be evaluated by comparing independent chains run under the same model. Therefore, it’s recommended to run at least two or better four replicates when performing MCMC analyses.</p>
 
-<p>Another best practice is to remove the initial samples from the chain, those initial iterations are called burn-in. By that we try to get rid of the samples that are not being taken from the stationary distribution.</p>
+<p>Another best practice is to remove the initial samples from the chain. Those initial iterations are called <em>burn-in</em>. By that we try to get rid of the samples that are not taken from the stationary distribution.</p>
 
-<p>One last concept we need to keep in mind is the Effective Sample Size (ESS), the number of independent samples in our chain. The ESS takes into account the correlation between samples within a chain. Low ESS values represent high autocorrelation in the chain. The higher the autocorrelation, higher the uncertainty in our estimates.</p>
+<p>One last concept we need to keep in mind is the <em>Effective Sample Size</em> (ESS), the number of independent samples generated by our MCMC sampler. The ESS takes into account the correlation between samples within a chain. Low ESS values represent high autocorrelation in the chain. If the autocorrelation is higher, then the uncertainty in our estimates is also higher.</p>
 
 <h2 class="section" id="criteria-for-convergence">Criteria for Convergence</h2>
 <hr class="section" />
 
 <p>Now that we learned about convergence, let’s take a look into the criteria in the Convenience package:</p>
 
-<p>In the phylogenetics field the output to be analyzed consists of two types of parameters:</p>
+<p>The output of a phylogenetic analysis most commonly consists of two types of parameters:</p>
 
 <ol>
-  <li>Continuous parameters: the evolutionary model parameters and the tree length;</li>
+  <li>Continuous parameters: the evolutionary model parameters, the tree length, clock rates, etc.;</li>
   <li>Discrete parameters: the phylogenetic tree.</li>
 </ol>
 
@@ -172,34 +172,50 @@ The two samples will be drawn from different distributions, at level $\alpha$, w
 
 <p>The phylogenetic tree is evaluated regarding the bipartitions or splits. Therefore, the comparisons are made using the frequency of a given split between intervals of the same run or between different runs.</p>
 
-<figure id="splits"><p><img src="figures/splits.png" /></p>
+<figure id="splits.png"><p><img src="figures/splits.png" /></p>
 <figcaption>Two example trees with tips A, B, C, D and the splits seen at each tree.</figcaption>
 </figure>
 
 <h3 class="subsection" id="thresholds">Thresholds</h3>
 <hr class="subsection" />
 
-<p>The current state of convergence assessment in Bayesian phylogenetics relies mainly on visual tools and ESS thresholds that have no clear theory to support them. The idea behind the Convenience package is to provide a less subjective framework with clear thresholds for each convergence criterion.</p>
+<p>The current state of convergence assessment in Bayesian phylogenetics relies mainly on visual tools (e.g., Tracer) and ESS thresholds that have no clear theory to support them <a class="citation" href="#Rambaut2018">(Rambaut et al. 2018)</a>. The motivation for the Convenience package is to provide an easy-to-use framework with clear thresholds for each convergence criterion.</p>
 
-<p>We calculated a minimum value for the ESS based on a normal distribution and the standard error of the mean (SEM).
-If we set up the SEM to be smaller than 1% of the 95% interval of the distribution, we can calculate the ESS with:</p>
+<p>We derive a minimum value for the ESS based on a normal distribution and the standard error of the mean (SEM).
+How much error in our estimate of the posterior mean should we find acceptable? Clearly, the mean estimate for a distribution with a large variance does not need to be as precise as the mean estimate for a distribution with a small variance. However, relative to the variance/spread of the distribution, what percentage is acceptable? We suggest to use a SEM smaller of 1% of the 95% probability interval of the distribution, which is equivalent to say that the allowed error of the mean is four times the standard deviation of the distribution. (Note that you can derive a different ESS value for any other threshold that you like.) From this SEM, we can derive the ESS with:</p>
 
-<script type="math/tex; mode=display">SEM = \frac{\sigma}{\sqrt{ESS}}</script>
-
-<script type="math/tex; mode=display">% <![CDATA[
+<p>\begin{eqnarray}
+SEM = \frac{\sigma}{\sqrt{ESS}}<br />
+\frac{\sigma}{\sqrt{ESS}} &lt; 1\% \times 4 \times \sigma<br />
+ESS &gt; \frac{1}{0.04^2}<br />
+ESS &gt; 625
+\end{eqnarray}
+<script type="math/tex">SEM = \frac{\sigma}{\sqrt{ESS}}</script>
+<script type="math/tex">% <![CDATA[
 \frac{\sigma}{\sqrt{ESS}} < 1\% \times 4 \times \sigma %]]></script>
+<script type="math/tex">ESS > \frac{1}{0.04^2}</script>
+<script type="math/tex">ESS > 625</script></p>
 
-<script type="math/tex; mode=display">ESS > \frac{1}{0.04^2}</script>
+<p>An ESS of 625 is therefore the default value for the convenience package.</p>
 
-<script type="math/tex; mode=display">ESS > 625</script>
+<p>For the KS test, the threshold is the critical value for $\alpha$ = 0.01.
+We are currently still evaluating the choice of $\alpha$ on the power and false-discovery rate to detect failure of convergence.</p>
 
-<p>That is the default value for the convenience package.</p>
+<h4 class="subsubsection" id="split-frequncies">Split Frequncies</h4>
+<hr class="subsubsection" />
 
-<p>For the KS test, the threshold is the critical value for $\alpha$ = 0.001.</p>
+<p>To date, the most often test to assess convergence of split frequencies is the <em>average standard deviation of split frequencies</em> (ASDSF) <a class="citation" href="#Nylander2008">(Nylander et al. 2008)</a>. The frequency of each split is computed for two separate MCMC runs and the difference between the two split frequency estimates is used. The ASDSF is problematic for two reasons: (1) for large trees with many splits that have posterior probabilities close to 0.0 or 1.0 will overwhelm the ASDSF and hence even a single split that is present in all samples in run 1 (thus a posterior probability of 1.0) and is never present in any sample in run 2 (thus a posterior probability of 0.0) might not be detected, and (2) the expected difference in split frequency depends on the true split frequency (see Figure <a href="#difference_split_frequencies"></a>).</p>
 
-<p>The threshold for the split frequencies is the mean absolute difference between two variables drawn independently from the same binomial distribution.</p>
+<figure id="difference_split_frequencies"><p><img src="figures/difference_split_frequencies.png" width="400" /></p>
+<figcaption>The expected difference in split frequencies for ESS of 100, 200 and 625. The x-axis is the true value of the split frequency. The y-axis is the expected difference in split frequencies. The effect of increasing the ESS is the decrease of differences in frequency of sampled splits.</figcaption>
+</figure>
 
-<script type="math/tex; mode=display">{E}[\Delta^{sf}_{p}] = \sum\limits_{i=0}^N \left(|\frac{i}{N} - p| \times P_{binom}(i|N,p) \right)</script>
+<p>Instead of the ASDSF we use the ESS of each split.
+We transform each split into a chain of absence and presence values; if the split was present in the i-th tree then we score the i-th value of the chain as a 1 and 0 otherwise. This sequence of absence and presence observations (0s and 1s) allows us to apply standard methods to compute ESS values and thus we can use the same ESS threshold of 625 as for our continuous parameters.</p>
+
+<p>#The threshold for the split frequencies is the mean absolute difference between two variables drawn independently from the same binomial distribution.
+#
+#<script type="math/tex">{E}[\Delta^{sf}_{p}] = \sum\limits_{i=0}^N \left(|\frac{i}{N} - p| \times P_{binom}(i|N,p) \right)</script></p>
 
 <h2 class="section" id="install">Install</h2>
 <hr class="section" />
@@ -305,7 +321,7 @@ This function can take either a directory with all the output files from a singl
 <hr class="subsection" />
 
 <p>You can see that the output is different when we have a failure in convergence. We have 2 extra elements <code class="highlighter-rouge">failed</code> and <code class="highlighter-rouge">failed_names</code>.
-The element <code class="highlighter-rouge">failed</code> has a summary text of what failed in our analysis. 
+The element <code class="highlighter-rouge">failed</code> has a summary text of what failed in our analysis.
 The element <code class="highlighter-rouge">failed_names</code> has the specifics about the parameters that failed, like the name of the parameter or the split and if it failed in checking for the ESS, the comparison between windows or between runs.</p>
 
 <p><a href="#failed"></a> shows the results from the convergence assessment on the analysis from Exercise 1 with the GTR+$\Gamma$+I nucleotide substitution model.</p>
@@ -355,7 +371,14 @@ The element <code class="highlighter-rouge">failed_names</code> has the specific
 </table>
 </figure>
 
-<ol class="bibliography"></ol>
+<ol class="bibliography"><li><span id="Nylander2008">Nylander J.A.A., Wilgenbusch J.C., Warren D.L., Swofford D.L. 2008. AWTY (are we there yet?): a system for graphical exploration of MCMC convergence in Bayesian phylogenetics. Bioinformatics. 24:581.</span>
+
+</li>
+<li><span id="Rambaut2018">Rambaut A., Drummond A.J., Xie D., Baele G., Suchard M.A. 2018. Posterior Summarization in Bayesian Phylogenetics Using Tracer 1.7. Systematic Biology. 67:901–904.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syy032">10.1093/sysbio/syy032</a>
+
+</li></ol>
 
 <script type="text/javascript">
 var _ol = document.querySelectorAll('ol');
