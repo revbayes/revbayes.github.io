@@ -53,4 +53,10 @@ prerequisites:
 5. [Convergence assessment]({{ site.baseurl }}/tutorials/convergence)
 6. [Introduction to Posterior Prediction]({{ site.baseurl }}/tutorials/intro_posterior_prediction)
 7. [Additional tutorials]({{ site.baseurl }}/tutorials) (optional)
+
+## Workshop Code of Conduct
+
+All attendees and instructors have agreed to the terms outlined in the workshop code of conduct. 
+
+[https://drive.google.com/file/d/194cxLEmlona0EDpRxO73HI15P0gbEOug/view?usp=sharing](https://drive.google.com/file/d/194cxLEmlona0EDpRxO73HI15P0gbEOug/view?usp=sharing)
  
