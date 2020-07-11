@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Convergence assessment</h1>
 	<h3 class="subtitle">Phylogenetic convergence assessment using the R package Convenience</h3>
 	<h4 class="authors">Luiza Fabreti and Sebastian Höhna</h4>
-  <h5>Last modified on July  9, 2020</h5>
+  <h5>Last modified on July 11, 2020</h5>
 </div>
 
 
@@ -161,7 +161,7 @@ Precision can be evaluated by checking that we have sufficiently many samples be
 
 <script type="math/tex; mode=display">{D}_{m,n} = \max_{x} |{F_{1,m}(x) - G_{2,n}(x)}|</script>
 
-<p>F(x) and G(x) are the empirical distribution functions for the first and second sample, respectively.
+<p><em>F(x)</em> and <em>G(x)</em> are the empirical distribution functions for the samples with size <em>m</em> and <em>n</em>, respectively.
 The two samples will be drawn from different distributions, at level $\alpha$, when:</p>
 
 <script type="math/tex; mode=display">{D}_{m,n} > c(\alpha) \sqrt{\frac{m + n}{m\times n}}</script>
@@ -184,17 +184,14 @@ The two samples will be drawn from different distributions, at level $\alpha$, w
 <p>We derive a minimum value for the ESS based on a normal distribution and the standard error of the mean (SEM).
 How much error in our estimate of the posterior mean should we find acceptable? Clearly, the mean estimate for a distribution with a large variance does not need to be as precise as the mean estimate for a distribution with a small variance. However, relative to the variance/spread of the distribution, what percentage is acceptable? We suggest to use a SEM smaller of 1% of the 95% probability interval of the distribution, which is equivalent to say that the allowed error of the mean is four times the standard deviation of the distribution. (Note that you can derive a different ESS value for any other threshold that you like.) From this SEM, we can derive the ESS with:</p>
 
-<p>\begin{eqnarray}
-SEM = \frac{\sigma}{\sqrt{ESS}}<br />
-\frac{\sigma}{\sqrt{ESS}} &lt; 1\% \times 4 \times \sigma<br />
-ESS &gt; \frac{1}{0.04^2}<br />
-ESS &gt; 625
-\end{eqnarray}
-<script type="math/tex">SEM = \frac{\sigma}{\sqrt{ESS}}</script>
-<script type="math/tex">% <![CDATA[
+<script type="math/tex; mode=display">SEM = \frac{\sigma}{\sqrt{ESS}}</script>
+
+<script type="math/tex; mode=display">% <![CDATA[
 \frac{\sigma}{\sqrt{ESS}} < 1\% \times 4 \times \sigma %]]></script>
-<script type="math/tex">ESS > \frac{1}{0.04^2}</script>
-<script type="math/tex">ESS > 625</script></p>
+
+<script type="math/tex; mode=display">ESS > \frac{1}{0.04^2}</script>
+
+<script type="math/tex; mode=display">ESS > 625</script>
 
 <p>An ESS of 625 is therefore the default value for the convenience package.</p>
 
@@ -213,12 +210,15 @@ We are currently still evaluating the choice of $\alpha$ on the power and false-
 <p>Instead of the ASDSF we use the ESS of each split.
 We transform each split into a chain of absence and presence values; if the split was present in the i-th tree then we score the i-th value of the chain as a 1 and 0 otherwise. This sequence of absence and presence observations (0s and 1s) allows us to apply standard methods to compute ESS values and thus we can use the same ESS threshold of 625 as for our continuous parameters.</p>
 
-<p>#The threshold for the split frequencies is the mean absolute difference between two variables drawn independently from the same binomial distribution.
-#
-#<script type="math/tex">{E}[\Delta^{sf}_{p}] = \sum\limits_{i=0}^N \left(|\frac{i}{N} - p| \times P_{binom}(i|N,p) \right)</script></p>
+<p>With the ESS threshold for the splits, we can estimate the expected difference in the splits and use this value as a threshold for the split differencies. The expected difference ($ {E}[\Delta^{sf}_{p}] $) between two samples is calculated as the <a href="https://en.wikipedia.org/wiki/Mean_absolute_difference">‘mean absolute difference’</a>, with N as the ESS:</p>
 
-<h2 class="section" id="install">Install</h2>
+<script type="math/tex; mode=display">{E}[\Delta^{sf}_{p}] = \sum\limits_{i=0}^N \sum\limits_{j=0}^N \left(|\frac{i}{N} - \frac{j}{N}| \times P_{binom}(i|N,p) \times P_{binom}(j|N,p) \right)</script>
+
+<h2 class="section" id="convenience">Convenience</h2>
 <hr class="section" />
+
+<h3 class="subsection" id="install">Install</h3>
+<hr class="subsection" />
 
 <p>To install Convenience, we need first to install the package devtools.
 In R, type the commands:</p>
@@ -230,6 +230,54 @@ In R, type the commands:</p>
 <code class="highlighter-rouge">library(convenience)</code> <br /></p>
 </blockquote>
 
+<h3 class="subsection" id="functions">Functions</h3>
+<hr class="subsection" />
+
+<p>Here is a list of the functions the package uses to assess convergence:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">checkConvergence</code>: takes the output from a phylogenetic analysis and works through the convergence assessment pipeline. This function can take either a directory with all the output files from a single analysis or a list of files. The function has 3 arguments:</li>
+</ul>
+
+<ol>
+  <li><code class="highlighter-rouge">path</code>: for when a path to a directory is provided</li>
+  <li><code class="highlighter-rouge">list_files</code>: for when a list of files is provided</li>
+  <li><code class="highlighter-rouge">control</code>: calls the <code class="highlighter-rouge">makeControl</code> function</li>
+</ol>
+
+<ul>
+  <li>
+    <p><code class="highlighter-rouge">essContParam</code>: calculates the ESS for the continuous parameters</p>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">essSplitFreq</code>: calculates the ESS for the splits from the trees</p>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">ksTestContParam</code>: calculates the KS test for the continuous parameters, for both the comparison between windows or runs</p>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">loadFiles</code>: gets the MCMC output from a directory path or a list of files. This function uses the package RWTY <a class="citation" href="#Warren2016">(Warren et al. 2016)</a> and returns a list of type rwty.chain</p>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">loadMulti</code>: this function was modified from RWTY to include the option to pass a list of files to the function <code class="highlighter-rouge">loadFiles</code></p>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">makeControl</code>: a function to set the burnin size, the precision of the standard error of the mean and the continuous parameters to exclude from the assessment. Default values are burnin = 10%, precision = 1%, namesToExclude = “br_lens, bl, Iteration, Likelihood, Posterior, Prior”</p>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">printConvergenceDiag</code>: a S3 method to print the class <code class="highlighter-rouge">convenience.diag</code></p>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">printListFails</code>: a S3 method to print the class <code class="highlighter-rouge">list.fails</code></p>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">readTrace</code>: this function was modified from <a href="https://github.com/revbayes/RevGadgets">‘RevGadgets’</a> to include the option to read only files with the continuous parameters, when the user has no tree files to assess convergence</p>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">splitFreq</code>: calculates the difference in splits for the trees, for both the comparison between windows or runs</p>
+  </li>
+</ul>
+
 <h2 class="section" id="example">Example</h2>
 <hr class="section" />
 
@@ -237,17 +285,7 @@ In R, type the commands:</p>
 These files are the output from a phylogenetic analysis performed with a dataset from bears. The nucleotide substitution model was GTR+$\Gamma$+I and the MCMC was set to run 2 independent runs.
 The package also works if your analysis has only one run of the MCMC. But the part to compare runs will not be evaluated. Therefore, it is not possible to say that your MCMC result is reproducible. We strongly advise on running more than 1 run.</p>
 
-<p>The function <code class="highlighter-rouge">checkConvergence</code> takes the output from a phylogenetic analysis performed on RevBayes and works through the convergence assessment pipeline.
-This function can take either a directory with all the output files from a single analysis or a list of files.</p>
-
-<p>The function has 3 arguments:</p>
-<ol>
-  <li><code class="highlighter-rouge">path</code>: for when a path to a directory is provided</li>
-  <li><code class="highlighter-rouge">list_files</code>: for when a list of files is provided</li>
-  <li><code class="highlighter-rouge">control</code>: a function to set the burnin size, the precision of the standard error of the mean and the continuous parameters to exclude from the assessment. Default values are burnin = 10%, precision = 1%, namesToExclude = “br_lens, bl, Iteration, Likelihood, Posterior, Prior”.</li>
-</ol>
-
-<p>Let’s run this function with our example output in a directory(this step may take a few minutes):</p>
+<p>Let’s run the <code class="highlighter-rouge">checkConvergence</code> function with our example output in a directory (this step may take a few minutes):</p>
 
 <blockquote>
   <p><code class="highlighter-rouge">check_bears &lt;- checkConvergence("data/")</code> <br /></p>
@@ -334,42 +372,40 @@ The element <code class="highlighter-rouge">failed_names</code> has the specific
 <hr class="subsection" />
 
 <ul>
-  <li>Rerun the MCMC with the GTR+$\Gamma$+I model from <a href="/tutorials/ctmc/">Nucleotide Substitution Models</a>, but increase the number of iterations to 50000.</li>
-  <li>Check the new results for convergence.</li>
+  <li>
+    <p>Rerun the MCMC with the GTR+$\Gamma$+I model from <a href="/tutorials/ctmc/">Nucleotide Substitution Models</a>, but increase the number of iterations to 50000.</p>
+  </li>
+  <li>
+    <p>Check the new results for convergence.</p>
+  </li>
 </ul>
+
+<h3 class="subsection" id="exercise-3">Exercise 3</h3>
+<hr class="subsection" />
+
+<ul>
+  <li>Check convergence for the output from the <a href="/tutorials/fbd_simple/">Estimating a Time-Calibrated Phylogeny of Fossil and Extant Taxa using Morphological Data</a> tutorial.</li>
+</ul>
+
+<p>In this case we should check only the continuous parameters (log files). Because the trees sampled throughout the MCMC have different number of tips due to the fossil record.</p>
 
 <h3 class="subsection" id="what-to-do">What to do</h3>
 <hr class="subsection" />
 
-<figure id="what_to_do" class="table"><figcaption class="table">What to do in case of failure of convergence for each criteria</figcaption>
+<p>When we face a convergence failure, there are a few options of what to do in our MCMC to overcome this problem. The suggestions here come from experience, rather than theoretical proofs.
+We can divide our MCMC that lack convergence by the number of parameters that failed:</p>
 
-<table>
-  <thead>
-    <tr>
-      <th style="text-align: left"><strong>Criterion</strong></th>
-      <th style="text-align: center"><strong>What we can try</strong></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td style="text-align: left">Combination of criteria</td>
-      <td style="text-align: center">Get more samples</td>
-    </tr>
-    <tr>
-      <td style="text-align: left">ESS</td>
-      <td style="text-align: center">Get more samples</td>
-    </tr>
-    <tr>
-      <td style="text-align: left">Comparison between windows</td>
-      <td style="text-align: center">Increase burn-in</td>
-    </tr>
-    <tr>
-      <td style="text-align: left">Comparison between runs</td>
-      <td style="text-align: center">Add more weight to the moves</td>
-    </tr>
-  </tbody>
-</table>
-</figure>
+<ul>
+  <li>
+    <p>Several parameters failing</p>
+  </li>
+  <li>
+    <p>One or few parameters failing</p>
+  </li>
+</ul>
+
+<p>For the first case, we should run the MCMC longer to get more samples. In the second case, we should increase the weights on the moves or even add more moves for the specific parameters that failed.</p>
+
 
 <ol class="bibliography"><li><span id="Nylander2008">Nylander J.A.A., Wilgenbusch J.C., Warren D.L., Swofford D.L. 2008. AWTY (are we there yet?): a system for graphical exploration of MCMC convergence in Bayesian phylogenetics. Bioinformatics. 24:581.</span>
 
@@ -377,6 +413,9 @@ The element <code class="highlighter-rouge">failed_names</code> has the specific
 <li><span id="Rambaut2018">Rambaut A., Drummond A.J., Xie D., Baele G., Suchard M.A. 2018. Posterior Summarization in Bayesian Phylogenetics Using Tracer 1.7. Systematic Biology. 67:901–904.</span>
 
 <a href="https://doi.org/10.1093/sysbio/syy032">10.1093/sysbio/syy032</a>
+
+</li>
+<li><span id="Warren2016">Warren D.L., Geneva A., Swofford D.L., Lanfear R. 2016. rwty: R We There Yet. A package for visualizing MCMC convergence in phylogenetics.</span>
 
 </li></ol>
 
