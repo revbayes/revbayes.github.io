@@ -23,9 +23,9 @@ description:
 - Applications for the course are now closed. 
 
 schedule:
-- "Mid-July: introductions, installation troubleshooting & basics of RevBayes"
+- "July 13: introductions, installation troubleshooting & basics of RevBayes"
 - "August 10-12 (tentative): Q&A sessions"
-- Session times will be set depending on participants' timezones.
+- Interactive sessions will be held over Zoom and the links will be announced on Slack.
 
 software:
 - Participants will need access to a computer (Unix, Mac OSX, Windows) to complete the tutorials, as well as a web-enabled device (computer or mobile device) capable of running communication tools.
@@ -46,10 +46,11 @@ prerequisites:
 
 ## Tutorials
 
-- [Introduction to MCMC using RevBayes]({{ site.baseurl }}/tutorials/mcmc/binomial.html)
-- [Nucleotide substitution models]({{ site.baseurl }}/tutorials/ctmc)
-- [Partitioned data analysis]({{ site.baseurl }}/tutorials/partition)
-- [Convergence assessment]({{ site.baseurl }}/tutorials/convergence)
-- [Estimating a Time-Calibrated Phylogeny of Fossil and Extant Taxa using Morphological Data]({{ site.baseurl }}/tutorials/fbd_simple)
-- [Introduction to Posterior Prediction]({{ site.baseurl }}/tutorials/intro_posterior_prediction)
+1. [Introduction to MCMC using RevBayes]({{ site.baseurl }}/tutorials/mcmc/binomial.html)
+2. [Nucleotide substitution models]({{ site.baseurl }}/tutorials/ctmc)
+3. [Partitioned data analysis]({{ site.baseurl }}/tutorials/partition)
+4. [Estimating a Time-Calibrated Phylogeny of Fossil and Extant Taxa using Morphological Data]({{ site.baseurl }}/tutorials/fbd_simple)
+5. [Convergence assessment]({{ site.baseurl }}/tutorials/convergence)
+6. [Introduction to Posterior Prediction]({{ site.baseurl }}/tutorials/intro_posterior_prediction)
+7. [Additional tutorials]({{ site.baseurl }}/tutorials) (optional)
  
