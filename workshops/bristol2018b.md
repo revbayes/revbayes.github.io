@@ -1,5 +1,6 @@
 ---
 layout: workshop
+type: workshop
 title: Bayesian phylogenetic analysis of morphological character data using RevBayes
 location: Palaeontological Association Annual Meeting, Bristol, UK
 startdate: 2018-12-14

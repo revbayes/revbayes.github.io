@@ -30,13 +30,13 @@ $(".overview").each(function() {
               if (sublist == null)
                 sublist = document.createElement('ul');
 
-              sublist.innerHTML += "<li><a href=\"#"+element.id+"\">"+element.innerHTML+"</a></li>";
+              sublist.innerHTML += "<li><a href=\"#"+element.id+"\">"+element.innerHTML.replace(/<a.*<\/a>/,"")+"</a></li>";
           } else {
               if(sublist != null) {
                 ul.appendChild(sublist);
                 sublist = null;
               }
-              ul.innerHTML += "<li><a href=\"#"+element.id+"\">"+element.innerHTML+"</a></li>";
+              ul.innerHTML += "<li><a href=\"#"+element.id+"\">"+element.innerHTML.replace(/<a.*<\/a>/,"")+"</a></li>";
           }
       }
       if(sublist != null) {
