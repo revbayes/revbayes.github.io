@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Nucleotide substitution models</h1>
 	<h3 class="subtitle">Phylogenetic inference of nucleotide data using RevBayes</h3>
 	<h4 class="authors">Sebastian Höhna, Michael Landis, Brian Moore and Tracy Heath</h4>
-  <h5>Last modified on July  7, 2020</h5>
+  <h5>Last modified on July 15, 2020</h5>
 </div>
 
 
@@ -115,10 +115,14 @@
 
 
 </div>
+<p>This tutorial comes with a recorded video walkthrough. The video corresponding to each section of the exercise is linked next to the section title. The full playlist is available here: <a href="https://www.youtube.com/playlist?list=PLztACvN0g42t9pLJpeUel-ynfuNdWOsa4"><img src="/assets/img/YouTube_icon.svg" alt="Walkthrough playlist" height="36" width="36" /></a></p>
+
 <h2 class="section" id="overview">Overview</h2>
 <hr class="section" />
 
-<p>This tutorial covers the first protocol from <a class="citation" href="#Hoehna2017a">Höhna et al. (2017)</a>, 
+<p><a href="https://youtu.be/x4ADIyqbYGM"><img src="/assets/img/YouTube_icon.svg" alt="Walkthrough video" height="36" width="36" /></a></p>
+
+<p>This tutorial covers the first protocol from <a class="citation" href="#Hoehna2017a">Höhna et al. (2017)</a>,
 which demonstrates how to set up and perform analyses
 using common nucleotide substitution models. The substitution models
 used in molecular evolution are continuous time Markov models, which are
@@ -129,7 +133,7 @@ Q = \begin{pmatrix}
 -\mu_A & \mu_{AC} & \mu_{AG} & \mu_{AT} \\
 \mu_{CA} & -\mu_C  & \mu_{CG} & \mu_{CT} \\
 \mu_{GA} & \mu_{GC} & -\mu_C  & \mu_{GT} \\
-\mu_{TA} & \mu_{TC} & \mu_{TG} & -\mu_T 
+\mu_{TA} & \mu_{TC} & \mu_{TG} & -\mu_T
 \end{pmatrix} \mbox{  ,} %]]></script>
 
 <p>where $\mu_{ij}$ represents the instantaneous rate of substitution from
@@ -140,7 +144,7 @@ compute the corresponding transition probabilities for a branch of
 length $t$, $P(t)$, by exponentiating the rate matrix:</p>
 
 <script type="math/tex; mode=display">% <![CDATA[
-P(t) = \begin{pmatrix}          
+P(t) = \begin{pmatrix}
 p_{AA}(t) & p_{AC}(t) & p_{AG}(t) & p_{AT}(t) \\
 p_{CA}(t) & p_{CC}(t) & p_{CG}(t) & p_{CT}(t) \\
 p_{GA}(t) & p_{GC}(t) & p_{GG}(t) & p_{GT}(t) \\
@@ -152,7 +156,7 @@ instantaneous-rate matrix, $Q$.</p>
 
 <p>In this tutorial you will perform phylogeny inference under common
 models of DNA sequence evolution: JC, F81, HKY85, GTR, GTR+Gamma and
-GTR+Gamma+I. For all of these substitution models, you will perform a 
+GTR+Gamma+I. For all of these substitution models, you will perform a
 Markov chain Monte Carlo (MCMC) analysis to estimate phylogeny and other model parameters. The
 estimated trees will be unrooted trees with independent branch-length
 parameters. We will provide comments on how to modify the tutorial if
@@ -214,6 +218,7 @@ be covered in more detail later in this tutorial.</p>
 <h2 class="section" id="example-character-evolution-under-the-jukes-cantor-substitution-model">Example: Character Evolution under the Jukes-Cantor Substitution Model</h2>
 <hr class="section" />
 
+<p><a href="https://youtu.be/z-94P0d10us"><img src="/assets/img/YouTube_icon.svg" alt="Walkthrough video" height="36" width="36" /></a></p>
 <h3 class="subsection" id="getting-started">Getting Started</h3>
 <hr class="subsection" />
 
@@ -228,23 +233,23 @@ be covered in more detail later in this tutorial.</p>
 <figcaption>Graphical model representation of a simple phylogenetic model. The graphical model shows the dependencies among parameters <a class="citation" href="#Hoehna2014b">(Höhna et al. 2014)</a>. Here, the rate matrix $Q$ is a constant variable because it is fixed and does not depend on any parameter. The only free parameters of this model, the Jukes-Cantor model, are the tree $\Psi$ including the branch lengths.</figcaption>
 </figure>
 
-<p>We first consider the simplest substitution model described by 
+<p>We first consider the simplest substitution model described by
 <a class="citation" href="#Jukes1969">Jukes and Cantor (1969)</a>. The instantaneous-rate matrix for the JC substitution
 model is defined as</p>
 
 <script type="math/tex; mode=display">% <![CDATA[
-Q_{JC69} = \begin{pmatrix} 
-{*} & \frac{1}{3} & \frac{1}{3} & \frac{1}{3} \\ 
-\frac{1}{3} & {*} & \frac{1}{3} & \frac{1}{3} \\ 
-\frac{1}{3} & \frac{1}{3} & {*} & \frac{1}{3} \\ 
-\frac{1}{3} & \frac{1}{3} & \frac{1}{3} & {*}  
+Q_{JC69} = \begin{pmatrix}
+{*} & \frac{1}{3} & \frac{1}{3} & \frac{1}{3} \\
+\frac{1}{3} & {*} & \frac{1}{3} & \frac{1}{3} \\
+\frac{1}{3} & \frac{1}{3} & {*} & \frac{1}{3} \\
+\frac{1}{3} & \frac{1}{3} & \frac{1}{3} & {*}
 \end{pmatrix} \mbox{  ,} %]]></script>
 
 <p>which has the advantage that the transition probability matrix can be
 computed analytically</p>
 
 <script type="math/tex; mode=display">% <![CDATA[
-P_{JC69} = \begin{pmatrix} {\frac{1}{4} + \frac{3}{4}e^{-rt}} & {\frac{1}{4} - \frac{1}{4}e^{-rt}} & {\frac{1}{4} - \frac{1}{4}e^{-rt}} & {\frac{1}{4} - \frac{1}{4}e^{-rt}} \\\\ {\frac{1}{4} - \frac{1}{4}e^{-rt}} & {\frac{1}{4} + \frac{3}{4}e^{-rt}} & {\frac{1}{4} - \frac{1}{4}e^{-rt}} & {\frac{1}{4} - \frac{1}{4}e^{-rt}} \\\\ {\frac{1}{4} - \frac{1}{4}e^{-rt}} & {\frac{1}{4} - \frac{1}{4}e^{-rt}} & {\frac{1}{4} + \frac{3}{4}e^{-rt}} & {\frac{1}{4} - \frac{1}{4}e^{-rt}} \\\\ {\frac{1}{4} - \frac{1}{4}e^{-rt}} & {\frac{1}{4} - \frac{1}{4}e^{-rt}} & {\frac{1}{4} - \frac{1}{4}e^{-rt}} & {\frac{1}{4} + \frac{3}{4}e^{-rt}}  
+P_{JC69} = \begin{pmatrix} {\frac{1}{4} + \frac{3}{4}e^{-rt}} & {\frac{1}{4} - \frac{1}{4}e^{-rt}} & {\frac{1}{4} - \frac{1}{4}e^{-rt}} & {\frac{1}{4} - \frac{1}{4}e^{-rt}} \\\\ {\frac{1}{4} - \frac{1}{4}e^{-rt}} & {\frac{1}{4} + \frac{3}{4}e^{-rt}} & {\frac{1}{4} - \frac{1}{4}e^{-rt}} & {\frac{1}{4} - \frac{1}{4}e^{-rt}} \\\\ {\frac{1}{4} - \frac{1}{4}e^{-rt}} & {\frac{1}{4} - \frac{1}{4}e^{-rt}} & {\frac{1}{4} + \frac{3}{4}e^{-rt}} & {\frac{1}{4} - \frac{1}{4}e^{-rt}} \\\\ {\frac{1}{4} - \frac{1}{4}e^{-rt}} & {\frac{1}{4} - \frac{1}{4}e^{-rt}} & {\frac{1}{4} - \frac{1}{4}e^{-rt}} & {\frac{1}{4} + \frac{3}{4}e^{-rt}}
 \end{pmatrix} \mbox{  ,} %]]></script>
 
 <p>where $t$ is the branch length in units of time, and $r$ is the rate (clock) for the process. In the later exercises you will be asked to specify more complex substitution models. <strong>Don’t worry, you won’t have to calculate all of the transition probabilities, because RevBayes will take care of all the computations for you.</strong> Here we only provide some of the equations for the models in case you might be interested in the details. You will be able to complete the exercises without understanding the underlying math.</p>
@@ -267,13 +272,15 @@ output the states of the Markov chain once the MCMC analysis begins.</p>
 <h3 class="subsection" id="loading-the-data">Loading the Data</h3>
 <hr class="subsection" />
 
+<p><a href="https://youtu.be/kU-6WEv0mRQ"><img src="/assets/img/YouTube_icon.svg" alt="Walkthrough video" height="36" width="36" /></a></p>
+
 <blockquote class="instruction">
   <p>First create a directory for this tutorial and name it <code class="highlighter-rouge">RB_CTMC_Tutorial</code>, or any name
 you like.</p>
 
   <p>Navigate to this new directory and create a new folder called <code class="highlighter-rouge">data</code> inside of it.</p>
 
-  <p>Download the data file called <a href="data/primates_and_galeopterus_cytb.nex"><code class="highlighter-rouge">primates_and_galeopterus_cytb.nex</code></a> 
+  <p>Download the data file called <a href="data/primates_and_galeopterus_cytb.nex"><code class="highlighter-rouge">primates_and_galeopterus_cytb.nex</code></a>
 and save it to the <code class="highlighter-rouge">data</code> directory.</p>
 
   <p>Now start RevBayes from your working directory (<code class="highlighter-rouge">RB_CTMC_Tutorial</code>).</p>
@@ -325,8 +332,8 @@ provides information about the alignment:</p>
    Datatype:                         DNA
 </code></pre></div></div>
 
-<p>Next we will specify some useful variables based on our dataset. The variable <code class="highlighter-rouge">data</code> has <em>member functions</em> 
-that we can use to retrieve information about the dataset. These include, for example, 
+<p>Next we will specify some useful variables based on our dataset. The variable <code class="highlighter-rouge">data</code> has <em>member functions</em>
+that we can use to retrieve information about the dataset. These include, for example,
 the number of species and the taxa. We will need that taxon information for setting up different parts of our model.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>num_taxa &lt;- data.ntaxa()
@@ -334,17 +341,17 @@ num_branches &lt;- 2 * num_taxa - 3
 taxa &lt;- data.taxa()
 </code></pre></div></div>
 
-<p>Additionally, we set up a (vector) variable that holds all the moves for our analysis. 
-Recall that moves are algorithms used to propose new parameter values during the MCMC simulation. 
-Similarly, we set up a variable for the monitors. 
+<p>Additionally, we set up a (vector) variable that holds all the moves for our analysis.
+Recall that moves are algorithms used to propose new parameter values during the MCMC simulation.
+Similarly, we set up a variable for the monitors.
 Monitors print the values of model parameters to the screen and/or log files during the MCMC analysis.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
 monitors = VectorMonitors()
 </code></pre></div></div>
 
-<p>You may have noticed that we used the <code class="highlighter-rouge">=</code> operator to create the move index. 
-This simply means that the variable is not part of the model. 
+<p>You may have noticed that we used the <code class="highlighter-rouge">=</code> operator to create the move index.
+This simply means that the variable is not part of the model.
 You will later see that we use this operator more often, e.g., when we create moves and monitors.</p>
 
 <p>With the data loaded, we can now proceed to specify our specifying the model.</p>
@@ -358,6 +365,8 @@ You will later see that we use this operator more often, e.g., when we create mo
 <h4 class="subsubsection" id="subsub-JCMod">Jukes-Cantor Substitution Model</h4>
 <hr class="subsubsection" />
 
+<p><a href="https://youtu.be/S1XTkUOWTLo"><img src="/assets/img/YouTube_icon.svg" alt="Walkthrough video" height="36" width="36" /></a></p>
+
 <p>A given substitution model is defined by its corresponding
 instantaneous-rate matrix, $Q$. The Jukes-Cantor substitution model does
 not have any free parameters (as the substitution rates are all assumed
@@ -367,7 +376,7 @@ magnitude), so we can define it as a constant variable. The function
 $n$ states. Since we use DNA data here, we create a 4x4
 instantaneous-rate matrix:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q &lt;- fnJC(4) 
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q &lt;- fnJC(4)
 </code></pre></div></div>
 
 <p>You can see the rates of the $Q$ matrix by typing</p>
@@ -385,29 +394,29 @@ instantaneous-rate matrix:</p>
 <h4 class="subsubsection" id="subsub-TreeBlMod">Tree Topology and Branch Lengths</h4>
 <hr class="subsubsection" />
 
-<p>The tree topology and branch lengths are stochastic nodes in our phylogenetic model. 
-In <a href="#jc_graphical_model"></a>, the tree topology is denoted $\Psi$ and the 
+<p>The tree topology and branch lengths are stochastic nodes in our phylogenetic model.
+In <a href="#jc_graphical_model"></a>, the tree topology is denoted $\Psi$ and the
 length of the branch leading to node $i$ is $bl_i$.</p>
 
-<p>We will assume that all possible labeled, unrooted tree topologies have equal probability. 
-This is the <code class="highlighter-rouge">dnUniformTopology()</code> distribution in RevBayes. 
-Note that in RevBayes it is advisable to specify the outgroup for your study system 
-if you use an unrooted tree prior, whereas other software, <em>e.g.</em>,<br />
-MrBayes uses the first taxon in the data matrix file as the outgroup. 
+<p>We will assume that all possible labeled, unrooted tree topologies have equal probability.
+This is the <code class="highlighter-rouge">dnUniformTopology()</code> distribution in RevBayes.
+Note that in RevBayes it is advisable to specify the outgroup for your study system
+if you use an unrooted tree prior, whereas other software, <em>e.g.</em>,
+MrBayes uses the first taxon in the data matrix file as the outgroup.
 Providing RevBayes with an outgroup clade will enable the monitor writing the trees
-to file to orient the topologies with the outgroup clade at the base, 
+to file to orient the topologies with the outgroup clade at the base,
 thus making the trees easier to visualize.
-Specify the <code class="highlighter-rouge">topology</code> stochastic node by passing in the list of <code class="highlighter-rouge">taxa</code> 
+Specify the <code class="highlighter-rouge">topology</code> stochastic node by passing in the list of <code class="highlighter-rouge">taxa</code>
 to the <code class="highlighter-rouge">dnUniformTopology()</code> distribution:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>out_group = clade("Galeopterus_variegatus")
 topology ~ dnUniformTopology(taxa, outgroup=out_group)
 </code></pre></div></div>
 
-<p>Some types of stochastic nodes can be updated by a number of alternative moves. 
-Different moves may explore parameter space in different ways, 
-and it is possible to use multiple different moves for a given parameter to improve mixing 
-(the efficiency of the MCMC simulation). 
+<p>Some types of stochastic nodes can be updated by a number of alternative moves.
+Different moves may explore parameter space in different ways,
+and it is possible to use multiple different moves for a given parameter to improve mixing
+(the efficiency of the MCMC simulation).
 In the case of our unrooted tree topology, for example, we can use both a nearest-neighbor interchange move (<code class="highlighter-rouge">mvNNI</code>) and a subtree-prune and regrafting move (<code class="highlighter-rouge">mvSPR</code>). These moves do not have tuning parameters associated with them, thus you only need to pass in the <code class="highlighter-rouge">topology</code> node and proposal <code class="highlighter-rouge">weight</code>.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvNNI(topology, weight=num_taxa) )
@@ -446,12 +455,12 @@ moves.append( mvBranchLengthScale(psi, weight=num_branches) )
 We still think that it is pedagogical to specify the prior on each branch length separately in this tutorial to emphasize all components of the model.</p>
 </blockquote>
 
-<blockquote class="aside"><h2>Alternative branch-length priors</h2><p>Some studies, <em>e.g.</em> <a class="citation" href="#Brown2010">Brown et al. (2010), Rannala et al. (2012)</a>, 
-have criticized the exponential prior distribution for branch lengths 
+<blockquote class="aside"><h2>Alternative branch-length priors</h2><p>Some studies, <em>e.g.</em> <a class="citation" href="#Brown2010">Brown et al. (2010), Rannala et al. (2012)</a>,
+have criticized the exponential prior distribution for branch lengths
 because it induces a gamma-distributed tree-length and the mean of this gamma distribution
-grows with the number of taxa. As an alternative, we can instead use a specific gamma prior distribution 
-(or any other distribution defined on a positive real variable) for the tree length, 
-and then use a Dirichlet prior distribution to break the tree length into 
+grows with the number of taxa. As an alternative, we can instead use a specific gamma prior distribution
+(or any other distribution defined on a positive real variable) for the tree length,
+and then use a Dirichlet prior distribution to break the tree length into
 the corresponding branch lengths <a class="citation" href="#Zhang2012">(Zhang et al. 2012)</a>.</p>
 
 <p>First, specify a prior distribution on the tree length with your desired mean.
@@ -470,11 +479,11 @@ moves.append( mvDirichletSimplex(rel_branch_lengths, weight=num_branches/10.0) )
 </code></pre></div></div>
 </blockquote>
 
-<blockquote class="aside"><h2>Alternative Prior on Time-Trees: Tree Topology and Node Ages</h2><p>Alternatively, you may want to specify a prior on time-trees. 
+<blockquote class="aside"><h2>Alternative Prior on Time-Trees: Tree Topology and Node Ages</h2><p>Alternatively, you may want to specify a prior on time-trees.
 Here we will briefly indicate how to specify such an prior which will lead to inference of time trees.</p>
 
-<p>The tree (the topology and node ages) is a stochastic node in our phylogenetic model. 
-For simplicity, we will assume a uniform prior on both topologies and node ages. 
+<p>The tree (the topology and node ages) is a stochastic node in our phylogenetic model.
+For simplicity, we will assume a uniform prior on both topologies and node ages.
 The distribution in RevBayes is <code class="highlighter-rouge">dnUniformTimeTree()</code>.</p>
 
 <p>Fore more information on tree priors, such as birth-death processes, please read the <a href="/tutorials/clocks/">Relaxed Clocks &amp; Time Trees</a>.</p>
@@ -489,15 +498,15 @@ The distribution in RevBayes is <code class="highlighter-rouge">dnUniformTimeTre
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psi ~ dnUniformTimeTree(rootAge=root_age, taxa=taxa)
 </code></pre></div></div>
 
-<p>Some types of stochastic nodes can be updated by a number of alternative moves. 
-Different moves may explore parameter space in different ways,and it is possible to use 
-multiple different moves for a given parameter to improve mixing 
-(the efficiency of the MCMC simulation). In the case of our rooted tree, 
-for example, we can use both a nearest-neighbor interchange move without and with changing 
-the node ages (<code class="highlighter-rouge">mvNarrow</code> and <code class="highlighter-rouge">mvNNI</code>) and a fixed-node-height subtree-prune and regrafting 
-move (<code class="highlighter-rouge">mvFNPR</code>) and its Metropolized-Gibbs variant (<code class="highlighter-rouge">mvGPR</code>) <a class="citation" href="#Hoehna2008">(Höhna et al. 2008; Höhna and Drummond 2012)</a>. 
-We also need moves that change the ages of the internal nodes, for example, <code class="highlighter-rouge">mvSubtreeScale</code> 
-and <code class="highlighter-rouge">mvNodeTimeSlideUniform</code>. These moves do not have tuning parameters associated with 
+<p>Some types of stochastic nodes can be updated by a number of alternative moves.
+Different moves may explore parameter space in different ways,and it is possible to use
+multiple different moves for a given parameter to improve mixing
+(the efficiency of the MCMC simulation). In the case of our rooted tree,
+for example, we can use both a nearest-neighbor interchange move without and with changing
+the node ages (<code class="highlighter-rouge">mvNarrow</code> and <code class="highlighter-rouge">mvNNI</code>) and a fixed-node-height subtree-prune and regrafting
+move (<code class="highlighter-rouge">mvFNPR</code>) and its Metropolized-Gibbs variant (<code class="highlighter-rouge">mvGPR</code>) <a class="citation" href="#Hoehna2008">(Höhna et al. 2008; Höhna and Drummond 2012)</a>.
+We also need moves that change the ages of the internal nodes, for example, <code class="highlighter-rouge">mvSubtreeScale</code>
+and <code class="highlighter-rouge">mvNodeTimeSlideUniform</code>. These moves do not have tuning parameters associated with
 them, thus you only need to pass in the <code class="highlighter-rouge">psi</code> node and proposal <code class="highlighter-rouge">weight</code>.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvNarrow(psi, weight=num_taxa) )
@@ -520,12 +529,14 @@ moves.append( mvSlide(log_clock_rate, weight=2.0) )
 clock_rate := 10^log_clock_rate
 </code></pre></div></div>
 
-<p>Instead, you could also fix the clock rate and estimate the root age. 
+<p>Instead, you could also fix the clock rate and estimate the root age.
 For more information on molecular clocks please read the <a href="/tutorials/clocks/">Relaxed Clocks &amp; Time Trees</a> tutorial.</p>
 </blockquote>
 
 <h4 class="subsubsection" id="putting-it-all-together">Putting it All Together</h4>
 <hr class="subsubsection" />
+
+<p><a href="https://youtu.be/XaXJ26rD16c"><img src="/assets/img/YouTube_icon.svg" alt="Walkthrough video" height="36" width="36" /></a></p>
 
 <p>We have fully specified all of the parameters of our phylogenetic
 model—the tree topology with branch lengths, and the substitution model
@@ -544,7 +555,7 @@ distribution requires several input arguments:</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>seq ~ dnPhyloCTMC(tree=psi, Q=Q, type="DNA")
 </code></pre></div></div>
 
-<p>Once the <code class="highlighter-rouge">PhyloCTMC</code> model has been created, we can attach our sequence 
+<p>Once the <code class="highlighter-rouge">PhyloCTMC</code> model has been created, we can attach our sequence
 data to the tip nodes in the tree.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>seq.clamp(data)
 </code></pre></div></div>
@@ -573,7 +584,7 @@ DAG:</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel
 </code></pre></div></div>
 
-<!-- 
+<!--
 <h4 class="subsubsection" id="performing-an-mcmc-analysis-under-the-jukes-cantor-model">Performing an MCMC Analysis Under the Jukes-Cantor Model</h4><hr class="subsubsection">
 
 In this section, we will describe how to set up the MCMC sampler and
@@ -647,10 +658,12 @@ mymcmc.run(generations=100000000, checkpointInterval=100, checkpointFile="output
 <h4 class="subsubsection" id="summarizing-mcmc-samples">Summarizing MCMC Samples</h4>
 <hr class="subsubsection" />
 
-<p>Methods for visualizing the marginal densities of parameter values are not currently available in RevBayes itself. 
+<p><a href="https://youtu.be/ZJhj8wR9YNs"><img src="/assets/img/YouTube_icon.svg" alt="Walkthrough video" height="36" width="36" /></a></p>
+
+<p>Methods for visualizing the marginal densities of parameter values are not currently available in RevBayes itself.
 Thus, it is important to use programs like <a href="http://tree.bio.ed.ac.uk/software/tracer/">Tracer</a> <a class="citation" href="#Rambaut2011">(Rambaut and Drummond 2011)</a> to evaluate mixing and non-convergence.</p>
 
-<p>Look at the file called <code class="highlighter-rouge">output/primates_cytb_JC.log</code> in Tracer. 
+<p>Look at the file called <code class="highlighter-rouge">output/primates_cytb_JC.log</code> in Tracer.
 There you see the posterior distribution of the continuous parameters, <em>e.g.</em>, the tree length variable <code class="highlighter-rouge">TL</code>.</p>
 
 <figure id="jc_trace_tl"><p><img src="figures/primates_cytb_JC_TL_Trace.png" width="500" /> <img src="figures/primates_cytb_JC_TL_Distribution.png" width="500" /></p>
@@ -749,14 +762,14 @@ maximum <em>a posteriori</em> tree to file:</p>
 <p>Note, you can query the posterior probability of a clade being
 monophyletic using the following command:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Lemuroidea &lt;- clade("Cheirogaleus_major", 
-                    "Daubentonia_madagascariensis", 
-                    "Lemur_catta", 
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Lemuroidea &lt;- clade("Cheirogaleus_major",
+                    "Daubentonia_madagascariensis",
+                    "Lemur_catta",
                     "Lepilemur_hubbardorum",
                     "Microcebus_murinus",
                     "Propithecus_coquereli",
                     "Varecia_variegata_variegata")
-                    
+
 treetrace.cladeProbability( Lemuroidea )
 </code></pre></div></div>
 
@@ -908,14 +921,14 @@ treetrace.cladeProbability( Lemuroidea )
 </table>
 </figure>
 
-<blockquote class="aside"><h2>Setting up the Kimura 1980 (K80 or K2P) substitution model</h2><p>The K80 model (AKA the K2P model) allows the rates of transition and transversion substitutions to be unequal <a class="citation" href="#Kimura1980">(Kimura 1980)</a>. 
+<blockquote class="aside"><h2>Setting up the Kimura 1980 (K80 or K2P) substitution model</h2><p>The K80 model (AKA the K2P model) allows the rates of transition and transversion substitutions to be unequal <a class="citation" href="#Kimura1980">(Kimura 1980)</a>.
 The parameter $\kappa$ describes the relative rate of transition to transversion substitutions (if $\kappa &gt; 1$, transitions occur at a higher rate than transversions). The instantaneous-rate matrix for the K80 model is defined as:</p>
 
 <script type="math/tex; mode=display">% <![CDATA[
 Q_{K80} = \begin{pmatrix}
-                  - 			    & \frac{1}{4} & \frac{\kappa}{4} & \frac{1}{4} \\
-                  \frac{1}{4} & - 			    & \frac{1}{4} & \frac{\kappa}{4} \\
-                  \frac{\kappa}{4} & \frac{1}{4} & - 			    & \frac{1}{4} \\
+                  -                 & \frac{1}{4} & \frac{\kappa}{4} & \frac{1}{4} \\
+                  \frac{1}{4} & -               & \frac{1}{4} & \frac{\kappa}{4} \\
+                  \frac{\kappa}{4} & \frac{1}{4} & -                & \frac{1}{4} \\
                   \frac{1}{4} & \frac{\kappa}{4}	& \frac{1}{4} & -
 \end{pmatrix} \mbox{  .} %]]></script>
 
@@ -930,6 +943,8 @@ Q := fnK80(kappa)
 <h2 class="section" id="the-hasegawa-kishino-yano-hky-1985-substitution-model">The Hasegawa-Kishino-Yano (HKY) 1985 Substitution Model</h2>
 <hr class="section" />
 
+<p><a href="https://youtu.be/cqeyZyjIcuw"><img src="/assets/img/YouTube_icon.svg" alt="Walkthrough video" height="36" width="36" /></a></p>
+
 <p>The Jukes-Cantor model assumes that all substitution rates are equal,
 which also implies that the stationary frequencies of the four
 nucleotide bases are equal. These assumptions are not very biologically
@@ -941,11 +956,11 @@ corresponds to the substitution model proposed by <a class="citation" href="#Has
 which is specified with the following instantaneous-rate matrix:</p>
 
 <script type="math/tex; mode=display">% <![CDATA[
-Q_{HKY} = \begin{pmatrix} 
-{\cdot} 			& {\pi_C}       	& {\kappa\pi_G} 	& {\pi_T} \\ 
-{\pi_A}      		& {\cdot} 			& {\pi_G} 			& {\kappa\pi_T} \\ 
-{\kappa\pi_A} 		& {\pi_C} 			& {\cdot} 			& {\pi_T} \\ 
-{\pi_A} 			& {\kappa\pi_C} 	& {\pi_G} 	        & {\cdot}  
+Q_{HKY} = \begin{pmatrix}
+{\cdot}             & {\pi_C}           & {\kappa\pi_G}     & {\pi_T} \\
+{\pi_A}             & {\cdot}           & {\pi_G}           & {\kappa\pi_T} \\
+{\kappa\pi_A}       & {\pi_C}           & {\cdot}           & {\pi_T} \\
+{\pi_A}             & {\kappa\pi_C}     & {\pi_G}           & {\cdot}
 \end{pmatrix} \mbox{  ,} %]]></script>
 
 <p>where the diagonal ${\cdot}$ entries are equal to the negative sum of the
@@ -1029,7 +1044,7 @@ rate of transversion substitutions? If so, by how much?</p>
   <li>
     <p>Like the HKY model, the Felsenstein 1981 (F81) substitution model
 has unequal stationary frequencies, but it assumes equal
-transition-transversion rates <a class="citation" href="#Felsenstein1981">(Felsenstein 1981)</a>. 
+transition-transversion rates <a class="citation" href="#Felsenstein1981">(Felsenstein 1981)</a>.
 Can you set up the F81 model and run an analysis?</p>
   </li>
   <li>
@@ -1040,6 +1055,8 @@ probabilities of phylogenetic relationships.</p>
 
 <h2 class="section" id="the-general-time-reversible-gtr-substitution-model">The General Time-Reversible (GTR) Substitution Model</h2>
 <hr class="section" />
+
+<p><a href="https://youtu.be/mqLv0INyit4"><img src="/assets/img/YouTube_icon.svg" alt="Walkthrough video" height="36" width="36" /></a></p>
 
 <p>The HKY substitution model can accommodate unequal base frequencies and
 different rates of transition and transversion substitutions. Despite
@@ -1143,6 +1160,8 @@ GTR substitution model.</p>
 <h2 class="section" id="the-discrete-gamma-model-of-among-site-rate-variation">The Discrete Gamma Model of Among Site Rate Variation</h2>
 <hr class="section" />
 
+<p><a href="https://youtu.be/JN1nOT7iSOE"><img src="/assets/img/YouTube_icon.svg" alt="Walkthrough video" height="36" width="36" /></a></p>
+
 <p>Members of the GTR family of substitution models assume that rates are homogeneous across sites, an assumption that is often violated by real data. We can accommodate variation in substitution rate among sites (ASRV) by adopting the discrete-gamma model <a class="citation" href="#Yang1994a">(Yang 1994)</a>. This model assumes that the substitution rate at each site is a random variable that is described by a discretized gamma distribution, which has two parameters: the shape parameter, $\alpha$, and the rate parameter, $\beta$. In order that we can interpret the branch lengths as the expected number of substitutions per site, this model assumes that the mean site rate is equal to 1. The mean of the gamma is equal to $\alpha/\beta$, so a mean-one gamma is specified by setting the two parameters to be equal, $\alpha=\beta$. This means that we can fully describe the gamma distribution with the single shape parameter, $\alpha$. The degree of among-site substitution rate variation is inversely proportional to the value of the $\alpha$-shape parameter. As the value of the $\alpha$-shape increases, the gamma distribution increasingly resembles a normal distribution with decreasing variance, which therefore corresponds to decreasing levels of ASRV (<a href="#asrhGammaFig"></a>). By contrast, when the value of the $\alpha$-shape parameter is $&lt; 1$, the gamma distribution assumes a concave distribution that concentrates most of the prior density on low rates, but retains some prior mass on sites with very high rates, which therefore corresponds to high levels of ASRV (<a href="#asrhGammaFig"></a>). Note that, when $\alpha = 1$, the gamma distribution collapses to an exponential distribution with a rate parameter equal to $\beta$.</p>
 
 <figure id="asrhGammaFig"><p><img src="figures/asrh_gamma.png" width="600" /></p>
@@ -1207,6 +1226,8 @@ probabilities of the clades.</p>
 
 <h2 class="section" id="modeling-invariable-sites">Modeling Invariable Sites</h2>
 <hr class="section" />
+
+<p><a href="https://youtu.be/0P4yLk0jxps"><img src="/assets/img/YouTube_icon.svg" alt="Walkthrough video" height="36" width="36" /></a></p>
 
 <p>All of the substitution models described so far assume that the sequence data are potentially variable. That is, we assume that the sequence data are random variables; specifically, we assume that they are realizations of the specified <code class="highlighter-rouge">PhyloCTMC</code> distribution. However, some sites may not be free to vary—when the substitution rate of a site is zero, it is said to be <em>invariable</em>. Invariable sites are often confused with <em>invariant</em> sites—when each species exhibits the same state, it is said to be invariant. The concepts are related but distinct. If a site is truly invariable, it will necessarily give rise to an invariant site pattern, as such sites will always have a zero substitution rate. However, an invariant site pattern may be achieved via multiple substitutions that happen to end in the same state for every species.</p>
 

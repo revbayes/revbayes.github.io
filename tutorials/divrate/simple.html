@@ -201,12 +201,13 @@ parameter $\rho$ to $233/367$.</p>
 <h3 class="subsection" id="read-the-tree">Read the tree</h3>
 <hr class="subsection" />
 
-<p>Begin by reading in the observed tree.</p>
+<p>Begin by reading in the observed tree and get some useful variables. We will need these later on.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>T &lt;- readTrees("data/primates_tree.nex")[1]
+
+# Get some useful variables from the data. We need these later on.
+taxa &lt;- T.taxa()
 </code></pre></div></div>
-<p>From this tree, we can get some helpful variables:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>taxa &lt;- T.taxa()
-</code></pre></div></div>
+
 <p>Additionally, we can initialize a variable for our vector of
 moves and monitors:</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
@@ -224,7 +225,7 @@ monitors = VectorMonitors()
 mean and standard deviation of the lognormal hyperprior on $\lambda$,
 and the conditional dependency of the two parameters all in one line of
 <code class="highlighter-rouge">Rev</code> code.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>birth_rate_mean &lt;- ln( ln(367/2) / T.rootAge() )
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>birth_rate_mean &lt;- ln( ln(367.0/2.0) / T.rootAge() )
 birth_rate_sd &lt;- 0.587405
 birth_rate ~ dnLognormal(mean=birth_rate_mean,sd=birth_rate_sd)
 </code></pre></div></div>
@@ -247,7 +248,7 @@ operate on this node. In RevBayes these MCMC sampling algorithms are
 called <em>moves</em>. We need to create a vector of moves and we can do this
 by using vector indexing and our pre-initialized iterator <code class="highlighter-rouge">mi</code>. We will
 use a scaling move on $\lambda$ called <code class="highlighter-rouge">mvScale</code>.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale(birth_rate,lambda=1,tune=true,weight=3) )
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale(birth_rate,lambda=1.0,tune=true,weight=3.0) )
 </code></pre></div></div>
 
 <h4 class="subsubsection" id="sampling-probability">Sampling probability</h4>
@@ -336,7 +337,7 @@ create our MCMC object:</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
 </code></pre></div></div>
 <p>Now, run the MCMC:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=50000)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=50000, tuningInterval=200)
 </code></pre></div></div>
 <p>When the analysis is complete, you will have the monitored files in your
 output directory.</p>
