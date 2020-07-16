@@ -162,7 +162,7 @@ Here is a list of the functions the package uses to assess convergence:
 
 {% section Example %}
 
-First, download the files listed as data files on the top left of this page. Save them in a folder called output.
+First, download the files listed as example output files on the top left of this page. Save them in a folder called output.
 These files are the output from a phylogenetic analysis performed with a dataset from bears. The nucleotide substitution model was GTR+$\Gamma$+I and the MCMC was set to run 2 independent runs.
 The package also works if your analysis has only one run of the MCMC. But the part to compare runs will not be evaluated. Therefore, it is not possible to say that your MCMC result is reproducible. We strongly advise on running more than 1 run.
 
