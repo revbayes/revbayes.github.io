@@ -97,7 +97,7 @@ For the KS test, the threshold is the critical value for $\alpha$ = 0.01.
 We are currently still evaluating the choice of $\alpha$ on the power and false-discovery rate to detect failure of convergence.
 
 
-{% subsubsection Split Frequncies %}
+{% subsubsection Split Frequencies %}
 
 To date, the most often test to assess convergence of split frequencies is the *average standard deviation of split frequencies* (ASDSF) {% cite Nylander2008 %}. The frequency of each split is computed for two separate MCMC runs and the difference between the two split frequency estimates is used. The ASDSF is problematic for two reasons: (1) for large trees with many splits that have posterior probabilities close to 0.0 or 1.0 will overwhelm the ASDSF and hence even a single split that is present in all samples in run 1 (thus a posterior probability of 1.0) and is never present in any sample in run 2 (thus a posterior probability of 0.0) might not be detected, and (2) the expected difference in split frequency depends on the true split frequency (see Figure {% ref difference_split_frequencies %}).
 
@@ -115,6 +115,17 @@ With the ESS threshold for the splits, we can estimate the expected difference i
 
 
 $$ {E}[\Delta^{sf}_{p}] = \sum\limits_{i=0}^N \sum\limits_{j=0}^N \left(|\frac{i}{N} - \frac{j}{N}| \times P_{binom}(i|N,p) \times P_{binom}(j|N,p) \right) $$
+
+{% subsection Summary %}
+
+{% ref convergence_summary %} provides an overview of the convergence assessment described before and implemented in the package Convenience. 
+
+{% figure convergence_summary %}
+<img src="figures/convergence_summary.png" width="700" />
+{% figcaption %}
+Overview of the workflow in the convergence assessment.
+{% endfigcaption %}
+{% endfigure %}
 
 
 {% section Convenience %}
@@ -173,6 +184,15 @@ Let's run the `checkConvergence` function with our example output in a directory
 We can also list the names of the files:
 
   > `check_bears <- checkConvergence( list_files = c("bears_cytb_GTR_run_1.log", "bears_cytb_GTR_run_1.trees", "bears_cytb_GTR_run_2.log", "bears_cytb_GTR_run_2.trees") )` <br />
+
+To better understand what `checkConvergence` is doing, take a look at {% ref checkConvergence_summary%}. The first step consists of the user setting up the precision in the standard error of the mean for our estimates. The thresholds for ESS, KS test and difference in split frequencies will be calculated based on the precision. Then the function reads in the MCMC output, from the files provided by the user, and computes the quantities used in the criteria for convergence. Afterwards, the function checks if the computed quantities are within the calculated thresholds. Finally, the function reports wheter the MCMC has converged or not, the computed quantities and, in case of non convergence, the parameters that failed to achieve the desired thresholds.
+
+{% figure checkConvergence_summary %}
+<img src="figures/checkConvergence_summary.png" width="700" />
+{% figcaption %}
+Summary of the process in the `checkConvergence` function. SF is the abbreviation for split frequencies.
+{% endfigcaption %}
+{% endfigure %}
 
 Now, let's see what is the output:
 
