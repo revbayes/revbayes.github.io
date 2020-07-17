@@ -1081,38 +1081,63 @@ Rev Language Reference
 <div class="help col-sm-8">
     
         
-        <h2 class="help-title"><p><code class="highlighter-rouge">StochasticMatrix</code></p>
+        <h2 class="help-title"><p><code class="highlighter-rouge">stochasticMatrix</code> - Building a stochastic matrix.</p>
 </h2>
 
         
-
-        
-
-        
-
-        
-
-        
-
-        
-
-        
-            <h3 class="help-section-header">Methods</h3>
-            <div class="help-section-body">
-            <ul class="list-unstyled methods">
-            
-            <li>[](<a href="/documentation/Natural.html">Natural</a> index)</li>
-            
-            <li>column(<a href="/documentation/Natural.html">Natural</a> index)</li>
-            
-            <li>ncolumns()</li>
-            
-            <li>nrows()</li>
-            
-            <li>size()</li>
-            
-            </ul>
+            <div class="help-description">
+            A stochastic matrix is a matrix (not necessarily square) with rows that sum to 1.
             </div>
+        
+
+        
+
+        
+            <h3 class="help-section-header">Usage</h3>
+            
+            <div class="help-section-body">
+            stochasticMatrix(<a href="/documentation/Simplex.html">Simplex</a>[] x)
+            </div>
+            <h3 class="help-section-header arguments">Arguments</h3>
+            <div class="help-section-body">
+            <table class="arguments">
+                
+                <tr>
+                    <td class="lhs argument">x : </td>
+                    <td class="rhs argument"><a href="/documentation/Simplex.html">Simplex</a>[] (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">A vector of simplices. Each simplex corresponds to a row in the stochastic matrix.</td>
+                </tr>
+                
+                
+                
+            </table>
+            </div>
+        
+
+        
+            <h3 class="help-section-header">Return Type</h3>
+            <div class="help-section-body">
+            <a href="/documentation/StochasticMatrix.html">StochasticMatrix</a>
+            </div>
+        
+
+        
+
+        
+            <h3 class="help-section-header">Example</h3>
+            
+            <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vec[1] ~ dnDirichlet( [1,1,1,1] )
+vec[2] ~ dnDirichlet( [1,1,1,1] )
+vec[3] ~ dnDirichlet( [1,1,1,1] )
+vec[4] ~ dnDirichlet( [1,1,1,1] )
+
+m := stochasticMatrix(vec)
+</code></pre></div></div>
+
+        
+
         
 
         
@@ -1121,7 +1146,7 @@ Rev Language Reference
 
         <h3 class="help-section-header"></h3>
         <div class="help-section-header" text-align="right">
-        <a href="https://github.com/revbayes/revbayes/edit/help/help/md/StochasticMatrix.md"><img src="/assets/img/edit.png" width="24" height="24" hspace="5">Edit this page</a>
+        <a href="https://github.com/revbayes/revbayes/edit/help/help/md/stochasticMatrix.md"><img src="/assets/img/edit.png" width="24" height="24" hspace="5">Edit this page</a>
         </div>
     
 </div>

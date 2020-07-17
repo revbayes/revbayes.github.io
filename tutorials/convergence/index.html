@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Convergence assessment</h1>
 	<h3 class="subtitle">Phylogenetic convergence assessment using the R package Convenience</h3>
 	<h4 class="authors">Luiza Fabreti and Sebastian Höhna</h4>
-  <h5>Last modified on July 16, 2020</h5>
+  <h5>Last modified on July 17, 2020</h5>
 </div>
 
 
@@ -198,7 +198,7 @@ How much error in our estimate of the posterior mean should we find acceptable? 
 <p>For the KS test, the threshold is the critical value for $\alpha$ = 0.01.
 We are currently still evaluating the choice of $\alpha$ on the power and false-discovery rate to detect failure of convergence.</p>
 
-<h4 class="subsubsection" id="split-frequncies">Split Frequncies</h4>
+<h4 class="subsubsection" id="split-frequencies">Split Frequencies</h4>
 <hr class="subsubsection" />
 
 <p>To date, the most often test to assess convergence of split frequencies is the <em>average standard deviation of split frequencies</em> (ASDSF) <a class="citation" href="#Nylander2008">(Nylander et al. 2008)</a>. The frequency of each split is computed for two separate MCMC runs and the difference between the two split frequency estimates is used. The ASDSF is problematic for two reasons: (1) for large trees with many splits that have posterior probabilities close to 0.0 or 1.0 will overwhelm the ASDSF and hence even a single split that is present in all samples in run 1 (thus a posterior probability of 1.0) and is never present in any sample in run 2 (thus a posterior probability of 0.0) might not be detected, and (2) the expected difference in split frequency depends on the true split frequency (see Figure <a href="#difference_split_frequencies"></a>).</p>
@@ -213,6 +213,15 @@ We transform each split into a chain of absence and presence values; if the spli
 <p>With the ESS threshold for the splits, we can estimate the expected difference in the splits and use this value as a threshold for the split differencies. The expected difference ($ {E}[\Delta^{sf}_{p}] $) between two samples is calculated as the <a href="https://en.wikipedia.org/wiki/Mean_absolute_difference">‘mean absolute difference’</a>, with N as the ESS:</p>
 
 <script type="math/tex; mode=display">{E}[\Delta^{sf}_{p}] = \sum\limits_{i=0}^N \sum\limits_{j=0}^N \left(|\frac{i}{N} - \frac{j}{N}| \times P_{binom}(i|N,p) \times P_{binom}(j|N,p) \right)</script>
+
+<h3 class="subsection" id="summary">Summary</h3>
+<hr class="subsection" />
+
+<p><a href="#convergence_summary"></a> provides an overview of the convergence assessment described before and implemented in the package Convenience.</p>
+
+<figure id="convergence_summary"><p><img src="figures/convergence_summary.png" width="700" /></p>
+<figcaption>Overview of the workflow in the convergence assessment.</figcaption>
+</figure>
 
 <h2 class="section" id="convenience">Convenience</h2>
 <hr class="section" />
@@ -296,6 +305,12 @@ The package also works if your analysis has only one run of the MCMC. But the pa
 <blockquote>
   <p><code class="highlighter-rouge">check_bears &lt;- checkConvergence( list_files = c("bears_cytb_GTR_run_1.log", "bears_cytb_GTR_run_1.trees", "bears_cytb_GTR_run_2.log", "bears_cytb_GTR_run_2.trees") )</code> <br /></p>
 </blockquote>
+
+<p>To better understand what <code class="highlighter-rouge">checkConvergence</code> is doing, take a look at <a href="#checkConvergence_summary"></a>. The first step consists of the user setting up the precision in the standard error of the mean for our estimates. The thresholds for ESS, KS test and difference in split frequencies will be calculated based on the precision. Then the function reads in the MCMC output, from the files provided by the user, and computes the quantities used in the criteria for convergence. Afterwards, the function checks if the computed quantities are within the calculated thresholds. Finally, the function reports wheter the MCMC has converged or not, the computed quantities and, in case of non convergence, the parameters that failed to achieve the desired thresholds.</p>
+
+<figure id="checkConvergence_summary"><p><img src="figures/checkConvergence_summary.png" width="700" /></p>
+<figcaption>Summary of the process in the <code class="highlighter-rouge">checkConvergence</code> function. SF is the abbreviation for split frequencies.</figcaption>
+</figure>
 
 <p>Now, let’s see what is the output:</p>
 
