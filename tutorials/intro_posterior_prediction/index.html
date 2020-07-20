@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Introduction to Posterior Prediction</h1>
 	<h3 class="subtitle">Assessing the fit of Normal distributions to trait data</h3>
 	<h4 class="authors">Jeremy M. Brown and Christina L. Kolbmann</h4>
-  <h5>Last modified on October 10, 2019</h5>
+  <h5>Last modified on July 20, 2020</h5>
 </div>
 
 
@@ -93,7 +93,7 @@
         
           <li><a href="/tutorials/intro_posterior_prediction/data/singleNormal_posterior.log">singleNormal_posterior.log</a></li>
         
-          <li><a href="/tutorials/intro_posterior_prediction/data/twoNormals_fullMCMC.log">twoNormals_fullMCMC.log</a></li>
+          <li><a href="/tutorials/intro_posterior_prediction/data/twoNormals_posterior.log">twoNormals_posterior.log</a></li>
         
         </ul>
     
@@ -103,13 +103,13 @@
         
         
         
-          <li><a href="/tutorials/intro_posterior_prediction/scripts/orig_MCMC_SingleNormal.rev">orig_MCMC_SingleNormal.rev</a></li>
+          <li><a href="/tutorials/intro_posterior_prediction/scripts/MCMC_SingleNormal.rev">MCMC_SingleNormal.rev</a></li>
         
-          <li><a href="/tutorials/intro_posterior_prediction/scripts/orig_MCMC_TwoNormals_fullMCMC.rev">orig_MCMC_TwoNormals_fullMCMC.rev</a></li>
+          <li><a href="/tutorials/intro_posterior_prediction/scripts/MCMC_TwoNormals.rev">MCMC_TwoNormals.rev</a></li>
         
           <li><a href="/tutorials/intro_posterior_prediction/scripts/pps_SingleNormal.rev">pps_SingleNormal.rev</a></li>
         
-          <li><a href="/tutorials/intro_posterior_prediction/scripts/pps_TwoNormals_fullMCMC.rev">pps_TwoNormals_fullMCMC.rev</a></li>
+          <li><a href="/tutorials/intro_posterior_prediction/scripts/pps_TwoNormals.rev">pps_TwoNormals.rev</a></li>
         
         </ul>
     
@@ -120,109 +120,84 @@
 <h2 class="section" id="overview">Overview</h2>
 <hr class="section" />
 
-<p>This tutorial introduces the basic principles of posterior predictive simulation. The goal
-of posterior prediction is to assess the fit between a model and data. To perform posterior
-prediction, we simulate datasets using parameter values drawn from a posterior distribution.
-We then quantify some characteristic of both the simulated
-and empirical datasets using a test statistic (or a suite of test statistics), and we ask if
-the value of the test statistic calculated for the empirical data is a reasonable draw from
-the set of values calculated for the simulated data. If the empirical test statistic value is
-very different from the simulated ones, our model is not doing a good job of replicating some
-aspect of the process that generated our data.</p>
+<p>This tutorial introduces the basic principles of posterior predictive model checking. The goal of posterior prediction is to assess the fit between a model and data by answering the following question: <strong>Could the model we’ve assumed plausibly have produced the data we observed?</strong></p>
 
-<p>At the end of this tutorial, you should understand the basic steps involved in posterior predictive
-model assessment.</p>
+<p>To perform posterior prediction, we simulate datasets using parameter values drawn from a posterior distribution. We then quantify some characteristic of both the simulated and empirical datasets using a test statistic (or a suite of test statistics), and we ask if the value of the test statistic calculated for the empirical data is a reasonable draw from the set of values calculated for the simulated data. If the empirical test statistic value is very different from the simulated ones, our model is not doing a good job of replicating some aspect of the process that generated our data.</p>
+
+<p>At the end of this tutorial, you should understand the goal of posterior predictive model checking and the steps involved to carry it out in RevBayes.</p>
 
 <h2 class="section" id="introduction">Introduction</h2>
 <hr class="section" />
 
-<p>A good statistical model captures important features of observed data using relatively simple
-mathematical principles. However, a model that fails to capture some important feature of the data can
-mislead us. Therefore, it is important to not only compare
-the relative performance of models (i.e., model selection), but also to test the absolute fit of the
-best model (missing reference). In other words, could the best model
-plausibly have produced our data? If not, we should be cautious in interpreting any conclusions.</p>
+<p>A good statistical model captures important features of observed data using relatively simple mathematical principles. However, a model that fails to capture some important feature of the data can mislead us. Therefore, it is important to not only compare the relative performance of models (i.e., model selection), but also to test the absolute fit of the best model <a class="citation" href="#Bollback2002">(Bollback 2002; Brown 2014; Brown 2014; Höhna et al. 2018; Brown and Thomson 2018)</a>. If the best available model could not have plausibly produced our observed data, we should be cautious in interpreting conclusions based on that model.</p>
 
-<p>Posterior prediction is a technique to assess the absolute fit of a model in a Bayesian framework (missing reference).
-Posterior prediction relies on comparing the observed data to data simulated from the model. If the
-simulated data are similar to the observed, the model could reasonably have produced our observations.
-However, if the simulated data consistently differ from the observed, the model is not capturing some
-feature of the data-generating process.</p>
+<p>Posterior prediction is a technique to assess the absolute fit of a model in a Bayesian framework <a class="citation" href="#Bollback2002">(Bollback 2002; Brown and Thomson 2018)</a>. Posterior prediction relies on comparing the observed data to data simulated from the model. If the simulated data are similar to the observed, the model could reasonably have produced our observations. However, if the simulated data consistently differ from the observed, the model is not capturing some feature of the data-generating process.</p>
 
 <h2 class="section" id="an-example">An Example</h2>
 <hr class="section" />
 
-<p>To illustrate posterior prediction, we will use an example dataset of traits sampled from a population. In this
-population, there is sexual dimorphism for our trait, but for the purposes of our tutorial we will say that we
-do not yet realize this. Note that this example is discussed further in (missing reference).</p>
+<p>To illustrate the steps involved in posterior prediction, we’ll begin with a non-phylogenetic example. Here, we will examine a hypothetical dataset of trait values sampled from a sexually dimorphic population. However, for the purposes of our tutorial, we will say that we do not yet realize that sexual dimorphism exists. This example is discussed further in <a class="citation" href="#BrownThomson2018">Brown and Thomson (2018)</a>.</p>
 
 <figure id="populationTraits"><p><img src="figures/populationTraits.png" /></p>
 <figcaption>A set of trait values sampled from a population with sexual dimorphism.</figcaption>
 </figure>
 
-<h2 class="section" id="a-single-normal-model">A Single Normal Model</h2>
+<h2 class="section" id="a-single-normal-model">A Single-Normal Model</h2>
 <hr class="section" />
 
-<p>To start analyzing our data, we fit a single Normal distribution to our trait values. This is a reasonable starting
-point, because we know that many continuous traits are polygenic and normally distributed. Here is the result:</p>
+<p>To start analyzing our data, we fit a single Normal distribution to our trait values using MCMC. This is a reasonable starting point, because we know that many continuous traits are polygenic and normally distributed. This single-normal model includes two free parameters that we estimate from the observed data: the mean and standard deviation.</p>
 
-<figure id="singleNormalFit"><p><img src="figures/SingleNormal.png" /></p>
-<figcaption>A single Normal distribution fit to the population trait values.</figcaption>
-</figure>
-
-<p>In this case, it is visually obvious that there are some important differences between the model we’ve assumed and
-the trait data. However, we’d like a quantitative method to assess this fit. In the case of more complicated models
-and data, visual comparisons are often not possible.</p>
-
-<p>For the sake of brevity, we will not discuss here how to fit a model using MCMC, but if you are interested the trait 
-values can be found in <strong>data.txt</strong>, the MCMC analysis can be found in <strong>orig_MCMC_SingleNormal.rev</strong>, and the results of
-this analysis (i.e., posterior samples of the mean and standard deviation) can be found in <strong>singleNormal_posterior.log</strong>.</p>
+<p>For the sake of brevity, we will not discuss here how to fit a model using MCMC, but if you are interested the trait values can be found in <strong>data.txt</strong>, the MCMC analysis can be found in <strong>MCMC_SingleNormal.rev</strong>, and the results of this analysis (i.e., posterior samples of the mean and standard deviation) can be found in <strong>singleNormal_posterior.log</strong>. Figure 2 shows some of the parameter values sampled for the mean and standard deviation during the MCMC analysis.</p>
 
 <figure id="MCMCSamplesSingleNormal"><p><img src="figures/postDensSurface_wSamples.png" /></p>
 <figcaption>MCMC samples from the posterior distribution of the mean and standard deviation for a single Normal distribution.</figcaption>
 </figure>
 
+<p>Based on one set of sampled parameter values (one of the dots in Figure 2), Figure 3 shows the resulting Normal distribution compared to the population trait data:</p>
+
+<figure id="singleNormalFit"><p><img src="figures/SingleNormal.png" /></p>
+<figcaption>A single Normal distribution fit to the population trait values (based on one draw of the mean and standard deviation sampled during MCMC).</figcaption>
+</figure>
+
+<p>In this case, it is visually obvious that there are some important differences between the model we’ve assumed and the trait data. However, we’d like a quantitative method to assess this fit. Also, in the case of more complicated models and data like we typically encounter in phylogenetics, visual comparisons are often not possible.</p>
+
 <h2 class="section" id="posterior-predictive-simulation">Posterior Predictive Simulation</h2>
 <hr class="section" />
 
-<p>Now that we’ve fit our single Normal model, we need to simulate posterior predictive datasets. Remember
-that these are datasets of the same size as our observed data, but simulated using means and standard
-deviations drawn from our posterior distribution.</p>
+<p>Now that we’ve fit our single-normal model, we need to simulate posterior predictive datasets. Remember that these are datasets of the same size as our observed data, but simulated using means and standard deviations drawn from our posterior distribution.</p>
 
 <figure id="posteriorPredictiveSimulation"><p><img src="figures/posteriorPredictiveSimulation.png" /></p>
-<figcaption>Simulation of posterior predictive datasets (shown in light gray) by drawing samples of means and standard
-deviations from the posterior distribution.</figcaption>
+<figcaption>Simulation of posterior predictive datasets (shown in light gray) by drawing samples of means and standard deviations from the posterior distribution.</figcaption>
 </figure>
 
-<p>The code for this simulation with the single Normal model can be found in <strong>pps_SingleNormal.rev</strong>.</p>
+<p>The code for this simulation with the single-normal model can be found in <strong>pps_SingleNormal.rev</strong>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Read in model log file from original MCMC
-postVals &lt;- readMatrix("singleNormal_posterior.log")
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Read in model log file from MCMC
+print("Reading MCMC log...")
+postVals &lt;- readMatrix("../data/singleNormal_posterior.log")
 
-# Read in original data
-empDataMatrix &lt;- readMatrix("data.txt")
+# Read in empirical data
+print("Reading empirical data...")
+empDataMatrix &lt;- readMatrix("../data/data.txt")
 
-# Convert empirical data format to a vector (hacky but needed for this particular dataset)
+# Convert empirical data format to a vector
 for (i in 1:empDataMatrix.size()){
 	empData[i] &lt;- empDataMatrix[i][1] 
 }
 
-# Simulate datasets and store in matrix
-simCounter = 1
-burnin &lt;- 50
-for (gen in burnin:postVals.size()){
-	sims[simCounter] &lt;- rnorm(n=empData.size(), mean=postVals[gen][5], sd=postVals[gen][6])
-	simCounter++
+# Simulate datasets and store in a vector
+# Note: We are using the first 49 values as burn-in and we start simulating with the
+#       50th value sampled during our MCMC analysis.
+print("Posterior predictive simulations...")
+for (gen in 50:postVals.size()){
+	sims[gen-49] &lt;- rnorm(n=empData.size(), mean=postVals[gen][5], sd=postVals[gen][6])
 }
 </code></pre></div></div>
 
 <h2 class="section" id="test-statistics">Test Statistics</h2>
 <hr class="section" />
 
-<p>To quantitatively compare our empirical and simulated data, we need to use some test statistic (or suite of
-test statistics). These statistics summarize different aspects of a dataset in a single value. We can then
-compare the empirical test statistic value to the posterior predictive distribution. For the case of our trait
-data, we will try four possible test statistics: the 1st percentile, mean, median, and 90th percentile.</p>
+<p>To quantitatively compare our empirical and simulated data, we need to use some test statistic (or suite of test statistics). These statistics numerically summarize different aspects of a dataset. We can then compare the empirical test statistic value to the posterior predictive distribution. For the case of our trait data, we will try four possible test statistics: the 1st percentile, mean, median, and 90th percentile.</p>
 
 <figure id="testStatistics"><p><img src="figures/testStatistics.png" /></p>
 <figcaption>Four possible test statistics to summarize particular characteristics of a dataset of trait values.</figcaption>
@@ -230,7 +205,9 @@ data, we will try four possible test statistics: the 1st percentile, mean, media
 
 <p>Code to calculate these test statistics can also be found in <strong>pps_SingleNormal.rev</strong>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Sort each simulated dataset
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>print("Sorting...")
+
+# Sort each simulated dataset
 for ( s in 1:sims.size() ){
 	sims[s] &lt;- sort(sims[s])
 }
@@ -243,6 +220,8 @@ function percentile(p,nums){
 	pos &lt;- round( (p/100) * nums.size() )
 	return nums[pos]
 }
+
+print("Calculating test statistics...")
 
 # Calculate empirical test statistics
 emp_mean &lt;- mean(empData)
@@ -270,19 +249,15 @@ for ( s in 1:sims.size() ){
 <h2 class="section" id="p-values-and-effect-sizes">P-values and Effect Sizes</h2>
 <hr class="section" />
 
-<p>We typically summarize the comparison of test statistic values between empirical and posterior predictive datasets
-using either a posterior predictive p-value or effect size. Like a standard p-value, a posterior
-predictive p-value tells us how many of our simulated datasets have test statistic values that are as, or more,
-extreme than the empirical. While useful, these p-values are unable to distinguish between cases where the observed
-test statisic falls just a little bit outside the posterior predictive distribution from cases where there is a
-very big difference between the simulated and empirical values. Effect sizes, however, allow us to distinguish
-those different possibilities (missing reference). An effect size is calculated as the difference between the empirical test statistic
-value and the median of the posterior predictive distribution, divided by the standard deviation of the posterior
-predictive distribution.</p>
+<p>We typically summarize the comparison of test statistic values between empirical and posterior predictive datasets using either a posterior predictive p-value or an effect size.</p>
+
+<p>A posterior predictive p-value tells us how many of our simulated datasets have test statistic values that are as, or more, extreme than the empirical. While useful, these p-values are unable to distinguish between cases where the observed test statisic falls just a little bit outside the posterior predictive distribution from cases where there is a very big difference between the simulated and empirical values.</p>
+
+<p>Effect sizes allow us to distinguish those different possibilities <a class="citation" href="#Doyle2015">(Doyle et al. 2015)</a>. An effect size is calculated as the difference between the empirical test statistic value and the median of the posterior predictive distribution, divided by the standard deviation of the posterior predictive distribution. In other words, how many standard deviations away from the median is the observed value?</p>
 
 <figure id="PValEffectSize"><p><img src="figures/PVal_EffectSize.png" /></p>
 <figcaption>The comparison between test statistic values from empirical and posterior predictive datasets can be summarized 
-using both posterior predictive p-values and effect sizes.</figcaption>
+using both posterior predictive p-values and effect sizes. Figure from <a class="citation" href="#Hoehna2018a">Höhna et al. (2018)</a>.</figcaption>
 </figure>
 
 <p>P-values and effect sizes are calculated in <strong>pps_SingleNormal.rev</strong> with this code</p>
@@ -291,17 +266,23 @@ using both posterior predictive p-values and effect sizes.</figcaption>
 	lessThan &lt;- 0
 	for (i in 1:s.size()){
 		if (e &gt; s[i]){
-			lessThan++
+			lessThan &lt;- lessThan + 1
 		}
 	}
 	return lessThan/s.size()
 }
+
+print("Calculating p-values and effect sizes...")
 
 # Calculate posterior predictive p-values
 p_means &lt;- pVal(emp_mean,sim_means)
 p_medians &lt;- pVal(emp_median,sim_medians)
 p_1sts &lt;- pVal(emp_1st,sim_1sts)
 p_90ths &lt;- pVal(emp_90th,sim_90ths)
+
+print("")
+print("---&gt; Posterior Prediction Model Assessment Results &lt;---")
+print("")
 
 # Print p-values
 print("P-value mean:",p_means)
@@ -316,30 +297,32 @@ eff_1sts &lt;- abs(emp_1st-median(sim_1sts))/stdev(sim_1sts)
 eff_90ths &lt;- abs(emp_90th-median(sim_90ths))/stdev(sim_90ths)
 
 # Print effect sizes
+print("")
 print("Effect size mean:",eff_means)
 print("Effect size median:",eff_medians)
 print("Effect size 1st percentile:",eff_1sts)
 print("Effect size 90th percentile:",eff_90ths)
+print("")
 </code></pre></div></div>
 
 <p>The results should look something like this</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>P-value mean:	0.4774397
-P-value median:	0.03147954
-P-value 1st percentile:	0.996852
-P-value 90th percentile:	0.6883526
-Effect size mean:	0.04028857
-Effect size median:	1.860162
-Effect size 1st percentile:	2.074742
-Effect size 90th percentile:	0.4983143
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>---&gt; Posterior Prediction Model Assessment Results &lt;---
+
+P-value mean:	0.4879328
+P-value median:	0.04616999
+P-value 1st percentile:	0.9958027
+P-value 90th percentile:	0.683106
+
+Effect size mean:	0.03008183
+Effect size median:	1.698682
+Effect size 1st percentile:	1.930702
+Effect size 90th percentile:	0.5100314
 </code></pre></div></div>
 
-<p>Note that this script only calculates p-values as the percentage of posterior predictive values that are
-<em>less</em> than the empirical value. Formally, this is known as a lower one-tailed p-value. Therefore, p-values
-near <em>either 0 or 1</em> indicate poor fit between our model and our empirical data.</p>
+<p>Note that this script only calculates p-values as the percentage of posterior predictive values that are <em>less</em> than the empirical value. Formally, this is known as a lower one-tailed p-value. Therefore, p-values near <em>either 0 or 1</em> indicate poor fit between our model and our empirical data.</p>
 
-<p>To run this entire posterior predictive analysis at once, you could use this command, after
-downloading <strong>pps_SingleNormal.rev</strong>.</p>
+<p>To run this entire posterior predictive analysis at once, you could use this command from inside the <code class="highlighter-rouge">scripts</code> folder for this tutorial.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source(pps_SingleNormal.rev)
 </code></pre></div></div>
@@ -347,50 +330,103 @@ downloading <strong>pps_SingleNormal.rev</strong>.</p>
 <p>These results can also be summarized graphically (although not in RevBayes) like this</p>
 
 <figure id="PPResults"><p><img src="figures/PPResults.png" /></p>
-<figcaption>Comparison of empirical and posterior predictive test statistic values. The four test statistics are shown in
-different rows. Vertical arrows show empirical values, and distributions show simulated values. The lighter
-distributions were generated by posterior predictive simulation and the darker distributions were generated by
-parametric bootstrapping (similar to posterior prediction, but using only maximum likelihood parameter estimates)
-for simulation. More detail is available in (missing reference).</figcaption>
+<figcaption>Comparison of empirical and posterior predictive test statistic values. The four test statistics are shown in different rows. Vertical arrows show empirical values, and distributions show simulated values. The lighter distributions were generated by posterior predictive simulation and the darker distributions were generated by parametric bootstrapping (similar to posterior prediction, but using only maximum likelihood parameter estimates for simulation). More detail is available in <a class="citation" href="#BrownThomson2018">Brown and Thomson (2018)</a>.</figcaption>
 </figure>
 
 <h2 class="section" id="a-two-normal-model">A Two-Normal Model</h2>
 <hr class="section" />
 
-<p>All of the analyses above can be replicated in the context of a model that correctly employs two independent Normal 
-distributions to separately capture the distinct trait values for males and females. The simplest form of a two-Normal
-model is a mixture distribution. The means and standard deviations of two Normal distributions are estimated separately
-and we calculate a likelihood that averages across the possibility of each individual belonging to each possible group.</p>
+<p>All of the analyses above can be replicated using a model that correctly employs two independent Normal distributions to separately capture the distinct trait values for males and females. The simplest form of a two-normal model is a mixture distribution. The means and standard deviations of two Normal distributions are estimated separately and we calculate a likelihood that averages across the possibility of each individual belonging to each possible group.</p>
 
-<p>If you want to run an MCMC analysis under this two-Normal mixture model, you can use the script <strong>orig_MCMC_TwoNormals_fullMCMC.rev</strong>. 
-However, the MCMC output from this analysis is already available in <strong>twoNormals_fullMCMC.log</strong>, so you do not need 
-to rerun the MCMC if you don’t want to. You can perform just the posterior prediction steps using <strong>pps_TwoNormals_fullMCMC.rev</strong>.</p>
+<p>If you want to run an MCMC analysis under this two-normal mixture model, you can use the script <strong>MCMC_TwoNormals.rev</strong>. However, the MCMC output from this analysis is already available in <strong>twoNormals_posterior.log</strong>, so you do not need 
+to rerun the MCMC if you don’t want to. You can perform just the posterior prediction steps using <strong>pps_TwoNormals.rev</strong>.</p>
 
-<p>After running posterior prediction for the two-Normal model, compare your results to the one-Normal model. Do these results
-indicate a better fit?</p>
+<p>After running posterior prediction for the two-normal model, compare your results to the one-normal model. Do these results indicate a better fit?</p>
 
 <h2 class="section" id="interpreting-posterior-predictive-results">Interpreting Posterior Predictive Results</h2>
 <hr class="section" />
 
-<p>In general, test statistics with intermediate p-values (close to 0.5) indicate good fit and should have
-relatively small effect sizes. In our results from the one-Normal model, both the mean (p-value = 0.477, effect size = 0.04) and the 90th percentile (p-value = 0.688, effect size = 0.498) do not indicate big
-discrepancies between what we’ve observed and what we’ve simulated.</p>
+<p>In general, test statistics with intermediate p-values (close to 0.5) indicate good fit and should have relatively small effect sizes. In our results from the one-normal model, both the mean (p-value = 0.49, effect size = 0.03) and the 90th percentile (p-value = 0.68, effect size = 0.51) do not indicate big discrepancies between what we’ve observed and what we’ve simulated.</p>
 
-<p>However, the median (p-value = 0.031, effect size = 1.86) and 1st percentile (p-value = 0.997, effect 
-size = 2.07) statistics have small and large p-values, respectively, and correspondingly large effect 
-sizes. These results do indicate a discrepancy between the assumptions of the model and the data we’ve observed.</p>
+<p>However, the median (p-value = 0.046, effect size = 1.70) and 1st percentile (p-value = 0.996, effect size = 1.93) statistics have small and large p-values, respectively, and correspondingly large effect sizes. These results <strong>do indicate a discrepancy</strong> between the assumptions of the model and the data we’ve observed.</p>
 
-<p>Should we be concerned about our model? Two of our test statistics do not indicate poor fit, while two others
-<strong>do</strong> indicate poor fit. The answer depends on what we want to learn about our population. If we are interested in
-inferring or predicting the average trait value of our population, we seem to be doing fine. However, if we wanted to
-predict the trait value of any given individual drawn from the population, we will tend to overpredict individuals with
-intermediate values and underpredict individuals with extreme trait values. If we were interested in understanding
-an evolutionary process like stabilizing selection, we might also be very concerned. A single normal model would suggest 
-that our population has quite a lot of trait variation, when in fact most of that difference is between sexes. Individuals 
-within a sex have much more limited variation.</p>
+<p><strong>Should we be concerned about our model?</strong> Two of our test statistics do not indicate poor fit, while two others do indicate poor fit.</p>
 
+<p><strong>The answer depends on what we want to learn about our population.</strong> If we are interested in inferring or predicting the average trait value of our population, we seem to be doing fine. However, if we wanted to predict the trait value of any given individual drawn from the population, we will tend to overpredict individuals with intermediate values and underpredict individuals with extreme trait values. If we were interested in understanding an evolutionary process like stabilizing selection, we might also be very concerned. A single-normal model would suggest 
+that our population has quite a lot of trait variation between individuals, when in fact most of that difference is between sexes. Individuals within a sex have much more limited variation.</p>
 
-<ol class="bibliography"></ol>
+<h2 class="section" id="moving-to-phylogenetic-posterior-prediction-psup3sup">Moving to Phylogenetic Posterior Prediction (P<sup>3</sup>)</h2>
+<hr class="section" />
+
+<p>After going through this tutorial, you have hopefully gained a sense for the overall workflow of posterior prediction:</p>
+
+<ol>
+  <li>Fit a model (with MCMC)</li>
+  <li>Simulate posterior predictive datasets by drawing parameter values from the posterior</li>
+  <li>Compare simulated and empirical datasets using your chosen test statistics</li>
+</ol>
+
+<p>A few important, general take-home points are:</p>
+
+<ul>
+  <li>Posterior prediction is a way to assess the absolute fit of a model to your data.</li>
+  <li>There is no single correct test statistic to use for posterior prediction.
+    <ul>
+      <li>Some statistics may be more sensitive than others to different kinds of model violations.</li>
+    </ul>
+  </li>
+  <li>How to best proceed if you identify model violations will depend on the goals of your analysis.
+    <ul>
+      <li>Is the type of model violation you’ve identified relevant to the question you’re asking?</li>
+      <li>Is the model a better fit for some parts of your dataset than others?</li>
+      <li>Can you think of ways to extend your model that might provide a better fit to your data?</li>
+    </ul>
+  </li>
+</ul>
+
+<p>The scripts used for this introductory tutorial made the posterior predictive workflow as obvious as possible, but required us to code each step individually. Because some of these steps are more complicated or tedious for phylogenetic applications, the developers of RevBayes have packaged them in a pipeline called P<sup>3</sup> (for Phylogenetic Posterior Prediction). The following tutorials will guide you through the use of P<sup>3</sup>. These tutorials are divided by the types of test statistics used - whether based solely on the data (data-based) or whether conditioned on the assumed model (inference-based):</p>
+
+<p><a href="https://revbayes.github.io/tutorials/model_testing_pps/pps_data.html">Assessing Phylogenetic Reliability Using RevBayes and P<sup>3</sup> (Data Version)</a></p>
+
+<p><a href="https://revbayes.github.io/tutorials/model_testing_pps/pps_inference.html">Assessing Phylogenetic Reliability Using RevBayes and P<sup>3</sup> (Inference Version)</a></p>
+
+<h2 class="section" id="phyloseminar">Phyloseminar</h2>
+<hr class="section" />
+
+<p>A recent phyloseminar discusses the example used in this tutorial and other aspects of posterior prediction:</p>
+
+<p><a href="https://youtu.be/TfkBuS5mvP8">The Role of Model Fit in Resolving the Tree of Life</a></p>
+
+<ol class="bibliography"><li><span id="Bollback2002">Bollback J.P. 2002. Bayesian model adequacy and choice in phylogenetics. Molecular Biology and Evolution. 19:1171–1180.</span>
+
+<a href="https://doi.org/10.1093/oxfordjournals.molbev.a004175">10.1093/oxfordjournals.molbev.a004175</a>
+
+</li>
+<li><span id="Brown2014">Brown J.M. 2014. Predictive approaches to assessing the fit of evolutionary models. Systematic Biology. 63:289–292.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syu009">10.1093/sysbio/syu009</a>
+
+</li>
+<li><span id="Brown2014a">Brown J.M. 2014. Detection of implausible phylogenetic inferences using posterior predictive assessment of model fit. Systematic Biology. 63:334–348.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syu002">10.1093/sysbio/syu002</a>
+
+</li>
+<li><span id="BrownThomson2018">Brown J.M., Thomson R.C. 2018. Evaluating model performance in evolutionary biology. Annual Review of Ecology, Evolution, and Systematics. 49:95–114.</span>
+
+<a href="https://doi.org/10.1146/annurev-ecolsys-110617-062249">10.1146/annurev-ecolsys-110617-062249</a>
+
+</li>
+<li><span id="Doyle2015">Doyle V.P., Young R.E., Naylor G.J.P., Brown J.M. 2015. Can we identify genes with increased phylogenetic reliability? Systematic Biology. 64:824–837.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syv041">10.1093/sysbio/syv041</a>
+
+</li>
+<li><span id="Hoehna2018a">Höhna S., Coghill L.M., Mount G.G., Thomson R.C., Brown J.M. 2018. P^3: Phylogenetic Posterior Prediction in RevBayes. Molecular Biology and Evolution. 35:1028–1034.</span>
+
+<a href="https://doi.org/10.1093/molbev/msx286">10.1093/molbev/msx286</a>
+
+</li></ol>
 
 <script type="text/javascript">
 var _ol = document.querySelectorAll('ol');
