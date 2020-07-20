@@ -11,7 +11,9 @@ for (i in 1:empDataMatrix.size()){
 	empData[i] <- empDataMatrix[i][1] 
 }
 
-# Simulate datasets and store in matrix
+# Simulate datasets and store in a vector
+# Note: We using the first 49 values as burn-in and start simulating with the
+#       50th value sampled during our MCMC analysis.
 print("Posterior predictive simulations...")
 for (gen in 50:postVals.size()){
 	sims[gen-49] <- rnorm(n=empData.size(), mean=postVals[gen][5], sd=postVals[gen][6])
