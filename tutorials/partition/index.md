@@ -13,11 +13,13 @@ title-old: RB_Partition_Tutorial
 redirect: false
 ---
 
+This tutorial comes with a recorded video walkthrough, available here: [![Walkthrough playlist](/assets/img/YouTube_icon.svg){: height="36" width="36"}](https://youtu.be/VNHMdghMaD4). The video corresponding to each section of the exercise is linked next to the section title.
 
 {% section Overview %}
+[![Walkthrough video](/assets/img/YouTube_icon.svg){: height="36" width="36"}](https://youtu.be/VNHMdghMaD4)
 
 This tutorial provides the second protocol from our recent publication
-{% cite Hoehna2017a %}. The first protocol is described in the [Substitution model tutorial](ctmc)
+{% cite Hoehna2017a %}. The first protocol is described in the {% page_ref ctmc %}
 and the third protocol is described in the {% page_ref model_selection_bayes_factors/bf_subst_model %}.
 
 This tutorial demonstrates how to accommodate variation in the
@@ -136,6 +138,7 @@ assess the fit of the data to the three candidate partition models.
 
 
 {% section Concatenated, Non-partitioned %}
+[![Walkthrough video](/assets/img/YouTube_icon.svg){: height="36" width="36"}](https://youtu.be/VNHMdghMaD4#t=2m48s)
 
 Our first exercise is to construct a multi-gene analysis where all genes
 evolve under the same process and parameters.
@@ -419,6 +422,7 @@ will implement more complex partitioning schemes in a similar manner.
 
 
 {% section Partitioning by Gene Region %}
+[![Walkthrough video](/assets/img/YouTube_icon.svg){: height="36" width="36"}](https://youtu.be/VNHMdghMaD4#t=17m05s)
 
 The uniform model used in the previous section assumes that all sites in
 the alignment evolved under the same process described by a shared tree,
@@ -660,6 +664,7 @@ mapTree(treetrace,"output/PS_gene_MAP.tre")
 
 
 {% section Partitioning by Codon Position and by Gene %}
+[![Walkthrough video](/assets/img/YouTube_icon.svg){: height="36" width="36"}](https://youtu.be/VNHMdghMaD4#t=25m36s)
 
 Because of the genetic code, we often find that different positions
 within a codon (first, second, and third) evolve at different rates.
@@ -716,6 +721,7 @@ Don’t forget to rename the output files!
 
 
 {% section Exercises %}
+[![Walkthrough video](/assets/img/YouTube_icon.svg){: height="36" width="36"}](https://youtu.be/VNHMdghMaD4#t=29m10s)
 
 1.  **Reviewing posterior estimates.** Open the
     PS_codon.log file in `Tracer`. Remember
@@ -747,9 +753,7 @@ Don’t forget to rename the output files!
     higher or lower clade support?
 
 3.  **Partitioned model selection.** Bayes factors are
-    computed as the ratio of marginal likelihoods (see the [model
-    selection using Bayes factors
-    tutorial](https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_BayesFactor_Tutorial/RB_BayesFactor_Tutorial.pdf)
+    computed as the ratio of marginal likelihoods (see {% page_ref model_selection_bayes_factors/bf_intro %}
     for more details). Rather than constructing the analysis with an
     mcmc object, marginal likelihood computations rely on
     output from a powerPosterior object.
