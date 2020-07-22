@@ -179,7 +179,7 @@ The package also works if your analysis has only one run of the MCMC. But the pa
 
 Let's run the `checkConvergence` function with our example output in a directory (this step may take a few minutes):
 
-  > `check_bears <- checkConvergence("data/")` <br />
+  > `check_bears <- checkConvergence("output/")` <br />
 
 We can also list the names of the files:
 
