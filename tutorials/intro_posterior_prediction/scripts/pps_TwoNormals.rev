@@ -53,13 +53,13 @@ for ( s in 1:sims.size() ){
 }
 
 function pVal(e,s){
-	lessThan <- 0
+	greaterThan <- 0
 	for (i in 1:s.size()){
-		if (e > s[i]){
-			lessThan <- lessThan + 1
+		if (e < s[i]){
+			greaterThan <- greaterThan + 1
 		}
 	}
-	return lessThan/s.size()
+	return greaterThan/s.size()
 }
 
 print("Calculating p-values and effect sizes...")

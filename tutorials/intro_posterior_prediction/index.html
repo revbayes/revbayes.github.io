@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Introduction to Posterior Prediction</h1>
 	<h3 class="subtitle">Assessing the fit of Normal distributions to trait data</h3>
 	<h4 class="authors">Jeremy M. Brown and Christina L. Kolbmann</h4>
-  <h5>Last modified on July 21, 2020</h5>
+  <h5>Last modified on July 23, 2020</h5>
 </div>
 
 
@@ -263,13 +263,13 @@ using both posterior predictive p-values and effect sizes. Figure from <a class=
 <p>P-values and effect sizes are calculated in <strong>pps_SingleNormal.rev</strong> with this code</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>function pVal(e,s){
-	lessThan &lt;- 0
+	greaterThan &lt;- 0
 	for (i in 1:s.size()){
-		if (e &gt; s[i]){
-			lessThan &lt;- lessThan + 1
+		if (e &lt; s[i]){
+			greaterThan &lt;- greaterThan + 1
 		}
 	}
-	return lessThan/s.size()
+	return greaterThan/s.size()
 }
 
 print("Calculating p-values and effect sizes...")
@@ -309,15 +309,15 @@ print("")
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>---&gt; Posterior Prediction Model Assessment Results &lt;---
 
-P-value mean:	0.4879328
-P-value median:	0.04616999
-P-value 1st percentile:	0.9958027
-P-value 90th percentile:	0.683106
+P-value mean:	0.4973767
+P-value median:	0.9632739
+P-value 1st percentile:	0.003147954
+P-value 90th percentile:	0.3231899
 
-Effect size mean:	0.03008183
-Effect size median:	1.698682
-Effect size 1st percentile:	1.930702
-Effect size 90th percentile:	0.5100314
+Effect size mean:	0.001805498
+Effect size median:	1.860846
+Effect size 1st percentile:	2.034433
+Effect size 90th percentile:	0.4808086
 </code></pre></div></div>
 
 <p>Note that this script only calculates p-values as the percentage of posterior predictive values that are <em>less</em> than the empirical value. Formally, this is known as a lower one-tailed p-value. Therefore, p-values near <em>either 0 or 1</em> indicate poor fit between our model and our empirical data.</p>
