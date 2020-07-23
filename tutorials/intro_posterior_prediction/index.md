@@ -116,15 +116,15 @@ The results should look something like this
 ```
 ---> Posterior Prediction Model Assessment Results <---
 
-P-value mean:	0.4879328
-P-value median:	0.04616999
-P-value 1st percentile:	0.9958027
-P-value 90th percentile:	0.683106
+P-value mean:	0.4973767
+P-value median:	0.9632739
+P-value 1st percentile:	0.003147954
+P-value 90th percentile:	0.3231899
 
-Effect size mean:	0.03008183
-Effect size median:	1.698682
-Effect size 1st percentile:	1.930702
-Effect size 90th percentile:	0.5100314
+Effect size mean:	0.001805498
+Effect size median:	1.860846
+Effect size 1st percentile:	2.034433
+Effect size 90th percentile:	0.4808086
 ```
 
 Note that this script only calculates p-values as the percentage of posterior predictive values that are *less* than the empirical value. Formally, this is known as a lower one-tailed p-value. Therefore, p-values near *either 0 or 1* indicate poor fit between our model and our empirical data.
