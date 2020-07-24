@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Introduction to Posterior Prediction</h1>
 	<h3 class="subtitle">Assessing the fit of Normal distributions to trait data</h3>
 	<h4 class="authors">Jeremy M. Brown and Christina L. Kolbmann</h4>
-  <h5>Last modified on July 23, 2020</h5>
+  <h5>Last modified on July 24, 2020</h5>
 </div>
 
 
@@ -119,6 +119,7 @@
 </div>
 <h2 class="section" id="overview">Overview</h2>
 <hr class="section" />
+<p><a href="https://youtu.be/ju6LuDPOPpw"><img src="/assets/img/YouTube_icon.svg" alt="Overview Video" height="36" width="36" /></a></p>
 
 <p>This tutorial introduces the basic principles of posterior predictive model checking. The goal of posterior prediction is to assess the fit between a model and data by answering the following question: <strong>Could the model we’ve assumed plausibly have produced the data we observed?</strong></p>
 
@@ -128,6 +129,7 @@
 
 <h2 class="section" id="introduction">Introduction</h2>
 <hr class="section" />
+<p><a href="https://youtu.be/ME8IgGmOyEg"><img src="/assets/img/YouTube_icon.svg" alt="Introduction Video" height="36" width="36" /></a></p>
 
 <p>A good statistical model captures important features of observed data using relatively simple mathematical principles. However, a model that fails to capture some important feature of the data can mislead us. Therefore, it is important to not only compare the relative performance of models (i.e., model selection), but also to test the absolute fit of the best model <a class="citation" href="#Bollback2002">(Bollback 2002; Brown 2014; Brown 2014; Höhna et al. 2018; Brown and Thomson 2018)</a>. If the best available model could not have plausibly produced our observed data, we should be cautious in interpreting conclusions based on that model.</p>
 
@@ -135,6 +137,7 @@
 
 <h2 class="section" id="an-example">An Example</h2>
 <hr class="section" />
+<p><a href="https://youtu.be/xRLEsTR1T6E"><img src="/assets/img/YouTube_icon.svg" alt="An Example Video" height="36" width="36" /></a></p>
 
 <p>To illustrate the steps involved in posterior prediction, we’ll begin with a non-phylogenetic example. Here, we will examine a hypothetical dataset of trait values sampled from a sexually dimorphic population. However, for the purposes of our tutorial, we will say that we do not yet realize that sexual dimorphism exists. This example is discussed further in <a class="citation" href="#BrownThomson2018">Brown and Thomson (2018)</a>.</p>
 
@@ -144,6 +147,7 @@
 
 <h2 class="section" id="a-single-normal-model">A Single-Normal Model</h2>
 <hr class="section" />
+<p><a href="https://youtu.be/z5qE3-rTSlA"><img src="/assets/img/YouTube_icon.svg" alt="Single-Normal Video" height="36" width="36" /></a></p>
 
 <p>To start analyzing our data, we fit a single Normal distribution to our trait values using MCMC. This is a reasonable starting point, because we know that many continuous traits are polygenic and normally distributed. This single-normal model includes two free parameters that we estimate from the observed data: the mean and standard deviation.</p>
 
@@ -163,6 +167,7 @@
 
 <h2 class="section" id="posterior-predictive-simulation">Posterior Predictive Simulation</h2>
 <hr class="section" />
+<p><a href="https://youtu.be/kp1xEybn0C8"><img src="/assets/img/YouTube_icon.svg" alt="Posterior Predictive Simulation Video" height="36" width="36" /></a></p>
 
 <p>Now that we’ve fit our single-normal model, we need to simulate posterior predictive datasets. Remember that these are datasets of the same size as our observed data, but simulated using means and standard deviations drawn from our posterior distribution.</p>
 
@@ -196,6 +201,7 @@ for (gen in 50:postVals.size()){
 
 <h2 class="section" id="test-statistics">Test Statistics</h2>
 <hr class="section" />
+<p><a href="https://youtu.be/F3Ivo0-fbUc"><img src="/assets/img/YouTube_icon.svg" alt="Test Statistics Video" height="36" width="36" /></a></p>
 
 <p>To quantitatively compare our empirical and simulated data, we need to use some test statistic (or suite of test statistics). These statistics numerically summarize different aspects of a dataset. We can then compare the empirical test statistic value to the posterior predictive distribution. For the case of our trait data, we will try four possible test statistics: the 1st percentile, mean, median, and 90th percentile.</p>
 
@@ -248,6 +254,7 @@ for ( s in 1:sims.size() ){
 
 <h2 class="section" id="p-values-and-effect-sizes">P-values and Effect Sizes</h2>
 <hr class="section" />
+<p><a href="https://youtu.be/-fTThJjJFxU"><img src="/assets/img/YouTube_icon.svg" alt="P-values and Effect Sizes Video" height="36" width="36" /></a></p>
 
 <p>We typically summarize the comparison of test statistic values between empirical and posterior predictive datasets using either a posterior predictive p-value or an effect size.</p>
 
@@ -345,6 +352,7 @@ to rerun the MCMC if you don’t want to. You can perform just the posterior pre
 
 <h2 class="section" id="interpreting-posterior-predictive-results">Interpreting Posterior Predictive Results</h2>
 <hr class="section" />
+<p><a href="https://youtu.be/WAJqnDejhAQ"><img src="/assets/img/YouTube_icon.svg" alt="Interpreting Posterior Predictive Results Video" height="36" width="36" /></a></p>
 
 <p>In general, test statistics with intermediate p-values (close to 0.5) indicate good fit and should have relatively small effect sizes. In our results from the one-normal model, both the mean (p-value = 0.49, effect size = 0.03) and the 90th percentile (p-value = 0.68, effect size = 0.51) do not indicate big discrepancies between what we’ve observed and what we’ve simulated.</p>
 
@@ -357,6 +365,7 @@ that our population has quite a lot of trait variation between individuals, when
 
 <h2 class="section" id="moving-to-phylogenetic-posterior-prediction-psup3sup">Moving to Phylogenetic Posterior Prediction (P<sup>3</sup>)</h2>
 <hr class="section" />
+<p><a href="https://youtu.be/2heX-Lc0P_A"><img src="/assets/img/YouTube_icon.svg" alt="Moving to Phylogenetic Posterior Prediction Video" height="36" width="36" /></a></p>
 
 <p>After going through this tutorial, you have hopefully gained a sense for the overall workflow of posterior prediction:</p>
 
