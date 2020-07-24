@@ -8,7 +8,7 @@ index: true
 redirect: false
 ---
 
-{% section Overview %}
+{% section Overview %} [![Overview Video](/assets/img/YouTube_icon.svg){: height="36" width="36"}](https://youtu.be/ju6LuDPOPpw)
 
 This tutorial introduces the basic principles of posterior predictive model checking. The goal of posterior prediction is to assess the fit between a model and data by answering the following question: __Could the model we've assumed plausibly have produced the data we observed?__
 
@@ -16,13 +16,13 @@ To perform posterior prediction, we simulate datasets using parameter values dra
 
 At the end of this tutorial, you should understand the goal of posterior predictive model checking and the steps involved to carry it out in RevBayes.
 
-{% section Introduction %}
+{% section Introduction %} [![Introduction Video](/assets/img/YouTube_icon.svg){: height="36" width="36"}](https://youtu.be/ME8IgGmOyEg)
 
 A good statistical model captures important features of observed data using relatively simple mathematical principles. However, a model that fails to capture some important feature of the data can mislead us. Therefore, it is important to not only compare the relative performance of models (i.e., model selection), but also to test the absolute fit of the best model {% cite Bollback2002 Brown2014 Brown2014a Hoehna2018a BrownThomson2018 %}. If the best available model could not have plausibly produced our observed data, we should be cautious in interpreting conclusions based on that model.
 
 Posterior prediction is a technique to assess the absolute fit of a model in a Bayesian framework {% cite Bollback2002 BrownThomson2018 %}. Posterior prediction relies on comparing the observed data to data simulated from the model. If the simulated data are similar to the observed, the model could reasonably have produced our observations. However, if the simulated data consistently differ from the observed, the model is not capturing some feature of the data-generating process.
 
-{% section An Example %}
+{% section An Example %} [![An Example Video](/assets/img/YouTube_icon.svg){: height="36" width="36"}](https://youtu.be/xRLEsTR1T6E)
 
 To illustrate the steps involved in posterior prediction, we'll begin with a non-phylogenetic example. Here, we will examine a hypothetical dataset of trait values sampled from a sexually dimorphic population. However, for the purposes of our tutorial, we will say that we do not yet realize that sexual dimorphism exists. This example is discussed further in {% citet BrownThomson2018 %}.
 
@@ -33,7 +33,7 @@ A set of trait values sampled from a population with sexual dimorphism.
 {% endfigcaption %}
 {% endfigure %}
 
-{% section A Single-Normal Model %}
+{% section A Single-Normal Model %} [![Single-Normal Video](/assets/img/YouTube_icon.svg){: height="36" width="36"}](https://youtu.be/z5qE3-rTSlA)
 
 To start analyzing our data, we fit a single Normal distribution to our trait values using MCMC. This is a reasonable starting point, because we know that many continuous traits are polygenic and normally distributed. This single-normal model includes two free parameters that we estimate from the observed data: the mean and standard deviation.
 
@@ -57,7 +57,7 @@ A single Normal distribution fit to the population trait values (based on one dr
 
 In this case, it is visually obvious that there are some important differences between the model we've assumed and the trait data. However, we'd like a quantitative method to assess this fit. Also, in the case of more complicated models and data like we typically encounter in phylogenetics, visual comparisons are often not possible.
 
-{% section Posterior Predictive Simulation %}
+{% section Posterior Predictive Simulation %} [![Posterior Predictive Simulation Video](/assets/img/YouTube_icon.svg){: height="36" width="36"}](https://youtu.be/kp1xEybn0C8)
 
 Now that we've fit our single-normal model, we need to simulate posterior predictive datasets. Remember that these are datasets of the same size as our observed data, but simulated using means and standard deviations drawn from our posterior distribution. 
 
@@ -72,7 +72,7 @@ The code for this simulation with the single-normal model can be found in **pps_
 
 {{ "pps_SingleNormal.rev" | snippet:"line","1-20" }}
 
-{% section Test Statistics %}
+{% section Test Statistics %} [![Test Statistics Video](/assets/img/YouTube_icon.svg){: height="36" width="36"}](https://youtu.be/F3Ivo0-fbUc)
 
 To quantitatively compare our empirical and simulated data, we need to use some test statistic (or suite of test statistics). These statistics numerically summarize different aspects of a dataset. We can then compare the empirical test statistic value to the posterior predictive distribution. For the case of our trait data, we will try four possible test statistics: the 1st percentile, mean, median, and 90th percentile. 
 
@@ -91,7 +91,7 @@ Note that the calculation of percentiles is not built-in to RevBayes, which was 
 
 {{ "pps_SingleNormal.rev" | snippet:"line","33-36" }}
 
-{% section P-values and Effect Sizes %}
+{% section P-values and Effect Sizes %} [![P-values and Effect Sizes Video](/assets/img/YouTube_icon.svg){: height="36" width="36"}](https://youtu.be/-fTThJjJFxU)
 
 We typically summarize the comparison of test statistic values between empirical and posterior predictive datasets using either a posterior predictive p-value or an effect size.
 
@@ -153,7 +153,7 @@ to rerun the MCMC if you don't want to. You can perform just the posterior predi
 
 After running posterior prediction for the two-normal model, compare your results to the one-normal model. Do these results indicate a better fit?
 
-{% section Interpreting Posterior Predictive Results %}
+{% section Interpreting Posterior Predictive Results %} [![Interpreting Posterior Predictive Results Video](/assets/img/YouTube_icon.svg){: height="36" width="36"}](https://youtu.be/WAJqnDejhAQ)
 
 In general, test statistics with intermediate p-values (close to 0.5) indicate good fit and should have relatively small effect sizes. In our results from the one-normal model, both the mean (p-value = 0.49, effect size = 0.03) and the 90th percentile (p-value = 0.68, effect size = 0.51) do not indicate big discrepancies between what we've observed and what we've simulated.
 
@@ -164,7 +164,7 @@ __Should we be concerned about our model?__ Two of our test statistics do not in
 __The answer depends on what we want to learn about our population.__ If we are interested in inferring or predicting the average trait value of our population, we seem to be doing fine. However, if we wanted to predict the trait value of any given individual drawn from the population, we will tend to overpredict individuals with intermediate values and underpredict individuals with extreme trait values. If we were interested in understanding an evolutionary process like stabilizing selection, we might also be very concerned. A single-normal model would suggest 
 that our population has quite a lot of trait variation between individuals, when in fact most of that difference is between sexes. Individuals within a sex have much more limited variation.
 
-{% section Moving to Phylogenetic Posterior Prediction (P<sup>3</sup>) %}
+{% section Moving to Phylogenetic Posterior Prediction (P<sup>3</sup>) %} [![Moving to Phylogenetic Posterior Prediction Video](/assets/img/YouTube_icon.svg){: height="36" width="36"}](https://youtu.be/2heX-Lc0P_A)
 
 After going through this tutorial, you have hopefully gained a sense for the overall workflow of posterior prediction:
 
