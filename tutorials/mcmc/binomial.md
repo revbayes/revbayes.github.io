@@ -16,7 +16,7 @@ redirect: true
 
 
 
-Overview
+Overview 
 ========
 
 This very basic tutorial provides an introduction to Bayesian inference
@@ -29,7 +29,9 @@ posterior distribution, and likelihood function) and MCMC simulation
 (*e.g.*, what are moves and monitors and why do
 we need them).
 
-A Coin Flipping (Binomial) Model
+This tutorial comes with a recorded video walkthrough. The video corresponding to each section of the exercise is linked next to the section title. The full playlist is available here: [![Walkthrough playlist](/assets/img/YouTube_icon.svg){: height="36" width="36"}](https://www.youtube.com/watch?v=3yccWNE34V8&list=PLztACvN0g42u14RIxHqvSSfaNfxzyq4Gb)
+
+A Coin Flipping (Binomial) Model [![Walkthrough video](/assets/img/YouTube_icon.svg){: height="36" width="36"}](https://www.youtube.com/watch?v=3yccWNE34V8)
 ================================
 
 We'll begin our exploration of Bayesian inference with a simple
@@ -92,7 +94,7 @@ Graphical model for the binomial model.
 {% endfigcaption %}
 {% endfigure %}
 
-Writing an MCMC from Scratch
+Writing an MCMC from Scratch [![Walkthrough video](/assets/img/YouTube_icon.svg){: height="36" width="36"}](https://www.youtube.com/watch?v=Cs-sY8whDXY&t=1s)
 ============================
 
 Make yourself familiar with the example script called
@@ -429,8 +431,12 @@ to understand these moves.
 However, this MCMC algorithm is *very* specific to our binomial model
 and thus hard to extend (also it's pretty inefficient!).
 
-The Metropolis-Hastings Algorithm with the *Real* RevBayes
+The Metropolis-Hastings Algorithm with the *Real* RevBayes 
 ============================================================
+
+The video walkthrough for this section is in two parts.
+Part 1 [![Walkthrough video](/assets/img/YouTube_icon.svg){: height="36" width="36"}](https://www.youtube.com/watch?v=in_QxGdxBlE)
+Part 2 [![Walkthrough video](/assets/img/YouTube_icon.svg){: height="36" width="36"}](https://www.youtube.com/watch?v=DOZLkjGKEnQ)
 
 We'll now specify the exact same model in `Rev` using the built-in
 modeling functionality. It turns out that the `Rev` code to specify the

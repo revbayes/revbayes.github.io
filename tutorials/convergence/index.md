@@ -58,7 +58,7 @@ For the continuous parameters, the comparison is made with the two-sample Kolmog
 
 $$ {D}_{m,n} = \max_{x} |{F_{1,m}(x) - G_{2,n}(x)}| $$
 
-F(x) and G(x) are the empirical distribution functions for the first and second sample, respectively.
+_F(x)_ and _G(x)_ are the empirical distribution functions for the samples with size _m_ and _n_, respectively.
 The two samples will be drawn from different distributions, at level $\alpha$, when:
 
 $$ {D}_{m,n} > c(\alpha) \sqrt{\frac{m + n}{m\times n}} $$
@@ -83,15 +83,12 @@ The current state of convergence assessment in Bayesian phylogenetics relies mai
 We derive a minimum value for the ESS based on a normal distribution and the standard error of the mean (SEM).
 How much error in our estimate of the posterior mean should we find acceptable? Clearly, the mean estimate for a distribution with a large variance does not need to be as precise as the mean estimate for a distribution with a small variance. However, relative to the variance/spread of the distribution, what percentage is acceptable? We suggest to use a SEM smaller of 1% of the 95% probability interval of the distribution, which is equivalent to say that the allowed error of the mean is four times the standard deviation of the distribution. (Note that you can derive a different ESS value for any other threshold that you like.) From this SEM, we can derive the ESS with:
 
-\begin{eqnarray}
-SEM = \frac{\sigma}{\sqrt{ESS}}\\
-\frac{\sigma}{\sqrt{ESS}} < 1\% \times 4 \times \sigma\\
-ESS > \frac{1}{0.04^2}\\
-ESS > 625
-\end{eqnarray}
 $$ SEM = \frac{\sigma}{\sqrt{ESS}} $$
+
 $$ \frac{\sigma}{\sqrt{ESS}} < 1\% \times 4 \times \sigma $$
+
 $$ ESS > \frac{1}{0.04^2} $$
+
 $$ ESS > 625 $$
 
 An ESS of 625 is therefore the default value for the convenience package.
@@ -100,7 +97,7 @@ For the KS test, the threshold is the critical value for $\alpha$ = 0.01.
 We are currently still evaluating the choice of $\alpha$ on the power and false-discovery rate to detect failure of convergence.
 
 
-{% subsubsection Split Frequncies %}
+{% subsubsection Split Frequencies %}
 
 To date, the most often test to assess convergence of split frequencies is the *average standard deviation of split frequencies* (ASDSF) {% cite Nylander2008 %}. The frequency of each split is computed for two separate MCMC runs and the difference between the two split frequency estimates is used. The ASDSF is problematic for two reasons: (1) for large trees with many splits that have posterior probabilities close to 0.0 or 1.0 will overwhelm the ASDSF and hence even a single split that is present in all samples in run 1 (thus a posterior probability of 1.0) and is never present in any sample in run 2 (thus a posterior probability of 0.0) might not be detected, and (2) the expected difference in split frequency depends on the true split frequency (see Figure {% ref difference_split_frequencies %}).
 
@@ -114,12 +111,26 @@ The expected difference in split frequencies for ESS of 100, 200 and 625. The x-
 Instead of the ASDSF we use the ESS of each split.
 We transform each split into a chain of absence and presence values; if the split was present in the i-th tree then we score the i-th value of the chain as a 1 and 0 otherwise. This sequence of absence and presence observations (0s and 1s) allows us to apply standard methods to compute ESS values and thus we can use the same ESS threshold of 625 as for our continuous parameters.
 
-#The threshold for the split frequencies is the mean absolute difference between two variables drawn independently from the same binomial distribution.
-#
-#$$ {E}[\Delta^{sf}_{p}] = \sum\limits_{i=0}^N \left(|\frac{i}{N} - p| \times P_{binom}(i|N,p) \right) $$
+With the ESS threshold for the splits, we can estimate the expected difference in the splits and use this value as a threshold for the split differencies. The expected difference ($ {E}[\Delta^{sf}_{p}] $) between two samples is calculated as the ['mean absolute difference'](https://en.wikipedia.org/wiki/Mean_absolute_difference), with N as the ESS:
 
 
-{% section Install %}
+$$ {E}[\Delta^{sf}_{p}] = \sum\limits_{i=0}^N \sum\limits_{j=0}^N \left(|\frac{i}{N} - \frac{j}{N}| \times P_{binom}(i|N,p) \times P_{binom}(j|N,p) \right) $$
+
+{% subsection Summary %}
+
+{% ref convergence_summary %} provides an overview of the convergence assessment described before and implemented in the package Convenience. 
+
+{% figure convergence_summary %}
+<img src="figures/convergence_summary.png" width="700" />
+{% figcaption %}
+Overview of the workflow in the convergence assessment.
+{% endfigcaption %}
+{% endfigure %}
+
+
+{% section Convenience %}
+
+{% subsection Install %}
 
 To install Convenience, we need first to install the package devtools.
 In R, type the commands:
@@ -129,27 +140,59 @@ In R, type the commands:
   > `install_github("lfabreti/convenience")` <br />
   > `library(convenience)` <br />
 
+{% subsection Functions %}
+
+Here is a list of the functions the package uses to assess convergence:
+
+- `checkConvergence`: takes the output from a phylogenetic analysis and works through the convergence assessment pipeline. This function can take either a directory with all the output files from a single analysis or a list of files. The function has 3 arguments:
+
+1. `path`: for when a path to a directory is provided
+2. `list_files`: for when a list of files is provided
+3. `control`: calls the `makeControl` function
+
+- `essContParam`: calculates the ESS for the continuous parameters
+
+- `essSplitFreq`: calculates the ESS for the splits from the trees
+
+- `ksTestContParam`: calculates the KS test for the continuous parameters, for both the comparison between windows or runs
+
+- `loadFiles`: gets the MCMC output from a directory path or a list of files. This function uses the package RWTY {% cite Warren2016 %} and returns a list of type rwty.chain
+
+- `loadMulti`: this function was modified from RWTY to include the option to pass a list of files to the function `loadFiles`
+
+- `makeControl`: a function to set the burnin size, the precision of the standard error of the mean and the continuous parameters to exclude from the assessment. Default values are burnin = 10%, precision = 1%, namesToExclude = "br_lens, bl, Iteration, Likelihood, Posterior, Prior"
+
+- `printConvergenceDiag`: a S3 method to print the class `convenience.diag`
+
+- `printListFails`: a S3 method to print the class `list.fails`
+
+- `readTrace`: this function was modified from ['RevGadgets'](https://github.com/revbayes/RevGadgets) to include the option to read only files with the continuous parameters, when the user has no tree files to assess convergence
+
+- `splitFreq`: calculates the difference in splits for the trees, for both the comparison between windows or runs
+
+
 {% section Example %}
 
-First, download the files listed as data files on the top left of this page. Save them in a folder called data.
+First, download the files listed as example output files on the top left of this page. Save them in a folder called output.
 These files are the output from a phylogenetic analysis performed with a dataset from bears. The nucleotide substitution model was GTR+$\Gamma$+I and the MCMC was set to run 2 independent runs.
 The package also works if your analysis has only one run of the MCMC. But the part to compare runs will not be evaluated. Therefore, it is not possible to say that your MCMC result is reproducible. We strongly advise on running more than 1 run.
 
-The function `checkConvergence` takes the output from a phylogenetic analysis performed on RevBayes and works through the convergence assessment pipeline.
-This function can take either a directory with all the output files from a single analysis or a list of files.
+Let's run the `checkConvergence` function with our example output in a directory (this step may take a few minutes):
 
-The function has 3 arguments:
-1. `path`: for when a path to a directory is provided
-2. `list_files`: for when a list of files is provided
-3. `control`: a function to set the burnin size, the precision of the standard error of the mean and the continuous parameters to exclude from the assessment. Default values are burnin = 10%, precision = 1%, namesToExclude = "br_lens, bl, Iteration, Likelihood, Posterior, Prior".
-
-Let's run this function with our example output in a directory(this step may take a few minutes):
-
-  > `check_bears <- checkConvergence("data/")` <br />
+  > `check_bears <- checkConvergence("output/")` <br />
 
 We can also list the names of the files:
 
   > `check_bears <- checkConvergence( list_files = c("bears_cytb_GTR_run_1.log", "bears_cytb_GTR_run_1.trees", "bears_cytb_GTR_run_2.log", "bears_cytb_GTR_run_2.trees") )` <br />
+
+To better understand what `checkConvergence` is doing, take a look at {% ref checkConvergence_summary%}. The first step consists of the user setting up the precision in the standard error of the mean for our estimates. The thresholds for ESS, KS test and difference in split frequencies will be calculated based on the precision. Then the function reads in the MCMC output, from the files provided by the user, and computes the quantities used in the criteria for convergence. Afterwards, the function checks if the computed quantities are within the calculated thresholds. Finally, the function reports wheter the MCMC has converged or not, the computed quantities and, in case of non convergence, the parameters that failed to achieve the desired thresholds.
+
+{% figure checkConvergence_summary %}
+<img src="figures/checkConvergence_summary.png" width="700" />
+{% figcaption %}
+Summary of the process in the `checkConvergence` function. SF is the abbreviation for split frequencies.
+{% endfigcaption %}
+{% endfigure %}
 
 Now, let's see what is the output:
 
@@ -174,6 +217,7 @@ We can check `continuous_parameters`and `tree_parameters` with the commands:
   > `check_bears$continuous_parameters` <br />
   > `check_bears$tree_parameters` <br />
 
+
 {% figure list_parameters %}
 <img src="figures/list_parameters.png" />
 {% figcaption %}
@@ -196,11 +240,13 @@ Each of these elements can be accessed to check all the values calculated in the
 
 Now that we learned how to use the package and how to interpret the results, let's practice with some exercises.
 
+
 {% subsection Exercise 1 %}
 
 Check for convergence in the output generated in the [Nucleotide Substitution Models]({{ base.url }}/tutorials/ctmc/) tutorial.
 
 Which analysis have converged?
+
 
 {% subsection Convergence failure %}
 
@@ -217,24 +263,28 @@ The output of a convergence assessment that has failed. On the left, we see the 
 {% endfigcaption %}
 {% endfigure %}
 
+
 {% subsection Exercise 2 %}
 
 - Rerun the MCMC with the GTR+$\Gamma$+I model from [Nucleotide Substitution Models]({{ base.url }}/tutorials/ctmc/), but increase the number of iterations to 50000.
+
 - Check the new results for convergence.
+
+{% subsection Exercise 3 %}
+
+- Check convergence for the output from the [Estimating a Time-Calibrated Phylogeny of Fossil and Extant Taxa using Morphological Data]({{ base.url }}/tutorials/fbd_simple/) tutorial.
+
+In this case we should check only the continuous parameters (log files). Because the trees sampled throughout the MCMC have different number of tips due to the fossil record.
 
 {% subsection What to do %}
 
-{% table what_to_do %}
-{% tabcaption %}
-What to do in case of failure of convergence for each criteria
-{% endtabcaption %}
+When we face a convergence failure, there are a few options of what to do in our MCMC to overcome this problem. The suggestions here come from experience, rather than theoretical proofs.
+We can divide our MCMC that lack convergence by the number of parameters that failed: 
 
- |	            **Criterion**           	|	               **What we can try**              	|
-  	:-----------------------------------	|	:----------------------------------------------:	|
- |	            Combination of criteria 	|	                Get more samples                	|
- |	                ESS                 	|	                Get more samples                	|
- |	    Comparison between windows      	|	                  Increase burn-in      	        |
- |	     Comparison between runs        	| 	               Add more weight to the moves    		|
+- Several parameters failing
+
+- One or few parameters failing
+
+For the first case, we should run the MCMC longer to get more samples. In the second case, we should increase the weights on the moves or even add more moves for the specific parameters that failed.
 
 
-{% endtable %}
