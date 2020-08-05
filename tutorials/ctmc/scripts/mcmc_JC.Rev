@@ -36,7 +36,7 @@ out_group = clade("Galeopterus_variegatus")
 # Prior distribution on the tree topology
 topology ~ dnUniformTopology(taxa, outgroup=out_group)
 moves.append( mvNNI(topology, weight=num_taxa/1.0) )
-moves.append( mvSPR(topology, weight=num_taxa/2.0) )
+#moves.append( mvSPR(topology, weight=num_taxa*2.0) )
 
 # Branch length prior
 for (i in 1:num_branches) {
@@ -73,8 +73,8 @@ monitors.append( mnFile(psi, filename="output/primates_cytb_JC.trees", printgen=
 monitors.append( mnModel(filename="output/primates_cytb_JC.log", printgen=1) )
 
 # run the analysis
-mymcmc = mcmc(mymodel, moves, monitors, nruns=2, combine="mixed")
-mymcmc.run(generations=50000, tuningInterval=100)
+mymcmc = mcmc(mymodel, moves, monitors, nruns=4, combine="mixed")
+mymcmc.run(generations=250000, tuningInterval=100)
 
 
 ###################
