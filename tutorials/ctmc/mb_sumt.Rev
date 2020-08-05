@@ -1,0 +1,7 @@
+for (run in 1:2) {
+   treetrace = readTreeTrace("data/primates_and_galeopterus_cytb.nex.run"+run+".t", treetype="non-clock", nexus=TRUE)
+   # and then get the MAP tree
+   map_tree = mapTree(treetrace,"data/primates_cytb_JC_run_"+run+"_MAP.tree")
+}
+
+q()
