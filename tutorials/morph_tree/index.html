@@ -217,30 +217,27 @@ a phylogeny with the Mk model, and two useful extensions to the model.</p>
 sequence evolution, which we discussed in <a href="/tutorials/ctmc/">Nucleotide substitution models</a>. 
 The Q matrix for a two-state Mk model looks like so:</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-Q = \begin{pmatrix} -\mu_0 & \mu_{01} \\
-\mu_{10} & -\mu_1  &\\
-\end{pmatrix} \mbox{  ,} %]]></script>
+\[Q = \begin{pmatrix} -\mu_0 &amp; \mu_{01} \\
+\mu_{10} &amp; -\mu_1  &amp;\\
+\end{pmatrix} \mbox{  ,}\]
 
 <p>This matrix can be expanded to accommodate multi-state data, as well:</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-Q = \begin{pmatrix} -\mu_0 & \mu_{01} & \mu_{02} & \mu_{03} \\
-\mu_{10} & -\mu_1  & \mu_{12} & \mu_{13} \\
-\mu_{20} & \mu_{21} & -\mu_2  & \mu_{23} \\
-\mu_{30} & \mu_{31} & \mu_{32} & -\mu_3 
-\end{pmatrix} \mbox{  ,} %]]></script>
+\[Q = \begin{pmatrix} -\mu_0 &amp; \mu_{01} &amp; \mu_{02} &amp; \mu_{03} \\
+\mu_{10} &amp; -\mu_1  &amp; \mu_{12} &amp; \mu_{13} \\
+\mu_{20} &amp; \mu_{21} &amp; -\mu_2  &amp; \mu_{23} \\
+\mu_{30} &amp; \mu_{31} &amp; \mu_{32} &amp; -\mu_3 
+\end{pmatrix} \mbox{  ,}\]
 
 <p>However, the Mk model sets transitions to be equal from any state to any
 other state. In that sense, our multistate matrix really looks like
 this:</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-Q = \begin{pmatrix} -(k-1)\mu & \mu & \mu & \mu \\
-\mu & -(k-1)\mu  & \mu & \mu \\
-\mu & \mu & -(k-1)\mu  & \mu \\
-\mu & \mu & \mu & -(k-1)\mu \\
-\end{pmatrix} \mbox{  ,} %]]></script>
+\[Q = \begin{pmatrix} -(k-1)\mu &amp; \mu &amp; \mu &amp; \mu \\
+\mu &amp; -(k-1)\mu  &amp; \mu &amp; \mu \\
+\mu &amp; \mu &amp; -(k-1)\mu  &amp; \mu \\
+\mu &amp; \mu &amp; \mu &amp; -(k-1)\mu \\
+\end{pmatrix} \mbox{  ,}\]
 
 <p>Because this is a Jukes-Cantor-like model <a class="citation" href="#Jukes1969">(Jukes and Cantor 1969)</a>, state
 frequencies do not vary as a model parameter. These assumptions may seem

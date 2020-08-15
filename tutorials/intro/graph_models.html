@@ -156,7 +156,7 @@ This means the learning curve is steep, however there are a number of benefits:<
 the observed data points $X_i$ are conditionally independent given $\theta$.
 Right: the same graphical model using plate notation to represent the $N$ repeated $X_i$.
 These graphical models represent the joint probability distribution
-<script type="math/tex">p(\theta,X_1,\dots,X_N)</script>.
+\(p(\theta,X_1,\dots,X_N)\).
 See <a href="#legend"></a> for a description of the visual symbols.
 Image from (missing reference)</em></figcaption>
 </figure>
@@ -178,11 +178,11 @@ To specify that a node has an observed value associated with it we say that the
 node is <em>clamped</em>, or fixed, to the observed value.
 <a href="#graphicalmodel"></a> illustrates the graphical model that represents the joint probability distribution</p>
 
-<script type="math/tex; mode=display">\begin{aligned}
+\[\begin{aligned}
 p(\theta,\mathcal{D}) = p(\theta) \Big[ \displaystyle\prod^N_{i=1} p(X_i|\theta) \Big],
-\end{aligned}</script>
+\end{aligned}\]
 
-<p>where <script type="math/tex">\mathcal{D}</script> is the vector of observed data points <script type="math/tex">X_1,\dots,X_N</script>.</p>
+<p>where \(\mathcal{D}\) is the vector of observed data points \(X_1,\dots,X_N\).</p>
 
 <p>Nearly any probabilistic model can be represented as a graphical model: neural networks, classification models, time series models, and of course phylogenetic models!
 In some literature the terms Bayesian networks, belief networks, or causal networks are sometimes used to refer to graphical models.</p>
@@ -299,21 +299,21 @@ the model using MCMC.</p>
 We might hypothesize that $x$ and $y$ are related through the linear
 regression model</p>
 
-<script type="math/tex; mode=display">\begin{aligned}
+\[\begin{aligned}
 y = \beta x + \alpha + \epsilon.
-\end{aligned}</script>
+\end{aligned}\]
 
 <p>In this model $\beta$ and $\alpha$ are the regression variables (slope and y-intercept, respectively) 
 and $\epsilon$ is an error or noise term.
 We can formulate this as the graphical model</p>
 
-<script type="math/tex; mode=display">\begin{aligned}
+\[\begin{aligned}
 \mu_y := \beta x + \alpha
-\end{aligned}</script>
+\end{aligned}\]
 
-<script type="math/tex; mode=display">\begin{aligned}
+\[\begin{aligned}
 y \sim \text{Normal}(\mu_y, \sigma_{\epsilon}).
-\end{aligned}</script>
+\end{aligned}\]
 
 <p>Here $\mu_y$ is a <em>deterministic</em> variable, it is determined by whatever the values
 of $\beta$ and $\alpha$ are. We use the $:=$ assignment operator to designate
@@ -330,17 +330,17 @@ Since we have observed values for $y$, we will <em>clamp</em> $y$ to those obser
 are the free variables we wish to estimate.
 To perform Bayesian inference, we need some priors!</p>
 
-<script type="math/tex; mode=display">\begin{aligned}
+\[\begin{aligned}
 \beta \sim \text{Normal}(\mu=0, \sigma^2=1)
-\end{aligned}</script>
+\end{aligned}\]
 
-<script type="math/tex; mode=display">\begin{aligned}
+\[\begin{aligned}
 \alpha \sim \text{Normal}(\mu=0, \sigma^2=1)
-\end{aligned}</script>
+\end{aligned}\]
 
-<script type="math/tex; mode=display">\begin{aligned}
+\[\begin{aligned}
 \sigma_{\epsilon} \sim \text{Exponential}(\lambda=1)
-\end{aligned}</script>
+\end{aligned}\]
 
 <p>Again, these are stochastic variables, so we use the $\sim$ assignment operator.
 For now we will accept these as decent uninformative priors.

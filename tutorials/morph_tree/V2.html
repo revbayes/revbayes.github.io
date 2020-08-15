@@ -152,28 +152,25 @@
 
 <p>As mentioned above, the Mk model is a generalization of the JC model. This model assumes that all transitions between character states are equal, and that all characters in the matrix have the same transition matrix. The transition matrix for a binary trait looks like so:</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-Q = \begin{pmatrix} -\mu_0 & \mu_{01} \\
-\mu_{10} & -\mu_1  &\\
-\end{pmatrix} \mbox{  ,} %]]></script>
+\[Q = \begin{pmatrix} -\mu_0 &amp; \mu_{01} \\
+\mu_{10} &amp; -\mu_1  &amp;\\
+\end{pmatrix} \mbox{  ,}\]
 
 <p>In this matrix, $\mu$ represents the transition probability between the two states that follow it. A transition matrix for multistate data simply expands.</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-Q = \begin{pmatrix} -\mu_0 & \mu_{01} & \mu_{02} & \mu_{03} \\
-\mu_{10} & -\mu_1  & \mu_{12} & \mu_{13} \\
-\mu_{20} & \mu_{21} & -\mu_2  & \mu_{23} \\
-\mu_{30} & \mu_{31} & \mu_{32} & -\mu_3
-\end{pmatrix} \mbox{  ,} %]]></script>
+\[Q = \begin{pmatrix} -\mu_0 &amp; \mu_{01} &amp; \mu_{02} &amp; \mu_{03} \\
+\mu_{10} &amp; -\mu_1  &amp; \mu_{12} &amp; \mu_{13} \\
+\mu_{20} &amp; \mu_{21} &amp; -\mu_2  &amp; \mu_{23} \\
+\mu_{30} &amp; \mu_{31} &amp; \mu_{32} &amp; -\mu_3
+\end{pmatrix} \mbox{  ,}\]
 
 <p>However, the Mk model sets transitions to be equal from any state to any other state. In that sense, our multistate matrix really looks like this:</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-Q = \begin{pmatrix} -(k-1)\mu & \mu & \mu & \mu \\
-\mu & -(k-1)\mu  & \mu & \mu \\
-\mu & \mu & -(k-1)\mu  & \mu \\
-\mu & \mu & \mu & -(k-1)\mu \\
-\end{pmatrix} \mbox{  ,} %]]></script>
+\[Q = \begin{pmatrix} -(k-1)\mu &amp; \mu &amp; \mu &amp; \mu \\
+\mu &amp; -(k-1)\mu  &amp; \mu &amp; \mu \\
+\mu &amp; \mu &amp; -(k-1)\mu  &amp; \mu \\
+\mu &amp; \mu &amp; \mu &amp; -(k-1)\mu \\
+\end{pmatrix} \mbox{  ,}\]
 
 <p>You might notice that these transition rates are not different than what we might expect from an equal-weights parsimony matrix. In practice, the Mk model makes very few assumptions due to the complexity and non-generalizability of morphological data.</p>
 
@@ -449,10 +446,9 @@ this by specifying a beta prior on state frequencies. Stationary frequencies imp
 
 <p>We can think of a Q matrix as looking like so:</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-Q = \begin{pmatrix} -\mu_0\pi0 & \mu_{01}\pi0 \\
-\mu_{10}\pi1 & -\mu_1\pi1  &\\
-\end{pmatrix} \mbox{  ,} %]]></script>
+\[Q = \begin{pmatrix} -\mu_0\pi0 &amp; \mu_{01}\pi0 \\
+\mu_{10}\pi1 &amp; -\mu_1\pi1  &amp;\\
+\end{pmatrix} \mbox{  ,}\]
 
 <p>In which the probability of changing states depends not solely on the transition probability, but also the frequency of the starting state. For example, if we have a rare character state, we do not expect to see many transitions from the rare state to another. $\pi$ is the value chosen to represent state frequency commonly in phylogenetic models.</p>
 

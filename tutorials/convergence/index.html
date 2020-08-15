@@ -159,16 +159,16 @@ Precision can be evaluated by checking that we have sufficiently many samples be
 
 <p>For the continuous parameters, the comparison is made with the two-sample Kolmogorov-Smirnov (KS) test, a non-parametric statistical test for equality of probability distributions. Two samples will be equal when the KS value is below a given threshold. The KS value (D) is calculated:</p>
 
-<script type="math/tex; mode=display">{D}_{m,n} = \max_{x} |{F_{1,m}(x) - G_{2,n}(x)}|</script>
+\[{D}_{m,n} = \max_{x} |{F_{1,m}(x) - G_{2,n}(x)}|\]
 
 <p><em>F(x)</em> and <em>G(x)</em> are the empirical distribution functions for the samples with size <em>m</em> and <em>n</em>, respectively.
 The two samples will be drawn from different distributions, at level $\alpha$, when:</p>
 
-<script type="math/tex; mode=display">{D}_{m,n} > c(\alpha) \sqrt{\frac{m + n}{m\times n}}</script>
+\[{D}_{m,n} &gt; c(\alpha) \sqrt{\frac{m + n}{m\times n}}\]
 
 <p>with</p>
 
-<script type="math/tex; mode=display">c(\alpha) = \sqrt{-\ln({\frac{\alpha}{2})\times \frac{1}{2}}}</script>
+\[c(\alpha) = \sqrt{-\ln({\frac{\alpha}{2})\times \frac{1}{2}}}\]
 
 <p>The phylogenetic tree is evaluated regarding the bipartitions or splits. Therefore, the comparisons are made using the frequency of a given split between intervals of the same run or between different runs.</p>
 
@@ -184,14 +184,13 @@ The two samples will be drawn from different distributions, at level $\alpha$, w
 <p>We derive a minimum value for the ESS based on a normal distribution and the standard error of the mean (SEM).
 How much error in our estimate of the posterior mean should we find acceptable? Clearly, the mean estimate for a distribution with a large variance does not need to be as precise as the mean estimate for a distribution with a small variance. However, relative to the variance/spread of the distribution, what percentage is acceptable? We suggest to use a SEM smaller of 1% of the 95% probability interval of the distribution, which is equivalent to say that the allowed error of the mean is four times the standard deviation of the distribution. (Note that you can derive a different ESS value for any other threshold that you like.) From this SEM, we can derive the ESS with:</p>
 
-<script type="math/tex; mode=display">SEM = \frac{\sigma}{\sqrt{ESS}}</script>
+\[SEM = \frac{\sigma}{\sqrt{ESS}}\]
 
-<script type="math/tex; mode=display">% <![CDATA[
-\frac{\sigma}{\sqrt{ESS}} < 1\% \times 4 \times \sigma %]]></script>
+\[\frac{\sigma}{\sqrt{ESS}} &lt; 1\% \times 4 \times \sigma\]
 
-<script type="math/tex; mode=display">ESS > \frac{1}{0.04^2}</script>
+\[ESS &gt; \frac{1}{0.04^2}\]
 
-<script type="math/tex; mode=display">ESS > 625</script>
+\[ESS &gt; 625\]
 
 <p>An ESS of 625 is therefore the default value for the convenience package.</p>
 
@@ -212,7 +211,7 @@ We transform each split into a chain of absence and presence values; if the spli
 
 <p>With the ESS threshold for the splits, we can estimate the expected difference in the splits and use this value as a threshold for the split differencies. The expected difference ($ {E}[\Delta^{sf}_{p}] $) between two samples is calculated as the <a href="https://en.wikipedia.org/wiki/Mean_absolute_difference">‘mean absolute difference’</a>, with N as the ESS:</p>
 
-<script type="math/tex; mode=display">{E}[\Delta^{sf}_{p}] = \sum\limits_{i=0}^N \sum\limits_{j=0}^N \left(|\frac{i}{N} - \frac{j}{N}| \times P_{binom}(i|N,p) \times P_{binom}(j|N,p) \right)</script>
+\[{E}[\Delta^{sf}_{p}] = \sum\limits_{i=0}^N \sum\limits_{j=0}^N \left(|\frac{i}{N} - \frac{j}{N}| \times P_{binom}(i|N,p) \times P_{binom}(j|N,p) \right)\]
 
 <h3 class="subsection" id="summary">Summary</h3>
 <hr class="subsection" />

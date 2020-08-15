@@ -127,33 +127,31 @@
 
 <p>The multivariate Brownian motion (mvBM) process is a model that accommodates for both variation in rate among continuous characters, and for correlations among each pair of characters. For a dataset with $c$ continuous characters, the mvBM process is completely described by a $c \times c$ variance-covariance matrix, $\Sigma$:</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{equation}
+\[\begin{equation}
     \Sigma = \begin{bmatrix}
-                \sigma^2_1                   & \sigma_1 \sigma_2 \rho_{1,2} & \ldots & \sigma_1 \sigma_c \rho_{1,c} \\
-                \sigma_2 \sigma_1 \rho_{1,2} & \sigma^2_2                   & \ldots & \sigma_2 \sigma_c \rho_{2,c} \\
-                \vdots                       & \vdots                       & \ddots & \vdots \\
-                \sigma_c \sigma_1 \rho_{1,c} & \ldots                       & \ldots & \sigma^2_c
+                \sigma^2_1                   &amp; \sigma_1 \sigma_2 \rho_{1,2} &amp; \ldots &amp; \sigma_1 \sigma_c \rho_{1,c} \\
+                \sigma_2 \sigma_1 \rho_{1,2} &amp; \sigma^2_2                   &amp; \ldots &amp; \sigma_2 \sigma_c \rho_{2,c} \\
+                \vdots                       &amp; \vdots                       &amp; \ddots &amp; \vdots \\
+                \sigma_c \sigma_1 \rho_{1,c} &amp; \ldots                       &amp; \ldots &amp; \sigma^2_c
              \end{bmatrix},
-\end{equation} %]]></script>
+\end{equation}\]
 
 <p>where $\sigma_i^2$ is the rate of evolution of character $i$, and $\rho_{i,j}$ is the correlation coefficient between characters $i$ and $j$. Note that the variance-covariance matrix is symmetric across the diagonal and is completely determined by $\boldsymbol{\sigma^2} = [ \sigma_1^2, \ldots, \sigma_c^2 ]$ and $\boldsymbol{\rho} = [ \rho_{1,2}, \rho_{1,3}, \ldots, \rho_{c-1, c} ]$. By convention, we place the correlation parameters in a correlation matrix, $R$:</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{equation}
+\[\begin{equation}
     R = \begin{bmatrix}
-            1 & \rho_{1,2} & \ldots & \rho_{1,c} \\
-            \rho_{1,2} & 1 & \ldots & \rho_{2,c} \\
-            \vdots & \vdots & \ddots & \vdots \\
-            \rho_{1,c} & \ldots & \ldots & 1
+            1 &amp; \rho_{1,2} &amp; \ldots &amp; \rho_{1,c} \\
+            \rho_{1,2} &amp; 1 &amp; \ldots &amp; \rho_{2,c} \\
+            \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+            \rho_{1,c} &amp; \ldots &amp; \ldots &amp; 1
         \end{bmatrix}
-\end{equation} %]]></script>
+\end{equation}\]
 
 <p>Over a branch of length $t$, a set of characters evolving under mvBM changes by a multivariate-normal random variable, $\boldsymbol{\Delta}$:</p>
 
-<script type="math/tex; mode=display">\begin{equation}
+\[\begin{equation}
     \boldsymbol{\Delta} \sim \text{MVN}( \boldsymbol{0}, t\Sigma )
-\end{equation}</script>
+\end{equation}\]
 
 <p>where the vector of zeros, $\boldsymbol{0}$, indicates that the average amount of change for each character is zero, and the variance in the changes scales with the length of the branch, $t$.</p>
 

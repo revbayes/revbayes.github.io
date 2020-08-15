@@ -104,11 +104,11 @@
 <p><img src="figures/exponential.png" alt="" /></p>
 
 <p>While we can use the die to generate a uniformly-distributed random number, we cannot directly generate an exponentially-distributed number. That said, we can generate an exponential random variable from our uniformly-distributed random number using some math. First, generate a uniform(0,1) random number using your die, called $u$. We can convert this uniform(0,1) random number to an exponential random number using the following equation:
-<script type="math/tex">t = -{\log(u) \over \lambda}</script>
+\(t = -{\log(u) \over \lambda}\)
 where $\lambda$ is the rate at which something occurs and $\log$ is the natural log function. (You can access the natural log function on your smart phone by going to the calculator app and turning the phone on its side, thereby revealing the full functionality of the calculator.) The variable $t$ is exponentially distributed.</p>
 
 <p>Let’s try it. We will generate an exponential random number when the rate parameter is $\lambda = 10$. With my die, I generated a uniform(0,1) random number: $u = 0.948$. Using my calculator, I convert it to an exponential random number:
-<script type="math/tex">t = -{\log(0.948) \over 10} = 0.00534</script></p>
+\(t = -{\log(0.948) \over 10} = 0.00534\)</p>
 
 <h2 class="subsection" id="the-parameters-for-the-simulation">The parameters for the simulation</h2>
 
@@ -122,13 +122,12 @@ where $\lambda$ is the rate at which something occurs and $\log$ is the natural 
 
 <p>The last part of the model that must be specified is the rate matrix of the continuous-time Markov process that describes how the DNA sequences change on the tree. We will assume that sequences evolve according to the HKY85 model of DNA substitution, that has rate matrix:</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-{\mathbf Q} = \{q_{ij}\} = \left( \begin{array}{cccc}
-\cdot               &  \pi_C & \kappa \pi_G & \pi_T \\
-\pi_A & \cdot               & \pi_G & \kappa \pi_T \\
-\kappa \pi_A & \pi_C & \cdot               & \pi_T \\
-\pi_A & \kappa \pi_C & \pi_G & \cdot               \\
-\end{array} \right) \mu %]]></script>
+\[{\mathbf Q} = \{q_{ij}\} = \left( \begin{array}{cccc}
+\cdot               &amp;  \pi_C &amp; \kappa \pi_G &amp; \pi_T \\
+\pi_A &amp; \cdot               &amp; \pi_G &amp; \kappa \pi_T \\
+\kappa \pi_A &amp; \pi_C &amp; \cdot               &amp; \pi_T \\
+\pi_A &amp; \kappa \pi_C &amp; \pi_G &amp; \cdot               \\
+\end{array} \right) \mu\]
 
 <p>We will make a few important points about the rate matrix. First, the rate matrix may have free parameters. For example,
 the HKY85 model has the parameters $\kappa$, $\pi_A$, $\pi_C$, $\pi_G$, and $\pi_T$. 
@@ -144,13 +143,12 @@ stationary distribution play a key role in calculating the likelihood.</p>
 <p>We will assume the following values for the HKY85 parameters: $\kappa = 5$, $\pi_A = 0.4$, $\pi_C = 0.3$, $\pi_G = 0.2$, and $\pi_T = 0.1$.
 These values result in the following scaled rate matrix:</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-{\mathbf Q} = \{q_{ij}\} = \left( \begin{array}{rrrr}
- -0.886 &  0.190 &  0.633 &  0.063 \\
- 0.253 & -0.696 &  0.127 &  0.316 \\
- 1.266 &  0.190 & -1.519 &  0.063 \\
- 0.253 &  0.949 &  0.127 & -1.329 \\
-\end{array} \right) %]]></script>
+\[{\mathbf Q} = \{q_{ij}\} = \left( \begin{array}{rrrr}
+ -0.886 &amp;  0.190 &amp;  0.633 &amp;  0.063 \\
+ 0.253 &amp; -0.696 &amp;  0.127 &amp;  0.316 \\
+ 1.266 &amp;  0.190 &amp; -1.519 &amp;  0.063 \\
+ 0.253 &amp;  0.949 &amp;  0.127 &amp; -1.329 \\
+\end{array} \right)\]
 
 <p>The stationary probabilities for this rate matrix are $\pi_A = 0.4$, $\pi_C = 0.3$, $\pi_G = 0.2$, and $\pi_T = 0.1$.</p>
 
@@ -159,10 +157,10 @@ These values result in the following scaled rate matrix:</p>
 <p>The rate matrix specifies how changes occur on a phylogenetic tree. Consider the very simple case of a single
 branch on a phylogenetic tree. Let’s assume that the branch is $v=0.5$ in length. Our first task is to determine the nucleotide at the root of this tree. Although it is tempting to simply pick a nucleotide at the root of the tree with each nucleotide having a probability of $1/4$, doing so is not consistent with the process we are assuming, as described in the rate matrix, ${\mathbf Q}$. Rather, we should choose the state at the root of the tree from the stationary probabilities. I made four intervals, with the following probabilities:</p>
 
-<script type="math/tex; mode=display">0.0 - 0.4 \rightarrow A \\
+\[0.0 - 0.4 \rightarrow A \\
 0.4 - 0.7 \rightarrow C \\
 0.7 - 0.9 \rightarrow G \\
-0.9 - 1.0 \rightarrow T</script>
+0.9 - 1.0 \rightarrow T\]
 
 <p>I rolled the die to generate a uniiform(0,1) random number and obtained $u = 0.709$. The nucleotide at the root, then, is the nucleotide $G$.
 The situation we have is something like this,</p>
@@ -173,13 +171,12 @@ The situation we have is something like this,</p>
 How can we simulate the evolution
 of the site starting from the $G$ at the ancestor? The rate matrix tells us how to do this. First of all, because the current state of the process is $G$,  the only relevant row of the rate matrix is the third one:</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-{\mathbf Q} = \{q_{ij}\} = \left( \begin{array}{cccc}
-\cdot   &   \cdot &    \cdot &  \cdot \\
-\cdot   &   \cdot &    \cdot &  \cdot \\
-1.266 &  0.190 & -1.519 &  0.063 \\
-\cdot   &   \cdot &    \cdot & \cdot \\
-\end{array} \right) %]]></script>
+\[{\mathbf Q} = \{q_{ij}\} = \left( \begin{array}{cccc}
+\cdot   &amp;   \cdot &amp;    \cdot &amp;  \cdot \\
+\cdot   &amp;   \cdot &amp;    \cdot &amp;  \cdot \\
+1.266 &amp;  0.190 &amp; -1.519 &amp;  0.063 \\
+\cdot   &amp;   \cdot &amp;    \cdot &amp; \cdot \\
+\end{array} \right)\]
 
 <p>The overall rate of change away from nucleotide $G$ is $q_{GA} + q_{GC} + q_{GT} = 1.266 + 0.190 + 0.063 = 1.519$.
 Equivalently, the rate of change away from nucleotide $G$ is simply $-q_{GG} = 1.519$. 
@@ -196,10 +193,9 @@ The first number it generated is $u = 0.794$. This means that the next time at w
 
 <p>The rate matrix also specifies the probabilities of a change from $G$
 to the nucleotides $A$, $C$, and $T$.  These probabilities are
-<script type="math/tex">% <![CDATA[
-\begin{array}{ccc}
-G \rightarrow A: {1.266\over 1.519}=0.833, &  G \rightarrow C: {0.190\over 1.519}=0.125, & G \rightarrow T: {0.063 \over 1.519}=0.042 \\
-\end{array} %]]></script>
+\(\begin{array}{ccc}
+G \rightarrow A: {1.266\over 1.519}=0.833, &amp;  G \rightarrow C: {0.190\over 1.519}=0.125, &amp; G \rightarrow T: {0.063 \over 1.519}=0.042 \\
+\end{array}\)
 To determine what nucleotide the process changes to we would generate another uniform(0,1) random number (again
 called $u$). If $u$ is between 0 and 0.833, we will say that we had a change from $G$ to $A$. If the random number
 is between 0.833 and 0.958 we will say that we had a change from $G$ to $C$. Finally, if the random number $u$ is
@@ -207,13 +203,12 @@ between 0.958 and 1.000, we will say we had a change from $G$ to $T$. The next n
 was $u = 0.102$, which means the change was from $G$ to $A$. The process is now in a different state (the nucleotide
 $A$) and the relevant row of the rate matrix is</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-{\mathbf Q} = \{q_{ij}\} = \left( \begin{array}{cccc}
--0.886 &  0.190 &  0.633 &  0.063 \\
-\cdot & \cdot &  \cdot &  \cdot \\
-\cdot &  \cdot & \cdot &  \cdot \\
-\cdot &  \cdot &  \cdot & \cdot \\
-\end{array} \right) %]]></script>
+\[{\mathbf Q} = \{q_{ij}\} = \left( \begin{array}{cccc}
+-0.886 &amp;  0.190 &amp;  0.633 &amp;  0.063 \\
+\cdot &amp; \cdot &amp;  \cdot &amp;  \cdot \\
+\cdot &amp;  \cdot &amp; \cdot &amp;  \cdot \\
+\cdot &amp;  \cdot &amp;  \cdot &amp; \cdot \\
+\end{array} \right)\]
 
 <p>We wait an exponentially distributed amount of time with parameter
 $\lambda = 0.886$ until the next substitution occurs. When the substitution occurs, it is to a $C$, $G$, or $T$
@@ -912,13 +907,12 @@ and our knowledge of the rate matrix to simulate a single realization of the HKY
 
 <p>Simulate a site on the four-species tree described in this lab using the rate matrix.</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-{\mathbf Q} = \{q_{ij}\} = \left( \begin{array}{rrrr}
- -0.886 &  0.190 &  0.633 &  0.063 \\
- 0.253 & -0.696 &  0.127 &  0.316 \\
- 1.266 &  0.190 & -1.519 &  0.063 \\
- 0.253 &  0.949 &  0.127 & -1.329 \\
-\end{array} \right) %]]></script>
+\[{\mathbf Q} = \{q_{ij}\} = \left( \begin{array}{rrrr}
+ -0.886 &amp;  0.190 &amp;  0.633 &amp;  0.063 \\
+ 0.253 &amp; -0.696 &amp;  0.127 &amp;  0.316 \\
+ 1.266 &amp;  0.190 &amp; -1.519 &amp;  0.063 \\
+ 0.253 &amp;  0.949 &amp;  0.127 &amp; -1.329 \\
+\end{array} \right)\]
 
 <p>Why do we start the simulation by drawing from the stationary distribution?</p>
 

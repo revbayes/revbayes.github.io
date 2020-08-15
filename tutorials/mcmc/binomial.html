@@ -119,8 +119,8 @@ we need them).</p>
 coin-flipping model. In this model, we imagine flipping a coin $n$ times
 and count the number of heads, $x$; each flip comes up heads with
 probability $p$. This model gives rise to the Binomial probability
-distribution, with parameters $n$ and $p$: <script type="math/tex">\begin{aligned}
-P(x \mid n,p) = {n \choose x}p^x(1-p)^{n-x}\end{aligned}</script> Simple
+distribution, with parameters $n$ and $p$: \(\begin{aligned}
+P(x \mid n,p) = {n \choose x}p^x(1-p)^{n-x}\end{aligned}\) Simple
 intuition suggests that, given that we observe $x$ heads in $n$ coin
 tosses, the maximum-likelihood estimate (MLE) of $p$ is simply
 $\frac{x}{n}$: if we flip a coin 100 times and observe 70 heads, we
@@ -128,7 +128,7 @@ assume the probability the coin comes up heads is
 $\frac{70}{100} = 0.7$. This is indeed the maximum likelihood estimate!</p>
 
 <p>From Bayes’ theorem, the <em>posterior distribution</em> of $p$ given $x$,
-$P(p \mid x)$, is: <script type="math/tex">\begin{aligned} \overbrace{P(p \mid x)}^{\text{posterior distribution}} = \frac{\overbrace{P(x \mid p)}^{\text{likelihood}} \times \overbrace{P(p)}^{\text{prior}}}{\underbrace{P(x)}_{\text{marginal likelihood}}} \end{aligned}</script>
+$P(p \mid x)$, is: \(\begin{aligned} \overbrace{P(p \mid x)}^{\text{posterior distribution}} = \frac{\overbrace{P(x \mid p)}^{\text{likelihood}} \times \overbrace{P(p)}^{\text{prior}}}{\underbrace{P(x)}_{\text{marginal likelihood}}} \end{aligned}\)
 The take-home message here is that if we’re interested in doing
 Bayesian inference for the coin flipping model, we need to specify a
 <em>likelihood function</em> and a <em>prior distribution</em> for $p$. In virtually
@@ -194,9 +194,9 @@ parameters of the model, (possibly) based on their current values</p>
   </li>
   <li>
     <p>Calculate the acceptance probability, $R$, according to:
-<script type="math/tex">\begin{aligned}
+\(\begin{aligned}
 		R = \text{min}\left\{1, \frac{P(x \mid p^\prime)}{P(x \mid p)} \times \frac{P(p^\prime)}{P(p)} \times \frac{q(p)}{q(p^\prime)} \right\}
-	\end{aligned}</script></p>
+	\end{aligned}\)</p>
   </li>
   <li>
     <p>Generate a uniform random number between 1 and 0. If it is less than

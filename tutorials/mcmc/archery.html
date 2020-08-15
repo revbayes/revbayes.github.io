@@ -107,9 +107,9 @@ from the target’s center is measured. Let’s assume that the distance of
 each arrow from the bullseye follows an exponential
 distribution—<em>i.e.,</em> $d\sim\mbox{Exp}(\mu^{-1})$. This implies the archer has an inherent ability to shoot arrows at an average distance $\mu$. Then, the probability density of each arrow distance $d_i$ is</p>
 
-<script type="math/tex; mode=display">\begin{aligned}
+\[\begin{aligned}
 P(d_i \mid \mu) = \frac{1}{\mu} e^{-d_i/\mu}.
-\end{aligned}</script>
+\end{aligned}\]
 
 <p>Simple intuition suggests that, given that we observe $n$ arrows, a good
 estimate of $\mu$ is the average of all the arrow distances
@@ -118,9 +118,9 @@ likelihood estimate! In fact, given $n$ arrows whose distances follow an
 exponential distribution, it turns out that the observed average
 $\bar d$ follows a gamma distribution, with parameters $n$ and $n/\mu$,</p>
 
-<script type="math/tex; mode=display">\begin{aligned}
+\[\begin{aligned}
 P(\bar d \mid \mu,n) = \frac{(n/\mu)^n}{\Gamma(n)} {\bar d}\,^{n-1}e^{-n\bar d /\mu}.
-\end{aligned}</script>
+\end{aligned}\]
 
 <p>In this case, the average $\bar d$ acts as a <em>sufficient statistic</em> for
 $\mu$. This means that it tells just as much about $\mu$ as the
@@ -131,9 +131,9 @@ data.</p>
 <p>From Bayes’ theorem, the <em>posterior distribution</em> of $\mu$ given
 $\bar d$, $P(\mu \mid \bar d)$, is:</p>
 
-<script type="math/tex; mode=display">\begin{aligned}
+\[\begin{aligned}
 P\left(\mu \mid \bar d\right) = \frac{P\left(\bar d \mid \mu\right) \times P\left(\mu\right)}{P\left(\bar d\right)}
-\end{aligned}</script>
+\end{aligned}\]
 
 <p>Where $P(\mu \mid \bar d)$ is our posterior distribution, $P(\bar d \mid \mu)$ is our likelihood or data distribution, $P(\mu)$ is our prior distribution, and $P(\bar d)$ is our marginal likelihood. The take-home message here is that, if we’re interested in doing Bayesian inference for the archery model, we need to specify a <em>likelihood function</em> and a <em>prior distribution</em> for $\mu$. In virtually all practical cases, we cannot compute the posterior distribution directly and instead use numerical procedures, such as a Markov chain Monte Carlo (MCMC) algorithm. Therefore, we will also have to write a MCMC algorithm that samples parameter values in the frequency of their posterior probability.</p>
 
@@ -187,11 +187,10 @@ parameters of the model, (possibly) based on their current values</p>
   <li>
     <p>Calculate the acceptance probability, $R$, according to:</p>
 
-    <script type="math/tex; mode=display">% <![CDATA[
-\begin{aligned}
-R &= \text{min}\left\{1, \frac{P(\bar d \mid \mu^\prime)}{P(\bar d \mid \mu)} \times \frac{P(\mu^\prime)}{P(\mu)} \times \frac{q(\mu)}{q(\mu^\prime)} \right\}\\
-  &= \text{min}\left\{1, \text{likelihood ratio} \times \text{prior ratio} \times \text{proposal ratio} \right\},
-\end{aligned} %]]></script>
+\[\begin{aligned}
+R &amp;= \text{min}\left\{1, \frac{P(\bar d \mid \mu^\prime)}{P(\bar d \mid \mu)} \times \frac{P(\mu^\prime)}{P(\mu)} \times \frac{q(\mu)}{q(\mu^\prime)} \right\}\\
+  &amp;= \text{min}\left\{1, \text{likelihood ratio} \times \text{prior ratio} \times \text{proposal ratio} \right\},
+\end{aligned}\]
 
     <p>where the proposal ratio (also called the Hastings ratio) ensures the correct target density, even if the move is biased.</p>
   </li>

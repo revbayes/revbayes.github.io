@@ -190,7 +190,7 @@ equations in the following sections.</p>
 <p>The derivation here follows the original description in <a class="citation" href="#Maddison2007">Maddison et al. (2007)</a>.
 Consider a (time-independent) birth-death process with two possible
 states (a binary character), with diversification rates
-<script type="math/tex">\{\lambda_0, \mu_0\}</script> and <script type="math/tex">\{\lambda_1, \mu_1\}</script>.</p>
+\(\{\lambda_0, \mu_0\}\) and \(\{\lambda_1, \mu_1\}\).</p>
 
 <h4 id="clade-probabilities-d_n-i"><strong>Clade probabilities, $D_{N, i}$</strong></h4>
 
@@ -233,14 +233,13 @@ This is Figure 2 in <a class="citation" href="#Maddison2007">Maddison et al. (20
 
 <p>We can thus compute $D_{N,0}(t + \Delta t)$ as:</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{aligned}
-	D_{N,0}(t + \Delta t) = & \;(1 - \mu_0 \Delta t) \times & \text{in all cases, no extinction of the observed lineage} \\
-& \;[  (1 - q_{01} \Delta t)(1 - \lambda_0 \Delta t) D_{N,0}(t) & \text{case (1) nothing happens} \\
-& \; + (q_{01} \Delta t) (1 - \lambda_0 \Delta t) D_{N,1}(t) & \text{case (2) state change but no speciation} \\
-& \; + (1 - q_{01} \Delta t) (\lambda_0 \Delta t) E_0(t) D_{N,0}(t) & \text{case (3) no state change, speciation, extinction} \\
-& \; + (1 - q_{01} \Delta t) (\lambda_0 \Delta t) E_0(t) D_{N,0}(t)] & \text{case (4) no state change, speciation, extinction}
-\end{aligned} %]]></script>
+\[\begin{aligned}
+	D_{N,0}(t + \Delta t) = &amp; \;(1 - \mu_0 \Delta t) \times &amp; \text{in all cases, no extinction of the observed lineage} \\
+&amp; \;[  (1 - q_{01} \Delta t)(1 - \lambda_0 \Delta t) D_{N,0}(t) &amp; \text{case (1) nothing happens} \\
+&amp; \; + (q_{01} \Delta t) (1 - \lambda_0 \Delta t) D_{N,1}(t) &amp; \text{case (2) state change but no speciation} \\
+&amp; \; + (1 - q_{01} \Delta t) (\lambda_0 \Delta t) E_0(t) D_{N,0}(t) &amp; \text{case (3) no state change, speciation, extinction} \\
+&amp; \; + (1 - q_{01} \Delta t) (\lambda_0 \Delta t) E_0(t) D_{N,0}(t)] &amp; \text{case (4) no state change, speciation, extinction}
+\end{aligned}\]
 
 <p>A matching equation can be written down for $D_{N,1}(t+\Delta t)$.</p>
 
@@ -248,8 +247,8 @@ This is Figure 2 in <a class="citation" href="#Maddison2007">Maddison et al. (20
 take the limit $\Delta t \rightarrow 0$. With the notation that $i$ can
 be either state 0 or state 1, and $j$ is the other state, this yields:</p>
 
-<script type="math/tex; mode=display">\frac{\mathrm{d}D_{N,i}(t)}{\mathrm{d}t} = - \left(\lambda_i + \mu_i + q_{ij} \right) D_{N,i}(t) + q_{ij} D_{N,j}(t) + 2 \lambda_i E_i(t) D_{N,i}(t)
-\tag{1}\label{eq:one}</script>
+\[\frac{\mathrm{d}D_{N,i}(t)}{\mathrm{d}t} = - \left(\lambda_i + \mu_i + q_{ij} \right) D_{N,i}(t) + q_{ij} D_{N,j}(t) + 2 \lambda_i E_i(t) D_{N,i}(t)
+\tag{1}\label{eq:one}\]
 
 <h3 id="extinction-probabilities-e_i">Extinction probabilities, $E_i$</h3>
 
@@ -279,15 +278,14 @@ that must eventually go extinct before the present.</p>
   </li>
 </ol>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{aligned}
-E_0(t + \Delta t) = &\; \mu_0\Delta t + 
-& \text{case (1) extinction in the interval} \\
-& (1 - \mu_0\Delta t) \times & \text{no extinction in the interval and \dots} \\
-& \;[(1-q_{01}\Delta t)(1-\lambda_0 \Delta t) E_0(t) & \text{case (2) nothing happens, but subsequent extinction} \\
-& \;+ (q_{01}\Delta t) (1-\lambda_0 \Delta t) E_1(t) & \text{case (3) state change and subsequent extinction} \\
-& \;+ (1 - q_{01} \Delta t) (\lambda_0 \Delta t) E_0(t)^2] & \text{case (4) speciation and subsequent extinctions}
-\end{aligned} %]]></script>
+\[\begin{aligned}
+E_0(t + \Delta t) = &amp;\; \mu_0\Delta t + 
+&amp; \text{case (1) extinction in the interval} \\
+&amp; (1 - \mu_0\Delta t) \times &amp; \text{no extinction in the interval and \dots} \\
+&amp; \;[(1-q_{01}\Delta t)(1-\lambda_0 \Delta t) E_0(t) &amp; \text{case (2) nothing happens, but subsequent extinction} \\
+&amp; \;+ (q_{01}\Delta t) (1-\lambda_0 \Delta t) E_1(t) &amp; \text{case (3) state change and subsequent extinction} \\
+&amp; \;+ (1 - q_{01} \Delta t) (\lambda_0 \Delta t) E_0(t)^2] &amp; \text{case (4) speciation and subsequent extinctions}
+\end{aligned}\]
 
 <p>Again, a matching equation for $E_1(t+\Delta t)$ can be written down.</p>
 
@@ -299,8 +297,8 @@ This is Figure 3 in <a class="citation" href="#Maddison2007">Maddison et al. (20
 <p>To convert these difference equations into differential equations, we
 again take the limit $\Delta t \rightarrow 0$:</p>
 
-<script type="math/tex; mode=display">\frac{\mathrm{d}E_i(t)}{\mathrm{d}t} = \mu_i - \left(\lambda_i + \mu_i + q_{ij} \right)E_i(t) + q_{ij} E_j(t) + \lambda_i E_i(t)^2
-\tag{2}\label{eq:two}</script>
+\[\frac{\mathrm{d}E_i(t)}{\mathrm{d}t} = \mu_i - \left(\lambda_i + \mu_i + q_{ij} \right)E_i(t) + q_{ij} E_j(t) + \lambda_i E_i(t)^2
+\tag{2}\label{eq:two}\]
 
 <h3 id="initial-values-tips-and-sampling">Initial values: tips and sampling</h3>
 
@@ -334,8 +332,8 @@ change). The initial value for the ancestral branch going into a node
 daughter branches coming out of that node, times the instantaneous
 speciation rate (to account for the observed speciation event):</p>
 
-<script type="math/tex; mode=display">D_{A, i}(t_A) = D_{N, i}(t_A) D_{M, i}(t_A) \lambda_i
-\tag{3}\label{eq:three}</script>
+\[D_{A, i}(t_A) = D_{N, i}(t_A) D_{M, i}(t_A) \lambda_i
+\tag{3}\label{eq:three}\]
 
 <h3 id="at-the-root">At the root</h3>
 
@@ -345,7 +343,7 @@ equation \eqref{eq:three}, we arrive at the root with the $D$ values
 (called $D_{R, i}$), one for each state. These need to be combined
 somehow to get the overall likelihood of the data:</p>
 
-<script type="math/tex; mode=display">\text{Likelihood(tree, tip states | model)} = \sum_i D_{R, i} \, p_{R, i}</script>
+\[\text{Likelihood(tree, tip states | model)} = \sum_i D_{R, i} \, p_{R, i}\]
 
 <p>What probability weighting, $p_{R, i}$ should be used for the possible
 root states? Sometimes a fixed approach is used, assuming that the prior
@@ -414,11 +412,10 @@ arbitrary number of states <a class="citation" href="#FitzJohn2012">(FitzJohn 20
 summing over all the possible state transitions. The resulting
 differential equations within the branches are:</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{aligned}
-\frac{\mathrm{d}D_{N,i}(t)}{\mathrm{d}t} &= - \left(\lambda_i + \mu_i + \sum\limits_{j \neq i}^k q_{ij} \right)D_{N,i}(t) + \sum\limits_{j \neq i}^k q_{ij} D_{N,j}(t) + 2\lambda_iE_i(t)D_{N,i}(t) \\
-\frac{\mathrm{d}E_i(t)}{\mathrm{d}t} &= \mu_i - \left(\lambda_i + \mu_i + \sum\limits_{j \neq i}^k q_{ij} \right)E_i(t) + \sum\limits_{j \neq i}^k q_{ij} E_j(t) + \lambda_i E_i(t)^2
-\end{aligned} %]]></script>
+\[\begin{aligned}
+\frac{\mathrm{d}D_{N,i}(t)}{\mathrm{d}t} &amp;= - \left(\lambda_i + \mu_i + \sum\limits_{j \neq i}^k q_{ij} \right)D_{N,i}(t) + \sum\limits_{j \neq i}^k q_{ij} D_{N,j}(t) + 2\lambda_iE_i(t)D_{N,i}(t) \\
+\frac{\mathrm{d}E_i(t)}{\mathrm{d}t} &amp;= \mu_i - \left(\lambda_i + \mu_i + \sum\limits_{j \neq i}^k q_{ij} \right)E_i(t) + \sum\limits_{j \neq i}^k q_{ij} E_j(t) + \lambda_i E_i(t)^2
+\end{aligned}\]
 
 
 <ol class="bibliography"><li><span id="Beaulieu2016">Beaulieu J.M., O’Meara B.C. 2016. Detecting hidden diversification shifts in models of trait-dependent speciation and extinction. Systematic Biology. 65:583–601.</span>

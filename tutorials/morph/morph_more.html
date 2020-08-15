@@ -101,14 +101,6 @@
         
           <li><a href="/tutorials/morph/data/mammals_thinned_placenta_type.nex">mammals_thinned_placenta_type.nex</a></li>
         
-          <li><a href="/tutorials/morph/data/primates_activity_period.nex">primates_activity_period.nex</a></li>
-        
-          <li><a href="/tutorials/morph/data/primates_mating_system.nex">primates_mating_system.nex</a></li>
-        
-          <li><a href="/tutorials/morph/data/primates_solitariness.nex">primates_solitariness.nex</a></li>
-        
-          <li><a href="/tutorials/morph/data/primates_tree.nex">primates_tree.nex</a></li>
-        
         </ul>
     
         
@@ -122,8 +114,6 @@
           <li><a href="/tutorials/morph/scripts/mcmc_ase_freeK_RJ.Rev">mcmc_ase_freeK_RJ.Rev</a></li>
         
           <li><a href="/tutorials/morph/scripts/mcmc_ase_mk.Rev">mcmc_ase_mk.Rev</a></li>
-        
-          <li><a href="/tutorials/morph/scripts/mcmc_corr.Rev">mcmc_corr.Rev</a></li>
         
           <li><a href="/tutorials/morph/scripts/plot_anc_states.R">plot_anc_states.R</a></li>
         
@@ -183,12 +173,11 @@ The lineage may transition directly from state 1 to state 4 without going throug
 In addition, all transition rates are equal as they are in the Jukes-Cantor rate matrix <a class="citation" href="#Jukes1969">(Jukes and Cantor 1969)</a>.
 Here is an example of a symmetric unordered Mk model for $k=3$.</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-Q = \begin{pmatrix}
-- & r & r \\
-r & - & r \\
-r & r & - 
-\end{pmatrix} %]]></script>
+\[Q = \begin{pmatrix}
+- &amp; r &amp; r \\
+r &amp; - &amp; r \\
+r &amp; r &amp; - 
+\end{pmatrix}\]
 
 <p>Define the single shared rate parameter</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mu &lt;- 1.0
@@ -256,13 +245,12 @@ For example, the number of digits on a foot might vary by gaining and losing sin
 Below, we assume that gain events ( $n \rightarrow n+1$ ) occur at rate $\lambda$ and loss events ($n \rightarrow n-1$) occur at rate $\mu$.
 The zeroes indicate that there is no immediate evolutionary path between states $1$ and $4$: states $2$ and $3$ must be used to reach $4$ from $1$.</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-Q = \begin{pmatrix}
-- & \lambda & 0 & 0 \\
-\mu & -   & \lambda & 0 \\
-0 & \mu & -   & \lambda \\
-0 & 0 & \mu & - 
-\end{pmatrix} %]]></script>
+\[Q = \begin{pmatrix}
+- &amp; \lambda &amp; 0 &amp; 0 \\
+\mu &amp; -   &amp; \lambda &amp; 0 \\
+0 &amp; \mu &amp; -   &amp; \lambda \\
+0 &amp; 0 &amp; \mu &amp; - 
+\end{pmatrix}\]
 
 <p>Create two rate parameters, $\lambda$ for gain and $\mu$ loss events.</p>
 
@@ -325,13 +313,12 @@ In addition, the transition rate that, say, character X goes from 0 to 1 depends
 <p>In the first case, all possible transitions might be assigned their own parameter.
 Here, we’ll assign a simplex over all rates, leaving seven free parameters (plus an eighth parameter that scales the rate matrix).</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-Q = \begin{pmatrix}
-                      - & \mu_{00 \rightarrow 10} & \mu_{00 \rightarrow 01} &                       0 \\
-\mu_{10 \rightarrow 00} &                       - &                       0 & \mu_{10 \rightarrow 11} \\
-\mu_{01 \rightarrow 00} &                       0 &                       - & \mu_{01 \rightarrow 11} \\
-                      0 & \mu_{11 \rightarrow 10} & \mu_{11 \rightarrow 01} &                       - \\
-\end{pmatrix} %]]></script>
+\[Q = \begin{pmatrix}
+                      - &amp; \mu_{00 \rightarrow 10} &amp; \mu_{00 \rightarrow 01} &amp;                       0 \\
+\mu_{10 \rightarrow 00} &amp;                       - &amp;                       0 &amp; \mu_{10 \rightarrow 11} \\
+\mu_{01 \rightarrow 00} &amp;                       0 &amp;                       - &amp; \mu_{01 \rightarrow 11} \\
+                      0 &amp; \mu_{11 \rightarrow 10} &amp; \mu_{11 \rightarrow 01} &amp;                       - \\
+\end{pmatrix}\]
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>r ~ dnDirichlet( [1,1,1,1,1,1,1,1] )
 r.setValue( simplex(1,1,3,3,3,3,1,1) )
@@ -387,13 +374,12 @@ In this toy example, these probabilities reflect that states 10 an 01 are less e
 <p>Alternatively, characters X and Y might share state frequencies, $\pi_j$, and transition rates $\mu_{ij}^{(k)}$, where $i$ is the starting state for the character undergoing change, $j$ is the ending state, and $k$ is the state of the other character.
 This results in two stationary frequencies (one free parameter), four transition rates for $0 \rightarrow 1$ and $1 \rightarrow 0$ given that the other character is in state 0 or state 1 (three free parameters), plus one free parameter to scale the rate matrix.</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-Q = \begin{pmatrix}
-- & \mu_{01}^{(0)} \pi_1 \pi_0 & \mu_{01}^{(0)} \pi_0 \pi_1 & 0 \\
-\mu_{10}^{(0)} \pi_0 \pi_0 & -   & 0 & \mu_{01}^{(1)} \pi_1 \pi_1 \\
-\mu_{10}^{(0)} \pi_0 \pi_0 & 0   & - & \mu_{01}^{(1)} \pi_1 \pi_1 \\
-0 & \mu_{10}^{(1)} \pi_1 \pi_0 & \mu_{10}^{(1)} \pi_0 \pi_1 & - \\
-\end{pmatrix} %]]></script>
+\[Q = \begin{pmatrix}
+- &amp; \mu_{01}^{(0)} \pi_1 \pi_0 &amp; \mu_{01}^{(0)} \pi_0 \pi_1 &amp; 0 \\
+\mu_{10}^{(0)} \pi_0 \pi_0 &amp; -   &amp; 0 &amp; \mu_{01}^{(1)} \pi_1 \pi_1 \\
+\mu_{10}^{(0)} \pi_0 \pi_0 &amp; 0   &amp; - &amp; \mu_{01}^{(1)} \pi_1 \pi_1 \\
+0 &amp; \mu_{10}^{(1)} \pi_1 \pi_0 &amp; \mu_{10}^{(1)} \pi_0 \pi_1 &amp; - \\
+\end{pmatrix}\]
 
 <p>Assign the stationary frequencies of being in state 0 or state 1 shared by both characters X and Y.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pi ~ dnDirichlet([1,1])
@@ -464,27 +450,25 @@ In practice, this is done by setting the likelihood of observing those $0k$ stat
 
 <p>The expanded structure of a simple covarion rate matrix with $K=2$ is</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-Q = \left(
+\[Q = \left(
 \begin{array}{cc|cc}
-- & r_1 q_{01}^{(1)} & s_{12} & 0 \\
-r_1 q_{10}^{(1)} & - & 0 & s_{12} \\
+- &amp; r_1 q_{01}^{(1)} &amp; s_{12} &amp; 0 \\
+r_1 q_{10}^{(1)} &amp; - &amp; 0 &amp; s_{12} \\
 \hline
-s_{21} & 0 & - & r_2 q_{01}^{(2)} \\
-0 & s_{21} & r_2 q_{10}^{(2)} & -  \\
+s_{21} &amp; 0 &amp; - &amp; r_2 q_{01}^{(2)} \\
+0 &amp; s_{21} &amp; r_2 q_{10}^{(2)} &amp; -  \\
 
 \end{array}
-\right) %]]></script>
+\right)\]
 
 <p>This form can be reduced to a simpler block-matrix representation
-<script type="math/tex">% <![CDATA[
-Q = \left(
+\(Q = \left(
 \begin{array}{c|c}
-r_1 Q^{(1)} & s_{12} I  \\
+r_1 Q^{(1)} &amp; s_{12} I  \\
 \hline
-s_{21} I & r_2 Q^{(2)} \\
+s_{21} I &amp; r_2 Q^{(2)} \\
 \end{array}
-\right) %]]></script></p>
+\right)\)</p>
 
 <p>where $Q^{(i)}$ is the rate matrix for the $i$th class, $r_i \in r$ is the clock rate for the $i$th class, and $S$ is the rate matrix to switch between classes.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sr ~ dnDirichlet([1,1])
@@ -553,19 +537,17 @@ Furthermore, we want to know if placenta type is evolving under an equal-rates m
 Thus, we will follow the <a href="/tutorials/morph_tree/">Discrete morphology - Tree Inference</a> Tutorial very closely and refer you to that tutorial for more information.</p>
 
 <p>Let us start with defining the rate matrix $Q$ for this 3-state model:
-<script type="math/tex">% <![CDATA[
-Q = \begin{pmatrix} -\mu_1 & \mu_{12} & \mu_{13} \\
-\mu_{21} & -\mu_2  & \mu_{23} \\
-\mu_{31} & \mu_{32} & -\mu_3 
-\end{pmatrix} \mbox{  .} %]]></script></p>
+\(Q = \begin{pmatrix} -\mu_1 &amp; \mu_{12} &amp; \mu_{13} \\
+\mu_{21} &amp; -\mu_2  &amp; \mu_{23} \\
+\mu_{31} &amp; \mu_{32} &amp; -\mu_3 
+\end{pmatrix} \mbox{  .}\)</p>
 
 <p>Remember, the Mk model sets transitions to be equal from any state to any other state. 
 In that sense, our 3-state matrix really looks like this:
-<script type="math/tex">% <![CDATA[
-Q = \begin{pmatrix} -(k-1)\mu & \mu & \mu \\
-\mu & -(k-1)\mu  & \mu \\
-\mu & \mu & -(k-1)\mu \\
-\end{pmatrix} \mbox{  .} %]]></script></p>
+\(Q = \begin{pmatrix} -(k-1)\mu &amp; \mu &amp; \mu \\
+\mu &amp; -(k-1)\mu  &amp; \mu \\
+\mu &amp; \mu &amp; -(k-1)\mu \\
+\end{pmatrix} \mbox{  .}\)</p>
 
 <p>Because this is a Jukes-Cantor-like model <a class="citation" href="#Jukes1969">(Jukes and Cantor 1969)</a>, state frequencies do not vary as a model parameter.
 A visualization of this simple model can be seen in <a href="#fig_gm_m3"></a>.</p>

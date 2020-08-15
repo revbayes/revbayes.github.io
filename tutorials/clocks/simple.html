@@ -189,23 +189,23 @@ allowing us to evaluate the relative support for different models given a single
 <p>Given two models, $M_0$ and $M_1$, the Bayes-factor comparison assessing
 the relative fit of each model to the data, $BF(M_0,M_1)$, is:</p>
 
-<script type="math/tex; mode=display">BF(M_0,M_1) = \frac{\mbox{posterior odds}}{\mbox{prior odds}}.</script>
+\[BF(M_0,M_1) = \frac{\mbox{posterior odds}}{\mbox{prior odds}}.\]
 
 <p>The
 posterior odds is the posterior probability of $M_0$ given the data,
 $\mathbf X$, divided by the posterior odds of $M_1$ given the data:</p>
 
-<script type="math/tex; mode=display">\mbox{posterior odds} = \frac{\mathbb{P}(M_0 \mid \mathbf X)}{\mathbb{P}(M_1 \mid \mathbf X)},</script>
+\[\mbox{posterior odds} = \frac{\mathbb{P}(M_0 \mid \mathbf X)}{\mathbb{P}(M_1 \mid \mathbf X)},\]
 
 <p>and the prior odds is the prior probability of $M_0$ divided by the
 prior probability of $M_1$:
-<script type="math/tex">\mbox{prior odds} = \frac{\mathbb{P}(M_0)}{\mathbb{P}(M_1)}.</script> Thus,
+\(\mbox{prior odds} = \frac{\mathbb{P}(M_0)}{\mathbb{P}(M_1)}.\) Thus,
 the Bayes factor measures the degree to which the data alter our belief
 regarding the support for $M_0$ relative to $M_1$ <a class="citation" href="#Lavine1999">(Lavine and Schervish 1999)</a>:</p>
 
-<script type="math/tex; mode=display">\begin{equation}
+\[\begin{equation}
 BF(M_0,M_1) = \frac{\mathbb{P}(M_0 \mid \mathbf X, \theta_0)}{\mathbb{P}(M_1 \mid \mathbf X, \theta_1)} \div \frac{\mathbb{P}(M_0)}{\mathbb{P}(M_1)} \tag{1}\label{eq:one}
-\end{equation}</script>
+\end{equation}\]
 
 <p>Note that interpreting Bayes factors involves some subjectivity. That
 is, it is up to <em>you</em> to decide the degree of your belief in $M_0$
@@ -218,9 +218,9 @@ measures.</p>
 posterior odds to prior odds ratios. However, we can further define the
 posterior odds ratio as:</p>
 
-<script type="math/tex; mode=display">\begin{aligned}
+\[\begin{aligned}
 \frac{\mathbb{P}(M_0 \mid \mathbf X)}{\mathbb{P}(M_1 \mid \mathbf X)} = \frac{\mathbb{P}(M_0)}{\mathbb{P}(M_1)} \frac{\mathbb{P}(\mathbf X \mid M_0)}{\mathbb{P}(\mathbf X \mid M_1)},
-\end{aligned}</script>
+\end{aligned}\]
 
 <p>where $\mathbb{P}(\mathbf X \mid M_i)$ is the <em>marginal likelihood</em> of
 the data (this may be familiar to you as the denominator of Bayes
@@ -230,9 +230,9 @@ probability of the observed data ($\mathbf X$) under a given model
 ($M_i$) that is averaged over all possible values of the parameters of
 the model ($\theta_i$) with respect to the prior density on $\theta_i$</p>
 
-<script type="math/tex; mode=display">\begin{aligned}
+\[\begin{aligned}
 \mathbb{P}(\mathbf X \mid M_i) = \int \mathbb{P}(\mathbf X \mid \theta_i) \mathbb{P}(\theta_i)dt.
-\end{aligned}</script>
+\end{aligned}\]
 
 <p>This makes it clear that more complex (parameter-rich) models are
 penalized by virtue of the associated prior: each additional parameter
@@ -241,9 +241,9 @@ density. If you refer back to equation \eqref{eq:one}, you can see that, with
 very little algebra, the ratio of marginal likelihoods is equal to the
 Bayes factor:</p>
 
-<script type="math/tex; mode=display">\begin{aligned}
+\[\begin{aligned}
 BF(M_0,M_1) = \frac{\mathbb{P}(\mathbf X \mid M_0)}{\mathbb{P}(\mathbf X \mid M_1)} = \frac{\mathbb{P}(M_0 \mid \mathbf X, \theta_0)}{\mathbb{P}(M_1 \mid \mathbf X, \theta_1)} \div \frac{\mathbb{P}(M_0)}{\mathbb{P}(M_1)}. 
-\end{aligned}</script>
+\end{aligned}\]
 
 <p>Therefore, we can perform a Bayes factor comparison of two models by
 calculating the marginal likelihood for each one. Alas, exact solutions
@@ -620,18 +620,18 @@ small to be held in computer memory. Accordingly, we need to use a
 different form of equation [bfFormula] to calculate the ln-Bayes
 factor (we will denote this value $\mathcal{K}$):</p>
 
-<script type="math/tex; mode=display">\begin{aligned}
+\[\begin{aligned}
 \mathcal{K}=\ln[BF(M_0,M_1)] = \ln[\mathbb{P}(\mathbf X \mid M_0)]-\ln[\mathbb{P}(\mathbf X \mid M_1)],
-\end{aligned}</script>
+\end{aligned}\]
 
 <p>where $\ln[\mathbb{P}(\mathbf X \mid M_0)]$ is the <em>marginal lnL</em>
 estimate for model $M_0$. The value resulting from equation
 [LNbfFormula] can be converted to a raw Bayes factor by simply taking
 the exponent of $\cal{K}$</p>
 
-<script type="math/tex; mode=display">\begin{aligned}
+\[\begin{aligned}
 BF(M_0,M_1) = e^{\cal{K}}.
-\end{aligned}</script>
+\end{aligned}\]
 
 <p>Alternatively, you can
 directly interpret the strength of evidence in favor of $M_0$ in log
@@ -726,7 +726,7 @@ We will use an “off-set” lognormal distribution, so then we have to set the 
 <p>The lognormal distribution has two parameters: $\mu$ is the location parameter and $\sigma$ is the standard deviation. Importantly, $\mu$ is <em>not</em> the same as the mean for the lognormal.
 We can compute $\mu$ easily by:</p>
 
-<script type="math/tex; mode=display">\mu = log(M) - \frac{\sigma^2}{2}.</script>
+\[\mu = log(M) - \frac{\sigma^2}{2}.\]
 
 <p>If we plug in <code class="highlighter-rouge">mean_ra</code> and <code class="highlighter-rouge">stdv_ra</code> into the equation above, we get:</p>
 

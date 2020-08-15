@@ -143,15 +143,14 @@ performing standard Bayesian inference.</p>
 regression</a> model with
 parameters $\alpha$ and $\beta$</p>
 
-<script type="math/tex; mode=display">y \sim \text{Poisson}(\exp(\alpha+\beta*x))</script>
+\[y \sim \text{Poisson}(\exp(\alpha+\beta*x))\]
 
 <p>where $y$ is the number of fatal accidents in year $x$. For simplicity,
 we choose uniform priors for $\alpha$ and $\beta$.</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{aligned}
-\alpha & \sim \text{Uniform}(-10,10)\\
-\beta &  \sim \text{Uniform}(-10,10)\end{aligned} %]]></script>
+\[\begin{aligned}
+\alpha &amp; \sim \text{Uniform}(-10,10)\\
+\beta &amp;  \sim \text{Uniform}(-10,10)\end{aligned}\]
 
 <p>The probability density can be computed in <code class="highlighter-rouge">RevBayes</code> for a single year by</p>
 
@@ -361,13 +360,13 @@ object, the vector of monitors and the vector of moves.</p>
 <ul>
   <li>Report the posterior mean and 95% credible intervals for $\alpha$ and $\beta$.</li>
   <li>Additionally, plot the posterior distribution of $\alpha$ and $\beta$ by plotting a histogram of the samples.</li>
-  <li>Plot the curve of <script type="math/tex">m(x) = \text{E}[\exp(\alpha+\beta*x) |y]</script> for $x = [1976,1985]$. You can generate draws from the posterior distribution of the expected value for
+  <li>Plot the curve of \(m(x) = \text{E}[\exp(\alpha+\beta*x) |y]\) for $x = [1976,1985]$. You can generate draws from the posterior distribution of the expected value for
 a specific $x$ by recording the current expected value at a iteration
 $i$ of the Metropolis algorithm 
-<script type="math/tex">m_{sample}(x)[i] = \text{E}[\exp(\alpha[i]+\beta[i]*x) |y]</script> and taking
+\(m_{sample}(x)[i] = \text{E}[\exp(\alpha[i]+\beta[i]*x) |y]\) and taking
 the mean of those samples ($\bar{m}_{sample}(x)$) afterwards. Since <code class="highlighter-rouge">RevBayes</code>
 provides you with the samples of
-<script type="math/tex">m(x) = \text{E}[\exp(\alpha+\beta*x) |y] = \lambda_x</script> you can simply
+\(m(x) = \text{E}[\exp(\alpha+\beta*x) |y] = \lambda_x\) you can simply
 plot these posterior curves.</li>
   <li>Produce a histogram of the predictive distribution of the number of
 fatalities in 2014 and estimate the posterior mean. The predictive
@@ -409,19 +408,17 @@ discretize and look at the yearly number of accidents.</p>
 for different rates before and after year $\theta$, where $\theta$ is
 unknown to us. Thus, the observation distribution of our model is
 $y_t \sim Poisson(\lambda_t)$ with $t = 1851,\ldots,1962$ and
-<script type="math/tex">% <![CDATA[
-\begin{aligned}
-\lambda_t = & \begin{cases}
-\beta & \mbox{if } t < \theta \\
-\gamma & \mbox{if } t \geq \theta
-\end{cases}\end{aligned} %]]></script> Thus, the rate $\lambda_t$ is defined by
+\(\begin{aligned}
+\lambda_t = &amp; \begin{cases}
+\beta &amp; \mbox{if } t &lt; \theta \\
+\gamma &amp; \mbox{if } t \geq \theta
+\end{cases}\end{aligned}\) Thus, the rate $\lambda_t$ is defined by
 three unknown parameters: $\beta$, $\gamma$ and $\theta$. A hierarchical
-choice of priors is given by <script type="math/tex">% <![CDATA[
-\begin{aligned}
- \eta & \sim Gamma(10.0;20.0) \\ 
- \beta & \sim Gamma(2.0;\eta) \\
- \gamma & \sim Gamma(2.0;\eta) \\
- \theta & \sim Uniform(1852,\ldots,1962)\end{aligned} %]]></script> which brings
+choice of priors is given by \(\begin{aligned}
+ \eta &amp; \sim Gamma(10.0;20.0) \\ 
+ \beta &amp; \sim Gamma(2.0;\eta) \\
+ \gamma &amp; \sim Gamma(2.0;\eta) \\
+ \theta &amp; \sim Uniform(1852,\ldots,1962)\end{aligned}\) which brings
 an additional parameter $\eta$ in the model. For $\theta$ we have used a
 uniform prior over the years, but excluded year 1851 in order to make
 sure at least one year has rate $\beta$. The hierarchical prior carries

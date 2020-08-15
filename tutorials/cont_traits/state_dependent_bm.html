@@ -138,15 +138,15 @@ which describes models of discrete-character evolution, before using this tutori
 
 <p>Under this model, the changes in the continuous character while the discrete character is in state $j$, $\Delta_j$, are normally distributed with mean 0 and variance $t_j \beta^2 \zeta^2_j$, where $t_j$ is the amount of time spent in state $j$. The total change over the entire branch is a sum of normally distributed random variables:</p>
 
-<script type="math/tex; mode=display">\begin{equation}
+\[\begin{equation}
     \Delta \sim \text{Normal}(0, \beta^2 \sum_{j=0}^k t_j \zeta^2_j )
-\end{equation}</script>
+\end{equation}\]
 
 <p>Consequently, the rate of evolution on branch $i$ is the weighted average of the state-dependent rates, weighted by the amount of time spent in each state:</p>
 
-<script type="math/tex; mode=display">\begin{equation}
+\[\begin{equation}
     \sigma^2_i = \beta^2 \times \sum_{j=0}^k \tau_i(j) \times \zeta^2_j,
-\end{equation}</script>
+\end{equation}\]
 
 <p>where $\tau_i(j)$ is the <em>relative</em> amount of time branch $i$ spends in discrete-state $j$ (the relative dwelling time). Given a particular history of the discrete character, which describes the amount of time spent in each state along each branch, we can therefore compute the branch-specific rates of continuous-character evolution over the entire tree. We use data augmentation to map the history of discrete characters across the tree, and use Markov chain Monte Carlo to integrate over all possible histories of the discrete character in proportion to their probability. The probabilistic graphical model for this model is represented in (<a href="#fig_bm_state_dependent_gm"></a>).</p>
 
@@ -390,9 +390,9 @@ create our MCMC object:</p>
 
 <p>Using rjMCMC allows the Markov chain to visit the two models in proportion to their posterior probability. The posterior probability of model $i$ is simply the fraction of samples where the chain was visiting that model. Because we also specify a prior on the models, we can compute a Bayes factor for the state-dependent model as:</p>
 
-<script type="math/tex; mode=display">\begin{equation}
+\[\begin{equation}
     \text{BF}_\text{state-dependent} = \frac{ P( \text{state-dependent} \mid X, Y) }{ P( \text{state-independent} \mid X, Y) } \div \frac{ P( \text{state-dependent}) }{ P( \text{state-independent}) },
-\end{equation}</script>
+\end{equation}\]
 
 <p>where $P( \text{state-dependent} \mid X, Y)$ and $P( \text{state-dependent})$ are the posterior probability and prior probability of state-dependent rates, respectively.</p>
 

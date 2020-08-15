@@ -602,7 +602,7 @@ posterior to increase. Equation $\ref{equation1}$.</p>
 
 <p>Assuming a uniform prior on topologies, the change in entropy can be calculated as:</p>
 
-<script type="math/tex; mode=display">T_e(X,M_c)=ln[B(N)]+\sum_{i=1}^{B(N)} p(\tau_i|X)ln[p(\tau_i|X)] \label{equation1}\tag{1}</script>
+\[T_e(X,M_c)=ln[B(N)]+\sum_{i=1}^{B(N)} p(\tau_i|X)ln[p(\tau_i|X)] \label{equation1}\tag{1}\]
 
 <p>These same statistics are calculated for both the posterior distributions from the simulated datasets and the posterior distribution from the empirical dataset. This framework is designed to be flexible, so if in the future you can imagine a test statistic you think would be informative for your model,
 it is easy to expand these calculations in <code class="highlighter-rouge">RevScript</code>.</p>
@@ -658,18 +658,18 @@ of our <em>P</em>-values for our test statistics.</p>
 proportion of samples in the distribution where the value is less than
 or equal to the observed value, calculated as:</p>
 
-<script type="math/tex; mode=display">p_l=p(T(X_{rep})\leqslant T(X)|(X) \label{equation2}\tag{2}</script>
+\[p_l=p(T(X_{rep})\leqslant T(X)|(X) \label{equation2}\tag{2}\]
 
 <p>The posterior predictive <em>P</em>-value for an upper one-tailed test is the
 proportion of samples in the distribution where the value is greater
 than or equal to the observed value, calculated as:</p>
 
-<script type="math/tex; mode=display">p_u=p(T(X_{rep})\geqslant T(X)|(X) \label{equation3}\tag{3}</script>
+\[p_u=p(T(X_{rep})\geqslant T(X)|(X) \label{equation3}\tag{3}\]
 
 <p>and the two-tailed posterior predictive <em>P</em>-value is simply twice the
 minimum of the corresponding one-tailed tests calculated as:</p>
 
-<script type="math/tex; mode=display">p_2=2min(p_l,p_u) \label{equation4}\tag{4}</script>
+\[p_2=2min(p_l,p_u) \label{equation4}\tag{4}\]
 
 <p>Let’s take a look at the <strong>PosteriorPredictive_PValues.Rev</strong> script to
 get a better idea of what is happening.</p>

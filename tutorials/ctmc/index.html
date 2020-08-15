@@ -95,38 +95,6 @@
         
           <li><a href="/tutorials/ctmc/data/primates_and_galeopterus_cytb.nex">primates_and_galeopterus_cytb.nex</a></li>
         
-          <li><a href="/tutorials/ctmc/data/primates_and_galeopterus_cytb.nex.ckp">primates_and_galeopterus_cytb.nex.ckp</a></li>
-        
-          <li><a href="/tutorials/ctmc/data/primates_and_galeopterus_cytb.nex.con.tre">primates_and_galeopterus_cytb.nex.con.tre</a></li>
-        
-          <li><a href="/tutorials/ctmc/data/primates_and_galeopterus_cytb.nex.lstat">primates_and_galeopterus_cytb.nex.lstat</a></li>
-        
-          <li><a href="/tutorials/ctmc/data/primates_and_galeopterus_cytb.nex.mcmc">primates_and_galeopterus_cytb.nex.mcmc</a></li>
-        
-          <li><a href="/tutorials/ctmc/data/primates_and_galeopterus_cytb.nex.parts">primates_and_galeopterus_cytb.nex.parts</a></li>
-        
-          <li><a href="/tutorials/ctmc/data/primates_and_galeopterus_cytb.nex.pstat">primates_and_galeopterus_cytb.nex.pstat</a></li>
-        
-          <li><a href="/tutorials/ctmc/data/primates_and_galeopterus_cytb.nex.run1.p">primates_and_galeopterus_cytb.nex.run1.p</a></li>
-        
-          <li><a href="/tutorials/ctmc/data/primates_and_galeopterus_cytb.nex.run1.t">primates_and_galeopterus_cytb.nex.run1.t</a></li>
-        
-          <li><a href="/tutorials/ctmc/data/primates_and_galeopterus_cytb.nex.run2.p">primates_and_galeopterus_cytb.nex.run2.p</a></li>
-        
-          <li><a href="/tutorials/ctmc/data/primates_and_galeopterus_cytb.nex.run2.t">primates_and_galeopterus_cytb.nex.run2.t</a></li>
-        
-          <li><a href="/tutorials/ctmc/data/primates_and_galeopterus_cytb.nex.trprobs">primates_and_galeopterus_cytb.nex.trprobs</a></li>
-        
-          <li><a href="/tutorials/ctmc/data/primates_and_galeopterus_cytb.nex.tstat">primates_and_galeopterus_cytb.nex.tstat</a></li>
-        
-          <li><a href="/tutorials/ctmc/data/primates_and_galeopterus_cytb.nex.vstat">primates_and_galeopterus_cytb.nex.vstat</a></li>
-        
-          <li><a href="/tutorials/ctmc/data/primates_and_galeopterus_cytb.phy">primates_and_galeopterus_cytb.phy</a></li>
-        
-          <li><a href="/tutorials/ctmc/data/primates_cytb_JC_run_1_MAP.tree">primates_cytb_JC_run_1_MAP.tree</a></li>
-        
-          <li><a href="/tutorials/ctmc/data/primates_cytb_JC_run_2_MAP.tree">primates_cytb_JC_run_2_MAP.tree</a></li>
-        
         </ul>
     
         
@@ -160,13 +128,12 @@ using common nucleotide substitution models. The substitution models
 used in molecular evolution are continuous time Markov models, which are
 fully characterized by their instantaneous-rate matrix:</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-Q = \begin{pmatrix}
--\mu_A & \mu_{AC} & \mu_{AG} & \mu_{AT} \\
-\mu_{CA} & -\mu_C  & \mu_{CG} & \mu_{CT} \\
-\mu_{GA} & \mu_{GC} & -\mu_C  & \mu_{GT} \\
-\mu_{TA} & \mu_{TC} & \mu_{TG} & -\mu_T
-\end{pmatrix} \mbox{  ,} %]]></script>
+\[Q = \begin{pmatrix}
+-\mu_A &amp; \mu_{AC} &amp; \mu_{AG} &amp; \mu_{AT} \\
+\mu_{CA} &amp; -\mu_C  &amp; \mu_{CG} &amp; \mu_{CT} \\
+\mu_{GA} &amp; \mu_{GC} &amp; -\mu_C  &amp; \mu_{GT} \\
+\mu_{TA} &amp; \mu_{TC} &amp; \mu_{TG} &amp; -\mu_T
+\end{pmatrix} \mbox{  ,}\]
 
 <p>where $\mu_{ij}$ represents the instantaneous rate of substitution from
 state $i$ to state $j$. The diagonal elements $\mu_i$ are the rates of
@@ -175,13 +142,12 @@ corresponding row. Given the instantaneous-rate matrix, $Q$, we can
 compute the corresponding transition probabilities for a branch of
 length $t$, $P(t)$, by exponentiating the rate matrix:</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-P(t) = \begin{pmatrix}
-p_{AA}(t) & p_{AC}(t) & p_{AG}(t) & p_{AT}(t) \\
-p_{CA}(t) & p_{CC}(t) & p_{CG}(t) & p_{CT}(t) \\
-p_{GA}(t) & p_{GC}(t) & p_{GG}(t) & p_{GT}(t) \\
-p_{TA}(t) & p_{TC}(t) & p_{TG}(t) & p_{TT}(t)
-\end{pmatrix} = e^{Qt} = \sum_{j=0}^\infty\frac{(Qt)^j}{j!} \mbox{  .} %]]></script>
+\[P(t) = \begin{pmatrix}
+p_{AA}(t) &amp; p_{AC}(t) &amp; p_{AG}(t) &amp; p_{AT}(t) \\
+p_{CA}(t) &amp; p_{CC}(t) &amp; p_{CG}(t) &amp; p_{CT}(t) \\
+p_{GA}(t) &amp; p_{GC}(t) &amp; p_{GG}(t) &amp; p_{GT}(t) \\
+p_{TA}(t) &amp; p_{TC}(t) &amp; p_{TG}(t) &amp; p_{TT}(t)
+\end{pmatrix} = e^{Qt} = \sum_{j=0}^\infty\frac{(Qt)^j}{j!} \mbox{  .}\]
 
 <p>Each of the named substitution models (e.g., HKY or GTR) has a uniquely defined
 instantaneous-rate matrix, $Q$.</p>
@@ -269,20 +235,18 @@ be covered in more detail later in this tutorial.</p>
 <a class="citation" href="#Jukes1969">Jukes and Cantor (1969)</a>. The instantaneous-rate matrix for the JC substitution
 model is defined as</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-Q_{JC69} = \begin{pmatrix}
-{*} & \frac{1}{3} & \frac{1}{3} & \frac{1}{3} \\
-\frac{1}{3} & {*} & \frac{1}{3} & \frac{1}{3} \\
-\frac{1}{3} & \frac{1}{3} & {*} & \frac{1}{3} \\
-\frac{1}{3} & \frac{1}{3} & \frac{1}{3} & {*}
-\end{pmatrix} \mbox{  ,} %]]></script>
+\[Q_{JC69} = \begin{pmatrix}
+{*} &amp; \frac{1}{3} &amp; \frac{1}{3} &amp; \frac{1}{3} \\
+\frac{1}{3} &amp; {*} &amp; \frac{1}{3} &amp; \frac{1}{3} \\
+\frac{1}{3} &amp; \frac{1}{3} &amp; {*} &amp; \frac{1}{3} \\
+\frac{1}{3} &amp; \frac{1}{3} &amp; \frac{1}{3} &amp; {*}
+\end{pmatrix} \mbox{  ,}\]
 
 <p>which has the advantage that the transition probability matrix can be
 computed analytically</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-P_{JC69} = \begin{pmatrix} {\frac{1}{4} + \frac{3}{4}e^{-rt}} & {\frac{1}{4} - \frac{1}{4}e^{-rt}} & {\frac{1}{4} - \frac{1}{4}e^{-rt}} & {\frac{1}{4} - \frac{1}{4}e^{-rt}} \\\\ {\frac{1}{4} - \frac{1}{4}e^{-rt}} & {\frac{1}{4} + \frac{3}{4}e^{-rt}} & {\frac{1}{4} - \frac{1}{4}e^{-rt}} & {\frac{1}{4} - \frac{1}{4}e^{-rt}} \\\\ {\frac{1}{4} - \frac{1}{4}e^{-rt}} & {\frac{1}{4} - \frac{1}{4}e^{-rt}} & {\frac{1}{4} + \frac{3}{4}e^{-rt}} & {\frac{1}{4} - \frac{1}{4}e^{-rt}} \\\\ {\frac{1}{4} - \frac{1}{4}e^{-rt}} & {\frac{1}{4} - \frac{1}{4}e^{-rt}} & {\frac{1}{4} - \frac{1}{4}e^{-rt}} & {\frac{1}{4} + \frac{3}{4}e^{-rt}}
-\end{pmatrix} \mbox{  ,} %]]></script>
+\[P_{JC69} = \begin{pmatrix} {\frac{1}{4} + \frac{3}{4}e^{-rt}} &amp; {\frac{1}{4} - \frac{1}{4}e^{-rt}} &amp; {\frac{1}{4} - \frac{1}{4}e^{-rt}} &amp; {\frac{1}{4} - \frac{1}{4}e^{-rt}} \\\\ {\frac{1}{4} - \frac{1}{4}e^{-rt}} &amp; {\frac{1}{4} + \frac{3}{4}e^{-rt}} &amp; {\frac{1}{4} - \frac{1}{4}e^{-rt}} &amp; {\frac{1}{4} - \frac{1}{4}e^{-rt}} \\\\ {\frac{1}{4} - \frac{1}{4}e^{-rt}} &amp; {\frac{1}{4} - \frac{1}{4}e^{-rt}} &amp; {\frac{1}{4} + \frac{3}{4}e^{-rt}} &amp; {\frac{1}{4} - \frac{1}{4}e^{-rt}} \\\\ {\frac{1}{4} - \frac{1}{4}e^{-rt}} &amp; {\frac{1}{4} - \frac{1}{4}e^{-rt}} &amp; {\frac{1}{4} - \frac{1}{4}e^{-rt}} &amp; {\frac{1}{4} + \frac{3}{4}e^{-rt}}
+\end{pmatrix} \mbox{  ,}\]
 
 <p>where $t$ is the branch length in units of time, and $r$ is the rate (clock) for the process. In the later exercises you will be asked to specify more complex substitution models. <strong>Don’t worry, you won’t have to calculate all of the transition probabilities, because RevBayes will take care of all the computations for you.</strong> Here we only provide some of the equations for the models in case you might be interested in the details. You will be able to complete the exercises without understanding the underlying math.</p>
 
@@ -956,13 +920,12 @@ treetrace.cladeProbability( Lemuroidea )
 <blockquote class="aside"><h2>Setting up the Kimura 1980 (K80 or K2P) substitution model</h2><p>The K80 model (AKA the K2P model) allows the rates of transition and transversion substitutions to be unequal <a class="citation" href="#Kimura1980">(Kimura 1980)</a>.
 The parameter $\kappa$ describes the relative rate of transition to transversion substitutions (if $\kappa &gt; 1$, transitions occur at a higher rate than transversions). The instantaneous-rate matrix for the K80 model is defined as:</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-Q_{K80} = \begin{pmatrix}
-                  -                 & \frac{1}{4} & \frac{\kappa}{4} & \frac{1}{4} \\
-                  \frac{1}{4} & -               & \frac{1}{4} & \frac{\kappa}{4} \\
-                  \frac{\kappa}{4} & \frac{1}{4} & -                & \frac{1}{4} \\
-                  \frac{1}{4} & \frac{\kappa}{4}	& \frac{1}{4} & -
-\end{pmatrix} \mbox{  .} %]]></script>
+\[Q_{K80} = \begin{pmatrix}
+                  -                 &amp; \frac{1}{4} &amp; \frac{\kappa}{4} &amp; \frac{1}{4} \\
+                  \frac{1}{4} &amp; -               &amp; \frac{1}{4} &amp; \frac{\kappa}{4} \\
+                  \frac{\kappa}{4} &amp; \frac{1}{4} &amp; -                &amp; \frac{1}{4} \\
+                  \frac{1}{4} &amp; \frac{\kappa}{4}	&amp; \frac{1}{4} &amp; -
+\end{pmatrix} \mbox{  .}\]
 
 <p>Now, add the parameter $\kappa$ to the substitution model, and create a K80 rate matrix:</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kappa ~ dnExp(1)
@@ -987,13 +950,12 @@ transition and transversion substitutions to differ, $\kappa$. This
 corresponds to the substitution model proposed by <a class="citation" href="#Hasegawa1985">Hasegawa et al. (1985)</a>,
 which is specified with the following instantaneous-rate matrix:</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-Q_{HKY} = \begin{pmatrix}
-{\cdot}             & {\pi_C}           & {\kappa\pi_G}     & {\pi_T} \\
-{\pi_A}             & {\cdot}           & {\pi_G}           & {\kappa\pi_T} \\
-{\kappa\pi_A}       & {\pi_C}           & {\cdot}           & {\pi_T} \\
-{\pi_A}             & {\kappa\pi_C}     & {\pi_G}           & {\cdot}
-\end{pmatrix} \mbox{  ,} %]]></script>
+\[Q_{HKY} = \begin{pmatrix}
+{\cdot}             &amp; {\pi_C}           &amp; {\kappa\pi_G}     &amp; {\pi_T} \\
+{\pi_A}             &amp; {\cdot}           &amp; {\pi_G}           &amp; {\kappa\pi_T} \\
+{\kappa\pi_A}       &amp; {\pi_C}           &amp; {\cdot}           &amp; {\pi_T} \\
+{\pi_A}             &amp; {\kappa\pi_C}     &amp; {\pi_G}           &amp; {\cdot}
+\end{pmatrix} \mbox{  ,}\]
 
 <p>where the diagonal ${\cdot}$ entries are equal to the negative sum of the
 elements in the corresponding row.</p>
@@ -1099,13 +1061,12 @@ exchangeability rates to differ (<a href="#gtr_graphical_model"></a>).</p>
 
 <p>The instantaneous-rate matrix for the GTR substitution model is:</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-Q_{GTR} = \begin{pmatrix}
-{\cdot}	   & {r_{AC}\pi_C} & {r_{AG}\pi_G} & {r_{AT}\pi_T} \\
-{r_{AC}\pi_A} & {\cdot}       & {r_{CG}\pi_G} & {r_{CT}\pi_T} \\
-{r_{AG}\pi_A} & {r_{CG}\pi_C} & {\cdot}       & {r_{GT}\pi_T} \\
-{r_{AT}\pi_A} & {r_{CT}\pi_C} & {r_{GT}\pi_G} & {\cdot}       \\
-\end{pmatrix} \mbox{  ,} %]]></script>
+\[Q_{GTR} = \begin{pmatrix}
+{\cdot}	   &amp; {r_{AC}\pi_C} &amp; {r_{AG}\pi_G} &amp; {r_{AT}\pi_T} \\
+{r_{AC}\pi_A} &amp; {\cdot}       &amp; {r_{CG}\pi_G} &amp; {r_{CT}\pi_T} \\
+{r_{AG}\pi_A} &amp; {r_{CG}\pi_C} &amp; {\cdot}       &amp; {r_{GT}\pi_T} \\
+{r_{AT}\pi_A} &amp; {r_{CT}\pi_C} &amp; {r_{GT}\pi_G} &amp; {\cdot}       \\
+\end{pmatrix} \mbox{  ,}\]
 
 <p>where the six exchangeability parameters, $r_{ij}$, specify the relative
 rates of change between states $i$ and $j$.</p>

@@ -189,7 +189,7 @@ over all possible attachment points for each range <a class="citation" href="#He
 For range $i$, we define $\gamma_i$, which is the number of co-existing lineages at time $b_i$. 
 This allows us to account for topological uncertainty without explicitly sampling the underlying topology.</p>
 
-<p>The data summary for this first model, $\mathcal{D} = ( \{ k_{i,j}, b_i, d_i, o_i \}_{i \in 1…n, j \in 1…l})$, includes per interval fossil counts <script type="math/tex">k_{i,j}</script>, lineage duration times, $b_i$ and $d_i$, and first appearance time $o_i$ for each range.
+<p>The data summary for this first model, $\mathcal{D} = ( \{ k_{i,j}, b_i, d_i, o_i \}_{i \in 1…n, j \in 1…l})$, includes per interval fossil counts \(k_{i,j}\), lineage duration times, $b_i$ and $d_i$, and first appearance time $o_i$ for each range.
 Typically, we do not have information about times $b_i$ and $d_i$, but we can sample these using Markov Chain Monte Carlo (MCMC), thus accounting for the uncertainty associated with these ages.
 Although the age of the last appearance is not included in our data summary and is not required to calculate the probability of observing our data, it is used to provide an upper limit (maximum age) for the extinction times $d_i$.</p>
 
@@ -352,7 +352,7 @@ The function can optionally take as input the matrix of per-interval fossil coun
 The option <code class="highlighter-rouge">binary</code> is used to indicate whether the data in matrix <code class="highlighter-rouge">k</code> should be interpreted as absolute fossil counts (as in model 1) or presence/absence (1/0) data (as in model 3).
 If <code class="highlighter-rouge">binary = FALSE</code> the function will implement model 1 and interpret the data in <code class="highlighter-rouge">k</code> as absolute fossil counts, which is the default.
 If <code class="highlighter-rouge">binary = TRUE</code> the function will implement model 3 and use 1/0 data.
-If the matrix <code class="highlighter-rouge">k</code> contains cells with <script type="math/tex">k_{i,j} > 1</script>, the function will interpret this as $\kappa_{i,j} = 1$.</p>
+If the matrix <code class="highlighter-rouge">k</code> contains cells with \(k_{i,j} &gt; 1\), the function will interpret this as $\kappa_{i,j} = 1$.</p>
 
 <p>Model 1 requires both stratigraphic range ages and per-interval fossil counts.
 To use model 1 simply include the matrix <code class="highlighter-rouge">k</code>, along with the other model parameters and leave <code class="highlighter-rouge">binary = FALSE</code> (excluding this argument from the function call is equivalent to specifying the default option).</p>

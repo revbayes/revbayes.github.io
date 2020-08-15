@@ -237,7 +237,7 @@ Because DEC uses discrete-valued ranges, anagenesis is modeled using a
 continuous-time Markov chain. This, in turn, allows us to compute
 transition probability of a character changing from $i$ to $j$ in time
 $t$ through matrix exponentiation
-<script type="math/tex">\mathbf{P}_{ij}(t) = \left[ \exp \left\lbrace \mathbf{Q}t \right\rbrace \right]_{ij},</script>
+\(\mathbf{P}_{ij}(t) = \left[ \exp \left\lbrace \mathbf{Q}t \right\rbrace \right]_{ij},\)
 where $\textbf{Q}$ is the instantaneous rate matrix defining the rates
 of change between all pairs of characters, and $\textbf{P}$ is the
 transition probability rate matrix. The indices $i$ and $j$ represent
@@ -249,20 +249,19 @@ encode ${\bf Q}$ to reflect the allowable classes of range evolution
 events with biologically meaningful parameters. For three areas, the
 rates in the anagenetic rate matrix are</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\textbf{Q} = 
+\[\textbf{Q} = 
 	\begin{array}{c|cccccccc}
-		& \emptyset & A & B & C & AB & AC & BC & ABC \\
+		&amp; \emptyset &amp; A &amp; B &amp; C &amp; AB &amp; AC &amp; BC &amp; ABC \\
 		\hline
-		\emptyset 	& - 	& 0 	& 0 	& 0 		& 0			& 0 		& 0 		& 0 \\
-		A 			& e_A 	& - 	& 0 	& 0 		& d_{AB}	& d_{AC} 	& 0 		& 0 \\
-		B 			& e_B 	& 0 	& - 	& 0 		& d_{BA}	& 0 		& d_{BC} 	& 0 \\
-		C 			& e_C 	& 0 	& 0 	& - 		& 0 		& d_{CA} 	& d_{CB} 	& 0 \\
-		AB 			& 0 	& e_A 	& e_B 	& 0 		& -			& 0 		& 0 		& d_{AC} + d_{BC} \\
-		AC 			& 0 	& e_C 	& 0 	& e_A 		& 0			& - 		& 0 		& d_{AB} + d_{CB} \\
-		BC 			& 0 	& 0 	& e_C 	& e_B 		& 0			& 0 		& - 		& d_{BA} + d_{CA} \\
-		ABC 		& 0 	& 0 	& 0 	& 0 		& e_C 		& e_B 		& e_A 		& - \\								
-	\end{array} %]]></script>
+		\emptyset 	&amp; - 	&amp; 0 	&amp; 0 	&amp; 0 		&amp; 0			&amp; 0 		&amp; 0 		&amp; 0 \\
+		A 			&amp; e_A 	&amp; - 	&amp; 0 	&amp; 0 		&amp; d_{AB}	&amp; d_{AC} 	&amp; 0 		&amp; 0 \\
+		B 			&amp; e_B 	&amp; 0 	&amp; - 	&amp; 0 		&amp; d_{BA}	&amp; 0 		&amp; d_{BC} 	&amp; 0 \\
+		C 			&amp; e_C 	&amp; 0 	&amp; 0 	&amp; - 		&amp; 0 		&amp; d_{CA} 	&amp; d_{CB} 	&amp; 0 \\
+		AB 			&amp; 0 	&amp; e_A 	&amp; e_B 	&amp; 0 		&amp; -			&amp; 0 		&amp; 0 		&amp; d_{AC} + d_{BC} \\
+		AC 			&amp; 0 	&amp; e_C 	&amp; 0 	&amp; e_A 		&amp; 0			&amp; - 		&amp; 0 		&amp; d_{AB} + d_{CB} \\
+		BC 			&amp; 0 	&amp; 0 	&amp; e_C 	&amp; e_B 		&amp; 0			&amp; 0 		&amp; - 		&amp; d_{BA} + d_{CA} \\
+		ABC 		&amp; 0 	&amp; 0 	&amp; 0 	&amp; 0 		&amp; e_C 		&amp; e_B 		&amp; e_A 		&amp; - \\								
+	\end{array}\]
 
 <p>where $e = ( e_A, e_B, e_C )$ are the (local) extinction rates per area,
 and $d = ( d_{AB}, d_{AC}, d_{BC}, d_{BA}, d_{CA}, d_{CB})$ are the

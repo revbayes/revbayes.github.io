@@ -117,8 +117,6 @@
         
           <li><a href="/tutorials/divrate/scripts/mcmc_EBD_Corr_RJ.Rev">mcmc_EBD_Corr_RJ.Rev</a></li>
         
-          <li><a href="/tutorials/divrate/scripts/mcmc_EBD_PEP.Rev">mcmc_EBD_PEP.Rev</a></li>
-        
           <li><a href="/tutorials/divrate/scripts/mcmc_Yule.Rev">mcmc_Yule.Rev</a></li>
         
           <li><a href="/tutorials/divrate/scripts/mcmc_Yule_prior.Rev">mcmc_Yule_prior.Rev</a></li>
@@ -130,10 +128,6 @@
           <li><a href="/tutorials/divrate/scripts/plot_BDS.R">plot_BDS.R</a></li>
         
           <li><a href="/tutorials/divrate/scripts/plot_EBD.R">plot_EBD.R</a></li>
-        
-          <li><a href="/tutorials/divrate/scripts/plot_EBD_PEP.R">plot_EBD_PEP.R</a></li>
-        
-          <li><a href="/tutorials/divrate/scripts/plot_SEM.R">plot_SEM.R</a></li>
         
         </ul>
     
@@ -635,7 +629,7 @@ integrating over the known interval when these speciation events have
 happened (between the crown age and the present). This integral of the
 probability density of a speciation event is exactly the same as one
 minus the cumulative distribution function of a speciation event,
-<script type="math/tex">F(t|N(t_1)=1,t_1\leq t \leq T) = 1 - \frac{1-P(N(T)>0|N(t)=1)\exp{(r(t,T))}}{1-P(N(T)>0|N(t_1)=1)\exp{(r(t_1,T))}} \label{spec_dist}</script>
+\(F(t|N(t_1)=1,t_1\leq t \leq T) = 1 - \frac{1-P(N(T)&gt;0|N(t)=1)\exp{(r(t,T))}}{1-P(N(T)&gt;0|N(t_1)=1)\exp{(r(t_1,T))}} \label{spec_dist}\)
 which was previously derived by @Hoehna2014a [Equation (6)] (see also
 @Yang1997 [Equation (3)] for constant rates and @Hoehna2013
 [Equation (8)]).</p>
@@ -647,10 +641,9 @@ time of most recent common ancestor of the $i^{th}$ clade.</p>
 
 <p>Then, the joint probability density of the sampled reconstructed tree
 and the empirically informed missing speciation times is
-<script type="math/tex">% <![CDATA[
-\begin{aligned}
-f(\Psi,\mathbb{K}|N(t_1\!=\!0)\!=\!2,S(2,t_1\!=\!0,T))  & = & f(\Psi|N(t_1\!=\!0)\!=\!2,S(2,t_1\!=\!0,T)) \nonumber \\
-& &  \times\prod_{i=1}^{|\mathbb{K}|}\left(1-F(t|N(c_{i})=1,c_{i}\leq t \leq T)\right)^{k_i}  \nonumber\\ \label{eq:timesAndMissing}\end{aligned} %]]></script>
+\(\begin{aligned}
+f(\Psi,\mathbb{K}|N(t_1\!=\!0)\!=\!2,S(2,t_1\!=\!0,T))  &amp; = &amp; f(\Psi|N(t_1\!=\!0)\!=\!2,S(2,t_1\!=\!0,T)) \nonumber \\
+&amp; &amp;  \times\prod_{i=1}^{|\mathbb{K}|}\left(1-F(t|N(c_{i})=1,c_{i}\leq t \leq T)\right)^{k_i}  \nonumber\\ \label{eq:timesAndMissing}\end{aligned}\)
 Equation ([eq:timesAndMissing]) is actually proportional to the
 original equation under the birth-death process times the probabilities
 of the missing species. There are two things to consider when specifying
