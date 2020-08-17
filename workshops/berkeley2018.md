@@ -1,5 +1,6 @@
 ---
 layout: workshop
+type: workshop
 title: Phylogenetic graphical models and Bayesian inference
 location: UC Berkeley, CA USA
 startdate: 2018-02-26

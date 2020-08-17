@@ -1,32 +1,3 @@
-- name: 'Probability'
-  return_type: 'Probability'
-  usage: 'Probability(Real<any> x)'
-  arguments:
-    - label: 'x'
-      description: 'The value.'
-      dag_type: '<any>'
-      pass_by: 'const reference'
-      value_type: 'Real'
-      default:
-      options:
-  title:
-  aliases:
-  description: 'This Rev function converts between Rev types from Real to Probability.'
-  details:
-  example: |
-    # Create a RealPos
-    x <- 12/13
-    type(x)
-    
-    # Convert the RealPos to Probability
-    y := Probability(x)
-    type(y)
-  authors: 'Sebastian Hoehna'
-  see_also:
-  type_spec:
-    - 'Function'
-    - 'RevObject'
-  references:
 - name: 'VectorMonitors'
   return_type: 'Monitor[]'
   usage: 'VectorMonitors()'
@@ -110,7 +81,7 @@
     } else {
         print("Correct computation of an absolute value.")
     }
-  authors: 'Sebastian Hoehna'
+  authors:
   see_also:
     - 'ceil'
     - 'floor'
@@ -327,7 +298,7 @@
     a <- 1:3
     b <- 4
     c := append(a,b)
-  authors: 'Sebastian Hoehna'
+  authors:
   see_also: 'rep'
   type_spec:
     - 'Function'
@@ -386,7 +357,7 @@
     } else {
         print("Correct computation of a ceiled value.")
     }
-  authors: 'Sebastian Hoehna'
+  authors:
   see_also:
     - 'abs'
     - 'floor'
@@ -538,7 +509,7 @@
     n <- 5
     k <- 2
     x := choose(n, k)
-  authors: 'Michael Landis'
+  authors:
   see_also:
   type_spec:
     - 'Function'
@@ -571,7 +542,7 @@
     ls()   # check what is in the workspace
     clear( b )
     ls()   # check what is in the workspace
-  authors: 'Sebastian Hoehna'
+  authors:
   see_also: 'exists'
   type_spec:
     - 'Function'
@@ -606,7 +577,7 @@
     locus_2 = readContinuousCharacterData("locus_2.nex")
     # create concated locus for 1+2 (union of taxa)
     locus_1_and_2 = concatenate( locus_1, locus_2 )
-  authors: 'Sebastian Hoehna'
+  authors:
   see_also:
   type_spec:
     - 'Procedure'
@@ -694,7 +665,7 @@
     locus_2 = readDiscreteCharacterData("locus_2.nex")
     # create concated locus for 1+2 (union of taxa)
     locus_1_and_2 = concatenate( locus_1, locus_2 )
-  authors: 'Michael Landis'
+  authors:
   see_also:
   type_spec:
     - 'Function'
@@ -766,10 +737,6 @@
     # Generate the majority-rule consensus tree
     map_tree = consensusTree(trace=tree_trace, cutoff=0.5, file="consensus.tree")
   authors:
-    - 'Seraina Klopfstein'
-    - 'Will Freyman'
-    - 'Will Pett'
-    - 'Sebastian Hoehna'
   see_also:
     - 'mapTree'
     - 'mccTree'
@@ -863,7 +830,7 @@
   description: 'Building a identity/diagonal matrix with ''n'' columns and rows.'
   details:
   example:
-  authors: 'Sebastian Hoehna'
+  authors:
   see_also:
   type_spec:
     - 'Function'
@@ -891,7 +858,7 @@
     
     ## Incorrect usage: does "1.0" exist?
     exists(x)
-  authors: 'Michael Landis'
+  authors:
   see_also: 'clear'
   type_spec:
     - 'Function'
@@ -995,6 +962,29 @@
   authors:
   see_also:
   type_spec:
+    - 'Function'
+    - 'RevObject'
+  references:
+- name: 'fnAverageDistanceMatrix'
+  return_type: 'AverageDistanceMatrix'
+  usage: 'fnAverageDistanceMatrix(DistanceMatrix[]<any> distanceMatrices)'
+  arguments:
+    - label: 'distanceMatrices'
+      description: 'The vector of distance matrices.'
+      dag_type: '<any>'
+      pass_by: 'const reference'
+      value_type: 'DistanceMatrix[]'
+      default:
+      options:
+  title:
+  aliases: 'avgDistanceMatrix'
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  type_spec:
+    - 'Function<AverageDistanceMatrix>'
     - 'Function'
     - 'RevObject'
   references:
@@ -1528,6 +1518,42 @@
     - 'Function'
     - 'RevObject'
   references:
+- name: 'fnCladogeneticProbabilityMatrix'
+  return_type: 'CladogeneticProbabilityMatrix'
+  usage: 'fnCladogeneticProbabilityMatrix(Integer[][]<any> cladogenetic_events, RealPos[]<any> probabilities, Natural<any> num_states)'
+  arguments:
+    - label: 'cladogenetic_events'
+      description: 'A vector of cladogenetic event types. Each type is in the form [ancestral_state, daughter1_state, daughter2_state].'
+      dag_type: '<any>'
+      pass_by: 'const reference'
+      value_type: 'Integer[][]'
+      default:
+      options:
+    - label: 'probabilities'
+      description: 'The probabilities that correspond to the different cladogenetic event types.'
+      dag_type: '<any>'
+      pass_by: 'const reference'
+      value_type: 'RealPos[]'
+      default:
+      options:
+    - label: 'num_states'
+      description: 'The number of states.'
+      dag_type: '<any>'
+      pass_by: 'value'
+      value_type: 'Natural'
+      default:
+      options:
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  type_spec:
+    - 'Function'
+    - 'RevObject'
+  references:
 - name: 'fnCladogeneticSpeciationRateMatrix'
   return_type: 'CladogeneticSpeciationRateMatrix'
   usage: 'fnCladogeneticSpeciationRateMatrix(Natural[][]<any> cladogenetic_events, RealPos[]<any> speciation_rates, Natural<any> num_states)'
@@ -1594,7 +1620,7 @@
   description:
   details:
   example:
-  authors: 'Bastien Boussau'
+  authors:
   see_also:
   type_spec:
     - 'Function'
@@ -2659,17 +2685,26 @@
       value_type: 'Simplex'
       default:
       options:
-  title:
+  title: 'The General Time-Reversible rate matrix'
   aliases:
-  description:
-  details:
-  example:
+  description: 'The GTR rate matrix.'
+  details: |
+    The general time-reversible rate matrix:
+      Q(i,j) = exchangeRates(i,j) * baseFrequencies[j]
+    The exchangeRates are symmetric.
+  example: |
+    er ~ dnDirichlet( v(1,1,1,1,1,1) )
+    pi ~ dnDirichlet( v(1,1,1,1) )
+    Q := fnGTR(er,pi)
   authors:
   see_also:
   type_spec:
     - 'Function'
     - 'RevObject'
   references:
+    - citation: 'Tavare, S. Some Probabilistic and Statistical Problems in the Analysis of DNA Sequences.  Lectures on Mathematics in the Life Sciences (1986). 17: 57-86'
+      doi:
+      url: 'http://www.damtp.cam.ac.uk/user/st321/CV_&_Publications_files/STpapers-pdf/T86.pdf'
 - name: 'fnGeographicalDistance'
   return_type: 'RealPos'
   usage: 'fnGeographicalDistance(Real<any> lat1, Real<any> lon1, Real<any> lat2, Real<any> lon2)'
@@ -2731,17 +2766,23 @@
       value_type: 'Simplex'
       default:
       options:
-  title:
+  title: 'The Hasegawa-Kishino-Yano (1985) nucleotide rate matrix'
   aliases:
-  description:
+  description: 'The HKY85 model.'
   details:
-  example:
+  example: |
+    kappa ~ dnLognormal(0,1)
+    pi ~ dnDirichlet( v(1,1,1,1) )
+    Q := fnHKY(kappa,pi)
   authors:
   see_also:
   type_spec:
     - 'Function'
     - 'RevObject'
   references:
+    - citation: 'Hasegawa, M. et al. Dating of the human-ape splitting by a molecular clock of mitochondrial DNA. Journal of molecular evolution (1985) 22 (2): 160-174.'
+      doi: 'https://doi.org/10.1007/BF02101694'
+      url: 'https://link.springer.com/article/10.1007%2FBF02101694'
 - name: 'fnHiddenStateRateMatrix'
   return_type: 'RateMatrix'
   usage: 'fnHiddenStateRateMatrix(RealPos[][]|RealPos[]|RateGenerator<any> observered_transition_rates, RealPos[][]|RealPos[]|RateGenerator<any> hidden_transition_rates, Bool<any> rescaled)'
@@ -3947,17 +3988,24 @@
       value_type: 'Simplex'
       default: '[ 0.250, 0.250, 0.250, 0.250 ]'
       options:
-  title:
+  title: 'The Tamura-Nei (1993) nucleotide rate matrix'
   aliases: 'fnTamuraNei'
-  description:
+  description: 'The Tamura-Nei nucleotide rate matrix.'
   details:
-  example:
+  example: |
+    kappaAG ~ dnLognormal(0,1)    # The purine transition rate
+    kappaCT ~ dnLognormal(0,1)    # The pyrimindine transition rate
+    pi ~ dnDirichlet( v(1,1,1,1) )
+    Q := fnTrN(kappaAT, kappaCT, ,pi)
   authors:
-  see_also:
+  see_also: 'fnHKY'
   type_spec:
     - 'Function'
     - 'RevObject'
   references:
+    - citation: 'Tamura, K. and M. Nei. Estimation of the number of nucleotide substitutions in the control region of mitochondrial DNA in humans and chimpanzees. Molecular biology and evolution (1993) 10(3):512-526.'
+      doi: 'https://doi.org/10.1093/oxfordjournals.molbev.a040023'
+      url: 'https://academic.oup.com/mbe/article/10/3/512/1016366'
 - name: 'fnTreeAssembly'
   return_type: 'Tree'
   usage: 'fnTreeAssembly(Tree<any> topology, RealPos[]<any> brlens)'
@@ -4319,7 +4367,7 @@
     
     # now let's check what the value is
     getOption("linewidth")
-  authors: 'Sebastian Hoehna'
+  authors:
   see_also: 'setOption'
   type_spec:
     - 'Function'
@@ -4342,7 +4390,7 @@
     
     # check the working directory again
     getwd()
-  authors: 'Sebastian Hoehna'
+  authors:
   see_also: 'setwd'
   type_spec:
     - 'Function'
@@ -4410,9 +4458,32 @@
     
     a <- 2
     b
-  authors: 'Sebastian Hoehna'
+  authors:
   see_also:
   type_spec:
+    - 'Function'
+    - 'RevObject'
+  references:
+- name: 'int'
+  return_type: 'Integer'
+  usage: 'int(String<any> x)'
+  arguments:
+    - label: 'x'
+      description: 'The string value to convert.'
+      dag_type: '<any>'
+      pass_by: 'value'
+      value_type: 'String'
+      default:
+      options:
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  type_spec:
+    - 'Procedure'
     - 'Function'
     - 'RevObject'
   references:
@@ -4424,9 +4495,8 @@
   aliases:
   description: 'Print the copyright license of RevBayes.'
   details:
-  example: |
-    license()
-  authors: 'Sebastian Hoehna'
+  example: 'license()'
+  authors:
   see_also:
   type_spec:
     - 'Function'
@@ -4484,7 +4554,7 @@
   description: 'List all global options for RevBayes.'
   details: 'Options are used to personalize RevBayes and are stored on the local machine. Currently this is rather experimental.'
   example:
-  authors: 'Will Freyman'
+  authors:
   see_also:
     - 'setOption'
     - 'getOption'
@@ -4517,7 +4587,7 @@
     # print the values for x and y
     x # x has the stochastic value of 2.940149
     y # y has the determined value of 1.07846
-  authors: 'Jordan Koch'
+  authors:
   see_also: 'log'
   type_spec:
     - 'Function'
@@ -4615,7 +4685,7 @@
     a <- 1
     # and we can see it
     ls()
-  authors: 'Sebastian Hoehna'
+  authors:
   see_also:
     - 'clear'
     - 'exists'
@@ -4701,8 +4771,6 @@
     # Generate the MAP tree
     map_tree = mapTree(trace=tree_trace, file="map.tree")
   authors:
-    - 'Will Freyman'
-    - 'Sebastian Hoehna'
   see_also:
     - 'consensusTree'
     - 'mccTree'
@@ -4745,13 +4813,16 @@
       value_type: 'Real[]'
       default:
       options:
-  title:
+  title: 'Maximum of a set of numbers'
   aliases:
-  description:
+  description: 'Finds the maximum of a vector of numbers.'
   details:
-  example:
+  example: |
+    a = v(1,2,3,4,5)
+    max(a)
+    # this will print 5
   authors:
-  see_also:
+  see_also: '`min`'
   type_spec:
     - 'Function'
     - 'RevObject'
@@ -4777,7 +4848,7 @@
     
     # Compute the maxdiff statistic
     maxdiff = maxdiff(traces=tree_trace)
-  authors: 'Will Pett'
+  authors:
   see_also: 'readTreeTrace'
   type_spec:
     - 'Function'
@@ -4823,10 +4894,10 @@
       }
       geneTrees[g] ~ dnMultiSpeciesCoalescent(speciesTree=spTree, Ne=popSize, taxa=taxons[g])
     }
-    # Let's compute the maximum tree: 
+    # Let's compute the maximum tree:
     recTree <- maximumTree(geneTrees)
     print(recTree)
-  authors: 'Bastien Boussau'
+  authors:
   see_also:
   type_spec:
     - 'Function'
@@ -4835,7 +4906,7 @@
     - citation: 'High-resolution species trees without concatenation. Scott V. Edwards, Liang Liu, and Dennis K. Pearl . PNAS April 3, 2007 vol. 104 no. 14 .'
       doi:
       url: 'http://www.pnas.org/content/104/14/5936.full'
-    - citation: 'Maximum tree: a consistent estimator of the species tree. Liu L, Yu L, Pearl DK.  Journal of Mathematical Biology, 2010. Jan;60(1):95-106.'
+    - citation: '''Maximum tree: a consistent estimator of the species tree. Liu L, Yu L, Pearl DK.  Journal of Mathematical Biology, 2010. Jan;60(1):95-106.'''
       doi: 'https://doi.org/10.1007/s00285-009-0260-0'
       url: 'https://link.springer.com/article/10.1007%2Fs00285-009-0260-0'
 - name: 'mccTree'
@@ -4916,8 +4987,6 @@
     # Generate the MCC tree
     map_tree = mccTree(trace=tree_trace, file="mcc.tree")
   authors:
-    - 'Will Pett'
-    - 'Sebastian Hoehna'
   see_also:
     - 'consensusTree'
     - 'mapTree'
@@ -4938,11 +5007,14 @@
       value_type: 'Real[]'
       default:
       options:
-  title:
+  title: 'Mean of a vector of numbers'
   aliases:
-  description:
-  details:
-  example:
+  description: 'Finds the arithmetic mean of a vector of numbers.'
+  details: 'The numbers of the vector are summed and divided by the vector length.'
+  example: |
+    g = v(2,3,5,6,7)
+    mean(g)
+    # 4.6
   authors:
   see_also:
   type_spec:
@@ -4960,13 +5032,22 @@
       value_type: 'Real[]'
       default:
       options:
-  title:
+  title: 'Median of a set of numbers'
   aliases:
-  description:
-  details:
-  example:
+  description: 'Finds the median of a sorted vector of numbers.'
+  details: |
+    The vector is sorted when `median` is used finding the
+    number of the sorted values with an equal amount of numbers that
+    are greater than or less than that value. If the length of the vector is even, there will be no such value. In that case, the two are averaged automatically.
+  example: |
+    a = v(5,3,2,6,8)
+    median(a)
+    # 5 is the result
+    b = v(1,1,2,3,5,8)
+    median(b)
+    # 2.5 is the result
   authors:
-  see_also:
+  see_also: '`mean`'
   type_spec:
     - 'Function'
     - 'RevObject'
@@ -4982,13 +5063,16 @@
       value_type: 'Real[]'
       default:
       options:
-  title:
+  title: 'Minimum of a set of numbers'
   aliases:
-  description:
+  description: 'Finds the minimum of a vector of numbers.'
   details:
-  example:
+  example: |
+    a = v(0,1,1,2,3,5,8,13)
+    min(a)
+    # will print 0
   authors:
-  see_also:
+  see_also: '`max`'
   type_spec:
     - 'Function'
     - 'RevObject'
@@ -5275,7 +5359,7 @@
     seed(12345)
     # Now print the seed again
     printSeed()
-  authors: 'Sebastian Hoehna'
+  authors:
   see_also: 'seed'
   type_spec:
     - 'Function'
@@ -5322,7 +5406,7 @@
     # if you really want to quit
     q()
     # you can always start again later ...
-  authors: 'Sebastian Hoehna'
+  authors:
   see_also:
   type_spec:
     - 'Function'
@@ -5356,7 +5440,7 @@
     
     # this function is actually the same as the ':'
     20:-20
-  authors: 'Sebastian Hoehna'
+  authors:
   see_also:
     - 'seq'
     - 'rep'
@@ -5513,7 +5597,7 @@
   references:
 - name: 'readCharacterDataDelimited'
   return_type: 'NaturalNumbers'
-  usage: 'readCharacterDataDelimited(String<any> file, String<any> type {valid options: "NaturalNumbers"|"Bitset"|"Standard"|"Continuous"}, String<any> stateLabels, String<any> delimiter, Bool<any> headers)'
+  usage: 'readCharacterDataDelimited(String<any> file, String<any> type {valid options: "NaturalNumbers"|"Bitset"|"Standard"|"Continuous"|"Taxa"}, String<any> stateLabels, String<any> delimiter, Bool<any> headers)'
   arguments:
     - label: 'file'
       description: 'The name of the file to read in.'
@@ -5533,6 +5617,7 @@
         - 'Bitset'
         - 'Standard'
         - 'Continuous'
+        - 'Taxa'
     - label: 'stateLabels'
       description: 'The state labels (for standard states) or max number for NaturalNumbers.'
       dag_type: '<any>'
@@ -6012,7 +6097,7 @@
   example: |
     trees=readTrees(text="(a,(b,c));\n(d:0.1,(e:0.1,f:0.1):0.1);")
     print(trees)
-  authors: 'Bastien Boussau'
+  authors:
   see_also:
     - 'write'
     - 'readBranchLengthTrees'
@@ -6079,9 +6164,8 @@
   aliases: 'replicate'
   description: '''rep'' creates a vector of ''n'' copies of the value ''x''.'
   details: '''rep'' creates a vector of ''n'' elements, each with value ''x'', preserving the type of ''x'' in the returned vector.'
-  example: |
-    rep(0.1, 3)
-  authors: 'Sebastian Hoehna'
+  example: 'rep(0.1, 3)'
+  authors:
   see_also:
     - 'simplex'
     - 'v'
@@ -6158,11 +6242,18 @@
       value_type: 'Natural'
       default:
       options:
-  title:
+  title: 'Seed set function'
   aliases:
-  description:
+  description: 'Sets the random number generator seed given a natural number.'
   details:
-  example:
+  example: |
+    # pick some definitely random number
+    seed(80797980)
+    a <- rUniform(1,0.6,1.2)
+    a
+    seed(80797980)
+    a <- rUniform(1,0.6,1.2)
+    a # this will be the same as above!
   authors:
   see_also:
   type_spec:
@@ -6198,9 +6289,8 @@
   aliases:
   description: 'Create a sequence of values separate by a given step-size.'
   details: 'The ''seq'' function create a sequence of values, starting with the initial value and then adding the step-size to it until the value reaches the ''to''-value.'
-  example: |
-    seq(-0.5, 10.5, 2)
-  authors: 'Sebastian Hoehna'
+  example: 'seq(-0.5, 10.5, 2)'
+  authors:
   see_also: 'rep'
   type_spec:
     - 'Function'
@@ -6237,7 +6327,7 @@
     
     # now let's check what the value is
     getOption("linewidth")
-  authors: 'Sebastian Hoehna'
+  authors:
   see_also: 'getOption'
   type_spec:
     - 'Function'
@@ -6267,7 +6357,7 @@
     
     # check the working directory again
     getwd()
-  authors: 'Sebastian Hoehna'
+  authors:
   see_also: 'getwd'
   type_spec:
     - 'Function'
@@ -6468,42 +6558,6 @@
     - 'Function'
     - 'RevObject'
   references:
-- name: 'simplex'
-  return_type: 'Simplex'
-  usage: 'simplex(RealPos<any> x1, RealPos<any> x2, RealPos ...)'
-  arguments:
-    - label: 'x1'
-      description: 'first value'
-      dag_type: '<any>'
-      pass_by: 'const reference'
-      value_type: 'RealPos'
-      default:
-      options:
-    - label: 'x2'
-      description: 'second value'
-      dag_type: '<any>'
-      pass_by: 'const reference'
-      value_type: 'RealPos'
-      default:
-      options:
-    - label:
-      description: 'additional values'
-      dag_type: '<any>'
-      pass_by: 'const reference'
-      value_type: 'RealPos'
-      default:
-      options:
-  title:
-  aliases:
-  description:
-  details:
-  example:
-  authors:
-  see_also:
-  type_spec:
-    - 'Function'
-    - 'RevObject'
-  references:
 - name: 'sinh'
   return_type: 'Real'
   usage: 'sinh(Real<any> x)'
@@ -6544,11 +6598,16 @@
       value_type: 'Bool'
       default: 'TRUE'
       options:
-  title:
+  title: 'Sort function'
   aliases:
-  description:
-  details:
-  example:
+  description: 'Function for sorting the members of a vector in either ascending or descending order.'
+  details: 'The vector to be sorted can be of any numeric type. Ascending or descending is specified via the `ascending` argument'
+  example: |
+    nums = v(1,3,5,7,2,4,6,8)
+    sort(nums)
+    # this will result in 1,2,3,4,5,6,7,8
+    sort(nums, ascending = FALSE)
+    # this will result in 8,7,6,5,4,3,2,1
   authors:
   see_also:
   type_spec:
@@ -6573,11 +6632,15 @@
       value_type: 'Bool'
       default: 'FALSE'
       options:
-  title:
+  title: 'Function for sourcing a Rev file'
   aliases:
-  description:
+  description: 'This function takes a Rev filename as an argument and runs that Rev script.'
   details:
-  example:
+  example: |
+    # set the file name
+    fn = "rb_tutorial.Rev"
+    # the source function will run the Rev code in the file fn
+    source(fn)
   authors:
   see_also:
   type_spec:
@@ -6595,13 +6658,21 @@
       value_type: 'RealPos'
       default:
       options:
-  title:
+  title: 'Square root of a number'
   aliases:
-  description:
+  description: 'Takes the square root of some positive number `x`.'
   details:
-  example:
+  example: |
+    # compute the square root of a real number
+    x <- 3.0
+    root <- sqrt(x)
+    if ( abs(root*root - x) > 1.0e-15) {
+        print("Problem computing the square root.")
+    } else {
+        print("Correct computation of the square root.")
+    }
   authors:
-  see_also:
+  see_also: '`power`'
   type_spec:
     - 'Function'
     - 'RevObject'
@@ -6622,6 +6693,34 @@
   description:
   details:
   example:
+  authors:
+  see_also:
+  type_spec:
+    - 'Function'
+    - 'RevObject'
+  references:
+- name: 'stochasticMatrix'
+  return_type: 'StochasticMatrix'
+  usage: 'stochasticMatrix(Simplex[]<any> x)'
+  arguments:
+    - label: 'x'
+      description: 'A vector of simplices. Each simplex corresponds to a row in the stochastic matrix.'
+      dag_type: '<any>'
+      pass_by: 'const reference'
+      value_type: 'Simplex[]'
+      default:
+      options:
+  title: 'Building a stochastic matrix.'
+  aliases:
+  description: 'A stochastic matrix is a matrix (not necessarily square) with rows that sum to 1.'
+  details:
+  example: |
+    vec[1] ~ dnDirichlet( [1,1,1,1] )
+    vec[2] ~ dnDirichlet( [1,1,1,1] )
+    vec[3] ~ dnDirichlet( [1,1,1,1] )
+    vec[4] ~ dnDirichlet( [1,1,1,1] )
+    
+    m := stochasticMatrix(vec)
   authors:
   see_also:
   type_spec:
@@ -6660,7 +6759,7 @@
     d <- ln(b)
     
     str(b)
-  authors: 'Sebastian Hoehna'
+  authors:
   see_also: 'type'
   type_spec:
     - 'Function'
@@ -6677,11 +6776,16 @@
       value_type: 'Real[]'
       default:
       options:
-  title:
+  title: 'Sum function'
   aliases:
-  description:
+  description: |
+    Sums all members of a vector of type `Real`, `RealPos`, `Integer`,
+    or `Natural`
   details:
-  example:
+  example: |
+    a = v(1,2,3,4,5,6,7,8)
+    sum(a)
+    # returns 36
   authors:
   see_also:
   type_spec:
@@ -6800,7 +6904,7 @@
     # We can execute any command just as if you are using a terminal
     system("ls")
     system("pwd")
-  authors: 'Sebastian Hoehna'
+  authors:
   see_also:
   type_spec:
     - 'Function'
@@ -6856,7 +6960,7 @@
     for (i in 1:10000) sum += i
     # Now print the time again
     time()
-  authors: 'Sebastian Hoehna'
+  authors:
   see_also:
   type_spec:
     - 'Function'
@@ -6887,13 +6991,26 @@
       value_type: 'Bool'
       default: 'FALSE'
       options:
-  title:
+  title: 'Find the time to the most recent common ancestor'
   aliases:
-  description:
+  description: 'Finds the most recent common ancestor (TMRCA) of a clade of taxa on a tree.'
   details:
-  example:
+  example: |
+    # let's make up some taxa
+    taxa = v("horse", "whale", "unicorn", "narwhal")
+    # convert these to the taxon datatype
+    for(i in 1:4) { taxa[i] = taxon(taxa[i]) }
+    # simulate a tree
+    tau ~ dnUniformTimeTree(rootAge=1, taxa=taxa)
+    # we also need a molecular substitution model
+    molecular_model := fnJC(4)
+    # together these form a continuous time Markov chain over the tree
+    full_model ~ dnPhyloCTMC(tree=tau, Q=molecular_model, nSites = 100, type="DNA")
+    # need to make a clade
+    horned_animals <- clade(taxa[3], taxa[4])
+    tmrca(tau, horned_animals)
   authors:
-  see_also:
+  see_also: '`clade`'
   type_spec:
     - 'Function'
     - 'RevObject'
@@ -6932,7 +7049,7 @@
     
     # Add an MCMC move
     moves[1] = mvEmpiricalTree(tree)
-  authors: 'Will Freyman'
+  authors:
   see_also:
     - 'mvEmpiricalTree'
     - 'treeTrace'
@@ -6985,7 +7102,7 @@
     
     b <- 2.0
     type(b)
-  authors: 'Sebastian Hoehna'
+  authors:
   see_also: 'structure'
   type_spec:
     - 'Function'
@@ -7024,7 +7141,7 @@
     z <- v(x,y)
     z
     z[0]
-  authors: 'Michael Landis'
+  authors:
   see_also:
     - 'simplex'
     - 'rep'
@@ -7181,17 +7298,42 @@
       value_type: 'AbstractHomologousDiscreteCharacterData'
       default:
       options:
-  title:
+  title: 'FASTA file writing function'
   aliases:
-  description:
+  description: |
+    This function writes out a FASTA formatted file given 
+    data of class `AbstractHomologousDiscreteCharacterData`.
+    Filename is specified using the `fn` argument.
   details:
-  example:
+  example: |
+    # let's make up some taxa
+    taxa = v("horse", "whale", "unicorn", "narwhal")
+    # convert these to the taxon datatype
+    for(i in 1:4) { taxa[i] = taxon(taxa[i]) }
+    # simulate a tree
+    tau ~ dnUniformTimeTree(rootAge=1, taxa=taxa)
+    # we also need a molecular substitution model
+    molecular_model := fnJC(4)
+    # together these form a continuous time Markov chain over the tree
+    full_model ~ dnPhyloCTMC(tree=tau, Q=molecular_model, nSites = 100, type="DNA")
+    # this will print a FASTA file with a simulated molecular matrix
+    # to the working directory
+    writeFasta(filename="test.fasta", full_model)
   authors:
-  see_also:
+  see_also: '`writeNexus`, `writeCharacterDataDelimited`'
   type_spec:
     - 'Function'
     - 'RevObject'
   references:
+    - citation: 'Pearson, William R., and David J. Lipman. "Improved tools for biological sequence comparison." Proceedings of the National Academy of Sciences 85.8 (1988): 2444-2448.'
+      doi:
+      url:
+    - citation:
+      doi:
+      url: 'https://www.pnas.org/content/85/8/2444.short'
+    - citation:
+      doi: 'https://doi.org/10.1073/pnas.85.8.2444'
+      url:
 - name: 'writeNexus'
   return_type: 'NULL'
   usage: 'writeNexus(String<any> filename, AbstractHomologousDiscreteCharacterData|ContinuousCharacterData|Tree|Tree[]|TimeTree[]<any> data)'
@@ -7210,17 +7352,34 @@
       value_type: 'AbstractHomologousDiscreteCharacterData'
       default:
       options:
-  title:
+  title: 'Nexus file writer'
   aliases:
-  description:
-  details:
-  example:
+  description: 'Function for writing a nexus file.'
+  details: |
+    The first argument is the filename  to write to and this must be a string.
+    The second argument is a data object that must be some character matrix. 
+    This data matrix could be a morphological matrix, a molecular matrix, or a tree.
+  example: |
+    # let's make up some taxa
+    taxa = v("horse", "whale", "unicorn", "narwhal")
+    # simulate a tree
+    tau ~ dnUniformTimeTree(rootAge=1, taxa=taxa)
+    # we also need a molecular substitution model
+    molecular_model := fnJC(4)
+    # together these form a continuous time Markov chain over the tree
+    full_model ~ dnPhyloCTMC(tree=tau, Q=molecular_model, nSites = 100, type="DNA")
+    # this will print a Nexus file with a simulated molecular matrix
+    # to the working directory
+    writeNexus(filename="test.nex", full_model)
   authors:
-  see_also:
+  see_also: '`writeFasta`, `writeCharacterDataDelimited`, `write`'
   type_spec:
     - 'Function'
     - 'RevObject'
   references:
+    - citation: 'David R. Maddison, David L. Swofford, Wayne P. Maddison, Nexus: An Extensible File Format for Systematic Information, Systematic Biology, Volume 46, Issue 4, December 1997, Pages 590–621,'
+      doi: 'https://doi.org/10.1093/sysbio/46.4.590'
+      url: 'https://academic.oup.com/sysbio/article/46/4/590/1629695'
 - name: 'AbstractHomologousDiscreteCharacterData'
   title:
   aliases:
@@ -7681,6 +7840,10 @@
           value_type: 'Natural'
           default:
           options:
+    - name: 'setNumStatesVector'
+      return_type: 'AbstractHomologousDiscreteCharacterData[]'
+      usage: 'setNumStatesVector()'
+      arguments:
     - name: 'setTaxonName'
       return_type: 'void'
       usage: 'setTaxonName(String<any> current, String<any> new)'
@@ -7781,12 +7944,66 @@
           default: 'FALSE'
           options:
   references:
-- name: 'Bool'
+- name: 'AverageDistanceMatrix'
   title:
   aliases:
   description:
   details:
   example:
+  authors:
+  see_also:
+  type_spec: 'RevObject'
+  constructor:
+  methods:
+    - name: 'completeness'
+      return_type: 'Natural'
+      usage: 'completeness()'
+      arguments:
+    - name: 'distanceMatrix'
+      return_type: 'AverageDistanceMatrix'
+      usage: 'distanceMatrix()'
+      arguments:
+    - name: 'getElement'
+      return_type: 'Natural'
+      usage: 'getElement(Natural<any> i, Natural<any> j)'
+      arguments:
+        - label: 'i'
+          description: 'The row.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          default:
+          options:
+        - label: 'j'
+          description: 'The column.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          default:
+          options:
+    - name: 'mask'
+      return_type: 'MatrixBoolean'
+      usage: 'mask()'
+      arguments:
+    - name: 'names'
+      return_type: 'String[]'
+      usage: 'names()'
+      arguments:
+    - name: 'size'
+      return_type: 'Real'
+      usage: 'size()'
+      arguments:
+  references:
+- name: 'Bool'
+  title: 'Datatype for logical variables.'
+  aliases:
+  description: 'Bool variables can be either `true` or `false` (`TRUE` or `FALSE` also work).'
+  details:
+  example: |
+    a <- FALSE
+    if(!a)
+        print("a is not true")
+    # this will print the statement in parentheses
   authors:
   see_also:
   type_spec: 'RevObject'
@@ -7838,7 +8055,7 @@
 - name: 'BranchLengthTree'
   title: 'Tree datatype'
   aliases:
-  description: 'The Tree datatype stores information to describe the shared ancestryof a taxon set. Information includes taxon labels, topology, nodecount, and branch lengths. Tree objects also possess several usefulmethods to traverse and manipulate the Tree''s value.'
+  description: 'The Tree datatype stores information to describe the shared ancestry of a taxon set. Information includes taxon labels, topology, nodecount, and branch lengths. Tree objects also possess several useful methods to traverse and manipulate the Tree''s value.'
   details:
   example:
   authors:
@@ -8019,6 +8236,10 @@
           value_type: 'Taxon[]'
           default:
           options:
+    - name: 'getIndices'
+      return_type: 'Natural[]'
+      usage: 'getIndices()'
+      arguments:
     - name: 'getInverseES'
       return_type: 'RealPos[]'
       usage: 'getInverseES()'
@@ -8173,6 +8394,24 @@
       arguments:
         - label: 'factor'
           description: 'The scaling factor.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          default:
+          options:
+    - name: 'setBranchLength'
+      return_type: 'void'
+      usage: 'setBranchLength(Natural<any> index, RealPos<any> value)'
+      arguments:
+        - label: 'index'
+          description: 'The index of the node.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          default:
+          options:
+        - label: 'value'
+          description: 'The new branch length value.'
           dag_type: '<any>'
           pass_by: 'value'
           value_type: 'RealPos'
@@ -8874,7 +9113,7 @@
     
     # print the summary of the operators (now tuned)
     myHillClimberObject.operatorSummary()
-  authors: 'Sebastian Hoehna'
+  authors:
   see_also: 'SimulatedAnnealing'
   type_spec:
     - 'MaximumLikelihoodAnalysis'
@@ -8950,6 +9189,52 @@
   type_spec: 'RevObject'
   constructor:
   methods:
+  references:
+- name: 'MatrixBoolean'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  type_spec: 'RevObject'
+  constructor:
+  methods:
+    - name: '[]'
+      return_type: 'Bool[]'
+      usage: '[](Natural<any> index)'
+      arguments:
+        - label: 'index'
+          description: 'The index of the row.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          default:
+          options:
+    - name: 'column'
+      return_type: 'Bool[]'
+      usage: 'column(Natural<any> index)'
+      arguments:
+        - label: 'index'
+          description: 'The index of the column.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          default:
+          options:
+    - name: 'ncolumns'
+      return_type: 'Natural'
+      usage: 'ncolumns()'
+      arguments:
+    - name: 'nrows'
+      return_type: 'Natural'
+      usage: 'nrows()'
+      arguments:
+    - name: 'size'
+      return_type: 'Natural'
+      usage: 'size()'
+      arguments:
   references:
 - name: 'MatrixReal'
   title:
@@ -9143,6 +9428,37 @@
   constructor:
   methods:
   references:
+- name: 'Probability'
+  title:
+  aliases:
+  description: 'A Probability is a real value between 0.0 and 1.0'
+  details:
+  example: |
+    # Create a RealPos
+    x <- 12/13
+    type(x)
+    
+    # Convert the RealPos to Probability
+    y := Probability(x)
+    type(y)
+  authors:
+  see_also:
+  type_spec:
+    - 'RealPos'
+    - 'Real'
+    - 'RevObject'
+  constructor:
+    - usage: 'Probability(Real<any> x)'
+      arguments:
+        - label: 'x'
+          description: 'The value.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Real'
+          default:
+          options:
+  methods:
+  references:
 - name: 'RateGenerator'
   title:
   aliases:
@@ -9181,13 +9497,20 @@
           options:
   references:
 - name: 'Real'
-  title:
+  title: 'Real number data type'
   aliases:
-  description:
+  description: |
+    The real number data type can hold any real number value.
+    Not to be confused with integers which are whole numbers, or
+    `Natural` which are the counting numbers (e.g. 1,2,3,...).
   details:
-  example:
+  example: |
+    a = 1.1
+    b = 1.3
+    c = a + b
+    # c will be 2.4
   authors:
-  see_also:
+  see_also: '`RealPos`, `Integer`, `Natural`, `Probability`'
   type_spec: 'RevObject'
   constructor:
   methods:
@@ -9220,7 +9543,7 @@
   references:
 - name: 'Simplex'
   title:
-  aliases:
+  aliases: 'simplex'
   description:
   details:
   example:
@@ -9230,6 +9553,36 @@
     - 'ModelObject'
     - 'RevObject'
   constructor:
+    - usage: 'Simplex(RealPos[]<any> x, RealPos<any> x1, RealPos<any> x2, RealPos ...)'
+      arguments:
+        - label: 'x'
+          description: 'A vector of values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos[]'
+          default: 'NULL'
+          options:
+        - label: 'x1'
+          description: 'first value'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          default: 'NULL'
+          options:
+        - label: 'x2'
+          description: 'second value'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          default: 'NULL'
+          options:
+        - label:
+          description: 'additional values'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          default:
+          options:
   methods:
     - name: '[]'
       return_type: 'Probability'
@@ -9242,6 +9595,54 @@
           value_type: 'Natural'
           default:
           options:
+  references:
+- name: 'StochasticMatrix'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  type_spec:
+    - 'MatrixReal'
+    - 'RevObject'
+  constructor:
+  methods:
+    - name: '[]'
+      return_type: 'RealPos[]'
+      usage: '[](Natural<any> index)'
+      arguments:
+        - label: 'index'
+          description: 'The index of the row.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          default:
+          options:
+    - name: 'column'
+      return_type: 'RealPos[]'
+      usage: 'column(Natural<any> index)'
+      arguments:
+        - label: 'index'
+          description: 'The index of the column.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          default:
+          options:
+    - name: 'ncolumns'
+      return_type: 'Natural'
+      usage: 'ncolumns()'
+      arguments:
+    - name: 'nrows'
+      return_type: 'Natural'
+      usage: 'nrows()'
+      arguments:
+    - name: 'size'
+      return_type: 'Natural'
+      usage: 'size()'
+      arguments:
   references:
 - name: 'String'
   title:
@@ -9532,6 +9933,10 @@
       return_type: 'Taxon[]'
       usage: 'getFossils()'
       arguments:
+    - name: 'getIndices'
+      return_type: 'Natural[]'
+      usage: 'getIndices()'
+      arguments:
     - name: 'getInverseES'
       return_type: 'RealPos[]'
       usage: 'getInverseES()'
@@ -9710,6 +10115,24 @@
       return_type: 'RealPos'
       usage: 'rootAge()'
       arguments:
+    - name: 'setBranchLength'
+      return_type: 'void'
+      usage: 'setBranchLength(Natural<any> index, RealPos<any> value)'
+      arguments:
+        - label: 'index'
+          description: 'The index of the node.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          default:
+          options:
+        - label: 'value'
+          description: 'The new branch length value.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          default:
+          options:
     - name: 'setNegativeConstraint'
       return_type: 'void'
       usage: 'setNegativeConstraint(Bool<any> flag)'
@@ -9945,6 +10368,10 @@
           value_type: 'Taxon[]'
           default:
           options:
+    - name: 'getIndices'
+      return_type: 'Natural[]'
+      usage: 'getIndices()'
+      arguments:
     - name: 'getInverseES'
       return_type: 'RealPos[]'
       usage: 'getInverseES()'
@@ -10093,6 +10520,24 @@
           value_type: 'RealPos'
           default:
           options:
+    - name: 'setBranchLength'
+      return_type: 'void'
+      usage: 'setBranchLength(Natural<any> index, RealPos<any> value)'
+      arguments:
+        - label: 'index'
+          description: 'The index of the node.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          default:
+          options:
+        - label: 'value'
+          description: 'The new branch length value.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          default:
+          options:
     - name: 'setNegativeConstraint'
       return_type: 'void'
       usage: 'setNegativeConstraint(Bool<any> flag)'
@@ -10223,9 +10668,6 @@
     clade_68 = clade( taxa[6], taxa[8] )
     clade_67_or_68 = clade( clade_67, clade_68, optional_match=true )
   authors:
-    - 'Will Pett'
-    - 'Sebastian Hoehna'
-    - 'Michael Landis'
   see_also:
     - 'dnConstrainedTopology'
     - 'tmrca'
@@ -10484,12 +10926,12 @@
     x ~ dnBernoulli(p)
     x.clamp(1)
     moves[1] = mvSlide(p, delta=0.1, weight=1.0)
-    monitors[1] = screenmonitor(printgen=1000, separator = "	", x)
+    monitors[1] = screenmonitor(printgen=1000, separator = "        ", x)
     mymodel = model(p)
     mymcmc = mcmc(mymodel, monitors, moves)
     mymcmc.burnin(generations=20000,tuningInterval=100)
     mymcmc.run(generations=200000)
-  authors: 'John Huelsenbeck'
+  authors:
   see_also: 'dnBinomial'
   type_spec:
     - 'Distribution'
@@ -10517,12 +10959,12 @@
     x ~ dnBernoulli(p)
     x.clamp(1)
     moves[1] = mvSlide(p, delta=0.1, weight=1.0)
-    monitors[1] = screenmonitor(printgen=1000, separator = "	", x)
+    monitors[1] = screenmonitor(printgen=1000, separator = "        ", x)
     mymodel = model(p)
     mymcmc = mcmc(mymodel, monitors, moves)
     mymcmc.burnin(generations=20000,tuningInterval=100)
     mymcmc.run(generations=200000)
-  authors: 'Sebastian Hoehna'
+  authors:
   see_also: 'dnDirichlet'
   type_spec:
     - 'Distribution__Probability'
@@ -10558,12 +11000,12 @@
     x ~ dnBimodalLognormal(mean1=-1,mean2=1,sd1=0.1,sd2=0.1,p=p)
     x.clamp( exp(1) )
     moves[1] = mvSlide(p, delta=0.1, weight=1.0)
-    monitors[1] = screenmonitor(printgen=1000, separator = "	", x)
+    monitors[1] = screenmonitor(printgen=1000, separator = "        ", x)
     mymodel = model(p)
     mymcmc = mcmc(mymodel, monitors, moves)
     mymcmc.burnin(generations=20000,tuningInterval=100)
     mymcmc.run(generations=200000)
-  authors: 'Sebastian Hoehna'
+  authors:
   see_also:
     - 'dnBimodalNormal'
     - 'dnLognormal'
@@ -10623,12 +11065,12 @@
     x ~ dnBimodalNormal(mean1=-1,mean2=1,sd1=0.1,sd2=0.1,p=p)
     x.clamp( 1 )
     moves[1] = mvSlide(p, delta=0.1, weight=1.0)
-    monitors[1] = screenmonitor(printgen=1000, separator = "	", x)
+    monitors[1] = screenmonitor(printgen=1000, separator = "        ", x)
     mymodel = model(p)
     mymcmc = mcmc(mymodel, monitors, moves)
     mymcmc.burnin(generations=20000,tuningInterval=100)
     mymcmc.run(generations=200000)
-  authors: 'Sebastian Hoehna'
+  authors:
   see_also:
     - 'dnBimodalLognormal'
     - 'dnNormal'
@@ -10688,12 +11130,12 @@
     x ~ dnBinomial(n=10,p)
     x.clamp(8)
     moves[1] = mvSlide(p, delta=0.1, weight=1.0)
-    monitors[1] = screenmonitor(printgen=1000, separator = "	", x)
+    monitors[1] = screenmonitor(printgen=1000, separator = "        ", x)
     mymodel = model(p)
     mymcmc = mcmc(mymodel, monitors, moves)
     mymcmc.burnin(generations=20000,tuningInterval=100)
     mymcmc.run(generations=200000)
-  authors: 'Sebastian Hoehna'
+  authors:
   see_also: 'dnBernoulli'
   type_spec:
     - 'Distribution'
@@ -10894,11 +11336,7 @@
   references:
 - name: 'dnBirthDeathSamplingTreatment'
   title:
-  aliases:
-    - 'dnBDSTP'
-    - 'dnSkylineBDP'
-    - 'dnSSBDP'
-    - 'dnSampledAncestorBDP'
+  aliases: 'dnBDSTP'
   description:
   details:
   example:
@@ -10911,7 +11349,7 @@
     - 'RevObject'
   domain: 'TimeTree'
   constructor:
-    - usage: 'dnBirthDeathSamplingTreatment(RealPos<any> rootAge/originAge, RealPos|RealPos[]<any> lambda, RealPos|RealPos[]<any> mu, RealPos|RealPos[]<any> phi, RealPos|RealPos[]<any> r, Probability[]<any> Lambda, Probability[]<any> Mu, Probability|Probability[]<any> Phi, RealPos[]<any> timeline, String<any> condition {valid options: "time"|"survival"|"sampleAtLeastOneLineage"}, Taxon[]<any> taxa, TimeTree<any> initialTree)'
+    - usage: 'dnBirthDeathSamplingTreatment(RealPos<any> rootAge/originAge, RealPos|RealPos[]<any> lambda, RealPos|RealPos[]<any> mu, RealPos|RealPos[]<any> phi, RealPos|RealPos[]<any> r, Probability[]<any> Lambda, Probability[]<any> Mu, Probability|Probability[]<any> Phi, Probability[]<any> R, RealPos[]<any> timeline, RealPos[]<any> lambdaTimeline, RealPos[]<any> muTimeline, RealPos[]<any> phiTimeline, RealPos[]<any> rTimeline, RealPos[]<any> LambdaTimeline, RealPos[]<any> MuTimeline, RealPos[]<any> PhiTimeline, String<any> condition {valid options: "time"|"survival"|"sampling"}, Taxon[]<any> taxa)'
       arguments:
         - label: 'rootAge/originAge'
           description: 'The start time of the process.'
@@ -10967,6 +11405,13 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Probability'
+          default:
+          options:
+        - label: 'R'
+          description: 'The treatment probabilities for the sampling events (excluding sampling at present).'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Probability[]'
           default: 'NULL'
           options:
         - label: 'timeline'
@@ -10974,7 +11419,56 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos[]'
-          default: '[ ]'
+          default: 'NULL'
+          options:
+        - label: 'lambdaTimeline'
+          description: 'The rate interval change times of the speciation rate.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos[]'
+          default: 'NULL'
+          options:
+        - label: 'muTimeline'
+          description: 'The rate interval change times of the extinction rate.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos[]'
+          default: 'NULL'
+          options:
+        - label: 'phiTimeline'
+          description: 'The rate interval change times of the sampling rate.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos[]'
+          default: 'NULL'
+          options:
+        - label: 'rTimeline'
+          description: 'The rate interval change times of the (serial) treatment probability.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos[]'
+          default: 'NULL'
+          options:
+        - label: 'LambdaTimeline'
+          description: 'The rate interval change times of the speciation rate.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos[]'
+          default: 'NULL'
+          options:
+        - label: 'MuTimeline'
+          description: 'The rate interval change times of the extinction rate.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos[]'
+          default: 'NULL'
+          options:
+        - label: 'PhiTimeline'
+          description: 'The rate interval change times of the sampling rate.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos[]'
+          default: 'NULL'
           options:
         - label: 'condition'
           description: 'The condition of the process.'
@@ -10985,20 +11479,13 @@
           options:
             - 'time'
             - 'survival'
-            - 'sampleAtLeastOneLineage'
+            - 'sampling'
         - label: 'taxa'
           description: 'The taxa used for initialization.'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Taxon[]'
           default:
-          options:
-        - label: 'initialTree'
-          description: 'Instead of drawing a tree from the distribution, initialize distribution with this tree.'
-          dag_type: '<any>'
-          pass_by: 'value'
-          value_type: 'TimeTree'
-          default: 'NULL'
           options:
   methods:
   references:
@@ -11022,8 +11509,6 @@
     ymcmc.burnin(generations=20000,tuningInterval=100)
     mymcmc.run(generations=200000)
   authors:
-    - 'Alexander Zarebski'
-    - 'Sebastian Hoehna'
   see_also: 'dnPoisson'
   type_spec:
     - 'Distribution__Natural'
@@ -11320,7 +11805,7 @@
     shape ~ dnExp( 10.0 )
     rates := fnDiscretizeGamma( shape, shape, 4 )
     y := rates[x]
-  authors: 'Fredrik Ronquist'
+  authors:
   see_also: 'dnBinomial'
   type_spec:
     - 'Distribution'
@@ -11354,7 +11839,7 @@
     mean(x)
     var(x)
     sd(x)
-  authors: 'Andrew Magee'
+  authors:
   see_also:
   type_spec:
     - 'ContinuousDistribution'
@@ -11393,7 +11878,7 @@
     df <- 10
     a := qchisq(0.025, df)
     a
-  authors: 'Sebastian Hoehna'
+  authors:
   see_also:
   type_spec:
     - 'Distribution'
@@ -11861,7 +12346,7 @@
     b
     # let check if b really sums to 1
     sum(b)
-  authors: 'Sebastian Hoehna'
+  authors:
   see_also: 'simplex'
   type_spec:
     - 'Distribution__Simplex'
@@ -11945,7 +12430,7 @@
     The effective population size is constant across the species tree.
   example: |
     # We are going to save the trees we simulate in the folder simulatedTrees:
-    dataFolder = "simulatedTrees/" 
+    dataFolder = "simulatedTrees/"
     # Let’s simulate a species tree with 10 taxa, 2 gene trees, 3 alleles per species:
     n_species <- 10
     n_genes <- 2
@@ -11970,13 +12455,13 @@
       geneTrees[g] ~ dnMultiSpeciesCoalescent(speciesTree=spTree, Ne=popSize, taxa=taxons[g])
       print(geneTrees[g])
     }
-    # We can save the species tree and the gene trees: 
+    # We can save the species tree and the gene trees:
     write(spTree, filename=dataFolder+"speciesTree")
     # Saving the gene trees
     for (i in 1:(n_genes)) {
       write(geneTrees[i], filename=dataFolder+"geneTree_"+i+".tree")
     }
-  authors: 'Sebastian Hoehna, Bastien Boussau, Dominik ...'
+  authors:
   see_also:
     - 'dnMultiSpeciesCoalescentUniformPrior'
     - 'dnMultiSpeciesCoalescentInverseGamma'
@@ -12061,9 +12546,6 @@
     # Add an MCMC move
     moves[1] = mvEmpiricalTree(tree)
   authors:
-    - 'Will Freyman'
-    - 'Sebastian Hoehna'
-    - 'Will Pett'
   see_also:
     - 'mvEmpiricalTree'
     - 'treeTrace'
@@ -12234,7 +12716,7 @@
     x ~ dnExponential(lambda=rate)
     # compute the probability of the variable
     x.probability()
-  authors: 'Michael Landis'
+  authors:
   see_also:
   type_spec:
     - 'PositiveContinuousDistribution'
@@ -12254,9 +12736,50 @@
           options:
   methods:
   references:
-- name: 'dnFossilizedBirthDeathRange'
+- name: 'dnExponentialError'
   title:
-  aliases: 'dnFBDRP'
+  aliases: 'dnExpError'
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  type_spec:
+    - 'Distribution'
+    - 'RevObject'
+  domain: 'AverageDistanceMatrix'
+  constructor:
+    - usage: 'dnExponentialError(AverageDistanceMatrix<any> avgDistMat, DistanceMatrix<any> distMat, RealPos<any> lambda)'
+      arguments:
+        - label: 'avgDistMat'
+          description: 'The average distance matrix.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'AverageDistanceMatrix'
+          default: 'NULL'
+          options:
+        - label: 'distMat'
+          description: 'The distance matrix of the proposed supertree.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'DistanceMatrix'
+          default: 'NULL'
+          options:
+        - label: 'lambda'
+          description: 'The rate of the exponential distribution.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          default:
+          options:
+  methods:
+  references:
+- name: 'dnFossilizedBirthDeathProcess'
+  title:
+  aliases:
+    - 'dnFBDP'
+    - 'dnEFBDP'
+    - 'dnEpisodicFossilizedBirthDeathProcess'
   description:
   details:
   example:
@@ -12269,7 +12792,7 @@
     - 'RevObject'
   domain: 'TimeTree'
   constructor:
-    - usage: 'dnFossilizedBirthDeathRange(RealPos<any> rootAge/originAge, RealPos|RealPos[]<any> lambda, RealPos|RealPos[]<any> mu, RealPos|RealPos[]<any> psi, Probability<any> rho, RealPos[]<any> timeline, Natural|Natural[]|Natural[][]<any> k, String<any> condition {valid options: "time"|"survival"}, Taxon[]<any> taxa, Bool<any> binary, Bool<any> extended)'
+    - usage: 'dnFossilizedBirthDeathProcess(RealPos<any> rootAge/originAge, RealPos|RealPos[]<any> lambda, RealPos|RealPos[]<any> mu, RealPos|RealPos[]<any> psi, Probability[]<any> Lambda, Probability[]<any> Mu, Probability|Probability[]<any> rho, RealPos[]<any> timeline, RealPos[]<any> lambdaTimeline, RealPos[]<any> muTimeline, RealPos[]<any> psiTimeline, RealPos[]<any> LambdaTimeline, RealPos[]<any> MuTimeline, RealPos[]<any> rhoTimeline, String<any> condition {valid options: "time"|"survival"|"sampling"}, Taxon[]<any> taxa)'
       arguments:
         - label: 'rootAge/originAge'
           description: 'The start time of the process.'
@@ -12279,7 +12802,143 @@
           default:
           options:
         - label: 'lambda'
-          description: 'The speciation rate(s).'
+          description: 'The birth rate(s).'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          default:
+          options:
+        - label: 'mu'
+          description: 'The death rate(s).'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          default:
+          options:
+        - label: 'psi'
+          description: 'The serial sampling rate(s).'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          default:
+          options:
+        - label: 'Lambda'
+          description: 'The episodic birth burst probabilities.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Probability[]'
+          default: 'NULL'
+          options:
+        - label: 'Mu'
+          description: 'The episodic death burst (mass extinction) survival probabilities.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Probability[]'
+          default: 'NULL'
+          options:
+        - label: 'rho'
+          description: 'The probability of sampling taxa at sampling events (at present only if input is scalar).'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Probability'
+          default: '1'
+          options:
+        - label: 'timeline'
+          description: 'The rate interval change times of the piecewise constant process.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos[]'
+          default: 'NULL'
+          options:
+        - label: 'lambdaTimeline'
+          description: 'The rate interval change times of the speciation rate.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos[]'
+          default: 'NULL'
+          options:
+        - label: 'muTimeline'
+          description: 'The rate interval change times of the extinction rate.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos[]'
+          default: 'NULL'
+          options:
+        - label: 'psiTimeline'
+          description: 'The rate interval change times of the fossil sampling rate.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos[]'
+          default: 'NULL'
+          options:
+        - label: 'LambdaTimeline'
+          description: 'The rate interval change times of the birth burst probabilities.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos[]'
+          default: 'NULL'
+          options:
+        - label: 'MuTimeline'
+          description: 'The rate interval change times of the mass extinction survival probabilities.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos[]'
+          default: 'NULL'
+          options:
+        - label: 'rhoTimeline'
+          description: 'The rate interval change times of the taxon sampling rate.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos[]'
+          default: 'NULL'
+          options:
+        - label: 'condition'
+          description: 'The condition of the process.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          default: 'time'
+          options:
+            - 'time'
+            - 'survival'
+            - 'sampling'
+        - label: 'taxa'
+          description: 'The taxa used for initialization.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Taxon[]'
+          default:
+          options:
+  methods:
+  references:
+- name: 'dnFossilizedBirthDeathRange'
+  title:
+  aliases: 'dnFBDRP'
+  description: 'The fossilized birth death range process describes diversification and sampling of extinct species trees under a mixed model of asymmetric, symmetric and anagenetic speciation.'
+  details: 'Fossil species samples are represented by their sampled stratigraphic ranges, consisting of a first and last occurrence, and sample count data. Sampling data may be provided by species, time interval, or both depending on the sampling model assumed. The distribution may describe either sampled trees, in which unsampled tips represent sampling events, or extended trees in which tips represent extinction events.'
+  example:
+  authors:
+  see_also:
+    - 'dnFossilizedBirthDeathRangeMatrix'
+    - 'dnBirthDeathSamplingTreatment'
+  type_spec:
+    - 'BirthDeathProcess'
+    - 'Distribution__TimeTree'
+    - 'Distribution'
+    - 'RevObject'
+  domain: 'TimeTree'
+  constructor:
+    - usage: 'dnFossilizedBirthDeathRange(RealPos<any> rootAge/originAge, RealPos|RealPos[]<any> lambda, RealPos|RealPos[]<any> mu, RealPos|RealPos[]<any> psi, Probability<any> rho, RealPos|RealPos[]<any> lambda_a, Probability|Probability[]<any> beta, RealPos[]<any> timeline, Natural|Natural[]|Natural[][]<any> k, String<any> condition {valid options: "time"|"survival"}, Taxon[]<any> taxa, Bool<any> bounded, Bool<any> binary, Bool<any> extended)'
+      arguments:
+        - label: 'rootAge/originAge'
+          description: 'The start time of the process.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          default:
+          options:
+        - label: 'lambda'
+          description: 'The (asymmetric) speciation rate(s).'
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'RealPos'
@@ -12305,6 +12964,20 @@
           pass_by: 'const reference'
           value_type: 'Probability'
           default: '1'
+          options:
+        - label: 'lambda_a'
+          description: 'The anagenetic speciation rate(s).'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          default: '0'
+          options:
+        - label: 'beta'
+          description: 'The probability of symmetric speciation.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Probability'
+          default: '0'
           options:
         - label: 'timeline'
           description: 'The rate interval change times of the piecewise constant process.'
@@ -12336,6 +13009,13 @@
           value_type: 'Taxon[]'
           default:
           options:
+        - label: 'bounded'
+          description: 'Treat first and last occurrence ages as known range boundaries?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          default: 'TRUE'
+          options:
         - label: 'binary'
           description: 'Treat fossil counts as binary presence/absence data?'
           dag_type: '<any>'
@@ -12352,21 +13032,26 @@
           options:
   methods:
   references:
+    - citation: 'The fossilized birth-death model for the analysis of stratigraphic range data under different speciation modes. Stadler, Tanja et al. Journal of theoretical biology, 447:41-55.'
+      doi:
+      url: 'https://www.sciencedirect.com/science/article/pii/S002251931830119X'
 - name: 'dnFossilizedBirthDeathRangeMatrix'
   title:
   aliases: 'dnFBDRMatrix'
-  description:
-  details:
+  description: 'The fossilized birth death range matrix process describes the distribution of a matrix of species origin and extinction times under a model of asymmetric speciation and sampling of extinct species.'
+  details: 'Fossil species samples are represented by their sampled stratigraphic ranges, consisting of a first and last occurrence, and sample count data. Sampling data may be provided by species, time interval, or both depending on the sampling model assumed.'
   example:
   authors:
   see_also:
+    - 'dnFossilizedBirthDeathRange'
+    - 'dnBirthDeathSamplingTreatment'
   type_spec:
     - 'Distribution__RealPos[][]'
     - 'Distribution'
     - 'RevObject'
   domain: 'MatrixReal'
   constructor:
-    - usage: 'dnFossilizedBirthDeathRangeMatrix(RealPos|RealPos[]<any> lambda, RealPos|RealPos[]<any> mu, RealPos|RealPos[]<any> psi, Probability<any> rho, RealPos[]<any> timeline, Natural|Natural[]|Natural[][]<any> k, String<any> condition {valid options: "time"|"survival"}, Taxon[]<any> taxa, Bool<any> binary)'
+    - usage: 'dnFossilizedBirthDeathRangeMatrix(RealPos|RealPos[]<any> lambda, RealPos|RealPos[]<any> mu, RealPos|RealPos[]<any> psi, Probability<any> rho, RealPos[]<any> timeline, Natural|Natural[]|Natural[][]<any> k, String<any> condition {valid options: "time"|"survival"}, Taxon[]<any> taxa, Bool<any> bounded, Bool<any> binary)'
       arguments:
         - label: 'lambda'
           description: 'The speciation rate(s).'
@@ -12426,6 +13111,13 @@
           value_type: 'Taxon[]'
           default:
           options:
+        - label: 'bounded'
+          description: 'Treat first and last occurrence ages as known range boundaries?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          default: 'TRUE'
+          options:
         - label: 'binary'
           description: 'Treat fossil counts as binary presence/absence data?'
           dag_type: '<any>'
@@ -12435,6 +13127,9 @@
           options:
   methods:
   references:
+    - citation: 'The fossilized birth-death model for the analysis of stratigraphic range data under different speciation modes. Stadler, Tanja et al. Journal of theoretical biology, 447:41-55.'
+      doi:
+      url: 'https://www.sciencedirect.com/science/article/pii/S002251931830119X'
 - name: 'dnGamma'
   title: 'Gamma Distribution'
   aliases:
@@ -12449,7 +13144,7 @@
     # create a random variable
     x ~ dnGamma(shape=4,rate=1)
     x
-  authors: 'Sebastian Hoehna'
+  authors:
   see_also: 'dnExponential'
   type_spec:
     - 'PositiveContinuousDistribution'
@@ -12486,12 +13181,12 @@
     x ~ dnGeom(p)
     x.clamp(10)
     moves[1] = mvSlide(p, delta=0.1, weight=1.0)
-    monitors[1] = screenmonitor(printgen=1000, separator = "	", p)
+    monitors[1] = screenmonitor(printgen=1000, separator = "        ", p)
     mymodel = model(p)
     mymcmc = mcmc(mymodel, monitors, moves)
     mymcmc.burnin(generations=20000,tuningInterval=100)
     mymcmc.run(generations=200000)
-  authors: 'Sebastian Hoehna'
+  authors:
   see_also:
     - 'dnPoisson'
     - 'mvRandomIntegerWalk'
@@ -12644,7 +13339,7 @@
     mean(x)
     var(x)
     sd(x)
-  authors: 'Andrew Magee'
+  authors:
   see_also:
   type_spec:
     - 'ContinuousDistribution'
@@ -12693,7 +13388,7 @@
     mean(x)
     var(x)
     sd(x)
-  authors: 'Andrew Magee'
+  authors:
   see_also:
     - 'dnNormal'
     - 'dnLognormal'
@@ -12817,6 +13512,38 @@
           options:
   methods:
   references:
+- name: 'dnIID'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  type_spec:
+    - 'Distribution__Real[]'
+    - 'Distribution'
+    - 'RevObject'
+  domain: 'Real[]'
+  constructor:
+    - usage: 'dnIID(Natural<any> numValues, Distribution__Real<any> valueDistribution)'
+      arguments:
+        - label: 'numValues'
+          description: 'The number of IID samples.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Natural'
+          default:
+          options:
+        - label: 'valueDistribution'
+          description: 'The base distribution for the per category values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__Real'
+          default:
+          options:
+  methods:
+  references:
 - name: 'dnInverseGamma'
   title: 'inverseGamma Distribution'
   aliases:
@@ -12831,7 +13558,7 @@
     # create a random variable
     x ~ dnInverseGamma(shape=4,rate=1)
     x
-  authors: 'Sebastian Hoehna'
+  authors:
   see_also: 'dnExponential'
   type_spec:
     - 'PositiveContinuousDistribution'
@@ -12922,7 +13649,7 @@
     
     # let's print the simulated correlation matrix
     R
-  authors: 'Michael R. May'
+  authors:
   see_also: 'dnLKJPartial'
   type_spec:
     - 'Distribution'
@@ -12966,7 +13693,7 @@
     
     # let's print the simulated partial correlation matrix
     P
-  authors: 'Michael R. May'
+  authors:
   see_also: 'dnLKJ'
   type_spec:
     - 'Distribution'
@@ -13005,7 +13732,7 @@
     
     where mu is the mean of the distribution and b the scale.
   example:
-  authors: 'Will Freyman'
+  authors:
   see_also:
     - 'dnExponential'
     - 'dnNormal'
@@ -13049,7 +13776,7 @@
     sigma := exp(log_sigma)
     X ~ dnBrownian(trueTree,sigma)
     # ...
-  authors: 'Sebastian Hoehna'
+  authors:
   see_also: 'dnExponential'
   type_spec:
     - 'ContinuousDistribution'
@@ -13091,7 +13818,7 @@
     mean <- ln(expectation_of_x) - 0.5 * sd^2
     # create a lognormal distribution with expected value of 1
     x ~ dnLognormal(mean=mean, sd=sd)
-  authors: 'Michael Landis'
+  authors:
   see_also:
   type_spec:
     - 'PositiveContinuousDistribution'
@@ -13134,7 +13861,7 @@
     sigma ~ dnLogUniform(min=0.001, max=1000)
     X ~ dnBrownian(trueTree,sigma)
     # ...
-  authors: 'Nicolas Lartillot'
+  authors:
   see_also: 'dnUniform'
   type_spec:
     - 'PositiveContinuousDistribution'
@@ -13182,6 +13909,38 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Real[]'
+          default:
+          options:
+        - label: 'probabilities'
+          description: 'The probabilitoes for each value.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Simplex'
+          default:
+          options:
+  methods:
+  references:
+- name: 'dnMixtureAnalytical'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  type_spec:
+    - 'Distribution__Real'
+    - 'Distribution'
+    - 'RevObject'
+  domain: 'Real'
+  constructor:
+    - usage: 'dnMixtureAnalytical(Distribution__Real[]<any> baseDistributions, Simplex<any> probabilities)'
+      arguments:
+        - label: 'baseDistributions'
+          description: 'The base distribution for the per category values.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Distribution__Real[]'
           default:
           options:
         - label: 'probabilities'
@@ -13241,7 +14000,7 @@
     The effective population size is constant across the species tree.
   example: |
     # We are going to save the trees we simulate in the folder simulatedTrees:
-    dataFolder = "simulatedTrees/" 
+    dataFolder = "simulatedTrees/"
     # Let’s simulate a species tree with 10 taxa, 2 gene trees, 3 alleles per species:
     n_species <- 10
     n_genes <- 2
@@ -13266,13 +14025,13 @@
       geneTrees[g] ~ dnMultiSpeciesCoalescent(speciesTree=spTree, Ne=popSize, taxa=taxons[g])
       print(geneTrees[g])
     }
-    # We can save the species tree and the gene trees: 
+    # We can save the species tree and the gene trees:
     write(spTree, filename=dataFolder+"speciesTree")
     # Saving the gene trees
     for (i in 1:(n_genes)) {
       write(geneTrees[i], filename=dataFolder+"geneTree_"+i+".tree")
     }
-  authors: 'Sebastian Hoehna, Bastien Boussau'
+  authors:
   see_also:
     - 'dnMultiSpeciesCoalescentUniformPrior'
     - 'dnMultiSpeciesCoalescentInverseGamma'
@@ -13322,7 +14081,7 @@
     If you are interested in reconstructing ancestral effective population sizes, use dnMultiSpeciesCoalescent.
   example: |
     # We are going to save the trees we simulate in the folder simulatedTrees:
-    dataFolder = "simulatedTrees/" 
+    dataFolder = "simulatedTrees/"
     # Let’s simulate a species tree with 10 taxa, 2 gene trees, 3 alleles per species:
     n_species <- 10
     n_genes <- 2
@@ -13348,13 +14107,13 @@
       geneTrees[g] ~ dnMultiSpeciesCoalescentInverseGamma(speciesTree=spTree, shape=alpha, rate=beta, taxa=taxons[g])
       print(geneTrees[g])
     }
-    # We can save the species tree and the gene trees: 
+    # We can save the species tree and the gene trees:
     write(spTree, filename=dataFolder+"speciesTree")
     # Saving the gene trees
     for (i in 1:(n_genes)) {
       write(geneTrees[i], filename=dataFolder+"geneTree_"+i+".tree")
     }
-  authors: 'Sebastian Hoehna, Bastien Boussau'
+  authors:
   see_also:
     - 'dnMultiSpeciesCoalescent'
     - 'dnMultiSpeciesCoalescentUniformPrior'
@@ -13396,8 +14155,8 @@
           options:
   methods:
   references:
-    - citation: ' Algorithmic improvements to species delimitation and phylogeny estimation under the multispecies coalescent. Jones G.  Journal of Mathematical Biology. 2016.'
-      doi: 'DOI: 10.1007/s00285-016-1034-0'
+    - citation: ''' Algorithmic improvements to species delimitation and phylogeny estimation under the multispecies coalescent. Jones G.  Journal of Mathematical Biology. 2016.'''
+      doi: '''DOI: 10.1007/s00285-016-1034-0'''
       url: 'http://www.indriid.com/2016/2016-06-01-STACEY.pdf'
 - name: 'dnMultiSpeciesCoalescentUniformPrior'
   title: 'Multispecies coalescent Distribution'
@@ -13408,7 +14167,7 @@
     Effective population sizes can be constant across the species tree, if a single real positive is provided, or branchwise, if a vector is provided.
   example: |
     # We are going to save the trees we simulate in the folder simulatedTrees:
-    dataFolder = "simulatedTrees/" 
+    dataFolder = "simulatedTrees/"
     # Let’s simulate a species tree with 10 taxa, 2 gene trees, 3 alleles per species:
     n_species <- 10
     n_genes <- 2
@@ -13433,13 +14192,13 @@
       geneTrees[g] ~ dnMultiSpeciesCoalescentUniformPrior(speciesTree=spTree, Ne=popSize, taxa=taxons[g])
       print(geneTrees[g])
     }
-    # We can save the species tree and the gene trees: 
+    # We can save the species tree and the gene trees:
     write(spTree, filename=dataFolder+"speciesTree")
     # Saving the gene trees
     for (i in 1:(n_genes)) {
       write(geneTrees[i], filename=dataFolder+"geneTree_"+i+".tree")
     }
-  authors: 'Sebastian Hoehna, Bastien Boussau'
+  authors:
   see_also:
     - 'dnMultiSpeciesCoalescent'
     - 'dnMultiSpeciesCoalescentInverseGamma'
@@ -13477,8 +14236,8 @@
     - citation: 'Bayes Estimation of Species Divergence Times and Ancestral Population Sizes Using DNA Sequences From Multiple Loci. Bruce Rannala and Ziheng Yang. GENETICS August 1, 2003 vol. 164 no. 4 1645-1656.'
       doi:
       url: 'http://www.genetics.org/content/164/4/1645.short'
-    - citation: 'Bayesian Inference of Species Trees from Multilocus Data. Heled and Drummond Mol. Biol Evol. 27 (3): 570-580, 2010.'
-      doi: 'DOI: https://doi.org/10.1093/molbev/msp274'
+    - citation: '''Bayesian Inference of Species Trees from Multilocus Data. Heled and Drummond Mol. Biol Evol. 27 (3): 570-580, 2010.'''
+      doi: '''DOI: https://doi.org/10.1093/molbev/msp274'''
       url: 'https://academic.oup.com/mbe/article/27/3/570/999753/Bayesian-Inference-of-Species-Trees-from'
 - name: 'dnMultiValueEvent'
   title: 'MultiValueEvent Distribution'
@@ -13486,7 +14245,7 @@
   description: 'A MultiValueEvent distribution.'
   details:
   example:
-  authors: 'Sebastian Hoehna'
+  authors:
   see_also: 'dnEvent'
   type_spec:
     - 'Distribution__Natural'
@@ -13537,12 +14296,12 @@
     y ~ dnDirichlet(x)
     y.clamp( simplex(1,2,3,4) )
     moves[1] = mvSlide(x, delta=0.1, weight=1.0)
-    monitors[1] = screenmonitor(printgen=1000, separator = "	", x)
+    monitors[1] = screenmonitor(printgen=1000, separator = "        ", x)
     mymodel = model(p)
     mymcmc = mcmc(mymodel, monitors, moves)
     mymcmc.burnin(generations=20000,tuningInterval=100)
     mymcmc.run(generations=200000)
-  authors: 'Sebastian Hoehna'
+  authors:
   see_also: 'dnDirichlet'
   type_spec:
     - 'Distribution__Natural[]'
@@ -13592,8 +14351,6 @@
     mv[5] = mvCorrelationMatrixUpdate(Sigma)
     mv[6] = mvVectorSlide(x)
   authors:
-    - 'Sebastian Hoehna'
-    - 'Michael Landis'
   see_also:
     - 'dnNormal'
     - 'dnWishart'
@@ -13664,12 +14421,12 @@
     x ~ dnNegativeBinomial(r=10,p)
     x.clamp(8)
     moves[1] = mvSlide(p, delta=0.1, weight=1.0)
-    monitors[1] = screenmonitor(printgen=1000, separator = "	", x)
+    monitors[1] = screenmonitor(printgen=1000, separator = "        ", x)
     mymodel = model(p)
     mymcmc = mcmc(mymodel, monitors, moves)
     mymcmc.burnin(generations=20000,tuningInterval=100)
     mymcmc.run(generations=200000)
-  authors: 'Walker Pett'
+  authors:
   see_also: 'dnBinomial'
   type_spec:
     - 'Distribution'
@@ -13713,7 +14470,7 @@
     mean(x)
     var(x)
     sd(x)
-  authors: 'Sebastian Hoehna'
+  authors:
   see_also: 'dnLognormal'
   type_spec:
     - 'ContinuousDistribution'
@@ -13750,12 +14507,12 @@
     x ~ dnBernoulli(p)
     x.clamp(1)
     moves[1] = mvSlide(p, delta=0.1, weight=1.0)
-    monitors[1] = screenmonitor(printgen=1000, separator = "	", speciation)
+    monitors[1] = screenmonitor(printgen=1000, separator = "        ", speciation)
     mymodel = model(p)
     mymcmc = mcmc(mymodel, monitors, moves)
     mymcmc.burnin(generations=20000,tuningInterval=100)
     mymcmc.run(generations=200000)
-  authors: 'Sebastian Hoehna'
+  authors:
   see_also: 'dnBinomial'
   type_spec:
     - 'ContinuousDistribution'
@@ -13912,6 +14669,52 @@
           pass_by: 'const reference'
           value_type: 'Clade[]'
           default: 'NULL'
+          options:
+  methods:
+  references:
+- name: 'dnPhyloBranchRateBM'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  type_spec:
+    - 'Distribution__RealPos[]'
+    - 'Distribution'
+    - 'RevObject'
+  domain: 'RealPos[]'
+  constructor:
+    - usage: 'dnPhyloBranchRateBM(TimeTree<any> tree, RealPos<any> rootState, RealPos<any> sigma, Real<any> drift)'
+      arguments:
+        - label: 'tree'
+          description: 'The tree along which the continuous character evolves.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'TimeTree'
+          default:
+          options:
+        - label: 'rootState'
+          description: 'The value of the root.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          default:
+          options:
+        - label: 'sigma'
+          description: 'The branch-length multiplier to scale the variance of the Brownian motion.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          default:
+          options:
+        - label: 'drift'
+          description: 'The drift parameter of the Brownian motion.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Real'
+          default: '0'
           options:
   methods:
   references:
@@ -14278,7 +15081,7 @@
     - 'RevObject'
   domain: 'AbstractHomologousDiscreteCharacterData'
   constructor:
-    - usage: 'dnPhyloCTMCClado(Tree<any> tree, RateGenerator|RateGenerator[]<any> Q, CladogeneticProbabilityMatrix|CladogeneticProbabilityMatrix[]<deterministic> cladoProbs, Simplex<any> rootFrequencies, RealPos|RealPos[]<any> branchRates, RealPos[]<any> siteRates, Probability<any> pInv, Natural<any> nSites, String<any> type {valid options: "DNA"|"RNA"|"AA"|"PoMo"|"Protein"|"Standard"|"NaturalNumbers"}, Bool<any> treatAmbiguousAsGap, Bool<any> storeInternalNodes, Bool<any> gapMatchClamped)'
+    - usage: 'dnPhyloCTMCClado(Tree<any> tree, RateGenerator|RateGenerator[]<any> Q, CladogeneticProbabilityMatrix|CladogeneticProbabilityMatrix[]<deterministic> cladoProbs, Simplex<any> rootFrequencies, RealPos|RealPos[]<any> branchRates, RealPos[]<any> siteRates, Probability<any> pInv, Natural<any> nSites, String<any> type {valid options: "DNA"|"RNA"|"AA"|"PoMo"|"Protein"|"Standard"|"NaturalNumbers"|"Taxa"}, Bool<any> treatAmbiguousAsGap, Bool<any> storeInternalNodes, Bool<any> gapMatchClamped)'
       arguments:
         - label: 'tree'
           description:
@@ -14350,6 +15153,7 @@
             - 'Protein'
             - 'Standard'
             - 'NaturalNumbers'
+            - 'Taxa'
         - label: 'treatAmbiguousAsGap'
           description:
           dag_type: '<any>'
@@ -14928,8 +15732,6 @@
     # print the simulated data.
     x
   authors:
-    - 'Michael R. May'
-    - 'Nicolai Vetr'
   see_also:
     - 'dnPhyloBrownianREML'
     - 'dnPhyloBrownianMVN'
@@ -15191,14 +15993,140 @@
           options:
   methods:
   references:
+- name: 'dnPhylodynamicBirthDeathProcess'
+  title:
+  aliases: 'dnPhylodynamicBDP'
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  type_spec:
+    - 'BirthDeathProcess'
+    - 'Distribution__TimeTree'
+    - 'Distribution'
+    - 'RevObject'
+  domain: 'TimeTree'
+  constructor:
+    - usage: 'dnPhylodynamicBirthDeathProcess(RealPos<any> rootAge/originAge, RealPos|RealPos[]<any> lambda, RealPos|RealPos[]<any> mu, RealPos|RealPos[]<any> phi, RealPos|RealPos[]<any> r, Probability|Probability[]<any> Phi, Probability[]<any> R, RealPos[]<any> timeline, RealPos[]<any> lambdaTimeline, RealPos[]<any> muTimeline, RealPos[]<any> phiTimeline, RealPos[]<any> rTimeline, RealPos[]<any> PhiTimeline, String<any> condition {valid options: "time"|"survival"|"sampling"}, Taxon[]<any> taxa)'
+      arguments:
+        - label: 'rootAge/originAge'
+          description: 'The start time of the process.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          default:
+          options:
+        - label: 'lambda'
+          description: 'The birth rate(s).'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          default:
+          options:
+        - label: 'mu'
+          description: 'The death rate(s).'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          default:
+          options:
+        - label: 'phi'
+          description: 'The serial sampling rate(s).'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          default:
+          options:
+        - label: 'r'
+          description: 'The probabilit(y|ies) of death upon sampling (treatment).'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          default: '1'
+          options:
+        - label: 'Phi'
+          description: 'The probability of sampling taxa at sampling events (at present only if input is scalar).'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Probability'
+          default: '0'
+          options:
+        - label: 'R'
+          description: 'The treatment probabilities for the sampling events (excluding sampling at present).'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Probability[]'
+          default: 'NULL'
+          options:
+        - label: 'timeline'
+          description: 'The rate interval change times of the piecewise constant process.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos[]'
+          default: 'NULL'
+          options:
+        - label: 'lambdaTimeline'
+          description: 'The rate interval change times of the speciation rate.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos[]'
+          default: 'NULL'
+          options:
+        - label: 'muTimeline'
+          description: 'The rate interval change times of the extinction rate.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos[]'
+          default: 'NULL'
+          options:
+        - label: 'phiTimeline'
+          description: 'The rate interval change times of the sampling rate.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos[]'
+          default: 'NULL'
+          options:
+        - label: 'rTimeline'
+          description: 'The rate interval change times of the (serial) treatment probability.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos[]'
+          default: 'NULL'
+          options:
+        - label: 'PhiTimeline'
+          description: 'The rate interval change times of the sampling rate.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos[]'
+          default: 'NULL'
+          options:
+        - label: 'condition'
+          description: 'The condition of the process.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          default: 'time'
+          options:
+            - 'time'
+            - 'survival'
+            - 'sampling'
+        - label: 'taxa'
+          description: 'The taxa used for initialization.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Taxon[]'
+          default:
+          options:
+  methods:
+  references:
 - name: 'dnPointMass'
   title: 'Point Mass Distribution'
   aliases: 'dnDiracDelta'
   description: 'Point mass distribution.'
   details: 'The point mass distribution, or Dirac delta function, has density f(x) = 1 when x is equal to the point mass value.'
-  example: |
-    u ~ dnPointMass(1.2)
-  authors: 'Walker Pett'
+  example: 'u ~ dnPointMass(1.2)'
+  authors:
   see_also:
   type_spec:
     - 'ContinuousDistribution'
@@ -15228,12 +16156,12 @@
     x ~ dnPoisson(l)
     x.clamp(10)
     moves[1] = mvSlide(l, delta=0.1, weight=1.0)
-    monitors[1] = mnScreen(printgen=1000, separator = "	", l)
+    monitors[1] = mnScreen(printgen=1000, separator = "        ", l)
     mymodel = model(l)
     mymcmc = mcmc(mymodel, monitors, moves)
     mymcmc.burnin(generations=20000,tuningInterval=100)
     mymcmc.run(generations=200000)
-  authors: 'Sebastian Hoehna'
+  authors:
   see_also: 'dnGeom'
   type_spec:
     - 'Distribution__Natural'
@@ -15356,7 +16284,7 @@
     x
     # let check if b really sums to 1
     sum(x)
-  authors: 'Andrew Magee'
+  authors:
   see_also:
     - 'dnDirichlet'
     - 'simplex'
@@ -15384,118 +16312,6 @@
           options:
   methods:
   references:
-- name: 'dnSerialSampledBirthDeath'
-  title:
-  aliases: 'dnFBDP'
-  description:
-  details:
-  example:
-  authors:
-  see_also:
-  type_spec:
-    - 'BirthDeathProcess'
-    - 'Distribution__TimeTree'
-    - 'Distribution'
-    - 'RevObject'
-  domain: 'TimeTree'
-  constructor:
-    - usage: 'dnSerialSampledBirthDeath(RealPos<any> rootAge/originAge, RealPos|RealPos[]<any> lambda, RealPos|RealPos[]<any> mu, RealPos|RealPos[]<any> psi, Probability|Probability[]<any> rho, RealPos[]<any> timeline, RealPos[]<any> lambdaTimes, RealPos[]<any> muTimes, RealPos[]<any> psiTimes, RealPos[]<any> rhoTimes, String<any> condition {valid options: "time"|"survival"}, Taxon[]<any> taxa, TimeTree<any> initialTree)'
-      arguments:
-        - label: 'rootAge/originAge'
-          description: 'The start time of the process.'
-          dag_type: '<any>'
-          pass_by: 'const reference'
-          value_type: 'RealPos'
-          default:
-          options:
-        - label: 'lambda'
-          description: 'The speciation rate(s).'
-          dag_type: '<any>'
-          pass_by: 'const reference'
-          value_type: 'RealPos'
-          default:
-          options:
-        - label: 'mu'
-          description: 'The extinction rate(s).'
-          dag_type: '<any>'
-          pass_by: 'const reference'
-          value_type: 'RealPos'
-          default: '0'
-          options:
-        - label: 'psi'
-          description: 'The serial sampling rate(s).'
-          dag_type: '<any>'
-          pass_by: 'const reference'
-          value_type: 'RealPos'
-          default: '0'
-          options:
-        - label: 'rho'
-          description: 'The episodic taxon sampling fraction(s).'
-          dag_type: '<any>'
-          pass_by: 'const reference'
-          value_type: 'Probability'
-          default: '1'
-          options:
-        - label: 'timeline'
-          description: 'The rate interval change times of the piecewise constant process.'
-          dag_type: '<any>'
-          pass_by: 'const reference'
-          value_type: 'RealPos[]'
-          default: 'NULL'
-          options:
-        - label: 'lambdaTimes'
-          description: 'The speciation rate change times.'
-          dag_type: '<any>'
-          pass_by: 'const reference'
-          value_type: 'RealPos[]'
-          default: 'NULL'
-          options:
-        - label: 'muTimes'
-          description: 'The extinction rate change times.'
-          dag_type: '<any>'
-          pass_by: 'const reference'
-          value_type: 'RealPos[]'
-          default: 'NULL'
-          options:
-        - label: 'psiTimes'
-          description: 'The serial sampling rate change times.'
-          dag_type: '<any>'
-          pass_by: 'const reference'
-          value_type: 'RealPos[]'
-          default: 'NULL'
-          options:
-        - label: 'rhoTimes'
-          description: 'The episodic taxon sampling fraction change times.'
-          dag_type: '<any>'
-          pass_by: 'const reference'
-          value_type: 'RealPos[]'
-          default: 'NULL'
-          options:
-        - label: 'condition'
-          description: 'The condition of the process.'
-          dag_type: '<any>'
-          pass_by: 'value'
-          value_type: 'String'
-          default: 'time'
-          options:
-            - 'time'
-            - 'survival'
-        - label: 'taxa'
-          description: 'The taxa used for initialization.'
-          dag_type: '<any>'
-          pass_by: 'const reference'
-          value_type: 'Taxon[]'
-          default:
-          options:
-        - label: 'initialTree'
-          description: 'Instead of drawing a tree from the distribution, initialize distribution with this tree.'
-          dag_type: '<any>'
-          pass_by: 'value'
-          value_type: 'TimeTree'
-          default: 'NULL'
-          options:
-  methods:
-  references:
 - name: 'dnSoftBoundUniformNormal'
   title: 'Softbound Uniform Distribution with Normal distributed tails.'
   aliases:
@@ -15506,12 +16322,12 @@
     x ~ dnBernoulli(p)
     x.clamp(1)
     moves[1] = mvSlide(p, delta=0.1, weight=1.0)
-    monitors[1] = screenmonitor(printgen=1000, separator = "	", speciation)
+    monitors[1] = screenmonitor(printgen=1000, separator = "        ", speciation)
     mymodel = model(p)
     mymcmc = mcmc(mymodel, monitors, moves)
     mymcmc.burnin(generations=20000,tuningInterval=100)
     mymcmc.run(generations=200000)
-  authors: 'Sebastian Hoehna'
+  authors:
   see_also: 'dnUniform'
   type_spec:
     - 'ContinuousDistribution'
@@ -15567,7 +16383,7 @@
     df <- 10
     a := qStudentT(0.025, df)
     a
-  authors: 'Wade Dismukes and Kevin Quinteros'
+  authors:
   see_also:
   type_spec:
     - 'Distribution'
@@ -15807,7 +16623,7 @@
     b <- -3.9
     # create a stochastic node with a uniform prior
     u ~ dnUniform(a, b)
-  authors: 'Michael Landis'
+  authors:
   see_also:
   type_spec:
     - 'ContinuousDistribution'
@@ -15894,6 +16710,38 @@
           dag_type: '<any>'
           pass_by: 'const reference'
           value_type: 'Natural'
+          default:
+          options:
+  methods:
+  references:
+- name: 'dnUniformSerialSampledTimeTree'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  type_spec:
+    - 'Distribution__TimeTree'
+    - 'Distribution'
+    - 'RevObject'
+  domain: 'TimeTree'
+  constructor:
+    - usage: 'dnUniformSerialSampledTimeTree(RealPos<any> rootAge/originAge, Taxon[]<any> taxa)'
+      arguments:
+        - label: 'rootAge/originAge'
+          description: 'The start time of the process.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'RealPos'
+          default:
+          options:
+        - label: 'taxa'
+          description: 'The taxa used for simulation.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Taxon[]'
           default:
           options:
   methods:
@@ -16034,7 +16882,7 @@
     mean(x)
     var(x)
     sd(x)
-  authors: 'Michael Landis'
+  authors:
   see_also:
   type_spec:
     - 'ContinuousDistribution'
@@ -16160,7 +17008,7 @@
     # create a random variable
     x ~ dnWhiteNoise(mu=1.0,sigma=4,time=1)
     x
-  authors: 'Sebastian Hoehna'
+  authors:
   see_also: 'dnGamma'
   type_spec:
     - 'PositiveContinuousDistribution'
@@ -16255,7 +17103,7 @@
     
     # print the summary of the operators (now tuned)
     mymcmcObject.operatorSummary()
-  authors: 'Sebastian Hoehna'
+  authors:
   see_also: 'mcmcmc'
   type_spec:
     - 'MonteCarloAnalysis'
@@ -16477,8 +17325,6 @@
     # print the summary of the operators (now tuned)
     myMcmcmcObject.operatorSummary()
   authors:
-    - 'Michael Landis'
-    - 'Sebastian Hoehna'
   see_also: 'mcmc'
   type_spec:
     - 'MonteCarloAnalysis'
@@ -16717,10 +17563,10 @@
           default: 'FALSE'
           options:
   references:
-    - citation: 'Geyer,C.J. (1991) Markov chain Monte Carlo maximum likelihood. In Keramidas (ed.), Computing Science and Statistics: Proceedings of the 23rd Symposium on the Interface. Interface Foundation, Fairfax Station, pp. 156–163.'
+    - citation: '"Geyer,C.J. (1991) Markov chain Monte Carlo maximum likelihood. In Keramidas  (ed.), Computing Science and Statistics: Proceedings of the 23rd Symposium on  the Interface. Interface Foundation, Fairfax Station, pp. 156\u2013163."'
       doi:
       url:
-    - citation: 'Gilks,W.R. and Roberts,G.O. (1996) Strategies for improving MCMC. In Gilks,W.R., Richardson,S. and Spiegelhalter (eds) Markov chain Monte Carlo in Practice. Chapman&Hall, London, 89–114.'
+    - citation: '"Gilks,W.R. and Roberts,G.O. (1996) Strategies for improving MCMC. In  Gilks,W.R., Richardson,S. and Spiegelhalter (eds) Markov chain Monte Carlo in  Practice. Chapman&Hall, London, 89\u2013114."'
       doi:
       url:
     - citation: 'Altekar, G.; Dwarkadas, S.; Huelsenbeck, J. P. & Ronquist, F. Parallel metropolis coupled Markov chain Monte Carlo for Bayesian phylogenetic inference Bioinformatics, Oxford Univ Press, 2004, 20, 407-415.'
@@ -17522,7 +18368,7 @@
     - 'WorkspaceObject'
     - 'RevObject'
   constructor:
-    - usage: 'mnModel(String<any> filename, Natural<any> printgen, String<any> separator, Bool<any> posterior, Bool<any> likelihood, Bool<any> prior, Bool<any> append, Bool<any> stochasticOnly, Bool<any> version)'
+    - usage: 'mnModel(String<any> filename, Natural<any> printgen, String<any> separator, Bool<any> posterior, Bool<any> likelihood, Bool<any> prior, Bool<any> append, Bool<any> stochasticOnly, Bool<any> version, String[]<any> exclude)'
       arguments:
         - label: 'filename'
           description: 'The name of the file where to store the values.'
@@ -17586,6 +18432,13 @@
           pass_by: 'value'
           value_type: 'Bool'
           default: 'FALSE'
+          options:
+        - label: 'exclude'
+          description: 'Variables to exclude from the monitor'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String[]'
+          default: '[ ]'
           options:
   methods:
     - name: 'addVariable'
@@ -17820,6 +18673,84 @@
           default:
           options:
   references:
+- name: 'mnSiteMixtureAllocation'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  type_spec:
+    - 'Monitor'
+    - 'WorkspaceToCoreWrapperObject'
+    - 'WorkspaceObject'
+    - 'RevObject'
+  constructor:
+    - usage: 'mnSiteMixtureAllocation(AbstractHomologousDiscreteCharacterData<any> ctmc, String<any> filename, String<any> type, Natural<any> printgen, String<any> separator, Bool<any> append, Bool<any> version)'
+      arguments:
+        - label: 'ctmc'
+          description:
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'AbstractHomologousDiscreteCharacterData'
+          default: 'NULL'
+          options:
+        - label: 'filename'
+          description:
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          default:
+          options:
+        - label: 'type'
+          description:
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          default:
+          options:
+        - label: 'printgen'
+          description:
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          default: '1'
+          options:
+        - label: 'separator'
+          description:
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'String'
+          default: ''
+          options:
+        - label: 'append'
+          description:
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          default: 'FALSE'
+          options:
+        - label: 'version'
+          description: 'Should we record the software version?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          default: 'FALSE'
+          options:
+  methods:
+    - name: 'addVariable'
+      return_type: 'void'
+      usage: 'addVariable(RevObject<any> x)'
+      arguments:
+        - label: 'x'
+          description: 'A variable you want to monitor.'
+          dag_type: '<any>'
+          pass_by: 'reference'
+          value_type: 'RevObject'
+          default:
+          options:
+  references:
 - name: 'mnStochasticBranchRate'
   title:
   aliases:
@@ -17976,7 +18907,7 @@
     - 'WorkspaceObject'
     - 'RevObject'
   constructor:
-    - usage: 'mnStochasticCharacterMap(AbstractHomologousDiscreteCharacterData<any> ctmc, TimeTree<any> cdbdp, String<any> filename, Bool<any> include_simmap, Bool<any> use_simmap_default, Natural<any> printgen, String<any> separator, Bool<any> append, Bool<any> version)'
+    - usage: 'mnStochasticCharacterMap(AbstractHomologousDiscreteCharacterData<any> ctmc, TimeTree<any> cdbdp, String<any> filename, Bool<any> include_simmap, Bool<any> use_simmap_default, Natural<any> printgen, String<any> separator, Bool<any> append, Bool<any> version, Natural<any> index)'
       arguments:
         - label: 'ctmc'
           description: 'The continuous-time Markov process to monitor.'
@@ -18040,6 +18971,13 @@
           pass_by: 'value'
           value_type: 'Bool'
           default: 'FALSE'
+          options:
+        - label: 'index'
+          description: 'The index of the character to be mointored.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Natural'
+          default: '1'
           options:
   methods:
     - name: 'addVariable'
@@ -19028,7 +19966,7 @@
     
     # we specify an element swap move
     moves[1] = mvCorrelationMatrixElementSwap(R)
-  authors: 'Michael R. May'
+  authors:
   see_also:
   type_spec:
     - 'Move'
@@ -19126,7 +20064,7 @@
     
     # we specify a beta move on the correlation matrix
     moves[1] = mvCorrelationMatrixSingleElementBeta(R, alpha=10.0)
-  authors: 'Michael R. May'
+  authors:
   see_also:
     - 'mvCorrelationMatrixSpecificElementBeta'
     - 'mvCorrelationMatrixRandomWalk'
@@ -19727,10 +20665,6 @@
     # Add an MCMC move
     moves[1] = mvEmpiricalTree(tree)
   authors:
-    - 'Will Freyman'
-    - 'Sebastian Hoehna'
-    - 'Will Pett'
-    - 'Jiansi Gao'
   see_also:
     - 'mvEmpiricalTree'
     - 'treeTrace'
@@ -20121,7 +21055,7 @@
     
     # Running MCMC under the prior
     mymcmc.run(30000,underPrior=TRUE);
-  authors: 'Jeremy M. Brown'
+  authors:
   see_also: 'mvScale'
   type_spec:
     - 'Move'
@@ -20507,6 +21441,59 @@
           options:
   methods:
   references:
+- name: 'mvHSRFIntervalSwap'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  type_spec:
+    - 'Move'
+    - 'WorkspaceToCoreWrapperObject'
+    - 'WorkspaceObject'
+    - 'RevObject'
+  constructor:
+    - usage: 'mvHSRFIntervalSwap(Real[]<deterministic> deltas, RealPos[]<deterministic> sigmas, Bool<any> tune, RealPos<any> weight, Probability<any> tuneTarget)'
+      arguments:
+        - label: 'deltas'
+          description: 'The HSMRF delta parameters on which the move operates.'
+          dag_type: '<deterministic>'
+          pass_by: 'reference'
+          value_type: 'Real[]'
+          default:
+          options:
+        - label: 'sigmas'
+          description: 'The HSMRF sigma parameters on which the move operates.'
+          dag_type: '<deterministic>'
+          pass_by: 'reference'
+          value_type: 'RealPos[]'
+          default:
+          options:
+        - label: 'tune'
+          description: 'Should we tune the scaling factor during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          default: 'TRUE'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          default: '1'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          default: '0.44'
+          options:
+  methods:
+  references:
 - name: 'mvHSRFUnevenGridHyperpriorsGibbs'
   title:
   aliases:
@@ -20697,7 +21684,7 @@
     An age is randomly drawn between the root age and the age of the oldest tip. Then all subtrees below this age are scaled up or down depending on a scaler drawn from an exponential distribution.
   example: |
     # We are going to save the trees we simulate in the folder simulatedTrees:
-    dataFolder = "simulatedTrees/" 
+    dataFolder = "simulatedTrees/"
     # Let’s simulate a species tree with 10 taxa, 2 gene trees, 3 alleles per species:
     n_species <- 10
     n_genes <- 2
@@ -20722,7 +21709,7 @@
       geneTrees[g] ~ dnMultiSpeciesCoalescent(speciesTree=spTree, Ne=popSize, taxa=taxons[g])
       print(geneTrees[g])
     }
-    # We can save the species tree and the gene trees: 
+    # We can save the species tree and the gene trees:
     write(spTree, filename=dataFolder+"speciesTree")
     # Saving the gene trees
     for (i in 1:(n_genes)) {
@@ -20745,7 +21732,7 @@
     mymcmc = mcmc(mymodel, monitors, moves, nruns=4)
     mymcmc.run(generations=1000)
     mymcmc.operatorSummary()
-  authors: 'Bastien Boussau'
+  authors:
   see_also: 'mvSubTreeScale'
   type_spec:
     - 'Move'
@@ -22122,6 +23109,134 @@
           options:
   methods:
   references:
+- name: 'mvRateAgeProposal'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  type_spec:
+    - 'Move'
+    - 'WorkspaceToCoreWrapperObject'
+    - 'WorkspaceObject'
+    - 'RevObject'
+  constructor:
+    - usage: 'mvRateAgeProposal(Tree<any> tree, RealPos<any> alpha, Bool<any> tune, RealPos<any> weight, Probability<any> tuneTarget)'
+      arguments:
+        - label: 'tree'
+          description: 'The tree to which the branch-rates belong.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Tree'
+          default:
+          options:
+        - label: 'alpha'
+          description: 'The scaling factor (strength) of this move.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          default: '1'
+          options:
+        - label: 'tune'
+          description: 'Should we tune the scaling factor during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          default: 'TRUE'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          default: '1'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          default: '0.44'
+          options:
+  methods:
+    - name: 'addRates'
+      return_type: 'void'
+      usage: 'addRates(RealPos[]<deterministic> var)'
+      arguments:
+        - label: 'var'
+          description: 'The variable to move'
+          dag_type: '<deterministic>'
+          pass_by: 'reference'
+          value_type: 'RealPos[]'
+          default:
+          options:
+  references:
+- name: 'mvRateAgeSubtreeProposal'
+  title:
+  aliases:
+  description:
+  details:
+  example:
+  authors:
+  see_also:
+  type_spec:
+    - 'Move'
+    - 'WorkspaceToCoreWrapperObject'
+    - 'WorkspaceObject'
+    - 'RevObject'
+  constructor:
+    - usage: 'mvRateAgeSubtreeProposal(Tree<any> tree, RealPos<any> alpha, Bool<any> tune, RealPos<any> weight, Probability<any> tuneTarget)'
+      arguments:
+        - label: 'tree'
+          description: 'The tree to which the branch-rates belong.'
+          dag_type: '<any>'
+          pass_by: 'const reference'
+          value_type: 'Tree'
+          default:
+          options:
+        - label: 'alpha'
+          description: 'The scaling factor (strength) of this move.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          default: '1'
+          options:
+        - label: 'tune'
+          description: 'Should we tune the scaling factor during burnin?'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Bool'
+          default: 'TRUE'
+          options:
+        - label: 'weight'
+          description: 'The weight how often on average this move will be used per iteration.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'RealPos'
+          default: '1'
+          options:
+        - label: 'tuneTarget'
+          description: 'The acceptance probability targeted by auto-tuning.'
+          dag_type: '<any>'
+          pass_by: 'value'
+          value_type: 'Probability'
+          default: '0.44'
+          options:
+  methods:
+    - name: 'addRates'
+      return_type: 'void'
+      usage: 'addRates(RealPos[]<deterministic> var)'
+      arguments:
+        - label: 'var'
+          description: 'The variable to move'
+          dag_type: '<deterministic>'
+          pass_by: 'reference'
+          value_type: 'RealPos[]'
+          default:
+          options:
+  references:
 - name: 'mvRootTimeScaleBactrian'
   title:
   aliases:
@@ -22696,7 +23811,7 @@
     This move jointly performs narrow exchange moves (Nearest-Neighbor Interchanges without branch length alterations) on the species tree and on gene trees, all of which must be ultrametric.
   example: |
     # We are going to save the trees we simulate in the folder simulatedTrees:
-    dataFolder = "simulatedTrees/" 
+    dataFolder = "simulatedTrees/"
     # Let’s simulate a species tree with 10 taxa, 2 gene trees, 3 alleles per species:
     n_species <- 10
     n_genes <- 2
@@ -22721,7 +23836,7 @@
       geneTrees[g] ~ dnMultiSpeciesCoalescent(speciesTree=spTree, Ne=popSize, taxa=taxons[g])
       print(geneTrees[g])
     }
-    # We can save the species tree and the gene trees: 
+    # We can save the species tree and the gene trees:
     write(spTree, filename=dataFolder+"speciesTree")
     # Saving the gene trees
     for (i in 1:(n_genes)) {
@@ -22744,7 +23859,7 @@
     mymcmc = mcmc(mymodel, monitors, moves, nruns=4)
     mymcmc.run(generations=1000)
     mymcmc.operatorSummary()
-  authors: 'Sebastian Hoehna, Bastien Boussau'
+  authors:
   see_also:
     - 'mvSpeciesSubtreeScale'
     - 'mvSpeciesSubtreeScaleBeta'
@@ -22792,7 +23907,7 @@
           default:
           options:
   references:
-    - citation: 'Guided Tree Topology Proposals for Bayesian Phylogenetic Inference. Sebastian Höhna, Alexei J. Drummond. Syst Biol (2012) 61 (1): 1-11.'
+    - citation: '"Guided Tree Topology Proposals for Bayesian Phylogenetic Inference. Sebastian  H\xF6hna, Alexei J. Drummond. Syst Biol (2012) 61 (1): 1-11."'
       doi: 'https://doi.org/10.1093/sysbio/syr074'
       url: 'https://academic.oup.com/sysbio/article-lookup/doi/10.1093/sysbio/syr074'
     - citation: 'Algorithmic improvements to species delimitation and phylogeny estimation under the multispecies coalescent. Graham Jones.  Journal of Mathematical Biology, 2016.'
@@ -22810,7 +23925,7 @@
     This move jointly performs node time slides (branch length alterations, keeping the topologies fixed) on the species tree and on gene trees, all of which must be ultrametric.
   example: |
     # We are going to save the trees we simulate in the folder simulatedTrees:
-    dataFolder = "simulatedTrees" 
+    dataFolder = "simulatedTrees"
     # Let’s simulate a species tree with 10 taxa, 2 gene trees, 3 alleles per species:
     n_species <- 10
     n_genes <- 2
@@ -22835,7 +23950,7 @@
       geneTrees[g] ~ dnMultiSpeciesCoalescent(speciesTree=spTree, Ne=popSize, taxa=taxons[g])
       print(geneTrees[g])
     }
-    # We can save the species tree and the gene trees: 
+    # We can save the species tree and the gene trees:
     write(spTree, filename=dataFolder+"speciesTree")
     # Saving the gene trees
     for (i in 1:(n_genes)) {
@@ -22858,7 +23973,7 @@
     mymcmc = mcmc(mymodel, monitors, moves, nruns=4)
     mymcmc.run(generations=1000)
     mymcmc.operatorSummary()
-  authors: 'Sebastian Hoehna, Bastien Boussau'
+  authors:
   see_also:
     - 'mvSpeciesSubtreeScale'
     - 'mvSpeciesSubtreeScaleBeta'
@@ -22906,7 +24021,7 @@
           default:
           options:
   references:
-    - citation: 'Guided Tree Topology Proposals for Bayesian Phylogenetic Inference. Sebastian Höhna, Alexei J. Drummond. Syst Biol (2012) 61 (1): 1-11.'
+    - citation: '"Guided Tree Topology Proposals for Bayesian Phylogenetic Inference. Sebastian  H\xF6hna, Alexei J. Drummond. Syst Biol (2012) 61 (1): 1-11."'
       doi: 'https://doi.org/10.1093/sysbio/syr074'
       url: 'https://academic.oup.com/sysbio/article-lookup/doi/10.1093/sysbio/syr074'
     - citation: 'Algorithmic improvements to species delimitation and phylogeny estimation under the multispecies coalescent. Graham Jones.  Journal of Mathematical Biology, 2016.'
@@ -22929,7 +24044,7 @@
     All gene-trees that are present in the population will be scaled accordingly.
   example: |
     # We are going to save the trees we simulate in the folder simulatedTrees:
-    dataFolder = "simulatedTrees/" 
+    dataFolder = "simulatedTrees/"
     # Let’s simulate a species tree with 10 taxa, 2 gene trees, 3 alleles per species:
     n_species <- 10
     n_genes <- 2
@@ -22954,7 +24069,7 @@
       geneTrees[g] ~ dnMultiSpeciesCoalescent(speciesTree=spTree, Ne=popSize, taxa=taxons[g])
       print(geneTrees[g])
     }
-    # We can save the species tree and the gene trees: 
+    # We can save the species tree and the gene trees:
     write(spTree, filename=dataFolder+"speciesTree")
     # Saving the gene trees
     for (i in 1:(n_genes)) {
@@ -22977,7 +24092,7 @@
     mymcmc = mcmc(mymodel, monitors, moves, nruns=4)
     mymcmc.run(generations=1000)
     mymcmc.operatorSummary()
-  authors: 'Sebastian Hoehna, Bastien Boussau'
+  authors:
   see_also:
     - 'mvSpeciesNodeTimeSlideUniform'
     - 'mvSpeciesSubtreeScaleBeta'
@@ -23025,7 +24140,7 @@
           default:
           options:
   references:
-    - citation: 'Guided Tree Topology Proposals for Bayesian Phylogenetic Inference. Sebastian Höhna, Alexei J. Drummond. Syst Biol (2012) 61 (1): 1-11.'
+    - citation: '"Guided Tree Topology Proposals for Bayesian Phylogenetic Inference. Sebastian  H\xF6hna, Alexei J. Drummond. Syst Biol (2012) 61 (1): 1-11."'
       doi: 'https://doi.org/10.1093/sysbio/syr074'
       url: 'https://academic.oup.com/sysbio/article-lookup/doi/10.1093/sysbio/syr074'
     - citation: 'Algorithmic improvements to species delimitation and phylogeny estimation under the multispecies coalescent. Graham Jones.  Journal of Mathematical Biology, 2016.'
@@ -23048,7 +24163,7 @@
     All gene-trees that are present in the population will be scaled accordingly.
   example: |
     # We are going to save the trees we simulate in the folder simulatedTrees:
-    dataFolder = "simulatedTrees/" 
+    dataFolder = "simulatedTrees/"
     # Let’s simulate a species tree with 10 taxa, 2 gene trees, 3 alleles per species:
     n_species <- 10
     n_genes <- 2
@@ -23073,7 +24188,7 @@
       geneTrees[g] ~ dnMultiSpeciesCoalescent(speciesTree=spTree, Ne=popSize, taxa=taxons[g])
       print(geneTrees[g])
     }
-    # We can save the species tree and the gene trees: 
+    # We can save the species tree and the gene trees:
     write(spTree, filename=dataFolder+"speciesTree")
     # Saving the gene trees
     for (i in 1:(n_genes)) {
@@ -23096,7 +24211,7 @@
     mymcmc = mcmc(mymodel, monitors, moves, nruns=4)
     mymcmc.run(generations=1000)
     mymcmc.operatorSummary()
-  authors: 'Sebastian Hoehna, Bastien Boussau'
+  authors:
   see_also:
     - 'mvSpeciesNodeTimeSlideUniform'
     - 'mvSpeciesSubtreeScale'
@@ -23158,7 +24273,7 @@
           default:
           options:
   references:
-    - citation: 'Guided Tree Topology Proposals for Bayesian Phylogenetic Inference. Sebastian Höhna, Alexei J. Drummond. Syst Biol (2012) 61 (1): 1-11.'
+    - citation: '"Guided Tree Topology Proposals for Bayesian Phylogenetic Inference. Sebastian  H\xF6hna, Alexei J. Drummond. Syst Biol (2012) 61 (1): 1-11."'
       doi: 'https://doi.org/10.1093/sysbio/syr074'
       url: 'https://academic.oup.com/sysbio/article-lookup/doi/10.1093/sysbio/syr074'
     - citation: 'Algorithmic improvements to species delimitation and phylogeny estimation under the multispecies coalescent. Graham Jones.  Journal of Mathematical Biology, 2016.'
@@ -23176,7 +24291,7 @@
     This move jointly performs a tree scale move (the entire tree is scaled up or down, keeping the topology fixed) on the species tree and on gene trees, all of which must be ultrametric.
   example: |
     # We are going to save the trees we simulate in the folder simulatedTrees:
-    dataFolder = "simulatedTrees/" 
+    dataFolder = "simulatedTrees/"
     # Let’s simulate a species tree with 10 taxa, 2 gene trees, 3 alleles per species:
     n_species <- 10
     n_genes <- 2
@@ -23202,7 +24317,7 @@
       geneTrees[g] ~ dnMultiSpeciesCoalescent(speciesTree=spTree, Ne=popSize, taxa=taxons[g])
       print(geneTrees[g])
     }
-    # We can save the species tree and the gene trees: 
+    # We can save the species tree and the gene trees:
     write(spTree, filename=dataFolder+"speciesTree")
     # Saving the gene trees
     for (i in 1:(n_genes)) {
@@ -23225,7 +24340,7 @@
     mymcmc = mcmc(mymodel, monitors, moves, nruns=4)
     mymcmc.run(generations=1000)
     mymcmc.operatorSummary()
-  authors: 'Sebastian Hoehna, Bastien Boussau'
+  authors:
   see_also:
     - 'mvSpeciesNodeTimeSlideUniform'
     - 'mvSpeciesSubtreeScaleBeta'
@@ -23294,7 +24409,7 @@
           default:
           options:
   references:
-    - citation: 'Guided Tree Topology Proposals for Bayesian Phylogenetic Inference. Sebastian Höhna, Alexei J. Drummond. Syst Biol (2012) 61 (1): 1-11.'
+    - citation: '"Guided Tree Topology Proposals for Bayesian Phylogenetic Inference. Sebastian  H\xF6hna, Alexei J. Drummond. Syst Biol (2012) 61 (1): 1-11."'
       doi: 'https://doi.org/10.1093/sysbio/syr074'
       url: 'https://academic.oup.com/sysbio/article-lookup/doi/10.1093/sysbio/syr074'
     - citation: 'Algorithmic improvements to species delimitation and phylogeny estimation under the multispecies coalescent. Graham Jones.  Journal of Mathematical Biology, 2016.'
@@ -25218,7 +26333,7 @@
     phy ~ dnBDP(lambda=1, mu=0, rootAge=1, taxa=taxa)
     # retrieve the taxon list for 'phy'
     phy.taxa()
-  authors: 'Michael Landis'
+  authors:
   see_also: 'readTaxonData'
   type_spec: 'RevObject'
   constructor:

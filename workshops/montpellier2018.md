@@ -1,5 +1,6 @@
 ---
 layout: workshop
+type: workshop
 title: Analysing Macroevolutionary Processes using RevBayes
 location: Université de Montpellier, Montpellier, France
 startdate: 2018-12-11

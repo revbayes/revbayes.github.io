@@ -1,5 +1,6 @@
 ---
 layout: workshop
+type: workshop
 title: Bayesian phylogenetics and macroevolution in RevBayes
 location: Room D114, Museum of Paleontology, Richard-Wagner Str 10, LMU Munich, Germany
 startdate: 2019-09-17

@@ -46,7 +46,7 @@ make_states = function(label_fn, color_fn, fp="./") {
         st_colors[j] = range_colors[j]
     }
     st_colors[ length(st_colors)+1 ] = "lightgray"
-    st_lbl[["..."]] = "..."   
+    st_lbl[["misc."]] = "misc."   
     
     return( list(state_labels=st_lbl, state_colors=st_colors) )
 }

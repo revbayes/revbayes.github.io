@@ -27,13 +27,13 @@ brew install cmake boost
 
 ### If you do not have root
 
-TODO: [Test instructions for installing cmake](https://cmake.org/install/)
+First you will need to [install cmake](https://cmake.org/install/)
 
 Then you can compile boost:
 
     curl -O -L https://dl.bintray.com/boostorg/release/1.71.0/source/boost_1_71_0.tar.gz
     tar -xzvf boost_1_71_0.tar.gz
-    cd boost_1_71_0.tar.gz
+    cd boost_1_71_0
     ./bootstrap.sh --with-libraries=atomic,chrono,filesystem,system,regex,thread,date_time,program_options,math,serialization
     ./b2 link=static
 
