@@ -109,6 +109,17 @@ age_clade_1_prior.clamp(age_clade_1_mean)
 
 mean_tree <- readTrees(mean_tree_file)[1]
 var_tree <- readTrees(var_tree_file)[1]
+
+# Reroot and make bifurcating.
+rootId <- tree.getRootIndex()
+outgroup <- tree.getDescendantTaxa(rootId)
+mean_tree.reRootAndMakeBifurcating(clade(outgroup))
+var_tree.reRootAndMakeBifurcating(clade(outgroup))
+
+# Renumber nodes.
+mean_tree.renumberNodes(tree)
+var_tree.renumberNodes(tree)
+
 if (debug == true) {
   print("The tree with posterior means as branch lengths:")
   print(mean_tree)
