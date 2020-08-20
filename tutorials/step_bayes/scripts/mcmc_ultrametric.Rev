@@ -1,0 +1,130 @@
+################################################################################
+#
+# RevBayes Example: Bayesian inference of a rooted time tree using a
+#                   relaxed clock model and a posterior distribution of trees
+#                   as data.
+#
+# authors: Sebastian Hoehna
+#
+################################################################################
+
+GENE = "CAD"
+
+
+### Read in the tree samples from the previous analysis
+### Here I assume that we had 50,000 sampled trees (2x an MCMC of 25,000 iterations)
+### If we want to remove 20% as burnin, that leaves 40,000 samples.
+### Then, if we want 100 trees, we should take every 400th sample => thin=400
+treetrace = readTreeTrace("output/photinus_"+GENE+".trees", treetype="non-clock", thinning=400, burnin=0.2)
+
+## let's just double check how many trees we have for this analysis
+## it should be 100 (or 101, if the tree for iteration 0 was included)
+treetrace.size(true)
+
+## get the taxon information from the first tree
+taxa = treetrace.getTree(1).taxa()
+n_species <- taxa.size()
+
+moves     = VectorMoves()
+monitors  = VectorMonitors()
+
+
+
+#####################
+# Branch-Rate Model #
+#####################
+
+## We assume a uncorrelated lognormal relaxed clocks.
+## So we need to specify this lognormal distribution
+## with a mean and standard deviation.
+
+## Specify a uniform prior on the clock mean
+clock_rate_mean ~ dnUniform(0,1E4)
+clock_rate_mean.setValue( 0.1 )
+
+## also specify a uniform prior on the sd of the clock rates
+clock_rate_sd ~ dnUniform(0,1E4)
+clock_rate_sd.setValue( 0.01 )
+
+## transform the clock mean to log-space for the lognormal distribution.
+clock_rate_ln_mean := ln(clock_rate_mean)
+
+## construct the lognormal branch length prior
+branch_rate_prior = dnLognormal(clock_rate_ln_mean, clock_rate_sd)
+
+## Specify scaling moves on the mean and sd.
+## Since the mean is in real space, a scaling move should work.
+## Alternatively, we could us a sliding move.
+moves.append( mvScale( clock_rate_mean, weight=3 ) )
+moves.append( mvScale( clock_rate_sd, weight=3 ) )
+
+
+
+##############
+# Tree model #
+##############
+
+## From our study, Catalan et al (2020), we know that the root age
+## for Photinus should be around 42.5Ma.
+## We thus specify a normal distribution as the prior on the root age.
+root_time ~ dnNormal( mean=42.5,sd=2.5, min=30, max=70)
+root_time.setValue( 42.5 )
+moves.append( mvScale(root_time, weight=2.0) )
+moves.append( mvSlide(root_time, weight=2.0) )
+
+
+## The birth and death rates are drawn from a uniform prior
+birth_rate ~ dnUniform(0,1E6)
+death_rate ~ dnUniform(0,1E6)
+
+## We initialize the birth and death rates with reasonable values.
+birth_rate.setValue( ln(n_species/2.0) / root_time )
+death_rate.setValue( birth_rate / 1E4 )
+
+## we apply movesto the birth and death rate variables using a scale proposal
+moves.append( mvScale(birth_rate,lambda=1.0,tune=true,weight=3.0) )
+moves.append( mvScale(death_rate,lambda=1.0,tune=true,weight=3.0) )
+
+## specify the prior on the time tree as a birth-death process.
+time_tree ~ dnBirthDeath(rootAge=root_time, lambda=birth_rate, mu=death_rate, taxa=taxa)
+
+#unrooted_MAP_tree = readTrees("output/photinus_"+GENE+"_MAP.tre")[1]
+#unrooted_MAP_tree.reroot()
+#time_tree.setValue( unrooted_MAP_tree )
+
+
+## Apply a bunch of moves on the time tree
+moves.append( mvNodeTimeSlideUniform(time_tree,weight=n_species) )
+moves.append( mvNarrow(time_tree,weight=n_species) )
+moves.append( mvFNPR(time_tree,weight=n_species/5.0) )
+
+## Specify a root branch fraction.
+## This has to be a uniform prior between 0 and 1,
+## which is actualy a Beta(1,1) prior.
+root_branch_fraction ~ dnBeta(1,1)
+moves.append( mvBetaProbability(root_branch_fraction, weight=2.0) )
+
+## The branch length trees are the trees we sampled in step 1
+phis ~ dnEmpiricalSample( dnBranchRateTree( time_tree, branch_rate_prior, root_branch_fraction ) )
+phis.clamp(treetrace.getTrees())
+
+
+
+############
+# Analysis #
+############
+
+mymodel = model(time_tree)
+
+# add monitors
+monitors.append( mnScreen( clock_rate_mean, clock_rate_sd, printgen=100) )
+monitors.append( mnFile(time_tree, filename="output/ultrametric_" + GENE + ".trees", printgen=1) )
+monitors.append( mnModel(filename="output/ultrametric_" + GENE + ".log", printgen=1) )
+
+# run the analysis
+mymcmc = mcmc(mymodel, moves, monitors, nruns=2, combine="mixed")
+mymcmc.run(25000, tuningInterval=100)
+
+
+# you may want to quit RevBayes now
+q()
