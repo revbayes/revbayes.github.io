@@ -10,9 +10,9 @@ out_bn="alignment.fasta.approx.dating"
 ################################################################################
 # Options.
 
-# Show some debug output.
+# Show debug output?
 debug = true
-# Use relative constraints.
+# Use relative constraints?
 constrain = true
 # Length of Markov chain.
 mcmc_length = 50000
@@ -22,7 +22,8 @@ mcmc_burnin = 100
 var_min = 1e-6
 
 ################################################################################
-# Variables used later.
+# Variables.
+
 moves = VectorMoves()
 monitors = VectorMonitors()
 
@@ -50,7 +51,7 @@ root_time := abs( root_time_real )
 
 if (constrain) {
   out_bn = out_bn + "_cons"
-  constraints <- readRelativeNodeAgeConstraints(file=constraints_file);
+  constraints <- readRelativeNodeAgeConstraints(file=constraints_file)
 }
 
 ################################################################################
@@ -113,8 +114,8 @@ var_tree <- readTrees(var_tree_file)[1]
 # Reroot and make bifurcating.
 rootId <- tree.getRootIndex()
 outgroup <- tree.getDescendantTaxa(rootId)
-mean_tree.reRootAndMakeBifurcating(clade(outgroup))
-var_tree.reRootAndMakeBifurcating(clade(outgroup))
+mean_tree.reroot(clade=clade(outgroup), make_bifurcating=TRUE)
+var_tree.reroot(clade=clade(outgroup), make_bifurcating=TRUE)
 
 # Renumber nodes.
 mean_tree.renumberNodes(tree)
