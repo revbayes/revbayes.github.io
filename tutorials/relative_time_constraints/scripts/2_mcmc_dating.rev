@@ -81,8 +81,10 @@ moves.append(mvLayeredScaleProposal(tree=psi, lambda=0.1, tune=true, weight=1.0*
 # Node calibrations provide information about the ages of the MRCA.
 
 # The MRCAs of the following clades are calibrated.
-clade_0 = clade("T_3","T_4","T_5")
-clade_1 = clade("T_14","T_15","T_16","T_17")
+# clade_0 = clade("T_3","T_4","T_5")
+# clade_1 = clade("T_14","T_15","T_16","T_17")
+clade_0 = clade("3","4","5")
+clade_1 = clade("14","15","16","17")
 
 # Clade 0.
 tmrca_clade_0 := tmrca(psi, clade_0)
@@ -127,6 +129,8 @@ if (debug == true) {
   print("The tree with posterior variances as branch lengths:")
   print(var_tree)
 }
+
+quit()
 
 # Get indices of left child and right child of root.
 i_left <- tree.child(tree.nnodes(),1)
