@@ -3,58 +3,24 @@ title: Setting up CLion for RevBayes development
 order: 0
 ---
 
-CLion is a cross-platform IDE for C and C++ by [JetBrains](https://www.jetbrains.com/clion/). To work in CLion you need
-to install CMake.
+CLion is a cross-platform IDE for C and C++ by [JetBrains](https://www.jetbrains.com/clion/). 
 
-First follow the install instructions for [installing RevBayes](https://revbayes.github.io/software) from source. First navigate to wherever the revbayes directory is, then go to the `projects/cmake` directory. Here you should see that there is a build directory, go to that directory. 
+Prerequisites
+----------------------
+To work in CLion you need to install CMake. On Mac OSX you can install via [homebrew](https://brew.sh/), `apt` on ubuntu, or [chocolatey](https://chocolatey.org) on windows, 
 
-To set up CLion we need to use a compilation database which has the name `compile_commands.json`. To make this run `cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON` in this directory: `<your path to revbayes>/revbayes/projects/cmake/build`
+Follow the install instructions for [installing RevBayes](https://revbayes.github.io/software) from source. The only change is instead of running `./build.sh` run `./build.sh -debug true`. This should take a second so feel free to go to grab yourself a snack.
 
-After running this, within that directory you should have a `compile_commands.json` file.
+Create an CLion project for RevBayes
+-----------------------------
+Open CLion. It should look like this:
+<img src="figures/clion-opening.png" width="50%">
+Click on  "New CMake Project from Sources. This will open up a file tree, you need to find a file called `cmake_install.cmake`. You can see this below, mine was at `<where-revbayes-is>/revbayes/projects/cmake/build/`.
 
-Now open Clion, it should look something like this:
+<img src="figures/clion-cmake.png" width="50%">
 
-(screenshot)
+This will open the project in CLion and it should say in the bottom updating symbols... This part takes a bit, an additional snack may be warranted. After a bit you should also see in the upper right near the little hammer a dropdown menu that says `rb | DEBUG`.
 
-Go to open and then navigate to the `compile_commands.json` file we just created. Click on open as project
+<img src="figures/clion-ready.png" width="50%">
 
-This will open your project but right now on the left it should list all of the `.cpp` files alphabetically (not ideal).
-
-To fix this, go to Tools -> Compilation Database -> Change Project Root and change that directory to the revbayes directory `<your path to revbayes>/revbayes/`
-
-
-## Making a build configuration for RevBayes
-
-Open Preferences/Tools -> Build, Execution, Deployment -> Custom Build Targets
-
-Screenshot
-
-Name your configuration and click on the ... by Build, then click the + in the window that pops up.
-
-Screenshot
-
-Next to program place the `build.sh` file found in `<your path to revbayes>/revbayes/projects/cmake`
-
-In arguments type `-boost false -debug true`
-
-Next to executeable find the RevBayes executeable which is in `<your path to revbayes>/revbayes/projects/cmake`. 
-
-Click OK
-
-Now the screen should looks like this and it should build if you go to Build and clikc Build Project
-
-screenshot 
-
-## Running and debugging configurations
-We need to set up CLion to run the executeable for debugging to do this do the following:
-
-1. Go to Run -> Edit Configurations
-2. Click on the + and go to Custom Build Application
-3. For target select the build configuration from above 
-4. For executeable find the RevBayes program that was built
-5. For working directory put the revbayes directory
-6. Click Apply and then OK
-
-Now you can run RevBayes by pressing Ctrl + R and set breakpoints and debug with Ctrl + D. 
-
-Screenshot
+You should now be able to set a breakpoint and run your Rev script. The interactive Rev console does not work in CLion right now.
