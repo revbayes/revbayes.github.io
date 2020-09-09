@@ -14,7 +14,9 @@ Follow the install instructions for [installing RevBayes](https://revbayes.githu
 Create an CLion project for RevBayes
 -----------------------------
 Open CLion. It should look like this:
+
 <img src="figures/clion-opening.png" width="50%">
+
 Click on  "New CMake Project from Sources. This will open up a file tree, you need to find a file called `cmake_install.cmake`. You can see this below, mine was at `<where-revbayes-is>/revbayes/projects/cmake/build/`.
 
 <img src="figures/clion-cmake.png" width="50%">

@@ -40,9 +40,17 @@ in your home folder using:
 
     export GEM_HOME=~/.gem
     gem install jekyll bundler
-    
+
+
 NOTE: You may get errors here that you need to update ruby to install these
 gems. 
+
+If you are having trouble on MacOS with system ruby being out of date, you can install ruby via homebrew with `brew install ruby`. Then you need to add the homebrew version of ruby to your path by adding:
+
+    export PATH="/usr/local/Cellar/ruby/2.7.1_2/bin/:$PATH"
+
+to your `.bash_profile` file. Then restart your terminal or `source .bash_profile`.
+
 
 Next, move into the `revbayes.github.io` repo directory, and install required gems via:
 
