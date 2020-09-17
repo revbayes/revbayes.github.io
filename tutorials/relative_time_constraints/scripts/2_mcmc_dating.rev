@@ -13,7 +13,7 @@ out_bn="alignment.fasta.approx.dating"
 # Show debug output?
 debug = true
 # Use relative constraints?
-constrain = true
+constrain = false
 # Length of Markov chain.
 mcmc_length = 50000
 mcmc_burnin = 100
@@ -81,10 +81,8 @@ moves.append(mvLayeredScaleProposal(tree=psi, lambda=0.1, tune=true, weight=1.0*
 # Node calibrations provide information about the ages of the MRCA.
 
 # The MRCAs of the following clades are calibrated.
-# clade_0 = clade("T_3","T_4","T_5")
-# clade_1 = clade("T_14","T_15","T_16","T_17")
-clade_0 = clade("T3","T4","T5")
-clade_1 = clade("T14","T15","T16","T17")
+clade_0 = clade("T0","T1","T2")
+clade_1 = clade("T13","T14","T15","T16")
 
 # Clade 0.
 tmrca_clade_0 := tmrca(psi, clade_0)
@@ -256,13 +254,18 @@ for(i in 1:n_branches)
   ages_psi[i] := psi.nodeAge(i)
   ages_true[i] := tree.nodeAge(i)
 }
-if (debug == true) print ("True node ages: " + ages_true)
-if (debug == true) print ("Node ages of state of Markov chain: " + ages_psi)
+if (debug == true) {
+  print("True node ages:")
+  print(ages_true)
+  print("Node ages of state of Markov chain:")
+  print(ages_psi)
+}
 
 monitors.append(mnModel(filename="output/"+out_bn+".log",printgen=10, separator = TAB))
 monitors.append(mnStochasticVariable(filename="output/"+out_bn+"_Stoch.log",printgen=10))
 monitors.append(mnExtNewick(filename="output/"+out_bn+".trees", isNodeParameter=FALSE, printgen=10, separator = TAB, tree=psi, branch_rates))
-# Add some randoma age monitors.
+
+# Add some random age monitors.
 monitors.append(mnScreen(printgen=100, root_time, ages_psi[20], ages_psi[25], ages_psi[27]))
 
 ################################################################################
