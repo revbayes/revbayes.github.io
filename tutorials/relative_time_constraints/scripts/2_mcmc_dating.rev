@@ -245,9 +245,11 @@ if (debug == true) {
   print(ages_psi)
 }
 
+trees_base_name = "output/" + out_bn
+trees_file_name = trees_base_name + ".trees"
 monitors.append(mnModel(filename="output/"+out_bn+".log",printgen=10, separator = TAB))
 monitors.append(mnStochasticVariable(filename="output/"+out_bn+"_Stoch.log",printgen=10))
-monitors.append(mnExtNewick(filename="output/"+out_bn+".trees", isNodeParameter=FALSE, printgen=10, separator = TAB, tree=psi, branch_rates))
+monitors.append(mnExtNewick(filename=trees_file_name, isNodeParameter=FALSE, printgen=10, separator = TAB, tree=psi, branch_rates))
 
 # Add some random age monitors.
 monitors.append(mnScreen(printgen=100, root_time, ages_psi[20], ages_psi[25], ages_psi[27]))
@@ -263,4 +265,7 @@ mymcmc.operatorSummary()
 mymcmc.run(generations=mcmc_length)
 mymcmc.operatorSummary()
 
+# Get maximum posterior tree (MAP).
+tt = readTreeTrace(trees_file_name, burnin=mcmc_burnin)
+mapTree(tt, trees_base_name+".tree")
 q()
