@@ -88,3 +88,10 @@ Finally, we can estimate the time tree using relative constraints.
 ```
 rb ./scripts/2_mcmc_dating.rev
 ```
+
+Branch score distances between master tree and inferred trees:
+
+alignment.fasta.approx.dating_cons.tree
+Branch score               Right 0.14207812275294182
+alignment.fasta.approx.dating.tree
+Branch score               Right 0.1592917560202034
