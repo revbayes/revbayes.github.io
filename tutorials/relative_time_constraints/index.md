@@ -499,30 +499,96 @@ for (i in n_branches:1) {
 }
 ```
 
+Finally, we calculate the approximate phylogenetic likelihood. In detail, for
+each branch, the length measured in substitutions is the product of the length
+measured in time, and the evolutionary rate at that branch:
 
-Finally, we can estimate the time tree using relative constraints.
+```
+mean_bl[i] := times[i]*branch_rates[i]
+```
+
+The branch lengths are then distribution according to normal distributions with
+the posterior means and variances obtained in the previous steps:
+
+```
+bls[i] ~ dnNormal(mean_bl[i] ,sqrt(posterior_var_bl[i]))
+```
+
+Again, the two branches leading to the root are handled in a special way. In
+total, the approximate phylogenetic likelihood is calculated like so:
+
+```
+times[i_left] := psi.branchLength(i_left)
+times[i_right] := psi.branchLength(i_right)
+
+for(i in 1:n_branches) {
+  if(i != i_left && i != i_right) {
+    times[i] := psi.branchLength(i)
+    mean_bl[i] := times[i]*branch_rates[i]
+    bls[i] ~ dnNormal(mean_bl[i] ,sqrt(posterior_var_bl[i]))
+    bls[i].clamp(posterior_mean_bl[i])
+  }
+}
+
+# See above.
+mean_bl_root := times[i_left]*branch_rates[i_left] + times[i_right]*branch_rates[i_right]
+bls[i_root] ~ dnNormal(mean_bl_root, sqrt(posterior_var_bl_root))
+bls[i_root].clamp(posterior_mean_bl_root)
+```
+
+
+The last part of the script defines the monitors, executes the MCMC chain, and
+saves the results. To perform the dating analysis, please execute twice (once
+with `constrain = true`, and once with `constrain = false`):
+
 ```
 rb ./scripts/3_mcmc_dating.rev
 ```
+
+The MAP trees for the analysis with calibrations only, and with calibrations and
+constraints are stored in the files `output/alignment.fasta.approx.dating.tree`,
+and `output/alignment.fasta.approx.dating_cons.tree`, respectively.
 
 Analysis of results
 --
 {:.section}
 
-Branch score distances between master tree and inferred trees:
+The following figures show the inferred time-like trees.
 
-alignment.fasta.approx.dating_cons.tree
-Branch score               Right 0.14207812275294182
-alignment.fasta.approx.dating.tree
-Branch score               Right 0.1592917560202034
+{% figure time-tree-calibrations-only %}
+<img src="figures/time-tree-calibrations-only.png" width="600" />  
+{% figcaption %} *Inferred time-like tree using calibrations only.* {% endfigcaption %}
+{% endfigure %}
+
+{% figure time-tree-calibrations-and-constraints %}
+<img src="figures/time-tree-calibrations-and-constraints.png" width="600" />  
+{% figcaption %} *Inferred time-like tree using calibrations and constraints.* {% endfigcaption %}
+{% endfigure %}
+
+We see, that the constraints help improve the accuracy, as well as reduce the
+confidence intervals of the node ages. The branch score distances between the
+original time-like tree, and the inferred time-like trees are:
+
+```
+Calibrations only:
+Branch score distance is 0.1592917560202034
+Calibrations and constraints:
+Branch score distance is 0.14207812275294182
+```
+
+That is, using constraints helped improve the branch score distance by 11
+percent.
 
 Concluding remarks
 --
 {:.section}
 
-Real data:
-- When analyzing real data, a more appropriate substitution model should be used.
-- Discuss, tree not available, has to be inferred.
+When analyzing real data a more appropriate substitution model should be used.
+Also, the tree topology is unknown, and has to be inferred. This has to be done
+beforehand. Finally, calibrations and constraints have to be obtained manually
+either through literature or original research.
 
-Simulation scripts:
-- Link to ELynx.
+The simulations were done using a custom simulator called `ELynx`. If you are
+interested, please have a look at the [source code of
+ELynx](https://github.com/dschrempf/elynx) and the [simulation scripts for this
+tutorial](https://github.com/revbayes/revbayes.github.io/tree/source/tutorials/relative_time_constraints/internal/simulate).
