@@ -1,16 +1,24 @@
+################################################################################
 outdir="output/"
+
+# File including trees obtained in step 1.
 tree_file="alignment.fasta.trees"
+
+# Only use every nth tree to calculate the mean and the variance.
 thinning = 5
 
-trees_only = tree_file + "_trees_only.nxs"
+################################################################################
+# The function 'readBranchLengthTrees' expects a Nexus file, so we have to
+# convert the trees into this format before reading the branch lengths.
+file_trees_only = tree_file + "_trees_only.nxs"
 tree_trace = readTreeTrace(outdir+tree_file)
-writeNexus(outdir+trees_only, tree_trace.getTrees())
-
-tre = readBranchLengthTrees(outdir+trees_only)
+writeNexus(outdir+file_trees_only, tree_trace.getTrees())
+tre = readBranchLengthTrees(outdir+file_trees_only)
 
 print("Number of trees before thinning: ")
 print(tre.size())
 
+# Perform thinning.
 index = 1
 for (i in 1:tre.size()) {
   if (i % thinning == 0) {
@@ -22,11 +30,14 @@ for (i in 1:tre.size()) {
 print("Number of trees after thinning: ")
 print(trees.size())
 
-MAPtree = readBranchLengthTrees(outdir+trees_only)[1]
+################################################################################
+print("Compute the posterior means and squared means of the branch lengths.")
 num_branches = trees[1].nnodes()-1
 bl_means <- rep(0.0,num_branches)
 bl_squaredmeans <- rep(0.0,num_branches)
 
+# Extract the posterior branch lengths. The index `i` is traversing the trees,
+# the index `j` is traversing the branches.
 for (i in 1:(trees.size())) {
   for (j in 1:num_branches ) {
     bl_means[j] <- bl_means[j] + trees[i].branchLength(j)
@@ -34,31 +45,44 @@ for (i in 1:(trees.size())) {
     }
 }
 
+# Compute the means.
 for (j in 1:num_branches ) {
   bl_means[j] <- bl_means[j] / (trees.size())
   bl_squaredmeans[j] <- bl_squaredmeans[j] / (trees.size())
 }
 
-print("MAP tree before changing branch lengths")
-print(MAPtree)
+################################################################################
+print("Compute the tree with posterior means as branch lengths.")
+meanTree = readBranchLengthTrees(outdir+file_trees_only)[1]
+
+print("Original mean tree before changing branch lengths")
+print(meanTree)
 
 for (j in 1:num_branches ) {
-  MAPtree.setBranchLength(j, bl_means[j])
+  meanTree.setBranchLength(j, bl_means[j])
 }
 
-print("MAP tree after changing branch lengths")
-print(MAPtree)
+print("Tree with posterior means as branch lengths.")
+print(meanTree)
 
-writeNexus(outdir+tree_file+"_meanBL.nex", MAPtree)
+writeNexus(outdir+tree_file+"_meanBL.nex", meanTree)
 print("The tree with mean branch lengths has been saved.")
 
-print ("Computing variance tree")
+################################################################################
+print ("Compute tree with posterior variances as branch lengths.")
+varTree = readBranchLengthTrees(outdir+file_trees_only)[1]
+
+print("Original variance tree before changing branch lengths")
+print(varTree)
+
 for (j in 1:num_branches ) {
-  MAPtree.setBranchLength(j, abs ( bl_squaredmeans[j] - bl_means[j]^2) )
-  print("VAR: " + bl_squaredmeans[j] + " ; " +  bl_means[j] +" ; " +  bl_means[j]^2 +" ; " + abs ( bl_squaredmeans[j] - bl_means[j]^2))
+  varTree.setBranchLength(j, abs ( bl_squaredmeans[j] - bl_means[j]^2) )
 }
 
-writeNexus(outdir+tree_file+"_varBL.nex", MAPtree)
+print("Tree with posterior variances as branch lengths.")
+print(varTree)
+
+writeNexus(outdir+tree_file+"_varBL.nex", varTree)
 print("The tree with variance branch lengths has been saved.")
 
 q()
