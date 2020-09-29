@@ -1,7 +1,7 @@
 ---
 title:  Dating with relative constraints
 subtitle: Synchronization of molecular clocks between co-existing species
-authors: Dominik Schrempf, and Bastien Boussau
+authors: Dominik Schrempf, Gergely Szöllősi, and Bastien Boussau
 level: 3
 prerequisites:
 - intro
