@@ -154,28 +154,142 @@ to improve the accuracy of dating the phylogeny (`3_mcmc_dating.rev`). The
 posterior means and variances of the branch lengths obtained in the second step
 are used to approximate the phylogenetic likelihood using normal distributions.
 
-1. Inference of the posterior distributions of the branch lengths
+Step 1: Inference of the posterior distributions of the branch lengths
 --
 {:.section}
+
+
+Please execute the following command to perform Bayesian inference of the
+posterior distributions of branch lengths using a Jukes-Cantor substitution
+model on a single alignment with a fixed tree topology. The Markov chain Monte
+Carlo (MCMC) algorithm will be run for 30000 iterations. It will use the
+alignment `data/alignment.fasta`, and the substitution-like tree
+`data/substitution.tree`. The output will be a file
+`output/alignment.fasta.trees` containing the 30000 trees from the MCMC chain.
 
 ```bash
  rb ./scripts/1_mcmc_jc.rev
-
 ```
 
-2. Summary of the posterior means and variances
+For more detailed explanations of the script file, please consult the
+[continuous time Markov chain tutorial](../ctmc/).
+
+Step 2: Summary of the posterior means and variances
 --
 {:.section}
 
-TODO: State that the approximation of the likelihood using posterior means and
-variances is optional (but recommended for reasons of computational efficiency).
+In this step, we will compute the posterior means and variances of the branch
+lengths using the 30000 trees obtained in the previous step. Please have a look
+at the script file `scripts/2_summarize_branch_lengths.rev`.
 
-Computation of posterior mean and variance of branch lengths:
+First, we specify the name of the file containing the trees, and the amount of
+thinning we apply:
+
 ```
+# File including trees obtained in step 1.
+tree_file="alignment.fasta.trees"
+# Only use every nth tree to calculate the posterior means and variances.
+thinning = 5
+```
+
+Then, the trees are loaded and thinned:
+
+```
+tre = readBranchLengthTrees(outdir+file_trees_only)
+
+print("Number of trees before thinning: ")
+print(tre.size())
+
+# Perform thinning.
+index = 1
+for (i in 1:tre.size()) {
+  if (i % thinning == 0) {
+    trees[index] = tre[i]
+    index = index + 1
+  }
+}
+```
+
+The posterior means and squared means (which will be used to calculate
+variances) are then computed:
+
+```
+print("Compute the posterior means and squared means of the branch lengths.")
+num_branches = trees[1].nnodes()-1
+bl_means <- rep(0.0,num_branches)
+bl_squaredmeans <- rep(0.0,num_branches)
+
+# Extract the posterior branch lengths. The index `i` is traversing the trees,
+# the index `j` is traversing the branches.
+for (i in 1:(trees.size())) {
+  for (j in 1:num_branches ) {
+    bl_means[j] <- bl_means[j] + trees[i].branchLength(j)
+    bl_squaredmeans[j] <- bl_squaredmeans[j] + trees[i].branchLength(j)^2
+    }
+}
+
+# Compute the posterior means and squared means.
+for (j in 1:num_branches ) {
+  bl_means[j] <- bl_means[j] / (trees.size())
+  bl_squaredmeans[j] <- bl_squaredmeans[j] / (trees.size())
+}
+```
+
+Finally, the posterior means and variances are stored in two trees having the
+same topology as used for inference, respectively. In this way we ensure that
+the posterior means and variances for the specific branches are tracked in a
+correct way.
+
+```
+################################################################################
+# Save the posterior means in a separate tree.
+
+print("Compute the tree with posterior means as branch lengths.")
+meanTree = readBranchLengthTrees(outdir+file_trees_only)[1]
+
+print("Original mean tree before changing branch lengths")
+print(meanTree)
+
+for (j in 1:num_branches ) {
+  meanTree.setBranchLength(j, bl_means[j])
+}
+
+print("Tree with posterior means as branch lengths.")
+print(meanTree)
+
+writeNexus(outdir+tree_file+"_meanBL.nex", meanTree)
+print("The tree with posterior mean branch lengths has been saved.")
+
+################################################################################
+# Save the posterior variances in a separate tree.
+
+print ("Compute tree with posterior variances as branch lengths.")
+varTree = readBranchLengthTrees(outdir+file_trees_only)[1]
+
+print("Original variance tree before changing branch lengths")
+print(varTree)
+
+for (j in 1:num_branches ) {
+  varTree.setBranchLength(j, abs ( bl_squaredmeans[j] - bl_means[j]^2) )
+}
+
+print("Tree with posterior variances as branch lengths.")
+print(varTree)
+
+writeNexus(outdir+tree_file+"_varBL.nex", varTree)
+print("The tree with posterior variance branch lengths has been saved.")
+```
+
+To run the script, please execute
+```bash
  rb ./scripts/2_summarize_branch_lengths.rev
 ```
 
-3. Dating using calibrations and constraints
+The approximation of the phylogenetic likelihood using posterior means and
+variances is optional but recommended for reasons of computational efficiency.
+
+
+Step 3: Dating using calibrations and constraints
 --
 {:.section}
 

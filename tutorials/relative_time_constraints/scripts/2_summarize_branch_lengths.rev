@@ -1,13 +1,16 @@
 ################################################################################
-outdir="output/"
+# Options.
 
+# Output directory.
+outdir="output/"
 # File including trees obtained in step 1.
 tree_file="alignment.fasta.trees"
-
-# Only use every nth tree to calculate the mean and the variance.
+# Only use every nth tree to calculate the posterior means and variances.
 thinning = 5
 
 ################################################################################
+# Retrieve the trees.
+
 # The function 'readBranchLengthTrees' expects a Nexus file, so we have to
 # convert the trees into this format before reading the branch lengths.
 file_trees_only = tree_file + "_trees_only.nxs"
@@ -31,6 +34,8 @@ print("Number of trees after thinning: ")
 print(trees.size())
 
 ################################################################################
+# Compute posterior means and variances.
+
 print("Compute the posterior means and squared means of the branch lengths.")
 num_branches = trees[1].nnodes()-1
 bl_means <- rep(0.0,num_branches)
@@ -45,13 +50,15 @@ for (i in 1:(trees.size())) {
     }
 }
 
-# Compute the means.
+# Compute the posterior means and squared means.
 for (j in 1:num_branches ) {
   bl_means[j] <- bl_means[j] / (trees.size())
   bl_squaredmeans[j] <- bl_squaredmeans[j] / (trees.size())
 }
 
 ################################################################################
+# Save the posterior means in a separate tree.
+
 print("Compute the tree with posterior means as branch lengths.")
 meanTree = readBranchLengthTrees(outdir+file_trees_only)[1]
 
@@ -66,9 +73,11 @@ print("Tree with posterior means as branch lengths.")
 print(meanTree)
 
 writeNexus(outdir+tree_file+"_meanBL.nex", meanTree)
-print("The tree with mean branch lengths has been saved.")
+print("The tree with posterior mean branch lengths has been saved.")
 
 ################################################################################
+# Save the posterior variances in a separate tree.
+
 print ("Compute tree with posterior variances as branch lengths.")
 varTree = readBranchLengthTrees(outdir+file_trees_only)[1]
 
@@ -83,6 +92,6 @@ print("Tree with posterior variances as branch lengths.")
 print(varTree)
 
 writeNexus(outdir+tree_file+"_varBL.nex", varTree)
-print("The tree with variance branch lengths has been saved.")
+print("The tree with posterior variance branch lengths has been saved.")
 
 q()

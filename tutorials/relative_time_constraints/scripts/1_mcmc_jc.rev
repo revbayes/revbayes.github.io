@@ -9,6 +9,7 @@ tree_file = "substitution.tree"
 
 ################################################################################
 # Sequence data.
+
 data = readDiscreteCharacterData(data_dir+aln_file)
 print ("\n\tRead alignment")
 
@@ -20,10 +21,12 @@ monitors = VectorMonitors()
 
 ################################################################################
 # Substitution Model.
+
 Q <- fnJC(4)
 
 ################################################################################
 # Tree model.
+
 tree <- readBranchLengthTrees(data_dir + tree_file)[1]
 num_branches <- tree.nnodes() - 1
 
@@ -40,6 +43,7 @@ psi := treeAssembly(tree, bl)
 
 ################################################################################
 # PhyloCTMC Model.
+
 seq ~ dnPhyloCTMC(tree=psi, Q=Q, type="DNA")
 seq.clamp(data)
 
@@ -60,6 +64,7 @@ mymcmc.run(generations = num_generations)
 
 ################################################################################
 # Post processing.
+
 treetrace = readTreeTrace("output/" + aln_file+".trees", treetype="non-clock")
 map_tree = mapTree(treetrace, "output/" + aln_file + ".tree")
 
