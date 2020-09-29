@@ -162,10 +162,10 @@ Step 1: Inference of the posterior distributions of the branch lengths
 Please execute the following command to perform Bayesian inference of the
 posterior distributions of branch lengths using a Jukes-Cantor substitution
 model on a single alignment with a fixed tree topology. The Markov chain Monte
-Carlo (MCMC) algorithm will be run for 30000 iterations. It will use the
-alignment `data/alignment.fasta`, and the substitution-like tree
-`data/substitution.tree`. The output will be a file
-`output/alignment.fasta.trees` containing the 30000 trees from the MCMC chain.
+Carlo (MCMC) algorithm runs for 30000 iterations. It uses the alignment
+`data/alignment.fasta`, and the substitution-like tree `data/substitution.tree`.
+The output is a file `output/alignment.fasta.trees` containing the 30000 trees
+from the MCMC chain.
 
 ```bash
  rb ./scripts/1_mcmc_jc.rev
@@ -178,9 +178,9 @@ Step 2: Summary of the posterior means and variances
 --
 {:.section}
 
-In this step, we will compute the posterior means and variances of the branch
-lengths using the 30000 trees obtained in the previous step. Please have a look
-at the script file `scripts/2_summarize_branch_lengths.rev`.
+In this step, we compute the posterior means and variances of the branch lengths
+using the 30000 trees obtained in the previous step. Please have a look at the
+script file `scripts/2_summarize_branch_lengths.rev`.
 
 First, we specify the name of the file containing the trees, and the amount of
 thinning we apply:
@@ -236,9 +236,12 @@ for (j in 1:num_branches ) {
 ```
 
 Finally, the posterior means and variances are stored in two trees having the
-same topology as used for inference, respectively. In this way we ensure that
-the posterior means and variances for the specific branches are tracked in a
-correct way.
+same topology as the one used for inference. In this way we ensure that the
+posterior means and variances for the specific branches are tracked in a correct
+way.
+
+The posterior variances are calculated using the well known formula $$Var(X) =
+E(X^2) - E(X)^2.$$
 
 ```
 ################################################################################
@@ -269,6 +272,8 @@ varTree = readBranchLengthTrees(outdir+file_trees_only)[1]
 print("Original variance tree before changing branch lengths")
 print(varTree)
 
+# Here, the posterior variances are calculated using the well known formula
+# Var(x) =E[X^2] - E[X]^2.
 for (j in 1:num_branches ) {
   varTree.setBranchLength(j, abs ( bl_squaredmeans[j] - bl_means[j]^2) )
 }
@@ -293,10 +298,207 @@ Step 3: Dating using calibrations and constraints
 --
 {:.section}
 
-TODO: Create figures with calibrations and constraints.
+Finally, we date the phylogeny using a relaxed clock model. Please have a look
+at the script `3_mcmc_dating.rev`. Important parts will be explained in the
+following.
 
-TODO: Mean and variance at the root have to be split up (or the sum has to be
-taken).
+After defining file names and options with respect to the MCMC sampler, the root
+age is calibrated using an interval around the true root age:
+
+```
+root_age <- tree.rootAge()
+root_age_delta <- root_age / 5
+root_age_min <- root_age - root_age_delta
+root_age_max <- root_age + root_age_delta
+root_time_real ~ dnUniform(root_age_min, root_age_max)
+root_time_real.setValue(tree.rootAge())
+root_time := abs( root_time_real )
+```
+
+The correct root age is obtained from the variable `tree` which was initialized
+to store the correct time-like tree (we are cheating, in a way). We set a
+uniform prior on the age of the root.
+
+If specified, we also load the constraints from the given file `contraints.txt`:
+```
+if (constrain) {
+  out_bn = out_bn + "_cons"
+  constraints <- readRelativeNodeAgeConstraints(file=constraints_file)
+}
+```
+
+The file `constraints.txt` stores the constraints obtained from 3 hypothetical
+gene transfer events.
+```
+-- Contents of file `data/constraints.txt`
+T0	T1	T14	T15
+T7	T8	T19	T20
+T3	T4	T8	T9
+```
+
+The first line `T0\tT1\tT14\tT15` tells RevBayes that the most recent common
+ancestor (MRCA) of `T0` and `T1` has to be older than the MRCA of `T14` and
+`T15`, and so on. You can look for the respective nodes on the time-like tree
+given above, and check that the constraints are actually valid. In fact, the
+constraints are quite helpful in that they resolve the order of nodes having
+similar age.
+
+Next, we use the birth process with unknown birth rate as a prior for the
+time-like tree `psi`, and define some proposals for the MCMC sampler. The
+proposals change the root age, scale the branches of `psi`, and slide the nodes.
+
+```
+################################################################################
+# Tree model.
+
+birth_rate ~ dnExp(1)
+moves.append(mvScale(birth_rate, lambda=1.0, tune=true, weight=3.0))
+
+if (!constrain) psi ~ dnBDP(lambda=birth_rate, mu=0.0, rho=1.0, rootAge=root_time, samplingStrategy="uniform", condition="survival", taxa=taxa)
+if (constrain) psi ~  dnConstrainedNodeOrder(dnBDP(lambda=birth_rate, mu=0.0, rho=1.0, rootAge=root_time, samplingStrategy="uniform", condition="survival", taxa=taxa), constraints)
+
+psi.setValue(tree)
+if (debug == true) {
+  print("The original time tree:")
+  print(tree)
+  print("The tree used in the Markov chain:")
+  print(psi)
+}
+
+moves.append(mvScale(root_time_real, weight=1.0, lambda=0.1))
+moves.append(mvSubtreeScale(psi, weight=1.0*n_branches))
+moves.append(mvNodeTimeSlideUniform(psi, weight=1.0*n_branches))
+moves.append(mvLayeredScaleProposal(tree=psi, lambda=0.1, tune=true, weight=1.0*n_branches))
+```
+
+Now, two calibrations are added. The MRCAs of `T1` and `T2`, as well as `T14`
+and `T15` are fixed to be within intervals centered around their true ages
+(initially, `psi` stores the true tree). The distribution
+`dnSoftBoundUniformNormal` is uniform between the specified boundaries and
+decreases normally out of the boundaries with the given standard deviation
+(`sd`).
+
+```
+################################################################################
+# Node calibrations provide information about the ages of the MRCA.
+
+# The MRCAs of the following clades are calibrated.
+clade_0 = clade("T1","T2")
+clade_1 = clade("T14","T15")
+
+# Clade 0.
+tmrca_clade_0 := tmrca(psi, clade_0)
+age_clade_0_mean <- tmrca(psi, clade_0)
+age_clade_0_delta <- age_clade_0_mean / 5
+age_clade_0_prior ~ dnSoftBoundUniformNormal(min=age_clade_0_mean-age_clade_0_delta, max=age_clade_0_mean+age_clade_0_delta, sd=2.5, p=0.95)
+age_clade_0_prior.clamp(age_clade_0_mean)
+
+# Clade 1.
+tmrca_clade_1 := tmrca(psi, clade_1)
+age_clade_1_mean <- tmrca(psi, clade_1)
+age_clade_1_delta <- age_clade_1_mean / 5
+age_clade_1_prior ~ dnSoftBoundUniformNormal(min=age_clade_1_mean-age_clade_1_delta, max=age_clade_1_mean+age_clade_1_delta, sd=2.5, p=0.95)
+age_clade_1_prior.clamp(age_clade_1_mean)
+```
+
+Finally, we obtain the posterior means and variances of the branch lengths
+prepared in the previous steps.
+
+```
+mean_tree <- readTrees(mean_tree_file)[1]
+var_tree <- readTrees(var_tree_file)[1]
+```
+
+We re-root the time-trees and ensure that they are bifurcating. These steps are
+necessary to get the correct mapping between branches, and their posterior means
+and variances. Internally, it is ensured that the indices are shared correctly.
+
+```
+# Reroot and make bifurcating.
+rootId <- tree.getRootIndex()
+outgroup <- tree.getDescendantTaxa(rootId)
+mean_tree.reroot(clade=clade(outgroup), make_bifurcating=TRUE)
+var_tree.reroot(clade=clade(outgroup), make_bifurcating=TRUE)
+
+# Renumber nodes.
+mean_tree.renumberNodes(tree)
+var_tree.renumberNodes(tree)
+```
+
+Further, this step harbors a complication. During the first step, the reversible
+JC model was used to estimate the posterior means and variances of the branch
+lengths. Hence, the estimated tree is unrooted. Now, we estimate a rooted time
+tree. It follows, that the two branches leading to the root of the time tree
+correspond to a single branch of the unrooted tree from the first step. We have
+to take this into account when approximating the phylogenetic likelihood.
+
+```
+# Get indices of left child and right child of root.
+i_left <- tree.child(tree.nnodes(),1)
+i_right <- tree.child(tree.nnodes(),2)
+
+# Get posterior means and variances of all branches except the branches leading
+# to the root.
+for(i in 1:n_branches) {
+  if(i != i_left && i != i_right) {
+    posterior_mean_bl[i] <- mean_tree.branchLength(i)
+    posterior_var_bl[i] := var_tree.branchLength(i)
+    if (posterior_var_bl[i]<var_min) posterior_var_bl[i]:=var_min
+  }
+}
+
+# Get the index of the root in the time tree.
+if (i_left<i_right)  i_root <- i_left
+if (i_left>=i_right) i_root <- i_right
+
+# Get the mean and variance of the branch containing the root.
+posterior_mean_bl_root <- mean_tree.branchLength(i_root)
+posterior_var_bl_root <- var_tree.branchLength(i_root)
+if (posterior_var_bl_root<var_min) posterior_var_bl_root:=var_min
+```
+
+Please also note that we set a minimum variance. In very extreme cases, the
+posterior distribution of a branch length is so condensed, that the variance is
+too low to be used for calculating the approximate phylogenetic likelihood.
+
+In the next step, we define the relaxed molecular clock model. In general, we
+separate between a global rate normalization constant (`global_rate_mean`) and
+the relative rates (`rel_branch_rates`). We use an uncorrelated gamma model
+(UGAM). In the UGAM model, the relative branch rates are distributed according
+to a gamma distribution. We use a hyper parameter `sigma` on the shape and scale
+parameters of the gamma distributions:
+
+```
+mean_tree_root_age := mean_tree.rootAge()
+global_rate_mean ~ dnExp(1)
+global_rate_mean.setValue(mean_tree_root_age/tree.rootAge());
+sigma ~ dnExp(10.0)
+
+first_gamma_param := 1/sigma
+second_gamma_param := 1/sigma
+
+moves.append(mvScaleBactrian(global_rate_mean, lambda=0.5, weight=10.0))
+moves.append(mvScaleBactrian(sigma, lambda=0.5, weight=10.0))
+
+# Use a Gamma distribution on rates.
+for (i in n_branches:1) {
+  times[i]=psi.branchLength(i)
+  rel_branch_rates[i] ~ dnGamma(first_gamma_param, second_gamma_param)
+  # Exclude the branches leading to the root (see above).
+  if(i != i_left && i != i_right) {
+    rel_branch_rates[i].setValue(posterior_mean_bl[i]/times[i]/global_rate_mean)
+  } else {
+    # And set them to half of the branch length in the unrooted tree.
+    rel_branch_rates[i].setValue(posterior_mean_bl_root/2/times[i]/global_rate_mean)
+  }
+  moves.append(mvScale(rel_branch_rates[i], lambda=0.5, weight=1.0,tune=true))
+}
+
+for (i in n_branches:1) {
+  branch_rates[i] := global_rate_mean * rel_branch_rates[i]
+}
+```
+
 
 Finally, we can estimate the time tree using relative constraints.
 ```

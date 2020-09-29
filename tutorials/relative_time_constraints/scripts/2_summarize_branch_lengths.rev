@@ -84,6 +84,8 @@ varTree = readBranchLengthTrees(outdir+file_trees_only)[1]
 print("Original variance tree before changing branch lengths")
 print(varTree)
 
+# Here, the posterior variances are calculated using the well known formula
+# Var(x) =E[X^2] - E[X]^2.
 for (j in 1:num_branches ) {
   varTree.setBranchLength(j, abs ( bl_squaredmeans[j] - bl_means[j]^2) )
 }
