@@ -31,12 +31,13 @@ phylogenies. For example, dating a species tree involves inference of the times
 when the species split. Dating phylogenies is central to understanding the
 evolution of life on Earth. However, evolutionary sequences evolve with
 different rates, an observation that has been termed __relaxed molecular
-clock__. In general, it is difficult to map a phylogeny obtained from an
-alignment, and with branch lengths measured in average number of substitutions
-per site, to a phylogeny with branch lengths measured in actual units of time.
-For this reason, the molecular clocks are calibrated with information gained
-from __fossils__, which can be accurately dated. Incorporating fossil
-information enables __calibration__ of node ages of a phylogeny.
+clock__. In general, it is difficult to map a phylogeny obtained from a multiple
+sequence alignment, and with branch lengths measured in average number of
+substitutions per site, to a phylogeny with branch lengths measured in actual
+units of time. For this reason, the molecular clocks are calibrated with
+information gained from __fossils__, which can be accurately dated.
+Incorporating fossil information enables __calibration__ of node ages of a
+phylogeny.
 
 In this tutorial, we explore another possibility to improve on the accuracy of
 dating a phylogeny. Namely, horizontal gene transfers and ancient evolutionary
@@ -52,13 +53,15 @@ Definitions
 -------------
 {:.section}
 
-__Time-like tree__: A phylogeny with branch lengths measured in units of time.
-If the leaves have been sampled at the same time, for example, at the present, a
+__Alignment__: Multiple sequence alignment.
+
+__Time-like tree__: Phylogeny with branch lengths measured in units of time. If
+the leaves have been sampled at the same time, for example, at the present, a
 time-tree is ultrametric.
 
-__Substitution-like tree__: A phylogeny with branch lengths measured in units of
+__Substitution-like tree__: Phylogeny with branch lengths measured in units of
 substitutions. Usually, substitution-like trees are obtained from a phylogenetic
-analyses of multiple sequence alignments.
+analyses of alignments.
 
 __Calibration__: Absolute node calibration; an interval of time that specifies
 the possible age of a node of a time-like tree.
@@ -107,7 +110,7 @@ topology obtained from the file `substitution.tree`. Usually, one would use the
 maximum-likelihood (ML) or the maximum a posteriori (MAP) topology obtained from
 the alignment.
 
-Statement of the exercise
+Statement of the problem
 --
 {:.section}
 
@@ -118,37 +121,40 @@ and constraints:
 <img src="figures/time-tree.png" width="600" />  
 {% figcaption %}
 
-*Time-like, ultrametric tree with 25 leaves (T0 to T24) to be inferred. The
-height is 0.3 units of time.*
+*Time-like, ultrametric tree with 25 leaves (T0 to T24) to be inferred. The tree
+was simulated using a birth process (Yule process) with a birth rate of 1.0 per
+unit of time. The tree was conditioned on having height 0.3, and 25 leaves.*
 
 {% endfigcaption %}
 {% endfigure %}
 
-However, the only information we get is an MSA simulated along the following
-substitution-like tree:
+However, the only information we get is an alignment simulated along the
+following substitution-like tree:
 
 {% figure substitution-tree %}
 <img src="figures/substitution-tree.png" width="600" />  
 {% figcaption %}
 
 *Substitution-like tree obtained from the time-like tree by altering the branch
-lengths with randomly chosen rate modifiers. The alignment used for inference
-was simulated along this tree using the JC model.*
+lengths with randomly chosen rate modifiers. The rate modifiers are sampled from
+two log-normal distributions introducing frequent minor, and sparse major rate
+modifications, respectively. The alignment used for inference was simulated
+along this tree using the JC model.*
 
 {% endfigcaption %}
 {% endfigure %}
 
-For reasons of computations efficiency, the inference of the time-like tree will
-be done in three steps. First, the posterior distribution of the branch lengths
-of the substitution-like tree are inferred using the JC model (`1_mcmc_jc.rev`).
-Second, the inferred posterior distributions of the branch lengths will be
+For reasons of computational efficiency, the inference of the time-like tree is
+done in three steps. First, the posterior distributions of the branch lengths of
+the substitution-like tree are inferred using the JC model (`1_mcmc_jc.rev`).
+Second, the inferred posterior distributions of the branch lengths are
 summarized into the posterior means and variances of the branch lengths
-(`2_summarize_branch_lengths.rev`). Third, calibrations and constraints will be
-used to improve the accuracy of dating the phylogeny (`3_mcmc_dating.rev`). The
+(`2_summarize_branch_lengths.rev`). Third, calibrations and constraints are used
+to improve the accuracy of dating the phylogeny (`3_mcmc_dating.rev`). The
 posterior means and variances of the branch lengths obtained in the second step
-will be used to approximate the phylogenetic likelihood.
+are used to approximate the phylogenetic likelihood using normal distributions.
 
-1. Inference of the posterior distribution of branch lengths
+1. Inference of the posterior distributions of the branch lengths
 --
 {:.section}
 
@@ -183,7 +189,7 @@ Finally, we can estimate the time tree using relative constraints.
 rb ./scripts/3_mcmc_dating.rev
 ```
 
-Results
+Analysis of results
 --
 {:.section}
 
@@ -194,10 +200,13 @@ Branch score               Right 0.14207812275294182
 alignment.fasta.approx.dating.tree
 Branch score               Right 0.1592917560202034
 
-Considerations when using real data
+Concluding remarks
 --
 {:.section}
 
-When analyzing real data, a more appropriate substitution model should be used.
+Real data:
+- When analyzing real data, a more appropriate substitution model should be used.
+- Discuss, tree not available, has to be inferred.
 
-Discuss, tree not available, has to be inferred.
+Simulation scripts:
+- Link to ELynx.
