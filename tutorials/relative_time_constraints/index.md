@@ -1,6 +1,6 @@
 ---
 title:  Dating with relative constraints
-subtitle: Synchronization of molecular clocks between co-existing species
+subtitle: Constraining the relative order of nodes when dating a phylogeny
 authors: Dominik Schrempf, Gergely Szöllősi, and Bastien Boussau
 level: 3
 prerequisites:
@@ -59,15 +59,13 @@ __Time-like tree__: Phylogeny with branch lengths measured in units of time. If
 the leaves have been sampled at the same time, for example, at the present, a
 time-tree is ultrametric.
 
-__Substitution-like tree__: Phylogeny with branch lengths measured in units of
-substitutions. Usually, substitution-like trees are obtained from a phylogenetic
-analyses of alignments.
+__Branch length tree__: Phylogeny with branch lengths measured in expected numbers of
+substitutions. Usually, branch length trees are obtained from a phylogenetic
+analysis of an alignment.
 
-__Calibration__: Absolute node calibration; an interval of time that specifies
-the possible age of a node of a time-like tree.
+__Calibration__: Absolute node calibration; an estimate of the age of a node of a timetree. This is usually associated with a prior describing the uncertainty associated to this node age.
 
-__Constraint__: Relative node order constraint; a specification restricting the
-order in time of two nodes of a tree.
+__Constraint__: Relative node order constraint, which specifies the relative order in time of two nodes of a tree (e.g. node A is older than node B).
 
 Getting Started
 ------------------
@@ -90,24 +88,24 @@ The following data files are available:
 data/
 ├── alignment.fasta    -- Alignment file simulated with the Jukes-Cantor (JC) model.
 ├── constraints.txt    -- File containing constraints.
-├── substitution.tree  -- Substitution-like tree used to simulate the alignment.
-└── time.tree          -- Original time-like tree to be recovered.
+├── substitution.tree  -- Tree with branch length in expected number of substitutions used to simulate the alignment.
+└── time.tree          -- Original timetree to be recovered.
 ```
 
 The following RevBayes script files are available:
 ```
 scripts/
-├── 1_mcmc_jc.rev                   -- Infer substition-like trees using the JC model.
+├── 1_mcmc_jc.rev                   -- Infer branch-length trees using the JC model.
 ├── 2_summarize_branch_lengths.rev  -- Extract posterior means and variances of branch lengths.
 └── 3_mcmc_dating.rev               -- Date with calibrations and constraints.
 ```
 
-Simulated data will be used, so that the inferred time-like trees can be tested
-for accuracy against the correct time-like topology stored in the file
+Simulated data will be used, so that the inferred timetrees can be tested
+for accuracy against the correct timetree stored in the file
 `time.tree`. Inference will be done twice: (1) using calibrations only, and (2)
-using calibrations and constraints. We will work with the correct, fixed tree
-topology obtained from the file `substitution.tree`. Usually, one would use the
-maximum-likelihood (ML) or the maximum a posteriori (MAP) topology obtained from
+using calibrations and constraints. We will not perform inference of the topology of the tree, only of the age of its nodes. We will therefore work with the correct, fixed tree
+topology obtained from the file `substitution.tree`. On empirical data, one could use the
+maximum-likelihood (ML) or the maximum a posteriori (MAP) topology obtained from a phylogenetic reconstruction based on the as in e.g. tutorial [Phylogenetic inference of nucleotide data using RevBayes](https://revbayes.github.io/tutorials/ctmc/).
 the alignment.
 
 Statement of the problem
