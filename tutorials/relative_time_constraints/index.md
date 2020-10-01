@@ -71,9 +71,8 @@ Getting Started
 ------------------
 {:.section}
 
-This tutorial was tested against the development branch of Bastien Boussau,
-available at [development branch of Bastien Boussau, commit
-9a2ce50](https://github.com/revbayes/revbayes/tree/9a2ce50da007876bb5d6cf2f274b4f799a9cc0b8).
+This tutorial was tested against the development branch,
+available at [commit 06c1cac](https://github.com/revbayes/revbayes/commit/06c1cac4b9e62185cd8db45f638f152e30045ab8).
 Similar to other RevBayes tutorials, we suggest using the following
 directory structure:
 ```
