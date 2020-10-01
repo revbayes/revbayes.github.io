@@ -55,12 +55,12 @@ Definitions
 
 __Alignment__: Multiple sequence alignment.
 
-__Time-like tree__: Phylogeny with branch lengths measured in units of time. If
+__timetree__: Phylogeny with branch lengths measured in units of time. If
 the leaves have been sampled at the same time, for example, at the present, a
 time-tree is ultrametric.
 
-__Branch length tree__: Phylogeny with branch lengths measured in expected numbers of
-substitutions. Usually, branch length trees are obtained from a phylogenetic
+__Branch-length tree__: Phylogeny with branch lengths measured in expected numbers of
+substitutions. Usually, branch-length trees are obtained from a phylogenetic
 analysis of an alignment.
 
 __Calibration__: Absolute node calibration; an estimate of the age of a node of a timetree. This is usually associated with a prior describing the uncertainty associated to this node age.
@@ -105,21 +105,21 @@ for accuracy against the correct timetree stored in the file
 `time.tree`. Inference will be done twice: (1) using calibrations only, and (2)
 using calibrations and constraints. We will not perform inference of the topology of the tree, only of the age of its nodes. We will therefore work with the correct, fixed tree
 topology obtained from the file `substitution.tree`. On empirical data, one could use the
-maximum-likelihood (ML) or the maximum a posteriori (MAP) topology obtained from a phylogenetic reconstruction based on the as in e.g. tutorial [Phylogenetic inference of nucleotide data using RevBayes](https://revbayes.github.io/tutorials/ctmc/).
-the alignment.
+maximum-likelihood (ML) or the maximum a posteriori (MAP) topology obtained from a phylogenetic reconstruction based on the alignment as in e.g. tutorial [Phylogenetic inference of nucleotide data using RevBayes](https://revbayes.github.io/tutorials/ctmc/).
+
 
 Statement of the problem
 --
 {:.section}
 
-We are interested in inferring the following time-like tree using calibrations
+We are interested in inferring the following timetree using calibrations
 and constraints:
 
 {% figure time-tree %}
 <img src="figures/time-tree.png" width="600" />  
 {% figcaption %}
 
-*Time-like, ultrametric tree with 25 leaves (T0 to T24) to be inferred. The tree
+*Timetree with 25 leaves (T0 to T24) to be inferred. The tree
 was simulated using a birth process (Yule process) with a birth rate of 1.0 per
 unit of time. The tree was conditioned on having height 0.3, and 25 leaves.*
 
@@ -127,14 +127,14 @@ unit of time. The tree was conditioned on having height 0.3, and 25 leaves.*
 {% endfigure %}
 
 However, the only information we get is an alignment simulated along the
-following substitution-like tree:
+following branch-length tree:
 
 {% figure substitution-tree %}
 <img src="figures/substitution-tree.png" width="600" />  
 {% figcaption %}
 
-*Substitution-like tree obtained from the time-like tree by altering the branch
-lengths with randomly chosen rate modifiers. The rate modifiers are sampled from
+*Branch-length tree obtained from the timetree by multiplying the branch
+lengths with randomly chosen rates. The rates are sampled from
 two log-normal distributions introducing frequent minor, and sparse major rate
 modifications, respectively. The alignment used for inference was simulated
 along this tree using the JC model.*
@@ -142,9 +142,9 @@ along this tree using the JC model.*
 {% endfigcaption %}
 {% endfigure %}
 
-For reasons of computational efficiency, the inference of the time-like tree is
+For reasons of computational efficiency, the inference of the timetree is
 done in three steps. First, the posterior distributions of the branch lengths of
-the substitution-like tree are inferred using the JC model (`1_mcmc_jc.rev`).
+the branch-length tree are inferred using the JC model (`1_mcmc_jc.rev`).
 Second, the inferred posterior distributions of the branch lengths are
 summarized into the posterior means and variances of the branch lengths
 (`2_summarize_branch_lengths.rev`). Third, calibrations and constraints are used
@@ -161,7 +161,7 @@ Please execute the following command to perform Bayesian inference of the
 posterior distributions of branch lengths using a Jukes-Cantor substitution
 model on a single alignment with a fixed tree topology. The Markov chain Monte
 Carlo (MCMC) algorithm runs for 30000 iterations. It uses the alignment
-`data/alignment.fasta`, and the substitution-like tree `data/substitution.tree`.
+`data/alignment.fasta`, and the branch-length tree `data/substitution.tree`.
 The output is a file `output/alignment.fasta.trees` containing the 30000 trees
 from the MCMC chain.
 
@@ -314,7 +314,7 @@ root_time := abs( root_time_real )
 ```
 
 The correct root age is obtained from the variable `tree` which was initialized
-to store the correct time-like tree (we are cheating, in a way). We set a
+to store the correct timetree (we are cheating, in a way). We set a
 uniform prior on the age of the root.
 
 If specified, we also load the constraints from the given file `contraints.txt`:
@@ -336,13 +336,13 @@ T3	T4	T8	T9
 
 The first line `T0\tT1\tT14\tT15` tells RevBayes that the most recent common
 ancestor (MRCA) of `T0` and `T1` has to be older than the MRCA of `T14` and
-`T15`, and so on. You can look for the respective nodes on the time-like tree
+`T15`, and so on. You can look for the respective nodes on the timetree
 given above, and check that the constraints are actually valid. In fact, the
 constraints are quite helpful in that they resolve the order of nodes having
 similar age.
 
 Next, we use the birth process with unknown birth rate as a prior for the
-time-like tree `psi`, and define some proposals for the MCMC sampler. The
+timetree `psi`, and define some proposals for the MCMC sampler. The
 proposals change the root age, scale the branches of `psi`, and slide the nodes.
 
 ```
@@ -551,21 +551,21 @@ Analysis of results
 --
 {:.section}
 
-The following figures show the inferred time-like trees.
+The following figures show the inferred timetrees.
 
 {% figure time-tree-calibrations-only %}
 <img src="figures/time-tree-calibrations-only.png" width="600" />  
-{% figcaption %} *Inferred time-like tree using calibrations only.* {% endfigcaption %}
+{% figcaption %} *Inferred timetree using calibrations only.* {% endfigcaption %}
 {% endfigure %}
 
 {% figure time-tree-calibrations-and-constraints %}
 <img src="figures/time-tree-calibrations-and-constraints.png" width="600" />  
-{% figcaption %} *Inferred time-like tree using calibrations and constraints.* {% endfigcaption %}
+{% figcaption %} *Inferred timetree using calibrations and constraints.* {% endfigcaption %}
 {% endfigure %}
 
 We see, that the constraints help improve the accuracy, as well as reduce the
 confidence intervals of the node ages. The branch score distances between the
-original time-like tree, and the inferred time-like trees are:
+original timetree, and the inferred timetrees are:
 
 ```
 Calibrations only:
