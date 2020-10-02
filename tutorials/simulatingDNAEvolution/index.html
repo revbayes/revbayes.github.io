@@ -1,0 +1,1010 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: Simulating DNA sequence evolution</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
+      </a>
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/download">Download</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/documentation/">Documentation</a></li>
+        <li><a href="https://revbayes.github.io/revscripter/">RevScripter</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/jobs/">Jobs</a></li>
+        <li><a href="/developer/">Developer</a></li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <div class="titlebar">
+	<h1 class="maintitle">Simulating DNA sequence evolution</h1>
+	<h3 class="subtitle">Simulating DNA sequence evolution in RevBayes</h3>
+	<h4 class="authors">Bastien Boussau</h4>
+  <h5>Last modified on October  2, 2020</h5>
+</div>
+
+
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul id="prerequisites">
+          
+            <li><a href="/tutorials/intro/">Getting Started with RevBayes and Rev Language Syntax</a></li>
+          
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+
+
+
+
+</div>
+<h1 class="section" id="simulating-dna-sequences">Simulating DNA Sequences</h1>
+
+<p>In this tutorial, you will develop an intuition for continuous-time Markov models used to describe how DNA sequences evolve along a phylogenetic tree. These models most often assume that each site evolves independently of the other sites in the sequences. This assumption is very convenient: once one knows how to simulate the evolution of a single site, one just repeats the same process over and over again, and in the end, $voilà$, one has simulated the evolution of homologous sequences.
+In this tutorial we will focus on DNA sequences, but the same approach is used in models of codon or protein sequence evolution, as well as in models that describe the evolution of discrete characters.
+Our work will be to model the evolution of a DNA sequence along a branch, not along an entire tree.
+However, once one knows how to simulate along a branch, simulating along a tree is not difficult conceptually.
+Simulating along a tree will therefore be left as an exercise to the reader.</p>
+
+<h2 class="subsection" id="modeling-character-evolution">Modeling character evolution</h2>
+<p>We want to model how one site of a DNA sequence evolves through time.
+It starts in a DNA state $A$, $C$, $G$, or $T$, and undergoes mutations through time.
+Because we want a simple model for this tutorial, we are going to make a few
+hypotheses.
+First, we are going to assume that the rate of change is constant through time.
+This means that, in every small time interval $dt$, we have the same rate of change.
+In the literature, this hypothesis is often used to model sequence evolution along a branch.
+Second, we are going to assume that all types of changes between characters have
+ the same rate: the rate of change from $A$ to $C$ is the same as from $C$ to
+ $A$, $G$ to $T$, etc. .
+In the literature, this hypothesis is made in the Jukes and Cantor model,
+proposed in 1969. More recent models are less naive: for instance they allow for different
+rates for transitions and transversions, and allow for different equilibrium
+frequencies for the bases $A$, $C$, $G$, and $T$. Those equilibrium frequencies
+correspond to the base frequencies one would obtain after simulating a large number
+of sites over a long (infinite) amount of time.</p>
+
+<h2 class="subsection" id="generating-uniform-and-exponential-random-variables">Generating uniform and exponential random variables</h2>
+
+<p>If you had a highschool social life as awkward as this author’s, you already own a 10-sided die (d10, in the gaming lingo). If you actually had friends in high school, however, you may need to buy such a die. Go to a gaming store and tell them that you want to buy a “d10.” Alternatively, buy a 10-sided die from Amazon.</p>
+
+<p>Examine your new die. Note that it has ten faces, with each face numbered from 0 to 9. You can generate a random number on the interval (0,1) by repeatedly rolling your die. You will assume the “0.” of the number and use the die to randomly generate the digit in the tenths place (0._), hundreths place (0._ _), thousandths place (0. _ _ _) etc. until you have the random number to the desired precision. Let’s try it! I rolled my die three times and saw, in order, the numbers 0, 4, and 7. My uniform(0,1) random number, then, is $u = 0.047$. Try it yourself. With three rolls of the die, you can generate a random number to a precision of three decimal places. Do you understand why the number you generate in this manner is uniformly-distributed on the interval (0,1)? For reference, the uniform(0,1) probability distribution looks like,</p>
+
+<p><img src="figures/uniform.png" alt="" /></p>
+
+<p>and is sometimes referred to as the rectangular distribution, for obvious reasons.</p>
+
+<p>The uniform distribution is only one of many distributions. You have probably heard of at least some of the more common distributions (the normal, log-normal, binomial, gamma, Poisson, exponential, $\chi^2$, Student’s t) and perhaps you’ve heard of some of the more obscure distributions, too  (Wishart, Normal inverse Wishart, and Weibull, among others). When simulating DNA sequence evolution on a tree, in addition to the uniform(0,1) random numbers, we will need to generate exponential random variables.</p>
+
+<p>The exponential distribution is used to model waiting times. Imagine that something occurs at a constant rate, $\lambda$. The time until that something occurs is exponentially distributed with parameter $\lambda$. The exponential distribution looks like,</p>
+
+<p><img src="figures/exponential.png" alt="" /></p>
+
+<p>While we can use the die to generate a uniformly-distributed random number, we cannot directly generate an exponentially-distributed number. That said, we can generate an exponential random variable from our uniformly-distributed random number using some math. First, generate a uniform(0,1) random number using your die, called $u$. We can convert this uniform(0,1) random number to an exponential random number using the following equation:
+\(t = -{\log(u) \over \lambda}\)
+where $\lambda$ is the rate at which something occurs and $\log$ is the natural log function. (You can access the natural log function on your smart phone by going to the calculator app and turning the phone on its side, thereby revealing the full functionality of the calculator.) The variable $t$ is exponentially distributed.</p>
+
+<p>Let’s try it. We will generate an exponential random number when the rate parameter is $\lambda = 10$. With my die, I generated a uniform(0,1) random number: $u = 0.948$. Using my calculator, I convert it to an exponential random number:
+\(t = -{\log(0.948) \over 10} = 0.00534\)</p>
+
+<h2 class="subsection" id="the-parameters-for-the-simulation">The parameters for the simulation</h2>
+
+<p>We now have the machinery needed to generate uniform and exponential random numbers. For the simulation of DNA sequences on a tree, however, we need to choose some simulation parameters. Specifically, we need the tree topology, branch lengths, and rate matrix of the continuous-time Markov model that describes how the DNA sequences change over time.</p>
+
+<p>We will assume the following tree for the simulations:</p>
+
+<p><img src="figures/simtree.png" alt="" /></p>
+
+<p>We will simulate on this tree for no particular reason except that I like this tree. Note the branch lengths on the tree. The branch lengths are in terms of expected number of substitutions per site. Again, the branch lengths were an arbitrary choice that I made.</p>
+
+<p>The last part of the model that must be specified is the rate matrix of the continuous-time Markov process that describes how the DNA sequences change on the tree. We will assume that sequences evolve according to the HKY85 model of DNA substitution, that has rate matrix:</p>
+
+\[{\mathbf Q} = \{q_{ij}\} = \left( \begin{array}{cccc}
+\cdot               &amp;  \pi_C &amp; \kappa \pi_G &amp; \pi_T \\
+\pi_A &amp; \cdot               &amp; \pi_G &amp; \kappa \pi_T \\
+\kappa \pi_A &amp; \pi_C &amp; \cdot               &amp; \pi_T \\
+\pi_A &amp; \kappa \pi_C &amp; \pi_G &amp; \cdot               \\
+\end{array} \right) \mu\]
+
+<p>We will make a few important points about the rate matrix. First, the rate matrix may have free parameters. For example,
+the HKY85 model has the parameters $\kappa$, $\pi_A$, $\pi_C$, $\pi_G$, and $\pi_T$.
+The parameter $\kappa$ is the transition/transversion rate bias; when $\kappa = 1$ transitions occur at the same rate as transversions.
+Typically, the transition/transversion rate ratio, estimated using maximum likelihood or Bayesian inference, is
+greater than one; transitions occur at a higher rate than transversions.
+The other parameters – $\pi_A$, $\pi_C$, $\pi_G$, and $\pi_T$ – are the base frequencies, and have a biological interpretation
+as the frequency of the different nucleotides and are also, incidentally, the stationary probabilities of the process.
+Second, the rate matrix, ${\mathbf Q}$, can be used to calculate
+the transition probabilities and the stationary distribution of the substitution process. The transition probabilities and
+stationary distribution play a key role in calculating the likelihood.</p>
+
+<p>We will assume the following values for the HKY85 parameters: $\kappa = 5$, $\pi_A = 0.4$, $\pi_C = 0.3$, $\pi_G = 0.2$, and $\pi_T = 0.1$.
+These values result in the following scaled rate matrix:</p>
+
+\[{\mathbf Q} = \{q_{ij}\} = \left( \begin{array}{rrrr}
+ -0.886 &amp;  0.190 &amp;  0.633 &amp;  0.063 \\
+ 0.253 &amp; -0.696 &amp;  0.127 &amp;  0.316 \\
+ 1.266 &amp;  0.190 &amp; -1.519 &amp;  0.063 \\
+ 0.253 &amp;  0.949 &amp;  0.127 &amp; -1.329 \\
+\end{array} \right)\]
+
+<p>The stationary probabilities for this rate matrix are $\pi_A = 0.4$, $\pi_C = 0.3$, $\pi_G = 0.2$, and $\pi_T = 0.1$.</p>
+
+<h2 class="subsection" id="interpreting-the-rate-matrix">Interpreting the rate matrix</h2>
+
+<p>The rate matrix specifies how changes occur on a phylogenetic tree. Consider the very simple case of a single
+branch on a phylogenetic tree. Let’s assume that the branch is $v=0.5$ in length. Our first task is to determine the nucleotide at the root of this tree. Although it is tempting to simply pick a nucleotide at the root of the tree with each nucleotide having a probability of $1/4$, doing so is not consistent with the process we are assuming, as described in the rate matrix, ${\mathbf Q}$. Rather, we should choose the state at the root of the tree from the stationary probabilities. I made four intervals, with the following probabilities:</p>
+
+\[0.0 - 0.4 \rightarrow A \\
+0.4 - 0.7 \rightarrow C \\
+0.7 - 0.9 \rightarrow G \\
+0.9 - 1.0 \rightarrow T\]
+
+<p>I rolled the die to generate a uniiform(0,1) random number and obtained $u = 0.709$. The nucleotide at the root, then, is the nucleotide $G$.
+The situation we have is something like this,</p>
+
+<p><img src="figures/sim1.png" alt="" /></p>
+
+<p>in which we have a single branch of length $v = 0.5$ starting in the nucleotide $G$.
+How can we simulate the evolution
+of the site starting from the $G$ at the ancestor? The rate matrix tells us how to do this. First of all, because the current state of the process is $G$,  the only relevant row of the rate matrix is the third one:</p>
+
+\[{\mathbf Q} = \{q_{ij}\} = \left( \begin{array}{cccc}
+\cdot   &amp;   \cdot &amp;    \cdot &amp;  \cdot \\
+\cdot   &amp;   \cdot &amp;    \cdot &amp;  \cdot \\
+1.266 &amp;  0.190 &amp; -1.519 &amp;  0.063 \\
+\cdot   &amp;   \cdot &amp;    \cdot &amp; \cdot \\
+\end{array} \right)\]
+
+<p>The overall rate of change away from nucleotide $G$ is $q_{GA} + q_{GC} + q_{GT} = 1.266 + 0.190 + 0.063 = 1.519$.
+Equivalently, the rate of change away from nucleotide $G$ is simply $-q_{GG} = 1.519$.
+In a continuous-time Markov model, the waiting time between substitutions is exponentially distributed.
+The exact shape of the exponential distribution is determined by its rate, which is the same as the rate of the
+corresponding process in the ${\mathbf Q}$ matrix. For instance, if we are in state $G$, we  wait an exponentially
+distributed amount of time with rate 1.519 until the next substitution occurs.</p>
+
+<p>I generated an exponential(1.519) random variable by first generating a uniform(0,1) random number with my die.
+The first number it generated is $u = 0.794$. This means that the next time at which a substitution occurs is
+0.152 up from the root of the tree [i.e., $t = -{1 \over 1.519} \log(0.794)$]. We can now color a portion of the branch because we know the process was in state $G$ from the root of the single-branch tree ($t=0.0$) to $t=0.152$:</p>
+
+<p><img src="figures/sim2.png" alt="" /></p>
+
+<p>The rate matrix also specifies the probabilities of a change from $G$
+to the nucleotides $A$, $C$, and $T$.  These probabilities are
+\(\begin{array}{ccc}
+G \rightarrow A: {1.266\over 1.519}=0.833, &amp;  G \rightarrow C: {0.190\over 1.519}=0.125, &amp; G \rightarrow T: {0.063 \over 1.519}=0.042 \\
+\end{array}\)
+To determine what nucleotide the process changes to we would generate another uniform(0,1) random number (again
+called $u$). If $u$ is between 0 and 0.833, we will say that we had a change from $G$ to $A$. If the random number
+is between 0.833 and 0.958 we will say that we had a change from $G$ to $C$. Finally, if the random number $u$ is
+between 0.958 and 1.000, we will say we had a change from $G$ to $T$. The next number generated using the die
+was $u = 0.102$, which means the change was from $G$ to $A$. The process is now in a different state (the nucleotide
+$A$) and the relevant row of the rate matrix is</p>
+
+\[{\mathbf Q} = \{q_{ij}\} = \left( \begin{array}{cccc}
+-0.886 &amp;  0.190 &amp;  0.633 &amp;  0.063 \\
+\cdot &amp; \cdot &amp;  \cdot &amp;  \cdot \\
+\cdot &amp;  \cdot &amp; \cdot &amp;  \cdot \\
+\cdot &amp;  \cdot &amp;  \cdot &amp; \cdot \\
+\end{array} \right)\]
+
+<p>We wait an exponentially distributed amount of time with parameter
+$\lambda = 0.886$ until the next substitution occurs. When the substitution occurs, it is to a $C$, $G$, or $T$
+with probabilities ${0.190 \over 0.886} = 0.214$, ${0.633 \over 0.886} = 0.714$, and ${0.063 \over 0.886} = 0.072$,
+respectively.</p>
+
+<p>This process of generating random and exponentially-distributed times until the next substitution occurs
+and then determining (randomly) what nucleotide the change is to is repeated until the process exceeds the length
+of the branch. The state the process is in when it passes the end of the branch is recorded. To complete the simulation on the branch, I generated another uniform random variable using the die. The number was $u = 0.371$, which means that the next substitution would occur 1.119 units above the substitution
+from $G \rightarrow A$. The process is in the state $A$ when it passed the end of the branch:</p>
+
+<p><img src="figures/sim3.png" alt="" /></p>
+
+<p>The only non-random part of the entire procedure was the initial choice of the parameters. All other aspects of the simulation used a uniform random number generator
+and our knowledge of the rate matrix to simulate a single realization of the HKY85 process of DNA substitution.</p>
+
+<h2 class="subsection" id="simulating-on-a-more-complicated-tree">Simulating on a more complicated tree</h2>
+
+<p>Simulating on the tree</p>
+
+<p><img src="figures/simtree.png" alt="" /></p>
+
+<p>is only slightly more complicated than simulating data on the single-branch tree. The steps are as follows:</p>
+
+<ul>
+  <li>First, generate the state at the root of the tree. This step requires knowledge of the stationary probabilities for the Markov process specified by the rate matrix, ${\mathbf Q}$. The stationary distribution is the probability of capturing the process in a particular state when it has been run for a very long (technically, infinitely long) time. The stationary probabilities for the rate matrix we chose are $\pi_A = 0.4$, $\pi_C = 0.3$, $\pi_G = 0.2$, and $\pi_T = 0.1$.</li>
+  <li>Visit each branch in turn in preorder sequence (that is, from the root to the tips of the tree). If you visit the branches in preorder sequence, you will know the state at the root of the branch.</li>
+</ul>
+
+<h2 class="subsection" id="pattern-probabilities">Pattern probabilities</h2>
+
+<p>The tree we simulate DNA sequence evolution on has only four tips. This means that there are a total of $4^4 = 256$ possible patterns of nucleotides we could have observed at the tips of the tree. For example, one of the possible patterns is GTTC: Species I has the nucletide G, Species II and Species III are assigned the nucleotide T, and Species IV is assigned C.</p>
+
+<p>The probability of simulating any of the 256 patterns is given in the following table:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Pattern</th>
+      <th>Prob.</th>
+      <th>Pattern</th>
+      <th>Prob.</th>
+      <th>Pattern</th>
+      <th>Prob.</th>
+      <th>Pattern</th>
+      <th>Prob.</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>AAAA</td>
+      <td>0.199465</td>
+      <td>AGAA</td>
+      <td>0.014711</td>
+      <td>CAAA</td>
+      <td>0.018317</td>
+      <td>CGAA</td>
+      <td>0.001490</td>
+    </tr>
+    <tr>
+      <td>AAAC</td>
+      <td>0.004185</td>
+      <td>AGAC</td>
+      <td>0.000725</td>
+      <td>CAAC</td>
+      <td>0.000628</td>
+      <td>CGAC</td>
+      <td>0.000210</td>
+    </tr>
+    <tr>
+      <td>AAAG</td>
+      <td>0.014711</td>
+      <td>AGAG</td>
+      <td>0.019868</td>
+      <td>CAAG</td>
+      <td>0.001490</td>
+      <td>CGAG</td>
+      <td>0.002878</td>
+    </tr>
+    <tr>
+      <td>AAAT</td>
+      <td>0.001395</td>
+      <td>AGAT</td>
+      <td>0.000242</td>
+      <td>CAAT</td>
+      <td>0.000166</td>
+      <td>CGAT</td>
+      <td>0.000048</td>
+    </tr>
+    <tr>
+      <td>AACA</td>
+      <td>0.009075</td>
+      <td>AGCA</td>
+      <td>0.000843</td>
+      <td>CACA</td>
+      <td>0.005277</td>
+      <td>CGCA</td>
+      <td>0.000669</td>
+    </tr>
+    <tr>
+      <td>AACC</td>
+      <td>0.000703</td>
+      <td>AGCC</td>
+      <td>0.000315</td>
+      <td>CACC</td>
+      <td>0.004524</td>
+      <td>CGCC</td>
+      <td>0.002262</td>
+    </tr>
+    <tr>
+      <td>AACG</td>
+      <td>0.000843</td>
+      <td>AGCG</td>
+      <td>0.002202</td>
+      <td>CACG</td>
+      <td>0.000669</td>
+      <td>CGCG</td>
+      <td>0.002304</td>
+    </tr>
+    <tr>
+      <td>AACT</td>
+      <td>0.000121</td>
+      <td>AGCT</td>
+      <td>0.000048</td>
+      <td>CACT</td>
+      <td>0.000375</td>
+      <td>CGCT</td>
+      <td>0.000188</td>
+    </tr>
+    <tr>
+      <td>AAGA</td>
+      <td>0.028625</td>
+      <td>AGGA</td>
+      <td>0.005985</td>
+      <td>CAGA</td>
+      <td>0.003304</td>
+      <td>CGGA</td>
+      <td>0.001065</td>
+    </tr>
+    <tr>
+      <td>AAGC</td>
+      <td>0.000702</td>
+      <td>AGGC</td>
+      <td>0.000755</td>
+      <td>CAGC</td>
+      <td>0.000210</td>
+      <td>CGGC</td>
+      <td>0.000209</td>
+    </tr>
+    <tr>
+      <td>AAGG</td>
+      <td>0.005985</td>
+      <td>AGGG</td>
+      <td>0.032738</td>
+      <td>CAGG</td>
+      <td>0.001065</td>
+      <td>CGGG</td>
+      <td>0.006655</td>
+    </tr>
+    <tr>
+      <td>AAGT</td>
+      <td>0.000234</td>
+      <td>AGGT</td>
+      <td>0.000252</td>
+      <td>CAGT</td>
+      <td>0.000048</td>
+      <td>CGGT</td>
+      <td>0.000059</td>
+    </tr>
+    <tr>
+      <td>AATA</td>
+      <td>0.003025</td>
+      <td>AGTA</td>
+      <td>0.000281</td>
+      <td>CATA</td>
+      <td>0.000959</td>
+      <td>CGTA</td>
+      <td>0.000120</td>
+    </tr>
+    <tr>
+      <td>AATC</td>
+      <td>0.000121</td>
+      <td>AGTC</td>
+      <td>0.000048</td>
+      <td>CATC</td>
+      <td>0.000360</td>
+      <td>CGTC</td>
+      <td>0.000180</td>
+    </tr>
+    <tr>
+      <td>AATG</td>
+      <td>0.000281</td>
+      <td>AGTG</td>
+      <td>0.000734</td>
+      <td>CATG</td>
+      <td>0.000120</td>
+      <td>CGTG</td>
+      <td>0.000420</td>
+    </tr>
+    <tr>
+      <td>AATT</td>
+      <td>0.000154</td>
+      <td>AGTT</td>
+      <td>0.000073</td>
+      <td>CATT</td>
+      <td>0.000404</td>
+      <td>CGTT</td>
+      <td>0.000202</td>
+    </tr>
+    <tr>
+      <td>ACAA</td>
+      <td>0.004185</td>
+      <td>ATAA</td>
+      <td>0.001395</td>
+      <td>CCAA</td>
+      <td>0.000628</td>
+      <td>CTAA</td>
+      <td>0.000166</td>
+    </tr>
+    <tr>
+      <td>ACAC</td>
+      <td>0.005482</td>
+      <td>ATAC</td>
+      <td>0.000350</td>
+      <td>CCAC</td>
+      <td>0.009592</td>
+      <td>CTAC</td>
+      <td>0.000415</td>
+    </tr>
+    <tr>
+      <td>ACAG</td>
+      <td>0.000725</td>
+      <td>ATAG</td>
+      <td>0.000242</td>
+      <td>CCAG</td>
+      <td>0.000210</td>
+      <td>CTAG</td>
+      <td>0.000048</td>
+    </tr>
+    <tr>
+      <td>ACAT</td>
+      <td>0.000350</td>
+      <td>ATAT</td>
+      <td>0.001594</td>
+      <td>CCAT</td>
+      <td>0.000415</td>
+      <td>CTAT</td>
+      <td>0.001214</td>
+    </tr>
+    <tr>
+      <td>ACCA</td>
+      <td>0.000703</td>
+      <td>ATCA</td>
+      <td>0.000121</td>
+      <td>CCCA</td>
+      <td>0.004524</td>
+      <td>CTCA</td>
+      <td>0.000375</td>
+    </tr>
+    <tr>
+      <td>ACCC</td>
+      <td>0.019527</td>
+      <td>ATCC</td>
+      <td>0.000752</td>
+      <td>CCCC</td>
+      <td>0.167489</td>
+      <td>CTCC</td>
+      <td>0.005866</td>
+    </tr>
+    <tr>
+      <td>ACCG</td>
+      <td>0.000315</td>
+      <td>ATCG</td>
+      <td>0.000048</td>
+      <td>CCCG</td>
+      <td>0.002262</td>
+      <td>CTCG</td>
+      <td>0.000188</td>
+    </tr>
+    <tr>
+      <td>ACCT</td>
+      <td>0.000752</td>
+      <td>ATCT</td>
+      <td>0.001546</td>
+      <td>CCCT</td>
+      <td>0.005866</td>
+      <td>CTCT</td>
+      <td>0.007452</td>
+    </tr>
+    <tr>
+      <td>ACGA</td>
+      <td>0.000702</td>
+      <td>ATGA</td>
+      <td>0.000234</td>
+      <td>CCGA</td>
+      <td>0.000210</td>
+      <td>CTGA</td>
+      <td>0.000048</td>
+    </tr>
+    <tr>
+      <td>ACGC</td>
+      <td>0.001837</td>
+      <td>ATGC</td>
+      <td>0.000116</td>
+      <td>CCGC</td>
+      <td>0.004796</td>
+      <td>CTGC</td>
+      <td>0.000208</td>
+    </tr>
+    <tr>
+      <td>ACGG</td>
+      <td>0.000755</td>
+      <td>ATGG</td>
+      <td>0.000252</td>
+      <td>CCGG</td>
+      <td>0.000209</td>
+      <td>CTGG</td>
+      <td>0.000059</td>
+    </tr>
+    <tr>
+      <td>ACGT</td>
+      <td>0.000116</td>
+      <td>ATGT</td>
+      <td>0.000535</td>
+      <td>CCGT</td>
+      <td>0.000208</td>
+      <td>CTGT</td>
+      <td>0.000607</td>
+    </tr>
+    <tr>
+      <td>ACTA</td>
+      <td>0.000121</td>
+      <td>ATTA</td>
+      <td>0.000154</td>
+      <td>CCTA</td>
+      <td>0.000360</td>
+      <td>CTTA</td>
+      <td>0.000404</td>
+    </tr>
+    <tr>
+      <td>ACTC</td>
+      <td>0.001781</td>
+      <td>ATTC</td>
+      <td>0.000517</td>
+      <td>CCTC</td>
+      <td>0.011625</td>
+      <td>CTTC</td>
+      <td>0.001716</td>
+    </tr>
+    <tr>
+      <td>ACTG</td>
+      <td>0.000048</td>
+      <td>ATTG</td>
+      <td>0.000073</td>
+      <td>CCTG</td>
+      <td>0.000180</td>
+      <td>CTTG</td>
+      <td>0.000202</td>
+    </tr>
+    <tr>
+      <td>ACTT</td>
+      <td>0.000517</td>
+      <td>ATTT</td>
+      <td>0.004711</td>
+      <td>CCTT</td>
+      <td>0.001716</td>
+      <td>CTTT</td>
+      <td>0.013873</td>
+    </tr>
+    <tr>
+      <td>GAAA</td>
+      <td>0.045565</td>
+      <td>GGAA</td>
+      <td>0.005060</td>
+      <td>TAAA</td>
+      <td>0.006106</td>
+      <td>TGAA</td>
+      <td>0.000497</td>
+    </tr>
+    <tr>
+      <td>GAAC</td>
+      <td>0.001004</td>
+      <td>GGAC</td>
+      <td>0.000453</td>
+      <td>TAAC</td>
+      <td>0.000166</td>
+      <td>TGAC</td>
+      <td>0.000048</td>
+    </tr>
+    <tr>
+      <td>GAAG</td>
+      <td>0.005060</td>
+      <td>GGAG</td>
+      <td>0.017648</td>
+      <td>TAAG</td>
+      <td>0.000497</td>
+      <td>TGAG</td>
+      <td>0.000959</td>
+    </tr>
+    <tr>
+      <td>GAAT</td>
+      <td>0.000335</td>
+      <td>GGAT</td>
+      <td>0.000151</td>
+      <td>TAAT</td>
+      <td>0.000099</td>
+      <td>TGAT</td>
+      <td>0.000038</td>
+    </tr>
+    <tr>
+      <td>GACA</td>
+      <td>0.002514</td>
+      <td>GGCA</td>
+      <td>0.000532</td>
+      <td>TACA</td>
+      <td>0.000959</td>
+      <td>TGCA</td>
+      <td>0.000120</td>
+    </tr>
+    <tr>
+      <td>GACC</td>
+      <td>0.000315</td>
+      <td>GGCC</td>
+      <td>0.000194</td>
+      <td>TACC</td>
+      <td>0.000548</td>
+      <td>TGCC</td>
+      <td>0.000274</td>
+    </tr>
+    <tr>
+      <td>GACG</td>
+      <td>0.000532</td>
+      <td>GGCG</td>
+      <td>0.002904</td>
+      <td>TACG</td>
+      <td>0.000120</td>
+      <td>TGCG</td>
+      <td>0.000420</td>
+    </tr>
+    <tr>
+      <td>GACT</td>
+      <td>0.000048</td>
+      <td>GGCT</td>
+      <td>0.000036</td>
+      <td>TACT</td>
+      <td>0.000215</td>
+      <td>TGCT</td>
+      <td>0.000108</td>
+    </tr>
+    <tr>
+      <td>GAGA</td>
+      <td>0.014437</td>
+      <td>GGGA</td>
+      <td>0.008240</td>
+      <td>TAGA</td>
+      <td>0.001101</td>
+      <td>TGGA</td>
+      <td>0.000355</td>
+    </tr>
+    <tr>
+      <td>GAGC</td>
+      <td>0.000476</td>
+      <td>GGGC</td>
+      <td>0.001251</td>
+      <td>TAGC</td>
+      <td>0.000048</td>
+      <td>TGGC</td>
+      <td>0.000059</td>
+    </tr>
+    <tr>
+      <td>GAGG</td>
+      <td>0.008240</td>
+      <td>GGGG</td>
+      <td>0.056794</td>
+      <td>TAGG</td>
+      <td>0.000355</td>
+      <td>TGGG</td>
+      <td>0.002218</td>
+    </tr>
+    <tr>
+      <td>GAGT</td>
+      <td>0.000159</td>
+      <td>GGGT</td>
+      <td>0.000417</td>
+      <td>TAGT</td>
+      <td>0.000038</td>
+      <td>TGGT</td>
+      <td>0.000030</td>
+    </tr>
+    <tr>
+      <td>GATA</td>
+      <td>0.000838</td>
+      <td>GGTA</td>
+      <td>0.000177</td>
+      <td>TATA</td>
+      <td>0.001119</td>
+      <td>TGTA</td>
+      <td>0.000143</td>
+    </tr>
+    <tr>
+      <td>GATC</td>
+      <td>0.000048</td>
+      <td>GGTC</td>
+      <td>0.000036</td>
+      <td>TATC</td>
+      <td>0.000231</td>
+      <td>TGTC</td>
+      <td>0.000116</td>
+    </tr>
+    <tr>
+      <td>GATG</td>
+      <td>0.000177</td>
+      <td>GGTG</td>
+      <td>0.000968</td>
+      <td>TATG</td>
+      <td>0.000143</td>
+      <td>TGTG</td>
+      <td>0.000488</td>
+    </tr>
+    <tr>
+      <td>GATT</td>
+      <td>0.000073</td>
+      <td>GGTT</td>
+      <td>0.000040</td>
+      <td>TATT</td>
+      <td>0.000893</td>
+      <td>TGTT</td>
+      <td>0.000447</td>
+    </tr>
+    <tr>
+      <td>GCAA</td>
+      <td>0.001004</td>
+      <td>GTAA</td>
+      <td>0.000335</td>
+      <td>TCAA</td>
+      <td>0.000166</td>
+      <td>TTAA</td>
+      <td>0.000099</td>
+    </tr>
+    <tr>
+      <td>GCAC</td>
+      <td>0.001837</td>
+      <td>GTAC</td>
+      <td>0.000116</td>
+      <td>TCAC</td>
+      <td>0.001389</td>
+      <td>TTAC</td>
+      <td>0.000240</td>
+    </tr>
+    <tr>
+      <td>GCAG</td>
+      <td>0.000453</td>
+      <td>GTAG</td>
+      <td>0.000151</td>
+      <td>TCAG</td>
+      <td>0.000048</td>
+      <td>TTAG</td>
+      <td>0.000038</td>
+    </tr>
+    <tr>
+      <td>GCAT</td>
+      <td>0.000116</td>
+      <td>GTAT</td>
+      <td>0.000535</td>
+      <td>TCAT</td>
+      <td>0.000240</td>
+      <td>TTAT</td>
+      <td>0.002009</td>
+    </tr>
+    <tr>
+      <td>GCCA</td>
+      <td>0.000315</td>
+      <td>GTCA</td>
+      <td>0.000048</td>
+      <td>TCCA</td>
+      <td>0.000548</td>
+      <td>TTCA</td>
+      <td>0.000215</td>
+    </tr>
+    <tr>
+      <td>GCCC</td>
+      <td>0.009764</td>
+      <td>GTCC</td>
+      <td>0.000376</td>
+      <td>TCCC</td>
+      <td>0.019456</td>
+      <td>TTCC</td>
+      <td>0.001275</td>
+    </tr>
+    <tr>
+      <td>GCCG</td>
+      <td>0.000194</td>
+      <td>GTCG</td>
+      <td>0.000036</td>
+      <td>TCCG</td>
+      <td>0.000274</td>
+      <td>TTCG</td>
+      <td>0.000108</td>
+    </tr>
+    <tr>
+      <td>GCCT</td>
+      <td>0.000376</td>
+      <td>GTCT</td>
+      <td>0.000773</td>
+      <td>TCCT</td>
+      <td>0.001275</td>
+      <td>TTCT</td>
+      <td>0.006924</td>
+    </tr>
+    <tr>
+      <td>GCGA</td>
+      <td>0.000476</td>
+      <td>GTGA</td>
+      <td>0.000159</td>
+      <td>TCGA</td>
+      <td>0.000048</td>
+      <td>TTGA</td>
+      <td>0.000038</td>
+    </tr>
+    <tr>
+      <td>GCGC</td>
+      <td>0.001823</td>
+      <td>GTGC</td>
+      <td>0.000117</td>
+      <td>TCGC</td>
+      <td>0.000694</td>
+      <td>TTGC</td>
+      <td>0.000120</td>
+    </tr>
+    <tr>
+      <td>GCGG</td>
+      <td>0.001251</td>
+      <td>GTGG</td>
+      <td>0.000417</td>
+      <td>TCGG</td>
+      <td>0.000059</td>
+      <td>TTGG</td>
+      <td>0.000030</td>
+    </tr>
+    <tr>
+      <td>GCGT</td>
+      <td>0.000117</td>
+      <td>GTGT</td>
+      <td>0.000530</td>
+      <td>TCGT</td>
+      <td>0.000120</td>
+      <td>TTGT</td>
+      <td>0.001005</td>
+    </tr>
+    <tr>
+      <td>GCTA</td>
+      <td>0.000048</td>
+      <td>GTTA</td>
+      <td>0.000073</td>
+      <td>TCTA</td>
+      <td>0.000231</td>
+      <td>TTTA</td>
+      <td>0.000893</td>
+    </tr>
+    <tr>
+      <td>GCTC</td>
+      <td>0.000891</td>
+      <td>GTTC</td>
+      <td>0.000258</td>
+      <td>TCTC</td>
+      <td>0.004935</td>
+      <td>TTTC</td>
+      <td>0.003240</td>
+    </tr>
+    <tr>
+      <td>GCTG</td>
+      <td>0.000036</td>
+      <td>GTTG</td>
+      <td>0.000040</td>
+      <td>TCTG</td>
+      <td>0.000116</td>
+      <td>TTTG</td>
+      <td>0.000447</td>
+    </tr>
+    <tr>
+      <td>GCTT</td>
+      <td>0.000258</td>
+      <td>GTTT</td>
+      <td>0.002355</td>
+      <td>TCTT</td>
+      <td>0.003240</td>
+      <td>TTTT</td>
+      <td>0.031522</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+
+<h2 class="subsection" id="exercises">Exercises</h2>
+
+<p>Simulate a site on the four-species tree described in this lab using the rate matrix.</p>
+
+\[{\mathbf Q} = \{q_{ij}\} = \left( \begin{array}{rrrr}
+ -0.886 &amp;  0.190 &amp;  0.633 &amp;  0.063 \\
+ 0.253 &amp; -0.696 &amp;  0.127 &amp;  0.316 \\
+ 1.266 &amp;  0.190 &amp; -1.519 &amp;  0.063 \\
+ 0.253 &amp;  0.949 &amp;  0.127 &amp; -1.329 \\
+\end{array} \right)\]
+
+<p>Why do we start the simulation by drawing from the stationary distribution?</p>
+
+<ol class="bibliography"></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+    });
+    MathJax.Hub.Queue(function () {
+      $(".aside").each(function() {
+          $("div .MathJax", this).hide();
+      });
+    });
+</script>
+<script src="/assets/js/base.js"></script>
+
+  </body>
+</html>
