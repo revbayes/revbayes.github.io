@@ -12,9 +12,10 @@ index: false
 redirect: false
 ---
 
-{% section Overview | overview %}
+{% section Getting Started | getting started %}
 
-
+Mention introductory tutorials: X,Y, and Z. Links to tutorials, resources, google help group, etc.
+How to navigate the website for specific things: documentation, a tutorial on X.
 
 {% section Moves  | moves %}
 
@@ -55,7 +56,6 @@ Talk about things like:
 
 
 {% section Clade Constraints  | Clade Constraints %}
-
 
 
 {% section Checkpointing  | Checkpointing %}
