@@ -38,6 +38,10 @@ then
     fi
     cd _site
 
+    # don't update the documentation
+    git update-index --assume-unchanged documentation/index.html
+    git ls-files --deleted -z documentation | git update-index --assume-unchanged -z --stdin
+
     untracked=`git ls-files --other --exclude-standard --directory`
 
     # check if there are any changes on master
