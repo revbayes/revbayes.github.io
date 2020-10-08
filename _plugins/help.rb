@@ -136,25 +136,27 @@ module Jekyll
     safe true
 
     def generate(site)
-      site.data['hierarchy'] = Hash.new
+    	unless site.data['help'].nil?
+	      site.data['hierarchy'] = Hash.new
 
-      # find concrete types
-      site.data['help'].each do |entry|
-        site.data['hierarchy'][entry['name']] = Hash.new
-        site.data['hierarchy'][entry['name']]['derived'] = Array.new
-        site.data['hierarchy'][entry['name']]['concrete'] = true
-        site.pages << HelpPage.new(site, entry)
-      end
+	      # find concrete types
+	      site.data['help'].each do |entry|
+	        site.data['hierarchy'][entry['name']] = Hash.new
+	        site.data['hierarchy'][entry['name']]['derived'] = Array.new
+	        site.data['hierarchy'][entry['name']]['concrete'] = true
+	        site.pages << HelpPage.new(site, entry)
+	      end
 
-      # find abstract types
-      site.data['hierarchy'].each_key do |type|
-        unless site.data['hierarchy'][type]['concrete']
-          abstract = Hash.new
-          abstract['name'] = type
-          abstract['derived'] = site.data['hierarchy'][type]['derived']
-          site.pages << HelpPage.new(site, abstract)
-        end
-      end
+	      # find abstract types
+	      site.data['hierarchy'].each_key do |type|
+	        unless site.data['hierarchy'][type]['concrete']
+	          abstract = Hash.new
+	          abstract['name'] = type
+	          abstract['derived'] = site.data['hierarchy'][type]['derived']
+	          site.pages << HelpPage.new(site, abstract)
+	        end
+	      end
+	    end
     end
   end
 end
