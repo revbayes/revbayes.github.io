@@ -36,11 +36,21 @@ Although we have chosen an appropriate type of move we still need to consider th
 
 We can qualitatively assess the adequacy of size parameters of moves by using `TRACER` to view the trace. In figure __ we can see an example of a well-mixing MCMC, the catapillar-like appearance is a qualitative sign that the parameter is efficiently moving around the parameter space. If the move is too large the trace will look blocky, almost like a city skyline. Large moves often cause proposals to be rejected which is why we see the trace having the same value for many generations. Conversely, if we set too small of a move then we will accept most moves and the trace will appear to slowly meander about parameter values. 
 
-**Figure of 3 trace outputs. One for a good mixing, too small, and too big move**
+{% figure fig_trace %}
+<img src="figures/Move_size.png" width="400" />
+{% figcaption %}
+Mixing of the `mvSlide` move on  sampling the probability of flipping heads $p$. The left image depicts the trace when moves are too small. The image in the center depicts moves that are too big. The image on the left depicts moves that are just right.
+{% endfigcaption %}
+{% endfigure %}
 
-We can directly see how often proposals on specific moves are accepted or rejected by using the `operatorSummary()` method on an `mcmc` object. 
+We can directly see how often proposals on specific moves are accepted or rejected by using the `operatorSummary()` method on an `mcmc` object {% ref fig_operatorSummary %}. 
 
-**Show the output of operatorSummary**
+{% figure fig_operatorSummary %}
+<img src="figures/mcmc_operatorSummary.png" width="400" />
+{% figcaption %}
+Output of the `operatorSummary` method of an `mcmc` object after performing an analysis. On the leftmost column we can see each move and the node that it operates on. We can also see the weight of each move, how often it was proposed, and how often it was accepted. On the far right we can see the tuning argument for each move if it has one, in the case of `mvSlide` this is `delta`
+{% endfigcaption %}
+{% endfigure %
 
 We can see that almost every proposal was accepted for the move with the smallest window size while the largest move rejected most proposals. In general we want a move that isn't too small such that it moves slowly but isn't so large that it rejects most proposals, this is known as the Goldilock's Principle.  ___ found an optimal acceptance ratio of 0.234 for a multivariate target distributions with i.i.d. components. Being able to break the posterior into i.i.d. components is unrealistic for phylogenetic analyses, numerical studies have shown acceptance rates to be robust to this assumption and rates between 0.1 and 0.6 are still reasonably efficient.
 
@@ -49,33 +59,26 @@ We can see that almost every proposal was accepted for the move with the smalles
 
 {% subsubsection Tuning Moves %}
 
-Luckily, for moves with an adjustable size, we don't need trial and error adjusting of that size argument to achieve a certain acceptance rate. We can tune our moves to achieve a certain acceptance ratio. When creating a move that has an adjustable size, we can set the `tune` arguemnt to `TRUE`, this will adjust the size of the move so the acceptance rate approaches the value given in `tuneTarget`. Before running our mcmc analysis, we can tune our parameters by using the `tuningInterval` argument in  either the `burnin` or `run` methods on an `mcmc` object. This means that every `tuninginterval` MCMC generations, it will try to adjust the size of the move to reach the desired tuning interval.
+Luckily, for moves with an adjustable size, we don't need trial and error adjusting of that size argument to achieve a certain acceptance rate. We can tune our moves to achieve a certain acceptance ratio. When creating a move that has an adjustable size, we can set the `tune` arguemnt to `TRUE`, this will adjust the size of the move so the acceptance rate approaches the value given in `tuneTarget` {% ref fig_tuned %}. Before running our mcmc analysis, we can tune our parameters by using the `tuningInterval` argument in  either the `burnin` or `run` methods on an `mcmc` object. This means that every `tuninginterval` MCMC generations, it will try to adjust the size of the move to reach the desired tuning interval.
 
-**Example code with screenshots of the tuning before and after**
+{% figure fig_tuned %}
+<img src="figures/mcmc_tuned.png" width="400" />
+{% figcaption %}
+Output of `operatorSummary` after tuning the moves for 10,000 generations. The moves in this image started with the same size values as {% ref fig_operatorSummary %}.  We can notice that the value `delta` has is different from when it started and the acceptance rate for each move approaches 0.44 which is the default tuning target
+{% endfigcaption %}
+{% endfigure %
 
 {% subsection Creating a Move Scheme %}
 
-After we've chosen the moves we want, we need to specify how often those moves get called and how they are scheduled. We can set up a move schedule that determines the order of moves with the `moveschedule` argument of the `mcmc` function. There are 3 different options for `moveschedule`:
+After we've chosen the moves we want, we need to specify how often those moves get called and how they are scheduled. First, for any function that creates a move, there is an argument called `weight`. Although the specific details vary between which move scheduler is used, the weights correspond to how often the move gets used. 
 
-- **sequential**:
-- **single**:
-- **random**: 
+Given finite resources, we may want to upweight or downweight certain nodes to focus our resources. Analyses may contain nuisance parameters, or parameters we aren't particularly interested in estimating; we could downweight these to spend more time ensuring our parameters of interest are well sampled. Additionally, we may want to upweight parameters that are compplex or difficult to sample, this is often down for moves regarding the tree topology. We know that the number tree topologies grow for a given number of taxa, specifically for $n$ taxa there are $(2n-3)!!$ different rooted topologies (**NOTE:** we are using the [double factorial function](https://en.wikipedia.org/wiki/Phylogenetic_tree), not the factorial function used twice). Since the space of tree topologies grows dramatically with the number of taxa, we may want to upweight moves on the tree topology accordingly. In practice we usually set the weight for topology moves to be the number of tips on the tree, though even this is a conservative scaling for the weight relative to the size of tree topology space
 
-**After talking about the different types of schedules, talk about weights** 
-Talk about how too low weighting on a particular node can create that skyline effect on the trace of a certain parameter
+We can set up a move schedule that determines the order of moves with the `moveschedule` argument of the `mcmc` function. There are 3 different options for `moveschedule`:
 
-upweight moves on nodes with a complex parameter space
-upweight the tree moves based on the number of taxa
-downeight nuisance parameters that aren't interested in 
-
-
-
-
-
-
-
-
-
+- **sequential**: Each MCMC cycle moves get performed in the order that they are entered into the move vector. We perform each move a number of times that corresponds to the weight of that move. For example, if we specify a weight of 4.35 on a move then that move will be performed 4 times garuanteed and then there is 0.35 probability of the move being performed a 5th time. After that, the scheduler moves on to the next move in the moves vector 
+- **single**: This scheduler only considers one move each MCMC cycle. A move gets picked at random based on the weights. Moves with higher weights relative to the other moves in the move vector will be picked more often.
+- **random**: This scheduler is similar to the single move scheduler except that multiple moves get picked at random each cycle. The number of moves each cycle is the sum of the wieghts for all the moves in the move vector. 
 
 {% section Clade Constraints  | Clade Constraints %}
 
