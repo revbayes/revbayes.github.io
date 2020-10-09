@@ -10,18 +10,6 @@ prerequisites:
 index: true
 ---
 
-TODO Bastien
---
-{:.section}
-
-Check citation (I believe the order of authors has changed).
-
-Check RevBayes version. Merge changes into master, and don't use development branch?
-
-Are you satisfied with the structure?
-
-Let me know, if you think that something is not clear!
-
 Introduction
 --
 {:.section}
