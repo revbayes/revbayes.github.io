@@ -55,17 +55,20 @@ Definitions
 
 __Alignment__: Multiple sequence alignment.
 
-__timetree__: Phylogeny with branch lengths measured in units of time. If
-the leaves have been sampled at the same time, for example, at the present, a
+__Timetree__: Phylogeny with branch lengths measured in units of time. If the
+leaves have been sampled at the same time, for example, at the present, a
 time-tree is ultrametric.
 
-__Branch-length tree__: Phylogeny with branch lengths measured in expected numbers of
-substitutions. Usually, branch-length trees are obtained from a phylogenetic
-analysis of an alignment.
+__Branch-length tree__: Phylogeny with branch lengths measured in expected
+numbers of substitutions. Usually, branch-length trees are obtained from a
+phylogenetic analysis of an alignment.
 
-__Calibration__: Absolute node calibration; an estimate of the age of a node of a timetree. This is usually associated with a prior describing the uncertainty associated to this node age.
+__Calibration__: Absolute node calibration; an estimate of the age of a node of
+a timetree. This is usually associated with a prior describing the uncertainty
+associated to this node age.
 
-__Constraint__: Relative node order constraint, which specifies the relative order in time of two nodes of a tree (e.g. node A is older than node B).
+__Constraint__: Relative node order constraint, which specifies the relative
+order in time of two nodes of a tree (e.g. node A is older than node B).
 
 Getting Started
 ------------------
@@ -99,12 +102,15 @@ scripts/
 └── 3_mcmc_dating.rev               -- Date with calibrations and constraints.
 ```
 
-Simulated data will be used, so that the inferred timetrees can be tested
-for accuracy against the correct timetree stored in the file
-`time.tree`. Inference will be done twice: (1) using calibrations only, and (2)
-using calibrations and constraints. We will not perform inference of the topology of the tree, only of the age of its nodes. We will therefore work with the correct, fixed tree
-topology obtained from the file `substitution.tree`. On empirical data, one could use the
-maximum-likelihood (ML) or the maximum a posteriori (MAP) topology obtained from a phylogenetic reconstruction based on the alignment as in e.g. tutorial [Phylogenetic inference of nucleotide data using RevBayes](../ctmc/).
+Simulated data will be used, so that the inferred timetrees can be tested for
+accuracy against the correct timetree stored in the file `time.tree`. Inference
+will be done twice: (1) using calibrations only, and (2) using calibrations and
+constraints. We will not perform inference of the topology of the tree, only of
+the age of its nodes. We will therefore work with the correct, fixed tree
+topology obtained from the file `substitution.tree`. On empirical data, one
+could use the maximum-likelihood (ML) or the maximum a posteriori (MAP) topology
+obtained from a phylogenetic reconstruction based on the alignment as in e.g.
+tutorial [Phylogenetic inference of nucleotide data using RevBayes](../ctmc/).
 
 
 Statement of the problem
@@ -546,7 +552,6 @@ bls[i_root] ~ dnNormal(mean_bl_root, sqrt(posterior_var_bl_root))
 bls[i_root].clamp(posterior_mean_bl_root)
 ```
 
-
 The last part of the script defines the monitors, executes the MCMC chain, and
 saves the results. To perform the dating analysis, please execute twice (once
 with `constrain = true`, and once with `constrain = false`):
@@ -576,14 +581,46 @@ The following figures show the inferred timetrees.
 {% endfigure %}
 
 We see that the constraints help improve the accuracy, as well as reduce the
-confidence intervals of the node ages. The branch score distances between the
-original timetree, and the inferred timetrees are:
+confidence intervals of the node ages. Further, we can measure the distance
+between the inferred timetrees, and the original timetree used for simulating
+the alignment. We use the branch score distance
+
+$$d(T_1, T_2) = \sqrt{\sum_{i} \Delta_i^2},$$
+
+where $T_1$ and $T_2$ are two trees, $i$ traverses the branches, and $\Delta_i$
+is the difference of the lengths of the branch in $T_1$ and $T_2$. If a branch
+is only in one tree, the whole length is chosen (although this is not the case
+here). The branch score distances can be calculated with any phylogenetic
+software package. Here, we used [ELynx](https://github.com/dschrempf/elynx). The
+branch score distances between the original timetree, and the inferred timetrees
+are:
 
 ```
-Calibrations only:
-Branch score distance is 0.1592917560202034
-Calibrations and constraints:
-Branch score distance is 0.14207812275294182
+$ tlynx distance -d branch-score -f RevBayes -m data/time.tree output/alignment.fasta.approx.dating.tree output/alignment.fasta.approx.dating_cons.tree
+=== tlynx
+Compare, examine, and simulate phylogenetic trees.
+ELynx Suite version 0.4.0.
+Developed by Dominik Schrempf.
+Compiled on September 19, 2020, at 13:41 pm, UTC.
+Start time: October 9, 2020, at 11:29 am, UTC.
+Command line: tlynx distance -d branch-score -f RevBayes -m data/time.tree output/alignment.fasta.approx.dating.tree output/alignment.fasta.approx.dating_cons.tree
+
+Write results to standard output.
+Read master tree from file: data/time.tree.
+Compute distances between all trees and master tree.
+Read trees from files.
+Trees are named according to their file names.
+Use branch score distance.
+Summary statistics of Branch Score Distance:
+Mean:     0.151
+Median:   0.159
+Variance: 0.000
+
+Tree 1                                          Tree 2                                            Branch Score
+data/time.tree                                  output/alignment.fasta.approx.dating.tree                0.159
+data/time.tree                                  output/alignment.fasta.approx.dating_cons.tree           0.142
+No output file given --- skip writing ELynx file for reproducible runs.
+=== End time: October 9, 2020, at 11:29 am, UTC.
 ```
 
 That is, using constraints helped improve the branch score distance by 11
