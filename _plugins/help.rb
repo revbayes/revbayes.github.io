@@ -26,32 +26,6 @@ module Jekyll
         else
           entry['index'] = 'ModelObject'
         end
-
-        Array(entry['type_spec']).each do |type|
-          if site.data['hierarchy'][type].nil?
-            site.data['hierarchy'][type] = Hash.new
-          end
-
-          if site.data['hierarchy'][type]['derived'].nil?
-            site.data['hierarchy'][type]['derived'] = Array.new
-          end
-
-          site.data['hierarchy'][type]['derived'] << entry['name']
-        end
-      end
-
-      # add domain type
-      unless entry['domain'].nil?
-        if site.data['hierarchy'][entry['domain']].nil?
-          site.data['hierarchy'][entry['domain']] = Hash.new
-        end
-      end
-
-      # add return type
-      unless entry['return_type'].nil?
-        if site.data['hierarchy'][entry['return_type']].nil?
-          site.data['hierarchy'][entry['return_type']] = Hash.new
-        end
       end
 
       # get arguments
@@ -137,24 +111,45 @@ module Jekyll
 
     def generate(site)
     	unless site.data['help'].nil?
-	      site.data['hierarchy'] = Hash.new
+	      entries = Hash.new
 
-	      # find concrete types
+	      # copy entries for concrete types
 	      site.data['help'].each do |entry|
-	        site.data['hierarchy'][entry['name']] = Hash.new
-	        site.data['hierarchy'][entry['name']]['derived'] = Array.new
-	        site.data['hierarchy'][entry['name']]['concrete'] = true
-	        site.pages << HelpPage.new(site, entry)
+          entries[entry['name']] = entry
+        end
+
+        # create entries for abstract types
+        site.data['help'].each do |entry|
+          # add domain type
+          if not entry['domain'].nil? and entries[entry['domain']].nil?
+            entries[entry['domain']] = Hash.new
+            entries[entry['domain']]['name'] = entry['domain']
+          end
+
+          # add return type
+          if not entry['return_type'].nil? and entries[entry['return_type']].nil?
+            entries[entry['return_type']] = Hash.new
+            entries[entry['return_type']]['name'] = entry['return_type']
+          end
+
+	        Array(entry['type_spec']).each do |type|
+            if entries[type].nil?
+              entries[type] = Hash.new
+              entries[type]['name'] = type
+            end
+
+            # add derived types
+            if entries[type]['derived'].nil?
+              entries[type]['derived'] = Array.new
+            end
+
+            entries[type]['derived'] << entry['name']
+          end
 	      end
 
-	      # find abstract types
-	      site.data['hierarchy'].each_key do |type|
-	        unless site.data['hierarchy'][type]['concrete']
-	          abstract = Hash.new
-	          abstract['name'] = type
-	          abstract['derived'] = site.data['hierarchy'][type]['derived']
-	          site.pages << HelpPage.new(site, abstract)
-	        end
+        # generate help pages
+	      entries.each_key do |type|
+	        site.pages << HelpPage.new(site, entries[type])
 	      end
 	    end
     end
