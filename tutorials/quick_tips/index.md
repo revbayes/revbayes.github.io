@@ -62,7 +62,7 @@ Here is some filler text.
 
 {% subsubsection Tuning Moves %}
 
-Luckily, for moves with an adjustable size, we don't need trial and error adjusting of that size argument to achieve a certain acceptance rate. We can tune our moves to achieve a certain acceptance ratio. When creating a move that has an adjustable size, we can set the `tune` arguemnt to `TRUE`, this will adjust the size of the move so the acceptance rate approaches the value given in `tuneTarget`. Before running our MCMC analysis, we can tune our parameters by using the `tuningInterval` argument in  either the `burnin` or `run` methods on an `mcmc` object (see {% ref fig_tuned %}). This means that every `tuninginterval` MCMC generations, it will try to adjust the size of the move to reach the desired tuning interval.
+Luckily, for moves with an adjustable size, we don't need trial and error adjusting of that size argument to achieve a certain acceptance rate. We can tune our moves to achieve a certain acceptance ratio. When creating a move that has an adjustable size, we can set the `tune` argument to `TRUE`, this will adjust the size of the move so the acceptance rate approaches the value given in `tuneTarget`. Before running our MCMC analysis, we can tune our parameters by using the `tuningInterval` argument in  either the `burnin` or `run` methods on an `mcmc` object (see {% ref fig_tuned %}). This means that every `tuninginterval` MCMC generations, it will try to adjust the size of the move to reach the desired tuning interval.
 
 {% figure fig_tuned %}
 <img src="figures/mcmc_tuned.png"  />
@@ -93,7 +93,23 @@ We can set up a move schedule that determines the order of moves with the `moves
 
 {% section MCMC under the Prior | Sampling under the Prior %}
 
+Before we perform our phylogenetic analysis using our data, we may first want to run the MCMC under the prior. Running our analysis under the prior ignores all of our data and likelihood computations associated with our data and uses prior distributions to copmute the sampled posterior. Since we are not performing any likelihood calculations the MCMC should sample relatively quickly, making this a good way to assess the efficiency of our move scheme. This can also be a good way to ensure the model was set up correctly and gauge how long we will need to run our MCMC. As a result of not using any data when running an analysis under the prior, our sampled posterior should match the distributions we used for our prior beliefs. When running an analysis in this way, if our posterior looks nothing like our prior we can either say that we haven't ran the analysis long enough or the model may be set up incorrectly. 
 
+Assuming that we've already set up our model, moves, and monitors in RevBayes, we can run an analysis under by setting the `underPrior` argument to `TRUE` when using either the `run` or `burnin` methods on an `mcmc` object:
+
+```
+
+###We assume we already created these objects
+my_model 	##The model
+my_moves 	##The vector of moves for the parameters we are inferrring
+my_monitors ##The vector of monitors used to record our MCMC analysis
+
+##create an mcmc object
+my_mcmc = mcmc(my_model, my_moves, my_monitors) 
+
+##Perform an analysis under the prior
+my_mcmc.run(generations = 10000, underPrior=TRUE)
+```
 
 
 
