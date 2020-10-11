@@ -37,7 +37,7 @@ Although we have chosen an appropriate type of move we still need to consider th
 We can qualitatively assess the adequacy of size parameters of moves by using `TRACER` to view the trace. In {% ref fig_trace %} we can see an example of a well-mixing MCMC, the catapillar-like appearance is a qualitative sign that the parameter is efficiently moving around the parameter space. If the move is too large the trace will look blocky, almost like a city skyline. Large moves often cause proposals to be rejected which is why we see the trace having the same value for many generations. Conversely, if we set too small of a move then we will accept most moves and the trace will appear to slowly meander about parameter values. 
 
 {% figure fig_trace %}
-<img src="figures/Move_size.png" width="400" />
+<img src="figures/Move_size.png"  />
 {% figcaption %}
 Mixing of the `mvSlide` move on  sampling the probability of flipping heads $p$. The left image depicts the trace when moves are too small. The image in the center depicts moves that are too big. The image on the left depicts moves that are just right.
 {% endfigcaption %}
@@ -46,15 +46,18 @@ Mixing of the `mvSlide` move on  sampling the probability of flipping heads $p$.
 We can directly see how often proposals on specific moves are accepted or rejected by using the `operatorSummary()` method on an `mcmc` object {% ref fig_operatorSummary %}. 
 
 {% figure fig_operatorSummary %}
-<img src="figures/mcmc_operatorSummary.png" width="400" />
+<img src="figures/mcmc_operatorSummary.png"  />
 {% figcaption %}
 Output of the `operatorSummary` method of an `mcmc` object after performing an analysis. On the leftmost column we can see each move and the node that it operates on. We can also see the weight of each move, how often it was proposed, and how often it was accepted. On the far right we can see the tuning argument for each move if it has one, in the case of `mvSlide` this is `delta`
 {% endfigcaption %}
 {% endfigure %
 
-We can see that almost every proposal was accepted for the move with the smallest window size while the largest move rejected most proposals. In general we want a move that isn't too small such that it moves slowly but isn't so large that it rejects most proposals, this is known as the Goldilock's Principle.  ___ found an optimal acceptance ratio of 0.234 for a multivariate target distributions with i.i.d. components. Being able to break the posterior into i.i.d. components is unrealistic for phylogenetic analyses, numerical studies have shown acceptance rates to be robust to this assumption and rates between 0.1 and 0.6 are still reasonably efficient.
+We can see that almost every proposal was accepted for the move with the smallest window size while the largest move rejected most proposals. In general we want a move that isn't too small such that it moves slowly but isn't so large that it rejects most proposals, this is known as the Goldilock's Principle. {% citet Roberts1997 %} found an optimal acceptance ratio of 0.234 for a multivariate target distributions with i.i.d. components. Being able to break the posterior into i.i.d. components is unrealistic for phylogenetic analyses, numerical studies have shown acceptance rates to be robust to this assumption and rates between 0.1 and 0.6 are still reasonably efficient {% cite Roberts2001 Rosenthal2011 %}.
 
-{% aside Different Sized Moves on Trees %}
+{% aside Move sizes on trees %}
+here is some more filler text.
+
+Here is some filler text. 
 {% endaside %}
 
 {% subsubsection Tuning Moves %}
@@ -62,7 +65,7 @@ We can see that almost every proposal was accepted for the move with the smalles
 Luckily, for moves with an adjustable size, we don't need trial and error adjusting of that size argument to achieve a certain acceptance rate. We can tune our moves to achieve a certain acceptance ratio. When creating a move that has an adjustable size, we can set the `tune` arguemnt to `TRUE`, this will adjust the size of the move so the acceptance rate approaches the value given in `tuneTarget` {% ref fig_tuned %}. Before running our mcmc analysis, we can tune our parameters by using the `tuningInterval` argument in  either the `burnin` or `run` methods on an `mcmc` object. This means that every `tuninginterval` MCMC generations, it will try to adjust the size of the move to reach the desired tuning interval.
 
 {% figure fig_tuned %}
-<img src="figures/mcmc_tuned.png" width="400" />
+<img src="figures/mcmc_tuned.png"  />
 {% figcaption %}
 Output of `operatorSummary` after tuning the moves for 10,000 generations. The moves in this image started with the same size values as {% ref fig_operatorSummary %}.  We can notice that the value `delta` has is different from when it started and the acceptance rate for each move approaches 0.44 which is the default tuning target
 {% endfigcaption %}
