@@ -98,7 +98,6 @@ Before we perform our phylogenetic analysis using our data, we may first want to
 Assuming that we've already set up our model, moves, and monitors in RevBayes, we can run an analysis under by setting the `underPrior` argument to `TRUE` when using either the `run` or `burnin` methods on an `mcmc` object:
 
 ```
-
 ###We assume we already created these objects
 my_model 	##The model
 my_moves 	##The vector of moves for the parameters we are inferrring
