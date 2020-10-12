@@ -37,8 +37,10 @@ then
     then
     git update-index --no-assume-unchanged documentation/index.html
     git ls-files --deleted -z documentation | git update-index --no-assume-unchanged -z --stdin
+    git ls-files -z documentation | git update-index --no-assume-unchanged -z --stdin
     else
     git update-index --assume-unchanged documentation/index.html
+    git ls-files -z documentation | git update-index --assume-unchanged -z --stdin
     git ls-files --deleted -z documentation | git update-index --assume-unchanged -z --stdin
     fi
 
