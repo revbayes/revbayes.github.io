@@ -124,6 +124,20 @@ module Jekyll
             end
           end
 
+          # add distributions to types
+          unless entry['type_spec'].nil?
+            if entry['type_spec'].include? 'Distribution'
+              unless entry['domain'].nil?
+                type = entry['domain']
+                if entries[type]['distributions'].nil?
+                  entries[type]['distributions'] = Array.new
+                end
+
+                entries[type]['distributions'] << entry['name']
+              end
+            end
+          end
+
           # build type hierarchy
 	        Array(entry['type_spec']).each do |type|
             if entries[type].nil?
