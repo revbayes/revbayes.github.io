@@ -5,6 +5,13 @@ subtitle: Download and Install RevBayes
 permalink: /download
 code_layout: bash
 ---
+
+<div class="row">
+<p>Current version: 1.1.0</p>
+<p>New release planned for November 2020. See the <a href="https://github.com/revbayes/revbayes/blob/development/NEWS.md">latest changes</a> on GitHub.</p>
+</div>
+<br><br>
+
 <div class="row">
 
 <div class="col-sm-4" align="center">
