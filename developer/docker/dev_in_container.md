@@ -1,3 +1,9 @@
+---
+title: Developing in the Docker container
+category: docker
+order: 1
+---
+
 ## Developing in the Docker container
 
 Ok now we are ready to get the container running. Use:
