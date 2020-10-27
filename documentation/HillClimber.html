@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
-    <title>RevBayes: Documentation</title>
+    <title>RevBayes</title>
   </head>
   <body>
     <div class="container">
@@ -1080,12 +1080,147 @@ Rev Language Reference
 
 <div class="help col-sm-8">
     
-    <p>Welcome to the Rev Language Reference pages!</p>
+        
+        <h2 class="help-title"><p><code class="highlighter-rouge">HillClimber</code> - Hill-Climber analysis object</p>
+</h2>
 
-<p>These help pages are stored in Markdown files on the RevBayes GitHub repository, <a href="https://github.com/revbayes/revbayes/tree/help/help/md">here</a>.</p>
+        
+            <div class="help-description">
+            The HillClimber analysis object keeps a model and the associated moves and monitors. The object is used to run Markov chain Monte Carlo (HillClimber) simulation on the model, using the provided moves, to obtain a sample of the posterior probability distribution. During the analysis, the monitors are responsible for sampling model parameters of interest.
+            </div>
+        
 
-<p>If you would like to edit a help page, click the <img src="/assets/img/edit.png" width="24" height="24" hspace="5" /> button at the bottom of the entry page.</p>
+        
 
+        
+            <h3 class="help-section-header">Usage</h3>
+            
+            <div class="help-section-body">
+            HillClimber(<a href="/documentation/Model.html">Model</a> model, <a href="/documentation/Monitor.html">Monitor</a>[] monitors, <a href="/documentation/Move.html">Move</a>[] moves, <a href="/documentation/String.html">String</a> moveschedule)
+            </div>
+            <h3 class="help-section-header arguments">Arguments</h3>
+            <div class="help-section-body">
+            <table class="arguments">
+                
+                <tr>
+                    <td class="lhs argument">model : </td>
+                    <td class="rhs argument"><a href="/documentation/Model.html">Model</a> (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The model graph.</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">monitors : </td>
+                    <td class="rhs argument"><a href="/documentation/Monitor.html">Monitor</a>[] (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The monitors used for this analysis.</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">moves : </td>
+                    <td class="rhs argument"><a href="/documentation/Move.html">Move</a>[] (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The moves used for this analysis.</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">moveschedule : </td>
+                    <td class="rhs argument"><a href="/documentation/String.html">String</a> (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The strategy how the moves are used.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : random</td>
+                </tr>
+                
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Options : sequential|random|single</td>
+                </tr>
+                
+                
+            </table>
+            </div>
+        
+
+        
+
+        
+            <h3 class="help-section-header">Details</h3>
+            <div class="help-section-body">
+             The HillClimber analysis object produced by a call to this function keeps copies of the model and the associated moves and monitors. The HillClimber analysis object is used to run Markov chain Monte Carlo (HillClimber) simulation on the model, using the provided moves, to obtain a sample of the posterior probability distribution. During the analysis, the monitors are responsible for sampling model parameters of interest.
+            </div>
+        
+
+        
+            <h3 class="help-section-header">Example</h3>
+            
+            <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Create a simple model (unclamped)
+a ~ exponential(1)
+mymodel = model(a)
+
+# Create a move vector and a monitor vector
+moves[1] = mvScale(a, lambda=1.0, weight=1.0)
+monitors[1] = mnFile(a,"output/out.log")
+
+# Create an HillClimber object
+myHillClimberObject = HillClimber( mymodel, monitors, moves)
+
+# Run a short analysis
+myHillClimberObject.burnin( generations = 400, tuningInterval = 100)
+myHillClimberObject.run( generations = 400)
+
+# print the summary of the operators (now tuned)
+myHillClimberObject.operatorSummary()
+</code></pre></div></div>
+
+        
+
+        
+            <h3 class="help-section-header">Methods</h3>
+            <div class="help-section-body">
+            <ul class="list-unstyled methods">
+            
+            <li>run(<a href="/documentation/RealPos.html">RealPos</a> epsilon)</li>
+            
+            <li>variable(<a href="/documentation/String.html">String</a> name)</li>
+            
+            </ul>
+            </div>
+        
+
+        
+            <h3 class="help-section-header">See Also</h3>
+            <div class="help-section-body">
+            <ul class="list-unstyled">
+            
+            <li><a href="SimulatedAnnealing.html">SimulatedAnnealing</a></li>
+            
+            </ul>
+            </div>
+        
+
+        
+
+        
+
+        
+
+        <h3 class="help-section-header"></h3>
+        <div class="help-section-header" text-align="right">
+        <a href="https://github.com/revbayes/revbayes/edit/help/help/md/HillClimber.md"><img src="/assets/img/edit.png" width="24" height="24" hspace="5">Edit this page</a>
+        </div>
     
 </div>
 
@@ -1114,14 +1249,14 @@ Rev Language Reference
 $(":not(code).highlighter-rouge").each(function() {
   
   if( this.classList == "highlighter-rouge") {
-    this.classList = "default highlighter-rouge";
+    this.classList = "Rev highlighter-rouge";
   }
   
 });
 // $("code.highlighter-rouge").each(function() {
 //   
 //   if( this.classList == "highlighter-rouge") {
-//       this.classList = "default highlighter-rouge";
+//       this.classList = "Rev highlighter-rouge";
 //   }
 //   
 // });

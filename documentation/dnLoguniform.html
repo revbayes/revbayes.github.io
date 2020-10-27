@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
-    <title>RevBayes: Documentation</title>
+    <title>RevBayes</title>
   </head>
   <body>
     <div class="container">
@@ -1080,12 +1080,106 @@ Rev Language Reference
 
 <div class="help col-sm-8">
     
-    <p>Welcome to the Rev Language Reference pages!</p>
+        
+        <h2 class="help-title"><p><code class="highlighter-rouge">dnLoguniform</code> - Log-Uniform Distribution</p>
+</h2>
 
-<p>These help pages are stored in Markdown files on the RevBayes GitHub repository, <a href="https://github.com/revbayes/revbayes/tree/help/help/md">here</a>.</p>
+        
+            <div class="help-description">
+            A strictly positive real number x has a log-uniform distribution over interval (min,max) if its logarithm y = ln(x) has uniform distribution over interval (ln(min),ln(max)).
+            </div>
+        
 
-<p>If you would like to edit a help page, click the <img src="/assets/img/edit.png" width="24" height="24" hspace="5" /> button at the bottom of the entry page.</p>
+        
 
+        
+            <h3 class="help-section-header">Usage</h3>
+            
+            <div class="help-section-body">
+            dnLoguniform(<a href="/documentation/RealPos.html">RealPos</a> min, <a href="/documentation/RealPos.html">RealPos</a> max)
+            </div>
+            <h3 class="help-section-header arguments">Arguments</h3>
+            <div class="help-section-body">
+            <table class="arguments">
+                
+                <tr>
+                    <td class="lhs argument">min : </td>
+                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a> (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The lower bound.</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">max : </td>
+                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a> (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The upper bound.</td>
+                </tr>
+                
+                
+                
+            </table>
+            </div>
+        
+
+        
+            <h3 class="help-section-header">Domain Type</h3>
+            <div class="help-section-body">
+            <a href="RealPos.html">RealPos</a>
+            </div>
+        
+
+        
+            <h3 class="help-section-header">Details</h3>
+            <div class="help-section-body">
+            The log-uniform distribution is defined over strictly positive real numbers. Saying that x is log-uniform is equivalent to saying that y = ln(x) is uniform. The log-uniform distribution therefore expresses lack of information about the order of magnitude of a scale parameter:  if x has a log-uniform distribution, then it has equal chance to be contained by any of the intervals of the form (10^k, 10^(k+1)) within the allowed range.
+
+The density is p(x) = 1/x, which can be seen by defining x = exp(y) where y has uniform distribution and apply the change-of-variable formula.
+
+The log-uniform distribution is improper when defined over the entire positive real line. To always make it proper, in RevBayes, a min and a max should always be specified.
+
+            </div>
+        
+
+        
+            <h3 class="help-section-header">Example</h3>
+            
+            <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># a log-uniform prior over the rate of change of a Brownian trait (or a Brownian relaxed clock)
+trueTree = readTrees("data/primates.tree")[1]
+sigma ~ dnLogUniform(min=0.001, max=1000)
+X ~ dnBrownian(trueTree,sigma)
+# ...
+</code></pre></div></div>
+
+        
+
+        
+
+        
+            <h3 class="help-section-header">See Also</h3>
+            <div class="help-section-body">
+            <ul class="list-unstyled">
+            
+            <li><a href="dnUniform.html">dnUniform</a></li>
+            
+            </ul>
+            </div>
+        
+
+        
+
+        
+
+        
+
+        <h3 class="help-section-header"></h3>
+        <div class="help-section-header" text-align="right">
+        <a href="https://github.com/revbayes/revbayes/edit/help/help/md/dnLoguniform.md"><img src="/assets/img/edit.png" width="24" height="24" hspace="5">Edit this page</a>
+        </div>
     
 </div>
 
@@ -1114,14 +1208,14 @@ Rev Language Reference
 $(":not(code).highlighter-rouge").each(function() {
   
   if( this.classList == "highlighter-rouge") {
-    this.classList = "default highlighter-rouge";
+    this.classList = "Rev highlighter-rouge";
   }
   
 });
 // $("code.highlighter-rouge").each(function() {
 //   
 //   if( this.classList == "highlighter-rouge") {
-//       this.classList = "default highlighter-rouge";
+//       this.classList = "Rev highlighter-rouge";
 //   }
 //   
 // });

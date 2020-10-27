@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
-    <title>RevBayes: Documentation</title>
+    <title>RevBayes</title>
   </head>
   <body>
     <div class="container">
@@ -1080,12 +1080,211 @@ Rev Language Reference
 
 <div class="help col-sm-8">
     
-    <p>Welcome to the Rev Language Reference pages!</p>
+        
+        <h2 class="help-title"><p><code class="highlighter-rouge">mvSpeciesSubtreeScaleBeta</code> - Subtree scale move on species tree and gene trees for multispecies coalescent models.</p>
+</h2>
 
-<p>These help pages are stored in Markdown files on the RevBayes GitHub repository, <a href="https://github.com/revbayes/revbayes/tree/help/help/md">here</a>.</p>
+        
+            <div class="help-description">
+            Makes a subtree scale move both in the species tree and in the gene trees that contain nodes of the relevant populations. Tree topologies are not altered. Uses a beta distribution to propose a new age value.
+            </div>
+        
 
-<p>If you would like to edit a help page, click the <img src="/assets/img/edit.png" width="24" height="24" hspace="5" /> button at the bottom of the entry page.</p>
+        
 
+        
+            <h3 class="help-section-header">Usage</h3>
+            
+            <div class="help-section-body">
+            mvSpeciesSubtreeScaleBeta(<a href="/documentation/TimeTree.html">TimeTree</a> speciesTree, <a href="/documentation/RealPos.html">RealPos</a> alpha, <a href="/documentation/Bool.html">Bool</a> tune, <a href="/documentation/RealPos.html">RealPos</a> weight, <a href="/documentation/Probability.html">Probability</a> tuneTarget)
+            </div>
+            <h3 class="help-section-header arguments">Arguments</h3>
+            <div class="help-section-body">
+            <table class="arguments">
+                
+                <tr>
+                    <td class="lhs argument">speciesTree : </td>
+                    <td class="rhs argument"><a href="/documentation/TimeTree.html">TimeTree</a> (&lt;stochastic&gt; pass by reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The species tree on which this move operates on.</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">alpha : </td>
+                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a> (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The concentration parameter.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 10</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">tune : </td>
+                    <td class="rhs argument"><a href="/documentation/Bool.html">Bool</a> (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">Should we tune the concentration parameter during burnin?</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : TRUE</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">weight : </td>
+                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a> (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The weight how often on average this move will be used per iteration.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 1</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">tuneTarget : </td>
+                    <td class="rhs argument"><a href="/documentation/Probability.html">Probability</a> (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The acceptance probability targeted by auto-tuning.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 0.44</td>
+                </tr>
+                
+                
+                
+            </table>
+            </div>
+        
+
+        
+
+        
+            <h3 class="help-section-header">Details</h3>
+            <div class="help-section-body">
+            The species tree must be ultrametric.
+
+All the gene trees that evolved along the species tree according to some form of multispecies coalescent must be added to the move using the addGeneTreeVariable method.
+
+This move jointly performs a subtree scale move (a whole subtree is scaled up or down, keeping the topology fixed) on the species tree and on gene trees, all of which must be ultrametric.
+
+How this works: we pick a random node which is not the root.
+Then, we pick a new age between the parent and the oldest sampled descendant according to a beta distribution.
+The picked subtree is then scaled to this new age.
+All gene-trees that are present in the population will be scaled accordingly.
+
+            </div>
+        
+
+        
+            <h3 class="help-section-header">Example</h3>
+            
+            <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># We are going to save the trees we simulate in the folder simulatedTrees:
+dataFolder = "simulatedTrees/"
+# Let’s simulate a species tree with 10 taxa, 2 gene trees, 3 alleles per species:
+n_species &lt;- 10
+n_genes &lt;- 2
+n_alleles &lt;- 3
+# we simulate an ultrametric species tree:
+# Species names:
+for (i in 1:n_species) {
+        species[i] &lt;- taxon(taxonName="Species_"+i, speciesName="Species_"+i)
+}
+spTree ~ dnBirthDeath(lambda=0.3, mu=0.2, rootAge=10, rho=1, samplingStrategy="uniform", condition="nTaxa", taxa=species)
+print(spTree)
+# let's pick a constant effective population size of 50:
+popSize &lt;- 50
+# let's simulate gene trees now:
+# taxa names:
+for (g in 1:n_genes) {
+  for (i in 1:n_species) {
+    for (j in 1:n_alleles) {
+        taxons[g][(i-1)*n_alleles+j] &lt;- taxon(taxonName="Species_"+i+"_"+j, speciesName="Species_"+i)
+    }
+  }
+  geneTrees[g] ~ dnMultiSpeciesCoalescent(speciesTree=spTree, Ne=popSize, taxa=taxons[g])
+  print(geneTrees[g])
+}
+# We can save the species tree and the gene trees:
+write(spTree, filename=dataFolder+"speciesTree")
+# Saving the gene trees
+for (i in 1:(n_genes)) {
+  write(geneTrees[i], filename=dataFolder+"geneTree_"+i+".tree")
+}
+# set my move index
+mi = 0
+move_species_subtree_scale_beta = mvSpeciesSubtreeScaleBeta( speciesTree=spTree, weight=5 )
+for (i in 1:n_genes) {
+   move_species_subtree_scale_beta.addGeneTreeVariable( geneTrees[i] )
+}
+moves[++mi] = move_species_subtree_scale_beta
+# We get a handle on our model.
+# We can use any node of our model as a handle, here we choose to use the topology.
+mymodel = model(spTree)
+# Monitors to check the progression of the program
+monitors[1] = mnScreen(printgen=10, spTree)
+# Here we use a plain MCMC. You could also set nruns=2 for a replicated analysis
+# or use mcmcmc with heated chains.
+mymcmc = mcmc(mymodel, monitors, moves, nruns=4)
+mymcmc.run(generations=1000)
+mymcmc.operatorSummary()
+</code></pre></div></div>
+
+        
+
+        
+            <h3 class="help-section-header">Methods</h3>
+            <div class="help-section-body">
+            <ul class="list-unstyled methods">
+            
+            <li>addGeneTreeVariable(<a href="/documentation/TimeTree.html">TimeTree</a> geneTree)</li>
+            
+            </ul>
+            </div>
+        
+
+        
+            <h3 class="help-section-header">See Also</h3>
+            <div class="help-section-body">
+            <ul class="list-unstyled">
+            
+            <li><a href="mvSpeciesNodeTimeSlideUniform.html">mvSpeciesNodeTimeSlideUniform</a></li>
+            
+            <li><a href="mvSpeciesSubtreeScale.html">mvSpeciesSubtreeScale</a></li>
+            
+            <li><a href="mvSpeciesNarrow.html">mvSpeciesNarrow</a></li>
+            
+            <li><a href="mvSpeciesTreeScale.html">mvSpeciesTreeScale</a></li>
+            
+            </ul>
+            </div>
+        
+
+        
+
+        
+
+        
+
+        <h3 class="help-section-header"></h3>
+        <div class="help-section-header" text-align="right">
+        <a href="https://github.com/revbayes/revbayes/edit/help/help/md/mvSpeciesSubtreeScaleBeta.md"><img src="/assets/img/edit.png" width="24" height="24" hspace="5">Edit this page</a>
+        </div>
     
 </div>
 
@@ -1114,14 +1313,14 @@ Rev Language Reference
 $(":not(code).highlighter-rouge").each(function() {
   
   if( this.classList == "highlighter-rouge") {
-    this.classList = "default highlighter-rouge";
+    this.classList = "Rev highlighter-rouge";
   }
   
 });
 // $("code.highlighter-rouge").each(function() {
 //   
 //   if( this.classList == "highlighter-rouge") {
-//       this.classList = "default highlighter-rouge";
+//       this.classList = "Rev highlighter-rouge";
 //   }
 //   
 // });

@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
-    <title>RevBayes: Documentation</title>
+    <title>RevBayes</title>
   </head>
   <body>
     <div class="container">
@@ -1080,12 +1080,114 @@ Rev Language Reference
 
 <div class="help col-sm-8">
     
-    <p>Welcome to the Rev Language Reference pages!</p>
+        
+        <h2 class="help-title"><p><code class="highlighter-rouge">mvVectorScale</code></p>
+</h2>
 
-<p>These help pages are stored in Markdown files on the RevBayes GitHub repository, <a href="https://github.com/revbayes/revbayes/tree/help/help/md">here</a>.</p>
+        
 
-<p>If you would like to edit a help page, click the <img src="/assets/img/edit.png" width="24" height="24" hspace="5" /> button at the bottom of the entry page.</p>
+        
 
+        
+            <h3 class="help-section-header">Usage</h3>
+            
+            <div class="help-section-body">
+            mvVectorScale(<a href="/documentation/RealPos.html">RealPos</a>[] x, <a href="/documentation/RealPos.html">RealPos</a> lambda, <a href="/documentation/Bool.html">Bool</a> tune, <a href="/documentation/RealPos.html">RealPos</a> weight, <a href="/documentation/Probability.html">Probability</a> tuneTarget)
+            </div>
+            <h3 class="help-section-header arguments">Arguments</h3>
+            <div class="help-section-body">
+            <table class="arguments">
+                
+                <tr>
+                    <td class="lhs argument">x : </td>
+                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a>[] (&lt;stochastic&gt; pass by reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The variable on which this move operates.</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">lambda : </td>
+                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a> (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The scaling parameter (strength) of the move.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 1</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">tune : </td>
+                    <td class="rhs argument"><a href="/documentation/Bool.html">Bool</a> (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">Should we tune the scaling parameter during burnin?</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : TRUE</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">weight : </td>
+                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a> (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The weight how often on average this move will be used per iteration.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 1</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">tuneTarget : </td>
+                    <td class="rhs argument"><a href="/documentation/Probability.html">Probability</a> (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The acceptance probability targeted by auto-tuning.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 0.44</td>
+                </tr>
+                
+                
+                
+            </table>
+            </div>
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        <h3 class="help-section-header"></h3>
+        <div class="help-section-header" text-align="right">
+        <a href="https://github.com/revbayes/revbayes/edit/help/help/md/mvVectorScale.md"><img src="/assets/img/edit.png" width="24" height="24" hspace="5">Edit this page</a>
+        </div>
     
 </div>
 
@@ -1114,14 +1216,14 @@ Rev Language Reference
 $(":not(code).highlighter-rouge").each(function() {
   
   if( this.classList == "highlighter-rouge") {
-    this.classList = "default highlighter-rouge";
+    this.classList = "Rev highlighter-rouge";
   }
   
 });
 // $("code.highlighter-rouge").each(function() {
 //   
 //   if( this.classList == "highlighter-rouge") {
-//       this.classList = "default highlighter-rouge";
+//       this.classList = "Rev highlighter-rouge";
 //   }
 //   
 // });

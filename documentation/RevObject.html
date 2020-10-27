@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
-    <title>RevBayes: Documentation</title>
+    <title>RevBayes</title>
   </head>
   <body>
     <div class="container">
@@ -1080,12 +1080,1025 @@ Rev Language Reference
 
 <div class="help col-sm-8">
     
-    <p>Welcome to the Rev Language Reference pages!</p>
+        
+        <h2 class="help-title"><p><code class="highlighter-rouge">RevObject</code></p>
+</h2>
 
-<p>These help pages are stored in Markdown files on the RevBayes GitHub repository, <a href="https://github.com/revbayes/revbayes/tree/help/help/md">here</a>.</p>
+        
 
-<p>If you would like to edit a help page, click the <img src="/assets/img/edit.png" width="24" height="24" hspace="5" /> button at the bottom of the entry page.</p>
+        
 
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+            <h3 class="help-section-header">Derived Types</h3>
+            <div class="help-section-body">
+            <ul class="list-unstyled">
+            
+            <li><a href="VectorMonitors.html">VectorMonitors</a></li>
+            
+            <li><a href="VectorMoves.html">VectorMoves</a></li>
+            
+            <li><a href="[].html">[]</a></li>
+            
+            <li><a href="abs.html">abs</a></li>
+            
+            <li><a href="ancestralStateTree.html">ancestralStateTree</a></li>
+            
+            <li><a href="annotateTree.html">annotateTree</a></li>
+            
+            <li><a href="append.html">append</a></li>
+            
+            <li><a href="branchScoreDistance.html">branchScoreDistance</a></li>
+            
+            <li><a href="ceil.html">ceil</a></li>
+            
+            <li><a href="characterMapTree.html">characterMapTree</a></li>
+            
+            <li><a href="checkNodeOrderConstraints.html">checkNodeOrderConstraints</a></li>
+            
+            <li><a href="choose.html">choose</a></li>
+            
+            <li><a href="clear.html">clear</a></li>
+            
+            <li><a href="combineCharacter.html">combineCharacter</a></li>
+            
+            <li><a href="computeWeightedNodeOrderConstraintsScore.html">computeWeightedNodeOrderConstraintsScore</a></li>
+            
+            <li><a href="concatenate.html">concatenate</a></li>
+            
+            <li><a href="consensusTree.html">consensusTree</a></li>
+            
+            <li><a href="convertToPhylowood.html">convertToPhylowood</a></li>
+            
+            <li><a href="diagonalMatrix.html">diagonalMatrix</a></li>
+            
+            <li><a href="exists.html">exists</a></li>
+            
+            <li><a href="exp.html">exp</a></li>
+            
+            <li><a href="floor.html">floor</a></li>
+            
+            <li><a href="fnAdjacentRateModifier.html">fnAdjacentRateModifier</a></li>
+            
+            <li><a href="fnAverageDistanceMatrix.html">fnAverageDistanceMatrix</a></li>
+            
+            <li><a href="fnBetaBrokenStick.html">fnBetaBrokenStick</a></li>
+            
+            <li><a href="fnBinaryMutationCoalescentRateMatrix.html">fnBinaryMutationCoalescentRateMatrix</a></li>
+            
+            <li><a href="fnBiogeoDE.html">fnBiogeoDE</a></li>
+            
+            <li><a href="fnBiogeographyCladoEventsBD.html">fnBiogeographyCladoEventsBD</a></li>
+            
+            <li><a href="fnBlosum62.html">fnBlosum62</a></li>
+            
+            <li><a href="fnChromosomes.html">fnChromosomes</a></li>
+            
+            <li><a href="fnChromosomesCladoEventsBD.html">fnChromosomesCladoEventsBD</a></li>
+            
+            <li><a href="fnChromosomesCladoProbs.html">fnChromosomesCladoProbs</a></li>
+            
+            <li><a href="fnChromosomesPloidy.html">fnChromosomesPloidy</a></li>
+            
+            <li><a href="fnChromosomesPloidyCladoEventsBD.html">fnChromosomesPloidyCladoEventsBD</a></li>
+            
+            <li><a href="fnChronoToPhylo.html">fnChronoToPhylo</a></li>
+            
+            <li><a href="fnCladeSpecificHierarchicalBranchRate.html">fnCladeSpecificHierarchicalBranchRate</a></li>
+            
+            <li><a href="fnCladogeneticProbabilityMatrix.html">fnCladogeneticProbabilityMatrix</a></li>
+            
+            <li><a href="fnCladogeneticSpeciationRateMatrix.html">fnCladogeneticSpeciationRateMatrix</a></li>
+            
+            <li><a href="fnCoala.html">fnCoala</a></li>
+            
+            <li><a href="fnCodon.html">fnCodon</a></li>
+            
+            <li><a href="fnCodonHKY.html">fnCodonHKY</a></li>
+            
+            <li><a href="fnCovarion.html">fnCovarion</a></li>
+            
+            <li><a href="fnCovarionRateMatrix.html">fnCovarionRateMatrix</a></li>
+            
+            <li><a href="fnCpRev.html">fnCpRev</a></li>
+            
+            <li><a href="fnDECCladoProbs.html">fnDECCladoProbs</a></li>
+            
+            <li><a href="fnDECRateMatrix.html">fnDECRateMatrix</a></li>
+            
+            <li><a href="fnDECRates.html">fnDECRates</a></li>
+            
+            <li><a href="fnDECRoot.html">fnDECRoot</a></li>
+            
+            <li><a href="fnDayhoff.html">fnDayhoff</a></li>
+            
+            <li><a href="fnDecompVarCovar.html">fnDecompVarCovar</a></li>
+            
+            <li><a href="fnDiscretizeBeta.html">fnDiscretizeBeta</a></li>
+            
+            <li><a href="fnDiscretizeBetaQuadrature.html">fnDiscretizeBetaQuadrature</a></li>
+            
+            <li><a href="fnDiscretizeDistribution.html">fnDiscretizeDistribution</a></li>
+            
+            <li><a href="fnDiscretizeGamma.html">fnDiscretizeGamma</a></li>
+            
+            <li><a href="fnDiscretizeGammaFromBetaQuantiles.html">fnDiscretizeGammaFromBetaQuantiles</a></li>
+            
+            <li><a href="fnDiscretizeGammaQuadrature.html">fnDiscretizeGammaQuadrature</a></li>
+            
+            <li><a href="fnDiscretizeLognormalQuadrature.html">fnDiscretizeLognormalQuadrature</a></li>
+            
+            <li><a href="fnDistanceRateModifier.html">fnDistanceRateModifier</a></li>
+            
+            <li><a href="fnDppConcFromMean.html">fnDppConcFromMean</a></li>
+            
+            <li><a href="fnDppMeanFromConc.html">fnDppMeanFromConc</a></li>
+            
+            <li><a href="fnEarlyBurst.html">fnEarlyBurst</a></li>
+            
+            <li><a href="fnEpoch.html">fnEpoch</a></li>
+            
+            <li><a href="fnEpochCladoProbs.html">fnEpochCladoProbs</a></li>
+            
+            <li><a href="fnExtantTree.html">fnExtantTree</a></li>
+            
+            <li><a href="fnF81.html">fnF81</a></li>
+            
+            <li><a href="fnFreeBinary.html">fnFreeBinary</a></li>
+            
+            <li><a href="fnFreeK.html">fnFreeK</a></li>
+            
+            <li><a href="fnFreeSymmetricRateMatrix.html">fnFreeSymmetricRateMatrix</a></li>
+            
+            <li><a href="fnGTR.html">fnGTR</a></li>
+            
+            <li><a href="fnGeographicalDistance.html">fnGeographicalDistance</a></li>
+            
+            <li><a href="fnHKY.html">fnHKY</a></li>
+            
+            <li><a href="fnHiddenStateRateMatrix.html">fnHiddenStateRateMatrix</a></li>
+            
+            <li><a href="fnHostSwitchRateModifier.html">fnHostSwitchRateModifier</a></li>
+            
+            <li><a href="fnInfiniteSites.html">fnInfiniteSites</a></li>
+            
+            <li><a href="fnJC.html">fnJC</a></li>
+            
+            <li><a href="fnJones.html">fnJones</a></li>
+            
+            <li><a href="fnK80.html">fnK80</a></li>
+            
+            <li><a href="fnK81.html">fnK81</a></li>
+            
+            <li><a href="fnLG.html">fnLG</a></li>
+            
+            <li><a href="fnLnProbability.html">fnLnProbability</a></li>
+            
+            <li><a href="fnMixtureCladoProbs.html">fnMixtureCladoProbs</a></li>
+            
+            <li><a href="fnMtMam.html">fnMtMam</a></li>
+            
+            <li><a href="fnMtRev.html">fnMtRev</a></li>
+            
+            <li><a href="fnNormalizedQuantile.html">fnNormalizedQuantile</a></li>
+            
+            <li><a href="fnNumUniqueInVector.html">fnNumUniqueInVector</a></li>
+            
+            <li><a href="fnOrderedRateMatrix.html">fnOrderedRateMatrix</a></li>
+            
+            <li><a href="fnPD.html">fnPD</a></li>
+            
+            <li><a href="fnPartialToCorr.html">fnPartialToCorr</a></li>
+            
+            <li><a href="fnPattersonsD.html">fnPattersonsD</a></li>
+            
+            <li><a href="fnPhylogeneticIndependentContrasts.html">fnPhylogeneticIndependentContrasts</a></li>
+            
+            <li><a href="fnPhylogeneticIndependentContrastsMultiSample.html">fnPhylogeneticIndependentContrastsMultiSample</a></li>
+            
+            <li><a href="fnPoMo.html">fnPoMo</a></li>
+            
+            <li><a href="fnPruneTree.html">fnPruneTree</a></li>
+            
+            <li><a href="fnRangeEvolutionRateModifier.html">fnRangeEvolutionRateModifier</a></li>
+            
+            <li><a href="fnRateGeneratorSequence.html">fnRateGeneratorSequence</a></li>
+            
+            <li><a href="fnReversiblePoMo.html">fnReversiblePoMo</a></li>
+            
+            <li><a href="fnRtRev.html">fnRtRev</a></li>
+            
+            <li><a href="fnSampledCladogenesisRootFrequencies.html">fnSampledCladogenesisRootFrequencies</a></li>
+            
+            <li><a href="fnSegregatingSites.html">fnSegregatingSites</a></li>
+            
+            <li><a href="fnShortestDistance.html">fnShortestDistance</a></li>
+            
+            <li><a href="fnSiteRateModifier.html">fnSiteRateModifier</a></li>
+            
+            <li><a href="fnStateCountRateModifier.html">fnStateCountRateModifier</a></li>
+            
+            <li><a href="fnStirling.html">fnStirling</a></li>
+            
+            <li><a href="fnStitchTree.html">fnStitchTree</a></li>
+            
+            <li><a href="fnT92.html">fnT92</a></li>
+            
+            <li><a href="fnTIM.html">fnTIM</a></li>
+            
+            <li><a href="fnTVM.html">fnTVM</a></li>
+            
+            <li><a href="fnTajimasD.html">fnTajimasD</a></li>
+            
+            <li><a href="fnTajimasPi.html">fnTajimasPi</a></li>
+            
+            <li><a href="fnTrN.html">fnTrN</a></li>
+            
+            <li><a href="fnTreeAssembly.html">fnTreeAssembly</a></li>
+            
+            <li><a href="fnTreePairwiseDistances.html">fnTreePairwiseDistances</a></li>
+            
+            <li><a href="fnTreePairwiseNodalDistances.html">fnTreePairwiseNodalDistances</a></li>
+            
+            <li><a href="fnTreeScale.html">fnTreeScale</a></li>
+            
+            <li><a href="fnUpperTriangle.html">fnUpperTriangle</a></li>
+            
+            <li><a href="fnVT.html">fnVT</a></li>
+            
+            <li><a href="fnVarCovar.html">fnVarCovar</a></li>
+            
+            <li><a href="fnWAG.html">fnWAG</a></li>
+            
+            <li><a href="fnWattersonsTheta.html">fnWattersonsTheta</a></li>
+            
+            <li><a href="fnassembleContinuousMRF.html">fnassembleContinuousMRF</a></li>
+            
+            <li><a href="formatDiscreteCharacterData.html">formatDiscreteCharacterData</a></li>
+            
+            <li><a href="gamma.html">gamma</a></li>
+            
+            <li><a href="getOption.html">getOption</a></li>
+            
+            <li><a href="getwd.html">getwd</a></li>
+            
+            <li><a href="help.html">help</a></li>
+            
+            <li><a href="ifelse.html">ifelse</a></li>
+            
+            <li><a href="int.html">int</a></li>
+            
+            <li><a href="license.html">license</a></li>
+            
+            <li><a href="listFiles.html">listFiles</a></li>
+            
+            <li><a href="listOptions.html">listOptions</a></li>
+            
+            <li><a href="ln.html">ln</a></li>
+            
+            <li><a href="log.html">log</a></li>
+            
+            <li><a href="logistic.html">logistic</a></li>
+            
+            <li><a href="ls.html">ls</a></li>
+            
+            <li><a href="mapTree.html">mapTree</a></li>
+            
+            <li><a href="matrix.html">matrix</a></li>
+            
+            <li><a href="max.html">max</a></li>
+            
+            <li><a href="maxdiff.html">maxdiff</a></li>
+            
+            <li><a href="maximumTree.html">maximumTree</a></li>
+            
+            <li><a href="mccTree.html">mccTree</a></li>
+            
+            <li><a href="mean.html">mean</a></li>
+            
+            <li><a href="median.html">median</a></li>
+            
+            <li><a href="min.html">min</a></li>
+            
+            <li><a href="module.html">module</a></li>
+            
+            <li><a href="mrcaIndex.html">mrcaIndex</a></li>
+            
+            <li><a href="nodeAgeByID.html">nodeAgeByID</a></li>
+            
+            <li><a href="normalize.html">normalize</a></li>
+            
+            <li><a href="pomoRF.html">pomoRF</a></li>
+            
+            <li><a href="pomoState4Convert.html">pomoState4Convert</a></li>
+            
+            <li><a href="posteriorPredictiveProbability.html">posteriorPredictiveProbability</a></li>
+            
+            <li><a href="power.html">power</a></li>
+            
+            <li><a href="printSeed.html">printSeed</a></li>
+            
+            <li><a href="quantile.html">quantile</a></li>
+            
+            <li><a href="quit.html">quit</a></li>
+            
+            <li><a href="range.html">range</a></li>
+            
+            <li><a href="readAncestralStateTrace.html">readAncestralStateTrace</a></li>
+            
+            <li><a href="readAncestralStateTreeTrace.html">readAncestralStateTreeTrace</a></li>
+            
+            <li><a href="readAtlas.html">readAtlas</a></li>
+            
+            <li><a href="readBranchLengthTrees.html">readBranchLengthTrees</a></li>
+            
+            <li><a href="readCharacterData.html">readCharacterData</a></li>
+            
+            <li><a href="readCharacterDataDelimited.html">readCharacterDataDelimited</a></li>
+            
+            <li><a href="readContinuousCharacterData.html">readContinuousCharacterData</a></li>
+            
+            <li><a href="readDataDelimitedFile.html">readDataDelimitedFile</a></li>
+            
+            <li><a href="readDiscreteCharacterData.html">readDiscreteCharacterData</a></li>
+            
+            <li><a href="readDistanceMatrix.html">readDistanceMatrix</a></li>
+            
+            <li><a href="readMatrix.html">readMatrix</a></li>
+            
+            <li><a href="readPoMoCountFile.html">readPoMoCountFile</a></li>
+            
+            <li><a href="readRelativeNodeAgeConstraints.html">readRelativeNodeAgeConstraints</a></li>
+            
+            <li><a href="readRelativeNodeAgeWeightedConstraints.html">readRelativeNodeAgeWeightedConstraints</a></li>
+            
+            <li><a href="readStochasticVariableTrace.html">readStochasticVariableTrace</a></li>
+            
+            <li><a href="readTaxonData.html">readTaxonData</a></li>
+            
+            <li><a href="readTrace.html">readTrace</a></li>
+            
+            <li><a href="readTreeTrace.html">readTreeTrace</a></li>
+            
+            <li><a href="readTrees.html">readTrees</a></li>
+            
+            <li><a href="readVCF.html">readVCF</a></li>
+            
+            <li><a href="rep.html">rep</a></li>
+            
+            <li><a href="rootedTripletDist.html">rootedTripletDist</a></li>
+            
+            <li><a href="round.html">round</a></li>
+            
+            <li><a href="seed.html">seed</a></li>
+            
+            <li><a href="seq.html">seq</a></li>
+            
+            <li><a href="setOption.html">setOption</a></li>
+            
+            <li><a href="setwd.html">setwd</a></li>
+            
+            <li><a href="simBirthDeath.html">simBirthDeath</a></li>
+            
+            <li><a href="simCompleteTree.html">simCompleteTree</a></li>
+            
+            <li><a href="simStartingTree.html">simStartingTree</a></li>
+            
+            <li><a href="simTree.html">simTree</a></li>
+            
+            <li><a href="sinh.html">sinh</a></li>
+            
+            <li><a href="sort.html">sort</a></li>
+            
+            <li><a href="source.html">source</a></li>
+            
+            <li><a href="sqrt.html">sqrt</a></li>
+            
+            <li><a href="stdev.html">stdev</a></li>
+            
+            <li><a href="stochasticMatrix.html">stochasticMatrix</a></li>
+            
+            <li><a href="structure.html">structure</a></li>
+            
+            <li><a href="sum.html">sum</a></li>
+            
+            <li><a href="summarizeCharacterMaps.html">summarizeCharacterMaps</a></li>
+            
+            <li><a href="symmetricDifference.html">symmetricDifference</a></li>
+            
+            <li><a href="system.html">system</a></li>
+            
+            <li><a href="tanh.html">tanh</a></li>
+            
+            <li><a href="time.html">time</a></li>
+            
+            <li><a href="tmrca.html">tmrca</a></li>
+            
+            <li><a href="treeTrace.html">treeTrace</a></li>
+            
+            <li><a href="trunc.html">trunc</a></li>
+            
+            <li><a href="type.html">type</a></li>
+            
+            <li><a href="v.html">v</a></li>
+            
+            <li><a href="var.html">var</a></li>
+            
+            <li><a href="vectorFlatten.html">vectorFlatten</a></li>
+            
+            <li><a href="write.html">write</a></li>
+            
+            <li><a href="writeCharacterDataDelimited.html">writeCharacterDataDelimited</a></li>
+            
+            <li><a href="writeFasta.html">writeFasta</a></li>
+            
+            <li><a href="writeNexus.html">writeNexus</a></li>
+            
+            <li><a href="AbstractHomologousDiscreteCharacterData.html">AbstractHomologousDiscreteCharacterData</a></li>
+            
+            <li><a href="AverageDistanceMatrix.html">AverageDistanceMatrix</a></li>
+            
+            <li><a href="Bool.html">Bool</a></li>
+            
+            <li><a href="BootstrapAnalysis.html">BootstrapAnalysis</a></li>
+            
+            <li><a href="BranchLengthTree.html">BranchLengthTree</a></li>
+            
+            <li><a href="CharacterHistoryRateModifier.html">CharacterHistoryRateModifier</a></li>
+            
+            <li><a href="CladogeneticProbabilityMatrix.html">CladogeneticProbabilityMatrix</a></li>
+            
+            <li><a href="CladogeneticSpeciationRateMatrix.html">CladogeneticSpeciationRateMatrix</a></li>
+            
+            <li><a href="ContinuousCharacterData.html">ContinuousCharacterData</a></li>
+            
+            <li><a href="CorrespondenceAnalysis.html">CorrespondenceAnalysis</a></li>
+            
+            <li><a href="DistanceMatrix.html">DistanceMatrix</a></li>
+            
+            <li><a href="HillClimber.html">HillClimber</a></li>
+            
+            <li><a href="Integer.html">Integer</a></li>
+            
+            <li><a href="MatrixBoolean.html">MatrixBoolean</a></li>
+            
+            <li><a href="MatrixReal.html">MatrixReal</a></li>
+            
+            <li><a href="MatrixRealPos.html">MatrixRealPos</a></li>
+            
+            <li><a href="MatrixRealSymmetric.html">MatrixRealSymmetric</a></li>
+            
+            <li><a href="Natural.html">Natural</a></li>
+            
+            <li><a href="Probability.html">Probability</a></li>
+            
+            <li><a href="RateGenerator.html">RateGenerator</a></li>
+            
+            <li><a href="Real.html">Real</a></li>
+            
+            <li><a href="RealPos.html">RealPos</a></li>
+            
+            <li><a href="Simplex.html">Simplex</a></li>
+            
+            <li><a href="StochasticMatrix.html">StochasticMatrix</a></li>
+            
+            <li><a href="String.html">String</a></li>
+            
+            <li><a href="TimeTree.html">TimeTree</a></li>
+            
+            <li><a href="Tree.html">Tree</a></li>
+            
+            <li><a href="beca.html">beca</a></li>
+            
+            <li><a href="clade.html">clade</a></li>
+            
+            <li><a href="dfConstant.html">dfConstant</a></li>
+            
+            <li><a href="dfExponential.html">dfExponential</a></li>
+            
+            <li><a href="dfLinear.html">dfLinear</a></li>
+            
+            <li><a href="dnBernoulli.html">dnBernoulli</a></li>
+            
+            <li><a href="dnBeta.html">dnBeta</a></li>
+            
+            <li><a href="dnBimodalLognormal.html">dnBimodalLognormal</a></li>
+            
+            <li><a href="dnBimodalNormal.html">dnBimodalNormal</a></li>
+            
+            <li><a href="dnBinomial.html">dnBinomial</a></li>
+            
+            <li><a href="dnBirthDeath.html">dnBirthDeath</a></li>
+            
+            <li><a href="dnBirthDeathBurstProcess.html">dnBirthDeathBurstProcess</a></li>
+            
+            <li><a href="dnBirthDeathSamplingTreatment.html">dnBirthDeathSamplingTreatment</a></li>
+            
+            <li><a href="dnBivariatePoisson.html">dnBivariatePoisson</a></li>
+            
+            <li><a href="dnCBDSP.html">dnCBDSP</a></li>
+            
+            <li><a href="dnCDBDP.html">dnCDBDP</a></li>
+            
+            <li><a href="dnCategorical.html">dnCategorical</a></li>
+            
+            <li><a href="dnCauchy.html">dnCauchy</a></li>
+            
+            <li><a href="dnChisq.html">dnChisq</a></li>
+            
+            <li><a href="dnCoalescent.html">dnCoalescent</a></li>
+            
+            <li><a href="dnCoalescentDemography.html">dnCoalescentDemography</a></li>
+            
+            <li><a href="dnCoalescentSkyline.html">dnCoalescentSkyline</a></li>
+            
+            <li><a href="dnCompleteBirthDeath.html">dnCompleteBirthDeath</a></li>
+            
+            <li><a href="dnConstrainedNodeAge.html">dnConstrainedNodeAge</a></li>
+            
+            <li><a href="dnConstrainedNodeOrder.html">dnConstrainedNodeOrder</a></li>
+            
+            <li><a href="dnConstrainedTopology.html">dnConstrainedTopology</a></li>
+            
+            <li><a href="dnCppNormal.html">dnCppNormal</a></li>
+            
+            <li><a href="dnDPP.html">dnDPP</a></li>
+            
+            <li><a href="dnDecomposedInvWishart.html">dnDecomposedInvWishart</a></li>
+            
+            <li><a href="dnDirichlet.html">dnDirichlet</a></li>
+            
+            <li><a href="dnDiversityDependentYule.html">dnDiversityDependentYule</a></li>
+            
+            <li><a href="dnDuplicationLoss.html">dnDuplicationLoss</a></li>
+            
+            <li><a href="dnEmpiricalSample.html">dnEmpiricalSample</a></li>
+            
+            <li><a href="dnEmpiricalTree.html">dnEmpiricalTree</a></li>
+            
+            <li><a href="dnEpisodicBirthDeath.html">dnEpisodicBirthDeath</a></li>
+            
+            <li><a href="dnEvent.html">dnEvent</a></li>
+            
+            <li><a href="dnExponential.html">dnExponential</a></li>
+            
+            <li><a href="dnExponentialError.html">dnExponentialError</a></li>
+            
+            <li><a href="dnFossilizedBirthDeathProcess.html">dnFossilizedBirthDeathProcess</a></li>
+            
+            <li><a href="dnFossilizedBirthDeathRange.html">dnFossilizedBirthDeathRange</a></li>
+            
+            <li><a href="dnFossilizedBirthDeathRangeMatrix.html">dnFossilizedBirthDeathRangeMatrix</a></li>
+            
+            <li><a href="dnGamma.html">dnGamma</a></li>
+            
+            <li><a href="dnGeometric.html">dnGeometric</a></li>
+            
+            <li><a href="dnGilbertGraph.html">dnGilbertGraph</a></li>
+            
+            <li><a href="dnHBDP.html">dnHBDP</a></li>
+            
+            <li><a href="dnHalfCauchy.html">dnHalfCauchy</a></li>
+            
+            <li><a href="dnHalfNormal.html">dnHalfNormal</a></li>
+            
+            <li><a href="dnHeterochronousCoalescent.html">dnHeterochronousCoalescent</a></li>
+            
+            <li><a href="dnHeterochronousCoalescentSkyline.html">dnHeterochronousCoalescentSkyline</a></li>
+            
+            <li><a href="dnIID.html">dnIID</a></li>
+            
+            <li><a href="dnInverseGamma.html">dnInverseGamma</a></li>
+            
+            <li><a href="dnInverseWishart.html">dnInverseWishart</a></li>
+            
+            <li><a href="dnLKJ.html">dnLKJ</a></li>
+            
+            <li><a href="dnLKJPartial.html">dnLKJPartial</a></li>
+            
+            <li><a href="dnLaplace.html">dnLaplace</a></li>
+            
+            <li><a href="dnLogExponential.html">dnLogExponential</a></li>
+            
+            <li><a href="dnLognormal.html">dnLognormal</a></li>
+            
+            <li><a href="dnLoguniform.html">dnLoguniform</a></li>
+            
+            <li><a href="dnMixture.html">dnMixture</a></li>
+            
+            <li><a href="dnMixtureAnalytical.html">dnMixtureAnalytical</a></li>
+            
+            <li><a href="dnMixtureVector.html">dnMixtureVector</a></li>
+            
+            <li><a href="dnMultiSpeciesCoalescent.html">dnMultiSpeciesCoalescent</a></li>
+            
+            <li><a href="dnMultiSpeciesCoalescentInverseGamma.html">dnMultiSpeciesCoalescentInverseGamma</a></li>
+            
+            <li><a href="dnMultiSpeciesCoalescentUniformPrior.html">dnMultiSpeciesCoalescentUniformPrior</a></li>
+            
+            <li><a href="dnMultiValueEvent.html">dnMultiValueEvent</a></li>
+            
+            <li><a href="dnMultinomial.html">dnMultinomial</a></li>
+            
+            <li><a href="dnMultivariateNormal.html">dnMultivariateNormal</a></li>
+            
+            <li><a href="dnNbinomial.html">dnNbinomial</a></li>
+            
+            <li><a href="dnNormal.html">dnNormal</a></li>
+            
+            <li><a href="dnOrnsteinUhlenbeck.html">dnOrnsteinUhlenbeck</a></li>
+            
+            <li><a href="dnOutgroupBirthDeath.html">dnOutgroupBirthDeath</a></li>
+            
+            <li><a href="dnPhyloBranchRateBM.html">dnPhyloBranchRateBM</a></li>
+            
+            <li><a href="dnPhyloBrownian.html">dnPhyloBrownian</a></li>
+            
+            <li><a href="dnPhyloBrownianMVN.html">dnPhyloBrownianMVN</a></li>
+            
+            <li><a href="dnPhyloBrownianMultiSampleREML.html">dnPhyloBrownianMultiSampleREML</a></li>
+            
+            <li><a href="dnPhyloBrownianMultiVariate.html">dnPhyloBrownianMultiVariate</a></li>
+            
+            <li><a href="dnPhyloBrownianREML.html">dnPhyloBrownianREML</a></li>
+            
+            <li><a href="dnPhyloCTMC.html">dnPhyloCTMC</a></li>
+            
+            <li><a href="dnPhyloCTMCClado.html">dnPhyloCTMCClado</a></li>
+            
+            <li><a href="dnPhyloCTMCDASequence.html">dnPhyloCTMCDASequence</a></li>
+            
+            <li><a href="dnPhyloCTMCDASiteIID.html">dnPhyloCTMCDASiteIID</a></li>
+            
+            <li><a href="dnPhyloCTMCDollo.html">dnPhyloCTMCDollo</a></li>
+            
+            <li><a href="dnPhyloDistanceGamma.html">dnPhyloDistanceGamma</a></li>
+            
+            <li><a href="dnPhyloMultiSampleOrnsteinUhlenbeck.html">dnPhyloMultiSampleOrnsteinUhlenbeck</a></li>
+            
+            <li><a href="dnPhyloMultiSampleOrnsteinUhlenbeckREML.html">dnPhyloMultiSampleOrnsteinUhlenbeckREML</a></li>
+            
+            <li><a href="dnPhyloMultivariateBrownianMultiSampleREML.html">dnPhyloMultivariateBrownianMultiSampleREML</a></li>
+            
+            <li><a href="dnPhyloMultivariateBrownianREML.html">dnPhyloMultivariateBrownianREML</a></li>
+            
+            <li><a href="dnPhyloOrnsteinUhlenbeck.html">dnPhyloOrnsteinUhlenbeck</a></li>
+            
+            <li><a href="dnPhyloOrnsteinUhlenbeckMVN.html">dnPhyloOrnsteinUhlenbeckMVN</a></li>
+            
+            <li><a href="dnPhyloOrnsteinUhlenbeckREML.html">dnPhyloOrnsteinUhlenbeckREML</a></li>
+            
+            <li><a href="dnPhyloOrnsteinUhlenbeckThreePoint.html">dnPhyloOrnsteinUhlenbeckThreePoint</a></li>
+            
+            <li><a href="dnPhyloWhiteNoise.html">dnPhyloWhiteNoise</a></li>
+            
+            <li><a href="dnPhylodynamicBirthDeathProcess.html">dnPhylodynamicBirthDeathProcess</a></li>
+            
+            <li><a href="dnPointMass.html">dnPointMass</a></li>
+            
+            <li><a href="dnPoisson.html">dnPoisson</a></li>
+            
+            <li><a href="dnReversibleJumpMixture.html">dnReversibleJumpMixture</a></li>
+            
+            <li><a href="dnSBBDP.html">dnSBBDP</a></li>
+            
+            <li><a href="dnScaledDirichlet.html">dnScaledDirichlet</a></li>
+            
+            <li><a href="dnSoftBoundUniformNormal.html">dnSoftBoundUniformNormal</a></li>
+            
+            <li><a href="dnStudentT.html">dnStudentT</a></li>
+            
+            <li><a href="dnTimeVaryingStateDependentSpeciationExtinction.html">dnTimeVaryingStateDependentSpeciationExtinction</a></li>
+            
+            <li><a href="dnUPP.html">dnUPP</a></li>
+            
+            <li><a href="dnUltrametricTree.html">dnUltrametricTree</a></li>
+            
+            <li><a href="dnUniform.html">dnUniform</a></li>
+            
+            <li><a href="dnUniformInteger.html">dnUniformInteger</a></li>
+            
+            <li><a href="dnUniformNatural.html">dnUniformNatural</a></li>
+            
+            <li><a href="dnUniformSerialSampledTimeTree.html">dnUniformSerialSampledTimeTree</a></li>
+            
+            <li><a href="dnUniformTimeTree.html">dnUniformTimeTree</a></li>
+            
+            <li><a href="dnUniformTopology.html">dnUniformTopology</a></li>
+            
+            <li><a href="dnUniformTopologyBranchLength.html">dnUniformTopologyBranchLength</a></li>
+            
+            <li><a href="dnVarianceGamma.html">dnVarianceGamma</a></li>
+            
+            <li><a href="dnWeightedConstrainedNodeOrder.html">dnWeightedConstrainedNodeOrder</a></li>
+            
+            <li><a href="dnWeightedSample.html">dnWeightedSample</a></li>
+            
+            <li><a href="dnWhiteNoise.html">dnWhiteNoise</a></li>
+            
+            <li><a href="dnWishart.html">dnWishart</a></li>
+            
+            <li><a href="mcmc.html">mcmc</a></li>
+            
+            <li><a href="mcmcmc.html">mcmcmc</a></li>
+            
+            <li><a href="mnAncestralState.html">mnAncestralState</a></li>
+            
+            <li><a href="mnCharHistoryNewick.html">mnCharHistoryNewick</a></li>
+            
+            <li><a href="mnCharHistoryNhx.html">mnCharHistoryNhx</a></li>
+            
+            <li><a href="mnCharacterHistorySummary.html">mnCharacterHistorySummary</a></li>
+            
+            <li><a href="mnExtNewick.html">mnExtNewick</a></li>
+            
+            <li><a href="mnFile.html">mnFile</a></li>
+            
+            <li><a href="mnHomeologPhase.html">mnHomeologPhase</a></li>
+            
+            <li><a href="mnJointConditionalAncestralState.html">mnJointConditionalAncestralState</a></li>
+            
+            <li><a href="mnModel.html">mnModel</a></li>
+            
+            <li><a href="mnNexus.html">mnNexus</a></li>
+            
+            <li><a href="mnProbability.html">mnProbability</a></li>
+            
+            <li><a href="mnScreen.html">mnScreen</a></li>
+            
+            <li><a href="mnSiteMixtureAllocation.html">mnSiteMixtureAllocation</a></li>
+            
+            <li><a href="mnStochasticBranchRate.html">mnStochasticBranchRate</a></li>
+            
+            <li><a href="mnStochasticBranchStateTimes.html">mnStochasticBranchStateTimes</a></li>
+            
+            <li><a href="mnStochasticCharacterMap.html">mnStochasticCharacterMap</a></li>
+            
+            <li><a href="mnStochasticVariable.html">mnStochasticVariable</a></li>
+            
+            <li><a href="model.html">model</a></li>
+            
+            <li><a href="mvAVMVN.html">mvAVMVN</a></li>
+            
+            <li><a href="mvAddRemoveTip.html">mvAddRemoveTip</a></li>
+            
+            <li><a href="mvBetaProbability.html">mvBetaProbability</a></li>
+            
+            <li><a href="mvBetaSimplex.html">mvBetaSimplex</a></li>
+            
+            <li><a href="mvBinarySwitch.html">mvBinarySwitch</a></li>
+            
+            <li><a href="mvBirthDeathEvent.html">mvBirthDeathEvent</a></li>
+            
+            <li><a href="mvBirthDeathEventContinuous.html">mvBirthDeathEventContinuous</a></li>
+            
+            <li><a href="mvBirthDeathFromAgeEvent.html">mvBirthDeathFromAgeEvent</a></li>
+            
+            <li><a href="mvBranchLengthScale.html">mvBranchLengthScale</a></li>
+            
+            <li><a href="mvBurstEvent.html">mvBurstEvent</a></li>
+            
+            <li><a href="mvCharacterHistory.html">mvCharacterHistory</a></li>
+            
+            <li><a href="mvCollapseExpandFossilBranch.html">mvCollapseExpandFossilBranch</a></li>
+            
+            <li><a href="mvConjugateInverseWishart.html">mvConjugateInverseWishart</a></li>
+            
+            <li><a href="mvContinuousCharacterDataSlide.html">mvContinuousCharacterDataSlide</a></li>
+            
+            <li><a href="mvContinuousEventScale.html">mvContinuousEventScale</a></li>
+            
+            <li><a href="mvCorrelationMatrixElementSwap.html">mvCorrelationMatrixElementSwap</a></li>
+            
+            <li><a href="mvCorrelationMatrixRandomWalk.html">mvCorrelationMatrixRandomWalk</a></li>
+            
+            <li><a href="mvCorrelationMatrixSingleElementBeta.html">mvCorrelationMatrixSingleElementBeta</a></li>
+            
+            <li><a href="mvCorrelationMatrixSpecificElementBeta.html">mvCorrelationMatrixSpecificElementBeta</a></li>
+            
+            <li><a href="mvCorrelationMatrixUpdate.html">mvCorrelationMatrixUpdate</a></li>
+            
+            <li><a href="mvDPPAllocateAuxGibbs.html">mvDPPAllocateAuxGibbs</a></li>
+            
+            <li><a href="mvDPPGibbsConcentration.html">mvDPPGibbsConcentration</a></li>
+            
+            <li><a href="mvDPPValueBetaSimplex.html">mvDPPValueBetaSimplex</a></li>
+            
+            <li><a href="mvDPPValueScaling.html">mvDPPValueScaling</a></li>
+            
+            <li><a href="mvDirichletSimplex.html">mvDirichletSimplex</a></li>
+            
+            <li><a href="mvDiscreteEventCategoryRandomWalk.html">mvDiscreteEventCategoryRandomWalk</a></li>
+            
+            <li><a href="mvElementSwapSimplex.html">mvElementSwapSimplex</a></li>
+            
+            <li><a href="mvEllipticalSliceSamplingSimple.html">mvEllipticalSliceSamplingSimple</a></li>
+            
+            <li><a href="mvEmpiricalTree.html">mvEmpiricalTree</a></li>
+            
+            <li><a href="mvEventTimeBeta.html">mvEventTimeBeta</a></li>
+            
+            <li><a href="mvEventTimeSlide.html">mvEventTimeSlide</a></li>
+            
+            <li><a href="mvFNPR.html">mvFNPR</a></li>
+            
+            <li><a href="mvGMRFHyperpriorGibbs.html">mvGMRFHyperpriorGibbs</a></li>
+            
+            <li><a href="mvGMRFUnevenGridHyperpriorGibbs.html">mvGMRFUnevenGridHyperpriorGibbs</a></li>
+            
+            <li><a href="mvGPR.html">mvGPR</a></li>
+            
+            <li><a href="mvGammaScale.html">mvGammaScale</a></li>
+            
+            <li><a href="mvGibbsDrawCharacterHistory.html">mvGibbsDrawCharacterHistory</a></li>
+            
+            <li><a href="mvGibbsMixtureAllocation.html">mvGibbsMixtureAllocation</a></li>
+            
+            <li><a href="mvGraphFlipClique.html">mvGraphFlipClique</a></li>
+            
+            <li><a href="mvGraphFlipEdge.html">mvGraphFlipEdge</a></li>
+            
+            <li><a href="mvGraphShiftEdge.html">mvGraphShiftEdge</a></li>
+            
+            <li><a href="mvHSRFHyperpriorsGibbs.html">mvHSRFHyperpriorsGibbs</a></li>
+            
+            <li><a href="mvHSRFIntervalSwap.html">mvHSRFIntervalSwap</a></li>
+            
+            <li><a href="mvHSRFUnevenGridHyperpriorsGibbs.html">mvHSRFUnevenGridHyperpriorsGibbs</a></li>
+            
+            <li><a href="mvHomeologPhase.html">mvHomeologPhase</a></li>
+            
+            <li><a href="mvIndependentTopology.html">mvIndependentTopology</a></li>
+            
+            <li><a href="mvLayeredScaleProposal.html">mvLayeredScaleProposal</a></li>
+            
+            <li><a href="mvLevyJump.html">mvLevyJump</a></li>
+            
+            <li><a href="mvLevyJumpSum.html">mvLevyJumpSum</a></li>
+            
+            <li><a href="mvMatrixElementScale.html">mvMatrixElementScale</a></li>
+            
+            <li><a href="mvMatrixElementSlide.html">mvMatrixElementSlide</a></li>
+            
+            <li><a href="mvMirror.html">mvMirror</a></li>
+            
+            <li><a href="mvMirrorMultiplier.html">mvMirrorMultiplier</a></li>
+            
+            <li><a href="mvMixtureAllocation.html">mvMixtureAllocation</a></li>
+            
+            <li><a href="mvMultiValueEventBirthDeath.html">mvMultiValueEventBirthDeath</a></li>
+            
+            <li><a href="mvMultiValueEventScale.html">mvMultiValueEventScale</a></li>
+            
+            <li><a href="mvMultiValueEventSlide.html">mvMultiValueEventSlide</a></li>
+            
+            <li><a href="mvMultipleElementVectorScale.html">mvMultipleElementVectorScale</a></li>
+            
+            <li><a href="mvNNI.html">mvNNI</a></li>
+            
+            <li><a href="mvNarrow.html">mvNarrow</a></li>
+            
+            <li><a href="mvNarrowExchangeRateMatrix.html">mvNarrowExchangeRateMatrix</a></li>
+            
+            <li><a href="mvNodeRateTimeSlideUniform.html">mvNodeRateTimeSlideUniform</a></li>
+            
+            <li><a href="mvNodeTimeScale.html">mvNodeTimeScale</a></li>
+            
+            <li><a href="mvNodeTimeSlideBeta.html">mvNodeTimeSlideBeta</a></li>
+            
+            <li><a href="mvNodeTimeSlidePathTruncatedNormal.html">mvNodeTimeSlidePathTruncatedNormal</a></li>
+            
+            <li><a href="mvNodeTimeSlideUniform.html">mvNodeTimeSlideUniform</a></li>
+            
+            <li><a href="mvNodeTimeSlideUniformAgeConstrained.html">mvNodeTimeSlideUniformAgeConstrained</a></li>
+            
+            <li><a href="mvRJSwitch.html">mvRJSwitch</a></li>
+            
+            <li><a href="mvRandomDive.html">mvRandomDive</a></li>
+            
+            <li><a href="mvRandomGeometricWalk.html">mvRandomGeometricWalk</a></li>
+            
+            <li><a href="mvRandomIntegerWalk.html">mvRandomIntegerWalk</a></li>
+            
+            <li><a href="mvRateAgeBetaShift.html">mvRateAgeBetaShift</a></li>
+            
+            <li><a href="mvRateAgeProposal.html">mvRateAgeProposal</a></li>
+            
+            <li><a href="mvRateAgeSubtreeProposal.html">mvRateAgeSubtreeProposal</a></li>
+            
+            <li><a href="mvRootTimeScaleBactrian.html">mvRootTimeScaleBactrian</a></li>
+            
+            <li><a href="mvRootTimeSlideUniform.html">mvRootTimeSlideUniform</a></li>
+            
+            <li><a href="mvSPR.html">mvSPR</a></li>
+            
+            <li><a href="mvScale.html">mvScale</a></li>
+            
+            <li><a href="mvScaleBactrian.html">mvScaleBactrian</a></li>
+            
+            <li><a href="mvScaleBactrianCauchy.html">mvScaleBactrianCauchy</a></li>
+            
+            <li><a href="mvShrinkExpand.html">mvShrinkExpand</a></li>
+            
+            <li><a href="mvShrinkExpandScale.html">mvShrinkExpandScale</a></li>
+            
+            <li><a href="mvSlice.html">mvSlice</a></li>
+            
+            <li><a href="mvSlide.html">mvSlide</a></li>
+            
+            <li><a href="mvSlideBactrian.html">mvSlideBactrian</a></li>
+            
+            <li><a href="mvSpeciesNarrow.html">mvSpeciesNarrow</a></li>
+            
+            <li><a href="mvSpeciesNodeTimeSlideUniform.html">mvSpeciesNodeTimeSlideUniform</a></li>
+            
+            <li><a href="mvSpeciesSubtreeScale.html">mvSpeciesSubtreeScale</a></li>
+            
+            <li><a href="mvSpeciesSubtreeScaleBeta.html">mvSpeciesSubtreeScaleBeta</a></li>
+            
+            <li><a href="mvSpeciesTreeScale.html">mvSpeciesTreeScale</a></li>
+            
+            <li><a href="mvSubtreeScale.html">mvSubtreeScale</a></li>
+            
+            <li><a href="mvSymmetricMatrixElementSlide.html">mvSymmetricMatrixElementSlide</a></li>
+            
+            <li><a href="mvSynchronizedVectorFixedSingleElementSlide.html">mvSynchronizedVectorFixedSingleElementSlide</a></li>
+            
+            <li><a href="mvTipTimeSlideUniform.html">mvTipTimeSlideUniform</a></li>
+            
+            <li><a href="mvTreeScale.html">mvTreeScale</a></li>
+            
+            <li><a href="mvUPPAllocation.html">mvUPPAllocation</a></li>
+            
+            <li><a href="mvUpDownScale.html">mvUpDownScale</a></li>
+            
+            <li><a href="mvUpDownSlide.html">mvUpDownSlide</a></li>
+            
+            <li><a href="mvUpDownSlideBactrian.html">mvUpDownSlideBactrian</a></li>
+            
+            <li><a href="mvVectorBinarySwitch.html">mvVectorBinarySwitch</a></li>
+            
+            <li><a href="mvVectorFixedSingleElementSlide.html">mvVectorFixedSingleElementSlide</a></li>
+            
+            <li><a href="mvVectorScale.html">mvVectorScale</a></li>
+            
+            <li><a href="mvVectorSingleElementScale.html">mvVectorSingleElementScale</a></li>
+            
+            <li><a href="mvVectorSingleElementSlide.html">mvVectorSingleElementSlide</a></li>
+            
+            <li><a href="mvVectorSlide.html">mvVectorSlide</a></li>
+            
+            <li><a href="mvVectorSlideRecenter.html">mvVectorSlideRecenter</a></li>
+            
+            <li><a href="pathSampler.html">pathSampler</a></li>
+            
+            <li><a href="posteriorPredictiveAnalysis.html">posteriorPredictiveAnalysis</a></li>
+            
+            <li><a href="posteriorPredictiveSimulation.html">posteriorPredictiveSimulation</a></li>
+            
+            <li><a href="powerPosterior.html">powerPosterior</a></li>
+            
+            <li><a href="srGelmanRubin.html">srGelmanRubin</a></li>
+            
+            <li><a href="srGeweke.html">srGeweke</a></li>
+            
+            <li><a href="srMaxIteration.html">srMaxIteration</a></li>
+            
+            <li><a href="srMaxTime.html">srMaxTime</a></li>
+            
+            <li><a href="srMinESS.html">srMinESS</a></li>
+            
+            <li><a href="srStationarity.html">srStationarity</a></li>
+            
+            <li><a href="steppingStoneSampler.html">steppingStoneSampler</a></li>
+            
+            <li><a href="taxon.html">taxon</a></li>
+            
+            <li><a href="validationAnalysis.html">validationAnalysis</a></li>
+            
+            </ul>
+            </div>
+        
+
+        
+
+        
+
+        <h3 class="help-section-header"></h3>
+        <div class="help-section-header" text-align="right">
+        <a href="https://github.com/revbayes/revbayes/edit/help/help/md/RevObject.md"><img src="/assets/img/edit.png" width="24" height="24" hspace="5">Edit this page</a>
+        </div>
     
 </div>
 
@@ -1114,14 +2127,14 @@ Rev Language Reference
 $(":not(code).highlighter-rouge").each(function() {
   
   if( this.classList == "highlighter-rouge") {
-    this.classList = "default highlighter-rouge";
+    this.classList = "Rev highlighter-rouge";
   }
   
 });
 // $("code.highlighter-rouge").each(function() {
 //   
 //   if( this.classList == "highlighter-rouge") {
-//       this.classList = "default highlighter-rouge";
+//       this.classList = "Rev highlighter-rouge";
 //   }
 //   
 // });

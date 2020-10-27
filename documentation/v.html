@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
-    <title>RevBayes: Documentation</title>
+    <title>RevBayes</title>
   </head>
   <body>
     <div class="container">
@@ -1080,12 +1080,108 @@ Rev Language Reference
 
 <div class="help col-sm-8">
     
-    <p>Welcome to the Rev Language Reference pages!</p>
+        
+        <h2 class="help-title"><p><code class="highlighter-rouge">v</code> - Create a vector</p>
+</h2>
 
-<p>These help pages are stored in Markdown files on the RevBayes GitHub repository, <a href="https://github.com/revbayes/revbayes/tree/help/help/md">here</a>.</p>
+        
+            <div class="help-description">
+            'v' creates a vector of the elements '...'
+            </div>
+        
 
-<p>If you would like to edit a help page, click the <img src="/assets/img/edit.png" width="24" height="24" hspace="5" /> button at the bottom of the entry page.</p>
+        
 
+        
+            <h3 class="help-section-header">Usage</h3>
+            
+            <div class="help-section-body">
+            v(<a href="/documentation/Integer.html">Integer</a> ..., <a href="/documentation/Integer.html">Integer</a> ...)
+            </div>
+            <h3 class="help-section-header arguments">Arguments</h3>
+            <div class="help-section-body">
+            <table class="arguments">
+                
+                <tr>
+                    <td class="lhs argument">... : </td>
+                    <td class="rhs argument"><a href="/documentation/Integer.html">Integer</a> (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">First value.</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">... : </td>
+                    <td class="rhs argument"><a href="/documentation/Integer.html">Integer</a> (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">More values ...</td>
+                </tr>
+                
+                
+                
+            </table>
+            </div>
+        
+
+        
+            <h3 class="help-section-header">Return Type</h3>
+            <div class="help-section-body">
+            <a href="Integer[].html">Integer[]</a>
+            </div>
+        
+
+        
+            <h3 class="help-section-header">Details</h3>
+            <div class="help-section-body">
+            'v' creates a vector of the elements '...', which are objects of a common base type. Vector elements may themselves be vectors.
+            </div>
+        
+
+        
+            <h3 class="help-section-header">Example</h3>
+            
+            <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># create a vector, Natural[]
+x &lt;- v(1,2,3)
+x &lt;- x + 1
+x
+
+y &lt;- v(2,4,6)
+# create a vector of Natural[][]
+z &lt;- v(x,y)
+z
+z[0]
+</code></pre></div></div>
+
+        
+
+        
+
+        
+            <h3 class="help-section-header">See Also</h3>
+            <div class="help-section-body">
+            <ul class="list-unstyled">
+            
+            <li><a href="simplex.html">simplex</a></li>
+            
+            <li><a href="rep.html">rep</a></li>
+            
+            </ul>
+            </div>
+        
+
+        
+
+        
+
+        
+
+        <h3 class="help-section-header"></h3>
+        <div class="help-section-header" text-align="right">
+        <a href="https://github.com/revbayes/revbayes/edit/help/help/md/v.md"><img src="/assets/img/edit.png" width="24" height="24" hspace="5">Edit this page</a>
+        </div>
     
 </div>
 
@@ -1114,14 +1210,14 @@ Rev Language Reference
 $(":not(code).highlighter-rouge").each(function() {
   
   if( this.classList == "highlighter-rouge") {
-    this.classList = "default highlighter-rouge";
+    this.classList = "Rev highlighter-rouge";
   }
   
 });
 // $("code.highlighter-rouge").each(function() {
 //   
 //   if( this.classList == "highlighter-rouge") {
-//       this.classList = "default highlighter-rouge";
+//       this.classList = "Rev highlighter-rouge";
 //   }
 //   
 // });

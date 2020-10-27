@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
-    <title>RevBayes: Documentation</title>
+    <title>RevBayes</title>
   </head>
   <body>
     <div class="container">
@@ -1080,12 +1080,304 @@ Rev Language Reference
 
 <div class="help col-sm-8">
     
-    <p>Welcome to the Rev Language Reference pages!</p>
+        
+        <h2 class="help-title"><p><code class="highlighter-rouge">dnBirthDeathSamplingTreatment</code></p>
+</h2>
 
-<p>These help pages are stored in Markdown files on the RevBayes GitHub repository, <a href="https://github.com/revbayes/revbayes/tree/help/help/md">here</a>.</p>
+        
 
-<p>If you would like to edit a help page, click the <img src="/assets/img/edit.png" width="24" height="24" hspace="5" /> button at the bottom of the entry page.</p>
+        
+            <h3 class="help-section-header">Aliases</h3>
+            <div class="help-section-body">
+            <ul class="list-unstyled">
+            
+            <li>dnBDSTP</li>
+            
+            </ul>
+            </div>
+        
 
+        
+            <h3 class="help-section-header">Usage</h3>
+            
+            <div class="help-section-body">
+            dnBirthDeathSamplingTreatment(<a href="/documentation/RealPos.html">RealPos</a> rootAge/originAge, <a href="/documentation/RealPos.html">RealPos</a> lambda, <a href="/documentation/RealPos.html">RealPos</a> mu, <a href="/documentation/RealPos.html">RealPos</a> phi, <a href="/documentation/RealPos.html">RealPos</a> r, <a href="/documentation/Probability.html">Probability</a>[] Lambda, <a href="/documentation/Probability.html">Probability</a>[] Mu, <a href="/documentation/Probability.html">Probability</a> Phi, <a href="/documentation/Probability.html">Probability</a>[] R, <a href="/documentation/RealPos.html">RealPos</a>[] timeline, <a href="/documentation/RealPos.html">RealPos</a>[] lambdaTimeline, <a href="/documentation/RealPos.html">RealPos</a>[] muTimeline, <a href="/documentation/RealPos.html">RealPos</a>[] phiTimeline, <a href="/documentation/RealPos.html">RealPos</a>[] rTimeline, <a href="/documentation/RealPos.html">RealPos</a>[] LambdaTimeline, <a href="/documentation/RealPos.html">RealPos</a>[] MuTimeline, <a href="/documentation/RealPos.html">RealPos</a>[] PhiTimeline, <a href="/documentation/String.html">String</a> condition, <a href="/documentation/Taxon.html">Taxon</a>[] taxa)
+            </div>
+            <h3 class="help-section-header arguments">Arguments</h3>
+            <div class="help-section-body">
+            <table class="arguments">
+                
+                <tr>
+                    <td class="lhs argument">rootAge/originAge : </td>
+                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a> (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The start time of the process.</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">lambda : </td>
+                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a> (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The birth rate(s).</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">mu : </td>
+                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a> (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The death rate(s).</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">phi : </td>
+                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a> (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The serial sampling rate(s).</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">r : </td>
+                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a> (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The probabilit(y|ies) of death upon sampling (treatment).</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">Lambda : </td>
+                    <td class="rhs argument"><a href="/documentation/Probability.html">Probability</a>[] (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The episodic birth burst probabilities.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : NULL</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">Mu : </td>
+                    <td class="rhs argument"><a href="/documentation/Probability.html">Probability</a>[] (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The episodic death burst (mass extinction) survival probabilities.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : NULL</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">Phi : </td>
+                    <td class="rhs argument"><a href="/documentation/Probability.html">Probability</a> (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The probability of sampling taxa at sampling events (at present only if input is scalar).</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">R : </td>
+                    <td class="rhs argument"><a href="/documentation/Probability.html">Probability</a>[] (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The treatment probabilities for the sampling events (excluding sampling at present).</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : NULL</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">timeline : </td>
+                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a>[] (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The rate interval change times of the piecewise constant process.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : NULL</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">lambdaTimeline : </td>
+                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a>[] (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The rate interval change times of the speciation rate.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : NULL</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">muTimeline : </td>
+                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a>[] (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The rate interval change times of the extinction rate.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : NULL</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">phiTimeline : </td>
+                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a>[] (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The rate interval change times of the sampling rate.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : NULL</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">rTimeline : </td>
+                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a>[] (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The rate interval change times of the (serial) treatment probability.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : NULL</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">LambdaTimeline : </td>
+                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a>[] (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The rate interval change times of the speciation rate.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : NULL</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">MuTimeline : </td>
+                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a>[] (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The rate interval change times of the extinction rate.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : NULL</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">PhiTimeline : </td>
+                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a>[] (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The rate interval change times of the sampling rate.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : NULL</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">condition : </td>
+                    <td class="rhs argument"><a href="/documentation/String.html">String</a> (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The condition of the process.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : time</td>
+                </tr>
+                
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Options : time|survival|sampling</td>
+                </tr>
+                
+                
+                <tr>
+                    <td class="lhs argument">taxa : </td>
+                    <td class="rhs argument"><a href="/documentation/Taxon.html">Taxon</a>[] (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The taxa used for initialization.</td>
+                </tr>
+                
+                
+                
+            </table>
+            </div>
+        
+
+        
+            <h3 class="help-section-header">Domain Type</h3>
+            <div class="help-section-body">
+            <a href="TimeTree.html">TimeTree</a>
+            </div>
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        <h3 class="help-section-header"></h3>
+        <div class="help-section-header" text-align="right">
+        <a href="https://github.com/revbayes/revbayes/edit/help/help/md/dnBirthDeathSamplingTreatment.md"><img src="/assets/img/edit.png" width="24" height="24" hspace="5">Edit this page</a>
+        </div>
     
 </div>
 
@@ -1114,14 +1406,14 @@ Rev Language Reference
 $(":not(code).highlighter-rouge").each(function() {
   
   if( this.classList == "highlighter-rouge") {
-    this.classList = "default highlighter-rouge";
+    this.classList = "Rev highlighter-rouge";
   }
   
 });
 // $("code.highlighter-rouge").each(function() {
 //   
 //   if( this.classList == "highlighter-rouge") {
-//       this.classList = "default highlighter-rouge";
+//       this.classList = "Rev highlighter-rouge";
 //   }
 //   
 // });

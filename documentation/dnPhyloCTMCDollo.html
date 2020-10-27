@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
-    <title>RevBayes: Documentation</title>
+    <title>RevBayes</title>
   </head>
   <body>
     <div class="container">
@@ -1080,12 +1080,193 @@ Rev Language Reference
 
 <div class="help col-sm-8">
     
-    <p>Welcome to the Rev Language Reference pages!</p>
+        
+        <h2 class="help-title"><p><code class="highlighter-rouge">dnPhyloCTMCDollo</code></p>
+</h2>
 
-<p>These help pages are stored in Markdown files on the RevBayes GitHub repository, <a href="https://github.com/revbayes/revbayes/tree/help/help/md">here</a>.</p>
+        
 
-<p>If you would like to edit a help page, click the <img src="/assets/img/edit.png" width="24" height="24" hspace="5" /> button at the bottom of the entry page.</p>
+        
 
+        
+            <h3 class="help-section-header">Usage</h3>
+            
+            <div class="help-section-body">
+            dnPhyloCTMCDollo(<a href="/documentation/Tree.html">Tree</a> tree, <a href="/documentation/RateGenerator.html">RateGenerator</a> Q, <a href="/documentation/RealPos.html">RealPos</a> deathRate, <a href="/documentation/Simplex.html">Simplex</a> rootFrequencies, <a href="/documentation/RealPos.html">RealPos</a> branchRates, <a href="/documentation/RealPos.html">RealPos</a>[] siteRates, <a href="/documentation/Natural.html">Natural</a> nSites, <a href="/documentation/String.html">String</a> type, <a href="/documentation/Bool.html">Bool</a> normalize, <a href="/documentation/String.html">String</a> coding)
+            </div>
+            <h3 class="help-section-header arguments">Arguments</h3>
+            <div class="help-section-body">
+            <table class="arguments">
+                
+                <tr>
+                    <td class="lhs argument">tree : </td>
+                    <td class="rhs argument"><a href="/documentation/Tree.html">Tree</a> (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The tree along which the process evolves.</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">Q : </td>
+                    <td class="rhs argument"><a href="/documentation/RateGenerator.html">RateGenerator</a> (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The global or branch-specific rate matrices.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : NULL</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">deathRate : </td>
+                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a> (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The Dollo character death rate</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 1</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">rootFrequencies : </td>
+                    <td class="rhs argument"><a href="/documentation/Simplex.html">Simplex</a> (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The root specific frequencies of the characters, if applicable.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : NULL</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">branchRates : </td>
+                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a> (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The global or branch-specific rate multipliers.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 1</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">siteRates : </td>
+                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a>[] (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The rate categories for the sites.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : [ ]</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">nSites : </td>
+                    <td class="rhs argument"><a href="/documentation/Natural.html">Natural</a> (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The number of sites, used for simulation.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 0</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">type : </td>
+                    <td class="rhs argument"><a href="/documentation/String.html">String</a> (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The data type, used for simulation and initialization.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : Standard</td>
+                </tr>
+                
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Options : Standard|Binary|Restriction</td>
+                </tr>
+                
+                
+                <tr>
+                    <td class="lhs argument">normalize : </td>
+                    <td class="rhs argument"><a href="/documentation/Bool.html">Bool</a> (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">Should we normalize the Dollo substitution matrices?</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : TRUE</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">coding : </td>
+                    <td class="rhs argument"><a href="/documentation/String.html">String</a> (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs"></td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : noabsencesites</td>
+                </tr>
+                
+                
+                
+            </table>
+            </div>
+        
+
+        
+            <h3 class="help-section-header">Domain Type</h3>
+            <div class="help-section-body">
+            <a href="AbstractHomologousDiscreteCharacterData.html">AbstractHomologousDiscreteCharacterData</a>
+            </div>
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        <h3 class="help-section-header"></h3>
+        <div class="help-section-header" text-align="right">
+        <a href="https://github.com/revbayes/revbayes/edit/help/help/md/dnPhyloCTMCDollo.md"><img src="/assets/img/edit.png" width="24" height="24" hspace="5">Edit this page</a>
+        </div>
     
 </div>
 
@@ -1114,14 +1295,14 @@ Rev Language Reference
 $(":not(code).highlighter-rouge").each(function() {
   
   if( this.classList == "highlighter-rouge") {
-    this.classList = "default highlighter-rouge";
+    this.classList = "Rev highlighter-rouge";
   }
   
 });
 // $("code.highlighter-rouge").each(function() {
 //   
 //   if( this.classList == "highlighter-rouge") {
-//       this.classList = "default highlighter-rouge";
+//       this.classList = "Rev highlighter-rouge";
 //   }
 //   
 // });

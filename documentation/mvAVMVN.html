@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
-    <title>RevBayes: Documentation</title>
+    <title>RevBayes</title>
   </head>
   <body>
     <div class="container">
@@ -1080,12 +1080,192 @@ Rev Language Reference
 
 <div class="help col-sm-8">
     
-    <p>Welcome to the Rev Language Reference pages!</p>
+        
+        <h2 class="help-title"><p><code class="highlighter-rouge">mvAVMVN</code></p>
+</h2>
 
-<p>These help pages are stored in Markdown files on the RevBayes GitHub repository, <a href="https://github.com/revbayes/revbayes/tree/help/help/md">here</a>.</p>
+        
+            <div class="help-description">
+            The adaptive variance multivariate-normal proposal of Baele et al. 2017, uses MCMC samples to fit covariance matrix to parameters.
 
-<p>If you would like to edit a help page, click the <img src="/assets/img/edit.png" width="24" height="24" hspace="5" /> button at the bottom of the entry page.</p>
+After user-defined waiting time, proposes using covariance matrix epsilon * I + (1 - epsilon) * sigmaSquared * empirical_matrix.
 
+Internally transforms variables based on whether variables are (finitely) bounded, strictly positive, or simplexed.
+
+Non-simplex-valued vector random variables are untransformed.
+
+Add random variables to the move directly (e.g. branch_rates[1], not branch_rates).WARNING: Disabling tuning disables both tuning of proposal variance and learning of empirical covariance matrix.
+
+            </div>
+        
+
+        
+
+        
+            <h3 class="help-section-header">Usage</h3>
+            
+            <div class="help-section-body">
+            mvAVMVN(<a href="/documentation/RealPos.html">RealPos</a> sigmaSquared, <a href="/documentation/RealPos.html">RealPos</a> epsilon, <a href="/documentation/Natural.html">Natural</a> waitBeforeLearning, <a href="/documentation/Natural.html">Natural</a> waitBeforeUsing, <a href="/documentation/Natural.html">Natural</a> maxUpdates, <a href="/documentation/Bool.html">Bool</a> tune, <a href="/documentation/RealPos.html">RealPos</a> weight, <a href="/documentation/Probability.html">Probability</a> tuneTarget)
+            </div>
+            <h3 class="help-section-header arguments">Arguments</h3>
+            <div class="help-section-body">
+            <table class="arguments">
+                
+                <tr>
+                    <td class="lhs argument">sigmaSquared : </td>
+                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a> (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The scaling factor (strength) of the proposal.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 1</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">epsilon : </td>
+                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a> (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The mixture weight of the post-learning move on a simple identity matrix.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 0.05</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">waitBeforeLearning : </td>
+                    <td class="rhs argument"><a href="/documentation/Natural.html">Natural</a> (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The number of move attempts to wait before tracking the covariance of the variables.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 2500</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">waitBeforeUsing : </td>
+                    <td class="rhs argument"><a href="/documentation/Natural.html">Natural</a> (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The number of move attempts to wait before using the learned covariance matrix.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 5000</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">maxUpdates : </td>
+                    <td class="rhs argument"><a href="/documentation/Natural.html">Natural</a> (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The maximum number of updates to the empirical covariance matrix (matrix is only updated when MCMC tunes).</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 10000</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">tune : </td>
+                    <td class="rhs argument"><a href="/documentation/Bool.html">Bool</a> (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">Should we tune the scaling factor during burnin?</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : TRUE</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">weight : </td>
+                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a> (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The weight how often on average this move will be used per iteration.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 1</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">tuneTarget : </td>
+                    <td class="rhs argument"><a href="/documentation/Probability.html">Probability</a> (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The acceptance probability targeted by auto-tuning.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 0.44</td>
+                </tr>
+                
+                
+                
+            </table>
+            </div>
+        
+
+        
+
+        
+
+        
+
+        
+            <h3 class="help-section-header">Methods</h3>
+            <div class="help-section-body">
+            <ul class="list-unstyled methods">
+            
+            <li>addVariable(<a href="/documentation/Real.html">Real</a> var)</li>
+            
+            <li>addVariable(<a href="/documentation/Simplex.html">Simplex</a> var)</li>
+            
+            <li>addVariable(<a href="/documentation/Real.html">Real</a>[] var)</li>
+            
+            <li>removeVariable(<a href="/documentation/Real.html">Real</a> var)</li>
+            
+            <li>removeVariable(<a href="/documentation/Simplex.html">Simplex</a> var)</li>
+            
+            <li>removeVariable(<a href="/documentation/Real.html">Real</a>[] var)</li>
+            
+            </ul>
+            </div>
+        
+
+        
+
+        
+
+        
+
+        
+
+        <h3 class="help-section-header"></h3>
+        <div class="help-section-header" text-align="right">
+        <a href="https://github.com/revbayes/revbayes/edit/help/help/md/mvAVMVN.md"><img src="/assets/img/edit.png" width="24" height="24" hspace="5">Edit this page</a>
+        </div>
     
 </div>
 
@@ -1114,14 +1294,14 @@ Rev Language Reference
 $(":not(code).highlighter-rouge").each(function() {
   
   if( this.classList == "highlighter-rouge") {
-    this.classList = "default highlighter-rouge";
+    this.classList = "Rev highlighter-rouge";
   }
   
 });
 // $("code.highlighter-rouge").each(function() {
 //   
 //   if( this.classList == "highlighter-rouge") {
-//       this.classList = "default highlighter-rouge";
+//       this.classList = "Rev highlighter-rouge";
 //   }
 //   
 // });

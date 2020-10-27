@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
-    <title>RevBayes: Documentation</title>
+    <title>RevBayes</title>
   </head>
   <body>
     <div class="container">
@@ -1080,12 +1080,156 @@ Rev Language Reference
 
 <div class="help col-sm-8">
     
-    <p>Welcome to the Rev Language Reference pages!</p>
+        
+        <h2 class="help-title"><p><code class="highlighter-rouge">dnMultiSpeciesCoalescentInverseGamma</code> - Multispecies coalescent Distribution with inverse gamma prior on effective population sizes</p>
+</h2>
 
-<p>These help pages are stored in Markdown files on the RevBayes GitHub repository, <a href="https://github.com/revbayes/revbayes/tree/help/help/md">here</a>.</p>
+        
+            <div class="help-description">
+            Multispecies coalescent distribution describing how gene trees can be generated from within a species tree given effective population sizes. Requires an ultrametric species tree, parameters of an inverse gamma prior on effective population sizes, and taxa with species and individual names.
+            </div>
+        
 
-<p>If you would like to edit a help page, click the <img src="/assets/img/edit.png" width="24" height="24" hspace="5" /> button at the bottom of the entry page.</p>
+        
 
+        
+            <h3 class="help-section-header">Usage</h3>
+            
+            <div class="help-section-body">
+            dnMultiSpeciesCoalescentInverseGamma(<a href="/documentation/TimeTree.html">TimeTree</a> speciesTree, <a href="/documentation/RealPos.html">RealPos</a> shape, <a href="/documentation/RealPos.html">RealPos</a> rate, <a href="/documentation/Taxon.html">Taxon</a>[] taxa)
+            </div>
+            <h3 class="help-section-header arguments">Arguments</h3>
+            <div class="help-section-body">
+            <table class="arguments">
+                
+                <tr>
+                    <td class="lhs argument">speciesTree : </td>
+                    <td class="rhs argument"><a href="/documentation/TimeTree.html">TimeTree</a> (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The species tree in which the gene trees evolve.</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">shape : </td>
+                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a> (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The shape of the inverse gamma prior distribution on the effective population sizes.</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">rate : </td>
+                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a> (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The rate of the inverse gamma prior distribution on the effective population sizes.</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">taxa : </td>
+                    <td class="rhs argument"><a href="/documentation/Taxon.html">Taxon</a>[] (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The vector of taxa which have species and individual names.</td>
+                </tr>
+                
+                
+                
+            </table>
+            </div>
+        
+
+        
+            <h3 class="help-section-header">Domain Type</h3>
+            <div class="help-section-body">
+            <a href="TimeTree.html">TimeTree</a>
+            </div>
+        
+
+        
+            <h3 class="help-section-header">Details</h3>
+            <div class="help-section-body">
+            The species tree must be ultrametric.
+Parameters of an inverse gamma prior on effective population sizes must be provided.
+This distribution uses a conjugate prior on effective population sizes. As a consequence, effective population sizes are integrated out and treated as nuisance parameters.
+
+If you are interested in reconstructing ancestral effective population sizes, use dnMultiSpeciesCoalescent.
+
+            </div>
+        
+
+        
+            <h3 class="help-section-header">Example</h3>
+            
+            <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># We are going to save the trees we simulate in the folder simulatedTrees:
+dataFolder = "simulatedTrees/"
+# Let’s simulate a species tree with 10 taxa, 2 gene trees, 3 alleles per species:
+n_species &lt;- 10
+n_genes &lt;- 2
+n_alleles &lt;- 3
+# we simulate an ultrametric species tree:
+# Species names:
+for (i in 1:n_species) {
+        species[i] &lt;- taxon(taxonName="Species_"+i, speciesName="Species_"+i)
+}
+spTree ~ dnBirthDeath(lambda=0.3, mu=0.2, rootAge=10, rho=1, samplingStrategy="uniform", condition="nTaxa", taxa=species)
+print(spTree)
+# let's pick constant parameters for the inverse gamma distribution:
+alpha &lt;- 3
+beta &lt;- 0.003
+# let's simulate gene trees now:
+# taxa names:
+for (g in 1:n_genes) {
+  for (i in 1:n_species) {
+    for (j in 1:n_alleles) {
+        taxons[g][(i-1)*n_alleles+j] &lt;- taxon(taxonName="Species_"+i+"_"+j, speciesName="Species_"+i)
+    }
+  }
+  geneTrees[g] ~ dnMultiSpeciesCoalescentInverseGamma(speciesTree=spTree, shape=alpha, rate=beta, taxa=taxons[g])
+  print(geneTrees[g])
+}
+# We can save the species tree and the gene trees:
+write(spTree, filename=dataFolder+"speciesTree")
+# Saving the gene trees
+for (i in 1:(n_genes)) {
+  write(geneTrees[i], filename=dataFolder+"geneTree_"+i+".tree")
+}
+</code></pre></div></div>
+
+        
+
+        
+
+        
+            <h3 class="help-section-header">See Also</h3>
+            <div class="help-section-body">
+            <ul class="list-unstyled">
+            
+            <li><a href="dnMultiSpeciesCoalescent.html">dnMultiSpeciesCoalescent</a></li>
+            
+            <li><a href="dnMultiSpeciesCoalescentUniformPrior.html">dnMultiSpeciesCoalescentUniformPrior</a></li>
+            
+            </ul>
+            </div>
+        
+
+        
+
+        
+
+        
+
+        <h3 class="help-section-header"></h3>
+        <div class="help-section-header" text-align="right">
+        <a href="https://github.com/revbayes/revbayes/edit/help/help/md/dnMultiSpeciesCoalescentInverseGamma.md"><img src="/assets/img/edit.png" width="24" height="24" hspace="5">Edit this page</a>
+        </div>
     
 </div>
 
@@ -1114,14 +1258,14 @@ Rev Language Reference
 $(":not(code).highlighter-rouge").each(function() {
   
   if( this.classList == "highlighter-rouge") {
-    this.classList = "default highlighter-rouge";
+    this.classList = "Rev highlighter-rouge";
   }
   
 });
 // $("code.highlighter-rouge").each(function() {
 //   
 //   if( this.classList == "highlighter-rouge") {
-//       this.classList = "default highlighter-rouge";
+//       this.classList = "Rev highlighter-rouge";
 //   }
 //   
 // });

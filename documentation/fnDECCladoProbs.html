@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
-    <title>RevBayes: Documentation</title>
+    <title>RevBayes</title>
   </head>
   <body>
     <div class="container">
@@ -1080,12 +1080,166 @@ Rev Language Reference
 
 <div class="help col-sm-8">
     
-    <p>Welcome to the Rev Language Reference pages!</p>
+        
+        <h2 class="help-title"><p><code class="highlighter-rouge">fnDECCladoProbs</code></p>
+</h2>
 
-<p>These help pages are stored in Markdown files on the RevBayes GitHub repository, <a href="https://github.com/revbayes/revbayes/tree/help/help/md">here</a>.</p>
+        
 
-<p>If you would like to edit a help page, click the <img src="/assets/img/edit.png" width="24" height="24" hspace="5" /> button at the bottom of the entry page.</p>
+        
+            <h3 class="help-section-header">Aliases</h3>
+            <div class="help-section-body">
+            <ul class="list-unstyled">
+            
+            <li>fnCladoProbs</li>
+            
+            </ul>
+            </div>
+        
 
+        
+            <h3 class="help-section-header">Usage</h3>
+            
+            <div class="help-section-body">
+            fnDECCladoProbs(<a href="/documentation/Simplex.html">Simplex</a> eventProbs, <a href="/documentation/Natural.html">Natural</a> numCharacters, <a href="/documentation/Natural.html">Natural</a> maxRangeSize, <a href="/documentation/String.html">String</a> probType, <a href="/documentation/Bool.html">Bool</a> widespreadAllopatry, <a href="/documentation/String.html">String</a>[] eventTypes, <a href="/documentation/RealPos.html">RealPos</a>[][] connectivityGraph, <a href="/documentation/RealPos.html">RealPos</a>[][] vicarianceGraph)
+            </div>
+            <h3 class="help-section-header arguments">Arguments</h3>
+            <div class="help-section-body">
+            <table class="arguments">
+                
+                <tr>
+                    <td class="lhs argument">eventProbs : </td>
+                    <td class="rhs argument"><a href="/documentation/Simplex.html">Simplex</a> (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The probabilities of the different event types.</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">numCharacters : </td>
+                    <td class="rhs argument"><a href="/documentation/Natural.html">Natural</a> (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The number of characters.</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">maxRangeSize : </td>
+                    <td class="rhs argument"><a href="/documentation/Natural.html">Natural</a> (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The maximum range size.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 0</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">probType : </td>
+                    <td class="rhs argument"><a href="/documentation/String.html">String</a> (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">Assign event weights over classes of patterns or over specific patterns</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : pattern</td>
+                </tr>
+                
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Options : pattern|class</td>
+                </tr>
+                
+                
+                <tr>
+                    <td class="lhs argument">widespreadAllopatry : </td>
+                    <td class="rhs argument"><a href="/documentation/Bool.html">Bool</a> (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">Allopatry may result in both daughter ranges being larger than size 1.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : FALSE</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">eventTypes : </td>
+                    <td class="rhs argument"><a href="/documentation/String.html">String</a>[] (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">Vector of cladogenetic event types.</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">connectivityGraph : </td>
+                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a>[][] (&lt;constant&gt; pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">Connectivity graph of allowed ranges.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : [ ]</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">vicarianceGraph : </td>
+                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a>[][] (&lt;constant&gt; pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">Graph to model vicariance events.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : [ ]</td>
+                </tr>
+                
+                
+                
+            </table>
+            </div>
+        
+
+        
+            <h3 class="help-section-header">Return Type</h3>
+            <div class="help-section-body">
+            <a href="CladogeneticProbabilityMatrix.html">CladogeneticProbabilityMatrix</a>
+            </div>
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        <h3 class="help-section-header"></h3>
+        <div class="help-section-header" text-align="right">
+        <a href="https://github.com/revbayes/revbayes/edit/help/help/md/fnDECCladoProbs.md"><img src="/assets/img/edit.png" width="24" height="24" hspace="5">Edit this page</a>
+        </div>
     
 </div>
 
@@ -1114,14 +1268,14 @@ Rev Language Reference
 $(":not(code).highlighter-rouge").each(function() {
   
   if( this.classList == "highlighter-rouge") {
-    this.classList = "default highlighter-rouge";
+    this.classList = "Rev highlighter-rouge";
   }
   
 });
 // $("code.highlighter-rouge").each(function() {
 //   
 //   if( this.classList == "highlighter-rouge") {
-//       this.classList = "default highlighter-rouge";
+//       this.classList = "Rev highlighter-rouge";
 //   }
 //   
 // });

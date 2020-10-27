@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
-    <title>RevBayes: Documentation</title>
+    <title>RevBayes</title>
   </head>
   <body>
     <div class="container">
@@ -1080,12 +1080,203 @@ Rev Language Reference
 
 <div class="help col-sm-8">
     
-    <p>Welcome to the Rev Language Reference pages!</p>
+        
+        <h2 class="help-title"><p><code class="highlighter-rouge">simBirthDeath</code></p>
+</h2>
 
-<p>These help pages are stored in Markdown files on the RevBayes GitHub repository, <a href="https://github.com/revbayes/revbayes/tree/help/help/md">here</a>.</p>
+        
+            <div class="help-description">
+            Simulates a tree under a very general birth-death process. Parameters are fed in as a n_cats by n_intervals matrix, such that the ith row is the rate vector for the ith category.
+            </div>
+        
 
-<p>If you would like to edit a help page, click the <img src="/assets/img/edit.png" width="24" height="24" hspace="5" /> button at the bottom of the entry page.</p>
+        
 
+        
+            <h3 class="help-section-header">Usage</h3>
+            
+            <div class="help-section-body">
+            simBirthDeath(<a href="/documentation/RealPos.html">RealPos</a>[] timeline, <a href="/documentation/RealPos.html">RealPos</a>[][] lambda, <a href="/documentation/RealPos.html">RealPos</a>[][] mu, <a href="/documentation/RealPos.html">RealPos</a>[][] phi, <a href="/documentation/Probability.html">Probability</a>[][] r, <a href="/documentation/Probability.html">Probability</a>[][] Lambda, <a href="/documentation/Probability.html">Probability</a>[][] Mu, <a href="/documentation/Probability.html">Probability</a>[][] Phi, <a href="/documentation/Probability.html">Probability</a>[][] R, <a href="/documentation/Simplex.html">Simplex</a> rootCategory, <a href="/documentation/RealPos.html">RealPos</a> time)
+            </div>
+            <h3 class="help-section-header arguments">Arguments</h3>
+            <div class="help-section-body">
+            <table class="arguments">
+                
+                <tr>
+                    <td class="lhs argument">timeline : </td>
+                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a>[] (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The endpoints of the time intervals (episodes). You should include 0 at the end. We use ages before the present.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : [ 0.000 ]</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">lambda : </td>
+                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a>[][] (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The speciation rates for each interval.</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">mu : </td>
+                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a>[][] (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The extinction rates for each interval.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 0</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">phi : </td>
+                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a>[][] (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The sampling rates for each interval.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 0</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">r : </td>
+                    <td class="rhs argument"><a href="/documentation/Probability.html">Probability</a>[][] (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The extinction probability when rate-sampling happens for each interval.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 0</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">Lambda : </td>
+                    <td class="rhs argument"><a href="/documentation/Probability.html">Probability</a>[][] (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The burst probability at the end of each interval.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 0</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">Mu : </td>
+                    <td class="rhs argument"><a href="/documentation/Probability.html">Probability</a>[][] (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The (mass) extinction probability at the end of each interval.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 0</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">Phi : </td>
+                    <td class="rhs argument"><a href="/documentation/Probability.html">Probability</a>[][] (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The sampling probability at the end of each interval.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 0</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">R : </td>
+                    <td class="rhs argument"><a href="/documentation/Probability.html">Probability</a>[][] (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The extinction probability when event-sampling happens for each interval.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : 0</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">rootCategory : </td>
+                    <td class="rhs argument"><a href="/documentation/Simplex.html">Simplex</a> (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The probabilities of the categories for the root.</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : [ 1.000 ]</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">time : </td>
+                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a> (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The time/age before the present.</td>
+                </tr>
+                
+                
+                
+            </table>
+            </div>
+        
+
+        
+            <h3 class="help-section-header">Return Type</h3>
+            <div class="help-section-body">
+            <a href="TimeTree.html">TimeTree</a>
+            </div>
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        <h3 class="help-section-header"></h3>
+        <div class="help-section-header" text-align="right">
+        <a href="https://github.com/revbayes/revbayes/edit/help/help/md/simBirthDeath.md"><img src="/assets/img/edit.png" width="24" height="24" hspace="5">Edit this page</a>
+        </div>
     
 </div>
 
@@ -1114,14 +1305,14 @@ Rev Language Reference
 $(":not(code).highlighter-rouge").each(function() {
   
   if( this.classList == "highlighter-rouge") {
-    this.classList = "default highlighter-rouge";
+    this.classList = "Rev highlighter-rouge";
   }
   
 });
 // $("code.highlighter-rouge").each(function() {
 //   
 //   if( this.classList == "highlighter-rouge") {
-//       this.classList = "default highlighter-rouge";
+//       this.classList = "Rev highlighter-rouge";
 //   }
 //   
 // });

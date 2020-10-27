@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
-    <title>RevBayes: Documentation</title>
+    <title>RevBayes</title>
   </head>
   <body>
     <div class="container">
@@ -1080,12 +1080,218 @@ Rev Language Reference
 
 <div class="help col-sm-8">
     
-    <p>Welcome to the Rev Language Reference pages!</p>
+        
+        <h2 class="help-title"><p><code class="highlighter-rouge">clade</code> - Clade</p>
+</h2>
 
-<p>These help pages are stored in Markdown files on the RevBayes GitHub repository, <a href="https://github.com/revbayes/revbayes/tree/help/help/md">here</a>.</p>
+        
+            <div class="help-description">
+            A clade is a subtree within a phylogeny.
+            </div>
+        
 
-<p>If you would like to edit a help page, click the <img src="/assets/img/edit.png" width="24" height="24" hspace="5" /> button at the bottom of the entry page.</p>
+        
 
+        
+            <h3 class="help-section-header">Usage</h3>
+            
+            <div class="help-section-body">
+            clade(<a href="/documentation/String.html">String</a> ..., <a href="/documentation/String.html">String</a>[] ..., <a href="/documentation/Clade.html">Clade</a> ..., <a href="/documentation/Taxon.html">Taxon</a> ..., <a href="/documentation/Taxon.html">Taxon</a>[] ..., <a href="/documentation/RealPos.html">RealPos</a> age, <a href="/documentation/Natural.html">Natural</a> missing, <a href="/documentation/Bool.html">Bool</a> negative, <a href="/documentation/Bool.html">Bool</a> optional_match)
+            </div>
+            <h3 class="help-section-header arguments">Arguments</h3>
+            <div class="help-section-body">
+            <table class="arguments">
+                
+                <tr>
+                    <td class="lhs argument">... : </td>
+                    <td class="rhs argument"><a href="/documentation/String.html">String</a> (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">Taxon names as string values.</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">... : </td>
+                    <td class="rhs argument"><a href="/documentation/String.html">String</a>[] (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">Taxon names as a vector of string values.</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">... : </td>
+                    <td class="rhs argument"><a href="/documentation/Clade.html">Clade</a> (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">Taxa as clade objects.</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">... : </td>
+                    <td class="rhs argument"><a href="/documentation/Taxon.html">Taxon</a> (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">Taxon names as taxon values</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">... : </td>
+                    <td class="rhs argument"><a href="/documentation/Taxon.html">Taxon</a>[] (pass by const reference)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">Taxon names as a vector of taxons</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">age : </td>
+                    <td class="rhs argument"><a href="/documentation/RealPos.html">RealPos</a> (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">The age of the clade (optional).</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : NULL</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">missing : </td>
+                    <td class="rhs argument"><a href="/documentation/Natural.html">Natural</a> (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">Number of missing taxa in the clade (optional).</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : NULL</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">negative : </td>
+                    <td class="rhs argument"><a href="/documentation/Bool.html">Bool</a> (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">Is this a negative clade constraint?</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : FALSE</td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td class="lhs argument">optional_match : </td>
+                    <td class="rhs argument"><a href="/documentation/Bool.html">Bool</a> (pass by value)</td>
+                </tr>
+                <tr>
+                    <td class="lhs"/><td class="rhs">Clade constraint satisfied when any Clade argument matched</td>
+                </tr>
+                
+                <tr>
+                    <td class="lhs"/><td class="rhs">Default : FALSE</td>
+                </tr>
+                
+                
+                
+            </table>
+            </div>
+        
+
+        
+
+        
+            <h3 class="help-section-header">Details</h3>
+            <div class="help-section-body">
+            Clades are defined in terms of a taxon set and a shared tree topology. In phylogenetic analyses, clades are generally used (a) to constrain tree topologies to match provided taxon relationships, (b) to identify the most recent common ancestor of a taxon set within a phylogeny, or (c) to apply node age calibrations on particular nodes in the phylogeny.
+            </div>
+        
+
+        
+            <h3 class="help-section-header">Example</h3>
+            
+            <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># read in a tree
+phy = readTrees("primates.tre")[1]
+# get taxa from the tree
+taxa = phy.taxa()
+# create a clade for (1,2) using taxon objects
+clade_12 = clade( taxa[1], taxa[2] )
+# create a clade for (1,2,3)
+clade_123 = clade( taxa[3], clade_12 )
+# create a clade for (4,5) using taxon names
+clade_45 = clade( "Taxon_4", "Taxon_5" )
+# create a negative clade constraint
+clade_not_23 = clade( taxa[2], taxa[3], negative=true )
+# create an optional clade constraint
+clade_67 = clade( taxa[6], taxa[7] )
+clade_68 = clade( taxa[6], taxa[8] )
+clade_67_or_68 = clade( clade_67, clade_68, optional_match=true )
+</code></pre></div></div>
+
+        
+
+        
+            <h3 class="help-section-header">Methods</h3>
+            <div class="help-section-body">
+            <ul class="list-unstyled methods">
+            
+            <li>getAge()</li>
+            
+            <li>getNumberOfTaxaMissing()</li>
+            
+            <li>getTaxon(<a href="/documentation/Natural.html">Natural</a> node)</li>
+            
+            <li>getTaxonName(<a href="/documentation/Natural.html">Natural</a> node)</li>
+            
+            <li>setAge(<a href="/documentation/RealPos.html">RealPos</a> a)</li>
+            
+            <li>setNumberOfTaxaMissing(<a href="/documentation/Natural.html">Natural</a> n)</li>
+            
+            <li>size()</li>
+            
+            </ul>
+            </div>
+        
+
+        
+            <h3 class="help-section-header">See Also</h3>
+            <div class="help-section-body">
+            <ul class="list-unstyled">
+            
+            <li><a href="dnConstrainedTopology.html">dnConstrainedTopology</a></li>
+            
+            <li><a href="tmrca.html">tmrca</a></li>
+            
+            <li><a href="mrcaIndex.html">mrcaIndex</a></li>
+            
+            </ul>
+            </div>
+        
+
+        
+
+        
+
+        
+
+        <h3 class="help-section-header"></h3>
+        <div class="help-section-header" text-align="right">
+        <a href="https://github.com/revbayes/revbayes/edit/help/help/md/clade.md"><img src="/assets/img/edit.png" width="24" height="24" hspace="5">Edit this page</a>
+        </div>
     
 </div>
 
@@ -1114,14 +1320,14 @@ Rev Language Reference
 $(":not(code).highlighter-rouge").each(function() {
   
   if( this.classList == "highlighter-rouge") {
-    this.classList = "default highlighter-rouge";
+    this.classList = "Rev highlighter-rouge";
   }
   
 });
 // $("code.highlighter-rouge").each(function() {
 //   
 //   if( this.classList == "highlighter-rouge") {
-//       this.classList = "default highlighter-rouge";
+//       this.classList = "Rev highlighter-rouge";
 //   }
 //   
 // });
