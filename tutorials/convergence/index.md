@@ -43,7 +43,10 @@ To assess convergence for these parameters, the Convenience package evaluates:
 2. Comparison between windows of the same run;
 3. Comparison between different runs.
 
-The comparison between windows of the same run works by dividing the full length of the run into 5 windows (subsets) and comparing the third and fifth window. In Figure {% ref windows %} we can see a trace plot for the tree length from the example provided in this tutorial. The trace plot shows the sampled values over the iterations of the MCMC. The highlighted areas of the figure show the third and fifth window of the run.
+The comparison between windows of the same run works by dividing the full length of the run into 5 windows (subsets) and comparing the third and fifth window.
+This comparison is used to determine the size of the burn-in. A sufficient burn-in will lead to windows that sampled values from the same distribution. 
+Finding the appropriate burn-in size is done automatically in the Convenience package. The package tests burn-in of 0, 10%, 20%, 30%, 40% and 50%. If the required burn-in is higher than 50% of the length of the MCMC, we recommend re-running the MCMC.  
+In Figure {% ref windows %} we can see a trace plot for the tree length from the example provided in this tutorial. The trace plot shows the sampled values over the iterations of the MCMC. The highlighted areas of the figure show the third and fifth window of the run.
 
 {% figure windows %}
 <img src="figures/windows.png" />
@@ -148,6 +151,7 @@ Here is a list of the functions the package uses to assess convergence:
 
 1. `path`: for when a path to a directory is provided
 2. `list_files`: for when a list of files is provided
+4. `format`: the software used for the phylogenetic analysis, current accepted formats are "revbayes", "mb" for MrBayes, "beast", "*beast"
 3. `control`: calls the `makeControl` function
 
 - `essContParam`: calculates the ESS for the continuous parameters
@@ -160,13 +164,29 @@ Here is a list of the functions the package uses to assess convergence:
 
 - `loadMulti`: this function was modified from RWTY to include the option to pass a list of files to the function `loadFiles`
 
-- `makeControl`: a function to set the burnin size, the precision of the standard error of the mean and the continuous parameters to exclude from the assessment. Default values are burnin = 10%, precision = 1%, namesToExclude = "br_lens, bl, Iteration, Likelihood, Posterior, Prior"
+- `makeControl`: a function to set the burnin size, the precision of the standard error of the mean and the continuous parameters to exclude from the assessment. Default values are burnin = 0, precision = 1%, namesToExclude = "br_lens, bl, Iteration, Likelihood, Posterior, Prior"
+
+- `meanContParam`: calculates the means of the continuous parameters
+
+- `plotESS.hist`: plots the histogram of the ESS values for the continuous parameters or the splits
+
+- `plotKS.hist`: plots the histogram of the KS values for the combination of all runs. The MCMC must have at least 2 runs
+
+- `plotKS.pooled`: plots the histogram of the KS values for the one-on-one comparison of runs. The MCMC must have at least 3 runs
 
 - `printConvergenceDiag`: a S3 method to print the class `convenience.diag`
 
+- `printConvergenceTable`: a S3 method to print the class `convenience.table`
+
 - `printListFails`: a S3 method to print the class `list.fails`
 
+- `printTableContinuous`: prints the means and the ESS of the continuous parameters, you can save the table to a csv file by passing a file name to the function
+
+- `printTableSplits`: prints the frequencies and ESS of the splits, you can save the table to a csv file by passing a file name to the function
+
 - `readTrace`: this function was modified from ['RevGadgets'](https://github.com/revbayes/RevGadgets) to include the option to read only files with the continuous parameters, when the user has no tree files to assess convergence
+
+- `removeBurnin`: remove the initial statates from the MCMC output
 
 - `splitFreq`: calculates the difference in splits for the trees, for both the comparison between windows or runs
 
@@ -188,55 +208,106 @@ We can also list the names of the files:
 To better understand what `checkConvergence` is doing, take a look at {% ref checkConvergence_summary%}. The first step consists of the user setting up the precision in the standard error of the mean for our estimates. The thresholds for ESS, KS test and difference in split frequencies will be calculated based on the precision. Then the function reads in the MCMC output, from the files provided by the user, and computes the quantities used in the criteria for convergence. Afterwards, the function checks if the computed quantities are within the calculated thresholds. Finally, the function reports wheter the MCMC has converged or not, the computed quantities and, in case of non convergence, the parameters that failed to achieve the desired thresholds.
 
 {% figure checkConvergence_summary %}
-<img src="figures/checkConvergence_summary.png" width="700" />
+<img src="figures/checkConvergence_summary_modified.png" width="500" />
 {% figcaption %}
 Summary of the process in the `checkConvergence` function. SF is the abbreviation for split frequencies.
 {% endfigcaption %}
 {% endfigure %}
 
-Now, let's see what is the output:
+Now, let's see the output from `checkConvergence` by typing `check_bears`.
+The output message includes:
 
-{% figure output_example %}
-<img src="figures/output_example.png" />
-{% figcaption %}
-The output stored in check_bears
-{% endfigcaption %}
-{% endfigure %}
+- A message if convergence was achieved or not
+
+- The calculated burn-in
+
+- The splits excluded from the assessment for having frequency above 0.975 or below 0.025 (when applicable)
+
+- The continuous parameters excluded from the assessment for having no variation during the MCMC (when applicable)
+
+- Lowest ESS for the splits and continuous parameters
+
+- Instructions to check further the output:
+
+> `To check the calculated parameters for the continuous parameters type:` <br />
+  >    `Means: output$continuous_parameters$means` <br />
+  >    `ESS: output$continuous_parameters$ess` <br />
+  >    `KS score: output$continuous_parameters$compare_runs` <br />
+
+  
+> `To check the calculated parameters for the splits type:` <br />
+  >    `Frequencies of splits: output$tree_parameters$frequencies` <br />
+  >    `ESS: output$tree_parameters$ess` <br />
+  >    `Difference in frequencies: output$tree_parameters$compare_runs` <br />
+
 
 We can see that `check_bears` has 4 elements: `message`, `converged`, `continuous_parameters` and `tree_parameters`.
 
-1. `message`: a string with a message if the analysis has converged or not;
+1. `message`: a summary of the convergence assessment;
 2. `converged`: a boolean that has TRUE if the analysis converged and FALSE if it did not converge;
-3. `continuous_parameters`: a list with ESS, KS-scores between windows of the same run and KS-scores between runs;
-4. `tree_parameters`: a list with ESS, split frequencies between windows of the same run and split frequencies between runs.
+3. `continuous_parameters`: a list with means, ESS and KS-scores between runs;
+4. `tree_parameters`: a list with frequencies, ESS and split frequencies between runs.
 
 In case the analysis has failed to converge, another element will be on the output list: `failed` with the parameters that failed the criteria for convergence.
 
-We can check `continuous_parameters`and `tree_parameters` with the commands:
+We can generate tables with general information for the continuous parameters the splits with the commands:
 
-  > `check_bears$continuous_parameters` <br />
-  > `check_bears$tree_parameters` <br />
+> `printTableContinuous(check_bears)` <br />
+
+|        |     means     |     ESS    |
+| :---:  |     :----:    |     :---:  |
+| alpha  |  1.603954589  |  9031.384  |
+| er.1.  |  0.015576521  |  11070.400 |
+| er.2.  |  0.505904352  |  12114.042 |
+| er.3.  |  0.006423004  |  6343.636  |
+| er.4.  |  0.009572443  |  18549.306 |
+| er.5.  |  0.454927376  |  16764.042 |
+| er.6.  |  0.007596305  |  5534.844  |
+| p_inv  |  0.532339279  |  4382.799  |
+| pi.1.  |  0.293497210  |  10027.691 |
+| pi.2.  |  0.301726522  |  12104.489 |
+| pi.3.  |  0.135420687  |  9974.490  |
+| pi.4.  |  0.269355587  |  11021.611 |
+| sr.1.  |  0.216077996  |  10773.049 |
+| sr.2.  |  0.550663747  |  15892.737 |
+| sr.3.  |  1.015625752  |  11885.672 |
+| sr.4.  |  2.217632528  |  3654.626  |
+| TL     |  1.112491969  |  8041.564  |
 
 
-{% figure list_parameters %}
-<img src="figures/list_parameters.png" />
-{% figcaption %}
-The lists of what is stored in the `check_bears$continuous_parameters` and `check_bears$tree_parameters`
-{% endfigcaption %}
+> `printTableSplits(check_bears)` <br />
+
+|                                                                                   |     frequencies   |    ESS    |
+| :---                                                                              |     :----:        |    :---:  |
+|Helarctos_malayanus Melursus_ursinus Ursus_americanus Ursus_thibetanus             |    0.32441756     | 16318.73  |
+|Ursus_americanus Ursus_thibetanus                                                  |    0.88891111     | 15668.33  |
+|Melursus_ursinus Ursus_arctos Ursus_maritimus                                      |    0.17603240     | 17116.12  |
+|Helarctos_malayanus Ursus_americanus Ursus_arctos Ursus_maritimus Ursus_thibetanus |    0.49535046     | 18692.89  |
+|Helarctos_malayanus Ursus_americanus                                               |    0.08814119     | 18594.19  |
+
+Convenience also provides plot functions to facilitate showing that convergence has been achieved.
+The function `plotESS.hist` plots a histogram of the ESS values for the continuous parameters or the splits.
+Typing `plotESS.hist(check_bears, trees = F)` and `plotESS.hist(check_bears, trees = T)` yields these figures:
+
+<p float="left">
+  <img src="figures/plotESS_continuous.png" width="400" />
+  <img src="figures/plotESS_splits.png" width="400" /> 
+</p>
+
+The function `plotKS.hist` plots a histogram of the KS values for the continuous parameters.
+The plot for the command `plotKS.hist(check_bears)` generates this figure:
+
+{% figure checkConvergence_summary %}
+<img src="figures/plotKS.png" width="400" />
 {% endfigure %}
 
-Both lists have 3 elements: ESS, comparison of windows and comparison of runs. Let's see each component:
+It is possible to plot the histogram of the KS values for the comparisons one-on-one when the MCMC analysis have more than 2 runs.
+The function for this plot is `plotKS.pooled`. 
+The following figure is an example of this plot.
 
-1. Continuous parameters
-  > `check_bears$continuous_parameters$ess` <br />
-  > `check_bears$continuous_parameters$compare_windows` <br />
-  > `check_bears$continuous_parameters$compare_runs` <br />
-2. Tree parameters
-  > `check_bears$tree_parameters$ess` <br />
-  > `check_bears$tree_parameters$compare_windows` <br />
-  > `check_bears$tree_parameters$compare_runs` <br />
-
-Each of these elements can be accessed to check all the values calculated in the package.
+{% figure checkConvergence_summary %}
+<img src="figures/plotKS_pooled.png" width="450" />
+{% endfigure %}
 
 Now that we learned how to use the package and how to interpret the results, let's practice with some exercises.
 
@@ -250,17 +321,14 @@ Which analysis have converged?
 
 {% subsection Convergence failure %}
 
-You can see that the output is different when we have a failure in convergence. We have 2 extra elements `failed` and `failed_names`.
+You can see that the output is different when we have a failure in convergence. We have more information in the text output and 2 extra elements `failed` and `failed_names`.
 The element `failed` has a summary text of what failed in our analysis.
 The element `failed_names` has the specifics about the parameters that failed, like the name of the parameter or the split and if it failed in checking for the ESS, the comparison between windows or between runs.
 
-{% ref failed %} shows the results from the convergence assessment on the analysis from Exercise 1 with the GTR+$\Gamma$+I nucleotide substitution model.
+{% ref failed %} shows the `failed` message for the convergence assessment on the analysis from Exercise 1 with the GTR+$\Gamma$+I nucleotide substitution model.
 
 {% figure failed %}
 <img src="figures/failed.png" />
-{% figcaption %}
-The output of a convergence assessment that has failed. On the left, we see the output with 6 elements. On the right, it's the summary of the parameters that failed.
-{% endfigcaption %}
 {% endfigure %}
 
 
