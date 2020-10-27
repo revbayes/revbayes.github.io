@@ -33,7 +33,7 @@ then
     git reset --quiet --hard origin/master
 
     # update the documentation?
-    if [ "$1" != "help" ]
+    if [ "$1" = "help" ]
     then
     git update-index --no-assume-unchanged documentation/index.html
     git ls-files --deleted -z documentation | git update-index --no-assume-unchanged -z --stdin
