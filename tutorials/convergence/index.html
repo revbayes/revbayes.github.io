@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Convergence assessment</h1>
 	<h3 class="subtitle">Phylogenetic convergence assessment using the R package Convenience</h3>
 	<h4 class="authors">Luiza Fabreti and Sebastian Höhna</h4>
-  <h5>Last modified on October 27, 2020</h5>
+  <h5>Last modified on October 28, 2020</h5>
 </div>
 
 
@@ -135,18 +135,18 @@ Precision can be evaluated by checking that we have sufficiently many samples be
 
 <p>The output of a phylogenetic analysis most commonly consists of two types of parameters:</p>
 
-<ol>
+<ul>
   <li>Continuous parameters: the evolutionary model parameters, the tree length, clock rates, etc.;</li>
   <li>Discrete parameters: the phylogenetic tree.</li>
-</ol>
+</ul>
 
 <p>To assess convergence for these parameters, the Convenience package evaluates:</p>
 
-<ol>
+<ul>
   <li>The Effective Sample Size (ESS);</li>
   <li>Comparison between windows of the same run;</li>
   <li>Comparison between different runs.</li>
-</ol>
+</ul>
 
 <p>The comparison between windows of the same run works by dividing the full length of the run into 5 windows (subsets) and comparing the third and fifth window.
 This comparison is used to determine the size of the burn-in. A sufficient burn-in will lead to windows that sampled values from the same distribution. 
@@ -205,7 +205,7 @@ We are currently still evaluating the choice of $\alpha$ on the power and false-
 
 <p>To date, the most often test to assess convergence of split frequencies is the <em>average standard deviation of split frequencies</em> (ASDSF) <a class="citation" href="#Nylander2008">(Nylander et al. 2008)</a>. The frequency of each split is computed for two separate MCMC runs and the difference between the two split frequency estimates is used. The ASDSF is problematic for two reasons: (1) for large trees with many splits that have posterior probabilities close to 0.0 or 1.0 will overwhelm the ASDSF and hence even a single split that is present in all samples in run 1 (thus a posterior probability of 1.0) and is never present in any sample in run 2 (thus a posterior probability of 0.0) might not be detected, and (2) the expected difference in split frequency depends on the true split frequency (see Figure <a href="#difference_split_frequencies"></a>).</p>
 
-<figure id="difference_split_frequencies"><p><img src="figures/difference_split_frequencies.png" width="400" /></p>
+<figure id="difference_split_frequencies"><p><img src="figures/difference_split_frequencies.png" width="500" /></p>
 <figcaption>The expected difference in split frequencies for ESS of 100, 200 and 625. The x-axis is the true value of the split frequency. The y-axis is the expected difference in split frequencies. The effect of increasing the ESS is the decrease of differences in frequency of sampled splits.</figcaption>
 </figure>
 
@@ -221,7 +221,7 @@ We transform each split into a chain of absence and presence values; if the spli
 
 <p><a href="#convergence_summary"></a> provides an overview of the convergence assessment described before and implemented in the package Convenience.</p>
 
-<figure id="convergence_summary"><p><img src="figures/convergence_summary.png" width="700" /></p>
+<figure id="convergence_summary"><p><img src="figures/convergence_summary.png" width="600" /></p>
 <figcaption>Overview of the workflow in the convergence assessment.</figcaption>
 </figure>
 
@@ -247,17 +247,16 @@ In R, type the commands:</p>
 <p>Here is a list of the functions the package uses to assess convergence:</p>
 
 <ul>
-  <li><code class="highlighter-rouge">checkConvergence</code>: takes the output from a phylogenetic analysis and works through the convergence assessment pipeline. This function can take either a directory with all the output files from a single analysis or a list of files. The function has 3 arguments:</li>
-</ul>
+  <li>
+    <p><code class="highlighter-rouge">checkConvergence</code>: takes the output from a phylogenetic analysis and works through the convergence assessment pipeline. This function can take either a directory with all the output files from a single analysis or a list of files. The function has 3 arguments:</p>
 
-<ol>
-  <li><code class="highlighter-rouge">path</code>: for when a path to a directory is provided</li>
-  <li><code class="highlighter-rouge">list_files</code>: for when a list of files is provided</li>
-  <li><code class="highlighter-rouge">format</code>: the software used for the phylogenetic analysis, current accepted formats are “revbayes”, “mb” for MrBayes, “beast”, “*beast”</li>
-  <li><code class="highlighter-rouge">control</code>: calls the <code class="highlighter-rouge">makeControl</code> function</li>
-</ol>
-
-<ul>
+    <ul>
+      <li><code class="highlighter-rouge">path</code>: for when a path to a directory is provided</li>
+      <li><code class="highlighter-rouge">list_files</code>: for when a list of files is provided</li>
+      <li><code class="highlighter-rouge">format</code>: the software used for the phylogenetic analysis, current accepted formats are “revbayes”, “mb” for MrBayes, “beast”, “*beast”</li>
+      <li><code class="highlighter-rouge">control</code>: calls the <code class="highlighter-rouge">makeControl</code> function</li>
+    </ul>
+  </li>
   <li>
     <p><code class="highlighter-rouge">essContParam</code>: calculates the ESS for the continuous parameters</p>
   </li>
@@ -505,14 +504,9 @@ The output message includes:</p>
   </thead>
   <tbody>
     <tr>
-      <td style="text-align: left">Helarctos_malayanus Melursus_ursinus Ursus_americanus Ursus_thibetanus</td>
-      <td style="text-align: center">0.32441756</td>
-      <td style="text-align: center">16318.73</td>
-    </tr>
-    <tr>
-      <td style="text-align: left">Ursus_americanus Ursus_thibetanus</td>
-      <td style="text-align: center">0.88891111</td>
-      <td style="text-align: center">15668.33</td>
+      <td style="text-align: left">Helarctos_malayanus Ursus_americanus</td>
+      <td style="text-align: center">0.08814119</td>
+      <td style="text-align: center">18594.19</td>
     </tr>
     <tr>
       <td style="text-align: left">Melursus_ursinus Ursus_arctos Ursus_maritimus</td>
@@ -520,41 +514,50 @@ The output message includes:</p>
       <td style="text-align: center">17116.12</td>
     </tr>
     <tr>
+      <td style="text-align: left">Helarctos_malayanus Melursus_ursinus Ursus_americanus Ursus_thibetanus</td>
+      <td style="text-align: center">0.32441756</td>
+      <td style="text-align: center">16318.73</td>
+    </tr>
+    <tr>
       <td style="text-align: left">Helarctos_malayanus Ursus_americanus Ursus_arctos Ursus_maritimus Ursus_thibetanus</td>
       <td style="text-align: center">0.49535046</td>
       <td style="text-align: center">18692.89</td>
     </tr>
     <tr>
-      <td style="text-align: left">Helarctos_malayanus Ursus_americanus</td>
-      <td style="text-align: center">0.08814119</td>
-      <td style="text-align: center">18594.19</td>
+      <td style="text-align: left">Ursus_americanus Ursus_thibetanus</td>
+      <td style="text-align: center">0.88891111</td>
+      <td style="text-align: center">15668.33</td>
     </tr>
   </tbody>
 </table>
 
 <p>Convenience also provides plot functions to facilitate showing that convergence has been achieved.
-The function <code class="highlighter-rouge">plotESS.hist</code> plots a histogram of the ESS values for the continuous parameters or the splits.
-Typing <code class="highlighter-rouge">plotESS.hist(check_bears, trees = F)</code> and <code class="highlighter-rouge">plotESS.hist(check_bears, trees = T)</code> yields these figures:</p>
+The functions <code class="highlighter-rouge">plotEssContinuous</code> and <code class="highlighter-rouge">plotEssSplits</code> plot the histogram of the ESS values for the continuous parameters and  the splits, respectively.
+Typing <code class="highlighter-rouge">plotEssContinuous(check_bears)</code> and <code class="highlighter-rouge">plotEssSplits(check_bears)</code> yields these figures:</p>
 
-<p float="left">
-  <img src="figures/plotESS_continuous.png" width="400" />
-  <img src="figures/plotESS_splits.png" width="400" /> 
-</p>
-
-<p>The function <code class="highlighter-rouge">plotKS.hist</code> plots a histogram of the KS values for the continuous parameters.
-The plot for the command <code class="highlighter-rouge">plotKS.hist(check_bears)</code> generates this figure:</p>
-
-<figure id="checkConvergence_summary"><p><img src="figures/plotKS.png" width="400" /></p>
+<figure id="plotESS"><p><img src="figures/plotESS.png" width="800" /></p>
+<figcaption>Histograms of the calculated ESS values. The left panel shows the ESS values for the continuous parameters and the right panel show the ESS for the splits. Both plots have the ESS ranges on the x-axis and the frequency on the y-axis. The dotted red line represents the threshold for the ESS.</figcaption>
 </figure>
 
-<p>It is possible to plot the histogram of the KS values for the comparisons one-on-one when the MCMC analysis have more than 2 runs.
+<p>We can see that, for both figures, all continuous parameters and splits have an ESS above the threshold. This is what we would have expected for a MCMC that has converged. 
+Another function to summarize the achievment of convergence is the function <code class="highlighter-rouge">plotKS</code>. It plots a histogram of the KS values for the continuous parameters.
+The plot for the command <code class="highlighter-rouge">plotKS(check_bears)</code> generates this figure:</p>
+
+<figure id="checkConvergence_summary"><p><img src="figures/plotKS.png" width="500" /></p>
+<figcaption>Histogram of the calculated KS values. The x-axis is the KS values and the y-axis is the frequency. The red dotted line represents the threshold for the KS score.</figcaption>
+</figure>
+
+<p>In this case, all KS values calculated for the continuous parameters are below the threshold. This means that the parameters are drawn from the same distribution for both runs of our analysis. Therefore, if convergence is achieved for a given analysis, the histogram for the KS values should be similiar to this plot.
+It is also possible to plot the histogram of the KS values for the comparisons one-on-one when the MCMC analysis have more than 2 runs.
 The function for this plot is <code class="highlighter-rouge">plotKS.pooled</code>. 
 The following figure is an example of this plot.</p>
 
-<figure id="checkConvergence_summary"><p><img src="figures/plotKS_pooled.png" width="450" /></p>
+<figure id="checkConvergence_summary"><p><img src="figures/plotKS_pooled.png" width="500" /></p>
+<figcaption>Histogram of the calculated KS values for the one-on-one comparison between runs. Each color represents a different comparison of runs, as shown in the legend. The x-axis is the KS values and the y-axis is the frequency. The red dotted line represents the threshold for the KS score.</figcaption>
 </figure>
 
-<p>Now that we learned how to use the package and how to interpret the results, let’s practice with some exercises.</p>
+<p>In this example, we observe again that all KS values are below the threshold. Which means that, for this criterion, convergence has been achieved.
+Now that we learned how to use the package and how to interpret the results, let’s practice with some exercises.</p>
 
 <h3 class="subsection" id="exercise-1">Exercise 1</h3>
 <hr class="subsection" />
@@ -573,6 +576,7 @@ The element <code class="highlighter-rouge">failed_names</code> has the specific
 <p><a href="#failed"></a> shows the <code class="highlighter-rouge">failed</code> message for the convergence assessment on the analysis from Exercise 1 with the GTR+$\Gamma$+I nucleotide substitution model.</p>
 
 <figure id="failed"><p><img src="figures/failed.png" /></p>
+<figcaption>The output from the command <code class="highlighter-rouge">check_primates$failed</code> showing a summary of the number of parameters that have failed a certain criterion.</figcaption>
 </figure>
 
 <h3 class="subsection" id="exercise-2">Exercise 2</h3>
