@@ -5,6 +5,7 @@ subtitle: Download and Install RevBayes
 permalink: /download
 code_layout: bash
 ---
+
 <div class="row">
 
 <div class="col-sm-4" align="center">
