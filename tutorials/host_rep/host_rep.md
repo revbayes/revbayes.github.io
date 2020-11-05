@@ -322,15 +322,17 @@ In cases where we don't have information about potential hosts in our data set, 
 
 For that, we need to change the code in two places: the Q matrix 
 
-    switch_rate_0_to_1 := switch_rates_pos[1]
-    switch_rate_0_to_2 := 0.
-    switch_rate_1_to_0 := switch_rates_pos[2]
-    switch_rate_1_to_2 := switch_rates_pos[3]
-    switch_rate_2_to_0 := 0.
-    switch_rate_2_to_1 := switch_rates_pos[4]
+    switch_rates_pos ~ dnDirichlet( [1,1] )
+
+    switch_rate_0_to_1 := 1e-6               # MCMC gets stuck on first gen if rates = 0.
+    switch_rate_0_to_2 := switch_rates_pos[1]
+    switch_rate_1_to_0 := 1e-6
+    switch_rate_1_to_2 := 1e-6
+    switch_rate_2_to_0 := switch_rates_pos[2]
+    switch_rate_2_to_1 := 1e-6
 
 and the root state frequencies
 
-    rf_host <- simplex(1,1,1)
+    rf_host <- simplex(1,0,1)
     
 And that's it. Everything else should be the same.
