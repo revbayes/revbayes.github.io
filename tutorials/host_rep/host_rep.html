@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Reconstructing Host Repertoire Evolution</h1>
 	<h3 class="subtitle">Inference of ancestral ecological interactions</h3>
 	<h4 class="authors">Mariana P. Braga and Michael J. Landis</h4>
-  <h5>Last modified on April 23, 2020</h5>
+  <h5>Last modified on October 19, 2020</h5>
 </div>
 
 
@@ -353,7 +353,7 @@ switch_rate_2_to_1 := switch_rates_pos[4]
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>switch_rates := v( switch_rate_0_to_1, switch_rate_0_to_2, switch_rate_1_to_0, switch_rate_1_to_2, switch_rate_2_to_0, switch_rate_2_to_1 )
 </code></pre></div></div>
 
-<p>We then construct a rate matrix for three states (0: non-host, 1: potential host, 2: actual host) using our vector of named rates. We found that the MCMC mixes better when the Q matrix is not rescaled such that the expected number of events per unit time per character is 1 (<code class="highlighter-rouge">rescaled=false</code>)</p>
+<p>We then construct a rate matrix for three states (0: non-host, 1: potential host, 2: actual host) using our vector of named rates. We found that the MCMC mixes better when the Q matrix is not rescaled such that the expected number of events per unit time per character is 1 (<code class="highlighter-rouge">rescaled=false</code>). This might not be true for every data set and you can always change it to <code class="highlighter-rouge">rescaled=true</code>.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q_char := fnFreeK( transition_rates=switch_rates, rescaled=false )
 </code></pre></div></div>
@@ -496,6 +496,27 @@ monitors.append( mnCharacterHistorySummary( filename=out_fn + ".history.txt",
 <figcaption>Ancestral state reconstruction of host repertoire across the Nymphalini phylogeny. Each square color represents one interaction with a given host family (only interactions with &gt;90% posterior probability). Some parasite nodes don’t display an ancestral state because no host interaction was estimated with probability higher than 90%. The x-axis shows time before present in millions of years.</figcaption>
 </figure>
 
+<h2 class="section" id="2-state">2-state model</h2>
+<hr class="section" />
+
+<p>In cases where we don’t have information about potential hosts in our data set, the inference might not work well with the 3-state model. It is tricky to infer a state when you only have indirect evidence of it (actual hosts must have been potential hosts in the past). One option is to skip potential hosts altogether and describe a 2-state model where there are only non-hosts (coded as 0) and actual hosts (coded as 2).</p>
+
+<p>For that, we need to change the code in two places: the Q matrix</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>switch_rate_0_to_1 := switch_rates_pos[1]
+switch_rate_0_to_2 := 0.
+switch_rate_1_to_0 := switch_rates_pos[2]
+switch_rate_1_to_2 := switch_rates_pos[3]
+switch_rate_2_to_0 := 0.
+switch_rate_2_to_1 := switch_rates_pos[4]
+</code></pre></div></div>
+
+<p>and the root state frequencies</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rf_host &lt;- simplex(1,1,1)
+</code></pre></div></div>
+
+<p>And that’s it. Everything else should be the same.</p>
 
 <ol class="bibliography"><li><span id="Nielsen2002">Nielsen R. 2002. Mapping mutations on phylogenies. Systematic Biology. 51:729–739.</span>
 
