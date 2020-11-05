@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Reconstructing Host Repertoire Evolution</h1>
 	<h3 class="subtitle">Inference of ancestral ecological interactions</h3>
 	<h4 class="authors">Mariana P. Braga and Michael J. Landis</h4>
-  <h5>Last modified on October 19, 2020</h5>
+  <h5>Last modified on November  5, 2020</h5>
 </div>
 
 
@@ -503,17 +503,19 @@ monitors.append( mnCharacterHistorySummary( filename=out_fn + ".history.txt",
 
 <p>For that, we need to change the code in two places: the Q matrix</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>switch_rate_0_to_1 := switch_rates_pos[1]
-switch_rate_0_to_2 := 0.
-switch_rate_1_to_0 := switch_rates_pos[2]
-switch_rate_1_to_2 := switch_rates_pos[3]
-switch_rate_2_to_0 := 0.
-switch_rate_2_to_1 := switch_rates_pos[4]
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>switch_rates_pos ~ dnDirichlet( [1,1] )
+
+switch_rate_0_to_1 := 1e-6               # MCMC gets stuck on first gen if rates = 0.
+switch_rate_0_to_2 := switch_rates_pos[1]
+switch_rate_1_to_0 := 1e-6
+switch_rate_1_to_2 := 1e-6
+switch_rate_2_to_0 := switch_rates_pos[2]
+switch_rate_2_to_1 := 1e-6
 </code></pre></div></div>
 
 <p>and the root state frequencies</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rf_host &lt;- simplex(1,1,1)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rf_host &lt;- simplex(1,0,1)
 </code></pre></div></div>
 
 <p>And that’s it. Everything else should be the same.</p>
