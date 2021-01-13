@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: Automated building and testing in RevBayes</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
+      </a>
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/download">Download</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/documentation/">Documentation</a></li>
+        <li><a href="https://revbayes.github.io/revscripter/">RevScripter</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/jobs/">Jobs</a></li>
+        <li><a href="/developer/">Developer</a></li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <div class="titlebar">
+	<h1 class="maintitle">Automated building and testing in RevBayes</h1>
+	
+	<h4 class="authors"></h4>
+  <h5>Last modified on January 13, 2021</h5>
+</div>
+
+<h2 class="section" id="automated-builds">Automated builds</h2>
+<hr class="section" />
+
+<p>A series of automated builds and tests is run every time code is pushed to the repository in any branch through Github Actions. The status of current workflows can be checked on the repository <a href="https://github.com/revbayes/revbayes/actions">page</a>, and a notification is sent to Slack (channel #github) once the full workflow is complete.</p>
+
+<p>The Github Actions workflow is configured in the <code class="highlighter-rouge">.github/workflows/build.yml</code> file. Linux and Mac builds use the CMake build configured in <code class="highlighter-rouge">projects/cmake/build.sh</code>, while the Windows build uses the Meson build.</p>
+
+<p>The automated workflow runs the following tests:</p>
+
+<ul>
+  <li>
+    <p>Tutorial tests</p>
+  </li>
+  <li>
+    <p>Integration tests (in the <code class="highlighter-rouge">tests/</code> submodule). To learn more about integration tests or add one, see <a href="/developer/tests/">this page</a>.</p>
+  </li>
+  <li>
+    <p>Likelihood calculations checks using <a href="https://gitlab.com/testiphy/testiphy">testiphy</a>.</p>
+  </li>
+</ul>
+
+<h2 class="section" id="troubleshooting">Troubleshooting</h2>
+<hr class="section" />
+
+<p>Known issues:</p>
+
+<ul>
+  <li>the Windows build fails at the <code class="highlighter-rouge">Configure and build</code> step with the message <code class="highlighter-rouge">ERROR: Dependency "boost" not found</code>. The <code class="highlighter-rouge">Install BOOST</code> step shows <code class="highlighter-rouge">ERROR 404</code> when attempting to download BOOST.</li>
+</ul>
+
+<p><strong>Resolution:</strong> BOOST and other necessary libraries for the Windows build are downloaded from a repository which periodically removes old versions. This error means that the versions used by RevBayes need to be updated in the file <code class="highlighter-rouge">projects/meson/make_winroot.sh</code>, l90. Available packages are listed <a href="http://repo.msys2.org/mingw/x86_64/">here</a>.</p>
+
+<ul>
+  <li>the Windows build fails at the <code class="highlighter-rouge">Test</code> step with an error message about a missing dll file.</li>
+</ul>
+
+<p><strong>Resolution:</strong> the missing DLL can be downloaded from the repository <a href="http://repo.msys2.org/mingw/x86_64/">here</a>. It needs to be added to the download list in file <code class="highlighter-rouge">projects/meson/make_winroot.sh</code> (l90) and moved to the build folder by adding the instruction <code class="highlighter-rouge">cp /home/runner/win_root/mingw64/bin/your_missing_file.dll ${GITHUB_WORKSPACE}/wincrossbuild/bin</code> to the file <code class="highlighter-rouge">.github/workflows/build.yml</code> in step <code class="highlighter-rouge">Configure and build (Windows meson cross compile)</code>. For an example already present in the build, see <code class="highlighter-rouge">libwinpthread-1.dll</code>.</p>
+
+<ul>
+  <li>the Mac build fails at the <code class="highlighter-rouge">Install</code> step with Homebrew-related errors.</li>
+</ul>
+
+<p><strong>Resolution:</strong> this is not a RevBayes issue, but an issue with the Mac virtual environment set up by Github. A list of current issues (and possible workarounds) can be found <a href="https://github.com/actions/virtual-environments/issues">here</a>.</p>
+
+<ol class="bibliography"></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "default highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "default highlighter-rouge";
+//   }
+//   
+// });
+</script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+    });
+    MathJax.Hub.Queue(function () {
+      $(".aside").each(function() {
+          $("div .MathJax", this).hide();
+      });
+    });
+</script>
+<script src="/assets/js/base.js"></script>
+
+  </body>
+</html>
