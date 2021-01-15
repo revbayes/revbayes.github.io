@@ -19,8 +19,9 @@ monitors = VectorMonitors()
 Finally, we create a helper variable that specifies the number of intervals.
 ```
 NUM_INTERVALS = 10
+NUM_BREAKS := NUM_INTERVALS - 1
 ```
-Using this variable we can easily change our script to break-up time into many (e.g., `NUM_INTERVALS = 100`) or few (e.g., `NUM_INTERVALS = 4`) intervals.
+Using this variable we can easily change our script to break-up time into many (e.g., `NUM_INTERVALS = 100`).
 
 
 
@@ -28,29 +29,27 @@ Using this variable we can easily change our script to break-up time into many (
 
 {% subsubsection Priors on amount of rate variation %}
 We start by specifying prior distributions on the rates.
-Each interval-specific speciation and extinction rate will be drawn from a normal distribution.
-Thus, we need a parameter for the standard deviation of those normal distributions.
-We use an exponential hyperprior with rate `SD = 0.587405 / NUM_INTERVALS` to estimate the standard deviation, but assume that all speciation rates and all extinction rates share the same standard deviation.
-The motivation for an exponential hyperprior is that it has the highest probability density at 0 which would make the variance of rates between consecutive time intervals 0 and thus represent a constant rate process.
-The data will tell us if there should be much variation in rates through time.
-(You may want to experiment with this hyperprior if you are interested.)
-```
-SD = abs(0.587405 / NUM_INTERVALS)
+The overall model is a HSMRF birth-death model.
+In this model, the changes in log-scale rates between intervals follow a Horseshoe distribution {% citet Carvalho2010 %}, which allows for large jumps in rate while assuming most changes are very small.
+We need a parameter to control the overall variability from present to past in the diversification rates, the global scale parameter.
+We must also set the global scale hyperprior, which acts with the global scale parameter to set the prior on rate variability.
+In this example, we use 10 speciation and extinction rate intervals, but the HSMRF enables us to use much larger numbers.
+The global scale hyperprior should be set based on how many intervals are used, in the case of 100 intervals, use 0.0021.
+RevGadgets provides the function `setMRFGlobalScaleHyperpriorNShifts()` to compute this parameter for other numbers of intervals.
 
-speciation_sd ~ dnExponential( 1.0 / SD)
-extinction_sd ~ dnExponential( 1.0 / SD)
 ```
-We apply a simple scaling move on each prior parameter.
-```
-moves.append( mvScale(speciation_sd,weight=5.0) )
-moves.append( mvScale(extinction_sd,weight=5.0) )
-```
+speciation_global_scale_hyperprior <- 0.044
+extinction_global_scale_hyperprior <- 0.044
 
+speciation_global_scale ~ dnHalfCauchy(0,1)
+extinction_global_scale ~ dnHalfCauchy(0,1)
+
+```
 
 
 {% subsubsection Specifying episodic rates %}
-As we mentioned before, we will apply normal distributions as priors for each log-transformed rate.
-We begin with the rate at the present which is our initial rate parameter.
+As we mentioned before, we will apply HSMRF distributions as prior for the log-transformed speciation and extinction rates.
+We begin with the rates at the present which is our initial rate parameter.
 The rates at the present will be specified slightly differently
 because they are not correlated to any previous rates.
 This is because we are actually modeling rate-changes backwards in time and
@@ -66,70 +65,74 @@ between $e^{-10}$ and $e^10$, so we should clearly cover the true values.
 (Note that for diversification rate estimates, $e^{-10}$ is virtually 0
 since the rate is so slow).
 ```
-log_speciation[1] ~ dnUniform(-10.0,10.0)
-log_speciation[1].setValue(0.0)
-log_extinction[1] ~ dnUniform(-10.0,10.0)
-log_extinction[1].setValue(-1.0)
-```
-Notice that we store the diversification rate variables in vectors.
-Storing the rate parameters in vectors will be useful and important later when we pass the rates into the birth-death process.
-
-We apply simple sliding window moves for the rates.
-Normally we would use scaling moves but in this case we work on the log-transformed parameters and thus sliding moves perform better.
-(If you are keen you can test the differences.)
-```
-moves.append( mvSlide(log_speciation[1], weight=2) )
-moves.append( mvSlide(log_extinction[1], weight=2) )
-```
-Now we transform the diversification rate parameters into actual rates using
-an exponential parameter transformation.
-```
-speciation[1] := exp( log_speciation[1] )
-extinction[1] := exp( log_extinction[1] )
+log_speciation_at_present ~ dnUniform(-10.0,10.0)
+log_speciation_at_present.setValue(0.0)
+log_extinction_at_present ~ dnUniform(-10.0,10.0)
+log_extinction_at_present.setValue(-1.0)
 ```
 
-Next, we specify the speciation and extinction rates for each time interval (*i.e.,* epoch).
+We apply efficient sliding moves to each parameter.
+```
+moves.append( mvScaleBactrian(log_speciation_at_present,weight=5))
+moves.append( mvScaleBactrian(log_extinction_at_present,weight=5))
+```
+
+To make MCMC possible for the HSMRF model, we use what is called a non-centered parameterization.
+This means that first we specify the log-scale changes in rate between intervals, and later we assemble these into the vector of rates, by adding them together and then exponentiating.
+The HSMRF also requires a vector of local scale parameters.
+These give the HSMRF a property called local adaptivity, which allow it to have rapidly varying rates in some intervals and nearly constant rates in others.
 This can be done efficiently using a `for-loop`.
-We will use a specific index variable so that we can more easily refer to the rate at the previous interval.
-Remember that we want to model the rates as a Brownian motion, which we achieve by specifying a normal distribution as the prior distribution on the rates centered around the previous rate (\IE the mean of the normal distribution is equal to the previous rate).
+
 ```
-for (i in 1:NUM_INTERVALS) {
-    index = i+1
+for (i in 1:NUM_BREAKS) {
+  sigma_speciation[i] ~ dnHalfCauchy(0,1)
+  sigma_extinction[i] ~ dnHalfCauchy(0,1)
 
-    log_speciation[index] ~ dnNormal( mean=log_speciation[i], sd=speciation_sd )
-    log_extinction[index] ~ dnNormal( mean=log_extinction[i], sd=extinction_sd )
+  # Make sure values initialize to something reasonable
+  sigma_speciation[i].setValue(runif(1,0.005,0.1)[1])
+  sigma_extinction[i].setValue(runif(1,0.005,0.1)[1])
 
-    moves.append( mvSlide(log_speciation[index], weight=2) )
-    moves.append( mvSlide(log_extinction[index], weight=2) )
-
-    speciation[index] := exp( log_speciation[index] )
-    extinction[index] := exp( log_extinction[index] )
-
+  # non-centralized parameterization of horseshoe
+  delta_log_speciation[i] ~ dnNormal( mean=0, sd=sigma_speciation[i]*speciation_global_scale*speciation_global_scale_hyperprior )
+  delta_log_extinction[i] ~ dnNormal( mean=0, sd=sigma_extinction[i]*extinction_global_scale*extinction_global_scale_hyperprior )
 }
 ```
-Finally, we apply moves that slide all values in the rate vectors,
-*i.e.,* all speciation or extinction rates.
-We will use an `mvVectorSlide` move.
+
+Now, we take the pieces we have for the rates (the global and local scales, the rate at the present, and the log-changes) and we assemble the overall rates.
+The `delta` parameters are differences in log-scale rates, and so we need to sum them then exponentiate.
+For example, speciation[2] := exp(log_speciation_at_present + delta_log_speciation[1]).
+Because the `sd` values for any of the log-scale differences is equivalent to what we wrote in the DAG above (simply written in expanded form), the model here is equivalent to the one in the DAG.
+The function `fnassembleContinuousMRF()` does all the summation and exponentiation efficiently for all speciation and extinction rates in all intervals and avoids making the DAG too big.
+
 ```
-moves.append( mvVectorSlide(log_speciation, weight=10) )
-moves.append( mvVectorSlide(log_extinction, weight=10) )
+speciation := fnassembleContinuousMRF(log_speciation_at_present,delta_log_speciation,initialValueIsLogScale=TRUE,order=1)
+extinction := fnassembleContinuousMRF(log_extinction_at_present,delta_log_extinction,initialValueIsLogScale=TRUE,order=1)
 ```
 
-Additionally, we apply a `mvShrinkExpand` move which changes the spread of several variables
-around their mean.
+The HSMRF requires a unique set of MCMC samplers to work.
+While you can place individual moves on the local and global scales and the log-changes, adequate MCMC sampling requires moves that exploit the structure of the model.
+These moves are the elliptical slice sampler that works on the log-changes, a Gibbs sampler for the global and local scales, and a recommended swap move (that works on both).
+But these moves require us to have the HSMRF model written out this way, and not the version we showed in the DAG.
+
 ```
-moves.append( mvShrinkExpand( log_speciation, sd=speciation_sd, weight=10 ) )
-moves.append( mvShrinkExpand( log_extinction, sd=extinction_sd, weight=10 ) )
+# Move all field parameters in one go
+moves.append( mvEllipticalSliceSamplingSimple(delta_log_speciation,weight=5,tune=FALSE) )
+moves.append( mvEllipticalSliceSamplingSimple(delta_log_extinction,weight=5,tune=FALSE) )
+
+# Move all field hyperparameters in one go
+moves.append( mvHSRFHyperpriorsGibbs(speciation_global_scale, sigma_speciation , delta_log_speciation , speciation_global_scale_hyperprior, propGlobalOnly=0.75, weight=10) )
+moves.append( mvHSRFHyperpriorsGibbs(extinction_global_scale, sigma_extinction , delta_log_extinction , extinction_global_scale_hyperprior, propGlobalOnly=0.75, weight=10) )
+
+# Swap moves to exchange adjacent delta,sigma pairs
+moves.append( mvHSRFIntervalSwap(delta_log_speciation ,sigma_speciation ,weight=5) )
+moves.append( mvHSRFIntervalSwap(delta_log_extinction ,sigma_extinction ,weight=5) )
 ```
-Both moves considerably improve the efficiency of our MCMC analysis.
 
 {% subsubsection Setting up the time intervals %}
-In `RevBayes` you actually have the possibility to specify unequal time intervals
-or even different intervals for the speciation and extinction rate.
-This is achieved by providing a vector of times when each interval ends.
-Here we simply break-up the time in equal-length intervals.
+The model formulation we are using assumes that time points are evenly spaced.
+We must now create this vector of times to give to the birth death model.
 ```
-interval_times <- T.rootAge() * (1:NUM_INTERVALS) / NUM_INTERVALS
+interval_times <- abs(T.rootAge() * seq(1, NUM_BREAKS, 1)/NUM_INTERVALS)
 ```
 This vector of times will be used for both the speciation and extinction rates.
 Also, remember that the times of the intervals represent ages going backwards in time.
@@ -193,16 +196,16 @@ monitors.append( mnModel(filename="output/primates_EBD.log",printgen=10, separat
 Additionally, we create four separate file monitors, one for each vector of speciation and extinction rates and for each speciation and extinction rate epoch (\IE the times when the interval ends).
 We want to have the speciation and extinction rates stored separately so that we can plot them nicely afterwards.
 ```
-monitors.append( mnFile(filename="output/primates_EBD_speciation_rates.log",printgen=10, separator = TAB, speciation) )
+monitors.append( mnFile(filename="output/primates_EBD_speciation s.log",printgen=10, separator = TAB, speciation) )
 monitors.append( mnFile(filename="output/primates_EBD_speciation_times.log",printgen=10, separator = TAB, interval_times) )
-monitors.append( mnFile(filename="output/primates_EBD_extinction_rates.log",printgen=10, separator = TAB, extinction) )
+monitors.append( mnFile(filename="output/primates_EBD_extinction s.log",printgen=10, separator = TAB, extinction) )
 monitors.append( mnFile(filename="output/primates_EBD_extinction_times.log",printgen=10, separator = TAB, interval_times) )
 ```
 
 Finally, we create a screen monitor that will report the states of specified variables
 to the screen with `mnScreen`:
 ```
-monitors.append( mnScreen(printgen=1000, extinction_sd, speciation_sd) )
+monitors.append( mnScreen(printgen=1000, extinction_global_scale, speciation_global_scale) )
 ```
 
 {% subsubsection Initializing and Running the MCMC Simulation %}
@@ -230,7 +233,7 @@ library(RevGadgets)
 
 tree <- read.nexus("data/primates_tree.nex")
 
-rev_out <- rev.process.div.rates(speciation_times_file = "output/primates_EBD_speciation_times.log", speciation_rates_file = "output/primates_EBD_speciation_rates.log", extinction_times_file = "output/primates_EBD_extinction_times.log", extinction_rates_file = "output/primates_EBD_extinction_rates.log", tree=tree, burnin=0.25,numIntervals=100)
+rev_out <- rev.process.div.rates(speciation_times_file = "output/primates_EBD_speciation_times.log", speciation s_file = "output/primates_EBD_speciation s.log", extinction_times_file = "output/primates_EBD_extinction_times.log", extinction s_file = "output/primates_EBD_extinction s.log", tree=tree, burnin=0.25,numIntervals=100)
 
 pdf("EBD.pdf")
 par(mfrow=c(2,2))

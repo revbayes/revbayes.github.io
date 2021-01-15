@@ -1,0 +1,656 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: Mass Extinction Estimation</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
+      </a>
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/download">Download</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/documentation/">Documentation</a></li>
+        <li><a href="https://revbayes.github.io/revscripter/">RevScripter</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/jobs/">Jobs</a></li>
+        <li><a href="/developer/">Developer</a></li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <div class="titlebar">
+	<h1 class="maintitle">Mass Extinction Estimation</h1>
+	<h3 class="subtitle">Estimating Mass Extinctions from Phylogenies with Fossil and Extant Taxa</h3>
+	<h4 class="authors">Andrew Magee and Sebastian Höhna</h4>
+  <h5>Last modified on January 14, 2021</h5>
+</div>
+
+
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul id="prerequisites">
+          
+            <li><a href="/tutorials/intro/">Getting Started with RevBayes and Rev Language Syntax</a></li>
+          
+            <li><a href="/tutorials/mcmc/">Introduction to Markov chain Monte Carlo (MCMC) Sampling</a></li>
+          
+            <li><a href="/tutorials/divrate/ebd.html">Episodic Diversification Rate Estimation</a></li>
+          
+            <li><a href="/tutorials/fbd/fbd_specimen.html">Combined-Evidence Analysis and the Fossilized Birth-Death Process for Analysis of Extant Taxa and Fossil Specimens</a></li>
+          
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+
+
+
+
+<blockquote class="tutorial_files" id="tutorial_files">
+    <h2>Data files and scripts</h2>
+    
+        
+        <strong>Data Files</strong>
+        <ul id="data_files">
+        
+        
+        
+          <li><a href="/tutorials/divrate/data/crocs_T1.tre">crocs_T1.tre</a></li>
+        
+          <li><a href="/tutorials/divrate/data/crocs_taxa.txt">crocs_taxa.txt</a></li>
+        
+        </ul>
+    
+        
+        <strong>Scripts</strong>
+        <ul id="scripts">
+        
+        
+        
+          <li><a href="/tutorials/divrate/scripts/fit_gamma_distributions.R">fit_gamma_distributions.R</a></li>
+        
+          <li><a href="/tutorials/divrate/scripts/mcmc_CRFBD.Rev">mcmc_CRFBD.Rev</a></li>
+        
+          <li><a href="/tutorials/divrate/scripts/mcmc_EFBD_mass_extinctions.Rev">mcmc_EFBD_mass_extinctions.Rev</a></li>
+        
+          <li><a href="/tutorials/divrate/scripts/plot_ME.R">plot_ME.R</a></li>
+        
+        </ul>
+    
+</blockquote>
+
+
+</div>
+<h2 class="section" id="overview">Overview</h2>
+<hr class="section" />
+
+<p>This tutorial describes how to infer mass extinctions using an episodic fossilized birth-death model in <code class="highlighter-rouge">RevBayes</code>.
+The episodic birth-death model is a process where diversification rates vary episodically through time
+and are modeled as piecewise-constant rates <a class="citation" href="#Stadler2011">(Stadler 2011; Höhna 2015)</a>.
+Your goal is to estimate whether or not there was a mass extinction using Markov chain Monte Carlo (MCMC).</p>
+
+<p>This tutorial builds on the time-varying birth-death model in the <a href="/tutorials/divrate/ebd.html">Episodic Diversification Rate Estimation</a>
+tutorial, where the theory of the underlying time-varying diversification model is covered.
+This model allows the incorporation of fossils in the phylogeny, so the
+<a href="/tutorials/fbd/fbd_specimen.html">Combined-Evidence Analysis and the Fossilized Birth-Death Process for Analysis of Extant Taxa and Fossil Specimens</a> tutorial may also be of interest.</p>
+
+<h2 class="section" id="models">Episodic Diversification Rate Models with Mass Extinctions</h2>
+<hr class="section" />
+
+<p>The basic idea behind the model is that speciation, extinction, and fossilization rates are constant within time intervals but can be different between time intervals.
+At these time points, the model allows for the possibility of a mass extinction, where every lineage dies instantaneously with some probability $M_i$.
+This instantaneous model of mass extinctions allows us to codify the fact that mass extinctions should lead to very large proportions of lineages dying off relatively quickly.
+It is important to account for variation in the per-lineage rates of speciation, extinction, and fossilization so that diversificaton-rate shifts are not misinterpreted as mass extinctions.
+To do this, we will use a Horseshoe Markov random field model (see the <a href="/tutorials/divrate/ebd.html">Episodic Diversification Rate Estimation</a> for more specifics).
+An overview of the underlying theory of the specific model and implementation is given in <a class="citation" href="#Magee2021">(Magee and Höhna 2021)</a>.</p>
+
+<figure id="fig_ME"><p><img src="figures/ME_tree.png" width="75%" height="75%" /></p>
+<figcaption>Two trees simulated under two scenarios of birth-death models.
+Tree (A) on the left was simulated without a mass extinction, while tree (B) on the
+right experienced as mass extinction at the dashed line.
+Both trees contain sampled ancestors as well, but these have been omitted for clarity.</figcaption>
+</figure>
+
+<p><a href="#fig_ME"></a> shows an example of a tree without and a tree with a mass extinction, but with otherwise similar diversification rates.
+Note how the tree with a mass extinction contains a band of fossil tips shortly
+before the mass extinction time, and few lineages cross the boundary.
+This is to be expected, as mass extinctions kill off a majority of lineages alive at that time, thus few lineages survive and what might otherwise be sampled ancestors become tips.</p>
+
+<p>In our inference model, each mass extinction probability will have a reversible jump mixture model
+prior with a probability $1 - p_M_i$ that there is <em>no</em> mass extinction.
+If there is a mass extinction, the probability that a lineage goes extinct at
+that time, $M_i$, will be modeled with a Beta distribution.
+The probability $p_M_i$ that there is a mass extinction will be small (mass
+extinctions are rare), but the probability of a lineage dying in a mass
+extinction will be large (most lineages die in a mass extinction).
+To model background rate variation, we use the Horseshoe Markov random field
+birth-death model as in the <a href="/tutorials/divrate/ebd.html">Episodic Diversification Rate Estimation</a> tutorial.</p>
+
+<h2 class="section" id="estimating-mass-extinctions">Estimating Mass Extinctions</h2>
+<hr class="section" />
+
+<h3 class="subsection" id="read-the-data">Read the data</h3>
+<hr class="subsection" />
+
+<p>Begin by reading in the ``observed’’ tree.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>T &lt;- readTrees("data/crocs_T1.tre")[1]
+</code></pre></div></div>
+<p>When the tree has fossils, it is best to read in the taxa from a taxon data file.
+This is absolutely required if the tree is to be simultaneously inferred.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>taxa &lt;- readTaxonData("data/crocs_taxa.txt",delim=TAB)
+</code></pre></div></div>
+<p>Additionally, we initialize a variable for our vector of moves and monitors.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
+monitors = VectorMonitors()
+</code></pre></div></div>
+
+<p>Finally, we create a helper variable that specifies the number of intervals.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NUM_INTERVALS = 100
+NUM_BREAKS := NUM_INTERVALS - 1
+</code></pre></div></div>
+<p>Using this variable we can easily change our script to break-up time into more
+intervals (e.g., <code class="highlighter-rouge">NUM_INTERVALS = 200</code>) for finer resolution on the mass extinctions.</p>
+
+<h3 class="subsection" id="specifying-the-model">Specifying the model</h3>
+<hr class="subsection" />
+
+<h4 class="subsubsection" id="setting-up-the-time-intervals">Setting up the time intervals</h4>
+<hr class="subsubsection" />
+
+<p>The model formulation we are using assumes that time points are evenly spaced.
+We must now create this vector of times to give to the birth death model.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>interval_times &lt;- abs(T.rootAge() * seq(1, NUM_BREAKS, 1)/NUM_INTERVALS)
+</code></pre></div></div>
+<p>This vector of times will be used for the speciation, extinction, and fossilization
+rates, as well as the mass extinctions.
+Also, remember that the times of the intervals represent ages going backwards in time.</p>
+
+<h4 class="subsubsection" id="priors-on-the-mass-extinctions">Priors on the mass extinctions</h4>
+<hr class="subsubsection" />
+
+<p>Recall that the prior on mass extinctions is done with a reversible jump mixture model.
+This means our prior on mass extinctions comes in two parts: the probability that
+there <em>is</em> a mass extinction at any time interval, and the probability that a
+lineage <em>dies</em> in that mass extinction.
+We set the reversible jump probability in terms of the prior expected number of mass extinctions experienced.
+For example, we might set the prior to 0.5 or 1.0 as a conservative prior estimate of the number of mass extinctions that shaped this tree.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>expected_number_of_mass_extinctions &lt;- 1.0
+</code></pre></div></div>
+<p>Since there are NUM_BREAKS possible extinction locations, this makes the probability
+that there is NOT a mass extinction at any one of them 1 - expected_number_of_mass_extinctions/NUM_BREAKS.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mix_p &lt;- Probability(1.0 - expected_number_of_mass_extinctions/NUM_BREAKS)
+</code></pre></div></div>
+
+<p>We must also choose a prior on the probability that a lineage <em>dies</em> at a mass extinction (when there is a non-zero mass extinction).
+Mass extinctions kill a large majority of lineages, so we use a Beta(18,2) prior,
+which correspondingly has a mean of 0.9 and a 95% CI of [0.74,0.987].
+Our full prior then says the following: mass extinctions are rare, but when they occur they kill most lineages.</p>
+
+<p>Now we must use these choices to set up the prior on all NUM_BREAKS possible mass extinctions.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:NUM_BREAKS) {
+  mass_extinction_probabilities[i] ~ dnReversibleJumpMixture(0.0,dnBeta(18.0,2.0),mix_p)
+  moves.append( mvRJSwitch(mass_extinction_probabilities[i]) )
+  moves.append( mvSlideBactrian(mass_extinction_probabilities[i]) )
+}
+</code></pre></div></div>
+<p>We must attach a reversible jump move to investigate whether there is or is not a mass extinction.
+We must also attach a move to explore the probability of death (when there is a mass extinction).</p>
+
+<h4 class="subsubsection" id="priors-on-amount-of-rate-variation">Priors on amount of rate variation</h4>
+<hr class="subsubsection" />
+
+<p>Now we must specify prior distributions on the rates of speciation, extinction, and fossilization through time.
+The overall model is a Horseshoe Markov random field (HSMRF) birth-death model <a class="citation" href="#Magee2020">Magee et al. (2020)</a>.
+In this model, the changes in log-scale rates between intervals follow a Horseshoe distribution <a class="citation" href="#Carvalho2010">Carvalho et al. (2010)</a>, which allows for large jumps in rate while assuming most changes are very small.
+We need a parameter to control the overall variability from present to past in the diversification rates, the global scale parameter.
+We must also set the global scale hyperprior, which acts with the global scale parameter to set the prior on rate variability.
+In this example, we use 100 rate intervals, but the HSMRF enables us to use larger numbers.
+The global scale hyperprior should be set based on how many intervals are used, in the case of 100 intervals, use 0.0021.
+RevGadgets provides the function <code class="highlighter-rouge">setMRFGlobalScaleHyperpriorNShifts()</code> to compute this parameter for other numbers of intervals.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>speciation_rate_global_scale_hyperprior &lt;- 0.0021
+extinction_rate_global_scale_hyperprior &lt;- 0.0021
+fossilization_rate_global_scale_hyperprior &lt;- 0.0021
+
+speciation_rate_global_scale ~ dnHalfCauchy(0,1)
+extinction_rate_global_scale ~ dnHalfCauchy(0,1)
+fossilization_rate_global_scale ~ dnHalfCauchy(0,1)
+</code></pre></div></div>
+
+<h4 class="subsubsection" id="specifying-episodic-rates">Specifying episodic rates</h4>
+<hr class="subsubsection" />
+
+<p>As we mentioned, we will apply HSMRF distributions as prior for the log-transformed speciation, extinction, and fossilization rates.
+We begin with the rates at the present which is our initial rate parameter.
+The rates at the present will be specified slightly differently
+because they are not correlated to any previous rates.
+This is because we are actually modeling rate-changes backwards in time and
+there is no previous rate for the rate at the present.
+Modeling rates backwards in time makes it easier for us if we had some prior information
+about some event affected diversification sometime before the present,
+<em>e.g.,</em> 25 million years ago.</p>
+
+<p>Given that the full model contains many parameters, we set the prior on the
+first rate using an empirical Bayes strategy.
+In this approach, we first fit a constant-rate FBD model, then use the posterior
+distribution on those rates to determine the prior on the rate at present.
+Here, this has already been done and a gamma prior has been fit to the samples.
+The script <code class="highlighter-rouge">mcmc_CRFBD.Rev</code> can be used to run the constant-rate analysis,
+and the RevGadgets function <code class="highlighter-rouge">posteriorSamplesToParametricPrior()</code> can be used
+to fit a distribution to the posterior samples.
+The following three Gamma priors are suitable only for analyses of the Wilberg <em>et al.</em> (2019) datasets.
+New priors must be set for new datasets.
+The script <code class="highlighter-rouge">fit_gamma_distributions.R</code> shows you how to set the priors, using this Crocodylomorph dataset as an example, assuming you have run <code class="highlighter-rouge">mcmc_CRFBD.Rev</code>.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>speciation_rate_hyperprior_alpha &lt;- 8.333449
+speciation_rate_hyperprior_beta &lt;- 24.432402
+extinction_rate_hyperprior_alpha &lt;- 8.28311
+extinction_rate_hyperprior_beta &lt;- 24.34245
+fossilization_rate_hyperprior_alpha &lt;- 8.964942
+fossilization_rate_hyperprior_beta &lt;- 2717.621689
+
+speciation_rate_at_present ~ dnGamma(speciation_rate_hyperprior_alpha,speciation_rate_hyperprior_beta)
+extinction_rate_at_present ~ dnGamma(extinction_rate_hyperprior_alpha,extinction_rate_hyperprior_beta)
+fossilization_rate_at_present ~ dnGamma(fossilization_rate_hyperprior_alpha,fossilization_rate_hyperprior_beta)
+</code></pre></div></div>
+
+<p>We apply a variety of moves to the rates at present individually.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScaleBactrian(speciation_rate_at_present,weight=5) )
+moves.append( mvScaleBactrian(extinction_rate_at_present,weight=5) )
+moves.append( mvScaleBactrian(fossilization_rate_at_present,weight=5) )
+moves.append( mvMirrorMultiplier(speciation_rate_at_present,weight=5) )
+moves.append( mvMirrorMultiplier(extinction_rate_at_present,weight=5) )
+moves.append( mvMirrorMultiplier(fossilization_rate_at_present,weight=5) )
+moves.append( mvRandomDive(speciation_rate_at_present,weight=5) )
+moves.append( mvRandomDive(extinction_rate_at_present,weight=5) )
+moves.append( mvRandomDive(fossilization_rate_at_present,weight=5) )
+</code></pre></div></div>
+<p>We also apply joint moves to account for the correlation between the parameters.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>avmvn_rates_at_present = mvAVMVN(weight=50)
+avmvn_rates_at_present.addVariable(speciation_rate_at_present)
+avmvn_rates_at_present.addVariable(extinction_rate_at_present)
+avmvn_rates_at_present.addVariable(fossilization_rate_at_present)
+moves.append( avmvn_rates_at_present )
+
+up_down_move = mvUpDownScale(weight=5.0)
+up_down_move.addVariable(speciation_rate_at_present,TRUE)
+up_down_move.addVariable(extinction_rate_at_present,TRUE)
+moves.append( up_down_move )
+</code></pre></div></div>
+
+<p>To make MCMC possible for the HSMRF model, we use what is called a non-centered parameterization.
+This means that first we specify the log-scale changes in rate between intervals, and later we assemble these into the vector of rates.
+The HSMRF also requires a vector of local scale parameters.
+These give the HSMRF a property called local adaptivity, which allow it to have rapidly varying rates in some intervals and nearly constant rates in others.
+This can be done efficiently using a <code class="highlighter-rouge">for-loop</code>.
+In this loop we also attach a variety of moves to improve MCMC mixing, but as with the <a href="/tutorials/divrate/ebd.html">Episodic Diversification Rate Estimation</a> tutorial, we will also use HSMRF-specific moves.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:NUM_BREAKS) {
+  # Variable-scaled variances for hierarchical horseshoe
+  sigma_speciation_rate[i] ~ dnHalfCauchy(0,1)
+  sigma_extinction_rate[i] ~ dnHalfCauchy(0,1)
+  sigma_fossilization_rate[i] ~ dnHalfCauchy(0,1)
+
+  # Make sure values initialize to something reasonable
+  sigma_speciation_rate[i].setValue(runif(1,0.005,0.1)[1])
+  sigma_extinction_rate[i].setValue(runif(1,0.005,0.1)[1])
+  sigma_fossilization_rate[i].setValue(runif(1,0.005,0.1)[1])
+
+  # moves on the single sigma values
+  moves.append( mvScaleBactrian(sigma_speciation_rate[i], weight=5) )
+  moves.append( mvScaleBactrian(sigma_extinction_rate[i], weight=5) )
+  moves.append( mvScaleBactrian(sigma_fossilization_rate[i], weight=5) )
+
+  # non-centralized parameterization of horseshoe
+  delta_log_speciation_rate[i] ~ dnNormal( mean=0, sd=sigma_speciation_rate[i]*speciation_rate_global_scale*speciation_rate_global_scale_hyperprior )
+  delta_log_extinction_rate[i] ~ dnNormal( mean=0, sd=sigma_extinction_rate[i]*extinction_rate_global_scale*extinction_rate_global_scale_hyperprior )
+  delta_log_fossilization_rate[i] ~ dnNormal( mean=0, sd=sigma_fossilization_rate[i]*fossilization_rate_global_scale*fossilization_rate_global_scale_hyperprior )
+
+  # Make sure values initialize to something reasonable
+  delta_log_speciation_rate[i].setValue(runif(1,-0.1,0.1)[1])
+  delta_log_extinction_rate[i].setValue(runif(1,-0.1,0.1)[1])
+  delta_log_fossilization_rate[i].setValue(runif(1,-0.1,0.1)[1])
+
+  moves.append( mvSlideBactrian(delta_log_speciation_rate[i], weight=5) )
+  moves.append( mvSlideBactrian(delta_log_extinction_rate[i], weight=5) )
+  moves.append( mvSlideBactrian(delta_log_fossilization_rate[i], weight=5) )
+
+  delta_up_down_move[i] = mvUpDownSlide(weight=5.0)
+  delta_up_down_move[i].addVariable(delta_log_speciation_rate[i],TRUE)
+  delta_up_down_move[i].addVariable(delta_log_extinction_rate[i],TRUE)
+  moves.append( delta_up_down_move[i] )
+}
+</code></pre></div></div>
+
+<p>Now, we take the pieces we have for the rates (the global and local scales, the rate at the present, and the log-changes) and we assemble the overall rates.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>speciation_rate := fnassembleContinuousMRF(speciation_rate_at_present,delta_log_speciation_rate,initialValueIsLogScale=FALSE,order=1)
+extinction_rate := fnassembleContinuousMRF(extinction_rate_at_present,delta_log_extinction_rate,initialValueIsLogScale=FALSE,order=1)
+fossilization_rate := fnassembleContinuousMRF(fossilization_rate_at_present,delta_log_fossilization_rate,initialValueIsLogScale=FALSE,order=1)
+</code></pre></div></div>
+
+<p>The HSMRF requires a unique set of MCMC samplers to work.
+While we can (and did) place individual moves on the local and global scales and the log-changes, adequate MCMC sampling requires moves that exploit the structure of the model.
+These moves are the elliptical slice sampler that works on the log-changes, a Gibbs sampler for the global and local scales, and a recommended swap move (that works on both).</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Move all field parameters in one go
+moves.append( mvEllipticalSliceSamplingSimple(delta_log_speciation,weight=5,tune=FALSE) )
+moves.append( mvEllipticalSliceSamplingSimple(delta_log_extinction,weight=5,tune=FALSE) )
+moves.append( mvEllipticalSliceSamplingSimple(delta_log_fossilization,weight=5,tune=FALSE) )
+
+# Move all field hyperparameters in one go
+moves.append( mvHSRFHyperpriorsGibbs(speciation_rate_global_scale, sigma_speciation , delta_log_speciation , speciation_rate_global_scale_hyperprior, propGlobalOnly=0.75, weight=10) )
+moves.append( mvHSRFHyperpriorsGibbs(extinction_rate_global_scale, sigma_extinction , delta_log_extinction , extinction_rate_global_scale_hyperprior, propGlobalOnly=0.75, weight=10) )
+moves.append( mvHSRFHyperpriorsGibbs(fossilization_rate_global_scale, sigma_fossilization , delta_log_fossilization , fossilization_rate_global_scale_hyperprior, propGlobalOnly=0.75, weight=10) )
+
+# Swap moves to exchange adjacent delta,sigma pairs
+moves.append( mvHSRFIntervalSwap(delta_log_speciation ,sigma_speciation ,weight=5) )
+moves.append( mvHSRFIntervalSwap(delta_log_extinction ,sigma_extinction ,weight=5) )
+moves.append( mvHSRFIntervalSwap(delta_log_fossilization ,sigma_fossilization ,weight=5) )
+</code></pre></div></div>
+
+<h4 class="subsubsection" id="incomplete-taxon-sampling">Incomplete Taxon Sampling</h4>
+<hr class="subsubsection" />
+
+<p>We know that we have sampled 14 out of 23 living Crocodilian species.
+To account for this we can set the sampling parameter as a constant node with a value of 14/23.
+For simplicity we assume <em>uniform</em> taxon sampling <a class="citation" href="#Hoehna2011">(Höhna et al. 2011; Höhna 2014)</a>,</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sampling_at_present &lt;- 14/23
+</code></pre></div></div>
+
+<h4 class="subsubsection" id="root-age">Root age</h4>
+<hr class="subsubsection" />
+
+<p>The birth-death process requires a parameter for the root age.
+In this exercise we use a fixed tree and thus we know the age of the tree.
+Hence, we can get the value for the root from the <a class="citation" href="#Wilberg2019">Wilberg et al. (2019)</a> tree.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root_time &lt;- T.rootAge()
+</code></pre></div></div>
+
+<h4 class="subsubsection" id="the-time-tree">The time tree</h4>
+<hr class="subsubsection" />
+
+<p>Now we have all of the parameters we need to specify the full episodic birth-death model.
+We initialize the stochastic node representing the time tree.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree ~ dnFBDP(
+                  rootAge                                          = T.rootAge(),
+                  timeline                                         = interval_times,
+                  lambda                                           = speciation_rate,
+                  mu                                               = extinction_rate,
+                  phi                                              = fossilization_rate,
+                  Mu                                               = mass_extinction_probabilities,
+                  Phi                                              = sampling_at_present,
+                  condition                                        = "time",
+                  taxa                                             = taxa,
+                  initialTree                                      = T)
+</code></pre></div></div>
+<p>You may notice that we explicitly specify that we want to condition on the time of the process.
+It is possible to change this condition to the the fact that we have sampled
+the root (and at least one lineage has survived to the present).</p>
+
+<p>Then we attach data to the <code class="highlighter-rouge">timetree</code> variable.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree.clamp(T)
+</code></pre></div></div>
+
+<p>Finally, we create a workspace object of our whole model using the <code class="highlighter-rouge">model()</code> function.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(speciation_rate)
+</code></pre></div></div>
+
+<p>The <code class="highlighter-rouge">model()</code> function traversed all of the connections and found all of the nodes we specified.</p>
+
+<h3 class="subsection" id="running-an-mcmc-analysis">Running an MCMC analysis</h3>
+<hr class="subsection" />
+
+<h4 class="subsubsection" id="specifying-monitors">Specifying Monitors</h4>
+<hr class="subsubsection" />
+
+<p>For our MCMC analysis, we need to set up a vector of <em>monitors</em> to record the states of our Markov chain.
+First, we will initialize the model monitor using the <code class="highlighter-rouge">mnModel</code> function.
+This creates a new monitor variable that will output the states for all model parameters
+when passed into a MCMC function.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/crocs_EFBDME.log",printgen=10, separator = TAB) )
+</code></pre></div></div>
+
+<p>Additionally, we create four separate file monitors, one for each vector of speciation and extinction rates and for each speciation and extinction rate epoch (\IE the times when the interval ends).
+We want to have the speciation and extinction rates stored separately so that we can plot them nicely afterwards.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/crocs_EFBDME.log",printgen=10, separator = TAB) )
+monitors.append( mnFile(filename="output/crocs_EFBDME_speciation_rates.log",printgen=10, separator = TAB, speciation_rate) )
+monitors.append( mnFile(filename="output/crocs_EFBDME_speciation_rate_times.log",printgen=10, separator = TAB, interval_times) )
+monitors.append( mnFile(filename="output/crocs_EFBDME_extinction_rates.log",printgen=10, separator = TAB, extinction_rate) )
+monitors.append( mnFile(filename="output/crocs_EFBDME_extinction_rate_times.log",printgen=10, separator = TAB, interval_times) )
+monitors.append( mnFile(filename="output/crocs_EFBDME_fossilization_rates.log",printgen=10, separator = TAB, fossilization_rate) )
+monitors.append( mnFile(filename="output/crocs_EFBDME_fossilization_rate_times.log",printgen=10, separator = TAB, interval_times) )
+monitors.append( mnFile(filename="output/crocs_EFBDME_mass_extinction_probabilities.log",printgen=10, separator = TAB, fossilization_rate) )
+monitors.append( mnFile(filename="output/crocs_EFBDME_mass_extinction_times.log",printgen=10, separator = TAB, interval_times) )
+</code></pre></div></div>
+
+<p>Finally, we create a screen monitor that will report the states of specified variables
+to the screen with <code class="highlighter-rouge">mnScreen</code>:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(printgen=1000, speciation_rate_global_scale, extinction_rate_global_scale, fossilization_rate_global_scale) )
+</code></pre></div></div>
+
+<h4 class="subsubsection" id="initializing-and-running-the-mcmc-simulation">Initializing and Running the MCMC Simulation</h4>
+<hr class="subsubsection" />
+
+<p>With a fully specified model, a set of monitors, and a set of moves,
+we can now set up the MCMC algorithm that will sample parameter values in proportion
+to their posterior probability.
+The <code class="highlighter-rouge">mcmc()</code> function will create our MCMC object:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
+</code></pre></div></div>
+
+<p>Now, run the MCMC.
+This will take some time, this model has roughly 700 parameters to infer which are generally correlated with each other.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=300000, tuningInterval=200)
+</code></pre></div></div>
+
+<h3 class="subsection" id="assessing-support-for-mass-extinctions">Assessing support for mass extinctions</h3>
+<hr class="subsection" />
+
+<p>When the analysis is complete, you will have the monitored files in your output directory.
+The <a href="/tutorials/divrate/ebd.html">Episodic Diversification Rate Estimation</a> tutorial covers how to summarize the continuous rates of speciation, extinction, and fossilization through time.
+The key summary for the mass extinctions is the posterior support for the presence of a mass extinction at any interval.
+Since we have used reversible jump mixture models, the posterior distribution for each has some samples where the mass extinction was disallowed (and the $M_i$ is exactly 0).
+If there is support for a mass extinction, there will also be samples with mass extinctions (where $M_i$ is not 0).
+We can use Bayes factors to summarize how significant support is for a mass extinction at any time, with a 2 log Bayes factor threshold of 10 indicating strong support.</p>
+
+<p>You can visualize the support at the allowed mass extinction times using <code class="highlighter-rouge">R</code> using our package <code class="highlighter-rouge">RevGadgets</code>.
+If you don’t have the R-package <code class="highlighter-rouge">RevGadgets</code> installed, or if you have trouble with the package, then please read the separate tutorial about the package.
+Note that you will have to give <code class="highlighter-rouge">RevGadgets</code> some information about the model setup from the Rev script for it to function.</p>
+
+<p>Just start <code class="highlighter-rouge">R</code> in the main directory for this analysis and then type the following commands:</p>
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">RevGadgets</span><span class="p">)</span><span class="w">
+
+</span><span class="n">mass_extinction_probabilities</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">readTrace</span><span class="p">(</span><span class="s2">"output/crocs_EFBDME_mass_extinction_probabilities.log"</span><span class="p">,</span><span class="n">burnin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.25</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># prior probability of mass extinction at any time</span><span class="w">
+</span><span class="n">prior_n_expected</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">0.1</span><span class="w">
+</span><span class="n">n_intervals</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">100</span><span class="w">
+</span><span class="n">prior_prob</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">prior_n_expected</span><span class="o">/</span><span class="p">(</span><span class="n">n_intervals</span><span class="m">-1</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># times when mass extinctions were allowed</span><span class="w">
+</span><span class="n">tree_age</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">243.5</span><span class="w">
+</span><span class="n">interval_times</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">tree_age</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">seq</span><span class="p">(</span><span class="m">1</span><span class="o">/</span><span class="n">n_intervals</span><span class="p">,(</span><span class="n">n_intervals</span><span class="m">-1</span><span class="p">)</span><span class="o">/</span><span class="n">n_intervals</span><span class="p">,</span><span class="m">1</span><span class="o">/</span><span class="n">n_intervals</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># then plot results:</span><span class="w">
+</span><span class="n">p</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">plotMassExtinctions</span><span class="p">(</span><span class="n">mass.extinction.trace</span><span class="o">=</span><span class="n">mass_extinction_probabilities</span><span class="p">,</span><span class="n">mass.extinction.times</span><span class="o">=</span><span class="n">interval_times</span><span class="p">,</span><span class="n">mass.extinction.name</span><span class="o">=</span><span class="s2">"mass_extinction_probabilities"</span><span class="p">,</span><span class="n">prior_prob</span><span class="p">)</span><span class="w">
+
+</span><span class="n">pdf</span><span class="p">(</span><span class="s2">"mass_extinction_Bayes_factors.pdf"</span><span class="p">)</span><span class="w">
+</span><span class="n">p</span><span class="w">
+</span><span class="n">dev.off</span><span class="p">()</span><span class="w">
+</span></code></pre></div></div>
+
+<p>⇨ The <code class="highlighter-rouge">Rev</code> file for performing this analysis: <code class="highlighter-rouge">mcmc_EFBD_mass_extinctions.Rev</code></p>
+
+<figure id="fig_ME_Results"><p><img src="figures/mass_extinction_bayes_factors.png" width="75%" height="75%" /></p>
+<figcaption>Resulting Bayes Factor support when using 100 intervals.
+You should obtain similar results when you use 100 intervals.
+The support values might change when you use a different resolution, <em>i.e.,</em> a different number of intervals.</figcaption>
+</figure>
+
+<h3 class="subsection" id="exercise-1">Exercise 1</h3>
+<hr class="subsection" />
+
+<ul>
+  <li>Run an MCMC simulation to estimate the posterior support for mass extinctions.</li>
+  <li>Visualize the support using <code class="highlighter-rouge">R</code>.</li>
+  <li>Do you see evidence for mass extinctions? When? What known mass extinction event, if any, does this correspond to?</li>
+  <li>Plot the continuous rates of speciation, extinction, and fossilization (revisit the <a href="/tutorials/divrate/ebd.html">Episodic Diversification Rate Estimation</a> tutorial for details). What patterns do you see?</li>
+  <li>Is there evidence for rate variation? Look at the estimates of <code class="highlighter-rouge">speciation_global_scale</code>, <code class="highlighter-rouge">extinction_global_scale</code>, and <code class="highlighter-rouge">fossilization_global_scale</code> in <code class="highlighter-rouge">Tracer</code>: Is there information in the data to change the estimates from the prior?</li>
+</ul>
+
+<h3 class="subsection" id="exercise-2">Exercise 2</h3>
+<hr class="subsection" />
+
+<ul>
+  <li>Assess prior sensitivity. Specifically, assess the sensitivity of the results to the prior expected number of mass extinctions.
+    <ol>
+      <li>Set <code class="highlighter-rouge">expected_number_of_mass_extinctions</code> to something other than 1.0, like 0.5 or 2.0 (or even something much smaller or bigger like 0.1 or 10).</li>
+      <li>Run the new analysis and plot the results.</li>
+    </ol>
+  </li>
+  <li>How does this influence your support for mass extinctions?</li>
+  <li>Do the continuous rates of speciation, extintion, and/or fossilization change?</li>
+</ul>
+
+
+<ol class="bibliography"><li><span id="Carvalho2010">Carvalho C.M., Polson N.G., Scott J.G. 2010. The horseshoe estimator for sparse signals. Biometrika. 97:465–480.</span>
+
+</li>
+<li><span id="Hoehna2014a">Höhna S. 2014. Likelihood Inference of Non-Constant Diversification Rates with Incomplete Taxon Sampling. PLoS One. 9:e84184.</span>
+
+<a href="https://doi.org/10.1371/journal.pone.0084184">10.1371/journal.pone.0084184</a>
+
+</li>
+<li><span id="Hoehna2015a">Höhna S. 2015. The time-dependent reconstructed evolutionary process with a key-role for mass-extinction events. Journal of Theoretical Biology. 380:321–331.</span>
+
+<a href="https://doi.org/http://dx.doi.org/10.1016/j.jtbi.2015.06.005">http://dx.doi.org/10.1016/j.jtbi.2015.06.005</a>
+
+</li>
+<li><span id="Hoehna2011">Höhna S., Stadler T., Ronquist F., Britton T. 2011. Inferring speciation and extinction rates under different species sampling schemes. Molecular Biology and Evolution. 28:2577–2589.</span>
+
+</li>
+<li><span id="Magee2021">Magee A.F., Höhna S. 2021. Impact of K-Pg Mass Extinction Event on Crocodylomorpha Inferred from Phylogeny of Extinct and Extant Taxa. bioRxiv.:426715.</span>
+
+<a href="https://doi.org/10.1101/426715">10.1101/426715</a>
+
+</li>
+<li><span id="Magee2020">Magee A.F., Höhna S., Vasylyeva T.I., Leaché A.D., Minin V.N. 2020. Locally adaptive Bayesian birth-death model successfully detects slow and rapid rate shifts. PLoS Computational Biology. 16:e1007999.</span>
+
+</li>
+<li><span id="Stadler2011">Stadler T. 2011. Mammalian phylogeny reveals recent diversification rate shifts. Proceedings of the National Academy of Sciences. 108:6187–6192.</span>
+
+<a href="https://doi.org/10.1073/pnas.1016876108">10.1073/pnas.1016876108</a>
+
+</li>
+<li><span id="Wilberg2019">Wilberg E.W., Turner A.H., Brochu C.A. 2019. Evolutionary structure and timing of major habitat shifts in Crocodylomorpha. Scientific reports. 9:514.</span>
+
+</li></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+    });
+    MathJax.Hub.Queue(function () {
+      $(".aside").each(function() {
+          $("div .MathJax", this).hide();
+      });
+    });
+</script>
+<script src="/assets/js/base.js"></script>
+
+  </body>
+</html>

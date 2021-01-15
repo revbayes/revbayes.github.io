@@ -54,8 +54,8 @@
       <div class="titlebar">
 	<h1 class="maintitle">Episodic Diversification Rate Estimation</h1>
 	<h3 class="subtitle">Estimating Rate-Variation Through Time in Diversification Rates</h3>
-	<h4 class="authors">Sebastian Höhna</h4>
-  <h5>Last modified on September 12, 2019</h5>
+	<h4 class="authors">Sebastian Höhna and Andrew Magee</h4>
+  <h5>Last modified on January 14, 2021</h5>
 </div>
 
 
@@ -139,43 +139,49 @@ for estimating diversification rates.</p>
 <h2 class="section" id="models">Episodic Diversification Rate Models</h2>
 <hr class="section" />
 
-<p>The basic idea behind the model is that speciation and extinction rates are constant 
+<p>The basic idea behind the model is that speciation and extinction rates are constant
 within time intervals but can be different between time intervals.
 Thus, we will divide time into equally sized intervals.
-An overview of the underlying theory of the specific model and implementation 
+An overview of the underlying theory of the specific model and implementation
 is given in <a class="citation" href="#Hoehna2015a">(Höhna 2015)</a>.</p>
 
 <figure id="fig_EBD"><p><img src="figures/EBD_scenarios.png" width="75%" height="75%" /></p>
-<figcaption>Two scenarios of birth-death models. On the left we show constant diversification. 
-On the right we show an example of an episodic birth-death process where rates 
-are constant in each time interval (epoch). The top panel of this figure shows 
+<figcaption>Two scenarios of birth-death models. On the left we show constant diversification.
+On the right we show an example of an episodic birth-death process where rates
+are constant in each time interval (epoch). The top panel of this figure shows
 an example realization under the given rates.</figcaption>
 </figure>
 
-<p><a href="#fig_EBD"></a> shows an example of a constant rate birth-death process and 
+<p><a href="#fig_EBD"></a> shows an example of a constant rate birth-death process and
 an episodic birth-death process.</p>
 
-<p>We assume that the log-transformed rates are drawn from a normal distribution.
-Furthermore, we will assume that rates are autocorrelated, that is, rates in the current time interval will be centered around the rates in the previous time interval.
-Thus, we model (log-transformed) diversification rates by a Brownian motion.
-The assumption of autocorrelated rates does not only makes sense biologically but also improves our ability to estimate parameters.</p>
+<p>We assume that the log-transformed rates follow a Horseshoe Markov random field (HSMRF) prior distribution <a class="citation" href="#Magee2020">Magee et al. (2020)</a>.
+This prior assumes that rates are autocorrelated, that is, rates in the current time interval will be centered around the rates in the previous time interval.
+The assumption of autocorrelated rates does not only makes sense biologically but also improves our ability to estimate parameters.
+The HSMRF allows for periods of relatively constant rates interspersed with large jumps, and can be used with large numbers of intervals (hundreds) to provide fine-scale detail in estimated rates.</p>
 
 <figure id="fig_EBD_GM"><p><img src="figures/graphical_model_EBD.png" width="75%" height="75%" /></p>
-<figcaption>A graphical model with the outline of the <code class="highlighter-rouge">Rev</code> code. On the left we see the graphical model 
-describing the correlated (Brownian motion) model for rate-variation through time. 
-On the right we show the corresponding <code class="highlighter-rouge">Rev</code> commands to instantiate this model. 
-This figure gives a complete overview of the model that we use here in this analysis.</figcaption>
+<figcaption>A graphical model with the outline of the <code class="highlighter-rouge">Rev</code> code. On the left we see a
+ graphical model describing the HSMRF model for rate-variation through time.
+On the right we show the corresponding <code class="highlighter-rouge">Rev</code> commands to instantiate this model.
+This figure gives a complete overview of the model that we use here in this analysis.
+There are many ways to represent the HSMRF model, this one is easy to read, but
+more computationally burdensome than the version we will use in practice.</figcaption>
 </figure>
 
-<p>We show a graphical model of the episodic birth-death process with autocorrelated rates 
+<p>We show an idealized graphical model of the episodic birth-death process with autocorrelated rates
 in <a href="#fig_EBD_GM"></a>.
-This graphical model shows you which variables are included in the model, 
+This graphical model shows you which variables are included in the model,
 and the dependency between the variables.
-Thus, it makes the structure and assumption of the model clear and 
+Thus, it makes the structure and assumption of the model clear and
 visible instead of a black-box <a class="citation" href="#Hoehna2014b">(Höhna et al. 2014)</a>.
-For example, you see how the speciation and extinction rates in each time interval 
-depend on the rates of the previous interval, and that we use a hyperprior for 
-the standard deviation of rates between time intervals.</p>
+For example, you see how the speciation and extinction rates in each time interval
+depend on the rates of the previous interval, and that we use a hyperprior for
+the standard deviation of rates between time intervals.
+Note that the actual set up of the plates in Rev code will appear to differ from what is shown here.
+This is because there are many ways to represent the HSMRF model, and with some
+small reparameterization and a function to replace the plate(s), we can make
+it run much more efficiently and easily in MCMC.</p>
 
 <h2 class="section" id="estimating-episodic-diversification-rates">Estimating Episodic Diversification Rates</h2>
 <hr class="section" />
@@ -196,8 +202,9 @@ monitors = VectorMonitors()
 
 <p>Finally, we create a helper variable that specifies the number of intervals.</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NUM_INTERVALS = 10
+NUM_BREAKS := NUM_INTERVALS - 1
 </code></pre></div></div>
-<p>Using this variable we can easily change our script to break-up time into many (e.g., <code class="highlighter-rouge">NUM_INTERVALS = 100</code>) or few (e.g., <code class="highlighter-rouge">NUM_INTERVALS = 4</code>) intervals.</p>
+<p>Using this variable we can easily change our script to break-up time into many (e.g., <code class="highlighter-rouge">NUM_INTERVALS = 100</code>).</p>
 
 <h3 class="subsection" id="specifying-the-model">Specifying the model</h3>
 <hr class="subsection" />
@@ -206,27 +213,27 @@ monitors = VectorMonitors()
 <hr class="subsubsection" />
 
 <p>We start by specifying prior distributions on the rates.
-Each interval-specific speciation and extinction rate will be drawn from a normal distribution.
-Thus, we need a parameter for the standard deviation of those normal distributions.
-We use an exponential hyperprior with rate <code class="highlighter-rouge">SD = 0.587405 / NUM_INTERVALS</code> to estimate the standard deviation, but assume that all speciation rates and all extinction rates share the same standard deviation.
-The motivation for an exponential hyperprior is that it has the highest probability density at 0 which would make the variance of rates between consecutive time intervals 0 and thus represent a constant rate process.
-The data will tell us if there should be much variation in rates through time.
-(You may want to experiment with this hyperprior if you are interested.)</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SD = abs(0.587405 / NUM_INTERVALS)
+The overall model is a HSMRF birth-death model.
+In this model, the changes in log-scale rates between intervals follow a Horseshoe distribution <a class="citation" href="#Carvalho2010">Carvalho et al. (2010)</a>, which allows for large jumps in rate while assuming most changes are very small.
+We need a parameter to control the overall variability from present to past in the diversification rates, the global scale parameter.
+We must also set the global scale hyperprior, which acts with the global scale parameter to set the prior on rate variability.
+In this example, we use 10 speciation and extinction rate intervals, but the HSMRF enables us to use much larger numbers.
+The global scale hyperprior should be set based on how many intervals are used, in the case of 100 intervals, use 0.0021.
+RevGadgets provides the function <code class="highlighter-rouge">setMRFGlobalScaleHyperpriorNShifts()</code> to compute this parameter for other numbers of intervals.</p>
 
-speciation_sd ~ dnExponential( 1.0 / SD)
-extinction_sd ~ dnExponential( 1.0 / SD)
-</code></pre></div></div>
-<p>We apply a simple scaling move on each prior parameter.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale(speciation_sd,weight=5.0) )
-moves.append( mvScale(extinction_sd,weight=5.0) )
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>speciation_global_scale_hyperprior &lt;- 0.044
+extinction_global_scale_hyperprior &lt;- 0.044
+
+speciation_global_scale ~ dnHalfCauchy(0,1)
+extinction_global_scale ~ dnHalfCauchy(0,1)
+
 </code></pre></div></div>
 
 <h4 class="subsubsection" id="specifying-episodic-rates">Specifying episodic rates</h4>
 <hr class="subsubsection" />
 
-<p>As we mentioned before, we will apply normal distributions as priors for each log-transformed rate.
-We begin with the rate at the present which is our initial rate parameter.
+<p>As we mentioned before, we will apply HSMRF distributions as prior for the log-transformed speciation and extinction rates.
+We begin with the rates at the present which is our initial rate parameter.
 The rates at the present will be specified slightly differently
 because they are not correlated to any previous rates.
 This is because we are actually modeling rate-changes backwards in time and
@@ -241,66 +248,71 @@ This actually means that we allow speciation and extinction rates
 between $e^{-10}$ and $e^10$, so we should clearly cover the true values.
 (Note that for diversification rate estimates, $e^{-10}$ is virtually 0
 since the rate is so slow).</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log_speciation[1] ~ dnUniform(-10.0,10.0)
-log_speciation[1].setValue(0.0)
-log_extinction[1] ~ dnUniform(-10.0,10.0)
-log_extinction[1].setValue(-1.0)
-</code></pre></div></div>
-<p>Notice that we store the diversification rate variables in vectors.
-Storing the rate parameters in vectors will be useful and important later when we pass the rates into the birth-death process.</p>
-
-<p>We apply simple sliding window moves for the rates.
-Normally we would use scaling moves but in this case we work on the log-transformed parameters and thus sliding moves perform better.
-(If you are keen you can test the differences.)</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvSlide(log_speciation[1], weight=2) )
-moves.append( mvSlide(log_extinction[1], weight=2) )
-</code></pre></div></div>
-<p>Now we transform the diversification rate parameters into actual rates using
-an exponential parameter transformation.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>speciation[1] := exp( log_speciation[1] )
-extinction[1] := exp( log_extinction[1] )
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log_speciation_at_present ~ dnUniform(-10.0,10.0)
+log_speciation_at_present.setValue(0.0)
+log_extinction_at_present ~ dnUniform(-10.0,10.0)
+log_extinction_at_present.setValue(-1.0)
 </code></pre></div></div>
 
-<p>Next, we specify the speciation and extinction rates for each time interval (<em>i.e.,</em> epoch).
-This can be done efficiently using a <code class="highlighter-rouge">for-loop</code>.
-We will use a specific index variable so that we can more easily refer to the rate at the previous interval.
-Remember that we want to model the rates as a Brownian motion, which we achieve by specifying a normal distribution as the prior distribution on the rates centered around the previous rate (\IE the mean of the normal distribution is equal to the previous rate).</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:NUM_INTERVALS) {
-    index = i+1
+<p>We apply efficient sliding moves to each parameter.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScaleBactrian(log_speciation_at_present,weight=5))
+moves.append( mvScaleBactrian(log_extinction_at_present,weight=5))
+</code></pre></div></div>
 
-    log_speciation[index] ~ dnNormal( mean=log_speciation[i], sd=speciation_sd )
-    log_extinction[index] ~ dnNormal( mean=log_extinction[i], sd=extinction_sd )
+<p>To make MCMC possible for the HSMRF model, we use what is called a non-centered parameterization.
+This means that first we specify the log-scale changes in rate between intervals, and later we assemble these into the vector of rates, by adding them together and then exponentiating.
+The HSMRF also requires a vector of local scale parameters.
+These give the HSMRF a property called local adaptivity, which allow it to have rapidly varying rates in some intervals and nearly constant rates in others.
+This can be done efficiently using a <code class="highlighter-rouge">for-loop</code>.</p>
 
-    moves.append( mvSlide(log_speciation[index], weight=2) )
-    moves.append( mvSlide(log_extinction[index], weight=2) )
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:NUM_BREAKS) {
+  sigma_speciation[i] ~ dnHalfCauchy(0,1)
+  sigma_extinction[i] ~ dnHalfCauchy(0,1)
 
-    speciation[index] := exp( log_speciation[index] )
-    extinction[index] := exp( log_extinction[index] )
+  # Make sure values initialize to something reasonable
+  sigma_speciation[i].setValue(runif(1,0.005,0.1)[1])
+  sigma_extinction[i].setValue(runif(1,0.005,0.1)[1])
 
+  # non-centralized parameterization of horseshoe
+  delta_log_speciation[i] ~ dnNormal( mean=0, sd=sigma_speciation[i]*speciation_global_scale*speciation_global_scale_hyperprior )
+  delta_log_extinction[i] ~ dnNormal( mean=0, sd=sigma_extinction[i]*extinction_global_scale*extinction_global_scale_hyperprior )
 }
 </code></pre></div></div>
-<p>Finally, we apply moves that slide all values in the rate vectors,
-<em>i.e.,</em> all speciation or extinction rates.
-We will use an <code class="highlighter-rouge">mvVectorSlide</code> move.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvVectorSlide(log_speciation, weight=10) )
-moves.append( mvVectorSlide(log_extinction, weight=10) )
+
+<p>Now, we take the pieces we have for the rates (the global and local scales, the rate at the present, and the log-changes) and we assemble the overall rates.
+The <code class="highlighter-rouge">delta</code> parameters are differences in log-scale rates, and so we need to sum them then exponentiate.
+For example, speciation[2] := exp(log_speciation_at_present + delta_log_speciation[1]).
+Because the <code class="highlighter-rouge">sd</code> values for any of the log-scale differences is equivalent to what we wrote in the DAG above (simply written in expanded form), the model here is equivalent to the one in the DAG.
+The function <code class="highlighter-rouge">fnassembleContinuousMRF()</code> does all the summation and exponentiation efficiently for all speciation and extinction rates in all intervals and avoids making the DAG too big.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>speciation := fnassembleContinuousMRF(log_speciation_at_present,delta_log_speciation,initialValueIsLogScale=TRUE,order=1)
+extinction := fnassembleContinuousMRF(log_extinction_at_present,delta_log_extinction,initialValueIsLogScale=TRUE,order=1)
 </code></pre></div></div>
 
-<p>Additionally, we apply a <code class="highlighter-rouge">mvShrinkExpand</code> move which changes the spread of several variables
-around their mean.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvShrinkExpand( log_speciation, sd=speciation_sd, weight=10 ) )
-moves.append( mvShrinkExpand( log_extinction, sd=extinction_sd, weight=10 ) )
+<p>The HSMRF requires a unique set of MCMC samplers to work.
+While you can place individual moves on the local and global scales and the log-changes, adequate MCMC sampling requires moves that exploit the structure of the model.
+These moves are the elliptical slice sampler that works on the log-changes, a Gibbs sampler for the global and local scales, and a recommended swap move (that works on both).
+But these moves require us to have the HSMRF model written out this way, and not the version we showed in the DAG.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Move all field parameters in one go
+moves.append( mvEllipticalSliceSamplingSimple(delta_log_speciation,weight=5,tune=FALSE) )
+moves.append( mvEllipticalSliceSamplingSimple(delta_log_extinction,weight=5,tune=FALSE) )
+
+# Move all field hyperparameters in one go
+moves.append( mvHSRFHyperpriorsGibbs(speciation_global_scale, sigma_speciation , delta_log_speciation , speciation_global_scale_hyperprior, propGlobalOnly=0.75, weight=10) )
+moves.append( mvHSRFHyperpriorsGibbs(extinction_global_scale, sigma_extinction , delta_log_extinction , extinction_global_scale_hyperprior, propGlobalOnly=0.75, weight=10) )
+
+# Swap moves to exchange adjacent delta,sigma pairs
+moves.append( mvHSRFIntervalSwap(delta_log_speciation ,sigma_speciation ,weight=5) )
+moves.append( mvHSRFIntervalSwap(delta_log_extinction ,sigma_extinction ,weight=5) )
 </code></pre></div></div>
-<p>Both moves considerably improve the efficiency of our MCMC analysis.</p>
 
 <h4 class="subsubsection" id="setting-up-the-time-intervals">Setting up the time intervals</h4>
 <hr class="subsubsection" />
 
-<p>In <code class="highlighter-rouge">RevBayes</code> you actually have the possibility to specify unequal time intervals
-or even different intervals for the speciation and extinction rate.
-This is achieved by providing a vector of times when each interval ends.
-Here we simply break-up the time in equal-length intervals.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>interval_times &lt;- T.rootAge() * (1:NUM_INTERVALS) / NUM_INTERVALS
+<p>The model formulation we are using assumes that time points are evenly spaced.
+We must now create this vector of times to give to the birth death model.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>interval_times &lt;- abs(T.rootAge() * seq(1, NUM_BREAKS, 1)/NUM_INTERVALS)
 </code></pre></div></div>
 <p>This vector of times will be used for both the speciation and extinction rates.
 Also, remember that the times of the intervals represent ages going backwards in time.</p>
@@ -360,15 +372,15 @@ when passed into a MCMC function.</p>
 
 <p>Additionally, we create four separate file monitors, one for each vector of speciation and extinction rates and for each speciation and extinction rate epoch (\IE the times when the interval ends).
 We want to have the speciation and extinction rates stored separately so that we can plot them nicely afterwards.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnFile(filename="output/primates_EBD_speciation_rates.log",printgen=10, separator = TAB, speciation) )
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnFile(filename="output/primates_EBD_speciation s.log",printgen=10, separator = TAB, speciation) )
 monitors.append( mnFile(filename="output/primates_EBD_speciation_times.log",printgen=10, separator = TAB, interval_times) )
-monitors.append( mnFile(filename="output/primates_EBD_extinction_rates.log",printgen=10, separator = TAB, extinction) )
+monitors.append( mnFile(filename="output/primates_EBD_extinction s.log",printgen=10, separator = TAB, extinction) )
 monitors.append( mnFile(filename="output/primates_EBD_extinction_times.log",printgen=10, separator = TAB, interval_times) )
 </code></pre></div></div>
 
 <p>Finally, we create a screen monitor that will report the states of specified variables
 to the screen with <code class="highlighter-rouge">mnScreen</code>:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(printgen=1000, extinction_sd, speciation_sd) )
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(printgen=1000, extinction_global_scale, speciation_global_scale) )
 </code></pre></div></div>
 
 <h4 class="subsubsection" id="initializing-and-running-the-mcmc-simulation">Initializing and Running the MCMC Simulation</h4>
@@ -394,7 +406,7 @@ If you don’t have the R-package <code class="highlighter-rouge">RevGadgets</co
 
 </span><span class="n">tree</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">read.nexus</span><span class="p">(</span><span class="s2">"data/primates_tree.nex"</span><span class="p">)</span><span class="w">
 
-</span><span class="n">rev_out</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rev.process.div.rates</span><span class="p">(</span><span class="n">speciation_times_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"output/primates_EBD_speciation_times.log"</span><span class="p">,</span><span class="w"> </span><span class="n">speciation_rates_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"output/primates_EBD_speciation_rates.log"</span><span class="p">,</span><span class="w"> </span><span class="n">extinction_times_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"output/primates_EBD_extinction_times.log"</span><span class="p">,</span><span class="w"> </span><span class="n">extinction_rates_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"output/primates_EBD_extinction_rates.log"</span><span class="p">,</span><span class="w"> </span><span class="n">tree</span><span class="o">=</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="n">burnin</span><span class="o">=</span><span class="m">0.25</span><span class="p">,</span><span class="n">numIntervals</span><span class="o">=</span><span class="m">100</span><span class="p">)</span><span class="w">
+</span><span class="n">rev_out</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rev.process.div.rates</span><span class="p">(</span><span class="n">speciation_times_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"output/primates_EBD_speciation_times.log"</span><span class="p">,</span><span class="w"> </span><span class="n">speciation</span><span class="w"> </span><span class="n">s_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"output/primates_EBD_speciation s.log"</span><span class="p">,</span><span class="w"> </span><span class="n">extinction_times_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"output/primates_EBD_extinction_times.log"</span><span class="p">,</span><span class="w"> </span><span class="n">extinction</span><span class="w"> </span><span class="n">s_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"output/primates_EBD_extinction s.log"</span><span class="p">,</span><span class="w"> </span><span class="n">tree</span><span class="o">=</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="n">burnin</span><span class="o">=</span><span class="m">0.25</span><span class="p">,</span><span class="n">numIntervals</span><span class="o">=</span><span class="m">100</span><span class="p">)</span><span class="w">
 
 </span><span class="n">pdf</span><span class="p">(</span><span class="s2">"EBD.pdf"</span><span class="p">)</span><span class="w">
 </span><span class="n">par</span><span class="p">(</span><span class="n">mfrow</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="m">2</span><span class="p">,</span><span class="m">2</span><span class="p">))</span><span class="w">
@@ -420,8 +432,8 @@ The estimated rates might change when you use a different resolution, <em>i.e.,<
   <li>Visualize the rate through time using <code class="highlighter-rouge">R</code>.</li>
   <li>Do you see evidence for rate decreases or increases? What is the general trend?</li>
   <li>How much faster is the <code class="highlighter-rouge">net-diversification</code> rate at the present compared to the most ancient time interval?</li>
-  <li>Is there evidence for rate variation? Look at the estimates of <code class="highlighter-rouge">speciation_sd</code> and <code class="highlighter-rouge">extinction_sd</code> in <code class="highlighter-rouge">Tracer</code>: Is there information in the data to change the estimates from the prior?</li>
-  <li>Run the analysis using a different number of intervals, <em>e.g.,</em> 5 or 50. How do the rates change?</li>
+  <li>Is there evidence for rate variation? Look at the estimates of <code class="highlighter-rouge">speciation_global_scale</code> and <code class="highlighter-rouge">extinction_global_scale</code> in <code class="highlighter-rouge">Tracer</code>: Is there information in the data to change the estimates from the prior?</li>
+  <li>Run the analysis using a different number of intervals, <em>e.g.,</em> 100 or 200. How do the rates change?</li>
 </ul>
 
 <h3 class="subsection" id="exercise-2">Exercise 2</h3>
@@ -432,7 +444,7 @@ The estimated rates might change when you use a different resolution, <em>i.e.,<
     <ol>
       <li>Remove all previous occurrences of the extinction rates (<em>i.e.,</em> priors, parameters and moves).</li>
       <li>Specify a lognormal prior distribution on the constant extinction rate (<code class="highlighter-rouge">extinction ~ dnLognormal(-5,sd=2*0.587405)</code>)</li>
-      <li>Add a move for the new extinction rate parameter <code class="highlighter-rouge">moves.append( mvScale(extinction,weight=5.0) )</code>.</li>
+      <li>Add a move for the new extinction rate parameter <code class="highlighter-rouge">moves.append( mvScaleBactrian(extinction,weight=5.0) )</code>.</li>
       <li>Remove the argument <code class="highlighter-rouge">muTimes=interval_times</code> from the birth-death process.</li>
     </ol>
   </li>
@@ -440,7 +452,10 @@ The estimated rates might change when you use a different resolution, <em>i.e.,<
 </ul>
 
 
-<ol class="bibliography"><li><span id="Hoehna2014a">Höhna S. 2014. Likelihood Inference of Non-Constant Diversification Rates with Incomplete Taxon Sampling. PLoS One. 9:e84184.</span>
+<ol class="bibliography"><li><span id="Carvalho2010">Carvalho C.M., Polson N.G., Scott J.G. 2010. The horseshoe estimator for sparse signals. Biometrika. 97:465–480.</span>
+
+</li>
+<li><span id="Hoehna2014a">Höhna S. 2014. Likelihood Inference of Non-Constant Diversification Rates with Incomplete Taxon Sampling. PLoS One. 9:e84184.</span>
 
 <a href="https://doi.org/10.1371/journal.pone.0084184">10.1371/journal.pone.0084184</a>
 
@@ -456,6 +471,9 @@ The estimated rates might change when you use a different resolution, <em>i.e.,<
 
 </li>
 <li><span id="Hoehna2011">Höhna S., Stadler T., Ronquist F., Britton T. 2011. Inferring speciation and extinction rates under different species sampling schemes. Molecular Biology and Evolution. 28:2577–2589.</span>
+
+</li>
+<li><span id="Magee2020">Magee A.F., Höhna S., Vasylyeva T.I., Leaché A.D., Minin V.N. 2020. Locally adaptive Bayesian birth-death model successfully detects slow and rapid rate shifts. PLoS Computational Biology. 16:e1007999.</span>
 
 </li>
 <li><span id="MagnusonFord2012">Magnuson-Ford K., Otto S.P. 2012. Linking the Investigations of Character Evolution and Species Diversification. The American Naturalist. 180:225–245.</span>
