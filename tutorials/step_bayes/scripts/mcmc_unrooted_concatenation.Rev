@@ -1,0 +1,156 @@
+################################################################################
+#
+# RevBayes Example: Bayesian inference of phylogeny using a GTR+Gamma+Inv
+#                   substitution model on a single gene.
+#
+# authors: Sebastian Hoehna
+#
+################################################################################
+
+H = 0.587405
+
+
+### read in the character data
+tmp_data = readDiscreteCharacterData( "data/")
+
+supermatrix = concatenate( tmp_data, merge="union" )
+
+n_data_subsets = tmp_data.size()
+
+all_taxa <- supermatrix.taxa()
+
+for ( i in 1:n_data_subsets ) {
+    data[i] = tmp_data[i]
+    data[i].addMissingTaxa( all_taxa )
+}
+
+
+# Get some useful variables from the data. We need these later on.
+taxa            = data[1].taxa()
+num_taxa        = taxa.size()
+num_branches    = 2 * num_taxa - 3
+
+
+moves    = VectorMoves()
+monitors = VectorMonitors()
+
+
+######################
+# Substitution Model #
+######################
+
+for ( i in 1:n_data_subsets ) {
+
+    # exchangeability rates
+    er_prior[i] <- v(1,1,1,1,1,1)
+    er[i] ~ dnDirichlet(er_prior[i])
+    er[i].setValue( simplex( rep(1,6) ) )
+    moves.append( mvBetaSimplex(er[i], alpha=10, tune=true, weight=2) )
+    moves.append( mvDirichletSimplex(er[i], alpha=10, tune=true, weight=1) )
+
+    # stationary frequencies
+    pi_prior[i] <- v(1,1,1,1)
+    pi[i] ~ dnDirichlet(pi_prior[i])
+    pi[i].setValue( data[i].getEmpiricalBaseFrequencies() )
+    moves.append( mvBetaSimplex(pi[i], alpha=20, tune=true, weight=2) )
+    moves.append( mvDirichletSimplex(pi[i], alpha=20, tune=true, weight=1) )
+
+    # rate matrix for partition i
+    Q[i] := fnGTR(er[i],pi[i])
+
+    # +Gamma for partition i
+    alpha[i] ~ dnUniform( 0, 1E8 )
+    alpha[i].setValue( 0.2 )
+    sr[i] := fnDiscretizeGamma( alpha[i], alpha[i], 4, false )
+
+    # add moves for the alpha parameter
+    moves.append( mvScale(alpha[i],weight=2) )
+
+    # the probability of a site being invariable
+    pinvar[i] ~ dnBeta(1,1)
+    moves.append( mvBetaProbability(pinvar[i], delta=20, tune=true, weight=2.0) )
+
+}
+
+
+
+##############
+# Tree model #
+##############
+
+# hyper-prior for the
+branch_length_lambda <- 10.0
+
+# Prior distribution on the tree topology and branch lengths
+psi ~ dnUniformTopologyBranchLength(taxa, branchLengthDistribution=dnExponential(branch_length_lambda))
+
+moves.append( mvNNI(psi, weight=num_taxa) )
+moves.append( mvSPR(psi, weight=num_taxa/5.0) )
+moves.append( mvBranchLengthScale(psi, weight=num_branches*2) )
+
+TL := psi.treeLength()
+
+
+########################
+# Partition Rate Model #
+########################
+
+#rel_part_rate[1] <- 1
+#
+#for ( i in 2:n_data_subsets ) {
+#
+##    rel_part_rate[i] ~ dnUniform(0,1E4)
+#    rel_part_rate[i] ~ dnLognormal(0,H)
+#    rel_part_rate[i].setValue(1.0)
+#    moves.append( mvScale(rel_part_rate[i],lambda=0.01,weight=2.0) )
+#
+#}
+
+
+rel_part_rate ~ dnDirichlet( rep(5,n_data_subsets) )
+moves.append( mvBetaSimplex(rel_part_rate, alpha=20, tune=true, weight=n_data_subsets) )
+moves.append( mvDirichletSimplex(rel_part_rate, alpha=20, tune=true, weight=3) )
+
+avmvn_part_rate = mvAVMVN(weight=20)
+avmvn_part_rate.addVariable(rel_part_rate)
+moves.append( avmvn_part_rate )
+
+###################
+# PhyloCTMC Model #
+###################
+
+# the sequence evolution model
+for ( i in 1:n_data_subsets ) {
+
+    seq[i] ~ dnPhyloCTMC(tree=psi, Q=Q[i], siteRates=sr[i], pInv=pinvar[i], branchRates=rel_part_rate[i] * n_data_subsets, type="DNA")
+    seq[i].clamp( data[i] )
+
+}
+
+
+############
+# Analysis #
+############
+
+mymodel = model(psi)
+
+# add monitors
+monitors.append( mnScreen(alpha, TL, rel_part_rate, printgen=10) )
+monitors.append( mnFile(psi, filename="output/photinus_partitioned.trees", printgen=1) )
+monitors.append( mnModel(filename="output/photinus_partitioned.log", printgen=1) )
+
+# run the analysis
+mymcmc = mcmc(mymodel, moves, monitors, nruns=2, combine="mixed")
+mymcmc.run(generations=25000, tuningInterval=100)
+
+# show the performance of the operators
+mymcmc.operatorSummary()
+
+# summarize output
+treetrace = readTreeTrace("output/photinus_partitioned.trees", treetype="non-clock")
+# and then get the MAP tree
+map_tree = mapTree(treetrace,"output/photinus_partitioned_MAP.tre")
+
+
+# you may want to quit RevBayes now
+q()
