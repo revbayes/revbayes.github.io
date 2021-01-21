@@ -1,5 +1,5 @@
 ---
-title:  Dating with relative constraints
+title:  Dating with Relative Constraints
 subtitle: Constraining the relative order of nodes when dating a phylogeny
 authors: Dominik Schrempf, Gergely Szöllősi, and Bastien Boussau
 level: 3
@@ -243,8 +243,8 @@ way.
 The posterior variances are calculated using the standard formula $$Var(X) =
 E(X^2) - E(X)^2.$$
 
-Save the posterior means in a separate tree
----
+
+Here we save the posterior means in a separate tree so we can use them later.
 
 ```
 print("Compute the tree with posterior means as branch lengths.")
@@ -264,8 +264,8 @@ writeNexus(outdir+tree_file+"_meanBL.nex", meanTree)
 print("The tree with posterior mean branch lengths has been saved.")
 ```
 
-Save the posterior variances in a separate tree
----
+We also save the posterior varainces in a separate tree so we can use them later.
+
 ```
 
 print ("Compute tree with posterior variances as branch lengths.")
@@ -300,8 +300,7 @@ Finally, we date the phylogeny using a relaxed clock model. Please have a look
 at the script `2_mcmc_dating.rev`. Important parts will be explained in the
 following.
 
-Options
----
+{% subsection Options %}
 
 First, let's define some file names and options:
 
@@ -324,8 +323,7 @@ mcmc_burnin = 100
 var_min = 1e-6
 ```
 
-Root age
----
+{% subsection Root Age %}
 
 Then, the root age is calibrated using an interval around the true root age:
 
@@ -374,8 +372,7 @@ on the timetree given above, and check that the constraints are actually valid.
 In fact, the constraints may be helpful in that they resolve the order of
 nodes having similar ages.
 
-Yule tree model
----
+{% subsection Yule Tree Model %}
 
 Next, we use a birth process with an unknown birth rate as a prior for the
 timetree `psi`, and define some proposals for the MCMC sampler. The
@@ -435,8 +432,7 @@ age_clade_1_prior ~ dnSoftBoundUniformNormal(min=age_clade_1_mean-age_clade_1_de
 age_clade_1_prior.clamp(age_clade_1_mean)
 ```
 
-Posterior means and variances
----
+{% subsection Posterior Means and Variances %}
 
 Finally, we read in the posterior means and variances of the branch lengths
 prepared in the step 1b.
@@ -469,8 +465,6 @@ rooted time tree. It follows that the two branches leading to the root of the
 timetree correspond to a single branch of the unrooted tree from the first step.
 We have to take this into account when approximating the phylogenetic likelihood.
 
-Relaxed molecular clock model
----
 
 ```
 # Get indices of left child and right child of root.
@@ -500,6 +494,8 @@ if (posterior_var_bl_root<var_min) posterior_var_bl_root:=var_min
 Please also note that we set a minimum variance. In some extreme cases, the
 posterior distribution of a branch length may be so condensed, that the variance is
 too low to be used for calculating the approximate phylogenetic likelihood.
+
+{% subsection Relaxed Molecular Clock Model %}
 
 In the next step, we define the relaxed molecular clock model. Several of them
 are available in RevBayes. Here, we decided to use an uncorrelated model. We
@@ -540,8 +536,7 @@ for (i in n_branches:1) {
 }
 ```
 
-Likelihood
----
+{% subsection Likelihood %}
 
 Finally, we calculate the approximate phylogenetic likelihood. In detail, for
 each branch, the length measured in substitutions is the product of the length
@@ -580,8 +575,7 @@ bls[i_root] ~ dnNormal(mean_bl_root, sqrt(posterior_var_bl_root))
 bls[i_root].clamp(posterior_mean_bl_root)
 ```
 
-Monitors and MCMC
----
+{% subsection Monitors and MCMC %}
 
 The last part of the script defines the monitors, executes the MCMC chain, and
 saves the results.
