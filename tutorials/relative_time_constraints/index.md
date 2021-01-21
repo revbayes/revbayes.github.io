@@ -23,19 +23,19 @@ clock__. In general, it is difficult to map a phylogeny obtained from a multiple
 sequence alignment, and with branch lengths measured in average number of
 substitutions per site, to a phylogeny with branch lengths measured in actual
 units of time. For this reason, the molecular clocks are calibrated with
-information gained from __fossils__, which can be accurately dated.
-Incorporating fossil information enables __calibration__ of node ages of a
-phylogeny.
+information gained from fossils, which can be accurately dated. Incorporating
+fossil information enables __calibration__ of node ages of a phylogeny. Please
+also see the [tutorial on fossil calibrations](../fbd/).
 
 In this tutorial, we explore another possibility to improve on the accuracy of
 dating a phylogeny. Namely, horizontal gene transfers and ancient evolutionary
 relationships such as symbioses are informative about the order of nodes of a
-phylogeny of interest. That is, __horizontal gene transfers__ define __relative
-node constraints__. Relative node constraints can be particularly helpful when
-the geological record is sparse, for example, for microorganisms, which
-represent the vast majority of extant and extinct biodiversity. Combination of
-node calibrations with relative node constraints can significantly improve both
-accuracy and resolution of molecular clock estimates {% cite Szollosi2020 %}.
+phylogeny of interest. That is, horizontal gene transfers define __relative node
+constraints__. Relative node constraints can be particularly helpful when the
+geological record is sparse, for example, for microorganisms, which represent
+the vast majority of extant and extinct biodiversity. Combination of node
+calibrations with relative node constraints can significantly improve both
+accuracy and resolution of molecular clock estimates {% cite Szollosi2021 %}.
 
 Definitions
 -------------
@@ -85,9 +85,9 @@ data/
 The following RevBayes script files are available:
 ```
 scripts/
-├── 1_mcmc_jc.rev                   -- Infer branch-length trees using the JC model.
-├── 2_summarize_branch_lengths.rev  -- Extract posterior means and variances of branch lengths.
-└── 3_mcmc_dating.rev               -- Date with calibrations and constraints.
+├── 1a_mcmc_jc.rev                   -- Infer branch-length trees using the JC model.
+├── 1b_summarize_branch_lengths.rev  -- Extract posterior means and variances of branch lengths.
+└── 2_mcmc_dating.rev                -- Date with calibrations and constraints.
 ```
 
 Simulated data will be used, so that the inferred timetrees can be tested for
@@ -135,17 +135,18 @@ along this tree using the JC model.*
 {% endfigcaption %}
 {% endfigure %}
 
-For reasons of computational efficiency, the inference of the timetree is
-done in three steps. First, the posterior distributions of the branch lengths of
-the branch-length tree are inferred using the JC model (`1_mcmc_jc.rev`).
-Second, the inferred posterior distributions of the branch lengths are
-summarized into the posterior means and variances of the branch lengths
-(`2_summarize_branch_lengths.rev`). Third, calibrations and constraints are used
-to improve the accuracy of dating the phylogeny (`3_mcmc_dating.rev`). The
-posterior means and variances of the branch lengths obtained in the second step
-are used to approximate the phylogenetic likelihood using normal distributions.
+For reasons of computational efficiency, the phylogenetic likelihood is
+approximated using a branch-wise composition of normal distributions. For a
+detailed description of this two-step procedure please see {% cite Szollosi2021
+%}. In the first step, the posterior distributions of branch lengths for a fixed
+unrooted topology is inferred using the JC model (`1a_mcmc_jc.rev`). Then, the
+inferred posterior distributions of branch lengths are summarized into the
+posterior means and variances of the branch lengths
+(`1b_summarize_branch_lengths.rev`). In the second step, these posterior means
+and variances of the branch lengths, as well as the calibrations and constraints
+are used to date the phylogeny (`2_mcmc_dating.rev`).
 
-Step 1: Inference of the posterior distributions of the branch lengths
+Step 1a: Inference of the posterior distributions of the branch lengths
 --
 {:.section}
 
@@ -159,19 +160,19 @@ The output is a file `output/alignment.fasta.trees` containing the 30000 branch-
 from the MCMC chain.
 
 ```bash
- rb ./scripts/1_mcmc_jc.rev
+ rb ./scripts/1a_mcmc_jc.rev
 ```
 
 For more detailed explanations of the script file, please consult the
 [continuous time Markov chain tutorial](../ctmc/).
 
-Step 2: Summarizing the branch length distributions by their means and variances
+Step 1b: Summarizing the branch length distributions by their means and variances
 --
 {:.section}
 
 In this step, we compute the means and variances of the posterior distributions of branch lengths
 using the 30000 trees obtained in the previous step. Please have a look at the
-script file `scripts/2_summarize_branch_lengths.rev`.
+script file `scripts/1b_summarize_branch_lengths.rev`.
 
 First, we specify the name of the file containing the trees, and the amount of
 thinning we apply:
@@ -278,7 +279,7 @@ print("The tree with posterior variance branch lengths has been saved.")
 
 To run the script, please execute
 ```bash
- rb ./scripts/2_summarize_branch_lengths.rev
+ rb ./scripts/1b_summarize_branch_lengths.rev
 ```
 
 The approximation of the phylogenetic likelihood using posterior means and
