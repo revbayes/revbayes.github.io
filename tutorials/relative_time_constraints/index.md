@@ -146,18 +146,26 @@ posterior means and variances of the branch lengths
 and variances of the branch lengths, as well as the calibrations and constraints
 are used to date the phylogeny (`2_mcmc_dating.rev`).
 
+The approximation of the phylogenetic likelihood using posterior means and
+variances is optional but recommended for reasons of computational efficiency.
+It is not necessary to use this approximation when dealing with relative time
+constraints, but the benefit here is clear: the first step computes
+branch-length tree distributions, which is costly and takes a long time. Once
+this has been done, in step two, several different dating models can be run
+efficiently without the need to rerun the analysis performed in the first step.
+
 Step 1a: Inference of the posterior distributions of the branch lengths
 --
 {:.section}
-
 
 Please execute the following command to perform Bayesian inference of the
 posterior distributions of branch-length trees using a Jukes-Cantor substitution
 model on a single alignment with a fixed tree topology. The Markov chain Monte
 Carlo (MCMC) algorithm runs for 30000 iterations. It uses the alignment
-`data/alignment.fasta`, and the branch-length tree `data/substitution.tree`.
-The output is a file `output/alignment.fasta.trees` containing the 30000 branch-length trees
-from the MCMC chain.
+`data/alignment.fasta`, and the branch-length tree `data/substitution.tree`. The
+output is a file `output/alignment.fasta.trees` containing the 30000
+branch-length trees from the MCMC chain. It will be used to calculate the
+posterior means and variances of the branch lengths.
 
 ```bash
  rb ./scripts/1a_mcmc_jc.rev
@@ -170,15 +178,15 @@ Step 1b: Summarizing the branch length distributions by their means and variance
 --
 {:.section}
 
-In this step, we compute the means and variances of the posterior distributions of branch lengths
-using the 30000 trees obtained in the previous step. Please have a look at the
-script file `scripts/1b_summarize_branch_lengths.rev`.
+In this step, we compute the means and variances of the posterior distributions
+of branch lengths using the 30000 trees obtained in step 1a. Please have a look
+at the script file `scripts/1b_summarize_branch_lengths.rev`.
 
 First, we specify the name of the file containing the trees, and the amount of
-thinning we apply:
+thinning we apply (`thinning = 5` means that we take every fifth tree):
 
 ```
-# File including trees obtained in step 1.
+# File including trees obtained in step 1a.
 tree_file="alignment.fasta.trees"
 # Only use every nth tree to calculate the posterior means and variances.
 thinning = 5
@@ -235,10 +243,10 @@ way.
 The posterior variances are calculated using the standard formula $$Var(X) =
 E(X^2) - E(X)^2.$$
 
-```
-################################################################################
-# Save the posterior means in a separate tree.
+Save the posterior means in a separate tree
+---
 
+```
 print("Compute the tree with posterior means as branch lengths.")
 meanTree = readBranchLengthTrees(outdir+file_trees_only)[1]
 
@@ -254,9 +262,11 @@ print(meanTree)
 
 writeNexus(outdir+tree_file+"_meanBL.nex", meanTree)
 print("The tree with posterior mean branch lengths has been saved.")
+```
 
-################################################################################
-# Save the posterior variances in a separate tree.
+Save the posterior variances in a separate tree
+---
+```
 
 print ("Compute tree with posterior variances as branch lengths.")
 varTree = readBranchLengthTrees(outdir+file_trees_only)[1]
@@ -282,28 +292,42 @@ To run the script, please execute
  rb ./scripts/1b_summarize_branch_lengths.rev
 ```
 
-The approximation of the phylogenetic likelihood using posterior means and
-variances is optional but recommended for reasons of computational efficiency.
-It is not necessary to use this approximation when dealing with relative time
-constraints, but the benefit here is clear: the first script computes
-branch-length tree distributions by repeatedly running the pruning algorithm,
-which is costly.
-Once this has been done, several different dating models can be run efficiently
-without having to go through the pruning algorithm anymore.
-In our case, we have 2 models: the model with relative constraints, and the one
-without.
-
-
-Step 3: Dating using calibrations and constraints
+Step 2: Dating using calibrations and constraints
 --
 {:.section}
 
 Finally, we date the phylogeny using a relaxed clock model. Please have a look
-at the script `3_mcmc_dating.rev`. Important parts will be explained in the
+at the script `2_mcmc_dating.rev`. Important parts will be explained in the
 following.
 
-After defining file names and options with respect to the MCMC sampler, the root
-age is calibrated using an interval around the true root age:
+Options
+---
+
+First, let's define some file names and options:
+
+```
+time_tree_file="data/time.tree"
+constraints_file="data/constraints.txt"
+mean_tree_file="output/alignment.fasta.trees_meanBL.nex"
+var_tree_file="output/alignment.fasta.trees_varBL.nex"
+out_bn="alignment.fasta.approx.dating"
+
+# Show debug output?
+debug = true
+# Use relative constraints?
+constrain = false
+# Length of Markov chain.
+mcmc_length = 50000
+mcmc_burnin = 100
+# The posterior branch length distribution of some branches of the first run has
+# zero variance. In this case, set the variance to the following value.
+var_min = 1e-6
+```
+
+Root age
+---
+
+Then, the root age is calibrated using an interval around the true root age:
 
 ```
 root_age <- tree.rootAge()
@@ -322,6 +346,9 @@ When analyzing an empirical data set for which the timetree is not known, one
 needs to find other ways to come up
 with a reasonable prior distribution for the root age. We set a
 uniform prior on the age of the root.
+
+Setting up constraints
+---
 
 If specified, we also load the constraints from the given file `contraints.txt`:
 ```
@@ -346,6 +373,9 @@ ancestor (MRCA) of `T0` and `T1` has to be older than the MRCA of `T14` and
 on the timetree given above, and check that the constraints are actually valid.
 In fact, the constraints may be helpful in that they resolve the order of
 nodes having similar ages.
+
+Yule tree model
+---
 
 Next, we use a birth process with an unknown birth rate as a prior for the
 timetree `psi`, and define some proposals for the MCMC sampler. The
@@ -405,8 +435,11 @@ age_clade_1_prior ~ dnSoftBoundUniformNormal(min=age_clade_1_mean-age_clade_1_de
 age_clade_1_prior.clamp(age_clade_1_mean)
 ```
 
+Posterior means and variances
+---
+
 Finally, we read in the posterior means and variances of the branch lengths
-prepared in the previous steps.
+prepared in the step 1b.
 
 ```
 mean_tree <- readTrees(mean_tree_file)[1]
@@ -435,6 +468,9 @@ lengths. Hence, the estimated branch-length tree is unrooted. Now, we estimate a
 rooted time tree. It follows that the two branches leading to the root of the
 timetree correspond to a single branch of the unrooted tree from the first step.
 We have to take this into account when approximating the phylogenetic likelihood.
+
+Relaxed molecular clock model
+---
 
 ```
 # Get indices of left child and right child of root.
@@ -504,6 +540,9 @@ for (i in n_branches:1) {
 }
 ```
 
+Likelihood
+---
+
 Finally, we calculate the approximate phylogenetic likelihood. In detail, for
 each branch, the length measured in substitutions is the product of the length
 measured in time, and the evolutionary rate at that branch:
@@ -513,7 +552,7 @@ mean_bl[i] := times[i]*branch_rates[i]
 ```
 
 The branch lengths are then distributed according to normal distributions with
-the posterior means and variances obtained in the previous steps:
+the posterior means and variances obtained in the previous step:
 
 ```
 bls[i] ~ dnNormal(mean_bl[i] ,sqrt(posterior_var_bl[i]))
@@ -541,12 +580,54 @@ bls[i_root] ~ dnNormal(mean_bl_root, sqrt(posterior_var_bl_root))
 bls[i_root].clamp(posterior_mean_bl_root)
 ```
 
+Monitors and MCMC
+---
+
 The last part of the script defines the monitors, executes the MCMC chain, and
-saves the results. To perform the dating analysis, please execute twice (once
+saves the results.
+
+Define the monitors:
+
+```
+for(i in 1:n_branches)
+{
+  ages_psi[i] := psi.nodeAge(i)
+  ages_true[i] := tree.nodeAge(i)
+}
+if (debug == true) {
+  print("True node ages:")
+  print(ages_true)
+  print("Node ages of state of Markov chain:")
+  print(ages_psi)
+}
+
+trees_base_name = "output/" + out_bn
+trees_file_name = trees_base_name + ".trees"
+monitors.append(mnModel(filename="output/"+out_bn+".log",printgen=10, separator = TAB))
+monitors.append(mnStochasticVariable(filename="output/"+out_bn+"_Stoch.log",printgen=10))
+monitors.append(mnExtNewick(filename=trees_file_name, isNodeParameter=FALSE, printgen=10, separator = TAB, tree=psi, branch_rates))
+
+# Add some random age monitors.
+monitors.append(mnScreen(printgen=100, root_time, ages_psi[20], ages_psi[25], ages_psi[27]))
+```
+
+Use the Metropolis-coupled Markov chain Monte Carlo algorithm:
+
+```
+# mymodel = model(branch_rates)
+mymodel = model(bls)
+mymcmc = mcmcmc(mymodel, monitors, moves, nruns=1, nchains=4, tuneHeat=TRUE)
+mymcmc.burnin(generations=mcmc_burnin,tuningInterval=mcmc_burnin/10)
+mymcmc.operatorSummary()
+mymcmc.run(generations=mcmc_length)
+mymcmc.operatorSummary()
+```
+
+To perform the dating analysis, please execute twice (once
 with `constrain = true`, and once with `constrain = false`):
 
 ```
-rb ./scripts/3_mcmc_dating.rev
+rb ./scripts/2_mcmc_dating.rev
 ```
 
 The MAP trees for the analysis with calibrations only, and with calibrations and
