@@ -101,7 +101,7 @@ obtained from a phylogenetic reconstruction based on the alignment as in e.g.
 tutorial [Phylogenetic inference of nucleotide data using RevBayes](../ctmc/).
 
 
-Statement of the problem
+Statement of the Problem
 --
 {:.section}
 
@@ -154,7 +154,7 @@ branch-length tree distributions, which is costly and takes a long time. Once
 this has been done, in step two, several different dating models can be run
 efficiently without the need to rerun the analysis performed in the first step.
 
-Step 1a: Inference of the posterior distributions of the branch lengths
+Step 1a: Inference of the Posterior Distributions of the Branch Lengths
 --
 {:.section}
 
@@ -174,7 +174,7 @@ posterior means and variances of the branch lengths.
 For more detailed explanations of the script file, please consult the
 [continuous time Markov chain tutorial](../ctmc/).
 
-Step 1b: Summarizing the branch length distributions by their means and variances
+Step 1b: Summarizing Branch Length Distributions by Means and Variances
 --
 {:.section}
 
@@ -292,7 +292,7 @@ To run the script, please execute
  rb ./scripts/1b_summarize_branch_lengths.rev
 ```
 
-Step 2: Dating using calibrations and constraints
+Step 2: Dating Using Calibrations and Constraints
 --
 {:.section}
 
@@ -345,8 +345,7 @@ needs to find other ways to come up
 with a reasonable prior distribution for the root age. We set a
 uniform prior on the age of the root.
 
-Setting up constraints
----
+{% subsection Setting up Constraints %}
 
 If specified, we also load the constraints from the given file `contraints.txt`:
 ```
@@ -401,6 +400,7 @@ moves.append(mvSubtreeScale(psi, weight=1.0*n_branches))
 moves.append(mvNodeTimeSlideUniform(psi, weight=1.0*n_branches))
 moves.append(mvLayeredScaleProposal(tree=psi, lambda=0.1, tune=true, weight=1.0*n_branches))
 ```
+{% subsubsection Adding Node Calibrations %}
 
 Now, two calibrations are added. The MRCAs of `T1` and `T2`, as well as `T14`
 and `T15` are fixed to be within intervals centered around their true ages
