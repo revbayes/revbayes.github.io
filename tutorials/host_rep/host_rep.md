@@ -173,7 +173,7 @@ Next, we assemble our named rate variables into a vector
 
     switch_rates := v( switch_rate_0_to_1, switch_rate_0_to_2, switch_rate_1_to_0, switch_rate_1_to_2, switch_rate_2_to_0, switch_rate_2_to_1 )
 
-We then construct a rate matrix for three states (0: non-host, 1: potential host, 2: actual host) using our vector of named rates. We found that the MCMC mixes better when the Q matrix is not rescaled such that the expected number of events per unit time per character is 1 (`rescaled=false`)
+We then construct a rate matrix for three states (0: non-host, 1: potential host, 2: actual host) using our vector of named rates. We found that the MCMC mixes better when the Q matrix is not rescaled such that the expected number of events per unit time per character is 1 (`rescaled=false`). This might not be true for every data set and you can always change it to `rescaled=true`.
 
     Q_char := fnFreeK( transition_rates=switch_rates, rescaled=false )
 
@@ -316,4 +316,23 @@ Ancestral state reconstruction of host repertoire across the Nymphalini phylogen
 {% endfigure %}
 
 
+{% section 2-state model | 2-state %}
 
+In cases where we don't have information about potential hosts in our data set, the inference might not work well with the 3-state model. It is tricky to infer a state when you only have indirect evidence of it (actual hosts must have been potential hosts in the past). One option is to skip potential hosts altogether and describe a 2-state model where there are only non-hosts (coded as 0) and actual hosts (coded as 2). 
+
+For that, we need to change the code in two places: the Q matrix 
+
+    switch_rates_pos ~ dnDirichlet( [1,1] )
+
+    switch_rate_0_to_1 := 1e-6               # MCMC gets stuck on first gen if rates = 0.
+    switch_rate_0_to_2 := switch_rates_pos[1]
+    switch_rate_1_to_0 := 1e-6
+    switch_rate_1_to_2 := 1e-6
+    switch_rate_2_to_0 := switch_rates_pos[2]
+    switch_rate_2_to_1 := 1e-6
+
+and the root state frequencies
+
+    rf_host <- simplex(1,0,1)
+    
+And that's it. Everything else should be the same.

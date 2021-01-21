@@ -69,12 +69,12 @@ code_layout: Rev
         {% if page.entry.domain %}
             <h3 class="help-section-header">Domain Type</h3>
             <div class="help-section-body">
-            {{ page.entry.domain }}
+            <a href="{{ page.entry.domain }}.html">{{ page.entry.domain }}</a>
             </div>
         {% elsif page.entry.return_type %}
             <h3 class="help-section-header">Return Type</h3>
             <div class="help-section-body">
-            {{ page.entry.return_type }}
+            <a href="{{ page.entry.return_type }}.html">{{ page.entry.return_type }}</a>
             </div>
         {% endif %}
 
@@ -108,7 +108,7 @@ code_layout: Rev
             <div class="help-section-body">
             <ul class="list-unstyled">
             {% for ref in page.entry.see_also %}
-            <li>{{ ref }}</li>
+            <li><a href="{{ ref }}.html">{{ ref }}</a></li>
             {% endfor %}
             </ul>
             </div>
@@ -120,6 +120,28 @@ code_layout: Rev
             <ul class="list-unstyled">
             {% for derived in page.entry.derived %}
             <li><a href="{{ derived }}.html">{{ derived }}</a></li>
+            {% endfor %}
+            </ul>
+            </div>
+        {% endif %}
+
+        {% if page.entry.moves %}
+            <h3 class="help-section-header">Moves</h3>
+            <div class="help-section-body">
+            <ul class="list-unstyled">
+            {% for move in page.entry.moves %}
+            <li><a href="{{ move }}.html">{{ move }}</a></li>
+            {% endfor %}
+            </ul>
+            </div>
+        {% endif %}
+
+        {% if page.entry.distributions %}
+            <h3 class="help-section-header">Distributions</h3>
+            <div class="help-section-body">
+            <ul class="list-unstyled">
+            {% for dist in page.entry.distributions %}
+            <li><a href="{{ dist }}.html">{{ dist }}</a></li>
             {% endfor %}
             </ul>
             </div>

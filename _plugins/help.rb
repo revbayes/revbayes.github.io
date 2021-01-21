@@ -26,32 +26,6 @@ module Jekyll
         else
           entry['index'] = 'ModelObject'
         end
-
-        Array(entry['type_spec']).each do |type|
-          if site.data['hierarchy'][type].nil?
-            site.data['hierarchy'][type] = Hash.new
-          end
-
-          if site.data['hierarchy'][type]['derived'].nil?
-            site.data['hierarchy'][type]['derived'] = Array.new
-          end
-
-          site.data['hierarchy'][type]['derived'] << entry['name']
-        end
-      end
-
-      # add domain type
-      unless entry['domain'].nil?
-        if site.data['hierarchy'][entry['domain']].nil?
-          site.data['hierarchy'][entry['domain']] = Hash.new
-        end
-      end
-
-      # add return type
-      unless entry['return_type'].nil?
-        if site.data['hierarchy'][entry['return_type']].nil?
-          site.data['hierarchy'][entry['return_type']] = Hash.new
-        end
       end
 
       # get arguments
@@ -66,13 +40,13 @@ module Jekyll
       # build usage string
       usage_args = Array.new
 
-      # hyperlink arguments
       unless arguments.nil?
         arguments.each do |argument|
           if argument['label'].nil?
             argument['label'] = "..."
           end
 
+          # hyperlink argument types
           type = argument['value_type'].gsub(/[\[\]]/,"")
           url = "<a href=\"#{dir}#{type}.html\">#{type}</a>"
 
@@ -83,7 +57,7 @@ module Jekyll
         entry['usage'] = entry['name']+"("+usage_args.join(", ")+")"
       end
 
-      # hyperlink methods
+      # build methods strings
       unless entry['methods'].nil?
         entry['methods'].each do |method|
           # build usage string
@@ -95,6 +69,7 @@ module Jekyll
                 argument['label'] = "..."
               end
 
+              # hyperlink method argument types
               type = argument['value_type'].gsub(/[\[\]]/,"")
               url = "<a href=\"#{dir}#{type}.html\">#{type}</a>"
 
@@ -106,29 +81,6 @@ module Jekyll
           method['usage'] = method['name']+"("+method_args.join(", ")+")"
         end
       end
-
-      # hyperlink domain
-      unless entry['domain'].nil?
-        type = entry['domain'].gsub(/[\[\]]/,"")
-        entry['domain'] = entry['domain'].gsub(type,"<a href=\"#{dir}#{type}.html\">#{type}</a>")
-      end
-
-      # hyperlink return_type
-      unless entry['return_type'].nil?
-        type = entry['return_type'].gsub(/[\[\]]/,"")
-        entry['return_type'] = entry['return_type'].gsub(type,"<a href=\"#{dir}#{type}.html\">#{type}</a>")
-      end
-
-      #hyperlink see also types
-      unless entry['see_also'].nil?
-        if entry['see_also'].instance_of?(String)
-          entry['see_also'] = "<a href=\"#{dir}#{entry['see_also']}.html\">#{entry['see_also']}</a>"
-        else
-          entry['see_also'].map! do |see|
-            see = "<a href=\"#{dir}#{see}.html\">#{see}</a>"
-          end
-        end
-      end
     end
   end
 
@@ -137,24 +89,74 @@ module Jekyll
 
     def generate(site)
     	unless site.data['help'].nil?
-	      site.data['hierarchy'] = Hash.new
+	      entries = Hash.new
 
-	      # find concrete types
+	      # copy entries for concrete types
 	      site.data['help'].each do |entry|
-	        site.data['hierarchy'][entry['name']] = Hash.new
-	        site.data['hierarchy'][entry['name']]['derived'] = Array.new
-	        site.data['hierarchy'][entry['name']]['concrete'] = true
-	        site.pages << HelpPage.new(site, entry)
+          entries[entry['name']] = entry
+        end
+
+        # create entries for abstract types
+        site.data['help'].each do |entry|
+          # add domain type
+          if not entry['domain'].nil? and entries[entry['domain']].nil?
+            entries[entry['domain']] = Hash.new
+            entries[entry['domain']]['name'] = entry['domain']
+          end
+
+          # add return type
+          if not entry['return_type'].nil? and entries[entry['return_type']].nil?
+            entries[entry['return_type']] = Hash.new
+            entries[entry['return_type']]['name'] = entry['return_type']
+          end
+
+          # add moves to types
+          unless entry['type_spec'].nil?
+            if entry['type_spec'].include? 'Move'
+              unless entry['constructor'].nil?
+                type = entry['constructor'].first['arguments'].first()['value_type'].gsub(/[\[\]]/,"")
+                if entries[type]['moves'].nil?
+                  entries[type]['moves'] = Array.new
+                end
+
+                entries[type]['moves'] << entry['name']
+              end
+            end
+          end
+
+          # add distributions to types
+          unless entry['type_spec'].nil?
+            if entry['type_spec'].include? 'Distribution'
+              unless entry['domain'].nil?
+                type = entry['domain']
+                if entries[type]['distributions'].nil?
+                  entries[type]['distributions'] = Array.new
+                end
+
+                entries[type]['distributions'] << entry['name']
+              end
+            end
+          end
+
+          # build type hierarchy
+	        Array(entry['type_spec']).each do |type|
+            if entries[type].nil?
+              entries[type] = Hash.new
+              entries[type]['name'] = type
+            end
+
+            # add derived types
+            if entries[type]['derived'].nil?
+              entries[type]['derived'] = Array.new
+            end
+
+            entries[type]['derived'] << entry['name']
+          end
 	      end
 
-	      # find abstract types
-	      site.data['hierarchy'].each_key do |type|
-	        unless site.data['hierarchy'][type]['concrete']
-	          abstract = Hash.new
-	          abstract['name'] = type
-	          abstract['derived'] = site.data['hierarchy'][type]['derived']
-	          site.pages << HelpPage.new(site, abstract)
-	        end
+        # generate help pages
+	      entries.each_key do |type|
+	        site.pages << HelpPage.new(site, entries[type])
 	      end
 	    end
     end
