@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+set -e
+
+# Time-like tree.
+tlynx -f -o time simulate -t 1 -n 25 birthdeath -l 1.0 -m 0 -r 1.0 --mrca 0.3 -S "[1]"
+
+./rename_tips.py time.tree
+mv time_renamed.dnd time_renamed.tree
+
+# Substitution-like tree.
+cmd="./alter_branch_lengths.py time_renamed.tree 0.01 0.05 0.5 0.2 0.01 substitution.tree y"
+echo "$cmd" > substitution.log
+$cmd >> substitution.log
+
+# Alignment.
+slynx -f -o alignment simulate -t substitution.tree -s JC -l 2000 -S "[0]"
+
+./unroot_tree.py substitution.tree
+mv substitution_unrooted.dnd substitution_unrooted.tree
+
