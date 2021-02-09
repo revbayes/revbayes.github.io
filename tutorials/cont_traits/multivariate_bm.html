@@ -167,23 +167,23 @@
 
 <p>In this tutorial, we use the phylogenies and continuous character datasets from (missing reference) to estimate correlations among a set of continuous-characters.</p>
 
-<p>⇨ The full multivariate BM-model specification is in the file called <code class="highlighter-rouge">mcmc_multivariate_BM.Rev</code>.</p>
+<p>⇨ The full multivariate BM-model specification is in the file called <code class="language-plaintext highlighter-rouge">mcmc_multivariate_BM.Rev</code>.</p>
 
 <h3 class="subsection" id="read-the-data">Read the data</h3>
 <hr class="subsection" />
 
 <p>We begin by reading in the (time-calibrate) tree of the Haemulids.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>T &lt;- readTrees("data/haemulidae.nex")[1]
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>T &lt;- readTrees("data/haemulidae.nex")[1]
 </code></pre></div></div>
 <p>Next, we read in the continuous-character data.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data &lt;- readContinuousCharacterData("data/haemulidae_trophic_traits.nex")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data &lt;- readContinuousCharacterData("data/haemulidae_trophic_traits.nex")
 </code></pre></div></div>
 <p>We record the number of characters for future reference.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nchar &lt;- data.nchar()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nchar &lt;- data.nchar()
 </code></pre></div></div>
 <p>Additionally, we initialize a variable for our vector of
 moves and monitors:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
 monitors = VectorMonitors()
 </code></pre></div></div>
 
@@ -194,14 +194,14 @@ monitors = VectorMonitors()
 <hr class="subsubsection" />
 
 <p>In this tutorial, we assume the tree is known without area. We create a constant node for the tree that corresponds to the observed phylogeny.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tree &lt;- T
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tree &lt;- T
 </code></pre></div></div>
 
 <h4 class="subsubsection" id="average-rate-of-evolution">Average rate of evolution</h4>
 <hr class="subsubsection" />
 
 <p>We draw the average rate of evolution, $\sigma^2$, from a vague lognormal prior. This prior is uniform on the log scale, which means that it is represents ignorance about the <em>order of magnitude</em> of the average rate of evolution. We use a scaling move to propose updates to this parameter.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sigma2 ~ dnLoguniform(1e-3, 1)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sigma2 ~ dnLoguniform(1e-3, 1)
 moves.append( mvScale(sigma2, weight=1.0) )
 </code></pre></div></div>
 
@@ -209,65 +209,65 @@ moves.append( mvScale(sigma2, weight=1.0) )
 <hr class="subsubsection" />
 
 <p>We draw <em>proportional</em> rates of evolution among characters from a symmetric Dirichlet distribution with concentration parameter $\alpha$. We then multiply these proportional rates by the number of characters to get the <em>relative</em> rates. This ensures that the relative rates have a mean of 1. Increasing the value of $\alpha$ will <em>decrease</em> the amount of rate variation under the prior.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha &lt;- 1.0
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha &lt;- 1.0
 proportional_rates ~ dnDirichlet( rep(alpha, nchar) )
 relative_rates := proportional_rates * nchar
 </code></pre></div></div>
-<p>We apply an <code class="highlighter-rouge">mvBetaSimplex</code> move to the proportional rates.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvBetaSimplex(proportional_rates, weight=2.0) )
+<p>We apply an <code class="language-plaintext highlighter-rouge">mvBetaSimplex</code> move to the proportional rates.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvBetaSimplex(proportional_rates, weight=2.0) )
 </code></pre></div></div>
 
 <h4 class="subsubsection" id="correlation-matrix">Correlation matrix</h4>
 <hr class="subsubsection" />
 
-<p>We draw the correlation matrix from an LKJ prior distribution with concentration parameter <code class="highlighter-rouge">eta &lt;- 1.0</code>. Larger values of <code class="highlighter-rouge">eta</code> correspond to less prior correlation among characters. This distribution draws a correlation matrix with <code class="highlighter-rouge">nchar</code> rows and columns.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>eta &lt;- 1.0
+<p>We draw the correlation matrix from an LKJ prior distribution with concentration parameter <code class="language-plaintext highlighter-rouge">eta &lt;- 1.0</code>. Larger values of <code class="language-plaintext highlighter-rouge">eta</code> correspond to less prior correlation among characters. This distribution draws a correlation matrix with <code class="language-plaintext highlighter-rouge">nchar</code> rows and columns.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>eta &lt;- 1.0
 R ~ dnLKJ( eta, nchar )
 </code></pre></div></div>
-<p>We use special moves to update the correlation matrix. The first move, <code class="highlighter-rouge">mvCorrelationMatrixRandomWalk</code>, perturbs each element of the matrix by a small amount simultaneously. The second move, <code class="highlighter-rouge">mvCorrelationMatrixSingleElementBeta</code>, updates a randomly chosen element of the correlation matrix by drawing Beta random variable centered on the current correlation (stretched from -1 to 1).</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvCorrelationMatrixRandomWalk(R, weight=3.0) )
+<p>We use special moves to update the correlation matrix. The first move, <code class="language-plaintext highlighter-rouge">mvCorrelationMatrixRandomWalk</code>, perturbs each element of the matrix by a small amount simultaneously. The second move, <code class="language-plaintext highlighter-rouge">mvCorrelationMatrixSingleElementBeta</code>, updates a randomly chosen element of the correlation matrix by drawing Beta random variable centered on the current correlation (stretched from -1 to 1).</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvCorrelationMatrixRandomWalk(R, weight=3.0) )
 moves.append( mvCorrelationMatrixSingleElementBeta(R, weight=5.0) )
 </code></pre></div></div>
 <p>We extract the elements in the upper triangle of the correlation matrix for reference. These parameters are the vector of pairwise correlation parameters, $\boldsymbol{\rho}$ in the upper triangular part of the matrix, in natural reading order (left to right, top to bottom).</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>correlations := R.upperTriangle()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>correlations := R.upperTriangle()
 </code></pre></div></div>
 
 <blockquote class="aside"><h2>Parameterizing the partial correlation matrix</h2><p>An alternative to specifying a prior on the correlation matrix is to specify a prior on the partial correlation matrix, $P$. You can think of the partial correlations between character $i$ and $j$ as the correlation between those characters, controlling for their induced correlations through other characters. Parameterizing the partial correlation matrix can be helpful when there are strong correlations between the estimates of the correlation parameters themselves. This makes it difficult for the MCMC to move across the posterior distribution of correlation matrices.</p>
 
 <p>To parameterize the partial correlation matrix, we draw it from an LKJ prior:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>P ~ dnLKJPartial( eta, nchar )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>P ~ dnLKJPartial( eta, nchar )
 </code></pre></div></div>
 <p>This distribution is designed so that the induced prior on $R$ is identical to the prior you would be specifying if you drew $R$ from the same LKJ distribution.</p>
 
 <p>Next, we apply moves to the partial correlation matrix.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvCorrelationMatrixRandomWalk(P, weight=3.0) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvCorrelationMatrixRandomWalk(P, weight=3.0) )
 moves.append( mvCorrelationMatrixSingleElementBeta(P, weight=5.0) )
 </code></pre></div></div>
 <p>Then, we compute the correlation matrix from the partial correlation matrix.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>R := fnPartialToCorr(P)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>R := fnPartialToCorr(P)
 </code></pre></div></div>
 </blockquote>
 
 <h4 class="subsubsection" id="variance-covariance-matrix">Variance-covariance matrix</h4>
 <hr class="subsubsection" />
 
-<p>Having specified the separate components, we assemble the variance-covariance matrix. Here, we provide the square-roots of the relative rates (<em>i.e.</em>, the standard deviations) and the correlation matrix. We exclude the average rate, <code class="highlighter-rouge">sigma2</code>, because we may want to allow different branches of the phylogeny to have different rates.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>V := fnDecompVarCovar( relative_rates^0.5, R )
+<p>Having specified the separate components, we assemble the variance-covariance matrix. Here, we provide the square-roots of the relative rates (<em>i.e.</em>, the standard deviations) and the correlation matrix. We exclude the average rate, <code class="language-plaintext highlighter-rouge">sigma2</code>, because we may want to allow different branches of the phylogeny to have different rates.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>V := fnDecompVarCovar( relative_rates^0.5, R )
 </code></pre></div></div>
 
 <h4 class="subsubsection" id="multivariate-brownian-motion">Multivariate Brownian motion</h4>
 <hr class="subsubsection" />
 
-<p>Finally, we draw the continuous character data from a phylogenetic mvBM model. We provide the variance-covariance matrix, <code class="highlighter-rouge">V</code>, as well as the square-root of average rate of evolution.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>X ~ dnPhyloMultivariateBrownianREML(tree, branchRates=sigma2^0.5, rateMatrix=V)
+<p>Finally, we draw the continuous character data from a phylogenetic mvBM model. We provide the variance-covariance matrix, <code class="language-plaintext highlighter-rouge">V</code>, as well as the square-root of average rate of evolution.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>X ~ dnPhyloMultivariateBrownianREML(tree, branchRates=sigma2^0.5, rateMatrix=V)
 </code></pre></div></div>
 <p>We clamp the observed data to this stochastic node to represent that they are observed.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>X.clamp(data)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>X.clamp(data)
 </code></pre></div></div>
 
-<p>Finally, we create a workspace object for the entire model with <code class="highlighter-rouge">model()</code>. Remember that workspace objects are initialized with the <code class="highlighter-rouge">=</code> operator, and are not themselves part of the Bayesian graphical model. The <code class="highlighter-rouge">model()</code> function traverses the entire model graph and finds all the nodes in the model that we specified. This object provides a convenient way to refer to the whole model object, rather than just a single DAG node.</p>
+<p>Finally, we create a workspace object for the entire model with <code class="language-plaintext highlighter-rouge">model()</code>. Remember that workspace objects are initialized with the <code class="language-plaintext highlighter-rouge">=</code> operator, and are not themselves part of the Bayesian graphical model. The <code class="language-plaintext highlighter-rouge">model()</code> function traverses the entire model graph and finds all the nodes in the model that we specified. This object provides a convenient way to refer to the whole model object, rather than just a single DAG node.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(sigma2)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(sigma2)
 </code></pre></div></div>
 
 <h3 class="subsection" id="running-an-mcmc-analysis">Running an MCMC analysis</h3>
@@ -276,12 +276,12 @@ moves.append( mvCorrelationMatrixSingleElementBeta(P, weight=5.0) )
 <h4 class="subsubsection" id="specifying-monitors">Specifying Monitors</h4>
 <hr class="subsubsection" />
 
-<p>For our MCMC analysis, we need to set up a vector of <em>monitors</em> to record the states of our Markov chain. The monitor functions are all called <code class="highlighter-rouge">mn*</code>, where <code class="highlighter-rouge">*</code> is the wildcard representing the monitor type. First, we will initialize the model monitor using the <code class="highlighter-rouge">mnModel</code> function. This creates a new monitor variable that will output the states for all model parameters when passed into a MCMC function.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/multivariate_BM.log", printgen=10) )
+<p>For our MCMC analysis, we need to set up a vector of <em>monitors</em> to record the states of our Markov chain. The monitor functions are all called <code class="language-plaintext highlighter-rouge">mn*</code>, where <code class="language-plaintext highlighter-rouge">*</code> is the wildcard representing the monitor type. First, we will initialize the model monitor using the <code class="language-plaintext highlighter-rouge">mnModel</code> function. This creates a new monitor variable that will output the states for all model parameters when passed into a MCMC function.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/multivariate_BM.log", printgen=10) )
 </code></pre></div></div>
 <p>Additionally, create a screen monitor that will report the states of
-specified variables to the screen with <code class="highlighter-rouge">mnScreen</code>:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(printgen=1000, sigma2) )
+specified variables to the screen with <code class="language-plaintext highlighter-rouge">mnScreen</code>:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(printgen=1000, sigma2) )
 </code></pre></div></div>
 
 <h4 class="subsubsection" id="initializing-and-running-the-mcmc-simulation">Initializing and Running the MCMC Simulation</h4>
@@ -289,22 +289,22 @@ specified variables to the screen with <code class="highlighter-rouge">mnScreen<
 
 <p>With a fully specified model, a set of monitors, and a set of moves, we
 can now set up the MCMC algorithm that will sample parameter values in
-proportion to their posterior probability. The <code class="highlighter-rouge">mcmc()</code> function will
+proportion to their posterior probability. The <code class="language-plaintext highlighter-rouge">mcmc()</code> function will
 create our MCMC object:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
 </code></pre></div></div>
 <p>Now, run the MCMC:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=50000)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=50000)
 </code></pre></div></div>
 <p>When the analysis is complete, you will have the monitored files in your
 output directory.</p>
 
-<p>⇨ The <code class="highlighter-rouge">Rev</code> file for performing this analysis: <code class="highlighter-rouge">mcmc_multivariate_BM.Rev</code></p>
+<p>⇨ The <code class="language-plaintext highlighter-rouge">Rev</code> file for performing this analysis: <code class="language-plaintext highlighter-rouge">mcmc_multivariate_BM.Rev</code></p>
 
-<p>You can then visualize the correlation parameters in <code class="highlighter-rouge">Tracer</code>.</p>
+<p>You can then visualize the correlation parameters in <code class="language-plaintext highlighter-rouge">Tracer</code>.</p>
 
 <figure id="rho_posterior"><p><img src="figures/correlations.png" height="50%" width="50%" /></p>
-<figcaption>Estimates of the posterior distribution of the correlation between the first trait (body size) against each of the remaining characters, visualized in <code class="highlighter-rouge">Tracer</code>. Characters 6 and 9 (buccal length and head length, respectively) are highly correlated with body size, while character 8 (head height) seems to be less positively correlated.</figcaption>
+<figcaption>Estimates of the posterior distribution of the correlation between the first trait (body size) against each of the remaining characters, visualized in <code class="language-plaintext highlighter-rouge">Tracer</code>. Characters 6 and 9 (buccal length and head length, respectively) are highly correlated with body size, while character 8 (head height) seems to be less positively correlated.</figcaption>
 </figure>
 
 <blockquote class="aside"><h2>Advanced: Hypothesis Tests for Correlation Parameters</h2><p>We can test the hypothesis that characters $i$ and $j$ are correlated using the Savage-Dickey ratio (missing reference). Using the Savage-Dickey ratio, the Bayes Factor for the hypothesis that parameter $\theta$ has a specific value is $\text{BF} = P(\theta \mid X) \div P(\theta)$. Therefore, we can use the Savage-Dickey ratio to compute the Bayes factor that two characters are uncorrelated if we can compute the posterior probability of $\rho_{i,j} = 0$ (the numerator) and the prior probability of $\rho_{i,j} = 0$ (the denominator).</p>
@@ -347,10 +347,10 @@ output directory.</p>
 <hr class="subsection" />
 
 <ul>
-  <li>Run an MCMC simulation to estimate the posterior distribution of the correlation parameters (<code class="highlighter-rouge">correlations</code>).</li>
+  <li>Run an MCMC simulation to estimate the posterior distribution of the correlation parameters (<code class="language-plaintext highlighter-rouge">correlations</code>).</li>
   <li>Run an MCMC under the prior to compute the prior distribution for the correlation parameters. Are the posterior correlations different from their prior?</li>
-  <li>Change the prior on the concentration parameter, <code class="highlighter-rouge">eta</code>, to decrease the prior weight on high correlation parameters.</li>
-  <li>Compare the posterior distribution of <code class="highlighter-rouge">correlations</code> under these two values of <code class="highlighter-rouge">eta</code>. Are posterior estimates sensitive to the prior concentration parameter?</li>
+  <li>Change the prior on the concentration parameter, <code class="language-plaintext highlighter-rouge">eta</code>, to decrease the prior weight on high correlation parameters.</li>
+  <li>Compare the posterior distribution of <code class="language-plaintext highlighter-rouge">correlations</code> under these two values of <code class="language-plaintext highlighter-rouge">eta</code>. Are posterior estimates sensitive to the prior concentration parameter?</li>
 </ul>
 
 <h2 class="section" id="variable-rates-among-lineages">Variable Rates Among Lineages</h2>
@@ -360,25 +360,25 @@ output directory.</p>
 
 <p>We can relax the assumption that the average rate of evolution is constant across branches the same way that we did for univariate Brownian motion models (see <a href="/tutorials/cont_traits/relaxed_bm.html">Relaxed Brownian Rate Estimation</a>). Importantly, this tutorial assumes that the relative rates among characters and the correlation matrix are shared among all branches. Otherwise, we can simply rely on the ‘‘random local clock’’ model that we used in the relaxed univariate tutorial.</p>
 
-<p>⇨ The relaxed mvBM-model is specified in the file called <code class="highlighter-rouge">mcmc_relaxed_multivariate_BM.Rev</code>. The majority of this script is the same as <code class="highlighter-rouge">mcmc_multivariate_BM.Rev</code>, except as described below.</p>
+<p>⇨ The relaxed mvBM-model is specified in the file called <code class="language-plaintext highlighter-rouge">mcmc_relaxed_multivariate_BM.Rev</code>. The majority of this script is the same as <code class="language-plaintext highlighter-rouge">mcmc_multivariate_BM.Rev</code>, except as described below.</p>
 
 <h3 class="subsection" id="relaxing-the-morphological-clock">Relaxing the morphological clock</h3>
 <hr class="subsection" />
 
 <p>To specify the relaxed morphological clock, we simply modify the component of the model that controls the average rate, $\sigma^2$. We specify the average rate at the root of the tree, $\sigma_R^2$.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sigma2_root ~ dnLoguniform(1e-3, 1)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sigma2_root ~ dnLoguniform(1e-3, 1)
 moves.append( mvScale(sigma2_root, weight=1.0) )
 </code></pre></div></div>
 <p>Next, we specify the prior on the expected number of rate shifts.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>expected_number_of_shifts &lt;- 5
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>expected_number_of_shifts &lt;- 5
 rate_shift_probability    &lt;- expected_number_of_shifts / nbranches
 </code></pre></div></div>
 <p>We must also specify the prior on the magnitude of rate shifts (when they occur). This prior supposes that rate shifts result in changes of rate within one order of magnitude.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sd = 0.578
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sd = 0.578
 rate_shift_distribution = dnLognormal(-sd^2/2, sd)
 </code></pre></div></div>
-<p>Then we draw the rate multiplier from each branch from a <code class="highlighter-rouge">dnReversibleJumpMixture</code> distribution, and compute the average rate of evolution for each branch.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for(i in nbranches:1) {
+<p>Then we draw the rate multiplier from each branch from a <code class="language-plaintext highlighter-rouge">dnReversibleJumpMixture</code> distribution, and compute the average rate of evolution for each branch.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for(i in nbranches:1) {
 
     # draw the rate multiplier from a mixture distribution
     branch_rate_multiplier[i] ~ dnReversibleJumpMixture(1, rate_shift_distribution, Probability(1 - rate_shift_probability) )
@@ -403,16 +403,16 @@ rate_shift_distribution = dnLognormal(-sd^2/2, sd)
 }
 </code></pre></div></div>
 <p>We may also wish to keep track of the total number of rate shifts.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>num_rate_changes := sum( branch_rate_shift )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>num_rate_changes := sum( branch_rate_shift )
 </code></pre></div></div>
-<p>We then provide these relaxed branch rates to <code class="highlighter-rouge">dnPhyloMulivariateBrownianREML</code> instead of <code class="highlighter-rouge">sigma2</code>.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>X ~ dnPhyloMultivariateBrownianREML(tree, branchRates=branch_rates^0.5, rateMatrix=V)
+<p>We then provide these relaxed branch rates to <code class="language-plaintext highlighter-rouge">dnPhyloMulivariateBrownianREML</code> instead of <code class="language-plaintext highlighter-rouge">sigma2</code>.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>X ~ dnPhyloMultivariateBrownianREML(tree, branchRates=branch_rates^0.5, rateMatrix=V)
 X.clamp(data)
 </code></pre></div></div>
 
-<p>⇨ The <code class="highlighter-rouge">Rev</code> file for performing this analysis: <code class="highlighter-rouge">mcmc_relaxed_multivariate_BM.Rev</code></p>
+<p>⇨ The <code class="language-plaintext highlighter-rouge">Rev</code> file for performing this analysis: <code class="language-plaintext highlighter-rouge">mcmc_relaxed_multivariate_BM.Rev</code></p>
 
-<p>You can then visualize the branch-specific rates by plotting them using our <code class="highlighter-rouge">R</code> package <code class="highlighter-rouge">RevGadgets</code>. Just start R in the main directory for this analysis and then type the following commands:</p>
+<p>You can then visualize the branch-specific rates by plotting them using our <code class="language-plaintext highlighter-rouge">R</code> package <code class="language-plaintext highlighter-rouge">RevGadgets</code>. Just start R in the main directory for this analysis and then type the following commands:</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">RevGadgets</span><span class="p">)</span><span class="w">
 
 </span><span class="n">my_tree</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">read.nexus</span><span class="p">(</span><span class="s2">"data/haemulidae.nex"</span><span class="p">)</span><span class="w">
@@ -435,10 +435,10 @@ We show the estimated average rate of evolution for each branch under the mvBM m
 <hr class="subsection" />
 
 <ul>
-  <li>Estimate the posterior distribution of <code class="highlighter-rouge">branch_rates</code> under the relaxed multivariate BM model.</li>
+  <li>Estimate the posterior distribution of <code class="language-plaintext highlighter-rouge">branch_rates</code> under the relaxed multivariate BM model.</li>
   <li>Compare the estimated correlation parameters under the relaxed mvBM model to those when the average rate is constant across branches. Do the estimated correlation coefficients differ? Do they differ in a consistent direction?</li>
-  <li>Modify the <code class="highlighter-rouge">mcmc_relaxed_multivariate_BM.Rev</code> script to estimate the posterior distribution of <code class="highlighter-rouge">branch_rates</code> when assuming that characters are uncorrelated. This can be achieved by setting the off-diagonal elements of correlation matrix to 0:
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>R &lt;- diagonalMatrix(nchar)
+  <li>Modify the <code class="language-plaintext highlighter-rouge">mcmc_relaxed_multivariate_BM.Rev</code> script to estimate the posterior distribution of <code class="language-plaintext highlighter-rouge">branch_rates</code> when assuming that characters are uncorrelated. This can be achieved by setting the off-diagonal elements of correlation matrix to 0:
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>R &lt;- diagonalMatrix(nchar)
 </code></pre></div>    </div>
     <p>How do branch-specific rates of evolution vary between the correlated and uncorrelated models?</p>
   </li>

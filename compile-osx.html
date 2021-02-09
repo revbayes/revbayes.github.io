@@ -60,7 +60,7 @@ Compile on Mac OS X
 
 <p><strong>NOTE: These instructions are for compiling the development branch.</strong></p>
 
-<p>The standard way to build revbayes is to use <code class="highlighter-rouge">cmake</code>.  If you want to compile using <code class="highlighter-rouge">meson</code>, see <a href="https://github.com/revbayes/revbayes/blob/development/projects/meson/README.md">revbayes/projects/meson/README.md</a>.</p>
+<p>The standard way to build revbayes is to use <code class="language-plaintext highlighter-rouge">cmake</code>.  If you want to compile using <code class="language-plaintext highlighter-rouge">meson</code>, see <a href="https://github.com/revbayes/revbayes/blob/development/projects/meson/README.md">revbayes/projects/meson/README.md</a>.</p>
 
 <h2 id="pre-requisites">Pre-requisites</h2>
 
@@ -72,7 +72,7 @@ Compile on Mac OS X
 
 <p>One option to install them is using homebrew:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 brew install cmake boost
 </code></pre></div></div>
 
@@ -82,7 +82,7 @@ brew install cmake boost
 
 <p>Then you can compile boost:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl -O -L https://dl.bintray.com/boostorg/release/1.71.0/source/boost_1_71_0.tar.gz
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl -O -L https://dl.bintray.com/boostorg/release/1.71.0/source/boost_1_71_0.tar.gz
 tar -xzvf boost_1_71_0.tar.gz
 cd boost_1_71_0
 ./bootstrap.sh --with-libraries=atomic,chrono,filesystem,system,regex,thread,date_time,program_options,math,serialization
@@ -105,30 +105,30 @@ cd boost_1_71_0
 
 <p>Download RevBayes from our github repository. Clone the repository using git by running the following command in the terminal</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone --branch development https://github.com/revbayes/revbayes.git revbayes
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone --branch development https://github.com/revbayes/revbayes.git revbayes
 </code></pre></div></div>
 
 <p>Open a terminal and go to the RevBayes cmake directory:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd revbayes/projects/cmake
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd revbayes/projects/cmake
 </code></pre></div></div>
 
 <p>Now either build the standard version using the following:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./build.sh
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./build.sh
 </code></pre></div></div>
 
 <p>or build the MPI version to produce the rb-mpi executeable:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./build.sh -mpi true
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./build.sh -mpi true
 </code></pre></div></div>
 
 <p>To compile with a locally compiled boost, do the following. Be sure to replace the paths in the build command with those you got from boost in the previous step.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./build.sh -boost_root /root/boost_1_71_0 -boost_lib /root/boost_1_71_0/stage/lib
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./build.sh -boost_root /root/boost_1_71_0 -boost_lib /root/boost_1_71_0/stage/lib
 </code></pre></div></div>
 
-<p>You will likely see some compiler warnings (e.g. <code class="highlighter-rouge">clang: warning: optimization flag '-finline-functions' is not supported</code>). This is normal.</p>
+<p>You will likely see some compiler warnings (e.g. <code class="language-plaintext highlighter-rouge">clang: warning: optimization flag '-finline-functions' is not supported</code>). This is normal.</p>
 
 <h2 id="troubleshooting">Troubleshooting</h2>
 
@@ -136,15 +136,15 @@ cd boost_1_71_0
 
 <ul>
   <li>
-    <p><code class="highlighter-rouge">rb: command not found</code></p>
+    <p><code class="language-plaintext highlighter-rouge">rb: command not found</code></p>
 
     <p>The problem is that you tried to run RevBayes but your computer doesn’t know where the executable is. The easiest way is to add the directory in which you compiled RevBayes to your system path:</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export PATH=&lt;your_revbayes_directory&gt;/projects/cmake:$PATH  
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export PATH=&lt;your_revbayes_directory&gt;/projects/cmake:$PATH  
 </code></pre></div>    </div>
   </li>
   <li>
-    <p><code class="highlighter-rouge">Error cmake not found!</code></p>
+    <p><code class="language-plaintext highlighter-rouge">Error cmake not found!</code></p>
 
     <p>Please double check that CMake is installed. For OS X, go to step 2 above.</p>
   </li>
@@ -154,29 +154,29 @@ cd boost_1_71_0
 
 <ul>
   <li>
-    <p><code class="highlighter-rouge">Error can't find the libboost_filesystem.dylib library or Library not   loaded: libboost_filesystem.dylib</code></p>
+    <p><code class="language-plaintext highlighter-rouge">Error can't find the libboost_filesystem.dylib library or Library not   loaded: libboost_filesystem.dylib</code></p>
 
-    <p>You need to add the boost libraries to your path variable. You may find that you have to export this <code class="highlighter-rouge">DYLD_LIBRARY_PATH</code> every time you open a new terminal window. To get around this, you can add this to your <code class="highlighter-rouge">.bash_profile</code> or <code class="highlighter-rouge">.bashrc</code> file (which lives in your home directory). To change this, open a new terminal window and you should be in the home directory. If you do not have either of these files, use the text editor <code class="highlighter-rouge">nano</code> to create this file type:</p>
+    <p>You need to add the boost libraries to your path variable. You may find that you have to export this <code class="language-plaintext highlighter-rouge">DYLD_LIBRARY_PATH</code> every time you open a new terminal window. To get around this, you can add this to your <code class="language-plaintext highlighter-rouge">.bash_profile</code> or <code class="language-plaintext highlighter-rouge">.bashrc</code> file (which lives in your home directory). To change this, open a new terminal window and you should be in the home directory. If you do not have either of these files, use the text editor <code class="language-plaintext highlighter-rouge">nano</code> to create this file type:</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd ~
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd ~
 touch .bash_profile
 nano .bash_profile
 </code></pre></div>    </div>
 
-    <p>Then add the following lines, replacing <code class="highlighter-rouge">&lt;your-revbayes-directory&gt;</code> with wherever you put the Revbayes Github repository:</p>
+    <p>Then add the following lines, replacing <code class="language-plaintext highlighter-rouge">&lt;your-revbayes-directory&gt;</code> with wherever you put the Revbayes Github repository:</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export DYLD_LIBRARY_PATH=&lt;your-revbayes-directory&gt;/boost_1_60_0/stage/lib:$DYLD_LIBRARY_PATH
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export DYLD_LIBRARY_PATH=&lt;your-revbayes-directory&gt;/boost_1_60_0/stage/lib:$DYLD_LIBRARY_PATH
 export PATH=&lt;your-revbayes-directory&gt;/projects/cmake:$PATH  
 </code></pre></div>    </div>
 
     <p>Then save the file using ctrl^o and hit return, then exit using ctrl^x. Now quit the Terminal app and reopen it and the boost libraries will forever be in your path.</p>
   </li>
   <li>
-    <p><strong>I am using precompiled boost and getting messages like <code class="highlighter-rouge">undefined reference to boost::program_options</code> during the link step</strong></p>
+    <p><strong>I am using precompiled boost and getting messages like <code class="language-plaintext highlighter-rouge">undefined reference to boost::program_options</code> during the link step</strong></p>
 
     <p>It’s possible that the boost you are using was compiled with an older version of GCC than the one you are trying to use to compile RevBayes. <a href="https://gcc.gnu.org/onlinedocs/libstdc++/manual/using_dual_abi.html">GCC switched the default ABI in newer versions</a>. Try running:</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  export CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0"
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  export CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0"
 </code></pre></div>    </div>
 
     <p>and then run build.sh again</p>

@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Molecular dating</h1>
 	<h3 class="subtitle">The global molecular clock model</h3>
 	<h4 class="authors">Rachel Warnock, Sebastian Höhna, Tracy Heath, April  Wright and Walker Pett</h4>
-  <h5>Last modified on September 16, 2019</h5>
+  <h5>Last modified on September 17, 2019</h5>
 </div>
 
 
@@ -144,16 +144,16 @@
 
 <h4 id="reading-the-data">Reading the data</h4>
 
-<p>First, we’ll begin the Rev script by importing the cytochrome b sequences and assign the data matrix to a variable called <code class="highlighter-rouge">cytb</code>.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cytb &lt;- readDiscreteCharacterData("data/bears_cytb.nex")
+<p>First, we’ll begin the Rev script by importing the cytochrome b sequences and assign the data matrix to a variable called <code class="language-plaintext highlighter-rouge">cytb</code>.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cytb &lt;- readDiscreteCharacterData("data/bears_cytb.nex")
 </code></pre></div></div>
-<p>At this stage we’ll also create some useful variables for later, including the number of taxa <code class="highlighter-rouge">n_taxa</code> and a vector of taxa that we can extract from the alignment data using <code class="highlighter-rouge">cytb.taxa</code>.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_taxa &lt;- cytb.size()
+<p>At this stage we’ll also create some useful variables for later, including the number of taxa <code class="language-plaintext highlighter-rouge">n_taxa</code> and a vector of taxa that we can extract from the alignment data using <code class="language-plaintext highlighter-rouge">cytb.taxa</code>.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_taxa &lt;- cytb.size()
 taxa &lt;- cytb.taxa()
 </code></pre></div></div>
-<p>We will also create a workspace variable called <code class="highlighter-rouge">moves</code> and <code class="highlighter-rouge">monitors</code>. 
+<p>We will also create a workspace variable called <code class="language-plaintext highlighter-rouge">moves</code> and <code class="language-plaintext highlighter-rouge">monitors</code>. 
 This variable is a vector containing all of the MCMC moves and monitors respectively.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
 monitors = VectorMonitors()
 </code></pre></div></div>
 
@@ -171,51 +171,51 @@ monitors = VectorMonitors()
 
 <p>This script will contain all the parameters in our birth-death tree model, which is used to describe the process that generated our tree. Since all of the taxa included in the analysis in this exercise are living species we’ll use a birth-death model that doesn’t incorporate the fossil recovery process. Two key parameters in this model are the speciation rate (the rate at which lineages are added to the tree, denoted by $\lambda$) and the extinction rate (the rate at which lineages are removed from the tree, $\mu$). We will assume that these rates are constant over time and place exponential priors on each of these. Each parameter is assumed to be drawn independently from a different exponential distribution with rates $\delta_\lambda$ and $\delta_\mu$, with $\delta_\lambda$ = $\delta_\mu$ = 10. Note an exponential distribution with $\delta = 10$ has an expected value (mean) of $1/\delta$ = 0.1.</p>
 
-<p>Create the exponentially distributed stochastic nodes for <code class="highlighter-rouge">speciation_rate</code> and <code class="highlighter-rouge">extinction_rate</code> using the <code class="highlighter-rouge">~</code> operator.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>speciation_rate ~ dnExponential(10)
+<p>Create the exponentially distributed stochastic nodes for <code class="language-plaintext highlighter-rouge">speciation_rate</code> and <code class="language-plaintext highlighter-rouge">extinction_rate</code> using the <code class="language-plaintext highlighter-rouge">~</code> operator.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>speciation_rate ~ dnExponential(10)
 extinction_rate ~ dnExponential(10)
 </code></pre></div></div>
 <p>For every stochastic node we declare, we must also specify moves (or proposal algorithms) to sample the value of the parameter in proportion to its posterior probability. If a move is not specified for a stochastic node, then it will not be estimated, but fixed to its initial value.</p>
 
-<p>The rate parameters for extinction and speciation are both positive, real numbers (i.e. non-negative floating point variables). For both of these nodes, we will use a scaling move (<code class="highlighter-rouge">mvScale</code>), which proposes multiplicative changes to a parameter. Many moves also require us to set a tuning value, called <code class="highlighter-rouge">lambda</code> for <code class="highlighter-rouge">mvScale</code>, which determine the size of the proposed change. Here, we will also use <code class="highlighter-rouge">tune=true</code>, which will alter the magnitude of the proposed changes after an intital tuning phase. Note there are many different strategies available in RevBayes for improving mixing and convergence. See the tutorial [Diagnosing MCMC performance](/tutorials for more information on this topic.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale(speciation_rate, lambda=0.5, tune=true, weight=3.0) )
+<p>The rate parameters for extinction and speciation are both positive, real numbers (i.e. non-negative floating point variables). For both of these nodes, we will use a scaling move (<code class="language-plaintext highlighter-rouge">mvScale</code>), which proposes multiplicative changes to a parameter. Many moves also require us to set a tuning value, called <code class="language-plaintext highlighter-rouge">lambda</code> for <code class="language-plaintext highlighter-rouge">mvScale</code>, which determine the size of the proposed change. Here, we will also use <code class="language-plaintext highlighter-rouge">tune=true</code>, which will alter the magnitude of the proposed changes after an intital tuning phase. Note there are many different strategies available in RevBayes for improving mixing and convergence. See the tutorial [Diagnosing MCMC performance](/tutorials for more information on this topic.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale(speciation_rate, lambda=0.5, tune=true, weight=3.0) )
 moves.append( mvScale(extinction_rate, lambda=0.5, tune=true, weight=3.0) )
 </code></pre></div></div>
-<p>The <code class="highlighter-rouge">weight</code> option allows you to indicate how many times you would like a given move to be performed at each MCMC cycle. In this tutorial we will run our MCMC for this tutorial will be to execute a <em>schedule</em> of moves at each step in our chain instead of just one move per step. Here, if we were to run our MCMC with our current vector of 6 moves, then our move schedule would perform 6 moves at each cycle. Within a cycle, an individual move is chosen from the move list in proportion to its weight. Therefore, with all six moves assigned <code class="highlighter-rouge">weight=1</code>, each has an equal probability of being executed and will be performed on average one time per MCMC cycle. For more information on moves and how they are performed in RevBayes, please refer to the <a href="/tutorials/mcmc/">Introduction to Markov chain Monte Carlo (MCMC) Sampling</a> and <a href="/tutorials/ctmc/">Nucleotide substitution models</a> tutorials.</p>
+<p>The <code class="language-plaintext highlighter-rouge">weight</code> option allows you to indicate how many times you would like a given move to be performed at each MCMC cycle. In this tutorial we will run our MCMC for this tutorial will be to execute a <em>schedule</em> of moves at each step in our chain instead of just one move per step. Here, if we were to run our MCMC with our current vector of 6 moves, then our move schedule would perform 6 moves at each cycle. Within a cycle, an individual move is chosen from the move list in proportion to its weight. Therefore, with all six moves assigned <code class="language-plaintext highlighter-rouge">weight=1</code>, each has an equal probability of being executed and will be performed on average one time per MCMC cycle. For more information on moves and how they are performed in RevBayes, please refer to the <a href="/tutorials/mcmc/">Introduction to Markov chain Monte Carlo (MCMC) Sampling</a> and <a href="/tutorials/ctmc/">Nucleotide substitution models</a> tutorials.</p>
 
-<p>In addition to the speciation ($\lambda$) and extinction ($\mu$) rates, we may also be interested in inferring diversification ($\lambda - \mu$) and turnover ($\mu/\lambda$). Since these parameters can be expressed as a deterministic transformation of the speciation and extinction rates, we can monitor (that is, track the values of these parameters, and print them to a file) their values by creating two deterministic nodes using the <code class="highlighter-rouge">:=</code> operator.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>diversification := speciation_rate - extinction_rate
+<p>In addition to the speciation ($\lambda$) and extinction ($\mu$) rates, we may also be interested in inferring diversification ($\lambda - \mu$) and turnover ($\mu/\lambda$). Since these parameters can be expressed as a deterministic transformation of the speciation and extinction rates, we can monitor (that is, track the values of these parameters, and print them to a file) their values by creating two deterministic nodes using the <code class="language-plaintext highlighter-rouge">:=</code> operator.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>diversification := speciation_rate - extinction_rate
 turnover := extinction_rate/speciation_rate
 </code></pre></div></div>
-<p>$\rho$ is the probability of extant species sampling. Since we sample all extant bears, we’ll specify this probability as a constant node = 1.0 using the <code class="highlighter-rouge">&lt;-</code> operator.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rho &lt;- 1.0
+<p>$\rho$ is the probability of extant species sampling. Since we sample all extant bears, we’ll specify this probability as a constant node = 1.0 using the <code class="language-plaintext highlighter-rouge">&lt;-</code> operator.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rho &lt;- 1.0
 </code></pre></div></div>
 <p>Because $\rho$ is a constant node, we do not have to assign any moves to this parameter.</p>
 
 <p>Since in this exercise our aim is to infer relative times only, we’ll simply fix the root age to an arbitrary value = 1.0. In this exercise the root is the MRCA of all living bears.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>extant_mrca &lt;- 1.0
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>extant_mrca &lt;- 1.0
 </code></pre></div></div>
 <p>Now that we’ve specified all of the parameters of the birth-death model, we can use these parameters to define the prior distribution on the tree topology and divergence times.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tree_dist = dnBDP(lambda=speciation_rate, mu=extinction_rate, rho=rho, rootAge=extant_mrca, samplingStrategy="uniform", condition="nTaxa", taxa=taxa)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tree_dist = dnBDP(lambda=speciation_rate, mu=extinction_rate, rho=rho, rootAge=extant_mrca, samplingStrategy="uniform", condition="nTaxa", taxa=taxa)
 </code></pre></div></div>
-<p>Note that we created the distribution as a workspace variable using the workspace assignment operator <code class="highlighter-rouge">=</code>. This is because we still need to include a topology constraint in our final specification of the tree prior.</p>
+<p>Note that we created the distribution as a workspace variable using the workspace assignment operator <code class="language-plaintext highlighter-rouge">=</code>. This is because we still need to include a topology constraint in our final specification of the tree prior.</p>
 
 <h4 id="clade-constraints">Clade constraints</h4>
 
 <p>In some cases we may want to constrain parts of the tree topology based on prior information. This is often necessary when we incorporate fossil calibration information, which we’ll do in subsequent tutorial exercises.</p>
 
 <p>Here, we will constrain the group Ursinae to be monophyletic by first creating a vector of constraints.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clade_ursinae = clade("Melursus_ursinus", "Ursus_arctos", "Ursus_maritimus", "Helarctos_malayanus", "Ursus_americanus", "Ursus_thibetanus")                      
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clade_ursinae = clade("Melursus_ursinus", "Ursus_arctos", "Ursus_maritimus", "Helarctos_malayanus", "Ursus_americanus", "Ursus_thibetanus")                      
 constraints = v(clade_ursinae)
 </code></pre></div></div>
-<p>Next, we will specify the final constrained tree prior distribution, providing the constraints along with the workspace birth-death distribution to the constrained topology distribution. Here we use the stochastic assignment operator <code class="highlighter-rouge">~</code> to create a stochastic node for our constrained tree variable <code class="highlighter-rouge">timetree</code>.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree ~ dnConstrainedTopology(tree_dist, constraints=constraints)
+<p>Next, we will specify the final constrained tree prior distribution, providing the constraints along with the workspace birth-death distribution to the constrained topology distribution. Here we use the stochastic assignment operator <code class="language-plaintext highlighter-rouge">~</code> to create a stochastic node for our constrained tree variable <code class="language-plaintext highlighter-rouge">timetree</code>.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree ~ dnConstrainedTopology(tree_dist, constraints=constraints)
 </code></pre></div></div>
 
 <h4 id="moves-on-the-tree">Moves on the tree</h4>
 
-<p>The final step in our tree model script is to add the moves for the tree topology (<code class="highlighter-rouge">mvFNPR</code>) and node ages (<code class="highlighter-rouge">mvNodeTimeSlideUniform</code>).</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvNarrow(timetree, weight=n_taxa) )
+<p>The final step in our tree model script is to add the moves for the tree topology (<code class="language-plaintext highlighter-rouge">mvFNPR</code>) and node ages (<code class="language-plaintext highlighter-rouge">mvNodeTimeSlideUniform</code>).</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvNarrow(timetree, weight=n_taxa) )
 moves.append( mvFNPR(timetree, weight=n_taxa/4) )
 moves.append( mvNodeTimeSlideUniform(timetree, weight=n_taxa) )
 moves.append( mvSubtreeScale(timetree, weight=n_taxa/5.0) )
@@ -224,10 +224,10 @@ moves.append( mvSubtreeScale(timetree, weight=n_taxa/5.0) )
 
 <h4 id="monitoring-node-ages-of-interest">Monitoring node ages of interest</h4>
 
-<p>We may be interested in monitoring the age of a given node in our MCMC sample. We can do this by first using the <code class="highlighter-rouge">clade</code> function to specify the node of interest, as we have done above for Ursinae. Once a clade is defined we can instantiate a deterministic node, in this case <code class="highlighter-rouge">age_ursinae</code>, with the <code class="highlighter-rouge">tmrca</code> function that will record the age of this node.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>age_ursinae := tmrca(timetree, clade_ursinae)
+<p>We may be interested in monitoring the age of a given node in our MCMC sample. We can do this by first using the <code class="language-plaintext highlighter-rouge">clade</code> function to specify the node of interest, as we have done above for Ursinae. Once a clade is defined we can instantiate a deterministic node, in this case <code class="language-plaintext highlighter-rouge">age_ursinae</code>, with the <code class="language-plaintext highlighter-rouge">tmrca</code> function that will record the age of this node.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>age_ursinae := tmrca(timetree, clade_ursinae)
 </code></pre></div></div>
-<p>Note that if we had not included this clade in the constraints that defined the <code class="highlighter-rouge">timetree</code> variable this node would not be constrained to be monophyletic but we could still monitor the age using the <code class="highlighter-rouge">tmrca</code> approach.</p>
+<p>Note that if we had not included this clade in the constraints that defined the <code class="language-plaintext highlighter-rouge">timetree</code> variable this node would not be constrained to be monophyletic but we could still monitor the age using the <code class="language-plaintext highlighter-rouge">tmrca</code> approach.</p>
 
 <h3 id="the-clock-model">The clock model</h3>
 
@@ -240,8 +240,8 @@ moves.append( mvSubtreeScale(timetree, weight=n_taxa/5.0) )
 <p>In this exercise we’ll use the global molecular clock model that assumes rates are constant over time and across the tree. Specifying this model in RevBayes is very simple. 
 For the branch-rates parameter we will use an exponential prior, with rate parameter $\delta_c$ = 10. Recall that the expected value (or mean) of this distribution is 0.1. The same branch-rate will apply to every branch in the tree.</p>
 
-<p>Create the exponentially distributed stochastic node for <code class="highlighter-rouge">branch_rates</code> and assign a move to this parameter.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>branch_rates ~ dnExponential(10.0)
+<p>Create the exponentially distributed stochastic node for <code class="language-plaintext highlighter-rouge">branch_rates</code> and assign a move to this parameter.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>branch_rates ~ dnExponential(10.0)
 moves.append( mvScale(branch_rates, lambda=0.5, tune=true, weight=3.0) )
 </code></pre></div></div>
 
@@ -257,30 +257,30 @@ moves.append( mvScale(branch_rates, lambda=0.5, tune=true, weight=3.0) )
 
 <p>First, we need to define an instantaneous-rate matrix (i.e. a Q-matrix). 
 A nucleotide GTR matrix is defined by a set of 4 stationary frequencies, and 6 exchangeability rates. Create stochastic nodes for these variables, each drawn from a uniform Dirichlet prior distribution.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sf_hp &lt;- v(1,1,1,1)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sf_hp &lt;- v(1,1,1,1)
 sf ~ dnDirichlet(sf_hp)
 
 er_hp &lt;- v(1,1,1,1,1,1)
 er ~ dnDirichlet(er_hp)
 </code></pre></div></div>
-<p>We need special moves to propose changes to a Dirichlet random variable, also known as a simplex (a vector constrained to sum to one). Here, we use a <code class="highlighter-rouge">mvSimplexElementScale</code> move, which scales a single element of a simplex and then renormalises the vector to sum to one. The tuning parameter <code class="highlighter-rouge">alpha</code> specifies how conservative the proposal should be, with larger values of alpha leading to proposals closer to the current value.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvSimplexBeta(er, alpha=10.0, weight=3.0) )
+<p>We need special moves to propose changes to a Dirichlet random variable, also known as a simplex (a vector constrained to sum to one). Here, we use a <code class="language-plaintext highlighter-rouge">mvSimplexElementScale</code> move, which scales a single element of a simplex and then renormalises the vector to sum to one. The tuning parameter <code class="language-plaintext highlighter-rouge">alpha</code> specifies how conservative the proposal should be, with larger values of alpha leading to proposals closer to the current value.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvSimplexBeta(er, alpha=10.0, weight=3.0) )
 moves.append( mvSimplexBeta(sf, alpha=10.0, weight=2.0) )
 </code></pre></div></div>
-<p>Then we can define a deterministic node for our GTR Q-matrix using the special GTR matrix function (<code class="highlighter-rouge">fnGTR</code>).</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q_cytb := fnGTR(er,sf)
+<p>Then we can define a deterministic node for our GTR Q-matrix using the special GTR matrix function (<code class="language-plaintext highlighter-rouge">fnGTR</code>).</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q_cytb := fnGTR(er,sf)
 </code></pre></div></div>
 <p>Next, in order to model gamma-distributed rates across sites, we will create an exponential parameter $\alpha$ for the shape of the gamma distribution, along with scale proposals.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha_cytb ~ dnUniform(0.0,1E6)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha_cytb ~ dnUniform(0.0,1E6)
 alpha_cytb.setValue( 1.0 )
 
 moves.append( mvScale(alpha_cytb, lambda=0.5, tune=true, weight=2.0) )
 </code></pre></div></div>
-<p>Then we create a gamma distribution, discretized into 4 rate categories using the <code class="highlighter-rouge">fnDiscretizeGamma</code> function. Here, <code class="highlighter-rouge">rates_cytb</code> is a deterministic vector of rates computed as the mean of each category.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rates_cytb := fnDiscretizeGamma(alpha_cytb, alpha_cytb, 4)
+<p>Then we create a gamma distribution, discretized into 4 rate categories using the <code class="language-plaintext highlighter-rouge">fnDiscretizeGamma</code> function. Here, <code class="language-plaintext highlighter-rouge">rates_cytb</code> is a deterministic vector of rates computed as the mean of each category.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rates_cytb := fnDiscretizeGamma(alpha_cytb, alpha_cytb, 4)
 </code></pre></div></div>
 <p>Finally, we can create the phylogenetic continuous time Markov chain (PhyloCTMC) distribution for our sequence data, including the gamma-distributed site rate categories, as well as the branch rates defined as part of our clock model. We set the value of this distribution equal to our observed data and identify it as a static part of the likelihood using the clamp method.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phySeq ~ dnPhyloCTMC(tree=timetree, Q=Q_cytb, siteRates=rates_cytb, branchRates=branch_rates, type="DNA")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phySeq ~ dnPhyloCTMC(tree=timetree, Q=Q_cytb, siteRates=rates_cytb, branchRates=branch_rates, type="DNA")
 phySeq.clamp(cytb)
 </code></pre></div></div>
 
@@ -290,41 +290,41 @@ phySeq.clamp(cytb)
   <p>Return to the master script <strong>MCMC_dating_ex1.Rev</strong>.</p>
 </blockquote>
 
-<p>RevBayes uses the <code class="highlighter-rouge">source</code> function to load commands from Rev files into the workspace. Use this function to load in the model scripts you have written in the text editor and saved in the <strong>scripts</strong> directory.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/tree_BD.Rev") # BD tree prior
+<p>RevBayes uses the <code class="language-plaintext highlighter-rouge">source</code> function to load commands from Rev files into the workspace. Use this function to load in the model scripts you have written in the text editor and saved in the <strong>scripts</strong> directory.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/tree_BD.Rev") # BD tree prior
 source("scripts/clock_global.Rev") # the global clock model
 source("scripts/sub_GTR.Rev") # the GTR model
 </code></pre></div></div>
-<p>We can now create our workspace model variable with our fully specified model DAG. We will do this with the <code class="highlighter-rouge">model</code> function and provide a single node in the graph (<code class="highlighter-rouge">sf</code>).</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(sf)
+<p>We can now create our workspace model variable with our fully specified model DAG. We will do this with the <code class="language-plaintext highlighter-rouge">model</code> function and provide a single node in the graph (<code class="language-plaintext highlighter-rouge">sf</code>).</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(sf)
 </code></pre></div></div>
-<p>The object <code class="highlighter-rouge">mymodel</code> is a wrapper around the entire model graph and allows us to pass the model to various functions that are specific to our MCMC analysis.</p>
+<p>The object <code class="language-plaintext highlighter-rouge">mymodel</code> is a wrapper around the entire model graph and allows us to pass the model to various functions that are specific to our MCMC analysis.</p>
 
-<p>The next important step for our master Rev file is to specify the monitors and output file names. For this, we will create a vector called <code class="highlighter-rouge">monitors</code> that will each sample and record or output our MCMC.</p>
+<p>The next important step for our master Rev file is to specify the monitors and output file names. For this, we will create a vector called <code class="language-plaintext highlighter-rouge">monitors</code> that will each sample and record or output our MCMC.</p>
 
-<p>The first monitor we will create will monitor every named random variable in our model graph. This will include every stochastic and deterministic node using the <code class="highlighter-rouge">mnModel</code> monitor. The only parameter that is not included in the <code class="highlighter-rouge">mnModel</code> is the tree topology. Therefore, the parameters in the file written by this monitor are all numerical parameters and will be written to a tab-separated text file that can be opened by accessory programs for evaluating such parameters. We will also name the output file for this monitor and indicate that we wish to sample our MCMC every 10 cycles.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/bears_global.log", printgen=10) )
+<p>The first monitor we will create will monitor every named random variable in our model graph. This will include every stochastic and deterministic node using the <code class="language-plaintext highlighter-rouge">mnModel</code> monitor. The only parameter that is not included in the <code class="language-plaintext highlighter-rouge">mnModel</code> is the tree topology. Therefore, the parameters in the file written by this monitor are all numerical parameters and will be written to a tab-separated text file that can be opened by accessory programs for evaluating such parameters. We will also name the output file for this monitor and indicate that we wish to sample our MCMC every 10 cycles.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/bears_global.log", printgen=10) )
 </code></pre></div></div>
-<p>The <code class="highlighter-rouge">mnFile</code> monitor writes any parameter we specify to file. Thus, if we only cared about the speciation rate and nothing else (this is not a typical or recommended attitude for an analysis this complex) we wouldn’t use the <code class="highlighter-rouge">mnModel</code> monitor above and just use the <code class="highlighter-rouge">mnFile</code> monitor to write a smaller and simpler output file. Since the tree topology is not included in the <code class="highlighter-rouge">mnModel</code> monitor (because it is not numerical), we will use <code class="highlighter-rouge">mnFile</code> to write the tree to file by specifying our <code class="highlighter-rouge">timetree</code> variable in the arguments.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnFile(filename="output/bears_global.trees", printgen=10, timetree) )
+<p>The <code class="language-plaintext highlighter-rouge">mnFile</code> monitor writes any parameter we specify to file. Thus, if we only cared about the speciation rate and nothing else (this is not a typical or recommended attitude for an analysis this complex) we wouldn’t use the <code class="language-plaintext highlighter-rouge">mnModel</code> monitor above and just use the <code class="language-plaintext highlighter-rouge">mnFile</code> monitor to write a smaller and simpler output file. Since the tree topology is not included in the <code class="language-plaintext highlighter-rouge">mnModel</code> monitor (because it is not numerical), we will use <code class="language-plaintext highlighter-rouge">mnFile</code> to write the tree to file by specifying our <code class="language-plaintext highlighter-rouge">timetree</code> variable in the arguments.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnFile(filename="output/bears_global.trees", printgen=10, timetree) )
 </code></pre></div></div>
-<p>The last monitor we will add to our analysis will print information to the screen. As with <code class="highlighter-rouge">mnFile</code> we must tell <code class="highlighter-rouge">mnScreen</code> which parameters we’d like to see updated on the screen. We will choose the age of the MRCA of living bears (<code class="highlighter-rouge">extant_mrca</code>) and the diversification rate (<code class="highlighter-rouge">diversification</code>) parameters.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(printgen=10, extant_mrca, diversification, branch_rates) )
+<p>The last monitor we will add to our analysis will print information to the screen. As with <code class="language-plaintext highlighter-rouge">mnFile</code> we must tell <code class="language-plaintext highlighter-rouge">mnScreen</code> which parameters we’d like to see updated on the screen. We will choose the age of the MRCA of living bears (<code class="language-plaintext highlighter-rouge">extant_mrca</code>) and the diversification rate (<code class="language-plaintext highlighter-rouge">diversification</code>) parameters.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(printgen=10, extant_mrca, diversification, branch_rates) )
 </code></pre></div></div>
-<p>Once we have set up our model, moves, and monitors, we can now create the workspace variable that defines our MCMC run. We do this using the <code class="highlighter-rouge">mcmc</code> function that simply takes the three main analysis components as arguments.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
+<p>Once we have set up our model, moves, and monitors, we can now create the workspace variable that defines our MCMC run. We do this using the <code class="language-plaintext highlighter-rouge">mcmc</code> function that simply takes the three main analysis components as arguments.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
 </code></pre></div></div>
-<p>The MCMC object that we named <code class="highlighter-rouge">mymcmc</code> has a member method called run. This will execute our analysis and we will set the chain length to 20000 cycles using the generations option.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=20000, tuningInterval=200)
+<p>The MCMC object that we named <code class="language-plaintext highlighter-rouge">mymcmc</code> has a member method called run. This will execute our analysis and we will set the chain length to 20000 cycles using the generations option.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=20000, tuningInterval=200)
 </code></pre></div></div>
-<p>After the Markov chain has completed, we can create a summary tree. We’ll use the function <code class="highlighter-rouge">readTreeTrace</code> to read the MCMC sample of trees from file and the command <code class="highlighter-rouge">mccTree</code> to generate the maximum clade credibility (MCC) tree.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>trace = readTreeTrace("output/bears_global.trees")
+<p>After the Markov chain has completed, we can create a summary tree. We’ll use the function <code class="language-plaintext highlighter-rouge">readTreeTrace</code> to read the MCMC sample of trees from file and the command <code class="language-plaintext highlighter-rouge">mccTree</code> to generate the maximum clade credibility (MCC) tree.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>trace = readTreeTrace("output/bears_global.trees")
 mccTree(trace, file="output/bears_global.mcc.tre")
 </code></pre></div></div>
-<p>Note by default, a burn-in of 25% is used when creating the tree trace (250 trees in our case). You can specify a different burn-in fraction, say 50%, by typing the command <code class="highlighter-rouge">trace.setBurnin(500)</code>.</p>
+<p>Note by default, a burn-in of 25% is used when creating the tree trace (250 trees in our case). You can specify a different burn-in fraction, say 50%, by typing the command <code class="language-plaintext highlighter-rouge">trace.setBurnin(500)</code>.</p>
 
-<p>Once all our analysis is complete, we will want RevBayes to close. Tell the program to quit using the <code class="highlighter-rouge">q()</code> function.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>q()
+<p>Once all our analysis is complete, we will want RevBayes to close. Tell the program to quit using the <code class="language-plaintext highlighter-rouge">q()</code> function.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>q()
 </code></pre></div></div>
 
 <blockquote class="instruction">
@@ -334,7 +334,7 @@ mccTree(trace, file="output/bears_global.mcc.tre")
 <h3 id="examining-the-output">Examining the output</h3>
 
 <blockquote class="instruction">
-  <p>Open the program Tracer and load the log file <code class="highlighter-rouge">bears_global.log</code>.</p>
+  <p>Open the program Tracer and load the log file <code class="language-plaintext highlighter-rouge">bears_global.log</code>.</p>
 </blockquote>
 
 <p>Evaluate the mixing and convergence of your MCMC analysis, and examine the marginal distributions of parameters of interest. For publication quality analysis you would probably want to run multiple independent MCMC chain and increase your chain length, but you should be able to see that the chain is mixing quite well.</p>
@@ -349,10 +349,10 @@ mccTree(trace, file="output/bears_global.mcc.tre")
 
 <p>In addition to evaluating the performance and sampling of an MCMC run using numerical parameters, it is also important to inspect the sampled topology and tree parameters. This is a difficult endeavor, however. One tool for evaluating convergence and mixing of the tree samples is RWTY (Warren et al. 2016). In this tutorial, we will only summarize the sampled trees, but we encourage you to consider approaches for assessing the performance of the MCMC with respect to the tree topology.</p>
 
-<p>Ultimately, we are interested in summarizing the sampled trees and branch times given that our MCMC has sampled all of the important parameters in proportion to their posterior probabilities. RevBayes includes some functions for summarizing the tree topology and other tree parameters, including the <code class="highlighter-rouge">mccTree</code> that we used in this exercise.</p>
+<p>Ultimately, we are interested in summarizing the sampled trees and branch times given that our MCMC has sampled all of the important parameters in proportion to their posterior probabilities. RevBayes includes some functions for summarizing the tree topology and other tree parameters, including the <code class="language-plaintext highlighter-rouge">mccTree</code> that we used in this exercise.</p>
 
 <blockquote>
-  <p>Open the program FigTree and load MCC tree file <code class="highlighter-rouge">bears_global.mcc.tre</code>.</p>
+  <p>Open the program FigTree and load MCC tree file <code class="language-plaintext highlighter-rouge">bears_global.mcc.tre</code>.</p>
 </blockquote>
 
 <figure id="fig_tree"><p><img src="figures/bears_global.mcc.tre.png" width="700" /></p>

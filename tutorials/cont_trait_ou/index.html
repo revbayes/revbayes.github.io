@@ -122,16 +122,16 @@ The traits have been log-transformed.</p>
 
 <p>First, load the trait data:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>contData &lt;- readContinuousCharacterData("data/primates_lhtlog.nex")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>contData &lt;- readContinuousCharacterData("data/primates_lhtlog.nex")
 </code></pre></div></div>
 
 <p>If you type you will see that the continuous character data matrix
 contains several characters (columns).</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>contData
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>contData
 </code></pre></div></div>
 
-<div class="rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    
+<div class="language-plaintext rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    
        Continuous character matrix with 23 taxa and 11 characters
        ==========================================================
        Origination:                   primates_lhtlog.nex
@@ -145,14 +145,14 @@ contains several characters (columns).</p>
 <p>Since we only want the body mass (of females) we exclude all but the
 third character</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>contData.excludeAll()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>contData.excludeAll()
 contData.includeCharacter(3) 
 </code></pre></div></div>
 
 <p>Next, load the time-tree from file. Remember that we use in this first
 simple example a fixed tree that we assume is known without uncertainty.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>treeArray &lt;- readTrees("data/primates.tree")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>treeArray &lt;- readTrees("data/primates.tree")
 psi &lt;- treeArray[1]
 </code></pre></div></div>
 
@@ -166,7 +166,7 @@ already added to our analysis. This will make it much easier if we
 extend the model or analysis to include additional moves or to remove
 some moves.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvi = 0 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvi = 0 
 </code></pre></div></div>
 
 <p>Then, we define the overall rate parameter $\sigma$ which we assign a
@@ -174,7 +174,7 @@ some moves.</p>
 Bayesian inference to specify a uniform prior and then to transform the
 parameter which we will use here:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>logAlpha ~ dnUniform(-10,10)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>logAlpha ~ dnUniform(-10,10)
 alpha := 10^logAlpha
 
 logSigma ~ dnUniform(-5,5)
@@ -190,7 +190,7 @@ values drawn from a window with width ‘delta‘ and is centered around the
 current values; thus it slides through the parameter space together with
 the current parameter value.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[++mvi] = mvSlide(logAlpha,delta=10,tune=true,weight=2)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[++mvi] = mvSlide(logAlpha,delta=10,tune=true,weight=2)
 moves[++mvi] = mvSlide(logSigma, delta=1.0, tune=true, weight=2.0)
 </code></pre></div></div>
 
@@ -198,21 +198,21 @@ moves[++mvi] = mvSlide(logSigma, delta=1.0, tune=true, weight=2.0)
 to know the number of nodes and the number of tips. We will store these
 as some helper variables.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>numNodes = psi.nnodes()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>numNodes = psi.nnodes()
 numTips = psi.ntips()
 </code></pre></div></div>
 
 <p>We will use a uniform prior distribution on the logarithm of the root
 mass optimal value.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>logOptim ~ dnUniform(-10,10)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>logOptim ~ dnUniform(-10,10)
 </code></pre></div></div>
 
 <p>Again, we’ll specify a sliding move that proposes new values for the
 ‘rootlogmass‘ randomly drawn from a window centered around the current
 value.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[++mvi] = mvSlide(logOptim,delta=10,tune=true,weight=2)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[++mvi] = mvSlide(logOptim,delta=10,tune=true,weight=2)
 </code></pre></div></div>
 
 <p>Now we are ready to specify the Brownian motion model for each branch.
@@ -228,7 +228,7 @@ length of node with index ‘i‘ using the function ‘psi.branchLength(i)‘.<
 
 <p>First we need to copy (create a reference to) the ‘rootlogmass‘</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>logmass[numNodes] := logOptim
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>logmass[numNodes] := logOptim
 </code></pre></div></div>
 
 <p>Let us start by creating the random variables for the internal nodes.
@@ -236,7 +236,7 @@ Remember that the variance is equal to ‘sigma‘-squared times the branch
 length, and we need to compute the square root of it to obtain the
 standard deviation.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># univariate Ornstein-Uhlenbeck process along the tree
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># univariate Ornstein-Uhlenbeck process along the tree
 for (i in (numNodes-1):(numTips+1) ) {
   logmass[i] ~ dnOrnsteinUhlenbeck( x0=logmass, theta=logOptim, alpha=alpha, sigma=sigma, time=psi.branchLength(i) )
   # moves on the Ornstein-Uhlenbeck process
@@ -252,7 +252,7 @@ integrate over the uncertainty in the states.</p>
 applying a move to each tip node we will clamp the nodes. The nodes will
 be clamped with the data that we read in before.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in numTips:1 ) {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in numTips:1 ) {
   logmass[i] ~ dnOrnsteinUhlenbeck( x0=logmass, theta=logOptim, alpha=alpha, sigma=sigma, time=psi.branchLength(i) )
 
   # condition OU model on quantitative trait data (second column of the dataset)
@@ -264,33 +264,33 @@ be clamped with the data that we read in before.</p>
 containing the entire model graph by providing it with only one of our
 model variables, <em>e.g.,</em>‘sigma‘.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(sigma)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(sigma)
 </code></pre></div></div>
 
 <p>To see what it happing during the MCMC let us make a screen monitor that
 tracks the rate ‘sigma‘.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[1] = mnScreen(printgen=10, sigma, alpha, logOptim)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[1] = mnScreen(printgen=10, sigma, alpha, logOptim)
 </code></pre></div></div>
 
 <p>Since we have several additional parameters —the states at the internal
 nodes— we will use a model monitor to write to file instead.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[2] = mnModel(filename="output/primates_mass_OU.log", printgen=10, separator = TAB)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[2] = mnModel(filename="output/primates_mass_OU.log", printgen=10, separator = TAB)
 monitors[3] = mnExtNewick(filename="output/primates_mass_OU_ext.trees", isNodeParameter=TRUE, printgen=10, separator = TAB, tree=psi, logmass)
 </code></pre></div></div>
 
 <p>We can finally create a mcmc, and run it for a good 100 000 cycles after
 we did a burnin phase of 10 000 iterations:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves)
 mymcmc.burnin(generations=10000,tuningInterval=500)
 mymcmc.run(100000)
 </code></pre></div></div>
 
 <p>To get the annotate tree we use the map tree function.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>treetrace = readTreeTrace("output/primates_mass_OU_ext.trees", treetype="clock")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>treetrace = readTreeTrace("output/primates_mass_OU_ext.trees", treetype="clock")
 map_tree = mapTree(treetrace,"output/primates_mass_OU_ext_MAP.tree")
 </code></pre></div></div>
 
@@ -320,19 +320,19 @@ changed?</p>
 <p>We start with specifying a probability for a jump to occur at a given
 branch.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rho &lt;- 0.01
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rho &lt;- 0.01
 </code></pre></div></div>
 
 <p>Next, we specify the prior distribution on the root value.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>logRootOptim ~ dnUniform(-10,10)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>logRootOptim ~ dnUniform(-10,10)
 moves[++mvi] = mvSlide(logRootOptim,delta=10,tune=true,weight=2)
 </code></pre></div></div>
 
 <p>Now, we use a loop over all branches to specify the per branch optimal
 value.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in numBranches:1) {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in numBranches:1) {
    optimChangeProbability[i] := Probability(1-rho)      # + (1-exp(-lambda*psi.branchLength(i)))
    optimMultiplier[i] ~ dnReversibleJumpMixture(1, dnGamma(2,2), optimChangeProbability[i] )
    if ( psi.isRoot( psi.parent(i) ) ) {
@@ -349,12 +349,12 @@ value.</p>
 <p>Only for monitoring purposes we add a variable that counts the current
 number of jumps.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>numOptimChanges := sum( optimChange )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>numOptimChanges := sum( optimChange )
 </code></pre></div></div>
 
 <p>You may want to monitor and then visualize the branch-specific jumps</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[4] = mnExtNewick(filename="output/primates_mass_OU_rate_jumps.trees", isNodeParameter=FALSE, printgen=10, separator = TAB, tree=psi, nodeOptim, optimChange)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[4] = mnExtNewick(filename="output/primates_mass_OU_rate_jumps.trees", isNodeParameter=FALSE, printgen=10, separator = TAB, tree=psi, nodeOptim, optimChange)
 </code></pre></div></div>
 
 

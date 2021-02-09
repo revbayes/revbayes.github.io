@@ -177,7 +177,7 @@
 
 <p>The code for this simulation with the single-normal model can be found in <strong>pps_SingleNormal.rev</strong>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Read in model log file from MCMC
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Read in model log file from MCMC
 print("Reading MCMC log...")
 postVals &lt;- readMatrix("../data/singleNormal_posterior.log")
 
@@ -211,7 +211,7 @@ for (gen in 50:postVals.size()){
 
 <p>Code to calculate these test statistics can also be found in <strong>pps_SingleNormal.rev</strong>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>print("Sorting...")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>print("Sorting...")
 
 # Sort each simulated dataset
 for ( s in 1:sims.size() ){
@@ -246,7 +246,7 @@ for ( s in 1:sims.size() ){
 
 <p>Note that the calculation of percentiles is not built-in to RevBayes, which was why we created this custom function</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>function percentile(p,nums){
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>function percentile(p,nums){
 	pos &lt;- round( (p/100) * nums.size() )
 	return nums[pos]
 }
@@ -269,7 +269,7 @@ using both posterior predictive p-values and effect sizes. Figure from <a class=
 
 <p>P-values and effect sizes are calculated in <strong>pps_SingleNormal.rev</strong> with this code</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>function pVal(e,s){
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>function pVal(e,s){
 	greaterThan &lt;- 0
 	for (i in 1:s.size()){
 		if (e &lt; s[i]){
@@ -314,7 +314,7 @@ print("")
 
 <p>The results should look something like this</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>---&gt; Posterior Prediction Model Assessment Results &lt;---
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>---&gt; Posterior Prediction Model Assessment Results &lt;---
 
 P-value mean:	0.4973767
 P-value median:	0.9632739
@@ -329,9 +329,9 @@ Effect size 90th percentile:	0.4808086
 
 <p>Note that this script only calculates p-values as the percentage of posterior predictive values that are <em>less</em> than the empirical value. Formally, this is known as a lower one-tailed p-value. Therefore, p-values near <em>either 0 or 1</em> indicate poor fit between our model and our empirical data.</p>
 
-<p>To run this entire posterior predictive analysis at once, you could use this command from inside the <code class="highlighter-rouge">scripts</code> folder for this tutorial.</p>
+<p>To run this entire posterior predictive analysis at once, you could use this command from inside the <code class="language-plaintext highlighter-rouge">scripts</code> folder for this tutorial.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source(pps_SingleNormal.rev)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source(pps_SingleNormal.rev)
 </code></pre></div></div>
 
 <p>These results can also be summarized graphically (although not in RevBayes) like this</p>

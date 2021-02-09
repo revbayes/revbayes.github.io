@@ -129,9 +129,9 @@ for instance by allowing different sets of parameters for different
 branches of the species tree. This is useful to model differences in
 rates of duplication, loss or transfer among species, or to model
 different effective population sizes in a species tree. In
-<code class="highlighter-rouge">RevBayes</code> so far only models of incomplete lineage sorting
+<code class="language-plaintext highlighter-rouge">RevBayes</code> so far only models of incomplete lineage sorting
 have been implemented (models of duplication and loss and transfer will
-soon be added). Thanks to <code class="highlighter-rouge">RevBayes</code> modular design, there
+soon be added). Thanks to <code class="language-plaintext highlighter-rouge">RevBayes</code> modular design, there
 is quite a lot of flexibility in specifying the model, for instance by
 associating different parameters to different branches of the species
 tree, or by combining the gene tree-species tree model to other types of
@@ -328,7 +328,7 @@ mammalian species.</p>
   <li>
     <p>Let’s load all 10 gene alignments.</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>### Read in sequence data for all genes
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>### Read in sequence data for all genes
 
 locus_names = ["COIII", "FGA", "GHRmeredith", "lrpprc_169", "npas3", "sim1", "tex2", "ttr", "zfy", "zic3"]
 
@@ -362,7 +362,7 @@ with mean 75 and standard deviation 2.5 as the prior on the root
 age. Since the root age can only be a positive real number we
 truncate the normal distribution at 0.</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Specify a prior on the diversification and turnover rate
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Specify a prior on the diversification and turnover rate
 speciation ~ dnGamma(2,2)
 relativeExtinction ~ dnBeta(1,1)
 
@@ -411,7 +411,7 @@ Conveniently, tip names in the gene trees correspond to the species
 names: we can thus use the maximum tree function on these trees
 without worrying about potential name inconsistencies.</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># read in each gene tree separately
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># read in each gene tree separately
 j=1
 for ( i in 1:num_loci ) {
     gene_trees[i] &lt;- readTrees("output_GeneTrees/" + locus_names[i] + "_MAP.tree")[1]
@@ -449,7 +449,7 @@ could assume that all branches have the same population size. Once
 the gene trees have been declared, we set their value to the MAP
 trees that we have read previously.</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># We assume independent effective population size parameters for each branch of the species tree.
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># We assume independent effective population size parameters for each branch of the species tree.
 for (i in 1:n_species) {
   Ne[i] &lt;- 10.0
 }
@@ -489,7 +489,7 @@ between the species tree and the gene trees. These moves are first
 declared with the species tree as main argument. Then, each gene
 tree is added to the moves.</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## General tree moves used on the species tree
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## General tree moves used on the species tree
 moves[++mi] = mvNarrow(psi, weight=5.0)
 moves[++mi] = mvNNI(psi, weight=1.0)
 moves[++mi] = mvFNPR(psi, weight=3.0)
@@ -538,7 +538,7 @@ estimate to see how much the clock rate estimates actually differ
 across genes. One could also choose to use a relaxed clock model
 instead of a strict clock.</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for ( i in 1:num_loci ) {
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for ( i in 1:num_loci ) {
    clock_rate[i] ~ dnExponential(1.0)
    moves[++mi] = mvScale(clock_rate[i], weight=2.0)
    moves[++mi] = mvSlide(clock_rate[i], weight=3.0)
@@ -551,7 +551,7 @@ need to define the substitution matrix. We use a single HKY matrix
 that will apply to all sites per gene. Additionally, we assume that
 sites all evolve according to the same rate, to save computing time.</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for ( i in 1:num_loci ) {
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for ( i in 1:num_loci ) {
 
     #### specify the HKY substitution model applied uniformly to all sites ###
     kappa[i] ~ dnLognormal(0,1)
@@ -574,7 +574,7 @@ will use the common ‘PhyloCTMC‘ distribution, which is a continuous
 time Markov process along a phylogenetic tree. We create a ‘seq‘
 variable and attach/clamp each gene to one of the ‘seq‘ variables.</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for ( i in 1:num_loci ) {
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for ( i in 1:num_loci ) {
     # the sequence evolution model
     seq[i] ~ dnPhyloCTMC(tree=geneTree[i], Q=Q[i], branchRates=clock_rate[i], type="DNA")
 
@@ -587,7 +587,7 @@ variable and attach/clamp each gene to one of the ‘seq‘ variables.</p>
     <p>Now we have defined all the bricks of the model, and create our
 model object from it.</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># We get a handle on our model.
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># We get a handle on our model.
 # We can use any node of our model as a handle, here we choose to use the topology.
 mymodel = model(psi)
 </code></pre></div>    </div>
@@ -597,7 +597,7 @@ mymodel = model(psi)
 data. For clarity, we put the results in an output folder, and the
 gene trees will be further included within a folder of their own.</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>output_folder = "output_MSC/"
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>output_folder = "output_MSC/"
 
 # Monitors to check the progression of the program
 monitors[1] = mnScreen(printgen=100, psi)
@@ -625,7 +625,7 @@ mymcmc.operatorSummary()
     <p>Now we can perform some post-run analyses, for instance to obtain
 and save the MAP species tree.</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Now, we will analyze the tree output.
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Now, we will analyze the tree output.
 # Let us start by reading in the tree trace
 treetrace = readTreeTrace(output_folder+"posterior_MSC_primates.trees", treetype="clock")
 # and get the summary of the tree trace

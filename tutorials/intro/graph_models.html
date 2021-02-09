@@ -118,11 +118,11 @@
 <p><a href="http://revbayes.com">RevBayes</a> uses a <em>graphical model</em> framework in
 which all probabilistic models, including phylogenetic models,
 are comprised of modular components that can be assembled in a myriad of ways.
-<a href="http://revbayes.com">RevBayes</a> provides a highly flexible language called <code class="highlighter-rouge">Rev</code>
+<a href="http://revbayes.com">RevBayes</a> provides a highly flexible language called <code class="language-plaintext highlighter-rouge">Rev</code>
 that users employ to specify their own custom graphical models.</p>
 
-<p>This tutorial is intended to be a gentle introduction on how to use <code class="highlighter-rouge">Rev</code> to specify graphical models.
-Additionally we’ll cover how to use <code class="highlighter-rouge">Rev</code> to specify the Markov chain Monte Carlo (MCMC) 
+<p>This tutorial is intended to be a gentle introduction on how to use <code class="language-plaintext highlighter-rouge">Rev</code> to specify graphical models.
+Additionally we’ll cover how to use <code class="language-plaintext highlighter-rouge">Rev</code> to specify the Markov chain Monte Carlo (MCMC) 
 algorithms used to perform inference with the model.
 We will focus on a simple linear regression example,
 and use <a href="http://revbayes.com">RevBayes</a> to estimate the posterior distributions of our parameters.</p>
@@ -139,7 +139,7 @@ This means the learning curve is steep, however there are a number of benefits:<
 
 <ol>
   <li>
-    <p>Transparency: All the modeling assumptions are explicitly specified in <a href="http://revbayes.com">RevBayes</a>. The <code class="highlighter-rouge">Rev</code> script that runs an analysis makes these assumptions clear and can be easily shared. The assumptions can easily be modified in the <code class="highlighter-rouge">Rev</code> script and then the analysis can be rerun to see how changes affect the results. There is no reliance on “defaults” that may change with different versions of the software.</p>
+    <p>Transparency: All the modeling assumptions are explicitly specified in <a href="http://revbayes.com">RevBayes</a>. The <code class="language-plaintext highlighter-rouge">Rev</code> script that runs an analysis makes these assumptions clear and can be easily shared. The assumptions can easily be modified in the <code class="language-plaintext highlighter-rouge">Rev</code> script and then the analysis can be rerun to see how changes affect the results. There is no reliance on “defaults” that may change with different versions of the software.</p>
   </li>
   <li>
     <p>Flexibility: Users are not limited by a small set of models the programmers hard coded, instead users can specify their own custom models uniquely tailored to their hypotheses and datasets.</p>
@@ -195,7 +195,7 @@ We explain the notation used in the visual representation of these models only b
 (see <a href="#legend"></a>),
 and enourage readers to see <a class="citation" href="#Hoehna2014b">Höhna et al. (2014)</a> for more details.
 As we will discuss below, representing graphical models in computer code 
-(using the <code class="highlighter-rouge">Rev</code> language)
+(using the <code class="language-plaintext highlighter-rouge">Rev</code> language)
 will likely be the most useful aspect of graphical models to most readers.</p>
 
 <figure id="legend"><p><img src="figures/graphical_model_legend.png" width="400" /></p>
@@ -254,24 +254,24 @@ Some of the most common are <a href="http://mc-stan.org/">Stan</a>, <a href="htt
 While these are all excellent tools, they are all unsuitable for phylogenetic models 
 since the tree topology itself must be treated as a random variable to be inferred.</p>
 
-<h2 class="subsection" id="the-rev-probabilistic-programming-language">The <code class="highlighter-rouge">Rev</code> Probabilistic Programming Language</h2>
+<h2 class="subsection" id="the-rev-probabilistic-programming-language">The <code class="language-plaintext highlighter-rouge">Rev</code> Probabilistic Programming Language</h2>
 
-<p><a href="http://revbayes.com">RevBayes</a> provides its own probabilistic programming language called <code class="highlighter-rouge">Rev</code>.
-While <code class="highlighter-rouge">Rev</code> focuses on phylogenetic models, nearly any type of probabilistic
-model can be programmed in <code class="highlighter-rouge">Rev</code> making it a highly flexible probabilistic computing environment.
-Most <code class="highlighter-rouge">Rev</code> scripts consist of two different parts:</p>
+<p><a href="http://revbayes.com">RevBayes</a> provides its own probabilistic programming language called <code class="language-plaintext highlighter-rouge">Rev</code>.
+While <code class="language-plaintext highlighter-rouge">Rev</code> focuses on phylogenetic models, nearly any type of probabilistic
+model can be programmed in <code class="language-plaintext highlighter-rouge">Rev</code> making it a highly flexible probabilistic computing environment.
+Most <code class="language-plaintext highlighter-rouge">Rev</code> scripts consist of two different parts:</p>
 
 <ol>
   <li>Model specification. This part of the script defines the constant, stochastic, and determinstic nodes that make up the model.</li>
   <li>Inference algorithm specification. This part of the script specifies what sort of inference algorithm we want to use with the model. Typically this is a Markov chain Monte Carlo algorithm, and we need to specify what sort of proposals (or moves) will operate on each variable.</li>
 </ol>
 
-<p>In more complex <code class="highlighter-rouge">Rev</code> scripts, these two different elements (model specification and infernence algorithm specification) will be woven together.
+<p>In more complex <code class="language-plaintext highlighter-rouge">Rev</code> scripts, these two different elements (model specification and infernence algorithm specification) will be woven together.
 In the example for this tutorial we will keep the two parts separate.</p>
 
 <h1 class="section" id="linear-regression-example">Linear Regression Example</h1>
 
-<p>To demonstrate how to use the <code class="highlighter-rouge">Rev</code> language to specify a graphical model,
+<p>To demonstrate how to use the <code class="language-plaintext highlighter-rouge">Rev</code> language to specify a graphical model,
 we will start with a simple non-phylogenetic model.
 This tutorial will show both how to specify linear regression
 as a graphical model, and how to perform Bayesian inference over
@@ -279,15 +279,15 @@ the model using MCMC.</p>
 
 <h2 class="subsection" id="tutorial-format">Tutorial Format</h2>
 
-<p>All command-line text, including all <code class="highlighter-rouge">Rev</code> syntax, are given in <code class="highlighter-rouge">monotype font</code>. Furthermore, blocks of <code class="highlighter-rouge">Rev</code> code that are needed to build the model, specify the analysis, or execute the run are given in separate shaded boxes. For example, we will instruct you to create a new variable called <code class="highlighter-rouge">n</code> that is equal to <code class="highlighter-rouge">10</code> using the <code class="highlighter-rouge">&lt;-</code> operator like this:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n &lt;- 10
+<p>All command-line text, including all <code class="language-plaintext highlighter-rouge">Rev</code> syntax, are given in <code class="language-plaintext highlighter-rouge">monotype font</code>. Furthermore, blocks of <code class="language-plaintext highlighter-rouge">Rev</code> code that are needed to build the model, specify the analysis, or execute the run are given in separate shaded boxes. For example, we will instruct you to create a new variable called <code class="language-plaintext highlighter-rouge">n</code> that is equal to <code class="language-plaintext highlighter-rouge">10</code> using the <code class="language-plaintext highlighter-rouge">&lt;-</code> operator like this:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n &lt;- 10
 </code></pre></div></div>
 
 <h2 class="subsection" id="setup-your-files">Setup Your Files</h2>
 
-<p>Make yourself familiar with the example script called <a href="scripts/linear_regression.Rev"><code class="highlighter-rouge">linear_regression.Rev</code></a> which shows the code for the following sections. Then, start a new and empty script in your text editor and follow each step provided as below. Name the script file <code class="highlighter-rouge">my_linear_regression.Rev</code> or anything you’d like.</p>
+<p>Make yourself familiar with the example script called <a href="scripts/linear_regression.Rev"><code class="language-plaintext highlighter-rouge">linear_regression.Rev</code></a> which shows the code for the following sections. Then, start a new and empty script in your text editor and follow each step provided as below. Name the script file <code class="language-plaintext highlighter-rouge">my_linear_regression.Rev</code> or anything you’d like.</p>
 
-<p>You’ll also want to download the <a href="data/x.csv"><code class="highlighter-rouge">x.csv</code></a> and <a href="data/y.csv"><code class="highlighter-rouge">y.csv</code></a> data files and place them in a <code class="highlighter-rouge">data</code> directory.</p>
+<p>You’ll also want to download the <a href="data/x.csv"><code class="language-plaintext highlighter-rouge">x.csv</code></a> and <a href="data/y.csv"><code class="language-plaintext highlighter-rouge">y.csv</code></a> data files and place them in a <code class="language-plaintext highlighter-rouge">data</code> directory.</p>
 
 <h2 class="subsection" id="linear-regression-as-a-graphical-model">Linear Regression as a Graphical Model</h2>
 
@@ -366,66 +366,66 @@ have constant parameter values (the squares on the top row of the figure).</em><
 </figure>
 </blockquote>
 
-<h2 class="subsection" id="specifying-the-model-in-rev">Specifying the Model in <code class="highlighter-rouge">Rev</code></h2>
+<h2 class="subsection" id="specifying-the-model-in-rev">Specifying the Model in <code class="language-plaintext highlighter-rouge">Rev</code></h2>
 
 <p>Remember that graphical models are made up of three types of nodes: stochastic, constant, and deterministic nodes.
-In <code class="highlighter-rouge">Rev</code> we specify the type of node by using a specific assignment operator:</p>
+In <code class="language-plaintext highlighter-rouge">Rev</code> we specify the type of node by using a specific assignment operator:</p>
 <ul>
-  <li>Stochastic node: <code class="highlighter-rouge">n ~ dnNormal(0, 1)</code></li>
-  <li>Constant node: <code class="highlighter-rouge">n &lt;- 5</code></li>
-  <li>Deterministic node: <code class="highlighter-rouge">n := m + 5</code></li>
+  <li>Stochastic node: <code class="language-plaintext highlighter-rouge">n ~ dnNormal(0, 1)</code></li>
+  <li>Constant node: <code class="language-plaintext highlighter-rouge">n &lt;- 5</code></li>
+  <li>Deterministic node: <code class="language-plaintext highlighter-rouge">n := m + 5</code></li>
 </ul>
 
 <p>We will use each of these assignment operators to set up the linear regression model.</p>
 
 <p>First, we read in the observed data as constant nodes:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>x_obs &lt;- readDataDelimitedFile(file="data/x.csv", header=FALSE, delimiter=",")[1]
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>x_obs &lt;- readDataDelimitedFile(file="data/x.csv", header=FALSE, delimiter=",")[1]
 y_obs &lt;- readDataDelimitedFile(file="data/y.csv", header=FALSE, delimiter=",")[1]
 </code></pre></div></div>
-<p>Take a look at <code class="highlighter-rouge">x_obs</code>:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>x_obs
+<p>Take a look at <code class="language-plaintext highlighter-rouge">x_obs</code>:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>x_obs
 </code></pre></div></div>
 <p>This is the vector of x-coordinates for the points plotted in <a href="#linear"></a>.</p>
 
 <p>Now we will specify the prior distributions for the stochastic nodes.
 These are the variables that we will estimate:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>beta ~ dnNormal(0, 1)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>beta ~ dnNormal(0, 1)
 alpha ~ dnNormal(0, 1)
 sigma ~ dnExponential(1)
 </code></pre></div></div>
 
-<p>Now, for each observed value in <code class="highlighter-rouge">x_obs</code>
-we will create a deterministic node for <code class="highlighter-rouge">mu_y</code> and a stochastic node for <code class="highlighter-rouge">y</code>:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:x_obs.size()) {
+<p>Now, for each observed value in <code class="language-plaintext highlighter-rouge">x_obs</code>
+we will create a deterministic node for <code class="language-plaintext highlighter-rouge">mu_y</code> and a stochastic node for <code class="language-plaintext highlighter-rouge">y</code>:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:x_obs.size()) {
     mu_y[i] := (beta * x_obs[i]) + alpha
     y[i] ~ dnNormal(mu_y[i], sigma)
 }
 </code></pre></div></div>
-<p>Take a look at <code class="highlighter-rouge">y</code>:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>y
+<p>Take a look at <code class="language-plaintext highlighter-rouge">y</code>:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>y
 </code></pre></div></div>
-<p>This produces a vector of simulated values of <code class="highlighter-rouge">y</code>!
-We have specified a model that describes the process that generates <code class="highlighter-rouge">y</code>
-conditioned on the observed values of <code class="highlighter-rouge">x</code>.
-We have not clamped, or fixed, the observed values <code class="highlighter-rouge">y_obs</code> to the stochastic nodes <code class="highlighter-rouge">y</code>.
-In <code class="highlighter-rouge">Rev</code> all models can be used to both simulate new values and, when clamped to observed values,
+<p>This produces a vector of simulated values of <code class="language-plaintext highlighter-rouge">y</code>!
+We have specified a model that describes the process that generates <code class="language-plaintext highlighter-rouge">y</code>
+conditioned on the observed values of <code class="language-plaintext highlighter-rouge">x</code>.
+We have not clamped, or fixed, the observed values <code class="language-plaintext highlighter-rouge">y_obs</code> to the stochastic nodes <code class="language-plaintext highlighter-rouge">y</code>.
+In <code class="language-plaintext highlighter-rouge">Rev</code> all models can be used to both simulate new values and, when clamped to observed values,
 perform parameter inference.</p>
 
-<p>In this case we are not interested in simulating new values of <code class="highlighter-rouge">y</code>, but instead
+<p>In this case we are not interested in simulating new values of <code class="language-plaintext highlighter-rouge">y</code>, but instead
 we want to estimate our linear regression parameters. So let’s modify the above code
-to clamp the observed values to <code class="highlighter-rouge">y</code>:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:x_obs.size()) {
+to clamp the observed values to <code class="language-plaintext highlighter-rouge">y</code>:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:x_obs.size()) {
     mu_y[i] := (beta * x_obs[i]) + alpha
     y[i] ~ dnNormal(mu_y[i], sigma)
     y[i].clamp(y_obs[i])
 }
 </code></pre></div></div>
-<p>Note that we have now clamped each observed value <code class="highlighter-rouge">y_obs</code> to each stochastic node <code class="highlighter-rouge">y</code>.</p>
+<p>Note that we have now clamped each observed value <code class="language-plaintext highlighter-rouge">y_obs</code> to each stochastic node <code class="language-plaintext highlighter-rouge">y</code>.</p>
 
 <p>We have now fully specified the model, so we can begin specifying the inference
 algorithm.</p>
 
-<h2 class="subsection" id="setting-up-mcmc-in-rev">Setting up MCMC in <code class="highlighter-rouge">Rev</code></h2>
+<h2 class="subsection" id="setting-up-mcmc-in-rev">Setting up MCMC in <code class="language-plaintext highlighter-rouge">Rev</code></h2>
 
 <p>Here we will use the Metropolis-Hastings MCMC algorithm <a class="citation" href="#Metropolis1953">(Metropolis et al. 1953; Hastings 1970)</a> 
 to perform parameter estimation.
@@ -434,72 +434,72 @@ for a more in depth introduction to MCMC please see the <a href="/tutorials/mcmc
 
 <p>The first step in setting up our MCMC algorithm is wrapping the entire model
 into a single variable:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(beta)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(beta)
 </code></pre></div></div>
 <p>Since our model is a graph in which all the model nodes are connected,
 we can use any model variable and RevBayes will traverse the graph to copy
-the entire model into the variable <code class="highlighter-rouge">mymodel</code>.</p>
+the entire model into the variable <code class="language-plaintext highlighter-rouge">mymodel</code>.</p>
 
-<p>Note that we used the <code class="highlighter-rouge">=</code> assignment operator. This means that the variable
-<code class="highlighter-rouge">mymodel</code> is <em>not</em> part of the graphical model – it is not a stochastic, constant, or deterministic
-node. We call this a <code class="highlighter-rouge">Rev</code> workspace variable. Workspace variables
+<p>Note that we used the <code class="language-plaintext highlighter-rouge">=</code> assignment operator. This means that the variable
+<code class="language-plaintext highlighter-rouge">mymodel</code> is <em>not</em> part of the graphical model – it is not a stochastic, constant, or deterministic
+node. We call this a <code class="language-plaintext highlighter-rouge">Rev</code> workspace variable. Workspace variables
 are utility variables that we use for any programming task that 
 is not specifically defining the model.
-Note, that unlike in <code class="highlighter-rouge">R</code>, in <code class="highlighter-rouge">Rev</code> the <code class="highlighter-rouge">=</code> and <code class="highlighter-rouge">&lt;-</code> assignment operators have very different functions!</p>
+Note, that unlike in <code class="language-plaintext highlighter-rouge">R</code>, in <code class="language-plaintext highlighter-rouge">Rev</code> the <code class="language-plaintext highlighter-rouge">=</code> and <code class="language-plaintext highlighter-rouge">&lt;-</code> assignment operators have very different functions!</p>
 
 <p>To sample different values of each variable, we must assign
 an MCMC move to each variable. Each MCMC move will propose new values
 of each parameter. We have three variables,
 so we will have three moves which we will save in a
-vector called <code class="highlighter-rouge">moves</code>:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[1] = mvSlide(beta, delta=0.001, weight=1)
+vector called <code class="language-plaintext highlighter-rouge">moves</code>:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[1] = mvSlide(beta, delta=0.001, weight=1)
 moves[2] = mvSlide(alpha, delta=0.001, weight=1)
 moves[3] = mvSlide(sigma, delta=0.001, weight=1)
 </code></pre></div></div>
 <p>Here we used simple slide moves for each variable. 
 The slide move proposes new values for the variable by “sliding” its value within a small window
-determined by the <code class="highlighter-rouge">delta</code> argument.
+determined by the <code class="language-plaintext highlighter-rouge">delta</code> argument.
 RevBayes provides many other types of moves that you will see in other tutorials.
-We set the <code class="highlighter-rouge">weight</code> of each move to 1, which means that each
+We set the <code class="language-plaintext highlighter-rouge">weight</code> of each move to 1, which means that each
 move will be performed on average once per MCMC iteration.</p>
 
 <p>Next, we need to set up some monitors that will sample values during the MCMC.
-We will use two monitors which we save into a vector called <code class="highlighter-rouge">monitors</code>.
-The first monitor <code class="highlighter-rouge">mnScreen</code> prints out values to the screen,
-and the second monitor <code class="highlighter-rouge">mnModel</code> prints a log file.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[1] = mnScreen()
+We will use two monitors which we save into a vector called <code class="language-plaintext highlighter-rouge">monitors</code>.
+The first monitor <code class="language-plaintext highlighter-rouge">mnScreen</code> prints out values to the screen,
+and the second monitor <code class="language-plaintext highlighter-rouge">mnModel</code> prints a log file.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[1] = mnScreen()
 monitors[2] = mnModel("output/linear_regression.log")
 </code></pre></div></div>
 <p>RevBayes provides many other monitors that can be useful for different types of analyses,
 but these are sufficient for this example.</p>
 
-<p>We can now pass the model, moves, and monitors into the <code class="highlighter-rouge">mcmc</code> function
+<p>We can now pass the model, moves, and monitors into the <code class="language-plaintext highlighter-rouge">mcmc</code> function
 to finalize our analysis.
-Then we use the <code class="highlighter-rouge">run</code> member method to run the MCMC for 10000 iterations.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, moves, monitors)
+Then we use the <code class="language-plaintext highlighter-rouge">run</code> member method to run the MCMC for 10000 iterations.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, moves, monitors)
 mymcmc.run(10000)
 quit()
 </code></pre></div></div>
-<p>Note that we included the <code class="highlighter-rouge">quit()</code> command so that RevBayes will automatically quit
+<p>Note that we included the <code class="language-plaintext highlighter-rouge">quit()</code> command so that RevBayes will automatically quit
 after the MCMC has finished running.</p>
 
 <h1 class="section" id="improving-mcmc-mixing">Improving MCMC Mixing</h1>
 
 <blockquote class="instruction">
   <p><strong>Exercise:</strong> <br /><br />
-Now open the file <code class="highlighter-rouge">output/linear_regression.log</code> in Tracer.</p>
+Now open the file <code class="language-plaintext highlighter-rouge">output/linear_regression.log</code> in Tracer.</p>
 </blockquote>
 <p>You will notice that the MCMC analysis did not converge well:</p>
 <figure id="bad"><p><img src="figures/beta-bad.png" width="400" /></p>
-<figcaption><em>The MCMC trace for the <code class="highlighter-rouge">beta</code> parameter. This analysis never converged.</em></figcaption>
+<figcaption><em>The MCMC trace for the <code class="language-plaintext highlighter-rouge">beta</code> parameter. This analysis never converged.</em></figcaption>
 </figure>
 
 <p>We can fix this by modifying the MCMC moves we use.
-Let’s use a larger sliding window (the <code class="highlighter-rouge">delta</code> argument in <code class="highlighter-rouge">mvSlide</code>).
-We will also increase the <code class="highlighter-rouge">weight</code> of each move to 5.
+Let’s use a larger sliding window (the <code class="language-plaintext highlighter-rouge">delta</code> argument in <code class="language-plaintext highlighter-rouge">mvSlide</code>).
+We will also increase the <code class="language-plaintext highlighter-rouge">weight</code> of each move to 5.
 This means that each move will be now be performed on average 5 times
 per MCMC iteration.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[1] = mvSlide(beta, delta=1, weight=5)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[1] = mvSlide(beta, delta=1, weight=5)
 moves[2] = mvSlide(alpha, delta=1, weight=5)
 moves[3] = mvSlide(sigma, delta=1, weight=5)
 </code></pre></div></div>
@@ -509,7 +509,7 @@ Rerun the MCMC analysis with these new moves and view the log file in Tracer.</p
 </blockquote>
 <p>This analysis looks much better:</p>
 <figure id="good"><p><img src="figures/beta-good.png" width="400" /><img src="figures/param-estimates.png" width="400" /></p>
-<figcaption><em>Left: The MCMC trace for the <code class="highlighter-rouge">beta</code> parameter. This analysis has adequately converged;
+<figcaption><em>Left: The MCMC trace for the <code class="language-plaintext highlighter-rouge">beta</code> parameter. This analysis has adequately converged;
 all parameter values have ESS values over 200.
 Right: Posterior parameter estimates from the converged MCMC analysis.
 The y-intercept ($\alpha$) was estimated to be about -2 and the slope 
@@ -543,9 +543,9 @@ the parameter is.</p>
 <p>In <a href="http://revbayes.com">RevBayes</a> it is easy to modify the priors used in an analysis and rerun the analysis.</p>
 <blockquote class="instruction">
   <p><strong>Exercise:</strong> <br /><br />
-Try rerunning the linear regression exercise using highly informative priors (standard deviation set to 0.1) on <code class="highlighter-rouge">beta</code> and <code class="highlighter-rouge">alpha</code> as shown below.</p>
+Try rerunning the linear regression exercise using highly informative priors (standard deviation set to 0.1) on <code class="language-plaintext highlighter-rouge">beta</code> and <code class="language-plaintext highlighter-rouge">alpha</code> as shown below.</p>
 </blockquote>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>beta ~ dnNormal(0, 0.1)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>beta ~ dnNormal(0, 0.1)
 alpha ~ dnNormal(0, 0.1)
 </code></pre></div></div>
 <p><a href="#bad-priors"></a> shows the posterior estimates when using these priors.
@@ -562,7 +562,7 @@ The true values were $\alpha = -2$, $\beta = 0.5$, and $\sigma = 0.25$.</em></fi
 Try running the analysis again with highly uninformative priors (10.0).</p>
 </blockquote>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>beta ~ dnNormal(0, 10.0)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>beta ~ dnNormal(0, 10.0)
 alpha ~ dnNormal(0, 10.0)
 </code></pre></div></div>
 <p>These results are highly similar to our original estimates
@@ -586,7 +586,7 @@ involve a response variable conditioned on a predictor variable.
 The model represents the conditional distribution $p(y|x)$
 and so makes fewer assumptions about the data: 
 it is not necessary to specify $p(x)$.
-The linear regression example we coded in <code class="highlighter-rouge">Rev</code> was a discriminative model
+The linear regression example we coded in <code class="language-plaintext highlighter-rouge">Rev</code> was a discriminative model
 because it conditioned on the observed values of $x$. In other words
 the model could simulate values of $y$ conditioned on the observed values of $x$,
 but it could not simulate values of $x$.</p>
@@ -638,7 +638,7 @@ With the generative model:</p>
 Reformulate our linear regression example so that it is a fully generative model:</p>
   <ol>
     <li>Draw the sticks-and-arrows diagram for a generative model and compare it to the discriminative form. See the expandable box for one solution.</li>
-    <li>Code up the model in <code class="highlighter-rouge">Rev</code> and run MCMC. A solution is provided in <a href="scripts/linear_regression_generative.Rev"><code class="highlighter-rouge">linear_regression_generative.Rev</code></a> if you get stuck.</li>
+    <li>Code up the model in <code class="language-plaintext highlighter-rouge">Rev</code> and run MCMC. A solution is provided in <a href="scripts/linear_regression_generative.Rev"><code class="language-plaintext highlighter-rouge">linear_regression_generative.Rev</code></a> if you get stuck.</li>
   </ol>
 </blockquote>
 

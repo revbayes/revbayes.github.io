@@ -64,18 +64,18 @@
 
 <ol>
   <li>Open Xcode and in the <em>Welcome to Xcode</em> window, choose <strong>Create a new Xcode project</strong>.</li>
-  <li>Select <strong>Command Line Tool</strong> and name it <code class="highlighter-rouge">rb</code> and click <strong>Next</strong>. <img src="figures/xcode-making_xcode_project.png" alt="" /></li>
+  <li>Select <strong>Command Line Tool</strong> and name it <code class="language-plaintext highlighter-rouge">rb</code> and click <strong>Next</strong>. <img src="figures/xcode-making_xcode_project.png" alt="" /></li>
   <li>Click <strong>New Folder</strong>  to create an empty directory and name it whatever you’d like.</li>
   <li>Click <strong>Create</strong>.</li>
-  <li>Delete all of the files and folders in each of the directories including <code class="highlighter-rouge">main.cpp</code> so that RevBayes is empty. You can do this by selecting the folders and files, right clicking and selecting delete. When asked, choose <strong>Move to Trash</strong>.</li>
+  <li>Delete all of the files and folders in each of the directories including <code class="language-plaintext highlighter-rouge">main.cpp</code> so that RevBayes is empty. You can do this by selecting the folders and files, right clicking and selecting delete. When asked, choose <strong>Move to Trash</strong>.</li>
   <li>Add the source files by selecting the appropriate directory and going to the <strong>File</strong> pull-down menu and selecting <strong>Add Files to rb</strong>.</li>
   <li>Click on <strong>Options</strong> at the button of the window, and under the <strong><em>Added Folders</em></strong> heading, select the <strong>Create Groups</strong> radio button.
     <ul>
       <li>Select the
         <ul>
-          <li><code class="highlighter-rouge">revbayes/src/revlanguage</code></li>
-          <li><code class="highlighter-rouge">revbayes/src/core</code></li>
-          <li><code class="highlighter-rouge">revbayes/src/libs</code></li>
+          <li><code class="language-plaintext highlighter-rouge">revbayes/src/revlanguage</code></li>
+          <li><code class="language-plaintext highlighter-rouge">revbayes/src/core</code></li>
+          <li><code class="language-plaintext highlighter-rouge">revbayes/src/libs</code></li>
         </ul>
       </li>
       <li>directories and click <strong>Add</strong>.
@@ -85,10 +85,10 @@
   </li>
   <li>Add the boost library to your Xcode project:
     <ul>
-      <li>You have to install boost from another source and point your Xcode project to that version. If you use Homebrew as a package management system on your Mac, you can install boost using <code class="highlighter-rouge">brew install boost</code>. This will install the boost libraries in your <code class="highlighter-rouge">/usr/local</code> directory. To enable this version in your Xcode project, simply change these search paths:
+      <li>You have to install boost from another source and point your Xcode project to that version. If you use Homebrew as a package management system on your Mac, you can install boost using <code class="language-plaintext highlighter-rouge">brew install boost</code>. This will install the boost libraries in your <code class="language-plaintext highlighter-rouge">/usr/local</code> directory. To enable this version in your Xcode project, simply change these search paths:
         <ul>
-          <li><strong>Header Search Paths</strong>: <code class="highlighter-rouge">/usr/local/include</code></li>
-          <li><strong>Library Search Paths</strong>: <code class="highlighter-rouge">/usr/local/lib</code>
+          <li><strong>Header Search Paths</strong>: <code class="language-plaintext highlighter-rouge">/usr/local/include</code></li>
+          <li><strong>Library Search Paths</strong>: <code class="language-plaintext highlighter-rouge">/usr/local/lib</code>
 <img src="figures/xcode-adding_files.png" alt="" /></li>
         </ul>
       </li>
@@ -97,18 +97,18 @@
   <li>Add the boost linker flag
     <ul>
       <li>Scroll to the <strong>Linking</strong> section in the <strong>Build Settings</strong></li>
-      <li>Go to <strong>Other Linker Flags</strong> and double click on the space. This will bring up a box where you can add the flag <code class="highlighter-rouge">-lboost_program_options</code>.
+      <li>Go to <strong>Other Linker Flags</strong> and double click on the space. This will bring up a box where you can add the flag <code class="language-plaintext highlighter-rouge">-lboost_program_options</code>.
 <img src="figures/xcode-linking.png" alt="" /></li>
     </ul>
   </li>
 </ol>
 
-<h3 id="add-the-rb_xcode-preprocessor-macro-to-your-xcode-project">Add the <code class="highlighter-rouge">RB_XCODE</code> Preprocessor Macro to your Xcode project</h3>
+<h3 id="add-the-rb_xcode-preprocessor-macro-to-your-xcode-project">Add the <code class="language-plaintext highlighter-rouge">RB_XCODE</code> Preprocessor Macro to your Xcode project</h3>
 
 <ol>
   <li>Select the RevBayes project and go to the <strong>Build Settings</strong>.</li>
   <li>Search for or Scroll down to the <strong>Apple LLVM X.X - Preprocessing</strong> heading and find the sub-heading named <strong>Preprocessor Macros</strong>.</li>
-  <li>Double click on right hand column, click on the <strong>+</strong> and enter <code class="highlighter-rouge">RB_XCODE</code>. Do not replace the debug flag that is already present.
+  <li>Double click on right hand column, click on the <strong>+</strong> and enter <code class="language-plaintext highlighter-rouge">RB_XCODE</code>. Do not replace the debug flag that is already present.
 <img src="figures/xcode-macro.png" alt="" /></li>
 </ol>
 
@@ -135,7 +135,7 @@
 <h3 id="prerequisites">Prerequisites</h3>
 
 <ul>
-  <li>To compile RevBayes using Xcode, first install <a href="CMake">https://cmake.org/</a> and its <a href="command line tools">https://stackoverflow.com/questions/30668601/installing-cmake-command-line-tools-on-a-mac</a>. This is easily done using <a href="homebrew">https://brew.sh/</a> by running <code class="highlighter-rouge">brew install cmake</code> in terminal.</li>
+  <li>To compile RevBayes using Xcode, first install <a href="CMake">https://cmake.org/</a> and its <a href="command line tools">https://stackoverflow.com/questions/30668601/installing-cmake-command-line-tools-on-a-mac</a>. This is easily done using <a href="homebrew">https://brew.sh/</a> by running <code class="language-plaintext highlighter-rouge">brew install cmake</code> in terminal.</li>
 </ul>
 
 <h3 id="create-an-xcode-project-for-revbayes">Create an Xcode project for RevBayes</h3>
@@ -144,7 +144,7 @@
   <li>Open Xcode and in the <em>Welcome to Xcode</em> window, choose <strong>Create a new Xcode project</strong>.</li>
   <li>Click on the Cross-Platform tab at the top</li>
   <li>Select <strong>External Build System</strong> and name it rb (or whatever you’d like)</li>
-  <li>Under <strong>Build Tool</strong> type the following directory <code class="highlighter-rouge">/&lt;path-to-revbayes&gt;/revbayes/projects/cmake/build.sh</code></li>
+  <li>Under <strong>Build Tool</strong> type the following directory <code class="language-plaintext highlighter-rouge">/&lt;path-to-revbayes&gt;/revbayes/projects/cmake/build.sh</code></li>
   <li>Click <strong>Next</strong>.</li>
 </ol>
 
@@ -153,18 +153,18 @@
 <ol>
   <li>After clicking <strong>Next</strong> as directed above, you should see a screen that looks like this:
 <img src="figures/xcode-info.png" alt="" /></li>
-  <li>On this screen, under <strong>Arguments</strong> type <code class="highlighter-rouge">$(ACTION) -boost true -debug true</code>, or if you haven’t built the boost libraries in RevBayes already. If you have then type <code class="highlighter-rouge">$(ACTION) -boost false -debug true</code>.</li>
-  <li>Under <strong>Directory</strong> put <code class="highlighter-rouge">/&lt;path-to-revbayes&gt;/revbayes/projects/cmake/</code>.</li>
+  <li>On this screen, under <strong>Arguments</strong> type <code class="language-plaintext highlighter-rouge">$(ACTION) -boost true -debug true</code>, or if you haven’t built the boost libraries in RevBayes already. If you have then type <code class="language-plaintext highlighter-rouge">$(ACTION) -boost false -debug true</code>.</li>
+  <li>Under <strong>Directory</strong> put <code class="language-plaintext highlighter-rouge">/&lt;path-to-revbayes&gt;/revbayes/projects/cmake/</code>.</li>
   <li>Add the source files by selecting the appropriate directory and going to the <strong>File</strong> pull-down menu and selecting **Add Files to <xcode-rb-project-name>**.</xcode-rb-project-name></li>
   <li>This should open a screen that looks like this:
 <img src="figures/xcode-adding.png" alt="" /></li>
   <li>Click on <strong>Options</strong> at the button of the window, and under the <strong><em>Added Folders</em></strong> heading, select <strong>Create as Folder References</strong>, and add to the target that was created in Step 2.
     <ul>
-      <li>Select the following directories from the <code class="highlighter-rouge">revbayes</code> directory:
+      <li>Select the following directories from the <code class="language-plaintext highlighter-rouge">revbayes</code> directory:
         <ul>
-          <li><code class="highlighter-rouge">revbayes/src/revlanguage</code></li>
-          <li><code class="highlighter-rouge">revbayes/src/core</code></li>
-          <li><code class="highlighter-rouge">revbayes/src/libs</code></li>
+          <li><code class="language-plaintext highlighter-rouge">revbayes/src/revlanguage</code></li>
+          <li><code class="language-plaintext highlighter-rouge">revbayes/src/core</code></li>
+          <li><code class="language-plaintext highlighter-rouge">revbayes/src/libs</code></li>
         </ul>
       </li>
       <li>Click <strong>Add</strong>.</li>

@@ -293,12 +293,12 @@ A data matrix with the coded ranges for each species.</li>
 <blockquote class="instruction">
   <p>Once you have downloaded the zip file by clicking on the arrow above,
 Unzip that and navigate inside of that directory.
-This directory should be called <code class="highlighter-rouge">revbayes_biogeo_biogeo_simple</code></p>
+This directory should be called <code class="language-plaintext highlighter-rouge">revbayes_biogeo_biogeo_simple</code></p>
 
-  <p>Once inside you should see two directories: <code class="highlighter-rouge">data</code> and <code class="highlighter-rouge">scripts</code></p>
+  <p>Once inside you should see two directories: <code class="language-plaintext highlighter-rouge">data</code> and <code class="language-plaintext highlighter-rouge">scripts</code></p>
 
   <p>Once you have all of the files, open RevBayes and ensure that your working directory 
-is the top directory above the <code class="highlighter-rouge">data</code> folder (e.g., <code class="highlighter-rouge">revbayes_biogeo_biogeo_simple</code>).</p>
+is the top directory above the <code class="language-plaintext highlighter-rouge">data</code> folder (e.g., <code class="language-plaintext highlighter-rouge">revbayes_biogeo_biogeo_simple</code>).</p>
 </blockquote>
 
 <h3 class="subsection" id="analysis_simple">Analysis</h3>
@@ -306,44 +306,44 @@ is the top directory above the <code class="highlighter-rouge">data</code> folde
 
 <p>First, create file management variables for input and output</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>range_fn = "data/n4/silversword.n4.range.nex"
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>range_fn = "data/n4/silversword.n4.range.nex"
 tree_fn = "data/n4/silversword.tre"
 out_fn = "output/simple"
 </code></pre></div></div>
 
 <p>then read in our character data as binary presence-absence characters</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dat_range_01 = readDiscreteCharacterData(range_fn)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dat_range_01 = readDiscreteCharacterData(range_fn)
 </code></pre></div></div>
 
 <p>then encode the species ranges into natural numbers</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dat_range_n = formatDiscreteCharacterData(dat_range_01, "DEC")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dat_range_n = formatDiscreteCharacterData(dat_range_01, "DEC")
 </code></pre></div></div>
 
 <p>Record the number of areas (characters) from the discrete character data
 object</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_areas = dat_range_01.nchar()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_areas = dat_range_01.nchar()
 </code></pre></div></div>
 
 <p>You can view the taxon data to see how characters are coded both as
 human-readable presence-absence data</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dat_range_01[1]
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dat_range_01[1]
 </code></pre></div></div>
 
-<div class="rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>      Argyroxiphium_grayanum_East_Maui:
+<div class="language-plaintext rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>      Argyroxiphium_grayanum_East_Maui:
         0010
 </code></pre></div></div>
 
 <p>And as computer-readable natural
 numbers</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dat_range_n[1]
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dat_range_n[1]
 </code></pre></div></div>
 
-<div class="rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>      Argyroxiphium_grayanum_East_Maui:
+<div class="language-plaintext rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>      Argyroxiphium_grayanum_East_Maui:
         3
 </code></pre></div></div>
 
@@ -351,12 +351,12 @@ numbers</p>
 labels when producing an ancestral range estimate figure. First, store
 the vector of range state descriptions</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>state_desc = dat_range_n.getStateDescriptions()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>state_desc = dat_range_n.getStateDescriptions()
 </code></pre></div></div>
 
 <p>then write it to file</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>state_desc_str = "state,range\n"
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>state_desc_str = "state,range\n"
 for (i in 1:state_desc.size()){
     state_desc_str += (i-1) + "," + state_desc[i] + "\n"
 }
@@ -366,7 +366,7 @@ write(state_desc_str, file=out_fn+".state_labels.txt")
 <p>For this tutorial we’ll assume we know the dated species phylogeny
 without error.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tree &lt;- readTrees(tree_fn)[1]
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tree &lt;- readTrees(tree_fn)[1]
 </code></pre></div></div>
 
 <p>Next, we’ll build the anagenetic rate matrix for the DEC model. In its
@@ -385,13 +385,13 @@ used in dating analyses.</p>
 evolution events. We’ll apply an uninformative prior to the rate’s
 magnitude by first assigning it a log uniform prior.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_bg ~ dnLoguniform(1E-4,1E2)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_bg ~ dnLoguniform(1E-4,1E2)
 rate_bg.setValue(1E-2)
 </code></pre></div></div>
 
 <p>Create a moves vector and create a proposal to update the rate parameter.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves = VectorMoves()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves = VectorMoves()
 moves.append( mvSlide(rate_bg, weight=4) )
 </code></pre></div></div>
 
@@ -402,12 +402,12 @@ $10^{-4}$ to $10^2$ events per million years.</p>
 rates, we can safely assume that dispersal occurs at the relative
 (fixed) rate of one.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dispersal_rate &lt;- 1.0
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dispersal_rate &lt;- 1.0
 </code></pre></div></div>
 
 <p>then create the dispersal rate matrix</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:n_areas) {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:n_areas) {
   for (j in 1:n_areas) {
     dr[i][j] &lt;- dispersal_rate
   }
@@ -416,11 +416,11 @@ rates, we can safely assume that dispersal occurs at the relative
 
 <p>Next, assign a prior distribution to the relative extirpation rate and
 assign it a move. The prior distribution of extirpation rates is given
-<code class="highlighter-rouge">log_sd</code> and <code class="highlighter-rouge">log_mean</code> values that give the
+<code class="language-plaintext highlighter-rouge">log_sd</code> and <code class="language-plaintext highlighter-rouge">log_mean</code> values that give the
 prior expected value of one – i.e. the mean rate of area gain and area
 loss are equal under the prior.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log_sd &lt;- 0.5
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log_sd &lt;- 0.5
 log_mean &lt;- ln(1) - 0.5*log_sd^2
 extirpation_rate ~ dnLognormal(mean=log_mean, sd=log_sd)
 moves.append( mvScale(extirpation_rate, weight=2) )
@@ -428,7 +428,7 @@ moves.append( mvScale(extirpation_rate, weight=2) )
 
 <p>then create a matrix of extirpation rates</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:n_areas) {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:n_areas) {
   for (j in 1:n_areas) {
     er[i][j] &lt;- 0.0       
   }
@@ -437,18 +437,18 @@ moves.append( mvScale(extirpation_rate, weight=2) )
 </code></pre></div></div>
 
 <p>Note that er is a diagonal matrix whose diagonal values are
-determined (<code class="highlighter-rouge">:=</code>) by the stochastic variable,
+determined (<code class="language-plaintext highlighter-rouge">:=</code>) by the stochastic variable,
 extirpation_rate. We can now create our relative rate
-matrix, <code class="highlighter-rouge">Q_DEC</code>, with the <code class="highlighter-rouge">fnDECRateMatrix</code>
+matrix, <code class="language-plaintext highlighter-rouge">Q_DEC</code>, with the <code class="language-plaintext highlighter-rouge">fnDECRateMatrix</code>
 function.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q_DEC := fnDECRateMatrix(dispersalRates=dr, extirpationRates=er)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q_DEC := fnDECRateMatrix(dispersalRates=dr, extirpationRates=er)
 </code></pre></div></div>
 
-<p>Note, <code class="highlighter-rouge">fnDECRateMatrix</code> does not rescale its elements in any
+<p>Note, <code class="language-plaintext highlighter-rouge">fnDECRateMatrix</code> does not rescale its elements in any
 way, so transition rates share the same time scale as the underlying
 tree. This scaling is in contrast to the standard molecular substitution
-processes that are available in RevBayes, such as <code class="highlighter-rouge">fnGTR</code>,
+processes that are available in RevBayes, such as <code class="language-plaintext highlighter-rouge">fnGTR</code>,
 whose rates are rescaled such that the process is expected to produce
 one event per site per unit time.</p>
 
@@ -459,7 +459,7 @@ that we wish to consider only subset sympatry and allopatry events.
 Next, we will create a vector of prior weights on cladogenesis events
 that fixes all cladogenetic events to be equiprobable.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clado_event_types &lt;- [ "s", "a" ]
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clado_event_types &lt;- [ "s", "a" ]
 clado_event_probs &lt;- simplex(1, 1)
 P_DEC := fnDECCladoProbs(eventProbs=clado_event_probs,
                             eventTypes=clado_event_types,
@@ -467,13 +467,13 @@ P_DEC := fnDECCladoProbs(eventProbs=clado_event_probs,
 </code></pre></div></div>
 
 <p>Finally, all our DEC model components are encapsulated in the
-<code class="highlighter-rouge">dnPhyloCTMCClado</code> distribution, which is similar to
-<code class="highlighter-rouge">dnPhyloCTMC</code> except specialized to integrate over
+<code class="language-plaintext highlighter-rouge">dnPhyloCTMCClado</code> distribution, which is similar to
+<code class="language-plaintext highlighter-rouge">dnPhyloCTMC</code> except specialized to integrate over
 cladogenetic events. Although this dataset has four areas, it is
 recognized single character with states valued from 1 to $2^4$, hence
-<code class="highlighter-rouge">nSites=1</code>.</p>
+<code class="language-plaintext highlighter-rouge">nSites=1</code>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>m_bg ~ dnPhyloCTMCClado(tree=tree,
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>m_bg ~ dnPhyloCTMCClado(tree=tree,
                            Q=Q_DEC,
                            cladoProbs=P_DEC,
                            branchRates=rate_bg,
@@ -482,15 +482,15 @@ recognized single character with states valued from 1 to $2^4$, hence
 </code></pre></div></div>
 
 <p>Finally, attach the observed ranges to the model. Be sure to use the
-natural number valued range characters, <code class="highlighter-rouge">dat_range_n</code>, and
-not the presence-absence range characters, <code class="highlighter-rouge">dat_range_01</code>.</p>
+natural number valued range characters, <code class="language-plaintext highlighter-rouge">dat_range_n</code>, and
+not the presence-absence range characters, <code class="language-plaintext highlighter-rouge">dat_range_01</code>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>m_bg.clamp(dat_range_n)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>m_bg.clamp(dat_range_n)
 </code></pre></div></div>
 
 <p>Add the monitors.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors = VectorMonitors()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors = VectorMonitors()
 monitors.append( mnScreen(rate_bg, extirpation_rate, printgen=100) )
 monitors.append( mnModel(file=out_fn+".params.log", printgen=10) )
 monitors.append( mnFile(tree, file=out_fn+".tre", printgen=10) )
@@ -506,9 +506,9 @@ monitors.append( mnStochasticCharacterMap(ctmc=m_bg,
                                           printgen=100) )
 </code></pre></div></div>
 
-<p>The <code class="highlighter-rouge">mnJointConditionalAncestralState</code> monitor samples
+<p>The <code class="language-plaintext highlighter-rouge">mnJointConditionalAncestralState</code> monitor samples
 ancestral states from the phylogeny, tree, according to the
-model of evolution, <code class="highlighter-rouge">m_bg</code>, and stores it to the file named
+model of evolution, <code class="language-plaintext highlighter-rouge">m_bg</code>, and stores it to the file named
 “simple.states.log”. Each row in the states file lists the
 joint sample of ancestral states conditioned on the tip values for the
 entire tree (i.e. a <em>joint</em> ancestral state sample
@@ -522,13 +522,13 @@ which is especially important when the topology is a random variable
 can proceed briskly. Prepare the model graph for analysis by creating a
 Model object.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(m_bg)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(m_bg)
 </code></pre></div></div>
 
 <p>Create the MCMC object from the model, moves, and monitors
 variables, and run the MCMC analysis.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, moves, monitors)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, moves, monitors)
 mymcmc.run(3000)
 </code></pre></div></div>
 
@@ -547,7 +547,7 @@ execute the script by typing `rb scripts/make_anc_states.Rev` into the command l
 
 <figure id="simple_FigTree_ase"><p><img src="figures/fig_simple_FigTree_ase.png" alt="" /></p>
 <figcaption>Annotated tree with
-ancestral state estimates in <code class="highlighter-rouge">FigTree</code>.This tree was
+ancestral state estimates in <code class="language-plaintext highlighter-rouge">FigTree</code>.This tree was
 generated by ancestralStateTree in RevBayes.The most
 probable end state of each branch (before cladogenesis) is shown at each
 node. Branches are labeled with the posterior probability for the
@@ -557,7 +557,7 @@ ancestral state on the tipwards end of the branch.</figcaption>
 <p>After opening a new RevBayes session, create helper variables for
 files we’ll work with.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>out_str = "output/simple"
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>out_str = "output/simple"
 out_state_fn = out_str + ".states.log"
 out_tree_fn = out_str + ".tre"
 out_mcc_fn = out_str + ".mcc.tre" 
@@ -568,33 +568,33 @@ distribution, discarding the first 25% of samples. (Note, this step is
 gratuitous when we assume a fixed phylogeny, but essential when we
 estimate the phylogeny in <a href="#bg_phylo"></a>).</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tree_trace = readTreeTrace(file=out_tree_fn, treetype="clock")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tree_trace = readTreeTrace(file=out_tree_fn, treetype="clock")
 tree_trace.setBurnin(0.25)
 n_burn = tree_trace.getBurnin()
 </code></pre></div></div>
 
 <p>Compute and save the maximum clade credibility tree</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mcc_tree = mccTree(tree_trace, file=out_mcc_fn)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mcc_tree = mccTree(tree_trace, file=out_mcc_fn)
 </code></pre></div></div>
 
 <p>Get the ancestral state trace from simple.states.log</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>state_trace = readAncestralStateTrace(file=out_state_fn)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>state_trace = readAncestralStateTrace(file=out_state_fn)
 </code></pre></div></div>
 
-<p>Get the ancestral state tree trace from <code class="highlighter-rouge">simple.tre</code>. It is
-important to use <code class="highlighter-rouge">readAncestralTreeTrace</code> and not
-<code class="highlighter-rouge">readTreeTrace</code> to properly annotate the tree with ancestral
+<p>Get the ancestral state tree trace from <code class="language-plaintext highlighter-rouge">simple.tre</code>. It is
+important to use <code class="language-plaintext highlighter-rouge">readAncestralTreeTrace</code> and not
+<code class="language-plaintext highlighter-rouge">readTreeTrace</code> to properly annotate the tree with ancestral
 states.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tree_trace = readAncestralStateTreeTrace(file=out_tree_fn, treetype="clock")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tree_trace = readAncestralStateTreeTrace(file=out_tree_fn, treetype="clock")
 </code></pre></div></div>
 
 <p>Finally, compute and save the ancestral state tree as
-<code class="highlighter-rouge">simple.ase.tre</code>.</p>
+<code class="language-plaintext highlighter-rouge">simple.ase.tre</code>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>anc_tree = ancestralStateTree(tree=mcc_tree,
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>anc_tree = ancestralStateTree(tree=mcc_tree,
                               ancestral_state_trace_vector=state_trace,
                               tree_trace=tree_trace,
                               include_start_states=true,
@@ -604,7 +604,7 @@ states.</p>
 </code></pre></div></div>
 
 <p>We can review the output from ancestralStateTree in
-<code class="highlighter-rouge">FigTree</code>(<a href="#simple_FigTree_ase"></a>).</p>
+<code class="language-plaintext highlighter-rouge">FigTree</code>(<a href="#simple_FigTree_ase"></a>).</p>
 
 <p>Ancestral state trees are annotated with the first three most probable
 ancestral states along with their posterior probabilities. When the tree
@@ -612,12 +612,12 @@ is a random variable, as it is in later exercises, additional
 information about phylogenetic uncertainty is reported.</p>
 
 <p>Finally, it is possible to generate a figure with ancestral states that is
-suitable for publication using the <code class="highlighter-rouge">R</code> package
+suitable for publication using the <code class="language-plaintext highlighter-rouge">R</code> package
 <a href="https://github.com/revbayes/RevGadgets">RevGadgets</a> (<a href="#simple_RevGadgets_ase"></a>). 
-To create build this figure, open an <code class="highlighter-rouge">R</code> session and load the plotting
+To create build this figure, open an <code class="language-plaintext highlighter-rouge">R</code> session and load the plotting
 script with the source function</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/plot_anc_state.simple.R")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/plot_anc_state.simple.R")
 </code></pre></div></div>
 
 <figure id="simple_RevGadgets_ase"><p><img src="figures/fig_simple.range.png" /></p>

@@ -153,13 +153,13 @@
 
 <p>This tutorial describes how to specify different models of incomplete
 taxon sampling (missing reference) for estimating
-diversification rates in <code class="highlighter-rouge">RevBayes</code> <a class="citation" href="#Hoehna2016b">(Höhna et al. 2016)</a>. Incomplete taxon
+diversification rates in <code class="language-plaintext highlighter-rouge">RevBayes</code> <a class="citation" href="#Hoehna2016b">(Höhna et al. 2016)</a>. Incomplete taxon
 sampling, if not modeled correctly, severely biases diversification-rate
 parameter estimates (missing reference). Specifically, we will
 discuss <em>uniform</em>, <em>diversified</em>, and <em>empirical</em> taxon sampling. All
 analyses in this tutorial will focus on diversification rate estimation
 through-time and use a birth-death process where diversification rates
-vary episodically which we model by piecewise constant rates <code class="highlighter-rouge">RevBayes</code>
+vary episodically which we model by piecewise constant rates <code class="language-plaintext highlighter-rouge">RevBayes</code>
 (missing reference). The probabilistic graphical model is given
 only once for this tutorial as an overview. The model itself does not
 change between the different analyses; only the assumptions of
@@ -180,10 +180,10 @@ started</a></p>
   </li>
   <li>
     <p><a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Intro_Tutorial/RB_Intro_Tutorial.pdf">Very Basic Introduction to
-<code class="highlighter-rouge">Rev</code></a></p>
+<code class="language-plaintext highlighter-rouge">Rev</code></a></p>
   </li>
   <li>
-    <p><a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Rev_Tutorial/RB_Rev_Tutorial.pdf">General Introduction to the <code class="highlighter-rouge">Rev</code>
+    <p><a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Rev_Tutorial/RB_Rev_Tutorial.pdf">General Introduction to the <code class="language-plaintext highlighter-rouge">Rev</code>
 syntax</a></p>
   </li>
   <li>
@@ -204,14 +204,14 @@ Time</a></p>
   </li>
 </ul>
 
-<p>Note that the <a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Intro_Tutorial/RB_Intro_Tutorial.pdf"><code class="highlighter-rouge">Rev</code> basics
+<p>Note that the <a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Intro_Tutorial/RB_Intro_Tutorial.pdf"><code class="language-plaintext highlighter-rouge">Rev</code> basics
 tutorial</a>
-introduces the basic syntax of <code class="highlighter-rouge">Rev</code> but does not cover any phylogenetic
+introduces the basic syntax of <code class="language-plaintext highlighter-rouge">Rev</code> but does not cover any phylogenetic
 models. We tried to keep this tutorial very basic and introduce all the
-language concepts and theory on the way. You may only need the <a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Rev_Tutorial/RB_Rev_Tutorial.pdf"><code class="highlighter-rouge">Rev</code>
+language concepts and theory on the way. You may only need the <a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_Rev_Tutorial/RB_Rev_Tutorial.pdf"><code class="language-plaintext highlighter-rouge">Rev</code>
 syntax
 tutorial</a>
-for a more in-depth discussion of concepts in <code class="highlighter-rouge">Rev</code>.</p>
+for a more in-depth discussion of concepts in <code class="language-plaintext highlighter-rouge">Rev</code>.</p>
 
 <p>For this tutorial it is especially important that you have read the two
 tutorials on diversification rate estimation: <a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_DiversificationRate_Tutorial/RB_DiversificationRate_Tutorial.pdf">Basic Diversification
@@ -243,7 +243,7 @@ impact of incomplete taxon sampling, which is a very prominent feature
 in many large scale phylogenies.</p>
 
 <p>Open the tree ‘data/primates.tre‘ in
-<code class="highlighter-rouge">FigTree</code>.</p>
+<code class="language-plaintext highlighter-rouge">FigTree</code>.</p>
 
 <blockquote class="figure">
   <p><img src="figures/EBD_scenarios.png" alt="" /> 
@@ -278,9 +278,9 @@ diversification rates.</p>
 <blockquote>
   <p><img src="figures/graphical_model_EBD.png" alt="" /> 
 A graphical model
-with the outline of the <code class="highlighter-rouge">Rev</code> code. On the left we see the graphical
+with the outline of the <code class="language-plaintext highlighter-rouge">Rev</code> code. On the left we see the graphical
 model describing the correlated (Brownian motion) model for
-rate-variation through time. On the right we show the correspond <code class="highlighter-rouge">Rev</code>
+rate-variation through time. On the right we show the correspond <code class="language-plaintext highlighter-rouge">Rev</code>
 commands to instantiate this model in computer memory. This figure gives
 a complete overview of the model that we use here in this analysis.</p>
 </blockquote>
@@ -293,7 +293,7 @@ assumption of the model clear and visible instead of a black-box
 <a class="citation" href="#Hoehna2014b">(Höhna et al. 2014)</a>. Here we will focus only on the variable ‘rho‘, the
 sampling probability, to model incomplete taxon sampling.</p>
 
-<h2 id="specifying-the-model-in-rev">Specifying the model in <code class="highlighter-rouge">Rev</code></h2>
+<h2 id="specifying-the-model-in-rev">Specifying the model in <code class="language-plaintext highlighter-rouge">Rev</code></h2>
 
 <p>We will give a very brief and compressed version of the model with fewer
 comments and explanation. The more detailed explanation can be found in
@@ -304,9 +304,9 @@ duplication/copy of the original tutorial with the additional to be less
 complete and less up to date.</p>
 
 <p>Here are the summarized steps for running the episodic birth-death model
-in <code class="highlighter-rouge">Rev</code>.</p>
+in <code class="language-plaintext highlighter-rouge">Rev</code>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#######################
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#######################
 # Reading in the Data #
 #######################
 
@@ -422,7 +422,7 @@ mymcmc.burnin(generations=10000,tuningInterval=200)
 mymcmc.run(generations=50000)
 </code></pre></div></div>
 
-<p>This <code class="highlighter-rouge">Rev</code> code shows the template for estimating episodic
+<p>This <code class="language-plaintext highlighter-rouge">Rev</code> code shows the template for estimating episodic
 diversification rates. In the next sections we will tweak the script for
 the different sampling schemes.</p>
 
@@ -441,7 +441,7 @@ assumption of uniform taxon sampling means.</p>
 species. To account for this we can set the sampling parameter as a
 constant variable with a value of 23/377.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rho &lt;- T.ntips()/377
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rho &lt;- T.ntips()/377
 </code></pre></div></div>
 
 <p>Note that in principle you could specify a hyperprior distribution on
@@ -454,12 +454,12 @@ diversity is in same range.</p>
 <p>Moreover, we specify the <em>uniform</em> sampling scheme by setting
 ‘samplingStrategy=“uniform”‘ in the birth-death process.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree ~ dnEpisodicBirthDeath(rootAge=T.rootAge(), lambdaRates=speciation, lambdaTimes=interval_times, muRates=extinction, muTimes=interval_times, rho=rho, samplingStrategy="uniform", condition="survival", taxa=taxa)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree ~ dnEpisodicBirthDeath(rootAge=T.rootAge(), lambdaRates=speciation, lambdaTimes=interval_times, muRates=extinction, muTimes=interval_times, rho=rho, samplingStrategy="uniform", condition="survival", taxa=taxa)
 </code></pre></div></div>
 
-<p>This is exactly what we did in the <code class="highlighter-rouge">Rev</code> script above.</p>
+<p>This is exactly what we did in the <code class="language-plaintext highlighter-rouge">Rev</code> script above.</p>
 
-<p>The <code class="highlighter-rouge">Rev</code> file for performing this analysis:
+<p>The <code class="language-plaintext highlighter-rouge">Rev</code> file for performing this analysis:
 <a href="https://github.com/revbayes/revbayes_tutorial/raw/master/RB_DiversificationRate_Sampling_Tutorial/scripts/mcmc_uniform.Rev">‘mcmc_uniform.Rev‘</a>.</p>
 
 <h2 id="exercise-1">Exercise 1</h2>
@@ -473,7 +473,7 @@ the analysis.</p>
   </li>
   <li>
     <p>Visualize the rate through time using
-<code class="highlighter-rouge">R</code>and <code class="highlighter-rouge">Rev</code>Gadgets.</p>
+<code class="language-plaintext highlighter-rouge">R</code>and <code class="language-plaintext highlighter-rouge">Rev</code>Gadgets.</p>
   </li>
 </ul>
 
@@ -489,14 +489,14 @@ compare the rates through time.</p>
 
 <p>When the analysis is complete, you will have the monitored files in your
 output directory. You can then visualize the rates through time using
-<code class="highlighter-rouge">R</code>using our package <code class="highlighter-rouge">Rev</code>Gadgets. If you don’t have the
-R-package <code class="highlighter-rouge">Rev</code>Gadgets installed, or if you have trouble with the
+<code class="language-plaintext highlighter-rouge">R</code>using our package <code class="language-plaintext highlighter-rouge">Rev</code>Gadgets. If you don’t have the
+R-package <code class="language-plaintext highlighter-rouge">Rev</code>Gadgets installed, or if you have trouble with the
 package, then please read the separate tutorial about the package.</p>
 
-<p>Just start <code class="highlighter-rouge">R</code>in the main directory for this analysis and
+<p>Just start <code class="language-plaintext highlighter-rouge">R</code>in the main directory for this analysis and
 then type the following commands:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>library(RevGadgets)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>library(RevGadgets)
 
 tree &lt;- read.nexus("data/primates.tre")
 files &lt;- c("output/primates_uniform_speciation_times.log", "output/primates_uniform_speciation_rates.log", "output/primates_uniform_extinction_times.log", "output/primates_uniform_extinction_rates.log")
@@ -538,20 +538,20 @@ sampling. The example shows the same tree as in Figure [fig:BDP] where
 group is included and the most recent speciation events are excluded
 (not sampled).</p>
 
-<p>In <code class="highlighter-rouge">RevBayes</code> we can specify <em>diversified</em> taxon sampling in the same
+<p>In <code class="language-plaintext highlighter-rouge">RevBayes</code> we can specify <em>diversified</em> taxon sampling in the same
 way as we did <em>uniform</em> taxon sampling. First, we specify a constant
 variable for the sampling fraction ‘rho‘ which we set to the number of
 included (sampled) taxa divided by the number of total taxa in the
 group.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rho &lt;- T.ntips()/377
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rho &lt;- T.ntips()/377
 </code></pre></div></div>
 
 <p>Then, we specify that our sampling strategy was diversified by setting
 the argument of the birth-death process
 to‘samplingStrategy=“diversified”‘.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree ~ dnEpisodicBirthDeath(rootAge=T.rootAge(), lambdaRates=speciation, lambdaTimes=interval_times, muRates=extinction, muTimes=interval_times, rho=rho, samplingStrategy="diversified", condition="time", taxa=taxa)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree ~ dnEpisodicBirthDeath(rootAge=T.rootAge(), lambdaRates=speciation, lambdaTimes=interval_times, muRates=extinction, muTimes=interval_times, rho=rho, samplingStrategy="diversified", condition="time", taxa=taxa)
 </code></pre></div></div>
 
 <p>This is all we needed to do to change our previous script to model
@@ -561,7 +561,7 @@ to‘samplingStrategy=“diversified”‘.</p>
 
 <ul>
   <li>
-    <p>Copy the <code class="highlighter-rouge">Rev</code> script ‘mcmc_uniform.Rev‘ and name
+    <p>Copy the <code class="language-plaintext highlighter-rouge">Rev</code> script ‘mcmc_uniform.Rev‘ and name
 it ‘mcmc_diversified.Rev‘.</p>
   </li>
   <li>
@@ -617,10 +617,10 @@ species will be used to compute the crown age. For example, we use
 would have <em>Homo_sapiens</em> sampled as well then we could additionally
 include it in the clade but we could not leave out <em>Hylobates_lar</em>.</p>
 
-<p>In <code class="highlighter-rouge">Rev</code> we specify several clades and give the number of missing
+<p>In <code class="language-plaintext highlighter-rouge">Rev</code> we specify several clades and give the number of missing
 species.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Galagidae             = clade("Galago_senegalensis",  "Otolemur_crassicaudatus", missing= 17)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Galagidae             = clade("Galago_senegalensis",  "Otolemur_crassicaudatus", missing= 17)
 Lorisidae             = clade("Perodicticus_potto", "Loris_tardigradus", "Nycticebus_coucang", missing=6)
 Cheirogaleoidea       = clade("Cheirogaleus_major", "Microcebus_murinus", missing= 19)
 Lemuridae             = clade("Lemur_catta", "Varecia_variegata_variegata", missing=17)
@@ -633,7 +633,7 @@ Cercopithecoidea      = clade("Colobus_guereza", "Macaca_mulatta", "Chlorocebus_
 
 <p>Next, we combine all clades into a single vector for later use.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>missing_species_per_clade = v(Galagidae, Lorisidae, Cheirogaleoidea, Lemuridae, Lemuriformes, Atelidae_Aotidae, NWM, Hominoidea, Cercopithecoidea)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>missing_species_per_clade = v(Galagidae, Lorisidae, Cheirogaleoidea, Lemuridae, Lemuriformes, Atelidae_Aotidae, NWM, Hominoidea, Cercopithecoidea)
 </code></pre></div></div>
 
 <p>In the birth-death model we include these missing speciation events by
@@ -659,12 +659,12 @@ f(\Psi,\mathbb{K}|N(t_1\!=\!0)\!=\!2,S(2,t_1\!=\!0,T))  &amp; = &amp; f(\Psi|N(t
 Equation ([eq:timesAndMissing]) is actually proportional to the
 original equation under the birth-death process times the probabilities
 of the missing species. There are two things to consider when specifying
-empirical taxon sampling in <code class="highlighter-rouge">RevBayes</code>. First, we set the “traditional”
+empirical taxon sampling in <code class="language-plaintext highlighter-rouge">RevBayes</code>. First, we set the “traditional”
 sampling fraction to one (‘rho=1.0‘). Second, we provide the clades with
 missing species as an argument of the birth-death model
 (‘incompleteClades=missing_species_per_clade‘).</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree ~ dnEpisodicBirthDeath(rootAge=T.rootAge(), lambdaRates=speciation, lambdaTimes=interval_times, muRates=extinction, muTimes=interval_times, rho=1.0, taxa=taxa, incompleteClades=missing_species_per_clade, condition="time")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree ~ dnEpisodicBirthDeath(rootAge=T.rootAge(), lambdaRates=speciation, lambdaTimes=interval_times, muRates=extinction, muTimes=interval_times, rho=1.0, taxa=taxa, incompleteClades=missing_species_per_clade, condition="time")
 </code></pre></div></div>
 
 <p>These are the only necessary changes to perform a diversification rate
@@ -674,7 +674,7 @@ analysis under <em>empirical</em> taxon sampling.</p>
 
 <ul>
   <li>
-    <p>Copy the <code class="highlighter-rouge">Rev</code> script ‘mcmc_uniform.Rev‘ and name
+    <p>Copy the <code class="language-plaintext highlighter-rouge">Rev</code> script ‘mcmc_uniform.Rev‘ and name
 it ‘mcmc_empirical.Rev‘.</p>
   </li>
   <li>

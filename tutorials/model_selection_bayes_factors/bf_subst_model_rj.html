@@ -152,7 +152,7 @@ models, in particular, we’re going to average over the “named” members of 
 <p>We average over $Q$-matrices by including all of the relevant parameters ($\kappa$, $\pi$, $r$) in our model, 
 and using a <em>model indicator</em> to indicate which parameters to include in the model. For example:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kappa ~ dnExp(1)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kappa ~ dnExp(1)
 moves.append( mvScale(kappa, weight=5.0) )
 
 pi ~ dnDirichlet(v(1,1,1,1))
@@ -182,7 +182,7 @@ and another parameter (the indicator) that allows us to move between $Q$ matrice
 <hr class="subsection" />
 
 <p>Including reversible-jump for Gamma-distributed ASRV is more straightforward:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha ~ dnReversibleJumpMixture(1E8, dnUniform(0,1E8), 0.5)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha ~ dnReversibleJumpMixture(1E8, dnUniform(0,1E8), 0.5)
 alpha.setValue(1.0)
 moves.append( mvRJSwitch(alpha, weight=10.0) )
 moves.append( mvScale(alpha, weight=10.0) )
@@ -191,29 +191,29 @@ alpha_indicator := ifelse(alpha == 1E8, 0, 1)
 
 site_rates := fnDiscretizeGamma(alpha, alpha, 4)
 </code></pre></div></div>
-<p>Here, we draw <code class="highlighter-rouge">alpha</code> from a “reversibe jump mixture”, which specifies the value of <code class="highlighter-rouge">alpha</code> 
-when ASRV is “turned off” (the first argument), the prior distribution from which <code class="highlighter-rouge">alpha</code> is drawn 
+<p>Here, we draw <code class="language-plaintext highlighter-rouge">alpha</code> from a “reversibe jump mixture”, which specifies the value of <code class="language-plaintext highlighter-rouge">alpha</code> 
+when ASRV is “turned off” (the first argument), the prior distribution from which <code class="language-plaintext highlighter-rouge">alpha</code> is drawn 
 when the ASRV is “turned on” (the second argument), and the prior probability that ASRV is “turned on” (the final argument). 
-The <code class="highlighter-rouge">alpha_indicator</code> parameter will have a value of 1 when ASRV is “turned on” 
+The <code class="language-plaintext highlighter-rouge">alpha_indicator</code> parameter will have a value of 1 when ASRV is “turned on” 
 and a value of 0 when it is “turned off”. 
-We’re using a value of <code class="highlighter-rouge">alpha=1e8</code> to approximate “no rate variation”, 
+We’re using a value of <code class="language-plaintext highlighter-rouge">alpha=1e8</code> to approximate “no rate variation”, 
 because, as $\alpha \rightarrow \infty$, the Gamma-model collapse to a spike at 1 (i.e., approximately no rate variation):</p>
 
 <figure id="gamma_rates"><p><img src="figures/gammas.png" width="75%" /></p>
 <figcaption>Gamma distribution for different choices of $\alpha$.</figcaption>
 </figure>
 
-<p>Using reversible jump, we can actually estimate the posterior probability of each model! In this case, the posterior probability of a model for a particular locus is the frequency with which it is sampled in the posterior distribution; in this case, the posterior probability of the rate-variable model is the fraction of MCMC samples that aren’t 10000, which is also the posterior mean value of the <code class="highlighter-rouge">alpha_indicator</code> parameter!</p>
+<p>Using reversible jump, we can actually estimate the posterior probability of each model! In this case, the posterior probability of a model for a particular locus is the frequency with which it is sampled in the posterior distribution; in this case, the posterior probability of the rate-variable model is the fraction of MCMC samples that aren’t 10000, which is also the posterior mean value of the <code class="language-plaintext highlighter-rouge">alpha_indicator</code> parameter!</p>
 
 <h3 class="subsection" id="in-class-exercises">In-Class Exercises</h3>
 <hr class="subsection" />
 
 <ol>
-  <li>Download and run the <code class="highlighter-rouge">model_average_primates_cytb.Rev</code> script. 
-Examine the posterior distributions of the <code class="highlighter-rouge">model_indicator</code> and <code class="highlighter-rouge">alpha_indicator</code> parameters in Tracer. 
+  <li>Download and run the <code class="language-plaintext highlighter-rouge">model_average_primates_cytb.Rev</code> script. 
+Examine the posterior distributions of the <code class="language-plaintext highlighter-rouge">model_indicator</code> and <code class="language-plaintext highlighter-rouge">alpha_indicator</code> parameters in Tracer. 
 What is the posterior probability that our model includes Gamma-distributed rate variation? 
 What is the $Q$ matrix with the highest posterior probability? What substitution models are in the 95% credible set?</li>
-  <li>Repeat the above exercise for <code class="highlighter-rouge">matK</code> and <code class="highlighter-rouge">rbcL</code> by making the appropriate changes to the <code class="highlighter-rouge">model_average_primates_cytb.Rev</code> script. 
+  <li>Repeat the above exercise for <code class="language-plaintext highlighter-rouge">matK</code> and <code class="language-plaintext highlighter-rouge">rbcL</code> by making the appropriate changes to the <code class="language-plaintext highlighter-rouge">model_average_primates_cytb.Rev</code> script. 
 Are these results consistent with the Bayes factors we computed in the first section of the tutorial?</li>
 </ol>
 

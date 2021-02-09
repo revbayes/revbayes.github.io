@@ -177,7 +177,7 @@ and $(\lambda’’’,\mu’’’)$.</figcaption>
 
 <p>In this analysis we are interested in estimating the branch-specific diversification rates.
 We show how to implement and use the model developed by <a class="citation" href="#Hoehna2019">Höhna et al. (2019)</a>
-We are going to use the <code class="highlighter-rouge">dnCBDP</code> distribution which uses a finite number of rate-categories
+We are going to use the <code class="language-plaintext highlighter-rouge">dnCBDP</code> distribution which uses a finite number of rate-categories
 instead of drawing rates from a continuous distribution directly.</p>
 
 <p>Here we adopt an approach using (few) discrete rate categories.
@@ -208,21 +208,21 @@ rate-shift event are drawn from a given (discrete) set of rates (see <a href="#f
 <hr class="subsection" />
 
 <p>Begin by reading in the observed tree.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>observed_phylogeny &lt;- readTrees("data/primates_tree.nex")[1]
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>observed_phylogeny &lt;- readTrees("data/primates_tree.nex")[1]
 </code></pre></div></div>
 <p>From this tree, we can get some helpful variables:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>taxa &lt;- observed_phylogeny.taxa()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>taxa &lt;- observed_phylogeny.taxa()
 root &lt;- observed_phylogeny.rootAge()
 tree_length &lt;- observed_phylogeny.treeLength()
 </code></pre></div></div>
 <p>Additionally, we initialize a variable for our vector of moves and monitors.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
 monitors = VectorMonitors()
 </code></pre></div></div>
 <p>Finally, we create a helper variable that specifies the number of
 discrete rate categories, another helper variable for the total number of species
 and our constant for specifying the standard deviation of the lognormal distribution.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NUM_RATE_CATEGORIES = 6
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NUM_RATE_CATEGORIES = 6
 NUM_TOTAL_SPECIES = 367
 H = 0.587405
 </code></pre></div></div>
@@ -251,7 +251,7 @@ discrete approximation of the distribution, as done for modeling rate
 variation across sites <a class="citation" href="#Yang1994a">(Yang 1994)</a> and for modeling relaxed molecular
 clocks <a class="citation" href="#Drummond2006">(Drummond et al. 2006)</a>. That means, we assume that the speciation rates
 are drawn from one of the $N$ quantiles of the lognormal distribution.
-For this we will use the function <code class="highlighter-rouge">fnDiscretizeDistribution</code> which takes
+For this we will use the function <code class="language-plaintext highlighter-rouge">fnDiscretizeDistribution</code> which takes
 in a distribution as its first argument and the number of quantiles as
 the second argument. The return value is a vector of quantiles. We use
 it as a deterministic variable and every time the parameters of the base
@@ -260,16 +260,16 @@ distribution in our case) change the quantiles will update automatically
 as well. Thus we only need to specify parameters for our base
 distribution, the lognormal distribution.
 We choose a log-uniform distribution as the prior distribution for the mean parameter of the lognormal distribution.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>speciation_mean ~ dnLoguniform( 1E-6, 1E2)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>speciation_mean ~ dnLoguniform( 1E-6, 1E2)
 moves.append( mvScale(speciation_mean, lambda=1, tune=true, weight=2.0) )
 </code></pre></div></div>
 <p>Next, we choose an exponential prior distribution with mean of $H$ for the variation in speciation rates.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>speciation_sd ~ dnExponential( 1.0 / H )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>speciation_sd ~ dnExponential( 1.0 / H )
 moves.append( mvScale(speciation_sd, lambda=1, tune=true, weight=2.0) )
 </code></pre></div></div>
 <p>Now, we can compute the speciation rate categories.
-We will use a lognormal distribution discretized into <code class="highlighter-rouge">NUM_RATE_CATEGORIES</code> quantiles and the parameters that we should created.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>speciation := fnDiscretizeDistribution( dnLognormal(ln(speciation_mean), speciation_sd), NUM_RATE_CATEGORIES )
+We will use a lognormal distribution discretized into <code class="language-plaintext highlighter-rouge">NUM_RATE_CATEGORIES</code> quantiles and the parameters that we should created.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>speciation := fnDiscretizeDistribution( dnLognormal(ln(speciation_mean), speciation_sd), NUM_RATE_CATEGORIES )
 </code></pre></div></div>
 
 <!-- Alternatively, we choose a fixed standard deviation of $H * 2$ for the
@@ -282,13 +282,13 @@ speciation := fnDiscretizeDistribution( dnLognormal(ln(speciation_mean), speciat
 -->
 <p>Similarly, we define the prior on the extinction rate in the same way as we did for
 the speciation rate.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>extinction_mean ~ dnLoguniform( 1E-6, 1E2)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>extinction_mean ~ dnLoguniform( 1E-6, 1E2)
 extinction_mean.setValue( speciation_mean / 2.0 )
 moves.append( mvScale(extinction_mean, lambda=1, tune=true, weight=2.0) )
 </code></pre></div></div>
 <p>However, we assume that extinction rate is the same for all categories.
-Therefore, we simply replicate using the <code class="highlighter-rouge">rep</code> function the extinction rate <code class="highlighter-rouge">NUM_RATE_CATEGORIES</code> times.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>extinction := rep( extinction_mean, NUM_RATE_CATEGORIES )
+Therefore, we simply replicate using the <code class="language-plaintext highlighter-rouge">rep</code> function the extinction rate <code class="language-plaintext highlighter-rouge">NUM_RATE_CATEGORIES</code> times.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>extinction := rep( extinction_mean, NUM_RATE_CATEGORIES )
 </code></pre></div></div>
 <p>Next, we need a rate parameter for the rate-shifts events. We do not
 have much prior information about this rate but we can provide some
@@ -297,26 +297,26 @@ goes from 0 to 100 expected events.
 Remember that this is only possible if the tree is known and not
 estimated simultaneously because only if the tree is known, then we also know the
 tree length. As usual for rate parameter, we apply a scaling move to the
-<code class="highlighter-rouge">event_rate</code> variable.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>event_rate ~ dnUniform(0.0, 100.0/tree_length)
+<code class="language-plaintext highlighter-rouge">event_rate</code> variable.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>event_rate ~ dnUniform(0.0, 100.0/tree_length)
 moves.append( mvScale(event_rate, lambda=1, tune=true, weight=2.0) )
 </code></pre></div></div>
 <p>Additionally, we need a parameter for probability that the process starts at the root in any of the diversification-rate categories.
 We use a uniform/equal prior distribution on the diversification-rate categories.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_cat_probs &lt;- simplex( rep(1, NUM_RATE_CATEGORIES) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_cat_probs &lt;- simplex( rep(1, NUM_RATE_CATEGORIES) )
 </code></pre></div></div>
 
 <blockquote class="aside"><h2>Shifts in the Extinction Rate</h2><p>We might want to allow the extinction rate to change as well.
 As with the speciation rate, we discretize the lognormal distribution
 into a finite number of rate categories.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>extinction_categories := fnDiscretizeDistribution( dnLognormal(ln(extinction_mean), H), NUM_RATE_CATEGORIES )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>extinction_categories := fnDiscretizeDistribution( dnLognormal(ln(extinction_mean), H), NUM_RATE_CATEGORIES )
 </code></pre></div></div>
 <p>Now, we must create a vector that contains each combination of
 speciation- and extinction-rates. This allows the rate of speciation to
 change without changing the rate of extinction and vice versa. The
 resulting vector should be $N^2$ elements long. We call these the
 `paired’ rate categories.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>k = 1
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>k = 1
 for(i in 1:NUM_RATE_CATEGORIES) {
     for(j in 1:NUM_RATE_CATEGORIES) {
         speciation[k]   := speciation_categories[i]
@@ -325,7 +325,7 @@ for(i in 1:NUM_RATE_CATEGORIES) {
 }
 </code></pre></div></div>
 <p>Now we also need to specify a root prior for $N^2$ elements.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_cat_probs &lt;- simplex( rep(1, NUM_RATE_CATEGORIES * NUM_RATE_CATEGORIES) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_cat_probs &lt;- simplex( rep(1, NUM_RATE_CATEGORIES * NUM_RATE_CATEGORIES) )
 
 </code></pre></div></div>
 <p>Note however, that this type of analysis will take significantly longer to run!</p>
@@ -337,7 +337,7 @@ for(i in 1:NUM_RATE_CATEGORIES) {
 <p>We know that we have sampled 233 out of 367 living primate species. To
 account for this we can set the sampling parameter as a constant node
 with a value of 233 / 367.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rho &lt;- observed_phylogeny.ntips() / NUM_TOTAL_SPECIES
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rho &lt;- observed_phylogeny.ntips() / NUM_TOTAL_SPECIES
 </code></pre></div></div>
 
 <h4 class="subsubsection" id="root-age">Root age</h4>
@@ -346,7 +346,7 @@ with a value of 233 / 367.</p>
 <p>The birth-death process requires a parameter for the root age. In this
 exercise we use a fix tree and thus we know the age of the tree. Hence,
 we can get the value for the root from the <a class="citation" href="#MagnusonFord2012">(Magnuson-Ford and Otto 2012)</a> tree. This
-is done using our global variable <code class="highlighter-rouge">root</code> defined above and nothing else
+is done using our global variable <code class="language-plaintext highlighter-rouge">root</code> defined above and nothing else
 has to be done here.</p>
 
 <h4 class="subsubsection" id="the-time-tree">The time tree</h4>
@@ -355,7 +355,7 @@ has to be done here.</p>
 <p>Now we have all of the parameters we need to specify the full
 branch-specific birth-death model. We initialize the stochastic node
 representing the time tree.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree ~ dnCDBDP( rootAge           = root,
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree ~ dnCDBDP( rootAge           = root,
                     speciationRates   = speciation,
                     extinctionRates   = extinction,
                     Q                 = fnJC(NUM_RATE_CATEGORIES),
@@ -365,14 +365,14 @@ representing the time tree.</p>
                     condition         = "time" )
 </code></pre></div></div>
 <p>And then we attach data to it.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree.clamp(observed_phylogeny)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree.clamp(observed_phylogeny)
 </code></pre></div></div>
 
 <p>Finally, we create a workspace object of our whole model using the
-<code class="highlighter-rouge">model()</code> function.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(speciation)
+<code class="language-plaintext highlighter-rouge">model()</code> function.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(speciation)
 </code></pre></div></div>
-<p>The <code class="highlighter-rouge">model()</code> function traversed all of the connections and found all of
+<p>The <code class="language-plaintext highlighter-rouge">model()</code> function traversed all of the connections and found all of
 the nodes we specified.</p>
 
 <h3 class="subsection" id="running-an-mcmc-analysis">Running an MCMC analysis</h3>
@@ -383,22 +383,22 @@ the nodes we specified.</p>
 
 <p>For our MCMC analysis, we need to set up a vector of <em>monitors</em> to
 record the states of our Markov chain. First, we will initialize the
-model monitor using the <code class="highlighter-rouge">mnModel</code> function. This creates a new monitor
+model monitor using the <code class="language-plaintext highlighter-rouge">mnModel</code> function. This creates a new monitor
 variable that will output the states for all model parameters when
 passed into a MCMC function.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/primates_BDS.log",printgen=1, separator = TAB) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/primates_BDS.log",printgen=1, separator = TAB) )
 </code></pre></div></div>
 <p>For summary and plotting purposes, we need to obtain the branch-specific diversification rate estimate along the tree.
 We will use a stochastic rate mapping algorithm <a class="citation" href="#Freyman2019">Freyman and Höhna (2019)</a>.
-Thus, we create an <code class="highlighter-rouge">mnStochasticBranchRate</code>. The stochastic branch-rate monitor
+Thus, we create an <code class="language-plaintext highlighter-rouge">mnStochasticBranchRate</code>. The stochastic branch-rate monitor
 draws stochastic character maps and writes the <em>simulated</em> branch rates into a file.
 We will need this file later to estimate and visualize the posterior
 distribution of the rates at the branches.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnStochasticBranchRate(cdbdp=timetree, printgen=1, filename="output/primates_BDS_rates.log") )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnStochasticBranchRate(cdbdp=timetree, printgen=1, filename="output/primates_BDS_rates.log") )
 </code></pre></div></div>
 <p>Finally, create a screen monitor that will report the states of
-specified variables to the screen with <code class="highlighter-rouge">mnScreen</code>:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(printgen=10, event_rate, speciation_mean, extinction_mean) )
+specified variables to the screen with <code class="language-plaintext highlighter-rouge">mnScreen</code>:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(printgen=10, event_rate, speciation_mean, extinction_mean) )
 </code></pre></div></div>
 
 <h4 class="subsubsection" id="initializing-and-running-the-mcmc-simulation">Initializing and Running the MCMC Simulation</h4>
@@ -406,21 +406,21 @@ specified variables to the screen with <code class="highlighter-rouge">mnScreen<
 
 <p>With a fully specified model, a set of monitors, and a set of moves, we
 can now set up the MCMC algorithm that will sample parameter values in
-proportion to their posterior probability. The <code class="highlighter-rouge">mcmc()</code> function will
+proportion to their posterior probability. The <code class="language-plaintext highlighter-rouge">mcmc()</code> function will
 create our MCMC object:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
 </code></pre></div></div>
 <p>Now, run the MCMC:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=2500,tuning=200)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=2500,tuning=200)
 </code></pre></div></div>
 
-<p>⇨ The <code class="highlighter-rouge">Rev</code> file for performing this analysis: <code class="highlighter-rouge">mcmc_BDS.Rev</code></p>
+<p>⇨ The <code class="language-plaintext highlighter-rouge">Rev</code> file for performing this analysis: <code class="language-plaintext highlighter-rouge">mcmc_BDS.Rev</code></p>
 
 <p>When the analysis is complete, you will have the monitored files in your
 output directory. You can then visualize the branch-specific rates by
-plotting them using our <code class="highlighter-rouge">R</code> package <code class="highlighter-rouge">RevGadgets</code>.</p>
+plotting them using our <code class="language-plaintext highlighter-rouge">R</code> package <code class="language-plaintext highlighter-rouge">RevGadgets</code>.</p>
 
-<p>Just start <code class="highlighter-rouge">R</code> in the main directory for this analysis and then type the following commands:</p>
+<p>Just start <code class="language-plaintext highlighter-rouge">R</code> in the main directory for this analysis and then type the following commands:</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">RevGadgets</span><span class="p">)</span><span class="w">
 
 </span><span class="n">my_tree_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"data/primates_tree.nex"</span><span class="w">
@@ -442,9 +442,9 @@ increase for the New World Monkeys.</figcaption>
 
 <ul>
   <li>Run an MCMC simulation to estimate the posterior distribution of the speciation rate and extinction rate.</li>
-  <li>Visualize the branch-specific rates in <code class="highlighter-rouge">R</code> using <code class="highlighter-rouge">RevGadgets</code>.</li>
+  <li>Visualize the branch-specific rates in <code class="language-plaintext highlighter-rouge">R</code> using <code class="language-plaintext highlighter-rouge">RevGadgets</code>.</li>
   <li>Do you see evidence for rate decreases or increases? What is the general trend?</li>
-  <li>Run the analysis using a different number of rate categories (<code class="highlighter-rouge">NUM_RATE_CATEGORIES</code>), <em>e.g.,</em> 4 or 10. How do the rates change?</li>
+  <li>Run the analysis using a different number of rate categories (<code class="language-plaintext highlighter-rouge">NUM_RATE_CATEGORIES</code>), <em>e.g.,</em> 4 or 10. How do the rates change?</li>
 </ul>
 
 

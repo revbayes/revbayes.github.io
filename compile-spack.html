@@ -66,11 +66,11 @@ Compile with Spack
 
 <h2 id="pre-requisites">Pre-requisites</h2>
 
-<p>You will need to have C++ compiler installed on your computer, along with <code class="highlighter-rouge">git</code>, <code class="highlighter-rouge">make</code>, <code class="highlighter-rouge">curl</code>, and <code class="highlighter-rouge">python</code>. On OSX, <a href="https://apps.apple.com/us/app/xcode/id497799835?mt=12">XCode</a> is required.</p>
+<p>You will need to have C++ compiler installed on your computer, along with <code class="language-plaintext highlighter-rouge">git</code>, <code class="language-plaintext highlighter-rouge">make</code>, <code class="language-plaintext highlighter-rouge">curl</code>, and <code class="language-plaintext highlighter-rouge">python</code>. On OSX, <a href="https://apps.apple.com/us/app/xcode/id497799835?mt=12">XCode</a> is required.</p>
 
 <h2 id="set-up">Set up</h2>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/spack/spack.git
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/spack/spack.git
 cd spack
 source share/spack/setup-env.sh
 spack compiler find
@@ -81,13 +81,13 @@ spack compiler find
 <h3 id="latest-stable-version">Latest stable version</h3>
 
 <h4 id="without-mpi">Without MPI</h4>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>spack install revbayes ~mpi
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>spack install revbayes ~mpi
 spack load revbayes
 rb
 </code></pre></div></div>
 
 <h4 id="with-mpi">With MPI</h4>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>spack install revbayes +mpi
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>spack install revbayes +mpi
 spack load revbayes
 mpirun rb-mpi
 </code></pre></div></div>
@@ -95,27 +95,27 @@ mpirun rb-mpi
 <h3 id="development-version">Development version</h3>
 
 <h4 id="without-mpi-1">Without MPI</h4>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>spack install revbayes@develop ~mpi
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>spack install revbayes@develop ~mpi
 spack load revbayes
 rb
 </code></pre></div></div>
 
 <h4 id="with-mpi-1">With MPI</h4>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>spack install revbayes@develop +mpi
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>spack install revbayes@develop +mpi
 spack load revbayes
 mpirun rb-mpi
 </code></pre></div></div>
 
 <h3 id="older-version">Older version</h3>
 
-<p>You can install older versions by replacing <code class="highlighter-rouge">@develop</code> in the development version commands with <code class="highlighter-rouge">@version</code>. E.g.</p>
+<p>You can install older versions by replacing <code class="language-plaintext highlighter-rouge">@develop</code> in the development version commands with <code class="language-plaintext highlighter-rouge">@version</code>. E.g.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>spack install revbayes@1.0.12 ~mpi.
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>spack install revbayes@1.0.12 ~mpi.
 </code></pre></div></div>
 
 <p>To get a list of available versions run:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>spack info revbayes
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>spack info revbayes
 </code></pre></div></div>
 
 <h2 id="troubleshooting">Troubleshooting</h2>
@@ -130,11 +130,11 @@ Matching packages:
     l6sv4oz revbayes@develop%gcc@9.2.1 arch=linux-fedora31-skylake
 </pre>
 
-<p>The text before <code class="highlighter-rouge">revbayes</code> in each line is the hash for the package. You can get more information on the difference between the two packages by doing:</p>
+<p>The text before <code class="language-plaintext highlighter-rouge">revbayes</code> in each line is the hash for the package. You can get more information on the difference between the two packages by doing:</p>
 
 <p>Package 1:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>spack find --deps /abe2xnq
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>spack find --deps /abe2xnq
 </code></pre></div></div>
 
 <p>Which shows</p>
@@ -149,7 +149,7 @@ revbayes@develop
 
 <p>Package 2:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>spack find --deps /l6sv4oz
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>spack find --deps /l6sv4oz
 </code></pre></div></div>
 
 <p>Which shows</p>
@@ -174,7 +174,7 @@ revbayes@develop
 
 <p>We can load it with</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>spack load /l6sv4oz
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>spack load /l6sv4oz
 </code></pre></div></div>
 
       <br>

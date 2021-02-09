@@ -250,12 +250,12 @@ computed analytically</p>
 
 <p>where $t$ is the branch length in units of time, and $r$ is the rate (clock) for the process. In the later exercises you will be asked to specify more complex substitution models. <strong>Don’t worry, you won’t have to calculate all of the transition probabilities, because RevBayes will take care of all the computations for you.</strong> Here we only provide some of the equations for the models in case you might be interested in the details. You will be able to complete the exercises without understanding the underlying math.</p>
 
-<p>The files for this example analysis are provided for you (<a href="scripts/mcmc_JC.Rev"><code class="highlighter-rouge">mcmc_JC.Rev</code></a>).
-If you download this file and place it in a directory called <code class="highlighter-rouge">scripts</code> inside your main tutorial directory,
+<p>The files for this example analysis are provided for you (<a href="scripts/mcmc_JC.Rev"><code class="language-plaintext highlighter-rouge">mcmc_JC.Rev</code></a>).
+If you download this file and place it in a directory called <code class="language-plaintext highlighter-rouge">scripts</code> inside your main tutorial directory,
 you can
-easily execute this analysis using the <code class="highlighter-rouge">source()</code> function in the RevBayes console:</p>
+easily execute this analysis using the <code class="language-plaintext highlighter-rouge">source()</code> function in the RevBayes console:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/mcmc_JC.Rev")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/mcmc_JC.Rev")
 </code></pre></div></div>
 
 <p>If everything loaded properly, then you should see the program initiate
@@ -263,7 +263,7 @@ the Markov chain Monte Carlo analysis that estimates the posterior
 distribution. If you continue to let this run, then you will see it
 output the states of the Markov chain once the MCMC analysis begins.</p>
 
-<p>Ultimately, this is how you will execute most analyses in RevBayes, with the full specification of the model and analyses contained in the sourced files. You could easily run this entire analysis on your own data by substituting your data file name for that in the model-specification file. However, it is important to understand the components of the model to be able to take full advantage of the flexibility and richness of RevBayes. Furthermore, without inspecting the Rev scripts sourced in <code class="highlighter-rouge">mcmc_JC.Rev</code>, you may end up inadvertently performing inappropriate analyses on your dataset, which would be a waste of your time and CPU cycles. The next steps will walk you through the full specification of the model and MCMC analyses.</p>
+<p>Ultimately, this is how you will execute most analyses in RevBayes, with the full specification of the model and analyses contained in the sourced files. You could easily run this entire analysis on your own data by substituting your data file name for that in the model-specification file. However, it is important to understand the components of the model to be able to take full advantage of the flexibility and richness of RevBayes. Furthermore, without inspecting the Rev scripts sourced in <code class="language-plaintext highlighter-rouge">mcmc_JC.Rev</code>, you may end up inadvertently performing inappropriate analyses on your dataset, which would be a waste of your time and CPU cycles. The next steps will walk you through the full specification of the model and MCMC analyses.</p>
 
 <h3 class="subsection" id="loading-the-data">Loading the Data</h3>
 <hr class="subsection" />
@@ -271,54 +271,54 @@ output the states of the Markov chain once the MCMC analysis begins.</p>
 <p><a href="https://youtu.be/kU-6WEv0mRQ"><img src="/assets/img/YouTube_icon.svg" alt="Walkthrough video" height="36" width="36" /></a></p>
 
 <blockquote class="instruction">
-  <p>First create a directory for this tutorial and name it <code class="highlighter-rouge">RB_CTMC_Tutorial</code>, or any name
+  <p>First create a directory for this tutorial and name it <code class="language-plaintext highlighter-rouge">RB_CTMC_Tutorial</code>, or any name
 you like.</p>
 
-  <p>Navigate to this new directory and create a new folder called <code class="highlighter-rouge">data</code> inside of it.</p>
+  <p>Navigate to this new directory and create a new folder called <code class="language-plaintext highlighter-rouge">data</code> inside of it.</p>
 
-  <p>Download the data file called <a href="data/primates_and_galeopterus_cytb.nex"><code class="highlighter-rouge">primates_and_galeopterus_cytb.nex</code></a>
-and save it to the <code class="highlighter-rouge">data</code> directory.</p>
+  <p>Download the data file called <a href="data/primates_and_galeopterus_cytb.nex"><code class="language-plaintext highlighter-rouge">primates_and_galeopterus_cytb.nex</code></a>
+and save it to the <code class="language-plaintext highlighter-rouge">data</code> directory.</p>
 
-  <p>Now start RevBayes from your working directory (<code class="highlighter-rouge">RB_CTMC_Tutorial</code>).</p>
+  <p>Now start RevBayes from your working directory (<code class="language-plaintext highlighter-rouge">RB_CTMC_Tutorial</code>).</p>
 </blockquote>
 
 <blockquote class="aside"><h2>Checking and Changing Your Working Directory</h2><p>For this tutorial and much of the work you will do in RevBayes, you will need to access files.
 It is important that you are aware of your current working directory if you use relative file paths
 in your Rev scripts or in the RevBayes console.</p>
 
-<p>To check your current working directory, use the function <code class="highlighter-rouge">getwd()</code>.</p>
+<p>To check your current working directory, use the function <code class="language-plaintext highlighter-rouge">getwd()</code>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>getwd()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>getwd()
 </code></pre></div></div>
-<div class="Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/Users/tombayes/Work
+<div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/Users/tombayes/Work
 </code></pre></div></div>
 
-<p>If you want to change the directory, enter the path to your directory in the arguments of the function <code class="highlighter-rouge">setwd()</code>.</p>
+<p>If you want to change the directory, enter the path to your directory in the arguments of the function <code class="language-plaintext highlighter-rouge">setwd()</code>.</p>
 
-<div class="Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>setwd("Tutorials/RB_CTMC_Tutorial")
+<div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>setwd("Tutorials/RB_CTMC_Tutorial")
 </code></pre></div></div>
 
 <p>Now check your directory again to make sure you are where you want to be:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>getwd()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>getwd()
 </code></pre></div></div>
-<div class="Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/Users/tombayes/Work/Tutorials/RB_CTMC_Tutorial
+<div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/Users/tombayes/Work/Tutorials/RB_CTMC_Tutorial
 </code></pre></div></div>
 </blockquote>
 
-<p>First load in the sequences using the <code class="highlighter-rouge">readDiscreteCharacterData()</code>
+<p>First load in the sequences using the <code class="language-plaintext highlighter-rouge">readDiscreteCharacterData()</code>
 function.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data &lt;- readDiscreteCharacterData("data/primates_and_galeopterus_cytb.nex")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data &lt;- readDiscreteCharacterData("data/primates_and_galeopterus_cytb.nex")
 </code></pre></div></div>
 
 <p>Executing these lines initializes the data matrix as the respective
 Rev variables. To report the current value of any variable, simply
-type the variable name and press enter. For the <code class="highlighter-rouge">data</code> matrix, this
+type the variable name and press enter. For the <code class="language-plaintext highlighter-rouge">data</code> matrix, this
 provides information about the alignment:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data
 </code></pre></div></div>
-<div class="Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   DNA character matrix with 23 taxa and 1141 characters
+<div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   DNA character matrix with 23 taxa and 1141 characters
    =====================================================
    Origination:                      primates_and_galeopterus_cytb.nex
    Number of taxa:                   23
@@ -328,11 +328,11 @@ provides information about the alignment:</p>
    Datatype:                         DNA
 </code></pre></div></div>
 
-<p>Next we will specify some useful variables based on our dataset. The variable <code class="highlighter-rouge">data</code> has <em>member functions</em>
+<p>Next we will specify some useful variables based on our dataset. The variable <code class="language-plaintext highlighter-rouge">data</code> has <em>member functions</em>
 that we can use to retrieve information about the dataset. These include, for example,
 the number of species and the taxa. We will need that taxon information for setting up different parts of our model.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>num_taxa &lt;- data.ntaxa()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>num_taxa &lt;- data.ntaxa()
 num_branches &lt;- 2 * num_taxa - 3
 taxa &lt;- data.taxa()
 </code></pre></div></div>
@@ -342,11 +342,11 @@ Recall that moves are algorithms used to propose new parameter values during the
 Similarly, we set up a variable for the monitors.
 Monitors print the values of model parameters to the screen and/or log files during the MCMC analysis.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
 monitors = VectorMonitors()
 </code></pre></div></div>
 
-<p>You may have noticed that we used the <code class="highlighter-rouge">=</code> operator to create the move index.
+<p>You may have noticed that we used the <code class="language-plaintext highlighter-rouge">=</code> operator to create the move index.
 This simply means that the variable is not part of the model.
 You will later see that we use this operator more often, e.g., when we create moves and monitors.</p>
 
@@ -368,18 +368,18 @@ instantaneous-rate matrix, $Q$. The Jukes-Cantor substitution model does
 not have any free parameters (as the substitution rates are all assumed
 to be equal, and there is a separate parameter that scales their overall
 magnitude), so we can define it as a constant variable. The function
-<code class="highlighter-rouge">fnJC(n)</code> will create an instantaneous-rate matrix for a character with
+<code class="language-plaintext highlighter-rouge">fnJC(n)</code> will create an instantaneous-rate matrix for a character with
 $n$ states. Since we use DNA data here, we create a 4x4
 instantaneous-rate matrix:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q &lt;- fnJC(4)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q &lt;- fnJC(4)
 </code></pre></div></div>
 
 <p>You can see the rates of the $Q$ matrix by typing</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q
 </code></pre></div></div>
-<div class="Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   [ [ -1.0000, 0.3333, 0.3333, 0.3333 ] ,
+<div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   [ [ -1.0000, 0.3333, 0.3333, 0.3333 ] ,
      0.3333, -1.0000, 0.3333, 0.3333 ] ,
      0.3333, 0.3333, -1.0000, 0.3333 ] ,
      0.3333, 0.3333, 0.3333, -1.0000 ] ]
@@ -395,17 +395,17 @@ In <a href="#jc_graphical_model"></a>, the tree topology is denoted $\Psi$ and t
 length of the branch leading to node $i$ is $bl_i$.</p>
 
 <p>We will assume that all possible labeled, unrooted tree topologies have equal probability.
-This is the <code class="highlighter-rouge">dnUniformTopology()</code> distribution in RevBayes.
+This is the <code class="language-plaintext highlighter-rouge">dnUniformTopology()</code> distribution in RevBayes.
 Note that in RevBayes it is advisable to specify the outgroup for your study system
 if you use an unrooted tree prior, whereas other software, <em>e.g.</em>,
 MrBayes uses the first taxon in the data matrix file as the outgroup.
 Providing RevBayes with an outgroup clade will enable the monitor writing the trees
 to file to orient the topologies with the outgroup clade at the base,
 thus making the trees easier to visualize.
-Specify the <code class="highlighter-rouge">topology</code> stochastic node by passing in the list of <code class="highlighter-rouge">taxa</code>
-to the <code class="highlighter-rouge">dnUniformTopology()</code> distribution:</p>
+Specify the <code class="language-plaintext highlighter-rouge">topology</code> stochastic node by passing in the list of <code class="language-plaintext highlighter-rouge">taxa</code>
+to the <code class="language-plaintext highlighter-rouge">dnUniformTopology()</code> distribution:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>out_group = clade("Galeopterus_variegatus")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>out_group = clade("Galeopterus_variegatus")
 topology ~ dnUniformTopology(taxa, outgroup=out_group)
 </code></pre></div></div>
 
@@ -413,41 +413,41 @@ topology ~ dnUniformTopology(taxa, outgroup=out_group)
 Different moves may explore parameter space in different ways,
 and it is possible to use multiple different moves for a given parameter to improve mixing
 (the efficiency of the MCMC simulation).
-In the case of our unrooted tree topology, for example, we can use both a nearest-neighbor interchange move (<code class="highlighter-rouge">mvNNI</code>) and a subtree-prune and regrafting move (<code class="highlighter-rouge">mvSPR</code>). These moves do not have tuning parameters associated with them, thus you only need to pass in the <code class="highlighter-rouge">topology</code> node and proposal <code class="highlighter-rouge">weight</code>.</p>
+In the case of our unrooted tree topology, for example, we can use both a nearest-neighbor interchange move (<code class="language-plaintext highlighter-rouge">mvNNI</code>) and a subtree-prune and regrafting move (<code class="language-plaintext highlighter-rouge">mvSPR</code>). These moves do not have tuning parameters associated with them, thus you only need to pass in the <code class="language-plaintext highlighter-rouge">topology</code> node and proposal <code class="language-plaintext highlighter-rouge">weight</code>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvNNI(topology, weight=num_taxa) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvNNI(topology, weight=num_taxa) )
 moves.append( mvSPR(topology, weight=num_taxa/10.0) )
 </code></pre></div></div>
 
 <p>The weight specifies how often the move will be applied either on average per iteration or relative to all other moves. Have a look at the MCMC Diagnosis tutorial for more details about moves and MCMC strategies (found in <a href="/tutorials/">Tutorials</a>).</p>
 
-<p>Next we have to create a stochastic node representing the length of each of the $2N - 3$ branches in our tree (where $N=$ <code class="highlighter-rouge">n_species</code>). We can do this using a <code class="highlighter-rouge">for</code> loop — this is a plate in our graphical model. In this loop, we can create each of the branch-length nodes and assign each move. Copy this entire block of Rev code into the console:</p>
+<p>Next we have to create a stochastic node representing the length of each of the $2N - 3$ branches in our tree (where $N=$ <code class="language-plaintext highlighter-rouge">n_species</code>). We can do this using a <code class="language-plaintext highlighter-rouge">for</code> loop — this is a plate in our graphical model. In this loop, we can create each of the branch-length nodes and assign each move. Copy this entire block of Rev code into the console:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:num_branches) {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:num_branches) {
    br_lens[i] ~ dnExponential(10.0)
    moves.append( mvScale(br_lens[i]) )
 }
 </code></pre></div></div>
 
-<p>It is convenient for monitoring purposes to add the tree length as deterministic variable. The tree length is simply the sum of all branch lengths. Accordingly, the tree length can be computed using the <code class="highlighter-rouge">sum()</code> function, which calculates the sum of any vector of values.</p>
+<p>It is convenient for monitoring purposes to add the tree length as deterministic variable. The tree length is simply the sum of all branch lengths. Accordingly, the tree length can be computed using the <code class="language-plaintext highlighter-rouge">sum()</code> function, which calculates the sum of any vector of values.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>TL := sum(br_lens)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>TL := sum(br_lens)
 </code></pre></div></div>
 
-<p>Finally, we can create a <em>phylogram</em> (a phylogeny in which the branch lengths are proportional to the expected number of substitutions/site) by combining the tree topology and branch lengths. We do this using the <code class="highlighter-rouge">treeAssembly()</code> function, which applies the value of the $i^{th}$ member of the <code class="highlighter-rouge">br_lens</code> vector to the branch leading to the $i^{th}$ node in <code class="highlighter-rouge">topology</code>. Thus, the <code class="highlighter-rouge">psi</code> variable is a deterministic node:</p>
+<p>Finally, we can create a <em>phylogram</em> (a phylogeny in which the branch lengths are proportional to the expected number of substitutions/site) by combining the tree topology and branch lengths. We do this using the <code class="language-plaintext highlighter-rouge">treeAssembly()</code> function, which applies the value of the $i^{th}$ member of the <code class="language-plaintext highlighter-rouge">br_lens</code> vector to the branch leading to the $i^{th}$ node in <code class="language-plaintext highlighter-rouge">topology</code>. Thus, the <code class="language-plaintext highlighter-rouge">psi</code> variable is a deterministic node:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psi := treeAssembly(topology, br_lens)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psi := treeAssembly(topology, br_lens)
 </code></pre></div></div>
 
 <blockquote class="aside"><h2>Alternative tree priors</h2><p>For large phylogenetic trees, i.e., with more than 200 taxa, it might be easier to specify a combined topology and branch length prior distribution.
-We can achieve this by simple using the distribution <code class="highlighter-rouge">dnUniformTopologyBranchLength()</code>.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>br_len_lambda &lt;- 10.0
+We can achieve this by simple using the distribution <code class="language-plaintext highlighter-rouge">dnUniformTopologyBranchLength()</code>.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>br_len_lambda &lt;- 10.0
 psi ~ dnUniformTopologyBranchLength(taxa, branchLengthDistribution=dnExponential(br_len_lambda))
 moves.append( mvNNI(psi, weight=num_taxa) )
 moves.append( mvSPR(psi, weight=num_taxa/10.0) )
 moves.append( mvBranchLengthScale(psi, weight=num_branches) )
 </code></pre></div></div>
-<p>You might think that this approach is in fact simpler than the <code class="highlighter-rouge">for</code> loop that we explained above.
+<p>You might think that this approach is in fact simpler than the <code class="language-plaintext highlighter-rouge">for</code> loop that we explained above.
 We still think that it is pedagogical to specify the prior on each branch length separately in this tutorial to emphasize all components of the model.</p>
 </blockquote>
 
@@ -461,17 +461,17 @@ the corresponding branch lengths <a class="citation" href="#Zhang2012">(Zhang et
 
 <p>First, specify a prior distribution on the tree length with your desired mean.
 For example, we use a gamma distribution as our prior on the tree length.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>TL ~ dnGamma(2,4)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>TL ~ dnGamma(2,4)
 moves.append( mvScale(TL) )
 </code></pre></div></div>
 
 <p>Now we create a random variable for the relative branch lengths.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rel_branch_lengths ~ dnDirichlet( rep(1.0,num_branches) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rel_branch_lengths ~ dnDirichlet( rep(1.0,num_branches) )
 moves.append( mvBetaSimplex(rel_branch_lengths, weight=num_branches) )
 moves.append( mvDirichletSimplex(rel_branch_lengths, weight=num_branches/10.0) )
 </code></pre></div></div>
 <p>Finally, transform the relative branch lengths into actual branch lengths</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>br_lens := rel_branch_lengths * TL
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>br_lens := rel_branch_lengths * TL
 </code></pre></div></div>
 </blockquote>
 
@@ -480,18 +480,18 @@ Here we will briefly indicate how to specify such an prior which will lead to in
 
 <p>The tree (the topology and node ages) is a stochastic node in our phylogenetic model.
 For simplicity, we will assume a uniform prior on both topologies and node ages.
-The distribution in RevBayes is <code class="highlighter-rouge">dnUniformTimeTree()</code>.</p>
+The distribution in RevBayes is <code class="language-plaintext highlighter-rouge">dnUniformTimeTree()</code>.</p>
 
 <p>Fore more information on tree priors, such as birth-death processes, please read the <a href="/tutorials/clocks/">Relaxed Clocks &amp; Time Trees</a>.</p>
 
 <p>First, we need to specify the age of the tree:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root_age &lt;- 10.0
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root_age &lt;- 10.0
 </code></pre></div></div>
 
-<p>Here we simply assumed that the tree is 10.0 time units old. We could also specify a prior on the root age if we have fossil calibrations (see <a href="/tutorials/clocks/">Relaxed Clocks &amp; Time Trees</a>). Next, we specify the <code class="highlighter-rouge">tree</code> stochastic variable by passing in the taxon information <code class="highlighter-rouge">taxa</code> to the <code class="highlighter-rouge">dnUniformTimeTree()</code> distribution:</p>
+<p>Here we simply assumed that the tree is 10.0 time units old. We could also specify a prior on the root age if we have fossil calibrations (see <a href="/tutorials/clocks/">Relaxed Clocks &amp; Time Trees</a>). Next, we specify the <code class="language-plaintext highlighter-rouge">tree</code> stochastic variable by passing in the taxon information <code class="language-plaintext highlighter-rouge">taxa</code> to the <code class="language-plaintext highlighter-rouge">dnUniformTimeTree()</code> distribution:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psi ~ dnUniformTimeTree(rootAge=root_age, taxa=taxa)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psi ~ dnUniformTimeTree(rootAge=root_age, taxa=taxa)
 </code></pre></div></div>
 
 <p>Some types of stochastic nodes can be updated by a number of alternative moves.
@@ -499,13 +499,13 @@ Different moves may explore parameter space in different ways,and it is possible
 multiple different moves for a given parameter to improve mixing
 (the efficiency of the MCMC simulation). In the case of our rooted tree,
 for example, we can use both a nearest-neighbor interchange move without and with changing
-the node ages (<code class="highlighter-rouge">mvNarrow</code> and <code class="highlighter-rouge">mvNNI</code>) and a fixed-node-height subtree-prune and regrafting
-move (<code class="highlighter-rouge">mvFNPR</code>) and its Metropolized-Gibbs variant (<code class="highlighter-rouge">mvGPR</code>) <a class="citation" href="#Hoehna2008">(Höhna et al. 2008; Höhna and Drummond 2012)</a>.
-We also need moves that change the ages of the internal nodes, for example, <code class="highlighter-rouge">mvSubtreeScale</code>
-and <code class="highlighter-rouge">mvNodeTimeSlideUniform</code>. These moves do not have tuning parameters associated with
-them, thus you only need to pass in the <code class="highlighter-rouge">psi</code> node and proposal <code class="highlighter-rouge">weight</code>.</p>
+the node ages (<code class="language-plaintext highlighter-rouge">mvNarrow</code> and <code class="language-plaintext highlighter-rouge">mvNNI</code>) and a fixed-node-height subtree-prune and regrafting
+move (<code class="language-plaintext highlighter-rouge">mvFNPR</code>) and its Metropolized-Gibbs variant (<code class="language-plaintext highlighter-rouge">mvGPR</code>) <a class="citation" href="#Hoehna2008">(Höhna et al. 2008; Höhna and Drummond 2012)</a>.
+We also need moves that change the ages of the internal nodes, for example, <code class="language-plaintext highlighter-rouge">mvSubtreeScale</code>
+and <code class="language-plaintext highlighter-rouge">mvNodeTimeSlideUniform</code>. These moves do not have tuning parameters associated with
+them, thus you only need to pass in the <code class="language-plaintext highlighter-rouge">psi</code> node and proposal <code class="language-plaintext highlighter-rouge">weight</code>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvNarrow(psi, weight=num_taxa) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvNarrow(psi, weight=num_taxa) )
 moves.append( mvNNI(psi, weight=num_taxa/5.0) )
 moves.append( mvFNPR(psi, weight=num_taxa/5.0) )
 moves.append( mvGPR(psi, weight=num_taxa/30.0) )
@@ -520,7 +520,7 @@ moves.append( mvNodeTimeSlideUniform(psi, weight=num_taxa) )
 
 <p>Additionally, in the case of time-calibrated trees, we need to add a molecular clock rate parameter. For example, we know from empirical estimates that the molecular clock rate is about 0.01 (=1%) per million years per site. Nevertheless, we can estimate it here because we fixed the root age. We use a uniform prior on the log-transform clock rate. This specifies our lack of prior knowledge on the magnitude of the clock rate.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log_clock_rate ~ dnUniform(-6,1)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log_clock_rate ~ dnUniform(-6,1)
 moves.append( mvSlide(log_clock_rate, weight=2.0) )
 clock_rate := 10^log_clock_rate
 </code></pre></div></div>
@@ -539,21 +539,21 @@ model—the tree topology with branch lengths, and the substitution model
 that describes how the sequence data evolved over the tree with branch
 lengths. Collectively, these parameters comprise a distribution called
 the <em>phylogenetic continuous-time Markov chain</em>, and we use the
-<code class="highlighter-rouge">dnPhyloCTMC</code> constructor function to create this node. This
+<code class="language-plaintext highlighter-rouge">dnPhyloCTMC</code> constructor function to create this node. This
 distribution requires several input arguments:</p>
 <ol>
-  <li>the <code class="highlighter-rouge">tree</code> with branch lengths;</li>
-  <li>the instantaneous-rate matrix <code class="highlighter-rouge">Q</code>;</li>
-  <li>the <code class="highlighter-rouge">type</code> of character data.</li>
+  <li>the <code class="language-plaintext highlighter-rouge">tree</code> with branch lengths;</li>
+  <li>the instantaneous-rate matrix <code class="language-plaintext highlighter-rouge">Q</code>;</li>
+  <li>the <code class="language-plaintext highlighter-rouge">type</code> of character data.</li>
 </ol>
 
 <p>Build the random variable for the character data (sequence alignment).</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>seq ~ dnPhyloCTMC(tree=psi, Q=Q, type="DNA")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>seq ~ dnPhyloCTMC(tree=psi, Q=Q, type="DNA")
 </code></pre></div></div>
 
-<p>Once the <code class="highlighter-rouge">PhyloCTMC</code> model has been created, we can attach our sequence
+<p>Once the <code class="language-plaintext highlighter-rouge">PhyloCTMC</code> model has been created, we can attach our sequence
 data to the tip nodes in the tree.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>seq.clamp(data)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>seq.clamp(data)
 </code></pre></div></div>
 
 <p>Note that although we assume that our sequence data are random
@@ -565,19 +565,19 @@ sequence in the alignment. This essentially tells the program that we
 have observed data for the sequences at the tips.</p>
 
 <p>Finally, we wrap the entire model in a single object to provide convenient access to the
-DAG. To do this, we only need to give the <code class="highlighter-rouge">model()</code> function a single
-node. With this node, the <code class="highlighter-rouge">model()</code> function can find all of the other
+DAG. To do this, we only need to give the <code class="language-plaintext highlighter-rouge">model()</code> function a single
+node. With this node, the <code class="language-plaintext highlighter-rouge">model()</code> function can find all of the other
 nodes by following the arrows in the graphical model:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(Q)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(Q)
 </code></pre></div></div>
 
 <p>Now we have specified a simple phylogenetic analysis—each parameter of
 the model will be estimated from every site in our alignment. If we
-inspect the contents of <code class="highlighter-rouge">mymodel</code> we can review all of the nodes in the
+inspect the contents of <code class="language-plaintext highlighter-rouge">mymodel</code> we can review all of the nodes in the
 DAG:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel
 </code></pre></div></div>
 
 <!--
@@ -592,25 +592,25 @@ summarize the resulting posterior distribution of trees.
 
 <p>For our MCMC analysis, we need to set up a vector of <em>monitors</em> to
 record the states of our Markov chain. The monitor functions are all
-called <code class="highlighter-rouge">mn\*</code>, where <code class="highlighter-rouge">\*</code> is the wild-card representing the monitor type.
-First, we will initialize the model monitor using the <code class="highlighter-rouge">mnModel</code>
+called <code class="language-plaintext highlighter-rouge">mn\*</code>, where <code class="language-plaintext highlighter-rouge">\*</code> is the wild-card representing the monitor type.
+First, we will initialize the model monitor using the <code class="language-plaintext highlighter-rouge">mnModel</code>
 function. This creates a new monitor variable that will output the
 states for all model parameters when passed into a MCMC function.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/primates_cytb_JC.log", printgen=10) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/primates_cytb_JC.log", printgen=10) )
 </code></pre></div></div>
 
-<p>The <code class="highlighter-rouge">mnFile</code> monitor will record the states for only the parameters
+<p>The <code class="language-plaintext highlighter-rouge">mnFile</code> monitor will record the states for only the parameters
 passed in as arguments. We use this monitor to specify the output for
 our sampled trees and branch lengths.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnFile(filename="output/primates_cytb_JC.trees", printgen=10, psi) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnFile(filename="output/primates_cytb_JC.trees", printgen=10, psi) )
 </code></pre></div></div>
 
 <p>Finally, create a screen monitor that will report the states of
-specified variables to the screen with <code class="highlighter-rouge">mnScreen</code>:</p>
+specified variables to the screen with <code class="language-plaintext highlighter-rouge">mnScreen</code>:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(printgen=100, TL) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(printgen=100, TL) )
 </code></pre></div></div>
 
 <p>This monitor mostly helps us to see the progress of the MCMC run.</p>
@@ -620,31 +620,31 @@ specified variables to the screen with <code class="highlighter-rouge">mnScreen<
 
 <p>With a fully specified model, a set of monitors, and a set of moves, we
 can now set up the MCMC algorithm that will sample parameter values in
-proportion to their posterior probability. The <code class="highlighter-rouge">mcmc()</code> function will
+proportion to their posterior probability. The <code class="language-plaintext highlighter-rouge">mcmc()</code> function will
 create our MCMC object:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves)
 </code></pre></div></div>
 
 <p>Now, run the MCMC:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=20000)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=20000)
 </code></pre></div></div>
 
 <p>When the analysis is complete, you will have the monitored files in your output directory.</p>
 
 <blockquote class="aside"><h2>Saving and restarting analyses</h2><p>MCMC analyses can take a long time to converge, and it is usually difficult to predict how many generations will be needed to obtain results. In addition, many analyses are run on computer clusters with time limits, and so may be stopped by the cluster partway through. For all of these reasons, it is useful to save the state of the chain regularly through the analysis.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=100000000, checkpointInterval=100, checkpointFile="output/primates_cytb_JC.state")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=100000000, checkpointInterval=100, checkpointFile="output/primates_cytb_JC.state")
 </code></pre></div></div>
-<p>The <code class="highlighter-rouge">checkpointInterval</code> and <code class="highlighter-rouge">checkpointFile</code> inputs specify respectively how often, and to which file, the chain should be saved. Three different files will be used for storing the state, with no extension and with extensions <code class="highlighter-rouge">_mcmc</code> and <code class="highlighter-rouge">_moves</code>.
-When multiple independent runs are specified, they will automatically be saved in separate files (with extensions <code class="highlighter-rouge">_run_1</code>, <code class="highlighter-rouge">_run_2</code>, etc.).</p>
+<p>The <code class="language-plaintext highlighter-rouge">checkpointInterval</code> and <code class="language-plaintext highlighter-rouge">checkpointFile</code> inputs specify respectively how often, and to which file, the chain should be saved. Three different files will be used for storing the state, with no extension and with extensions <code class="language-plaintext highlighter-rouge">_mcmc</code> and <code class="language-plaintext highlighter-rouge">_moves</code>.
+When multiple independent runs are specified, they will automatically be saved in separate files (with extensions <code class="language-plaintext highlighter-rouge">_run_1</code>, <code class="language-plaintext highlighter-rouge">_run_2</code>, etc.).</p>
 
 <p>Restarting the chain from a previous run is done by adding this line:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.initializeFromCheckpoint("output/primates_cytb_JC.state")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.initializeFromCheckpoint("output/primates_cytb_JC.state")
 </code></pre></div></div>
-<p>before calling the function <code class="highlighter-rouge">mcmc.run()</code>. The file name should match what was given as <code class="highlighter-rouge">checkpointFile</code> when running the previous analysis. <strong>NB:</strong> Note that this line will create an error if the state file does not exist yet, and so should be commented out in the first run.</p>
+<p>before calling the function <code class="language-plaintext highlighter-rouge">mcmc.run()</code>. The file name should match what was given as <code class="language-plaintext highlighter-rouge">checkpointFile</code> when running the previous analysis. <strong>NB:</strong> Note that this line will create an error if the state file does not exist yet, and so should be commented out in the first run.</p>
 
 <p>The full MCMC block thus becomes:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
 mymcmc.initializeFromCheckpoint("output/primates_cytb_JC.state") #comment this out for the first run
 
 mymcmc.run(generations=100000000, checkpointInterval=100, checkpointFile="output/primates_cytb_JC.state")
@@ -659,8 +659,8 @@ mymcmc.run(generations=100000000, checkpointInterval=100, checkpointFile="output
 <p>Methods for visualizing the marginal densities of parameter values are not currently available in RevBayes itself.
 Thus, it is important to use programs like <a href="http://tree.bio.ed.ac.uk/software/tracer/">Tracer</a> <a class="citation" href="#Rambaut2011">(Rambaut and Drummond 2011)</a> to evaluate mixing and non-convergence.</p>
 
-<p>Look at the file called <code class="highlighter-rouge">output/primates_cytb_JC.log</code> in Tracer.
-There you see the posterior distribution of the continuous parameters, <em>e.g.</em>, the tree length variable <code class="highlighter-rouge">TL</code>.</p>
+<p>Look at the file called <code class="language-plaintext highlighter-rouge">output/primates_cytb_JC.log</code> in Tracer.
+There you see the posterior distribution of the continuous parameters, <em>e.g.</em>, the tree length variable <code class="language-plaintext highlighter-rouge">TL</code>.</p>
 
 <figure id="jc_trace_tl"><p><img src="figures/primates_cytb_JC_TL_Trace.png" width="500" /> <img src="figures/primates_cytb_JC_TL_Distribution.png" width="500" /></p>
 <figcaption><strong>Left:</strong> Trace of tree-length samples for one MCMC run. The caterpillar-like look is a good sign.You will also see that the effective sample size is comparably large, i.e., much larger than 200. <strong>Right:</strong> Posterior distribution of the tree length of the primate phylogeny under a Jukes-Cantor substitution model.</figcaption>
@@ -678,21 +678,21 @@ Therefore, we need to summarize the trees sampled from the posterior
 distribution. RevBayes can summarize the sampled trees by reading in
 the tree-trace file:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>treetrace = readTreeTrace("output/primates_cytb_JC.trees", treetype="non-clock")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>treetrace = readTreeTrace("output/primates_cytb_JC.trees", treetype="non-clock")
 </code></pre></div></div>
 
-<p>The <code class="highlighter-rouge">mapTree()</code> function will summarize the tree samples and write the
+<p>The <code class="language-plaintext highlighter-rouge">mapTree()</code> function will summarize the tree samples and write the
 maximum <em>a posteriori</em> tree to file:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>map_tree = mapTree(treetrace,"output/primates_cytb_JC_MAP.tree")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>map_tree = mapTree(treetrace,"output/primates_cytb_JC_MAP.tree")
 </code></pre></div></div>
 
 <figure id="jc_tree"><p><img src="figures/primates_cytb_JC_tree.png" width="800" /></p>
 <figcaption>Maximum a posteriori estimate of the primate phylogeny under a Jukes-Cantor substitution model. The numbers at the nodes show the posterior probabilities for the clades. We have rooted the tree at the outgroup <em>Galeopterus_variegatus</em></figcaption>
 </figure>
 
-<p>Look at the file called <code class="highlighter-rouge">output/primates_cytb_JC_MAP.tree</code> in
-<code class="highlighter-rouge">FigTree</code>. We show it in <a href="#jc_tree"></a>.</p>
+<p>Look at the file called <code class="language-plaintext highlighter-rouge">output/primates_cytb_JC_MAP.tree</code> in
+<code class="language-plaintext highlighter-rouge">FigTree</code>. We show it in <a href="#jc_tree"></a>.</p>
 
 <p>Fill in the following table as you go through the tutorial.</p>
 
@@ -758,7 +758,7 @@ maximum <em>a posteriori</em> tree to file:</p>
 <p>Note, you can query the posterior probability of a clade being
 monophyletic using the following command:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Lemuroidea &lt;- clade("Cheirogaleus_major",
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Lemuroidea &lt;- clade("Cheirogaleus_major",
                     "Daubentonia_madagascariensis",
                     "Lemur_catta",
                     "Lepilemur_hubbardorum",
@@ -928,7 +928,7 @@ The parameter $\kappa$ describes the relative rate of transition to transversion
 \end{pmatrix} \mbox{  .}\]
 
 <p>Now, add the parameter $\kappa$ to the substitution model, and create a K80 rate matrix:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kappa ~ dnExp(1)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kappa ~ dnExp(1)
 moves.append( mvScale(kappa, weight=1.0) )
 
 Q := fnK80(kappa)
@@ -960,24 +960,24 @@ which is specified with the following instantaneous-rate matrix:</p>
 <p>where the diagonal ${\cdot}$ entries are equal to the negative sum of the
 elements in the corresponding row.</p>
 
-<p>Use the file <code class="highlighter-rouge">mcmc_JC.Rev</code> as a starting point for the HKY analysis.</p>
+<p>Use the file <code class="language-plaintext highlighter-rouge">mcmc_JC.Rev</code> as a starting point for the HKY analysis.</p>
 
 <p>Note that we are adding two new variables to our model. We can define a
-variable <code class="highlighter-rouge">pi</code> for the stationary frequencies that are drawn from a flat
+variable <code class="language-plaintext highlighter-rouge">pi</code> for the stationary frequencies that are drawn from a flat
 Dirichlet distribution by</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pi_prior &lt;- v(1,1,1,1)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pi_prior &lt;- v(1,1,1,1)
 pi ~ dnDirichlet(pi_prior)
 </code></pre></div></div>
 
-<p>Since <code class="highlighter-rouge">pi</code> is a stochastic variable, we need to specify a move to
+<p>Since <code class="language-plaintext highlighter-rouge">pi</code> is a stochastic variable, we need to specify a move to
 propose updates to it. A good move on variables drawn from a Dirichlet
-distribution is the <code class="highlighter-rouge">mvBetaSimplex</code>. This move randomly takes an element
+distribution is the <code class="language-plaintext highlighter-rouge">mvBetaSimplex</code>. This move randomly takes an element
 from the simplex, proposes a new value for it drawn from a Beta
 distribution, and then rescales all values of the simplex to sum to 1
 again.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvBetaSimplex(pi, weight=2) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvBetaSimplex(pi, weight=2) )
 moves.append( mvDirichletSimplex(pi, weight=1) )
 </code></pre></div></div>
 
@@ -986,19 +986,19 @@ transition-transversion rates. The $\kappa$ parameter must be a
 positive-real number and a natural choice as the prior distribution is
 the lognormal distribution:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kappa ~ dnLognormal(0.0, 1.0)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kappa ~ dnLognormal(0.0, 1.0)
 </code></pre></div></div>
 
 <p>Again, we need to specify a move for this new stochastic variable. A
 simple scaling move should do the job.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale(kappa) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale(kappa) )
 </code></pre></div></div>
 
 <p>Finally, we need to create the HKY instantaneous-rate matrix using the
-<code class="highlighter-rouge">fnHKY</code> function:</p>
+<code class="language-plaintext highlighter-rouge">fnHKY</code> function:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q := fnHKY(kappa,pi)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q := fnHKY(kappa,pi)
 </code></pre></div></div>
 
 <p>This should be all for the HKY model. Don’t forget to change the output file names, otherwise your old analyses files will be overwritten.</p>
@@ -1012,12 +1012,12 @@ simple scaling move should do the job.</p>
 graphical model of the HKY model.</p>
   </li>
   <li>
-    <p>Download the file called <a href="scripts/mcmc_JC.Rev"><code class="highlighter-rouge">mcmc_JC.Rev</code></a> and rename it
-<code class="highlighter-rouge">mcmc_HKY.Rev</code>. Save this file in a directory called <code class="highlighter-rouge">scripts</code> located in the same
-directory as your <code class="highlighter-rouge">data</code> folder.</p>
+    <p>Download the file called <a href="scripts/mcmc_JC.Rev"><code class="language-plaintext highlighter-rouge">mcmc_JC.Rev</code></a> and rename it
+<code class="language-plaintext highlighter-rouge">mcmc_HKY.Rev</code>. Save this file in a directory called <code class="language-plaintext highlighter-rouge">scripts</code> located in the same
+directory as your <code class="language-plaintext highlighter-rouge">data</code> folder.</p>
   </li>
   <li>
-    <p>Modify <code class="highlighter-rouge">mcmc_HKY.Rev</code> by including the
+    <p>Modify <code class="language-plaintext highlighter-rouge">mcmc_HKY.Rev</code> by including the
 necessary parameters to specify the HKY substitution model. <em>Be sure to change the output file names given to the monitors.</em></p>
   </li>
   <li>
@@ -1029,7 +1029,7 @@ the HKY substitution model.</p>
 how much do they differ? Are the estimated base frequencies similar
 to the empirical base frequencies? The empirical base frequencies
 are the frequencies of the characters in the alignment, which can be
-computed with RevBayes by <code class="highlighter-rouge">data.getEmpiricalBaseFrequencies()</code>.</p>
+computed with RevBayes by <code class="language-plaintext highlighter-rouge">data.getEmpiricalBaseFrequencies()</code>.</p>
   </li>
   <li>
     <p>Is the inferred rate of transition substitutions higher than the
@@ -1079,36 +1079,36 @@ rates of change between states $i$ and $j$.</p>
 exchangeability rates, which we will describe using a flat Dirichlet
 distribution. As we did previously for the Dirichlet prior on base
 frequencies, we first define a constant node specifying the vector of
-concentration-parameter values using the <code class="highlighter-rouge">v()</code> function:</p>
+concentration-parameter values using the <code class="language-plaintext highlighter-rouge">v()</code> function:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>er_prior &lt;- v(1,1,1,1,1,1)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>er_prior &lt;- v(1,1,1,1,1,1)
 </code></pre></div></div>
 
 <p>This node defines the concentration-parameter values of the Dirichlet
 prior distribution on the exchangeability rates. Now, we can create a
-stochastic node for the exchangeability rates using the <code class="highlighter-rouge">dnDirichlet()</code>
+stochastic node for the exchangeability rates using the <code class="language-plaintext highlighter-rouge">dnDirichlet()</code>
 function, which takes the vector of concentration-parameter values as an
-argument and the <code class="highlighter-rouge">~</code> operator. Together, these create a stochastic node
-named <code class="highlighter-rouge">er</code> ($\theta$ in <a href="#gtr_graphical_model"></a>):</p>
+argument and the <code class="language-plaintext highlighter-rouge">~</code> operator. Together, these create a stochastic node
+named <code class="language-plaintext highlighter-rouge">er</code> ($\theta$ in <a href="#gtr_graphical_model"></a>):</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>er ~ dnDirichlet(er_prior)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>er ~ dnDirichlet(er_prior)
 </code></pre></div></div>
 
 <p>The Dirichlet distribution assigns probability densities to a group of parameters: <em>e.g.</em>,  those that measure proportions and must sum to 1. Here, we have specified a six-parameter Dirichlet prior, where each value describes one of the six relative rates of the GTR model: (1) $A\leftrightarrows C$; (2) $A\leftrightarrows G$; (3) $A\leftrightarrows T$; (4) $C\leftrightarrows G$; (5) $C\leftrightarrows T$; (6) $G\leftrightarrows T$. The input parameters of a Dirichlet distribution are called shape (or concentration) parameters. The expectation and variance for each variable are related to the sum of the shape parameters. The prior we specified above is a ‘flat’ or symmetric Dirichlet distribution; all of the shape parameters are equal (1,1,1,1,1,1). This describes a model that allows for equal rates of change between nucleotides, such that the expected rate for each is equal to $\frac{1}{6}$ (<a href="#dirichletFig"></a>a).</p>
 
-<p>We might also parameterize the Dirichlet distribution such that all of the shape parameters were equal to 100, which would also specify a prior with an expectation of equal exchangeability rates (<a href="#dirichletFig"></a>b). However, by increasing the values of the shape parameters, <code class="highlighter-rouge">er_prior &lt;- v(100,100,100,100,100,100)</code>, the Dirichlet distribution will more strongly favor equal exchangeability rates; (<em>i.e.</em>, a relatively informative prior).</p>
+<p>We might also parameterize the Dirichlet distribution such that all of the shape parameters were equal to 100, which would also specify a prior with an expectation of equal exchangeability rates (<a href="#dirichletFig"></a>b). However, by increasing the values of the shape parameters, <code class="language-plaintext highlighter-rouge">er_prior &lt;- v(100,100,100,100,100,100)</code>, the Dirichlet distribution will more strongly favor equal exchangeability rates; (<em>i.e.</em>, a relatively informative prior).</p>
 
-<p>Alternatively, we might consider an asymmetric Dirichlet parameterization that could reflect a strong prior belief that transition and transversion substitutions occur at different rates. For example, we might specify the prior density <code class="highlighter-rouge">er_prior &lt;- v(4,8,4,4,8,4)</code>. Under this model, the expected rate for transversions would be $\frac{4}{32}$ and that for transitions would be $\frac{8}{32}$, and there would be greater prior probability on sets of GTR rates that matched this configuration (<a href="#dirichletFig"></a>c).</p>
+<p>Alternatively, we might consider an asymmetric Dirichlet parameterization that could reflect a strong prior belief that transition and transversion substitutions occur at different rates. For example, we might specify the prior density <code class="language-plaintext highlighter-rouge">er_prior &lt;- v(4,8,4,4,8,4)</code>. Under this model, the expected rate for transversions would be $\frac{4}{32}$ and that for transitions would be $\frac{8}{32}$, and there would be greater prior probability on sets of GTR rates that matched this configuration (<a href="#dirichletFig"></a>c).</p>
 
-<p>Yet another asymmetric prior could specify that each of the six GTR rates had a different value conforming to a Dirichlet(2,4,6,8,10,12). This would lead to a different prior probability density for each rate parameter (<a href="#dirichletFig"></a>d). Without strong prior knowledge about the pattern of relative rates, however, we can better reflect our uncertainty by using a vague prior on the GTR rates. Notably, all patterns of relative rates have the same probability density under <code class="highlighter-rouge">er_prior &lt;- v(1,1,1,1,1,1)</code>.</p>
+<p>Yet another asymmetric prior could specify that each of the six GTR rates had a different value conforming to a Dirichlet(2,4,6,8,10,12). This would lead to a different prior probability density for each rate parameter (<a href="#dirichletFig"></a>d). Without strong prior knowledge about the pattern of relative rates, however, we can better reflect our uncertainty by using a vague prior on the GTR rates. Notably, all patterns of relative rates have the same probability density under <code class="language-plaintext highlighter-rouge">er_prior &lt;- v(1,1,1,1,1,1)</code>.</p>
 
 <figure id="dirichletFig"><p><img src="figures/dirichlet_rates.png" width="600" /></p>
 <figcaption>Four different examples of Dirichlet priors on exchangeability rates.</figcaption>
 </figure>
 
-<p>For each stochastic node in our model, we must also specify a proposal mechanism if we wish to estimate that parameter. The Dirichlet prior on our parameter <code class="highlighter-rouge">er</code> creates a <a href="http://en.wikipedia.org/wiki/Simplex"><em>simplex</em></a> of values that sum to 1.</p>
+<p>For each stochastic node in our model, we must also specify a proposal mechanism if we wish to estimate that parameter. The Dirichlet prior on our parameter <code class="language-plaintext highlighter-rouge">er</code> creates a <a href="http://en.wikipedia.org/wiki/Simplex"><em>simplex</em></a> of values that sum to 1.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvBetaSimplex(er, weight=3) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvBetaSimplex(er, weight=3) )
 moves.append( mvDirichletSimplex(er, weight=1) )
 </code></pre></div></div>
 
@@ -1117,19 +1117,19 @@ frequencies ($\pi_A, \pi_C, \pi_G, \pi_T$) since these parameters also
 represent proportions. Specify a flat Dirichlet prior density on the
 base frequencies:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pi_prior &lt;- v(1,1,1,1)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pi_prior &lt;- v(1,1,1,1)
 pi ~ dnDirichlet(pi_prior)
 </code></pre></div></div>
 
-<p>The node <code class="highlighter-rouge">pi</code> represents the $\pi$ node in <a href="#gtr_graphical_model"></a>. Now add the simplex scale move on the stationary frequencies to the moves vector:</p>
+<p>The node <code class="language-plaintext highlighter-rouge">pi</code> represents the $\pi$ node in <a href="#gtr_graphical_model"></a>. Now add the simplex scale move on the stationary frequencies to the moves vector:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvBetaSimplex(pi, weight=2) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvBetaSimplex(pi, weight=2) )
 moves.append( mvDirichletSimplex(pi, weight=1) )
 </code></pre></div></div>
 
-<p>We can finish setting up this part of the model by creating a deterministic node for the GTR instantaneous-rate matrix <code class="highlighter-rouge">Q</code>. The <code class="highlighter-rouge">fnGTR()</code> function takes a set of exchangeability rates and a set of base frequencies to compute the instantaneous-rate matrix used when calculating the likelihood of our model.</p>
+<p>We can finish setting up this part of the model by creating a deterministic node for the GTR instantaneous-rate matrix <code class="language-plaintext highlighter-rouge">Q</code>. The <code class="language-plaintext highlighter-rouge">fnGTR()</code> function takes a set of exchangeability rates and a set of base frequencies to compute the instantaneous-rate matrix used when calculating the likelihood of our model.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q := fnGTR(er,pi)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q := fnGTR(er,pi)
 </code></pre></div></div>
 
 <h3 class="subsection" id="exercise-3">Exercise 3</h3>
@@ -1137,9 +1137,9 @@ moves.append( mvDirichletSimplex(pi, weight=1) )
 
 <ul>
   <li>
-    <p>Use one of your previous analysis files—either the <code class="highlighter-rouge">mcmc_JC.Rev</code> or
-<code class="highlighter-rouge">mcmc_HKY.Rev</code>—to specify a GTR analysis in a new file called
-<code class="highlighter-rouge">mcmc_GTR.Rev</code>. Adapt the old analysis to be performed under the
+    <p>Use one of your previous analysis files—either the <code class="language-plaintext highlighter-rouge">mcmc_JC.Rev</code> or
+<code class="language-plaintext highlighter-rouge">mcmc_HKY.Rev</code>—to specify a GTR analysis in a new file called
+<code class="language-plaintext highlighter-rouge">mcmc_GTR.Rev</code>. Adapt the old analysis to be performed under the
 GTR substitution model.</p>
   </li>
   <li>
@@ -1175,28 +1175,28 @@ These rate-multipliers are drawn from a discrete, mean-one gamma distribution; t
 <h4 class="subsubsection" id="setting-up-the-gamma-model-in-revbayes">Setting up the Gamma Model in RevBayes</h4>
 <hr class="subsubsection" />
 
-<p>Then create a stochastic node called <code class="highlighter-rouge">alpha</code> with a uniform prior distribution between 0.0 and $10$
+<p>Then create a stochastic node called <code class="language-plaintext highlighter-rouge">alpha</code> with a uniform prior distribution between 0.0 and $10$
 (this represents the stochastic node for the $\alpha$-shape parameter in
 <a href="#fig_gtrg"></a>):</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha ~ dnUniform( 0.0, 10 )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha ~ dnUniform( 0.0, 10 )
 </code></pre></div></div>
 
-<p>The way the ASRV model is implemented involves discretizing the mean-one gamma distribution into a set number of rate categories, $k$. Thus, we can analytically marginalize over the uncertainty in the rate at each site. The likelihood of each site is averaged over the $k$ rate categories, where the rate multiplier is the mean (or median) of each of the discrete $k$ categories. To specify this, we need a deterministic node that is a vector that will hold the set of $k$ rates drawn from the gamma distribution with $k$ rate categories. The <code class="highlighter-rouge">fnDiscretizeGamma()</code> function returns this deterministic node and takes three arguments: the shape and rate of the gamma distribution and the number of categories. Since we want to discretize a mean-one gamma distribution, we can pass in <code class="highlighter-rouge">alpha</code> for both the shape and rate.</p>
+<p>The way the ASRV model is implemented involves discretizing the mean-one gamma distribution into a set number of rate categories, $k$. Thus, we can analytically marginalize over the uncertainty in the rate at each site. The likelihood of each site is averaged over the $k$ rate categories, where the rate multiplier is the mean (or median) of each of the discrete $k$ categories. To specify this, we need a deterministic node that is a vector that will hold the set of $k$ rates drawn from the gamma distribution with $k$ rate categories. The <code class="language-plaintext highlighter-rouge">fnDiscretizeGamma()</code> function returns this deterministic node and takes three arguments: the shape and rate of the gamma distribution and the number of categories. Since we want to discretize a mean-one gamma distribution, we can pass in <code class="language-plaintext highlighter-rouge">alpha</code> for both the shape and rate.</p>
 
-<p>Initialize the <code class="highlighter-rouge">sr</code> deterministic node vector using the <code class="highlighter-rouge">fnDiscretizeGamma()</code> function with <code class="highlighter-rouge">4</code> bins:</p>
+<p>Initialize the <code class="language-plaintext highlighter-rouge">sr</code> deterministic node vector using the <code class="language-plaintext highlighter-rouge">fnDiscretizeGamma()</code> function with <code class="language-plaintext highlighter-rouge">4</code> bins:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sr := fnDiscretizeGamma( alpha, alpha, 4 )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sr := fnDiscretizeGamma( alpha, alpha, 4 )
 </code></pre></div></div>
 
-<p>Note that here, by convention, we set $k = 4$. The random variable that controls the rate variation is the stochastic node <code class="highlighter-rouge">alpha</code>. We will apply a simple scale move to this parameter.</p>
+<p>Note that here, by convention, we set $k = 4$. The random variable that controls the rate variation is the stochastic node <code class="language-plaintext highlighter-rouge">alpha</code>. We will apply a simple scale move to this parameter.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale(alpha, weight=2.0) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale(alpha, weight=2.0) )
 </code></pre></div></div>
 
-<p>Remember that you need to call the <code class="highlighter-rouge">PhyloCTMC</code> constructor to include the new site-rate parameter:</p>
+<p>Remember that you need to call the <code class="language-plaintext highlighter-rouge">PhyloCTMC</code> constructor to include the new site-rate parameter:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>seq ~ dnPhyloCTMC(tree=psi, Q=Q, siteRates=sr, type="DNA")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>seq ~ dnPhyloCTMC(tree=psi, Q=Q, siteRates=sr, type="DNA")
 </code></pre></div></div>
 
 <h3 class="subsection" id="exercise-4">Exercise 4</h3>
@@ -1222,33 +1222,33 @@ probabilities of the clades.</p>
 
 <p><a href="https://youtu.be/0P4yLk0jxps"><img src="/assets/img/YouTube_icon.svg" alt="Walkthrough video" height="36" width="36" /></a></p>
 
-<p>All of the substitution models described so far assume that the sequence data are potentially variable. That is, we assume that the sequence data are random variables; specifically, we assume that they are realizations of the specified <code class="highlighter-rouge">PhyloCTMC</code> distribution. However, some sites may not be free to vary—when the substitution rate of a site is zero, it is said to be <em>invariable</em>. Invariable sites are often confused with <em>invariant</em> sites—when each species exhibits the same state, it is said to be invariant. The concepts are related but distinct. If a site is truly invariable, it will necessarily give rise to an invariant site pattern, as such sites will always have a zero substitution rate. However, an invariant site pattern may be achieved via multiple substitutions that happen to end in the same state for every species.</p>
+<p>All of the substitution models described so far assume that the sequence data are potentially variable. That is, we assume that the sequence data are random variables; specifically, we assume that they are realizations of the specified <code class="language-plaintext highlighter-rouge">PhyloCTMC</code> distribution. However, some sites may not be free to vary—when the substitution rate of a site is zero, it is said to be <em>invariable</em>. Invariable sites are often confused with <em>invariant</em> sites—when each species exhibits the same state, it is said to be invariant. The concepts are related but distinct. If a site is truly invariable, it will necessarily give rise to an invariant site pattern, as such sites will always have a zero substitution rate. However, an invariant site pattern may be achieved via multiple substitutions that happen to end in the same state for every species.</p>
 
-<p>Here we describe an extension to our phylogenetic model to accommodate invariable sites. Under the invariable-sites model <a class="citation" href="#Hasegawa1985">(Hasegawa et al. 1985)</a>, each site is invariable with probability <code class="highlighter-rouge">p_inv</code>, and variable with probability $1-$<code class="highlighter-rouge">p_inv</code>.</p>
+<p>Here we describe an extension to our phylogenetic model to accommodate invariable sites. Under the invariable-sites model <a class="citation" href="#Hasegawa1985">(Hasegawa et al. 1985)</a>, each site is invariable with probability <code class="language-plaintext highlighter-rouge">p_inv</code>, and variable with probability $1-$<code class="language-plaintext highlighter-rouge">p_inv</code>.</p>
 
 <p>First, let’s have a look at the data and see how many invariant sites we have:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data.getNumInvariantSites()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data.getNumInvariantSites()
 </code></pre></div></div>
 
 <p>There seem to be a substantial number of invariant sites.</p>
 
 <p>Now let’s specify the invariable-sites model in RevBayes. We need to specify the prior probability that a site is invariable. A Beta distribution is a common choice for parameters representing probabilities.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>p_inv ~ dnBeta(1,1)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>p_inv ~ dnBeta(1,1)
 </code></pre></div></div>
 
-<p>The <code class="highlighter-rouge">Beta(1,1)</code> distribution is a flat prior distribution that specifies equal probability for all values between 0 and 1.</p>
+<p>The <code class="language-plaintext highlighter-rouge">Beta(1,1)</code> distribution is a flat prior distribution that specifies equal probability for all values between 0 and 1.</p>
 
 <p>Then, as usual, we add a move to change this stochastic variable; we’ll use a simple sliding window move.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvSlide(p_inv) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvSlide(p_inv) )
 </code></pre></div></div>
 
-<p>Finally, you need to call the <code class="highlighter-rouge">PhyloCTMC</code> constructor to include the
-new <code class="highlighter-rouge">p_inv</code> parameter:</p>
+<p>Finally, you need to call the <code class="language-plaintext highlighter-rouge">PhyloCTMC</code> constructor to include the
+new <code class="language-plaintext highlighter-rouge">p_inv</code> parameter:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>seq ~ dnPhyloCTMC(tree=psi, Q=Q, siteRates=sr, pInv=p_inv, type="DNA")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>seq ~ dnPhyloCTMC(tree=psi, Q=Q, siteRates=sr, pInv=p_inv, type="DNA")
 </code></pre></div></div>
 
 <h3 class="subsection" id="exercise-5">Exercise 5</h3>

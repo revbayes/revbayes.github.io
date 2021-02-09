@@ -235,7 +235,7 @@ models:</p>
 <strong>pps_analysis_JC.Rev</strong> script in the <strong>scripts</strong> folder. If you
 were to type the following command into ‘RevBayes‘:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    source("scripts/pps_analysis_JC.Rev")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    source("scripts/pps_analysis_JC.Rev")
 </code></pre></div></div>
 <p>the entire data-based posterior prediction process would run on the
 example dataset. However, in this tutorial, we will walk through each
@@ -257,14 +257,14 @@ evolutionary model, and run a traditional MCMC analysis.</p>
 <p>First, let’s set up some workspace variables we’ll need. We’ll specify a
 general name to apply to your analysis. This will be used for future
 output files, so make sure it’s something clear and easy to understand.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    analysis_name = "pps_example"
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    analysis_name = "pps_example"
     model_name = "JC"
     model_file_name = "scripts/pps_"+model_name+"_Model.Rev"
 </code></pre></div></div>
 
 <p>Now specify and read in the input file. This is your sequence alignment
 in NEXUS format.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    inFile = "data/primates_and_galeopterus_cytb.nex"
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    inFile = "data/primates_and_galeopterus_cytb.nex"
     data &lt;- readDiscreteCharacterData(inFile)
 </code></pre></div></div>
 
@@ -273,24 +273,24 @@ in NEXUS format.</p>
 
 <p>Now we’ll call a separate script <strong>pps_JC_Model.Rev</strong> that specifies the JC
 model:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    source( model_file_name ) 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    source( model_file_name ) 
 </code></pre></div></div>
 <p>If we open the <strong>pps_JC_Model.Rev</strong> script, most of this script should look
 familiar from the <a href="/tutorials/ctmc/">Nucleotide substitution models</a>. Nevertheless, we will look at some parts 
 of script for a very brief repitition.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    Q &lt;- fnJC(4)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    Q &lt;- fnJC(4)
 </code></pre></div></div>
 <p>Here we are specifying that we should use the Jukes-Cantor model, and
 have it applied uniformly to all sites in the dataset. While this
 obviously is not likely to be a good fitting model for most datasets, we
 are using it for simplicity of illustrating the process.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    topology ~ dnUniformTopology(names)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    topology ~ dnUniformTopology(names)
 </code></pre></div></div>
 <p>This sets a uniform prior on the tree topology.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    br_lens[i] ~ dnExponential(10.0)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    br_lens[i] ~ dnExponential(10.0)
 </code></pre></div></div>
 <p>This sets an exponential distribution as the branch length prior.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    phylogeny := treeAssembly(topology, br_lens)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    phylogeny := treeAssembly(topology, br_lens)
 </code></pre></div></div>
 <p>This builds the tree by combining the topology with branch length
 support values.</p>
@@ -300,7 +300,7 @@ support values.</p>
 
 <p>Now let’s run MCMC on our empirical dataset, just like a normal
 phylogenetic analysis. Here we use the Jukes-Cantor substition model.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    source("scripts/pps_MCMC_Simulation.Rev")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    source("scripts/pps_MCMC_Simulation.Rev")
 </code></pre></div></div>
 <p>After specifying a model, we will conduct the MCMC analysis with the
 script <strong>pps_MCMC_Simulation.Rev</strong>. Much of that script should look familiar
@@ -309,7 +309,7 @@ break down and revisit some of the major pieces as a refresher. Much of
 this will be a familiar to you from the <a href="/tutorials/ctmc/">Nucleotide substitution models</a>.</p>
 
 <p>First we need to specify some monitors.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    mni = 0
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    mni = 0
     monitors[++mni] = mnModel(filename="output" + n + "/" + analysis_name + "_posterior.log",printgen=10, separator = TAB)
     monitors[++mni] = mnFile(filename="output" + n + "/" + analysis_name + "_posterior.trees",printgen=10, separator = TAB, phylogeny)
     monitors[++mni] = mnScreen(printgen=1000, TL)
@@ -320,10 +320,10 @@ being incremented each generation.</p>
 
 <p>Next, we will call the MCMC function, passing it the model, monitors and
 moves we specified above to set to build our mymcmc object.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
 </code></pre></div></div>
 <p>Specify a burnin for this run.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    mymcmc.burnin(generations=2000,tuningInterval=200)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    mymcmc.burnin(generations=2000,tuningInterval=200)
 </code></pre></div></div>
 <p>Finally, we will execute the run for a specified number of generations.
 The number of generations and printed generations is important to consider here for a
@@ -334,7 +334,7 @@ samples will almost always be larger than the number of datasets we will
 want to simulate, it’s something to keep in mind.</p>
 
 <p>Now let’s actually run the MCMC in ‘RevBayes‘.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    mymcmc.run(generations=10000)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    mymcmc.run(generations=10000)
 </code></pre></div></div>
 
 <h4 class="subsubsection" id="mcmc-output">MCMC output</h4>
@@ -364,7 +364,7 @@ distribution generated from the empirical MCMC anlaysis.</p>
 
 <p>In the <strong>pps_analysis_JC.Rev</strong> script, that is conducted using
 the following lines of RevScript:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    source("scripts/pps_Simulation.Rev")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    source("scripts/pps_Simulation.Rev")
 </code></pre></div></div>
 <p>Let’s take a look at each of the calls in the
 <strong>pps_Simulation.Rev</strong> script so that we can understand
@@ -372,13 +372,13 @@ what is occurring.</p>
 
 <p>First, we read in the trace file of the Posterior Distribution of
 Variables.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    trace = readStochasticVariableTrace("output_" + model_name + "/" + analysis_name + "_posterior.var", delimiter=TAB)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    trace = readStochasticVariableTrace("output_" + model_name + "/" + analysis_name + "_posterior.var", delimiter=TAB)
 </code></pre></div></div>
 <p>Now we call the <strong>posteriorPredictiveSimulation()</strong> function, which
 accepts any valid model of sequence evolution, and output directory, and
 a trace. For each line in the trace, it will simulate a new dataset
 under the specified model.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    pps = posteriorPredictiveSimulation(mymodel, directory="output" + "/" + analysis_name + "_post_sims", trace)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    pps = posteriorPredictiveSimulation(mymodel, directory="output" + "/" + analysis_name + "_post_sims", trace)
 </code></pre></div></div>
 <p>Now we run the posterior predictive simulation, generating a new dataset
 for each line in the trace file that was read in. This is the part where
@@ -391,7 +391,7 @@ you need to use the thinning argument as above. In this case, we are
 thinning the output by 2, that is we are dividing our number of samples
 by 2. So that in our example case, we will end up simulating 1000 new
 datasets.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    pps.run(thinning=2)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    pps.run(thinning=2)
 </code></pre></div></div>
 <p>This process should finish in just a minute or two. If you look in the
 <strong>output_JC</strong> folder, there should be another folder called
@@ -408,7 +408,7 @@ file. These will be the datasets we analyze in the next step.</p>
 <p>Now we will calculate the test statistics from the empirical data and
 the simulated data sets. The part in the <strong>pps_analysis_JC.Rev</strong>
 script that generates the test statistics is the following line:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    num_post_sims = listFiles(path="output_"+model_name+"/" + analysis_name + "_post_sims").size()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    num_post_sims = listFiles(path="output_"+model_name+"/" + analysis_name + "_post_sims").size()
     source("scripts/pps_DataSummary.Rev")
 </code></pre></div></div>
 <p>We will look at the major concepts of the
@@ -433,7 +433,7 @@ including:</p>
 <p>There are functions built-in to ‘RevBayes‘ to calculate these values for
 you. Here are some examples from the
 <strong>pps_DataSummary.Rev</strong> script:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    max_pd          = sim_data.maxPairwiseDifference( excludeAmbiguous=FALSE )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    max_pd          = sim_data.maxPairwiseDifference( excludeAmbiguous=FALSE )
     mean_gc_1       = sim_data.meanGcContentByCodonPosition(1, excludeAmbiguous=FALSE )
     var_gc_1        = sim_data.varGcContentByCodonPosition(1, excludeAmbiguous=FALSE )
 </code></pre></div></div>
@@ -450,7 +450,7 @@ empirical to get a goodness-of-fit. One simple way to do this is to
 calculate a posterior predictive <em>P</em>value for each of the test
 statistics of interest. This is done in the
 <strong>data_pp_analysis_JC.Rev</strong> with the following lines :</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    emp_pps_file = "results_" + model_name + "/empirical_data_" + analysis_name + ".csv"
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    emp_pps_file = "results_" + model_name + "/empirical_data_" + analysis_name + ".csv"
     sim_pps_file = "results_" + model_name + "/simulated_data_" + analysis_name + ".csv"
     outfileName = "results_" + model_name + "/data_pvalues_effectsizes_" + analysis_name + ".csv"
     source("scripts/pps_PValues.Rev")
@@ -497,7 +497,7 @@ get a better idea of what is happening.</p>
 <p>Using the equations outlined above, this script reads in the simulated
 and empirical data we just calculated, and calls a few simple functions
 for each of the test statistics:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    ## Calculate and return a vector of lower, equal, and upper pvalues for a given test statistic
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    ## Calculate and return a vector of lower, equal, and upper pvalues for a given test statistic
     p_values &lt;- posteriorPredictiveProbability(numbers, empValue)
 
     ## 1-tailed
@@ -529,7 +529,7 @@ distribution (missing reference). Effect sizes are calculated automatically
 for the inference based test statistics in the P analysis. The effect
 sizes for each test statistics are stored in the same output file as the
 <em>P</em>-values.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    effect_size = abs((m - empValue) / stdev(numbers))
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    effect_size = abs((m - empValue) / stdev(numbers))
 </code></pre></div></div>
 <p>calculates the effect size of a given test statistic.</p>
 
@@ -549,7 +549,7 @@ test statistic calculation output.</p>
 
 <p>If you have these 3 files, and there are results in them, you can go
 ahead and quit ‘RevBayes‘.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    q()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    q()
 </code></pre></div></div>
 
 <figure id="pps_mean_gc"><p><img src="figures/mean_gc.png" width="50%" /></p>
@@ -557,7 +557,7 @@ ahead and quit ‘RevBayes‘.</p>
 from the simulated data set is shown. The dotted line represents the
 mean GC calculated from the empirical data set.The Jukes-Cantor model
 does not adequately describe the empirical data. This plot was generated
-in <code class="highlighter-rouge">R</code>using the <strong>scripts/plot_results.R</strong> script.</figcaption>
+in <code class="language-plaintext highlighter-rouge">R</code>using the <strong>scripts/plot_results.R</strong> script.</figcaption>
 </figure>
 
 <p>You can get an estimate of how the model performed by examining the
@@ -570,8 +570,8 @@ be a poor fit for our data. However, it’s a good example of the
 sensitivity of this method, showing how relatively short runtimes and a
 low number of generations will still detect poor fit.</p>
 
-<p>You can also use <code class="highlighter-rouge">R</code>to plot the results. Run the
-<code class="highlighter-rouge">R</code>script <strong>scripts/plot_results.R</strong>. This will generate a
+<p>You can also use <code class="language-plaintext highlighter-rouge">R</code>to plot the results. Run the
+<code class="language-plaintext highlighter-rouge">R</code>script <strong>scripts/plot_results.R</strong>. This will generate a
 pdf plot for every test statistic. See <a href="#pps_mean_gc"></a> and its legend to learn how to interpret these plots.</p>
 
 <h2 class="section" id="exercises">Exercises</h2>
@@ -634,7 +634,7 @@ the MPI version of ‘RevBayes‘ will speed up the process dramatically.</p>
 number of alignments is relatively simple as well. One easy way is to
 provide a list of the data file names, and to loop through them. As an
 example:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    data_file_list = "data_file_list.txt" 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    data_file_list = "data_file_list.txt" 
     data_file_list &lt;- readDiscreteCharacterData(data_file_list)
     file_count = 0
 
@@ -647,11 +647,11 @@ example:</p>
 </code></pre></div></div>
 <p>Then, anywhere in the full analysis portion of the script that the
 lines</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    inFile = "data/8taxa_500chars_GTR.nex"
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    inFile = "data/8taxa_500chars_GTR.nex"
     analysis_name = "pps_example"
 </code></pre></div></div>
 <p>appear, you would replace them with something along the lines of:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    inFile = n
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    inFile = n
     analysis_name = "pps_example_" + file_count
 </code></pre></div></div>
 <p>This should loop through all of the data files in the list provided, and

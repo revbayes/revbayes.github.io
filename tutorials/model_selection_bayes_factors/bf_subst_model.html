@@ -116,7 +116,7 @@ models:</p>
 
 <p>Just to be safe, it is better to clear the workspace (if you did not
 just restart RevBayes):</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clear()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clear()
 </code></pre></div></div>
 <p>Now set up the model as in the previous exercise. You should start with
 the simple Jukes-Cantor substitution model. Setting up the model
@@ -129,7 +129,7 @@ taxon names).</li>
   <li>Specifying the instantaneous-rate matrix of the substitution model.</li>
   <li>Specifying the tree model including branch-length variables.</li>
   <li>Creating a random variable for the sequences that evolved under
-the <code class="highlighter-rouge">PhyloCTMC</code>.</li>
+the <code class="language-plaintext highlighter-rouge">PhyloCTMC</code>.</li>
   <li>Clamping the data.</li>
   <li>Creating a model object.</li>
   <li>Specifying the moves for parameter updates.</li>
@@ -139,39 +139,39 @@ the <code class="highlighter-rouge">PhyloCTMC</code>.</li>
 any model in RevBayes. You will need to repeat this later for other
 models. First, we create the variable containing the power-posterior
 analysis. This requires that we provide a model and vector of moves, as
-well as an output file name. The <code class="highlighter-rouge">cats</code> argument sets the number of
+well as an output file name. The <code class="language-plaintext highlighter-rouge">cats</code> argument sets the number of
 stepping stones.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pow_p = powerPosterior(mymodel, moves, monitors, "output/model1.out", cats=50)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pow_p = powerPosterior(mymodel, moves, monitors, "output/model1.out", cats=50)
 </code></pre></div></div>
 <p>We can start the power-posterior analysis by first burning in the chain
 and and discarding the first 10000 states. This will help ensure that
 analysis starts from a region of high posterior probability, rather than
 from some random point.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pow_p.burnin(generations=10000,tuningInterval=1000)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pow_p.burnin(generations=10000,tuningInterval=1000)
 </code></pre></div></div>
-<p>Now execute the run with the <code class="highlighter-rouge">.run()</code> function:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pow_p.run(generations=1000)
+<p>Now execute the run with the <code class="language-plaintext highlighter-rouge">.run()</code> function:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pow_p.run(generations=1000)
 </code></pre></div></div>
 <p>Once the power posteriors have been saved to file, create a stepping
 stone sampler. This function can read any file of power posteriors and
 compute the marginal likelihood using stepping-stone sampling.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ss = steppingStoneSampler(file="output/model1.out", powerColumnName="power", likelihoodColumnName="likelihood")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ss = steppingStoneSampler(file="output/model1.out", powerColumnName="power", likelihoodColumnName="likelihood")
 </code></pre></div></div>
 <p>These commands will execute a stepping-stone simulation with 50 stepping
 stones, sampling 1000 states from each step. Compute the marginal
 likelihood under stepping-stone sampling using the member function
-<code class="highlighter-rouge">marginal()</code> of the <code class="highlighter-rouge">ss</code> variable and record the value in Table
+<code class="language-plaintext highlighter-rouge">marginal()</code> of the <code class="language-plaintext highlighter-rouge">ss</code> variable and record the value in Table
 [tab:ml_cytb].</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ss.marginal()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ss.marginal()
 </code></pre></div></div>
 <p>Path sampling is an alternative to stepping-stone sampling and also
 takes the same power posteriors as input.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ps = pathSampler(file="output/model1.out", powerColumnName="power", likelihoodColumnName="likelihood")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ps = pathSampler(file="output/model1.out", powerColumnName="power", likelihoodColumnName="likelihood")
 </code></pre></div></div>
 <p>Compute the marginal likelihood under stepping-stone sampling using the
-member function <code class="highlighter-rouge">marginal()</code> of the <code class="highlighter-rouge">ps</code> variable and record the value
+member function <code class="language-plaintext highlighter-rouge">marginal()</code> of the <code class="language-plaintext highlighter-rouge">ps</code> variable and record the value
 in Table [tab_ml_subst_models].</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ps.marginal()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ps.marginal()
 </code></pre></div></div>
 
 <p>We have kept this description of how to use stepping-stone-sampling and

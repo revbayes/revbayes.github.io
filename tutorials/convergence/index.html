@@ -235,10 +235,10 @@ We transform each split into a chain of absence and presence values; if the spli
 In R, type the commands:</p>
 
 <blockquote>
-  <p><code class="highlighter-rouge">install.packages("devtools")</code> <br />
-<code class="highlighter-rouge">library(devtools)</code> <br />
-<code class="highlighter-rouge">install_github("lfabreti/convenience")</code> <br />
-<code class="highlighter-rouge">library(convenience)</code> <br /></p>
+  <p><code class="language-plaintext highlighter-rouge">install.packages("devtools")</code> <br />
+<code class="language-plaintext highlighter-rouge">library(devtools)</code> <br />
+<code class="language-plaintext highlighter-rouge">install_github("lfabreti/convenience")</code> <br />
+<code class="language-plaintext highlighter-rouge">library(convenience)</code> <br /></p>
 </blockquote>
 
 <h3 class="subsection" id="functions">Functions</h3>
@@ -248,68 +248,68 @@ In R, type the commands:</p>
 
 <ul>
   <li>
-    <p><code class="highlighter-rouge">checkConvergence</code>: takes the output from a phylogenetic analysis and works through the convergence assessment pipeline. This function can take either a directory with all the output files from a single analysis or a list of files. The function has 3 arguments:</p>
+    <p><code class="language-plaintext highlighter-rouge">checkConvergence</code>: takes the output from a phylogenetic analysis and works through the convergence assessment pipeline. This function can take either a directory with all the output files from a single analysis or a list of files. The function has 3 arguments:</p>
 
     <ul>
-      <li><code class="highlighter-rouge">path</code>: for when a path to a directory is provided</li>
-      <li><code class="highlighter-rouge">list_files</code>: for when a list of files is provided</li>
-      <li><code class="highlighter-rouge">format</code>: the software used for the phylogenetic analysis, current accepted formats are “revbayes”, “mb” for MrBayes, “beast”, “*beast”</li>
-      <li><code class="highlighter-rouge">control</code>: calls the <code class="highlighter-rouge">makeControl</code> function</li>
+      <li><code class="language-plaintext highlighter-rouge">path</code>: for when a path to a directory is provided</li>
+      <li><code class="language-plaintext highlighter-rouge">list_files</code>: for when a list of files is provided</li>
+      <li><code class="language-plaintext highlighter-rouge">format</code>: the software used for the phylogenetic analysis, current accepted formats are “revbayes”, “mb” for MrBayes, “beast”, “*beast”</li>
+      <li><code class="language-plaintext highlighter-rouge">control</code>: calls the <code class="language-plaintext highlighter-rouge">makeControl</code> function</li>
     </ul>
   </li>
   <li>
-    <p><code class="highlighter-rouge">essContParam</code>: calculates the ESS for the continuous parameters</p>
+    <p><code class="language-plaintext highlighter-rouge">essContParam</code>: calculates the ESS for the continuous parameters</p>
   </li>
   <li>
-    <p><code class="highlighter-rouge">essSplitFreq</code>: calculates the ESS for the splits from the trees</p>
+    <p><code class="language-plaintext highlighter-rouge">essSplitFreq</code>: calculates the ESS for the splits from the trees</p>
   </li>
   <li>
-    <p><code class="highlighter-rouge">ksTestContParam</code>: calculates the KS test for the continuous parameters, for both the comparison between windows or runs</p>
+    <p><code class="language-plaintext highlighter-rouge">ksTestContParam</code>: calculates the KS test for the continuous parameters, for both the comparison between windows or runs</p>
   </li>
   <li>
-    <p><code class="highlighter-rouge">loadFiles</code>: gets the MCMC output from a directory path or a list of files. This function uses the package RWTY <a class="citation" href="#Warren2016">(Warren et al. 2016)</a> and returns a list of type rwty.chain</p>
+    <p><code class="language-plaintext highlighter-rouge">loadFiles</code>: gets the MCMC output from a directory path or a list of files. This function uses the package RWTY <a class="citation" href="#Warren2016">(Warren et al. 2016)</a> and returns a list of type rwty.chain</p>
   </li>
   <li>
-    <p><code class="highlighter-rouge">loadMulti</code>: this function was modified from RWTY to include the option to pass a list of files to the function <code class="highlighter-rouge">loadFiles</code></p>
+    <p><code class="language-plaintext highlighter-rouge">loadMulti</code>: this function was modified from RWTY to include the option to pass a list of files to the function <code class="language-plaintext highlighter-rouge">loadFiles</code></p>
   </li>
   <li>
-    <p><code class="highlighter-rouge">makeControl</code>: a function to set the burnin size, the precision of the standard error of the mean and the continuous parameters to exclude from the assessment. Default values are burnin = 0, precision = 1%, namesToExclude = “br_lens, bl, Iteration, Likelihood, Posterior, Prior”</p>
+    <p><code class="language-plaintext highlighter-rouge">makeControl</code>: a function to set the burnin size, the precision of the standard error of the mean and the continuous parameters to exclude from the assessment. Default values are burnin = 0, precision = 1%, namesToExclude = “br_lens, bl, Iteration, Likelihood, Posterior, Prior”</p>
   </li>
   <li>
-    <p><code class="highlighter-rouge">meanContParam</code>: calculates the means of the continuous parameters</p>
+    <p><code class="language-plaintext highlighter-rouge">meanContParam</code>: calculates the means of the continuous parameters</p>
   </li>
   <li>
-    <p><code class="highlighter-rouge">plotESS.hist</code>: plots the histogram of the ESS values for the continuous parameters or the splits</p>
+    <p><code class="language-plaintext highlighter-rouge">plotESS.hist</code>: plots the histogram of the ESS values for the continuous parameters or the splits</p>
   </li>
   <li>
-    <p><code class="highlighter-rouge">plotKS.hist</code>: plots the histogram of the KS values for the combination of all runs. The MCMC must have at least 2 runs</p>
+    <p><code class="language-plaintext highlighter-rouge">plotKS.hist</code>: plots the histogram of the KS values for the combination of all runs. The MCMC must have at least 2 runs</p>
   </li>
   <li>
-    <p><code class="highlighter-rouge">plotKS.pooled</code>: plots the histogram of the KS values for the one-on-one comparison of runs. The MCMC must have at least 3 runs</p>
+    <p><code class="language-plaintext highlighter-rouge">plotKS.pooled</code>: plots the histogram of the KS values for the one-on-one comparison of runs. The MCMC must have at least 3 runs</p>
   </li>
   <li>
-    <p><code class="highlighter-rouge">printConvergenceDiag</code>: a S3 method to print the class <code class="highlighter-rouge">convenience.diag</code></p>
+    <p><code class="language-plaintext highlighter-rouge">printConvergenceDiag</code>: a S3 method to print the class <code class="language-plaintext highlighter-rouge">convenience.diag</code></p>
   </li>
   <li>
-    <p><code class="highlighter-rouge">printConvergenceTable</code>: a S3 method to print the class <code class="highlighter-rouge">convenience.table</code></p>
+    <p><code class="language-plaintext highlighter-rouge">printConvergenceTable</code>: a S3 method to print the class <code class="language-plaintext highlighter-rouge">convenience.table</code></p>
   </li>
   <li>
-    <p><code class="highlighter-rouge">printListFails</code>: a S3 method to print the class <code class="highlighter-rouge">list.fails</code></p>
+    <p><code class="language-plaintext highlighter-rouge">printListFails</code>: a S3 method to print the class <code class="language-plaintext highlighter-rouge">list.fails</code></p>
   </li>
   <li>
-    <p><code class="highlighter-rouge">printTableContinuous</code>: prints the means and the ESS of the continuous parameters, you can save the table to a csv file by passing a file name to the function</p>
+    <p><code class="language-plaintext highlighter-rouge">printTableContinuous</code>: prints the means and the ESS of the continuous parameters, you can save the table to a csv file by passing a file name to the function</p>
   </li>
   <li>
-    <p><code class="highlighter-rouge">printTableSplits</code>: prints the frequencies and ESS of the splits, you can save the table to a csv file by passing a file name to the function</p>
+    <p><code class="language-plaintext highlighter-rouge">printTableSplits</code>: prints the frequencies and ESS of the splits, you can save the table to a csv file by passing a file name to the function</p>
   </li>
   <li>
-    <p><code class="highlighter-rouge">readTrace</code>: this function was modified from <a href="https://github.com/revbayes/RevGadgets">‘RevGadgets’</a> to include the option to read only files with the continuous parameters, when the user has no tree files to assess convergence</p>
+    <p><code class="language-plaintext highlighter-rouge">readTrace</code>: this function was modified from <a href="https://github.com/revbayes/RevGadgets">‘RevGadgets’</a> to include the option to read only files with the continuous parameters, when the user has no tree files to assess convergence</p>
   </li>
   <li>
-    <p><code class="highlighter-rouge">removeBurnin</code>: remove the initial statates from the MCMC output</p>
+    <p><code class="language-plaintext highlighter-rouge">removeBurnin</code>: remove the initial statates from the MCMC output</p>
   </li>
   <li>
-    <p><code class="highlighter-rouge">splitFreq</code>: calculates the difference in splits for the trees, for both the comparison between windows or runs</p>
+    <p><code class="language-plaintext highlighter-rouge">splitFreq</code>: calculates the difference in splits for the trees, for both the comparison between windows or runs</p>
   </li>
 </ul>
 
@@ -320,25 +320,25 @@ In R, type the commands:</p>
 These files are the output from a phylogenetic analysis performed with a dataset from bears. The nucleotide substitution model was GTR+$\Gamma$+I and the MCMC was set to run 2 independent runs.
 The package also works if your analysis has only one run of the MCMC. But the part to compare runs will not be evaluated. Therefore, it is not possible to say that your MCMC result is reproducible. We strongly advise on running more than 1 run.</p>
 
-<p>Let’s run the <code class="highlighter-rouge">checkConvergence</code> function with our example output in a directory (this step may take a few minutes):</p>
+<p>Let’s run the <code class="language-plaintext highlighter-rouge">checkConvergence</code> function with our example output in a directory (this step may take a few minutes):</p>
 
 <blockquote>
-  <p><code class="highlighter-rouge">check_bears &lt;- checkConvergence("output/")</code> <br /></p>
+  <p><code class="language-plaintext highlighter-rouge">check_bears &lt;- checkConvergence("output/")</code> <br /></p>
 </blockquote>
 
 <p>We can also list the names of the files:</p>
 
 <blockquote>
-  <p><code class="highlighter-rouge">check_bears &lt;- checkConvergence( list_files = c("bears_cytb_GTR_run_1.log", "bears_cytb_GTR_run_1.trees", "bears_cytb_GTR_run_2.log", "bears_cytb_GTR_run_2.trees") )</code> <br /></p>
+  <p><code class="language-plaintext highlighter-rouge">check_bears &lt;- checkConvergence( list_files = c("bears_cytb_GTR_run_1.log", "bears_cytb_GTR_run_1.trees", "bears_cytb_GTR_run_2.log", "bears_cytb_GTR_run_2.trees") )</code> <br /></p>
 </blockquote>
 
-<p>To better understand what <code class="highlighter-rouge">checkConvergence</code> is doing, take a look at <a href="#checkConvergence_summary"></a>. The first step consists of the user setting up the precision in the standard error of the mean for our estimates. The thresholds for ESS, KS test and difference in split frequencies will be calculated based on the precision. Then the function reads in the MCMC output, from the files provided by the user, and computes the quantities used in the criteria for convergence. Afterwards, the function checks if the computed quantities are within the calculated thresholds. Finally, the function reports wheter the MCMC has converged or not, the computed quantities and, in case of non convergence, the parameters that failed to achieve the desired thresholds.</p>
+<p>To better understand what <code class="language-plaintext highlighter-rouge">checkConvergence</code> is doing, take a look at <a href="#checkConvergence_summary"></a>. The first step consists of the user setting up the precision in the standard error of the mean for our estimates. The thresholds for ESS, KS test and difference in split frequencies will be calculated based on the precision. Then the function reads in the MCMC output, from the files provided by the user, and computes the quantities used in the criteria for convergence. Afterwards, the function checks if the computed quantities are within the calculated thresholds. Finally, the function reports wheter the MCMC has converged or not, the computed quantities and, in case of non convergence, the parameters that failed to achieve the desired thresholds.</p>
 
 <figure id="checkConvergence_summary"><p><img src="figures/checkConvergence_summary_modified.png" width="500" /></p>
-<figcaption>Summary of the process in the <code class="highlighter-rouge">checkConvergence</code> function. SF is the abbreviation for split frequencies.</figcaption>
+<figcaption>Summary of the process in the <code class="language-plaintext highlighter-rouge">checkConvergence</code> function. SF is the abbreviation for split frequencies.</figcaption>
 </figure>
 
-<p>Now, let’s see the output from <code class="highlighter-rouge">checkConvergence</code> by typing <code class="highlighter-rouge">check_bears</code>.
+<p>Now, let’s see the output from <code class="language-plaintext highlighter-rouge">checkConvergence</code> by typing <code class="language-plaintext highlighter-rouge">check_bears</code>.
 The output message includes:</p>
 
 <ul>
@@ -363,34 +363,34 @@ The output message includes:</p>
 </ul>
 
 <blockquote>
-  <p><code class="highlighter-rouge">To check the calculated parameters for the continuous parameters type:</code> <br />
-   <code class="highlighter-rouge">Means: output$continuous_parameters$means</code> <br />
-   <code class="highlighter-rouge">ESS: output$continuous_parameters$ess</code> <br />
-   <code class="highlighter-rouge">KS score: output$continuous_parameters$compare_runs</code> <br /></p>
+  <p><code class="language-plaintext highlighter-rouge">To check the calculated parameters for the continuous parameters type:</code> <br />
+   <code class="language-plaintext highlighter-rouge">Means: output$continuous_parameters$means</code> <br />
+   <code class="language-plaintext highlighter-rouge">ESS: output$continuous_parameters$ess</code> <br />
+   <code class="language-plaintext highlighter-rouge">KS score: output$continuous_parameters$compare_runs</code> <br /></p>
 </blockquote>
 
 <blockquote>
-  <p><code class="highlighter-rouge">To check the calculated parameters for the splits type:</code> <br />
-   <code class="highlighter-rouge">Frequencies of splits: output$tree_parameters$frequencies</code> <br />
-   <code class="highlighter-rouge">ESS: output$tree_parameters$ess</code> <br />
-   <code class="highlighter-rouge">Difference in frequencies: output$tree_parameters$compare_runs</code> <br /></p>
+  <p><code class="language-plaintext highlighter-rouge">To check the calculated parameters for the splits type:</code> <br />
+   <code class="language-plaintext highlighter-rouge">Frequencies of splits: output$tree_parameters$frequencies</code> <br />
+   <code class="language-plaintext highlighter-rouge">ESS: output$tree_parameters$ess</code> <br />
+   <code class="language-plaintext highlighter-rouge">Difference in frequencies: output$tree_parameters$compare_runs</code> <br /></p>
 </blockquote>
 
-<p>We can see that <code class="highlighter-rouge">check_bears</code> has 4 elements: <code class="highlighter-rouge">message</code>, <code class="highlighter-rouge">converged</code>, <code class="highlighter-rouge">continuous_parameters</code> and <code class="highlighter-rouge">tree_parameters</code>.</p>
+<p>We can see that <code class="language-plaintext highlighter-rouge">check_bears</code> has 4 elements: <code class="language-plaintext highlighter-rouge">message</code>, <code class="language-plaintext highlighter-rouge">converged</code>, <code class="language-plaintext highlighter-rouge">continuous_parameters</code> and <code class="language-plaintext highlighter-rouge">tree_parameters</code>.</p>
 
 <ol>
-  <li><code class="highlighter-rouge">message</code>: a summary of the convergence assessment;</li>
-  <li><code class="highlighter-rouge">converged</code>: a boolean that has TRUE if the analysis converged and FALSE if it did not converge;</li>
-  <li><code class="highlighter-rouge">continuous_parameters</code>: a list with means, ESS and KS-scores between runs;</li>
-  <li><code class="highlighter-rouge">tree_parameters</code>: a list with frequencies, ESS and split frequencies between runs.</li>
+  <li><code class="language-plaintext highlighter-rouge">message</code>: a summary of the convergence assessment;</li>
+  <li><code class="language-plaintext highlighter-rouge">converged</code>: a boolean that has TRUE if the analysis converged and FALSE if it did not converge;</li>
+  <li><code class="language-plaintext highlighter-rouge">continuous_parameters</code>: a list with means, ESS and KS-scores between runs;</li>
+  <li><code class="language-plaintext highlighter-rouge">tree_parameters</code>: a list with frequencies, ESS and split frequencies between runs.</li>
 </ol>
 
-<p>In case the analysis has failed to converge, another element will be on the output list: <code class="highlighter-rouge">failed</code> with the parameters that failed the criteria for convergence.</p>
+<p>In case the analysis has failed to converge, another element will be on the output list: <code class="language-plaintext highlighter-rouge">failed</code> with the parameters that failed the criteria for convergence.</p>
 
 <p>We can generate tables with general information for the continuous parameters the splits with the commands:</p>
 
 <blockquote>
-  <p><code class="highlighter-rouge">printTableContinuous(check_bears)</code> <br /></p>
+  <p><code class="language-plaintext highlighter-rouge">printTableContinuous(check_bears)</code> <br /></p>
 </blockquote>
 
 <table>
@@ -491,7 +491,7 @@ The output message includes:</p>
 </table>
 
 <blockquote>
-  <p><code class="highlighter-rouge">printTableSplits(check_bears)</code> <br /></p>
+  <p><code class="language-plaintext highlighter-rouge">printTableSplits(check_bears)</code> <br /></p>
 </blockquote>
 
 <table>
@@ -532,16 +532,16 @@ The output message includes:</p>
 </table>
 
 <p>Convenience also provides plot functions to facilitate showing that convergence has been achieved.
-The functions <code class="highlighter-rouge">plotEssContinuous</code> and <code class="highlighter-rouge">plotEssSplits</code> plot the histogram of the ESS values for the continuous parameters and  the splits, respectively.
-Typing <code class="highlighter-rouge">plotEssContinuous(check_bears)</code> and <code class="highlighter-rouge">plotEssSplits(check_bears)</code> yields these figures:</p>
+The functions <code class="language-plaintext highlighter-rouge">plotEssContinuous</code> and <code class="language-plaintext highlighter-rouge">plotEssSplits</code> plot the histogram of the ESS values for the continuous parameters and  the splits, respectively.
+Typing <code class="language-plaintext highlighter-rouge">plotEssContinuous(check_bears)</code> and <code class="language-plaintext highlighter-rouge">plotEssSplits(check_bears)</code> yields these figures:</p>
 
 <figure id="plotESS"><p><img src="figures/plotESS.png" width="800" /></p>
 <figcaption>Histograms of the calculated ESS values. The left panel shows the ESS values for the continuous parameters and the right panel show the ESS for the splits. Both plots have the ESS ranges on the x-axis and the frequency on the y-axis. The dotted red line represents the threshold for the ESS.</figcaption>
 </figure>
 
 <p>We can see that, for both figures, all continuous parameters and splits have an ESS above the threshold. This is what we would have expected for a MCMC that has converged. 
-Another function to summarize the achievment of convergence is the function <code class="highlighter-rouge">plotKS</code>. It plots a histogram of the KS values for the continuous parameters.
-The plot for the command <code class="highlighter-rouge">plotKS(check_bears)</code> generates this figure:</p>
+Another function to summarize the achievment of convergence is the function <code class="language-plaintext highlighter-rouge">plotKS</code>. It plots a histogram of the KS values for the continuous parameters.
+The plot for the command <code class="language-plaintext highlighter-rouge">plotKS(check_bears)</code> generates this figure:</p>
 
 <figure id="checkConvergence_summary"><p><img src="figures/plotKS.png" width="500" /></p>
 <figcaption>Histogram of the calculated KS values. The x-axis is the KS values and the y-axis is the frequency. The red dotted line represents the threshold for the KS score.</figcaption>
@@ -549,7 +549,7 @@ The plot for the command <code class="highlighter-rouge">plotKS(check_bears)</co
 
 <p>In this case, all KS values calculated for the continuous parameters are below the threshold. This means that the parameters are drawn from the same distribution for both runs of our analysis. Therefore, if convergence is achieved for a given analysis, the histogram for the KS values should be similiar to this plot.
 It is also possible to plot the histogram of the KS values for the comparisons one-on-one when the MCMC analysis have more than 2 runs.
-The function for this plot is <code class="highlighter-rouge">plotKS.pooled</code>. 
+The function for this plot is <code class="language-plaintext highlighter-rouge">plotKS.pooled</code>. 
 The following figure is an example of this plot.</p>
 
 <figure id="checkConvergence_summary"><p><img src="figures/plotKS_pooled.png" width="500" /></p>
@@ -569,14 +569,14 @@ Now that we learned how to use the package and how to interpret the results, let
 <h3 class="subsection" id="convergence-failure">Convergence failure</h3>
 <hr class="subsection" />
 
-<p>You can see that the output is different when we have a failure in convergence. We have more information in the text output and 2 extra elements <code class="highlighter-rouge">failed</code> and <code class="highlighter-rouge">failed_names</code>.
-The element <code class="highlighter-rouge">failed</code> has a summary text of what failed in our analysis.
-The element <code class="highlighter-rouge">failed_names</code> has the specifics about the parameters that failed, like the name of the parameter or the split and if it failed in checking for the ESS, the comparison between windows or between runs.</p>
+<p>You can see that the output is different when we have a failure in convergence. We have more information in the text output and 2 extra elements <code class="language-plaintext highlighter-rouge">failed</code> and <code class="language-plaintext highlighter-rouge">failed_names</code>.
+The element <code class="language-plaintext highlighter-rouge">failed</code> has a summary text of what failed in our analysis.
+The element <code class="language-plaintext highlighter-rouge">failed_names</code> has the specifics about the parameters that failed, like the name of the parameter or the split and if it failed in checking for the ESS, the comparison between windows or between runs.</p>
 
-<p><a href="#failed"></a> shows the <code class="highlighter-rouge">failed</code> message for the convergence assessment on the analysis from Exercise 1 with the GTR+$\Gamma$+I nucleotide substitution model.</p>
+<p><a href="#failed"></a> shows the <code class="language-plaintext highlighter-rouge">failed</code> message for the convergence assessment on the analysis from Exercise 1 with the GTR+$\Gamma$+I nucleotide substitution model.</p>
 
 <figure id="failed"><p><img src="figures/failed.png" /></p>
-<figcaption>The output from the command <code class="highlighter-rouge">check_primates$failed</code> showing a summary of the number of parameters that have failed a certain criterion.</figcaption>
+<figcaption>The output from the command <code class="language-plaintext highlighter-rouge">check_primates$failed</code> showing a summary of the number of parameters that have failed a certain criterion.</figcaption>
 </figure>
 
 <h3 class="subsection" id="exercise-2">Exercise 2</h3>

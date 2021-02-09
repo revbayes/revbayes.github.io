@@ -124,7 +124,7 @@
 <h2 class="section" id="overview">Overview</h2>
 <hr class="section" />
 
-<p>This tutorial describes how to specify an episodic birth-death model in <code class="highlighter-rouge">RevBayes</code>.
+<p>This tutorial describes how to specify an episodic birth-death model in <code class="language-plaintext highlighter-rouge">RevBayes</code>.
 The episodic birth-death model is a process where diversification rates vary episodically through time 
 and are modeled as piecewise-constant rates <a class="citation" href="#Stadler2011">(Stadler 2011; Höhna 2015)</a>.
 The probabilistic graphical model is given once at the beginning of this tutorial.
@@ -161,9 +161,9 @@ The assumption of autocorrelated rates does not only makes sense biologically bu
 The HSMRF allows for periods of relatively constant rates interspersed with large jumps, and can be used with large numbers of intervals (hundreds) to provide fine-scale detail in estimated rates.</p>
 
 <figure id="fig_EBD_GM"><p><img src="figures/graphical_model_EBD.png" width="75%" height="75%" /></p>
-<figcaption>A graphical model with the outline of the <code class="highlighter-rouge">Rev</code> code. On the left we see a
+<figcaption>A graphical model with the outline of the <code class="language-plaintext highlighter-rouge">Rev</code> code. On the left we see a
  graphical model describing the HSMRF model for rate-variation through time.
-On the right we show the corresponding <code class="highlighter-rouge">Rev</code> commands to instantiate this model.
+On the right we show the corresponding <code class="language-plaintext highlighter-rouge">Rev</code> commands to instantiate this model.
 This figure gives a complete overview of the model that we use here in this analysis.
 There are many ways to represent the HSMRF model, this one is easy to read, but
 more computationally burdensome than the version we will use in practice.</figcaption>
@@ -190,21 +190,21 @@ it run much more efficiently and easily in MCMC.</p>
 <hr class="subsection" />
 
 <p>Begin by reading in the ``observed’’ tree.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>T &lt;- readTrees("data/primates_tree.nex")[1]
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>T &lt;- readTrees("data/primates_tree.nex")[1]
 </code></pre></div></div>
 <p>From this tree, we get some helpful variables, such as the taxon information which we need to instantiate the birth-death process.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>taxa &lt;- T.taxa()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>taxa &lt;- T.taxa()
 </code></pre></div></div>
 <p>Additionally, we initialize a variable for our vector of moves and monitors.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
 monitors = VectorMonitors()
 </code></pre></div></div>
 
 <p>Finally, we create a helper variable that specifies the number of intervals.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NUM_INTERVALS = 10
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NUM_INTERVALS = 10
 NUM_BREAKS := NUM_INTERVALS - 1
 </code></pre></div></div>
-<p>Using this variable we can easily change our script to break-up time into many (e.g., <code class="highlighter-rouge">NUM_INTERVALS = 100</code>).</p>
+<p>Using this variable we can easily change our script to break-up time into many (e.g., <code class="language-plaintext highlighter-rouge">NUM_INTERVALS = 100</code>).</p>
 
 <h3 class="subsection" id="specifying-the-model">Specifying the model</h3>
 <hr class="subsection" />
@@ -219,9 +219,9 @@ We need a parameter to control the overall variability from present to past in t
 We must also set the global scale hyperprior, which acts with the global scale parameter to set the prior on rate variability.
 In this example, we use 10 speciation and extinction rate intervals, but the HSMRF enables us to use much larger numbers.
 The global scale hyperprior should be set based on how many intervals are used, in the case of 100 intervals, use 0.0021.
-RevGadgets provides the function <code class="highlighter-rouge">setMRFGlobalScaleHyperpriorNShifts()</code> to compute this parameter for other numbers of intervals.</p>
+RevGadgets provides the function <code class="language-plaintext highlighter-rouge">setMRFGlobalScaleHyperpriorNShifts()</code> to compute this parameter for other numbers of intervals.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>speciation_global_scale_hyperprior &lt;- 0.044
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>speciation_global_scale_hyperprior &lt;- 0.044
 extinction_global_scale_hyperprior &lt;- 0.044
 
 speciation_global_scale ~ dnHalfCauchy(0,1)
@@ -248,14 +248,14 @@ This actually means that we allow speciation and extinction rates
 between $e^{-10}$ and $e^10$, so we should clearly cover the true values.
 (Note that for diversification rate estimates, $e^{-10}$ is virtually 0
 since the rate is so slow).</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log_speciation_at_present ~ dnUniform(-10.0,10.0)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log_speciation_at_present ~ dnUniform(-10.0,10.0)
 log_speciation_at_present.setValue(0.0)
 log_extinction_at_present ~ dnUniform(-10.0,10.0)
 log_extinction_at_present.setValue(-1.0)
 </code></pre></div></div>
 
 <p>We apply efficient sliding moves to each parameter.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScaleBactrian(log_speciation_at_present,weight=5))
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScaleBactrian(log_speciation_at_present,weight=5))
 moves.append( mvScaleBactrian(log_extinction_at_present,weight=5))
 </code></pre></div></div>
 
@@ -263,9 +263,9 @@ moves.append( mvScaleBactrian(log_extinction_at_present,weight=5))
 This means that first we specify the log-scale changes in rate between intervals, and later we assemble these into the vector of rates, by adding them together and then exponentiating.
 The HSMRF also requires a vector of local scale parameters.
 These give the HSMRF a property called local adaptivity, which allow it to have rapidly varying rates in some intervals and nearly constant rates in others.
-This can be done efficiently using a <code class="highlighter-rouge">for-loop</code>.</p>
+This can be done efficiently using a <code class="language-plaintext highlighter-rouge">for-loop</code>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:NUM_BREAKS) {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:NUM_BREAKS) {
   sigma_speciation[i] ~ dnHalfCauchy(0,1)
   sigma_extinction[i] ~ dnHalfCauchy(0,1)
 
@@ -280,12 +280,12 @@ This can be done efficiently using a <code class="highlighter-rouge">for-loop</c
 </code></pre></div></div>
 
 <p>Now, we take the pieces we have for the rates (the global and local scales, the rate at the present, and the log-changes) and we assemble the overall rates.
-The <code class="highlighter-rouge">delta</code> parameters are differences in log-scale rates, and so we need to sum them then exponentiate.
+The <code class="language-plaintext highlighter-rouge">delta</code> parameters are differences in log-scale rates, and so we need to sum them then exponentiate.
 For example, speciation[2] := exp(log_speciation_at_present + delta_log_speciation[1]).
-Because the <code class="highlighter-rouge">sd</code> values for any of the log-scale differences is equivalent to what we wrote in the DAG above (simply written in expanded form), the model here is equivalent to the one in the DAG.
-The function <code class="highlighter-rouge">fnassembleContinuousMRF()</code> does all the summation and exponentiation efficiently for all speciation and extinction rates in all intervals and avoids making the DAG too big.</p>
+Because the <code class="language-plaintext highlighter-rouge">sd</code> values for any of the log-scale differences is equivalent to what we wrote in the DAG above (simply written in expanded form), the model here is equivalent to the one in the DAG.
+The function <code class="language-plaintext highlighter-rouge">fnassembleContinuousMRF()</code> does all the summation and exponentiation efficiently for all speciation and extinction rates in all intervals and avoids making the DAG too big.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>speciation := fnassembleContinuousMRF(log_speciation_at_present,delta_log_speciation,initialValueIsLogScale=TRUE,order=1)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>speciation := fnassembleContinuousMRF(log_speciation_at_present,delta_log_speciation,initialValueIsLogScale=TRUE,order=1)
 extinction := fnassembleContinuousMRF(log_extinction_at_present,delta_log_extinction,initialValueIsLogScale=TRUE,order=1)
 </code></pre></div></div>
 
@@ -294,7 +294,7 @@ While you can place individual moves on the local and global scales and the log-
 These moves are the elliptical slice sampler that works on the log-changes, a Gibbs sampler for the global and local scales, and a recommended swap move (that works on both).
 But these moves require us to have the HSMRF model written out this way, and not the version we showed in the DAG.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Move all field parameters in one go
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Move all field parameters in one go
 moves.append( mvEllipticalSliceSamplingSimple(delta_log_speciation,weight=5,tune=FALSE) )
 moves.append( mvEllipticalSliceSamplingSimple(delta_log_extinction,weight=5,tune=FALSE) )
 
@@ -312,7 +312,7 @@ moves.append( mvHSRFIntervalSwap(delta_log_extinction ,sigma_extinction ,weight=
 
 <p>The model formulation we are using assumes that time points are evenly spaced.
 We must now create this vector of times to give to the birth death model.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>interval_times &lt;- abs(T.rootAge() * seq(1, NUM_BREAKS, 1)/NUM_INTERVALS)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>interval_times &lt;- abs(T.rootAge() * seq(1, NUM_BREAKS, 1)/NUM_INTERVALS)
 </code></pre></div></div>
 <p>This vector of times will be used for both the speciation and extinction rates.
 Also, remember that the times of the intervals represent ages going backwards in time.</p>
@@ -324,7 +324,7 @@ Also, remember that the times of the intervals represent ages going backwards in
 To account for this we can set the sampling parameter as a constant node with a value of 233/367.
 For simplicity, and since almost all species have been sampled,
 we assume <em>uniform</em> taxon sampling <a class="citation" href="#Hoehna2011">(Höhna et al. 2011; Höhna 2014)</a>,</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rho &lt;- T.ntips()/367
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rho &lt;- T.ntips()/367
 </code></pre></div></div>
 
 <h4 class="subsubsection" id="root-age">Root age</h4>
@@ -333,7 +333,7 @@ we assume <em>uniform</em> taxon sampling <a class="citation" href="#Hoehna2011"
 <p>The birth-death process requires a parameter for the root age.
 In this exercise we use a fixed tree and thus we know the age of the tree.
 Hence, we can get the value for the root from the <a class="citation" href="#MagnusonFord2012">Magnuson-Ford and Otto (2012)</a> tree.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root_time &lt;- T.rootAge()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root_time &lt;- T.rootAge()
 </code></pre></div></div>
 
 <h4 class="subsubsection" id="the-time-tree">The time tree</h4>
@@ -341,21 +341,21 @@ Hence, we can get the value for the root from the <a class="citation" href="#Mag
 
 <p>Now we have all of the parameters we need to specify the full episodic birth-death model.
 We initialize the stochastic node representing the time tree.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree ~ dnEpisodicBirthDeath(rootAge=T.rootAge(), lambdaRates=speciation, lambdaTimes=interval_times, muRates=extinction, muTimes=interval_times, rho=rho, samplingStrategy="uniform", condition="survival", taxa=taxa)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree ~ dnEpisodicBirthDeath(rootAge=T.rootAge(), lambdaRates=speciation, lambdaTimes=interval_times, muRates=extinction, muTimes=interval_times, rho=rho, samplingStrategy="uniform", condition="survival", taxa=taxa)
 </code></pre></div></div>
 <p>You may notice that we explicitly specify that we want to condition on survival.
 It is possible to change this condition to the <em>time of the process</em> or
 <em>the number of sampled taxa</em> too.</p>
 
-<p>Then we attach data to the <code class="highlighter-rouge">timetree</code> variable.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree.clamp(T)
+<p>Then we attach data to the <code class="language-plaintext highlighter-rouge">timetree</code> variable.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree.clamp(T)
 </code></pre></div></div>
 
-<p>Finally, we create a workspace object of our whole model using the <code class="highlighter-rouge">model()</code> function.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(speciation)
+<p>Finally, we create a workspace object of our whole model using the <code class="language-plaintext highlighter-rouge">model()</code> function.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(speciation)
 </code></pre></div></div>
 
-<p>The <code class="highlighter-rouge">model()</code> function traversed all of the connections and found all of the nodes we specified.</p>
+<p>The <code class="language-plaintext highlighter-rouge">model()</code> function traversed all of the connections and found all of the nodes we specified.</p>
 
 <h3 class="subsection" id="running-an-mcmc-analysis">Running an MCMC analysis</h3>
 <hr class="subsection" />
@@ -364,23 +364,23 @@ It is possible to change this condition to the <em>time of the process</em> or
 <hr class="subsubsection" />
 
 <p>For our MCMC analysis, we need to set up a vector of <em>monitors</em> to record the states of our Markov chain.
-First, we will initialize the model monitor using the <code class="highlighter-rouge">mnModel</code> function.
+First, we will initialize the model monitor using the <code class="language-plaintext highlighter-rouge">mnModel</code> function.
 This creates a new monitor variable that will output the states for all model parameters
 when passed into a MCMC function.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/primates_EBD.log",printgen=10, separator = TAB) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/primates_EBD.log",printgen=10, separator = TAB) )
 </code></pre></div></div>
 
 <p>Additionally, we create four separate file monitors, one for each vector of speciation and extinction rates and for each speciation and extinction rate epoch (\IE the times when the interval ends).
 We want to have the speciation and extinction rates stored separately so that we can plot them nicely afterwards.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnFile(filename="output/primates_EBD_speciation s.log",printgen=10, separator = TAB, speciation) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnFile(filename="output/primates_EBD_speciation s.log",printgen=10, separator = TAB, speciation) )
 monitors.append( mnFile(filename="output/primates_EBD_speciation_times.log",printgen=10, separator = TAB, interval_times) )
 monitors.append( mnFile(filename="output/primates_EBD_extinction s.log",printgen=10, separator = TAB, extinction) )
 monitors.append( mnFile(filename="output/primates_EBD_extinction_times.log",printgen=10, separator = TAB, interval_times) )
 </code></pre></div></div>
 
 <p>Finally, we create a screen monitor that will report the states of specified variables
-to the screen with <code class="highlighter-rouge">mnScreen</code>:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(printgen=1000, extinction_global_scale, speciation_global_scale) )
+to the screen with <code class="language-plaintext highlighter-rouge">mnScreen</code>:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(printgen=1000, extinction_global_scale, speciation_global_scale) )
 </code></pre></div></div>
 
 <h4 class="subsubsection" id="initializing-and-running-the-mcmc-simulation">Initializing and Running the MCMC Simulation</h4>
@@ -389,19 +389,19 @@ to the screen with <code class="highlighter-rouge">mnScreen</code>:</p>
 <p>With a fully specified model, a set of monitors, and a set of moves,
 we can now set up the MCMC algorithm that will sample parameter values in proportion
 to their posterior probability.
-The <code class="highlighter-rouge">mcmc()</code> function will create our MCMC object:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
+The <code class="language-plaintext highlighter-rouge">mcmc()</code> function will create our MCMC object:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
 </code></pre></div></div>
 
 <p>Now, run the MCMC:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=50000, tuningInterval=200)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=50000, tuningInterval=200)
 </code></pre></div></div>
 
 <p>When the analysis is complete, you will have the monitored files in your output directory.
-You can then visualize the rates through time using <code class="highlighter-rouge">R</code> using our package <code class="highlighter-rouge">RevGadgets</code>.
-If you don’t have the R-package <code class="highlighter-rouge">RevGadgets</code> installed, or if you have trouble with the package, then please read the separate tutorial about the package.</p>
+You can then visualize the rates through time using <code class="language-plaintext highlighter-rouge">R</code> using our package <code class="language-plaintext highlighter-rouge">RevGadgets</code>.
+If you don’t have the R-package <code class="language-plaintext highlighter-rouge">RevGadgets</code> installed, or if you have trouble with the package, then please read the separate tutorial about the package.</p>
 
-<p>Just start <code class="highlighter-rouge">R</code> in the main directory for this analysis and then type the following commands:</p>
+<p>Just start <code class="language-plaintext highlighter-rouge">R</code> in the main directory for this analysis and then type the following commands:</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">RevGadgets</span><span class="p">)</span><span class="w">
 
 </span><span class="n">tree</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">read.nexus</span><span class="p">(</span><span class="s2">"data/primates_tree.nex"</span><span class="p">)</span><span class="w">
@@ -414,9 +414,9 @@ If you don’t have the R-package <code class="highlighter-rouge">RevGadgets</co
 </span><span class="n">dev.off</span><span class="p">()</span><span class="w">
 </span></code></pre></div></div>
 
-<p>(Note, you may want to add a nice geological timescale to the plot by setting <code class="highlighter-rouge">use.geoscale=TRUE</code> but then you can only plot one figure per page.)</p>
+<p>(Note, you may want to add a nice geological timescale to the plot by setting <code class="language-plaintext highlighter-rouge">use.geoscale=TRUE</code> but then you can only plot one figure per page.)</p>
 
-<p>⇨ The <code class="highlighter-rouge">Rev</code> file for performing this analysis: <code class="highlighter-rouge">mcmc_EBD.Rev</code></p>
+<p>⇨ The <code class="language-plaintext highlighter-rouge">Rev</code> file for performing this analysis: <code class="language-plaintext highlighter-rouge">mcmc_EBD.Rev</code></p>
 
 <figure id="fig_EBD_Results"><p><img src="figures/EBD_10_Result.png" width="75%" height="75%" /></p>
 <figcaption>Resulting diversification rate estimations when using 10 intervals.
@@ -429,10 +429,10 @@ The estimated rates might change when you use a different resolution, <em>i.e.,<
 
 <ul>
   <li>Run an MCMC simulation to estimate the posterior distribution of the speciation rate and extinction rate.</li>
-  <li>Visualize the rate through time using <code class="highlighter-rouge">R</code>.</li>
+  <li>Visualize the rate through time using <code class="language-plaintext highlighter-rouge">R</code>.</li>
   <li>Do you see evidence for rate decreases or increases? What is the general trend?</li>
-  <li>How much faster is the <code class="highlighter-rouge">net-diversification</code> rate at the present compared to the most ancient time interval?</li>
-  <li>Is there evidence for rate variation? Look at the estimates of <code class="highlighter-rouge">speciation_global_scale</code> and <code class="highlighter-rouge">extinction_global_scale</code> in <code class="highlighter-rouge">Tracer</code>: Is there information in the data to change the estimates from the prior?</li>
+  <li>How much faster is the <code class="language-plaintext highlighter-rouge">net-diversification</code> rate at the present compared to the most ancient time interval?</li>
+  <li>Is there evidence for rate variation? Look at the estimates of <code class="language-plaintext highlighter-rouge">speciation_global_scale</code> and <code class="language-plaintext highlighter-rouge">extinction_global_scale</code> in <code class="language-plaintext highlighter-rouge">Tracer</code>: Is there information in the data to change the estimates from the prior?</li>
   <li>Run the analysis using a different number of intervals, <em>e.g.,</em> 100 or 200. How do the rates change?</li>
 </ul>
 
@@ -443,9 +443,9 @@ The estimated rates might change when you use a different resolution, <em>i.e.,<
   <li>In our results we see that the extinction rate is fairly constant. Modify the model by using a constant-rate for the extinction rate parameter but still let the speciation rate vary through time.
     <ol>
       <li>Remove all previous occurrences of the extinction rates (<em>i.e.,</em> priors, parameters and moves).</li>
-      <li>Specify a lognormal prior distribution on the constant extinction rate (<code class="highlighter-rouge">extinction ~ dnLognormal(-5,sd=2*0.587405)</code>)</li>
-      <li>Add a move for the new extinction rate parameter <code class="highlighter-rouge">moves.append( mvScaleBactrian(extinction,weight=5.0) )</code>.</li>
-      <li>Remove the argument <code class="highlighter-rouge">muTimes=interval_times</code> from the birth-death process.</li>
+      <li>Specify a lognormal prior distribution on the constant extinction rate (<code class="language-plaintext highlighter-rouge">extinction ~ dnLognormal(-5,sd=2*0.587405)</code>)</li>
+      <li>Add a move for the new extinction rate parameter <code class="language-plaintext highlighter-rouge">moves.append( mvScaleBactrian(extinction,weight=5.0) )</code>.</li>
+      <li>Remove the argument <code class="language-plaintext highlighter-rouge">muTimes=interval_times</code> from the birth-death process.</li>
     </ol>
   </li>
   <li>How does this influence your estimated rates?</li>

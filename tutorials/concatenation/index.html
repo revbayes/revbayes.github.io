@@ -246,7 +246,7 @@ mammalian species.</p>
   <li>
     <p>Let’s load all 10 gene alignments.</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># read in each data matrix together which will create a vector of objects
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># read in each data matrix together which will create a vector of objects
 data = readDiscreteCharacterData("data/merged.nex")
 
 # Now we get some useful variables from the data. We need these later on.
@@ -272,7 +272,7 @@ distribution with mean 75 and standard deviation 2.5 as the prior on
 the root age. Since the root age can only be a positive real number
 we truncate the normal distribution at 0.</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Specify a prior on the diversification and turnover rate
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Specify a prior on the diversification and turnover rate
 speciation ~ dnGamma(2,2)
 relativeExtinction ~ dnBeta(1,1)
 
@@ -319,7 +319,7 @@ assumption means that we put the same prior probability on values of
 each magnitude, e.g., values between 0.0001 and 0.001 have the same
 prior probability as values between 10 and 100.</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for ( i in 1:num_loci ) { 
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for ( i in 1:num_loci ) { 
    log_clock_rate[i] ~ dnUniform(-8,4)
    clock_rate[i] := 10^log_clock_rate[i]
        
@@ -334,7 +334,7 @@ that will apply to all sites per gene. Additionally, we assume that
 sites evolve according to one of four possible rates, where each
 rate corresponds to a quantile from a gamma distribution.</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for ( i in 1:num_loci ) {
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for ( i in 1:num_loci ) {
 
     #### specify the HKY substitution model applied uniformly to all sites of a gene
     kappa[i] ~ dnLognormal(0,1)
@@ -366,7 +366,7 @@ continuous time Markov process along a phylogenetic tree. We create
 a ‘seq‘ variable and attach/clamp each gene to one of the
 ‘seq‘ variables.</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for ( i in 1:num_loci ) { 
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for ( i in 1:num_loci ) { 
     # the sequence evolution model
     seq[i] ~ dnPhyloCTMC(tree=psi, Q=Q[i], branchRates=clock_rate[i], siteRates=gamma_rates[i], type="DNA")
 
@@ -379,7 +379,7 @@ a ‘seq‘ variable and attach/clamp each gene to one of the
     <p>Now we have defined all the bricks of the model, and create our
 model object from it.</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># We get a handle on our model.
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># We get a handle on our model.
 # We can use any node of our model as a handle, here we choose to use the topology.
 mymodel = model(psi)
 </code></pre></div>    </div>
@@ -388,7 +388,7 @@ mymodel = model(psi)
     <p>Finally, we need to perform inference under the model, using
 the data.</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Monitors to check the progression of the program
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Monitors to check the progression of the program
 monitors[1] = mnScreen(printgen=100, root)
 monitors[2] = mnModel(filename="output/primates_concatenation_root_calibration",printgen=10, separator = TAB)
 monitors[3] = mnFile(filename="output/primates_concatenation_root_calibration",printgen=10, separator = TAB, psi)
@@ -405,7 +405,7 @@ mymcmc.run(generations=10000)
   <li>
     <p>Now we can perform some post-run analyses.</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Now, we will analyze the tree output.
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Now, we will analyze the tree output.
 # Let us start by reading in the tree trace
 treetrace = readTreeTrace("output/primates_concatenation_root_calibration", treetype="clock")
 # and get the summary of the tree trace

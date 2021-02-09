@@ -160,16 +160,16 @@ information.</p>
 
 <p>Information describing the commands and instructions will be written in paragraph-form before or after they are issued.</p>
 
-<p>All command-line text, including all <code class="highlighter-rouge">Rev</code> syntax, are given in <code class="highlighter-rouge">monotype font</code>. Furthermore, blocks of <code class="highlighter-rouge">Rev</code> code that are needed to build the model, specify the analysis, or execute the run are given in separate shaded boxes. For example, we will instruct you to create a new variable called <code class="highlighter-rouge">n</code> that is equal to <code class="highlighter-rouge">10</code> using the <code class="highlighter-rouge">=</code> operator like this:</p>
+<p>All command-line text, including all <code class="language-plaintext highlighter-rouge">Rev</code> syntax, are given in <code class="language-plaintext highlighter-rouge">monotype font</code>. Furthermore, blocks of <code class="language-plaintext highlighter-rouge">Rev</code> code that are needed to build the model, specify the analysis, or execute the run are given in separate shaded boxes. For example, we will instruct you to create a new variable called <code class="language-plaintext highlighter-rouge">n</code> that is equal to <code class="language-plaintext highlighter-rouge">10</code> using the <code class="language-plaintext highlighter-rouge">=</code> operator like this:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n = 10
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n = 10
 </code></pre></div></div>
 
 <h2 class="subsection" id="create-your-script-file">Create Your Script File</h2>
 
-<p>Make yourself familiar with the example script called <a href="https://raw.githubusercontent.com/revbayes/revbayes_tutorial/master/RB_MCMC_Archery_Tutorial/archery_MH.Rev"><code class="highlighter-rouge">archery_MH.Rev</code></a> which shows the code for the following sections. Then, start a new and empty script in your text editor and follow each step provided as below.</p>
+<p>Make yourself familiar with the example script called <a href="https://raw.githubusercontent.com/revbayes/revbayes_tutorial/master/RB_MCMC_Archery_Tutorial/archery_MH.Rev"><code class="language-plaintext highlighter-rouge">archery_MH.Rev</code></a> which shows the code for the following sections. Then, start a new and empty script in your text editor and follow each step provided as below.</p>
 
-<p>Name the script file <code class="highlighter-rouge">my_archery_MH.Rev</code> or anything you’d like.</p>
+<p>Name the script file <code class="language-plaintext highlighter-rouge">my_archery_MH.Rev</code> or anything you’d like.</p>
 
 <h2 class="subsection" id="the-metropolis-hastings-algorithm">The Metropolis-Hastings Algorithm</h2>
 
@@ -221,7 +221,7 @@ $\mu = \mu$.</p>
 
 <p>Since we do not have access to archery data, we will simulate the the shots of our archer using the simulation tools in RevBayes. By simulating the data, we can also evaluate how well our moves and prior model perform—<em>i.e.,</em> how robust and accurate our estimators are. After completing this exercise, feel free to repeat it and alter the true values to see how they influence the posterior distribution.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Simulate some data (i.e. shoot some arrows)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Simulate some data (i.e. shoot some arrows)
 # First we need the number of arrows to shoot
 n = 10
 # Then we need a true mean distance
@@ -230,11 +230,11 @@ mu_true = 1
 arrow_mean = rgamma(1, n, n/mu_true)[1]
 </code></pre></div></div>
 
-<p>The Rev code above uses the <code class="highlighter-rouge">rgamma()</code> function to simulate a single
-observed <code class="highlighter-rouge">arrow_mean</code> from $n=10$ arrows shot on target. The <code class="highlighter-rouge">[1]</code>
-following the <code class="highlighter-rouge">rgamma()</code> function is needed because this function always
+<p>The Rev code above uses the <code class="language-plaintext highlighter-rouge">rgamma()</code> function to simulate a single
+observed <code class="language-plaintext highlighter-rouge">arrow_mean</code> from $n=10$ arrows shot on target. The <code class="language-plaintext highlighter-rouge">[1]</code>
+following the <code class="language-plaintext highlighter-rouge">rgamma()</code> function is needed because this function always
 returns a <em>vector</em> even when we only request a single value. Thus, in
-order to treat <code class="highlighter-rouge">arrow_mean</code> as a single value, we have to request the
+order to treat <code class="language-plaintext highlighter-rouge">arrow_mean</code> as a single value, we have to request the
 first element of the vector returned by that function.</p>
 
 <h2 class="subsection" id="initializing-the-markov-chain">Initializing the Markov chain</h2>
@@ -245,7 +245,7 @@ parameters (just $\mu$, in this case) from the prior distribution. We’ll
 assume a simple exponential prior distribution; that is, one with
 $\alpha = 1$.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Initialize the chain with some starting value
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Initialize the chain with some starting value
 alpha = 1.0
 mu = rexp(1, alpha)[1]
 </code></pre></div></div>
@@ -257,18 +257,18 @@ probability of our data given the prior model. We use the gamma
 distribution for the likelihood. Since the likelihood is defined only
 for values of $\mu$ greater than 0, we return a likelihood of 0.0 if
 $\mu$ is negative:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Define the likelihood function on the mean
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Define the likelihood function on the mean
 function likelihood(mu){
     if(mu &lt; 0.0)
         return 0.0
     return dgamma(arrow_mean, n, n/mu, log=false)
 }
 </code></pre></div></div>
-<p>In <code class="highlighter-rouge">Rev</code>, we can create a <em>user-defined function</em> using the
-<code class="highlighter-rouge">function</code> keyword. In our function definition above, <code class="highlighter-rouge">likelihood()</code>
+<p>In <code class="language-plaintext highlighter-rouge">Rev</code>, we can create a <em>user-defined function</em> using the
+<code class="language-plaintext highlighter-rouge">function</code> keyword. In our function definition above, <code class="language-plaintext highlighter-rouge">likelihood()</code>
 takes a single value as an argument that is expected to be the mean
 ($\mu$) value. All other parameters in our function are expected to be
-defined before <code class="highlighter-rouge">likelihood()</code> is called.</p>
+defined before <code class="language-plaintext highlighter-rouge">likelihood()</code> is called.</p>
 
 <h3 id="prior-distribution">Prior distribution</h3>
 
@@ -276,7 +276,7 @@ defined before <code class="highlighter-rouge">likelihood()</code> is called.</p
 Here, we use the exponential probability distribution for the prior on
 $\mu$:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Define the prior function on the mean
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Define the prior function on the mean
 function prior(mu){
     if(mu &lt; 0.0)
         return 0.0
@@ -288,10 +288,10 @@ function prior(mu){
 
 <p>Additionally, we are going to monitor, <em>i.e.</em> store, parameter values into a file during the MCMC simulation. For this file we need to write the column
 headers in the first line of our output file, which we will name
-<code class="highlighter-rouge">archery_MH.log</code> (you may have to change the newline characters from
-<code class="highlighter-rouge">\n</code> to <code class="highlighter-rouge">\r\n</code> if you’re using a Windows operating system.):</p>
+<code class="language-plaintext highlighter-rouge">archery_MH.log</code> (you may have to change the newline characters from
+<code class="language-plaintext highlighter-rouge">\n</code> to <code class="language-plaintext highlighter-rouge">\r\n</code> if you’re using a Windows operating system.):</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Prepare a file to log our samples
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Prepare a file to log our samples
 write("iteration","mu","\n",file="archery_MH.log")
 write(0,mu,"\n",file="archery_MH.log",append=TRUE)
 </code></pre></div></div>
@@ -299,7 +299,7 @@ write(0,mu,"\n",file="archery_MH.log",append=TRUE)
 <p>We’ll also monitor the parameter values to the screen, so let’s print
 the initial values:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Print the initial values to the screen
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Print the initial values to the screen
 print("iteration","mu")
 print(0,mu)
 </code></pre></div></div>
@@ -307,24 +307,24 @@ print(0,mu)
 <h2 class="subsection" id="writing-the-metropolis-hastings-algorithm">Writing the Metropolis-Hastings Algorithm</h2>
 
 <p>At long last, we can write our MCMC algorithm. First, we define how
-often we print to file (<em>i.e.,</em> monitor); this is called thinning if we do not choose to save every value of our parameter to file. If we set the variable <code class="highlighter-rouge">printgen=1</code>, then we will store the parameter values at every iteration; if we instead choose <code class="highlighter-rouge">printgen=10</code>, then we’ll only save the values every $10^{th}$ step in our Markov chain.</p>
+often we print to file (<em>i.e.,</em> monitor); this is called thinning if we do not choose to save every value of our parameter to file. If we set the variable <code class="language-plaintext highlighter-rouge">printgen=1</code>, then we will store the parameter values at every iteration; if we instead choose <code class="language-plaintext highlighter-rouge">printgen=10</code>, then we’ll only save the values every $10^{th}$ step in our Markov chain.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Write the MH algorithm    
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Write the MH algorithm    
 printgen = 10
 </code></pre></div></div>
 
 <p>We will repeat this resampling procedure many times and iterate the MCMC
-using a <code class="highlighter-rouge">for</code> loop (<em>e.g.,</em> step 6 in <a href="#sect:MH_algorithm">The Metropolis-Hastings Algorithm Section</a>). We will start
-this part by defining the number of iterations for our MCMC ( <code class="highlighter-rouge">reps =
+using a <code class="language-plaintext highlighter-rouge">for</code> loop (<em>e.g.,</em> step 6 in <a href="#sect:MH_algorithm">The Metropolis-Hastings Algorithm Section</a>). We will start
+this part by defining the number of iterations for our MCMC ( <code class="language-plaintext highlighter-rouge">reps =
 10000</code>), and writing the first line of our ‘for‘ loop. We’ll also define
-a variable <code class="highlighter-rouge">delta</code> (explained momentarily).</p>
+a variable <code class="language-plaintext highlighter-rouge">delta</code> (explained momentarily).</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>reps = 10000
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>reps = 10000
 delta = 1
 for(rep in 1:reps){
 </code></pre></div></div>
 
-<p>In <code class="highlighter-rouge">Rev</code>, the contents of every <code class="highlighter-rouge">for</code> loop must be enclosed within a set
+<p>In <code class="language-plaintext highlighter-rouge">Rev</code>, the contents of every <code class="language-plaintext highlighter-rouge">for</code> loop must be enclosed within a set
 of ‘curly braces’ . Our loop will not be complete until we finish it and
 add the closing brace. Additionally, it is good style to make our loops
 readable by indenting the contents within the curly braces. We recommend
@@ -334,15 +334,15 @@ that you use 4 spaces to represent these indents.</p>
 $\mu^\prime$ to evaluate (step 2 of the <a href="#sect:MH_algorithm">The Metropolis-Hastings Algorithm Section</a>). We’ll propose a new value of $\mu$ by
 drawing a random number from a uniform window and then adding this
 random number to the current value (<em>i.e.</em> centered on the previous value). The
-value of <code class="highlighter-rouge">delta</code> defines the width of the uniform window from which we
-draw new values. Thus, if <code class="highlighter-rouge">delta</code> is large, then the proposed values are
+value of <code class="language-plaintext highlighter-rouge">delta</code> defines the width of the uniform window from which we
+draw new values. Thus, if <code class="language-plaintext highlighter-rouge">delta</code> is large, then the proposed values are
 more likely to be very different from the current value of $\mu$.
-Conversely, if <code class="highlighter-rouge">delta</code> is small, then the proposed values are more
+Conversely, if <code class="language-plaintext highlighter-rouge">delta</code> is small, then the proposed values are more
 likely to be very close to the current value of $\mu$. By changing the
-value of <code class="highlighter-rouge">delta</code> we can tune the behavior of the proposal, and therefore
-<code class="highlighter-rouge">delta</code> is called a <em>tuning parameter</em>.</p>
+value of <code class="language-plaintext highlighter-rouge">delta</code> we can tune the behavior of the proposal, and therefore
+<code class="language-plaintext highlighter-rouge">delta</code> is called a <em>tuning parameter</em>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Propose a new value of p
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Propose a new value of p
 mu_prime &lt;- mu + runif(n=1,-delta,delta)[1]
 </code></pre></div></div>
 
@@ -350,14 +350,14 @@ mu_prime &lt;- mu + runif(n=1,-delta,delta)[1]
 the functions we defined above, as well as the acceptance probability,
 $R$ (step 3 of the <a href="#sect:MH_algorithm">The Metropolis-Hastings Algorithm Section</a>):</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Compute the acceptance probability
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Compute the acceptance probability
 R = ( likelihood(mu_prime)/likelihood(mu) ) * ( prior(mu_prime)/prior(mu) )
 </code></pre></div></div>
 
 <p>Then, we accept the proposal with probability $R$ and reject otherwise
 (step 4 of the <a href="#sect:MH_algorithm">The Metropolis-Hastings Algorithm Section</a>):</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Accept or reject the proposal
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Accept or reject the proposal
 u = runif(1,0,1)[1]
 
 if(u &lt; R){
@@ -369,7 +369,7 @@ if(u &lt; R){
 <p>Finally, we store the current value of $\mu$ in our log file (step
 5 of the the <a href="#sect:MH_algorithm">The Metropolis-Hastings Algorithm Section</a>). Here, we actually check if we want to store the value during this iteration.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if ( (rep % printgen) == 0 ) {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if ( (rep % printgen) == 0 ) {
     # Write the samples to a file
     write(rep,mu,"\n",file="archery_MH.log",append=TRUE)
     # Print the samples to the screen
@@ -379,7 +379,7 @@ if(u &lt; R){
 
 <p>and close the for loop</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>}
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>}
 </code></pre></div></div>
 
 <p>Execute the MCMC Analysis {#subsect:Exercise-RunMCMC}</p>
@@ -388,16 +388,16 @@ if(u &lt; R){
 
 <p>Begin by running the RevBayes executable. You can do this by navigating to the folder containing your RevBayes executable and running it. If you’re on a Unix system you can do this by typing:</p>
 
-<div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rb
+<div class="language-plaintext bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rb
 </code></pre></div></div>
 
 <p><em>Alternatively</em>, if you are on a Unix system and the RevBayes binary is in your path, you only have to type the following from any directory:</p>
 
-<div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rb
+<div class="language-plaintext bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rb
 </code></pre></div></div>
 <p>Now you can run your RevBayes script:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("my_archery_MH.Rev")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("my_archery_MH.Rev")
 </code></pre></div></div>
 
 <h2 class="section" id="exercise-1">Exercise 1</h2>
@@ -406,11 +406,11 @@ if(u &lt; R){
   <li>
     <p>Write and execute the script outlined above, which you can give any
 name you like (there is also an example file
-called <code class="highlighter-rouge">archery_MH.Rev</code>).</p>
+called <code class="language-plaintext highlighter-rouge">archery_MH.Rev</code>).</p>
   </li>
   <li>
-    <p>The <code class="highlighter-rouge">.log</code> file will contain samples from the posterior distribution
-of the model. Open the file in <code class="highlighter-rouge">Tracer</code> to learn about
+    <p>The <code class="language-plaintext highlighter-rouge">.log</code> file will contain samples from the posterior distribution
+of the model. Open the file in <code class="language-plaintext highlighter-rouge">Tracer</code> to learn about
 various features of the posterior distribution, for example: the
 posterior mean or the 95% credible interval.</p>
   </li>
@@ -419,11 +419,11 @@ posterior mean or the 95% credible interval.</p>
 <p>Pretty awesome, right?</p>
 
 <p>Below we show an example of the obtained output in
-<code class="highlighter-rouge">Tracer</code>. Specifically, <a href="#mcmc-trace"></a> shows
+<code class="language-plaintext highlighter-rouge">Tracer</code>. Specifically, <a href="#mcmc-trace"></a> shows
 the sample trace (left) and the estimated posterior distribution of
 $\mu$ (right). There are other parameters, such as the posterior mean
 and the 95% HPD (highest posterior density) interval, that you can
-obtain from <code class="highlighter-rouge">Tracer</code>.</p>
+obtain from <code class="language-plaintext highlighter-rouge">Tracer</code>.</p>
 
 <figure id="mcmc-trace"><p><img src="figures/archery_MCMC_Trace.png" width="45%" />
 <img src="figures/archery_MCMC_distribution.png" width="45%" /></p>
@@ -438,27 +438,27 @@ other ways how to propose new values; some of which are more efficient
 than others.</p>
 
 <p>First, let us rewrite the MCMC loop so that instead we call a function,
-which we name <code class="highlighter-rouge">move_slide</code> for simplicity, that performs the move:</p>
+which we name <code class="language-plaintext highlighter-rouge">move_slide</code> for simplicity, that performs the move:</p>
 
 <h2 class="subsection" id="slide-move">Slide move</h2>
 
-<p>Now we need to actually write the <code class="highlighter-rouge">move_slide</code> function. We mostly just
+<p>Now we need to actually write the <code class="language-plaintext highlighter-rouge">move_slide</code> function. We mostly just
 copy the code we had before into a dedicated function</p>
 
-<p>There are a few things to consider in the function <code class="highlighter-rouge">move_slide</code>. First,
+<p>There are a few things to consider in the function <code class="language-plaintext highlighter-rouge">move_slide</code>. First,
 we do not have a return value because the move simply changes the
 variable $\mu$ if the move is accepted. Second, in addition to the
-tuning parameter <code class="highlighter-rouge">delta</code>, we expect an argument called <code class="highlighter-rouge">weight</code> which
+tuning parameter <code class="language-plaintext highlighter-rouge">delta</code>, we expect an argument called <code class="language-plaintext highlighter-rouge">weight</code> which
 will tell us how often we want to use this move. Otherwise, this
 function does exactly the same what was inside the for loop previously.</p>
 
 <p>(Note that you need to define this function before the for loop in your
 script).</p>
 
-<p>Experiment with different values for <code class="highlighter-rouge">delta</code> and see how the effective
+<p>Experiment with different values for <code class="language-plaintext highlighter-rouge">delta</code> and see how the effective
 sample size (ESS) changes.</p>
 
-<p>There is, <em>a priori</em>, no good method for knowing what values of <code class="highlighter-rouge">delta</code> are most efficient. However, there are some algorithms implemented in RevBayes, called <em>auto-tuning</em>, that will estimate good values for <code class="highlighter-rouge">delta</code>.</p>
+<p>There is, <em>a priori</em>, no good method for knowing what values of <code class="language-plaintext highlighter-rouge">delta</code> are most efficient. However, there are some algorithms implemented in RevBayes, called <em>auto-tuning</em>, that will estimate good values for <code class="language-plaintext highlighter-rouge">delta</code>.</p>
 
 <h2 class="subsection" id="scaling-move">Scaling move</h2>
 
@@ -472,7 +472,7 @@ is the same as the proposal ratio given in Section
 case, and one only needs to multiply the acceptance rate by the scaling
 factor.</p>
 
-<p>As before, this move has a tuning parameter called <code class="highlighter-rouge">lambda</code>.</p>
+<p>As before, this move has a tuning parameter called <code class="language-plaintext highlighter-rouge">lambda</code>.</p>
 
 <p>The sliding-window and scaling moves are very common and popular moves in RevBayes. The code examples here are actually showing the exact same equation as implemented internally. It will be very useful for you to understand these moves.</p>
 
@@ -485,13 +485,13 @@ and re-run the script to estimate the posterior distribution of
 $\mu$ again.</p>
   </li>
   <li>
-    <p>Use only a single move and set <code class="highlighter-rouge">printgen=1</code>. Which move has the best
+    <p>Use only a single move and set <code class="language-plaintext highlighter-rouge">printgen=1</code>. Which move has the best
 ESS?</p>
   </li>
   <li>
     <p>How does the ESS change if you use tuning parameter values
-<code class="highlighter-rouge">delta=10</code> or <code class="highlighter-rouge">delta=0.1</code> for the sliding-window move? What about
-<code class="highlighter-rouge">lambda=10</code> or <code class="highlighter-rouge">lambda=0.1</code> for the scaling move?</p>
+<code class="language-plaintext highlighter-rouge">delta=10</code> or <code class="language-plaintext highlighter-rouge">delta=0.1</code> for the sliding-window move? What about
+<code class="language-plaintext highlighter-rouge">lambda=10</code> or <code class="language-plaintext highlighter-rouge">lambda=0.1</code> for the scaling move?</p>
   </li>
   <li>
     <p>You can keep track of your results using the following table.</p>
@@ -500,13 +500,13 @@ ESS?</p>
 
 <h1 class="section" id="the-metropolis-hastings-algorithm-with-the-real-revbayes">The Metropolis-Hastings Algorithm with the <em>Real</em> RevBayes</h1>
 
-<p>We’ll now specify the exact same model in <code class="highlighter-rouge">Rev</code> using the built-in
+<p>We’ll now specify the exact same model in <code class="language-plaintext highlighter-rouge">Rev</code> using the built-in
 modeling functionality and moves. It turns out that the ‘Rev‘ code to
 specify the above model is extremely simple and similar to the one we
 used before. Again, we start by “reading in” (<em>i.e.</em> making up) our
 data.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Simulate some data (i.e. shoot some arrows)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Simulate some data (i.e. shoot some arrows)
 # First we need the number of arrows to shoot
 n = 10
 # Then we need some true mean distance
@@ -517,7 +517,7 @@ arrow_mean = rgamma(1, n, n/mu_true)[1]
 
 <p>Now we specify our prior model.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Specify the prior distribution
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Specify the prior distribution
 alpha &lt;- 1.0
 mu ~ dnExponential(alpha)
 </code></pre></div></div>
@@ -528,13 +528,13 @@ specify them <em>before</em> we run the MCMC. We usually define (at least) one
 move per parameter immediately after we specify the prior distribution
 for that parameter.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Define a move for our parameter, mu
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Define a move for our parameter, mu
 moves[1] = mvSlide(mu, delta=1, weight=1.0)
 </code></pre></div></div>
 
 <p>Next, our likelihood model.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Specify the likelihood model
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Specify the likelihood model
 d_bar ~ dnGamma(n, n/mu)
 d_bar.clamp(arrow_mean)
 </code></pre></div></div>
@@ -542,24 +542,24 @@ d_bar.clamp(arrow_mean)
 <p>We wrap our full Bayesian model into one model object (this is a
 convenience to keep the entire model in a single object, and is more
 useful when we have very large models):</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Construct the full model
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Construct the full model
 my_model = model(mu)
 </code></pre></div></div>
 
 <p>We use “monitors” to keep track of parameters throughout the MCMC. The
-two kinds of monitors we use here are the <code class="highlighter-rouge">mnModel</code>, which writes
-parameters to a specified file, and the <code class="highlighter-rouge">mnScreen</code>, which simply outputs
+two kinds of monitors we use here are the <code class="language-plaintext highlighter-rouge">mnModel</code>, which writes
+parameters to a specified file, and the <code class="language-plaintext highlighter-rouge">mnScreen</code>, which simply outputs
 some parts of the model to screen (as a sort of progress bar).</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Make the monitors to keep track of the MCMC
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Make the monitors to keep track of the MCMC
 monitors[1] = mnModel(filename="archery_RB.log", printgen=10)
 monitors[2] = mnScreen(printgen=1000, mu)
 </code></pre></div></div>
 
 <p>Finally, we assemble the analysis object (which contains the model, the
-monitors, and the moves) and execute the run using the <code class="highlighter-rouge">.run</code> command:</p>
+monitors, and the moves) and execute the run using the <code class="language-plaintext highlighter-rouge">.run</code> command:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Make the analysis object
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Make the analysis object
 analysis = mcmc(my_model, monitors, moves)
 # Run the MCMC
 analysis.run(100000)
@@ -567,13 +567,13 @@ analysis.run(100000)
 analysis.operatorSummary()
 </code></pre></div></div>
 
-<p>Open the resulting <code class="highlighter-rouge">archery_RB.log</code> file in <code class="highlighter-rouge">Tracer</code>.</p>
+<p>Open the resulting <code class="language-plaintext highlighter-rouge">archery_RB.log</code> file in <code class="language-plaintext highlighter-rouge">Tracer</code>.</p>
 
 <p>Do the posterior distributions for the parameter $\mu$ look the same as the ones we got from our first analysis?</p>
 
-<p>Hopefully, you’ll note that this <code class="highlighter-rouge">Rev</code> model is substantially simpler
+<p>Hopefully, you’ll note that this <code class="language-plaintext highlighter-rouge">Rev</code> model is substantially simpler
 and easier to read than the MH algorithm script we began with. Perhaps
-more importantly, this <code class="highlighter-rouge">Rev</code> analysis is <em>orders of magnitude</em> faster
+more importantly, this <code class="language-plaintext highlighter-rouge">Rev</code> analysis is <em>orders of magnitude</em> faster
 than our own script, because it makes use of extremely efficient
 probability calculations built-in to RevBayes (rather than the ones we
 hacked together in our own algorithm).</p>
@@ -587,7 +587,7 @@ the posterior estimates the same? Are the acceptance rates of the
 moves similar?</p>
   </li>
   <li>
-    <p>Add a second move <code class="highlighter-rouge">moves[2] = mvScale(mu,lambda=0.1,weight=1.0)</code></p>
+    <p>Add a second move <code class="language-plaintext highlighter-rouge">moves[2] = mvScale(mu,lambda=0.1,weight=1.0)</code></p>
   </li>
   <li>
     <p>Run the analysis again and compare the output.</p>

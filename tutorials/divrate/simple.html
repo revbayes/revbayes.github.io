@@ -196,13 +196,13 @@ taken from the analysis by <a class="citation" href="#MagnusonFord2012">Magnuson
 approximately 367 described primates species, so we will fix the
 parameter $\rho$ to $233/367$.</p>
 
-<p>⇨ The full Yule-model specification is in the file called <code class="highlighter-rouge">mcmc_Yule.Rev</code>.</p>
+<p>⇨ The full Yule-model specification is in the file called <code class="language-plaintext highlighter-rouge">mcmc_Yule.Rev</code>.</p>
 
 <h3 class="subsection" id="read-the-tree">Read the tree</h3>
 <hr class="subsection" />
 
 <p>Begin by reading in the observed tree and get some useful variables. We will need these later on.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>T &lt;- readTrees("data/primates_tree.nex")[1]
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>T &lt;- readTrees("data/primates_tree.nex")[1]
 
 # Get some useful variables from the data. We need these later on.
 taxa &lt;- T.taxa()
@@ -210,7 +210,7 @@ taxa &lt;- T.taxa()
 
 <p>Additionally, we can initialize a variable for our vector of
 moves and monitors:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
 monitors = VectorMonitors()
 </code></pre></div></div>
 
@@ -224,14 +224,14 @@ monitors = VectorMonitors()
 (<a href="#fig_yule_gm2"></a>). We can specify the birth rate $\lambda$, the
 mean and standard deviation of the lognormal hyperprior on $\lambda$,
 and the conditional dependency of the two parameters all in one line of
-<code class="highlighter-rouge">Rev</code> code.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>birth_rate_mean &lt;- ln( ln(367.0/2.0) / T.rootAge() )
+<code class="language-plaintext highlighter-rouge">Rev</code> code.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>birth_rate_mean &lt;- ln( ln(367.0/2.0) / T.rootAge() )
 birth_rate_sd &lt;- 0.587405
 birth_rate ~ dnLognormal(mean=birth_rate_mean,sd=birth_rate_sd)
 </code></pre></div></div>
 
-<p>Here, the stochastic node called <code class="highlighter-rouge">birth_rate</code> represents the speciation
-rate $\lambda$. <code class="highlighter-rouge">birth_rate_mean</code> and <code class="highlighter-rouge">birth_rate_sd</code> are the prior
+<p>Here, the stochastic node called <code class="language-plaintext highlighter-rouge">birth_rate</code> represents the speciation
+rate $\lambda$. <code class="language-plaintext highlighter-rouge">birth_rate_mean</code> and <code class="language-plaintext highlighter-rouge">birth_rate_sd</code> are the prior
 mean and prior standard deviation, respectively. We chose the prior mean
 so that it is centered around observed number of species
 (<em>i.e.</em>, the expected number of species under a
@@ -240,15 +240,15 @@ prior standard deviation of 0.587405 which creates a lognormal
 distribution with 95% prior probability spanning exactly one order of
 magnitude. If you want to represent more prior uncertainty by,
 <em>e.g.,</em> allowing for two orders of magnitude in
-the 95% prior probability then you can simply multiply <code class="highlighter-rouge">birth_rate_sd</code>
+the 95% prior probability then you can simply multiply <code class="language-plaintext highlighter-rouge">birth_rate_sd</code>
 by a factor of 2.</p>
 
 <p>To estimate the value of $\lambda$, we assign a proposal mechanism to
 operate on this node. In RevBayes these MCMC sampling algorithms are
 called <em>moves</em>. We need to create a vector of moves and we can do this
-by using vector indexing and our pre-initialized iterator <code class="highlighter-rouge">mi</code>. We will
-use a scaling move on $\lambda$ called <code class="highlighter-rouge">mvScale</code>.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale(birth_rate,lambda=1.0,tune=true,weight=3.0) )
+by using vector indexing and our pre-initialized iterator <code class="language-plaintext highlighter-rouge">mi</code>. We will
+use a scaling move on $\lambda$ called <code class="language-plaintext highlighter-rouge">mvScale</code>.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale(birth_rate,lambda=1.0,tune=true,weight=3.0) )
 </code></pre></div></div>
 
 <h4 class="subsubsection" id="sampling-probability">Sampling probability</h4>
@@ -257,7 +257,7 @@ use a scaling move on $\lambda$ called <code class="highlighter-rouge">mvScale</
 <p>Our prior belief is that we have sampled 233 out of 367 living primate
 species. To account for this we can set the sampling parameter as a
 constant node with a value of 233/367</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rho &lt;- T.ntips()/367
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rho &lt;- T.ntips()/367
 </code></pre></div></div>
 
 <h4 class="subsubsection" id="root-age">Root age</h4>
@@ -274,7 +274,7 @@ root by assuming the process started with <em>two</em> lineages that both
 originate at the time of the root.</p>
 
 <p>We can get the value for the root from the <a class="citation" href="#MagnusonFord2012">Magnuson-Ford and Otto (2012)</a> tree.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root_time &lt;- T.rootAge()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root_time &lt;- T.rootAge()
 </code></pre></div></div>
 
 <h4 class="subsubsection" id="the-time-tree">The time tree</h4>
@@ -282,30 +282,30 @@ originate at the time of the root.</p>
 
 <p>Now we have all of the parameters we need to specify the full pure-birth
 model. We can initialize the stochastic node representing the time tree.
-Note that we set the <code class="highlighter-rouge">mu</code> parameter to the constant value <code class="highlighter-rouge">0.0</code>.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree ~ dnBDP(lambda=birth_rate, mu=0.0, rho=rho, rootAge=root_time, samplingStrategy="uniform", condition="survival", taxa=taxa)
+Note that we set the <code class="language-plaintext highlighter-rouge">mu</code> parameter to the constant value <code class="language-plaintext highlighter-rouge">0.0</code>.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree ~ dnBDP(lambda=birth_rate, mu=0.0, rho=rho, rootAge=root_time, samplingStrategy="uniform", condition="survival", taxa=taxa)
 </code></pre></div></div>
 <p>If you refer back to Equation \eqref{eq:bayes_thereom} and <a href="#fig_yule_gm2"></a>, 
 the time tree $\Psi$ is the variable we observe,
-<em>i.e.</em>, the data. We can set this in <code class="highlighter-rouge">Rev</code> by
-using the <code class="highlighter-rouge">clamp()</code> function.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree.clamp(T)
+<em>i.e.</em>, the data. We can set this in <code class="language-plaintext highlighter-rouge">Rev</code> by
+using the <code class="language-plaintext highlighter-rouge">clamp()</code> function.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree.clamp(T)
 </code></pre></div></div>
 <p>Here we are fixing the value of the time tree to our observed tree from
 <a class="citation" href="#MagnusonFord2012">Magnuson-Ford and Otto (2012)</a>.</p>
 
 <p>Finally, we can create a workspace object of our whole model using the
-<code class="highlighter-rouge">model()</code> function. Workspace objects are initialized using the <code class="highlighter-rouge">=</code>
+<code class="language-plaintext highlighter-rouge">model()</code> function. Workspace objects are initialized using the <code class="language-plaintext highlighter-rouge">=</code>
 operator. This distinguishes the objects used by the program to run the
 MCMC analysis from the distinct nodes of our graphical model. The model
-workspace objects makes it easy to work with the model in <code class="highlighter-rouge">Rev</code> and
+workspace objects makes it easy to work with the model in <code class="language-plaintext highlighter-rouge">Rev</code> and
 creates a wrapper around our model DAG. Because our model is a directed,
 acyclic graph (DAG), we only need to give the model wrapper function a
 single node and it does the work to find all the other nodes through
 their connections.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(birth_rate)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(birth_rate)
 </code></pre></div></div>
-<p>The <code class="highlighter-rouge">model()</code> function traverses all of the connections and finds all of
+<p>The <code class="language-plaintext highlighter-rouge">model()</code> function traverses all of the connections and finds all of
 the nodes we specified.</p>
 
 <h3 class="subsection" id="running-an-mcmc-analysis">Running an MCMC analysis</h3>
@@ -316,15 +316,15 @@ the nodes we specified.</p>
 
 <p>For our MCMC analysis, we need to set up a vector of <em>monitors</em> to
 record the states of our Markov chain. The monitor functions are all
-called <code class="highlighter-rouge">mn*</code>, where <code class="highlighter-rouge">*</code> is the wildcard representing the monitor type.
-First, we will initialize the model monitor using the <code class="highlighter-rouge">mnModel</code>
+called <code class="language-plaintext highlighter-rouge">mn*</code>, where <code class="language-plaintext highlighter-rouge">*</code> is the wildcard representing the monitor type.
+First, we will initialize the model monitor using the <code class="language-plaintext highlighter-rouge">mnModel</code>
 function. This creates a new monitor variable that will output the
 states for all model parameters when passed into a MCMC function.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/primates_Yule.log",printgen=10, separator = TAB) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/primates_Yule.log",printgen=10, separator = TAB) )
 </code></pre></div></div>
 <p>Additionally, create a screen monitor that will report the states of
-specified variables to the screen with <code class="highlighter-rouge">mnScreen</code>:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(printgen=1000, birth_rate) )
+specified variables to the screen with <code class="language-plaintext highlighter-rouge">mnScreen</code>:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(printgen=1000, birth_rate) )
 </code></pre></div></div>
 
 <h4 class="subsubsection" id="initializing-and-running-the-mcmc-simulation">Initializing and Running the MCMC Simulation</h4>
@@ -332,29 +332,29 @@ specified variables to the screen with <code class="highlighter-rouge">mnScreen<
 
 <p>With a fully specified model, a set of monitors, and a set of moves, we
 can now set up the MCMC algorithm that will sample parameter values in
-proportion to their posterior probability. The <code class="highlighter-rouge">mcmc()</code> function will
+proportion to their posterior probability. The <code class="language-plaintext highlighter-rouge">mcmc()</code> function will
 create our MCMC object:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
 </code></pre></div></div>
 <p>Now, run the MCMC:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=50000, tuningInterval=200)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=50000, tuningInterval=200)
 </code></pre></div></div>
 <p>When the analysis is complete, you will have the monitored files in your
 output directory.</p>
 
-<p>⇨ The <code class="highlighter-rouge">Rev</code> file for performing this analysis: <code class="highlighter-rouge">mcmc_Yule.Rev</code></p>
+<p>⇨ The <code class="language-plaintext highlighter-rouge">Rev</code> file for performing this analysis: <code class="language-plaintext highlighter-rouge">mcmc_Yule.Rev</code></p>
 
 <h3 class="subsection" id="exercise-1">Exercise 1</h3>
 <hr class="subsection" />
 
 <ul>
   <li>Run an MCMC simulation to estimate the posterior distribution of the
-speciation rate (<code class="highlighter-rouge">birth_rate</code>).</li>
-  <li>Load the generated output file into <code class="highlighter-rouge">Tracer</code>: What is
-the mean posterior estimate of the <code class="highlighter-rouge">birth_rate</code> and what is the
+speciation rate (<code class="language-plaintext highlighter-rouge">birth_rate</code>).</li>
+  <li>Load the generated output file into <code class="language-plaintext highlighter-rouge">Tracer</code>: What is
+the mean posterior estimate of the <code class="language-plaintext highlighter-rouge">birth_rate</code> and what is the
 estimated HPD?</li>
   <li>Compare the prior mean with the posterior mean. (<strong>Hint:</strong> Use the
-optional argument <code class="highlighter-rouge">underPrior=TRUE</code> in the function <code class="highlighter-rouge">mymcmc.run()</code>)
+optional argument <code class="language-plaintext highlighter-rouge">underPrior=TRUE</code> in the function <code class="language-plaintext highlighter-rouge">mymcmc.run()</code>)
 Are they different (<em>e.g.,</em> <a href="#fig_prior_posterior"></a>)?
 Is the posterior mean outside the prior 95% probability interval?</li>
   <li>Repeat the analysis and allow for two orders of magnitude of
@@ -363,15 +363,15 @@ prior uncertainty.</li>
 
 <figure id="fig_prior_posterior"><p><img src="figures/birth_rate_prior_posterior.png" height="50%" width="50%" /></p>
 <figcaption>Estimates of the
-posterior and prior distribution of the <code class="highlighter-rouge">birth_rate</code> visualized in
-<code class="highlighter-rouge">Tracer</code>. The prior (black curve) shows the lognormal
+posterior and prior distribution of the <code class="language-plaintext highlighter-rouge">birth_rate</code> visualized in
+<code class="language-plaintext highlighter-rouge">Tracer</code>. The prior (black curve) shows the lognormal
 distribution that we chose as the prior distribution.</figcaption>
 </figure>
 
 <h2 class="section" id="estimating-the-marginal-likelihood-of-the-model">Estimating the marginal likelihood of the model</h2>
 <hr class="section" />
 
-<p>With a fully specified model, we can set up the <code class="highlighter-rouge">powerPosterior()</code>
+<p>With a fully specified model, we can set up the <code class="language-plaintext highlighter-rouge">powerPosterior()</code>
 analysis to create a file of ‘powers’ and likelihoods from which we can
 estimate the marginal likelihood using stepping-stone or path sampling.
 This method computes a vector of powers from a beta distribution, then
@@ -384,37 +384,37 @@ information on marginal likelihood estimation please read the
 
 <p>First, we create the variable containing the power posterior. This
 requires us to provide a model and vector of moves, as well as an output
-file name. The <code class="highlighter-rouge">cats</code> argument sets the number of power steps.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pow_p = powerPosterior(mymodel, moves, monitors, "output/Yule_powp.out", cats=127, sampleFreq=10)
+file name. The <code class="language-plaintext highlighter-rouge">cats</code> argument sets the number of power steps.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pow_p = powerPosterior(mymodel, moves, monitors, "output/Yule_powp.out", cats=127, sampleFreq=10)
 </code></pre></div></div>
 <p>We can start the power posterior by first burning in the chain and and
 discarding the first 10000 states.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pow_p.burnin(generations=10000,tuningInterval=200)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pow_p.burnin(generations=10000,tuningInterval=200)
 </code></pre></div></div>
-<p>Now execute the run with the <code class="highlighter-rouge">.run()</code> function:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pow_p.run(generations=10000)
+<p>Now execute the run with the <code class="language-plaintext highlighter-rouge">.run()</code> function:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pow_p.run(generations=10000)
 </code></pre></div></div>
 <p>Once the power posteriors have been saved to file, create a
 stepping-stone sampler. This function can read any file of power
 posteriors and compute the marginal likelihood using stepping-stone
 sampling.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ss = steppingStoneSampler(file="output/Yule_powp.out", powerColumnName="power", likelihoodColumnName="likelihood")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ss = steppingStoneSampler(file="output/Yule_powp.out", powerColumnName="power", likelihoodColumnName="likelihood")
 </code></pre></div></div>
 <p>Compute the marginal likelihood under stepping-stone sampling using the
-member function <code class="highlighter-rouge">marginal()</code> of the <code class="highlighter-rouge">ss</code> variable and record the value
+member function <code class="language-plaintext highlighter-rouge">marginal()</code> of the <code class="language-plaintext highlighter-rouge">ss</code> variable and record the value
 in <a href="#tab_ml_yule"></a>.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>write("Stepping stone marginal likelihood:\t", ss.marginal() )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>write("Stepping stone marginal likelihood:\t", ss.marginal() )
 </code></pre></div></div>
 <p>Path sampling is an alternative to stepping-stone sampling and also
 takes the same power posteriors as input.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ps = pathSampler(file="output/Yule_powp.out", powerColumnName="power", likelihoodColumnName="likelihood")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ps = pathSampler(file="output/Yule_powp.out", powerColumnName="power", likelihoodColumnName="likelihood")
 </code></pre></div></div>
 <p>Compute the marginal likelihood under stepping-stone sampling using the
-member function <code class="highlighter-rouge">marginal()</code> of the <code class="highlighter-rouge">ps</code> variable and record the value
+member function <code class="language-plaintext highlighter-rouge">marginal()</code> of the <code class="language-plaintext highlighter-rouge">ps</code> variable and record the value
 in <a href="#tab_ml_yule"></a>.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>write("Path-sampling marginal likelihood:\t", ps.marginal() )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>write("Path-sampling marginal likelihood:\t", ps.marginal() )
 </code></pre></div></div>
-<p>⇨ The <code class="highlighter-rouge">Rev</code> file for performing this analysis: <code class="highlighter-rouge">ml_Yule.Rev</code>.</p>
+<p>⇨ The <code class="language-plaintext highlighter-rouge">Rev</code> file for performing this analysis: <code class="language-plaintext highlighter-rouge">ml_Yule.Rev</code>.</p>
 
 <h3 class="subsection" id="exercise-2">Exercise 2</h3>
 <hr class="subsection" />
@@ -497,7 +497,7 @@ with uniform sampling parameterized using the diversification and turnover.</fig
 <p>In the following subsections we will only provide the key command that
 are different for the constant-rate birth-death process. All other
 commands will be the same as in the previous exercise. You should copy
-the <code class="highlighter-rouge">mcmc_Yule.Rev</code> script and modify it accordingly. Don’t forget to
+the <code class="language-plaintext highlighter-rouge">mcmc_Yule.Rev</code> script and modify it accordingly. Don’t forget to
 rename the filenames of the monitors to avoid overwriting of your
 previous results!</p>
 
@@ -508,7 +508,7 @@ previous results!</p>
 diversification. The diversification rate represent the rate at which
 the species diversity increases. Thus, we just use the same prior for
 the diversification rate as we used before for the birth rate.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>diversification_mean &lt;- ln( ln(367.0/2.0) / T.rootAge() )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>diversification_mean &lt;- ln( ln(367.0/2.0) / T.rootAge() )
 diversification_sd &lt;- 0.587405
 diversification ~ dnLognormal(mean=diversification_mean,sd=diversification_sd)
 moves.append( mvScale(diversification,lambda=1.0,tune=true,weight=3.0) )
@@ -519,7 +519,7 @@ another species due to a birth plus death event. Hence, the turnover
 rate represent the longevity of a species. For simplicity we use the
 same prior on the turnover rate but with two orders of magnitude prior
 uncertainty.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>turnover_mean &lt;- ln( ln(367.0/2.0) / T.rootAge() )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>turnover_mean &lt;- ln( ln(367.0/2.0) / T.rootAge() )
 turnover_sd &lt;- 0.587405*2
 turnover ~ dnLognormal(mean=turnover_mean,sd=turnover_sd)
 moves.append( mvScale(turnover,lambda=1.0,tune=true,weight=3.0) )
@@ -531,7 +531,7 @@ moves.append( mvScale(turnover,lambda=1.0,tune=true,weight=3.0) )
 <p>The birth and death rates are both deterministic nodes. We compute them
 by simple parameter transformation. Note that the death rate is in fact
 equal to the turnover rate.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>birth_rate := diversification + turnover
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>birth_rate := diversification + turnover
 death_rate := turnover
 </code></pre></div></div>
 <p>All other parameters, such as the sampling probability and the root age
@@ -543,10 +543,10 @@ are kept the same as in the analysis above.</p>
 <p>Initialize the stochastic node representing the time tree. The main
 difference now is that we provide a stochastic parameter for the
 extinction rate $\mu$.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree ~ dnBDP(lambda=birth_rate, mu=death_rate, rho=rho, rootAge=root_time, samplingStrategy="uniform", condition="survival", taxa=taxa)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree ~ dnBDP(lambda=birth_rate, mu=death_rate, rho=rho, rootAge=root_time, samplingStrategy="uniform", condition="survival", taxa=taxa)
 </code></pre></div></div>
 
-<p>⇨ The <code class="highlighter-rouge">Rev</code> file for performing this analysis: <code class="highlighter-rouge">mcmc_BD.Rev</code></p>
+<p>⇨ The <code class="language-plaintext highlighter-rouge">Rev</code> file for performing this analysis: <code class="language-plaintext highlighter-rouge">mcmc_BD.Rev</code></p>
 
 <h3 class="subsection" id="exercise-3">Exercise 3</h3>
 <hr class="subsection" />
@@ -554,7 +554,7 @@ extinction rate $\mu$.</p>
 <ul>
   <li>Run an MCMC simulation to compute the posterior distribution of the
 diversification and turnover rate.</li>
-  <li>Look at the parameter estimates in <code class="highlighter-rouge">Tracer</code>. What can
+  <li>Look at the parameter estimates in <code class="language-plaintext highlighter-rouge">Tracer</code>. What can
 you say about the diversification, turnover, speciation and
 extinction rates? How high is the extinction rate compared with the
 speciation rate?</li>

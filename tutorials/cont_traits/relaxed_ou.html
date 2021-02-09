@@ -121,7 +121,7 @@
 
 <p>Under a simple Ornstein-Uhlenbeck (OU) model, the optimal of a continuous character is determined by a single rate parameter, $\theta$. Many evolutionary questions are related to how the optimal phenotype changes among lineages. In a Bayesian setting, we can specify a ‘‘relaxed’’ OU prior model that allows the optimal phenotype to vary over the phylogeny.</p>
 
-<p>Here, we will use the ‘‘random local clock’’ model, similar to the one described by (missing reference) in the software <code class="highlighter-rouge">bayOU</code>. In this model, we assume that each branch in the phylogeny either does or does not have a optimum shift. When there is no shift on a branch, the optimum on the branch is inherited directly from its ancestral branch; when there <em>is</em> a shift, the ancestral optimum is shifted by an amount that is drawn from a specified prior distribution. We specify a prior probability, $p$, that a given branch experiences a shift. For a tree with $n$ branches, the expected number of shifts is $E(k) = n \times p$. To control the number of shifts, we specify a prior on the <em>expected number of shifts</em>, $E(k)$, and then calculate the prior probability for a shift on a particular branch, $p = E(k) / n$. The graphical model shows the relationship between the branch-specific optima and priors (fig_ou_relaxed_gm).</p>
+<p>Here, we will use the ‘‘random local clock’’ model, similar to the one described by (missing reference) in the software <code class="language-plaintext highlighter-rouge">bayOU</code>. In this model, we assume that each branch in the phylogeny either does or does not have a optimum shift. When there is no shift on a branch, the optimum on the branch is inherited directly from its ancestral branch; when there <em>is</em> a shift, the ancestral optimum is shifted by an amount that is drawn from a specified prior distribution. We specify a prior probability, $p$, that a given branch experiences a shift. For a tree with $n$ branches, the expected number of shifts is $E(k) = n \times p$. To control the number of shifts, we specify a prior on the <em>expected number of shifts</em>, $E(k)$, and then calculate the prior probability for a shift on a particular branch, $p = E(k) / n$. The graphical model shows the relationship between the branch-specific optima and priors (fig_ou_relaxed_gm).</p>
 
 <figure id="fig_ou_relaxed_gm"><p><img src="figures/relaxed_ou_gm.png" width="50%" height="50%" /></p>
 <figcaption>The graphical model representation of the relaxed Ornstein-Uhlenbeck (OU) process under the random local clock. For more information about graphical model representations see <a class="citation" href="#Hoehna2014b">Höhna et al. (2014)</a>.</figcaption>
@@ -129,30 +129,30 @@
 
 <p>In this tutorial, we use the 66 vertebrate phylogenies and (log) body-size datasets from <a class="citation" href="#Landis2017b">(Landis and Schraiber 2017)</a> to estimate branch-specific optima of body-size evolution.</p>
 
-<p>⇨ The full relaxed BM-model specification is in the file called <code class="highlighter-rouge">mcmc_relaxed_OU.Rev</code>.</p>
+<p>⇨ The full relaxed BM-model specification is in the file called <code class="language-plaintext highlighter-rouge">mcmc_relaxed_OU.Rev</code>.</p>
 
 <h3 class="subsection" id="read-the-data">Read the data</h3>
 <hr class="subsection" />
 
 <p>We begin by deciding which of the 66 vertebrate datasets to use. Here, we assume we are analyzing the 5th dataset (<em>Acanthuridae</em>), but you should feel free to choose any of the datasets.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dataset &lt;- 1
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dataset &lt;- 1
 </code></pre></div></div>
 
 <p>Now, we read in the (time-calibrated) tree corresponding to our chosen dataset.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>T &lt;- readTrees("data/trees.nex")[dataset]
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>T &lt;- readTrees("data/trees.nex")[dataset]
 </code></pre></div></div>
 <p>We also want to keep track of the number of branches for our relaxed clock model.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ntips     &lt;- T.ntips()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ntips     &lt;- T.ntips()
 nbranches &lt;- 2 * ntips - 2
 </code></pre></div></div>
 
 <p>Next, we read in the character data for the same dataset.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data &lt;- readContinuousCharacterData("data/traits.nex")[dataset]
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data &lt;- readContinuousCharacterData("data/traits.nex")[dataset]
 </code></pre></div></div>
 
 <p>Additionally, we initialize a variable for our vector of
 moves and monitors:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
 monitors = VectorMonitors()
 </code></pre></div></div>
 
@@ -164,7 +164,7 @@ monitors = VectorMonitors()
 
 <p>In this tutorial, we assume the tree is known without area. We create a constant node for the tree that corresponds to the observed phylogeny.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tree &lt;- T
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tree &lt;- T
 </code></pre></div></div>
 
 <h4 class="subsubsection" id="rate-parameter">Rate parameter</h4>
@@ -172,7 +172,7 @@ monitors = VectorMonitors()
 
 <p>The stochastic rate of evolution is controlled by the rate parameter, $\sigma^2$. We draw the rate parameter from a loguniform prior. This prior is uniform on the log scale, which means that it is represents ignorance about the <em>order of magnitude</em> of the rate. As before, we provide a scale move that proposes changes to the parameter during MCMC.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sigma2 ~ dnLoguniform(1e-3, 1)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sigma2 ~ dnLoguniform(1e-3, 1)
 moves.append( mvScale(sigma2, weight=1.0) )
 </code></pre></div></div>
 
@@ -180,7 +180,7 @@ moves.append( mvScale(sigma2, weight=1.0) )
 <hr class="subsubsection" />
 
 <p>The rate of adaptation toward the optimum is determined by the parameter $\alpha$. We draw $\alpha$ from an exponential prior distribution, and place a scale proposal on it. This parameter is assumed to be constant across the tree (even though the optimum will vary).</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha ~ dnExponential(10)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha ~ dnExponential(10)
 moves.append( mvScale(alpha, weight=1.0) )
 </code></pre></div></div>
 
@@ -188,21 +188,21 @@ moves.append( mvScale(alpha, weight=1.0) )
 <hr class="subsubsection" />
 
 <p>We begin by drawing the optimum value at the root of the tree, and including a slide move.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>theta_root ~ dnUniform(-10, 10)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>theta_root ~ dnUniform(-10, 10)
 moves.append( mvSlide(theta_root, weight=1.0) )
 </code></pre></div></div>
 
 <p>We specify the relaxed-optimum model by specifying a prior on the probability of shifts for each branch. We parameterize our prior expected number of shifts, and then compute the probability of a shift on a given branch.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>expected_number_of_shifts &lt;- 5
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>expected_number_of_shifts &lt;- 5
 shift_probability &lt;- expected_number_of_shifts / nbranches
 </code></pre></div></div>
 
 <p>Next, we specify the prior distribution on the size of shifts (when they occur). We draw each rate shift from a uniform distribution.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>shift_distribution = dnNormal(0, 0.587)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>shift_distribution = dnNormal(0, 0.587)
 </code></pre></div></div>
 <p>Now, we loop over each branch, drawing a the change in the optima value from a mixture distribution. This mixture distribution places prior probability $p$ on the rate shift being drawn from the uniform distribution we just specified, and prior probability $1 - p$ on the shift being exactly equal to 0 (<em>i.e.</em>, no shift). We then compute the optimum on the branch by adding the change in the optimum to the ancestral optimum. Note that we loop over the branches in reverse order; this ensures that the ancestral optimum exists when we specify the optimum for a given branch.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for(i in nbranches:1) {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for(i in nbranches:1) {
 
     # draw the theta shift from a mixture distribution
     branch_deltas[i] ~ dnReversibleJumpMixture(0, shift_distribution, Probability(1 - shift_probability) )
@@ -227,23 +227,23 @@ shift_probability &lt;- expected_number_of_shifts / nbranches
 }
 </code></pre></div></div>
 <p>We also keep track of the total number of rate shifts.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>num_theta_changes := sum( branch_theta_shift )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>num_theta_changes := sum( branch_theta_shift )
 </code></pre></div></div>
 
 <h4 class="subsubsection" id="ou-model">OU model</h4>
 <hr class="subsubsection" />
 
-<p>Now that we have specified the branch-specific theta parameters, we can draw the character data from the corresponding phylogenetic OU model, just as we did for the simple OU models. In this case, we provide the vector of <code class="highlighter-rouge">branch_thetas</code> to the <code class="highlighter-rouge">theta</code> argument.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>X ~ dnPhyloOrnsteinUhlenbeckREML(tree, alpha, branch_thetas, sigma2^0.5, rootStates=theta_root)
+<p>Now that we have specified the branch-specific theta parameters, we can draw the character data from the corresponding phylogenetic OU model, just as we did for the simple OU models. In this case, we provide the vector of <code class="language-plaintext highlighter-rouge">branch_thetas</code> to the <code class="language-plaintext highlighter-rouge">theta</code> argument.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>X ~ dnPhyloOrnsteinUhlenbeckREML(tree, alpha, branch_thetas, sigma2^0.5, rootStates=theta_root)
 </code></pre></div></div>
 
-<p>Noting that $X$ is the observed data (<a href="#fig_ou_relaxed_gm"></a>), we clamp the <code class="highlighter-rouge">data</code> to this stochastic node.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>X.clamp(data)
+<p>Noting that $X$ is the observed data (<a href="#fig_ou_relaxed_gm"></a>), we clamp the <code class="language-plaintext highlighter-rouge">data</code> to this stochastic node.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>X.clamp(data)
 </code></pre></div></div>
 
-<p>Finally, we create a workspace object for the entire model with <code class="highlighter-rouge">model()</code>. Remember that workspace objects are initialized with the <code class="highlighter-rouge">=</code> operator, and are not themselves part of the Bayesian graphical model. The <code class="highlighter-rouge">model()</code> function traverses the entire model graph and finds all the nodes in the model that we specified. This object provides a convenient way to refer to the whole model object, rather than just a single DAG node.</p>
+<p>Finally, we create a workspace object for the entire model with <code class="language-plaintext highlighter-rouge">model()</code>. Remember that workspace objects are initialized with the <code class="language-plaintext highlighter-rouge">=</code> operator, and are not themselves part of the Bayesian graphical model. The <code class="language-plaintext highlighter-rouge">model()</code> function traverses the entire model graph and finds all the nodes in the model that we specified. This object provides a convenient way to refer to the whole model object, rather than just a single DAG node.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(X)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(X)
 </code></pre></div></div>
 
 <h3 class="subsection" id="running-an-mcmc-analysis">Running an MCMC analysis</h3>
@@ -252,12 +252,12 @@ shift_probability &lt;- expected_number_of_shifts / nbranches
 <h4 class="subsubsection" id="specifying-monitors">Specifying Monitors</h4>
 <hr class="subsubsection" />
 
-<p>For our MCMC analysis, we need to set up a vector of <em>monitors</em> to record the states of our Markov chain. The monitor functions are all called <code class="highlighter-rouge">mn*</code>, where <code class="highlighter-rouge">*</code> is the wildcard representing the monitor type. First, we will initialize the model monitor using the <code class="highlighter-rouge">mnModel</code> function. This creates a new monitor variable that will output the states for all model parameters when passed into a MCMC function.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/relaxed_OU.log", printgen=10) )
+<p>For our MCMC analysis, we need to set up a vector of <em>monitors</em> to record the states of our Markov chain. The monitor functions are all called <code class="language-plaintext highlighter-rouge">mn*</code>, where <code class="language-plaintext highlighter-rouge">*</code> is the wildcard representing the monitor type. First, we will initialize the model monitor using the <code class="language-plaintext highlighter-rouge">mnModel</code> function. This creates a new monitor variable that will output the states for all model parameters when passed into a MCMC function.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/relaxed_OU.log", printgen=10) )
 </code></pre></div></div>
 <p>Additionally, create a screen monitor that will report the states of
-specified variables to the screen with <code class="highlighter-rouge">mnScreen</code>:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(printgen=1000, sigma2, num_theta_changes) )
+specified variables to the screen with <code class="language-plaintext highlighter-rouge">mnScreen</code>:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(printgen=1000, sigma2, num_theta_changes) )
 </code></pre></div></div>
 
 <h4 class="subsubsection" id="initializing-and-running-the-mcmc-simulation">Initializing and Running the MCMC Simulation</h4>
@@ -265,19 +265,19 @@ specified variables to the screen with <code class="highlighter-rouge">mnScreen<
 
 <p>With a fully specified model, a set of monitors, and a set of moves, we
 can now set up the MCMC algorithm that will sample parameter values in
-proportion to their posterior probability. The <code class="highlighter-rouge">mcmc()</code> function will
+proportion to their posterior probability. The <code class="language-plaintext highlighter-rouge">mcmc()</code> function will
 create our MCMC object:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
 </code></pre></div></div>
 <p>Now, run the MCMC:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=50000)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=50000)
 </code></pre></div></div>
 <p>When the analysis is complete, you will have the monitored files in your
 output directory.</p>
 
-<p>⇨ The <code class="highlighter-rouge">Rev</code> file for performing this analysis: <code class="highlighter-rouge">mcmc_relaxed_OU.Rev</code></p>
+<p>⇨ The <code class="language-plaintext highlighter-rouge">Rev</code> file for performing this analysis: <code class="language-plaintext highlighter-rouge">mcmc_relaxed_OU.Rev</code></p>
 
-<p>You can then visualize the branch-specific rates by plotting them using our <code class="highlighter-rouge">R</code> package <code class="highlighter-rouge">RevGadgets</code>. Just start R in the main directory for this analysis and then type the following commands:</p>
+<p>You can then visualize the branch-specific rates by plotting them using our <code class="language-plaintext highlighter-rouge">R</code> package <code class="language-plaintext highlighter-rouge">RevGadgets</code>. Just start R in the main directory for this analysis and then type the following commands:</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">RevGadgets</span><span class="p">)</span><span class="w">
 
 </span><span class="n">dataset</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">1</span><span class="w">
@@ -301,10 +301,10 @@ Here we show the results of our example analysis.</figcaption>
 <hr class="subsection" />
 
 <ul>
-  <li>Run an MCMC simulation to estimate the posterior distribution of the branch-specific thetas (<code class="highlighter-rouge">branch_thetas</code>) assuming a prior expected number of shifts of 5.</li>
+  <li>Run an MCMC simulation to estimate the posterior distribution of the branch-specific thetas (<code class="language-plaintext highlighter-rouge">branch_thetas</code>) assuming a prior expected number of shifts of 5.</li>
   <li>Plot the thetas among branches under this prior.</li>
   <li>Change the prior expected number of shifts to 1, and then plot the branch-specific thetas on the tree.</li>
-  <li>Compare the posterior distributions for the total number of shifts under both priors using <code class="highlighter-rouge">Tracer</code>. Does the posterior distribution for the total number of shifts seem to be sensitive to the prior?</li>
+  <li>Compare the posterior distributions for the total number of shifts under both priors using <code class="language-plaintext highlighter-rouge">Tracer</code>. Does the posterior distribution for the total number of shifts seem to be sensitive to the prior?</li>
   <li>Compare the posterior mean estimates under each prior. Do the posterior mean estimates estimates appear to be sensitive to this prior?</li>
 </ul>
 

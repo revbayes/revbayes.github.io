@@ -90,8 +90,8 @@ With some more words, the SBC algorithm/procedure works as follows:</p>
 
 <p>Overview of an SBC analysis in RevBayes:</p>
 <ol>
-  <li>Create a <code class="highlighter-rouge">Rev</code> script for the validation analysis.</li>
-  <li>Run the <code class="highlighter-rouge">Rev</code> script, e.g., <code class="highlighter-rouge">rb scripts/Validation_normal.Rev</code> or <code class="highlighter-rouge">mpirun -np 20 rb-mpi scripts/Validation_normal.Rev</code></li>
+  <li>Create a <code class="language-plaintext highlighter-rouge">Rev</code> script for the validation analysis.</li>
+  <li>Run the <code class="language-plaintext highlighter-rouge">Rev</code> script, e.g., <code class="language-plaintext highlighter-rouge">rb scripts/Validation_normal.Rev</code> or <code class="language-plaintext highlighter-rouge">mpirun -np 20 rb-mpi scripts/Validation_normal.Rev</code></li>
   <li>Check that you obtained acceptable coverage probabilities.</li>
 </ol>
 
@@ -101,13 +101,13 @@ With some more words, the SBC algorithm/procedure works as follows:</p>
 <p>In the RevBayes GitHub repository, the validation scripts are all located within the folder called <a href="https://github.com/revbayes/revbayes/tree/master/validation">validation</a>.</p>
 
 <figure id="fig_dir"><p><img src="figures/validation_dir.png" width="500" /></p>
-<figcaption>That directory structure within RevBayes. You should see the <code class="highlighter-rouge">validation</code> directory with the two sub-directories <code class="highlighter-rouge">scripts</code> and <code class="highlighter-rouge">data</code>.</figcaption>
+<figcaption>That directory structure within RevBayes. You should see the <code class="language-plaintext highlighter-rouge">validation</code> directory with the two sub-directories <code class="language-plaintext highlighter-rouge">scripts</code> and <code class="language-plaintext highlighter-rouge">data</code>.</figcaption>
 </figure>
 
 <p>In this directory there are two subdirectories:</p>
 <ol>
-  <li><code class="highlighter-rouge">scripts</code>: containing the <code class="highlighter-rouge">Rev</code> scripts defining different models and analyses that use the RevBayes validation functions to evaluate the coverage of relevant parameters.</li>
-  <li><code class="highlighter-rouge">data</code>: containing the data files used to determine the dimensions of the simulations for some
+  <li><code class="language-plaintext highlighter-rouge">scripts</code>: containing the <code class="language-plaintext highlighter-rouge">Rev</code> scripts defining different models and analyses that use the RevBayes validation functions to evaluate the coverage of relevant parameters.</li>
+  <li><code class="language-plaintext highlighter-rouge">data</code>: containing the data files used to determine the dimensions of the simulations for some
 of the validation analyses (<em>e.g.</em>, taxon names, number of taxa, alignment length). Data files
 are not necessary for validation of all models.</li>
 </ol>
@@ -140,14 +140,14 @@ behaving correctly in RevBayes:</p>
 This routine is performed for many simulation replicates (set in the validation script) and the coverage probability across replicates is summarized and reported to the screen.</p>
 
 <p>The complete validation script for the Normal distribution can be found in the RevBayes GitHub repository:
-<a href="https://github.com/revbayes/revbayes/blob/master/validation/scripts/Validation_normal.Rev"><code class="highlighter-rouge">Validation_normal.Rev</code></a>.
+<a href="https://github.com/revbayes/revbayes/blob/master/validation/scripts/Validation_normal.Rev"><code class="language-plaintext highlighter-rouge">Validation_normal.Rev</code></a>.
 If you view this script, you will see that it begins with a header in comments that provide details about the script:</p>
 
 <ol>
-  <li><code class="highlighter-rouge"># RevBayes Validation Test: Normal Distribution</code> – the name of the validation test.</li>
-  <li><code class="highlighter-rouge"># Model: 10 random variables from a normal distribution with a uniform prior on the mean and exponential prior on the standard deviation.</code> – a brief description of what the validation script is testing.</li>
-  <li><code class="highlighter-rouge"># Inference: MCMC algorithm with the following moves: mvSlide and mvScale</code> – a list of moves that are tested in this validation</li>
-  <li><code class="highlighter-rouge">authors: Sebastian Hoehna</code> – the author of the script and the person you should contact if you implement any new functionality in RevBayes that break their validation test.</li>
+  <li><code class="language-plaintext highlighter-rouge"># RevBayes Validation Test: Normal Distribution</code> – the name of the validation test.</li>
+  <li><code class="language-plaintext highlighter-rouge"># Model: 10 random variables from a normal distribution with a uniform prior on the mean and exponential prior on the standard deviation.</code> – a brief description of what the validation script is testing.</li>
+  <li><code class="language-plaintext highlighter-rouge"># Inference: MCMC algorithm with the following moves: mvSlide and mvScale</code> – a list of moves that are tested in this validation</li>
+  <li><code class="language-plaintext highlighter-rouge">authors: Sebastian Hoehna</code> – the author of the script and the person you should contact if you implement any new functionality in RevBayes that break their validation test.</li>
 </ol>
 
 <h4 class="subsubsection" id="model">Specify the model</h4>
@@ -155,7 +155,7 @@ If you view this script, you will see that it begins with a header in comments t
 
 <p>The first part of the script specifies the model DAG (<em>i.e.</em>, random variables and conditional dependency) and its dimensions (<em>i.e.</em> the number of samples).</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_samples = 10
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_samples = 10
 
 mu ~ dnUniform( -10, 10 )
 sigma ~ dnExponential( 1.0 )
@@ -170,39 +170,39 @@ for (i in 1:n_samples ) {
 }
 </code></pre></div></div>
 
-<p>Note that in this script, the data node is clamped: <code class="highlighter-rouge">x[i].clamp( 0.0 )</code>.
+<p>Note that in this script, the data node is clamped: <code class="language-plaintext highlighter-rouge">x[i].clamp( 0.0 )</code>.
 This is not necessary since the validation methods will change the clamped value to the simulated data value for each simulation replicate.
 It also doesn’t hurt to clamp the nodes in this case if you prefer to do so.
 Clamping will make it more obvious which variables represent the data.</p>
 
 <p>Once the model DAG is set up, you can create a model workspace variable:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(mu)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(mu)
 </code></pre></div></div>
 
 <h4 class="subsubsection" id="MCMC">Specify the MCMC object</h4>
 <hr class="subsubsection" />
 
 <p>Before using the validation functions, you need to first have an MCMC workspace variable.
-Because the <code class="highlighter-rouge">mcmc()</code> function requires a list of monitors, we create an empty list to satisfy the required arguments of that function.
+Because the <code class="language-plaintext highlighter-rouge">mcmc()</code> function requires a list of monitors, we create an empty list to satisfy the required arguments of that function.
 Ultimately, the validation functions will not actually use this monitor because a new ones
 will be created for each simulation replicate.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors = VectorMonitors()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors = VectorMonitors()
 </code></pre></div></div>
 
 <p>The MCMC object is initialized just like in any normal MCMC analysis.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves)
 </code></pre></div></div>
 
 <h4 class="subsubsection" id="valid">Specify the validation analysis</h4>
 <hr class="subsubsection" />
 
 <p>The first step in specifying the validation analysis is to create a workspace object using
-the <code class="highlighter-rouge">validationAnalysis()</code> function.
+the <code class="language-plaintext highlighter-rouge">validationAnalysis()</code> function.
 This function takes 2 arguments: (1) and MCMC object and (2) the number of
 simulation replicates you want it to perform.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>validation = validationAnalysis( mymcmc, 1000 )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>validation = validationAnalysis( mymcmc, 1000 )
 </code></pre></div></div>
 
 <p>For this validation, note that we chose 1000 replicates.
@@ -213,25 +213,25 @@ Importantly, this can be alleviated if you compile the MPI version of RevBayes, 
 
 <p>Next, you can specify a burn-in period, which will run the MCMC for each replicate for a specified number of MCMC cycles, while re-tuning the moves.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>validation.burnin(generations=10000,tuningInterval=100)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>validation.burnin(generations=10000,tuningInterval=100)
 </code></pre></div></div>
 
 <p>Now you can run the validation MCMC.
 (As previously mentioned, it is best to compile the MPI version of RevBayes.)
 The number of generations should be chosen at your discretion, but this should be a sufficient number of samplesso that you can ensure your MCMC has effectively sampled the target distribution.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>validation.run(generations=30000)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>validation.run(generations=30000)
 </code></pre></div></div>
 
 <h4 class="subsubsection" id="summarize">Validation summary</h4>
 <hr class="subsubsection" />
 
-<p>Once the validation run is complete, you can use the <code class="highlighter-rouge">.summarize()</code> method of the validation object.</p>
+<p>Once the validation run is complete, you can use the <code class="language-plaintext highlighter-rouge">.summarize()</code> method of the validation object.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>validation.summarize( coverageProbability=0.9 )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>validation.summarize( coverageProbability=0.9 )
 </code></pre></div></div>
 
-<div class="Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Summarizing analysis ...
+<div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Summarizing analysis ...
 
 The validation analysis ran 1000 simulations to validate the implementation.
 This analysis used a 0.9 credible interval.
@@ -256,7 +256,7 @@ In the example output above, the interval is 0.881 to 0.918.</p>
 <p>SBC is a stochastic procedure, so it can happen by chance that your coverage probabilities are outside the expected range.
 You should run the SBC with more replicates and check if your coverage probabilities is now closer to the expected value.</p>
 
-<p>If more replicates are not helping, then you should check your <code class="highlighter-rouge">Rev</code> script if everything is properly set-up, that you didn’t forget any MCMC moves by chance.
+<p>If more replicates are not helping, then you should check your <code class="language-plaintext highlighter-rouge">Rev</code> script if everything is properly set-up, that you didn’t forget any MCMC moves by chance.
 If you still get unexpected coverage probabilities, then you need to check:</p>
 <ul>
   <li>the simulation function used in the distribution,</li>

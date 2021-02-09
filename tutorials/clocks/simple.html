@@ -156,10 +156,10 @@ For this, you will need to download the data files.</p>
 <p>To keep things organized, it is recommended that you create a new directory for this tutorial, and then place all of the data files in a subdirectory.</p>
 
 <blockquote class="instruction">
-  <p>Create a new directory on your computer called <code class="highlighter-rouge">RB_div_clock_tutorial</code>.</p>
+  <p>Create a new directory on your computer called <code class="language-plaintext highlighter-rouge">RB_div_clock_tutorial</code>.</p>
 
-  <p>Within the <code class="highlighter-rouge">RB_div_clock_tutorial</code> directory, create a subdirectory called <code class="highlighter-rouge">data</code>. 
-Then, dowload the <a href="https://revbayes.github.io/revbayes-site/tutorials/clocks/data/bears_dosReis.tre"><code class="highlighter-rouge">bears_dosReis.tre</code></a> and <a href="https://revbayes.github.io/revbayes-site/tutorials/clocks/data/bears_irbp.nex"><code class="highlighter-rouge">bears_irbp.nex</code></a> and place them in the <code class="highlighter-rouge">data</code> folder.</p>
+  <p>Within the <code class="language-plaintext highlighter-rouge">RB_div_clock_tutorial</code> directory, create a subdirectory called <code class="language-plaintext highlighter-rouge">data</code>. 
+Then, dowload the <a href="https://revbayes.github.io/revbayes-site/tutorials/clocks/data/bears_dosReis.tre"><code class="language-plaintext highlighter-rouge">bears_dosReis.tre</code></a> and <a href="https://revbayes.github.io/revbayes-site/tutorials/clocks/data/bears_irbp.nex"><code class="language-plaintext highlighter-rouge">bears_irbp.nex</code></a> and place them in the <code class="language-plaintext highlighter-rouge">data</code> folder.</p>
 </blockquote>
 
 <!-- need to fix the data file links -->
@@ -167,12 +167,12 @@ Then, dowload the <a href="https://revbayes.github.io/revbayes-site/tutorials/cl
 <p>Now you can execute RevBayes.</p>
 
 <blockquote class="instruction">
-  <p>Navigate to the <code class="highlighter-rouge">RB_div_clock_tutorial</code> directory and execute the <code class="highlighter-rouge">rb</code> binary. 
-One option for doing this is to move the <code class="highlighter-rouge">rb</code> executable to the <code class="highlighter-rouge">RB_div_clock_tutorial</code>
+  <p>Navigate to the <code class="language-plaintext highlighter-rouge">RB_div_clock_tutorial</code> directory and execute the <code class="language-plaintext highlighter-rouge">rb</code> binary. 
+One option for doing this is to move the <code class="language-plaintext highlighter-rouge">rb</code> executable to the <code class="language-plaintext highlighter-rouge">RB_div_clock_tutorial</code>
 directory.</p>
 
   <p>Alternatively, if you are on a Unix system, and have added RevBayes to your path, 
-you simply have to type <code class="highlighter-rouge">rb</code> in your Terminal to run the program.</p>
+you simply have to type <code class="language-plaintext highlighter-rouge">rb</code> in your Terminal to run the program.</p>
 </blockquote>
 
 <p>Once you execute RevBayes, you will be in the console. The rest of this tutorial will proceed 
@@ -297,12 +297,12 @@ there is a constant rate of speciation and the rate of extinction is 0.0.</p>
 
 <p>To start our evaluation of the Yule model, we must first read in the published phylogeny and
 the branch lengths (in units of millions of years). 
-For this, we will create the variable <code class="highlighter-rouge">T</code> to represent the published tree and use the function <code class="highlighter-rouge">readTrees()</code> to get the tree from the file in the <code class="highlighter-rouge">data</code> folder.</p>
+For this, we will create the variable <code class="language-plaintext highlighter-rouge">T</code> to represent the published tree and use the function <code class="language-plaintext highlighter-rouge">readTrees()</code> to get the tree from the file in the <code class="language-plaintext highlighter-rouge">data</code> folder.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>T &lt;- readTrees("data/bears_dosReis.tre")[1]
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>T &lt;- readTrees("data/bears_dosReis.tre")[1]
 </code></pre></div></div>
 
-<p>Because the <code class="highlighter-rouge">readTrees()</code> function can read a file with a single tree or many trees, it always returns a vector of trees. Thus, we use the index notation <code class="highlighter-rouge">[1]</code> to indicate that we 
+<p>Because the <code class="language-plaintext highlighter-rouge">readTrees()</code> function can read a file with a single tree or many trees, it always returns a vector of trees. Thus, we use the index notation <code class="language-plaintext highlighter-rouge">[1]</code> to indicate that we 
 only want the first tree.</p>
 
 <!-- Now we will create a helper variable that simply stores the list of taxon names. 
@@ -313,7 +313,7 @@ This list will
 
 <p>Next we need a helper variable to keep track of the index in our list of moves:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvi = 1
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvi = 1
 </code></pre></div></div>
 
 <h4 id="the-speciation-rate">The speciation rate</h4>
@@ -323,117 +323,117 @@ For the Yule process, we do not need very many parameters. The most important on
 is the <em>speciation rate</em>. We will assume that the mean speciation rate is 1.0 and our prior on 
 this parameter is an <a href="https://en.wikipedia.org/wiki/Exponential_distribution">exponential distribution</a>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sp_mean &lt;- 1.0
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sp_mean &lt;- 1.0
 speciation ~ dnExp(1.0 / sp_mean)
 </code></pre></div></div>
 
-<p>The parameter <code class="highlighter-rouge">speciation</code> is a stochastic node. When it is created, RevBayes 
+<p>The parameter <code class="language-plaintext highlighter-rouge">speciation</code> is a stochastic node. When it is created, RevBayes 
 initializes it with a value drawn from the prior. If we wish to estimate its value, 
-we must now apply a <em>move</em> that will propose changes to <code class="highlighter-rouge">speciation</code> over the course of our
+we must now apply a <em>move</em> that will propose changes to <code class="language-plaintext highlighter-rouge">speciation</code> over the course of our
 analysis.</p>
 
-<p>For <code class="highlighter-rouge">speciation</code> we will use the scale move, which is called <code class="highlighter-rouge">mvScale()</code> in RevBayes. 
+<p>For <code class="language-plaintext highlighter-rouge">speciation</code> we will use the scale move, which is called <code class="language-plaintext highlighter-rouge">mvScale()</code> in RevBayes. 
 This move proposes changes to a continuous valued parameter using a multiplier. 
 The degree of change from that multiplier is determined by the value of the tuning parameter 
-<code class="highlighter-rouge">lambda</code> in the move arguments. If we set the option <code class="highlighter-rouge">tune=true</code>, then the tuning parameter will be optimized for our analysis during the initial burn-in phase of our MCMC.</p>
+<code class="language-plaintext highlighter-rouge">lambda</code> in the move arguments. If we set the option <code class="language-plaintext highlighter-rouge">tune=true</code>, then the tuning parameter will be optimized for our analysis during the initial burn-in phase of our MCMC.</p>
 
 <p>The move functions also require us to decide how often changes are proposed to this parameter.
-This is done by setting the <code class="highlighter-rouge">weight</code> of the move.</p>
+This is done by setting the <code class="language-plaintext highlighter-rouge">weight</code> of the move.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvScale(speciation, lambda=1.0, tune=true, weight=3.0)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvScale(speciation, lambda=1.0, tune=true, weight=3.0)
 </code></pre></div></div>
 
-<p>All of our moves are contained in a single vector we are calling <code class="highlighter-rouge">moves</code>. 
-In the <code class="highlighter-rouge">Rev</code> code above, we put our first move in the first position of the vector. 
-The <code class="highlighter-rouge">++</code> notation indicates that we are incrementing the index variable <code class="highlighter-rouge">mvi</code> by <code class="highlighter-rouge">1</code>. 
-By using <code class="highlighter-rouge">mvi++</code> we are using post-incrementation. This means that the variable is increased 
+<p>All of our moves are contained in a single vector we are calling <code class="language-plaintext highlighter-rouge">moves</code>. 
+In the <code class="language-plaintext highlighter-rouge">Rev</code> code above, we put our first move in the first position of the vector. 
+The <code class="language-plaintext highlighter-rouge">++</code> notation indicates that we are incrementing the index variable <code class="language-plaintext highlighter-rouge">mvi</code> by <code class="language-plaintext highlighter-rouge">1</code>. 
+By using <code class="language-plaintext highlighter-rouge">mvi++</code> we are using post-incrementation. This means that the variable is increased 
 <em>after</em> it is used.</p>
 
 <h4 id="the-probability-of-sampling-an-extant-species">The probability of sampling an extant species</h4>
 
 <p>The other important parameter of the Yule model is the probability of sampling a species 
 in the present. In this exercise, we have every living species of bear represented in 
-our dataset. Thus, it is reasonable to say that the sampling probability is approximately <code class="highlighter-rouge">1</code>.
-We will create a <em>constant</em> node called <code class="highlighter-rouge">sampling</code>.</p>
+our dataset. Thus, it is reasonable to say that the sampling probability is approximately <code class="language-plaintext highlighter-rouge">1</code>.
+We will create a <em>constant</em> node called <code class="language-plaintext highlighter-rouge">sampling</code>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sampling &lt;- 1.0
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sampling &lt;- 1.0
 </code></pre></div></div>
 
 <h4 id="conditioning-on-the-root-age">Conditioning on the root age</h4>
 
 <p>In this analysis, we will condition the process on the root age. This, we can obtain from 
-the tree we imported earlier. The tree object has a method called <code class="highlighter-rouge">.rootAge()</code> which returns
-the depth of the tree. We will create a <em>constant</em> node for this value called <code class="highlighter-rouge">root_time</code>.</p>
+the tree we imported earlier. The tree object has a method called <code class="language-plaintext highlighter-rouge">.rootAge()</code> which returns
+the depth of the tree. We will create a <em>constant</em> node for this value called <code class="language-plaintext highlighter-rouge">root_time</code>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root_time &lt;- T.rootAge()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root_time &lt;- T.rootAge()
 </code></pre></div></div>
 
 <h4 id="putting-it-all-together-in-the-birth-death-process-distribution">Putting it all together in the birth-death process distribution</h4>
 
 <p>We now have all of the components of our model. As you can see, we have only applied a move 
-to the parameter <code class="highlighter-rouge">speciation</code>. The next step is to create the stochastic node representing 
+to the parameter <code class="language-plaintext highlighter-rouge">speciation</code>. The next step is to create the stochastic node representing 
 the phylogeny and branching times. We assume that this time-tree is generated from a Yule 
-process, which is the same as a birth-death process with extinction set to <code class="highlighter-rouge">0.0</code>.</p>
+process, which is the same as a birth-death process with extinction set to <code class="language-plaintext highlighter-rouge">0.0</code>.</p>
 
-<p>In RevBayes, the constant-rate birth-death process is invoked using the syntax <code class="highlighter-rouge">dnBDP()</code>. 
+<p>In RevBayes, the constant-rate birth-death process is invoked using the syntax <code class="language-plaintext highlighter-rouge">dnBDP()</code>. 
 This distribution has the following arguments:</p>
 
 <ul>
-  <li><code class="highlighter-rouge">lambda</code>: the speciation rate</li>
-  <li><code class="highlighter-rouge">mu</code>: the extinction rate</li>
-  <li><code class="highlighter-rouge">rho</code>: the probability of sampling an extant taxon</li>
-  <li><code class="highlighter-rouge">rootAge</code>: the age of the most-recent-common ancestor of all taxa in the tree</li>
-  <li><code class="highlighter-rouge">samplingStrategy</code>: if sampling of taxa has been <code class="highlighter-rouge">uniform</code> (<em>i.e.</em>, random) or <code class="highlighter-rouge">diversified</code>
+  <li><code class="language-plaintext highlighter-rouge">lambda</code>: the speciation rate</li>
+  <li><code class="language-plaintext highlighter-rouge">mu</code>: the extinction rate</li>
+  <li><code class="language-plaintext highlighter-rouge">rho</code>: the probability of sampling an extant taxon</li>
+  <li><code class="language-plaintext highlighter-rouge">rootAge</code>: the age of the most-recent-common ancestor of all taxa in the tree</li>
+  <li><code class="language-plaintext highlighter-rouge">samplingStrategy</code>: if sampling of taxa has been <code class="language-plaintext highlighter-rouge">uniform</code> (<em>i.e.</em>, random) or <code class="language-plaintext highlighter-rouge">diversified</code>
 (<em>i.e.</em>, one species selected per taxonomic group)</li>
-  <li><code class="highlighter-rouge">condition</code>: if the process is conditioned on (1) there being <code class="highlighter-rouge">nTaxa</code> at the time of 
-sampling, (2) the <code class="highlighter-rouge">survival</code> of the clade, or (3) the process proceeding for a given amount of <code class="highlighter-rouge">time</code>.</li>
-  <li><code class="highlighter-rouge">taxa</code>: the list of species names that are in the tree (this is extracted from the input tree
-using <code class="highlighter-rouge">T.taxa()</code>)</li>
+  <li><code class="language-plaintext highlighter-rouge">condition</code>: if the process is conditioned on (1) there being <code class="language-plaintext highlighter-rouge">nTaxa</code> at the time of 
+sampling, (2) the <code class="language-plaintext highlighter-rouge">survival</code> of the clade, or (3) the process proceeding for a given amount of <code class="language-plaintext highlighter-rouge">time</code>.</li>
+  <li><code class="language-plaintext highlighter-rouge">taxa</code>: the list of species names that are in the tree (this is extracted from the input tree
+using <code class="language-plaintext highlighter-rouge">T.taxa()</code>)</li>
 </ul>
 
 <p>Now that we have instantiated all of these values, we can create a stochastic node for the 
-time tree (let’s call it <code class="highlighter-rouge">timetree</code>).</p>
+time tree (let’s call it <code class="language-plaintext highlighter-rouge">timetree</code>).</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree ~ dnBDP(lambda=speciation, mu=0.0, rho=sampling, rootAge=root_time, samplingStrategy="uniform", condition="nTaxa", taxa=T.taxa())
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree ~ dnBDP(lambda=speciation, mu=0.0, rho=sampling, rootAge=root_time, samplingStrategy="uniform", condition="nTaxa", taxa=T.taxa())
 </code></pre></div></div>
 
-<p>Like other stochastic nodes, RevBayes initializes the value of <code class="highlighter-rouge">timetree</code> by drawing a state from the prior. 
+<p>Like other stochastic nodes, RevBayes initializes the value of <code class="language-plaintext highlighter-rouge">timetree</code> by drawing a state from the prior. 
 Since we are treating the tree from <a class="citation" href="#DosReis2012">dos Reis et al. (2012)</a> as an “observation”, we now 
-have to fix the value of <code class="highlighter-rouge">timetree</code> to be the same as the published phylogeny. 
-To do this, we use the member method <code class="highlighter-rouge">.clamp()</code> that is specific to stochastic nodes.
+have to fix the value of <code class="language-plaintext highlighter-rouge">timetree</code> to be the same as the published phylogeny. 
+To do this, we use the member method <code class="language-plaintext highlighter-rouge">.clamp()</code> that is specific to stochastic nodes.
 This is how we tell RevBayes that we have observed the value of a stochastic node and it
 should be treated as data and fixed.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree.clamp(T)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree.clamp(T)
 </code></pre></div></div>
 
 <h4 id="the-workspace-model-object">The workspace model object</h4>
 
 <p>Now that our model is complete, we can create a model object in our workspace using the 
-<code class="highlighter-rouge">model()</code> function. 
+<code class="language-plaintext highlighter-rouge">model()</code> function. 
 This allows us to put a “wrapper” around all of the components of our model so that we can 
 use it in analysis functions.
-Because our model is a directed-acyclic graph, we only need to give the <code class="highlighter-rouge">model()</code> function 
+Because our model is a directed-acyclic graph, we only need to give the <code class="language-plaintext highlighter-rouge">model()</code> function 
 one node and it will traverse the graph and find all of the linked parameters.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(speciation)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(speciation)
 </code></pre></div></div>
 
-<p>One useful member method of the model object is the <code class="highlighter-rouge">graph()</code> method. This allows us to 
+<p>One useful member method of the model object is the <code class="language-plaintext highlighter-rouge">graph()</code> method. This allows us to 
 visualize our graphical model. Unfortunately, this is only a reasonable thing to do 
 for relatively small models. This function write graph to a file in the 
 <a href="https://en.wikipedia.org/wiki/DOT_(graph_description_language)">dot</a> 
 graph description language. This file can be opened using the program <a href="https://www.graphviz.org/">Graphviz</a>, or you can try pasting the contents of the file in a <a href="http://www.webgraphviz.com/">web version</a> that can 
 display the graph.</p>
 
-<p>We will call the graph <code class="highlighter-rouge">yule_graph.dot</code>. You can see the image generated by Graphviz in <a href="#yulegraphv"></a>.</p>
+<p>We will call the graph <code class="language-plaintext highlighter-rouge">yule_graph.dot</code>. You can see the image generated by Graphviz in <a href="#yulegraphv"></a>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel.graph("yule_graph.dot")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel.graph("yule_graph.dot")
 </code></pre></div></div>
 
 <figure id="yulegraphv"><p><img src="figures/yule_gm.svg" width="400" /></p>
 <figcaption>The probabilistic graphical model of the Yule diversification model for the bear phylogeny.
-This image was generated by running the <code class="highlighter-rouge">.graph()</code> method fo the model object and opening the
+This image was generated by running the <code class="language-plaintext highlighter-rouge">.graph()</code> method fo the model object and opening the
 resulting file in the program <a href="https://www.graphviz.org/">Graphviz</a>.</figcaption>
 </figure>
 
@@ -444,11 +444,11 @@ To do this we create a list of monitors that specify how our samples are saved.<
 
 <p>To estimate the marginal likelihood using the stepping-stone approach, we will save the
 states sampled for each step. All of the files written will be placed in a new directory
-called <code class="highlighter-rouge">output</code> that RevBayes will create in the directory where we are running it (if it 
+called <code class="language-plaintext highlighter-rouge">output</code> that RevBayes will create in the directory where we are running it (if it 
 isn’t there already.)
 We also make a screen monitor so that we can see the progress of our analysis.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[1] = mnModel(filename="output/bears_yule.log",printgen=10, separator = TAB)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[1] = mnModel(filename="output/bears_yule.log",printgen=10, separator = TAB)
 monitors[2] = mnScreen(printgen=1000, speciation)
 </code></pre></div></div>
 
@@ -456,13 +456,13 @@ monitors[2] = mnScreen(printgen=1000, speciation)
 
 <p>Above in the <a href="#secdiv">introduction section</a> of this part of the tutorial, we explained
 Bayes factors and the need to compute the marginal likelihoods. 
-This approach uses the RevBayes function <code class="highlighter-rouge">powerPosterior()</code> to perform the series of MCMC simulations to estimate the marginal likelihood. 
+This approach uses the RevBayes function <code class="language-plaintext highlighter-rouge">powerPosterior()</code> to perform the series of MCMC simulations to estimate the marginal likelihood. 
 The function takes the model, list of moves, and list of monitors. 
 We must also specify an output file where the power posteriors are saved for each step and the number of steps taken. 
-Here we will set the number of steps to <code class="highlighter-rouge">100</code>, using <code class="highlighter-rouge">cats=100</code>, this will result in 101 
+Here we will set the number of steps to <code class="language-plaintext highlighter-rouge">100</code>, using <code class="language-plaintext highlighter-rouge">cats=100</code>, this will result in 101 
 power posteriors (or “stones”).</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pow_p = powerPosterior(mymodel, moves, monitors, "output/yule_powp.out", cats=100, sampleFreq=10)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pow_p = powerPosterior(mymodel, moves, monitors, "output/yule_powp.out", cats=100, sampleFreq=10)
 </code></pre></div></div>
 
 <p>We can start the power-posterior analysis by first burning in the chain
@@ -470,25 +470,25 @@ and and discarding the first 10000 states. This will help ensure that
 analysis starts from a region of high posterior probability, rather than
 from some random point.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pow_p.burnin(generations=10000,tuningInterval=200)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pow_p.burnin(generations=10000,tuningInterval=200)
 </code></pre></div></div>
 
 <p>Now we can execute the run.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pow_p.run(generations=10000)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pow_p.run(generations=10000)
 </code></pre></div></div>
 
 <p>Once the power posteriors have been saved to file, create a stepping
 stone sampler. This function can read any file of power posteriors and
 compute the marginal likelihood using stepping-stone sampling.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ss = steppingStoneSampler(file="output/yule_powp.out", powerColumnName="power", likelihoodColumnName="likelihood")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ss = steppingStoneSampler(file="output/yule_powp.out", powerColumnName="power", likelihoodColumnName="likelihood")
 </code></pre></div></div>
 
-<p>The workspace variable <code class="highlighter-rouge">ss</code> now holds the estimated marginal likelihood. We can view the value
+<p>The workspace variable <code class="language-plaintext highlighter-rouge">ss</code> now holds the estimated marginal likelihood. We can view the value
 and print it to our screen.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ss.marginal()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ss.marginal()
 </code></pre></div></div>
 
 <p><strong>Write down the value displayed. This is the marginal likelihood of the Yule model ($M_0$).</strong></p>
@@ -505,14 +505,14 @@ Once we have completed our run of the stepping stone estimator, we can then comp
 <p>Before we begin a new model, we should first clear our workspace. This ensures that we 
 won’t have any variables left over from the previous section.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clear()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clear()
 </code></pre></div></div>
 
 <h4 id="read-in-the-tree-and-get-some-helper-variables-1">Read in the tree and get some helper variables</h4>
 
 <p>We will initialize the analysis just like we did above.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>T &lt;- readTrees("data/bears_dosReis.tre")[1]
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>T &lt;- readTrees("data/bears_dosReis.tre")[1]
 mvi = 1
 </code></pre></div></div>
 
@@ -520,7 +520,7 @@ mvi = 1
 
 <p>For this model, let’s assume that the speciation rate has a smaller mean value.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sp_mean &lt;- 0.2
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sp_mean &lt;- 0.2
 speciation ~ dnExp(1.0 / sp_mean)
 moves[mvi++] = mvScale(speciation, lambda=1.0, tune=true, weight=3.0)
 </code></pre></div></div>
@@ -528,10 +528,10 @@ moves[mvi++] = mvScale(speciation, lambda=1.0, tune=true, weight=3.0)
 <h4 id="the-extinction-rate">The extinction rate</h4>
 
 <p>Now we have to create a new stochastic node for the extinction rate. This we will assume 
-has a mean of <code class="highlighter-rouge">0.01</code>. And like the <code class="highlighter-rouge">speciation</code> this variable is drawn from an exponential
+has a mean of <code class="language-plaintext highlighter-rouge">0.01</code>. And like the <code class="language-plaintext highlighter-rouge">speciation</code> this variable is drawn from an exponential
 distribution.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ext_mean &lt;- 0.01
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ext_mean &lt;- 0.01
 extinction ~ dnExp(1.0 / ext_mean)
 moves[mvi++] = mvScale(extinction, lambda=1.0, tune=true, weight=3.0)
 </code></pre></div></div>
@@ -541,7 +541,7 @@ moves[mvi++] = mvScale(extinction, lambda=1.0, tune=true, weight=3.0)
 <p>Sometimes, we may be interested parameters that are functions of parameters in our model. 
 We can create these as deterministic nodes and monitor these alongside our stochastic nodes.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>diversification := speciation - extinction
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>diversification := speciation - extinction
 turnover := extinction / speciation
 </code></pre></div></div>
 
@@ -549,21 +549,21 @@ turnover := extinction / speciation
 
 <p>As with the Yule model, we will assume that the sampling probability is effectively 1.0.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sampling &lt;- 1.0
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sampling &lt;- 1.0
 </code></pre></div></div>
 
 <h4 id="conditioning-on-the-root-age-1">Conditioning on the root age</h4>
 
 <p>Create the root-age constant node.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root_time &lt;- T.rootAge()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root_time &lt;- T.rootAge()
 </code></pre></div></div>
 
 <h4 id="putting-it-all-together-in-the-birth-death-process-distribution-1">Putting it all together in the birth-death process distribution</h4>
 
-<p>For this model, we will set <code class="highlighter-rouge">mu=extinction</code>.</p>
+<p>For this model, we will set <code class="language-plaintext highlighter-rouge">mu=extinction</code>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree ~ dnBDP(lambda=speciation, mu=extinction, rho=sampling, rootAge=root_time, samplingStrategy="uniform", condition="nTaxa", taxa=T.taxa())
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree ~ dnBDP(lambda=speciation, mu=extinction, rho=sampling, rootAge=root_time, samplingStrategy="uniform", condition="nTaxa", taxa=T.taxa())
 timetree.clamp(T)
 </code></pre></div></div>
 
@@ -571,13 +571,13 @@ timetree.clamp(T)
 
 <p>Create the model object and write the Graphviz file. You can view the new model in <a href="#birthdeathgraphv"></a>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(speciation)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(speciation)
 mymodel.graph("bd_graph.dot")
 </code></pre></div></div>
 
 <figure id="birthdeathgraphv"><p><img src="figures/bd_gm.svg" width="500" /></p>
 <figcaption>The probabilistic graphical model of the birth-death diversification model for the bear phylogeny.
-This image was generated by running the <code class="highlighter-rouge">.graph()</code> method fo the model object and opening the
+This image was generated by running the <code class="language-plaintext highlighter-rouge">.graph()</code> method fo the model object and opening the
 resulting file in the program <a href="https://www.graphviz.org/">Graphviz</a>.</figcaption>
 </figure>
 
@@ -586,7 +586,7 @@ resulting file in the program <a href="https://www.graphviz.org/">Graphviz</a>.<
 <p>We will create file and screen monitors like we did for the Yule model. It is important to
 remember to give the file monitor a different name than you did for the Yule analysis.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[1] = mnModel(filename="output/bears_BDP.log",printgen=10, separator = TAB)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[1] = mnModel(filename="output/bears_BDP.log",printgen=10, separator = TAB)
 monitors[2] = mnScreen(printgen=1000, speciation, extinction)
 </code></pre></div></div>
 
@@ -594,14 +594,14 @@ monitors[2] = mnScreen(printgen=1000, speciation, extinction)
 
 <p>Now it is time to setup and run our power posteriors:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pow_p = powerPosterior(mymodel, moves, monitors, "output/BDP_powp.out", cats=100, sampleFreq=10)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pow_p = powerPosterior(mymodel, moves, monitors, "output/BDP_powp.out", cats=100, sampleFreq=10)
 pow_p.burnin(generations=10000,tuningInterval=200)
 pow_p.run(generations=10000)
 </code></pre></div></div>
 
 <p>Use stepping-stone sampling to calculate marginal likelihood and print the value to the screen.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ss = steppingStoneSampler(file="output/BDP_powp.out", powerColumnName="power", likelihoodColumnName="likelihood")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ss = steppingStoneSampler(file="output/BDP_powp.out", powerColumnName="power", likelihoodColumnName="likelihood")
 ss.marginal()
 </code></pre></div></div>
 
@@ -659,21 +659,21 @@ dated phylogeny using molecular data (presumably the data are different from tho
 
 <p>As above, we first need to clear the workspace to avoid any issues with re-doing the model.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clear()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clear()
 </code></pre></div></div>
 
 <p>This time, we will not read in a tree (we are going to infer one!), but we will need to 
 import our sequence data. For this analysis, we will use a single locus, the interphotoreceptor
 retinoid-binding protein (irbp) sequenced for each of the living bear species. 
-You should have saved the data file <code class="highlighter-rouge">bears_irbp.nex</code> to the <code class="highlighter-rouge">data</code> folder. 
-We will use the <code class="highlighter-rouge">readDiscreteCharacterData()</code> function and assign the sequence alignment to a variable called <code class="highlighter-rouge">data</code>.</p>
+You should have saved the data file <code class="language-plaintext highlighter-rouge">bears_irbp.nex</code> to the <code class="language-plaintext highlighter-rouge">data</code> folder. 
+We will use the <code class="language-plaintext highlighter-rouge">readDiscreteCharacterData()</code> function and assign the sequence alignment to a variable called <code class="language-plaintext highlighter-rouge">data</code>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data &lt;- readDiscreteCharacterData(file="data/bears_irbp.nex")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data &lt;- readDiscreteCharacterData(file="data/bears_irbp.nex")
 </code></pre></div></div>
 
-<p>Create the index to augment the <code class="highlighter-rouge">moves</code> vector.</p>
+<p>Create the index to augment the <code class="language-plaintext highlighter-rouge">moves</code> vector.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvi = 1
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvi = 1
 </code></pre></div></div>
 
 <h3 class="subsection" id="treemodel">The Tree Model</h3>
@@ -682,7 +682,7 @@ We will use the <code class="highlighter-rouge">readDiscreteCharacterData()</cod
 <p>Assuming our previous analysis indicated that the birth-death process is the preferred model, 
 we can use the same model specification as in the <a href="#bdsec"></a> section.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Speciation rate
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Speciation rate
 sp_mean &lt;- 0.02
 speciation ~ dnExp(1.0 / sp_mean)
 moves[mvi++] = mvScale(speciation, lambda=1.0, tune=true, weight=3.0)
@@ -705,9 +705,9 @@ The prior distribution on the root age will come from our previous knowledge abo
 <p>The oldest crown fossil bear is <em>Kretzoiarctos beatrix</em>, a member of the giant panda clade 
 <a class="citation" href="#abella12">(Abella et al. 2012)</a> that is approximately 11.2 to 11.8 My old. Thus, we can use 
 this age as a minimum bound on the age of the root 
-of the tree. We will start by making a variable called <code class="highlighter-rouge">tKretzoiarctos</code> and assigning it the value of <code class="highlighter-rouge">11.2</code>.</p>
+of the tree. We will start by making a variable called <code class="language-plaintext highlighter-rouge">tKretzoiarctos</code> and assigning it the value of <code class="language-plaintext highlighter-rouge">11.2</code>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tKretzoiarctos &lt;- 11.2
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tKretzoiarctos &lt;- 11.2
 </code></pre></div></div>
 
 <p>Let’s use a <a href="https://en.wikipedia.org/wiki/Log-normal_distribution">log-normal distribution</a> as a prior on the root time. For this, we can specify 
@@ -715,12 +715,12 @@ parameters for the mean of the distribution and the standard deviation.
 In the paper by <a class="citation" href="#DosReis2012">dos Reis et al. (2012)</a>, they estimated the age of the MRCA of all bears to be 33.24. 
 We will use an “off-set” lognormal distribution, so then we have to set the mean ($M$) to be $M = 33.24 - 11.2$, where 11.2 is the age of the oldest crown fossil.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mean_ra &lt;- 33.24 - tKretzoiarctos
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mean_ra &lt;- 33.24 - tKretzoiarctos
 </code></pre></div></div>
 
-<p>We will use a standard deviation of <code class="highlighter-rouge">0.25</code>.</p>
+<p>We will use a standard deviation of <code class="language-plaintext highlighter-rouge">0.25</code>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>stdv_ra &lt;- 0.25
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>stdv_ra &lt;- 0.25
 </code></pre></div></div>
 
 <p>The lognormal distribution has two parameters: $\mu$ is the location parameter and $\sigma$ is the standard deviation. Importantly, $\mu$ is <em>not</em> the same as the mean for the lognormal.
@@ -728,28 +728,28 @@ We can compute $\mu$ easily by:</p>
 
 \[\mu = log(M) - \frac{\sigma^2}{2}.\]
 
-<p>If we plug in <code class="highlighter-rouge">mean_ra</code> and <code class="highlighter-rouge">stdv_ra</code> into the equation above, we get:</p>
+<p>If we plug in <code class="language-plaintext highlighter-rouge">mean_ra</code> and <code class="language-plaintext highlighter-rouge">stdv_ra</code> into the equation above, we get:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mu_ra &lt;- ln(mean_ra) - ((stdv_ra*stdv_ra) * 0.5)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mu_ra &lt;- ln(mean_ra) - ((stdv_ra*stdv_ra) * 0.5)
 </code></pre></div></div>
 
-<p>Now we can define a stochastic node for the root age (called <code class="highlighter-rouge">root_time</code>).</p>
+<p>Now we can define a stochastic node for the root age (called <code class="language-plaintext highlighter-rouge">root_time</code>).</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root_time ~ dnLnorm(mu_ra, stdv_ra, offset=tKretzoiarctos)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root_time ~ dnLnorm(mu_ra, stdv_ra, offset=tKretzoiarctos)
 </code></pre></div></div>
 
-<p>Just like in the <a href="#bdsec"></a> section above, we specify a stochastic node for the <code class="highlighter-rouge">timetree</code> using the <code class="highlighter-rouge">dnBDP()</code>.</p>
+<p>Just like in the <a href="#bdsec"></a> section above, we specify a stochastic node for the <code class="language-plaintext highlighter-rouge">timetree</code> using the <code class="language-plaintext highlighter-rouge">dnBDP()</code>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree ~ dnBDP(lambda=speciation, mu=extinction, rho=sampling, rootAge=root_time, samplingStrategy="uniform", condition="nTaxa", taxa=data.taxa())
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree ~ dnBDP(lambda=speciation, mu=extinction, rho=sampling, rootAge=root_time, samplingStrategy="uniform", condition="nTaxa", taxa=data.taxa())
 </code></pre></div></div>
 
 <p>This time we will not treat a published tree as an observation.
-Instead, we will consider the <code class="highlighter-rouge">timetree</code> a stochastic node that we are interested in estimating. 
+Instead, we will consider the <code class="language-plaintext highlighter-rouge">timetree</code> a stochastic node that we are interested in estimating. 
 Thus, we will have to apply MCMC moves to the tree parameter so that we can sample the posterior distribution of trees.</p>
 
 <p>First, we can apply all the moves that propose changes to the node ages:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvNodeTimeSlideUniform(timetree, weight=30.0)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvNodeTimeSlideUniform(timetree, weight=30.0)
 moves[mvi++] = mvTreeScale(tree=timetree, rootAge=root_time, delta=1.0, tune=true, weight=3.0)
 moves[mvi++] = mvSlide(root_time, delta=2.0, tune=true, weight=10.0)
 moves[mvi++] = mvScale(root_time, lambda=2.0, tune=true, weight=10.0)
@@ -757,7 +757,7 @@ moves[mvi++] = mvScale(root_time, lambda=2.0, tune=true, weight=10.0)
 
 <p>Then, we can add moves that alter the tree topology:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvNNI(timetree, weight=8.0)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvNNI(timetree, weight=8.0)
 moves[mvi++] = mvNarrow(timetree, weight=8.0)
 moves[mvi++] = mvFNPR(timetree, weight=8.0)
 </code></pre></div></div>
@@ -772,37 +772,37 @@ these models we will create a stochastic node for every branch. We will assume a
 of an exponential is $\delta^{-1}$. If we do not know the mean branch rate, we can 
 apply a <em>hyperprior</em> to $\delta$ and account for our uncertainty in that parameter. 
 We will use another exponential distribution with a mean of $10^{-1}$. The node representing
-this parameter will be called <code class="highlighter-rouge">branch_rates_mean</code>. Since it will be a stochastic node, 
+this parameter will be called <code class="language-plaintext highlighter-rouge">branch_rates_mean</code>. Since it will be a stochastic node, 
 we will also propose changes to it during our MCMC.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>branch_rates_mean ~ dnExponential(10.0)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>branch_rates_mean ~ dnExponential(10.0)
 moves[mvi++] = mvScale(branch_rates_mean, lambda=1.0, tune=true, weight=2.0)
 </code></pre></div></div>
 
 <p>Now that we have a hyperprior defining the mean of the prior on the branch rates, we can 
-instantiate the stochastic nodes for each of the branches. To do this, we can use a <code class="highlighter-rouge">for</code> loop.
+instantiate the stochastic nodes for each of the branches. To do this, we can use a <code class="language-plaintext highlighter-rouge">for</code> loop.
 This will perform a set of instructions for every branch in the tree. First, we need to know
 how many branches there are. This value is a function of the number of taxa. We can get the 
-number of taxa from sequence <code class="highlighter-rouge">data</code> variable. And for any rooted tree, the number of branches<br />
-(we will call this <code class="highlighter-rouge">n_branches</code>) is simply:</p>
+number of taxa from sequence <code class="language-plaintext highlighter-rouge">data</code> variable. And for any rooted tree, the number of branches<br />
+(we will call this <code class="language-plaintext highlighter-rouge">n_branches</code>) is simply:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_branches &lt;- 2 * data.ntaxa() - 2
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_branches &lt;- 2 * data.ntaxa() - 2
 </code></pre></div></div>
 
 <p>Now we can loop over every branch and, for each one, we will create a stochastic node and add a
-scale move to our <code class="highlighter-rouge">moves</code> list.</p>
+scale move to our <code class="language-plaintext highlighter-rouge">moves</code> list.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for(i in 1:n_branches){
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for(i in 1:n_branches){
     branch_rates[i] ~ dnExp(1/branch_rates_mean)
     moves[mvi++] = mvScale(branch_rates[i], lambda=1.0, tune=true, weight=2.0)
 }
 </code></pre></div></div>
 
-<p>The variable <code class="highlighter-rouge">branch_rates</code> is now a vector of stochastic nodes. We can add an additional
+<p>The variable <code class="language-plaintext highlighter-rouge">branch_rates</code> is now a vector of stochastic nodes. We can add an additional
 move that will operate on the whole vector by scaling it up or down. Adding multiple moves
 to parameters can help with mixing.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvVectorScale(branch_rates, lambda=1.0, tune=true, weight=4.0)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves[mvi++] = mvVectorScale(branch_rates, lambda=1.0, tune=true, weight=4.0)
 </code></pre></div></div>
 
 <h3 class="subsection" id="gtrmodelsec">The Substitution Model</h3>
@@ -816,9 +816,9 @@ are unequal.</p>
 This means we can use a variable type called a <em>simplex</em> as our stochastic node. A simplex
 is a vector that sums to $1.0$. A distribution that returns a simplex is a 
 <a href="https://en.wikipedia.org/wiki/Dirichlet_distribution">Dirichlet distribution</a>. 
-We also need to add a move that will proposed changes to the <code class="highlighter-rouge">sf</code> simplex.</p>
+We also need to add a move that will proposed changes to the <code class="language-plaintext highlighter-rouge">sf</code> simplex.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sf_hp &lt;- v(1,1,1,1)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sf_hp &lt;- v(1,1,1,1)
 sf ~ dnDirichlet(sf_hp)
 moves[mvi++] = mvSimplexElementScale(sf, alpha=10.0, tune=true, weight=3.0)
 </code></pre></div></div>
@@ -826,18 +826,18 @@ moves[mvi++] = mvSimplexElementScale(sf, alpha=10.0, tune=true, weight=3.0)
 <p>The exchangeability rates are parameterized in a similar way as the stationary frequencies, 
 except here there are 6 elements instead of 4.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>er_hp &lt;- v(1,1,1,1,1,1)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>er_hp &lt;- v(1,1,1,1,1,1)
 er ~ dnDirichlet(er_hp)
 moves[mvi++] = mvSimplexElementScale(er, alpha=10.0, tune=true, weight=3.0)
 </code></pre></div></div>
 
 <p>With the parameters of our substitution models defined, we can create a <em>deterministic</em> node 
-for the instantaneous rate matrix, <em>i.e.</em>, the <code class="highlighter-rouge">Q</code> matrix. In RevBayes, there are functions
-defined for all of the named rate matrices. Here, we will use the <code class="highlighter-rouge">fnGTR()</code> function, which
+for the instantaneous rate matrix, <em>i.e.</em>, the <code class="language-plaintext highlighter-rouge">Q</code> matrix. In RevBayes, there are functions
+defined for all of the named rate matrices. Here, we will use the <code class="language-plaintext highlighter-rouge">fnGTR()</code> function, which
 takes the exchangeability rates and stationary frequencies and calculates the elements in the
 matrix.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q := fnGTR(er,sf)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q := fnGTR(er,sf)
 </code></pre></div></div>
 
 <p>For more details on the substitution models, please see the 
@@ -849,39 +849,39 @@ matrix.</p>
 <p>Now we can link all of the elements in our graphical model. We will define a stochastic node
 representing the sequence alignment. The distribution that generated our sequence data is 
 a <em>phylogenetic continuous time Markov chain</em>. In RevBayes, this distribution is called 
-<code class="highlighter-rouge">dnPhyloCTMC()</code>. For this model, the <code class="highlighter-rouge">dnPhyloCTMC()</code> expects the following arguments:</p>
+<code class="language-plaintext highlighter-rouge">dnPhyloCTMC()</code>. For this model, the <code class="language-plaintext highlighter-rouge">dnPhyloCTMC()</code> expects the following arguments:</p>
 
 <ul>
-  <li><code class="highlighter-rouge">tree</code>: a tree with branch lengths</li>
-  <li><code class="highlighter-rouge">Q</code>: the instantaneous rate matrix</li>
-  <li><code class="highlighter-rouge">branchRates</code>: the rate of substitution for each branch in the tree</li>
-  <li><code class="highlighter-rouge">nSites</code>: the number of characters in our data matrix</li>
-  <li><code class="highlighter-rouge">type</code>: the type of data, <em>i.e.</em>, <code class="highlighter-rouge">DNA</code>, <code class="highlighter-rouge">RNA</code>, <code class="highlighter-rouge">binary</code>, etc.</li>
+  <li><code class="language-plaintext highlighter-rouge">tree</code>: a tree with branch lengths</li>
+  <li><code class="language-plaintext highlighter-rouge">Q</code>: the instantaneous rate matrix</li>
+  <li><code class="language-plaintext highlighter-rouge">branchRates</code>: the rate of substitution for each branch in the tree</li>
+  <li><code class="language-plaintext highlighter-rouge">nSites</code>: the number of characters in our data matrix</li>
+  <li><code class="language-plaintext highlighter-rouge">type</code>: the type of data, <em>i.e.</em>, <code class="language-plaintext highlighter-rouge">DNA</code>, <code class="language-plaintext highlighter-rouge">RNA</code>, <code class="language-plaintext highlighter-rouge">binary</code>, etc.</li>
 </ul>
 
-<p>We will call the stochastic node for our sequence data <code class="highlighter-rouge">phySeq</code>.</p>
+<p>We will call the stochastic node for our sequence data <code class="language-plaintext highlighter-rouge">phySeq</code>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phySeq ~ dnPhyloCTMC(tree=timetree, Q=Q, branchRates=branch_rates, nSites=data.nchar(), type="DNA")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phySeq ~ dnPhyloCTMC(tree=timetree, Q=Q, branchRates=branch_rates, nSites=data.nchar(), type="DNA")
 </code></pre></div></div>
 
 <p>This node represents <em>observed data</em>. Thus, we will not perform any moves on this stochastic
-node. Instead, we will “clamp” the node to the observed value. The <code class="highlighter-rouge">.clamp()</code> method will fix
-<code class="highlighter-rouge">phySeq</code> to the observed <code class="highlighter-rouge">data</code> matrix we imported in the section <a href="#setting-up-the-workspace-and-importing-the-data">above</a>.</p>
+node. Instead, we will “clamp” the node to the observed value. The <code class="language-plaintext highlighter-rouge">.clamp()</code> method will fix
+<code class="language-plaintext highlighter-rouge">phySeq</code> to the observed <code class="language-plaintext highlighter-rouge">data</code> matrix we imported in the section <a href="#setting-up-the-workspace-and-importing-the-data">above</a>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phySeq.clamp(data)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phySeq.clamp(data)
 </code></pre></div></div>
 
 <p>All of the parameters are now defined and linked via the phylogenetic CTMC. We can create a
 model object to use the model in our workspace. It is also possible to visualize this model
-using <code class="highlighter-rouge">mymodel.graph("timetree_gm.dot")</code> (<a href="#timetreegv"></a>). However, this model
+using <code class="language-plaintext highlighter-rouge">mymodel.graph("timetree_gm.dot")</code> (<a href="#timetreegv"></a>). However, this model
 involves many more parameters than in the previous sections, so this tool becomes less useful.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(speciation)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(speciation)
 </code></pre></div></div>
 
 <figure id="timetreegv"><p><img src="figures/timetree_gm.svg" width="100%" /></p>
 <figcaption>The probabilistic graphical model of all parameters in the phylogenetic analysis.
-This image was generated by running the <code class="highlighter-rouge">.graph()</code> method fo the model object and opening the
+This image was generated by running the <code class="language-plaintext highlighter-rouge">.graph()</code> method fo the model object and opening the
 resulting file in the program <a href="https://www.graphviz.org/">Graphviz</a>.</figcaption>
 </figure>
 
@@ -890,28 +890,28 @@ resulting file in the program <a href="https://www.graphviz.org/">Graphviz</a>.<
 
 <p>Now that we have our full model, we can set up and run our MCMC. First, we will define a list 
 monitors for our parameters. Since we are now dealing with a tree object, we have to 
-be sure to save the sampled trees to file. The <code class="highlighter-rouge">mnModel()</code> function will log all of the 
-numerical parameters, but not the tree. We can use the <code class="highlighter-rouge">mnFile()</code> monitor to write our 
+be sure to save the sampled trees to file. The <code class="language-plaintext highlighter-rouge">mnModel()</code> function will log all of the 
+numerical parameters, but not the tree. We can use the <code class="language-plaintext highlighter-rouge">mnFile()</code> monitor to write our 
 MCMC samples of the tree.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[1] = mnModel(filename="output/TimeTree_bears_mcmc.log", printgen=10)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[1] = mnModel(filename="output/TimeTree_bears_mcmc.log", printgen=10)
 monitors[2] = mnFile(filename="output/TimeTree_bears_mcmc.trees", printgen=10, timetree)
 monitors[3] = mnScreen(printgen=100, root_time)
 </code></pre></div></div>
 
 <p>Create the MCMC object:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves)
 </code></pre></div></div>
 
 <p>Run the burn-in:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.burnin(generations=5000,tuningInterval=100)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.burnin(generations=5000,tuningInterval=100)
 </code></pre></div></div>
 
 <p>This will give you the following output.</p>
 
-<div class="Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   Running burn-in phase of Monte Carlo sampler for 5000 iterations.
+<div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   Running burn-in phase of Monte Carlo sampler for 5000 iterations.
    This simulation runs 1 independent replicate.
    The simulator uses 27 different moves in a random move schedule with 123 moves per iteration
 
@@ -922,10 +922,10 @@ Progress:
 
 <p>Once the burn-in phase is completed, run the MCMC</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=40000)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=40000)
 </code></pre></div></div>
 
-<div class="Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   Running MCMC simulation
+<div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   Running MCMC simulation
    This simulation runs 1 independent replicate.
    The simulator uses 27 different moves in a random move schedule with 123 moves per iteration
 
@@ -944,11 +944,11 @@ Iter        |      Posterior   |     Likelihood   |          Prior   |      root
 <h4 id="inspect-the-mcmc">Inspect the MCMC</h4>
 
 <p>Now that our MCMC has completed, we need to evaluate the output. The first thing we can do is 
-to visually inspect the sampled numerical parameters in our <code class="highlighter-rouge">TimeTree_bears_mcmc.log</code> file. To 
+to visually inspect the sampled numerical parameters in our <code class="language-plaintext highlighter-rouge">TimeTree_bears_mcmc.log</code> file. To 
 do this, we can use the handy program <a href="http://tree.bio.ed.ac.uk/software/tracer/">Tracer</a> <a class="citation" href="#Rambaut2011">(Rambaut and Drummond 2011)</a>.</p>
 
 <blockquote class="instruction">
-  <p>Open the program Tracer and load the <code class="highlighter-rouge">TimeTree_bears_mcmc.log</code> from the <code class="highlighter-rouge">output</code> folder</p>
+  <p>Open the program Tracer and load the <code class="language-plaintext highlighter-rouge">TimeTree_bears_mcmc.log</code> from the <code class="language-plaintext highlighter-rouge">output</code> folder</p>
 </blockquote>
 
 <figure id="tracer1"><p><img src="figures/tracer_screen1.png" width="100%" /></p>
@@ -966,7 +966,7 @@ as though your MCMC had good or bad mixing?</p>
 </blockquote>
 
 <figure id="tracer2"><p><img src="figures/tracer_screen2.png" width="100%" /></p>
-<figcaption>The trace plot of the <code class="highlighter-rouge">root_time</code> parameter in Tracer.</figcaption>
+<figcaption>The trace plot of the <code class="language-plaintext highlighter-rouge">root_time</code> parameter in Tracer.</figcaption>
 </figure>
 
 <p>It is important to perform multiple independent MCMC runs so that you can determine if your 
@@ -979,17 +979,17 @@ only conduct one run.</p>
 
 <p>Assuming we did our due diligence to ensure that our MCMC sampled joint posterior distribution
 effectively, we can now summarize the sampled trees. If we return to RevBayes, we can read in 
-the sampled trees in <code class="highlighter-rouge">output/TimeTree_bears_mcmc.trees</code>. The <code class="highlighter-rouge">readTreeTrace()</code> function returns
-a tree-trace object that we will call <code class="highlighter-rouge">tt</code>.</p>
+the sampled trees in <code class="language-plaintext highlighter-rouge">output/TimeTree_bears_mcmc.trees</code>. The <code class="language-plaintext highlighter-rouge">readTreeTrace()</code> function returns
+a tree-trace object that we will call <code class="language-plaintext highlighter-rouge">tt</code>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tt = readTreeTrace("output/TimeTree_bears_mcmc.trees", "clock")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tt = readTreeTrace("output/TimeTree_bears_mcmc.trees", "clock")
 </code></pre></div></div>
 
 <p>We will find the maximum <em>a posteriori</em> tree in our MCMC sample. This is the tree with the 
-highest posterior probability. To do this we can use the <code class="highlighter-rouge">mapTree()</code> function on the tree-trace
+highest posterior probability. To do this we can use the <code class="language-plaintext highlighter-rouge">mapTree()</code> function on the tree-trace
 object.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mapTree(tt, "output/TimeTree_bears_mcmc_MAP.tre")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mapTree(tt, "output/TimeTree_bears_mcmc_MAP.tre")
 </code></pre></div></div>
 
 <p>To view this tree, we can use the online tree-viewer <a href="https://icytree.org/">IcyTree</a> developed by <a href="https://github.com/tgvaughan">Tim Vaughan</a>.</p>
@@ -997,7 +997,7 @@ object.</p>
 <blockquote class="instruction">
   <p>Open your web browser and go to <a href="https://icytree.org">https://icytree.org</a>.</p>
 
-  <p>You can load the <code class="highlighter-rouge">TimeTree_bears_mcmc_MAP.tre</code> file by going to 
+  <p>You can load the <code class="language-plaintext highlighter-rouge">TimeTree_bears_mcmc_MAP.tre</code> file by going to 
 the <strong><em>File -&gt; Load from file…</em></strong> in the menu, or by simpling dragging and dropping your
 file into the browser window.</p>
 

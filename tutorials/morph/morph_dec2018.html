@@ -118,7 +118,7 @@ Visually representing graphical models can be useful for communication model ass
 The notation used in the visual representation of these models is briefly explained in <a href="#legend"></a>,
 and enourage users to see <a class="citation" href="#Hoehna2014b">Höhna et al. (2014)</a> for more details.
 Representing graphical models in computer code 
-(using the <code class="highlighter-rouge">Rev</code> language) is useful in developing an understanding of phylogenetic models. 
+(using the <code class="language-plaintext highlighter-rouge">Rev</code> language) is useful in developing an understanding of phylogenetic models. 
 For more information about this topic see the tutorial <a href="/intro_graph_models">Introduction to Graphical Models</a>.</p>
 
 <figure id="legend"><p><img src="figures/graphical_model_legend.png" width="400" /></p>
@@ -157,7 +157,7 @@ molecular tree.</p>
 
 <p>To understand how morphological characters are modeled, it is important
 to understand how characters are collected. Unlike in molecular data,
-for which homology is algorithmically determined, homology in a morphological character is typically assessed by an expert. Biologists will typically decide what characters are homologous by looking across specimens at the same structure in multiple taxa; they may also look at the developmental origin of structures in making this assessment <a class="citation" href="#Phillips06">(Phillips 2006)</a>. Once homology is determined, characters are broken down into states, or different forms a single character can take. The state <code class="highlighter-rouge">0</code> commonly refers to absence, meaning that character is not present. In some
+for which homology is algorithmically determined, homology in a morphological character is typically assessed by an expert. Biologists will typically decide what characters are homologous by looking across specimens at the same structure in multiple taxa; they may also look at the developmental origin of structures in making this assessment <a class="citation" href="#Phillips06">(Phillips 2006)</a>. Once homology is determined, characters are broken down into states, or different forms a single character can take. The state <code class="language-plaintext highlighter-rouge">0</code> commonly refers to absence, meaning that character is not present. In some
 codings, absence will mean that character has not evolved in that group.
 In others, absence means that that character has not evolved in that
 group, and/or that that character has been lost in that group
@@ -252,12 +252,12 @@ files or similar.</p>
 paragraph-form before or after they are issued.</p>
 
 <p>All command-line text, including all Rev syntax, are given in
-<code class="highlighter-rouge">monotype font</code>. Furthermore, blocks of Rev code that are needed to
+<code class="language-plaintext highlighter-rouge">monotype font</code>. Furthermore, blocks of Rev code that are needed to
 build the model, specify the analysis, or execute the run are given in
 separate shaded boxes. For example, we will instruct you to create a
-constant node called <code class="highlighter-rouge">example</code> that is equal to <code class="highlighter-rouge">1.0</code> using the <code class="highlighter-rouge">&lt;-</code>
+constant node called <code class="language-plaintext highlighter-rouge">example</code> that is equal to <code class="language-plaintext highlighter-rouge">1.0</code> using the <code class="language-plaintext highlighter-rouge">&lt;-</code>
 operator like this:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>example &lt;- 1.0
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>example &lt;- 1.0
 </code></pre></div></div>
 
 <p>If you copy and paste text from the browser, beware of introducing incorrect characters!</p>
@@ -266,8 +266,8 @@ operator like this:</p>
 <hr class="subsection" />
 
 <blockquote class="instruction">
-  <p>On your own computer, create a directory for the tutorial called <code class="highlighter-rouge">RB_DiscreteMorphology_Tutorial</code> (or whatever you want) and within this directory create a subdirectory called <strong>data</strong>.
-In this directory download the data files: <a href="data/bears.nex"><code class="highlighter-rouge">bears.nex</code></a>.</p>
+  <p>On your own computer, create a directory for the tutorial called <code class="language-plaintext highlighter-rouge">RB_DiscreteMorphology_Tutorial</code> (or whatever you want) and within this directory create a subdirectory called <strong>data</strong>.
+In this directory download the data files: <a href="data/bears.nex"><code class="language-plaintext highlighter-rouge">bears.nex</code></a>.</p>
 </blockquote>
 
 <h3 class="subsection" id="getting-started">Getting Started</h3>
@@ -291,7 +291,7 @@ In this first section, you will write the following file
 from scratch and save them in the <strong>scripts</strong> directory:</p>
 
 <ul>
-  <li><code class="highlighter-rouge">mcmc_mk.Rev</code>: the Rev file that loads the data, 
+  <li><code class="language-plaintext highlighter-rouge">mcmc_mk.Rev</code>: the Rev file that loads the data, 
 specifies the model describing discrete morphological
 character change (binary characters), 
 and specifies the monitors and MCMC sampler.</li>
@@ -302,7 +302,7 @@ RevBayes tutorial here (see the top of this webpage).
 Please refer to these files to verify or troubleshoot your own scripts.</p>
 
 <blockquote class="instruction">
-  <p>Open your text editor and create the Rev-script file called <code class="highlighter-rouge">mcmc_Mk.Rev</code> in the
+  <p>Open your text editor and create the Rev-script file called <code class="language-plaintext highlighter-rouge">mcmc_Mk.Rev</code> in the
 <strong>scripts</strong> directory.</p>
 
   <p>Enter the Rev code provided in this section in the new file.</p>
@@ -318,12 +318,12 @@ complete, you will complete the script with the instructions given in section
 <h3 class="subsection" id="subsec_load_data">Load Data Matrix</h3>
 <hr class="subsection" />
 
-<p>RevBayes uses the function <code class="highlighter-rouge">readDiscreteCharacterData()</code> to load a
+<p>RevBayes uses the function <code class="language-plaintext highlighter-rouge">readDiscreteCharacterData()</code> to load a
 data matrix to the workspace from a formatted file. This function can be
 used for both molecular sequences and discrete morphological characters.
 Import the morphological character matrix and assign it to the variable
-<code class="highlighter-rouge">morpho</code>.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>morpho &lt;- readDiscreteCharacterData("data/bears.nex")
+<code class="language-plaintext highlighter-rouge">morpho</code>.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>morpho &lt;- readDiscreteCharacterData("data/bears.nex")
 </code></pre></div></div>
 
 <h3 class="subsection" id="subsec_var">Create Helper Variables</h3>
@@ -333,22 +333,22 @@ Import the morphological character matrix and assign it to the variable
 we need to instantiate a couple “helper variables” that will
 be used by downstream parts of our model specification.</p>
 
-<p>Create a new constant node called <code class="highlighter-rouge">num_taxa</code> that is equal to the number
-of species in our analysis (18) and a constant node called <code class="highlighter-rouge">num_branches</code> representing
+<p>Create a new constant node called <code class="language-plaintext highlighter-rouge">num_taxa</code> that is equal to the number
+of species in our analysis (18) and a constant node called <code class="language-plaintext highlighter-rouge">num_branches</code> representing
 the number of branches in the tree. We will also create a constant node of
 the taxon names. This list will be used to initialize the tree.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>taxa &lt;- morpho.names()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>taxa &lt;- morpho.names()
 num_taxa &lt;- morpho.size() 
 num_branches &lt;- 2 * num_taxa - 2
 </code></pre></div></div>
-<p>Next, create two workspace variables called <code class="highlighter-rouge">moves</code> and <code class="highlighter-rouge">monitors</code>. 
+<p>Next, create two workspace variables called <code class="language-plaintext highlighter-rouge">moves</code> and <code class="language-plaintext highlighter-rouge">monitors</code>. 
 These variables are vectors containing all of the MCMC moves and monitors, respectively.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
 monitors = VectorMonitors()
 </code></pre></div></div>
-<p>One important distinction here is that <code class="highlighter-rouge">moves</code> and <code class="highlighter-rouge">monitors</code> are part of the RevBayes
+<p>One important distinction here is that <code class="language-plaintext highlighter-rouge">moves</code> and <code class="language-plaintext highlighter-rouge">monitors</code> are part of the RevBayes
 workspace and not the hierarchical model. Thus, we use the workspace
-assignment operator <code class="highlighter-rouge">=</code> instead of the constant node assignment <code class="highlighter-rouge">&lt;-</code>.</p>
+assignment operator <code class="language-plaintext highlighter-rouge">=</code> instead of the constant node assignment <code class="language-plaintext highlighter-rouge">&lt;-</code>.</p>
 
 <h3 class="subsection" id="subsec_Mk_model">The Mk Model</h3>
 <hr class="subsection" />
@@ -358,9 +358,9 @@ assignment operator <code class="highlighter-rouge">=</code> instead of the cons
 <p>Some types of stochastic nodes can be updated by a number of alternative moves. 
 Different moves may explore parameter space in different ways, 
 and it is possible to use multiple different moves for a given parameter to improve mixing (the efficiency of the MCMC simulation). 
-In the case of our unrooted tree topology, for example, we can use both a nearest-neighbor interchange move (<code class="highlighter-rouge">mvNNI</code>) and a subtree-prune and regrafting move (<code class="highlighter-rouge">mvSPR</code>). These moves do not have tuning parameters associated with them, thus you only need to pass in the <code class="highlighter-rouge">topology</code> node and proposal <code class="highlighter-rouge">weight</code>.</p>
+In the case of our unrooted tree topology, for example, we can use both a nearest-neighbor interchange move (<code class="language-plaintext highlighter-rouge">mvNNI</code>) and a subtree-prune and regrafting move (<code class="language-plaintext highlighter-rouge">mvSPR</code>). These moves do not have tuning parameters associated with them, thus you only need to pass in the <code class="language-plaintext highlighter-rouge">topology</code> node and proposal <code class="language-plaintext highlighter-rouge">weight</code>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>br_len_lambda ~ dnExp(0.2)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>br_len_lambda ~ dnExp(0.2)
 moves.append( mvScale(br_len_lambda, weight=2) )
 
 phylogeny ~ dnUniformTopologyBranchLength(taxa, branchLengthDistribution=dnExp(br_len_lambda))
@@ -372,14 +372,14 @@ tree_length := phylogeny.treeLength()
 </code></pre></div></div>
 <p>Next, we will create a Q-matrix. Recall that the Mk model is simply a
 generalization of the JC model. Therefore, we will create a 2x2 Q-matrix
-using <code class="highlighter-rouge">fnJC</code>, which initializes Q-matrices with equal transition
+using <code class="language-plaintext highlighter-rouge">fnJC</code>, which initializes Q-matrices with equal transition
 probabilities between all states.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q_morpho &lt;- fnJC(2)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q_morpho &lt;- fnJC(2)
 </code></pre></div></div>
 <p>Now that we have the basics of the model specified, we will add
 gamma-distributed rate variation and specify moves on the parameter of
-the gamma distribution, <code class="highlighter-rouge">alpha_morpho</code>.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha_morpho ~ dnUniform( 0, 1E8 )
+the gamma distribution, <code class="language-plaintext highlighter-rouge">alpha_morpho</code>.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha_morpho ~ dnUniform( 0, 1E8 )
 rates_morpho := fnDiscretizeGamma( alpha_morpho, alpha_morpho, 4 )
 
 # Moves on the parameters of the gamma distribution
@@ -390,8 +390,8 @@ moves.append( mvScale(alpha_morpho, lambda=1, weight=2.0)
 We see some familiar pieces: the tree, Q-matrix and site rates.
 We also have two new keywords: data type and coding. The data type
 argument specifies the type of data - in our case, “Standard”, the
-specification for morphology. (The role of the <code class="highlighter-rouge">coding</code> argument will be described in the next section <a href="#sec_ascertainment_bias"></a>.)</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phyMorpho ~ dnPhyloCTMC(tree=phylogeny, siteRates=rates_morpho, Q=Q_morpho, type="Standard")
+specification for morphology. (The role of the <code class="language-plaintext highlighter-rouge">coding</code> argument will be described in the next section <a href="#sec_ascertainment_bias"></a>.)</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phyMorpho ~ dnPhyloCTMC(tree=phylogeny, siteRates=rates_morpho, Q=Q_morpho, type="Standard")
 phyMorpho.clamp(morpho)
 </code></pre></div></div>
 <p>All of the components of the model are now specified.</p>
@@ -403,11 +403,11 @@ phyMorpho.clamp(morpho)
 <hr class="subsubsection" />
 
 <p>We can now create our workspace model variable with our fully specified
-model DAG. We will do this with the <code class="highlighter-rouge">model()</code> function and provide a
-single node from the graph (<code class="highlighter-rouge">phylogeny</code>).</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(phylogeny)
+model DAG. We will do this with the <code class="language-plaintext highlighter-rouge">model()</code> function and provide a
+single node from the graph (<code class="language-plaintext highlighter-rouge">phylogeny</code>).</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(phylogeny)
 </code></pre></div></div>
-<p>The object <code class="highlighter-rouge">mymodel</code> is a wrapper around the entire model graph and
+<p>The object <code class="language-plaintext highlighter-rouge">mymodel</code> is a wrapper around the entire model graph and
 allows us to pass the model to various functions that are specific to
 our MCMC analysis.</p>
 
@@ -416,30 +416,30 @@ our MCMC analysis.</p>
 
 <p>The next important step for our Rev-script is to specify the
 monitors and output file names. For this, we create a vector called
-<code class="highlighter-rouge">monitors</code> that will each sample and record or output our MCMC.</p>
+<code class="language-plaintext highlighter-rouge">monitors</code> that will each sample and record or output our MCMC.</p>
 
 <p>The first monitor we will create will monitor every named random
 variable in our model graph. This will include every stochastic and
-deterministic node using the <code class="highlighter-rouge">mnModel</code> monitor. The only parameter that
-is not included in the <code class="highlighter-rouge">mnModel</code> is the tree topology. Therefore, the
+deterministic node using the <code class="language-plaintext highlighter-rouge">mnModel</code> monitor. The only parameter that
+is not included in the <code class="language-plaintext highlighter-rouge">mnModel</code> is the tree topology. Therefore, the
 parameters in the file written by this monitor are all numerical
 parameters. This file will be a tab-separated text file that can be opened by accessory programs for evaluating such parameters. We will also name the output file for this monitor and indicate that we wish to sample our
 MCMC every 10 cycles.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/mk.log", printgen=10) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/mk.log", printgen=10) )
 </code></pre></div></div>
-<p>The <code class="highlighter-rouge">mnFile</code> monitor writes any parameter we specify to file. Thus, if
+<p>The <code class="language-plaintext highlighter-rouge">mnFile</code> monitor writes any parameter we specify to file. Thus, if
 we only cared about the branch lengths and nothing else (this is not a
 typical or recommended attitude for an analysis this complex) we
-wouldn’t use the <code class="highlighter-rouge">mnModel</code> monitor above and just use the <code class="highlighter-rouge">mnFile</code>
+wouldn’t use the <code class="language-plaintext highlighter-rouge">mnModel</code> monitor above and just use the <code class="language-plaintext highlighter-rouge">mnFile</code>
 monitor to write a smaller and simpler output file. Since the tree
-topology is not included in the <code class="highlighter-rouge">mnModel</code> monitor (because it is not
-numerical), we will use <code class="highlighter-rouge">mnFile</code> to write the tree to file by specifying
-our <code class="highlighter-rouge">phylogeny</code> variable in the arguments.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnFile(filename="output/mk.trees", printgen=10, phylogeny) )
+topology is not included in the <code class="language-plaintext highlighter-rouge">mnModel</code> monitor (because it is not
+numerical), we will use <code class="language-plaintext highlighter-rouge">mnFile</code> to write the tree to file by specifying
+our <code class="language-plaintext highlighter-rouge">phylogeny</code> variable in the arguments.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnFile(filename="output/mk.trees", printgen=10, phylogeny) )
 </code></pre></div></div>
 <p>The third monitor we will add to our analysis will print information to
 the screen.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(printgen=100) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(printgen=100) )
 </code></pre></div></div>
 
 <h4 class="subsubsection" id="set-up-the-mcmc">Set-Up the MCMC</h4>
@@ -447,18 +447,18 @@ the screen.</p>
 
 <p>Once we have set up our model, moves, and monitors, we can now create
 the workspace variable that defines our MCMC run. We do this using the
-<code class="highlighter-rouge">mcmc()</code> function that takes the three main analysis components
+<code class="language-plaintext highlighter-rouge">mcmc()</code> function that takes the three main analysis components
 as arguments.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
 </code></pre></div></div>
-<p>The MCMC object that we named <code class="highlighter-rouge">mymcmc</code> has a member method called
-<code class="highlighter-rouge">.run()</code>. This will execute our analysis and we will set the chain
-length to <code class="highlighter-rouge">20000</code> cycles using the <code class="highlighter-rouge">generations</code> option.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=20000, tuningInterval=200)
+<p>The MCMC object that we named <code class="language-plaintext highlighter-rouge">mymcmc</code> has a member method called
+<code class="language-plaintext highlighter-rouge">.run()</code>. This will execute our analysis and we will set the chain
+length to <code class="language-plaintext highlighter-rouge">20000</code> cycles using the <code class="language-plaintext highlighter-rouge">generations</code> option.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=20000, tuningInterval=200)
 </code></pre></div></div>
 <p>Once our Markov chain has terminated, we will want RevBayes to close.
-Tell the program to quit using the <code class="highlighter-rouge">q()</code> function.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>q()
+Tell the program to quit using the <code class="language-plaintext highlighter-rouge">q()</code> function.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>q()
 </code></pre></div></div>
 
 <blockquote class="instruction">
@@ -479,13 +479,13 @@ rb</p>
 </blockquote>
 
 <p>Provided that you started RevBayes from the correct directory
-(<strong>RB_DiscreteMorphology_Tutorial</strong>), you can then use the <code class="highlighter-rouge">source()</code>
-function to feed RevBayes your Rev-script file (<code class="highlighter-rouge">mcmc_mk.Rev</code>).</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    source("scripts/mcmc_mk.Rev")
+(<strong>RB_DiscreteMorphology_Tutorial</strong>), you can then use the <code class="language-plaintext highlighter-rouge">source()</code>
+function to feed RevBayes your Rev-script file (<code class="language-plaintext highlighter-rouge">mcmc_mk.Rev</code>).</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    source("scripts/mcmc_mk.Rev")
 </code></pre></div></div>
 <p>This will execute the analysis and you should see the following output
 (though not the exact same values):</p>
-<div class="Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   Processing file "scripts/mcmc_mk.Rev"
+<div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   Processing file "scripts/mcmc_mk.Rev"
    Successfully read one character matrix from file 'data/bears.nex'
 
    Running MCMC simulation
@@ -550,11 +550,11 @@ code provided in this section in this file.</p>
 </blockquote>
 
 <p>In RevBayes it is actually very simple to add a correction for ascertainment bias. 
-You only need to set the option <code class="highlighter-rouge">coding="variable"</code> in the <code class="highlighter-rouge">dnPhyloCTMC</code>. Coding specifies what type of ascertainment bias is expected. We are using the <code class="highlighter-rouge">variable</code> correction, as we have no invariant character in our matrix. If we also lacked parsimony non-informative characters, we would use the coding <code class="highlighter-rouge">informative</code> (there are actually 4 parsimony non-informative characters in our matrix).</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phyMorpho ~ dnPhyloCTMC(tree=phylogeny, siteRates=rates_morpho, Q=Q_morpho, type="Standard", coding="variable")
+You only need to set the option <code class="language-plaintext highlighter-rouge">coding="variable"</code> in the <code class="language-plaintext highlighter-rouge">dnPhyloCTMC</code>. Coding specifies what type of ascertainment bias is expected. We are using the <code class="language-plaintext highlighter-rouge">variable</code> correction, as we have no invariant character in our matrix. If we also lacked parsimony non-informative characters, we would use the coding <code class="language-plaintext highlighter-rouge">informative</code> (there are actually 4 parsimony non-informative characters in our matrix).</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phyMorpho ~ dnPhyloCTMC(tree=phylogeny, siteRates=rates_morpho, Q=Q_morpho, type="Standard", coding="variable")
 </code></pre></div></div>
 <blockquote class="instruction">
-  <p>Remember to change all filenames for the output, e.g., from <code class="highlighter-rouge">output/mk.log</code> to <code class="highlighter-rouge">output/mkv.log</code>.</p>
+  <p>Remember to change all filenames for the output, e.g., from <code class="language-plaintext highlighter-rouge">output/mk.log</code> to <code class="language-plaintext highlighter-rouge">output/mkv.log</code>.</p>
 </blockquote>
 
 <blockquote>
@@ -591,7 +591,7 @@ discretized beta distribution for allowing variable state frequencies.</figcapti
 
 <blockquote class="instruction">
   <p>Make a copy of the Rev script you made earlier. Call it
-<code class="highlighter-rouge">mcmc_mk_dicretized.Rev</code>. This new script will
+<code class="language-plaintext highlighter-rouge">mcmc_mk_dicretized.Rev</code>. This new script will
 contain the new model parameters and models.</p>
 </blockquote>
 
@@ -602,8 +602,8 @@ be evaluated according to this distribution, in the same way that rate
 variation is evaluated according to the gamma distribution. The
 discretized distribution is split into multiple classes, each with it’s
 own set of frequencies for the 0 and 1 characters. The number of classes
-can vary; we have chosen 4 for tractability. Note that we need to make sure that this discretization results in a symmetric model, therefore we will use only one parameter for the beta distribution: <code class="highlighter-rouge">beta_scale</code> such that $\alpha = \beta$.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>num_cats = 4
+can vary; we have chosen 4 for tractability. Note that we need to make sure that this discretization results in a symmetric model, therefore we will use only one parameter for the beta distribution: <code class="language-plaintext highlighter-rouge">beta_scale</code> such that $\alpha = \beta$.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>num_cats = 4
 beta_scale ~ dnLognormal( 0.0, sd=2*0.587405 )
 moves.append( mvScale(beta_scale, lambda=1, weight=5.0 ) )
 </code></pre></div></div>
@@ -611,38 +611,38 @@ moves.append( mvScale(beta_scale, lambda=1, weight=5.0 ) )
 beta distribution, and the moves on these parameters.</p>
 
 <p>Next, we set the categories to each represent a quadrant of the beta
-distribution specified by <code class="highlighter-rouge">beta_scale</code>.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cats := fnDiscretizeBeta(beta_scale, beta_scale, num_cats)
+distribution specified by <code class="language-plaintext highlighter-rouge">beta_scale</code>.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cats := fnDiscretizeBeta(beta_scale, beta_scale, num_cats)
 </code></pre></div></div>
-<p>If you were to print the <code class="highlighter-rouge">cats</code> variable, you would see a list of state
+<p>If you were to print the <code class="language-plaintext highlighter-rouge">cats</code> variable, you would see a list of state
 frequencies like so:</p>
 
-<div class="Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[ 0.011, 0.236, 0.764, 0.989 ]
+<div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[ 0.011, 0.236, 0.764, 0.989 ]
 </code></pre></div></div>
 
 <p>Using these state frequencies, we will generate a new vector of Q-matrices. Because we are varying the state frequencies, we must use a Q-matrix generation function that allows for state frequencies to vary as
-a parameter. We will, therefore, use the <code class="highlighter-rouge">fnF81</code> function.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:cats.size())
+a parameter. We will, therefore, use the <code class="language-plaintext highlighter-rouge">fnF81</code> function.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:cats.size())
 {
     Q[i] := fnF81(simplex(abs(1-cats[i]), cats[i]))
 }
 </code></pre></div></div>
 <p>Additionally, in RevBayes we need to specify the probabilities that a site evolves according to one
 of the Q-matrices. For this model the probabilities must be equal because we need to guarantee that
-the model is symmetric. Thus, we use a <code class="highlighter-rouge">simplex</code> function to create a vector that sums to 1.0.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>matrix_probs &lt;- simplex( rep(1,num_cats) )
+the model is symmetric. Thus, we use a <code class="language-plaintext highlighter-rouge">simplex</code> function to create a vector that sums to 1.0.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>matrix_probs &lt;- simplex( rep(1,num_cats) )
 </code></pre></div></div>
 
 <p>The only other specification that needs to change in the model specification is
 the CTMC:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phyMorpho ~ dnPhyloCTMC(tree=phylogeny, siteRates=rates_morpho, Q=Q, type="Standard", coding="variable", siteMatrices=matrix_probs)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phyMorpho ~ dnPhyloCTMC(tree=phylogeny, siteRates=rates_morpho, Q=Q, type="Standard", coding="variable", siteMatrices=matrix_probs)
 </code></pre></div></div>
 <p>You will notice that we have added a command to tell the CTMC that we have
 multiple site matrices that will be applied to different characters in
 the matrix.</p>
 
 <blockquote class="instruction">
-  <p>Remember to change all filenames for the output, e.g., from <code class="highlighter-rouge">output/mkv.log</code> to <code class="highlighter-rouge">output/mkv_discretized.log</code>.</p>
+  <p>Remember to change all filenames for the output, e.g., from <code class="language-plaintext highlighter-rouge">output/mkv.log</code> to <code class="language-plaintext highlighter-rouge">output/mkv_discretized.log</code>.</p>
 </blockquote>
 
 <blockquote>
@@ -656,9 +656,9 @@ just as you ran the previous MCMC analyses. This estimation will take longer tha
 <h4 class="subsubsection" id="evaluating-the-mcmc">Evaluating the MCMC</h4>
 <hr class="subsubsection" />
 
-<p>We will use <code class="highlighter-rouge">Tracer</code>to evaluate the MCMC samples from our
+<p>We will use <code class="language-plaintext highlighter-rouge">Tracer</code>to evaluate the MCMC samples from our
 three estimations. Load all three of the MCMC logs into the
-<code class="highlighter-rouge">Tracer</code> window. Highlight all three files in
+<code class="language-plaintext highlighter-rouge">Tracer</code> window. Highlight all three files in
 the upper left-hand viewer (<a href="#add_files"></a>) by right- or
 command-clicking all three files.</p>
 
@@ -667,9 +667,9 @@ command-clicking all three files.</p>
 </figure>
 
 <p>Once all three trace logs are loaded and highlighted, first look at the
-estimated likelihoods. You will notice that the Mk model (<code class="highlighter-rouge">mk.log</code>), as
+estimated likelihoods. You will notice that the Mk model (<code class="language-plaintext highlighter-rouge">mk.log</code>), as
 originally proposed by <a class="citation" href="#Lewis2001">(Lewis 2001)</a> is improved by adding the correction for ascertainment bias.
-The <code class="highlighter-rouge">mkv</code> and the <code class="highlighter-rouge">mkv_discretized</code> analyses both represent improvements, but are fairly close in likelihoodscore to each other (<a href="#tracer_llik"></a>). 
+The <code class="language-plaintext highlighter-rouge">mkv</code> and the <code class="language-plaintext highlighter-rouge">mkv_discretized</code> analyses both represent improvements, but are fairly close in likelihoodscore to each other (<a href="#tracer_llik"></a>). 
 Likely, we would need to perform stepping stone model assessment to truly tell if the more complicated model is statistically justified. 
 This analysis is too complicated and time-consuming for this tutorial period, but you will find instructions for performing the analysis in
 <a href="/tutorials/model_selection_bayes_factors/bf_intro.html">General Introduction to Model selection</a>.</p>
@@ -678,7 +678,7 @@ This analysis is too complicated and time-consuming for this tutorial period, bu
 <figcaption>Comparison of likelihood scores for all three models.</figcaption>
 </figure>
 
-<p>Next, click on the <code class="highlighter-rouge">Trace</code> tab. In the lower left hand corner, you will
+<p>Next, click on the <code class="language-plaintext highlighter-rouge">Trace</code> tab. In the lower left hand corner, you will
 notice an option to color each trace by the file it came from. Choose
 this option (you may need to expand the window slightly to see it). Next
 to this option, you can also see an option to add a legend to your trace
@@ -692,8 +692,8 @@ they correspond to.</figcaption>
 </figure>
 
 <p>We are interested in two aspects of the posterior distribution. First,
-the <code class="highlighter-rouge">mkv</code> and <code class="highlighter-rouge">mkv_discretized</code> analyses incorporated a correction for the biased sampling of variable characters, while the <code class="highlighter-rouge">mk</code> analysis does not. In this case, we expect the <code class="highlighter-rouge">tree_length</code> variable to be greater for the <code class="highlighter-rouge">mk</code> analysis, because in reality our data are enriched for variation (i.e. the model overestimates variation). Click on the “Marginal Density” tab and select the <code class="highlighter-rouge">tree_length</code> parameter.
-<a href="#tracer_tree_length"></a> shows that <code class="highlighter-rouge">tree_length</code> is approximately 20% greater for the <code class="highlighter-rouge">mk</code>.</p>
+the <code class="language-plaintext highlighter-rouge">mkv</code> and <code class="language-plaintext highlighter-rouge">mkv_discretized</code> analyses incorporated a correction for the biased sampling of variable characters, while the <code class="language-plaintext highlighter-rouge">mk</code> analysis does not. In this case, we expect the <code class="language-plaintext highlighter-rouge">tree_length</code> variable to be greater for the <code class="language-plaintext highlighter-rouge">mk</code> analysis, because in reality our data are enriched for variation (i.e. the model overestimates variation). Click on the “Marginal Density” tab and select the <code class="language-plaintext highlighter-rouge">tree_length</code> parameter.
+<a href="#tracer_tree_length"></a> shows that <code class="language-plaintext highlighter-rouge">tree_length</code> is approximately 20% greater for the <code class="language-plaintext highlighter-rouge">mk</code>.</p>
 
 <figure id="tracer_tree_length"><p><img src="figures/results_mk_mkv_mkvd/Treelength_mk_mkv_mkvd.png" width="100%" /></p>
 <figcaption>Posterior tree length estimates.</figcaption>
@@ -702,18 +702,18 @@ the <code class="highlighter-rouge">mkv</code> and <code class="highlighter-roug
 <p>Second, we are interested in characterizing the degree of heterogeneity
 estimated by the beta discretized model. If the data were distributed by
 a single morphological rate matrix, then we would expect to see very
-little variation among the different <code class="highlighter-rouge">cats</code> value estimates, and
-a very large value for the <code class="highlighter-rouge">beta_scale</code> parameter of the
+little variation among the different <code class="language-plaintext highlighter-rouge">cats</code> value estimates, and
+a very large value for the <code class="language-plaintext highlighter-rouge">beta_scale</code> parameter of the
 discretized beta distribution. For example, if beta_scale =
 1000, then that would cause all discretized beta categories to have values approaching 0.5, which approximates a symmetric Mk model.
-Examine the output for <code class="highlighter-rouge">beta_scale</code> in Tracer (<a href="#tracer_alpha_beta"></a>).</p>
+Examine the output for <code class="language-plaintext highlighter-rouge">beta_scale</code> in Tracer (<a href="#tracer_alpha_beta"></a>).</p>
 
 <figure id="tracer_alpha_beta"><p><img src="figures/results_mk_mkv_mkvd/beta_scale.png" width="100%" /></p>
 <figcaption>Beta scale parameter of the discretized beta model.</figcaption>
 </figure>
 
 <p><a href="#tracer_cats"></a> shows that the four discretized beta state
-frequencies do not all have the exact same value. To replicate this figure in Tracer select the <code class="highlighter-rouge">cats[i]</code> estimates, click on the Marginal Density tab and select Colour by: “Trace and Trace File” and Display: “Box and whisker”.</p>
+frequencies do not all have the exact same value. To replicate this figure in Tracer select the <code class="language-plaintext highlighter-rouge">cats[i]</code> estimates, click on the Marginal Density tab and select Colour by: “Trace and Trace File” and Display: “Box and whisker”.</p>
 
 <figure id="tracer_cats"><p><img src="figures/results_mk_mkv_mkvd/cats_boxplot.png" width="100%" /></p>
 <figcaption>Posterior discretized state frequencies for the discretized beta model.</figcaption>

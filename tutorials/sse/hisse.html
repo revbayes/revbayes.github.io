@@ -158,7 +158,7 @@ Using this variable we can easily change our script to use a different character
 of states. We will also use this variable in our second example on hidden-state speciation and extinction
 model.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NUM_TOTAL_SPECIES     = 367
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NUM_TOTAL_SPECIES     = 367
 NUM_STATES            = 2
 NUM_HIDDEN            = 4
 NUM_RATES             = NUM_STATES * NUM_HIDDEN
@@ -171,22 +171,22 @@ DATASET               = "activity_period"
 
 <p>Begin by reading in the observed tree and the character data. 
 We have both stored in separate nexus files.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>observed_phylogeny &lt;- readTrees("data/primates_tree.nex")[1]
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>observed_phylogeny &lt;- readTrees("data/primates_tree.nex")[1]
 data &lt;- readCharacterData("data/primates_activity_period.nex")
 </code></pre></div></div>
 <p>It will be convenient to get some helper variables with information from the tree:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>taxa &lt;- observed_phylogeny.taxa()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>taxa &lt;- observed_phylogeny.taxa()
 tree_length &lt;- observed_phylogeny.treeLength()
 </code></pre></div></div>
 <p>For the HiSSE model, we need to expand our characters to the new state space.
-This means, that originally we had the states <code class="highlighter-rouge">0</code> and <code class="highlighter-rouge">1</code>.
-Now, we want to have the states <code class="highlighter-rouge">0A</code>, <code class="highlighter-rouge">0B</code>, <code class="highlighter-rouge">0C</code>, <code class="highlighter-rouge">0D</code> and <code class="highlighter-rouge">1A</code>, <code class="highlighter-rouge">1B</code>, <code class="highlighter-rouge">1C</code>, <code class="highlighter-rouge">1D</code>.
-A character that was originally in state <code class="highlighter-rouge">0</code> will now be ambiguous for all states <code class="highlighter-rouge">0A</code>, <code class="highlighter-rouge">0B</code>, <code class="highlighter-rouge">0C</code> and <code class="highlighter-rouge">0D</code>.
+This means, that originally we had the states <code class="language-plaintext highlighter-rouge">0</code> and <code class="language-plaintext highlighter-rouge">1</code>.
+Now, we want to have the states <code class="language-plaintext highlighter-rouge">0A</code>, <code class="language-plaintext highlighter-rouge">0B</code>, <code class="language-plaintext highlighter-rouge">0C</code>, <code class="language-plaintext highlighter-rouge">0D</code> and <code class="language-plaintext highlighter-rouge">1A</code>, <code class="language-plaintext highlighter-rouge">1B</code>, <code class="language-plaintext highlighter-rouge">1C</code>, <code class="language-plaintext highlighter-rouge">1D</code>.
+A character that was originally in state <code class="language-plaintext highlighter-rouge">0</code> will now be ambiguous for all states <code class="language-plaintext highlighter-rouge">0A</code>, <code class="language-plaintext highlighter-rouge">0B</code>, <code class="language-plaintext highlighter-rouge">0C</code> and <code class="language-plaintext highlighter-rouge">0D</code>.
 Instead of coding this up manually, RevBayes provides a simple function for you.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data_exp &lt;- data.expandCharacters( NUM_HIDDEN )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data_exp &lt;- data.expandCharacters( NUM_HIDDEN )
 </code></pre></div></div>
 <p>Finally, we initialize a variable for our vector of moves and monitors.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
 monitors = VectorMonitors()
 </code></pre></div></div>
 
@@ -207,29 +207,29 @@ For example, we have $\lambda_{0A} = \lambda_{\text{observed},0} * \lambda_{\tex
 <p>Let’s code this up in RevBayes.
 First, we create the vector of hidden speciation rates.
 Following the idea of discretizing a continuous distribution of diversification rates
-(see <a href="/tutorials/divrate/branch_specific.html">Branch-Specific Diversification Rate Estimation</a>), we will specify <code class="highlighter-rouge">NUM_HIDDEN</code> speciation rates
+(see <a href="/tutorials/divrate/branch_specific.html">Branch-Specific Diversification Rate Estimation</a>), we will specify <code class="language-plaintext highlighter-rouge">NUM_HIDDEN</code> speciation rates
 as the quantiles of a lognormal distribution.
 We need the average rate of the hidden speciation rates to be fixed, because otherwise the model is not identifiable.
 Therefore, we fix the median of the lognormal distribution to 1.0:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ln_speciation_hidden_mean &lt;- ln(1.0)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ln_speciation_hidden_mean &lt;- ln(1.0)
 </code></pre></div></div>
-<p>Next, we draw the standard deviation of the hidden speciation rates from an exponential distribution with mean <code class="highlighter-rouge">H</code> 
+<p>Next, we draw the standard deviation of the hidden speciation rates from an exponential distribution with mean <code class="language-plaintext highlighter-rouge">H</code> 
 (so that we expect the 95% interval of the hidden speciation rate to span 1 order of magnitude).</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>speciation_hidden_sd ~ dnExponential( 1.0 / H )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>speciation_hidden_sd ~ dnExponential( 1.0 / H )
 moves.append( mvScale(speciation_hidden_sd, lambda=1, tune=true, weight=2.0) )
 </code></pre></div></div>
 <p>With the mean and the standard deviation we can specify the distribution on the hidden speciation rates.
 We create a deterministic variable for the hidden speciation rate categories using 
 a discretized lognormal distribution (the N-quantiles of it).</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>speciation_hidden_unormalized := fnDiscretizeDistribution( dnLognormal(ln_speciation_hidden_mean, speciation_hidden_sd), NUM_HIDDEN )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>speciation_hidden_unormalized := fnDiscretizeDistribution( dnLognormal(ln_speciation_hidden_mean, speciation_hidden_sd), NUM_HIDDEN )
 </code></pre></div></div>
 <p>However, we normalize the hidden speciation rates by dividing the rates with the main 
 (so the mean of the normalized rates equals to 1.0):</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>speciation_hidden := speciation_hidden_unormalized / mean(speciation_hidden_unormalized)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>speciation_hidden := speciation_hidden_unormalized / mean(speciation_hidden_unormalized)
 </code></pre></div></div>
 
 <p>Next, we repeat this same procedure for the hidden extinction rates.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ln_extinction_hidden_mean &lt;- ln(1.0)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ln_extinction_hidden_mean &lt;- ln(1.0)
 
 extinction_hidden_sd ~ dnExponential( 1.0 / H )
 moves.append( mvScale(extinction_hidden_sd, lambda=1, tune=true, weight=2.0) )
@@ -245,7 +245,7 @@ and with probability 0.5 we expect $\lambda_{\text{observed},1} &gt; \lambda_{\t
 For the lack of prior knowledge, we specify a log-uniform prior distribution on the speciation and extinction rates
 for the observed characters.
 Note that we also initialize the starting states to make the analysis run more efficiently.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:NUM_STATES) {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:NUM_STATES) {
     
     ### Create a loguniform distributed variable for the speciation rate
     speciation_observed[i] ~ dnLoguniform( 1E-6, 1E2)
@@ -261,7 +261,7 @@ Note that we also initialize the starting states to make the analysis run more e
 </code></pre></div></div>
 <p>We have now specified the diversification rate variables for the observed and hidden states.
 That means, we can now put these two put together.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (j in 1:NUM_HIDDEN) {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (j in 1:NUM_HIDDEN) {
     for (i in 1:NUM_STATES) {
         index = i+(j*NUM_STATES)-NUM_STATES
         speciation[index] := speciation_observed[i] * speciation_hidden[j]
@@ -272,26 +272,26 @@ That means, we can now put these two put together.</p>
 
 <p>Now we can specify our character-specific speciation and extinction rate
 parameters. Because we will use the same prior for each rate, it’s easy
-to specify them all in a <code class="highlighter-rouge">for</code>-loop. We will use a log-uniform distribution as a prior
+to specify them all in a <code class="language-plaintext highlighter-rouge">for</code>-loop. We will use a log-uniform distribution as a prior
 on the speciation and extinction rates. The loop also allows us to apply moves to each
 of the rates we are estimating and create a vector of deterministic nodes
 representing the rate of diversification ($\lambda - \mu$) associated with each
 character state.</p>
 
 <p>The stochastic nodes representing the vector of speciation rates and vector of 
-extinction rates have been instantiated. The software assumes that the rate in position <code class="highlighter-rouge">[1]</code> of each
-vector corresponds to the rate associated with diurnal <code class="highlighter-rouge">0</code> lineages and the rate
-at position <code class="highlighter-rouge">[2]</code> of each vector is the rate associated with nocturnal <code class="highlighter-rouge">1</code> lineages.</p>
+extinction rates have been instantiated. The software assumes that the rate in position <code class="language-plaintext highlighter-rouge">[1]</code> of each
+vector corresponds to the rate associated with diurnal <code class="language-plaintext highlighter-rouge">0</code> lineages and the rate
+at position <code class="language-plaintext highlighter-rouge">[2]</code> of each vector is the rate associated with nocturnal <code class="language-plaintext highlighter-rouge">1</code> lineages.</p>
 
-<p>Next we specify the transition rates between the states <code class="highlighter-rouge">0</code> and <code class="highlighter-rouge">1</code>:
+<p>Next we specify the transition rates between the states <code class="language-plaintext highlighter-rouge">0</code> and <code class="language-plaintext highlighter-rouge">1</code>:
 $q_{01}$ and $q_{10}$. As a prior, we choose that each transition rate
 is drawn from an exponential distribution with a mean of 10 character
 state transitions over the entire tree. This is reasonable because we
 use this kind of model for traits that transition not-infrequently, and
 it leaves a fair bit of uncertainty. 
-Note that we will actually use a <code class="highlighter-rouge">for</code>-loop to instantiate the transition rates
+Note that we will actually use a <code class="language-plaintext highlighter-rouge">for</code>-loop to instantiate the transition rates
 so that our script will also work for non-binary characters.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#########################################################
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#########################################################
 # Set up the transition rate matrix for observed states #
 #########################################################
 
@@ -320,12 +320,12 @@ for (i in 1:(NUM_HIDDEN * (NUM_HIDDEN - 1))) {
 rate_matrix := fnHiddenStateRateMatrix(transition_rates, R, rescaled=false)
 
 </code></pre></div></div>
-<p>Here, <code class="highlighter-rouge">rate[1]</code> is the rate of transition from state <code class="highlighter-rouge">0</code> (diurnal) to state <code class="highlighter-rouge">1</code> (nocturnal),
-and <code class="highlighter-rouge">rate[2]</code> is the rate of going from nocturnal to diurnal.</p>
+<p>Here, <code class="language-plaintext highlighter-rouge">rate[1]</code> is the rate of transition from state <code class="language-plaintext highlighter-rouge">0</code> (diurnal) to state <code class="language-plaintext highlighter-rouge">1</code> (nocturnal),
+and <code class="language-plaintext highlighter-rouge">rate[2]</code> is the rate of going from nocturnal to diurnal.</p>
 
 <p>Finally, we put the rates into a matrix, because this is what’s needed
 by the function for the state-dependent birth-death process.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_matrix := fnFreeK( transition_rates, rescaled=false)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_matrix := fnFreeK( transition_rates, rescaled=false)
 </code></pre></div></div>
 <p>Note that we do not “rescale” the rate matrix. Rate matrices for
 molecular evolution are rescaled to have an average rate of 1.0, but for
@@ -338,15 +338,15 @@ scale as the diversification rates.</p>
 each state. There has been some discussion about this in <a class="citation" href="#FitzJohn2009">(FitzJohn et al. 2009)</a>. 
 You could also fix the prior probabilities for the root states to be equal 
 (generally not recommended), or use empirical state frequencies.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_category_prior ~ dnDirichlet( rep(1,NUM_RATES) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_category_prior ~ dnDirichlet( rep(1,NUM_RATES) )
 </code></pre></div></div>
-<p>Note that we use the <code class="highlighter-rouge">rep()</code> function which generates a vector of length <code class="highlighter-rouge">NUM_STATES</code>
-with each position in the vector set to <code class="highlighter-rouge">1</code>. Using this function and the <code class="highlighter-rouge">NUM_STATES</code>
+<p>Note that we use the <code class="language-plaintext highlighter-rouge">rep()</code> function which generates a vector of length <code class="language-plaintext highlighter-rouge">NUM_STATES</code>
+with each position in the vector set to <code class="language-plaintext highlighter-rouge">1</code>. Using this function and the <code class="language-plaintext highlighter-rouge">NUM_STATES</code>
 variable allows us to easily use this Rev script as a template for a different analysis
 using a character with more than two states.</p>
 
 <p>We will use a special move for objects that are drawn from a Dirichlet distribution:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvBetaSimplex(rate_category_prior,tune=true,weight=2) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvBetaSimplex(rate_category_prior,tune=true,weight=2) )
 moves.append( mvDirichletSimplex(rate_category_prior,tune=true,weight=2) )
 </code></pre></div></div>
 
@@ -359,7 +359,7 @@ species in our analysis.</p>
 <p>We know that we have sampled 233 out of 367 living described primate species. To
 account for this we can set the sampling probability as a constant node
 with a value of 233/367.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rho &lt;- observed_phylogeny.ntips()/367
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rho &lt;- observed_phylogeny.ntips()/367
 </code></pre></div></div>
 
 <h4 id="root-age"><strong>Root Age</strong></h4>
@@ -367,15 +367,15 @@ with a value of 233/367.</p>
 <p>The birth-death process also depends on time to the most-recent-common ancestor–<em>i.e.</em>,
 the root. In this
 exercise we use a fixed tree and thus we know the age of the tree.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root &lt;- observed_phylogeny.rootAge()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root &lt;- observed_phylogeny.rootAge()
 </code></pre></div></div>
 
 <h4 id="the-time-tree"><strong>The Time Tree</strong></h4>
 
 <p>Now we have all of the parameters we need to specify the full character
 state-dependent birth-death model. We initialize the stochastic node
-representing the time tree and we create this node using the <code class="highlighter-rouge">dnCDBDP()</code> function.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree ~ dnCDBDP( rootAge           = root,
+representing the time tree and we create this node using the <code class="language-plaintext highlighter-rouge">dnCDBDP()</code> function.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree ~ dnCDBDP( rootAge           = root,
                     speciationRates   = speciation,
                     extinctionRates   = extinction, 
                     Q                 = rate_matrix,
@@ -385,25 +385,25 @@ representing the time tree and we create this node using the <code class="highli
                     condition         = "survival" )
 </code></pre></div></div>
 <p>Now, we will fix the BiSSE time-tree to the observed values from our data files. We use
-the standard <code class="highlighter-rouge">.clamp()</code> method to give the observed tree and branch times:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree.clamp( observed_phylogeny )
+the standard <code class="language-plaintext highlighter-rouge">.clamp()</code> method to give the observed tree and branch times:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree.clamp( observed_phylogeny )
 timetree.clampCharData( data_exp )
 </code></pre></div></div>
-<p>And then we use the <code class="highlighter-rouge">.clampCharData()</code> to set the observed states at the tips of the tree:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree.clampCharData( data )
+<p>And then we use the <code class="language-plaintext highlighter-rouge">.clampCharData()</code> to set the observed states at the tips of the tree:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree.clampCharData( data )
 </code></pre></div></div>
-<p>Finally, we create a workspace object of our whole model. The <code class="highlighter-rouge">model()</code>
+<p>Finally, we create a workspace object of our whole model. The <code class="language-plaintext highlighter-rouge">model()</code>
 function traverses all of the connections and finds all of the nodes we
 specified.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(timetree)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(timetree)
 </code></pre></div></div>
-<p>You can use the <code class="highlighter-rouge">.graph()</code> method of the model object to visualize the graphical model you
+<p>You can use the <code class="language-plaintext highlighter-rouge">.graph()</code> method of the model object to visualize the graphical model you
 have just constructed . This function writes the model DAG to a file 
 that can be viewed using the  program <a href="https://www.graphviz.org/">Graphviz</a> (<a href="#graphviz"></a>).</p>
 
 <figure id="graphviz"><p><img src="figures/bisse_dag.svg" width="95%" /></p>
 <figcaption>The probabilistic graphical model of the character-state-dependent diversification model.
-This image was generated by executing the <code class="highlighter-rouge">mymodel.graph("bisse.dot")</code> in RevBayes after specifying the full model DAG.
+This image was generated by executing the <code class="language-plaintext highlighter-rouge">mymodel.graph("bisse.dot")</code> in RevBayes after specifying the full model DAG.
 Then, the resulting file can be opened in the program <a href="https://www.graphviz.org/">Graphviz</a>.</figcaption>
 </figure>
 
@@ -416,17 +416,17 @@ Then, the resulting file can be opened in the program <a href="https://www.graph
 states of our Markov chain. The first monitor will model all numerical
 variables; we are particularly interested in the rates of speciation,
 extinction, and transition.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/primates_HiSSE_2.log", printgen=1) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/primates_HiSSE_2.log", printgen=1) )
 </code></pre></div></div>
 <p>Then, we add a screen monitor showing some updates during the MCMC
 run.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(printgen=10, speciation_observed, extinction_observed) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(printgen=10, speciation_observed, extinction_observed) )
 </code></pre></div></div>
 
 <blockquote class="aside"><h2>Sampling Ancestral States</h2><p>Optionally, we can sample ancestral states during the MCMC analysis. 
 We need to add an additional monitor to record the state of each internal node in the tree.
 The file produced by this monitor can be summarized so that we can visualize the estimates of ancestral states.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnStochasticCharacterMap(cdbdp=timetree, printgen=10, filename="output/stoch_char_map_primates_HiSSE.log", include_simmap=true) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnStochasticCharacterMap(cdbdp=timetree, printgen=10, filename="output/stoch_char_map_primates_HiSSE.log", include_simmap=true) )
 </code></pre></div></div>
 </blockquote>
 
@@ -434,21 +434,21 @@ The file produced by this monitor can be summarized so that we can visualize the
 
 <p>With a fully specified model, a set of monitors, and a set of moves, we
 can now set up the MCMC algorithm that will sample parameter values in
-proportion to their posterior probability. The <code class="highlighter-rouge">mcmc()</code> function will
+proportion to their posterior probability. The <code class="language-plaintext highlighter-rouge">mcmc()</code> function will
 create our MCMC object:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
 
 </code></pre></div></div>
 <p>Now, run the MCMC:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=2500, tuningInterval=100)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=2500, tuningInterval=100)
 </code></pre></div></div>
 
-<blockquote class="aside"><h2>Summarize Sampled Ancestral States</h2><p>If we sampled ancestral states during the MCMC analysis, we can use the <code class="highlighter-rouge">RevGadgets</code> R package
+<blockquote class="aside"><h2>Summarize Sampled Ancestral States</h2><p>If we sampled ancestral states during the MCMC analysis, we can use the <code class="language-plaintext highlighter-rouge">RevGadgets</code> R package
 to plot the ancestral state reconstruction. First, though, we must summarize the sampled values in 
 RevBayes.</p>
 
-<p>To do this, we first have to read in the ancestral state log file. This uses a specific function called <code class="highlighter-rouge">readAncestralStateTrace()</code>.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>burnin=25
+<p>To do this, we first have to read in the ancestral state log file. This uses a specific function called <code class="language-plaintext highlighter-rouge">readAncestralStateTrace()</code>.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>burnin=25
 n_time_slices = 500
 
 # read in the sampled character histories
@@ -459,7 +459,7 @@ summarizeCharacterMaps(anc_states, observed_phylogeny, file="output/events.tsv",
 <p>Now, we can write an annotated tree to a file. This function will write a tree with each
 node labeled with the maximum a posteriori (MAP) state and the posterior probabilities for each
 state.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>char_map_tree = characterMapTree(tree=observed_phylogeny, 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>char_map_tree = characterMapTree(tree=observed_phylogeny, 
                  ancestral_state_trace_vector=anc_states, 
                  character_file="output/marginal_character.tree", 
                  posterior_file="output/marginal_posterior.tree", 
@@ -470,14 +470,14 @@ state.</p>
 <h3 class="subsection" id="subsec_ancviz">Visualize Estimated Ancestral States</h3>
 <hr class="subsection" />
 
-<p>To visualize the posterior probabilities of ancestral states, we will use the <code class="highlighter-rouge">RevGadgets</code> R package.</p>
+<p>To visualize the posterior probabilities of ancestral states, we will use the <code class="language-plaintext highlighter-rouge">RevGadgets</code> R package.</p>
 
 <blockquote class="instruction">
   <p>Open R.</p>
 </blockquote>
 
-<p><code class="highlighter-rouge">RevGadgets</code> requires the <code class="highlighter-rouge">ggtree</code> package <a class="citation" href="#Yu2017ggtree">(Yu et al. 2017)</a>. 
-First, install the <code class="highlighter-rouge">ggtree</code> and <code class="highlighter-rouge">RevGadgets</code> packages:</p>
+<p><code class="language-plaintext highlighter-rouge">RevGadgets</code> requires the <code class="language-plaintext highlighter-rouge">ggtree</code> package <a class="citation" href="#Yu2017ggtree">(Yu et al. 2017)</a>. 
+First, install the <code class="language-plaintext highlighter-rouge">ggtree</code> and <code class="language-plaintext highlighter-rouge">RevGadgets</code> packages:</p>
 
 <pre>
 install.packages("devtools")
@@ -514,7 +514,7 @@ ggsave(output_file, width = 11, height = 9)
 <h3 class="subsection" id="subsec_summary">Summarizing Parameter Estimates</h3>
 <hr class="subsection" />
 
-<p>Our MCMC analysis generated a tab-delimited file called <code class="highlighter-rouge">primates_activTime_BiSSE_mcmc.log</code> that contains
+<p>Our MCMC analysis generated a tab-delimited file called <code class="language-plaintext highlighter-rouge">primates_activTime_BiSSE_mcmc.log</code> that contains
 the samples of all the numerical parameters in our model. There are a lot of tools available
 for visualizing files like this (like R or python), which allow you to generate plots and 
 visually explore the posterior distributions of sampled parameters.</p>
@@ -523,7 +523,7 @@ visually explore the posterior distributions of sampled parameters.</p>
 <a class="citation" href="#Rambaut2011">(Rambaut and Drummond 2011)</a>, which is a tool for easily exploring parameters sampled using MCMC.</p>
 
 <blockquote class="instruction">
-  <p>Open the program Tracer and import your file: <code class="highlighter-rouge">output/primates_activTime_BiSSE_mcmc.log</code>.</p>
+  <p>Open the program Tracer and import your file: <code class="language-plaintext highlighter-rouge">output/primates_activTime_BiSSE_mcmc.log</code>.</p>
 </blockquote>
 
 <p>Tracer opens to a histogram of the <em>Posterior</em> statistic and a list of all the other sampled
@@ -540,12 +540,12 @@ parameters (<a href="#tracer1"></a>).</p>
 
   <p>Check the <em>Trace</em> view for each parameter. Did the chain “mix” effectively?</p>
 
-  <p>Highlight both of the <em>speciation</em> rates: <code class="highlighter-rouge">speciation[1]</code> and <code class="highlighter-rouge">speciation[2]</code> to 
+  <p>Highlight both of the <em>speciation</em> rates: <code class="language-plaintext highlighter-rouge">speciation[1]</code> and <code class="language-plaintext highlighter-rouge">speciation[2]</code> to 
 compare the <em>Estimates</em> of both parameters.</p>
 
   <p><strong>Write down</strong> the mean value for the rate of speciation associated with 
-diurnal lineages <code class="highlighter-rouge">speciation[1]</code> and the rate of speciation associated with 
-nocturnal lineages <code class="highlighter-rouge">speciation[2]</code>.</p>
+diurnal lineages <code class="language-plaintext highlighter-rouge">speciation[1]</code> and the rate of speciation associated with 
+nocturnal lineages <code class="language-plaintext highlighter-rouge">speciation[2]</code>.</p>
 
   <p>Now use the <em>Marginal Prob Distribution</em> view to compare the marginal posterior densities
 of both speciation rates.</p>

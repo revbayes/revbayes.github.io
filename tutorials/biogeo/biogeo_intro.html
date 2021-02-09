@@ -272,25 +272,25 @@ areas in its range remains that way permanently.</p>
 <p>To build our intuition, let’s construct a DEC rate matrix in RevBayes.</p>
 
 <blockquote class="instruction">
-  <p>Create a new directory on your computer called <code class="highlighter-rouge">RB_biogeo_tutorial</code>.</p>
+  <p>Create a new directory on your computer called <code class="language-plaintext highlighter-rouge">RB_biogeo_tutorial</code>.</p>
 
-  <p>Navigate to your tutorial directory and execute the <code class="highlighter-rouge">rb</code> binary. 
-One option for doing this is to move the <code class="highlighter-rouge">rb</code> executable to the tutorial
+  <p>Navigate to your tutorial directory and execute the <code class="language-plaintext highlighter-rouge">rb</code> binary. 
+One option for doing this is to move the <code class="language-plaintext highlighter-rouge">rb</code> executable to the tutorial
 directory or to create a shortcut to your executable.</p>
 
   <p>Alternatively, if you are on a Unix system, and have added RevBayes to your path, 
-you simply have to type <code class="highlighter-rouge">rb</code> in your Terminal to run the program.</p>
+you simply have to type <code class="language-plaintext highlighter-rouge">rb</code> in your Terminal to run the program.</p>
 </blockquote>
 
 <p>Assume you have three areas</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_areas &lt;- 3
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_areas &lt;- 3
 </code></pre></div></div>
 
 <p>First, create a matrix of dispersal rates between area pairs, with rates
 $d_{AB} = d_{AC} = \ldots = d_{CB} = 1$.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:n_areas) {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:n_areas) {
     for (j in 1:n_areas) {
         dr[i][j] &lt;- 1.0
     }
@@ -299,7 +299,7 @@ $d_{AB} = d_{AC} = \ldots = d_{CB} = 1$.</p>
 
 <p>Next, let’s create the extirpation rates with values $e_A=e_B=e_C=1$</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:n_areas) {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:n_areas) {
     for (j in 1:n_areas) {
         er[i][j] &lt;- 0.0
     }
@@ -316,11 +316,11 @@ sections.</p>
 <p>To continue, create the DEC rate matrix from the dispersal rates
 (dr) and extirpation rates (er).</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q_DEC := fnDECRateMatrix(dispersalRates=dr, extirpationRates=er)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q_DEC := fnDECRateMatrix(dispersalRates=dr, extirpationRates=er)
 Q_DEC
 </code></pre></div></div>
 
-<div class="rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    [ [ 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000 ] ,
+<div class="language-plaintext rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    [ [ 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000 ] ,
         1.0000, -3.0000, 0.0000, 0.0000, 1.0000, 1.0000, 0.0000, 0.0000 ] ,
         1.0000, 0.0000, -3.0000, 0.0000, 1.0000, 0.0000, 1.0000, 0.0000 ] ,
         1.0000, 0.0000, 0.0000, -3.0000, 0.0000, 1.0000, 1.0000, 0.0000 ] ,
@@ -333,11 +333,11 @@ Q_DEC
 <p>Compute the anagenetic transition probabilities for a branch of length
 0.2.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tp_DEC &lt;- Q_DEC.getTransitionProbabilities(rate=0.2)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tp_DEC &lt;- Q_DEC.getTransitionProbabilities(rate=0.2)
 tp_DEC
 </code></pre></div></div>
 
-<div class="rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    [ [ 1.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000],
+<div class="language-plaintext rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    [ [ 1.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000],
       [ 0.000, 0.673, 0.013, 0.013, 0.123, 0.123, 0.005, 0.050],
       [ 0.000, 0.013, 0.673, 0.013, 0.123, 0.005, 0.123, 0.050],
       [ 0.000, 0.013, 0.013, 0.673, 0.005, 0.123, 0.123, 0.050],
@@ -356,14 +356,14 @@ and has probability 0.005.</p>
 <p>Also note that the probability of entering or leaving the null range is
 zero. By default, the RevBayes conditions the anagenetic range
 evolution process on never entering the null range when computing the
-transition probabilities (<code class="highlighter-rouge">nullRange="CondSurv"</code>). This
+transition probabilities (<code class="language-plaintext highlighter-rouge">nullRange="CondSurv"</code>). This
 allows the model to both simulate and infer using the same transition
 probabilities. <a class="citation" href="#Massana2015">Massana et al. (2015)</a> first noted that the null range—an
 unobserved absorbing state—results in abnormal extirpation rate and
 range size estimates. Their proposed solution to eliminate the null
 range from the state space is enabled with the
-<code class="highlighter-rouge">nullRange="Exclude"</code> setting. The
-<code class="highlighter-rouge">nullRange="Include"</code> setting provides no special handling of
+<code class="language-plaintext highlighter-rouge">nullRange="Exclude"</code> setting. The
+<code class="language-plaintext highlighter-rouge">nullRange="Include"</code> setting provides no special handling of
 the null range, and produces the raw probabilities of <a class="citation" href="#Ree2005">Ree et al. (2005)</a>.</p>
 
 <h3 class="subsection" id="cladogenetic">Cladogenetic Range Evolution</h3>
@@ -398,26 +398,26 @@ transitions described in the literature (specifically see this <a href="http://p
 
 <p>Make the cladogenetic probability event matrix</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clado_event_types = [ "s", "a" ]
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clado_event_types = [ "s", "a" ]
 clado_event_probs &lt;- simplex( 1, 1 )
 P_DEC := fnDECCladoProbs(eventProbs=clado_event_probs,
                          eventTypes=clado_event_types,
                          numCharacters=n_areas)
 </code></pre></div></div>
 
-<p><code class="highlighter-rouge">clado_event_types</code> defines what cladogenetic event types
-are used. <code class="highlighter-rouge">"a"</code> and <code class="highlighter-rouge">"s"</code> indicate allopatry and
+<p><code class="language-plaintext highlighter-rouge">clado_event_types</code> defines what cladogenetic event types
+are used. <code class="language-plaintext highlighter-rouge">"a"</code> and <code class="language-plaintext highlighter-rouge">"s"</code> indicate allopatry and
 subset sympatry, as described in <a class="citation" href="#Ree2005">Ree et al. (2005)</a>. Other cladogenetic events
-include jump dispersal <code class="highlighter-rouge">["j"]</code> <a class="citation" href="#Matzke2014">(Matzke 2014)</a> and full sympatry
-<code class="highlighter-rouge">["f"]</code> <a class="citation" href="#Landis2013a">(Landis et al. 2013)</a>. The cladogenetic event probability
-matrix will assume that <code class="highlighter-rouge">eventProbs</code> and <code class="highlighter-rouge">eventTypes</code> share the same order.</p>
+include jump dispersal <code class="language-plaintext highlighter-rouge">["j"]</code> <a class="citation" href="#Matzke2014">(Matzke 2014)</a> and full sympatry
+<code class="language-plaintext highlighter-rouge">["f"]</code> <a class="citation" href="#Landis2013a">(Landis et al. 2013)</a>. The cladogenetic event probability
+matrix will assume that <code class="language-plaintext highlighter-rouge">eventProbs</code> and <code class="language-plaintext highlighter-rouge">eventTypes</code> share the same order.</p>
 
 <p>Print the cladogenetic transition probabilities</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>P_DEC
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>P_DEC
 </code></pre></div></div>
 
-<div class="rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>       [
+<div class="language-plaintext rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>       [
          ( 1 -&gt; 1, 1 ) = 1.0000,
          ( 2 -&gt; 2, 2 ) = 1.0000,
          ( 3 -&gt; 3, 3 ) = 1.0000,

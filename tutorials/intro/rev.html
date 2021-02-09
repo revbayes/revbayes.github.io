@@ -91,7 +91,7 @@ RevBayes). You should try to execute the statements step by step, look
 at the output and try to understand what and why things are happening.</p>
 
 <p>First, open up your terminal and type RevBayes. This should launch RevBayes and give you
-a command prompt (the <code class="highlighter-rouge">&gt;</code> character). This means RevBayes is waiting for input.</p>
+a command prompt (the <code class="language-plaintext highlighter-rouge">&gt;</code> character). This means RevBayes is waiting for input.</p>
 
 <p><img src="figures/terminal.png" alt="image" /></p>
 
@@ -101,7 +101,7 @@ a command prompt (the <code class="highlighter-rouge">&gt;</code> character). Th
 analysis. Therefore, the basics are simple mathematical operations.
 Entering each of the following lines will automatically execute these
 operations.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Simple mathematical operators:
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Simple mathematical operators:
 1 + 1                            # Addition
 10 - 5                           # Subtraction
 5 * 5                            # Multiplication
@@ -122,15 +122,15 @@ to the text file containing the list of commands as a <em>script</em>, because
 it describes line-by-line instructions for the program to follow.</p>
 
 <p>You can write multiple statements in the same line if you separate them
-by a semicolon (<code class="highlighter-rouge">;</code>). The statements will execute as if you wrote each
+by a semicolon (<code class="language-plaintext highlighter-rouge">;</code>). The statements will execute as if you wrote each
 on a single line.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1 + 1; 2 + 2                    # Multiple statements in one line
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1 + 1; 2 + 2                    # Multiple statements in one line
 </code></pre></div></div>
-<p>Here you can see that comments always start with the hash symbol (<code class="highlighter-rouge">#</code>).
-Everything after the <code class="highlighter-rouge">#</code>-symbol will be ignored. In addition to these
+<p>Here you can see that comments always start with the hash symbol (<code class="language-plaintext highlighter-rouge">#</code>).
+Everything after the <code class="language-plaintext highlighter-rouge">#</code>-symbol will be ignored. In addition to these
 simple mathematical operations, provides some standard math functions
 which can be called by:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Math functions
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Math functions
 exp(1)                           # exponential function
 ln(1)                            # logarithmic function with natural base
 sqrt(16)                         # square root function 
@@ -139,7 +139,7 @@ power(2,2)                       # power function: power(a,b) = a^b
 <p>Notice that Rev is case-sensitive. That means, Rev distinguishes upper and lower
 case letter for both variable names and function names. For example,
 only the first of these two calls will work:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>exp(1)                           # correct lower case name
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>exp(1)                           # correct lower case name
 Exp(1)                           # wrong upper case name
 </code></pre></div></div>
 
@@ -159,21 +159,21 @@ distribution.</p>
 
 <p>Different types of variables differ in how you create them and assign
 values to them. We will begin by creating a constant variable with name
-<code class="highlighter-rouge">a</code> that starts with the value 1. The left arrow assignment (<code class="highlighter-rouge">&lt;-</code>)
+<code class="language-plaintext highlighter-rouge">a</code> that starts with the value 1. The left arrow assignment (<code class="language-plaintext highlighter-rouge">&lt;-</code>)
 always creates a constant variable, and automatically assigns the
 following value to it.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Variable assignment: constant
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Variable assignment: constant
 a &lt;- 1                           # assignment of constant node `a'
 </code></pre></div></div>
 <p>You see the value of ‘a’ by just typing in the variable name and
 pressing enter.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>a                                # printing the value of `a'
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>a                                # printing the value of `a'
 </code></pre></div></div>
-<p>Next, we create a deterministic variable <code class="highlighter-rouge">b</code> using the <code class="highlighter-rouge">:=</code> assignment
-computed by <code class="highlighter-rouge">exp(a)</code> and another deterministic variable <code class="highlighter-rouge">c</code> computed by
-<code class="highlighter-rouge">ln(b)</code>. Deterministic variables are always created using the
-colon-equal assignment (<code class="highlighter-rouge">:=</code>).</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Variable assignment: deterministic
+<p>Next, we create a deterministic variable <code class="language-plaintext highlighter-rouge">b</code> using the <code class="language-plaintext highlighter-rouge">:=</code> assignment
+computed by <code class="language-plaintext highlighter-rouge">exp(a)</code> and another deterministic variable <code class="language-plaintext highlighter-rouge">c</code> computed by
+<code class="language-plaintext highlighter-rouge">ln(b)</code>. Deterministic variables are always created using the
+colon-equal assignment (<code class="language-plaintext highlighter-rouge">:=</code>).</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Variable assignment: deterministic
 
 # assignment of deterministic node `b' with
 # the exponential function with parameter `a'
@@ -186,10 +186,10 @@ c := ln(b)
 c 
 </code></pre></div></div>
 <p>Finally, we will create the third type of variables in RevBayes: stochastic
-variables. We will create a random variable <code class="highlighter-rouge">x</code> from an exponential
-distribution with parameter <code class="highlighter-rouge">lambda</code>. Stochastic assignments use the
+variables. We will create a random variable <code class="language-plaintext highlighter-rouge">x</code> from an exponential
+distribution with parameter <code class="language-plaintext highlighter-rouge">lambda</code>. Stochastic assignments use the
 $\sim$ operation.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Variable assignment: stochastic
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Variable assignment: stochastic
 
 # assign constant node `lambda' with value `1'
 lambda &lt;- 1.0
@@ -198,10 +198,10 @@ lambda &lt;- 1.0
 # distribution and parameter `lambda'
 x ~ dnExponential(lambda)
 </code></pre></div></div>
-<p>The value of <code class="highlighter-rouge">x</code> is a random draw from the distribution. You can see the
+<p>The value of <code class="language-plaintext highlighter-rouge">x</code> is a random draw from the distribution. You can see the
 value and the probability (or log-probability) of the current value
 under the current parameter values by</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>x                                # print value of stochastic node `x'
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>x                                # print value of stochastic node `x'
 x.probability()                  # print the probability if `x'
 x.lnProbability()                # print the log-probability if `x'
 </code></pre></div></div>
@@ -222,7 +222,7 @@ parameter $\lambda$:</p>
 <p>In RevBayes, we might describe
 $u$ as a stochastic variable, and $x$ as a deterministic variable (since
 it is a function of $u$):</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># create the random variable u
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># create the random variable u
 u ~ dnUniform(0,1)
 u
 
@@ -235,7 +235,7 @@ x
 </code></pre></div></div>
 <p>Alternatively, we can create $x$ directly as an exponential random
 variable:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># create the random variable x
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># create the random variable x
 x ~ dnExponential(lambda)
 x
 </code></pre></div></div>
@@ -245,46 +245,46 @@ x
 <p>Individual variables can have more than one value. Variables that have
 more than one value are called <em>vectors</em>. The simplest way to create a
 vector is like this:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>z &lt;- v(1.0,2.0,3.0)              # create a vector
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>z &lt;- v(1.0,2.0,3.0)              # create a vector
 </code></pre></div></div>
-<p>You can refer to a specific value in the vector using brackets, <code class="highlighter-rouge">[i]</code>,
-where <code class="highlighter-rouge">i</code> is the index of the variable of interest.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>z[1]                             # print the first entry
+<p>You can refer to a specific value in the vector using brackets, <code class="language-plaintext highlighter-rouge">[i]</code>,
+where <code class="language-plaintext highlighter-rouge">i</code> is the index of the variable of interest.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>z[1]                             # print the first entry
 z[1] &lt;- 10                       # change the value of the first entry
 z
 </code></pre></div></div>
 
-<h2 class="subsection" id="for-loops"><code class="highlighter-rouge">for</code> loops</h2>
+<h2 class="subsection" id="for-loops"><code class="language-plaintext highlighter-rouge">for</code> loops</h2>
 
-<p><code class="highlighter-rouge">for</code> loops are important programming structures that allow you to
+<p><code class="language-plaintext highlighter-rouge">for</code> loops are important programming structures that allow you to
 repeat the same statement a number of times on different variables. The
-basic structure of a <code class="highlighter-rouge">for</code> loop is:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># a for loop
+basic structure of a <code class="language-plaintext highlighter-rouge">for</code> loop is:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># a for loop
 for ([variable] in [set of values]) {
    [statements using variable]
 }
 </code></pre></div></div>
-<p>The <code class="highlighter-rouge">for</code> statement is followed by a set of parenthesis containing
-<code class="highlighter-rouge">[variable]</code>, which contains the name of the variable being iterated,
-and <code class="highlighter-rouge">[set of values]</code>, which are the values that the variable iterates
-over. The <code class="highlighter-rouge">for</code> loop variable is a special variable that is created by
-the <code class="highlighter-rouge">for</code> loop: you do not have to create it before executing the loop.
-This simple <code class="highlighter-rouge">for</code> loop creates the variable <code class="highlighter-rouge">i</code>, and for each value of
-<code class="highlighter-rouge">i</code> from 1 to 100, prints the value of <code class="highlighter-rouge">i</code> to the screen.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:100) {
+<p>The <code class="language-plaintext highlighter-rouge">for</code> statement is followed by a set of parenthesis containing
+<code class="language-plaintext highlighter-rouge">[variable]</code>, which contains the name of the variable being iterated,
+and <code class="language-plaintext highlighter-rouge">[set of values]</code>, which are the values that the variable iterates
+over. The <code class="language-plaintext highlighter-rouge">for</code> loop variable is a special variable that is created by
+the <code class="language-plaintext highlighter-rouge">for</code> loop: you do not have to create it before executing the loop.
+This simple <code class="language-plaintext highlighter-rouge">for</code> loop creates the variable <code class="language-plaintext highlighter-rouge">i</code>, and for each value of
+<code class="language-plaintext highlighter-rouge">i</code> from 1 to 100, prints the value of <code class="language-plaintext highlighter-rouge">i</code> to the screen.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:100) {
    i
 }
 </code></pre></div></div>
-<p><code class="highlighter-rouge">for</code> loops are very powerful programming tools. We can use a <code class="highlighter-rouge">for</code> loop
+<p><code class="language-plaintext highlighter-rouge">for</code> loops are very powerful programming tools. We can use a <code class="language-plaintext highlighter-rouge">for</code> loop
 to create an entire <em>vector</em> of uniform random numbers, and transform
 them into a <em>second</em> vector of exponential random numbers.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:100) {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:100) {
    y[i] ~ dnUniform(0,1)
    z[i] := -ln(y[i]) / lambda 
 }
 </code></pre></div></div>
-<p>Close using the statement <code class="highlighter-rouge">q()</code>.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>q()
+<p>Close using the statement <code class="language-plaintext highlighter-rouge">q()</code>.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>q()
 </code></pre></div></div>
 
 <ol class="bibliography"><li><span id="Hoehna2014b">Höhna S., Heath T.A., Boussau B., Landis M.J., Ronquist F., Huelsenbeck J.P. 2014. Probabilistic Graphical Model Representation in Phylogenetics. Systematic Biology. 63:753–771.</span>

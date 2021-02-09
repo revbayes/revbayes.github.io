@@ -60,7 +60,7 @@ Compile on Windows
 
 <p><strong>NOTE: These instructions are for compiling the development branch.</strong></p>
 
-<p>The standard way to build revbayes is to use <code class="highlighter-rouge">cmake</code>. Cross-compiling for Windows from Linux is also possible using <code class="highlighter-rouge">meson</code>, see <a href="https://github.com/revbayes/revbayes/blob/development/projects/meson/README.md">revbayes/projects/meson/README.md</a>.</p>
+<p>The standard way to build revbayes is to use <code class="language-plaintext highlighter-rouge">cmake</code>. Cross-compiling for Windows from Linux is also possible using <code class="language-plaintext highlighter-rouge">meson</code>, see <a href="https://github.com/revbayes/revbayes/blob/development/projects/meson/README.md">revbayes/projects/meson/README.md</a>.</p>
 
 <ol>
   <li>
@@ -168,7 +168,7 @@ Compile on Windows
 
     <p><strong>Boost and CMake:</strong></p>
 
-    <p>It’s important that the version of Boost that you use be supported by the version of CMake that you use. You can check this by going to the package source for the CMake version you’re using e.g. <a href="https://github.com/Kitware/CMake/blob/v3.14.5/Modules/FindBoost.cmake">3.14.5</a>. Search for <code class="highlighter-rouge">_Boost_KNOWN_VERSIONS</code> and ensure your boost version appears in the list.</p>
+    <p>It’s important that the version of Boost that you use be supported by the version of CMake that you use. You can check this by going to the package source for the CMake version you’re using e.g. <a href="https://github.com/Kitware/CMake/blob/v3.14.5/Modules/FindBoost.cmake">3.14.5</a>. Search for <code class="language-plaintext highlighter-rouge">_Boost_KNOWN_VERSIONS</code> and ensure your boost version appears in the list.</p>
   </li>
   <li>
     <p>Retrieve the RevBayes sources.</p>
@@ -176,7 +176,7 @@ Compile on Windows
     <ol>
       <li>Open a cygwin terminal window</li>
       <li>Clone the git repository:
-        <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> git clone https://github.com/revbayes/revbayes.git revbayes
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> git clone https://github.com/revbayes/revbayes.git revbayes
 </code></pre></div>        </div>
       </li>
     </ol>
@@ -186,18 +186,18 @@ Compile on Windows
 
     <ol>
       <li>Open a cygwin terminal window and go to the RevBayes source directory if you haven’t already done so, e.g.,
-        <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> cd revbayes
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> cd revbayes
 </code></pre></div>        </div>
       </li>
       <li>Next, go into the projects and then the cmake subdirectory:
-        <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> cd projects/cmake
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> cd projects/cmake
 </code></pre></div>        </div>
       </li>
       <li>Now you can either build the standard version
-        <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> bash build.sh -DCMAKE_TOOLCHAIN_FILE=../mingw64_toolchain.cmake
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> bash build.sh -DCMAKE_TOOLCHAIN_FILE=../mingw64_toolchain.cmake
 </code></pre></div>        </div>
         <p>or the RevStudio version</p>
-        <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> bash build.sh -DCMAKE_TOOLCHAIN_FILE=../mingw64_toolchain.cmake -cmd true
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> bash build.sh -DCMAKE_TOOLCHAIN_FILE=../mingw64_toolchain.cmake -cmd true
 </code></pre></div>        </div>
       </li>
     </ol>
@@ -209,7 +209,7 @@ Compile on Windows
 
     <p>Make a new directory and put the executable in it.</p>
 
-    <p>Then find the library from the error message in <code class="highlighter-rouge">/usr/x86_64-w64-mingw32/sys-root/mingw/bin/</code> and copy it to the directory you put the exectuable in. Repeat this until you stop getting error messages.</p>
+    <p>Then find the library from the error message in <code class="language-plaintext highlighter-rouge">/usr/x86_64-w64-mingw32/sys-root/mingw/bin/</code> and copy it to the directory you put the exectuable in. Repeat this until you stop getting error messages.</p>
 
     <p>At the time this was written (RevBayes v1.1.0), this consisted of:</p>
 

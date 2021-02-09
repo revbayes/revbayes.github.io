@@ -157,7 +157,7 @@ across various partitioning schemes.</p>
 <p>All of the files for this analysis are provided for you and you can run
 these without significant effort using the ‘source()‘ function in the
 ‘RevBayes‘ console, <em>e.g.,</em></p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/mcmc_Partition_uniform.Rev")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/mcmc_Partition_uniform.Rev")
 </code></pre></div></div>
 <p>If everything loaded properly, then you should see the program begin
 running the Markov chain Monte Carlo analysis needed for estimating the
@@ -260,18 +260,18 @@ evolve under the same process and parameters.</p>
 
 <p>To begin, load in the sequences using the ‘readDiscreteCharacterData()‘
 function.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data_cox2 = readDiscreteCharacterData("data/primates_and_galeopterus_cox2.nex")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data_cox2 = readDiscreteCharacterData("data/primates_and_galeopterus_cox2.nex")
 data_cytb = readDiscreteCharacterData("data/primates_and_galeopterus_cytb.nex")
 </code></pre></div></div>
 <p>Since the first step in this exercise is to assume a single model across
 genes, we need to combine the two datasets using
 concatenate()</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data = concatenate( data_cox2, data_cytb )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data = concatenate( data_cox2, data_cytb )
 </code></pre></div></div>
 <p>Typing ‘data‘ reports the dimensions of the concatenated matrix, this
 provides information about the alignment:</p>
 
-<div class="Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>       DNA character matrix with 23 taxa and 1852 characters
+<div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>       DNA character matrix with 23 taxa and 1852 characters
        =====================================================
        Origination:                   primates_and_galeopterus_cox2.nex
        Number of taxa:                23
@@ -282,12 +282,12 @@ provides information about the alignment:</p>
 </code></pre></div></div>
 <p>For later use, we will store the taxon information (‘taxa‘) and the
 number of taxa and branches.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_taxa &lt;- data.ntaxa()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_taxa &lt;- data.ntaxa()
 num_branches &lt;- 2 * n_taxa - 3
 taxa &lt;- data.taxa()
 </code></pre></div></div>
 <p>Additionally, we will create our move and monitor vectors.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
 monitors = VectorMonitors()
 </code></pre></div></div>
 
@@ -296,23 +296,23 @@ monitors = VectorMonitors()
 
 <p>Now we can proceed with building our GTR$+\Gamma$ model. First, we will
 define and specify a prior on the exchangeability rates of the GTR model</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>er_prior &lt;- v(1,1,1,1,1,1) 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>er_prior &lt;- v(1,1,1,1,1,1) 
 er ~ dnDirichlet( er_prior )
 </code></pre></div></div>
 <p>and assign its moves</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvBetaSimplex(er, alpha=10, tune=true, weight=3) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvBetaSimplex(er, alpha=10, tune=true, weight=3) )
 moves.append( mvDirichletSimplex(er, alpha=10.0, tune=true, weight=1.0) )
 </code></pre></div></div>
 <p>We can use the same type of distribution as a prior on the 4 stationary
 frequencies ($\pi_A, \pi_C, \pi_G, \pi_T$) since these parameters also
 represent proportions. Specify a flat Dirichlet prior density on the
 base frequencies:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pi_prior &lt;- v(1,1,1,1) 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pi_prior &lt;- v(1,1,1,1) 
 pi ~ dnDirichlet( pi_prior )
 </code></pre></div></div>
 <p>Now add the simplex scale move on the stationary frequencies to the
 moves vector</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvBetaSimplex(pi, alpha=10, tune=true, weight=2) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvBetaSimplex(pi, alpha=10, tune=true, weight=2) )
 moves.append( mvDirichletSimplex(pi, alpha=10.0, tune=true, weight=1.0) )
 </code></pre></div></div>
 <p>We can finish setting up this part of the model by creating a
@@ -320,7 +320,7 @@ deterministic node for the GTR rate matrix ‘Q‘. The ‘fnGTR()‘ function
 takes a set of exchangeability rates and a set of base frequencies to
 compute the rate matrix used when calculating the likelihood of our
 model.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q := fnGTR(er,pi)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q := fnGTR(er,pi)
 </code></pre></div></div>
 
 <h4 class="subsubsection" id="among-site-rate-variation">Among site rate variation</h4>
@@ -332,7 +332,7 @@ i.e., where the shape equals the rate
 ($\alpha=\beta$) and thus with mean 1.0 <a class="citation" href="#Yang1994a">(Yang 1994)</a>. Since we do not
 have good prior knowledge about the variance in site rates, we apply a uniform distribution between $1$ and $10^8$.
 Then create a stochastic node called ‘alpha‘ with a uniform prior:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha ~ dnUniform( 0, 1E8 )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha ~ dnUniform( 0, 1E8 )
 </code></pre></div></div>
 <p>The way the ASRV model is implemented involves discretizing the mean-one
 gamma distribution into a set number of rate categories. Thus, we can
@@ -347,14 +347,14 @@ both the shape and rate.</p>
 
 <p>Initialize the ‘gamma_rates‘ deterministic node vector using the
 ‘fnDiscretizeGamma()‘ function with ‘4‘ bins:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gamma_rates := fnDiscretizeGamma( alpha, alpha, 4, false )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gamma_rates := fnDiscretizeGamma( alpha, alpha, 4, false )
 </code></pre></div></div>
 <p>The random variable that controls the rate variation is the stochastic
 node ‘alpha‘. This variable is a single, real positive value (‘RevType =
 RealPos‘). We will apply a simple scale move to this parameter. The
 scale move’s tuning parameter is called ‘lambda‘ and this value dictates
 the size of the proposal.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale(alpha, lambda=0.1, tune=false, weight=4.0) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale(alpha, lambda=0.1, tune=false, weight=4.0) )
 </code></pre></div></div>
 
 <h2 class="section" id="invariant-sites">Invariant sites</h2>
@@ -365,7 +365,7 @@ history) may be seen as an extreme case of among-site rate variation. In
 contrast to $+ \Gamma$ models, the $+I$ model allows site some
 probability of having substitution rate equal to zero. Here, we give the
 probability of a site being invariant with ‘pinvar‘</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pinvar ~ dnBeta(1,1)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pinvar ~ dnBeta(1,1)
 moves.append( mvBetaProbability(pinvar, delta=10.0, tune=true, weight=2.0) )
 </code></pre></div></div>
 
@@ -381,11 +381,11 @@ exponential prior distributions, as done in the <a href="/tutorials/ctmc/">Nucle
 equal probability. This is the ‘dnUniformTopology()‘ distribution in
 ‘RevBayes‘. Note that in ‘RevBayes‘ it is advisable to specify the
 outgroup for your study system if you use an unrooted tree prior,
-whereas other software, e.g.,<code class="highlighter-rouge">MrBayes</code> uses the first
+whereas other software, e.g.,<code class="language-plaintext highlighter-rouge">MrBayes</code> uses the first
 taxon in the data matrix file as the outgroup. Specify the ‘topology‘
 stochastic node by passing in the tip labels ‘names‘ to the
 ‘dnUniformTopology()‘ distribution:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>out_group = clade("Galeopterus_variegatus")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>out_group = clade("Galeopterus_variegatus")
 topology ~ dnUniformTopology(taxa, outgroup=out_group)
 </code></pre></div></div>
 <p>To update the unrooted tree topology, we can use both a nearest-neighbor
@@ -393,7 +393,7 @@ interchange move (‘mvNNI‘) and a subtree-prune and regrafting move
 (‘mvSPR‘). These moves do not have tuning parameters associated with
 them, thus you only need to pass in the ‘topology‘ node and proposal
 ‘weight‘.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvNNI(topology, weight=n_taxa/2.0) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvNNI(topology, weight=n_taxa/2.0) )
 moves.append( mvSPR(topology, weight=n_taxa/10.0) )
 </code></pre></div></div>
 <p>The weight specifies how often the move will be applied either on
@@ -407,7 +407,7 @@ in our tree (where $N=$ ‘n_species‘). We can do this using a ‘for‘ loop
 — this is a plate in our graphical model. In this loop, we can create
 each of the branch-length nodes and assign each move. Copy this entire
 block of ‘Rev‘ code into the console:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:num_branches) {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:num_branches) {
     br_lens[i] ~ dnExponential(10.0)
     moves.append( mvScale(br_lens[i]) )
 }
@@ -416,7 +416,7 @@ block of ‘Rev‘ code into the console:</p>
 deterministic variable. The tree length is simply the sum of all branch
 lengths. . Accordingly, the tree length can be computed using the
 ‘sum()‘ function, which calculates the sum of any vector of values.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>TL := sum(br_lens)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>TL := sum(br_lens)
 </code></pre></div></div>
 <p>Finally, we can create a <em>phylogram</em> (a phylogeny in which the branch
 lengths are proportional to the expected number of substitutions/site)
@@ -424,7 +424,7 @@ by combining the tree topology and branch lengths. We do this using the
 ‘treeAssembly()‘ function, which applies the value of the $i^{th}$
 member of the ‘br_lens‘ vector to the branch leading to the $i^{th}$
 node in ‘topology‘. Thus, the ‘psi‘ variable is a deterministic node:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psi := fnTreeAssembly(topology, br_lens)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psi := fnTreeAssembly(topology, br_lens)
 </code></pre></div></div>
 
 <h3 class="subsection" id="putting-it-all-together">Putting it All Together</h3>
@@ -432,15 +432,15 @@ node in ‘topology‘. Thus, the ‘psi‘ variable is a deterministic node:</p
 
 <p>We now have all the parameters needed to model the phylogenetic
 molecular substitution process</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>seq ~ dnPhyloCTMC(tree=psi, Q=Q,  siteRates=gamma_rates, pInv=pinvar, type="DNA")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>seq ~ dnPhyloCTMC(tree=psi, Q=Q,  siteRates=gamma_rates, pInv=pinvar, type="DNA")
 </code></pre></div></div>
 <p>To compute the likelihood, we condition the process on the data observed
 at the tips of the tree</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>seq.clamp(data)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>seq.clamp(data)
 </code></pre></div></div>
 <p>Since the model is now specified, we wrap the components in a
 Model object.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>my_model = model(Q)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>my_model = model(Q)
 </code></pre></div></div>
 
 <h4 class="subsubsection" id="specifying-monitors">Specifying Monitors</h4>
@@ -452,16 +452,16 @@ the states of our Markov chain. The monitor functions are all called
 we will initialize the model monitor using the ‘mnModel‘ function. This
 creates a new monitor variable that will output the states for all model
 parameters when passed into a MCMC function.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/PS_uniform.log",printgen=10) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/PS_uniform.log",printgen=10) )
 </code></pre></div></div>
 <p>The ‘mnFile‘ monitor will record the states for only the parameters
 passed in as arguments. We use this monitor to specify the output for
 our sampled trees and branch lengths.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnFile(psi, filename="output/PS_uniform.trees", printgen=10) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnFile(psi, filename="output/PS_uniform.trees", printgen=10) )
 </code></pre></div></div>
 <p>Finally, create a screen monitor that will report the states of
 specified variables to the screen with ‘mnScreen‘:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(alpha, pinvar, TL, printgen=1000) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(alpha, pinvar, TL, printgen=1000) )
 </code></pre></div></div>
 
 <h4 class="subsubsection" id="initializing-and-running-the-mcmc-simulation">Initializing and Running the MCMC Simulation</h4>
@@ -471,25 +471,25 @@ specified variables to the screen with ‘mnScreen‘:</p>
 can now set up the MCMC algorithm that will sample parameter values in
 proportion to their posterior probability. The ‘mcmc()‘ function will
 create our MCMC object:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(my_model, monitors, moves, nruns=2, combine="mixed")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(my_model, monitors, moves, nruns=2, combine="mixed")
 </code></pre></div></div>
 <p>Note that this will automatically run two independent replicated MCMC
 simulations because we specified ‘nruns=2‘.</p>
 
 <p>Now, run the MCMC:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=30000, tuningInterval=200)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=30000, tuningInterval=200)
 </code></pre></div></div>
 <p>When the analysis is complete, you will have the monitor files in your
 output directory.</p>
 
 <p>‘RevBayes‘ can also summarize the tree samples by reading in the
 tree-trace file:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>treetrace = readTreeTrace("output/PS_uniform.trees", treetype="non-clock")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>treetrace = readTreeTrace("output/PS_uniform.trees", treetype="non-clock")
 treetrace.summarize()
 </code></pre></div></div>
 <p>The ‘mapTree()‘ function will summarize the tree samples and write the
 maximum a posteriori tree to file:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>map_tree = mapTree(treetrace,"output/PS_uniform_map.tre")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>map_tree = mapTree(treetrace,"output/PS_uniform_map.tre")
 </code></pre></div></div>
 <p>This completes the uniform partition analysis. The next two sections
 will implement more complex partitioning schemes in a similar manner.</p>
@@ -510,26 +510,26 @@ these two genes, then define an independent substitution model for each
 data partition.</p>
 
 <p>First, we’ll clear the workspace of all declared variables</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clear()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clear()
 </code></pre></div></div>
 <p>Since we wish to avoid individually specifying each parameter of the
 GTR+$\Gamma$ model for each of our data partitions, we can <em>loop</em> over
 our datasets and create vectors of nodes. To do this, we begin by
 creating a vector of data file names:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>filenames &lt;- v("data/primates_and_galeopterus_cox2.nex", "data/primates_and_galeopterus_cytb.nex")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>filenames &lt;- v("data/primates_and_galeopterus_cox2.nex", "data/primates_and_galeopterus_cytb.nex")
 </code></pre></div></div>
 <p>Set a variable for the number of partitions:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_data_subsets &lt;- filenames.size()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_data_subsets &lt;- filenames.size()
 </code></pre></div></div>
 <p>And create a vector of data matrices called ‘data‘:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:n_data_subsets){
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:n_data_subsets){
     data[i] = readDiscreteCharacterData(filenames[i])
 }
 </code></pre></div></div>
 <p>Next, we can initialize some important variables. This does require,
 however, that both of our alignments have the same number of species and
 matching tip names.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>taxa &lt;- data[1].taxa()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>taxa &lt;- data[1].taxa()
 n_taxa &lt;- data[1].ntaxa()
 num_branches &lt;- 2 * n_taxa - 3
 
@@ -556,21 +556,21 @@ split the loop into smaller parts to achieve the same end.</p>
 
 <p>First, we will create the GTR rate matrix for partition $i$ by first
 creating exchangeability rates</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:n_data_subsets) {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:n_data_subsets) {
     er_prior[i] &lt;- v(1,1,1,1,1,1)
     er[i] ~ dnDirichlet(er_prior[i])
     moves.append( mvBetaSimplex(er[i], alpha=10, tune=true, weight=3) )
 }
 </code></pre></div></div>
 <p>and stationary frequencies</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:n_data_subsets) {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:n_data_subsets) {
     pi_prior[i] &lt;- v(1,1,1,1)
     pi[i] ~ dnDirichlet(pi_prior[i])
     moves.append( mvBetaSimplex(pi[i], alpha=10, tune=true, weight=2) )
 }
 </code></pre></div></div>
 <p>then passing those parameters into a rate matrix function</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:n_data_subsets) {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:n_data_subsets) {
     Q[i] := fnGTR(er[i],pi[i]) 
 }
 </code></pre></div></div>
@@ -579,7 +579,7 @@ determined by the exchangeability rates (er[i]) and
 stationary frequencies (pi[i]) also defined for partition
 $i$. Following this format, we construct the remaining partition
 parameters: the $+\Gamma$ mixture model</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:n_data_subsets) {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:n_data_subsets) {
     alpha[i] ~ dnUniform( 0.0, 1E8 )
     gamma_rates[i] := fnDiscretizeGamma( alpha[i], alpha[i], 4, false )
 
@@ -587,13 +587,13 @@ parameters: the $+\Gamma$ mixture model</p>
 }
 </code></pre></div></div>
 <p>the $+I$ invariant sites model</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:n_data_subsets) {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:n_data_subsets) {
     pinvar[i] ~ dnBeta(1,1)
     moves.append( mvBetaProbability(pinvar[i], delta=10.0, tune=true, weight=2.0) )
 }
 </code></pre></div></div>
 <p>and the per-partition substitution rate multipliers</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># specify a rate multiplier for each partition
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># specify a rate multiplier for each partition
 part_rate_mult ~ dnDirichlet( rep(1.0, n_data_subsets) )
 moves.append( mvBetaSimplex(part_rate_mult, alpha=1.0, tune=true, weight=n_data_subsets) )
 moves.append( mvDirichletSimplex(part_rate_mult, alpha=1.0, tune=true, weight=2.0) )
@@ -615,11 +615,11 @@ lengthy and you might want to write a script to generate this section
 b region evolves under a Jukes-Cantor substitution model and the COX-II
 gene under an HKY substitution model. We begin with the cytochrome b
 gene and the Jukes-Cantor substitution model:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># specify the JC rate matrix
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># specify the JC rate matrix
 Q[1] &lt;- fnJC(4)
 </code></pre></div></div>
 <p>Second, we specify the HKY substitution model for the COX-II gene:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pi_prior &lt;- v(1,1,1,1) 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pi_prior &lt;- v(1,1,1,1) 
 pi ~ dnDirichlet(pi_prior)
 
 # specify a move to propose updates to on pi
@@ -656,7 +656,7 @@ probability for a site being invariant for this gene), or you create the
 <p>We assume that both genes evolve along the same tree. Hence, we need to
 specify a random variable for our tree parameter which is the same as
 was specified for mcmc_Partition_uniform.Rev.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>out_group = clade("Galeopterus_variegatus")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>out_group = clade("Galeopterus_variegatus")
 # Prior distribution on the tree topology	
 topology ~ dnUniformTopology(taxa, outgroup=out_group)
 moves.append( mvNNI(topology, weight=n_taxa/2.0) )
@@ -681,30 +681,30 @@ must create a phylogenetic CTMC for each gene. Additionally, we must fix
 the values of these nodes by attaching their respective data matrices.
 These two nodes are linked by the ‘psi‘ node and their log-likelihoods
 are added to get the likelihood of the whole DAG.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:n_data_subsets) {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:n_data_subsets) {
     seq[i] ~ dnPhyloCTMC(tree=psi, Q=Q[i], branchRates=part_rate_mult[i], siteRates=gamma_rates[i], pInv=pinvar[i], type="DNA")
     seq[i].clamp(data[i])
 }
 </code></pre></div></div>
 <p>The remaining steps should be familiar: wrap the model components in a
 model object</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>my_model = model(psi)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>my_model = model(psi)
 </code></pre></div></div>
 
 <h4 class="subsubsection" id="create-monitors">Create monitors</h4>
 <hr class="subsubsection" />
 
 <p>create the monitors</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/PS_gene.log",printgen=10) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/PS_gene.log",printgen=10) )
 monitors.append( mnFile(psi, filename="output/PS_gene.trees", printgen=100) )
 monitors.append( mnScreen(TL, printgen=1000) )
 </code></pre></div></div>
 <p>configure and run the MCMC analysis</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(my_model, moves, monitors, nruns=2, combine="mixed")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(my_model, moves, monitors, nruns=2, combine="mixed")
 mymcmc.run(30000,tuningInterval=200)
 </code></pre></div></div>
 <p>and summarize the posterior density of trees with a MAP tree</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>treetrace = readTreeTrace("output/PS_gene.trees", treetype="non-clock")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>treetrace = readTreeTrace("output/PS_gene.trees", treetype="non-clock")
 treetrace.summarize()
 mapTree(treetrace,"output/PS_gene_MAP.tre")
 </code></pre></div></div>
@@ -719,7 +719,7 @@ within a codon (first, second, and third) evolve at different rates.
 Thus, using our knowledge of biological data, we can devise a third
 approach that further partitions our alignment. For this exercise, we
 will partition sites within the cytB and cox2 gene by codon position.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clear()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clear()
 data_cox2 &lt;- readDiscreteCharacterData("data/primates_and_galeopterus_cox2.nex")
 data_cytb &lt;- readDiscreteCharacterData("data/primates_and_galeopterus_cytb.nex")
 </code></pre></div></div>
@@ -742,16 +742,16 @@ argument.</p>
 first populate the position in the ‘data‘ matrix with some sequences.
 Then we call the member function of ‘data[1]‘ to exclude all but the
 1$^{st}$ and 2$^{nd}$ positions for cox2.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data[1] &lt;- data_cox2
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data[1] &lt;- data_cox2
 data[1].setCodonPartition( v(1,2) )
 </code></pre></div></div>
 <p>Assign the 3$^{rd}$ codon positions for cox2 to ‘data[2]‘:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data[2] &lt;- data_cox2
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data[2] &lt;- data_cox2
 data[2].setCodonPartition( 3 )
 </code></pre></div></div>
 <p>Then repeat for cytB, being careful to store the subsetted data to
 elements 3 and 4:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data[3] &lt;- data_cytb
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data[3] &lt;- data_cytb
 data[3].setCodonPartition( v(1,2) )
 data[4] &lt;- data_cytb
 data[4].setCodonPartition( 3 )
@@ -771,7 +771,7 @@ by gene.</p>
 <ol>
   <li>
     <p><strong>Reviewing posterior estimates.</strong> Open the
-PS_codon.log file in <code class="highlighter-rouge">Tracer</code>. Remember
+PS_codon.log file in <code class="language-plaintext highlighter-rouge">Tracer</code>. Remember
 that data subsets 1 and 2 are for cox2, partitions 3 and 4 are for
 cytB, subsets 1 and 3 are for sites in the first and second codon
 positions (per gene), and subsets 2 and 4 are for sites in the third
@@ -793,7 +793,7 @@ evolutionary mode?</p>
   </li>
   <li>
     <p><strong>Comparison of MAP trees.</strong> Open the three inferred
-MAP trees in <code class="highlighter-rouge">FigTree</code>. Check to enable “Node Labels”,
+MAP trees in <code class="language-plaintext highlighter-rouge">FigTree</code>. Check to enable “Node Labels”,
 click “Display” and select “posterior” from the dropdown menu.
 Internal nodes now report the probability of the clade appearing in
 the posterior density of sampled trees. Do different models yield
@@ -814,17 +814,17 @@ model function is called, so the MCMC is never run and
 the MAP tree is never computed.</p>
 
     <p>Instead, configure and run a power posterior analysis</p>
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pow_p = powerPosterior(mymodel, moves, monitors, "output/model_uniform.out", cats=127)
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pow_p = powerPosterior(mymodel, moves, monitors, "output/model_uniform.out", cats=127)
 pow_p.burnin(generations=5000,tuningInterval=200)
 pow_p.run(generations=2000)
 </code></pre></div>    </div>
     <p>then compute the marginal likelihood using the stepping stone
 sampler</p>
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ss = steppingStoneSampler(file="output/model_uniform.out", powerColumnName="power", likelihoodColumnName="likelihood")
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ss = steppingStoneSampler(file="output/model_uniform.out", powerColumnName="power", likelihoodColumnName="likelihood")
 ss.marginal()
 </code></pre></div>    </div>
     <p>and again using the path sampler</p>
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ps = pathSampler(file="model_uniform.out", powerColumnName="power", likelihoodColumnName="likelihood")
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ps = pathSampler(file="model_uniform.out", powerColumnName="power", likelihoodColumnName="likelihood")
 ps.marginal()
 </code></pre></div>    </div>
   </li>

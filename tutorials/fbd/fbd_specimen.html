@@ -526,32 +526,32 @@ constraints.</p>
 <hr class="subsection" />
 
 <blockquote class="instruction">
-  <p>On your own computer or your remote machine, create a directory called <code class="highlighter-rouge">RB_CombinedEvidence_Tutorial</code>
+  <p>On your own computer or your remote machine, create a directory called <code class="language-plaintext highlighter-rouge">RB_CombinedEvidence_Tutorial</code>
 (or any name you like).</p>
 
-  <p>Then, navigate to the folder you created and make a new one called <code class="highlighter-rouge">data</code>.</p>
+  <p>Then, navigate to the folder you created and make a new one called <code class="language-plaintext highlighter-rouge">data</code>.</p>
 
-  <p>Download the files listed below into the <code class="highlighter-rouge">data</code> folder. 
+  <p>Download the files listed below into the <code class="language-plaintext highlighter-rouge">data</code> folder. 
 Click on the hyperlinked file names below (these files are also listed in the “Data files and scripts” box at the top of this page).</p>
 </blockquote>
 
-<p>In the <code class="highlighter-rouge">data</code> folder, add the following files:</p>
+<p>In the <code class="language-plaintext highlighter-rouge">data</code> folder, add the following files:</p>
 
 <ul>
   <li>
-    <p><a href="data/bears_taxa.tsv"><code class="highlighter-rouge">bears_taxa.tsv</code></a>: a tab-separated table listing every bear species
+    <p><a href="data/bears_taxa.tsv"><code class="language-plaintext highlighter-rouge">bears_taxa.tsv</code></a>: a tab-separated table listing every bear species
 (both fossil and extant) and their occurrence age ranges. For extant
 taxa, the minimum age is 0.0
 (<em>i.e.</em> the present).</p>
   </li>
   <li>
-    <p><a href="data/bears_cytb.nex"><code class="highlighter-rouge">bears_cytb.nex</code></a>: an alignment in NEXUS format of 1,000 bp of
+    <p><a href="data/bears_cytb.nex"><code class="language-plaintext highlighter-rouge">bears_cytb.nex</code></a>: an alignment in NEXUS format of 1,000 bp of
 cytochrome b sequences for 10 bear species. This alignment includes
 8 living bears and 2 extinct sub-fossil bears.</p>
   </li>
   <li>
-    <p><a href="data/bears_morphology.nex"><code class="highlighter-rouge">bears_morphology.nex</code></a>: a matrix of 62 discrete, binary (coded <code class="highlighter-rouge">0</code>
-or <code class="highlighter-rouge">1</code>) morphological characters for 18 species of fossil and
+    <p><a href="data/bears_morphology.nex"><code class="language-plaintext highlighter-rouge">bears_morphology.nex</code></a>: a matrix of 62 discrete, binary (coded <code class="language-plaintext highlighter-rouge">0</code>
+or <code class="language-plaintext highlighter-rouge">1</code>) morphological characters for 18 species of fossil and
 extant bears.</p>
   </li>
 </ul>
@@ -560,11 +560,11 @@ extant bears.</p>
 <hr class="subsection" />
 
 <blockquote class="instruction">
-  <p>Create a new directory called <code class="highlighter-rouge">scripts</code>.</p>
+  <p>Create a new directory called <code class="language-plaintext highlighter-rouge">scripts</code>.</p>
 </blockquote>
 
 <p>When you execute RevBayes in this exercise, you will do so within the
-main directory you created (<em>i.e.</em>, <code class="highlighter-rouge">RB_CombinedEvidence_Tutorial</code>). 
+main directory you created (<em>i.e.</em>, <code class="language-plaintext highlighter-rouge">RB_CombinedEvidence_Tutorial</code>). 
 Thus, if you are using a Unix-based operating system, we recommend that
 you add the RevBayes binary to your path.</p>
 
@@ -576,31 +576,31 @@ that will contain all of the model parameters, moves, and functions. In
 this exercise, you will work primarily in your text editor and
 create a set of modular files that will be easily managed and
 interchanged. You will write the following files from scratch and save
-them in the <code class="highlighter-rouge">scripts</code> directory:</p>
+them in the <code class="language-plaintext highlighter-rouge">scripts</code> directory:</p>
 
 <ul>
   <li>
-    <p><code class="highlighter-rouge">mcmc_CEFBDP_Specimens.Rev</code>: the master Rev file that loads the data, the
+    <p><code class="language-plaintext highlighter-rouge">mcmc_CEFBDP_Specimens.Rev</code>: the master Rev file that loads the data, the
 separate model file and specifies the monitors and MCMC sampler.</p>
   </li>
   <li>
-    <p><code class="highlighter-rouge">model_FBDP.Rev</code>: specifies the model parameters and moves
+    <p><code class="language-plaintext highlighter-rouge">model_FBDP.Rev</code>: specifies the model parameters and moves
 required for the fossilized birth-death prior on the tree topology,
 divergence times fossil occurrence times and
 diversification dynamics.</p>
   </li>
   <li>
-    <p><code class="highlighter-rouge">model_UExp.Rev</code>: specifies the components of the
+    <p><code class="language-plaintext highlighter-rouge">model_UExp.Rev</code>: specifies the components of the
 uncorrelated exponential model of lineage-specific substitution
 rate variation.</p>
   </li>
   <li>
-    <p><code class="highlighter-rouge">model_GTRG.Rev</code>: specifies the parameters and moves for the
+    <p><code class="language-plaintext highlighter-rouge">model_GTRG.Rev</code>: specifies the parameters and moves for the
 general time-reversible model of sequence evolution with
 gamma-distributed rates across sites (GTR+$\Gamma$).</p>
   </li>
   <li>
-    <p><code class="highlighter-rouge">model_Morph.Rev</code>: specifies the model describing discrete
+    <p><code class="language-plaintext highlighter-rouge">model_Morph.Rev</code>: specifies the model describing discrete
 morphological character change (binary characters) under a strict
 morphological clock.</p>
   </li>
@@ -619,7 +619,7 @@ RevBayes when you’ve completed all of the components of the analysis.</p>
 
 <blockquote class="instruction">
   <p>Open your text editor and create the master Rev
-file called <code class="highlighter-rouge">mcmc_CEFBDP_Specimens.Rev</code> in the <code class="highlighter-rouge">scripts</code> directory.</p>
+file called <code class="language-plaintext highlighter-rouge">mcmc_CEFBDP_Specimens.Rev</code> in the <code class="language-plaintext highlighter-rouge">scripts</code> directory.</p>
 
   <p>Enter the Rev code provided in this section in the new model file.</p>
 </blockquote>
@@ -630,7 +630,7 @@ In this section you will begin the file and write the Rev commands for
 loading in the taxon list and managing the data matrices. Then, starting
 in section <a href="#Exercise-ModelFBD"></a>, you will move on to writing
 module files for each of the model components. Once the model files are
-complete, you will return to editing <code class="highlighter-rouge">mcmc_CEFBDP_Specimens.Rev</code> and complete the
+complete, you will return to editing <code class="language-plaintext highlighter-rouge">mcmc_CEFBDP_Specimens.Rev</code> and complete the
 Rev script with the instructions given in section, 
 you will move on to writing the <a href="#Exercise-CompleteMCMC"></a>.</p>
 
@@ -638,13 +638,13 @@ you will move on to writing the <a href="#Exercise-CompleteMCMC"></a>.</p>
 <hr class="subsubsection" />
 
 <p>Begin the Rev script by loading in the list of taxon names from the
-<code class="highlighter-rouge">bears_taxa.tsv</code> file using the <code class="highlighter-rouge">readTaxonData</code> function.</p>
+<code class="language-plaintext highlighter-rouge">bears_taxa.tsv</code> file using the <code class="language-plaintext highlighter-rouge">readTaxonData</code> function.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>taxa &lt;- readTaxonData("data/bears_taxa.tsv")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>taxa &lt;- readTaxonData("data/bears_taxa.tsv")
 </code></pre></div></div>
 
 <p>This function reads a tab-delimited file and creates a variable called
-<code class="highlighter-rouge">taxa</code> that is a list of all of the taxon names relevant to this
+<code class="language-plaintext highlighter-rouge">taxa</code> that is a list of all of the taxon names relevant to this
 analysis. This list includes all of the fossil and extant bear species
 names in the first columns and a single age value in the second column.
 The ages provided are either 0.0 for extant species or the average of
@@ -653,20 +653,20 @@ the age range for fossil species (see <a href="#tab_bear_fossils"></a>).</p>
 <h4 class="subsubsection" id="Exercise-LoadData">Load Data Matrices</h4>
 <hr class="subsubsection" />
 
-<p>RevBayes uses the function <code class="highlighter-rouge">readDiscreteCharacterData</code> to load a
+<p>RevBayes uses the function <code class="language-plaintext highlighter-rouge">readDiscreteCharacterData</code> to load a
 data matrix to the workspace from a formatted file. This function can be
 used for both molecular sequences and discrete morphological characters.</p>
 
 <p>Load the cytochrome-b sequences from file and assign the data matrix to
-a variable called <code class="highlighter-rouge">cytb</code>.</p>
+a variable called <code class="language-plaintext highlighter-rouge">cytb</code>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cytb &lt;- readDiscreteCharacterData("data/bears_cytb.nex")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cytb &lt;- readDiscreteCharacterData("data/bears_cytb.nex")
 </code></pre></div></div>
 
 <p>Next, import the morphological character matrix and assign it to the
-variable <code class="highlighter-rouge">morpho</code>.</p>
+variable <code class="language-plaintext highlighter-rouge">morpho</code>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>morpho &lt;- readDiscreteCharacterData("data/bears_morphology.nex")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>morpho &lt;- readDiscreteCharacterData("data/bears_morphology.nex")
 </code></pre></div></div>
 
 <h4 class="subsubsection" id="Exercise-AddMissing">Add Missing Taxa</h4>
@@ -675,16 +675,16 @@ variable <code class="highlighter-rouge">morpho</code>.</p>
 <p>In the descriptions of the files in section
 <a href="#Exercise-DataFiles"></a>, we mentioned that the two data matrices
 have different numbers of taxa. Thus, we must add any taxa that are not
-found in the molecular (<code class="highlighter-rouge">cytb</code>) partition
+found in the molecular (<code class="language-plaintext highlighter-rouge">cytb</code>) partition
 (<em>i.e.</em> are only found in the fossil data) to
-that data matrix as missing data (with <code class="highlighter-rouge">?</code> in place of all characters),
-and do the same with the morphological data partition (<code class="highlighter-rouge">morpho</code>). In
+that data matrix as missing data (with <code class="language-plaintext highlighter-rouge">?</code> in place of all characters),
+and do the same with the morphological data partition (<code class="language-plaintext highlighter-rouge">morpho</code>). In
 order for all the taxa to appear on the same tree, they all need to be
 part of the same dataset, as opposed to present in separate datasets.
 This ensures that there is a unified taxon set that contains all of our
 tips.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cytb.addMissingTaxa( taxa )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cytb.addMissingTaxa( taxa )
 morpho.addMissingTaxa( taxa )
 </code></pre></div></div>
 
@@ -697,37 +697,37 @@ be used by downstream parts of our model specification files. These
 variables will be used in more than one of the module files so it’s best
 to initialize them in the master file.</p>
 
-<p>Create a new constant node called <code class="highlighter-rouge">n_taxa</code> that is equal to the number
+<p>Create a new constant node called <code class="language-plaintext highlighter-rouge">n_taxa</code> that is equal to the number
 of species in our analysis (22).</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_taxa &lt;- taxa.size()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_taxa &lt;- taxa.size()
 </code></pre></div></div>
 
-<p>Next, create a workspace variable called <code class="highlighter-rouge">moves</code>. This variable is a vector that will contain all of the MCMC moves used
+<p>Next, create a workspace variable called <code class="language-plaintext highlighter-rouge">moves</code>. This variable is a vector that will contain all of the MCMC moves used
 to propose new states for every stochastic node in the model graph. Each
 time a new stochastic node is created in the model, we can append the move to this vector.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves = VectorMoves()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves = VectorMoves()
 </code></pre></div></div>
 
-<p>One important distinction here is that <code class="highlighter-rouge">moves</code> is part of the RevBayes
+<p>One important distinction here is that <code class="language-plaintext highlighter-rouge">moves</code> is part of the RevBayes
 workspace and not the hierarchical model. Thus, we use the workspace
-assignment operator <code class="highlighter-rouge">=</code> instead of the constant node assignment <code class="highlighter-rouge">&lt;-</code>.</p>
+assignment operator <code class="language-plaintext highlighter-rouge">=</code> instead of the constant node assignment <code class="language-plaintext highlighter-rouge">&lt;-</code>.</p>
 
 <blockquote class="instruction">
-  <p>Save your current working version of <code class="highlighter-rouge">mcmc_CEFBDP_Specimens.Rev</code> in the <code class="highlighter-rouge">scripts</code>
+  <p>Save your current working version of <code class="language-plaintext highlighter-rouge">mcmc_CEFBDP_Specimens.Rev</code> in the <code class="language-plaintext highlighter-rouge">scripts</code>
 directory.</p>
 </blockquote>
 
 <p>We will now move on to the next Rev file and will complete
-<code class="highlighter-rouge">mcmc_CEFBDP_Specimens.Rev</code> in section <a href="#Exercise-CompleteMCMC"></a>.</p>
+<code class="language-plaintext highlighter-rouge">mcmc_CEFBDP_Specimens.Rev</code> in section <a href="#Exercise-CompleteMCMC"></a>.</p>
 
 <h3 class="subsection" id="Exercise-ModelFBD">The Fossilized Birth-Death Process</h3>
 <hr class="subsection" />
 
 <blockquote class="instruction">
   <p>Open your text editor and create the fossilized birth-death model file
-called <code class="highlighter-rouge">model_FBDP.Rev</code> in the <code class="highlighter-rouge">scripts</code> directory.</p>
+called <code class="language-plaintext highlighter-rouge">model_FBDP.Rev</code> in the <code class="language-plaintext highlighter-rouge">scripts</code> directory.</p>
 
   <p>Enter the Rev code provided in this section in the new model file.</p>
 </blockquote>
@@ -753,9 +753,9 @@ $\delta_{\lambda} = \delta_{\mu} = 10$. Note that an exponential
 distribution with $\delta = 10$ has an expected value (mean) of $1/10$.</p>
 
 <p>Create the exponentially distributed stochastic nodes for the
-<code class="highlighter-rouge">speciation_rate</code> and <code class="highlighter-rouge">extinction_rate</code> using the <code class="highlighter-rouge">~</code> operator.</p>
+<code class="language-plaintext highlighter-rouge">speciation_rate</code> and <code class="language-plaintext highlighter-rouge">extinction_rate</code> using the <code class="language-plaintext highlighter-rouge">~</code> operator.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>speciation_rate ~ dnExponential(10)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>speciation_rate ~ dnExponential(10)
 extinction_rate ~ dnExponential(10)
 </code></pre></div></div>
 
@@ -768,14 +768,14 @@ initial value.</p>
 <p>The rate parameters for extinction and speciation are both positive,
 real numbers (<em>i.e.</em> non-negative floating
 point variables). For both of these nodes, we will use a scaling move
-(<code class="highlighter-rouge">mvScale</code>), which proposes multiplicative changes to a parameter.
-Many moves also require us to set a <em>tuning value</em>, called <code class="highlighter-rouge">lambda</code> for
-<code class="highlighter-rouge">mvScale</code>, which determine the size of the proposed change. Here, we
+(<code class="language-plaintext highlighter-rouge">mvScale</code>), which proposes multiplicative changes to a parameter.
+Many moves also require us to set a <em>tuning value</em>, called <code class="language-plaintext highlighter-rouge">lambda</code> for
+<code class="language-plaintext highlighter-rouge">mvScale</code>, which determine the size of the proposed change. Here, we
 will use three scale moves for each parameter with different values of
 lambda. By using multiple moves for a single parameter, we will improve
 the mixing of the Markov chain.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale(speciation_rate, lambda=0.01, weight=1) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale(speciation_rate, lambda=0.01, weight=1) )
 moves.append( mvScale(speciation_rate, lambda=0.1,  weight=1) )
 moves.append( mvScale(speciation_rate, lambda=1.0,  weight=1) )
 
@@ -784,7 +784,7 @@ moves.append( mvScale(extinction_rate, lambda=0.1,  weight=1) )
 moves.append( mvScale(extinction_rate, lambda=1,    weight=1) )
 </code></pre></div></div>
 
-<p>You will also notice that each move has a specified <code class="highlighter-rouge">weight</code>. This
+<p>You will also notice that each move has a specified <code class="language-plaintext highlighter-rouge">weight</code>. This
 option allows you to indicate how many times you would like a given move
 to be performed at each MCMC cycle. The way that we will run our MCMC
 for this tutorial will be to execute a <em>schedule</em> of moves at each step
@@ -794,7 +794,7 @@ MrBayes <a class="citation" href="#Ronquist2003">(Ronquist and Huelsenbeck 2003)
 our current vector of 6 moves, then our move schedule would perform 6
 moves at each cycle. Within a cycle, an individual move is chosen from
 the move list in proportion to its weight. Therefore, with all six moves
-assigned <code class="highlighter-rouge">weight=1</code>, each has an equal probability of being executed and
+assigned <code class="language-plaintext highlighter-rouge">weight=1</code>, each has an equal probability of being executed and
 will be performed on average one time per MCMC cycle. For more
 information on moves and how they are performed in RevBayes, please
 refer to the <a href="/tutorials/mcmc/">Introduction to Markov chain Monte Carlo (MCMC) Sampling</a> and <a href="/tutorials/ctmc/">Nucleotide substitution models</a> tutorials.</p>
@@ -805,9 +805,9 @@ and turnover ($\mu/\lambda$). Since these parameters can be expressed as
 a deterministic transformation of the speciation and extinction rates,
 we can monitor (that is, track the values of these parameters, and print
 them to a file) their values by creating two deterministic nodes using
-the <code class="highlighter-rouge">:=</code> operator.</p>
+the <code class="language-plaintext highlighter-rouge">:=</code> operator.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>diversification := speciation_rate - extinction_rate
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>diversification := speciation_rate - extinction_rate
 turnover := extinction_rate/speciation_rate
 </code></pre></div></div>
 
@@ -816,10 +816,10 @@ turnover := extinction_rate/speciation_rate
 
 <p>All extant bears are represented in this dataset. Therefore, we will fix
 the probability of sampling an extant lineage ($\rho$ in
-<a href="#fig_fbd_gm"></a>) to 1. The parameter <code class="highlighter-rouge">rho</code> will be specified as a
-constant node using the <code class="highlighter-rouge">&lt;-</code> operator.</p>
+<a href="#fig_fbd_gm"></a>) to 1. The parameter <code class="language-plaintext highlighter-rouge">rho</code> will be specified as a
+constant node using the <code class="language-plaintext highlighter-rouge">&lt;-</code> operator.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rho &lt;- 1.0
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rho &lt;- 1.0
 </code></pre></div></div>
 
 <p>Because $\rho$ is a constant node, we do not have to assign a move to
@@ -831,13 +831,13 @@ this parameter.</p>
 <p>Since our data set includes serially sampled lineages, we must also
 account for the rate of sampling back in time. This is the fossil
 sampling (or recovery) rate ($\psi$ in <a href="#fig_fbd_gm"></a>), which we
-will instantiate as a stochastic node (named <code class="highlighter-rouge">psi</code>). As with the
+will instantiate as a stochastic node (named <code class="language-plaintext highlighter-rouge">psi</code>). As with the
 speciation and extinction rates
 (see <a href="#Exercise-FBD-SpeciationExtinction"></a>), we will use an
 exponential prior on this parameter and use scale moves to sample values
 from the posterior distribution.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psi ~ dnExponential(10) 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psi ~ dnExponential(10) 
 
 moves.append( mvScale(psi, lambda=0.01, weight=1) )
 moves.append( mvScale(psi, lambda=0.1,  weight=1) )
@@ -850,40 +850,40 @@ moves.append( mvScale(psi, lambda=1,    weight=1) )
 <p>We will condition the FBD process on the origin time ($\phi$ in
 <a href="#fig_fbd_gm"></a>) of bears, and we will specify a uniform
 distribution on the origin age. For this parameter, we will use a
-sliding window move (<code class="highlighter-rouge">mvSlide</code>). A sliding window samples a parameter
-uniformly within an interval (defined by the half-width <code class="highlighter-rouge">delta</code>).
+sliding window move (<code class="language-plaintext highlighter-rouge">mvSlide</code>). A sliding window samples a parameter
+uniformly within an interval (defined by the half-width <code class="language-plaintext highlighter-rouge">delta</code>).
 Sliding window moves can be tricky for small values, as the window may
 overlap zero. However, for parameters such as the origin age, there is
 little risk of this being an issue.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>origin_time ~ dnUnif(37.0, 55.0)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>origin_time ~ dnUnif(37.0, 55.0)
 
 moves.append( mvSlide(origin_time, delta=0.01, weight=5.0) )
 moves.append( mvSlide(origin_time, delta=0.1,  weight=5.0) )
 moves.append( mvSlide(origin_time, delta=1,    weight=5.0) )
 </code></pre></div></div>
 
-<p>Note that we specified a higher move <code class="highlighter-rouge">weight</code> for each of the proposals
-operating on <code class="highlighter-rouge">origin_time</code> than we did for the three previous
+<p>Note that we specified a higher move <code class="language-plaintext highlighter-rouge">weight</code> for each of the proposals
+operating on <code class="language-plaintext highlighter-rouge">origin_time</code> than we did for the three previous
 stochastic nodes. This means that our move schedule will propose five
-times as many updates to <code class="highlighter-rouge">origin_time</code> than it will to
-<code class="highlighter-rouge">speciation_rate</code>, <code class="highlighter-rouge">extinction_rate</code>, or <code class="highlighter-rouge">psi</code>.</p>
+times as many updates to <code class="language-plaintext highlighter-rouge">origin_time</code> than it will to
+<code class="language-plaintext highlighter-rouge">speciation_rate</code>, <code class="language-plaintext highlighter-rouge">extinction_rate</code>, or <code class="language-plaintext highlighter-rouge">psi</code>.</p>
 
 <h4 class="subsubsection" id="Exercise-FBD-dnFBD">The FBD Distribution Object</h4>
 <hr class="subsubsection" />
 
 <p>All the parameters of the FBD process have now been specified. The next
 step is to use these parameters to define the FBD tree prior
-distribution, which we will call <code class="highlighter-rouge">fbd_dist</code>.</p>
+distribution, which we will call <code class="language-plaintext highlighter-rouge">fbd_dist</code>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fbd_dist = dnFBDP(origin=origin_time, lambda=speciation_rate, mu=extinction_rate, psi=psi, rho=rho, taxa=taxa)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fbd_dist = dnFBDP(origin=origin_time, lambda=speciation_rate, mu=extinction_rate, psi=psi, rho=rho, taxa=taxa)
 </code></pre></div></div>
 
 <h4 class="subsubsection" id="Exercise-FBD-Constraints">Clade Constraints</h4>
 <hr class="subsubsection" />
 
 <p>Note that we created the distribution as a workspace variable using the
-workspace assignment operator <code class="highlighter-rouge">=</code>. This is because we still need to
+workspace assignment operator <code class="language-plaintext highlighter-rouge">=</code>. This is because we still need to
 include a topology constraint in our final specification of the tree
 prior. Specifically, we do not have any morphological or molecular data
 for the fossil species <em>Ursus abstrusus</em>. Therefore, in order to use the
@@ -892,7 +892,7 @@ it belongs. In this case, <em>Ursus abstrusus</em> belongs to the subfamily
 Ursinae, so we define a clade for the total group Ursinae including
 <em>Ursus abstrusus</em>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clade_ursinae = clade("Melursus_ursinus", "Ursus_arctos", "Ursus_maritimus", 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clade_ursinae = clade("Melursus_ursinus", "Ursus_arctos", "Ursus_maritimus", 
                       "Helarctos_malayanus", "Ursus_americanus", "Ursus_thibetanus", 
                       "Ursus_abstrusus", "Ursus_spelaeus")
 </code></pre></div></div>
@@ -900,11 +900,11 @@ Ursinae, so we define a clade for the total group Ursinae including
 <p>Then we can specify the final constrained tree prior distribution by
 creating a vector of constraints, and providing it along with the
 workspace FBD distribution to the constrained topology distribution.
-Here we use the stochastic assignment operator <code class="highlighter-rouge">~</code> to create a
+Here we use the stochastic assignment operator <code class="language-plaintext highlighter-rouge">~</code> to create a
 stochastic node for our constrained FBD-tree variable (called
-<code class="highlighter-rouge">fbd_tree</code>).</p>
+<code class="language-plaintext highlighter-rouge">fbd_tree</code>).</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>constraints = v(clade_ursinae)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>constraints = v(clade_ursinae)
 fbd_tree ~ dnConstrainedTopology(fbd_dist, constraints=constraints)
 </code></pre></div></div>
 
@@ -927,16 +927,16 @@ maximum amount of uncertainty in the placement of <em>P. montanus</em>.</p>
 <hr class="subsubsection" />
 
 <p>Next, in order to sample from the posterior distribution of trees, we
-need to specify moves that propose changes to the topology (<code class="highlighter-rouge">mvFNPR</code>)
-and node times (<code class="highlighter-rouge">mvNodeTimeSlideUniform</code>). Included with these moves is
+need to specify moves that propose changes to the topology (<code class="language-plaintext highlighter-rouge">mvFNPR</code>)
+and node times (<code class="language-plaintext highlighter-rouge">mvNodeTimeSlideUniform</code>). Included with these moves is
 a proposal that will collapse or expand a fossil branch
-(<code class="highlighter-rouge">mvCollapseExpandFossilBranch</code>). This will change a fossil that is a
+(<code class="language-plaintext highlighter-rouge">mvCollapseExpandFossilBranch</code>). This will change a fossil that is a
 sampled ancestor (see <a href="#fig_example_tree"></a> and
 <a href="#Intro-FBD"></a>) so that it is on its own branch and vice
 versa. In addition, when conditioning on the origin time, we also need
-to explicitly sample the root age (<code class="highlighter-rouge">mvRootTimeSlideUniform</code>).</p>
+to explicitly sample the root age (<code class="language-plaintext highlighter-rouge">mvRootTimeSlideUniform</code>).</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvFNPR(fbd_tree, weight=15.0) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvFNPR(fbd_tree, weight=15.0) )
 moves.append( mvCollapseExpandFossilBranch(fbd_tree, origin_time, weight=6.0) )
 
 moves.append( mvNodeTimeSlideUniform(fbd_tree, weight=40.0) )
@@ -948,7 +948,7 @@ moves.append( mvRootTimeSlideUniform(fbd_tree, origin_time, weight=5.0) )
 
 <p>Next, we need to account for uncertainty in the age estimates of our
 fossils using the observed minimum and maximum stratigraphic ages.
-To do this, we get all the fossils from the tree and use a <code class="highlighter-rouge">for</code> loop to iterate over them.
+To do this, we get all the fossils from the tree and use a <code class="language-plaintext highlighter-rouge">for</code> loop to iterate over them.
 For each fossil observation, we create a
 uniform random variable representing the likelihood. Remember, we can
 represent the fossil likelihood using any uniform distribution that is
@@ -961,7 +961,7 @@ when $a_i &lt; t_i &lt; b_i$, or equivalently $t_i - b_i &lt; 0 &lt; t_i - a_i$.
 let’s represent the likelihood using a uniform random variable uniformly
 distributed in $(t_i - b_i, t_i - a_i)$ and clamped at zero.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fossils = fbd_tree.getFossils()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fossils = fbd_tree.getFossils()
 for(i in 1:fossils.size())
 {
     t[i] := tmrca(fbd_tree, clade(fossils[i]))
@@ -977,7 +977,7 @@ for(i in 1:fossils.size())
 <p>Finally, we add a move that samples the ages of the fossil nodes on the
 tree.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvFossilTimeSlideUniform(fbd_tree, origin_time, weight=5.0) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvFossilTimeSlideUniform(fbd_tree, origin_time, weight=5.0) )
 </code></pre></div></div>
 
 <h4 class="subsubsection" id="Exercise-FBD-DetNodes">Monitoring Parameters of Interest using Deterministic Nodes</h4>
@@ -988,22 +988,22 @@ that are not directly inferred as part of this graphical model. As with
 the diversification and turnover nodes specified in
 <a href="#Exercise-FBD-SpeciationExtinction"></a>, we can create
 deterministic nodes to sample the posterior distributions of these
-parameters. Create a deterministic node called <code class="highlighter-rouge">num_samp_anc</code> that
-will compute the number of sampled ancestors in our <code class="highlighter-rouge">fbd_tree</code>.</p>
+parameters. Create a deterministic node called <code class="language-plaintext highlighter-rouge">num_samp_anc</code> that
+will compute the number of sampled ancestors in our <code class="language-plaintext highlighter-rouge">fbd_tree</code>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>num_samp_anc := fbd_tree.numSampledAncestors();
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>num_samp_anc := fbd_tree.numSampledAncestors();
 </code></pre></div></div>
 
 <p>We are also interested in the age of the most-recent-common ancestor
 (MRCA) of all living bears. To monitor the age of this node in our MCMC
-sample, we must use the <code class="highlighter-rouge">clade</code> function to identify the node.
+sample, we must use the <code class="language-plaintext highlighter-rouge">clade</code> function to identify the node.
 Importantly, since we did not include this clade in our constraints that
-defined <code class="highlighter-rouge">fbd_tree</code>, this clade will not be constrained to be
+defined <code class="language-plaintext highlighter-rouge">fbd_tree</code>, this clade will not be constrained to be
 monophyletic. Once this clade is defined we can instantiate a
-deterministic node called <code class="highlighter-rouge">age_extant</code> with the <code class="highlighter-rouge">tmrca</code> function that
+deterministic node called <code class="language-plaintext highlighter-rouge">age_extant</code> with the <code class="language-plaintext highlighter-rouge">tmrca</code> function that
 will record the age of the MRCA of all living bears.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clade_extant = clade("Ailuropoda_melanoleuca","Tremarctos_ornatus","Melursus_ursinus",
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clade_extant = clade("Ailuropoda_melanoleuca","Tremarctos_ornatus","Melursus_ursinus",
                     "Ursus_arctos","Ursus_maritimus","Helarctos_malayanus",
                     "Ursus_americanus","Ursus_thibetanus")
 age_extant := tmrca(fbd_tree, clade_extant)
@@ -1014,7 +1014,7 @@ monitor the age of a fossil taxon that we may be interested in
 recording. We will monitor the marginal distribution of the age of
 <em>Kretzoiarctos beatrix</em>, which is between 11.2–11.8 My.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>age_Kretzoiarctos_beatrix := tmrca(fbd_tree, clade("Kretzoiarctos_beatrix"))
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>age_Kretzoiarctos_beatrix := tmrca(fbd_tree, clade("Kretzoiarctos_beatrix"))
 </code></pre></div></div>
 
 <p>Finally, we will monitor the tree after removing taxa for which we did
@@ -1028,15 +1028,15 @@ remove them from the output.</p>
 
 <p>We will remove two fossil taxa, <em>Parictis montanus</em> and <em>Ursus
 abstrusus</em>, from every tree in the trace file before summarizing the
-samples. Use the <code class="highlighter-rouge">fnPruneTree</code> function to create a deterministic tree
-variable <code class="highlighter-rouge">pruned_tree</code> from which these taxa have been pruned. We will
-monitor this tree instead of <code class="highlighter-rouge">fbd_tree</code>.</p>
+samples. Use the <code class="language-plaintext highlighter-rouge">fnPruneTree</code> function to create a deterministic tree
+variable <code class="language-plaintext highlighter-rouge">pruned_tree</code> from which these taxa have been pruned. We will
+monitor this tree instead of <code class="language-plaintext highlighter-rouge">fbd_tree</code>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pruned_tree := fnPruneTree(fbd_tree, prune=v(taxa[17],taxa[20]))
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pruned_tree := fnPruneTree(fbd_tree, prune=v(taxa[17],taxa[20]))
 </code></pre></div></div>
 
 <blockquote class="instruction">
-  <p>You have completed the FBD model file. Save <code class="highlighter-rouge">model_FBDP.Rev</code> in the <code class="highlighter-rouge">scripts</code> directory.</p>
+  <p>You have completed the FBD model file. Save <code class="language-plaintext highlighter-rouge">model_FBDP.Rev</code> in the <code class="language-plaintext highlighter-rouge">scripts</code> directory.</p>
 </blockquote>
 
 <p>We will now move on to the next model file.</p>
@@ -1048,7 +1048,7 @@ monitor this tree instead of <code class="highlighter-rouge">fbd_tree</code>.</p
 
 <blockquote class="instruction">
   <p>Open your text editor and create the lineage-specific branch-rate model
-file called <code class="highlighter-rouge">model_UExp.Rev</code> in the <code class="highlighter-rouge">scripts</code> directory.</p>
+file called <code class="language-plaintext highlighter-rouge">model_UExp.Rev</code> in the <code class="language-plaintext highlighter-rouge">scripts</code> directory.</p>
 
   <p>Enter the Rev code provided in this section in the new model file.</p>
 </blockquote>
@@ -1059,7 +1059,7 @@ file called <code class="highlighter-rouge">model_UExp.Rev</code> in the <code c
 exponential random variable. Then, we specify scale proposal moves on
 the mean rate parameter.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>branch_rates_mean ~ dnExponential(10.0)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>branch_rates_mean ~ dnExponential(10.0)
 
 moves.append( mvScale(branch_rates_mean, lambda=0.01, weight=1.0) )
 moves.append( mvScale(branch_rates_mean, lambda=0.1,  weight=1.0) )
@@ -1070,7 +1070,7 @@ moves.append( mvScale(branch_rates_mean, lambda=1.0,  weight=1.0) )
 number of branches in the tree. For rooted trees with $n$ taxa, the
 number of branches is $2n-2$.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_branches &lt;- 2 * n_taxa - 2
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_branches &lt;- 2 * n_taxa - 2
 </code></pre></div></div>
 
 <p>Then, use a for loop to define a rate for each branch. The branch rates
@@ -1078,7 +1078,7 @@ are independent and identically exponentially distributed with mean
 equal to the mean branch rate parameter we specified above. For each
 rate parameter we also create scale proposal moves.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for(i in 1:n_branches){
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for(i in 1:n_branches){
     branch_rates[i] ~ dnExp(1/branch_rates_mean)
     moves.append( mvScale(branch_rates[i], lambda=1.0,  weight=1.0) )
     moves.append( mvScale(branch_rates[i], lambda=0.1,  weight=1.0) )
@@ -1090,13 +1090,13 @@ rate parameter we also create scale proposal moves.</p>
 rates simultaneously. This way we can sample the total branch rate
 independently of each individual rate, which can improve mixing.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvVectorScale(branch_rates, lambda=0.01, weight=4.0) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvVectorScale(branch_rates, lambda=0.01, weight=4.0) )
 moves.append( mvVectorScale(branch_rates, lambda=0.1,  weight=4.0) )
 moves.append( mvVectorScale(branch_rates, lambda=1.0,  weight=4.0) )
 </code></pre></div></div>
 
-<p>You have completed the molecular relaxed clock model file. Save <code class="highlighter-rouge">model_UExp.Rev</code> in
-the <code class="highlighter-rouge">scripts</code> directory.</p>
+<p>You have completed the molecular relaxed clock model file. Save <code class="language-plaintext highlighter-rouge">model_UExp.Rev</code> in
+the <code class="language-plaintext highlighter-rouge">scripts</code> directory.</p>
 
 <h3 class="subsection" id="Exercise-ModelGTRG">The General Time-Reversible + Gamma Model of Nucleotide Sequence Evolution</h3>
 <hr class="subsection" />
@@ -1105,7 +1105,7 @@ the <code class="highlighter-rouge">scripts</code> directory.</p>
 
 <blockquote class="instruction">
   <p>Open your text editor and create the molecular substitution model file
-called <code class="highlighter-rouge">model_GTRG.Rev</code> in the <code class="highlighter-rouge">scripts</code> directory.</p>
+called <code class="language-plaintext highlighter-rouge">model_GTRG.Rev</code> in the <code class="language-plaintext highlighter-rouge">scripts</code> directory.</p>
 
   <p>Enter the Rev code provided in this section in the new model file.</p>
 </blockquote>
@@ -1117,7 +1117,7 @@ is defined by a set of 4 stationary frequencies, and 6 exchangeability
 rates. We create stochastic nodes for these variables, each drawn from a
 uniform Dirichlet prior distribution.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sf_hp &lt;- v(1,1,1,1)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sf_hp &lt;- v(1,1,1,1)
 sf ~ dnDirichlet(sf_hp)
 
 er_hp &lt;- v(1,1,1,1,1,1)
@@ -1126,27 +1126,27 @@ er ~ dnDirichlet(er_hp)
 
 <p>We need special moves to propose changes to a Dirichlet random variable,
 also known as a simplex (a vector constrained sum to one). Here, we use
-a <code class="highlighter-rouge">mvSimplexElementScale</code> move, which scales a single element of a
+a <code class="language-plaintext highlighter-rouge">mvSimplexElementScale</code> move, which scales a single element of a
 simplex and then renormalizes the vector to sum to one. The tuning
-parameter <code class="highlighter-rouge">alpha</code> specifies how conservative the proposal should be,
-with larger values of <code class="highlighter-rouge">alpha</code> leading to proposals closer to the current
+parameter <code class="language-plaintext highlighter-rouge">alpha</code> specifies how conservative the proposal should be,
+with larger values of <code class="language-plaintext highlighter-rouge">alpha</code> leading to proposals closer to the current
 value.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvSimplexElementScale(er, alpha=10.0, weight=5.0) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvSimplexElementScale(er, alpha=10.0, weight=5.0) )
 moves.append( mvSimplexElementScale(sf, alpha=10.0, weight=5.0) )
 </code></pre></div></div>
 
 <p>Then we can define a deterministic node for our GTR $Q$-matrix using the
-special GTR matrix function (<code class="highlighter-rouge">fnGTR</code>).</p>
+special GTR matrix function (<code class="language-plaintext highlighter-rouge">fnGTR</code>).</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q_cytb := fnGTR(er,sf)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q_cytb := fnGTR(er,sf)
 </code></pre></div></div>
 
 <p>Next, in order to model gamma-distributed rates across, we create an
 exponential parameter $\alpha$ for the shape of the gamma distribution,
 along with scale proposals.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha_cytb ~ dnExponential( 1.0 )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha_cytb ~ dnExponential( 1.0 )
 
 moves.append( mvScale(alpha_cytb, lambda=0.01, weight=1.0) )
 moves.append( mvScale(alpha_cytb, lambda=0.1,  weight=1.0) )
@@ -1154,11 +1154,11 @@ moves.append( mvScale(alpha_cytb, lambda=1,    weight=1.0) )
 </code></pre></div></div>
 
 <p>Then we create a Gamma$(\alpha,\alpha)$ distribution, discretized into 4
-rate categories using the <code class="highlighter-rouge">fnDiscretizeGamma</code> function. Here,
-<code class="highlighter-rouge">rates_cytb</code> is a deterministic vector of rates computed as the mean of
+rate categories using the <code class="language-plaintext highlighter-rouge">fnDiscretizeGamma</code> function. Here,
+<code class="language-plaintext highlighter-rouge">rates_cytb</code> is a deterministic vector of rates computed as the mean of
 each category.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rates_cytb := fnDiscretizeGamma( alpha_cytb, alpha_cytb, 4 )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rates_cytb := fnDiscretizeGamma( alpha_cytb, alpha_cytb, 4 )
 </code></pre></div></div>
 
 <p>Finally, we can create the phylogenetic continuous time Markov chain
@@ -1166,15 +1166,15 @@ each category.</p>
 gamma-distributed site rate categories, as well as the branch rates
 defined as part of our exponential relaxed clock. We set the value of
 this distribution equal to our observed data and identify it as a static
-part of the likelihood using the <code class="highlighter-rouge">clamp</code> method.</p>
+part of the likelihood using the <code class="language-plaintext highlighter-rouge">clamp</code> method.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phySeq ~ dnPhyloCTMC(tree=fbd_tree, Q=Q_cytb, siteRates=rates_cytb, branchRates=branch_rates, type="DNA")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phySeq ~ dnPhyloCTMC(tree=fbd_tree, Q=Q_cytb, siteRates=rates_cytb, branchRates=branch_rates, type="DNA")
 phySeq.clamp(cytb)
 </code></pre></div></div>
 
 <blockquote class="instruction">
-  <p>You have completed the GTR model file. Save <code class="highlighter-rouge">model_GTRG.Rev</code> in
-the <code class="highlighter-rouge">scripts</code> directory.</p>
+  <p>You have completed the GTR model file. Save <code class="language-plaintext highlighter-rouge">model_GTRG.Rev</code> in
+the <code class="language-plaintext highlighter-rouge">scripts</code> directory.</p>
 </blockquote>
 
 <p>We will now move on to the next model file.</p>
@@ -1186,7 +1186,7 @@ the <code class="highlighter-rouge">scripts</code> directory.</p>
 
 <blockquote class="instruction">
   <p>Open your text editor and create the morphological character model file
-called <code class="highlighter-rouge">model_Morph.Rev</code> in the <code class="highlighter-rouge">scripts</code> directory.</p>
+called <code class="language-plaintext highlighter-rouge">model_Morph.Rev</code> in the <code class="language-plaintext highlighter-rouge">scripts</code> directory.</p>
 </blockquote>
 
 <p>As stated in the introduction (<a href="#Intro-Morpho"></a>) we will
@@ -1194,13 +1194,13 @@ use Mk to model our data. Because the Mk model is a generalization of
 the Jukes-Cantor model, we will initialize our Q matrix from a Jukes-Cantor
 matrix.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q_morpho := fnJC(2)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q_morpho := fnJC(2)
 </code></pre></div></div>
 
 <p>As in the molecular data partition, we will allow gamma-distributed rate
 heterogeneity among sites.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha_morpho ~ dnExponential( 1.0 )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha_morpho ~ dnExponential( 1.0 )
 rates_morpho := fnDiscretizeGamma( alpha_morpho, alpha_morpho, 4 )
 
 moves.append( mvScale(alpha_morpho, lambda=0.01, weight=5.0) )
@@ -1213,7 +1213,7 @@ morphological character change. For simplicity, we will assume a strict
 exponential clock—meaning that every branch has the same rate drawn from
 an exponential distribution (see <a href="#Intro-MorphClock"></a>).</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clock_morpho ~ dnExponential(1.0)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clock_morpho ~ dnExponential(1.0)
 
 moves.append( mvScale(clock_morpho, lambda=0.01, weight=4.0) )
 moves.append( mvScale(clock_morpho, lambda=0.1,  weight=4.0) )
@@ -1224,18 +1224,18 @@ moves.append( mvScale(clock_morpho, lambda=1,    weight=4.0) )
 model in the phylogenetic CTMC distribution. There are some unique
 aspects to doing this for morphology.</p>
 
-<p>You will notice that we have an option called <code class="highlighter-rouge">coding</code>. This option
+<p>You will notice that we have an option called <code class="language-plaintext highlighter-rouge">coding</code>. This option
 allows us to condition on biases in the way the morphological data were
-collected (ascertainment bias). The option <code class="highlighter-rouge">coding=variable</code> specifies
+collected (ascertainment bias). The option <code class="language-plaintext highlighter-rouge">coding=variable</code> specifies
 that we should correct for coding only variable characters (discussed in
 <a href="#Intro-Morpho"></a>).</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phyMorpho ~ dnPhyloCTMC(tree=fbd_tree, siteRates=rates_morpho, branchRates=clock_morpho, Q=Q_morpho, type="Standard", coding="variable")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phyMorpho ~ dnPhyloCTMC(tree=fbd_tree, siteRates=rates_morpho, branchRates=clock_morpho, Q=Q_morpho, type="Standard", coding="variable")
 phyMorpho.clamp(morpho)
 </code></pre></div></div>
 
-<p>You have completed the morphology model file. Save <code class="highlighter-rouge">model_Morph.Rev</code> in
-the <code class="highlighter-rouge">scripts</code> directory.</p>
+<p>You have completed the morphology model file. Save <code class="language-plaintext highlighter-rouge">model_Morph.Rev</code> in
+the <code class="language-plaintext highlighter-rouge">scripts</code> directory.</p>
 
 <p>We will now move on to the next model file.</p>
 
@@ -1244,7 +1244,7 @@ the <code class="highlighter-rouge">scripts</code> directory.</p>
 
 <blockquote class="instruction">
   <p>Return to the master Rev file you created in section
-<a href="#Exercise-StartMasterRev"></a> called <code class="highlighter-rouge">mcmc_CEFBDP_Specimens.Rev</code> in the <code class="highlighter-rouge">scripts</code> directory.</p>
+<a href="#Exercise-StartMasterRev"></a> called <code class="language-plaintext highlighter-rouge">mcmc_CEFBDP_Specimens.Rev</code> in the <code class="language-plaintext highlighter-rouge">scripts</code> directory.</p>
 
   <p>Enter the Rev code provided in this section in this file.</p>
 </blockquote>
@@ -1252,11 +1252,11 @@ the <code class="highlighter-rouge">scripts</code> directory.</p>
 <h4 class="subsubsection" id="Exercise-SourceMods">Source Model Scripts</h4>
 <hr class="subsubsection" />
 
-<p>RevBayes uses the <code class="highlighter-rouge">source</code> function to load commands from Rev
+<p>RevBayes uses the <code class="language-plaintext highlighter-rouge">source</code> function to load commands from Rev
 files into the workspace. Use this function to load in the model scripts
-we have written in the text editor and saved in the <code class="highlighter-rouge">scripts</code> directory.</p>
+we have written in the text editor and saved in the <code class="language-plaintext highlighter-rouge">scripts</code> directory.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/model_FBDP.Rev") # FBD tree prior
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/model_FBDP.Rev") # FBD tree prior
 
 source("scripts/model_UExp.Rev") # UExp relaxed clock
 
@@ -1269,13 +1269,13 @@ source("scripts/model_Morph.Rev") # Morphological character change model
 <hr class="subsubsection" />
 
 <p>We can now create our workspace model variable with our fully specified
-model DAG. We will do this with the <code class="highlighter-rouge">model</code> function and provide a
-single node in the graph (<code class="highlighter-rouge">sf</code>).</p>
+model DAG. We will do this with the <code class="language-plaintext highlighter-rouge">model</code> function and provide a
+single node in the graph (<code class="language-plaintext highlighter-rouge">sf</code>).</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(sf)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(sf)
 </code></pre></div></div>
 
-<p>The object <code class="highlighter-rouge">mymodel</code> is a wrapper around the entire model graph and
+<p>The object <code class="language-plaintext highlighter-rouge">mymodel</code> is a wrapper around the entire model graph and
 allows us to pass the model to various functions that are specific to
 our MCMC analysis.</p>
 
@@ -1284,45 +1284,45 @@ our MCMC analysis.</p>
 
 <p>The next important step for our master Rev file is to specify the
 monitors and output file names. For this, we create a vector called
-<code class="highlighter-rouge">monitors</code> that will each sample and record or output our MCMC.</p>
+<code class="language-plaintext highlighter-rouge">monitors</code> that will each sample and record or output our MCMC.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors = VectorMonitors()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors = VectorMonitors()
 </code></pre></div></div>
 
 <p>The first monitor we will create will monitor every named random
 variable in our model graph. This will include every stochastic and
-deterministic node using the <code class="highlighter-rouge">mnModel</code> monitor. The only parameter that
-is not included in the <code class="highlighter-rouge">mnModel</code> is the tree topology. Therefore, the
+deterministic node using the <code class="language-plaintext highlighter-rouge">mnModel</code> monitor. The only parameter that
+is not included in the <code class="language-plaintext highlighter-rouge">mnModel</code> is the tree topology. Therefore, the
 parameters in the file written by this monitor are all numerical
 parameters written to a tab-separated text file that can be opened by
 accessory programs for evaluating such parameters. We will also name the
 output file for this monitor and indicate that we wish to sample our
 MCMC every 10 cycles.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/bears.log", printgen=10) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/bears.log", printgen=10) )
 </code></pre></div></div>
 
-<p>The <code class="highlighter-rouge">mnFile</code> monitor writes any parameter we specify to file. Thus, if
+<p>The <code class="language-plaintext highlighter-rouge">mnFile</code> monitor writes any parameter we specify to file. Thus, if
 we only cared about the speciation rate and nothing else (this is not a
 typical or recommended attitude for an analysis this complex) we
-wouldn’t use the <code class="highlighter-rouge">mnModel</code> monitor above and just use the <code class="highlighter-rouge">mnFile</code>
+wouldn’t use the <code class="language-plaintext highlighter-rouge">mnModel</code> monitor above and just use the <code class="language-plaintext highlighter-rouge">mnFile</code>
 monitor to write a smaller and simpler output file. Since the tree
-topology is not included in the <code class="highlighter-rouge">mnModel</code> monitor (because it is not
-numerical), we will use <code class="highlighter-rouge">mnFile</code> to write the tree to file by specifying
-our <code class="highlighter-rouge">pruned_tree</code> variable in the arguments. Remember, we are
+topology is not included in the <code class="language-plaintext highlighter-rouge">mnModel</code> monitor (because it is not
+numerical), we will use <code class="language-plaintext highlighter-rouge">mnFile</code> to write the tree to file by specifying
+our <code class="language-plaintext highlighter-rouge">pruned_tree</code> variable in the arguments. Remember, we are
 monitoring the tree with nuisance taxa pruned out (see
 <a href="#Exercise-FBD-DetNodes"></a>).</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnFile(filename="output/bears.trees", printgen=10, pruned_tree) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnFile(filename="output/bears.trees", printgen=10, pruned_tree) )
 </code></pre></div></div>
 
 <p>The last monitor we will add to our analysis will print information to
-the screen. Like with <code class="highlighter-rouge">mnFile</code> we must tell <code class="highlighter-rouge">mnScreen</code> which parameters
+the screen. Like with <code class="language-plaintext highlighter-rouge">mnFile</code> we must tell <code class="language-plaintext highlighter-rouge">mnScreen</code> which parameters
 we’d like to see updated on the screen. We will choose the age of the
-MCRCA of living bears (<code class="highlighter-rouge">age_extant</code>), the number of sampled ancestors
-(<code class="highlighter-rouge">num_samp_anc</code>), and the origin time (<code class="highlighter-rouge">origin_time</code>).</p>
+MCRCA of living bears (<code class="language-plaintext highlighter-rouge">age_extant</code>), the number of sampled ancestors
+(<code class="language-plaintext highlighter-rouge">num_samp_anc</code>), and the origin time (<code class="language-plaintext highlighter-rouge">origin_time</code>).</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(printgen=10, age_extant, num_samp_anc, origin_time) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(printgen=10, age_extant, num_samp_anc, origin_time) )
 </code></pre></div></div>
 
 <h4 class="subsubsection" id="Exercise-MCMCSetup">Set-Up the MCMC</h4>
@@ -1330,23 +1330,23 @@ MCRCA of living bears (<code class="highlighter-rouge">age_extant</code>), the n
 
 <p>Once we have set up our model, moves, and monitors, we can now create
 the workspace variable that defines our MCMC run. We do this using the
-<code class="highlighter-rouge">mcmc</code> function that simply takes the three main analysis components
+<code class="language-plaintext highlighter-rouge">mcmc</code> function that simply takes the three main analysis components
 as arguments.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves)
 </code></pre></div></div>
 
-<p>The MCMC object that we named <code class="highlighter-rouge">mymcmc</code> has a member method called
-<code class="highlighter-rouge">run</code>. This will execute our analysis and we will set the chain
-length to <code class="highlighter-rouge">10000</code> cycles using the <code class="highlighter-rouge">generations</code> option.</p>
+<p>The MCMC object that we named <code class="language-plaintext highlighter-rouge">mymcmc</code> has a member method called
+<code class="language-plaintext highlighter-rouge">run</code>. This will execute our analysis and we will set the chain
+length to <code class="language-plaintext highlighter-rouge">10000</code> cycles using the <code class="language-plaintext highlighter-rouge">generations</code> option.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=10000)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=10000)
 </code></pre></div></div>
 
 <p>Once our Markov chain has terminated, we will want RevBayes to close.
-Tell the program to quit using the <code class="highlighter-rouge">q()</code> function.</p>
+Tell the program to quit using the <code class="language-plaintext highlighter-rouge">q()</code> function.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>q()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>q()
 </code></pre></div></div>
 
 <blockquote class="instruction">
@@ -1365,16 +1365,16 @@ order.</p>
 following in your terminal (if the RevBayes binary is in your path):</p>
 
 <p>Provided that you started RevBayes from the correct directory, you can then use the
-<code class="highlighter-rouge">source</code> function to feed RevBayes your master script file
-(<code class="highlighter-rouge">mcmc_CEFBDP_Specimens.Rev</code>).</p>
+<code class="language-plaintext highlighter-rouge">source</code> function to feed RevBayes your master script file
+(<code class="language-plaintext highlighter-rouge">mcmc_CEFBDP_Specimens.Rev</code>).</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/mcmc_CEFBDP_Specimens.Rev")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/mcmc_CEFBDP_Specimens.Rev")
 </code></pre></div></div>
 
-<p>This will execute the analysis and you should see the various parameters you included when you created <code class="highlighter-rouge">mnScreen</code> printed to the screen every 10 generations.</p>
+<p>This will execute the analysis and you should see the various parameters you included when you created <code class="language-plaintext highlighter-rouge">mnScreen</code> printed to the screen every 10 generations.</p>
 
 <p>When the analysis is complete, RevBayes will quit and you will have a
-new directory called <code class="highlighter-rouge">output</code> that will contain all of the files you
+new directory called <code class="language-plaintext highlighter-rouge">output</code> that will contain all of the files you
 specified with the monitors (see <a href="#Exercise-Monitors"></a>).</p>
 
 <h3 class="subsection" id="Exercise-SummarizeResults">Evaluate and Summarize Your Results</h3>
@@ -1389,7 +1389,7 @@ This program is limited to numerical parameters, however, and cannot be
 used to summarize or analyze MCMC samples of the tree topology (this
 will be discussed further in <a href="#Exercise-SummarizeTree"></a>).</p>
 
-<p>Open Tracer and import the <code class="highlighter-rouge">bears.log</code> file in the
+<p>Open Tracer and import the <code class="language-plaintext highlighter-rouge">bears.log</code> file in the
 <strong><em>File &gt; Import New Trace Files</em></strong>. Or click the button on the
 left-hand side of the screen to add your log file (see <a href="#fig_tracer"></a>).</p>
 
@@ -1423,7 +1423,7 @@ histogram of the <strong>Posterior</strong></figcaption>
 <strong>Estimates</strong> window, which shows a histogram and summary
 statistics of the values sampled by the Markov chain. 
 <a href="#tracer_post_ests"></a> shows the marginal distribution of the
-<strong>Posterior</strong> statistic for the <code class="highlighter-rouge">bears.log</code> file for an analysis run for 10,000 generations.</p>
+<strong>Posterior</strong> statistic for the <code class="language-plaintext highlighter-rouge">bears.log</code> file for an analysis run for 10,000 generations.</p>
 
 <blockquote class="instruction">
   <p>Look through the various parameters and statistics in the list of
@@ -1472,7 +1472,7 @@ distributions of your parameters in the
 distributions of several different parameters (by selecting them both).</p>
 
 <blockquote class="instruction">
-  <p>Go to the <code class="highlighter-rouge">diversification</code> parameter in the 
+  <p>Go to the <code class="language-plaintext highlighter-rouge">diversification</code> parameter in the 
 <strong>Marginal Prob Distribution</strong> window.</p>
 
   <p>⇨ What is the mean value estimated
@@ -1490,7 +1490,7 @@ allows us to view the summaries of these parameters since they appear in
 our log files.</p>
 
 <blockquote class="instruction">
-  <p>Go to the <code class="highlighter-rouge">age_extant</code> parameter in the <strong>Estimates</strong>
+  <p>Go to the <code class="language-plaintext highlighter-rouge">age_extant</code> parameter in the <strong>Estimates</strong>
 window.</p>
 
   <p>⇨ What is the mean and 95% highest posterior density of the age of the MRCA for all living bears?</p>
@@ -1535,20 +1535,20 @@ this from within the tutorial directory.</p>
 
 <p>Read in the MCMC sample of trees from file.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>trace = readTreeTrace("output/bears.trees")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>trace = readTreeTrace("output/bears.trees")
 </code></pre></div></div>
 
 <p>By default, a burn-in of 25% is used when creating the tree trace (250
 trees in our case). You can specify a different burn-in fraction, say
-50%, by typing the command <code class="highlighter-rouge">trace.setBurnin(500)</code>.</p>
+50%, by typing the command <code class="language-plaintext highlighter-rouge">trace.setBurnin(500)</code>.</p>
 
-<p>Now we will use the <code class="highlighter-rouge">mccTree</code> function to return a maximum clade
+<p>Now we will use the <code class="language-plaintext highlighter-rouge">mccTree</code> function to return a maximum clade
 credibility (MCC) tree. The MCC tree is the tree with the maximum
 product of the posterior clade probabilities. When considering trees
 with sampled ancestors, we refer to the maximum sampled ancestor clade
 credibility (MSACC) tree <a class="citation" href="#Gavryushkina2016">(Gavryushkina et al. 2017)</a>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mccTree(trace, file="output/bears.mcc.tre" )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mccTree(trace, file="output/bears.mcc.tre" )
 </code></pre></div></div>
 
 <p>When there are sampled ancestors present in the tree, visualizing the
@@ -1570,7 +1570,7 @@ ancestor</figcaption>
 </figure>
 
 <p>Navigate to <a href="https://icytree.org">https://icytree.org</a> and open the file
-<code class="highlighter-rouge">output/bears.mcc.tre</code> in IcyTree.</p>
+<code class="language-plaintext highlighter-rouge">output/bears.mcc.tre</code> in IcyTree.</p>
 
 <blockquote class="instruction">
   <p>Try to replicate the tree in <a href="#summary_tree"></a> (Hint: <strong><em>Style &gt; Mark Singletons</em></strong>)</p>

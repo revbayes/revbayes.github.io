@@ -217,7 +217,7 @@ current value of $p$.</p>
 spot. Feel free to alter these values to see how they influence the
 posterior distribution</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Make up some coin flips!
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Make up some coin flips!
 # Feel free to change these numbers
 n &lt;- 100 # the number of flips
 x &lt;- 63	# the number of heads
@@ -231,7 +231,7 @@ in this case) from the prior distribution. We’ll assume a “flat” beta
 prior distribution; that is, one with parameters $\alpha = 1$ and
 $\beta = 1$.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Initialize the chain with starting values
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Initialize the chain with starting values
 alpha &lt;- 1
 beta  &lt;- 1
 p &lt;- rbeta(n=1,alpha,beta)[1]
@@ -244,7 +244,7 @@ probability for the likelihood function. Since the likelihood is defined
 only for values of $p$ between 0 and 1, we return 0.0 if $p$ is outside
 this range:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># specify the likelihood function
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># specify the likelihood function
 function likelihood(p) {
     if(p &lt; 0 || p &gt; 1)
         return 0
@@ -259,7 +259,7 @@ function likelihood(p) {
 <p>Similarly, we need to specify a function for the prior distribution.
 Here, we use the beta probability distribution for the prior on $p$:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># specify the prior function
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># specify the prior function
 function prior(p) {
     if(p &lt; 0 || p &gt; 1)
         return 0
@@ -276,17 +276,17 @@ function prior(p) {
 during the MCMC simulation. For this file we need to write the column
 headers:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Prepare a file to log our samples
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Prepare a file to log our samples
 write("iteration","p","\n",file="binomial_MH.log")
 write(0,p,"\n",file="binomial_MH.log",append=TRUE)
 </code></pre></div></div>
 
 <p>(You may have to change the newline characters to
-<code class="highlighter-rouge">\backslashr\backslashn</code> if you’re using a Windows operating system.)
+<code class="language-plaintext highlighter-rouge">\backslashr\backslashn</code> if you’re using a Windows operating system.)
 We’ll also monitor the parameter values to the screen, so let’s print
 the initial values:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Print the initial values to the screen
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Print the initial values to the screen
 print("iteration","p")
 print(0,p)
 </code></pre></div></div>
@@ -296,42 +296,42 @@ print(0,p)
 <p>At long last, we can write our MCMC algorithm. First, let us define the
 frequency how often we print to file
 (<em>i.e.</em>, monitor), which is also often called
-thinning. If we set the variable <code class="highlighter-rouge">printgen</code> to 1, then we will store the
-parameter values every single iteration; if we choose <code class="highlighter-rouge">printgen=10</code>
+thinning. If we set the variable <code class="language-plaintext highlighter-rouge">printgen</code> to 1, then we will store the
+parameter values every single iteration; if we choose <code class="language-plaintext highlighter-rouge">printgen=10</code>
 instead, then only every $10^{th}$ iteration.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>printgen = 10
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>printgen = 10
 </code></pre></div></div>
 
 <p>We will repeat this resampling procedure many times (here, 10000), and
-iterate the MCMC using a <code class="highlighter-rouge">for</code> loop:</p>
+iterate the MCMC using a <code class="language-plaintext highlighter-rouge">for</code> loop:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Write the MH algorithm
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Write the MH algorithm
 reps = 10000 
 for(rep in 1:reps){
 </code></pre></div></div>
 
-<p>(remember to close your <code class="highlighter-rouge">for</code> loop at the end).</p>
+<p>(remember to close your <code class="language-plaintext highlighter-rouge">for</code> loop at the end).</p>
 
 <p>The first thing we do in the first generation is generate a new value of
 $p^\prime$ to evaluate. We’ll propose a new value of $p$ from a uniform
 distribution between 0 and 1. Note that in this first example we do not
 condition new parameter values on the current value.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	# Propose a new value of p
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	# Propose a new value of p
 	p_prime &lt;- runif(n=1,0.0,1.0)[1]
 </code></pre></div></div>
 
 <p>Next, we compute the proposed likelihood and prior probabilities, as
 well as the acceptance probability, $R$:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	# Compute the acceptance probability
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	# Compute the acceptance probability
 	R &lt;- ( likelihood(p_prime) / likelihood(p) ) * ( prior(p_prime) / prior(p) )
 </code></pre></div></div>
 
 <p>Then, we accept the proposal with probability $R$ and reject otherwise:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	# Accept or reject the proposal
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	# Accept or reject the proposal
 	u &lt;- runif(1,0,1)[1]
 	if(u &lt; R){
 		# Accept the proposal
@@ -342,7 +342,7 @@ well as the acceptance probability, $R$:</p>
 <p>Finally, we store the current value of $p$ in our log file. Here, we
 actually check if we want to store the value during this iteration.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    if ( (rep % printgen) == 0 ) {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    if ( (rep % printgen) == 0 ) {
         # Write the samples to a file
         write(rep,p,"\n",file="binomial_MH.log",append=TRUE)
         # Print the samples to the screen
@@ -354,11 +354,11 @@ actually check if we want to store the value during this iteration.</p>
 <h2 id="visualizing-the-samples-of-an-mcmc-simulation">Visualizing the samples of an MCMC simulation</h2>
 
 <p>Below we show an example of the obtained output in
-<code class="highlighter-rouge">Tracer</code>. Specifically, <a href="#fig:mcmc_samples"></a> shows
+<code class="language-plaintext highlighter-rouge">Tracer</code>. Specifically, <a href="#fig:mcmc_samples"></a> shows
 the sample trace (left) and the estimated posterior distribution of $p$
 (right). There are other parameters, such as the posterior mean and the
 95% HPD (highest posterior density) interval, that you can obtain from
-<code class="highlighter-rouge">Tracer</code>.</p>
+<code class="language-plaintext highlighter-rouge">Tracer</code>.</p>
 
 <figure id="fig:mcmc_samples"><p><img src="figures/binomial_MCMC_Trace.png" width="400pt" />
   <img src="figures/binomial_MCMC_distribution.png" width="400pt" /></p>
@@ -374,9 +374,9 @@ There are actually many other ways how to propose new values; some of
 which are more efficient than others.</p>
 
 <p>First, let us rewrite the MCMC loop so that we use instead a function,
-which we call <code class="highlighter-rouge">move_uniform</code> for simplicity, that performs the move:</p>
+which we call <code class="language-plaintext highlighter-rouge">move_uniform</code> for simplicity, that performs the move:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (rep in 1:reps){
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (rep in 1:reps){
     
     # call uniform move
     move_uniform(1)
@@ -393,10 +393,10 @@ which we call <code class="highlighter-rouge">move_uniform</code> for simplicity
 
 <h2 id="uniform-move">Uniform move</h2>
 
-<p>Now we need to actually write the <code class="highlighter-rouge">move_uniform</code> function. We mostly
+<p>Now we need to actually write the <code class="language-plaintext highlighter-rouge">move_uniform</code> function. We mostly
 just copy the code we had before into a dedicated function</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>function move_uniform( Natural weight) {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>function move_uniform( Natural weight) {
 
     for (i in 1:weight) {
         # Propose a new value of p
@@ -419,10 +419,10 @@ just copy the code we had before into a dedicated function</p>
 }
 </code></pre></div></div>
 
-<p>There are a few things to consider in the function <code class="highlighter-rouge">move_uniform</code>.
+<p>There are a few things to consider in the function <code class="language-plaintext highlighter-rouge">move_uniform</code>.
 First, we do not have a return value because the move simply changes the
 variable $p$ if the move is accepted. Second, we expect an argument
-called <code class="highlighter-rouge">weight</code> which will tell us how often we want to use this move.
+called <code class="language-plaintext highlighter-rouge">weight</code> which will tell us how often we want to use this move.
 Otherwise, this function does exactly the same what was inside the for
 loop previously.</p>
 
@@ -436,7 +436,7 @@ moves propose an update by drawing a random number from a uniform
 distribution and then adding this random number to the current value
 (<em>i.e.</em>, centered on the previous value).</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>function move_slide( RealPos delta, Natural weight) {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>function move_slide( RealPos delta, Natural weight) {
 
     for (i in 1:weight) {
         # Propose a new value of p
@@ -460,19 +460,19 @@ distribution and then adding this random number to the current value
 </code></pre></div></div>
 
 <p>In addition to the weight of the move, this move has another argument,
-<code class="highlighter-rouge">delta</code>. The argument <code class="highlighter-rouge">delta</code> defines the width of the uniform window
-from which we draw new values. Thus, if <code class="highlighter-rouge">delta</code> is large, then the
+<code class="language-plaintext highlighter-rouge">delta</code>. The argument <code class="language-plaintext highlighter-rouge">delta</code> defines the width of the uniform window
+from which we draw new values. Thus, if <code class="language-plaintext highlighter-rouge">delta</code> is large, then the
 proposed values are more likely to be very different from the current
-value of $p$. Conversely, if <code class="highlighter-rouge">delta</code> is small, then the proposed values
+value of $p$. Conversely, if <code class="language-plaintext highlighter-rouge">delta</code> is small, then the proposed values
 are more likely to be very close to the current value of $p$.</p>
 
-<p>Experiment with different values for <code class="highlighter-rouge">delta</code> and check how the effective
+<p>Experiment with different values for <code class="language-plaintext highlighter-rouge">delta</code> and check how the effective
 sample size (ESS) changes.</p>
 
-<p>There is, a priori, no good method for knowing what values of <code class="highlighter-rouge">delta</code>
+<p>There is, a priori, no good method for knowing what values of <code class="language-plaintext highlighter-rouge">delta</code>
 are most efficient. However, there are some algorithms implemented in
 RevBayes, called <em>auto-tuning</em>, that will estimate good values for
-<code class="highlighter-rouge">delta</code>.</p>
+<code class="language-plaintext highlighter-rouge">delta</code>.</p>
 
 <h2 id="scaling-move">Scaling move</h2>
 
@@ -484,7 +484,7 @@ move is that it is not symmetrical and thus needs a Hastings ratio. The
 Hastings ratio is rather trivial in this case, and one only needs to
 multiply the acceptance rate by the scaling factor.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>function move_scale( RealPos lambda, Natural weight) {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>function move_scale( RealPos lambda, Natural weight) {
 
     for (i in 1:weight) {
         # Propose a new value of p
@@ -524,12 +524,12 @@ and thus hard to extend (also it’s pretty inefficient!).</p>
 Part 1 <a href="https://www.youtube.com/watch?v=in_QxGdxBlE"><img src="/assets/img/YouTube_icon.svg" alt="Walkthrough video" height="36" width="36" /></a>
 Part 2 <a href="https://www.youtube.com/watch?v=DOZLkjGKEnQ"><img src="/assets/img/YouTube_icon.svg" alt="Walkthrough video" height="36" width="36" /></a></p>
 
-<p>We’ll now specify the exact same model in <code class="highlighter-rouge">Rev</code> using the built-in
-modeling functionality. It turns out that the <code class="highlighter-rouge">Rev</code> code to specify the
+<p>We’ll now specify the exact same model in <code class="language-plaintext highlighter-rouge">Rev</code> using the built-in
+modeling functionality. It turns out that the <code class="language-plaintext highlighter-rouge">Rev</code> code to specify the
 above model is extremely simple and similar to the one we used before.
 Again, we start by “reading in” (<em>i.e.</em>, making up) our data.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Make up some coin flips!
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Make up some coin flips!
 # Feel free to change these numbers
 n &lt;- 100 # the number of flips
 x &lt;- 63	# the number of heads
@@ -537,7 +537,7 @@ x &lt;- 63	# the number of heads
 
 <p>Now we specify our prior model.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Specify the prior distribution
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Specify the prior distribution
 alpha &lt;- 1
 beta  &lt;- 1
 p ~ dnBeta(alpha,beta)
@@ -549,13 +549,13 @@ specify them <em>before</em> we run the MCMC. We usually define (at least) one
 move per parameter immediately after we specify the prior distribution
 for that parameter.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Define a move for our parameter, p
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Define a move for our parameter, p
 moves[1] = mvSlide(p,delta=0.1,weight=1)
 </code></pre></div></div>
 
 <p>Next, our likelihood model.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Specify the likelihood model
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Specify the likelihood model
 k ~ dnBinomial(p, n)
 k.clamp(x)
 </code></pre></div></div>
@@ -564,24 +564,24 @@ k.clamp(x)
 convenience to keep the entire model in a single object, and is more
 useful when we have very large models):</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Construct the full model
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Construct the full model
 my_model = model(p)
 </code></pre></div></div>
 
 <p>We use “monitors” to keep track of parameters throughout the MCMC. The
-two kinds of monitors we use here are the <code class="highlighter-rouge">mnModel</code>, which writes
-parameters to a specified file, and the <code class="highlighter-rouge">mnScreen</code>, which simply outputs
+two kinds of monitors we use here are the <code class="language-plaintext highlighter-rouge">mnModel</code>, which writes
+parameters to a specified file, and the <code class="language-plaintext highlighter-rouge">mnScreen</code>, which simply outputs
 some parts of the model to screen (as a sort of progress bar).</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Make the monitors to keep track of the MCMC
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Make the monitors to keep track of the MCMC
 monitors[1] = mnModel(filename="binomial_MCMC.log", printgen=10, separator = TAB)
 monitors[2] = mnScreen(printgen=100, p)
 </code></pre></div></div>
 
 <p>Finally, we assemble the analysis object (which contains the model, the
-monitors, and the moves) and execute the run using the <code class="highlighter-rouge">.run</code> command:</p>
+monitors, and the moves) and execute the run using the <code class="language-plaintext highlighter-rouge">.run</code> command:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Make the analysis object
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Make the analysis object
 analysis = mcmc(my_model, monitors, moves)
 
 # Run the MCMC
@@ -591,13 +591,13 @@ analysis.run(100000)
 analysis.operatorSummary()
 </code></pre></div></div>
 
-<p>Open the resulting <code class="highlighter-rouge">binomial_MCMC.log</code> file in <code class="highlighter-rouge">Tracer</code>. Do the
+<p>Open the resulting <code class="language-plaintext highlighter-rouge">binomial_MCMC.log</code> file in <code class="language-plaintext highlighter-rouge">Tracer</code>. Do the
 posterior distributions for the parameter $p$ look the same as the ones
 we got from our first analysis?</p>
 
-<p>Hopefully, you’ll note that this <code class="highlighter-rouge">Rev</code> model is substantially simpler
+<p>Hopefully, you’ll note that this <code class="language-plaintext highlighter-rouge">Rev</code> model is substantially simpler
 and easier to read than the MH algorithm script we began with. Perhaps
-more importantly, this <code class="highlighter-rouge">Rev</code> analysis is <em>orders of magnitude</em> faster
+more importantly, this <code class="language-plaintext highlighter-rouge">Rev</code> analysis is <em>orders of magnitude</em> faster
 than our own script, because it makes use of extremely efficient
 probability calculations built-in to RevBayes (rather than the ones we
 hacked together in our own algorithm).</p>
@@ -616,8 +616,8 @@ of the tutorial.</p>
     <p>Execute the script <em>Binomial_MH_algorithm.Rev</em>.</p>
   </li>
   <li>
-    <p>The <code class="highlighter-rouge">.log</code> file will contain samples from the posterior distribution
-of the model! Open the file in <code class="highlighter-rouge">Tracer</code>to learn about
+    <p>The <code class="language-plaintext highlighter-rouge">.log</code> file will contain samples from the posterior distribution
+of the model! Open the file in <code class="language-plaintext highlighter-rouge">Tracer</code>to learn about
 various features of the posterior distribution, for example: the
 posterior mean or the 95% credible interval.</p>
   </li>
@@ -638,21 +638,21 @@ this tutorial.</p>
     <p>Run the script to estimate the posterior distribution of $p$ again.</p>
   </li>
   <li>
-    <p>Look at the output in <code class="highlighter-rouge">Tracer</code>.</p>
+    <p>Look at the output in <code class="language-plaintext highlighter-rouge">Tracer</code>.</p>
   </li>
   <li>
-    <p>Use only a single move and set <code class="highlighter-rouge">printgen=1</code>. Which move has the best
+    <p>Use only a single move and set <code class="language-plaintext highlighter-rouge">printgen=1</code>. Which move has the best
 ESS?</p>
   </li>
   <li>
-    <p>How does the ESS change if you use a <code class="highlighter-rouge">delta=10</code> for the
+    <p>How does the ESS change if you use a <code class="language-plaintext highlighter-rouge">delta=10</code> for the
 sliding-window move?</p>
   </li>
   <li>
     <p>Add to each move a counter variable that counts how often the move
 was accepted. For example:</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        if (u &lt; R){
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        if (u &lt; R){
             # Accept the proposal
             p &lt;- p_prime
             ++num_sliding_move_accepted
@@ -674,20 +674,20 @@ to your own MCMC. Are the posterior estimates the same? Are the ESS
 values similar? Which script was the fastest?</p>
   </li>
   <li>
-    <p>Next, add a second move <code class="highlighter-rouge">moves[2] =
+    <p>Next, add a second move <code class="language-plaintext highlighter-rouge">moves[2] =
 mvScale(p,lambda=0.1,tune=true,weight=1.0)</code> just after the
 first one. Run the analysis again and compare it to the original one.
 Did the second move help with mixing?</p>
   </li>
   <li>
     <p>Finally, run a pre-burnin using
-<code class="highlighter-rouge">analysis.burnin(generations=10000,tuningInterval=200)</code> just before
-you call <code class="highlighter-rouge">analysis.run(100000)</code>. This will auto-tune the tuning
-parameters (<em>e.g.</em>, <code class="highlighter-rouge">delta</code> and <code class="highlighter-rouge">lambda</code>)
+<code class="language-plaintext highlighter-rouge">analysis.burnin(generations=10000,tuningInterval=200)</code> just before
+you call <code class="language-plaintext highlighter-rouge">analysis.run(100000)</code>. This will auto-tune the tuning
+parameters (<em>e.g.</em>, <code class="language-plaintext highlighter-rouge">delta</code> and <code class="language-plaintext highlighter-rouge">lambda</code>)
 so that the acceptance ratio is between 0.4 and 0.5.</p>
   </li>
   <li>
-    <p>What are the tuned values for <code class="highlighter-rouge">delta</code> and <code class="highlighter-rouge">lambda</code>? Did the
+    <p>What are the tuned values for <code class="language-plaintext highlighter-rouge">delta</code> and <code class="language-plaintext highlighter-rouge">lambda</code>? Did the
 auto-tuning increase the ESS?</p>
   </li>
 </ol>

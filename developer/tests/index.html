@@ -92,17 +92,17 @@ In the end, all of our algorithms are deterministic given a sequence of random n
 <p>In the RevBayes GitHub repository, the validation scripts are all located within the folder called <a href="https://github.com/revbayes/revbayes/tree/master/tests">tests</a>.</p>
 
 <figure id="fig_dir"><p><img src="figures/test_dir_structure.png" width="400" /></p>
-<figcaption>The directory structure within RevBayes highlighting where the integration tests can be found. Note specifically the bash script <code class="highlighter-rouge">run_integration_tests.sh</code>.</figcaption>
+<figcaption>The directory structure within RevBayes highlighting where the integration tests can be found. Note specifically the bash script <code class="language-plaintext highlighter-rouge">run_integration_tests.sh</code>.</figcaption>
 </figure>
 
-<p>Within the <strong>tests</strong> directory, there is one bash script call <code class="highlighter-rouge">run_integration_tests.sh</code>.
+<p>Within the <strong>tests</strong> directory, there is one bash script call <code class="language-plaintext highlighter-rouge">run_integration_tests.sh</code>.
 This is the bash script that runs <em>all</em> integration tests.
 Additionally, there is a <strong>data</strong> directory where all the data needs to be stored.
 You must not store data for your integration elsewhere.</p>
 
 <p>Then, each integration test has its own directory which must start with <strong>test_</strong>.
 If an integration test should excluded from the automatic testing, then simply prepend the directory with a <strong><em>**, for example, **_test_DEC_DA**.
-Our bash script <code class="highlighter-rouge">run_integration_tests.sh</code> traverses the **tests** directory and searches for all subdirectories starting with **test</em></strong>.
+Our bash script <code class="language-plaintext highlighter-rouge">run_integration_tests.sh</code> traverses the **tests** directory and searches for all subdirectories starting with **test</em></strong>.
 Hence, if you add your new integration test by creating a new directory called, for example, <strong>test_my_first_test</strong>, then your new integration test if automatically included in our test suite.
 So far not too difficult ;)</p>
 
@@ -112,7 +112,7 @@ So far not too difficult ;)</p>
 
 <p>Next, within a specific integration test, you need to have at least two subdirectories:</p>
 <ol>
-  <li><strong>scripts</strong>: containing the <code class="highlighter-rouge">Rev</code> scripts one for each integration test analysis. There could be multiple files as long as each is its own analysis because we assume that each script can be run by itself.</li>
+  <li><strong>scripts</strong>: containing the <code class="language-plaintext highlighter-rouge">Rev</code> scripts one for each integration test analysis. There could be multiple files as long as each is its own analysis because we assume that each script can be run by itself.</li>
   <li><strong>output_expected</strong>: containing the expected output which basically is a copy of the output from your successful benchmark.</li>
 </ol>
 
@@ -122,21 +122,21 @@ So far not too difficult ;)</p>
 <p>Let us look at a simple integration test as an example.
 Look at the file <a href="https://github.com/revbayes/revbayes/blob/master/test/test_BM/scripts/mcmc_BM.Rev">test/scripts/test_BM/scripts/mcmc_BM.Rev</a>.
 This script will run a standard Brownian motion analysis for a single continuous trait evolving along a phylogeny.
-The only estimated parameter here is the rate of evolution <code class="highlighter-rouge">sigma</code>.
+The only estimated parameter here is the rate of evolution <code class="language-plaintext highlighter-rouge">sigma</code>.
 The details of the model are not important because they will differ for your analysis.
 In the end, an integration test a <em>almost</em> a standard analysis.</p>
 
 <p>The main differences and important aspects to consider/follow are:</p>
 <ul>
-  <li><code class="highlighter-rouge">seed(12345)</code>: We specify the seed of the random number generator at the very beginning of the script.</li>
+  <li><code class="language-plaintext highlighter-rouge">seed(12345)</code>: We specify the seed of the random number generator at the very beginning of the script.</li>
   <li><strong>data</strong>: We always assume that your data is stored in the common data directory, so we can share the data among tests.</li>
-  <li><strong>output</strong>: The results of the analysis will be stored in one or multiple files within the directory <strong>output</strong>. The is absolutely necessary because we run a <code class="highlighter-rouge">diff</code> on the directories <strong>output</strong> and <strong>output_expected</strong>.</li>
+  <li><strong>output</strong>: The results of the analysis will be stored in one or multiple files within the directory <strong>output</strong>. The is absolutely necessary because we run a <code class="language-plaintext highlighter-rouge">diff</code> on the directories <strong>output</strong> and <strong>output_expected</strong>.</li>
   <li><strong>printgen</strong>: often it makes sense to print every iteration. Here we are not interested in convergence but instead in the correct sequence of MCMC steps which only occurs if the likelihoods and MCMC moves are still working exactly the same way.</li>
   <li><strong>runtime</strong> Your integration test should not run longer than 5 seconds on your lousy laptop so that we can run hundreds of integration tests in less than 5 minutes. Therefore:
     <ul>
       <li>use a small toy dataset</li>
       <li>run the MCMC only for very few iterations</li>
-      <li>use <code class="highlighter-rouge">moveschedule="single"</code> within the MCMC command to only use one move per generation.</li>
+      <li>use <code class="language-plaintext highlighter-rouge">moveschedule="single"</code> within the MCMC command to only use one move per generation.</li>
     </ul>
   </li>
 </ul>
@@ -145,12 +145,12 @@ In the end, an integration test a <em>almost</em> a standard analysis.</p>
 <hr class="subsection" />
 
 <p>You can run the integration tests locally using (assuming your RevBayes GitHub directory is called <strong>revbayes</strong>)</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd revbayes/tests
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd revbayes/tests
 ./run_integration_tests.sh "$PWD/../projects/cmake/rb"
 </code></pre></div></div>
 <p>This will run all the integration tests which can take a few minutes, but currently it should be less than 2 minutes.
 At the end, you will receive the results as the output:</p>
-<div class="Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#### Checking output from tests...
+<div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#### Checking output from tests...
 #### Test passed: BM
 #### Test passed: BM_MVN
 #### Test passed: BP

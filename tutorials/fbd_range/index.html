@@ -243,35 +243,35 @@ The script used to generate this dataset is at the top of this page.</p>
 <p>On your own computer, create a directory called <em>RB_FBDRMatrix_Tutorial</em> (or any name you like). When you execute RevBayes in this exercise, you will do so within this directory. 
 If you are using a Unix-based operating system, we recommend that you add the RevBayes binary to your path.</p>
 
-<p>Download the data files <code class="highlighter-rouge">dinosaur_ranges.tsv</code> and <code class="highlighter-rouge">dinosaur_fossil_counts.tsv</code>, which you can find at the top of this page, and place them in this directory.</p>
+<p>Download the data files <code class="language-plaintext highlighter-rouge">dinosaur_ranges.tsv</code> and <code class="language-plaintext highlighter-rouge">dinosaur_fossil_counts.tsv</code>, which you can find at the top of this page, and place them in this directory.</p>
 
 <p>These files contain the following data:</p>
 
 <ul>
   <li>
-    <p><code class="highlighter-rouge">dinosaur_ranges.tsv</code>: a tab-delimited table listing first and last appearance times for each range. Each row represents a seperate species. Note that for singletons the first and last appearance times will be the same. For extant ranges, including extant singletons, the last appearance time would be 0.0. <strong>Important</strong>: fossil ages have been rescaled such that 66 Ma = 0 Ma (see <a href="#pbdb-occurrence-data"></a> for details).</p>
+    <p><code class="language-plaintext highlighter-rouge">dinosaur_ranges.tsv</code>: a tab-delimited table listing first and last appearance times for each range. Each row represents a seperate species. Note that for singletons the first and last appearance times will be the same. For extant ranges, including extant singletons, the last appearance time would be 0.0. <strong>Important</strong>: fossil ages have been rescaled such that 66 Ma = 0 Ma (see <a href="#pbdb-occurrence-data"></a> for details).</p>
   </li>
   <li>
-    <p><code class="highlighter-rouge">dinosaur_fossil_counts.tsv</code>: a tab-delimited table of fossil occurrence counts. Each row represents a seperate species and each column represents a seperate time interval, from youngest to oldest (that is, left to right). Each cell contains information about species sampling during each interval - this can be the absolute number of times a species was sampled during each interval (required for model 1) or a binary character indicating whether a species was sampled (= “1”) or not (= “0”) during each interval (required for model 3). This file is not required for model 2.</p>
+    <p><code class="language-plaintext highlighter-rouge">dinosaur_fossil_counts.tsv</code>: a tab-delimited table of fossil occurrence counts. Each row represents a seperate species and each column represents a seperate time interval, from youngest to oldest (that is, left to right). Each cell contains information about species sampling during each interval - this can be the absolute number of times a species was sampled during each interval (required for model 1) or a binary character indicating whether a species was sampled (= “1”) or not (= “0”) during each interval (required for model 3). This file is not required for model 2.</p>
   </li>
 </ul>
 
 <h3 class="subsection" id="setting-up-the-analysis">Setting up the analysis</h3>
 <hr class="subsection" />
 
-<p>In this exercise you will create a single Rev script for each of the three models described in <a href="#intro-fbd"></a>: <code class="highlighter-rouge">mcmc_FBDRMatrix_model1.Rev</code>, <code class="highlighter-rouge">mcmc_FBDRMatrix_model2.Rev</code> and <code class="highlighter-rouge">mcmc_FBDRMatrix_model3.Rev</code>. Each file will contain all the commands needed to read the data and run the MCMC analysis.</p>
+<p>In this exercise you will create a single Rev script for each of the three models described in <a href="#intro-fbd"></a>: <code class="language-plaintext highlighter-rouge">mcmc_FBDRMatrix_model1.Rev</code>, <code class="language-plaintext highlighter-rouge">mcmc_FBDRMatrix_model2.Rev</code> and <code class="language-plaintext highlighter-rouge">mcmc_FBDRMatrix_model3.Rev</code>. Each file will contain all the commands needed to read the data and run the MCMC analysis.</p>
 
 <h4 class="subsubsection" id="loading-the-data">Loading the data</h4>
 <hr class="subsubsection" />
 
-<p>Begin the first Rev script (<code class="highlighter-rouge">mcmc_FBDRMatrix_model1.Rev</code>) by loading the stratigraphic ranges from the <code class="highlighter-rouge">dinosaur_ranges.tsv</code> using the <code class="highlighter-rouge">readTaxonData</code> function.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>taxa = readTaxonData(file = "dinosaur_ranges.tsv")
+<p>Begin the first Rev script (<code class="language-plaintext highlighter-rouge">mcmc_FBDRMatrix_model1.Rev</code>) by loading the stratigraphic ranges from the <code class="language-plaintext highlighter-rouge">dinosaur_ranges.tsv</code> using the <code class="language-plaintext highlighter-rouge">readTaxonData</code> function.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>taxa = readTaxonData(file = "dinosaur_ranges.tsv")
 </code></pre></div></div>
 <p>This file contains the taxon names, along with the first and last appearance times.
 For the purposes of the tutorial, these times will be treated as known.</p>
 
-<p>Next, load the matrix of fossil counts from <code class="highlighter-rouge">dinosaur_fossil_counts.tsv</code> using the <code class="highlighter-rouge">readDataDelimitedFile</code> function.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>k &lt;- readDataDelimitedFile(file = "dinosaur_fossil_counts.tsv", header = true, rownames = true)
+<p>Next, load the matrix of fossil counts from <code class="language-plaintext highlighter-rouge">dinosaur_fossil_counts.tsv</code> using the <code class="language-plaintext highlighter-rouge">readDataDelimitedFile</code> function.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>k &lt;- readDataDelimitedFile(file = "dinosaur_fossil_counts.tsv", header = true, rownames = true)
 </code></pre></div></div>
 
 <h4 class="subsubsection" id="specifying-interval-ages">Specifying interval ages</h4>
@@ -279,9 +279,9 @@ For the purposes of the tutorial, these times will be treated as known.</p>
 
 <p>In this analysis, our period of interest ends at 66 Ma, which we will rescale to the present day (<em>i.e.,</em> 66 Ma = 0 Ma).</p>
 
-<p>Create a vector called <code class="highlighter-rouge">timeline</code> for the maximum age of each interval, from youngest to oldest. 
+<p>Create a vector called <code class="language-plaintext highlighter-rouge">timeline</code> for the maximum age of each interval, from youngest to oldest. 
 RevBayes will assume that the age of the youngest interval = 0.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timeline &lt;- v(100, 145, 201) - 66
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timeline &lt;- v(100, 145, 201) - 66
 </code></pre></div></div>
 <p>These ages represent the boundary between the Early Cretaceous, the Late Cretaceous, and the Jurassic.
 The oldest occurrence in our dataset is from the Triassic and we will treat the time prior to the Jurassic as a single interval (<em>i.e.,</em> 201 Ma - infinity).</p>
@@ -293,25 +293,25 @@ The oldest occurrence in our dataset is from the Triassic and we will treat the 
 Here, we will use the same prior distributions for all rate parameters across all intervals and the same scale moves to sample values from the posterior distribution.</p>
 
 <p>Each rate during each interval is assumed to be drawn independently from a different exponential distribution.
-For each rate parameter, we will create an exponentially distributed stochastic node using the <code class="highlighter-rouge">~</code> operator and the <code class="highlighter-rouge">dnExp</code> function, with rate parameter = 10, which has an expected value (mean) of 0.1.</p>
+For each rate parameter, we will create an exponentially distributed stochastic node using the <code class="language-plaintext highlighter-rouge">~</code> operator and the <code class="language-plaintext highlighter-rouge">dnExp</code> function, with rate parameter = 10, which has an expected value (mean) of 0.1.</p>
 
-<p>To sample the parameters during MCMC you will assign three scaling moves (<code class="highlighter-rouge">mvScale</code>) to each stochastic node, each with a different tuning value (called <code class="highlighter-rouge">lambda</code> for <code class="highlighter-rouge">mvScale</code>).
+<p>To sample the parameters during MCMC you will assign three scaling moves (<code class="language-plaintext highlighter-rouge">mvScale</code>) to each stochastic node, each with a different tuning value (called <code class="language-plaintext highlighter-rouge">lambda</code> for <code class="language-plaintext highlighter-rouge">mvScale</code>).
 The tuning value determines the size of the proposed change and using multiple moves for a single parameter will improve the mixing of the MCMC.</p>
 
 <p>It may also be useful to keep track of the diversification ($\lambda - \mu$) and turnover ($\mu/\lambda$) parameters. 
-Since these parameters can be expressed as a deterministic transformation of the speciation and extinction rates, we can also monitor these values (that is, keep track of them during MCMC, and print them to a file) by creating deterministic nodes for these parameters for each interval using the <code class="highlighter-rouge">:=</code> operator.</p>
+Since these parameters can be expressed as a deterministic transformation of the speciation and extinction rates, we can also monitor these values (that is, keep track of them during MCMC, and print them to a file) by creating deterministic nodes for these parameters for each interval using the <code class="language-plaintext highlighter-rouge">:=</code> operator.</p>
 
-<p>Before specifying the moves and priors on the model parameters, create a workspace variable called <code class="highlighter-rouge">moves</code>. 
+<p>Before specifying the moves and priors on the model parameters, create a workspace variable called <code class="language-plaintext highlighter-rouge">moves</code>. 
 This variable is a vector containing all of the MCMC moves used to propose new states for every stochastic node in the model graph. 
 Similarly, we need to create a variable to hold all of our monitors</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
 monitors = VectorMonitors()
 </code></pre></div></div>
 <p>Next define a constant node representing the rate hyperparameter of the exponential prior distributions on your diversification parameters.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha &lt;- 10
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha &lt;- 10
 </code></pre></div></div>
 <p>Then, write a loop that specifys the priors and moves on the rates during each interval.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for(i in 1:(timeline.size()+1))
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for(i in 1:(timeline.size()+1))
 {
     mu[i] ~ dnExp(alpha)
     lambda[i] ~ dnExp(alpha)
@@ -333,45 +333,45 @@ monitors = VectorMonitors()
     moves.append( mvScale(psi[i], lambda = 1) )
 }
 </code></pre></div></div>
-<p>Note that this loop specifies parameters for an additional interval (<code class="highlighter-rouge">timeline()+1</code>).
+<p>Note that this loop specifies parameters for an additional interval (<code class="language-plaintext highlighter-rouge">timeline()+1</code>).
 This is for the interval prior to the Jurassic.</p>
 
 <p>For this analysis we will fix the extant species sampling probability ($\rho$) to zero to avoid having to make any assumptions about lineages that may have survived beyond the Cretaceous-Paleogene boundary.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rho &lt;- 0    
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rho &lt;- 0    
 </code></pre></div></div>
 <p>Because $\rho$ is a constant node, we do not have to assign a move to this parameter.</p>
 
 <h4 class="subsubsection" id="fbdr-model-specify">Specifying the FBDR Matrix model</h4>
 <hr class="subsubsection" />
 
-<p>All three models described in the <a href="#introduction"></a> can be specified using the same distribution function <code class="highlighter-rouge">dnFBDRMatrix</code> in RevBayes.
+<p>All three models described in the <a href="#introduction"></a> can be specified using the same distribution function <code class="language-plaintext highlighter-rouge">dnFBDRMatrix</code> in RevBayes.
 The model used to calculate the likelihood will depend on the data and commands passed to this function.</p>
 
-<p>The <code class="highlighter-rouge">dnFBDRMatrix</code> function always takes as input the stratigraphic ranges (<code class="highlighter-rouge">taxa</code>), the FBDR model parameters (<code class="highlighter-rouge">lambda, mu, psi, rho</code>), and the vector of interval ages (<code class="highlighter-rouge">timeline</code>). 
-The function can optionally take as input the matrix of per-interval fossil counts (<code class="highlighter-rouge">k</code>), used by model 1 and 3 only.
-The option <code class="highlighter-rouge">binary</code> is used to indicate whether the data in matrix <code class="highlighter-rouge">k</code> should be interpreted as absolute fossil counts (as in model 1) or presence/absence (1/0) data (as in model 3).
-If <code class="highlighter-rouge">binary = FALSE</code> the function will implement model 1 and interpret the data in <code class="highlighter-rouge">k</code> as absolute fossil counts, which is the default.
-If <code class="highlighter-rouge">binary = TRUE</code> the function will implement model 3 and use 1/0 data.
-If the matrix <code class="highlighter-rouge">k</code> contains cells with \(k_{i,j} &gt; 1\), the function will interpret this as $\kappa_{i,j} = 1$.</p>
+<p>The <code class="language-plaintext highlighter-rouge">dnFBDRMatrix</code> function always takes as input the stratigraphic ranges (<code class="language-plaintext highlighter-rouge">taxa</code>), the FBDR model parameters (<code class="language-plaintext highlighter-rouge">lambda, mu, psi, rho</code>), and the vector of interval ages (<code class="language-plaintext highlighter-rouge">timeline</code>). 
+The function can optionally take as input the matrix of per-interval fossil counts (<code class="language-plaintext highlighter-rouge">k</code>), used by model 1 and 3 only.
+The option <code class="language-plaintext highlighter-rouge">binary</code> is used to indicate whether the data in matrix <code class="language-plaintext highlighter-rouge">k</code> should be interpreted as absolute fossil counts (as in model 1) or presence/absence (1/0) data (as in model 3).
+If <code class="language-plaintext highlighter-rouge">binary = FALSE</code> the function will implement model 1 and interpret the data in <code class="language-plaintext highlighter-rouge">k</code> as absolute fossil counts, which is the default.
+If <code class="language-plaintext highlighter-rouge">binary = TRUE</code> the function will implement model 3 and use 1/0 data.
+If the matrix <code class="language-plaintext highlighter-rouge">k</code> contains cells with \(k_{i,j} &gt; 1\), the function will interpret this as $\kappa_{i,j} = 1$.</p>
 
 <p>Model 1 requires both stratigraphic range ages and per-interval fossil counts.
-To use model 1 simply include the matrix <code class="highlighter-rouge">k</code>, along with the other model parameters and leave <code class="highlighter-rouge">binary = FALSE</code> (excluding this argument from the function call is equivalent to specifying the default option).</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, rho=rho, timeline=timeline, k=k)
+To use model 1 simply include the matrix <code class="language-plaintext highlighter-rouge">k</code>, along with the other model parameters and leave <code class="language-plaintext highlighter-rouge">binary = FALSE</code> (excluding this argument from the function call is equivalent to specifying the default option).</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, rho=rho, timeline=timeline, k=k)
 </code></pre></div></div>
 <p>Model 2 requires stratigraphic range ages only and no information about per-interval fossil counts.
-To use model 2 simply exclude the matrix <code class="highlighter-rouge">k</code> from the function call.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, rho=rho, timeline=timeline)
+To use model 2 simply exclude the matrix <code class="language-plaintext highlighter-rouge">k</code> from the function call.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, rho=rho, timeline=timeline)
 </code></pre></div></div>
-<p>Model 3 requires both stratigraphic range ages and per-interval 1/0 data, which can also be represented by <code class="highlighter-rouge">k</code>.
-To use model 3 simply include the matrix <code class="highlighter-rouge">k</code>, along with the other model parameters and specify <code class="highlighter-rouge">binary = TRUE</code>.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, rho=rho, timeline=timeline, k=k, binary=true)
+<p>Model 3 requires both stratigraphic range ages and per-interval 1/0 data, which can also be represented by <code class="language-plaintext highlighter-rouge">k</code>.
+To use model 3 simply include the matrix <code class="language-plaintext highlighter-rouge">k</code>, along with the other model parameters and specify <code class="language-plaintext highlighter-rouge">binary = TRUE</code>.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, rho=rho, timeline=timeline, k=k, binary=true)
 </code></pre></div></div>
-<p>Add the options for model 1 to your script <code class="highlighter-rouge">mcmc_FBDRMatrix_model1.Rev</code>.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># model 1
+<p>Add the options for model 1 to your script <code class="language-plaintext highlighter-rouge">mcmc_FBDRMatrix_model1.Rev</code>.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># model 1
 bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, rho=rho, timeline=timeline, k=k)
 </code></pre></div></div>
 <p>Next specify scale moves to propose changes to the stratigraphic range start and end times (<em>i.e.,</em> $b_i$ and $d_i$).</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvMatrixElementScale(bd, lambda = 0.01, weight=taxa.size())
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvMatrixElementScale(bd, lambda = 0.01, weight=taxa.size())
 moves.append( mvMatrixElementScale(bd, lambda = 0.1, weight=taxa.size())
 moves.append( mvMatrixElementScale(bd, lambda = 1, weight=taxa.size())
 
@@ -379,23 +379,23 @@ moves.append( mvMatrixElementSlide(bd, delta = 0.01, weight=taxa.size())
 moves.append( mvMatrixElementSlide(bd, delta = 0.1, weight=taxa.size())
 moves.append( mvMatrixElementSlide(bd, delta = 1, weight=taxa.size())
 </code></pre></div></div>
-<p>Finally, specify a workspace model variable (<code class="highlighter-rouge">mymodel</code>) using the <code class="highlighter-rouge">model</code> function.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(alpha)
+<p>Finally, specify a workspace model variable (<code class="language-plaintext highlighter-rouge">mymodel</code>) using the <code class="language-plaintext highlighter-rouge">model</code> function.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(alpha)
 </code></pre></div></div>
-<p>The object <code class="highlighter-rouge">mymodel</code> represents the entire graphical model and allows us to pass the model to the next set of functions specific to our MCMC analysis.</p>
+<p>The object <code class="language-plaintext highlighter-rouge">mymodel</code> represents the entire graphical model and allows us to pass the model to the next set of functions specific to our MCMC analysis.</p>
 
 <h4 class="subsubsection" id="specifying-monitors-and-setting-up-the-mcmc">Specifying monitors and setting up the MCMC</h4>
 <hr class="subsubsection" />
 
 <p>Next, create monitors for the FBDR model parameters speciation, extinction and fossil recovery, along with diversification and turnover.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(lambda, mu, psi, div, turnover, printgen=100) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(lambda, mu, psi, div, turnover, printgen=100) )
 monitors.append( mnModel(filename="model1.log", printgen=10) )
 </code></pre></div></div>
-<p>The <code class="highlighter-rouge">mnScreen</code> monitor writes the parameters we specify to the screen every 100 MCMC generations.
-The <code class="highlighter-rouge">mnFile</code> monitor writes the parameters we specify to file every 10 MCMC generations.</p>
+<p>The <code class="language-plaintext highlighter-rouge">mnScreen</code> monitor writes the parameters we specify to the screen every 100 MCMC generations.
+The <code class="language-plaintext highlighter-rouge">mnFile</code> monitor writes the parameters we specify to file every 10 MCMC generations.</p>
 
 <p>We can also add some additional monitors to generate output that can be used with the R package <strong>RevGadets</strong>.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># monitors to print RevGagets input
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># monitors to print RevGagets input
 monitors.append( mnFile(filename="output/model1_speciation_rates.log",lambda,printgen=10) )
 monitors.append( mnFile(filename="output/model1_speciation_times.log",timeline,printgen=10) )
 monitors.append( mnFile(filename="output/model1_extinction_rates.log",mu,printgen=10) )
@@ -403,14 +403,14 @@ monitors.append( mnFile(filename="output/model1_extinction_times.log",timeline,p
 monitors.append( mnFile(filename="output/model1_sampling_rates.log",psi,printgen=10) )
 monitors.append( mnFile(filename="output/model1_sampling_times.log",timeline,printgen=10) )
 </code></pre></div></div>
-<p>To run the analysis we have to create a workspace variable that defines our MCMC run using the <code class="highlighter-rouge">mcmc</code> function. This function takes the three main analysis components as arguments and we set the move schedule to <code class="highlighter-rouge">"random"</code>, meaning moves will be chosen at random during the analysis.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, moves, monitors, moveschedule="random")
+<p>To run the analysis we have to create a workspace variable that defines our MCMC run using the <code class="language-plaintext highlighter-rouge">mcmc</code> function. This function takes the three main analysis components as arguments and we set the move schedule to <code class="language-plaintext highlighter-rouge">"random"</code>, meaning moves will be chosen at random during the analysis.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, moves, monitors, moveschedule="random")
 </code></pre></div></div>
-<p>Finally, we can execute our MCMC analysis and we will set the chain length to <code class="highlighter-rouge">30000</code> cycles.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(30000)
+<p>Finally, we can execute our MCMC analysis and we will set the chain length to <code class="language-plaintext highlighter-rouge">30000</code> cycles.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(30000)
 q()
 </code></pre></div></div>
-<p>Adding <code class="highlighter-rouge">q()</code> to the end of the script means the program will exit at the end of the MCMC run.</p>
+<p>Adding <code class="language-plaintext highlighter-rouge">q()</code> to the end of the script means the program will exit at the end of the MCMC run.</p>
 
 <p>You’re now ready to run the first analysis!</p>
 
@@ -420,34 +420,34 @@ q()
 <p>Begin by running the RevBayes executable. In Unix systems, type the
 following in your terminal (if the RevBayes binary is in your path):</p>
 
-<div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rb
+<div class="language-plaintext bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rb
 </code></pre></div></div>
 
-<p>Provided that you started RevBayes from the correct directory, you can then use the <code class="highlighter-rouge">source</code> function to feed RevBayes your script and run the analysis.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("mcmc_FBDRMatrix_model1.Rev")
+<p>Provided that you started RevBayes from the correct directory, you can then use the <code class="language-plaintext highlighter-rouge">source</code> function to feed RevBayes your script and run the analysis.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("mcmc_FBDRMatrix_model1.Rev")
 </code></pre></div></div>
-<p>This analysis will take around 10 minutes. While you’re waiting for this analysis to run, create the files you need to run the analysis using models 2 and 3: <code class="highlighter-rouge">mcmc_FBDRMatrix_model2.Rev</code> and <code class="highlighter-rouge">mcmc_FBDRMatrix_model3.Rev</code>.
+<p>This analysis will take around 10 minutes. While you’re waiting for this analysis to run, create the files you need to run the analysis using models 2 and 3: <code class="language-plaintext highlighter-rouge">mcmc_FBDRMatrix_model2.Rev</code> and <code class="language-plaintext highlighter-rouge">mcmc_FBDRMatrix_model3.Rev</code>.
 You can just copy and paste your exisiting script for model 1.
-Recall from Section <a href="#fbdr-model-specify"></a> that to use the alternative models you only need to change the arguments passed to the distribution function <code class="highlighter-rouge">dnFBDRMatrix</code>.</p>
+Recall from Section <a href="#fbdr-model-specify"></a> that to use the alternative models you only need to change the arguments passed to the distribution function <code class="language-plaintext highlighter-rouge">dnFBDRMatrix</code>.</p>
 
-<p>To use model 2 just remove the argument that passes the fossil count matrix to the function, <code class="highlighter-rouge">k=k</code>, since this model doesn’t use any information about the number of fossils sampled during different intervals.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, rho=rho, timeline=timeline)
+<p>To use model 2 just remove the argument that passes the fossil count matrix to the function, <code class="language-plaintext highlighter-rouge">k=k</code>, since this model doesn’t use any information about the number of fossils sampled during different intervals.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, rho=rho, timeline=timeline)
 </code></pre></div></div>
-<p>For this model, you also don’t need to read the maxtrix represented by <code class="highlighter-rouge">k</code>, so you can remove the line that reads this file using <code class="highlighter-rouge">readDataDelimitedFile</code> from the script.
-Make these modifications in <code class="highlighter-rouge">mcmc_FBDRMatrix_model2.Rev</code>, and when model 1 is done, open RevBayes and run the analysis as before.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("mcmc_FBDRMatrix_model2.Rev")
+<p>For this model, you also don’t need to read the maxtrix represented by <code class="language-plaintext highlighter-rouge">k</code>, so you can remove the line that reads this file using <code class="language-plaintext highlighter-rouge">readDataDelimitedFile</code> from the script.
+Make these modifications in <code class="language-plaintext highlighter-rouge">mcmc_FBDRMatrix_model2.Rev</code>, and when model 1 is done, open RevBayes and run the analysis as before.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("mcmc_FBDRMatrix_model2.Rev")
 </code></pre></div></div>
-<p>To use model 3, we still include the argument that passes the fossil count matrix to the function, <code class="highlighter-rouge">k=k</code>, and switch the argument <code class="highlighter-rouge">binary=true</code> to <code class="highlighter-rouge">binary=false</code>, since this model uses 1/0 sampling information, rather than absolute occurrence counts. The <code class="highlighter-rouge">k</code> matrix is still required for this model.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, rho=rho, timeline=timeline, k=k, binary=true)
+<p>To use model 3, we still include the argument that passes the fossil count matrix to the function, <code class="language-plaintext highlighter-rouge">k=k</code>, and switch the argument <code class="language-plaintext highlighter-rouge">binary=true</code> to <code class="language-plaintext highlighter-rouge">binary=false</code>, since this model uses 1/0 sampling information, rather than absolute occurrence counts. The <code class="language-plaintext highlighter-rouge">k</code> matrix is still required for this model.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, rho=rho, timeline=timeline, k=k, binary=true)
 </code></pre></div></div>
-<p>Make these modifications in <code class="highlighter-rouge">mcmc_FBDRMatrix_model3.Rev</code>, and when you’re ready, run the analysis as before.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("mcmc_FBDRMatrix_model3.Rev")
+<p>Make these modifications in <code class="language-plaintext highlighter-rouge">mcmc_FBDRMatrix_model3.Rev</code>, and when you’re ready, run the analysis as before.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("mcmc_FBDRMatrix_model3.Rev")
 </code></pre></div></div>
 <p>While you’re waiting for model 2 and 3 to run you can examine the output from model 1.</p>
 
-<blockquote class="aside"><h2>Running this model under the prior</h2><p>To run this model under the prior, we can’t use the conventional approach in RevBayes of passing the argument <code class="highlighter-rouge">runUnderPrior=true</code> to the <code class="highlighter-rouge">mymcmc.run</code> command.</p>
+<blockquote class="aside"><h2>Running this model under the prior</h2><p>To run this model under the prior, we can’t use the conventional approach in RevBayes of passing the argument <code class="language-plaintext highlighter-rouge">runUnderPrior=true</code> to the <code class="language-plaintext highlighter-rouge">mymcmc.run</code> command.</p>
 
-<p>Instead, we will simply comment out the creation of the <code class="highlighter-rouge">bd</code> stochastic node and its associated moves, and instead create a workspace model variable by passing <code class="highlighter-rouge">alpha</code> to the <code class="highlighter-rouge">model</code> function.</p>
+<p>Instead, we will simply comment out the creation of the <code class="language-plaintext highlighter-rouge">bd</code> stochastic node and its associated moves, and instead create a workspace model variable by passing <code class="language-plaintext highlighter-rouge">alpha</code> to the <code class="language-plaintext highlighter-rouge">model</code> function.</p>
 
 <div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gh">#bd ~ dnFBDRMatrix(taxa=taxa, lambda=lambda, mu=mu, psi=psi, rho=rho, timeline=timeline, k=k, binary=true)</span>
 
@@ -459,7 +459,7 @@ Make these modifications in <code class="highlighter-rouge">mcmc_FBDRMatrix_mode
 <span class="gh">#moves.append( mvMatrixElementSlide(bd, delta = 0.1, weight=taxa.size())</span>
 <span class="gh">#moves.append( mvMatrixElementSlide(bd, delta = 1, weight=taxa.size())</span>
 </code></pre></div></div>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(alpha)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(alpha)
 </code></pre></div></div>
 <p>This allows us to sample the prior distribution on our FBDR model parameters.</p>
 </blockquote>
@@ -467,7 +467,7 @@ Make these modifications in <code class="highlighter-rouge">mcmc_FBDRMatrix_mode
 <h3 class="subsection" id="evaluating-your-results">Evaluating your results</h3>
 <hr class="subsection" />
 
-<p>During the MCMC analysis RevBayes will output parameters of interest (defined using the <code class="highlighter-rouge">monitors</code> vector) to the screen and the user-specified output file (<code class="highlighter-rouge">model1.log</code>, <code class="highlighter-rouge">model2.log</code>, <code class="highlighter-rouge">model3.log</code>).</p>
+<p>During the MCMC analysis RevBayes will output parameters of interest (defined using the <code class="language-plaintext highlighter-rouge">monitors</code> vector) to the screen and the user-specified output file (<code class="language-plaintext highlighter-rouge">model1.log</code>, <code class="language-plaintext highlighter-rouge">model2.log</code>, <code class="language-plaintext highlighter-rouge">model3.log</code>).</p>
 
 <h4 class="subsubsection" id="tracer">Tracer</h4>
 <hr class="subsubsection" />
@@ -482,10 +482,10 @@ Take a look at the output obtained for model 1.</p>
 </figure>
 
 <p>RevBayes outputs the parameter estiamtes for each interval from youngest and to oldest.
-This is the same order they were specified in the vector (<code class="highlighter-rouge">timeline</code>) in <a href="#specifying-interval-ages"></a>, and also the order in which the intervals appear in the input file <code class="highlighter-rouge">dinosaur_fossil_counts.tsv</code>.
+This is the same order they were specified in the vector (<code class="language-plaintext highlighter-rouge">timeline</code>) in <a href="#specifying-interval-ages"></a>, and also the order in which the intervals appear in the input file <code class="language-plaintext highlighter-rouge">dinosaur_fossil_counts.tsv</code>.
 In this analysis the youngest interval (the Cretaceous) is denoted 1 and the oldest interval is denoted 4.
 In Tracer, we can select multiple parameters simultaneously.
-If we select all the estimates  for <code class="highlighter-rouge">mu</code>, we can look at the 95% HPD intervals obtained for each interval.</p>
+If we select all the estimates  for <code class="language-plaintext highlighter-rouge">mu</code>, we can look at the 95% HPD intervals obtained for each interval.</p>
 
 <figure id="fig_tracer2"><p><img src="figures/tracer2.png" width="1000" /></p>
 <figcaption>The Estimates window, showing 95% HPDs for multiple parameters (in this case extinction), highlighted on the lower left.
@@ -504,7 +504,7 @@ The youngest interval appears on the lefthand side.</figcaption>
 <hr class="subsubsection" />
 
 <p>We can also examine and manipulate the log files using other software, such as R. 
-At the top of the page you will find an R script <code class="highlighter-rouge">skyline_plots_FBDRMatrix.R</code>. 
+At the top of the page you will find an R script <code class="language-plaintext highlighter-rouge">skyline_plots_FBDRMatrix.R</code>. 
 This script contains commands that can be used to generate so-called skyline plots. 
 These plots show the posterior rates estimated during each interval.</p>
 

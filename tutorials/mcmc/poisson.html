@@ -134,9 +134,9 @@ performing standard Bayesian inference.</p>
 <figcaption class="table">Airline fatalities from 1976 to 1985. Reproduced from <a class="citation" href="#Gelman2003">Gelman et al. (2003)</a> [Table 2.2 on p. 69].</figcaption>
 </figure>
 
-<p>These data can be loaded into <code class="highlighter-rouge">RevBayes</code> by typing:</p>
+<p>These data can be loaded into <code class="language-plaintext highlighter-rouge">RevBayes</code> by typing:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>observed_fatalities &lt;- v(24,25,31,31,22,21,26,20,16,22)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>observed_fatalities &lt;- v(24,25,31,31,22,21,26,20,16,22)
 </code></pre></div></div>
 
 <p>The model is a <a href="http://en.wikipedia.org/wiki/Poisson_regression">Poisson
@@ -152,9 +152,9 @@ we choose uniform priors for $\alpha$ and $\beta$.</p>
 \alpha &amp; \sim \text{Uniform}(-10,10)\\
 \beta &amp;  \sim \text{Uniform}(-10,10)\end{aligned}\]
 
-<p>The probability density can be computed in <code class="highlighter-rouge">RevBayes</code> for a single year by</p>
+<p>The probability density can be computed in <code class="language-plaintext highlighter-rouge">RevBayes</code> for a single year by</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dpoisson(y[i],exp(alpha+beta*x[i]))
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dpoisson(y[i],exp(alpha+beta*x[i]))
 </code></pre></div></div>
 
 <h2 id="problems">Problems</h2>
@@ -166,7 +166,7 @@ we choose uniform priors for $\alpha$ and $\beta$.</p>
 <p>Let us construct a Metropolis algorithm that simulates from the
 posterior distribution $P(\alpha,\beta|y)$. We will construct this
 algorithm explicitly, without using the high-level functions existing in
-<code class="highlighter-rouge">RevBayes</code> to perform MCMC. In the next section, we will repeat the same
+<code class="language-plaintext highlighter-rouge">RevBayes</code> to perform MCMC. In the next section, we will repeat the same
 analysis, this time using the high-level functions. (More background on
 MCMC is provided in the <a href="https://github.com/revbayes/revbayes_tutorial/raw/master/tutorial_TeX/RB_MCMC_Intro_Tutorial/RB_MCMC_Intro_Tutorial.pdf">Introduction to Markov Chain Monte Carlo
 Algorithms
@@ -174,19 +174,19 @@ tutorial</a>.)</p>
 
 <p>For simplicity of the calculations you can “normalize” the years, e.g.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>x &lt;- 1976:1985 - mean(1976:1985)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>x &lt;- 1976:1985 - mean(1976:1985)
 </code></pre></div></div>
 
 <p>A common proposal distribution for $\alpha^{\prime} \sim P(\alpha[i-1])$
 is the normal distribution with mean $\mu = \alpha[i-1]$ and standard
 deviation $\sigma = \delta_\alpha$:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha_prime &lt;- rnorm(1,alpha[i-1],delta_alpha)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha_prime &lt;- rnorm(1,alpha[i-1],delta_alpha)
 </code></pre></div></div>
 
 <p>A similar distribution should be used for $\beta^{\prime}$.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>delta_alpha &lt;- 1.0
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>delta_alpha &lt;- 1.0
 delta_beta &lt;- 1.0
 </code></pre></div></div>
 
@@ -198,15 +198,15 @@ these are drawn from the prior distribution, but sometimes if the prior
 is very uninformative, then these parameter values result in a
 likelihood of 0.0 (or log-likelihood of -Inf).</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha[1] &lt;- -0.01     # you can also use runif(-1.0,1.0)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha[1] &lt;- -0.01     # you can also use runif(-1.0,1.0)
 beta[1] &lt;- -0.01      # you can also use runif(-1.0,1.0)
 </code></pre></div></div>
 
 <p>Next, create some output for our MCMC algorithm. The output will be
-written into a file that can be read into <code class="highlighter-rouge">R</code>or Tracer
+written into a file that can be read into <code class="language-plaintext highlighter-rouge">R</code>or Tracer
 <a class="citation" href="#Rambaut2011">(Rambaut and Drummond 2011)</a>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># create a file output
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># create a file output
 write("iteration","alpha","beta",file="airline_fatalities.log")
 write(0,alpha[1],beta[1],file="airline_fatalities.log",append=TRUE)
 </code></pre></div></div>
@@ -216,12 +216,12 @@ in this file.</p>
 
 <p>Finally, we set up a ‘for‘ loop over each iteration of the MCMC.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 2:10000) {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 2:10000) {
 </code></pre></div></div>
 
 <p>Within the ‘for‘ loop we propose new parameter values.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    alpha_prime &lt;- rnorm(1,alpha[i-1],delta_alpha)[1]
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    alpha_prime &lt;- rnorm(1,alpha[i-1],delta_alpha)[1]
     beta_prime &lt;- rnorm(1,beta[i-1],delta_beta)[1]
 </code></pre></div></div>
 
@@ -229,12 +229,12 @@ in this file.</p>
 this case we know that the prior ratio is 0.0 as long as the new
 parameters are within the limits.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    ln_prior_ratio &lt;- dunif(alpha_prime,-10.0,10.0,log=TRUE) + dunif(beta_prime,-10.0,10.0,log=TRUE) - dunif(alpha[i-1],-10.0,10.0,log=TRUE) - dunif(beta[i-1],-10.0,10.0,log=TRUE)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    ln_prior_ratio &lt;- dunif(alpha_prime,-10.0,10.0,log=TRUE) + dunif(beta_prime,-10.0,10.0,log=TRUE) - dunif(alpha[i-1],-10.0,10.0,log=TRUE) - dunif(beta[i-1],-10.0,10.0,log=TRUE)
 </code></pre></div></div>
 
 <p>Similarly, we compute the likelihood ratio for each observation.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    ln_likelihood_ratio &lt;- 0
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    ln_likelihood_ratio &lt;- 0
     for (j in 1:x.size() ) {
        lambda_prime &lt;- exp( alpha_prime + beta_prime * x[j] )
        lambda &lt;- exp( alpha[i-1] + beta[i-1] * x[j] )
@@ -246,7 +246,7 @@ parameters are within the limits.</p>
 <p>And finally we accept or reject the newly proposed parameter values with
 probability ‘ratio‘.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    if ( ln(runif(1)[1]) &lt; ratio) {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    if ( ln(runif(1)[1]) &lt; ratio) {
        alpha[i] &lt;- alpha_prime
        beta[i] &lt;- beta_prime
     } else {
@@ -258,52 +258,52 @@ probability ‘ratio‘.</p>
 <p>Then we log the current parameter values to the file by appending the
 file.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    # output to a log-file
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    # output to a log-file
     write(i-1,alpha[i],beta[i],file="airline_fatalities.log",append=TRUE)
  }
 </code></pre></div></div>
 
 <p>As a quick summary you can compute the posterior mean of the parameters.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mean(alpha)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mean(alpha)
 mean(beta)
 </code></pre></div></div>
 
-<p>You can also load the file into <code class="highlighter-rouge">R</code>or Tracer to analyze the
+<p>You can also load the file into <code class="language-plaintext highlighter-rouge">R</code>or Tracer to analyze the
 output.</p>
 
 <p>In this section of the first exercise we wrote our own little Metropolis
-algorithm in <code class="highlighter-rouge">Rev</code>. This becomes very cumbersome, difficult and slow if
+algorithm in <code class="language-plaintext highlighter-rouge">Rev</code>. This becomes very cumbersome, difficult and slow if
 we’ld need to do this for every model. Here we wanted to show you only
 the basic principle of any MCMC algorithm. In the next section we will
-use the built-in MCMC algorithm of <code class="highlighter-rouge">RevBayes</code>.</p>
+use the built-in MCMC algorithm of <code class="language-plaintext highlighter-rouge">RevBayes</code>.</p>
 
-<h3 id="mcmc-analysis-using-the-built-in-algorithm-in-revbayes">MCMC analysis using the built-in algorithm in <code class="highlighter-rouge">RevBayes</code></h3>
+<h3 id="mcmc-analysis-using-the-built-in-algorithm-in-revbayes">MCMC analysis using the built-in algorithm in <code class="language-plaintext highlighter-rouge">RevBayes</code></h3>
 
 <p>Before starting with this new approach it would be good if you either
-start a new <code class="highlighter-rouge">RevBayes</code> session or clear all previous variables using the
+start a new <code class="language-plaintext highlighter-rouge">RevBayes</code> session or clear all previous variables using the
 ‘clear‘ function. Currently we may have some minor memory problems and
-if you get stuck it may help to restart <code class="highlighter-rouge">RevBayes</code>.</p>
+if you get stuck it may help to restart <code class="language-plaintext highlighter-rouge">RevBayes</code>.</p>
 
-<p>We start by loading in the data to <code class="highlighter-rouge">RevBayes</code>.</p>
+<p>We start by loading in the data to <code class="language-plaintext highlighter-rouge">RevBayes</code>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>observed_fatalities &lt;- v(24,25,31,31,22,21,26,20,16,22)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>observed_fatalities &lt;- v(24,25,31,31,22,21,26,20,16,22)
 x &lt;- 1976:1985 - mean(1976:1985)
 </code></pre></div></div>
 
 <p>Then we create the parameters with their prior distributions.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha ~ dnUnif(-10,10) 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha ~ dnUnif(-10,10) 
 beta ~ dnUnif(-10,10)
 </code></pre></div></div>
 
 <p>It may be good to set some reasonable starting values especially if you
 choose a very uninformative prior distribution. If by chance you had
-starting values that gave a likelihood of -Inf, then <code class="highlighter-rouge">RevBayes</code> will try
+starting values that gave a likelihood of -Inf, then <code class="language-plaintext highlighter-rouge">RevBayes</code> will try
 several times to propose new starting values drawn from the prior
 distribution.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># let us use reasonable starting value
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># let us use reasonable starting value
 alpha.setValue(0.0)
 beta.setValue(0.0)
 </code></pre></div></div>
@@ -313,7 +313,7 @@ new values and know how to reset the values if the proposals are
 rejected. We use the same sliding window move as we implemented above by
 ourselves.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mi &lt;- 0
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mi &lt;- 0
 moves[mi++] = mvSlide(alpha)
 moves[mi++] = mvSlide(beta)
 </code></pre></div></div>
@@ -321,7 +321,7 @@ moves[mi++] = mvSlide(beta)
 <p>Then we set up the model. This means we create a stochastic variable for
 each observation and clamp its value with the observed data.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:x.size() ) {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:x.size() ) {
     lambda[i] := exp( alpha + beta * x[i] )
     y[i] ~ dnPoisson(lambda[i])
     y[i].clamp(observed_fatalities[i])
@@ -331,26 +331,26 @@ each observation and clamp its value with the observed data.</p>
 <p>We can now create the model by pulling up the model graph from any
 variable that is connected to our model graph.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model( alpha )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model( alpha )
 </code></pre></div></div>
 
 <p>We also need some monitors that report the current values during the
 MCMC run. We create two monitors, one printing all numeric non-constant
 variables to a file and one printing some information to the screen.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[1] = mnModel(filename="output/airline_fatalities.log",printgen=10, separator = "	")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[1] = mnModel(filename="output/airline_fatalities.log",printgen=10, separator = "	")
 monitors[2] = mnScreen(printgen=10, alpha, beta)
 </code></pre></div></div>
 
 <p>Finally we create an MCMC object. The MCMC object takes in a model
 object, the vector of monitors and the vector of moves.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves)
 </code></pre></div></div>
 
 <p>On the MCMC object we call its member method ‘run‘ to run the MCMC.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=3000)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=3000)
 </code></pre></div></div>
 
 <p>And now we are done</p>
@@ -364,7 +364,7 @@ object, the vector of monitors and the vector of moves.</p>
 a specific $x$ by recording the current expected value at a iteration
 $i$ of the Metropolis algorithm 
 \(m_{sample}(x)[i] = \text{E}[\exp(\alpha[i]+\beta[i]*x) |y]\) and taking
-the mean of those samples ($\bar{m}_{sample}(x)$) afterwards. Since <code class="highlighter-rouge">RevBayes</code>
+the mean of those samples ($\bar{m}_{sample}(x)$) afterwards. Since <code class="language-plaintext highlighter-rouge">RevBayes</code>
 provides you with the samples of
 \(m(x) = \text{E}[\exp(\alpha+\beta*x) |y] = \lambda_x\) you can simply
 plot these posterior curves.</li>
@@ -425,17 +425,17 @@ sure at least one year has rate $\beta$. The hierarchical prior carries
 the belief that $\beta$ and $\gamma$ are somewhat similar in size, since
 they both depend on $\eta$.</p>
 
-<h2 id="the-model-in-rev">The model in <code class="highlighter-rouge">Rev</code></h2>
+<h2 id="the-model-in-rev">The model in <code class="language-plaintext highlighter-rouge">Rev</code></h2>
 
 <p>We start as usual by loading in the data.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>observed_fatalities &lt;-  v(4, 5, 4, 1, 0, 4, 3, 4, 0, 6, 3, 3, 4, 0, 2, 6, 3, 3, 5, 4, 5, 3, 1, 4, 4, 1, 5, 5, 3, 4, 2, 5, 2, 2, 3, 4, 2, 1, 3, 2, 2, 1, 1, 1, 1, 3, 0, 0, 1, 0, 1, 1, 0, 0, 3, 1, 0, 3, 2, 2, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 2, 1, 0, 0, 0, 1, 1, 0, 2, 3, 3, 1, 1, 2, 1, 1, 1, 1, 2, 3, 3, 0, 0, 0, 1, 4, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>observed_fatalities &lt;-  v(4, 5, 4, 1, 0, 4, 3, 4, 0, 6, 3, 3, 4, 0, 2, 6, 3, 3, 5, 4, 5, 3, 1, 4, 4, 1, 5, 5, 3, 4, 2, 5, 2, 2, 3, 4, 2, 1, 3, 2, 2, 1, 1, 1, 1, 3, 0, 0, 1, 0, 1, 1, 0, 0, 3, 1, 0, 3, 2, 2, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 2, 1, 0, 0, 0, 1, 1, 0, 2, 3, 3, 1, 1, 2, 1, 1, 1, 1, 2, 3, 3, 0, 0, 0, 1, 4, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1)
 year &lt;- 1851:1962
 </code></pre></div></div>
 
-<p>In <code class="highlighter-rouge">Rev</code> we specify this prior choice by</p>
+<p>In <code class="language-plaintext highlighter-rouge">Rev</code> we specify this prior choice by</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>eta ~ dnGamma(10.0,20.0)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>eta ~ dnGamma(10.0,20.0)
 beta ~ dnGamma(2.0,eta)
 gamma ~ dnGamma(2.0,eta)
 theta ~ dnUnif(1852.0,1962.0)
@@ -445,7 +445,7 @@ theta ~ dnUnif(1852.0,1962.0)
 are defined only on the positive real line — we choose a scaling move.
 Only for ‘theta‘ we choose the sliding window proposal.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mi &lt;- 0
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mi &lt;- 0
 moves[mi++] = mvScale(eta)
 moves[mi++] = mvScale(beta)
 moves[mi++] = mvScale(gamma)
@@ -456,7 +456,7 @@ moves[mi++] = mvSlide(theta)
 Poisson distribution, creating random variables for each observation and
 attaching (clamping) data to the variables.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:year.size() ) {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:year.size() ) {
     rate[i] := ifelse(theta &gt; year[i], beta, gamma)
     y[i] ~ dnPoisson(rate[i])
     y[i].clamp(observed_fatalities[i])
@@ -466,7 +466,7 @@ attaching (clamping) data to the variables.</p>
 <p>Finally, we create the model object from the variables, add some
 monitors and run the MCMC algorithm.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model( theta )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model( theta )
 
 monitors[1] = mnModel(filename="output/coal_accidents.log",printgen=10, separator = "	")
 monitors[2] = mnScreen(printgen=10, eta, lambda, gamma, theta)
@@ -485,7 +485,7 @@ for you.</p>
 you execute the ‘rb‘ binary in your unix terminal (this will overwrite
 all of your existing run files).</p>
 
-<div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rb RevBayes_scripts airline_fatalities_part1.Rev
+<div class="language-plaintext bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rb RevBayes_scripts airline_fatalities_part1.Rev
 rb RevBayes_scripts airline_fatalities_part2.Rev
 rb RevBayes_scripts coalmine_accidents.Rev
 </code></pre></div></div>

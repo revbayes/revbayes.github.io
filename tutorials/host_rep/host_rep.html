@@ -243,7 +243,7 @@
 <p>where $\beta$ controls the effect of $d$, the average pairwise phylogenetic distance between the new host, $a$, and the hosts currently occupied in <strong>y</strong>; and $\overline{d}$ is the average phylogenetic distance between all pairs of hosts. Pairwise phylogenetic distance is defined as the sum of branch lengths separating two leaf nodes.</p>
 
 <figure id="cartoon"><p><img src="figures/hr_evolution.png" width="60%" /></p>
-<figcaption>Cartoon of the model of host repertoire evolution within a parasite lineage. Parasites can have potential (lowercase) or actual (uppercase) interactions with host lineages A, B, and C, whose phylogeny is known (<em>left</em>). For example, the parasite begins with the host repertoire bC, which corresponds to the vector 012 (see <code class="highlighter-rouge">Table 1</code>). Time proceeds from left to right. Only anagenetic events are modeled, <em>i.e.</em> repertoires are identically inherited during cladogenesis. In this example, a repertoire of three hosts changes along a branch of the parasite tree. Gain rates are multiplied by the phylogenetic-distance rate modifier function, $\eta$, using the host phylogeny.</figcaption>
+<figcaption>Cartoon of the model of host repertoire evolution within a parasite lineage. Parasites can have potential (lowercase) or actual (uppercase) interactions with host lineages A, B, and C, whose phylogeny is known (<em>left</em>). For example, the parasite begins with the host repertoire bC, which corresponds to the vector 012 (see <code class="language-plaintext highlighter-rouge">Table 1</code>). Time proceeds from left to right. Only anagenetic events are modeled, <em>i.e.</em> repertoires are identically inherited during cladogenesis. In this example, a repertoire of three hosts changes along a branch of the parasite tree. Gain rates are multiplied by the phylogenetic-distance rate modifier function, $\eta$, using the host phylogeny.</figcaption>
 </figure>
 
 <p>Let’s calculate the instantaneous rate for the second gain event in <strong>Figure 1</strong> for two different values of $\beta$. Say $\mu = 0.5$, $\lambda_{12} = 0.2$, $d_{\bf AC}=10$ and $\overline{d}=8$. In this case,</p>
@@ -273,15 +273,15 @@
 
   <p>Once you have downloaded the zip file by clicking on the arrow above,
 unzip that and navigate inside of that directory.
-This directory should be called <code class="highlighter-rouge">revbayes_host_rep</code></p>
+This directory should be called <code class="language-plaintext highlighter-rouge">revbayes_host_rep</code></p>
 
-  <p>Once inside, you should see two directories: <code class="highlighter-rouge">data</code> and <code class="highlighter-rouge">scripts</code></p>
+  <p>Once inside, you should see two directories: <code class="language-plaintext highlighter-rouge">data</code> and <code class="language-plaintext highlighter-rouge">scripts</code></p>
 
   <p>Once you have all of the files, open RevBayes and ensure that your working directory 
-is the top directory above the <code class="highlighter-rouge">data</code> folder (e.g., <code class="highlighter-rouge">revbayes_host_rep</code>).</p>
+is the top directory above the <code class="language-plaintext highlighter-rouge">data</code> folder (e.g., <code class="language-plaintext highlighter-rouge">revbayes_host_rep</code>).</p>
 </blockquote>
 
-<p>In this tutorial we are going to perform the analysis with two different host trees: the time-calibrated tree (<code class="highlighter-rouge">angio_25tips_time.phy</code>), and a tree where all branch lengths were set to 1 (<code class="highlighter-rouge">angio_25tips_bl1.phy</code>). This is because we wanted to test if cladogenetic distances and anagenetic distances between host families have different effects on host colonization. Note that the columns in the nexus file containing the interaction data are ordered by the</p>
+<p>In this tutorial we are going to perform the analysis with two different host trees: the time-calibrated tree (<code class="language-plaintext highlighter-rouge">angio_25tips_time.phy</code>), and a tree where all branch lengths were set to 1 (<code class="language-plaintext highlighter-rouge">angio_25tips_bl1.phy</code>). This is because we wanted to test if cladogenetic distances and anagenetic distances between host families have different effects on host colonization. Note that the columns in the nexus file containing the interaction data are ordered by the</p>
 
 <h2 class="section" id="analysis---butterfly-plant-interactions">Analysis - Butterfly-plant interactions</h2>
 <hr class="section" />
@@ -290,29 +290,29 @@ is the top directory above the <code class="highlighter-rouge">data</code> folde
 
 <p>First, create file management variables for input</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phy_host_fn = "data/angio_25tips_time.phy"
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phy_host_fn = "data/angio_25tips_time.phy"
 phy_parasite_fn = "data/Nymphalini.phy"
 dat_parasite_fn = "data/interaction_matrix.nex"
 </code></pre></div></div>
 
 <p>then read in our character data</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dat_parasite &lt;- readDiscreteCharacterData(dat_parasite_fn)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dat_parasite &lt;- readDiscreteCharacterData(dat_parasite_fn)
 </code></pre></div></div>
 
-<p>For this tutorial we’ll assume we know the host and parasite phylogenies without error. Note that our host repertoire inference method uses a root branch length to estimate the stationary probabilities at the root node. Our parasite tree file (<code class="highlighter-rouge">Nymphalini.phy</code>) is modified to have a branch length assigned to the root node. If you provide a tree without a root branch length, the software will consider it to be the same length as the tree height.</p>
+<p>For this tutorial we’ll assume we know the host and parasite phylogenies without error. Note that our host repertoire inference method uses a root branch length to estimate the stationary probabilities at the root node. Our parasite tree file (<code class="language-plaintext highlighter-rouge">Nymphalini.phy</code>) is modified to have a branch length assigned to the root node. If you provide a tree without a root branch length, the software will consider it to be the same length as the tree height.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phy_parasite &lt;- readTrees(phy_parasite_fn)[1]
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phy_parasite &lt;- readTrees(phy_parasite_fn)[1]
 </code></pre></div></div>
 
-<p>Here is where you can change the host tree to <code class="highlighter-rouge">angio_25tips_bl1.phy</code> when you repeat the analysis</p>
+<p>Here is where you can change the host tree to <code class="language-plaintext highlighter-rouge">angio_25tips_bl1.phy</code> when you repeat the analysis</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phy_host &lt;- readTrees(phy_host_fn)[1]
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phy_host &lt;- readTrees(phy_host_fn)[1]
 </code></pre></div></div>
 
 <p>Retrieve dataset dimensions</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_host_tips &lt;- phy_host.ntips()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_host_tips &lt;- phy_host.ntips()
 n_host_branches &lt;- 2 * n_host_tips - 2
 n_parasite_branches &lt;- 2 * phy_parasite.ntips() - 2
 n_sites &lt;- dat_parasite.nchar()
@@ -320,13 +320,13 @@ n_sites &lt;- dat_parasite.nchar()
 
 <p>Add more information to the name of output files</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>out_str = "out.time"
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>out_str = "out.time"
 out_fn = "output/" + out_str    
 </code></pre></div></div>
 
 <p>We need to create vectors of <em>moves</em> and <em>monitors</em> to later inform how our Markov chain Monte Carlo (MCMC) analysis needs to propose and sample new model parameters and host repertoire histories. Also, we use monitors to record the information we want to use</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves = VectorMoves()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves = VectorMoves()
 monitors = VectorMonitors()
 </code></pre></div></div>
 
@@ -334,13 +334,13 @@ monitors = VectorMonitors()
 
 <p>First, create a vector containing all transition rates and assign it a move</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>switch_rates_pos ~ dnDirichlet( [1,1,1,1] )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>switch_rates_pos ~ dnDirichlet( [1,1,1,1] )
 moves.append( mvSimplex(switch_rates_pos, alpha=10, weight=2, tune=false) )
 </code></pre></div></div>
 
 <p>We’ll now create a set of deterministic nodes to help us map our simplex of transition rates onto specific host gain and loss events</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>switch_rate_0_to_1 := switch_rates_pos[1]
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>switch_rate_0_to_1 := switch_rates_pos[1]
 switch_rate_0_to_2 := 0.
 switch_rate_1_to_0 := switch_rates_pos[2]
 switch_rate_1_to_2 := switch_rates_pos[3]
@@ -350,55 +350,55 @@ switch_rate_2_to_1 := switch_rates_pos[4]
 
 <p>Next, we assemble our named rate variables into a vector</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>switch_rates := v( switch_rate_0_to_1, switch_rate_0_to_2, switch_rate_1_to_0, switch_rate_1_to_2, switch_rate_2_to_0, switch_rate_2_to_1 )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>switch_rates := v( switch_rate_0_to_1, switch_rate_0_to_2, switch_rate_1_to_0, switch_rate_1_to_2, switch_rate_2_to_0, switch_rate_2_to_1 )
 </code></pre></div></div>
 
-<p>We then construct a rate matrix for three states (0: non-host, 1: potential host, 2: actual host) using our vector of named rates. We found that the MCMC mixes better when the Q matrix is not rescaled such that the expected number of events per unit time per character is 1 (<code class="highlighter-rouge">rescaled=false</code>). This might not be true for every data set and you can always change it to <code class="highlighter-rouge">rescaled=true</code>.</p>
+<p>We then construct a rate matrix for three states (0: non-host, 1: potential host, 2: actual host) using our vector of named rates. We found that the MCMC mixes better when the Q matrix is not rescaled such that the expected number of events per unit time per character is 1 (<code class="language-plaintext highlighter-rouge">rescaled=false</code>). This might not be true for every data set and you can always change it to <code class="language-plaintext highlighter-rouge">rescaled=true</code>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q_char := fnFreeK( transition_rates=switch_rates, rescaled=false )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q_char := fnFreeK( transition_rates=switch_rates, rescaled=false )
 </code></pre></div></div>
 
-<p>Note that <code class="highlighter-rouge">Q_char</code> is a rate matrix for a single character, which would define the rates of host repertoire evolution if all hosts were gained and lost at rates independent of what other hosts were in the repertoire.
+<p>Note that <code class="language-plaintext highlighter-rouge">Q_char</code> is a rate matrix for a single character, which would define the rates of host repertoire evolution if all hosts were gained and lost at rates independent of what other hosts were in the repertoire.
 To let host gain and loss rates be modified by other hosts in the repertoire, we must define how host usage evolves interdependently using a rate modifier function.
 In this analysis, we wish to model how the average phylogenetic distance between a new possible host and currently parasitized hosts might increase or decrease the rate of that host gain event.</p>
 
-<p>To this end, we now create the phylogenetic distance rate modifier function (effect of host phylogeny on gain rate). First, we define a parameter (<code class="highlighter-rouge">beta</code>) that defines how influential phylogenetic distances should be on host repertoire evolution. The <code class="highlighter-rouge">beta</code> parameter is a vector with two values: the first for the gain 0-&gt;1 and the second for 1-&gt;2. In this tutorial, we assume they are equal</p>
+<p>To this end, we now create the phylogenetic distance rate modifier function (effect of host phylogeny on gain rate). First, we define a parameter (<code class="language-plaintext highlighter-rouge">beta</code>) that defines how influential phylogenetic distances should be on host repertoire evolution. The <code class="language-plaintext highlighter-rouge">beta</code> parameter is a vector with two values: the first for the gain 0-&gt;1 and the second for 1-&gt;2. In this tutorial, we assume they are equal</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>beta[1] ~ dnExp(1)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>beta[1] ~ dnExp(1)
 beta[2] := beta[1]
 </code></pre></div></div>
 
-<p>Because the value of <code class="highlighter-rouge">beta[2]</code> is determined to be equal to <code class="highlighter-rouge">beta[1]</code>, we only need to create a single move to update <code class="highlighter-rouge">beta[1]</code></p>
+<p>Because the value of <code class="language-plaintext highlighter-rouge">beta[2]</code> is determined to be equal to <code class="language-plaintext highlighter-rouge">beta[1]</code>, we only need to create a single move to update <code class="language-plaintext highlighter-rouge">beta[1]</code></p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale( beta[1], weight=1 ) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale( beta[1], weight=1 ) )
 </code></pre></div></div>
 
-<p>Next, we pass our <code class="highlighter-rouge">beta</code> parameter into a special function called <code class="highlighter-rouge">fnHostSwitchRateModifier</code> that rescales the host gain rate accordingly</p>
+<p>Next, we pass our <code class="language-plaintext highlighter-rouge">beta</code> parameter into a special function called <code class="language-plaintext highlighter-rouge">fnHostSwitchRateModifier</code> that rescales the host gain rate accordingly</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_modifiers[1] := fnHostSwitchRateModifier(tree=phy_host, gainScale=beta)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_modifiers[1] := fnHostSwitchRateModifier(tree=phy_host, gainScale=beta)
 </code></pre></div></div>
 
 <p>Now we can build the rate matrix for all characters (= number of hosts) based on the gain and loss rates and the phylogenetic distance rate modifier</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q_host := fnRateGeneratorSequence(Q=Q_char,
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q_host := fnRateGeneratorSequence(Q=Q_char,
                                   numChars=n_host_tips,
                                   rateModifiers=rate_modifiers)
 </code></pre></div></div>
 
 <p>We then rescale all rates in $\lambda$ with $\mu$. We refer to $\mu$ as the maximum rate (or rate, for short) of host repertoire evolution, since $0 \leq \mu \lambda_{ij} \leq \mu$.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mu ~ dnExp(10)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mu ~ dnExp(10)
 moves.append( mvScale(mu, weight=2) )
 </code></pre></div></div>
 
 <p>Next, set uniform subroot state priors over the states (0,1,2). The subroot is the start of the branch leading to the root node.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rf_host &lt;- simplex(1,1,1)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rf_host &lt;- simplex(1,1,1)
 </code></pre></div></div>
 
-<p>We have fully specified all of the parameters of our phylogenetic model. Our model components are then encapsulated in a distribution called the <em>phylogenetic continuous-time Markov chain for data-augmented character sequences</em>, and we use the <code class="highlighter-rouge">dnPhyloCTMCDASequence</code> constructor function to create this node. This distribution is similar to dnPhyloCTMC except specialized to use data-augmented histories under the non-iid model to integrate over coevolutionary histories. For more details on how this distribution computes the probability of a specific coevolutionary history, see (missing reference).</p>
+<p>We have fully specified all of the parameters of our phylogenetic model. Our model components are then encapsulated in a distribution called the <em>phylogenetic continuous-time Markov chain for data-augmented character sequences</em>, and we use the <code class="language-plaintext highlighter-rouge">dnPhyloCTMCDASequence</code> constructor function to create this node. This distribution is similar to dnPhyloCTMC except specialized to use data-augmented histories under the non-iid model to integrate over coevolutionary histories. For more details on how this distribution computes the probability of a specific coevolutionary history, see (missing reference).</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>m_host ~ dnPhyloCTMCDASequence(tree=phy_parasite,
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>m_host ~ dnPhyloCTMCDASequence(tree=phy_parasite,
                                Q=Q_host,
                                branchRates=mu,
                                rootFrequencies=rf_host,
@@ -406,15 +406,15 @@ moves.append( mvScale(mu, weight=2) )
                                type="Standard")
 </code></pre></div></div>
 
-<p>Once the <code class="highlighter-rouge">PhyloCTMCDASequence</code> variable has been created, we can attach our observed host repertoires (interaction matrix) to the tip nodes in the parasite tree</p>
+<p>Once the <code class="language-plaintext highlighter-rouge">PhyloCTMCDASequence</code> variable has been created, we can attach our observed host repertoires (interaction matrix) to the tip nodes in the parasite tree</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>m_host.clamp(dat_parasite)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>m_host.clamp(dat_parasite)
 </code></pre></div></div>
 
-<p>Let’s add the remaining moves to update the character histories. These moves share several arguments to configure how they update histories. <code class="highlighter-rouge">ctmc</code> and <code class="highlighter-rouge">qmap_seq</code> indicate which model variables are relevant to the move. The <code class="highlighter-rouge">lambda</code> argument assigns the probability of proposing a new history for any individual character, e.g. if <code class="highlighter-rouge">lambda=0.2</code>and <code class="highlighter-rouge">n_host_tips</code> equals 25, then we would expect the move to propose 5 new host interaction histories per update. The <code class="highlighter-rouge">graph</code> argument specifies whether the move performs on a single branch (<code class="highlighter-rouge">graph="branch"</code>) or on a single node and its three incident branches (<code class="highlighter-rouge">graph="node"</code>). The <code class="highlighter-rouge">proposal</code> argument controls which MCMC proposal algorithm we use to sample and propose new branch histories; in our case, we use the rejection sampling algorithm of <a class="citation" href="#Nielsen2002">Nielsen (2002)</a> (<code class="highlighter-rouge">proposal="rejection"</code>). Finally, the <code class="highlighter-rouge">weight</code> argument controls the relative number of times that move is sampled per MCMC iteration. 
+<p>Let’s add the remaining moves to update the character histories. These moves share several arguments to configure how they update histories. <code class="language-plaintext highlighter-rouge">ctmc</code> and <code class="language-plaintext highlighter-rouge">qmap_seq</code> indicate which model variables are relevant to the move. The <code class="language-plaintext highlighter-rouge">lambda</code> argument assigns the probability of proposing a new history for any individual character, e.g. if <code class="language-plaintext highlighter-rouge">lambda=0.2</code>and <code class="language-plaintext highlighter-rouge">n_host_tips</code> equals 25, then we would expect the move to propose 5 new host interaction histories per update. The <code class="language-plaintext highlighter-rouge">graph</code> argument specifies whether the move performs on a single branch (<code class="language-plaintext highlighter-rouge">graph="branch"</code>) or on a single node and its three incident branches (<code class="language-plaintext highlighter-rouge">graph="node"</code>). The <code class="language-plaintext highlighter-rouge">proposal</code> argument controls which MCMC proposal algorithm we use to sample and propose new branch histories; in our case, we use the rejection sampling algorithm of <a class="citation" href="#Nielsen2002">Nielsen (2002)</a> (<code class="language-plaintext highlighter-rouge">proposal="rejection"</code>). Finally, the <code class="language-plaintext highlighter-rouge">weight</code> argument controls the relative number of times that move is sampled per MCMC iteration. 
 First we create a move to update character histories along a random branch</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvCharacterHistory(ctmc=m_host,
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvCharacterHistory(ctmc=m_host,
                                  qmap_seq=Q_host,
                                  lambda=0.2,
                                  graph="branch",
@@ -424,7 +424,7 @@ First we create a move to update character histories along a random branch</p>
 
 <p>Then, we create a move to update the character histories for a random node and the three incident branches</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvCharacterHistory(ctmc=m_host,
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvCharacterHistory(ctmc=m_host,
                                  qmap_seq=Q_host,
                                  lambda=0.2,
                                  graph="node",
@@ -434,52 +434,52 @@ First we create a move to update character histories along a random branch</p>
 
 <p>Before we can start the analysis, we need to define the number of generations and the sampling frequency of the MCMC</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_gen = 1e6
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_gen = 1e6
 sample_freq = 50
 </code></pre></div></div>
 
-<p>We also need to set up a vector of <em>monitors</em> to record the states of our Markov chain. All the monitor functions start with <code class="highlighter-rouge">mn</code>. First, we will initialize the screen monitor that will report the states of specified variables to the screen. This monitor mostly helps us see the progress of the MCMC run.</p>
+<p>We also need to set up a vector of <em>monitors</em> to record the states of our Markov chain. All the monitor functions start with <code class="language-plaintext highlighter-rouge">mn</code>. First, we will initialize the screen monitor that will report the states of specified variables to the screen. This monitor mostly helps us see the progress of the MCMC run.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(mu, beta, printgen=sample_freq) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(mu, beta, printgen=sample_freq) )
 </code></pre></div></div>
 
 <p>Then we create a new monitor variable that will output the states for all model parameters when passed into a MCMC function.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(printgen=sample_freq, filename=out_fn + ".log") )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(printgen=sample_freq, filename=out_fn + ".log") )
 </code></pre></div></div>
 
-<p>The <code class="highlighter-rouge">mnFile</code> monitor will record the states for only the parameters passed in as arguments. We use this monitor to output the parasite tree, even though the parasite tree value remains constant. This is useful for mapping the indices of internal nodes onto the tree. These indices will also be used in the next monitor, which outputs all sampled coevolutionary histories</p>
+<p>The <code class="language-plaintext highlighter-rouge">mnFile</code> monitor will record the states for only the parameters passed in as arguments. We use this monitor to output the parasite tree, even though the parasite tree value remains constant. This is useful for mapping the indices of internal nodes onto the tree. These indices will also be used in the next monitor, which outputs all sampled coevolutionary histories</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnFile( phy_parasite, filename=out_fn + ".tre", printgen=sample_freq) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnFile( phy_parasite, filename=out_fn + ".tre", printgen=sample_freq) )
 monitors.append( mnCharacterHistorySummary( filename=out_fn + ".history.txt",
                                             ctmc=m_host,
                                             tree=phy_parasite,
                                             printgen=sample_freq ) )
 </code></pre></div></div>
 
-<p>Finally, we wrap the entire model in a single object. To do this, we only need to give the <code class="highlighter-rouge">model()</code> function a single node and it will find all of the other nodes in the model</p>
+<p>Finally, we wrap the entire model in a single object. To do this, we only need to give the <code class="language-plaintext highlighter-rouge">model()</code> function a single node and it will find all of the other nodes in the model</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">model</span> <span class="p">=</span> <span class="k">model</span><span class="p">(</span><span class="n">m_host</span><span class="p">)</span>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>model = model(m_host)
 </code></pre></div></div>
 
 <p>Create MCMC object from the model, moves, and monitors variables.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ch = mcmc(model, monitors, moves)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ch = mcmc(model, monitors, moves)
 </code></pre></div></div>
 
 <p>Then run the MCMC analysis, which will sample parameter values and character histories in proportion to their posterior probability</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ch.run(n_gen)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ch.run(n_gen)
 </code></pre></div></div>
 
-<p>Now you can repeat the analysis using the host tree <code class="highlighter-rouge">angio_25tips_bl1.phy</code>. Remember to change the output file name!</p>
+<p>Now you can repeat the analysis using the host tree <code class="language-plaintext highlighter-rouge">angio_25tips_bl1.phy</code>. Remember to change the output file name!</p>
 
 <h2 class="section" id="results">Results</h2>
 <hr class="section" />
 
-<p>You can use the output files <code class="highlighter-rouge">out.time.log</code> and <code class="highlighter-rouge">out.bl1.log</code> to plot the posterior distributions for the four transition rates, the overall clock, and the phylogenetic distance rate modifier. We can examine the log files in the program <a href="http://beast.community/tracer"><strong>Tracer</strong></a>. Once you open this program, you can open the log files using the “File &gt; Import Tracer File” option, navigate to the directory in which you ran the analysis and select the relevant log file. Or you can simply drag and drop the files into “Trace Files” (the empty white box on the upper left of the program).</p>
+<p>You can use the output files <code class="language-plaintext highlighter-rouge">out.time.log</code> and <code class="language-plaintext highlighter-rouge">out.bl1.log</code> to plot the posterior distributions for the four transition rates, the overall clock, and the phylogenetic distance rate modifier. We can examine the log files in the program <a href="http://beast.community/tracer"><strong>Tracer</strong></a>. Once you open this program, you can open the log files using the “File &gt; Import Tracer File” option, navigate to the directory in which you ran the analysis and select the relevant log file. Or you can simply drag and drop the files into “Trace Files” (the empty white box on the upper left of the program).</p>
 
-<p>Take a look at the output obtained for the analysis with the time-calibrated host tree (<code class="highlighter-rouge">out.time.log</code>) and with the host tree with branch lengths set to 1 (<code class="highlighter-rouge">out.bl1.log</code>). Let’s focus on the posterior distributions of $\beta$.</p>
+<p>Take a look at the output obtained for the analysis with the time-calibrated host tree (<code class="language-plaintext highlighter-rouge">out.time.log</code>) and with the host tree with branch lengths set to 1 (<code class="language-plaintext highlighter-rouge">out.bl1.log</code>). Let’s focus on the posterior distributions of $\beta$.</p>
 
 <figure id="ancestral-plot"><p><img src="figures/tracer.png" width="80%" /></p>
 <figcaption>Marginal density in Tracer. The left-hand window provides mean and ESS of the chain. The right-hand window shows the distribution of samples.</figcaption>
@@ -503,7 +503,7 @@ monitors.append( mnCharacterHistorySummary( filename=out_fn + ".history.txt",
 
 <p>For that, we need to change the code in two places: the Q matrix</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>switch_rates_pos ~ dnDirichlet( [1,1] )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>switch_rates_pos ~ dnDirichlet( [1,1] )
 
 switch_rate_0_to_1 := 1e-6               # MCMC gets stuck on first gen if rates = 0.
 switch_rate_0_to_2 := switch_rates_pos[1]
@@ -515,7 +515,7 @@ switch_rate_2_to_1 := 1e-6
 
 <p>and the root state frequencies</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rf_host &lt;- simplex(1,0,1)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rf_host &lt;- simplex(1,0,1)
 </code></pre></div></div>
 
 <p>And that’s it. Everything else should be the same.</p>

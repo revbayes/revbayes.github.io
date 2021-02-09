@@ -245,7 +245,7 @@ prior probability distributions. The basic idea is to estimate the
 probability of the data for all points between the posterior and the
 prior—effectively summing the probability of the data over the prior
 probability of the parameters to estimate the marginal likelihood.
-Technically, the steps correspond to a series of <code class="highlighter-rouge">powerPosteriors()</code>,
+Technically, the steps correspond to a series of <code class="language-plaintext highlighter-rouge">powerPosteriors()</code>,
 where the likelihood is iteratively raised to a series of numbers
 between 1 and 0 (Figure [fig:ss]). When the likelihood is raised to
 the power of 1 (typically the first stepping stone), samples are drawn
@@ -289,38 +289,38 @@ sampling closer and closer to the prior as the power decreases.</p>
 <p>The following procedure for estimating marginal likelihoods is valid for
 any model in RevBayes. First, we create the variable containing the power-posterior
 analysis. This requires that we provide a model and vector of moves, as
-well as an output file name. The <code class="highlighter-rouge">cats</code> argument sets the number of
+well as an output file name. The <code class="language-plaintext highlighter-rouge">cats</code> argument sets the number of
 stepping stones.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pow_p = powerPosterior(mymodel, moves, monitors, "output/model1.out", cats=50) 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pow_p = powerPosterior(mymodel, moves, monitors, "output/model1.out", cats=50) 
 </code></pre></div></div>
 <p>We can start the power-posterior analysis by first burning in the chain
 and and discarding the first 10000 states. This will help ensure that
 analysis starts from a region of high posterior probability, rather than
 from some random point.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pow_p.burnin(generations=10000,tuningInterval=1000)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pow_p.burnin(generations=10000,tuningInterval=1000)
 </code></pre></div></div>
-<p>Now execute the run with the <code class="highlighter-rouge">.run()</code> function:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pow_p.run(generations=1000)  
+<p>Now execute the run with the <code class="language-plaintext highlighter-rouge">.run()</code> function:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pow_p.run(generations=1000)  
 </code></pre></div></div>
 <p>Once the power posteriors have been saved to file, create a stepping
 stone sampler. This function can read any file of power posteriors and
 compute the marginal likelihood using stepping-stone sampling.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ss = steppingStoneSampler(file="output/model1.out", powerColumnName="power", likelihoodColumnName="likelihood")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ss = steppingStoneSampler(file="output/model1.out", powerColumnName="power", likelihoodColumnName="likelihood")
 </code></pre></div></div>
 <p>These commands will execute a stepping-stone simulation with 50 stepping
 stones, sampling 1000 states from each step. Compute the marginal
 likelihood under stepping-stone sampling using the member function
-<code class="highlighter-rouge">marginal()</code> of the <code class="highlighter-rouge">ss</code> variable.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ss.marginal() 
+<code class="language-plaintext highlighter-rouge">marginal()</code> of the <code class="language-plaintext highlighter-rouge">ss</code> variable.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ss.marginal() 
 </code></pre></div></div>
 <p>Path sampling is an alternative to stepping-stone sampling and also
 takes the same power posteriors as input.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ps = pathSampler(file="output/model1.out", powerColumnName="power", likelihoodColumnName="likelihood")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ps = pathSampler(file="output/model1.out", powerColumnName="power", likelihoodColumnName="likelihood")
 </code></pre></div></div>
 <p>Compute the marginal likelihood under stepping-stone sampling using the
-member function <code class="highlighter-rouge">marginal()</code> of the <code class="highlighter-rouge">ps</code> variable and record the value
+member function <code class="language-plaintext highlighter-rouge">marginal()</code> of the <code class="language-plaintext highlighter-rouge">ps</code> variable and record the value
 in Table [tab:ml_cytb].</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ps.marginal() 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ps.marginal() 
 </code></pre></div></div>
 
 <p>We have kept this description of how to use stepping-stone-sampling and

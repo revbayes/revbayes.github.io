@@ -90,7 +90,7 @@ This comes from considering (phylogenetic) models as <em>probabilistic
 graphical models</em>, which lends flexibility and enhances the capabilities
 of the program. Users interact with RevBayes via an interactive shell.
 Users communicate commands using a language specifically designed for
-RevBayes, called <code class="highlighter-rouge">Rev</code>; an R-like language (complete with control
+RevBayes, called <code class="language-plaintext highlighter-rouge">Rev</code>; an R-like language (complete with control
 statements, user-defined functions, and loops) that enables the user to
 build up (phylogenetic) models from simple parts (random variables,
 variable/parameter transformations, models, and constants of different
@@ -108,7 +108,7 @@ exercises you can either use RevBayes interactively or run an entire
 script. Execute the RevBayes binary. If this program is in your path,
 then you can simply type in your Unix terminal:</p>
 
-<div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rb
+<div class="language-plaintext bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rb
 </code></pre></div></div>
 
 <p>When you execute the program, you will see a brief program information,
@@ -117,7 +117,7 @@ be obtained from <a href="https://revbayes.github.io/">revbayes.github.io</a>. W
 the program with an additional filename,
 <em>e.g.,</em></p>
 
-<div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rb my_analysis.Rev
+<div class="language-plaintext bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rb my_analysis.Rev
 </code></pre></div></div>
 
 <p>then RevBayes will run all commands specified in your file.</p>
@@ -125,7 +125,7 @@ the program with an additional filename,
 <p>You may want to run RevBayes in parallel using multiple processes.
 This can be done by starting RevBayes with</p>
 
-<div class="bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mpirun -np 4 rb-mpi
+<div class="language-plaintext bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mpirun -np 4 rb-mpi
 </code></pre></div></div>
 
 <p>which starts 4 processes of RevBayes. You may want to change the
@@ -134,16 +134,16 @@ number of processes depending on your available hardware.</p>
 <p>The format of the exercises uses to delineate code examples that you
 should type into RevBayes. For example, after opening the RevBayes
 program, you can load your data file:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data &lt;- readDiscreteCharacterData("data/primates_cytb.nex")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data &lt;- readDiscreteCharacterData("data/primates_cytb.nex")
 </code></pre></div></div>
 <p>Examples can be copied and pasted directly as the RevBayes “&gt;” will not be copied. This is especially useful for larger command blocks, particularly loops, which will often
 be displayed in boxes</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for( i in 1:12 ){
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for( i in 1:12 ){
    x[i] ~ dnExponential(1.0)
 }
 </code></pre></div></div>
 <p>The various RevBayes commands and syntax within the text are specified
-using <code class="highlighter-rouge">typewriter text</code>.</p>
+using <code class="language-plaintext highlighter-rouge">typewriter text</code>.</p>
 
 <p>Most tutorials also includes hyperlinks: bibliographic citations such as 
 <a class="citation" href="#Hoehna2014b">Höhna et al. (2014)</a> which link to the full citation in the references, external URLs such as <a href="http://en.wikipedia.org/wiki/Log-normal_distribution">lognormal
@@ -152,7 +152,7 @@ internal references to figures and equations such as <a href="#gmnotation"></a>.
 
 <p>The various exercises in this tutorial take you through the steps
 required to perform phylogenetic analyses of the example datasets. In
-addition, we have provided the <code class="highlighter-rouge">Rev</code> scripts and output files for some
+addition, we have provided the <code class="language-plaintext highlighter-rouge">Rev</code> scripts and output files for some
 exercises so you can verify your results. (Note that since the MCMC runs
 you perform will start from different random seeds, the output files
 resulting from your analyses <em>will not</em> be identical to the ones we
@@ -228,11 +228,11 @@ stochastic variable $\sigma$ is exponentially distributed with fixed
 value for the rate $\lambda$.</em></figcaption>
 </figure>
 
-<h1 class="section" id="rev-the-revbayes-language"><code class="highlighter-rouge">Rev</code>: The RevBayes Language</h1>
+<h1 class="section" id="rev-the-revbayes-language"><code class="language-plaintext highlighter-rouge">Rev</code>: The RevBayes Language</h1>
 
 <p>In RevBayes models and analyses are specified using an interpreted
-language called <code class="highlighter-rouge">Rev</code>. <code class="highlighter-rouge">Rev</code> bears similarities to the compiled language
-in WinBUGS and the interpreted <code class="highlighter-rouge">R</code>language. Setting up and
+language called <code class="language-plaintext highlighter-rouge">Rev</code>. <code class="language-plaintext highlighter-rouge">Rev</code> bears similarities to the compiled language
+in WinBUGS and the interpreted <code class="language-plaintext highlighter-rouge">R</code>language. Setting up and
 executing a statistical analysis in RevBayes requires the user to
 specify all of the parameters of their model and the type of analysis
 (<em>e.g.,</em>an MCMC run). By using an interpreted
@@ -240,9 +240,9 @@ language, RevBayes enables the practitioner to build complex,
 hierarchical models and to check the current states of variables while
 building the model. This will be very useful in the beginning. Later on
 you, when you run very complex analyses, you may want to write
-<code class="highlighter-rouge">Rev</code>-scripts.</p>
+<code class="language-plaintext highlighter-rouge">Rev</code>-scripts.</p>
 
-<p>Differently to <code class="highlighter-rouge">R</code>and BUGS, <code class="highlighter-rouge">Rev</code> is a strongly but
+<p>Differently to <code class="language-plaintext highlighter-rouge">R</code>and BUGS, <code class="language-plaintext highlighter-rouge">Rev</code> is a strongly but
 implicitly typed language. It is implicitly typed, and thus similar to
 Python, because you do not need to provide the type of a variable (which
 you need to in languages such as C++ and Java). We do implicit typing to
@@ -256,7 +256,7 @@ real numbers. RevBayes does automatic type conversion.</p>
 
 <h2 class="subsection" id="specifying-models">Specifying Models</h2>
 
-<figure id="tab_notation" class="table"><figcaption class="table"><code class="highlighter-rouge">Rev</code> assignment operators, clamp function, and plate/loop syntax.</figcaption>
+<figure id="tab_notation" class="table"><figcaption class="table"><code class="language-plaintext highlighter-rouge">Rev</code> assignment operators, clamp function, and plate/loop syntax.</figcaption>
 
 <table>
   <thead>
@@ -267,27 +267,27 @@ real numbers. RevBayes does automatic type conversion.</p>
   </thead>
   <tbody>
     <tr>
-      <td><code class="highlighter-rouge">&lt;-</code></td>
+      <td><code class="language-plaintext highlighter-rouge">&lt;-</code></td>
       <td style="text-align: center">constant variable</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">~</code></td>
+      <td><code class="language-plaintext highlighter-rouge">~</code></td>
       <td style="text-align: center">stochastic variable</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">:=</code></td>
+      <td><code class="language-plaintext highlighter-rouge">:=</code></td>
       <td style="text-align: center">deterministic variable</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">node.clamp(data)</code></td>
+      <td><code class="language-plaintext highlighter-rouge">node.clamp(data)</code></td>
       <td style="text-align: center">clamped variable</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">=</code></td>
+      <td><code class="language-plaintext highlighter-rouge">=</code></td>
       <td style="text-align: center">inference (<em>i.e.,</em>non-model) variable</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">for(i in 1:N){...}</code></td>
+      <td><code class="language-plaintext highlighter-rouge">for(i in 1:N){...}</code></td>
       <td style="text-align: center">plate</td>
     </tr>
   </tbody>
@@ -295,49 +295,49 @@ real numbers. RevBayes does automatic type conversion.</p>
 </figure>
 
 <p>The variables/parameters of a statistical model are created using
-different operators in <code class="highlighter-rouge">Rev</code> (<a href="#tab_notation"></a>). In Figure
-[revgmexample], the <code class="highlighter-rouge">Rev</code> syntax for creating the model in Figure
-[simpleGM] is provided. Because <code class="highlighter-rouge">Rev</code> is an interpreted language, it
+different operators in <code class="language-plaintext highlighter-rouge">Rev</code> (<a href="#tab_notation"></a>). In Figure
+[revgmexample], the <code class="language-plaintext highlighter-rouge">Rev</code> syntax for creating the model in Figure
+[simpleGM] is provided. Because <code class="language-plaintext highlighter-rouge">Rev</code> is an interpreted language, it
 is important to consider the order in which you specify your variables
 (<em>cf.</em>BUGS where the order is not important).
 Thus, typically the first variables that are instantiated are <em>constant
 variables</em>. Constant variables require you to assign a fixed value using
-the <code class="highlighter-rouge">&lt;-</code> operator. Stochastic variables are initialized using the <code class="highlighter-rouge">~</code>
+the <code class="language-plaintext highlighter-rouge">&lt;-</code> operator. Stochastic variables are initialized using the <code class="language-plaintext highlighter-rouge">~</code>
 operator followed by the constructor function for a distribution. In
-<code class="highlighter-rouge">Rev</code>, the naming convention for distributions is <code class="highlighter-rouge">dn*</code>, where <code class="highlighter-rouge">*</code> is
+<code class="language-plaintext highlighter-rouge">Rev</code>, the naming convention for distributions is <code class="language-plaintext highlighter-rouge">dn*</code>, where <code class="language-plaintext highlighter-rouge">*</code> is
 a wildcard representing the name of the distribution. Each distribution
 function requires hyperparameters passed in as arguments. This is
 effectively linking nodes using arrows in the graphical model. The
-following code snippet creates a stochastic variable called <code class="highlighter-rouge">M</code> which is
-assigned a gamma-distributed hyperprior, with shape <code class="highlighter-rouge">alpha</code> and rate
-<code class="highlighter-rouge">beta</code>:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha &lt;- 2.0
+following code snippet creates a stochastic variable called <code class="language-plaintext highlighter-rouge">M</code> which is
+assigned a gamma-distributed hyperprior, with shape <code class="language-plaintext highlighter-rouge">alpha</code> and rate
+<code class="language-plaintext highlighter-rouge">beta</code>:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha &lt;- 2.0
 beta &lt;- 4.0
 M ~ dnGamma(alpha, beta)
 </code></pre></div></div>
 <p>The flexibility gained from the graphical model framework and the
 interpreted language allows you to easily change a model by swapping
 components. For example, if you decide that a bimodal lognormal
-distribution is a better representation of your uncertainty in <code class="highlighter-rouge">M</code>, then
-you can simply change the distribution associated with <code class="highlighter-rouge">M</code> (after
+distribution is a better representation of your uncertainty in <code class="language-plaintext highlighter-rouge">M</code>, then
+you can simply change the distribution associated with <code class="language-plaintext highlighter-rouge">M</code> (after
 initializing the bimodal lognormal hyperparameters):</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mean_1 &lt;- 0.5
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mean_1 &lt;- 0.5
 mean_2 &lt;- 2.0
 sd_1 &lt;- 1.0
 sd_2 &lt;- 1.0
 weight &lt;- 0.5
 M ~ dnBimodalLognormal(mean_1, mean_2, sd_1, sd_2, weight)
 </code></pre></div></div>
-<p><code class="highlighter-rouge">Rev</code> does allow you to specify constant-variable values in the
+<p><code class="language-plaintext highlighter-rouge">Rev</code> does allow you to specify constant-variable values in the
 distribution constructor function; therefore this also works:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>M ~ dnBimodalLognormal(0.5, 2.0, 1.0, 1.0, 0.5)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>M ~ dnBimodalLognormal(0.5, 2.0, 1.0, 1.0, 0.5)
 </code></pre></div></div>
 <p>Both ways to specify priors are equivalent. The only difference is that
 one code may be more readable than the other.</p>
 
 <figure id="simpleGM"><p><img src="figures/simple_GM_rev.png" width="600" /></p>
 <figcaption>Specifying a model with
-<code class="highlighter-rouge">Rev</code>. The graphical model of the observed parameter $x$ is shown on the
+<code class="language-plaintext highlighter-rouge">Rev</code>. The graphical model of the observed parameter $x$ is shown on the
 left. In this example, $x$ is log-normally distributed with a location
 parameter of $\mu$ and a standard deviation of $\sigma$, thus
 $x \sim \mbox{Lognormal}(\mu, \sigma)$. The expected value of $x$ (or
@@ -357,25 +357,25 @@ function executed on $M$ and $\sigma$:
 </figure>
 
 <p>Deterministic variables are parameter transformations and initialized
-using the <code class="highlighter-rouge">:=</code> operator followed by the function or formula for
+using the <code class="language-plaintext highlighter-rouge">:=</code> operator followed by the function or formula for
 calculating the value. Previously we created a variable for the
 expectation of the lognormal distribution. Now, if you have an
 exponentially distributed stochastic variable $\sigma$, you can create a
 deterministic variable for the mean $\mu$:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>lambda &lt;- 1.0
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>lambda &lt;- 1.0
 sigma ~ dnExponential(lambda)
 mu := ln(M) - (sigma^2)/2.0
 </code></pre></div></div>
 <p>Replication over lists of variables as a plate object is specified using
-<code class="highlighter-rouge">for</code> loops. A for-loop is an iterator statement that performs a
-function a given number of times. In <code class="highlighter-rouge">Rev</code> you can use this syntax to
+<code class="language-plaintext highlighter-rouge">for</code> loops. A for-loop is an iterator statement that performs a
+function a given number of times. In <code class="language-plaintext highlighter-rouge">Rev</code> you can use this syntax to
 create a vector of 7 stochastic variables, each drawn from a lognormal
 distribution:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for( i in 1:7 ) {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for( i in 1:7 ) {
    x[i] ~ dnLognormal(mu, sigma)
 }
 </code></pre></div></div>
-<p>The <code class="highlighter-rouge">for</code> loop executes the statement <code class="highlighter-rouge">x[i] ~ dnLognormal(mu, sigma)</code> for different values of $i$ repeatedly, where $i$ takes the
+<p>The <code class="language-plaintext highlighter-rouge">for</code> loop executes the statement <code class="language-plaintext highlighter-rouge">x[i] ~ dnLognormal(mu, sigma)</code> for different values of $i$ repeatedly, where $i$ takes the
 values 1 to 7. Thus, we created a vector $x$ of seven variables, each
 being independent and identically distributed (i.i.d.).</p>
 
@@ -384,7 +384,7 @@ first read in or input the data, then clamp it to a stochastic variable.
 In <a href="#revgmexample"></a> the observations are assigned and clamped to
 the stochastic variables. If we observed 7 values for $x$ we would
 create 7 clamped variables:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>observations &lt;- [0.20, 0.21, 0.03, 0.40, 0.65, 0.87, 0.22]
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>observations &lt;- [0.20, 0.21, 0.03, 0.40, 0.65, 0.87, 0.22]
 N &lt;- observations.size()
 for( i in 1:N ){
    x[i].clamp(observations[i])
@@ -397,17 +397,17 @@ observations.</p>
 
 <p>RevBayes provides an elaborate help system. Most of the help is found
 online on our <a href="https://revbayes.github.io/">website</a>. Within RevBayes you can display the help for
-a function, distribution or any other type using the <code class="highlighter-rouge">?</code> symbol followed
+a function, distribution or any other type using the <code class="language-plaintext highlighter-rouge">?</code> symbol followed
 by the command you want help for:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>?dnNorm
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>?dnNorm
 ?mcmc
 ?mcmc.run
 </code></pre></div></div>
 <p>Additionally, RevBayes will print the correct usage of a function if
 you only type in its name and hit return:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mcmc
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mcmc
 </code></pre></div></div>
-<div class="Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>       MCMC function (Model model, Monitor[] monitors, Move[] moves, String moveschedule = "sequential" | "random" | "single", Natural nruns)
+<div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>       MCMC function (Model model, Monitor[] monitors, Move[] moves, String moveschedule = "sequential" | "random" | "single", Natural nruns)
 </code></pre></div></div>
 
 <h2 class="subsection" id="revbayes-users-forum">RevBayes Users’ Forum</h2>

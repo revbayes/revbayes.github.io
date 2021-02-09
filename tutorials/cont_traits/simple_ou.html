@@ -124,26 +124,26 @@ For more information about graphical model representations see <a class="citatio
 
 <p>In this tutorial, we use the 66 vertebrate phylogenies and (log) body-size datasets from <a class="citation" href="#Landis2017b">(Landis and Schraiber 2017)</a>.</p>
 
-<p>⇨ The full OU-model specification is in the file called <code class="highlighter-rouge">mcmc_OU.Rev</code>.</p>
+<p>⇨ The full OU-model specification is in the file called <code class="language-plaintext highlighter-rouge">mcmc_OU.Rev</code>.</p>
 
 <h3 class="subsection" id="read-the-data">Read the data</h3>
 <hr class="subsection" />
 
 <p>We begin by deciding which of the 66 vertebrate datasets to use. Here, we assume we are analyzing the first dataset (<em>Acanthuridae</em>), but you should feel free to choose any of the datasets.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dataset &lt;- 1
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dataset &lt;- 1
 </code></pre></div></div>
 
 <p>Now, we read in the (time-calibrated) tree corresponding to our chosen dataset.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>T &lt;- readTrees("data/trees.nex")[dataset]
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>T &lt;- readTrees("data/trees.nex")[dataset]
 </code></pre></div></div>
 
 <p>Next, we read in the character data for the same dataset.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data &lt;- readContinuousCharacterData("data/traits.nex")[dataset]
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data &lt;- readContinuousCharacterData("data/traits.nex")[dataset]
 </code></pre></div></div>
 
 <p>Additionally, we initialize a variable for our vector of
 moves and monitors:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
 monitors = VectorMonitors()
 </code></pre></div></div>
 
@@ -155,7 +155,7 @@ monitors = VectorMonitors()
 
 <p>In this tutorial, we assume the tree is known without area. We create a constant node for the tree that corresponds to the observed phylogeny.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tree &lt;- T
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tree &lt;- T
 </code></pre></div></div>
 
 <h4 class="subsubsection" id="rate-parameter">Rate parameter</h4>
@@ -163,18 +163,18 @@ monitors = VectorMonitors()
 
 <p>The stochastic rate of evolution is controlled by the rate parameter, $\sigma^2$. We draw the rate parameter from a loguniform prior. This prior is uniform on the log scale, which means that it is represents ignorance about the <em>order of magnitude</em> of the rate.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sigma2 ~ dnLoguniform(1e-3, 1)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sigma2 ~ dnLoguniform(1e-3, 1)
 </code></pre></div></div>
 
-<p>In order to estimate the posterior distribution of $\sigma^2$, we must provide an MCMC proposal mechanism that operates on this node. Because $\sigma^2$ is a rate parameter, and must therefore be positive, we use a scaling move called <code class="highlighter-rouge">mvScale</code>.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale(sigma2, weight=1.0) )
+<p>In order to estimate the posterior distribution of $\sigma^2$, we must provide an MCMC proposal mechanism that operates on this node. Because $\sigma^2$ is a rate parameter, and must therefore be positive, we use a scaling move called <code class="language-plaintext highlighter-rouge">mvScale</code>.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale(sigma2, weight=1.0) )
 </code></pre></div></div>
 
 <h4 class="subsubsection" id="adaptation-parameter">Adaptation parameter</h4>
 <hr class="subsubsection" />
 
 <p>The rate of adaptation toward the optimum is determined by the parameter $\alpha$. We draw $\alpha$ from an exponential prior distribution, and place a scale proposal on it.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha ~ dnExponential(10)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha ~ dnExponential(10)
 moves.append( mvScale(alpha, weight=1.0) )
 </code></pre></div></div>
 
@@ -182,7 +182,7 @@ moves.append( mvScale(alpha, weight=1.0) )
 <hr class="subsubsection" />
 
 <p>We draw the optimal value from a vague uniform prior ranging from -10 to 10 (you should change this prior if your character is outside of this range). Because this parameter can be positive or negative, we use a slide move to propose changes during MCMC.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>theta ~ dnUniform(-10, 10)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>theta ~ dnUniform(-10, 10)
 moves.append( mvSlide(theta, weight=1.0) )
 </code></pre></div></div>
 
@@ -190,16 +190,16 @@ moves.append( mvSlide(theta, weight=1.0) )
 <hr class="subsubsection" />
 
 <p>Now that we have specified the parameters of the model, we can draw the character data from the corresponding phylogenetic OU model. In this example, we use the REML algorithm to efficiently compute the likelihood <a class="citation" href="#Felsenstein1985a">(Felsenstein 1985)</a>. We assume the character begins at the optimal value at the root of the tree.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>X ~ dnPhyloOrnsteinUhlenbeckREML(tree, alpha, theta, sigma2^0.5, rootStates=theta)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>X ~ dnPhyloOrnsteinUhlenbeckREML(tree, alpha, theta, sigma2^0.5, rootStates=theta)
 </code></pre></div></div>
 
-<p>Noting that $X$ is the observed data (<a href="#fig_bm_gm"></a>), we clamp the <code class="highlighter-rouge">data</code> to this stochastic node.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>X.clamp(data)
+<p>Noting that $X$ is the observed data (<a href="#fig_bm_gm"></a>), we clamp the <code class="language-plaintext highlighter-rouge">data</code> to this stochastic node.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>X.clamp(data)
 </code></pre></div></div>
 
-<p>Finally, we create a workspace object for the entire model with <code class="highlighter-rouge">model()</code>. Remeber that workspace objects are initialized with the <code class="highlighter-rouge">=</code> operator, and are not themselves part of the Bayesian graphical model. The <code class="highlighter-rouge">model()</code> function traverses the entire model graph and finds all the nodes in the model that we specified. This object provides a convenient way to refer to the whole model object, rather than just a single DAG node.</p>
+<p>Finally, we create a workspace object for the entire model with <code class="language-plaintext highlighter-rouge">model()</code>. Remeber that workspace objects are initialized with the <code class="language-plaintext highlighter-rouge">=</code> operator, and are not themselves part of the Bayesian graphical model. The <code class="language-plaintext highlighter-rouge">model()</code> function traverses the entire model graph and finds all the nodes in the model that we specified. This object provides a convenient way to refer to the whole model object, rather than just a single DAG node.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(theta)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(theta)
 </code></pre></div></div>
 
 <h3 class="subsection" id="running-an-mcmc-analysis">Running an MCMC analysis</h3>
@@ -208,12 +208,12 @@ moves.append( mvSlide(theta, weight=1.0) )
 <h4 class="subsubsection" id="specifying-monitors">Specifying Monitors</h4>
 <hr class="subsubsection" />
 
-<p>For our MCMC analysis, we need to set up a vector of <em>monitors</em> to record the states of our Markov chain. The monitor functions are all called <code class="highlighter-rouge">mn*</code>, where <code class="highlighter-rouge">*</code> is the wildcard representing the monitor type. First, we will initialize the model monitor using the <code class="highlighter-rouge">mnModel</code> function. This creates a new monitor variable that will output the states for all model parameters when passed into a MCMC function.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/simple_OU.log", printgen=10) )
+<p>For our MCMC analysis, we need to set up a vector of <em>monitors</em> to record the states of our Markov chain. The monitor functions are all called <code class="language-plaintext highlighter-rouge">mn*</code>, where <code class="language-plaintext highlighter-rouge">*</code> is the wildcard representing the monitor type. First, we will initialize the model monitor using the <code class="language-plaintext highlighter-rouge">mnModel</code> function. This creates a new monitor variable that will output the states for all model parameters when passed into a MCMC function.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/simple_OU.log", printgen=10) )
 </code></pre></div></div>
 <p>Additionally, create a screen monitor that will report the states of
-specified variables to the screen with <code class="highlighter-rouge">mnScreen</code>:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(printgen=1000, sigma2, alpha, theta) )
+specified variables to the screen with <code class="language-plaintext highlighter-rouge">mnScreen</code>:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(printgen=1000, sigma2, alpha, theta) )
 </code></pre></div></div>
 
 <h4 class="subsubsection" id="initializing-and-running-the-mcmc-simulation">Initializing and Running the MCMC Simulation</h4>
@@ -221,19 +221,19 @@ specified variables to the screen with <code class="highlighter-rouge">mnScreen<
 
 <p>With a fully specified model, a set of monitors, and a set of moves, we
 can now set up the MCMC algorithm that will sample parameter values in
-proportion to their posterior probability. The <code class="highlighter-rouge">mcmc()</code> function will
+proportion to their posterior probability. The <code class="language-plaintext highlighter-rouge">mcmc()</code> function will
 create our MCMC object:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
 </code></pre></div></div>
 <p>Now, run the MCMC:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=50000)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=50000)
 </code></pre></div></div>
 <p>When the analysis is complete, you will have the monitored files in your
 output directory.</p>
 
-<p>⇨ The <code class="highlighter-rouge">Rev</code> file for performing this analysis: <code class="highlighter-rouge">mcmc_OU.Rev</code></p>
+<p>⇨ The <code class="language-plaintext highlighter-rouge">Rev</code> file for performing this analysis: <code class="language-plaintext highlighter-rouge">mcmc_OU.Rev</code></p>
 
-<p>Characters evolving under the OU process will tend toward a stationary distribution, which is a normal distribution with mean $\theta$ and variance $\sigma^2 \div 2\alpha$. Therefore, if rates of evolution are high (or the branches in the tree are relatively long), it can be difficult to estimate $\sigma^2$ and $\alpha$ separately, since they both determine the long-term variance of the process. We can see whether this affects our analysis by examining the <em>joint posterior distribution</em> of the parameters in <code class="highlighter-rouge">Tracer</code>. When the parameters are positively correlated, we should hesitate to interpret their marginal distributions (<em>i.e.</em>, don’t make inferences about the rate of adaptation or the variance parameter separately).</p>
+<p>Characters evolving under the OU process will tend toward a stationary distribution, which is a normal distribution with mean $\theta$ and variance $\sigma^2 \div 2\alpha$. Therefore, if rates of evolution are high (or the branches in the tree are relatively long), it can be difficult to estimate $\sigma^2$ and $\alpha$ separately, since they both determine the long-term variance of the process. We can see whether this affects our analysis by examining the <em>joint posterior distribution</em> of the parameters in <code class="language-plaintext highlighter-rouge">Tracer</code>. When the parameters are positively correlated, we should hesitate to interpret their marginal distributions (<em>i.e.</em>, don’t make inferences about the rate of adaptation or the variance parameter separately).</p>
 
 <figure id="ou_figure"><p><img src="figures/ou_joint_posterior.png" height="50%" width="50%" /></p>
 <figcaption>Estimates of the joint posterior distribution of the rate of adaptation, $\alpha$ (x-axis), and the variance parameter, $\sigma^2$ (y-axis). Note that these parameters are positively correlated.</figcaption>
@@ -245,10 +245,10 @@ output directory.</p>
 <hr class="subsection" />
 
 <ul>
-  <li>Run an MCMC simulation to estimate the posterior distribution of the OU optimum (<code class="highlighter-rouge">theta</code>).</li>
-  <li>Load the generated output file into <code class="highlighter-rouge">Tracer</code>: What is the mean posterior estimate of <code class="highlighter-rouge">theta</code> and what is the estimated HPD?</li>
-  <li>Use <code class="highlighter-rouge">Tracer</code> to compare the joint posterior distributions of <code class="highlighter-rouge">alpha</code> and <code class="highlighter-rouge">sigma2</code>. Are these parameters correlated or uncorrelated?</li>
-  <li>Compare the prior mean with the posterior mean. (<strong>Hint:</strong> Use the optional argument <code class="highlighter-rouge">underPrior=TRUE</code> in the function <code class="highlighter-rouge">mymcmc.run()</code>) Are they different (<em>e.g.,</em> <a href="#fig_prior_posterior"></a>)? Is the posterior mean outside the prior 95% probability interval?</li>
+  <li>Run an MCMC simulation to estimate the posterior distribution of the OU optimum (<code class="language-plaintext highlighter-rouge">theta</code>).</li>
+  <li>Load the generated output file into <code class="language-plaintext highlighter-rouge">Tracer</code>: What is the mean posterior estimate of <code class="language-plaintext highlighter-rouge">theta</code> and what is the estimated HPD?</li>
+  <li>Use <code class="language-plaintext highlighter-rouge">Tracer</code> to compare the joint posterior distributions of <code class="language-plaintext highlighter-rouge">alpha</code> and <code class="language-plaintext highlighter-rouge">sigma2</code>. Are these parameters correlated or uncorrelated?</li>
+  <li>Compare the prior mean with the posterior mean. (<strong>Hint:</strong> Use the optional argument <code class="language-plaintext highlighter-rouge">underPrior=TRUE</code> in the function <code class="language-plaintext highlighter-rouge">mymcmc.run()</code>) Are they different (<em>e.g.,</em> <a href="#fig_prior_posterior"></a>)? Is the posterior mean outside the prior 95% probability interval?</li>
 </ul>
 
 <h2 class="section" id="comparing-ou-and-bm-models">Comparing OU and BM models</h2>
@@ -272,21 +272,21 @@ output directory.</p>
 <h4 class="subsubsection" id="reversible-jump-between-ou-and-bm-models">Reversible-jump between OU and BM models</h4>
 <hr class="subsubsection" />
 
-<p>To enable rjMCMC, we simply have to place a reversible-jump prior on the relevant parameter, $\alpha$. We can modify the prior on <code class="highlighter-rouge">alpha</code> so that it takes either a constant value of 0, or is drawn from a prior distribution. Finally, we specify a prior probability on the OU model of <code class="highlighter-rouge">p = 0.5</code>.</p>
+<p>To enable rjMCMC, we simply have to place a reversible-jump prior on the relevant parameter, $\alpha$. We can modify the prior on <code class="language-plaintext highlighter-rouge">alpha</code> so that it takes either a constant value of 0, or is drawn from a prior distribution. Finally, we specify a prior probability on the OU model of <code class="language-plaintext highlighter-rouge">p = 0.5</code>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha ~ dnReversibleJumpMixture(0.0, dnExponential(10), 0.5)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha ~ dnReversibleJumpMixture(0.0, dnExponential(10), 0.5)
 </code></pre></div></div>
-<p>We then provide a reversible-jump proposal on <code class="highlighter-rouge">alpha</code> that proposes changes between the two models.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvRJSwitch(alpha, weight=1.0) )
+<p>We then provide a reversible-jump proposal on <code class="language-plaintext highlighter-rouge">alpha</code> that proposes changes between the two models.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvRJSwitch(alpha, weight=1.0) )
 </code></pre></div></div>
-<p>Additionally, we provide the normal <code class="highlighter-rouge">mvScale</code> proposal for when the MCMC is visiting the OU model.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale(alpha, weight=1.0) )
+<p>Additionally, we provide the normal <code class="language-plaintext highlighter-rouge">mvScale</code> proposal for when the MCMC is visiting the OU model.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale(alpha, weight=1.0) )
 </code></pre></div></div>
-<p>We include a variable that has a value of <code class="highlighter-rouge">1</code> when the chain is visiting the OU model, and a corresponding variable that has value <code class="highlighter-rouge">1</code> when it is visiting the BM model. This will allow us to easily compute the posterior probability of the models because we simply need to compute the posterior mean value of this parameter.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>is_OU := ifelse(alpha != 0.0, 1, 0)
+<p>We include a variable that has a value of <code class="language-plaintext highlighter-rouge">1</code> when the chain is visiting the OU model, and a corresponding variable that has value <code class="language-plaintext highlighter-rouge">1</code> when it is visiting the BM model. This will allow us to easily compute the posterior probability of the models because we simply need to compute the posterior mean value of this parameter.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>is_OU := ifelse(alpha != 0.0, 1, 0)
 is_BM := ifelse(alpha == 0.0, 1, 0)
 </code></pre></div></div>
-<p>The fraction of samples for which <code class="highlighter-rouge">is_OU = 1</code> is the posterior probability of the OU model. Alternatively, the posterior mean estimate of this indicator variable corresponds to the posterior probability of the OU model. These values can be used in the Bayes Factor equation above to compute the Bayes Factor support for either model.</p>
+<p>The fraction of samples for which <code class="language-plaintext highlighter-rouge">is_OU = 1</code> is the posterior probability of the OU model. Alternatively, the posterior mean estimate of this indicator variable corresponds to the posterior probability of the OU model. These values can be used in the Bayes Factor equation above to compute the Bayes Factor support for either model.</p>
 
 <!--  -->
 
