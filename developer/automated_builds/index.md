@@ -35,3 +35,7 @@ Known issues:
  * the Mac build fails at the `Install` step with Homebrew-related errors. 
  
  **Resolution:** this is not a RevBayes issue, but an issue with the Mac virtual environment set up by Github. A list of current issues (and possible workarounds) can be found [here](https://github.com/actions/virtual-environments/issues).
+ 
+ * some tests pass on my local machine but then fail on Github Actions. The output looks identical at the start but then diverges after a number of generations.
+ 
+ **Resolution:** this is not a RevBayes issue, but comes from changes to the RNG in different Boost versions. Workarounds are to truncate the problem tests to a shorter run, or run the tests with the same Boost version as Github Actions.
