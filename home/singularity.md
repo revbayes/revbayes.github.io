@@ -25,7 +25,7 @@ If not, your HPC staff can get it from a EPEL (CentOS/RHEL) or a Debian/Ubuntu r
 
 ## How to use the RevBayes image
 
-First, download the RevBayes Singularity image. [RevBayes_Singularity_1.1.1.simg](https://github.com/revbayes/revbayes/releases/download/{{ site.version }}/RevBayes_Singularity_{{ site.version }}.simg).
+First, download the RevBayes Singularity image. [RevBayes_Singularity_{{ site.version }}.simg](https://github.com/revbayes/revbayes/releases/download/{{ site.version }}/RevBayes_Singularity_{{ site.version }}.simg).
 
 #### To get to an interative shell
 
@@ -51,9 +51,3 @@ mpirun singularity run --app rbmpi RevBayes_Singularity_{{ site.version }}.simg 
 ```
 
 If it does not work with the version of MPI you have on your cluster, you could ask your administrator to rebuild the image for the appropriate MPI version for your environment (see recipe below). [More information is available here](https://sylabs.io/guides/3.4/user-guide/mpi.html).
-
-### Recipe
-
-Here is the recipe that was used to build the 1.1.1 version of the container image.
-
-https://github.com/revbayes/revbayes/blob/singularity/projects/singularity/Singularity
