@@ -7,7 +7,7 @@ code_layout: bash
 ---
 
 <div class="row">
-<p>Current version: 1.1.1</p>
+<p>Current version: {{ site.version }}</p>
 <p>See the <a href="https://github.com/revbayes/revbayes/blob/master/NEWS.md">list of changes</a> on GitHub.</p>
 </div>
 <br><br>
