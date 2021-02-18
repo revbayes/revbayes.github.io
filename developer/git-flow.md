@@ -8,10 +8,9 @@ order: 1
 {% include overview.html %}
 {:style='width: 100%;'}
 
-## Contribution process
-{:.subsection}
+{% section Contribution process %}
 
-### Working on the RevBayes repository
+{% subsection Working on the RevBayes repository %}
 
 The main branches of the RevBayes repo exist are
 
@@ -36,26 +35,29 @@ it, and then merge the hotfix branch into `master` and `development`. Similarly 
 
 For more information, please follow this illustrated [guide](Git_flow_illustrated.pdf).
 
-#### Recommended reading
+{% subsubsection *Recommended reading* %}
 
 The RevBayes workflow is inspired by this guide: <http://nvie.com/posts/a-successful-git-branching-model/>
 
-### Forking the RevBayes repo
+{% subsection Forking the RevBayes repo %}
 
 Forking the RevBayes repository is not mandatory as long as the workflow outlined above is respected. However, occasional developers or people who are considering contributing may fork their own copy of the repository on GitHub in order to keep the total number of branches reasonable. They can then contribute their changes via pull request.
 
-## Code review process 
-{:.subsection}
+{% subsection Automated tests %}
+
+A suite of automated tests is run on all new pushes to the repository. The outcome of the tests will be notified by email to the author of the commits, and on Slack on the #github channel. More information on the tests and how to update them can be found [here](/developer/automated_builds/).
+
+{% section Code review process %}
 
 As mentioned above, all pull requests need to undergo a code review before being merged into the repository. All regular contributors to RevBayes may be asked to perform code reviews, so it is important to understand the process.
 
-### Code review assignments
+{% subsection Code review assignments %}
 
 A developer creating a pull request may decide to request reviews from one or more people. These people will appear under the `Reviewers` heading. This is only a request, and is not binding. If you do decide to review a pull request you have been requested on, please assign yourself under the `Assignees` heading. This helps both the pull request creators and the people managing the repository to easily see which pull requests are actively under review and which are still looking for reviewers.
 
 In case no reviewers were requested, or if all the requested reviewers are unable to do a review, a reviewer will be assigned from the list of available developers. If you are assigned, you will get a GitHub notification. If you are unable to review the pull request you have been assigned to, please contact the person who assigned you (whose name will appear in the notification as well as in the pull request's `Conversation` tab) so you can be replaced.
 
-### Reviewing guidelines
+{% subsubsection *Reviewing guidelines* %}
 
 Code reviews are an essential part of the current process, for two main reasons. First, the current suite of automated tests in incomplete, and may not catch all issues. Second, some issues such as missing documentation, or the introduction of a new model without an accompanying validation test, can only be caught by human eyes.
 
@@ -69,20 +71,20 @@ Some suggested checks for reviews are:
 
 Note that these are only suggestions and may not be applicable to all pull requests. Feel free to bring up any other issue you notice.
 
-#### Checking out code
+{% subsubsection *Checking out code* %}
 
 Checking out the code in a pull request can be useful to run additional tests. If the pull request was created from a branch in the RevBayes repository, this can be done very simply by checking out the corresponding branch. Any changes committed and pushed to that branch will automatically be added to the pull request.
 
 The process is more complicated if the pull request was created from a fork of the repository. In that case, you can check out the pull request by using the command `git fetch origin pull/ID/head:NAME`, where `ID` is the pull request number and `NAME` any name you like, followed by `git checkout NAME`. Note that this will only allow you to check out the code, and not to push any edits. To edit the pull request, you will need to clone the forked repository and push your edits to the branch that was linked in the pull request.
 
-### Sending your review
+{% subsection Sending your review %}
 
 Small issues (e.g. typos) can be fixed directly by the reviewer, either by editing directly the files on the GitHub website, or by following the process outlined above to check out a pull request.
 
 Any other changes should be requested using the review option `Request changes`. The requests should state clearly what the issues are and where (file or function name) they appear.
 The review option `Comment` can be used to ask questions. If there are no requests for changes or questions, select the review option `Accept`.
 
-### Follow-up
+{% subsection Follow-up %}
 
 The creator of the pull request is responsible for making the requested changes or otherwise addressing the comments. They can then re-request a review from the assigned reviewer, which will notify them to check the added changes and approve or make new comments.
 
