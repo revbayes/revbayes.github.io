@@ -1,0 +1,108 @@
+\definecolor{shc}{RGB}{238,224,229}
+\definecolor{shc2}{RGB}{182,152,195}
+\definecolor{brnt}{RGB}{221,132,13}
+\definecolor{shc3}{RGB}{192,255,204}
+\begin{tikzpicture}
+%\node (a1) at (-7.5,-7.75) {.};
+%\node (a2) at (-0.5,-9) {.};
+%\node (a3) at (-7.5,-9) {.};
+%\node[rectangle, fill=shc3,inner sep=1mm, rounded corners,  fit = (a1) (a2) (a3)] (siteplate) {};
+%\node (la) at (-0.5,0) [left]{origin time};
+%\node (ll) at (-0.5,-8.75) [left]{likelihood of morphological character data $\mathcal{M}$};
+%\node[rectangle, fill=shc3,inner sep=3mm, rounded corners,  fit = (la) (ll)] (siteplate) {};
+%%%%% Time Tree Labels %%%%
+\node[black, fill=white, draw=black, shape=rectangle, inner sep=2mm,rounded corners] (TTLabel) at (0,0.75) {Time Tree Model};
+\node (origin) at (0,0) [right]{$\psi\sim$ Uniform({\tt 37}, {\tt 55})};
+\node (la) at (-0.5,0) [left]{origin time};
+\node (lambda) at (0,-0.75) [right]{$\lambda\sim$ Exponential({\tt 10})};
+\node (lb) at (-0.5,-0.75) [left]{speciation rate};
+\node (mu) at (0,-1.5) [right]{$\mu\sim$ Exponential({\tt 10})};
+\node (lc) at (-0.5,-1.5) [left]{extinction rate};
+\node (psi) at (0,-2.25) [right]{$\psi\sim$ Exponential({\tt 10})};
+\node (ld) at (-0.5,-2.25) [left]{fossil sampling rate};
+\node (rho) at (0,-3) [right]{$\rho =$ {\tt 1}};
+\node (le) at (-0.5,-3) [left]{sampling probability};
+\node (tree) at (0,-3.75) [right]{$\mathcal{T}\sim$ FBD($\phi, \lambda, \mu, \psi, \rho)$};
+\node (lf) at (-0.5,-3.75) [left]{tree topology \& divergence times};
+%%%%% Clock Labels %%%%
+\node[black, fill=white, draw=black, shape=rectangle, inner sep=2mm,rounded corners] (ClkLab) at (0,-4.75) {Branch Rate Model};
+\node (clock) at (0,-5.5) [right]{$c \sim$ Exponential({\tt 1})};
+\node (lg) at (-0.5,-5.5) [left]{strict clock rate};
+%%%%% Site rate Labels %%%%
+\node[black, fill=white, draw=black, shape=rectangle, inner sep=2mm,rounded corners] (SrLab) at (0,-6.5) {Site Rate Model};
+\node (alph) at (0,-7.25) [right]{$\alpha \sim$ Exponential({\tt 1})};
+\node (lh) at (-0.5,-7.25) [left]{gamma shape parameter};
+\node (sr) at (0,-8) [right]{$\mathbf{R} :=$ Discretized Gamma($\alpha,\alpha, 4$)};
+\node (li) at (-0.5,-8) [left]{4 site-rate categories};
+%%%%% Subst rate Labels %%%%
+\node[black, fill=white, draw=black, shape=rectangle, inner sep=2mm,rounded corners] (QmatLab) at (0,-9) {Substitution Model};
+\node (qm) at (0,-10) [right]{$Q = \begin{bmatrix}
+  -1 & 1\\ 
+  1 & -1
+\end{bmatrix}$ 
+};
+\node (lj) at (-0.5,-10) [left]{2-state Mk rate matrix};
+%%%%% likelihoods Labels %%%%
+\node[black, fill=black!20, draw=black, shape=rectangle, inner sep=2mm,rounded corners] (likes) at (0,-11) {Data Likelihoods};
+\node (foss) at (0,-11.75) [right]{$f(\mathcal{F}\mid \mathcal{T},\phi, \lambda, \mu, \psi, \rho)$};
+\node (lk) at (-0.5,-11.75) [left]{likelihood of fossil occurrence data $\mathcal{F}$};
+\node (ddd) at (0,-12.5) [right]{$f(\mathcal{M} \mid \mathcal{T}, c, \mathbf{R}, Q)$};
+\node (ll) at (-0.5,-12.5) [left]{likelihood of morphological character data $\mathcal{M}$};
+%\node[rectangle, very thick, inner sep=3mm, draw=black!100, rounded corners, fit = (siteplate) (sr)] (boarder) {};
+\node[rectangle, very thick, inner sep=5mm, draw=black, rounded corners, fit = (ll) (sr) (TTLabel)] (mm) {};
+%%% GM %%%%
+\node[snode] (tree) at ($(lg)+(-16,0)$) {\LARGE $\mathcal{T}$};
+\node[snode] (lambda) at ($(tree)+(-3,0)$) {\LARGE $\lambda$};
+\node[snode] (mu) at ($(tree)+(-2,2)$) {\LARGE $\mu$};
+\node[snode] (psi) at ($(tree)+(0,3)$) {\LARGE $\psi$};
+\node[constnode] (nul) at ($(lambda)+(-1.5,0)$) {\Large {\tt 10}};
+\node[constnode] (num) at ($(mu)+(-1.5,1.5)$) {\Large {\tt 10}};
+\node[constnode] (nup) at ($(psi)+(0,1.5)$) {\Large {\tt 10}};
+%\node[white, fill=brnt, shape=rectangle, rounded corners] at ($(lambda)+(0,-1)$) {speciation rate};
+%\node[white, fill=brnt, shape=rectangle, rounded corners] at ($(mu)+(0.6,0)$) [right]{extinction rate};
+%\node[white, fill=brnt, shape=rectangle, rounded corners] at ($(psi)+(0,-1)$) [centered]{fossilization rate};
+%\node at ($(lambda)+(0,0.75)$) {\scriptsize exponential};
+%\node at ($(mu)+(0,0.75)$) {\scriptsize exponential};
+%\node at ($(psi)+(0,0.75)$) {\scriptsize exponential};
+\draw [taro] (lambda) -- (tree);
+\draw [taro] (mu) -- (tree);
+\draw [taro] (psi) -- (tree);
+\draw [taro] (nul) -- (lambda);
+\draw [taro] (num) -- (mu);
+\draw [taro] (nup) -- (psi);
+%\node at ($(nx)+(0,-1)$) {time tree};
+%\node at ($(nx)+(0,-1.75)$) {Node ages};
+\node[constnode] (rho) at ($(tree)+(2,2)$) {\LARGE $\rho$};
+\draw[taro] (rho) -- (tree) ;
+%\node[white, fill=brnt, shape=rectangle, rounded corners] at ($(rho)+(0,-1)$) {sampling probability};
+\node[snode] (origin) at ($(tree)+(-2.5,-2.5)$) {\large $\phi$};
+%\node at ($(origin)+(0,0.75)$) {\scriptsize uniform};
+\draw[taro] (origin) -- (tree) ;
+\node[constnode] (min) at ($(origin)+(-1.5,0.75)$) {\large {\tt 37}};
+\node[constnode] (max) at ($(origin)+(-1.5,-0.75)$) {\large {\tt 55}};
+\draw[taro] (min) -- (origin) ;
+\draw[taro] (max) -- (origin) ;
+%\node[white, fill=brnt, shape=rectangle, rounded corners] at ($(origin)+(0,-1)$) {origin time};
+\node[obnode] (ddd) at ($(tree)+(5,-4)$) {\LARGE $\mathcal{M}$};
+\draw[taro] (tree) -- (ddd) ;
+\node[obnode] (foss) at ($(tree)+(0,-4)$) {\LARGE $\mathcal{F}$};
+\draw[taro] (tree) -- (foss) ;
+\node[constnode] (qm) at ($(ddd)+(3,0)$) {\LARGE $Q$};
+\draw[taro] (qm) -- (ddd) ;
+\node[snode] (clock) at ($(ddd)+(0,3)$) {\large $c$};
+\node[constnode] (clockpar) at ($(clock)+(0,1.75)$) {\large {\tt 1}};
+\draw[taro] (clock) -- (ddd) ;
+\draw[taro] (clockpar) -- (clock) ;
+\node[detnode] (sr) at ($(ddd)+(2.5,2.5)$) {\large $\mathbf{R}$};
+\node[snode] (alph) at ($(sr)+(0,2)$) {\large $\alpha$};
+\node[constnode] (alphpar) at ($(alph)+(0,1.75)$) {\large {\tt 1}};
+%\node[rectangle,dashed, very thick, inner sep=7mm, draw=black!100, fit = (sr)] (siteplate) {};
+%\node[anchor=south east,inner sep=7pt] at (siteplate.south east) {\small $i \in 4$};
+\draw[taro] (sr) -- (ddd) ;
+\draw[taro] (alph) -- (sr) ;
+\draw[taro] (alphpar) -- (alph) ;
+%\node[rectangle, very thick, inner sep=7mm, draw=shc2, rounded corners, fit = (foss) (rho) (nul) (nup)] (ttm) {};
+%\node[anchor=north west,inner sep=7pt] at (ttm.north west) {\small Time Tree Model};
+%\node[rectangle, very thick, inner sep=7mm, draw=shc2, rounded corners, fit = (ddd) (qm) (alphpar)] (mm) {};
+%\node[anchor=north west,inner sep=7pt] at (mm.north west) {\small Morphological Data Model};
+\end{tikzpicture}

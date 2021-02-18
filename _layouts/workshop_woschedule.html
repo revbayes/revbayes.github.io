@@ -1,0 +1,102 @@
+---
+layout: default
+---
+
+<h1>{{ page.title }}</h1>
+
+<b>Location:</b> {{ page.location }} <br>
+
+<b>Dates:</b> {{ page.startdate | date: "%-m/%-d" }}, {{ page.startdate | date: "%Y" }}
+
+{% if page.enddate %}
+to {{ page.enddate | date: "%-m/%-d" }}, {{ page.enddate | date: "%Y" }}
+{% endif %}
+
+<br>
+
+<b>Instructors:</b> {{ page.instructors | join: ", " }} <br>
+
+{% if page.registration %}
+<b>Register:</b> <a href="{{ page.registration  }}">{{ page.registration  }}</a> <br>
+{% endif %}
+
+<h2>Description</h2>
+
+<p>{{ page.description | join: "</p><p>" }}</p>
+
+{% if page.venue %}
+<h2>Venue</h2> 
+{{ page.venue }} <br>
+{% endif %}
+
+{% if page.website.size > 0 %}
+<h2>Workshop Website</h2>
+
+<a href="{{ page.website }}">{{ page.website  }}</a><br>
+
+{% endif %}
+
+{% if page.software.size > 0 %}
+<h2>Software</h2>
+Before the course starts, please install the following software on your own computer:
+<div class="row">
+    <div class="col-md-9">
+        <ul>
+          {% for program in page.software %}
+            <li>{{ program }}</li>
+          {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endif %}
+
+{% if page.prerequisites.size > 0 %}
+<h2>Pre-workshop Materials</h2>
+Please review the following materials before the workshop:
+<div class="row">
+    <div class="col-md-9">
+        <ul>
+          {% for preq in page.prerequisites %}
+            <li>{{ preq }}</li>
+          {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endif %}
+
+{% if page.papers.size > 0 %}
+<h2>Papers</h2>
+We recommend some selected papers for you to read prior to the workshop. These are not required and we will explain all the content throughout the workshop. However, some prior background knowledge will help to successfully work through the material.
+<div class="row">
+    <div class="col-md-9">
+        <ul>
+          {% for paper in page.papers %}
+            <li>{{ paper }}</li>
+          {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endif %}
+
+{% if page.schedule.size > 0 %}
+<h2>Schedule</h2>
+
+<li>{{ page.schedule | join: "</li><li>" }}</li>
+
+{% endif %}
+
+{% if page.tutorials.size > 0 %}
+<h2>Tutorials</h2>
+
+<div class="row">
+    <div class="col-md-9">
+        <ul>
+          {% for tutorial in page.tutorial %}
+            <li>{% page_ref {{ tutorial }} %}</li>
+          {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endif %}
+
+{{content}}

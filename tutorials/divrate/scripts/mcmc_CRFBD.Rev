@@ -1,0 +1,83 @@
+#######################
+# Reading in the Data #
+#######################
+
+### Read in the "observed" tree
+T <- readTrees("data/crocs_T1.tre")[1]
+
+# Get some useful variables from the data. We need these later on.
+taxa <- readTaxonData("data/crocs_taxa.txt",delim=TAB)
+
+
+# Create some vector for the moves and monitors of this analysis
+moves    = VectorMoves()
+monitors = VectorMonitors()
+
+##########
+# Priors #
+##########
+
+speciation_rate ~ dnHalfCauchy(0.0,0.1)
+moves.append( mvScaleBactrian(speciation_rate,weight=7.5) )
+moves.append( mvRandomDive(speciation_rate,weight=2.5) )
+
+extinction_rate ~ dnHalfCauchy(0.0,0.1)
+moves.append( mvScaleBactrian(extinction_rate,weight=7.5) )
+moves.append( mvRandomDive(extinction_rate,weight=2.5) )
+
+fossilization_rate ~ dnHalfCauchy(0.0,0.1)
+moves.append( mvScaleBactrian(fossilization_rate,weight=7.5) )
+moves.append( mvRandomDive(fossilization_rate,weight=2.5) )
+
+joint_move = mvAVMVN(weight=10.0)
+joint_move.addVariable(speciation_rate)
+joint_move.addVariable(extinction_rate)
+joint_move.addVariable(fossilization_rate)
+moves.append( joint_move )
+
+### this is the probability of sampling extant species at the present
+### fix this to 14/23, since there are ~23 described species of extant
+### Crocodylomorphs and we have sampled 14
+sampling_at_present <- 14/23
+
+timetree ~ dnFBDP(
+                  rootAge                                          = T.rootAge(),
+                  lambda                                           = speciation_rate,
+                  mu                                               = extinction_rate,
+                  phi                                              = fossilization_rate,
+                  Phi                                              = sampling_at_present,
+                  condition                                        = "time",
+                  taxa                                             = taxa,
+                  initialTree                                      = T)
+
+
+### clamp the model with the "observed" tree
+timetree.clamp(T)
+
+#############
+# The Model #
+#############
+
+
+### workspace model wrapper ###
+mymodel = model(sampling_at_present)
+
+### set up the monitors that will output parameter values to file and screen
+monitors.append( mnModel(filename="output/crocs_CRFBD.log",printgen=10, separator = TAB) )
+monitors.append( mnScreen(printgen=1000) )
+
+
+
+################
+# The Analysis #
+################
+
+### workspace mcmc ###
+mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
+
+### run the MCMC ###
+mymcmc.run(generations=50000, tuningInterval=200)
+
+
+## quit ##
+q()

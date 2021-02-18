@@ -1,5 +1,6 @@
 ---
 layout: workshop
+type: workshop
 title: Buenos Aires 2018 RevBayes Workshop
 location: Buenos Aires, Argentina
 startdate: 2018-04-16

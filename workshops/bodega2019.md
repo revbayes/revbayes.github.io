@@ -1,5 +1,6 @@
 ---
 layout: workshop
+type: workshop
 title: Bodega Applied Phylogenetics Workshop
 location: Bodega Bay, California, USA
 startdate: 2019-05-25

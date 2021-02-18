@@ -1,5 +1,6 @@
 ---
 layout: workshop
+type: workshop
 title: Bayesian phylogenetics and macroevolution in RevBayes
 location: The Australian National University, Canberra, Australia
 startdate: 2019-03-26

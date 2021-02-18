@@ -44,22 +44,31 @@ exercises you can either use RevBayes interactively or run an entire
 script. Execute the RevBayes binary. If this program is in your path,
 then you can simply type in your Unix terminal:
 
--   '\$ rb'\
+```
+rb
+```
+{:.bash}
 
 When you execute the program, you will see a brief program information,
 including the current version number. Remember that more information can
-be obtained from [www.RevBayes.com](www.RevBayes.com). When you execute
+be obtained from [revbayes.github.io](https://revbayes.github.io/). When you execute
 the program with an additional filename,
 *e.g.,*
 
--   '\$ rb my_analysis.Rev'\
+```
+rb my_analysis.Rev
+```
+{:.bash}
 
 then RevBayes will run all commands specified in your file.
 
 You may want to run RevBayes in parallel using multiple processes.
 This can be done by starting RevBayes with
 
--   '\$ mpirun -np 4 rb-mpi'\
+```
+mpirun -np 4 rb-mpi
+```
+{:.bash}
 
 which starts 4 processes of RevBayes. You may want to change the
 number of processes depending on your available hardware.
@@ -70,9 +79,7 @@ program, you can load your data file:
 ```
 data <- readDiscreteCharacterData("data/primates_cytb.nex")
 ```
-The 'RevBayes &gt;' prompt that you see in your terminal is omitted so
-that the examples can be copied and pasted wholly. This is especially
-useful for larger command blocks, particularly loops, which will often
+Examples can be copied and pasted directly as the RevBayes "&gt;" will not be copied. This is especially useful for larger command blocks, particularly loops, which will often
 be displayed in boxes
 ```
 for( i in 1:12 ){
@@ -80,11 +87,12 @@ for( i in 1:12 ){
 }
 ```
 The various RevBayes commands and syntax within the text are specified
-using 'typewriter text'.
+using `typewriter text`.
 
-Most tutorials also includes hyperlinks: bibliographic citations are and
-link to the full citation in the references, external URLs are , and
-internal references to figures and equations are .
+Most tutorials also includes hyperlinks: bibliographic citations such as 
+{% citet Hoehna2014b %} which link to the full citation in the references, external URLs such as [lognormal
+distribution](http://en.wikipedia.org/wiki/Log-normal_distribution), and
+internal references to figures and equations such as {% ref gmnotation %}.
 
 The various exercises in this tutorial take you through the steps
 required to perform phylogenetic analyses of the example datasets. In
@@ -111,7 +119,7 @@ of symbols for depicting a [*directed acyclic
 graph*](http://en.wikipedia.org/wiki/Directed_acyclic_graph) (DAG).
 {% citet Hoehna2014b %} described the use of probabilistic graphical models for
 phylogenetics. The different nodes and components of a phylogenetic
-graphical model are shown in Figure [gmnotation] [Fig. 1 from
+graphical model are shown in {% ref gmnotation %} [Fig. 1 from
 {% citet Hoehna2014b %}].
 
 {% figure gmnotation %}
@@ -134,7 +142,7 @@ in a plate (dashed rectangle). [Partially reproduced from Fig. 1 in
 
 To represent the DAG, nodes are connected with arrows indicating
 dependency. A simple, albeit abstract, graphical model is shown in
-Figure [simpleGM]. In this model, we observe a set of states for
+{% ref simpleGM %}. In this model, we observe a set of states for
 parameter $x$. We assume that the values of $x$ are samples from a
 lognormal distribution with a location parameter (log mean) $\mu$ and a
 standard deviation $\sigma$. It is more straightforward to model our
@@ -157,7 +165,7 @@ $$\mathbb{P}(M,\sigma \mid \boldsymbol{x}, \alpha, \beta, \lambda) = \frac{\math
 
 
 {% figure simpleGM %}
-<img src="figures/simple_GM.png" width="400" />  
+<img src="figures/simple_GM.png" width="500" />  
 {% figcaption %}
 *Graphical model
 representation of a simple lognormal model. A total of $N$ observations
@@ -207,15 +215,6 @@ Specifying Models
 -----------------
 {:.subsection}
 
-
-
-  ------------ ------ ------ ------ ------ ------ ------ ------ ------ ------ ------
-  Year           1976   1977   1978   1979   1980   1981   1982   1983   1984   1985
-  Fatalities       24     25     31     31     22     21     26     20     16     22
-  ------------ ------ ------ ------ ------ ------ ------ ------ ------ ------ ------
-
-  : Airline fatalities from 1976 to 1985. Reproduced from @Gelman2003
-  [Table 2.2 on p. 69].<span data-label="tab:airlineFatalities">
   
 {% table tab_notation %}
 {% tabcaption %}
@@ -234,22 +233,22 @@ Specifying Models
 {% endtable %}
 
 The variables/parameters of a statistical model are created using
-different operators in `Rev` (Table [operatorTable]). In Figure
+different operators in `Rev` ({% ref tab_notation %}). In Figure
 [revgmexample], the `Rev` syntax for creating the model in Figure
 [simpleGM] is provided. Because `Rev` is an interpreted language, it
 is important to consider the order in which you specify your variables
 (*cf.*BUGS where the order is not important).
 Thus, typically the first variables that are instantiated are *constant
 variables*. Constant variables require you to assign a fixed value using
-the `<-` operator. Stochastic variables are initialized using the ''
+the `<-` operator. Stochastic variables are initialized using the `~`
 operator followed by the constructor function for a distribution. In
-`Rev`, the naming convention for distributions is 'dn\*', where '\*' is
+`Rev`, the naming convention for distributions is `dn*`, where `*` is
 a wildcard representing the name of the distribution. Each distribution
 function requires hyperparameters passed in as arguments. This is
 effectively linking nodes using arrows in the graphical model. The
-following code snippet creates a stochastic variable called 'M' which is
-assigned a gamma-distributed hyperprior, with shape 'alpha' and rate
-'beta':
+following code snippet creates a stochastic variable called `M` which is
+assigned a gamma-distributed hyperprior, with shape `alpha` and rate
+`beta`:
 ```
 alpha <- 2.0
 beta <- 4.0
@@ -258,8 +257,8 @@ M ~ dnGamma(alpha, beta)
 The flexibility gained from the graphical model framework and the
 interpreted language allows you to easily change a model by swapping
 components. For example, if you decide that a bimodal lognormal
-distribution is a better representation of your uncertainty in 'M', then
-you can simply change the distribution associated with 'M' (after
+distribution is a better representation of your uncertainty in `M`, then
+you can simply change the distribution associated with `M` (after
 initializing the bimodal lognormal hyperparameters):
 ```
 mean_1 <- 0.5
@@ -278,7 +277,7 @@ Both ways to specify priors are equivalent. The only difference is that
 one code may be more readable than the other.
 
 {% figure simpleGM %}
-<img src="figures/simple_GM_rev.png" width="400" />  
+<img src="figures/simple_GM_rev.png" width="600" />  
 {% figcaption %}
 Specifying a model with
 `Rev`. The graphical model of the observed parameter $x$ is shown on the
@@ -294,9 +293,9 @@ lognormal distribution is assigned an exponential hyperprior with rate
 $\lambda$: $\sigma \sim \mbox{Exponential}(\lambda)$. Since we are
 conditioning our model on the *expectation*, we must compute the
 location parameter ($\mu$) to calculate the probability of our model.
-Thus, $\mu$ is a deterministic node that is the result of the
-function$^*$ executed on $M$ and $\sigma$:
-$\mu = \ln(M) - \frac{\sigma^2}{2}$. Since we observe values of $x$, we
+Thus, $\mu$ is a deterministic node that is the result of a
+function executed on $M$ and $\sigma$:
+$$\mu = \ln(M) - \frac{\sigma^2}{2}$$. Since we observe values of $x$, we
 *clamp* this node. {% endfigcaption %}
 {% endfigure %}
 
@@ -321,15 +320,14 @@ for( i in 1:7 ) {
    x[i] ~ dnLognormal(mu, sigma)
 }
 ```
-The `for` loop executes the statement 'x[i] $\sim$ dnLognormal(mu,
-sigma)' for different values of $i$ repeatedly, where $i$ takes the
+The `for` loop executes the statement `x[i] ~ dnLognormal(mu, sigma)` for different values of $i$ repeatedly, where $i$ takes the
 values 1 to 7. Thus, we created a vector $x$ of seven variables, each
 being independent and identically distributed (i.i.d.).
 
 A clamped node/variable has observed data attached to it. Thus, you must
 first read in or input the data, then clamp it to a stochastic variable.
-In Figure [revgmexample] the observations are assigned and clamped to
-the stochastic variables. If we observed 7 values for 'x' we would
+In {% ref revgmexample %} the observations are assigned and clamped to
+the stochastic variables. If we observed 7 values for $x$ we would
 create 7 clamped variables:
 ```
 observations <- [0.20, 0.21, 0.03, 0.40, 0.65, 0.87, 0.22]
@@ -347,8 +345,7 @@ Getting help in RevBayes
 {:.section}
 
 RevBayes provides an elaborate help system. Most of the help is found
-online on our website\
-http://www.RevBayes.com. Within RevBayes you can display the help for
+online on our [website](https://revbayes.github.io/). Within RevBayes you can display the help for
 a function, distribution or any other type using the `?` symbol followed
 by the command you want help for:
 ```
@@ -375,7 +372,5 @@ RevBayes Users' Forum
 An email list has been created for users of RevBayes to discuss
 RevBayes-related topics, including: RevBayes installation and use,
 scripting and programming, phylogenetics, population genetics, models of
-evolution, graphical models, etc. The forum is hosted by Google Groups:
-
--   [revbayes-users](http://bit.ly/107aW2R)\
+evolution, graphical models, etc. The forum is hosted by Google Groups: [revbayes-users](http://bit.ly/107aW2R)
 

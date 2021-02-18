@@ -27,10 +27,24 @@ then
 
     git pull origin source
 
-    # build the site
+    # fetch master
     cd _site
     git fetch --quiet origin
     git reset --quiet --hard origin/master
+
+    # update the documentation?
+    if [ "$1" = "help" ]
+    then
+    git update-index --no-assume-unchanged documentation/index.html
+    git ls-files --deleted -z documentation | git update-index --no-assume-unchanged -z --stdin
+    git ls-files -z documentation | git update-index --no-assume-unchanged -z --stdin
+    else
+    git update-index --assume-unchanged documentation/index.html
+    git ls-files -z documentation | git update-index --assume-unchanged -z --stdin
+    git ls-files --deleted -z documentation | git update-index --assume-unchanged -z --stdin
+    fi
+
+    # build the site
     cd ..
     if ! bundle exec jekyll build; then
         echo "Jekyll build failed. Master not updated."
@@ -38,9 +52,9 @@ then
     fi
     cd _site
 
+    # check if there are any changes on master
     untracked=`git ls-files --other --exclude-standard --directory`
 
-    # check if there are any changes on master
     if git diff --exit-code > /dev/null && [ "$untracked" = "" ]
     then
         echo "Nothing to update on master."

@@ -1,0 +1,271 @@
+################################################################################
+# Files.
+
+time_tree_file="data/time.tree"
+constraints_file="data/constraints.txt"
+mean_tree_file="output/alignment.fasta.trees_meanBL.nex"
+var_tree_file="output/alignment.fasta.trees_varBL.nex"
+out_bn="alignment.fasta.approx.dating"
+
+################################################################################
+# Options.
+
+# Show debug output?
+debug = true
+# Use relative constraints?
+constrain = false
+# Length of Markov chain.
+mcmc_length = 50000
+mcmc_burnin = 100
+# The posterior branch length distribution of some branches of the first run has
+# zero variance. In this case, set the variance to the following value.
+var_min = 1e-6
+
+################################################################################
+# Variables.
+
+moves = VectorMoves()
+monitors = VectorMonitors()
+
+tree <- readTrees(time_tree_file)[1]
+if (debug == true) print ("Root age of the original time tree: " + tree.rootAge())
+
+n_species <- tree.ntips()
+n_branches <- 2*n_species - 2
+
+taxa <- tree.taxa()
+
+################################################################################
+# Prior on root age. Similar to a calibration, but always needed.
+
+root_age <- tree.rootAge()
+root_age_delta <- root_age / 5
+root_age_min <- root_age - root_age_delta
+root_age_max <- root_age + root_age_delta
+root_time_real ~ dnUniform(root_age_min, root_age_max)
+root_time_real.setValue(tree.rootAge())
+root_time := abs( root_time_real )
+
+################################################################################
+# Constraints.
+
+if (constrain) {
+  out_bn = out_bn + "_cons"
+  constraints <- readRelativeNodeAgeConstraints(file=constraints_file)
+}
+
+################################################################################
+# Tree model.
+
+birth_rate ~ dnExp(1)
+moves.append(mvScale(birth_rate, lambda=1.0, tune=true, weight=3.0))
+
+if (!constrain) psi ~ dnBDP(lambda=birth_rate, mu=0.0, rho=1.0, rootAge=root_time, samplingStrategy="uniform", condition="survival", taxa=taxa)
+if (constrain) psi ~  dnConstrainedNodeOrder(dnBDP(lambda=birth_rate, mu=0.0, rho=1.0, rootAge=root_time, samplingStrategy="uniform", condition="survival", taxa=taxa), constraints)
+
+psi.setValue(tree)
+if (debug == true) {
+  print("The original time tree:")
+  print(tree)
+  print("The tree used in the Markov chain:")
+  print(psi)
+}
+
+moves.append(mvScale(root_time_real, weight=1.0, lambda=0.1))
+moves.append(mvSubtreeScale(psi, weight=1.0*n_branches))
+moves.append(mvNodeTimeSlideUniform(psi, weight=1.0*n_branches))
+moves.append(mvLayeredScaleProposal(tree=psi, lambda=0.1, tune=true, weight=1.0*n_branches))
+
+################################################################################
+# Node calibrations provide information about the ages of the MRCA.
+
+# The MRCAs of the following clades are calibrated.
+clade_0 = clade("T1","T2")
+clade_1 = clade("T14","T15")
+
+# Clade 0.
+tmrca_clade_0 := tmrca(psi, clade_0)
+age_clade_0_mean <- tmrca(psi, clade_0)
+age_clade_0_delta <- age_clade_0_mean / 5
+age_clade_0_prior ~ dnSoftBoundUniformNormal(min=age_clade_0_mean-age_clade_0_delta, max=age_clade_0_mean+age_clade_0_delta, sd=2.5, p=0.95)
+age_clade_0_prior.clamp(age_clade_0_mean)
+
+# Clade 1.
+tmrca_clade_1 := tmrca(psi, clade_1)
+age_clade_1_mean <- tmrca(psi, clade_1)
+age_clade_1_delta <- age_clade_1_mean / 5
+age_clade_1_prior ~ dnSoftBoundUniformNormal(min=age_clade_1_mean-age_clade_1_delta, max=age_clade_1_mean+age_clade_1_delta, sd=2.5, p=0.95)
+age_clade_1_prior.clamp(age_clade_1_mean)
+
+################################################################################
+# Obtain posterior means and variances of branch lengths from first step.
+
+# This step harbors a complication. During the first step, a reversible
+# substitution model was used to estimate the posterior means and variances of
+# the branch lengths of an unrooted tree. Now, we estimate a rooted time tree.
+# Hence, the two branches leading to the root of the time tree correspond to a
+# single branch of the unrooted tree from the first step. We have to take this
+# into account when approximating the phylogenetic likelihood.
+
+mean_tree <- readTrees(mean_tree_file)[1]
+var_tree <- readTrees(var_tree_file)[1]
+
+# Reroot and make bifurcating.
+rootId <- tree.getRootIndex()
+outgroup <- tree.getDescendantTaxa(rootId)
+mean_tree.reroot(clade=clade(outgroup), make_bifurcating=TRUE)
+var_tree.reroot(clade=clade(outgroup), make_bifurcating=TRUE)
+
+# Renumber nodes.
+mean_tree.renumberNodes(tree)
+var_tree.renumberNodes(tree)
+
+if (debug == true) {
+  print("The tree with posterior means as branch lengths:")
+  print(mean_tree)
+  print("The tree with posterior variances as branch lengths:")
+  print(var_tree)
+}
+
+# Get indices of left child and right child of root.
+i_left <- tree.child(tree.nnodes(),1)
+i_right <- tree.child(tree.nnodes(),2)
+if (debug == true) {
+  print("")
+  print("Index of left daughter branch of root: " + i_left)
+  print("Index of right daughter branch of root: " + i_right)
+}
+
+# Get posterior means and variances of all branches except the branches leading
+# to the root.
+for(i in 1:n_branches) {
+  if(i != i_left && i != i_right) {
+    posterior_mean_bl[i] <- mean_tree.branchLength(i)
+    posterior_var_bl[i] := var_tree.branchLength(i)
+    if (posterior_var_bl[i]<var_min) posterior_var_bl[i]:=var_min
+  }
+}
+
+# Get the index of the root in the time tree.
+if (i_left<i_right)  i_root <- i_left
+if (i_left>=i_right) i_root <- i_right
+
+# Get the mean and variance of the branch containing the root.
+posterior_mean_bl_root <- mean_tree.branchLength(i_root)
+posterior_var_bl_root <- var_tree.branchLength(i_root)
+if (posterior_var_bl_root<var_min) posterior_var_bl_root:=var_min
+
+# Avoid RevBayes error; we need to set all array values, even if they are not used.
+posterior_mean_bl[i_root] := -1.0
+posterior_var_bl[i_root] := -1.0
+
+if (debug == true) {
+  print("")
+  print("Index, mean and variance of the branches of the unrooted tree obtained from step one.")
+  print("The branch containing the root of the time tree is excluded.")
+  for (i in 1:n_branches) {
+    if(i != i_left && i != i_right) print(i, posterior_mean_bl[i], posterior_var_bl[i])
+  }
+  print("")
+  print("Index, mean and variance of the branch containing the root of the time tree.")
+  print(i_root, posterior_mean_bl_root, posterior_var_bl_root)
+}
+
+################################################################################
+# Molecular clock UGAM model.
+
+mean_tree_root_age := mean_tree.rootAge()
+global_rate_mean ~ dnExp(1)
+global_rate_mean.setValue(mean_tree_root_age/tree.rootAge());
+if (debug == true) {
+  print("")
+  print("Mean of global rate of molecular clock: " + global_rate_mean)
+}
+sigma ~ dnExp(10.0)
+
+first_gamma_param := 1/sigma
+second_gamma_param := 1/sigma
+
+moves.append(mvScaleBactrian(global_rate_mean, lambda=0.5, weight=10.0))
+moves.append(mvScaleBactrian(sigma, lambda=0.5, weight=10.0))
+
+# Use a Gamma distribution on rates.
+for (i in n_branches:1) {
+  times[i]=psi.branchLength(i)
+  rel_branch_rates[i] ~ dnGamma(first_gamma_param, second_gamma_param)
+  # Exclude the branches leading to the root (see above).
+  if(i != i_left && i != i_right) {
+    rel_branch_rates[i].setValue(posterior_mean_bl[i]/times[i]/global_rate_mean)
+  } else {
+    # And set them to half of the branch length in the unrooted tree.
+    rel_branch_rates[i].setValue(posterior_mean_bl_root/2/times[i]/global_rate_mean)
+  }
+  moves.append(mvScale(rel_branch_rates[i], lambda=0.5, weight=1.0,tune=true))
+}
+
+for (i in n_branches:1) {
+  branch_rates[i] := global_rate_mean * rel_branch_rates[i]
+}
+
+################################################################################
+# Approximate phylogenetic likelihood.
+
+times[i_left] := psi.branchLength(i_left)
+times[i_right] := psi.branchLength(i_right)
+
+# Avoid RevBayes error; we need to set all array values, even if they are not used.
+mean_bl[i_root] := -1.0
+
+for(i in 1:n_branches) {
+  if(i != i_left && i != i_right) {
+    times[i] := psi.branchLength(i)
+    mean_bl[i] := times[i]*branch_rates[i]
+    bls[i] ~ dnNormal(mean_bl[i] ,sqrt(posterior_var_bl[i]))
+    bls[i].clamp(posterior_mean_bl[i])
+  }
+}
+
+# See above.
+mean_bl_root := times[i_left]*branch_rates[i_left] + times[i_right]*branch_rates[i_right]
+bls[i_root] ~ dnNormal(mean_bl_root, sqrt(posterior_var_bl_root))
+bls[i_root].clamp(posterior_mean_bl_root)
+
+################################################################################
+# Monitors.
+
+for(i in 1:n_branches)
+{
+  ages_psi[i] := psi.nodeAge(i)
+  ages_true[i] := tree.nodeAge(i)
+}
+if (debug == true) {
+  print("True node ages:")
+  print(ages_true)
+  print("Node ages of state of Markov chain:")
+  print(ages_psi)
+}
+
+trees_base_name = "output/" + out_bn
+trees_file_name = trees_base_name + ".trees"
+monitors.append(mnModel(filename="output/"+out_bn+".log",printgen=10, separator = TAB))
+monitors.append(mnStochasticVariable(filename="output/"+out_bn+"_Stoch.log",printgen=10))
+monitors.append(mnExtNewick(filename=trees_file_name, isNodeParameter=FALSE, printgen=10, separator = TAB, tree=psi, branch_rates))
+
+# Add some random age monitors.
+monitors.append(mnScreen(printgen=100, root_time, ages_psi[20], ages_psi[25], ages_psi[27]))
+
+################################################################################
+# MC3 Model.
+
+# mymodel = model(branch_rates)
+mymodel = model(bls)
+mymcmc = mcmcmc(mymodel, monitors, moves, nruns=1, nchains=4, tuneHeat=TRUE)
+mymcmc.burnin(generations=mcmc_burnin,tuningInterval=mcmc_burnin/10)
+mymcmc.operatorSummary()
+mymcmc.run(generations=mcmc_length)
+mymcmc.operatorSummary()
+
+# Get maximum posterior tree (MAP).
+tt = readTreeTrace(trees_file_name, burnin=mcmc_burnin)
+mapTree(tt, trees_base_name+".tree")
+q()

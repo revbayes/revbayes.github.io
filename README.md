@@ -15,7 +15,7 @@ First, you should clone the `source` branch
 After first cloning this repository, you will be on the `source` branch. Then, you should clone the `master` branch into the `_site` directory.
 
 	cd revbayes.github.io
-    git clone -b master https://github.com/revbayes/revbayes.github.io _site
+    git clone -b master git@github.com:revbayes/revbayes.github.io.git _site
 
 In order to build the site you will need `jekyll`, see instructions below to install.
 
@@ -40,9 +40,17 @@ in your home folder using:
 
     export GEM_HOME=~/.gem
     gem install jekyll bundler
-    
+
+
 NOTE: You may get errors here that you need to update ruby to install these
 gems. 
+
+If you are having trouble on MacOS with system ruby being out of date, you can install ruby via homebrew with `brew install ruby`. Then you need to add the homebrew version of ruby to your path by adding:
+
+    export PATH="/usr/local/Cellar/ruby/2.7.1_2/bin/:$PATH"
+
+to your `.bash_profile` file. Then restart your terminal or `source .bash_profile`.
+
 
 Next, move into the `revbayes.github.io` repo directory, and install required gems via:
 

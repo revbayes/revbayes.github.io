@@ -1,7 +1,7 @@
 ---
 title: Episodic Diversification Rate Estimation
 subtitle: Estimating Rate-Variation Through Time in Diversification Rates
-authors:  Sebastian Höhna
+authors:  Sebastian Höhna and Andrew Magee
 level: 5
 order: 2
 prerequisites:

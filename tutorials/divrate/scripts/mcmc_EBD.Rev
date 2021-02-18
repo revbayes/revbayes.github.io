@@ -24,6 +24,7 @@ moves    = VectorMoves()
 monitors = VectorMonitors()
 
 NUM_INTERVALS = 10
+NUM_BREAKS := NUM_INTERVALS - 1
 
 
 
@@ -31,58 +32,52 @@ NUM_INTERVALS = 10
 # Create the rates #
 ####################
 
-SD = abs(0.587405 / NUM_INTERVALS)
+# prior and hyperprior for overall amount of rate variation
+speciation_global_scale_hyperprior <- 0.044
+extinction_global_scale_hyperprior <- 0.044
 
+speciation_global_scale ~ dnHalfCauchy(0,1)
+extinction_global_scale ~ dnHalfCauchy(0,1)
 
-# first we create the standard deviation of the rates between intervals
-speciation_sd ~ dnExponential( 1.0 / SD)
-extinction_sd ~ dnExponential( 1.0 / SD)
-
-moves.append( mvScale(speciation_sd,weight=5.0) )
-moves.append( mvScale(extinction_sd,weight=5.0) )
 
 # create a random variable at the present time
-log_speciation[1] ~ dnUniform(-10.0,10.0)
-log_speciation[1].setValue(0.0)
-log_extinction[1] ~ dnUniform(-10.0,10.0)
-log_extinction[1].setValue(-1.0)
+log_speciation_at_present ~ dnUniform(-10.0,10.0)
+log_speciation_at_present.setValue(0.0)
+log_extinction_at_present ~ dnUniform(-10.0,10.0)
+log_extinction_at_present.setValue(-1.0)
 
+moves.append( mvSlideBactrian(log_speciation_at_present,weight=5))
+moves.append( mvSlideBactrian(log_extinction_at_present,weight=5))
 
-# apply moves on the rates
-moves.append( mvSlide(log_speciation[1], weight=2) )
-moves.append( mvSlide(log_extinction[1], weight=2) )
+for (i in 1:NUM_BREAKS) {
+  sigma_speciation[i] ~ dnHalfCauchy(0,1)
+  sigma_extinction[i] ~ dnHalfCauchy(0,1)
 
+  # Make sure values initialize to something reasonable
+  sigma_speciation[i].setValue(runif(1,0.005,0.1)[1])
+  sigma_extinction[i].setValue(runif(1,0.005,0.1)[1])
 
-speciation[1] := exp( log_speciation[1] )
-extinction[1] := exp( log_extinction[1] )
-
-
-for (i in 1:NUM_INTERVALS) {
-    index = i+1
-
-    # specify normal priors (= Brownian motion) on the log of the rates
-    log_speciation[index] ~ dnNormal( mean=log_speciation[i], sd=speciation_sd )
-    log_extinction[index] ~ dnNormal( mean=log_extinction[i], sd=extinction_sd )
-
-    # apply moves on the rates
-    moves.append( mvSlide(log_speciation[index], weight=2) )
-    moves.append( mvSlide(log_extinction[index], weight=2) )
-
-    # transform the log-rate into actual rates
-    speciation[index] := exp( log_speciation[index] )
-    extinction[index] := exp( log_extinction[index] )
-
+  # non-centralized parameterization of horseshoe
+  delta_log_speciation[i] ~ dnNormal( mean=0, sd=sigma_speciation[i]*speciation_global_scale*speciation_global_scale_hyperprior )
+  delta_log_extinction[i] ~ dnNormal( mean=0, sd=sigma_extinction[i]*extinction_global_scale*extinction_global_scale_hyperprior )
 }
 
-moves.append( mvVectorSlide(log_speciation, weight=10) )
-moves.append( mvVectorSlide(log_extinction, weight=10) )
+# Assemble first-order differences and speciation_rate at present into the random field
+speciation := fnassembleContinuousMRF(log_speciation_at_present,delta_log_speciation,initialValueIsLogScale=TRUE,order=1)
+extinction := fnassembleContinuousMRF(log_extinction_at_present,delta_log_extinction,initialValueIsLogScale=TRUE,order=1)
 
-# if we are estimating the sd of the prior too, then we should change it during our shrink-expand moves
-moves.append( mvShrinkExpand( log_speciation, sd=speciation_sd, weight=10 ) )
-moves.append( mvShrinkExpand( log_extinction, sd=extinction_sd, weight=10 ) )
+# Move all field parameters in one go
+moves.append( mvEllipticalSliceSamplingSimple(delta_log_speciation,weight=5,tune=FALSE) )
+moves.append( mvEllipticalSliceSamplingSimple(delta_log_extinction,weight=5,tune=FALSE) )
 
+# Move all field hyperparameters in one go
+moves.append( mvHSRFHyperpriorsGibbs(speciation_global_scale, sigma_speciation , delta_log_speciation , speciation_global_scale_hyperprior, propGlobalOnly=0.75, weight=10) )
+moves.append( mvHSRFHyperpriorsGibbs(extinction_global_scale, sigma_extinction , delta_log_extinction , extinction_global_scale_hyperprior, propGlobalOnly=0.75, weight=10) )
 
-interval_times <- T.rootAge() * (1:NUM_INTERVALS) / NUM_INTERVALS
+# Swap moves to exchange adjacent delta,sigma pairs
+moves.append( mvHSRFIntervalSwap(delta_log_speciation ,sigma_speciation ,weight=5) )
+moves.append( mvHSRFIntervalSwap(delta_log_extinction ,sigma_extinction ,weight=5) )
+interval_times <- abs(T.rootAge() * seq(1, NUM_BREAKS, 1)/NUM_INTERVALS)
 
 
 ### rho is the probability of sampling species at the present
@@ -111,7 +106,7 @@ monitors.append( mnFile(filename="output/primates_EBD_speciation_rates.log",prin
 monitors.append( mnFile(filename="output/primates_EBD_speciation_times.log",printgen=10, separator = TAB, interval_times) )
 monitors.append( mnFile(filename="output/primates_EBD_extinction_rates.log",printgen=10, separator = TAB, extinction) )
 monitors.append( mnFile(filename="output/primates_EBD_extinction_times.log",printgen=10, separator = TAB, interval_times) )
-monitors.append( mnScreen(printgen=1000, extinction_sd, speciation_sd) )
+monitors.append( mnScreen(printgen=1000, extinction_global_scale, speciation_global_scale) )
 
 
 
@@ -124,7 +119,6 @@ mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
 
 ### run the MCMC ###
 mymcmc.run(generations=50000, tuningInterval=200)
-
 
 
 ## quit ##
