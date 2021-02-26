@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Automated building and testing in RevBayes</h1>
 	
 	<h4 class="authors"></h4>
-  <h5>Last modified on February  9, 2021</h5>
+  <h5>Last modified on February 18, 2021</h5>
 </div>
 
 <h2 class="section" id="automated-builds">Automated builds</h2>
@@ -63,7 +63,7 @@
 
 <p>A series of automated builds and tests is run every time code is pushed to the repository in any branch through Github Actions. The status of current workflows can be checked on the repository <a href="https://github.com/revbayes/revbayes/actions">page</a>, and a notification is sent to Slack (channel #github) once the full workflow is complete.</p>
 
-<p>The Github Actions workflow is configured in the <code class="language-plaintext highlighter-rouge">.github/workflows/build.yml</code> file. Linux and Mac builds use the CMake build configured in <code class="language-plaintext highlighter-rouge">projects/cmake/build.sh</code>, while the Windows build uses the Meson build.</p>
+<p>The Github Actions workflow is configured in the <code class="language-plaintext highlighter-rouge">.github/workflows/build.yml</code> file. Linux and Mac builds use the CMake build configured in <code class="language-plaintext highlighter-rouge">projects/cmake/build.sh</code>, while the Windows build uses the Meson build in <code class="language-plaintext highlighter-rouge">projects/meson/</code>.</p>
 
 <p>The automated workflow runs the following tests:</p>
 
@@ -78,6 +78,8 @@
     <p>Likelihood calculations checks using <a href="https://gitlab.com/testiphy/testiphy">testiphy</a>.</p>
   </li>
 </ul>
+
+<p>The tests are stored in a separate <a href="https://github.com/revbayes/tests">repository</a>. Instructions on how to update this repository can be found in the <a href="https://github.com/revbayes/tests/blob/master/README.md">README</a>.</p>
 
 <h2 class="section" id="troubleshooting">Troubleshooting</h2>
 <hr class="section" />

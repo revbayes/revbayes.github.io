@@ -55,10 +55,23 @@
 	<h1 class="maintitle">RevBayes Git Workflow</h1>
 	
 	<h4 class="authors"></h4>
-  <h5>Last modified on March 11, 2020</h5>
+  <h5>Last modified on February 18, 2021</h5>
 </div>
 
-<h2 class="subsection" id="branch-organization">Branch organization</h2>
+
+<div class="sidebar no-print" style="width: 100%;">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+</blockquote>
+
+</div>
+
+<h2 class="section" id="contribution-process">Contribution process</h2>
+<hr class="section" />
+
+<h3 class="subsection" id="working-on-the-revbayes-repository">Working on the RevBayes repository</h3>
+<hr class="subsection" />
 
 <p>The main branches of the RevBayes repo exist are</p>
 
@@ -85,13 +98,73 @@ it, and then merge the hotfix branch into <code class="language-plaintext highli
 
 <p>For more information, please follow this illustrated <a href="Git_flow_illustrated.pdf">guide</a>.</p>
 
-<h2 id="recommended-reading">Recommended reading</h2>
+<h4 class="subsubsection" id="recommended-reading"><em>Recommended reading</em></h4>
+<hr class="subsubsection" />
 
-<p><a href="http://nvie.com/posts/a-successful-git-branching-model/">http://nvie.com/posts/a-successful-git-branching-model/</a></p>
+<p>The RevBayes workflow is inspired by this guide: <a href="http://nvie.com/posts/a-successful-git-branching-model/">http://nvie.com/posts/a-successful-git-branching-model/</a></p>
 
-<h2 class="subsection" id="forking-the-revbayes-repo">Forking the RevBayes repo</h2>
+<h3 class="subsection" id="forking-the-revbayes-repo">Forking the RevBayes repo</h3>
+<hr class="subsection" />
 
 <p>Forking the RevBayes repository is not mandatory as long as the workflow outlined above is respected. However, occasional developers or people who are considering contributing may fork their own copy of the repository on GitHub in order to keep the total number of branches reasonable. They can then contribute their changes via pull request.</p>
+
+<h3 class="subsection" id="automated-tests">Automated tests</h3>
+<hr class="subsection" />
+
+<p>A suite of automated tests is run on all new pushes to the repository. The outcome of the tests will be notified by email to the author of the commits, and on Slack on the #github channel. More information on the tests and how to update them can be found <a href="/developer/automated_builds/">here</a>.</p>
+
+<h2 class="section" id="code-review-process">Code review process</h2>
+<hr class="section" />
+
+<p>As mentioned above, all pull requests need to undergo a code review before being merged into the repository. All regular contributors to RevBayes may be asked to perform code reviews, so it is important to understand the process.</p>
+
+<h3 class="subsection" id="code-review-assignments">Code review assignments</h3>
+<hr class="subsection" />
+
+<p>A developer creating a pull request may decide to request reviews from one or more people. These people will appear under the <code class="language-plaintext highlighter-rouge">Reviewers</code> heading. This is only a request, and is not binding. If you do decide to review a pull request you have been requested on, please assign yourself under the <code class="language-plaintext highlighter-rouge">Assignees</code> heading. This helps both the pull request creators and the people managing the repository to easily see which pull requests are actively under review and which are still looking for reviewers.</p>
+
+<p>In case no reviewers were requested, or if all the requested reviewers are unable to do a review, a reviewer will be assigned from the list of available developers. If you are assigned, you will get a GitHub notification. If you are unable to review the pull request you have been assigned to, please contact the person who assigned you (whose name will appear in the notification as well as in the pull request’s <code class="language-plaintext highlighter-rouge">Conversation</code> tab) so you can be replaced.</p>
+
+<h4 class="subsubsection" id="reviewing-guidelines"><em>Reviewing guidelines</em></h4>
+<hr class="subsubsection" />
+
+<p>Code reviews are an essential part of the current process, for two main reasons. First, the current suite of automated tests in incomplete, and may not catch all issues. Second, some issues such as missing documentation, or the introduction of a new model without an accompanying validation test, can only be caught by human eyes.</p>
+
+<p>Some suggested checks for reviews are:</p>
+
+<ul>
+  <li>check that there is documentation and that it follows the RevBayes <a href="best_practices#doxygen_guidelines">guidelines</a></li>
+  <li>if existing functions have been changed or extended, check that the documentation, the help files and/or the RevBayes website (if applicable) have also been updated</li>
+  <li>check that the added code is readable: proper indentation, good names for functions and variables (no <code class="language-plaintext highlighter-rouge">bbb</code> or <code class="language-plaintext highlighter-rouge">thing</code> or <code class="language-plaintext highlighter-rouge">DoStuff</code>)</li>
+  <li>if a new model or probability distribution is introduced, check that corresponding validation  and integration tests have also been added</li>
+  <li>check that added code or functionality does not duplicate existing parts of RevBayes</li>
+</ul>
+
+<p>Note that these are only suggestions and may not be applicable to all pull requests. Feel free to bring up any other issue you notice.</p>
+
+<h4 class="subsubsection" id="checking-out-code"><em>Checking out code</em></h4>
+<hr class="subsubsection" />
+
+<p>Checking out the code in a pull request can be useful to run additional tests. If the pull request was created from a branch in the RevBayes repository, this can be done very simply by checking out the corresponding branch. Any changes committed and pushed to that branch will automatically be added to the pull request.</p>
+
+<p>The process is more complicated if the pull request was created from a fork of the repository. In that case, you can check out the pull request by using the command <code class="language-plaintext highlighter-rouge">git fetch origin pull/ID/head:NAME</code>, where <code class="language-plaintext highlighter-rouge">ID</code> is the pull request number and <code class="language-plaintext highlighter-rouge">NAME</code> any name you like, followed by <code class="language-plaintext highlighter-rouge">git checkout NAME</code>. Note that this will only allow you to check out the code, and not to push any edits. To edit the pull request, you will need to clone the forked repository and push your edits to the branch that was linked in the pull request.</p>
+
+<h3 class="subsection" id="sending-your-review">Sending your review</h3>
+<hr class="subsection" />
+
+<p>Small issues (e.g. typos) can be fixed directly by the reviewer, either by editing directly the files on the GitHub website, or by following the process outlined above to check out a pull request.</p>
+
+<p>Any other changes should be requested using the review option <code class="language-plaintext highlighter-rouge">Request changes</code>. The requests should state clearly what the issues are and where (file or function name) they appear.
+The review option <code class="language-plaintext highlighter-rouge">Comment</code> can be used to ask questions. If there are no requests for changes or questions, select the review option <code class="language-plaintext highlighter-rouge">Accept</code>.</p>
+
+<h3 class="subsection" id="follow-up">Follow-up</h3>
+<hr class="subsection" />
+
+<p>The creator of the pull request is responsible for making the requested changes or otherwise addressing the comments. They can then re-request a review from the assigned reviewer, which will notify them to check the added changes and approve or make new comments.</p>
+
+<p>Once the pull request is approved (directly or after changes) and the automated tests pass, the pull request can be merged into the repository. If some time has passed since the original request, it may be necessary to update the branch first (<code class="language-plaintext highlighter-rouge">Update branch</code> button). Updating and merging can be done by any developer.</p>
+
+<p>Once the pull request has been merged, the branch it was created from should be deleted by its creator, unless they intend to keep working on that branch.</p>
 
 <ol class="bibliography"></ol>
 
