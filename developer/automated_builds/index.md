@@ -8,7 +8,7 @@ category: Developer
 
 A series of automated builds and tests is run every time code is pushed to the repository in any branch through Github Actions. The status of current workflows can be checked on the repository [page](https://github.com/revbayes/revbayes/actions), and a notification is sent to Slack (channel #github) once the full workflow is complete.
 
-The Github Actions workflow is configured in the `.github/workflows/build.yml` file. Linux and Mac builds use the CMake build configured in `projects/cmake/build.sh`, while the Windows build uses the Meson build.
+The Github Actions workflow is configured in the `.github/workflows/build.yml` file. Linux and Mac builds use the CMake build configured in `projects/cmake/build.sh`, while the Windows build uses the Meson build in `projects/meson/`.
 
 The automated workflow runs the following tests:
 
@@ -17,6 +17,8 @@ The automated workflow runs the following tests:
  * Integration tests (in the `tests/` submodule). To learn more about integration tests or add one, see [this page](/developer/tests/). 
  
  * Likelihood calculations checks using [testiphy](https://gitlab.com/testiphy/testiphy).
+ 
+The tests are stored in a separate [repository](https://github.com/revbayes/tests). Instructions on how to update this repository can be found in the [README](https://github.com/revbayes/tests/blob/master/README.md).
 
 {% section Troubleshooting %}
 
@@ -35,3 +37,7 @@ Known issues:
  * the Mac build fails at the `Install` step with Homebrew-related errors. 
  
  **Resolution:** this is not a RevBayes issue, but an issue with the Mac virtual environment set up by Github. A list of current issues (and possible workarounds) can be found [here](https://github.com/actions/virtual-environments/issues).
+ 
+ * some tests pass on my local machine but then fail on Github Actions. The output looks identical at the start but then diverges after a number of generations.
+ 
+ **Resolution:** this is not a RevBayes issue, but comes from changes to the RNG in different Boost versions. Workarounds are to truncate the problem tests to a shorter run, or run the tests with the same Boost version as Github Actions.
