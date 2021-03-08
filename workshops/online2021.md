@@ -14,6 +14,8 @@ instructors:
 - Wade Dismukes
 - Luiza Fabreti
 - Rui Borges
+- Ben Redelings
+- Mike May
 - April Wright
 - Rachel Warnock
 - Carrie Tribble
