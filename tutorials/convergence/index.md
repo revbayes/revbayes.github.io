@@ -96,8 +96,8 @@ $$ ESS > 625 $$
 
 An ESS of 625 is therefore the default value for the convenience package.
 
-For the KS test, the threshold is the critical value for $\alpha$ = 0.01.
-We are currently still evaluating the choice of $\alpha$ on the power and false-discovery rate to detect failure of convergence.
+For the KS test, the threshold is the critical value for $\alpha$ = 0.01 and the sample size is the calculated threshold for the ESS, 625.
+With these values, the threshold for the KS test is ${D}_{crit}$ = 0.0921.
 
 
 {% subsubsection Split Frequencies %}
@@ -114,7 +114,7 @@ The expected difference in split frequencies for ESS of 100, 200 and 625. The x-
 Instead of the ASDSF we use the ESS of each split.
 We transform each split into a chain of absence and presence values; if the split was present in the i-th tree then we score the i-th value of the chain as a 1 and 0 otherwise. This sequence of absence and presence observations (0s and 1s) allows us to apply standard methods to compute ESS values and thus we can use the same ESS threshold of 625 as for our continuous parameters.
 
-With the ESS threshold for the splits, we can estimate the expected difference in the splits and use this value as a threshold for the split differencies. The expected difference ($ {E}[\Delta^{sf}_{p}] $) between two samples is calculated as the ['mean absolute difference'](https://en.wikipedia.org/wiki/Mean_absolute_difference), with N as the ESS:
+With the ESS threshold for the splits, we can estimate the expected difference in splits frequencies (EDSF) and use the 95% quantile as a threshold for the split differencies. The expected difference ($ {E}[\Delta^{sf}_{p}] $) between two samples is calculated as the ['mean absolute difference'](https://en.wikipedia.org/wiki/Mean_absolute_difference), with N as the ESS:
 
 
 $$ {E}[\Delta^{sf}_{p}] = \sum\limits_{i=0}^N \sum\limits_{j=0}^N \left(|\frac{i}{N} - \frac{j}{N}| \times P_{binom}(i|N,p) \times P_{binom}(j|N,p) \right) $$
@@ -168,11 +168,15 @@ Here is a list of the functions the package uses to assess convergence:
 
 * `meanContParam`: calculates the means of the continuous parameters
 
-* `plotESS.hist`: plots the histogram of the ESS values for the continuous parameters or the splits
+* `plotDiffSplits`: plots the calculated difference in splits frequency
 
-* `plotKS.hist`: plots the histogram of the KS values for the combination of all runs. The MCMC must have at least 2 runs
+* `plotEssContinuous`: plots the histogram of the ESS values for the continuous parameters
 
-* `plotKS.pooled`: plots the histogram of the KS values for the one-on-one comparison of runs. The MCMC must have at least 3 runs
+* `plotEssSplits`: plots the histogram of the ESS values for the splits
+
+* `plotKS`: plots the histogram of the KS values for the combination of all runs. The MCMC must have at least 2 runs
+
+* `plotKSPooled`: plots the histogram of the KS values for the one-on-one comparison of runs. The MCMC must have at least 3 runs
 
 * `printConvergenceDiag`: a S3 method to print the class `convenience.diag`
 
@@ -288,27 +292,21 @@ We can generate tables with general information for the continuous parameters th
 
 Convenience also provides plot functions to facilitate showing that convergence has been achieved.
 The functions `plotEssContinuous` and `plotEssSplits` plot the histogram of the ESS values for the continuous parameters and  the splits, respectively.
-Typing `plotEssContinuous(check_bears)` and `plotEssSplits(check_bears)` yields these figures:
+The function `plotKS` plots a histogram of the KS values for the continuous parameters.
+And the function `plotDiffSplits` yields a plot for the calculated difference in splits frequency.
+
 
 {% figure plotESS %}
-<img src="figures/plotESS.png" width="800" />
+<img src="figures/results_plots.png" width="800" />
 {% figcaption %}
-Histograms of the calculated ESS values. The left panel shows the ESS values for the continuous parameters and the right panel show the ESS for the splits. Both plots have the ESS ranges on the x-axis and the frequency on the y-axis. The dotted red line represents the threshold for the ESS.
+The plots generated with Convenience for summarizing and visualizing the results from the convergence assessment. The top-left figure shows the histogram of calculated ESS values for the model parameters (continuous parameters). The bottom-left figure shows the histogram of calculated ESS for the splits. In both histograms the grey dotted lines represents the threshold of 625. The bottom-right plot is the histogram of the Kolmogorov-Smirnov (KS) for the model parameters, the dotted grey line represents the threshold for the KS test. The bottom-left figure shows the observed difference is split frequencies in the red dots and the expected difference between split frequencies (EDSF) in the grey curve.
 {% endfigcaption %}
 {% endfigure %}
 
-We can see that, for both figures, all continuous parameters and splits have an ESS above the threshold. This is what we would have expected for a MCMC that has converged. 
-Another function to summarize the achievment of convergence is the function `plotKS`. It plots a histogram of the KS values for the continuous parameters.
-The plot for the command `plotKS(check_bears)` generates this figure:
+We can see that, for all figures, all continuous parameters and splits have an ESS above the threshold. This is what we would have expected for a MCMC that has converged. 
+The KS histogram shows that all KS values calculated for the continuous parameters are below the threshold. This means that the parameters are drawn from the same distribution for both runs of our analysis. Therefore, if convergence is achieved for a given analysis, the histogram for the KS values should be similiar to this plot.
+The calculated differences in split frequencies fall below the threshold curve in gray. When convergence is not achieved, some dots would be above the threshold curve. 
 
-{% figure checkConvergence_summary %}
-<img src="figures/plotKS.png" width="500" />
-{% figcaption %}
-Histogram of the calculated KS values. The x-axis is the KS values and the y-axis is the frequency. The red dotted line represents the threshold for the KS score.
-{% endfigcaption %}
-{% endfigure %}
-
-In this case, all KS values calculated for the continuous parameters are below the threshold. This means that the parameters are drawn from the same distribution for both runs of our analysis. Therefore, if convergence is achieved for a given analysis, the histogram for the KS values should be similiar to this plot.
 It is also possible to plot the histogram of the KS values for the comparisons one-on-one when the MCMC analysis have more than 2 runs.
 The function for this plot is `plotKS.pooled`. 
 The following figure is an example of this plot.
