@@ -3,7 +3,7 @@ title: Introduction to RevGadgets
 subtitle: Plotting the output of RevBayes analyses in the R package RevGadgets.
 authors: Carrie M. Tribble and Michael R. May
 level: 0
-order: 1.0
+order: 1.1
 prerequisites: 
 - intro
 index: true
@@ -16,10 +16,13 @@ include_files:
 - data/relaxed_OU_MAP.tre
 - data/ase_freeK.tree
 - data/simple.ase.tre
+- data/empirical_data_pps_example.csv
+- data/simulated_data_pps_example.csv
 - scripts/parameter_estimates.R
 - scripts/visualize_trees.R
 - scripts/mcmc_relaxed_OU.Rev
 - scripts/anc_states.R
+- scripts/post_pred.R
 redirect: false
 ---
 
@@ -120,7 +123,7 @@ To examine the stationary frequency (pi) parameter values in our trace file, sum
 ```{R}
 summarizeTrace(trace = trace_quant, 
                vars =  c("pi[1]","pi[2]",
-                           "pi[3]","pi[4]"))
+                         "pi[3]","pi[4]"))
 ```
 ```{R}
 $`pi[1]`
@@ -147,7 +150,7 @@ Then plot these distributions:
 ```{R}
 plotTrace(trace = trace_quant, 
           vars = c("pi[1]","pi[2]",
-                     "pi[3]","pi[4]"))
+                   "pi[3]","pi[4]"))
 ```
 Colored areas under the curve indicate the 95% credible interval. 
 
@@ -159,9 +162,8 @@ First, read and summarize the data:
 ```{R}
 file <- "freeK_RJ.log"
 trace_qual <- readTrace(path = file)
-summarizeTrace(trace_qual, 
-			vars = c("prob_rate_12", "prob_rate_13", "prob_rate_21",
-			"prob_rate_23", "prob_rate_31", "prob_rate_32"))
+summarizeTrace(trace_qual, vars = c("prob_rate_12", "prob_rate_13", "prob_rate_21",
+									"prob_rate_23", "prob_rate_31", "prob_rate_32"))
 ```
 ```{R}
 $prob_rate_12
@@ -169,7 +171,9 @@ $prob_rate_12$trace_1
 credible_set
         1         0 
 0.6440396 0.3559604 
+
 ...
+
 $prob_rate_32
 $prob_rate_32$trace_1
         0 
@@ -178,8 +182,8 @@ $prob_rate_32$trace_1
 Then plot the distributions as histograms:
 ```{R}
 plotTrace(trace = trace_qual, 
-		vars = c("prob_rate_12", "prob_rate_13", 
-				"prob_rate_31", "prob_rate_32"))
+          vars = c("prob_rate_12", "prob_rate_13",
+                   "prob_rate_31", "prob_rate_32"))
 ```
 ![image](figures/traceQual.png)
 Colored areas within bars indicate the credible set.
@@ -210,8 +214,8 @@ tree <- readTrees(paths = file)
 tree_rooted <- rerootPhylo(tree = tree, outgroup = "Galeopterus_variegatus")
 
 plot <- plotTree(tree = tree_rooted, node_labels = "posterior", 
-				 node_labels_offset = 0.005, node_labels_size = 3, 
-				 line_width = 0.5, tip_labels_italics = T)
+                 node_labels_offset = 0.005, node_labels_size = 3, 
+                 line_width = 0.5, tip_labels_italics = T)
 
 plot + ggtree::geom_treescale(x = -0.35, y = -1)
 ```
@@ -227,16 +231,16 @@ RevGadgets elaborates on the `plotTree` to plot fossilized birth death analyses,
 file <- "bears.mcc.tre"
 tree <- readTrees(paths = file)
 plot <- plotFBDTree(tree = tree, 
-					timeline = T, 
-					geo_units = "epochs",
-					tip_labels_italics = T,
-					tip_labels_remove_underscore = T,
-					tip_labels_size = 3, 
-					tip_age_bars = T,
-					node_age_bars = T, 
-					age_bars_colored_by = "posterior",
-					label_sampled_ancs = TRUE) + 
-      		theme(legend.position=c(.05, .6))
+                    timeline = T, 
+                    geo_units = "epochs",
+                    tip_labels_italics = T,
+                    tip_labels_remove_underscore = T,
+                    tip_labels_size = 3, 
+                    tip_age_bars = T,
+                    node_age_bars = T, 
+                    age_bars_colored_by = "posterior",
+                    label_sampled_ancs = TRUE) + 
+            theme(legend.position=c(.05, .6))
 ```
 ![image](figures/FBDTree.png)
 
@@ -254,7 +258,7 @@ plotTree(tree = tree,
          tip_labels_italics = FALSE,
          color_branch_by = "branch_thetas", 
          line_width = 1.7) + 
- theme(legend.position=c(.1, .9))
+    theme(legend.position=c(.1, .9))
 ```
 ![image](figures/treeOU.png)
 
@@ -276,12 +280,12 @@ To plot the output of an ancestral state estimation of placenta type across mode
 ```{R}
 file <- "ase_freeK.tree"
 freeK <- processAncStates(file, 
-						  state_labels = c("1" = "Epitheliochorial", 
-										   "2" = "Endotheliochorial", 
-										   "3" = "Hemochorial"))
+                          state_labels = c("1" = "Epitheliochorial", 
+                                           "2" = "Endotheliochorial", 
+                                           "3" = "Hemochorial"))
 plot <- plotAncStatesMAP(t = freeK, 
-              tree_layout = "circular") + 
-  theme(legend.position = c(0.57,0.41))
+                         tree_layout = "circular") + 
+            theme(legend.position = c(0.57,0.41))
 ```
 ![image](figures/ancStatesMAP_trimmed.png)
 
@@ -309,49 +313,133 @@ labs <- c("1" = "K", "2" = "O",
           "11" = "KOM", "12" = "KOH", 
           "13" = "KMH", "14" = "OMH", 
           "15" = "KOMH")
-dec_example <- processAncStatesDiscrete(file, 
-										state_labels = labs)
+dec_example <- processAncStatesDiscrete(file, state_labels = labs)
 ncol <- length(dec_example@state_labels)
 colors <- colorRampPalette(colFun(12))(ncol)
 names(colors) <- dec_example@state_labels
 ordered_labels <- names(colors)[c(6,1,4,3,
-								  9,5,2,7,
-								  10,13,12,
-								  14,11,8,15)]
+                                  9,5,2,7,
+                                  10,13,12,
+                                  14,11,8,15)]
 plotAncStatesPie(t = dec_example,
-          		 cladogenetic = TRUE, 
-          		 tip_labels_states = TRUE,
-          		 pie_colors = colors, 
-          		 tip_labels_offset = .2, 
-          		 tip_pie_nudge_x = -.15, 
-          		 node_pie_size = 1.2, 
-          		 tip_pie_size = 0.12, 
-          		 tip_labels_states_offset = .05) +
-      theme(legend.position = c(0.1, 0.75)) +
-      scale_color_manual(values = c(colors, "grey"), 
-                         breaks = ordered_labels)
+                 cladogenetic = TRUE, 
+                 tip_labels_states = TRUE,
+                 pie_colors = colors, 
+                 tip_labels_offset = .2, 
+                 tip_pie_nudge_x = -.15, 
+                 node_pie_size = 1.2, 
+                 tip_pie_size = 0.12, 
+                 tip_labels_states_offset = .05) +
+        theme(legend.position = c(0.1, 0.75)) +
+        scale_color_manual(values = c(colors, "grey"), 
+                           breaks = ordered_labels)
 ```
 ![image](figures/ancStatesPie.png)
 
 While these examples demonstrate cladogenetic change for `plotAncStatesPie()` only, `plotAncStatesMAP()` can also plot cladogenetic change, and `plotAncStatesPie()` can also plot the results of anagenetic models. 
-These functionsprovide plotting tools for any discrete ancestral-state estimation including the results of chromosome count reconstructions (as in {% page_ref chromo %}) and discrete state-dependent speciation and extinction (SSE) models (as in {% page_ref sse/bisse %}, among others). 
+These functions provide plotting tools for any discrete ancestral-state estimation including the results of chromosome count reconstructions (as in {% page_ref chromo %}) and discrete state-dependent speciation and extinction (SSE) models (as in {% page_ref sse/bisse %}, among others). 
 
 Diversification Analysis
 ========================
 {:.section} 
 
-Episodic Diversification Analysis
----------------------------------
-{:.subsection} 
+Diversification rate estimation is a major goal of many comparative analysis. `RevBayes` allows flexible implementation of many diversification rate estimation models. Methods may estimate speciation and extinction rates through time, across branches of the phylogeny, and in conjunction with the evolution of a trait. 
+These methods produce estimates of rates that `RevGadgets` can plot on branches of the phylogeny or as posterior distributions. 
+When the method also includes simulataneous estimation of the ancestral state of a discrete trait, `RevGadets` may plot those ancestral states using the same ancestral state code described above. 
+`RevGadgets` also includes special functionality for visualizing time-varying (episodic) diversification rate estimation.
+The examples below demonstrate the potential for visualizing diversifcation rate estimations using `RevGadgets` for a few standard analyses. 
+
 
 State-Dependendent Diversification Analysis
 -------------------------------------------
 {:.subsection} 
 
+yada yada this won't make sense yet still gotta add the files etc. 
+```{R}
+bisse_file <- "primates_BiSSE_activity_period.log"
+pdata <- processSSE(bisse_file)
+plotMuSSE(pdata)
+
+bisse_anc_states_file <- "anc_states_primates_BiSSE_activity_period_results.tree"
+panc <- processAncStates(path = bisse_anc_states_file)
+plotAncStatesMAP(panc, tree_layout = "circular") +
+  scale_color_manual(values=colFun(2), breaks = c("A", "B"), name = "State") +
+  scale_size_continuous(name = "State posterior")
+
+```
+imagine figures here 
+
 Lineage-Specific Diversification Analysis
 ------------------------------------------
 {:.subsection} 
 
+yada yada also not ready yet and code still broken 
+```{R}
+ranch_specific_file <- "primates_BDS_rates.log"
+branch_specific_tree_file <- "primates_tree.nex"
+
+rates <- readTrace(branch_specific_file)[[1]]
+tree <- readTrees(branch_specific_tree_file)[[1]][[1]]
+
+combined <- processBranchData(tree = tree, df = rates)
+
+plotTree(combined, color_branch_by = "avg_lambda", tip_labels_size = 2, tree_layout = "circular")
+
+```
+
+
+Episodic Diversification Analysis
+---------------------------------
+{:.subsection} 
+
+```{R}
+speciation_time_file <- "primates_EBD_speciation_times.log", 
+speciation_rate_file <- "primates_EBD_speciation_rates.log", 
+extinction_time_file <- "primates_EBD_extinction_times.log",  
+extinction_rate_file <- "primates_EBD_extinction_rates.log",
+
+rates <- processDivRates(speciation_time_log = speciation_time_file,
+                         speciation_rate_log = speciation_rate_file, 
+                         extinction_time_log = extinction_time_file, 
+                         extinction_rate_log = extinction_rate_file, 
+                         burnin = 0.25)
+
+plotDivRates(rates = rates) + 
+        xlab("Millions of years ago") +
+        ylab("Rate per million years")
+```
+
+![image](figures/divRates.png)
+
 Posterior-Predictive Analysis 
 ==============
 {:.section} 
+
+Posterior predictive simulation is a powerful tool for assessing the adequacy of the model and assessing the reliability of phylogenetic inference. 
+&#8680; To reproduce this section, see: `post_pred.R`
+
+The analysis that produced this output file is describe in the {% page_ref model_testing_pps/pps_data %} tutorial.
+
+```{R}
+sim <- "simulated_data_pps_example.csv"
+emp <- "empirical_data_pps_example.csv"
+
+t <- processPostPredStats(path_sim = sim, 
+                          path_emp = emp)
+
+plots <- plotPostPredStats(data = t)
+```
+
+To plot a subset of the parameters in a single figure, use the `gridExtra` package.
+
+```{R}
+library(ggplot2)
+library(gridExtra)
+
+grid.arrange(plots[[1]] + theme(axis.title.y = element_blank()),
+             plots[[3]] + theme(axis.title.y = element_blank()),
+             plots[[5]] + theme(axis.title.y = element_blank()),
+             plots[[7]] + theme(axis.title.y = element_blank()),
+             left = "Density")
+```
+![image](figures/postPredStats.png)
