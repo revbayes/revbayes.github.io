@@ -116,9 +116,7 @@ Alternatively, use the `R` package `convenience` (described here: {% page_ref co
 To examine the stationary frequency (pi) parameter values in our trace file, summarize their distributions:
 
 ```R
-summarizeTrace(trace = trace_quant, 
-               vars =  c("pi[1]","pi[2]",
-                         "pi[3]","pi[4]"))
+summarizeTrace(trace = trace_quant, vars =  c("pi[1]","pi[2]","pi[3]","pi[4]"))
 ```
 ```R
 $`pi[1]`
@@ -143,9 +141,7 @@ $`pi[4]`$trace_1
 
 Then plot these distributions:
 ```R
-plotTrace(trace = trace_quant, 
-          vars = c("pi[1]","pi[2]",
-                   "pi[3]","pi[4]"))
+plotTrace(trace = trace_quant, vars = c("pi[1]","pi[2]","pi[3]","pi[4]"))
 ```
 
 {% figure %}
@@ -217,9 +213,12 @@ tree <- readTrees(paths = file)
 ```R
 tree_rooted <- rerootPhylo(tree = tree, outgroup = "Galeopterus_variegatus")
 
-plot <- plotTree(tree = tree_rooted, node_labels = "posterior", 
-                 node_labels_offset = 0.005, node_labels_size = 3, 
-                 line_width = 0.5, tip_labels_italics = T)
+plot <- plotTree(tree = tree_rooted,
+	             node_labels = "posterior", 
+                 node_labels_offset = 0.005,
+				 node_labels_size = 3, 
+                 line_width = 0.5,
+				 tip_labels_italics = TRUE)
 
 plot + ggtree::geom_treescale(x = -0.35, y = -1)
 ```
@@ -241,13 +240,13 @@ RevGadgets elaborates on the `plotTree` to plot fossilized birth death analyses,
 file <- "bears.mcc.tre"
 tree <- readTrees(paths = file)
 plot <- plotFBDTree(tree = tree, 
-                    timeline = T, 
+                    timeline = TRUE, 
                     geo_units = "epochs",
-                    tip_labels_italics = T,
-                    tip_labels_remove_underscore = T,
+                    tip_labels_italics = TRUE,
+                    tip_labels_remove_underscore = TRUE,
                     tip_labels_size = 3, 
-                    tip_age_bars = T,
-                    node_age_bars = T, 
+                    tip_age_bars = TRUE,
+                    node_age_bars = TRUE, 
                     age_bars_colored_by = "posterior",
                     label_sampled_ancs = TRUE) + 
             theme(legend.position=c(.05, .6))
