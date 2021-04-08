@@ -1,11 +1,13 @@
 library(RevGadgets)
 setwd("your_directory")
 
-# read in file 
+# specify the input file
 file <- "primates_cytb_GTR.log"
+
+# read the trace and discard burnin
 trace_quant <- readTrace(path = file, burnin = 0.1)
 
-# or remove burnin later:
+# or read the trace _then_ discard burnin
 trace_quant <- readTrace(path = file)
 trace_quant <- removeBurnin(trace = trace_quant, burnin = 0.1)
 
@@ -31,4 +33,3 @@ summarizeTrace(trace_qual,
 plotTrace(trace = trace_qual, 
 		  vars = c("prob_rate_12", "prob_rate_13", 
 		  		   "prob_rate_31", "prob_rate_32"))
-

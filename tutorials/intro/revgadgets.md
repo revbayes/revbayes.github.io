@@ -31,7 +31,7 @@ Overview
 {:.section}
 
 {% figure %}
-<img src="figures/RevGadgets_logo.png" height="50%" width="50%" />
+<img src="figures/revgadgets_logo.png" height="50%" width="50%" />
 {% endfigure %}
 
 Through user-friendly data pipelines, `RevGadgets` guides users through importing RevBayes output into `R`, processing the output, and producing figures or other summaries of the results. 
@@ -44,7 +44,7 @@ Installation
 
 `RevGadgets` is available to download from GitHub using `devtools`: 
 
-```{R}
+```R
 install.packages("devtools")
 devtools::install_github("cmt2/RevGadgets")
 ```
@@ -74,43 +74,38 @@ Visualizing Parameter Estimates
 {:.section} 
 
 `RevGadgets` provides several tools that facilitate the visualization of posterior distributions of parameters. 
-The output of most `RevBayes` analyses is a is a tab-delimited file where rows correspond to samples of an MCMC algorithm and columns correspond to parameters in the model. 
-Most information of interest to researchers, such as the most probable parameter values and the 95% credible interval or set (CI/CS), require processing raw MCMC output.  
-Visualizing MCMC output is critical for evaluating and troubleshooting analyses, especially for diagnosing bizarre pathologies in MCMC convergence and model results. 
+The output of most `RevBayes` analyses is a tab-delimited file where rows correspond to samples of an MCMC analysis and columns correspond to parameters in the model. 
+Most information of interest to researchers must be extracted from these output files.  
+Visualizing MCMC output is also critical for evaluating and troubleshooting analyses, especially for diagnosing MCMC pathologies. 
 
-The following code demonstrates how to process and visualize the MCMC trace file of a general time-reversible (GTR) substitution model analysis {% cite Tavare1986 %}, in which we have estimated the substitution rate and stationary frequency parameters for a single gene in a sample of 23 primates {% cite springer2012 %}. This analysis is covered in the {% page_ref ctmc %} tutorial.
+The following code demonstrates how to process and visualize the MCMC trace file of a general time-reversible (GTR) substitution model analysis {% cite Tavare1986 %}, in which we have estimated the substitution rate and stationary frequency parameters for a single gene in a sample of 23 primates {% cite springer2012 %}. This analysis is covered in detail the {% page_ref ctmc %} tutorial.
 
-&#8680; To reproduce this section, see: `parameter_estimates.R`
+&#8680; The code in this section is contained in the script: `parameter_estimates.R`
 
 First, load the `RevGadgets` package: 
-
-```{R}
-library(`RevGadgets`)
+```R
+library("RevGadgets")
 ```
 
-Then, read in and process the trace file.
-Burnin (the samples taken before the Markov chain reached stationarity) may be removed at this stage or after examining the trace file further.
-
-```{R}
+Then, read in and process the trace file. Burnin (the samples taken before the Markov chain reached stationarity) may be removed at this stage or after examining the trace file further.
+```R
+# specify the input file
 file <- "primates_cytb_GTR.log"
 
+# read the trace and discard burnin
 trace_quant <- readTrace(path = file, burnin = 0.1)
 
-# or 
-
+# or read the trace _then_ discard burnin
 trace_quant <- readTrace(path = file)
 trace_quant <- removeBurnin(trace = trace_quant, burnin = 0.1)
-
 ```
 
-The output of `readTrace()` may be passed to `R` packages specializing in MCMC diagnoses such as `coda` {% cite plummer2006coda %}. Note that `RevGadgets` does not require `coda`, so you will have to install it separately. 
-
-
-```{R}
+The output of `readTrace()` may be passed to `R` packages specializing in MCMC diagnoses such as `coda` {% cite plummer2006coda %}. (Note that `RevGadgets` does not require `coda`, so you will have to install it separately.)
+For example:
+```R
+# assess convergence with coda 
 trace_quant_MCMC <- coda::as.mcmc(trace_quant[[1]])
-
 coda::effectiveSize(trace_quant_MCMC)
-
 coda::traceplot(trace_quant_MCMC)
 ```
 
@@ -120,12 +115,12 @@ Alternatively, use the `R` package `convenience` (described here: {% page_ref co
 `SummarizeTrace()` calculates the mean and 95% credible interval for quantitative variables and the 95% credible set for qualitative variables.
 To examine the stationary frequency (pi) parameter values in our trace file, summarize their distributions:
 
-```{R}
+```R
 summarizeTrace(trace = trace_quant, 
                vars =  c("pi[1]","pi[2]",
                          "pi[3]","pi[4]"))
 ```
-```{R}
+```R
 $`pi[1]`
 $`pi[1]`$trace_1
         mean        median        MAP  
@@ -147,25 +142,29 @@ $`pi[4]`$trace_1
 ```
 
 Then plot these distributions:
-```{R}
+```R
 plotTrace(trace = trace_quant, 
           vars = c("pi[1]","pi[2]",
                    "pi[3]","pi[4]"))
 ```
-Colored areas under the curve indicate the 95% credible interval. 
 
-![image](figures/traceQuant.png)
+{% figure %}
+<img src="figures/traceQuant.png" height="50%" width="50%"/>
+{% figcaption %}
+The posterior densities of the nucleotide stationary frequencies under a GTR substitution model. Colored areas under the curve correspond to the 95% credible interval. 
+{% endfigcaption %}
+{% endfigure %}
 
 These functions may also process and plot posterior estimates of qualitative (discrete) variables, such as the the binary character indicating if certain transition rates among character states exist (i.e. if the corresponding transitions are possible), from a reversible jump MCMC (rjMCMC) ancestral-state reconstruction analysis. See the {% page_ref morph/morph_more %} tutorial for information on performing this RevBayes analysis. 
 
 First, read and summarize the data: 
-```{R}
+```R
 file <- "freeK_RJ.log"
 trace_qual <- readTrace(path = file)
 summarizeTrace(trace_qual, vars = c("prob_rate_12", "prob_rate_13", "prob_rate_21",
 									"prob_rate_23", "prob_rate_31", "prob_rate_32"))
 ```
-```{R}
+```R
 $prob_rate_12
 $prob_rate_12$trace_1
 credible_set
@@ -180,13 +179,18 @@ $prob_rate_32$trace_1
 0.9724475
 ```
 Then plot the distributions as histograms:
-```{R}
+```R
 plotTrace(trace = trace_qual, 
           vars = c("prob_rate_12", "prob_rate_13",
                    "prob_rate_31", "prob_rate_32"))
 ```
-![image](figures/traceQual.png)
-Colored areas within bars indicate the credible set.
+
+{% figure %}
+<img src="figures/traceQual.png" height="50%" width="50%"/>
+{% figcaption %}
+The posterior distributions whether particular rates are included in the model of character evolution. Colored bars are included in the 95% credible set. 
+{% endfigcaption %}
+{% endfigure %}
 
 Visualizing Phylogenies
 =======================
@@ -205,12 +209,12 @@ Basic tree plots
 
 RevGadgets reads and processes single trees, such as those produced by the {% page_ref ctmc %} tutorial, and tree traces with `readTrees()`:
 
-```{R}
+```R
 file <- "primates_cytb_GTR_MAP.tre"
 tree <- readTrees(paths = file)
 ```
 `rerootPhylo()` roots the tree and `plotTree()` produces a basic tree plot, which may be modified by changing the formatting of tip labels, adjusting tree line width, and adding posterior probabilities of nodes as internal node labels. This plot object is modifiable in the same way as `ggplot`. Here, we add a scale bar: 
-```{R}
+```R
 tree_rooted <- rerootPhylo(tree = tree, outgroup = "Galeopterus_variegatus")
 
 plot <- plotTree(tree = tree_rooted, node_labels = "posterior", 
@@ -219,7 +223,13 @@ plot <- plotTree(tree = tree_rooted, node_labels = "posterior",
 
 plot + ggtree::geom_treescale(x = -0.35, y = -1)
 ```
-![image](figures/basic_tree.png)
+
+{% figure %}
+<img src="figures/basic_tree.png" height="50%" width="50%"/>
+{% figcaption %}
+The maximum _a posterior_ phylogeny of primates inferred under a GTR substitution model. 
+{% endfigcaption %}
+{% endfigure %}
 
 Fossilized birth-death trees
 ----------------------------
@@ -227,7 +237,7 @@ Fossilized birth-death trees
 
 RevGadgets elaborates on the `plotTree` to plot fossilized birth death analyses, such as those described in the {% page_ref fbd_simple %} tutorial. This plot includes a geological timescale, labeled sampled ancestors along branches and their species names as annotated text in the top left corner, and node and tip age bars colored by their corresponding posterior probabilities.
 
-```{R}
+```R
 file <- "bears.mcc.tre"
 tree <- readTrees(paths = file)
 plot <- plotFBDTree(tree = tree, 
@@ -242,7 +252,14 @@ plot <- plotFBDTree(tree = tree,
                     label_sampled_ancs = TRUE) + 
             theme(legend.position=c(.05, .6))
 ```
-![image](figures/FBDTree.png)
+
+{% figure %}
+<img src="figures/FBDTree.png" height="50%" width="50%"/>
+{% figcaption %}
+The sampled-ancestor maximum-clade credibility phylogeny of extant and extinct bears inferred under the fossilized birth-death model.
+Bars correspond to the 95% credible interval of node (or tip) ages, and are colored by the posterior probability of the clade (for internal nodes), the posterior probability that the tip is _not_ a sampled ancestor (for tip nodes) or the posterior probability that the node is a sampled ancestor (for sampled ancestor nodes). 
+{% endfigcaption %}
+{% endfigure %}
 
 
 Branch rates 
@@ -251,7 +268,7 @@ Branch rates
 
 The `plotTree()` function can color the branches of the tree, which is useful for indicating branch rates, or other continuous parameters. For example, `plotTree()` here colors the branches by branch-specific optima (thetas) from a relaxed Ornstein_Uhlenbeck model of body size evolution in whales. The {% page_ref cont_traits/relaxed_ou %} tutorial covers this type of analysis. 
 
-```{R}
+```R
 file <- "relaxed_OU_MAP.tre"
 tree <- readTrees(paths = file)
 plotTree(tree = tree, 
@@ -260,7 +277,13 @@ plotTree(tree = tree,
          line_width = 1.7) + 
     theme(legend.position=c(.1, .9))
 ```
-![image](figures/treeOU.png)
+
+{% figure %}
+<img src="figures/treeOU.png" height="50%" width="50%"/>
+{% figcaption %}
+Branch-specific optima, $\theta$, under a relaxed Ornstein-Uhlenbeck model. Branches are colored according to the posterior-mean estimate of $\theta$ for the branch.
+{% endfigcaption %}
+{% endfigure %}
 
 To produce the imput file for this plot `relaxed_OU_MAP.tre`, you will need to run a slightly modified script from the tutorial. See `mcmc_relaxed_OU.Rev` for this modification. 
 
@@ -275,9 +298,9 @@ Text annotations may be added to specify states, state posterior probabilities, 
 
 &#8680; To reproduce this section, see: `anc_states.R`
 
-To plot the output of an ancestral state estimation of placenta type across models, `RevGadgets` first summarizes the `RevBayes` output file and then creates the plot object. The analysis that produced this output file is describe in the  {% page_ref morph/morph_more %} tutorial.
+To plot the output of an ancestral state estimation of placenta type across models, `RevGadgets` first summarizes the `RevBayes` output file and then creates the plot object. The analysis that produced this output file is described in the {% page_ref morph/morph_more %} tutorial.
 
-```{R}
+```R
 file <- "ase_freeK.tree"
 freeK <- processAncStates(file, 
                           state_labels = c("1" = "Epitheliochorial", 
@@ -287,9 +310,15 @@ plot <- plotAncStatesMAP(t = freeK,
                          tree_layout = "circular") + 
             theme(legend.position = c(0.57,0.41))
 ```
-![image](figures/ancStatesMAP_trimmed.png)
 
-Here, the color of node circles indicates the estimated ancestral states and the size of the circles corresponds to the posterior probability of that state. 
+{% figure %}
+<img src="figures/ancStatesMap_trimmed.png" height="75%" width="75%"/>
+{% figcaption %}
+Ancestral-state estimates of mammalian placental under an asymmetric model of character evolution. Symbol colors correspond to the state with the highest posterior probability at that node; the size of the symbol is proportional to the posterior probability of that state.
+{% endfigcaption %}
+{% endfigure %}
+
+<!-- Here, the color of node circles indicates the estimated ancestral states and the size of the circles corresponds to the posterior probability of that state.  -->
 
 For standard evolutionary models of anagenetic (within-lineage) change such as demonstrated above, states are plotted at the nodes. 
 However, cladogenetic models allow for two ways that character states can change on the phylogeny: shifts can occur along branches of the tree (anagenetic change) or happen precisely at the moment of speciation (cladogenetic change) {% cite Ree2008 Goldberg2012 %}. 
@@ -303,8 +332,8 @@ We pass the appropriate ancestral area names to`processAncStates()` and specify 
 To plot the ancestral states, we provide the processed data, specify that the data are "cladogenetic", add text labels to the tips specifying the character state, and modify sizes and horizontal positions for aesthetics.
 We also modify the order at which states appear in the legend and the legend position.
 
-```{R}
-file <- simple.ase.tre"
+```R
+file <- "simple.ase.tre"
 labs <- c("1" = "K", "2" = "O", 
           "3" = "M",  "4" = "H", 
           "5" = "KO", "6" = "KM", 
@@ -334,7 +363,13 @@ plotAncStatesPie(t = dec_example,
         scale_color_manual(values = c(colors, "grey"), 
                            breaks = ordered_labels)
 ```
-![image](figures/ancStatesPie.png)
+
+{% figure %}
+<img src="figures/ancStatesPie.png" height="50%" width="50%"/>
+{% figcaption %}
+Ancestral-state estimates of biogeographic area of the Hawaiian silverswords. Pies represent the posterior probability of each state at the node; pies at the branching event correspond to the state of the ancestor immediately before the branching event, and pies on the "shoulders" of the two descendant branches are the states of the two descendants immediately after the branching event.
+{% endfigcaption %}
+{% endfigure %}
 
 While these examples demonstrate cladogenetic change for `plotAncStatesPie()` only, `plotAncStatesMAP()` can also plot cladogenetic change, and `plotAncStatesPie()` can also plot the results of anagenetic models. 
 These functions provide plotting tools for any discrete ancestral-state estimation including the results of chromosome count reconstructions (as in {% page_ref chromo %}) and discrete state-dependent speciation and extinction (SSE) models (as in {% page_ref sse/bisse %}, among others). 
@@ -355,7 +390,7 @@ State-Dependendent Diversification Analysis
 {:.subsection} 
 
 yada yada this won't make sense yet still gotta add the files etc. 
-```{R}
+```R
 bisse_file <- "primates_BiSSE_activity_period.log"
 pdata <- processSSE(bisse_file)
 plotMuSSE(pdata)
@@ -374,7 +409,7 @@ Lineage-Specific Diversification Analysis
 {:.subsection} 
 
 yada yada also not ready yet and code still broken 
-```{R}
+```R
 ranch_specific_file <- "primates_BDS_rates.log"
 branch_specific_tree_file <- "primates_tree.nex"
 
@@ -392,7 +427,7 @@ Episodic Diversification Analysis
 ---------------------------------
 {:.subsection} 
 
-```{R}
+```R
 speciation_time_file <- "primates_EBD_speciation_times.log", 
 speciation_rate_file <- "primates_EBD_speciation_rates.log", 
 extinction_time_file <- "primates_EBD_extinction_times.log",  
@@ -409,7 +444,12 @@ plotDivRates(rates = rates) +
         ylab("Rate per million years")
 ```
 
-![image](figures/divRates.png)
+{% figure %}
+<img src="figures/divRates.png" height="50%" width="50%"/>
+{% figcaption %}
+Diversification-rates over time estimated from the primate phylogeny. Lines correspond to the posterior mean estimate over time, and shaded regions correspond to the 95% credible interval.
+{% endfigcaption %}
+{% endfigure %}
 
 Posterior-Predictive Analysis 
 ==============
@@ -420,7 +460,7 @@ Posterior predictive simulation is a powerful tool for assessing the adequacy of
 
 The analysis that produced this output file is describe in the {% page_ref model_testing_pps/pps_data %} tutorial.
 
-```{R}
+```R
 sim <- "simulated_data_pps_example.csv"
 emp <- "empirical_data_pps_example.csv"
 
@@ -432,7 +472,7 @@ plots <- plotPostPredStats(data = t)
 
 To plot a subset of the parameters in a single figure, use the `gridExtra` package.
 
-```{R}
+```R
 library(ggplot2)
 library(gridExtra)
 
@@ -442,4 +482,10 @@ grid.arrange(plots[[1]] + theme(axis.title.y = element_blank()),
              plots[[7]] + theme(axis.title.y = element_blank()),
              left = "Density")
 ```
-![image](figures/postPredStats.png)
+
+{% figure %}
+<img src="figures/postPredStats.png" height="50%" width="50%"/>
+{% figcaption %}
+Posterior-predictive distribution of statistics (curves) and observed statistics (dashed vertical lines), and posterior-predictive p-values (upper right corner). Blue and red regions correspond to the 10% and 5% rejection regions, respectively.
+{% endfigcaption %}
+{% endfigure %}
