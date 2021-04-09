@@ -326,7 +326,13 @@ Ancestral-state estimates of mammalian placental under an asymmetric model of ch
 {% endfigcaption %}
 {% endfigure %}
 
-<!-- Here, the color of node circles indicates the estimated ancestral states and the size of the circles corresponds to the posterior probability of that state.  -->
+<!-- 
+Let's add an example of pie charts under an anagenetic model
+ -->
+
+Cladogenetic models
+-------------------------------------------
+{:.subsection} 
 
 For standard evolutionary models of anagenetic (within-lineage) change such as demonstrated above, states are plotted at the nodes. 
 However, cladogenetic models allow for two ways that character states can change on the phylogeny: shifts can occur along branches of the tree (anagenetic change) or happen precisely at the moment of speciation (cladogenetic change) {% cite Ree2008 Goldberg2012 %}. 
@@ -340,8 +346,13 @@ We pass the appropriate ancestral area names to`processAncStates()` and specify 
 To plot the ancestral states, we provide the processed data, specify that the data are "cladogenetic", add text labels to the tips specifying the character state, and modify sizes and horizontal positions for aesthetics.
 We also modify the order at which states appear in the legend and the legend position.
 
+<!-- 
+Let's add comments to this code
+ -->
+
 ```R
 file <- "data/simple.ase.tre"
+
 labs <- c("1" = "K", "2" = "O", 
           "3" = "M",  "4" = "H", 
           "5" = "KO", "6" = "KM", 
@@ -350,14 +361,18 @@ labs <- c("1" = "K", "2" = "O",
           "11" = "KOM", "12" = "KOH", 
           "13" = "KMH", "14" = "OMH", 
           "15" = "KOMH")
+
 dec_example <- processAncStatesDiscrete(file, state_labels = labs)
+
 ncol <- length(dec_example@state_labels)
 colors <- colorRampPalette(colFun(12))(ncol)
 names(colors) <- dec_example@state_labels
+
 ordered_labels <- names(colors)[c(6,1,4,3,
                                   9,5,2,7,
                                   10,13,12,
                                   14,11,8,15)]
+
 plotAncStatesPie(t = dec_example,
                  cladogenetic = TRUE, 
                  tip_labels_states = TRUE,
