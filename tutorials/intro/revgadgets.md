@@ -412,6 +412,8 @@ Posterior distributions of the rates for a BiSSE analysis.
 {% endfigcaption %}
 {% endfigure %}
 
+While the above example includes two states (a BiSSE analysis), the same workflow is appropriate for models of multi-state traits (MuSSE). For plotting the rates from an analysis with hidden states (HiSSE), check out `plotHiSSE()`.
+
 The ancestral state estimates may be plotted similarly to in the ancestral states section above. 
 ```R
 bisse_anc_states_file <- "data/anc_states_primates_BiSSE_activity_period_results.tree"
