@@ -16,12 +16,21 @@ include_files:
 - data/relaxed_OU_MAP.tre
 - data/ase_freeK.tree
 - data/simple.ase.tre
+- data/primates_BiSSE_activity_period.log
+- data/anc_states_primates_BiSSE_activity_period_results.tree
+- data/primates_tree.nex
+- data/primates_BDS_rates.log
+- data/primates_EBD_extinction_rates.log
+- data/primates_EBD_extinction_times.log
+- data/primates_EBD_speciation_rates.log
+- data/primates_EBD_speciation_times.log
 - data/empirical_data_pps_example.csv
 - data/simulated_data_pps_example.csv
 - scripts/parameter_estimates.R
 - scripts/visualize_trees.R
 - scripts/mcmc_relaxed_OU.Rev
 - scripts/anc_states.R
+- scripts/divrates.R
 - scripts/post_pred.R
 redirect: false
 ---
@@ -63,7 +72,7 @@ Alternatively, visit the [ImageMagick website](https://imagemagick.org/script/do
 Getting Started
 ===============
 {:.section} 
-To run this tutorial, download the associated files from the `Data files and scripts` menu. 
+To run this tutorial, download the associated files from the `Data files and scripts` menu. All scripts should be in a subdirectory called `scripts` and all data files in a subdirectory called `data`. 
 Open `R` and make sure your working directory is set to the directory with the downloaded files. 
 For more information on how to customize these plots, see the associated documentation for each function (e.g., `?readTrace`)).
 Submit feature requests or bug reports with Issues on [GitHub](https://github.com/cmt2/RevGadgets). 
@@ -80,7 +89,7 @@ Visualizing MCMC output is also critical for evaluating and troubleshooting anal
 
 The following code demonstrates how to process and visualize the MCMC trace file of a general time-reversible (GTR) substitution model analysis {% cite Tavare1986 %}, in which we have estimated the substitution rate and stationary frequency parameters for a single gene in a sample of 23 primates {% cite springer2012 %}. This analysis is covered in detail the {% page_ref ctmc %} tutorial.
 
-&#8680; The code in this section is contained in the script: `parameter_estimates.R`
+&#8680; The code in this section is contained in the script: `scripts/parameter_estimates.R`
 
 First, load the `RevGadgets` package: 
 ```R
@@ -90,7 +99,7 @@ library("RevGadgets")
 Then, read in and process the trace file. Burnin (the samples taken before the Markov chain reached stationarity) may be removed at this stage or after examining the trace file further.
 ```R
 # specify the input file
-file <- "primates_cytb_GTR.log"
+file <- "data/primates_cytb_GTR.log"
 
 # read the trace and discard burnin
 trace_quant <- readTrace(path = file, burnin = 0.1)
@@ -155,10 +164,10 @@ These functions may also process and plot posterior estimates of qualitative (di
 
 First, read and summarize the data: 
 ```R
-file <- "freeK_RJ.log"
+file <- "data/freeK_RJ.log"
 trace_qual <- readTrace(path = file)
 summarizeTrace(trace_qual, vars = c("prob_rate_12", "prob_rate_13", "prob_rate_21",
-									"prob_rate_23", "prob_rate_31", "prob_rate_32"))
+                                    "prob_rate_23", "prob_rate_31", "prob_rate_32"))
 ```
 ```R
 $prob_rate_12
@@ -197,7 +206,7 @@ Phylogenies are central to all analyses in `RevBayes`, and accurate and informat
 Additionally, text annotation may be added to specify associated data, such as posterior probabilities of nodes or node ages. 
 Users may modify aesthetics such as colors, sizes, branch thickness, and tip label formatting through specific function arguments or by adding layers to the resulting ggplot object.
 
-&#8680; To reproduce this section, see: `visualize_trees.R`
+&#8680; To reproduce this section, see: `scripts/visualize_trees.R`
 
 Basic tree plots
 ----------------
@@ -206,7 +215,7 @@ Basic tree plots
 RevGadgets reads and processes single trees, such as those produced by the {% page_ref ctmc %} tutorial, and tree traces with `readTrees()`:
 
 ```R
-file <- "primates_cytb_GTR_MAP.tre"
+file <- "data/primates_cytb_GTR_MAP.tre"
 tree <- readTrees(paths = file)
 ```
 `rerootPhylo()` roots the tree and `plotTree()` produces a basic tree plot, which may be modified by changing the formatting of tip labels, adjusting tree line width, and adding posterior probabilities of nodes as internal node labels. This plot object is modifiable in the same way as `ggplot`. Here, we add a scale bar: 
@@ -237,7 +246,7 @@ Fossilized birth-death trees
 RevGadgets elaborates on the `plotTree` to plot fossilized birth death analyses, such as those described in the {% page_ref fbd_simple %} tutorial. This plot includes a geological timescale, labeled sampled ancestors along branches and their species names as annotated text in the top left corner, and node and tip age bars colored by their corresponding posterior probabilities.
 
 ```R
-file <- "bears.mcc.tre"
+file <- "data/bears.mcc.tre"
 tree <- readTrees(paths = file)
 plot <- plotFBDTree(tree = tree, 
                     timeline = TRUE, 
@@ -268,7 +277,7 @@ Branch rates
 The `plotTree()` function can color the branches of the tree, which is useful for indicating branch rates, or other continuous parameters. For example, `plotTree()` here colors the branches by branch-specific optima (thetas) from a relaxed Ornstein_Uhlenbeck model of body size evolution in whales. The {% page_ref cont_traits/relaxed_ou %} tutorial covers this type of analysis. 
 
 ```R
-file <- "relaxed_OU_MAP.tre"
+file <- "data/relaxed_OU_MAP.tre"
 tree <- readTrees(paths = file)
 plotTree(tree = tree, 
          tip_labels_italics = FALSE,
@@ -295,12 +304,12 @@ This aspect of `RevGadgets` functionality allows users to plot the maximum \emph
 Ancestral-state plotting functions in `RevGadgets` allow users to demarcate character states and their posterior probabilities by modifying the colors, shapes, and sizes of node and shoulder symbols. 
 Text annotations may be added to specify states, state posterior probabilities, and the posterior probabilities of nodes. 
 
-&#8680; To reproduce this section, see: `anc_states.R`
+&#8680; To reproduce this section, see: `scripts/anc_states.R`
 
 To plot the output of an ancestral state estimation of placenta type across models, `RevGadgets` first summarizes the `RevBayes` output file and then creates the plot object. The analysis that produced this output file is described in the {% page_ref morph/morph_more %} tutorial.
 
 ```R
-file <- "ase_freeK.tree"
+file <- "data/ase_freeK.tree"
 freeK <- processAncStates(file, 
                           state_labels = c("1" = "Epitheliochorial", 
                                            "2" = "Endotheliochorial", 
@@ -332,7 +341,7 @@ To plot the ancestral states, we provide the processed data, specify that the da
 We also modify the order at which states appear in the legend and the legend position.
 
 ```R
-file <- "simple.ase.tre"
+file <- "data/simple.ase.tre"
 labs <- c("1" = "K", "2" = "O", 
           "3" = "M",  "4" = "H", 
           "5" = "KO", "6" = "KM", 
@@ -382,55 +391,84 @@ These methods produce estimates of rates that `RevGadgets` can plot on branches 
 When the method also includes simulataneous estimation of the ancestral state of a discrete trait, `RevGadets` may plot those ancestral states using the same ancestral state code described above. 
 `RevGadgets` also includes special functionality for visualizing time-varying (episodic) diversification rate estimation.
 The examples below demonstrate the potential for visualizing diversifcation rate estimations using `RevGadgets` for a few standard analyses. 
-
+&#8680; To reproduce this section, see: `scripts/divrates.R`
 
 State-Dependendent Diversification Analysis
 -------------------------------------------
 {:.subsection} 
 
-yada yada this won't make sense yet still gotta add the files etc. 
+State-dependent diversification analyses model the evolution of a trait and estimate state-dependent diversification rates. These models thus estimate posterior distributions of state-specific rates and can reconstruct ancestral states on the phylogeny. The analysis plotted here is described in the {% page_ref sse/bisse %} tutorial. 
+
+`RevGadgets` first reads in and processes the rate file and then plots the state-specific posterior rate distributions. 
 ```R
-bisse_file <- "primates_BiSSE_activity_period.log"
+bisse_file <- "data/primates_BiSSE_activity_period.log"
 pdata <- processSSE(bisse_file)
 plotMuSSE(pdata)
+```
+{% figure %}
+<img src="figures/bisse_rates.png" height="50%" width="50%"/>
+{% figcaption %}
+Posterior distributions of the rates for a BiSSE analysis. 
+{% endfigcaption %}
+{% endfigure %}
 
-bisse_anc_states_file <- "anc_states_primates_BiSSE_activity_period_results.tree"
+The ancestral state estimates may be plotted similarly to in the ancestral states section above. 
+```R
+bisse_anc_states_file <- "data/anc_states_primates_BiSSE_activity_period_results.tree"
 panc <- processAncStates(path = bisse_anc_states_file)
 plotAncStatesMAP(panc, tree_layout = "circular") +
   scale_color_manual(values=colFun(2), breaks = c("A", "B"), name = "State") +
   scale_size_continuous(name = "State posterior")
 
 ```
-imagine figures here 
+{% figure %}
+<img src="figures/bisse_anc_states.png" height="75%" width="75%"/>
+{% figcaption %}
+Ancestral states estimated with a BiSSE analysis. 
+{% endfigcaption %}
+{% endfigure %}
 
 Lineage-Specific Diversification Analysis
 ------------------------------------------
 {:.subsection} 
 
-yada yada also not ready yet and code still broken 
+
+To examine diversification rate variation across the branches of the tree (described in {% page_ref divrate/branch_specific %}), `RevBayes` estimates branch-specific speciation and extinction rates. 
+Those rates can be plotted by reading in the tree and rate log files, associated the rates with the phylogeny (using `processBranchData()`), and plotting the rate of interest by coloring the branches of the phylogeny. 
+
 ```R
-ranch_specific_file <- "primates_BDS_rates.log"
-branch_specific_tree_file <- "primates_tree.nex"
+ranch_specific_file <- "data/primates_BDS_rates.log"
+branch_specific_tree_file <- "data/primates_tree.nex"
 
-rates <- readTrace(branch_specific_file)[[1]]
-tree <- readTrees(branch_specific_tree_file)[[1]][[1]]
+rates <- readTrace(branch_specific_file)
+tree <- readTrees(branch_specific_tree_file)
 
-combined <- processBranchData(tree = tree, df = rates)
+combined <- processBranchData(tree = tree, 
+	                          dat = rates,
+	                          net_div = TRUE)
 
-plotTree(combined, color_branch_by = "avg_lambda", tip_labels_size = 2, tree_layout = "circular")
+plotTree(combined, color_branch_by = "net_div", 
+	     tip_labels_size = 2, tree_layout = "circular")
 
 ```
-
+{% figure %}
+<img src="figures/net_div_bds.png" height="75%" width="75%"/>
+{% figcaption %}
+Net diversifification plotted as the color of branches of a circular phylogeny. 
+{% endfigcaption %}
+{% endfigure %}
 
 Episodic Diversification Analysis
 ---------------------------------
 {:.subsection} 
 
+Instead of varying rates across branches of the phylogeny, the episodic birth death process varies rates through time (see the {% page_ref divrate/ebd %} tutorial). `RevGadgets` visualizes these rates through time with skyline plots.
+
 ```R
-speciation_time_file <- "primates_EBD_speciation_times.log", 
-speciation_rate_file <- "primates_EBD_speciation_rates.log", 
-extinction_time_file <- "primates_EBD_extinction_times.log",  
-extinction_rate_file <- "primates_EBD_extinction_rates.log",
+speciation_time_file <- "data/primates_EBD_speciation_times.log", 
+speciation_rate_file <- "data/primates_EBD_speciation_rates.log", 
+extinction_time_file <- "data/primates_EBD_extinction_times.log",  
+extinction_rate_file <- "data/primates_EBD_extinction_rates.log",
 
 rates <- processDivRates(speciation_time_log = speciation_time_file,
                          speciation_rate_log = speciation_rate_file, 
@@ -455,13 +493,13 @@ Posterior-Predictive Analysis
 {:.section} 
 
 Posterior predictive simulation is a powerful tool for assessing the adequacy of the model and assessing the reliability of phylogenetic inference. 
-&#8680; To reproduce this section, see: `post_pred.R`
+&#8680; To reproduce this section, see: `scripts/post_pred.R`
 
 The analysis that produced this output file is describe in the {% page_ref model_testing_pps/pps_data %} tutorial.
 
 ```R
-sim <- "simulated_data_pps_example.csv"
-emp <- "empirical_data_pps_example.csv"
+sim <- "data/simulated_data_pps_example.csv"
+emp <- "data/empirical_data_pps_example.csv"
 
 t <- processPostPredStats(path_sim = sim, 
                           path_emp = emp)
