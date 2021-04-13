@@ -113,9 +113,10 @@ The output of `readTrace()` may be passed to `R` packages specializing in MCMC d
 For example:
 ```R
 # assess convergence with coda 
-trace_quant_MCMC <- coda::as.mcmc(trace_quant[[1]])
-coda::effectiveSize(trace_quant_MCMC)
-coda::traceplot(trace_quant_MCMC)
+library(coda)
+trace_quant_MCMC <- as.mcmc(trace_quant[[1]])
+effectiveSize(trace_quant_MCMC)
+traceplot(trace_quant_MCMC)
 ```
 
 Alternatively, use the `R` package `convenience` (described here: {% page_ref convergence %}) to assess convergence before processing the data with `RevGadgets`. 
@@ -148,9 +149,9 @@ $`pi[4]`$trace_1
 
 ```
 
-Then plot these distributions:
+Then plot these distributions. `plotTrace()` produces a list of ggplot2 objects, with multiple plots if there are multiple runs in the trace object or if you provide a mix of quantitative and qualitative parameters. Here, only one plot is produced. 
 ```R
-plotTrace(trace = trace_quant, vars = c("pi[1]","pi[2]","pi[3]","pi[4]"))
+plotTrace(trace = trace_quant, vars = c("pi[1]","pi[2]","pi[3]","pi[4]"))[[1]]
 ```
 
 {% figure %}
@@ -187,7 +188,7 @@ Then plot the distributions as histograms:
 ```R
 plotTrace(trace = trace_qual, 
           vars = c("prob_rate_12", "prob_rate_13",
-                   "prob_rate_31", "prob_rate_32"))
+                   "prob_rate_31", "prob_rate_32"))[[1]]
 ```
 
 {% figure %}
@@ -220,16 +221,24 @@ tree <- readTrees(paths = file)
 ```
 `rerootPhylo()` roots the tree and `plotTree()` produces a basic tree plot, which may be modified by changing the formatting of tip labels, adjusting tree line width, and adding posterior probabilities of nodes as internal node labels. This plot object is modifiable in the same way as `ggplot`. Here, we add a scale bar: 
 ```R
+# reroot the tree with Galeopterus variegatus 
+# you can also specify multiple tips to reroot using a clade
 tree_rooted <- rerootPhylo(tree = tree, outgroup = "Galeopterus_variegatus")
 
+# create the plot of the rooted tree
 plot <- plotTree(tree = tree_rooted,
+                 # label nodes the with posterior probabilities
 	             node_labels = "posterior", 
+                 # offset the node labels from the nodes
                  node_labels_offset = 0.005,
-				 node_labels_size = 3, 
+                 # make tree lines more narrow
                  line_width = 0.5,
+                 # italicize tip labels 
 				 tip_labels_italics = TRUE)
 
-plot + ggtree::geom_treescale(x = -0.35, y = -1)
+# add scale bar to the tree and plot
+library(ggtree)
+plot + geom_treescale(x = -0.35, y = -1)
 ```
 
 {% figure %}
@@ -247,18 +256,24 @@ RevGadgets elaborates on the `plotTree` to plot fossilized birth death analyses,
 
 ```R
 file <- "data/bears.mcc.tre"
+
+# read in the tree 
 tree <- readTrees(paths = file)
-plot <- plotFBDTree(tree = tree, 
-                    timeline = TRUE, 
-                    geo_units = "epochs",
-                    tip_labels_italics = TRUE,
-                    tip_labels_remove_underscore = TRUE,
-                    tip_labels_size = 3, 
-                    tip_age_bars = TRUE,
-                    node_age_bars = TRUE, 
-                    age_bars_colored_by = "posterior",
-                    label_sampled_ancs = TRUE) + 
-            theme(legend.position=c(.05, .6))
+
+# plot the FBD tree
+plotFBDTree(tree = tree, 
+          timeline = T, 
+          geo_units = "epochs",
+          tip_labels_italics = T,
+          tip_labels_remove_underscore = T,
+          tip_labels_size = 3, 
+          tip_age_bars = T,
+          node_age_bars = T, 
+          age_bars_colored_by = "posterior",
+          label_sampled_ancs = TRUE) + 
+    # move the legend and make the legend background transparent
+    theme(legend.position=c(.05, .6),
+          legend.background = element_rect(fill="transparent"))
 ```
 
 {% figure %}
@@ -278,11 +293,19 @@ The `plotTree()` function can color the branches of the tree, which is useful fo
 
 ```R
 file <- "data/relaxed_OU_MAP.tre"
+
+# read in the tree
 tree <- readTrees(paths = file)
+
+# plot the tree with rates
 plotTree(tree = tree, 
+         # italicize tip labels
          tip_labels_italics = FALSE,
+         # specify variable to color branches
          color_branch_by = "branch_thetas", 
+         # thicken the tree lines
          line_width = 1.7) + 
+    # move the legend
     theme(legend.position=c(.1, .9))
 ```
 
@@ -310,13 +333,21 @@ To plot the output of an ancestral state estimation of placenta type across mode
 
 ```R
 file <- "data/ase_freeK.tree"
-freeK <- processAncStates(file, 
+
+# process the ancestral states
+freeK <- processAncStates(file,
+                          # Specify state labels. 
+                          # These numbers correspond to 
+                          # your input data file.
                           state_labels = c("1" = "Epitheliochorial", 
                                            "2" = "Endotheliochorial", 
                                            "3" = "Hemochorial"))
-plot <- plotAncStatesMAP(t = freeK, 
-                         tree_layout = "circular") + 
-            theme(legend.position = c(0.57,0.41))
+
+# produce the plot object, showing MAP states at nodes.
+# color corresponds to state, size to the state's posterior probability
+plotAncStatesMAP(t = freeK, 
+                 tree_layout = "circular") + 
+    theme(legend.position = c(0.57,0.41))
 ```
 
 {% figure %}
@@ -325,10 +356,6 @@ plot <- plotAncStatesMAP(t = freeK,
 Ancestral-state estimates of mammalian placental under an asymmetric model of character evolution. Symbol colors correspond to the state with the highest posterior probability at that node; the size of the symbol is proportional to the posterior probability of that state.
 {% endfigcaption %}
 {% endfigure %}
-
-<!-- 
-Let's add an example of pie charts under an anagenetic model
- -->
 
 Cladogenetic models
 -------------------------------------------
@@ -339,6 +366,8 @@ However, cladogenetic models allow for two ways that character states can change
 To remedy this problem `RevGadgets` plots the results of inferences using cladogenetic models on "shoulders" as well as the nodes.
 
 For example, many biogeographic models, including the popular Dispersal-Extirpation-Cladogenesis model described in {% page_ref biogeo/biogeo_intro %}, include cladogenetic change. 
+
+
 `plotAncStatesPie()` is a special case of `plotAncStatesMAP()` where the symbols at nodes are pie charts of the most probable states for that node plus an "other" category of any remaining probability.
 We demonstrate this functionality with a visualization of the ancestral ranges of Hawaiian silverswords estimated using a DEC biogeographic analysis and include shoulder states to indicate cladogenetic as well as anagenetic changes. 
 Because of the large number of states in this analysis (15 possible ranges and one "other" category), more pre-plotting processing is necessary.
@@ -346,12 +375,18 @@ We pass the appropriate ancestral area names to`processAncStates()` and specify 
 To plot the ancestral states, we provide the processed data, specify that the data are "cladogenetic", add text labels to the tips specifying the character state, and modify sizes and horizontal positions for aesthetics.
 We also modify the order at which states appear in the legend and the legend position.
 
-<!-- 
-Let's add comments to this code
- -->
-
 ```R
 file <- "data/simple.ase.tre"
+
+# Create the labels vector.
+# This is a named vector where names correspond 
+# to the computer-readable numbers generated 
+# in the biogeographic analysis and the values 
+# are character strings of whatever you'd like 
+# as labels on the figure. The state.labels.txt
+# file produced in the analysis links the 
+# computer-readable numbers with presence/ absence
+# data for individual ranges.
 
 labs <- c("1" = "K", "2" = "O", 
           "3" = "M",  "4" = "H", 
@@ -361,36 +396,78 @@ labs <- c("1" = "K", "2" = "O",
           "11" = "KOM", "12" = "KOH", 
           "13" = "KMH", "14" = "OMH", 
           "15" = "KOMH")
+# pass the labels vector and file name to the processing script
+dec_example <- processAncStates(file, state_labels = labs)
 
-dec_example <- processAncStatesDiscrete(file, state_labels = labs)
-
+# Generate a custom color palette. Here we get the number of 
+# states in our data from dec_example@state_labels (this may
+# be different from the length of the labs vector if not all
+# states are included in the annotated tree).
 ncol <- length(dec_example@state_labels)
+
+# We use colorRampPalette() to generate a function that will
+# expand the RevGadgets color palette (colFun) to the necessary
+# number of colors, but you can use any colors you like as long 
+# as each state_label has a color. 
 colors <- colorRampPalette(colFun(12))(ncol)
+
+# Name the color vector with your state labels and then order 
+# it in the order you'd like the ranges to appear in your legend.
+# Otherwise, they will appear alphabetically. 
 names(colors) <- dec_example@state_labels
+colors <- colors[c(6,1,4,3,
+                   9,5,2,7,
+                   10,13,12,
+                   14,11,8)]
 
-ordered_labels <- names(colors)[c(6,1,4,3,
-                                  9,5,2,7,
-                                  10,13,12,
-                                  14,11,8,15)]
+# Plot the results with pies at nodes
+pie <- plotAncStatesPie(t = dec_example,
+                        # Include cladogenetic events
+                        cladogenetic = TRUE, 
+                        # Add text labels to the tip pie symbols
+                        tip_labels_states = TRUE,
+                        # Offset those text labels slightly
+                        tip_labels_states_offset = .05,
+                        # Pass in your named and ordered color vector
+                        pie_colors = colors, 
+                        # Offset the tip labels to make room for tip pies
+                        tip_labels_offset = .2, 
+                        # Move tip pies right slightly 
+                        tip_pie_nudge_x = .07,
+                        # Change the size of node and tip pies  
+                        tip_pie_size = 0.8,
+                        node_pie_size = 1.5) +
+  # Move the legend 
+  theme(legend.position = c(0.1, 0.75))
+```
 
-plotAncStatesPie(t = dec_example,
-                 cladogenetic = TRUE, 
-                 tip_labels_states = TRUE,
-                 pie_colors = colors, 
-                 tip_labels_offset = .2, 
-                 tip_pie_nudge_x = -.15, 
-                 node_pie_size = 1.2, 
-                 tip_pie_size = 0.12, 
-                 tip_labels_states_offset = .05) +
-        theme(legend.position = c(0.1, 0.75)) +
-        scale_color_manual(values = c(colors, "grey"), 
-                           breaks = ordered_labels)
+`plotAncStatesMAP()` can also plot cladogenetic models. The `plotAncStatesMAP()` function can plot the same processed output `dec_example` using the same color vector. 
+
+```R
+map <- plotAncStatesMAP(t = dec_example, 
+                        # Include cladogenetic events
+                        cladogenetic = T,
+                        # Pass in the same color vector
+                        node_color = colors,
+                        # adjust tip labels 
+                        tip_labels_offset = 0.1,
+                        # increase tip states symbol size
+                        tip_states_size = 3) +
+  # adjust legend position and remove color guide
+  theme(legend.position = c(0.2, 0.87)) + 
+  guides(color = FALSE)
+```
+
+Compare the two plots side by side using the `gridExtra` package:
+```R
+library(gridExtra)
+grid.arrange(pie,map, ncol = 2)
 ```
 
 {% figure %}
-<img src="figures/ancStatesPie.png" height="50%" width="50%"/>
+<img src="figures/clado_example.png" height="80%" width="80%"/>
 {% figcaption %}
-Ancestral-state estimates of biogeographic area of the Hawaiian silverswords. Pies represent the posterior probability of each state at the node; pies at the branching event correspond to the state of the ancestor immediately before the branching event, and pies on the "shoulders" of the two descendant branches are the states of the two descendants immediately after the branching event.
+Two visualizations of ancestral-state estimates of biogeographic area of the Hawaiian silverswords. On the left, pies represent the posterior probability of each state at the node; pies at the branching event correspond to the state of the ancestor immediately before the branching event, and pies on the "shoulders" of the two descendant branches are the states of the two descendants immediately after the branching event. On the right, symbols at the nodes and shoulders are colored by state and sized by posterior probability.
 {% endfigcaption %}
 {% endfigure %}
 
@@ -433,10 +510,7 @@ The ancestral state estimates may be plotted similarly to in the ancestral state
 ```R
 bisse_anc_states_file <- "data/anc_states_primates_BiSSE_activity_period_results.tree"
 panc <- processAncStates(path = bisse_anc_states_file)
-plotAncStatesMAP(panc, tree_layout = "circular") +
-  scale_color_manual(values=colFun(2), breaks = c("A", "B"), name = "State") +
-  scale_size_continuous(name = "State posterior")
-
+plotAncStatesMAP(panc, tree_layout = "circular")
 ```
 {% figure %}
 <img src="figures/bisse_anc_states.png" height="75%" width="75%"/>
@@ -454,7 +528,7 @@ To examine diversification rate variation across the branches of the tree (descr
 Those rates can be plotted by reading in the tree and rate log files, associated the rates with the phylogeny (using `processBranchData()`), and plotting the rate of interest by coloring the branches of the phylogeny. 
 
 ```R
-ranch_specific_file <- "data/primates_BDS_rates.log"
+branch_specific_file <- "data/primates_BDS_rates.log"
 branch_specific_tree_file <- "data/primates_tree.nex"
 
 rates <- readTrace(branch_specific_file)

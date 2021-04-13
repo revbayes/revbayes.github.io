@@ -15,17 +15,18 @@ plot + ggtree::geom_treescale(x = -0.35, y = -1)
 
 file <- "bears.mcc.tre"
 tree <- readTrees(paths = file)
-plot <- plotFBDTree(tree = tree, 
-      				timeline = T, 
-      				geo_units = "epochs",
-      				tip_labels_italics = T,
-      				tip_labels_remove_underscore = T,
-      				tip_labels_size = 3, 
-      				tip_age_bars = T,
-      				node_age_bars = T, 
-      				age_bars_colored_by = "posterior",
-      				label_sampled_ancs = TRUE) + 
-      		theme(legend.position=c(.05, .6))
+plotFBDTree(tree = tree, 
+          timeline = T, 
+          geo_units = "epochs",
+          tip_labels_italics = T,
+          tip_labels_remove_underscore = T,
+          tip_labels_size = 3, 
+          tip_age_bars = T,
+          node_age_bars = T, 
+          age_bars_colored_by = "posterior",
+          label_sampled_ancs = TRUE) + 
+    theme(legend.position=c(.05, .6),
+          legend.background = element_rect(fill="transparent"))
 
 # branch rates as branch colors
 
