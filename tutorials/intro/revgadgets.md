@@ -327,8 +327,6 @@ Branch-specific optima, $\theta$, under a relaxed Ornstein-Uhlenbeck model. Bran
 {% endfigcaption %}
 {% endfigure %}
 
-To produce the imput file for this plot `data/relaxed_OU_MAP.tre`, you will need to run a slightly modified script from the tutorial. See `scripts/mcmc_relaxed_OU.Rev` for this modification. 
-
 Ancestral-State Reconstruction
 ==============================
 {:.section} 
