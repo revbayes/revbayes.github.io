@@ -1,4 +1,9 @@
+library(RevGadgets)
+library(ggplot2)
+library(gridExtra)
 # ancestral state estimation
+setwd("your_directory")
+
 
 file <- "data/ase_freeK.tree"
 
@@ -14,6 +19,7 @@ freeK <- processAncStates(file,
 # produce the plot object
 plot <- plotAncStatesMAP(t = freeK, 
                          tree_layout = "circular") + 
+            # modify legend location using ggplot2
             theme(legend.position = c(0.57,0.41))
 
 
@@ -45,6 +51,12 @@ labs <- c("1" = "K", "2" = "O",
           "15" = "KOMH")
 # pass the labels vector and file name to the processing script
 dec_example <- processAncStates(file, state_labels = labs)
+
+# plot as-is:
+# plotAncStatesPie(dec_example, 
+#                  cladogenetic = T, 
+#                  tip_labels_offset = 0.2)
+
 
 # Generate a custom color palette. Here we get the number of 
 # states in our data from dec_example@state_labels (this may
@@ -100,6 +112,5 @@ map <- plotAncStatesMAP(t = dec_example,
   theme(legend.position = c(0.2, 0.87)) + 
   guides(color = FALSE)
 
-# compare plots side by side 
-library(gridExtra)
+# compare plots side by side using the gridExtra package
 grid.arrange(pie,map, ncol = 2) 

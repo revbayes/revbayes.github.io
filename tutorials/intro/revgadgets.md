@@ -17,7 +17,7 @@ include_files:
 - data/ase_freeK.tree
 - data/simple.ase.tre
 - data/primates_BiSSE_activity_period.log
-- data/anc_states_primates_BiSSE_activity_period_results.tree
+- data/anc_states_BiSSE.tree
 - data/primates_tree.nex
 - data/primates_BDS_rates.log
 - data/primates_EBD_extinction_rates.log
@@ -77,6 +77,16 @@ Open `R` and make sure your working directory is set to the directory with the d
 For more information on how to customize these plots, see the associated documentation for each function (e.g., `?readTrace`)).
 Submit feature requests or bug reports with Issues on [GitHub](https://github.com/cmt2/RevGadgets). 
 
+Before running the code chunks below, load all the libraries used in the tutorial. You may need to install these packages separately.
+
+```R
+library(RevGadgets)
+library(coda)
+library(ggplot2)
+library(ggtree)
+library(grid)
+library(grdExtra)
+```
 
 Visualizing Parameter Estimates 
 ==============
@@ -91,12 +101,7 @@ The following code demonstrates how to process and visualize the MCMC trace file
 
 &#8680; The code in this section is contained in the script: `scripts/parameter_estimates.R`
 
-First, load the `RevGadgets` package: 
-```R
-library("RevGadgets")
-```
-
-Then, read in and process the trace file. Burnin (the samples taken before the Markov chain reached stationarity) may be removed at this stage or after examining the trace file further.
+First, read in and process the trace file. Burnin (the samples taken before the Markov chain reached stationarity) may be removed at this stage or after examining the trace file further.
 ```R
 # specify the input file
 file <- "data/primates_cytb_GTR.log"
@@ -151,7 +156,8 @@ $`pi[4]`$trace_1
 
 Then plot these distributions. `plotTrace()` produces a list of ggplot2 objects, with multiple plots if there are multiple runs in the trace object or if you provide a mix of quantitative and qualitative parameters. Here, only one plot is produced. 
 ```R
-plotTrace(trace = trace_quant, vars = c("pi[1]","pi[2]","pi[3]","pi[4]"))[[1]]
+plotTrace(trace = trace_quant, 
+          vars = c("pi[1]","pi[2]","pi[3]","pi[4]"))[[1]]
 ```
 
 {% figure %}
@@ -165,10 +171,14 @@ These functions may also process and plot posterior estimates of qualitative (di
 
 First, read and summarize the data: 
 ```R
+# read in trace
 file <- "data/freeK_RJ.log"
 trace_qual <- readTrace(path = file)
-summarizeTrace(trace_qual, vars = c("prob_rate_12", "prob_rate_13", "prob_rate_21",
-                                    "prob_rate_23", "prob_rate_31", "prob_rate_32"))
+
+# summarize parameters 
+summarizeTrace(trace_qual, 
+               vars = c("prob_rate_12", "prob_rate_13", "prob_rate_21",
+                        "prob_rate_23", "prob_rate_31", "prob_rate_32"))
 ```
 ```R
 $prob_rate_12
@@ -194,7 +204,7 @@ plotTrace(trace = trace_qual,
 {% figure %}
 <img src="figures/traceQual.png" height="50%" width="50%"/>
 {% figcaption %}
-The posterior distributions whether particular rates are included in the model of character evolution. Colored bars are included in the 95% credible set. 
+The posterior distributions of whether particular rates are included in a model of character evolution. Colored bars are included in the 95% credible set. 
 {% endfigcaption %}
 {% endfigure %}
 
@@ -236,7 +246,7 @@ plot <- plotTree(tree = tree_rooted,
                  # italicize tip labels 
 				 tip_labels_italics = TRUE)
 
-# add scale bar to the tree and plot
+# add scale bar to the tree and plot with ggtree
 library(ggtree)
 plot + geom_treescale(x = -0.35, y = -1)
 ```
@@ -271,9 +281,10 @@ plotFBDTree(tree = tree,
           node_age_bars = T, 
           age_bars_colored_by = "posterior",
           label_sampled_ancs = TRUE) + 
-    # move the legend and make the legend background transparent
-    theme(legend.position=c(.05, .6),
-          legend.background = element_rect(fill="transparent"))
+    # use ggplot2 to move the legend and make 
+    # the legend background transparent
+        theme(legend.position=c(.05, .6),
+              legend.background = element_rect(fill="transparent"))
 ```
 
 {% figure %}
@@ -289,7 +300,7 @@ Branch rates
 -------------
 {:.subsection} 
 
-The `plotTree()` function can color the branches of the tree, which is useful for indicating branch rates, or other continuous parameters. For example, `plotTree()` here colors the branches by branch-specific optima (thetas) from a relaxed Ornstein_Uhlenbeck model of body size evolution in whales. The {% page_ref cont_traits/relaxed_ou %} tutorial covers this type of analysis. 
+The `plotTree()` function can color the branches of the tree, which is useful for indicating branch rates or other continuous parameters. For example, here `plotTree()` colors the branches by branch-specific optima (thetas) from a relaxed Ornstein-Uhlenbeck model of body size evolution in whales. The {% page_ref cont_traits/relaxed_ou %} tutorial covers this type of analysis. 
 
 ```R
 file <- "data/relaxed_OU_MAP.tre"
@@ -305,7 +316,7 @@ plotTree(tree = tree,
          color_branch_by = "branch_thetas", 
          # thicken the tree lines
          line_width = 1.7) + 
-    # move the legend
+    # move the legend with ggplot2
     theme(legend.position=c(.1, .9))
 ```
 
@@ -316,7 +327,7 @@ Branch-specific optima, $\theta$, under a relaxed Ornstein-Uhlenbeck model. Bran
 {% endfigcaption %}
 {% endfigure %}
 
-To produce the imput file for this plot `relaxed_OU_MAP.tre`, you will need to run a slightly modified script from the tutorial. See `mcmc_relaxed_OU.Rev` for this modification. 
+To produce the imput file for this plot `data/relaxed_OU_MAP.tre`, you will need to run a slightly modified script from the tutorial. See `scripts/mcmc_relaxed_OU.Rev` for this modification. 
 
 Ancestral-State Reconstruction
 ==============================
@@ -347,6 +358,7 @@ freeK <- processAncStates(file,
 # color corresponds to state, size to the state's posterior probability
 plotAncStatesMAP(t = freeK, 
                  tree_layout = "circular") + 
+    # modify legend location using ggplot2
     theme(legend.position = c(0.57,0.41))
 ```
 
@@ -398,11 +410,22 @@ labs <- c("1" = "K", "2" = "O",
           "15" = "KOMH")
 # pass the labels vector and file name to the processing script
 dec_example <- processAncStates(file, state_labels = labs)
+```
+We could plot this as is with little processing (output not shown). However, we are going to walk through creating a custom color palette and then compare this plot to the same data plotted with plotAncStatesMAP().
 
-# Generate a custom color palette. Here we get the number of 
-# states in our data from dec_example@state_labels (this may
-# be different from the length of the labs vector if not all
-# states are included in the annotated tree).
+```R
+# plotAncStatesPie(dec_example, 
+#                  cladogenetic = T, 
+#                  tip_labels_offset = 0.2)
+
+```
+
+Plot using a custom color palette: 
+```R
+# Here we get the number of states in our data from 
+# dec_example@state_labels (this may be different from 
+# the length of the labs vector if not all states are 
+# included in the annotated tree).
 ncol <- length(dec_example@state_labels)
 
 # We use colorRampPalette() to generate a function that will
@@ -460,7 +483,6 @@ map <- plotAncStatesMAP(t = dec_example,
 
 Compare the two plots side by side using the `gridExtra` package:
 ```R
-library(gridExtra)
 grid.arrange(pie,map, ncol = 2)
 ```
 
@@ -493,8 +515,11 @@ State-dependent diversification analyses model the evolution of a trait and esti
 
 `RevGadgets` first reads in and processes the rate file and then plots the state-specific posterior rate distributions. 
 ```R
+# read in and process the log file
 bisse_file <- "data/primates_BiSSE_activity_period.log"
 pdata <- processSSE(bisse_file)
+
+# plot the rates
 plotMuSSE(pdata)
 ```
 {% figure %}
@@ -508,9 +533,12 @@ While the above example includes two states (a BiSSE analysis), the same workflo
 
 The ancestral state estimates may be plotted similarly to in the ancestral states section above. 
 ```R
-bisse_anc_states_file <- "data/anc_states_primates_BiSSE_activity_period_results.tree"
-panc <- processAncStates(path = bisse_anc_states_file)
-plotAncStatesMAP(panc, tree_layout = "circular")
+# read in and process the ancestral states 
+bisse_anc_states_file <- "data/anc_states_BiSSE.tree"
+p_anc <- processAncStates(path = bisse_anc_states_file)
+
+# plot the ancestral states
+plotAncStatesMAP(p_anc, tree_layout = "circular")
 ```
 {% figure %}
 <img src="figures/bisse_anc_states.png" height="75%" width="75%"/>
@@ -556,18 +584,20 @@ Episodic Diversification Analysis
 Instead of varying rates across branches of the phylogeny, the episodic birth death process varies rates through time (see the {% page_ref divrate/ebd %} tutorial). `RevGadgets` visualizes these rates through time with skyline plots.
 
 ```R
-speciation_time_file <- "data/primates_EBD_speciation_times.log", 
-speciation_rate_file <- "data/primates_EBD_speciation_rates.log", 
-extinction_time_file <- "data/primates_EBD_extinction_times.log",  
-extinction_rate_file <- "data/primates_EBD_extinction_rates.log",
-
+# read in and process rates
+speciation_time_file <- "data/primates_EBD_speciation_times.log" 
+speciation_rate_file <- "data/primates_EBD_speciation_rates.log" 
+extinction_time_file <- "data/primates_EBD_extinction_times.log"  
+extinction_rate_file <- "data/primates_EBD_extinction_rates.log"
 rates <- processDivRates(speciation_time_log = speciation_time_file,
                          speciation_rate_log = speciation_rate_file, 
                          extinction_time_log = extinction_time_file, 
                          extinction_rate_log = extinction_rate_file, 
                          burnin = 0.25)
 
+# plot rates through time 
 plotDivRates(rates = rates) + 
+        # change labels with ggplot2
         xlab("Millions of years ago") +
         ylab("Rate per million years")
 ```
@@ -598,17 +628,17 @@ t <- processPostPredStats(path_sim = sim,
 plots <- plotPostPredStats(data = t)
 ```
 
-To plot a subset of the parameters in a single figure, use the `gridExtra` package.
+To plot a subset of the parameters in a single figure, use the `grid` package.
 
 ```R
-library(ggplot2)
-library(gridExtra)
-
-grid.arrange(plots[[1]] + theme(axis.title.y = element_blank()),
-             plots[[3]] + theme(axis.title.y = element_blank()),
-             plots[[5]] + theme(axis.title.y = element_blank()),
-             plots[[7]] + theme(axis.title.y = element_blank()),
-             left = "Density")
+# arrange a subset of them with grid and ggplot2
+grid.newpage()
+grid.draw(
+  cbind(rbind(ggplotGrob(plots[[1]]),
+              ggplotGrob(plots[[5]])),
+        rbind(ggplotGrob(plots[[3]] + theme(axis.title.y = element_blank())  ),
+              ggplotGrob(plots[[7]] + theme(axis.title.y = element_blank()) )))
+)
 ```
 
 {% figure %}
