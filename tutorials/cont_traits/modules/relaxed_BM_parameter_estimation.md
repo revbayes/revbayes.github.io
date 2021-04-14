@@ -18,9 +18,9 @@ In this tutorial, we use the 66 vertebrate phylogenies and (log) body-size datas
 
 {% subsection Read the data %}
 
-We begin by deciding which of the 66 vertebrate datasets to use. Here, we assume we are analyzing the first dataset (_Acanthuridae_), but you should feel free to choose any of the datasets.
+We begin by deciding which of the 66 vertebrate datasets to use. Here, we assume we are analyzing the first dataset (Cetacea), but you should feel free to choose any of the datasets.
 ```
-dataset <- 1
+dataset <- 11
 ```
 
 Now, we read in the (time-calibrated) tree corresponding to our chosen dataset.
@@ -143,42 +143,53 @@ specified variables to the screen with `mnScreen`:
 ```
 monitors.append( mnScreen(printgen=1000, sigma2_root, num_rate_changes) )
 ```
+Finally, create a monitor that associates the branch-specific rates to each branch in the tree.
+```
+monitors.append( mnExtNewick(filename="output/relaxed_BM.trees", isNodeParameter=TRUE, printgen=10, separator=TAB, tree=tree, branch_rates) )
+```
 
 {% subsubsection Initializing and Running the MCMC Simulation %}
 
-With a fully specified model, a set of monitors, and a set of moves, we
-can now set up the MCMC algorithm that will sample parameter values in
-proportion to their posterior probability. The `mcmc()` function will
+With a fully specified model, a set of monitors, and a set of moves, we can now set up the MCMC algorithm that will sample parameter values in proportion to their posterior probability. The `mcmc()` function will
 create our MCMC object:
 ```
 mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
 ```
+
 Now, run the MCMC:
 ```
 mymcmc.run(generations=50000)
 ```
-When the analysis is complete, you will have the monitored files in your
-output directory.
+
+Now, summarize the branch-specific rates in the annotated tree file.
+```
+treetrace = readTreeTrace("output/relaxed_BM.trees")
+map_tree = mapTree(treetrace,"output/relaxed_BM_MAP.tre")
+```
 
 &#8680; The `Rev` file for performing this analysis: `mcmc_relaxed_BM.Rev`
 
-You can then visualize the branch-specific rates by plotting them using our `R` package `RevGadgets`. Just start R in the main directory for this analysis and then type the following commands:
-```R
+You can then visualize the branch-specific rates by plotting them using our `R` package `RevGadgets`. Just start R in the main directory for this analysis and then type the following commands.
+
+First, load `RevGadgets`:
+```{R}
 library(RevGadgets)
-
-dataset <- 1
-my_tree <- read.nexus("data/trees.nex")[[dataset]]
-my_output_file <- "output/relaxed_BM.log"
-
-tree_plot <- plot_relaxed_branch_rates_tree(tree           = my_tree,
-                                            output_file    = my_output_file,
-                                            parameter_name = "branch_rates")
-
-ggsave("relaxed_BM.pdf", width=15, height=15, units="cm")
 ```
 
+Next, read in the tree annotated with the branch rates:
+```{R}
+tree <- readTrees("output/relaxed_BM_MAP.tre")
+```
+
+Finally, plot the tree with the branch rates:
+```{R}
+plotTree(tree, color_branch_by="branch_rates")
+```
+
+&#8680; The `R` script for plotting this output: `plot_relaxed_BM.R`
+
 {% figure fig_relaxed_BM %}
-<img src="figures/relaxed_BM.png" width="100%" height="100%" />
+<img src="figures/relaxed_BM.png" width="75%" height="75%" />
 {% figcaption %}
 **Estimated branch-specific rates of Brownian-motion evolution.**
 Here we show the results of our example analysis.

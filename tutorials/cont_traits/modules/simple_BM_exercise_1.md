@@ -1,14 +1,35 @@
 {% subsection Exercise 1 %}
-- Run an MCMC simulation to estimate the posterior distribution of the BM rate (`sigma`).
-- Load the generated output file into `Tracer`: What is the mean posterior estimate of `sigma` and what is the estimated HPD?
-- Compare the prior mean with the posterior mean. (**Hint:** Use the optional argument `underPrior=TRUE` in the function `mymcmc.run()`) Are they different (*e.g.,* {% ref fig_prior_posterior %})? Is the posterior mean outside the prior 95% probability interval?
-- Repeat the analysis with a loguniform prior ranging from $1e-10$ to $1e10$.
+- Run an MCMC simulation to sample the posterior distribution of the BM rate (`sigma2`).
+- Run an MCMC simulation to sample the _prior_ distribution of the BM rate (**Hint:** You can run an analysis under the prior using the script `scripts/mcmc_BM_prior.Rev`).
+- Compare the posterior and the prior using `RevGadgets`:
+
+First, we need to load the R package `RevGadgets`
+```{R}
+library(RevGadgets)
+```
+
+Next, read in the MCMC output from the posterior and the prior:
+```{R}
+simple_BM_posterior <- readTrace("output/simple_BM.log")[[1]]
+simple_BM_prior     <- readTrace("output/simple_BM_prior.log")[[1]]
+```
+
+Next, add the samples of `sigma2` from the prior to the posterior (and rename them to `sigma2_prior`):
+```{R}
+simple_BM_posterior$sigma2_prior <- simple_BM_prior$sigma2
+```
+
+Finally, we plot the prior and posterior distributions:
+```{R}
+plotTrace(list(simple_BM_posterior), vars=c("sigma2", "sigma2_prior"))
+```
 
 {% figure fig_prior_posterior %}
-<img src="figures/sigma_prior_posterior.png" height="50%" width="50%" />
+<img src="figures/sigma_prior_posterior.png" height="75%" width="75%" />
 {% figcaption %}
-Estimates of the posterior and prior distribution of the `sigma` visualized in
-`Tracer`. The prior (green curve) shows the loguniform
-distribution that we chose as the prior distribution.
+Estimates of the posterior (blue) and prior (red) distribution of the `sigma2` visualized in `RevGadgets`.
 {% endfigcaption %}
 {% endfigure %}
+
+>You can also find all these commands in the file called **plot_BM.R** which you can run as a script in R.
+{:.instruction}

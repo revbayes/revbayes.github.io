@@ -200,21 +200,40 @@ output directory.
 
 &#8680; The `Rev` file for performing this analysis: `mcmc_multivariate_BM.Rev`
 
-You can then visualize the correlation parameters in `Tracer`.
+You can then visualize the correlation parameters in `RevGadgets`.
+
+First, we need to load the R package `RevGadgets`
+```{R}
+library(RevGadgets)
+```
+
+Next, read the MCMC output:
+```{R}
+samples <- readTrace("output/multivariate_BM.log")
+```
+
+Finally, plot the posterior distribution of the first 8 correlation parameters rate parameters (the top row of the correlation matrix, which represents how characters two through 9 are correlated with body size):
+```{R}
+plotTrace(samples, vars=paste0("correlations[",1:8,"]"))
+```
 
 {% figure rho_posterior %}
 <img src="figures/correlations.png" height="50%" width="50%" />
 {% figcaption %}
-Estimates of the posterior distribution of the correlation between the first trait (body size) against each of the remaining characters, visualized in `Tracer`. Characters 6 and 9 (buccal length and head length, respectively) are highly correlated with body size, while character 8 (head height) seems to be less positively correlated.
+Estimates of the posterior distribution of the correlation between the first trait (body size) against each of the remaining characters, visualized in `RevGadgets`. Characters 6 and 9 (buccal length and head length, respectively) are highly correlated with body size, while character 8 (head height) seems to be less positively correlated.
 {% endfigcaption %}
 {% endfigure %}
+
+&#8680; The `R` file for plotting these results: `plot_mvBM.R`
 
 {% aside Advanced: Hypothesis Tests for Correlation Parameters %}
 
 We can test the hypothesis that characters $i$ and $j$ are correlated using the Savage-Dickey ratio {% cite Dickey1971 Huelsenbeck2003 %}. Using the Savage-Dickey ratio, the Bayes Factor for the hypothesis that parameter $\theta$ has a specific value is $\text{BF} = P(\theta \mid X) \div P(\theta)$. Therefore, we can use the Savage-Dickey ratio to compute the Bayes factor that two characters are uncorrelated if we can compute the posterior probability of $\rho_{i,j} = 0$ (the numerator) and the prior probability of $\rho_{i,j} = 0$ (the denominator).
 
-Under the LKJ distribution, the marginal prior distribution of $(\rho_{i,j} + 1) / 2$ is a Beta distribution with parameters $\alpha = \beta = \eta + (c - 2) / 2$ (where $c$ is the number of continuous characters). Knowing this, we can use our posterior samples to compute the Bayes factor for the uncorrelated hypothesis (which is the inverse the Bayes factor for the correlated hypothesis) in R:
+Under the LKJ distribution, the marginal prior distribution of $(\rho_{i,j} + 1) / 2$ is a Beta distribution with parameters $\alpha = \beta = \eta + (c - 2) / 2$ (where $c$ is the number of continuous characters). Knowing this, we can use our posterior samples to compute the Bayes factor for the uncorrelated hypothesis (which is the inverse the Bayes factor for the correlated hypothesis) in `R`:
 ```R
+library(RevGadgets)
+
 eta   <- 1
 c     <- 9
 alpha <- eta + (c - 2) / 2
@@ -223,8 +242,8 @@ alpha <- eta + (c - 2) / 2
 corr  <- 20 # this is the correlation parameter between characters 3 and 8
 
 # read the samples from the posterior
-samples <- read.table("output/multivariate_BM.log", header=TRUE, sep="\t", check.names=FALSE)
-correlation_samples = samples[,paste0("correlations[",corr,"]")]
+samples <- readTrace("output/multivariate_BM.log")
+correlation_samples <- samples[[1]][,paste0("correlations[",corr,"]")]
 
 # fit a density to the samples
 posterior_density <- density(correlation_samples)

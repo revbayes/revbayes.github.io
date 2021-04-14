@@ -230,6 +230,7 @@ For our MCMC analysis, we need to set up a vector of *monitors* to record the st
 ```
 monitors.append( mnModel(filename="output/state_dependent_BM.log", printgen=10) )
 ```
+
 Additionally, create a screen monitor that will report the states of
 specified variables to the screen with `mnScreen`:
 ```
@@ -253,15 +254,33 @@ When the analysis is complete, you will have the monitored files in your output 
 
 &#8680; The `Rev` file for performing this analysis: `mcmc_state_dependent_BM.Rev`
 
-You can then visualize the absolute rates of state-dependent evolution ($\beta^2 \times \boldsymbol{\zeta^2}$) in `Tracer`.
+You can then visualize the absolute rates of state-dependent evolution ($\beta^2 \times \boldsymbol{\zeta^2}$) in `RevGadgets`.
+
+First, we need to load the R package `RevGadgets`
+```{R}
+library(RevGadgets)
+```
+
+Next, read the MCMC output:
+```{R}
+samples <- readTrace("output/state_dependent_BM.log")
+```
+
+Finally, plot the posterior distribution of the state-dependent rate parameters:
+```{R}
+plotTrace(samples, match="overall_rate")
+```
 
 {% figure zeta_posterior %}
 <img src="figures/zeta_posterior.png" height="75%" width="75%" />
 {% figcaption %}
 Estimates of the posterior distribution of the $\beta^2 \times \zeta^2$ visualized in
-`Tracer`.
+`RevGadgets`.
 {% endfigcaption %}
 {% endfigure %}
+
+&#8680; The `R` file for performing this analysis: `plot_state_dependent_BM_rates.R`
+
 
 {% aside Results: Multivariate model %}
 
@@ -279,7 +298,7 @@ However, comparing the posterior distribution for the number of habitat transiti
 {% figure num_transitions_comparison %}
 <img src="figures/num_transitions_posterior.png" height="75%" width="75%" />
 {% figcaption %}
-Estimates of the posterior distribution of the the number of habitat transitions under the univariate model (green) and the multivariate model (blue).
+Estimates of the posterior distribution of the number of habitat transitions under the univariate model (blue) and the multivariate model (red).
 {% endfigcaption %}
 {% endfigure %}
 

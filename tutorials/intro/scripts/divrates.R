@@ -34,11 +34,13 @@ plotTree(combined, color_branch_by = "net_div", tip_labels_size = 2, tree_layout
 
 # episodic birth-death
 
-# read in and process rates
+# specify the output files
 speciation_time_file <- "data/primates_EBD_speciation_times.log" 
 speciation_rate_file <- "data/primates_EBD_speciation_rates.log" 
 extinction_time_file <- "data/primates_EBD_extinction_times.log"  
 extinction_rate_file <- "data/primates_EBD_extinction_rates.log"
+
+# read in and process rates
 rates <- processDivRates(speciation_time_log = speciation_time_file,
                          speciation_rate_log = speciation_rate_file, 
                          extinction_time_log = extinction_time_file, 

@@ -6,6 +6,7 @@ level: 6
 order: 1.1
 prerequisites:
 - intro
+- intro/revgadgets
 - mcmc
 - cont_traits/cont_trait_intro
 index: true
@@ -14,6 +15,7 @@ include_all: false
 include_files:
 - data/trees.nex
 - data/traits.nex
+- scripts/plot_BM.R
 - scripts/mcmc_BM.Rev
 ---
 

@@ -28,7 +28,6 @@ include_files:
 - data/simulated_data_pps_example.csv
 - scripts/parameter_estimates.R
 - scripts/visualize_trees.R
-- scripts/mcmc_relaxed_OU.Rev
 - scripts/anc_states.R
 - scripts/divrates.R
 - scripts/post_pred.R
@@ -58,16 +57,17 @@ install.packages("devtools")
 devtools::install_github("cmt2/RevGadgets")
 ```
 
-{% aside Note about `magick` dependency %}
+Note about `magick` dependency
+------------------------------
+{:.subsection} 
 
-`RevGadgets` depends on the `R` package `magick`, which in turn depends on external software `ImageMagick`. If `RevGadgets` installation fails, you may need to install `ImageMagick`. On a mac or Linux machine, this can be done using homebrew on terminal or your Linux shell:
-
+`RevGadgets` depends on the `R` package `magick`, which in turn depends on external software `ImageMagick`. If `RevGadgets` installation fails, you may need to install `ImageMagick`. On macOS or Linux, this can be done using `homebrew` at the command line:
 ```
 brew install imagemagick
 ```
+
 Alternatively, visit the [ImageMagick website](https://imagemagick.org/script/download.php) for more download options.
 
-{% endaside %}
 
 Getting Started
 ===============
@@ -129,10 +129,10 @@ Alternatively, use the `R` package `convenience` (described here: {% page_ref co
 `RevGadgets` provides its own core functions for summarizing and visualizing traces of specific parameters. 
 `SummarizeTrace()` calculates the mean and 95% credible interval for quantitative variables and the 95% credible set for qualitative variables.
 To examine the stationary frequency (pi) parameter values in our trace file, summarize their distributions:
-
 ```R
 summarizeTrace(trace = trace_quant, vars =  c("pi[1]","pi[2]","pi[3]","pi[4]"))
 ```
+The following summaries will be printed to the screen:
 ```R
 $`pi[1]`
 $`pi[1]`$trace_1
@@ -156,8 +156,7 @@ $`pi[4]`$trace_1
 
 Then plot these distributions. `plotTrace()` produces a list of ggplot2 objects, with multiple plots if there are multiple runs in the trace object or if you provide a mix of quantitative and qualitative parameters. Here, only one plot is produced. 
 ```R
-plotTrace(trace = trace_quant, 
-          vars = c("pi[1]","pi[2]","pi[3]","pi[4]"))[[1]]
+plotTrace(trace = trace_quant, vars = c("pi[1]","pi[2]","pi[3]","pi[4]"))[[1]]
 ```
 
 {% figure %}
@@ -167,7 +166,7 @@ The posterior densities of the nucleotide stationary frequencies under a GTR sub
 {% endfigcaption %}
 {% endfigure %}
 
-These functions may also process and plot posterior estimates of qualitative (discrete) variables, such as the the binary character indicating if certain transition rates among character states exist (i.e. if the corresponding transitions are possible), from a reversible jump MCMC (rjMCMC) ancestral-state reconstruction analysis. See the {% page_ref morph/morph_more %} tutorial for information on performing this RevBayes analysis. 
+These functions may also process and plot posterior estimates of discrete variables, such as the the binary character indicating if certain transition rates among character states exist (i.e. if the corresponding transitions are possible), from a reversible jump MCMC (rjMCMC) ancestral-state reconstruction analysis. See the {% page_ref morph/morph_more %} tutorial for information on performing this RevBayes analysis. 
 
 First, read and summarize the data: 
 ```R
@@ -180,6 +179,7 @@ summarizeTrace(trace_qual,
                vars = c("prob_rate_12", "prob_rate_13", "prob_rate_21",
                         "prob_rate_23", "prob_rate_31", "prob_rate_32"))
 ```
+The following summaries will be printed to the screen:
 ```R
 $prob_rate_12
 $prob_rate_12$trace_1
@@ -238,13 +238,13 @@ tree_rooted <- rerootPhylo(tree = tree, outgroup = "Galeopterus_variegatus")
 # create the plot of the rooted tree
 plot <- plotTree(tree = tree_rooted,
                  # label nodes the with posterior probabilities
-	             node_labels = "posterior", 
+                 node_labels = "posterior", 
                  # offset the node labels from the nodes
                  node_labels_offset = 0.005,
                  # make tree lines more narrow
                  line_width = 0.5,
                  # italicize tip labels 
-				 tip_labels_italics = TRUE)
+                 tip_labels_italics = TRUE)
 
 # add scale bar to the tree and plot with ggtree
 library(ggtree)
@@ -272,15 +272,15 @@ tree <- readTrees(paths = file)
 
 # plot the FBD tree
 plotFBDTree(tree = tree, 
-          timeline = T, 
-          geo_units = "epochs",
-          tip_labels_italics = T,
-          tip_labels_remove_underscore = T,
-          tip_labels_size = 3, 
-          tip_age_bars = T,
-          node_age_bars = T, 
-          age_bars_colored_by = "posterior",
-          label_sampled_ancs = TRUE) + 
+            timeline = T, 
+            geo_units = "epochs",
+            tip_labels_italics = T,
+            tip_labels_remove_underscore = T,
+            tip_labels_size = 3, 
+            tip_age_bars = T,
+            node_age_bars = T, 
+            age_bars_colored_by = "posterior",
+            label_sampled_ancs = TRUE) + 
     # use ggplot2 to move the legend and make 
     # the legend background transparent
         theme(legend.position=c(.05, .6),
@@ -380,11 +380,11 @@ To remedy this problem `RevGadgets` plots the results of inferences using cladog
 For example, many biogeographic models, including the popular Dispersal-Extirpation-Cladogenesis model described in {% page_ref biogeo/biogeo_intro %}, include cladogenetic change. 
 
 
-`plotAncStatesPie()` is a special case of `plotAncStatesMAP()` where the symbols at nodes are pie charts of the most probable states for that node plus an "other" category of any remaining probability.
+`plotAncStatesPie()` represents the distribution of ancestral states at nodes as pie charts of the three most probable states for that node plus an "other" category of any remaining probability.
 We demonstrate this functionality with a visualization of the ancestral ranges of Hawaiian silverswords estimated using a DEC biogeographic analysis and include shoulder states to indicate cladogenetic as well as anagenetic changes. 
 Because of the large number of states in this analysis (15 possible ranges and one "other" category), more pre-plotting processing is necessary.
-We pass the appropriate ancestral area names to`processAncStates()` and specify custom colors in a named vector.
-To plot the ancestral states, we provide the processed data, specify that the data are "cladogenetic", add text labels to the tips specifying the character state, and modify sizes and horizontal positions for aesthetics.
+We pass the appropriate ancestral area names to `processAncStates()` and specify custom colors in a named vector.
+To plot the ancestral states, we provide the processed data, specify that the corresponding model is "cladogenetic", add text labels to the tips specifying the character state, and modify sizes and horizontal positions for aesthetics.
 We also modify the order at which states appear in the legend and the legend position.
 
 ```R
@@ -399,28 +399,24 @@ file <- "data/simple.ase.tre"
 # file produced in the analysis links the 
 # computer-readable numbers with presence/ absence
 # data for individual ranges.
-
-labs <- c("1" = "K", "2" = "O", 
-          "3" = "M",  "4" = "H", 
-          "5" = "KO", "6" = "KM", 
-          "7" = "OM", "8" = "KH", 
-          "9" = "OH", "10" = "MH", 
+labs <- c("1"  = "K",   "2"  = "O", 
+          "3"  = "M",   "4"  = "H", 
+          "5"  = "KO",  "6"  = "KM", 
+          "7"  = "OM",  "8"  = "KH", 
+          "9"  = "OH",  "10" = "MH", 
           "11" = "KOM", "12" = "KOH", 
           "13" = "KMH", "14" = "OMH", 
           "15" = "KOMH")
+
 # pass the labels vector and file name to the processing script
 dec_example <- processAncStates(file, state_labels = labs)
 ```
-We could plot this as is with little processing (output not shown). However, we are going to walk through creating a custom color palette and then compare this plot to the same data plotted with plotAncStatesMAP().
-
+We could plot this as is with little processing using the following code (output not shown). However, we are going to walk through creating a custom color palette and then compare this plot to the same data plotted with plotAncStatesMAP().
 ```R
-# plotAncStatesPie(dec_example, 
-#                  cladogenetic = T, 
-#                  tip_labels_offset = 0.2)
-
+# plotAncStatesPie(dec_example, cladogenetic = T, tip_labels_offset = 0.2)
 ```
 
-Plot using a custom color palette: 
+Here's how you specify a custom color palette: 
 ```R
 # Here we get the number of states in our data from 
 # dec_example@state_labels (this may be different from 
@@ -560,15 +556,14 @@ branch_specific_file <- "data/primates_BDS_rates.log"
 branch_specific_tree_file <- "data/primates_tree.nex"
 
 rates <- readTrace(branch_specific_file)
-tree <- readTrees(branch_specific_tree_file)
+tree  <- readTrees(branch_specific_tree_file)
 
-combined <- processBranchData(tree = tree, 
-	                          dat = rates,
-	                          net_div = TRUE)
+combined <- processBranchData(tree    = tree, 
+                              dat     = rates,
+                              net_div = TRUE)
 
 plotTree(combined, color_branch_by = "net_div", 
-	     tip_labels_size = 2, tree_layout = "circular")
-
+         tip_labels_size = 2, tree_layout = "circular")
 ```
 {% figure %}
 <img src="figures/net_div_bds.png" height="75%" width="75%"/>
@@ -584,11 +579,13 @@ Episodic Diversification Analysis
 Instead of varying rates across branches of the phylogeny, the episodic birth death process varies rates through time (see the {% page_ref divrate/ebd %} tutorial). `RevGadgets` visualizes these rates through time with skyline plots.
 
 ```R
-# read in and process rates
+# specify the output files
 speciation_time_file <- "data/primates_EBD_speciation_times.log" 
 speciation_rate_file <- "data/primates_EBD_speciation_rates.log" 
 extinction_time_file <- "data/primates_EBD_extinction_times.log"  
 extinction_rate_file <- "data/primates_EBD_extinction_rates.log"
+
+# read in and process rates
 rates <- processDivRates(speciation_time_log = speciation_time_file,
                          speciation_rate_log = speciation_rate_file, 
                          extinction_time_log = extinction_time_file, 
@@ -619,13 +616,18 @@ Posterior predictive simulation is a powerful tool for assessing the adequacy of
 The analysis that produced this output file is describe in the {% page_ref model_testing_pps/pps_data %} tutorial.
 
 ```R
-sim <- "data/simulated_data_pps_example.csv"
-emp <- "data/empirical_data_pps_example.csv"
+# specify the simulated statistics file
+sim <- "simulated_data_pps_example.csv"
 
-t <- processPostPredStats(path_sim = sim, 
-                          path_emp = emp)
+# specify the empirical statistics file
+emp <- "empirical_data_pps_example.csv"
 
-plots <- plotPostPredStats(data = t)
+# read the statistics files
+stats <- processPostPredStats(path_sim = sim, 
+                              path_emp = emp)
+
+# create the posterior-predictive plots
+plots <- plotPostPredStats(data = stats)
 ```
 
 To plot a subset of the parameters in a single figure, use the `grid` package.
@@ -633,11 +635,14 @@ To plot a subset of the parameters in a single figure, use the `grid` package.
 ```R
 # arrange a subset of them with grid and ggplot2
 grid.newpage()
-grid.draw(
-  cbind(rbind(ggplotGrob(plots[[1]]),
-              ggplotGrob(plots[[5]])),
-        rbind(ggplotGrob(plots[[3]] + theme(axis.title.y = element_blank())  ),
-              ggplotGrob(plots[[7]] + theme(axis.title.y = element_blank()) )))
+grid.draw( # draw the following matrix of plots
+    cbind( # bind together the columns into a matrix
+        rbind( # bind together the first column
+            ggplotGrob(plots[[1]]),
+            ggplotGrob(plots[[5]])),
+        rbind( # bind together the last column (exclude the y-axis label in the last column)
+            ggplotGrob(plots[[3]] + theme(axis.title.y = element_blank())),
+            ggplotGrob(plots[[7]] + theme(axis.title.y = element_blank())))))
 )
 ```
 
