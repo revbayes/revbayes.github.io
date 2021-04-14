@@ -5,10 +5,10 @@ library(grid)
 setwd("your_directory")
 
 # specify the simulated statistics file
-sim <- "simulated_data_pps_example.csv"
+sim <- "data/simulated_data_pps_example.csv"
 
 # specify the empirical statistics file
-emp <- "empirical_data_pps_example.csv"
+emp <- "data/empirical_data_pps_example.csv"
 
 # read the statistics files
 stats <- processPostPredStats(path_sim = sim, 
