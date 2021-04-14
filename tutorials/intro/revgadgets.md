@@ -72,7 +72,7 @@ Alternatively, visit the [ImageMagick website](https://imagemagick.org/script/do
 Getting Started
 ===============
 {:.section} 
-To run this tutorial, download the associated files from the `Data files and scripts` menu. All scripts should be in a subdirectory called `scripts` and all data files in a subdirectory called `data`. 
+To run this tutorial, download the associated files from the `Data files and scripts` menu, preserving the structure of the zipped folder. All scripts should be in a subdirectory called `scripts` and all data files in a subdirectory called `data`. 
 Open `R` and make sure your working directory is set to the directory with the downloaded files. 
 For more information on how to customize these plots, see the associated documentation for each function (e.g., `?readTrace`)).
 Submit feature requests or bug reports with Issues on [GitHub](https://github.com/cmt2/RevGadgets). 
@@ -85,7 +85,7 @@ library(coda)
 library(ggplot2)
 library(ggtree)
 library(grid)
-library(grdExtra)
+library(gridExtra)
 ```
 
 Visualizing Parameter Estimates 
@@ -97,7 +97,7 @@ The output of most `RevBayes` analyses is a tab-delimited file where rows corres
 Most information of interest to researchers must be extracted from these output files.  
 Visualizing MCMC output is also critical for evaluating and troubleshooting analyses, especially for diagnosing MCMC pathologies. 
 
-The following code demonstrates how to process and visualize the MCMC trace file of a general time-reversible (GTR) substitution model analysis {% cite Tavare1986 %}, in which we have estimated the substitution rate and stationary frequency parameters for a single gene in a sample of 23 primates {% cite springer2012 %}. This analysis is covered in detail the {% page_ref ctmc %} tutorial.
+The following code demonstrates how to process and visualize the MCMC trace file of a general time-reversible (GTR) substitution model analysis {% cite Tavare1986 %}, in which we have estimated the substitution rate and stationary frequency parameters for a single gene in a sample of 23 primates {% cite Springer2012 %}. This analysis is covered in detail the {% page_ref ctmc %} tutorial.
 
 &#8680; The code in this section is contained in the script: `scripts/parameter_estimates.R`
 
@@ -154,7 +154,7 @@ $`pi[4]`$trace_1
 
 ```
 
-Then plot these distributions. `plotTrace()` produces a list of ggplot2 objects, with multiple plots if there are multiple runs in the trace object or if you provide a mix of quantitative and qualitative parameters. Here, only one plot is produced. 
+Then plot these distributions. `plotTrace()` produces a list of ggplot2 objects, with multiple plots if there are multiple runs in the trace object or if you provide a mix of quantitative and qualitative parameters. Here, only one plot is produced, so we print the plot using `[[1]]` after the function call. 
 ```R
 plotTrace(trace = trace_quant, vars = c("pi[1]","pi[2]","pi[3]","pi[4]"))[[1]]
 ```
