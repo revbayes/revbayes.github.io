@@ -60,21 +60,38 @@ X ~ dnPhyloMultivariateBrownianREML(tree, branchRates=branch_rates^0.5, rateMatr
 X.clamp(data)
 ```
 
+When we create our monitors, we include an extended Newick monitor to keep track of the branch-specific rates.
+```
+monitors.append( mnExtNewick(filename="output/relaxed_multivariate_BM.trees", isNodeParameter=TRUE, printgen=10, separator=TAB, tree=tree, branch_rates) )
+```
+
+Finally, when the MCMC completes, we create an tree with branches annotated with the branch-specific rates.
+```
+treetrace = readTreeTrace("output/relaxed_multivariate_BM.trees")
+map_tree = mapTree(treetrace,"output/relaxed_multivariate_BM_MAP.tre")
+```
+
 &#8680; The `Rev` file for performing this analysis: `mcmc_relaxed_multivariate_BM.Rev`
 
-You can then visualize the branch-specific rates by plotting them using our `R` package `RevGadgets`. Just start R in the main directory for this analysis and then type the following commands:
-```R
+You can then visualize the branch-specific rates by plotting them using our `R` package `RevGadgets`. Just start R in the main directory for this analysis and then type the following commands.
+
+First, load `RevGadgets`:
+```{R}
 library(RevGadgets)
-
-my_tree <- read.nexus("data/haemulidae.nex")
-my_output_file <- "output/relaxed_multivariate_BM.log"
-
-tree_plot <- plot_relaxed_branch_rates_tree(tree           = my_tree,
-                                            output_file    = my_output_file,
-                                            parameter_name = "branch_rates")
-
-ggsave("relaxed_mvBM.pdf", width=15, height=15, units="cm")
 ```
+
+Next, read in the tree annotated with the branch rates:
+```{R}
+tree <- readTrees("output/relaxed_multivariate_BM_MAP.tre")
+```
+
+Finally, plot the tree with the branch rates:
+```{R}
+plotTree(tree, color_branch_by="branch_rates")
+```
+
+&#8680; The `R` script for plotting this output: `plot_relaxed_multivariate_BM.R`
+
 {% figure fig_relaxed_multivariate_BM %}
 <img src="figures/relaxed_mvBM.png" width="50%" height="50%" />
 {% figcaption %}

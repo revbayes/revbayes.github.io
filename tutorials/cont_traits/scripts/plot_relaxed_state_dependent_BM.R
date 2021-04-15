@@ -1,20 +1,15 @@
 library(RevGadgets)
+library(gridExtra)
 
-my_tree <- read.nexus("data/haemulidae.nex")
-my_output_file <- "output/relaxed_state_dependent_BM.log"
+# read the annotated tree
+tree <- readTrees("output/relaxed_state_dependent_BM_MAP.tre")
 
-background_plot <- plot_relaxed_branch_rates_tree(tree        = my_tree,
-                                                  output_file    = my_output_file,
-                                                  parameter_name = "background_rates")
+# create the ggplot objects
+state_rates      <- plotTree(tree, color_branch_by="state_branch_rate", tip_labels_size = 2, legend_x=0.2)
+background_rates <- plotTree(tree, color_branch_by="background_rates",  tip_labels_size = 2, legend_x=0.2)
+overall_rates    <- plotTree(tree, color_branch_by="branch_rates",      tip_labels_size = 2, legend_x=0.2)
 
-state_plot <- plot_relaxed_branch_rates_tree(tree           = my_tree,
-                                             output_file    = my_output_file,
-                                             parameter_name = "state_branch_rate")
-
-overall_plot <- plot_relaxed_branch_rates_tree(tree           = my_tree,
-                                               output_file    = my_output_file,
-                                               parameter_name = "branch_rates")
-
-pdf("relaxed_state_dependent_BM.pdf", height=5, width=12)
-grid.arrange(state_plot, background_plot, overall_plot, nrow=1)
+# plot the objects
+pdf("relaxed_state_dependent_BM.pdf", height=7, width=21)
+grid.arrange(state_rates, background_rates, overall_rates, nrow=1)
 dev.off()
