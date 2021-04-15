@@ -1,5 +1,7 @@
 library(RevGadgets)
 library(coda)
+library(grid)
+library(ggplot2)
 setwd("your_directory")
 
 # specify the input file
@@ -40,3 +42,16 @@ plotTrace(trace = trace_qual,
           vars = c("prob_rate_12", "prob_rate_13",
                    "prob_rate_31", "prob_rate_32"))[[1]]
 
+# combined quantitative and qualitative
+plots <- plotTrace(trace = trace_qual, 
+                   vars = c("prob_rate_12", "prob_rate_13",
+                            "prob_rate_31", "prob_rate_32",
+                             "rate_31", "rate_32"))
+
+# visualize both plots together
+grid.newpage()
+grid.draw( # draw the following matrix of plots
+    rbind( # bind together the column
+      ggplotGrob(plots[[1]]),
+      ggplotGrob(plots[[2]]))
+)

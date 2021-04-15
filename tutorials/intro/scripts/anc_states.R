@@ -17,10 +17,10 @@ freeK <- processAncStates(file,
                                            "3" = "Hemochorial"))
 
 # produce the plot object
-plot <- plotAncStatesMAP(t = freeK, 
-                         tree_layout = "circular") + 
-            # modify legend location using ggplot2
-            theme(legend.position = c(0.57,0.41))
+plotAncStatesMAP(t = freeK, 
+                 tree_layout = "circular") + 
+    # modify legend location using ggplot2
+    theme(legend.position = c(0.57,0.41))
 
 
 

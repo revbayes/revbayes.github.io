@@ -208,6 +208,35 @@ The posterior distributions of whether particular rates are included in a model 
 {% endfigcaption %}
 {% endfigure %}
 
+If you provide both quantitative and qualitative variables to the `vars` argument, `plotTrace()` will produce multiple plots. Say you want to visualize some rates in addition to the qualitative probability parameters:
+
+```R
+# produce plots of probab
+plots <- plotTrace(trace = trace_qual, 
+                   vars = c("prob_rate_12", "prob_rate_13",
+                            "prob_rate_31", "prob_rate_32",
+                             "rate_31", "rate_32"))
+```
+
+`plots` is now a list of length two. Visualize them together with the `grid` package:
+
+```R
+grid.newpage()
+grid.draw( # draw the following matrix of plots
+    rbind( # bind together the columns
+      ggplotGrob(plots[[1]]),
+      ggplotGrob(plots[[2]]))
+)
+```
+
+{% figure %}
+<img src="figures/trace_both.png" height="50%" width="50%"/>
+{% figcaption %}
+A combined figure of the plots for both quantitative and qualitative variables. Top: the posterior densities of transition rate parameters.
+Bottom: the posterior distributions of whether particular rates are included in a model of character evolution (same as the sandalone figure above). 
+{% endfigcaption %}
+{% endfigure %}
+
 Visualizing Phylogenies
 =======================
 {:.section} 
@@ -296,8 +325,8 @@ Bars correspond to the 95% credible interval of node (or tip) ages, and are colo
 {% endfigure %}
 
 
-Branch rates 
--------------
+Coloring branches by variables
+------------------------------
 {:.subsection} 
 
 The `plotTree()` function can color the branches of the tree, which is useful for indicating branch rates or other continuous parameters. For example, here `plotTree()` colors the branches by branch-specific optima (thetas) from a relaxed Ornstein-Uhlenbeck model of body size evolution in whales. The {% page_ref cont_traits/relaxed_ou %} tutorial covers this type of analysis. 
@@ -332,13 +361,22 @@ Ancestral-State Reconstruction
 {:.section} 
 
 Ancestral state reconstruction methods allow users to model how heritable characters, such as phenotypes or geographical distributions, have evolved across a phylogeny, producing probability distributions of states for each node of the phylogeny.
-This aspect of `RevGadgets` functionality allows users to plot the maximum \emph{a posteriori} (MAP) estimate of ancestral states via `plotAncStatesMAP()` or a pie chart showing the most probable states via `plotAncStatesPie()`.
-Ancestral-state plotting functions in `RevGadgets` allow users to demarcate character states and their posterior probabilities by modifying the colors, shapes, and sizes of node and shoulder symbols. 
+This aspect of `RevGadgets` functionality allows users to plot the maximum _a posteriori_ (MAP) estimate of ancestral states via `plotAncStatesMAP()` or a pie chart showing the most probable states via `plotAncStatesPie()`.
+
+For anagenetic evolutionary models (including standard CTMC models such as the GTR and Mk models), ancestral-state estimates are plotted at the nodes.
+However, more complex models may include cladogenetic evolution, so that state changes can occur at speciation events in addition to anagenetic evolution along branches {% cite Ree2008 Goldberg2012 %}. 
+`RevGadgets` can plot the results of inferences for modes with cladogenetic events by plotting ancestral states on the “shoulders” as well as the nodes.
+
+Ancestral-state plotting functions in `RevGadgets` allow users to specify character states and their posterior probabilities by modifying the colors, shapes, and sizes of node and shoulder symbols. 
 Text annotations may be added to specify states, state posterior probabilities, and the posterior probabilities of nodes. 
 
 &#8680; To reproduce this section, see: `scripts/anc_states.R`
 
-To plot the output of an ancestral state estimation of placenta type across models, `RevGadgets` first summarizes the `RevBayes` output file and then creates the plot object. The analysis that produced this output file is described in the {% page_ref morph/morph_more %} tutorial.
+Standard (anagenetic) models
+----------------------------
+{:.subsection} 
+
+To plot the output of an ancestral state estimation of placenta type across mammals, `RevGadgets` first summarizes the `RevBayes` output file using `processAncStates()`. This function reads in and processes an annotated tree file and labels the states. If no state labels are provided to `processAncStates()`, the function will provide default labels. Next, `RevGadgets` creates the plot object using a plotting function. In this example, we plot the MAP states using `plotAncStatesMAP()`. The analysis that produced this output file is described in the {% page_ref morph/morph_more %} tutorial.
 
 ```R
 file <- "data/ase_freeK.tree"
@@ -371,11 +409,7 @@ Cladogenetic models
 -------------------------------------------
 {:.subsection} 
 
-For standard evolutionary models of anagenetic (within-lineage) change such as demonstrated above, states are plotted at the nodes. 
-However, cladogenetic models allow for two ways that character states can change on the phylogeny: shifts can occur along branches of the tree (anagenetic change) or happen precisely at the moment of speciation (cladogenetic change) {% cite Ree2008 Goldberg2012 %}. 
-To remedy this problem `RevGadgets` plots the results of inferences using cladogenetic models on "shoulders" as well as the nodes.
-
-For example, many biogeographic models, including the popular Dispersal-Extirpation-Cladogenesis model described in {% page_ref biogeo/biogeo_intro %}, include cladogenetic change. 
+Many biogeographic models, including the popular Dispersal-Extirpation-Cladogenesis model described in {% page_ref biogeo/biogeo_intro %}, include cladogenetic change. 
 
 
 `plotAncStatesPie()` represents the distribution of ancestral states at nodes as pie charts of the three most probable states for that node plus an "other" category of any remaining probability.
@@ -494,18 +528,17 @@ Diversification Analysis
 ========================
 {:.section} 
 
-Diversification rate estimation is a major goal of many comparative analysis. `RevBayes` allows flexible implementation of many diversification rate estimation models. Methods may estimate speciation and extinction rates through time, across branches of the phylogeny, and in conjunction with the evolution of a trait. 
-These methods produce estimates of rates that `RevGadgets` can plot on branches of the phylogeny or as posterior distributions. 
-When the method also includes simulataneous estimation of the ancestral state of a discrete trait, `RevGadets` may plot those ancestral states using the same ancestral state code described above. 
-`RevGadgets` also includes special functionality for visualizing time-varying (episodic) diversification rate estimation.
-The examples below demonstrate the potential for visualizing diversifcation rate estimations using `RevGadgets` for a few standard analyses. 
+Diversification-rate estimation is a major goal of many comparative and epidemiological analyses.
+The diversification models implemented in `RevBayes` allow the speciation, extinction, and sampling/ fossilization rates to vary through time, across branches of the phylogeny, in conjunction with the evolution of a focal trait, etc.
+The examples below demonstrate how to use `RevGadgets` to visualize the (often complex) output of analyses performed under these models.
+
 &#8680; To reproduce this section, see: `scripts/divrates.R`
 
 State-Dependendent Diversification Analysis
 -------------------------------------------
 {:.subsection} 
 
-State-dependent diversification analyses model the evolution of a trait and estimate state-dependent diversification rates. These models thus estimate posterior distributions of state-specific rates and can reconstruct ancestral states on the phylogeny. The analysis plotted here is described in the {% page_ref sse/bisse %} tutorial. 
+Diversification rates might depend on the state of an evolving character. State-dependent diversification models can be used to estimate diversification rates associated with each character state, and can also reconstruct ancestral states on the phylogeny. The analysis plotted here is described in the {% page_ref sse/bisse %} tutorial. 
 
 `RevGadgets` first reads in and processes the rate file and then plots the state-specific posterior rate distributions. 
 ```R
@@ -547,7 +580,7 @@ Lineage-Specific Diversification Analysis
 
 
 To examine diversification rate variation across the branches of the tree (described in {% page_ref divrate/branch_specific %}), `RevBayes` estimates branch-specific speciation and extinction rates. 
-Those rates can be plotted by reading in the tree and rate log files, associated the rates with the phylogeny (using `processBranchData()`), and plotting the rate of interest by coloring the branches of the phylogeny. 
+Those rates can be plotted by reading in the tree and rate log files, associating the rates with the phylogeny (using `processBranchData()`), and plotting the rate of interest by coloring the branches of the phylogeny. 
 
 ```R
 branch_specific_file <- "data/primates_BDS_rates.log"
@@ -574,7 +607,7 @@ Episodic Diversification Analysis
 ---------------------------------
 {:.subsection} 
 
-Instead of varying rates across branches of the phylogeny, the episodic birth death process varies rates through time (see the {% page_ref divrate/ebd %} tutorial). `RevGadgets` visualizes these rates through time with skyline plots.
+Instead of varying rates across branches of the phylogeny, the episodic birth death process varies rates through time (see the {% page_ref divrate/ebd %} tutorial). `RevGadgets` visualizes these rates through time with skyline/ episodic plots.
 
 ```R
 # specify the output files
