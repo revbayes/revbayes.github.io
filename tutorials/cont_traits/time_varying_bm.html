@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Simple Brownian Rate Estimation</h1>
 	<h3 class="subtitle">Estimating rates of Brownian-motion evolution</h3>
 	<h4 class="authors">Michael R. May</h4>
-  <h5>Last modified on September 16, 2019</h5>
+  <h5>Last modified on April 14, 2021</h5>
 </div>
 
 
@@ -70,6 +70,8 @@
           <ul id="prerequisites">
           
             <li><a href="/tutorials/intro/">Getting Started with RevBayes and Rev Language Syntax</a></li>
+          
+            <li><a href="/tutorials/intro/revgadgets.html">Introduction to RevGadgets</a></li>
           
             <li><a href="/tutorials/mcmc/">Introduction to Markov chain Monte Carlo (MCMC) Sampling</a></li>
           
@@ -138,8 +140,8 @@ For more information about graphical model representations see <a class="citatio
 <h3 class="subsection" id="read-the-data">Read the data</h3>
 <hr class="subsection" />
 
-<p>We begin by deciding which of the 66 vertebrate datasets to use. Here, we assume we are analyzing the first dataset (<em>Acanthuridae</em>), but you should feel free to choose any of the datasets.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dataset &lt;- 1
+<p>We begin by deciding which of the 66 vertebrate datasets to use. Here, we assume we are analyzing the first dataset (Cetacea), but you should feel free to choose any of the datasets.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dataset &lt;- 11
 </code></pre></div></div>
 
 <p>Now, we read in the (time-calibrated) tree corresponding to our chosen dataset.</p>
@@ -230,17 +232,35 @@ output directory.</p>
 <hr class="subsection" />
 
 <ul>
-  <li>Run an MCMC simulation to estimate the posterior distribution of the BM rate (<code class="language-plaintext highlighter-rouge">sigma</code>).</li>
-  <li>Load the generated output file into <code class="language-plaintext highlighter-rouge">Tracer</code>: What is the mean posterior estimate of <code class="language-plaintext highlighter-rouge">sigma</code> and what is the estimated HPD?</li>
-  <li>Compare the prior mean with the posterior mean. (<strong>Hint:</strong> Use the optional argument <code class="language-plaintext highlighter-rouge">underPrior=TRUE</code> in the function <code class="language-plaintext highlighter-rouge">mymcmc.run()</code>) Are they different (<em>e.g.,</em> <a href="#fig_prior_posterior"></a>)? Is the posterior mean outside the prior 95% probability interval?</li>
-  <li>Repeat the analysis with a loguniform prior ranging from $1e-10$ to $1e10$.</li>
+  <li>Run an MCMC simulation to sample the posterior distribution of the BM rate (<code class="language-plaintext highlighter-rouge">sigma2</code>).</li>
+  <li>Run an MCMC simulation to sample the <em>prior</em> distribution of the BM rate (<strong>Hint:</strong> You can run an analysis under the prior using the script <code class="language-plaintext highlighter-rouge">scripts/mcmc_BM_prior.Rev</code>).</li>
+  <li>Compare the posterior and the prior using <code class="language-plaintext highlighter-rouge">RevGadgets</code>:</li>
 </ul>
 
-<figure id="fig_prior_posterior"><p><img src="figures/sigma_prior_posterior.png" height="50%" width="50%" /></p>
-<figcaption>Estimates of the posterior and prior distribution of the <code class="language-plaintext highlighter-rouge">sigma</code> visualized in
-<code class="language-plaintext highlighter-rouge">Tracer</code>. The prior (green curve) shows the loguniform
-distribution that we chose as the prior distribution.</figcaption>
+<p>First, we need to load the R package <code class="language-plaintext highlighter-rouge">RevGadgets</code></p>
+<pre><code class="language-{R}">library(RevGadgets)
+</code></pre>
+
+<p>Next, read in the MCMC output from the posterior and the prior:</p>
+<pre><code class="language-{R}">simple_BM_posterior &lt;- readTrace("output/simple_BM.log")[[1]]
+simple_BM_prior     &lt;- readTrace("output/simple_BM_prior.log")[[1]]
+</code></pre>
+
+<p>Next, add the samples of <code class="language-plaintext highlighter-rouge">sigma2</code> from the prior to the posterior (and rename them to <code class="language-plaintext highlighter-rouge">sigma2_prior</code>):</p>
+<pre><code class="language-{R}">simple_BM_posterior$sigma2_prior &lt;- simple_BM_prior$sigma2
+</code></pre>
+
+<p>Finally, we plot the prior and posterior distributions:</p>
+<pre><code class="language-{R}">plotTrace(list(simple_BM_posterior), vars=c("sigma2", "sigma2_prior"))
+</code></pre>
+
+<figure id="fig_prior_posterior"><p><img src="figures/sigma_prior_posterior.png" height="75%" width="75%" /></p>
+<figcaption>Estimates of the posterior (blue) and prior (red) distribution of the <code class="language-plaintext highlighter-rouge">sigma2</code> visualized in <code class="language-plaintext highlighter-rouge">RevGadgets</code>.</figcaption>
 </figure>
+
+<blockquote class="instruction">
+  <p>You can also find all these commands in the file called <strong>plot_BM.R</strong> which you can run as a script in R.</p>
+</blockquote>
 
 
 <ol class="bibliography"><li><span id="Felsenstein1985a">Felsenstein J. 1985. Phylogenies and the comparative method. The American Naturalist.:1–15.</span>

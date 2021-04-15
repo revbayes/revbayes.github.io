@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Multivariate Brownian Motion</h1>
 	<h3 class="subtitle">Accounting for correlations among continuous traits</h3>
 	<h4 class="authors">Michael R. May</h4>
-  <h5>Last modified on September 16, 2019</h5>
+  <h5>Last modified on April 14, 2021</h5>
 </div>
 
 
@@ -70,6 +70,8 @@
           <ul id="prerequisites">
           
             <li><a href="/tutorials/intro/">Getting Started with RevBayes and Rev Language Syntax</a></li>
+          
+            <li><a href="/tutorials/intro/revgadgets.html">Introduction to RevGadgets</a></li>
           
             <li><a href="/tutorials/mcmc/">Introduction to Markov chain Monte Carlo (MCMC) Sampling</a></li>
           
@@ -106,6 +108,8 @@
           <li><a href="/tutorials/cont_traits/scripts/mcmc_multivariate_BM.Rev">mcmc_multivariate_BM.Rev</a></li>
         
           <li><a href="/tutorials/cont_traits/scripts/mcmc_relaxed_multivariate_BM.Rev">mcmc_relaxed_multivariate_BM.Rev</a></li>
+        
+          <li><a href="/tutorials/cont_traits/scripts/plot_multivariate_BM.R">plot_multivariate_BM.R</a></li>
         
           <li><a href="/tutorials/cont_traits/scripts/plot_relaxed_multivariate_BM.R">plot_relaxed_multivariate_BM.R</a></li>
         
@@ -301,16 +305,32 @@ output directory.</p>
 
 <p>⇨ The <code class="language-plaintext highlighter-rouge">Rev</code> file for performing this analysis: <code class="language-plaintext highlighter-rouge">mcmc_multivariate_BM.Rev</code></p>
 
-<p>You can then visualize the correlation parameters in <code class="language-plaintext highlighter-rouge">Tracer</code>.</p>
+<p>You can then visualize the correlation parameters in <code class="language-plaintext highlighter-rouge">RevGadgets</code>.</p>
+
+<p>First, we need to load the R package <code class="language-plaintext highlighter-rouge">RevGadgets</code></p>
+<pre><code class="language-{R}">library(RevGadgets)
+</code></pre>
+
+<p>Next, read the MCMC output:</p>
+<pre><code class="language-{R}">samples &lt;- readTrace("output/multivariate_BM.log")
+</code></pre>
+
+<p>Finally, plot the posterior distribution of the first 8 correlation parameters rate parameters (the top row of the correlation matrix, which represents how characters two through 9 are correlated with body size):</p>
+<pre><code class="language-{R}">plotTrace(samples, vars=paste0("correlations[",1:8,"]"))
+</code></pre>
 
 <figure id="rho_posterior"><p><img src="figures/correlations.png" height="50%" width="50%" /></p>
-<figcaption>Estimates of the posterior distribution of the correlation between the first trait (body size) against each of the remaining characters, visualized in <code class="language-plaintext highlighter-rouge">Tracer</code>. Characters 6 and 9 (buccal length and head length, respectively) are highly correlated with body size, while character 8 (head height) seems to be less positively correlated.</figcaption>
+<figcaption>Estimates of the posterior distribution of the correlation between the first trait (body size) against each of the remaining characters, visualized in <code class="language-plaintext highlighter-rouge">RevGadgets</code>. Characters 6 and 9 (buccal length and head length, respectively) are highly correlated with body size, while character 8 (head height) seems to be less positively correlated.</figcaption>
 </figure>
+
+<p>⇨ The <code class="language-plaintext highlighter-rouge">R</code> file for plotting these results: <code class="language-plaintext highlighter-rouge">plot_mvBM.R</code></p>
 
 <blockquote class="aside"><h2>Advanced: Hypothesis Tests for Correlation Parameters</h2><p>We can test the hypothesis that characters $i$ and $j$ are correlated using the Savage-Dickey ratio (missing reference). Using the Savage-Dickey ratio, the Bayes Factor for the hypothesis that parameter $\theta$ has a specific value is $\text{BF} = P(\theta \mid X) \div P(\theta)$. Therefore, we can use the Savage-Dickey ratio to compute the Bayes factor that two characters are uncorrelated if we can compute the posterior probability of $\rho_{i,j} = 0$ (the numerator) and the prior probability of $\rho_{i,j} = 0$ (the denominator).</p>
 
-<p>Under the LKJ distribution, the marginal prior distribution of $(\rho_{i,j} + 1) / 2$ is a Beta distribution with parameters $\alpha = \beta = \eta + (c - 2) / 2$ (where $c$ is the number of continuous characters). Knowing this, we can use our posterior samples to compute the Bayes factor for the uncorrelated hypothesis (which is the inverse the Bayes factor for the correlated hypothesis) in R:</p>
-<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">eta</span><span class="w">   </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">1</span><span class="w">
+<p>Under the LKJ distribution, the marginal prior distribution of $(\rho_{i,j} + 1) / 2$ is a Beta distribution with parameters $\alpha = \beta = \eta + (c - 2) / 2$ (where $c$ is the number of continuous characters). Knowing this, we can use our posterior samples to compute the Bayes factor for the uncorrelated hypothesis (which is the inverse the Bayes factor for the correlated hypothesis) in <code class="language-plaintext highlighter-rouge">R</code>:</p>
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">RevGadgets</span><span class="p">)</span><span class="w">
+
+</span><span class="n">eta</span><span class="w">   </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">1</span><span class="w">
 </span><span class="n">c</span><span class="w">     </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">9</span><span class="w">
 </span><span class="n">alpha</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">eta</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="m">2</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="m">2</span><span class="w">
 
@@ -318,8 +338,8 @@ output directory.</p>
 </span><span class="n">corr</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">20</span><span class="w"> </span><span class="c1"># this is the correlation parameter between characters 3 and 8</span><span class="w">
 
 </span><span class="c1"># read the samples from the posterior</span><span class="w">
-</span><span class="n">samples</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">read.table</span><span class="p">(</span><span class="s2">"output/multivariate_BM.log"</span><span class="p">,</span><span class="w"> </span><span class="n">header</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">sep</span><span class="o">=</span><span class="s2">"\t"</span><span class="p">,</span><span class="w"> </span><span class="n">check.names</span><span class="o">=</span><span class="kc">FALSE</span><span class="p">)</span><span class="w">
-</span><span class="n">correlation_samples</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">samples</span><span class="p">[,</span><span class="n">paste0</span><span class="p">(</span><span class="s2">"correlations["</span><span class="p">,</span><span class="n">corr</span><span class="p">,</span><span class="s2">"]"</span><span class="p">)]</span><span class="w">
+</span><span class="n">samples</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">readTrace</span><span class="p">(</span><span class="s2">"output/multivariate_BM.log"</span><span class="p">)</span><span class="w">
+</span><span class="n">correlation_samples</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">samples</span><span class="p">[[</span><span class="m">1</span><span class="p">]][,</span><span class="n">paste0</span><span class="p">(</span><span class="s2">"correlations["</span><span class="p">,</span><span class="n">corr</span><span class="p">,</span><span class="s2">"]"</span><span class="p">)]</span><span class="w">
 
 </span><span class="c1"># fit a density to the samples</span><span class="w">
 </span><span class="n">posterior_density</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">density</span><span class="p">(</span><span class="n">correlation_samples</span><span class="p">)</span><span class="w">
@@ -410,20 +430,33 @@ rate_shift_distribution = dnLognormal(-sd^2/2, sd)
 X.clamp(data)
 </code></pre></div></div>
 
+<p>When we create our monitors, we include an extended Newick monitor to keep track of the branch-specific rates.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnExtNewick(filename="output/relaxed_multivariate_BM.trees", isNodeParameter=TRUE, printgen=10, separator=TAB, tree=tree, branch_rates) )
+</code></pre></div></div>
+
+<p>Finally, when the MCMC completes, we create an tree with branches annotated with the branch-specific rates.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>treetrace = readTreeTrace("output/relaxed_multivariate_BM.trees")
+map_tree = mapTree(treetrace,"output/relaxed_multivariate_BM_MAP.tre")
+</code></pre></div></div>
+
 <p>⇨ The <code class="language-plaintext highlighter-rouge">Rev</code> file for performing this analysis: <code class="language-plaintext highlighter-rouge">mcmc_relaxed_multivariate_BM.Rev</code></p>
 
-<p>You can then visualize the branch-specific rates by plotting them using our <code class="language-plaintext highlighter-rouge">R</code> package <code class="language-plaintext highlighter-rouge">RevGadgets</code>. Just start R in the main directory for this analysis and then type the following commands:</p>
-<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">RevGadgets</span><span class="p">)</span><span class="w">
+<p>You can then visualize the branch-specific rates by plotting them using our <code class="language-plaintext highlighter-rouge">R</code> package <code class="language-plaintext highlighter-rouge">RevGadgets</code>. Just start R in the main directory for this analysis and then type the following commands.</p>
 
-</span><span class="n">my_tree</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">read.nexus</span><span class="p">(</span><span class="s2">"data/haemulidae.nex"</span><span class="p">)</span><span class="w">
-</span><span class="n">my_output_file</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"output/relaxed_multivariate_BM.log"</span><span class="w">
+<p>First, load <code class="language-plaintext highlighter-rouge">RevGadgets</code>:</p>
+<pre><code class="language-{R}">library(RevGadgets)
+</code></pre>
 
-</span><span class="n">tree_plot</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">plot_relaxed_branch_rates_tree</span><span class="p">(</span><span class="n">tree</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="n">my_tree</span><span class="p">,</span><span class="w">
-                                            </span><span class="n">output_file</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">my_output_file</span><span class="p">,</span><span class="w">
-                                            </span><span class="n">parameter_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"branch_rates"</span><span class="p">)</span><span class="w">
+<p>Next, read in the tree annotated with the branch rates:</p>
+<pre><code class="language-{R}">tree &lt;- readTrees("output/relaxed_multivariate_BM_MAP.tre")
+</code></pre>
 
-</span><span class="n">ggsave</span><span class="p">(</span><span class="s2">"relaxed_mvBM.pdf"</span><span class="p">,</span><span class="w"> </span><span class="n">width</span><span class="o">=</span><span class="m">15</span><span class="p">,</span><span class="w"> </span><span class="n">height</span><span class="o">=</span><span class="m">15</span><span class="p">,</span><span class="w"> </span><span class="n">units</span><span class="o">=</span><span class="s2">"cm"</span><span class="p">)</span><span class="w">
-</span></code></pre></div></div>
+<p>Finally, plot the tree with the branch rates:</p>
+<pre><code class="language-{R}">plotTree(tree, color_branch_by="branch_rates")
+</code></pre>
+
+<p>⇨ The <code class="language-plaintext highlighter-rouge">R</code> script for plotting this output: <code class="language-plaintext highlighter-rouge">plot_relaxed_multivariate_BM.R</code></p>
+
 <figure id="fig_relaxed_multivariate_BM"><p><img src="figures/relaxed_mvBM.png" width="50%" height="50%" /></p>
 <figcaption><strong>Estimated rates of multivariate-Brownian-motion evolution.</strong>
 We show the estimated average rate of evolution for each branch under the mvBM model.</figcaption>

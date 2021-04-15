@@ -55,7 +55,7 @@
 	<h1 class="maintitle">State-Dependent Brownian Rate Estimation</h1>
 	<h3 class="subtitle">Estimating state-dependent rates of Brownian-motion evolution</h3>
 	<h4 class="authors">Michael R. May</h4>
-  <h5>Last modified on September 16, 2019</h5>
+  <h5>Last modified on April 14, 2021</h5>
 </div>
 
 
@@ -70,6 +70,8 @@
           <ul id="prerequisites">
           
             <li><a href="/tutorials/intro/">Getting Started with RevBayes and Rev Language Syntax</a></li>
+          
+            <li><a href="/tutorials/intro/revgadgets.html">Introduction to RevGadgets</a></li>
           
             <li><a href="/tutorials/mcmc/">Introduction to Markov chain Monte Carlo (MCMC) Sampling</a></li>
           
@@ -324,6 +326,7 @@ Y.clamp(cont)
 <p>For our MCMC analysis, we need to set up a vector of <em>monitors</em> to record the states of our Markov chain. The monitor functions are all called <code class="language-plaintext highlighter-rouge">mn*</code>, where <code class="language-plaintext highlighter-rouge">*</code> is the wildcard representing the monitor type. First, we will initialize the model monitor using the <code class="language-plaintext highlighter-rouge">mnModel</code> function. This creates a new monitor variable that will output the states for all model parameters when passed into a MCMC function.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/state_dependent_BM.log", printgen=10) )
 </code></pre></div></div>
+
 <p>Additionally, create a screen monitor that will report the states of
 specified variables to the screen with <code class="language-plaintext highlighter-rouge">mnScreen</code>:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(printgen=1000, zeta, total_num_changes) )
@@ -345,12 +348,26 @@ create our MCMC object:</p>
 
 <p>⇨ The <code class="language-plaintext highlighter-rouge">Rev</code> file for performing this analysis: <code class="language-plaintext highlighter-rouge">mcmc_state_dependent_BM.Rev</code></p>
 
-<p>You can then visualize the absolute rates of state-dependent evolution ($\beta^2 \times \boldsymbol{\zeta^2}$) in <code class="language-plaintext highlighter-rouge">Tracer</code>.</p>
+<p>You can then visualize the absolute rates of state-dependent evolution ($\beta^2 \times \boldsymbol{\zeta^2}$) in <code class="language-plaintext highlighter-rouge">RevGadgets</code>.</p>
+
+<p>First, we need to load the R package <code class="language-plaintext highlighter-rouge">RevGadgets</code></p>
+<pre><code class="language-{R}">library(RevGadgets)
+</code></pre>
+
+<p>Next, read the MCMC output:</p>
+<pre><code class="language-{R}">samples &lt;- readTrace("output/state_dependent_BM.log")
+</code></pre>
+
+<p>Finally, plot the posterior distribution of the state-dependent rate parameters:</p>
+<pre><code class="language-{R}">plotTrace(samples, match="overall_rate")
+</code></pre>
 
 <figure id="zeta_posterior"><p><img src="figures/zeta_posterior.png" height="75%" width="75%" /></p>
 <figcaption>Estimates of the posterior distribution of the $\beta^2 \times \zeta^2$ visualized in
-<code class="language-plaintext highlighter-rouge">Tracer</code>.</figcaption>
+<code class="language-plaintext highlighter-rouge">RevGadgets</code>.</figcaption>
 </figure>
+
+<p>⇨ The <code class="language-plaintext highlighter-rouge">R</code> file for performing this analysis: <code class="language-plaintext highlighter-rouge">plot_state_dependent_BM_rates.R</code></p>
 
 <blockquote class="aside"><h2>Results: Multivariate model</h2><p>If you ran the multivariate analysis, your posterior distributions for the state-dependent rates will look quite different. In the multivariate analysis, the effect of habitat is more pronounced than it was for the univariate analysis.</p>
 
@@ -361,7 +378,7 @@ create our MCMC object:</p>
 <p>However, comparing the posterior distribution for the number of habitat transitions under the univariate and multivariate analysis (<a href="#num_transitions_comparison"></a>) reveals that the inferred number of transitions under the multivariate analysis is very unrealistic ($\approx 32$ transitions) compared to the univariate analysis ($\approx 6.5$ transitions). This is a strong indication that there are other sources of rate variation that are causing the multivariate analysis to infer very unrealistic patterns of habitat evolution.</p>
 
 <figure id="num_transitions_comparison"><p><img src="figures/num_transitions_posterior.png" height="75%" width="75%" /></p>
-<figcaption>Estimates of the posterior distribution of the the number of habitat transitions under the univariate model (green) and the multivariate model (blue).</figcaption>
+<figcaption>Estimates of the posterior distribution of the number of habitat transitions under the univariate model (blue) and the multivariate model (red).</figcaption>
 </figure>
 </blockquote>
 
@@ -485,28 +502,32 @@ rate_shift_distribution = dnLognormal(-sd^2/2, sd)
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Y ~ dnPhyloBrownianREML(tree, branchRates=branch_rates^0.5)
 </code></pre></div></div>
 
+<p>We include an extended Newick monitor to keep track of the three different kinds of branch-specific rates.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnExtNewick(filename="output/relaxed_state_dependent_BM.trees", isNodeParameter=TRUE, printgen=10, separator=TAB, tree=tree, state_branch_rate, background_rates, branch_rates) )
+</code></pre></div></div>
+
+<p>Finally, we summarize the branch-specific rates after we run the MCMC analysis.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>treetrace = readTreeTrace("output/relaxed_state_dependent_BM.trees")
+map_tree = mapTree(treetrace,"output/relaxed_state_dependent_BM_MAP.tre")
+</code></pre></div></div>
+
 <p>⇨ The <code class="language-plaintext highlighter-rouge">Rev</code> file for performing this analysis: <code class="language-plaintext highlighter-rouge">mcmc_relaxed_state_dependent_BM.Rev</code></p>
 
 <p>You can then visualize the branch-specific rates by plotting them using our <code class="language-plaintext highlighter-rouge">R</code> package <code class="language-plaintext highlighter-rouge">RevGadgets</code>. Importantly, these plots allow you to tease apart the relative contributions of background- and state-dependent-rate variation to overall patterns of rate variation across the tree. Just start R in the main directory for this analysis and then type the following commands:</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">RevGadgets</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">gridExtra</span><span class="p">)</span><span class="w">
 
-</span><span class="n">my_tree</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">read.nexus</span><span class="p">(</span><span class="s2">"data/haemulidae.nex"</span><span class="p">)</span><span class="w">
-</span><span class="n">my_output_file</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"output/relaxed_state_dependent_BM.log"</span><span class="w">
+</span><span class="c1"># read the annotated tree</span><span class="w">
+</span><span class="n">tree</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">readTrees</span><span class="p">(</span><span class="s2">"output/relaxed_state_dependent_BM_MAP.tre"</span><span class="p">)</span><span class="w">
 
-</span><span class="n">background_plot</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">plot_relaxed_branch_rates_tree</span><span class="p">(</span><span class="n">tree</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="n">my_tree</span><span class="p">,</span><span class="w">
-                                                  </span><span class="n">output_file</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">my_output_file</span><span class="p">,</span><span class="w">
-                                                  </span><span class="n">parameter_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"background_rates"</span><span class="p">)</span><span class="w">
+</span><span class="c1"># create the ggplot objects</span><span class="w">
+</span><span class="n">state_rates</span><span class="w">      </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">plotTree</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="n">color_branch_by</span><span class="o">=</span><span class="s2">"state_branch_rate"</span><span class="p">,</span><span class="w"> </span><span class="n">tip_labels_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="n">legend_x</span><span class="o">=</span><span class="m">0.2</span><span class="p">)</span><span class="w">
+</span><span class="n">background_rates</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">plotTree</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="n">color_branch_by</span><span class="o">=</span><span class="s2">"background_rates"</span><span class="p">,</span><span class="w">  </span><span class="n">tip_labels_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="n">legend_x</span><span class="o">=</span><span class="m">0.2</span><span class="p">)</span><span class="w">
+</span><span class="n">overall_rates</span><span class="w">    </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">plotTree</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="n">color_branch_by</span><span class="o">=</span><span class="s2">"branch_rates"</span><span class="p">,</span><span class="w">      </span><span class="n">tip_labels_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="n">legend_x</span><span class="o">=</span><span class="m">0.2</span><span class="p">)</span><span class="w">
 
-</span><span class="n">state_plot</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">plot_relaxed_branch_rates_tree</span><span class="p">(</span><span class="n">tree</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="n">my_tree</span><span class="p">,</span><span class="w">
-                                             </span><span class="n">output_file</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">my_output_file</span><span class="p">,</span><span class="w">
-                                             </span><span class="n">parameter_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"state_branch_rate"</span><span class="p">)</span><span class="w">
-
-</span><span class="n">overall_plot</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">plot_relaxed_branch_rates_tree</span><span class="p">(</span><span class="n">tree</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="n">my_tree</span><span class="p">,</span><span class="w">
-                                               </span><span class="n">output_file</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">my_output_file</span><span class="p">,</span><span class="w">
-                                               </span><span class="n">parameter_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"branch_rates"</span><span class="p">)</span><span class="w">
-
-</span><span class="n">pdf</span><span class="p">(</span><span class="s2">"relaxed_state_dependent_BM.pdf"</span><span class="p">,</span><span class="w"> </span><span class="n">height</span><span class="o">=</span><span class="m">5</span><span class="p">,</span><span class="w"> </span><span class="n">width</span><span class="o">=</span><span class="m">15</span><span class="p">)</span><span class="w">
-</span><span class="n">grid.arrange</span><span class="p">(</span><span class="n">state_plot</span><span class="p">,</span><span class="w"> </span><span class="n">background_plot</span><span class="p">,</span><span class="w"> </span><span class="n">overall_plot</span><span class="p">,</span><span class="w"> </span><span class="n">nrow</span><span class="o">=</span><span class="m">1</span><span class="p">)</span><span class="w">
+</span><span class="c1"># plot the objects</span><span class="w">
+</span><span class="n">pdf</span><span class="p">(</span><span class="s2">"relaxed_state_dependent_BM.pdf"</span><span class="p">,</span><span class="w"> </span><span class="n">height</span><span class="o">=</span><span class="m">5</span><span class="p">,</span><span class="w"> </span><span class="n">width</span><span class="o">=</span><span class="m">12</span><span class="p">)</span><span class="w">
+</span><span class="n">grid.arrange</span><span class="p">(</span><span class="n">state_rates</span><span class="p">,</span><span class="w"> </span><span class="n">background_rates</span><span class="p">,</span><span class="w"> </span><span class="n">overall_rates</span><span class="p">,</span><span class="w"> </span><span class="n">nrow</span><span class="o">=</span><span class="m">1</span><span class="p">)</span><span class="w">
 </span><span class="n">dev.off</span><span class="p">()</span><span class="w">
 </span></code></pre></div></div>
 
@@ -514,6 +535,8 @@ rate_shift_distribution = dnLognormal(-sd^2/2, sd)
 <figcaption><strong>Estimated rates of Brownian-motion evolution with state-dependent and background-rate variation.</strong>
 Left) We show the state-dependent rates of continuous-character evolution, indicating that increased rates are strongly associated with living in reefs. Middle) We show the background rates of continuous-character evolution, indicating mild rate variation that cannot be attributed to the state of the discrete character. Right) We show the combined effect of state-dependent and state-independent sources of rate variation.</figcaption>
 </figure>
+
+<p>⇨ The <code class="language-plaintext highlighter-rouge">R</code> file for plotting these results: <code class="language-plaintext highlighter-rouge">plot_relaxed_state_dependent_BM.Rev</code></p>
 
 <!--  -->
 

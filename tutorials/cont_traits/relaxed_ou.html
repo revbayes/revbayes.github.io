@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Relaxed Ornstein-Uhlenbeck Models</h1>
 	<h3 class="subtitle">Estimating lineage-specific optima under Ornstein-Uhlenbeck evolution</h3>
 	<h4 class="authors">Michael R. May</h4>
-  <h5>Last modified on September 16, 2019</h5>
+  <h5>Last modified on April 14, 2021</h5>
 </div>
 
 
@@ -70,6 +70,8 @@
           <ul id="prerequisites">
           
             <li><a href="/tutorials/intro/">Getting Started with RevBayes and Rev Language Syntax</a></li>
+          
+            <li><a href="/tutorials/intro/revgadgets.html">Introduction to RevGadgets</a></li>
           
             <li><a href="/tutorials/mcmc/">Introduction to Markov chain Monte Carlo (MCMC) Sampling</a></li>
           
@@ -259,6 +261,9 @@ shift_probability &lt;- expected_number_of_shifts / nbranches
 specified variables to the screen with <code class="language-plaintext highlighter-rouge">mnScreen</code>:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(printgen=1000, sigma2, num_theta_changes) )
 </code></pre></div></div>
+<p>Finally, we include an extended Newick monitor to keep track of the branch-specific <code class="language-plaintext highlighter-rouge">theta</code> values on each branch of the tree.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnExtNewick(filename="output/relaxed_OU.trees", isNodeParameter=TRUE, printgen=10, separator=TAB, tree=tree, branch_thetas) )
+</code></pre></div></div>
 
 <h4 class="subsubsection" id="initializing-and-running-the-mcmc-simulation">Initializing and Running the MCMC Simulation</h4>
 <hr class="subsubsection" />
@@ -272,24 +277,24 @@ create our MCMC object:</p>
 <p>Now, run the MCMC:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=50000)
 </code></pre></div></div>
+<p>Finally, we summarize the branch-specific rate after we run the MCMC analysis.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>treetrace = readTreeTrace("output/relaxed_OU.trees")
+map_tree = mapTree(treetrace,"output/relaxed_OU_MAP.tre")
+</code></pre></div></div>
+
 <p>When the analysis is complete, you will have the monitored files in your
 output directory.</p>
 
 <p>⇨ The <code class="language-plaintext highlighter-rouge">Rev</code> file for performing this analysis: <code class="language-plaintext highlighter-rouge">mcmc_relaxed_OU.Rev</code></p>
 
-<p>You can then visualize the branch-specific rates by plotting them using our <code class="language-plaintext highlighter-rouge">R</code> package <code class="language-plaintext highlighter-rouge">RevGadgets</code>. Just start R in the main directory for this analysis and then type the following commands:</p>
+<p>You can then visualize the branch-specific rates by plotting them using our <code class="language-plaintext highlighter-rouge">R</code> package <code class="language-plaintext highlighter-rouge">RevGadgets</code>. Importantly, these plots allow you to tease apart the relative contributions of background- and state-dependent-rate variation to overall patterns of rate variation across the tree. Just start R in the main directory for this analysis and then type the following commands:</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">RevGadgets</span><span class="p">)</span><span class="w">
 
-</span><span class="n">dataset</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">1</span><span class="w">
-</span><span class="n">my_tree</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">read.nexus</span><span class="p">(</span><span class="s2">"data/trees.nex"</span><span class="p">)[[</span><span class="n">dataset</span><span class="p">]]</span><span class="w">
-</span><span class="n">my_output_file</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"output/relaxed_OU.log"</span><span class="w">
+</span><span class="c1"># read the annotated tree</span><span class="w">
+</span><span class="n">tree</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">readTrees</span><span class="p">(</span><span class="s2">"output/relaxed_OU_MAP.tre"</span><span class="p">)</span><span class="w">
 
-</span><span class="n">tree_plot</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">plot_relaxed_branch_rates_tree</span><span class="p">(</span><span class="n">tree</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="n">my_tree</span><span class="p">,</span><span class="w">
-                                            </span><span class="n">output_file</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">my_output_file</span><span class="p">,</span><span class="w">
-                                            </span><span class="n">parameter_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"branch_thetas"</span><span class="p">)</span><span class="w">
-
-</span><span class="n">ggsave</span><span class="p">(</span><span class="s2">"relaxed_OU.pdf"</span><span class="p">,</span><span class="w"> </span><span class="n">width</span><span class="o">=</span><span class="m">15</span><span class="p">,</span><span class="w"> </span><span class="n">height</span><span class="o">=</span><span class="m">15</span><span class="p">,</span><span class="w"> </span><span class="n">units</span><span class="o">=</span><span class="s2">"cm"</span><span class="p">)</span><span class="w">
-
+</span><span class="c1"># plot the objects</span><span class="w">
+</span><span class="n">plotTree</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="n">color_branch_by</span><span class="o">=</span><span class="s2">"branch_thetas"</span><span class="p">)</span><span class="w">
 </span></code></pre></div></div>
 
 <figure id="fig_relaxed_OU"><p><img src="figures/relaxed_OU.png" width="50%" height="50%" /></p>
@@ -304,7 +309,7 @@ Here we show the results of our example analysis.</figcaption>
   <li>Run an MCMC simulation to estimate the posterior distribution of the branch-specific thetas (<code class="language-plaintext highlighter-rouge">branch_thetas</code>) assuming a prior expected number of shifts of 5.</li>
   <li>Plot the thetas among branches under this prior.</li>
   <li>Change the prior expected number of shifts to 1, and then plot the branch-specific thetas on the tree.</li>
-  <li>Compare the posterior distributions for the total number of shifts under both priors using <code class="language-plaintext highlighter-rouge">Tracer</code>. Does the posterior distribution for the total number of shifts seem to be sensitive to the prior?</li>
+  <li>Compare the posterior distributions for the total number of shifts under both priors. Does the posterior distribution for the total number of shifts seem to be sensitive to the prior?</li>
   <li>Compare the posterior mean estimates under each prior. Do the posterior mean estimates estimates appear to be sensitive to this prior?</li>
 </ul>
 

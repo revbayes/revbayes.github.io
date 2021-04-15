@@ -1,0 +1,794 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: Introduction to RevGadgets</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
+      </a>
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/download">Download</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/documentation/">Documentation</a></li>
+        <li><a href="https://revbayes.github.io/revscripter/">RevScripter</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/jobs/">Jobs</a></li>
+        <li><a href="/developer/">Developer</a></li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <div class="titlebar">
+	<h1 class="maintitle">Introduction to RevGadgets</h1>
+	<h3 class="subtitle">Plotting the output of RevBayes analyses in the R package RevGadgets.</h3>
+	<h4 class="authors">Carrie M. Tribble and Michael R. May</h4>
+  <h5>Last modified on April 14, 2021</h5>
+</div>
+
+
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul id="prerequisites">
+          
+            <li><a href="/tutorials/intro/">Getting Started with RevBayes and Rev Language Syntax</a></li>
+          
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+
+
+
+
+<blockquote class="tutorial_files" id="tutorial_files">
+    <h2>Data files and scripts</h2>
+    
+        
+        <strong>Data Files</strong>
+        <ul id="data_files">
+        
+        
+        
+          <li><a href="/tutorials/intro/data/anc_states_BiSSE.tree">anc_states_BiSSE.tree</a></li>
+        
+          <li><a href="/tutorials/intro/data/ase_freeK.tree">ase_freeK.tree</a></li>
+        
+          <li><a href="/tutorials/intro/data/bears.mcc.tre">bears.mcc.tre</a></li>
+        
+          <li><a href="/tutorials/intro/data/empirical_data_pps_example.csv">empirical_data_pps_example.csv</a></li>
+        
+          <li><a href="/tutorials/intro/data/freeK_RJ.log">freeK_RJ.log</a></li>
+        
+          <li><a href="/tutorials/intro/data/primates_BDS_rates.log">primates_BDS_rates.log</a></li>
+        
+          <li><a href="/tutorials/intro/data/primates_BiSSE_activity_period.log">primates_BiSSE_activity_period.log</a></li>
+        
+          <li><a href="/tutorials/intro/data/primates_EBD_extinction_rates.log">primates_EBD_extinction_rates.log</a></li>
+        
+          <li><a href="/tutorials/intro/data/primates_EBD_extinction_times.log">primates_EBD_extinction_times.log</a></li>
+        
+          <li><a href="/tutorials/intro/data/primates_EBD_speciation_rates.log">primates_EBD_speciation_rates.log</a></li>
+        
+          <li><a href="/tutorials/intro/data/primates_EBD_speciation_times.log">primates_EBD_speciation_times.log</a></li>
+        
+          <li><a href="/tutorials/intro/data/primates_cytb_GTR.log">primates_cytb_GTR.log</a></li>
+        
+          <li><a href="/tutorials/intro/data/primates_cytb_GTR_MAP.tre">primates_cytb_GTR_MAP.tre</a></li>
+        
+          <li><a href="/tutorials/divrate/data/primates_tree.nex">primates_tree.nex</a></li>
+        
+          <li><a href="/tutorials/intro/data/primates_tree.nex">primates_tree.nex</a></li>
+        
+          <li><a href="/tutorials/sse/data/primates_tree.nex">primates_tree.nex</a></li>
+        
+          <li><a href="/tutorials/intro/data/relaxed_OU_MAP.tre">relaxed_OU_MAP.tre</a></li>
+        
+          <li><a href="/tutorials/intro/data/simple.ase.tre">simple.ase.tre</a></li>
+        
+          <li><a href="/tutorials/intro/data/simulated_data_pps_example.csv">simulated_data_pps_example.csv</a></li>
+        
+        </ul>
+    
+        
+        <strong>Scripts</strong>
+        <ul id="scripts">
+        
+        
+        
+          <li><a href="/tutorials/intro/scripts/anc_states.R">anc_states.R</a></li>
+        
+          <li><a href="/tutorials/intro/scripts/divrates.R">divrates.R</a></li>
+        
+          <li><a href="/tutorials/intro/scripts/parameter_estimates.R">parameter_estimates.R</a></li>
+        
+          <li><a href="/tutorials/intro/scripts/post_pred.R">post_pred.R</a></li>
+        
+          <li><a href="/tutorials/intro/scripts/visualize_trees.R">visualize_trees.R</a></li>
+        
+        </ul>
+    
+</blockquote>
+
+
+</div>
+<h1 class="section" id="overview">Overview</h1>
+
+<figure><p><img src="figures/revgadgets_logo.png" height="50%" width="50%" /></p>
+</figure>
+
+<p>Through user-friendly data pipelines, <code class="language-plaintext highlighter-rouge">RevGadgets</code> guides users through importing RevBayes output into <code class="language-plaintext highlighter-rouge">R</code>, processing the output, and producing figures or other summaries of the results. 
+<code class="language-plaintext highlighter-rouge">RevGadgets</code> provide paired processing and plotting functions built around commonly implemented analyses, such as tree building and divergence-time estimation, diversification-rate estimation, ancestral-state reconstruction and biogeographic range reconstruction, and posterior predictive simulations.
+Using the general framework of <code class="language-plaintext highlighter-rouge">ggplot2</code>, the tidyverse, and associated packages <a class="citation" href="#wickham2011ggplot2">(Wickham 2011; Wickham et al. 2019)</a>, plotting functions return plot objects with default aesthetics that users may customize. Below, we walk you through installation and several case studies to illustrate primary functionalities.</p>
+
+<h1 class="section" id="installation">Installation</h1>
+
+<p><code class="language-plaintext highlighter-rouge">RevGadgets</code> is available to download from GitHub using <code class="language-plaintext highlighter-rouge">devtools</code>:</p>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">install.packages</span><span class="p">(</span><span class="s2">"devtools"</span><span class="p">)</span><span class="w">
+</span><span class="n">devtools</span><span class="o">::</span><span class="n">install_github</span><span class="p">(</span><span class="s2">"cmt2/RevGadgets"</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<h2 class="subsection" id="note-about-magick-dependency">Note about <code class="language-plaintext highlighter-rouge">magick</code> dependency</h2>
+
+<p><code class="language-plaintext highlighter-rouge">RevGadgets</code> depends on the <code class="language-plaintext highlighter-rouge">R</code> package <code class="language-plaintext highlighter-rouge">magick</code>, which in turn depends on external software <code class="language-plaintext highlighter-rouge">ImageMagick</code>. If <code class="language-plaintext highlighter-rouge">RevGadgets</code> installation fails, you may need to install <code class="language-plaintext highlighter-rouge">ImageMagick</code>. On macOS or Linux, this can be done using <code class="language-plaintext highlighter-rouge">homebrew</code> at the command line:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>brew install imagemagick
+</code></pre></div></div>
+
+<p>Alternatively, visit the <a href="https://imagemagick.org/script/download.php">ImageMagick website</a> for more download options.</p>
+
+<h1 class="section" id="getting-started">Getting Started</h1>
+<p>To run this tutorial, download the associated files from the <code class="language-plaintext highlighter-rouge">Data files and scripts</code> menu, preserving the structure of the zipped folder. All scripts should be in a subdirectory called <code class="language-plaintext highlighter-rouge">scripts</code> and all data files in a subdirectory called <code class="language-plaintext highlighter-rouge">data</code>. 
+Open <code class="language-plaintext highlighter-rouge">R</code> and make sure your working directory is set to the directory with the downloaded files. 
+For more information on how to customize these plots, see the associated documentation for each function (e.g., <code class="language-plaintext highlighter-rouge">?readTrace</code>)).
+Submit feature requests or bug reports with Issues on <a href="https://github.com/cmt2/RevGadgets">GitHub</a>.</p>
+
+<p>Before running the code chunks below, load all the libraries used in the tutorial. You may need to install these packages separately.</p>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">RevGadgets</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">coda</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">ggplot2</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">ggtree</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">gridExtra</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<h1 class="section" id="visualizing-parameter-estimates">Visualizing Parameter Estimates</h1>
+
+<p><code class="language-plaintext highlighter-rouge">RevGadgets</code> provides several tools that facilitate the visualization of posterior distributions of parameters. 
+The output of most <code class="language-plaintext highlighter-rouge">RevBayes</code> analyses is a tab-delimited file where rows correspond to samples of an MCMC analysis and columns correspond to parameters in the model. 
+Most information of interest to researchers must be extracted from these output files.<br />
+Visualizing MCMC output is also critical for evaluating and troubleshooting analyses, especially for diagnosing MCMC pathologies.</p>
+
+<p>The following code demonstrates how to process and visualize the MCMC trace file of a general time-reversible (GTR) substitution model analysis <a class="citation" href="#Tavare1986">(Tavaré 1986)</a>, in which we have estimated the substitution rate and stationary frequency parameters for a single gene in a sample of 23 primates <a class="citation" href="#Springer2012">(Springer et al. 2012)</a>. This analysis is covered in detail the <a href="/tutorials/ctmc/">Nucleotide substitution models</a> tutorial.</p>
+
+<p>⇨ The code in this section is contained in the script: <code class="language-plaintext highlighter-rouge">scripts/parameter_estimates.R</code></p>
+
+<p>First, read in and process the trace file. Burnin (the samples taken before the Markov chain reached stationarity) may be removed at this stage or after examining the trace file further.</p>
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># specify the input file</span><span class="w">
+</span><span class="n">file</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"data/primates_cytb_GTR.log"</span><span class="w">
+
+</span><span class="c1"># read the trace and discard burnin</span><span class="w">
+</span><span class="n">trace_quant</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">readTrace</span><span class="p">(</span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">file</span><span class="p">,</span><span class="w"> </span><span class="n">burnin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.1</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># or read the trace _then_ discard burnin</span><span class="w">
+</span><span class="n">trace_quant</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">readTrace</span><span class="p">(</span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">file</span><span class="p">)</span><span class="w">
+</span><span class="n">trace_quant</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">removeBurnin</span><span class="p">(</span><span class="n">trace</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">trace_quant</span><span class="p">,</span><span class="w"> </span><span class="n">burnin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.1</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>The output of <code class="language-plaintext highlighter-rouge">readTrace()</code> may be passed to <code class="language-plaintext highlighter-rouge">R</code> packages specializing in MCMC diagnoses such as <code class="language-plaintext highlighter-rouge">coda</code> <a class="citation" href="#plummer2006coda">(Plummer et al. 2006)</a>. (Note that <code class="language-plaintext highlighter-rouge">RevGadgets</code> does not require <code class="language-plaintext highlighter-rouge">coda</code>, so you will have to install it separately.)
+For example:</p>
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># assess convergence with coda </span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">coda</span><span class="p">)</span><span class="w">
+</span><span class="n">trace_quant_MCMC</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">as.mcmc</span><span class="p">(</span><span class="n">trace_quant</span><span class="p">[[</span><span class="m">1</span><span class="p">]])</span><span class="w">
+</span><span class="n">effectiveSize</span><span class="p">(</span><span class="n">trace_quant_MCMC</span><span class="p">)</span><span class="w">
+</span><span class="n">traceplot</span><span class="p">(</span><span class="n">trace_quant_MCMC</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Alternatively, use the <code class="language-plaintext highlighter-rouge">R</code> package <code class="language-plaintext highlighter-rouge">convenience</code> (described here: <a href="/tutorials/convergence/">Convergence assessment</a>) to assess convergence before processing the data with <code class="language-plaintext highlighter-rouge">RevGadgets</code>.</p>
+
+<p><code class="language-plaintext highlighter-rouge">RevGadgets</code> provides its own core functions for summarizing and visualizing traces of specific parameters. 
+<code class="language-plaintext highlighter-rouge">SummarizeTrace()</code> calculates the mean and 95% credible interval for quantitative variables and the 95% credible set for qualitative variables.
+To examine the stationary frequency (pi) parameter values in our trace file, summarize their distributions:</p>
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">summarizeTrace</span><span class="p">(</span><span class="n">trace</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">trace_quant</span><span class="p">,</span><span class="w"> </span><span class="n">vars</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="nf">c</span><span class="p">(</span><span class="s2">"pi[1]"</span><span class="p">,</span><span class="s2">"pi[2]"</span><span class="p">,</span><span class="s2">"pi[3]"</span><span class="p">,</span><span class="s2">"pi[4]"</span><span class="p">))</span><span class="w">
+</span></code></pre></div></div>
+<p>The following summaries will be printed to the screen:</p>
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">$</span><span class="n">`pi[1]`</span><span class="w">
+</span><span class="o">$</span><span class="n">`pi[1]`</span><span class="o">$</span><span class="n">trace_1</span><span class="w">
+        </span><span class="n">mean</span><span class="w">        </span><span class="n">median</span><span class="w">        </span><span class="n">MAP</span><span class="w">  
+        </span><span class="m">0.3280593</span><span class="w">   </span><span class="m">0.3282250</span><span class="w">     </span><span class="m">0.3265728</span><span class="w">      
+        </span><span class="n">quantile_2.5</span><span class="w">  </span><span class="n">quantile_97.5</span><span class="w"> 
+        
+        </span><span class="m">0.3080363</span><span class="w">     </span><span class="m">0.3481651</span><span class="w">
+        
+</span><span class="n">...</span><span class="w">
+
+</span><span class="o">$</span><span class="n">`pi[4]`</span><span class="w">
+</span><span class="o">$</span><span class="n">`pi[4]`</span><span class="o">$</span><span class="n">trace_1</span><span class="w">
+        </span><span class="n">mean</span><span class="w">        </span><span class="n">median</span><span class="w">        </span><span class="n">MAP</span><span class="w">  
+        </span><span class="m">0.2152190</span><span class="w">   </span><span class="m">0.2145595</span><span class="w">     </span><span class="m">0.2144797</span><span class="w">
+        
+        </span><span class="n">quantile_2.5</span><span class="w">  </span><span class="n">quantile_97.5</span><span class="w">
+        </span><span class="m">0.2020019</span><span class="w">     </span><span class="m">0.2278689</span><span class="w">
+
+</span></code></pre></div></div>
+
+<p>Then plot these distributions. <code class="language-plaintext highlighter-rouge">plotTrace()</code> produces a list of ggplot2 objects, with multiple plots if there are multiple runs in the trace object or if you provide a mix of quantitative and qualitative parameters. Here, only one plot is produced, so we print the plot using <code class="language-plaintext highlighter-rouge">[[1]]</code> after the function call.</p>
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">plotTrace</span><span class="p">(</span><span class="n">trace</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">trace_quant</span><span class="p">,</span><span class="w"> </span><span class="n">vars</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s2">"pi[1]"</span><span class="p">,</span><span class="s2">"pi[2]"</span><span class="p">,</span><span class="s2">"pi[3]"</span><span class="p">,</span><span class="s2">"pi[4]"</span><span class="p">))[[</span><span class="m">1</span><span class="p">]]</span><span class="w">
+</span></code></pre></div></div>
+
+<figure><p><img src="figures/traceQuant.png" height="50%" width="50%" /></p>
+<figcaption>The posterior densities of the nucleotide stationary frequencies under a GTR substitution model. Colored areas under the curve correspond to the 95% credible interval.</figcaption>
+</figure>
+
+<p>These functions may also process and plot posterior estimates of discrete variables, such as the the binary character indicating if certain transition rates among character states exist (i.e. if the corresponding transitions are possible), from a reversible jump MCMC (rjMCMC) ancestral-state reconstruction analysis. See the <a href="/tutorials/morph/morph_more.html">Discrete morphology - Ancestral State Estimation</a> tutorial for information on performing this RevBayes analysis.</p>
+
+<p>First, read and summarize the data:</p>
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># read in trace</span><span class="w">
+</span><span class="n">file</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"data/freeK_RJ.log"</span><span class="w">
+</span><span class="n">trace_qual</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">readTrace</span><span class="p">(</span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">file</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># summarize parameters </span><span class="w">
+</span><span class="n">summarizeTrace</span><span class="p">(</span><span class="n">trace_qual</span><span class="p">,</span><span class="w"> 
+               </span><span class="n">vars</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s2">"prob_rate_12"</span><span class="p">,</span><span class="w"> </span><span class="s2">"prob_rate_13"</span><span class="p">,</span><span class="w"> </span><span class="s2">"prob_rate_21"</span><span class="p">,</span><span class="w">
+                        </span><span class="s2">"prob_rate_23"</span><span class="p">,</span><span class="w"> </span><span class="s2">"prob_rate_31"</span><span class="p">,</span><span class="w"> </span><span class="s2">"prob_rate_32"</span><span class="p">))</span><span class="w">
+</span></code></pre></div></div>
+<p>The following summaries will be printed to the screen:</p>
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">$</span><span class="n">prob_rate_12</span><span class="w">
+</span><span class="o">$</span><span class="n">prob_rate_12</span><span class="o">$</span><span class="n">trace_1</span><span class="w">
+</span><span class="n">credible_set</span><span class="w">
+        </span><span class="m">1</span><span class="w">         </span><span class="m">0</span><span class="w"> 
+</span><span class="m">0.6440396</span><span class="w"> </span><span class="m">0.3559604</span><span class="w"> 
+
+</span><span class="n">...</span><span class="w">
+
+</span><span class="o">$</span><span class="n">prob_rate_32</span><span class="w">
+</span><span class="o">$</span><span class="n">prob_rate_32</span><span class="o">$</span><span class="n">trace_1</span><span class="w">
+        </span><span class="m">0</span><span class="w"> 
+</span><span class="m">0.9724475</span><span class="w">
+</span></code></pre></div></div>
+<p>Then plot the distributions as histograms:</p>
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">plotTrace</span><span class="p">(</span><span class="n">trace</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">trace_qual</span><span class="p">,</span><span class="w"> 
+          </span><span class="n">vars</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s2">"prob_rate_12"</span><span class="p">,</span><span class="w"> </span><span class="s2">"prob_rate_13"</span><span class="p">,</span><span class="w">
+                   </span><span class="s2">"prob_rate_31"</span><span class="p">,</span><span class="w"> </span><span class="s2">"prob_rate_32"</span><span class="p">))[[</span><span class="m">1</span><span class="p">]]</span><span class="w">
+</span></code></pre></div></div>
+
+<figure><p><img src="figures/traceQual.png" height="50%" width="50%" /></p>
+<figcaption>The posterior distributions of whether particular rates are included in a model of character evolution. Colored bars are included in the 95% credible set.</figcaption>
+</figure>
+
+<p>If you provide both quantitative and qualitative variables to the <code class="language-plaintext highlighter-rouge">vars</code> argument, <code class="language-plaintext highlighter-rouge">plotTrace()</code> will produce multiple plots. Say you want to visualize some rates in addition to the qualitative probability parameters:</p>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># produce plots of probab</span><span class="w">
+</span><span class="n">plots</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">plotTrace</span><span class="p">(</span><span class="n">trace</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">trace_qual</span><span class="p">,</span><span class="w"> 
+                   </span><span class="n">vars</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s2">"prob_rate_12"</span><span class="p">,</span><span class="w"> </span><span class="s2">"prob_rate_13"</span><span class="p">,</span><span class="w">
+                            </span><span class="s2">"prob_rate_31"</span><span class="p">,</span><span class="w"> </span><span class="s2">"prob_rate_32"</span><span class="p">,</span><span class="w">
+                             </span><span class="s2">"rate_31"</span><span class="p">,</span><span class="w"> </span><span class="s2">"rate_32"</span><span class="p">))</span><span class="w">
+</span></code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">plots</code> is now a list of length two. Visualize them together with the <code class="language-plaintext highlighter-rouge">grid</code> package:</p>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">grid.newpage</span><span class="p">()</span><span class="w">
+</span><span class="n">grid.draw</span><span class="p">(</span><span class="w"> </span><span class="c1"># draw the following matrix of plots</span><span class="w">
+    </span><span class="n">rbind</span><span class="p">(</span><span class="w"> </span><span class="c1"># bind together the columns</span><span class="w">
+      </span><span class="n">ggplotGrob</span><span class="p">(</span><span class="n">plots</span><span class="p">[[</span><span class="m">1</span><span class="p">]]),</span><span class="w">
+      </span><span class="n">ggplotGrob</span><span class="p">(</span><span class="n">plots</span><span class="p">[[</span><span class="m">2</span><span class="p">]]))</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<figure><p><img src="figures/trace_both.png" height="50%" width="50%" /></p>
+<figcaption>A combined figure of the plots for both quantitative and qualitative variables. Top: the posterior densities of transition rate parameters.
+Bottom: the posterior distributions of whether particular rates are included in a model of character evolution (same as the sandalone figure above).</figcaption>
+</figure>
+
+<h1 class="section" id="visualizing-phylogenies">Visualizing Phylogenies</h1>
+
+<p>Phylogenies are central to all analyses in <code class="language-plaintext highlighter-rouge">RevBayes</code>, and accurate and information-rich visualizations of evolutionary trees are thus critical.
+<code class="language-plaintext highlighter-rouge">RevGadgets</code> contains methods to visualize phylogenies and their associated posterior probabilities, divergence time estimates, geological time scales, and branch rates.
+Additionally, text annotation may be added to specify associated data, such as posterior probabilities of nodes or node ages. 
+Users may modify aesthetics such as colors, sizes, branch thickness, and tip label formatting through specific function arguments or by adding layers to the resulting ggplot object.</p>
+
+<p>⇨ To reproduce this section, see: <code class="language-plaintext highlighter-rouge">scripts/visualize_trees.R</code></p>
+
+<h2 class="subsection" id="basic-tree-plots">Basic tree plots</h2>
+
+<p>RevGadgets reads and processes single trees, such as those produced by the <a href="/tutorials/ctmc/">Nucleotide substitution models</a> tutorial, and tree traces with <code class="language-plaintext highlighter-rouge">readTrees()</code>:</p>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">file</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"data/primates_cytb_GTR_MAP.tre"</span><span class="w">
+</span><span class="n">tree</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">readTrees</span><span class="p">(</span><span class="n">paths</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">file</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+<p><code class="language-plaintext highlighter-rouge">rerootPhylo()</code> roots the tree and <code class="language-plaintext highlighter-rouge">plotTree()</code> produces a basic tree plot, which may be modified by changing the formatting of tip labels, adjusting tree line width, and adding posterior probabilities of nodes as internal node labels. This plot object is modifiable in the same way as <code class="language-plaintext highlighter-rouge">ggplot</code>. Here, we add a scale bar:</p>
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># reroot the tree with Galeopterus variegatus </span><span class="w">
+</span><span class="c1"># you can also specify multiple tips to reroot using a clade</span><span class="w">
+</span><span class="n">tree_rooted</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rerootPhylo</span><span class="p">(</span><span class="n">tree</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="n">outgroup</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Galeopterus_variegatus"</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># create the plot of the rooted tree</span><span class="w">
+</span><span class="n">plot</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">plotTree</span><span class="p">(</span><span class="n">tree</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tree_rooted</span><span class="p">,</span><span class="w">
+                 </span><span class="c1"># label nodes the with posterior probabilities</span><span class="w">
+                 </span><span class="n">node_labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"posterior"</span><span class="p">,</span><span class="w"> 
+                 </span><span class="c1"># offset the node labels from the nodes</span><span class="w">
+                 </span><span class="n">node_labels_offset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.005</span><span class="p">,</span><span class="w">
+                 </span><span class="c1"># make tree lines more narrow</span><span class="w">
+                 </span><span class="n">line_width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.5</span><span class="p">,</span><span class="w">
+                 </span><span class="c1"># italicize tip labels </span><span class="w">
+                 </span><span class="n">tip_labels_italics</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># add scale bar to the tree and plot with ggtree</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">ggtree</span><span class="p">)</span><span class="w">
+</span><span class="n">plot</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">geom_treescale</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">-0.35</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">-1</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<figure><p><img src="figures/basic_tree.png" height="50%" width="50%" /></p>
+<figcaption>The maximum <em>a posterior</em> phylogeny of primates inferred under a GTR substitution model.</figcaption>
+</figure>
+
+<h2 class="subsection" id="fossilized-birth-death-trees">Fossilized birth-death trees</h2>
+
+<p>RevGadgets elaborates on the <code class="language-plaintext highlighter-rouge">plotTree</code> to plot fossilized birth death analyses, such as those described in the <a href="/tutorials/fbd_simple/">Estimating a Time-Calibrated Phylogeny of Fossil and Extant Taxa using Morphological Data</a> tutorial. This plot includes a geological timescale, labeled sampled ancestors along branches and their species names as annotated text in the top left corner, and node and tip age bars colored by their corresponding posterior probabilities.</p>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">file</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"data/bears.mcc.tre"</span><span class="w">
+
+</span><span class="c1"># read in the tree </span><span class="w">
+</span><span class="n">tree</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">readTrees</span><span class="p">(</span><span class="n">paths</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">file</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># plot the FBD tree</span><span class="w">
+</span><span class="n">plotFBDTree</span><span class="p">(</span><span class="n">tree</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tree</span><span class="p">,</span><span class="w"> 
+            </span><span class="n">timeline</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">T</span><span class="p">,</span><span class="w"> 
+            </span><span class="n">geo_units</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"epochs"</span><span class="p">,</span><span class="w">
+            </span><span class="n">tip_labels_italics</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">T</span><span class="p">,</span><span class="w">
+            </span><span class="n">tip_labels_remove_underscore</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">T</span><span class="p">,</span><span class="w">
+            </span><span class="n">tip_labels_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3</span><span class="p">,</span><span class="w"> 
+            </span><span class="n">tip_age_bars</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">T</span><span class="p">,</span><span class="w">
+            </span><span class="n">node_age_bars</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">T</span><span class="p">,</span><span class="w"> 
+            </span><span class="n">age_bars_colored_by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"posterior"</span><span class="p">,</span><span class="w">
+            </span><span class="n">label_sampled_ancs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+    </span><span class="c1"># use ggplot2 to move the legend and make </span><span class="w">
+    </span><span class="c1"># the legend background transparent</span><span class="w">
+        </span><span class="n">theme</span><span class="p">(</span><span class="n">legend.position</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="m">.05</span><span class="p">,</span><span class="w"> </span><span class="m">.6</span><span class="p">),</span><span class="w">
+              </span><span class="n">legend.background</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_rect</span><span class="p">(</span><span class="n">fill</span><span class="o">=</span><span class="s2">"transparent"</span><span class="p">))</span><span class="w">
+</span></code></pre></div></div>
+
+<figure><p><img src="figures/FBDTree.png" height="50%" width="50%" /></p>
+<figcaption>The sampled-ancestor maximum-clade credibility phylogeny of extant and extinct bears inferred under the fossilized birth-death model.
+Bars correspond to the 95% credible interval of node (or tip) ages, and are colored by the posterior probability of the clade (for internal nodes), the posterior probability that the tip is <em>not</em> a sampled ancestor (for tip nodes) or the posterior probability that the node is a sampled ancestor (for sampled ancestor nodes).</figcaption>
+</figure>
+
+<h2 class="subsection" id="coloring-branches-by-variables">Coloring branches by variables</h2>
+
+<p>The <code class="language-plaintext highlighter-rouge">plotTree()</code> function can color the branches of the tree, which is useful for indicating branch rates or other continuous parameters. For example, here <code class="language-plaintext highlighter-rouge">plotTree()</code> colors the branches by branch-specific optima (thetas) from a relaxed Ornstein-Uhlenbeck model of body size evolution in whales. The <a href="/tutorials/cont_traits/relaxed_ou.html">Relaxed Ornstein-Uhlenbeck Models</a> tutorial covers this type of analysis.</p>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">file</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"data/relaxed_OU_MAP.tre"</span><span class="w">
+
+</span><span class="c1"># read in the tree</span><span class="w">
+</span><span class="n">tree</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">readTrees</span><span class="p">(</span><span class="n">paths</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">file</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># plot the tree with rates</span><span class="w">
+</span><span class="n">plotTree</span><span class="p">(</span><span class="n">tree</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tree</span><span class="p">,</span><span class="w"> 
+         </span><span class="c1"># italicize tip labels</span><span class="w">
+         </span><span class="n">tip_labels_italics</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">,</span><span class="w">
+         </span><span class="c1"># specify variable to color branches</span><span class="w">
+         </span><span class="n">color_branch_by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"branch_thetas"</span><span class="p">,</span><span class="w"> 
+         </span><span class="c1"># thicken the tree lines</span><span class="w">
+         </span><span class="n">line_width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1.7</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+    </span><span class="c1"># move the legend with ggplot2</span><span class="w">
+    </span><span class="n">theme</span><span class="p">(</span><span class="n">legend.position</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="m">.1</span><span class="p">,</span><span class="w"> </span><span class="m">.9</span><span class="p">))</span><span class="w">
+</span></code></pre></div></div>
+
+<figure><p><img src="figures/treeOU.png" height="50%" width="50%" /></p>
+<figcaption>Branch-specific optima, $\theta$, under a relaxed Ornstein-Uhlenbeck model. Branches are colored according to the posterior-mean estimate of $\theta$ for the branch.</figcaption>
+</figure>
+
+<h1 class="section" id="ancestral-state-reconstruction">Ancestral-State Reconstruction</h1>
+
+<p>Ancestral state reconstruction methods allow users to model how heritable characters, such as phenotypes or geographical distributions, have evolved across a phylogeny, producing probability distributions of states for each node of the phylogeny.
+This aspect of <code class="language-plaintext highlighter-rouge">RevGadgets</code> functionality allows users to plot the maximum <em>a posteriori</em> (MAP) estimate of ancestral states via <code class="language-plaintext highlighter-rouge">plotAncStatesMAP()</code> or a pie chart showing the most probable states via <code class="language-plaintext highlighter-rouge">plotAncStatesPie()</code>.</p>
+
+<p>For anagenetic evolutionary models (including standard CTMC models such as the GTR and Mk models), ancestral-state estimates are plotted at the nodes.
+However, more complex models may include cladogenetic evolution, so that state changes can occur at speciation events in addition to anagenetic evolution along branches <a class="citation" href="#Ree2008">(Ree and Smith 2008; Goldberg and Igić 2012)</a>. 
+<code class="language-plaintext highlighter-rouge">RevGadgets</code> can plot the results of inferences for modes with cladogenetic events by plotting ancestral states on the “shoulders” as well as the nodes.</p>
+
+<p>Ancestral-state plotting functions in <code class="language-plaintext highlighter-rouge">RevGadgets</code> allow users to specify character states and their posterior probabilities by modifying the colors, shapes, and sizes of node and shoulder symbols. 
+Text annotations may be added to specify states, state posterior probabilities, and the posterior probabilities of nodes.</p>
+
+<p>⇨ To reproduce this section, see: <code class="language-plaintext highlighter-rouge">scripts/anc_states.R</code></p>
+
+<h2 class="subsection" id="standard-anagenetic-models">Standard (anagenetic) models</h2>
+
+<p>To plot the output of an ancestral state estimation of placenta type across mammals, <code class="language-plaintext highlighter-rouge">RevGadgets</code> first summarizes the <code class="language-plaintext highlighter-rouge">RevBayes</code> output file using <code class="language-plaintext highlighter-rouge">processAncStates()</code>. This function reads in and processes an annotated tree file and labels the states. If no state labels are provided to <code class="language-plaintext highlighter-rouge">processAncStates()</code>, the function will provide default labels. Next, <code class="language-plaintext highlighter-rouge">RevGadgets</code> creates the plot object using a plotting function. In this example, we plot the MAP states using <code class="language-plaintext highlighter-rouge">plotAncStatesMAP()</code>. The analysis that produced this output file is described in the <a href="/tutorials/morph/morph_more.html">Discrete morphology - Ancestral State Estimation</a> tutorial.</p>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">file</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"data/ase_freeK.tree"</span><span class="w">
+
+</span><span class="c1"># process the ancestral states</span><span class="w">
+</span><span class="n">freeK</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">processAncStates</span><span class="p">(</span><span class="n">file</span><span class="p">,</span><span class="w">
+                          </span><span class="c1"># Specify state labels. </span><span class="w">
+                          </span><span class="c1"># These numbers correspond to </span><span class="w">
+                          </span><span class="c1"># your input data file.</span><span class="w">
+                          </span><span class="n">state_labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s2">"1"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Epitheliochorial"</span><span class="p">,</span><span class="w"> 
+                                           </span><span class="s2">"2"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Endotheliochorial"</span><span class="p">,</span><span class="w"> 
+                                           </span><span class="s2">"3"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Hemochorial"</span><span class="p">))</span><span class="w">
+
+</span><span class="c1"># produce the plot object, showing MAP states at nodes.</span><span class="w">
+</span><span class="c1"># color corresponds to state, size to the state's posterior probability</span><span class="w">
+</span><span class="n">plotAncStatesMAP</span><span class="p">(</span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">freeK</span><span class="p">,</span><span class="w"> 
+                 </span><span class="n">tree_layout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"circular"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+    </span><span class="c1"># modify legend location using ggplot2</span><span class="w">
+    </span><span class="n">theme</span><span class="p">(</span><span class="n">legend.position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">0.57</span><span class="p">,</span><span class="m">0.41</span><span class="p">))</span><span class="w">
+</span></code></pre></div></div>
+
+<figure><p><img src="figures/ancStatesMap_trimmed.png" height="75%" width="75%" /></p>
+<figcaption>Ancestral-state estimates of mammalian placental under an asymmetric model of character evolution. Symbol colors correspond to the state with the highest posterior probability at that node; the size of the symbol is proportional to the posterior probability of that state.</figcaption>
+</figure>
+
+<h2 class="subsection" id="cladogenetic-models">Cladogenetic models</h2>
+
+<p>Many biogeographic models, including the popular Dispersal-Extirpation-Cladogenesis model described in <a href="/tutorials/biogeo/biogeo_intro.html">Introduction to Phylogenetic Models of Discrete Biogeography</a>, include cladogenetic change.</p>
+
+<p><code class="language-plaintext highlighter-rouge">plotAncStatesPie()</code> represents the distribution of ancestral states at nodes as pie charts of the three most probable states for that node plus an “other” category of any remaining probability.
+We demonstrate this functionality with a visualization of the ancestral ranges of Hawaiian silverswords estimated using a DEC biogeographic analysis and include shoulder states to indicate cladogenetic as well as anagenetic changes. 
+Because of the large number of states in this analysis (15 possible ranges and one “other” category), more pre-plotting processing is necessary.
+We pass the appropriate ancestral area names to <code class="language-plaintext highlighter-rouge">processAncStates()</code> and specify custom colors in a named vector.
+To plot the ancestral states, we provide the processed data, specify that the corresponding model is “cladogenetic”, add text labels to the tips specifying the character state, and modify sizes and horizontal positions for aesthetics.
+We also modify the order at which states appear in the legend and the legend position.</p>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">file</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"data/simple.ase.tre"</span><span class="w">
+
+</span><span class="c1"># Create the labels vector.</span><span class="w">
+</span><span class="c1"># This is a named vector where names correspond </span><span class="w">
+</span><span class="c1"># to the computer-readable numbers generated </span><span class="w">
+</span><span class="c1"># in the biogeographic analysis and the values </span><span class="w">
+</span><span class="c1"># are character strings of whatever you'd like </span><span class="w">
+</span><span class="c1"># as labels on the figure. The state.labels.txt</span><span class="w">
+</span><span class="c1"># file produced in the analysis links the </span><span class="w">
+</span><span class="c1"># computer-readable numbers with presence/ absence</span><span class="w">
+</span><span class="c1"># data for individual ranges.</span><span class="w">
+</span><span class="n">labs</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s2">"1"</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"K"</span><span class="p">,</span><span class="w">   </span><span class="s2">"2"</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"O"</span><span class="p">,</span><span class="w"> 
+          </span><span class="s2">"3"</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"M"</span><span class="p">,</span><span class="w">   </span><span class="s2">"4"</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"H"</span><span class="p">,</span><span class="w"> 
+          </span><span class="s2">"5"</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"KO"</span><span class="p">,</span><span class="w">  </span><span class="s2">"6"</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"KM"</span><span class="p">,</span><span class="w"> 
+          </span><span class="s2">"7"</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"OM"</span><span class="p">,</span><span class="w">  </span><span class="s2">"8"</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"KH"</span><span class="p">,</span><span class="w"> 
+          </span><span class="s2">"9"</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">"OH"</span><span class="p">,</span><span class="w">  </span><span class="s2">"10"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"MH"</span><span class="p">,</span><span class="w"> 
+          </span><span class="s2">"11"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"KOM"</span><span class="p">,</span><span class="w"> </span><span class="s2">"12"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"KOH"</span><span class="p">,</span><span class="w"> 
+          </span><span class="s2">"13"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"KMH"</span><span class="p">,</span><span class="w"> </span><span class="s2">"14"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"OMH"</span><span class="p">,</span><span class="w"> 
+          </span><span class="s2">"15"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"KOMH"</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># pass the labels vector and file name to the processing script</span><span class="w">
+</span><span class="n">dec_example</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">processAncStates</span><span class="p">(</span><span class="n">file</span><span class="p">,</span><span class="w"> </span><span class="n">state_labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">labs</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+<p>We could plot this as is with little processing using the following code (output not shown). However, we are going to walk through creating a custom color palette and then compare this plot to the same data plotted with plotAncStatesMAP().</p>
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># plotAncStatesPie(dec_example, cladogenetic = T, tip_labels_offset = 0.2)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Here’s how you specify a custom color palette:</p>
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Here we get the number of states in our data from </span><span class="w">
+</span><span class="c1"># dec_example@state_labels (this may be different from </span><span class="w">
+</span><span class="c1"># the length of the labs vector if not all states are </span><span class="w">
+</span><span class="c1"># included in the annotated tree).</span><span class="w">
+</span><span class="n">ncol</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">length</span><span class="p">(</span><span class="n">dec_example</span><span class="o">@</span><span class="n">state_labels</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># We use colorRampPalette() to generate a function that will</span><span class="w">
+</span><span class="c1"># expand the RevGadgets color palette (colFun) to the necessary</span><span class="w">
+</span><span class="c1"># number of colors, but you can use any colors you like as long </span><span class="w">
+</span><span class="c1"># as each state_label has a color. </span><span class="w">
+</span><span class="n">colors</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">colorRampPalette</span><span class="p">(</span><span class="n">colFun</span><span class="p">(</span><span class="m">12</span><span class="p">))(</span><span class="n">ncol</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># Name the color vector with your state labels and then order </span><span class="w">
+</span><span class="c1"># it in the order you'd like the ranges to appear in your legend.</span><span class="w">
+</span><span class="c1"># Otherwise, they will appear alphabetically. </span><span class="w">
+</span><span class="nf">names</span><span class="p">(</span><span class="n">colors</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">dec_example</span><span class="o">@</span><span class="n">state_labels</span><span class="w">
+</span><span class="n">colors</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">colors</span><span class="p">[</span><span class="nf">c</span><span class="p">(</span><span class="m">6</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="m">4</span><span class="p">,</span><span class="m">3</span><span class="p">,</span><span class="w">
+                   </span><span class="m">9</span><span class="p">,</span><span class="m">5</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">7</span><span class="p">,</span><span class="w">
+                   </span><span class="m">10</span><span class="p">,</span><span class="m">13</span><span class="p">,</span><span class="m">12</span><span class="p">,</span><span class="w">
+                   </span><span class="m">14</span><span class="p">,</span><span class="m">11</span><span class="p">,</span><span class="m">8</span><span class="p">)]</span><span class="w">
+
+</span><span class="c1"># Plot the results with pies at nodes</span><span class="w">
+</span><span class="n">pie</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">plotAncStatesPie</span><span class="p">(</span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dec_example</span><span class="p">,</span><span class="w">
+                        </span><span class="c1"># Include cladogenetic events</span><span class="w">
+                        </span><span class="n">cladogenetic</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> 
+                        </span><span class="c1"># Add text labels to the tip pie symbols</span><span class="w">
+                        </span><span class="n">tip_labels_states</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span><span class="w">
+                        </span><span class="c1"># Offset those text labels slightly</span><span class="w">
+                        </span><span class="n">tip_labels_states_offset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">.05</span><span class="p">,</span><span class="w">
+                        </span><span class="c1"># Pass in your named and ordered color vector</span><span class="w">
+                        </span><span class="n">pie_colors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">colors</span><span class="p">,</span><span class="w"> 
+                        </span><span class="c1"># Offset the tip labels to make room for tip pies</span><span class="w">
+                        </span><span class="n">tip_labels_offset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">.2</span><span class="p">,</span><span class="w"> 
+                        </span><span class="c1"># Move tip pies right slightly </span><span class="w">
+                        </span><span class="n">tip_pie_nudge_x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">.07</span><span class="p">,</span><span class="w">
+                        </span><span class="c1"># Change the size of node and tip pies  </span><span class="w">
+                        </span><span class="n">tip_pie_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.8</span><span class="p">,</span><span class="w">
+                        </span><span class="n">node_pie_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1.5</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="c1"># Move the legend </span><span class="w">
+  </span><span class="n">theme</span><span class="p">(</span><span class="n">legend.position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">0.1</span><span class="p">,</span><span class="w"> </span><span class="m">0.75</span><span class="p">))</span><span class="w">
+</span></code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">plotAncStatesMAP()</code> can also plot cladogenetic models. The <code class="language-plaintext highlighter-rouge">plotAncStatesMAP()</code> function can plot the same processed output <code class="language-plaintext highlighter-rouge">dec_example</code> using the same color vector.</p>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">map</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">plotAncStatesMAP</span><span class="p">(</span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dec_example</span><span class="p">,</span><span class="w"> 
+                        </span><span class="c1"># Include cladogenetic events</span><span class="w">
+                        </span><span class="n">cladogenetic</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">T</span><span class="p">,</span><span class="w">
+                        </span><span class="c1"># Pass in the same color vector</span><span class="w">
+                        </span><span class="n">node_color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">colors</span><span class="p">,</span><span class="w">
+                        </span><span class="c1"># adjust tip labels </span><span class="w">
+                        </span><span class="n">tip_labels_offset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.1</span><span class="p">,</span><span class="w">
+                        </span><span class="c1"># increase tip states symbol size</span><span class="w">
+                        </span><span class="n">tip_states_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="c1"># adjust legend position and remove color guide</span><span class="w">
+  </span><span class="n">theme</span><span class="p">(</span><span class="n">legend.position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">0.2</span><span class="p">,</span><span class="w"> </span><span class="m">0.87</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+  </span><span class="n">guides</span><span class="p">(</span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Compare the two plots side by side using the <code class="language-plaintext highlighter-rouge">gridExtra</code> package:</p>
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">grid.arrange</span><span class="p">(</span><span class="n">pie</span><span class="p">,</span><span class="n">map</span><span class="p">,</span><span class="w"> </span><span class="n">ncol</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<figure><p><img src="figures/clado_example.png" height="80%" width="80%" /></p>
+<figcaption>Two visualizations of ancestral-state estimates of biogeographic area of the Hawaiian silverswords. On the left, pies represent the posterior probability of each state at the node; pies at the branching event correspond to the state of the ancestor immediately before the branching event, and pies on the “shoulders” of the two descendant branches are the states of the two descendants immediately after the branching event. On the right, symbols at the nodes and shoulders are colored by state and sized by posterior probability.</figcaption>
+</figure>
+
+<p>While these examples demonstrate cladogenetic change for <code class="language-plaintext highlighter-rouge">plotAncStatesPie()</code> only, <code class="language-plaintext highlighter-rouge">plotAncStatesMAP()</code> can also plot cladogenetic change, and <code class="language-plaintext highlighter-rouge">plotAncStatesPie()</code> can also plot the results of anagenetic models. 
+These functions provide plotting tools for any discrete ancestral-state estimation including the results of chromosome count reconstructions (as in <a href="/tutorials/chromo/">Chromosome Evolution</a>) and discrete state-dependent speciation and extinction (SSE) models (as in <a href="/tutorials/sse/bisse.html">State-dependent diversification with BiSSE and MuSSE</a>, among others).</p>
+
+<h1 class="section" id="diversification-analysis">Diversification Analysis</h1>
+
+<p>Diversification-rate estimation is a major goal of many comparative and epidemiological analyses.
+The diversification models implemented in <code class="language-plaintext highlighter-rouge">RevBayes</code> allow the speciation, extinction, and sampling/ fossilization rates to vary through time, across branches of the phylogeny, in conjunction with the evolution of a focal trait, etc.
+The examples below demonstrate how to use <code class="language-plaintext highlighter-rouge">RevGadgets</code> to visualize the (often complex) output of analyses performed under these models.</p>
+
+<p>⇨ To reproduce this section, see: <code class="language-plaintext highlighter-rouge">scripts/divrates.R</code></p>
+
+<h2 class="subsection" id="state-dependendent-diversification-analysis">State-Dependendent Diversification Analysis</h2>
+
+<p>Diversification rates might depend on the state of an evolving character. State-dependent diversification models can be used to estimate diversification rates associated with each character state, and can also reconstruct ancestral states on the phylogeny. The analysis plotted here is described in the <a href="/tutorials/sse/bisse.html">State-dependent diversification with BiSSE and MuSSE</a> tutorial.</p>
+
+<p><code class="language-plaintext highlighter-rouge">RevGadgets</code> first reads in and processes the rate file and then plots the state-specific posterior rate distributions.</p>
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># read in and process the log file</span><span class="w">
+</span><span class="n">bisse_file</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"data/primates_BiSSE_activity_period.log"</span><span class="w">
+</span><span class="n">pdata</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">processSSE</span><span class="p">(</span><span class="n">bisse_file</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># plot the rates</span><span class="w">
+</span><span class="n">plotMuSSE</span><span class="p">(</span><span class="n">pdata</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+<figure><p><img src="figures/bisse_rates.png" height="50%" width="50%" /></p>
+<figcaption>Posterior distributions of the rates for a BiSSE analysis.</figcaption>
+</figure>
+
+<p>While the above example includes two states (a BiSSE analysis), the same workflow is appropriate for models of multi-state traits (MuSSE). For plotting the rates from an analysis with hidden states (HiSSE), check out <code class="language-plaintext highlighter-rouge">plotHiSSE()</code>.</p>
+
+<p>The ancestral state estimates may be plotted similarly to in the ancestral states section above.</p>
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># read in and process the ancestral states </span><span class="w">
+</span><span class="n">bisse_anc_states_file</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"data/anc_states_BiSSE.tree"</span><span class="w">
+</span><span class="n">p_anc</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">processAncStates</span><span class="p">(</span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bisse_anc_states_file</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># plot the ancestral states</span><span class="w">
+</span><span class="n">plotAncStatesMAP</span><span class="p">(</span><span class="n">p_anc</span><span class="p">,</span><span class="w"> </span><span class="n">tree_layout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"circular"</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+<figure><p><img src="figures/bisse_anc_states.png" height="75%" width="75%" /></p>
+<figcaption>Ancestral states estimated with a BiSSE analysis.</figcaption>
+</figure>
+
+<h2 class="subsection" id="lineage-specific-diversification-analysis">Lineage-Specific Diversification Analysis</h2>
+
+<p>To examine diversification rate variation across the branches of the tree (described in <a href="/tutorials/divrate/branch_specific.html">Branch-Specific Diversification Rate Estimation</a>), <code class="language-plaintext highlighter-rouge">RevBayes</code> estimates branch-specific speciation and extinction rates. 
+Those rates can be plotted by reading in the tree and rate log files, associating the rates with the phylogeny (using <code class="language-plaintext highlighter-rouge">processBranchData()</code>), and plotting the rate of interest by coloring the branches of the phylogeny.</p>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">branch_specific_file</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"data/primates_BDS_rates.log"</span><span class="w">
+</span><span class="n">branch_specific_tree_file</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"data/primates_tree.nex"</span><span class="w">
+
+</span><span class="n">rates</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">readTrace</span><span class="p">(</span><span class="n">branch_specific_file</span><span class="p">)</span><span class="w">
+</span><span class="n">tree</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">readTrees</span><span class="p">(</span><span class="n">branch_specific_tree_file</span><span class="p">)</span><span class="w">
+
+</span><span class="n">combined</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">processBranchData</span><span class="p">(</span><span class="n">tree</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">tree</span><span class="p">,</span><span class="w"> 
+                              </span><span class="n">dat</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">rates</span><span class="p">,</span><span class="w">
+                              </span><span class="n">net_div</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w">
+
+</span><span class="n">plotTree</span><span class="p">(</span><span class="n">combined</span><span class="p">,</span><span class="w"> </span><span class="n">color_branch_by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"net_div"</span><span class="p">,</span><span class="w"> 
+         </span><span class="n">tip_labels_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="n">tree_layout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"circular"</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+<figure><p><img src="figures/net_div_bds.png" height="75%" width="75%" /></p>
+<figcaption>Net diversifification plotted as the color of branches of a circular phylogeny.</figcaption>
+</figure>
+
+<h2 class="subsection" id="episodic-diversification-analysis">Episodic Diversification Analysis</h2>
+
+<p>Instead of varying rates across branches of the phylogeny, the episodic birth death process varies rates through time (see the <a href="/tutorials/divrate/ebd.html">Episodic Diversification Rate Estimation</a> tutorial). <code class="language-plaintext highlighter-rouge">RevGadgets</code> visualizes these rates through time with skyline/ episodic plots.</p>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># specify the output files</span><span class="w">
+</span><span class="n">speciation_time_file</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"data/primates_EBD_speciation_times.log"</span><span class="w"> 
+</span><span class="n">speciation_rate_file</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"data/primates_EBD_speciation_rates.log"</span><span class="w"> 
+</span><span class="n">extinction_time_file</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"data/primates_EBD_extinction_times.log"</span><span class="w">  
+</span><span class="n">extinction_rate_file</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"data/primates_EBD_extinction_rates.log"</span><span class="w">
+
+</span><span class="c1"># read in and process rates</span><span class="w">
+</span><span class="n">rates</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">processDivRates</span><span class="p">(</span><span class="n">speciation_time_log</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">speciation_time_file</span><span class="p">,</span><span class="w">
+                         </span><span class="n">speciation_rate_log</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">speciation_rate_file</span><span class="p">,</span><span class="w"> 
+                         </span><span class="n">extinction_time_log</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">extinction_time_file</span><span class="p">,</span><span class="w"> 
+                         </span><span class="n">extinction_rate_log</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">extinction_rate_file</span><span class="p">,</span><span class="w"> 
+                         </span><span class="n">burnin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.25</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># plot rates through time </span><span class="w">
+</span><span class="n">plotDivRates</span><span class="p">(</span><span class="n">rates</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rates</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+        </span><span class="c1"># change labels with ggplot2</span><span class="w">
+        </span><span class="n">xlab</span><span class="p">(</span><span class="s2">"Millions of years ago"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+        </span><span class="n">ylab</span><span class="p">(</span><span class="s2">"Rate per million years"</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<figure><p><img src="figures/divRates.png" height="50%" width="50%" /></p>
+<figcaption>Diversification-rates over time estimated from the primate phylogeny. Lines correspond to the posterior mean estimate over time, and shaded regions correspond to the 95% credible interval.</figcaption>
+</figure>
+
+<h1 class="section" id="posterior-predictive-analysis">Posterior-Predictive Analysis</h1>
+
+<p>Posterior predictive simulation is a powerful tool for assessing the adequacy of the model and assessing the reliability of phylogenetic inference. 
+⇨ To reproduce this section, see: <code class="language-plaintext highlighter-rouge">scripts/post_pred.R</code></p>
+
+<p>The analysis that produced this output file is describe in the <a href="/tutorials/model_testing_pps/pps_data.html">Assessing Phylogenetic Reliability Using RevBayes and $P^{3}$</a> tutorial.</p>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># specify the simulated statistics file</span><span class="w">
+</span><span class="n">sim</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"data/simulated_data_pps_example.csv"</span><span class="w">
+
+</span><span class="c1"># specify the empirical statistics file</span><span class="w">
+</span><span class="n">emp</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"data/empirical_data_pps_example.csv"</span><span class="w">
+
+</span><span class="c1"># read the statistics files</span><span class="w">
+</span><span class="n">stats</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">processPostPredStats</span><span class="p">(</span><span class="n">path_sim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sim</span><span class="p">,</span><span class="w"> 
+                              </span><span class="n">path_emp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">emp</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># create the posterior-predictive plots</span><span class="w">
+</span><span class="n">plots</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">plotPostPredStats</span><span class="p">(</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">stats</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>To plot a subset of the parameters in a single figure, use the <code class="language-plaintext highlighter-rouge">grid</code> package.</p>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># arrange a subset of them with grid and ggplot2</span><span class="w">
+</span><span class="n">grid.newpage</span><span class="p">()</span><span class="w">
+</span><span class="n">grid.draw</span><span class="p">(</span><span class="w"> </span><span class="c1"># draw the following matrix of plots</span><span class="w">
+    </span><span class="n">cbind</span><span class="p">(</span><span class="w"> </span><span class="c1"># bind together the columns into a matrix</span><span class="w">
+        </span><span class="n">rbind</span><span class="p">(</span><span class="w"> </span><span class="c1"># bind together the first column</span><span class="w">
+            </span><span class="n">ggplotGrob</span><span class="p">(</span><span class="n">plots</span><span class="p">[[</span><span class="m">1</span><span class="p">]]),</span><span class="w">
+            </span><span class="n">ggplotGrob</span><span class="p">(</span><span class="n">plots</span><span class="p">[[</span><span class="m">5</span><span class="p">]])),</span><span class="w">
+        </span><span class="n">rbind</span><span class="p">(</span><span class="w"> </span><span class="c1"># bind together the last column (exclude the y-axis label in the last column)</span><span class="w">
+            </span><span class="n">ggplotGrob</span><span class="p">(</span><span class="n">plots</span><span class="p">[[</span><span class="m">3</span><span class="p">]]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">theme</span><span class="p">(</span><span class="n">axis.title.y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_blank</span><span class="p">())),</span><span class="w">
+            </span><span class="n">ggplotGrob</span><span class="p">(</span><span class="n">plots</span><span class="p">[[</span><span class="m">7</span><span class="p">]]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">theme</span><span class="p">(</span><span class="n">axis.title.y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_blank</span><span class="p">())))))</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<figure><p><img src="figures/postPredStats.png" height="50%" width="50%" /></p>
+<figcaption>Posterior-predictive distribution of statistics (curves) and observed statistics (dashed vertical lines), and posterior-predictive p-values (upper right corner). Blue and red regions correspond to the 10% and 5% rejection regions, respectively.</figcaption>
+</figure>
+
+<ol class="bibliography"><li><span id="Goldberg2012">Goldberg E.E., Igić B. 2012. Tempo and Mode in Plant Breeding System Evolution. Evolution. 66:3701–3709.</span>
+
+<a href="https://doi.org/10.1111/j.1558-5646.2012.01730.x">10.1111/j.1558-5646.2012.01730.x</a>
+
+</li>
+<li><span id="plummer2006coda">Plummer M., Best N., Cowles K., Vines K. 2006. CODA: convergence diagnosis and output analysis for MCMC. R news. 6:7–11.</span>
+
+</li>
+<li><span id="Ree2008">Ree R.H., Smith S.A. 2008. Maximum Likelihood Inference of Geographic Range Evolution by Dispersal, Local Extinction, and Cladogenesis. Systematic Biology. 57:4–14.</span>
+
+<a href="https://doi.org/10.1080/10635150701883881">10.1080/10635150701883881</a>
+
+</li>
+<li><span id="Springer2012">Springer M.S., Meredith R.W., Gatesy J., Emerling C.A., Park J., Rabosky D.L., Stadler T., Steiner C., Ryder O.A., Janečka J.E., others. 2012. Macroevolutionary dynamics and historical biogeography of primate diversification inferred from a species supermatrix. PLoS One. 7:e49521.</span>
+
+<a href="https://doi.org/10.1371/journal.pone.0049521">10.1371/journal.pone.0049521</a>
+
+</li>
+<li><span id="Tavare1986">Tavaré S. 1986. Some Probabilistic and Statistical Problems in the Analysis of DNA Sequences. Some Mathematical Questions in Biology: DNA Sequence Analysis. 17:57–86.</span>
+
+</li>
+<li><span id="wickham2011ggplot2">Wickham H. 2011. ggplot2. Wiley Interdisciplinary Reviews: Computational Statistics. 3:180–185.</span>
+
+</li>
+<li><span id="wickham2019welcome">Wickham H., Averick M., Bryan J., Chang W., McGowan L., François R., Grolemund G., Hayes A., Henry L., Hester J., others. 2019. Welcome to the Tidyverse. Journal of Open Source Software. 4:1686.</span>
+
+</li></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+    });
+    MathJax.Hub.Queue(function () {
+      $(".aside").each(function() {
+          $("div .MathJax", this).hide();
+      });
+    });
+</script>
+<script src="/assets/js/base.js"></script>
+
+  </body>
+</html>

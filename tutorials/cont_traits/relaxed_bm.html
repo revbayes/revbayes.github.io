@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Relaxed Brownian Rate Estimation</h1>
 	<h3 class="subtitle">Estimating branch-specific rates of Brownian-motion evolution</h3>
 	<h4 class="authors">Michael R. May</h4>
-  <h5>Last modified on September 16, 2019</h5>
+  <h5>Last modified on April 14, 2021</h5>
 </div>
 
 
@@ -70,6 +70,8 @@
           <ul id="prerequisites">
           
             <li><a href="/tutorials/intro/">Getting Started with RevBayes and Rev Language Syntax</a></li>
+          
+            <li><a href="/tutorials/intro/revgadgets.html">Introduction to RevGadgets</a></li>
           
             <li><a href="/tutorials/mcmc/">Introduction to Markov chain Monte Carlo (MCMC) Sampling</a></li>
           
@@ -134,8 +136,8 @@
 <h3 class="subsection" id="read-the-data">Read the data</h3>
 <hr class="subsection" />
 
-<p>We begin by deciding which of the 66 vertebrate datasets to use. Here, we assume we are analyzing the first dataset (<em>Acanthuridae</em>), but you should feel free to choose any of the datasets.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dataset &lt;- 1
+<p>We begin by deciding which of the 66 vertebrate datasets to use. Here, we assume we are analyzing the first dataset (Cetacea), but you should feel free to choose any of the datasets.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dataset &lt;- 11
 </code></pre></div></div>
 
 <p>Now, we read in the (time-calibrated) tree corresponding to our chosen dataset.</p>
@@ -249,39 +251,46 @@ rate_shift_distribution = dnLognormal(-sd^2/2, sd)
 specified variables to the screen with <code class="language-plaintext highlighter-rouge">mnScreen</code>:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(printgen=1000, sigma2_root, num_rate_changes) )
 </code></pre></div></div>
+<p>Finally, create a monitor that associates the branch-specific rates to each branch in the tree.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnExtNewick(filename="output/relaxed_BM.trees", isNodeParameter=TRUE, printgen=10, separator=TAB, tree=tree, branch_rates) )
+</code></pre></div></div>
 
 <h4 class="subsubsection" id="initializing-and-running-the-mcmc-simulation">Initializing and Running the MCMC Simulation</h4>
 <hr class="subsubsection" />
 
-<p>With a fully specified model, a set of monitors, and a set of moves, we
-can now set up the MCMC algorithm that will sample parameter values in
-proportion to their posterior probability. The <code class="language-plaintext highlighter-rouge">mcmc()</code> function will
+<p>With a fully specified model, a set of monitors, and a set of moves, we can now set up the MCMC algorithm that will sample parameter values in proportion to their posterior probability. The <code class="language-plaintext highlighter-rouge">mcmc()</code> function will
 create our MCMC object:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
 </code></pre></div></div>
+
 <p>Now, run the MCMC:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=50000)
 </code></pre></div></div>
-<p>When the analysis is complete, you will have the monitored files in your
-output directory.</p>
+
+<p>Now, summarize the branch-specific rates in the annotated tree file.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>treetrace = readTreeTrace("output/relaxed_BM.trees")
+map_tree = mapTree(treetrace,"output/relaxed_BM_MAP.tre")
+</code></pre></div></div>
 
 <p>⇨ The <code class="language-plaintext highlighter-rouge">Rev</code> file for performing this analysis: <code class="language-plaintext highlighter-rouge">mcmc_relaxed_BM.Rev</code></p>
 
-<p>You can then visualize the branch-specific rates by plotting them using our <code class="language-plaintext highlighter-rouge">R</code> package <code class="language-plaintext highlighter-rouge">RevGadgets</code>. Just start R in the main directory for this analysis and then type the following commands:</p>
-<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">RevGadgets</span><span class="p">)</span><span class="w">
+<p>You can then visualize the branch-specific rates by plotting them using our <code class="language-plaintext highlighter-rouge">R</code> package <code class="language-plaintext highlighter-rouge">RevGadgets</code>. Just start R in the main directory for this analysis and then type the following commands.</p>
 
-</span><span class="n">dataset</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">1</span><span class="w">
-</span><span class="n">my_tree</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">read.nexus</span><span class="p">(</span><span class="s2">"data/trees.nex"</span><span class="p">)[[</span><span class="n">dataset</span><span class="p">]]</span><span class="w">
-</span><span class="n">my_output_file</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"output/relaxed_BM.log"</span><span class="w">
+<p>First, load <code class="language-plaintext highlighter-rouge">RevGadgets</code>:</p>
+<pre><code class="language-{R}">library(RevGadgets)
+</code></pre>
 
-</span><span class="n">tree_plot</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">plot_relaxed_branch_rates_tree</span><span class="p">(</span><span class="n">tree</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="n">my_tree</span><span class="p">,</span><span class="w">
-                                            </span><span class="n">output_file</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">my_output_file</span><span class="p">,</span><span class="w">
-                                            </span><span class="n">parameter_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"branch_rates"</span><span class="p">)</span><span class="w">
+<p>Next, read in the tree annotated with the branch rates:</p>
+<pre><code class="language-{R}">tree &lt;- readTrees("output/relaxed_BM_MAP.tre")
+</code></pre>
 
-</span><span class="n">ggsave</span><span class="p">(</span><span class="s2">"relaxed_BM.pdf"</span><span class="p">,</span><span class="w"> </span><span class="n">width</span><span class="o">=</span><span class="m">15</span><span class="p">,</span><span class="w"> </span><span class="n">height</span><span class="o">=</span><span class="m">15</span><span class="p">,</span><span class="w"> </span><span class="n">units</span><span class="o">=</span><span class="s2">"cm"</span><span class="p">)</span><span class="w">
-</span></code></pre></div></div>
+<p>Finally, plot the tree with the branch rates:</p>
+<pre><code class="language-{R}">plotTree(tree, color_branch_by="branch_rates")
+</code></pre>
 
-<figure id="fig_relaxed_BM"><p><img src="figures/relaxed_BM.png" width="100%" height="100%" /></p>
+<p>⇨ The <code class="language-plaintext highlighter-rouge">R</code> script for plotting this output: <code class="language-plaintext highlighter-rouge">plot_relaxed_BM.R</code></p>
+
+<figure id="fig_relaxed_BM"><p><img src="figures/relaxed_BM.png" width="75%" height="75%" /></p>
 <figcaption><strong>Estimated branch-specific rates of Brownian-motion evolution.</strong>
 Here we show the results of our example analysis.</figcaption>
 </figure>
