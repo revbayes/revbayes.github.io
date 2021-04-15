@@ -68,6 +68,13 @@ brew install imagemagick
 
 Alternatively, visit the [ImageMagick website](https://imagemagick.org/script/download.php) for more download options.
 
+<a href="https://xkcd.com/844/" style="color:black">&#9881;</a> `RevGadgets` is under active development
+---------------------------------------------------
+{:.subsection} 
+
+`RevGadgets` is still under active development. If you encounter any bugs or issues while using `RevGadgets`, please submit a bug report with Issues on [GitHub](https://github.com/cmt2/RevGadgets). 
+
+We are currently transitioning our tutorials to the new `RevGadgets`, so you may notice inconsistencies between instructions here and in those tutorials. **If you are using an existing tutorial, make sure you are using the `RevGadgets` version referenced in that tutorial.** Older tutorials will use this [older version of `RevGadgets`](https://github.com/revbayes/RevGadgets). Tutorials that use the new version of `RevGadgets` indicate this tutorial as a dependency.
 
 Getting Started
 ===============
@@ -75,7 +82,7 @@ Getting Started
 To run this tutorial, download the associated files from the `Data files and scripts` menu, preserving the structure of the zipped folder. All scripts should be in a subdirectory called `scripts` and all data files in a subdirectory called `data`. 
 Open `R` and make sure your working directory is set to the directory with the downloaded files. 
 For more information on how to customize these plots, see the associated documentation for each function (e.g., `?readTrace`)).
-Submit feature requests or bug reports with Issues on [GitHub](https://github.com/cmt2/RevGadgets). 
+
 
 Before running the code chunks below, load all the libraries used in the tutorial. You may need to install these packages separately.
 
