@@ -8,6 +8,8 @@ index: true
 include_all: false
 include_files:
 - scripts/mh_algorithm.Rev
+- scripts/Binomial_MH_algorithm_moves.Rev
+- scripts/Binomial_MCMC.Rev
 prerequisites:
 - intro
 redirect: true

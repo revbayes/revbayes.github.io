@@ -13,7 +13,7 @@
 #######################
 
 ### Select the dataset to analyze
-dataset <- 3
+dataset <- 11
 
 ### Read in the trees
 T <- readTrees("data/trees.nex")[dataset]
@@ -96,7 +96,7 @@ mymodel = model(sigma2_root)
 ### set up the monitors that will output parameter values to file and screen
 monitors.append( mnModel(filename="output/relaxed_BM.log", printgen=10) )
 monitors.append( mnScreen(printgen=1000, sigma2_root, num_rate_changes) )
-
+monitors.append( mnExtNewick(filename="output/relaxed_BM.trees", isNodeParameter=TRUE, printgen=10, separator=TAB, tree=tree, branch_rates) )
 
 
 
@@ -112,6 +112,9 @@ mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
 mymcmc.burnin(generations=1000, tuningInterval=100)
 mymcmc.run(generations=50000)
 
+## create the annotated tree
+treetrace = readTreeTrace("output/relaxed_BM.trees")
+map_tree = mapTree(treetrace,"output/relaxed_BM_MAP.tre")
 
 
 ## quit ##

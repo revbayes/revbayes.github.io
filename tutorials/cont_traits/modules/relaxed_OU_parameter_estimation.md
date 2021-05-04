@@ -152,6 +152,10 @@ specified variables to the screen with `mnScreen`:
 ```
 monitors.append( mnScreen(printgen=1000, sigma2, num_theta_changes) )
 ```
+Finally, we include an extended Newick monitor to keep track of the branch-specific `theta` values on each branch of the tree.
+```
+monitors.append( mnExtNewick(filename="output/relaxed_OU.trees", isNodeParameter=TRUE, printgen=10, separator=TAB, tree=tree, branch_thetas) )
+```
 
 {% subsubsection Initializing and Running the MCMC Simulation %}
 
@@ -166,25 +170,26 @@ Now, run the MCMC:
 ```
 mymcmc.run(generations=50000)
 ```
+Finally, we summarize the branch-specific rate after we run the MCMC analysis.
+```
+treetrace = readTreeTrace("output/relaxed_OU.trees")
+map_tree = mapTree(treetrace,"output/relaxed_OU_MAP.tre")
+```
+
 When the analysis is complete, you will have the monitored files in your
 output directory.
 
 &#8680; The `Rev` file for performing this analysis: `mcmc_relaxed_OU.Rev`
 
-You can then visualize the branch-specific rates by plotting them using our `R` package `RevGadgets`. Just start R in the main directory for this analysis and then type the following commands:
+You can then visualize the branch-specific rates by plotting them using our `R` package `RevGadgets`. Importantly, these plots allow you to tease apart the relative contributions of background- and state-dependent-rate variation to overall patterns of rate variation across the tree. Just start R in the main directory for this analysis and then type the following commands:
 ```R
 library(RevGadgets)
 
-dataset <- 1
-my_tree <- read.nexus("data/trees.nex")[[dataset]]
-my_output_file <- "output/relaxed_OU.log"
+# read the annotated tree
+tree <- readTrees("output/relaxed_OU_MAP.tre")
 
-tree_plot <- plot_relaxed_branch_rates_tree(tree           = my_tree,
-                                            output_file    = my_output_file,
-                                            parameter_name = "branch_thetas")
-
-ggsave("relaxed_OU.pdf", width=15, height=15, units="cm")
-
+# plot the objects
+plotTree(tree, color_branch_by="branch_thetas")
 ```
 
 {% figure fig_relaxed_OU %}

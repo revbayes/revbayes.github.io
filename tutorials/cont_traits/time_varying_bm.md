@@ -6,6 +6,7 @@ level: 6
 order: 1.2
 prerequisites:
 - intro
+- intro/revgadgets
 - mcmc
 - cont_traits/cont_trait_intro
 index: false

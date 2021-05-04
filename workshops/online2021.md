@@ -3,9 +3,8 @@ layout: workshop_woschedule
 type: workshop
 title: Stay-at-Home RevBayes Workshop Spring 2021
 location: Online Only Event (for Asia-Pacific Time Zones)
-startdate: 2021-04-10 
+startdate: 2021-04-21 
 enddate: 2021-06-05 
-registration: https://iastate.qualtrics.com/jfe/form/SV_byLyLZAd8ZF1yBw
 
 instructors: 
 - Joëlle Barido-Sottani
@@ -27,12 +26,11 @@ instructors:
 description: 
 - <!--<div class="row"><div class="col-md-3"><img src="images/online2020_logo.png" /></div><div class="col-md-9"><p>--> This free online-only RevBayes workshop will provide an introduction to the theory and use of RevBayes, with a focus on (1) tree inference from molecular data, (2) analyses combining fossil and extant taxa, and (3) evaluating MCMC performance, with advanced topics including polymorphism-aware inference, assessing model adequacy, and macroevolutionary analyses. Additional topics may be added depending on the interests of selected participants. The format will be a combination of interactive video sessions (via Zoom), real-time discussions over Slack, self-guided tutorials, and pre-recorded videos.</p><p>The initial session will resolve technical issues and present the basics of using RevBayes. Participants will then be expected to work through several tutorials on their own schedule, with the help of pre-recorded materials. A Slack forum will be open for questions and issues. The workshop will conclude with group online Q&A sessions and a 1-on-1 meeting for each participant with a course instructor. The dates for the interactive sessions are currently tentative and may be adjusted depending on the schedules of the participants and instructors.<!-- </p></div></div> -->
 - We are hoping to identify up to 20-25 participants for this online course. We will target applicants from the Asia-Pacific regions (timezones UTC+4 to UTC+14, including UTC-10 and UTC-11). Participants will not be charged for the course, but we will request that they commit to completing the tutorials and attending a majority of interactive sessions. 
-- <a href="https://iastate.qualtrics.com/jfe/form/SV_byLyLZAd8ZF1yBw">Apply by March 29, 2021</a>
 
 schedule:
-- "April 10 (tentative): introductions, installation troubleshooting & basics of RevBayes"
-- "May 20-22 (tentative): Q&A sessions and 1-on-1 meetings"
-- Interactive sessions will be held over Zoom and the links will be announced on Slack. To accommodate all participants and the instructors, we may have to hold separate sessions at 0h-2h UTC and 8h-10h UTC (we may record some sessions and make those available to the workshop participants).
+- "April 21 and 22: introductions, installation troubleshooting & basics of RevBayes"
+- "May 26 to June 4: Q&A sessions and 1-on-1 meetings"
+- Interactive sessions will be held over Zoom and the links will be announced on Slack. To accommodate all participants and the instructors, we may have to hold separate sessions at 1h-4h UTC and 13h-16h UTC (we may record some sessions and make those available to the workshop participants).
 
 software:
 - Participants will need access to a computer (Unix, Mac OSX, Windows) to complete the tutorials, as well as a web-enabled device (computer or mobile device) capable of running communication tools.
