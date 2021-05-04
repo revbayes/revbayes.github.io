@@ -56,7 +56,7 @@ prerequisites:
 2. [Nucleotide substitution models]({{ site.baseurl }}/tutorials/ctmc)
 3. [Partitioned data analysis]({{ site.baseurl }}/tutorials/partition)
 4. [Estimating a Time-Calibrated Phylogeny of Fossil and Extant Taxa using Morphological Data]({{ site.baseurl }}/tutorials/fbd_simple)
-5. Bayesian polymorphism-aware phylogenetic inference (tutorial coming soon)
+5. [Bayesian polymorphism-aware phylogenetic inference]({{ site.baseurl }}/tutorials/pomos)
 6. [Convergence assessment]({{ site.baseurl }}/tutorials/convergence)
 7. [Introduction to Posterior Prediction]({{ site.baseurl }}/tutorials/intro_posterior_prediction)
 8. [Additional tutorials]({{ site.baseurl }}/tutorials) (optional)
