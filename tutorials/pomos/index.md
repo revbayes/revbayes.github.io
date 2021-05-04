@@ -13,8 +13,9 @@ title-old:
 redirect: false
 ---
 
-{% section Polymorphism-aware phylogenetic models %}
-[![Walkthrough video](/assets/img/YouTube_icon.svg){: height="36" width="36"}](https://youtu.be/POMOS1)
+This tutorial comes with a recorded video walkthrough. The video corresponding to each section of the exercise is linked next to the section title. The full playlist is available here: [![Walkthrough playlist](/assets/img/YouTube_icon.svg){: height="36" width="36"}](https://www.youtube.com/playlist?list=PLztACvN0g42ue0Y1cbcyTq3r6cMaTYpvg)
+
+{% section Polymorphism-aware phylogenetic models [![Walkthrough video](/assets/img/YouTube_icon.svg){: height="36" width="36"}](https://youtu.be/i8XPJbhIuEQ) | PoMo %}
 
 The polymorphism-aware phylogenetic models (PoMos) are alternative approaches of species tree estimation {% cite DeMaio2013 %} that add a new layer of complexity to the standard substitution models by accounting for population-level forces to describe the process of sequence evolution {% cite DeMaio2015 Schrempf2016 Borges2019 %}. PoMos model the evolution of a population of individuals in which changes in allele content (e.g., due to mutations) and frequency (e.g., due to genetic drift or selection) are both possible ({% ref pomos %}).
 
@@ -34,8 +35,7 @@ PoMos stand out from the standard models of evolution and other species tree met
 
 Overall, PoMos constitute a full-likelihood yet computationally efficient approach to species tree inference. PoMos are designed to cope with recent radiations, including incomplete lineage sorting, and long divergence times.
 
-{% section Polymorphism-aware phylogenetic models: the model %}
-[![Walkthrough video](/assets/img/YouTube_icon.svg){: height="36" width="36"}](https://youtu.be/POMOS2)
+{% section Polymorphism-aware phylogenetic models: the model [![Walkthrough video](/assets/img/YouTube_icon.svg){: height="36" width="36"}](https://youtu.be/Kp0P9cMcf6o) | PoMo_model %}
 
 PoMos model the evolution of a population of $N$ individuals and $K$ alleles in which changes in the allele content and frequency occur. These are mediated by population forces, such as mutation, genetic drift, and selection. The PoMo state-space includes fixed (or boundary) states $$\{Na_i\}$$, in which all $N$ individuals have the same allele $$i \in \{0,1,...,K-1\}$$, and polymorphic states $$\{na_i,(N-n)a_j\}$$, in which two alleles $a_i$ and $a_j$ are present in the population with absolute frequencies $n$ and $N-n$. 
 
@@ -74,8 +74,7 @@ Graphical model representation of PoMos. The graphical model shows the dependenc
 {% endfigcaption %}
 {% endfigure %}
 
-{% section Count files %}
-[![Walkthrough video](/assets/img/YouTube_icon.svg){: height="36" width="36"}](https://youtu.be/POMOS3)
+{% section Count files [![Walkthrough video](/assets/img/YouTube_icon.svg){: height="36" width="36"}](https://youtu.be/MQjs08HH2VY) | Count_files %}
 
 PoMos perform inferences based on allele frequency data. Count files are the files where we store such data. They contain two header lines. The first line indicates the number of taxa and the number of sites (or loci) in the sequence alignment. You might have noticed that NPOP stands for the number of populations, but this is not necessarily the case. PoMos can be employed to infer the evolutionary history of different species or even other systematic units that one might be interested in studying (e.g., subspecies, communities, etc.). 
 
@@ -96,8 +95,7 @@ The four allelic counts in this count files represent the allelic counts of the 
 * the mutation rates are $$\{a_0a_1, a_1a_0, a_0a_2, a_2a_0,...\}$$
 * the exchangeabilities follow a similar pattern as for the mutation rates, but without the reversed mutation: i.e., $$\{a_0a_1, a_0a_2, ...\}$$
 
-{% section Loading the data %}
-[![Walkthrough video](/assets/img/YouTube_icon.svg){: height="36" width="36"}](https://youtu.be/POMOS4)
+{% section Loading the data [![Walkthrough video](/assets/img/YouTube_icon.svg){: height="36" width="36"}](https://youtu.be/acjouysOU04) | loading_data %}
 
 The first step in this tutorial is to convert the allelic counts into PoMo states. Open the terminal and place it on your working directory **PoMos** (you can choose a name of your preference). Inside **PoMos** create the usual **data** and **output** folders.
 
@@ -151,8 +149,7 @@ moves    = VectorMoves()
 monitors = VectorMonitors()
 ```
 
-{% section Setting up the model %}
-[![Walkthrough video](/assets/img/YouTube_icon.svg){: height="36" width="36"}](https://youtu.be/POMOS5)
+{% section Setting up the model [![Walkthrough video](/assets/img/YouTube_icon.svg){: height="36" width="36"}](https://youtu.be/izCH8lQY-AY) | model_setup %}
 
 Estimating an unrooted tree under the virtual PoMos requires specifying two main components: 
 * the PoMo model, which in our case is PoMoTwo or PoMoThree;
@@ -248,8 +245,7 @@ Finally, we wrap the entire model in a single object. To do this, we only need t
 pomo_model = model(pi)
 ```
 
-{% section Setting, running, and summarizing the MCMC simulation %}
-[![Walkthrough video](/assets/img/YouTube_icon.svg){: height="36" width="36"}](https://youtu.be/POMOS6)
+{% section Setting, running, and summarizing the MCMC simulation [![Walkthrough video](/assets/img/YouTube_icon.svg){: height="36" width="36"}](https://youtu.be/5b1FmykQ37o) | mcmc %}
 
 For our MCMC analysis, we need to set up a vector of monitors to record the states of our Markov chain. First, we will initialize the model monitor using the ```mnModel``` function. This creates a new monitor variable that will output the states for all model parameters when passed into an MCMC function. We will sample every 10th iterate, and the resulting file can be found in the **output** folder.
 
