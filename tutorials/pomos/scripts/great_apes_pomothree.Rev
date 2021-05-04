@@ -1,0 +1,130 @@
+# RevBayes example: Bayesian inference of phylogeny using polymorphism-aware models (PoMoThree)  
+
+# Authors: Rui Borges and Carolin Kosiol
+
+
+# reading the PoMo alignment
+
+data <- readCharacterDataDelimited("data/great_apes_pomothree_naturalnumbers.txt", stateLabels=16, type="NaturalNumbers", delimiter=" ", headers=FALSE)
+
+data
+
+n_taxa     <- data.ntaxa()
+
+n_branches <- 2*n_taxa-3
+
+taxa       <- data.taxa()
+
+
+# setting up a vector variable that holds all the moves and monitors
+
+moves    = VectorMoves()  
+
+monitors = VectorMonitors()
+
+
+# setting the model of evolution
+
+# population size
+
+N <- 10
+
+
+# allele frequencies
+
+pi_prior <- [1,1,1,1]
+
+pi ~ dnDirichlet(pi_prior)
+
+moves.append( mvBetaSimplex(pi, weight=2) )
+
+
+# exchangeabilities
+
+for (i in 1:6){
+
+  rho[i] ~ dnExponential(10.0)
+
+  moves.append(mvScale( rho[i], weight=2 ))
+
+}
+
+
+# fitness coefficients
+
+gamma ~ dnExponential(1.0)
+
+moves.append(mvScale( gamma, weight=2 ))
+
+phi := [1.0,gamma,gamma,1.0]
+
+
+# rate matrix
+
+Q := fnReversiblePoMoThree4N(N,pi,rho,phi)
+
+
+
+
+# defining the tree
+
+# topology
+
+topology ~ dnUniformTopology(taxa)
+
+moves.append( mvNNI(topology, weight=2*n_taxa) )
+
+
+# branch lengths
+
+for (i in 1:n_branches) {
+
+   branch_lengths[i] ~ dnExponential(10.0)
+
+   moves.append( mvScale(branch_lengths[i]) )
+
+}
+
+
+psi := treeAssembly(topology, branch_lengths)
+
+
+
+# wrapping the model
+
+sequences ~ dnPhyloCTMC(psi,Q=Q,type="NaturalNumbers")
+
+sequences.clamp(data)
+
+pomo_model = model(pi)
+
+
+
+# specifying monitors and output files
+
+monitors.append( mnModel(filename="output/great_apes_pomothree.log", printgen=10) )
+
+monitors.append( mnFile(filename="output/great_apes_pomothree.trees", printgen=10, psi) )
+
+monitors.append( mnScreen(printgen=10) )
+
+
+
+# running the MCMC simulation
+
+pomo_mcmc = mcmc(pomo_model, monitors, moves, nruns=2, combine="mixed")
+
+pomo_mcmc.run( generations=10000 )
+
+
+
+# computing the maximum a posteriori tree
+
+trace = readTreeTrace("output/great_apes_pomothree.trees", treetype="non-clock", burnin= 0.2)
+
+mapTree(trace, file="output/great_apes_pomothree_MAP.tree" )
+
+
+# quiting revbayes
+
+q()
