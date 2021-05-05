@@ -11,7 +11,7 @@ file <- "data/primates_cytb_GTR.log"
 trace_quant <- readTrace(path = file, burnin = 0.1)
 
 # or read the trace _then_ discard burnin
-trace_quant <- readTrace(path = file)
+trace_quant <- readTrace(path = file, burnin = 0)
 trace_quant <- removeBurnin(trace = trace_quant, burnin = 0.1)
 
 # assess convergence with coda 
