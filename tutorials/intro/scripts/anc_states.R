@@ -74,10 +74,10 @@ colors <- colorRampPalette(colFun(12))(ncol)
 # it in the order you'd like the ranges to appear in your legend.
 # Otherwise, they will appear alphabetically. 
 names(colors) <- dec_example@state_labels
-colors <- colors[c(6,1,4,3,
-                   9,5,2,7,
-                   10,13,12,
-                   14,11,8)]
+colors <- colors[c(1,2,9,11,
+                   3,4,6,10,12,13,
+                   5,7,14,
+                   8)]
 
 # Plot the results with pies at nodes
 pie <- plotAncStatesPie(t = dec_example,
