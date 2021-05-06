@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Introduction to RevGadgets</h1>
 	<h3 class="subtitle">Plotting the output of RevBayes analyses in the R package RevGadgets.</h3>
 	<h4 class="authors">Carrie M. Tribble and Michael R. May</h4>
-  <h5>Last modified on May  4, 2021</h5>
+  <h5>Last modified on May  5, 2021</h5>
 </div>
 
 
@@ -504,10 +504,18 @@ We also modify the order at which states appear in the legend and the legend pos
 </span></code></pre></div></div>
 
 <p>Here’s how you specify a custom color palette:</p>
-<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Here we get the number of states in our data from </span><span class="w">
-</span><span class="c1"># dec_example@state_labels (this may be different from </span><span class="w">
-</span><span class="c1"># the length of the labs vector if not all states are </span><span class="w">
-</span><span class="c1"># included in the annotated tree).</span><span class="w">
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># You can see the states sampled in the analysis in the</span><span class="w">
+</span><span class="c1"># dec_example@state_labels vector. This may be different </span><span class="w">
+</span><span class="c1"># from the `labs` vector you provided above if not all </span><span class="w">
+</span><span class="c1"># possible states are included in the annotated tree.</span><span class="w">
+</span><span class="n">dec_example</span><span class="o">@</span><span class="n">state_labels</span><span class="w">
+
+</span><span class="c1"># We are going to generate colors for these states using</span><span class="w">
+</span><span class="c1"># a color palette, but you could also specify a color per</span><span class="w">
+</span><span class="c1"># state manually. </span><span class="w">
+
+</span><span class="c1"># Get the length of the dec_example$state_labels vector</span><span class="w">
+</span><span class="c1"># to know how many colors you need. </span><span class="w">
 </span><span class="n">ncol</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">length</span><span class="p">(</span><span class="n">dec_example</span><span class="o">@</span><span class="n">state_labels</span><span class="p">)</span><span class="w">
 
 </span><span class="c1"># We use colorRampPalette() to generate a function that will</span><span class="w">
