@@ -58,10 +58,18 @@ dec_example <- processAncStates(file, state_labels = labs)
 #                  tip_labels_offset = 0.2)
 
 
-# Generate a custom color palette. Here we get the number of 
-# states in our data from dec_example@state_labels (this may
-# be different from the length of the labs vector if not all
-# states are included in the annotated tree).
+# You can see the states sampled in the analysis in the
+# dec_example@state_labels vector. This may be different 
+# from the `labs` vector you provided above if not all 
+# possible states are included in the annotated tree.
+dec_example@state_labels
+
+# We are going to generate colors for these states using
+# a color palette, but you could also specify a color per
+# state manually. 
+
+# Get the length of the dec_example$state_labels vector
+# to know how many colors you need. 
 ncol <- length(dec_example@state_labels)
 
 # We use colorRampPalette() to generate a function that will
