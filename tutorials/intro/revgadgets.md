@@ -34,9 +34,9 @@ include_files:
 redirect: false
 ---
 
-Overview
+Overview [![Introduction Video](/assets/img/YouTube_icon.svg){: height="36" width="36"}](https://youtu.be/lf7JAKYjFQA)
 ==============
-{:.section}
+{:.section} 
 
 {% figure %}
 <img src="figures/revgadgets_logo.png" height="50%" width="50%" />
@@ -46,7 +46,7 @@ Through user-friendly data pipelines, `RevGadgets` guides users through importin
 `RevGadgets` provide paired processing and plotting functions built around commonly implemented analyses, such as tree building and divergence-time estimation, diversification-rate estimation, ancestral-state reconstruction and biogeographic range reconstruction, and posterior predictive simulations.
 Using the general framework of `ggplot2`, the tidyverse, and associated packages {% cite wickham2011ggplot2 wickham2019welcome %}, plotting functions return plot objects with default aesthetics that users may customize. Below, we walk you through installation and several case studies to illustrate primary functionalities.
 
-Installation
+Installation [![Overview Video](/assets/img/YouTube_icon.svg){: height="36" width="36"}](https://youtu.be/lf7JAKYjFQA?t=53)
 ============
 {:.section} 
 
@@ -95,7 +95,7 @@ library(grid)
 library(gridExtra)
 ```
 
-Visualizing Parameter Estimates 
+Visualizing Parameter Estimates [![Parameters Video](/assets/img/YouTube_icon.svg){: height="36" width="36"}](https://youtu.be/lf7JAKYjFQA?t=454)
 ==============
 {:.section} 
 
@@ -244,7 +244,7 @@ Bottom: the posterior distributions of whether particular rates are included in 
 {% endfigcaption %}
 {% endfigure %}
 
-Visualizing Phylogenies
+Visualizing Phylogenies [![Phylogenies Video](/assets/img/YouTube_icon.svg){: height="36" width="36"}](https://youtu.be/lf7JAKYjFQA?t=1277)
 =======================
 {:.section} 
 
@@ -363,7 +363,7 @@ Branch-specific optima, $\theta$, under a relaxed Ornstein-Uhlenbeck model. Bran
 {% endfigcaption %}
 {% endfigure %}
 
-Ancestral-State Reconstruction
+Ancestral-State Reconstruction [![Ancestral Video](/assets/img/YouTube_icon.svg){: height="36" width="36"}](https://youtu.be/lf7JAKYjFQA?t=1936)
 ==============================
 {:.section} 
 
@@ -539,7 +539,7 @@ Two visualizations of ancestral-state estimates of biogeographic area of the Haw
 While these examples demonstrate cladogenetic change for `plotAncStatesPie()` only, `plotAncStatesMAP()` can also plot cladogenetic change, and `plotAncStatesPie()` can also plot the results of anagenetic models. 
 These functions provide plotting tools for any discrete ancestral-state estimation including the results of chromosome count reconstructions (as in {% page_ref chromo %}) and discrete state-dependent speciation and extinction (SSE) models (as in {% page_ref sse/bisse %}, among others). 
 
-Diversification Analysis
+Diversification Analysis [![Diversification Video](/assets/img/YouTube_icon.svg){: height="36" width="36"}](https://youtu.be/lf7JAKYjFQA?t=2846)
 ========================
 {:.section} 
 
@@ -652,7 +652,7 @@ Diversification-rates over time estimated from the primate phylogeny. Lines corr
 {% endfigcaption %}
 {% endfigure %}
 
-Posterior-Predictive Analysis 
+Posterior-Predictive Analysis [![PPS Video](/assets/img/YouTube_icon.svg){: height="36" width="36"}](https://youtu.be/lf7JAKYjFQA?t=3435)
 ==============
 {:.section} 
 
@@ -698,3 +698,13 @@ grid.draw( # draw the following matrix of plots
 Posterior-predictive distribution of statistics (curves) and observed statistics (dashed vertical lines), and posterior-predictive p-values (upper right corner). Blue and red regions correspond to the 10% and 5% rejection regions, respectively.
 {% endfigcaption %}
 {% endfigure %}
+
+Bonus Videos 
+==============
+{:.section} 
+
+[![FBD Video](/assets/img/YouTube_icon.svg){: height="36" width="36"}](https://youtu.be/lf7JAKYjFQA?t=3678)
+Coding for a new dataset (FBD)
+
+[![DEC Video](/assets/img/YouTube_icon.svg){: height="36" width="36"}](https://youtu.be/lf7JAKYjFQA?t=4191)
+Coding for a new dataset (DEC)
