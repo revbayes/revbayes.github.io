@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Introduction to RevGadgets</h1>
 	<h3 class="subtitle">Plotting the output of RevBayes analyses in the R package RevGadgets.</h3>
 	<h4 class="authors">Carrie M. Tribble and Michael R. May</h4>
-  <h5>Last modified on May  5, 2021</h5>
+  <h5>Last modified on May 10, 2021</h5>
 </div>
 
 
@@ -153,7 +153,7 @@
 
 
 </div>
-<h1 class="section" id="overview">Overview</h1>
+<h1 class="section" id="overview-">Overview <a href="https://youtu.be/lf7JAKYjFQA"><img src="/assets/img/YouTube_icon.svg" alt="Introduction Video" height="36" width="36" /></a></h1>
 
 <figure><p><img src="figures/revgadgets_logo.png" height="50%" width="50%" /></p>
 </figure>
@@ -162,7 +162,7 @@
 <code class="language-plaintext highlighter-rouge">RevGadgets</code> provide paired processing and plotting functions built around commonly implemented analyses, such as tree building and divergence-time estimation, diversification-rate estimation, ancestral-state reconstruction and biogeographic range reconstruction, and posterior predictive simulations.
 Using the general framework of <code class="language-plaintext highlighter-rouge">ggplot2</code>, the tidyverse, and associated packages <a class="citation" href="#wickham2011ggplot2">(Wickham 2011; Wickham et al. 2019)</a>, plotting functions return plot objects with default aesthetics that users may customize. Below, we walk you through installation and several case studies to illustrate primary functionalities.</p>
 
-<h1 class="section" id="installation">Installation</h1>
+<h1 class="section" id="installation-">Installation <a href="https://youtu.be/lf7JAKYjFQA?t=53"><img src="/assets/img/YouTube_icon.svg" alt="Overview Video" height="36" width="36" /></a></h1>
 
 <p><code class="language-plaintext highlighter-rouge">RevGadgets</code> is available to download from GitHub using <code class="language-plaintext highlighter-rouge">devtools</code>:</p>
 
@@ -199,7 +199,7 @@ For more information on how to customize these plots, see the associated documen
 </span><span class="n">library</span><span class="p">(</span><span class="n">gridExtra</span><span class="p">)</span><span class="w">
 </span></code></pre></div></div>
 
-<h1 class="section" id="visualizing-parameter-estimates">Visualizing Parameter Estimates</h1>
+<h1 class="section" id="visualizing-parameter-estimates-">Visualizing Parameter Estimates <a href="https://youtu.be/lf7JAKYjFQA?t=454"><img src="/assets/img/YouTube_icon.svg" alt="Parameters Video" height="36" width="36" /></a></h1>
 
 <p><code class="language-plaintext highlighter-rouge">RevGadgets</code> provides several tools that facilitate the visualization of posterior distributions of parameters. 
 The output of most <code class="language-plaintext highlighter-rouge">RevBayes</code> analyses is a tab-delimited file where rows correspond to samples of an MCMC analysis and columns correspond to parameters in the model. 
@@ -327,7 +327,7 @@ To examine the stationary frequency (pi) parameter values in our trace file, sum
 Bottom: the posterior distributions of whether particular rates are included in a model of character evolution (same as the sandalone figure above).</figcaption>
 </figure>
 
-<h1 class="section" id="visualizing-phylogenies">Visualizing Phylogenies</h1>
+<h1 class="section" id="visualizing-phylogenies-">Visualizing Phylogenies <a href="https://youtu.be/lf7JAKYjFQA?t=1277"><img src="/assets/img/YouTube_icon.svg" alt="Phylogenies Video" height="36" width="36" /></a></h1>
 
 <p>Phylogenies are central to all analyses in <code class="language-plaintext highlighter-rouge">RevBayes</code>, and accurate and information-rich visualizations of evolutionary trees are thus critical.
 <code class="language-plaintext highlighter-rouge">RevGadgets</code> contains methods to visualize phylogenies and their associated posterior probabilities, divergence time estimates, geological time scales, and branch rates.
@@ -424,7 +424,7 @@ Bars correspond to the 95% credible interval of node (or tip) ages, and are colo
 <figcaption>Branch-specific optima, $\theta$, under a relaxed Ornstein-Uhlenbeck model. Branches are colored according to the posterior-mean estimate of $\theta$ for the branch.</figcaption>
 </figure>
 
-<h1 class="section" id="ancestral-state-reconstruction">Ancestral-State Reconstruction</h1>
+<h1 class="section" id="ancestral-state-reconstruction-">Ancestral-State Reconstruction <a href="https://youtu.be/lf7JAKYjFQA?t=1936"><img src="/assets/img/YouTube_icon.svg" alt="Ancestral Video" height="36" width="36" /></a></h1>
 
 <p>Ancestral state reconstruction methods allow users to model how heritable characters, such as phenotypes or geographical distributions, have evolved across a phylogeny, producing probability distributions of states for each node of the phylogeny.
 This aspect of <code class="language-plaintext highlighter-rouge">RevGadgets</code> functionality allows users to plot the maximum <em>a posteriori</em> (MAP) estimate of ancestral states via <code class="language-plaintext highlighter-rouge">plotAncStatesMAP()</code> or a pie chart showing the most probable states via <code class="language-plaintext highlighter-rouge">plotAncStatesPie()</code>.</p>
@@ -581,7 +581,7 @@ We also modify the order at which states appear in the legend and the legend pos
 <p>While these examples demonstrate cladogenetic change for <code class="language-plaintext highlighter-rouge">plotAncStatesPie()</code> only, <code class="language-plaintext highlighter-rouge">plotAncStatesMAP()</code> can also plot cladogenetic change, and <code class="language-plaintext highlighter-rouge">plotAncStatesPie()</code> can also plot the results of anagenetic models. 
 These functions provide plotting tools for any discrete ancestral-state estimation including the results of chromosome count reconstructions (as in <a href="/tutorials/chromo/">Chromosome Evolution</a>) and discrete state-dependent speciation and extinction (SSE) models (as in <a href="/tutorials/sse/bisse.html">State-dependent diversification with BiSSE and MuSSE</a>, among others).</p>
 
-<h1 class="section" id="diversification-analysis">Diversification Analysis</h1>
+<h1 class="section" id="diversification-analysis-">Diversification Analysis <a href="https://youtu.be/lf7JAKYjFQA?t=2846"><img src="/assets/img/YouTube_icon.svg" alt="Diversification Video" height="36" width="36" /></a></h1>
 
 <p>Diversification-rate estimation is a major goal of many comparative and epidemiological analyses.
 The diversification models implemented in <code class="language-plaintext highlighter-rouge">RevBayes</code> allow the speciation, extinction, and sampling/ fossilization rates to vary through time, across branches of the phylogeny, in conjunction with the evolution of a focal trait, etc.
@@ -669,7 +669,7 @@ Those rates can be plotted by reading in the tree and rate log files, associatin
 <figcaption>Diversification-rates over time estimated from the primate phylogeny. Lines correspond to the posterior mean estimate over time, and shaded regions correspond to the 95% credible interval.</figcaption>
 </figure>
 
-<h1 class="section" id="posterior-predictive-analysis">Posterior-Predictive Analysis</h1>
+<h1 class="section" id="posterior-predictive-analysis-">Posterior-Predictive Analysis <a href="https://youtu.be/lf7JAKYjFQA?t=3435"><img src="/assets/img/YouTube_icon.svg" alt="PPS Video" height="36" width="36" /></a></h1>
 
 <p>Posterior predictive simulation is a powerful tool for assessing the adequacy of the model and assessing the reliability of phylogenetic inference. 
 ⇨ To reproduce this section, see: <code class="language-plaintext highlighter-rouge">scripts/post_pred.R</code></p>
@@ -708,6 +708,14 @@ Those rates can be plotted by reading in the tree and rate log files, associatin
 <figure><p><img src="figures/postPredStats.png" height="50%" width="50%" /></p>
 <figcaption>Posterior-predictive distribution of statistics (curves) and observed statistics (dashed vertical lines), and posterior-predictive p-values (upper right corner). Blue and red regions correspond to the 10% and 5% rejection regions, respectively.</figcaption>
 </figure>
+
+<h1 class="section" id="bonus-videos">Bonus Videos</h1>
+
+<p><a href="https://youtu.be/lf7JAKYjFQA?t=3678"><img src="/assets/img/YouTube_icon.svg" alt="FBD Video" height="36" width="36" /></a>
+Coding for a new dataset (FBD)</p>
+
+<p><a href="https://youtu.be/lf7JAKYjFQA?t=4191"><img src="/assets/img/YouTube_icon.svg" alt="DEC Video" height="36" width="36" /></a>
+Coding for a new dataset (DEC)</p>
 
 <ol class="bibliography"><li><span id="Goldberg2012">Goldberg E.E., Igić B. 2012. Tempo and Mode in Plant Breeding System Evolution. Evolution. 66:3701–3709.</span>
 
