@@ -225,10 +225,6 @@ The output message includes:
 
 * The calculated burn-in
 
-* The splits excluded from the assessment for having frequency above 0.975 or below 0.025 (when applicable)
-
-* The continuous parameters excluded from the assessment for having no variation during the MCMC (when applicable)
-
 * Lowest ESS for the splits and continuous parameters
 
 * Instructions to check further the output:
@@ -244,13 +240,17 @@ The output message includes:
   >    `ESS: output$tree_parameters$ess` <br />
   >    `Difference in frequencies: output$tree_parameters$compare_runs` <br />
 
+> `To check the full summary message with splits and parameters excluded from the analysis type:` <br />
+  >    `output$message_complete` <br />
 
-We can see that `check_bears` has 4 elements: `message`, `converged`, `continuous_parameters` and `tree_parameters`.
+
+We can see that `check_bears` has 4 elements: `message`, `message_complete`, `converged`, `continuous_parameters` and `tree_parameters`.
 
 1. `message`: a summary of the convergence assessment;
-2. `converged`: a boolean that has TRUE if the analysis converged and FALSE if it did not converge;
-3. `continuous_parameters`: a list with means, ESS and KS-scores between runs;
-4. `tree_parameters`: a list with frequencies, ESS and split frequencies between runs.
+2. `message_complete`: the summary from message plus: (1) the splits excluded from the assessment for having frequency above 0.975 or below 0.025 (when applicable), (2) the continuous parameters excluded from the assessment for having no variation during the MCMC (when applicable);
+3. `converged`: a boolean that has TRUE if the analysis converged and FALSE if it did not converge;
+4. `continuous_parameters`: a list with means, ESS and KS-scores between runs;
+5. `tree_parameters`: a list with frequencies, ESS and split frequencies between runs.
 
 In case the analysis has failed to converge, another element will be on the output list: `failed` with the parameters that failed the criteria for convergence.
 
@@ -260,34 +260,34 @@ We can generate tables with general information for the continuous parameters th
 
 |        |     means     |     ESS    |
 | :---:  |     :----:    |     :---:  |
-| alpha  |  1.603954589  |  9031.384  |
-| er.1.  |  0.015576521  |  11070.400 |
-| er.2.  |  0.505904352  |  12114.042 |
-| er.3.  |  0.006423004  |  6343.636  |
-| er.4.  |  0.009572443  |  18549.306 |
-| er.5.  |  0.454927376  |  16764.042 |
-| er.6.  |  0.007596305  |  5534.844  |
-| p_inv  |  0.532339279  |  4382.799  |
-| pi.1.  |  0.293497210  |  10027.691 |
-| pi.2.  |  0.301726522  |  12104.489 |
-| pi.3.  |  0.135420687  |  9974.490  |
-| pi.4.  |  0.269355587  |  11021.611 |
-| sr.1.  |  0.216077996  |  10773.049 |
-| sr.2.  |  0.550663747  |  15892.737 |
-| sr.3.  |  1.015625752  |  11885.672 |
-| sr.4.  |  2.217632528  |  3654.626  |
-| TL     |  1.112491969  |  8041.564  |
+| alpha  |  1.603954589  |  8921.945  |
+| er.1.  |  0.015576521  |  10705.048 |
+| er.2.  |  0.505904352  |  11570.794 |
+| er.3.  |  0.006423004  |  5683.824  |
+| er.4.  |  0.009572443  |  18078.730 |
+| er.5.  |  0.454927376  |  15992.299 |
+| er.6.  |  0.007596305  |  4368.023  |
+| p_inv  |  0.532339279  |  3306.411  |
+| pi.1.  |  0.293497210  |  10057.477 |
+| pi.2.  |  0.301726522  |  11016.263 |
+| pi.3.  |  0.135420687  |  9775.079  |
+| pi.4.  |  0.269355587  |  9885.677  |
+| sr.1.  |  0.216077996  |  10275.761 |
+| sr.2.  |  0.550663747  |  16053.336 |
+| sr.3.  |  1.015625752  |  11775.210 |
+| sr.4.  |  2.217632528  |  3842.496  |
+| TL     |  1.112491969  |  7677.455  |
 
 
 > `printTableSplits(check_bears)` <br />
 
 |                                                                                   |     frequencies   |    ESS    |
 | :---                                                                              |     :----:        |    :---:  |
-|Helarctos_malayanus Ursus_americanus                                               |    0.08814119     | 18594.19  |
-|Melursus_ursinus Ursus_arctos Ursus_maritimus                                      |    0.17603240     | 17116.12  |
-|Helarctos_malayanus Melursus_ursinus Ursus_americanus Ursus_thibetanus             |    0.32441756     | 16318.73  |
-|Helarctos_malayanus Ursus_americanus Ursus_arctos Ursus_maritimus Ursus_thibetanus |    0.49535046     | 18692.89  |
-|Ursus_americanus Ursus_thibetanus                                                  |    0.88891111     | 15668.33  |
+|Helarctos_malayanus Ursus_americanus                                               |    0.09     | 17127.93  |
+|Melursus_ursinus Ursus_arctos Ursus_maritimus                                      |    0.18     | 18074.54  |
+|Helarctos_malayanus Melursus_ursinus Ursus_americanus Ursus_thibetanus             |    0.32     | 15526.14  |
+|Helarctos_malayanus Ursus_americanus Ursus_arctos Ursus_maritimus Ursus_thibetanus |    0.50     | 15731.22  |
+|Ursus_americanus Ursus_thibetanus                                                  |    0.89     | 15269.03  |
 
 
 Convenience also provides plot functions to facilitate showing that convergence has been achieved.
@@ -299,13 +299,13 @@ And the function `plotDiffSplits` yields a plot for the calculated difference in
 {% figure plotESS %}
 <img src="figures/results_plots.png" width="800" />
 {% figcaption %}
-The plots generated with Convenience for summarizing and visualizing the results from the convergence assessment. The top-left figure shows the histogram of calculated ESS values for the model parameters (continuous parameters). The bottom-left figure shows the histogram of calculated ESS for the splits. In both histograms the grey dotted lines represents the threshold of 625. The bottom-right plot is the histogram of the Kolmogorov-Smirnov (KS) for the model parameters, the dotted grey line represents the threshold for the KS test. The bottom-left figure shows the observed difference is split frequencies in the red dots and the expected difference between split frequencies (EDSF) in the grey curve.
+The plots generated with Convenience for summarizing and visualizing the results from the convergence assessment. The top-left figure shows the histogram of calculated ESS values for the model parameters (continuous parameters). The bottom-left figure shows the histogram of calculated ESS for the splits. In both histograms the grey dotted lines represents the threshold of 625. The bottom-right plot is the histogram of the Kolmogorov-Smirnov (KS) for the model parameters, the dotted grey line represents the threshold for the KS test. The bottom-left figure shows the observed difference is split frequencies in the green dots and the expected difference between split frequencies (EDSF) in the grey curve. For all plots, the grey area shows where the parameters should be for convergence to be achieved.
 {% endfigcaption %}
 {% endfigure %}
 
 We can see that, for all figures, all continuous parameters and splits have an ESS above the threshold. This is what we would have expected for a MCMC that has converged. 
 The KS histogram shows that all KS values calculated for the continuous parameters are below the threshold. This means that the parameters are drawn from the same distribution for both runs of our analysis. Therefore, if convergence is achieved for a given analysis, the histogram for the KS values should be similiar to this plot.
-The calculated differences in split frequencies fall below the threshold curve in gray. When convergence is not achieved, some dots would be above the threshold curve. 
+The calculated differences in split frequencies fall below the threshold curve in grey. When convergence is not achieved, some dots would be above the threshold curve. 
 
 It is also possible to plot the histogram of the KS values for the comparisons one-on-one when the MCMC analysis have more than 2 runs.
 The function for this plot is `plotKS.pooled`. 
@@ -366,6 +366,7 @@ We can divide our MCMC that lack convergence by the number of parameters that fa
 
 * One or few parameters failing
 
-For the first case, we should run the MCMC longer to get more samples. In the second case, we should increase the weights on the moves or even add more moves for the specific parameters that failed.
+For the first case, we should adjust the MCMC to be more efficient. This can be done by increasing the weights on the moves of the parameters that failed, using other MCMC algorithms (such as adaptive MCMC or Metropolis-Coupled MCMC), increasing the number of iterations, etc. 
+In the second case, we should increase the weights on the moves or even add more moves for the specific parameters that failed.
 
 
