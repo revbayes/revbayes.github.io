@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Convergence assessment</h1>
 	<h3 class="subtitle">Phylogenetic convergence assessment using the R package Convenience</h3>
 	<h4 class="authors">Luiza Fabreti and Sebastian Höhna</h4>
-  <h5>Last modified on March 23, 2021</h5>
+  <h5>Last modified on May 16, 2021</h5>
 </div>
 
 
@@ -355,12 +355,6 @@ The output message includes:</p>
     <p>The calculated burn-in</p>
   </li>
   <li>
-    <p>The splits excluded from the assessment for having frequency above 0.975 or below 0.025 (when applicable)</p>
-  </li>
-  <li>
-    <p>The continuous parameters excluded from the assessment for having no variation during the MCMC (when applicable)</p>
-  </li>
-  <li>
     <p>Lowest ESS for the splits and continuous parameters</p>
   </li>
   <li>
@@ -382,10 +376,16 @@ The output message includes:</p>
    <code class="language-plaintext highlighter-rouge">Difference in frequencies: output$tree_parameters$compare_runs</code> <br /></p>
 </blockquote>
 
-<p>We can see that <code class="language-plaintext highlighter-rouge">check_bears</code> has 4 elements: <code class="language-plaintext highlighter-rouge">message</code>, <code class="language-plaintext highlighter-rouge">converged</code>, <code class="language-plaintext highlighter-rouge">continuous_parameters</code> and <code class="language-plaintext highlighter-rouge">tree_parameters</code>.</p>
+<blockquote>
+  <p><code class="language-plaintext highlighter-rouge">To check the full summary message with splits and parameters excluded from the analysis type:</code> <br />
+   <code class="language-plaintext highlighter-rouge">output$message_complete</code> <br /></p>
+</blockquote>
+
+<p>We can see that <code class="language-plaintext highlighter-rouge">check_bears</code> has 4 elements: <code class="language-plaintext highlighter-rouge">message</code>, <code class="language-plaintext highlighter-rouge">message_complete</code>, <code class="language-plaintext highlighter-rouge">converged</code>, <code class="language-plaintext highlighter-rouge">continuous_parameters</code> and <code class="language-plaintext highlighter-rouge">tree_parameters</code>.</p>
 
 <ol>
   <li><code class="language-plaintext highlighter-rouge">message</code>: a summary of the convergence assessment;</li>
+  <li><code class="language-plaintext highlighter-rouge">message_complete</code>: the summary from message plus: (1) the splits excluded from the assessment for having frequency above 0.975 or below 0.025 (when applicable), (2) the continuous parameters excluded from the assessment for having no variation during the MCMC (when applicable);</li>
   <li><code class="language-plaintext highlighter-rouge">converged</code>: a boolean that has TRUE if the analysis converged and FALSE if it did not converge;</li>
   <li><code class="language-plaintext highlighter-rouge">continuous_parameters</code>: a list with means, ESS and KS-scores between runs;</li>
   <li><code class="language-plaintext highlighter-rouge">tree_parameters</code>: a list with frequencies, ESS and split frequencies between runs.</li>
@@ -411,87 +411,87 @@ The output message includes:</p>
     <tr>
       <td style="text-align: center">alpha</td>
       <td style="text-align: center">1.603954589</td>
-      <td style="text-align: center">9031.384</td>
+      <td style="text-align: center">8921.945</td>
     </tr>
     <tr>
       <td style="text-align: center">er.1.</td>
       <td style="text-align: center">0.015576521</td>
-      <td style="text-align: center">11070.400</td>
+      <td style="text-align: center">10705.048</td>
     </tr>
     <tr>
       <td style="text-align: center">er.2.</td>
       <td style="text-align: center">0.505904352</td>
-      <td style="text-align: center">12114.042</td>
+      <td style="text-align: center">11570.794</td>
     </tr>
     <tr>
       <td style="text-align: center">er.3.</td>
       <td style="text-align: center">0.006423004</td>
-      <td style="text-align: center">6343.636</td>
+      <td style="text-align: center">5683.824</td>
     </tr>
     <tr>
       <td style="text-align: center">er.4.</td>
       <td style="text-align: center">0.009572443</td>
-      <td style="text-align: center">18549.306</td>
+      <td style="text-align: center">18078.730</td>
     </tr>
     <tr>
       <td style="text-align: center">er.5.</td>
       <td style="text-align: center">0.454927376</td>
-      <td style="text-align: center">16764.042</td>
+      <td style="text-align: center">15992.299</td>
     </tr>
     <tr>
       <td style="text-align: center">er.6.</td>
       <td style="text-align: center">0.007596305</td>
-      <td style="text-align: center">5534.844</td>
+      <td style="text-align: center">4368.023</td>
     </tr>
     <tr>
       <td style="text-align: center">p_inv</td>
       <td style="text-align: center">0.532339279</td>
-      <td style="text-align: center">4382.799</td>
+      <td style="text-align: center">3306.411</td>
     </tr>
     <tr>
       <td style="text-align: center">pi.1.</td>
       <td style="text-align: center">0.293497210</td>
-      <td style="text-align: center">10027.691</td>
+      <td style="text-align: center">10057.477</td>
     </tr>
     <tr>
       <td style="text-align: center">pi.2.</td>
       <td style="text-align: center">0.301726522</td>
-      <td style="text-align: center">12104.489</td>
+      <td style="text-align: center">11016.263</td>
     </tr>
     <tr>
       <td style="text-align: center">pi.3.</td>
       <td style="text-align: center">0.135420687</td>
-      <td style="text-align: center">9974.490</td>
+      <td style="text-align: center">9775.079</td>
     </tr>
     <tr>
       <td style="text-align: center">pi.4.</td>
       <td style="text-align: center">0.269355587</td>
-      <td style="text-align: center">11021.611</td>
+      <td style="text-align: center">9885.677</td>
     </tr>
     <tr>
       <td style="text-align: center">sr.1.</td>
       <td style="text-align: center">0.216077996</td>
-      <td style="text-align: center">10773.049</td>
+      <td style="text-align: center">10275.761</td>
     </tr>
     <tr>
       <td style="text-align: center">sr.2.</td>
       <td style="text-align: center">0.550663747</td>
-      <td style="text-align: center">15892.737</td>
+      <td style="text-align: center">16053.336</td>
     </tr>
     <tr>
       <td style="text-align: center">sr.3.</td>
       <td style="text-align: center">1.015625752</td>
-      <td style="text-align: center">11885.672</td>
+      <td style="text-align: center">11775.210</td>
     </tr>
     <tr>
       <td style="text-align: center">sr.4.</td>
       <td style="text-align: center">2.217632528</td>
-      <td style="text-align: center">3654.626</td>
+      <td style="text-align: center">3842.496</td>
     </tr>
     <tr>
       <td style="text-align: center">TL</td>
       <td style="text-align: center">1.112491969</td>
-      <td style="text-align: center">8041.564</td>
+      <td style="text-align: center">7677.455</td>
     </tr>
   </tbody>
 </table>
@@ -511,28 +511,28 @@ The output message includes:</p>
   <tbody>
     <tr>
       <td style="text-align: left">Helarctos_malayanus Ursus_americanus</td>
-      <td style="text-align: center">0.08814119</td>
-      <td style="text-align: center">18594.19</td>
+      <td style="text-align: center">0.09</td>
+      <td style="text-align: center">17127.93</td>
     </tr>
     <tr>
       <td style="text-align: left">Melursus_ursinus Ursus_arctos Ursus_maritimus</td>
-      <td style="text-align: center">0.17603240</td>
-      <td style="text-align: center">17116.12</td>
+      <td style="text-align: center">0.18</td>
+      <td style="text-align: center">18074.54</td>
     </tr>
     <tr>
       <td style="text-align: left">Helarctos_malayanus Melursus_ursinus Ursus_americanus Ursus_thibetanus</td>
-      <td style="text-align: center">0.32441756</td>
-      <td style="text-align: center">16318.73</td>
+      <td style="text-align: center">0.32</td>
+      <td style="text-align: center">15526.14</td>
     </tr>
     <tr>
       <td style="text-align: left">Helarctos_malayanus Ursus_americanus Ursus_arctos Ursus_maritimus Ursus_thibetanus</td>
-      <td style="text-align: center">0.49535046</td>
-      <td style="text-align: center">18692.89</td>
+      <td style="text-align: center">0.50</td>
+      <td style="text-align: center">15731.22</td>
     </tr>
     <tr>
       <td style="text-align: left">Ursus_americanus Ursus_thibetanus</td>
-      <td style="text-align: center">0.88891111</td>
-      <td style="text-align: center">15668.33</td>
+      <td style="text-align: center">0.89</td>
+      <td style="text-align: center">15269.03</td>
     </tr>
   </tbody>
 </table>
@@ -543,12 +543,12 @@ The function <code class="language-plaintext highlighter-rouge">plotKS</code> pl
 And the function <code class="language-plaintext highlighter-rouge">plotDiffSplits</code> yields a plot for the calculated difference in splits frequency.</p>
 
 <figure id="plotESS"><p><img src="figures/results_plots.png" width="800" /></p>
-<figcaption>The plots generated with Convenience for summarizing and visualizing the results from the convergence assessment. The top-left figure shows the histogram of calculated ESS values for the model parameters (continuous parameters). The bottom-left figure shows the histogram of calculated ESS for the splits. In both histograms the grey dotted lines represents the threshold of 625. The bottom-right plot is the histogram of the Kolmogorov-Smirnov (KS) for the model parameters, the dotted grey line represents the threshold for the KS test. The bottom-left figure shows the observed difference is split frequencies in the red dots and the expected difference between split frequencies (EDSF) in the grey curve.</figcaption>
+<figcaption>The plots generated with Convenience for summarizing and visualizing the results from the convergence assessment. The top-left figure shows the histogram of calculated ESS values for the model parameters (continuous parameters). The bottom-left figure shows the histogram of calculated ESS for the splits. In both histograms the grey dotted lines represents the threshold of 625. The bottom-right plot is the histogram of the Kolmogorov-Smirnov (KS) for the model parameters, the dotted grey line represents the threshold for the KS test. The bottom-left figure shows the observed difference is split frequencies in the green dots and the expected difference between split frequencies (EDSF) in the grey curve. For all plots, the grey area shows where the parameters should be for convergence to be achieved.</figcaption>
 </figure>
 
 <p>We can see that, for all figures, all continuous parameters and splits have an ESS above the threshold. This is what we would have expected for a MCMC that has converged. 
 The KS histogram shows that all KS values calculated for the continuous parameters are below the threshold. This means that the parameters are drawn from the same distribution for both runs of our analysis. Therefore, if convergence is achieved for a given analysis, the histogram for the KS values should be similiar to this plot.
-The calculated differences in split frequencies fall below the threshold curve in gray. When convergence is not achieved, some dots would be above the threshold curve.</p>
+The calculated differences in split frequencies fall below the threshold curve in grey. When convergence is not achieved, some dots would be above the threshold curve.</p>
 
 <p>It is also possible to plot the histogram of the KS values for the comparisons one-on-one when the MCMC analysis have more than 2 runs.
 The function for this plot is <code class="language-plaintext highlighter-rouge">plotKS.pooled</code>. 
@@ -617,7 +617,8 @@ We can divide our MCMC that lack convergence by the number of parameters that fa
   </li>
 </ul>
 
-<p>For the first case, we should run the MCMC longer to get more samples. In the second case, we should increase the weights on the moves or even add more moves for the specific parameters that failed.</p>
+<p>For the first case, we should adjust the MCMC to be more efficient. This can be done by increasing the weights on the moves of the parameters that failed, using other MCMC algorithms (such as adaptive MCMC or Metropolis-Coupled MCMC), increasing the number of iterations, etc. 
+In the second case, we should increase the weights on the moves or even add more moves for the specific parameters that failed.</p>
 
 
 <ol class="bibliography"><li><span id="Nylander2008">Nylander J.A.A., Wilgenbusch J.C., Warren D.L., Swofford D.L. 2008. AWTY (are we there yet?): a system for graphical exploration of MCMC convergence in Bayesian phylogenetics. Bioinformatics. 24:581.</span>
