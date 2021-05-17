@@ -240,6 +240,7 @@ The output message includes:
   >    `ESS: output$tree_parameters$ess` <br />
   >    `Difference in frequencies: output$tree_parameters$compare_runs` <br />
 
+
 > `To check the full summary message with splits and parameters excluded from the analysis type:` <br />
   >    `output$message_complete` <br />
 
@@ -283,11 +284,11 @@ We can generate tables with general information for the continuous parameters th
 
 |                                                                                   |     frequencies   |    ESS    |
 | :---                                                                              |     :----:        |    :---:  |
-|Helarctos_malayanus Ursus_americanus                                               |    0.09     | 17127.93  |
-|Melursus_ursinus Ursus_arctos Ursus_maritimus                                      |    0.18     | 18074.54  |
-|Helarctos_malayanus Melursus_ursinus Ursus_americanus Ursus_thibetanus             |    0.32     | 15526.14  |
-|Helarctos_malayanus Ursus_americanus Ursus_arctos Ursus_maritimus Ursus_thibetanus |    0.50     | 15731.22  |
-|Ursus_americanus Ursus_thibetanus                                                  |    0.89     | 15269.03  |
+|Helarctos_malayanus Ursus_americanus                                               |    0.09           | 17127.93  |
+|Melursus_ursinus Ursus_arctos Ursus_maritimus                                      |    0.18           | 18074.54  |
+|Helarctos_malayanus Melursus_ursinus Ursus_americanus Ursus_thibetanus             |    0.32           | 15526.14  |
+|Helarctos_malayanus Ursus_americanus Ursus_arctos Ursus_maritimus Ursus_thibetanus |    0.50           | 15731.22  |
+|Ursus_americanus Ursus_thibetanus                                                  |    0.89           | 15269.03  |
 
 
 Convenience also provides plot functions to facilitate showing that convergence has been achieved.
@@ -317,6 +318,7 @@ The following figure is an example of this plot.
 Histogram of the calculated KS values for the one-on-one comparison between runs. Each color represents a different comparison of runs, as shown in the legend. The x-axis is the KS values and the y-axis is the frequency. The red dotted line represents the threshold for the KS score.
 {% endfigcaption %}
 {% endfigure %}
+
 
 In this example, we observe again that all KS values are below the threshold. Which means that, for this criterion, convergence has been achieved.
 Now that we learned how to use the package and how to interpret the results, let's practice with some exercises.
