@@ -17,6 +17,7 @@ include_files:
 - data/traits.nex
 - scripts/plot_BM.R
 - scripts/mcmc_BM.Rev
+- scripts/mcmc_BM_prior.Rev
 ---
 
 {% section Estimating Constant Rates of Evolution %}
