@@ -15,6 +15,9 @@ instructors:
 - Rui Borges
 - Ben Redelings
 - Mike May
+- Fábio Mendes
+- Mariana Braga
+- Bruno Petrucci 
 - April Wright
 - Rachel Warnock
 - Carrie Tribble
