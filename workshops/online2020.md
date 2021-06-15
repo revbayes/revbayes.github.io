@@ -1,7 +1,7 @@
 ---
 layout: workshop_woschedule
 type: workshop
-title: Stay-at-Home RevBayes Workshop 
+title: Stay-at-Home RevBayes Workshop Summer 2020
 location: Anywhere (online-only event)
 startdate: 2020-07-13
 enddate: 2020-08-12
