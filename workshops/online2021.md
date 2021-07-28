@@ -15,6 +15,9 @@ instructors:
 - Rui Borges
 - Ben Redelings
 - Mike May
+- Fábio Mendes
+- Mariana Braga
+- Bruno Petrucci 
 - April Wright
 - Rachel Warnock
 - Carrie Tribble
@@ -59,7 +62,8 @@ prerequisites:
 5. [Bayesian polymorphism-aware phylogenetic inference]({{ site.baseurl }}/tutorials/pomos)
 6. [Convergence assessment]({{ site.baseurl }}/tutorials/convergence)
 7. [Introduction to Posterior Prediction]({{ site.baseurl }}/tutorials/intro_posterior_prediction)
-8. [Additional tutorials]({{ site.baseurl }}/tutorials) (optional)
+8. [Introduction to RevGadgets]({{ site.baseurl }}/tutorials/intro/revgadgets.html) 
+9. [Additional tutorials]({{ site.baseurl }}/tutorials) (optional)
 
 ## Videos
 
@@ -70,7 +74,8 @@ prerequisites:
 5. [RevBayes Convergence Assessment](https://www.youtube.com/playlist?list=PLztACvN0g42tn40Hg0KLRfyljtybhWlUV)
 6. [RevBayes Intro to Posterior Prediction](https://www.youtube.com/playlist?list=PLztACvN0g42vs7ivZvkyAaOR1Gay1LsAn)
 7. [History of Phylogenetic Comparative Methods](https://www.youtube.com/watch?v=xl317lwY2Rg)
-8. [RevBayes BiSSE Tutorial](https://www.youtube.com/watch?v=kYT74DTrong)
+8. [Introduction to RevGadgets](https://www.youtube.com/watch?v=lf7JAKYjFQA)
+9. [RevBayes BiSSE Tutorial](https://www.youtube.com/watch?v=kYT74DTrong)
 
 ## Workshop Code of Conduct
 
