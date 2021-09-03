@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Setting up an IDE for RevBayes</h1>
 	
 	<h4 class="authors"></h4>
-  <h5>Last modified on August  1, 2019</h5>
+  <h5>Last modified on September  3, 2021</h5>
 </div>
 
 <p>The easiest way to get started developing in RevBayes is to use an IDE such as XCode or Eclipse.
@@ -71,28 +71,24 @@ See the <a href="/download">Download</a> page for instructions on how to obtain 
 
 </div>
 
-<p class="section maintitle" id="clion">Setting up CLion for RevBayes development</p>
-<p>CLion is a cross-platform IDE for C and C++ by <a href="https://www.jetbrains.com/clion/">JetBrains</a>.</p>
+<p class="section maintitle" id="vscode">Setting up Visual Studio Code for RevBayes development</p>
+<p>Visual Studio Code (or VSCode) is an open-source text editor by Microsoft. You can download and install it <a href="https://code.visualstudio.com/Download">here</a>.</p>
 
 <h2 id="prerequisites">Prerequisites</h2>
-<p>To work in CLion you need to install CMake. On Mac OSX you can install via <a href="https://brew.sh/">homebrew</a>, <code class="language-plaintext highlighter-rouge">apt</code> on ubuntu, or <a href="https://chocolatey.org">chocolatey</a> on windows,</p>
+<p>You will first need to install RevBayes from <a href="https://revbayes.github.io/download">source</a>. Once RevBayes is installed you will need to open VSCode. Once VSCode is open you will need to select the RevBayes folder from wherever you have stored on your computer.</p>
 
-<p>Follow the install instructions for <a href="https://revbayes.github.io/software">installing RevBayes</a> from source. The only change is instead of running <code class="language-plaintext highlighter-rouge">./build.sh</code> run <code class="language-plaintext highlighter-rouge">./build.sh -debug true</code>. This should take a second so feel free to go to grab yourself a snack.</p>
+<p>Now you will need to install two extensions to get RevBayes to work nicely. To do this click on the button shown below in VSCode.</p>
 
-<h2 id="create-an-clion-project-for-revbayes">Create an CLion project for RevBayes</h2>
-<p>Open CLion. It should look like this:</p>
+<p><img src="Extension-button.jpg" /></p>
 
-<p><img src="figures/clion-opening.png" width="50%" /></p>
+<h2 id="getting-revbayes-working">Getting RevBayes working</h2>
 
-<p>Click on  “New CMake Project from Sources. This will open up a file tree, you need to find a file called <code class="language-plaintext highlighter-rouge">cmake_install.cmake</code>. You can see this below, mine was at <code class="language-plaintext highlighter-rouge">&lt;where-revbayes-is&gt;/revbayes/projects/cmake/build/</code>.</p>
+<p>Once here you need to search for the <a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools"> C/C++ extension </a>, the <a href="https://marketplace.visualstudio.com/items?itemName=twxs.cmake"> Cmake extension </a>, and the <a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools"> CMake tools extension </a>.
+Now that these are installed, Cmake tools will prompt in the lower right asking you to locate the file named <code class="language-plaintext highlighter-rouge">CMakeLists.txt</code>. Choose the file located in the <code class="language-plaintext highlighter-rouge">revbayes/src/CMakeLists.txt</code> location. This should begin building RevBayes using CMake and a new folder should appear in <code class="language-plaintext highlighter-rouge">revbayes</code> called <code class="language-plaintext highlighter-rouge">build</code>. This will contain the compiled files and will eventually be added to <code class="language-plaintext highlighter-rouge">.gitignore</code> if it is not currently you will need to add this to the <code class="language-plaintext highlighter-rouge">.gitignore</code> file.</p>
 
-<p><img src="figures/clion-cmake.png" width="50%" /></p>
+<p>Once the Cmake build finishes, you can setup debugging by clicking the triangle with the small beatle in the lower left. Now click on the gear shown below. This will open a new file called <code class="language-plaintext highlighter-rouge">launch.json</code>. You need to change the values for the <code class="language-plaintext highlighter-rouge">"program:"</code> object to the path where your <code class="language-plaintext highlighter-rouge">rb</code> executeable is. For example, <code class="language-plaintext highlighter-rouge">"${workspaceFolder}/projects/cmake/rb"</code>. In vscode <code class="language-plaintext highlighter-rouge">${workspaceFolder}</code> refers to the root folder of the project you opened. To test a specific rev script, change the value of the <code class="language-plaintext highlighter-rouge">"args"</code> object to a location of a Rev script.With that you can use debugging in VSCode by pressing the play button or using the command palette (CTRL/CMD + SHIFT + P) and using the “Cmake: Debug” command.</p>
 
-<p>This will open the project in CLion and it should say in the bottom updating symbols… This part takes a bit, an additional snack may be warranted. After a bit you should also see in the upper right near the little hammer a dropdown menu that says <code class="language-plaintext highlighter-rouge">rb | DEBUG</code>.</p>
-
-<p><img src="figures/clion-ready.png" width="50%" /></p>
-
-<p>You should now be able to set a breakpoint and run your Rev script. The interactive Rev console does not work in CLion right now.</p>
+<p><img src="screensho.jpg" /></p>
 
 <p class="section maintitle" id="eclipse">Setting up Eclipse for RevBayes development</p>
 <p>Eclipse is a Java-based, cross-platform IDE with lots of nice features that make it convenient for RevBayes development. First, it’s cross-platform, and unlike Xcode, you can use any compiler you like (not just <code class="language-plaintext highlighter-rouge">clang</code>).</p>
@@ -397,6 +393,7 @@ If YCM is working, when you open a revbayes <code class="language-plaintext high
 </code></pre></div></div>
 
 <p>See <a href="https://www.cs.cmu.edu/~gilpin/tutorial/">here</a> for more on using GDB.</p>
+
 
 <ol class="bibliography"></ol>
 

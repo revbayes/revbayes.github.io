@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Relaxed Clocks & Time Trees</h1>
 	<h3 class="subtitle">Comparing relaxed clock models & estimating rooted time trees</h3>
 	<h4 class="authors">Tracy A. Heath</h4>
-  <h5>Last modified on September 16, 2019</h5>
+  <h5>Last modified on September  3, 2021</h5>
 </div>
 
 
@@ -298,14 +298,14 @@ tutorial.</p>
 <p>Diversification ($d$) is the speciation rate ($\lambda$) minus the
 extinction rate ($\mu$): $d = \lambda - \mu$.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>diversification ~ dnExponential(10.0) 
-moves.append( mvScale(diversification, lambda=1.0, tune=true, weight=3.0)
+moves.append( mvScale(diversification, lambda=1.0, tune=true, weight=3.0) )
 </code></pre></div></div>
 
 <p><strong><em>Turnover</em></strong></p>
 
 <p>Turnover is: $r = \mu / \lambda$.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>turnover ~ dnBeta(2.0, 2.0) 
-moves.append( mvSlide(turnover,delta=1.0,tune=true,weight=3.0)
+moves.append( mvSlide(turnover,delta=1.0,tune=true,weight=3.0) )
 </code></pre></div></div>
 
 <p><strong><em>Deterministic Nodes for Birth and Death Rates</em></strong></p>
@@ -391,7 +391,7 @@ monitor its age.</p>
 
 <p>Next, create the vector of moves. These tree moves act on node ages:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvNodeTimeSlideUniform(timetree, weight=30.0) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvNodeTimeSlideUniform(timetree, weight=30.0) ) )
 moves.append( mvSlide(root_time, delta=2.0, tune=true, weight=10.0) )
 moves.append( mvScale(root_time, lambda=2.0, tune=true, weight=10.0) )
 moves.append( mvTreeScale(tree=timetree, rootAge=root_time, delta=1.0, tune=true, weight=3.0) )
@@ -435,7 +435,7 @@ still depend on variable initialized in different files.</p>
 <p>The clock-rate parameter is a stochastic node from a gamma distribution.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clock_rate ~ dnGamma(2.0,4.0)
-moves.append( mvScale(clock_rate,lambda=0.5,tune=true,weight=5.0)
+moves.append( mvScale(clock_rate,lambda=0.5,tune=true,weight=5.0) )
 </code></pre></div></div>
 
 <p><strong><em>The Sequence Model and Phylogenetic CTMC</em></strong></p>
@@ -445,8 +445,8 @@ them.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    sf ~ dnDirichlet(v(1,1,1,1))
     er ~ dnDirichlet(v(1,1,1,1,1,1))
     Q := fnGTR(er,sf)
-    moves.append( mvSimplexElementScale(er, alpha=10.0, tune=true, weight=3.0)
-    moves.append( mvSimplexElementScale(sf, alpha=10.0, tune=true, weight=3.0)
+    moves.append( mvSimplexElementScale(er, alpha=10.0, tune=true, weight=3.0) )
+    moves.append( mvSimplexElementScale(sf, alpha=10.0, tune=true, weight=3.0) )
 </code></pre></div></div>
 <p>And instantiate the phyloCTMC.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    phySeq ~ dnPhyloCTMC(tree=timetree, Q=Q, branchRates=clock_rate, nSites=n_sites, type="DNA")
@@ -614,8 +614,8 @@ lognormal distribution on branch rates.</p>
 model are the lognormal mean ($M$ or <code class="language-plaintext highlighter-rouge">ucln_mean</code>) and the standard
 deviation ($\sigma$ or <code class="language-plaintext highlighter-rouge">ucln_sigma</code>).</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale(ucln_mean, lambda=1.0, tune=true, weight=4.0)
-moves.append( mvScale(ucln_sigma, lambda=0.5, tune=true, weight=4.0)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale(ucln_mean, lambda=1.0, tune=true, weight=4.0))
+moves.append( mvScale(ucln_sigma, lambda=0.5, tune=true, weight=4.0))
 </code></pre></div></div>
 
 <p>With our nodes representing the $\mu$ and $\sigma$ of the lognormal
@@ -625,7 +625,7 @@ move for each branch-rate stochastic node to our moves vector.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for(i in 1:n_branches){
    branch_rates[i] ~ dnLnorm(ucln_mu, ucln_sigma)
-   moves.append( mvScale(branch_rates[i], lambda=1, tune=true, weight=2.)
+   moves.append( mvScale(branch_rates[i], lambda=1, tune=true, weight=2.))
 }
 </code></pre></div></div>
 
@@ -651,8 +651,8 @@ to apply a range of moves to the variables representing the branch rates
 and branch times. This will help to improve the mixing of our MCMC. Here
 we will add 2 additional types of moves that act on vectors.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvVectorScale(branch_rates,lambda=1.0,tune=true,weight=2.0) 
-moves.append( mvVectorSingleElementScale(branch_rates,lambda=30.0,tune=true,weight=1.0) 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvVectorScale(branch_rates,lambda=1.0,tune=true,weight=2.0) )
+moves.append( mvVectorSingleElementScale(branch_rates,lambda=30.0,tune=true,weight=1.0) )
 </code></pre></div></div>
 
 <p>The mean of the branch rates is a convenient deterministic node to
@@ -669,8 +669,8 @@ GTR matrix.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sf ~ dnDirichlet(v(1,1,1,1))
 er ~ dnDirichlet(v(1,1,1,1,1,1))
 Q := fnGTR(er,sf)
-moves.append( mvSimplexElementScale(er, alpha=10.0, tune=true, weight=3.0)
-moves.append( mvSimplexElementScale(sf, alpha=10.0, tune=true, weight=3.0)
+moves.append( mvSimplexElementScale(er, alpha=10.0, tune=true, weight=3.0))
+moves.append( mvSimplexElementScale(sf, alpha=10.0, tune=true, weight=3.0))
 </code></pre></div></div>
 
 <p>Now, we can put the whole model together in the phylogenetic CTMC and
@@ -860,7 +860,7 @@ file. Thus, every variable that you gave a name in your model files will
 be written to your log file. This makes it very easy to get an analysis
 going, but can generate very large files with a lot of redundant output.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[1] = mnModel(filename="output/TimetTree_bears_mcmc.log", printgen=10)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append(mnModel(filename="output/TimetTree_bears_mcmc.log", printgen=10))
 </code></pre></div></div>
 
 <p>If the model monitor is too verbose for your needs, you should use the
@@ -877,7 +877,7 @@ That is because tools for reading MCMC log files—like
 load files with non-numerical states. Therefore, you must save the
 sampled trees to a different file.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[2] = mnFile(filename="output/TimeTree_bears_mcmc.trees", printgen=10, timetree)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append(mnFile(filename="output/TimeTree_bears_mcmc.trees", printgen=10, timetree))
 </code></pre></div></div>
 
 <p>Finally, we will create a monitor in charge of writing information to
@@ -887,7 +887,7 @@ to see in your screen output (e.g., the mean rate of the UCLN or ACLN
 model), feel free to add them to the list of parameters give to this
 model.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[3] = mnScreen(printgen=10, root_time, tmrca_Ursidae)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append(mnScreen(printgen=10, root_time, tmrca_Ursidae))
 </code></pre></div></div>
 
 <p><strong><em>Setting-Up &amp; Executing the MCMC</em></strong></p>

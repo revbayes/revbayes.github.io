@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Simple Diversification Models & Estimating Time Trees</h1>
 	<h3 class="subtitle">Comparing diversification models using Bayes factors and estimating a dated phylogeny</h3>
 	<h4 class="authors">Tracy A. Heath</h4>
-  <h5>Last modified on September 16, 2019</h5>
+  <h5>Last modified on February  9, 2021</h5>
 </div>
 
 
@@ -894,9 +894,11 @@ be sure to save the sampled trees to file. The <code class="language-plaintext h
 numerical parameters, but not the tree. We can use the <code class="language-plaintext highlighter-rouge">mnFile()</code> monitor to write our 
 MCMC samples of the tree.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors[1] = mnModel(filename="output/TimeTree_bears_mcmc.log", printgen=10)
-monitors[2] = mnFile(filename="output/TimeTree_bears_mcmc.trees", printgen=10, timetree)
-monitors[3] = mnScreen(printgen=100, root_time)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append(mnModel(filename="output/TimetTree_bears_mcmc.log",
+printgen=10))
+monitors.append(mnFile(filename="output/TimeTree_bears_mcmc.trees",
+printgen=10, timetree))
+monitors.append(mnScreen(printgen=10, root_time, tmrca_Ursidae))
 </code></pre></div></div>
 
 <p>Create the MCMC object:</p>
