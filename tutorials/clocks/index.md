@@ -193,7 +193,7 @@ Diversification ($d$) is the speciation rate ($\lambda$) minus the
 extinction rate ($\mu$): $d = \lambda - \mu$.
 ```
 diversification ~ dnExponential(10.0) 
-moves.append( mvScale(diversification, lambda=1.0, tune=true, weight=3.0)
+moves.append( mvScale(diversification, lambda=1.0, tune=true, weight=3.0) )
 ```
 
 ***Turnover***
@@ -201,7 +201,7 @@ moves.append( mvScale(diversification, lambda=1.0, tune=true, weight=3.0)
 Turnover is: $r = \mu / \lambda$.
 ```
 turnover ~ dnBeta(2.0, 2.0) 
-moves.append( mvSlide(turnover,delta=1.0,tune=true,weight=3.0)
+moves.append( mvSlide(turnover,delta=1.0,tune=true,weight=3.0) )
 ```
 
 ***Deterministic Nodes for Birth and Death Rates***
@@ -288,7 +288,7 @@ monitor its age.
 
 Next, create the vector of moves. These tree moves act on node ages:
 
-    moves.append( mvNodeTimeSlideUniform(timetree, weight=30.0) )
+    moves.append( mvNodeTimeSlideUniform(timetree, weight=30.0) ) )
     moves.append( mvSlide(root_time, delta=2.0, tune=true, weight=10.0) )
     moves.append( mvScale(root_time, lambda=2.0, tune=true, weight=10.0) )
     moves.append( mvTreeScale(tree=timetree, rootAge=root_time, delta=1.0, tune=true, weight=3.0) )
@@ -337,7 +337,7 @@ still depend on variable initialized in different files.
 The clock-rate parameter is a stochastic node from a gamma distribution.
 
     clock_rate ~ dnGamma(2.0,4.0)
-    moves.append( mvScale(clock_rate,lambda=0.5,tune=true,weight=5.0)
+    moves.append( mvScale(clock_rate,lambda=0.5,tune=true,weight=5.0) )
 
 ***The Sequence Model and Phylogenetic CTMC***
 
@@ -347,8 +347,8 @@ them.
     sf ~ dnDirichlet(v(1,1,1,1))
     er ~ dnDirichlet(v(1,1,1,1,1,1))
     Q := fnGTR(er,sf)
-    moves.append( mvSimplexElementScale(er, alpha=10.0, tune=true, weight=3.0)
-    moves.append( mvSimplexElementScale(sf, alpha=10.0, tune=true, weight=3.0)
+    moves.append( mvSimplexElementScale(er, alpha=10.0, tune=true, weight=3.0) )
+    moves.append( mvSimplexElementScale(sf, alpha=10.0, tune=true, weight=3.0) )
 ```
 And instantiate the phyloCTMC.
 ```
@@ -511,8 +511,8 @@ The only stochastic nodes we need to operate on for this part of the
 model are the lognormal mean ($M$ or `ucln_mean`) and the standard
 deviation ($\sigma$ or `ucln_sigma`).
 
-    moves.append( mvScale(ucln_mean, lambda=1.0, tune=true, weight=4.0)
-    moves.append( mvScale(ucln_sigma, lambda=0.5, tune=true, weight=4.0)
+    moves.append( mvScale(ucln_mean, lambda=1.0, tune=true, weight=4.0))
+    moves.append( mvScale(ucln_sigma, lambda=0.5, tune=true, weight=4.0))
 
 With our nodes representing the $\mu$ and $\sigma$ of the lognormal
 distribution, we can create the vector of stochastic nodes for each of
@@ -521,7 +521,7 @@ move for each branch-rate stochastic node to our moves vector.
 
     for(i in 1:n_branches){
        branch_rates[i] ~ dnLnorm(ucln_mu, ucln_sigma)
-       moves.append( mvScale(branch_rates[i], lambda=1, tune=true, weight=2.)
+       moves.append( mvScale(branch_rates[i], lambda=1, tune=true, weight=2.))
     }
 
 ***Sidebar: Other Uncorrelated-Rates Models***
@@ -546,8 +546,8 @@ to apply a range of moves to the variables representing the branch rates
 and branch times. This will help to improve the mixing of our MCMC. Here
 we will add 2 additional types of moves that act on vectors.
 
-    moves.append( mvVectorScale(branch_rates,lambda=1.0,tune=true,weight=2.0) 
-    moves.append( mvVectorSingleElementScale(branch_rates,lambda=30.0,tune=true,weight=1.0) 
+    moves.append( mvVectorScale(branch_rates,lambda=1.0,tune=true,weight=2.0) )
+    moves.append( mvVectorSingleElementScale(branch_rates,lambda=30.0,tune=true,weight=1.0) )
 
 The mean of the branch rates is a convenient deterministic node to
 monitor, particularly in the screen output when conducting MCMC.
@@ -562,8 +562,8 @@ GTR matrix.
     sf ~ dnDirichlet(v(1,1,1,1))
     er ~ dnDirichlet(v(1,1,1,1,1,1))
     Q := fnGTR(er,sf)
-    moves.append( mvSimplexElementScale(er, alpha=10.0, tune=true, weight=3.0)
-    moves.append( mvSimplexElementScale(sf, alpha=10.0, tune=true, weight=3.0)
+    moves.append( mvSimplexElementScale(er, alpha=10.0, tune=true, weight=3.0))
+    moves.append( mvSimplexElementScale(sf, alpha=10.0, tune=true, weight=3.0))
 
 Now, we can put the whole model together in the phylogenetic CTMC and
 clamp that node with our sequence data.
