@@ -1,0 +1,168 @@
+#
+# FILENAME: geo_FIG.Rev
+#
+# AUTHOR: Michael Landis (michael.landis@wustl.edu)
+#
+# DESCRIPTION:
+#     geo_FIG.Rev configures the parameterized geography model for FIG,
+#     which relates geographical features to the m_d, m_e, m_w, and m_b
+#     rate modifier functions.
+#
+# NOTES:
+#     This file reads in regional features for size, distances, a
+#     custom FIG analysis by either defining variable names in the RevBayes
+#     script or by piping variables into RevBayes through a shell command
+#     (e.g. see the file, single_run_job.sh). After defining all necessary
+#     variables the script runs mcmc_FIG.Rev.
+#
+# CALLED BY:
+#     mcmc_FIG.Rev
+#
+# CALLS:
+#     (nothing)
+#
+#
+
+
+# define a minimal set of variables so that one can debug this file
+# independently of run_FIG.Rev, if desired
+if (!exists("fp"))             fp              = "/Users/mlandis/projects/fig_model/"
+if (!exists("geo_fp"))         geo_fp          = fp + "data/anolis/"
+if (!exists("geo_prefix"))     geo_prefix      = "anolis_nr9"
+if (!exists("max_range_size")) max_range_size  = -1
+if (!exists("use_rj"))         use_rj          = false
+if (!exists("p_d_init"))       p_d_init        = 0.01
+if (!exists("p_e_init"))       p_e_init        = 0.01
+if (!exists("p_w_init"))       p_w_init        = 0.01
+if (!exists("p_b_init"))       p_b_init        = 0.01
+if (!exists("w_d_init"))       w_d_init        = 1
+if (!exists("w_b_init"))       w_b_init        = 1
+if (!exists("w_e_init"))       w_e_init        = 1
+if (!exists("w_w_init"))       w_w_init        = 1
+
+#######################################
+# define regional info                #
+#######################################
+
+# read raw data
+y_quant = readDataDelimitedFile(file=geo_fp + geo_prefix + ".size_km2.txt", delimiter=",", header=true)[1]
+y_categ = readDataDelimitedFile(file=geo_fp + geo_prefix + ".region_type.txt", delimiter=",", header=true)[1]
+z_quant = readDataDelimitedFile(file=geo_fp + geo_prefix + ".distance_km.txt", delimiter=",", header=true)
+z_categ = readDataDelimitedFile(file=geo_fp + geo_prefix + ".connection_type.txt", delimiter=",", header=true)
+
+# get dimensions
+n_regions = y_quant.size()
+n_region_pairs = n_regions * (n_regions-1) / 2
+if (max_range_size == -1) max_range_size = n_regions
+
+# get number of states
+n_states = 0
+for (i in 1:max_range_size) n_states += choose(n_regions, i)
+
+# define feature exponent parameters (psi_p)
+if (use_rj) {
+    p_d ~ dnRJMixture(0.0, dnNormal(0,1), p=0.5)
+    p_e ~ dnRJMixture(0.0, dnNormal(0,1), p=0.5)
+    p_w ~ dnRJMixture(0.0, dnNormal(0,1), p=0.5)
+    p_b ~ dnRJMixture(0.0, dnNormal(0,1), p=0.5)
+} else {
+    p_d ~ dnNormal(0,1)
+    p_e ~ dnNormal(0,1)
+    p_w ~ dnNormal(0,1)
+    p_b ~ dnNormal(0,1)
+}
+
+# define categorical scaler parameters (sigma_p)
+ln_sd   <- 0.587405
+ln_mean <- ln(1) - 0.5 * ln_sd^2
+w_dist = dnLognormal(ln_mean, ln_sd)
+
+if (use_rj) {
+    w_d ~ dnRJMixture(1.0, w_dist, p=0.5)
+    w_e ~ dnRJMixture(1.0, w_dist, p=0.5)
+    w_w ~ dnRJMixture(1.0, w_dist, p=0.5)
+    w_b ~ dnRJMixture(1.0, w_dist, p=0.5)
+} else {
+    w_d ~ w_dist
+    w_e ~ w_dist
+    w_w ~ w_dist
+    w_b ~ w_dist
+}
+
+# normalize raw quantitative features against mean
+y_quant_norm = y_quant / mean(y_quant)
+z_quant_sum = 0
+for (i in 1:n_regions) {
+    for (j in 1:n_regions) {
+        if (i != j) {
+            z_quant_sum += z_quant[i][j]
+        }
+    }
+}
+z_quant_mean = z_quant_sum / (n_region_pairs * 2)
+for (i in 1:n_regions) { 
+    for (j in 1:n_regions) {
+        z_quant_norm[i][j] = 0
+        z_quant_norm_symm[i][j] = 0
+        if (i != j) {
+            z_quant_norm[i][j] = z_quant[i][j] / z_quant_mean
+            z_quant_norm_symm[i][j] = 0.5 * (z_quant[i][j] + z_quant[j][i]) / z_quant_mean
+        }
+    }
+}
+
+# assign categorical scalers to elements in y_q(i) and z_q(i,j)
+# for elements i and i,j that satisfy y_c(i)==0 or y_q(i,j)==0;
+# otherwise, no categorical scaler is applied
+for (i in 1:n_regions) {
+    if (y_categ[i] == 0) {
+        w_w_vec[i] := w_w
+        w_e_vec[i] := w_e
+    } else if {
+        w_w_vec[i] <- 1.0
+        w_e_vec[i] <- 1.0
+    }
+    for (j in 1:n_regions) {
+        if (z_categ[i][j] == 0) {
+            w_d_vec[i][j] := w_d
+            w_b_vec[i][j] := w_b
+        } else {
+            w_d_vec[i][j] <- 1.0
+            w_b_vec[i][j] <- 1.0
+        }
+    }
+}
+
+# multiply rescale quantitative features by category
+g_w := y_quant_norm * w_w_vec
+g_e := y_quant_norm * w_e_vec
+for (i in 1:n_regions) {
+    g_d[i] := z_quant_norm[i] * w_d_vec[i]
+    g_b[i] := z_quant_norm_symm[i] * w_b_vec[i]
+}
+
+# define normalization terms, Z
+Z_w := geometricMean(g_w)
+Z_e := geometricMean(g_e)
+Z_b := geometricMean(fnUpperTriangle( matrix(g_b)))
+Z_d := geometricMean(fnUpperTriangle( matrix(g_d)))
+
+# define normalized features, m
+# NOTE: each feature-set has geometric mean of 1, regardless of power
+m_w := (g_w / Z_w)^p_w
+m_e := (g_e / Z_e)^p_e
+for (i in 1:n_regions) {
+    m_d[i] := (g_d[i] / Z_d)^p_d
+    m_b[i] := (g_b[i] / Z_b)^p_b
+}
+
+# initialize parameters 
+p_d.setValue(p_d_init)
+p_e.setValue(p_e_init)
+p_w.setValue(p_w_init)
+p_b.setValue(p_b_init)
+
+w_d.setValue(w_d_init)
+w_e.setValue(w_e_init)
+w_w.setValue(w_w_init)
+w_b.setValue(w_b_init)

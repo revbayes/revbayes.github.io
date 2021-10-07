@@ -1,0 +1,204 @@
+#
+# FILENAME: mcmc_FIG.Rev
+#
+# AUTHOR: Michael Landis (michael.landis@wustl.edu)
+#
+# DESCRIPTION:
+#     mcmc_FIG.Rev fits the FIG model to a dataset using Bayesian MCMC
+#  
+# NOTES:
+#     This file reads the input data (tree file, biogeographic data),
+#     builds the FIG model (by calling geo_FIG.Rev and model_FIG.Rev),
+#     creates the appropriate moves and monitors for the model, then
+#     runs the MCMC analysis.
+#
+# CALLED BY:
+#     run_FIG.Rev
+#
+# CALLS:
+#     geo_FIG.Rev
+#     model_FIG.Rev
+#
+
+
+# initialize move and monitor index
+mvi       = 1
+mni       = 1
+
+#-----------#
+# load data #
+#-----------#
+
+# read tree variable
+phy         <- readTrees(phy_fn)[1]
+
+# collect taxa
+taxa        <- phy.taxa()
+
+# collect number of taxa and branches
+n_taxa      <- taxa.size()
+n_branches  <- 2 * n_taxa - 2
+
+# get tree height
+tree_height <- phy.rootAge()
+
+# read biogeographical data
+dat <- readCharacterDataDelimited(range_fn, type="NaturalNumbers", stateLabels=n_states, delimiter="\t", headers=false)
+
+
+#------------#
+# load model #
+#------------#
+
+# load FIG geography
+source("geo_FIG.Rev")
+
+# load FIG model
+source("model_FIG.Rev")
+
+print("Clamping tree...")
+# clamp tree & data
+timetree.clamp( phy )
+print("Clamping data...")
+timetree.clampCharData( dat )
+print("...done clamping!")
+
+
+#-----------#
+# set moves #
+#-----------#
+
+# update base rates (rho parameters)
+mv[mvi++] = mvScale( r_d, weight=4, lambda=0.5 )
+mv[mvi++] = mvScale( r_e, weight=4, lambda=0.5 )
+mv[mvi++] = mvScale( r_w, weight=4, lambda=0.5 )
+mv[mvi++] = mvScale( r_b, weight=4, lambda=0.5 )
+mv[mvi++] = mvScale( r_d, weight=1, lambda=1.5, tuneTarget=0.10 )
+mv[mvi++] = mvScale( r_e, weight=1, lambda=1.5, tuneTarget=0.10 )
+mv[mvi++] = mvScale( r_w, weight=1, lambda=1.5, tuneTarget=0.10 )
+mv[mvi++] = mvScale( r_b, weight=1, lambda=1.5, tuneTarget=0.10 )
+
+# update other parameters if geographical features are used
+if (use_features) {
+
+    # update feature exponents (psi parameters)
+    mv[mvi++] = mvScale( p_d, weight=3, lambda=0.5 )
+    mv[mvi++] = mvScale( p_e, weight=3, lambda=0.5 )
+    mv[mvi++] = mvScale( p_w, weight=3, lambda=0.5 )
+    mv[mvi++] = mvScale( p_b, weight=3, lambda=0.5 )
+    mv[mvi++] = mvScale( p_d, weight=1, lambda=1.0 )
+    mv[mvi++] = mvScale( p_e, weight=1, lambda=1.0 )
+    mv[mvi++] = mvScale( p_w, weight=1, lambda=1.0 )
+    mv[mvi++] = mvScale( p_b, weight=1, lambda=1.0 )
+    mv[mvi++] = mvSlide( p_d, weight=1, delta=0.3 )
+    mv[mvi++] = mvSlide( p_e, weight=1, delta=0.3 )
+    mv[mvi++] = mvSlide( p_w, weight=1, delta=0.3 )
+    mv[mvi++] = mvSlide( p_b, weight=1, delta=0.3 )
+    mv[mvi++] = mvSlide( p_d, weight=1, delta=2.0, tuneTarget=0.10 )
+    mv[mvi++] = mvSlide( p_e, weight=1, delta=2.0, tuneTarget=0.10 )
+    mv[mvi++] = mvSlide( p_w, weight=1, delta=2.0, tuneTarget=0.10 )
+    mv[mvi++] = mvSlide( p_b, weight=1, delta=2.0, tuneTarget=0.10 )
+
+    # update categorical scalers (sigma parameters)
+    mv[mvi++] = mvScale( w_d, weight=4, lambda=0.5 )
+    mv[mvi++] = mvScale( w_e, weight=4, lambda=0.5 )
+    mv[mvi++] = mvScale( w_w, weight=4, lambda=0.5 )
+    mv[mvi++] = mvScale( w_b, weight=4, lambda=0.5 )
+    mv[mvi++] = mvScale( w_d, weight=1, lambda=1.5, tuneTarget=0.10 )
+    mv[mvi++] = mvScale( w_e, weight=1, lambda=1.5, tuneTarget=0.10 )
+    mv[mvi++] = mvScale( w_w, weight=1, lambda=1.5, tuneTarget=0.10 )
+    mv[mvi++] = mvScale( w_b, weight=1, lambda=1.5, tuneTarget=0.10 )
+
+    # reversible-jump MCMC updates (if enabled)
+    if (use_rj) {
+        mv[mvi++] = mvRJSwitch(w_d, weight=2)
+        mv[mvi++] = mvRJSwitch(w_e, weight=2)
+        mv[mvi++] = mvRJSwitch(w_w, weight=2)
+        mv[mvi++] = mvRJSwitch(w_b, weight=2)
+        mv[mvi++] = mvRJSwitch(p_d, weight=2)
+        mv[mvi++] = mvRJSwitch(p_e, weight=2)
+        mv[mvi++] = mvRJSwitch(p_w, weight=2)
+        mv[mvi++] = mvRJSwitch(p_b, weight=2)
+    }
+} else if (!use_features) {
+    p_d <- 0.
+    p_e <- 0.
+    p_w <- 0.
+    p_b <- 0.
+    w_d <- 1.
+    w_e <- 1.
+    w_w <- 1.
+    w_b <- 1.
+}
+
+# variables to monitor RJ preference for simple or complex model
+if (use_rj) {
+    use_p_d := ifelse( p_d==0.0, 1, 0 )
+    use_p_e := ifelse( p_e==0.0, 1, 0 )
+    use_p_w := ifelse( p_w==0.0, 1, 0 )
+    use_p_b := ifelse( p_b==0.0, 1, 0 )
+    use_w_d := ifelse( w_d==1.0, 1, 0 )
+    use_w_e := ifelse( w_e==1.0, 1, 0 )
+    use_w_w := ifelse( w_w==1.0, 1, 0 )
+    use_w_b := ifelse( w_b==1.0, 1, 0 )
+}
+
+
+#--------------#
+# set monitors #
+#--------------#
+
+mn[mni++] = mnScreen( r_d, r_e, r_w, r_b, p_d, p_e, p_w, p_b, printgen=print_gen )
+mn[mni++] = mnModel(printgen=print_gen, filename=output_prefix+".model.log")
+mn[mni++] = mnFile( printgen=print_gen, filename=output_prefix+".geo_features.log",
+                    m_e,
+                    m_w,
+                    m_d[1], m_d[2], m_d[3], m_d[4], m_d[5], m_d[6], m_d[7], m_d[8], m_d[9], 
+                    m_b[1], m_b[2], m_b[3], m_b[4], m_b[5], m_b[6], m_b[7], m_b[8], m_b[9] )
+
+mn[mni++] = mnJointConditionalAncestralState( glhbdsp=timetree,
+                                              tree=timetree,
+                                              printgen=print_gen*10,
+                                              filename=output_prefix+".states.log",
+                                              withTips=true,
+                                              withStartStates=true,
+                                              type="NaturalNumbers" )
+
+mn[mni++] = mnStochasticCharacterMap( glhbdsp=timetree, 
+                                      printgen=print_gen*10,
+                                      filename=output_prefix+".stoch.log",
+                                      use_simmap_default=false )
+
+#------------------------#
+# save analysis settings #
+#------------------------#
+
+# save tree with RevBayes node-indexing to output
+write( timetree, filename=output_prefix+".tre" )
+
+# save state labels
+# ... how?
+
+# tsv of initial settings?
+
+#-------------#
+# build model #
+#-------------#
+print("Building model")
+mdl = model(r_d)
+
+#--------------#
+# run analysis #
+#--------------#
+print("Building MCMC")
+ch = mcmc( mv, mn, mdl )
+
+print("Running MCMC")
+if (use_tune == true) {
+    ch.burnin(n_burn, tuningInterval=10)
+}
+ch.run(n_gen)
+
+# done!
+quit()
+

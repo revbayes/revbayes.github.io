@@ -1,0 +1,149 @@
+#
+# FILENAME: model_FIG.Rev
+#
+# AUTHOR: Michael Landis (michael.landis@wustl.edu)
+#
+# DESCRIPTION:
+#     model_FIG.Rev defines SSE rates for dispersal, extinction
+#     within-region speciation, and between-region speciation using the 
+#     the m_d, m_e, m_w, and m_b functions created in geo_FIG.Rev,
+#     then passes those rates to the SSE model object defined in TensorPhylo.
+#
+# NOTES:
+#     The default RevBayes SSE model can be used for simulation and inference,
+#     and the TensorPhylo SSE model can only be used for inference (currently).
+#     Although RevBayes and the TensorPhylo plugin produce identical likelihoods
+#     given the same data and parameter values, TensorPhylo is generally faster.
+#     We strongly recommend using TensorPhylo for FIG analyses with more than
+#     five regions (e.g. >> 31 states).
+#
+# CALLED BY:
+#     mcmc_FIG.Rev
+#
+# CALLS:
+#     (none)
+#
+#
+
+# load TensorPhylo plugin
+loadPlugin("TensorPhylo", tensorphylo_fp)
+
+#######################################
+# define model base rates             #
+#######################################
+
+# base rate parameters
+r_d ~ dnExp(1)
+r_e ~ dnExp(1)
+r_w ~ dnExp(1)
+r_b ~ dnExp(1)
+
+# summarize base rates
+speciation_rates := [ r_w, r_b ]
+total_speciation := sum( speciation_rates )
+
+#################################
+# dispersal-extirpation process #
+#################################
+
+# dispersal rate (region gain)
+for (i in 1:n_regions) {
+    dr[i] := r_d * m_d[i]
+}
+
+# extirpation rate (region loss)
+er := r_e * m_e
+
+# dispersal-extirpation rate matrix
+# - states are discrete ranges
+# - elements are rates of range expansion/contraction
+Q := fnBiogeographyRateMatrix(dispersalRates=dr,
+                     extirpationRates=er,
+                     maxRangeSize=max_range_size)
+
+#####################
+# speciation rates  #
+#####################
+
+# speciation rate matrix
+clado_map := fnBiogeographyCladoEventsBD(speciation_rates=speciation_rates,
+                                         within_region_features=m_w,
+                                         between_region_features=m_b,
+                                         max_range_size=max_range_size,
+                                         max_subrange_split_size=max_subrange_split_size)
+
+clado_map
+
+# speciation rates for each range
+lambda := clado_map.getSpeciationRateSumPerState()
+
+# probabilities of speciation outcomes for each range
+omega := clado_map.getCladogeneticProbabilityMatrix()
+
+
+####################
+# extinction rates #
+####################
+
+# extinction rates (lineage death)
+for (i in 1:n_states) {
+    if (i <= n_regions) {
+    	# only possible if range is size 1
+        mu[i] := er[i]
+    } else {
+    	# zero if range is size 2+
+        mu[i] <- abs(0)
+    }
+}
+
+# base frequencies
+pi_base <- rep(1,n_states)
+pi <- simplex(pi_base)
+
+# tree settings
+rho <- 1.
+condition <- "time"
+
+if (init_parameters) {
+    r_d.setValue(r_d_init)
+    r_e.setValue(r_e_init)
+    r_w.setValue(r_w_init)
+    r_b.setValue(r_b_init)
+    p_d.setValue(p_d_init)
+    p_e.setValue(p_e_init)
+    p_w.setValue(p_w_init)
+    p_b.setValue(p_b_init)
+    w_d.setValue(w_d_init)
+    w_e.setValue(w_e_init)
+    w_w.setValue(w_w_init)
+    w_b.setValue(w_b_init)
+}
+
+
+# build FIG model (SSE variant)
+if (use_tensorphylo) {
+	print("Initializing FIG model using TensorPhylo SSE distribution (dnGLHBDSP)...")
+    timetree ~ dnGLHBDSP( rootAge      = tree_height,
+                          lambda       = lambda,
+                          mu           = mu,
+                          eta          = Q,
+                          omega        = omega,
+                          pi           = pi,
+                          rho          = rho,
+                          condition    = condition,
+                          taxa         = taxa,
+                          nStates      = n_states,
+                          nProc        = n_proc )
+} else {
+	print("Initializing FIG model using native RevBayes SSE distribution (dnCDCladoBDP)...")
+    timetree ~ dnCDCladoBDP(rootAge=tree_height,
+                   cladoEventMap=clado_map,
+                   extinctionRates=mu,
+                   Q=Q,
+                   delta=1.0,
+                   pi=pi,
+                   rho=rho,
+                   condition=condition)
+}
+
+print("...done!")

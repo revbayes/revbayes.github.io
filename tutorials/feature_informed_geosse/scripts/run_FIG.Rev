@@ -1,0 +1,144 @@
+#
+# FILENAME: run_FIG.Rev
+#
+# AUTHOR: Michael Landis (michael.landis@wustl.edu)
+#
+# DESCRIPTION:
+#     run_FIG.Rev initializes the settings for a FIG analysis, then
+#     initiates an MCMC analysis against a FIG model.
+#
+# NOTES:
+#     This file provides a useful interface for scripting analyses. Run a
+#     custom FIG analysis by either defining variable names in the RevBayes
+#     script or by piping variables into RevBayes through a shell command
+#     (e.g. see the file, single_run_job.sh). After defining all necessary
+#     variables the script runs mcmc_FIG.Rev.
+#
+# CALLED BY:
+#     single_run_job.sh (optional)
+#
+# CALLS:
+#     mcmc_FIG.Rev
+#
+#
+
+###########################
+# Runs FIG model analysis #
+###########################
+
+# You can define variables to run the analysis under your dataset.
+# For example, you might set the following lines to analyze a
+# Viburnum dataset.
+
+# input_fp      = "../data/viburnum/"
+# output_fp     = "../output/viburnum/"
+# phy_fn        = "viburnum.mcc.tre"
+# range_fn      = "viburnum.bg.tsv"
+# input_prefix  = "viburnum"
+# output_prefix = "viburnum"
+# job_seed      = 02022020
+#input_prefix   = "anolis_nr9_ns378_major_edits"
+fp             = "/home/mlandis/projects/fig_model/"
+tensorphylo_fp = "/home/mlandis/apps/tensorphylo/"
+
+#---------------------#
+# initialize RNG seed #
+#---------------------#
+if (!exists("job_seed"))        job_seed        = -1
+if (job_seed <= 0) {
+    job_seed = round(runif(1,100000,999999)[1])
+    seed(job_seed)
+}
+
+#-----------------------#
+# initialize file paths #
+#-----------------------#
+
+# Set the "base" file path.
+if (!exists("fp"))              fp              = "/Users/mlandis/projects/fig_model/"
+
+# Set the input file paths.
+if (!exists("input_fp"))        input_fp        = fp + "data/anolis/"
+if (!exists("input_prefix"))    input_prefix    = "anolis_nr9_ns383"
+if (!exists("phy_fn"))          phy_fn          = input_fp + input_prefix + ".mcc.tre"
+if (!exists("range_fn"))        range_fn        = input_fp + input_prefix + ".range.tsv"
+
+# Set the output file paths.
+if (!exists("output_fp"))       output_fp       = fp + "output/anolis/"
+if (!exists("output_prefix"))   output_prefix   = output_fp + input_prefix + ".seed_" + job_seed
+
+# Set the TensorPhylo plugin file path.
+if (!exists("tensorphylo_fp"))  tensorphylo_fp  = "/Users/mlandis/apps/tensorphylo/"
+
+#------------------------------#
+# initialize analysis settings #
+#------------------------------#
+
+# Allow regional features to inform evolutionary rates. If this is set to false
+# then fix rho parameters = 0 and sigma parameters = 1.
+if (!exists("use_features"))    use_features    = true
+
+# Enable reversible-jump MCMC analysis for rho and sigma parameters. Reversible-jump
+# allows jumps between rho = 0 and rho != 0, and sigma = 1 and sigma != 1.
+if (!exists("use_rj"))          use_rj          = !true
+
+# Use TensorPhylo library to compute model likelihoods. Necessary for analyses
+# that use more than 5 regions.
+if (!exists("use_tensorphylo")) use_tensorphylo = true
+
+# Number of processors for TensorPhylo analyses (speeds up analysis).
+if (!exists("n_proc"))          n_proc          = 8
+
+# Number of regions
+if (!exists("n_regions"))       n_regions       = 9
+
+# Maximum size of species ranges. Set to 0 for no limit or comment out the next line.
+if (!exists("max_range_size"))  max_range_size  = 4
+
+# Maximum size of species ranges. Set to 0 for no limit or comment out the next line.
+if (!exists("max_subrange_split_size"))  max_subrange_split_size  = 4
+
+# Number of range states
+if (!exists("n_states"))        n_states        = 255
+
+# Number of MCMC generations (each generation contains multiple moves).
+if (!exists("n_gen"))           n_gen           = 5000
+
+# Number of MCMC samples to burnin
+if (!exists("n_burn"))          n_burn          = n_gen / 10
+
+# Use MCMC autotuning?
+if (!exists("use_tune"))        use_tune        = false
+
+# Standard frequency for saving MCMC state.
+if (!exists("print_gen"))       print_gen       = 1
+
+#------------------------------#
+# initialized parameter values #
+#------------------------------#
+
+# Use initial parameter values for analysis. Useful to "skip" burn-in
+# for well-calibrated MCMC analyses.
+if (!exists("init_parameters")) init_parameters = true
+if (!exists("r_d_init"))        r_d_init        =  0.01
+if (!exists("r_e_init"))        r_e_init        =  0.01
+if (!exists("r_w_init"))        r_w_init        =  0.01
+if (!exists("r_b_init"))        r_b_init        =  0.100
+if (!exists("w_d_init"))        w_d_init        =  1.0
+if (!exists("w_e_init"))        w_e_init        =  1.0
+if (!exists("w_w_init"))        w_w_init        =  1.0
+if (!exists("w_b_init"))        w_b_init        =  1.0
+if (!exists("p_d_init"))        p_d_init        = -1.0
+if (!exists("p_e_init"))        p_e_init        =  0.1
+if (!exists("p_w_init"))        p_w_init        =  0.1
+if (!exists("p_b_init"))        p_b_init        =  1.0
+
+#--------------------------#
+# fit FIG model using MCMC #
+#--------------------------#
+
+# Load MCMC analysis code, which itself loads the FIG model code.
+source("mcmc_FIG.Rev")
+
+# Done!
+quit()
