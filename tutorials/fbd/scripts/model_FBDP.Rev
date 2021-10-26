@@ -48,7 +48,7 @@ moves.append( mvSlide(origin_time, delta=1,    weight=5.0) )
 
 
 ### Define the tree-prior distribution as the fossilized birth-death process ###
-fbd_dist = dnFBDP(origin=origin_time, lambda=speciation_rate, mu=extinction_rate, psi=psi, rho=rho, taxa=taxa)
+fbd_dist = dnBDSTP(r=1, origin=origin_time, lambda=speciation_rate, mu=extinction_rate, psi=psi, rho=rho, taxa=taxa)
 
 # The will be a random variable of a constrained topology distribution that is governed by the FBD #
 # this distribution will generate FBD trees that match the monophyly constraints defined above #
