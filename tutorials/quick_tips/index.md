@@ -14,12 +14,17 @@ redirect: false
 
 {% section Getting Started | getting started %}
 
-Mention introductory tutorials: X,Y, and Z. Links to tutorials, resources, google help group, etc.
-How to navigate the website for specific things: documentation, a tutorial on X, bug reporting.
+RevBayes comes with a suite of functions and analyses, each with their own idiosyncracies and nuances. 
+Here you will find an assortment of tips and guides that are either of general use or topics that are not explicitly covered in tutorials. Topics are listed the lefthand side under the table named **Overview**.
+More in depth tutorials for most specific models in RevBayes can be found on  the [Tutorials]({% page_url tutorials %}) page on the RevBayes site. If you are just beggining with RevBayes, we would recommend the [Getting Started]({% page_url intro/index %}) for familiarizing yourself with the syntax and language and the [Intro to MCMC]({% page_url mcmc/binomial %}) for the basics of creating a model and running MCMC for inference.
+
+Additionally, if you ever want to learn more about a specific function in RevBayes, you can either look at the [Documentation]({% page_url documentation %}) page on the website or type `?` before any function in the RevBayes terminal (e.g., `?sqrt()`) to get information about the function purpose, arguments, and output.  
+
+
 
 {% section Moves  | moves %}
 
-Given infinite time, any MCMC proposal scheme will converge on the posterior distribution. However, since time is finite, we need to carefully consider the moves we chose on parameters to efficiently approximate the sampling distribution. In this section we will discuss how to identify inefficient moves and poor mixing as well as the components of a move scheme that can be modulated to increase MCMC effectiveness. 
+Given infinite time, any MCMC proposal scheme will converge on the posterior distribution. However, since time is finite, we need to carefully consider the moves we chose on parameters to efficiently approximate the sampling distribution. In this section we will discuss how to identify inefficient moves and poor mixing as well as the components of a move scheme that can be modulated to increase MCMC effectiveness. Further convergence diagnostics can be found in the [Convergence Assessment]({% page_url convergence %}) tutorial.
 
 
 {% subsection Choosing and Optimizing Moves %}
@@ -55,9 +60,21 @@ Output of the `operatorSummary` method of an `mcmc` object after performing an a
 We can see that almost every proposal was accepted for the move with the smallest window size while the largest move rejected most proposals. In general we want a move that isn't too small such that it moves slowly but isn't so large that it rejects most proposals, this is known as the Goldilock's Principle. {% citet Roberts1997 %} found an optimal acceptance ratio of 0.234 for a multivariate target distributions with i.i.d. components. Being able to break the posterior into i.i.d. components is unrealistic for phylogenetic analyses, numerical studies have shown acceptance rates to be robust to this assumption and rates between 0.1 and 0.6 are still reasonably efficient {% cite Roberts2001 Rosenthal2011 %}.
 
 {% aside Move sizes on trees %}
-here is some more filler text.
 
-Here is some filler text. 
+The two most common moves on tree topology are the Nearest Neighbor Interchange (NNI) move and the Subtree Pruning and Regrafting (SPR) move. The NNI move rearanges the connectivity between four subtrees while SPR moves prune a subtree and regraft it on another part of the tree {% ref fig_moves %}. Since these moves define specific opertations on the phylogeny, they do not have arguments to adjust the size of the moves. Instead, it may be useful to think of the moves themselves as 'big' or 'small' based on their inherent qualities.
+One way to assess the size of these topology moves is to consider how many different topologies we can obtain by performing one move. This often speaks to how interconnected tree topologies are given a specific move. If many topologies are connected by a move then we can think of this as being able to move from one topology to another in a fewer number of moves and would be considered a large move. In this sense we would consider NNI moves to be considerably smaller than SPR moves; NNI moves on a given internal branch has only 2 other alternative topologies while an SPR move on a given internal branch can be pruned and regrafted to any other branch on the phylogeny, making it connected to more topologies.
+
+ The other way we may want to evaluate the relative size of moves is by considering the diameter of the tree space of a move {% cite Kathrine2016 %}. The diameter of a tree space for a given move is defined the maximal distance between any two topologies. Although it is NP-hard to compute the diameter of a tree space, the space of SPR moves has a tighter upper bound on the diameter than NNI moves. This means that generally we can reach trees in fewer moves with the "Bigger" SPR moves than the "Smaller" NNI moves.  
+
+{% figure fig_moves %}
+
+<img src="figures/moves.png"  />
+{% figcaption %}
+Two common tree topology moves. Left NNI. Right SPR.
+{% endfigcaption %}
+{% endfigure %}
+
+
 {% endaside %}
 
 {% subsubsection Tuning Moves %}
@@ -90,6 +107,81 @@ We can set up a move schedule that determines the order of moves with the `moves
 {% section Multiple Independent Runs | Multiple Independent Runs %}
 
 {% section Metropolis Coupled MCMC | MCMCMC %}
+
+One common concern with Bayesian phylogenetic inference is being entrapped in a local optimum. Posterior distributions can be multimodal and efficiently moving between optima during MCMC is a difficult task, even with a good proposal scheme.
+Metropolis Coupled Markov Chain Monte Carlo is a common technique in phylogenetic analysis to efficiently move around a parameter space with local optima ({% cite Altekar2004 %}). Briefly, this technique has mutiple MCMC chains running in parallel, with one 'cold' chain that records operates as a normal MCMC,recording parameter values at prespecified intervals, and multiple 'hot' chains that effectively have a flattened posterior distribution. 
+These hot chains are less likely to reject move proposals, making it easier for them to move into low posterior density valleys to move between local optima. Periodically, the chains will swap their 'heating' and current parameter values. 
+The idea here is that the 'hot' chains can efficiently move around large swathes of parameter space and ocassionally swap values with the 'cold' chain as it comes across different optima. 
+Formally, a heating value refers to the posterior distribution being raised to some power $\beta$, where lower values of $\beta$ effectively flatten out the posterior distribution.
+
+We can use the `mcmcmc()` function in RevBayes to perform Metropolis Coupled Markov Chain Monte Carlo. 
+This function is very similar to the `mcmc()` function in terms of arguments and associated methods but contains a few extra arguments that focus around the multiple parallel chains.
+Those additional arguments are:
+
+- **nchains**: The number of chains to run in parallel. 
+- **swapInterval**: This is how often chains attempt to swap their heats
+
+
+- **deltaHeat**: a numeric that specifies the heat of each chain. If there are $i$ chains then the heat of the $i^{th}$ chain is denoted as $\frac{1}{1+deltaHeat*i}$. Here we can see that the heat $\beta$ decreases with each subsequent chain, making them 'hotter'.
+- **heats**: A vector that explicity defines the heat of each chain. The first element must be $1.0$ (it is the cold chain) and the length of the vector must match `nchains`.
+
+**NOTE:** Only one of `deltaHeat` or `heats` are required for `mcmcmc()`. These arguments are used to specify the heat $\beta$ of each chain. 
+For example, for a chain with `nchains=4`, setting either `deltaHeat=0.5` or `heats=[1, 2/3, 1/2, 2/5]` would be equivalent.  
+After making our `mcmcmc` object, we can use the `operatorSummary()` method to inspect the heats of each chain ({% ref fig_heats %}). 
+
+{% figure fig_heats %}
+
+<img src="figures/chain_heats.png"  />
+{% figcaption %}
+Partial output of the `operatorSummary()` method of `mcmcmc` objects. We can see each chain with their respective heats and proposed moves.
+{% endfigcaption %}
+{% endfigure %}
+
+
+- **tuneHeat**: A boolean specifying whether the heats $\beta$'s should be tuned during burnin.
+- **tuneHeatTarget**: The acceptance probability of adjacent chain swaps targeted by heats auto-tuning.
+
+**NOTE:** Much like how moves can be tuned to achieve ideal acceptance proportions, the heats can be adjusted so swapping between chains at some ideal proportion.
+Specifically, if `tuneHeat` is `TRUE` then during burnin the heats will tune such that the proportion of successfully swapping the heats between any two adjacent chains is `tuneHeatTarget`. we can use the `operatorSummary()` method on the `mcmcmc` ({% ref fig_swaps %}).
+
+{% figure fig_swaps%}
+
+<img src="figures/chain_swaps.png"  />
+{% figcaption %}
+Partial output of the `operatorSummary()` method of `mcmcmc` objects. Each potential chain swap is listed along with the number of times each type of swap was proposed and accepted.
+{% endfigcaption %}
+{% endfigure %}
+
+- **SwapMethod**: The method at which chain swaps are proposed. Valid options are:
+    - `"neighbor"`: Swaps for $i^th$ chain will be proposed to the $i\pm 1$ chains.
+    - `"random"`: Swaps between chains will be proposed at random
+    - `"both"`: both `"neighbor"` and `"random"` type chain swaps will be proposed.
+- **swapInterval2**: This argument is only used if `swapMethod="both"`. In that case then `swapInterval` denotes how often chains attempt swaps using the `neighbor` method while `swapInterval2` denotes how often chains attempt swaps using the `random` method. If no argument is provided for `swapInterval2` then both methods will use the same interval provided in `swapInterval`. 
+- **swapMode**: A string of either `"single"` or `"multiple"`, that denotes how many chain swaps are proposed at each interval. If `swapMode="multiple"` then $(nchains-1)$ swaps will be proposed for `nieghbor` type chain swaps and ${nchains \choose 2}$ swaps for `random` type chain swaps. 
+
+```
+###We assume we already created these objects
+my_model 	##The model
+my_moves 	##The vector of moves for the parameters we are inferrring
+my_monitors ##The vector of monitors used to record our MCMC analysis
+
+# Create an mcmcmc object
+myMcmcmcObject = mcmcmc( mymodel, monitors, moves, nchains=4, deltaHeat=5)
+
+# print the summary of the operators (now tuned)
+##In particular take note of the chain heats before tuning
+myMcmcmcObject.operatorSummary()
+
+
+# Tune heats
+myMcmcmcObject.burnin( generations = 40000, tuningInterval = 100)
+
+# print the summary of the operators (now tuned). heats should have changed
+myMcmcmcObject.operatorSummary()
+
+
+```
+
 
 {% section MCMC under the Prior | Sampling under the Prior %}
 
