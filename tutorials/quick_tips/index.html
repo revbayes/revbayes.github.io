@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: Quick Tips for Analyses in RevBayes</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
+      </a>
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/download">Download</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/documentation/">Documentation</a></li>
+        <li><a href="https://revbayes.github.io/revscripter/">RevScripter</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/jobs/">Jobs</a></li>
+        <li><a href="/developer/">Developer</a></li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <div class="titlebar">
+	<h1 class="maintitle">Quick Tips for Analyses in RevBayes</h1>
+	<h3 class="subtitle"></h3>
+	<h4 class="authors">Heath Lab folks</h4>
+  <h5>Last modified on October 29, 2021</h5>
+</div>
+
+
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul id="prerequisites">
+          
+            <li><a href="/tutorials/intro/">Getting Started with RevBayes and Rev Language Syntax</a></li>
+          
+            <li><a href="/tutorials/mcmc/">Introduction to Markov chain Monte Carlo (MCMC) Sampling</a></li>
+          
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+
+
+
+
+</div>
+<h2 class="section" id="getting started">Getting Started</h2>
+<hr class="section" />
+
+<p>RevBayes comes with a suite of functions and analyses, each with their own idiosyncracies and nuances. 
+Here you will find an assortment of tips and guides that are either of general use or topics that are not explicitly covered in tutorials. Topics are listed the lefthand side under the table named <strong>Overview</strong>.
+More in depth tutorials for most specific models in RevBayes can be found on  the <a href="/tutorials/">Tutorials</a> page on the RevBayes site. If you are just beggining with RevBayes, we would recommend the <a href="/tutorials/intro/">Getting Started</a> for familiarizing yourself with the syntax and language and the <a href="/tutorials/mcmc/binomial.html">Intro to MCMC</a> for the basics of creating a model and running MCMC for inference.</p>
+
+<p>Additionally, if you ever want to learn more about a specific function in RevBayes, you can either look at the <a href="/documentation/">Documentation</a> page on the website or type <code class="language-plaintext highlighter-rouge">?</code> before any function in the RevBayes terminal (e.g., <code class="language-plaintext highlighter-rouge">?sqrt()</code>) to get information about the function purpose, arguments, and output.</p>
+
+<h2 class="section" id="moves">Moves</h2>
+<hr class="section" />
+
+<p>Given infinite time, any MCMC proposal scheme will converge on the posterior distribution. However, since time is finite, we need to carefully consider the moves we chose on parameters to efficiently approximate the sampling distribution. 
+In this section we will discuss how to identify inefficient moves and poor mixing as well as the components of a move scheme that can be modulated to increase MCMC effectiveness. Further convergence diagnostics can be found in the <a href="/tutorials/convergence/">Convergence Assessment</a> tutorial.</p>
+
+<h3 class="subsection" id="choosing-and-optimizing-moves">Choosing and Optimizing Moves</h3>
+<hr class="subsection" />
+
+<p>In this section we will discuss the things you will want to consider when choosing moves for your MCMC and how we can optimize those moves to efficiently sample the posterior.</p>
+
+<h4 class="subsubsection" id="choosing-the-right-type-of-move">Choosing the Right Type of Move</h4>
+<hr class="subsubsection" />
+
+<p>For most types of parameters there are a plethora moves implemented in RevBayes. When choosing moves it is important to consider the size and scale of the move relative to the parameter space that they operate upon. For example, let us consider the binomial coin-flipping scenario posed in <a href="/tutorials/mcmc/binomial.html">Introduction to MCMC using RevBayes</a> tutorial where we are trying to estimate the probability of a coin landing on heads, $p$. In this case we know that the parameter $p$ is bounded between 0 and 1 so we would want to consider moves that efficiently move around this space. The move <code class="language-plaintext highlighter-rouge">mvScale</code> is a valid option for our parameter $p$ but it won’t move around the space very effectively as this move multiplies the current value by some scalar which can often propose values on a different order of magnitude. Alternatively, we could chose <code class="language-plaintext highlighter-rouge">mvSlide</code> to propose new values within some window from the current value; this move is more better for proposing values between 0 and 1. Since moves often act in drastically different ways and on various scales, it can be useful to use multiple different types of moves on the same parameter to search space efficiently.</p>
+
+<h4 class="subsubsection" id="the-size-of-moves">The Size of Moves</h4>
+<hr class="subsubsection" />
+
+<p>Although we have chosen an appropriate type of move we still need to consider the size of the move itself. In the case of <code class="language-plaintext highlighter-rouge">mvSlide</code> the function for the move has the parameter <code class="language-plaintext highlighter-rouge">delta</code> which is used to specify the size of the window around the current value $p$. In other words, the move proposes a new value $p’$ by choosing a value at random on the interval $(p-\delta,p+\delta)$. Large values of <code class="language-plaintext highlighter-rouge">delta</code> will result in proposals that often fall outside of the interval $(0,1)$ while too small of a <code class="language-plaintext highlighter-rouge">delta</code> will cause the MCMC to explore the parameter space slowly and inefficiently. Most moves on continous variables have parameters that control the relative size of the move, in the case of <code class="language-plaintext highlighter-rouge">mvSlide</code>, the <code class="language-plaintext highlighter-rouge">lambda</code> parameter controls the size of the sclar.</p>
+
+<p>We can qualitatively assess the adequacy of size parameters of moves by using <code class="language-plaintext highlighter-rouge">TRACER</code> to view the trace. In <a href="#fig_trace"></a> we can see an example of a well-mixing MCMC, the catapillar-like appearance is a qualitative sign that the parameter is efficiently moving around the parameter space. If the move is too large the trace will look blocky, almost like a city skyline. Large moves often cause proposals to be rejected which is why we see the trace having the same value for many generations. Conversely, if we set too small of a move then we will accept most moves and the trace will appear to slowly meander about parameter values.</p>
+
+<figure id="fig_trace"><p><img src="figures/Move_size.png" /></p>
+<figcaption>Mixing of the <code class="language-plaintext highlighter-rouge">mvSlide</code> move on  sampling the probability of flipping heads $p$. The left image depicts the trace when moves are too small. The image in the center depicts moves that are too big. The image on the left depicts moves that are just right.</figcaption>
+</figure>
+
+<p>We can directly see how often proposals on specific moves are accepted or rejected by using the <code class="language-plaintext highlighter-rouge">operatorSummary()</code> method on an <code class="language-plaintext highlighter-rouge">mcmc</code> object (see <a href="#fig_operatorSummary"></a>).</p>
+
+<figure id="fig_operatorSummary"><p><img src="figures/mcmc_operatorSummary.png" /></p>
+<figcaption>Output of the <code class="language-plaintext highlighter-rouge">operatorSummary</code> method of an <code class="language-plaintext highlighter-rouge">mcmc</code> object after performing an analysis. On the leftmost column we can see each move and the node that it operates on. We can also see the weight of each move, how often it was proposed, and how often it was accepted. On the far right we can see the tuning argument for each move if it has one, in the case of <code class="language-plaintext highlighter-rouge">mvSlide</code> this is <code class="language-plaintext highlighter-rouge">delta</code></figcaption>
+</figure>
+
+<p>We can see that almost every proposal was accepted for the move with the smallest window size while the largest move rejected most proposals. In general we want a move that isn’t too small such that it moves slowly but isn’t so large that it rejects most proposals, this is known as the Goldilock’s Principle. <a class="citation" href="#Roberts1997">Roberts et al. (1997)</a> found an optimal acceptance ratio of 0.234 for a multivariate target distributions with i.i.d. components. Being able to break the posterior into i.i.d. components is unrealistic for phylogenetic analyses, numerical studies have shown acceptance rates to be robust to this assumption and rates between 0.1 and 0.6 are still reasonably efficient <a class="citation" href="#Roberts2001">(Roberts and Rosenthal 2001; Rosenthal 2011)</a>.</p>
+
+<blockquote class="aside"><h2>Move sizes on trees</h2><p>The two most common moves on tree topology are the Nearest Neighbor Interchange (NNI) move and the Subtree Pruning and Regrafting (SPR) move. The NNI move rearanges the connectivity between four subtrees while SPR moves prune a subtree and regraft it on another part of the tree <a href="#fig_moves"></a>. Since these moves define specific opertations on the phylogeny, they do not have arguments to adjust the size of the moves. Instead, it may be useful to think of the moves themselves as ‘big’ or ‘small’ based on their inherent qualities.
+One way to assess the size of these topology moves is to consider how many different topologies we can obtain by performing one move. This often speaks to how interconnected tree topologies are given a specific move. If many topologies are connected by a move then we can think of this as being able to move from one topology to another in a fewer number of moves and would be considered a large move. In this sense we would consider NNI moves to be considerably smaller than SPR moves; NNI moves on a given internal branch has only 2 other alternative topologies while an SPR move on a given internal branch can be pruned and regrafted to any other branch on the phylogeny, making it connected to more topologies.</p>
+
+<p>The other way we may want to evaluate the relative size of moves is by considering the diameter of the tree space of a move <a class="citation" href="#Kathrine2016">(St. John 2016)</a>. The diameter of a tree space for a given move is defined the maximal distance between any two topologies. Although it is NP-hard to compute the diameter of a tree space, the space of SPR moves has a tighter upper bound on the diameter than NNI moves. This means that generally we can reach trees in fewer moves with the “Bigger” SPR moves than the “Smaller” NNI moves.</p>
+
+<figure id="fig_moves"><p><img src="figures/moves.png" /></p>
+<figcaption>Two common tree topology moves. Left NNI. Right SPR.</figcaption>
+</figure>
+</blockquote>
+
+<h4 class="subsubsection" id="tuning-moves">Tuning Moves</h4>
+<hr class="subsubsection" />
+
+<p>Luckily, for moves with an adjustable size, we don’t need trial and error adjusting of that size argument to achieve a certain acceptance rate. We can tune our moves to achieve a certain acceptance ratio.
+ When creating a move that has an adjustable size, we can set the <code class="language-plaintext highlighter-rouge">tune</code> argument to <code class="language-plaintext highlighter-rouge">TRUE</code>, this will adjust the size of the move so the acceptance rate approaches the value given in <code class="language-plaintext highlighter-rouge">tuneTarget</code>.
+ Before running our MCMC analysis, we can tune our parameters by using the <code class="language-plaintext highlighter-rouge">tuningInterval</code> argument in  either the <code class="language-plaintext highlighter-rouge">burnin</code> or <code class="language-plaintext highlighter-rouge">run</code> methods on an <code class="language-plaintext highlighter-rouge">mcmc</code> object (see <a href="#fig_tuned"></a>). This means that every <code class="language-plaintext highlighter-rouge">tuninginterval</code> MCMC generations, it will try to adjust the size of the move to reach the desired tuning interval.</p>
+
+<figure id="fig_tuned"><p><img src="figures/mcmc_tuned.png" /></p>
+<figcaption>Output of <code class="language-plaintext highlighter-rouge">operatorSummary</code> after tuning the moves for 100,000 generations. The moves in this image started with the same size values as <a href="#fig_operatorSummary"></a>.  We can notice that the value <code class="language-plaintext highlighter-rouge">delta</code> has is different from when it started and the acceptance rate for each move approaches 0.44 which is the default tuning target</figcaption>
+</figure>
+
+<h3 class="subsection" id="creating-a-move-scheme">Creating a Move Scheme</h3>
+<hr class="subsection" />
+
+<p>After we’ve chosen the moves we want, we need to specify how often those moves get called and how they are scheduled. First, for any function that creates a move, there is an argument called <code class="language-plaintext highlighter-rouge">weight</code>. Although the specific details vary between which move scheduler is used, the weights correspond to how often the move gets used.</p>
+
+<p>Given finite resources, we may want to upweight or downweight certain nodes to focus our resources. Analyses may contain nuisance parameters, or parameters we aren’t particularly interested in estimating; we could downweight these to spend more time ensuring our parameters of interest are well sampled. Additionally, we may want to upweight parameters that are complex or difficult to sample, this is often done for moves regarding the tree topology. We know that the number tree topologies grow for a given number of taxa, specifically for $n$ taxa there are $(2n-3)!!$ different rooted topologies (<strong>NOTE:</strong> we are using the <a href="https://en.wikipedia.org/wiki/Double_factorial">double factorial function</a>, not the factorial function used twice). Since the space of tree topologies grows dramatically with the number of taxa, we may want to upweight moves on the tree topology accordingly. In practice we usually set the weight for topology moves to be the number of tips on the tree, though even this is a conservative scaling for the weight relative to the size of tree topology space</p>
+
+<p>We can set up a move schedule that determines the order of moves with the <code class="language-plaintext highlighter-rouge">moveschedule</code> argument of the <code class="language-plaintext highlighter-rouge">mcmc</code> function. There are 3 different options for <code class="language-plaintext highlighter-rouge">moveschedule</code>:</p>
+
+<ul>
+  <li><strong>sequential</strong>: Each MCMC cycle moves get performed in the order that they are entered into the move vector. We perform each move a number of times that corresponds to the weight of that move. For example, if we specify a weight of 4.35 on a move then that move will be performed 4 times garuanteed and then there is 0.35 probability of the move being performed a 5th time. After that, the scheduler moves on to the next move in the moves vector</li>
+  <li><strong>single</strong>: This scheduler only considers one move each MCMC cycle. A move gets picked at random based on the weights. Moves with higher weights relative to the other moves in the move vector will be picked more often.</li>
+  <li><strong>random</strong>: This scheduler is similar to the single move scheduler except that multiple moves get picked at random each cycle. The number of moves each cycle is the sum of the wieghts for all the moves in the move vector.</li>
+</ul>
+
+<!--<h2 class="section" id="Clade Constraints">Clade Constraints</h2><hr class="section"> -->
+
+<!--<h2 class="section" id="Checkpointing">Checkpointing</h2><hr class="section"> -->
+
+<h2 class="section" id="Multiple Independent Runs">Multiple Independent Runs</h2>
+<hr class="section" />
+
+<p>There are a variety of scenarios where it may be helpful to run an analysis multiple times independently. First, one way of assessing whether our MCMC converged on the posterior distribution is by looking at multiple independent runs and asking how similar they are to one another. The <a href="/tutorials/convergence/">Convergence Assessment</a> tutorial, in particular, makes use of multiple runs.  It can also be helpful to have multiple runs for the purposes of good mixing and reducing autocorrelation between samples.</p>
+
+<p>We can run multiple analyses by adjusting the <code class="language-plaintext highlighter-rouge">nruns</code> argument of an <code class="language-plaintext highlighter-rouge">mcmc()</code> function. 
+If we only adjust the <code class="language-plaintext highlighter-rouge">nruns</code> argument and perform an analysis with the <code class="language-plaintext highlighter-rouge">run()</code> method then will notice our MCMC generates <strong>multiple</strong> output log files. We can see that each run in our multiple run log outputs get saved in the style <code class="language-plaintext highlighter-rouge">MCMCoutput_run_x.log</code>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>###We assume we already created these objects from the Binomial MCMC tutorial
+my_model 	##The model
+my_moves 	##The vector of moves for the parameters we are inferrring
+my_monitors ##The vector of monitors used to record our MCMC analysis
+
+##create an mcmc object
+my_mcmc = mcmc(my_model, my_moves, my_monitors,nruns=2)
+</code></pre></div></div>
+
+<figure id="fig_tuned"><p><img src="figures/two_runs.png" /></p>
+<figcaption>Files generated from running the code above with multiple runs.</figcaption>
+</figure>
+
+<p>Alternatively, if we want to save our MCMC outputs in one file, we can change the <code class="language-plaintext highlighter-rouge">combine</code> argument in the <code class="language-plaintext highlighter-rouge">mcmc()</code> function. If the <code class="language-plaintext highlighter-rouge">combine</code> argument is used then each run will save in the same file but will generate an additional column titled <code class="language-plaintext highlighter-rouge">Replicate_ID</code> that denotes which run created each observation. <code class="language-plaintext highlighter-rouge">combine</code> can take the values <code class="language-plaintext highlighter-rouge">"sequential"</code> or <code class="language-plaintext highlighter-rouge">"mixed"</code>.</p>
+
+<h2 class="section" id="MCMCMC">Metropolis Coupled MCMC</h2>
+<hr class="section" />
+
+<p>One common concern with Bayesian phylogenetic inference is being entrapped in a local optimum. Posterior distributions can be multimodal and efficiently moving between optima during MCMC is a difficult task, even with a good proposal scheme.
+Metropolis Coupled Markov Chain Monte Carlo is a common technique in phylogenetic analysis to efficiently move around a parameter space with local optima (<a class="citation" href="#Altekar2004">(Altekar et al. 2004)</a>). Briefly, this technique has mutiple MCMC chains running in parallel, with one ‘cold’ chain that records operates as a normal MCMC,recording parameter values at prespecified intervals, and multiple ‘hot’ chains that effectively have a flattened posterior distribution. 
+These hot chains are less likely to reject move proposals, making it easier for them to move into low posterior density valleys to move between local optima. Periodically, the chains will swap their ‘heating’ and current parameter values. 
+The idea here is that the ‘hot’ chains can efficiently move around large swathes of parameter space and ocassionally swap values with the ‘cold’ chain as it comes across different optima. 
+Formally, a heating value refers to the posterior distribution being raised to some power $\beta$, where lower values of $\beta$ effectively flatten out the posterior distribution.</p>
+
+<p>We can use the <code class="language-plaintext highlighter-rouge">mcmcmc()</code> function in RevBayes to perform Metropolis Coupled Markov Chain Monte Carlo. 
+This function is very similar to the <code class="language-plaintext highlighter-rouge">mcmc()</code> function in terms of arguments and associated methods but contains a few extra arguments that focus around the multiple parallel chains.
+Those additional arguments are:</p>
+
+<ul>
+  <li><strong>nchains</strong>: The number of chains to run in parallel.</li>
+  <li>
+    <p><strong>swapInterval</strong>: This is how often chains attempt to swap their heats</p>
+  </li>
+  <li><strong>deltaHeat</strong>: a numeric that specifies the heat of each chain. If there are $i$ chains then the heat of the $i^{th}$ chain is denoted as $\frac{1}{1+deltaHeat*i}$. Here we can see that the heat $\beta$ decreases with each subsequent chain, making them ‘hotter’.</li>
+  <li><strong>heats</strong>: A vector that explicity defines the heat of each chain. The first element must be $1.0$ (it is the cold chain) and the length of the vector must match <code class="language-plaintext highlighter-rouge">nchains</code>.</li>
+</ul>
+
+<p><strong>NOTE:</strong> Only one of <code class="language-plaintext highlighter-rouge">deltaHeat</code> or <code class="language-plaintext highlighter-rouge">heats</code> are required for <code class="language-plaintext highlighter-rouge">mcmcmc()</code>. These arguments are used to specify the heat $\beta$ of each chain. 
+For example, for a chain with <code class="language-plaintext highlighter-rouge">nchains=4</code>, setting either <code class="language-plaintext highlighter-rouge">deltaHeat=0.5</code> or <code class="language-plaintext highlighter-rouge">heats=[1, 2/3, 1/2, 2/5]</code> would be equivalent.<br />
+After making our <code class="language-plaintext highlighter-rouge">mcmcmc</code> object, we can use the <code class="language-plaintext highlighter-rouge">operatorSummary()</code> method to inspect the heats of each chain (<a href="#fig_heats"></a>).</p>
+
+<figure id="fig_heats"><p><img src="figures/chain_heats.png" /></p>
+<figcaption>Partial output of the <code class="language-plaintext highlighter-rouge">operatorSummary()</code> method of <code class="language-plaintext highlighter-rouge">mcmcmc</code> objects. We can see each chain with their respective heats and proposed moves.</figcaption>
+</figure>
+
+<ul>
+  <li><strong>tuneHeat</strong>: A boolean specifying whether the heats $\beta$’s should be tuned during burnin.</li>
+  <li><strong>tuneHeatTarget</strong>: The acceptance probability of adjacent chain swaps targeted by heats auto-tuning.</li>
+</ul>
+
+<p><strong>NOTE:</strong> Much like how moves can be tuned to achieve ideal acceptance proportions, the heats can be adjusted so swapping between chains at some ideal proportion.
+Specifically, if <code class="language-plaintext highlighter-rouge">tuneHeat</code> is <code class="language-plaintext highlighter-rouge">TRUE</code> then during burnin the heats will tune such that the proportion of successfully swapping the heats between any two adjacent chains is <code class="language-plaintext highlighter-rouge">tuneHeatTarget</code>. we can use the <code class="language-plaintext highlighter-rouge">operatorSummary()</code> method on the <code class="language-plaintext highlighter-rouge">mcmcmc</code> (<a href="#fig_swaps"></a>).</p>
+
+<figure id="fig_swaps"><p><img src="figures/chain_swaps.png" /></p>
+<figcaption>Partial output of the <code class="language-plaintext highlighter-rouge">operatorSummary()</code> method of <code class="language-plaintext highlighter-rouge">mcmcmc</code> objects. Each potential chain swap is listed along with the number of times each type of swap was proposed and accepted.</figcaption>
+</figure>
+
+<ul>
+  <li><strong>SwapMethod</strong>: The method at which chain swaps are proposed. Valid options are:
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">"neighbor"</code>: Swaps for $i^th$ chain will be proposed to the $i\pm 1$ chains.</li>
+      <li><code class="language-plaintext highlighter-rouge">"random"</code>: Swaps between chains will be proposed at random</li>
+      <li><code class="language-plaintext highlighter-rouge">"both"</code>: both <code class="language-plaintext highlighter-rouge">"neighbor"</code> and <code class="language-plaintext highlighter-rouge">"random"</code> type chain swaps will be proposed.</li>
+    </ul>
+  </li>
+  <li><strong>swapInterval2</strong>: This argument is only used if <code class="language-plaintext highlighter-rouge">swapMethod="both"</code>. In that case then <code class="language-plaintext highlighter-rouge">swapInterval</code> denotes how often chains attempt swaps using the <code class="language-plaintext highlighter-rouge">neighbor</code> method while <code class="language-plaintext highlighter-rouge">swapInterval2</code> denotes how often chains attempt swaps using the <code class="language-plaintext highlighter-rouge">random</code> method. If no argument is provided for <code class="language-plaintext highlighter-rouge">swapInterval2</code> then both methods will use the same interval provided in <code class="language-plaintext highlighter-rouge">swapInterval</code>.</li>
+  <li><strong>swapMode</strong>: A string of either <code class="language-plaintext highlighter-rouge">"single"</code> or <code class="language-plaintext highlighter-rouge">"multiple"</code>, that denotes how many chain swaps are proposed at each interval. If <code class="language-plaintext highlighter-rouge">swapMode="multiple"</code> then $(nchains-1)$ swaps will be proposed for <code class="language-plaintext highlighter-rouge">nieghbor</code> type chain swaps and ${nchains \choose 2}$ swaps for <code class="language-plaintext highlighter-rouge">random</code> type chain swaps.</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>###We assume we already created these objects
+my_model 	##The model
+my_moves 	##The vector of moves for the parameters we are inferrring
+my_monitors ##The vector of monitors used to record our MCMC analysis
+
+# Create an mcmcmc object
+myMcmcmcObject = mcmcmc( mymodel, monitors, moves, nchains=4, deltaHeat=5)
+
+# print the summary of the operators (now tuned)
+##In particular take note of the chain heats before tuning
+myMcmcmcObject.operatorSummary()
+
+
+# Tune heats
+myMcmcmcObject.burnin( generations = 40000, tuningInterval = 100)
+
+# print the summary of the operators (now tuned). heats should have changed
+myMcmcmcObject.operatorSummary()
+
+
+</code></pre></div></div>
+
+<h2 class="section" id="Sampling under the Prior">MCMC under the Prior</h2>
+<hr class="section" />
+
+<p>Before we perform our phylogenetic analysis using our data, we may first want to run the MCMC under the prior. Running our analysis under the prior ignores all of our data and likelihood computations associated with our data and uses prior distributions to copmute the sampled posterior. Since we are not performing any likelihood calculations the MCMC should sample relatively quickly, making this a good way to assess the efficiency of our move scheme. This can also be a good way to ensure the model was set up correctly and gauge how long we will need to run our MCMC. As a result of not using any data when running an analysis under the prior, our sampled posterior should match the distributions we used for our prior beliefs. When running an analysis in this way, if our posterior looks nothing like our prior we can either say that we haven’t ran the analysis long enough or the model may be set up incorrectly.</p>
+
+<p>Assuming that we’ve already set up our model, moves, and monitors in RevBayes, we can run an analysis under by setting the <code class="language-plaintext highlighter-rouge">underPrior</code> argument to <code class="language-plaintext highlighter-rouge">TRUE</code> when using either the <code class="language-plaintext highlighter-rouge">run</code> or <code class="language-plaintext highlighter-rouge">burnin</code> methods on an <code class="language-plaintext highlighter-rouge">mcmc</code> object:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>###We assume we already created these objects
+my_model 	##The model
+my_moves 	##The vector of moves for the parameters we are inferrring
+my_monitors ##The vector of monitors used to record our MCMC analysis
+
+##create an mcmc object
+my_mcmc = mcmc(my_model, my_moves, my_monitors) 
+
+##Perform an analysis under the prior
+my_mcmc.run(generations = 10000, underPrior=TRUE)
+</code></pre></div></div>
+
+
+<ol class="bibliography"><li><span id="Altekar2004">Altekar G., Dwarkadas S., Huelsenbeck J.P., Ronquist F. 2004. Parallel metropolis coupled Markov chain Monte Carlo for Bayesian phylogenetic inference. Bioinformatics. 20:407–415.</span>
+
+</li>
+<li><span id="Roberts1997">Roberts G.O., Gelman A., Gilks W.R. 1997. Weak convergence and optimal scaling of random walk Metropolis algorithms. The annals of applied probability. 7:110–120.</span>
+
+</li>
+<li><span id="Roberts2001">Roberts G.O., Rosenthal J.S. 2001. Optimal scaling for various Metropolis-Hastings algorithms. Statistical science. 16:351–367.</span>
+
+</li>
+<li><span id="Rosenthal2011">Rosenthal J.S. 2011. Optimal proposal distributions and adaptive MCMC. Handbook of Markov Chain Monte Carlo. 4.</span>
+
+</li>
+<li><span id="Kathrine2016">St. John K. 2016. Review Paper: The Shape of Phylogenetic Treespace. Systematic Biology. 66:e83–e94.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syw025">10.1093/sysbio/syw025</a>
+
+</li></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+    });
+    MathJax.Hub.Queue(function () {
+      $(".aside").each(function() {
+          $("div .MathJax", this).hide();
+      });
+    });
+</script>
+<script src="/assets/js/base.js"></script>
+
+  </body>
+</html>
