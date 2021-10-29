@@ -94,8 +94,6 @@ More in depth tutorials for most specific models in RevBayes can be found on  th
 
 <p>Additionally, if you ever want to learn more about a specific function in RevBayes, you can either look at the <a href="/documentation/">Documentation</a> page on the website or type <code class="language-plaintext highlighter-rouge">?</code> before any function in the RevBayes terminal (e.g., <code class="language-plaintext highlighter-rouge">?sqrt()</code>) to get information about the function purpose, arguments, and output.</p>
 
-<hr />
-
 <h2 class="section" id="moves">Moves</h2>
 <hr class="section" />
 
@@ -110,7 +108,7 @@ In this section we will discuss how to identify inefficient moves and poor mixin
 <h4 class="subsubsection" id="choosing-the-right-type-of-move">Choosing the Right Type of Move</h4>
 <hr class="subsubsection" />
 
-<p>For most types of parameters there are a plethora moves implemented in RevBayes. When choosing moves it is important to consider the size and scale of the move relative to the parameter space that they operate upon. For example, let us consider the binomial coin-flipping scenario posed in <a href="/tutorials/mcmc/binomial.html">Introduction to MCMC using RevBayes</a> tutorial where we are trying to estimate the probability of a coin landing on heads, $p$. In this case we know that the parameter $p$ is bounded between $0$ and $1$ so we would want to consider moves that efficiently move around this space. The move <code class="language-plaintext highlighter-rouge">mvScale</code> is a valid option for our parameter $p$ but it won’t move around the space very effectively as this move multiplies the current value by some scalar which can often propose values on a different order of magnitude. Alternatively, we could chose <code class="language-plaintext highlighter-rouge">mvSlide</code> to propose new values within some window from the current value; this move is more better for proposing values between 0 and 1. Since moves often act in drastically different ways and on various scales, it can be useful to use multiple different types of moves on the same parameter to search space efficiently.</p>
+<p>For most types of parameters there are a plethora moves implemented in RevBayes. When choosing moves it is important to consider the size and scale of the move relative to the parameter space that they operate upon. For example, let us consider the binomial coin-flipping scenario posed in <a href="/tutorials/mcmc/binomial.html">Introduction to MCMC using RevBayes</a> tutorial where we are trying to estimate the probability of a coin landing on heads, $p$. In this case we know that the parameter $p$ is bounded between 0 and 1 so we would want to consider moves that efficiently move around this space. The move <code class="language-plaintext highlighter-rouge">mvScale</code> is a valid option for our parameter $p$ but it won’t move around the space very effectively as this move multiplies the current value by some scalar which can often propose values on a different order of magnitude. Alternatively, we could chose <code class="language-plaintext highlighter-rouge">mvSlide</code> to propose new values within some window from the current value; this move is more better for proposing values between 0 and 1. Since moves often act in drastically different ways and on various scales, it can be useful to use multiple different types of moves on the same parameter to search space efficiently.</p>
 
 <h4 class="subsubsection" id="the-size-of-moves">The Size of Moves</h4>
 <hr class="subsubsection" />
@@ -129,19 +127,17 @@ In this section we will discuss how to identify inefficient moves and poor mixin
 <figcaption>Output of the <code class="language-plaintext highlighter-rouge">operatorSummary</code> method of an <code class="language-plaintext highlighter-rouge">mcmc</code> object after performing an analysis. On the leftmost column we can see each move and the node that it operates on. We can also see the weight of each move, how often it was proposed, and how often it was accepted. On the far right we can see the tuning argument for each move if it has one, in the case of <code class="language-plaintext highlighter-rouge">mvSlide</code> this is <code class="language-plaintext highlighter-rouge">delta</code></figcaption>
 </figure>
 
-<p>We can see that almost every proposal was accepted for the move with the smallest window size while the largest move rejected most proposals. In general we want a move that isn’t too small such that it moves slowly but isn’t so large that it rejects most proposals, this is known as the Goldilock’s Principle. <a class="citation" href="#Roberts1997">Roberts et al. (1997)</a> found an optimal acceptance ratio of $0.234$ for a multivariate target distributions with i.i.d. components. Although being able to break the posterior into i.i.d. components is unrealistic for phylogenetic analyses, numerical studies have shown acceptance rates to be robust to this assumption and rates between $0.1$ and $0.6$ are still reasonably efficient <a class="citation" href="#Roberts2001">(Roberts and Rosenthal 2001; Rosenthal 2011)</a>.</p>
+<p>We can see that almost every proposal was accepted for the move with the smallest window size while the largest move rejected most proposals. In general we want a move that isn’t too small such that it moves slowly but isn’t so large that it rejects most proposals, this is known as the Goldilock’s Principle. <a class="citation" href="#Roberts1997">Roberts et al. (1997)</a> found an optimal acceptance ratio of 0.234 for a multivariate target distributions with i.i.d. components. Being able to break the posterior into i.i.d. components is unrealistic for phylogenetic analyses, numerical studies have shown acceptance rates to be robust to this assumption and rates between 0.1 and 0.6 are still reasonably efficient <a class="citation" href="#Roberts2001">(Roberts and Rosenthal 2001; Rosenthal 2011)</a>.</p>
 
 <blockquote class="aside"><h2>Move sizes on trees</h2><p>The two most common moves on tree topology are the Nearest Neighbor Interchange (NNI) move and the Subtree Pruning and Regrafting (SPR) move. The NNI move rearanges the connectivity between four subtrees while SPR moves prune a subtree and regraft it on another part of the tree <a href="#fig_moves"></a>. Since these moves define specific opertations on the phylogeny, they do not have arguments to adjust the size of the moves. Instead, it may be useful to think of the moves themselves as ‘big’ or ‘small’ based on their inherent qualities.
 One way to assess the size of these topology moves is to consider how many different topologies we can obtain by performing one move. This often speaks to how interconnected tree topologies are given a specific move. If many topologies are connected by a move then we can think of this as being able to move from one topology to another in a fewer number of moves and would be considered a large move. In this sense we would consider NNI moves to be considerably smaller than SPR moves; NNI moves on a given internal branch has only 2 other alternative topologies while an SPR move on a given internal branch can be pruned and regrafted to any other branch on the phylogeny, making it connected to more topologies.</p>
 
-<p>The other way we may want to evaluate the relative size of moves is by considering the diameter of the tree space of a move <a class="citation" href="#Kathrine2016">(St. John 2016)</a>. The diameter of a tree space for a given move is defined the maximal distance between any two topologies. Although it is NP-hard to compute the diameter of a tree space, the space of SPR moves has a tighter upper bound on the diameter than NNI moves. This means that generally we can reach trees in fewer moves with the “bigger” SPR moves than the “smaller” NNI moves.</p>
+<p>The other way we may want to evaluate the relative size of moves is by considering the diameter of the tree space of a move <a class="citation" href="#Kathrine2016">(St. John 2016)</a>. The diameter of a tree space for a given move is defined the maximal distance between any two topologies. Although it is NP-hard to compute the diameter of a tree space, the space of SPR moves has a tighter upper bound on the diameter than NNI moves. This means that generally we can reach trees in fewer moves with the “Bigger” SPR moves than the “Smaller” NNI moves.</p>
 
 <figure id="fig_moves"><p><img src="figures/moves.png" /></p>
 <figcaption>Two common tree topology moves. Left NNI. Right SPR.</figcaption>
 </figure>
 </blockquote>
-
-<hr />
 
 <h4 class="subsubsection" id="tuning-moves">Tuning Moves</h4>
 <hr class="subsubsection" />
@@ -151,23 +147,20 @@ One way to assess the size of these topology moves is to consider how many diffe
  Before running our MCMC analysis, we can tune our parameters by using the <code class="language-plaintext highlighter-rouge">tuningInterval</code> argument in  either the <code class="language-plaintext highlighter-rouge">burnin</code> or <code class="language-plaintext highlighter-rouge">run</code> methods on an <code class="language-plaintext highlighter-rouge">mcmc</code> object (see <a href="#fig_tuned"></a>). This means that every <code class="language-plaintext highlighter-rouge">tuninginterval</code> MCMC generations, it will try to adjust the size of the move to reach the desired tuning interval.</p>
 
 <figure id="fig_tuned"><p><img src="figures/mcmc_tuned.png" /></p>
-<figcaption>Output of <code class="language-plaintext highlighter-rouge">operatorSummary</code> after tuning the moves for $100,000$ generations. The moves in this image started with the same size values as <a href="#fig_operatorSummary"></a>.  We can notice that the value <code class="language-plaintext highlighter-rouge">delta</code> has is different from when it started and the acceptance rate for each move approaches 0.44 which is the default tuning target</figcaption>
+<figcaption>Output of <code class="language-plaintext highlighter-rouge">operatorSummary</code> after tuning the moves for 100,000 generations. The moves in this image started with the same size values as <a href="#fig_operatorSummary"></a>.  We can notice that the value <code class="language-plaintext highlighter-rouge">delta</code> has is different from when it started and the acceptance rate for each move approaches 0.44 which is the default tuning target</figcaption>
 </figure>
 
 <h3 class="subsection" id="creating-a-move-scheme">Creating a Move Scheme</h3>
 <hr class="subsection" />
 
-<p>After we’ve chosen the moves we want, we need to specify how often those moves get called and how they are scheduled. First, for any function that creates a move, there is an argument called <code class="language-plaintext highlighter-rouge">weight</code>. 
-Although the specific details vary between which move scheduler is used, the weights correspond to how often the move gets used.</p>
+<p>After we’ve chosen the moves we want, we need to specify how often those moves get called and how they are scheduled. First, for any function that creates a move, there is an argument called <code class="language-plaintext highlighter-rouge">weight</code>. Although the specific details vary between which move scheduler is used, the weights correspond to how often the move gets used.</p>
 
-<p>Given finite resources, we may want to upweight or downweight certain nodes to focus our resources. Analyses may contain nuisance parameters, or parameters we aren’t particularly interested in estimating; we could downweight these to spend more time ensuring our parameters of interest are well sampled. Additionally, we may want to upweight parameters that are complex or difficult to sample, this is often done for moves regarding the tree topology. We know that the number tree topologies grow for a given number of taxa, specifically for $n$ taxa there are $(2n-3)!!$ different rooted topologies (<strong>NOTE:</strong> we are using the <a href="https://en.wikipedia.org/wiki/Double_factorial">double factorial function</a>, not the factorial function used twice).
- Since the space of tree topologies grows dramatically with the number of taxa, we may want to upweight moves on the tree topology accordingly.
- In practice we usually set the weight for topology moves to be proportional to the number of tips on the tree, though even this is a conservative scaling for the weight relative to the size of tree topology space</p>
+<p>Given finite resources, we may want to upweight or downweight certain nodes to focus our resources. Analyses may contain nuisance parameters, or parameters we aren’t particularly interested in estimating; we could downweight these to spend more time ensuring our parameters of interest are well sampled. Additionally, we may want to upweight parameters that are complex or difficult to sample, this is often done for moves regarding the tree topology. We know that the number tree topologies grow for a given number of taxa, specifically for $n$ taxa there are $(2n-3)!!$ different rooted topologies (<strong>NOTE:</strong> we are using the <a href="https://en.wikipedia.org/wiki/Double_factorial">double factorial function</a>, not the factorial function used twice). Since the space of tree topologies grows dramatically with the number of taxa, we may want to upweight moves on the tree topology accordingly. In practice we usually set the weight for topology moves to be the number of tips on the tree, though even this is a conservative scaling for the weight relative to the size of tree topology space</p>
 
-<p>We can set up a move schedule that determines the order of moves with the <code class="language-plaintext highlighter-rouge">moveschedule</code> argument of the <code class="language-plaintext highlighter-rouge">mcmc</code> function. There are $3$ different options for <code class="language-plaintext highlighter-rouge">moveschedule</code>:</p>
+<p>We can set up a move schedule that determines the order of moves with the <code class="language-plaintext highlighter-rouge">moveschedule</code> argument of the <code class="language-plaintext highlighter-rouge">mcmc</code> function. There are 3 different options for <code class="language-plaintext highlighter-rouge">moveschedule</code>:</p>
 
 <ul>
-  <li><strong>sequential</strong>: Each MCMC cycle moves get performed in the order that they are entered into the move vector. We perform each move a number of times that corresponds to the weight of that move. For example, if we specify a weight of $4.35$ on a move then that move will be performed $4$ times garuanteed and then there is $0.35$ probability of the move being performed a $5^{th}$ time. After that, the scheduler moves on to the next move in the moves vector</li>
+  <li><strong>sequential</strong>: Each MCMC cycle moves get performed in the order that they are entered into the move vector. We perform each move a number of times that corresponds to the weight of that move. For example, if we specify a weight of 4.35 on a move then that move will be performed 4 times garuanteed and then there is 0.35 probability of the move being performed a 5th time. After that, the scheduler moves on to the next move in the moves vector</li>
   <li><strong>single</strong>: This scheduler only considers one move each MCMC cycle. A move gets picked at random based on the weights. Moves with higher weights relative to the other moves in the move vector will be picked more often.</li>
   <li><strong>random</strong>: This scheduler is similar to the single move scheduler except that multiple moves get picked at random each cycle. The number of moves each cycle is the sum of the wieghts for all the moves in the move vector.</li>
 </ul>
@@ -175,8 +168,6 @@ Although the specific details vary between which move scheduler is used, the wei
 <!--<h2 class="section" id="Clade Constraints">Clade Constraints</h2><hr class="section"> -->
 
 <!--<h2 class="section" id="Checkpointing">Checkpointing</h2><hr class="section"> -->
-
-<hr />
 
 <h2 class="section" id="Multiple Independent Runs">Multiple Independent Runs</h2>
 <hr class="section" />
@@ -201,13 +192,11 @@ my_mcmc = mcmc(my_model, my_moves, my_monitors,nruns=2)
 
 <p>Alternatively, if we want to save our MCMC outputs in one file, we can change the <code class="language-plaintext highlighter-rouge">combine</code> argument in the <code class="language-plaintext highlighter-rouge">mcmc()</code> function. If the <code class="language-plaintext highlighter-rouge">combine</code> argument is used then each run will save in the same file but will generate an additional column titled <code class="language-plaintext highlighter-rouge">Replicate_ID</code> that denotes which run created each observation. <code class="language-plaintext highlighter-rouge">combine</code> can take the values <code class="language-plaintext highlighter-rouge">"sequential"</code> or <code class="language-plaintext highlighter-rouge">"mixed"</code>.</p>
 
-<hr />
-
 <h2 class="section" id="MCMCMC">Metropolis Coupled MCMC</h2>
 <hr class="section" />
 
 <p>One common concern with Bayesian phylogenetic inference is being entrapped in a local optimum. Posterior distributions can be multimodal and efficiently moving between optima during MCMC is a difficult task, even with a good proposal scheme.
-Metropolis Coupled Markov Chain Monte Carlo is a common technique in phylogenetic analysis to efficiently move around a parameter space with local optima <a class="citation" href="#Altekar2004">(Altekar et al. 2004)</a>. Briefly, this technique has mutiple MCMC chains running in parallel, with one ‘cold’ chain that records operates as a normal MCMC,recording parameter values at prespecified intervals, and multiple ‘hot’ chains that effectively have a flattened posterior distribution. 
+Metropolis Coupled Markov Chain Monte Carlo is a common technique in phylogenetic analysis to efficiently move around a parameter space with local optima (<a class="citation" href="#Altekar2004">(Altekar et al. 2004)</a>). Briefly, this technique has mutiple MCMC chains running in parallel, with one ‘cold’ chain that records operates as a normal MCMC,recording parameter values at prespecified intervals, and multiple ‘hot’ chains that effectively have a flattened posterior distribution. 
 These hot chains are less likely to reject move proposals, making it easier for them to move into low posterior density valleys to move between local optima. Periodically, the chains will swap their ‘heating’ and current parameter values. 
 The idea here is that the ‘hot’ chains can efficiently move around large swathes of parameter space and ocassionally swap values with the ‘cold’ chain as it comes across different optima. 
 Formally, a heating value refers to the posterior distribution being raised to some power $\beta$, where lower values of $\beta$ effectively flatten out the posterior distribution.</p>
@@ -248,7 +237,7 @@ Specifically, if <code class="language-plaintext highlighter-rouge">tuneHeat</co
 <ul>
   <li><strong>SwapMethod</strong>: The method at which chain swaps are proposed. Valid options are:
     <ul>
-      <li><code class="language-plaintext highlighter-rouge">"neighbor"</code>: Swaps for $i^{th}$ chain will be proposed to the $i\pm 1$ chains.</li>
+      <li><code class="language-plaintext highlighter-rouge">"neighbor"</code>: Swaps for $i^th$ chain will be proposed to the $i\pm 1$ chains.</li>
       <li><code class="language-plaintext highlighter-rouge">"random"</code>: Swaps between chains will be proposed at random</li>
       <li><code class="language-plaintext highlighter-rouge">"both"</code>: both <code class="language-plaintext highlighter-rouge">"neighbor"</code> and <code class="language-plaintext highlighter-rouge">"random"</code> type chain swaps will be proposed.</li>
     </ul>
@@ -278,8 +267,6 @@ myMcmcmcObject.operatorSummary()
 
 
 </code></pre></div></div>
-
-<hr />
 
 <h2 class="section" id="Sampling under the Prior">MCMC under the Prior</h2>
 <hr class="section" />
