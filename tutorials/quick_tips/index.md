@@ -24,7 +24,8 @@ Additionally, if you ever want to learn more about a specific function in RevBay
 
 {% section Moves  | moves %}
 
-Given infinite time, any MCMC proposal scheme will converge on the posterior distribution. However, since time is finite, we need to carefully consider the moves we chose on parameters to efficiently approximate the sampling distribution. In this section we will discuss how to identify inefficient moves and poor mixing as well as the components of a move scheme that can be modulated to increase MCMC effectiveness. Further convergence diagnostics can be found in the [Convergence Assessment]({% page_url convergence %}) tutorial.
+Given infinite time, any MCMC proposal scheme will converge on the posterior distribution. However, since time is finite, we need to carefully consider the moves we chose on parameters to efficiently approximate the sampling distribution. 
+In this section we will discuss how to identify inefficient moves and poor mixing as well as the components of a move scheme that can be modulated to increase MCMC effectiveness. Further convergence diagnostics can be found in the [Convergence Assessment]({% page_url convergence %}) tutorial.
 
 
 {% subsection Choosing and Optimizing Moves %}
@@ -79,7 +80,9 @@ Two common tree topology moves. Left NNI. Right SPR.
 
 {% subsubsection Tuning Moves %}
 
-Luckily, for moves with an adjustable size, we don't need trial and error adjusting of that size argument to achieve a certain acceptance rate. We can tune our moves to achieve a certain acceptance ratio. When creating a move that has an adjustable size, we can set the `tune` argument to `TRUE`, this will adjust the size of the move so the acceptance rate approaches the value given in `tuneTarget`. Before running our MCMC analysis, we can tune our parameters by using the `tuningInterval` argument in  either the `burnin` or `run` methods on an `mcmc` object (see {% ref fig_tuned %}). This means that every `tuninginterval` MCMC generations, it will try to adjust the size of the move to reach the desired tuning interval.
+Luckily, for moves with an adjustable size, we don't need trial and error adjusting of that size argument to achieve a certain acceptance rate. We can tune our moves to achieve a certain acceptance ratio.
+ When creating a move that has an adjustable size, we can set the `tune` argument to `TRUE`, this will adjust the size of the move so the acceptance rate approaches the value given in `tuneTarget`.
+ Before running our MCMC analysis, we can tune our parameters by using the `tuningInterval` argument in  either the `burnin` or `run` methods on an `mcmc` object (see {% ref fig_tuned %}). This means that every `tuninginterval` MCMC generations, it will try to adjust the size of the move to reach the desired tuning interval.
 
 {% figure fig_tuned %}
 <img src="figures/mcmc_tuned.png"  />
@@ -100,11 +103,36 @@ We can set up a move schedule that determines the order of moves with the `moves
 - **single**: This scheduler only considers one move each MCMC cycle. A move gets picked at random based on the weights. Moves with higher weights relative to the other moves in the move vector will be picked more often.
 - **random**: This scheduler is similar to the single move scheduler except that multiple moves get picked at random each cycle. The number of moves each cycle is the sum of the wieghts for all the moves in the move vector. 
 
-{% section Clade Constraints  | Clade Constraints %}
+<!--{% section Clade Constraints  | Clade Constraints %} -->
 
-{% section Checkpointing  | Checkpointing %}
+<!--{% section Checkpointing  | Checkpointing %} -->
 
 {% section Multiple Independent Runs | Multiple Independent Runs %}
+
+There are a variety of scenarios where it may be helpful to run an analysis multiple times independently. First, one way of assessing whether our MCMC converged on the posterior distribution is by looking at multiple independent runs and asking how similar they are to one another. The [Convergence Assessment]({% page_url convergence %}) tutorial, in particular, makes use of multiple runs.  It can also be helpful to have multiple runs for the purposes of good mixing and reducing autocorrelation between samples.  
+
+We can run multiple analyses by adjusting the `nruns` argument of an `mcmc()` function. 
+If we only adjust the `nruns` argument and perform an analysis with the `run()` method then will notice our MCMC generates **multiple** output log files. We can see that each run in our multiple run log outputs get saved in the style `MCMCoutput_run_x.log`. 
+
+```
+###We assume we already created these objects from the Binomial MCMC tutorial
+my_model 	##The model
+my_moves 	##The vector of moves for the parameters we are inferrring
+my_monitors ##The vector of monitors used to record our MCMC analysis
+
+##create an mcmc object
+my_mcmc = mcmc(my_model, my_moves, my_monitors,nruns=2)
+``` 
+
+{% figure fig_tuned %}
+<img src="figures/two_runs.png"  />
+{% figcaption %}
+Files generated from running the code above with multiple runs. 
+{% endfigcaption %}
+{% endfigure %}
+
+Alternatively, if we want to save our MCMC outputs in one file, we can change the `combine` argument in the `mcmc()` function. If the `combine` argument is used then each run will save in the same file but will generate an additional column titled `Replicate_ID` that denotes which run created each observation. `combine` can take the values `"sequential"` or `"mixed"`.
+
 
 {% section Metropolis Coupled MCMC | MCMCMC %}
 
