@@ -163,7 +163,7 @@ mymodel = model(zeta)
 ### set up the monitors that will output parameter values to file and screen
 monitors.append( mnModel(filename="output/state_dependent_relaxed_mvBM.log", printgen=10) )
 monitors.append( mnScreen(printgen=1000, zeta, num_rate_changes, total_num_changes) )
-
+monitors.append( mnExtNewick(filename="output/relaxed_state_dependent_mvBM.trees", isNodeParameter=TRUE, printgen=10, separator=TAB, tree=tree, state_branch_rate, background_rates, branch_rates) )
 
 
 
@@ -179,6 +179,9 @@ mymcmc = mcmc(mymodel, monitors, moves, nruns=1, combine="mixed")
 mymcmc.burnin(generations=2000, tuningInterval=100)
 mymcmc.run(generations=50000)
 
+## create the annotated tree
+treetrace = readTreeTrace("output/relaxed_state_dependent_mvBM.trees")
+map_tree = mapTree(treetrace,"output/relaxed_state_dependent_mvBM_MAP.tre")
 
 
 ## quit ##

@@ -6,6 +6,7 @@ level: 6
 order: 1.7
 prerequisites:
 - intro
+- intro/revgadgets
 - mcmc
 - cont_traits/cont_trait_intro
 index: true
@@ -15,6 +16,7 @@ include_files:
 - data/trees.nex
 - data/traits.nex
 - scripts/mcmc_OU.Rev
+- scripts/plot_OU.R
 ---
 
 {% section Estimating Evolutionary Optima %}

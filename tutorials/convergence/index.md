@@ -96,8 +96,8 @@ $$ ESS > 625 $$
 
 An ESS of 625 is therefore the default value for the convenience package.
 
-For the KS test, the threshold is the critical value for $\alpha$ = 0.01.
-We are currently still evaluating the choice of $\alpha$ on the power and false-discovery rate to detect failure of convergence.
+For the KS test, the threshold is the critical value for $\alpha$ = 0.01 and the sample size is the calculated threshold for the ESS, 625.
+With these values, the threshold for the KS test is ${D}_{crit}$ = 0.0921.
 
 
 {% subsubsection Split Frequencies %}
@@ -114,7 +114,7 @@ The expected difference in split frequencies for ESS of 100, 200 and 625. The x-
 Instead of the ASDSF we use the ESS of each split.
 We transform each split into a chain of absence and presence values; if the split was present in the i-th tree then we score the i-th value of the chain as a 1 and 0 otherwise. This sequence of absence and presence observations (0s and 1s) allows us to apply standard methods to compute ESS values and thus we can use the same ESS threshold of 625 as for our continuous parameters.
 
-With the ESS threshold for the splits, we can estimate the expected difference in the splits and use this value as a threshold for the split differencies. The expected difference ($ {E}[\Delta^{sf}_{p}] $) between two samples is calculated as the ['mean absolute difference'](https://en.wikipedia.org/wiki/Mean_absolute_difference), with N as the ESS:
+With the ESS threshold for the splits, we can estimate the expected difference in splits frequencies (EDSF) and use the 95% quantile as a threshold for the split differencies. The expected difference ($ {E}[\Delta^{sf}_{p}] $) between two samples is calculated as the ['mean absolute difference'](https://en.wikipedia.org/wiki/Mean_absolute_difference), with N as the ESS:
 
 
 $$ {E}[\Delta^{sf}_{p}] = \sum\limits_{i=0}^N \sum\limits_{j=0}^N \left(|\frac{i}{N} - \frac{j}{N}| \times P_{binom}(i|N,p) \times P_{binom}(j|N,p) \right) $$
@@ -168,11 +168,15 @@ Here is a list of the functions the package uses to assess convergence:
 
 * `meanContParam`: calculates the means of the continuous parameters
 
-* `plotESS.hist`: plots the histogram of the ESS values for the continuous parameters or the splits
+* `plotDiffSplits`: plots the calculated difference in splits frequency
 
-* `plotKS.hist`: plots the histogram of the KS values for the combination of all runs. The MCMC must have at least 2 runs
+* `plotEssContinuous`: plots the histogram of the ESS values for the continuous parameters
 
-* `plotKS.pooled`: plots the histogram of the KS values for the one-on-one comparison of runs. The MCMC must have at least 3 runs
+* `plotEssSplits`: plots the histogram of the ESS values for the splits
+
+* `plotKS`: plots the histogram of the KS values for the combination of all runs. The MCMC must have at least 2 runs
+
+* `plotKSPooled`: plots the histogram of the KS values for the one-on-one comparison of runs. The MCMC must have at least 3 runs
 
 * `printConvergenceDiag`: a S3 method to print the class `convenience.diag`
 
@@ -221,10 +225,6 @@ The output message includes:
 
 * The calculated burn-in
 
-* The splits excluded from the assessment for having frequency above 0.975 or below 0.025 (when applicable)
-
-* The continuous parameters excluded from the assessment for having no variation during the MCMC (when applicable)
-
 * Lowest ESS for the splits and continuous parameters
 
 * Instructions to check further the output:
@@ -241,12 +241,17 @@ The output message includes:
   >    `Difference in frequencies: output$tree_parameters$compare_runs` <br />
 
 
-We can see that `check_bears` has 4 elements: `message`, `converged`, `continuous_parameters` and `tree_parameters`.
+> `To check the full summary message with splits and parameters excluded from the analysis type:` <br />
+  >    `output$message_complete` <br />
+
+
+We can see that `check_bears` has 4 elements: `message`, `message_complete`, `converged`, `continuous_parameters` and `tree_parameters`.
 
 1. `message`: a summary of the convergence assessment;
-2. `converged`: a boolean that has TRUE if the analysis converged and FALSE if it did not converge;
-3. `continuous_parameters`: a list with means, ESS and KS-scores between runs;
-4. `tree_parameters`: a list with frequencies, ESS and split frequencies between runs.
+2. `message_complete`: the summary from message plus: (1) the splits excluded from the assessment for having frequency above 0.975 or below 0.025 (when applicable), (2) the continuous parameters excluded from the assessment for having no variation during the MCMC (when applicable);
+3. `converged`: a boolean that has TRUE if the analysis converged and FALSE if it did not converge;
+4. `continuous_parameters`: a list with means, ESS and KS-scores between runs;
+5. `tree_parameters`: a list with frequencies, ESS and split frequencies between runs.
 
 In case the analysis has failed to converge, another element will be on the output list: `failed` with the parameters that failed the criteria for convergence.
 
@@ -256,59 +261,53 @@ We can generate tables with general information for the continuous parameters th
 
 |        |     means     |     ESS    |
 | :---:  |     :----:    |     :---:  |
-| alpha  |  1.603954589  |  9031.384  |
-| er.1.  |  0.015576521  |  11070.400 |
-| er.2.  |  0.505904352  |  12114.042 |
-| er.3.  |  0.006423004  |  6343.636  |
-| er.4.  |  0.009572443  |  18549.306 |
-| er.5.  |  0.454927376  |  16764.042 |
-| er.6.  |  0.007596305  |  5534.844  |
-| p_inv  |  0.532339279  |  4382.799  |
-| pi.1.  |  0.293497210  |  10027.691 |
-| pi.2.  |  0.301726522  |  12104.489 |
-| pi.3.  |  0.135420687  |  9974.490  |
-| pi.4.  |  0.269355587  |  11021.611 |
-| sr.1.  |  0.216077996  |  10773.049 |
-| sr.2.  |  0.550663747  |  15892.737 |
-| sr.3.  |  1.015625752  |  11885.672 |
-| sr.4.  |  2.217632528  |  3654.626  |
-| TL     |  1.112491969  |  8041.564  |
+| alpha  |  1.603954589  |  8921.945  |
+| er.1.  |  0.015576521  |  10705.048 |
+| er.2.  |  0.505904352  |  11570.794 |
+| er.3.  |  0.006423004  |  5683.824  |
+| er.4.  |  0.009572443  |  18078.730 |
+| er.5.  |  0.454927376  |  15992.299 |
+| er.6.  |  0.007596305  |  4368.023  |
+| p_inv  |  0.532339279  |  3306.411  |
+| pi.1.  |  0.293497210  |  10057.477 |
+| pi.2.  |  0.301726522  |  11016.263 |
+| pi.3.  |  0.135420687  |  9775.079  |
+| pi.4.  |  0.269355587  |  9885.677  |
+| sr.1.  |  0.216077996  |  10275.761 |
+| sr.2.  |  0.550663747  |  16053.336 |
+| sr.3.  |  1.015625752  |  11775.210 |
+| sr.4.  |  2.217632528  |  3842.496  |
+| TL     |  1.112491969  |  7677.455  |
 
 
 > `printTableSplits(check_bears)` <br />
 
 |                                                                                   |     frequencies   |    ESS    |
 | :---                                                                              |     :----:        |    :---:  |
-|Helarctos_malayanus Ursus_americanus                                               |    0.08814119     | 18594.19  |
-|Melursus_ursinus Ursus_arctos Ursus_maritimus                                      |    0.17603240     | 17116.12  |
-|Helarctos_malayanus Melursus_ursinus Ursus_americanus Ursus_thibetanus             |    0.32441756     | 16318.73  |
-|Helarctos_malayanus Ursus_americanus Ursus_arctos Ursus_maritimus Ursus_thibetanus |    0.49535046     | 18692.89  |
-|Ursus_americanus Ursus_thibetanus                                                  |    0.88891111     | 15668.33  |
+|Helarctos_malayanus Ursus_americanus                                               |    0.09           | 17127.93  |
+|Melursus_ursinus Ursus_arctos Ursus_maritimus                                      |    0.18           | 18074.54  |
+|Helarctos_malayanus Melursus_ursinus Ursus_americanus Ursus_thibetanus             |    0.32           | 15526.14  |
+|Helarctos_malayanus Ursus_americanus Ursus_arctos Ursus_maritimus Ursus_thibetanus |    0.50           | 15731.22  |
+|Ursus_americanus Ursus_thibetanus                                                  |    0.89           | 15269.03  |
 
 
 Convenience also provides plot functions to facilitate showing that convergence has been achieved.
 The functions `plotEssContinuous` and `plotEssSplits` plot the histogram of the ESS values for the continuous parameters and  the splits, respectively.
-Typing `plotEssContinuous(check_bears)` and `plotEssSplits(check_bears)` yields these figures:
+The function `plotKS` plots a histogram of the KS values for the continuous parameters.
+And the function `plotDiffSplits` yields a plot for the calculated difference in splits frequency.
+
 
 {% figure plotESS %}
-<img src="figures/plotESS.png" width="800" />
+<img src="figures/results_plots.png" width="800" />
 {% figcaption %}
-Histograms of the calculated ESS values. The left panel shows the ESS values for the continuous parameters and the right panel show the ESS for the splits. Both plots have the ESS ranges on the x-axis and the frequency on the y-axis. The dotted red line represents the threshold for the ESS.
+The plots generated with Convenience for summarizing and visualizing the results from the convergence assessment. The top-left figure shows the histogram of calculated ESS values for the model parameters (continuous parameters). The bottom-left figure shows the histogram of calculated ESS for the splits. In both histograms the grey dotted lines represents the threshold of 625. The bottom-right plot is the histogram of the Kolmogorov-Smirnov (KS) for the model parameters, the dotted grey line represents the threshold for the KS test. The bottom-left figure shows the observed difference is split frequencies in the green dots and the expected difference between split frequencies (EDSF) in the grey curve. For all plots, the grey area shows where the parameters should be for convergence to be achieved.
 {% endfigcaption %}
 {% endfigure %}
 
-We can see that, for both figures, all continuous parameters and splits have an ESS above the threshold. This is what we would have expected for a MCMC that has converged. 
-Another function to summarize the achievment of convergence is the function `plotKS`. It plots a histogram of the KS values for the continuous parameters.
-The plot for the command `plotKS(check_bears)` generates this figure:
+We can see that, for all figures, all continuous parameters and splits have an ESS above the threshold. This is what we would have expected for a MCMC that has converged. 
+The KS histogram shows that all KS values calculated for the continuous parameters are below the threshold. This means that the parameters are drawn from the same distribution for both runs of our analysis. Therefore, if convergence is achieved for a given analysis, the histogram for the KS values should be similiar to this plot.
+The calculated differences in split frequencies fall below the threshold curve in grey. When convergence is not achieved, some dots would be above the threshold curve. 
 
-{% figure checkConvergence_summary %}
-<img src="figures/plotKS.png" width="500" />
-{% figcaption %}
-Histogram of the calculated KS values. The x-axis is the KS values and the y-axis is the frequency. The red dotted line represents the threshold for the KS score.
-{% endfigcaption %}
-{% endfigure %}
-
-In this case, all KS values calculated for the continuous parameters are below the threshold. This means that the parameters are drawn from the same distribution for both runs of our analysis. Therefore, if convergence is achieved for a given analysis, the histogram for the KS values should be similiar to this plot.
 It is also possible to plot the histogram of the KS values for the comparisons one-on-one when the MCMC analysis have more than 2 runs.
 The function for this plot is `plotKS.pooled`. 
 The following figure is an example of this plot.
@@ -319,6 +318,7 @@ The following figure is an example of this plot.
 Histogram of the calculated KS values for the one-on-one comparison between runs. Each color represents a different comparison of runs, as shown in the legend. The x-axis is the KS values and the y-axis is the frequency. The red dotted line represents the threshold for the KS score.
 {% endfigcaption %}
 {% endfigure %}
+
 
 In this example, we observe again that all KS values are below the threshold. Which means that, for this criterion, convergence has been achieved.
 Now that we learned how to use the package and how to interpret the results, let's practice with some exercises.
@@ -368,6 +368,7 @@ We can divide our MCMC that lack convergence by the number of parameters that fa
 
 * One or few parameters failing
 
-For the first case, we should run the MCMC longer to get more samples. In the second case, we should increase the weights on the moves or even add more moves for the specific parameters that failed.
+For the first case, we should adjust the MCMC to be more efficient. This can be done by increasing the weights on the moves of the parameters that failed, using other MCMC algorithms (such as adaptive MCMC or Metropolis-Coupled MCMC), increasing the number of iterations, etc. 
+In the second case, we should increase the weights on the moves or even add more moves for the specific parameters that failed.
 
 

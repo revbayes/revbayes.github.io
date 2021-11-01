@@ -13,7 +13,7 @@
 #######################
 
 ### Select the dataset to analyze
-dataset <- 3
+dataset <- 11
 
 ### Read in the trees
 T <- readTrees("data/trees.nex")[dataset]
@@ -35,7 +35,7 @@ tree <- T
 # Specify the rate model #
 ##########################
 
-sigma2 ~ dnLoguniform(1e-3, 1)
+sigma2 ~ dnLoguniform(1e-5, 1e-2)
 moves.append( mvScale(sigma2, weight=1.0) )
 
 ##########################
@@ -71,7 +71,7 @@ mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
 
 ### run the MCMC ###
 mymcmc.burnin(generations=1000, tuningInterval=100)
-mymcmc.run(generations=50000)
+mymcmc.run(generations=100000)
 
 ## quit ##
 q()

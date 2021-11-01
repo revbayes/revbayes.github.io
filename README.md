@@ -15,7 +15,7 @@ First, you should clone the `source` branch
 After first cloning this repository, you will be on the `source` branch. Then, you should clone the `master` branch into the `_site` directory.
 
 	cd revbayes.github.io
-    git clone -b master https://github.com/revbayes/revbayes.github.io _site
+    git clone -b master git@github.com:revbayes/revbayes.github.io.git _site
 
 In order to build the site you will need `jekyll`, see instructions below to install.
 

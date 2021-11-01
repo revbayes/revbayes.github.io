@@ -4,7 +4,7 @@ subtitle: Setting up XCode, Eclipse, vim
 category: Developer
 order: 2
 ides:
-- clion
+- vscode 
 - eclipse
 - xcode
 - vim

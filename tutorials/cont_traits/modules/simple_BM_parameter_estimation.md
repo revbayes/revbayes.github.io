@@ -25,9 +25,9 @@ In this tutorial, we use the 66 vertebrate phylogenies and (log) body-size datas
 
 {% subsection Read the data %}
 
-We begin by deciding which of the 66 vertebrate datasets to use. Here, we assume we are analyzing the first dataset (_Acanthuridae_), but you should feel free to choose any of the datasets.
+We begin by deciding which of the 66 vertebrate datasets to use. Here, we assume we are analyzing the first dataset (Cetacea), but you should feel free to choose any of the datasets.
 ```
-dataset <- 1
+dataset <- 11
 ```
 
 Now, we read in the (time-calibrated) tree corresponding to our chosen dataset.

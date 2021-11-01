@@ -6,6 +6,7 @@ level: 6
 order: 1.6
 prerequisites:
 - intro
+- intro/revgadgets
 - mcmc
 - cont_traits/cont_trait_intro
 - cont_traits/simple_bm
@@ -18,6 +19,7 @@ include_files:
 - data/haemulidae_trophic_traits.nex
 - scripts/mcmc_multivariate_BM.Rev
 - scripts/mcmc_relaxed_multivariate_BM.Rev
+- scripts/plot_multivariate_BM.R
 - scripts/plot_relaxed_multivariate_BM.R
 ---
 

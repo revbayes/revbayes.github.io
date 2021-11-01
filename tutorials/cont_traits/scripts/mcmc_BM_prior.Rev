@@ -13,7 +13,7 @@
 #######################
 
 ### Select the dataset to analyze
-dataset <- 1
+dataset <- 11
 
 ### Read in the trees
 T <- readTrees("data/trees.nex")[dataset]
@@ -35,14 +35,14 @@ tree <- T
 # Specify the rate model #
 ##########################
 
-sigma ~ dnLoguniform(1e-3, 1)
-moves.append( mvScale(sigma, weight=1.0) )
+sigma2 ~ dnLoguniform(1e-5, 1e-2)
+moves.append( mvScale(sigma2, weight=1.0) )
 
 ##########################
 # Specify the BM process #
 ##########################
 
-X ~ dnPhyloBrownianREML(tree, branchRates=sigma)
+X ~ dnPhyloBrownianREML(tree, branchRates=sigma2^0.5)
 X.clamp(data)
 
 
@@ -51,11 +51,11 @@ X.clamp(data)
 # The Model #
 #############
 
-mymodel = model(sigma)
+mymodel = model(sigma2)
 
 ### set up the monitors that will output parameter values to file and screen
 monitors.append( mnModel(filename="output/simple_BM_prior.log", printgen=10) )
-monitors.append( mnScreen(printgen=1000, sigma) )
+monitors.append( mnScreen(printgen=1000, sigma2) )
 
 
 
@@ -70,7 +70,7 @@ mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
 
 
 ### run the MCMC ###
-mymcmc.run(generations=50000, underPrior=true)
+mymcmc.run(generations=100000, underPrior=true)
 
 ## quit ##
 q()
