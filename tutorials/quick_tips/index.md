@@ -45,7 +45,7 @@ We can qualitatively assess the adequacy of size parameters of moves by using `T
 {% figure fig_trace %}
 <img src="figures/Move_size.png"  />
 {% figcaption %}
-Mixing of the `mvSlide` move on  sampling the probability of flipping heads $p$. The left image depicts the trace when moves are too small. The image in the center depicts moves that are too big. The image on the left depicts moves that are just right.
+Mixing of the `mvSlide` move on  sampling the probability of flipping heads $p$. The left image depicts the trace when moves are too small. The image in the center depicts moves that are too big. The image on the right depicts moves that are just right.
 {% endfigcaption %}
 {% endfigure %}
 
