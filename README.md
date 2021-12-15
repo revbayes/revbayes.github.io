@@ -62,7 +62,7 @@ Now, you should be able to build and serve the static HTML with:
 
 The previous command will cause a full rebuild of the site each time a file is modified. This can sometimes take a long time. You can selectively regenerate only modified files using the `--incremental` option
 
-	bundle exec jekyll serve --incremental
+    bundle exec jekyll serve --incremental
 
 This will reduce regeneration times substantially. However, keep in mind that if you add new files, or modify `_config.yml` or any plugins, you will need to do a non-incremental rebuild.
 
@@ -74,21 +74,19 @@ If you get the error "invalid byte sequence in US-ASCII", this seems to fix it:
 Setting up jekyll on Linux
 ==========================
 
-For Debian/Ubuntu Linux, you can install jekyll as a system package:
+For Debian/Ubuntu Linux, the system jekyll package seems not to work.  If you have the system jekyll package installed:
 
-    sudo apt-get install ruby-all-dev jekyll
-    export GEM_HOME=~/.gem
-    cd revbayes.github.io
-    bundle install
+    sudo apt-get autoremove jekyll
 
-You can also install jekyll as a gem:
+Instead, you can install jekyll as a gem:
 
     sudo apt-get install ruby-all-dev
     export GEM_HOME=~/.gem
+    export PATH=${GEM_HOME}/bin:$PATH
     gem install jekyll bundler
-    export PATH=${GEM_HOME}/:$PATH
+
     cd revbayes.github.io
     bundle install
 
-You may want to put the lines that set GEM_HOME and PATH into your `~/.profile` or `~/.bash_profile`.
+You may want to put the `export` lines into your `~/.profile` or `~/.bash_profile`.
 
