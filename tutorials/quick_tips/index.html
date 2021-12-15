@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Quick Tips for Analyses in RevBayes</h1>
 	<h3 class="subtitle"></h3>
 	<h4 class="authors">Heath Lab folks</h4>
-  <h5>Last modified on October 29, 2021</h5>
+  <h5>Last modified on November  8, 2021</h5>
 </div>
 
 
@@ -115,12 +115,12 @@ In this section we will discuss how to identify inefficient moves and poor mixin
 <h4 class="subsubsection" id="the-size-of-moves">The Size of Moves</h4>
 <hr class="subsubsection" />
 
-<p>Although we have chosen an appropriate type of move we still need to consider the size of the move itself. In the case of <code class="language-plaintext highlighter-rouge">mvSlide</code> the function for the move has the parameter <code class="language-plaintext highlighter-rouge">delta</code> which is used to specify the size of the window around the current value $p$. In other words, the move proposes a new value $p’$ by choosing a value at random on the interval $(p-\delta,p+\delta)$. Large values of <code class="language-plaintext highlighter-rouge">delta</code> will result in proposals that often fall outside of the interval $(0,1)$ while too small of a <code class="language-plaintext highlighter-rouge">delta</code> will cause the MCMC to explore the parameter space slowly and inefficiently. Most moves on continous variables have parameters that control the relative size of the move, in the case of <code class="language-plaintext highlighter-rouge">mvSlide</code>, the <code class="language-plaintext highlighter-rouge">lambda</code> parameter controls the size of the sclar.</p>
+<p>Although we have chosen an appropriate type of move we still need to consider the size of the move itself. In the case of <code class="language-plaintext highlighter-rouge">mvSlide</code> the function for the move has the parameter <code class="language-plaintext highlighter-rouge">delta</code> which is used to specify the size of the window around the current value $p$. In other words, the move proposes a new value $p’$ by choosing a value at random on the interval $(p-\delta,p+\delta)$. Large values of <code class="language-plaintext highlighter-rouge">delta</code> will result in proposals that often fall outside of the interval $(0,1)$ while too small of a <code class="language-plaintext highlighter-rouge">delta</code> will cause the MCMC to explore the parameter space slowly and inefficiently. Most moves on continous variables have parameters that control the relative size of the move, in the case of <code class="language-plaintext highlighter-rouge">mvSlide</code>, the <code class="language-plaintext highlighter-rouge">lambda</code> parameter controls the size of the scalar.</p>
 
 <p>We can qualitatively assess the adequacy of size parameters of moves by using <code class="language-plaintext highlighter-rouge">TRACER</code> to view the trace. In <a href="#fig_trace"></a> we can see an example of a well-mixing MCMC, the catapillar-like appearance is a qualitative sign that the parameter is efficiently moving around the parameter space. If the move is too large the trace will look blocky, almost like a city skyline. Large moves often cause proposals to be rejected which is why we see the trace having the same value for many generations. Conversely, if we set too small of a move then we will accept most moves and the trace will appear to slowly meander about parameter values.</p>
 
 <figure id="fig_trace"><p><img src="figures/Move_size.png" /></p>
-<figcaption>Mixing of the <code class="language-plaintext highlighter-rouge">mvSlide</code> move on  sampling the probability of flipping heads $p$. The left image depicts the trace when moves are too small. The image in the center depicts moves that are too big. The image on the left depicts moves that are just right.</figcaption>
+<figcaption>Mixing of the <code class="language-plaintext highlighter-rouge">mvSlide</code> move on  sampling the probability of flipping heads $p$. The left image depicts the trace when moves are too small. The image in the center depicts moves that are too big. The image on the right depicts moves that are just right.</figcaption>
 </figure>
 
 <p>We can directly see how often proposals on specific moves are accepted or rejected by using the <code class="language-plaintext highlighter-rouge">operatorSummary()</code> method on an <code class="language-plaintext highlighter-rouge">mcmc</code> object (see <a href="#fig_operatorSummary"></a>).</p>

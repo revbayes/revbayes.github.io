@@ -64,7 +64,16 @@ Compile on Linux
 
 <h2 id="pre-requisites">Pre-requisites</h2>
 
-<p>First you will need to install gcc, cmake and boost</p>
+<p>You will need to have C++ compiler installed on your computer. GCC 6 (or higher) and Clang 8 (or higher) should work.</p>
+
+<p>You will also need to have CMake (3.5.1 or higher) and Boost (1.74 or higher) installed</p>
+
+<p>If you are compiling on a Linux cluster, you might need to select a version of gcc or cmake that is more recent than the default compiler.  You can often do this through <code class="language-plaintext highlighter-rouge">module</code> command:</p>
+<blockquote>
+  <p>% module avail
+% module help gcc boost cmake
+% module load gcc</p>
+</blockquote>
 
 <h3 id="if-you-have-root">If you have root</h3>
 
@@ -98,9 +107,9 @@ make
 
 <p>Then you can compile boost:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl -O -L https://dl.bintray.com/boostorg/release/1.71.0/source/boost_1_71_0.tar.gz
-tar -xzvf boost_1_71_0.tar.gz
-cd boost_1_71_0
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl -O -L https://dl.bintray.com/boostorg/release/1.74.0/source/boost_1_74_0.tar.gz
+tar -xzvf boost_1_74_0.tar.gz
+cd boost_1_74_0
 ./bootstrap.sh --with-libraries=atomic,chrono,filesystem,system,regex,thread,date_time,program_options,math,serialization
 ./b2 link=static
 </code></pre></div></div>
@@ -110,11 +119,11 @@ cd boost_1_71_0
 <blockquote>
   <p>The following directory should be added to compiler include paths:</p>
 
-  <p>/root/boost_1_71_0</p>
+  <p>/root/boost_1_74_0</p>
 
   <p>The following directory should be added to linker library paths:</p>
 
-  <p>/root/boost_1_71_0/stage/lib</p>
+  <p>/root/boost_1_74_0/stage/lib</p>
 </blockquote>
 
 <h2 id="compile">Compile</h2>
@@ -133,7 +142,7 @@ cd boost_1_71_0
 <p>To compile with a locally compiled boost, do the following. Be sure to replace the paths in the build command with those you got from boost in the previous step.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd revbayes/projects/cmake
-./build.sh -boost_root /root/boost_1_71_0 -boost_lib /root/boost_1_71_0/stage/lib
+./build.sh -boost_root /root/boost_1_74_0 -boost_lib /root/boost_1_74_0/stage/lib
 </code></pre></div></div>
 
 <p>For the MPI version:</p>
