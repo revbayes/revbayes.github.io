@@ -14,7 +14,7 @@ The standard way to build revbayes is to use `cmake`.  If you want to compile us
 
 You will need to have C++ compiler installed on your computer. GCC 6 (or higher) and Clang 8 (or higher) should work.
 
-You will also need to have CMake (3.5.1 or higher) and Boost installed
+You will also need to have CMake (3.5.1 or higher) and Boost (1.74 or higher) installed
 
 If you are compiling on a Linux cluster, you might need to select a version of gcc or cmake that is more recent than the default compiler.  You can often do this through `module` command:
 > % module avail
@@ -50,9 +50,9 @@ When this is completed, you will notice that there is now a `/bin` directory in 
 
 Then you can compile boost:
 
-    curl -O -L https://dl.bintray.com/boostorg/release/1.71.0/source/boost_1_71_0.tar.gz
-    tar -xzvf boost_1_71_0.tar.gz
-    cd boost_1_71_0
+    curl -O -L https://dl.bintray.com/boostorg/release/1.74.0/source/boost_1_74_0.tar.gz
+    tar -xzvf boost_1_74_0.tar.gz
+    cd boost_1_74_0
     ./bootstrap.sh --with-libraries=atomic,chrono,filesystem,system,regex,thread,date_time,program_options,math,serialization
     ./b2 link=static
 
@@ -60,11 +60,11 @@ When it is done, something like the following will be printed. You will need the
 
 >    The following directory should be added to compiler include paths:
 >
->    /root/boost_1_71_0
+>    /root/boost_1_74_0
 >
 >    The following directory should be added to linker library paths:
 >
->    /root/boost_1_71_0/stage/lib
+>    /root/boost_1_74_0/stage/lib
 
 ## Compile
 
@@ -80,7 +80,7 @@ To compile with system boost:
 To compile with a locally compiled boost, do the following. Be sure to replace the paths in the build command with those you got from boost in the previous step.
 
     cd revbayes/projects/cmake
-    ./build.sh -boost_root /root/boost_1_71_0 -boost_lib /root/boost_1_71_0/stage/lib
+    ./build.sh -boost_root /root/boost_1_74_0 -boost_lib /root/boost_1_74_0/stage/lib
 
 For the MPI version:
 

@@ -14,7 +14,7 @@ The standard way to build revbayes is to use `cmake`.  If you want to compile us
 
 You will need to have C++ compiler installed on your computer. GCC 6 (or higher) and Apple Clang from XCode 11 (or higher) should work. If you don't have a C++ compiler, you should install Xcode.
 
-You will also need to have CMake (3.5.1 or higher) and Boost installed
+You will also need to have CMake (3.5.1 or higher) and Boost (1.74 or higher) installed
 
 ### If you have root
 
@@ -31,9 +31,9 @@ First you will need to [install cmake](https://cmake.org/install/)
 
 Then you can compile boost:
 
-    curl -O -L https://dl.bintray.com/boostorg/release/1.71.0/source/boost_1_71_0.tar.gz
-    tar -xzvf boost_1_71_0.tar.gz
-    cd boost_1_71_0
+    curl -O -L https://dl.bintray.com/boostorg/release/1.74.0/source/boost_1_74_0.tar.gz
+    tar -xzvf boost_1_74_0.tar.gz
+    cd boost_1_74_0
     ./bootstrap.sh --with-libraries=atomic,chrono,filesystem,system,regex,thread,date_time,program_options,math,serialization
     ./b2 link=static
 
@@ -41,11 +41,11 @@ When it is done, something like the following will be printed. You will need the
 
 >    The following directory should be added to compiler include paths:
 >
->    /root/boost_1_71_0
+>    /root/boost_1_74_0
 >
 >    The following directory should be added to linker library paths:
 >
->    /root/boost_1_71_0/stage/lib
+>    /root/boost_1_74_0/stage/lib
 
 ## Compile
 
@@ -76,7 +76,7 @@ or build the MPI version to produce the rb-mpi executeable:
 To compile with a locally compiled boost, do the following. Be sure to replace the paths in the build command with those you got from boost in the previous step.
 
 ```
-./build.sh -boost_root /root/boost_1_71_0 -boost_lib /root/boost_1_71_0/stage/lib
+./build.sh -boost_root /root/boost_1_74_0 -boost_lib /root/boost_1_74_0/stage/lib
 ```
 
 You will likely see some compiler warnings (e.g. `clang: warning: optimization flag '-finline-functions' is not supported`). This is normal. 
