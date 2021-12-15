@@ -12,9 +12,9 @@ The standard way to build revbayes is to use `cmake`.  If you want to compile us
 
 ## Pre-requisites
 
-You will need to have C++ compiler installed on your computer. GCC 4.2 (or higher) and Apple LLVM version 6.0 have both been used successfully. If you don't have a C++ compiler, you should install Xcode.
+You will need to have C++ compiler installed on your computer. GCC 6 (or higher) and Apple Clang from XCode 11 (or higher) should work. If you don't have a C++ compiler, you should install Xcode.
 
-You will also need to have CMake and Boost installed
+You will also need to have CMake (3.5.1 or higher) and Boost installed
 
 ### If you have root
 

@@ -12,7 +12,14 @@ The standard way to build revbayes is to use `cmake`.  If you want to compile us
 
 ## Pre-requisites
 
-First you will need to install gcc, cmake and boost
+You will need to have C++ compiler installed on your computer. GCC 6 (or higher) and Clang 8 (or higher) should work.
+
+You will also need to have CMake (3.5.1 or higher) and Boost installed
+
+If you are compiling on a Linux cluster, you might need to select a version of gcc or cmake that is more recent than the default compiler.  You can often do this through `module` command:
+> % module avail
+> % module help gcc boost cmake
+> % module load gcc
 
 ### If you have root
 
