@@ -18,7 +18,7 @@ You will also need to have CMake (3.5.1 or higher) and Boost (1.74 or higher) in
 
 ### If you have root
 
-One option to install them is using homebrew:
+The typical way to install `boost` and `cmake` is to use the homebrew package manager:
 
 ``` 
 ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
@@ -109,11 +109,10 @@ touch .bash_profile
 nano .bash_profile
 ```
 
-    Then add the following lines, replacing `<your-revbayes-directory>` with wherever you put the Revbayes Github repository:
+    Then add the following lines, replacing `/root` with wherever you put the boost libraries:
 
     ```
-export DYLD_LIBRARY_PATH=<your-revbayes-directory>/boost_1_60_0/stage/lib:$DYLD_LIBRARY_PATH
-export PATH=<your-revbayes-directory>/projects/cmake:$PATH  
+export DYLD_LIBRARY_PATH=/root/boost_1_74_0/stage/lib:$DYLD_LIBRARY_PATH
 ```
 
     Then save the file using ctrl^o and hit return, then exit using ctrl^x. Now quit the Terminal app and reopen it and the boost libraries will forever be in your path.
