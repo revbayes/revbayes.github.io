@@ -70,7 +70,7 @@ Compile on Mac OS X
 
 <h3 id="if-you-have-root">If you have root</h3>
 
-<p>One option to install them is using homebrew:</p>
+<p>The typical way to install <code class="language-plaintext highlighter-rouge">boost</code> and <code class="language-plaintext highlighter-rouge">cmake</code> is to use the homebrew package manager:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 brew install cmake boost
@@ -163,10 +163,9 @@ touch .bash_profile
 nano .bash_profile
 </code></pre></div>    </div>
 
-    <p>Then add the following lines, replacing <code class="language-plaintext highlighter-rouge">&lt;your-revbayes-directory&gt;</code> with wherever you put the Revbayes Github repository:</p>
+    <p>Then add the following lines, replacing <code class="language-plaintext highlighter-rouge">/root</code> with wherever you put the boost libraries:</p>
 
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export DYLD_LIBRARY_PATH=&lt;your-revbayes-directory&gt;/boost_1_60_0/stage/lib:$DYLD_LIBRARY_PATH
-export PATH=&lt;your-revbayes-directory&gt;/projects/cmake:$PATH  
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export DYLD_LIBRARY_PATH=/root/boost_1_74_0/stage/lib:$DYLD_LIBRARY_PATH
 </code></pre></div>    </div>
 
     <p>Then save the file using ctrl^o and hit return, then exit using ctrl^x. Now quit the Terminal app and reopen it and the boost libraries will forever be in your path.</p>
