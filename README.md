@@ -70,3 +70,25 @@ If you get the error "invalid byte sequence in US-ASCII", this seems to fix it:
 
     export LC_CTYPE="en_US.UTF-8"
     export LANG="en_US.UTF-8"
+
+Setting up jekyll on Linux
+==========================
+
+For Debian/Ubuntu Linux, you can install jekyll as a system package:
+
+    sudo apt-get install ruby-all-dev jekyll
+    export GEM_HOME=~/.gem
+    cd revbayes.github.io
+    bundle install
+
+You can also install jekyll as a gem:
+
+    sudo apt-get install ruby-all-dev
+    export GEM_HOME=~/.gem
+    gem install jekyll bundler
+    export PATH=${GEM_HOME}/:$PATH
+    cd revbayes.github.io
+    bundle install
+
+You may want to put the lines that set GEM_HOME and PATH into your `~/.profile` or `~/.bash_profile`.
+
