@@ -64,18 +64,11 @@ Compile on Linux
 
 <h2 id="pre-requisites">Pre-requisites</h2>
 
-<p>You will need to have C++ compiler installed on your computer. GCC 6 (or higher) and Clang 8 (or higher) should work.</p>
+<p>You will need to have a C++ compiler installed on your computer. GCC 6 (or higher) and Clang 8 (or higher) should work.</p>
 
 <p>You will also need to have CMake (3.5.1 or higher) and Boost (1.74 or higher) installed</p>
 
-<p>If you are compiling on a Linux cluster, you might need to select a version of gcc or cmake that is more recent than the default compiler.  You can often do this through <code class="language-plaintext highlighter-rouge">module</code> command:</p>
-<blockquote>
-  <p>% module avail
-% module help gcc boost cmake
-% module load gcc</p>
-</blockquote>
-
-<h3 id="if-you-have-root">If you have root</h3>
+<h3 id="installing-pre-requisites-with-rootadministrator-priveleges">Installing pre-requisites <em>with</em> root/administrator priveleges</h3>
 
 <p>Install these using your distribution’s package manager</p>
 
@@ -90,24 +83,57 @@ Compile on Linux
 sudo yum install cmake boost-devel
 </code></pre></div></div>
 
-<h3 id="if-you-do-not-have-root">If you do not have root</h3>
+<h3 id="installing-pre-requisites-on-linux-computing-clusters">Installing pre-requisites on Linux computing clusters</h3>
 
-<p>You will need your administrator to install build-essential (or equivalent package containing gcc) for you. If possible, ask them to install cmake as well.</p>
+<p>If you are compiling revbayes on a Linux cluster, you might need to select a version of gcc or cmake that is more recent than the default version.</p>
 
-<p>If you need to compile CMake yourself:</p>
+<p>Most high-performance compute clusters have additional software available as “modules”.
+Using the <code class="language-plaintext highlighter-rouge">module avail</code> command followed by the name of the library will tell you if there is already a sufficiently recent version installed, thus saving you the effort of installing boost or cmake yourself:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl -O -L https://github.com/Kitware/CMake/releases/download/v3.17.0-rc3/cmake-3.17.0-rc3.tar.gz
-tar -xzvf cmake-3.17.0-rc3.tar.gz
-cd cmake-3.17.0-rc3/
-./configure
-make
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>module avail
+module help gcc boost cmake
+module load gcc
 </code></pre></div></div>
 
-<p>When this is completed, you will notice that there is now a <code class="language-plaintext highlighter-rouge">/bin</code> directory in the cmake directory. This contains the cmake executable. You may replace the call to cmake on line 45 of <code class="language-plaintext highlighter-rouge">build.sh</code> with this path to use your custom cmake installation.</p>
+<p>CMake, GCC and Boost are all commonly used in computational research, there will likely be a sufficiently recent version of gcc and cmake, and perhaps a recent enough version of boost.</p>
+
+<h3 id="installing-pre-requisites-without-rootadministrator-priveleges">Installing pre-requisites <em>without</em> root/administrator priveleges</h3>
+
+<p>If there is no compiler, you will need your administrator to install build-essential (or equivalent package containing gcc) for you. If possible, ask them to install cmake as well.</p>
+
+<h4 id="installing-cmake">Installing cmake</h4>
+
+<p>The simplest way to <a href="https://cmake.org/install/">install cmake</a> is to <a href="https://cmake.org/download/">download</a> a CMake executable.  For example:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl -O -L https://github.com/Kitware/CMake/releases/download/v3.22.1/cmake-3.22.1-linux-x86_64.tar.gz
+tar -zxf cmake-3.22.1-linux-x86_64.tar.gz
+cmake-3.22.1/bin/cmake --version
+echo "cmake installed at:"
+pwd cmake-3.22.1/bin/cmake
+</code></pre></div></div>
+
+<p>Note the full path to the cmake executable!
+You may replace the call to cmake on line 161 of <code class="language-plaintext highlighter-rouge">build.sh</code> with this path to use your custom cmake installation.</p>
+
+<p>In the rare cases where the downloaded cmake executable will not run on your computer, you can also compile from source:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl -O -L https://github.com/Kitware/CMake/releases/download/v3.22.1/cmake-3.22.1.tar.gz
+tar -xzvf cmake-3.22.1.tar.gz
+cd cmake-3.22.1/
+./bootstrap -- -DCMAKE_USE_OPENSSL=OFF
+make
+bin/cmake --version
+echo "cmake installed at:"
+pwd bin/cmake
+</code></pre></div></div>
+
+<p>Note the full path to the cmake executable.</p>
+
+<h4 id="installing-boost">Installing boost</h4>
 
 <p>Then you can compile boost:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl -O -L https://dl.bintray.com/boostorg/release/1.74.0/source/boost_1_74_0.tar.gz
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl -O -L https://boostorg.jfrog.io/artifactory/main/release/1.74.0/source/boost_1_74_0.tar.gz
 tar -xzvf boost_1_74_0.tar.gz
 cd boost_1_74_0
 ./bootstrap.sh --with-libraries=atomic,chrono,filesystem,system,regex,thread,date_time,program_options,math,serialization
@@ -128,21 +154,22 @@ cd boost_1_74_0
 
 <h2 id="compile">Compile</h2>
 
-<p>Then obtain the source:</p>
+<p>Download RevBayes from our github repository. Clone the repository using git by running the following command in the terminal:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone --branch development https://github.com/revbayes/revbayes.git revbayes
 </code></pre></div></div>
 
-<p>To compile with system boost:</p>
+<p>To compile with the system boost:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd revbayes/projects/cmake
 ./build.sh
 </code></pre></div></div>
 
-<p>To compile with a locally compiled boost, do the following. Be sure to replace the paths in the build command with those you got from boost in the previous step.</p>
+<p>You will likely see some compiler warnings. This is normal.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd revbayes/projects/cmake
-./build.sh -boost_root /root/boost_1_74_0 -boost_lib /root/boost_1_74_0/stage/lib
+<p>To compile revbayes using a locally compiled boost, do the following. Be sure to replace the paths in the build command with those you got from boost in the previous step.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./build.sh -boost_root /root/boost_1_74_0 -boost_lib /root/boost_1_74_0/stage/lib
 </code></pre></div></div>
 
 <p>For the MPI version:</p>
@@ -150,11 +177,9 @@ cd boost_1_74_0
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./build.sh -mpi true
 </code></pre></div></div>
 
-<p>Note that to compile the MPI version requires that an MPI library is installed. If you have root, openmpi can be install with apt or yum. If not, if can be <a href="https://www.open-mpi.org/">downloaded</a> and compiled.</p>
+<p>This produces an executable called <code class="language-plaintext highlighter-rouge">rb-mpi</code>.</p>
 
-<h2 id="a-note-on-compiling-revbayes-on-high-performance-compute-clusters">A note on compiling RevBayes on high-performance compute clusters</h2>
-
-<p>Most high-performance compute clusters have software available as “modules”. Cmake, GCC and boost are all commonly used in computational research. Using the <code class="language-plaintext highlighter-rouge">module avail</code> command followed by the name of the library will tell you if there is already a version installed, thus saving you the effort of performing these steps yourself.</p>
+<p>Note that compiling the MPI version requires that an MPI library is installed. If you have root, openmpi can be install with apt or yum. If not, if can be <a href="https://www.open-mpi.org/">downloaded</a> and compiled.</p>
 
 <h2 id="troubleshooting">Troubleshooting</h2>
 
@@ -189,23 +214,12 @@ touch .bash_profile
 nano .bash_profile
 </code></pre></div>    </div>
 
-    <p>Then add the following lines, replacing <code class="language-plaintext highlighter-rouge">&lt;your-revbayes-directory&gt;</code> with wherever you put the Revbayes Github repository:</p>
+    <p>Then add the following lines, replacing <code class="language-plaintext highlighter-rouge">/root</code> with wherever you put the boost libraries:</p>
 
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export LD_LIBRARY_PATH=&lt;your-revbayes-directory&gt;/boost_1_60_0/stage/lib:$LD_LIBRARY_PATH
-export PATH=&lt;your-revbayes-directory&gt;/projects/cmake:$PATH  
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export LD_LIBRARY_PATH=/root/boost_1_74_0/stage/lib:$LD_LIBRARY_PATH
 </code></pre></div>    </div>
 
     <p>Then save the file using ctrl^o and hit return, then exit using ctrl^x. Now quit the Terminal app and reopen it and the boost libraries will forever be in your path.</p>
-  </li>
-  <li>
-    <p><strong>I am using precompiled boost and getting messages like <code class="language-plaintext highlighter-rouge">undefined reference to boost::program_options</code> during the link step</strong></p>
-
-    <p>It’s possible that the boost you are using was compiled with an older version of GCC than the one you are trying to use to compile RevBayes. <a href="https://gcc.gnu.org/onlinedocs/libstdc++/manual/using_dual_abi.html">GCC switched the default ABI in newer versions</a>. Try running:</p>
-
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  export CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0"
-</code></pre></div>    </div>
-
-    <p>and then run build.sh again. If this does not fix the issue, you may consider recompiling boost with your current version of GCC.</p>
   </li>
 </ul>
 

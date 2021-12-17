@@ -68,21 +68,26 @@ Compile on Mac OS X
 
 <p>You will also need to have CMake (3.5.1 or higher) and Boost (1.74 or higher) installed</p>
 
-<h3 id="if-you-have-root">If you have root</h3>
+<h3 id="installing-pre-requisites-with-rootadministrator-priveleges-the-usual-case">Installing pre-requisites <em>with</em> root/administrator priveleges (the usual case)</h3>
 
-<p>The typical way to install <code class="language-plaintext highlighter-rouge">boost</code> and <code class="language-plaintext highlighter-rouge">cmake</code> is to use the homebrew package manager:</p>
+<p>The typical way to install <code class="language-plaintext highlighter-rouge">boost</code> and <code class="language-plaintext highlighter-rouge">cmake</code> is to use the <a href="https://brew.sh/">homebrew</a> package manager.
+If homebrew is not already installed, you can install it with:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-brew install cmake boost
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 </code></pre></div></div>
 
-<h3 id="if-you-do-not-have-root">If you do not have root</h3>
+<p>You can then use homebrew to install cmake and boost:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>brew install cmake boost
+</code></pre></div></div>
+
+<h3 id="installing-pre-requisites-without-rootadministrator-priveleges">Installing pre-requisites <em>without</em> root/administrator priveleges</h3>
 
 <p>First you will need to <a href="https://cmake.org/install/">install cmake</a></p>
 
 <p>Then you can compile boost:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl -O -L https://dl.bintray.com/boostorg/release/1.74.0/source/boost_1_74_0.tar.gz
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl -O -L https://boostorg.jfrog.io/artifactory/main/release/1.74.0/source/boost_1_74_0.tar.gz
 tar -xzvf boost_1_74_0.tar.gz
 cd boost_1_74_0
 ./bootstrap.sh --with-libraries=atomic,chrono,filesystem,system,regex,thread,date_time,program_options,math,serialization
@@ -108,27 +113,27 @@ cd boost_1_74_0
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone --branch development https://github.com/revbayes/revbayes.git revbayes
 </code></pre></div></div>
 
-<p>Open a terminal and go to the RevBayes cmake directory:</p>
+<p>To compile with the system Boost library:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd revbayes/projects/cmake
+./build.sh
 </code></pre></div></div>
 
-<p>Now either build the standard version using the following:</p>
+<p>You will likely see some compiler warnings (e.g. <code class="language-plaintext highlighter-rouge">clang: warning: optimization flag '-finline-functions' is not supported</code>). This is normal.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./build.sh
-</code></pre></div></div>
-
-<p>or build the MPI version to produce the rb-mpi executeable:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./build.sh -mpi true
-</code></pre></div></div>
-
-<p>To compile with a locally compiled boost, do the following. Be sure to replace the paths in the build command with those you got from boost in the previous step.</p>
+<p>To compile revbayes using a locally compiled boost, do the following. Be sure to replace the paths in the build command with those you got from boost in the previous step.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./build.sh -boost_root /root/boost_1_74_0 -boost_lib /root/boost_1_74_0/stage/lib
 </code></pre></div></div>
 
-<p>You will likely see some compiler warnings (e.g. <code class="language-plaintext highlighter-rouge">clang: warning: optimization flag '-finline-functions' is not supported</code>). This is normal.</p>
+<p>For the MPI version:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./build.sh -mpi true
+</code></pre></div></div>
+
+<p>This produces an executable called <code class="language-plaintext highlighter-rouge">rb-mpi</code>.</p>
+
+<p>Note that compiling the MPI version requires that an MPI library is installed.</p>
 
 <h2 id="troubleshooting">Troubleshooting</h2>
 
@@ -170,18 +175,7 @@ nano .bash_profile
 
     <p>Then save the file using ctrl^o and hit return, then exit using ctrl^x. Now quit the Terminal app and reopen it and the boost libraries will forever be in your path.</p>
   </li>
-  <li>
-    <p><strong>I am using precompiled boost and getting messages like <code class="language-plaintext highlighter-rouge">undefined reference to boost::program_options</code> during the link step</strong></p>
-
-    <p>It’s possible that the boost you are using was compiled with an older version of GCC than the one you are trying to use to compile RevBayes. <a href="https://gcc.gnu.org/onlinedocs/libstdc++/manual/using_dual_abi.html">GCC switched the default ABI in newer versions</a>. Try running:</p>
-
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  export CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0"
-</code></pre></div>    </div>
-
-    <p>and then run build.sh again</p>
-  </li>
 </ul>
-
 
       <br>
 <footer>
