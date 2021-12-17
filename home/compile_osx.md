@@ -16,22 +16,25 @@ You will need to have C++ compiler installed on your computer. GCC 6 (or higher)
 
 You will also need to have CMake (3.5.1 or higher) and Boost (1.74 or higher) installed
 
-### If you have root
+###  Installing pre-requisites *with* root/administrator priveleges (the usual case)
 
-The typical way to install `boost` and `cmake` is to use the homebrew package manager:
+The typical way to install `boost` and `cmake` is to use the [homebrew](https://brew.sh/) package manager.
+If homebrew is not already installed, you can install it with:
 
-``` 
-ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-brew install cmake boost
-```
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-### If you do not have root
+You can then use homebrew to install cmake and boost:
+
+    brew install cmake boost
+
+
+### Installing pre-requisites *without* root/administrator priveleges
 
 First you will need to [install cmake](https://cmake.org/install/)
 
 Then you can compile boost:
 
-    curl -O -L https://dl.bintray.com/boostorg/release/1.74.0/source/boost_1_74_0.tar.gz
+    curl -O -L https://boostorg.jfrog.io/artifactory/main/release/1.74.0/source/boost_1_74_0.tar.gz
     tar -xzvf boost_1_74_0.tar.gz
     cd boost_1_74_0
     ./bootstrap.sh --with-libraries=atomic,chrono,filesystem,system,regex,thread,date_time,program_options,math,serialization
@@ -51,35 +54,27 @@ When it is done, something like the following will be printed. You will need the
 
 Download RevBayes from our github repository. Clone the repository using git by running the following command in the terminal 
 
-``` 
-git clone --branch development https://github.com/revbayes/revbayes.git revbayes
-```
+    git clone --branch development https://github.com/revbayes/revbayes.git revbayes
 
-Open a terminal and go to the RevBayes cmake directory:
+To compile with the system Boost library:
 
-```  
-cd revbayes/projects/cmake
-```
-
-Now either build the standard version using the following:
-
-``` 
-./build.sh
-```
-
-or build the MPI version to produce the rb-mpi executeable:
-
-``` 
-./build.sh -mpi true
-```
-
-To compile with a locally compiled boost, do the following. Be sure to replace the paths in the build command with those you got from boost in the previous step.
-
-```
-./build.sh -boost_root /root/boost_1_74_0 -boost_lib /root/boost_1_74_0/stage/lib
-```
+    cd revbayes/projects/cmake
+    ./build.sh
 
 You will likely see some compiler warnings (e.g. `clang: warning: optimization flag '-finline-functions' is not supported`). This is normal. 
+
+
+To compile revbayes using a locally compiled boost, do the following. Be sure to replace the paths in the build command with those you got from boost in the previous step.
+
+    ./build.sh -boost_root /root/boost_1_74_0 -boost_lib /root/boost_1_74_0/stage/lib
+
+For the MPI version:
+
+    ./build.sh -mpi true
+
+This produces an executable called `rb-mpi`.
+
+Note that compiling the MPI version requires that an MPI library is installed.
 
 ## Troubleshooting
 
@@ -116,15 +111,3 @@ export DYLD_LIBRARY_PATH=/root/boost_1_74_0/stage/lib:$DYLD_LIBRARY_PATH
 ```
 
     Then save the file using ctrl^o and hit return, then exit using ctrl^x. Now quit the Terminal app and reopen it and the boost libraries will forever be in your path.
-
-
-* **I am using precompiled boost and getting messages like `undefined reference to boost::program_options` during the link step**
-
-    It's possible that the boost you are using was compiled with an older version of GCC than the one you are trying to use to compile RevBayes. [GCC switched the default ABI in newer versions](https://gcc.gnu.org/onlinedocs/libstdc++/manual/using_dual_abi.html). Try running:
-
-    ```
-    export CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0"
-    ```
-
-    and then run build.sh again
-    
