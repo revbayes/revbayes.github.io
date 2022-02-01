@@ -12,7 +12,7 @@ include_files:
 - data/horses_homochronous_sequences_nooutgroup.fasta
 - scripts/mcmc_homochronous_constant.Rev
 include_example_output: true
-permalink: ./tutorials/coalescent/constant
+# permalink: ./tutorials/coalescent/constant
 ---
 
 {% section Overview %}

@@ -12,7 +12,7 @@ include_files:
 - data/horses_homochronous_sequences_nooutgroup.fasta
 - scripts/mcmc_homochronous_skyline.Rev
 include_example_output: true
-permalink: ./tutorials/coalescent/skyline
+# permalink: ./tutorials/coalescent/skyline
 ---
 
 {% section Skyline Plots %}

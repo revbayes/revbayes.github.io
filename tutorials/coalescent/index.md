@@ -14,7 +14,7 @@ include_files:
 - data/horses_heterochronous_sequences_nooutgroup.fasta
 - data/horses_ages_inyears_nooutgroup.tsv
 include_example_output: true
-permalink: ./tutorials/coalescent
+# permalink: ./tutorials/coalescent
 ---
 
 > ## For your info
