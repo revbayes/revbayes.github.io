@@ -1,8 +1,8 @@
 ---
 title: Skyline Models
 subtitle: Estimating Demographic Histories with Skyline Models
-authors: Sebastian Höhna and Ronja Billenstein
-level: 4 #may need adjustment
+authors: Ronja Billenstein and Sebastian Höhna
+level: 8 #may need adjustment
 order: 0.2
 prerequisites:
 - coalescent
@@ -11,18 +11,16 @@ include_all: false
 include_files:
 - data/horses_homochronous_sequences_nooutgroup.fasta
 - scripts/mcmc_homochronous_skyline.Rev
-include_example_output: true
-# permalink: ./tutorials/coalescent/skyline
 ---
 
 {% section Skyline Plots %}
-Skyline Plots are models for how population size changes through time..
+Skyline Plots are models for how population size changes through time.
 The classical skyline plot {% cite Pybus2000 %} provided the first implementation of this idea.
 For each interval between two coalescent events, an effective population size was calculated.
 This led to a plot looking very similar to a skyline, thus giving the method its name.
 The generalized skyline plot {% cite Strimmer2001 %} aimed at reducing the noise from analyzing every single interval by grouping several coalescent events into one interval.
-This created a smoother curve. <!--- **(better word for smoother needed)** --->
-These models were used for maximum likelihood (ML) estimation of population sizes through time.
+This created a smoother curve.
+First, these models were used for maximum likelihood (ML) estimation of population sizes through time.
 By now, several extensions allowing for Bayesian estimation have been published {% cite %}.
 In `RevBayes`, a Skyline plot method is implemented with constant population size intervals.
 <!--- The length of these intervals is not based on the timing of the coalescent events, but can be individually chosen. --->

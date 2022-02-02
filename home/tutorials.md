@@ -12,6 +12,7 @@ levels:
 - Diversification Rate Estimation
 - Comparative methods
 - Biogeography
+- Demographic Inference
 levels_id:
 - intro
 - mcmc
@@ -21,12 +22,13 @@ levels_id:
 - phylo_div_rate
 - phylo_trait
 - phylo_biogeo
+- demographic
 ---
 
 This list shows all of the RevBayes tutorials for learning various aspects of RevBayes and Bayesian phylogenetic analysis.
 Each one explicitly walks you through model specification and analysis set-up for different phylogenetic methods.
-These tutorials have been written for new users to learn RevBayes at home, at workshops, and in courses taught at the undergraduate and graduate levels. 
-You may find that the styles are somewhat different between tutorials and that some  have overlapping content. 
+These tutorials have been written for new users to learn RevBayes at home, at workshops, and in courses taught at the undergraduate and graduate levels.
+You may find that the styles are somewhat different between tutorials and that some  have overlapping content.
 
 Please see the {% page_ref format %} guide for details about how to read the tutorials.
 

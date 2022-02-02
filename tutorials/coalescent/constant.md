@@ -1,8 +1,8 @@
 ---
 title: Constant Coalescent Process
 subtitle: Estimating Demographic Histories with a Constant Coalescent Process
-authors: Sebastian Höhna and Ronja Billenstein
-level: 4 #may need adjustment
+authors: Ronja Billenstein and Sebastian Höhna
+level: 8 #may need adjustment
 order: 0.1
 prerequisites:
 - coalescent
@@ -11,8 +11,6 @@ include_all: false
 include_files:
 - data/horses_homochronous_sequences_nooutgroup.fasta
 - scripts/mcmc_homochronous_constant.Rev
-include_example_output: true
-# permalink: ./tutorials/coalescent/constant
 ---
 
 {% section Overview %}
@@ -97,8 +95,8 @@ psi ~ dnCoalescent(theta=pop_size, taxa=taxa)
 ~~~
 
 We calibrate the tree based on the root age.
-We chose a Normal distribution with a mean of $375000$ and a standard deviation of $60000$. **(add why!)**
-As mentioned above, the root age will be constrained to the interval $\[250000, 500000\]$.
+We chose a Normal distribution with a mean of $375,000$ and a standard deviation of $60,000$. **(add why!)**
+As mentioned above, the root age will be constrained to the interval $\[250,000, 500,000\]$.
 ~~~
 root_age := psi.rootAge()
 obs_root_age ~ dnNormal(mean = root_age, sd = 60000, min = 250000, max = 500000)
@@ -236,4 +234,3 @@ Example output from plotting the constant coalescent analysis run in this exerci
 When you are done, have a look at the next exercise.
 
 * [The skyline model](coalescent/skyline)
-

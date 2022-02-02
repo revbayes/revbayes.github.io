@@ -8,8 +8,6 @@ prerequisites:
 - intro
 - mcmc
 index: true
-title-old: RB_CTMC_Tutorial
-redirect: false
 ---
 
 This tutorial comes with a recorded video walkthrough. The video corresponding to each section of the exercise is linked next to the section title. The full playlist is available here: [![Walkthrough playlist](/assets/img/YouTube_icon.svg){: height="36" width="36"}](https://www.youtube.com/playlist?list=PLztACvN0g42t9pLJpeUel-ynfuNdWOsa4)

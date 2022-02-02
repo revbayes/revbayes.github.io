@@ -6,7 +6,7 @@ level: 3
 order: 3.1
 prerequisites:
 - dating
-include_all: false 
+include_all: false
 include_files:
 - data/bears_cytb.nex
 - scripts/MCMC_dating_ex1.Rev
@@ -14,7 +14,6 @@ include_files:
 - scripts/sub_GTRG.Rev
 - scripts/tree_BD.Rev
 index: false
-redirect: false
 ---
 
 Exercise 1
@@ -24,15 +23,15 @@ Exercise 1
 In this exercise we will use molecular sequence data to estimate the relationships between extant species of bears and infer *relative* speciation times assuming a global (or strict) clock model. This model assumes that the rate of substitution is constant over time and across the tree.
 
 {% figure fig_morph_clock_gm %}
-<img src="figures/tikz/morph_clock_gm.png" width="300" /> 
-{% figcaption %} 
+<img src="figures/tikz/morph_clock_gm.png" width="300" />
+{% figcaption %}
 The graphical-model representation of the global molecular clock, where every branch has the same rate of change ($c$) and that rate is drawn from an exponential distribution with a rate parameter of $\delta_c$.
 {% endfigcaption %}
 {% endfigure %}
 
 ### The data
 
-For this exercise we'll use an alignment of 1,000 bp of cytochrome b sequences for 8 extant bear species. 
+For this exercise we'll use an alignment of 1,000 bp of cytochrome b sequences for 8 extant bear species.
 **bears_cytb.nex** contains the alignment in NEXUS format.
 
 ### The master Rev script
@@ -55,14 +54,14 @@ At this stage we'll also create some useful variables for later, including the n
 n_taxa <- cytb.size()
 taxa <- cytb.taxa()
 ```
-We will also create a workspace variable called `moves` and `monitors`. 
+We will also create a workspace variable called `moves` and `monitors`.
 This variable is a vector containing all of the MCMC moves and monitors respectively.
 ```
 moves    = VectorMoves()
 monitors = VectorMonitors()
 ```
 
->Don't forget to save your changes at the end of each section! 
+>Don't forget to save your changes at the end of each section!
 {:.instruction}
 
 
@@ -107,17 +106,17 @@ Since in this exercise our aim is to infer relative times only, we'll simply fix
 ```
 extant_mrca <- 1.0
 ```
-Now that we've specified all of the parameters of the birth-death model, we can use these parameters to define the prior distribution on the tree topology and divergence times. 
+Now that we've specified all of the parameters of the birth-death model, we can use these parameters to define the prior distribution on the tree topology and divergence times.
 ```
 tree_dist = dnBDP(lambda=speciation_rate, mu=extinction_rate, rho=rho, rootAge=extant_mrca, samplingStrategy="uniform", condition="nTaxa", taxa=taxa)
 ```
-Note that we created the distribution as a workspace variable using the workspace assignment operator `=`. This is because we still need to include a topology constraint in our final specification of the tree prior. 
+Note that we created the distribution as a workspace variable using the workspace assignment operator `=`. This is because we still need to include a topology constraint in our final specification of the tree prior.
 
 
 
 #### Clade constraints
 
-In some cases we may want to constrain parts of the tree topology based on prior information. This is often necessary when we incorporate fossil calibration information, which we'll do in subsequent tutorial exercises. 
+In some cases we may want to constrain parts of the tree topology based on prior information. This is often necessary when we incorporate fossil calibration information, which we'll do in subsequent tutorial exercises.
 
 Here, we will constrain the group Ursinae to be monophyletic by first creating a vector of constraints.
 ```
@@ -139,7 +138,7 @@ moves.append( mvNarrow(timetree, weight=n_taxa) )
 moves.append( mvFNPR(timetree, weight=n_taxa/4) )
 moves.append( mvNodeTimeSlideUniform(timetree, weight=n_taxa) )
 moves.append( mvSubtreeScale(timetree, weight=n_taxa/5.0) )
-```	
+```
 Note there are lots of moves available for trees in RevBayes that you can use to improve the mixing, which you can learn about in other tutorials, including [Divergence Time Calibration](https://github.com/revbayes/revbayes_tutorial/blob/master/tutorial_TeX/RB_DivergenceTime_Calibration_Tutorial/).
 
 
@@ -156,12 +155,12 @@ Note that if we had not included this clade in the constraints that defined the 
 
 ### The clock model
 
-Next we'll specify the clock (or branch-rate) model that describes how rates of substitution vary (or not) over the tree. 
+Next we'll specify the clock (or branch-rate) model that describes how rates of substitution vary (or not) over the tree.
 
->Create a script called **clock_global.Rev** and open it in your text editor. 
+>Create a script called **clock_global.Rev** and open it in your text editor.
 {:.instruction}
 
-In this exercise we'll use the global molecular clock model that assumes rates are constant over time and across the tree. Specifying this model in RevBayes is very simple. 
+In this exercise we'll use the global molecular clock model that assumes rates are constant over time and across the tree. Specifying this model in RevBayes is very simple.
 For the branch-rates parameter we will use an exponential prior, with rate parameter $\delta_c$ = 10. Recall that the expected value (or mean) of this distribution is 0.1. The same branch-rate will apply to every branch in the tree.
 
 Create the exponentially distributed stochastic node for `branch_rates` and assign a move to this parameter.
@@ -176,12 +175,12 @@ moves.append( mvScale(branch_rates, lambda=0.5, tune=true, weight=3.0) )
 
 The next step is to specify the model that describes how sequences evolve along the tree and across sites.
 
->Create a script called **sub_GTRG.Rev** and open it in your text editor. 
+>Create a script called **sub_GTRG.Rev** and open it in your text editor.
 {:.instruction}
 
 For this exercise we will use the general time-reversible (GTR) + $\Gamma$ model.
 
-First, we need to define an instantaneous-rate matrix (i.e. a Q-matrix). 
+First, we need to define an instantaneous-rate matrix (i.e. a Q-matrix).
 A nucleotide GTR matrix is defined by a set of 4 stationary frequencies, and 6 exchangeability rates. Create stochastic nodes for these variables, each drawn from a uniform Dirichlet prior distribution.
 ```
 sf_hp <- v(1,1,1,1)
@@ -219,7 +218,7 @@ phySeq.clamp(cytb)
 
 ### Setting up the MCMC
 
->Return to the master script **MCMC_dating_ex1.Rev**. 
+>Return to the master script **MCMC_dating_ex1.Rev**.
 {:.instruction}
 
 RevBayes uses the `source` function to load commands from Rev files into the workspace. Use this function to load in the model scripts you have written in the text editor and saved in the **scripts** directory.
@@ -240,7 +239,7 @@ The first monitor we will create will monitor every named random variable in our
 ```
 monitors.append( mnModel(filename="output/bears_global.log", printgen=10) )
 ```
-The `mnFile` monitor writes any parameter we specify to file. Thus, if we only cared about the speciation rate and nothing else (this is not a typical or recommended attitude for an analysis this complex) we wouldn’t use the `mnModel` monitor above and just use the `mnFile` monitor to write a smaller and simpler output file. Since the tree topology is not included in the `mnModel` monitor (because it is not numerical), we will use `mnFile` to write the tree to file by specifying our `timetree` variable in the arguments. 
+The `mnFile` monitor writes any parameter we specify to file. Thus, if we only cared about the speciation rate and nothing else (this is not a typical or recommended attitude for an analysis this complex) we wouldn’t use the `mnModel` monitor above and just use the `mnFile` monitor to write a smaller and simpler output file. Since the tree topology is not included in the `mnModel` monitor (because it is not numerical), we will use `mnFile` to write the tree to file by specifying our `timetree` variable in the arguments.
 ```
 monitors.append( mnFile(filename="output/bears_global.trees", printgen=10, timetree) )
 ```
@@ -260,7 +259,7 @@ After the Markov chain has completed, we can create a summary tree. We'll use th
 ```
 trace = readTreeTrace("output/bears_global.trees")
 mccTree(trace, file="output/bears_global.mcc.tre")
-```	
+```
 Note by default, a burn-in of 25% is used when creating the tree trace (250 trees in our case). You can specify a different burn-in fraction, say 50%, by typing the command `trace.setBurnin(500)`.
 
 Once all our analysis is complete, we will want RevBayes to close. Tell the program to quit using the `q()` function.
@@ -281,8 +280,8 @@ q()
 Evaluate the mixing and convergence of your MCMC analysis, and examine the marginal distributions of parameters of interest. For publication quality analysis you would probably want to run multiple independent MCMC chain and increase your chain length, but you should be able to see that the chain is mixing quite well.
 
 {% figure fig_trace %}
-<img src="figures/bears_global_trace.png" width="700" /> 
-{% figcaption %} 
+<img src="figures/bears_global_trace.png" width="700" />
+{% figcaption %}
 The Trace window in the program Tracer. Click on the "+" sign to load your trace file or drag and drop you file in the Trace files box.
 {% endfigcaption %}
 {% endfigure %}
@@ -293,15 +292,15 @@ Note that the speciation and extinction rates are not especially meaningful beca
 
 #### The tree output
 
-In addition to evaluating the performance and sampling of an MCMC run using numerical parameters, it is also important to inspect the sampled topology and tree parameters. This is a difficult endeavor, however. One tool for evaluating convergence and mixing of the tree samples is RWTY (Warren et al. 2016). In this tutorial, we will only summarize the sampled trees, but we encourage you to consider approaches for assessing the performance of the MCMC with respect to the tree topology. 
+In addition to evaluating the performance and sampling of an MCMC run using numerical parameters, it is also important to inspect the sampled topology and tree parameters. This is a difficult endeavor, however. One tool for evaluating convergence and mixing of the tree samples is RWTY (Warren et al. 2016). In this tutorial, we will only summarize the sampled trees, but we encourage you to consider approaches for assessing the performance of the MCMC with respect to the tree topology.
 
 Ultimately, we are interested in summarizing the sampled trees and branch times given that our MCMC has sampled all of the important parameters in proportion to their posterior probabilities. RevBayes includes some functions for summarizing the tree topology and other tree parameters, including the `mccTree` that we used in this exercise.
 
 >Open the program FigTree and load MCC tree file `bears_global.mcc.tre`.
 
 {% figure fig_tree %}
-<img src="figures/bears_global.mcc.tre.png" width="700" /> 
-{% figcaption %} 
+<img src="figures/bears_global.mcc.tre.png" width="700" />
+{% figcaption %}
 The FigTree window. To open your tree you can use File > Open. Select Node Labels to view the relative node ages.
 {% endfigcaption %}
 {% endfigure %}
@@ -320,4 +319,3 @@ In the following exercise we'll relax the assumption of a global molecular clock
 ### Further reading
 
 For further options and information about clock models see Tracy Heath's tutorial [Relaxed Clocks & Time Trees]({{ base.url }}/tutorials/clocks/).
-

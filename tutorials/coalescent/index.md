@@ -1,20 +1,19 @@
 ---
 title: Coalescent Analyses
 subtitle: Estimating Demographic Histories with Coalescent Processes
-authors: Sebastian Höhna and Ronja Billenstein
-level: 4 #may need adjustment
+authors: Ronja Billenstein and Sebastian Höhna
+level: 8 #may need adjustment
 order: 0
 prerequisites:
 - intro
 - mcmc
+- ctmc
 index: false
 include_all: false
 include_files:
 - data/horses_homochronous_sequences_nooutgroup.fasta
 - data/horses_heterochronous_sequences_nooutgroup.fasta
 - data/horses_ages_inyears_nooutgroup.tsv
-include_example_output: true
-# permalink: ./tutorials/coalescent
 ---
 
 > ## For your info
@@ -22,8 +21,8 @@ include_example_output: true
 {:.info}
 
 {% section Overview %}
-This tutorial describes how to run a coalescent demographic analysis in `RevBayes`.
-A coalescent analysis is a flexible, non-parametric way of estimating population size trajectories through time.
+This tutorial describes how to run a demographic analysis using the coalescent process in `RevBayes`.
+The coalescent process provides a flexible way of estimating population size trajectories through time.
 The input data usually are sequence alignments or estimated trees.
 Here, we consider different types of analyses, starting with a constant demographic history and doing more complex analyses in later exercises.
 The first analyses will consider data from homochronous samples, *i.e* data from samples that have all been collected at the same time.
@@ -91,4 +90,3 @@ The first five exercises work with homochronous data, the last one with heteroch
 4. [The HSMRF model with trees as input data]({base.url}/tutorials/coalescent/HSMRF_treebased)
 5. [A piecewise model]({base.url}/tutorials/coalescent/piecewise)
 6. [Heterochronous data]({base.url}/tutorials/coalescent/heterochronous) --->
-
