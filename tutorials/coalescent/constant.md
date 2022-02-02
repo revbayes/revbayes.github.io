@@ -207,6 +207,10 @@ You can plot the `RevBayes` output as follows:
 ~~~
 library(RevGadgets)
 
+burnin = 0.1
+probs = c(0.025, 0.975)
+summary = "median"
+
 pop_size_log = "../output/horses_constant_NE.log"
 pop_size <- readTrace(paths = pop_size_log,
                       burnin = burnin)[[1]]
@@ -218,7 +222,7 @@ rates <- list(
   "coalescent time" = data.frame("interval_times[0]" = rep(0,900), "interval_times[1]" = rep(375000,900))
 )
 plotdata <- RevGadgets:::.makePlotData(rates = rates, probs = probs, summary = summary)
-p <- plotPopulationSize(plotdata) + ggplot2::scale_y_continuous(trans = "log10", limits=c(1e4,1e8)) + ggplot2::ylab("Population Size") + ggplot2::xlab("years ago")# + ggplot2::xlim(1e6,0)
+p <- plotPopulationSize(plotdata) + ggplot2::scale_y_continuous(trans = "log10", limits=c(1e4,1e7)) + ggplot2::ylab("Population Size") + ggplot2::xlab("years ago")# + ggplot2::xlim(1e6,0)
 ~~~
 
 Your output should look roughly like the following figure.
@@ -233,4 +237,4 @@ Example output from plotting the constant coalescent analysis run in this exerci
 {% section Next Exercise %}
 When you are done, have a look at the next exercise.
 
-* [The skyline model](coalescent/skyline)
+* [The skyline model]({{base.url}}/tutorials/coalescent/skyline)

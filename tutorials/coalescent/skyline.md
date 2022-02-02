@@ -6,6 +6,7 @@ level: 8 #may need adjustment
 order: 0.2
 prerequisites:
 - coalescent
+- coalescent/constant
 index: false
 include_all: false
 include_files:
@@ -60,7 +61,7 @@ The waiting times $w_k$ refer to the waiting time starting when there are $k$ ac
 We will walk you through the script in the following section.
 {:.info}
 
-We will mainly highlight the parts of the script that change compared to the [constant coalescent model](coalescent/constant).
+We will mainly highlight the parts of the script that change compared to the [constant coalescent model]({{base.url}}/tutorials/coalescent/constant).
 
 {% subsection Read the data %}
 Read in the data as described in the first exercise.
@@ -87,7 +88,7 @@ for (i in 1:NUM_INTERVALS) {
 
 {% subsection The Tree %}
 
-Now, the will instantiate the stochastic node for the tree.
+Now, we will instantiate the stochastic node for the tree.
 The Skyline distribution function `dnCoalescentSkyline` takes the vector of population sizes the taxa as input. <!--- **(need to check whether it can take more)** --->
 By chosing `methods="events"`, the interval lengths will be chosen based on the number of events.
 
@@ -101,7 +102,7 @@ In order to be able to later plot and analyze the population size curve, we need
 interval_times := psi.getIntervalAges()
 ~~~
 
-For this analysis, we constrain the root age as before and add the same moves.
+For this analysis, we constrain the root age as before and add the same moves for the tree.
 
 {% subsection Substitution Model and other parameters %}
 This part is also taken from the constant coalescent exercise.
@@ -132,3 +133,8 @@ After running your analysis, you can plot the results again using the `R` packag
 This is how the resulting skyline plot should roughly look like.
 {% endfigcaption %}
 {% endfigure %}
+
+{% section Next Exercise %}
+When you are done, have a look at the next exercise.
+
+* [The Gaussian Markov Random Field (GMRF) model]({{base.url}}/tutorials/coalescent/GMRF)

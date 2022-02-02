@@ -83,10 +83,10 @@ It aims at highlighting the changes you have to make when considering samples wi
 It is therefore recommended to do the exercises for homochronous data first.
 
 The first five exercises work with homochronous data, the last one with heterochronous data:
-1. [The constant coalescent model](constant)
-2. [The skyline model](skyline)
+1. [The constant coalescent model]({{base.url}}/tutorials/coalescent/constant)
+2. [The skyline model]({{base.url}}/tutorials/coalescent/skyline)
+3. [The Gaussian Markov Random Field (GMRF) model]({{base.url}}/tutorials/coalescent/GMRF)
+4. [The GMRF model with trees as input data]({{base.url}}/tutorials/coalescent/GMRF_treebased)
 
-<!--- 3. [The Horseshoe Markov Random Field (HSMRF) model]({base.url}/tutorials/coalescent/HSMRF)
-4. [The HSMRF model with trees as input data]({base.url}/tutorials/coalescent/HSMRF_treebased)
-5. [A piecewise model]({base.url}/tutorials/coalescent/piecewise)
-6. [Heterochronous data]({base.url}/tutorials/coalescent/heterochronous) --->
+<!--- 5. [A piecewise model]({{base.url}}/tutorials/coalescent/piecewise)
+6. [Heterochronous data]({{base.url}}/tutorials/coalescent/heterochronous) --->
