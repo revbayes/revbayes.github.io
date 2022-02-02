@@ -12,9 +12,11 @@ The standard way to build revbayes is to use `cmake`.  If you want to compile us
 
 ## Pre-requisites
 
-First you will need to install gcc, cmake and boost
+You will need to have a C++ compiler installed on your computer. GCC 6 (or higher) and Clang 8 (or higher) should work.
 
-### If you have root
+You will also need to have CMake (3.5.1 or higher) and Boost (1.74 or higher) installed
+
+### Installing pre-requisites *with* root/administrator priveleges
 
 Install these using your distribution's package manager
 
@@ -27,25 +29,56 @@ Install these using your distribution's package manager
     sudo yum group install "Development Tools"
     sudo yum install cmake boost-devel
 
-### If you do not have root
+### Installing pre-requisites on Linux computing clusters
 
-You will need your administrator to install build-essential (or equivalent package containing gcc) for you. If possible, ask them to install cmake as well.
+If you are compiling revbayes on a Linux cluster, you might need to select a version of gcc or cmake that is more recent than the default version.
 
-If you need to compile CMake yourself:
+Most high-performance compute clusters have additional software available as "modules".
+Using the `module avail` command followed by the name of the library will tell you if there is already a sufficiently recent version installed, thus saving you the effort of installing boost or cmake yourself:
 
-    curl -O -L https://github.com/Kitware/CMake/releases/download/v3.17.0-rc3/cmake-3.17.0-rc3.tar.gz
-    tar -xzvf cmake-3.17.0-rc3.tar.gz
-    cd cmake-3.17.0-rc3/
-    ./configure
+    module avail
+    module help gcc boost cmake
+    module load gcc
+
+CMake, GCC and Boost are all commonly used in computational research, there will likely be a sufficiently recent version of gcc and cmake, and perhaps a recent enough version of boost.
+
+### Installing pre-requisites *without* root/administrator priveleges
+
+If there is no compiler, you will need your administrator to install build-essential (or equivalent package containing gcc) for you. If possible, ask them to install cmake as well.
+
+#### Installing cmake
+
+The simplest way to [install cmake](https://cmake.org/install/) is to [download](https://cmake.org/download/) a CMake executable.  For example:
+
+    curl -O -L https://github.com/Kitware/CMake/releases/download/v3.22.1/cmake-3.22.1-linux-x86_64.tar.gz
+    tar -zxf cmake-3.22.1-linux-x86_64.tar.gz
+    cmake-3.22.1/bin/cmake --version
+    echo "cmake installed at:"
+    pwd cmake-3.22.1/bin/cmake
+
+Note the full path to the cmake executable!
+You may replace the call to cmake on line 161 of `build.sh` with this path to use your custom cmake installation.
+
+In the rare cases where the downloaded cmake executable will not run on your computer, you can also compile from source:
+
+    curl -O -L https://github.com/Kitware/CMake/releases/download/v3.22.1/cmake-3.22.1.tar.gz
+    tar -xzvf cmake-3.22.1.tar.gz
+    cd cmake-3.22.1/
+    ./bootstrap -- -DCMAKE_USE_OPENSSL=OFF
     make
+    bin/cmake --version
+    echo "cmake installed at:"
+    pwd bin/cmake
 
-When this is completed, you will notice that there is now a `/bin` directory in the cmake directory. This contains the cmake executable. You may replace the call to cmake on line 45 of `build.sh` with this path to use your custom cmake installation.
+Note the full path to the cmake executable.
+
+#### Installing boost
 
 Then you can compile boost:
 
-    curl -O -L https://dl.bintray.com/boostorg/release/1.71.0/source/boost_1_71_0.tar.gz
-    tar -xzvf boost_1_71_0.tar.gz
-    cd boost_1_71_0
+    curl -O -L https://boostorg.jfrog.io/artifactory/main/release/1.74.0/source/boost_1_74_0.tar.gz
+    tar -xzvf boost_1_74_0.tar.gz
+    cd boost_1_74_0
     ./bootstrap.sh --with-libraries=atomic,chrono,filesystem,system,regex,thread,date_time,program_options,math,serialization
     ./b2 link=static
 
@@ -53,37 +86,36 @@ When it is done, something like the following will be printed. You will need the
 
 >    The following directory should be added to compiler include paths:
 >
->    /root/boost_1_71_0
+>    /root/boost_1_74_0
 >
 >    The following directory should be added to linker library paths:
 >
->    /root/boost_1_71_0/stage/lib
+>    /root/boost_1_74_0/stage/lib
 
 ## Compile
 
-Then obtain the source:
+Download RevBayes from our github repository. Clone the repository using git by running the following command in the terminal:
 
     git clone --branch development https://github.com/revbayes/revbayes.git revbayes
 
-To compile with system boost:
+To compile with the system boost:
 
     cd revbayes/projects/cmake
     ./build.sh
 
-To compile with a locally compiled boost, do the following. Be sure to replace the paths in the build command with those you got from boost in the previous step.
+You will likely see some compiler warnings. This is normal. 
 
-    cd revbayes/projects/cmake
-    ./build.sh -boost_root /root/boost_1_71_0 -boost_lib /root/boost_1_71_0/stage/lib
+To compile revbayes using a locally compiled boost, do the following. Be sure to replace the paths in the build command with those you got from boost in the previous step.
+
+    ./build.sh -boost_root /root/boost_1_74_0 -boost_lib /root/boost_1_74_0/stage/lib
 
 For the MPI version:
 
     ./build.sh -mpi true
 
-Note that to compile the MPI version requires that an MPI library is installed. If you have root, openmpi can be install with apt or yum. If not, if can be [downloaded](https://www.open-mpi.org/) and compiled.
+This produces an executable called `rb-mpi`.
 
-## A note on compiling RevBayes on high-performance compute clusters
-
-Most high-performance compute clusters have software available as "modules". Cmake, GCC and boost are all commonly used in computational research. Using the `module avail` command followed by the name of the library will tell you if there is already a version installed, thus saving you the effort of performing these steps yourself.
+Note that compiling the MPI version requires that an MPI library is installed. If you have root, openmpi can be install with apt or yum. If not, if can be [downloaded](https://www.open-mpi.org/) and compiled.
 
 ## Troubleshooting
 
@@ -113,25 +145,14 @@ touch .bash_profile
 nano .bash_profile
 ```
 
-    Then add the following lines, replacing `<your-revbayes-directory>` with wherever you put the Revbayes Github repository:
+    Then add the following lines, replacing `/root` with wherever you put the boost libraries:
 
     ```
-export LD_LIBRARY_PATH=<your-revbayes-directory>/boost_1_60_0/stage/lib:$LD_LIBRARY_PATH
-export PATH=<your-revbayes-directory>/projects/cmake:$PATH  
+export LD_LIBRARY_PATH=/root/boost_1_74_0/stage/lib:$LD_LIBRARY_PATH
 ```
 
     Then save the file using ctrl^o and hit return, then exit using ctrl^x. Now quit the Terminal app and reopen it and the boost libraries will forever be in your path.
 
-
-* **I am using precompiled boost and getting messages like `undefined reference to boost::program_options` during the link step**
-
-    It's possible that the boost you are using was compiled with an older version of GCC than the one you are trying to use to compile RevBayes. [GCC switched the default ABI in newer versions](https://gcc.gnu.org/onlinedocs/libstdc++/manual/using_dual_abi.html). Try running:
-
-    ```
-    export CXXFLAGS="-D_GLIBCXX_USE_CXX11_ABI=0"
-    ```
-
-    and then run build.sh again. If this does not fix the issue, you may consider recompiling boost with your current version of GCC.
 
 ### MPI
 
