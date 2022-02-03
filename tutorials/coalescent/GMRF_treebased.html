@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: Skyline Models from Trees with GMRF</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
+      </a>
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/download">Download</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/documentation/">Documentation</a></li>
+        <li><a href="https://revbayes.github.io/revscripter/">RevScripter</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/jobs/">Jobs</a></li>
+        <li><a href="/developer/">Developer</a></li>
+        <li><a href="/home/gui.html">GUI</a></li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <div class="titlebar">
+	<h1 class="maintitle">Skyline Models from Trees with GMRF</h1>
+	<h3 class="subtitle">Estimating Demographic Histories with Skyline Models from Trees using a Gaussian Markov Random Field Prior</h3>
+	<h4 class="authors">Ronja Billenstein and Sebastian Höhna</h4>
+  <h5>Last modified on February  2, 2022</h5>
+</div>
+
+
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul id="prerequisites">
+          
+            <li><a href="/tutorials/coalescent/">Coalescent Analyses</a></li>
+          
+            <li><a href="/tutorials/coalescent/constant.html">Constant Coalescent Process</a></li>
+          
+            <li><a href="/tutorials/coalescent/skyline.html">Skyline Models</a></li>
+          
+            <li><a href="/tutorials/coalescent/GMRF.html">Skyline Models with GMRF</a></li>
+          
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+
+
+
+
+<blockquote class="tutorial_files" id="tutorial_files">
+    <h2>Data files and scripts</h2>
+    
+        
+        <strong>Other</strong>
+        <ul id="other_files">
+        
+        
+        
+          <li><a href="/tutorials/coalescent/output/horses_constant.trees">horses_constant.trees</a></li>
+        
+          <li><a href="/tutorials/coalescent/data/horses_homochronous_sequences_nooutgroup.fasta">horses_homochronous_sequences_nooutgroup.fasta</a></li>
+        
+          <li><a href="/tutorials/coalescent/scripts/mcmc_homochronous_GMRF.Rev">mcmc_homochronous_GMRF.Rev</a></li>
+        
+        </ul>
+    
+</blockquote>
+
+
+</div>
+<h2 class="section" id="overview">Overview</h2>
+<hr class="section" />
+
+<p>This tutorial describes how to run the Skyline Analysis from trees with a Gaussian Markov Random Field (GMRF) prior in <code class="language-plaintext highlighter-rouge">RevBayes</code>.
+Here, the trees and population sizes will not be estimated simultaneously, but it is assumed that a single tree or a sample of trees is used as input instead of a sequence alignment.</p>
+
+<h2 class="section" id="inference-example">Inference Example</h2>
+<hr class="section" />
+
+<blockquote class="info">
+  <h2 id="for-your-info">For your info</h2>
+  <p>The entire process of the GMRF based estimation from trees can be executed by using the <strong>mcmc_homochronous_GMRF_treebased.Rev</strong> script in the <strong>scripts</strong> folder.
+The alternative script <strong>mcmc_homochronous_GMRF_maptreebased.Rev</strong> provides an example on how to compute a maximum a posteriori (MAP) tree in <code class="language-plaintext highlighter-rouge">RevBayes</code> an run the analysis based on that single tree.
+You can type the following commands into <code class="language-plaintext highlighter-rouge">RevBayes</code>:</p>
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/mcmc_homochronous_GMRF_treebased.Rev")
+source("scripts/mcmc_homochronous_GMRF_maptreebased.Rev")
+</code></pre></div>  </div>
+  <p>We will walk you through the first of the scripts in the following section.</p>
+</blockquote>
+
+<p>We will mainly highlight the parts of the script that change compared to the other exercises.
+You can have another look at the other exercises, they are listed under prerequisites on the left.</p>
+
+<h3 class="subsection" id="read-the-data">Read the data</h3>
+<hr class="subsection" />
+
+<p>Read in the output from the <a href="/tutorials/coalescent/constant">constant coalescent exercise</a>.
+If you haven’t done the exercise, please download the file <strong>horses_constant.trees</strong> into an “output” folder in your tutorial directory.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Read in the tree sample
+treetrace = readTreeTrace("output/horses_constant.trees", treetype = "clock", burnin = 0.1)
+trees = treetrace.getTrees()
+
+# Get the taxa
+taxa &lt;- trees[1].taxa()
+
+# Get the number of taxa. We need these later on.
+n_taxa &lt;- taxa.size()
+</code></pre></div></div>
+
+<h3 class="subsection" id="the-gmrf-model">The GMRF Model</h3>
+<hr class="subsection" />
+
+<p>In contrast to the <a href="/tutorials/coalescent/GMRF">GMRF exercise</a>, we do not set the maximal age, but take the maximal root age of all trees included in the sample.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>MAX_AGE &lt;- 0
+for (T in trees) {
+    MAX_AGE &lt;- max( [MAX_AGE,T.rootAge()] )
+}
+</code></pre></div></div>
+
+<p>The remaining part of the model is the same as in the <a href="/tutorials/coalescent/GMRF">GMRF exercise</a>.</p>
+
+<h3 class="subsection" id="the-tree">The Tree</h3>
+<hr class="subsection" />
+
+<p>Now, we will instantiate the stochastic node for the tree.
+Similar to the skyline exercise, we use the <code class="language-plaintext highlighter-rouge">dnCoalescentSkyline</code> distribution for the tree.
+In the GMRF case, however, the method is not based on events, but has specified intervals.
+Also, with having a sample of trees, we use this distribution as prior and need to clamp the tree sample. <strong>(why dnEmpiricalSample?)</strong></p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tree_prior = dnCoalescentSkyline(theta=population_size, times=changePoints, method="specified", taxa=taxa)
+psi ~ dnEmpiricalSample( tree_prior)
+psi.clamp(trees)
+</code></pre></div></div>
+
+<p>The interval times are the defined change points.
+If you would like to read them out later, you can set them here.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>interval_times := changePoints
+</code></pre></div></div>
+
+<p>Again, we constrain the root age as before and add the same moves for the tree.</p>
+
+<blockquote class="aside"><h2>Working with one tree as input</h2><p>As mentioned above, you can also have a single tree as input.
+In this case, you can read it in with <code class="language-plaintext highlighter-rouge">readTrees</code>. <strong>(is this correct?)</strong>
+Here, we first generate the maximum a posteriori (MAP) tree from the tree sample.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>trees = readTreeTrace("output/horses_constant.trees", treetype = "clock", burnin = 0.1)
+maptree = mapTree(trace=trees)
+taxa &lt;- maptree.taxa()
+</code></pre></div></div>
+<p>The remaining part of the script is similar to having a tree sample.
+The node for the tree is just a little simpler:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psi ~ dnCoalescentSkyline(theta=population_size, times=changePoints, method="specified", taxa=taxa)
+psi.clamp(maptree)
+</code></pre></div></div>
+</blockquote>
+
+<h3 class="subsection" id="substitution-model-and-other-parameters">Substitution Model and other parameters</h3>
+<hr class="subsection" />
+
+<p>This part is also taken from the constant coalescent exercise.</p>
+
+<h3 class="subsection" id="finalize-and-run-the-analysis">Finalize and run the analysis</h3>
+<hr class="subsection" />
+
+<p>In the end, we need to wrap our model as before.</p>
+
+<p>Finally, we add the monitors and then run the MCMC.
+Remember to change the file names to avoid overwriting your previous results.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/horses_GMRF.log",printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_GMRF.trees",psi,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_GMRF_NEs.log",population_size,printgen=THINNING) )
+# monitors.append( mnFile(filename="output/horses_GMRF_times.log",interval_times,printgen=THINNING) )
+monitors.append( mnScreen(population_size, root_age, printgen=100) )
+
+mymcmc = mcmc(mymodel, monitors, moves)
+mymcmc.burnin(NUM_MCMC_ITERATIONS*0.1,100)
+mymcmc.run(NUM_MCMC_ITERATIONS, tuning = 100)
+</code></pre></div></div>
+
+<h2 class="section" id="results">Results</h2>
+<hr class="section" />
+
+<p>After running your analysis, you can plot the results using the <code class="language-plaintext highlighter-rouge">R</code> package <code class="language-plaintext highlighter-rouge">RevGadgets</code>.</p>
+
+<figure id="example_skyline"><p><img src="figures/horses_GMRF_treebased.png" width="800" /></p>
+<figcaption>This is how the resulting GMRF skyline plot should roughly look like.</figcaption>
+</figure>
+
+
+<ol class="bibliography"></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+    });
+    MathJax.Hub.Queue(function () {
+      $(".aside").each(function() {
+          $("div .MathJax", this).hide();
+      });
+    });
+</script>
+<script src="/assets/js/base.js"></script>
+
+  </body>
+</html>

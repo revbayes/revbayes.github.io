@@ -41,6 +41,7 @@
         <li><a href="/workshops/">Workshops</a></li>
         <li><a href="/jobs/">Jobs</a></li>
         <li><a href="/developer/">Developer</a></li>
+        <li><a href="/home/gui.html">GUI</a></li>
       </ul>
       <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
         <div class="form-group">
@@ -55,7 +56,7 @@
 	<h1 class="maintitle">Molecular dating</h1>
 	<h3 class="subtitle">The global molecular clock model</h3>
 	<h4 class="authors">Rachel Warnock, Sebastian Höhna, Tracy Heath, April  Wright and Walker Pett</h4>
-  <h5>Last modified on September 16, 2019</h5>
+  <h5>Last modified on February  2, 2022</h5>
 </div>
 
 
@@ -129,7 +130,7 @@
 
 <h3 id="the-data">The data</h3>
 
-<p>For this exercise we’ll use an alignment of 1,000 bp of cytochrome b sequences for 8 extant bear species. 
+<p>For this exercise we’ll use an alignment of 1,000 bp of cytochrome b sequences for 8 extant bear species.
 <strong>bears_cytb.nex</strong> contains the alignment in NEXUS format.</p>
 
 <h3 id="the-master-rev-script">The master Rev script</h3>
@@ -151,7 +152,7 @@
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_taxa &lt;- cytb.size()
 taxa &lt;- cytb.taxa()
 </code></pre></div></div>
-<p>We will also create a workspace variable called <code class="language-plaintext highlighter-rouge">moves</code> and <code class="language-plaintext highlighter-rouge">monitors</code>. 
+<p>We will also create a workspace variable called <code class="language-plaintext highlighter-rouge">moves</code> and <code class="language-plaintext highlighter-rouge">monitors</code>.
 This variable is a vector containing all of the MCMC moves and monitors respectively.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
 monitors = VectorMonitors()
@@ -237,7 +238,7 @@ moves.append( mvSubtreeScale(timetree, weight=n_taxa/5.0) )
   <p>Create a script called <strong>clock_global.Rev</strong> and open it in your text editor.</p>
 </blockquote>
 
-<p>In this exercise we’ll use the global molecular clock model that assumes rates are constant over time and across the tree. Specifying this model in RevBayes is very simple. 
+<p>In this exercise we’ll use the global molecular clock model that assumes rates are constant over time and across the tree. Specifying this model in RevBayes is very simple.
 For the branch-rates parameter we will use an exponential prior, with rate parameter $\delta_c$ = 10. Recall that the expected value (or mean) of this distribution is 0.1. The same branch-rate will apply to every branch in the tree.</p>
 
 <p>Create the exponentially distributed stochastic node for <code class="language-plaintext highlighter-rouge">branch_rates</code> and assign a move to this parameter.</p>
@@ -255,7 +256,7 @@ moves.append( mvScale(branch_rates, lambda=0.5, tune=true, weight=3.0) )
 
 <p>For this exercise we will use the general time-reversible (GTR) + $\Gamma$ model.</p>
 
-<p>First, we need to define an instantaneous-rate matrix (i.e. a Q-matrix). 
+<p>First, we need to define an instantaneous-rate matrix (i.e. a Q-matrix).
 A nucleotide GTR matrix is defined by a set of 4 stationary frequencies, and 6 exchangeability rates. Create stochastic nodes for these variables, each drawn from a uniform Dirichlet prior distribution.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sf_hp &lt;- v(1,1,1,1)
 sf ~ dnDirichlet(sf_hp)
@@ -374,7 +375,6 @@ mccTree(trace, file="output/bears_global.mcc.tre")
 <h3 id="further-reading">Further reading</h3>
 
 <p>For further options and information about clock models see Tracy Heath’s tutorial <a href="/tutorials/clocks/">Relaxed Clocks &amp; Time Trees</a>.</p>
-
 
 <ol class="bibliography"></ol>
 

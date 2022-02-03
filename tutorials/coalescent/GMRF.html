@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: Skyline Models with GMRF</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
+      </a>
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/download">Download</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/documentation/">Documentation</a></li>
+        <li><a href="https://revbayes.github.io/revscripter/">RevScripter</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/jobs/">Jobs</a></li>
+        <li><a href="/developer/">Developer</a></li>
+        <li><a href="/home/gui.html">GUI</a></li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <div class="titlebar">
+	<h1 class="maintitle">Skyline Models with GMRF</h1>
+	<h3 class="subtitle">Estimating Demographic Histories with Skyline Models using a Gaussian Markov Random Field Prior</h3>
+	<h4 class="authors">Ronja Billenstein and Sebastian Höhna</h4>
+  <h5>Last modified on February  2, 2022</h5>
+</div>
+
+
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul id="prerequisites">
+          
+            <li><a href="/tutorials/coalescent/">Coalescent Analyses</a></li>
+          
+            <li><a href="/tutorials/coalescent/constant.html">Constant Coalescent Process</a></li>
+          
+            <li><a href="/tutorials/coalescent/skyline.html">Skyline Models</a></li>
+          
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+
+
+
+
+<blockquote class="tutorial_files" id="tutorial_files">
+    <h2>Data files and scripts</h2>
+    
+        
+        <strong>Other</strong>
+        <ul id="other_files">
+        
+        
+        
+          <li><a href="/tutorials/coalescent/data/horses_homochronous_sequences_nooutgroup.fasta">horses_homochronous_sequences_nooutgroup.fasta</a></li>
+        
+          <li><a href="/tutorials/coalescent/scripts/mcmc_homochronous_GMRF.Rev">mcmc_homochronous_GMRF.Rev</a></li>
+        
+        </ul>
+    
+</blockquote>
+
+
+</div>
+<h2 class="section" id="overview">Overview</h2>
+<hr class="section" />
+
+<p>This tutorial describes how to run a Skyline Analysis with a Gaussian Markov Random Field (GMRF) prior in <code class="language-plaintext highlighter-rouge">RevBayes</code>.
+This is a special case of a skyline plot.
+The intervals are equally spaced and thus their start and end points are independent from the coalescent events.
+Furthermore, each interval’s population size has a prior based on the previous, more recent interval (remember that we start in the present and go backwards in time for coalescent processes).</p>
+
+<h2 class="section" id="inference-example">Inference Example</h2>
+<hr class="section" />
+
+<blockquote class="info">
+  <h2 id="for-your-info">For your info</h2>
+  <p>The entire process of the GMRF based estimation can be executed by using the <strong>mcmc_homochronous_GMRF.Rev</strong> script in the <strong>scripts</strong> folder.
+You can type the following command into <code class="language-plaintext highlighter-rouge">RevBayes</code>:</p>
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/mcmc_homochronous_GMRF.Rev")
+</code></pre></div>  </div>
+  <p>We will walk you through the script in the following section.</p>
+</blockquote>
+
+<p>We will mainly highlight the parts of the script that change compared to the <a href="/tutorials/coalescent/constant">constant coalescent model</a> and the <a href="/tutorials/coalescent/skyline">skyline model</a>.</p>
+
+<h3 class="subsection" id="read-the-data">Read the data</h3>
+<hr class="subsection" />
+
+<p>Read in the data as described in the first exercise.</p>
+
+<h3 class="subsection" id="the-gmrf-model">The GMRF Model</h3>
+<hr class="subsection" />
+
+<p>For the GMRF model, you need to decide on the number of intervals.
+These are equally distributed in time.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NUM_INTERVALS = 10
+</code></pre></div></div>
+
+<p>You will also need to define the points of change in time.
+Here, we define the maximal age to be $500000$ which should cover the whole tree.
+Further backwards in time the population size is thought to be in equilibrium and to be equal to the population size of the most ancient interval.
+The first interval starts at $t = 0$, the other starting points depend on the number of intervals and the maximal age.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>MAX_AGE = 500000
+
+changePoints[1] &lt;- 0
+
+for (i in 2:NUM_INTERVALS) {
+
+    changePoints[i] &lt;- (i-1) * ((MAX_AGE)/NUM_INTERVALS)
+
+}
+</code></pre></div></div>
+
+<p>For each interval, a population size will be estimated.
+In this case, the most recent population size is treated differently to the other population sizes.
+This is due to the fact that all other population size priors depend on the one more recent.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>population_size_at_present ~ dnUniform(0,1E8)
+population_size_at_present.setValue(100)
+
+moves.append( mvScaleBactrian(population_size_at_present,weight=5) )
+moves.append( mvMirrorMultiplier(population_size_at_present,weight=5) )
+moves.append( mvRandomDive(population_size_at_present,weight=5) )
+</code></pre></div></div>
+
+<p>For the GMRF model implemented in <code class="language-plaintext highlighter-rouge">RevBayes</code>, you need to define a hyperprior.
+You can get the appropriate value for this hyperprior by using the <code class="language-plaintext highlighter-rouge">R</code> package <code class="language-plaintext highlighter-rouge">RevGadgets</code>.
+Here, we ran the function <code class="language-plaintext highlighter-rouge">setMRFGlobalScaleHyperpriorNShifts(10, "GMRF")</code> to know the value of $0.1065$. <strong>(why?)</strong></p>
+
+<p>The prior for the global scale is a Half Cauchy Distribution.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>population_size_global_scale_hyperprior &lt;- 0.1065
+population_size_global_scale ~ dnHalfCauchy(0,1)
+
+moves.append( mvScaleBactrian(population_size_global_scale,weight=5.0) )
+</code></pre></div></div>
+
+<p>For each interval we define the prior for the delta log population size to be a Normal Distribution with the standard deviation dependent on the global scale and its hyperprior.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:(NUM_INTERVALS-1)) {
+  # non-centralized parameterization of horseshoe
+  delta_log_population_size[i] ~ dnNormal( mean=0, sd=population_size_global_scale*population_size_global_scale_hyperprior )
+  # Make sure values initialize to something reasonable
+  delta_log_population_size[i].setValue(runif(1,-0.1,0.1)[1])
+  moves.append( mvSlideBactrian(delta_log_population_size[i], weight=5) )
+}
+</code></pre></div></div>
+
+<p>Finally, the different population sizes need to be assembled.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>population_size := fnassembleContinuousMRF(population_size_at_present,delta_log_population_size,initialValueIsLogScale=FALSE,order=1)
+</code></pre></div></div>
+
+<p>Here, a few extra moves are added.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Move all field parameters in one go
+moves.append( mvEllipticalSliceSamplingSimple(delta_log_population_size,weight=5,tune=FALSE) )
+# joint sliding moves of all vector elements
+moves.append( mvVectorSlide(delta_log_population_size, weight=10) )
+# up-down slide of the entire vector and the rate at present
+rates_up_down_move = mvUpDownScale(weight=10.0)
+rates_up_down_move.addVariable(population_size_at_present,FALSE)
+rates_up_down_move.addVariable(delta_log_population_size,TRUE)
+moves.append( rates_up_down_move )
+# shrink expand moves
+moves.append( mvShrinkExpand( delta_log_population_size, sd=population_size_global_scale, weight=10 ) )
+</code></pre></div></div>
+
+<h3 class="subsection" id="the-tree">The Tree</h3>
+<hr class="subsection" />
+
+<p>Now, we will instantiate the stochastic node for the tree.
+Similar to the skyline exercise, we use the <code class="language-plaintext highlighter-rouge">dnCoalescentSkyline</code> distribution for the tree.
+In the GMRF case, however, the method is not based on events, but has specified intervals.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psi ~ dnCoalescentSkyline(theta=population_size, times=changePoints, method="specified", taxa=taxa)
+</code></pre></div></div>
+
+<p>In order to be able to later plot and analyze the population size curve, we can retrieve the resulting interval times as for the skyline exercise.
+Here, they should not change, so you might as well omit this line.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>interval_times := psi.getIntervalAges()
+</code></pre></div></div>
+
+<p>Again, we constrain the root age as before and add the same moves for the tree.</p>
+
+<h3 class="subsection" id="substitution-model-and-other-parameters">Substitution Model and other parameters</h3>
+<hr class="subsection" />
+
+<p>This part is also taken from the constant coalescent exercise.</p>
+
+<h3 class="subsection" id="finalize-and-run-the-analysis">Finalize and run the analysis</h3>
+<hr class="subsection" />
+
+<p>In the end, we need to wrap our model as before.</p>
+
+<p>Finally, we add the monitors and then run the MCMC.
+Remember to change the file names to avoid overwriting your previous results.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/horses_GMRF.log",printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_GMRF.trees",psi,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_GMRF_NEs.log",population_size,printgen=THINNING) )
+# monitors.append( mnFile(filename="output/horses_GMRF_times.log",interval_times,printgen=THINNING) )
+monitors.append( mnScreen(population_size, root_age, printgen=100) )
+
+mymcmc = mcmc(mymodel, monitors, moves)
+mymcmc.burnin(NUM_MCMC_ITERATIONS*0.1,100)
+mymcmc.run(NUM_MCMC_ITERATIONS, tuning = 100)
+</code></pre></div></div>
+
+<h2 class="section" id="results">Results</h2>
+<hr class="section" />
+
+<p>After running your analysis, you can plot the results using the <code class="language-plaintext highlighter-rouge">R</code> package <code class="language-plaintext highlighter-rouge">RevGadgets</code>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>library(RevGadgets)
+
+burnin = 0.1
+probs = c(0.025, 0.975)
+summary = "median"
+
+pop_size_log = "../output/horses_GMRF_NEs.log"
+pop_size &lt;- readTrace(paths = pop_size_log,
+                      burnin = burnin)[[1]]
+interval_time_log = "../output/horses_GMRF_times.log"
+interval_time &lt;- readTrace(paths = interval_time_log,
+                           burnin = burnin)[[1]]
+
+rates &lt;- list(
+  "population size" = pop_size,
+  "coalescent time" = interval_time
+)
+plotdata &lt;- RevGadgets:::.makePlotData(rates = rates, probs = probs, summary = summary)
+p &lt;- plotPopulationSize(plotdata) + ggplot2::scale_y_continuous(trans = "log10", limits=c(1e4,1e7)) + ggplot2::ylab("Population Size") + ggplot2::xlab("years ago") + ggplot2::xlim(600840.9,0)
+</code></pre></div></div>
+
+<p>In the example, we set the limits of the x-axis to the root age value from the next exercise (see below).
+This was done to be able to easily compare the plots.</p>
+
+<figure id="example_skyline"><p><img src="figures/horses_GMRF.png" width="800" /></p>
+<figcaption>This is how the resulting GMRF skyline plot should roughly look like.</figcaption>
+</figure>
+
+<h2 class="section" id="the-horseshoe-markov-random-field-prior">The Horseshoe Markov Random Field Prior</h2>
+<hr class="section" />
+
+<p>Related to the GMRF, there also is the Horseshoe Markov Random Field (HSMRF) prior.
+In the tutorial <a href="/tutorials/divrate/ebd.html">Episodic Diversification Rate Estimation</a>, it is applied to the estimation of diversification rates.
+Have a look at the <strong>Specifying the model</strong> section and try to change the respective lines in your current script to follow the HSMRF procedure.
+Do your results look different?</p>
+
+<blockquote class="aside"><h2>Hint</h2><p>The lines you should look at are lines 67 to 73 in the script.
+There, you can change the way the standard deviation is calculated.</p>
+
+<p>Remember to change the hyperprior value (<code class="language-plaintext highlighter-rouge">setMRFGlobalScaleHyperpriorNShifts(10, "HSMRF")</code> in <code class="language-plaintext highlighter-rouge">RevGadgets</code>) and to add extra moves.</p>
+
+<p>In case you prefer to download a whole HSMRF script to compare it to the GMRF script, have a look at <a href="/tutorials/coalescent/HSMRF">the HSMRF</a>.</p>
+</blockquote>
+
+<h2 class="section" id="next-exercise">Next Exercise</h2>
+<hr class="section" />
+
+<p>When you are done, have a look at the next exercise.</p>
+
+<ul>
+  <li><a href="/tutorials/coalescent/GMRF_treebased">The GMRF model with trees as input data</a></li>
+</ul>
+
+<ol class="bibliography"></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+    });
+    MathJax.Hub.Queue(function () {
+      $(".aside").each(function() {
+          $("div .MathJax", this).hide();
+      });
+    });
+</script>
+<script src="/assets/js/base.js"></script>
+
+  </body>
+</html>

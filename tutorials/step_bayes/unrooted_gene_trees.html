@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: Stepwise Bayesian inference of phylogeny</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
+      </a>
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/download">Download</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/documentation/">Documentation</a></li>
+        <li><a href="https://revbayes.github.io/revscripter/">RevScripter</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/jobs/">Jobs</a></li>
+        <li><a href="/developer/">Developer</a></li>
+        <li><a href="/home/gui.html">GUI</a></li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <div class="titlebar">
+	<h1 class="maintitle">Stepwise Bayesian inference of phylogeny</h1>
+	<h3 class="subtitle">Rooting and calibrating the gene trees</h3>
+	<h4 class="authors">Sebastian Höhna and Allison Hsiang</h4>
+  <h5>Last modified on January 17, 2021</h5>
+</div>
+
+
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul id="prerequisites">
+          
+            <li><a href="/tutorials/ctmc/">Nucleotide substitution models</a></li>
+          
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+
+
+
+
+<blockquote class="tutorial_files" id="tutorial_files">
+    <h2>Data files and scripts</h2>
+    
+        
+        <strong>Other</strong>
+        <ul id="other_files">
+        
+        
+        
+          <li><a href="/tutorials/step_bayes/scripts/mcmc_unrooted_gene_tree.Rev">mcmc_unrooted_gene_tree.Rev</a></li>
+        
+        </ul>
+    
+</blockquote>
+
+
+</div>
+<h1 class="section" id="exercise-1">Exercise 1</h1>
+
+<figure id="fig_uexp_gm"><p><img src="figures/tikz/uexp_gm.png" width="400" /></p>
+<figcaption>A graphical model of the uncorrelated exponential relaxed clock model. In this model, the clock rate on each branch is independent and identically distributed according to an exponential density with mean drawn from an exponential hyperprior distribution.</figcaption>
+</figure>
+
+<h3 id="the-data">The data</h3>
+
+<p>The data used in this exercise is the same as in the previous exercise (<strong>bears_cytb.nex</strong>). We will also use the same tree model (the birth-death process model) and the same substitution model (the GTR + $\Gamma$ model).</p>
+
+<p>There are just three steps you need to complete before running the analysis in this exercise. First, we need to create a script for the relaxed clock model.
+Second, we need to switch out the global clock model for the relaxed clock model in our master script and we need to update the name of the output files, so we don’t overwrite the output generated in the previous exercise.</p>
+
+<h3 id="the-clock-model">The clock model</h3>
+
+<h3 id="the-master-rev-script">The master Rev script</h3>
+
+<blockquote class="instruction">
+  <p>Copy the master script from the previous exercise and call it <strong>MCMC_dating_ex2.Rev</strong>.</p>
+</blockquote>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GENE = "COI"
+
+### Read in sequence data for the gene
+data = readDiscreteCharacterData( "data/photinus_"+GENE+".fas" )
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Get some useful variables from the data. We need these later on.
+num_taxa &lt;- data.ntaxa()
+num_branches &lt;- 2 * num_taxa - 3
+taxa &lt;- data.taxa()
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
+monitors = VectorMonitors()
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>######################
+# Substitution Model #
+######################
+
+# specify the stationary frequency parameters
+pi_prior &lt;- v(1,1,1,1)
+pi ~ dnDirichlet(pi_prior)
+moves.append( mvBetaSimplex(pi, weight=2.0) )
+moves.append( mvDirichletSimplex(pi, weight=1.0) )
+
+
+# specify the exchangeability rate parameters
+er_prior &lt;- v(1,1,1,1,1,1)
+er ~ dnDirichlet(er_prior)
+moves.append( mvBetaSimplex(er, weight=3.0) )
+moves.append( mvDirichletSimplex(er, weight=1.5) )
+
+
+# create a deterministic variable for the rate matrix, GTR
+Q := fnGTR(er,pi)
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#############################
+# Among Site Rate Variation #
+#############################
+
+# among site rate variation, +Gamma4
+alpha ~ dnUniform( 0, 1E8 )
+alpha.setValue(1.0)
+
+sr := fnDiscretizeGamma( alpha, alpha, 4, false )
+moves.append( mvScale(alpha, weight=2.0) )
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># the probability of a site being invariable, +I
+p_inv ~ dnBeta(1,1)
+moves.append( mvBetaProbability(p_inv, weight=2.0) )
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>##############
+# Tree model #
+##############
+
+# hyper-prior for the
+branch_length_lambda &lt;- 10.0
+
+# Prior distribution on the tree topology and branch lengths
+psi ~ dnUniformTopologyBranchLength(taxa, branchLengthDistribution=dnExponential(branch_length_lambda))
+
+moves.append( mvNNI(psi, weight=num_taxa) )
+moves.append( mvSPR(psi, weight=num_taxa/5.0) )
+moves.append( mvBranchLengthScale(psi, weight=num_branches*2) )
+
+TL := psi.treeLength()
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>###################
+# PhyloCTMC Model #
+###################
+
+# the sequence evolution model
+seq ~ dnPhyloCTMC(tree=psi, Q=Q, siteRates=sr, pInv=p_inv, type="DNA")
+
+# attach the data
+seq.clamp(data)
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>############
+# Analysis #
+############
+
+mymodel = model(psi)
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># add monitors
+monitors.append( mnScreen(alpha, p_inv, TL, printgen=100) )
+monitors.append( mnFile(psi, filename="output/photinus_"+GENE+".trees", printgen=1) )
+monitors.append( mnModel(filename="output/photinus_"+GENE+".log", printgen=1) )
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># run the analysis
+mymcmc = mcmc(mymodel, moves, monitors, nruns=2, combine="mixed")
+mymcmc.run(generations=25000, tuningInterval=100)
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># show the performance of the operators
+mymcmc.operatorSummary()
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># summarize output
+treetrace = readTreeTrace("output/photinus_"+GENE+".trees", treetype="non-clock")
+# and then get the MAP tree
+map_tree = mapTree(treetrace,"output/photinus_"+GENE+"_MAP.tre")
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># you may want to quit RevBayes now
+q()
+</code></pre></div></div>
+
+<blockquote class="instruction">
+  <p>Run your MCMC analysis!</p>
+</blockquote>
+
+<h3 id="examining-the-output">Examining the output</h3>
+
+<p>Let’s compare the output from the two different clock models in Tracer.</p>
+
+<blockquote class="instruction">
+  <p>Open the program Tracer and load the log files <strong>bears_global.log</strong> and <strong>bears_relaxed_exponential.log</strong>.</p>
+</blockquote>
+
+<p>You may notice that convergence isn’t as good for this analysis,
+which is probably caused by having a larger number of parameters.</p>
+
+<p>Have a look at the estimate for the mean branch-rate parameter (<code class="language-plaintext highlighter-rouge">branch_rates_mean</code>) in comparison
+to the estimate recovered in the previous analysis assuming a global molecular clock (<code class="language-plaintext highlighter-rouge">branch_mean</code>).
+You’ll notice that median estimates for these parameters differ quite a bit.</p>
+
+<p>In Tracer you can also highlight multiple parameters simultaneously, by using the shift key.
+Have a look at the rates obtained across different branches.
+You can see that there appears to be signal in the data for variation in rates along different branches.</p>
+
+<figure id="fig_trace"><p><img src="figures/bears_relaxed_branchrates.png" width="700" /></p>
+<figcaption>The estimates panel in Tracer showing the rates estimated for different branches.</figcaption>
+</figure>
+
+<p>You can also compare the same parameters estimated using different models by selecting multiple trace files.</p>
+
+<figure id="fig_trace2"><p><img src="figures/bears_relaxed_likelihood.png" width="700" /></p>
+<figcaption>The estimates panel in Tracer showing the likelihood estimates obtained using two different clock models.</figcaption>
+</figure>
+
+<p>Note that the likelihood obtained using the relaxed clock model is higher than for the global clock model,
+which hints that it might be a better fit to our data.
+However, this analysis has quite a lot of additional parameters (i.e. one addition rate parameter for each branch).
+To work out whether this model really is more appropriate for our data,
+we would need to use a more robust model testing approach.
+For more on this topic see Tracy Heath’s tutorial <a href="/tutorials/clocks/">Relaxed Clocks &amp; Time Trees</a>.</p>
+
+<p>Scroll through the other parameter estimates and see if you can spot any differences.</p>
+
+<h4 id="the-tree-output">The tree output</h4>
+
+<p>Let’s also have a quick look at the trees.</p>
+
+<figure id="fig_tree"><p><img src="figures/bears_relaxed.mcc.tre.png" width="700" /></p>
+<figcaption>The FigTree window. To open your tree you can use File &gt; Open. Select Node Labels to view the relative node ages.</figcaption>
+</figure>
+
+<p>If you open the trees generated using the global versus relaxed clock models in FigTree, you can compare them to see whether these models made an important difference to the inferred topology and/or relative node ages. Another useful thing to look at are the posterior probabilities obtained for different nodes. Go to the options under Node Labels and select Display &gt; posterior.</p>
+
+<h4 id="exercise">Exercise</h4>
+
+<p>We have seen above how to specify the UCE (uncorrelated exponential) clock model.
+For this exercise, we want you the change the UCE clock model into a UCLN clock model (uncorrelated relaxed clock).
+That means, we will need to replace the prior on the <code class="language-plaintext highlighter-rouge">branch_rates</code> so that they are drawn from a lognormal distribution.</p>
+
+<blockquote class="instruction">
+  <p>Copy the script called <strong>clock_relaxed_exponential.Rev</strong>, name it <strong>clock_relaxed_lognormal.Rev</strong> and open it in your text editor.</p>
+</blockquote>
+
+<p>Since the lognormal distribution is parameterized by the log of the mean, we transform first the mean into the log mean.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ln_branch_rates_mean := ln( branch_rates_mean )
+</code></pre></div></div>
+<p>Now we can replace the <code class="language-plaintext highlighter-rouge">for</code>-loop and specify that we use a lognormal distribution</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for(i in 1:n_branches){
+    branch_rates[i] ~ dnLognormal(ln_branch_rates_mean,sd=0.587405)
+    moves.append( mvScale(branch_rates[i], lambda=0.5, tune=true, weight=1.0) )
+}
+</code></pre></div></div>
+<p>Next, we are ready to set up the master script to run the analysis.</p>
+
+<blockquote class="instruction">
+  <p>Copy the master script from the previous exercise and call it <strong>MCMC_dating_ex2b.Rev</strong>.</p>
+</blockquote>
+
+<p>Change the file used to specify the clock model from <strong>clock_relaxed_exponential.Rev</strong> to <strong>clock_relaxed_lognormal.Rev</strong>.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/clock_relaxed_lognormal.Rev")
+</code></pre></div></div>
+<p>Don’t forget to update the filenames of the output (<em>e.g.,</em> from <code class="language-plaintext highlighter-rouge">bears_relaxed_exponential</code> to <code class="language-plaintext highlighter-rouge">bears_relaxed_lognormal</code>).</p>
+
+<blockquote class="instruction">
+  <p>Run your MCMC analysis!</p>
+</blockquote>
+
+<h3 id="next">Next</h3>
+
+<blockquote class="instruction">
+  <p>Click below to begin the next exercise!</p>
+</blockquote>
+
+<ul>
+  <li><a href="/tutorials/dating/nodedate">Estimating speciation times using node dating</a></li>
+</ul>
+
+<p>For further options and information about clock models see Tracy Heath’s tutorial <a href="/tutorials/clocks/">Relaxed Clocks &amp; Time Trees</a>.</p>
+
+<ol class="bibliography"></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+    });
+    MathJax.Hub.Queue(function () {
+      $(".aside").each(function() {
+          $("div .MathJax", this).hide();
+      });
+    });
+</script>
+<script src="/assets/js/base.js"></script>
+
+  </body>
+</html>

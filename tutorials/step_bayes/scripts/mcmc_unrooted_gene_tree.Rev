@@ -1,0 +1,120 @@
+################################################################################
+#
+# RevBayes Example: Bayesian inference of phylogeny using a GTR+Gamma+Inv
+#                   substitution model on a single gene.
+#
+# authors: Sebastian Hoehna
+#
+################################################################################
+
+GENE = "COI"
+
+### Read in sequence data for the gene
+data = readDiscreteCharacterData( "data/photinus_"+GENE+".fas" )
+
+
+# Get some useful variables from the data. We need these later on.
+num_taxa <- data.ntaxa()
+num_branches <- 2 * num_taxa - 3
+taxa <- data.taxa()
+
+
+moves    = VectorMoves()
+monitors = VectorMonitors()
+
+
+######################
+# Substitution Model #
+######################
+
+# specify the stationary frequency parameters
+pi_prior <- v(1,1,1,1)
+pi ~ dnDirichlet(pi_prior)
+moves.append( mvBetaSimplex(pi, weight=2.0) )
+moves.append( mvDirichletSimplex(pi, weight=1.0) )
+
+
+# specify the exchangeability rate parameters
+er_prior <- v(1,1,1,1,1,1)
+er ~ dnDirichlet(er_prior)
+moves.append( mvBetaSimplex(er, weight=3.0) )
+moves.append( mvDirichletSimplex(er, weight=1.5) )
+
+
+# create a deterministic variable for the rate matrix, GTR
+Q := fnGTR(er,pi)
+
+
+#############################
+# Among Site Rate Variation #
+#############################
+
+# among site rate variation, +Gamma4
+alpha ~ dnUniform( 0, 1E8 )
+alpha.setValue(1.0)
+
+sr := fnDiscretizeGamma( alpha, alpha, 4, false )
+moves.append( mvScale(alpha, weight=2.0) )
+
+
+# the probability of a site being invariable, +I
+p_inv ~ dnBeta(1,1)
+moves.append( mvBetaProbability(p_inv, weight=2.0) )
+
+
+##############
+# Tree model #
+##############
+
+# hyper-prior for the
+branch_length_lambda <- 10.0
+
+# Prior distribution on the tree topology and branch lengths
+psi ~ dnUniformTopologyBranchLength(taxa, branchLengthDistribution=dnExponential(branch_length_lambda))
+
+moves.append( mvNNI(psi, weight=num_taxa) )
+moves.append( mvSPR(psi, weight=num_taxa/5.0) )
+moves.append( mvBranchLengthScale(psi, weight=num_branches*2) )
+
+TL := psi.treeLength()
+
+
+
+
+###################
+# PhyloCTMC Model #
+###################
+
+# the sequence evolution model
+seq ~ dnPhyloCTMC(tree=psi, Q=Q, siteRates=sr, pInv=p_inv, type="DNA")
+
+# attach the data
+seq.clamp(data)
+
+
+############
+# Analysis #
+############
+
+mymodel = model(psi)
+
+# add monitors
+monitors.append( mnScreen(alpha, p_inv, TL, printgen=100) )
+monitors.append( mnFile(psi, filename="output/photinus_"+GENE+".trees", printgen=1) )
+monitors.append( mnModel(filename="output/photinus_"+GENE+".log", printgen=1) )
+
+# run the analysis
+mymcmc = mcmc(mymodel, moves, monitors, nruns=2, combine="mixed")
+mymcmc.run(generations=25000, tuningInterval=100)
+
+# show the performance of the operators
+mymcmc.operatorSummary()
+
+# summarize output
+treetrace = readTreeTrace("output/photinus_"+GENE+".trees", treetype="non-clock")
+# and then get the MAP tree
+map_tree = mapTree(treetrace,"output/photinus_"+GENE+"_MAP.tre")
+
+
+# you may want to quit RevBayes now
+q()

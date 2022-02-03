@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: Skyline Models</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
+      </a>
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/download">Download</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/documentation/">Documentation</a></li>
+        <li><a href="https://revbayes.github.io/revscripter/">RevScripter</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/jobs/">Jobs</a></li>
+        <li><a href="/developer/">Developer</a></li>
+        <li><a href="/home/gui.html">GUI</a></li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <div class="titlebar">
+	<h1 class="maintitle">Skyline Models</h1>
+	<h3 class="subtitle">Estimating Demographic Histories with Skyline Models</h3>
+	<h4 class="authors">Ronja Billenstein and Sebastian Höhna</h4>
+  <h5>Last modified on February  2, 2022</h5>
+</div>
+
+
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul id="prerequisites">
+          
+            <li><a href="/tutorials/coalescent/">Coalescent Analyses</a></li>
+          
+            <li><a href="/tutorials/coalescent/constant.html">Constant Coalescent Process</a></li>
+          
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+
+
+
+
+<blockquote class="tutorial_files" id="tutorial_files">
+    <h2>Data files and scripts</h2>
+    
+        
+        <strong>Other</strong>
+        <ul id="other_files">
+        
+        
+        
+          <li><a href="/tutorials/coalescent/data/horses_homochronous_sequences_nooutgroup.fasta">horses_homochronous_sequences_nooutgroup.fasta</a></li>
+        
+          <li><a href="/tutorials/coalescent/scripts/mcmc_homochronous_skyline.Rev">mcmc_homochronous_skyline.Rev</a></li>
+        
+        </ul>
+    
+</blockquote>
+
+
+</div>
+<h2 class="section" id="skyline-plots">Skyline Plots</h2>
+<hr class="section" />
+
+<p>Skyline Plots are models for how population size changes through time.
+The classical skyline plot <a class="citation" href="#Pybus2000">(Pybus et al. 2000)</a> provided the first implementation of this idea.
+For each interval between two coalescent events, an effective population size was calculated.
+This led to a plot looking very similar to a skyline, thus giving the method its name.
+The generalized skyline plot <a class="citation" href="#Strimmer2001">(Strimmer and Pybus 2001)</a> aimed at reducing the noise from analyzing every single interval by grouping several coalescent events into one interval.
+This created a smoother curve.
+First, these models were used for maximum likelihood (ML) estimation of population sizes through time.
+By now, several extensions allowing for Bayesian estimation have been published <a class="citation" href="#"></a>.
+In <code class="language-plaintext highlighter-rouge">RevBayes</code>, a Skyline plot method is implemented with constant population size intervals.
+<!--- The length of these intervals is not based on the timing of the coalescent events, but can be individually chosen. --->
+The length of these intervals can either be defined by a specific number of intervals ending at coalescent events, or alternatively be chosen individually without depending on the coalescent events.
+<!--- In this tutorial, each interval will have the same length. --->
+In this exercise, each interval will group five coalescent events.</p>
+
+<blockquote class="aside"><h2>Likelihood Calculation</h2><p>We assume that the phylogeny of the samples is known.
+There are $n$ samples, with $k$ active lineages at the current point in time $t$.
+Time starts at $t = 0$.
+The waiting times between coalescent events $w_k$ are exponentially distributed with rate $c = \frac{k (k-1)}{2N_e(t)}$ with $N_e$ being the population size.
+<!--- In the case of a skyline plot, the population size curve is split into $m$ intervals which each have a starting point $t_i$. ---></p>
+
+<p>The likelihood for a Skyline Plot is the product of the probability density functions of the coalescent waiting times, which are calculated as follows:</p>
+
+\[p(w_k | t_k) = \frac{k (k -1)}{2N_e(t_k + w_k)} exp \left[ \int_{t_k}^{t_k+w_k} \frac{k (k -1)}{2N_e(t)} dt \right]\]
+
+<p>Each $t_k$ is the beginning of the respective kth coalescent interval.
+The waiting times $w_k$ refer to the waiting time starting when there are $k$ active lineages.</p>
+
+<!--- In our case, $N_e(t)$ is a piecewise constant demographic function with $m$ intervals which each have a starting point $t_i$ and the length $l$.
+**Do I need to go into the intervals here?** --->
+</blockquote>
+
+<h2 class="section" id="inference-example">Inference Example</h2>
+<hr class="section" />
+
+<blockquote class="info">
+  <h2 id="for-your-info">For your info</h2>
+  <p>The entire process of the skyline estimation can be executed by using the <strong>mcmc_homochronous_skyline.Rev</strong> script that you can download on the left side of the page.
+Save it in your <strong>scripts</strong> directory.
+You can type the following command into <code class="language-plaintext highlighter-rouge">RevBayes</code>:</p>
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/mcmc_homochronous_skyline.Rev")
+</code></pre></div>  </div>
+  <p>We will walk you through the script in the following section.</p>
+</blockquote>
+
+<p>We will mainly highlight the parts of the script that change compared to the <a href="/tutorials/coalescent/constant">constant coalescent model</a>.</p>
+
+<h3 class="subsection" id="read-the-data">Read the data</h3>
+<hr class="subsection" />
+
+<p>Read in the data as described in the first exercise.</p>
+
+<h3 class="subsection" id="the-skyline-model">The Skyline Model</h3>
+<hr class="subsection" />
+
+<p>For the skyline model, you need to decide on the number of intervals.
+In order to get five coalescent events per interval, we divide the number of coalescent events by five.
+With $n$ taxa, we expect $(n-1)$ coalescent events, until there is only one lineage left.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NUM_INTERVALS = ceil((n_taxa - 1) / 5)
+</code></pre></div></div>
+
+<p>For each interval, a population size will be estimated. Chose a prior and add a move for each population size.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:NUM_INTERVALS) {
+    pop_size[i] ~ dnUniform(0,1E6)
+    pop_size[i].setValue(100)
+    moves.append( mvScale(pop_size[i], lambda=0.1, tune=true, weight=2.0) )
+}
+</code></pre></div></div>
+
+<h3 class="subsection" id="the-tree">The Tree</h3>
+<hr class="subsection" />
+
+<p>Now, we will instantiate the stochastic node for the tree.
+The Skyline distribution function <code class="language-plaintext highlighter-rouge">dnCoalescentSkyline</code> takes the vector of population sizes the taxa as input. <!--- **(need to check whether it can take more)** --->
+By chosing <code class="language-plaintext highlighter-rouge">methods="events"</code>, the interval lengths will be chosen based on the number of events.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psi ~ dnCoalescentSkyline(theta=pop_size, method="events", taxa=taxa)
+</code></pre></div></div>
+
+<p>In order to be able to later plot and analyze the population size curve, we need to retrieve the resulting interval times.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>interval_times := psi.getIntervalAges()
+</code></pre></div></div>
+
+<p>For this analysis, we constrain the root age as before and add the same moves for the tree.</p>
+
+<h3 class="subsection" id="substitution-model-and-other-parameters">Substitution Model and other parameters</h3>
+<hr class="subsection" />
+
+<p>This part is also taken from the constant coalescent exercise.</p>
+
+<h3 class="subsection" id="finalize-and-run-the-analysis">Finalize and run the analysis</h3>
+<hr class="subsection" />
+
+<p>In the end, we need to wrap our model as before.</p>
+
+<p>Finally, we add the monitors and then run the MCMC.
+Here, another monitor is added for the interval times.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/example_skyline.log",printgen=THINNING) )
+monitors.append( mnFile(filename="output/example_skyline.trees",psi,printgen=THINNING) )
+monitors.append( mnFile(filename="output/example_skyline_NEs.log",pop_size,printgen=THINNING) )
+monitors.append( mnFile(filename="output/example_skyline_times.log",interval_times,printgen=THINNING) )
+monitors.append( mnScreen(pop_size, root_age, printgen=100) )
+</code></pre></div></div>
+
+<h2 class="section" id="results">Results</h2>
+<hr class="section" />
+
+<p>After running your analysis, you can plot the results again using the <code class="language-plaintext highlighter-rouge">R</code> package <code class="language-plaintext highlighter-rouge">RevGadgets</code>.</p>
+
+<figure id="example_skyline"><p><img src="figures/horses_skyline.png" width="800" /></p>
+<figcaption>This is how the resulting skyline plot should roughly look like.</figcaption>
+</figure>
+
+<h2 class="section" id="next-exercise">Next Exercise</h2>
+<hr class="section" />
+
+<p>When you are done, have a look at the next exercise.</p>
+
+<ul>
+  <li><a href="/tutorials/coalescent/GMRF">The Gaussian Markov Random Field (GMRF) model</a></li>
+</ul>
+
+<ol class="bibliography"><li><span id="Pybus2000">Pybus O.G., Rambaut A., Harvey P.H. 2000. An Integrated Framework for the Inference of Viral Population History From Reconstructed Genealogies. Genetics. 155:1429–1437.</span>
+
+<a href="https://doi.org/10.1093/genetics/155.3.1429">10.1093/genetics/155.3.1429</a>
+
+</li>
+<li><span id="Strimmer2001">Strimmer K., Pybus O.G. 2001. Exploring the Demographic History of DNA Sequences Using the Generalized Skyline Plot. Molecular Biology and Evolution. 18:2298–2305.</span>
+
+<a href="https://doi.org/10.1093/oxfordjournals.molbev.a003776">10.1093/oxfordjournals.molbev.a003776</a>
+
+</li></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+    });
+    MathJax.Hub.Queue(function () {
+      $(".aside").each(function() {
+          $("div .MathJax", this).hide();
+      });
+    });
+</script>
+<script src="/assets/js/base.js"></script>
+
+  </body>
+</html>
