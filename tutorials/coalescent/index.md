@@ -87,6 +87,6 @@ The first five exercises work with homochronous data, the last one with heteroch
 2. [The skyline model]({{base.url}}/tutorials/coalescent/skyline)
 3. [The Gaussian Markov Random Field (GMRF) model]({{base.url}}/tutorials/coalescent/GMRF)
 4. [The GMRF model with trees as input data]({{base.url}}/tutorials/coalescent/GMRF_treebased)
+5. [A piecewise model]({{base.url}}/tutorials/coalescent/piecewise)
 
-<!--- 5. [A piecewise model]({{base.url}}/tutorials/coalescent/piecewise)
-6. [Heterochronous data]({{base.url}}/tutorials/coalescent/heterochronous) --->
+<!--- 6. [Heterochronous data]({{base.url}}/tutorials/coalescent/heterochronous) --->
