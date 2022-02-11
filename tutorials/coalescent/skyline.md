@@ -128,7 +128,7 @@ monitors.append( mnScreen(pop_size, root_age, printgen=100) )
 After running your analysis, you can plot the results again using the `R` package `RevGadgets`.
 
 {% figure example_skyline %}
-<img src="figures/horses_skyline.png" width="800">
+<img src="figures/horses_skyline_n.png" width="800">
 {% figcaption %}
 This is how the resulting skyline plot should roughly look like.
 {% endfigcaption %}

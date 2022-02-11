@@ -48,16 +48,14 @@ NUM_INTERVALS = 10
 You will also need to define the points of change in time.
 Here, we define the maximal age to be $500000$ which should cover the whole tree.
 Further backwards in time the population size is thought to be in equilibrium and to be equal to the population size of the most ancient interval.
-The first interval starts at $t = 0$, the other starting points depend on the number of intervals and the maximal age.
+The first interval (automatically) starts at $t = 0$, the other starting points depend on the number of intervals and the maximal age.
 
 ~~~
 MAX_AGE = 500000
 
-changePoints[1] <- 0
+for (i in 1:(NUM_INTERVALS-1)) {
 
-for (i in 2:NUM_INTERVALS) {
-
-    changePoints[i] <- (i-1) * ((MAX_AGE)/NUM_INTERVALS)
+    changePoints[i] <- i * ((MAX_AGE)/NUM_INTERVALS)
 
 }
 ~~~
