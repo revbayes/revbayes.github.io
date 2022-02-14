@@ -19,8 +19,8 @@ The simplest coalescent model is one with a constant population size through tim
 This population size is estimated solely based on the waiting times between coalescent events.
 
 {% subsection The Coalescent %}
-The coalescent process is constructing a tree backwards in time.
-Starting from the samples, lineages are merged (*i.e.* coalesced), always two at a time.
+The coalescent process constructs a tree backwards in time.
+Starting from the samples, lineages are merged (*i.e.,* coalesced), always two at a time.
 Under the coalescent process, the waiting time between two coalescent events is exponentially distributed and depends on the number of 'active' lineages and the effective population size $N_e$.
 Active lineages are the ones that can coalesce, the number is reduced by one with every coalescent event.
 The coalescent process was first introduced by Kingman in 1982 for a constant population size {% cite Kingman1982 %}.
