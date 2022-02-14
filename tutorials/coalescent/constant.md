@@ -9,7 +9,7 @@ prerequisites:
 index: false
 include_all: false
 include_files:
-- data/horses_homochronous_sequences_nooutgroup.fasta
+- data/horses_homochronous_sequences.fasta
 - scripts/mcmc_homochronous_constant.Rev
 ---
 
@@ -32,7 +32,7 @@ The relationship betweeen coalescent waiting times and effective population size
 {% figure coalescent %}
 <img src="figures/Draft_coalescent_2.png" width="800">
 {% figcaption %}
-Schematic figure of a coalescent tree and the different times associated with it. $w_k$ are the waiting times with $k$ active lineages, $t_{ck}$ are the coalescent events at the beginning of such a coalescent interval. $t_{ij}$ mark the points of interval change in the case of intervals independent from coalescent intervals. Here, an example with equally spaced intervals is shown.
+Schematic figure of a coalescent tree and the different times associated with it. $w_k$ are the waiting times with $k$ active lineages, $t_{ck}$ are the coalescent events at the beginning of such a coalescent interval. $t_{ij}$ mark the points of interval change. Here, one example with event-based interval times (violet) and one example with equally sized intervals (green) are shown.
 {% endfigcaption %}
 {% endfigure %}
 
@@ -58,7 +58,7 @@ We will walk you through every single step in the following section.
 <!--- Start by reading in the taxa names and age information (**bears_taxa.tsv**) and the sequences (**.nex**). --->
 Start by reading in the aligned sequences.
 ~~~
-sequences <- readDiscreteCharacterData("data/horses_homochronous_sequences_nooutgroup.fasta")
+sequences <- readDiscreteCharacterData("data/horses_homochronous_sequences.fasta")
 ~~~
 
 You will also need the names of the taxa and their number.
@@ -78,7 +78,7 @@ pop_size ~ dnUniform(0,1E8)
 ~~~
 
 You may realize that in the full script, we initialize the population size to have a first value of $100$.
-Later in the tutorial, we will constrain the root age of the tree to be inside the interval $\[250000, 500000\]$.
+Later in the tutorial, we will constrain the root age of the tree to be inside the interval $\[250 000, 500 000\]$.
 In order for our first proposed tree to comply with this constraint, an initial value of $100$ proved to avoid problems. **(phrasing!)**
 ~~~
 pop_size.setValue(100)
@@ -95,8 +95,8 @@ psi ~ dnCoalescent(theta=pop_size, taxa=taxa)
 ~~~
 
 We calibrate the tree based on the root age.
-We chose a Normal distribution with a mean of $375,000$ and a standard deviation of $60,000$. **(add why!)**
-As mentioned above, the root age will be constrained to the interval $\[250,000, 500,000\]$.
+We chose a Normal distribution with a mean of $375 000$ and a standard deviation of $60 000$. **(add why!)**
+As mentioned above, the root age will be constrained to the interval $\[250 000, 500 000\]$.
 ~~~
 root_age := psi.rootAge()
 obs_root_age ~ dnNormal(mean = root_age, sd = 60000, min = 250000, max = 500000)
@@ -211,18 +211,9 @@ burnin = 0.1
 probs = c(0.025, 0.975)
 summary = "median"
 
-pop_size_log = "../output/horses_constant_NE.log"
-pop_size <- readTrace(paths = pop_size_log,
-                      burnin = burnin)[[1]]
-pop_size = dplyr::rename(pop_size, "pop_size[0]" = "pop_size")
-pop_size$`pop_size[1]` = pop_size$`pop_size[0]`
-
-rates <- list(
-  "population size" = pop_size,
-  "coalescent time" = data.frame("interval_times[0]" = rep(0,900), "interval_times[1]" = rep(375000,900))
-)
-plotdata <- RevGadgets:::.makePlotData(rates = rates, probs = probs, summary = summary)
-p <- plotPopulationSize(plotdata) + ggplot2::scale_y_continuous(trans = "log10", limits=c(1e4,1e7)) + ggplot2::ylab("Population Size") + ggplot2::xlab("years ago")# + ggplot2::xlim(1e6,0)
+population_size_log = "../output/horses_constant_NE.log"
+df <- processPopSizes(population_size_log, method = "constant", burnin = burnin, probs = probs, summary = summary)
+p <- plotPopSizes(df, method = "constant") + ggplot2::coord_cartesian(ylim = c(1e3, 1e7))
 ~~~
 
 Your output should look roughly like the following figure.

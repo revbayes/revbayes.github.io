@@ -11,9 +11,9 @@ prerequisites:
 index: false
 include_all: false
 include_files:
-- data/horses_homochronous_sequences_nooutgroup.fasta
-- data/horses_heterochronous_sequences_nooutgroup.fasta
-- data/horses_ages_inyears_nooutgroup.tsv
+- data/horses_homochronous_sequences.fasta
+- data/horses_heterochronous_sequences.fasta
+- data/horses_heterochronous_ages.tsv
 ---
 
 > ## For your info
@@ -57,11 +57,11 @@ In the tutorial directory on your computer, create a subdirectory called "data" 
 
 You should now have the following files in your data folder:
 
--   horses_homochronous_sequences_nooutgroup.fasta: an alignment in FASTA format, containing sequences of 36 horse taxa, all sampled at the same time.
+-   horses_homochronous_sequences.fasta: an alignment in FASTA format, containing sequences of 36 horse taxa, all sampled at the same time.
 
--   horses_heterochronous_sequences_nooutgroup.fasta: an alignment in FASTA format, containing sequences of 173 horse taxa, sampled at various times.
+-   horses_heterochronous_sequences.fasta: an alignment in FASTA format, containing sequences of 173 horse taxa, sampled at various times.
 
--   horses_ages_inyears.tsv: a tab seperated table listing the heterochronous horse samples and their ages. For extant taxa, the minimum age is 0.0 (i.e. the present).
+-   horses_heterochronous_ages.tsv: a tab seperated table listing the heterochronous horse samples and their ages. For extant taxa, the minimum age is 0.0 (i.e. the present).
 
 
 {% subsection The Scripts %}
@@ -90,3 +90,7 @@ The first five exercises work with homochronous data, the last one with heteroch
 5. [A piecewise model]({{base.url}}/tutorials/coalescent/piecewise)
 
 <!--- 6. [Heterochronous data]({{base.url}}/tutorials/coalescent/heterochronous) --->
+
+{% section Summary %}
+After doing all the exercises, you can compare the resulting population sizes.
+Have a look at the [summary]({{base.url}}/tutorials/coalescent/summary).

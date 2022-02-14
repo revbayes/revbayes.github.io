@@ -11,7 +11,7 @@ prerequisites:
 index: false
 include_all: false
 include_files:
-- data/horses_homochronous_sequences_nooutgroup.fasta
+- data/horses_homochronous_sequences.fasta
 - scripts/mcmc_homochronous_GMRF.Rev
 ---
 
@@ -73,9 +73,9 @@ moves.append( mvMirrorMultiplier(population_size_at_present,weight=5) )
 moves.append( mvRandomDive(population_size_at_present,weight=5) )
 ~~~
 
-For the GMRF model implemented in `RevBayes`, you need to define a hyperprior.
+For the GMRF model implemented in `RevBayes`, you need to define a hyperprior for the global scale parameter which controls the overall variability of population sizes from present to past.
 You can get the appropriate value for this hyperprior by using the `R` package `RevGadgets`.
-Here, we ran the function `setMRFGlobalScaleHyperpriorNShifts(10, "GMRF")` to know the value of $0.1065$. **(why?)**
+Here, we ran the function `setMRFGlobalScaleHyperpriorNShifts(10, "GMRF")` to know the value of $0.1065$. <!--- **(why?)** --->
 
 The prior for the global scale is a Half Cauchy Distribution.
 
@@ -172,23 +172,14 @@ burnin = 0.1
 probs = c(0.025, 0.975)
 summary = "median"
 
-pop_size_log = "../output/horses_GMRF_NEs.log"
-pop_size <- readTrace(paths = pop_size_log,
-                      burnin = burnin)[[1]]
-interval_time_log = "../output/horses_GMRF_times.log"
-interval_time <- readTrace(paths = interval_time_log,
-                           burnin = burnin)[[1]]
-
-rates <- list(
-  "population size" = pop_size,
-  "coalescent time" = interval_time
-)
-plotdata <- RevGadgets:::.makePlotData(rates = rates, probs = probs, summary = summary)
-p <- plotPopulationSize(plotdata) + ggplot2::scale_y_continuous(trans = "log10", limits=c(1e4,1e7)) + ggplot2::ylab("Population Size") + ggplot2::xlab("years ago") + ggplot2::xlim(600840.9,0)
+population_size_log = "../output/horses_GMRF_NEs.log"
+interval_change_points_log = "../output/horses_GMRF_times.log"
+df <- processPopSizes(population_size_log, interval_change_points_log, method = "specified", burnin = burnin, probs = probs, summary = summary)
+p <- plotPopSizes(df, method = "specified") + ggplot2::coord_cartesian(ylim = c(1e3, 1e7))
 ~~~
 
-In the example, we set the limits of the x-axis to the root age value from the next exercise (see below).
-This was done to be able to easily compare the plots.
+<!--- In the example, we set the limits of the x-axis to the root age value from the next exercise (see below).
+This was done to be able to easily compare the plots. --->
 
 {% figure example_skyline %}
 <img src="figures/horses_GMRF.png" width="800">
@@ -199,17 +190,78 @@ This is how the resulting GMRF skyline plot should roughly look like.
 
 {% section The Horseshoe Markov Random Field Prior %}
 Related to the GMRF, there also is the Horseshoe Markov Random Field (HSMRF) prior.
+It can be seen as a more generalized version of the GMRF with the change focusing on the definition of the standard deviation ({% cite Magee2020 %})
 In the tutorial {% page_ref divrate/ebd %}, it is applied to the estimation of diversification rates.
 Have a look at the **Specifying the model** section and try to change the respective lines in your current script to follow the HSMRF procedure.
 Do your results look different?
 
 {% aside Hint %}
 The lines you should look at are lines 67 to 73 in the script.
-There, you can change the way the standard deviation is calculated.
+There, you can change the way the standard deviation of the population sizes per interval is calculated.
+
+~~~
+for (i in 1:(NUM_INTERVALS-1)) {
+  # Variable-scaled variances for hierarchical horseshoe
+  sigma_population_size[i] ~ dnHalfCauchy(0,1)
+  # Make sure values initialize to something reasonable
+  sigma_population_size[i].setValue(runif(1,0.005,0.1)[1])
+  # moves on the single sigma values
+  moves.append( mvScaleBactrian(sigma_population_size[i], weight=5) )
+  # non-centralized parameterization of horseshoe
+  delta_log_population_size[i] ~ dnNormal( mean=0, sd=sigma_population_size[i]*population_size_global_scale*population_size_global_scale_hyperprior )
+  # Make sure values initialize to something reasonable
+  delta_log_population_size[i].setValue(runif(1,-0.1,0.1)[1])
+  moves.append( mvSlideBactrian(delta_log_population_size[i], weight=5) )
+}
+~~~
 
 Remember to change the hyperprior value (`setMRFGlobalScaleHyperpriorNShifts(10, "HSMRF")` in `RevGadgets`) and to add extra moves.
 
 In case you prefer to download a whole HSMRF script to compare it to the GMRF script, have a look at [the HSMRF]({{base.url}}/tutorials/coalescent/HSMRF).
+
+{% endaside %}
+
+{% aside Reversible Jump MCMC %}
+
+In RevBayes, there also is the possibility to estimate the number of intervals via reversible jump MCMC (rjMCMC).
+In this approach, you don't specifically set the number of intervals before the analysis, but make it a parameter that is estimated as part of the analysis.
+This functionality is implemented in the `dnMultiValueEvent` distribution.
+
+For the `eventDistribution` parameter, a distribution on natural number has to be chosen.
+In this example, we use a Poisson distribution with an expected value of $10$.
+The `valueDistribution` is a vector of prior distributions for the population sizes and the interval times.
+We also should call the variables by their names.
+The `minNumberEvents` are $1$ population size and $0$ times corresponding to interval changes.
+We expect to always have one more population size than change points.
+~~~
+events ~ dnMultiValueEvent (eventDistribution = dnPoisson(lambda=10),
+                   valueDistribution=[dnUniform(1E4,1E8),
+                                      dnUniform(0.0,MAX_AGE)],
+                   names=["theta","time"],
+                   minNumberEvents=[1,0])
+~~~
+Fo the `dnMultiValueEvent` distribution, we add specific moves.
+~~~
+# apply a move that adds and removes pairs of theta+time
+moves.append( mvMultiValueEventBirthDeath(events, weight=50) )
+# add a move that changes the theta variables
+moves.append( mvMultiValueEventScale(events, name="theta", lambda=1.0, weight=10, tune=!FALSE) )
+# add a move that changes the time variables
+moves.append( mvMultiValueEventSlide(events, name="time", lambda=10.0, weight=10, tune=!FALSE) )
+moves.append( mvMultiValueEventScale(events, name="time", lambda=0.5, weight=10, tune=!FALSE) )
+~~~
+Finally, we need to track the different parameters by assigning them to variables.
+~~~
+n_events := events.getNumberOfEvents()
+population_size := events.getRealPosValues(name="theta")
+changePoints := events.getRealPosValues(name="time")
+~~~
+In the end, all the parameters can be put into the `dnCoalescentSkyline` distribution.
+~~~
+psi ~ dnCoalescentSkyline(theta=population_size, times=changePoints, method="specified", taxa=taxa)
+~~~
+
+You can have a look at the results [here]({{base.url}}/tutorials/coalescent/CPP)
 
 {% endaside %}
 
