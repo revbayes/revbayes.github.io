@@ -1,6 +1,6 @@
 ################################################################################
 #
-# RevBayes Example: Homochronous constant coalescent process applied to horse data
+# RevBayes Example: Homochronous piecewise coalescent process applied to horse data
 #
 # authors: Sebastian Hoehna, Ronja Billenstein
 #
@@ -19,9 +19,6 @@ monitors  = VectorMonitors()
 # Reading in the Data #
 #######################
 
-# Read in the names and ages of the taxa - not needed, all homochronous, t = 0
-# taxa <- readTaxonData("data/horses_homochronous_ages_inyears_nooutgroup.tsv")
-
 # Read in sequence data
 sequences <- readDiscreteCharacterData("data/horses_homochronous_sequences.fasta")
 taxa <- sequences.taxa()
@@ -35,12 +32,30 @@ n_taxa <- taxa.size()
 # Tree model #
 ##############
 
-pop_size ~ dnUniform(0,1E8)
-pop_size.setValue(100)
-moves.append( mvScale(pop_size, lambda=0.1, tune=true, weight=2.0) )
+for (i in 1:5){
+	pop_size[i] ~ dnUniform(0,1E8)
+	pop_size[i].setValue(100)
+	moves.append( mvScale(pop_size[i], lambda=0.1, tune=true, weight=2.0) )
+}
 
-### the time tree is a stochastic node modeled by the constant coalescent process (dnConstantCoalescent)
-psi ~ dnCoalescent(theta=pop_size, taxa=taxa)
+change_points[1] ~ dnUniform(1E4,2E4)
+change_points[2] ~ dnUniform(3E4,4E4)
+change_points[3] ~ dnUniform(6E4,9E4)
+change_points[4] ~ dnUniform(1.2E5,1.7E5)
+change_points[5] ~ dnUniform(2.2E5,3.2E5)
+for (i in 1:5){
+	moves.append( mvSlide(change_points[i], delta=0.1, tune=true, weight=2.0) )
+}
+
+
+dem_exp_1 = dfExponential(N0 = pop_size[1], N1=pop_size[2], t0=0, t1=change_points[1])
+dem_exp_2 = dfExponential(N0 = pop_size[2], N1=pop_size[3], t0=change_points[1], t1=change_points[2])
+dem_lin_1 = dfLinear(N0 = pop_size[3], N1=pop_size[4], t0=change_points[2], t1=change_points[3])
+dem_const_1 = dfConstant(pop_size[4])
+dem_lin_2 = dfLinear(N0 = pop_size[4], N1=pop_size[5], t0=change_points[4], t1=change_points[5])
+dem_const_2 = dfConstant(pop_size[5])
+
+psi ~ dnCoalescentDemography([dem_exp_1,dem_exp_2,dem_lin_1,dem_const_1,dem_lin_2,dem_const_2], changePoints=change_points, taxa=taxa)
 
 root_age := psi.rootAge()
 obs_root_age ~ dnNormal(mean = root_age, sd = 60000, min = 250000, max = 500000)
@@ -109,9 +124,10 @@ mymodel = model(psi)
 ################
 
 #add monitors
-monitors.append( mnModel(filename="output/horses_constant.log",printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_constant.trees",psi,printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_constant_NE.log",pop_size,printgen=THINNING) )
+monitors.append( mnModel(filename="output/horses_piecewise.log",printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_piecewise.trees",psi,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_piecewise_NEs.log",pop_size,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_piecewise_times.log",change_points,printgen=THINNING) )
 monitors.append( mnScreen(pop_size, root_age, printgen=100) )
 
 mymcmc = mcmc(mymodel, monitors, moves)

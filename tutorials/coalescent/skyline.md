@@ -10,7 +10,7 @@ prerequisites:
 index: false
 include_all: false
 include_files:
-- data/horses_homochronous_sequences_nooutgroup.fasta
+- data/horses_homochronous_sequences.fasta
 - scripts/mcmc_homochronous_skyline.Rev
 ---
 
@@ -75,7 +75,7 @@ With $n$ taxa, we expect $(n-1)$ coalescent events, until there is only one line
 NUM_INTERVALS = ceil((n_taxa - 1) / 5)
 ~~~
 
-For each interval, a population size will be estimated. Chose a prior and add a move for each population size.
+For each interval, a population size will be estimated. Choose a prior and add a move for each population size.
 
 ~~~
 for (i in 1:NUM_INTERVALS) {
@@ -127,8 +127,21 @@ monitors.append( mnScreen(pop_size, root_age, printgen=100) )
 
 After running your analysis, you can plot the results again using the `R` package `RevGadgets`.
 
+~~~
+library(RevGadgets)
+
+burnin = 0.1
+probs = c(0.025, 0.975)
+summary = "median"
+
+population_size_log = "../output/horses_skyline_NEs.log"
+interval_change_points_log = "../output/horses_skyline_times.log"
+df <- processPopSizes(population_size_log, interval_change_points_log, method = "events", burnin = burnin, probs = probs, summary = summary)
+p <- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e7))
+~~~
+
 {% figure example_skyline %}
-<img src="figures/horses_skyline_n.png" width="800">
+<img src="figures/horses_skyline.png" width="800">
 {% figcaption %}
 This is how the resulting skyline plot should roughly look like.
 {% endfigcaption %}

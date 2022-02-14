@@ -25,8 +25,6 @@ taxa <- sequences.taxa()
 
 # Get the number of taxa and branches. We need these later on.
 n_taxa <- taxa.size()
-# n_branches <- 2 * n_taxa - 3
-
 
 ##############
 # Tree model #
@@ -34,54 +32,29 @@ n_taxa <- taxa.size()
 
 MAX_AGE = 500000
 
-NUM_INTERVALS <- 100
+# we create the events drawn from the multi-value event eventDistribution
+# as a prior on the number of events, we use a Poisson distribution with a mean of 10
+# we have two valueDistribution
+# - the population sizes with prior Uniform(1E4,1E8)
+# - the change times with prior Uniform(0.0,MAX_AGE)
+# we also assume that there is at least on population size but no change time
+events ~ dnMultiValueEvent (eventDistribution = dnPoisson(lambda=10),
+                   valueDistribution=[dnUniform(1E4,1E8),
+                                      dnUniform(0.0,MAX_AGE)],
+                   names=["theta","time"],
+                   minNumberEvents=[1,0])
 
-for (i in 1:(NUM_INTERVALS-1)) {
+# apply a move that adds and removes pairs of theta+time
+moves.append( mvMultiValueEventBirthDeath(events, weight=50) )
+# add a move that changes the theta variables
+moves.append( mvMultiValueEventScale(events, name="theta", lambda=1.0, weight=10, tune=!FALSE) )
+# add a move that changes the time variables
+moves.append( mvMultiValueEventSlide(events, name="time", lambda=10.0, weight=10, tune=!FALSE) )
+moves.append( mvMultiValueEventScale(events, name="time", lambda=0.5, weight=10, tune=!FALSE) )
 
-    changePoints[i] <- i * ((MAX_AGE)/NUM_INTERVALS)
-
-}
-
-# pop_size[i] ~ dnUniform(0,1E8)
-# pop_size[i].setValue(100)
-# moves.append( mvScale(pop_size[i], lambda=0.1, tune=true, weight=2.0) )
-
-population_size_at_present ~ dnUniform(0,1E8)
-population_size_at_present.setValue(100)
-
-moves.append( mvScaleBactrian(population_size_at_present,weight=5) )
-moves.append( mvMirrorMultiplier(population_size_at_present,weight=5) )
-moves.append( mvRandomDive(population_size_at_present,weight=5) )
-
-# this value depends on the number of intervals, you can find the best value using RevGadgets
-# setMRFGlobalScaleHyperpriorNShifts(100, "GMRF")
-population_size_global_scale_hyperprior <- 0.009376
-population_size_global_scale ~ dnHalfCauchy(0,1)
-# population_size_global_scale.setValue(runif(1,0.005,0.1)[1])
-
-moves.append( mvScaleBactrian(population_size_global_scale,weight=5.0) )
-
-for (i in 1:(NUM_INTERVALS-1)) {
-  # non-centralized parameterization of horseshoe
-  delta_log_population_size[i] ~ dnNormal( mean=0, sd=population_size_global_scale*population_size_global_scale_hyperprior )
-  # Make sure values initialize to something reasonable
-  delta_log_population_size[i].setValue(runif(1,-0.1,0.1)[1])
-  moves.append( mvSlideBactrian(delta_log_population_size[i], weight=5) )
-}
-
-population_size := fnassembleContinuousMRF(population_size_at_present,delta_log_population_size,initialValueIsLogScale=FALSE,order=1)
-
-# Move all field parameters in one go
-moves.append( mvEllipticalSliceSamplingSimple(delta_log_population_size,weight=5,tune=FALSE) )
-# joint sliding moves of all vector elements
-moves.append( mvVectorSlide(delta_log_population_size, weight=10) )
-# up-down slide of the entire vector and the rate at present
-rates_up_down_move = mvUpDownScale(weight=10.0)
-rates_up_down_move.addVariable(population_size_at_present,FALSE)
-rates_up_down_move.addVariable(delta_log_population_size,TRUE)
-moves.append( rates_up_down_move )
-# shrink expand moves
-moves.append( mvShrinkExpand( delta_log_population_size, sd=population_size_global_scale, weight=10 ) )
+n_events := events.getNumberOfEvents()
+population_size := events.getRealPosValues(name="theta")
+changePoints := events.getRealPosValues(name="time")
 
 
 ### the time tree is a stochastic node modeled by the coalescent skyline process (dnCoalescentSkyline)
@@ -91,7 +64,8 @@ root_age := psi.rootAge()
 obs_root_age ~ dnNormal(mean = root_age, sd = 60000, min = 250000, max = 500000)
 obs_root_age.clamp(375000)
 
-interval_times := psi.getIntervalAges()
+# not implemented yet
+interval_times := changePoints
 
 ### add some moves that change the tree
 moves.append( mvNarrow(psi, weight=n_taxa) )
@@ -139,7 +113,6 @@ moves.append( up_down_move)
 seq ~ dnPhyloCTMC(tree=psi, Q=Q, siteRates=sr, pInv=p_inv, type="DNA", branchRates=clock)
 seq.clamp(sequences)
 
-
 #############
 # The Model #
 #############
@@ -155,11 +128,11 @@ mymodel = model(psi)
 ################
 
 #add monitors
-monitors.append( mnModel(filename="output/horses_GMRF_100.log",printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_GMRF_100.trees",psi,printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_GMRF_100_NEs.log",population_size,printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_GMRF_100_times.log",interval_times,printgen=THINNING) )
-monitors.append( mnScreen(population_size, root_age, printgen=100) )
+monitors.append( mnFile(filename="output/horses_CPP.log",n_events,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_CPP.trees",psi,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_CPP_NEs.log",population_size,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_CPP_times.log",interval_times,printgen=THINNING) )
+monitors.append( mnScreen(n_events, root_age, printgen=100) )
 
 mymcmc = mcmc(mymodel, monitors, moves)
 mymcmc.burnin(NUM_MCMC_ITERATIONS*0.1,100)

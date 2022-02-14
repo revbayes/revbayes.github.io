@@ -12,8 +12,9 @@ prerequisites:
 index: false
 include_all: false
 include_files:
-- data/horses_homochronous_sequences_nooutgroup.fasta
+- data/horses_homochronous_sequences.fasta
 - scripts/mcmc_homochronous_GMRF.Rev
+- scripts/mcmc_homochronous_GMRF_maptreebased.Rev
 - output/horses_constant.trees
 ---
 
@@ -137,3 +138,7 @@ This is how the resulting GMRF skyline plot should roughly look like.
 {% endfigcaption %}
 {% endfigure %}
 
+{% section Next Exercise %}
+When you are done, have a look at the next exercise.
+
+* [A piecewise model]({{base.url}}/tutorials/coalescent/piecewise)

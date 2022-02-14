@@ -19,20 +19,20 @@ monitors  = VectorMonitors()
 # Reading in the Data #
 #######################
 
-# Read in sequence data
-sequences <- readDiscreteCharacterData("data/horses_homochronous_sequences.fasta")
-taxa <- sequences.taxa()
+# Read in the tree sample and create a MAP (maximum a posteriori) tree
+trees = readTreeTrace("output/horses_constant.trees", treetype = "clock", burnin = 0.1)
+maptree = mapTree(trace=trees)
+taxa <- maptree.taxa()
 
 # Get the number of taxa and branches. We need these later on.
 n_taxa <- taxa.size()
-# n_branches <- 2 * n_taxa - 3
-
 
 ##############
 # Tree model #
 ##############
 
-MAX_AGE = 500000
+MAX_AGE = maptree.rootAge()
+print("max age: ", MAX_AGE)
 
 NUM_INTERVALS <- 100
 
@@ -42,9 +42,6 @@ for (i in 1:(NUM_INTERVALS-1)) {
 
 }
 
-# pop_size[i] ~ dnUniform(0,1E8)
-# pop_size[i].setValue(100)
-# moves.append( mvScale(pop_size[i], lambda=0.1, tune=true, weight=2.0) )
 
 population_size_at_present ~ dnUniform(0,1E8)
 population_size_at_present.setValue(100)
@@ -54,8 +51,8 @@ moves.append( mvMirrorMultiplier(population_size_at_present,weight=5) )
 moves.append( mvRandomDive(population_size_at_present,weight=5) )
 
 # this value depends on the number of intervals, you can find the best value using RevGadgets
-# setMRFGlobalScaleHyperpriorNShifts(100, "GMRF")
-population_size_global_scale_hyperprior <- 0.009376
+# setMRFGlobalScaleHyperpriorNShifts(10, "GMRF")
+population_size_global_scale_hyperprior <- 0.1065
 population_size_global_scale ~ dnHalfCauchy(0,1)
 # population_size_global_scale.setValue(runif(1,0.005,0.1)[1])
 
@@ -86,58 +83,11 @@ moves.append( mvShrinkExpand( delta_log_population_size, sd=population_size_glob
 
 ### the time tree is a stochastic node modeled by the coalescent skyline process (dnCoalescentSkyline)
 psi ~ dnCoalescentSkyline(theta=population_size, times=changePoints, method="specified", taxa=taxa)
+psi.clamp(maptree)
 
-root_age := psi.rootAge()
-obs_root_age ~ dnNormal(mean = root_age, sd = 60000, min = 250000, max = 500000)
-obs_root_age.clamp(375000)
+# not implemented yet
+interval_times := changePoints
 
-interval_times := psi.getIntervalAges()
-
-### add some moves that change the tree
-moves.append( mvNarrow(psi, weight=n_taxa) )
-moves.append( mvNNI(psi, weight=n_taxa) )
-moves.append( mvFNPR(psi, weight=n_taxa/4.0) )
-moves.append( mvSubtreeScale(psi, weight=n_taxa/5.0) )
-moves.append( mvNodeTimeSlideUniform(psi, weight=n_taxa) )
-moves.append( mvRootTimeScaleBactrian(psi, weight=n_taxa/5.0) )
-moves.append( mvTreeScale(psi, weight=n_taxa/5.0) )
-
-#############
-# Sequences #
-#############
-
-er_prior <- v(1,1,1,1,1,1)
-pi_prior <- v(1,1,1,1)
-er ~ dnDirichlet(er_prior)
-pi ~ dnDirichlet(pi_prior)
-
-moves.append( mvBetaSimplex(er, weight=3) )
-moves.append( mvDirichletSimplex(er, weight=1) )
-moves.append( mvBetaSimplex(pi, weight=2) )
-moves.append( mvDirichletSimplex(pi, weight=1) )
-
-Q := fnGTR(er,pi)
-
-alpha ~ dnUniform( 0.0, 1E6 )
-alpha.setValue( 1.0 )
-sr := fnDiscretizeGamma( alpha, alpha, 4 )
-moves.append( mvScale(alpha, weight=2.0) )
-
-p_inv ~ dnBeta(1,1)
-moves.append( mvSlide(p_inv) )
-
-# lambda = 1/mean, mean = 4.68e-8
-rate <- 1/(4.68e-8)
-clock ~ dnExponential(lambda = rate)
-clock.setValue(4.68e-8)
-
-up_down_move = mvUpDownScale(weight=5.0)
-up_down_move.addVariable(clock,up=TRUE)
-up_down_move.addVariable(psi,up=FALSE)
-moves.append( up_down_move)
-
-seq ~ dnPhyloCTMC(tree=psi, Q=Q, siteRates=sr, pInv=p_inv, type="DNA", branchRates=clock)
-seq.clamp(sequences)
 
 
 #############
@@ -155,11 +105,10 @@ mymodel = model(psi)
 ################
 
 #add monitors
-monitors.append( mnModel(filename="output/horses_GMRF_100.log",printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_GMRF_100.trees",psi,printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_GMRF_100_NEs.log",population_size,printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_GMRF_100_times.log",interval_times,printgen=THINNING) )
-monitors.append( mnScreen(population_size, root_age, printgen=100) )
+monitors.append( mnModel(filename="output/horses_GMRF_maptreebased_100.log",printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_GMRF_maptreebased_100_NEs.log",population_size,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_GMRF_maptreebased_100_times.log",interval_times,printgen=THINNING) )
+monitors.append( mnScreen(population_size, printgen=100) )
 
 mymcmc = mcmc(mymodel, monitors, moves)
 mymcmc.burnin(NUM_MCMC_ITERATIONS*0.1,100)
