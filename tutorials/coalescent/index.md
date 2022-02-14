@@ -8,7 +8,7 @@ prerequisites:
 - intro
 - mcmc
 - ctmc
-index: false
+index: true
 include_all: false
 include_files:
 - data/horses_homochronous_sequences.fasta
@@ -23,10 +23,10 @@ include_files:
 {% section Overview %}
 This tutorial describes how to run a demographic analysis using the coalescent process in `RevBayes`.
 The coalescent process provides a flexible way of estimating population size trajectories through time.
-The input data usually are sequence alignments or estimated trees.
-Here, we consider different types of analyses, starting with a constant demographic history and doing more complex analyses in later exercises.
-The first analyses will consider data from homochronous samples, *i.e* data from samples that have all been collected at the same time.
-In the second part of the exercises, you will be asked to also analyze data from heterochronous samples, *i.e.* samples that have been collected at different points in time.
+The input data are usually sequence alignments or estimated trees.
+Here, we consider different types of analysis, starting with a constant demographic history and doing more complex analyses in later exercises.
+The first analyses will consider data from homochronous samples, *i.e.*, data from samples that have all been collected at the same time.
+In the second part of the exercises, you will be asked to also analyze data from heterochronous samples, *i.e.*, samples that have been collected at different points in time.
 The data for these analyes are taken from {% citet Vershinina2021 %}.
 
 
@@ -47,7 +47,7 @@ Griffiths and Tavaré then extended the model to be applicable to varying popula
 
 {% section Preparation %}
 
-In order to perform the different analyses in this tutorial, you will need to create a directory on your computer for this tutorial and downlaod a few files.
+In order to perform the different analyses in this tutorial, you will need to create a directory on your computer for this tutorial and download a few files.
 {:.instruction}
 
 {% subsection The Data %}
