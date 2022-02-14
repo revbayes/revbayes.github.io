@@ -1,8 +1,8 @@
 ---
 layout: home
-title: Graphical User Interfaces
+title: GUI
 subtitle: Use RevBayes with a Graphical Interface
-permalink: /gui-setup
+permalink: /gui
 code_layout: bash
 ---
 
