@@ -75,7 +75,7 @@ moves.append( mvRandomDive(population_size_at_present,weight=5) )
 
 For the GMRF model implemented in `RevBayes`, you need to define a hyperprior for the global scale parameter which controls the overall variability of population sizes from present to past.
 You can get the appropriate value for this hyperprior by using the `R` package `RevGadgets`.
-Here, we ran the function <!---`setMRFGlobalScaleHyperpriorNShifts(10, "GMRF")`---> to know the value of $0.1065$. <!--- **(why?)** --->
+Here, we ran the function `setMRFGlobalScaleHyperpriorNShifts(10, "GMRF")` to know the value of $0.1065$. <!--- **(why?)** --->
 
 The prior for the global scale is a Half Cauchy Distribution.
 
