@@ -54,6 +54,19 @@ Schematic figure of a coalescent tree and the different times associated with it
 We will walk you through every single step in the following section.
 {:.info}
 
+In the beginning, we define a few variable for running the MCMC.
+These are the number of iterations, and the so-called "thinning" which we use to say that we want to sample every $10^{th}$ iteration.
+~~~
+NUM_MCMC_ITERATIONS = 10000
+THINNING            = 10
+~~~
+
+We also need to create vectors for the monitors and moves of the MCMC.
+~~~
+moves     = VectorMoves()
+monitors  = VectorMonitors()
+~~~
+
 {% subsection Read the data %}
 <!--- Start by reading in the taxa names and age information (**bears_taxa.tsv**) and the sequences (**.nex**). --->
 Start by reading in the aligned sequences.
@@ -213,7 +226,8 @@ summary = "median"
 
 population_size_log = "../output/horses_constant_NE.log"
 df <- processPopSizes(population_size_log, method = "constant", burnin = burnin, probs = probs, summary = summary)
-p <- plotPopSizes(df, method = "constant") + ggplot2::coord_cartesian(ylim = c(1e3, 1e7))
+p <- plotPopSizes(df, method = "constant") + ggplot2::coord_cartesian(ylim = c(1e3, 1e8), xlim = c(1e5, 0))
+ggplot2::ggsave("/horses_constant.png", p)
 ~~~
 
 Your output should look roughly like the following figure.

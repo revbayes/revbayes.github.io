@@ -24,7 +24,7 @@ After running all the exercises for coalescent analyses, we want to compare all 
 <p align="middle">
   <img src="figures/horses_HSMRF.png" width="32%" />
   <img src="figures/horses_CPP.png" width="32%" /> 
-  <img src="figures/horses_piecewise.png" width="32%" />
+  <img src="figures/horses_piecewise_6diff.png" width="32%" />
 </p>
 {% figcaption %}
 Example output from plotting the output from all coalescent analyses.

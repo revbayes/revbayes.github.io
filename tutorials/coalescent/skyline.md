@@ -137,7 +137,8 @@ summary = "median"
 population_size_log = "../output/horses_skyline_NEs.log"
 interval_change_points_log = "../output/horses_skyline_times.log"
 df <- processPopSizes(population_size_log, interval_change_points_log, method = "events", burnin = burnin, probs = probs, summary = summary)
-p <- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e7))
+p <- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
+ggplot2::ggsave("horses_skyline.png", p)
 ~~~
 
 {% figure example_skyline %}
