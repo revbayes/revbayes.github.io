@@ -41,7 +41,6 @@
         <li><a href="/workshops/">Workshops</a></li>
         <li><a href="/jobs/">Jobs</a></li>
         <li><a href="/developer/">Developer</a></li>
-        <li><a href="/home/gui.html">GUI</a></li>
       </ul>
       <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
         <div class="form-group">
@@ -56,7 +55,7 @@
 	<h1 class="maintitle">Coalescent Analyses</h1>
 	<h3 class="subtitle">Estimating Demographic Histories with Coalescent Processes</h3>
 	<h4 class="authors">Ronja Billenstein and Sebastian Höhna</h4>
-  <h5>Last modified on February  2, 2022</h5>
+  <h5>Last modified on February 14, 2022</h5>
 </div>
 
 
@@ -96,11 +95,11 @@
         
         
         
-          <li><a href="/tutorials/coalescent/data/horses_ages_inyears_nooutgroup.tsv">horses_ages_inyears_nooutgroup.tsv</a></li>
+          <li><a href="/tutorials/coalescent/data/horses_heterochronous_ages.tsv">horses_heterochronous_ages.tsv</a></li>
         
-          <li><a href="/tutorials/coalescent/data/horses_heterochronous_sequences_nooutgroup.fasta">horses_heterochronous_sequences_nooutgroup.fasta</a></li>
+          <li><a href="/tutorials/coalescent/data/horses_heterochronous_sequences.fasta">horses_heterochronous_sequences.fasta</a></li>
         
-          <li><a href="/tutorials/coalescent/data/horses_homochronous_sequences_nooutgroup.fasta">horses_homochronous_sequences_nooutgroup.fasta</a></li>
+          <li><a href="/tutorials/coalescent/data/horses_homochronous_sequences.fasta">horses_homochronous_sequences.fasta</a></li>
         
         </ul>
     
@@ -118,10 +117,10 @@
 
 <p>This tutorial describes how to run a demographic analysis using the coalescent process in <code class="language-plaintext highlighter-rouge">RevBayes</code>.
 The coalescent process provides a flexible way of estimating population size trajectories through time.
-The input data usually are sequence alignments or estimated trees.
-Here, we consider different types of analyses, starting with a constant demographic history and doing more complex analyses in later exercises.
-The first analyses will consider data from homochronous samples, <em>i.e</em> data from samples that have all been collected at the same time.
-In the second part of the exercises, you will be asked to also analyze data from heterochronous samples, <em>i.e.</em> samples that have been collected at different points in time.
+The input data are usually sequence alignments or estimated trees.
+Here, we consider different types of analysis, starting with a constant demographic history and doing more complex analyses in later exercises.
+The first analyses will consider data from homochronous samples, <em>i.e.</em>, data from samples that have all been collected at the same time.
+In the second part of the exercises, you will be asked to also analyze data from heterochronous samples, <em>i.e.</em>, samples that have been collected at different points in time.
 The data for these analyes are taken from <a class="citation" href="#Vershinina2021">Vershinina et al. (2021)</a>.</p>
 
 <!--- ### Why?! --->
@@ -142,7 +141,7 @@ Griffiths and Tavaré then extended the model to be applicable to varying popula
 <h2 class="section" id="preparation">Preparation</h2>
 <hr class="section" />
 
-<p class="instruction">In order to perform the different analyses in this tutorial, you will need to create a directory on your computer for this tutorial and downlaod a few files.</p>
+<p class="instruction">In order to perform the different analyses in this tutorial, you will need to create a directory on your computer for this tutorial and download a few files.</p>
 
 <h3 class="subsection" id="the-data">The Data</h3>
 <hr class="subsection" />
@@ -153,13 +152,13 @@ Griffiths and Tavaré then extended the model to be applicable to varying popula
 
 <ul>
   <li>
-    <p>horses_homochronous_sequences_nooutgroup.fasta: an alignment in FASTA format, containing sequences of 36 horse taxa, all sampled at the same time.</p>
+    <p>horses_homochronous_sequences.fasta: an alignment in FASTA format, containing sequences of 36 horse taxa, all sampled at the same time.</p>
   </li>
   <li>
-    <p>horses_heterochronous_sequences_nooutgroup.fasta: an alignment in FASTA format, containing sequences of 173 horse taxa, sampled at various times.</p>
+    <p>horses_heterochronous_sequences.fasta: an alignment in FASTA format, containing sequences of 173 horse taxa, sampled at various times.</p>
   </li>
   <li>
-    <p>horses_ages_inyears.tsv: a tab seperated table listing the heterochronous horse samples and their ages. For extant taxa, the minimum age is 0.0 (i.e. the present).</p>
+    <p>horses_heterochronous_ages.tsv: a tab seperated table listing the heterochronous horse samples and their ages. For extant taxa, the minimum age is 0.0 (i.e. the present).</p>
   </li>
 </ul>
 
@@ -187,10 +186,16 @@ It is therefore recommended to do the exercises for homochronous data first.</p>
   <li><a href="/tutorials/coalescent/skyline">The skyline model</a></li>
   <li><a href="/tutorials/coalescent/GMRF">The Gaussian Markov Random Field (GMRF) model</a></li>
   <li><a href="/tutorials/coalescent/GMRF_treebased">The GMRF model with trees as input data</a></li>
+  <li><a href="/tutorials/coalescent/piecewise">A piecewise model</a></li>
 </ol>
 
-<!--- 5. [A piecewise model](/tutorials/coalescent/piecewise)
-6. [Heterochronous data](/tutorials/coalescent/heterochronous) --->
+<!--- 6. [Heterochronous data](/tutorials/coalescent/heterochronous) --->
+
+<h2 class="section" id="summary">Summary</h2>
+<hr class="section" />
+
+<p>After doing all the exercises, you can compare the resulting population sizes.
+Have a look at the <a href="/tutorials/coalescent/summary">summary</a>.</p>
 
 <ol class="bibliography"><li><span id="Griffiths1994">Griffiths R.C., Tavare S., Bodmer W.F., Donnelly P.J. 1994. Sampling theory for neutral alleles in a varying environment. Philosophical Transactions of the Royal Society of London. Series B: Biological Sciences. 344:403–410.</span>
 
