@@ -41,6 +41,7 @@
         <li><a href="/workshops/">Workshops</a></li>
         <li><a href="/jobs/">Jobs</a></li>
         <li><a href="/developer/">Developer</a></li>
+        <li><a href="/home/gui.html">GUI</a></li>
       </ul>
       <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
         <div class="form-group">
@@ -55,7 +56,7 @@
 	<h1 class="maintitle">Skyline Models with GMRF</h1>
 	<h3 class="subtitle">Estimating Demographic Histories with Skyline Models using a Gaussian Markov Random Field Prior</h3>
 	<h4 class="authors">Ronja Billenstein and Sebastian Höhna</h4>
-  <h5>Last modified on February 14, 2022</h5>
+  <h5>Last modified on February  2, 2022</h5>
 </div>
 
 
@@ -95,7 +96,7 @@
         
         
         
-          <li><a href="/tutorials/coalescent/data/horses_homochronous_sequences.fasta">horses_homochronous_sequences.fasta</a></li>
+          <li><a href="/tutorials/coalescent/data/horses_homochronous_sequences_nooutgroup.fasta">horses_homochronous_sequences_nooutgroup.fasta</a></li>
         
           <li><a href="/tutorials/coalescent/scripts/mcmc_homochronous_GMRF.Rev">mcmc_homochronous_GMRF.Rev</a></li>
         
@@ -144,13 +145,15 @@ These are equally distributed in time.</p>
 <p>You will also need to define the points of change in time.
 Here, we define the maximal age to be $500000$ which should cover the whole tree.
 Further backwards in time the population size is thought to be in equilibrium and to be equal to the population size of the most ancient interval.
-The first interval (automatically) starts at $t = 0$, the other starting points depend on the number of intervals and the maximal age.</p>
+The first interval starts at $t = 0$, the other starting points depend on the number of intervals and the maximal age.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>MAX_AGE = 500000
 
-for (i in 1:(NUM_INTERVALS-1)) {
+changePoints[1] &lt;- 0
 
-    changePoints[i] &lt;- i * ((MAX_AGE)/NUM_INTERVALS)
+for (i in 2:NUM_INTERVALS) {
+
+    changePoints[i] &lt;- (i-1) * ((MAX_AGE)/NUM_INTERVALS)
 
 }
 </code></pre></div></div>
@@ -167,9 +170,9 @@ moves.append( mvMirrorMultiplier(population_size_at_present,weight=5) )
 moves.append( mvRandomDive(population_size_at_present,weight=5) )
 </code></pre></div></div>
 
-<p>For the GMRF model implemented in <code class="language-plaintext highlighter-rouge">RevBayes</code>, you need to define a hyperprior for the global scale parameter which controls the overall variability of population sizes from present to past.
+<p>For the GMRF model implemented in <code class="language-plaintext highlighter-rouge">RevBayes</code>, you need to define a hyperprior.
 You can get the appropriate value for this hyperprior by using the <code class="language-plaintext highlighter-rouge">R</code> package <code class="language-plaintext highlighter-rouge">RevGadgets</code>.
-Here, we ran the function <code class="language-plaintext highlighter-rouge">setMRFGlobalScaleHyperpriorNShifts(10, "GMRF")</code> to know the value of $0.1065$. <!--- **(why?)** ---></p>
+Here, we ran the function <code class="language-plaintext highlighter-rouge">setMRFGlobalScaleHyperpriorNShifts(10, "GMRF")</code> to know the value of $0.1065$. <strong>(why?)</strong></p>
 
 <p>The prior for the global scale is a Half Cauchy Distribution.</p>
 
@@ -262,14 +265,23 @@ burnin = 0.1
 probs = c(0.025, 0.975)
 summary = "median"
 
-population_size_log = "../output/horses_GMRF_NEs.log"
-interval_change_points_log = "../output/horses_GMRF_times.log"
-df &lt;- processPopSizes(population_size_log, interval_change_points_log, method = "specified", burnin = burnin, probs = probs, summary = summary)
-p &lt;- plotPopSizes(df, method = "specified") + ggplot2::coord_cartesian(ylim = c(1e3, 1e7))
+pop_size_log = "../output/horses_GMRF_NEs.log"
+pop_size &lt;- readTrace(paths = pop_size_log,
+                      burnin = burnin)[[1]]
+interval_time_log = "../output/horses_GMRF_times.log"
+interval_time &lt;- readTrace(paths = interval_time_log,
+                           burnin = burnin)[[1]]
+
+rates &lt;- list(
+  "population size" = pop_size,
+  "coalescent time" = interval_time
+)
+plotdata &lt;- RevGadgets:::.makePlotData(rates = rates, probs = probs, summary = summary)
+p &lt;- plotPopulationSize(plotdata) + ggplot2::scale_y_continuous(trans = "log10", limits=c(1e4,1e7)) + ggplot2::ylab("Population Size") + ggplot2::xlab("years ago") + ggplot2::xlim(600840.9,0)
 </code></pre></div></div>
 
-<!--- In the example, we set the limits of the x-axis to the root age value from the next exercise (see below).
-This was done to be able to easily compare the plots. --->
+<p>In the example, we set the limits of the x-axis to the root age value from the next exercise (see below).
+This was done to be able to easily compare the plots.</p>
 
 <figure id="example_skyline"><p><img src="figures/horses_GMRF.png" width="800" /></p>
 <figcaption>This is how the resulting GMRF skyline plot should roughly look like.</figcaption>
@@ -279,69 +291,16 @@ This was done to be able to easily compare the plots. --->
 <hr class="section" />
 
 <p>Related to the GMRF, there also is the Horseshoe Markov Random Field (HSMRF) prior.
-It can be seen as a more generalized version of the GMRF with the change focusing on the definition of the standard deviation (<a class="citation" href="#Magee2020">(Magee et al. 2020)</a>)
 In the tutorial <a href="/tutorials/divrate/ebd.html">Episodic Diversification Rate Estimation</a>, it is applied to the estimation of diversification rates.
 Have a look at the <strong>Specifying the model</strong> section and try to change the respective lines in your current script to follow the HSMRF procedure.
 Do your results look different?</p>
 
 <blockquote class="aside"><h2>Hint</h2><p>The lines you should look at are lines 67 to 73 in the script.
-There, you can change the way the standard deviation of the population sizes per interval is calculated.</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:(NUM_INTERVALS-1)) {
-  # Variable-scaled variances for hierarchical horseshoe
-  sigma_population_size[i] ~ dnHalfCauchy(0,1)
-  # Make sure values initialize to something reasonable
-  sigma_population_size[i].setValue(runif(1,0.005,0.1)[1])
-  # moves on the single sigma values
-  moves.append( mvScaleBactrian(sigma_population_size[i], weight=5) )
-  # non-centralized parameterization of horseshoe
-  delta_log_population_size[i] ~ dnNormal( mean=0, sd=sigma_population_size[i]*population_size_global_scale*population_size_global_scale_hyperprior )
-  # Make sure values initialize to something reasonable
-  delta_log_population_size[i].setValue(runif(1,-0.1,0.1)[1])
-  moves.append( mvSlideBactrian(delta_log_population_size[i], weight=5) )
-}
-</code></pre></div></div>
+There, you can change the way the standard deviation is calculated.</p>
 
 <p>Remember to change the hyperprior value (<code class="language-plaintext highlighter-rouge">setMRFGlobalScaleHyperpriorNShifts(10, "HSMRF")</code> in <code class="language-plaintext highlighter-rouge">RevGadgets</code>) and to add extra moves.</p>
 
 <p>In case you prefer to download a whole HSMRF script to compare it to the GMRF script, have a look at <a href="/tutorials/coalescent/HSMRF">the HSMRF</a>.</p>
-</blockquote>
-
-<blockquote class="aside"><h2>Reversible Jump MCMC</h2><p>In RevBayes, there also is the possibility to estimate the number of intervals via reversible jump MCMC (rjMCMC).
-In this approach, you don’t specifically set the number of intervals before the analysis, but make it a parameter that is estimated as part of the analysis.
-This functionality is implemented in the <code class="language-plaintext highlighter-rouge">dnMultiValueEvent</code> distribution.</p>
-
-<p>For the <code class="language-plaintext highlighter-rouge">eventDistribution</code> parameter, a distribution on natural number has to be chosen.
-In this example, we use a Poisson distribution with an expected value of $10$.
-The <code class="language-plaintext highlighter-rouge">valueDistribution</code> is a vector of prior distributions for the population sizes and the interval times.
-We also should call the variables by their names.
-The <code class="language-plaintext highlighter-rouge">minNumberEvents</code> are $1$ population size and $0$ times corresponding to interval changes.
-We expect to always have one more population size than change points.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>events ~ dnMultiValueEvent (eventDistribution = dnPoisson(lambda=10),
-                   valueDistribution=[dnUniform(1E4,1E8),
-                                      dnUniform(0.0,MAX_AGE)],
-                   names=["theta","time"],
-                   minNumberEvents=[1,0])
-</code></pre></div></div>
-<p>Fo the <code class="language-plaintext highlighter-rouge">dnMultiValueEvent</code> distribution, we add specific moves.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># apply a move that adds and removes pairs of theta+time
-moves.append( mvMultiValueEventBirthDeath(events, weight=50) )
-# add a move that changes the theta variables
-moves.append( mvMultiValueEventScale(events, name="theta", lambda=1.0, weight=10, tune=!FALSE) )
-# add a move that changes the time variables
-moves.append( mvMultiValueEventSlide(events, name="time", lambda=10.0, weight=10, tune=!FALSE) )
-moves.append( mvMultiValueEventScale(events, name="time", lambda=0.5, weight=10, tune=!FALSE) )
-</code></pre></div></div>
-<p>Finally, we need to track the different parameters by assigning them to variables.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_events := events.getNumberOfEvents()
-population_size := events.getRealPosValues(name="theta")
-changePoints := events.getRealPosValues(name="time")
-</code></pre></div></div>
-<p>In the end, all the parameters can be put into the <code class="language-plaintext highlighter-rouge">dnCoalescentSkyline</code> distribution.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psi ~ dnCoalescentSkyline(theta=population_size, times=changePoints, method="specified", taxa=taxa)
-</code></pre></div></div>
-
-<p>You can have a look at the results <a href="/tutorials/coalescent/CPP">here</a></p>
 </blockquote>
 
 <h2 class="section" id="next-exercise">Next Exercise</h2>
@@ -353,9 +312,7 @@ changePoints := events.getRealPosValues(name="time")
   <li><a href="/tutorials/coalescent/GMRF_treebased">The GMRF model with trees as input data</a></li>
 </ul>
 
-<ol class="bibliography"><li><span id="Magee2020">Magee A.F., Höhna S., Vasylyeva T.I., Leaché A.D., Minin V.N. 2020. Locally adaptive Bayesian birth-death model successfully detects slow and rapid rate shifts. PLoS Computational Biology. 16:e1007999.</span>
-
-</li></ol>
+<ol class="bibliography"></ol>
 
 <script type="text/javascript">
 var _ol = document.querySelectorAll('ol');

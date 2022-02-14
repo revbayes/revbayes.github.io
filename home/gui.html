@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
-    <title>RevBayes: Skyline Models with rjMCMC</title>
+    <title>RevBayes: GUI</title>
   </head>
   <body>
     <div class="container">
@@ -41,6 +41,7 @@
         <li><a href="/workshops/">Workshops</a></li>
         <li><a href="/jobs/">Jobs</a></li>
         <li><a href="/developer/">Developer</a></li>
+        <li><a href="/home/gui.html">GUI</a></li>
       </ul>
       <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
         <div class="form-group">
@@ -51,91 +52,23 @@
   </div>
 </nav>
 
-      <div class="titlebar">
-	<h1 class="maintitle">Skyline Models with rjMCMC</h1>
-	<h3 class="subtitle">Estimating Demographic Histories with Skyline Models using reversible jump MCMC</h3>
-	<h4 class="authors">Ronja Billenstein and Sebastian Höhna</h4>
-  <h5>Last modified on February 14, 2022</h5>
-</div>
+      <h1 class="maintitle">
 
+RevBayes GUI
 
-<div class="sidebar no-print">
-<blockquote class="overview" id="overview">
-  <h2>Overview</h2>
-  
-  <div class="row">
-    <div class="col-md-9">
-        <strong>Prerequisites</strong>
-        
-          <ul id="prerequisites">
-          
-            <li><a href="/tutorials/coalescent/">Coalescent Analyses</a></li>
-          
-            <li><a href="/tutorials/coalescent/GMRF.html">Skyline Models with GMRF</a></li>
-          
-          </ul>
-        
-    </div>
-  </div>
-  
-</blockquote>
+</h1>
+<hr>
 
+<p>RevBayes GUI is a graphical user interface for RevBayes. RevBayes GUI is written in Swift with the use of Cocoa libraries and runs on the macOS platform.</p>
 
+<p>The complexity of the RevBayes program and the Rev language can be a significant barrier to the scientists wanting to use the program. It is the goal of the RevBayes GUI project to overcome that barrier. RevBayes GUI serves to simplify the use of RevBayes while at the same time expose its full functionality.</p>
 
+<p>RevBayes GUI is a document-based application, with a collection of phylogenetic analyses seen as a document. The user can create an analysis by dragging the necessary components from a tool palette and dropping them on the analysis canvas. Adopting a convention from the field of graphical models in computer science, we allow a biologist specify their analysis as a graph. We use a tool metaphor to expose the functionality of the program. Each node in the graph is a tool that carries out a single task, such as reading and visualizing data from a file, setting the phylogenetic model graphically, aligning DNA sequences, etc. Tool Model, often the core of an analysis, allows the user to specify their model assumptions. Like with the analysis, RevBayes GUI exposes a model as a graph. The user can build up models graphically, by bringing together different mathematical components of a model just as a child would build a house out of Lego bricks.</p>
 
+<p>Development of RevBayes GUI is funded by an NSF grant. It is an open-source project on GitHub. The <a href="https://github.com/svetakrasikova/macgui">GitHub repository</a> can be freely cloned.</p>
 
-<blockquote class="tutorial_files" id="tutorial_files">
-    <h2>Data files and scripts</h2>
-    
-        
-        <strong>Other</strong>
-        <ul id="other_files">
-        
-        
-        
-          <li><a href="/tutorials/coalescent/data/horses_homochronous_sequences.fasta">horses_homochronous_sequences.fasta</a></li>
-        
-          <li><a href="/tutorials/coalescent/scripts/mcmc_homochronous_CPP.Rev">mcmc_homochronous_CPP.Rev</a></li>
-        
-          <li><a href="/tutorials/coalescent/scripts/mcmc_homochronous_CPP_maptreebased.Rev">mcmc_homochronous_CPP_maptreebased.Rev</a></li>
-        
-        </ul>
-    
-</blockquote>
+<p>If you would like to contribute to the project or report issues please contact the <a href="https://github.com/svetakrasikova">lead developer</a> to request access.</p>
 
-
-</div>
-<h2 class="section" id="overview">Overview</h2>
-<hr class="section" />
-
-<p>This page provides you with scripts for a reversible jump MCMC (rjMCMC) skyline analysis on the left side.
-It is in addition to the <a href="/tutorials/coalescent/GMRF">Gaussian Markov Random Field Prior tutorial</a>.</p>
-
-<h2 class="section" id="results">Results</h2>
-<hr class="section" />
-
-<p>After running your analysis, you can plot the results using the <code class="language-plaintext highlighter-rouge">R</code> package <code class="language-plaintext highlighter-rouge">RevGadgets</code>.</p>
-
-<figure id="example_HSMRF"><p><img src="figures/horses_CPP.png" width="800" /></p>
-<figcaption>This is how the resulting rjMCMC plot should roughly look like.</figcaption>
-</figure>
-
-<ol class="bibliography"></ol>
-
-<script type="text/javascript">
-var _ol = document.querySelectorAll('ol');
-for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
-	if ( elem_ol.classList == "bibliography" ) {
-		var _li = elem_ol.getElementsByTagName("li");
-		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
-		//{
-		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
-		//}
-		if(_li.length > 0)
-			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
-	}
-}
-</script>
 
       <br>
 <footer>
@@ -160,14 +93,14 @@ for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
 $(":not(code).highlighter-rouge").each(function() {
   
   if( this.classList == "highlighter-rouge") {
-    this.classList = "Rev highlighter-rouge";
+    this.classList = "default highlighter-rouge";
   }
   
 });
 // $("code.highlighter-rouge").each(function() {
 //   
 //   if( this.classList == "highlighter-rouge") {
-//       this.classList = "Rev highlighter-rouge";
+//       this.classList = "default highlighter-rouge";
 //   }
 //   
 // });
