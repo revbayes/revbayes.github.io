@@ -41,7 +41,6 @@
         <li><a href="/workshops/">Workshops</a></li>
         <li><a href="/jobs/">Jobs</a></li>
         <li><a href="/developer/">Developer</a></li>
-        <li><a href="/home/gui.html">GUI</a></li>
       </ul>
       <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
         <div class="form-group">
@@ -56,7 +55,7 @@
 	<h1 class="maintitle">Skyline Models</h1>
 	<h3 class="subtitle">Estimating Demographic Histories with Skyline Models</h3>
 	<h4 class="authors">Ronja Billenstein and Sebastian Höhna</h4>
-  <h5>Last modified on February  2, 2022</h5>
+  <h5>Last modified on February 14, 2022</h5>
 </div>
 
 
@@ -94,7 +93,7 @@
         
         
         
-          <li><a href="/tutorials/coalescent/data/horses_homochronous_sequences_nooutgroup.fasta">horses_homochronous_sequences_nooutgroup.fasta</a></li>
+          <li><a href="/tutorials/coalescent/data/horses_homochronous_sequences.fasta">horses_homochronous_sequences.fasta</a></li>
         
           <li><a href="/tutorials/coalescent/scripts/mcmc_homochronous_skyline.Rev">mcmc_homochronous_skyline.Rev</a></li>
         
@@ -168,7 +167,7 @@ With $n$ taxa, we expect $(n-1)$ coalescent events, until there is only one line
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NUM_INTERVALS = ceil((n_taxa - 1) / 5)
 </code></pre></div></div>
 
-<p>For each interval, a population size will be estimated. Chose a prior and add a move for each population size.</p>
+<p>For each interval, a population size will be estimated. Choose a prior and add a move for each population size.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:NUM_INTERVALS) {
     pop_size[i] ~ dnUniform(0,1E6)
@@ -218,6 +217,18 @@ monitors.append( mnScreen(pop_size, root_age, printgen=100) )
 <hr class="section" />
 
 <p>After running your analysis, you can plot the results again using the <code class="language-plaintext highlighter-rouge">R</code> package <code class="language-plaintext highlighter-rouge">RevGadgets</code>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>library(RevGadgets)
+
+burnin = 0.1
+probs = c(0.025, 0.975)
+summary = "median"
+
+population_size_log = "../output/horses_skyline_NEs.log"
+interval_change_points_log = "../output/horses_skyline_times.log"
+df &lt;- processPopSizes(population_size_log, interval_change_points_log, method = "events", burnin = burnin, probs = probs, summary = summary)
+p &lt;- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e7))
+</code></pre></div></div>
 
 <figure id="example_skyline"><p><img src="figures/horses_skyline.png" width="800" /></p>
 <figcaption>This is how the resulting skyline plot should roughly look like.</figcaption>
