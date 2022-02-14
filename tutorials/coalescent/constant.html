@@ -142,6 +142,17 @@ You can type the following command into <code class="language-plaintext highligh
   <p>We will walk you through every single step in the following section.</p>
 </blockquote>
 
+<p>In the beginning, we define a few variable for running the MCMC.
+These are the number of iterations, and the so-called “thinning” which we use to say that we want to sample every $10^{th}$ iteration.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NUM_MCMC_ITERATIONS = 10000
+THINNING            = 10
+</code></pre></div></div>
+
+<p>We also need to create vectors for the monitors and moves of the MCMC.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves     = VectorMoves()
+monitors  = VectorMonitors()
+</code></pre></div></div>
+
 <h3 class="subsection" id="read-the-data">Read the data</h3>
 <hr class="subsection" />
 
@@ -292,7 +303,8 @@ summary = "median"
 
 population_size_log = "../output/horses_constant_NE.log"
 df &lt;- processPopSizes(population_size_log, method = "constant", burnin = burnin, probs = probs, summary = summary)
-p &lt;- plotPopSizes(df, method = "constant") + ggplot2::coord_cartesian(ylim = c(1e3, 1e7))
+p &lt;- plotPopSizes(df, method = "constant") + ggplot2::coord_cartesian(ylim = c(1e3, 1e8), xlim = c(1e5, 0))
+ggplot2::ggsave("/horses_constant.png", p)
 </code></pre></div></div>
 
 <p>Your output should look roughly like the following figure.</p>

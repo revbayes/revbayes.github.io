@@ -115,7 +115,30 @@ For all of these pieces, the different values of $N_e$ and the change points in 
 * an exponential population size trajectory in the middle
 * and another constant piece as most ancient. --->
 
-<blockquote class="aside"><h2>Definition of the different base demographic models</h2><p>…</p>
+<blockquote class="aside"><h2>Definition of the different base demographic models</h2><p>The three implemented base demographic models in RevBayes are a constant, a linear and an exponential model.</p>
+
+<p>For the constant model, the population size through time is easily defined:</p>
+
+<p>\(N_e(t) = N_e(t_{i,j})\),</p>
+
+<p>with $t_{i,j}$ being the time at the beginning of the $j^{th}$ interval.</p>
+
+<p>For the linear model, the slope depends on the starting and ending values of the population size at the interval change points.
+We define $\alpha$ as the slope.</p>
+
+<p>\(\alpha = \frac{N_e(t_{i,(j+1)}) - N_e(t_{i,j})}{t_{i,(j+1)} - t_{i,j}}\).</p>
+
+<p>Then, the effective population size through time is calculated as follows:</p>
+
+<p>\(N_e(t) = N_e(t_{i,j}) + (t-t_{i,j}) * \alpha\).</p>
+
+<p>Finally, for the exponential model, $\alpha$ is defined as follows:</p>
+
+\[\alpha = \frac{log(\frac{N_e(t_{i,(j+1)})}{N_e(t_{i,j})})}{t_{i,j} - t_{i,(j+1)}},\]
+
+<p>and the effective population size is:</p>
+
+\[N_e(t) = N_e(t_{i,j}) exp((t_{i,j} - t)\alpha).\]
 </blockquote>
 
 <h2 class="section" id="inference-example">Inference Example</h2>
@@ -213,13 +236,105 @@ monitors.append( mnScreen(pop_size, root_age, printgen=100) )
 <h2 class="section" id="results">Results</h2>
 <hr class="section" />
 
-<p>After running your analysis, you can plot the results using the <code class="language-plaintext highlighter-rouge">R</code> package <code class="language-plaintext highlighter-rouge">RevGadgets</code>.</p>
+<p>After running your analysis, you can plot the results using the <code class="language-plaintext highlighter-rouge">R</code> package <code class="language-plaintext highlighter-rouge">RevGadgets</code> and by additionally defining the demographic models from this exercise.</p>
 
-<!---
-<figure id="example_piecewise"><p><img src="figures/horses_skyline.png" width="800" /></p>
-<figcaption>This is how the resulting skyline plot should roughly look like.</figcaption>
+<blockquote class="aside"><h2>R code</h2><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>interval_change_points_log_skyline = "../output/horses_skyline_times.log"
+df_skyline &lt;- processPopSizes(population_size_log = population_size_log_skyline, interval_change_points_log = interval_change_points_log_skyline, method = "events", burnin = burnin, probs = probs, summary = summary)
+p_skyline &lt;- plotPopSizes(df_skyline) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
+
+population_size_log = "../output/horses_piecewise_NEs.log"
+interval_change_points_log = "../output/horses_piecewise_times.log"
+pop_sizes &lt;- readTrace(population_size_log, burnin = burnin)[[1]]
+interval_times &lt;- readTrace(interval_change_points_log, burnin = burnin)[[1]]
+
+pop_size_medians = apply(pop_sizes[,grep("size", names(pop_sizes))], 2, median)
+pop_size_quantiles = apply(pop_sizes[,grep("size", names(pop_sizes))], 2, quantile, probs = probs)
+time_medians =apply(interval_times[,grep("change_points", names(interval_times))], 2, median)
+
+# exp, exp, lin, const, lin, const
+exponential_recent &lt;- function(t){
+  N0 &lt;- pop_size_medians[1]
+  N1 &lt;- pop_size_medians[2]
+  t0 &lt;- 0
+  t1 &lt;- time_medians[1]
+  alpha = log( N1/N0 ) / (t0 - t1)
+  return (N0 * exp( (t0-t) * alpha))
+}
+
+exponential_ancient &lt;- function(t){
+  N0 &lt;- pop_size_medians[2]
+  N1 &lt;- pop_size_medians[3]
+  t0 &lt;- time_medians[1]
+  t1 &lt;- time_medians[2]
+  alpha = log( N1/N0 ) / (t0 - t1)
+  return (N0 * exp( (t0-t) * alpha))
+}
+
+linear_recent &lt;- function(t){
+  N0 &lt;- pop_size_medians[3]
+  N1 &lt;- pop_size_medians[4]
+  t0 &lt;- time_medians[2]
+  t1 &lt;- time_medians[3]
+  alpha = ( N1-N0 ) / (t1 - t0)
+  return (N0 + (t-t0) * alpha)
+}
+
+# constant with pop_size[4] from time[3] to time[4]
+
+linear_ancient &lt;- function(t){
+  N0 &lt;- pop_size_medians[4]
+  N1 &lt;- pop_size_medians[5]
+  t0 &lt;- time_medians[4]
+  t1 &lt;- time_medians[5]
+  alpha = ( N1-N0 ) / (t1 - t0)
+  return (N0 + (t-t0) * alpha)
+}
+
+# constant with pop_size[5] from time[5] to Inf
+
+all_combined &lt;- function(t){
+  if (t &lt; time_medians[1]){
+    
+    return(exponential_recent(t))
+    
+  } else if (t &lt; time_medians[2]){
+    
+    return(exponential_ancient(t))
+    
+  } else if (t &lt; time_medians[3]){
+    
+    return(linear_recent(t))
+    
+  } else if (t &lt; time_medians[4]){
+    
+    return(pop_size_medians[4])
+    
+  } else if (t &lt; time_medians[5]){
+    
+    return(linear_ancient(t))
+    
+  } else {
+    
+    return(pop_size_medians[5])
+    
+  }
+}
+
+grid = seq(0, 3.5e5, length.out = 500)
+pop_size_curve &lt;- sapply(grid, all_combined)
+
+df &lt;-tibble::tibble(.rows = length(grid))
+df$value &lt;- pop_size_curve
+df$time &lt;- grid
+
+p &lt;- p_skyline + ggplot2::geom_line(data = df, aes(x = time, y = value), size = 0.9, color = "blue")
+ggplot2::ggsave("horses_piecewise_6diff.png", p)
+</code></pre></div></div>
+</blockquote>
+
+<figure id="example_piecewise"><p><img src="figures/horses_piecewise_6diff.png" width="800" /></p>
+<figcaption>This is how the resulting skyline plot with addition of the piecewise model should roughly look like.</figcaption>
 </figure>
---->
 
 <h2 class="section" id="summary">Summary</h2>
 <hr class="section" />
