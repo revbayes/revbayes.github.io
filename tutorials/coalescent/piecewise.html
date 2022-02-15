@@ -56,7 +56,7 @@
 	<h1 class="maintitle">Piecewise Coalescent Process</h1>
 	<h3 class="subtitle">Estimating Demographic Histories with a Piecewise Coalescent Process</h3>
 	<h4 class="authors">Ronja Billenstein and Sebastian Höhna</h4>
-  <h5>Last modified on February 14, 2022</h5>
+  <h5>Last modified on February 15, 2022</h5>
 </div>
 
 
@@ -71,6 +71,8 @@
           <ul id="prerequisites">
           
             <li><a href="/tutorials/coalescent/">Coalescent Analyses</a></li>
+          
+            <li><a href="/tutorials/coalescent/skyline.html">Skyline Models</a></li>
           
           </ul>
         
@@ -238,7 +240,14 @@ monitors.append( mnScreen(pop_size, root_age, printgen=100) )
 
 <p>After running your analysis, you can plot the results using the <code class="language-plaintext highlighter-rouge">R</code> package <code class="language-plaintext highlighter-rouge">RevGadgets</code> and by additionally defining the demographic models from this exercise.</p>
 
-<blockquote class="aside"><h2>R code</h2><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>interval_change_points_log_skyline = "../output/horses_skyline_times.log"
+<blockquote class="aside"><h2>R code</h2><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>library(RevGadgets)
+
+burnin = 0.1
+probs = c(0.025, 0.975)
+summary = "median"
+
+population_size_log_skyline = "output/horses_skyline_NEs.log"
+interval_change_points_log_skyline = "output/horses_skyline_times.log"
 df_skyline &lt;- processPopSizes(population_size_log = population_size_log_skyline, interval_change_points_log = interval_change_points_log_skyline, method = "events", burnin = burnin, probs = probs, summary = summary)
 p_skyline &lt;- plotPopSizes(df_skyline) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
 

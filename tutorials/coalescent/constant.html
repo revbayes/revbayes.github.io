@@ -56,7 +56,7 @@
 	<h1 class="maintitle">Constant Coalescent Process</h1>
 	<h3 class="subtitle">Estimating Demographic Histories with a Constant Coalescent Process</h3>
 	<h4 class="authors">Ronja Billenstein and Sebastian Höhna</h4>
-  <h5>Last modified on February 14, 2022</h5>
+  <h5>Last modified on February 15, 2022</h5>
 </div>
 
 
@@ -121,6 +121,11 @@ The coalescent process was first introduced by Kingman in 1982 for a constant po
 
 <p>In the constant coalescent process, a single population size is assumed for the whole tree.
 The relationship betweeen coalescent waiting times and effective population size is defined through the coalescent rate: $c = \frac{k (k-1)}{2N_e}$ with $k$ being the number of currently active lineages and $N_e$ being the effective population size.</p>
+
+<p>In <a href="#coalescent"></a>, a general scheme is shown.
+Waiting times are in between coalescent events.
+In later exercises, we will not have a single constant population size, but population sizes in different intervals.
+The <a href="/tutorials/coalescent/skyline">skyline model</a> applies an event-based system (violet), whereas the <a href="/tutorials/coalescent/GMRF">Gaussian Markov Random Field (GMRF) model</a> has equally sized intervals (green).</p>
 
 <figure id="coalescent"><p><img src="figures/Draft_coalescent_2.png" width="800" /></p>
 <figcaption>Schematic figure of a coalescent tree and the different times associated with it. $w_k$ are the waiting times with $k$ active lineages, $t_{ck}$ are the coalescent events at the beginning of such a coalescent interval. $t_{ij}$ mark the points of interval change. Here, one example with event-based interval times (violet) and one example with equally sized intervals (green) are shown.</figcaption>
@@ -301,10 +306,10 @@ burnin = 0.1
 probs = c(0.025, 0.975)
 summary = "median"
 
-population_size_log = "../output/horses_constant_NE.log"
+population_size_log = "output/horses_constant_NE.log"
 df &lt;- processPopSizes(population_size_log, method = "constant", burnin = burnin, probs = probs, summary = summary)
 p &lt;- plotPopSizes(df, method = "constant") + ggplot2::coord_cartesian(ylim = c(1e3, 1e8), xlim = c(1e5, 0))
-ggplot2::ggsave("/horses_constant.png", p)
+ggplot2::ggsave("horses_constant.png", p)
 </code></pre></div></div>
 
 <p>Your output should look roughly like the following figure.</p>

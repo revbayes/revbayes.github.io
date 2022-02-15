@@ -56,7 +56,7 @@
 	<h1 class="maintitle">Skyline Models</h1>
 	<h3 class="subtitle">Estimating Demographic Histories with Skyline Models</h3>
 	<h4 class="authors">Ronja Billenstein and Sebastian Höhna</h4>
-  <h5>Last modified on February 14, 2022</h5>
+  <h5>Last modified on February 15, 2022</h5>
 </div>
 
 
@@ -110,16 +110,27 @@
 <p>Skyline Plots are models for how population size changes through time.
 The classical skyline plot <a class="citation" href="#Pybus2000">(Pybus et al. 2000)</a> provided the first implementation of this idea.
 For each interval between two coalescent events, an effective population size was calculated.
-This led to a plot looking very similar to a skyline, thus giving the method its name.
+This led to a plot looking very similar to a skyline, thus giving the method its name (see <a href="#classical-skyline"></a> for a hypothetical example).
 The generalized skyline plot <a class="citation" href="#Strimmer2001">(Strimmer and Pybus 2001)</a> aimed at reducing the noise from analyzing every single interval by grouping several coalescent events into one interval.
 This created a smoother curve.
 First, these models were used for maximum likelihood (ML) estimation of population sizes through time.
-By now, several extensions allowing for Bayesian estimation have been published <a class="citation" href="#"></a>.
+By now, several extensions allowing for Bayesian estimation have been published (see for example <a class="citation" href="#Drummond2005">Drummond et al. (2005), Heled and Drummond (2008), Gill et al. (2012)</a>).
 In <code class="language-plaintext highlighter-rouge">RevBayes</code>, a Skyline plot method is implemented with constant population size intervals.
+In other software, you can also find the possibility to have linear skyline intervals.
+Even though this is not implemented explicitly as skyline in <code class="language-plaintext highlighter-rouge">RevBayes</code>, you can also piece together linear intervals (have a look at the <a href="/tutorials/coalescent/piecewise">piecewise model exercise</a>, if you are interested in this).
 <!--- The length of these intervals is not based on the timing of the coalescent events, but can be individually chosen. --->
-The length of these intervals can either be defined by a specific number of intervals ending at coalescent events, or alternatively be chosen individually without depending on the coalescent events.
+The length of the skyline intervals can either be defined by a specific number of intervals ending at coalescent events, or alternatively be chosen individually without depending on the coalescent events.
 <!--- In this tutorial, each interval will have the same length. --->
-In this exercise, each interval will group five coalescent events.</p>
+In this exercise, each interval will group five coalescent events.
+Have a look at <a href="#event-skyline"></a>, for a hypothetical example with three events per interval.</p>
+
+<figure id="classical-skyline"><p><img src="figures/scheme_classical_skyline.png" /></p>
+<figcaption>Hypothetical examples of a classical skyline plot.</figcaption>
+</figure>
+
+<figure id="event-skyline"><p><img src="figures/scheme_event_skyline.png" /></p>
+<figcaption>Hypothetical examples of a Bayesian skyline plot with the interval length dependent on the number of coalescent events (event-based).</figcaption>
+</figure>
 
 <blockquote class="aside"><h2>Likelihood Calculation</h2><p>We assume that the phylogeny of the samples is known.
 There are $n$ samples, with $k$ active lineages at the current point in time $t$.
@@ -225,8 +236,8 @@ burnin = 0.1
 probs = c(0.025, 0.975)
 summary = "median"
 
-population_size_log = "../output/horses_skyline_NEs.log"
-interval_change_points_log = "../output/horses_skyline_times.log"
+population_size_log = "output/horses_skyline_NEs.log"
+interval_change_points_log = "output/horses_skyline_times.log"
 df &lt;- processPopSizes(population_size_log, interval_change_points_log, method = "events", burnin = burnin, probs = probs, summary = summary)
 p &lt;- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
 ggplot2::ggsave("horses_skyline.png", p)
@@ -245,7 +256,22 @@ ggplot2::ggsave("horses_skyline.png", p)
   <li><a href="/tutorials/coalescent/GMRF">The Gaussian Markov Random Field (GMRF) model</a></li>
 </ul>
 
-<ol class="bibliography"><li><span id="Pybus2000">Pybus O.G., Rambaut A., Harvey P.H. 2000. An Integrated Framework for the Inference of Viral Population History From Reconstructed Genealogies. Genetics. 155:1429–1437.</span>
+<ol class="bibliography"><li><span id="Drummond2005">Drummond A.J., Rambaut A., Shapiro B., Pybus O.G. 2005. Bayesian Coalescent Inference of Past Population Dynamics from Molecular Sequences. Molecular Biology and Evolution. 22:1185–1192.</span>
+
+<a href="https://doi.org/10.1093/molbev/msi103">10.1093/molbev/msi103</a>
+
+</li>
+<li><span id="Gill2012">Gill M.S., Lemey P., Faria N.R., Rambaut A., Shapiro B., Suchard M.A. 2012. Improving Bayesian Population Dynamics Inference: A Coalescent-Based Model for Multiple Loci. Molecular Biology and Evolution. 30:713–724.</span>
+
+<a href="https://doi.org/10.1093/molbev/mss265">10.1093/molbev/mss265</a>
+
+</li>
+<li><span id="Heled2008">Heled J., Drummond A.J. 2008. Bayesian inference of population size history from multiple loci. BMC Evolutionary Biology. 8:289.</span>
+
+<a href="https://doi.org/10.1186/1471-2148-8-289">10.1186/1471-2148-8-289</a>
+
+</li>
+<li><span id="Pybus2000">Pybus O.G., Rambaut A., Harvey P.H. 2000. An Integrated Framework for the Inference of Viral Population History From Reconstructed Genealogies. Genetics. 155:1429–1437.</span>
 
 <a href="https://doi.org/10.1093/genetics/155.3.1429">10.1093/genetics/155.3.1429</a>
 

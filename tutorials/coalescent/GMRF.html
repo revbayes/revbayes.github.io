@@ -56,7 +56,7 @@
 	<h1 class="maintitle">Skyline Models with GMRF</h1>
 	<h3 class="subtitle">Estimating Demographic Histories with Skyline Models using a Gaussian Markov Random Field Prior</h3>
 	<h4 class="authors">Ronja Billenstein and Sebastian Höhna</h4>
-  <h5>Last modified on February 14, 2022</h5>
+  <h5>Last modified on February 15, 2022</h5>
 </div>
 
 
@@ -111,8 +111,14 @@
 
 <p>This tutorial describes how to run a Skyline Analysis with a Gaussian Markov Random Field (GMRF) prior in <code class="language-plaintext highlighter-rouge">RevBayes</code>.
 This is a special case of a skyline plot.
-The intervals are equally spaced and thus their start and end points are independent from the coalescent events.
+The intervals are equally spaced and thus their start and end points are independent from the coalescent events (see <a href="#equalsize-skyline"></a> for a hypothetical example).
 Furthermore, each interval’s population size has a prior based on the previous, more recent interval (remember that we start in the present and go backwards in time for coalescent processes).</p>
+
+<figure id="equalsize-skyline"><p align="middle">
+  <img src="figures/scheme_equalsize_skyline.png" /> 
+</p>
+<figcaption>Hypothetical examples of a Bayesian skyline plot with equally sized intervals, independent from the number of coalescent events (equal-sized).</figcaption>
+</figure>
 
 <h2 class="section" id="inference-example">Inference Example</h2>
 <hr class="section" />
@@ -263,8 +269,8 @@ burnin = 0.1
 probs = c(0.025, 0.975)
 summary = "median"
 
-population_size_log = "../output/horses_GMRF_NEs.log"
-interval_change_points_log = "../output/horses_GMRF_times.log"
+population_size_log = "output/horses_GMRF_NEs.log"
+interval_change_points_log = "output/horses_GMRF_times.log"
 df &lt;- processPopSizes(population_size_log, interval_change_points_log, method = "specified", burnin = burnin, probs = probs, summary = summary)
 p &lt;- plotPopSizes(df, method = "specified") + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
 ggplot2::ggsave("horses_GMRF.png", p)
@@ -281,7 +287,7 @@ This was done to be able to easily compare the plots. --->
 <hr class="section" />
 
 <p>Related to the GMRF, there also is the Horseshoe Markov Random Field (HSMRF) prior.
-It can be seen as a more generalized version of the GMRF with the change focusing on the definition of the standard deviation (<a class="citation" href="#Magee2020">(Magee et al. 2020)</a>)
+It can be seen as a more generalized version of the GMRF with the change focusing on the definition of the standard deviation <a class="citation" href="#Magee2020">(Magee et al. 2020)</a>.
 In the tutorial <a href="/tutorials/divrate/ebd.html">Episodic Diversification Rate Estimation</a>, it is applied to the estimation of diversification rates.
 Have a look at the <strong>Specifying the model</strong> section and try to change the respective lines in your current script to follow the HSMRF procedure.
 Do your results look different?</p>
