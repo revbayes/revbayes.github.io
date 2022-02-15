@@ -18,8 +18,17 @@ include_files:
 {% section Overview %}
 This tutorial describes how to run a Coaelescent Skyline Analysis with a Gaussian Markov Random Field (GMRF) prior in `RevBayes`.
 This is a special case of a skyline plot.
-The intervals are equally spaced and thus their start and end points are independent from the coalescent events.
+The intervals are equally spaced and thus their start and end points are independent from the coalescent events (see {% ref equalsize-skyline %} for a hypothetical example).
 Furthermore, each interval's population size has a prior based on the previous, more recent interval (remember that we start in the present and go backwards in time for coalescent processes).
+
+{% figure equalsize-skyline %}
+<p align="middle">
+  <img src="figures/scheme_equalsize_skyline.png" /> 
+</p>
+{% figcaption %}
+Hypothetical examples of a Bayesian skyline plot with equally sized intervals, independent from the number of coalescent events (equal-sized).
+{% endfigcaption %}
+{% endfigure %}
 
 {% section Inference Example %}
 
@@ -172,8 +181,8 @@ burnin = 0.1
 probs = c(0.025, 0.975)
 summary = "median"
 
-population_size_log = "../output/horses_GMRF_NEs.log"
-interval_change_points_log = "../output/horses_GMRF_times.log"
+population_size_log = "output/horses_GMRF_NEs.log"
+interval_change_points_log = "output/horses_GMRF_times.log"
 df <- processPopSizes(population_size_log, interval_change_points_log, method = "specified", burnin = burnin, probs = probs, summary = summary)
 p <- plotPopSizes(df, method = "specified") + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
 ggplot2::ggsave("horses_GMRF.png", p)

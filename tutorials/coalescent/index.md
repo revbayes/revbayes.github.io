@@ -50,12 +50,12 @@ Griffiths and Tavaré then extended the model to be applicable to varying popula
 
 {% section Preparation %}
 
-In order to perform the different analyses in this tutorial, you will need to create a directory on your computer for this tutorial and download a few files.
+> In order to perform the different analyses in this tutorial, you will need to create a directory on your computer for this tutorial and download a few files.
 {:.instruction}
 
 {% subsection The Data %}
 
-In the tutorial directory on your computer, create a subdirectory called "data" and download the data files that you can find on the left of this page.
+> In the tutorial directory on your computer, create a subdirectory called "data" and download the data files that you can find on the left of this page.
 {:.instruction}
 
 You should now have the following files in your data folder:
@@ -72,12 +72,12 @@ You should now have the following files in your data folder:
 It is useful to create `.Rev` scripts for the different analyes.
 We will also provide a full script in every tutorial that you can easily run for the whole analysis.
 
-Please create a "scripts" directory in the tutorial directory.
+> Please create a "scripts" directory in the tutorial directory.
 {:.instruction}
 
 {% section Exercises %}
 
-You can begin by clicking on the first exercise!
+> You can begin by clicking on the first exercise!
 {:.instruction}
 
 If you want to turn back to this page, it is listed on the left as prerequisite in all the exercises.

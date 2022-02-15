@@ -29,6 +29,11 @@ The coalescent process was first introduced by Kingman in 1982 for a constant po
 In the constant coalescent process, a single population size is assumed for the whole tree.
 The relationship betweeen coalescent waiting times and effective population size is defined through the coalescent rate: $c = \frac{k (k-1)}{2N_e}$ with $k$ being the number of currently active lineages and $N_e$ being the effective population size.
 
+In {% ref coalescent %}, a general scheme is shown.
+Waiting times are in between coalescent events.
+In later exercises, we will not have a single constant population size, but population sizes in different intervals.
+The [skyline model]({{base.url}}/tutorials/coalescent/skyline) applies an event-based system (violet), whereas the [Gaussian Markov Random Field (GMRF) model]({{base.url}}/tutorials/coalescent/GMRF) has equally sized intervals (green).
+
 {% figure coalescent %}
 <img src="figures/Draft_coalescent_2.png" width="800">
 {% figcaption %}
@@ -224,10 +229,10 @@ burnin = 0.1
 probs = c(0.025, 0.975)
 summary = "median"
 
-population_size_log = "../output/horses_constant_NE.log"
+population_size_log = "output/horses_constant_NE.log"
 df <- processPopSizes(population_size_log, method = "constant", burnin = burnin, probs = probs, summary = summary)
 p <- plotPopSizes(df, method = "constant") + ggplot2::coord_cartesian(ylim = c(1e3, 1e8), xlim = c(1e5, 0))
-ggplot2::ggsave("/horses_constant.png", p)
+ggplot2::ggsave("horses_constant.png", p)
 ~~~
 
 Your output should look roughly like the following figure.

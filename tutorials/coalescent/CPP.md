@@ -6,6 +6,7 @@ level: 8 #may need adjustment
 order: 0.8
 prerequisites:
 - coalescent
+- coalescent/skyline
 - coalescent/GMRF
 index: false
 include_all: false
