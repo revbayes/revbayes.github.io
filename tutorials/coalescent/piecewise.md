@@ -6,6 +6,7 @@ level: 8 #may need adjustment
 order: 0.5
 prerequisites:
 - coalescent
+- coalescent/skyline
 index: false
 include_all: false
 include_files:
@@ -148,7 +149,14 @@ After running your analysis, you can plot the results using the `R` package `Rev
 
 {% aside R code %}
 ~~~
-interval_change_points_log_skyline = "../output/horses_skyline_times.log"
+library(RevGadgets)
+
+burnin = 0.1
+probs = c(0.025, 0.975)
+summary = "median"
+
+population_size_log_skyline = "output/horses_skyline_NEs.log"
+interval_change_points_log_skyline = "output/horses_skyline_times.log"
 df_skyline <- processPopSizes(population_size_log = population_size_log_skyline, interval_change_points_log = interval_change_points_log_skyline, method = "events", burnin = burnin, probs = probs, summary = summary)
 p_skyline <- plotPopSizes(df_skyline) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
 

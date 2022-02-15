@@ -133,6 +133,7 @@ p <- p_skyline + ggplot2::geom_segment(data = df, aes(x = time, xend = time_end,
 ggplot2::ggsave("../figures/horses_piecewise_3const.png", p)
 
 # piecewise, 6 different
+population_size_log_skyline = "../output/horses_skyline_NEs.log"
 interval_change_points_log_skyline = "../output/horses_skyline_times.log"
 df_skyline <- processPopSizes(population_size_log = population_size_log_skyline, interval_change_points_log = interval_change_points_log_skyline, method = "events", burnin = burnin, probs = probs, summary = summary)
 p_skyline <- plotPopSizes(df_skyline) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))

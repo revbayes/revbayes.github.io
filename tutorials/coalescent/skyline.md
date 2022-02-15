@@ -18,16 +18,33 @@ include_files:
 Skyline Plots are models for how population size changes through time.
 The classical skyline plot {% cite Pybus2000 %} provided the first implementation of this idea.
 For each interval between two coalescent events, an effective population size was calculated.
-This led to a plot looking very similar to a skyline, thus giving the method its name.
+This led to a plot looking very similar to a skyline, thus giving the method its name (see {% ref classical-skyline %} for a hypothetical example).
 The generalized skyline plot {% cite Strimmer2001 %} aimed at reducing the noise from analyzing every single interval by grouping several coalescent events into one interval.
 This created a smoother curve.
 First, these models were used for maximum likelihood (ML) estimation of population sizes through time.
-By now, several extensions allowing for Bayesian estimation have been published {% cite %}.
+By now, several extensions allowing for Bayesian estimation have been published (see for example {% citet Drummond2005 Heled2008 Gill2012 %}).
 In `RevBayes`, a Skyline plot method is implemented with constant population size intervals.
+In other software, you can also find the possibility to have linear skyline intervals.
+Even though this is not implemented explicitly as skyline in `RevBayes`, you can also piece together linear intervals (have a look at the [piecewise model exercise]({{base.url}}/tutorials/coalescent/piecewise), if you are interested in this).
 <!--- The length of these intervals is not based on the timing of the coalescent events, but can be individually chosen. --->
-The length of these intervals can either be defined by a specific number of intervals ending at coalescent events, or alternatively be chosen individually without depending on the coalescent events.
+The length of the skyline intervals can either be defined by a specific number of intervals ending at coalescent events, or alternatively be chosen individually without depending on the coalescent events.
 <!--- In this tutorial, each interval will have the same length. --->
 In this exercise, each interval will group five coalescent events.
+Have a look at {% ref event-skyline %}, for a hypothetical example with three events per interval.
+
+{% figure classical-skyline %}
+  <img src="figures/scheme_classical_skyline.png" />
+{% figcaption %}
+Hypothetical examples of a classical skyline plot.
+{% endfigcaption %}
+{% endfigure %}
+
+{% figure event-skyline %}
+  <img src="figures/scheme_event_skyline.png" /> 
+{% figcaption %}
+Hypothetical examples of a Bayesian skyline plot with the interval length dependent on the number of coalescent events (event-based).
+{% endfigcaption %}
+{% endfigure %}
 
 {% aside Likelihood Calculation %}
 
@@ -134,8 +151,8 @@ burnin = 0.1
 probs = c(0.025, 0.975)
 summary = "median"
 
-population_size_log = "../output/horses_skyline_NEs.log"
-interval_change_points_log = "../output/horses_skyline_times.log"
+population_size_log = "output/horses_skyline_NEs.log"
+interval_change_points_log = "output/horses_skyline_times.log"
 df <- processPopSizes(population_size_log, interval_change_points_log, method = "events", burnin = burnin, probs = probs, summary = summary)
 p <- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
 ggplot2::ggsave("horses_skyline.png", p)
