@@ -175,7 +175,8 @@ summary = "median"
 population_size_log = "../output/horses_GMRF_NEs.log"
 interval_change_points_log = "../output/horses_GMRF_times.log"
 df <- processPopSizes(population_size_log, interval_change_points_log, method = "specified", burnin = burnin, probs = probs, summary = summary)
-p <- plotPopSizes(df, method = "specified") + ggplot2::coord_cartesian(ylim = c(1e3, 1e7))
+p <- plotPopSizes(df, method = "specified") + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
+ggplot2::ggsave("horses_GMRF.png", p)
 ~~~
 
 <!--- In the example, we set the limits of the x-axis to the root age value from the next exercise (see below).
