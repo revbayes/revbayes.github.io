@@ -16,7 +16,7 @@ include_files:
 ---
 
 {% section Overview %}
-This tutorial describes how to run a Skyline Analysis with a Gaussian Markov Random Field (GMRF) prior in `RevBayes`.
+This tutorial describes how to run a Coaelescent Skyline Analysis with a Gaussian Markov Random Field (GMRF) prior in `RevBayes`.
 This is a special case of a skyline plot.
 The intervals are equally spaced and thus their start and end points are independent from the coalescent events.
 Furthermore, each interval's population size has a prior based on the previous, more recent interval (remember that we start in the present and go backwards in time for coalescent processes).
@@ -61,8 +61,8 @@ for (i in 1:(NUM_INTERVALS-1)) {
 ~~~
 
 For each interval, a population size will be estimated.
-In this case, the most recent population size is treated differently to the other population sizes.
-This is due to the fact that all other population size priors depend on the one more recent.
+In the GMRF model, each population size depends on the previous population size.
+In this case, the most recent population size must be treated differently to the other population sizes.
 
 ~~~
 population_size_at_present ~ dnUniform(0,1E8)
@@ -191,7 +191,7 @@ This is how the resulting GMRF skyline plot should roughly look like.
 
 {% section The Horseshoe Markov Random Field Prior %}
 Related to the GMRF, there also is the Horseshoe Markov Random Field (HSMRF) prior.
-It can be seen as a more generalized version of the GMRF with the change focusing on the definition of the standard deviation ({% cite Magee2020 %})
+It can be seen as a more generalized version of the GMRF with the change focusing on the definition of the standard deviation {% cite Magee2020 %}.
 In the tutorial {% page_ref divrate/ebd %}, it is applied to the estimation of diversification rates.
 Have a look at the **Specifying the model** section and try to change the respective lines in your current script to follow the HSMRF procedure.
 Do your results look different?
