@@ -7,7 +7,7 @@ probs = c(0.025, 0.975)
 summary = "median"
 
 # constant
-population_size_log = "../output/horses_constant_NE.log"
+population_size_log = "../output/horses_constant_NE_run_2.log"
 df <- processPopSizes(population_size_log, method = "constant", burnin = burnin, probs = probs, summary = summary)
 p <- plotPopSizes(df, method = "constant") + ggplot2::coord_cartesian(ylim = c(1e3, 1e8), xlim = c(1e5, 0))
 ggplot2::ggsave("../figures/horses_constant.png", p)
@@ -147,59 +147,28 @@ pop_size_medians = apply(pop_sizes[,grep("size", names(pop_sizes))], 2, median)
 pop_size_quantiles = apply(pop_sizes[,grep("size", names(pop_sizes))], 2, quantile, probs = probs)
 time_medians =apply(interval_times[,grep("change_points", names(interval_times))], 2, median)
 
-# exp, exp, lin, const, lin, const
-exponential_recent <- function(t){
-  N0 <- pop_size_medians[1]
-  N1 <- pop_size_medians[2]
-  t0 <- 0
-  t1 <- time_medians[1]
+exponential_dem <- function(t, N0, N1, t0, t1){
   alpha = log( N1/N0 ) / (t0 - t1)
   return (N0 * exp( (t0-t) * alpha))
 }
 
-exponential_ancient <- function(t){
-  N0 <- pop_size_medians[2]
-  N1 <- pop_size_medians[3]
-  t0 <- time_medians[1]
-  t1 <- time_medians[2]
-  alpha = log( N1/N0 ) / (t0 - t1)
-  return (N0 * exp( (t0-t) * alpha))
-}
-
-linear_recent <- function(t){
-  N0 <- pop_size_medians[3]
-  N1 <- pop_size_medians[4]
-  t0 <- time_medians[2]
-  t1 <- time_medians[3]
+linear_dem <- function(t, N0, N1, t0, t1){
   alpha = ( N1-N0 ) / (t1 - t0)
   return (N0 + (t-t0) * alpha)
 }
-
-# constant with pop_size[4] from time[3] to time[4]
-
-linear_ancient <- function(t){
-  N0 <- pop_size_medians[4]
-  N1 <- pop_size_medians[5]
-  t0 <- time_medians[4]
-  t1 <- time_medians[5]
-  alpha = ( N1-N0 ) / (t1 - t0)
-  return (N0 + (t-t0) * alpha)
-}
-
-# constant with pop_size[5] from time[5] to Inf
 
 all_combined <- function(t){
   if (t < time_medians[1]){
     
-    return(exponential_recent(t))
+    return(exponential_dem(t, N0 = pop_size_medians[1], N1 = pop_size_medians[2], t0 = 0, t1 = time_medians[1]))
     
   } else if (t < time_medians[2]){
     
-    return(exponential_ancient(t))
+    return(exponential_dem(t, N0 = pop_size_medians[2], N1 = pop_size_medians[3], t0 = time_medians[1], t1 = time_medians[2]))
     
   } else if (t < time_medians[3]){
     
-    return(linear_recent(t))
+    return(linear_dem(t, N0 = pop_size_medians[3], N1 = pop_size_medians[4], t0 = time_medians[2], t1 = time_medians[3]))
     
   } else if (t < time_medians[4]){
     
@@ -207,7 +176,7 @@ all_combined <- function(t){
     
   } else if (t < time_medians[5]){
     
-    return(linear_ancient(t))
+    return(linear_dem(t, N0 = pop_size_medians[4], N1 = pop_size_medians[5], t0 = time_medians[4], t1 = time_medians[5]))
     
   } else {
     
@@ -216,14 +185,171 @@ all_combined <- function(t){
   }
 }
 
+all_lower <- function(t){
+  if (t < time_medians[1]){
+    
+    return(exponential_dem(t, N0 = pop_size_quantiles[1,1], N1 = pop_size_quantiles[1,2], t0 = 0, t1 = time_medians[1]))
+    
+  } else if (t < time_medians[2]){
+    
+    return(exponential_dem(t, N0 = pop_size_quantiles[1,2], N1 = pop_size_quantiles[1,3], t0 = time_medians[1], t1 = time_medians[2]))
+    
+  } else if (t < time_medians[3]){
+    
+    return(linear_dem(t, N0 = pop_size_quantiles[1,3], N1 = pop_size_quantiles[1,4], t0 = time_medians[2], t1 = time_medians[3]))
+    
+  } else if (t < time_medians[4]){
+    
+    return(pop_size_quantiles[1,4])
+    
+  } else if (t < time_medians[5]){
+    
+    return(linear_dem(t, N0 = pop_size_quantiles[1,4], N1 = pop_size_quantiles[1,5], t0 = time_medians[4], t1 = time_medians[5]))
+    
+  } else {
+    
+    return(pop_size_quantiles[1,5])
+    
+  }
+}
+
+all_upper <- function(t){
+  if (t < time_medians[1]){
+    
+    return(exponential_dem(t, N0 = pop_size_quantiles[2,1], N1 = pop_size_quantiles[2,2], t0 = 0, t1 = time_medians[1]))
+    
+  } else if (t < time_medians[2]){
+    
+    return(exponential_dem(t, N0 = pop_size_quantiles[2,2], N1 = pop_size_quantiles[2,3], t0 = time_medians[1], t1 = time_medians[2]))
+    
+  } else if (t < time_medians[3]){
+    
+    return(linear_dem(t, N0 = pop_size_quantiles[2,3], N1 = pop_size_quantiles[2,4], t0 = time_medians[2], t1 = time_medians[3]))
+    
+  } else if (t < time_medians[4]){
+    
+    return(pop_size_quantiles[2,4])
+    
+  } else if (t < time_medians[5]){
+    
+    return(linear_dem(t, N0 = pop_size_quantiles[2,4], N1 = pop_size_quantiles[2,5], t0 = time_medians[4], t1 = time_medians[5]))
+    
+  } else {
+    
+    return(pop_size_quantiles[2,5])
+    
+  }
+}
+
 grid = seq(0, 3.5e5, length.out = 500)
-pop_size_curve <- sapply(grid, all_combined)
+pop_size_median <- sapply(grid, all_combined)
+pop_size_lower <- sapply(grid, all_lower)
+pop_size_upper <- sapply(grid, all_upper)
 
 df <-tibble::tibble(.rows = length(grid))
-df$value <- pop_size_curve
+df$value <- pop_size_median
+df$lower <- pop_size_lower
+df$upper <- pop_size_upper
 df$time <- grid
 
-# plot(df$grid, df$value)
-
-p <- p_skyline + ggplot2::geom_line(data = df, aes(x = time, y = value), size = 0.9, color = "blue")
+p <- p_skyline +
+  ggplot2::geom_line(data = df, ggplot2::aes(x = time, y = value), size = 0.9, color = "blue") +
+  ggplot2::geom_ribbon(data = df, ggplot2::aes(x = time, ymin = lower, ymax = upper), fill = "blue", alpha = 0.2)
 ggplot2::ggsave("../figures/horses_piecewise_6diff.png", p)
+
+#######################
+# heterochronous data #
+#######################
+
+# skyline
+population_size_log = "../output/horses_het_skyline_NEs.log"
+interval_change_points_log = "../output/horses_het_skyline_times.log"
+df <- processPopSizes(population_size_log, interval_change_points_log, method = "events", burnin = burnin, probs = probs, summary = summary)
+p <- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
+ggplot2::ggsave("../figures/horses_het_skyline.png", p)
+
+
+#############################################
+
+### old code
+# # exp, exp, lin, const, lin, const
+# exponential_recent <- function(t){
+#   N0 <- pop_size_medians[1]
+#   N1 <- pop_size_medians[2]
+#   t0 <- 0
+#   t1 <- time_medians[1]
+#   alpha = log( N1/N0 ) / (t0 - t1)
+#   return (N0 * exp( (t0-t) * alpha))
+# }
+# 
+# exponential_ancient <- function(t){
+#   N0 <- pop_size_medians[2]
+#   N1 <- pop_size_medians[3]
+#   t0 <- time_medians[1]
+#   t1 <- time_medians[2]
+#   alpha = log( N1/N0 ) / (t0 - t1)
+#   return (N0 * exp( (t0-t) * alpha))
+# }
+# 
+# linear_recent <- function(t){
+#   N0 <- pop_size_medians[3]
+#   N1 <- pop_size_medians[4]
+#   t0 <- time_medians[2]
+#   t1 <- time_medians[3]
+#   alpha = ( N1-N0 ) / (t1 - t0)
+#   return (N0 + (t-t0) * alpha)
+# }
+# 
+# # constant with pop_size[4] from time[3] to time[4]
+# 
+# linear_ancient <- function(t){
+#   N0 <- pop_size_medians[4]
+#   N1 <- pop_size_medians[5]
+#   t0 <- time_medians[4]
+#   t1 <- time_medians[5]
+#   alpha = ( N1-N0 ) / (t1 - t0)
+#   return (N0 + (t-t0) * alpha)
+# }
+# 
+# # constant with pop_size[5] from time[5] to Inf
+# 
+# all_combined <- function(t){
+#   if (t < time_medians[1]){
+#     
+#     return(exponential_recent(t))
+#     
+#   } else if (t < time_medians[2]){
+#     
+#     return(exponential_ancient(t))
+#     
+#   } else if (t < time_medians[3]){
+#     
+#     return(linear_recent(t))
+#     
+#   } else if (t < time_medians[4]){
+#     
+#     return(pop_size_medians[4])
+#     
+#   } else if (t < time_medians[5]){
+#     
+#     return(linear_ancient(t))
+#     
+#   } else {
+#     
+#     return(pop_size_medians[5])
+#     
+#   }
+# }
+# 
+# grid = seq(0, 3.5e5, length.out = 500)
+# pop_size_curve <- sapply(grid, all_combined)
+# 
+# df <-tibble::tibble(.rows = length(grid))
+# df$value <- pop_size_curve
+# df$time <- grid
+# 
+# # plot(df$grid, df$value)
+# 
+# p <- p_skyline + ggplot2::geom_line(data = df, ggplot2::aes(x = time, y = value), size = 0.9, color = "blue")
+# ggplot2::ggsave("../figures/horses_piecewise_6diff.png", p)
+

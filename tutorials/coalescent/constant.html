@@ -56,7 +56,7 @@
 	<h1 class="maintitle">Constant Coalescent Process</h1>
 	<h3 class="subtitle">Estimating Demographic Histories with a Constant Coalescent Process</h3>
 	<h4 class="authors">Ronja Billenstein and Sebastian Höhna</h4>
-  <h5>Last modified on February 15, 2022</h5>
+  <h5>Last modified on February 23, 2022</h5>
 </div>
 
 
@@ -127,8 +127,8 @@ Waiting times are in between coalescent events.
 In later exercises, we will not have a single constant population size, but population sizes in different intervals.
 The <a href="/tutorials/coalescent/skyline">skyline model</a> applies an event-based system (violet), whereas the <a href="/tutorials/coalescent/GMRF">Gaussian Markov Random Field (GMRF) model</a> has equally sized intervals (green).</p>
 
-<figure id="coalescent"><p><img src="figures/Draft_coalescent_2.png" width="800" /></p>
-<figcaption>Schematic figure of a coalescent tree and the different times associated with it. $w_k$ are the waiting times with $k$ active lineages, $t_{ck}$ are the coalescent events at the beginning of such a coalescent interval. $t_{ij}$ mark the points of interval change. Here, one example with event-based interval times (violet) and one example with equally sized intervals (green) are shown.</figcaption>
+<figure id="coalescent"><p><img src="figures/scheme_constant.png" width="800" /></p>
+<figcaption>Schematic figure of a coalescent tree and the different times associated with it. $w_k$ are the waiting times with $k$ active lineages, $t_{ck}$ are the coalescent events at the beginning of such a coalescent interval. Here, an example of a constant population size trajectory is shown. The bold line represents the median of the posterior distribution and the shaded are shows the $95%$ credible intervals.</figcaption>
 </figure>
 
 <!--- <blockquote class="aside"><h2>Likelihood Calculation</h2><p>…</p>
@@ -147,13 +147,25 @@ You can type the following command into <code class="language-plaintext highligh
   <p>We will walk you through every single step in the following section.</p>
 </blockquote>
 
-<p>In the beginning, we define a few variable for running the MCMC.
+<p>For every MCMC analysis, convergence assessment is an important step.
+In the tutorial <a href="/tutorials/convergence/">Convergence assessment</a>, you can find information and instructions on how to run the convergence assessment with the <code class="language-plaintext highlighter-rouge">R</code> package <code class="language-plaintext highlighter-rouge">convenience</code>.
+It is generally recommended to have at least two replicates per MCMC analysis to be able to compare convergence between runs.
+Thus, we first set the number of replicates:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NUM_REPLICATES      = 2
+</code></pre></div></div>
+
+<p>In the beginning, we also define a few variables for running the MCMC.
 These are the number of iterations, and the so-called “thinning” which we use to say that we want to sample every $10^{th}$ iteration.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NUM_MCMC_ITERATIONS = 10000
 THINNING            = 10
 </code></pre></div></div>
 
-<p>We also need to create vectors for the monitors and moves of the MCMC.</p>
+<p>We also need to create vectors for the monitors and moves of the MCMC.
+Moves are functions that propose new parameter values in your MCMC, based on the current value.
+These newly proposed parameters can either be accepted or rejected.
+Depending on this acceptance / rejection, the posterior distribution of your parameters will be formed.
+See for example <a href="/tutorials/mcmc/poisson.html">Introduction to MCMC</a> for more information on the acceptance / rejection procedure.
+Monitors are later used to track the progress of your analysis, but are also needed to write output files.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves     = VectorMoves()
 monitors  = VectorMonitors()
 </code></pre></div></div>
@@ -161,8 +173,7 @@ monitors  = VectorMonitors()
 <h3 class="subsection" id="read-the-data">Read the data</h3>
 <hr class="subsection" />
 
-<!--- Start by reading in the taxa names and age information (**bears_taxa.tsv**) and the sequences (**.nex**). --->
-<p>Start by reading in the aligned sequences.</p>
+<p>Start by reading in the aligned sequences of the homochronous horse data.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sequences &lt;- readDiscreteCharacterData("data/horses_homochronous_sequences.fasta")
 </code></pre></div></div>
 
@@ -184,28 +195,37 @@ Without knowing much about the population size of our horse sample, we set a uni
 
 <p>You may realize that in the full script, we initialize the population size to have a first value of $100$.
 Later in the tutorial, we will constrain the root age of the tree to be inside the interval $[250 000, 500 000]$.
-In order for our first proposed tree to comply with this constraint, an initial value of $100$ proved to avoid problems. <strong>(phrasing!)</strong></p>
+In order for our first proposed tree to comply with this constraint, an initial value of $100$ proved to lead to reasonable initial proposals.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pop_size.setValue(100)
 </code></pre></div></div>
 
-<p>We also add a move for the population size. <strong>(add why!)</strong></p>
+<p>We also add a move for the population size.
+Here, we chose a scaling move which means that the current values is multiplied by a scaling factor to propose a new value.
+See for example <a href="/tutorials/mcmc/binomial.html">Introduction to MCMC using RevBayes</a> for information on moves.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale(pop_size, lambda=0.1, tune=true, weight=2.0) )
 </code></pre></div></div>
 
-<p>Now, we will instantiate the stochastic node for the tree.</p>
+<p>Now, we will instantiate the stochastic node for the tree.
+The <code class="language-plaintext highlighter-rouge">dnCoalescent</code> distribution should be used for a constant coalescent process.
+It takes a value for the population size (<code class="language-plaintext highlighter-rouge">theta</code>) and the taxa as input.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psi ~ dnCoalescent(theta=pop_size, taxa=taxa)
 </code></pre></div></div>
 
 <p>We calibrate the tree based on the root age.
-We chose a Normal distribution with a mean of $375 000$ and a standard deviation of $60 000$. <strong>(add why!)</strong>
-As mentioned above, the root age will be constrained to the interval $[250 000, 500 000]$.</p>
+We chose a Normal distribution with a mean of $375 000$ and a standard deviation of $60 000$.
+As mentioned above, the root age will be constrained to the interval $[250 000, 500 000]$.
+As we have access to the original analysis from <a class="citation" href="#Vershinina2021">Vershinina et al. (2021)</a>, we could see that this should be the rough range of the root.</p>
+
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root_age := psi.rootAge()
 obs_root_age ~ dnNormal(mean = root_age, sd = 60000, min = 250000, max = 500000)
 obs_root_age.clamp(375000)
 </code></pre></div></div>
 
 <p>We should also add moves for the tree.
-Here, the weight of the different moves is based on the number of taxa. <strong>(add why!)</strong></p>
+These include moves on a single branch, subtrees or the whole tree.
+Here, the weight of the different moves is based on the number of taxa.
+If a move changes a single branch (<em>e.g.</em> <code class="language-plaintext highlighter-rouge">mvNNI</code>), it will be applied more often and thus have a higher weight than a move which changes the whole tree (<em>e.g.</em> <code class="language-plaintext highlighter-rouge">mvTreeScale</code>).</p>
+
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvNarrow(psi, weight=n_taxa) )
 moves.append( mvNNI(psi, weight=n_taxa) )
 moves.append( mvFNPR(psi, weight=n_taxa/4.0) )
@@ -238,22 +258,27 @@ moves.append( mvDirichletSimplex(pi, weight=1) )
 </code></pre></div></div>
 <p>For the $\Gamma$ extension to the GTR model, we need to draw the site rates (<code class="language-plaintext highlighter-rouge">sr</code>) from a discretized Gamma function with two parameters.
 Here, we use <code class="language-plaintext highlighter-rouge">alpha</code> for both parameters.
-We also need to add a move for <code class="language-plaintext highlighter-rouge">alpha</code>.</p>
+We also add a scaling move for <code class="language-plaintext highlighter-rouge">alpha</code>.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha ~ dnUniform( 0.0, 1E6 )
 alpha.setValue( 1.0 )
 sr := fnDiscretizeGamma( alpha, alpha, 4 )
 moves.append( mvScale(alpha, weight=2.0) )
 </code></pre></div></div>
-<p>We draw the proportion of invariant sites (<code class="language-plaintext highlighter-rouge">p_inv</code>) from a Beta distribution and add a move.</p>
+<p>We draw the proportion of invariant sites (<code class="language-plaintext highlighter-rouge">p_inv</code>) from a Beta distribution and add a sliding window move.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>p_inv ~ dnBeta(1,1)
 moves.append( mvSlide(p_inv) )
 </code></pre></div></div>
 <p>The last step is to set the clock rate.
-We draw it from an exponential distribution with mean $4.68e-8$ which we also use ad initial value.
-This value is taken from the original analsis published in <a class="citation" href="#Vershinina2021">Vershinina et al. (2021)</a>.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate &lt;- 1/(4.68e-8)
-clock ~ dnExponential(lambda = rate)
-clock.setValue(4.68e-8)
+We draw it from a uniform distribution here.
+Again, we know from the original analysis <a class="citation" href="#Vershinina2021">(Vershinina et al. 2021)</a> that the true value should be around $5*10^{-8}$ and thus set the upper bound of the distribution to $1*10^{-6}$.
+<!--- We also add a scaling move for the clock rate. --->
+We also add a scaling move which makes sure to regulate clock rate and the root age.
+This needs to be done as root age and clock rate are intertwined and can not be clearly seperated.
+Note that you could also calibrate the clock rate instead of the root age of the tree as we do it here.
+<!--- We draw it from an exponential distribution with mean $4.68e-8$ which we also use as initial value.
+This value is taken from the original analsis published in <a class="citation" href="#Vershinina2021">Vershinina et al. (2021)</a>. ---></p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clock ~ dnUniform(0,1e-6)
+# moves.append( mvScale(clock, weight=2.0) )
 
 up_down_move = mvUpDownScale(weight=5.0)
 up_down_move.addVariable(clock,up=TRUE)
@@ -274,14 +299,21 @@ seq.clamp(sequences)
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(psi)
 </code></pre></div></div>
 
-<p>Finally, we can add some monitors and then run the MCMC.</p>
+<p>Now, we add some monitors.
+The <code class="language-plaintext highlighter-rouge">mndModel</code> monitor keeps track of all model parameters and thus is written into our main <code class="language-plaintext highlighter-rouge">.log</code> file.
+With <code class="language-plaintext highlighter-rouge">mnFile</code>, you can keep track of the trees or parameters that you would like to keep in an extra file.
+<code class="language-plaintext highlighter-rouge">mnScreen</code> is responsible for having output printed directly to your screen.
+This output will not per se be saved in a file.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/horses_constant.log",printgen=THINNING) )
 monitors.append( mnFile(filename="output/horses_constant.trees",psi,printgen=THINNING) )
 monitors.append( mnFile(filename="output/horses_constant_NE.log",pop_size,printgen=THINNING) )
 monitors.append( mnScreen(pop_size, root_age, printgen=100) )
+</code></pre></div></div>
 
-mymcmc = mcmc(mymodel, monitors, moves)
+<p>The final step is to run the mcmc.
+Make sure to set <code class="language-plaintext highlighter-rouge">combine="mixed"</code> for the output of the two replicates to be combined in the end.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves, nruns=NUM_REPLICATES, combine="mixed") 
 mymcmc.burnin(NUM_MCMC_ITERATIONS*0.1,100)
 mymcmc.run(NUM_MCMC_ITERATIONS, tuning = 100)
 </code></pre></div></div>
@@ -290,7 +322,9 @@ mymcmc.run(NUM_MCMC_ITERATIONS, tuning = 100)
 <hr class="section" />
 
 <p>To check whether your analysis has converged, you can use the <code class="language-plaintext highlighter-rouge">R</code> package <code class="language-plaintext highlighter-rouge">convenience</code>.
-In the tutorial <a href="/tutorials/convergence/">Convergence assessment</a>, you can find information and instructions on how to run the convergence assessment.</p>
+Have a look at the <a href="/tutorials/convergence/">Convergence assessment</a> tutorial.</p>
+
+<p><strong>Add convergence results here</strong></p>
 
 <h2 class="section" id="results">Results</h2>
 <hr class="section" />
