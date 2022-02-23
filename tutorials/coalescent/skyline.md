@@ -35,14 +35,14 @@ Have a look at {% ref event-skyline %}, for a hypothetical example with three ev
 {% figure classical-skyline %}
   <img src="figures/scheme_classical_skyline.png" />
 {% figcaption %}
-Hypothetical examples of a classical skyline plot.
+Hypothetical example of a classical skyline plot.
 {% endfigcaption %}
 {% endfigure %}
 
 {% figure event-skyline %}
   <img src="figures/scheme_event_skyline.png" /> 
 {% figcaption %}
-Hypothetical examples of a Bayesian skyline plot with the interval length dependent on the number of coalescent events (event-based).
+Hypothetical example of a Bayesian skyline plot with the interval length dependent on the number of coalescent events (event-based).
 {% endfigcaption %}
 {% endfigure %}
 

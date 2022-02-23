@@ -31,18 +31,18 @@ The three implemented base demographic models in RevBayes are a constant, a line
 
 For the constant model, the population size through time is easily defined:
 
-$$N_e(t) = N_e(t_{i,j})$$,
+$$N_e(t) = N_e(t_{i,j}),$$
 
 with $t_{i,j}$ being the time at the beginning of the $j^{th}$ interval.
 
 For the linear model, the slope depends on the starting and ending values of the population size at the interval change points.
 We define $\alpha$ as the slope.
 
-$$\alpha = \frac{N_e(t_{i,(j+1)}) - N_e(t_{i,j})}{t_{i,(j+1)} - t_{i,j}}$$.
+$$\alpha = \frac{N_e(t_{i,(j+1)}) - N_e(t_{i,j})}{t_{i,(j+1)} - t_{i,j}}.$$
 
 Then, the effective population size through time is calculated as follows:
 
-$$N_e(t) = N_e(t_{i,j}) + (t-t_{i,j}) * \alpha$$.
+$$N_e(t) = N_e(t_{i,j}) + (t-t_{i,j}) * \alpha.$$
 
 Finally, for the exponential model, $\alpha$ is defined as follows:
 
@@ -51,7 +51,6 @@ $$\alpha = \frac{log(\frac{N_e(t_{i,(j+1)})}{N_e(t_{i,j})})}{t_{i,j} - t_{i,(j+1
 and the effective population size is:
 
 $$N_e(t) = N_e(t_{i,j}) exp((t_{i,j} - t)\alpha).$$
-
 
 {% endaside %}
 
@@ -169,59 +168,28 @@ pop_size_medians = apply(pop_sizes[,grep("size", names(pop_sizes))], 2, median)
 pop_size_quantiles = apply(pop_sizes[,grep("size", names(pop_sizes))], 2, quantile, probs = probs)
 time_medians =apply(interval_times[,grep("change_points", names(interval_times))], 2, median)
 
-# exp, exp, lin, const, lin, const
-exponential_recent <- function(t){
-  N0 <- pop_size_medians[1]
-  N1 <- pop_size_medians[2]
-  t0 <- 0
-  t1 <- time_medians[1]
+exponential_dem <- function(t, N0, N1, t0, t1){
   alpha = log( N1/N0 ) / (t0 - t1)
   return (N0 * exp( (t0-t) * alpha))
 }
 
-exponential_ancient <- function(t){
-  N0 <- pop_size_medians[2]
-  N1 <- pop_size_medians[3]
-  t0 <- time_medians[1]
-  t1 <- time_medians[2]
-  alpha = log( N1/N0 ) / (t0 - t1)
-  return (N0 * exp( (t0-t) * alpha))
-}
-
-linear_recent <- function(t){
-  N0 <- pop_size_medians[3]
-  N1 <- pop_size_medians[4]
-  t0 <- time_medians[2]
-  t1 <- time_medians[3]
+linear_dem <- function(t, N0, N1, t0, t1){
   alpha = ( N1-N0 ) / (t1 - t0)
   return (N0 + (t-t0) * alpha)
 }
-
-# constant with pop_size[4] from time[3] to time[4]
-
-linear_ancient <- function(t){
-  N0 <- pop_size_medians[4]
-  N1 <- pop_size_medians[5]
-  t0 <- time_medians[4]
-  t1 <- time_medians[5]
-  alpha = ( N1-N0 ) / (t1 - t0)
-  return (N0 + (t-t0) * alpha)
-}
-
-# constant with pop_size[5] from time[5] to Inf
 
 all_combined <- function(t){
   if (t < time_medians[1]){
     
-    return(exponential_recent(t))
+    return(exponential_dem(t, N0 = pop_size_medians[1], N1 = pop_size_medians[2], t0 = 0, t1 = time_medians[1]))
     
   } else if (t < time_medians[2]){
     
-    return(exponential_ancient(t))
+    return(exponential_dem(t, N0 = pop_size_medians[2], N1 = pop_size_medians[3], t0 = time_medians[1], t1 = time_medians[2]))
     
   } else if (t < time_medians[3]){
     
-    return(linear_recent(t))
+    return(linear_dem(t, N0 = pop_size_medians[3], N1 = pop_size_medians[4], t0 = time_medians[2], t1 = time_medians[3]))
     
   } else if (t < time_medians[4]){
     
@@ -229,7 +197,7 @@ all_combined <- function(t){
     
   } else if (t < time_medians[5]){
     
-    return(linear_ancient(t))
+    return(linear_dem(t, N0 = pop_size_medians[4], N1 = pop_size_medians[5], t0 = time_medians[4], t1 = time_medians[5]))
     
   } else {
     
@@ -238,14 +206,76 @@ all_combined <- function(t){
   }
 }
 
+all_lower <- function(t){
+  if (t < time_medians[1]){
+    
+    return(exponential_dem(t, N0 = pop_size_quantiles[1,1], N1 = pop_size_quantiles[1,2], t0 = 0, t1 = time_medians[1]))
+    
+  } else if (t < time_medians[2]){
+    
+    return(exponential_dem(t, N0 = pop_size_quantiles[1,2], N1 = pop_size_quantiles[1,3], t0 = time_medians[1], t1 = time_medians[2]))
+    
+  } else if (t < time_medians[3]){
+    
+    return(linear_dem(t, N0 = pop_size_quantiles[1,3], N1 = pop_size_quantiles[1,4], t0 = time_medians[2], t1 = time_medians[3]))
+    
+  } else if (t < time_medians[4]){
+    
+    return(pop_size_quantiles[1,4])
+    
+  } else if (t < time_medians[5]){
+    
+    return(linear_dem(t, N0 = pop_size_quantiles[1,4], N1 = pop_size_quantiles[1,5], t0 = time_medians[4], t1 = time_medians[5]))
+    
+  } else {
+    
+    return(pop_size_quantiles[1,5])
+    
+  }
+}
+
+all_upper <- function(t){
+  if (t < time_medians[1]){
+    
+    return(exponential_dem(t, N0 = pop_size_quantiles[2,1], N1 = pop_size_quantiles[2,2], t0 = 0, t1 = time_medians[1]))
+    
+  } else if (t < time_medians[2]){
+    
+    return(exponential_dem(t, N0 = pop_size_quantiles[2,2], N1 = pop_size_quantiles[2,3], t0 = time_medians[1], t1 = time_medians[2]))
+    
+  } else if (t < time_medians[3]){
+    
+    return(linear_dem(t, N0 = pop_size_quantiles[2,3], N1 = pop_size_quantiles[2,4], t0 = time_medians[2], t1 = time_medians[3]))
+    
+  } else if (t < time_medians[4]){
+    
+    return(pop_size_quantiles[2,4])
+    
+  } else if (t < time_medians[5]){
+    
+    return(linear_dem(t, N0 = pop_size_quantiles[2,4], N1 = pop_size_quantiles[2,5], t0 = time_medians[4], t1 = time_medians[5]))
+    
+  } else {
+    
+    return(pop_size_quantiles[2,5])
+    
+  }
+}
+
 grid = seq(0, 3.5e5, length.out = 500)
-pop_size_curve <- sapply(grid, all_combined)
+pop_size_median <- sapply(grid, all_combined)
+pop_size_lower <- sapply(grid, all_lower)
+pop_size_upper <- sapply(grid, all_upper)
 
 df <-tibble::tibble(.rows = length(grid))
-df$value <- pop_size_curve
+df$value <- pop_size_median
+df$lower <- pop_size_lower
+df$upper <- pop_size_upper
 df$time <- grid
 
-p <- p_skyline + ggplot2::geom_line(data = df, aes(x = time, y = value), size = 0.9, color = "blue")
+p <- p_skyline +
+  ggplot2::geom_line(data = df, ggplot2::aes(x = time, y = value), size = 0.9, color = "blue") +
+  ggplot2::geom_ribbon(data = df, ggplot2::aes(x = time, ymin = lower, ymax = upper), fill = "blue", alpha = 0.2)
 ggplot2::ggsave("horses_piecewise_6diff.png", p)
 ~~~
 {% endaside %}

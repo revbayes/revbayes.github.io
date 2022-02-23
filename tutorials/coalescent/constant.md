@@ -35,9 +35,9 @@ In later exercises, we will not have a single constant population size, but popu
 The [skyline model]({{base.url}}/tutorials/coalescent/skyline) applies an event-based system (violet), whereas the [Gaussian Markov Random Field (GMRF) model]({{base.url}}/tutorials/coalescent/GMRF) has equally sized intervals (green).
 
 {% figure coalescent %}
-<img src="figures/Draft_coalescent_2.png" width="800">
+<img src="figures/scheme_constant.png" width="800">
 {% figcaption %}
-Schematic figure of a coalescent tree and the different times associated with it. $w_k$ are the waiting times with $k$ active lineages, $t_{ck}$ are the coalescent events at the beginning of such a coalescent interval. $t_{ij}$ mark the points of interval change. Here, one example with event-based interval times (violet) and one example with equally sized intervals (green) are shown.
+Schematic figure of a coalescent tree and the different times associated with it. $w_k$ are the waiting times with $k$ active lineages, $t_{ck}$ are the coalescent events at the beginning of such a coalescent interval. Here, an example of a constant population size trajectory is shown. The bold line represents the median of the posterior distribution and the shaded are shows the $95%$ credible intervals.
 {% endfigcaption %}
 {% endfigure %}
 
@@ -59,7 +59,15 @@ Schematic figure of a coalescent tree and the different times associated with it
 We will walk you through every single step in the following section.
 {:.info}
 
-In the beginning, we define a few variable for running the MCMC.
+For every MCMC analysis, convergence assessment is an important step.
+In the tutorial {% page_ref convergence %}, you can find information and instructions on how to run the convergence assessment with the `R` package `convenience`.
+It is generally recommended to have at least two replicates per MCMC analysis to be able to compare convergence between runs.
+Thus, we first set the number of replicates:
+~~~
+NUM_REPLICATES      = 2
+~~~
+
+In the beginning, we also define a few variables for running the MCMC.
 These are the number of iterations, and the so-called "thinning" which we use to say that we want to sample every $10^{th}$ iteration.
 ~~~
 NUM_MCMC_ITERATIONS = 10000
@@ -67,14 +75,18 @@ THINNING            = 10
 ~~~
 
 We also need to create vectors for the monitors and moves of the MCMC.
+Moves are functions that propose new parameter values in your MCMC, based on the current value.
+These newly proposed parameters can either be accepted or rejected.
+Depending on this acceptance / rejection, the posterior distribution of your parameters will be formed.
+See for example {% page_ref mcmc/poisson %} for more information on the acceptance / rejection procedure.
+Monitors are later used to track the progress of your analysis, but are also needed to write output files.
 ~~~
 moves     = VectorMoves()
 monitors  = VectorMonitors()
 ~~~
 
 {% subsection Read the data %}
-<!--- Start by reading in the taxa names and age information (**bears_taxa.tsv**) and the sequences (**.nex**). --->
-Start by reading in the aligned sequences.
+Start by reading in the aligned sequences of the homochronous horse data.
 ~~~
 sequences <- readDiscreteCharacterData("data/horses_homochronous_sequences.fasta")
 ~~~
@@ -97,33 +109,41 @@ pop_size ~ dnUniform(0,1E8)
 
 You may realize that in the full script, we initialize the population size to have a first value of $100$.
 Later in the tutorial, we will constrain the root age of the tree to be inside the interval $\[250 000, 500 000\]$.
-In order for our first proposed tree to comply with this constraint, an initial value of $100$ proved to avoid problems. **(phrasing!)**
+In order for our first proposed tree to comply with this constraint, an initial value of $100$ proved to lead to reasonable initial proposals.
 ~~~
 pop_size.setValue(100)
 ~~~
 
-We also add a move for the population size. **(add why!)**
+We also add a move for the population size.
+Here, we chose a scaling move which means that the current values is multiplied by a scaling factor to propose a new value.
+See for example {% page_ref mcmc/binomial %} for information on moves.
 ~~~
 moves.append( mvScale(pop_size, lambda=0.1, tune=true, weight=2.0) )
 ~~~
 
 Now, we will instantiate the stochastic node for the tree.
+The `dnCoalescent` distribution should be used for a constant coalescent process.
+It takes a value for the population size (`theta`) and the taxa as input.
 ~~~
 psi ~ dnCoalescent(theta=pop_size, taxa=taxa)
 ~~~
 
 We calibrate the tree based on the root age.
-We chose a Normal distribution with a mean of $375 000$ and a standard deviation of $60 000$. **(add why!)**
+We chose a Normal distribution with a mean of $375 000$ and a standard deviation of $60 000$.
 As mentioned above, the root age will be constrained to the interval $\[250 000, 500 000\]$.
+As we have access to the original analysis from {% citet Vershinina2021 %}, we could see that this should be the rough range of the root.
+
 ~~~
 root_age := psi.rootAge()
 obs_root_age ~ dnNormal(mean = root_age, sd = 60000, min = 250000, max = 500000)
 obs_root_age.clamp(375000)
 ~~~
 
-
 We should also add moves for the tree.
-Here, the weight of the different moves is based on the number of taxa. **(add why!)**
+These include moves on a single branch, subtrees or the whole tree.
+Here, the weight of the different moves is based on the number of taxa.
+If a move changes a single branch (*e.g.* `mvNNI`), it will be applied more often and thus have a higher weight than a move which changes the whole tree (*e.g.* `mvTreeScale`).
+
 ~~~
 moves.append( mvNarrow(psi, weight=n_taxa) )
 moves.append( mvNNI(psi, weight=n_taxa) )
@@ -157,25 +177,30 @@ Q := fnGTR(er,pi)
 ~~~
 For the $\Gamma$ extension to the GTR model, we need to draw the site rates (`sr`) from a discretized Gamma function with two parameters.
 Here, we use `alpha` for both parameters.
-We also need to add a move for `alpha`.
+We also add a scaling move for `alpha`.
 ~~~
 alpha ~ dnUniform( 0.0, 1E6 )
 alpha.setValue( 1.0 )
 sr := fnDiscretizeGamma( alpha, alpha, 4 )
 moves.append( mvScale(alpha, weight=2.0) )
 ~~~
-We draw the proportion of invariant sites (`p_inv`) from a Beta distribution and add a move.
+We draw the proportion of invariant sites (`p_inv`) from a Beta distribution and add a sliding window move.
 ~~~
 p_inv ~ dnBeta(1,1)
 moves.append( mvSlide(p_inv) )
 ~~~
 The last step is to set the clock rate.
-We draw it from an exponential distribution with mean $4.68e-8$ which we also use ad initial value.
-This value is taken from the original analsis published in {% citet Vershinina2021 %}.
+We draw it from a uniform distribution here.
+Again, we know from the original analysis {% cite Vershinina2021 %} that the true value should be around $5\*10^{-8}$ and thus set the upper bound of the distribution to $1\*10^{-6}$.
+<!--- We also add a scaling move for the clock rate. --->
+We also add a scaling move which makes sure to regulate clock rate and the root age.
+This needs to be done as root age and clock rate are intertwined and can not be clearly seperated.
+Note that you could also calibrate the clock rate instead of the root age of the tree as we do it here.
+<!--- We draw it from an exponential distribution with mean $4.68e-8$ which we also use as initial value.
+This value is taken from the original analsis published in {% citet Vershinina2021 %}. --->
 ~~~
-rate <- 1/(4.68e-8)
-clock ~ dnExponential(lambda = rate)
-clock.setValue(4.68e-8)
+clock ~ dnUniform(0,1e-6)
+# moves.append( mvScale(clock, weight=2.0) )
 
 up_down_move = mvUpDownScale(weight=5.0)
 up_down_move.addVariable(clock,up=TRUE)
@@ -197,22 +222,32 @@ In the end, we need to wrap our model.
 mymodel = model(psi)
 ~~~
 
-Finally, we can add some monitors and then run the MCMC.
+Now, we add some monitors.
+The `mndModel` monitor keeps track of all model parameters and thus is written into our main `.log` file.
+With `mnFile`, you can keep track of the trees or parameters that you would like to keep in an extra file.
+`mnScreen` is responsible for having output printed directly to your screen.
+This output will not per se be saved in a file.
 
 ~~~
 monitors.append( mnModel(filename="output/horses_constant.log",printgen=THINNING) )
 monitors.append( mnFile(filename="output/horses_constant.trees",psi,printgen=THINNING) )
 monitors.append( mnFile(filename="output/horses_constant_NE.log",pop_size,printgen=THINNING) )
 monitors.append( mnScreen(pop_size, root_age, printgen=100) )
+~~~
 
-mymcmc = mcmc(mymodel, monitors, moves)
+The final step is to run the mcmc.
+Make sure to set `combine="mixed"` for the output of the two replicates to be combined in the end.
+~~~
+mymcmc = mcmc(mymodel, monitors, moves, nruns=NUM_REPLICATES, combine="mixed") 
 mymcmc.burnin(NUM_MCMC_ITERATIONS*0.1,100)
 mymcmc.run(NUM_MCMC_ITERATIONS, tuning = 100)
 ~~~
 
 {% section Check Convergence %}
 To check whether your analysis has converged, you can use the `R` package `convenience`.
-In the tutorial {% page_ref convergence %}, you can find information and instructions on how to run the convergence assessment.
+Have a look at the {% page_ref convergence %} tutorial.
+
+**Add convergence results here**
 
 
 {% section Results %}

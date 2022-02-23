@@ -22,8 +22,10 @@ include_files:
 
 {% section Overview %}
 This tutorial describes how to run a demographic analysis using the coalescent process in `RevBayes`.
+Demographic inference is about estimating population dynamics and in this tutorial, we will specifically focus on population size estimation.
 The coalescent process provides a flexible way of estimating population size trajectories through time.
 The input data are usually sequence alignments or estimated trees.
+In case of sequence data, trees and population size parameters will be jointly estimated.
 Here, we consider different types of analysis, starting with a constant demographic history and doing more complex analyses in later exercises.
 The first analyses will consider data from homochronous samples, *i.e.*, data from samples that have all been collected at the same time.
 In the second part of the exercises, you will be asked to also analyze data from heterochronous samples, *i.e.*, samples that have been collected at different points in time.
