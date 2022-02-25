@@ -56,7 +56,7 @@
 	<h1 class="maintitle">Discrete morphology - Ancestral State Estimation</h1>
 	<h3 class="subtitle">Ancestral State Estimation and Testing for Irreversibility</h3>
 	<h4 class="authors">Sebastian Höhna, Will Freyman, April M. Wright and Michael J. Landis</h4>
-  <h5>Last modified on September 16, 2019</h5>
+  <h5>Last modified on February 25, 2022</h5>
 </div>
 
 
@@ -127,31 +127,31 @@
 <h2 class="section" id="introduction">Introduction</h2>
 <hr class="section" />
 
-<p>Discrete morphological models are not only useful for tree estimation, 
-as was done in Tutorial <a href="/tutorials/morph_tree/">Discrete morphology - Tree Inference</a>, but also to ask specific questions about 
+<p>Discrete morphological models are not only useful for tree estimation,
+as was done in Tutorial <a href="/tutorials/morph_tree/">Discrete morphology - Tree Inference</a>, but also to ask specific questions about
 the evolution of the morphological character of interest.
-Specifically, there are two types of analyses that we might be interest in. 
-First, we can test different model of morphological evolution, 
+Specifically, there are two types of analyses that we might be interest in.
+First, we can test different model of morphological evolution,
 such as reversible and irreversible models, and estimate rates under these models.
-Using an irreversible model of evolution, we can test, for example, 
+Using an irreversible model of evolution, we can test, for example,
 for Dollo’s law of a complex character that can be lost but not gained again <a class="citation" href="#Goldberg2008">(Goldberg and Igić 2008)</a>.</p>
 
-<p>Additionally, we might be interest in ancestral state estimation, 
+<p>Additionally, we might be interest in ancestral state estimation,
 or mapping transition on the phylogeny.
-Commonly the central problem in statistical phylogenetics concerns <em>marginalizing</em> over 
-all unobserved character histories that evolved along the branches of a given 
+Commonly the central problem in statistical phylogenetics concerns <em>marginalizing</em> over
+all unobserved character histories that evolved along the branches of a given
 phylogenetic tree according to some model, $M$, under some parameters, $\theta$.
-This marginalization yields the probability of observing the tip states, $X_\text{tip}$, 
-given the model and its parameters, 
+This marginalization yields the probability of observing the tip states, $X_\text{tip}$,
+given the model and its parameters,
 $P( X_\text{tip} | \theta, M ) = \sum_{X_\text{internal}} P( X_\text{internal}, X_\text{tip} \mid \theta, M )$.
-One might also wish to find the probability distribution of ancestral state 
-configurations that are consistent with the tip state distribution, 
-$P( X_\text{internal} \mid X_\text{tip}, \theta, M )$, and to sample 
+One might also wish to find the probability distribution of ancestral state
+configurations that are consistent with the tip state distribution,
+$P( X_\text{internal} \mid X_\text{tip}, \theta, M )$, and to sample
 ancestral states from that distribution.
 This procedure is known as <em>ancestral state estimation</em>.</p>
 
-<p>This tutorial will provide a discussion of modeling morphological characters 
-and ancestral state estimation, and will demonstrate how to perform such 
+<p>This tutorial will provide a discussion of modeling morphological characters
+and ancestral state estimation, and will demonstrate how to perform such
 Bayesian phylogenetic analysis using RevBayes <a class="citation" href="#Hoehna2016b">(Höhna et al. 2016)</a>.</p>
 
 <h2 class="section" id="sec_irreversible_matrix">Overview of Discrete Morphology Models: Unequal rate models and irreversible models</h2>
@@ -169,7 +169,7 @@ In short, it is probably not likely that one single model describes all characte
 <hr class="subsection" />
 
 <p>The standard Mk model of character evolution, where M denotes it is a Markov model and $K$ denotes the number of states for the character.
-The lineage may transition directly from state 1 to state 4 without going through states 2 and 3, which is representative of a character with 
+The lineage may transition directly from state 1 to state 4 without going through states 2 and 3, which is representative of a character with
 <em>unordered</em> states.
 In addition, all transition rates are equal as they are in the Jukes-Cantor rate matrix <a class="citation" href="#Jukes1969">(Jukes and Cantor 1969)</a>.
 Here is an example of a symmetric unordered Mk model for $k=3$.</p>
@@ -177,7 +177,7 @@ Here is an example of a symmetric unordered Mk model for $k=3$.</p>
 \[Q = \begin{pmatrix}
 - &amp; r &amp; r \\
 r &amp; - &amp; r \\
-r &amp; r &amp; - 
+r &amp; r &amp; -
 \end{pmatrix}\]
 
 <p>Define the single shared rate parameter</p>
@@ -203,12 +203,12 @@ Q
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>P &lt;- Q.getTransitionProbabilities(0.1)
 P
 </code></pre></div></div>
-<div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[ [ 0.907, 0.046, 0.046 ], 
-  [ 0.046, 0.907, 0.046 ], 
+<div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[ [ 0.907, 0.046, 0.046 ],
+  [ 0.046, 0.907, 0.046 ],
   [ 0.046, 0.046, 0.907 ] ]
 </code></pre></div></div>
 
-<p>If we believed that, for example, for a couple of states, some transitions are strongly 
+<p>If we believed that, for example, for a couple of states, some transitions are strongly
 more likely, we could add a multiplier between those two states:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rates := [ [  0.0,  mu,   mu],
            [ 2*mu, 0.0, 2*mu],
@@ -223,14 +223,14 @@ Q
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> P &lt;- Q.getTransitionProbabilities(0.1)
  P
 </code></pre></div></div>
-<div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   [ [ 0.922, 0.038, 0.040 ], 
-     [ 0.075, 0.850, 0.075 ], 
+<div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   [ [ 0.922, 0.038, 0.040 ],
+     [ 0.075, 0.850, 0.075 ],
      [ 0.040, 0.038, 0.922 ] ]
 </code></pre></div></div>
 
 <p>If we then get our transition probabilities, we see that this changes our probability of observing the not simply our two state transitions that we changed the rate for, but others as well.</p>
 
-<p>This type of approach is common in parsimony, where it is one of several things referred to as weighted parsimony. 
+<p>This type of approach is common in parsimony, where it is one of several things referred to as weighted parsimony.
 This approach to using different matrices requires you to, <em>a priori</em> specify your matrix.
 But in reality, there is often fairly little guidance or information by which we decide if a weight applied to a transition is appropriate.
 Biologists still use models of this type - the Dollo model, in which a character is assumed not to be able to re-evolve once lost, is an extreme version of penalizing one change.</p>
@@ -250,7 +250,7 @@ The zeroes indicate that there is no immediate evolutionary path between states 
 - &amp; \lambda &amp; 0 &amp; 0 \\
 \mu &amp; -   &amp; \lambda &amp; 0 \\
 0 &amp; \mu &amp; -   &amp; \lambda \\
-0 &amp; 0 &amp; \mu &amp; - 
+0 &amp; 0 &amp; \mu &amp; -
 \end{pmatrix}\]
 
 <p>Create two rate parameters, $\lambda$ for gain and $\mu$ loss events.</p>
@@ -540,10 +540,10 @@ Thus, we will follow the <a href="/tutorials/morph_tree/">Discrete morphology - 
 <p>Let us start with defining the rate matrix $Q$ for this 3-state model:
 \(Q = \begin{pmatrix} -\mu_1 &amp; \mu_{12} &amp; \mu_{13} \\
 \mu_{21} &amp; -\mu_2  &amp; \mu_{23} \\
-\mu_{31} &amp; \mu_{32} &amp; -\mu_3 
+\mu_{31} &amp; \mu_{32} &amp; -\mu_3
 \end{pmatrix} \mbox{  .}\)</p>
 
-<p>Remember, the Mk model sets transitions to be equal from any state to any other state. 
+<p>Remember, the Mk model sets transitions to be equal from any state to any other state.
 In that sense, our 3-state matrix really looks like this:
 \(Q = \begin{pmatrix} -(k-1)\mu &amp; \mu &amp; \mu \\
 \mu &amp; -(k-1)\mu  &amp; \mu \\
@@ -563,7 +563,7 @@ In further sections, we will explore how to relax key assumptions of the Mk mode
 <h2 class="section" id="sec_dm_simple">Example: Ancestral State Estimation Using the Mk Model</h2>
 <hr class="section" />
 
-<p>In this example, we will use the placenta type data applied to a thinned phylogeny of placental mammals. 
+<p>In this example, we will use the placenta type data applied to a thinned phylogeny of placental mammals.
 We have thinned the phylogeny only so that it will run considerably fast for this tutorial.
 Our actual analysis uses the full dataset of $\sim 5000$ taxa.</p>
 
@@ -580,7 +580,7 @@ Our actual analysis uses the full dataset of $\sim 5000$ taxa.</p>
 <hr class="subsection" />
 
 <blockquote class="instruction">
-  <p>Create a new directory (in <code class="language-plaintext highlighter-rouge">RB_DiscreteMorphology_RateASE_Tutorial) called </code>scripts`. 
+  <p>Create a new directory (in <code class="language-plaintext highlighter-rouge">RB_DiscreteMorphology_RateASE_Tutorial) called </code>scripts`.
 (If you do not have this folder, please refer to the directions in section <a href="#subsec_data_files"></a>.)</p>
 </blockquote>
 
@@ -589,14 +589,14 @@ Our actual analysis uses the full dataset of $\sim 5000$ taxa.</p>
 <h3 class="subsection" id="subsec_creating_files">Creating Rev Files</h3>
 <hr class="subsection" />
 
-<p>For complex models and analyses, it is best to create Rev script files that will contain all of the model parameters, moves, and functions. 
+<p>For complex models and analyses, it is best to create Rev script files that will contain all of the model parameters, moves, and functions.
 In this exercise, you will work primarily in your text editor and create a set of files that will be easily managed and interchanged.
 In this first section, you will write the following files from scratch and save them in the <code class="language-plaintext highlighter-rouge">scripts</code> directory:</p>
 <ul>
   <li><code class="language-plaintext highlighter-rouge">mcmc_ase_mk.Rev</code>: the Rev-script file that loads the data, specifies the model describing discrete morphological character change (binary characters), and specifies the monitors and MCMC sampler.</li>
 </ul>
 
-<p>All of the files that you will create are also provided in the this RevBayes tutorial. 
+<p>All of the files that you will create are also provided in the this RevBayes tutorial.
 Please refer to these files to verify or troubleshoot your own scripts.</p>
 
 <blockquote class="instruction">
@@ -607,13 +607,13 @@ Please refer to these files to verify or troubleshoot your own scripts.</p>
 
 <p>The file you will begin in this section will be the one you load into RevBayes when you have completed all of the components of the analysis.
 In this section you will begin the file and write the Rev commands for loading in the taxon list and managing the data matrices.
-Then, starting in section <a href="#subsec_Mk_Model"></a>, you will move on to writing module files for each of the model components. 
+Then, starting in section <a href="#subsec_Mk_Model"></a>, you will move on to writing module files for each of the model components.
 Once the model files are complete, you will return to editing <code class="language-plaintext highlighter-rouge">mcmc_ase_Mk.Rev</code> and complete the Rev script with the instructions given in section <a href="#subsec_complete_MCMC"></a>.</p>
 
 <h4 class="subsubsection" id="subsubsec_load_data">Load Data Matrices</h4>
 <hr class="subsubsection" />
 
-<p>RevBayes uses the function <code class="language-plaintext highlighter-rouge">readDiscreteCharacterData()</code> to load a data matrix to the workspace from a formatted file. 
+<p>RevBayes uses the function <code class="language-plaintext highlighter-rouge">readDiscreteCharacterData()</code> to load a data matrix to the workspace from a formatted file.
 This function can be used for both molecular sequences and discrete morphological characters.
 Import the morphological character matrix and assign it to the variable <code class="language-plaintext highlighter-rouge">morpho</code>.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>morpho &lt;- readDiscreteCharacterData("data/mammals_thinned_placenta_type.nex")
@@ -622,7 +622,7 @@ Import the morphological character matrix and assign it to the variable <code cl
 <h4 class="subsubsection" id="subsubsec_var">Create Helper Variables</h4>
 <hr class="subsubsection" />
 
-<p>Before we begin writing the Rev scripts for each of the model components, we need to instantiate a couple ``helper variables’’ that will be used by downstream parts of our model specification files. 
+<p>Before we begin writing the Rev scripts for each of the model components, we need to instantiate a couple ``helper variables’’ that will be used by downstream parts of our model specification files.
 Create vectors of moves and monitors</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves = VectorMoves()
 monitors = VectorMonitors()
@@ -635,7 +635,7 @@ monitors = VectorMonitors()
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phylogeny &lt;- readTrees("data/mammals_thinned.tree")[1]
 </code></pre></div></div>
 
-<p>Next, we will create a Q matrix. 
+<p>Next, we will create a Q matrix.
 Recall that the Mk model is simply a generalization of the JC model.
 Therefore, we will create a 3x3 Q matrix using <code class="language-plaintext highlighter-rouge">fnJC</code>, which initializes $Q$-matrices with equal transition probabilities between all states.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q_morpho &lt;- fnJC(3)
@@ -649,7 +649,7 @@ The parameter specifies all the rates of morphological evolution:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale(mu_morpho,lambda=1, weight=2.0) )
 </code></pre></div></div>
 
-<p>Lastly, we set up the CTMC. 
+<p>Lastly, we set up the CTMC.
 This should be familiar from the <a href="/tutorials/ctmc/">Nucleotide substitution models</a> tutorial.
 We see some familiar pieces: tree and Q matrix.
 We also have two new keywords: data type and coding.
@@ -666,7 +666,7 @@ phyMorpho.clamp(morpho)
 <h4 class="subsubsection" id="subsubsec_Mod_Obj">Create Model Object</h4>
 <hr class="subsubsection" />
 
-<p>We can now create our workspace model variable with our fully specified model DAG. 
+<p>We can now create our workspace model variable with our fully specified model DAG.
 We will do this with the <code class="language-plaintext highlighter-rouge">model()</code> function and provide a single node in the graph (<code class="language-plaintext highlighter-rouge">phylogeny</code>).</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(phylogeny)
 </code></pre></div></div>
@@ -677,7 +677,7 @@ We will do this with the <code class="language-plaintext highlighter-rouge">mode
 <hr class="subsubsection" />
 
 <p>The next important step for our Rev script file is to specify the monitors and output file names.
-The first monitor we will create will monitor every named random variable in our model graph. 
+The first monitor we will create will monitor every named random variable in our model graph.
 This will include every stochastic and deterministic node using the <code class="language-plaintext highlighter-rouge">mnModel</code> monitor.
 In this case, it will only be our rate variable $\mu$.
 It is still useful to specify the model monitor this way for later extensions of the model.
@@ -700,12 +700,12 @@ Like with <code class="language-plaintext highlighter-rouge">mnFile</code> we mu
                                                    withStartStates=false) )
 </code></pre></div></div>
 
-<p>The core arguments this monitor needs are a tree object (<code class="language-plaintext highlighter-rouge">tree=phylogeny</code>), 
+<p>The core arguments this monitor needs are a tree object (<code class="language-plaintext highlighter-rouge">tree=phylogeny</code>),
 the phylogenetic model (<code class="language-plaintext highlighter-rouge">ctmc=phyMorpho</code>), an output filename (<code class="language-plaintext highlighter-rouge">filename="output/mk.states.txt"</code>),
 the data type for the characters (<code class="language-plaintext highlighter-rouge">type="Standard"</code>), and the sampling frequency (<code class="language-plaintext highlighter-rouge">printgen=10}</code>.
 The final argument, <code class="language-plaintext highlighter-rouge">withTips=true</code>, indicates that we do wish to record the tip states because we didn’t know all tip values and might be interested in the most plausible values.</p>
 
-<p>The monitor will produce a joint sample of ancestral states, where every ancestral state is conditional on the drawn value of its parent node state (except for the root node), 
+<p>The monitor will produce a joint sample of ancestral states, where every ancestral state is conditional on the drawn value of its parent node state (except for the root node),
 storing the samples every 10 iterations to the file <code class="language-plaintext highlighter-rouge">"output/mk.states.txt"</code>.
 Viewing the states file, we see</p>
 <div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Iteration	end_1	end_2	end_3	end_4	end_5	...
@@ -726,12 +726,12 @@ Viewing the states file, we see</p>
 <h4 class="subsubsection" id="set-up-the-mcmc">Set-Up the MCMC</h4>
 <hr class="subsubsection" />
 
-<p>Once we have set up our model, moves, and monitors, we can now create the workspace variable that defines our MCMC run. 
+<p>Once we have set up our model, moves, and monitors, we can now create the workspace variable that defines our MCMC run.
 We do this using the <code class="language-plaintext highlighter-rouge">mcmc()</code> function that simply takes the three main analysis components as arguments.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
 </code></pre></div></div>
 
-<p>The MCMC object that we named <code class="language-plaintext highlighter-rouge">mymcmc</code> has a member method called <code class="language-plaintext highlighter-rouge">.run()</code>. 
+<p>The MCMC object that we named <code class="language-plaintext highlighter-rouge">mymcmc</code> has a member method called <code class="language-plaintext highlighter-rouge">.run()</code>.
 This will execute our analysis and we will set the chain length to <code class="language-plaintext highlighter-rouge">10000</code> cycles using the <code class="language-plaintext highlighter-rouge">generations</code> option.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=10000, tuningInterval=200)
 </code></pre></div></div>
@@ -744,7 +744,7 @@ anc_tree = ancestralStateTree(tree=phylogeny, ancestral_state_trace_vector=anc_s
 writeNexus( anc_tree, filename="output/ase_mk.tree" )
 </code></pre></div></div>
 
-<p>Finally we can close RevBayes. 
+<p>Finally we can close RevBayes.
 Tell the program to quit using the <code class="language-plaintext highlighter-rouge">q()</code> function.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>q()
 </code></pre></div></div>
@@ -756,14 +756,14 @@ Tell the program to quit using the <code class="language-plaintext highlighter-r
 <h3 class="subsection" id="subsec_run_MCMC">Execute the MCMC Analysis</h3>
 <hr class="subsection" />
 
-<p>With all the parameters specified and all analysis components in place, you are now ready to run your analysis. 
+<p>With all the parameters specified and all analysis components in place, you are now ready to run your analysis.
 The Rev script you just created will be used by RevBayes and loaded in the appropriate order.</p>
 
 <blockquote class="instruction">
   <p>Begin by running the RevBayes executable.</p>
 </blockquote>
 
-<p>Provided that you started RevBayes from the correct directory (<code class="language-plaintext highlighter-rouge">RB_DiscreteMorphology_RateASE_Tutorial</code>), 
+<p>Provided that you started RevBayes from the correct directory (<code class="language-plaintext highlighter-rouge">RB_DiscreteMorphology_RateASE_Tutorial</code>),
 you can then use the <code class="language-plaintext highlighter-rouge">source()</code> function to feed RevBayes your master script file (<code class="language-plaintext highlighter-rouge">mcmc_ase_mk.Rev</code>).</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/mcmc_ase_mk.Rev")
 </code></pre></div></div>
@@ -821,7 +821,7 @@ This should be the directory where you now have you directory called <code class
 
 <p>Then, you plot the tree with ancestral states nicely mapped onto it.
 You may want to experiment with some of the settings to make the plot look prettier.
-For example, if you set <code class="language-plaintext highlighter-rouge">show_posterior_legend=TRUE</code> and <code class="language-plaintext highlighter-rouge">node_size_range=c(1, 3)</code>, 
+For example, if you set <code class="language-plaintext highlighter-rouge">show_posterior_legend=TRUE</code> and <code class="language-plaintext highlighter-rouge">node_size_range=c(1, 3)</code>,
 then the size of the circles will represent the posterior probability.</p>
 <pre><code class="language-{R}">g &lt;- plot_ancestral_states(tree_file, summary_statistic="MAP",
                       tip_label_size=1,
@@ -850,12 +850,12 @@ then the size of the circles will represent the posterior probability.</p>
 <hr class="section" />
 
 <blockquote class="instruction">
-  <p>Make a copy of the MCMC and model files you just made. 
-Call them <code class="language-plaintext highlighter-rouge">mcmc_ase_mk.Rev</code> and `model_ase_FreeK.Rev. 
+  <p>Make a copy of the MCMC and model files you just made.
+Call them <code class="language-plaintext highlighter-rouge">mcmc_ase_mk.Rev</code> and `model_ase_FreeK.Rev.
 These will contain the new model parameters and models.</p>
 </blockquote>
 
-<p>The Mk model makes a number of assumptions, but one that may strike you as unrealistic 
+<p>The Mk model makes a number of assumptions, but one that may strike you as unrealistic
 is the assumption that characters are equally likely to change from any one state to any other state.
 That means that a trait is as likely to be gained as lost.
 While this may hold true for some traits, we expect that it may be untrue for many others.</p>
@@ -865,7 +865,7 @@ While this may hold true for some traits, we expect that it may be untrue for ma
 <h3 class="subsection" id="modifying-the-mcmc-section">Modifying the MCMC Section</h3>
 <hr class="subsection" />
 
-<p>At each place in which the output files are specified in the MCMC file, change the output path so you don’t overwrite the output from the previous exercise. 
+<p>At each place in which the output files are specified in the MCMC file, change the output path so you don’t overwrite the output from the previous exercise.
 For example, you might call your output file <code class="language-plaintext highlighter-rouge">output/ase_freeK.log</code>.
 Change source statement to indicate the new model file.</p>
 
@@ -901,7 +901,7 @@ We would only rescale if we use relative rates.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q_morpho := fnFreeK( [ rate_12, rate_13, rate_21, rate_23, rate_31, rate_32 ], rescale=false )
 </code></pre></div></div>
 
-<p>In this model, we also decide to specify an additional parameter for the root state frequencies instead of assuming the root state to be drawn from the stationary distribution. 
+<p>In this model, we also decide to specify an additional parameter for the root state frequencies instead of assuming the root state to be drawn from the stationary distribution.
 We will use a Dirichlet prior distribution for the root state frequencies.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rf_prior &lt;- [1,1,1]
 rf ~ dnDirichlet( rf_prior )
@@ -924,15 +924,15 @@ moves.append( mvDirichletSimplex( rf, weight=2 ) )
 Now, we will apply a reversible-jump MCMC (missing reference) to test if any of the rates is significantly larger than $0$.</p>
 
 <blockquote class="instruction">
-  <p>Make a copy of the Rev script file you just made. 
-Call them `mcmc_ase_freeK_RJ.Rev. 
+  <p>Make a copy of the Rev script file you just made.
+Call them `mcmc_ase_freeK_RJ.Rev.
 This will contain the new model parameters and models.</p>
 </blockquote>
 
 <h3 class="subsection" id="modifying-the-mcmc-section">Modifying the MCMC Section</h3>
 <hr class="subsection" />
 
-<p>At each place in which the output files are specified in the MCMC section, change the output path so you don’t overwrite the output from the previous exercise. 
+<p>At each place in which the output files are specified in the MCMC section, change the output path so you don’t overwrite the output from the previous exercise.
 For example, you might call your output file <code class="language-plaintext highlighter-rouge">output/freeK_ASE.log</code>.</p>
 
 <h3 class="subsection" id="modifying-the-model-section">Modifying the Model Section</h3>
@@ -968,7 +968,7 @@ prob_rate_32 := ifelse( rate_32 == 0, 1.0, 0.0 )
 </code></pre></div></div>
 
 <p>We also need to specify specific moves that ``jump’’ in parameter dimension.
-We will use the <code class="language-plaintext highlighter-rouge">mvRJSwitch</code> move that changes the value to be either equal to the constant value 
+We will use the <code class="language-plaintext highlighter-rouge">mvRJSwitch</code> move that changes the value to be either equal to the constant value
 provided from the <code class="language-plaintext highlighter-rouge">dnRJMixture</code> or a value drawn from the base distribution (the exponential distribution).</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvRJSwitch( rate_12, weight=2 ) )
 moves.append( mvRJSwitch( rate_13, weight=2 ) )
@@ -1007,7 +1007,6 @@ My output is shown in <a href="#fig_mk_anc_states_freeK"></a></p>
 </figure>
 
 <p>You should observe that the estimated root states have changed!</p>
-
 
 <ol class="bibliography"><li><span id="Beaulieu2013">Beaulieu J.M., O’Meara B.C., Donoghue M.J. 2013. Identifying hidden rate changes in the evolution of a binary morphological character: the evolution of plant habit in campanulid angiosperms. Systematic Biology. 62:725–737.</span>
 

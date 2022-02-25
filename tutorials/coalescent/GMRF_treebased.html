@@ -56,7 +56,7 @@
 	<h1 class="maintitle">Skyline Models from Trees with GMRF</h1>
 	<h3 class="subtitle">Estimating Demographic Histories with Skyline Models from Trees using a Gaussian Markov Random Field Prior</h3>
 	<h4 class="authors">Ronja Billenstein and Sebastian Höhna</h4>
-  <h5>Last modified on February 14, 2022</h5>
+  <h5>Last modified on February 15, 2022</h5>
 </div>
 
 
@@ -102,9 +102,9 @@
         
           <li><a href="/tutorials/coalescent/data/horses_homochronous_sequences.fasta">horses_homochronous_sequences.fasta</a></li>
         
-          <li><a href="/tutorials/coalescent/scripts/mcmc_homochronous_GMRF.Rev">mcmc_homochronous_GMRF.Rev</a></li>
-        
           <li><a href="/tutorials/coalescent/scripts/mcmc_homochronous_GMRF_maptreebased.Rev">mcmc_homochronous_GMRF_maptreebased.Rev</a></li>
+        
+          <li><a href="/tutorials/coalescent/scripts/mcmc_homochronous_GMRF_treebased.Rev">mcmc_homochronous_GMRF_treebased.Rev</a></li>
         
         </ul>
     
@@ -199,11 +199,6 @@ psi.clamp(maptree)
 </code></pre></div></div>
 </blockquote>
 
-<h3 class="subsection" id="substitution-model-and-other-parameters">Substitution Model and other parameters</h3>
-<hr class="subsection" />
-
-<p>This part is also taken from the constant coalescent exercise.</p>
-
 <h3 class="subsection" id="finalize-and-run-the-analysis">Finalize and run the analysis</h3>
 <hr class="subsection" />
 
@@ -212,11 +207,10 @@ psi.clamp(maptree)
 <p>Finally, we add the monitors and then run the MCMC.
 Remember to change the file names to avoid overwriting your previous results.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/horses_GMRF.log",printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_GMRF.trees",psi,printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_GMRF_NEs.log",population_size,printgen=THINNING) )
-# monitors.append( mnFile(filename="output/horses_GMRF_times.log",interval_times,printgen=THINNING) )
-monitors.append( mnScreen(population_size, root_age, printgen=100) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/horses_GMRF_treebased.log",printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_GMRF_treebased_NEs.log",population_size,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_GMRF_treebased_times.log",interval_times,printgen=THINNING) )
+monitors.append( mnScreen(population_size, printgen=100) )
 
 mymcmc = mcmc(mymodel, monitors, moves)
 mymcmc.burnin(NUM_MCMC_ITERATIONS*0.1,100)

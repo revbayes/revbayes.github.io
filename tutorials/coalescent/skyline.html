@@ -56,7 +56,7 @@
 	<h1 class="maintitle">Skyline Models</h1>
 	<h3 class="subtitle">Estimating Demographic Histories with Skyline Models</h3>
 	<h4 class="authors">Ronja Billenstein and Sebastian Höhna</h4>
-  <h5>Last modified on February 23, 2022</h5>
+  <h5>Last modified on February 25, 2022</h5>
 </div>
 
 
@@ -138,7 +138,7 @@ Time starts at $t = 0$.
 The waiting times between coalescent events $w_k$ are exponentially distributed with rate $c = \frac{k (k-1)}{2N_e(t)}$ with $N_e$ being the population size.
 <!--- In the case of a skyline plot, the population size curve is split into $m$ intervals which each have a starting point $t_i$. ---></p>
 
-<p>The likelihood for a Skyline Plot is the product of the probability density functions of the coalescent waiting times, which are calculated as follows:</p>
+<p>The likelihood for a given piecewise-constant population size trajectory is computed as the product of the probability density functions of the coalescent waiting times, which are calculated as follows:</p>
 
 \[p(w_k | t_k) = \frac{k (k -1)}{2N_e(t_k + w_k)} exp \left[ \int_{t_k}^{t_k+w_k} \frac{k (k -1)}{2N_e(t)} dt \right]\]
 
@@ -192,13 +192,13 @@ With $n$ taxa, we expect $(n-1)$ coalescent events, until there is only one line
 <hr class="subsection" />
 
 <p>Now, we will instantiate the stochastic node for the tree.
-The Skyline distribution function <code class="language-plaintext highlighter-rouge">dnCoalescentSkyline</code> takes the vector of population sizes the taxa as input. <!--- **(need to check whether it can take more)** --->
+The Skyline version of the Coalescent distribution function <code class="language-plaintext highlighter-rouge">dnCoalescentSkyline</code> takes the vector of population sizes the taxa as input. <!--- **(need to check whether it can take more)** --->
 By chosing <code class="language-plaintext highlighter-rouge">methods="events"</code>, the interval lengths will be chosen based on the number of events.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psi ~ dnCoalescentSkyline(theta=pop_size, method="events", taxa=taxa)
 </code></pre></div></div>
 
-<p>In order to be able to later plot and analyze the population size curve, we need to retrieve the resulting interval times.</p>
+<p>For later plotting and analyzing the population size curve, we need to retrieve the resulting interval times.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>interval_times := psi.getIntervalAges()
 </code></pre></div></div>
@@ -208,14 +208,13 @@ By chosing <code class="language-plaintext highlighter-rouge">methods="events"</
 <h3 class="subsection" id="substitution-model-and-other-parameters">Substitution Model and other parameters</h3>
 <hr class="subsection" />
 
-<p>This part is also taken from the constant coalescent exercise.</p>
+<p>This part is also taken from the <a href="/tutorials/coalescent/constant">constant coalescent exercise</a>.</p>
 
 <h3 class="subsection" id="finalize-and-run-the-analysis">Finalize and run the analysis</h3>
 <hr class="subsection" />
 
-<p>In the end, we need to wrap our model as before.</p>
-
-<p>Finally, we add the monitors and then run the MCMC.
+<p>Finally, we need to wrap our model as before.
+We add the monitors and then run the MCMC.
 Here, another monitor is added for the interval times.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/example_skyline.log",printgen=THINNING) )
