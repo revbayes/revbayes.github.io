@@ -1,6 +1,6 @@
 ---
-title: Skyline Models with rjMCMC
-subtitle: Estimating Demographic Histories with Skyline Models using reversible jump MCMC
+title: Skyline Models with a Compound Poisson Prior
+subtitle: Estimating Demographic Histories with Skyline Models using a Compound Poisson Prior
 authors: Ronja Billenstein and Sebastian Höhna
 level: 8 #may need adjustment
 order: 0.8
@@ -17,7 +17,7 @@ include_files:
 ---
 
 {% section Overview %}
-This page provides you with scripts for a reversible jump MCMC (rjMCMC) skyline analysis on the left side.
+This page provides you with scripts for a skyline analysis with a compound poisson prior on the left side.
 It is in addition to the [Gaussian Markov Random Field Prior tutorial]({{base.url}}/tutorials/coalescent/GMRF).
 
 {% section Results %}

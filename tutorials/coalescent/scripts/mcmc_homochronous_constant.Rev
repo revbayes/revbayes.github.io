@@ -8,6 +8,7 @@
 
 ## Global settings
 
+NUM_REPLICATES      = 2
 NUM_MCMC_ITERATIONS = 10000
 THINNING            = 10
 
@@ -19,16 +20,12 @@ monitors  = VectorMonitors()
 # Reading in the Data #
 #######################
 
-# Read in the names and ages of the taxa - not needed, all homochronous, t = 0
-# taxa <- readTaxonData("data/horses_homochronous_ages_inyears_nooutgroup.tsv")
-
 # Read in sequence data
 sequences <- readDiscreteCharacterData("data/horses_homochronous_sequences.fasta")
 taxa <- sequences.taxa()
 
-# Get the number of taxa and branches. We need these later on.
+# Get the number of taxa. We need this later on.
 n_taxa <- taxa.size()
-# n_branches <- 2 * n_taxa - 3
 
 
 ##############
@@ -79,18 +76,15 @@ moves.append( mvScale(alpha, weight=2.0) )
 p_inv ~ dnBeta(1,1)
 moves.append( mvSlide(p_inv) )
 
-# lambda = 1/mean, mean = 4.68e-8
-rate <- 1/(4.68e-8)
-clock ~ dnExponential(lambda = rate)
-clock.setValue(4.68e-8)
+clock ~ dnUniform(0,1e-6)
 # moves.append( mvScale(clock, weight=2.0) )
+
 up_down_move = mvUpDownScale(weight=5.0)
 up_down_move.addVariable(clock,up=TRUE)
 up_down_move.addVariable(psi,up=FALSE)
 moves.append( up_down_move)
 
 seq ~ dnPhyloCTMC(tree=psi, Q=Q, siteRates=sr, pInv=p_inv, type="DNA", branchRates=clock)
-# seq ~ dnPhyloCTMC(tree=psi, Q=Q, pInv=p_inv, type="DNA", branchRates=clock)
 seq.clamp(sequences)
 
 
@@ -114,7 +108,7 @@ monitors.append( mnFile(filename="output/horses_constant.trees",psi,printgen=THI
 monitors.append( mnFile(filename="output/horses_constant_NE.log",pop_size,printgen=THINNING) )
 monitors.append( mnScreen(pop_size, root_age, printgen=100) )
 
-mymcmc = mcmc(mymodel, monitors, moves)
+mymcmc = mcmc(mymodel, monitors, moves, nruns=NUM_REPLICATES, combine="mixed") 
 mymcmc.burnin(NUM_MCMC_ITERATIONS*0.1,100)
 mymcmc.run(NUM_MCMC_ITERATIONS, tuning = 100)
 
