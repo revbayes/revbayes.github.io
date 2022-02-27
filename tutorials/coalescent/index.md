@@ -2,7 +2,7 @@
 title: Coalescent Analyses
 subtitle: Estimating Demographic Histories with Coalescent Processes
 authors: Ronja Billenstein and Sebastian Höhna
-level: 8 #may need adjustment
+level: 9 #may need adjustment
 order: 0
 prerequisites:
 - intro

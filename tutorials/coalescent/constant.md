@@ -238,7 +238,7 @@ monitors.append( mnScreen(pop_size, root_age, printgen=100) )
 The final step is to run the mcmc.
 Make sure to set `combine="mixed"` for the output of the two replicates to be combined in the end.
 ~~~
-mymcmc = mcmc(mymodel, monitors, moves, nruns=NUM_REPLICATES, combine="mixed") 
+mymcmc = mcmc(mymodel, monitors, moves, nruns=NUM_REPLICATES, combine="mixed")
 mymcmc.burnin(NUM_MCMC_ITERATIONS*0.1,100)
 mymcmc.run(NUM_MCMC_ITERATIONS, tuning = 100)
 ~~~

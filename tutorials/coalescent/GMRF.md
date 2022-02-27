@@ -2,7 +2,7 @@
 title: Skyline Models with GMRF
 subtitle: Estimating Demographic Histories with Skyline Models using a Gaussian Markov Random Field Prior
 authors: Ronja Billenstein and Sebastian Höhna
-level: 8 #may need adjustment
+level: 9 #may need adjustment
 order: 0.3
 prerequisites:
 - coalescent

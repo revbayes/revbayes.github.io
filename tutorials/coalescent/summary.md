@@ -2,7 +2,7 @@
 title: Summary of the Coalescent Analyses
 subtitle: Summary of all coalescent analyses run in the preceding exercises
 authors: Ronja Billenstein and Sebastian Höhna
-level: 8 #may need adjustment
+level: 9 #may need adjustment
 order: 0.6
 prerequisites:
 - coalescent
@@ -18,12 +18,12 @@ After running all the exercises for coalescent analyses, we want to compare all 
 {% figure all_outputs %}
 <p align="middle">
   <img src="figures/horses_constant.png" width="32%" />
-  <img src="figures/horses_skyline.png" width="32%" /> 
+  <img src="figures/horses_skyline.png" width="32%" />
   <img src="figures/horses_GMRF.png" width="32%" />
 </p>
 <p align="middle">
   <img src="figures/horses_HSMRF.png" width="32%" />
-  <img src="figures/horses_CPP.png" width="32%" /> 
+  <img src="figures/horses_CPP.png" width="32%" />
   <img src="figures/horses_piecewise_6diff.png" width="32%" />
 </p>
 {% figcaption %}

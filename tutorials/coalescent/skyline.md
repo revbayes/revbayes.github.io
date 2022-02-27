@@ -2,7 +2,7 @@
 title: Skyline Models
 subtitle: Estimating Demographic Histories with Skyline Models
 authors: Ronja Billenstein and Sebastian Höhna
-level: 8 #may need adjustment
+level: 9 #may need adjustment
 order: 0.2
 prerequisites:
 - coalescent
@@ -40,7 +40,7 @@ Hypothetical example of a classical skyline plot.
 {% endfigure %}
 
 {% figure event-skyline %}
-  <img src="figures/scheme_event_skyline.png" /> 
+  <img src="figures/scheme_event_skyline.png" />
 {% figcaption %}
 Hypothetical example of a Bayesian skyline plot with the interval length dependent on the number of coalescent events (event-based).
 {% endfigcaption %}

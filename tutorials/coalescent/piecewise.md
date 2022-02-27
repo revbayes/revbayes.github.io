@@ -2,7 +2,7 @@
 title: Piecewise Coalescent Process
 subtitle: Estimating Demographic Histories with a Piecewise Coalescent Process
 authors: Ronja Billenstein and Sebastian Höhna
-level: 8 #may need adjustment
+level: 9 #may need adjustment
 order: 0.5
 prerequisites:
 - coalescent
@@ -180,85 +180,85 @@ linear_dem <- function(t, N0, N1, t0, t1){
 
 all_combined <- function(t){
   if (t < time_medians[1]){
-    
+
     return(exponential_dem(t, N0 = pop_size_medians[1], N1 = pop_size_medians[2], t0 = 0, t1 = time_medians[1]))
-    
+
   } else if (t < time_medians[2]){
-    
+
     return(exponential_dem(t, N0 = pop_size_medians[2], N1 = pop_size_medians[3], t0 = time_medians[1], t1 = time_medians[2]))
-    
+
   } else if (t < time_medians[3]){
-    
+
     return(linear_dem(t, N0 = pop_size_medians[3], N1 = pop_size_medians[4], t0 = time_medians[2], t1 = time_medians[3]))
-    
+
   } else if (t < time_medians[4]){
-    
+
     return(pop_size_medians[4])
-    
+
   } else if (t < time_medians[5]){
-    
+
     return(linear_dem(t, N0 = pop_size_medians[4], N1 = pop_size_medians[5], t0 = time_medians[4], t1 = time_medians[5]))
-    
+
   } else {
-    
+
     return(pop_size_medians[5])
-    
+
   }
 }
 
 all_lower <- function(t){
   if (t < time_medians[1]){
-    
+
     return(exponential_dem(t, N0 = pop_size_quantiles[1,1], N1 = pop_size_quantiles[1,2], t0 = 0, t1 = time_medians[1]))
-    
+
   } else if (t < time_medians[2]){
-    
+
     return(exponential_dem(t, N0 = pop_size_quantiles[1,2], N1 = pop_size_quantiles[1,3], t0 = time_medians[1], t1 = time_medians[2]))
-    
+
   } else if (t < time_medians[3]){
-    
+
     return(linear_dem(t, N0 = pop_size_quantiles[1,3], N1 = pop_size_quantiles[1,4], t0 = time_medians[2], t1 = time_medians[3]))
-    
+
   } else if (t < time_medians[4]){
-    
+
     return(pop_size_quantiles[1,4])
-    
+
   } else if (t < time_medians[5]){
-    
+
     return(linear_dem(t, N0 = pop_size_quantiles[1,4], N1 = pop_size_quantiles[1,5], t0 = time_medians[4], t1 = time_medians[5]))
-    
+
   } else {
-    
+
     return(pop_size_quantiles[1,5])
-    
+
   }
 }
 
 all_upper <- function(t){
   if (t < time_medians[1]){
-    
+
     return(exponential_dem(t, N0 = pop_size_quantiles[2,1], N1 = pop_size_quantiles[2,2], t0 = 0, t1 = time_medians[1]))
-    
+
   } else if (t < time_medians[2]){
-    
+
     return(exponential_dem(t, N0 = pop_size_quantiles[2,2], N1 = pop_size_quantiles[2,3], t0 = time_medians[1], t1 = time_medians[2]))
-    
+
   } else if (t < time_medians[3]){
-    
+
     return(linear_dem(t, N0 = pop_size_quantiles[2,3], N1 = pop_size_quantiles[2,4], t0 = time_medians[2], t1 = time_medians[3]))
-    
+
   } else if (t < time_medians[4]){
-    
+
     return(pop_size_quantiles[2,4])
-    
+
   } else if (t < time_medians[5]){
-    
+
     return(linear_dem(t, N0 = pop_size_quantiles[2,4], N1 = pop_size_quantiles[2,5], t0 = time_medians[4], t1 = time_medians[5]))
-    
+
   } else {
-    
+
     return(pop_size_quantiles[2,5])
-    
+
   }
 }
 
@@ -289,4 +289,3 @@ This is how the resulting skyline plot with addition of the piecewise model shou
 
 {% section Summary %}
 When you are done with all exercises, have a look at the [summary]({{base.url}}/tutorials/coalescent/summary).
-

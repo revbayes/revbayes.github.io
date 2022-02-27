@@ -2,7 +2,7 @@
 title: Skyline Models from Trees with GMRF
 subtitle: Estimating Demographic Histories with Skyline Models from Trees using a Gaussian Markov Random Field Prior
 authors: Ronja Billenstein and Sebastian Höhna
-level: 8 #may need adjustment
+level: 9 #may need adjustment
 order: 0.4
 prerequisites:
 - coalescent
