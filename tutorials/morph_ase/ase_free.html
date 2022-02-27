@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: Discrete morphology - Ancestral State Estimation with the independent rates model</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
+      </a>
+
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/download">Download</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/documentation/">Documentation</a></li>
+        <li><a href="https://revbayes.github.io/revscripter/">RevScripter</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/jobs/">Jobs</a></li>
+        <li><a href="/developer/">Developer</a></li>
+        <li><<a href="/gui">GUI</a></li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <div class="titlebar">
+	<h1 class="maintitle">Discrete morphology - Ancestral State Estimation with the independent rates model</h1>
+	<h3 class="subtitle">Testing for Unequal Rates</h3>
+	<h4 class="authors">Sebastian Höhna</h4>
+  <h5>Last modified on February 28, 2022</h5>
+</div>
+
+
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul id="prerequisites">
+          
+            <li><a href="/tutorials/intro/">Getting Started with RevBayes and Rev Language Syntax</a></li>
+          
+            <li><a href="/tutorials/mcmc/">Introduction to Markov chain Monte Carlo (MCMC) Sampling</a></li>
+          
+            <li><a href="/tutorials/ctmc/">Nucleotide substitution models</a></li>
+          
+            <li><a href="/tutorials/morph_tree/">Discrete morphology - Tree Inference</a></li>
+          
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+
+
+
+
+<blockquote class="tutorial_files" id="tutorial_files">
+    <h2>Data files and scripts</h2>
+    
+        
+        <strong>Data Files</strong>
+        <ul id="data_files">
+        
+        
+        
+          <li><a href="/tutorials/morph_ase/data/primates_activity_period.nex">primates_activity_period.nex</a></li>
+        
+          <li><a href="/tutorials/morph_ase/data/primates_diet.nex">primates_diet.nex</a></li>
+        
+          <li><a href="/tutorials/morph_ase/data/primates_habitat.nex">primates_habitat.nex</a></li>
+        
+          <li><a href="/tutorials/morph_ase/data/primates_males.nex">primates_males.nex</a></li>
+        
+          <li><a href="/tutorials/morph_ase/data/primates_mating_system.nex">primates_mating_system.nex</a></li>
+        
+          <li><a href="/tutorials/morph_ase/data/primates_morph.nex">primates_morph.nex</a></li>
+        
+          <li><a href="/tutorials/morph_ase/data/primates_morph_description.txt">primates_morph_description.txt</a></li>
+        
+          <li><a href="/tutorials/morph_ase/data/primates_solitariness.nex">primates_solitariness.nex</a></li>
+        
+          <li><a href="/tutorials/morph_ase/data/primates_terrestrially.nex">primates_terrestrially.nex</a></li>
+        
+          <li><a href="/tutorials/morph_ase/data/primates_tree.nex">primates_tree.nex</a></li>
+        
+        </ul>
+    
+        
+        <strong>Scripts</strong>
+        <ul id="scripts">
+        
+        
+        
+          <li><a href="/tutorials/morph_ase/scripts/mcmc_ase_freeK.Rev">mcmc_ase_freeK.Rev</a></li>
+        
+          <li><a href="/tutorials/morph_ase/scripts/ml_ase_ERM.Rev">ml_ase_ERM.Rev</a></li>
+        
+          <li><a href="/tutorials/morph_ase/scripts/ml_ase_freeK.Rev">ml_ase_freeK.Rev</a></li>
+        
+          <li><a href="/tutorials/morph_ase/scripts/plot_anc_states_freeK.R">plot_anc_states_freeK.R</a></li>
+        
+          <li><a href="/tutorials/morph_ase/scripts/plot_iid_rates.R">plot_iid_rates.R</a></li>
+        
+        </ul>
+    
+</blockquote>
+
+
+</div>
+<h2 class="section" id="sec_ase_unequal">Example: Unequal Transition Rates</h2>
+<hr class="section" />
+
+<p>The instantaneous rate matrix encodes the transition rates between all pairs of evolutionary states.
+It is important to emphasize that all rate matrices are assertions about how morphological evolution operates.
+Depending on how one populates the rate matrix elements, different evolutionary hypotheses may be expressed.</p>
+
+<p>When we model the evolution of morphological data, unlike nucleotide data, each change may require a sequence of intermediate changes.
+Getting to one state may require going through another.
+In short, it is probably not likely that one single model describes all characters well.</p>
+
+<p>The ERM model makes a number of assumptions, but one that may strike you as unrealistic is the assumption that characters are equally likely to change from any one state to any other state.
+That means that a trait is as likely to be gained as lost.
+While this may hold true for some traits, we expect that it may be untrue for many others.
+$$
+Q = \begin{pmatrix}</p>
+<ul>
+  <li>&amp; \mu_1 <br />
+\mu_2 &amp; -
+\end{pmatrix}
+$$
+RevBayes has functionality to allow us to relax this assumption.
+For example, we can define the rates
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rates := [ [0.0,  mu_1],
+         [ mu_2,  0.0] ]
+</code></pre></div>    </div>
+    <p>and then create the rate matrix</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q := fnFreeK(rates)
+</code></pre></div>    </div>
+    <p>which corresponds to the model
+$$
+Q = \begin{pmatrix}</p>
+  </li>
+  <li>&amp; \mu_1 <br />
+\mu_2 &amp; -
+\end{pmatrix}
+$$
+This is the independent rates model <a class="citation" href="#Pagel1994">(Pagel 1994; Maddison 1994; Schluter et al. 1997)</a>, which we will explore in this tutorial.</li>
+</ul>
+
+<blockquote class="instruction">
+  <p>Make a copy of the MCMC and model files you just made.
+Call them <code class="language-plaintext highlighter-rouge">mcmc_ase_ERM.Rev</code> and `model_ase_FreeK.Rev.
+These will contain the new model parameters and models.</p>
+</blockquote>
+
+<h3 class="subsection" id="modifying-the-mcmc-section">Modifying the MCMC Section</h3>
+<hr class="subsection" />
+
+<p>At each place in which the output files are specified in the MCMC file, change the output path so you don’t overwrite the output from the previous exercise.
+For example, you might call your output file <code class="language-plaintext highlighter-rouge">output/solitariness_ase_freeK.log</code>.
+Change source statement to indicate the new model file.</p>
+
+<h3 class="subsection" id="modifying-the-model-section">Modifying the Model Section</h3>
+<hr class="subsection" />
+
+<p>Our goal here is to create a rate matrix with 2 free parameters.
+We will assume an exponential prior distribution for each of the rates.
+Thus, we start be specifying the rate of this exponential prior distribution.
+A good guess might be that 10 events happened along the tree, so the rate should be the tree-length divided by 10.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_pr := phylogeny.treeLength() / 10
+</code></pre></div></div>
+<p>Now we can create our two independent rate variables drawn from an identical exponential distribution</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NUM_RATES = NUM_STATES * (NUM_STATES-1)
+for ( i in 1:NUM_RATES ) {
+    rate[i] ~ dnExp(rate_pr)
+    moves.append( mvScale( rate[i], weight=2 ) )
+}
+</code></pre></div></div>
+<p>Next, we put all the rates together into our rate matrix.
+Don’t forget to say that we do not rescale the rate matrix (<code class="language-plaintext highlighter-rouge">rescale=false</code>).
+We would only rescale if we use relative rates.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q_morpho := fnFreeK( rate, rescale=false )
+</code></pre></div></div>
+
+<p>In this model, we also decide to specify an additional parameter for the root state frequencies instead of assuming the root state to be drawn from the stationary distribution.
+We will use a Dirichlet prior distribution for the root state frequencies.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rf_prior &lt;- [1,1]
+rf ~ dnDirichlet( rf_prior )
+moves.append( mvBetaSimplex( rf, weight=2 ) )
+moves.append( mvDirichletSimplex( rf, weight=2 ) )
+</code></pre></div></div>
+<p>We need to modify the <code class="language-plaintext highlighter-rouge">dnPhyloCTMC</code> to pass in our new root frequencies parameter.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phyMorpho ~ dnPhyloCTMC(tree=phylogeny, Q=Q_morpho, rootFrequencies=rf, type="Standard")
+</code></pre></div></div>
+
+<blockquote class="instruction">
+  <p>Now you are done with your unequal rates model. Give it a run!</p>
+</blockquote>
+
+<h2 class="section" id="plotting-the-tree-with-ancestral-states">Plotting the tree with ancestral states</h2>
+<hr class="section" />
+
+<p>As before in the <a href="/tutorials/morph_ase/ase.html">Discrete morphology - Ancestral State Estimation</a> tutorial, we will use <code class="language-plaintext highlighter-rouge">R</code> and the package <code class="language-plaintext highlighter-rouge">RevGadgets</code> (see the <a href="/tutorials/intro/revgadgets.html">Introduction to RevGadgets</a> Tutorial for an overview, <a class="citation" href="#Tribble2022">Tribble et al. (2022)</a>) to plot the ancestral state estimates.</p>
+
+<blockquote class="instruction">
+  <p>Adapt your previous R script plot_anc_states.R
+Start R from the same working directory as you started RevBayes.
+Plot the ancestral state estimates.</p>
+</blockquote>
+
+<figure id="fig_freeK_ASE"><p><img src="figures/primates_solitariness_ASE_FreeK_MAP.png" width="400" />
+<img src="figures/primates_solitariness_ASE_FreeK_Pie.png" width="400" /></p>
+<figcaption>Ancestral state estimates under the independent rates model. Note that the root state has changed compared to the ERM analysis!</figcaption>
+</figure>
+
+<p>Next, we want to actually see the estimated rates.
+We can do this nicely in <code class="language-plaintext highlighter-rouge">RevGadgets</code> (see the <a href="/tutorials/intro/revgadgets.html">Introduction to RevGadgets</a> Tutorial, <a class="citation" href="#Tribble2022">Tribble et al. (2022)</a>):</p>
+<pre><code class="language-{R}">library(RevGadgets)
+library(ggplot2)
+
+# specify the input file
+file &lt;- paste0("output/solitariness_freeK.log")
+
+# read the trace and discard burnin
+trace_quant &lt;- readTrace(path = file, burnin = 0.25)
+
+# produce the plot object, showing the posterior distributions of the rates.
+p &lt;- plotTrace(trace = trace_quant, vars = paste0("rate[",1:2,"]"))[[1]] +
+     # modify legend location using ggplot2
+     theme(legend.position = c(0.88,0.85))
+
+ggsave(paste0("Primates_solitariness_rates_freeK.pdf"), p, width = 5, height = 5)
+</code></pre>
+
+<figure id="fig_freeK_rates"><p><img src="figures/Primates_solitariness_rates_freeK.png" width="400" /></p>
+<figcaption>Posterior distribution of rates of morphological evolution.</figcaption>
+</figure>
+
+<p>We also see some clear evidence that the rates of gain and loss are not equal.
+This gives as a first indication that the free rates model should be supported over the equal rates model.
+We observe <a href="#fig_freeK_rates"></a> that the rate of gain <code class="language-plaintext highlighter-rouge">rate[1]</code> is very low compared to the rate of loss <code class="language-plaintext highlighter-rouge">rate[2]</code>.</p>
+<blockquote class="instruction">
+  <p>Does this correspond to our observation of changes in ancestral state estimates, i.e., did we see more losses than gains?</p>
+</blockquote>
+
+<h2 class="section" id="computing-bayes-factors-to-test-for-model-support">Computing Bayes factors to test for model support</h2>
+<hr class="section" />
+
+<p>Let us now actually test if the independent rates model is supported using statistical model testing.
+Have a look at the <a href="/tutorials/model_selection_bayes_factors/bf_intro.html">General Introduction to Model selection</a> tutorial for more information.</p>
+
+<blockquote class="instruction">
+  <p>Copy and change your two MCMC scripts <code class="language-plaintext highlighter-rouge">mcmc_ase_ERM.Rev</code> and <code class="language-plaintext highlighter-rouge">mcmc_ase_freeK.Rev</code>.</p>
+</blockquote>
+
+<p>You need to exchange the MCMC algorithm with the power posterior algorithm <a class="citation" href="#Hoehna2021">(Höhna et al. 2021)</a>.
+Remove all lines after <code class="language-plaintext highlighter-rouge">mymodel = model(phylogeny)</code>.
+Then, you need to construct the <code class="language-plaintext highlighter-rouge">powerPosterior</code>, which works analogous to an MCMC.
+In fact, it perform <code class="language-plaintext highlighter-rouge">cats=63</code> MCMC runs.
+We chose <code class="language-plaintext highlighter-rouge">cats=63</code> as a conservative estimate.
+Since this performs 64 MCMC simulations with 1000 iterations each, this can take a little while.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>### Compute power posterior distributions```
+pow_p = powerPosterior(mymodel, moves, monitors, "output/"+CHARACTER+"_ERM.out", cats=64, sampleFreq=10)
+pow_p.burnin(generations=2000,tuningInterval=250)
+pow_p.run(generations=1000)
+</code></pre></div></div>
+<p>The next step is to summarize the power posterior distribution, first using stepping stone sampling,</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>### Use stepping-stone sampling to calculate marginal likelihoods
+ss = steppingStoneSampler(file="output/"+CHARACTER+"_ERM.out", powerColumnName="power", likelihoodColumnName="likelihood")
+ss.marginal()
+</code></pre></div></div>
+<p>and then using path sampling.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>### Use path-sampling to calculate marginal likelihoods
+ps = pathSampler(file="output/"+CHARACTER+"_ERM.out", powerColumnName="power", likelihoodColumnName="likelihood")
+ps.marginal()
+</code></pre></div></div>
+<p>You should see the following output</p>
+<div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; source("scripts/ml_ase_ERM.Rev")
+   Processing file "scripts/ml_ase_ERM.Rev"
+   Successfully read one character matrix from file 'data/primates_solitariness.nex'
+   Attempting to read the contents of file "primates_tree.nex"
+   Successfully read file
+
+Running burn-in phase of Power Posterior sampler for 2000 iterations.
+The simulator uses 1 different moves in a random move schedule with 2 moves per iteration
+
+
+Progress:
+0---------------25---------------50---------------75--------------100
+********************************************************************
+
+
+Running power posterior analysis ...
+Step   1 / 66		****************************************
+Step   2 / 66		****************************************
+Step   3 / 66		****************************************
+
+...
+
+Step 65 / 66		****************************************
+Step 66 / 66		****************************************
+   -31.68466
+   -31.68498
+</code></pre></div></div>
+<p>Note that last two numbers; these are your marginal likelihood estimates.</p>
+<blockquote class="instruction">
+  <p>Compute the Bayes factor! Which model is supported?</p>
+</blockquote>
+
+<blockquote class="instruction">
+  <p>Click below to begin the next exercise!</p>
+</blockquote>
+
+<ul>
+  <li><a href="/tutorials/morph_ase/ase_irreversible">Testing for irreversible evolution</a></li>
+</ul>
+
+<ol class="bibliography"><li><span id="Hoehna2021">Höhna S., Landis M.J., Huelsenbeck J.P. 2021. Parallel power posterior analyses for fast computation of marginal likelihoods in phylogenetics. PeerJ. 9:e12438.</span>
+
+</li>
+<li><span id="Maddison1994">Maddison D.R. 1994. Phylogenetic methods for inferring the evolutionary history and processes of change in discretely valued characters. Annual Review of Entomology. 39:267–292.</span>
+
+</li>
+<li><span id="Pagel1994">Pagel M. 1994. Detecting correlated evolution on phylogenies: a general method for the comparative analysis of discrete characters. Proceedings of the Royal Society of London B: Biological Sciences. 255:37–45.</span>
+
+<a href="https://doi.org/10.1098/rspb.1994.0006">10.1098/rspb.1994.0006</a>
+
+</li>
+<li><span id="Schluter1997">Schluter D., Price T., Mooers A.Ø., Ludwig D. 1997. Likelihood of ancestor states in adaptive radiation. Evolution. 51:1699–1711.</span>
+
+</li>
+<li><span id="Tribble2022">Tribble C.M., Freyman W.A., Landis M.J., Lim J.Y., Barido-Sottani J., Kopperud B.T., Höhna S., May M.R. 2022. RevGadgets: An R package for visualizing Bayesian phylogenetic analyses from RevBayes. Methods in Ecology and Evolution. 13:314–323.</span>
+
+<a href="https://doi.org/https://doi.org/10.1111/2041-210X.13750">https://doi.org/10.1111/2041-210X.13750</a>
+
+</li></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+    });
+    MathJax.Hub.Queue(function () {
+      $(".aside").each(function() {
+          $("div .MathJax", this).hide();
+      });
+    });
+</script>
+<script src="/assets/js/base.js"></script>
+
+  </body>
+</html>

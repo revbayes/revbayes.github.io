@@ -56,7 +56,7 @@
 	<h1 class="maintitle">Constant Coalescent Process</h1>
 	<h3 class="subtitle">Estimating Demographic Histories with a Constant Coalescent Process</h3>
 	<h4 class="authors">Ronja Billenstein and Sebastian Höhna</h4>
-  <h5>Last modified on February 23, 2022</h5>
+  <h5>Last modified on February 28, 2022</h5>
 </div>
 
 
@@ -313,7 +313,7 @@ monitors.append( mnScreen(pop_size, root_age, printgen=100) )
 
 <p>The final step is to run the mcmc.
 Make sure to set <code class="language-plaintext highlighter-rouge">combine="mixed"</code> for the output of the two replicates to be combined in the end.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves, nruns=NUM_REPLICATES, combine="mixed") 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves, nruns=NUM_REPLICATES, combine="mixed")
 mymcmc.burnin(NUM_MCMC_ITERATIONS*0.1,100)
 mymcmc.run(NUM_MCMC_ITERATIONS, tuning = 100)
 </code></pre></div></div>

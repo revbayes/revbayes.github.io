@@ -56,7 +56,7 @@
 	<h1 class="maintitle">Diversification Rate Estimation with Missing Taxa</h1>
 	<h3 class="subtitle">How to estimate diversification rates with incomplete taxon sampling</h3>
 	<h4 class="authors">Sebastian Höhna, Will Freyman and Mike May</h4>
-  <h5>Last modified on September 12, 2019</h5>
+  <h5>Last modified on February 28, 2022</h5>
 </div>
 
 
@@ -251,7 +251,7 @@ in many large scale phylogenies.</p>
 <code class="language-plaintext highlighter-rouge">FigTree</code>.</p>
 
 <blockquote class="figure">
-  <p><img src="figures/EBD_scenarios.png" alt="" /> 
+  <p><img src="figures/EBD_scenarios.png" alt="" />
 Two scenarios of
 birth-death models. On the left we show constant diversification. On the
 right we show an example of an episodic birth-death process where rates
@@ -281,7 +281,7 @@ study the impact of the assumed incomplete sampling strategy on
 diversification rates.</p>
 
 <blockquote>
-  <p><img src="figures/graphical_model_EBD.png" alt="" /> 
+  <p><img src="figures/graphical_model_EBD.png" alt="" />
 A graphical model
 with the outline of the <code class="language-plaintext highlighter-rouge">Rev</code> code. On the left we see the graphical
 model describing the correlated (Brownian motion) model for
@@ -358,7 +358,7 @@ extinction[1] := exp( log_extinction[1] )
 
 for (i in 1:NUM_INTERVALS) {
     index = i+1
-    
+
     # specify normal priors (= Brownian motion) on the log of the rates
     log_speciation[index] ~ dnNormal( mean=log_speciation[i], sd=speciation_sd )
     log_extinction[index] ~ dnNormal( mean=log_extinction[i], sd=extinction_sd )
@@ -403,7 +403,7 @@ timetree.clamp(T)
 ### workspace model wrapper ###
 mymodel = model(timetree)
 
-### set up the monitors that will output parameter values to file and screen 
+### set up the monitors that will output parameter values to file and screen
 monitors[++mni] = mnModel(filename="output/primates_uniform.log",printgen=10, separator = TAB)
 monitors[++mni] = mnFile(filename="output/primates_uniform_speciation_rates.log",printgen=10, separator = TAB, speciation)
 monitors[++mni] = mnFile(filename="output/primates_uniform_speciation_times.log",printgen=10, separator = TAB, interval_times)#
@@ -483,7 +483,7 @@ the analysis.</p>
 </ul>
 
 <blockquote class="figure">
-  <p><img src="figures/uniform.png" alt="" /> 
+  <p><img src="figures/uniform.png" alt="" />
 Resulting diversification rate
 estimations when using 20 intervals and assuming uniform taxon sampling.
 You should create similar plots for the other sampling schemes and
@@ -528,7 +528,7 @@ diversity. This sampling scheme is called <em>diversified</em> taxon sampling
 <a class="citation" href="#Hoehna2011">(Höhna et al. 2011)</a>.</p>
 
 <blockquote class="figure">
-  <p><img src="figures/diversified-sampling.png" alt="" /> 
+  <p><img src="figures/diversified-sampling.png" alt="" />
 Example of
 diversified taxon sampling. a) An example phylogeny showing that all
 species after a certain time are not sampled. b) The cumulative
@@ -605,7 +605,7 @@ down with empirical evidence the times when these missing speciation
 events have happened.</p>
 
 <blockquote class="figure">
-  <p><img src="figures/primates.png" alt="" /> 
+  <p><img src="figures/primates.png" alt="" />
 Cartoon of empirical taxon
 sampling. The triangle in the phylogeny depict clades with missing
 species. To illustrate the point we have written the names of higher
@@ -695,7 +695,6 @@ it ‘mcmc_empirical.Rev‘.</p>
     <p>How does the new sampling assumption influence your estimated rates?</p>
   </li>
 </ul>
-
 
 <ol class="bibliography"><li><span id="Hoehna2016b">Höhna S., Landis M.J., Heath T.A., Boussau B., Lartillot N., Moore B.R., Huelsenbeck J.P., Ronquist F. 2016. RevBayes: Bayesian Phylogenetic Inference Using Graphical Models and an Interactive Model-Specification Language. Systematic Biology. 65:726–736.</span>
 

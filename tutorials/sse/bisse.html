@@ -56,7 +56,7 @@
 	<h1 class="maintitle">State-dependent diversification with BiSSE and MuSSE</h1>
 	<h3 class="subtitle">Inference using the binary/multiple state-dependent speciation and extinction (BiSSE/MuSSE) branching process</h3>
 	<h4 class="authors">Sebastian Höhna, Will Freyman, and Emma Goldberg</h4>
-  <h5>Last modified on September 12, 2019</h5>
+  <h5>Last modified on February 28, 2022</h5>
 </div>
 
 
@@ -138,13 +138,13 @@
 <hr class="section" />
 
 <p>This tutorial describes how to specify character state-dependent
-branching process models in RevBayes. For more details on the theory behind these models, please see the 
+branching process models in RevBayes. For more details on the theory behind these models, please see the
 introductory page: <a href="/tutorials/sse/bisse-intro.html">Background on state-dependent diversification rate estimation</a>.</p>
 
 <p>This tutorial will explain how to fit the BiSSE and MuSSE models
-to data using Markov chain Monte Carlo (MCMC). 
+to data using Markov chain Monte Carlo (MCMC).
 RevBayes is a powerful tool for SSE analyses:
-to specify HiSSE model, please see <a href="/tutorials/sse/hisse.html">State-dependent diversification with HiSSE</a>, 
+to specify HiSSE model, please see <a href="/tutorials/sse/hisse.html">State-dependent diversification with HiSSE</a>,
 for the ClaSSE model, please see <a href="/tutorials/sse/other-sse.html">State-dependent diversification with HiSSE and ClaSSE</a>
 and for ChromoSSE please see <a href="/tutorials/chromo/">Chromosome Evolution</a>.</p>
 
@@ -169,7 +169,7 @@ A file with the coded character states for primate species mating-system type. T
 <blockquote class="instruction">
   <p>Create a new directory on your computer called <code class="language-plaintext highlighter-rouge">RB_bisse_tutorial</code>.</p>
 
-  <p>Within the <code class="language-plaintext highlighter-rouge">RB_bisse_tutorial</code> directory, create a subdirectory called <code class="language-plaintext highlighter-rouge">data</code>. 
+  <p>Within the <code class="language-plaintext highlighter-rouge">RB_bisse_tutorial</code> directory, create a subdirectory called <code class="language-plaintext highlighter-rouge">data</code>.
 Then, download the provided files and place them in the <code class="language-plaintext highlighter-rouge">data</code> folder.</p>
 </blockquote>
 
@@ -181,33 +181,33 @@ model. In RevBayes, it’s called <code class="language-plaintext highlighter-ro
 birth-death process</em>.</p>
 
 <blockquote class="instruction">
-  <p>Navigate to the <code class="language-plaintext highlighter-rouge">RB_bisse_tutorial</code> directory and execute the <code class="language-plaintext highlighter-rouge">rb</code> binary. 
+  <p>Navigate to the <code class="language-plaintext highlighter-rouge">RB_bisse_tutorial</code> directory and execute the <code class="language-plaintext highlighter-rouge">rb</code> binary.
 One option for doing this is to move the <code class="language-plaintext highlighter-rouge">rb</code> executable to the <code class="language-plaintext highlighter-rouge">RB_bisse_tutorial</code>
 directory.</p>
 
-  <p>Alternatively, if you are on a Unix system, and have added RevBayes to your path, 
+  <p>Alternatively, if you are on a Unix system, and have added RevBayes to your path,
 you simply have to type <code class="language-plaintext highlighter-rouge">rb</code> in your Terminal to run the program.</p>
 </blockquote>
 
-<p>For this tutorial, we will specify a BiSSE model that allows for speciation and extinction 
-to be correlated with a particular life-history trait: the timing of activity during the day. 
-If you open the file <a href="data/primates_activity_period.nex">primates_activity_period.nex</a> 
-in your text editor, you will see that several species like the mantled howler monkey 
-(<a href="https://en.wikipedia.org/wiki/Mantled_howler"><em>Alouatta palliata</em></a>) have the state <code class="language-plaintext highlighter-rouge">0</code>, 
+<p>For this tutorial, we will specify a BiSSE model that allows for speciation and extinction
+to be correlated with a particular life-history trait: the timing of activity during the day.
+If you open the file <a href="data/primates_activity_period.nex">primates_activity_period.nex</a>
+in your text editor, you will see that several species like the mantled howler monkey
+(<a href="https://en.wikipedia.org/wiki/Mantled_howler"><em>Alouatta palliata</em></a>) have the state <code class="language-plaintext highlighter-rouge">0</code>,
 indicating that they are <em>diurnal</em>. Whereas other <em>nocturnal</em>
-species, like the aye-aye 
+species, like the aye-aye
 (<a href="https://en.wikipedia.org/wiki/Aye-aye"><em>Daubentonia madagascariensis</em></a>) are coded with <code class="language-plaintext highlighter-rouge">1</code>.
-We may have an <em>a priori</em> hypothesis that diurnal species have higher rates of speciation and 
-by estimating the rates of lineages associated with that trait will allow us to explore this 
+We may have an <em>a priori</em> hypothesis that diurnal species have higher rates of speciation and
+by estimating the rates of lineages associated with that trait will allow us to explore this
 hypothesis.</p>
 
-<p>Once you execute RevBayes, you will be in the console. The rest of this tutorial will proceed 
+<p>Once you execute RevBayes, you will be in the console. The rest of this tutorial will proceed
 using the interactive console.</p>
 
 <h3 class="subsection" id="subsec_readdata">Read in the Data</h3>
 <hr class="subsection" />
 
-<p>For this tutorial, we are assuming that the tree is “observed” and considered <em>data</em>. 
+<p>For this tutorial, we are assuming that the tree is “observed” and considered <em>data</em>.
 Thus, we will read in the dated phylogeny first.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>observed_phylogeny &lt;- readTrees("data/primates_tree.nex")[1]
 </code></pre></div></div>
@@ -228,7 +228,7 @@ that the observed character has:</p>
 </code></pre></div></div>
 <p>Using this variable allows us to easily change our script and use a different
 character with a different number of states, essentially changing our
-model from BiSSE <a class="citation" href="#Maddison2007">(Maddison et al. 2007)</a> to one that allows for more than 2 states–<em>i.e.</em>, 
+model from BiSSE <a class="citation" href="#Maddison2007">(Maddison et al. 2007)</a> to one that allows for more than 2 states–<em>i.e.</em>,
 the MuSSE model <a class="citation" href="#FitzJohn2012">(FitzJohn 2012)</a>.</p>
 
 <h3 class="subsection" id="subsec_specifymodel">Specify the Model</h3>
@@ -262,13 +262,13 @@ character state.</p>
     ### Create a loguniform distributed variable for the turnover rate
     extinction[i] ~ dnLoguniform( 1E-6, 1E2)
     moves.append( mvScale(extinction[i],lambda=0.20,tune=true,weight=3.0) )
-    
+
 
     diversification[i] := speciation[i] - extinction[i]
 
 }
 </code></pre></div></div>
-<p>The stochastic nodes representing the vector of speciation rates and vector of 
+<p>The stochastic nodes representing the vector of speciation rates and vector of
 extinction rates have been instantiated. The software assumes that the rate in position <code class="language-plaintext highlighter-rouge">[1]</code> of each
 vector corresponds to the rate associated with diurnal <code class="language-plaintext highlighter-rouge">0</code> lineages and the rate
 at position <code class="language-plaintext highlighter-rouge">[2]</code> of each vector is the rate associated with nocturnal <code class="language-plaintext highlighter-rouge">1</code> lineages.</p>
@@ -292,7 +292,7 @@ $q_{01}$ and $q_{10}$. As a prior, we choose that each transition rate
 is drawn from an exponential distribution with a mean of 10 character
 state transitions over the entire tree. This is reasonable because we
 use this kind of model for traits that transition not-infrequently, and
-it leaves a fair bit of uncertainty. 
+it leaves a fair bit of uncertainty.
 Note that we will actually use a <code class="language-plaintext highlighter-rouge">for</code>-loop to instantiate the transition rates
 so that our script will also work for non-binary characters.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_pr := observed_phylogeny.treeLength() / 10
@@ -316,8 +316,8 @@ scale as the diversification rates.</p>
 <h4 id="prior-on-the-root-state"><strong>Prior on the Root State</strong></h4>
 
 <p>Create a variable for the root state frequencies. We are using a flat <a href="https://en.wikipedia.org/wiki/Dirichlet_distribution">Dirichlet distribution</a> as the prior on
-each state. There has been some discussion about this in <a class="citation" href="#FitzJohn2009">(FitzJohn et al. 2009)</a>. 
-You could also fix the prior probabilities for the root states to be equal 
+each state. There has been some discussion about this in <a class="citation" href="#FitzJohn2009">(FitzJohn et al. 2009)</a>.
+You could also fix the prior probabilities for the root states to be equal
 (generally not recommended), or use empirical state frequencies.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root_state_freq ~ dnDirichlet( rep(1, NUM_STATES) )
 </code></pre></div></div>
@@ -357,7 +357,7 @@ state-dependent birth-death model. We initialize the stochastic node
 representing the time tree and we create this node using the <code class="language-plaintext highlighter-rouge">dnCDBDP()</code> function.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree ~ dnCDBDP( rootAge           = root_age,
                     speciationRates   = speciation,
-                    extinctionRates   = extinction, 
+                    extinctionRates   = extinction,
                     Q                 = rate_matrix,
                     pi                = root_state_freq,
                     rho               = sampling )
@@ -375,7 +375,7 @@ specified.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(timetree)
 </code></pre></div></div>
 <p>You can use the <code class="language-plaintext highlighter-rouge">.graph()</code> method of the model object to visualize the graphical model you
-have just constructed . This function writes the model DAG to a file 
+have just constructed . This function writes the model DAG to a file
 that can be viewed using the  program <a href="https://www.graphviz.org/">Graphviz</a> (<a href="#graphviz"></a>).</p>
 
 <figure id="graphviz"><p><img src="figures/bisse_dag.svg" width="95%" /></p>
@@ -401,7 +401,7 @@ run.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(printgen=10, speciation, extinction) )
 </code></pre></div></div>
 
-<blockquote class="aside"><h2>Sampling Ancestral States</h2><p>Optionally, we can sample ancestral states during the MCMC analysis. 
+<blockquote class="aside"><h2>Sampling Ancestral States</h2><p>Optionally, we can sample ancestral states during the MCMC analysis.
 We need to add an additional monitor to record the state of each internal node in the tree.
 The file produced by this monitor can be summarized so that we can visualize the estimates of ancestral states.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnJointConditionalAncestralState(tree=timetree, cdbdp=timetree, type="Standard", printgen=1, withTips=true, withStartStates=false, filename="output/anc_states_primates_BiSSE.log") )
@@ -421,7 +421,7 @@ create our MCMC object:</p>
 </code></pre></div></div>
 
 <blockquote class="aside"><h2>Summarize Sampled Ancestral States</h2><p>If we sampled ancestral states during the MCMC analysis, we can use the <code class="language-plaintext highlighter-rouge">RevGadgets</code> R package
-to plot the ancestral state reconstruction. First, though, we must summarize the sampled values in 
+to plot the ancestral state reconstruction. First, though, we must summarize the sampled values in
 RevBayes.</p>
 
 <p>To do this, we first have to read in the ancestral state log file. This uses a specific function called <code class="language-plaintext highlighter-rouge">readAncestralStateTrace()</code>.</p>
@@ -442,7 +442,7 @@ state.</p>
   <p>Open R.</p>
 </blockquote>
 
-<p><code class="language-plaintext highlighter-rouge">RevGadgets</code> requires the <code class="language-plaintext highlighter-rouge">ggtree</code> package <a class="citation" href="#Yu2017ggtree">(Yu et al. 2017)</a>. 
+<p><code class="language-plaintext highlighter-rouge">RevGadgets</code> requires the <code class="language-plaintext highlighter-rouge">ggtree</code> package <a class="citation" href="#Yu2017ggtree">(Yu et al. 2017)</a>.
 First, install the <code class="language-plaintext highlighter-rouge">ggtree</code> and <code class="language-plaintext highlighter-rouge">RevGadgets</code> packages:</p>
 
 <pre>
@@ -482,10 +482,10 @@ ggsave(output_file, width = 11, height = 9)
 
 <p>Our MCMC analysis generated a tab-delimited file called <code class="language-plaintext highlighter-rouge">primates_activTime_BiSSE_mcmc.log</code> that contains
 the samples of all the numerical parameters in our model. There are a lot of tools available
-for visualizing files like this (like R or python), which allow you to generate plots and 
+for visualizing files like this (like R or python), which allow you to generate plots and
 visually explore the posterior distributions of sampled parameters.</p>
 
-<p>We will use the program <a href="http://tree.bio.ed.ac.uk/software/tracer/">Tracer</a> 
+<p>We will use the program <a href="http://tree.bio.ed.ac.uk/software/tracer/">Tracer</a>
 <a class="citation" href="#Rambaut2011">(Rambaut and Drummond 2011)</a>, which is a tool for easily exploring parameters sampled using MCMC.</p>
 
 <blockquote class="instruction">
@@ -496,8 +496,8 @@ visually explore the posterior distributions of sampled parameters.</p>
 parameters (<a href="#tracer1"></a>).</p>
 
 <figure id="tracer1"><p><img src="figures/tracer1.png" width="95%" /></p>
-<figcaption>Visualizing posterior samples of parameters in 
-<a href="http://tree.bio.ed.ac.uk/software/tracer/">Tracer</a> 
+<figcaption>Visualizing posterior samples of parameters in
+<a href="http://tree.bio.ed.ac.uk/software/tracer/">Tracer</a>
 <a class="citation" href="#Rambaut2011">(Rambaut and Drummond 2011)</a>.</figcaption>
 </figure>
 
@@ -506,11 +506,11 @@ parameters (<a href="#tracer1"></a>).</p>
 
   <p>Check the <em>Trace</em> view for each parameter. Did the chain “mix” effectively?</p>
 
-  <p>Highlight both of the <em>speciation</em> rates: <code class="language-plaintext highlighter-rouge">speciation[1]</code> and <code class="language-plaintext highlighter-rouge">speciation[2]</code> to 
+  <p>Highlight both of the <em>speciation</em> rates: <code class="language-plaintext highlighter-rouge">speciation[1]</code> and <code class="language-plaintext highlighter-rouge">speciation[2]</code> to
 compare the <em>Estimates</em> of both parameters.</p>
 
-  <p><strong>Write down</strong> the mean value for the rate of speciation associated with 
-diurnal lineages <code class="language-plaintext highlighter-rouge">speciation[1]</code> and the rate of speciation associated with 
+  <p><strong>Write down</strong> the mean value for the rate of speciation associated with
+diurnal lineages <code class="language-plaintext highlighter-rouge">speciation[1]</code> and the rate of speciation associated with
 nocturnal lineages <code class="language-plaintext highlighter-rouge">speciation[2]</code>.</p>
 
   <p>Now use the <em>Marginal Prob Distribution</em> view to compare the marginal posterior densities
@@ -518,8 +518,8 @@ of both speciation rates.</p>
 </blockquote>
 
 <figure id="tracer2"><p><img src="figures/tracer2.png" width="50%" /></p>
-<figcaption>Comparing posterior samples of the speciation rates associated with daily activity time in 
-<a href="http://tree.bio.ed.ac.uk/software/tracer/">Tracer</a> 
+<figcaption>Comparing posterior samples of the speciation rates associated with daily activity time in
+<a href="http://tree.bio.ed.ac.uk/software/tracer/">Tracer</a>
 <a class="citation" href="#Rambaut2011">(Rambaut and Drummond 2011)</a>.</figcaption>
 </figure>
 
@@ -527,13 +527,13 @@ of both speciation rates.</p>
 <hr class="section" />
 
 <p>Now that you have completed the BiSSE analysis for the timing of activity for all primates,
-perform the same analysis using a different character. Your <code class="language-plaintext highlighter-rouge">data</code> directory should 
-contain the file <a href="data/primates_solitariness.nex"><code class="language-plaintext highlighter-rouge">primates_solitariness.nex</code></a>, which has the 
+perform the same analysis using a different character. Your <code class="language-plaintext highlighter-rouge">data</code> directory should
+contain the file <a href="data/primates_solitariness.nex"><code class="language-plaintext highlighter-rouge">primates_solitariness.nex</code></a>, which has the
 coded states for each species habitat type. This is also a <em>binary</em> character, where the states
 are <code class="language-plaintext highlighter-rouge">0</code> = forest and <code class="language-plaintext highlighter-rouge">1</code> = savanna.</p>
 
 <blockquote class="instruction">
-  <p>Complete the BiSSE analysis for habitat type using the same commands given above. 
+  <p>Complete the BiSSE analysis for habitat type using the same commands given above.
 Remember it is useful to <em>clear</em> the RevBayes console before starting another analysis. Do this
 using the <code class="language-plaintext highlighter-rouge">clear()</code> function.</p>
 
@@ -548,7 +548,7 @@ using the <code class="language-plaintext highlighter-rouge">clear()</code> func
 for solitary lineages (<code class="language-plaintext highlighter-rouge">speciation[2]</code>)?</p>
 </blockquote>
 
-<blockquote class="aside"><h2>Compare the rate estimates</h2><p>Compare the rates estimated when the activity time is the focal character versus when solitariness is the dependent character. 
+<blockquote class="aside"><h2>Compare the rate estimates</h2><p>Compare the rates estimated when the activity time is the focal character versus when solitariness is the dependent character.
 You can do this by opening <em>both</em> files in the same tracer window. If you managed to give all the parameters the same name,
 it is possible to compare the estimates in the Tracer window by highlighting both files.</p>
 
@@ -560,8 +560,8 @@ it is possible to compare the estimates in the Tracer window by highlighting bot
 <h2 class="section" id="exercise3">Evaluate Mating System under the MuSSE Model</h2>
 <hr class="section" />
 
-<p>In RevBayes it is trivial to change the BiSSE analysis you did in the exercises above to a multi-state model that is not limited to just 
-binary characters. That is because the model is effectively the same, just with the variable <code class="language-plaintext highlighter-rouge">NUM_STATES</code> changed. 
+<p>In RevBayes it is trivial to change the BiSSE analysis you did in the exercises above to a multi-state model that is not limited to just
+binary characters. That is because the model is effectively the same, just with the variable <code class="language-plaintext highlighter-rouge">NUM_STATES</code> changed.
 For this final exercise, we will use the MuSSE model <a class="citation" href="#FitzJohn2012">(FitzJohn 2012)</a> to estimate the rates of speciation and extinction
 associated with the mating system state for each primate lineage.</p>
 
@@ -569,7 +569,7 @@ associated with the mating system state for each primate lineage.</p>
 character where the states are: <code class="language-plaintext highlighter-rouge">0</code> = monogamy, <code class="language-plaintext highlighter-rouge">1</code> = polygyny, <code class="language-plaintext highlighter-rouge">2</code> = polygynandry, and <code class="language-plaintext highlighter-rouge">3</code> = polyandry.</p>
 
 <blockquote class="instruction">
-  <p>Modify the analysis you completed for the binary state characters in the <a href="#sec_CDBDP">BiSSE Exercise</a> to accommodate a 4-state character. 
+  <p>Modify the analysis you completed for the binary state characters in the <a href="#sec_CDBDP">BiSSE Exercise</a> to accommodate a 4-state character.
 This means that you must not only change the input data file (<code class="language-plaintext highlighter-rouge">primates_mating_system.nex</code>),
 but you also need to specify <code class="language-plaintext highlighter-rouge">NUM_STATES = 4</code>. The <code class="language-plaintext highlighter-rouge">rate_matrix</code> must also be modified to accommodate 4 states.</p>
 
@@ -579,7 +579,6 @@ but you also need to specify <code class="language-plaintext highlighter-rouge">
 
   <p>What is the diversification rate associated with each state (<code class="language-plaintext highlighter-rouge">diversification</code>)?</p>
 </blockquote>
-
 
 <ol class="bibliography"><li><span id="FitzJohn2009">FitzJohn R.G., Maddison W.P., Otto S.P. 2009. Estimating trait-dependent speciation and extinction rates from incompletely resolved phylogenies. Systematic Biology. 58:595–611.</span>
 

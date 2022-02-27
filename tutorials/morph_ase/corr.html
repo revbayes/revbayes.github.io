@@ -1,0 +1,598 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: Discrete morphology - Correlation among Characters</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
+      </a>
+
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/download">Download</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/documentation/">Documentation</a></li>
+        <li><a href="https://revbayes.github.io/revscripter/">RevScripter</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/jobs/">Jobs</a></li>
+        <li><a href="/developer/">Developer</a></li>
+        <li><<a href="/gui">GUI</a></li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <div class="titlebar">
+	<h1 class="maintitle">Discrete morphology - Correlation among Characters</h1>
+	<h3 class="subtitle">Testing for Correlation</h3>
+	<h4 class="authors">Sebastian Höhna</h4>
+  <h5>Last modified on February 28, 2022</h5>
+</div>
+
+
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul id="prerequisites">
+          
+            <li><a href="/tutorials/intro/">Getting Started with RevBayes and Rev Language Syntax</a></li>
+          
+            <li><a href="/tutorials/mcmc/">Introduction to Markov chain Monte Carlo (MCMC) Sampling</a></li>
+          
+            <li><a href="/tutorials/ctmc/">Nucleotide substitution models</a></li>
+          
+            <li><a href="/tutorials/morph_tree/">Discrete morphology - Tree Inference</a></li>
+          
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+
+
+
+
+<blockquote class="tutorial_files" id="tutorial_files">
+    <h2>Data files and scripts</h2>
+    
+        
+        <strong>Data Files</strong>
+        <ul id="data_files">
+        
+        
+        
+          <li><a href="/tutorials/morph_ase/data/primates_activity_period.nex">primates_activity_period.nex</a></li>
+        
+          <li><a href="/tutorials/morph_ase/data/primates_diet.nex">primates_diet.nex</a></li>
+        
+          <li><a href="/tutorials/morph_ase/data/primates_habitat.nex">primates_habitat.nex</a></li>
+        
+          <li><a href="/tutorials/morph_ase/data/primates_males.nex">primates_males.nex</a></li>
+        
+          <li><a href="/tutorials/morph_ase/data/primates_mating_system.nex">primates_mating_system.nex</a></li>
+        
+          <li><a href="/tutorials/morph_ase/data/primates_morph.nex">primates_morph.nex</a></li>
+        
+          <li><a href="/tutorials/morph_ase/data/primates_morph_description.txt">primates_morph_description.txt</a></li>
+        
+          <li><a href="/tutorials/morph_ase/data/primates_solitariness.nex">primates_solitariness.nex</a></li>
+        
+          <li><a href="/tutorials/morph_ase/data/primates_terrestrially.nex">primates_terrestrially.nex</a></li>
+        
+          <li><a href="/tutorials/morph_ase/data/primates_tree.nex">primates_tree.nex</a></li>
+        
+        </ul>
+    
+        
+        <strong>Scripts</strong>
+        <ul id="scripts">
+        
+        
+        
+          <li><a href="/tutorials/morph_ase/scripts/mcmc_corr_RJ.Rev">mcmc_corr_RJ.Rev</a></li>
+        
+          <li><a href="/tutorials/morph_ase/scripts/plot_anc_states_corr_RJ.R">plot_anc_states_corr_RJ.R</a></li>
+        
+          <li><a href="/tutorials/morph_ase/scripts/plot_corr.R">plot_corr.R</a></li>
+        
+        </ul>
+    
+</blockquote>
+
+
+</div>
+<h2 class="section" id="sec_corr_overview">Overview</h2>
+<hr class="section" />
+
+<p>In this tutorial we want to test for correlation between two discrete characters.
+In this primates dataset, we have the following discrete morpholigical characters: activity period, habitat, solitariness, terrestrially, number of males per group, mating system and diet (see <a href="/tutorials/morph_ase/">Introduction to Discrete Morphology Evolution</a> for more details).
+For example, the habitat and terrestrially characters are very likely to be dependent on another.
+But what about the other characters and how do we test for correlation?
+It actually turns out to be very similar to our <a href="/tutorials/morph_ase/scm_hrm.html">Discrete morphology - Stochastic Character Mapping and Hidden Rates</a> analysis.</p>
+
+<h2 class="section" id="sec_corr">The Correlated Evolution Model</h2>
+<hr class="section" />
+
+<p>In this exercise, let us assume that we have two binary characters <strong>A</strong> and <strong>B</strong>.
+To test for correlation, we need to combine these two characters into a single one.
+That means, we will expand the state space to 00, 10, 01 and 11 where the first position corresponds to the state of character <strong>A</strong> and the second position corresponds to character <strong>B</strong>.
+If both characters evolve independently and according to rates of gain $\alpha_A$ and $\alpha_B$ and rates of loss $\beta_A$ and $\beta_B$, respectively, then we can write the rate matrix as follows <a class="citation" href="#Pagel2004">(Pagel and Meade 2004)</a>.</p>
+
+\[Q = \begin{smallmatrix}
+ &amp; \begin{smallmatrix}00 &amp; 10 &amp; 01 &amp; 11\end{smallmatrix} \\
+\begin{smallmatrix}00\\10\\01\\11\end{smallmatrix} &amp;
+   \left(\begin{smallmatrix}- &amp; \alpha_{A} &amp; \alpha_{B} &amp; 0 \\ \beta_{A} &amp; - &amp; 0 &amp; \alpha_{B}\\ \beta_{B} &amp; 0 &amp; - &amp; \alpha_{A} \\ 0 &amp; \beta_{A} &amp; \beta_{B} &amp; -  \end{smallmatrix}\right)\\
+\end{smallmatrix}\]
+
+<p>Now if we assume instead that rates of gain and loss for both characters actually depend on the state of the other character, then we would obtain the full rate matrix of</p>
+
+\[Q = \begin{smallmatrix}
+ &amp; \begin{smallmatrix}00 &amp; 10 &amp; 01 &amp; 11\end{smallmatrix} \\
+\begin{smallmatrix}00\\10\\01\\11\end{smallmatrix} &amp;
+   \left(\begin{smallmatrix}- &amp; \mu_{1,2} &amp; \mu_{1,3} &amp; 0 \\ \mu_{2,1} &amp; - &amp; 0 &amp; \mu_{2,4}\\ \mu_{3,1} &amp; 0 &amp; - &amp; \mu_{3,4} \\ 0 &amp; \mu_{4,2} &amp; \mu_{4,3} &amp; -  \end{smallmatrix}\right)\\
+\end{smallmatrix}\]
+
+<p>Note that only single transitions, i.e., a transition of one character and not both, are allowed at a time.
+That is, we assume that not both characters can be gained or lost at the same infinitesimal small time interval, and instead that one usually precedes the other.</p>
+
+<p>In the first rate matrix, we only had 4 parameters.
+Now in the second rate matrix, we have 8 parameters.
+If we want to test for correlations, we can simply test if specific parameters are indeed distinguishable <a class="citation" href="#Pagel2004">(Pagel and Meade 2004)</a>.</p>
+
+<p>These parameters are:</p>
+<ul>
+  <li>$\mu_{1,2} \neq \mu_{3,4}$: a gain in character A does not depend on the state of character B</li>
+  <li>$\mu_{2,1} \neq \mu_{4,3}$: a loss in character A does not depend on the state of character B</li>
+  <li>$\mu_{1,3} \neq \mu_{2,4}$: a gain in character B does not depend on the state of character A</li>
+  <li>$\mu_{3,1} \neq \mu_{4,2}$: a loss in character B does not depend on the state of character A</li>
+</ul>
+
+<p>We will perform these tests here using reversible jump Markov chain Monte Carlo.</p>
+
+<blockquote class="instruction">
+  <p>Let us start with a fresh Rev script.
+Create an empty text file and call it `mcmc_corr_RJ.Rev.</p>
+</blockquote>
+
+<h4 class="subsubsection" id="subsubsec_load_data">Load the Data Matrices</h4>
+<hr class="subsubsection" />
+
+<p>As before, use the function <code class="language-plaintext highlighter-rouge">readDiscreteCharacterData()</code> to load a data matrix to the workspace from a formatted file.
+However, this time we need to load two data matrices, one for each character.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>morpho_A &lt;- readDiscreteCharacterData("data/primates_solitariness.nex")
+morpho_B &lt;- readDiscreteCharacterData("data/primates_terrestrially.nex")
+</code></pre></div></div>
+<p>Next, we need to combine the 2 character into a single one.
+In RevBayes, there is a convenient way so you don’t have to do it manually.
+You can use the function <code class="language-plaintext highlighter-rouge">combineCharacter()</code> which will combine any two characters.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>morpho = combineCharacter( morpho_A, morpho_B )
+</code></pre></div></div>
+<p>Again, to get a better understanding of how this happened just look into the newly created character data matrix (and the original ones if you want too).</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>morpho
+</code></pre></div></div>
+<div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   NaturalNumbers character matrix with 233 taxa and 1 characters
+   ==============================================================
+   Origination:                   
+   Number of taxa:                233
+   Number of included taxa:       233
+   Number of characters:          1
+   Number of included characters: 1
+   Datatype:                      NaturalNumbers
+</code></pre></div></div>
+<p>Notice that the <em>Datatype</em> for this character data matrix is <em>NaturalNumbers</em>.
+In RevBayes, we always default back to <em>NaturalNumbers</em> as the data type because we can list arbitrarily many states, but for standard states we wouldn’t know how to label them (except going through the alphabet, which is clearly shorter and doesn’t have any more meaning than numbers).</p>
+
+<p>Let us now also look at how the states are <em>combined</em>.
+Again, we look first at the original character data matrix.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>morpho.show()
+</code></pre></div></div>
+<div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   Allenopithecus_nigroviridis
+   1
+   Allocebus_trichotis
+   2
+   Alouatta_belzebul
+   0
+   Alouatta_caraya
+   0
+   Alouatta_coibensis
+   0
+   Alouatta_fusca
+   0
+   Alouatta_palliata
+   0
+   Alouatta_pigra
+   0
+   Alouatta_sara
+   (0 2)
+   Alouatta_seniculus
+   0
+   Aotus_azarai
+   0
+   Aotus_brumbacki
+   (0 2)
+   Aotus_hershkovitzi
+   (0 2)
+   ...
+</code></pre></div></div>
+<p>We see that <em>Allenopithecus nigroviridis</em> has state 1 and <em>Allocebus trichotis</em> has state 2.
+There are also ambiguous states if one or both character were ambiguous or missing.
+It is important to remember how the state space was expanded to set the rates up correctly.</p>
+
+<h4 class="subsubsection" id="subsubsec_var">Create Helper Variables</h4>
+<hr class="subsubsection" />
+
+<p>As before, we need to instantiate a couple “helper variables” that will be used by downstream parts of our model specification files.
+Create vectors of moves and monitors</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves = VectorMoves()
+monitors = VectorMonitors()
+</code></pre></div></div>
+
+<h3 class="subsection" id="subsec_phylogeny">The Phylogeny</h3>
+<hr class="subsection" />
+
+<p>As usual for morphological analysis, we assume the phylogeny to be know.
+Thus, we read in the tree as a constant variable:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phylogeny &lt;- readTrees("data/primates_tree.nex")[1]
+</code></pre></div></div>
+
+<h3 class="subsection" id="subsec_corr_Model">The Correlated Rates Model</h3>
+<hr class="subsection" />
+
+<p>Now we need to specify the correlated rates model.
+Have a look again above at the rate matrix that we want to specify.
+In the current example, we assume two binary morphological character.
+This gives 4 states in total and therefore a 4x4 rate matrix.</p>
+
+<p>Start with creating a matrix called <code class="language-plaintext highlighter-rouge">rates</code> where all elements are 0.0.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># we will fill the non-zero elements below
+for (i in 1:4) {
+  for (j in 1:4) {
+    rates[i][j] &lt;- 0.0
+  }
+}
+</code></pre></div></div>
+<p>Next, we specify the global rate prior.
+As in all previous discrete morphological evolution excersises, we will use an exponential prior distribution with a mean of 10 events along the given phylogeny.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_pr := phylogeny.treeLength() / 10
+</code></pre></div></div>
+<p>We also specify a prior probability of 0.5 that each pair of rates is indeed correlated.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mix_prob &lt;- 0.5
+</code></pre></div></div>
+<p>Then, let us specify the rate of gain for character <strong>A</strong>.
+First, we do this for the case when character <strong>B</strong> is in state 0.
+We will assume an exponential prior distribution here.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_gain_A_when_B0 ~ dnExponential( rate_pr )
+</code></pre></div></div>
+<p>Second, we create the rate for a gain in character <strong>A</strong> when character <strong>B</strong> is in state 1.
+This can either be the same rate (i.e., independent of the state of <strong>B</strong>) or its own rate.
+Therefore we use the reversible jump mixture distribution.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_gain_A_when_B1 ~ dnReversibleJumpMixture(rate_gain_A_when_B0, dnExponential( rate_pr ), mix_prob)
+</code></pre></div></div>
+<p>Now proceed in the same way for the rate of loss in character <strong>A</strong>, the rate of gain in character <strong>B</strong> and the rate of loss in character <strong>B</strong>.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_loss_A_when_B0 ~ dnExponential( rate_pr )
+rate_loss_A_when_B1 ~ dnReversibleJumpMixture(rate_loss_A_when_B0, dnExponential( rate_pr ), mix_prob)
+
+rate_gain_B_when_A0 ~ dnExponential( rate_pr )
+rate_gain_B_when_A1 ~ dnReversibleJumpMixture(rate_gain_B_when_A0, dnExponential( rate_pr ), mix_prob)
+
+rate_loss_B_when_A0 ~ dnExponential( rate_pr )
+rate_loss_B_when_A1 ~ dnReversibleJumpMixture(rate_loss_B_when_A0, dnExponential( rate_pr ), mix_prob)
+</code></pre></div></div>
+<p>Next, since we use reversible jump MCMC, we also want to compute the probability that any of the pairs of rates is indeed equal.
+We use the <code class="language-plaintext highlighter-rouge">ifelse</code> function to test for equivalence and store the value 1 if the rates are identical (i.e., the charatacer are independent with respect to that rate) or a 0 otherwise.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>prob_gain_A_indep := ifelse( rate_gain_A_when_B0 == rate_gain_A_when_B1, 1.0, 0.0 )
+prob_loss_A_indep := ifelse( rate_loss_A_when_B0 == rate_loss_A_when_B1, 1.0, 0.0 )
+prob_gain_B_indep := ifelse( rate_gain_B_when_A0 == rate_gain_B_when_A1, 1.0, 0.0 )
+prob_loss_B_indep := ifelse( rate_loss_B_when_A0 == rate_loss_B_when_A1, 1.0, 0.0 )
+</code></pre></div></div>
+<p>We need to specify moves on all our 8 rate variables.
+First, we specify a scaling move on each rate variable separately.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale( rate_gain_A_when_B0, weight=2 ) )
+moves.append( mvScale( rate_gain_A_when_B1, weight=2 ) )
+moves.append( mvScale( rate_loss_A_when_B0, weight=2 ) )
+moves.append( mvScale( rate_loss_A_when_B1, weight=2 ) )
+moves.append( mvScale( rate_gain_B_when_A0, weight=2 ) )
+moves.append( mvScale( rate_gain_B_when_A1, weight=2 ) )
+moves.append( mvScale( rate_loss_B_when_A0, weight=2 ) )
+moves.append( mvScale( rate_loss_B_when_A1, weight=2 ) )
+</code></pre></div></div>
+<p>On the 4 reversible jump variable, we also need to specify reversible jump moves to actually perform the reversible jump MCMC algorithm.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvRJSwitch(rate_gain_A_when_B1, weight=2.0) )
+moves.append( mvRJSwitch(rate_loss_A_when_B1, weight=2.0) )
+moves.append( mvRJSwitch(rate_gain_B_when_A1, weight=2.0) )
+moves.append( mvRJSwitch(rate_loss_B_when_A1, weight=2.0) )
+</code></pre></div></div>
+<p>Now that we have our rate parameters, we can fill in our rates matrix.
+If you are unsure about the indices, look again at the described rate matrix above.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rates[1][2] := rate_gain_A_when_B0 # 00-&gt;10
+rates[1][3] := rate_gain_B_when_A0 # 00-&gt;01
+rates[2][1] := rate_loss_A_when_B0 # 10-&gt;00
+rates[2][4] := rate_gain_B_when_A1 # 10-&gt;11
+rates[3][1] := rate_loss_B_when_A0 # 01-&gt;00
+rates[3][4] := rate_gain_A_when_B1 # 01-&gt;11
+rates[4][2] := rate_loss_B_when_A1 # 11-&gt;10
+rates[4][3] := rate_loss_A_when_B1 # 11-&gt;01
+</code></pre></div></div>
+<p>Finally, we can create our transition rate matrix <code class="language-plaintext highlighter-rouge">Q</code> using the rate matrix function <code class="language-plaintext highlighter-rouge">fnFreeK</code>.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q_morpho := fnFreeK(rates, rescaled=FALSE)
+</code></pre></div></div>
+
+<p>For this model, we also want to specify parameters for the root frequencies $\pi$, and thus also their prior distributions.
+We assume a flat Dirichlet distribution, which assigns each combination of root frequencies the exact same prior probability.
+Remember that we 2 binary characters and therefore 4 states.
+Thus we need a vector of 2*2 filled with ones.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rf_prior &lt;- rep(1,2*2)
+</code></pre></div></div>
+<p>We use this for our Dirichlet distribution.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rf ~ dnDirichlet( rf_prior )
+</code></pre></div></div>
+<p>We apply two different moves to the root frequencies, a <code class="language-plaintext highlighter-rouge">mvBetaSimplex</code> that changes a single frequencies and rescales the other frequencies, and a <code class="language-plaintext highlighter-rouge">mvDirichletSimplex</code> that redraws all root frequencies together.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvBetaSimplex( rf, weight=2 ) )
+moves.append( mvDirichletSimplex( rf, weight=2 ) )
+</code></pre></div></div>
+
+<p>Lastly, we set up the CTMC.
+Not that this time we need to specify the <code class="language-plaintext highlighter-rouge">type=NaturalNumbers</code>, as we saw this is used in the <em>combined</em> data matrix.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phyMorpho ~ dnPhyloCTMC(tree=phylogeny, Q=Q_morpho, rootFrequencies=rf, type="NaturalNumbers")
+</code></pre></div></div>
+<p>We conclude the model specification by attaching the <em>combined</em> data matrix to the CTMC object.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phyMorpho.clamp( morpho )
+</code></pre></div></div>
+
+<h3 class="subsection" id="subsec_complete_MCMC">Complete MCMC Analysis</h3>
+<hr class="subsection" />
+
+<h4 class="subsubsection" id="subsubsec_Mod_Obj">Create Model Object</h4>
+<hr class="subsubsection" />
+
+<p>We can now create our workspace model variable with our fully specified model DAG.
+We will do this with the <code class="language-plaintext highlighter-rouge">model()</code> function and provide a single node in the graph (<code class="language-plaintext highlighter-rouge">phylogeny</code>).</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(phylogeny)
+</code></pre></div></div>
+
+<p>The object <code class="language-plaintext highlighter-rouge">mymodel</code> is a wrapper around the entire model graph and allows us to pass the model to various functions that are specific to our MCMC analysis.</p>
+
+<h4 class="subsubsection" id="subsubsec_Monitors">Specify Monitors and Output Filenames</h4>
+<hr class="subsubsection" />
+
+<p>As in all our analyses, we will add the same monitors to plot the ancestral states and also the stochastic character maps.
+We will specify the same model monitor (<code class="language-plaintext highlighter-rouge">mnModel</code>), screen monitor (<code class="language-plaintext highlighter-rouge">mnScreen</code>), ancestral state monitor (<code class="language-plaintext highlighter-rouge">mnJointConditionalAncestralState</code>) as before (<a href="/tutorials/morph_ase/ase.html">Discrete morphology - Ancestral State Estimation</a>) and the stochastic character mapping monitor (<code class="language-plaintext highlighter-rouge">mnStochasticCharacterMap</code>) (<a href="/tutorials/morph_ase/scm_hrm.html">Discrete morphology - Stochastic Character Mapping and Hidden Rates</a>).</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># 1. for the full model #
+monitors.append( mnModel(filename="output/solitariness_terrestrially_corr_RJ.log", printgen=1) )
+# 2. and a few select parameters to be printed to the screen #
+monitors.append( mnScreen(printgen=10) )
+# 3. add an ancestral state monitor
+monitors.append( mnJointConditionalAncestralState(tree=phylogeny,
+                                                  ctmc=phyMorpho,
+                                                  filename="output/solitariness_terrestrially_corr_RJ.states.txt",
+                                                  type="NaturalNumbers",
+                                                  printgen=1,
+                                                  withTips=true,
+                                                  withStartStates=false) )
+# 4. add an stochastic character map monitor
+monitors.append( mnStochasticCharacterMap(ctmc=phyMorpho,
+                                          filename="output/solitariness_terrestrially_corr_RJ_stoch_char_map.log",
+                                          printgen=1,
+                                          include_simmap=true) )
+</code></pre></div></div>
+
+<h4 class="subsubsection" id="set-up-the-mcmc">Set-Up the MCMC</h4>
+<hr class="subsubsection" />
+
+<p>Setup the MCMC analysis as before (<a href="/tutorials/morph_ase/ase.html">Discrete morphology - Ancestral State Estimation</a>).
+This will run 2 replicated MCMC runs with 10,000 iterations and auto-tuning the moves every 200 iterations.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
+mymcmc.run(generations=10000, tuningInterval=200)
+</code></pre></div></div>
+
+<h4 class="subsubsection" id="summarizing-the-mcmc-output">Summarizing the MCMC output</h4>
+<hr class="subsubsection" />
+
+<p>After the MCMC simulation, we can calculate the maximum a posteriori
+<em>marginal</em>, <em>joint</em>, or <em>conditional</em> character history.
+As before (<a href="/tutorials/morph_ase/ase.html">Discrete morphology - Ancestral State Estimation</a>), we will compute the ancestral state estimates as well as the stochastic character mappings (<a href="/tutorials/morph_ase/scm_hrm.html">Discrete morphology - Stochastic Character Mapping and Hidden Rates</a>) which generates the <strong>SIMMAP</strong> <a class="citation" href="#Bollback2006">(Bollback 2006)</a>
+formatted files used for plotting in the <strong>phytools</strong> R package <a class="citation" href="#Revell2012">(Revell 2012)</a>.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Read in the tree trace and construct the ancestral states (ASE) #
+anc_states = readAncestralStateTrace("output/solitariness_terrestrially_corr_RJ.states.txt")
+anc_tree = ancestralStateTree(tree=phylogeny, ancestral_state_trace_vector=anc_states, include_start_states=false, file="output/solitariness_terrestrially_ase_corr_RJ.tree", burnin=0.25, summary_statistic="MAP", site=1, nStates=2*2)
+
+anc_states_stoch_map = readAncestralStateTrace("output/solitariness_terrestrially_corr_RJ_stoch_char_map.log")
+
+
+char_map_tree = characterMapTree(tree=phylogeny,
+                 ancestral_state_trace_vector=anc_states_stoch_map,
+                 character_file="output/solitariness_terrestrially_corr_RJ_marginal_character.tree",
+                 posterior_file="output/solitariness_terrestrially_corr_RJ_marginal_posterior.tree",
+                 burnin=0.25,
+                 num_time_slices=500)
+</code></pre></div></div>
+
+<p>This is all you need for this analysis.
+Don’t forget to quit RevBayes at the end of the script.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Quit RevBayes #
+q()
+</code></pre></div></div>
+
+<blockquote class="instruction">
+  <p>This is all that you need to do for the rate variation analysis with hidden rate categories and stochastic character mapping. Save your script and give it a try!</p>
+</blockquote>
+
+<h2 class="section" id="sec_ase_results">Evaluate and Summarize Your Results</h2>
+<hr class="section" />
+
+<h3 class="subsection" id="subsec_ase_plots">Visualizing Ancestral State Estimates</h3>
+<hr class="subsection" />
+
+<p>We have previously plotted the ancestral states, both the <em>maximum a posterior</em> (MAP) states as well as the posterior probabilities of all states shown as pie chart <a href="/tutorials/morph_ase/ase.html">Discrete morphology - Ancestral State Estimation</a>.
+We also showed before how to plot the stochastic character mapping using <strong>phytools</strong>.
+My output is shown in <a href="#fig_anc_states_corr_RJ"></a>.</p>
+
+<figure id="fig_anc_states_hrm"><p><img src="figures/Primates_solitariness_terrestrially_corr_RJ_simmap.png" height="300" />
+<img src="figures/Primates_solitariness_terrestrially_ASE_corr_RJ_MAP.png" height="300" />
+<img src="figures/Primates_solitariness_terrestrially_ASE_corr_RJ_Pie.png" height="300" /></p>
+<figcaption>Stochastic character map (left) and ancestral state estimates (middle and right) of the combined character solitariness and terrestrially under the correlated model of morphological evolution. You might notice that there no joint state solitary and terrestrial, which means that if primates are solitary, then they live in trees.</figcaption>
+</figure>
+
+<p>The more important output analysis here is the probability of the rates being dependent or not.
+Therefore, we will plot the probability that two rates were identical.
+You can do this nicely in <code class="language-plaintext highlighter-rouge">RevGadgets</code> <a class="citation" href="#Tribble2022">(Tribble et al. 2022)</a></p>
+<pre><code class="language-{R}">library(RevGadgets)
+library(ggplot2)
+
+CHARACTER_A &lt;- "solitariness"
+CHARACTER_B &lt;- "terrestrially"
+
+# specify the input file
+file &lt;- paste0("output/",CHARACTER_A,"_",CHARACTER_B,"_corr_RJ.log")
+
+# read the trace and discard burnin
+trace_qual &lt;- readTrace(path = file, burnin = 0.25)
+
+BF &lt;- c(3.2, 10, 100)
+p = BF/(1+BF)
+# produce the plot object, showing the posterior distributions of the rates.
+p &lt;- plotTrace(trace = trace_qual,
+          vars = c("prob_gain_A_indep", "prob_gain_B_indep", "prob_loss_A_indep", "prob_loss_B_indep"))[[1]] +
+          ylim(0,1) +
+          geom_hline(yintercept=0.5, linetype="solid", color = "black") +
+          geom_hline(yintercept=p, linetype=c("longdash","dashed","dotted"), color = "red") +
+          geom_hline(yintercept=1-p, linetype=c("longdash","dashed","dotted"), color = "red") +
+     # modify legend location using ggplot2
+     theme(legend.position = c(0.40,0.825))
+
+ggsave(paste0("Primates_",CHARACTER_A,"_",CHARACTER_B,"_corr_RJ.pdf"), p, width = 5, height = 5)
+
+</code></pre>
+
+<figure id="fig_prob_irrev"><p><img src="figures/Primates_solitariness_terrestrially_corr_RJ.png" width="400" /></p>
+<figcaption>Probability that a rate of gain or loss of a character was independent. If we see a high posterior probability for 1, then that means that the rate of gain or loss for the character is independent of the other character. We also show the prior (black solid line), weak support (BF $&lt;3.2$, long-dashed red line), substantial support ($3.2&lt;$ BF $&lt;10$, dashed red line), and strong support ($10&lt;$ BF $&lt;100$, dotted red line). Even though the support varies, for this specific analysis we don’t see any significant support of either correlated or independent rates.</figcaption>
+</figure>
+
+<blockquote class="instruction">
+  <p>How can you explain the observed allocation of clades to the slow and fast rate categories?
+Do ancestral state estimates match with the stochastic character maps?
+How certain are we in the ancestral state estimates?</p>
+</blockquote>
+
+<ol class="bibliography"><li><span id="Bollback2006">Bollback J.P. 2006. SIMMAP: stochastic character mapping of discrete traits on phylogenies. BMC bioinformatics. 7:88.</span>
+
+</li>
+<li><span id="Pagel2004">Pagel M., Meade A. 2004. A Phylogenetic Mixture Model for Detecting Pattern-Heterogeneity in Gene Sequence or Character-State Data. Systematic Biology. 53:571–581.</span>
+
+<a href="https://doi.org/10.1080/10635150490468675">10.1080/10635150490468675</a>
+
+</li>
+<li><span id="Revell2012">Revell L.J. 2012. phytools: an R package for phylogenetic comparative biology (and other things). Methods in Ecology and Evolution.:217–223.</span>
+
+</li>
+<li><span id="Tribble2022">Tribble C.M., Freyman W.A., Landis M.J., Lim J.Y., Barido-Sottani J., Kopperud B.T., Höhna S., May M.R. 2022. RevGadgets: An R package for visualizing Bayesian phylogenetic analyses from RevBayes. Methods in Ecology and Evolution. 13:314–323.</span>
+
+<a href="https://doi.org/https://doi.org/10.1111/2041-210X.13750">https://doi.org/10.1111/2041-210X.13750</a>
+
+</li></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+    });
+    MathJax.Hub.Queue(function () {
+      $(".aside").each(function() {
+          $("div .MathJax", this).hide();
+      });
+    });
+</script>
+<script src="/assets/js/base.js"></script>
+
+  </body>
+</html>

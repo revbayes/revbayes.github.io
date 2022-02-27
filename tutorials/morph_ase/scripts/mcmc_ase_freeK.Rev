@@ -1,10 +1,11 @@
 ################################################################################
 #
-# RevBayes Example: Inferring ancestral states and rates of morphological evolution
+# RevBayes Example: Inferring ancestral states and rates of morphological evolution using the independent rates model.
 #
-# This file: Runs the full MCMC on an irreversible model.
+# Note that this script is kept flexible so that you can easily substitute
+# the character of interest.
 #
-# authors:  Sebastian Höhna, Will Freyman, April M. Wright, Michael J. Landis
+# authors:  Sebastian Höhna
 #
 ################################################################################
 
@@ -12,11 +13,8 @@
 # Reading in the Data #
 #######################
 
-#CHARACTER = "mating_system"
-#NUM_STATES = 4
-
-CHARACTER = args[1]
-NUM_STATES = args[2]
+CHARACTER = "solitariness"
+NUM_STATES = 2
 
 # Import the morphological character matrix #
 morpho <- readDiscreteCharacterData("data/primates_"+CHARACTER+".nex")
@@ -102,7 +100,7 @@ monitors.append( mnJointConditionalAncestralState(tree=phylogeny,
 mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
 
 # Run the MCMC #
-mymcmc.run(generations=5000, tuningInterval=200)
+mymcmc.run(generations=25000, tuningInterval=200)
 
 # check the performance of the MCMC/moves
 mymcmc.operatorSummary()

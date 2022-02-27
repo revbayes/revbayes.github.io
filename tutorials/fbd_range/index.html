@@ -56,7 +56,7 @@
 	<h1 class="maintitle">Macroevolutionary Analysis of Stratigraphic Range Data</h1>
 	<h3 class="subtitle">Inference of diversification rates using the fossilized birth-death range process</h3>
 	<h4 class="authors">Rachel Warnock and Walker Pett</h4>
-  <h5>Last modified on July  8, 2020</h5>
+  <h5>Last modified on February 28, 2022</h5>
 </div>
 
 
@@ -130,17 +130,17 @@ We begin with a brief description of three available models, which take differen
 <h2 class="section" id="introduction">Introduction</h2>
 <hr class="section" />
 
-<p>Speciation (or origination) and extinction rates are key parameters in macroevolution, and are useful for addressing a wide range of questions in evolutionary biology and paleontology. 
+<p>Speciation (or origination) and extinction rates are key parameters in macroevolution, and are useful for addressing a wide range of questions in evolutionary biology and paleontology.
 Knowledge of speciation and extinction rates can help tell us whether a clade was expanding or declining during different geological intervals and provide a starting point for linking diversification parameters to other environmental variables.</p>
 
 <p>Paleontological estimates of speciation and extinction rates are typically obtained from information about fossil sampling times, using a wide range of different methods.
-A given taxon may be represented by one or more fossil occurrences sampled from discrete geological intervals, and the duration between the first and last appearance is known as the <em>stratigraphic range</em> of the taxon. 
+A given taxon may be represented by one or more fossil occurrences sampled from discrete geological intervals, and the duration between the first and last appearance is known as the <em>stratigraphic range</em> of the taxon.
 Of course, the true duration that a taxon existed for over geological time extends beyond the observed stratigraphic range, beginning and ending with the speciation and extinction times of the taxon.</p>
 
 <p>In many stratigraphic range datasets, the phylogenetic relationships between ranges may be unknown (<em>e.g.,</em> because no morphological character data has been collected), however, it is reasonable to assume that an underlying phylogenetic brith-death process gave rise to the observed ranges.
 Furthermore, the distribution of stratigraphic range ages is informative about the underlying phylogenetic parameters, including the rates of speciation, extinction and fossil recovery.
 In this tutorial we will apply a fossilized birth-death range skyline model to infer these parameters during different geological intervals using stratigraphic ranges as input.
-The model is closely related to the fossilized birth-death (FBD) model <a class="citation" href="#Stadler2010">(Stadler 2010)</a> and the fossilized birth-death range (FBDR) model <a class="citation" href="#Stadler2018">(Stadler et al. 2018)</a> that can be used as a <em>tree prior</em> in a phylogenetic analysis incorporating character data, where the goal is to infer the topology and divergence times, along with the diversification and fossil recovery parameters (<em>e.g.,</em> <a class="citation" href="#Heath2014">(Heath et al. 2014; Gavryushkina et al. 2017; Zhang et al. 2016)</a>). For more information about these models see the tutorial <a href="https://revbayes.github.io/revbayes-site/tutorials/tefbd/">Total-Evidence Analysis and the Fossilized Birth-Death Process</a>. 
+The model is closely related to the fossilized birth-death (FBD) model <a class="citation" href="#Stadler2010">(Stadler 2010)</a> and the fossilized birth-death range (FBDR) model <a class="citation" href="#Stadler2018">(Stadler et al. 2018)</a> that can be used as a <em>tree prior</em> in a phylogenetic analysis incorporating character data, where the goal is to infer the topology and divergence times, along with the diversification and fossil recovery parameters (<em>e.g.,</em> <a class="citation" href="#Heath2014">(Heath et al. 2014; Gavryushkina et al. 2017; Zhang et al. 2016)</a>). For more information about these models see the tutorial <a href="https://revbayes.github.io/revbayes-site/tutorials/tefbd/">Total-Evidence Analysis and the Fossilized Birth-Death Process</a>.
 The model described in this tutorial is referred to as the <em>FBDR Matrix model</em>, since this model takes as input a matrix of stratigraphic range ages and no information about the underlying phylogenetic relationships (<em>e.g.,</em> a character alignment or topological constraints).</p>
 
 <p>An important feature of any paleontological database is that we are typically missing an enormous amount of information, since sampling of the geological record is incomplete, highly non-uniform over time and space, and many extinct organisms are never preserved or sampled.
@@ -164,9 +164,9 @@ Unsampled lineages are represented by dashed lines.</figcaption>
 
 <p>We can use this model (<a href="#fig_fbdr_gm"></a>) to describe the probability of a set of ranges conditional on the birth-death parameters:
 $f[\mathcal{D} \mid \bar\lambda, \bar\mu, \bar\psi, \rho]$, where
-$\mathcal{D}$ denotes a summary of the fossil occurrence data and is described in more detail below. 
+$\mathcal{D}$ denotes a summary of the fossil occurrence data and is described in more detail below.
 The birth-death parameters $\lambda$ and $\mu$ denote the speciation and extinction rates, respectively.
-The “fossilization rate” or “fossil recovery rate” is denoted $\psi$ and is the rate at which fossils are sampled along lineages. 
+The “fossilization rate” or “fossil recovery rate” is denoted $\psi$ and is the rate at which fossils are sampled along lineages.
 The sampling probability parameter $\rho$ represents the <em>probability</em> that an extant species is sampled.
 The FBDR skyline model allows rates to vary in a piece-wise manner across different geological intervals and we use $\bar\lambda$, $\bar\mu$ and $\bar\psi$ to denote the vector for each set of rates.
 The total number of intervals, $l$, and the length of each interval will vary depending on the available stratigraphic data (<em>e.g.,</em> total number of fossils and/or ranges) and the biological questions of interest.</p>
@@ -177,7 +177,7 @@ extinction and fossilization rates are stochastic nodes (circles) drawn from exp
 equal to one. For more information on probabilistic graphical models and their notation, please see <a class="citation" href="#Hoehna2014b">(Höhna et al. 2014)</a>.</figcaption>
 </figure>
 
-<p>The data we observe are fossil occurrences and we use $n$ to denote the total number of sampled ranges. 
+<p>The data we observe are fossil occurrences and we use $n$ to denote the total number of sampled ranges.
 For a given stratigraphic range $i$, the first and last appearance are denoted $o_i$ and $y_i$, respectively.
 If the first and last appearance are the same (<em>i.e.,</em> the species is a singleton), $o_i = y_i$.
 In addition, each lineage begins and ends at time $b_i$ and $d_i$, respectively.
@@ -187,7 +187,7 @@ In constrast, lineage duration ends at the extinction time of the speices.</p>
 
 <p>To account for uncertainty in the relationships among sampled ranges we <a href="https://en.wikipedia.org/wiki/Marginal_distribution"><em>marginalize</em></a>
 over all possible attachment points for each range <a class="citation" href="#Heath2014">(Heath et al. 2014)</a>.
-For range $i$, we define $\gamma_i$, which is the number of co-existing lineages at time $b_i$. 
+For range $i$, we define $\gamma_i$, which is the number of co-existing lineages at time $b_i$.
 This allows us to account for topological uncertainty without explicitly sampling the underlying topology.</p>
 
 <p>The data summary for this first model, $\mathcal{D} = ( \{ k_{i,j}, b_i, d_i, o_i \}_{i \in 1…n, j \in 1…l})$, includes per interval fossil counts \(k_{i,j}\), lineage duration times, $b_i$ and $d_i$, and first appearance time $o_i$ for each range.
@@ -197,24 +197,24 @@ Although the age of the last appearance is not included in our data summary and 
 <blockquote class="aside"><h2>Stratigraphic age uncertainty</h2><p>In most cases the age of a given occurrence will not be known precisely and instead will be known to within some stratigraphic interval.
 The length of this interval is highly variable but it is an important source of uncertainty in any phylogenetic analysis incorporating fossil data.</p>
 
-<p>In the model described above, only the age of the first appearance, $o_i$, is used in the posterior probability. 
+<p>In the model described above, only the age of the first appearance, $o_i$, is used in the posterior probability.
 We can potentially account for specimen age uncertainty in RevBayes by placing a hyperprior on the age of the first appearance, and sample the age of $o_i$ during MCMC (although this is not yet possible using this model).
-As noted above, the last appearance time, $y_i$, is only used to provide an upper (maximum) bound on the extinction time, $d_i$. 
+As noted above, the last appearance time, $y_i$, is only used to provide an upper (maximum) bound on the extinction time, $d_i$.
 Thus, the <em>oldest possible</em> age of the last appearance (<em>i.e.,</em> the maximum stratigraphic age associated with the fossil) may be used to specify $y_i$. All other occurrences only contribute to the per-interal fossil count, $k_i$, and so need to be dated at this level of precision.</p>
 </blockquote>
 
 <h4 class="subsubsection" id="fbdr-model2">Marginalising over the number of fossils within a stratigraphic range</h4>
 <hr class="subsubsection" />
 
-<p>In the above model, some knowledge about the total number of samples collected during each interval, $k_i$, is required. However, in some cases we may only know the age of the first and last appearance times ($o_i, y_i$), but not the number of occurrences sampled inbetween. In other cases, the number that $k_i$ represents may not be obvious. We can take care of this uncertainty by marginalizing over the total number of fossils between the first and last appearance times for each range. In this version of the model, per-interval fossil counts, $k_i$, are not required. 
+<p>In the above model, some knowledge about the total number of samples collected during each interval, $k_i$, is required. However, in some cases we may only know the age of the first and last appearance times ($o_i, y_i$), but not the number of occurrences sampled inbetween. In other cases, the number that $k_i$ represents may not be obvious. We can take care of this uncertainty by marginalizing over the total number of fossils between the first and last appearance times for each range. In this version of the model, per-interval fossil counts, $k_i$, are not required.
 Instead, we define ${\kappa_i^\prime}$, which denotes the total number of occurrences representing first and last appearances within each interval, and the data summary, $\mathcal{D_r} = ( \{ \kappa_{i,j}^\prime, b_i, d_i, o_i \}_{i \in 1…n, j \in 1…l})$.</p>
 
 <h4 class="subsubsection" id="fbdr-model3">Marginalising over the number of fossils within a stratigraphic interval</h4>
 <hr class="subsubsection" />
 
-<p>For some datasets, the age and/or the number of fossil occurrences sampled during each interval may not be known very precisely. 
+<p>For some datasets, the age and/or the number of fossil occurrences sampled during each interval may not be known very precisely.
 Instead we may only know whether a given range was sampled or not within a given interval, but not how many times it was sampled.
-We refer to this as presence-absence (1/0) sampling. 
+We refer to this as presence-absence (1/0) sampling.
 To account for this type of data, we can marginalize over the total number of fossils within each interval, along with the age of first appearance, $o_i$.</p>
 
 <p>We use $\kappa_{S_{i,j}}$ to indicate whether species $i$ was sampled during interval $j$ or not, such that $\kappa_{S_{i,j}} = 1$ if $k_{i,j}&gt;0$ and $\kappa_{S_{i,j}} = 0$ otherwise. Within each interval for which we record a species as having been sampled (<em>i.e.,</em> $\kappa_{S_{i,j}} = 1$) we also define $L_{S_{i,j}}$, which is the duration that the species exists within that interval. We denote the data summary, $\mathcal{D_l} = (\{ \kappa_{S_{i,j}}, L_{S_i,j}, b_i, d_i \}_{i \in 1…n, j \in 1…l})$.</p>
@@ -231,7 +231,7 @@ To account for this type of data, we can marginalize over the total number of fo
 
 <p>Dinosaur occurrences were downloaded from the <a href="https://paleobiodb.org/">Paleobiology Database</a>.
 The models described in this tutorial can be computationally expensive, especially given a large number of intervals and ranges, so to ensure the analysis runs within a reasonable timeframe, available occurrence data has been subsampled.
-Specially, we took a random subsample of 116 species that were &gt;66 Ma, associated with &lt;5 Myr stratigraphic age uncertainty and identified at the species level. 
+Specially, we took a random subsample of 116 species that were &gt;66 Ma, associated with &lt;5 Myr stratigraphic age uncertainty and identified at the species level.
 Fossil ages were also treated as known, taking the mid point between the minimum and maximum age associated with each specimen.
 Specimens were binned into four intervals of interest: the Early and Late Cretaceous, the Jurassic and the Triassic.
 Finally, we rescaled the timeline, such that the Cretaceous-Paleogene boundary = the present (<em>i.e.,</em> 66 Ma = 0 Ma).
@@ -241,7 +241,7 @@ The script used to generate this dataset is at the top of this page.</p>
 <h3 class="subsection" id="input-files">Input files</h3>
 <hr class="subsection" />
 
-<p>On your own computer, create a directory called <em>RB_FBDRMatrix_Tutorial</em> (or any name you like). When you execute RevBayes in this exercise, you will do so within this directory. 
+<p>On your own computer, create a directory called <em>RB_FBDRMatrix_Tutorial</em> (or any name you like). When you execute RevBayes in this exercise, you will do so within this directory.
 If you are using a Unix-based operating system, we recommend that you add the RevBayes binary to your path.</p>
 
 <p>Download the data files <code class="language-plaintext highlighter-rouge">dinosaur_ranges.tsv</code> and <code class="language-plaintext highlighter-rouge">dinosaur_fossil_counts.tsv</code>, which you can find at the top of this page, and place them in this directory.</p>
@@ -280,7 +280,7 @@ For the purposes of the tutorial, these times will be treated as known.</p>
 
 <p>In this analysis, our period of interest ends at 66 Ma, which we will rescale to the present day (<em>i.e.,</em> 66 Ma = 0 Ma).</p>
 
-<p>Create a vector called <code class="language-plaintext highlighter-rouge">timeline</code> for the maximum age of each interval, from youngest to oldest. 
+<p>Create a vector called <code class="language-plaintext highlighter-rouge">timeline</code> for the maximum age of each interval, from youngest to oldest.
 RevBayes will assume that the age of the youngest interval = 0.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timeline &lt;- v(100, 145, 201) - 66
 </code></pre></div></div>
@@ -299,11 +299,11 @@ For each rate parameter, we will create an exponentially distributed stochastic 
 <p>To sample the parameters during MCMC you will assign three scaling moves (<code class="language-plaintext highlighter-rouge">mvScale</code>) to each stochastic node, each with a different tuning value (called <code class="language-plaintext highlighter-rouge">lambda</code> for <code class="language-plaintext highlighter-rouge">mvScale</code>).
 The tuning value determines the size of the proposed change and using multiple moves for a single parameter will improve the mixing of the MCMC.</p>
 
-<p>It may also be useful to keep track of the diversification ($\lambda - \mu$) and turnover ($\mu/\lambda$) parameters. 
+<p>It may also be useful to keep track of the diversification ($\lambda - \mu$) and turnover ($\mu/\lambda$) parameters.
 Since these parameters can be expressed as a deterministic transformation of the speciation and extinction rates, we can also monitor these values (that is, keep track of them during MCMC, and print them to a file) by creating deterministic nodes for these parameters for each interval using the <code class="language-plaintext highlighter-rouge">:=</code> operator.</p>
 
-<p>Before specifying the moves and priors on the model parameters, create a workspace variable called <code class="language-plaintext highlighter-rouge">moves</code>. 
-This variable is a vector containing all of the MCMC moves used to propose new states for every stochastic node in the model graph. 
+<p>Before specifying the moves and priors on the model parameters, create a workspace variable called <code class="language-plaintext highlighter-rouge">moves</code>.
+This variable is a vector containing all of the MCMC moves used to propose new states for every stochastic node in the model graph.
 Similarly, we need to create a variable to hold all of our monitors</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
 monitors = VectorMonitors()
@@ -317,7 +317,7 @@ monitors = VectorMonitors()
     mu[i] ~ dnExp(alpha)
     lambda[i] ~ dnExp(alpha)
     psi[i] ~ dnExp(alpha)
-    
+
     div[i] := lambda[i] - mu[i]
     turnover[i] := mu[i]/lambda[i]
 
@@ -348,7 +348,7 @@ This is for the interval prior to the Jurassic.</p>
 <p>All three models described in the <a href="#introduction"></a> can be specified using the same distribution function <code class="language-plaintext highlighter-rouge">dnFBDRMatrix</code> in RevBayes.
 The model used to calculate the likelihood will depend on the data and commands passed to this function.</p>
 
-<p>The <code class="language-plaintext highlighter-rouge">dnFBDRMatrix</code> function always takes as input the stratigraphic ranges (<code class="language-plaintext highlighter-rouge">taxa</code>), the FBDR model parameters (<code class="language-plaintext highlighter-rouge">lambda, mu, psi, rho</code>), and the vector of interval ages (<code class="language-plaintext highlighter-rouge">timeline</code>). 
+<p>The <code class="language-plaintext highlighter-rouge">dnFBDRMatrix</code> function always takes as input the stratigraphic ranges (<code class="language-plaintext highlighter-rouge">taxa</code>), the FBDR model parameters (<code class="language-plaintext highlighter-rouge">lambda, mu, psi, rho</code>), and the vector of interval ages (<code class="language-plaintext highlighter-rouge">timeline</code>).
 The function can optionally take as input the matrix of per-interval fossil counts (<code class="language-plaintext highlighter-rouge">k</code>), used by model 1 and 3 only.
 The option <code class="language-plaintext highlighter-rouge">binary</code> is used to indicate whether the data in matrix <code class="language-plaintext highlighter-rouge">k</code> should be interpreted as absolute fossil counts (as in model 1) or presence/absence (1/0) data (as in model 3).
 If <code class="language-plaintext highlighter-rouge">binary = FALSE</code> the function will implement model 1 and interpret the data in <code class="language-plaintext highlighter-rouge">k</code> as absolute fossil counts, which is the default.
@@ -504,12 +504,12 @@ The youngest interval appears on the lefthand side.</figcaption>
 <h4 class="subsubsection" id="skyline-plots-using-r">Skyline plots using R</h4>
 <hr class="subsubsection" />
 
-<p>We can also examine and manipulate the log files using other software, such as R. 
-At the top of the page you will find an R script <code class="language-plaintext highlighter-rouge">skyline_plots_FBDRMatrix.R</code>. 
-This script contains commands that can be used to generate so-called skyline plots. 
+<p>We can also examine and manipulate the log files using other software, such as R.
+At the top of the page you will find an R script <code class="language-plaintext highlighter-rouge">skyline_plots_FBDRMatrix.R</code>.
+This script contains commands that can be used to generate so-called skyline plots.
 These plots show the posterior rates estimated during each interval.</p>
 
-<p>Open R and set the working directory to the directory in which you performed the analyis, <em>RB_FBDRMatrix_Tutorial</em>. 
+<p>Open R and set the working directory to the directory in which you performed the analyis, <em>RB_FBDRMatrix_Tutorial</em>.
 Run the commands in this script to produce a set plots for each model that you ran.</p>
 
 <figure id="fig_skyline"><p><img src="figures/model1.png" width="700pt" /></p>
@@ -528,7 +528,6 @@ Run the commands in this script to produce a set plots for each model that you r
     </li>
   </ul>
 </blockquote>
-
 
 <ol class="bibliography"><li><span id="Gavryushkina2016">Gavryushkina A., Heath T.A., Ksepka D.T., Stadler T., Welch D., Drummond A.J. 2017. Bayesian Total-Evidence Dating Reveals the Recent Crown Radiation of Penguins. Systematic Biology. 66:57–73.</span>
 

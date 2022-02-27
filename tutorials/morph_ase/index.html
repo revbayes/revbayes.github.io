@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
-    <title>RevBayes: Discrete Morphology Evolution</title>
+    <title>RevBayes: Introduction to Discrete Morphology Evolution</title>
   </head>
   <body>
     <div class="container">
@@ -53,10 +53,10 @@
 </nav>
 
       <div class="titlebar">
-	<h1 class="maintitle">Discrete Morphology Evolution</h1>
-	<h3 class="subtitle">Ancestral State Estimation, Testing for Irreversibility and Correlation between Characters</h3>
+	<h1 class="maintitle">Introduction to Discrete Morphology Evolution</h1>
+	<h3 class="subtitle">Overview of types of Analyses</h3>
 	<h4 class="authors">Sebastian Höhna</h4>
-  <h5>Last modified on February 21, 2022</h5>
+  <h5>Last modified on February 28, 2022</h5>
 </div>
 
 
@@ -120,32 +120,6 @@
         
         </ul>
     
-        
-        <strong>Scripts</strong>
-        <ul id="scripts">
-        
-        
-        
-          <li><a href="/tutorials/morph_ase/scripts/mcmc_ase_corr.Rev">mcmc_ase_corr.Rev</a></li>
-        
-          <li><a href="/tutorials/morph_ase/scripts/mcmc_ase_corr_RJ.Rev">mcmc_ase_corr_RJ.Rev</a></li>
-        
-          <li><a href="/tutorials/morph_ase/scripts/mcmc_ase_corr_iid.Rev">mcmc_ase_corr_iid.Rev</a></li>
-        
-          <li><a href="/tutorials/morph_ase/scripts/mcmc_ase_freeK.Rev">mcmc_ase_freeK.Rev</a></li>
-        
-          <li><a href="/tutorials/morph_ase/scripts/mcmc_ase_freeK_RJ.Rev">mcmc_ase_freeK_RJ.Rev</a></li>
-        
-          <li><a href="/tutorials/morph_ase/scripts/mcmc_ase_hrm.Rev">mcmc_ase_hrm.Rev</a></li>
-        
-          <li><a href="/tutorials/morph_ase/scripts/mcmc_ase_mk.Rev">mcmc_ase_mk.Rev</a></li>
-        
-          <li><a href="/tutorials/morph_ase/scripts/plot_anc_states.R">plot_anc_states.R</a></li>
-        
-          <li><a href="/tutorials/morph_ase/scripts/plot_anc_states_hrm.R">plot_anc_states_hrm.R</a></li>
-        
-        </ul>
-    
 </blockquote>
 
 
@@ -158,7 +132,7 @@ as was done in Tutorial <a href="/tutorials/morph_tree/">Discrete morphology - T
 Specifically, there are a few types of analyses that we might be interest in.
 First, we can test different models of morphological evolution,
 such as reversible and irreversible models, and estimate rates under these models.
-Using an irreversible model of evolution, we can test, for example,
+For example, using an irreversible model of evolution, we can test, for example,
 for Dollo’s law of a complex character that can be lost but not gained again <a class="citation" href="#Goldberg2008">(Goldberg and Igić 2008)</a>.</p>
 
 <p>Additionally, we might be interest in ancestral state estimation,
@@ -180,376 +154,63 @@ For example,</p>
 and ancestral state estimation, and will demonstrate how to perform such
 Bayesian phylogenetic analysis using RevBayes <a class="citation" href="#Hoehna2016b">(Höhna et al. 2016)</a>.</p>
 
-<h2 class="section" id="sec_irreversible_matrix">Overview of Discrete Morphology Models: Unequal rate models and irreversible models</h2>
-<hr class="section" />
-
-<p>The instantaneous rate matrix encodes the transition rates between all pairs of evolutionary states.
-It is important to emphasize that all rate matrices are assertions about how morphological evolution operates.
-Depending on how one populates the rate matrix elements, different evolutionary hypotheses may be expressed.</p>
-
-<p>When we model the evolution of morphological data, unlike nucleotide data, each change may require a sequence of intermediate changes.
-Getting to one state may require going through another.
-In short, it is probably not likely that one single model describes all characters well.</p>
-
-<h3 class="subsection" id="symmetric-unordered">Symmetric unordered</h3>
-<hr class="subsection" />
-
-<p>The standard Mk model of character evolution, where M denotes it is a Markov model and $K$ denotes the number of states for the character.
-The lineage may transition directly from state 1 to state 4 without going through states 2 and 3, which is representative of a character with
-<em>unordered</em> states.
-In addition, all transition rates are equal as they are in the Jukes-Cantor rate matrix <a class="citation" href="#Jukes1969">(Jukes and Cantor 1969)</a>.
-Here is an example of a symmetric unordered Mk model for $k=3$.</p>
-
-\[Q = \begin{pmatrix}
-- &amp; r &amp; r \\
-r &amp; - &amp; r \\
-r &amp; r &amp; -
-\end{pmatrix}\]
-
-<p>Define the single shared rate parameter</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mu &lt;- 1.0
-</code></pre></div></div>
-
-<p>Define the rates</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rates := [ [0.0,  mu,  mu],
-           [ mu, 0.0,  mu],
-           [ mu,  mu, 0.0] ]
-</code></pre></div></div>
-
-<p>Create the rate matrix</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q := fnFreeK(rates)
-Q
-</code></pre></div></div>
-<div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   [ [ -1.0000, 0.5000, 0.5000 ] ,
-     0.5000, -1.0000, 0.5000 ] ,
-     0.5000, 0.5000, -1.0000 ] ]
-</code></pre></div></div>
-
-<p>Now, let’s compute the transition probability matrix for a branch length of 0.1.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>P &lt;- Q.getTransitionProbabilities(0.1)
-P
-</code></pre></div></div>
-<div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[ [ 0.907, 0.046, 0.046 ],
-  [ 0.046, 0.907, 0.046 ],
-  [ 0.046, 0.046, 0.907 ] ]
-</code></pre></div></div>
-
-<p>If we believed that, for example, for a couple of states, some transitions are strongly
-more likely, we could add a multiplier between those two states:</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rates := [ [  0.0,  mu,   mu],
-           [ 2*mu, 0.0, 2*mu],
-           [   mu,  mu,   mu] ]
-Q := fnFreeK(rates)
-Q
-</code></pre></div></div>
-<div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   [ [ -0.8333, 0.4167, 0.4167 ] ,
-     0.8333, -1.6667, 0.8333 ] ,
-     0.4167, 0.4167, -0.8333 ] ]
-</code></pre></div></div>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> P &lt;- Q.getTransitionProbabilities(0.1)
- P
-</code></pre></div></div>
-<div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   [ [ 0.922, 0.038, 0.040 ],
-     [ 0.075, 0.850, 0.075 ],
-     [ 0.040, 0.038, 0.922 ] ]
-</code></pre></div></div>
-
-<p>If we then get our transition probabilities, we see that this changes our probability of observing the not simply our two state transitions that we changed the rate for, but others as well.</p>
-
-<p>This type of approach is common in parsimony, where it is one of several things referred to as weighted parsimony.
-This approach to using different matrices requires you to, <em>a priori</em> specify your matrix.
-But in reality, there is often fairly little guidance or information by which we decide if a weight applied to a transition is appropriate.
-Biologists still use models of this type - the Dollo model, in which a character is assumed not to be able to re-evolve once lost, is an extreme version of penalizing one change.</p>
-
-<p>Because the transition rates between all differing pairs of states are the same, so are the transition probabilities.
-Similarly, the probability of remaining in any given state is also equal across states.</p>
-
-<h3 class="subsection" id="asymmetric-ordered">Asymmetric ordered</h3>
-<hr class="subsection" />
-
-<p>Character states that are ordered imply that evolutionary transitions occur in particular sequences.
-For example, the number of digits on a foot might vary by gaining and losing single digits, meaning the transition from three to five digits cannot occur without going through the evolutionary state of possessing four digits.
-Below, we assume that gain events ( $n \rightarrow n+1$ ) occur at rate $\lambda$ and loss events ($n \rightarrow n-1$) occur at rate $\mu$.
-The zeroes indicate that there is no immediate evolutionary path between states $1$ and $4$: states $2$ and $3$ must be used to reach $4$ from $1$.</p>
-
-\[Q = \begin{pmatrix}
-- &amp; \lambda &amp; 0 &amp; 0 \\
-\mu &amp; -   &amp; \lambda &amp; 0 \\
-0 &amp; \mu &amp; -   &amp; \lambda \\
-0 &amp; 0 &amp; \mu &amp; -
-\end{pmatrix}\]
-
-<p>Create two rate parameters, $\lambda$ for gain and $\mu$ loss events.</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>lambda ~ dnExponential( 1 )
-mu ~ dnExponential( 1 )
-lambda.setValue( 3 )
-mu.setValue( 1 )
-</code></pre></div></div>
-
-<p>Create a tridiagonal matrix of transition rates, meaning state $i$ may only transition to states $i-1$ and $i+1$</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>diag_rates := [ [  0.0, lambda,    0.0,    0.0],
-                [   mu,    0.0, lambda,    0.0],
-                [  0.0,     mu,    0.0, lambda],
-                [  0.0,    0.0,     mu,    0.0] ]
-</code></pre></div></div>
-
-<p>Create the rate matrix</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q := fnFreeK(diag_rates)
-Q
-</code></pre></div></div>
-<div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[ [ -1.5385, 1.5385, 0.0000, 0.0000 ] ,
-     0.5128, -2.0513, 1.5385, 0.0000 ] ,
-     0.0000, 0.5128, -2.0513, 1.5385 ] ,
-     0.0000, 0.0000, 0.5128, -0.5128 ] ]
-</code></pre></div></div>
-
-<p>Compute the transition probability matrix for a branch length of 0.1.</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>P &lt;- Q.getTransitionProbabilities(rate=0.1)
-P
-</code></pre></div></div>
-<div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[ [ 0.861, 0.129, 0.010, 0.001],
-  [ 0.043, 0.821, 0.126, 0.010],
-  [ 0.001, 0.042, 0.821, 0.136],
-  [ 0.000, 0.001, 0.045, 0.954]]
-</code></pre></div></div>
-
-<p>Note that $P[1][2] &gt; P[1][3] &gt; P[1][4]$, primarily because those transitions require a minimum of one, two, and three events, respectively.
-In addition, note that assigning asymmetric transition rates causes $P[1][2] &gt; P[2][1]$ because $rates[1][2] &gt; rates[2][1]$.</p>
+<h3 id="the-data">The data</h3>
 
 <blockquote class="instruction">
-  <p>In RevBayes we have also the specific rate matrix for this model: <code class="language-plaintext highlighter-rouge">fnOrderedRateMatrix(maxState, lambda, mu)</code>.</p>
+  <p>Create a directory on your computer for this tutorial.
+In this directory, create a subdirectory called <strong>data</strong>, and download the data files that you can find on the left of this page.</p>
 </blockquote>
 
-<h3 class="subsection" id="correlated-binary-characters">Correlated binary characters</h3>
-<hr class="subsection" />
+<p>We have taken the phylogeny from <a class="citation" href="#MagnusonFord2012">Magnuson-Ford and Otto (2012)</a>, who took it from <a class="citation" href="#Vos2006">Vos and Mooers (2006)</a> and then randomly resolved the polytomies using the method of <a class="citation" href="#Kuhn2011">Kuhn et al. (2011)</a> and the trait data from <a class="citation" href="#Redding2010">Redding et al. (2010)</a>. In the <strong>data</strong> folder, you should now have the following files:</p>
 
-<p>Two characters do not necessarily evolve independently of one another.
-Take two characters in plants: the presence or absence of toothed leaf margins (character X) is thought to be ecologically correlated with the presence of absence of leaf lobing (character Y).
-For a single binary character, there are two states (0 and 1), but there are four states for a pair of non-independent binary characters (00, 10, 01, and 11).
-(missing reference) introduced a general framework for modeling the evolution of joint sets of characters.
-These models require that only one evolutionary event can occur in a moment of time, which is enforced with the 0 terms.
-In addition, the transition rate that, say, character X goes from 0 to 1 depends on the current value of character Y.</p>
+<ul>
+  <li><a href="data/primates_tree.nex">primates_tree.nex</a>:
+Dated primate phylogeny including 233 out of 367 species.</li>
+  <li><a href="data/primates_activity_period.nex">primates_activity_period.nex</a>:
+A file with the coded character states for primate species activity time. This character has just two states: <code class="language-plaintext highlighter-rouge">0</code> = diurnal and <code class="language-plaintext highlighter-rouge">1</code> = nocturnal.</li>
+  <li><a href="data/primates_habitat.nex">primates_habitat.nex</a>:
+A file with the coded character states for primate species habitay. This character has just two states: <code class="language-plaintext highlighter-rouge">0</code> = forest and <code class="language-plaintext highlighter-rouge">1</code> = savanna.</li>
+  <li><a href="data/primates_solitariness.nex">primates_solitariness.nex</a>:
+A file with the coded character states for primate species social system type. This character has just two states: <code class="language-plaintext highlighter-rouge">0</code> = group living and <code class="language-plaintext highlighter-rouge">1</code> = solitary.</li>
+  <li><a href="data/primates_terrestrially.nex">primates_terrestrially.nex</a>:
+A file with the coded character states for primate species terrestrially. This character has just two states: <code class="language-plaintext highlighter-rouge">0</code> = arboreal and <code class="language-plaintext highlighter-rouge">1</code> = terrestrial.</li>
+  <li><a href="data/primates_males.nex">primates_males.nex</a>:
+A file with the coded character states for the number of males within a group per primate species. This character has four states: <code class="language-plaintext highlighter-rouge">0</code> = single male, <code class="language-plaintext highlighter-rouge">1</code> = single and multi male, and <code class="language-plaintext highlighter-rouge">2</code> = multi male.</li>
+  <li><a href="data/primates_mating_system.nex">primates_mating_system.nex</a>:
+A file with the coded character states for primate species mating-system type. This character has four states: <code class="language-plaintext highlighter-rouge">0</code> = monogamy, <code class="language-plaintext highlighter-rouge">1</code> = polygyny, <code class="language-plaintext highlighter-rouge">2</code> = polygynandry, and <code class="language-plaintext highlighter-rouge">3</code> = polyandry.</li>
+  <li><a href="data/primates_diet.nex">primates_diet.nex</a>:
+A file with the coded character states for primate species diet. This character has six states: <code class="language-plaintext highlighter-rouge">0</code> = frugivore, <code class="language-plaintext highlighter-rouge">1</code> = insectivore, <code class="language-plaintext highlighter-rouge">2</code> = folivore, <code class="language-plaintext highlighter-rouge">3</code> = gummnivore, <code class="language-plaintext highlighter-rouge">4</code> = omnivore, and <code class="language-plaintext highlighter-rouge">5</code> = gramnivore.</li>
+</ul>
 
-<h4 class="subsubsection" id="seven-free-parameters">Seven free parameters</h4>
-<hr class="subsubsection" />
+<figure id="fig_fbdr_gm"><p><img src="figures/Primates_traits.png" width="500pt" /></p>
+<figcaption>Primate phylogeny with traits displayed at the tips from <a class="citation" href="#MagnusonFord2012">Magnuson-Ford and Otto (2012)</a>.</figcaption>
+</figure>
 
-<p>In the first case, all possible transitions might be assigned their own parameter.
-Here, we’ll assign a simplex over all rates, leaving seven free parameters (plus an eighth parameter that scales the rate matrix).</p>
+<h3 id="scripts">Scripts</h3>
 
-\[Q = \begin{pmatrix}
-                      - &amp; \mu_{00 \rightarrow 10} &amp; \mu_{00 \rightarrow 01} &amp;                       0 \\
-\mu_{10 \rightarrow 00} &amp;                       - &amp;                       0 &amp; \mu_{10 \rightarrow 11} \\
-\mu_{01 \rightarrow 00} &amp;                       0 &amp;                       - &amp; \mu_{01 \rightarrow 11} \\
-                      0 &amp; \mu_{11 \rightarrow 10} &amp; \mu_{11 \rightarrow 01} &amp;                       - \\
-\end{pmatrix}\]
+<p>For more complex models and analyses, it’s useful to create separate Rev scripts that contain all the model parameters, moves, and functions for different model components (e.g. the substitution model and the clock model).</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>r ~ dnDirichlet( [1,1,1,1,1,1,1,1] )
-r.setValue( simplex(1,1,3,3,3,3,1,1) )
-</code></pre></div></div>
+<blockquote class="instruction">
+  <p>Create another subdirectory called <strong>scripts</strong>.</p>
+</blockquote>
 
-<p>Create an array of zeroes for the four states (00, 10, 01, 11)</p>
+<p>In this tutorial, you will work primarily in your text editor and create a set of modular files that can be easily managed and interchanged. Examples of all the commands used to perform each analysis are also provided at the top of this page under <strong>Scripts</strong> but try to write the complete scripts yourself from the beginning to ensure you understand all the steps involved and the differences between setting up each analysis.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:4) {
-    for (j in 1:4) {
-        rates[i][j] &lt;- 0.0
-    }
-}
-</code></pre></div></div>
+<h3 id="exercises">Exercises</h3>
 
-<p>Populate the elements of <code class="language-plaintext highlighter-rouge">rates</code></p>
+<blockquote class="instruction">
+  <p>Click on the first exercise to begin!</p>
+</blockquote>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rates[1][2] := r[1] # 00-&gt;10
-rates[1][3] := r[2] # 00-&gt;01
-rates[2][1] := r[3] # 10-&gt;00
-rates[2][4] := r[4] # 10-&gt;11
-rates[3][1] := r[5] # 01-&gt;00
-rates[3][4] := r[6] # 01-&gt;11
-rates[4][2] := r[7] # 11-&gt;10
-rates[4][3] := r[8] # 11-&gt;01
-</code></pre></div></div>
+<ol>
+  <li><a href="/tutorials/morph_ase/ase">Ancestral state estimation</a></li>
+  <li><a href="/tutorials/morph_ase/ase_free">Testing for independent rates</a></li>
+  <li><a href="/tutorials/morph_ase/ase_irreversible">Testing for irreversibility</a></li>
+  <li><a href="/tutorials/morph_ase/scm_hrm">Stochastic Character Mapping and Testing for Rate Variation</a></li>
+  <li><a href="/tutorials/morph_ase/corr">Testing for Correlation between Characters</a></li>
+</ol>
 
-<p>Create the rate matrix</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q := fnFreeK(rates)
-Q
-</code></pre></div></div>
-<div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[ [ -0.6667, 0.3333, 0.3333, 0.0000 ] ,
-     1.0000, -2.0000, 0.0000, 1.0000 ] ,
-     1.0000, 0.0000, -2.0000, 1.0000 ] ,
-     0.0000, 0.3333, 0.3333, -0.6667 ] ]
-</code></pre></div></div>
-
-<p>Compute the transition probability matrix for a branch length of 0.1.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>P &lt;- Q.getTransitionProbabilities(rate=0.1)
-P
-</code></pre></div></div>
-<div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[ [ 0.938, 0.029, 0.029, 0.003],
-  [ 0.088, 0.822, 0.003, 0.088],
-  [ 0.088, 0.003, 0.822, 0.088],
-  [ 0.003, 0.029, 0.029, 0.938] ]
-</code></pre></div></div>
-<p>Note that the probability of remaining in state 10 or state 01 is less than the probability of remaining in state 00 or state 11.
-In this toy example, these probabilities reflect that states 10 an 01 are less evolutionarily stable than states 00 and 11.</p>
-
-<h4 class="subsubsection" id="four-free-parameters">Four free parameters</h4>
-<hr class="subsubsection" />
-
-<p>Alternatively, characters X and Y might share state frequencies, $\pi_j$, and transition rates $\mu_{ij}^{(k)}$, where $i$ is the starting state for the character undergoing change, $j$ is the ending state, and $k$ is the state of the other character.
-This results in two stationary frequencies (one free parameter), four transition rates for $0 \rightarrow 1$ and $1 \rightarrow 0$ given that the other character is in state 0 or state 1 (three free parameters), plus one free parameter to scale the rate matrix.</p>
-
-\[Q = \begin{pmatrix}
-- &amp; \mu_{01}^{(0)} \pi_1 \pi_0 &amp; \mu_{01}^{(0)} \pi_0 \pi_1 &amp; 0 \\
-\mu_{10}^{(0)} \pi_0 \pi_0 &amp; -   &amp; 0 &amp; \mu_{01}^{(1)} \pi_1 \pi_1 \\
-\mu_{10}^{(0)} \pi_0 \pi_0 &amp; 0   &amp; - &amp; \mu_{01}^{(1)} \pi_1 \pi_1 \\
-0 &amp; \mu_{10}^{(1)} \pi_1 \pi_0 &amp; \mu_{10}^{(1)} \pi_0 \pi_1 &amp; - \\
-\end{pmatrix}\]
-
-<p>Assign the stationary frequencies of being in state 0 or state 1 shared by both characters X and Y.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pi ~ dnDirichlet([1,1])
-pi.setValue( simplex(1,3) )
-</code></pre></div></div>
-<p>Assign the relative transition rates for gain and loss provided that the other character is in state 0 or 1.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>r ~ dnDirichlet( [1,1,1,1] )
-r.setValue( simplex(1,3,3,1) )
-</code></pre></div></div>
-<p>Create an array of zeroes for the four states (00, 10, 01, 11)</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:4) {
-    for (j in 1:4) {
-        rates[i][j] &lt;- 0.0
-    }
-}
-</code></pre></div></div>
-<p>Populate the elements of {\tt rates}</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rates[1][2] := r[1] * pi[2] * pi[1] # 00-&gt;10
-rates[1][3] := r[1] * pi[1] * pi[2] # 00-&gt;01
-rates[2][1] := r[3] * pi[1] * pi[1] # 10-&gt;00
-rates[2][4] := r[2] * pi[2] * pi[2] # 10-&gt;11
-rates[3][1] := r[2] * pi[1] * pi[1] # 01-&gt;00
-rates[3][4] := r[3] * pi[2] * pi[2] # 01-&gt;11
-rates[4][2] := r[4] * pi[2] * pi[1] # 11-&gt;10
-rates[4][3] := r[4] * pi[1] * pi[2] # 11-&gt;01
-</code></pre></div></div>
-<p>Create the rate matrix</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q := fnFreeK(rates)
-Q
-</code></pre></div></div>
-<div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[ [ -0.6333, 0.3167, 0.3167, 0.0000 ] ,
-     0.4750, -2.3750, 0.0000, 1.9000 ] ,
-     0.4750, 0.0000, -2.3750, 1.9000 ] ,
-     0.0000, 0.3167, 0.3167, -0.6333 ] ]
-</code></pre></div></div>
-
-<p>Compute the transition probability matrix for a branch length of 0.1.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>P &lt;- Q.getTransitionProbabilities(0.1)
-P
-</code></pre></div></div>
-<div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[ [ 0.940, 0.027, 0.027, 0.005],
-  [ 0.041, 0.792, 0.003, 0.164],
-  [ 0.041, 0.003, 0.792, 0.164],
-  [ 0.001, 0.027, 0.027, 0.944] ]
-</code></pre></div></div>
-
-<p>Note that this model has a tendency towards state 11.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>P_10 &lt;- Q.getTransitionProbabilities(10.0)
-P_10
-</code></pre></div></div>
-<div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[ [ 0.159, 0.105, 0.105, 0.630],
-  [ 0.158, 0.105, 0.105, 0.632],
-  [ 0.158, 0.105, 0.105, 0.632],
-  [ 0.158, 0.105, 0.105, 0.632] ]
-</code></pre></div></div>
-
-<h3 class="subsection" id="covarion">Covarion</h3>
-<hr class="subsection" />
-
-<p>Covarion models <a class="citation" href="#Tuffley1998">(Tuffley and Steel 1998)</a> capture the possibility that a ``hidden’’ (unobserved or unmeasurable) states cause evolutionary processes to vary in tempo and modes.
-For example, phylogenetically local clusters of plant lineages appear to transition between herbaceous and woody habits at relatively high rates, so one might want to quantify where these bursts occur <a class="citation" href="#Beaulieu2013">(Beaulieu et al. 2013)</a>.
-While similar in structure to the correlated character model of <a class="citation" href="#Pagel1994">(Pagel 1994)</a>, covarion models do not observe the hidden state that induce the mode-shifts.
-Instead, covarion models expand the character’s state space by a factor of $K$, and observe the character once for each of the $K$ categories.
-For example, take a binary character modeled with $K=2$ hidden state classes.
-The model would treat a character that is observed as being in state 0 as possibly being in either of the $K=2$ classes (0,1) and (0,2).
-In practice, this is done by setting the likelihood of observing those $0k$ states to equal 1.</p>
-
-<p>The expanded structure of a simple covarion rate matrix with $K=2$ is</p>
-
-\[Q = \left(
-\begin{array}{cc|cc}
-- &amp; r_1 q_{01}^{(1)} &amp; s_{12} &amp; 0 \\
-r_1 q_{10}^{(1)} &amp; - &amp; 0 &amp; s_{12} \\
-\hline
-s_{21} &amp; 0 &amp; - &amp; r_2 q_{01}^{(2)} \\
-0 &amp; s_{21} &amp; r_2 q_{10}^{(2)} &amp; -  \\
-
-\end{array}
-\right)\]
-
-<p>This form can be reduced to a simpler block-matrix representation
-\(Q = \left(
-\begin{array}{c|c}
-r_1 Q^{(1)} &amp; s_{12} I  \\
-\hline
-s_{21} I &amp; r_2 Q^{(2)} \\
-\end{array}
-\right)\)</p>
-
-<p>where $Q^{(i)}$ is the rate matrix for the $i$th class, $r_i \in r$ is the clock rate for the $i$th class, and $S$ is the rate matrix to switch between classes.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sr ~ dnDirichlet([1,1])
-sr.setValue( simplex(1,2) )
-switch_rates := [ [   0.0, sr[1] ],
-                  [ sr[2],   0.0 ] ]
-Q_switch := fnFreeK(switch_rates)
-</code></pre></div></div>
-
-<p>Create an array of zeroes for the four states (00, 10, 01, 11)</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cr[1] ~ dnExp(1)
-cr[2] ~ dnExp(1)
-cr[1].setValue(3)
-cr[2].setValue(1)
-</code></pre></div></div>
-
-<p>Populate the elements of <code class="language-plaintext highlighter-rouge">rates</code></p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q_class[1] := fnJC(2)
-
-bf ~ dnDirichlet( [1,1] )
-bf.setValue( simplex(1,3) )
-Q_class[2] := fnF81( bf )
-</code></pre></div></div>
-
-<p>Create the rate matrix</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q := fnCovarionRateMatrix(Q=Q_class, switch_rates=Q_switch, clock_rates=cr)
-Q
-</code></pre></div></div>
-<div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[ [ -1.1126, 0.8901, 0.2225, 0.0000 ] ,
-     0.8901, -1.1126, 0.0000, 0.2225 ] ,
-     0.4451, 0.0000, -1.0385, 0.5934 ] ,
-     0.0000, 0.4451, 0.1978, -0.6429 ] ]
-</code></pre></div></div>
-
-<p>Compute the transition probability matrix for a branch length of 0.1.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>P &lt;- Q.getTransitionProbabilities(0.1)
-P &lt;- Q.getTransitionProbabilities(1)
-P
-</code></pre></div></div>
-<div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[ [ 0.899, 0.080, 0.020, 0.002],
-  [ 0.080, 0.899, 0.001, 0.020],
-  [ 0.040, 0.003, 0.902, 0.055],
-  [ 0.002, 0.041, 0.018, 0.939] ]
-</code></pre></div></div>
-
-<p>The rows and columns correspond to (in order): state 0 evolving by $r_1 Q^{(1)}$, state 1 evolving by $r_1 Q^{(1)}$, state 1 evolving by $r_2 Q^{(2)}$, and state 2 evolving by $r_2 Q^{(2)}$.
-Note that $P[1][2] &gt; P[3][4]$, which is largely due to the fact that $r_1 &gt; r_2$.</p>
-
-<ol class="bibliography"><li><span id="Beaulieu2013">Beaulieu J.M., O’Meara B.C., Donoghue M.J. 2013. Identifying hidden rate changes in the evolution of a binary morphological character: the evolution of plant habit in campanulid angiosperms. Systematic Biology. 62:725–737.</span>
-
-<a href="https://doi.org/10.1093/sysbio/syt034">10.1093/sysbio/syt034</a>
-
-</li>
-<li><span id="Goldberg2008">Goldberg E.E., Igić B. 2008. On Phylogenetic Tests of Irreversible Evolution. Evolution. 62:2727–2741.</span>
+<ol class="bibliography"><li><span id="Goldberg2008">Goldberg E.E., Igić B. 2008. On Phylogenetic Tests of Irreversible Evolution. Evolution. 62:2727–2741.</span>
 
 <a href="https://doi.org/10.1111/j.1558-5646.2008.00505.x">10.1111/j.1558-5646.2008.00505.x</a>
 
@@ -559,19 +220,20 @@ Note that $P[1][2] &gt; P[3][4]$, which is largely due to the fact that $r_1 &gt
 <a href="https://doi.org/10.1093/sysbio/syw021">10.1093/sysbio/syw021</a>
 
 </li>
-<li><span id="Jukes1969">Jukes T.H., Cantor C.R. 1969. Evolution of Protein Molecules. Mammalian Protein Metabolism. 3:21–132.</span>
+<li><span id="Kuhn2011">Kuhn T.S., Mooers A.Ø., Thomas G.H. 2011. A Simple Polytomy Resolver for Dated Phylogenies. Methods in Ecology and Evolution. 2:427–436.</span>
 
-<a href="https://doi.org/10.1016/B978-1-4832-3211-9.50009-7">10.1016/B978-1-4832-3211-9.50009-7</a>
-
-</li>
-<li><span id="Pagel1994">Pagel M. 1994. Detecting correlated evolution on phylogenies: a general method for the comparative analysis of discrete characters. Proceedings of the Royal Society of London B: Biological Sciences. 255:37–45.</span>
-
-<a href="https://doi.org/10.1098/rspb.1994.0006">10.1098/rspb.1994.0006</a>
+<a href="https://doi.org/10.1111/j.2041-210X.2011.00103.x">10.1111/j.2041-210X.2011.00103.x</a>
 
 </li>
-<li><span id="Tuffley1998">Tuffley C., Steel M. 1998. Modeling the covarion hypothesis of nucleotide substitution. Mathematical Biosciences. 147:63–91.</span>
+<li><span id="MagnusonFord2012">Magnuson-Ford K., Otto S.P. 2012. Linking the Investigations of Character Evolution and Species Diversification. The American Naturalist. 180:225–245.</span>
 
-<a href="https://doi.org/10.1016/S0025-5564(97)00081-3">10.1016/S0025-5564(97)00081-3</a>
+<a href="https://doi.org/10.1086/666649">10.1086/666649</a>
+
+</li>
+<li><span id="Redding2010">Redding D.W., DeWolff C.V., Mooers A.Ø. 2010. Evolutionary Distinctiveness, Threat Status, and Ecological Oddity in Primates. Conservation Biology. 24:1052–1058.</span>
+
+</li>
+<li><span id="Vos2006">Vos R.A., Mooers A.Ø. 2006. A New Dated Supertree of the Primates. .</span>
 
 </li></ol>
 
