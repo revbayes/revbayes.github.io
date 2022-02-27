@@ -2,7 +2,7 @@
 title: State-dependent diversification with HiSSE and ClaSSE
 subtitle: Hidden state and cladogenetic state-dependent speciation and extinction (HiSSE & ClaSSE) branching process
 authors:  Sebastian Höhna, Will Freyman, and Emma Goldberg
-level: 5
+level: 7
 order: 6.5
 index: true
 title-old: RB_DiversificationRate_CharacterDependent_Tutorial

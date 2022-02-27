@@ -2,7 +2,7 @@
 title: State-dependent diversification with HiSSE
 subtitle: Inference using the hidden character binary/multiple state-dependent speciation and extinction with (HiSSE) branching process
 authors:  Sebastian Höhna and Will Freyman
-level: 5
+level: 7
 order: 6
 prerequisites:
 - intro
@@ -11,7 +11,7 @@ prerequisites:
 - sse/bisse-intro
 - sse/bisse
 include_all: false
-include_files: 
+include_files:
 - data/primates_activity_period.nex
 - data/primates_mating_system.nex
 - data/primates_solitariness.nex
@@ -26,10 +26,10 @@ index: true
 
 BiSSE and MuSSE are powerful approaches for testing the association of a character with diversification
 rate heterogeneity. However, BiSSE has been shown to be prone to falsely identifying a positive association
-when diversification rate shifts are correlated with a character not included in the model 
+when diversification rate shifts are correlated with a character not included in the model
 {% cite Maddison2015 Rabosky2015 %}. One approach to reduce the possibility of falsely associating
 a character with diversification rate heterogeneity is to incorporate a second, unobserved character into the
-model (*i.e.,* a Hidden State-Dependent Speciation and Extinction (HiSSE) model; see for example {% citet Beaulieu2016 %}). 
+model (*i.e.,* a Hidden State-Dependent Speciation and Extinction (HiSSE) model; see for example {% citet Beaulieu2016 %}).
 The changes in the unobserved character’s state represent background diversification rate changes
 that are not correlated with the oberved character. See {% ref fig_hisse %} for a schematic overview of the HiSSE
 model, and Table 2 for an explanation of the HiSSE model parameters. Now let’s set up and run a HiSSE
@@ -52,7 +52,7 @@ beyond binary observed and unobserved characters.
 
 {% section Estimating State-Dependent Speciation and Extinction under the HiSSE Model | sec_CDBDP %}
 
-First, we create some global variables to set-up our analysis. 
+First, we create some global variables to set-up our analysis.
 Using this variable we can easily change our script to use a different character with a different number
 of states. We will also use this variable in our second example on hidden-state speciation and extinction
 model.
@@ -68,7 +68,7 @@ DATASET               = "activity_period"
 
 {% subsection Read in the Data | subsec_readdata %}
 
-Begin by reading in the observed tree and the character data. 
+Begin by reading in the observed tree and the character data.
 We have both stored in separate nexus files.
 ```
 observed_phylogeny <- readTrees("data/primates_tree.nex")[1]
@@ -102,7 +102,7 @@ We start by specifying prior distributions on the diversification rates.
 Here, we will assume an identical prior distribution on each of the
 speciation and extinction rates. Furthermore, we will use a log-uniform
 distribution as the prior distribution on each speciation and
-extinction rate (i.e., a uniform distribution on the log of the rates). 
+extinction rate (i.e., a uniform distribution on the log of the rates).
 
 $$
 \lambda_{ij} = \lambda_{\text{observed},i} * \lambda_{\text{hidden},j}
@@ -119,19 +119,19 @@ Therefore, we fix the median of the lognormal distribution to 1.0:
 ```
 ln_speciation_hidden_mean <- ln(1.0)
 ```
-Next, we draw the standard deviation of the hidden speciation rates from an exponential distribution with mean `H` 
+Next, we draw the standard deviation of the hidden speciation rates from an exponential distribution with mean `H`
 (so that we expect the 95% interval of the hidden speciation rate to span 1 order of magnitude).
 ```
 speciation_hidden_sd ~ dnExponential( 1.0 / H )
 moves.append( mvScale(speciation_hidden_sd, lambda=1, tune=true, weight=2.0) )
 ```
 With the mean and the standard deviation we can specify the distribution on the hidden speciation rates.
-We create a deterministic variable for the hidden speciation rate categories using 
+We create a deterministic variable for the hidden speciation rate categories using
 a discretized lognormal distribution (the N-quantiles of it).
 ```
 speciation_hidden_unormalized := fnDiscretizeDistribution( dnLognormal(ln_speciation_hidden_mean, speciation_hidden_sd), NUM_HIDDEN )
 ```
-However, we normalize the hidden speciation rates by dividing the rates with the main 
+However, we normalize the hidden speciation rates by dividing the rates with the main
 (so the mean of the normalized rates equals to 1.0):
 ```
 speciation_hidden := speciation_hidden_unormalized / mean(speciation_hidden_unormalized)
@@ -149,7 +149,7 @@ extinction_hidden := extinction_hidden_unormalized / mean(extinction_hidden_unor
 ```
 
 For the observed speciation and extinction rates, we will apply a different approach.
-We will draw the speciation and extinction rates for the observed characters from identical distribution, 
+We will draw the speciation and extinction rates for the observed characters from identical distribution,
 so that *a priori* we expect with probability 0.5 that $\lambda_{\text{observed},0} > \lambda_{\text{observed},1}$,
 and with probability 0.5 we expect $\lambda_{\text{observed},1} > \lambda_{\text{observed},0}$.
 For the lack of prior knowledge, we specify a log-uniform prior distribution on the speciation and extinction rates
@@ -157,7 +157,7 @@ for the observed characters.
 Note that we also initialize the starting states to make the analysis run more efficiently.
 ```
 for (i in 1:NUM_STATES) {
-    
+
     ### Create a loguniform distributed variable for the speciation rate
     speciation_observed[i] ~ dnLoguniform( 1E-6, 1E2)
     speciation_observed[i].setValue( (NUM_TOTAL_SPECIES-2) / tree_length )
@@ -190,7 +190,7 @@ of the rates we are estimating and create a vector of deterministic nodes
 representing the rate of diversification ($\lambda - \mu$) associated with each
 character state.
 
-The stochastic nodes representing the vector of speciation rates and vector of 
+The stochastic nodes representing the vector of speciation rates and vector of
 extinction rates have been instantiated. The software assumes that the rate in position `[1]` of each
 vector corresponds to the rate associated with diurnal `0` lineages and the rate
 at position `[2]` of each vector is the rate associated with nocturnal `1` lineages.
@@ -201,7 +201,7 @@ $q_{01}$ and $q_{10}$. As a prior, we choose that each transition rate
 is drawn from an exponential distribution with a mean of 10 character
 state transitions over the entire tree. This is reasonable because we
 use this kind of model for traits that transition not-infrequently, and
-it leaves a fair bit of uncertainty. 
+it leaves a fair bit of uncertainty.
 Note that we will actually use a `for`-loop to instantiate the transition rates
 so that our script will also work for non-binary characters.
 ```
@@ -211,7 +211,7 @@ so that our script will also work for non-binary characters.
 
 # Each transition rate between observed states are drawn
 # from an exponential distribution with a mean of 10
-# character state transitions over the tree. 
+# character state transitions over the tree.
 rate_pr := observed_phylogeny.treeLength() / 10
 for ( i in 1:(NUM_STATES*(NUM_STATES-1)) ) {
     transition_rates[i] ~ dnExp(rate_pr)
@@ -250,8 +250,8 @@ scale as the diversification rates.
 #### **Prior on the Root State**
 
 Create a variable for the root state frequencies. We are using a flat [Dirichlet distribution](https://en.wikipedia.org/wiki/Dirichlet_distribution) as the prior on
-each state. There has been some discussion about this in {% cite FitzJohn2009 %}. 
-You could also fix the prior probabilities for the root states to be equal 
+each state. There has been some discussion about this in {% cite FitzJohn2009 %}.
+You could also fix the prior probabilities for the root states to be equal
 (generally not recommended), or use empirical state frequencies.
 ```
 rate_category_prior ~ dnDirichlet( rep(1,NUM_RATES) )
@@ -297,7 +297,7 @@ representing the time tree and we create this node using the `dnCDBDP()` functio
 ```
 timetree ~ dnCDBDP( rootAge           = root,
                     speciationRates   = speciation,
-                    extinctionRates   = extinction, 
+                    extinctionRates   = extinction,
                     Q                 = rate_matrix,
                     delta             = 1.0,
                     pi                = rate_category_prior,
@@ -321,7 +321,7 @@ specified.
 mymodel = model(timetree)
 ```
 You can use the `.graph()` method of the model object to visualize the graphical model you
-have just constructed . This function writes the model DAG to a file 
+have just constructed . This function writes the model DAG to a file
 that can be viewed using the  program [Graphviz](https://www.graphviz.org/) ({% ref graphviz %}).
 
 {% figure graphviz %}
@@ -354,7 +354,7 @@ monitors.append( mnScreen(printgen=10, speciation_observed, extinction_observed)
 
 {% aside Sampling Ancestral States %}
 
-Optionally, we can sample ancestral states during the MCMC analysis. 
+Optionally, we can sample ancestral states during the MCMC analysis.
 We need to add an additional monitor to record the state of each internal node in the tree.
 The file produced by this monitor can be summarized so that we can visualize the estimates of ancestral states.
 ```
@@ -381,8 +381,8 @@ mymcmc.run(generations=2500, tuningInterval=100)
 {% aside Summarize Sampled Ancestral States %}
 
 If we sampled ancestral states during the MCMC analysis, we can use the `RevGadgets` R package
-to plot the ancestral state reconstruction. First, though, we must summarize the sampled values in 
-RevBayes. 
+to plot the ancestral state reconstruction. First, though, we must summarize the sampled values in
+RevBayes.
 
 To do this, we first have to read in the ancestral state log file. This uses a specific function called `readAncestralStateTrace()`.
 ```
@@ -396,13 +396,13 @@ summarizeCharacterMaps(anc_states, observed_phylogeny, file="output/events.tsv",
 ```
 Now, we can write an annotated tree to a file. This function will write a tree with each
 node labeled with the maximum a posteriori (MAP) state and the posterior probabilities for each
-state. 
+state.
 ```
-char_map_tree = characterMapTree(tree=observed_phylogeny, 
-                 ancestral_state_trace_vector=anc_states, 
-                 character_file="output/marginal_character.tree", 
-                 posterior_file="output/marginal_posterior.tree", 
-                 burnin=burnin, 
+char_map_tree = characterMapTree(tree=observed_phylogeny,
+                 ancestral_state_trace_vector=anc_states,
+                 character_file="output/marginal_character.tree",
+                 posterior_file="output/marginal_posterior.tree",
+                 burnin=burnin,
                  num_time_slices=n_time_slices)
 ```
 
@@ -415,7 +415,7 @@ To visualize the posterior probabilities of ancestral states, we will use the `R
 {:.instruction}
 
 
-`RevGadgets` requires the `ggtree` package {% cite Yu2017ggtree %}. 
+`RevGadgets` requires the `ggtree` package {% cite Yu2017ggtree %}.
 First, install the `ggtree` and `RevGadgets` packages:
 
 <pre>
@@ -461,10 +461,10 @@ A visualization of the ancestral states estimated under the BiSSE model.
 
 Our MCMC analysis generated a tab-delimited file called `primates_activTime_BiSSE_mcmc.log` that contains
 the samples of all the numerical parameters in our model. There are a lot of tools available
-for visualizing files like this (like R or python), which allow you to generate plots and 
-visually explore the posterior distributions of sampled parameters. 
+for visualizing files like this (like R or python), which allow you to generate plots and
+visually explore the posterior distributions of sampled parameters.
 
-We will use the program [Tracer](http://tree.bio.ed.ac.uk/software/tracer/) 
+We will use the program [Tracer](http://tree.bio.ed.ac.uk/software/tracer/)
 {% cite Rambaut2011 %}, which is a tool for easily exploring parameters sampled using MCMC.
 
 > Open the program Tracer and import your file: `output/primates_activTime_BiSSE_mcmc.log`.
@@ -476,21 +476,21 @@ parameters ({% ref tracer1 %}).
 {% figure tracer1 %}
 <img src="figures/tracer1.png" width="95%">
 {% figcaption %}
-Visualizing posterior samples of parameters in 
-[Tracer](http://tree.bio.ed.ac.uk/software/tracer/) 
+Visualizing posterior samples of parameters in
+[Tracer](http://tree.bio.ed.ac.uk/software/tracer/)
 {% cite Rambaut2011 %}.
 {% endfigcaption %}
 {% endfigure %}
 
-> Explore the various options in Tracer. 
+> Explore the various options in Tracer.
 >
-> Check the _Trace_ view for each parameter. Did the chain "mix" effectively? 
+> Check the _Trace_ view for each parameter. Did the chain "mix" effectively?
 >
-> Highlight both of the _speciation_ rates: `speciation[1]` and `speciation[2]` to 
-> compare the _Estimates_ of both parameters. 
-> 
-> **Write down** the mean value for the rate of speciation associated with 
-> diurnal lineages `speciation[1]` and the rate of speciation associated with 
+> Highlight both of the _speciation_ rates: `speciation[1]` and `speciation[2]` to
+> compare the _Estimates_ of both parameters.
+>
+> **Write down** the mean value for the rate of speciation associated with
+> diurnal lineages `speciation[1]` and the rate of speciation associated with
 > nocturnal lineages `speciation[2]`.
 >
 > Now use the _Marginal Prob Distribution_ view to compare the marginal posterior densities
@@ -500,9 +500,8 @@ Visualizing posterior samples of parameters in
 {% figure tracer2 %}
 <img src="figures/tracer2.png" width="50%">
 {% figcaption %}
-Comparing posterior samples of the speciation rates associated with daily activity time in 
-[Tracer](http://tree.bio.ed.ac.uk/software/tracer/) 
+Comparing posterior samples of the speciation rates associated with daily activity time in
+[Tracer](http://tree.bio.ed.ac.uk/software/tracer/)
 {% cite Rambaut2011 %}.
 {% endfigcaption %}
 {% endfigure %}
-
