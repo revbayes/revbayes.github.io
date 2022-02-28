@@ -18,7 +18,7 @@ redirect: true
 
 
 
-Overview 
+Overview
 ========
 
 This very basic tutorial provides an introduction to Bayesian inference
@@ -71,7 +71,7 @@ Distribution with two parameters,
 $\alpha$ and $\beta$. This distribution is used as a prior distribution
 on the probability parameter $p$ of observing a head. Here we show
 different curves for the beta distribution when using different
-parameters. 
+parameters.
 {% endfigcaption %}
 {% endfigure %}
 
@@ -92,7 +92,7 @@ variable has data attached to it.
 {% figure fig:binomial_model %}
   <img src="figures/binomial_graphical_model.png"  width="200pt">
 {% figcaption %}
-Graphical model for the binomial model. 
+Graphical model for the binomial model.
 {% endfigcaption %}
 {% endfigure %}
 
@@ -137,12 +137,12 @@ Reading in the data
 Actually, in this case, we're just going to make up some data on the
 spot. Feel free to alter these values to see how they influence the
 posterior distribution
-
+```
     # Make up some coin flips!
     # Feel free to change these numbers
     n <- 100 # the number of flips
     x <- 63	# the number of heads
-
+```
 Initializing the Markov chain
 -----------------------------
 
@@ -151,19 +151,19 @@ way to do this is to randomly draw values of the parameters (just $p$,
 in this case) from the prior distribution. We'll assume a "flat" beta
 prior distribution; that is, one with parameters $\alpha = 1$ and
 $\beta = 1$.
-
+```
     # Initialize the chain with starting values
     alpha <- 1
     beta  <- 1
     p <- rbeta(n=1,alpha,beta)[1]
-
+```
 ### Likelihood function
 
 We also need to specify the likelihood function. We use the binomial
 probability for the likelihood function. Since the likelihood is defined
 only for values of $p$ between 0 and 1, we return 0.0 if $p$ is outside
 this range:
-
+```
     # specify the likelihood function
     function likelihood(p) {
         if(p < 0 || p > 1)
@@ -172,41 +172,41 @@ this range:
         l = dbinomial(x,p,n,log=false)
         return l
     }
-
+```
 ### Prior distribution
 
 Similarly, we need to specify a function for the prior distribution.
 Here, we use the beta probability distribution for the prior on $p$:
-
+```
     # specify the prior function
     function prior(p) {
         if(p < 0 || p > 1)
             return 0
-            
+
         pp = dbeta(p,alpha,beta,log=false)
         return pp
     }
-
+```
 ### Monitoring parameter values
 
 Additionally, we are going to monitor,
 *i.e.*, store, parameter values into a file
 during the MCMC simulation. For this file we need to write the column
 headers:
-
+```
     # Prepare a file to log our samples
     write("iteration","p","\n",file="binomial_MH.log")
     write(0,p,"\n",file="binomial_MH.log",append=TRUE)
-
+```
 (You may have to change the newline characters to
 `\backslashr\backslashn` if you're using a Windows operating system.)
 We'll also monitor the parameter values to the screen, so let's print
 the initial values:
-
+```
     # Print the initial values to the screen
     print("iteration","p")
     print(0,p)
-
+```
 Writing the MH Algorithm
 ------------------------
 
@@ -216,44 +216,44 @@ frequency how often we print to file
 thinning. If we set the variable `printgen` to 1, then we will store the
 parameter values every single iteration; if we choose `printgen=10`
 instead, then only every $10^{th}$ iteration.
-
+```
     printgen = 10
-
+```
 We will repeat this resampling procedure many times (here, 10000), and
 iterate the MCMC using a `for` loop:
-
+```
     # Write the MH algorithm
-    reps = 10000 
+    reps = 10000
     for(rep in 1:reps){
-
+```
 (remember to close your `for` loop at the end).
 
 The first thing we do in the first generation is generate a new value of
 $p^\prime$ to evaluate. We'll propose a new value of $p$ from a uniform
 distribution between 0 and 1. Note that in this first example we do not
 condition new parameter values on the current value.
-
+```
     	# Propose a new value of p
     	p_prime <- runif(n=1,0.0,1.0)[1]
-
+```
 Next, we compute the proposed likelihood and prior probabilities, as
 well as the acceptance probability, $R$:
-
+```
     	# Compute the acceptance probability
     	R <- ( likelihood(p_prime) / likelihood(p) ) * ( prior(p_prime) / prior(p) )
-
+```
 Then, we accept the proposal with probability $R$ and reject otherwise:
-
+```
     	# Accept or reject the proposal
     	u <- runif(1,0,1)[1]
     	if(u < R){
     		# Accept the proposal
     		p <- p_prime
     	}
-
+```
 Finally, we store the current value of $p$ in our log file. Here, we
 actually check if we want to store the value during this iteration.
-
+```
         if ( (rep % printgen) == 0 ) {
             # Write the samples to a file
             write(rep,p,"\n",file="binomial_MH.log",append=TRUE)
@@ -261,7 +261,7 @@ actually check if we want to store the value during this iteration.
             print(rep,p)
         }
     } # end MCMC
-
+```
 Visualizing the samples of an MCMC simulation
 ---------------------------------------------
 
@@ -277,7 +277,7 @@ the sample trace (left) and the estimated posterior distribution of $p$
   <img src="figures/binomial_MCMC_distribution.png" width="400pt">
 {% figcaption %}
 Left: the *Trace* of samples from an MCMC simulation. Right: the approximated posterior
-probability distribution for $p$. 
+probability distribution for $p$.
 {% endfigcaption %}
 {% endfigure %}
 
@@ -291,19 +291,19 @@ which are more efficient than others.
 
 First, let us rewrite the MCMC loop so that we use instead a function,
 which we call `move_uniform` for simplicity, that performs the move:
-
+```
     for (rep in 1:reps){
-        
+
         # call uniform move
         move_uniform(1)
-        
+
         if ( (rep % printgen) == 0 ) {
             # Write the samples to a file
             write(rep,p,"\n",file="binomial_MH.log",append=TRUE)
         }
 
     } # end MCMC
-
+```
 This loop looks already much cleaner.
 
 Uniform move
@@ -311,7 +311,7 @@ Uniform move
 
 Now we need to actually write the `move_uniform` function. We mostly
 just copy the code we had before into a dedicated function
-
+```
     function move_uniform( Natural weight) {
 
         for (i in 1:weight) {
@@ -320,7 +320,7 @@ just copy the code we had before into a dedicated function
 
             # Compute the acceptance probability
             R <- ( likelihood(p_prime) / likelihood(p) ) * ( prior(p_prime) / prior(p) )
-        
+
             # Accept or reject the proposal
             u <- runif(1,0,1)[1]
             if (u < R){
@@ -331,9 +331,9 @@ just copy the code we had before into a dedicated function
                 # (we don't have to do anything here)
             }
         }
-        
-    }
 
+    }
+```
 There are a few things to consider in the function `move_uniform`.
 First, we do not have a return value because the move simply changes the
 variable $p$ if the move is accepted. Second, we expect an argument
@@ -351,7 +351,7 @@ As a second move we will write a sliding-window move. The sliding-window
 moves propose an update by drawing a random number from a uniform
 distribution and then adding this random number to the current value
 (*i.e.*, centered on the previous value).
-
+```
     function move_slide( RealPos delta, Natural weight) {
 
         for (i in 1:weight) {
@@ -360,7 +360,7 @@ distribution and then adding this random number to the current value
 
             # Compute the acceptance probability
             R <- ( likelihood(p_prime) / likelihood(p) ) * ( prior(p_prime) / prior(p) )
-        
+
             # Accept or reject the proposal
             u <- runif(1,0,1)[1]
             if (u < R) {
@@ -371,9 +371,9 @@ distribution and then adding this random number to the current value
                 # (we don't have to do anything here)
             }
         }
-        
-    }
 
+    }
+```
 In addition to the weight of the move, this move has another argument,
 `delta`. The argument `delta` defines the width of the uniform window
 from which we draw new values. Thus, if `delta` is large, then the
@@ -399,7 +399,7 @@ this scaling factor by the current value. An interesting feature of this
 move is that it is not symmetrical and thus needs a Hastings ratio. The
 Hastings ratio is rather trivial in this case, and one only needs to
 multiply the acceptance rate by the scaling factor.
-
+```
     function move_scale( RealPos lambda, Natural weight) {
 
         for (i in 1:weight) {
@@ -409,7 +409,7 @@ multiply the acceptance rate by the scaling factor.
 
             # Compute the acceptance probability
             R <- ( likelihood(p_prime) / likelihood(p) ) * ( prior(p_prime) / prior(p) ) * sf
-        
+
             # Accept or reject the proposal
             u <- runif(1,0,1)[1]
             if (u < R){
@@ -420,9 +420,9 @@ multiply the acceptance rate by the scaling factor.
                 # (we don't have to do anything here)
             }
         }
-        
-    }
 
+    }
+```
 As before, this move has a tuning parameter called *lambda*.
 
 The sliding-window and scaling moves are very common and popular moves
@@ -433,7 +433,7 @@ to understand these moves.
 However, this MCMC algorithm is *very* specific to our binomial model
 and thus hard to extend (also it's pretty inefficient!).
 
-The Metropolis-Hastings Algorithm with the *Real* RevBayes 
+The Metropolis-Hastings Algorithm with the *Real* RevBayes
 ============================================================
 
 The video walkthrough for this section is in two parts.
@@ -444,53 +444,53 @@ We'll now specify the exact same model in `Rev` using the built-in
 modeling functionality. It turns out that the `Rev` code to specify the
 above model is extremely simple and similar to the one we used before.
 Again, we start by "reading in" (*i.e.*, making up) our data.
-
+```
     # Make up some coin flips!
     # Feel free to change these numbers
     n <- 100 # the number of flips
     x <- 63	# the number of heads
-
+```
 Now we specify our prior model.
-
+```
     # Specify the prior distribution
     alpha <- 1
     beta  <- 1
     p ~ dnBeta(alpha,beta)
-
+```
 One difference between RevBayes and the MH algorithm that we wrote
 above is that many MCMC proposals are already built-in, but we have to
 specify them *before* we run the MCMC. We usually define (at least) one
 move per parameter immediately after we specify the prior distribution
 for that parameter.
-
+```
     # Define a move for our parameter, p
     moves[1] = mvSlide(p,delta=0.1,weight=1)
-
+```
 Next, our likelihood model.
-
+```
     # Specify the likelihood model
     k ~ dnBinomial(p, n)
     k.clamp(x)
-
+```
 We wrap our full Bayesian model into one model object (this is a
 convenience to keep the entire model in a single object, and is more
 useful when we have very large models):
-
+```
     # Construct the full model
     my_model = model(p)
-
+```
 We use "monitors" to keep track of parameters throughout the MCMC. The
 two kinds of monitors we use here are the `mnModel`, which writes
 parameters to a specified file, and the `mnScreen`, which simply outputs
 some parts of the model to screen (as a sort of progress bar).
-
+```
     # Make the monitors to keep track of the MCMC
     monitors[1] = mnModel(filename="binomial_MCMC.log", printgen=10, separator = TAB)
     monitors[2] = mnScreen(printgen=100, p)
-
+```
 Finally, we assemble the analysis object (which contains the model, the
 monitors, and the moves) and execute the run using the `.run` command:
-
+```
     # Make the analysis object
     analysis = mcmc(my_model, monitors, moves)
 
@@ -499,7 +499,7 @@ monitors, and the moves) and execute the run using the `.run` command:
 
     # Show how the moves performed
     analysis.operatorSummary()
-
+```
 Open the resulting `binomial_MCMC.log` file in `Tracer`. Do the
 posterior distributions for the parameter $p$ look the same as the ones
 we got from our first analysis?
@@ -550,13 +550,13 @@ Exercise 2: Different MCMC strategies (moves)
 
 6.  Add to each move a counter variable that counts how often the move
     was accepted. For example:
-
+```
                 if (u < R){
                     # Accept the proposal
                     p <- p_prime
                     ++num_sliding_move_accepted
-                } 
-
+                }
+```
 7.  Have a look at how the acceptance rate changes for different values
     of the tuning parameters.
 
@@ -611,4 +611,3 @@ the prior sensitivity depend on the sample size? Are the posterior
 estimates sensitive to the length of the MCMC? Do you think this MCMC
 has been run sufficiently long, or should you run it longer? Try to
 answer some of these questions and explain your findings.
-

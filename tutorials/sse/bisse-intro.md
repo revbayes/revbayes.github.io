@@ -2,7 +2,7 @@
 title: Background on state-dependent diversification rate estimation
 subtitle: An introduction to inference using state-dependent speciation and extinction (SSE) branching processes
 authors:  Sebastian Höhna, Will Freyman, and Emma Goldberg
-level: 5
+level: 7
 order: 4
 prerequisites:
 include_all: false
@@ -24,8 +24,8 @@ for other types of traits
 {% cite FitzJohn2010 Goldberg2011 Goldberg2012 MagnusonFord2012 FitzJohn2012 Beaulieu2016 Freyman2018 %}.
 
 RevBayes can be used to specify a wide range of SSE models. For specific examples see these other tutorials:
-- BiSSE and MuSSE models: {% page_ref sse/bisse %} 
-- ClaSSE and HiSSE models: {% page_ref sse/other-sse %} 
+- BiSSE and MuSSE models: {% page_ref sse/bisse %}
+- ClaSSE and HiSSE models: {% page_ref sse/other-sse %}
 - ChromoSSE: {% page_ref chromo %}
 
 
@@ -159,7 +159,7 @@ This is Figure 2 in {% citet Maddison2007 %}.
 {% endfigure %}
 
 
-We can thus compute $D_{N,0}(t + \Delta t)$ as: 
+We can thus compute $D_{N,0}(t + \Delta t)$ as:
 
 $$\begin{aligned}
 	D_{N,0}(t + \Delta t) = & \;(1 - \mu_0 \Delta t) \times & \text{in all cases, no extinction of the observed lineage} \\
@@ -200,7 +200,7 @@ interval $\Delta t$ ({% ref BiSSE_Events_E %}):
     that must eventually go extinct before the present.
 
 $$\begin{aligned}
-E_0(t + \Delta t) = &\; \mu_0\Delta t + 
+E_0(t + \Delta t) = &\; \mu_0\Delta t +
 & \text{case (1) extinction in the interval} \\
 & (1 - \mu_0\Delta t) \times & \text{no extinction in the interval and \dots} \\
 & \;[(1-q_{01}\Delta t)(1-\lambda_0 \Delta t) E_0(t) & \text{case (2) nothing happens, but subsequent extinction} \\
@@ -303,10 +303,9 @@ $p_{R, i}$ as nuisance parameters and integrate over them.
 The entire derivation above can easily be expanded to accommodate an
 arbitrary number of states {% cite FitzJohn2012 %}. The only extra piece is
 summing over all the possible state transitions. The resulting
-differential equations within the branches are: 
+differential equations within the branches are:
 
 $$\begin{aligned}
 \frac{\mathrm{d}D_{N,i}(t)}{\mathrm{d}t} &= - \left(\lambda_i + \mu_i + \sum\limits_{j \neq i}^k q_{ij} \right)D_{N,i}(t) + \sum\limits_{j \neq i}^k q_{ij} D_{N,j}(t) + 2\lambda_iE_i(t)D_{N,i}(t) \\
 \frac{\mathrm{d}E_i(t)}{\mathrm{d}t} &= \mu_i - \left(\lambda_i + \mu_i + \sum\limits_{j \neq i}^k q_{ij} \right)E_i(t) + \sum\limits_{j \neq i}^k q_{ij} E_j(t) + \lambda_i E_i(t)^2
 \end{aligned}$$
-

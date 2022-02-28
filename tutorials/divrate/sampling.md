@@ -2,7 +2,7 @@
 title: Diversification Rate Estimation with Missing Taxa
 subtitle: How to estimate diversification rates with incomplete taxon sampling
 authors:  Sebastian Höhna, Will Freyman and Mike May
-level: 5
+level: 7
 order: 5
 index: true
 prerequisites:
@@ -105,12 +105,12 @@ in many large scale phylogenies.
 Open the tree ‘data/primates.tre‘ in
 `FigTree`.
 
-> ![](figures/EBD_scenarios.png) 
+> ![](figures/EBD_scenarios.png)
 > Two scenarios of
 birth-death models. On the left we show constant diversification. On the
 right we show an example of an episodic birth-death process where rates
 are constant in each time interval (epoch). The top panel of this figure
-shows example realization under the given rates. 
+shows example realization under the given rates.
 {:.figure}
 
 Episodic Birth-Death Model
@@ -135,7 +135,7 @@ diversification rate through time model will be an excellent example to
 study the impact of the assumed incomplete sampling strategy on
 diversification rates.
 
-> ![](figures/graphical_model_EBD.png) 
+> ![](figures/graphical_model_EBD.png)
 > A graphical model
 with the outline of the `Rev` code. On the left we see the graphical
 model describing the correlated (Brownian motion) model for
@@ -214,7 +214,7 @@ in `Rev`.
 
     for (i in 1:NUM_INTERVALS) {
         index = i+1
-        
+
         # specify normal priors (= Brownian motion) on the log of the rates
         log_speciation[index] ~ dnNormal( mean=log_speciation[i], sd=speciation_sd )
         log_extinction[index] ~ dnNormal( mean=log_extinction[i], sd=extinction_sd )
@@ -259,7 +259,7 @@ in `Rev`.
     ### workspace model wrapper ###
     mymodel = model(timetree)
 
-    ### set up the monitors that will output parameter values to file and screen 
+    ### set up the monitors that will output parameter values to file and screen
     monitors[++mni] = mnModel(filename="output/primates_uniform.log",printgen=10, separator = TAB)
     monitors[++mni] = mnFile(filename="output/primates_uniform_speciation_rates.log",printgen=10, separator = TAB, speciation)
     monitors[++mni] = mnFile(filename="output/primates_uniform_speciation_times.log",printgen=10, separator = TAB, interval_times)#
@@ -334,11 +334,11 @@ Exercise 1
 -   Visualize the rate through time using
     `R`and `Rev`Gadgets.
 
-> ![](figures/uniform.png) 
+> ![](figures/uniform.png)
 > Resulting diversification rate
 estimations when using 20 intervals and assuming uniform taxon sampling.
 You should create similar plots for the other sampling schemes and
-compare the rates through time. 
+compare the rates through time.
 {:.figure}
 
 Summarizing and plotting diversification rates through time
@@ -379,13 +379,13 @@ but instead by including one species per genera and hence maximizing
 diversity. This sampling scheme is called *diversified* taxon sampling
 {% cite Hoehna2011 %}.
 
-> ![](figures/diversified-sampling.png) 
+> ![](figures/diversified-sampling.png)
 > Example of
 diversified taxon sampling. a) An example phylogeny showing that all
 species after a certain time are not sampled. b) The cumulative
 probability of a speciation event occurring as a function of time. Here
 we see that the highest probability for a speciation event is more
-recently. 
+recently.
 {:.figure}
 
 Figure [fig:DiversifiedSampling] shows an example of diversified
@@ -447,13 +447,13 @@ groups the crown ages and the number of missing species and thus narrow
 down with empirical evidence the times when these missing speciation
 events have happened.
 
-> ![](figures/primates.png) 
+> ![](figures/primates.png)
 > Cartoon of empirical taxon
 sampling. The triangle in the phylogeny depict clades with missing
 species. To illustrate the point we have written the names of higher
 taxa on the right with the number of species belonging to them. From
 this number of taxa in the clade we can compute how many species are
-missing per clade and which crown age the clade. 
+missing per clade and which crown age the clade.
 {:.figure}
 
 In your phylogeny you can count the number of species belonging to a
@@ -527,4 +527,3 @@ Exercise 3
 -   Run the analysis and plot the diversification rates.
 
 -   How does the new sampling assumption influence your estimated rates?
-

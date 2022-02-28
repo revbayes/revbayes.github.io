@@ -2,7 +2,7 @@
 title: Skyline Models from Trees with GMRF
 subtitle: Estimating Demographic Histories with Skyline Models from Trees using a Gaussian Markov Random Field Prior
 authors: Ronja Billenstein and Sebastian Höhna
-level: 8 #may need adjustment
+level: 9 #may need adjustment
 order: 0.4
 prerequisites:
 - coalescent
@@ -12,8 +12,9 @@ prerequisites:
 index: false
 include_all: false
 include_files:
-- data/horses_homochronous_sequences_nooutgroup.fasta
-- scripts/mcmc_homochronous_GMRF.Rev
+- data/horses_homochronous_sequences.fasta
+- scripts/mcmc_homochronous_GMRF_treebased.Rev
+- scripts/mcmc_homochronous_GMRF_maptreebased.Rev
 - output/horses_constant.trees
 ---
 
@@ -103,9 +104,6 @@ psi.clamp(maptree)
 ~~~
 {% endaside %}
 
-{% subsection Substitution Model and other parameters %}
-This part is also taken from the constant coalescent exercise.
-
 {% subsection Finalize and run the analysis %}
 
 In the end, we need to wrap our model as before.
@@ -114,11 +112,10 @@ Finally, we add the monitors and then run the MCMC.
 Remember to change the file names to avoid overwriting your previous results.
 
 ~~~
-monitors.append( mnModel(filename="output/horses_GMRF.log",printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_GMRF.trees",psi,printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_GMRF_NEs.log",population_size,printgen=THINNING) )
-# monitors.append( mnFile(filename="output/horses_GMRF_times.log",interval_times,printgen=THINNING) )
-monitors.append( mnScreen(population_size, root_age, printgen=100) )
+monitors.append( mnModel(filename="output/horses_GMRF_treebased.log",printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_GMRF_treebased_NEs.log",population_size,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_GMRF_treebased_times.log",interval_times,printgen=THINNING) )
+monitors.append( mnScreen(population_size, printgen=100) )
 
 mymcmc = mcmc(mymodel, monitors, moves)
 mymcmc.burnin(NUM_MCMC_ITERATIONS*0.1,100)
@@ -137,3 +134,7 @@ This is how the resulting GMRF skyline plot should roughly look like.
 {% endfigcaption %}
 {% endfigure %}
 
+{% section Next Exercise %}
+When you are done, have a look at the next exercise.
+
+* [A piecewise model]({{base.url}}/tutorials/coalescent/piecewise)

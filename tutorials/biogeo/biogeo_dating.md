@@ -2,7 +2,7 @@
 title: Biogeographic Dating of Divergence Times
 subtitle: Estimating divergence times with molecular, biogeographic, and paleogeographic evidence under the Dispersal-Extirpation-Cladogenesis (DEC) model
 authors:  Michael J. Landis
-level: 7
+level: 8
 prerequisites:
 - biogeo/biogeo_intro
 - biogeo/biogeo_simple
@@ -48,7 +48,7 @@ exclude_files:
 - data/n4/range_colors.epoch.n4.txt
 index: true
 title-old: RB_Biogeography_Tutorial
-redirect: false 
+redirect: false
 ---
 
 {% section Introduction | introduction %}
@@ -90,7 +90,7 @@ histories using process-based biogeographic dating method described in
 {% citet Landis2017a %}.
 
 {% figure fig_biogeo_dating %}
-![](figures/fig_biogeo_dating.png) 
+![](figures/fig_biogeo_dating.png)
 {% figcaption %}
 Cartoon of biogeographic
 transition probabilities as functions of geological time, and how that
@@ -98,7 +98,7 @@ relates to speciation times. (a) Areas split, dispersal before split,
 positive probability; (b) Areas split, dispersal after split, zero
 probability; (c) Areas merge, dispersal after merge, positive
 probability; (d) Areas merge, dispersal before merge, zero probabilty.
-Original figure and details regarding cartoon assumptions are found in {% citet Landis2017a %}. 
+Original figure and details regarding cartoon assumptions are found in {% citet Landis2017a %}.
 {% endfigcaption %}
 {% endfigure %}
 
@@ -494,7 +494,7 @@ for the tree variable, whereas the previous two tutorials
 assumed tree was fixed.
 
     monitors = VectorMonitors()
-    monitors.append( mnScreen(printgen=100, ingroup_age) ) 
+    monitors.append( mnScreen(printgen=100, ingroup_age) )
     monitors.append( mnModel(file=out_fn+".model.log", printgen=100) )
     monitors.append( mnFile(tree, filename=out_fn+".tre", printgen=100) )
     monitors.append( mnJointConditionalAncestralState(tree=tree,
@@ -577,12 +577,12 @@ likely a result of phylogenetic error in the fixed tree.
 <!--![](figures/fig_simple_ages.png) -->
 <img src="figures/fig_simple_ages.png" width="50%">
 {% figcaption %}
-Plot of posterior samples for island ages and the origin time of living silverswords. 
+Plot of posterior samples for island ages and the origin time of living silverswords.
 The colors black, blue, red, orange, and green correspond to the origination times of Kaui, Oahu, Maui, Hawaii, and the silversword clade, respectively.The
 left panel ignores paleogeography, allowing silverswords to originate
 well before the formation of Kauai (`epoch_times[1]`).The
 right panel conditions of paleogeography, which prefers a silversword
-crown age that follows the formation of Kauai. 
+crown age that follows the formation of Kauai.
 {% endfigcaption %}
 {% endfigure %}
 
@@ -629,4 +629,3 @@ model produces strong support that crown silverswords originated after
 the formation of Kauai, $Prob(a_S > a_K) = 1.0 - 0.04 > 0.95$ but less support
 that they originated after the formation of Oahu,
 $Prob(a_S > a_O) = 1.0 - 0.59 < 0.95$.
-

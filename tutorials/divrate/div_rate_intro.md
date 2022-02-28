@@ -1,8 +1,8 @@
 ---
 title: Introduction to Diversification Rate Estimation
-subtitle: Overview of Analyses, Models and Theory 
+subtitle: Overview of Analyses, Models and Theory
 authors:  Sebastian Höhna
-level: 5
+level: 7
 order: 0
 prerequisites:
 - intro

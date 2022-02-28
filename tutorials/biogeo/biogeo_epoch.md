@@ -2,13 +2,13 @@
 title: Advanced Phylogenetic Analysis of Historical Biogeography
 subtitle: Ancestral range estimates using the Dispersal-Extirpation-Cladogenesis (DEC) model while incorporating time-dependent and region-dependent effects on dispersal rates
 authors:  Michael J. Landis
-level: 7
+level: 8
 order: 2
 prerequisites:
 - biogeo/biogeo_intro
 - biogeo/biogeo_simple
 include_example_output: false
-include_files: 
+include_files:
 - scripts/plot_anc_range.epoch.R
 - scripts/plot_anc_range.util.R
 - data/n4/range_colors.n4.txt
@@ -45,13 +45,13 @@ exclude_files:
 - data/n4/range_colors.epoch.n4.txt
 index: index
 title-old: RB_Biogeography_Tutorial
-redirect: false 
+redirect: false
 ---
 
 {% section Introduction | intro %}
 
 In the {% page_ref biogeo/biogeo_simple %} tutorial, we went through the exercise of setting up the
-instantaneous rate matrix and cladogenetic transition probabilities for a simple 
+instantaneous rate matrix and cladogenetic transition probabilities for a simple
 DEC model.
 In this tutorial, we will set up a more complex model considering the geological histories in the biogeographic inference. We will learn how to set up an epoch model.
 
@@ -76,7 +76,7 @@ the full table is given for future reference.
   |---------------|------|-----------|------------|----------------|-----------------|-----------------|-----------------|-----------------|-----------------|
   | Older islands |   R  |      -    |      -     |        -       |        261      |        406      |        500      |        680      |       3900      |
   | Kauai         |   K  |    5.15   |    5.05    |        -       |         -       |        145      |        239      |        419      |       3900      |
-  | Oahu          |   O  |     3.7   |     2.2    |        -       |         -       |         -       |        059      |        239      |       3900      | 
+  | Oahu          |   O  |     3.7   |     2.2    |        -       |         -       |         -       |        059      |        239      |       3900      |
   | Maui Nui      |   M  |     1.8   |     1.3    |        -       |         -       |         -       |         -       |        082      |       3900      |
   | Hawaii        |   H  |     0.7   |     0.3    |        -       |         -       |         -       |         -       |         -       |       3900      |
   | Mainland      |   Z  |      -    |      -     |        -       |         -       |         -       |         -       |         -       |         -       |
@@ -351,7 +351,7 @@ time of the clade, so will set it as the only valid starting state
 through the root frequency distribution.
 
     rf_DEC_tmp <- rep(0, n_states)
-    rf_DEC_tmp[2] <- 1 
+    rf_DEC_tmp[2] <- 1
     rf_DEC <- simplex(rf_DEC_tmp)
 
 We have created all the necessary model variables. Now we can create the
@@ -367,7 +367,7 @@ time-heterogeneous probabilities embedded in the epoch rate generator,
                             rootFrequencies=rf_DEC,
                             type="NaturalNumbers",
                             nSites=1)
-                      
+
 
 Attach the observed range data to the distribution
 
@@ -388,7 +388,7 @@ And the rest we've done before...
     monitors.append( mnStochasticCharacterMap(ctmc=m_bg,
                                               filename=out_fn+".stoch.log",
                                               printgen=100) )
-                                                           
+
 
 Wrap the model graph into a model object
 
@@ -420,7 +420,7 @@ estimate phylogeny and biogeography, which potentially improves the
 estimation of divergence times, tree topology, and ancestral ranges.
 
 {% figure epoch_RevGadgets_ase %}
-![](figures/fig_epoch.range.png) 
+![](figures/fig_epoch.range.png)
 {% figcaption %}
 Tree with ancestral state estimates for the "epoch" analysis. Nodes represent ancestral ranges before and after cladogenetic events. Pie slices are proportional to the posterior probability of that ancestral range. Colors
 of markers indicate the range state. Only the first, second, and third most probable ranges are shown, with less probable ranges represented in gray (...). Vertical dashed lines indicate the range of possible island formation times.

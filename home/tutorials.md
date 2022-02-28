@@ -9,8 +9,9 @@ levels:
 - Model Selection and Testing
 - Standard tree inference
 - Complex hierarchical models for phylogenetic inference
-- Diversification Rate Estimation
+- Discrete Morphology
 - Comparative methods
+- Diversification Rate Estimation
 - Biogeography
 - Demographic Inference
 levels_id:
