@@ -408,8 +408,8 @@ ggsave(paste0("primates_solitariness_ASE_ERM_Pie.pdf"), p, width = 11, height = 
 
 
 {% figure fig_ERM_anc_states %}
-<img src="figures/primates_solitariness_ASE_ERM_MAP.png" width="400" />
-<img src="figures/primates_solitariness_ASE_ERM_Pie.png" width="400" />
+<img src="figures/Primates_solitariness_ASE_ERM_MAP.png" width="400" />
+<img src="figures/Primates_solitariness_ASE_ERM_Pie.png" width="400" />
 {% figcaption %}
 Ancestral state estimation of solitariness in primates.
 {% endfigcaption %}
