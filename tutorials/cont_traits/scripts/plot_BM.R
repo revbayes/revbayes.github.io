@@ -2,11 +2,12 @@
 #
 # Plot estimates of the Brownian motion model
 #
-# authors: Michael R. May
+# authors: Michael R. May and Sebastian Höhna
 #
 ################################################################################
 
 library(RevGadgets)
+library(ggplot2)
 
 # read the posterior and prior output
 simple_BM_posterior <- readTrace("output/simple_BM.log")[[1]]

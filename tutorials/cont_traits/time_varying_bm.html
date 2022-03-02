@@ -134,23 +134,29 @@ For more information about graphical model representations see <a class="citatio
 \tag{Bayes Theorem}\label{eq:bayes_thereom}
 \end{equation}\]
 
-<p>In this tutorial, we use the 66 vertebrate phylogenies and (log) body-size datasets from <a class="citation" href="#Landis2017b">(Landis and Schraiber 2017)</a>.</p>
+<p>In this tutorial, we use the primates dataset and log-transformed female body mass.</p>
 
 <p>⇨ The full BM-model specification is in the file called <code class="language-plaintext highlighter-rouge">mcmc_BM.Rev</code>.</p>
 
 <h3 class="subsection" id="read-the-data">Read the data</h3>
 <hr class="subsection" />
 
-<p>We begin by deciding which of the 66 vertebrate datasets to use. Here, we assume we are analyzing the first dataset (Cetacea), but you should feel free to choose any of the datasets.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dataset &lt;- 11
+<p>We begin by deciding which of the traits to use. Here, we assume we are analyzing the first trait (female body mass), but you should feel free to choose any of the trait.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>trait &lt;- 1
 </code></pre></div></div>
 
-<p>Now, we read in the (time-calibrated) tree corresponding to our chosen dataset.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>T &lt;- readTrees("data/trees.nex")[dataset]
+<p>Now, we read in the (time-calibrated) tree corresponding.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>T &lt;- readTrees("data/trees.nex")[1]
 </code></pre></div></div>
 
 <p>Next, we read in the character data for the same dataset.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data &lt;- readContinuousCharacterData("data/traits.nex")[dataset]
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data &lt;- readContinuousCharacterData("data/primates_cont_traits.nex")
+</code></pre></div></div>
+
+<p>We have to exclude all other traits that we are not interested in and only include our focal trait.
+This can be done in RevBayes using the member methods <code class="language-plaintext highlighter-rouge">.excludeAll()</code> and <code class="language-plaintext highlighter-rouge">.includeCharacter()</code>.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data.excludeAll()
+data.includeCharacter( trait )
 </code></pre></div></div>
 
 <p>Additionally, we initialize a variable for our vector of
@@ -173,9 +179,9 @@ monitors = VectorMonitors()
 <h4 class="subsubsection" id="rate-parameter">Rate parameter</h4>
 <hr class="subsubsection" />
 
-<p>The constant-rate BM model has just one parameter, $\sigma^2$. We draw the rate parameter from a loguniform prior. This prior is uniform on the log scale, which means that it is represents ignorance about the <em>order of magnitude</em> of the rate.</p>
+<p>The constant-rate BM model has just one parameter, $\sigma^2$. We draw the rate parameter from a loguniform prior. This prior is uniform on the log scale, which means that it is represents ignorance about the <em>order of magnitude</em> of the rate. However, you should be careful in specifying the boundaries for this parameter, as it strongly depends on your specific trait. If you notice that your parameters are stuck at one boundary of the prior, then come back here and modify your prior range.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sigma2 ~ dnLoguniform(1e-3, 1)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sigma2 ~ dnLoguniform(1e-5, 1e-1)
 </code></pre></div></div>
 
 <p>In order to estimate the posterior distribution of $\sigma^2$, we must provide an MCMC proposal mechanism that operates on this node. Because $\sigma^2$ is a rate parameter, and must therefore be positive, we use a scaling move called <code class="language-plaintext highlighter-rouge">mvScale</code>.</p>
@@ -186,7 +192,7 @@ monitors = VectorMonitors()
 <hr class="subsubsection" />
 
 <p>Now that we have specified the parameters of the model, we can draw the character data from the corresponding phylogenetic Brownian-motion model. In this example, we use the REML algorithm to efficiently compute the likelihood <a class="citation" href="#Felsenstein1985a">(Felsenstein 1985)</a>. We provide the square root of the variance parameter, $\sigma$, to <code class="language-plaintext highlighter-rouge">dnPhyloBrownianREML</code>:</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>X ~ dnPhyloBrownianREML(tree, branchRates=sigma2^0.5)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>X ~ dnPhyloBrownianREML(tree, branchRates=sqrt(sigma2) )
 </code></pre></div></div>
 
 <p>Noting that $X$ is the observed data (<a href="#fig_bm_gm"></a>), we clamp the <code class="language-plaintext highlighter-rouge">data</code> to this stochastic node.</p>
@@ -272,11 +278,6 @@ simple_BM_prior     &lt;- readTrace("output/simple_BM_prior.log")[[1]]
 <li><span id="Hoehna2014b">Höhna S., Heath T.A., Boussau B., Landis M.J., Ronquist F., Huelsenbeck J.P. 2014. Probabilistic Graphical Model Representation in Phylogenetics. Systematic Biology. 63:753–771.</span>
 
 <a href="https://doi.org/10.1093/sysbio/syu039">10.1093/sysbio/syu039</a>
-
-</li>
-<li><span id="Landis2017b">Landis M.J., Schraiber J.G. 2017. Pulsed evolution shaped modern vertebrate body sizes. Proceedings of the National Academy of Sciences. 114:13224–13229.</span>
-
-<a href="https://doi.org/10.1073/pnas.1710920114">10.1073/pnas.1710920114</a>
 
 </li></ol>
 

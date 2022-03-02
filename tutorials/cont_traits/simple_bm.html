@@ -56,7 +56,7 @@
 	<h1 class="maintitle">Simple Brownian Rate Estimation</h1>
 	<h3 class="subtitle">Estimating rates of Brownian-motion evolution</h3>
 	<h4 class="authors">Michael R. May</h4>
-  <h5>Last modified on May 17, 2021</h5>
+  <h5>Last modified on March  2, 2022</h5>
 </div>
 
 
@@ -93,6 +93,22 @@
     <h2>Data files and scripts</h2>
     
         
+        <strong>Data Files</strong>
+        <ul id="data_files">
+        
+        
+        
+          <li><a href="/tutorials/divrate/data/primates_tree.nex">primates_tree.nex</a></li>
+        
+          <li><a href="/tutorials/intro/data/primates_tree.nex">primates_tree.nex</a></li>
+        
+          <li><a href="/tutorials/morph_ase/data/primates_tree.nex">primates_tree.nex</a></li>
+        
+          <li><a href="/tutorials/sse/data/primates_tree.nex">primates_tree.nex</a></li>
+        
+        </ul>
+    
+        
         <strong>Other</strong>
         <ul id="other_files">
         
@@ -104,9 +120,9 @@
         
           <li><a href="/tutorials/cont_traits/scripts/plot_BM.R">plot_BM.R</a></li>
         
-          <li><a href="/tutorials/cont_traits/data/traits.nex">traits.nex</a></li>
+          <li><a href="/tutorials/cont_traits/data/primates_cont_traits.nex">primates_cont_traits.nex</a></li>
         
-          <li><a href="/tutorials/cont_traits/data/trees.nex">trees.nex</a></li>
+          <li><a href="/tutorials/cont_traits/data/primates_tree.nex">primates_tree.nex</a></li>
         
         </ul>
     
@@ -117,7 +133,40 @@
 <h2 class="section" id="estimating-constant-rates-of-evolution">Estimating Constant Rates of Evolution</h2>
 <hr class="section" />
 
-<p>This tutorial demonstrates how to specify a Brownian-motion model where the rate of evolution is assumed to be constant among branches of a time-calibrated phylogeny <a class="citation" href="#Felsenstein1985a">(Felsenstein 1985)</a> using the datasets of (log) body-size across vertebrate clades from (missing reference). We provide the probabilistic graphical model representation of each component for this tutorial. After specifying the model, you will estimate the rate of Brownian-motion evolution using Markov chain Monte Carlo (MCMC).</p>
+<p>This tutorial demonstrates how to specify a Brownian-motion model where the rate of evolution is assumed to be constant among branches of a time-calibrated phylogeny <a class="citation" href="#Felsenstein1985a">(Felsenstein 1985)</a>. We provide the probabilistic graphical model representation of each component for this tutorial. After specifying the model, you will estimate the rate of Brownian-motion evolution using Markov chain Monte Carlo (MCMC).</p>
+
+<h3 id="the-data">The data</h3>
+
+<blockquote class="instruction">
+  <p>Create a directory on your computer for this tutorial.
+In this directory, create a subdirectory called <strong>data</strong>, and download the data files that you can find on the left of this page.</p>
+</blockquote>
+
+<p>We have taken the phylogeny from <a class="citation" href="#MagnusonFord2012">Magnuson-Ford and Otto (2012)</a>, who took it from <a class="citation" href="#Vos2006">Vos and Mooers (2006)</a> and then randomly resolved the polytomies using the method of <a class="citation" href="#Kuhn2011">Kuhn et al. (2011)</a> and the trait data from <a class="citation" href="#Redding2010">Redding et al. (2010)</a>. In the <strong>data</strong> folder, you should now have the following files:</p>
+
+<ul>
+  <li><a href="data/primates_tree.nex">primates_tree.nex</a>:
+Dated primate phylogeny including 233 out of 367 species.</li>
+  <li><a href="data/primates_cont_traits.nex">primates_cont_traits.nex</a>:
+A file with the primates continuous data.</li>
+</ul>
+
+<p>The dataset includes:</p>
+<ul>
+  <li><strong>Female Mass</strong>: Body mass in grams of adult female, log-transformed, mean measurement.</li>
+  <li><strong>Tail Length – Body Length Residuals</strong>: The residuals of linear model of tail length (cm) and body length (cm), sqrt-transformed, mean measurement</li>
+  <li><strong>Body Length – Mass Residuals</strong>: The residuals of linear model of body length (cm) and adult female mass (g), sqrt-transformed, mean measurement</li>
+  <li><strong>Maximum Age</strong>: Maximum age reported in years, log-transformed, mean measurement</li>
+  <li><strong>Sexual Dimorphism</strong>: Adult male average weight divided by adult female average weight, log-transformed, mean measurement</li>
+  <li><strong>Geographic Range Size</strong>: Geographical extent (km2) of species’ occurrence, log-transformed</li>
+  <li><strong>Latitudinal Midpoint</strong>: Latitude of species’ geographic range mid-point, sqrt-transformed</li>
+  <li><strong>Distance to Continental Centroid</strong>: Distance of geographic range mid-point to mid-point of the combined area of all species found in that continent</li>
+  <li><strong>Population Density</strong>: Average number of individuals per km2, log-transformed</li>
+  <li><strong>Home Range Size</strong>: Size in m2 of group or individual’s land use, log-transformed</li>
+  <li><strong>Group Size</strong>: Number of individuals in social group, log-transformed</li>
+  <li><strong>Gestation Duration</strong>: Duration in months of gestation periods, mean measurement</li>
+  <li><strong>Litter size</strong>: Size of litter, mean measurement</li>
+</ul>
 
 <h2 class="section" id="brownian-motion-model">Brownian-motion Model</h2>
 <hr class="section" />
@@ -136,23 +185,29 @@ For more information about graphical model representations see <a class="citatio
 \tag{Bayes Theorem}\label{eq:bayes_thereom}
 \end{equation}\]
 
-<p>In this tutorial, we use the 66 vertebrate phylogenies and (log) body-size datasets from <a class="citation" href="#Landis2017b">(Landis and Schraiber 2017)</a>.</p>
+<p>In this tutorial, we use the primates dataset and log-transformed female body mass.</p>
 
 <p>⇨ The full BM-model specification is in the file called <code class="language-plaintext highlighter-rouge">mcmc_BM.Rev</code>.</p>
 
 <h3 class="subsection" id="read-the-data">Read the data</h3>
 <hr class="subsection" />
 
-<p>We begin by deciding which of the 66 vertebrate datasets to use. Here, we assume we are analyzing the first dataset (Cetacea), but you should feel free to choose any of the datasets.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dataset &lt;- 11
+<p>We begin by deciding which of the traits to use. Here, we assume we are analyzing the first trait (female body mass), but you should feel free to choose any of the trait.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>trait &lt;- 1
 </code></pre></div></div>
 
-<p>Now, we read in the (time-calibrated) tree corresponding to our chosen dataset.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>T &lt;- readTrees("data/trees.nex")[dataset]
+<p>Now, we read in the (time-calibrated) tree corresponding.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>T &lt;- readTrees("data/trees.nex")[1]
 </code></pre></div></div>
 
 <p>Next, we read in the character data for the same dataset.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data &lt;- readContinuousCharacterData("data/traits.nex")[dataset]
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data &lt;- readContinuousCharacterData("data/primates_cont_traits.nex")
+</code></pre></div></div>
+
+<p>We have to exclude all other traits that we are not interested in and only include our focal trait.
+This can be done in RevBayes using the member methods <code class="language-plaintext highlighter-rouge">.excludeAll()</code> and <code class="language-plaintext highlighter-rouge">.includeCharacter()</code>.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data.excludeAll()
+data.includeCharacter( trait )
 </code></pre></div></div>
 
 <p>Additionally, we initialize a variable for our vector of
@@ -175,9 +230,9 @@ monitors = VectorMonitors()
 <h4 class="subsubsection" id="rate-parameter">Rate parameter</h4>
 <hr class="subsubsection" />
 
-<p>The constant-rate BM model has just one parameter, $\sigma^2$. We draw the rate parameter from a loguniform prior. This prior is uniform on the log scale, which means that it is represents ignorance about the <em>order of magnitude</em> of the rate.</p>
+<p>The constant-rate BM model has just one parameter, $\sigma^2$. We draw the rate parameter from a loguniform prior. This prior is uniform on the log scale, which means that it is represents ignorance about the <em>order of magnitude</em> of the rate. However, you should be careful in specifying the boundaries for this parameter, as it strongly depends on your specific trait. If you notice that your parameters are stuck at one boundary of the prior, then come back here and modify your prior range.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sigma2 ~ dnLoguniform(1e-3, 1)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sigma2 ~ dnLoguniform(1e-5, 1e-1)
 </code></pre></div></div>
 
 <p>In order to estimate the posterior distribution of $\sigma^2$, we must provide an MCMC proposal mechanism that operates on this node. Because $\sigma^2$ is a rate parameter, and must therefore be positive, we use a scaling move called <code class="language-plaintext highlighter-rouge">mvScale</code>.</p>
@@ -188,7 +243,7 @@ monitors = VectorMonitors()
 <hr class="subsubsection" />
 
 <p>Now that we have specified the parameters of the model, we can draw the character data from the corresponding phylogenetic Brownian-motion model. In this example, we use the REML algorithm to efficiently compute the likelihood <a class="citation" href="#Felsenstein1985a">(Felsenstein 1985)</a>. We provide the square root of the variance parameter, $\sigma$, to <code class="language-plaintext highlighter-rouge">dnPhyloBrownianREML</code>:</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>X ~ dnPhyloBrownianREML(tree, branchRates=sigma2^0.5)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>X ~ dnPhyloBrownianREML(tree, branchRates=sqrt(sigma2) )
 </code></pre></div></div>
 
 <p>Noting that $X$ is the observed data (<a href="#fig_bm_gm"></a>), we clamp the <code class="language-plaintext highlighter-rouge">data</code> to this stochastic node.</p>
@@ -265,6 +320,13 @@ simple_BM_prior     &lt;- readTrace("output/simple_BM_prior.log")[[1]]
   <p>You can also find all these commands in the file called <strong>plot_BM.R</strong> which you can run as a script in R.</p>
 </blockquote>
 
+<blockquote class="instruction">
+  <p>Click below to begin the next exercise!</p>
+</blockquote>
+
+<ul>
+  <li><a href="/tutorials/cont_traits/relaxed_bm">Relaxed Brownian Rate Estimation</a></li>
+</ul>
 
 <ol class="bibliography"><li><span id="Felsenstein1985a">Felsenstein J. 1985. Phylogenies and the comparative method. The American Naturalist.:1–15.</span>
 
@@ -276,9 +338,20 @@ simple_BM_prior     &lt;- readTrace("output/simple_BM_prior.log")[[1]]
 <a href="https://doi.org/10.1093/sysbio/syu039">10.1093/sysbio/syu039</a>
 
 </li>
-<li><span id="Landis2017b">Landis M.J., Schraiber J.G. 2017. Pulsed evolution shaped modern vertebrate body sizes. Proceedings of the National Academy of Sciences. 114:13224–13229.</span>
+<li><span id="Kuhn2011">Kuhn T.S., Mooers A.Ø., Thomas G.H. 2011. A Simple Polytomy Resolver for Dated Phylogenies. Methods in Ecology and Evolution. 2:427–436.</span>
 
-<a href="https://doi.org/10.1073/pnas.1710920114">10.1073/pnas.1710920114</a>
+<a href="https://doi.org/10.1111/j.2041-210X.2011.00103.x">10.1111/j.2041-210X.2011.00103.x</a>
+
+</li>
+<li><span id="MagnusonFord2012">Magnuson-Ford K., Otto S.P. 2012. Linking the Investigations of Character Evolution and Species Diversification. The American Naturalist. 180:225–245.</span>
+
+<a href="https://doi.org/10.1086/666649">10.1086/666649</a>
+
+</li>
+<li><span id="Redding2010">Redding D.W., DeWolff C.V., Mooers A.Ø. 2010. Evolutionary Distinctiveness, Threat Status, and Ecological Oddity in Primates. Conservation Biology. 24:1052–1058.</span>
+
+</li>
+<li><span id="Vos2006">Vos R.A., Mooers A.Ø. 2006. A New Dated Supertree of the Primates. .</span>
 
 </li></ol>
 

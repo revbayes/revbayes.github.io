@@ -56,7 +56,7 @@
 	<h1 class="maintitle">Multivariate Brownian Motion</h1>
 	<h3 class="subtitle">Accounting for correlations among continuous traits</h3>
 	<h4 class="authors">Michael R. May</h4>
-  <h5>Last modified on April 14, 2021</h5>
+  <h5>Last modified on March  2, 2022</h5>
 </div>
 
 
@@ -123,7 +123,7 @@
 <h2 class="section" id="estimating-correlated-evolution">Estimating Correlated Evolution</h2>
 <hr class="section" />
 
-<p>This tutorial demonstrates how to specify a multivariate Brownian motion model for multiple continuous characters. Specifically, we’ll use a parameter separation strategy to separate the relative rates of evolution among characters from the correlations among characters (missing reference). We provide the probabilistic graphical model representation of each component for this tutorial. After specifying the model, you will estimate the correlations among characters using Markov chain Monte Carlo (MCMC). We will then measure the strength of correlation among characters to determine if there is evidence that the characters are correlated.</p>
+<p>This tutorial demonstrates how to specify a multivariate Brownian motion model for multiple continuous characters. Specifically, we’ll use a parameter separation strategy to separate the relative rates of evolution among characters from the correlations among characters <a class="citation" href="#Caetano2019">(Caetano and Harmon 2019)</a>. We provide the probabilistic graphical model representation of each component for this tutorial. After specifying the model, you will estimate the correlations among characters using Markov chain Monte Carlo (MCMC). We will then measure the strength of correlation among characters to determine if there is evidence that the characters are correlated.</p>
 
 <h2 class="section" id="a-multivariate-model-of-brownian-motion-evolution">A Multivariate Model of Brownian-motion Evolution</h2>
 <hr class="section" />
@@ -164,7 +164,7 @@
 
 <p>The ‘‘average’’ rate of change, $\sigma^2$, is a single parameter that governs the rate of change of the average character in the dataset. The parameter $\boldsymbol{\zeta^2} = [ \zeta_1^2, \zeta_2^2, \ldots, \zeta_c^2 ]$ is a vector of rates, one per character, that determine the <em>relative</em> rate of change of each character. The rate of change for character $i$ is therefore $\sigma^2 \zeta_i^2$. The relative rates are constrained to have a mean of 1, so that $\sigma^2$ can be correctly interpreted as the rate of change for the average character. The correlation matrix, $R$, is as described above. For given values of $\sigma^2$, $\boldsymbol{\zeta^2}$, and $R$, we can simply construct the variance-covariance matrix $\Sigma$ as shown in the equation above.</p>
 
-<p>The separate strategy requires that we specify a prior distribution on each of the three components of the variance-covariance matrix. The average rate, $\sigma^2$, does not have any special constraints and can be chosen from any arbitrary (positive) prior. The relative rates are required to have a mean of 1, but this is easy to achieve. However, the correlation matrix, $R$, must be positive-semidefinite. We will draw the correlation matrix from a special prior distribution, called the LKJ distribution after its authors (missing reference), that is designed especially for correlation matrices. This distribution is controlled by a single <em>concentration</em> parameter, $\eta &gt; 0$, that controls the amount of correlation in the matrix; as $\eta$ increases, the prior correlation between each pair of characters decreases toward 0. Importantly, the prior expected amount of correlation is always 0, and the distribution of correlations is symmetric around 0. When $\eta = 1$, the LKJ distribution is ‘‘uniform’’ over all positive-semidefinite correlation matrices. The probabilistic graphical model for this separation strategy is represented in represented in figure (<a href="#fig_mvbm_gm"></a>).</p>
+<p>The separate strategy requires that we specify a prior distribution on each of the three components of the variance-covariance matrix. The average rate, $\sigma^2$, does not have any special constraints and can be chosen from any arbitrary (positive) prior. The relative rates are required to have a mean of 1, but this is easy to achieve. However, the correlation matrix, $R$, must be positive-semidefinite. We will draw the correlation matrix from a special prior distribution, called the LKJ distribution after its authors <a class="citation" href="#Lewandowski2009">(Lewandowski et al. 2009)</a>, that is designed especially for correlation matrices. This distribution is controlled by a single <em>concentration</em> parameter, $\eta &gt; 0$, that controls the amount of correlation in the matrix; as $\eta$ increases, the prior correlation between each pair of characters decreases toward 0. Importantly, the prior expected amount of correlation is always 0, and the distribution of correlations is symmetric around 0. When $\eta = 1$, the LKJ distribution is ‘‘uniform’’ over all positive-semidefinite correlation matrices. The probabilistic graphical model for this separation strategy is represented in represented in figure (<a href="#fig_mvbm_gm"></a>).</p>
 
 <figure id="fig_mvbm_gm"><p><img src="figures/mvbm_gm.png" width="50%" height="50%" /></p>
 <figcaption>The graphical model representation of the multvariate Brownian-motion (mvBM) process. For more information about graphical model representations see <a class="citation" href="#Hoehna2014b">Höhna et al. (2014)</a>.</figcaption>
@@ -482,9 +482,15 @@ We show the estimated average rate of evolution for each branch under the mvBM m
 <ol class="bibliography"><li><span id="Adams2017">Adams D.C., Korneisel D., Young M., Nistri A. 2017. Natural history constrains the macroevolution of foot morphology in European plethodontid salamanders. The American Naturalist. 190:292–297.</span>
 
 </li>
+<li><span id="Caetano2019">Caetano D.S., Harmon L.J. 2019. Estimating correlated rates of trait evolution with uncertainty. Systematic Biology. 68:412–429.</span>
+
+</li>
 <li><span id="Hoehna2014b">Höhna S., Heath T.A., Boussau B., Landis M.J., Ronquist F., Huelsenbeck J.P. 2014. Probabilistic Graphical Model Representation in Phylogenetics. Systematic Biology. 63:753–771.</span>
 
 <a href="https://doi.org/10.1093/sysbio/syu039">10.1093/sysbio/syu039</a>
+
+</li>
+<li><span id="Lewandowski2009">Lewandowski D., Kurowicka D., Joe H. 2009. Generating random correlation matrices based on vines and extended onion method. Journal of multivariate analysis. 100:1989–2001.</span>
 
 </li></ol>
 
