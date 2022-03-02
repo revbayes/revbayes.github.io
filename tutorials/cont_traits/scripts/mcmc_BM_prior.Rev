@@ -4,7 +4,7 @@
 #                   constant-rate Brownian-motion model
 #
 #
-# authors: Michael R. May
+# authors: Michael R. May and Sebastian Höhna
 #
 ################################################################################
 
@@ -13,13 +13,16 @@
 #######################
 
 ### Select the dataset to analyze
-dataset <- 11
+# Datasets: Female Mass, Tail Length – Body Length Residuals, Body Length – Mass Residuals, Maximum Age, Sexual Dimorphism, Geographic Range Size, Latitudinal Midpoint, Distance to Continental Centroid, Population Density, Home Range Size, Group Size, Gestation Duration, Litter size
+dataset <- 1
 
 ### Read in the trees
-T <- readTrees("data/trees.nex")[dataset]
+T <- readTrees("data/primates_tree.nex")[1]
 
 ### Read in the character data
-data <- readContinuousCharacterData("data/traits.nex")[dataset]
+data <- readContinuousCharacterData("data/primates_cont_traits.nex")
+data.excludeAll()
+data.includeCharacter( dataset )
 
 # Create some vector for the moves and monitors of this analysis
 moves    = VectorMoves()
@@ -35,14 +38,15 @@ tree <- T
 # Specify the rate model #
 ##########################
 
-sigma2 ~ dnLoguniform(1e-5, 1e-2)
+sigma2 ~ dnLoguniform(1e3, 1e7)
 moves.append( mvScale(sigma2, weight=1.0) )
+
 
 ##########################
 # Specify the BM process #
 ##########################
 
-X ~ dnPhyloBrownianREML(tree, branchRates=sigma2^0.5)
+X ~ dnPhyloBrownianREML(tree, branchRates=sqrt(sigma2) )
 X.clamp(data)
 
 
@@ -70,7 +74,7 @@ mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
 
 
 ### run the MCMC ###
-mymcmc.run(generations=100000, underPrior=true)
+mymcmc.run(generations=50000, underPrior=TRUE)
 
 ## quit ##
 q()

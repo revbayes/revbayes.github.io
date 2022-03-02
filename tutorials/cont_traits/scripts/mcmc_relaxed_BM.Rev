@@ -1,10 +1,10 @@
 ################################################################################
 #
 # RevBayes Example: Bayesian inference of rates of evolution under a
-#                   constant-rate Brownian-motion model
+#                   relaxed-rate Brownian-motion model
 #
 #
-# authors: Michael R. May
+# authors: Michael R. May and Sebastian Höhna
 #
 ################################################################################
 
@@ -12,16 +12,18 @@
 # Reading in the Data #
 #######################
 
-### Select the dataset to analyze
-dataset <- 11
+### Select the trait to analyze
+trait <- 1
 
 ### Read in the trees
-T <- readTrees("data/trees.nex")[dataset]
+T <- readTrees("data/primates_tree.nex")[1]
 ntips     <- T.ntips()
 nbranches <- 2 * ntips - 2
 
 ### Read in the character data
-data <- readContinuousCharacterData("data/traits.nex")[dataset]
+data <- readContinuousCharacterData("data/primates_cont_traits.nex")
+data.excludeAll()
+data.includeCharacter( trait )
 
 # Create some vector for the moves and monitors of this analysis
 moves    = VectorMoves()
@@ -38,7 +40,7 @@ tree <- T
 ##########################
 
 # specify the rate at the root
-sigma2_root ~ dnLoguniform(1e-3, 1)
+sigma2_root ~ dnLoguniform(1e3, 1e7)
 moves.append( mvScale(sigma2_root, weight=1.0) )
 
 
@@ -48,7 +50,7 @@ rate_shift_probability    <- expected_number_of_shifts / nbranches
 
 # specify the prior on the magnitude of rate shifts
 sd = 0.578
-rate_shift_distribution = dnLognormal(-sd^2/2, sd)
+rate_shift_distribution = dnLognormal(0, sd)
 
 # specify the branch-specific rates
 for(i in nbranches:1) {
@@ -95,7 +97,7 @@ mymodel = model(sigma2_root)
 
 ### set up the monitors that will output parameter values to file and screen
 monitors.append( mnModel(filename="output/relaxed_BM.log", printgen=10) )
-monitors.append( mnScreen(printgen=1000, sigma2_root, num_rate_changes) )
+monitors.append( mnScreen(printgen=100, sigma2_root, num_rate_changes) )
 monitors.append( mnExtNewick(filename="output/relaxed_BM.trees", isNodeParameter=TRUE, printgen=10, separator=TAB, tree=tree, branch_rates) )
 
 
@@ -110,7 +112,7 @@ mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
 
 ### run the MCMC ###
 mymcmc.burnin(generations=1000, tuningInterval=100)
-mymcmc.run(generations=50000)
+mymcmc.run(generations=10000, tuningInterval=100)
 
 ## create the annotated tree
 treetrace = readTreeTrace("output/relaxed_BM.trees")
