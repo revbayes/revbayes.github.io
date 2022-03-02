@@ -27,7 +27,7 @@ trait <- 1
 
 Now, we read in the (time-calibrated) tree corresponding to our chosen dataset.
 ```
-T <- readTrees("data/trees.nex")[dataset]
+T <- readTrees("data/primates_tree.nex")[1]
 ```
 We also want to keep track of the number of branches for our relaxed clock model.
 ```
@@ -69,7 +69,7 @@ tree <- T
 The relaxed BM model places a prior on the rate at the root of the tree, $\sigma^2$. We draw this rate parameter from a loguniform prior. This prior is uniform on the log scale, which means that it is represents ignorance about the _order of magnitude_ of the rate at the root of the tree. However, you should be careful in specifying the boundaries for this parameter, as it strongly depends on your specific trait. If you notice that your parameters are stuck at one boundary of the prior, then come back here and modify your prior range.
 
 ```
-sigma2_root ~ dnLoguniform(1e3, 1e7)
+sigma2_root ~ dnLoguniform(1e-5, 1e-1)
 ```
 Because $\sigma^2_R$ is a rate parameter, and must therefore be positive, we use a scaling move called `mvScale`.
 ```

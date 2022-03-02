@@ -69,7 +69,7 @@ tree <- T
 The constant-rate BM model has just one parameter, $\sigma^2$. We draw the rate parameter from a loguniform prior. This prior is uniform on the log scale, which means that it is represents ignorance about the _order of magnitude_ of the rate. However, you should be careful in specifying the boundaries for this parameter, as it strongly depends on your specific trait. If you notice that your parameters are stuck at one boundary of the prior, then come back here and modify your prior range.
 
 ```
-sigma2 ~ dnLoguniform(1e3, 1e7)
+sigma2 ~ dnLoguniform(1e-5, 1e-1)
 ```
 
 In order to estimate the posterior distribution of $\sigma^2$, we must provide an MCMC proposal mechanism that operates on this node. Because $\sigma^2$ is a rate parameter, and must therefore be positive, we use a scaling move called `mvScale`.
