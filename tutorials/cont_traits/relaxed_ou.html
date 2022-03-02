@@ -117,14 +117,14 @@
 <h2 class="section" id="estimating-branch-specific-evolutionary-optima">Estimating Branch-Specific Evolutionary Optima</h2>
 <hr class="section" />
 
-<p>This tutorial demonstrates how to specify an Ornstein-Uhlenbeck model where the optimal phenotype is allowed to vary over branches of a time-calibrated phylogeny (missing reference) using the datasets of (log) body-size across vertebrate clades from (missing reference). We provide the probabilistic graphical model representation of each component for this tutorial. After specifying the model, you will estimate the parameters of branch-specific Ornstein-Uhlenbeck evolution using reversible-jump Markov chain Monte Carlo (rjMCMC).</p>
+<p>This tutorial demonstrates how to specify an Ornstein-Uhlenbeck model where the optimal phenotype is allowed to vary over branches of a time-calibrated phylogeny <a class="citation" href="#Uyeda2014">(Uyeda and Harmon 2014)</a> using the datasets of (log) body-size across vertebrate clades from (missing reference). We provide the probabilistic graphical model representation of each component for this tutorial. After specifying the model, you will estimate the parameters of branch-specific Ornstein-Uhlenbeck evolution using reversible-jump Markov chain Monte Carlo (rjMCMC).</p>
 
 <h2 class="section" id="relaxing-the-ou-model">Relaxing the OU Model</h2>
 <hr class="section" />
 
 <p>Under a simple Ornstein-Uhlenbeck (OU) model, the optimal of a continuous character is determined by a single rate parameter, $\theta$. Many evolutionary questions are related to how the optimal phenotype changes among lineages. In a Bayesian setting, we can specify a ‘‘relaxed’’ OU prior model that allows the optimal phenotype to vary over the phylogeny.</p>
 
-<p>Here, we will use the ‘‘random local clock’’ model, similar to the one described by (missing reference) in the software <code class="language-plaintext highlighter-rouge">bayOU</code>. In this model, we assume that each branch in the phylogeny either does or does not have a optimum shift. When there is no shift on a branch, the optimum on the branch is inherited directly from its ancestral branch; when there <em>is</em> a shift, the ancestral optimum is shifted by an amount that is drawn from a specified prior distribution. We specify a prior probability, $p$, that a given branch experiences a shift. For a tree with $n$ branches, the expected number of shifts is $E(k) = n \times p$. To control the number of shifts, we specify a prior on the <em>expected number of shifts</em>, $E(k)$, and then calculate the prior probability for a shift on a particular branch, $p = E(k) / n$. The graphical model shows the relationship between the branch-specific optima and priors (fig_ou_relaxed_gm).</p>
+<p>Here, we will use the ‘‘random local clock’’ model, similar to the one described by <a class="citation" href="#Uyeda2014">Uyeda and Harmon (2014)</a> in the software <code class="language-plaintext highlighter-rouge">bayOU</code>. In this model, we assume that each branch in the phylogeny either does or does not have a optimum shift. When there is no shift on a branch, the optimum on the branch is inherited directly from its ancestral branch; when there <em>is</em> a shift, the ancestral optimum is shifted by an amount that is drawn from a specified prior distribution. We specify a prior probability, $p$, that a given branch experiences a shift. For a tree with $n$ branches, the expected number of shifts is $E(k) = n \times p$. To control the number of shifts, we specify a prior on the <em>expected number of shifts</em>, $E(k)$, and then calculate the prior probability for a shift on a particular branch, $p = E(k) / n$. The graphical model shows the relationship between the branch-specific optima and priors (fig_ou_relaxed_gm).</p>
 
 <figure id="fig_ou_relaxed_gm"><p><img src="figures/relaxed_ou_gm.png" width="50%" height="50%" /></p>
 <figcaption>The graphical model representation of the relaxed Ornstein-Uhlenbeck (OU) process under the random local clock. For more information about graphical model representations see <a class="citation" href="#Hoehna2014b">Höhna et al. (2014)</a>.</figcaption>
@@ -323,6 +323,9 @@ Here we show the results of our example analysis.</figcaption>
 <li><span id="Landis2017b">Landis M.J., Schraiber J.G. 2017. Pulsed evolution shaped modern vertebrate body sizes. Proceedings of the National Academy of Sciences. 114:13224–13229.</span>
 
 <a href="https://doi.org/10.1073/pnas.1710920114">10.1073/pnas.1710920114</a>
+
+</li>
+<li><span id="Uyeda2014">Uyeda J.C., Harmon L.J. 2014. A novel Bayesian method for inferring and interpreting the dynamics of adaptive landscapes from phylogenetic comparative data. Systematic Biology. 63:902–918.</span>
 
 </li></ol>
 

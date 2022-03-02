@@ -124,7 +124,7 @@
 
 <p>Under a simple Brownian-motion (BM) model, the evolution of a continuous character is entirely determined by a single rate parameter, $\sigma^2$. We can allow rates of evolution to vary among branches of the phylogeny by letting each branch have its own rate parameter, $\sigma^2_i$. However, there will usually be insufficient information in a single continuous character to estimate each branch-specific rate as a free parameter. Therefore, in a Bayesian setting, we specify a ‘‘relaxed morphological clock’’ prior model that strikes a balance between biological realism (rates vary) and statistical reliability (there is only so much information to go around).</p>
 
-<p>Here, we will use the ‘‘relaxed local clock’’ model described by (missing reference), known as <code class="language-plaintext highlighter-rouge">AUTEUR</code>. In this model, we assume that each branch in the phylogeny either does or does not have a rate shift. When there is no rate shift on a branch, the rate on the branch is inherited directly from its ancestral branch; when there <em>is</em> a rate shift, the ancestral rate is multiplied by a rate shift parameter that is drawn from a prior distribution. We specify a prior probability, $p$, that a given branch experiences a rate shift. For a tree with $n$ branches, the expected number of rate shifts is $E(k) = n \times p$. To control the number of rate shifts, we specify a prior on the <em>expected number of rate shifts</em>, $E(k)$, and then calculate the prior probability for a rate shift on a particular branch, $p = E(k) / n$. The graphical model shows the relationship between the branch-specific rates and priors (fig_bm_relaxed_gm).</p>
+<p>Here, we will use the ‘‘relaxed local clock’’ model described by <a class="citation" href="#Eastman2011">Eastman et al. (2011)</a>, known as <code class="language-plaintext highlighter-rouge">AUTEUR</code>. In this model, we assume that each branch in the phylogeny either does or does not have a rate shift. When there is no rate shift on a branch, the rate on the branch is inherited directly from its ancestral branch; when there <em>is</em> a rate shift, the ancestral rate is multiplied by a rate shift parameter that is drawn from a prior distribution. We specify a prior probability, $p$, that a given branch experiences a rate shift. For a tree with $n$ branches, the expected number of rate shifts is $E(k) = n \times p$. To control the number of rate shifts, we specify a prior on the <em>expected number of rate shifts</em>, $E(k)$, and then calculate the prior probability for a rate shift on a particular branch, $p = E(k) / n$. The graphical model shows the relationship between the branch-specific rates and priors (fig_bm_relaxed_gm).</p>
 
 <figure id="fig_bm_relaxed_gm"><p><img src="figures/bm_relaxed_gm.png" width="50%" height="50%" /></p>
 <figcaption>The graphical model representation of the relaxed Brownian-motion (BM) process under the random local clock. For more information about graphical model representations see <a class="citation" href="#Hoehna2014b">Höhna et al. (2014)</a>.</figcaption>
@@ -308,7 +308,10 @@ Here we show the results of our example analysis.</figcaption>
 </ul>
 
 
-<ol class="bibliography"><li><span id="Hoehna2014b">Höhna S., Heath T.A., Boussau B., Landis M.J., Ronquist F., Huelsenbeck J.P. 2014. Probabilistic Graphical Model Representation in Phylogenetics. Systematic Biology. 63:753–771.</span>
+<ol class="bibliography"><li><span id="Eastman2011">Eastman J.M., Alfaro M.E., Joyce P., Hipp A.L., Harmon L.J. 2011. A novel comparative method for identifying shifts in the rate of character evolution on trees. Evolution. 65:3578–3589.</span>
+
+</li>
+<li><span id="Hoehna2014b">Höhna S., Heath T.A., Boussau B., Landis M.J., Ronquist F., Huelsenbeck J.P. 2014. Probabilistic Graphical Model Representation in Phylogenetics. Systematic Biology. 63:753–771.</span>
 
 <a href="https://doi.org/10.1093/sysbio/syu039">10.1093/sysbio/syu039</a>
 

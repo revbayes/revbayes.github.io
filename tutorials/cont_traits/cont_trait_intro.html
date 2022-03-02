@@ -89,7 +89,7 @@
 <h2 class="section" id="continuous_char_overview">Overview: Models of Continuous-Character Evolution</h2>
 <hr class="section" />
 
-<p>In these tutorials we will focus on a few types of models that are commonly used to study how continuous characters evolve over a phylogeny. All of the models we describe are <em>Gaussian</em> models, meaning that character evolution follows a normal distribution, as in the Brownian motion and Ornstein-Uhlenbeck models. Models that include stochastic jumps (missing reference) are not covered here.</p>
+<p>In these tutorials we will focus on a few types of models that are commonly used to study how continuous characters evolve over a phylogeny. All of the models we describe are <em>Gaussian</em> models, meaning that character evolution follows a normal distribution, as in the Brownian motion and Ornstein-Uhlenbeck models. Models that include stochastic jumps <a class="citation" href="#Landis2017b">(Landis and Schraiber 2017)</a> are not covered here.</p>
 
 <p>Models of continuous-character evolution are used to understand many interesting evolutionary phenomena, including: the <em>rate</em> of character evolution, the <em>mode</em> of character evolution, how these vary over time or among lineages, and understanding the biotic and abiotic factors that contribute to this variation.</p>
 
@@ -112,7 +112,7 @@
 
 <p><em>Do rates of evolution vary over time?</em></p>
 
-<p>Many hypotheses can naturally be addressed by asking whether rates of evolution vary over time, for example: are rates of evolution increased early in an adaptive radiation (missing reference), do rates of evolution increase over time (missing reference), or do rates vary in less predictable ways?</p>
+<p>Many hypotheses can naturally be addressed by asking whether rates of evolution vary over time, for example: are rates of evolution increased early in an adaptive radiation <a class="citation" href="#Harmon2010">(Harmon et al. 2010)</a>, do rates of evolution increase over time <a class="citation" href="#Blomberg2003">(Blomberg et al. 2003)</a>, or do rates vary in less predictable ways?</p>
 
 <p><strong>Work in Progress</strong></p>
 
@@ -123,14 +123,14 @@
 
 <p><em>Is there evidence for variation in the rate of evolution across the branches of my phylogeny?</em></p>
 
-<p>Identifying the number, location, and magnitude of shifts in rates of continuous character evolution can illuminate many evolutionary questions. Relaxing the assumption that rates are constant requires specifying a model that describes how rates vary (a ‘‘relaxed morphological clock’’). Many such models have been proposed (missing reference); we provide an example of relaxing the morphological clock using a ‘‘random local clock’’ model, as described in (missing reference), in the <a href="/tutorials/cont_traits/relaxed_bm.html">Relaxed Brownian Rate Estimation</a> tutorial.</p>
+<p>Identifying the number, location, and magnitude of shifts in rates of continuous character evolution can illuminate many evolutionary questions. Relaxing the assumption that rates are constant requires specifying a model that describes how rates vary (a ‘‘relaxed morphological clock’’). Many such models have been proposed <a class="citation" href="#Eastman2011">(Eastman et al. 2011; Venditti et al. 2011)</a>; we provide an example of relaxing the morphological clock using a ‘‘random local clock’’ model, as described in <a class="citation" href="#Eastman2011">Eastman et al. (2011)</a>, in the <a href="/tutorials/cont_traits/relaxed_bm.html">Relaxed Brownian Rate Estimation</a> tutorial.</p>
 
 <h4 class="subsubsection" id="4-detecting-state-dependent-rates-of-evolution">(4) Detecting state-dependent rates of evolution</h4>
 <hr class="subsubsection" />
 
 <p><em>Are rates of evolution correlated with a discrete variable on my phylogeny?</em></p>
 
-<p>If rates of evolution are found to vary across branches, a natural question to ask is if some focal variable is associated with the rate variation. For example, we can test whether changes in rates are associated with habitat type in reef and non-reef dwelling fishes (missing reference).</p>
+<p>If rates of evolution are found to vary across branches, a natural question to ask is if some focal variable is associated with the rate variation. For example, we can test whether changes in rates are associated with habitat type in reef and non-reef dwelling fishes <a class="citation" href="#Price2013">(Price et al. 2013; May and Moore 2020)</a>.</p>
 
 <p>We provide an example of fitting the state-dependent model to discrete- and continuous-character data in the <a href="/tutorials/cont_traits/state_dependent_bm.html">State-Dependent Brownian Rate Estimation</a> tutorial.</p>
 
@@ -139,14 +139,14 @@
 
 <p><em>Are characters X and Y evolutionarily correlated?</em></p>
 
-<p>Often we would like to know whether two (or more) continuous characters are correlated, and if they are, how strongly <a class="citation" href="#Felsenstein1985a">(Felsenstein 1985)</a>. Additionally, we may view correlations among continuous characters as <em>nuisance parameters</em>: perhaps we are interested in estimating how rates of evolution vary among lineages or over time from multiple characters, and are concerned that failing to model correlations among characters will mislead us (missing reference).</p>
+<p>Often we would like to know whether two (or more) continuous characters are correlated, and if they are, how strongly <a class="citation" href="#Felsenstein1985a">(Felsenstein 1985)</a>. Additionally, we may view correlations among continuous characters as <em>nuisance parameters</em>: perhaps we are interested in estimating how rates of evolution vary among lineages or over time from multiple characters, and are concerned that failing to model correlations among characters will mislead us <a class="citation" href="#Adams2017">(Adams et al. 2017)</a>.</p>
 
 <p>In the <a href="/tutorials/cont_traits/multivariate_bm.html">Multivariate Brownian Motion</a> tutorial, we will provide examples for working with <em>multivariate</em> Brownian motion models to test hypotheses about correlations, and to estimate the strength of correlations among many continuous characters.</p>
 
 <h3 class="subsection" id="ornstein-uhlenbeck-models">Ornstein-Uhlenbeck models</h3>
 <hr class="subsection" />
 
-<p>Another major class of Gaussian models are the Ornstein-Uhlenbeck models, sometimes referred to as the Hansen models (missing reference). These models can describe the evolution of a continuous character under stabilizing selection. These tutorials focus on estimating the optimum parameter, $\theta$, as well as how it varies among lineages.</p>
+<p>Another major class of Gaussian models are the Ornstein-Uhlenbeck models, sometimes referred to as the Hansen models <a class="citation" href="#Hansen1997">(Hansen 1997; Butler and King 2004)</a>. These models can describe the evolution of a continuous character under stabilizing selection. These tutorials focus on estimating the optimum parameter, $\theta$, as well as how it varies among lineages.</p>
 
 <h4 class="subsubsection" id="1-estimating-evolutionary-optima">(1) Estimating evolutionary optima</h4>
 <hr class="subsubsection" />
@@ -164,12 +164,47 @@
 
 <p>Optimal traits may change as species evolve over the adaptive landscape. Relaxing the assumption that the optimal value is fixed across the tree requires specifying a model that describes how theta varies.</p>
 
-<p>In the <a href="/tutorials/cont_traits/relaxed_ou.html">Relaxed Ornstein-Uhlenbeck Models</a> tutorial, we provide an example of relaxing the assumption that optima are homogeneously across branches using a ‘‘random local clock’’ model, which is spiritually similar to the one described in (missing reference).</p>
+<p>In the <a href="/tutorials/cont_traits/relaxed_ou.html">Relaxed Ornstein-Uhlenbeck Models</a> tutorial, we provide an example of relaxing the assumption that optima are homogeneously across branches using a ‘‘random local clock’’ model, which is spiritually similar to the one described in <a class="citation" href="#Uyeda2014">Uyeda and Harmon (2014)</a>.</p>
 
 
-<ol class="bibliography"><li><span id="Felsenstein1985a">Felsenstein J. 1985. Phylogenies and the comparative method. The American Naturalist.:1–15.</span>
+<ol class="bibliography"><li><span id="Adams2017">Adams D.C., Korneisel D., Young M., Nistri A. 2017. Natural history constrains the macroevolution of foot morphology in European plethodontid salamanders. The American Naturalist. 190:292–297.</span>
+
+</li>
+<li><span id="Blomberg2003">Blomberg S.P., Garland Jr T., Ives A.R. 2003. Testing for phylogenetic signal in comparative data: behavioral traits are more labile. Evolution. 57:717–745.</span>
+
+</li>
+<li><span id="Butler2004">Butler M.A., King A.A. 2004. Phylogenetic comparative analysis: a modeling approach for adaptive evolution. The American Naturalist. 164:683–695.</span>
+
+</li>
+<li><span id="Eastman2011">Eastman J.M., Alfaro M.E., Joyce P., Hipp A.L., Harmon L.J. 2011. A novel comparative method for identifying shifts in the rate of character evolution on trees. Evolution. 65:3578–3589.</span>
+
+</li>
+<li><span id="Felsenstein1985a">Felsenstein J. 1985. Phylogenies and the comparative method. The American Naturalist.:1–15.</span>
 
 <a href="https://doi.org/10.1086/284325">10.1086/284325</a>
+
+</li>
+<li><span id="Hansen1997">Hansen T.F. 1997. Stabilizing selection and the comparative analysis of adaptation. Evolution. 51:1341–1351.</span>
+
+</li>
+<li><span id="Harmon2010">Harmon L.J., Losos J.B., Jonathan Davies T., Gillespie R.G., Gittleman J.L., Jennings B.W., Kozak K.H., McPeek M.A., Moreno-Roark F., Near T.J., Purvis A., Ricklefs R.E., Schluter D., Schulte II J.A., Seehausen O., Sidlauskas B.L., Torres-Carvajal O., Weir J.T., Mooers A.Ø. 2010. Early bursts of body size and shape evolution are rare in comparative data. Evolution. 64:2385–2396.</span>
+
+</li>
+<li><span id="Landis2017b">Landis M.J., Schraiber J.G. 2017. Pulsed evolution shaped modern vertebrate body sizes. Proceedings of the National Academy of Sciences. 114:13224–13229.</span>
+
+<a href="https://doi.org/10.1073/pnas.1710920114">10.1073/pnas.1710920114</a>
+
+</li>
+<li><span id="May2020">May M.R., Moore B.R. 2020. A bayesian approach for inferring the impact of a discrete character on rates of continuous-character evolution in the presence of background-rate variation. Systematic Biology. 69:530–544.</span>
+
+</li>
+<li><span id="Price2013">Price S.A., Tavera J.J., Near T.J., Wainwright P.C. 2013. Elevated rates of morphological and functional diversification in reef-dwelling haemulid fishes. Evolution. 67:417–428.</span>
+
+</li>
+<li><span id="Uyeda2014">Uyeda J.C., Harmon L.J. 2014. A novel Bayesian method for inferring and interpreting the dynamics of adaptive landscapes from phylogenetic comparative data. Systematic Biology. 63:902–918.</span>
+
+</li>
+<li><span id="Venditti2011">Venditti C., Meade A., Pagel M. 2011. Multiple routes to mammalian diversity. Nature. 479:393–396.</span>
 
 </li></ol>
 
