@@ -56,7 +56,7 @@
 	<h1 class="maintitle">State-Dependent Brownian Rate Estimation</h1>
 	<h3 class="subtitle">Estimating state-dependent rates of Brownian-motion evolution</h3>
 	<h4 class="authors">Michael R. May</h4>
-  <h5>Last modified on March  2, 2022</h5>
+  <h5>Last modified on March  3, 2022</h5>
 </div>
 
 
@@ -129,7 +129,7 @@ specifying the model, you will estimate the state-dependent rates of Brownian-mo
 evolution using Markov chain Monte Carlo (MCMC).</p>
 
 <p>You should read the <a href="/tutorials/cont_traits/simple_bm.html">Simple Brownian Rate Estimation</a> tutorial, which provides a
-general introduction to simple Brownian-motion models, and <a href="/tutorials/morph_tree/">Discrete morphology - Tree Inference</a>,
+general introduction to simple Brownian-motion models, and <a href="/tutorials/morph_ase/">Introduction to Discrete Morphology Evolution</a>,
 which describes models of discrete-character evolution, before using this tutorial.</p>
 
 <h2 class="section" id="a-state-dependent-model-of-brownian-motion-evolution">A State-dependent Model of Brownian-motion Evolution</h2>
@@ -137,19 +137,15 @@ which describes models of discrete-character evolution, before using this tutori
 
 <p>Under a simple Brownian-motion (BM) model, the evolution of a continuous character is entirely determined by a single rate parameter, $\sigma^2$. However, we may be interested in testing hypotheses about whether the state of a discrete character (<em>e.g.</em>, habitat) are associated with differential rates of continuous-character evolution.</p>
 
-<p>In this tutorial, we will specify the state-dependent model described in (missing reference). Under this model, the rate of continuous-character evolution depends on the state of a discrete character that is also evolving on the phylogeny. We must therefore specify a model that includes both the continuouss characters and the discrete character. For a discrete character with $k$ states, we include $k$ BM rate parameters, $\boldsymbol{\zeta^2} = [\zeta^2_0, \ldots, \zeta^2_k]$ that describe the relative rate of evolution of the continuous character while the discrete character is in each state (these parameters have a mean of 1). We include a parameter that controls the ‘‘average’’ rate of continuous-character evolution, $\beta^2$; because the state-dependent relative rates have a mean of 1, $\beta^2$ controls the overall rate of the Brownian motion process. Finally, we include a continuous-time Markov chain model to describe the evolution of the discrete character, which is defined by the instantaneous-rate matrix $Q$.</p>
+<p>In this tutorial, we will specify the state-dependent model described in <a class="citation" href="#May2020">May and Moore (2020)</a>. Under this model, the rate of continuous-character evolution depends on the state of a discrete character that is also evolving on the phylogeny. We must therefore specify a model that includes both the continuous characters and the discrete character. For a discrete character with $k$ states, we include $k$ BM rate parameters, $\boldsymbol{\zeta^2} = [\zeta^2_0, \ldots, \zeta^2_k]$ that describe the relative rate of evolution of the continuous character while the discrete character is in each state (these parameters have a mean of 1). We include a parameter that controls the ‘‘average’’ rate of continuous-character evolution, $\beta^2$; because the state-dependent relative rates have a mean of 1, $\beta^2$ controls the overall rate of the Brownian motion process. Finally, we include a continuous-time Markov chain model to describe the evolution of the discrete character, which is defined by the instantaneous-rate matrix $Q$.</p>
 
 <p>Under this model, the changes in the continuous character while the discrete character is in state $j$, $\Delta_j$, are normally distributed with mean 0 and variance $t_j \beta^2 \zeta^2_j$, where $t_j$ is the amount of time spent in state $j$. The total change over the entire branch is a sum of normally distributed random variables:</p>
 
-\[\begin{equation}
-    \Delta \sim \text{Normal}(0, \beta^2 \sum_{j=0}^k t_j \zeta^2_j )
-\end{equation}\]
+\[\Delta \sim \text{Normal}(0, \beta^2 \sum_{j=0}^k t_j \zeta^2_j )\]
 
 <p>Consequently, the rate of evolution on branch $i$ is the weighted average of the state-dependent rates, weighted by the amount of time spent in each state:</p>
 
-\[\begin{equation}
-    \sigma^2_i = \beta^2 \times \sum_{j=0}^k \tau_i(j) \times \zeta^2_j,
-\end{equation}\]
+\[\sigma^2_i = \beta^2 \times \sum_{j=0}^k \tau_i(j) \times \zeta^2_j,\]
 
 <p>where $\tau_i(j)$ is the <em>relative</em> amount of time branch $i$ spends in discrete-state $j$ (the relative dwelling time). Given a particular history of the discrete character, which describes the amount of time spent in each state along each branch, we can therefore compute the branch-specific rates of continuous-character evolution over the entire tree. We use data augmentation to map the history of discrete characters across the tree, and use Markov chain Monte Carlo to integrate over all possible histories of the discrete character in proportion to their probability. The probabilistic graphical model for this model is represented in (<a href="#fig_bm_state_dependent_gm"></a>).</p>
 
@@ -569,6 +565,9 @@ Left) We show the state-dependent rates of continuous-character evolution, indic
 <li><span id="Lewis2001">Lewis P.O. 2001. A Likelihood Approach to Estimating Phylogeny from Discrete Morphological Character Data. Systematic Biology. 50:913–925.</span>
 
 <a href="https://doi.org/10.1080/106351501753462876">10.1080/106351501753462876</a>
+
+</li>
+<li><span id="May2020">May M.R., Moore B.R. 2020. A bayesian approach for inferring the impact of a discrete character on rates of continuous-character evolution in the presence of background-rate variation. Systematic Biology. 69:530–544.</span>
 
 </li>
 <li><span id="Nielsen2002">Nielsen R. 2002. Mapping mutations on phylogenies. Systematic Biology. 51:729–739.</span>

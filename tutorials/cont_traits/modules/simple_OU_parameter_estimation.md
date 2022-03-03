@@ -10,25 +10,32 @@ For more information about graphical model representations see {% citet Hoehna20
 {% endfigcaption %}
 {% endfigure %}
 
-In this tutorial, we use the 66 vertebrate phylogenies and (log) body-size datasets from {% cite Landis2017b %}.
+In this tutorial, we use the primates dataset and log-transformed female body mass to estimate branch-specific rates of body-size evolution.
 
 &#8680; The full OU-model specification is in the file called `mcmc_OU.Rev`.
 
 {% subsection Read the data %}
 
-We begin by deciding which of the 66 vertebrate datasets to use. Here, we assume we are analyzing the first dataset (Cetacea), but you should feel free to choose any of the datasets.
+We begin by deciding which of the traits to use. Here, we assume we are analyzing the first trait (female body mass), but you should feel free to choose any of the trait.
 ```
-dataset <- 11
+trait <- 1
 ```
 
-Now, we read in the (time-calibrated) tree corresponding to our chosen dataset.
+Now, we read in the (time-calibrated) tree corresponding.
 ```
-T <- readTrees("data/trees.nex")[dataset]
+T <- readTrees("data/primates_tree.nex")[1]
 ```
 
 Next, we read in the character data for the same dataset.
 ```
-data <- readContinuousCharacterData("data/traits.nex")[dataset]
+data <- readContinuousCharacterData("data/primates_cont_traits.nex")
+```
+
+We have to exclude all other traits that we are not interested in and only include our focal trait.
+This can be done in RevBayes using the member methods `.excludeAll()` and `.includeCharacter()`.
+```
+data.excludeAll()
+data.includeCharacter( trait )
 ```
 
 Additionally, we initialize a variable for our vector of
@@ -58,15 +65,16 @@ sigma2 ~ dnLoguniform(1e-3, 1)
 
 In order to estimate the posterior distribution of $\sigma^2$, we must provide an MCMC proposal mechanism that operates on this node. Because $\sigma^2$ is a rate parameter, and must therefore be positive, we use a scaling move called `mvScale`.
 ```
-moves.append( mvScale(sigma2, weight=1.0) )
+moves.append( mvScale(sigma2, weight=2.0) )
 ```
 
 {% subsubsection Adaptation parameter %}
 
-The rate of adaptation toward the optimum is determined by the parameter $\alpha$. We draw $\alpha$ from an exponential prior distribution, and place a scale proposal on it.
+The rate of adaptation toward the optimum is determined by the parameter $\alpha$. We draw $\alpha$ from an exponential prior distribution, and place a scale proposal on it. We specify the mean of the exponential prior distribution on $\alpha$ to be half the root age divided by $\ln(2)$, which means that we expect a phylogenetic half life of half the tree age.
 ```
-alpha ~ dnExponential(10)
-moves.append( mvScale(alpha, weight=1.0) )
+root_age := tree.rootAge()
+alpha ~ dnExponential( abs(root_age / 2.0 / ln(2.0)) )
+moves.append( mvScale(alpha, weight=2.0) )
 ```
 
 {% subsubsection Optimum %}
@@ -74,7 +82,31 @@ moves.append( mvScale(alpha, weight=1.0) )
 We draw the optimal value from a vague uniform prior ranging from -10 to 10 (you should change this prior if your character is outside of this range). Because this parameter can be positive or negative, we use a slide move to propose changes during MCMC.
 ```
 theta ~ dnUniform(-10, 10)
-moves.append( mvSlide(theta, weight=1.0) )
+moves.append( mvSlide(theta, weight=2.0) )
+```
+
+{% subsubsection More efficient MCMC %}
+Since the parameters of the OU model are most somewhat correlated, we often a bit of trouble to get good MCMC convergence.
+Thus, we add another specific move that proposes parameters from a multivariate normal distribution with learned covariance structure.
+```
+avmvn_move = mvAVMVN(weight=5, waitBeforeLearning=500, waitBeforeUsing=1000)
+avmvn_move.addVariable(sigma2)
+avmvn_move.addVariable(alpha)
+avmvn_move.addVariable(theta)
+moves.append( avmvn_move )
+```
+
+{% subsubsection Assessing the phylogenetic half-life and decrease in variance due to selection %}
+
+For our OU model, we are going to add two variables which are transformations primarily of the strength of selection $\alpha$.
+First, we add the phylogenetic half-life $t_{1/2} = \ln(2)/\alpha$, which represents the expected time needed for a trait to cover half the distance between root state and the selective optimum $\theta$.
+```
+t_half := ln(2) / alpha
+```
+
+Second, we add the metric $p_{th}$ which represents the percent decrease in trait variance caused by selection over the study period, as compared to the variance expected under pure drift (i.e. under BM). For instance, $p_{th} = 0.25$ means that selection has reduced the variance of traits by 25% over period tH.
+```
+p_th := 1 - (1 - exp(-2.0*alpha*root_age)) / (2.0*alpha*root_age)
 ```
 
 {% subsubsection Ornstein-Uhlenbeck model %}
@@ -89,7 +121,7 @@ Noting that $X$ is the observed data ({% ref fig_bm_gm %}), we clamp the `data` 
 X.clamp(data)
 ```
 
-Finally, we create a workspace object for the entire model with `model()`. Remeber that workspace objects are initialized with the `=` operator, and are not themselves part of the Bayesian graphical model. The `model()` function traverses the entire model graph and finds all the nodes in the model that we specified. This object provides a convenient way to refer to the whole model object, rather than just a single DAG node.
+Finally, we create a workspace object for the entire model with `model()`. Remember that workspace objects are initialized with the `=` operator, and are not themselves part of the Bayesian graphical model. The `model()` function traverses the entire model graph and finds all the nodes in the model that we specified. This object provides a convenient way to refer to the whole model object, rather than just a single DAG node.
 
 ```
 mymodel = model(theta)
@@ -101,7 +133,7 @@ mymodel = model(theta)
 
 For our MCMC analysis, we need to set up a vector of *monitors* to record the states of our Markov chain. The monitor functions are all called `mn*`, where `*` is the wildcard representing the monitor type. First, we will initialize the model monitor using the `mnModel` function. This creates a new monitor variable that will output the states for all model parameters when passed into a MCMC function.
 ```
-monitors.append( mnModel(filename="output/simple_OU.log", printgen=10) )
+monitors.append( mnModel(filename="output/simple_OU.log", printgen=1) )
 ```
 Additionally, create a screen monitor that will report the states of
 specified variables to the screen with `mnScreen`:
@@ -127,29 +159,45 @@ output directory.
 
 &#8680; The `Rev` file for performing this analysis: `mcmc_OU.Rev`
 
-We can plot the posterior estimates of `alpha`, `theta`, and `sigma2` in `RevGadgets`. Launch `R` and use the following code.
+We can plot the posterior estimates of `alpha`, `theta`, `sigma2`, `t_half` and `p_th` in `RevGadgets`. Launch `R` and use the following code.
 
 First, we need to load the R packages `RevGadgets` and `gridExtra` (to arrange the parameters in one plot).
 ```{R}
 library(RevGadgets)
 library(gridExtra)
+library(ggplot2)
 ```
 
 Next, read the MCMC output:
 ```{R}
-samples <- readTrace("output/simple_OU.log")
+samples <- readTrace("output/simple_OU.log", burnin = 0.25)[[1]]
+samples_OU_prior  <- readTrace("output/simple_OU_prior.log", burnin = 0.25)[[1]]
+
+# combine the samples into one data frame
+samples_OU$alpha_prior <- samples_OU_prior$alpha
+samples_OU$theta_prior <- samples_OU_prior$theta
+samples_OU$sigma2_prior <- samples_OU_prior$sigma2
+samples_OU$t_half_prior <- samples_OU_prior$t_half
+samples_OU$p_th_prior <- samples_OU_prior$p_th
 ```
 
 Next, we create the plot objects:
 ```{R}
-alpha_plot <- plotTrace(samples, vars="alpha")[[1]]
-theta_plot <- plotTrace(samples, vars="theta")[[1]]
-sigma_plot <- plotTrace(samples, vars="sigma2")[[1]]
+alpha_plot <- plotTrace(samples, vars="alpha")[[1]] +
+              theme(legend.position = c(0.25,0.81))
+theta_plot <- plotTrace(samples, vars="theta")[[1]] +
+              theme(legend.position = c(0.25,0.81))
+sigma_plot <- plotTrace(samples, vars="sigma2")[[1]] +
+              theme(legend.position = c(0.25,0.81))
+t_half_plot <- plotTrace(samples, vars="t_half")[[1]] + scale_x_log10() +
+               theme(legend.position = c(0.25,0.81))
+p_th_plot <- plotTrace(samples, vars="p_th")[[1]] +
+             theme(legend.position = c(0.25,0.81))
 ```
 
 Finally, plot the posterior distribution of the state-dependent rate parameters:
 ```{R}
-grid.arrange(alpha_plot, theta_plot, sigma_plot, nrow=1)
+grid.arrange(alpha_plot, theta_plot, sigma_plot, p_th_plot, nrow=1)
 ```
 
 {% figure ou_figure %}

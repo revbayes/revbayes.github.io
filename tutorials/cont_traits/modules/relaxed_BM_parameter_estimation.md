@@ -95,7 +95,7 @@ Now, we loop over each branch, drawing a rate-shift multiplier from a mixture di
 for(i in nbranches:1) {
 
     # draw the rate multiplier from a mixture distribution
-    branch_rate_multiplier[i] ~ dnReversibleJumpMixture(1, rate_shift_distribution, Probability(1 - rate_shift_probability) )
+    branch_rate_multiplier[i] ~ dnReversibleJumpMixture(constantValue=1, rate_shift_distribution, p=Probability(1 - rate_shift_probability) )
 
     # compute the rate for the branch
     if ( tree.isRoot( tree.parent(i) ) ) {

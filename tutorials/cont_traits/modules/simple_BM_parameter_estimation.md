@@ -32,7 +32,7 @@ trait <- 1
 
 Now, we read in the (time-calibrated) tree corresponding.
 ```
-T <- readTrees("data/trees.nex")[1]
+T <- readTrees("data/primates_tree.nex")[1]
 ```
 
 Next, we read in the character data for the same dataset.

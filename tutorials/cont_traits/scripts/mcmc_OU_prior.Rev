@@ -1,6 +1,7 @@
 ################################################################################
 #
-# RevBayes Example: Model selection between OU and BM
+# RevBayes Example: Simulating the prior of rates of evolution under a
+#                   Ornstein-Uhlenbeck model
 #
 #
 # authors: Michael R. May and Sebastian Höhna
@@ -12,6 +13,7 @@
 #######################
 
 ### Select the trait to analyze
+# Datasets: Female Mass, Tail Length – Body Length Residuals, Body Length – Mass Residuals, Maximum Age, Sexual Dimorphism, Geographic Range Size, Latitudinal Midpoint, Distance to Continental Centroid, Population Density, Home Range Size, Group Size, Gestation Duration, Litter size
 trait <- 1
 
 ### Read in the trees
@@ -26,6 +28,7 @@ data.includeCharacter( trait )
 moves    = VectorMoves()
 monitors = VectorMonitors()
 
+
 ##########################
 # Specify the tree model #
 ##########################
@@ -36,17 +39,16 @@ tree <- T
 # Specify the rate model #
 ##########################
 
-sigma2 ~ dnLoguniform(1e-3, 1e1)
-moves.append( mvScale(sigma2, weight=1.0) )
-
 root_age := tree.rootAge()
 
-alpha ~ dnReversibleJumpMixture(0.0, dnExponential( abs(root_age / 2.0 / ln(2.0)) ), 0.5)
-moves.append( mvRJSwitch(alpha, weight=1.0) )
-moves.append( mvScale(alpha, weight=1.0) )
+sigma2 ~ dnLoguniform(1e-3, 1)
+moves.append( mvScale(sigma2, weight=2.0) )
+
+alpha ~ dnExponential( abs(root_age / 2.0 / ln(2.0)) )
+moves.append( mvScale(alpha, weight=2.0) )
 
 theta ~ dnUniform(-10, 10)
-moves.append( mvSlide(theta, weight=1.0) )
+moves.append( mvSlide(theta, weight=2.0) )
 
 # also add an adaptive mutlivariate normal move
 avmvn_move = mvAVMVN(weight=5, waitBeforeLearning=500, waitBeforeUsing=1000)
@@ -55,15 +57,17 @@ avmvn_move.addVariable(alpha)
 avmvn_move.addVariable(theta)
 moves.append( avmvn_move )
 
-is_OU := ifelse(alpha != 0.0, 1, 0)
-is_BM := ifelse(alpha == 0.0, 1, 0)
+# some useful variable transformations to monitor
+t_half := ln(2) / alpha
+p_th := 1 - (1 - exp(-2.0*alpha*root_age)) / (2.0*alpha*root_age)
+
 
 ##########################
 # Specify the BM process #
 ##########################
 
 X ~ dnPhyloOrnsteinUhlenbeckREML(tree, alpha, theta, sigma2^0.5, rootStates=theta)
-X.clamp( data )
+X.clamp(data)
 
 
 
@@ -76,8 +80,8 @@ X.clamp( data )
 mymodel = model(tree)
 
 ### set up the monitors that will output parameter values to file and screen
-monitors.append( mnModel(filename="output/simple_OU_RJ.log", printgen=10) )
-monitors.append( mnScreen(printgen=1000, sigma2, alpha, theta, is_OU) )
+monitors.append( mnModel(filename="output/simple_OU_prior.log", printgen=10) )
+monitors.append( mnScreen(printgen=1000, sigma2, alpha, theta) )
 
 
 
@@ -91,8 +95,7 @@ monitors.append( mnScreen(printgen=1000, sigma2, alpha, theta, is_OU) )
 mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
 
 ### run the MCMC ###
-mymcmc.burnin(generations=1000, tuningInterval=100)
-mymcmc.run(generations=50000)
+mymcmc.run(generations=50000, tuningInterval=100, underPrior=TRUE)
 
 ## quit ##
 q()

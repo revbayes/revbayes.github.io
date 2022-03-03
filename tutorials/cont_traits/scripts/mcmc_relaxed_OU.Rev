@@ -1,10 +1,10 @@
 ################################################################################
 #
-# RevBayes Example: Bayesian inference of rates of evolution under a
-#                   constant-rate Brownian-motion model
+# RevBayes Example: Bayesian inference of shifts of optima under an
+#                   Ornstein-Uhlenbeck model.
 #
 #
-# authors: Michael R. May
+# authors: Michael R. May and Sebastian Höhna
 #
 ################################################################################
 
@@ -12,16 +12,18 @@
 # Reading in the Data #
 #######################
 
-### Select the dataset to analyze
-dataset <- 11
+### Select the trait to analyze
+trait <- 1
 
 ### Read in the trees
-T <- readTrees("data/trees.nex")[dataset]
+T <- readTrees("data/primates_tree.nex")[1]
 ntips     <- T.ntips()
 nbranches <- 2 * ntips - 2
 
 ### Read in the character data
-data <- readContinuousCharacterData("data/traits.nex")[dataset]
+data <- readContinuousCharacterData("data/primates_cont_traits.nex")
+data.excludeAll()
+data.includeCharacter( trait )
 
 # Create some vector for the moves and monitors of this analysis
 moves    = VectorMoves()
@@ -42,7 +44,8 @@ sigma2 ~ dnLoguniform(1e-3, 1)
 moves.append( mvScale(sigma2, weight=1.0) )
 
 # specify the strength parameter
-alpha ~ dnExponential(10)
+root_age := tree.rootAge()
+alpha ~ dnExponential( abs(root_age / 2.0 / ln(2.0)) )
 moves.append( mvScale(alpha, weight=1.0) )
 
 # specify theta at the root of the tree
@@ -85,7 +88,7 @@ for(i in nbranches:1) {
 num_theta_changes := sum( branch_theta_shift )
 
 ##########################
-# Specify the BM process #
+# Specify the OU process #
 ##########################
 
 X ~ dnPhyloOrnsteinUhlenbeckREML(tree, alpha, branch_thetas, sigma2^0.5, rootStates=theta_root)

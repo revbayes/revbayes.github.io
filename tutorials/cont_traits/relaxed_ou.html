@@ -55,8 +55,8 @@
       <div class="titlebar">
 	<h1 class="maintitle">Relaxed Ornstein-Uhlenbeck Models</h1>
 	<h3 class="subtitle">Estimating lineage-specific optima under Ornstein-Uhlenbeck evolution</h3>
-	<h4 class="authors">Michael R. May</h4>
-  <h5>Last modified on April 14, 2021</h5>
+	<h4 class="authors">Michael R. May and Sebastian Höhna</h4>
+  <h5>Last modified on March  3, 2022</h5>
 </div>
 
 
@@ -95,6 +95,22 @@
     <h2>Data files and scripts</h2>
     
         
+        <strong>Data Files</strong>
+        <ul id="data_files">
+        
+        
+        
+          <li><a href="/tutorials/sse/data/primates_tree.nex">primates_tree.nex</a></li>
+        
+          <li><a href="/tutorials/divrate/data/primates_tree.nex">primates_tree.nex</a></li>
+        
+          <li><a href="/tutorials/intro/data/primates_tree.nex">primates_tree.nex</a></li>
+        
+          <li><a href="/tutorials/morph_ase/data/primates_tree.nex">primates_tree.nex</a></li>
+        
+        </ul>
+    
+        
         <strong>Other</strong>
         <ul id="other_files">
         
@@ -104,9 +120,9 @@
         
           <li><a href="/tutorials/cont_traits/scripts/plot_relaxed_OU.R">plot_relaxed_OU.R</a></li>
         
-          <li><a href="/tutorials/cont_traits/data/traits.nex">traits.nex</a></li>
+          <li><a href="/tutorials/cont_traits/data/primates_cont_traits.nex">primates_cont_traits.nex</a></li>
         
-          <li><a href="/tutorials/cont_traits/data/trees.nex">trees.nex</a></li>
+          <li><a href="/tutorials/cont_traits/data/primates_tree.nex">primates_tree.nex</a></li>
         
         </ul>
     
@@ -117,7 +133,7 @@
 <h2 class="section" id="estimating-branch-specific-evolutionary-optima">Estimating Branch-Specific Evolutionary Optima</h2>
 <hr class="section" />
 
-<p>This tutorial demonstrates how to specify an Ornstein-Uhlenbeck model where the optimal phenotype is allowed to vary over branches of a time-calibrated phylogeny <a class="citation" href="#Uyeda2014">(Uyeda and Harmon 2014)</a> using the datasets of (log) body-size across vertebrate clades from (missing reference). We provide the probabilistic graphical model representation of each component for this tutorial. After specifying the model, you will estimate the parameters of branch-specific Ornstein-Uhlenbeck evolution using reversible-jump Markov chain Monte Carlo (rjMCMC).</p>
+<p>This tutorial demonstrates how to specify an Ornstein-Uhlenbeck model where the optimal phenotype is allowed to vary over branches of a time-calibrated phylogeny <a class="citation" href="#Uyeda2014">(Uyeda and Harmon 2014)</a>. We provide the probabilistic graphical model representation of each component for this tutorial. After specifying the model, you will estimate the parameters of branch-specific Ornstein-Uhlenbeck evolution using reversible-jump Markov chain Monte Carlo (rjMCMC).</p>
 
 <h2 class="section" id="relaxing-the-ou-model">Relaxing the OU Model</h2>
 <hr class="section" />
@@ -137,20 +153,25 @@
 <h3 class="subsection" id="read-the-data">Read the data</h3>
 <hr class="subsection" />
 
-<p>We begin by deciding which of the 66 vertebrate datasets to use. Here, we assume we are analyzing the 5th dataset (<em>Acanthuridae</em>), but you should feel free to choose any of the datasets.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dataset &lt;- 1
+<p>We begin by deciding which of the traits to use. Here, we assume we are analyzing the first trait (female body mass), but you should feel free to choose any of the trait.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>trait &lt;- 1
 </code></pre></div></div>
 
-<p>Now, we read in the (time-calibrated) tree corresponding to our chosen dataset.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>T &lt;- readTrees("data/trees.nex")[dataset]
+<p>Now, we read in the (time-calibrated) tree corresponding.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>T &lt;- readTrees("data/primates_tree.nex")[1]
 </code></pre></div></div>
 <p>We also want to keep track of the number of branches for our relaxed clock model.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ntips     &lt;- T.ntips()
 nbranches &lt;- 2 * ntips - 2
 </code></pre></div></div>
-
 <p>Next, we read in the character data for the same dataset.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data &lt;- readContinuousCharacterData("data/traits.nex")[dataset]
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data &lt;- readContinuousCharacterData("data/primates_cont_traits.nex")
+</code></pre></div></div>
+
+<p>We have to exclude all other traits that we are not interested in and only include our focal trait.
+This can be done in RevBayes using the member methods <code class="language-plaintext highlighter-rouge">.excludeAll()</code> and <code class="language-plaintext highlighter-rouge">.includeCharacter()</code>.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data.excludeAll()
+data.includeCharacter( trait )
 </code></pre></div></div>
 
 <p>Additionally, we initialize a variable for our vector of
@@ -182,8 +203,9 @@ moves.append( mvScale(sigma2, weight=1.0) )
 <h4 class="subsubsection" id="adaptation-parameter">Adaptation parameter</h4>
 <hr class="subsubsection" />
 
-<p>The rate of adaptation toward the optimum is determined by the parameter $\alpha$. We draw $\alpha$ from an exponential prior distribution, and place a scale proposal on it. This parameter is assumed to be constant across the tree (even though the optimum will vary).</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha ~ dnExponential(10)
+<p>The rate of adaptation toward the optimum is determined by the parameter $\alpha$. We draw $\alpha$ from an exponential prior distribution, and place a scale proposal on it. This parameter is assumed to be constant across the tree (even though the optimum will vary). We specify the mean of the exponential prior distribution on $\alpha$ to be half the root age divided by $\ln(2)$, which means that we expect a phylogenetic half life of half the tree age.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root_age := tree.rootAge()
+alpha ~ dnExponential( abs(root_age / 2.0 / ln(2.0)) )
 moves.append( mvScale(alpha, weight=1.0) )
 </code></pre></div></div>
 
@@ -205,7 +227,7 @@ shift_probability &lt;- expected_number_of_shifts / nbranches
 </code></pre></div></div>
 <p>Now, we loop over each branch, drawing a the change in the optima value from a mixture distribution. This mixture distribution places prior probability $p$ on the rate shift being drawn from the uniform distribution we just specified, and prior probability $1 - p$ on the shift being exactly equal to 0 (<em>i.e.</em>, no shift). We then compute the optimum on the branch by adding the change in the optimum to the ancestral optimum. Note that we loop over the branches in reverse order; this ensures that the ancestral optimum exists when we specify the optimum for a given branch.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for(i in nbranches:1) {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in nbranches:1) {
 
     # draw the theta shift from a mixture distribution
     branch_deltas[i] ~ dnReversibleJumpMixture(0, shift_distribution, Probability(1 - shift_probability) )

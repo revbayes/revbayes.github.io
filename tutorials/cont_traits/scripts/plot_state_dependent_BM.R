@@ -3,7 +3,7 @@ library(gridExtra)
 library(ggplot2)
 
 # read the annotated tree
-tree <- readTrees("output/relaxed_state_dependent_BM_MAP_primates.tre")
+tree <- readTrees("output/state_dependent_BM_MAP_primates.tre")
 
 # create the ggplot objects
 state_rates      <- plotTree(tree, color_branch_by="state_branch_rate", tip_labels_size = 2, legend_x=0.2) + theme(legend.position = c(0.15,0.90))
