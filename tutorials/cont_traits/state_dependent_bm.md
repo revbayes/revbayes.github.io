@@ -32,7 +32,7 @@ specifying the model, you will estimate the state-dependent rates of Brownian-mo
 evolution using Markov chain Monte Carlo (MCMC).
 
 You should read the {% page_ref cont_traits/simple_bm %} tutorial, which provides a
-general introduction to simple Brownian-motion models, and {% page_ref morph_tree/index %},
+general introduction to simple Brownian-motion models, and {% page_ref morph_ase %},
 which describes models of discrete-character evolution, before using this tutorial.
 
 
