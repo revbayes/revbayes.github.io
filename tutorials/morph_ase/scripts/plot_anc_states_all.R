@@ -1,9 +1,9 @@
 ################################################################################
 #
-# Plot ancestral placental types inferred using two CTMC models of character evolution.
+# Plot ancestral placental types inferred using all models of character evolution.
 #
 #
-# authors: Sebastian Hoehna, Will Freyman
+# authors: Sebastian Hoehna
 #
 ################################################################################
 

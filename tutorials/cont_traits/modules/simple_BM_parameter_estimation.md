@@ -19,25 +19,32 @@ $$
 \end{equation}
 $$
 
-In this tutorial, we use the 66 vertebrate phylogenies and (log) body-size datasets from {% cite Landis2017b %}.
+In this tutorial, we use the primates dataset and log-transformed female body mass.
 
 &#8680; The full BM-model specification is in the file called `mcmc_BM.Rev`.
 
 {% subsection Read the data %}
 
-We begin by deciding which of the 66 vertebrate datasets to use. Here, we assume we are analyzing the first dataset (Cetacea), but you should feel free to choose any of the datasets.
+We begin by deciding which of the traits to use. Here, we assume we are analyzing the first trait (female body mass), but you should feel free to choose any of the trait.
 ```
-dataset <- 11
+trait <- 1
 ```
 
-Now, we read in the (time-calibrated) tree corresponding to our chosen dataset.
+Now, we read in the (time-calibrated) tree corresponding.
 ```
-T <- readTrees("data/trees.nex")[dataset]
+T <- readTrees("data/trees.nex")[1]
 ```
 
 Next, we read in the character data for the same dataset.
 ```
-data <- readContinuousCharacterData("data/traits.nex")[dataset]
+data <- readContinuousCharacterData("data/primates_cont_traits.nex")
+```
+
+We have to exclude all other traits that we are not interested in and only include our focal trait.
+This can be done in RevBayes using the member methods `.excludeAll()` and `.includeCharacter()`.
+```
+data.excludeAll()
+data.includeCharacter( trait )
 ```
 
 Additionally, we initialize a variable for our vector of
@@ -59,10 +66,10 @@ tree <- T
 
 {% subsubsection Rate parameter %}
 
-The constant-rate BM model has just one parameter, $\sigma^2$. We draw the rate parameter from a loguniform prior. This prior is uniform on the log scale, which means that it is represents ignorance about the _order of magnitude_ of the rate.
+The constant-rate BM model has just one parameter, $\sigma^2$. We draw the rate parameter from a loguniform prior. This prior is uniform on the log scale, which means that it is represents ignorance about the _order of magnitude_ of the rate. However, you should be careful in specifying the boundaries for this parameter, as it strongly depends on your specific trait. If you notice that your parameters are stuck at one boundary of the prior, then come back here and modify your prior range.
 
 ```
-sigma2 ~ dnLoguniform(1e-3, 1)
+sigma2 ~ dnLoguniform(1e-5, 1e-1)
 ```
 
 In order to estimate the posterior distribution of $\sigma^2$, we must provide an MCMC proposal mechanism that operates on this node. Because $\sigma^2$ is a rate parameter, and must therefore be positive, we use a scaling move called `mvScale`.
@@ -74,7 +81,7 @@ moves.append( mvScale(sigma2, weight=1.0) )
 
 Now that we have specified the parameters of the model, we can draw the character data from the corresponding phylogenetic Brownian-motion model. In this example, we use the REML algorithm to efficiently compute the likelihood {% cite Felsenstein1985a %}. We provide the square root of the variance parameter, $\sigma$, to `dnPhyloBrownianREML`:
 ```
-X ~ dnPhyloBrownianREML(tree, branchRates=sigma2^0.5)
+X ~ dnPhyloBrownianREML(tree, branchRates=sqrt(sigma2) )
 ```
 
 Noting that $X$ is the observed data ({% ref fig_bm_gm %}), we clamp the `data` to this stochastic node.

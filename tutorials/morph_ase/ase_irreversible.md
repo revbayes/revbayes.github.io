@@ -105,8 +105,8 @@ My output is shown in {% ref fig_anc_states_irrev %}
 
 
 {% figure fig_anc_states_irrev %}
-<img src="figures/primates_solitariness_ASE_irrev_MAP.png" width="400" />
-<img src="figures/primates_solitariness_ASE_irrev_Pie.png" width="400" />
+<img src="figures/Primates_solitariness_ASE_irrev_MAP.png" width="400" />
+<img src="figures/Primates_solitariness_ASE_irrev_Pie.png" width="400" />
 {% figcaption %}
 Ancestral state estimates of solitariness under the irreversible model. You might see that some ancestral states have changed.
 {% endfigcaption %}

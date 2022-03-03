@@ -136,8 +136,8 @@ As before in the {% page_ref morph_ase/ase %} tutorial, we will use `R` and the 
 {:.instruction}
 
 {% figure fig_freeK_ASE %}
-<img src="figures/primates_solitariness_ASE_FreeK_MAP.png" width="400" />
-<img src="figures/primates_solitariness_ASE_FreeK_Pie.png" width="400" />
+<img src="figures/Primates_solitariness_ASE_FreeK_MAP.png" width="400" />
+<img src="figures/Primates_solitariness_ASE_FreeK_Pie.png" width="400" />
 {% figcaption %}
 Ancestral state estimates under the independent rates model. Note that the root state has changed compared to the ERM analysis!
 {% endfigcaption %}

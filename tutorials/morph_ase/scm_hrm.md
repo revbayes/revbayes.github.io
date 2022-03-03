@@ -18,7 +18,7 @@ exclude_files:
 - mcmc_corr.Rev
 - mcmc_corr_RJ.Rev
 - mcmc_corr_iid.Rev
-- mcmc_scm_hrm.Rev
+- mcmc_scm_hrm_RJ.Rev
 - mcmc_scm_hrm_RJk.Rev
 - ml_ase_ERM.Rev
 - ml_ase_freeK.Rev

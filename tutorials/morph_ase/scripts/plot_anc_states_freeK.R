@@ -1,9 +1,9 @@
 ################################################################################
 #
-# Plot ancestral state estimates inferred using two CTMC models of character evolution.
+# Plot ancestral state estimates inferred using an independent rates models of character evolution.
 #
 #
-# authors: Sebastian Hoehna, Will Freyman
+# authors: Sebastian Hoehna
 #
 ################################################################################
 

@@ -14,8 +14,8 @@ index: true
 redirect: false
 include_all: false
 include_files:
-- data/trees.nex
-- data/traits.nex
+- data/primates_tree.nex
+- data/primates_cont_traits.nex
 - scripts/mcmc_relaxed_BM.Rev
 - scripts/plot_relaxed_BM.R
 ---
@@ -27,3 +27,10 @@ This tutorial demonstrates how to specify a relaxed morphological clock model fo
 {% include_relative modules/relaxed_BM_parameter_estimation.md %}
 
 {% include_relative modules/relaxed_BM_exercise_1.md %}
+
+
+
+>Click below to begin the next exercise!
+{:.instruction}
+
+* [State-Dependent Brownian Rate Estimation]({{ base.url }}/tutorials/cont_traits/state_dependent_bm)

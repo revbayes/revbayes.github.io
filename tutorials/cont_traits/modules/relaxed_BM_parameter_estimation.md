@@ -12,20 +12,22 @@ The graphical model representation of the relaxed Brownian-motion (BM) process u
 {% endfigure %}
 
 
-In this tutorial, we use the 66 vertebrate phylogenies and (log) body-size datasets from {% cite Landis2017b %} to estimate branch-specific rates of body-size evolution.
+
+In this tutorial, we use the primates dataset and log-transformed female body mass to estimate branch-specific rates of body-size evolution.
 
 &#8680; The full relaxed BM-model specification is in the file called `mcmc_relaxed_BM.Rev`.
 
 {% subsection Read the data %}
 
-We begin by deciding which of the 66 vertebrate datasets to use. Here, we assume we are analyzing the first dataset (Cetacea), but you should feel free to choose any of the datasets.
+
+We begin by deciding which of the traits to use. Here, we assume we are analyzing the first trait (female body mass), but you should feel free to choose any of the trait.
 ```
-dataset <- 11
+trait <- 1
 ```
 
 Now, we read in the (time-calibrated) tree corresponding to our chosen dataset.
 ```
-T <- readTrees("data/trees.nex")[dataset]
+T <- readTrees("data/primates_tree.nex")[1]
 ```
 We also want to keep track of the number of branches for our relaxed clock model.
 ```
@@ -35,7 +37,14 @@ nbranches <- 2 * ntips - 2
 
 Next, we read in the character data for the same dataset.
 ```
-data <- readContinuousCharacterData("data/traits.nex")[dataset]
+data <- readContinuousCharacterData("data/primates_cont_traits.nex")
+```
+
+We have to exclude all other traits that we are not interested in and only include our focal trait.
+This can be done in RevBayes using the member methods `.excludeAll()` and `.includeCharacter()`.
+```
+data.excludeAll()
+data.includeCharacter( trait )
 ```
 
 Additionally, we initialize a variable for our vector of
@@ -57,10 +66,10 @@ tree <- T
 
 {% subsubsection Rate parameter at the root %}
 
-The relaxed BM model places a prior on the rate at the root of the tree, $\sigma^2$. We draw this rate parameter from a loguniform prior. This prior is uniform on the log scale, which means that it is represents ignorance about the _order of magnitude_ of the rate at the root of the tree.
+The relaxed BM model places a prior on the rate at the root of the tree, $\sigma^2$. We draw this rate parameter from a loguniform prior. This prior is uniform on the log scale, which means that it is represents ignorance about the _order of magnitude_ of the rate at the root of the tree. However, you should be careful in specifying the boundaries for this parameter, as it strongly depends on your specific trait. If you notice that your parameters are stuck at one boundary of the prior, then come back here and modify your prior range.
 
 ```
-sigma2_root ~ dnLoguniform(1e-3, 1)
+sigma2_root ~ dnLoguniform(1e-5, 1e-1)
 ```
 Because $\sigma^2_R$ is a rate parameter, and must therefore be positive, we use a scaling move called `mvScale`.
 ```
@@ -75,10 +84,10 @@ expected_number_of_shifts <- 5
 rate_shift_probability    <- expected_number_of_shifts / nbranches
 ```
 
-Next, we specify the prior distribution on the size of rate shifts (when they occur). We draw each rate shift from a lognormal distribution with a mean of 1, and a standard deviation such that rate shifts range over about one order of magnitude.
+Next, we specify the prior distribution on the size of rate shifts (when they occur). We draw each rate shift from a lognormal distribution with a median of 1, and a standard deviation such that rate shifts range over about one order of magnitude.
 ```
 sd = 0.578
-rate_shift_distribution = dnLognormal(-sd^2/2, sd)
+rate_shift_distribution = dnLognormal(0, sd)
 ```
 Now, we loop over each branch, drawing a rate-shift multiplier from a mixture distribution. This mixture distribution places prior probability $p$ on the rate multiplier being drawn from the lognormal distribution we just specified, and prior probability $1 - p$ on the rate shift being exactly equal to 1 (_i.e._, no rate shift). We then compute the rate on the branch by multiplying the ancestral rate by the rate shift multiplier. Note that we loop over the branches in reverse order; this ensures that the ancestral rate exists when we specify the rate for a given branch.
 

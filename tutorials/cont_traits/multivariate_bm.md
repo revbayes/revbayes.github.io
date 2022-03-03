@@ -25,7 +25,7 @@ include_files:
 
 {% section Estimating Correlated Evolution %}
 
-This tutorial demonstrates how to specify a multivariate Brownian motion model for multiple continuous characters. Specifically, we'll use a parameter separation strategy to separate the relative rates of evolution among characters from the correlations among characters {% cite Caetano2017 %}. We provide the probabilistic graphical model representation of each component for this tutorial. After specifying the model, you will estimate the correlations among characters using Markov chain Monte Carlo (MCMC). We will then measure the strength of correlation among characters to determine if there is evidence that the characters are correlated.
+This tutorial demonstrates how to specify a multivariate Brownian motion model for multiple continuous characters. Specifically, we'll use a parameter separation strategy to separate the relative rates of evolution among characters from the correlations among characters {% cite Caetano2019 %}. We provide the probabilistic graphical model representation of each component for this tutorial. After specifying the model, you will estimate the correlations among characters using Markov chain Monte Carlo (MCMC). We will then measure the strength of correlation among characters to determine if there is evidence that the characters are correlated.
 
 {% include_relative modules/multivariate_BM_parameter_estimation.md %}
 
