@@ -60,6 +60,11 @@ rate_gain_B_when_A1 ~ dnExponential( rate_pr )
 rate_loss_B_when_A0 ~ dnExponential( rate_pr )
 rate_loss_B_when_A1 ~ dnExponential( rate_pr )
 
+prob_gain_A_indep := ifelse( rate_gain_A_when_B0 > rate_gain_A_when_B1, 1.0, 0.0 )
+prob_loss_A_indep := ifelse( rate_loss_A_when_B0 > rate_loss_A_when_B1, 1.0, 0.0 )
+prob_gain_B_indep := ifelse( rate_gain_B_when_A0 > rate_gain_B_when_A1, 1.0, 0.0 )
+prob_loss_B_indep := ifelse( rate_loss_B_when_A0 > rate_loss_B_when_A1, 1.0, 0.0 )
+
 moves.append( mvScale( rate_gain_A_when_B0, weight=2 ) )
 moves.append( mvScale( rate_gain_A_when_B1, weight=2 ) )
 moves.append( mvScale( rate_loss_A_when_B0, weight=2 ) )
