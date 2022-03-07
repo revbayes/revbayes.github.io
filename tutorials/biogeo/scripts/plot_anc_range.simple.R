@@ -1,5 +1,6 @@
 source("scripts/plot_anc_range.util.R")
 
+
 # file names
 fp = "./" # edit to provide an absolute filepath
 plot_fn = paste(fp, "output/simple.range.pdf",sep="")
@@ -12,10 +13,17 @@ states = make_states(label_fn, color_fn, fp=fp)
 state_labels = states$state_labels
 state_colors = states$state_colors
 
+# process the ancestral states
+ase <- processAncStates(tree_fn,
+                        # Specify state labels.
+                        # These numbers correspond to
+                        # your input data file.
+                        state_labels = state_labels)
+
 # plot the ancestral states
-pp=plot_ancestral_states(tree_file=tree_fn,
+
+pp  <- plotAncStatesPie(t = ase,
                          include_start_states=T,
-                         summary_statistic="PieRange",
                          state_labels=state_labels,
                          state_colors=state_colors,
                          tip_label_size=2.5,
@@ -27,7 +35,9 @@ pp=plot_ancestral_states(tree_file=tree_fn,
                          node_pie_diameter=2.0,
                          pie_nudge_x=0.03,
                          pie_nudge_y=0.16,
-                         alpha=1)
+                         alpha=1) +
+  # Move the legend
+  theme(legend.position = c(0.1, 0.75))
 
 
 # get plot dimensions
@@ -54,9 +64,8 @@ pp = pp + scale_x_continuous(breaks=x_breaks, labels=x_labels, sec.axis=island_a
 pp = add_island_times(pp, x_phy)
 
 # set up the legend
-pp = pp + guides(colour = guide_legend(override.aes = list(size=5), ncol=2))
+#pp = pp + guides(color = guide_legend(override.aes = list(size=5), ncol=2))
 pp = pp + theme(legend.position="left")
 
-# save 
+# save
 ggsave(file=plot_fn, plot=pp, device="pdf", height=7, width=10, useDingbats=F)
-

@@ -13,7 +13,7 @@ library(ggplot2)
 CHARACTER_A <- "solitariness"
 CHARACTER_B <- "terrestrially"
 
-STATE_LABELS <- c("0" = "group - arboreal", "1" = "solitary - arboreal", "2" = "group - terrestrial", "3" = "solitary - terrestrial")
+STATE_LABELS <- c("0" = "group - arboreal", "1" = "group - terrestrial", "2" = "solitary - arboreal", "3" = "solitary - terrestrial")
 
 tree_file <- paste0("output/",CHARACTER_A,"_",CHARACTER_B,"_ase_corr_RJ.tree")
 
