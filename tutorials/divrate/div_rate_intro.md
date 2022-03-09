@@ -121,7 +121,16 @@ diversification rates. Then, if the organism is in state 0 (e.g., is herbivorous
 You can find examples and more information in the {% page_ref sse/bisse-intro %}.
 
 
+{% subsubsection (4) General Extension to Diversification Rate Estimation %}
 
+There exist some general considerations, assumptions and extensions that apply to most/all diversification rate models.
+We provide a few general topics.
+
+
+{% subsubsection (4a) Incomplete taxon sampling %}
+For most study groups, we do not have all extant taxa sampled.
+It is important that we properly model incomplete taxon sampling because otherwise our parameter estimates are biased {% cite Hoehna2011 Hoehna2014a Palazzesi2022 %}.
+You can find examples and more information in the {% page_ref divrate/sampling %}.
 
 
 {% section Diversification Rate Models | models %}
