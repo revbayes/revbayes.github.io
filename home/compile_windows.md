@@ -8,7 +8,7 @@ code_layout: bash
 
 **NOTE: These instructions are for compiling the development branch.**
 
-**NOTE: Boost now needs to be at least version 1.74.**
+**NOTE: Boost now needs to be at least version 1.71.**
 
 The standard way to build revbayes is to use `cmake`. Cross-compiling for Windows from Linux is also possible using `meson`, see [revbayes/projects/meson/README.md](https://github.com/revbayes/revbayes/blob/development/projects/meson/README.md).
 
