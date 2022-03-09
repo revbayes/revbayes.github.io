@@ -17,7 +17,7 @@ include_all: false
 {% section Conditions of the Birth-Death Process | overview %}
 
 {% figure fig_conditions %}
-<img src="figures/condition.png" width="100%"" />
+<img src="figures/condition.png" width="100%" />
 {% figcaption %}
 **Five different possible conditions for our generalized fossilized-birth-death process.**
     I) The process survives until the present.
