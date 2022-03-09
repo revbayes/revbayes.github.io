@@ -84,7 +84,7 @@ If we have found evidence in the previous section that diversification rates var
 then we can start asking the question whether these changes in diversification
 rates are driven by some abiotic (e.g., environmental) factors.
 For example, we can ask whether changes in diversification rates are correlated with
-environmental factors, such as environmental CO<sub>2</sub> or temperature {% cite Condamine2013 Condamine2018 %}.
+environmental factors, such as environmental CO<sub>2</sub> or temperature {% cite Condamine2013 Condamine2018 Palazzesi2022 %}.
 
 You can find examples and more information in the {% page_ref divrate/env %}.
 
