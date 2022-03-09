@@ -15,6 +15,8 @@ include_files:
 - data/primates_tree.nex
 - scripts/mcmc_Yule.Rev
 - scripts/ml_Yule.Rev
+- scripts/plot_Yule_rates.R
+- scripts/plot_BD_rates.R
 ---
 
 
@@ -34,12 +36,12 @@ gives some general overview of diversification rate estimation.
 
 {% include_relative modules/simple_Yule_parameter_estimation.md %}
 
-{% include_relative modules/simple_exercise_1.md %}
-
 {% include_relative modules/simple_Yule_marginal_likelihood_estimation.md %}
-
-{% include_relative modules/simple_exercise_2.md %}
 
 {% include_relative modules/simple_birth_death.md %}
 
-{% include_relative modules/simple_exercise_3.md %}
+
+>Click below to begin the next exercise!
+{:.instruction}
+
+* [Diversification Rates Through Time Estimation]({{ base.url }}/tutorials/divrate/ebd)

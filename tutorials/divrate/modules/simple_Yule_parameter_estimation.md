@@ -198,3 +198,29 @@ When the analysis is complete, you will have the monitored files in your
 output directory.
 
 &#8680; The `Rev` file for performing this analysis: `mcmc_Yule.Rev`
+
+
+
+{% subsection Exercise 1 %}
+-   Run an MCMC simulation to estimate the posterior distribution of the
+    speciation rate (`birth_rate`).
+-   Plot the `birth_rate` using RevGadgets ({% page_ref intro/revgadgets %}, {% citet Tribble2022 %}): What is
+    the mean posterior estimate of the `birth_rate` and what is the
+    estimated HPD?
+-   Compare the prior mean with the posterior mean. (**Hint:** Use the
+    optional argument `underPrior=TRUE` in the function `mymcmc.run()`)
+    Are they different (*e.g.,* {% ref fig_prior_posterior %})?
+    Is the posterior mean outside the prior 95% probability interval?
+-   Repeat the analysis and allow for two orders of magnitude of
+    prior uncertainty.
+
+{% figure fig_prior_posterior %}
+<img src="figures/birth_rate_prior_posterior.png" height="50%" width="50%" />
+{% figcaption %}
+Estimates of the
+posterior and prior distribution of the `birth_rate` visualized in
+`RevGadgets` {% cite Tribble2022 %}.
+We used the script `plot_Yule_rates.R`.
+The prior (red curve) shows the lognormal distribution that we chose as the prior distribution.
+{% endfigcaption %}
+{% endfigure %}
