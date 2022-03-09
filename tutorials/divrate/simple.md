@@ -21,8 +21,8 @@ include_files:
 {% section Estimating Constant Speciation & Extinction Rates | bdp_rate_estimation %}
 
 This tutorial describes how to specify basic birth-death models in RevBayes.
-Specifically, we will use the pure-birth (Yule) process and the constant-rate birth-death process
-{% cite Yule1925 Kendall1948 Thompson1975 Nee1994b Rannala1996 Yang1997 Hoehna2015a %}.
+Specifically, we will use the pure-birth (Yule; {% citet Yule1925 %}) process and the constant-rate birth-death process
+{% cite Kendall1948 Thompson1975 Nee1994b %}.
 The probabilistic graphical model is given for each component of this tutorial.
 After each model is specified, you will estimate speciation and extinction rates using Markov chain Monte Carlo (MCMC).
 Finally, you will estimate the marginal likelihood of the model and evaluate the
