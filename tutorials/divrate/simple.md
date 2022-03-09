@@ -3,7 +3,7 @@ title: Simple Diversification Rate Estimation
 subtitle: Comparing different constant-rate models of lineage diversification
 authors:  Sebastian Höhna and Tracy Heath
 level: 7
-order: 1
+order: 1.1
 prerequisites:
 - intro
 - mcmc

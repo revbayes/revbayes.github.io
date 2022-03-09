@@ -5,7 +5,7 @@ The basic idea behind the model is that speciation and extinction rates are cons
 within time intervals but can be different between time intervals.
 Thus, we will divide time into equally sized intervals.
 An overview of the underlying theory of the specific model and implementation
-is given in {% cite Hoehna2015a %}.
+is given in {% citet Hoehna2015a Magee2021 %}.
 
 {% figure fig_EBD %}
 <img src="figures/EBD_scenarios.png" width="75%" height="75%" />
