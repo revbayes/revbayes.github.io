@@ -90,18 +90,24 @@ You can find examples and more information in the {% page_ref divrate/env %}.
 
 
 {% subsubsection (3) Diversification-rate variation across branches estimation %}
+
+*Is there diversification rate variation among lineages in my phylogeny?*
+There are several reasons why diversification rates can vary among lineages primarily due to species specific factors (intrinsic and extrinsic), for example, key innovations.
+First, we can try to detect a signal of rate variation among lineages, and then we can test if their are variables that are associated with this among lineage rate variation.
+The different tutorials references below cover different scenarios for diversification rate variation among lineages.
+
+
+{% subsubsection (3a) Detecting diversification-rate variation across branches estimation %}
 *Is there evidence that diversification rates have varied across the branches of my phylogeny?*
-Have there been significant diversification-rate shifts along branches in my phylogeny,
-and if so, how many shifts, what magnitude of rate-shifts and along which branches?
+Have there been significant diversification-rate shifts along branches in my phylogeny, and if so, how many shifts, what magnitude of rate-shifts and along which branches?
 Similarly, one may ask what are the branch-specific diversification rates?
 
 You can study diversification rate variation among lineages using our birth-death-shift process {% cite Hoehna2019 %}.
 Examples and more information is provided in the {% page_ref divrate/branch_specific %}.
 
 
-{% subsubsection (4) Character-dependent diversification-rate estimation %}
-If we have found that there is rate variation among lineage, then we could ask if
-diversification rates correlated with some biotic (e.g., morphological) variable.
+{% subsubsection (3b) Character-dependent diversification-rate estimation %}
+If we have found that there is rate variation among lineage, then we could ask if diversification rates correlated with some biotic (e.g., morphological) variable.
 This can be addressed by using character-dependent birth-death models
 (often also called state-dependent speciation and extinction models; SSE models).
 Character-dependent diversification-rate models aim to identify
@@ -110,8 +116,7 @@ features (binary and multi-state discrete morphological traits,
 continuous morphological traits, geographic range, etc.). For example,
 one can hypothesize that a binary character, say if an organism is
 herbivorous/carnivorous or self-compatible/self-incompatible, impact the
-diversification rates. Then, if the organism is in state 0 (e.g., is herbivorous)
-it has a lower (or higher) diversification rate than if the organism is in state 1 (e.g., carnivorous) {% cite Maddison2007 %}.
+diversification rates. Then, if the organism is in state 0 (e.g., is herbivorous) it has a lower (or higher) diversification rate than if the organism is in state 1 (e.g., carnivorous) {% cite Maddison2007 %}.
 
 You can find examples and more information in the {% page_ref sse/bisse-intro %}.
 
