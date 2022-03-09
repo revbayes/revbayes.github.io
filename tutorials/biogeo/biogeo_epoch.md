@@ -85,7 +85,7 @@ the full table is given for future reference.
   Hawaiian paleogeographic data. The six areas are given in {% page_ref biogeo/biogeo_simple %}.
    Ages $a_{max}$ and $a_{min}$ report the maximum
   and minimum origination times for the given island [adapted from
-  {% cite Neal2008 %}]. Note that these ages are younger (less conservative) than the ages used in {% citet Landis2018 %}. Distances $g_{ij}$ report the shortest geographical
+  {% cite Lim2017 %}]. Note that these ages are younger (less conservative) than the ages used in {% citet Landis2018 %}. Distances $g_{ij}$ report the shortest geographical
   distance from the coast of the row's area to the column's area
   (measured at present).
   {% endtabcaption %}
@@ -95,32 +95,33 @@ the full table is given for future reference.
 
 Start by creating variables for the tree file, the range data, and the
 output prefix
-
+```
     range_fn = "data/n4/silversword.n4.range.nex"
     tree_fn = "data/n4/silversword.tre"
     out_fn = "output/epoch"
-
+```
 The paleogeographical information from {% ref paleogeo %} is encoded
 in three files named `hawaii.n4.times.txt`,
 `hawaii.n4.distances.txt`, and
 `hawaii.n4.connectivity.*.txt`.
 
+```
     geo_fn = "data/n4/hawaii.n4"
     times_fn = geo_fn + ".times.txt"
     dist_fn = geo_fn + ".distances.txt"
-
+```
 Create vectors that will contain all of our
 moves and monitors vectors, respectively.
-
+```
     moves = VectorMoves()
     monitors = VectorMonitors()
-
+```
 Read in the presence-absence range characters and record the number of
 areas in the dataset
-
+```
     dat_range_01 = readDiscreteCharacterData(range_fn)
     n_areas <- dat_range_01.nchar()
-
+```
 Often, biogeographers wish to limit to the maximum allowable range size.
 This prohibits widespread species ranges and reduces the total number of
 range states in the analysis, thus improving computational efficiency.
@@ -133,21 +134,21 @@ ${4 \choose 0} + {4 \choose 1} + {4 \choose 2} = 1 + 4 + 6 = 11$
 states.
 
 First, compute the number of states
-
+```
     max_areas <- 2
     n_states <- 0
     for (k in 0:max_areas) n_states += choose(n_areas, k)
-
+```
 then use n_states to format the dataset for the reduced
 state space
-
+```
     dat_range_n = formatDiscreteCharacterData(dat_range_01, "DEC", n_states)
-
+```
 Our state space now includes only 11 states ($\emptyset$, K, O, M, H,
 KO, KM, OM, KH, OH, MH).
 
 Record the complete list of range descriptions to file
-
+```
     state_desc = dat_range_n.getStateDescriptions()
     state_desc_str = "state,range\n"
     for (i in 1:state_desc.size())
@@ -155,37 +156,35 @@ Record the complete list of range descriptions to file
         state_desc_str += (i-1) + "," + state_desc[i] + "\n"
     }
     write(state_desc_str, file=out_fn+".state_labels.txt")
-
+```
 As with the previous analysis, we'll brazenly assume we know the dated
 species phylogeny without error.
-
+```
     tree <- readTrees(tree_fn)[1]
-
+```
 Next, we'll read and structure our paleogeographic data. Read in the
 list of minimum and maximum ages of island formation
-
+```
     time_bounds <- readDataDelimitedFile(file=times_fn, delimiter=" ")
     n_epochs <- time_bounds.size()
-
+```
 Read in the vector of matrices that describe the connectivity between
 areas over time. Note, there is one connectivity matrix per epoch,
 ordered from oldest to youngest.
-
+```
     for (i in 1:n_epochs) {
       epoch_fn[i] = geo_fn + ".connectivity." + i + ".txt"
       connectivity[i] <- readDataDelimitedFile(file=epoch_fn[i], delimiter=" ")
     }
-
+```
 The area connectivity file for the third epoch (when K, O, and M exist,
 but not H) contains
-
-
-~~~
+```
     1 1 1 0
     1 1 1 0
     1 1 1 0
     0 0 0 0
-~~~
+```
 {:.rev-output}
 
 
@@ -195,18 +194,16 @@ rather than be forbidden by non-connectivity.
 Read in the matrix of distances between all pairs of areas (km). For
 simplicity, we will assume that distances remained constant across
 epochs, even though these distances certainly varied over time.
-
+```
     distances <- readDataDelimitedFile(file=dist_fn, delimiter=" ")
-
+```
 The distances files contains
-
-
-~~~
+```
     001 145 239 419
     145 001 059 239
     239 059 001 082
     419 239 082 001
-~~~
+```
 {:.rev-output}
 
 
@@ -217,29 +214,29 @@ all four epochs.
 Next, we'll build an enhanced DEC model. Like before, we'll define the
 rate matrix in terms of relative rates, then rescale the entire matrix
 with the biogeographic rate scaling parameter `rate_bg`.
-
+```
     rate_bg ~ dnLoguniform(1E-4,1E2)
     rate_bg.setValue(1E-2)
-
+```
 And create a move to update the base rate of anagenetic change
-
+```
     moves.append( mvSlide(rate_bg, weight=4) )
-
+```
 Fix the base dispersal rate to 1
-
+```
     dispersal_rate <- 1.0
-
+```
 Dispersal rates might make use of some extrinsic information, such as
 geographical distances between areas {% cite MacArthur1967 Webb2012 %}. We
 model this as $d_{ij} = \exp(-a g_{ij})$ where $g_{ij}$ is the
 geographical distance between areas $i$ and $j$ and $a$ is a parameter
 that scales distance. Note that all dispersal rates are equal when
 $a=0$. Add a distance scale parameter
-
+```
     distance_scale ~ dnUnif(0,20)
     distance_scale.setValue(0.01)
     moves.append( mvScale(distance_scale, weight=3) )
-
+```
 Now we can assign rates that are functions of distance between all pairs
 of areas, *but also over all epochs*. To accomplish this,
 notice we now have an outer loop over the number of epochs,
@@ -252,7 +249,7 @@ and k for epoch i are non-zero if and only if
 the connectivity matrix element `connectivity[i][j][k]`
 has a positive value! When this condition is met, the dispersal rate is
 determined by the exponential function of inverse distance given above.
-
+```
     for (i in 1:n_epochs) {
       for (j in 1:n_areas) {
         for (k in 1:n_areas) {
@@ -263,17 +260,17 @@ determined by the exponential function of inverse distance given above.
         }
       }
     }
-
+```
 We will assign the same extirpation prior as was done in the simple
 analysis in the previous section
-
+```
     log_sd <- 0.5
     log_mean <- ln(1) - 0.5*log_sd^2
     extirpation_rate ~ dnLognormal(mean=log_mean, sd=log_sd)
     moves.append( mvScale(extirpation_rate, weight=2) )
-
+```
 and then provide the appropriate extirpation matrix structure
-
+```
     for (i in 1:n_epochs) {
       for (j in 1:n_areas) {
         for (k in 1:n_areas) {
@@ -282,18 +279,18 @@ and then provide the appropriate extirpation matrix structure
         er[i][j][j] := extirpation_rate
       }
     }
-
+```
 Now we have a vector of dispersal rates, `dr`, and an vector
 of extirpation rates, `er`, in stored in the RevBayes
 workspace. We'll use these to create a vector of four DEC rate matrices,
 one for each epoch.
-
+```
     for (i in 1:n_epochs) {
       Q_DEC[i] := fnDECRateMatrix(dispersalRates=dr[i],
                                   extirpationRates=er[i],
                                   maxRangeSize=max_areas)
     }
-
+```
 Next, we need to define breakpoints for when the underlying
 paleogeographic state/connectivity changes. In our case, we'll define
 the epoch breakpoints as uniformly distributed random variables that are
@@ -301,7 +298,7 @@ bounded by the minimum and maximum age estimates for when each new
 island complex formed ({% ref paleogeo %}). This is easily done
 using a for loop over the number of epochs. Note, we define the end of
 the final epoch as the present.
-
+```
     for (i in 1:n_epochs) {
       time_max[i] <- time_bounds[i][1]
       time_min[i] <- time_bounds[i][2]
@@ -312,7 +309,7 @@ the final epoch as the present.
           epoch_times[i] <- 0.0
       }
     }
-
+```
 Now that we have variables for the timing (`epoch_times`)
 and character (`Q_DEC` via connectivity) of
 paleogeographic change throughout the Hawaiian archipelago, we're ready
@@ -324,12 +321,12 @@ along branches according under a piecewise constant continuous-time
 Markov chain. The important consequence of using an epoch model is that
 transition probabilities for anagenetic events depend on the geological
 age of the branch.
-
+```
     Q_DEC_epoch := fnEpoch(Q=Q_DEC, times=epoch_times, rates=rep(1,n_epochs))
-
+```
 Here, we treat the probability of different types of cladogenetic events
 as a random variables to be estimated.
-
+```
     clado_event_types <- [ "s", "a" ]
     p_sympatry ~ dnUniform(0,1)
     p_allopatry := abs(1.0 - p_sympatry)
@@ -339,7 +336,7 @@ as a random variables to be estimated.
                              eventTypes=clado_event_types,
                              numCharacters=n_areas,
                              maxRangeSize=max_areas)
-
+```
 For this dataset, we assume cladogenetic probabilities are constant with
 respect to geological time. Using time-dependent cladogenetic
 probabilities (`fnEpochCladoProbs`) and mixtures of
@@ -349,17 +346,17 @@ covered in future tutorials.
 Among the four areas, only Kauai existed at the provided origination
 time of the clade, so will set it as the only valid starting state
 through the root frequency distribution.
-
+```
     rf_DEC_tmp <- rep(0, n_states)
     rf_DEC_tmp[2] <- 1
     rf_DEC <- simplex(rf_DEC_tmp)
-
+```
 We have created all the necessary model variables. Now we can create the
 phylogenetic model of anagenetic and cladogenetic character evolution.
 `dnPhyloCTMCClado` will internally make use of the
 time-heterogeneous probabilities embedded in the epoch rate generator,
 `Q_DEC_epoch`.
-
+```
     m_bg ~ dnPhyloCTMCClado(tree=tree,
                             Q=Q_DEC_epoch,
                             cladoProbs=P_DEC,
@@ -367,14 +364,14 @@ time-heterogeneous probabilities embedded in the epoch rate generator,
                             rootFrequencies=rf_DEC,
                             type="NaturalNumbers",
                             nSites=1)
-
+```
 
 Attach the observed range data to the distribution
-
+```
     m_bg.clamp(dat_range_n)
-
+```
 And the rest we've done before...
-
+```
     monitors.append( mnScreen(printgen=100, rate_bg, extirpation_rate, distance_scale) )
     monitors.append( mnModel(file=out_fn+".model.log", printgen=10) )
     monitors.append( mnFile(tree, filename=out_fn+".tre", printgen=10) )
@@ -388,17 +385,17 @@ And the rest we've done before...
     monitors.append( mnStochasticCharacterMap(ctmc=m_bg,
                                               filename=out_fn+".stoch.log",
                                               printgen=100) )
-
+```
 
 Wrap the model graph into a model object
-
+```
     mymodel = model(m_bg)
-
+```
 then build and run MCMC
-
+```
     mymcmc = mcmc(mymodel, moves, monitors)
     mymcmc.run(5000)
-
+```
 {% subsection Results %}
 
 **Example results are located at `output_example/epoch`.**
