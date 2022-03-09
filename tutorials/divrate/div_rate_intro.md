@@ -137,7 +137,7 @@ You can find examples and more information in the {% page_ref divrate/sampling %
 As any statistical model, the birth-death process includes several assumptions/conditions.
 Primarily, we condition the process if we only consider study groups that (a) survived until the present, (b) left exactly $N$ extant taxa, or (c) no restrictions.
 The conditions become a bit more involved if phylogenies with fossils are considered.
-You can find more discussion and examples in the XXX tutorial.
+You can find more discussion and examples in the {% page_ref divrate/conditions %}.
 
 
 
