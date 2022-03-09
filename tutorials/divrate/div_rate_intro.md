@@ -133,6 +133,14 @@ It is important that we properly model incomplete taxon sampling because otherwi
 You can find examples and more information in the {% page_ref divrate/sampling %}.
 
 
+{% subsubsection (4b) Conditions of the Birth-Death Process %}
+As any statistical model, the birth-death process includes several assumptions/conditions.
+Primarily, we condition the process if we only consider study groups that (a) survived until the present, (b) left exactly $N$ extant taxa, or (c) no restrictions.
+The conditions become a bit more involved if phylogenies with fossils are considered.
+You can find more discussion and examples in the XXX tutorial.
+
+
+
 {% section Diversification Rate Models | models %}
 
 
