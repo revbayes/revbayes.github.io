@@ -8,6 +8,7 @@
 
 ## Global settings
 
+NUM_REPLICATES      = 2
 NUM_MCMC_ITERATIONS = 10000
 THINNING            = 10
 
@@ -42,10 +43,6 @@ for (i in 1:(NUM_INTERVALS-1)) {
 
 }
 
-# pop_size[i] ~ dnUniform(0,1E8)
-# pop_size[i].setValue(100)
-# moves.append( mvScale(pop_size[i], lambda=0.1, tune=true, weight=2.0) )
-
 population_size_at_present ~ dnUniform(0,1E8)
 population_size_at_present.setValue(100)
 
@@ -54,10 +51,9 @@ moves.append( mvMirrorMultiplier(population_size_at_present,weight=5) )
 moves.append( mvRandomDive(population_size_at_present,weight=5) )
 
 # this value depends on the number of intervals, you can find the best value using RevGadgets
-# setMRFGlobalScaleHyperpriorNShifts(100, "GMRF")
-population_size_global_scale_hyperprior <- 0.009376
+# setMRFGlobalScaleHyperpriorNShifts(99, "GMRF")
+population_size_global_scale_hyperprior <- 0.009469
 population_size_global_scale ~ dnHalfCauchy(0,1)
-# population_size_global_scale.setValue(runif(1,0.005,0.1)[1])
 
 moves.append( mvScaleBactrian(population_size_global_scale,weight=5.0) )
 
@@ -126,10 +122,9 @@ moves.append( mvScale(alpha, weight=2.0) )
 p_inv ~ dnBeta(1,1)
 moves.append( mvSlide(p_inv) )
 
-# lambda = 1/mean, mean = 4.68e-8
-rate <- 1/(4.68e-8)
-clock ~ dnExponential(lambda = rate)
+clock ~ dnLoguniform(1e-12,1e-4)
 clock.setValue(4.68e-8)
+moves.append( mvScale(clock, weight=2.0) )
 
 up_down_move = mvUpDownScale(weight=5.0)
 up_down_move.addVariable(clock,up=TRUE)
@@ -161,7 +156,7 @@ monitors.append( mnFile(filename="output/horses_GMRF_100_NEs.log",population_siz
 monitors.append( mnFile(filename="output/horses_GMRF_100_times.log",interval_times,printgen=THINNING) )
 monitors.append( mnScreen(population_size, root_age, printgen=100) )
 
-mymcmc = mcmc(mymodel, monitors, moves)
+mymcmc = mcmc(mymodel, monitors, moves, nruns=NUM_REPLICATES, combine="mixed")
 mymcmc.burnin(NUM_MCMC_ITERATIONS*0.1,100)
 mymcmc.run(NUM_MCMC_ITERATIONS, tuning = 100)
 

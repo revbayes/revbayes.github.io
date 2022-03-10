@@ -56,7 +56,7 @@
 	<h1 class="maintitle">Skyline Models</h1>
 	<h3 class="subtitle">Estimating Demographic Histories with Skyline Models</h3>
 	<h4 class="authors">Ronja Billenstein and Sebastian Höhna</h4>
-  <h5>Last modified on February 27, 2022</h5>
+  <h5>Last modified on March 10, 2022</h5>
 </div>
 
 
@@ -96,6 +96,10 @@
         
           <li><a href="/tutorials/coalescent/data/horses_homochronous_sequences.fasta">horses_homochronous_sequences.fasta</a></li>
         
+          <li><a href="/tutorials/coalescent/output_Cluster/data/horses_homochronous_sequences.fasta">horses_homochronous_sequences.fasta</a></li>
+        
+          <li><a href="/tutorials/coalescent/output_Cluster/scripts/mcmc_homochronous_skyline.Rev">mcmc_homochronous_skyline.Rev</a></li>
+        
           <li><a href="/tutorials/coalescent/scripts/mcmc_homochronous_skyline.Rev">mcmc_homochronous_skyline.Rev</a></li>
         
         </ul>
@@ -125,11 +129,11 @@ In this exercise, each interval will group five coalescent events.
 Have a look at <a href="#event-skyline"></a>, for a hypothetical example with three events per interval.</p>
 
 <figure id="classical-skyline"><p><img src="figures/scheme_classical_skyline.png" /></p>
-<figcaption>Hypothetical example of a classical skyline plot.</figcaption>
+<figcaption>Hypothetical example of a classical skyline plot. $w_k$ are the waiting times with $k$ active lineages, $t_{c,k}$ are the coalescent events at the beginning of such a coalescent interval. Here, a population size for each interval between coalescent events is calculated. The bold line represents the maximum likelihood estimate of the population size.</figcaption>
 </figure>
 
 <figure id="event-skyline"><p><img src="figures/scheme_event_skyline.png" /></p>
-<figcaption>Hypothetical example of a Bayesian skyline plot with the interval length dependent on the number of coalescent events (event-based).</figcaption>
+<figcaption>Hypothetical example of a Bayesian skyline plot with the interval length dependent on the number of coalescent events (event-based).  $w_k$ are the waiting times with $k$ active lineages, $t_{c,k}$ are the coalescent events at the beginning of such a coalescent interval. $t_{i,j}$ mark the points of interval change.  Here, the change points are event-based, <em>i.e.</em>, dependent on coalescent events. The bold line represents the median of the posterior distribution of the population size and the shaded are shows the $95\%$ credible intervals.</figcaption>
 </figure>
 
 <blockquote class="aside"><h2>Likelihood Calculation</h2><p>We assume that the phylogeny of the samples is known.
@@ -254,6 +258,37 @@ ggplot2::ggsave("horses_skyline.png", p)
 <ul>
   <li><a href="/tutorials/coalescent/GMRF">The Gaussian Markov Random Field (GMRF) model</a></li>
 </ul>
+
+<h2 class="section" id="secAltPriors">Alternative Priors</h2>
+<hr class="section" />
+
+<p>There are many different ways of defining priors for the population sizes.
+Here, we chose to draw the population sizes from a Uniform distribution and to treat the intervals as independent and identically distributed (iid).
+In other software, the default priors can be defined differently.</p>
+
+<p>For example, for the Bayesian Skyline Plot <a class="citation" href="#Drummond2005">(Drummond et al. 2005)</a>, all but the first population size are drawn from an exponential distribution.
+The mean of this distribution is set to be the previous population size.
+This means that the population sizes in neighbouring intervals are correlated.
+For the first population size, a log uniform distribution was chosen.</p>
+
+<p>In a skyride analysis (missing reference), the population size is directly estimated on a log scale.
+The intervals also are correlated, but a Gaussian Markov Random Field (GMRF) prior is used with the degree of smooting being regulated by a precision parameter.</p>
+
+<p>For the Extended Bayesian Skyline Plot <a class="citation" href="#Heled2008">(Heled and Drummond 2008)</a>, the number of changing points is estimated by stochastic search variable selection.
+The intervals are considered to be iid.
+Also, the default demographic function usually is piecewise linear and not piecewise constant as in this tutorial.
+The estimation of the number of intervals can also be done slightly differently, as we show in the <a href="/tutorials/coalescent/GMRF#secCPP">Compound Poisson Process Prior</a> section of the <a href="/tutorials/coalescent/GMRF">GMRF tutorial</a> which is next.</p>
+
+<p>You can try and change the priors now accordingly.
+If you would like to have an example of what a <code class="language-plaintext highlighter-rouge">RevBayes</code> script with these different priors can look like, have a look at</p>
+<ul>
+  <li>the <a href="scripts/mcmc_heterochronous_BSP.Rev">example script for a BSP analysis</a>,</li>
+  <li>the <a href="scripts/mcmc_heterochronous_skyride.Rev">example script for a skyride analysis</a>, or</li>
+  <li>the <a href="scripts/mcmc_heterochronous_EBSP.Rev">example script for an EBSP analysis</a>.</li>
+</ul>
+
+<p>Note that all three examples have the interval change points on coalescent events (what we call “event-based”, as in the skyline model presented here).
+In the next tutorial (<a href="/tutorials/coalescent/GMRF">The GMRF model</a>), we use intervals with changing points independent from coalescent events.</p>
 
 <ol class="bibliography"><li><span id="Drummond2005">Drummond A.J., Rambaut A., Shapiro B., Pybus O.G. 2005. Bayesian Coalescent Inference of Past Population Dynamics from Molecular Sequences. Molecular Biology and Evolution. 22:1185–1192.</span>
 

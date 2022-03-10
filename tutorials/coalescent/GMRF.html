@@ -56,7 +56,7 @@
 	<h1 class="maintitle">Skyline Models with GMRF</h1>
 	<h3 class="subtitle">Estimating Demographic Histories with Skyline Models using a Gaussian Markov Random Field Prior</h3>
 	<h4 class="authors">Ronja Billenstein and Sebastian Höhna</h4>
-  <h5>Last modified on February 27, 2022</h5>
+  <h5>Last modified on March 10, 2022</h5>
 </div>
 
 
@@ -98,6 +98,10 @@
         
           <li><a href="/tutorials/coalescent/data/horses_homochronous_sequences.fasta">horses_homochronous_sequences.fasta</a></li>
         
+          <li><a href="/tutorials/coalescent/output_Cluster/data/horses_homochronous_sequences.fasta">horses_homochronous_sequences.fasta</a></li>
+        
+          <li><a href="/tutorials/coalescent/output_Cluster/scripts/mcmc_homochronous_GMRF.Rev">mcmc_homochronous_GMRF.Rev</a></li>
+        
           <li><a href="/tutorials/coalescent/scripts/mcmc_homochronous_GMRF.Rev">mcmc_homochronous_GMRF.Rev</a></li>
         
         </ul>
@@ -120,7 +124,7 @@ Here, the intervals additionally are equally spaced and thus their start and end
 <figure id="equalsize-skyline"><p align="middle">
   <img src="figures/scheme_equalsize_skyline.png" />
 </p>
-<figcaption>Hypothetical example of a Bayesian skyline plot with equally sized intervals, independent from the number of coalescent events (equal-sized).</figcaption>
+<figcaption>Hypothetical example of a Bayesian skyline plot with equally sized intervals, independent from the number of coalescent events (equal-sized). $w_k$ are the waiting times with $k$ active lineages, $t_{c,k}$ are the coalescent events at the beginning of such a coalescent interval. $t_{i,j}$ mark the points of interval change.  Here, the intervals are chosen to be equal-sized and the change points are independent from the coalescent events. The bold line represents the median of the posterior distribution of the population size and the shaded are shows the $95\%$ credible intervals.</figcaption>
 </figure>
 
 <blockquote class="aside"><h2>Likelihood Calculation</h2><p><strong>ADD</strong></p>
@@ -327,7 +331,7 @@ This was done to be able to easily compare the plots. --->
 <figcaption>This is how the resulting GMRF skyline plot should roughly look like.</figcaption>
 </figure>
 
-<h2 class="section" id="the-horseshoe-markov-random-field-prior">The Horseshoe Markov Random Field Prior</h2>
+<h2 class="section" id="secHSMRF">The Horseshoe Markov Random Field Prior</h2>
 <hr class="section" />
 
 <p>Related to the GMRF, there also is the Horseshoe Markov Random Field (HSMRF) prior.
@@ -364,7 +368,7 @@ This is the local scale parameter.</p>
 <p>In case you prefer to download a whole HSMRF script to compare it to the GMRF script, have a look at <a href="/tutorials/coalescent/HSMRF">the HSMRF</a>.</p>
 </blockquote>
 
-<h2 class="section" id="the-compound-poisson-process-prior">The Compound Poisson Process Prior</h2>
+<h2 class="section" id="secCPP">The Compound Poisson Process Prior</h2>
 <hr class="section" />
 
 <p>It is also possible to have a flexible number of intervals instead of specifying it before the analysis.
@@ -416,8 +420,27 @@ changePoints := events.getRealPosValues(name="time")
 <p>When you are done, have a look at the next exercise.</p>
 
 <ul>
-  <li><a href="/tutorials/coalescent/GMRF_treebased">The GMRF model with trees as input data</a></li>
+  <li><a href="/tutorials/coalescent/GMRF_treebased">The GMRF model with trees as input data</a>
+«««&lt; HEAD</li>
 </ul>
+
+<!--- <h2 class="section" id="alternative-implementations">Alternative Implementations</h2><hr class="section"> --->
+<p>=======</p>
+<blockquote>
+  <blockquote>
+    <blockquote>
+      <blockquote>
+        <blockquote>
+          <blockquote>
+            <blockquote>
+              <p>ac0a74db005c9a3a85dfeb5e6f07a9ec26525581</p>
+            </blockquote>
+          </blockquote>
+        </blockquote>
+      </blockquote>
+    </blockquote>
+  </blockquote>
+</blockquote>
 
 <ol class="bibliography"><li><span id="Faulkner2020">Faulkner J.R., Magee A.F., Shapiro B., Minin V.N. 2020. Horseshoe-based Bayesian nonparametric estimation of effective population size trajectories. Biometrics. 76:677–690.</span>
 

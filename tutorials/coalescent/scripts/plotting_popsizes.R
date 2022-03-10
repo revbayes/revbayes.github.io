@@ -6,10 +6,14 @@ burnin = 0.1
 probs = c(0.025, 0.975)
 summary = "median"
 
+####################
+# isochronous data #
+####################
+
 # constant
-population_size_log = "../output/horses_constant_NE_run_2.log"
+population_size_log = "../output/horses_constant_NE.log"
 df <- processPopSizes(population_size_log, method = "constant", burnin = burnin, probs = probs, summary = summary)
-p <- plotPopSizes(df, method = "constant") + ggplot2::coord_cartesian(ylim = c(1e3, 1e8), xlim = c(1e5, 0))
+p <- plotPopSizes(df, method = "constant")# + ggplot2::coord_cartesian(ylim = c(1e3, 1e8), xlim = c(1e5, 0))
 ggplot2::ggsave("../figures/horses_constant.png", p)
 
 # skyline
@@ -260,6 +264,12 @@ ggplot2::ggsave("../figures/horses_piecewise_6diff.png", p)
 #######################
 # heterochronous data #
 #######################
+
+# constant
+population_size_log = "../output/horses_het_constant_NE.log"
+df <- processPopSizes(population_size_log, method = "constant", burnin = burnin, probs = probs, summary = summary)
+p <- plotPopSizes(df, method = "constant")# + ggplot2::coord_cartesian(ylim = c(1e3, 1e8), xlim = c(1e5, 0))
+ggplot2::ggsave("../figures/horses_constant.png", p)
 
 # skyline
 population_size_log = "../output/horses_het_skyline_NEs.log"

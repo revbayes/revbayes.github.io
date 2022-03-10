@@ -56,7 +56,7 @@
 	<h1 class="maintitle">Constant Coalescent Process</h1>
 	<h3 class="subtitle">Estimating Demographic Histories with a Constant Coalescent Process</h3>
 	<h4 class="authors">Ronja Billenstein and Sebastian Höhna</h4>
-  <h5>Last modified on February 27, 2022</h5>
+  <h5>Last modified on March 10, 2022</h5>
 </div>
 
 
@@ -94,6 +94,10 @@
         
           <li><a href="/tutorials/coalescent/data/horses_homochronous_sequences.fasta">horses_homochronous_sequences.fasta</a></li>
         
+          <li><a href="/tutorials/coalescent/output_Cluster/data/horses_homochronous_sequences.fasta">horses_homochronous_sequences.fasta</a></li>
+        
+          <li><a href="/tutorials/coalescent/output_Cluster/scripts/mcmc_homochronous_constant.Rev">mcmc_homochronous_constant.Rev</a></li>
+        
           <li><a href="/tutorials/coalescent/scripts/mcmc_homochronous_constant.Rev">mcmc_homochronous_constant.Rev</a></li>
         
         </ul>
@@ -123,12 +127,10 @@ The coalescent process was first introduced by Kingman in 1982 for a constant po
 The relationship betweeen coalescent waiting times and effective population size is defined through the coalescent rate: $c = \frac{k (k-1)}{2N_e}$ with $k$ being the number of currently active lineages and $N_e$ being the effective population size.</p>
 
 <p>In <a href="#coalescent"></a>, a general scheme is shown.
-Waiting times are in between coalescent events.
-In later exercises, we will not have a single constant population size, but population sizes in different intervals.
-The <a href="/tutorials/coalescent/skyline">skyline model</a> applies an event-based system (violet), whereas the <a href="/tutorials/coalescent/GMRF">Gaussian Markov Random Field (GMRF) model</a> has equally sized intervals (green).</p>
+Waiting times are in between coalescent events.</p>
 
 <figure id="coalescent"><p><img src="figures/scheme_constant.png" width="800" /></p>
-<figcaption>Schematic figure of a coalescent tree and the different times associated with it. $w_k$ are the waiting times with $k$ active lineages, $t_{ck}$ are the coalescent events at the beginning of such a coalescent interval. Here, an example of a constant population size trajectory is shown. The bold line represents the median of the posterior distribution and the shaded are shows the $95%$ credible intervals.</figcaption>
+<figcaption>Schematic figure of a coalescent tree and the different times associated with it. $w_k$ are the waiting times with $k$ active lineages, $t_{c,k}$ are the coalescent events at the beginning of such a coalescent interval. Here, an example of a constant population size trajectory is shown. The bold line represents the median of the posterior distribution of the population size and the shaded are shows the $95\%$ credible intervals.</figcaption>
 </figure>
 
 <!--- <blockquote class="aside"><h2>Likelihood Calculation</h2><p>…</p>
@@ -269,18 +271,21 @@ moves.append( mvScale(alpha, weight=2.0) )
 moves.append( mvSlide(p_inv) )
 </code></pre></div></div>
 <p>The last step is to set the clock rate.
-We draw it from a uniform distribution here.
-Again, we know from the original analysis <a class="citation" href="#Vershinina2021">(Vershinina et al. 2021)</a> that the true value should be around $5*10^{-8}$ and thus set the upper bound of the distribution to $1*10^{-6}$.
-<!--- We also add a scaling move for the clock rate. --->
-We also add a scaling move which makes sure to regulate clock rate and the root age.
-This needs to be done as root age and clock rate are intertwined and can not be clearly seperated.
-Note that you could also calibrate the clock rate instead of the root age of the tree as we do it here.
+We draw it from a log uniform distribution here.
+Again, we know from the original analysis <a class="citation" href="#Vershinina2021">(Vershinina et al. 2021)</a> that the true value should be around $4.68*10^{-8}$ and thus set the lower bound of the distribution to $1*10^{-12}$ and the upper bound to $1*10^{-4}$.
+We also initialize the value to be equal to the original analysis.
+Then, we  add a scaling move for the clock rate.
 <!--- We draw it from an exponential distribution with mean $4.68e-8$ which we also use as initial value.
 This value is taken from the original analsis published in <a class="citation" href="#Vershinina2021">Vershinina et al. (2021)</a>. ---></p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clock ~ dnUniform(0,1e-6)
-# moves.append( mvScale(clock, weight=2.0) )
-
-up_down_move = mvUpDownScale(weight=5.0)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clock ~ dnLoguniform(1e-12,1e-4)
+clock.setValue(4.68e-8)
+moves.append( mvScale(clock, weight=2.0) )
+</code></pre></div></div>
+<p>Additionally, we add a scaling move which makes sure to regulate clock rate and the root age.
+This needs to be done as root age and clock rate are intertwined and can not be clearly seperated.
+Here, whenever the clock rate will be increased, the root age will be decreased.
+Note that you could also calibrate the clock rate instead of the root age of the tree as we do it here.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>up_down_move = mvUpDownScale(weight=5.0)
 up_down_move.addVariable(clock,up=TRUE)
 up_down_move.addVariable(psi,up=FALSE)
 moves.append( up_down_move)
