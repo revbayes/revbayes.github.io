@@ -2,7 +2,7 @@
 title: Skyline Models with GMRF
 subtitle: Estimating Demographic Histories with Skyline Models using a Gaussian Markov Random Field Prior
 authors: Ronja Billenstein and Sebastian Höhna
-level: 9 #may need adjustment
+level: 9
 order: 0.3
 prerequisites:
 - coalescent
@@ -29,7 +29,7 @@ Here, the intervals additionally are equally spaced and thus their start and end
   <img src="figures/scheme_equalsize_skyline.png" />
 </p>
 {% figcaption %}
-Hypothetical example of a Bayesian skyline plot with equally sized intervals, independent from the number of coalescent events (equal-sized).
+Hypothetical example of a Bayesian skyline plot with equally sized intervals, independent from the number of coalescent events (equal-sized). $w_k$ are the waiting times with $k$ active lineages, $t_{c,k}$ are the coalescent events at the beginning of such a coalescent interval. $t_{i,j}$ mark the points of interval change.  Here, the intervals are chosen to be equal-sized and the change points are independent from the coalescent events. The bold line represents the median of the posterior distribution of the population size and the shaded are shows the $95\%$ credible intervals.
 {% endfigcaption %}
 {% endfigure %}
 
@@ -247,7 +247,7 @@ This is how the resulting GMRF skyline plot should roughly look like.
 {% endfigcaption %}
 {% endfigure %}
 
-{% section The Horseshoe Markov Random Field Prior %}
+{% section The Horseshoe Markov Random Field Prior | secHSMRF %}
 Related to the GMRF, there also is the Horseshoe Markov Random Field (HSMRF) prior.
 It can be seen as a more generalized version of the GMRF with the difference lying in the definition of the standard deviation of the values in the intervals {% cite Faulkner2020 Magee2020 %}.
 It is even more flexible, because each interval has an additional variable assigned to the variation.
@@ -285,7 +285,7 @@ In case you prefer to download a whole HSMRF script to compare it to the GMRF sc
 
 {% endaside %}
 
-{% section The Compound Poisson Process Prior %}
+{% section The Compound Poisson Process Prior | secCPP %}
 
 It is also possible to have a flexible number of intervals instead of specifying it before the analysis.
 In this case, the number of intervals is also estimated.
@@ -341,3 +341,5 @@ You can have a look at the results [here]({{base.url}}/tutorials/coalescent/CPP)
 When you are done, have a look at the next exercise.
 
 * [The GMRF model with trees as input data]({{base.url}}/tutorials/coalescent/GMRF_treebased)
+
+<!--- {% section Alternative Implementations %} --->

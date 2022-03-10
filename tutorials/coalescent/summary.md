@@ -2,8 +2,8 @@
 title: Summary of the Coalescent Analyses
 subtitle: Summary of all coalescent analyses run in the preceding exercises
 authors: Ronja Billenstein and Sebastian Höhna
-level: 9 #may need adjustment
-order: 0.6
+level: 9
+order: 0.7
 prerequisites:
 - coalescent
 index: false

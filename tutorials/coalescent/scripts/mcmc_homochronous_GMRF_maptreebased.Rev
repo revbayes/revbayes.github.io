@@ -8,6 +8,7 @@
 
 ## Global settings
 
+NUM_REPLICATES      = 2
 NUM_MCMC_ITERATIONS = 10000
 THINNING            = 10
 
@@ -51,10 +52,9 @@ moves.append( mvMirrorMultiplier(population_size_at_present,weight=5) )
 moves.append( mvRandomDive(population_size_at_present,weight=5) )
 
 # this value depends on the number of intervals, you can find the best value using RevGadgets
-# setMRFGlobalScaleHyperpriorNShifts(10, "GMRF")
-population_size_global_scale_hyperprior <- 0.1065
+# setMRFGlobalScaleHyperpriorNShifts(9, "GMRF")
+population_size_global_scale_hyperprior <- 0.1203
 population_size_global_scale ~ dnHalfCauchy(0,1)
-# population_size_global_scale.setValue(runif(1,0.005,0.1)[1])
 
 moves.append( mvScaleBactrian(population_size_global_scale,weight=5.0) )
 
@@ -110,7 +110,7 @@ monitors.append( mnFile(filename="output/horses_GMRF_maptreebased_NEs.log",popul
 monitors.append( mnFile(filename="output/horses_GMRF_maptreebased_times.log",interval_times,printgen=THINNING) )
 monitors.append( mnScreen(population_size, printgen=100) )
 
-mymcmc = mcmc(mymodel, monitors, moves)
+mymcmc = mcmc(mymodel, monitors, moves, nruns=NUM_REPLICATES, combine="mixed")
 mymcmc.burnin(NUM_MCMC_ITERATIONS*0.1,100)
 mymcmc.run(NUM_MCMC_ITERATIONS, tuning = 100)
 

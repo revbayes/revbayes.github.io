@@ -21,12 +21,11 @@ monitors  = VectorMonitors()
 #######################
 
 # Read in sequence data
-sequences <- readDiscreteCharacterData("data/horses_homochronous_sequences.fasta")
-taxa <- sequences.taxa()
+taxa <- readTaxonData("data/horses_heterochronous_ages.tsv")
+sequences <- readDiscreteCharacterData("data/horses_heterochronous_sequences.fasta")
 
-# Get the number of taxa. We need this later on.
+# Get the number of taxa. We need it later on.
 n_taxa <- taxa.size()
-
 
 ##############
 # Tree model #
@@ -36,12 +35,12 @@ pop_size ~ dnUniform(0,1E8)
 pop_size.setValue(100)
 moves.append( mvScale(pop_size, lambda=0.1, tune=true, weight=2.0) )
 
-### the time tree is a stochastic node modeled by the constant coalescent process (dnConstantCoalescent)
+### the time tree is a stochastic node modeled by the constant coalescent process (dnCoalescent)
 psi ~ dnCoalescent(theta=pop_size, taxa=taxa)
 
 root_age := psi.rootAge()
-obs_root_age ~ dnNormal(mean = root_age, sd = 60000, min = 250000, max = 500000)
-obs_root_age.clamp(375000)
+obs_root_age ~ dnNormal(mean = root_age, sd = 200000, min = 780000, max = 1200000)
+obs_root_age.clamp(850000)
 
 ### add some moves that change the tree
 moves.append( mvNarrow(psi, weight=n_taxa) )
@@ -104,9 +103,9 @@ mymodel = model(psi)
 ################
 
 #add monitors
-monitors.append( mnModel(filename="output/horses_constant.log",printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_constant.trees",psi,printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_constant_NE.log",pop_size,printgen=THINNING) )
+monitors.append( mnModel(filename="output/horses_het_constant.log",printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_het_constant.trees",psi,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_het_constant_NE.log",pop_size,printgen=THINNING) )
 monitors.append( mnScreen(pop_size, root_age, printgen=100) )
 
 mymcmc = mcmc(mymodel, monitors, moves, nruns=NUM_REPLICATES, combine="mixed") 

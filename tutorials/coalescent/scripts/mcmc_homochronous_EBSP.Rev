@@ -26,61 +26,36 @@ taxa <- sequences.taxa()
 
 # Get the number of taxa and branches. We need these later on.
 n_taxa <- taxa.size()
+# n_branches <- 2 * n_taxa - 3
 
 
 ##############
 # Tree model #
 ##############
 
-MAX_AGE = 500000
+ESTIMATED_ROOT_AGE <- 375000
 
-NUM_INTERVALS <- 10
+NUM_INTERVALS = (n_taxa - 1)
+pop_size[1] ~ dnExponential( 2/ESTIMATED_ROOT_AGE )
+pop_size[1].setValue( ESTIMATED_ROOT_AGE/2 )
+moves.append( mvScale(pop_size[1], lambda=0.1, tune=true, weight=2.0) )
+indicator[1] <- 1
 
-for (i in 1:(NUM_INTERVALS-1)) {
+mix_prob <- 0.5
 
-    changePoints[i] <- i * ((MAX_AGE)/NUM_INTERVALS)
+for (i in 2:NUM_INTERVALS) {
 
+    pop_size[i] ~ dnReversibleJumpMixture(pop_size[i-1],
+                            dnExponential( 2/ESTIMATED_ROOT_AGE ),
+                            mix_prob)
+    moves.append( mvScale(pop_size[i], lambda=0.1, tune=true, weight=2.0) )
+    moves.append( mvRJSwitch(pop_size[i], weight=2.0) )
+    indicator[i] := ifelse( pop_size[i] == pop_size[i-1], 0, 1 )
 }
-
-population_size_at_present ~ dnUniform(0,1E8)
-population_size_at_present.setValue(100)
-
-moves.append( mvScaleBactrian(population_size_at_present,weight=5) )
-moves.append( mvMirrorMultiplier(population_size_at_present,weight=5) )
-moves.append( mvRandomDive(population_size_at_present,weight=5) )
-
-# this value depends on the number of intervals, you can find the best value using RevGadgets
-# setMRFGlobalScaleHyperpriorNShifts(9, "GMRF")
-population_size_global_scale_hyperprior <- 0.1203
-population_size_global_scale ~ dnHalfCauchy(0,1)
-
-moves.append( mvScaleBactrian(population_size_global_scale,weight=5.0) )
-
-for (i in 1:(NUM_INTERVALS-1)) {
-  # non-centralized parameterization of horseshoe
-  delta_log_population_size[i] ~ dnNormal( mean=0, sd=population_size_global_scale*population_size_global_scale_hyperprior )
-  # Make sure values initialize to something reasonable
-  delta_log_population_size[i].setValue(runif(1,-0.1,0.1)[1])
-  moves.append( mvSlideBactrian(delta_log_population_size[i], weight=5) )
-}
-
-population_size := fnassembleContinuousMRF(population_size_at_present,delta_log_population_size,initialValueIsLogScale=FALSE,order=1)
-
-# Move all field parameters in one go
-moves.append( mvEllipticalSliceSamplingSimple(delta_log_population_size,weight=5,tune=FALSE) )
-# joint sliding moves of all vector elements
-moves.append( mvVectorSlide(delta_log_population_size, weight=10) )
-# up-down slide of the entire vector and the rate at present
-rates_up_down_move = mvUpDownScale(weight=10.0)
-rates_up_down_move.addVariable(population_size_at_present,FALSE)
-rates_up_down_move.addVariable(delta_log_population_size,TRUE)
-moves.append( rates_up_down_move )
-# shrink expand moves
-moves.append( mvShrinkExpand( delta_log_population_size, sd=population_size_global_scale, weight=10 ) )
 
 
 ### the time tree is a stochastic node modeled by the coalescent skyline process (dnCoalescentSkyline)
-psi ~ dnCoalescentSkyline(theta=population_size, times=changePoints, method="specified", taxa=taxa)
+psi ~ dnCoalescentSkyline(theta=pop_size, method="events", taxa=taxa)
 
 root_age := psi.rootAge()
 obs_root_age ~ dnNormal(mean = root_age, sd = 60000, min = 250000, max = 500000)
@@ -149,13 +124,13 @@ mymodel = model(psi)
 ################
 
 #add monitors
-monitors.append( mnModel(filename="output/horses_GMRF.log",printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_GMRF.trees",psi,printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_GMRF_NEs.log",population_size,printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_GMRF_times.log",interval_times,printgen=THINNING) )
-monitors.append( mnScreen(population_size, root_age, printgen=100) )
+monitors.append( mnModel(filename="output/horses_EBSP.log",printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_EBSP.trees",psi,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_EBSP_NEs.log",pop_size,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_EBSP_times.log",interval_times,printgen=THINNING) )
+monitors.append( mnScreen(root_age, printgen=100) )
 
-mymcmc = mcmc(mymodel, monitors, moves, nruns=NUM_REPLICATES, combine="mixed")
+mymcmc = mcmc(mymodel, monitors, moves, nruns=NUM_REPLICATES, combine="mixed") 
 mymcmc.burnin(NUM_MCMC_ITERATIONS*0.1,100)
 mymcmc.run(NUM_MCMC_ITERATIONS, tuning = 100)
 

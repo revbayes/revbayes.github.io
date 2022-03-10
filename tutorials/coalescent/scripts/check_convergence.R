@@ -16,6 +16,12 @@ converged$continuous_parameters$means
 converged$continuous_parameters$ess
 converged$continuous_parameters$compare_runs
 
+# converged$tree_parameters$frequencies
+converged$tree_parameters$ess
+converged$tree_parameters$compare_runs
+# which(converged$tree_parameters$compare_runs[[1]] > 0.09)
+
+
 converged$message_complete
 
 converged$failed_names
