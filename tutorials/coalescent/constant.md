@@ -2,7 +2,7 @@
 title: Constant Coalescent Process
 subtitle: Estimating Demographic Histories with a Constant Coalescent Process
 authors: Ronja Billenstein and Sebastian Höhna
-level: 8 #may need adjustment
+level: 9
 order: 0.1
 prerequisites:
 - coalescent
@@ -31,13 +31,11 @@ The relationship betweeen coalescent waiting times and effective population size
 
 In {% ref coalescent %}, a general scheme is shown.
 Waiting times are in between coalescent events.
-In later exercises, we will not have a single constant population size, but population sizes in different intervals.
-The [skyline model]({{base.url}}/tutorials/coalescent/skyline) applies an event-based system (violet), whereas the [Gaussian Markov Random Field (GMRF) model]({{base.url}}/tutorials/coalescent/GMRF) has equally sized intervals (green).
 
 {% figure coalescent %}
 <img src="figures/scheme_constant.png" width="800">
 {% figcaption %}
-Schematic figure of a coalescent tree and the different times associated with it. $w_k$ are the waiting times with $k$ active lineages, $t_{ck}$ are the coalescent events at the beginning of such a coalescent interval. Here, an example of a constant population size trajectory is shown. The bold line represents the median of the posterior distribution and the shaded are shows the $95%$ credible intervals.
+Schematic figure of a coalescent tree and the different times associated with it. $w_k$ are the waiting times with $k$ active lineages, $t_{c,k}$ are the coalescent events at the beginning of such a coalescent interval. Here, an example of a constant population size trajectory is shown. The bold line represents the median of the posterior distribution of the population size and the shaded are shows the $95\%$ credible intervals.
 {% endfigcaption %}
 {% endfigure %}
 
@@ -190,18 +188,22 @@ p_inv ~ dnBeta(1,1)
 moves.append( mvSlide(p_inv) )
 ~~~
 The last step is to set the clock rate.
-We draw it from a uniform distribution here.
-Again, we know from the original analysis {% cite Vershinina2021 %} that the true value should be around $5\*10^{-8}$ and thus set the upper bound of the distribution to $1\*10^{-6}$.
-<!--- We also add a scaling move for the clock rate. --->
-We also add a scaling move which makes sure to regulate clock rate and the root age.
-This needs to be done as root age and clock rate are intertwined and can not be clearly seperated.
-Note that you could also calibrate the clock rate instead of the root age of the tree as we do it here.
+We draw it from a log uniform distribution here.
+Again, we know from the original analysis {% cite Vershinina2021 %} that the true value should be around $4.68\*10^{-8}$ and thus set the lower bound of the distribution to $1\*10^{-12}$ and the upper bound to $1\*10^{-4}$.
+We also initialize the value to be equal to the original analysis.
+Then, we  add a scaling move for the clock rate.
 <!--- We draw it from an exponential distribution with mean $4.68e-8$ which we also use as initial value.
 This value is taken from the original analsis published in {% citet Vershinina2021 %}. --->
 ~~~
-clock ~ dnUniform(0,1e-6)
-# moves.append( mvScale(clock, weight=2.0) )
-
+clock ~ dnLoguniform(1e-12,1e-4)
+clock.setValue(4.68e-8)
+moves.append( mvScale(clock, weight=2.0) )
+~~~
+Additionally, we add a scaling move which makes sure to regulate clock rate and the root age.
+This needs to be done as root age and clock rate are intertwined and can not be clearly seperated.
+Here, whenever the clock rate will be increased, the root age will be decreased.
+Note that you could also calibrate the clock rate instead of the root age of the tree as we do it here.
+~~~
 up_down_move = mvUpDownScale(weight=5.0)
 up_down_move.addVariable(clock,up=TRUE)
 up_down_move.addVariable(psi,up=FALSE)

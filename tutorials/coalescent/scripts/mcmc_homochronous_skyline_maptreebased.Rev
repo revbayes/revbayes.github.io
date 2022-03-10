@@ -8,6 +8,7 @@
 
 ## Global settings
 
+NUM_REPLICATES      = 2
 NUM_MCMC_ITERATIONS = 10000
 THINNING            = 10
 
@@ -67,7 +68,7 @@ monitors.append( mnFile(filename="output/horses_skyline_maptreebased_NEs.log",po
 monitors.append( mnFile(filename="output/horses_skyline_maptreebased_times.log",interval_times,printgen=THINNING) )
 monitors.append( mnScreen(pop_size, printgen=100) )
 
-mymcmc = mcmc(mymodel, monitors, moves)
+mymcmc = mcmc(mymodel, monitors, moves, nruns=NUM_REPLICATES, combine="mixed")
 mymcmc.burnin(NUM_MCMC_ITERATIONS*0.1,100)
 mymcmc.run(NUM_MCMC_ITERATIONS, tuning = 100)
 

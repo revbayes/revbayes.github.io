@@ -1,0 +1,207 @@
+################################################################################
+#
+# RevBayes Example: Bayesian inference of diversification rates under a
+#                   episodic birth-death model with an environmental variable
+#                   and the uncorrelated (UC) model.
+#
+#
+# authors: Sebastian Hoehna
+#
+################################################################################
+
+#######################
+# Reading in the Data #
+#######################
+
+### Read in the "observed" tree
+T <- readTrees("data/primates_tree.nex")[1]
+
+# Get some useful variables from the data. We need these later on.
+taxa <- T.taxa()
+
+
+# Create some vector for the moves and monitors of this analysis
+moves    = VectorMoves()
+monitors = VectorMonitors()
+
+
+#################################
+# Set up the environmental data #
+#################################
+
+var <- v(297.6, 301.36, 304.84, 307.86, 310.36, 312.53, 314.48, 316.31, 317.42, 317.63, 317.74, 318.51, 318.29, 316.5, 315.49, 317.64, 318.61, 316.6, 317.77, 328.27, 351.12, 381.87, 415.47, 446.86, 478.31, 513.77, 550.74, 586.68, 631.48, 684.13, 725.83, 757.81, 789.39, 813.79, 824.25, 812.6, 784.79, 755.25, 738.41, 727.53, 710.48, 693.55, 683.04, 683.99, 690.93, 694.44, 701.62, 718.05, 731.95, 731.56, 717.76)
+
+MAX_VAR_AGE = 50
+NUM_INTERVALS = var.size()-1
+
+H = 0.587405
+
+
+####################
+# Create the rates #
+####################
+
+speciation_sd ~ dnHalfCauchy(0,1)
+extinction_sd ~ dnHalfCauchy(0,1)
+
+moves.append( mvScaleBactrian(speciation_sd,weight=5.0) )
+moves.append( mvScaleBactrian(extinction_sd,weight=5.0) )
+
+speciation_sd.setValue(0.05)
+extinction_sd.setValue(0.05)
+
+speciation_at_present ~ dnUniform(0,100)
+extinction_at_present ~ dnUniform(0,100)
+
+moves.append( mvScaleBactrian(speciation_at_present,weight=2) )
+moves.append( mvScaleBactrian(extinction_at_present,weight=2) )
+
+speciation_at_present.setValue( 0.1 )
+extinction_at_present.setValue( 0.05 )
+
+move_up_down_alpha = mvUpDownScale(tune=TRUE, weight=5.0)
+move_up_down_alpha.addVariable( speciation_at_present, up=TRUE )
+move_up_down_alpha.addVariable( extinction_at_present, up=TRUE )
+moves.append( move_up_down_alpha )
+
+
+
+# create a random variable at the present time
+beta_speciation ~ dnNormal(0,1.0)
+beta_extinction ~ dnNormal(0,1.0)
+beta_speciation.setValue( 0.0 )
+beta_extinction.setValue( 0.0 )
+
+speciation_corr_neg_prob := ifelse(beta_speciation < 0.0, 1, 0)
+extinction_corr_neg_prob := ifelse(beta_extinction < 0.0, 1, 0)
+speciation_corr_pos_prob := ifelse(beta_speciation > 0.0, 1, 0)
+extinction_corr_pos_prob := ifelse(beta_extinction > 0.0, 1, 0)
+
+# apply moves on the rates
+moves.append( mvSlide(beta_speciation, delta=0.1, weight=5) )
+moves.append( mvSlide(beta_extinction, delta=0.1, weight=5) )
+
+move_up_down_beta = mvUpDownSlide(lambda=0.001, tune=TRUE, weight=5.0)
+move_up_down_beta.addVariable( beta_speciation, up=TRUE )
+move_up_down_beta.addVariable( beta_extinction, up=TRUE )
+moves.append( move_up_down_beta )
+
+
+moves.append(  mvSlide(beta_speciation,delta=1.0,weight=5.0,tuneTarget=0.025) )
+moves.append(  mvSlide(beta_extinction,delta=1.0,weight=5.0,tuneTarget=0.025) )
+
+moves.append(  mvSlide(beta_speciation,delta=1.0,weight=5.0,tuneTarget=0.25) )
+moves.append(  mvSlide(beta_extinction,delta=1.0,weight=5.0,tuneTarget=0.25) )
+
+moves.append(  mvSlide(beta_speciation,delta=1.0,weight=5.0,tuneTarget=0.75) )
+moves.append(  mvSlide(beta_extinction,delta=1.0,weight=5.0,tuneTarget=0.75) )
+
+moves.append(  mvScale(beta_speciation,weight=5.0,tuneTarget=0.025) )
+moves.append(  mvScale(beta_extinction,weight=5.0,tuneTarget=0.025) )
+
+moves.append(  mvScale(beta_speciation,weight=5.0,tuneTarget=0.25) )
+moves.append(  mvScale(beta_extinction,weight=5.0,tuneTarget=0.25) )
+
+moves.append(  mvScale(beta_speciation,weight=5.0,tuneTarget=0.75) )
+moves.append(  mvScale(beta_extinction,weight=5.0,tuneTarget=0.75) )
+
+moves.append(  mvSlideBactrian(beta_speciation,weight=10.0) )
+moves.append(  mvSlideBactrian(beta_extinction,weight=10.0) )
+
+
+mean_ln_speciation[1] := ln(speciation_at_present)
+mean_ln_extinction[1] := ln(extinction_at_present)
+
+ln_speciation[1] := mean_ln_speciation[1]
+ln_extinction[1] := mean_ln_extinction[1]
+
+speciation[1] := exp( ln_speciation[1] )
+extinction[1] := exp( ln_extinction[1] )
+
+for (i in 1:NUM_INTERVALS ) {
+    index = i+1
+
+    # transform the log-rate into actual rates
+    mean_ln_speciation[index] := mean_ln_speciation[i] + beta_speciation * (var[index]-var[i])
+    mean_ln_extinction[index] := mean_ln_extinction[i] + beta_extinction * (var[index]-var[i])
+
+    ln_speciation_error[i] ~ dnNormal( 0.0, speciation_sd )
+    ln_extinction_error[i] ~ dnNormal( 0.0, extinction_sd )
+
+    move_up_down_spec_ext[i] = mvUpDownSlide(lambda=0.1, tune=TRUE, weight=2.0)
+    move_up_down_spec_ext[i].addVariable( ln_speciation_error[i], up=TRUE )
+    move_up_down_spec_ext[i].addVariable( ln_extinction_error[i], up=TRUE )
+    moves.append( move_up_down_spec_ext[i] )
+
+    # apply moves on the rates
+    moves.append( mvSlide(ln_speciation_error[i], weight=2) )
+    moves.append( mvSlide(ln_extinction_error[i], weight=2) )
+
+    ln_speciation[index] := mean_ln_speciation[index] + ln_speciation_error[i]
+    ln_extinction[index] := mean_ln_extinction[index] + ln_extinction_error[i]
+
+    # transform the log-rate into actual rates
+    speciation[index] := exp( ln_speciation[index] )
+    extinction[index] := exp( ln_extinction[index] )
+
+}
+
+moves.append( mvVectorSlide(ln_speciation_error, weight=10) )
+moves.append( mvVectorSlide(ln_extinction_error, weight=10) )
+
+moves.append( mvShrinkExpand( ln_speciation_error, sd=speciation_sd, weight=10 ) )
+moves.append( mvShrinkExpand( ln_extinction_error, sd=extinction_sd, weight=10 ) )
+
+
+
+##############################################
+## Specify the episodic birth-death process ##
+##############################################
+
+
+interval_times <- MAX_VAR_AGE * (1:NUM_INTERVALS) / NUM_INTERVALS
+
+### rho is the probability of sampling species at the present
+### fix this to 23/367, since there are ~367 described species of primates
+### and we have sampled 23
+rho <- T.ntips()/367
+
+timetree ~ dnEpisodicBirthDeath(rootAge=T.rootAge(), lambdaRates=speciation, lambdaTimes=interval_times, muRates=extinction, muTimes=interval_times, rho=rho, samplingStrategy="uniform", condition="survival", taxa=taxa)
+
+### clamp the model with the "observed" tree
+timetree.clamp(T)
+
+
+
+#############
+# The Model #
+#############
+
+
+### workspace model wrapper ###
+mymodel = model(rho)
+
+### set up the monitors that will output parameter values to file and screen
+monitors.append( mnModel(filename="output/primates_EBD_UC_env.log",printgen=10, separator = TAB) )
+monitors.append( mnFile(filename="output/primates_EBD_UC_env_speciation_rates.log",printgen=10, separator = TAB, speciation) )
+monitors.append( mnFile(filename="output/primates_EBD_UC_env_speciation_times.log",printgen=10, separator = TAB, interval_times) )
+monitors.append( mnFile(filename="output/primates_EBD_UC_env_extinction_rates.log",printgen=10, separator = TAB, extinction) )
+monitors.append( mnFile(filename="output/primates_EBD_UC_env_extinction_times.log",printgen=10, separator = TAB, interval_times) )
+monitors.append( mnScreen(printgen=1000, beta_speciation, beta_extinction) )
+
+
+
+################
+# The Analysis #
+################
+
+### workspace mcmc ###
+mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
+
+### run the MCMC ###
+mymcmc.run(generations=50000, tuningInterval=200)
+
+
+
+## quit ##
+q()

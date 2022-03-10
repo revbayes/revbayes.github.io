@@ -8,6 +8,7 @@
 
 ## Global settings
 
+NUM_REPLICATES      = 2
 NUM_MCMC_ITERATIONS = 10000
 THINNING            = 10
 
@@ -63,10 +64,7 @@ changePoints := events.getRealPosValues(name="time")
 psi ~ dnCoalescentSkyline(theta=population_size, times=changePoints, method="specified", taxa=taxa)
 psi.clamp(maptree)
 
-# not implemented yet
 interval_times := changePoints
-
-
 
 #############
 # The Model #
@@ -83,12 +81,13 @@ mymodel = model(psi)
 ################
 
 #add monitors
-monitors.append( mnFile(filename="output/horses_CPP_maptreebased.log",n_events,printgen=THINNING) )
+monitors.append( mnModel(filename="output/horses_CPP_maptreebased.log",printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_CPP_maptreebased_nevents.log",n_events,printgen=THINNING) )
 monitors.append( mnFile(filename="output/horses_CPP_maptreebased_NEs.log",population_size,printgen=THINNING) )
 monitors.append( mnFile(filename="output/horses_CPP_maptreebased_times.log",interval_times,printgen=THINNING) )
 monitors.append( mnScreen(n_events, printgen=100) )
 
-mymcmc = mcmc(mymodel, monitors, moves)
+mymcmc = mcmc(mymodel, monitors, moves, nruns=NUM_REPLICATES, combine="mixed")
 mymcmc.burnin(NUM_MCMC_ITERATIONS*0.1,100)
 mymcmc.run(NUM_MCMC_ITERATIONS, tuning = 100)
 

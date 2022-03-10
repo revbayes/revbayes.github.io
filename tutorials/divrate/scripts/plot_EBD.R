@@ -16,7 +16,8 @@ rates <- processDivRates(speciation_time_log = speciation_time_file,
                          speciation_rate_log = speciation_rate_file,
                          extinction_time_log = extinction_time_file,
                          extinction_rate_log = extinction_rate_file,
-                         burnin = 0.25)
+                         burnin = 0.25,
+                         summary = "median")
 
 # plot rates through time
 p <- plotDivRates(df = rates) +

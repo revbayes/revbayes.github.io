@@ -2,12 +2,13 @@
 # rb make_anc_state.Rev
 
 # NOTE: modify out_str to use with other analyses!
-#out_str = "output/simple"
+out_str = "output/simple"
 #out_str = "output/epoch"
 #out_str = "output/simple_phy"
-out_str = "output/epoch_phy"
+#out_str = "output/epoch_phy"
 
 out_state_fn = out_str + ".states.log"
+out_stoch_fn = out_str + ".stoch.log"
 out_phy_fn   = out_str + ".tre"
 out_mcc_fn   = out_str + ".mcc.tre"
 
@@ -15,6 +16,7 @@ out_mcc_fn   = out_str + ".mcc.tre"
 tree_trace = readTreeTrace(file=out_phy_fn, treetype="clock")
 tree_trace.setBurnin(0.25)
 mcc_tree = mccTree(tree_trace, file=out_mcc_fn, mean=false)
+
 
 # get ancestral state trace
 state_trace = readAncestralStateTrace(file=out_state_fn)
@@ -35,6 +37,18 @@ anc_tree = ancestralStateTree(tree=mcc_tree,
                               summary_statistic="MAP",
                               site=1)
 
+# read in the sampled character histories
+anc_states_stoch_map = readAncestralStateTrace(out_stoch_fn)
+
+
+# make summary tree
+char_map_tree = characterMapTree(tree=mcc_tree,
+                                 ancestral_state_trace_vector=anc_states_stoch_map,
+                                 character_file=out_str+".char.map.tre",
+                                 posterior_file=out_str+".pp.map.tre",
+                                 burnin=0.25,
+                                 num_time_slices=500)
+
+
 # exit RevBayes
 quit()
-                             

@@ -17,24 +17,30 @@ In this tutorial, we use the 66 vertebrate phylogenies and (log) body-size datas
 
 {% subsection Read the data %}
 
-We begin by deciding which of the 66 vertebrate datasets to use. Here, we assume we are analyzing the 5th dataset (_Acanthuridae_), but you should feel free to choose any of the datasets.
+We begin by deciding which of the traits to use. Here, we assume we are analyzing the first trait (female body mass), but you should feel free to choose any of the trait.
 ```
-dataset <- 1
+trait <- 1
 ```
 
-Now, we read in the (time-calibrated) tree corresponding to our chosen dataset.
+Now, we read in the (time-calibrated) tree corresponding.
 ```
-T <- readTrees("data/trees.nex")[dataset]
+T <- readTrees("data/primates_tree.nex")[1]
 ```
 We also want to keep track of the number of branches for our relaxed clock model.
 ```
 ntips     <- T.ntips()
 nbranches <- 2 * ntips - 2
 ```
-
 Next, we read in the character data for the same dataset.
 ```
-data <- readContinuousCharacterData("data/traits.nex")[dataset]
+data <- readContinuousCharacterData("data/primates_cont_traits.nex")
+```
+
+We have to exclude all other traits that we are not interested in and only include our focal trait.
+This can be done in RevBayes using the member methods `.excludeAll()` and `.includeCharacter()`.
+```
+data.excludeAll()
+data.includeCharacter( trait )
 ```
 
 Additionally, we initialize a variable for our vector of
@@ -65,9 +71,10 @@ moves.append( mvScale(sigma2, weight=1.0) )
 
 {% subsubsection Adaptation parameter %}
 
-The rate of adaptation toward the optimum is determined by the parameter $\alpha$. We draw $\alpha$ from an exponential prior distribution, and place a scale proposal on it. This parameter is assumed to be constant across the tree (even though the optimum will vary).
+The rate of adaptation toward the optimum is determined by the parameter $\alpha$. We draw $\alpha$ from an exponential prior distribution, and place a scale proposal on it. This parameter is assumed to be constant across the tree (even though the optimum will vary). We specify the mean of the exponential prior distribution on $\alpha$ to be half the root age divided by $\ln(2)$, which means that we expect a phylogenetic half life of half the tree age.
 ```
-alpha ~ dnExponential(10)
+root_age := tree.rootAge()
+alpha ~ dnExponential( abs(root_age / 2.0 / ln(2.0)) )
 moves.append( mvScale(alpha, weight=1.0) )
 ```
 
@@ -92,7 +99,7 @@ shift_distribution = dnNormal(0, 0.587)
 Now, we loop over each branch, drawing a the change in the optima value from a mixture distribution. This mixture distribution places prior probability $p$ on the rate shift being drawn from the uniform distribution we just specified, and prior probability $1 - p$ on the shift being exactly equal to 0 (_i.e._, no shift). We then compute the optimum on the branch by adding the change in the optimum to the ancestral optimum. Note that we loop over the branches in reverse order; this ensures that the ancestral optimum exists when we specify the optimum for a given branch.
 
 ```
-for(i in nbranches:1) {
+for (i in nbranches:1) {
 
     # draw the theta shift from a mixture distribution
     branch_deltas[i] ~ dnReversibleJumpMixture(0, shift_distribution, Probability(1 - shift_probability) )

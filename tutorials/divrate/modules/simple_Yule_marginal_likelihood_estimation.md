@@ -9,7 +9,7 @@ that power. In this implementation, the vector of powers starts with 1,
 sampling the likelihood close to the posterior and incrementally
 sampling closer and closer to the prior as the power decreases. For more
 information on marginal likelihood estimation please read the
-[Bayesian Model Selection Tutorial]({{ base.url }}/tutorials/model_selection_bayes_factor/bf_intro)
+[Bayesian Model Selection Tutorial]({{ base.url }}/tutorials/model_selection_bayes_factor/bf_intro) or see {% citet Hoehna2021 %}.
 
 First, we create the variable containing the power posterior. This
 requires us to provide a model and vector of moves, as well as an output
@@ -51,3 +51,21 @@ in {% ref tab_ml_yule %}.
 write("Path-sampling marginal likelihood:\t", ps.marginal() )
 ```
 &#8680; The `Rev` file for performing this analysis: `ml_Yule.Rev`.
+
+
+{% subsection Exercise 2 %}
+-   Compute the marginal likelihood under the Yule model.
+-   Enter the estimate in the table below.
+
+{% figure tab_ml_yule %}
+
+ |                  **Model**                |   **Path-Sampling**   |   **Stepping-Stone-Sampling**   |
+  ------------------------------------------:|:---------------------:|:-------------------------------:|
+ |     Marginal likelihood Yule ($M_0$)      |                       |                                 |
+ |  Marginal likelihood birth-death ($M_1$)  |                       |                                 |
+ |              Supported model?             |                       |                                 |
+
+{% figcaption %}
+Marginal likelihoods of the Yule and Birth-death models.
+{% endfigcaption %}
+{% endfigure %}

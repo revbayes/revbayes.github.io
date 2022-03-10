@@ -1,9 +1,9 @@
 {% section Pure-Birth (Yule) Model %}
 
 
-In this section, we will walk through specifying a pure-birth process model and 
+In this section, we will walk through specifying a pure-birth process model and
 estimating the speciation rate.
-Then, we will continue by estimating the marginal likelihood of the model so that we can perform model comparison. 
+Then, we will continue by estimating the marginal likelihood of the model so that we can perform model comparison.
 The section about the birth-death process will be less detailed because it will build up on this section.
 
 The simplest branching model is the *pure-birth process* described by
@@ -13,7 +13,7 @@ the speciation rate remains constant over time. As a result, the waiting
 time between speciation events is exponential, where the rate of the
 exponential distribution is the product of the number of extant lineages
 ($n$) at that time and the speciation rate: $n\lambda$
-{% cite Yule1925 Aldous2001 Hoehna2014a %}. The pure-birth branching model
+{% cite Yule1925 Aldous2001 Hoehna2015a %}. The pure-birth branching model
 does not allow for lineage extinction
 (*i.e.*, the extinction rate $\mu=0$). However,
 the model depends on a second parameter, $\rho$, which is the
@@ -25,24 +25,25 @@ topology and node ages are conditional on the speciation rate, sampling
 probability, and root age ({% ref fig_yule_gm %}).
 
 {% figure fig_yule_gm %}
-<img src="figures/yule_gm.png" width="50%" height="50%" /> 
-{% figcaption %} 
-The graphical model representation of the pure-birth (Yule) process. 
+<img src="figures/yule_gm.png" width="50%" height="50%" />
+{% figcaption %}
+The graphical model representation of the pure-birth (Yule) process.
 For more information about graphical model representations see {% citet Hoehna2014b %}.
 {% endfigcaption %}
 {% endfigure %}
 
 We can add hierarchical structure to this model and account for
-uncertainty in the value of the speciation rate by placing a hyperprior
-on $\lambda$ ({% ref fig_yule_gm2 %}). The graphical models in {% ref fig_yule_gm %} 
-and {% ref fig_yule_gm2 %} demonstrate the simplicity of the
-Yule model. Ultimately, the pure birth model is just a special case of
+uncertainty in the value of the speciation rate by placing a prior distribution
+on $\lambda$ ({% ref fig_yule_gm2 %}).
+The graphical models in {% ref fig_yule_gm %}
+and {% ref fig_yule_gm2 %} demonstrate the simplicity of the Yule model.
+Ultimately, the pure birth model is just a special case of
 the birth-death process, where the extinction rate (typically denoted
 $\mu$) is a constant node with the value 0.
 
 {% figure fig_yule_gm2 %}
-<img src="figures/yule_gm2.png" width="50%" height="50%" /> 
-{% figcaption %} 
+<img src="figures/yule_gm2.png" width="50%" height="50%" />
+{% figcaption %}
 The graphical model representation
 of the pure-birth (Yule) process, where the speciation rate is treated
 as a random variable drawn from a lognormal distribution.
@@ -53,11 +54,11 @@ For this exercise, we will specify a Yule model, such that the
 speciation rate is a stochastic node, drawn from a lognormal
 distribution as in {% ref fig_yule_gm2 %}. In a Bayesian framework, we
 are interested in estimating the posterior probability of $\lambda$
-given that we observe a time tree. 
+given that we observe a time tree.
 
 $$
 \begin{equation}
-\mathbb{P}(\lambda \mid \Psi) = \frac{\mathbb{P}(\Psi \mid \lambda)\mathbb{P}(\lambda \mid \nu)}{\mathbb{P}(\Psi)} 
+\mathbb{P}(\lambda \mid \Psi) = \frac{\mathbb{P}(\Psi \mid \lambda)\mathbb{P}(\lambda \mid \nu)}{\mathbb{P}(\Psi)}
 \tag{Bayes Theorem}\label{eq:bayes_thereom}
 \end{equation}
 $$
@@ -106,11 +107,9 @@ magnitude. If you want to represent more prior uncertainty by,
 the 95% prior probability then you can simply multiply `birth_rate_sd`
 by a factor of 2.
 
-To estimate the value of $\lambda$, we assign a proposal mechanism to
-operate on this node. In RevBayes these MCMC sampling algorithms are
-called *moves*. We need to create a vector of moves and we can do this
-by using vector indexing and our pre-initialized iterator `mi`. We will
-use a scaling move on $\lambda$ called `mvScale`.
+To estimate the value of $\lambda$, we assign a proposal mechanism to operate on this node.
+In RevBayes these MCMC sampling algorithms are called *moves*.
+We will use a scaling move on $\lambda$ called `mvScale`.
 {{ "mcmc_Yule.Rev" | snippet:"line","39" }}
 
 {% subsubsection Sampling probability %}
@@ -119,6 +118,8 @@ Our prior belief is that we have sampled 233 out of 367 living primate
 species. To account for this we can set the sampling parameter as a
 constant node with a value of 233/367
 {{ "mcmc_Yule.Rev" | snippet:"line","44" }}
+Note that we will assume "uniform" taxon sampling {% cite Hoehna2011 Hoehna2014a %}, which we will specify below.
+If we want to learn more about different taxon sampling options, then look at {% page_ref divrate/sampling %} tutorial.
 
 {% subsubsection Root age %}
 
@@ -141,7 +142,10 @@ Now we have all of the parameters we need to specify the full pure-birth
 model. We can initialize the stochastic node representing the time tree.
 Note that we set the `mu` parameter to the constant value `0.0`.
 {{ "mcmc_Yule.Rev" | snippet:"line","51" }}
-If you refer back to Equation \eqref{eq:bayes_thereom} and {% ref fig_yule_gm2 %}, 
+Note that we specified the `condition="survival"`, which says that we assume this process only produced trees that survived until the present.
+Fore more information, see the {% page_ref divrate/conditions %} tutorial.
+
+If you refer back to Equation \eqref{eq:bayes_thereom} and {% ref fig_yule_gm2 %},
 the time tree $\Psi$ is the variable we observe,
 *i.e.*, the data. We can set this in `Rev` by
 using the `clamp()` function.
@@ -194,3 +198,29 @@ When the analysis is complete, you will have the monitored files in your
 output directory.
 
 &#8680; The `Rev` file for performing this analysis: `mcmc_Yule.Rev`
+
+
+
+{% subsection Exercise 1 %}
+-   Run an MCMC simulation to estimate the posterior distribution of the
+    speciation rate (`birth_rate`).
+-   Plot the `birth_rate` using RevGadgets ({% page_ref intro/revgadgets %}, {% citet Tribble2022 %}): What is
+    the mean posterior estimate of the `birth_rate` and what is the
+    estimated HPD?
+-   Compare the prior mean with the posterior mean. (**Hint:** Use the
+    optional argument `underPrior=TRUE` in the function `mymcmc.run()`)
+    Are they different (*e.g.,* {% ref fig_prior_posterior %})?
+    Is the posterior mean outside the prior 95% probability interval?
+-   Repeat the analysis and allow for two orders of magnitude of
+    prior uncertainty.
+
+{% figure fig_prior_posterior %}
+<img src="figures/birth_rate_prior_posterior.png" height="50%" width="50%" />
+{% figcaption %}
+Estimates of the
+posterior and prior distribution of the `birth_rate` visualized in
+`RevGadgets` {% cite Tribble2022 %}.
+We used the script `plot_Yule_rates.R`.
+The prior (red curve) shows the lognormal distribution that we chose as the prior distribution.
+{% endfigcaption %}
+{% endfigure %}
