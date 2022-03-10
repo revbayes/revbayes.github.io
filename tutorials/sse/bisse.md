@@ -504,3 +504,12 @@ character where the states are: `0` = monogamy, `1` = polygyny, `2` = polygynand
 >
 > What is the diversification rate associated with each state (`diversification`)?
 {:.instruction}
+
+
+
+
+
+>Click below to begin the next exercise!
+{:.instruction}
+
+* [Testing for state-dependent diversification with unobserved rate variation (HiSSE)]({{ base.url }}/tutorials/sse/hisse)

@@ -33,7 +33,7 @@ model (*i.e.,* a Hidden State-Dependent Speciation and Extinction (HiSSE) model;
 The changes in the unobserved character’s state represent background diversification rate changes
 that are not correlated with the oberved character. See {% ref fig_hisse %} for a schematic overview of the HiSSE
 model, and Table 2 for an explanation of the HiSSE model parameters. Now let’s set up and run a HiSSE
-analysis in RevBayes {% cite Hoehna2016b %}.
+analysis in RevBayes.
 
 We will keep this tutorial brief and assume that you have work through the {% page_ref sse/bisse %}.
 
@@ -205,30 +205,43 @@ it leaves a fair bit of uncertainty.
 Note that we will actually use a `for`-loop to instantiate the transition rates
 so that our script will also work for non-binary characters.
 ```
+#########################################################
+# Set up the transition rate matrix for observed states #
+#########################################################
+
+# Each transition rate between observed states are drawn
+# from an exponential distribution with a mean of 10
+# character state transitions over the tree.
 rate_pr := observed_phylogeny.treeLength() / 10
 for ( i in 1:(NUM_STATES*(NUM_STATES-1)) ) {
     transition_rates[i] ~ dnExp(rate_pr)
     moves.append( mvScale(transition_rates[i],lambda=0.50,tune=true,weight=3.0) )
 }
-```
-Similarly to the rate of change between the observed character, we also add a rate of change between the unobserved character, the hidden rate.
-Thus, we will also assume the same exponential prior distribution.
-```
+
+
+#########################################################
+# Set up the transition rate matrix for hidden states #
+#########################################################
+
+# We assume the transitions among the hidden states
+# are all equal and drawn from an exponential distriubtion.
 hidden_rate ~ dnExponential(rate_pr)
 moves.append( mvScale(hidden_rate,lambda=0.5,tune=true,weight=5) )
-```
-Furthermore, since there is no additional information, we assume that the rate of change between all hidden rates is identical.
-```
+
 for (i in 1:(NUM_HIDDEN * (NUM_HIDDEN - 1))) {
     R[i] := hidden_rate
 }
-```
-Finally, we can build our rate matrix.
-We do this using the specific `fnHiddenStateRateMatrix` function.
-```
 rate_matrix := fnHiddenStateRateMatrix(transition_rates, R, rescaled=false)
-```
 
+```
+Here, `rate[1]` is the rate of transition from state `0` (diurnal) to state `1` (nocturnal),
+and `rate[2]` is the rate of going from nocturnal to diurnal.
+
+Finally, we put the rates into a matrix, because this is what's needed
+by the function for the state-dependent birth-death process.
+```
+rate_matrix := fnFreeK( transition_rates, rescaled=false)
+```
 Note that we do not "rescale" the rate matrix. Rate matrices for
 molecular evolution are rescaled to have an average rate of 1.0, but for
 this model we want estimates of the transition rates with the same time
@@ -331,19 +344,23 @@ states of our Markov chain. The first monitor will model all numerical
 variables; we are particularly interested in the rates of speciation,
 extinction, and transition.
 ```
-monitors.append( mnModel(filename="output/primates_HiSSE.log", printgen=1) )
+monitors.append( mnModel(filename="output/primates_HiSSE_2.log", printgen=1) )
 ```
 Then, we add a screen monitor showing some updates during the MCMC
 run.
 ```
 monitors.append( mnScreen(printgen=10, speciation_observed, extinction_observed) )
 ```
+
+{% aside Sampling Ancestral States %}
+
 Optionally, we can sample ancestral states during the MCMC analysis.
 We need to add an additional monitor to record the state of each internal node in the tree.
 The file produced by this monitor can be summarized so that we can visualize the estimates of ancestral states.
 ```
-monitors.append( mnStochasticCharacterMap(cdbdp=timetree, printgen=1, filename="output/primates_HiSSE_stoch_map.log", include_simmap=true) )
+monitors.append( mnStochasticCharacterMap(cdbdp=timetree, printgen=10, filename="output/stoch_char_map_primates_HiSSE.log", include_simmap=true) )
 ```
+{% endaside %}
 
 
 #### **Initializing and Running the MCMC Simulation**
@@ -361,18 +378,21 @@ Now, run the MCMC:
 mymcmc.run(generations=2500, tuningInterval=100)
 ```
 
+{% aside Summarize Sampled Ancestral States %}
 
-#### **Summarizing the stochastic character maps**
 If we sampled ancestral states during the MCMC analysis, we can use the `RevGadgets` R package
 to plot the ancestral state reconstruction. First, though, we must summarize the sampled values in
 RevBayes.
 
 To do this, we first have to read in the ancestral state log file. This uses a specific function called `readAncestralStateTrace()`.
 ```
-# read in the sampled character histories
-anc_states = readAncestralStateTrace("output/primates_HiSSE_stoch_map.log")
+burnin=25
+n_time_slices = 500
 
-summarizeCharacterMaps(anc_states, observed_phylogeny, file="output/primates_HiSSE_stoch_map_events.tsv", burnin=0.1)
+# read in the sampled character histories
+anc_states = readAncestralStateTrace("output/stoch_char_map_primates_HiSSE.log")
+
+summarizeCharacterMaps(anc_states, observed_phylogeny, file="output/events.tsv", burnin=0.1)
 ```
 Now, we can write an annotated tree to a file. This function will write a tree with each
 node labeled with the maximum a posteriori (MAP) state and the posterior probabilities for each
@@ -380,11 +400,13 @@ state.
 ```
 char_map_tree = characterMapTree(tree=observed_phylogeny,
                  ancestral_state_trace_vector=anc_states,
-                 character_file="output/primates_HiSSE_stoch_map_character.tree",
-                 posterior_file="output/primates_HiSSE_stoch_map_posterior.tree",
-                 burnin=0.1,
-                 num_time_slices=500)
+                 character_file="output/marginal_character.tree",
+                 posterior_file="output/marginal_posterior.tree",
+                 burnin=burnin,
+                 num_time_slices=n_time_slices)
 ```
+
+{% subsection Visualize Estimated Ancestral States | subsec_ancviz %}
 
 To visualize the posterior probabilities of ancestral states, we will use the `RevGadgets` R package.
 
