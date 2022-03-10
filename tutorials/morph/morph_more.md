@@ -8,13 +8,13 @@ prerequisites:
 - mcmc
 - ctmc
 - morph_tree
-exclude_files: 
+exclude_files:
 - data/bears.nex
 - scripts/mcmc_mk.Rev
 - scripts/mcmc_mkv_discretized.Rev
 - scripts/mcmc_mkv_hyperprior.Rev
 - scripts/mcmc_mkv.Rev
-index: true
+index: false
 redirect: false
 ---
 
@@ -22,33 +22,33 @@ redirect: false
 
 {% section Introduction %}
 
-Discrete morphological models are not only useful for tree estimation, 
-as was done in Tutorial {% page_ref morph_tree %}, but also to ask specific questions about 
+Discrete morphological models are not only useful for tree estimation,
+as was done in Tutorial {% page_ref morph_tree %}, but also to ask specific questions about
 the evolution of the morphological character of interest.
-Specifically, there are two types of analyses that we might be interest in. 
-First, we can test different model of morphological evolution, 
+Specifically, there are two types of analyses that we might be interest in.
+First, we can test different model of morphological evolution,
 such as reversible and irreversible models, and estimate rates under these models.
-Using an irreversible model of evolution, we can test, for example, 
+Using an irreversible model of evolution, we can test, for example,
 for Dollo's law of a complex character that can be lost but not gained again {% cite Goldberg2008 %}.
 
-Additionally, we might be interest in ancestral state estimation, 
+Additionally, we might be interest in ancestral state estimation,
 or mapping transition on the phylogeny.
-Commonly the central problem in statistical phylogenetics concerns *marginalizing* over 
-all unobserved character histories that evolved along the branches of a given 
+Commonly the central problem in statistical phylogenetics concerns *marginalizing* over
+all unobserved character histories that evolved along the branches of a given
 phylogenetic tree according to some model, $M$, under some parameters, $\theta$.
-This marginalization yields the probability of observing the tip states, $X_\text{tip}$, 
-given the model and its parameters, 
+This marginalization yields the probability of observing the tip states, $X_\text{tip}$,
+given the model and its parameters,
 $P( X_\text{tip} | \theta, M ) = \sum_{X_\text{internal}} P( X_\text{internal}, X_\text{tip} \mid \theta, M )$.
-One might also wish to find the probability distribution of ancestral state 
-configurations that are consistent with the tip state distribution, 
-$P( X_\text{internal} \mid X_\text{tip}, \theta, M )$, and to sample 
+One might also wish to find the probability distribution of ancestral state
+configurations that are consistent with the tip state distribution,
+$P( X_\text{internal} \mid X_\text{tip}, \theta, M )$, and to sample
 ancestral states from that distribution.
 This procedure is known as *ancestral state estimation*.
 
 
-This tutorial will provide a discussion of modeling morphological characters 
-and ancestral state estimation, and will demonstrate how to perform such 
-Bayesian phylogenetic analysis using RevBayes {% cite Hoehna2016b %}. 
+This tutorial will provide a discussion of modeling morphological characters
+and ancestral state estimation, and will demonstrate how to perform such
+Bayesian phylogenetic analysis using RevBayes {% cite Hoehna2016b %}.
 
 
 {% section Overview of Discrete Morphology Models: Unequal rate models and irreversible models | sec_irreversible_matrix %}
@@ -65,7 +65,7 @@ In short, it is probably not likely that one single model describes all characte
 {% subsection Symmetric unordered %}
 
 The standard Mk model of character evolution, where M denotes it is a Markov model and $K$ denotes the number of states for the character.
-The lineage may transition directly from state 1 to state 4 without going through states 2 and 3, which is representative of a character with 
+The lineage may transition directly from state 1 to state 4 without going through states 2 and 3, which is representative of a character with
 *unordered* states.
 In addition, all transition rates are equal as they are in the Jukes-Cantor rate matrix {% cite Jukes1969 %}.
 Here is an example of a symmetric unordered Mk model for $k=3$.
@@ -74,7 +74,7 @@ $$
 Q = \begin{pmatrix}
 - & r & r \\
 r & - & r \\
-r & r & - 
+r & r & -
 \end{pmatrix}
 $$
 
@@ -110,13 +110,13 @@ P <- Q.getTransitionProbabilities(0.1)
 P
 ```
 ```
-[ [ 0.907, 0.046, 0.046 ], 
-  [ 0.046, 0.907, 0.046 ], 
+[ [ 0.907, 0.046, 0.046 ],
+  [ 0.046, 0.907, 0.046 ],
   [ 0.046, 0.046, 0.907 ] ]
 ```
 {:.Rev-output}
 
-If we believed that, for example, for a couple of states, some transitions are strongly 
+If we believed that, for example, for a couple of states, some transitions are strongly
 more likely, we could add a multiplier between those two states:
 ```
 rates := [ [  0.0,  mu,   mu],
@@ -136,15 +136,15 @@ Q
  P
 ```
 ```
-   [ [ 0.922, 0.038, 0.040 ], 
-     [ 0.075, 0.850, 0.075 ], 
+   [ [ 0.922, 0.038, 0.040 ],
+     [ 0.075, 0.850, 0.075 ],
      [ 0.040, 0.038, 0.922 ] ]
 ```
 {:.Rev-output}
 
 If we then get our transition probabilities, we see that this changes our probability of observing the not simply our two state transitions that we changed the rate for, but others as well.
 
-This type of approach is common in parsimony, where it is one of several things referred to as weighted parsimony. 
+This type of approach is common in parsimony, where it is one of several things referred to as weighted parsimony.
 This approach to using different matrices requires you to, *a priori* specify your matrix.
 But in reality, there is often fairly little guidance or information by which we decide if a weight applied to a transition is appropriate.
 Biologists still use models of this type - the Dollo model, in which a character is assumed not to be able to re-evolve once lost, is an extreme version of penalizing one change.
@@ -166,7 +166,7 @@ Q = \begin{pmatrix}
 - & \lambda & 0 & 0 \\
 \mu & -   & \lambda & 0 \\
 0 & \mu & -   & \lambda \\
-0 & 0 & \mu & - 
+0 & 0 & \mu & -
 \end{pmatrix}
 $$
 
@@ -497,8 +497,8 @@ Specifically, we want to know what the ancestral state of all placental mammals 
 Furthermore, we want to know if placenta type is evolving under an equal-rates model, an unequal rates model, an irreversible model, or any other type of transition model.
 
 {% figure fig_placenta_types %}
-<img src="figures/placenta_types.png" /> 
-{% figcaption %} 
+<img src="figures/placenta_types.png" />
+{% figcaption %}
 Visualization of different placenta types. Reproduced from {% cite PrabhuDas2015 %}.
 {% endfigcaption %}
 {% endfigure %}
@@ -515,11 +515,11 @@ Let us start with defining the rate matrix $Q$ for this 3-state model:
 $$
 Q = \begin{pmatrix} -\mu_1 & \mu_{12} & \mu_{13} \\
 \mu_{21} & -\mu_2  & \mu_{23} \\
-\mu_{31} & \mu_{32} & -\mu_3 
+\mu_{31} & \mu_{32} & -\mu_3
 \end{pmatrix} \mbox{  .}
 $$
 
-Remember, the Mk model sets transitions to be equal from any state to any other state. 
+Remember, the Mk model sets transitions to be equal from any state to any other state.
 In that sense, our 3-state matrix really looks like this:
 $$
 Q = \begin{pmatrix} -(k-1)\mu & \mu & \mu \\
@@ -532,8 +532,8 @@ Because this is a Jukes-Cantor-like model {% cite Jukes1969 %}, state frequencie
 A visualization of this simple model can be seen in {% ref fig_gm_m3 %}.
 
 {% figure fig_gm_m3 %}
-<img src="figures/tikz/Mk_model.png" /> 
-{% figcaption %} 
+<img src="figures/tikz/Mk_model.png" />
+{% figcaption %}
 Graphical model showing the Mk model (left panel). Rev code specifying the Mk model is on the right-hand panel.
 {% endfigcaption %}
 {% endfigure %}
@@ -543,7 +543,7 @@ In further sections, we will explore how to relax key assumptions of the Mk mode
 
 {% section Example: Ancestral State Estimation Using the Mk Model | sec_dm_simple %}
 
-In this example, we will use the placenta type data applied to a thinned phylogeny of placental mammals. 
+In this example, we will use the placenta type data applied to a thinned phylogeny of placental mammals.
 We have thinned the phylogeny only so that it will run considerably fast for this tutorial.
 Our actual analysis uses the full dataset of $\sim 5000$ taxa.
 
@@ -551,7 +551,7 @@ Our actual analysis uses the full dataset of $\sim 5000$ taxa.
 {% subsection Data and Files | subsec_data_files %}
 
 
->Create a directory called `RB_DiscreteMorphology_RateASE_Tutorial` (or any name you like). 
+>Create a directory called `RB_DiscreteMorphology_RateASE_Tutorial` (or any name you like).
 >
 >Make sure that you have the data files copied into a subdirectory called `data`: .
 {:.instruction}
@@ -559,7 +559,7 @@ Our actual analysis uses the full dataset of $\sim 5000$ taxa.
 
 {% subsection Getting Started | subsec_get_start %}
 
->Create a new directory (in `RB_DiscreteMorphology_RateASE_Tutorial) called `scripts`. 
+>Create a new directory (in `RB_DiscreteMorphology_RateASE_Tutorial) called `scripts`.
 >(If you do not have this folder, please refer to the directions in section {% ref subsec_data_files %}.)
 {:.instruction}
 
@@ -568,13 +568,13 @@ When you execute RevBayes in this exercise, you will do so within the main direc
 
 {% subsection Creating Rev Files | subsec_creating_files %}
 
-For complex models and analyses, it is best to create Rev script files that will contain all of the model parameters, moves, and functions. 
+For complex models and analyses, it is best to create Rev script files that will contain all of the model parameters, moves, and functions.
 In this exercise, you will work primarily in your text editor and create a set of files that will be easily managed and interchanged.
 In this first section, you will write the following files from scratch and save them in the `scripts` directory:
 -   `mcmc_ase_mk.Rev`: the Rev-script file that loads the data, specifies the model describing discrete morphological character change (binary characters), and specifies the monitors and MCMC sampler.
 
-All of the files that you will create are also provided in the this RevBayes tutorial. 
-Please refer to these files to verify or troubleshoot your own scripts. 
+All of the files that you will create are also provided in the this RevBayes tutorial.
+Please refer to these files to verify or troubleshoot your own scripts.
 
 >Open your text editor and create the master Rev file called `mcmc_ase_Mk.Rev` in the `scripts` directory.
 >
@@ -583,21 +583,21 @@ Please refer to these files to verify or troubleshoot your own scripts.
 
 The file you will begin in this section will be the one you load into RevBayes when you have completed all of the components of the analysis.
 In this section you will begin the file and write the Rev commands for loading in the taxon list and managing the data matrices.
-Then, starting in section {% ref subsec_Mk_Model %}, you will move on to writing module files for each of the model components. 
+Then, starting in section {% ref subsec_Mk_Model %}, you will move on to writing module files for each of the model components.
 Once the model files are complete, you will return to editing `mcmc_ase_Mk.Rev` and complete the Rev script with the instructions given in section {% ref subsec_complete_MCMC %}.
 
 {% subsubsection Load Data Matrices | subsubsec_load_data %}
 
-RevBayes uses the function `readDiscreteCharacterData()` to load a data matrix to the workspace from a formatted file. 
+RevBayes uses the function `readDiscreteCharacterData()` to load a data matrix to the workspace from a formatted file.
 This function can be used for both molecular sequences and discrete morphological characters.
-Import the morphological character matrix and assign it to the variable `morpho`. 
+Import the morphological character matrix and assign it to the variable `morpho`.
 ```
 morpho <- readDiscreteCharacterData("data/mammals_thinned_placenta_type.nex")
 ```
 
 {% subsubsection Create Helper Variables | subsubsec_var %}
 
-Before we begin writing the Rev scripts for each of the model components, we need to instantiate a couple ``helper variables'' that will be used by downstream parts of our model specification files. 
+Before we begin writing the Rev scripts for each of the model components, we need to instantiate a couple ``helper variables'' that will be used by downstream parts of our model specification files.
 Create vectors of moves and monitors
 ```
 moves = VectorMoves()
@@ -613,7 +613,7 @@ First, we read in the tree topology:
 phylogeny <- readTrees("data/mammals_thinned.tree")[1]
 ```
 
-Next, we will create a Q matrix. 
+Next, we will create a Q matrix.
 Recall that the Mk model is simply a generalization of the JC model.
 Therefore, we will create a 3x3 Q matrix using `fnJC`, which initializes $Q$-matrices with equal transition probabilities between all states.
 ```
@@ -630,7 +630,7 @@ Since $\mu$ is a rate parameter, we will apply a scaling move to update it.
 moves.append( mvScale(mu_morpho,lambda=1, weight=2.0) )
 ```
 
-Lastly, we set up the CTMC. 
+Lastly, we set up the CTMC.
 This should be familiar from the {% page_ref ctmc %} tutorial.
 We see some familiar pieces: tree and Q matrix.
 We also have two new keywords: data type and coding.
@@ -646,7 +646,7 @@ All of the components of the model are now specified.
 
 {% subsubsection Create Model Object | subsubsec_Mod_Obj %}
 
-We can now create our workspace model variable with our fully specified model DAG. 
+We can now create our workspace model variable with our fully specified model DAG.
 We will do this with the `model()` function and provide a single node in the graph (`phylogeny`).
 ```
 mymodel = model(phylogeny)
@@ -659,7 +659,7 @@ The object `mymodel` is a wrapper around the entire model graph and allows us to
 {% subsubsection Specify Monitors and Output Filenames | subsubsec_Monitors %}
 
 The next important step for our Rev script file is to specify the monitors and output file names.
-The first monitor we will create will monitor every named random variable in our model graph. 
+The first monitor we will create will monitor every named random variable in our model graph.
 This will include every stochastic and deterministic node using the `mnModel` monitor.
 In this case, it will only be our rate variable $\mu$.
 It is still useful to specify the model monitor this way for later extensions of the model.
@@ -669,7 +669,7 @@ monitors.append( mnModel(filename="output/mk.log", printgen=10) )
 ```
 
 The second monitor we will add to our analysis will print information to the screen.
-Like with `mnFile` we must tell `mnScreen` which parameters we'd like to see updated on the screen. 
+Like with `mnFile` we must tell `mnScreen` which parameters we'd like to see updated on the screen.
 ```
 monitors.append( mnScreen(printgen=100) )
 ```
@@ -685,12 +685,12 @@ monitors.append( mnJointConditionalAncestralState(tree=phylogeny,
                                                    withStartStates=false) )
 ```
 
-The core arguments this monitor needs are a tree object (`tree=phylogeny`), 
+The core arguments this monitor needs are a tree object (`tree=phylogeny`),
 the phylogenetic model (`ctmc=phyMorpho`), an output filename (`filename="output/mk.states.txt"`),
 the data type for the characters (`type="Standard"`), and the sampling frequency (`printgen=10}`.
 The final argument, `withTips=true`, indicates that we do wish to record the tip states because we didn't know all tip values and might be interested in the most plausible values.
 
-The monitor will produce a joint sample of ancestral states, where every ancestral state is conditional on the drawn value of its parent node state (except for the root node), 
+The monitor will produce a joint sample of ancestral states, where every ancestral state is conditional on the drawn value of its parent node state (except for the root node),
 storing the samples every 10 iterations to the file `"output/mk.states.txt"`.
 Viewing the states file, we see
 ```
@@ -713,13 +713,13 @@ Iteration	end_1	end_2	end_3	end_4	end_5	...
 
 {% subsubsection Set-Up the MCMC %}
 
-Once we have set up our model, moves, and monitors, we can now create the workspace variable that defines our MCMC run. 
+Once we have set up our model, moves, and monitors, we can now create the workspace variable that defines our MCMC run.
 We do this using the `mcmc()` function that simply takes the three main analysis components as arguments.
 ```
 mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
 ```
 
-The MCMC object that we named `mymcmc` has a member method called `.run()`. 
+The MCMC object that we named `mymcmc` has a member method called `.run()`.
 This will execute our analysis and we will set the chain length to `10000` cycles using the `generations` option.
 ```
 mymcmc.run(generations=10000, tuningInterval=200)
@@ -735,7 +735,7 @@ writeNexus( anc_tree, filename="output/ase_mk.tree" )
 ```
 
 
-Finally we can close RevBayes. 
+Finally we can close RevBayes.
 Tell the program to quit using the `q()` function.
 ```
 q()
@@ -747,13 +747,13 @@ q()
 
 {% subsection Execute the MCMC Analysis | subsec_run_MCMC %}
 
-With all the parameters specified and all analysis components in place, you are now ready to run your analysis. 
+With all the parameters specified and all analysis components in place, you are now ready to run your analysis.
 The Rev script you just created will be used by RevBayes and loaded in the appropriate order.
 
 >Begin by running the RevBayes executable.
 {:.instruction}
 
-Provided that you started RevBayes from the correct directory (`RB_DiscreteMorphology_RateASE_Tutorial`), 
+Provided that you started RevBayes from the correct directory (`RB_DiscreteMorphology_RateASE_Tutorial`),
 you can then use the `source()` function to feed RevBayes your master script file (`mcmc_ase_mk.Rev`).
 ```
 source("scripts/mcmc_ase_mk.Rev")
@@ -790,7 +790,7 @@ When the analysis is complete, RevBayes will quit and you will have a new direct
 
 
 We will now switch to `R` using the package `RevGadgets`.
-Make sure that you have the package installed, using 
+Make sure that you have the package installed, using
 
 ```{R}
 library(devtools)
@@ -804,7 +804,7 @@ We have written a little R package called \RevGadgets that can be used to visual
 
 
 >Start R from the same working directory as you started RevBayes.
->This should be the directory where you now have you directory called `output` with the MCMC output files. 
+>This should be the directory where you now have you directory called `output` with the MCMC output files.
 {:.instruction}
 
 First, we need to load the R package RevGadgets
@@ -819,7 +819,7 @@ tree_file = "output/ase_mk.tree"
 
 Then, you plot the tree with ancestral states nicely mapped onto it.
 You may want to experiment with some of the settings to make the plot look prettier.
-For example, if you set `show_posterior_legend=TRUE` and `node_size_range=c(1, 3)`, 
+For example, if you set `show_posterior_legend=TRUE` and `node_size_range=c(1, 3)`,
 then the size of the circles will represent the posterior probability.
 ```{R}
 g <- plot_ancestral_states(tree_file, summary_statistic="MAP",
@@ -844,8 +844,8 @@ ggsave("Mammals_ASE_MK.pdf", g, width = 11, height = 9)
 
 
 {% figure fig_mk_anc_states %}
-<img src="figures/Mammals_ASE_MK.png" /> 
-{% figcaption %} 
+<img src="figures/Mammals_ASE_MK.png" />
+{% figcaption %}
 Ancestral state estimation of the placenta type.
 {% endfigcaption %}
 {% endfigure %}
@@ -856,13 +856,13 @@ Ancestral state estimation of the placenta type.
 
 
 
->Make a copy of the MCMC and model files you just made. 
->Call them `mcmc_ase_mk.Rev` and `model_ase_FreeK.Rev. 
+>Make a copy of the MCMC and model files you just made.
+>Call them `mcmc_ase_mk.Rev` and `model_ase_FreeK.Rev.
 >These will contain the new model parameters and models.  
 {:.instruction}
 
 
-The Mk model makes a number of assumptions, but one that may strike you as unrealistic 
+The Mk model makes a number of assumptions, but one that may strike you as unrealistic
 is the assumption that characters are equally likely to change from any one state to any other state.
 That means that a trait is as likely to be gained as lost.
 While this may hold true for some traits, we expect that it may be untrue for many others.
@@ -872,7 +872,7 @@ RevBayes has functionality to allow us to relax this assumption.
 
 {% subsection Modifying the MCMC Section %}
 
-At each place in which the output files are specified in the MCMC file, change the output path so you don't overwrite the output from the previous exercise. 
+At each place in which the output files are specified in the MCMC file, change the output path so you don't overwrite the output from the previous exercise.
 For example, you might call your output file `output/ase_freeK.log`.
 Change source statement to indicate the new model file.
 
@@ -911,7 +911,7 @@ We would only rescale if we use relative rates.
 Q_morpho := fnFreeK( [ rate_12, rate_13, rate_21, rate_23, rate_31, rate_32 ], rescale=false )
 ```
 
-In this model, we also decide to specify an additional parameter for the root state frequencies instead of assuming the root state to be drawn from the stationary distribution. 
+In this model, we also decide to specify an additional parameter for the root state frequencies instead of assuming the root state to be drawn from the stationary distribution.
 We will use a Dirichlet prior distribution for the root state frequencies.
 ```
 rf_prior <- [1,1,1]
@@ -927,7 +927,7 @@ phyMorpho ~ dnPhyloCTMC(tree=phylogeny, Q=Q_morpho, rootFrequencies=rf, type="St
 
 
 
->Now you are done with your unequal rates model. Give it a run! 
+>Now you are done with your unequal rates model. Give it a run!
 {:.instruction}
 
 
@@ -938,15 +938,15 @@ In the previous section we assumed that there are 6 different rates, which are a
 Now, we will apply a reversible-jump MCMC {% cite Green1995 %} to test if any of the rates is significantly larger than $0$.
 
 
->Make a copy of the Rev script file you just made. 
->Call them `mcmc_ase_freeK_RJ.Rev. 
->This will contain the new model parameters and models. 
+>Make a copy of the Rev script file you just made.
+>Call them `mcmc_ase_freeK_RJ.Rev.
+>This will contain the new model parameters and models.
 {:.instruction}
 
 
 {% subsection Modifying the MCMC Section %}
 
-At each place in which the output files are specified in the MCMC section, change the output path so you don't overwrite the output from the previous exercise. 
+At each place in which the output files are specified in the MCMC section, change the output path so you don't overwrite the output from the previous exercise.
 For example, you might call your output file `output/freeK_ASE.log`.
 
 {% subsection Modifying the Model Section %}
@@ -962,7 +962,7 @@ mix_pr <- 0.5
 ```
 
 Now we can create our reversible-jump distributions, which take in a constant value, 0.0 in this case, and a distribution.
-Thus, the value is either drawn to be exactly equal to the constant value (0.0 here), or drawn from the base distribution (the exponential distribution in this case). 
+Thus, the value is either drawn to be exactly equal to the constant value (0.0 here), or drawn from the base distribution (the exponential distribution in this case).
 ```
 rate_12 ~ dnRJMixture(0.0, dnExponential(rate_pr), p=mix_pr)
 rate_13 ~ dnRJMixture(0.0, dnExponential(rate_pr), p=mix_pr)
@@ -985,7 +985,7 @@ prob_rate_32 := ifelse( rate_32 == 0, 1.0, 0.0 )
 ```
 
 We also need to specify specific moves that ``jump'' in parameter dimension.
-We will use the `mvRJSwitch` move that changes the value to be either equal to the constant value 
+We will use the `mvRJSwitch` move that changes the value to be either equal to the constant value
 provided from the `dnRJMixture` or a value drawn from the base distribution (the exponential distribution).
 ```
 moves.append( mvRJSwitch( rate_12, weight=2 ) )
@@ -1008,7 +1008,7 @@ moves.append( mvScale( rate_32, weight=2 ) )
 ```
 
 
->This is all that you need to do for this ``fancy'' reversible-jump model. Give it a try! 
+>This is all that you need to do for this ``fancy'' reversible-jump model. Give it a try!
 {:.instruction}
 
 
@@ -1023,12 +1023,10 @@ My output is shown in {% ref fig_mk_anc_states_freeK %}
 
 
 {% figure fig_mk_anc_states_freeK %}
-<img src="figures/Mammals_ASE_FreeK.png" /> 
-{% figcaption %} 
+<img src="figures/Mammals_ASE_FreeK.png" />
+{% figcaption %}
 Ancestral state estimates of placenta type under the `freeK` model.
 {% endfigcaption %}
 {% endfigure %}
 
 You should observe that the estimated root states have changed!
-
-

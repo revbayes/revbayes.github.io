@@ -2,13 +2,13 @@
 title: Introduction to Phylogenetic Models of Discrete Biogeography
 subtitle: Overview of the Dispersal-Extirpation-Cladogenesis (DEC) model
 authors:  Michael J. Landis
-level: 7
+level: 8
 order: 0
 prerequisites:
 - intro
 - mcmc
 include_example_output: false
-exclude_files: 
+exclude_files:
 - data/n4/hawaii.n4.connectivity.1.txt
 - data/n4/hawaii.n4.connectivity.2.txt
 - data/n4/hawaii.n4.connectivity.3.txt
@@ -60,7 +60,7 @@ exclude_files:
 - data/n6/range_colors.n6.txt
 index: true
 title-old: RB_Biogeography_Tutorial
-redirect: false 
+redirect: false
 ---
 
 {% section Introduction | introduction %}
@@ -87,13 +87,13 @@ This first exercise will not require you to use any data. However, it may still 
 useful to work within a single directory.
 
 > Create a new directory on your computer called `RB_biogeo_tutorial`.
-> 
-> Navigate to the `RB_biogeo_tutorial` directory and execute the `rb` binary. 
+>
+> Navigate to the `RB_biogeo_tutorial` directory and execute the `rb` binary.
 > One option for doing this is to move the `rb` executable to the `RB_biogeo_tutorial`
 > directory.
-> 
-> Alternatively, if you are on a Unix system, and have added RevBayes to your path, 
-> you simply have to type `rb` in your Terminal to run the program. 
+>
+> Alternatively, if you are on a Unix system, and have added RevBayes to your path,
+> you simply have to type `rb` in your Terminal to run the program.
 {:.instruction}
  -->
 
@@ -179,7 +179,7 @@ encode ${\bf Q}$ to reflect the allowable classes of range evolution
 events with biologically meaningful parameters. For three areas, the
 rates in the anagenetic rate matrix are
 
-$$\textbf{Q} = 
+$$\textbf{Q} =
 	\begin{array}{c|cccccccc}
 		& \emptyset & A & B & C & AB & AC & BC & ABC \\
 		\hline
@@ -202,13 +202,13 @@ areas in its range remains that way permanently.
 To build our intuition, let's construct a DEC rate matrix in RevBayes.
 
 > Create a new directory on your computer called `RB_biogeo_tutorial`.
-> 
-> Navigate to your tutorial directory and execute the `rb` binary. 
+>
+> Navigate to your tutorial directory and execute the `rb` binary.
 > One option for doing this is to move the `rb` executable to the tutorial
 > directory or to create a shortcut to your executable.
-> 
-> Alternatively, if you are on a Unix system, and have added RevBayes to your path, 
-> you simply have to type `rb` in your Terminal to run the program. 
+>
+> Alternatively, if you are on a Unix system, and have added RevBayes to your path,
+> you simply have to type `rb` in your Terminal to run the program.
 {:.instruction}
 
 Assume you have three areas
@@ -315,7 +315,7 @@ lineage identically inherits the ancestral species range, $ABC$, while
 the other lineage inherits only a single area, i.e. only $A$ or $B$ or
 $C$ ({% ref dec_cartoon %}d). Under allopatric cladogenesis, the
 ancestral range is split evenly among daughter lineages, e.g. one
-lineage may inherit $AB$ and the other inherits $C$ 
+lineage may inherit $AB$ and the other inherits $C$
 ({% ref dec_cartoon %}e). For widespread sympatric cladogenesis, both
 lineages inherit the ancestral range, $ABC$ ({% ref dec_cartoon %}f).
  Finally, supposing the ancestral range is $A$,
@@ -391,4 +391,3 @@ itself.
 
 > Continue to the next tutorial: {% page_ref biogeo/biogeo_simple %}  
 {:.instruction}
-

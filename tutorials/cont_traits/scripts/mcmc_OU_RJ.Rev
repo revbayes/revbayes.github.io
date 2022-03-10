@@ -1,10 +1,9 @@
 ################################################################################
 #
-# RevBayes Example: Bayesian inference of rates of evolution under a
-#                   constant-rate Brownian-motion model
+# RevBayes Example: Model selection between OU and BM
 #
 #
-# authors: Michael R. May
+# authors: Michael R. May and Sebastian Höhna
 #
 ################################################################################
 
@@ -12,14 +11,16 @@
 # Reading in the Data #
 #######################
 
-### Select the dataset to analyze
-dataset <- 1
+### Select the trait to analyze
+trait <- 1
 
 ### Read in the trees
-T <- readTrees("data/trees.nex")[dataset]
+T <- readTrees("data/primates_tree.nex")[1]
 
 ### Read in the character data
-X <- readContinuousCharacterData("data/traits.nex")[dataset]
+data <- readContinuousCharacterData("data/primates_cont_traits.nex")
+data.excludeAll()
+data.includeCharacter( trait )
 
 # Create some vector for the moves and monitors of this analysis
 moves    = VectorMoves()
@@ -38,12 +39,21 @@ tree <- T
 sigma2 ~ dnLoguniform(1e-3, 1e1)
 moves.append( mvScale(sigma2, weight=1.0) )
 
-alpha ~ dnReversibleJumpMixture(0.0, dnExponential(10), 0.5)
+root_age := tree.rootAge()
+
+alpha ~ dnReversibleJumpMixture(0.0, dnExponential( abs(root_age / 2.0 / ln(2.0)) ), 0.5)
 moves.append( mvRJSwitch(alpha, weight=1.0) )
 moves.append( mvScale(alpha, weight=1.0) )
 
 theta ~ dnUniform(-10, 10)
 moves.append( mvSlide(theta, weight=1.0) )
+
+# also add an adaptive mutlivariate normal move
+avmvn_move = mvAVMVN(weight=5, waitBeforeLearning=500, waitBeforeUsing=1000)
+avmvn_move.addVariable(sigma2)
+avmvn_move.addVariable(alpha)
+avmvn_move.addVariable(theta)
+moves.append( avmvn_move )
 
 is_OU := ifelse(alpha != 0.0, 1, 0)
 is_BM := ifelse(alpha == 0.0, 1, 0)
@@ -52,8 +62,8 @@ is_BM := ifelse(alpha == 0.0, 1, 0)
 # Specify the BM process #
 ##########################
 
-char ~ dnPhyloOrnsteinUhlenbeckREML(tree, alpha, theta, sigma2^0.5, rootStates=theta)
-char.clamp(X)
+X ~ dnPhyloOrnsteinUhlenbeckREML(tree, alpha, theta, sigma2^0.5, rootStates=theta)
+X.clamp( data )
 
 
 

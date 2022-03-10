@@ -1,0 +1,161 @@
+################################################################################
+#
+# RevBayes Example: Inferring ancestral states and rates of morphological evolution using a hidden rates model.
+#
+# authors:  Sebastian Höhna
+#
+################################################################################
+
+#######################
+# Reading in the Data #
+#######################
+
+CHARACTER = "solitariness"
+NUM_STATES = 2
+NUM_HIDDEN_STATES = 2
+
+# Import the morphological character matrix #
+morpho <- readDiscreteCharacterData("data/primates_"+CHARACTER+".nex")
+morpho_exp = morpho.expandCharacters( NUM_HIDDEN_STATES )
+
+# Create some vector for the moves and monitors of this analysis
+moves    = VectorMoves()
+monitors = VectorMonitors()
+
+##############
+# Tree model #
+##############
+
+# Here we use a fixed tree topology of primates
+# Note that the readTrees function always returns a vector of trees,
+# so we simple take the first tree
+phylogeny <- readTrees("data/primates_tree.nex")[1]
+
+
+#########################
+# Set up the rate model #
+#########################
+
+# create an empty rate matrix
+# we will fill the non-zero elements below
+for (i in 1:4) {
+    for (j in 1:4) {
+        rates[i][j] <- 0.0
+    }
+}
+
+# we assume every rate i <-> j to be independent and exponentially distributed
+rate_pr := phylogeny.treeLength() / 10
+H <- 0.587405
+SD_PRIOR <- 1/H
+
+rate_gain_median ~ dnExponential( rate_pr )
+rate_gain_sd ~ dnExponential( SD_PRIOR )
+
+moves.append( mvScale( rate_gain_median, weight=2 ) )
+moves.append( mvScale( rate_gain_sd, weight=2 ) )
+
+rate_gain := fnDiscretizeDistribution( dnLognormal( ln(rate_gain_median), rate_gain_sd ), NUM_HIDDEN_STATES )
+
+rate_loss_median ~ dnExponential( rate_pr )
+rate_loss_sd ~ dnExponential( SD_PRIOR )
+
+moves.append( mvScale( rate_loss_median, weight=2 ) )
+moves.append( mvScale( rate_loss_sd, weight=2 ) )
+
+rate_loss := fnDiscretizeDistribution( dnLognormal( ln(rate_loss_median), rate_loss_sd ), NUM_HIDDEN_STATES )
+
+switch_slow_fast ~ dnExponential( rate_pr )
+switch_fast_slow ~ dnExponential( rate_pr )
+
+moves.append( mvScale( switch_slow_fast, weight=2 ) )
+moves.append( mvScale( switch_fast_slow, weight=2 ) )
+
+rates[1][2] := rate_gain[1]     # 0S->1S
+rates[1][3] := switch_slow_fast # 0S->0F
+rates[2][1] := rate_loss[1]     # 1S->0S
+rates[2][4] := switch_slow_fast # 1S->1F
+rates[3][1] := switch_fast_slow # 0F->0S
+rates[3][4] := rate_gain[2]     # 0F->1F
+rates[4][2] := switch_fast_slow # 1F->1S
+rates[4][3] := rate_loss[2]     # 1F->2F
+
+Q_morpho := fnFreeK(rates, rescaled=FALSE)
+
+
+#####################################
+# Set up the root state frequencies #
+#####################################
+
+rf_prior <- rep(1,NUM_STATES*NUM_HIDDEN_STATES)
+rf ~ dnDirichlet( rf_prior )
+moves.append( mvBetaSimplex( rf, weight=2 ) )
+moves.append( mvDirichletSimplex( rf, weight=2 ) )
+
+
+
+###################
+# Set up the CTMC #
+###################
+
+# Combine all of our elements into a CTMC.
+
+phyMorpho ~ dnPhyloCTMC(tree=phylogeny, Q=Q_morpho, rootFrequencies=rf, type="NaturalNumbers")
+
+phyMorpho.clamp(morpho_exp)
+
+########
+# MCMC #
+########
+
+# initialize the model object #
+mymodel = model(phylogeny)
+# Create a vector of monitors #
+# 1. for the full model #
+monitors.append( mnModel(filename="output/"+CHARACTER+"_hrm.log", printgen=1) )
+# 2. and a few select parameters to be printed to the screen #
+monitors.append( mnScreen(printgen=10) )
+# 3. add an ancestral state monitor
+monitors.append( mnJointConditionalAncestralState(tree=phylogeny,
+                                                  ctmc=phyMorpho,
+                                                  filename="output/"+CHARACTER+"_hrm.states.txt",
+                                                  type="NaturalNumbers",
+                                                  printgen=1,
+                                                  withTips=true,
+                                                  withStartStates=false) )
+# 4. add an stochastic character map monitor
+monitors.append( mnStochasticCharacterMap(ctmc=phyMorpho,
+                                          filename="output/"+CHARACTER+"_hrm_stoch_char_map.log",
+                                          printgen=1,
+                                          include_simmap=true) )
+
+# Initialize the MCMC object #
+mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
+
+# Run the MCMC #
+mymcmc.run(generations=5000, tuningInterval=200)
+
+
+
+
+# Read in the tree trace and construct the ancestral states (ASE) #
+anc_states = readAncestralStateTrace("output/"+CHARACTER+"_hrm.states.txt")
+anc_tree = ancestralStateTree(tree=phylogeny, ancestral_state_trace_vector=anc_states, include_start_states=false, file="output/"+CHARACTER+"_ase_hrm.tree", burnin=0.25, summary_statistic="MAP", site=1, nStates=NUM_STATES*NUM_HIDDEN_STATES)
+
+
+# read in the sampled character histories
+anc_states_stoch_map = readAncestralStateTrace("output/"+CHARACTER+"_hrm_stoch_char_map.log")
+
+summarizeCharacterMaps(anc_states_stoch_map, phylogeny, file="output/"+CHARACTER+"_hrm.events.tsv", burnin=0.25)
+
+
+# make summary tree
+char_map_tree = characterMapTree(tree=phylogeny,
+                 ancestral_state_trace_vector=anc_states_stoch_map,
+                 character_file="output/"+CHARACTER+"_hrm_marginal_character.tree",
+                 posterior_file="output/"+CHARACTER+"_hrm_marginal_posterior.tree",
+                 burnin=0.25,
+                 num_time_slices=500)
+
+# Quit RevBayes #
+q()

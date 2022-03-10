@@ -2,7 +2,7 @@
 title: Chromosome Evolution
 subtitle: Modeling chromosome evolution with ChromEvol, BiChroM, and ChromoSSE
 authors:  William A. Freyman and Sebastian Höhna
-level: 5
+level: 7
 prerequisites:
 - intro
 - mcmc
@@ -61,11 +61,11 @@ models of chromosome number evolution introduced by
 phylogenetic studies of ancient whole genome duplication events, rapid
 "catastrophic" chromosome speciation, major reevaluations of the
 evolution of angiosperms, and new insights into the fate of polyploid
-lineages 
+lineages
 {% cite pires2008renaissance mayrose2011recently tank2015nested %}. The basic
 ChromEvol model has been extended to examine the association of
 phenotype with chromosome evolution {% cite zenil2017testing %}, and to
-incorporate cladogenetic changes and diversification rates 
+incorporate cladogenetic changes and diversification rates
 {% cite Freyman2018 %}.
 
 Here we describe the ChromEvol model as implemented in RevBayes, which
@@ -84,10 +84,10 @@ element represents the instantaneous rate of change within a lineage
 from a genome of $i$ chromosomes to a genome of $j$ chromosomes. For all
 elements of $Q$ in which either $i = 0$ or $j = 0$ we define
 $Q_{ij} = 0$. For the off-diagonal elements $i \neq j$ with positive
-values of $i$ and $j$, $Q$ is determined by: 
+values of $i$ and $j$, $Q$ is determined by:
 
 $$\label{eq:anagenetic1}
-Q_{ij} = 
+Q_{ij} =
     \begin{cases}
         \gamma_a                          & j = i + 1,    \\
         \delta_a                          & j = i - 1,    \\
@@ -95,7 +95,7 @@ Q_{ij} =
         \eta_a                                 & j = 1.5i,     \\
         0                                   & \mbox{otherwise},   
     \end{cases}
-$$ 
+$$
 
 where $\gamma_a$, $\delta_a$, $\rho_a$, and $\eta_a$
 are the rates of chromosome gains, losses, polyploidizations, and
@@ -105,10 +105,10 @@ events (see the ChromoSSE model in a later section).
 
 If we are interested in modeling scenarios in which the probability of
 fusion or fission events are positively or negatively correlated with
-the number of chromosomes we can define $Q$ as: 
+the number of chromosomes we can define $Q$ as:
 
 $$\label{eq:anagenetic2}
-Q_{ij} = 
+Q_{ij} =
     \begin{cases}
         \gamma_a e^{\gamma_m (i - 1)}  & j = i + 1,    \\
         \delta_a e^{\delta_m (i - 1)}     & j = i - 1,    \\
@@ -116,7 +116,7 @@ Q_{ij} =
         \eta_a                                 & j = 1.5i,     \\
         0                                   & \mbox{otherwise},   
     \end{cases}
-$$ 
+$$
 
 where $\gamma_m$ and $\delta_m$ are rate modifiers of
 chromosome gain and loss, respectively, that allow the rates of
@@ -142,14 +142,14 @@ odd values of $i$, $Q_{ij}$ is set to $\eta/2$ for the two integer
 values of $j$ resulting when $j = 1.5i$ is rounded up and down.
 
 As in all continuous-time Markov models, the diagonal elements $i = j$
-of $Q$ are defined as: 
-$$Q_{ii} = - \sum_{i \neq j}^{C_m} Q_{ij}.$$ 
+of $Q$ are defined as:
+$$Q_{ii} = - \sum_{i \neq j}^{C_m} Q_{ij}.$$
 The
 probability of anagenetically evolving from chromosome number $i$ to $j$
 along a branch of length $t$ is then calculated by exponentiation of the
-instantaneous rate matrix: 
+instantaneous rate matrix:
 $$\label{eq:anagenetic_probs}
-    P_{ij}(t) = e^{-Qt}.$$ 
+    P_{ij}(t) = e^{-Qt}.$$
 Given a phylogeny and chromosome counts of
 the extant lineages, this model can be used in either a maximum
 likelihood or Bayesian inference framework to estimate the rates of
@@ -204,7 +204,7 @@ section, however, we'll set up and run a simple RevBayes analysis
 using the ChromEvol model before moving on to the more complex models.
 
 {% figure fig:chromevol_simple %}
-<img src="figures/ChromEvol_simple.png"> 
+<img src="figures/ChromEvol_simple.png">
 {% figcaption %}
 Maximum a posteriori
 ancestral chromosome number estimates for *Aristolochia* inferred using
@@ -249,7 +249,7 @@ This will create a folder called `data` that contains the files
 necessary to complete this exercise.
 
 
-### Creating the `Rev` File 
+### Creating the `Rev` File
 
 Create a new directory (in `chromosome_tutorial`) called `scripts`
 . (If you do not have this folder, please refer to the directions in
@@ -276,7 +276,7 @@ This file will be the one you load into RevBayes to run the analysis.
 The file will contain the `Rev` code to load the data files, set up the
 model, run the MCMC analysis, and summarize the results.
 
-### Reading in Data 
+### Reading in Data
 
 First, we'll read in the phylogeny. In this example the phylogeny is
 assumed known. In further examples we'll jointly estimate chromosome
@@ -289,7 +289,7 @@ so here we use the largest observed chromosome count plus 10. This is an
 arbitrary limit on the size of the state space that could be increased
 if necessary.
 ```
-max_chromo = 26 
+max_chromo = 26
 ```
 Now we get the observed chromosome counts from a tab-delimited file.
 ```
@@ -414,7 +414,7 @@ q()
 You made it! Be sure to save the file.
 
 
-### Execute the RevBayes Analysis 
+### Execute the RevBayes Analysis
 
 With all the parameters specified and all analysis components in place,
 you are now ready to run your analysis. The `Rev` scripts you just
@@ -530,7 +530,7 @@ performed on a non-ultrametric tree, but the same analysis could be
 performed on time-calibrated trees.
 
 {% figure fig:simmap %}
-<img src="figures/simmap.png"> 
+<img src="figures/simmap.png">
 {% figcaption %}
 An example of stochastic character
 mapping applied to chromosome number evolution using RevBayes. Shown
@@ -551,8 +551,8 @@ the other log files, each row in this file represents a different sample
 from the MCMC. Each column in the file, though, is the character history
 for a different node in the phylogeny. The last column of the file is
 the full stochastic character map of the entire tree in **SIMMAP**
-{% cite bollback2006simmap %} format. These can be plotted using the
-**phytools** R package {% cite revell2012phytools %}.
+{% cite Bollback2006 %} format. These can be plotted using the
+**phytools** R package {% cite Revell2012 %}.
 
 After the MCMC simulation, we can calculate the maximum a posteriori
 *marginal*, *joint*, or *conditional* character history. This process is
@@ -588,7 +588,7 @@ phylogeny requires mostly combining elements covered in the **Molecular
 Models of Character Evolution** tutorial with what has already been
 covered in Section [sec:chromo_basic_analysis] of this tutorial. We
 will not repeat how to set up the chromosome model component, but we'll
-step through what must be added to the example in the section {% ref chromevolexample %} 
+step through what must be added to the example in the section {% ref chromevolexample %}
 above. Furthermore, we have provided a
 full working example script `scripts/ChromEvol_joint.Rev`.
 
@@ -611,10 +611,10 @@ Since we want to jointly infer ancestral states, we need to set an a
 priori rooting constraint on our phylogeny. So here we set an ingroup
 and outgroup.
 ```
-outgroup = ["Aristolochia_serpantaria", "Aristolochia_arborea", 
-            "Aristolochia_wardiana", "Aristolochia_californica", 
+outgroup = ["Aristolochia_serpantaria", "Aristolochia_arborea",
+            "Aristolochia_wardiana", "Aristolochia_californica",
             "Aristolochia_saccata", "Aristolochia_mollisima",
-            "Aristolochia_tomentosa", "Aristolochia_neolongifolia_SETS52", 
+            "Aristolochia_tomentosa", "Aristolochia_neolongifolia_SETS52",
             "Aristolochia_neolongifolia_SETS96"]
 ```
 Here we loop through each taxon and if it is not present in the outgroup
@@ -759,7 +759,7 @@ of this phenotype with changes in the rates of chromosome evolution.
 - phenotype state 0 = 3 lobed gynostemium
 - phenotype state 1 = 5 to 24 lobed gynostemium
 
-Much of this exercise is a repeat of what was already covered in section {% ref chromevolexample %}, 
+Much of this exercise is a repeat of what was already covered in section {% ref chromevolexample %},
 so we will only touch on the model
 components that are different. We have provided a full working example
 script `scripts/BiChroM.Rev`. In this example the phylogeny is assumed
@@ -767,7 +767,7 @@ known, however one could combine this with the exercise above to jointly
 infer the phylogeny.
 
 {% figure fig:bichrom_rates %}
-<img src="figures/BiChroM_rates.png"> 
+<img src="figures/BiChroM_rates.png">
 {% figcaption %}
 Results of the example BiChroM
 analysis performed in RevBayes. This plot shows the output from `.log`
@@ -779,7 +779,7 @@ lineages with complex gynostemium subdivided into 5 to 24 lobes (state
 {% endfigure %}
 
 {% figure fig:bichrom %}
-<img src="figures/BiChroM.png"> 
+<img src="figures/BiChroM.png">
 {% figcaption %}
 Maximum a posteriori estimates of
 ancestral chromosome number and gynostemium morphology for
@@ -839,8 +839,8 @@ Q_1 := fnChromosomes(max_chromo, gamma_1, delta_1, rho_1)
 Again, we could have include the rate of demi-polyploidization `eta` and
 rate modifiers like this:
 ```
-Q_0 := fnChromosomes(max_chromo, gamma_0, delta_0, rho_0, eta_0, gamma_l_0, delta_l_0) 
-Q_1 := fnChromosomes(max_chromo, gamma_1, delta_1, rho_1, eta_1, gamma_l_1, delta_l_1) 
+Q_0 := fnChromosomes(max_chromo, gamma_0, delta_0, rho_0, eta_0, gamma_l_0, delta_l_0)
+Q_1 := fnChromosomes(max_chromo, gamma_1, delta_1, rho_1, eta_1, gamma_l_1, delta_l_1)
 ```
 Now we create the rates of transitioning between phenotype states. Any
 model could be used (all rates equal models, Dollo models, etc.) but
@@ -951,7 +951,7 @@ have provided a full working example script
 ### A Simple Cladogenetic Model
 
 {% figure fig:chromevol_clado %}
-<img src="figures/ChromEvol_clado.png"> 
+<img src="figures/ChromEvol_clado.png">
 {% figcaption %}
 Maximum a posteriori
 ancestral chromosome numbers for *Aristolochia* estimated using a simple
@@ -1041,7 +1041,7 @@ provides an easily extensible framework for testing state-dependent
 speciation and extinction rates.
 
 {% figure fig:chromosse_ode %}
-<img src="figures/ode_trimmed.png"> 
+<img src="figures/ode_trimmed.png">
 {% figcaption %}
 An illustration of chromosome
 evolution events that could occur during each small time interval
@@ -1242,7 +1242,7 @@ tree and chromosome numbers drawn from a cladogenetic state-dependent
 birth-death process. The `dnCDBDP` distribution is named for a
 character-dependent birth-death process, which is another
 name for a state-dependent speciation and extinction
-process. 
+process.
 ```
 chromo_bdp ~ dnCDBDP( rootAge            = phylogeny.rootAge(),
                       cladoEventMap      = clado_matrix,
@@ -1273,5 +1273,3 @@ monitors.append( mnJointConditionalAncestralState(filename="output/ChromoSSE_anc
 ```
 And that's it! The results can be plotted using the same R script
 demonstrated before to plot the cladogenetic ChromEvol analysis.
-
-

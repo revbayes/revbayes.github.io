@@ -1,0 +1,100 @@
+################################################################################
+#
+# RevBayes Example: Inferring ancestral states and rates of morphological evolution using the independent rates model.
+#
+# Note that this script is kept flexible so that you can easily substitute
+# the character of interest.
+#
+# authors:  Sebastian Höhna
+#
+################################################################################
+
+#######################
+# Reading in the Data #
+#######################
+
+CHARACTER = "solitariness"
+NUM_STATES = 2
+
+# Import the morphological character matrix #
+morpho <- readDiscreteCharacterData("data/primates_"+CHARACTER+".nex")
+
+# Create some vector for the moves and monitors of this analysis
+moves    = VectorMoves()
+monitors = VectorMonitors()
+
+##############
+# Tree model #
+##############
+
+# Here we use a fixed tree topology of primates
+# Note that the readTrees function always returns a vector of trees,
+# so we simple take the first tree
+phylogeny <- readTrees("data/primates_tree.nex")[1]
+
+
+#########################
+# Set up the rate model #
+#########################
+
+# we assume every rate i <-> j to be independent and exponentially distributed
+rate_pr := phylogeny.treeLength() / 10
+NUM_RATES = NUM_STATES * (NUM_STATES-1)
+for ( i in 1:NUM_RATES ) {
+    rate[i] ~ dnExp(rate_pr)
+    moves.append( mvScale( rate[i], weight=2 ) )
+}
+
+
+##########################
+# Set up the rate matrix #
+##########################
+
+Q_morpho := fnFreeK( rate, rescale=false )
+
+
+
+#####################################
+# Set up the root state frequencies #
+#####################################
+
+rf_prior <- rep(1,NUM_STATES)
+rf ~ dnDirichlet( rf_prior )
+moves.append( mvBetaSimplex( rf, weight=2 ) )
+moves.append( mvDirichletSimplex( rf, weight=2 ) )
+
+
+
+###################
+# Set up the CTMC #
+###################
+
+# Combine all of our elements into a CTMC.
+
+phyMorpho ~ dnPhyloCTMC(tree=phylogeny, Q=Q_morpho, rootFrequencies=rf, type="Standard")
+phyMorpho.clamp(morpho)
+
+
+
+########
+# MCMC #
+########
+
+# initialize the model object #
+mymodel = model(phylogeny)
+
+### Compute power posterior distributions
+pow_p = powerPosterior(mymodel, moves, monitors, "output/"+CHARACTER+"_freeK.out", cats=63, sampleFreq=10)
+pow_p.burnin(generations=2000,tuningInterval=250)
+pow_p.run(generations=1000)
+
+### Use stepping-stone sampling to calculate marginal likelihoods
+ss = steppingStoneSampler(file="output/"+CHARACTER+"_freeK.out", powerColumnName="power", likelihoodColumnName="likelihood")
+ss.marginal()
+
+### Use path-sampling to calculate marginal likelihoods
+ps = pathSampler(file="output/"+CHARACTER+"_freeK.out", powerColumnName="power", likelihoodColumnName="likelihood")
+ps.marginal()
+
+# Quit RevBayes #
+q()

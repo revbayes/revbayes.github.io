@@ -2,7 +2,7 @@
 title: Skyline Models
 subtitle: Estimating Demographic Histories with Skyline Models
 authors: Ronja Billenstein and Sebastian Höhna
-level: 8 #may need adjustment
+level: 9 #may need adjustment
 order: 0.2
 prerequisites:
 - coalescent
@@ -40,7 +40,7 @@ Hypothetical example of a classical skyline plot. $w_k$ are the waiting times wi
 {% endfigure %}
 
 {% figure event-skyline %}
-  <img src="figures/scheme_event_skyline.png" /> 
+  <img src="figures/scheme_event_skyline.png" />
 {% figcaption %}
 Hypothetical example of a Bayesian skyline plot with the interval length dependent on the number of coalescent events (event-based).  $w_k$ are the waiting times with $k$ active lineages, $t_{c,k}$ are the coalescent events at the beginning of such a coalescent interval. $t_{i,j}$ mark the points of interval change.  Here, the change points are event-based, *i.e.*, dependent on coalescent events. The bold line represents the median of the posterior distribution of the population size and the shaded are shows the $95\%$ credible intervals.
 {% endfigcaption %}
@@ -54,7 +54,7 @@ Time starts at $t = 0$.
 The waiting times between coalescent events $w_k$ are exponentially distributed with rate $c = \frac{k (k-1)}{2N_e(t)}$ with $N_e$ being the population size.
 <!--- In the case of a skyline plot, the population size curve is split into $m$ intervals which each have a starting point $t_i$. --->
 
-The likelihood for a Skyline Plot is the product of the probability density functions of the coalescent waiting times, which are calculated as follows:
+The likelihood for a given piecewise-constant population size trajectory is computed as the product of the probability density functions of the coalescent waiting times, which are calculated as follows:
 
 $$p(w_k | t_k) = \frac{k (k -1)}{2N_e(t_k + w_k)} exp \left[ \int_{t_k}^{t_k+w_k} \frac{k (k -1)}{2N_e(t)} dt \right]$$
 
@@ -106,14 +106,14 @@ for (i in 1:NUM_INTERVALS) {
 {% subsection The Tree %}
 
 Now, we will instantiate the stochastic node for the tree.
-The Skyline distribution function `dnCoalescentSkyline` takes the vector of population sizes the taxa as input. <!--- **(need to check whether it can take more)** --->
+The Skyline version of the Coalescent distribution function `dnCoalescentSkyline` takes the vector of population sizes the taxa as input. <!--- **(need to check whether it can take more)** --->
 By chosing `methods="events"`, the interval lengths will be chosen based on the number of events.
 
 ~~~
 psi ~ dnCoalescentSkyline(theta=pop_size, method="events", taxa=taxa)
 ~~~
 
-In order to be able to later plot and analyze the population size curve, we need to retrieve the resulting interval times.
+For later plotting and analyzing the population size curve, we need to retrieve the resulting interval times.
 
 ~~~
 interval_times := psi.getIntervalAges()
@@ -122,13 +122,12 @@ interval_times := psi.getIntervalAges()
 For this analysis, we constrain the root age as before and add the same moves for the tree.
 
 {% subsection Substitution Model and other parameters %}
-This part is also taken from the constant coalescent exercise.
+This part is also taken from the [constant coalescent exercise]({{base.url}}/tutorials/coalescent/constant).
 
 {% subsection Finalize and run the analysis %}
 
-In the end, we need to wrap our model as before.
-
-Finally, we add the monitors and then run the MCMC.
+Finally, we need to wrap our model as before.
+We add the monitors and then run the MCMC.
 Here, another monitor is added for the interval times.
 
 ~~~

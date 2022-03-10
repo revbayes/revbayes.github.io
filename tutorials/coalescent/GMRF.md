@@ -2,7 +2,7 @@
 title: Skyline Models with GMRF
 subtitle: Estimating Demographic Histories with Skyline Models using a Gaussian Markov Random Field Prior
 authors: Ronja Billenstein and Sebastian Höhna
-level: 8 #may need adjustment
+level: 9 #may need adjustment
 order: 0.3
 prerequisites:
 - coalescent
@@ -16,7 +16,7 @@ include_files:
 ---
 
 {% section Overview %}
-This tutorial describes how to run a Skyline Analysis with a Gaussian Markov Random Field (GMRF) prior in `RevBayes`.
+This tutorial describes how to run a Coaelescent Skyline Analysis with a Gaussian Markov Random Field (GMRF) prior in `RevBayes`.
 This is a special case of a skyline plot.
 The most notable difference to the previous exercise is that the population size is autocorrelated, *i.e.*, each population size has a prior distribution that is centered on the population size from the previous, more recent, interval.
 This leads to a smoothing effect of the population size trajectory with adjacent intervals most likely having similar population size values.
@@ -26,7 +26,7 @@ Here, the intervals additionally are equally spaced and thus their start and end
 
 {% figure equalsize-skyline %}
 <p align="middle">
-  <img src="figures/scheme_equalsize_skyline.png" /> 
+  <img src="figures/scheme_equalsize_skyline.png" />
 </p>
 {% figcaption %}
 Hypothetical example of a Bayesian skyline plot with equally sized intervals, independent from the number of coalescent events (equal-sized). $w_k$ are the waiting times with $k$ active lineages, $t_{c,k}$ are the coalescent events at the beginning of such a coalescent interval. $t_{i,j}$ mark the points of interval change.  Here, the intervals are chosen to be equal-sized and the change points are independent from the coalescent events. The bold line represents the median of the posterior distribution of the population size and the shaded are shows the $95\%$ credible intervals.
@@ -341,5 +341,8 @@ You can have a look at the results [here]({{base.url}}/tutorials/coalescent/CPP)
 When you are done, have a look at the next exercise.
 
 * [The GMRF model with trees as input data]({{base.url}}/tutorials/coalescent/GMRF_treebased)
+<<<<<<< HEAD
 
 <!--- {% section Alternative Implementations %} --->
+=======
+>>>>>>> ac0a74db005c9a3a85dfeb5e6f07a9ec26525581

@@ -1,0 +1,116 @@
+################################################################################
+#
+# RevBayes Example: Inferring ancestral states and rates of morphological evolution and testing for irreversibility.
+#
+# authors: Sebastian Höhna and Will Freyman
+#
+################################################################################
+
+#######################
+# Reading in the Data #
+#######################
+
+CHARACTER = "solitariness"
+NUM_STATES = 2
+
+# Import the morphological character matrix #
+morpho <- readDiscreteCharacterData("data/primates_"+CHARACTER+".nex")
+
+
+# Create some vector for the moves and monitors of this analysis
+moves    = VectorMoves()
+monitors = VectorMonitors()
+
+
+##############
+# Tree model #
+##############
+
+# Here we use a fixed tree topology of mammals on a family level sampling
+# Note that the readTrees function always returns a vector of trees,
+# so we simple take the first tree
+phylogeny <- readTrees("data/primates_tree.nex")[1]
+
+
+#########################
+# Set up the rate model #
+#########################
+
+# we assume every rate i <-> j to be either
+# (a) independent and exponentially distributed, or
+# (b) 0.0
+
+rate_pr := phylogeny.treeLength() / 10
+mix_pr <- 0.5
+NUM_RATES = NUM_STATES * (NUM_STATES-1)
+for ( i in 1:NUM_RATES ) {
+    rate[i] ~ dnRJMixture(0.0, dnExp(rate_pr), p=mix_pr)
+    prob_rate[i] := ifelse( rate[i] == 0, 1.0, 0.0 )
+    moves.append( mvScale( rate[i], weight=2 ) )
+    moves.append( mvRJSwitch( rate[i], weight=2 ) )
+}
+
+
+##########################
+# Set up the rate matrix #
+##########################
+
+Q_morpho := fnFreeK( rate, rescaled=false )
+
+
+
+#####################################
+# Set up the root state frequencies #
+#####################################
+
+rf_prior <- rep(1,NUM_STATES)
+rf ~ dnDirichlet( rf_prior )
+moves.append( mvBetaSimplex( rf, weight=2 ) )
+moves.append( mvDirichletSimplex( rf, weight=2 ) )
+
+
+
+###################
+# Set up the CTMC #
+###################
+
+# Combine all of our elements into a CTMC.
+
+phyMorpho ~ dnPhyloCTMC(tree=phylogeny, Q=Q_morpho, rootFrequencies=rf, type="Standard")
+phyMorpho.clamp(morpho)
+
+
+
+########
+# MCMC #
+########
+
+# initialize the model object #
+mymodel = model(phylogeny)
+# Create a vector of monitors #
+# 1. for the full model #
+monitors.append( mnModel(filename="output/"+CHARACTER+"_irrev.log", printgen=1) )
+# 2. and a few select parameters to be printed to the screen #
+monitors.append( mnScreen(printgen=100) )
+# 3. add an ancestral state monitor
+monitors.append( mnJointConditionalAncestralState(tree=phylogeny,
+                                                   ctmc=phyMorpho,
+                                                   filename="output/"+CHARACTER+"_irrev.states.txt",
+                                                   type="Standard",
+                                                   printgen=1,
+                                                   withTips=true,
+                                                   withStartStates=false) )
+
+# Initialize the MCMC object #
+mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
+
+# Run the MCMC #
+mymcmc.run(generations=25000, tuningInterval=200)
+
+
+# Read in the tree trace and construct the ancestral states (ASE) #
+anc_states = readAncestralStateTrace("output/"+CHARACTER+"_irrev.states.txt")
+anc_tree = ancestralStateTree(tree=phylogeny, ancestral_state_trace_vector=anc_states, include_start_states=false, file="output/"+CHARACTER+"_ase_irrev.tree", burnin=0.25, summary_statistic="MAP", site=1)
+
+# Quit RevBayes #
+q()

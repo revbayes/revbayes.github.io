@@ -1,12 +1,12 @@
 {% section Overview: Models of Continuous-Character Evolution | continuous_char_overview %}
 
-In these tutorials we will focus on a few types of models that are commonly used to study how continuous characters evolve over a phylogeny. All of the models we describe are _Gaussian_ models, meaning that character evolution follows a normal distribution, as in the Brownian motion and Ornstein-Uhlenbeck models. Models that include stochastic jumps {% cite Landis2012 %} are not covered here.
+In these tutorials we will focus on a few types of models that are commonly used to study how continuous characters evolve over a phylogeny. All of the models we describe are _Gaussian_ models, meaning that character evolution follows a normal distribution, as in the Brownian motion and Ornstein-Uhlenbeck models. Models that include stochastic jumps {% cite Landis2017b %} are not covered here.
 
 Models of continuous-character evolution are used to understand many interesting evolutionary phenomena, including: the _rate_ of character evolution, the _mode_ of character evolution, how these vary over time or among lineages, and understanding the biotic and abiotic factors that contribute to this variation.
 
 {% subsection Brownian Motion models %}
 
-The simplest models of continuous-character evolution assume that the character evolves under a Brownian motion model {% cite Felsenstein1973 Felsenstein1985a %}. Under this model, the expected amount of character change along a branch is zero, and the _variance_ in character change is proportional to time and a rate parameter, $\sigma^2$. These tutorials focus on estimating the rate parameter, $\sigma^2$, as well as how it varies over time and among lineages.
+The simplest models of continuous-character evolution assume that the character evolves under a Brownian motion model {% cite Felsenstein1973s Felsenstein1985a %}. Under this model, the expected amount of character change along a branch is zero, and the _variance_ in character change is proportional to time and a rate parameter, $\sigma^2$. These tutorials focus on estimating the rate parameter, $\sigma^2$, as well as how it varies over time and among lineages.
 
 {% subsubsection (1) Estimating rates of evolution %}
 
@@ -30,13 +30,13 @@ __Work in Progress__
 
 *Is there evidence for variation in the rate of evolution across the branches of my phylogeny?*
 
-Identifying the number, location, and magnitude of shifts in rates of continuous character evolution can illuminate many evolutionary questions. Relaxing the assumption that rates are constant requires specifying a model that describes how rates vary (a ''relaxed morphological clock''). Many such models have been proposed {% cite Lemey2010 Eastman2011 Venditti2011 %}; we provide an example of relaxing the morphological clock using a ''random local clock'' model, as described in {% citet Eastman2011 %}, in the {% page_ref cont_traits/relaxed_bm %} tutorial.
+Identifying the number, location, and magnitude of shifts in rates of continuous character evolution can illuminate many evolutionary questions. Relaxing the assumption that rates are constant requires specifying a model that describes how rates vary (a ''relaxed morphological clock''). Many such models have been proposed {% cite Eastman2011 Venditti2011 %}; we provide an example of relaxing the morphological clock using a ''random local clock'' model, as described in {% citet Eastman2011 %}, in the {% page_ref cont_traits/relaxed_bm %} tutorial.
 
 {% subsubsection (4) Detecting state-dependent rates of evolution %}
 
 *Are rates of evolution correlated with a discrete variable on my phylogeny?*
 
-If rates of evolution are found to vary across branches, a natural question to ask is if some focal variable is associated with the rate variation. For example, we can test whether changes in rates are associated with habitat type in reef and non-reef dwelling fishes {% cite Price2013 May2019 %}.
+If rates of evolution are found to vary across branches, a natural question to ask is if some focal variable is associated with the rate variation. For example, we can test whether changes in rates are associated with habitat type in reef and non-reef dwelling fishes {% cite Price2013 May2020 %}.
 
 We provide an example of fitting the state-dependent model to discrete- and continuous-character data in the {% page_ref cont_traits/state_dependent_bm %} tutorial.
 

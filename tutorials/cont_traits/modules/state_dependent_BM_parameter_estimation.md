@@ -2,22 +2,18 @@
 
 Under a simple Brownian-motion (BM) model, the evolution of a continuous character is entirely determined by a single rate parameter, $\sigma^2$. However, we may be interested in testing hypotheses about whether the state of a discrete character (_e.g._, habitat) are associated with differential rates of continuous-character evolution.
 
-In this tutorial, we will specify the state-dependent model described in {% citet May2019 %}. Under this model, the rate of continuous-character evolution depends on the state of a discrete character that is also evolving on the phylogeny. We must therefore specify a model that includes both the continuouss characters and the discrete character. For a discrete character with $k$ states, we include $k$ BM rate parameters, $\boldsymbol{\zeta^2} = \[\zeta^2_0, \ldots, \zeta^2_k\]$ that describe the relative rate of evolution of the continuous character while the discrete character is in each state (these parameters have a mean of 1). We include a parameter that controls the ''average'' rate of continuous-character evolution, $\beta^2$; because the state-dependent relative rates have a mean of 1, $\beta^2$ controls the overall rate of the Brownian motion process. Finally, we include a continuous-time Markov chain model to describe the evolution of the discrete character, which is defined by the instantaneous-rate matrix $Q$.
+In this tutorial, we will specify the state-dependent model described in {% citet May2020 %}. Under this model, the rate of continuous-character evolution depends on the state of a discrete character that is also evolving on the phylogeny. We must therefore specify a model that includes both the continuous characters and the discrete character. For a discrete character with $k$ states, we include $k$ BM rate parameters, $\boldsymbol{\zeta^2} = \[\zeta^2_0, \ldots, \zeta^2_k\]$ that describe the relative rate of evolution of the continuous character while the discrete character is in each state (these parameters have a mean of 1). We include a parameter that controls the ''average'' rate of continuous-character evolution, $\beta^2$; because the state-dependent relative rates have a mean of 1, $\beta^2$ controls the overall rate of the Brownian motion process. Finally, we include a continuous-time Markov chain model to describe the evolution of the discrete character, which is defined by the instantaneous-rate matrix $Q$.
 
 Under this model, the changes in the continuous character while the discrete character is in state $j$, $\Delta_j$, are normally distributed with mean 0 and variance $t_j \beta^2 \zeta^2_j$, where $t_j$ is the amount of time spent in state $j$. The total change over the entire branch is a sum of normally distributed random variables:
 
 $$
-\begin{equation}
-    \Delta \sim \text{Normal}(0, \beta^2 \sum_{j=0}^k t_j \zeta^2_j )
-\end{equation}
+\Delta \sim \text{Normal}(0, \beta^2 \sum_{j=0}^k t_j \zeta^2_j )
 $$
 
 Consequently, the rate of evolution on branch $i$ is the weighted average of the state-dependent rates, weighted by the amount of time spent in each state:
 
 $$
-\begin{equation}
-    \sigma^2_i = \beta^2 \times \sum_{j=0}^k \tau_i(j) \times \zeta^2_j,
-\end{equation}
+\sigma^2_i = \beta^2 \times \sum_{j=0}^k \tau_i(j) \times \zeta^2_j,
 $$
 
 where $\tau_i(j)$ is the _relative_ amount of time branch $i$ spends in discrete-state $j$ (the relative dwelling time). Given a particular history of the discrete character, which describes the amount of time spent in each state along each branch, we can therefore compute the branch-specific rates of continuous-character evolution over the entire tree. We use data augmentation to map the history of discrete characters across the tree, and use Markov chain Monte Carlo to integrate over all possible histories of the discrete character in proportion to their probability. The probabilistic graphical model for this model is represented in ({% ref fig_bm_state_dependent_gm %}).
