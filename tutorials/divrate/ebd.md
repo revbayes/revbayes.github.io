@@ -317,7 +317,7 @@ mymcmc.run(generations=50000, tuningInterval=200)
 ```
 
 When the analysis is complete, you will have the monitored files in your output directory.
-You can then visualize the rates through time using `R` using our package `RevGadgets` {% Tribble2022 %}.
+You can then visualize the rates through time using `R` using our package `RevGadgets` {% cite Tribble2022 %}.
 If you don't have the R-package `RevGadgets` installed, or if you have trouble with the package, then please read the separate tutorial about the package ({% page_ref intro/revgadgets %}).
 
 Just start `R` in the main directory for this analysis and then type the following commands:
@@ -336,7 +336,7 @@ rates <- processDivRates(speciation_time_log = speciation_time_file,
                          extinction_time_log = extinction_time_file,
                          extinction_rate_log = extinction_rate_file,
                          burnin = 0.25,
-						 summary = "median")
+                         summary = "median")
 
 # plot rates through time
 p <- plotDivRates(df = rates) +
