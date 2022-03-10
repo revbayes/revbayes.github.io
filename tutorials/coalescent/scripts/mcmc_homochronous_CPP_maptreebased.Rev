@@ -35,13 +35,13 @@ n_taxa <- taxa.size()
 MAX_AGE = maptree.rootAge()
 print("max age: ", MAX_AGE)
 
-# we create the events drawn from the multi-value event eventDistribution
+# we create the events drawn from the multi-value event distribution
 # as a prior on the number of events, we use a Poisson distribution with a mean of 10
-# we have two valueDistribution
+# we have two values
 # - the population sizes with prior Uniform(1E4,1E8)
 # - the change times with prior Uniform(0.0,MAX_AGE)
 # we also assume that there is at least on population size but no change time
-events ~ dnMultiValueEvent (eventDistribution = dnPoisson(lambda=10),
+events ~ dnMultiValueEvent(eventDistribution = dnPoisson(lambda=2),
                    valueDistribution=[dnUniform(1E4,1E8),
                                       dnUniform(0.0,MAX_AGE)],
                    names=["theta","time"],
