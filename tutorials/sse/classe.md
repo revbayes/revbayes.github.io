@@ -1,6 +1,6 @@
 ---
-title: State-dependent diversification with HiSSE
-subtitle: Inference using the hidden character binary/multiple state-dependent speciation and extinction with (HiSSE) branching process
+title: State-dependent diversification with the ClaSSE model
+subtitle: Accommodating both cladogenetic and anagenetic changes
 authors:  Sebastian Höhna and Will Freyman
 level: 7
 order: 6
@@ -16,7 +16,7 @@ include_files:
 - data/primates_mating_system.nex
 - data/primates_solitariness.nex
 - data/primates_tree.nex
-- scripts/mcmc_HiSSE.Rev
+- scripts/mcmc_ClaSSE.Rev
 index: true
 ---
 
@@ -24,484 +24,367 @@ index: true
 
 {% section Introduction | introduction %}
 
-BiSSE and MuSSE are powerful approaches for testing the association of a character with diversification
-rate heterogeneity. However, BiSSE has been shown to be prone to falsely identifying a positive association
-when diversification rate shifts are correlated with a character not included in the model
-{% cite Maddison2015 Rabosky2015 %}. One approach to reduce the possibility of falsely associating
-a character with diversification rate heterogeneity is to incorporate a second, unobserved character into the
-model (*i.e.,* a Hidden State-Dependent Speciation and Extinction (HiSSE) model; see for example {% citet Beaulieu2016 %}).
-The changes in the unobserved character’s state represent background diversification rate changes
-that are not correlated with the oberved character. See {% ref fig_hisse %} for a schematic overview of the HiSSE
-model, and Table 2 for an explanation of the HiSSE model parameters. Now let’s set up and run a HiSSE
-analysis in RevBayes.
+In the previous examples we have modeled all character state transitions
+as anagenetic changes.
+Anagenetic changes occur along the branches of a phylogeny, within a lineage.
+Cladogenetic changes, on the other hand, occur at speciation events.
+They represent changes in a character state that may be associated with speciation events
+due to increased reproductive isolation,
+for example colonizing a new geographic area or a shift in chromosome number.
+Note that it can be quite tricky to determine if a character state shift is a cause or a consequence of speciation, but we can at least test if state changes tend to occur in the same time window as speciation events.
 
-We will keep this tutorial brief and assume that you have work through the {% page_ref sse/bisse %}.
+A major challenge for all phylogenetic models of cladogenetic character change
+is accounting for unobserved speciation events due to lineages going extinct
+and not leaving any extant descendants {% cite Bokma2002 %},
+or due to incomplete sampling of lineages in the present.
+Teasing apart
+the phylogenetic signal for cladogenetic and anagenetic processes given
+unobserved speciation events is a major difficulty.
+Commonly used biographic models like the
+dispersal-extinction-cladogenesis (DEC; {% citet Ree2008 %}) simply ignore
+unobserved speciation events and so result in biased
+estimates of cladogenetic versus anagenetic change.
 
+This bias can be avoided by using the
+Cladogenetic State change Speciation and Extinction
+(ClaSSE) model {% cite Goldberg2012 %},
+which accounts for unobserved speciation events
+by jointly modeling both character evolution
+and the phylogenetic birth-death process.
+ClaSSE models extend other SSE models by incorporating both cladogenetic
+and anagenetic character evolution.
+This approach has been used to model biogeographic range evolution {% cite Goldberg2011 %}
+and chromosome number evolution {% cite Freyman2017 %}.
 
-{% figure fig_hisse %}
-<img src="figures/HiSSE.png" width="75%">
-{% figcaption %}
-A schematic overview of the HiSSE model. Each lineage has an observed binary state associated to it:
-state 0 (blue) or state 1 (red). Furthermore, there is a second, unobserved (hidden), binary character with states A
-or B. The HiSSE model describes jointly the evolution of both of these two characters; a lineage must be in one of
-four different states: 0A, 0B, 1A, or 1B. We estimate separate speciation and extinction rates for each of these four
-states. Note that just like BiSSE can easily be extended to MuSSE, RevBayes allows you to extend HiSSE models
-beyond binary observed and unobserved characters.
-{% endfigcaption %}
-{% endfigure %}
+Here we will use RevBayes to examine biogeographic range evolution in the primates.
+We will model biogeographic range evolution similar to a DEC model,
+however we will use ClaSSE to account for speciation events unobserved due
+to extinction or incomplete sampling.
 
-{% section Estimating State-Dependent Speciation and Extinction under the HiSSE Model | sec_CDBDP %}
+## Setting up the analysis
 
-First, we create some global variables to set-up our analysis.
-Using this variable we can easily change our script to use a different character with a different number
-of states. We will also use this variable in our second example on hidden-state speciation and extinction
-model.
+### Reading in the data
 
+Begin by reading in the observed tree.
 ```
-NUM_TOTAL_SPECIES     = 367
-NUM_STATES            = 2
-NUM_HIDDEN            = 4
-NUM_RATES             = NUM_STATES * NUM_HIDDEN
-H                     = 0.587405
-DATASET               = "activity_period"
+observed_phylogeny <- readTrees("data/primates_biogeo.tre")[1]
+```
+Get the taxa in the tree. We'll need this later on.
+```
+taxa = observed_phylogeny.taxa()
 ```
 
-{% subsection Read in the Data | subsec_readdata %}
+Now let's read in the biogeographic range data. The areas are represented as the following character states:
 
-Begin by reading in the observed tree and the character data.
-We have both stored in separate nexus files.
+- 0 = 00 = the null state with no range
+- 1 = 01 = New World only
+- 2 = 10 = Old World only
+- 3 = 11 = both New and Old World
+
+For consistency, we have chosen to use the same representation of biogeographic ranges used in the \RevBayes biogeography/DEC tutorial.
+Each range is represented as both a natural number (0, 1, 2, 3) and a corresponding bitset (00, 01, 10, 11).
+The null state (state 0) is used in DEC models to represent a lineage that has no biogeographic range and is therefore extinct.
+Our model will include this null state as well, however, we will explicitly model extinction as part of the birth-death
+process so our character will never enter state 0.
 ```
-observed_phylogeny <- readTrees("data/primates_tree.nex")[1]
-data <- readCharacterData("data/primates_activity_period.nex")
+data_biogeo = readCharacterDataDelimited("data/primates_biogeo.tsv", stateLabels="0123", type="NaturalNumbers", delimiter="\t", headers=TRUE)
 ```
-It will be convenient to get some helper variables with information from the tree:
+
+Also we need to create the move and monitor vectors.
 ```
-taxa <- observed_phylogeny.taxa()
-tree_length <- observed_phylogeny.treeLength()
-```
-For the HiSSE model, we need to expand our characters to the new state space.
-This means, that originally we had the states `0` and `1`.
-Now, we want to have the states `0A`, `0B`, `0C`, `0D` and `1A`, `1B`, `1C`, `1D`.
-A character that was originally in state `0` will now be ambiguous for all states `0A`, `0B`, `0C` and `0D`.
-Instead of coding this up manually, RevBayes provides a simple function for you.
-```
-data_exp <- data.expandCharacters( NUM_HIDDEN )
-```
-Finally, we initialize a variable for our vector of moves and monitors.
-```
-moves    = VectorMoves()
+moves = VectorMoves()
 monitors = VectorMonitors()
 ```
 
+### Set up the extinction rates
 
-{% subsection Specify the Model | subsec_specifymodel %}
-
-#### **Priors on the Rates**
-
-We start by specifying prior distributions on the diversification rates.
-Here, we will assume an identical prior distribution on each of the
-speciation and extinction rates. Furthermore, we will use a log-uniform
-distribution as the prior distribution on each speciation and
-extinction rate (i.e., a uniform distribution on the log of the rates).
-
-$$
-\lambda_{ij} = \lambda_{\text{observed},i} * \lambda_{\text{hidden},j}
-$$
-For example, we have $\lambda_{0A} = \lambda_{\text{observed},0} * \lambda_{\text{hidden},A}$
-
-Let's code this up in RevBayes.
-First, we create the vector of hidden speciation rates.
-Following the idea of discretizing a continuous distribution of diversification rates
-(see {% page_ref divrate/branch_specific %}), we will specify `NUM_HIDDEN` speciation rates
-as the quantiles of a lognormal distribution.
-We need the average rate of the hidden speciation rates to be fixed, because otherwise the model is not identifiable.
-Therefore, we fix the median of the lognormal distribution to 1.0:
+We are going to draw both anagenetic transition rates
+and diversification rates from a lognormal distribution.
+The mean of the prior distribution will be
+$\ln(\frac{\text{\#Taxa}}{2}) / \text{tree-age}$
+which is the expected net
+diversification rate, and the SD will be 1.0 so the 95\%
+prior interval ranges well over 2 orders of magnitude.
 ```
-ln_speciation_hidden_mean <- ln(1.0)
-```
-Next, we draw the standard deviation of the hidden speciation rates from an exponential distribution with mean `H`
-(so that we expect the 95% interval of the hidden speciation rate to span 1 order of magnitude).
-```
-speciation_hidden_sd ~ dnExponential( 1.0 / H )
-moves.append( mvScale(speciation_hidden_sd, lambda=1, tune=true, weight=2.0) )
-```
-With the mean and the standard deviation we can specify the distribution on the hidden speciation rates.
-We create a deterministic variable for the hidden speciation rate categories using
-a discretized lognormal distribution (the N-quantiles of it).
-```
-speciation_hidden_unormalized := fnDiscretizeDistribution( dnLognormal(ln_speciation_hidden_mean, speciation_hidden_sd), NUM_HIDDEN )
-```
-However, we normalize the hidden speciation rates by dividing the rates with the main
-(so the mean of the normalized rates equals to 1.0):
-```
-speciation_hidden := speciation_hidden_unormalized / mean(speciation_hidden_unormalized)
+num_species <- 424 # approximate total number of primate species
+rate_mean <- ln( ln(num_species/2.0) / observed_phylogeny.rootAge() )
+rate_sd <- 1.0
 ```
 
-Next, we repeat this same procedure for the hidden extinction rates.
+The extinction rates will be stored in a vector where each element represents
+the extinction rate for the corresponding character state.
+We have chosen to allow a lineage to go extinct in both the New and Old World
+at the same time (like a global extinction event). As an alternative, you could
+restrict the model so that a lineage can only go extinct if it's range is limited
+to one area.
 ```
-ln_extinction_hidden_mean <- ln(1.0)
+extinction_rates[1] <- 0.0 # the null state (state 0)
+extinction_rates[2] ~ dnLognormal(rate_mean, rate_sd) # extinction when the lineage is in New World (state 1)
+extinction_rates[3] ~ dnLognormal(rate_mean, rate_sd) # extinction when the lineage is in Old World (state 2)
+extinction_rates[4] ~ dnLognormal(rate_mean, rate_sd) # extinction when in both (state 3)
+```
+Note \Rev vectors are indexed starting with 1, yet our character states start
+at 0. So \texttt{extinction\_rate[1]} will represent the extinction rate for character
+state 0.
 
-extinction_hidden_sd ~ dnExponential( 1.0 / H )
-moves.append( mvScale(extinction_hidden_sd, lambda=1, tune=true, weight=2.0) )
-
-extinction_hidden_unormalized := fnDiscretizeDistribution( dnLognormal(ln_extinction_hidden_mean, extinction_hidden_sd), NUM_HIDDEN )
-extinction_hidden := extinction_hidden_unormalized / mean(extinction_hidden_unormalized)
+Add MCMC moves for each extinction rate.
+```
+moves.append( mvSlide( extinction_rates[2], weight=4 ) )
+moves.append( mvSlide( extinction_rates[3], weight=4 ) )
+moves.append( mvSlide( extinction_rates[4], weight=4 ) )
 ```
 
-For the observed speciation and extinction rates, we will apply a different approach.
-We will draw the speciation and extinction rates for the observed characters from identical distribution,
-so that *a priori* we expect with probability 0.5 that $\lambda_{\text{observed},0} > \lambda_{\text{observed},1}$,
-and with probability 0.5 we expect $\lambda_{\text{observed},1} > \lambda_{\text{observed},0}$.
-For the lack of prior knowledge, we specify a log-uniform prior distribution on the speciation and extinction rates
-for the observed characters.
-Note that we also initialize the starting states to make the analysis run more efficiently.
+Let's also create a deterministic variable to monitor the overall extinction rate.
 ```
-for (i in 1:NUM_STATES) {
-
-    ### Create a loguniform distributed variable for the speciation rate
-    speciation_observed[i] ~ dnLoguniform( 1E-6, 1E2)
-    speciation_observed[i].setValue( (NUM_TOTAL_SPECIES-2) / tree_length )
-    moves.append( mvScale(speciation_observed[i],lambda=1.0,tune=true,weight=3.0) )
-
-    ### Create a loguniform distributed variable for the speciation rate
-    extinction_observed[i] ~ dnLoguniform( 1E-6, 1E2)
-    extinction_observed[i].setValue( speciation_observed[i] / 10.0 )
-    moves.append( mvScale(extinction_observed[i],lambda=1.0,tune=true,weight=3.0) )
-
-}
+total_extinction := sum(extinction_rates)
 ```
-We have now specified the diversification rate variables for the observed and hidden states.
-That means, we can now put these two put together.
+
+### Set up the anagenetic transition rate matrix
+
+First, let's create the rates of anagenetic dispersal:
 ```
-for (j in 1:NUM_HIDDEN) {
-    for (i in 1:NUM_STATES) {
-        index = i+(j*NUM_STATES)-NUM_STATES
-        speciation[index] := speciation_observed[i] * speciation_hidden[j]
-        extinction[index] := extinction_observed[i] * extinction_hidden[j]
+anagenetic_dispersal_13 ~ dnLognormal(rate_mean, rate_sd) # disperse from New to Old World 01 -> 11
+anagenetic_dispersal_23 ~ dnLognormal(rate_mean, rate_sd) # disperse from Old to New World 10 -> 11
+```
+
+Now add MCMC moves for each anagenetic dispersal rate.
+```
+moves.append( mvSlide( anagenetic_dispersal_13, weight=4 ) )
+moves.append( mvSlide( anagenetic_dispersal_23, weight=4 ) )
+```
+
+The anagenetic transitions will be stored in a 4 by 4
+instantaneous rate matrix. We will construct this by
+first creating a vector of vectors. Let's begin by
+initalizing all rates to 0.0:
+```
+for (i in 1:4) {
+    for (j in 1:4) {
+        r[i][j] <- 0.0
     }
 }
 ```
 
-Now we can specify our character-specific speciation and extinction rate
-parameters. Because we will use the same prior for each rate, it's easy
-to specify them all in a `for`-loop. We will use a log-uniform distribution as a prior
-on the speciation and extinction rates. The loop also allows us to apply moves to each
-of the rates we are estimating and create a vector of deterministic nodes
-representing the rate of diversification ($\lambda - \mu$) associated with each
-character state.
-
-The stochastic nodes representing the vector of speciation rates and vector of
-extinction rates have been instantiated. The software assumes that the rate in position `[1]` of each
-vector corresponds to the rate associated with diurnal `0` lineages and the rate
-at position `[2]` of each vector is the rate associated with nocturnal `1` lineages.
-
-
-Next we specify the transition rates between the states `0` and `1`:
-$q_{01}$ and $q_{10}$. As a prior, we choose that each transition rate
-is drawn from an exponential distribution with a mean of 10 character
-state transitions over the entire tree. This is reasonable because we
-use this kind of model for traits that transition not-infrequently, and
-it leaves a fair bit of uncertainty.
-Note that we will actually use a `for`-loop to instantiate the transition rates
-so that our script will also work for non-binary characters.
+Now we can populate non-zero rates into the anagenetic transition rate matrix:
 ```
-#########################################################
-# Set up the transition rate matrix for observed states #
-#########################################################
-
-# Each transition rate between observed states are drawn
-# from an exponential distribution with a mean of 10
-# character state transitions over the tree.
-rate_pr := observed_phylogeny.treeLength() / 10
-for ( i in 1:(NUM_STATES*(NUM_STATES-1)) ) {
-    transition_rates[i] ~ dnExp(rate_pr)
-    moves.append( mvScale(transition_rates[i],lambda=0.50,tune=true,weight=3.0) )
-}
-
-
-#########################################################
-# Set up the transition rate matrix for hidden states #
-#########################################################
-
-# We assume the transitions among the hidden states
-# are all equal and drawn from an exponential distriubtion.
-hidden_rate ~ dnExponential(rate_pr)
-moves.append( mvScale(hidden_rate,lambda=0.5,tune=true,weight=5) )
-
-for (i in 1:(NUM_HIDDEN * (NUM_HIDDEN - 1))) {
-    R[i] := hidden_rate
-}
-rate_matrix := fnHiddenStateRateMatrix(transition_rates, R, rescaled=false)
-
+r[2][4] := anagenetic_dispersal_13
+r[3][4] := anagenetic_dispersal_23
+r[4][2] := extinction_rates[3]
+r[4][3] := extinction_rates[2]
 ```
-Here, `rate[1]` is the rate of transition from state `0` (diurnal) to state `1` (nocturnal),
-and `rate[2]` is the rate of going from nocturnal to diurnal.
+Note that we have modeled the rate of 11 $\rightarrow$ 01 (3 $\rightarrow$ 1) as being
+the rate of going extinct in area 2, and the rate of 11 $\rightarrow$ 10 (3 $\rightarrow$ 2)
+as being the rate of going extinct in area 1.
 
-Finally, we put the rates into a matrix, because this is what's needed
-by the function for the state-dependent birth-death process.
+Now we pass our vector of vectors into the \cl{fnFreeK} function to create
+the instaneous rate matrix.
 ```
-rate_matrix := fnFreeK( transition_rates, rescaled=false)
-```
-Note that we do not "rescale" the rate matrix. Rate matrices for
-molecular evolution are rescaled to have an average rate of 1.0, but for
-this model we want estimates of the transition rates with the same time
-scale as the diversification rates.
-
-#### **Prior on the Root State**
-
-Create a variable for the root state frequencies. We are using a flat [Dirichlet distribution](https://en.wikipedia.org/wiki/Dirichlet_distribution) as the prior on
-each state. There has been some discussion about this in {% cite FitzJohn2009 %}.
-You could also fix the prior probabilities for the root states to be equal
-(generally not recommended), or use empirical state frequencies.
-```
-rate_category_prior ~ dnDirichlet( rep(1,NUM_RATES) )
-```
-Note that we use the `rep()` function which generates a vector of length `NUM_STATES`
-with each position in the vector set to `1`. Using this function and the `NUM_STATES`
-variable allows us to easily use this Rev script as a template for a different analysis
-using a character with more than two states.
-
-We will use a special move for objects that are drawn from a Dirichlet distribution:
-```
-moves.append( mvBetaSimplex(rate_category_prior,tune=true,weight=2) )
-moves.append( mvDirichletSimplex(rate_category_prior,tune=true,weight=2) )
+ana_rate_matrix := fnFreeK(r, rescaled=false)
 ```
 
-#### **The Probability of Sampling an Extant Species**
+### Set up the cladogenetic speciation rate matrix
 
-All birth-death processes are conditioned on the probability a taxon is sampled in the present.
-We can get an approximation for this parameter by calculating the _proportion_ of sampled
-species in our analysis.
+Here we need to define each cladogenetic event type in the form
+`[ancestor\_state, daughter1\_state, daughter2\_state]`
+and assign each cladogenetic event type a corresponding
+speciation rate.
 
-We know that we have sampled 233 out of 367 living described primate species. To
-account for this we can set the sampling probability as a constant node
-with a value of 233/367.
+The first type of cladogenetic event we'll specify is widespread sympatry.
+Widespread sympatric cladogenesis is where the biogeographic range does
+not change; that is the daughter lineages inherit the same range as
+the ancestor. In this example we are not going to allow the speciation events like
+11 $\rightarrow$ 11, 11, as it seems biologically implausible. However if you wanted
+you could add this to your model.
+
+Define the speciation rate for widespread sympatric cladogenesis events:
 ```
-rho <- observed_phylogeny.ntips()/367
-```
-
-#### **Root Age**
-
-The birth-death process also depends on time to the most-recent-common ancestor--*i.e.*,
-the root. In this
-exercise we use a fixed tree and thus we know the age of the tree.
-```
-root <- observed_phylogeny.rootAge()
+speciation_wide_sympatry ~ dnLognormal(rate_mean, rate_sd)
+moves.append( mvSlide( speciation_wide_sympatry, weight=4 ) )
 ```
 
-#### **The Time Tree**
-
-Now we have all of the parameters we need to specify the full character
-state-dependent birth-death model. We initialize the stochastic node
-representing the time tree and we create this node using the `dnCDBDP()` function.
+Define the widespread sympatric cladogenetic events:
 ```
-timetree ~ dnCDBDP( rootAge           = root,
-                    speciationRates   = speciation,
-                    extinctionRates   = extinction,
-                    Q                 = rate_matrix,
-                    delta             = 1.0,
-                    pi                = rate_category_prior,
-                    rho               = rho,
-                    condition         = "survival" )
-```
-Now, we will fix the BiSSE time-tree to the observed values from our data files. We use
-the standard `.clamp()` method to give the observed tree and branch times:
-```
-timetree.clamp( observed_phylogeny )
-timetree.clampCharData( data_exp )
-```
-And then we use the `.clampCharData()` to set the observed states at the tips of the tree:
-```
-timetree.clampCharData( data )
-```
-Finally, we create a workspace object of our whole model. The `model()`
-function traverses all of the connections and finds all of the nodes we
-specified.
-```
-mymodel = model(timetree)
-```
-You can use the `.graph()` method of the model object to visualize the graphical model you
-have just constructed . This function writes the model DAG to a file
-that can be viewed using the  program [Graphviz](https://www.graphviz.org/) ({% ref graphviz %}).
-
-{% figure graphviz %}
-<img src="figures/bisse_dag.svg" width="95%">
-{% figcaption %}
-The probabilistic graphical model of the character-state-dependent diversification model.
-This image was generated by executing the `mymodel.graph("bisse.dot")` in RevBayes after specifying the full model DAG.
-Then, the resulting file can be opened in the program [Graphviz](https://www.graphviz.org/).
-{% endfigcaption %}
-{% endfigure %}
-
-
-{% subsection Running an MCMC analysis | subsec_runningmcmc %}
-
-
-#### **Specifying Monitors**
-
-For our MCMC analysis, we set up a vector of *monitors* to record the
-states of our Markov chain. The first monitor will model all numerical
-variables; we are particularly interested in the rates of speciation,
-extinction, and transition.
-```
-monitors.append( mnModel(filename="output/primates_HiSSE_2.log", printgen=1) )
-```
-Then, we add a screen monitor showing some updates during the MCMC
-run.
-```
-monitors.append( mnScreen(printgen=10, speciation_observed, extinction_observed) )
+clado_events[1] = [1, 1, 1] # 01 -> 01, 01
+clado_events[2] = [2, 2, 2] # 10 -> 10, 10
 ```
 
-{% aside Sampling Ancestral States %}
-
-Optionally, we can sample ancestral states during the MCMC analysis.
-We need to add an additional monitor to record the state of each internal node in the tree.
-The file produced by this monitor can be summarized so that we can visualize the estimates of ancestral states.
+and assign each the same speciation rate:
 ```
-monitors.append( mnStochasticCharacterMap(cdbdp=timetree, printgen=10, filename="output/stoch_char_map_primates_HiSSE.log", include_simmap=true) )
-```
-{% endaside %}
-
-
-#### **Initializing and Running the MCMC Simulation**
-
-With a fully specified model, a set of monitors, and a set of moves, we
-can now set up the MCMC algorithm that will sample parameter values in
-proportion to their posterior probability. The `mcmc()` function will
-create our MCMC object:
-```
-mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
-
-```
-Now, run the MCMC:
-```
-mymcmc.run(generations=2500, tuningInterval=100)
+speciation_rates[1] := speciation_wide_sympatry/2
+speciation_rates[2] := speciation_wide_sympatry/2
 ```
 
-{% aside Summarize Sampled Ancestral States %}
-
-If we sampled ancestral states during the MCMC analysis, we can use the `RevGadgets` R package
-to plot the ancestral state reconstruction. First, though, we must summarize the sampled values in
-RevBayes.
-
-To do this, we first have to read in the ancestral state log file. This uses a specific function called `readAncestralStateTrace()`.
+Subset sympatry is where one daughter lineage inherits the full
+ancestral range but the other lineage inherits only a single region.
 ```
-burnin=25
-n_time_slices = 500
-
-# read in the sampled character histories
-anc_states = readAncestralStateTrace("output/stoch_char_map_primates_HiSSE.log")
-
-summarizeCharacterMaps(anc_states, observed_phylogeny, file="output/events.tsv", burnin=0.1)
-```
-Now, we can write an annotated tree to a file. This function will write a tree with each
-node labeled with the maximum a posteriori (MAP) state and the posterior probabilities for each
-state.
-```
-char_map_tree = characterMapTree(tree=observed_phylogeny,
-                 ancestral_state_trace_vector=anc_states,
-                 character_file="output/marginal_character.tree",
-                 posterior_file="output/marginal_posterior.tree",
-                 burnin=burnin,
-                 num_time_slices=n_time_slices)
+speciation_sub_sympatry ~ dnLognormal(rate_mean, rate_sd)
+moves.append( mvSlide( speciation_sub_sympatry, weight=4 ) )
 ```
 
-{% subsection Visualize Estimated Ancestral States | subsec_ancviz %}
+Define the subset sympatry events and assign each a speciation rate:
+```
+clado_events[3] = [3, 3, 1] # 11 -> 11, 01
+clado_events[4] = [3, 1, 3] # 11 -> 01, 11
+clado_events[5] = [3, 3, 2] # 11 -> 11, 10
+clado_events[6] = [3, 2, 3] # 11 -> 10, 11
+speciation_rates[3] := speciation_sub_sympatry/4
+speciation_rates[4] := speciation_sub_sympatry/4
+speciation_rates[5] := speciation_sub_sympatry/4
+speciation_rates[6] := speciation_sub_sympatry/4
+```
 
-To visualize the posterior probabilities of ancestral states, we will use the `RevGadgets` R package.
+Allopatric cladogenesis is when the two daughter lineages
+split the ancestral range:
+```
+speciation_allopatry ~ dnLognormal(rate_mean, rate_sd)
+moves.append( mvSlide( speciation_allopatry, weight=4 ) )
+```
 
+Define the allopatric events:
+```
+clado_events[7] = [3, 1, 2] # 11 -> 01, 10
+clado_events[8] = [3, 2, 1] # 11 -> 10, 01
+speciation_rates[7] := speciation_allopatry/2
+speciation_rates[8] := speciation_allopatry/2
+```
 
->Open R.
-{:.instruction}
+Now let's create a deterministic variable to monitor the overall speciation rate:
+```
+total_speciation := sum(speciation_rates)
+```
 
+Finally, we construct the cladogenetic speciation rate
+matrix from the cladogenetic event types and the speciation rates.
+```
+clado_matrix := fnCladogeneticSpeciationRateMatrix(clado_events, speciation_rates, 4)
+```
 
-`RevGadgets` requires the `ggtree` package {% cite Yu2017ggtree %}.
-First, install the `ggtree` and `RevGadgets` packages:
+Let's view the cladogenetic matrix to see if we have set it up correctly:
+```
+clado_matrix
+```
 
-<pre>
-install.packages("devtools")
-library(devtools)
-install_github("GuangchuangYu/ggtree")
-install_github("revbayes/RevGadgets")
-</pre>
+### Set up the cladogenetic character state-dependent birth-death process
 
-Run this code:
+For simplicity we will fix the root frequencies to be equal except for the null state
+which has probability of 0.
+```
+root_frequencies <- simplex([0, 1, 1, 1])
+```
 
-<pre>
-library(ggplot2)
+`rho` is the probability of sampling species at the present:
+```
+rho <- observed_phylogeny.ntips()/num_species
+```
+
+Now we construct a stochastic variable drawn from the cladogenetic
+character state-dependent birth-death process.
+```
+classe ~ dnCDCladoBDP( rootAge         = observed_phylogeny.rootAge(),
+                       cladoEventMap   = clado_matrix,
+                       extinctionRates = extinction_rates,
+                       Q               = ana_rate_matrix,
+                       delta           = 1.0,
+                       pi              = root_frequencies,
+                       rho             = rho,
+                       condition       = "time",
+                       taxa            = taxa )
+```
+
+Clamp the model with the observed data.
+```
+classe.clamp( observed_phylogeny )
+classe.clampCharData( data_biogeo )
+```
+
+### Finalize the model
+
+Just like before, we must create a workspace model object.
+```
+mymodel = model(classe)
+```
+
+\subsection{Set up and run the MCMC}
+
+First, set up the monitors that will output parameter values to file and screen.
+```
+monitors.append( mnModel(filename="output/primates_ClaSSE.log", printgen=1) )
+monitors.append( mnJointConditionalAncestralState(tree=observed_phylogeny, cdbdp=classe, type="NaturalNumbers", printgen=1, withTips=true, withStartStates=true, filename="output/anc_states_primates_ClaSSE.log") )
+monitors.append( mnScreen(printgen=1, speciation_wide_sympatry, speciation_sub_sympatry, speciation_allopatry, extinction_rates) )
+```
+
+Now define our workspace MCMC object.
+```
+mymcmc = mcmc(mymodel, monitors, moves)
+```
+
+We will perform a pre-burnin to tune the proposals
+and then run the MCMC. Note that for a real analysis you would
+want to run the MCMC for many more iterations.
+```
+mymcmc.burnin(generations=200,tuningInterval=5)
+mymcmc.run(generations=1000)
+```
+
+## Summarize ancestral states
+
+When the analysis has completed you now summarize the ancestral states.
+The ancestral states are estimated both for the "beginning" and "end"
+state of each branch, so that the cladogenetic changes that occurred at speciation events
+are distinguished from the changes that occurred anagenetically along branches.
+Make sure the `include_start_states` argument is set to `true`.
+```
+anc_states = readAncestralStateTrace("output/anc_states_primates_ClaSSE.log")
+anc_tree = ancestralStateTree(tree=observed_phylogeny, ancestral_state_trace_vector=anc_states, include_start_states=true, file="output/anc_states_primates_ClaSSE_results.tree", burnin=0, summary_statistic="MAP", site=0)
+```
+
+### Plotting ancestral states
+
+Like before, we'll plot the ancestral states
+using the `RevGadgets` `R` package.
+Execute the script `plot_anc_states_ClaSSE.R` in `R`.
+The results can be seen in Figure \ref{fig:results_ClaSSE}.
+The maximum *a posteriori* (MAP) estimate for each node is shown as well as the posterior probability of the states represented by the size of the dots.
+
+```{R}
 library(RevGadgets)
 
-tree_file = "output/anc_states_primates_BiSSE_results.tree"
+tree_file = "output/anc_states_primates_ClaSSE_results.tree"
 
-plot_ancestral_states(tree_file, summary_statistic="MAP",
-					  tip_label_size=0,
-                      xlim_visible=NULL,
+plot_ancestral_states(tree_file, summary_statistic="MAPRange",
+                      tip_label_size=3,
+                      tip_label_offset=1,
+                      xlim_visible=c(0,100),
                       node_label_size=0,
+                      shoulder_label_size=0,
+                      include_start_states=TRUE,
                       show_posterior_legend=TRUE,
-                      node_size_range=c(2, 6),
+                      node_size_range=c(4, 7),
                       alpha=0.75)
 
-output_file = "RevBayes_Anc_States_BiSSE.pdf"
+output_file = "RevBayes_Anc_States_ClaSSE.pdf"
 ggsave(output_file, width = 11, height = 9)
-</pre>
+```
 
-{% figure ggtree %}
-<img src="figures/RevBayes_Anc_States_BiSSE.png" width="75%">
+{% figure results_ClaSSE %}
+<img src="figures/RevBayes_Anc_States_ClaSSE.png" width="95%">
 {% figcaption %}
-A visualization of the ancestral states estimated under the BiSSE model.
+Maximum a posteriori estimate of biogeographic range evolution of the primates.
+The most recent common ancestor of the primates is inferred to be in the Old World (green).
+According to this reconstruction, approximately 70 Mya one lineage dispersed to be in both New and Old World (blue).
+This widespread lineage underwent allopatric cladogenesis, resulting in one
+daughter lineage in the Old World and one in the New World (green).
 {% endfigcaption %}
 {% endfigure %}
 
 
-{% endaside %}
+# Exercise
 
-
-
-{% subsection Summarizing Parameter Estimates | subsec_summary %}
-
-Our MCMC analysis generated a tab-delimited file called `primates_activTime_BiSSE_mcmc.log` that contains
-the samples of all the numerical parameters in our model. There are a lot of tools available
-for visualizing files like this (like R or python), which allow you to generate plots and
-visually explore the posterior distributions of sampled parameters.
-
-We will use the program [Tracer](http://tree.bio.ed.ac.uk/software/tracer/)
-{% cite Rambaut2011 %}, which is a tool for easily exploring parameters sampled using MCMC.
-
-> Open the program Tracer and import your file: `output/primates_activTime_BiSSE_mcmc.log`.
-{:.instruction}
-
-Tracer opens to a histogram of the _Posterior_ statistic and a list of all the other sampled
-parameters ({% ref tracer1 %}).
-
-{% figure tracer1 %}
-<img src="figures/tracer1.png" width="95%">
-{% figcaption %}
-Visualizing posterior samples of parameters in
-[Tracer](http://tree.bio.ed.ac.uk/software/tracer/)
-{% cite Rambaut2011 %}.
-{% endfigcaption %}
-{% endfigure %}
-
-> Explore the various options in Tracer.
->
-> Check the _Trace_ view for each parameter. Did the chain "mix" effectively?
->
-> Highlight both of the _speciation_ rates: `speciation[1]` and `speciation[2]` to
-> compare the _Estimates_ of both parameters.
->
-> **Write down** the mean value for the rate of speciation associated with
-> diurnal lineages `speciation[1]` and the rate of speciation associated with
-> nocturnal lineages `speciation[2]`.
->
-> Now use the _Marginal Prob Distribution_ view to compare the marginal posterior densities
-> of both speciation rates.
-{:.instruction}
-
-{% figure tracer2 %}
-<img src="figures/tracer2.png" width="50%">
-{% figcaption %}
-Comparing posterior samples of the speciation rates associated with daily activity time in
-[Tracer](http://tree.bio.ed.ac.uk/software/tracer/)
-{% cite Rambaut2011 %}.
-{% endfigcaption %}
-{% endfigure %}
+- Using either R or Tracer, visualize the posterior estimates for different types of cladogenetic events.
+    What kind of speciation events are most common?
+- As we have specified the model, we did not allow cladogenetic long
+    distance (jump) dispersal, for example 01 $\rightarrow$ 01, 10.
+    Modify this script to include cladogenetic
+    long distance dispersal and calculate Bayes factors to see which model fits the data better.
+    How does this affect the ancestral state estimate?
+}

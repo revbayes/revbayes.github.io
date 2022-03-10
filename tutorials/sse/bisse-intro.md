@@ -25,7 +25,8 @@ for other types of traits
 
 RevBayes can be used to specify a wide range of SSE models. For specific examples see these other tutorials:
 - BiSSE and MuSSE models: {% page_ref sse/bisse %}
-- ClaSSE and HiSSE models: {% page_ref sse/other-sse %}
+- HiSSE models: {% page_ref sse/hisse %}
+- ClaSSE models: {% page_ref sse/classe %}
 - ChromoSSE: {% page_ref chromo %}
 
 

@@ -31,7 +31,7 @@ This tutorial will explain how to fit the BiSSE and MuSSE models
 to data using Markov chain Monte Carlo (MCMC).
 RevBayes is a powerful tool for SSE analyses:
 to specify HiSSE model, please see {% page_ref sse/hisse %},
-for the ClaSSE model, please see {% page_ref sse/other-sse %}
+for the ClaSSE model, please see {% page_ref sse/classe %}
 and for ChromoSSE please see {% page_ref chromo %}.
 
 

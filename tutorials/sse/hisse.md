@@ -431,8 +431,6 @@ A visualization of the ancestral states estimated under the BiSSE model.
 {% endfigure %}
 
 
-{% endaside %}
-
 
 
 {% subsection Summarizing Parameter Estimates | subsec_summary %}
