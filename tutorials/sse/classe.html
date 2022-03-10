@@ -1,0 +1,572 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: State-dependent diversification with the ClaSSE model</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
+      </a>
+
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/download">Download</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/documentation/">Documentation</a></li>
+        <li><a href="https://revbayes.github.io/revscripter/">RevScripter</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/jobs/">Jobs</a></li>
+        <li><a href="/developer/">Developer</a></li>
+        <li><a href="/gui">GUI</a></li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <div class="titlebar">
+	<h1 class="maintitle">State-dependent diversification with the ClaSSE model</h1>
+	<h3 class="subtitle">Accommodating both cladogenetic and anagenetic changes</h3>
+	<h4 class="authors">Sebastian Höhna and Will Freyman</h4>
+  <h5>Last modified on March 10, 2022</h5>
+</div>
+
+
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul id="prerequisites">
+          
+            <li><a href="/tutorials/intro/">Getting Started with RevBayes and Rev Language Syntax</a></li>
+          
+            <li><a href="/tutorials/mcmc/">Introduction to Markov chain Monte Carlo (MCMC) Sampling</a></li>
+          
+            <li><a href="/tutorials/divrate/simple.html">Simple Diversification Rate Estimation</a></li>
+          
+            <li><a href="/tutorials/sse/bisse-intro.html">Background on state-dependent diversification rate estimation</a></li>
+          
+            <li><a href="/tutorials/sse/bisse.html">State-dependent diversification with BiSSE and MuSSE</a></li>
+          
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+
+
+
+
+<blockquote class="tutorial_files" id="tutorial_files">
+    <h2>Data files and scripts</h2>
+    
+        
+        <strong>Data Files</strong>
+        <ul id="data_files">
+        
+        
+        
+          <li><a href="/tutorials/morph_ase/data/primates_activity_period.nex">primates_activity_period.nex</a></li>
+        
+          <li><a href="/tutorials/morph_ase/data/primates_mating_system.nex">primates_mating_system.nex</a></li>
+        
+          <li><a href="/tutorials/morph_ase/data/primates_solitariness.nex">primates_solitariness.nex</a></li>
+        
+          <li><a href="/tutorials/biogeo/data/primates_tree.nex">primates_tree.nex</a></li>
+        
+          <li><a href="/tutorials/divrate/data/primates_tree.nex">primates_tree.nex</a></li>
+        
+          <li><a href="/tutorials/intro/data/primates_tree.nex">primates_tree.nex</a></li>
+        
+          <li><a href="/tutorials/morph_ase/data/primates_tree.nex">primates_tree.nex</a></li>
+        
+        </ul>
+    
+        
+        <strong>Other</strong>
+        <ul id="other_files">
+        
+        
+        
+          <li><a href="/tutorials/sse/scripts/mcmc_ClaSSE.Rev">mcmc_ClaSSE.Rev</a></li>
+        
+          <li><a href="/tutorials/cont_traits/data/primates_activity_period.nex">primates_activity_period.nex</a></li>
+        
+          <li><a href="/tutorials/sse/data/primates_activity_period.nex">primates_activity_period.nex</a></li>
+        
+          <li><a href="/tutorials/sse/data/primates_mating_system.nex">primates_mating_system.nex</a></li>
+        
+          <li><a href="/tutorials/cont_traits/data/primates_mating_system.nex">primates_mating_system.nex</a></li>
+        
+          <li><a href="/tutorials/cont_traits/data/primates_solitariness.nex">primates_solitariness.nex</a></li>
+        
+          <li><a href="/tutorials/sse/data/primates_solitariness.nex">primates_solitariness.nex</a></li>
+        
+          <li><a href="/tutorials/cont_traits/data/primates_tree.nex">primates_tree.nex</a></li>
+        
+          <li><a href="/tutorials/sse/data/primates_tree.nex">primates_tree.nex</a></li>
+        
+        </ul>
+    
+</blockquote>
+
+
+</div>
+<h2 class="section" id="introduction">Introduction</h2>
+<hr class="section" />
+
+<p>In the previous examples we have modeled all character state transitions
+as anagenetic changes.
+Anagenetic changes occur along the branches of a phylogeny, within a lineage.
+Cladogenetic changes, on the other hand, occur at speciation events.
+They represent changes in a character state that may be associated with speciation events
+due to increased reproductive isolation,
+for example colonizing a new geographic area or a shift in chromosome number.
+Note that it can be quite tricky to determine if a character state shift is a cause or a consequence of speciation, but we can at least test if state changes tend to occur in the same time window as speciation events.</p>
+
+<p>A major challenge for all phylogenetic models of cladogenetic character change
+is accounting for unobserved speciation events due to lineages going extinct
+and not leaving any extant descendants <a class="citation" href="#Bokma2002">(Bokma 2002)</a>,
+or due to incomplete sampling of lineages in the present.
+Teasing apart
+the phylogenetic signal for cladogenetic and anagenetic processes given
+unobserved speciation events is a major difficulty.
+Commonly used biographic models like the
+dispersal-extinction-cladogenesis (DEC; <a class="citation" href="#Ree2008">Ree and Smith (2008)</a>) simply ignore
+unobserved speciation events and so result in biased
+estimates of cladogenetic versus anagenetic change.</p>
+
+<p>This bias can be avoided by using the
+Cladogenetic State change Speciation and Extinction
+(ClaSSE) model <a class="citation" href="#Goldberg2012">(Goldberg and Igić 2012)</a>,
+which accounts for unobserved speciation events
+by jointly modeling both character evolution
+and the phylogenetic birth-death process.
+ClaSSE models extend other SSE models by incorporating both cladogenetic
+and anagenetic character evolution.
+This approach has been used to model biogeographic range evolution <a class="citation" href="#Goldberg2011">(Goldberg et al. 2011)</a>
+and chromosome number evolution (missing reference).</p>
+
+<p>Here we will use RevBayes to examine biogeographic range evolution in the primates.
+We will model biogeographic range evolution similar to a DEC model,
+however we will use ClaSSE to account for speciation events unobserved due
+to extinction or incomplete sampling.</p>
+
+<h2 id="setting-up-the-analysis">Setting up the analysis</h2>
+
+<h3 id="reading-in-the-data">Reading in the data</h3>
+
+<p>Begin by reading in the observed tree.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>observed_phylogeny &lt;- readTrees("data/primates_biogeo.tre")[1]
+</code></pre></div></div>
+<p>Get the taxa in the tree. We’ll need this later on.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>taxa = observed_phylogeny.taxa()
+</code></pre></div></div>
+
+<p>Now let’s read in the biogeographic range data. The areas are represented as the following character states:</p>
+
+<ul>
+  <li>0 = 00 = the null state with no range</li>
+  <li>1 = 01 = New World only</li>
+  <li>2 = 10 = Old World only</li>
+  <li>3 = 11 = both New and Old World</li>
+</ul>
+
+<p>For consistency, we have chosen to use the same representation of biogeographic ranges used in the \RevBayes biogeography/DEC tutorial.
+Each range is represented as both a natural number (0, 1, 2, 3) and a corresponding bitset (00, 01, 10, 11).
+The null state (state 0) is used in DEC models to represent a lineage that has no biogeographic range and is therefore extinct.
+Our model will include this null state as well, however, we will explicitly model extinction as part of the birth-death
+process so our character will never enter state 0.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data_biogeo = readCharacterDataDelimited("data/primates_biogeo.tsv", stateLabels="0123", type="NaturalNumbers", delimiter="\t", headers=TRUE)
+</code></pre></div></div>
+
+<p>Also we need to create the move and monitor vectors.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves = VectorMoves()
+monitors = VectorMonitors()
+</code></pre></div></div>
+
+<h3 id="set-up-the-extinction-rates">Set up the extinction rates</h3>
+
+<p>We are going to draw both anagenetic transition rates
+and diversification rates from a lognormal distribution.
+The mean of the prior distribution will be
+$\ln(\frac{\text{#Taxa}}{2}) / \text{tree-age}$
+which is the expected net
+diversification rate, and the SD will be 1.0 so the 95\%
+prior interval ranges well over 2 orders of magnitude.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>num_species &lt;- 424 # approximate total number of primate species
+rate_mean &lt;- ln( ln(num_species/2.0) / observed_phylogeny.rootAge() )
+rate_sd &lt;- 1.0
+</code></pre></div></div>
+
+<p>The extinction rates will be stored in a vector where each element represents
+the extinction rate for the corresponding character state.
+We have chosen to allow a lineage to go extinct in both the New and Old World
+at the same time (like a global extinction event). As an alternative, you could
+restrict the model so that a lineage can only go extinct if it’s range is limited
+to one area.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>extinction_rates[1] &lt;- 0.0 # the null state (state 0)
+extinction_rates[2] ~ dnLognormal(rate_mean, rate_sd) # extinction when the lineage is in New World (state 1)
+extinction_rates[3] ~ dnLognormal(rate_mean, rate_sd) # extinction when the lineage is in Old World (state 2)
+extinction_rates[4] ~ dnLognormal(rate_mean, rate_sd) # extinction when in both (state 3)
+</code></pre></div></div>
+<p>Note \Rev vectors are indexed starting with 1, yet our character states start
+at 0. So \texttt{extinction_rate[1]} will represent the extinction rate for character
+state 0.</p>
+
+<p>Add MCMC moves for each extinction rate.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvSlide( extinction_rates[2], weight=4 ) )
+moves.append( mvSlide( extinction_rates[3], weight=4 ) )
+moves.append( mvSlide( extinction_rates[4], weight=4 ) )
+</code></pre></div></div>
+
+<p>Let’s also create a deterministic variable to monitor the overall extinction rate.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>total_extinction := sum(extinction_rates)
+</code></pre></div></div>
+
+<h3 id="set-up-the-anagenetic-transition-rate-matrix">Set up the anagenetic transition rate matrix</h3>
+
+<p>First, let’s create the rates of anagenetic dispersal:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>anagenetic_dispersal_13 ~ dnLognormal(rate_mean, rate_sd) # disperse from New to Old World 01 -&gt; 11
+anagenetic_dispersal_23 ~ dnLognormal(rate_mean, rate_sd) # disperse from Old to New World 10 -&gt; 11
+</code></pre></div></div>
+
+<p>Now add MCMC moves for each anagenetic dispersal rate.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvSlide( anagenetic_dispersal_13, weight=4 ) )
+moves.append( mvSlide( anagenetic_dispersal_23, weight=4 ) )
+</code></pre></div></div>
+
+<p>The anagenetic transitions will be stored in a 4 by 4
+instantaneous rate matrix. We will construct this by
+first creating a vector of vectors. Let’s begin by
+initalizing all rates to 0.0:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:4) {
+    for (j in 1:4) {
+        r[i][j] &lt;- 0.0
+    }
+}
+</code></pre></div></div>
+
+<p>Now we can populate non-zero rates into the anagenetic transition rate matrix:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>r[2][4] := anagenetic_dispersal_13
+r[3][4] := anagenetic_dispersal_23
+r[4][2] := extinction_rates[3]
+r[4][3] := extinction_rates[2]
+</code></pre></div></div>
+<p>Note that we have modeled the rate of 11 $\rightarrow$ 01 (3 $\rightarrow$ 1) as being
+the rate of going extinct in area 2, and the rate of 11 $\rightarrow$ 10 (3 $\rightarrow$ 2)
+as being the rate of going extinct in area 1.</p>
+
+<p>Now we pass our vector of vectors into the \cl{fnFreeK} function to create
+the instaneous rate matrix.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ana_rate_matrix := fnFreeK(r, rescaled=false)
+</code></pre></div></div>
+
+<h3 id="set-up-the-cladogenetic-speciation-rate-matrix">Set up the cladogenetic speciation rate matrix</h3>
+
+<p>Here we need to define each cladogenetic event type in the form
+<code class="language-plaintext highlighter-rouge">[ancestor\_state, daughter1\_state, daughter2\_state]</code>
+and assign each cladogenetic event type a corresponding
+speciation rate.</p>
+
+<p>The first type of cladogenetic event we’ll specify is widespread sympatry.
+Widespread sympatric cladogenesis is where the biogeographic range does
+not change; that is the daughter lineages inherit the same range as
+the ancestor. In this example we are not going to allow the speciation events like
+11 $\rightarrow$ 11, 11, as it seems biologically implausible. However if you wanted
+you could add this to your model.</p>
+
+<p>Define the speciation rate for widespread sympatric cladogenesis events:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>speciation_wide_sympatry ~ dnLognormal(rate_mean, rate_sd)
+moves.append( mvSlide( speciation_wide_sympatry, weight=4 ) )
+</code></pre></div></div>
+
+<p>Define the widespread sympatric cladogenetic events:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clado_events[1] = [1, 1, 1] # 01 -&gt; 01, 01
+clado_events[2] = [2, 2, 2] # 10 -&gt; 10, 10
+</code></pre></div></div>
+
+<p>and assign each the same speciation rate:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>speciation_rates[1] := speciation_wide_sympatry/2
+speciation_rates[2] := speciation_wide_sympatry/2
+</code></pre></div></div>
+
+<p>Subset sympatry is where one daughter lineage inherits the full
+ancestral range but the other lineage inherits only a single region.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>speciation_sub_sympatry ~ dnLognormal(rate_mean, rate_sd)
+moves.append( mvSlide( speciation_sub_sympatry, weight=4 ) )
+</code></pre></div></div>
+
+<p>Define the subset sympatry events and assign each a speciation rate:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clado_events[3] = [3, 3, 1] # 11 -&gt; 11, 01
+clado_events[4] = [3, 1, 3] # 11 -&gt; 01, 11
+clado_events[5] = [3, 3, 2] # 11 -&gt; 11, 10
+clado_events[6] = [3, 2, 3] # 11 -&gt; 10, 11
+speciation_rates[3] := speciation_sub_sympatry/4
+speciation_rates[4] := speciation_sub_sympatry/4
+speciation_rates[5] := speciation_sub_sympatry/4
+speciation_rates[6] := speciation_sub_sympatry/4
+</code></pre></div></div>
+
+<p>Allopatric cladogenesis is when the two daughter lineages
+split the ancestral range:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>speciation_allopatry ~ dnLognormal(rate_mean, rate_sd)
+moves.append( mvSlide( speciation_allopatry, weight=4 ) )
+</code></pre></div></div>
+
+<p>Define the allopatric events:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clado_events[7] = [3, 1, 2] # 11 -&gt; 01, 10
+clado_events[8] = [3, 2, 1] # 11 -&gt; 10, 01
+speciation_rates[7] := speciation_allopatry/2
+speciation_rates[8] := speciation_allopatry/2
+</code></pre></div></div>
+
+<p>Now let’s create a deterministic variable to monitor the overall speciation rate:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>total_speciation := sum(speciation_rates)
+</code></pre></div></div>
+
+<p>Finally, we construct the cladogenetic speciation rate
+matrix from the cladogenetic event types and the speciation rates.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clado_matrix := fnCladogeneticSpeciationRateMatrix(clado_events, speciation_rates, 4)
+</code></pre></div></div>
+
+<p>Let’s view the cladogenetic matrix to see if we have set it up correctly:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clado_matrix
+</code></pre></div></div>
+
+<h3 id="set-up-the-cladogenetic-character-state-dependent-birth-death-process">Set up the cladogenetic character state-dependent birth-death process</h3>
+
+<p>For simplicity we will fix the root frequencies to be equal except for the null state
+which has probability of 0.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root_frequencies &lt;- simplex([0, 1, 1, 1])
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">rho</code> is the probability of sampling species at the present:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rho &lt;- observed_phylogeny.ntips()/num_species
+</code></pre></div></div>
+
+<p>Now we construct a stochastic variable drawn from the cladogenetic
+character state-dependent birth-death process.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>classe ~ dnCDCladoBDP( rootAge         = observed_phylogeny.rootAge(),
+                       cladoEventMap   = clado_matrix,
+                       extinctionRates = extinction_rates,
+                       Q               = ana_rate_matrix,
+                       delta           = 1.0,
+                       pi              = root_frequencies,
+                       rho             = rho,
+                       condition       = "time",
+                       taxa            = taxa )
+</code></pre></div></div>
+
+<p>Clamp the model with the observed data.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>classe.clamp( observed_phylogeny )
+classe.clampCharData( data_biogeo )
+</code></pre></div></div>
+
+<h3 id="finalize-the-model">Finalize the model</h3>
+
+<p>Just like before, we must create a workspace model object.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(classe)
+</code></pre></div></div>
+
+<p>\subsection{Set up and run the MCMC}</p>
+
+<p>First, set up the monitors that will output parameter values to file and screen.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/primates_ClaSSE.log", printgen=1) )
+monitors.append( mnJointConditionalAncestralState(tree=observed_phylogeny, cdbdp=classe, type="NaturalNumbers", printgen=1, withTips=true, withStartStates=true, filename="output/anc_states_primates_ClaSSE.log") )
+monitors.append( mnScreen(printgen=1, speciation_wide_sympatry, speciation_sub_sympatry, speciation_allopatry, extinction_rates) )
+</code></pre></div></div>
+
+<p>Now define our workspace MCMC object.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves)
+</code></pre></div></div>
+
+<p>We will perform a pre-burnin to tune the proposals
+and then run the MCMC. Note that for a real analysis you would
+want to run the MCMC for many more iterations.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.burnin(generations=200,tuningInterval=5)
+mymcmc.run(generations=1000)
+</code></pre></div></div>
+
+<h2 id="summarize-ancestral-states">Summarize ancestral states</h2>
+
+<p>When the analysis has completed you now summarize the ancestral states.
+The ancestral states are estimated both for the “beginning” and “end”
+state of each branch, so that the cladogenetic changes that occurred at speciation events
+are distinguished from the changes that occurred anagenetically along branches.
+Make sure the <code class="language-plaintext highlighter-rouge">include_start_states</code> argument is set to <code class="language-plaintext highlighter-rouge">true</code>.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>anc_states = readAncestralStateTrace("output/anc_states_primates_ClaSSE.log")
+anc_tree = ancestralStateTree(tree=observed_phylogeny, ancestral_state_trace_vector=anc_states, include_start_states=true, file="output/anc_states_primates_ClaSSE_results.tree", burnin=0, summary_statistic="MAP", site=0)
+</code></pre></div></div>
+
+<h3 id="plotting-ancestral-states">Plotting ancestral states</h3>
+
+<p>Like before, we’ll plot the ancestral states
+using the <code class="language-plaintext highlighter-rouge">RevGadgets</code> <code class="language-plaintext highlighter-rouge">R</code> package.
+Execute the script <code class="language-plaintext highlighter-rouge">plot_anc_states_ClaSSE.R</code> in <code class="language-plaintext highlighter-rouge">R</code>.
+The results can be seen in Figure \ref{fig:results_ClaSSE}.
+The maximum <em>a posteriori</em> (MAP) estimate for each node is shown as well as the posterior probability of the states represented by the size of the dots.</p>
+
+<pre><code class="language-{R}">library(RevGadgets)
+
+tree_file = "output/anc_states_primates_ClaSSE_results.tree"
+
+plot_ancestral_states(tree_file, summary_statistic="MAPRange",
+                      tip_label_size=3,
+                      tip_label_offset=1,
+                      xlim_visible=c(0,100),
+                      node_label_size=0,
+                      shoulder_label_size=0,
+                      include_start_states=TRUE,
+                      show_posterior_legend=TRUE,
+                      node_size_range=c(4, 7),
+                      alpha=0.75)
+
+output_file = "RevBayes_Anc_States_ClaSSE.pdf"
+ggsave(output_file, width = 11, height = 9)
+</code></pre>
+
+<figure id="results_ClaSSE"><p><img src="figures/RevBayes_Anc_States_ClaSSE.png" width="95%" /></p>
+<figcaption>Maximum a posteriori estimate of biogeographic range evolution of the primates.
+The most recent common ancestor of the primates is inferred to be in the Old World (green).
+According to this reconstruction, approximately 70 Mya one lineage dispersed to be in both New and Old World (blue).
+This widespread lineage underwent allopatric cladogenesis, resulting in one
+daughter lineage in the Old World and one in the New World (green).</figcaption>
+</figure>
+
+<h1 id="exercise">Exercise</h1>
+
+<ul>
+  <li>Using either R or Tracer, visualize the posterior estimates for different types of cladogenetic events.
+  What kind of speciation events are most common?</li>
+  <li>As we have specified the model, we did not allow cladogenetic long
+  distance (jump) dispersal, for example 01 $\rightarrow$ 01, 10.
+  Modify this script to include cladogenetic
+  long distance dispersal and calculate Bayes factors to see which model fits the data better.
+  How does this affect the ancestral state estimate?
+}</li>
+</ul>
+
+<ol class="bibliography"><li><span id="Bokma2002">Bokma F. 2002. Detection of punctuated equilibrium from molecular phylogenies. Journal of Evolutionary Biology. 15:1048–1056.</span>
+
+<a href="https://doi.org/10.1046/j.1420-9101.2002.00458.x">10.1046/j.1420-9101.2002.00458.x</a>
+
+</li>
+<li><span id="Goldberg2011">Goldberg E.E., Lancaster L.T., Ree R.H. 2011. Phylogenetic Inference of Reciprocal Effects between Geographic Range Evolution and Diversification. Systematic Biology. 60:451–465.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syr046">10.1093/sysbio/syr046</a>
+
+</li>
+<li><span id="Goldberg2012">Goldberg E.E., Igić B. 2012. Tempo and Mode in Plant Breeding System Evolution. Evolution. 66:3701–3709.</span>
+
+<a href="https://doi.org/10.1111/j.1558-5646.2012.01730.x">10.1111/j.1558-5646.2012.01730.x</a>
+
+</li>
+<li><span id="Ree2008">Ree R.H., Smith S.A. 2008. Maximum Likelihood Inference of Geographic Range Evolution by Dispersal, Local Extinction, and Cladogenesis. Systematic Biology. 57:4–14.</span>
+
+<a href="https://doi.org/10.1080/10635150701883881">10.1080/10635150701883881</a>
+
+</li></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+    });
+    MathJax.Hub.Queue(function () {
+      $(".aside").each(function() {
+          $("div .MathJax", this).hide();
+      });
+    });
+</script>
+<script src="/assets/js/base.js"></script>
+
+  </body>
+</html>
