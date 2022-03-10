@@ -2,8 +2,8 @@
 title: Skyline Models with a Compound Poisson Prior
 subtitle: Estimating Demographic Histories with Skyline Models using a Compound Poisson Prior
 authors: Ronja Billenstein and Sebastian Höhna
-level: 9 #may need adjustment
-order: 0.8
+level: 9
+order: 0.9
 prerequisites:
 - coalescent
 - coalescent/skyline

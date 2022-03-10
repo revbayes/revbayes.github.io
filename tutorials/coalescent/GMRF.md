@@ -2,7 +2,7 @@
 title: Skyline Models with GMRF
 subtitle: Estimating Demographic Histories with Skyline Models using a Gaussian Markov Random Field Prior
 authors: Ronja Billenstein and Sebastian Höhna
-level: 9 #may need adjustment
+level: 9
 order: 0.3
 prerequisites:
 - coalescent
@@ -341,8 +341,5 @@ You can have a look at the results [here]({{base.url}}/tutorials/coalescent/CPP)
 When you are done, have a look at the next exercise.
 
 * [The GMRF model with trees as input data]({{base.url}}/tutorials/coalescent/GMRF_treebased)
-<<<<<<< HEAD
 
 <!--- {% section Alternative Implementations %} --->
-=======
->>>>>>> ac0a74db005c9a3a85dfeb5e6f07a9ec26525581

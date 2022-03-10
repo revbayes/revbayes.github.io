@@ -2,7 +2,7 @@
 title: Skyline Models
 subtitle: Estimating Demographic Histories with Skyline Models
 authors: Ronja Billenstein and Sebastian Höhna
-level: 9 #may need adjustment
+level: 9
 order: 0.2
 prerequisites:
 - coalescent

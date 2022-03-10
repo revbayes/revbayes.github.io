@@ -2,7 +2,7 @@
 title: Piecewise Coalescent Process
 subtitle: Estimating Demographic Histories with a Piecewise Coalescent Process
 authors: Ronja Billenstein and Sebastian Höhna
-level: 9 #may need adjustment
+level: 9
 order: 0.5
 prerequisites:
 - coalescent

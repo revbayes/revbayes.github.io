@@ -2,7 +2,7 @@
 title: Constant Coalescent Process
 subtitle: Estimating Demographic Histories with a Constant Coalescent Process
 authors: Ronja Billenstein and Sebastian Höhna
-level: 8 #may need adjustment
+level: 9
 order: 0.1
 prerequisites:
 - coalescent
