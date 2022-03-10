@@ -56,7 +56,7 @@
 	<h1 class="maintitle">Episodic Diversification Rate Estimation</h1>
 	<h3 class="subtitle">Estimating Rate-Variation Through Time in Diversification Rates</h3>
 	<h4 class="authors">Sebastian Höhna and Andrew Magee</h4>
-  <h5>Last modified on February 28, 2022</h5>
+  <h5>Last modified on March 10, 2022</h5>
 </div>
 
 
@@ -102,13 +102,15 @@
         
           <li><a href="/tutorials/intro/data/primates.tre">primates.tre</a></li>
         
-          <li><a href="/tutorials/divrate/data/primates_tree.nex">primates_tree.nex</a></li>
+          <li><a href="/tutorials/biogeo/data/primates_tree.nex">primates_tree.nex</a></li>
         
           <li><a href="/tutorials/intro/data/primates_tree.nex">primates_tree.nex</a></li>
         
           <li><a href="/tutorials/morph_ase/data/primates_tree.nex">primates_tree.nex</a></li>
         
           <li><a href="/tutorials/sse/data/primates_tree.nex">primates_tree.nex</a></li>
+        
+          <li><a href="/tutorials/divrate/data/primates_tree.nex">primates_tree.nex</a></li>
         
         </ul>
     
@@ -141,15 +143,15 @@
 <h2 class="section" id="overview">Overview</h2>
 <hr class="section" />
 
-<p>This tutorial describes how to specify an episodic birth-death model in <code class="language-plaintext highlighter-rouge">RevBayes</code>.
-The episodic birth-death model is a process where diversification rates vary episodically through time 
+<p>This tutorial describes how to specify an episodic birth-death model in <code class="language-plaintext highlighter-rouge">RevBayes</code> <a class="citation" href="#Hoehna2016b">(Höhna et al. 2016)</a>.
+The episodic birth-death model is a process where diversification rates vary episodically through time
 and are modeled as piecewise-constant rates <a class="citation" href="#Stadler2011">(Stadler 2011; Höhna 2015)</a>.
 The probabilistic graphical model is given once at the beginning of this tutorial.
-Your goal is to estimate speciation and extinction rates through-time using 
+Your goal is to estimate speciation and extinction rates through-time using
 Markov chain Monte Carlo (MCMC).</p>
 
 <p>You should read first the <a href="/tutorials/divrate/div_rate_intro.html">Introduction to Diversification Rate Estimation</a>
-which explains the theory and gives some general overview of diversification rate estimation 
+which explains the theory and gives some general overview of diversification rate estimation
 and <a href="/tutorials/divrate/simple.html">Simple Diversification Rate Estimation</a> which goes through a very simple pure birth and birth-death model
 for estimating diversification rates.</p>
 
@@ -160,7 +162,7 @@ for estimating diversification rates.</p>
 within time intervals but can be different between time intervals.
 Thus, we will divide time into equally sized intervals.
 An overview of the underlying theory of the specific model and implementation
-is given in <a class="citation" href="#Hoehna2015a">(Höhna 2015)</a>.</p>
+is given in <a class="citation" href="#Hoehna2015a">Höhna (2015), Magee and Höhna (2021)</a>.</p>
 
 <figure id="fig_EBD"><p><img src="figures/EBD_scenarios.png" width="75%" height="75%" /></p>
 <figcaption>Two scenarios of birth-death models. On the left we show constant diversification.
@@ -197,7 +199,7 @@ depend on the rates of the previous interval, and that we use a hyperprior for
 the standard deviation of rates between time intervals.
 Note that the actual set up of the plates in Rev code will appear to differ from what is shown here.
 This is because there are many ways to represent the HSMRF model, and with some
-small reparameterization and a function to replace the plate(s), we can make
+small re-parameterization and a function to replace the plate(s), we can make
 it run much more efficiently and easily in MCMC.</p>
 
 <h2 class="section" id="estimating-episodic-diversification-rates">Estimating Episodic Diversification Rates</h2>
@@ -206,7 +208,7 @@ it run much more efficiently and easily in MCMC.</p>
 <h3 class="subsection" id="read-the-tree">Read the tree</h3>
 <hr class="subsection" />
 
-<p>Begin by reading in the ``observed’’ tree.</p>
+<p>Begin by reading in the “observed” tree.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>T &lt;- readTrees("data/primates_tree.nex")[1]
 </code></pre></div></div>
 <p>From this tree, we get some helpful variables, such as the taxon information which we need to instantiate the birth-death process.</p>
@@ -231,7 +233,7 @@ NUM_BREAKS := NUM_INTERVALS - 1
 
 <p>We start by specifying prior distributions on the rates.
 The overall model is a HSMRF birth-death model.
-In this model, the changes in log-scale rates between intervals follow a Horseshoe distribution <a class="citation" href="#Carvalho2010">Carvalho et al. (2010)</a>, which allows for large jumps in rate while assuming most changes are very small.
+In this model, the changes in log-scale rates between intervals follow a Horseshoe distribution <a class="citation" href="#Carvalho2010">(Carvalho et al. 2010)</a>, which allows for large jumps in rate while assuming most changes are very small.
 We need a parameter to control the overall variability from present to past in the diversification rates, the global scale parameter.
 We must also set the global scale hyperprior, which acts with the global scale parameter to set the prior on rate variability.
 In this example, we use 10 speciation and extinction rate intervals, but the HSMRF enables us to use much larger numbers.
@@ -262,7 +264,7 @@ about some event affected diversification sometime before the present,
 <p>We use a uniform distribution between -10 and 10 because of our lack of prior knowledge
 on the diversification rate.
 This actually means that we allow speciation and extinction rates
-between $e^{-10}$ and $e^10$, so we should clearly cover the true values.
+between $e^{-10}$ and $e^{10}$, so we should clearly cover the true values.
 (Note that for diversification rate estimates, $e^{-10}$ is virtually 0
 since the rate is so slow).</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log_speciation_at_present ~ dnUniform(-10.0,10.0)
@@ -298,7 +300,7 @@ This can be done efficiently using a <code class="language-plaintext highlighter
 
 <p>Now, we take the pieces we have for the rates (the global and local scales, the rate at the present, and the log-changes) and we assemble the overall rates.
 The <code class="language-plaintext highlighter-rouge">delta</code> parameters are differences in log-scale rates, and so we need to sum them then exponentiate.
-For example, speciation[2] := exp(log_speciation_at_present + delta_log_speciation[1]).
+For example, <code class="language-plaintext highlighter-rouge">speciation[2] := exp(log_speciation_at_present + delta_log_speciation[1])</code>.
 Because the <code class="language-plaintext highlighter-rouge">sd</code> values for any of the log-scale differences is equivalent to what we wrote in the DAG above (simply written in expanded form), the model here is equivalent to the one in the DAG.
 The function <code class="language-plaintext highlighter-rouge">fnassembleContinuousMRF()</code> does all the summation and exponentiation efficiently for all speciation and extinction rates in all intervals and avoids making the DAG too big.</p>
 
@@ -415,20 +417,32 @@ The <code class="language-plaintext highlighter-rouge">mcmc()</code> function wi
 </code></pre></div></div>
 
 <p>When the analysis is complete, you will have the monitored files in your output directory.
-You can then visualize the rates through time using <code class="language-plaintext highlighter-rouge">R</code> using our package <code class="language-plaintext highlighter-rouge">RevGadgets</code>.
-If you don’t have the R-package <code class="language-plaintext highlighter-rouge">RevGadgets</code> installed, or if you have trouble with the package, then please read the separate tutorial about the package.</p>
+You can then visualize the rates through time using <code class="language-plaintext highlighter-rouge">R</code> using our package <code class="language-plaintext highlighter-rouge">RevGadgets</code> <a class="citation" href="#Tribble2022">(Tribble et al. 2022)</a>.
+If you don’t have the R-package <code class="language-plaintext highlighter-rouge">RevGadgets</code> installed, or if you have trouble with the package, then please read the separate tutorial about the package (<a href="/tutorials/intro/revgadgets.html">Introduction to RevGadgets</a>).</p>
 
 <p>Just start <code class="language-plaintext highlighter-rouge">R</code> in the main directory for this analysis and then type the following commands:</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">RevGadgets</span><span class="p">)</span><span class="w">
 
-</span><span class="n">tree</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">read.nexus</span><span class="p">(</span><span class="s2">"data/primates_tree.nex"</span><span class="p">)</span><span class="w">
+</span><span class="c1"># specify the output files</span><span class="w">
+</span><span class="n">speciation_time_file</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"output/primates_EBD_speciation_times.log"</span><span class="w">
+</span><span class="n">speciation_rate_file</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"output/primates_EBD_speciation_rates.log"</span><span class="w">
+</span><span class="n">extinction_time_file</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"output/primates_EBD_extinction_times.log"</span><span class="w">
+</span><span class="n">extinction_rate_file</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"output/primates_EBD_extinction_rates.log"</span><span class="w">
 
-</span><span class="n">rev_out</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rev.process.div.rates</span><span class="p">(</span><span class="n">speciation_times_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"output/primates_EBD_speciation_times.log"</span><span class="p">,</span><span class="w"> </span><span class="n">speciation</span><span class="w"> </span><span class="n">s_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"output/primates_EBD_speciation s.log"</span><span class="p">,</span><span class="w"> </span><span class="n">extinction_times_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"output/primates_EBD_extinction_times.log"</span><span class="p">,</span><span class="w"> </span><span class="n">extinction</span><span class="w"> </span><span class="n">s_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"output/primates_EBD_extinction s.log"</span><span class="p">,</span><span class="w"> </span><span class="n">tree</span><span class="o">=</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="n">burnin</span><span class="o">=</span><span class="m">0.25</span><span class="p">,</span><span class="n">numIntervals</span><span class="o">=</span><span class="m">100</span><span class="p">)</span><span class="w">
+</span><span class="c1"># read in and process rates</span><span class="w">
+</span><span class="n">rates</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">processDivRates</span><span class="p">(</span><span class="n">speciation_time_log</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">speciation_time_file</span><span class="p">,</span><span class="w">
+                         </span><span class="n">speciation_rate_log</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">speciation_rate_file</span><span class="p">,</span><span class="w">
+                         </span><span class="n">extinction_time_log</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">extinction_time_file</span><span class="p">,</span><span class="w">
+                         </span><span class="n">extinction_rate_log</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">extinction_rate_file</span><span class="p">,</span><span class="w">
+                         </span><span class="n">burnin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.25</span><span class="p">,</span><span class="w">
+                         </span><span class="n">summary</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"median"</span><span class="p">)</span><span class="w">
 
-</span><span class="n">pdf</span><span class="p">(</span><span class="s2">"EBD.pdf"</span><span class="p">)</span><span class="w">
-</span><span class="n">par</span><span class="p">(</span><span class="n">mfrow</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="m">2</span><span class="p">,</span><span class="m">2</span><span class="p">))</span><span class="w">
-</span><span class="n">rev.plot.div.rates</span><span class="p">(</span><span class="n">rev_out</span><span class="p">,</span><span class="n">use.geoscale</span><span class="o">=</span><span class="kc">FALSE</span><span class="p">)</span><span class="w">
-</span><span class="n">dev.off</span><span class="p">()</span><span class="w">
+</span><span class="c1"># plot rates through time</span><span class="w">
+</span><span class="n">p</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">plotDivRates</span><span class="p">(</span><span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rates</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+        </span><span class="n">xlab</span><span class="p">(</span><span class="s2">"Millions of years ago"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+        </span><span class="n">ylab</span><span class="p">(</span><span class="s2">"Rate per million years"</span><span class="p">)</span><span class="w">
+
+</span><span class="n">ggsave</span><span class="p">(</span><span class="s2">"EBD.png"</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">)</span><span class="w">
 </span></code></pre></div></div>
 
 <p>(Note, you may want to add a nice geological timescale to the plot by setting <code class="language-plaintext highlighter-rouge">use.geoscale=TRUE</code> but then you can only plot one figure per page.)</p>
@@ -468,18 +482,31 @@ The estimated rates might change when you use a different resolution, <em>i.e.,<
   <li>How does this influence your estimated rates?</li>
 </ul>
 
+<blockquote class="instruction">
+  <p>Click below to begin the next exercise!</p>
+</blockquote>
+
+<ul>
+  <li><a href="/tutorials/divrate/efbdp_me">Inferring the Impact of Mass Extinctions</a></li>
+  <li><a href="/tutorials/divrate/env">Testing for Environmental Correlation</a></li>
+</ul>
 
 <ol class="bibliography"><li><span id="Carvalho2010">Carvalho C.M., Polson N.G., Scott J.G. 2010. The horseshoe estimator for sparse signals. Biometrika. 97:465–480.</span>
 
 </li>
-<li><span id="Hoehna2014a">Höhna S. 2014. Likelihood Inference of Non-Constant Diversification Rates with Incomplete Taxon Sampling. PLoS One. 9:e84184.</span>
+<li><span id="Hoehna2016b">Höhna S., Landis M.J., Heath T.A., Boussau B., Lartillot N., Moore B.R., Huelsenbeck J.P., Ronquist F. 2016. RevBayes: Bayesian Phylogenetic Inference Using Graphical Models and an Interactive Model-Specification Language. Systematic Biology. 65:726–736.</span>
 
-<a href="https://doi.org/10.1371/journal.pone.0084184">10.1371/journal.pone.0084184</a>
+<a href="https://doi.org/10.1093/sysbio/syw021">10.1093/sysbio/syw021</a>
 
 </li>
 <li><span id="Hoehna2015a">Höhna S. 2015. The time-dependent reconstructed evolutionary process with a key-role for mass-extinction events. Journal of Theoretical Biology. 380:321–331.</span>
 
 <a href="https://doi.org/http://dx.doi.org/10.1016/j.jtbi.2015.06.005">http://dx.doi.org/10.1016/j.jtbi.2015.06.005</a>
+
+</li>
+<li><span id="Hoehna2014a">Höhna S. 2014. Likelihood Inference of Non-Constant Diversification Rates with Incomplete Taxon Sampling. PLoS One. 9:e84184.</span>
+
+<a href="https://doi.org/10.1371/journal.pone.0084184">10.1371/journal.pone.0084184</a>
 
 </li>
 <li><span id="Hoehna2014b">Höhna S., Heath T.A., Boussau B., Landis M.J., Ronquist F., Huelsenbeck J.P. 2014. Probabilistic Graphical Model Representation in Phylogenetics. Systematic Biology. 63:753–771.</span>
@@ -488,6 +515,11 @@ The estimated rates might change when you use a different resolution, <em>i.e.,<
 
 </li>
 <li><span id="Hoehna2011">Höhna S., Stadler T., Ronquist F., Britton T. 2011. Inferring speciation and extinction rates under different species sampling schemes. Molecular Biology and Evolution. 28:2577–2589.</span>
+
+</li>
+<li><span id="Magee2021">Magee A.F., Höhna S. 2021. Impact of K-Pg Mass Extinction Event on Crocodylomorpha Inferred from Phylogeny of Extinct and Extant Taxa. bioRxiv.:426715.</span>
+
+<a href="https://doi.org/10.1101/426715">10.1101/426715</a>
 
 </li>
 <li><span id="Magee2020">Magee A.F., Höhna S., Vasylyeva T.I., Leaché A.D., Minin V.N. 2020. Locally adaptive Bayesian birth-death model successfully detects slow and rapid rate shifts. PLoS Computational Biology. 16:e1007999.</span>
@@ -501,6 +533,11 @@ The estimated rates might change when you use a different resolution, <em>i.e.,<
 <li><span id="Stadler2011">Stadler T. 2011. Mammalian phylogeny reveals recent diversification rate shifts. Proceedings of the National Academy of Sciences. 108:6187–6192.</span>
 
 <a href="https://doi.org/10.1073/pnas.1016876108">10.1073/pnas.1016876108</a>
+
+</li>
+<li><span id="Tribble2022">Tribble C.M., Freyman W.A., Landis M.J., Lim J.Y., Barido-Sottani J., Kopperud B.T., Höhna S., May M.R. 2022. RevGadgets: An R package for visualizing Bayesian phylogenetic analyses from RevBayes. Methods in Ecology and Evolution. 13:314–323.</span>
+
+<a href="https://doi.org/https://doi.org/10.1111/2041-210X.13750">https://doi.org/10.1111/2041-210X.13750</a>
 
 </li></ol>
 

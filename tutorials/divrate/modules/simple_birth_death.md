@@ -14,14 +14,15 @@ process, which considers the rates constant over time and over the tree
 
 {% citet Yang1997 %} derived the probability of time trees under an extension of
 the birth-death model that accounts for incomplete sampling of the tips
-({% ref fig_bdp_gm %}) (see also {% citet Stadler2009 %} and {% citet Hoehna2014a %}). Under
-this model, the parameter $\rho$ accounts for the probability of
-sampling in the present time, and because it is a probability, this
-parameter can only take values between 0 and 1.
+({% ref fig_bdp_gm %}) (see also {% citet Stadler2009 Hoehna2011 %} and {% citet Hoehna2014a %}).
+Under this model, the parameter $\rho$ accounts for the probability of
+sampling in the present time, and because it is a probability,
+this parameter can only take values between 0 and 1.
+For more information on incomplete taxon sampling, see {% page_ref divrate/sampling %} tutorial.
 
 {% figure fig_bdp_gm %}
-<img src="figures/simple_BD_gm_root.png" height="50%" width="50%" /> 
-{% figcaption %} 
+<img src="figures/simple_BD_gm_root.png" height="50%" width="50%" />
+{% figcaption %}
 The graphical model representation of the birth-death process with uniform sampling and
 conditioned on the root age.
 {% endfigcaption %}
@@ -36,9 +37,9 @@ because, for example, we want to enforce that the speciation rate is
 always larger than the extinction rate.
 
 {% figure fig_bdp_div_turn_gm %}
-<img src="figures/cBDR_gm.png" height="50%" width="50%" /> 
-{% figcaption %} 
-The graphical model representation of the birth-death process 
+<img src="figures/cBDR_gm.png" height="50%" width="50%" />
+{% figcaption %}
+The graphical model representation of the birth-death process
 with uniform sampling parameterized using the diversification and turnover.
 {% endfigcaption %}
 {% endfigure %}
@@ -98,3 +99,32 @@ timetree ~ dnBDP(lambda=birth_rate, mu=death_rate, rho=rho, rootAge=root_time, s
 
 
 &#8680; The `Rev` file for performing this analysis: `mcmc_BD.Rev`
+
+
+{% subsection Exercise 3 %}
+
+-   Run an MCMC simulation to compute the posterior distribution of the
+    diversification and turnover rate.
+-   Look at the parameter estimates in `Tracer`. What can
+    you say about the diversification, turnover, speciation and
+    extinction rates? How high is the extinction rate compared with the
+    speciation rate?
+-   Compute the marginal likelihood under the BD model. Which model is
+    supported by the data?
+-   Enter the estimate in the table above.
+-   Can you modify the script to use a prior on the birth drawn from a
+    lognormal distribution and relative death rate drawn from a beta
+    distribution so that the extinction rate is equal to the birth rate
+    times the relative death rate?
+    1.  Do the parameter estimates change?
+    2.  What about the marginal likelihood estimates?
+
+
+
+{% figure fig_bd_posterior %}
+<img src="figures/birth_death_rate.png" height="50%" width="50%" />
+{% figcaption %}
+Estimates of the posterior distribution of the `birth_rate` and `death_rate` visualized in `RevGadgets` {% cite Tribble2022 %}.
+We used the script `plot_BD_rates.R`.
+{% endfigcaption %}
+{% endfigure %}

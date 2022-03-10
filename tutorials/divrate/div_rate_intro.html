@@ -56,7 +56,7 @@
 	<h1 class="maintitle">Introduction to Diversification Rate Estimation</h1>
 	<h3 class="subtitle">Overview of Analyses, Models and Theory</h3>
 	<h4 class="authors">Sebastian Höhna</h4>
-  <h5>Last modified on February 28, 2022</h5>
+  <h5>Last modified on March  9, 2022</h5>
 </div>
 
 
@@ -100,8 +100,8 @@ diversification-rate parameters themselves.</p>
 <p>Macroevolutionary diversification rate estimation focuses on different key hypothesis,
 which may include:
 adaptive radiation, diversity-dependent and character diversification, key innovations, and
-mass extinction. 
-We classify these hypotheses primarily into questions whether diversification rates vary through time, 
+mass extinction.
+We classify these hypotheses primarily into questions whether diversification rates vary through time,
 and if so, whether some external, global factor has driven diversification rate changes, or if
 diversification rates vary among lineages, and if so, whether some species specific factor is correlated with
 the diversification rates.</p>
@@ -111,10 +111,10 @@ the diversification rates.</p>
 <h4 class="subsubsection" id="1-constant-diversification-rate-estimation">(1) Constant diversification-rate estimation</h4>
 <hr class="subsubsection" />
 
-<p><em>What is the global rate of diversification in my phylogeny?</em> 
-The most basic models estimate parameters of the birth-death process 
-(<em>i.e.</em>, rates of speciation and extinction, or composite parameters 
-such as net-diversification and relative-extinction rates) 
+<p><em>What is the global rate of diversification in my phylogeny?</em>
+The most basic models estimate parameters of the birth-death process
+(<em>i.e.</em>, rates of speciation and extinction, or composite parameters
+such as net-diversification and relative-extinction rates)
 under the assumption that rates have remained constant across lineages and through time.
 This is the most basic example and should be treated as a primer and introduction into the topic.</p>
 
@@ -129,14 +129,14 @@ adaptive radiation, diversity dependence and mass-extinction events.
 We can detect a signal any of these causes by detecting diversification rate variation through time.</p>
 
 <p>The different tutorials references below cover different scenarios for diversification rate variation through time.
-The common theme of these studies is that the diversification process is tree-wide, that is, 
+The common theme of these studies is that the diversification process is tree-wide, that is,
 all lineages of the study group have the exact same rates at a given time.</p>
 
 <h4 class="subsubsection" id="2a-detecting-diversification-rate-variation-through-time">(2a) Detecting diversification rate variation through time</h4>
 <hr class="subsubsection" />
 
-<p>In ‘RevBayes’ we use an episodic birth-death model to study diversification rate variation through time.
-That is, we assume that diversification rates are constant within an epoch but may shift between episodes (<a class="citation" href="#Stadler2011">Stadler (2011), Höhna (2015)</a>). 
+<p>In RevBayes we use an episodic birth-death model to study diversification rate variation through time.
+That is, we assume that diversification rates are constant within an epoch but may shift between episodes (<a class="citation" href="#Stadler2011">Stadler (2011), Höhna (2015)</a>).
 Then, we are estimating the diversification rates for each episode, and thus diversification rate variation through time.</p>
 
 <p>You can find examples and more information in the <a href="/tutorials/divrate/ebd.html">Episodic Diversification Rate Estimation</a>.</p>
@@ -144,38 +144,47 @@ Then, we are estimating the diversification rates for each episode, and thus div
 <h4 class="subsubsection" id="2b-detecting-the-impact-of-mass-extinction-events-on-diversification">(2b) Detecting the impact of mass-extinction events on diversification</h4>
 <hr class="subsubsection" />
 
-<p>Another question in this category asks whether our study tree was impacted by a mass-extinction event 
-(where a large fraction of the standing species diversity is suddenly lost, e.g., <a class="citation" href="#Hoehna2015a">Höhna (2015), May et al. (2016)</a>).</p>
+<p>Another question in this category asks whether our study tree was impacted by a mass-extinction event
+(where a large fraction of the standing species diversity is suddenly lost, e.g., <a class="citation" href="#Hoehna2015a">Höhna (2015), May et al. (2016), Magee and Höhna (2021)</a>).
+That is, we infer and test for the impact of instantaneous mass extinction events where each species alive at the given time has a probability of survival of the event.</p>
+
+<p>You can find examples and more information in the <a href="/tutorials/divrate/efbdp_me.html">Mass Extinction Estimation</a>.</p>
 
 <h4 class="subsubsection" id="2c-diversification-rate-correlation-to-environmental-eg-abiotic-factors">(2c) Diversification-rate correlation to environmental (e.g., abiotic) factors</h4>
 <hr class="subsubsection" />
 
 <p><em>Are diversification rates correlated with some abiotic (e.g., environmental) variable in my phylogeny?</em>
-If we have found evidence in the previous section that diversification rates vary through time, 
+If we have found evidence in the previous section that diversification rates vary through time,
 then we can start asking the question whether these changes in diversification
-rates are driven by some abiotic (e.g., environmental) factors. 
+rates are driven by some abiotic (e.g., environmental) factors.
 For example, we can ask whether changes in diversification rates are correlated with
-environmental factors, such as environmental CO<sub>2</sub> or temperature <a class="citation" href="#Condamine2013">(Condamine et al. 2013; Condamine et al. 2018)</a>.</p>
+environmental factors, such as environmental CO<sub>2</sub> or temperature <a class="citation" href="#Condamine2013">(Condamine et al. 2013; Condamine et al. 2018; Palazzesi et al. 2022)</a>.</p>
 
 <p>You can find examples and more information in the <a href="/tutorials/divrate/env.html">Environmental-dependent Speciation &amp; Extinction Rates</a>.</p>
 
 <h4 class="subsubsection" id="3-diversification-rate-variation-across-branches-estimation">(3) Diversification-rate variation across branches estimation</h4>
 <hr class="subsubsection" />
 
-<p><em>Is there evidence that diversification rates have varied across the branches of my phylogeny?</em> 
-Have there been significant diversification-rate shifts along branches in my phylogeny, 
-and if so, how many shifts, what magnitude of rate-shifts and along which branches?
-Similarly, one may ask what are the branch-specific diversification rates?</p>
+<p><em>Is there diversification rate variation among lineages in my phylogeny?</em>
+There are several reasons why diversification rates can vary among lineages primarily due to species specific factors (intrinsic and extrinsic), for example, key innovations.
+First, we can try to detect a signal of rate variation among lineages, and then we can test if their are variables that are associated with this among lineage rate variation.
+The different tutorials references below cover different scenarios for diversification rate variation among lineages.</p>
 
-<p>You can study diversification rate variation among lineages using our birth-death-shift process <a class="citation" href="#Hoehna2019">(Höhna et al. 2019)</a>. 
-Examples and more information is provided in the <a href="/tutorials/divrate/branch_specific.html">Branch-Specific Diversification Rate Estimation</a>.</p>
-
-<h4 class="subsubsection" id="4-character-dependent-diversification-rate-estimation">(4) Character-dependent diversification-rate estimation</h4>
+<h4 class="subsubsection" id="3a-detecting-diversification-rate-variation-across-branches-estimation">(3a) Detecting diversification-rate variation across branches estimation</h4>
 <hr class="subsubsection" />
 
-<p>If we have found that there is rate variation among lineage, then we could ask if 
-diversification rates correlated with some biotic (e.g., morphological) variable.
-This can be addressed by using character-dependent birth-death models 
+<p><em>Is there evidence that diversification rates have varied across the branches of my phylogeny?</em>
+Have there been significant diversification-rate shifts along branches in my phylogeny, and if so, how many shifts, what magnitude of rate-shifts and along which branches?
+Similarly, one may ask what are the branch-specific diversification rates?</p>
+
+<p>You can study diversification rate variation among lineages using our birth-death-shift process <a class="citation" href="#Hoehna2019">(Höhna et al. 2019)</a>.
+Examples and more information is provided in the <a href="/tutorials/divrate/branch_specific.html">Branch-Specific Diversification Rate Estimation</a>.</p>
+
+<h4 class="subsubsection" id="3b-character-dependent-diversification-rate-estimation">(3b) Character-dependent diversification-rate estimation</h4>
+<hr class="subsubsection" />
+
+<p>If we have found that there is rate variation among lineage, then we could ask if diversification rates correlated with some biotic (e.g., morphological) variable.
+This can be addressed by using character-dependent birth-death models
 (often also called state-dependent speciation and extinction models; SSE models).
 Character-dependent diversification-rate models aim to identify
 overall correlations between diversification rates and organismal
@@ -183,10 +192,30 @@ features (binary and multi-state discrete morphological traits,
 continuous morphological traits, geographic range, etc.). For example,
 one can hypothesize that a binary character, say if an organism is
 herbivorous/carnivorous or self-compatible/self-incompatible, impact the
-diversification rates. Then, if the organism is in state 0 (e.g., is herbivorous) 
-it has a lower (or higher) diversification rate than if the organism is in state 1 (e.g., carnivorous) <a class="citation" href="#Maddison2007">(Maddison et al. 2007)</a>.</p>
+diversification rates. Then, if the organism is in state 0 (e.g., is herbivorous) it has a lower (or higher) diversification rate than if the organism is in state 1 (e.g., carnivorous) <a class="citation" href="#Maddison2007">(Maddison et al. 2007)</a>.</p>
 
 <p>You can find examples and more information in the <a href="/tutorials/sse/bisse-intro.html">Background on state-dependent diversification rate estimation</a>.</p>
+
+<h4 class="subsubsection" id="4-general-extension-to-diversification-rate-estimation">(4) General Extension to Diversification Rate Estimation</h4>
+<hr class="subsubsection" />
+
+<p>There exist some general considerations, assumptions and extensions that apply to most/all diversification rate models.
+We provide a few general topics.</p>
+
+<h4 class="subsubsection" id="4a-incomplete-taxon-sampling">(4a) Incomplete taxon sampling</h4>
+<hr class="subsubsection" />
+
+<p>For most study groups, we do not have all extant taxa sampled.
+It is important that we properly model incomplete taxon sampling because otherwise our parameter estimates are biased <a class="citation" href="#Hoehna2011">(Höhna et al. 2011; Höhna 2014; Palazzesi et al. 2022)</a>.
+You can find examples and more information in the <a href="/tutorials/divrate/sampling.html">Diversification Rate Estimation with Missing Taxa</a>.</p>
+
+<h4 class="subsubsection" id="4b-conditions-of-the-birth-death-process">(4b) Conditions of the Birth-Death Process</h4>
+<hr class="subsubsection" />
+
+<p>As any statistical model, the birth-death process includes several assumptions/conditions.
+Primarily, we condition the process if we only consider study groups that (a) survived until the present, (b) left exactly $N$ extant taxa, or (c) no restrictions.
+The conditions become a bit more involved if phylogenies with fossils are considered.
+You can find more discussion and examples in the <a href="/tutorials/divrate/conditions.html">Assumptions of Diversification Rate Estimation</a>.</p>
 
 <h2 class="section" id="models">Diversification Rate Models</h2>
 <hr class="section" />
@@ -207,7 +236,7 @@ specified in RevBayes.</p>
 <hr class="subsection" />
 
 <figure id="fig_birth_death_shift"><p><img src="figures/BirthDeathShift.png" width="50%" height="50%" /></p>
-<figcaption>A realization of the birth-death process with mass extinction. 
+<figcaption>A realization of the birth-death process with mass extinction.
 Lineages that have no extant or sampled descendant are shown in gray and
 surviving lineages are shown in a thicker black line.</figcaption>
 </figure>
@@ -234,7 +263,7 @@ Finally, all extinct lineages are pruned and only the reconstructed tree
 remains (<a href="#fig_birth_death_shift"></a>).</p>
 
 <figure id="fig_bdp"><p><img src="figures/birth-death-sketch.png" width="75%" height="75%" /></p>
-<figcaption><strong>Examples of trees produced under a birth-death process.</strong> 
+<figcaption><strong>Examples of trees produced under a birth-death process.</strong>
 The process is initiated at the first speciation event (the ‘crown-age’ of the MRCA)
 when there are two initial lineages. At each speciation event the ancestral lineage is replaced by two
 descendant lineages. At an extinction event one lineage simply
@@ -282,7 +311,7 @@ information regarding the underlying birth-death process can be found in
 
 <p>To compute the equation above we need to know the rate function,
 $r(t,s) = \int_t^s d(x)-b(x) dx$, and the probability of survival,
-$P(N(T)!&gt;!0|N(t)!=!1)$. 
+$P(N(T)!&gt;!0|N(t)!=!1)$.
 <a class="citation" href="#Yule1925">Yule (1925)</a> and later <a class="citation" href="#Kendall1948">Kendall (1948)</a> derived the
 probability that a process survives ($N(T) &gt; 0$) and the probability of
 obtaining exactly $n$ species at time $T$ ($N(T) = n$) when the process
@@ -314,13 +343,17 @@ estimate the diversification rates jointly with the phylogeny and
 divergence times.</p>
 </blockquote>
 
-
 <ol class="bibliography"><li><span id="Condamine2013">Condamine F.L., Rolland J., Morlon H. 2013. Macroevolutionary perspectives to environmental change. Ecology Letters.</span>
 
 <a href="https://doi.org/10.1111/ele.12062">10.1111/ele.12062</a>
 
 </li>
-<li><span id="Condamine2018">Condamine F.L., Rolland J., Höhna S., Sperling F.A.H., Sanmartı́n Isabel. 2018. Testing the role of the Red Queen and Court Jester as drivers of the macroevolution of Apollo butterflies. Systematic Biology. 67:940–964.</span>
+<li><span id="Condamine2018">Condamine F.L., Rolland J., Höhna S., Sperling F.A.H., Sanmartín I. 2018. Testing the role of the Red Queen and Court Jester as drivers of the macroevolution of Apollo butterflies. Systematic Biology. 67:940–964.</span>
+
+</li>
+<li><span id="Hoehna2015a">Höhna S. 2015. The time-dependent reconstructed evolutionary process with a key-role for mass-extinction events. Journal of Theoretical Biology. 380:321–331.</span>
+
+<a href="https://doi.org/http://dx.doi.org/10.1016/j.jtbi.2015.06.005">http://dx.doi.org/10.1016/j.jtbi.2015.06.005</a>
 
 </li>
 <li><span id="Hoehna2013">Höhna S. 2013. Fast simulation of reconstructed phylogenies under global time-dependent birth-death processes. Bioinformatics. 29:1367–1374.</span>
@@ -333,14 +366,12 @@ divergence times.</p>
 <a href="https://doi.org/10.1371/journal.pone.0084184">10.1371/journal.pone.0084184</a>
 
 </li>
-<li><span id="Hoehna2015a">Höhna S. 2015. The time-dependent reconstructed evolutionary process with a key-role for mass-extinction events. Journal of Theoretical Biology. 380:321–331.</span>
-
-<a href="https://doi.org/http://dx.doi.org/10.1016/j.jtbi.2015.06.005">http://dx.doi.org/10.1016/j.jtbi.2015.06.005</a>
-
-</li>
 <li><span id="Hoehna2019">Höhna S., Freyman W.A., Nolen Z., Huelsenbeck J.P., May M.R., Moore B.R. 2019. A Bayesian Approach for Estimating Branch-Specific Speciation and Extinction Rates. bioRxiv.</span>
 
 <a href="https://doi.org/10.1101/555805">10.1101/555805</a>
+
+</li>
+<li><span id="Hoehna2011">Höhna S., Stadler T., Ronquist F., Britton T. 2011. Inferring speciation and extinction rates under different species sampling schemes. Molecular Biology and Evolution. 28:2577–2589.</span>
 
 </li>
 <li><span id="Kendall1948">Kendall D.G. 1948. On the Generalized "Birth-and-Death" Process. The Annals of Mathematical Statistics. 19:1–15.</span>
@@ -353,6 +384,11 @@ divergence times.</p>
 <a href="https://doi.org/10.1080/10635150701607033">10.1080/10635150701607033</a>
 
 </li>
+<li><span id="Magee2021">Magee A.F., Höhna S. 2021. Impact of K-Pg Mass Extinction Event on Crocodylomorpha Inferred from Phylogeny of Extinct and Extant Taxa. bioRxiv.:426715.</span>
+
+<a href="https://doi.org/10.1101/426715">10.1101/426715</a>
+
+</li>
 <li><span id="May2016">May M.R., Höhna S., Moore B.R. 2016. A Bayesian Approach for Detecting the Impact of Mass-Extinction Events on Molecular Phylogenies When Rates of Lineage Diversification May Vary. Methods in Ecology and Evolution. 7:947–959.</span>
 
 <a href="https://doi.org/10.1111/2041-210X.12563">10.1111/2041-210X.12563</a>
@@ -361,6 +397,9 @@ divergence times.</p>
 <li><span id="Nee1994b">Nee S., May R.M., Harvey P.H. 1994. The Reconstructed Evolutionary Process. Philosophical Transactions: Biological Sciences. 344:305–311.</span>
 
 <a href="https://doi.org/10.1098/rstb.1994.0068">10.1098/rstb.1994.0068</a>
+
+</li>
+<li><span id="Palazzesi2022">Palazzesi L., Hidalgo O., Barreda V.D., Forest F., Höhna S. 2022. The rise of grasslands is linked to atmospheric CO\textsubscript2 decline in the late Paleogene. Nature Communications. 13:293.</span>
 
 </li>
 <li><span id="Stadler2011">Stadler T. 2011. Mammalian phylogeny reveals recent diversification rate shifts. Proceedings of the National Academy of Sciences. 108:6187–6192.</span>

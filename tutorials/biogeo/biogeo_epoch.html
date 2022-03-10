@@ -56,7 +56,7 @@
 	<h1 class="maintitle">Advanced Phylogenetic Analysis of Historical Biogeography</h1>
 	<h3 class="subtitle">Ancestral range estimates using the Dispersal-Extirpation-Cladogenesis (DEC) model while incorporating time-dependent and region-dependent effects on dispersal rates</h3>
 	<h4 class="authors">Michael J. Landis</h4>
-  <h5>Last modified on February 28, 2022</h5>
+  <h5>Last modified on March  9, 2022</h5>
 </div>
 
 
@@ -106,11 +106,23 @@
         
           <li><a href="/tutorials/biogeo/data/n4/hawaii.n4.times.txt">hawaii.n4.times.txt</a></li>
         
+          <li><a href="/tutorials/biogeo/data/primates.bg.nex">primates.bg.nex</a></li>
+        
+          <li><a href="/tutorials/biogeo/data/primates.bg_amb.nex">primates.bg_amb.nex</a></li>
+        
+          <li><a href="/tutorials/biogeo/data/primates_range_colors.n4.txt">primates_range_colors.n4.txt</a></li>
+        
+          <li><a href="/tutorials/biogeo/data/primates_state_labels.simple.n4.txt">primates_state_labels.simple.n4.txt</a></li>
+        
+          <li><a href="/tutorials/biogeo/data/primates_tree.nex">primates_tree.nex</a></li>
+        
           <li><a href="/tutorials/biogeo/data/n4/range_colors.n4.txt">range_colors.n4.txt</a></li>
         
           <li><a href="/tutorials/biogeo/data/n4/silversword.n4.range.nex">silversword.n4.range.nex</a></li>
         
           <li><a href="/tutorials/biogeo/data/n4/silversword.tre">silversword.tre</a></li>
+        
+          <li><a href="/tutorials/biogeo/data/n4/silversword_tree.nex">silversword_tree.nex</a></li>
         
           <li><a href="/tutorials/biogeo/data/n4/state_labels.epoch.n4.txt">state_labels.epoch.n4.txt</a></li>
         
@@ -277,7 +289,7 @@ the full table is given for future reference.</p>
 <figcaption class="table">Hawaiian paleogeographic data. The six areas are given in <a href="/tutorials/biogeo/biogeo_simple.html">Simple Phylogenetic Analysis of Historical Biogeography</a>.
    Ages $a_{max}$ and $a_{min}$ report the maximum
   and minimum origination times for the given island [adapted from
-  (missing reference)]. Note that these ages are younger (less conservative) than the ages used in <a class="citation" href="#Landis2018">Landis et al. (2018)</a>. Distances $g_{ij}$ report the shortest geographical
+  <a class="citation" href="#Lim2017">(Lim and Marshall 2017)</a>]. Note that these ages are younger (less conservative) than the ages used in <a class="citation" href="#Landis2018">Landis et al. (2018)</a>. Distances $g_{ij}$ report the shortest geographical
   distance from the coast of the row’s area to the column’s area
   (measured at present).</figcaption>
 </figure>
@@ -287,36 +299,29 @@ the full table is given for future reference.</p>
 
 <p>Start by creating variables for the tree file, the range data, and the
 output prefix</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>range_fn = "data/n4/silversword.n4.range.nex"
-tree_fn = "data/n4/silversword.tre"
-out_fn = "output/epoch"
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    range_fn = "data/n4/silversword.n4.range.nex"
+    tree_fn = "data/n4/silversword.tre"
+    out_fn = "output/epoch"
 </code></pre></div></div>
-
 <p>The paleogeographical information from <a href="#paleogeo"></a> is encoded
 in three files named <code class="language-plaintext highlighter-rouge">hawaii.n4.times.txt</code>,
 <code class="language-plaintext highlighter-rouge">hawaii.n4.distances.txt</code>, and
 <code class="language-plaintext highlighter-rouge">hawaii.n4.connectivity.*.txt</code>.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>geo_fn = "data/n4/hawaii.n4"
-times_fn = geo_fn + ".times.txt"
-dist_fn = geo_fn + ".distances.txt"
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    geo_fn = "data/n4/hawaii.n4"
+    times_fn = geo_fn + ".times.txt"
+    dist_fn = geo_fn + ".distances.txt"
 </code></pre></div></div>
-
 <p>Create vectors that will contain all of our
 moves and monitors vectors, respectively.</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves = VectorMoves()
-monitors = VectorMonitors()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    moves = VectorMoves()
+    monitors = VectorMonitors()
 </code></pre></div></div>
-
 <p>Read in the presence-absence range characters and record the number of
 areas in the dataset</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dat_range_01 = readDiscreteCharacterData(range_fn)
-n_areas &lt;- dat_range_01.nchar()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    dat_range_01 = readDiscreteCharacterData(range_fn)
+    n_areas &lt;- dat_range_01.nchar()
 </code></pre></div></div>
-
 <p>Often, biogeographers wish to limit to the maximum allowable range size.
 This prohibits widespread species ranges and reduces the total number of
 range states in the analysis, thus improving computational efficiency.
@@ -329,58 +334,45 @@ ${4 \choose 0} + {4 \choose 1} + {4 \choose 2} = 1 + 4 + 6 = 11$
 states.</p>
 
 <p>First, compute the number of states</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>max_areas &lt;- 2
-n_states &lt;- 0
-for (k in 0:max_areas) n_states += choose(n_areas, k)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    max_areas &lt;- 2
+    n_states &lt;- 0
+    for (k in 0:max_areas) n_states += choose(n_areas, k)
 </code></pre></div></div>
-
 <p>then use n_states to format the dataset for the reduced
 state space</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dat_range_n = formatDiscreteCharacterData(dat_range_01, "DEC", n_states)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    dat_range_n = formatDiscreteCharacterData(dat_range_01, "DEC", n_states)
 </code></pre></div></div>
-
 <p>Our state space now includes only 11 states ($\emptyset$, K, O, M, H,
 KO, KM, OM, KH, OH, MH).</p>
 
 <p>Record the complete list of range descriptions to file</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>state_desc = dat_range_n.getStateDescriptions()
-state_desc_str = "state,range\n"
-for (i in 1:state_desc.size())
-{
-    state_desc_str += (i-1) + "," + state_desc[i] + "\n"
-}
-write(state_desc_str, file=out_fn+".state_labels.txt")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    state_desc = dat_range_n.getStateDescriptions()
+    state_desc_str = "state,range\n"
+    for (i in 1:state_desc.size())
+    {
+        state_desc_str += (i-1) + "," + state_desc[i] + "\n"
+    }
+    write(state_desc_str, file=out_fn+".state_labels.txt")
 </code></pre></div></div>
-
 <p>As with the previous analysis, we’ll brazenly assume we know the dated
 species phylogeny without error.</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tree &lt;- readTrees(tree_fn)[1]
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    tree &lt;- readTrees(tree_fn)[1]
 </code></pre></div></div>
-
 <p>Next, we’ll read and structure our paleogeographic data. Read in the
 list of minimum and maximum ages of island formation</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>time_bounds &lt;- readDataDelimitedFile(file=times_fn, delimiter=" ")
-n_epochs &lt;- time_bounds.size()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    time_bounds &lt;- readDataDelimitedFile(file=times_fn, delimiter=" ")
+    n_epochs &lt;- time_bounds.size()
 </code></pre></div></div>
-
 <p>Read in the vector of matrices that describe the connectivity between
 areas over time. Note, there is one connectivity matrix per epoch,
 ordered from oldest to youngest.</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:n_epochs) {
-  epoch_fn[i] = geo_fn + ".connectivity." + i + ".txt"
-  connectivity[i] &lt;- readDataDelimitedFile(file=epoch_fn[i], delimiter=" ")
-}
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    for (i in 1:n_epochs) {
+      epoch_fn[i] = geo_fn + ".connectivity." + i + ".txt"
+      connectivity[i] &lt;- readDataDelimitedFile(file=epoch_fn[i], delimiter=" ")
+    }
 </code></pre></div></div>
-
 <p>The area connectivity file for the third epoch (when K, O, and M exist,
 but not H) contains</p>
-
 <div class="language-plaintext rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    1 1 1 0
     1 1 1 0
     1 1 1 0
@@ -393,12 +385,9 @@ rather than be forbidden by non-connectivity.</p>
 <p>Read in the matrix of distances between all pairs of areas (km). For
 simplicity, we will assume that distances remained constant across
 epochs, even though these distances certainly varied over time.</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>distances &lt;- readDataDelimitedFile(file=dist_fn, delimiter=" ")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    distances &lt;- readDataDelimitedFile(file=dist_fn, delimiter=" ")
 </code></pre></div></div>
-
 <p>The distances files contains</p>
-
 <div class="language-plaintext rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    001 145 239 419
     145 001 059 239
     239 059 001 082
@@ -412,33 +401,25 @@ all four epochs.</p>
 <p>Next, we’ll build an enhanced DEC model. Like before, we’ll define the
 rate matrix in terms of relative rates, then rescale the entire matrix
 with the biogeographic rate scaling parameter <code class="language-plaintext highlighter-rouge">rate_bg</code>.</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rate_bg ~ dnLoguniform(1E-4,1E2)
-rate_bg.setValue(1E-2)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    rate_bg ~ dnLoguniform(1E-4,1E2)
+    rate_bg.setValue(1E-2)
 </code></pre></div></div>
-
 <p>And create a move to update the base rate of anagenetic change</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvSlide(rate_bg, weight=4) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    moves.append( mvSlide(rate_bg, weight=4) )
 </code></pre></div></div>
-
 <p>Fix the base dispersal rate to 1</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dispersal_rate &lt;- 1.0
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    dispersal_rate &lt;- 1.0
 </code></pre></div></div>
-
 <p>Dispersal rates might make use of some extrinsic information, such as
 geographical distances between areas <a class="citation" href="#MacArthur1967">(MacArthur and Wilson 1967; Webb and Ree 2012)</a>. We
 model this as $d_{ij} = \exp(-a g_{ij})$ where $g_{ij}$ is the
 geographical distance between areas $i$ and $j$ and $a$ is a parameter
 that scales distance. Note that all dispersal rates are equal when
 $a=0$. Add a distance scale parameter</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>distance_scale ~ dnUnif(0,20)
-distance_scale.setValue(0.01)
-moves.append( mvScale(distance_scale, weight=3) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    distance_scale ~ dnUnif(0,20)
+    distance_scale.setValue(0.01)
+    moves.append( mvScale(distance_scale, weight=3) )
 </code></pre></div></div>
-
 <p>Now we can assign rates that are functions of distance between all pairs
 of areas, <em>but also over all epochs</em>. To accomplish this,
 notice we now have an outer loop over the number of epochs,
@@ -451,52 +432,44 @@ and k for epoch i are non-zero if and only if
 the connectivity matrix element <code class="language-plaintext highlighter-rouge">connectivity[i][j][k]</code>
 has a positive value! When this condition is met, the dispersal rate is
 determined by the exponential function of inverse distance given above.</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:n_epochs) {
-  for (j in 1:n_areas) {
-    for (k in 1:n_areas) {
-      dr[i][j][k] &lt;- 0.0
-      if (connectivity[i][j][k] &gt; 0) {
-        dr[i][j][k]  := dispersal_rate * exp(-distance_scale * distances[j][k])
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    for (i in 1:n_epochs) {
+      for (j in 1:n_areas) {
+        for (k in 1:n_areas) {
+          dr[i][j][k] &lt;- 0.0
+          if (connectivity[i][j][k] &gt; 0) {
+            dr[i][j][k]  := dispersal_rate * exp(-distance_scale * distances[j][k])
+          }
+        }
       }
     }
-  }
-}
 </code></pre></div></div>
-
 <p>We will assign the same extirpation prior as was done in the simple
 analysis in the previous section</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>log_sd &lt;- 0.5
-log_mean &lt;- ln(1) - 0.5*log_sd^2
-extirpation_rate ~ dnLognormal(mean=log_mean, sd=log_sd)
-moves.append( mvScale(extirpation_rate, weight=2) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    log_sd &lt;- 0.5
+    log_mean &lt;- ln(1) - 0.5*log_sd^2
+    extirpation_rate ~ dnLognormal(mean=log_mean, sd=log_sd)
+    moves.append( mvScale(extirpation_rate, weight=2) )
 </code></pre></div></div>
-
 <p>and then provide the appropriate extirpation matrix structure</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:n_epochs) {
-  for (j in 1:n_areas) {
-    for (k in 1:n_areas) {
-      er[i][j][k] &lt;- 0.0
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    for (i in 1:n_epochs) {
+      for (j in 1:n_areas) {
+        for (k in 1:n_areas) {
+          er[i][j][k] &lt;- 0.0
+        }
+        er[i][j][j] := extirpation_rate
+      }
     }
-    er[i][j][j] := extirpation_rate
-  }
-}
 </code></pre></div></div>
-
 <p>Now we have a vector of dispersal rates, <code class="language-plaintext highlighter-rouge">dr</code>, and an vector
 of extirpation rates, <code class="language-plaintext highlighter-rouge">er</code>, in stored in the RevBayes
 workspace. We’ll use these to create a vector of four DEC rate matrices,
 one for each epoch.</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:n_epochs) {
-  Q_DEC[i] := fnDECRateMatrix(dispersalRates=dr[i],
-                              extirpationRates=er[i],
-                              maxRangeSize=max_areas)
-}
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    for (i in 1:n_epochs) {
+      Q_DEC[i] := fnDECRateMatrix(dispersalRates=dr[i],
+                                  extirpationRates=er[i],
+                                  maxRangeSize=max_areas)
+    }
 </code></pre></div></div>
-
 <p>Next, we need to define breakpoints for when the underlying
 paleogeographic state/connectivity changes. In our case, we’ll define
 the epoch breakpoints as uniformly distributed random variables that are
@@ -504,19 +477,17 @@ bounded by the minimum and maximum age estimates for when each new
 island complex formed (<a href="#paleogeo"></a>). This is easily done
 using a for loop over the number of epochs. Note, we define the end of
 the final epoch as the present.</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:n_epochs) {
-  time_max[i] &lt;- time_bounds[i][1]
-  time_min[i] &lt;- time_bounds[i][2]
-  if (i != n_epochs) {
-      epoch_times[i] ~ dnUniform(time_min[i], time_max[i])
-      moves.append( mvSlide(epoch_times[i], delta=(time_max[i]-time_min[i])/2) )
-  } else {
-      epoch_times[i] &lt;- 0.0
-  }
-}
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    for (i in 1:n_epochs) {
+      time_max[i] &lt;- time_bounds[i][1]
+      time_min[i] &lt;- time_bounds[i][2]
+      if (i != n_epochs) {
+          epoch_times[i] ~ dnUniform(time_min[i], time_max[i])
+          moves.append( mvSlide(epoch_times[i], delta=(time_max[i]-time_min[i])/2) )
+      } else {
+          epoch_times[i] &lt;- 0.0
+      }
+    }
 </code></pre></div></div>
-
 <p>Now that we have variables for the timing (<code class="language-plaintext highlighter-rouge">epoch_times</code>)
 and character (<code class="language-plaintext highlighter-rouge">Q_DEC</code> via connectivity) of
 paleogeographic change throughout the Hawaiian archipelago, we’re ready
@@ -528,24 +499,20 @@ along branches according under a piecewise constant continuous-time
 Markov chain. The important consequence of using an epoch model is that
 transition probabilities for anagenetic events depend on the geological
 age of the branch.</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q_DEC_epoch := fnEpoch(Q=Q_DEC, times=epoch_times, rates=rep(1,n_epochs))
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    Q_DEC_epoch := fnEpoch(Q=Q_DEC, times=epoch_times, rates=rep(1,n_epochs))
 </code></pre></div></div>
-
 <p>Here, we treat the probability of different types of cladogenetic events
 as a random variables to be estimated.</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clado_event_types &lt;- [ "s", "a" ]
-p_sympatry ~ dnUniform(0,1)
-p_allopatry := abs(1.0 - p_sympatry)
-clado_type_probs := simplex(p_sympatry, p_allopatry)
-moves.append( mvSlide(p_sympatry, weight=2) )
-P_DEC := fnDECCladoProbs(eventProbs=clado_type_probs,
-                         eventTypes=clado_event_types,
-                         numCharacters=n_areas,
-                         maxRangeSize=max_areas)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    clado_event_types &lt;- [ "s", "a" ]
+    p_sympatry ~ dnUniform(0,1)
+    p_allopatry := abs(1.0 - p_sympatry)
+    clado_type_probs := simplex(p_sympatry, p_allopatry)
+    moves.append( mvSlide(p_sympatry, weight=2) )
+    P_DEC := fnDECCladoProbs(eventProbs=clado_type_probs,
+                             eventTypes=clado_event_types,
+                             numCharacters=n_areas,
+                             maxRangeSize=max_areas)
 </code></pre></div></div>
-
 <p>For this dataset, we assume cladogenetic probabilities are constant with
 respect to geological time. Using time-dependent cladogenetic
 probabilities (<code class="language-plaintext highlighter-rouge">fnEpochCladoProbs</code>) and mixtures of
@@ -555,60 +522,50 @@ covered in future tutorials.</p>
 <p>Among the four areas, only Kauai existed at the provided origination
 time of the clade, so will set it as the only valid starting state
 through the root frequency distribution.</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rf_DEC_tmp &lt;- rep(0, n_states)
-rf_DEC_tmp[2] &lt;- 1
-rf_DEC &lt;- simplex(rf_DEC_tmp)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    rf_DEC_tmp &lt;- rep(0, n_states)
+    rf_DEC_tmp[2] &lt;- 1
+    rf_DEC &lt;- simplex(rf_DEC_tmp)
 </code></pre></div></div>
-
 <p>We have created all the necessary model variables. Now we can create the
 phylogenetic model of anagenetic and cladogenetic character evolution.
 <code class="language-plaintext highlighter-rouge">dnPhyloCTMCClado</code> will internally make use of the
 time-heterogeneous probabilities embedded in the epoch rate generator,
 <code class="language-plaintext highlighter-rouge">Q_DEC_epoch</code>.</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>m_bg ~ dnPhyloCTMCClado(tree=tree,
-                        Q=Q_DEC_epoch,
-                        cladoProbs=P_DEC,
-                        branchRates=rate_bg,
-                        rootFrequencies=rf_DEC,
-                        type="NaturalNumbers",
-                        nSites=1)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    m_bg ~ dnPhyloCTMCClado(tree=tree,
+                            Q=Q_DEC_epoch,
+                            cladoProbs=P_DEC,
+                            branchRates=rate_bg,
+                            rootFrequencies=rf_DEC,
+                            type="NaturalNumbers",
+                            nSites=1)
 </code></pre></div></div>
 
 <p>Attach the observed range data to the distribution</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>m_bg.clamp(dat_range_n)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    m_bg.clamp(dat_range_n)
 </code></pre></div></div>
-
 <p>And the rest we’ve done before…</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(printgen=100, rate_bg, extirpation_rate, distance_scale) )
-monitors.append( mnModel(file=out_fn+".model.log", printgen=10) )
-monitors.append( mnFile(tree, filename=out_fn+".tre", printgen=10) )
-monitors.append( mnJointConditionalAncestralState(tree=tree,
-                                                       ctmc=m_bg,
-                                                       type="NaturalNumbers",
-                                                       withTips=true,
-                                                       withStartStates=true,
-                                                       filename=out_fn+".states.log",
-                                                       printgen=10) )
-monitors.append( mnStochasticCharacterMap(ctmc=m_bg,
-                                          filename=out_fn+".stoch.log",
-                                          printgen=100) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    monitors.append( mnScreen(printgen=100, rate_bg, extirpation_rate, distance_scale) )
+    monitors.append( mnModel(file=out_fn+".model.log", printgen=10) )
+    monitors.append( mnFile(tree, filename=out_fn+".tre", printgen=10) )
+    monitors.append( mnJointConditionalAncestralState(tree=tree,
+                                                           ctmc=m_bg,
+                                                           type="NaturalNumbers",
+                                                           withTips=true,
+                                                           withStartStates=true,
+                                                           filename=out_fn+".states.log",
+                                                           printgen=10) )
+    monitors.append( mnStochasticCharacterMap(ctmc=m_bg,
+                                              filename=out_fn+".stoch.log",
+                                              printgen=100) )
 </code></pre></div></div>
 
 <p>Wrap the model graph into a model object</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(m_bg)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    mymodel = model(m_bg)
 </code></pre></div></div>
-
 <p>then build and run MCMC</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, moves, monitors)
-mymcmc.run(5000)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    mymcmc = mcmc(mymodel, moves, monitors)
+    mymcmc.run(5000)
 </code></pre></div></div>
-
 <h3 class="subsection" id="results">Results</h3>
 <hr class="subsection" />
 
@@ -639,9 +596,10 @@ of markers indicate the range state. Only the first, second, and third most prob
   <p>Continue to the next tutorial: <a href="/tutorials/biogeo/biogeo_dating.html">Biogeographic Dating of Divergence Times</a></p>
 </blockquote>
 
-<ol class="bibliography"><li><span id="Landis2018">Landis M.J., Freyman W.A., Baldwin B.G. 2018. Retracing the Hawaiian silversword radiation despite phylogenetic, biogeographic, and paleogeographic uncertainty. bioRxiv.:301887.</span>
+<ol class="bibliography"><li><span id="Landis2018">Landis M.J., Freyman W.A., Baldwin B.G. 2018. Retracing the Hawaiian silversword radiation despite phylogenetic, biogeographic, and paleogeographic uncertainty. Evolution. 72:2343–2359.</span>
 
-<a href="https://doi.org/10.1101/301887">10.1101/301887</a>
+</li>
+<li><span id="Lim2017">Lim J.Y., Marshall C.R. 2017. The true tempo of evolutionary radiation and decline revealed on the Hawaiian archipelago. Nature. 543:710–713.</span>
 
 </li>
 <li><span id="MacArthur1967">MacArthur R.H., Wilson E.O. 1967. Theory of Island Biogeography. Princeton University Press.</span>
