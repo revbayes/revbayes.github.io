@@ -20,33 +20,29 @@ monitors  = VectorMonitors()
 # Reading in the Data #
 #######################
 
-# Read in the tree sample
-treetrace = readTreeTrace("output/horses_constant.trees", treetype = "clock", burnin = 0.1)
-trees = treetrace.getTrees()
+# Read in the tree sample and create a MAP (maximum a posteriori) tree
+trees = readTreeTrace("output/horses_het_constant.trees", treetype = "clock", burnin = 0.1)
+maptree = mapTree(trace=trees)
+taxa <- maptree.taxa()
 
-# Get the taxa
-taxa <- trees[1].taxa()
-
-# Get the number of taxa. We need these later on.
+# Get the number of taxa and branches. We need these later on.
 n_taxa <- taxa.size()
 
 ##############
 # Tree model #
 ##############
 
-# Find the maximal age of all trees
-MAX_AGE <- 0
-for (T in trees) {
-    MAX_AGE <- max( [MAX_AGE,T.rootAge()] )
-}
+MAX_AGE = maptree.rootAge()
 print("max age: ", MAX_AGE)
 
-NUM_INTERVALS <- 10
+NUM_INTERVALS <- 100
+
 for (i in 1:(NUM_INTERVALS-1)) {
 
     changePoints[i] <- i * ((MAX_AGE)/NUM_INTERVALS)
 
 }
+
 
 population_size_at_present ~ dnUniform(0,1E8)
 population_size_at_present.setValue(100)
@@ -56,8 +52,8 @@ moves.append( mvMirrorMultiplier(population_size_at_present,weight=5) )
 moves.append( mvRandomDive(population_size_at_present,weight=5) )
 
 # this value depends on the number of intervals, you can find the best value using RevGadgets
-# setMRFGlobalScaleHyperpriorNShifts(9, "HSMRF")
-population_size_global_scale_hyperprior <- 0.1203
+# setMRFGlobalScaleHyperpriorNShifts(99, "GMRF")
+population_size_global_scale_hyperprior <- 0.009469
 population_size_global_scale ~ dnHalfCauchy(0,1)
 # population_size_global_scale.setValue(runif(1,0.005,0.1)[1])
 
@@ -87,11 +83,9 @@ moves.append( mvShrinkExpand( delta_log_population_size, sd=population_size_glob
 
 
 ### the time tree is a stochastic node modeled by the coalescent skyline process (dnCoalescentSkyline)
-tree_prior = dnCoalescentSkyline(theta=population_size, times=changePoints, method="specified", taxa=taxa)
-psi ~ dnEmpiricalSample( tree_prior)
-psi.clamp(trees)
+psi ~ dnCoalescentSkyline(theta=population_size, times=changePoints, method="specified", taxa=taxa)
+psi.clamp(maptree)
 
-# not implemented yet
 interval_times := changePoints
 
 
@@ -111,9 +105,9 @@ mymodel = model(psi)
 ################
 
 #add monitors
-monitors.append( mnModel(filename="output/horses_GMRF_treebased.log",printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_GMRF_treebased_NEs.log",population_size,printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_GMRF_treebased_times.log",interval_times,printgen=THINNING) )
+monitors.append( mnModel(filename="output/horses_het_GMRF_maptreebased_100.log",printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_het_GMRF_maptreebased_100_NEs.log",population_size,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_het_GMRF_maptreebased_100_times.log",interval_times,printgen=THINNING) )
 monitors.append( mnScreen(population_size, printgen=100) )
 
 mymcmc = mcmc(mymodel, monitors, moves, nruns=NUM_REPLICATES, combine="mixed")

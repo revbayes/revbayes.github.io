@@ -21,17 +21,17 @@ monitors  = VectorMonitors()
 #######################
 
 # Read in sequence data
-sequences <- readDiscreteCharacterData("data/horses_homochronous_sequences.fasta")
-taxa <- sequences.taxa()
+taxa <- readTaxonData("data/horses_heterochronous_ages.tsv")
+sequences <- readDiscreteCharacterData("data/horses_heterochronous_sequences.fasta")
 
-# Get the number of taxa and branches. We need these later on.
+# Get the number of taxa. We need it later on.
 n_taxa <- taxa.size()
 
 ##############
 # Tree model #
 ##############
 
-MAX_AGE = 500000
+MAX_AGE = 1.2E6
 
 # we create the events drawn from the multi-value event eventDistribution
 # as a prior on the number of events, we use a Poisson distribution with a mean of 10
@@ -66,8 +66,8 @@ maptree = mapTree(trace=trees)
 psi.setValue( maptree )
 
 root_age := psi.rootAge()
-obs_root_age ~ dnNormal(mean = root_age, sd = 60000, min = 250000, max = 500000)
-obs_root_age.clamp(375000)
+obs_root_age ~ dnNormal(mean = root_age, sd = 200000, min = 780000, max = 1200000)
+obs_root_age.clamp(850000)
 
 # not implemented yet
 interval_times := changePoints
@@ -132,11 +132,11 @@ mymodel = model(psi)
 ################
 
 #add monitors
-monitors.append( mnModel(filename="output/horses_CPP.log",printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_CPP_nevents.log",n_events,printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_CPP.trees",psi,printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_CPP_NEs.log",population_size,printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_CPP_times.log",interval_times,printgen=THINNING) )
+monitors.append( mnModel(filename="output/horses_het_CPP.log",printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_het_CPP_nevents.log",n_events,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_het_CPP.trees",psi,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_het_CPP_NEs.log",population_size,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_het_CPP_times.log",interval_times,printgen=THINNING) )
 monitors.append( mnScreen(n_events, root_age, printgen=100) )
 
 mymcmc = mcmc(mymodel, monitors, moves, nruns=NUM_REPLICATES, combine="mixed")

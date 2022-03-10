@@ -11,7 +11,7 @@ index: false
 include_all: false
 include_files:
 - data/horses_homochronous_sequences.fasta
-- scripts/mcmc_homochronous_piecewise.Rev
+- scripts/mcmc_homochronous_piecewise_6diff.Rev
 include_example_output: true
 ---
 

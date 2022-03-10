@@ -8,6 +8,7 @@
 
 ## Global settings
 
+NUM_REPLICATES      = 2
 NUM_MCMC_ITERATIONS = 10000
 THINNING            = 10
 
@@ -18,12 +19,6 @@ monitors  = VectorMonitors()
 #######################
 # Reading in the Data #
 #######################
-
-# Read in the names and ages of the taxa - not needed, all homochronous, t = 0
-# taxa <- readTaxonData("data/horses_homochronous_ages_inyears_nooutgroup.tsv")
-
-# Read in sequence data
-# sequences <- readDiscreteCharacterData("data/horses_homochronous_sequences_nooutgroup.fasta")
 
 trees = readTreeTrace("output/horses_constant.trees", treetype = "clock", burnin = 0.1)
 maptree = mapTree(trace=trees)
@@ -48,10 +43,6 @@ for (i in 1:(NUM_INTERVALS-1)) {
 
 }
 
-# pop_size[i] ~ dnUniform(0,1E8)
-# pop_size[i].setValue(100)
-# moves.append( mvScale(pop_size[i], lambda=0.1, tune=true, weight=2.0) )
-
 population_size_at_present ~ dnUniform(0,1E8)
 population_size_at_present.setValue(100)
 
@@ -60,10 +51,9 @@ moves.append( mvMirrorMultiplier(population_size_at_present,weight=5) )
 moves.append( mvRandomDive(population_size_at_present,weight=5) )
 
 # this value depends on the number of intervals, you can find the best value using RevGadgets
-# setMRFGlobalScaleHyperpriorNShifts(10, "HSMRF")
-population_size_global_scale_hyperprior <- 0.044464
+# setMRFGlobalScaleHyperpriorNShifts(9, "HSMRF")
+population_size_global_scale_hyperprior <- 0.05234
 population_size_global_scale ~ dnHalfCauchy(0,1)
-# population_size_global_scale.setValue(runif(1,0.005,0.1)[1])
 
 moves.append( mvScaleBactrian(population_size_global_scale,weight=5.0) )
 
@@ -128,7 +118,7 @@ monitors.append( mnFile(filename="output/horses_HSMRF_maptreebased_NEs.log",popu
 monitors.append( mnFile(filename="output/horses_HSMRF_maptreebased_times.log",interval_times,printgen=THINNING) )
 monitors.append( mnScreen(population_size, printgen=100) )
 
-mymcmc = mcmc(mymodel, monitors, moves)
+mymcmc = mcmc(mymodel, monitors, moves, nruns=NUM_REPLICATES, combine="mixed")
 mymcmc.burnin(NUM_MCMC_ITERATIONS*0.1,100)
 mymcmc.run(NUM_MCMC_ITERATIONS, tuning = 100)
 

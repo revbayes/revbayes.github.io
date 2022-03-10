@@ -3,7 +3,7 @@ title: Skyline Models with HSMRF
 subtitle: Estimating Demographic Histories with Skyline Models using a Horsehoe Markov Random Field Prior
 authors: Ronja Billenstein and Sebastian Höhna
 level: 8 #may need adjustment
-order: 0.7
+order: 0.8
 prerequisites:
 - coalescent
 - coalescent/GMRF

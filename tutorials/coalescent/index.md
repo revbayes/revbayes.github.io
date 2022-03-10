@@ -27,10 +27,22 @@ The coalescent process provides a flexible way of estimating population size tra
 The input data are usually sequence alignments or estimated trees.
 In case of sequence data, trees and population size parameters will be jointly estimated.
 Here, we consider different types of analysis, starting with a constant demographic history and doing more complex analyses in later exercises.
-The first analyses will consider data from homochronous samples, *i.e.*, data from samples that have all been collected at the same time.
+The first analyses will consider data from isochronous samples, *i.e.*, data from samples that have all been collected at the same time.
 In the second part of the exercises, you will be asked to also analyze data from heterochronous samples, *i.e.*, samples that have been collected at different points in time.
 The data for these analyes are taken from {% citet Vershinina2021 %}.
 
+The following table provides an overview of the different analyses performed in the tutorial for isochronous data:
+
+| Model                                 | Number of pieces    | Demographic function                      | Prior on the population sizes                                                   | Interval change point method                               | Tutorial                                                                                                                                                                         |
+|---------------------------------------|---------------------|-------------------------------------------|---------------------------------------------------------------------------------|------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Constant                              | one                 | constant                                  | individually chosen                                                             | -                                                          | [constant]({{base.url}}/tutorials/coalescent/constant)                                                                                                                           |
+| Skyline                               | individually chosen | constant<br><br>linear                    | independent and identically distributed (iid)<br><br>$\theta_i \| \theta_{i-1}$ | event based                                                | [skyline]({{base.url}}/tutorials/coalescent/skyline)                                                                                                                             |
+| Gaussian Markov Random Field (GMRF)   | individually chosen | constant                                  | $\theta_i \| \theta_{i-1}$                                                      | specified - here equally sized                             | With sequences as input data: [GMRF]({{base.url}}/tutorials/coalescent/GMRF)<br><br>With trees as input data: [GMRF treebased]({{base.url}}/tutorials/coalescent/GMRF_treebased) |
+| Horseshoe Markov Random Field (HSMRF) | individually chosen | constant                                  | $\theta_i \| \theta_{i-1}$                                                      | specified - here equally sized                             | little description included in [GMRF]({{base.url}}/tutorials/coalescent/GMRF)<br><br>script in [HSMRF]({{base.url}}/tutorials/coalescent/HSMRF)                                  |
+| Compound Poisson Prior (CPP)          | individually chosen | constant<br><br>linear                    | iid                                                                             | specified - number and position of change points estimated | little description included in [GMRF]({{base.url}}/tutorials/coalescent/GMRF)<br><br>script in [CPP]({{base.url}}/tutorials/coalescent/CPP)                                      |
+| Piecewise                             | individually chosen | constant<br><br>linear<br><br>exponential | iid                                                                             | specified - individually chosen                            | [piecewise]({{base.url}}/tutorials/coalescent/piecewise)                                                                                                                         |
+
+The tutorial on [heterochronous data]({{base.url}}/tutorials/coalescent/heterochronous) shows how to apply the models to data from different points in time.
 
 <!--- ### Why?! --->
 
@@ -90,8 +102,7 @@ The first five exercises work with homochronous data, the last one with heteroch
 3. [The Gaussian Markov Random Field (GMRF) model]({{base.url}}/tutorials/coalescent/GMRF)
 4. [The GMRF model with trees as input data]({{base.url}}/tutorials/coalescent/GMRF_treebased)
 5. [A piecewise model]({{base.url}}/tutorials/coalescent/piecewise)
-
-<!--- 6. [Heterochronous data]({{base.url}}/tutorials/coalescent/heterochronous) --->
+6. [Heterochronous data]({{base.url}}/tutorials/coalescent/heterochronous)
 
 {% section Summary %}
 After doing all the exercises, you can compare the resulting population sizes.

@@ -35,14 +35,14 @@ Have a look at {% ref event-skyline %}, for a hypothetical example with three ev
 {% figure classical-skyline %}
   <img src="figures/scheme_classical_skyline.png" />
 {% figcaption %}
-Hypothetical example of a classical skyline plot.
+Hypothetical example of a classical skyline plot. $w_k$ are the waiting times with $k$ active lineages, $t_{c,k}$ are the coalescent events at the beginning of such a coalescent interval. Here, a population size for each interval between coalescent events is calculated. The bold line represents the maximum likelihood estimate of the population size.
 {% endfigcaption %}
 {% endfigure %}
 
 {% figure event-skyline %}
   <img src="figures/scheme_event_skyline.png" /> 
 {% figcaption %}
-Hypothetical example of a Bayesian skyline plot with the interval length dependent on the number of coalescent events (event-based).
+Hypothetical example of a Bayesian skyline plot with the interval length dependent on the number of coalescent events (event-based).  $w_k$ are the waiting times with $k$ active lineages, $t_{c,k}$ are the coalescent events at the beginning of such a coalescent interval. $t_{i,j}$ mark the points of interval change.  Here, the change points are event-based, *i.e.*, dependent on coalescent events. The bold line represents the median of the posterior distribution of the population size and the shaded are shows the $95\%$ credible intervals.
 {% endfigcaption %}
 {% endfigure %}
 
@@ -169,3 +169,30 @@ This is how the resulting skyline plot should roughly look like.
 When you are done, have a look at the next exercise.
 
 * [The Gaussian Markov Random Field (GMRF) model]({{base.url}}/tutorials/coalescent/GMRF)
+
+{% section Alternative Priors | secAltPriors %}
+There are many different ways of defining priors for the population sizes.
+Here, we chose to draw the population sizes from a Uniform distribution and to treat the intervals as independent and identically distributed (iid).
+In other software, the default priors can be defined differently.
+
+For example, for the Bayesian Skyline Plot {% cite Drummond2005 %}, all but the first population size are drawn from an exponential distribution.
+The mean of this distribution is set to be the previous population size.
+This means that the population sizes in neighbouring intervals are correlated.
+For the first population size, a log uniform distribution was chosen.
+
+In a skyride analysis {% cite Minin2008 %}, the population size is directly estimated on a log scale.
+The intervals also are correlated, but a Gaussian Markov Random Field (GMRF) prior is used with the degree of smooting being regulated by a precision parameter.
+
+For the Extended Bayesian Skyline Plot {% cite Heled2008 %}, the number of changing points is estimated by stochastic search variable selection.
+The intervals are considered to be iid.
+Also, the default demographic function usually is piecewise linear and not piecewise constant as in this tutorial.
+The estimation of the number of intervals can also be done slightly differently, as we show in the [Compound Poisson Process Prior]({{base.url}}/tutorials/coalescent/GMRF#secCPP) section of the [GMRF tutorial]({{base.url}}/tutorials/coalescent/GMRF) which is next.
+
+You can try and change the priors now accordingly.
+If you would like to have an example of what a `RevBayes` script with these different priors can look like, have a look at
+* the [example script for a BSP analysis](scripts/mcmc_heterochronous_BSP.Rev),
+* the [example script for a skyride analysis](scripts/mcmc_heterochronous_skyride.Rev), or
+* the [example script for an EBSP analysis](scripts/mcmc_heterochronous_EBSP.Rev).
+
+Note that all three examples have the interval change points on coalescent events (what we call "event-based", as in the skyline model presented here).
+In the next tutorial ([The GMRF model]({{base.url}}/tutorials/coalescent/GMRF)), we use intervals with changing points independent from coalescent events.
