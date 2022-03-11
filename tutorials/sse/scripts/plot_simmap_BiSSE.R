@@ -33,8 +33,8 @@ names(cols) <- col_names
 
 
 
-pdf( paste0("primates_BiSSE_",DATASET,"_simmap.pdf") )
-plotSimmap(sim, cols, fsize=0.5, lwd=1, split.vertical=TRUE, ftype="i")
+pdf( paste0("BiSSE_simmap_",DATASET,".pdf"), width=8, height=12 )
+plotSimmap(sim, cols, fsize=0.3, lwd=1, split.vertical=TRUE, ftype="i")
 
 # add legend
 x = 0
@@ -44,7 +44,7 @@ leg = names(cols)
 colors = cols
 y = y - (0:(length(leg) - 1))*10
 x = rep(x, length(y))
-text(x + 0.005, y, leg, pos=4, cex=1.15)
+text(x + 0.15, y, leg, pos=4, cex=1.15)
 
 mapply(draw.circle, x=x, y=y, col=colors, MoreArgs = list(nv=200, radius=1, border="white"))
 

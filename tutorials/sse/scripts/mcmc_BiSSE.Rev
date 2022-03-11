@@ -124,7 +124,6 @@ timetree.clampCharData( data )
 mymodel = model(rate_matrix)
 
 ### set up the monitors that will output parameter values to file and screen
-monitors.append( mnFile(filename="output/primates_BiSSE_"+DATASET+".trees", printgen=1, timetree) )
 monitors.append( mnModel(filename="output/primates_BiSSE_"+DATASET+".log", printgen=1) )
 monitors.append( mnJointConditionalAncestralState(tree=timetree, cdbdp=timetree, type="Standard", printgen=1, withTips=true, withStartStates=false, filename="output/primates_BiSSE_"+DATASET+"_anc_states.log") )
 monitors.append( mnStochasticCharacterMap(cdbdp=timetree, filename="output/primates_BiSSE_"+DATASET+"_stoch_map.log", printgen=1) )
