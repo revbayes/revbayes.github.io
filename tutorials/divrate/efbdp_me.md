@@ -3,7 +3,7 @@ title: Mass Extinction Estimation
 subtitle: Estimating Mass Extinctions from Phylogenies with Fossil and Extant Taxa
 authors:  Andrew Magee and Sebastian Höhna
 level: 7
-order: 2
+order: 1.5
 prerequisites:
 - intro
 - mcmc

@@ -1,27 +1,29 @@
 ################################################################################
 #
-# Plot ancestral placental types inferred using MuSSE/HiSSE models.
+# Plotting the ancestral states under a HiSSE model
 #
 #
-# authors: Sebastian Hoehna, Will Freyman
+# authors: Sebastian Hoehna
 #
 ################################################################################
 
-#library(devtools)
-#install_github("revbayes/RevGadgets")
-
 library(RevGadgets)
+library(ggplot2)
 
-tree_file = "output/anc_states_primates_HiSSE_results.tree"
+DATASET <- "activity_period"
 
-plot_ancestral_states(tree_file, summary_statistic="MAP",
-                      tip_label_size=0,
-                      xlim_visible=NULL,
-                      node_label_size=0,
-                      show_posterior_legend=TRUE,
-                      node_size_range=c(2, 6),
-                      alpha=0.75)
+# read in and process the ancestral states
+hisse_file <- paste0("output/primates_HiSSE_",DATASET,"_anc_states_results.tree")
+p_anc <- processAncStates(hisse_file)
 
-output_file = "RevBayes_Anc_States_HiSSE.pdf"
-ggsave(output_file, width = 11, height = 9)
+# plot the ancestral states
+plot <- plotAncStatesMAP(p_anc,
+        tree_layout = "rect",
+        tip_labels_size = 1.0) +
+        # modify legend location using ggplot2
+        theme(legend.position = c(0.1,0.85),
+              legend.key.size = unit(0.3, 'cm'), #change legend key size
+              legend.title = element_text(size=6), #change legend title font size
+              legend.text = element_text(size=4))
 
+ggsave(paste0("HiSSE_anc_states_",DATASET,".png"),plot, width=8, height=8)

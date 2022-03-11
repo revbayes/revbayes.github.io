@@ -3,7 +3,7 @@ title: State-dependent diversification with the ClaSSE model
 subtitle: Accommodating both cladogenetic and anagenetic changes
 authors:  Sebastian Höhna and Will Freyman
 level: 7
-order: 6
+order: 3.4
 prerequisites:
 - intro
 - mcmc

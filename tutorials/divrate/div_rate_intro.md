@@ -118,7 +118,12 @@ one can hypothesize that a binary character, say if an organism is
 herbivorous/carnivorous or self-compatible/self-incompatible, impact the
 diversification rates. Then, if the organism is in state 0 (e.g., is herbivorous) it has a lower (or higher) diversification rate than if the organism is in state 1 (e.g., carnivorous) {% cite Maddison2007 %}.
 
-You can find examples and more information in the {% page_ref sse/bisse-intro %}.
+You can find examples and more information in
+- {% page_ref sse/bisse-intro %}
+- {% page_ref sse/bisse %} tutorial
+- {% page_ref sse/hisse %} tutorial
+- {% page_ref sse/classe %} tutorial
+- {% page_ref chromo %} tutorial
 
 
 {% subsubsection (4) General Extension to Diversification Rate Estimation %}

@@ -3,7 +3,7 @@ title: Background on state-dependent diversification rate estimation
 subtitle: An introduction to inference using state-dependent speciation and extinction (SSE) branching processes
 authors:  Sebastian Höhna, Will Freyman, and Emma Goldberg
 level: 7
-order: 4
+order: 3
 prerequisites:
 include_all: false
 index: true

@@ -3,7 +3,7 @@ title: State-dependent diversification with BiSSE and MuSSE
 subtitle: Inference using the binary/multiple state-dependent speciation and extinction (BiSSE/MuSSE) branching process
 authors:  Sebastian Höhna, Will Freyman, and Emma Goldberg
 level: 7
-order: 5
+order: 3.1
 prerequisites:
 - intro
 - mcmc
@@ -23,12 +23,10 @@ index: true
 
 {% section Introduction | introduction %}
 
-This tutorial describes how to specify character state-dependent
-branching process models in RevBayes. For more details on the theory behind these models, please see the
-introductory page: {% page_ref sse/bisse-intro %}.
+This tutorial describes how to specify character state-dependent branching process models in RevBayes {% cite Hoehna2016b %}.
+For more details on the theory behind these models, please see the introductory page: {% page_ref sse/bisse-intro %}.
 
-This tutorial will explain how to fit the BiSSE and MuSSE models
-to data using Markov chain Monte Carlo (MCMC).
+This tutorial will explain how to fit the BiSSE and MuSSE models to data using Markov chain Monte Carlo (MCMC).
 RevBayes is a powerful tool for SSE analyses:
 to specify HiSSE model, please see {% page_ref sse/hisse %},
 for the ClaSSE model, please see {% page_ref sse/classe %}
@@ -300,24 +298,31 @@ states of our Markov chain. The first monitor will model all numerical
 variables; we are particularly interested in the rates of speciation,
 extinction, and transition.
 ```
-monitors.append( mnModel(filename="output/primates_activTime_BiSSE_mcmc.log", printgen=1) )
-monitors.append( mnFile(filename="output/primates_BiSSE_"+DATASET+".trees", printgen=1, timetree) )
+monitors.append( mnModel(filename="output/primates_BiSSE_activity_period.log", printgen=1) )
+```
+Optionally, we can sample ancestral states during the MCMC analysis.
+We need to add an additional monitor to record the state of each internal node in the tree.
+The file produced by this monitor can be summarized so that we can visualize the estimates of ancestral states.
+```
+monitors.append( mnJointConditionalAncestralState(tree=timetree,
+                     cdbdp=timetree,  
+                     type="Standard",
+                     printgen=1,
+                     withTips=true,
+                     withStartStates=false,
+                     filename="output/primates_BiSSE_activity_period_anc_states.log") )
+```
+Similarly, you may want to add a stochastic character map.
+```
+monitors.append( mnStochasticCharacterMap(cdbdp=timetree,
+                       filename="output/primates_BiSSE_activity_period_stoch_map.log",
+                       printgen=1) )
 ```
 Then, we add a screen monitor showing some updates during the MCMC
 run.
 ```
 monitors.append( mnScreen(printgen=10, speciation, extinction) )
 ```
-
-{% aside Sampling Ancestral States %}
-
-Optionally, we can sample ancestral states during the MCMC analysis.
-We need to add an additional monitor to record the state of each internal node in the tree.
-The file produced by this monitor can be summarized so that we can visualize the estimates of ancestral states.
-```
-monitors.append( mnJointConditionalAncestralState(tree=timetree, cdbdp=timetree, type="Standard", printgen=1, withTips=true, withStartStates=false, filename="output/anc_states_primates_BiSSE.log") )
-```
-{% endaside %}
 
 
 #### **Initializing and Running the MCMC Simulation**
@@ -334,26 +339,43 @@ Now, run the MCMC:
 mymcmc.run(generations=5000, tuningInterval=200)
 ```
 
-{% aside Summarize Sampled Ancestral States %}
+## **Summarize Sampled Ancestral States**
 
-If we sampled ancestral states during the MCMC analysis, we can use the `RevGadgets` R package
-to plot the ancestral state reconstruction. First, though, we must summarize the sampled values in
-RevBayes.
+If we sampled ancestral states during the MCMC analysis, we can use the `RevGadgets` {% cite Tribble2022 %} R package
+to plot the ancestral state reconstruction.
+First, though, we must summarize the sampled values in RevBayes.
 
 To do this, we first have to read in the ancestral state log file. This uses a specific function called `readAncestralStateTrace()`.
 ```
-anc_states = readAncestralStateTrace("output/anc_states_primates_BiSSE.log")
+anc_states = readAncestralStateTrace("output/primates_BiSSE_activity_period_anc_states.log")
 ```
 Now, we can write an annotated tree to a file. This function will write a tree with each
 node labeled with the maximum a posteriori (MAP) state and the posterior probabilities for each
 state.
 ```
-anc_tree = ancestralStateTree(tree=T, ancestral_state_trace_vector=anc_states, include_start_states=false, file="output/anc_states_primates_BiSSE_results.tree", burnin=0, summary_statistic="MAP", site=1)
+anc_tree = ancestralStateTree(tree=T,
+                  ancestral_state_trace_vector=anc_states,
+                  include_start_states=false,
+                  file="output/primates_BiSSE_anc_states_results.tree",
+                  burnin=0,
+                  summary_statistic="MAP",
+                  site=1)
 ```
+Similarly, we compute the maximum a posteriori (MAP) stochastic character map.
+```
+anc_state_trace = readAncestralStateTrace("output/primates_BiSSE_activity_period_stoch_map.log")
+characterMapTree(observed_phylogeny,
+                 anc_state_trace,
+                 character_file="output/primates_BiSSE_activity_period_stoch_map_character.tree",
+                 posterior_file="output/primates_BiSSE_activity_period_stoch_map_posterior.tree",
+                 burnin=0.1,
+                 reconstruction="marginal")
+```
+
 
 {% subsection Visualize Estimated Ancestral States | subsec_ancviz %}
 
-To visualize the posterior probabilities of ancestral states, we will use the `RevGadgets` R package.
+To visualize the posterior probabilities of ancestral states, we will use the `RevGadgets` {% cite Tribble2022 %} R package.
 
 
 >Open R.
@@ -370,86 +392,90 @@ install_github("GuangchuangYu/ggtree")
 install_github("revbayes/RevGadgets")
 </pre>
 
-Run this code:
+Run this code (or use the script `plot_anc_states_BiSSE.R`):
 
-<pre>
+```{R}
 library(ggplot2)
 library(RevGadgets)
 
-tree_file = "output/anc_states_primates_BiSSE_results.tree"
+# read in and process the ancestral states
+bisse_file <- paste0("output/primates_BiSSE_activity_period_anc_states_results.tree")
+p_anc <- processAncStates(bisse_file)
 
-plot_ancestral_states(tree_file, summary_statistic="MAP",
-					  tip_label_size=0,
-                      xlim_visible=NULL,
-                      node_label_size=0,
-                      show_posterior_legend=TRUE,
-                      node_size_range=c(2, 6),
-                      alpha=0.75)
+# plot the ancestral states
+plot <- plotAncStatesMAP(p_anc,
+        tree_layout = "rect",
+        tip_labels_size = 1) +
+        # modify legend location using ggplot2
+        theme(legend.position = c(0.1,0.85),
+              legend.key.size = unit(0.3, 'cm'), #change legend key size
+              legend.title = element_text(size=6), #change legend title font size
+              legend.text = element_text(size=4))
 
-output_file = "RevBayes_Anc_States_BiSSE.pdf"
-ggsave(output_file, width = 11, height = 9)
-</pre>
+ggsave(paste0("BiSSE_anc_states_activity_period.png"),plot, width=8, height=8)
+```
 
-{% figure ggtree %}
-<img src="figures/RevBayes_Anc_States_BiSSE.png" width="75%">
+
+{% figure BiSSE_anc_states %}
+<img src="figures/BiSSE_anc_states_activity_period.png" width="75%">
 {% figcaption %}
-A visualization of the ancestral states estimated under the BiSSE model.
+A visualization of the ancestral states estimated under the BiSSE model. We used the script `plot_anc_states_BiSSE.R`.
 {% endfigcaption %}
 {% endfigure %}
 
 
-{% endaside %}
+
+
+Next, we also want to plot the stochastic character map.
+Use the script `plot_simmap_BiSSE.R`.
+
+{% figure BiSSE_simmap %}
+<img src="figures/BiSSE_simmap_activity_period.png" width="75%">
+{% figcaption %}
+A visualization of the stochastic character map estimated under the BiSSE model. We used the script `plot_simmap_BiSSE.R`.
+{% endfigcaption %}
+{% endfigure %}
+
 
 
 
 {% subsection Summarizing Parameter Estimates | subsec_summary %}
 
-Our MCMC analysis generated a tab-delimited file called `primates_activTime_BiSSE_mcmc.log` that contains
-the samples of all the numerical parameters in our model. There are a lot of tools available
-for visualizing files like this (like R or python), which allow you to generate plots and
+Our MCMC analysis generated a tab-delimited file called `primates_BiSSE_activity_period.log` that contains
+the samples of all the numerical parameters in our model.
+Again, we will use the `RevGadgets` {% cite Tribble2022 %} R package, which allow you to generate plots and
 visually explore the posterior distributions of sampled parameters.
 
-We will use the program [Tracer](http://tree.bio.ed.ac.uk/software/tracer/)
-{% cite Rambaut2011 %}, which is a tool for easily exploring parameters sampled using MCMC.
-
-> Open the program Tracer and import your file: `output/primates_activTime_BiSSE_mcmc.log`.
+>Open R.
 {:.instruction}
 
-Tracer opens to a histogram of the _Posterior_ statistic and a list of all the other sampled
-parameters ({% ref tracer1 %}).
+Run this code:
+```{R}
+library(RevGadgets)
+library(ggplot2)
 
-{% figure tracer1 %}
-<img src="figures/tracer1.png" width="95%">
+# read in and process the log file
+bisse_file <- paste0("output/primates_BiSSE_activity_period.log")
+pdata <- processSSE(bisse_file)
+
+# plot the rates
+plot <- plotMuSSE(pdata) +
+        theme(legend.position = c(0.875,0.915),
+              legend.key.size = unit(0.4, 'cm'), #change legend key size
+              legend.title = element_text(size=8), #change legend title font size
+              legend.text = element_text(size=6))
+
+ggsave(paste0("BiSSE_div_rates_activity_period.png"),plot, width=5, height=5)
+```
+
+{% figure BiSSE_rates %}
+<img src="figures/BiSSE_div_rates_activity_period.png" width="95%">
 {% figcaption %}
-Visualizing posterior samples of parameters in
-[Tracer](http://tree.bio.ed.ac.uk/software/tracer/)
-{% cite Rambaut2011 %}.
+Visualizing posterior samples of the speciation rates associated with daily activity time with the `RevGadgets` {% cite Tribble2022 %} R package. We used the script `plot_div_rates_BiSSE.R`.
 {% endfigcaption %}
 {% endfigure %}
 
-> Explore the various options in Tracer.
->
-> Check the _Trace_ view for each parameter. Did the chain "mix" effectively?
->
-> Highlight both of the _speciation_ rates: `speciation[1]` and `speciation[2]` to
-> compare the _Estimates_ of both parameters.
->
-> **Write down** the mean value for the rate of speciation associated with
-> diurnal lineages `speciation[1]` and the rate of speciation associated with
-> nocturnal lineages `speciation[2]`.
->
-> Now use the _Marginal Prob Distribution_ view to compare the marginal posterior densities
-> of both speciation rates.
-{:.instruction}
 
-{% figure tracer2 %}
-<img src="figures/tracer2.png" width="50%">
-{% figcaption %}
-Comparing posterior samples of the speciation rates associated with daily activity time in
-[Tracer](http://tree.bio.ed.ac.uk/software/tracer/)
-{% cite Rambaut2011 %}.
-{% endfigcaption %}
-{% endfigure %}
 
 {% section Evaluate Social System under the BiSSE Model | exercise2 %}
 
