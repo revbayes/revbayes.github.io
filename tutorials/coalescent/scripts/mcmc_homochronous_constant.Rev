@@ -40,7 +40,10 @@ moves.append( mvScale(pop_size, lambda=0.1, tune=true, weight=2.0) )
 psi ~ dnCoalescent(theta=pop_size, taxa=taxa)
 
 root_age := psi.rootAge()
-obs_root_age ~ dnNormal(mean = root_age, sd = 60000, min = 250000, max = 500000)
+
+diff <- (500000 - 250000)/2.0
+# obs_root_age ~ dnNormal(mean = root_age, sd = 60000, min = 250000, max = 500000)
+obs_root_age ~ dnNormal(mean = root_age, sd = 60000, min = root_age - diff, max = root_age + diff)
 obs_root_age.clamp(375000)
 
 ### add some moves that change the tree

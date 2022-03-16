@@ -83,7 +83,10 @@ moves.append( mvShrinkExpand( delta_log_population_size, sd=population_size_glob
 psi ~ dnCoalescentSkyline(theta=population_size, times=changePoints, method="specified", taxa=taxa)
 
 root_age := psi.rootAge()
-obs_root_age ~ dnNormal(mean = root_age, sd = 200000, min = 780000, max = 1200000)
+
+diff <- (1200000 - 780000)/2.0
+# obs_root_age ~ dnNormal(mean = root_age, sd = 200000, min = 780000, max = 1200000)
+obs_root_age ~ dnNormal(mean = root_age, sd = 200000, min = root_age - diff, max = root_age + diff)
 obs_root_age.clamp(850000)
 
 interval_times := psi.getIntervalAges()

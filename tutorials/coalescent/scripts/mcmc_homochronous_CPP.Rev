@@ -66,7 +66,10 @@ maptree = mapTree(trace=trees)
 psi.setValue( maptree )
 
 root_age := psi.rootAge()
-obs_root_age ~ dnNormal(mean = root_age, sd = 60000, min = 250000, max = 500000)
+
+diff <- (500000 - 250000)/2.0
+# obs_root_age ~ dnNormal(mean = root_age, sd = 60000, min = 250000, max = 500000)
+obs_root_age ~ dnNormal(mean = root_age, sd = 60000, min = root_age - diff, max = root_age + diff)
 obs_root_age.clamp(375000)
 
 # not implemented yet
