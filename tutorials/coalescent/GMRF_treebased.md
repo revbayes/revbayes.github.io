@@ -12,9 +12,9 @@ prerequisites:
 index: false
 include_all: false
 include_files:
-- data/horses_homochronous_sequences.fasta
-- scripts/mcmc_homochronous_GMRF_treebased.Rev
-- scripts/mcmc_homochronous_GMRF_maptreebased.Rev
+- data/horses_isochronous_sequences.fasta
+- scripts/mcmc_isochronous_GMRF_treebased.Rev
+- scripts/mcmc_isochronous_GMRF_maptreebased.Rev
 - output/horses_constant.trees
 ---
 
@@ -29,8 +29,8 @@ Here, the trees and population sizes will not be estimated simultaneously, but i
 > The alternative script **mcmc_homochronous_GMRF_maptreebased.Rev** provides an example on how to compute a maximum a posteriori (MAP) tree in `RevBayes` an run the analysis based on that single tree.
 > You can type the following commands into `RevBayes`:
 ~~~
-> source("scripts/mcmc_homochronous_GMRF_treebased.Rev")
-> source("scripts/mcmc_homochronous_GMRF_maptreebased.Rev")
+> source("scripts/mcmc_isochronous_GMRF_treebased.Rev")
+> source("scripts/mcmc_isochronous_GMRF_maptreebased.Rev")
 ~~~
 We will walk you through the first of the scripts in the following section.
 {:.info}
@@ -112,9 +112,9 @@ Finally, we add the monitors and then run the MCMC.
 Remember to change the file names to avoid overwriting your previous results.
 
 ~~~
-monitors.append( mnModel(filename="output/horses_GMRF_treebased.log",printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_GMRF_treebased_NEs.log",population_size,printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_GMRF_treebased_times.log",interval_times,printgen=THINNING) )
+monitors.append( mnModel(filename="output/horses_iso_GMRF_treebased.log",printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_GMRF_treebased_NEs.log",population_size,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_GMRF_treebased_times.log",interval_times,printgen=THINNING) )
 monitors.append( mnScreen(population_size, printgen=100) )
 
 mymcmc = mcmc(mymodel, monitors, moves)
@@ -128,9 +128,9 @@ mymcmc.run(NUM_MCMC_ITERATIONS, tuning = 100)
 After running your analysis, you can plot the results using the `R` package `RevGadgets`.
 
 {% figure example_skyline %}
-<img src="figures/horses_GMRF_treebased.png" width="800">
+<img src="figures/horses_iso_GMRF_treebased.png" width="800">
 {% figcaption %}
-This is how the resulting GMRF skyline plot should roughly look like.
+Example output from plotting the GMRF analysis run in this exercise. The bold line represents the median of the posterior distribution of the population size and the shaded are shows the $95\%$ credible intervals.
 {% endfigcaption %}
 {% endfigure %}
 

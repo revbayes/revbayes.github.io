@@ -10,8 +10,8 @@ prerequisites:
 index: false
 include_all: false
 include_files:
-- data/horses_homochronous_sequences.fasta
-- scripts/mcmc_homochronous_piecewise_6diff.Rev
+- data/horses_isochronous_sequences.fasta
+- scripts/mcmc_isochronous_piecewise_6diff.Rev
 include_example_output: true
 ---
 
@@ -60,7 +60,7 @@ $$N_e(t) = N_e(t_{i,j}) exp((t_{i,j} - t)\alpha).$$
 > The entire process of the skyline estimation can be executed by using the **mcmc_piecewise.Rev** script in the **scripts** folder.
 > You can type the following command into `RevBayes`:
 ~~~
-> source("scripts/mcmc_piecewiese.Rev")
+> source("scripts/mcmc_iso_piecewiese.Rev")
 ~~~
 We will walk you through every single step in the following section.
 {:.info}
@@ -135,10 +135,10 @@ In the end, we need to wrap our model as before.
 Finally, we add the monitors and then run the MCMC.
 
 ~~~
-monitors.append( mnModel(filename="output/horses_piecewise.log",printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_piecewise.trees",psi,printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_piecewise_NEs.log",pop_size,printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_piecewise_times.log",change_points,printgen=THINNING) )
+monitors.append( mnModel(filename="output/horses_iso_piecewise_6diff.log",printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_piecewise_6diff.trees",psi,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_piecewise_6diff_NEs.log",pop_size,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_piecewise_6diff_times.log",change_points,printgen=THINNING) )
 monitors.append( mnScreen(pop_size, root_age, printgen=100) )
 ~~~
 
@@ -281,9 +281,9 @@ ggplot2::ggsave("horses_piecewise_6diff.png", p)
 {% endaside %}
 
 {% figure example_piecewise %}
-<img src="figures/horses_piecewise_6diff.png" width="800">
+<img src="figures/horses_iso_piecewise_6diff.png" width="800">
 {% figcaption %}
-This is how the resulting skyline plot with addition of the piecewise model should roughly look like.
+Example output from plotting the piecewise analysis with six pieces run in this exercise. The bold line represents the median of the posterior distribution of the population size and the shaded are shows the $95\%$ credible intervals. The reference skyline result is shown in green and the result of the piecewise analysis is shown in blue.
 {% endfigcaption %}
 {% endfigure %}
 

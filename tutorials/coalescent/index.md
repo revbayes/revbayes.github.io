@@ -11,7 +11,7 @@ prerequisites:
 index: true
 include_all: false
 include_files:
-- data/horses_homochronous_sequences.fasta
+- data/horses_isochronous_sequences.fasta
 - data/horses_heterochronous_sequences.fasta
 - data/horses_heterochronous_ages.tsv
 ---

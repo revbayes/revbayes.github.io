@@ -9,8 +9,8 @@ prerequisites:
 index: false
 include_all: false
 include_files:
-- data/horses_homochronous_sequences.fasta
-- scripts/mcmc_homochronous_constant.Rev
+- data/horses_isochronous_sequences.fasta
+- scripts/mcmc_isochronous_constant.Rev
 ---
 
 {% section Overview %}
@@ -29,11 +29,11 @@ The coalescent process was first introduced by Kingman in 1982 for a constant po
 In the constant coalescent process, a single population size is assumed for the whole tree.
 The relationship betweeen coalescent waiting times and effective population size is defined through the coalescent rate: $c = \frac{k (k-1)}{2N_e}$ with $k$ being the number of currently active lineages and $N_e$ being the effective population size.
 
-In {% ref coalescent %}, a general scheme is shown.
+In {% ref coalescent-scheme %}, a general scheme is shown.
 Waiting times are in between coalescent events.
 
-{% figure coalescent %}
-<img src="figures/scheme_constant.png" width="800">
+{% figure coalescent-scheme %}
+  <img src="figures/scheme_constant.png" width="800">
 {% figcaption %}
 Schematic figure of a coalescent tree and the different times associated with it. $w_k$ are the waiting times with $k$ active lineages, $t_{c,k}$ are the coalescent events at the beginning of such a coalescent interval. Here, an example of a constant population size trajectory is shown. The bold line represents the median of the posterior distribution of the population size and the shaded are shows the $95\%$ credible intervals.
 {% endfigcaption %}
@@ -52,7 +52,7 @@ Schematic figure of a coalescent tree and the different times associated with it
 > Save it in your **scripts** directory.
 > You can type the following command into `RevBayes`:
 ~~~
-> source("scripts/mcmc_homochronous_constant.Rev")
+> source("scripts/mcmc_isochronous_constant.Rev")
 ~~~
 We will walk you through every single step in the following section.
 {:.info}
@@ -225,15 +225,15 @@ mymodel = model(psi)
 ~~~
 
 Now, we add some monitors.
-The `mndModel` monitor keeps track of all model parameters and thus is written into our main `.log` file.
+The `mnModel` monitor keeps track of all model parameters and thus is written into our main `.log` file.
 With `mnFile`, you can keep track of the trees or parameters that you would like to keep in an extra file.
 `mnScreen` is responsible for having output printed directly to your screen.
 This output will not per se be saved in a file.
 
 ~~~
-monitors.append( mnModel(filename="output/horses_constant.log",printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_constant.trees",psi,printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_constant_NE.log",pop_size,printgen=THINNING) )
+monitors.append( mnModel(filename="output/horses_iso_constant.log",printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_constant.trees",psi,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_constant_NE.log",pop_size,printgen=THINNING) )
 monitors.append( mnScreen(pop_size, root_age, printgen=100) )
 ~~~
 
@@ -266,7 +266,7 @@ burnin = 0.1
 probs = c(0.025, 0.975)
 summary = "median"
 
-population_size_log = "output/horses_constant_NE.log"
+population_size_log = "output/horses_iso_constant_NE.log"
 df <- processPopSizes(population_size_log, method = "constant", burnin = burnin, probs = probs, summary = summary)
 p <- plotPopSizes(df, method = "constant") + ggplot2::coord_cartesian(ylim = c(1e3, 1e8), xlim = c(1e5, 0))
 ggplot2::ggsave("horses_constant.png", p)
@@ -275,9 +275,9 @@ ggplot2::ggsave("horses_constant.png", p)
 Your output should look roughly like the following figure.
 
 {% figure coalescent %}
-<img src="figures/horses_constant.png" width="800">
+<img src="figures/horses_iso_constant.png" width="800">
 {% figcaption %}
-Example output from plotting the constant coalescent analysis run in this exercise.
+Example output from plotting the constant coalescent analysis run in this exercise. The bold line represents the median of the posterior distribution of the population size and the shaded are shows the $95\%$ credible intervals.
 {% endfigcaption %}
 {% endfigure %}
 

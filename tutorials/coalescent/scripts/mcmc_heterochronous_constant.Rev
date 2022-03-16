@@ -1,10 +1,10 @@
-################################################################################
+##############################################################################################
 #
-# RevBayes Example: Homochronous constant coalescent process applied to horse data
+# RevBayes Example: Constant coalescent process applied to heterochronous horse sequence data
 #
 # authors: Sebastian Hoehna, Ronja Billenstein
 #
-################################################################################
+##############################################################################################
 
 ## Global settings
 
@@ -32,7 +32,7 @@ n_taxa <- taxa.size()
 ##############
 
 pop_size ~ dnUniform(0,1E8)
-pop_size.setValue(100)
+pop_size.setValue(100000)
 moves.append( mvScale(pop_size, lambda=0.1, tune=true, weight=2.0) )
 
 ### the time tree is a stochastic node modeled by the constant coalescent process (dnCoalescent)

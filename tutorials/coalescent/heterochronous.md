@@ -209,7 +209,7 @@ mymodel = model(psi)
 ~~~
 
 Now, we add some monitors.
-The `mndModel` monitor keeps track of all model parameters and thus is written into our main `.log` file.
+The `mnModel` monitor keeps track of all model parameters and thus is written into our main `.log` file.
 With `mnFile`, you can keep track of the trees or parameters that you would like to keep in an extra file.
 `mnScreen` is responsible for having output printed directly to your screen.
 This output will not per se be saved in a file.
@@ -261,7 +261,8 @@ Your output should look roughly like the following figure.
 {% figure coalescent %}
 <img src="figures/horses_het_constant.png" width="800">
 {% figcaption %}
-Example output from plotting the constant coalescent analysis run in this exercise.
+Example output from plotting the constant coalescent analysis with heterochronous data run in this exercise. The bold line represents the median of the posterior distribution of the population size and the shaded are shows the $95\%$ credible intervals.
+
 {% endfigcaption %}
 {% endfigure %}
 

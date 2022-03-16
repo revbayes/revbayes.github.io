@@ -10,8 +10,8 @@ prerequisites:
 index: false
 include_all: false
 include_files:
-- data/horses_homochronous_sequences.fasta
-- scripts/mcmc_homochronous_skyline.Rev
+- data/horses_isochronous_sequences.fasta
+- scripts/mcmc_isochronous_skyline.Rev
 ---
 
 {% section Skyline Plots %}
@@ -23,8 +23,8 @@ The generalized skyline plot {% cite Strimmer2001 %} aimed at reducing the noise
 This created a smoother curve.
 First, these models were used for maximum likelihood (ML) estimation of population sizes through time.
 By now, several extensions allowing for Bayesian estimation have been published (see for example {% citet Drummond2005 Heled2008 Gill2012 %}).
-In `RevBayes`, a Skyline plot method is implemented with constant population size intervals.
-In other software, you can also find the possibility to have linear skyline intervals.
+In `RevBayes`, a Skyline plot method is implemented with constant or linear population size intervals.
+<!--- In other software, you can also find the possibility to have linear skyline intervals. --->
 Even though this is not implemented explicitly as skyline in `RevBayes`, you can also piece together linear intervals (have a look at the [piecewise model exercise]({{base.url}}/tutorials/coalescent/piecewise), if you are interested in this).
 <!--- The length of these intervals is not based on the timing of the coalescent events, but can be individually chosen. --->
 The length of the skyline intervals can either be defined by a specific number of intervals ending at coalescent events, or alternatively be chosen individually without depending on the coalescent events.
@@ -56,9 +56,9 @@ The waiting times between coalescent events $w_k$ are exponentially distributed 
 
 The likelihood for a given piecewise-constant population size trajectory is computed as the product of the probability density functions of the coalescent waiting times, which are calculated as follows:
 
-$$p(w_k | t_k) = \frac{k (k -1)}{2N_e(t_k + w_k)} exp \left[ \int_{t_k}^{t_k+w_k} \frac{k (k -1)}{2N_e(t)} dt \right]$$
+$$p(w_k | t_{c,k}) = \frac{k (k -1)}{2N_e(t_{c,k} + w_k)} exp \left[ \int_{t_{c,k}}^{t_{c,k}+w_k} \frac{k (k -1)}{2N_e(t)} dt \right]$$
 
-Each $t_k$ is the beginning of the respective kth coalescent interval.
+Each $t_{c,k}$ is the beginning of the respective kth coalescent interval.
 The waiting times $w_k$ refer to the waiting time starting when there are $k$ active lineages.
 
 <!--- In our case, $N_e(t)$ is a piecewise constant demographic function with $m$ intervals which each have a starting point $t_i$ and the length $l$.
@@ -73,7 +73,7 @@ The waiting times $w_k$ refer to the waiting time starting when there are $k$ ac
 > Save it in your **scripts** directory.
 > You can type the following command into `RevBayes`:
 ~~~
-> source("scripts/mcmc_homochronous_skyline.Rev")
+> source("scripts/mcmc_isochronous_skyline.Rev")
 ~~~
 We will walk you through the script in the following section.
 {:.info}
@@ -131,10 +131,10 @@ We add the monitors and then run the MCMC.
 Here, another monitor is added for the interval times.
 
 ~~~
-monitors.append( mnModel(filename="output/example_skyline.log",printgen=THINNING) )
-monitors.append( mnFile(filename="output/example_skyline.trees",psi,printgen=THINNING) )
-monitors.append( mnFile(filename="output/example_skyline_NEs.log",pop_size,printgen=THINNING) )
-monitors.append( mnFile(filename="output/example_skyline_times.log",interval_times,printgen=THINNING) )
+monitors.append( mnModel(filename="output/horses_iso_skyline.log",printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_skyline.trees",psi,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_skyline_NEs.log",pop_size,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_skyline_times.log",interval_times,printgen=THINNING) )
 monitors.append( mnScreen(pop_size, root_age, printgen=100) )
 ~~~
 
@@ -150,17 +150,17 @@ burnin = 0.1
 probs = c(0.025, 0.975)
 summary = "median"
 
-population_size_log = "output/horses_skyline_NEs.log"
-interval_change_points_log = "output/horses_skyline_times.log"
+population_size_log = "output/horses_iso_skyline_NEs.log"
+interval_change_points_log = "output/horses_iso_skyline_times.log"
 df <- processPopSizes(population_size_log, interval_change_points_log, method = "events", burnin = burnin, probs = probs, summary = summary)
 p <- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
 ggplot2::ggsave("horses_skyline.png", p)
 ~~~
 
 {% figure example_skyline %}
-<img src="figures/horses_skyline.png" width="800">
+<img src="figures/horses_iso_skyline.png" width="800">
 {% figcaption %}
-This is how the resulting skyline plot should roughly look like.
+Example output from plotting the coalescent skyline analysis run in this exercise. The bold line represents the median of the posterior distribution of the population size and the shaded are shows the $95\%$ credible intervals.
 {% endfigcaption %}
 {% endfigure %}
 
@@ -189,9 +189,9 @@ The estimation of the number of intervals can also be done slightly differently,
 
 You can try and change the priors now accordingly.
 If you would like to have an example of what a `RevBayes` script with these different priors can look like, have a look at
-* the [example script for a BSP analysis](scripts/mcmc_heterochronous_BSP.Rev),
-* the [example script for a skyride analysis](scripts/mcmc_heterochronous_skyride.Rev), or
-* the [example script for an EBSP analysis](scripts/mcmc_heterochronous_EBSP.Rev).
+* the [example script for a BSP analysis](scripts/mcmc_isochronous_BSP.Rev),
+* the [example script for a skyride analysis](scripts/mcmc_isoochronous_skyride.Rev), or
+* the [example script for an EBSP analysis](scripts/mcmc_isochronous_EBSP.Rev).
 
 Note that all three examples have the interval change points on coalescent events (what we call "event-based", as in the skyline model presented here).
 In the next tutorial ([The GMRF model]({{base.url}}/tutorials/coalescent/GMRF)), we use intervals with changing points independent from coalescent events.

@@ -10,8 +10,8 @@ prerequisites:
 index: false
 include_all: false
 include_files:
-- data/horses_homochronous_sequences.fasta
-- scripts/mcmc_homochronous_HSMRF.Rev
+- data/horses_isochronous_sequences.fasta
+- scripts/mcmc_isochronous_HSMRF.Rev
 ---
 
 {% section Overview %}
@@ -22,8 +22,8 @@ It is in addition to the [Gaussian Markov Random Field Prior tutorial]({{base.ur
 After running your analysis, you can plot the results using the `R` package `RevGadgets`.
 
 {% figure example_HSMRF %}
-<img src="figures/horses_HSMRF.png" width="800">
+<img src="figures/horses_iso_HSMRF.png" width="800">
 {% figcaption %}
-This is how the resulting HSMRF plot should roughly look like.
+Example output from plotting the HSMRF analysis. The bold line represents the median of the posterior distribution of the population size and the shaded are shows the $95\%$ credible intervals.
 {% endfigcaption %}
 {% endfigure %}

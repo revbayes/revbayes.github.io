@@ -11,8 +11,8 @@ prerequisites:
 index: false
 include_all: false
 include_files:
-- data/horses_homochronous_sequences.fasta
-- scripts/mcmc_homochronous_GMRF.Rev
+- data/horses_isochronous_sequences.fasta
+- scripts/mcmc_isochronous_GMRF.Rev
 ---
 
 {% section Overview %}
@@ -61,7 +61,7 @@ The waiting times $w_k$ refer to the waiting time starting when there are $k$ ac
 > The entire process of the GMRF based estimation can be executed by using the **mcmc_homochronous_GMRF.Rev** script in the **scripts** folder.
 > You can type the following command into `RevBayes`:
 ~~~
-> source("scripts/mcmc_homochronous_GMRF.Rev")
+> source("scripts/mcmc_isochronous_GMRF.Rev")
 ~~~
 We will walk you through the script in the following section.
 {:.info}
@@ -207,10 +207,10 @@ Finally, we add the monitors and then run the MCMC.
 Remember to change the file names to avoid overwriting your previous results.
 
 ~~~
-monitors.append( mnModel(filename="output/horses_GMRF.log",printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_GMRF.trees",psi,printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_GMRF_NEs.log",population_size,printgen=THINNING) )
-# monitors.append( mnFile(filename="output/horses_GMRF_times.log",interval_times,printgen=THINNING) )
+monitors.append( mnModel(filename="output/horses_iso_GMRF.log",printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_GMRF.trees",psi,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_GMRF_NEs.log",population_size,printgen=THINNING) )
+# monitors.append( mnFile(filename="output/horses_iso_GMRF_times.log",interval_times,printgen=THINNING) )
 monitors.append( mnScreen(population_size, root_age, printgen=100) )
 
 mymcmc = mcmc(mymodel, monitors, moves)
@@ -230,8 +230,8 @@ burnin = 0.1
 probs = c(0.025, 0.975)
 summary = "median"
 
-population_size_log = "output/horses_GMRF_NEs.log"
-interval_change_points_log = "output/horses_GMRF_times.log"
+population_size_log = "output/horses_iso_GMRF_NEs.log"
+interval_change_points_log = "output/horses_iso_GMRF_times.log"
 df <- processPopSizes(population_size_log, interval_change_points_log, method = "specified", burnin = burnin, probs = probs, summary = summary)
 p <- plotPopSizes(df, method = "specified") + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
 ggplot2::ggsave("horses_GMRF.png", p)
@@ -241,9 +241,9 @@ ggplot2::ggsave("horses_GMRF.png", p)
 This was done to be able to easily compare the plots. --->
 
 {% figure example_skyline %}
-<img src="figures/horses_GMRF.png" width="800">
+<img src="figures/horses_iso_GMRF.png" width="800">
 {% figcaption %}
-This is how the resulting GMRF skyline plot should roughly look like.
+Example output from plotting the GMRF analysis run in this exercise. The bold line represents the median of the posterior distribution of the population size and the shaded are shows the $95\%$ credible intervals.
 {% endfigcaption %}
 {% endfigure %}
 
@@ -343,3 +343,4 @@ When you are done, have a look at the next exercise.
 * [The GMRF model with trees as input data]({{base.url}}/tutorials/coalescent/GMRF_treebased)
 
 <!--- {% section Alternative Implementations %} --->
+<!--- skygrid --->

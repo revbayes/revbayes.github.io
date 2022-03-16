@@ -1,10 +1,10 @@
-################################################################################
+#######################################################################################################
 #
-# RevBayes Example: Homochronous constant coalescent process applied to horse data
+# RevBayes Example: Coalescent process with HSMRF prior applied to heterochronous horse sequence data
 #
 # authors: Sebastian Hoehna, Ronja Billenstein
 #
-################################################################################
+#######################################################################################################
 
 ## Global settings
 
@@ -43,7 +43,7 @@ for (i in 1:(NUM_INTERVALS-1)) {
 }
 
 # pop_size[i] ~ dnUniform(0,1E8)
-# pop_size[i].setValue(100)
+# pop_size[i].setValue(100000)
 # moves.append( mvScale(pop_size[i], lambda=0.1, tune=true, weight=2.0) )
 
 population_size_at_present ~ dnUniform(0,1E8)
