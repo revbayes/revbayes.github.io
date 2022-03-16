@@ -74,7 +74,7 @@ Griffiths and Tavaré then extended the model to be applicable to varying popula
 
 You should now have the following files in your data folder:
 
--   horses_homochronous_sequences.fasta: an alignment in FASTA format, containing sequences of 36 horse taxa, all sampled at the same time.
+-   horses_isochronous_sequences.fasta: an alignment in FASTA format, containing sequences of 36 horse taxa, all sampled at the same time.
 
 -   horses_heterochronous_sequences.fasta: an alignment in FASTA format, containing sequences of 173 horse taxa, sampled at various times.
 
@@ -95,11 +95,11 @@ We will also provide a full script in every tutorial that you can easily run for
 {:.instruction}
 
 If you want to turn back to this page, it is listed on the left as prerequisite in all the exercises.
-The exercise for heterochronous data is based on the exercises for homochronous data.
+The exercise for heterochronous data is based on the exercises for isochronous data.
 It aims at highlighting the changes you have to make when considering samples with different ages.
-It is therefore recommended to do the exercises for homochronous data first.
+It is therefore recommended to do the exercises for isochronous data first.
 
-The first five exercises work with homochronous data, the last one with heterochronous data:
+The first five exercises work with isochronous data, the last one with heterochronous data:
 1. [The constant coalescent model]({{base.url}}/tutorials/coalescent/constant)
 2. [The skyline model]({{base.url}}/tutorials/coalescent/skyline)
 3. [The Gaussian Markov Random Field (GMRF) model]({{base.url}}/tutorials/coalescent/GMRF)

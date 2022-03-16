@@ -58,7 +58,7 @@ The waiting times $w_k$ refer to the waiting time starting when there are $k$ ac
 {% section Inference Example %}
 
 > ## For your info
-> The entire process of the GMRF based estimation can be executed by using the **mcmc_homochronous_GMRF.Rev** script in the **scripts** folder.
+> The entire process of the GMRF based estimation can be executed by using the **mcmc_isochronous_GMRF.Rev** script in the **scripts** folder.
 > You can type the following command into `RevBayes`:
 ~~~
 > source("scripts/mcmc_isochronous_GMRF.Rev")

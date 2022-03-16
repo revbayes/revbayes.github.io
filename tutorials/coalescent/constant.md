@@ -48,7 +48,7 @@ Schematic figure of a coalescent tree and the different times associated with it
 {% section Inference Example %}
 
 > ## For your info
-> The entire process of the estimation can be executed by using the **mcmc_homochronous_constant.Rev** script that you can download on the left side of the page.
+> The entire process of the estimation can be executed by using the **mcmc_isochronous_constant.Rev** script that you can download on the left side of the page.
 > Save it in your **scripts** directory.
 > You can type the following command into `RevBayes`:
 ~~~
@@ -84,9 +84,9 @@ monitors  = VectorMonitors()
 ~~~
 
 {% subsection Read the data %}
-Start by reading in the aligned sequences of the homochronous horse data.
+Start by reading in the aligned sequences of the isochronous horse data.
 ~~~
-sequences <- readDiscreteCharacterData("data/horses_homochronous_sequences.fasta")
+sequences <- readDiscreteCharacterData("data/horses_isochronous_sequences.fasta")
 ~~~
 
 You will also need the names of the taxa and their number.

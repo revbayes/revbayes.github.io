@@ -69,7 +69,7 @@ The waiting times $w_k$ refer to the waiting time starting when there are $k$ ac
 {% section Inference Example %}
 
 > ## For your info
-> The entire process of the skyline estimation can be executed by using the **mcmc_homochronous_skyline.Rev** script that you can download on the left side of the page.
+> The entire process of the skyline estimation can be executed by using the **mcmc_isochronous_skyline.Rev** script that you can download on the left side of the page.
 > Save it in your **scripts** directory.
 > You can type the following command into `RevBayes`:
 ~~~

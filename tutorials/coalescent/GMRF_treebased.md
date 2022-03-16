@@ -15,7 +15,7 @@ include_files:
 - data/horses_isochronous_sequences.fasta
 - scripts/mcmc_isochronous_GMRF_treebased.Rev
 - scripts/mcmc_isochronous_GMRF_maptreebased.Rev
-- output/horses_constant.trees
+- output/horses_iso_constant.trees
 ---
 
 {% section Overview %}
@@ -25,8 +25,8 @@ Here, the trees and population sizes will not be estimated simultaneously, but i
 {% section Inference Example %}
 
 > ## For your info
-> The entire process of the GMRF based estimation from trees can be executed by using the **mcmc_homochronous_GMRF_treebased.Rev** script in the **scripts** folder.
-> The alternative script **mcmc_homochronous_GMRF_maptreebased.Rev** provides an example on how to compute a maximum a posteriori (MAP) tree in `RevBayes` an run the analysis based on that single tree.
+> The entire process of the GMRF based estimation from trees can be executed by using the **mcmc_isochronous_GMRF_treebased.Rev** script in the **scripts** folder.
+> The alternative script **mcmc_isochronous_GMRF_maptreebased.Rev** provides an example on how to compute a maximum a posteriori (MAP) tree in `RevBayes` an run the analysis based on that single tree.
 > You can type the following commands into `RevBayes`:
 ~~~
 > source("scripts/mcmc_isochronous_GMRF_treebased.Rev")
