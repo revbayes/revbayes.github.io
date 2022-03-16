@@ -1,10 +1,10 @@
-################################################################################
+######################################################################################################
 #
-# RevBayes Example: Homochronous constant coalescent process applied to horse data
+# RevBayes Example: Coalescent process with HSMRF prior applied to heterochronous horse sequence data
 #
 # authors: Sebastian Hoehna, Ronja Billenstein
 #
-################################################################################
+######################################################################################################
 
 ## Global settings
 
@@ -42,7 +42,7 @@ for (i in 1:(NUM_INTERVALS-1)) {
 }
 
 population_size_at_present ~ dnUniform(0,1E8)
-population_size_at_present.setValue(100)
+population_size_at_present.setValue(100000)
 
 moves.append( mvScaleBactrian(population_size_at_present,weight=5) )
 moves.append( mvMirrorMultiplier(population_size_at_present,weight=5) )
@@ -92,7 +92,10 @@ moves.append( mvShrinkExpand( delta_log_population_size, sd=population_size_glob
 psi ~ dnCoalescentSkyline(theta=population_size, times=changePoints, method = "specified", taxa=taxa)
 
 root_age := psi.rootAge()
-obs_root_age ~ dnNormal(mean = root_age, sd = 200000, min = 780000, max = 1200000)
+
+diff <- (1200000 - 780000)/2.0
+# obs_root_age ~ dnNormal(mean = root_age, sd = 200000, min = 780000, max = 1200000)
+obs_root_age ~ dnNormal(mean = root_age, sd = 200000, min = root_age - diff, max = root_age + diff)
 obs_root_age.clamp(850000)
 
 interval_times := psi.getIntervalAges()

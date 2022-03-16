@@ -1,10 +1,10 @@
-################################################################################
+#############################################################################################
 #
-# RevBayes Example: Homochronous constant coalescent process applied to horse data
+# RevBayes Example: Coalescent process with CPP prior applied to isochronous horse tree data
 #
 # authors: Sebastian Hoehna, Ronja Billenstein
 #
-################################################################################
+#############################################################################################
 
 ## Global settings
 
@@ -21,7 +21,7 @@ monitors  = VectorMonitors()
 #######################
 
 # Read in the tree sample and create a MAP (maximum a posteriori) tree
-trees = readTreeTrace("output/horses_constant.trees", treetype = "clock", burnin = 0.1)
+trees = readTreeTrace("output/horses_iso_constant.trees", treetype = "clock", burnin = 0.1)
 maptree = mapTree(trace=trees)
 taxa <- maptree.taxa()
 
@@ -81,10 +81,10 @@ mymodel = model(psi)
 ################
 
 #add monitors
-monitors.append( mnModel(filename="output/horses_CPP_maptreebased.log",printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_CPP_maptreebased_nevents.log",n_events,printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_CPP_maptreebased_NEs.log",population_size,printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_CPP_maptreebased_times.log",interval_times,printgen=THINNING) )
+monitors.append( mnModel(filename="output/horses_iso_CPP_maptreebased.log",printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_CPP_maptreebased_nevents.log",n_events,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_CPP_maptreebased_NEs.log",population_size,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_CPP_maptreebased_times.log",interval_times,printgen=THINNING) )
 monitors.append( mnScreen(n_events, printgen=100) )
 
 mymcmc = mcmc(mymodel, monitors, moves, nruns=NUM_REPLICATES, combine="mixed")

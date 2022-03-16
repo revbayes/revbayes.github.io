@@ -56,7 +56,7 @@
 	<h1 class="maintitle">Skyline Models from Trees with GMRF</h1>
 	<h3 class="subtitle">Estimating Demographic Histories with Skyline Models from Trees using a Gaussian Markov Random Field Prior</h3>
 	<h4 class="authors">Ronja Billenstein and Sebastian Höhna</h4>
-  <h5>Last modified on March 10, 2022</h5>
+  <h5>Last modified on March 16, 2022</h5>
 </div>
 
 
@@ -98,13 +98,13 @@
         
         
         
-          <li><a href="/tutorials/coalescent/output/horses_constant.trees">horses_constant.trees</a></li>
+          <li><a href="/tutorials/coalescent/output/horses_iso_constant.trees">horses_iso_constant.trees</a></li>
         
-          <li><a href="/tutorials/coalescent/data/horses_homochronous_sequences.fasta">horses_homochronous_sequences.fasta</a></li>
+          <li><a href="/tutorials/coalescent/data/horses_isochronous_sequences.fasta">horses_isochronous_sequences.fasta</a></li>
         
-          <li><a href="/tutorials/coalescent/scripts/mcmc_homochronous_GMRF_maptreebased.Rev">mcmc_homochronous_GMRF_maptreebased.Rev</a></li>
+          <li><a href="/tutorials/coalescent/scripts/mcmc_isochronous_GMRF_maptreebased.Rev">mcmc_isochronous_GMRF_maptreebased.Rev</a></li>
         
-          <li><a href="/tutorials/coalescent/scripts/mcmc_homochronous_GMRF_treebased.Rev">mcmc_homochronous_GMRF_treebased.Rev</a></li>
+          <li><a href="/tutorials/coalescent/scripts/mcmc_isochronous_GMRF_treebased.Rev">mcmc_isochronous_GMRF_treebased.Rev</a></li>
         
         </ul>
     
@@ -123,11 +123,11 @@ Here, the trees and population sizes will not be estimated simultaneously, but i
 
 <blockquote class="info">
   <h2 id="for-your-info">For your info</h2>
-  <p>The entire process of the GMRF based estimation from trees can be executed by using the <strong>mcmc_homochronous_GMRF_treebased.Rev</strong> script in the <strong>scripts</strong> folder.
-The alternative script <strong>mcmc_homochronous_GMRF_maptreebased.Rev</strong> provides an example on how to compute a maximum a posteriori (MAP) tree in <code class="language-plaintext highlighter-rouge">RevBayes</code> an run the analysis based on that single tree.
+  <p>The entire process of the GMRF based estimation from trees can be executed by using the <strong>mcmc_isochronous_GMRF_treebased.Rev</strong> script in the <strong>scripts</strong> folder.
+The alternative script <strong>mcmc_isochronous_GMRF_maptreebased.Rev</strong> provides an example on how to compute a maximum a posteriori (MAP) tree in <code class="language-plaintext highlighter-rouge">RevBayes</code> an run the analysis based on that single tree.
 You can type the following commands into <code class="language-plaintext highlighter-rouge">RevBayes</code>:</p>
-  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/mcmc_homochronous_GMRF_treebased.Rev")
-source("scripts/mcmc_homochronous_GMRF_maptreebased.Rev")
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/mcmc_isochronous_GMRF_treebased.Rev")
+source("scripts/mcmc_isochronous_GMRF_maptreebased.Rev")
 </code></pre></div>  </div>
   <p>We will walk you through the first of the scripts in the following section.</p>
 </blockquote>
@@ -207,9 +207,9 @@ psi.clamp(maptree)
 <p>Finally, we add the monitors and then run the MCMC.
 Remember to change the file names to avoid overwriting your previous results.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/horses_GMRF_treebased.log",printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_GMRF_treebased_NEs.log",population_size,printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_GMRF_treebased_times.log",interval_times,printgen=THINNING) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/horses_iso_GMRF_treebased.log",printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_GMRF_treebased_NEs.log",population_size,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_GMRF_treebased_times.log",interval_times,printgen=THINNING) )
 monitors.append( mnScreen(population_size, printgen=100) )
 
 mymcmc = mcmc(mymodel, monitors, moves)
@@ -222,8 +222,8 @@ mymcmc.run(NUM_MCMC_ITERATIONS, tuning = 100)
 
 <p>After running your analysis, you can plot the results using the <code class="language-plaintext highlighter-rouge">R</code> package <code class="language-plaintext highlighter-rouge">RevGadgets</code>.</p>
 
-<figure id="example_skyline"><p><img src="figures/horses_GMRF_treebased.png" width="800" /></p>
-<figcaption>This is how the resulting GMRF skyline plot should roughly look like.</figcaption>
+<figure id="example_skyline"><p><img src="figures/horses_iso_GMRF_treebased.png" width="800" /></p>
+<figcaption>Example output from plotting the GMRF analysis run in this exercise. The bold line represents the median of the posterior distribution of the population size and the shaded are shows the $95\%$ credible intervals.</figcaption>
 </figure>
 
 <h2 class="section" id="next-exercise">Next Exercise</h2>

@@ -1,10 +1,10 @@
-################################################################################
+##################################################################################
 #
-# RevBayes Example: Homochronous constant coalescent process applied to horse data
+# RevBayes Example: Coalescent process applied to isochronous horse sequence data
 #
 # authors: Sebastian Hoehna, Ronja Billenstein
 #
-################################################################################
+##################################################################################
 
 ## Global settings
 
@@ -21,7 +21,7 @@ monitors  = VectorMonitors()
 #######################
 
 # Read in sequence data
-sequences <- readDiscreteCharacterData("data/horses_homochronous_sequences.fasta")
+sequences <- readDiscreteCharacterData("data/horses_isochronous_sequences.fasta")
 taxa <- sequences.taxa()
 
 # Get the number of taxa and branches. We need these later on.
@@ -58,7 +58,10 @@ for (i in 2:NUM_INTERVALS) {
 psi ~ dnCoalescentSkyline(theta=pop_size, method="events", taxa=taxa)
 
 root_age := psi.rootAge()
-obs_root_age ~ dnNormal(mean = root_age, sd = 60000, min = 250000, max = 500000)
+
+diff <- (500000 - 250000)/2.0
+# obs_root_age ~ dnNormal(mean = root_age, sd = 60000, min = 250000, max = 500000)
+obs_root_age ~ dnNormal(mean = root_age, sd = 60000, min = root_age - diff, max = root_age + diff)
 obs_root_age.clamp(375000)
 
 interval_times := psi.getIntervalAges()
@@ -124,10 +127,10 @@ mymodel = model(psi)
 ################
 
 #add monitors
-monitors.append( mnModel(filename="output/horses_EBSP.log",printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_EBSP.trees",psi,printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_EBSP_NEs.log",pop_size,printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_EBSP_times.log",interval_times,printgen=THINNING) )
+monitors.append( mnModel(filename="output/horses_iso_EBSP.log",printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_EBSP.trees",psi,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_EBSP_NEs.log",pop_size,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_EBSP_times.log",interval_times,printgen=THINNING) )
 monitors.append( mnScreen(root_age, printgen=100) )
 
 mymcmc = mcmc(mymodel, monitors, moves, nruns=NUM_REPLICATES, combine="mixed") 

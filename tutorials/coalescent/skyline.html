@@ -56,7 +56,7 @@
 	<h1 class="maintitle">Skyline Models</h1>
 	<h3 class="subtitle">Estimating Demographic Histories with Skyline Models</h3>
 	<h4 class="authors">Ronja Billenstein and Sebastian Höhna</h4>
-  <h5>Last modified on March 10, 2022</h5>
+  <h5>Last modified on March 16, 2022</h5>
 </div>
 
 
@@ -94,9 +94,9 @@
         
         
         
-          <li><a href="/tutorials/coalescent/data/horses_homochronous_sequences.fasta">horses_homochronous_sequences.fasta</a></li>
+          <li><a href="/tutorials/coalescent/data/horses_isochronous_sequences.fasta">horses_isochronous_sequences.fasta</a></li>
         
-          <li><a href="/tutorials/coalescent/scripts/mcmc_homochronous_skyline.Rev">mcmc_homochronous_skyline.Rev</a></li>
+          <li><a href="/tutorials/coalescent/scripts/mcmc_isochronous_skyline.Rev">mcmc_isochronous_skyline.Rev</a></li>
         
         </ul>
     
@@ -115,8 +115,8 @@ The generalized skyline plot <a class="citation" href="#Strimmer2001">(Strimmer 
 This created a smoother curve.
 First, these models were used for maximum likelihood (ML) estimation of population sizes through time.
 By now, several extensions allowing for Bayesian estimation have been published (see for example <a class="citation" href="#Drummond2005">Drummond et al. (2005), Heled and Drummond (2008), Gill et al. (2012)</a>).
-In <code class="language-plaintext highlighter-rouge">RevBayes</code>, a Skyline plot method is implemented with constant population size intervals.
-In other software, you can also find the possibility to have linear skyline intervals.
+In <code class="language-plaintext highlighter-rouge">RevBayes</code>, a Skyline plot method is implemented with constant or linear population size intervals.
+<!--- In other software, you can also find the possibility to have linear skyline intervals. --->
 Even though this is not implemented explicitly as skyline in <code class="language-plaintext highlighter-rouge">RevBayes</code>, you can also piece together linear intervals (have a look at the <a href="/tutorials/coalescent/piecewise">piecewise model exercise</a>, if you are interested in this).
 <!--- The length of these intervals is not based on the timing of the coalescent events, but can be individually chosen. --->
 The length of the skyline intervals can either be defined by a specific number of intervals ending at coalescent events, or alternatively be chosen individually without depending on the coalescent events.
@@ -140,9 +140,9 @@ The waiting times between coalescent events $w_k$ are exponentially distributed 
 
 <p>The likelihood for a given piecewise-constant population size trajectory is computed as the product of the probability density functions of the coalescent waiting times, which are calculated as follows:</p>
 
-\[p(w_k | t_k) = \frac{k (k -1)}{2N_e(t_k + w_k)} exp \left[ \int_{t_k}^{t_k+w_k} \frac{k (k -1)}{2N_e(t)} dt \right]\]
+\[p(w_k | t_{c,k}) = \frac{k (k -1)}{2N_e(t_{c,k} + w_k)} exp \left[ \int_{t_{c,k}}^{t_{c,k}+w_k} \frac{k (k -1)}{2N_e(t)} dt \right]\]
 
-<p>Each $t_k$ is the beginning of the respective kth coalescent interval.
+<p>Each $t_{c,k}$ is the beginning of the respective kth coalescent interval.
 The waiting times $w_k$ refer to the waiting time starting when there are $k$ active lineages.</p>
 
 <!--- In our case, $N_e(t)$ is a piecewise constant demographic function with $m$ intervals which each have a starting point $t_i$ and the length $l$.
@@ -154,10 +154,10 @@ The waiting times $w_k$ refer to the waiting time starting when there are $k$ ac
 
 <blockquote class="info">
   <h2 id="for-your-info">For your info</h2>
-  <p>The entire process of the skyline estimation can be executed by using the <strong>mcmc_homochronous_skyline.Rev</strong> script that you can download on the left side of the page.
+  <p>The entire process of the skyline estimation can be executed by using the <strong>mcmc_isochronous_skyline.Rev</strong> script that you can download on the left side of the page.
 Save it in your <strong>scripts</strong> directory.
 You can type the following command into <code class="language-plaintext highlighter-rouge">RevBayes</code>:</p>
-  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/mcmc_homochronous_skyline.Rev")
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/mcmc_isochronous_skyline.Rev")
 </code></pre></div>  </div>
   <p>We will walk you through the script in the following section.</p>
 </blockquote>
@@ -217,10 +217,10 @@ By chosing <code class="language-plaintext highlighter-rouge">methods="events"</
 We add the monitors and then run the MCMC.
 Here, another monitor is added for the interval times.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/example_skyline.log",printgen=THINNING) )
-monitors.append( mnFile(filename="output/example_skyline.trees",psi,printgen=THINNING) )
-monitors.append( mnFile(filename="output/example_skyline_NEs.log",pop_size,printgen=THINNING) )
-monitors.append( mnFile(filename="output/example_skyline_times.log",interval_times,printgen=THINNING) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/horses_iso_skyline.log",printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_skyline.trees",psi,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_skyline_NEs.log",pop_size,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_skyline_times.log",interval_times,printgen=THINNING) )
 monitors.append( mnScreen(pop_size, root_age, printgen=100) )
 </code></pre></div></div>
 
@@ -235,15 +235,15 @@ burnin = 0.1
 probs = c(0.025, 0.975)
 summary = "median"
 
-population_size_log = "output/horses_skyline_NEs.log"
-interval_change_points_log = "output/horses_skyline_times.log"
+population_size_log = "output/horses_iso_skyline_NEs.log"
+interval_change_points_log = "output/horses_iso_skyline_times.log"
 df &lt;- processPopSizes(population_size_log, interval_change_points_log, method = "events", burnin = burnin, probs = probs, summary = summary)
 p &lt;- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
 ggplot2::ggsave("horses_skyline.png", p)
 </code></pre></div></div>
 
-<figure id="example_skyline"><p><img src="figures/horses_skyline.png" width="800" /></p>
-<figcaption>This is how the resulting skyline plot should roughly look like.</figcaption>
+<figure id="example_skyline"><p><img src="figures/horses_iso_skyline.png" width="800" /></p>
+<figcaption>Example output from plotting the coalescent skyline analysis run in this exercise. The bold line represents the median of the posterior distribution of the population size and the shaded are shows the $95\%$ credible intervals.</figcaption>
 </figure>
 
 <h2 class="section" id="next-exercise">Next Exercise</h2>
@@ -267,7 +267,7 @@ The mean of this distribution is set to be the previous population size.
 This means that the population sizes in neighbouring intervals are correlated.
 For the first population size, a log uniform distribution was chosen.</p>
 
-<p>In a skyride analysis (missing reference), the population size is directly estimated on a log scale.
+<p>In a skyride analysis <a class="citation" href="#Minin2008">(Minin et al. 2008)</a>, the population size is directly estimated on a log scale.
 The intervals also are correlated, but a Gaussian Markov Random Field (GMRF) prior is used with the degree of smooting being regulated by a precision parameter.</p>
 
 <p>For the Extended Bayesian Skyline Plot <a class="citation" href="#Heled2008">(Heled and Drummond 2008)</a>, the number of changing points is estimated by stochastic search variable selection.
@@ -278,9 +278,9 @@ The estimation of the number of intervals can also be done slightly differently,
 <p>You can try and change the priors now accordingly.
 If you would like to have an example of what a <code class="language-plaintext highlighter-rouge">RevBayes</code> script with these different priors can look like, have a look at</p>
 <ul>
-  <li>the <a href="scripts/mcmc_heterochronous_BSP.Rev">example script for a BSP analysis</a>,</li>
-  <li>the <a href="scripts/mcmc_heterochronous_skyride.Rev">example script for a skyride analysis</a>, or</li>
-  <li>the <a href="scripts/mcmc_heterochronous_EBSP.Rev">example script for an EBSP analysis</a>.</li>
+  <li>the <a href="scripts/mcmc_isochronous_BSP.Rev">example script for a BSP analysis</a>,</li>
+  <li>the <a href="scripts/mcmc_isoochronous_skyride.Rev">example script for a skyride analysis</a>, or</li>
+  <li>the <a href="scripts/mcmc_isochronous_EBSP.Rev">example script for an EBSP analysis</a>.</li>
 </ul>
 
 <p>Note that all three examples have the interval change points on coalescent events (what we call “event-based”, as in the skyline model presented here).
@@ -299,6 +299,11 @@ In the next tutorial (<a href="/tutorials/coalescent/GMRF">The GMRF model</a>), 
 <li><span id="Heled2008">Heled J., Drummond A.J. 2008. Bayesian inference of population size history from multiple loci. BMC Evolutionary Biology. 8:289.</span>
 
 <a href="https://doi.org/10.1186/1471-2148-8-289">10.1186/1471-2148-8-289</a>
+
+</li>
+<li><span id="Minin2008">Minin V.N., Bloomquist E.W., Suchard M.A. 2008. Smooth Skyride through a Rough Skyline: Bayesian Coalescent-Based Inference of Population Dynamics. Molecular Biology and Evolution. 25:1459–1471.</span>
+
+<a href="https://doi.org/10.1093/molbev/msn090">10.1093/molbev/msn090</a>
 
 </li>
 <li><span id="Pybus2000">Pybus O.G., Rambaut A., Harvey P.H. 2000. An Integrated Framework for the Inference of Viral Population History From Reconstructed Genealogies. Genetics. 155:1429–1437.</span>

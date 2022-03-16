@@ -1,10 +1,10 @@
-################################################################################
+##########################################################################
 #
-# RevBayes Example: Homochronous constant coalescent process applied to horse data
+# RevBayes Example: Coalescent process applied to isochronous horse data
 #
 # authors: Sebastian Hoehna, Ronja Billenstein
 #
-################################################################################
+##########################################################################
 
 ## Global settings
 
@@ -21,7 +21,7 @@ monitors  = VectorMonitors()
 #######################
 
 # Read in sequence data
-sequences <- readDiscreteCharacterData("data/horses_homochronous_sequences.fasta")
+sequences <- readDiscreteCharacterData("data/horses_isochronous_sequences.fasta")
 taxa <- sequences.taxa()
 
 # Get the number of taxa and branches. We need these later on.
@@ -35,25 +35,16 @@ n_taxa <- taxa.size()
 
 ESTIMATED_ROOT_AGE <- 375000
 
-NUM_INTERVALS = n_taxa - 1
-
-tau ~ dnGamma(0.001,0.001)
-moves.append( mvScale(tau, lambda=0.1, tune=true, weight=2.0) )
-
-sd := 1.0 / sqrt( tau )
-
-ln_pop_size[1] ~ dnUniform(ln(1E-2),ln(1E8))
-ln_pop_size[1].setValue( ln(ESTIMATED_ROOT_AGE/2) )
-pop_size[1] := exp( ln_pop_size[1] )
-moves.append( mvSlide(ln_pop_size[1], delta=0.1, tune=true, weight=2.0) )
+NUM_INTERVALS = ceil((n_taxa - 1) / 5)
+pop_size[1] ~ dnLoguniform(1E-2,1E8)
+pop_size[1].setValue( ESTIMATED_ROOT_AGE/2 )
+moves.append( mvScale(pop_size[1], lambda=0.1, tune=true, weight=2.0) )
 
 for (i in 2:NUM_INTERVALS) {
 
-    ln_pop_size[i] ~ dnNormal( ln_pop_size[i-1], sd )
-    ln_pop_size[i].setValue( ln(ESTIMATED_ROOT_AGE/2) )
-    pop_size[i] := exp( ln_pop_size[i] )
-
-    moves.append( mvSlide(ln_pop_size[i], delta=0.1, tune=true, weight=2.0) )
+    pop_size[i] ~ dnExponential( 1/pop_size[i-1] )
+    pop_size[i].setValue( ESTIMATED_ROOT_AGE/2 )
+    moves.append( mvScale(pop_size[i], lambda=0.1, tune=true, weight=2.0) )
 
 }
 
@@ -62,7 +53,10 @@ for (i in 2:NUM_INTERVALS) {
 psi ~ dnCoalescentSkyline(theta=pop_size, method="events", taxa=taxa)
 
 root_age := psi.rootAge()
-obs_root_age ~ dnNormal(mean = root_age, sd = 60000, min = 250000, max = 500000)
+
+diff <- (500000 - 250000)/2.0
+# obs_root_age ~ dnNormal(mean = root_age, sd = 60000, min = 250000, max = 500000)
+obs_root_age ~ dnNormal(mean = root_age, sd = 60000, min = root_age - diff, max = root_age + diff)
 obs_root_age.clamp(375000)
 
 interval_times := psi.getIntervalAges()
@@ -128,11 +122,11 @@ mymodel = model(psi)
 ################
 
 #add monitors
-monitors.append( mnModel(filename="output/horses_skyride.log",printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_skyride.trees",psi,printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_skyride_NEs.log",pop_size,printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_skyride_times.log",interval_times,printgen=THINNING) )
-monitors.append( mnScreen(root_age, printgen=100) )
+monitors.append( mnModel(filename="output/horses_iso_BSP.log",printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_BSP.trees",psi,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_BSP_NEs.log",pop_size,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_BSP_times.log",interval_times,printgen=THINNING) )
+monitors.append( mnScreen(pop_size, root_age, printgen=100) )
 
 mymcmc = mcmc(mymodel, monitors, moves, nruns=NUM_REPLICATES, combine="mixed") 
 mymcmc.burnin(NUM_MCMC_ITERATIONS*0.1,100)

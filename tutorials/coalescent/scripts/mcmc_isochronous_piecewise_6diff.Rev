@@ -1,6 +1,6 @@
 ################################################################################
 #
-# RevBayes Example: Homochronous piecewise coalescent process applied to horse data
+# RevBayes Example: Piecewise coalescent process applied to isochronous horse sequence data
 #
 # authors: Sebastian Hoehna, Ronja Billenstein
 #
@@ -21,7 +21,7 @@ monitors  = VectorMonitors()
 #######################
 
 # Read in sequence data
-sequences <- readDiscreteCharacterData("data/horses_homochronous_sequences.fasta")
+sequences <- readDiscreteCharacterData("data/horses_isochronous_sequences.fasta")
 taxa <- sequences.taxa()
 
 # Get the number of taxa and branches. We need these later on.
@@ -35,7 +35,7 @@ n_taxa <- taxa.size()
 
 for (i in 1:5){
 	pop_size[i] ~ dnUniform(0,1E8)
-	pop_size[i].setValue(100)
+	pop_size[i].setValue(100000)
 	moves.append( mvScale(pop_size[i], lambda=0.1, tune=true, weight=2.0) )
 }
 
@@ -59,7 +59,10 @@ dem_const_2 = dfConstant(pop_size[5])
 psi ~ dnCoalescentDemography([dem_exp_1,dem_exp_2,dem_lin_1,dem_const_1,dem_lin_2,dem_const_2], changePoints=change_points, taxa=taxa)
 
 root_age := psi.rootAge()
-obs_root_age ~ dnNormal(mean = root_age, sd = 60000, min = 250000, max = 500000)
+
+diff <- (500000 - 250000)/2.0
+# obs_root_age ~ dnNormal(mean = root_age, sd = 60000, min = 250000, max = 500000)
+obs_root_age ~ dnNormal(mean = root_age, sd = 60000, min = root_age - diff, max = root_age + diff)
 obs_root_age.clamp(375000)
 
 ### add some moves that change the tree
@@ -123,10 +126,10 @@ mymodel = model(psi)
 ################
 
 #add monitors
-monitors.append( mnModel(filename="output/horses_piecewise_6diff.log",printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_piecewise_6diff.trees",psi,printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_piecewise_6diff_NEs.log",pop_size,printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_piecewise_6diff_times.log",change_points,printgen=THINNING) )
+monitors.append( mnModel(filename="output/horses_iso_piecewise_6diff.log",printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_piecewise_6diff.trees",psi,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_piecewise_6diff_NEs.log",pop_size,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_piecewise_6diff_times.log",change_points,printgen=THINNING) )
 monitors.append( mnScreen(pop_size, root_age, printgen=100) )
 
 mymcmc = mcmc(mymodel, monitors, moves, nruns=NUM_REPLICATES, combine="mixed")

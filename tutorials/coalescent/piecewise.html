@@ -56,7 +56,7 @@
 	<h1 class="maintitle">Piecewise Coalescent Process</h1>
 	<h3 class="subtitle">Estimating Demographic Histories with a Piecewise Coalescent Process</h3>
 	<h4 class="authors">Ronja Billenstein and Sebastian Höhna</h4>
-  <h5>Last modified on March 10, 2022</h5>
+  <h5>Last modified on March 16, 2022</h5>
 </div>
 
 
@@ -94,9 +94,9 @@
         
         
         
-          <li><a href="/tutorials/coalescent/data/horses_homochronous_sequences.fasta">horses_homochronous_sequences.fasta</a></li>
+          <li><a href="/tutorials/coalescent/data/horses_isochronous_sequences.fasta">horses_isochronous_sequences.fasta</a></li>
         
-          <li><a href="/tutorials/coalescent/scripts/mcmc_homochronous_piecewise_6diff.Rev">mcmc_homochronous_piecewise_6diff.Rev</a></li>
+          <li><a href="/tutorials/coalescent/scripts/mcmc_isochronous_piecewise_6diff.Rev">mcmc_isochronous_piecewise_6diff.Rev</a></li>
         
         </ul>
     
@@ -150,7 +150,7 @@ We define $\alpha$ as the slope.</p>
   <h2 id="for-your-info">For your info</h2>
   <p>The entire process of the skyline estimation can be executed by using the <strong>mcmc_piecewise.Rev</strong> script in the <strong>scripts</strong> folder.
 You can type the following command into <code class="language-plaintext highlighter-rouge">RevBayes</code>:</p>
-  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/mcmc_piecewiese.Rev")
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/mcmc_iso_piecewiese.Rev")
 </code></pre></div>  </div>
   <p>We will walk you through every single step in the following section.</p>
 </blockquote>
@@ -228,10 +228,10 @@ In this case, we set the vector of demographic models and the change points as i
 
 <p>Finally, we add the monitors and then run the MCMC.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/horses_piecewise.log",printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_piecewise.trees",psi,printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_piecewise_NEs.log",pop_size,printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_piecewise_times.log",change_points,printgen=THINNING) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/horses_iso_piecewise_6diff.log",printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_piecewise_6diff.trees",psi,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_piecewise_6diff_NEs.log",pop_size,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_piecewise_6diff_times.log",change_points,printgen=THINNING) )
 monitors.append( mnScreen(pop_size, root_age, printgen=100) )
 </code></pre></div></div>
 
@@ -372,8 +372,8 @@ ggplot2::ggsave("horses_piecewise_6diff.png", p)
 </code></pre></div></div>
 </blockquote>
 
-<figure id="example_piecewise"><p><img src="figures/horses_piecewise_6diff.png" width="800" /></p>
-<figcaption>This is how the resulting skyline plot with addition of the piecewise model should roughly look like.</figcaption>
+<figure id="example_piecewise"><p><img src="figures/horses_iso_piecewise_6diff.png" width="800" /></p>
+<figcaption>Example output from plotting the piecewise analysis with six pieces run in this exercise. The bold line represents the median of the posterior distribution of the population size and the shaded are shows the $95\%$ credible intervals. The reference skyline result is shown in green and the result of the piecewise analysis is shown in blue.</figcaption>
 </figure>
 
 <h2 class="section" id="summary">Summary</h2>

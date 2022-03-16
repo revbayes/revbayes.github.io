@@ -1,10 +1,10 @@
-################################################################################
+#################################################################################################
 #
-# RevBayes Example: Homochronous constant coalescent process applied to horse data
+# RevBayes Example: Coalescent process with CPP prior applied to isochronous horse sequence data
 #
 # authors: Sebastian Hoehna, Ronja Billenstein
 #
-################################################################################
+#################################################################################################
 
 ## Global settings
 
@@ -21,7 +21,7 @@ monitors  = VectorMonitors()
 #######################
 
 # Read in sequence data
-sequences <- readDiscreteCharacterData("data/horses_homochronous_sequences.fasta")
+sequences <- readDiscreteCharacterData("data/horses_isochronous_sequences.fasta")
 taxa <- sequences.taxa()
 
 # Get the number of taxa and branches. We need these later on.
@@ -61,12 +61,15 @@ changePoints := events.getRealPosValues(name="time")
 ### the time tree is a stochastic node modeled by the coalescent skyline process (dnCoalescentSkyline)
 psi ~ dnCoalescentSkyline(theta=population_size, times=changePoints, method="specified", taxa=taxa)
 
-trees = readTreeTrace("output/horses_constant.trees", treetype = "clock", burnin = 0.1)
+trees = readTreeTrace("output/horses_iso_constant.trees", treetype = "clock", burnin = 0.1)
 maptree = mapTree(trace=trees)
 psi.setValue( maptree )
 
 root_age := psi.rootAge()
-obs_root_age ~ dnNormal(mean = root_age, sd = 60000, min = 250000, max = 500000)
+
+diff <- (500000 - 250000)/2.0
+# obs_root_age ~ dnNormal(mean = root_age, sd = 60000, min = 250000, max = 500000)
+obs_root_age ~ dnNormal(mean = root_age, sd = 60000, min = root_age - diff, max = root_age + diff)
 obs_root_age.clamp(375000)
 
 # not implemented yet
@@ -132,11 +135,11 @@ mymodel = model(psi)
 ################
 
 #add monitors
-monitors.append( mnModel(filename="output/horses_CPP.log",printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_CPP_nevents.log",n_events,printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_CPP.trees",psi,printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_CPP_NEs.log",population_size,printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_CPP_times.log",interval_times,printgen=THINNING) )
+monitors.append( mnModel(filename="output/horses_iso_CPP.log",printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_CPP_nevents.log",n_events,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_CPP.trees",psi,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_CPP_NEs.log",population_size,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_CPP_times.log",interval_times,printgen=THINNING) )
 monitors.append( mnScreen(n_events, root_age, printgen=100) )
 
 mymcmc = mcmc(mymodel, monitors, moves, nruns=NUM_REPLICATES, combine="mixed")

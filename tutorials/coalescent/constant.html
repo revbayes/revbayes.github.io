@@ -56,7 +56,7 @@
 	<h1 class="maintitle">Constant Coalescent Process</h1>
 	<h3 class="subtitle">Estimating Demographic Histories with a Constant Coalescent Process</h3>
 	<h4 class="authors">Ronja Billenstein and Sebastian Höhna</h4>
-  <h5>Last modified on March 10, 2022</h5>
+  <h5>Last modified on March 16, 2022</h5>
 </div>
 
 
@@ -92,9 +92,9 @@
         
         
         
-          <li><a href="/tutorials/coalescent/data/horses_homochronous_sequences.fasta">horses_homochronous_sequences.fasta</a></li>
+          <li><a href="/tutorials/coalescent/data/horses_isochronous_sequences.fasta">horses_isochronous_sequences.fasta</a></li>
         
-          <li><a href="/tutorials/coalescent/scripts/mcmc_homochronous_constant.Rev">mcmc_homochronous_constant.Rev</a></li>
+          <li><a href="/tutorials/coalescent/scripts/mcmc_isochronous_constant.Rev">mcmc_isochronous_constant.Rev</a></li>
         
         </ul>
     
@@ -122,10 +122,10 @@ The coalescent process was first introduced by Kingman in 1982 for a constant po
 <p>In the constant coalescent process, a single population size is assumed for the whole tree.
 The relationship betweeen coalescent waiting times and effective population size is defined through the coalescent rate: $c = \frac{k (k-1)}{2N_e}$ with $k$ being the number of currently active lineages and $N_e$ being the effective population size.</p>
 
-<p>In <a href="#coalescent"></a>, a general scheme is shown.
+<p>In <a href="#coalescent-scheme"></a>, a general scheme is shown.
 Waiting times are in between coalescent events.</p>
 
-<figure id="coalescent"><p><img src="figures/scheme_constant.png" width="800" /></p>
+<figure id="coalescent-scheme"><p><img src="figures/scheme_constant.png" width="800" /></p>
 <figcaption>Schematic figure of a coalescent tree and the different times associated with it. $w_k$ are the waiting times with $k$ active lineages, $t_{c,k}$ are the coalescent events at the beginning of such a coalescent interval. Here, an example of a constant population size trajectory is shown. The bold line represents the median of the posterior distribution of the population size and the shaded are shows the $95\%$ credible intervals.</figcaption>
 </figure>
 
@@ -137,10 +137,10 @@ Waiting times are in between coalescent events.</p>
 
 <blockquote class="info">
   <h2 id="for-your-info">For your info</h2>
-  <p>The entire process of the estimation can be executed by using the <strong>mcmc_homochronous_constant.Rev</strong> script that you can download on the left side of the page.
+  <p>The entire process of the estimation can be executed by using the <strong>mcmc_isochronous_constant.Rev</strong> script that you can download on the left side of the page.
 Save it in your <strong>scripts</strong> directory.
 You can type the following command into <code class="language-plaintext highlighter-rouge">RevBayes</code>:</p>
-  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/mcmc_homochronous_constant.Rev")
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/mcmc_isochronous_constant.Rev")
 </code></pre></div>  </div>
   <p>We will walk you through every single step in the following section.</p>
 </blockquote>
@@ -171,8 +171,8 @@ monitors  = VectorMonitors()
 <h3 class="subsection" id="read-the-data">Read the data</h3>
 <hr class="subsection" />
 
-<p>Start by reading in the aligned sequences of the homochronous horse data.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sequences &lt;- readDiscreteCharacterData("data/horses_homochronous_sequences.fasta")
+<p>Start by reading in the aligned sequences of the isochronous horse data.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sequences &lt;- readDiscreteCharacterData("data/horses_isochronous_sequences.fasta")
 </code></pre></div></div>
 
 <p>You will also need the names of the taxa and their number.</p>
@@ -301,14 +301,14 @@ seq.clamp(sequences)
 </code></pre></div></div>
 
 <p>Now, we add some monitors.
-The <code class="language-plaintext highlighter-rouge">mndModel</code> monitor keeps track of all model parameters and thus is written into our main <code class="language-plaintext highlighter-rouge">.log</code> file.
+The <code class="language-plaintext highlighter-rouge">mnModel</code> monitor keeps track of all model parameters and thus is written into our main <code class="language-plaintext highlighter-rouge">.log</code> file.
 With <code class="language-plaintext highlighter-rouge">mnFile</code>, you can keep track of the trees or parameters that you would like to keep in an extra file.
 <code class="language-plaintext highlighter-rouge">mnScreen</code> is responsible for having output printed directly to your screen.
 This output will not per se be saved in a file.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/horses_constant.log",printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_constant.trees",psi,printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_constant_NE.log",pop_size,printgen=THINNING) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/horses_iso_constant.log",printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_constant.trees",psi,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_constant_NE.log",pop_size,printgen=THINNING) )
 monitors.append( mnScreen(pop_size, root_age, printgen=100) )
 </code></pre></div></div>
 
@@ -341,7 +341,7 @@ burnin = 0.1
 probs = c(0.025, 0.975)
 summary = "median"
 
-population_size_log = "output/horses_constant_NE.log"
+population_size_log = "output/horses_iso_constant_NE.log"
 df &lt;- processPopSizes(population_size_log, method = "constant", burnin = burnin, probs = probs, summary = summary)
 p &lt;- plotPopSizes(df, method = "constant") + ggplot2::coord_cartesian(ylim = c(1e3, 1e8), xlim = c(1e5, 0))
 ggplot2::ggsave("horses_constant.png", p)
@@ -349,8 +349,8 @@ ggplot2::ggsave("horses_constant.png", p)
 
 <p>Your output should look roughly like the following figure.</p>
 
-<figure id="coalescent"><p><img src="figures/horses_constant.png" width="800" /></p>
-<figcaption>Example output from plotting the constant coalescent analysis run in this exercise.</figcaption>
+<figure id="coalescent"><p><img src="figures/horses_iso_constant.png" width="800" /></p>
+<figcaption>Example output from plotting the constant coalescent analysis run in this exercise. The bold line represents the median of the posterior distribution of the population size and the shaded are shows the $95\%$ credible intervals.</figcaption>
 </figure>
 
 <h2 class="section" id="next-exercise">Next Exercise</h2>

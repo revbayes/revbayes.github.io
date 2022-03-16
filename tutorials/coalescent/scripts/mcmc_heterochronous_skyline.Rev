@@ -1,10 +1,10 @@
-################################################################################
+#############################################################################################
 #
-# RevBayes Example: Homochronous constant coalescent process applied to horse data
+# RevBayes Example: Coalescent skyline process applied to heterochronous horse sequence data
 #
 # authors: Sebastian Hoehna, Ronja Billenstein
 #
-################################################################################
+#############################################################################################
 
 ## Global settings
 
@@ -35,7 +35,7 @@ NUM_INTERVALS = ceil((n_taxa - 1) / 5)
 for (i in 1:NUM_INTERVALS) {
 
     pop_size[i] ~ dnUniform(0,1E8)
-    pop_size[i].setValue(100)
+    pop_size[i].setValue(100000)
     moves.append( mvScale(pop_size[i], lambda=0.1, tune=true, weight=2.0) )
 
 }
@@ -45,7 +45,10 @@ for (i in 1:NUM_INTERVALS) {
 psi ~ dnCoalescentSkyline(theta=pop_size, method="events", taxa=taxa)
 
 root_age := psi.rootAge()
-obs_root_age ~ dnNormal(mean = root_age, sd = 200000, min = 780000, max = 1200000)
+
+diff <- (1200000 - 780000)/2.0
+# obs_root_age ~ dnNormal(mean = root_age, sd = 200000, min = 780000, max = 1200000)
+obs_root_age ~ dnNormal(mean = root_age, sd = 200000, min = root_age - diff, max = root_age + diff)
 obs_root_age.clamp(850000)
 
 interval_times := psi.getIntervalAges()

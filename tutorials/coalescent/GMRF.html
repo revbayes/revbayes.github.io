@@ -56,7 +56,7 @@
 	<h1 class="maintitle">Skyline Models with GMRF</h1>
 	<h3 class="subtitle">Estimating Demographic Histories with Skyline Models using a Gaussian Markov Random Field Prior</h3>
 	<h4 class="authors">Ronja Billenstein and Sebastian Höhna</h4>
-  <h5>Last modified on March 10, 2022</h5>
+  <h5>Last modified on March 16, 2022</h5>
 </div>
 
 
@@ -96,9 +96,9 @@
         
         
         
-          <li><a href="/tutorials/coalescent/data/horses_homochronous_sequences.fasta">horses_homochronous_sequences.fasta</a></li>
+          <li><a href="/tutorials/coalescent/data/horses_isochronous_sequences.fasta">horses_isochronous_sequences.fasta</a></li>
         
-          <li><a href="/tutorials/coalescent/scripts/mcmc_homochronous_GMRF.Rev">mcmc_homochronous_GMRF.Rev</a></li>
+          <li><a href="/tutorials/coalescent/scripts/mcmc_isochronous_GMRF.Rev">mcmc_isochronous_GMRF.Rev</a></li>
         
         </ul>
     
@@ -147,9 +147,9 @@ The waiting times $w_k$ refer to the waiting time starting when there are $k$ ac
 
 <blockquote class="info">
   <h2 id="for-your-info">For your info</h2>
-  <p>The entire process of the GMRF based estimation can be executed by using the <strong>mcmc_homochronous_GMRF.Rev</strong> script in the <strong>scripts</strong> folder.
+  <p>The entire process of the GMRF based estimation can be executed by using the <strong>mcmc_isochronous_GMRF.Rev</strong> script in the <strong>scripts</strong> folder.
 You can type the following command into <code class="language-plaintext highlighter-rouge">RevBayes</code>:</p>
-  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/mcmc_homochronous_GMRF.Rev")
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/mcmc_isochronous_GMRF.Rev")
 </code></pre></div>  </div>
   <p>We will walk you through the script in the following section.</p>
 </blockquote>
@@ -291,10 +291,10 @@ Here, they should not change, so you might as well omit this line.</p>
 <p>Finally, we add the monitors and then run the MCMC.
 Remember to change the file names to avoid overwriting your previous results.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/horses_GMRF.log",printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_GMRF.trees",psi,printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_GMRF_NEs.log",population_size,printgen=THINNING) )
-# monitors.append( mnFile(filename="output/horses_GMRF_times.log",interval_times,printgen=THINNING) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/horses_iso_GMRF.log",printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_GMRF.trees",psi,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_GMRF_NEs.log",population_size,printgen=THINNING) )
+# monitors.append( mnFile(filename="output/horses_iso_GMRF_times.log",interval_times,printgen=THINNING) )
 monitors.append( mnScreen(population_size, root_age, printgen=100) )
 
 mymcmc = mcmc(mymodel, monitors, moves)
@@ -313,8 +313,8 @@ burnin = 0.1
 probs = c(0.025, 0.975)
 summary = "median"
 
-population_size_log = "output/horses_GMRF_NEs.log"
-interval_change_points_log = "output/horses_GMRF_times.log"
+population_size_log = "output/horses_iso_GMRF_NEs.log"
+interval_change_points_log = "output/horses_iso_GMRF_times.log"
 df &lt;- processPopSizes(population_size_log, interval_change_points_log, method = "specified", burnin = burnin, probs = probs, summary = summary)
 p &lt;- plotPopSizes(df, method = "specified") + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
 ggplot2::ggsave("horses_GMRF.png", p)
@@ -323,8 +323,8 @@ ggplot2::ggsave("horses_GMRF.png", p)
 <!--- In the example, we set the limits of the x-axis to the root age value from the next exercise (see below).
 This was done to be able to easily compare the plots. --->
 
-<figure id="example_skyline"><p><img src="figures/horses_GMRF.png" width="800" /></p>
-<figcaption>This is how the resulting GMRF skyline plot should roughly look like.</figcaption>
+<figure id="example_skyline"><p><img src="figures/horses_iso_GMRF.png" width="800" /></p>
+<figcaption>Example output from plotting the GMRF analysis run in this exercise. The bold line represents the median of the posterior distribution of the population size and the shaded are shows the $95\%$ credible intervals.</figcaption>
 </figure>
 
 <h2 class="section" id="secHSMRF">The Horseshoe Markov Random Field Prior</h2>
@@ -420,6 +420,7 @@ changePoints := events.getRealPosValues(name="time")
 </ul>
 
 <!--- <h2 class="section" id="alternative-implementations">Alternative Implementations</h2><hr class="section"> --->
+<!--- skygrid --->
 
 <ol class="bibliography"><li><span id="Faulkner2020">Faulkner J.R., Magee A.F., Shapiro B., Minin V.N. 2020. Horseshoe-based Bayesian nonparametric estimation of effective population size trajectories. Biometrics. 76:677–690.</span>
 
