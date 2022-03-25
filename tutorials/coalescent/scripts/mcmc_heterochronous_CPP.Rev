@@ -61,7 +61,7 @@ changePoints := events.getRealPosValues(name="time")
 ### the time tree is a stochastic node modeled by the coalescent skyline process (dnCoalescentSkyline)
 psi ~ dnCoalescentSkyline(theta=population_size, times=changePoints, method="specified", taxa=taxa)
 
-trees = readTreeTrace("output/horses_constant.trees", treetype = "clock", burnin = 0.1)
+trees = readTreeTrace("output/horses_het_constant.trees", treetype = "clock", burnin = 0.1)
 maptree = mapTree(trace=trees)
 psi.setValue( maptree )
 
@@ -72,7 +72,6 @@ diff <- (1200000 - 780000)/2.0
 obs_root_age ~ dnNormal(mean = root_age, sd = 200000, min = root_age - diff, max = root_age + diff)
 obs_root_age.clamp(850000)
 
-# not implemented yet
 interval_times := changePoints
 
 ### add some moves that change the tree

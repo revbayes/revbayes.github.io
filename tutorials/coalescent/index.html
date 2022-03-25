@@ -56,7 +56,7 @@
 	<h1 class="maintitle">Coalescent Analyses</h1>
 	<h3 class="subtitle">Estimating Demographic Histories with Coalescent Processes</h3>
 	<h4 class="authors">Ronja Billenstein and Sebastian Höhna</h4>
-  <h5>Last modified on March 16, 2022</h5>
+  <h5>Last modified on March 25, 2022</h5>
 </div>
 
 
@@ -129,72 +129,135 @@ The first analyses will consider data from isochronous samples, <em>i.e.</em>, d
 In the second part of the exercises, you will be asked to also analyze data from heterochronous samples, <em>i.e.</em>, samples that have been collected at different points in time.
 The data for these analyes are taken from <a class="citation" href="#Vershinina2021">Vershinina et al. (2021)</a>.</p>
 
-<p>The following table provides an overview of the different analyses performed in the tutorial for isochronous data:</p>
+<p><br />
+<br />
+<br /></p>
+
+<p>The following table provides an overview of different coalescent models. The tutorials column links directly to the respective tutorial with isochronous data. The tutorial on <a href="/tutorials/coalescent/heterochronous">heterochronous data</a> shows how to apply the models to data from different points in time.</p>
 
 <table>
   <thead>
     <tr>
       <th>Model</th>
-      <th>Number of pieces</th>
+      <th>Description</th>
       <th>Demographic function</th>
       <th>Prior on the population sizes</th>
       <th>Interval change point method</th>
+      <th>Multiple loci analysis possible?</th>
       <th>Tutorial</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>Constant</td>
-      <td>one</td>
+      <td>A simple coalescent model with one constant population size.</td>
       <td>constant</td>
       <td>individually chosen</td>
       <td>-</td>
-      <td><a href="/tutorials/coalescent/constant">constant</a></td>
+      <td>Yes</td>
+      <td><a href="/tutorials/coalescent/constant">Constant</a></td>
     </tr>
     <tr>
-      <td>Skyline</td>
+      <td>Linear</td>
+      <td>A coalescent model with a linear population size trajectory.</td>
+      <td>linear</td>
       <td>individually chosen</td>
-      <td>constant<br /><br />linear</td>
-      <td>independent and identically distributed (iid)<br /><br />$\theta_i | \theta_{i-1}$</td>
-      <td>event based</td>
-      <td><a href="/tutorials/coalescent/skyline">skyline</a></td>
+      <td>-</td>
+      <td>Yes</td>
+      <td> </td>
     </tr>
     <tr>
-      <td>Gaussian Markov Random Field (GMRF)</td>
+      <td>Exponential</td>
+      <td>A coalescent model with an exponential population size trajectory.</td>
+      <td>exponential</td>
       <td>individually chosen</td>
+      <td>-</td>
+      <td>Yes</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Bayesian Skyline Plot without autocorrelation</td>
+      <td>A coalescent model with a piecewise constant population size trajectory. The different pieces (intervals) are not correlated. The times of interval change are dependent on coalescent events (“event-based”).</td>
       <td>constant</td>
-      <td>$\theta_i | \theta_{i-1}$</td>
-      <td>specified - here equally sized</td>
-      <td>With sequences as input data: <a href="/tutorials/coalescent/GMRF">GMRF</a><br /><br />With trees as input data: <a href="/tutorials/coalescent/GMRF_treebased">GMRF treebased</a></td>
+      <td>individually chosen, independent and identically distributed (iid)</td>
+      <td>-</td>
+      <td>Yes</td>
+      <td><a href="/tutorials/coalescent/skyline">Skyline</a></td>
     </tr>
     <tr>
-      <td>Horseshoe Markov Random Field (HSMRF)</td>
-      <td>individually chosen</td>
+      <td>Bayesian Skyline Plot with autocorrelation <a class="citation" href="#Drummond2005">(Drummond et al. 2005)</a></td>
+      <td>A coalescent model with a piecewise constant population size trajectory. The different pieces (intervals) are correlated, each population size is drawn from an exponential distribution with the mean being the previous population size. The times of interval change are dependent on coalescent events (“event-based”).</td>
       <td>constant</td>
-      <td>$\theta_i | \theta_{i-1}$</td>
-      <td>specified - here equally sized</td>
-      <td>little description included in <a href="/tutorials/coalescent/GMRF">GMRF</a><br /><br />script in <a href="/tutorials/coalescent/HSMRF">HSMRF</a></td>
+      <td>$\theta_i | \theta_{i-1}$ (exponential distribution with mean $\theta_{i-1}$)</td>
+      <td>event-based</td>
+      <td>No, only single loci</td>
+      <td>Little description included in <a href="/tutorials/coalescent/skyline#secAltPriors">skyline</a> <a href="scripts/mcmc_isochronous_BSP.Rev">Example script</a></td>
     </tr>
     <tr>
-      <td>Compound Poisson Prior (CPP)</td>
-      <td>individually chosen</td>
-      <td>constant<br /><br />linear</td>
-      <td>iid</td>
+      <td>Extended Bayesian Skyline Plot <a class="citation" href="#Heled2008">(Heled and Drummond 2008)</a></td>
+      <td>A coalescent model with a piecewise constant or linear population size trajectory. The different pieces are not correlated. The times of interval change are independent from coalescent events, they are independent and identically distributed (iid). The number of changes and thus the number of intervals is determined by stochastic variable search.</td>
+      <td>constant</td>
+      <td>independent and identically distributed (iid)</td>
+      <td>event-based - number and position of change points estimated</td>
+      <td>Yes</td>
+      <td>Little description included in <a href="/tutorials/coalescent/skyline#secAltPriors">skyline</a> <a href="scripts/mcmc_isochronous_EBSP.Rev">Example script</a></td>
+    </tr>
+    <tr>
+      <td>Skyride <a class="citation" href="#Minin2008">(Minin et al. 2008)</a></td>
+      <td>A coalescent model with a piecewise constant population size trajectory. The different pieces are correlated via a Gaussian Markov Random Field (GMRF) Prior, the degree of smoothing is determined by a precision parameter. The times of interval change are dependent on coalescent events (“event-based”).</td>
+      <td>constant</td>
+      <td>$\theta_i | \theta_{i-1}$ (GMRF Prior with precision parameter)</td>
+      <td>event-based</td>
+      <td>No, only single loci</td>
+      <td>Little description included in <a href="/tutorials/coalescent/skyline#secAltPriors">skyline</a> <a href="scripts/mcmc_isochronous_skyride.Rev">Example script</a></td>
+    </tr>
+    <tr>
+      <td>Skygrid <a class="citation" href="#Gill2012">(Gill et al. 2012)</a></td>
+      <td>A coalescent model with a piecewise constant population size trajectory. The different pieces are correlated via a Gaussian Markov Random Field (GMRF) Prior and are equally spaced in time, the degree of smoothing is determined by a precision parameter. The times of interval change are independent from coalescent events, they are independent and identically distributed (iid). Can be considered as extension of the skyride model.</td>
+      <td>constant or linear</td>
+      <td>$\theta_i | \theta_{i-1}$ (GMRF Prior with precision parameter)</td>
+      <td>equally sized</td>
+      <td>Yes</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Gaussian Markov Random Field (GMRF) Prior with interval change points independent from coalescent events</td>
+      <td>A coalescent model with a piecewise constant or linear population size trajectory. The different pieces are correlated via a Gaussian Markov Random Field (GMRF) Prior. The times of interval change are independent from coalescent events, they are independent and identically distributed (iid).</td>
+      <td>constant or linear</td>
+      <td>$\theta_i | \theta_{i-1}$ (GMRF Prior)</td>
+      <td>specified - here equally sized</td>
+      <td>Yes</td>
+      <td>With sequences as input data: <a href="/tutorials/coalescent/GMRF">GMRF</a>  With trees as input data: <a href="/tutorials/coalescent/GMRF_treebased">GMRF treebased</a></td>
+    </tr>
+    <tr>
+      <td>Horseshoe Markov Random Field (HSMRF) Prior with interval change points independent from coalescent events <a class="citation" href="#Faulkner2020">(Faulkner et al. 2020)</a></td>
+      <td>A coalescent model with a piecewise constant or linear population size trajectory. The different pieces are correlated via a Horseshoe Markov Random Field (HSMRF) Prior. The times of interval change are independent from coalescent events, they are independent and identically distributed (iid).</td>
+      <td>constant or linear</td>
+      <td>$\theta_i | \theta_{i-1}$ (HSMRF Prior)</td>
+      <td>specified - here equally sized</td>
+      <td>Yes</td>
+      <td>Little description included in <a href="/tutorials/coalescent/GMRF#secHSMRF">GMRF</a>  Script in <a href="/tutorials/coalescent/HSMRF">HSMRF</a></td>
+    </tr>
+    <tr>
+      <td>Compound Poisson Process (CPP) Prior (similar to <a class="citation" href="#OpgenRhein2005">Opgen-Rhein et al. (2005)</a>)</td>
+      <td>A coalescent model with a piecewise constant or linear population size trajectory. The number of pieces (intervals) is not fixed. A Poisson Prior is used on the number of interval change points, additional priors need to be defined for population sizes and change points. The number of change points is determined via reversible jump MCMC (rjMCMC).</td>
+      <td>constant or linear</td>
+      <td>independent and identically distributed (iid)</td>
       <td>specified - number and position of change points estimated</td>
-      <td>little description included in <a href="/tutorials/coalescent/GMRF">GMRF</a><br /><br />script in <a href="/tutorials/coalescent/CPP">CPP</a></td>
+      <td>Yes</td>
+      <td>Little description included in <a href="/tutorials/coalescent/GMRF#secCPP">GMRF</a>  Script in <a href="/tutorials/coalescent/CPP">CPP</a></td>
     </tr>
     <tr>
-      <td>Piecewise</td>
-      <td>individually chosen</td>
-      <td>constant<br /><br />linear<br /><br />exponential</td>
-      <td>iid</td>
+      <td>Piecewise (similar to <a class="citation" href="#Pybus2002">Pybus and Rambaut (2002)</a>, but with flexible combinations)</td>
+      <td>A coalescent model with user-defined demographic functions for a number of intervals. Base demographic functions included in RevBayes are constant, linear and exponential population size trajectories. These can be combined in an arbitrary way, but the most ancient one should always be constant due to computational reasons.</td>
+      <td>constant and linear and exponential</td>
+      <td>individually chosen, independent and identically distributed (iid)</td>
       <td>specified - individually chosen</td>
-      <td><a href="/tutorials/coalescent/piecewise">piecewise</a></td>
+      <td>No, only single loci</td>
+      <td><a href="/tutorials/coalescent/piecewise">Piecewise</a></td>
     </tr>
   </tbody>
 </table>
-
-<p>The tutorial on <a href="/tutorials/coalescent/heterochronous">heterochronous data</a> shows how to apply the models to data from different points in time.</p>
 
 <!--- ### Why?! --->
 
@@ -277,14 +340,49 @@ It is therefore recommended to do the exercises for isochronous data first.</p>
 <p>After doing all the exercises, you can compare the resulting population sizes.
 Have a look at the <a href="/tutorials/coalescent/summary">summary</a>.</p>
 
-<ol class="bibliography"><li><span id="Griffiths1994">Griffiths R.C., Tavare S., Bodmer W.F., Donnelly P.J. 1994. Sampling theory for neutral alleles in a varying environment. Philosophical Transactions of the Royal Society of London. Series B: Biological Sciences. 344:403–410.</span>
+<ol class="bibliography"><li><span id="Drummond2005">Drummond A.J., Rambaut A., Shapiro B., Pybus O.G. 2005. Bayesian Coalescent Inference of Past Population Dynamics from Molecular Sequences. Molecular Biology and Evolution. 22:1185–1192.</span>
+
+<a href="https://doi.org/10.1093/molbev/msi103">10.1093/molbev/msi103</a>
+
+</li>
+<li><span id="Faulkner2020">Faulkner J.R., Magee A.F., Shapiro B., Minin V.N. 2020. Horseshoe-based Bayesian nonparametric estimation of effective population size trajectories. Biometrics. 76:677–690.</span>
+
+<a href="https://doi.org/https://doi.org/10.1111/biom.13276">https://doi.org/10.1111/biom.13276</a>
+
+</li>
+<li><span id="Gill2012">Gill M.S., Lemey P., Faria N.R., Rambaut A., Shapiro B., Suchard M.A. 2012. Improving Bayesian Population Dynamics Inference: A Coalescent-Based Model for Multiple Loci. Molecular Biology and Evolution. 30:713–724.</span>
+
+<a href="https://doi.org/10.1093/molbev/mss265">10.1093/molbev/mss265</a>
+
+</li>
+<li><span id="Griffiths1994">Griffiths R.C., Tavare S., Bodmer W.F., Donnelly P.J. 1994. Sampling theory for neutral alleles in a varying environment. Philosophical Transactions of the Royal Society of London. Series B: Biological Sciences. 344:403–410.</span>
 
 <a href="https://doi.org/10.1098/rstb.1994.0079">10.1098/rstb.1994.0079</a>
+
+</li>
+<li><span id="Heled2008">Heled J., Drummond A.J. 2008. Bayesian inference of population size history from multiple loci. BMC Evolutionary Biology. 8:289.</span>
+
+<a href="https://doi.org/10.1186/1471-2148-8-289">10.1186/1471-2148-8-289</a>
 
 </li>
 <li><span id="Kingman1982">Kingman J.F.C. 1982. On the Genealogy of Large Populations. Journal of Applied Probability. 19:27–43.</span>
 
 <a href="https://doi.org/10.2307/3213548">10.2307/3213548</a>
+
+</li>
+<li><span id="Minin2008">Minin V.N., Bloomquist E.W., Suchard M.A. 2008. Smooth Skyride through a Rough Skyline: Bayesian Coalescent-Based Inference of Population Dynamics. Molecular Biology and Evolution. 25:1459–1471.</span>
+
+<a href="https://doi.org/10.1093/molbev/msn090">10.1093/molbev/msn090</a>
+
+</li>
+<li><span id="OpgenRhein2005">Opgen-Rhein R., Fahrmeir L., Strimmer K. 2005. Inference of demographic history from genealogical trees using reversible jump Markov chain Monte Carlo. BMC Evolutionary Biology. 5:6.</span>
+
+<a href="https://doi.org/10.1186/1471-2148-5-6">10.1186/1471-2148-5-6</a>
+
+</li>
+<li><span id="Pybus2002">Pybus O.G., Rambaut A. 2002. GENIE: estimating demographic history from molecular phylogenies. Bioinformatics. 18:1404–1405.</span>
+
+<a href="https://doi.org/10.1093/bioinformatics/18.10.1404">10.1093/bioinformatics/18.10.1404</a>
 
 </li>
 <li><span id="Vershinina2021">Vershinina A.O., Heintzman P.D., Froese D.G., Zazula G., Cassatt-Johnstone M., Dalén L., Der Sarkissian C., Dunn S.G., Ermini L., Gamba C., Groves P., Kapp J.D., Mann D.H., Seguin-Orlando A., Southon J., Stiller M., Wooller M.J., Baryshnikov G., Gimranov D., Scott E., Hall E., Hewitson S., Kirillova I., Kosintsev P., Shidlovsky F., Tong H.-W., Tiunov M.P., Vartanyan S., Orlando L., Corbett-Detig R., MacPhee R.D., Shapiro B. 2021. Ancient horse genomes reveal the timing and extent of dispersals across the Bering Land Bridge. Molecular Ecology. 30:6144–6161.</span>
