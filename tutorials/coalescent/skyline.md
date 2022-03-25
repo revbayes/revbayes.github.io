@@ -180,7 +180,7 @@ This means that the population sizes in neighbouring intervals are correlated.
 For the first population size, a log uniform distribution was chosen.
 
 In a skyride analysis {% cite Minin2008 %}, the population size is directly estimated on a log scale.
-The intervals also are correlated, but a Gaussian Markov Random Field (GMRF) prior is used with the degree of smooting being regulated by a precision parameter.
+The intervals also are correlated, but a Gaussian Markov Random Field (GMRF) prior is used with the degree of smoothing being regulated by a precision parameter.
 
 For the Extended Bayesian Skyline Plot {% cite Heled2008 %}, the number of changing points is estimated by stochastic search variable selection.
 The intervals are considered to be iid.
