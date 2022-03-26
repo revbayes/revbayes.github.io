@@ -1,0 +1,154 @@
+# moves container
+moves = VectorMoves()
+
+# convenient constants
+H = ln(10) / (qnorm(0.975) - qnorm(0.025))
+
+################
+# loading data #
+################
+
+# read the sequence data
+moledata = readDiscreteCharacterData("data/rbcL.nex")
+naln     = moledata.size() # the number of alignments
+
+# read the morphological data
+morphdata = readDiscreteCharacterData("data/morpho.nex")
+
+# read the taxon data
+taxa = readTaxonData("data/taxa.tsv", delimiter=TAB)
+ntax = taxa.size()
+nbranch = 2 * ntax - 2
+
+# count the number of fossils
+num_fossils = 0
+for(i in 1:taxa.size()) {
+  if (taxa[i].getMinAge() != 0) {
+    num_fossils = num_fossils + 1
+  }
+}
+
+# add missing taxa to the sequence data
+for(i in 1:naln) {
+  x = moledata[i]
+  x.addMissingTaxa(taxa)
+  moledata[i] = x
+}
+
+# add missing taxa to the morphological data
+morphdata.addMissingTaxa(taxa)
+
+# read in the timescale
+timescale = readDataDelimitedFile("data/epoch_timescale.csv", header = true, delimiter=",")
+num_bins  = timescale.size()
+for(i in 1:num_bins) {
+    breakpoints[i] <- timescale[i][2]
+}
+
+#############################
+# specifying the tree model #
+#############################
+
+# first we specify some dataset-specific parameters
+extant_taxa = 10    # total number of extant taxa in the tree
+total_taxa  = 111   # total number of extant taxa in the group
+origin_min  = 419.2 # earliest origin is the beginning of the Devonian
+origin_max  = 485.4 # lastest origin is the beginning of the Ordovician
+
+# draw the origin time
+origin_time ~ dnUniform(origin_min, origin_max)
+moves.append( mvSlide(origin_time, weight = 1.0) )
+
+# specify the diversification model
+source("modules/diversification_models/" + diversification_model + ".Rev")
+
+# specify the fossilization model
+source("modules/fossilization_models/" + fossilization_model + ".Rev")
+
+# make the FBD tree
+timetree ~ dnFBDP(originAge = origin_time,
+                  lambda    = lambda,
+                  mu        = mu,
+                  psi       = psi,
+                  timeline  = breakpoints,
+                  condition = "survival",
+                  taxa      = taxa)
+
+# MCMC proposals on the tree
+moves.append( mvFNPR(timetree,                       weight = ntax                             ) )
+moves.append( mvNarrow(timetree,                     weight = 5 * ntax                         ) )
+moves.append( mvNodeTimeSlideBeta(timetree,          weight = 5 * ntax                         ) )
+moves.append( mvRootTimeSlideUniform(timetree,       weight = ntax,        origin = origin_time) )
+
+# MCMC proposals on whether fossils are sampled ancestors
+moves.append( mvCollapseExpandFossilBranch(timetree, weight = num_fossils, origin = origin_time) )
+num_sampled_ancestors := timetree.numSampledAncestors()
+
+# MCMC proposals on the fossil ages
+fossils = timetree.getFossils()
+for(i in 1:fossils.size()) {
+
+  # get the fossil age
+  t[i] := tmrca(timetree, clade(fossils[i]))
+
+  # specify the age contraint
+  a = fossils[i].getMinAge()
+  b = fossils[i].getMaxAge()
+
+  F[i] ~ dnUniform(t[i] - b, t[i] - a)
+  F[i].clamp( 0 )
+
+  # specify a proposal on the fossil age
+  moves.append( mvFossilTimeSlideUniform(timetree, origin_time, fossils[i], weight = 1.0) )
+
+}
+
+# keep track of the extant tree
+extant_tree := fnPruneTree(timetree, fossils)
+
+# keep track of the tree length
+TL        := timetree.treeLength()
+TL_extant := extant_tree.treeLength()
+
+########################################
+# specifying the molecular clock model #
+########################################
+
+source("modules/mole_clock_models/" + mole_clock_model + ".Rev")
+
+#####################################
+# specifying the substitution model #
+#####################################
+
+source("modules/substn_models/" + substn_model + ".Rev")
+
+# make the CTMC for molecular data
+for(i in 1:naln) {
+  seq[i] ~ dnPhyloCTMC(timetree, mole_Q[i], branchRates = mole_branch_rates, siteRates = mole_site_rates[i] * mole_relative_rates[i])
+  seq[i].clamp( moledata[i] )
+}
+
+############################################
+# specifying the morphological clock model #
+############################################
+
+source("modules/morph_clock_models/" + morph_clock_model + ".Rev")
+
+#################################################
+# specifying the morphological transition model #
+#################################################
+
+source("modules/morph_models/" + morph_model + ".Rev")
+
+# make the CMTC for morphological data
+morph ~ dnPhyloCTMC(timetree, morph_Q, branchRates = morph_branch_rates, siteRates = morph_site_rates, coding = "variable", type = "Standard", siteMatrices = site_matrices)
+morph.clamp( morphdata )
+
+####################
+# running analysis #
+####################
+
+source("modules/analysis/" + analysis + ".Rev")
+
+
+q()

@@ -1,0 +1,13 @@
+# the constant-rate fossilization model
+# REQUIRED: psi (one per time interval)
+
+# empirical prior on the fossilization rate
+fossilization_prior_mean <- num_fossils * diversification_prior_mean / (exp(diversification_prior_mean * origin_time) - 1)
+fossilization_prior_sd   <- 2 * H
+
+# the fossilization rate
+psi_global ~ dnLognormal( ln(fossilization_prior_mean) - fossilization_prior_sd * fossilization_prior_sd * 0.5, fossilization_prior_sd)
+moves.append( mvScale(psi_global, weight = 1.0) )
+
+# define the timelines
+psi := rep(psi_global, num_bins + 1)

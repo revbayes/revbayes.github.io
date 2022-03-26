@@ -1,0 +1,58 @@
+# the epochal diversification model
+# REQUIRED: lambda, mu (both one per time interval)
+
+# empirical prior on the diversification rate
+diversification_prior_mean <- ln(total_taxa) / origin_time
+diversification_prior_sd   <- H
+
+# the diversitication rate
+diversification_prior = dnLognormal( ln(diversification_prior_mean) - diversification_prior_sd * diversification_prior_sd * 0.5, diversification_prior_sd)
+
+# empirical prior on the relative-extinction rate
+relext_prior_mean <- 1.0
+relext_prior_sd   <- H
+
+# the relative extinction rate
+relext_prior = dnLognormal( ln(relext_prior_mean) - relext_prior_sd * relext_prior_sd * 0.5, relext_prior_sd)
+
+# specify the mixture model
+num_div_cats = 3
+
+# draw the rates for each category
+for(i in 1:num_div_cats) {
+  diversification_rate_cat[i] ~ diversification_prior
+  moves.append( mvScale(diversification_rate_cat[i]) )
+}
+
+# draw the rates for each category
+for(i in 1:num_div_cats) {
+  relext_rate_cat[i] ~ relext_prior
+  moves.append( mvScale(relext_rate_cat[i]) )
+}
+
+# draw the mixture weights for each category
+div_mixture_weights ~ dnDirichlet(rep(1, num_div_cats))
+moves.append( mvBetaSimplex(div_mixture_weights, weight = 1.0) )
+moves.append( mvElementSwapSimplex(div_mixture_weights, weight = 1.0) )
+
+# draw the mixture weights for each category
+relext_mixture_weights ~ dnDirichlet(rep(1, num_div_cats))
+moves.append( mvBetaSimplex(relext_mixture_weights, weight = 1.0) )
+moves.append( mvElementSwapSimplex(relext_mixture_weights, weight = 1.0) )
+
+# draw the rates for each epoch
+for(i in 1:(breakpoints.size() + 1)) {
+
+	# diversification rate
+  diversification[i] ~ dnMixture(diversification_rate_cat, div_mixture_weights)
+  moves.append( mvMixtureAllocation(diversification[i], weight = 1.0) )
+
+  # relative-extinction rate
+  relext[i] ~ dnMixture(relext_rate_cat, relext_mixture_weights)
+  moves.append( mvMixtureAllocation(relext[i], weight = 1.0) )
+
+}
+
+# transform to real parameters
+lambda := abs(diversification / (1 - relext))
+mu     := abs(lambda * relext)

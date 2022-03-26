@@ -1,0 +1,30 @@
+# the partitioned HKY substitution model
+# REQUIRED: mole_Q (one per partition), mole_site_rates (one per partition), and mole_relative_rates (one per partition)
+
+# define the Q matrix and site rates per partition
+for(i in 1:naln) {
+
+  # the transition/transversion ratio
+  mole_kappa[i] ~ dnLognormal(ln(1) - H * H * 0.5, H)
+  moves.append( mvScale(mole_kappa[i], weight = 1.0) )
+
+  # the stationary frequency
+  mole_pi[i] ~ dnDirichlet(rep(1,4))
+  moves.append( mvBetaSimplex(mole_pi[i], weight = 1.0) )
+
+  # the Q matrices
+  mole_Q[i] := fnHKY(mole_kappa[i], mole_pi[i])
+
+  # the site rates
+  # NOTE: this model doesn't have ASRV
+  mole_site_rates[i] <- [1.0]
+
+}
+
+
+# relative-rate multipliers
+mole_proportional_rates ~ dnDirichlet(rep(1, naln))
+moves.append( mvBetaSimplex(mole_proportional_rates, weight = naln) )
+
+# rescale the rates so the mean is 1
+mole_relative_rates := abs(mole_proportional_rates * naln)

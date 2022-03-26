@@ -1,0 +1,30 @@
+# analysis settings
+printgen = 2
+nstones  = 30
+ngen     = 1000
+
+# the monitors
+monitors = VectorMonitors()
+monitors.append( mnScreen(printgen = printgen) )
+
+# the model
+mymodel = model(timetree)
+
+# make the analysis
+mymcmc = powerPosterior(mymodel, monitors, moves, filename = output_filename + "/stones/pp.log", cats = nstones, sampleFreq = printgen)
+
+# run the analysis
+mymcmc.run(generations = ngen)
+
+# compute the path-sampling estimate of the marginal likelihood
+ps = pathSampler(file = output_filename + "/stones/pp.log", powerColumnName = "power", likelihoodColumnName = "likelihood")
+ps_ml = ps.marginal()
+"Path-sampling estimate of ML: " + ps_ml
+
+# compute the stepping-stone estimate of the marginal likelihood
+ss = steppingStoneSampler(file = output_filename + "/stones/pp.log", powerColumnName = "power", likelihoodColumnName = "likelihood")
+ss_ml = ss.marginal()
+"Stepping-stone sampling estimate of ML: " + ps_ml
+
+# write the estimates to file
+write(ps_ml, ss_ml, filename = output_filename + "/ml.txt")

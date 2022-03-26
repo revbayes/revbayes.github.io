@@ -1,0 +1,34 @@
+# the UCLN morphological clock model
+# REQUIRED: morph_branch_rates (either one value, or one value per branch)
+
+# draw the log of the mean from a uniform distribution
+morph_clock_rate_mean_log ~ dnUniform(-10, 1)
+moves.append( mvSlide(morph_clock_rate_mean_log) )
+morph_clock_rate_mean_log.setValue(-7)
+
+# exponentiate to get the true mean
+morph_clock_rate_mean := exp(morph_clock_rate_mean_log)
+
+# draw the standard deviation from an exponential
+morph_clock_rate_sd ~ dnExponential(abs(1 / H))
+moves.append( mvScale(morph_clock_rate_sd) )
+
+# the branch-specific rates
+for(i in 1:nbranch) {
+
+  # draw the log of the rate
+  morph_branch_rates_log[i] ~ dnNormal(morph_clock_rate_mean_log - morph_clock_rate_sd * morph_clock_rate_sd * 0.5, morph_clock_rate_sd)
+  moves.append( mvSlide(morph_branch_rates_log[i]) )
+  morph_branch_rates_log[i].setValue(morph_clock_rate_mean_log - morph_clock_rate_sd * morph_clock_rate_sd * 0.5)
+
+  # exponentiate to get the rate
+  morph_branch_rates[i] := exp(morph_branch_rates_log[i])
+
+}
+
+# the mean of the branch rate
+morph_branch_rate_mean := mean(morph_branch_rates)
+
+# add a joint move on the branch rates and standard deviation
+moves.append( mvVectorSlideRecenter(morph_branch_rates_log, morph_clock_rate_mean_log) )
+moves.append( mvShrinkExpand(morph_branch_rates_log, morph_clock_rate_sd) )

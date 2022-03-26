@@ -1,0 +1,34 @@
+# the UCLN clock model
+# REQUIRED: mole_branch_rates (either one value, or one value per branch), mole_branch_rate_mean
+
+# draw the log of the mean from a uniform distribution
+mole_clock_rate_mean_log ~ dnUniform(-10, 1)
+moves.append( mvSlide(mole_clock_rate_mean_log) )
+mole_clock_rate_mean_log.setValue(-7)
+
+# exponentiate to get the true mean
+mole_clock_rate_mean := exp(mole_clock_rate_mean_log)
+
+# draw the standard deviation from an exponential
+mole_clock_rate_sd ~ dnExponential(abs(1 / H))
+moves.append( mvScale(mole_clock_rate_sd) )
+
+# the branch-specific rates
+for(i in 1:nbranch) {
+
+  # draw the log of the rate
+  mole_branch_rates_log[i] ~ dnNormal(mole_clock_rate_mean_log - mole_clock_rate_sd * mole_clock_rate_sd * 0.5, mole_clock_rate_sd)
+  moves.append( mvSlide(mole_branch_rates_log[i]) )
+  mole_branch_rates_log[i].setValue(mole_clock_rate_mean_log - mole_clock_rate_sd * mole_clock_rate_sd * 0.5)
+
+  # exponentiate to get the rate
+  mole_branch_rates[i] := exp(mole_branch_rates_log[i])
+
+}
+
+# the mean of the branch rate
+mole_branch_rate_mean := mean(mole_branch_rates)
+
+# add a joint move on the branch rates and hyperparameters
+moves.append( mvVectorSlideRecenter(mole_branch_rates_log, mole_clock_rate_mean_log) )
+moves.append( mvShrinkExpand(mole_branch_rates_log, mole_clock_rate_sd) )
