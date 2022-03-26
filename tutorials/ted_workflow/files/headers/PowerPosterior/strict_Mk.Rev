@@ -1,0 +1,24 @@
+# tree model
+diversification_model = "constant"
+fossilization_model   = "constant"
+
+# molecular model
+mole_clock_model = "strict"
+substn_model     = "HKY"
+
+# morphological model
+morph_clock_model = "linked"
+morph_model       = "Mk"
+
+# the type of analysis
+analysis = "PP"
+
+# the output directory
+output_dir      = "output_PP"
+output_extra    = ""
+output_filename = output_dir + "/div_" + diversification_model + "_foss_" + fossilization_model + "_moleclock_" + mole_clock_model + "_moleQ_" + substn_model + "_morphclock_" + morph_clock_model + "_morphQ_" + morph_model + "_" + analysis + output_extra + "/"
+
+# source the template file
+source("modules/template.Rev")
+
+q()

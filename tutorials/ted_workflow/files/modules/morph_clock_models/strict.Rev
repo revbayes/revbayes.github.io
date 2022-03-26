@@ -1,0 +1,13 @@
+# the strict morphological clock model
+# REQUIRED: morph_branch_rates (either one value, or one value per branch)
+
+# the strict clock model on the log scale
+morph_clock_rate_log ~ dnUniform(-10, 1)
+moves.append( mvSlide(morph_clock_rate_log) )
+morph_clock_rate_log.setValue(-7)
+
+# exponentiate
+morph_clock_rate := exp(morph_clock_rate_log)
+
+# the branch-specific rates
+morph_branch_rates := morph_clock_rate

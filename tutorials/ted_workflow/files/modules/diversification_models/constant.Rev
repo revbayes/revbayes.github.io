@@ -1,0 +1,18 @@
+# the constant-rate diversification model
+# REQUIRED: lambda, mu (both one per time interval)
+
+# empirical prior on the diversification rate
+diversification_prior_mean <- ln(total_taxa) / origin_time
+diversification_prior_sd   <- H
+
+# the diversification rate
+diversification ~ dnLognormal( ln(diversification_prior_mean) - diversification_prior_sd * diversification_prior_sd * 0.5, diversification_prior_sd)
+moves.append( mvScale(diversification, weight = 1.0) )
+
+# the relative extinction rate
+relext ~ dnUniform(0, 1)
+moves.append( mvSlide(relext, weight = 1.0) )
+
+# transform to real parameters
+lambda := rep(abs(diversification / (1 - relext)), num_bins + 1)
+mu     := abs(lambda * relext)

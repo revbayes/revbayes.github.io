@@ -1,0 +1,32 @@
+# the epochal fossilization model
+# REQUIRED: psi (one per time interval)
+
+# empirical prior on the fossilization rate
+fossilization_prior_mean <- num_fossils * diversification_prior_mean / (exp(diversification_prior_mean * origin_time) - 1)
+fossilization_prior_sd   <- 2 * H
+
+# the fossilization rate
+fossilization_prior = dnLognormal( ln(fossilization_prior_mean) - fossilization_prior_sd * fossilization_prior_sd * 0.5, fossilization_prior_sd)
+
+# specify the mixture model
+num_foss_cats = 3
+
+# draw the rates for each category
+for(i in 1:num_foss_cats) {
+  fossilization_rate_cat[i] ~ fossilization_prior
+  moves.append( mvScale(fossilization_rate_cat[i]) )
+}
+
+# draw the mixture weights for each category
+foss_mixture_weights ~ dnDirichlet(rep(1, num_foss_cats))
+moves.append( mvBetaSimplex(foss_mixture_weights, weight = 1.0) )
+moves.append( mvElementSwapSimplex(foss_mixture_weights, weight = 1.0) )
+
+# draw the rates for each epoch
+for(i in 1:(breakpoints.size() + 1)) {
+
+	# diversification rate
+  psi[i] ~ dnMixture(fossilization_rate_cat, foss_mixture_weights)
+  moves.append( mvMixtureAllocation(psi[i], weight = 1.0) )
+
+}

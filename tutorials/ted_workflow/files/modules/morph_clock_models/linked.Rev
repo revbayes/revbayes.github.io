@@ -1,0 +1,15 @@
+# the linked morphological clock model
+# REQUIRED: morph_branch_rates (either one value, or one value per branch)
+
+# draw the log of the rate from a uniform distribution
+morph_clock_rate_log ~ dnUniform(-10, 1)
+moves.append( mvSlide(morph_clock_rate_log) )
+morph_clock_rate_log.setValue(-7)
+
+# exponentiate
+morph_clock_rate := exp(morph_clock_rate_log)
+
+# the branch-specific rates
+# in this model, these are a multiple of the molecular branch rates
+# so, the morphological branch rate = morphological clock rate * molecular branch rate / morphological clock rate
+morph_branch_rates := morph_clock_rate * mole_branch_rates / mole_branch_rate_mean

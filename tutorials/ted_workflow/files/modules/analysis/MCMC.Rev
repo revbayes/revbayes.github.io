@@ -1,0 +1,57 @@
+# analysis settings
+nruns    = 1
+printgen = 10
+nburnin  = 2000
+ngen     = 20000
+
+# the monitors
+monitors = VectorMonitors()
+monitors.append( mnScreen(printgen = printgen) )
+monitors.append( mnModel(filename  = output_filename + "params.log", printgen = printgen, exclude = ["F"]) )
+monitors.append( mnFile(filename   = output_filename + "tree.trees", printgen = printgen, timetree) )
+monitors.append( mnFile(filename   = output_filename + "extant_tree.trees", printgen = printgen, extant_tree) )
+
+# the model
+mymodel = model(timetree)
+
+# make the analysis
+mymcmc = mcmc(mymodel, monitors, moves, nruns = nruns, combine = "mixed")
+
+# run the burnin
+if (nburnin > 0 ) {
+  mymcmc.burnin(generations = nburnin, tuningInterval = 100)
+  mymcmc.operatorSummary()
+}
+
+# run the analysis
+mymcmc.run(generations = ngen)
+
+# make the summary trees
+if ( nruns == 1 ) {
+
+  # just make summary trees for the one run
+  full_trees = readTreeTrace(output_filename + "tree.trees", "clock")
+  mccTree(full_trees, output_filename + "MCC_tree.tre")
+
+  extant_trees = readTreeTrace(output_filename + "extant_tree.trees", "clock")
+  mccTree(extant_trees, output_filename + "MCC_extant_tree.tre")
+
+} else {
+
+  # make a combined summary tree
+  full_trees = readTreeTrace(output_filename + "tree.trees", "clock")
+  mccTree(full_trees, output_filename + "MCC_tree.tre")
+
+  extant_trees = readTreeTrace(output_filename + "extant_tree.trees", "clock")
+  mccTree(extant_trees, output_filename + "MCC_extant_tree.tre")
+
+  # and run-specific summary trees
+  for(i in 1:nruns) {
+    full_trees = readTreeTrace(output_filename + "tree_run_" + i + ".trees", "clock")
+    mccTree(full_trees, output_filename + "MCC_tree_run_" + i + ".tre")
+
+    extant_trees = readTreeTrace(output_filename + "extant_tree_run_" + i + ".trees", "clock")
+    mccTree(extant_trees, output_filename + "MCC_extant_tree_run_" + i + ".tre")
+  }
+
+}

@@ -1,0 +1,18 @@
+# the strict molecular clock model
+# REQUIRED: mole_branch_rates (either one value, or one value per branch), mole_branch_rate_mean
+
+# the strict clock model on the log scale
+
+# draw the log of the rate from a uniform distribution
+mole_clock_rate_log ~ dnUniform(-10, 1)
+moves.append( mvSlide(mole_clock_rate_log) )
+mole_clock_rate_log.setValue(-7)
+
+# exponentiate
+mole_clock_rate := exp(mole_clock_rate_log)
+
+# the branch-specific rates
+mole_branch_rates := mole_clock_rate
+
+# the mean of the branch rates
+mole_branch_rate_mean := mole_branch_rates

@@ -1,0 +1,16 @@
+# the Mk+G model of morphological evolution
+# REQUIRED: morph_Q (either one, or one per mixture category), morph_site_rates, site_matrices (TRUE or FALSE)
+
+# the Mk model
+morph_Q <- fnJC(2)
+
+# relative rates among characters
+num_rate_cats_morph = 4
+
+morph_site_rate_alpha ~ dnUniform(0, 10)
+moves.append( mvScale(morph_site_rate_alpha) )
+
+morph_site_rates := fnDiscretizeGamma(morph_site_rate_alpha, morph_site_rate_alpha, num_rate_cats_morph)
+
+# make sure we don't use site matrices
+site_matrices = FALSE
