@@ -18,7 +18,7 @@ To learn more about these different model components, see the [CTMC]({{site.base
 {% subsection Data and Script Files %}
 
 The data and scripts for this tutorial have a special structure.
-To download all the files in the appropriate structure, click [HERE]({{site.baseurl}}/tutorials/ted_pps/files/TED_workflow.tar.gz), and then unpack the archive.
+To download all the files in the appropriate structure, click [HERE]({{site.baseurl}}/tutorials/ted_workflow/files/TED_workflow.tar.gz), and then unpack the archive.
 You will want to run all of the scripts from this tutorial in the top-level directory of `TED_workflow`.
 
 The example dataset is a pruned down version of the marattialean fern dataset analyzed in {% citet May2021 %}.
@@ -151,12 +151,12 @@ The job of the template file is to take the values specified in the header to pu
 The template file is located in `modules/template.Rev`.
 Let's look at it line-by-line.
 
-Like most `Rev` scripts, the first thing we'll do in the template  create a container for moves:
+Like most `Rev` scripts, the first thing we'll do in the template is create a container for moves:
 ```R
 # moves container
 moves = VectorMoves()
 ```
-as well as some useful constants (in this case, `H` is the the standard deviation for a lognormal distribution that spans one order of magnitude, which we use for some prior distributions):
+as well as some useful constants (in this case, `H` is the standard deviation for a lognormal distribution that spans one order of magnitude, which we use for some prior distributions):
 ```R
 # convenient constants
 H = ln(10) / (qnorm(0.975) - qnorm(0.025))
@@ -167,16 +167,22 @@ For your own datasets, you'll want to substitute your own data files for these v
 We'll begin by reading in our molecular dataset:
 ```R
 # read the sequence data
-moledata = readDiscreteCharacterData("data/rbcL.nex")
+moledata = readDiscreteCharacterData("data/rbcL.nex", alwaysReturnAsVector = TRUE)
 naln     = moledata.size() # the number of alignments
 ```
+The argument `alwaysReturnAsVector = TRUE` enforces that the molecular data is always assumed to be a vector.
+Whether you are reading in a nexus file with a single alignment or many alignments, the result will always be a vector of alignments.
+If we read one alignment, we'd just end up with a vector of length one.
+This means that `moledata.size()` returns the number of alignments in the vector, not the number of sites in the alignment.
+(Also note that our example molecular data file contains three alignments, one per codon position.)
+
 Next, we read our morphological data:
 ```R
 # read the morphological data
 morphdata = readDiscreteCharacterData("data/morpho.nex")
 ```
 
-Now, we read in the taxon data (the ages associated with each taxon, as described [here]({{site.baseurl}}{% link tutorials/fbd_simple/index.md %})):
+Now, we read in the taxon data (including the ages associated with each taxon, as described [here]({{site.baseurl}}{% link tutorials/fbd_simple/index.md %})):
 ```R
 # read the taxon data
 taxa = readTaxonData("data/taxa.tsv", delimiter=TAB)
@@ -242,8 +248,8 @@ total_taxa  = 111   # total number of extant taxa in the group
 ```
 We also need to specify the minimum and maximum age of the group (the age of the lineage ancestral to the root of the tree):
 ```R
-origin_min  = 419.2 # earliest origin is the beginning of the Devonian
-origin_max  = 485.4 # lastest origin is the beginning of the Ordovician
+origin_min  = 419.2 # latest origin is the beginning of the Devonian
+origin_max  = 485.4 # earliest origin is the beginning of the Ordovician
 ```
 
 We assume the ancestral lineage is uniformly distributed between this minimum and maximum age.
@@ -636,7 +642,7 @@ The rates of change among characters are the same, so we use `morph_site_rates <
 
 {% endaside %}
 
-Just as with molecular substitution models, we hand the tree, transition model, and branch-rate model to a phylogenetic CTMC, and clamp our observed data:
+Just as with molecular substitution models, we hand the tree, transition model, and morphological-clock model to a phylogenetic CTMC, and clamp our observed data:
 ```R
 # make the CMTC for morphological data
 morph ~ dnPhyloCTMC(timetree, morph_Q, branchRates = morph_branch_rates, siteRates = morph_site_rates, coding = "variable", type = "Standard", siteMatrices = site_matrices)

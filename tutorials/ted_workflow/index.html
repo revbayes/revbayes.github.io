@@ -56,7 +56,7 @@
 	<h1 class="maintitle">Total-evidence dating, model sensitivity, and model comparison</h1>
 	<h3 class="subtitle">An example analysis workflow for total-evidence dating analyses</h3>
 	<h4 class="authors">Michael R. May</h4>
-  <h5>Last modified on March 26, 2022</h5>
+  <h5>Last modified on March 28, 2022</h5>
 </div>
 
 
@@ -102,7 +102,7 @@
 <hr class="section" />
 
 <p>Total-evidence (or combined-evidence) dating allows us to estimate time-calibrated phylogenies for extinct and extant species in one coherent statistical framework.
-In this framework, fossils are treated as tips in the phylogeny, and their phylogenetic position and branch lengths are inferred directly from morphological data rather than specified <em>a prior</em>.
+In this framework, fossils are treated as tips in the phylogeny, and their phylogenetic position and branch lengths are inferred directly from morphological data rather than specified a priori.
 While this relieves us from the difficult (sometimes impossible) task of deriving reliable fossil-calibration densities for use in node-dating, it requires us to specify a model that (in addition to the standard components of a phylogenetic model) describes how morphological characters evolve, and how lineages diversify and produce fossils over time.</p>
 
 <p>As with all phylogenetic analyses (and divergence-time estimation in particular), inferences using total-evidence dating may be sensitive to the models we use.
@@ -113,7 +113,7 @@ It is intended to be adapted to new datasets, and to allow you to add or modify 
 <p>This tutorial is structured as follows.
 In the first section (<a href="#intro"></a>), we discuss the general structure of the total-evidence-dating model, and the organizational scheme of the analysis scripts we provide.
 In the second section (<a href="#MCMC"></a>), we show how to estimate the posterior distribution under a given model using Markov-chain Monte Carlo.
-In the third section (<a href="#sensitivity"></a>), we present some tools for assessing how much different modeling assumptions make on tree topologies and divergence-time estimates.
+In the third section (<a href="#sensitivity"></a>), we present some tools for assessing how much different modeling assumptions affect tree topologies and divergence-time estimates.
 In the fourth section (<a href="#bayes_factors"></a>), we show how to compare the relative fit of competing models using Bayes factors, which can be useful if posterior estimates are sensitive to different models.
 In the final section (<a href="#posterior_prediction"></a>), we show how to use posterior-predictive simulation to assess whether our models provide a good absolute (rather than relative) description of morphological evolution.</p>
 
@@ -173,7 +173,7 @@ To learn more about these different model components, see the <a href="/tutorial
 <hr class="subsection" />
 
 <p>The data and scripts for this tutorial have a special structure.
-To download all the files in the appropriate structure, click <a href="/tutorials/ted_pps/files/TED_workflow.tar.gz">HERE</a>, and then unpack the archive.
+To download all the files in the appropriate structure, click <a href="/tutorials/ted_workflow/files/TED_workflow.tar.gz">HERE</a>, and then unpack the archive.
 You will want to run all of the scripts from this tutorial in the top-level directory of <code class="language-plaintext highlighter-rouge">TED_workflow</code>.</p>
 
 <p>The example dataset is a pruned down version of the marattialean fern dataset analyzed in <a class="citation" href="#May2021">May et al. (2021)</a>.
@@ -292,11 +292,11 @@ You can think of this as the header file handing all of the relevant information
 The template file is located in <code class="language-plaintext highlighter-rouge">modules/template.Rev</code>.
 Let’s look at it line-by-line.</p>
 
-<p>Like most <code class="language-plaintext highlighter-rouge">Rev</code> scripts, the first thing we’ll do in the template  create a container for moves:</p>
+<p>Like most <code class="language-plaintext highlighter-rouge">Rev</code> scripts, the first thing we’ll do in the template is create a container for moves:</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># moves container</span><span class="w">
 </span><span class="n">moves</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">VectorMoves</span><span class="p">()</span><span class="w">
 </span></code></pre></div></div>
-<p>as well as some useful constants (in this case, <code class="language-plaintext highlighter-rouge">H</code> is the the standard deviation for a lognormal distribution that spans one order of magnitude, which we use for some prior distributions):</p>
+<p>as well as some useful constants (in this case, <code class="language-plaintext highlighter-rouge">H</code> is the standard deviation for a lognormal distribution that spans one order of magnitude, which we use for some prior distributions):</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># convenient constants</span><span class="w">
 </span><span class="n">H</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ln</span><span class="p">(</span><span class="m">10</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">qnorm</span><span class="p">(</span><span class="m">0.975</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">qnorm</span><span class="p">(</span><span class="m">0.025</span><span class="p">))</span><span class="w">
 </span></code></pre></div></div>
@@ -305,15 +305,21 @@ Let’s look at it line-by-line.</p>
 For your own datasets, you’ll want to substitute your own data files for these variables.
 We’ll begin by reading in our molecular dataset:</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># read the sequence data</span><span class="w">
-</span><span class="n">moledata</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">readDiscreteCharacterData</span><span class="p">(</span><span class="s2">"data/rbcL.nex"</span><span class="p">)</span><span class="w">
+</span><span class="n">moledata</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">readDiscreteCharacterData</span><span class="p">(</span><span class="s2">"data/rbcL.nex"</span><span class="p">,</span><span class="w"> </span><span class="n">alwaysReturnAsVector</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w">
 </span><span class="n">naln</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">moledata.size</span><span class="p">()</span><span class="w"> </span><span class="c1"># the number of alignments</span><span class="w">
 </span></code></pre></div></div>
+<p>The argument <code class="language-plaintext highlighter-rouge">alwaysReturnAsVector = TRUE</code> enforces that the molecular data is always assumed to be a vector.
+Whether you are reading in a nexus file with a single alignment or many alignments, the result will always be a vector of alignments.
+If we read one alignment, we’d just end up with a vector of length one.
+This means that <code class="language-plaintext highlighter-rouge">moledata.size()</code> returns the number of alignments in the vector, not the number of sites in the alignment.
+(Also note that our example molecular data file contains three alignments, one per codon position.)</p>
+
 <p>Next, we read our morphological data:</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># read the morphological data</span><span class="w">
 </span><span class="n">morphdata</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">readDiscreteCharacterData</span><span class="p">(</span><span class="s2">"data/morpho.nex"</span><span class="p">)</span><span class="w">
 </span></code></pre></div></div>
 
-<p>Now, we read in the taxon data (the ages associated with each taxon, as described <a href="/tutorials/fbd_simple/">here</a>):</p>
+<p>Now, we read in the taxon data (including the ages associated with each taxon, as described <a href="/tutorials/fbd_simple/">here</a>):</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># read the taxon data</span><span class="w">
 </span><span class="n">taxa</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">readTaxonData</span><span class="p">(</span><span class="s2">"data/taxa.tsv"</span><span class="p">,</span><span class="w"> </span><span class="n">delimiter</span><span class="o">=</span><span class="n">TAB</span><span class="p">)</span><span class="w">
 </span><span class="n">ntax</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">taxa.size</span><span class="p">()</span><span class="w">
@@ -375,8 +381,8 @@ We first need to define some dataset-specific variables, for example the number 
 </span><span class="n">total_taxa</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="m">111</span><span class="w">   </span><span class="c1"># total number of extant taxa in the group</span><span class="w">
 </span></code></pre></div></div>
 <p>We also need to specify the minimum and maximum age of the group (the age of the lineage ancestral to the root of the tree):</p>
-<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">origin_min</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="m">419.2</span><span class="w"> </span><span class="c1"># earliest origin is the beginning of the Devonian</span><span class="w">
-</span><span class="n">origin_max</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="m">485.4</span><span class="w"> </span><span class="c1"># lastest origin is the beginning of the Ordovician</span><span class="w">
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">origin_min</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="m">419.2</span><span class="w"> </span><span class="c1"># latest origin is the beginning of the Devonian</span><span class="w">
+</span><span class="n">origin_max</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="m">485.4</span><span class="w"> </span><span class="c1"># earliest origin is the beginning of the Ordovician</span><span class="w">
 </span></code></pre></div></div>
 
 <p>We assume the ancestral lineage is uniformly distributed between this minimum and maximum age.
@@ -718,7 +724,7 @@ Because the rate matrix is normalized to have an average rate of 1, this model h
 <p>The rates of change among characters are the same, so we use <code class="language-plaintext highlighter-rouge">morph_site_rates &lt;- [1.0]</code>, and the rate matrix $Q$ is the same for all characters, so we set <code class="language-plaintext highlighter-rouge">site_matrices = FALSE</code>.</p>
 </blockquote>
 
-<p>Just as with molecular substitution models, we hand the tree, transition model, and branch-rate model to a phylogenetic CTMC, and clamp our observed data:</p>
+<p>Just as with molecular substitution models, we hand the tree, transition model, and morphological-clock model to a phylogenetic CTMC, and clamp our observed data:</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># make the CMTC for morphological data</span><span class="w">
 </span><span class="n">morph</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">dnPhyloCTMC</span><span class="p">(</span><span class="n">timetree</span><span class="p">,</span><span class="w"> </span><span class="n">morph_Q</span><span class="p">,</span><span class="w"> </span><span class="n">branchRates</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">morph_branch_rates</span><span class="p">,</span><span class="w"> </span><span class="n">siteRates</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">morph_site_rates</span><span class="p">,</span><span class="w"> </span><span class="n">coding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"variable"</span><span class="p">,</span><span class="w"> </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Standard"</span><span class="p">,</span><span class="w"> </span><span class="n">siteMatrices</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">site_matrices</span><span class="p">)</span><span class="w">
 </span><span class="n">morph.clamp</span><span class="p">(</span><span class="w"> </span><span class="n">morphdata</span><span class="w"> </span><span class="p">)</span><span class="w">

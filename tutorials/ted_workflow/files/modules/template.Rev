@@ -9,7 +9,7 @@ H = ln(10) / (qnorm(0.975) - qnorm(0.025))
 ################
 
 # read the sequence data
-moledata = readDiscreteCharacterData("data/rbcL.nex")
+moledata = readDiscreteCharacterData("data/rbcL.nex", alwaysReturnAsVector = TRUE)
 naln     = moledata.size() # the number of alignments
 
 # read the morphological data
@@ -52,8 +52,8 @@ for(i in 1:num_bins) {
 # first we specify some dataset-specific parameters
 extant_taxa = 10    # total number of extant taxa in the tree
 total_taxa  = 111   # total number of extant taxa in the group
-origin_min  = 419.2 # earliest origin is the beginning of the Devonian
-origin_max  = 485.4 # lastest origin is the beginning of the Ordovician
+origin_min  = 419.2 # latest origin is the beginning of the Devonian
+origin_max  = 485.4 # earliest origin is the beginning of the Ordovician
 
 # draw the origin time
 origin_time ~ dnUniform(origin_min, origin_max)
