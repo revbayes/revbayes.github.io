@@ -21,7 +21,7 @@ redirect: false
 {% section Overview | overview %}
 
 Total-evidence (or combined-evidence) dating allows us to estimate time-calibrated phylogenies for extinct and extant species in one coherent statistical framework.
-In this framework, fossils are treated as tips in the phylogeny, and their phylogenetic position and branch lengths are inferred directly from morphological data rather than specified _a prior_.
+In this framework, fossils are treated as tips in the phylogeny, and their phylogenetic position and branch lengths are inferred directly from morphological data rather than specified a priori.
 While this relieves us from the difficult (sometimes impossible) task of deriving reliable fossil-calibration densities for use in node-dating, it requires us to specify a model that (in addition to the standard components of a phylogenetic model) describes how morphological characters evolve, and how lineages diversify and produce fossils over time.
 
 As with all phylogenetic analyses (and divergence-time estimation in particular), inferences using total-evidence dating may be sensitive to the models we use.
@@ -32,7 +32,7 @@ It is intended to be adapted to new datasets, and to allow you to add or modify 
 This tutorial is structured as follows.
 In the first section ({% ref intro %}), we discuss the general structure of the total-evidence-dating model, and the organizational scheme of the analysis scripts we provide.
 In the second section ({% ref MCMC %}), we show how to estimate the posterior distribution under a given model using Markov-chain Monte Carlo.
-In the third section ({% ref sensitivity %}), we present some tools for assessing how much different modeling assumptions make on tree topologies and divergence-time estimates.
+In the third section ({% ref sensitivity %}), we present some tools for assessing how much different modeling assumptions affect tree topologies and divergence-time estimates.
 In the fourth section ({% ref bayes_factors %}), we show how to compare the relative fit of competing models using Bayes factors, which can be useful if posterior estimates are sensitive to different models.
 In the final section ({% ref posterior_prediction %}), we show how to use posterior-predictive simulation to assess whether our models provide a good absolute (rather than relative) description of morphological evolution.
 
