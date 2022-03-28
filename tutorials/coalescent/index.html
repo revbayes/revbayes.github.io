@@ -56,7 +56,7 @@
 	<h1 class="maintitle">Coalescent Analyses</h1>
 	<h3 class="subtitle">Estimating Demographic Histories with Coalescent Processes</h3>
 	<h4 class="authors">Ronja Billenstein and Sebastian Höhna</h4>
-  <h5>Last modified on March 25, 2022</h5>
+  <h5>Last modified on March 28, 2022</h5>
 </div>
 
 
@@ -110,7 +110,8 @@
 </div>
 <blockquote class="info">
   <h2 id="for-your-info">For your info</h2>
-  <p>This tutorial and the included exercises are currently under construction.</p>
+  <p>This tutorial and the included exercises are currently under construction.
+If you want to run the analyses, please compile <code class="language-plaintext highlighter-rouge">RevBayes</code> from the <a href="https://github.com/revbayes/revbayes/tree/dev-coalescent">dev-coalescent</a> branch as described <a href="https://revbayes.github.io/compile-linux">here</a> (for the development branch).</p>
 </blockquote>
 
 <h2 class="section" id="overview">Overview</h2>
@@ -185,34 +186,34 @@ The data for these analyes are taken from <a class="citation" href="#Vershinina2
       <td><a href="/tutorials/coalescent/skyline">Skyline</a></td>
     </tr>
     <tr>
-      <td>Bayesian Skyline Plot with autocorrelation <a class="citation" href="#Drummond2005">(Drummond et al. 2005)</a></td>
+      <td>Bayesian Skyline Plot with autocorrelation<br /><a class="citation" href="#Drummond2005">(Drummond et al. 2005)</a></td>
       <td>A coalescent model with a piecewise constant population size trajectory. The different pieces (intervals) are correlated, each population size is drawn from an exponential distribution with the mean being the previous population size. The times of interval change are dependent on coalescent events (“event-based”).</td>
       <td>constant</td>
       <td>$\theta_i | \theta_{i-1}$ (exponential distribution with mean $\theta_{i-1}$)</td>
       <td>event-based</td>
       <td>No, only single loci</td>
-      <td>Little description included in <a href="/tutorials/coalescent/skyline#secAltPriors">skyline</a> <a href="scripts/mcmc_isochronous_BSP.Rev">Example script</a></td>
+      <td>Little description included in <a href="/tutorials/coalescent/skyline#secAltPriors">skyline</a><br /><br /><a href="scripts/mcmc_isochronous_BSP.Rev">Example script</a></td>
     </tr>
     <tr>
-      <td>Extended Bayesian Skyline Plot <a class="citation" href="#Heled2008">(Heled and Drummond 2008)</a></td>
+      <td>Extended Bayesian Skyline Plot<br /><a class="citation" href="#Heled2008">(Heled and Drummond 2008)</a></td>
       <td>A coalescent model with a piecewise constant or linear population size trajectory. The different pieces are not correlated. The times of interval change are independent from coalescent events, they are independent and identically distributed (iid). The number of changes and thus the number of intervals is determined by stochastic variable search.</td>
       <td>constant</td>
       <td>independent and identically distributed (iid)</td>
       <td>event-based - number and position of change points estimated</td>
       <td>Yes</td>
-      <td>Little description included in <a href="/tutorials/coalescent/skyline#secAltPriors">skyline</a> <a href="scripts/mcmc_isochronous_EBSP.Rev">Example script</a></td>
+      <td>Little description included in <a href="/tutorials/coalescent/skyline#secAltPriors">skyline</a><br /><br /><a href="scripts/mcmc_isochronous_EBSP.Rev">Example script</a></td>
     </tr>
     <tr>
-      <td>Skyride (missing reference)</td>
+      <td>Skyride<br />(missing reference)</td>
       <td>A coalescent model with a piecewise constant population size trajectory. The different pieces are correlated via a Gaussian Markov Random Field (GMRF) Prior, the degree of smoothing is determined by a precision parameter. The times of interval change are dependent on coalescent events (“event-based”).</td>
       <td>constant</td>
       <td>$\theta_i | \theta_{i-1}$ (GMRF Prior with precision parameter)</td>
       <td>event-based</td>
       <td>No, only single loci</td>
-      <td>Little description included in <a href="/tutorials/coalescent/skyline#secAltPriors">skyline</a> <a href="scripts/mcmc_isochronous_skyride.Rev">Example script</a></td>
+      <td>Little description included in <a href="/tutorials/coalescent/skyline#secAltPriors">skyline</a><br /><br /><a href="scripts/mcmc_isochronous_skyride.Rev">Example script</a></td>
     </tr>
     <tr>
-      <td>Skygrid <a class="citation" href="#Gill2012">(Gill et al. 2012)</a></td>
+      <td>Skygrid<br /><a class="citation" href="#Gill2012">(Gill et al. 2012)</a></td>
       <td>A coalescent model with a piecewise constant population size trajectory. The different pieces are correlated via a Gaussian Markov Random Field (GMRF) Prior and are equally spaced in time, the degree of smoothing is determined by a precision parameter. The times of interval change are independent from coalescent events, they are independent and identically distributed (iid). Can be considered as extension of the skyride model.</td>
       <td>constant or linear</td>
       <td>$\theta_i | \theta_{i-1}$ (GMRF Prior with precision parameter)</td>
@@ -227,7 +228,7 @@ The data for these analyes are taken from <a class="citation" href="#Vershinina2
       <td>$\theta_i | \theta_{i-1}$ (GMRF Prior)</td>
       <td>specified - here equally sized</td>
       <td>Yes</td>
-      <td>With sequences as input data: <a href="/tutorials/coalescent/GMRF">GMRF</a>  With trees as input data: <a href="/tutorials/coalescent/GMRF_treebased">GMRF treebased</a></td>
+      <td>With sequences as input data: <a href="/tutorials/coalescent/GMRF">GMRF</a><br /><br />With trees as input data: <a href="/tutorials/coalescent/GMRF_treebased">GMRF treebased</a></td>
     </tr>
     <tr>
       <td>Horseshoe Markov Random Field (HSMRF) Prior with interval change points independent from coalescent events <a class="citation" href="#Faulkner2020">(Faulkner et al. 2020)</a></td>
@@ -236,19 +237,19 @@ The data for these analyes are taken from <a class="citation" href="#Vershinina2
       <td>$\theta_i | \theta_{i-1}$ (HSMRF Prior)</td>
       <td>specified - here equally sized</td>
       <td>Yes</td>
-      <td>Little description included in <a href="/tutorials/coalescent/GMRF#secHSMRF">GMRF</a>  Script in <a href="/tutorials/coalescent/HSMRF">HSMRF</a></td>
+      <td>Little description included in <a href="/tutorials/coalescent/GMRF#secHSMRF">GMRF</a><br /><br />Script in <a href="/tutorials/coalescent/HSMRF">HSMRF</a></td>
     </tr>
     <tr>
-      <td>Compound Poisson Process (CPP) Prior (similar to (missing reference))</td>
+      <td>Compound Poisson Process (CPP) Prior<br />(similar to (missing reference))</td>
       <td>A coalescent model with a piecewise constant or linear population size trajectory. The number of pieces (intervals) is not fixed. A Poisson Prior is used on the number of interval change points, additional priors need to be defined for population sizes and change points. The number of change points is determined via reversible jump MCMC (rjMCMC).</td>
       <td>constant or linear</td>
       <td>independent and identically distributed (iid)</td>
       <td>specified - number and position of change points estimated</td>
       <td>Yes</td>
-      <td>Little description included in <a href="/tutorials/coalescent/GMRF#secCPP">GMRF</a>  Script in <a href="/tutorials/coalescent/CPP">CPP</a></td>
+      <td>Little description included in <a href="/tutorials/coalescent/GMRF#secCPP">GMRF</a><br /><br />Script in <a href="/tutorials/coalescent/CPP">CPP</a></td>
     </tr>
     <tr>
-      <td>Piecewise (similar to (missing reference), but with flexible combinations)</td>
+      <td>Piecewise<br />(similar to (missing reference), but with flexible combinations)</td>
       <td>A coalescent model with user-defined demographic functions for a number of intervals. Base demographic functions included in RevBayes are constant, linear and exponential population size trajectories. These can be combined in an arbitrary way, but the most ancient one should always be constant due to computational reasons.</td>
       <td>constant and linear and exponential</td>
       <td>individually chosen, independent and identically distributed (iid)</td>
