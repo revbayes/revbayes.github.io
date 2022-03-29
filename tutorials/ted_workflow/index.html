@@ -198,7 +198,7 @@ For example, all diversification models will have to define parameters $\lambda$
 The details of how the different diversification models fill in $\lambda$ and $\mu$ will, of course, depend on the model.
 We’ll hide details of particular models in folds, like so (in case you want to dig in):</p>
 
-<blockquote class="aside"><h2>An example model module</h2><p>Here’s a Jukes-Cantor model of sequence evolution, partitioned by alignment:</p>
+<blockquote class="aside"><h2>Module: An example model module</h2><p>Here’s a Jukes-Cantor model of sequence evolution, partitioned by alignment:</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># the partitioned JC substitution model</span><span class="w">
 </span><span class="c1"># REQUIRED: mole_Q (one per partition), mole_site_rates (one per partition), and mole_relative_rates (one per partition)</span><span class="w">
 
@@ -400,7 +400,7 @@ Once again, we use string concatenation to look up the appropriate file:</p>
 </span></code></pre></div></div>
 <p>In this case, the above code will evaluate to <code class="language-plaintext highlighter-rouge">source("modules/diversification_models/constant.Rev")</code>, because we defined <code class="language-plaintext highlighter-rouge">diversification_model = "constant"</code> in our header file!</p>
 
-<blockquote class="aside"><h2>The Constant-Rate Diversification Model</h2><p>In this model, (<code class="language-plaintext highlighter-rouge">modules/diversification_models/constant.Rev</code>) we assume speciation ($\lambda$) and extinction ($\mu$) rates are constant over time.
+<blockquote class="aside"><h2>Module: The Constant-Rate Diversification Model</h2><p>In this model, (<code class="language-plaintext highlighter-rouge">modules/diversification_models/constant.Rev</code>) we assume speciation ($\lambda$) and extinction ($\mu$) rates are constant over time.
 We parameterize the model using the net-diversification rate ($\lambda - \mu$) and the relative extinction rate ($\mu \div \lambda$).
 We use an empirical prior on the diversification rate such that the prior mean diversification rate gives rise to the known number of taxa at the present (see below for details):</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># the constant-rate diversification model</span><span class="w">
@@ -456,7 +456,7 @@ N(t) = N(0) \exp^{(\lambda - \mu)t}
 </span><span class="n">source</span><span class="p">(</span><span class="s2">"modules/fossilization_models/"</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">fossilization_model</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">".Rev"</span><span class="p">)</span><span class="w">
 </span></code></pre></div></div>
 
-<blockquote class="aside"><h2>The Constant-Rate Fossilization Model</h2><p>This model is defined in <code class="language-plaintext highlighter-rouge">modules/fossilization_models/constant.Rev</code>.
+<blockquote class="aside"><h2>Module: The Constant-Rate Fossilization Model</h2><p>This model is defined in <code class="language-plaintext highlighter-rouge">modules/fossilization_models/constant.Rev</code>.
 As with the constant-rate diversification model, this model assumes that the fossilization rate is constant over time.
 Here, we use an empirical prior that centers the fossilization rate such that, on average, we expect to see the number of fossils we observe in the empirical dataset (see below for details):</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># the constant-rate fossilization model</span><span class="w">
@@ -565,7 +565,7 @@ To derive an empirical prior mean for the fossilization rate, we plug the observ
 </span></code></pre></div></div>
 <p>In this header file, we assumed a strict molecular clock.</p>
 
-<blockquote class="aside"><h2>The Strict Molecular Clock</h2><p>This simple model (defined in <code class="language-plaintext highlighter-rouge">modules/mole_clock_models/strict.Rev</code>) assumes that the rate of evolution is the same across branches of the tree.
+<blockquote class="aside"><h2>Module: The Strict Molecular Clock</h2><p>This simple model (defined in <code class="language-plaintext highlighter-rouge">modules/mole_clock_models/strict.Rev</code>) assumes that the rate of evolution is the same across branches of the tree.
 It therefore has a single parameter, which we parameterize on the log scale:</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># the strict molecular clock model</span><span class="w">
 </span><span class="c1"># REQUIRED: mole_branch_rates (either one value, or one value per branch), mole_branch_rate_mean</span><span class="w">
@@ -602,7 +602,7 @@ To keep our code generic, we’ll make sure we define <code class="language-plai
 </span></code></pre></div></div>
 <p>In this analyses, we’re using the HYK substitution model, partitioned among alignments (which correspond to codon positions in the example rbcL dataset).</p>
 
-<blockquote class="aside"><h2>The HKY Substitution Model</h2><p>This model is defined in <code class="language-plaintext highlighter-rouge">modules/substn_models/HYK.Rev</code>.
+<blockquote class="aside"><h2>Module: The HKY Substitution Model</h2><p>This model is defined in <code class="language-plaintext highlighter-rouge">modules/substn_models/HYK.Rev</code>.
 It has a single parameter, $\kappa$, which defines the transition to transversion ratio, and a vector of stationary frequencies, $\pi$.
 We allow each molecular partition to have different $\kappa$ and $\pi$ parameters.</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># the partitioned HKY substitution model</span><span class="w">
@@ -665,7 +665,7 @@ We specify this model by sourcing the appropriate module file:</p>
 <p>We’re using a “linked” morphological clock model, which assumes rates of morphological evolution are proportional to rates of molecular evolution (per branch).
 In this case, because we’re using a strict <em>molecular</em> clock, this implies that rates of molecular evolution also follow a strict clock (though the absolute rate will be different between molecular and morphological characters).</p>
 
-<blockquote class="aside"><h2>The Linked Morphological Clock</h2><p>Here, we use the linked morphological clock, specified in the <code class="language-plaintext highlighter-rouge">modules/morph_clock_models/linked.Rev</code> module file.
+<blockquote class="aside"><h2>Module: The Linked Morphological Clock</h2><p>Here, we use the linked morphological clock, specified in the <code class="language-plaintext highlighter-rouge">modules/morph_clock_models/linked.Rev</code> module file.
 This model has a single parameter: the absolute rate of morphological evolution, which we parameterize on the log scale and then exponentiate onto the real scale:</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># the linked morphological clock model</span><span class="w">
 </span><span class="c1"># REQUIRED: morph_branch_rates (either one value, or one value per branch)</span><span class="w">
@@ -708,7 +708,7 @@ See the <a href="/tutorials/morph_tree/V2.html">multistate tutorial</a> for idea
 </span></code></pre></div></div>
 
 <p>In this analysis, we’re using an Mk model <a class="citation" href="#Lewis2001">(Lewis 2001)</a>.</p>
-<blockquote class="aside"><h2>The Mk Model</h2><p>In this analysis we’re assuming that rates of transition between character states are the same, i.e., that the $Q$ matrix is symmetrical.
+<blockquote class="aside"><h2>Module: The Mk Model</h2><p>In this analysis we’re assuming that rates of transition between character states are the same, i.e., that the $Q$ matrix is symmetrical.
 Because the rate matrix is normalized to have an average rate of 1, this model has no free parameters:</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># the Mk model of morphological evolution</span><span class="w">
 </span><span class="c1"># REQUIRED: morph_Q (either one, or one per mixture category), morph_site_rates, site_matrices (TRUE or FALSE)</span><span class="w">
@@ -903,7 +903,7 @@ Then, change the value of <code class="language-plaintext highlighter-rouge">mol
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">mole_clock_model</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"UCLN"</span><span class="w">
 </span></code></pre></div></div>
 
-<blockquote class="aside"><h2>The Uncorrelated Lognormal Molecular Clock Model</h2><p>The uncorrelated lognormal (UCLN) relaxed molecular clock allows the rates of molecular evolution to vary among branches.
+<blockquote class="aside"><h2>Module: The Uncorrelated Lognormal Molecular Clock Model</h2><p>The uncorrelated lognormal (UCLN) relaxed molecular clock allows the rates of molecular evolution to vary among branches.
 Each branch draws its rate from an underlying lognormal distribution with some mean and variance.
 Since we don’t know what the mean and variance are, we treat them as free parameters, place a prior on them, and estimate them from the data.
 In the parlance of hierarchical modeling, we would the mean and standard deviation “hyperparameters” of the branch-rate prior.</p>
@@ -971,7 +971,7 @@ Also, since we’re still using the linked morphological clock, this model allow
 
 <p>To perform these analyses, you’ll need to use the following module files:</p>
 
-<blockquote class="aside"><h2>The Uncorrelated Exponential Relaxed Molecular Clock</h2><p>This relaxed clock model has a single parameter: the mean rate of evolution among branches.
+<blockquote class="aside"><h2>Module: The Uncorrelated Exponential Relaxed Molecular Clock</h2><p>This relaxed clock model has a single parameter: the mean rate of evolution among branches.
 The branch-rates then follow an exponential distribution with the specified mean.
 The logic is otherwise similar to the UCLN model.
 This model is defined in <code class="language-plaintext highlighter-rouge">modules/mole_clock_models/UCE.Rev</code></p>
@@ -1007,7 +1007,7 @@ This model is defined in <code class="language-plaintext highlighter-rouge">modu
 </span></code></pre></div></div>
 </blockquote>
 
-<blockquote class="aside"><h2>The F81 Mixture Model</h2><p>The <em>Mk</em> model assumes that relative transition rates are the same among all character states.
+<blockquote class="aside"><h2>Module: The F81 Mixture Model</h2><p>The <em>Mk</em> model assumes that relative transition rates are the same among all character states.
 For binary characters, <em>F81</em> assumes that each character state has a stationary frequency, $\pi$, that is estimated from the data.
 This stationary frequency reflects the tendency for the character to evolve toward one state or the other.
 While this model may be appropriate for a single character, it is difficult to justify for many characters because the state labels are arbitrary (0 and 1 don’t have the same meaning for all characters), and the process of evolution is certainly very different among characters.</p>
@@ -1049,7 +1049,7 @@ But to do that, you’d have to write a new module file, like <code class="langu
 We’ll leave that one to you :)</p>
 </blockquote>
 
-<blockquote class="aside"><h2>The Epochal FBD Model</h2><p>The fossilized birth-death model can easily accommodate diversification (speciation and extinction) and/or fossilization-rate variation over time.
+<blockquote class="aside"><h2>Module: The Epochal FBD Model</h2><p>The fossilized birth-death model can easily accommodate diversification (speciation and extinction) and/or fossilization-rate variation over time.
 In our analyses, we’ll assume (for convenience) that these rates are different among different geological epochs, though you could use any time intervals you like by modifying the <code class="language-plaintext highlighter-rouge">data/epoch_timescale.csv</code> file.</p>
 
 <p>In this example, we’ll let both diversification and fossilization rates to vary.
