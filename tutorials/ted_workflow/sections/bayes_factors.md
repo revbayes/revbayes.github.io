@@ -119,7 +119,7 @@ Prepare a header file for each of the five models we explored in Exercise 1, abo
 Note that these model comparisons are _not exhaustive_, and you might want to consider more combinations of models to pinpoint which parts of the model are affecting model fit.)
 
 Use these header files to estimate the marginal likelihood for each model.
-For each model, assess whether the path-sampling and and stepping-stone estimates are the same.
+For each model, assess whether the path-sampling and and stepping-stone estimates are similar.
 
 {% figure tab_ml_ted_models %}
 
@@ -129,14 +129,14 @@ For each model, assess whether the path-sampling and and stepping-stone estimate
 | `UCLN_Mk`              |                       |                                 |
 | `UCE_Mk`               |                       |                                 |
 | `UCLN_F81Mix`          |                       |                                 |
-| `epochal_Mk`           |                       |                                 |
 
 {% figcaption %}
 Marginal likelihoods for total-evidence models.
 {% endfigcaption %}
 {% endfigure %}
 
-Now, compare the relative fit by computing the Bayes factor between each pair of models:
+Now, compare the relative fit by computing the Bayes factor between each pair of models.
+Which is the favored model?
 
 {% figure tab_bf_ted_models %}
 

@@ -126,12 +126,13 @@ To achieve this, we start by defining the overall output directory:
 # the output directory
 output_dir      = "output_MCMC"
 ```
-We then create another variable, `output_extra`, (here left empty), that you can use to append any additional information to the output file name.
+We then create another variable, `output_extra` that you can use to append any additional information to the output file name.
 ```R
-output_extra    = ""
+output_extra    = "_run_01"
 ```
-(You can use `output_extra` to add extra information to individual runs.
-For example, you can use this to keep track of independent runs of the same model by duplicating the header and adding `output_extra = run_1`, `run = 2`, etc., to each header.)
+(We're using `output_extra` to specify a given run of the same analyses.
+This lets us quickly do multiple runs by duplicating the header and changing the run number.
+However, in principle, you could use this variable to keep track of any additional information you want.)
 
 Next, we use string concatenation (`+`) to programmatically create the output filename based on the `output_dir` and the analysis-specific variables.
 ```R
