@@ -163,7 +163,7 @@ Then, change the value of `mole_clock_model` like so:
 mole_clock_model = "UCLN"
 ```
 
-{% aside The Uncorrelated Lognormal Molecular Clock Model %}
+{% aside Module: The Uncorrelated Lognormal Molecular Clock Model %}
 
 The uncorrelated lognormal (UCLN) relaxed molecular clock allows the rates of molecular evolution to vary among branches.
 Each branch draws its rate from an underlying lognormal distribution with some mean and variance.
@@ -237,7 +237,7 @@ Now, prepare header files by duplicating and modifying the `strict_Mk.Rev` heade
 
 To perform these analyses, you'll need to use the following module files:
 
-{% aside The Uncorrelated Exponential Relaxed Molecular Clock %}
+{% aside Module: The Uncorrelated Exponential Relaxed Molecular Clock %}
 
 This relaxed clock model has a single parameter: the mean rate of evolution among branches.
 The branch-rates then follow an exponential distribution with the specified mean.
@@ -277,7 +277,7 @@ moves.append( mvVectorSlideRecenter(mole_branch_rates_log, mole_clock_rate_mean_
 
 {% endaside %}
 
-{% aside The F81 Mixture Model %}
+{% aside Module: The F81 Mixture Model %}
 
 The _Mk_ model assumes that relative transition rates are the same among all character states.
 For binary characters, _F81_ assumes that each character state has a stationary frequency, $\pi$, that is estimated from the data.
@@ -323,7 +323,7 @@ We'll leave that one to you :)
 
 {% endaside %}
 
-{% aside The Epochal FBD Model %}
+{% aside Module: The Epochal FBD Model %}
 
 The fossilized birth-death model can easily accommodate diversification (speciation and extinction) and/or fossilization-rate variation over time.
 In our analyses, we'll assume (for convenience) that these rates are different among different geological epochs, though you could use any time intervals you like by modifying the `data/epoch_timescale.csv` file.

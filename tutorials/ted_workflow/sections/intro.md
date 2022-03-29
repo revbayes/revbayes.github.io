@@ -45,7 +45,7 @@ For example, all diversification models will have to define parameters $\lambda$
 The details of how the different diversification models fill in $\lambda$ and $\mu$ will, of course, depend on the model.
 We'll hide details of particular models in folds, like so (in case you want to dig in):
 
-{% aside An example model module %}
+{% aside Module: An example model module %}
 
 Here's a Jukes-Cantor model of sequence evolution, partitioned by alignment:
 ```R
@@ -269,7 +269,7 @@ source("modules/diversification_models/" + diversification_model + ".Rev")
 ```
 In this case, the above code will evaluate to `source("modules/diversification_models/constant.Rev")`, because we defined `diversification_model = "constant"` in our header file!
 
-{% aside The Constant-Rate Diversification Model %}
+{% aside Module: The Constant-Rate Diversification Model %}
 
 In this model, (`modules/diversification_models/constant.Rev`) we assume speciation ($\lambda$) and extinction ($\mu$) rates are constant over time.
 We parameterize the model using the net-diversification rate ($\lambda - \mu$) and the relative extinction rate ($\mu \div \lambda$).
@@ -337,7 +337,7 @@ Next, we source the fossilization model:
 source("modules/fossilization_models/" + fossilization_model + ".Rev")
 ```
 
-{% aside The Constant-Rate Fossilization Model %}
+{% aside Module: The Constant-Rate Fossilization Model %}
 
 This model is defined in `modules/fossilization_models/constant.Rev`.
 As with the constant-rate diversification model, this model assumes that the fossilization rate is constant over time.
@@ -461,7 +461,7 @@ source("modules/mole_clock_models/" + mole_clock_model + ".Rev")
 ```
 In this header file, we assumed a strict molecular clock.
 
-{% aside The Strict Molecular Clock %}
+{% aside Module: The Strict Molecular Clock %}
 
 This simple model (defined in `modules/mole_clock_models/strict.Rev`) assumes that the rate of evolution is the same across branches of the tree.
 It therefore has a single parameter, which we parameterize on the log scale:
@@ -505,7 +505,7 @@ source("modules/substn_models/" + substn_model + ".Rev")
 ```
 In this analyses, we're using the HYK substitution model, partitioned among alignments (which correspond to codon positions in the example rbcL dataset).
 
-{% aside The HKY Substitution Model %}
+{% aside Module: The HKY Substitution Model %}
 
 This model is defined in `modules/substn_models/HYK.Rev`.
 It has a single parameter, $\kappa$, which defines the transition to transversion ratio, and a vector of stationary frequencies, $\pi$.
@@ -574,7 +574,7 @@ source("modules/morph_clock_models/" + morph_clock_model + ".Rev")
 We're using a "linked" morphological clock model, which assumes rates of morphological evolution are proportional to rates of molecular evolution (per branch).
 In this case, because we're using a strict _molecular_ clock, this implies that rates of molecular evolution also follow a strict clock (though the absolute rate will be different between molecular and morphological characters).
 
-{% aside The Linked Morphological Clock %}
+{% aside Module: The Linked Morphological Clock %}
 
 Here, we use the linked morphological clock, specified in the `modules/morph_clock_models/linked.Rev` module file.
 This model has a single parameter: the absolute rate of morphological evolution, which we parameterize on the log scale and then exponentiate onto the real scale:
@@ -622,7 +622,7 @@ source("modules/morph_models/" + morph_model + ".Rev")
 ```
 
 In this analysis, we're using an Mk model {% cite Lewis2001 %}.
-{% aside The Mk Model %}
+{% aside Module: The Mk Model %}
 
 In this analysis we're assuming that rates of transition between character states are the same, i.e., that the $Q$ matrix is symmetrical.
 Because the rate matrix is normalized to have an average rate of 1, this model has no free parameters:
