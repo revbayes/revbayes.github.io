@@ -79,9 +79,9 @@ Consider doing the [RevGadgets tutorial]({{site.baseurl}}{% link tutorials/intro
 
 This concludes the total-evidence-dating workflow tutorial!
 We've shown you how to specify complex analyses in a generic way, that hopefully you can extend and modify to accommodate your own dataset.
-We've also shown provided some examples of how to assess model sensitivity---the degree to which phylogenetic divergence-time estimates are sensitive to modeling choices---and how to compare models on both relative (Bayes factor) and absolute (posterior-predictive simulation) scales.
+We've also provided some examples of how to assess model sensitivity---the degree to which phylogenetic divergence-time estimates are sensitive to modeling choices---and how to compare models on both relative (Bayes factor) and absolute (posterior-predictive simulation) scales.
 We encourage you to try this workflow out with your own dataset, and let us know how it goes!
-For a more complete set of models and analyses, you can check out the supplemental archive of our Marattiales study, which explored a larger number of models and model combinations that we presented here at our [GitHub supplemental repository](https://github.com/mikeryanmay/marattiales_supplemental).
+For a more complete set of models and analyses, you can check out the supplemental archive of our Marattiales study---which explored a larger number of models and model combinations than we presented here---at our [GitHub supplemental repository](https://github.com/mikeryanmay/marattiales_supplemental).
 
 
 

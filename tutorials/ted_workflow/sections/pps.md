@@ -125,7 +125,7 @@ pps = posteriorPredictiveSimulation(mymodel, directory = output_filename + "/sim
 # run the PPS simulations
 pps.run()
 ```
-(Note that we're reading in the reading in the stochastic variable trace created by `mnStochasticVariable`.)
+(Note that we're reading in the stochastic variable trace created by `mnStochasticVariable`.)
 The `pps.run()` command will generate one simulated dataset per MCMC sample, and write them in the `/simulations` subdirectory.
 
 We repeat this procedure for each model under consideration, though in principle we can do model adequacy with a single model!

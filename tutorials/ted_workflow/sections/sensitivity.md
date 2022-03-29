@@ -159,7 +159,7 @@ which produces {% ref KF_MDS %}
 {% figcaption %}
 **Multidimensional scaling of tree space sampled by different models using the Kühner-Felsenstein distance.**
 The KF metric incorporates both tree topology and branch lengths.
-Because this MDS plot looks very similar to the MDS plot for RF distances ({% ref RF_MDS %}), we might conclude that the main differences between these models are in the inferred tree topologies.
+Because this MDS plot looks very similar to the MDS plot for RF distances ({% ref RF_MDS %}; note that the directions of the axes are arbitrary, so rotations don't matter), we might conclude that the main differences between these models are in the inferred tree topologies.
 (Of course, we don't expect this to be a general result, just a feature of the example dataset!)
 {% endfigcaption %}
 {% endfigure %}
