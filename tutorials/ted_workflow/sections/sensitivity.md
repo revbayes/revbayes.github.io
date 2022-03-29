@@ -1,7 +1,7 @@
 {% section Assessing model sensitivity | sensitivity %}
 
 In this section, we'll discuss how to tell whether different models affect phylogenetic estimates.
-We'll use two tools for assessing model sensitivity: lineage-through-time (LTT) plots to visualize inferred lineages over time and multidimensional scaling (MDS) plots to visualize differences in posterior distributions of trees.
+We'll use two tools for assessing model sensitivity: lineage-through-time (LTT) plots to visualize the inferred number of lineages over time and multidimensional scaling (MDS) plots to visualize differences in posterior distributions of trees.
 The code for plotting LTT curves and MDS plots can all be found in the `R` script `posterior_summary/sensitivity.R`
 
 For these examples, we'll assume you've already estimated the posterior distribution of total-evidence trees for the five models we explored in the last exercise.
@@ -9,7 +9,7 @@ For these examples, we'll assume you've already estimated the posterior distribu
 
 {% subsection Lineage-Through-Time Plots %}
 
-A lineage-through-time curves display the number of branches in the inferred tree at any given time, and therefore summarizes overall differences in divergence-time estimates between different models.
+A lineage-through-time curve displays the number of branches in the inferred tree at any given time, so we can use LTTS to summarize overall differences in divergence-time estimates between different models.
 We'll use `R` and `RevGadgets` to plot the LTT curves for our different models.
 
 First, we load some required packages and code:

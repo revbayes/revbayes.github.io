@@ -269,11 +269,12 @@ To achieve this, we start by defining the overall output directory:</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># the output directory</span><span class="w">
 </span><span class="n">output_dir</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">"output_MCMC"</span><span class="w">
 </span></code></pre></div></div>
-<p>We then create another variable, <code class="language-plaintext highlighter-rouge">output_extra</code>, (here left empty), that you can use to append any additional information to the output file name.</p>
-<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">output_extra</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">""</span><span class="w">
+<p>We then create another variable, <code class="language-plaintext highlighter-rouge">output_extra</code> that you can use to append any additional information to the output file name.</p>
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">output_extra</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">"_run_01"</span><span class="w">
 </span></code></pre></div></div>
-<p>(You can use <code class="language-plaintext highlighter-rouge">output_extra</code> to add extra information to individual runs.
-For example, you can use this to keep track of independent runs of the same model by duplicating the header and adding <code class="language-plaintext highlighter-rouge">output_extra = run_1</code>, <code class="language-plaintext highlighter-rouge">run = 2</code>, etc., to each header.)</p>
+<p>(We’re using <code class="language-plaintext highlighter-rouge">output_extra</code> to specify a given run of the same analyses.
+This lets us quickly do multiple runs by duplicating the header and changing the run number.
+However, in principle, you could use this variable to keep track of any additional information you want.)</p>
 
 <p>Next, we use string concatenation (<code class="language-plaintext highlighter-rouge">+</code>) to programmatically create the output filename based on the <code class="language-plaintext highlighter-rouge">output_dir</code> and the analysis-specific variables.</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">output_filename</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">output_dir</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">"/div_"</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">diversification_model</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">"_foss_"</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">fossilization_model</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">"_moleclock_"</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">mole_clock_model</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">"_moleQ_"</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">substn_model</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">"_morphclock_"</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">morph_clock_model</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">"_morphQ_"</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">morph_model</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">"_"</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">analysis</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">output_extra</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">"/"</span><span class="w">
@@ -758,8 +759,8 @@ This argument (when <code class="language-plaintext highlighter-rouge">TRUE</cod
 We do this by calling the <code class="language-plaintext highlighter-rouge">analysis/MCMC.Rev</code> module.
 Let’s look at this script line-by-line.</p>
 
-<p>The first thing we’ll want to do is decide how many runs to do, and how many generations to run for.
-We’ll do a burnin analysis, so we’ll also need to decide how many burnin generations to run for, and how often to adjust the tuning parameters for MCMC proposals:</p>
+<p>The first thing we’ll want to do is decide how many runs to do (<code class="language-plaintext highlighter-rouge">nruns</code>), how many generations to run for (<code class="language-plaintext highlighter-rouge">ngen</code>), and how often to write sampled to file (<code class="language-plaintext highlighter-rouge">printgen</code>).
+We’ll do a burnin analysis, so we’ll also need to decide how many burnin generations to run for (<code class="language-plaintext highlighter-rouge">nburnin</code>):</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># analysis settings</span><span class="w">
 </span><span class="n">nruns</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="w">
 </span><span class="n">printgen</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span><span class="w">
@@ -790,7 +791,7 @@ The timetree is a natural choice because it will always be in the model (regardl
 </span><span class="n">mymcmc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mcmc</span><span class="p">(</span><span class="n">mymodel</span><span class="p">,</span><span class="w"> </span><span class="n">monitors</span><span class="p">,</span><span class="w"> </span><span class="n">moves</span><span class="p">,</span><span class="w"> </span><span class="n">nruns</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nruns</span><span class="p">,</span><span class="w"> </span><span class="n">combine</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"mixed"</span><span class="p">)</span><span class="w">
 </span></code></pre></div></div>
 
-<p>If we specified a burnin (<code class="language-plaintext highlighter-rouge">nburnin &gt; 0</code>), we now run that part of the analysis.
+<p>If we specified a burnin (that is, more than zero burnin generations, <code class="language-plaintext highlighter-rouge">nburnin &gt; 0</code>), we now run that part of the analysis.
 This analysis will adjust MCMC proposals every <code class="language-plaintext highlighter-rouge">tuningInterval</code> iterations to improve the acceptance rates (to a target value of 23-44%).
 We also print out the MCMC proposal information with <code class="language-plaintext highlighter-rouge">operatorSummary</code>, which tells us how often each proposal was accepted during the burnin phase.</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># run the burnin</span><span class="w">
@@ -799,6 +800,10 @@ We also print out the MCMC proposal information with <code class="language-plain
   </span><span class="n">mymcmc.operatorSummary</span><span class="p">()</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre></div></div>
+<p>Note that we normally throw out the first chunk of our MCMC sampled (before the chain has converged) as “burnin”.
+This <code class="language-plaintext highlighter-rouge">burnin</code> analysis is a bit different: it is a special “warm-up” MCMC where the tuning parameters are adjusted to achieve good acceptance rates.
+While the chain may converge in this period, there are no guarantees!
+It is good practice to still check the samples generated by the <code class="language-plaintext highlighter-rouge">run</code> step (next) to decide how many need to discard as burnin.</p>
 
 <p>Now we are ready to run our MCMC analysis for <code class="language-plaintext highlighter-rouge">ngen</code> generations.</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># run the analysis</span><span class="w">
@@ -1146,7 +1151,7 @@ In the next section, we’ll explore some more useful ways of exploring the impa
 <hr class="section" />
 
 <p>In this section, we’ll discuss how to tell whether different models affect phylogenetic estimates.
-We’ll use two tools for assessing model sensitivity: lineage-through-time (LTT) plots to visualize inferred lineages over time and multidimensional scaling (MDS) plots to visualize differences in posterior distributions of trees.
+We’ll use two tools for assessing model sensitivity: lineage-through-time (LTT) plots to visualize the inferred number of lineages over time and multidimensional scaling (MDS) plots to visualize differences in posterior distributions of trees.
 The code for plotting LTT curves and MDS plots can all be found in the <code class="language-plaintext highlighter-rouge">R</code> script <code class="language-plaintext highlighter-rouge">posterior_summary/sensitivity.R</code></p>
 
 <p>For these examples, we’ll assume you’ve already estimated the posterior distribution of total-evidence trees for the five models we explored in the last exercise.
@@ -1155,7 +1160,7 @@ The code for plotting LTT curves and MDS plots can all be found in the <code cla
 <h3 class="subsection" id="lineage-through-time-plots">Lineage-Through-Time Plots</h3>
 <hr class="subsection" />
 
-<p>A lineage-through-time curves display the number of branches in the inferred tree at any given time, and therefore summarizes overall differences in divergence-time estimates between different models.
+<p>A lineage-through-time curve displays the number of branches in the inferred tree at any given time, so we can use LTTS to summarize overall differences in divergence-time estimates between different models.
 We’ll use <code class="language-plaintext highlighter-rouge">R</code> and <code class="language-plaintext highlighter-rouge">RevGadgets</code> to plot the LTT curves for our different models.</p>
 
 <p>First, we load some required packages and code:</p>
@@ -1403,7 +1408,7 @@ Prepare a header file for each of the five models we explored in Exercise 1, abo
 Note that these model comparisons are <em>not exhaustive</em>, and you might want to consider more combinations of models to pinpoint which parts of the model are affecting model fit.)</p>
 
 <p>Use these header files to estimate the marginal likelihood for each model.
-For each model, assess whether the path-sampling and and stepping-stone estimates are the same.</p>
+For each model, assess whether the path-sampling and and stepping-stone estimates are similar.</p>
 
 <figure id="tab_ml_ted_models"><table>
   <thead>
@@ -1434,18 +1439,14 @@ For each model, assess whether the path-sampling and and stepping-stone estimate
       <td style="text-align: center"> </td>
       <td style="text-align: center"> </td>
     </tr>
-    <tr>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">epochal_Mk</code></td>
-      <td style="text-align: center"> </td>
-      <td style="text-align: center"> </td>
-    </tr>
   </tbody>
 </table>
 
 <figcaption>Marginal likelihoods for total-evidence models.</figcaption>
 </figure>
 
-<p>Now, compare the relative fit by computing the Bayes factor between each pair of models:</p>
+<p>Now, compare the relative fit by computing the Bayes factor between each pair of models.
+Which is the favored model?</p>
 
 <figure id="tab_bf_ted_models"><table>
   <thead>

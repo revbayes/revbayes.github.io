@@ -24,7 +24,7 @@ ps_ml = ps.marginal()
 # compute the stepping-stone estimate of the marginal likelihood
 ss = steppingStoneSampler(file = output_filename + "/stones/pp.log", powerColumnName = "power", likelihoodColumnName = "likelihood")
 ss_ml = ss.marginal()
-"Stepping-stone sampling estimate of ML: " + ps_ml
+"Stepping-stone sampling estimate of ML: " + ss_ml
 
 # write the estimates to file
 write(ps_ml, ss_ml, filename = output_filename + "/ml.txt")
