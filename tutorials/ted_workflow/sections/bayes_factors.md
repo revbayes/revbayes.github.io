@@ -72,7 +72,7 @@ Next, we define our power-posterior analysis object.
 This function takes the number of stones (the `cats`) argument, as well as the filename for the samples per stone.
 ```R
 # make the analysis
-mymcmc = powerPosterior(mymodel, monitors, moves, filename = output_filename + "/stones/pp.log", cats = nstones, sampleFreq = printgen)
+mymcmc = powerPosterior(mymodel, monitors, moves, filename = output_filename + "/stones/pp.log", cats = nstones - 1, sampleFreq = printgen)
 ```
 (This function automatically decides where to place the $\beta$ values for each stone, but advanced users may want to control where the stones go using the `powers` or `alpha` arguments, describes in the documentation. The placement of stones can have some affect on the accuracy of marginal-likelihood estimates, but the default values are usually pretty good.)
 
@@ -114,7 +114,7 @@ The rest of the model files do not need to change, because the power-posterior a
 {% subsection Exercise 2: Comparing among models %}
 
 Now that we've written a `PP.Rev` analysis script for doing a power-posterior analysis, we want to compare the fit of our models.
-Prepare a header file for each of the five models we explored in Exercise 1, above.
+Prepare a header file for each of the four models in the tables below (a subset of the models we used above for the MCMC analyses).
 (We also provide the relevant header files in `headers/PowerPosterior`.
 Note that these model comparisons are _not exhaustive_, and you might want to consider more combinations of models to pinpoint which parts of the model are affecting model fit.)
 
@@ -146,7 +146,6 @@ Which is the favored model?
 | `UCLN_Mk` | | | | | |
 | `UCE_Mk` | | | | | |
 | `UCLN_F81Mix` | | | | | |
-| `epochal_Mk` | | | | | |
 
 {% figcaption %}
 Bayes factors between total-evidence models.

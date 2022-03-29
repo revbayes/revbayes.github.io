@@ -11,7 +11,7 @@ monitors.append( mnScreen(printgen = printgen) )
 mymodel = model(timetree)
 
 # make the analysis
-mymcmc = powerPosterior(mymodel, monitors, moves, filename = output_filename + "/stones/pp.log", cats = nstones, sampleFreq = printgen)
+mymcmc = powerPosterior(mymodel, monitors, moves, filename = output_filename + "/stones/pp.log", cats = nstones - 1, sampleFreq = printgen)
 
 # run the analysis
 mymcmc.run(generations = ngen)

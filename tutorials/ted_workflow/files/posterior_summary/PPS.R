@@ -23,12 +23,6 @@ stats_UCLN_Mk     <- processMorphoPPS(data, samples_UCLN_Mk)
 stats_UCE_Mk      <- processMorphoPPS(data, samples_UCE_Mk)
 stats_UCLN_F81Mix <- processMorphoPPS(data, samples_UCLN_F81Mix)
 
-# create the plots
-p_strict_Mk   <- plotPostPredStats(stats_strict_Mk)
-p_UCLN_Mk     <- plotPostPredStats(stats_UCLN_Mk)
-p_UCE_Mk      <- plotPostPredStats(stats_UCE_Mk)
-p_UCLN_F81Mix <- plotPostPredStats(stats_UCLN_F81Mix)
-
 # plot things together
 combined_stats <- list(
   strict_Mk   = stats_strict_Mk,

@@ -56,7 +56,7 @@
 	<h1 class="maintitle">Total-evidence dating, model sensitivity, and model comparison</h1>
 	<h3 class="subtitle">An example analysis workflow for total-evidence dating analyses</h3>
 	<h4 class="authors">Michael R. May</h4>
-  <h5>Last modified on March 28, 2022</h5>
+  <h5>Last modified on March 29, 2022</h5>
 </div>
 
 
@@ -1292,7 +1292,7 @@ The strict clock model in particular appears to be sampling tree topologies in o
 <figure id="KF_MDS"><p><img src="files/figures/mds_KF.png" width="50%" height="50%" /></p>
 <figcaption><strong>Multidimensional scaling of tree space sampled by different models using the Kühner-Felsenstein distance.</strong>
 The KF metric incorporates both tree topology and branch lengths.
-Because this MDS plot looks very similar to the MDS plot for RF distances (<a href="#RF_MDS"></a>), we might conclude that the main differences between these models are in the inferred tree topologies.
+Because this MDS plot looks very similar to the MDS plot for RF distances (<a href="#RF_MDS"></a>; note that the directions of the axes are arbitrary, so rotations don’t matter), we might conclude that the main differences between these models are in the inferred tree topologies.
 (Of course, we don’t expect this to be a general result, just a feature of the example dataset!)</figcaption>
 </figure>
 
@@ -1364,7 +1364,7 @@ If you want to estimate the posterior distribution, you should use the <code cla
 <p>Next, we define our power-posterior analysis object.
 This function takes the number of stones (the <code class="language-plaintext highlighter-rouge">cats</code>) argument, as well as the filename for the samples per stone.</p>
 <div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># make the analysis</span><span class="w">
-</span><span class="n">mymcmc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">powerPosterior</span><span class="p">(</span><span class="n">mymodel</span><span class="p">,</span><span class="w"> </span><span class="n">monitors</span><span class="p">,</span><span class="w"> </span><span class="n">moves</span><span class="p">,</span><span class="w"> </span><span class="n">filename</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">output_filename</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">"/stones/pp.log"</span><span class="p">,</span><span class="w"> </span><span class="n">cats</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nstones</span><span class="p">,</span><span class="w"> </span><span class="n">sampleFreq</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">printgen</span><span class="p">)</span><span class="w">
+</span><span class="n">mymcmc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">powerPosterior</span><span class="p">(</span><span class="n">mymodel</span><span class="p">,</span><span class="w"> </span><span class="n">monitors</span><span class="p">,</span><span class="w"> </span><span class="n">moves</span><span class="p">,</span><span class="w"> </span><span class="n">filename</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">output_filename</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">"/stones/pp.log"</span><span class="p">,</span><span class="w"> </span><span class="n">cats</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nstones</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">sampleFreq</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">printgen</span><span class="p">)</span><span class="w">
 </span></code></pre></div></div>
 <p>(This function automatically decides where to place the $\beta$ values for each stone, but advanced users may want to control where the stones go using the <code class="language-plaintext highlighter-rouge">powers</code> or <code class="language-plaintext highlighter-rouge">alpha</code> arguments, describes in the documentation. The placement of stones can have some affect on the accuracy of marginal-likelihood estimates, but the default values are usually pretty good.)</p>
 
@@ -1403,7 +1403,7 @@ The rest of the model files do not need to change, because the power-posterior a
 <hr class="subsection" />
 
 <p>Now that we’ve written a <code class="language-plaintext highlighter-rouge">PP.Rev</code> analysis script for doing a power-posterior analysis, we want to compare the fit of our models.
-Prepare a header file for each of the five models we explored in Exercise 1, above.
+Prepare a header file for each of the four models in the tables below (a subset of the models we used above for the MCMC analyses).
 (We also provide the relevant header files in <code class="language-plaintext highlighter-rouge">headers/PowerPosterior</code>.
 Note that these model comparisons are <em>not exhaustive</em>, and you might want to consider more combinations of models to pinpoint which parts of the model are affecting model fit.)</p>
 
@@ -1486,14 +1486,6 @@ Which is the favored model?</p>
     </tr>
     <tr>
       <td style="text-align: right"><code class="language-plaintext highlighter-rouge">UCLN_F81Mix</code></td>
-      <td style="text-align: center"> </td>
-      <td style="text-align: center"> </td>
-      <td style="text-align: center"> </td>
-      <td style="text-align: center"> </td>
-      <td style="text-align: center"> </td>
-    </tr>
-    <tr>
-      <td style="text-align: right"><code class="language-plaintext highlighter-rouge">epochal_Mk</code></td>
       <td style="text-align: center"> </td>
       <td style="text-align: center"> </td>
       <td style="text-align: center"> </td>
@@ -1626,7 +1618,7 @@ We’ll hide this code behind a fold because we’ve already seen in before in o
 </span><span class="c1"># run the PPS simulations</span><span class="w">
 </span><span class="n">pps.run</span><span class="p">()</span><span class="w">
 </span></code></pre></div></div>
-<p>(Note that we’re reading in the reading in the stochastic variable trace created by <code class="language-plaintext highlighter-rouge">mnStochasticVariable</code>.)
+<p>(Note that we’re reading in the stochastic variable trace created by <code class="language-plaintext highlighter-rouge">mnStochasticVariable</code>.)
 The <code class="language-plaintext highlighter-rouge">pps.run()</code> command will generate one simulated dataset per MCMC sample, and write them in the <code class="language-plaintext highlighter-rouge">/simulations</code> subdirectory.</p>
 
 <p>We repeat this procedure for each model under consideration, though in principle we can do model adequacy with a single model!
@@ -1731,9 +1723,9 @@ However, we should not expect this to be a general result: different datasets wi
 
 <p>This concludes the total-evidence-dating workflow tutorial!
 We’ve shown you how to specify complex analyses in a generic way, that hopefully you can extend and modify to accommodate your own dataset.
-We’ve also shown provided some examples of how to assess model sensitivity—the degree to which phylogenetic divergence-time estimates are sensitive to modeling choices—and how to compare models on both relative (Bayes factor) and absolute (posterior-predictive simulation) scales.
+We’ve also provided some examples of how to assess model sensitivity—the degree to which phylogenetic divergence-time estimates are sensitive to modeling choices—and how to compare models on both relative (Bayes factor) and absolute (posterior-predictive simulation) scales.
 We encourage you to try this workflow out with your own dataset, and let us know how it goes!
-For a more complete set of models and analyses, you can check out the supplemental archive of our Marattiales study, which explored a larger number of models and model combinations that we presented here at our <a href="https://github.com/mikeryanmay/marattiales_supplemental">GitHub supplemental repository</a>.</p>
+For a more complete set of models and analyses, you can check out the supplemental archive of our Marattiales study—which explored a larger number of models and model combinations than we presented here—at our <a href="https://github.com/mikeryanmay/marattiales_supplemental">GitHub supplemental repository</a>.</p>
 
 <!--  -->
 
