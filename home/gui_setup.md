@@ -36,7 +36,7 @@ sudo python3 setup.py install
 python3 -m revbayes_kernel.install
 pip3 install metakernel
 ```
-to deploy the kernel. Now, when launching a Jupyter Notebook, RevBayes should be an available language when starting a notebook.
+to deploy the kernel. Now, when launching a Jupyter Notebook, RevBayes should be an available language when starting a notebook. You can check the installation by executing the revbayes_mcmc_demo.ipynb found in the `revbayes_kernel` directory.
 
 Examples of RevNotebooks can be found in the RevNotebook [repository](https://github.com/revbayes/RevNotebooks).
 
@@ -45,29 +45,29 @@ Examples of RevNotebooks can be found in the RevNotebook [repository](https://gi
 
 Compile or download RevBayes as appropriate for your system above. Add RevBayes to your system path.
 
-Download [R](https://cran.rstudio.com/) and [RStudio](https://rstudio.com/products/rstudio/download/). Once these are downloaded, start RStudio. Install the `devtools` package like so:
+Download [R](https://cran.rstudio.com/) and [RStudio](https://rstudio.com/products/rstudio/download/). Once these are downloaded, start RStudio. Install the `remotes` package. We will also install the package `usethis` to aid with installation:
 
 ```
-install.packages("devtools")
+install.packages("remotes")
+install.packages("usethis")
 ```
 
-Use `devtools` to install RevKnitr:
+Use `remotes` to install RevKnitr:
 
 ```
-devtools::install_github("revbayes/RevKnitr")
+remotes::install_github("revbayes/Revticulate")
 ```
 
-Once installation is complete, restart RStudio. `rb` should now be available as an RMarkdown language.
-
-For ease of use, you might consider adding an RMarkdown chunk to the beginning of any RevMarkdown files that specifies
-the current working directory and where RevBayes is stored. For example, a markdown cell containing the following information:
+Once installation is complete, type
 
 ```
-```{r setup}
-knitr::opts_chunk$set(root.dir = "~/projects/RevBayesWork")
-knitr::opts_chunk$set(engine.pat="~/software/rb")
+library(Revticulate)
 ```
 
-Would tell RMarkdown that the home, or current working directory, is in a directory called "RevBayesWork",
-and that the executeable itself is in a folder called software. In this way, the working directory is set
-for the entire document.
+in a markdown chunk or in the console. This will prompt Revticulate to open your .Renviron file. You will use this to place the path to RevBayes in the Renviron, providing R with the location of RevBayes so that Revticulate may execute code using it. You will enter into the file the location of RevBayes on your hard drive. For example, if I have RevBayes installed in my software directory, this will be:
+
+```
+rb=/Users/software/rb
+```
+
+Now, you may use RevBayes in either KnitR or console. For examples of RevBayes used via Revticulate, see the [Revticulate website](https://paleantology.github.io/Revticulate/).
