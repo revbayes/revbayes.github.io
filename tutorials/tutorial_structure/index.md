@@ -9,6 +9,8 @@ redirect: false
 include_files:
     - tutorial_structure/data/example_file.nex
     - tutorial_structure/scripts/test.Rev
+    - tutorial_structure/scripts/test.Rmd
+
 
 
 ---
@@ -17,7 +19,7 @@ include_files:
 
 This tutorial covers how to set up files and directories to work effectively in RevBayes {% cite Hoehna2014a Hoehna2016b %}.
 This workshop assumes no familiarity with the command line, or programming in general.
-The themes of good directory structuring shown in this tutorial will be used in many othe RevBayes tutorials.  
+The themes of good directory structuring shown in this tutorial will be used in many other RevBayes tutorials.  
 
 {% section Using your computer's graphical user interface %}
 
@@ -315,86 +317,9 @@ A sample RStudio window.
 {% endfigure %}
 
 
-In the upper-right hand panel, start a new RMarkdown document. RMarkdown is used via "chunks", or  lines of code. In a new RMarkdown notebook, the first cell is shown in {% ref markdownsetup %}
-
-{% figure markdownsetup %}
-<img src="figures/RSetup.png" width="600">
-{% figcaption %}
-The first cell of an RMarkdown notebook.
-{% endfigcaption %}
-{% endfigure %}
-
-We will edit this cell to add two variables, the root directory and the engine.path. The working directory tells R what directory you want to work in. We will set this equal to the directory to which we downloaded the data and scripts. For example, if the directory structure if as shown in figure {% ref example %}, this line will be `knitr::opts_chunk$set(root.dir = "~/projects/tutorials/tutorial_structure/)` on Mac and Linux. On PC, it will be `setwd("c:\\april\\tutorials\\tutorial_structure")`.
-
-The engine.path is where RevBayes is on your computer. If my copy of RevBayes is in a directory called "software" in my user home, my enine path will be `knitr::opts_chunk$set(engine.pat="~/software/rb")` on Mac and Linux or `knitr::opts_chunk$set(engine.path="c:\\april\\software\\rb")` on PC.
-
-The appearance of the setup cell can be seen below.
-
-{% figure CompletedSetup %}
-<img src="figures/CompletedSetup.png" width="400">
-{% figcaption %}
-This setup cell shows an example of setting the work directory and the engine path (to tell R where RevBayes is located).
-{% endfigcaption %}
-{% endfigure %}
+You will find in the scripts directory a file called test.Rmd. Open this file in RStudio. This file will walk you through the installation and use of RevBayes via Revticulate.
 
 
-
-Run this chunk by clicking the green arrow in the upper-left hand corner of the cell.
-
-Next, you will note other RMarkdown chunks in the document. By changing the `r` in the curly braces to `rb`, we can run RevBayes in a markdown document. By choosing `r` or `rb`, we can use both the R programming language and RevBayes in the same notebook.
-
-{% figure RBMkd %}
-<img src="figures/RbMarkdown.png" width="300">
-{% figcaption %}
-This is an example of a Rev Markdown cell inside an RMarkdown document.
-{% endfigcaption %}
-{% endfigure %}
-
-
-```{rb}
-variable <- "Hi there! Welcome to RevBayes! I am now going to read in some test data."
-
-variable
-```
-
-Run it by clicking the green arrow. If this execute correctly, you will receive the message.
-
-```
-   Processing file "scripts/test.Rev"
-   Hi there! Welcome to RevBayes! I am now going to read in some test data.
-```
-
-
-Now, we'll actually read in the data. Start a new Markdown chunk and enter:
-
-```
-molecular <- readDiscreteCharacterData("data/example_file.nex")
-
-success <- "Congratulations, you set up your scripts and code directories correctly."
-
-success
-q()
-```
-
-If this executes correctly, you will receive the output:
-
-```
-   Successfully read one character matrix from file 'data/primates_and_galeopterus_cytb.nex'
-   Congratulations, you set up your scripts and code directories correctly.
-```
-
-If you have made a mistake and need to erase previous output, you can add a flag to the markdown cells that refreshes previously-entered commands, as shown in figure {% ref mistake %}.
-
-
-{% figure mistake %}
-<img src="figures/freshchunkrb.png" width="300">
-{% figcaption %}
-This is an example of how to reset after making a mistake.
-{% endfigcaption %}
-{% endfigure %}
-
-
-Lastly, the entire document can be `knitted` to an output file. At the top of your screen, there is a button labeled Knit. This allows you to run all of your code and save the text, output, and figures to html, PDF, and other formats.
 
 {% section Using Jupyter %}
 
