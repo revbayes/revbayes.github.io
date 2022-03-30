@@ -151,10 +151,10 @@ data      <- readMorphoData(data_file)
 Now, we specify the output directories for each of our posterior-predictive analyses.
 ```R
 # specify the output directory for each model
-output_strict_Mk   <- "output_PPS/div_constant_foss_constant_moleclock_strict_moleQ_HKY_morphclock_linked_morphQ_Mk_PPS/"
-output_UCLN_Mk     <- "output_PPS/div_constant_foss_constant_moleclock_UCLN_moleQ_HKY_morphclock_linked_morphQ_Mk_PPS/"
-outout_UCE_Mk      <- "output_PPS/div_constant_foss_constant_moleclock_UCE_moleQ_HKY_morphclock_linked_morphQ_Mk_PPS/"
-output_UCLN_F81Mix <- "output_PPS/div_constant_foss_constant_moleclock_UCLN_moleQ_HKY_morphclock_linked_morphQ_F81Mix_PPS/"
+output_strict_Mk   <- "output_PPS/div_constant_foss_constant_moleclock_strict_moleQ_HKY_morphclock_linked_morphQ_Mk_PPS_run_01/"
+output_UCLN_Mk     <- "output_PPS/div_constant_foss_constant_moleclock_UCLN_moleQ_HKY_morphclock_linked_morphQ_Mk_PPS_run_01/"
+outout_UCE_Mk      <- "output_PPS/div_constant_foss_constant_moleclock_UCE_moleQ_HKY_morphclock_linked_morphQ_Mk_PPS_run_01/"
+output_UCLN_F81Mix <- "output_PPS/div_constant_foss_constant_moleclock_UCLN_moleQ_HKY_morphclock_linked_morphQ_F81Mix_PPS_run_01/"
 ```
 
 Next, we read in the simulated morphological datasets with `readMorphoPPS`:

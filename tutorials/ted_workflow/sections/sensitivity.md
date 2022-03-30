@@ -22,11 +22,11 @@ source("posterior_summary/utils.R")
 Now, we read in the trees that were sampled by a set of analyses:
 ```R
 # read the samples
-strict_samples  <- readTrees("output_MCMC/div_constant_foss_constant_moleclock_strict_moleQ_HKY_morphclock_linked_morphQ_Mk_MCMC/tree.trees", tree_name = "timetree")
-UCLN_samples    <- readTrees("output_MCMC/div_constant_foss_constant_moleclock_UCLN_moleQ_HKY_morphclock_linked_morphQ_Mk_MCMC/tree.trees", tree_name = "timetree")
-UCE_samples     <- readTrees("output_MCMC/div_constant_foss_constant_moleclock_UCE_moleQ_HKY_morphclock_linked_morphQ_Mk_MCMC/tree.trees", tree_name = "timetree")
-epochal_samples <- readTrees("output_MCMC/div_epochal_foss_epochal_moleclock_UCLN_moleQ_HKY_morphclock_linked_morphQ_Mk_MCMC/tree.trees", tree_name = "timetree")
-F81Mix_samples  <- readTrees("output_MCMC/div_constant_foss_constant_moleclock_UCLN_moleQ_HKY_morphclock_linked_morphQ_F81Mix_MCMC/tree.trees", tree_name = "timetree")
+strict_samples  <- readTrees("output_MCMC/div_constant_foss_constant_moleclock_strict_moleQ_HKY_morphclock_linked_morphQ_Mk_MCMC_run_01/tree.trees", tree_name = "timetree")
+UCLN_samples    <- readTrees("output_MCMC/div_constant_foss_constant_moleclock_UCLN_moleQ_HKY_morphclock_linked_morphQ_Mk_MCMC_run_01/tree.trees", tree_name = "timetree")
+UCE_samples     <- readTrees("output_MCMC/div_constant_foss_constant_moleclock_UCE_moleQ_HKY_morphclock_linked_morphQ_Mk_MCMC_run_01/tree.trees", tree_name = "timetree")
+epochal_samples <- readTrees("output_MCMC/div_epochal_foss_epochal_moleclock_UCLN_moleQ_HKY_morphclock_linked_morphQ_Mk_MCMC_run_01/tree.trees", tree_name = "timetree")
+F81Mix_samples  <- readTrees("output_MCMC/div_constant_foss_constant_moleclock_UCLN_moleQ_HKY_morphclock_linked_morphQ_F81Mix_MCMC_run_01/tree.trees", tree_name = "timetree")
 ```
 The `treename` argument tells `RevGadgets` what the tree variable was called in your `RevBayes` analyses.
 Since we named our tree `timetree` in our template file, we use `tree_name = "timetree"`.
@@ -89,11 +89,11 @@ We'll be using the `R` package `phangorn` {% cite Schliep2011 %} to compute the 
 We'll start by reading in the data (you don't have to repeat this step if you've already read in the trees to make LTT plots, above):
 ```R
 # read the samples
-strict_samples  <- readTrees("output_MCMC/div_constant_foss_constant_moleclock_strict_moleQ_HKY_morphclock_linked_morphQ_Mk_MCMC/tree.trees", tree_name = "timetree")
-UCLN_samples    <- readTrees("output_MCMC/div_constant_foss_constant_moleclock_UCLN_moleQ_HKY_morphclock_linked_morphQ_Mk_MCMC/tree.trees", tree_name = "timetree")
-UCE_samples     <- readTrees("output_MCMC/div_constant_foss_constant_moleclock_UCE_moleQ_HKY_morphclock_linked_morphQ_Mk_MCMC/tree.trees", tree_name = "timetree")
-epochal_samples <- readTrees("output_MCMC/div_epochal_foss_epochal_moleclock_UCLN_moleQ_HKY_morphclock_linked_morphQ_Mk_MCMC/tree.trees", tree_name = "timetree")
-F81Mix_samples  <- readTrees("output_MCMC/div_constant_foss_constant_moleclock_UCLN_moleQ_HKY_morphclock_linked_morphQ_F81Mix_MCMC/tree.trees", tree_name = "timetree")
+strict_samples  <- readTrees("output_MCMC/div_constant_foss_constant_moleclock_strict_moleQ_HKY_morphclock_linked_morphQ_Mk_MCMC_run_01/tree.trees", tree_name = "timetree")
+UCLN_samples    <- readTrees("output_MCMC/div_constant_foss_constant_moleclock_UCLN_moleQ_HKY_morphclock_linked_morphQ_Mk_MCMC_run_01/tree.trees", tree_name = "timetree")
+UCE_samples     <- readTrees("output_MCMC/div_constant_foss_constant_moleclock_UCE_moleQ_HKY_morphclock_linked_morphQ_Mk_MCMC_run_01/tree.trees", tree_name = "timetree")
+epochal_samples <- readTrees("output_MCMC/div_epochal_foss_epochal_moleclock_UCLN_moleQ_HKY_morphclock_linked_morphQ_Mk_MCMC_run_01/tree.trees", tree_name = "timetree")
+F81Mix_samples  <- readTrees("output_MCMC/div_constant_foss_constant_moleclock_UCLN_moleQ_HKY_morphclock_linked_morphQ_F81Mix_MCMC_run_01/tree.trees", tree_name = "timetree")
 ```
 
 Again, we combine the tree samples into a single named list:
