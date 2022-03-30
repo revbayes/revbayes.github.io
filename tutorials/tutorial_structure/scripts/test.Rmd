@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
-    <title>RevBayes: Stepwise Bayesian inference of phylogeny</title>
+    <title>RevBayes: Using RevBayes in R</title>
   </head>
   <body>
     <div class="container">
@@ -53,10 +53,10 @@
 </nav>
 
       <div class="titlebar">
-	<h1 class="maintitle">Stepwise Bayesian inference of phylogeny</h1>
-	<h3 class="subtitle">A full analysis pipeline for phylogenetic inference using RevBayes</h3>
-	<h4 class="authors">Sebastian Höhna and Allison Hsiang</h4>
-  <h5>Last modified on January 18, 2021</h5>
+	<h1 class="maintitle">Using RevBayes in R</h1>
+	<h3 class="subtitle"></h3>
+	<h4 class="authors"></h4>
+  <h5>Last modified on March 29, 2022</h5>
 </div>
 
 
@@ -68,12 +68,8 @@
     <div class="col-md-9">
         <strong>Prerequisites</strong>
         
-          <ul id="prerequisites">
-          
-            <li><a href="/tutorials/intro/">Getting Started with RevBayes and Rev Language Syntax</a></li>
-          
-            <li><a href="/tutorials/mcmc/">Introduction to Markov chain Monte Carlo (MCMC) Sampling</a></li>
-          
+          <ul>
+          <li>None</li>
           </ul>
         
     </div>
@@ -86,47 +82,48 @@
 
 
 </div>
-<h1 class="section" id="overview">Overview</h1>
+# Installation
 
-<p>This tutorial aims to guide you through our stepwise Bayesian inference pipeline using <a href="http://revbayes.com">RevBayes</a>. The exercises are based on a dataset of north american fireflies (genus <em>Photinus</em>) for which we have molecular sequence data for extant species. The material used in this tutorial is directly taken from three others that explore some of the topics in more detail.</p>
+Revticulate can be installed in two ways.
+The first is via CRAN, using the default `install.packages` function in R:
 
-<ul>
-  <li><a href="/tutorials/ctmc/">Continuous Time Markov Models</a> written by Sebastian Höhna</li>
-</ul>
 
-<p>In <a href="/tutorials/step_bayes/unrooted_gene_trees">exercises 1</a> we’ll use the molecular sequence data to infer the relationships among living species.
-In <a href="/tutorials/step_bayes/relaxed">exercise 2</a> we transform the branch lengths from units of substitution into units of time assuming a relaxed clock model.</p>
+```{r}
+install.packages("Revticulate")
+```
 
-<h3 id="the-data">The data</h3>
+The second is via the remotes package, a lightweight package enabling installation from GitHub repositories.
 
-<blockquote class="instruction">
-  <p>Create a directory on your computer for this tutorial.
-In this directory, create a subdirectory called <strong>data</strong>, and download the data files that you can find on the left of this page.</p>
-</blockquote>
 
-<p>In the <strong>data</strong> folder, you should now have seven files.
-Each file is a <em>fasta</em> formatted alignment of a different protein coding gene.</p>
+```{r}
+remotes::install_github("revbayes/Revticulate")
+```
 
-<h3 id="scripts">Scripts</h3>
+ The GitHub repository for Revticulate contains cutting-edge features and may contain bugfixes, but the CRAN is known to be stable for everyday use.
 
-<p>For more complex models and analyses, it’s useful to create separate Rev scripts that contain all the model parameters, moves, and functions for different model components (e.g. the substitution model and the clock model).</p>
+Upon first installation, Revticulate will run a package check.  
+This check searches for and .Renviron file that contains a RevBayes path. If the package doesn’t find this file, or finds it without the path, the package prompts the user to use `usethis::edit_r_environ()`. This opens the .Renviron file, and the user will enter `rb={absolute path to revbayes}`. This can be edited at any time if there are multiple installs on the system, or if you recompile RevBayes and want to use a new version.
 
-<blockquote class="instruction">
-  <p>Create another subdirectory called <strong>scripts</strong>.</p>
-</blockquote>
+Before using Revticulate in knitr, make sure the following is in your setup chunk:
 
-<p>In this tutorial, you will work primarily in your text editor and create a set of modular files that can be easily managed and interchanged. Examples of all the commands used to perform each analysis are also provided at the top of this page under <strong>Scripts</strong> but try to write the complete scripts yourself from the beginning to ensure you understand all the steps involved and the differences between setting up each analysis.</p>
+```{r}
+library(Revticulate)
+knitRev()
+```
 
-<h3 id="exercises">Exercises</h3>
+First, we will test that RevBayes is accessible to us. This is a Rev chunk, which we know becuase the header says 'rb'. This will fail if RevBayes cannot be found. If this is the case, check that the path in your Renviron goes to RevBayes, and restart.
 
-<blockquote class="instruction">
-  <p>Click on the first exercise to begin!</p>
-</blockquote>
+```{rb}
+variable <- "Hi there! Welcome to RevBayes! I am now going to read in some test data."
+variable
+```
 
-<ol>
-  <li><a href="/tutorials/step_bayes/unrooted_gene_trees">Estimating unrooted gene tree(s)</a></li>
-  <li><a href="/tutorials/step_bayes/dating">Rooting and time calibrating the gene tree(s)</a></li>
-</ol>
+Next, we will attempt to read in some data. Note that this file is stored in `tutorial_structure/scripts`, and so we'll going up one directory to the data directory.
+
+```{rb}
+molecular_data <- readDiscreteCharacterData("../data/example_file.nex")
+molecular_data
+```
 
 <ol class="bibliography"></ol>
 

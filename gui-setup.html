@@ -87,7 +87,7 @@ Use RevBayes with a Graphical Interface
 python3 -m revbayes_kernel.install
 pip3 install metakernel
 </code></pre></div></div>
-<p>to deploy the kernel. Now, when launching a Jupyter Notebook, RevBayes should be an available language when starting a notebook.</p>
+<p>to deploy the kernel. Now, when launching a Jupyter Notebook, RevBayes should be an available language when starting a notebook. You can check the installation by executing the revbayes_mcmc_demo.ipynb found in the <code class="language-plaintext highlighter-rouge">revbayes_kernel</code> directory.</p>
 
 <p>Examples of RevNotebooks can be found in the RevNotebook <a href="https://github.com/revbayes/RevNotebooks">repository</a>.</p>
 
@@ -96,29 +96,28 @@ pip3 install metakernel
 
 <p>Compile or download RevBayes as appropriate for your system above. Add RevBayes to your system path.</p>
 
-<p>Download <a href="https://cran.rstudio.com/">R</a> and <a href="https://rstudio.com/products/rstudio/download/">RStudio</a>. Once these are downloaded, start RStudio. Install the <code class="language-plaintext highlighter-rouge">devtools</code> package like so:</p>
+<p>Download <a href="https://cran.rstudio.com/">R</a> and <a href="https://rstudio.com/products/rstudio/download/">RStudio</a>. Once these are downloaded, start RStudio. Install the <code class="language-plaintext highlighter-rouge">remotes</code> package. We will also install the package <code class="language-plaintext highlighter-rouge">usethis</code> to aid with installation:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>install.packages("devtools")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>install.packages("remotes")
+install.packages("usethis")
 </code></pre></div></div>
 
-<p>Use <code class="language-plaintext highlighter-rouge">devtools</code> to install RevKnitr:</p>
+<p>Use <code class="language-plaintext highlighter-rouge">remotes</code> to install RevKnitr:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>devtools::install_github("revbayes/RevKnitr")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>remotes::install_github("revbayes/Revticulate")
 </code></pre></div></div>
 
-<p>Once installation is complete, restart RStudio. <code class="language-plaintext highlighter-rouge">rb</code> should now be available as an RMarkdown language.</p>
+<p>Once installation is complete, type</p>
 
-<p>For ease of use, you might consider adding an RMarkdown chunk to the beginning of any RevMarkdown files that specifies
-the current working directory and where RevBayes is stored. For example, a markdown cell containing the following information:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>```{r setup}
-knitr::opts_chunk$set(root.dir = "~/projects/RevBayesWork")
-knitr::opts_chunk$set(engine.pat="~/software/rb")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>library(Revticulate)
 </code></pre></div></div>
 
-<p>Would tell RMarkdown that the home, or current working directory, is in a directory called “RevBayesWork”,
-and that the executeable itself is in a folder called software. In this way, the working directory is set
-for the entire document.</p>
+<p>in a markdown chunk or in the console. This will prompt Revticulate to open your .Renviron file. You will use this to place the path to RevBayes in the Renviron, providing R with the location of RevBayes so that Revticulate may execute code using it. You will enter into the file the location of RevBayes on your hard drive. For example, if I have RevBayes installed in my software directory, this will be:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rb=/Users/software/rb
+</code></pre></div></div>
+
+<p>Now, you may use RevBayes in either KnitR or console. For examples of RevBayes used via Revticulate, see the <a href="https://paleantology.github.io/Revticulate/">Revticulate website</a>.</p>
 
       <br>
 <footer>

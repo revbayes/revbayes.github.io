@@ -56,7 +56,7 @@
 	<h1 class="maintitle">Setting Up RevBayes</h1>
 	<h3 class="subtitle">Preparing your computer to work with phylogenetic data in RevBayes</h3>
 	<h4 class="authors">April Wright</h4>
-  <h5>Last modified on March 15, 2020</h5>
+  <h5>Last modified on March 29, 2022</h5>
 </div>
 
 
@@ -102,6 +102,8 @@
         
           <li><a href="/tutorials/tutorial_structure/scripts/test.Rev">test.Rev</a></li>
         
+          <li><a href="tutorials/tutorial_structure/scripts/test.Rmd">test.Rmd</a></li>
+        
         </ul>
     
 </blockquote>
@@ -113,7 +115,7 @@
 
 <p>This tutorial covers how to set up files and directories to work effectively in RevBayes <a class="citation" href="#Hoehna2014a">(Höhna 2014; Höhna et al. 2016)</a>.
 This workshop assumes no familiarity with the command line, or programming in general.
-The themes of good directory structuring shown in this tutorial will be used in many othe RevBayes tutorials.</p>
+The themes of good directory structuring shown in this tutorial will be used in many other RevBayes tutorials.</p>
 
 <h2 class="section" id="using-your-computers-graphical-user-interface">Using your computer’s graphical user interface</h2>
 <hr class="section" />
@@ -366,64 +368,7 @@ This can be seen below</p>
 <figcaption>A sample RStudio window.</figcaption>
 </figure>
 
-<p>In the upper-right hand panel, start a new RMarkdown document. RMarkdown is used via “chunks”, or  lines of code. In a new RMarkdown notebook, the first cell is shown in <a href="#markdownsetup"></a></p>
-
-<figure id="markdownsetup"><p><img src="figures/RSetup.png" width="600" /></p>
-<figcaption>The first cell of an RMarkdown notebook.</figcaption>
-</figure>
-
-<p>We will edit this cell to add two variables, the root directory and the engine.path. The working directory tells R what directory you want to work in. We will set this equal to the directory to which we downloaded the data and scripts. For example, if the directory structure if as shown in figure <a href="#example"></a>, this line will be <code class="language-plaintext highlighter-rouge">knitr::opts_chunk$set(root.dir = "~/projects/tutorials/tutorial_structure/)</code> on Mac and Linux. On PC, it will be <code class="language-plaintext highlighter-rouge">setwd("c:\\april\\tutorials\\tutorial_structure")</code>.</p>
-
-<p>The engine.path is where RevBayes is on your computer. If my copy of RevBayes is in a directory called “software” in my user home, my enine path will be <code class="language-plaintext highlighter-rouge">knitr::opts_chunk$set(engine.pat="~/software/rb")</code> on Mac and Linux or <code class="language-plaintext highlighter-rouge">knitr::opts_chunk$set(engine.path="c:\\april\\software\\rb")</code> on PC.</p>
-
-<p>The appearance of the setup cell can be seen below.</p>
-
-<figure id="CompletedSetup"><p><img src="figures/CompletedSetup.png" width="400" /></p>
-<figcaption>This setup cell shows an example of setting the work directory and the engine path (to tell R where RevBayes is located).</figcaption>
-</figure>
-
-<p>Run this chunk by clicking the green arrow in the upper-left hand corner of the cell.</p>
-
-<p>Next, you will note other RMarkdown chunks in the document. By changing the <code class="language-plaintext highlighter-rouge">r</code> in the curly braces to <code class="language-plaintext highlighter-rouge">rb</code>, we can run RevBayes in a markdown document. By choosing <code class="language-plaintext highlighter-rouge">r</code> or <code class="language-plaintext highlighter-rouge">rb</code>, we can use both the R programming language and RevBayes in the same notebook.</p>
-
-<figure id="RBMkd"><p><img src="figures/RbMarkdown.png" width="300" /></p>
-<figcaption>This is an example of a Rev Markdown cell inside an RMarkdown document.</figcaption>
-</figure>
-
-<pre><code class="language-{rb}">variable &lt;- "Hi there! Welcome to RevBayes! I am now going to read in some test data."
-
-variable
-</code></pre>
-
-<p>Run it by clicking the green arrow. If this execute correctly, you will receive the message.</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   Processing file "scripts/test.Rev"
-   Hi there! Welcome to RevBayes! I am now going to read in some test data.
-</code></pre></div></div>
-
-<p>Now, we’ll actually read in the data. Start a new Markdown chunk and enter:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>molecular &lt;- readDiscreteCharacterData("data/example_file.nex")
-
-success &lt;- "Congratulations, you set up your scripts and code directories correctly."
-
-success
-q()
-</code></pre></div></div>
-
-<p>If this executes correctly, you will receive the output:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   Successfully read one character matrix from file 'data/primates_and_galeopterus_cytb.nex'
-   Congratulations, you set up your scripts and code directories correctly.
-</code></pre></div></div>
-
-<p>If you have made a mistake and need to erase previous output, you can add a flag to the markdown cells that refreshes previously-entered commands, as shown in figure <a href="#mistake"></a>.</p>
-
-<figure id="mistake"><p><img src="figures/freshchunkrb.png" width="300" /></p>
-<figcaption>This is an example of how to reset after making a mistake.</figcaption>
-</figure>
-
-<p>Lastly, the entire document can be <code class="language-plaintext highlighter-rouge">knitted</code> to an output file. At the top of your screen, there is a button labeled Knit. This allows you to run all of your code and save the text, output, and figures to html, PDF, and other formats.</p>
+<p>You will find in the scripts directory a file called test.Rmd. Open this file in RStudio. This file will walk you through the installation and use of RevBayes via Revticulate.</p>
 
 <h2 class="section" id="using-jupyter">Using Jupyter</h2>
 <hr class="section" />
