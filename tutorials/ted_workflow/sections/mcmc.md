@@ -115,7 +115,7 @@ library(RevGadgets)
 Now we make a variable that stores where the summary tree is located.
 ```R
 # specify a tree file
-treefile <- "output_MCMC/div_constant_foss_constant_moleclock_strict_moleQ_HKY_morphclock_linked_morphQ_Mk_MCMC/MCC_tree.tre"
+treefile <- "output_MCMC/div_constant_foss_constant_moleclock_strict_moleQ_HKY_morphclock_linked_morphQ_Mk_MCMC_run_01/MCC_tree.tre"
 ```
 Then we read the tree.
 ```R

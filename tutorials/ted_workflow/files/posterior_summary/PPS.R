@@ -6,10 +6,10 @@ data_file <- "data/morpho.nex"
 data      <- readMorphoData(data_file)
 
 # specify the output directory for each model
-output_strict_Mk   <- "output_PPS/div_constant_foss_constant_moleclock_strict_moleQ_HKY_morphclock_linked_morphQ_Mk_PPS/"
+output_strict_Mk   <- "output_PPS/div_constant_foss_constant_moleclock_strict_moleQ_HKY_morphclock_linked_morphQ_Mk_PPS_run_01/"
 output_UCLN_Mk     <- "output_PPS/div_constant_foss_constant_moleclock_UCLN_moleQ_HKY_morphclock_linked_morphQ_Mk_PPS/"
-outout_UCE_Mk      <- "output_PPS/div_constant_foss_constant_moleclock_UCE_moleQ_HKY_morphclock_linked_morphQ_Mk_PPS/"
-output_UCLN_F81Mix <- "output_PPS/div_constant_foss_constant_moleclock_UCLN_moleQ_HKY_morphclock_linked_morphQ_F81Mix_PPS/"
+outout_UCE_Mk      <- "output_PPS/div_constant_foss_constant_moleclock_UCE_moleQ_HKY_morphclock_linked_morphQ_Mk_PPS_run_01/"
+output_UCLN_F81Mix <- "output_PPS/div_constant_foss_constant_moleclock_UCLN_moleQ_HKY_morphclock_linked_morphQ_F81Mix_PPS_run_01/"
 
 # read the output files
 samples_strict_Mk   <- readMorphoPPS(output_strict_Mk)
