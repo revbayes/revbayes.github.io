@@ -1,6 +1,6 @@
 ---
-title: Skyline Models from Trees with GMRF
-subtitle: Estimating Demographic Histories with Skyline Models from Trees using a Gaussian Markov Random Field Prior
+title: Coalescent Models from Trees with GMRF
+subtitle: Estimating Demographic Histories with Coalescent Models from Trees using a Gaussian Markov Random Field Prior
 authors: Ronja Billenstein and Sebastian Höhna
 level: 9
 order: 0.4
@@ -19,7 +19,7 @@ include_files:
 ---
 
 {% section Overview %}
-This tutorial describes how to run the Skyline Analysis from trees with a Gaussian Markov Random Field (GMRF) prior in `RevBayes`.
+This tutorial describes how to run the Coalescent Skyline Analysis from trees with a Gaussian Markov Random Field (GMRF) prior in `RevBayes`.
 Here, the trees and population sizes will not be estimated simultaneously, but it is assumed that a single tree or a sample of trees is used as input instead of a sequence alignment.
 
 {% section Inference Example %}
@@ -71,7 +71,8 @@ The remaining part of the model is the same as in the [GMRF exercise]({{base.url
 Now, we will instantiate the stochastic node for the tree.
 Similar to the skyline exercise, we use the `dnCoalescentSkyline` distribution for the tree.
 In the GMRF case, however, the method is not based on events, but has specified intervals.
-Also, with having a sample of trees, we use this distribution as prior and need to clamp the tree sample. **(why dnEmpiricalSample?)**
+Also, with having a sample of trees, we use this distribution as prior and need to clamp the tree sample.
+<!--- **(why dnEmpiricalSample?)** --->
 ~~~
 tree_prior = dnCoalescentSkyline(theta=population_size, times=changePoints, method="specified", taxa=taxa)
 psi ~ dnEmpiricalSample( tree_prior)
@@ -127,7 +128,24 @@ mymcmc.run(NUM_MCMC_ITERATIONS, tuning = 100)
 
 After running your analysis, you can plot the results using the `R` package `RevGadgets`.
 
-{% figure example_skyline %}
+~~~
+library(RevGadgets)
+
+burnin = 0.1
+probs = c(0.025, 0.975)
+summary = "median"
+
+num_grid_points = 500
+max_age_iso = 5e5
+
+population_size_log = "output/horses_iso_GMRF_treebased_NEs.log"
+interval_change_points_log = "output/horses_iso_GMRF_treebased_times.log"
+df <- processPopSizes(population_size_log, interval_change_points_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_iso)
+p <- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
+ggplot2::ggsave("horses_iso_GMRF_treebased.png", p)
+~~~
+
+{% figure results-GMRF_tb %}
 <img src="figures/horses_iso_GMRF_treebased.png" width="800">
 {% figcaption %}
 Example output from plotting the GMRF analysis run in this exercise. The bold line represents the median of the posterior distribution of the population size and the shaded are shows the $95\%$ credible intervals.

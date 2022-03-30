@@ -1,6 +1,6 @@
 ---
-title: Constant Coalescent Process
-subtitle: Estimating Demographic Histories with a Constant Coalescent Process
+title: Constant Coalescent Model
+subtitle: Estimating Demographic Histories with a Constant Coalescent Model
 authors: Ronja Billenstein and Sebastian Höhna
 level: 9
 order: 0.1
@@ -105,11 +105,11 @@ Without knowing much about the population size of our horse sample, we set a uni
 pop_size ~ dnUniform(0,1E8)
 ~~~
 
-You may realize that in the full script, we initialize the population size to have a first value of $100$.
+You may realize that in the full script, we initialize the population size to have a first value of $100000$.
 Later in the tutorial, we will constrain the root age of the tree to be inside the interval $\[250 000, 500 000\]$.
-In order for our first proposed tree to comply with this constraint, an initial value of $100$ proved to lead to reasonable initial proposals.
+In order for our first proposed tree to comply with this constraint, an initial value of $100000$ proved to lead to reasonable initial proposals.
 ~~~
-pop_size.setValue(100)
+pop_size.setValue(100000)
 ~~~
 
 We also add a move for the population size.
@@ -133,7 +133,9 @@ As we have access to the original analysis from {% citet Vershinina2021 %}, we c
 
 ~~~
 root_age := psi.rootAge()
-obs_root_age ~ dnNormal(mean = root_age, sd = 60000, min = 250000, max = 500000)
+
+diff <- (500000 - 250000)/2.0
+obs_root_age ~ dnNormal(mean = root_age, sd = 60000, min = root_age - diff, max = root_age + diff)
 obs_root_age.clamp(375000)
 ~~~
 
@@ -249,7 +251,7 @@ mymcmc.run(NUM_MCMC_ITERATIONS, tuning = 100)
 To check whether your analysis has converged, you can use the `R` package `convenience`.
 Have a look at the {% page_ref convergence %} tutorial.
 
-**Add convergence results here**
+<!--- **Add convergence results here** --->
 
 
 {% section Results %}
@@ -266,15 +268,18 @@ burnin = 0.1
 probs = c(0.025, 0.975)
 summary = "median"
 
+num_grid_points = 500
+max_age_iso = 5e5
+
 population_size_log = "output/horses_iso_constant_NE.log"
-df <- processPopSizes(population_size_log, method = "constant", burnin = burnin, probs = probs, summary = summary)
-p <- plotPopSizes(df, method = "constant") + ggplot2::coord_cartesian(ylim = c(1e3, 1e8), xlim = c(1e5, 0))
-ggplot2::ggsave("horses_constant.png", p)
+df <- processPopSizes(population_size_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_iso)
+p <- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
+ggplot2::ggsave("horses_iso_constant.png", p)
 ~~~
 
 Your output should look roughly like the following figure.
 
-{% figure coalescent %}
+{% figure results-constant %}
 <img src="figures/horses_iso_constant.png" width="800">
 {% figcaption %}
 Example output from plotting the constant coalescent analysis run in this exercise. The bold line represents the median of the posterior distribution of the population size and the shaded are shows the $95\%$ credible intervals.
