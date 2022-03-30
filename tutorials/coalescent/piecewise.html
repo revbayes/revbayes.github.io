@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
-    <title>RevBayes: Piecewise Coalescent Process</title>
+    <title>RevBayes: Piecewise Coalescent Model</title>
   </head>
   <body>
     <div class="container">
@@ -53,10 +53,10 @@
 </nav>
 
       <div class="titlebar">
-	<h1 class="maintitle">Piecewise Coalescent Process</h1>
-	<h3 class="subtitle">Estimating Demographic Histories with a Piecewise Coalescent Process</h3>
+	<h1 class="maintitle">Piecewise Coalescent Model</h1>
+	<h3 class="subtitle">Estimating Demographic Histories with a Piecewise Coalescent Model</h3>
 	<h4 class="authors">Ronja Billenstein and Sebastian Höhna</h4>
-  <h5>Last modified on March 16, 2022</h5>
+  <h5>Last modified on March 30, 2022</h5>
 </div>
 
 
@@ -107,7 +107,7 @@
 <h2 class="section" id="overview">Overview</h2>
 <hr class="section" />
 
-<p>This exercise describes how to run a piecewise Skyline Analysis in <code class="language-plaintext highlighter-rouge">RevBayes</code>.
+<p>This exercise describes how to run a piecewise coalescent analysis in <code class="language-plaintext highlighter-rouge">RevBayes</code>.
 In this case, we will define an individual demographic function with different basic “pieces”.
 The pieces can be either constant, linear or exponential.
 For all of these pieces, the different values of $N_e$ and the change points in between can be estimated.</p>
@@ -148,7 +148,7 @@ We define $\alpha$ as the slope.</p>
 
 <blockquote class="info">
   <h2 id="for-your-info">For your info</h2>
-  <p>The entire process of the skyline estimation can be executed by using the <strong>mcmc_piecewise.Rev</strong> script in the <strong>scripts</strong> folder.
+  <p>The entire process of the coalescent estimation can be executed by using the <strong>mcmc_piecewise.Rev</strong> script in the <strong>scripts</strong> folder.
 You can type the following command into <code class="language-plaintext highlighter-rouge">RevBayes</code>:</p>
   <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/mcmc_iso_piecewiese.Rev")
 </code></pre></div>  </div>
@@ -177,7 +177,7 @@ Thus, we need five population sizes.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:5){
     pop_size[i] ~ dnUniform(0,1E8)
-    pop_size[i].setValue(100)
+    pop_size[i].setValue(100000)
     moves.append( mvScale(pop_size[i], lambda=0.1, tune=true, weight=2.0) )
 }
 </code></pre></div></div>
@@ -246,9 +246,12 @@ burnin = 0.1
 probs = c(0.025, 0.975)
 summary = "median"
 
+num_grid_points = 500
+max_age_iso = 5e5
+
 population_size_log_skyline = "output/horses_skyline_NEs.log"
 interval_change_points_log_skyline = "output/horses_skyline_times.log"
-df_skyline &lt;- processPopSizes(population_size_log = population_size_log_skyline, interval_change_points_log = interval_change_points_log_skyline, method = "events", burnin = burnin, probs = probs, summary = summary)
+df_skyline &lt;- processPopSizes(population_size_log_skyline, interval_change_points_log_skyline, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_iso)
 p_skyline &lt;- plotPopSizes(df_skyline) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
 
 population_size_log = "../output/horses_piecewise_NEs.log"
@@ -368,18 +371,18 @@ df$time &lt;- grid
 p &lt;- p_skyline +
   ggplot2::geom_line(data = df, ggplot2::aes(x = time, y = value), size = 0.9, color = "blue") +
   ggplot2::geom_ribbon(data = df, ggplot2::aes(x = time, ymin = lower, ymax = upper), fill = "blue", alpha = 0.2)
-ggplot2::ggsave("horses_piecewise_6diff.png", p)
+ggplot2::ggsave("horses_iso_piecewise_6diff.png", p)
 </code></pre></div></div>
 </blockquote>
 
-<figure id="example_piecewise"><p><img src="figures/horses_iso_piecewise_6diff.png" width="800" /></p>
+<figure id="results-piecewise"><p><img src="figures/horses_iso_piecewise_6diff.png" width="800" /></p>
 <figcaption>Example output from plotting the piecewise analysis with six pieces run in this exercise. The bold line represents the median of the posterior distribution of the population size and the shaded are shows the $95\%$ credible intervals. The reference skyline result is shown in green and the result of the piecewise analysis is shown in blue.</figcaption>
 </figure>
 
 <h2 class="section" id="summary">Summary</h2>
 <hr class="section" />
 
-<p>When you are done with all exercises, have a look at the <a href="/tutorials/coalescent/summary">summary</a>.</p>
+<p>When you are done with all exercises, have a look at the <a href="/tutorials/coalescent/heterochronous">tutorial with heterochronous data</a> or the <a href="/tutorials/coalescent/summary">summary</a>.</p>
 
 <ol class="bibliography"></ol>
 

@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
-    <title>RevBayes: Skyline Models with GMRF</title>
+    <title>RevBayes: Coalescent Models with GMRF</title>
   </head>
   <body>
     <div class="container">
@@ -53,10 +53,10 @@
 </nav>
 
       <div class="titlebar">
-	<h1 class="maintitle">Skyline Models with GMRF</h1>
-	<h3 class="subtitle">Estimating Demographic Histories with Skyline Models using a Gaussian Markov Random Field Prior</h3>
+	<h1 class="maintitle">Coalescent Models with GMRF</h1>
+	<h3 class="subtitle">Estimating Demographic Histories with Coalescent Models using a Gaussian Markov Random Field Prior</h3>
 	<h4 class="authors">Ronja Billenstein and Sebastian Höhna</h4>
-  <h5>Last modified on March 16, 2022</h5>
+  <h5>Last modified on March 30, 2022</h5>
 </div>
 
 
@@ -72,7 +72,7 @@
           
             <li><a href="/tutorials/coalescent/">Coalescent Analyses</a></li>
           
-            <li><a href="/tutorials/coalescent/constant.html">Constant Coalescent Process</a></li>
+            <li><a href="/tutorials/coalescent/constant.html">Constant Coalescent Model</a></li>
           
             <li><a href="/tutorials/coalescent/skyline.html">Skyline Models</a></li>
           
@@ -123,7 +123,7 @@ Here, the intervals additionally are equally spaced and thus their start and end
 <figcaption>Hypothetical example of a Bayesian skyline plot with equally sized intervals, independent from the number of coalescent events (equal-sized). $w_k$ are the waiting times with $k$ active lineages, $t_{c,k}$ are the coalescent events at the beginning of such a coalescent interval. $t_{i,j}$ mark the points of interval change.  Here, the intervals are chosen to be equal-sized and the change points are independent from the coalescent events. The bold line represents the median of the posterior distribution of the population size and the shaded are shows the $95\%$ credible intervals.</figcaption>
 </figure>
 
-<blockquote class="aside"><h2>Likelihood Calculation</h2><p><strong>ADD</strong></p>
+<blockquote class="aside"><h2>Likelihood Calculation</h2><!--- **ADD** --->
 
 <p>We assume that the phylogeny of the samples is known.
 There are $n$ samples, with $k$ active lineages at the current point in time $t$.
@@ -137,6 +137,10 @@ The waiting times between coalescent events $w_k$ are exponentially distributed 
 
 <p>Each $t_k$ is the beginning of the respective kth coalescent interval.
 The waiting times $w_k$ refer to the waiting time starting when there are $k$ active lineages.</p>
+
+<p>In the case of interval times not being dependent on coalescent events, a likelihood is calculated for each interval.
+This likelihood is the product of the likelihoods of the coalescent events in the specific interval and the likelihood of no coalescent event happening in the remaining time until the next interval.
+As the intervals can be considered independent from each other, the likelihood of the complete demographic function is the product of the likelihoods of each interval.</p>
 
 <!--- In our case, $N_e(t)$ is a piecewise constant demographic function with $m$ intervals which each have a starting point $t_i$ and the length $l$.
 **Do I need to go into the intervals here?** --->
@@ -192,7 +196,7 @@ This is due to the fact that all other population size priors depend on the one 
 For <code class="language-plaintext highlighter-rouge">population_size_at_present</code> we assume the same prior distribution and initial value as in the previous exercises.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>population_size_at_present ~ dnUniform(0,1E8)
-population_size_at_present.setValue(100)
+population_size_at_present.setValue(100000)
 </code></pre></div></div>
 
 <p>Note that we apply three different moves to the recent population size here: a scaling move (<code class="language-plaintext highlighter-rouge">mvScaleBactrian</code>), a mirror move (<code class="language-plaintext highlighter-rouge">mvMirrorMultiplier</code>) and a random dive move (<code class="language-plaintext highlighter-rouge">mvRandomDive</code>).
@@ -313,17 +317,20 @@ burnin = 0.1
 probs = c(0.025, 0.975)
 summary = "median"
 
+num_grid_points = 500
+max_age_iso = 5e5
+
 population_size_log = "output/horses_iso_GMRF_NEs.log"
 interval_change_points_log = "output/horses_iso_GMRF_times.log"
-df &lt;- processPopSizes(population_size_log, interval_change_points_log, method = "specified", burnin = burnin, probs = probs, summary = summary)
-p &lt;- plotPopSizes(df, method = "specified") + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
-ggplot2::ggsave("horses_GMRF.png", p)
+df &lt;- processPopSizes(population_size_log, interval_change_points_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_iso)
+p &lt;- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
+ggplot2::ggsave("horses_iso_GMRF.png", p)
 </code></pre></div></div>
 
 <!--- In the example, we set the limits of the x-axis to the root age value from the next exercise (see below).
 This was done to be able to easily compare the plots. --->
 
-<figure id="example_skyline"><p><img src="figures/horses_iso_GMRF.png" width="800" /></p>
+<figure id="results-GMRF"><p><img src="figures/horses_iso_GMRF.png" width="800" /></p>
 <figcaption>Example output from plotting the GMRF analysis run in this exercise. The bold line represents the median of the posterior distribution of the population size and the shaded are shows the $95\%$ credible intervals.</figcaption>
 </figure>
 
@@ -407,7 +414,7 @@ changePoints := events.getRealPosValues(name="time")
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psi ~ dnCoalescentSkyline(theta=population_size, times=changePoints, method="specified", taxa=taxa)
 </code></pre></div></div>
 
-<p>You can have a look at the results <a href="/tutorials/coalescent/CPP">here</a></p>
+<p>You can have a look at the results <a href="/tutorials/coalescent/CPP">here</a>.</p>
 </blockquote>
 
 <h2 class="section" id="next-exercise">Next Exercise</h2>

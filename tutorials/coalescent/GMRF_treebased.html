@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
-    <title>RevBayes: Skyline Models from Trees with GMRF</title>
+    <title>RevBayes: Coalescent Models from Trees with GMRF</title>
   </head>
   <body>
     <div class="container">
@@ -53,10 +53,10 @@
 </nav>
 
       <div class="titlebar">
-	<h1 class="maintitle">Skyline Models from Trees with GMRF</h1>
-	<h3 class="subtitle">Estimating Demographic Histories with Skyline Models from Trees using a Gaussian Markov Random Field Prior</h3>
+	<h1 class="maintitle">Coalescent Models from Trees with GMRF</h1>
+	<h3 class="subtitle">Estimating Demographic Histories with Coalescent Models from Trees using a Gaussian Markov Random Field Prior</h3>
 	<h4 class="authors">Ronja Billenstein and Sebastian Höhna</h4>
-  <h5>Last modified on March 16, 2022</h5>
+  <h5>Last modified on March 30, 2022</h5>
 </div>
 
 
@@ -72,11 +72,11 @@
           
             <li><a href="/tutorials/coalescent/">Coalescent Analyses</a></li>
           
-            <li><a href="/tutorials/coalescent/constant.html">Constant Coalescent Process</a></li>
+            <li><a href="/tutorials/coalescent/constant.html">Constant Coalescent Model</a></li>
           
             <li><a href="/tutorials/coalescent/skyline.html">Skyline Models</a></li>
           
-            <li><a href="/tutorials/coalescent/GMRF.html">Skyline Models with GMRF</a></li>
+            <li><a href="/tutorials/coalescent/GMRF.html">Coalescent Models with GMRF</a></li>
           
           </ul>
         
@@ -115,7 +115,7 @@
 <h2 class="section" id="overview">Overview</h2>
 <hr class="section" />
 
-<p>This tutorial describes how to run the Skyline Analysis from trees with a Gaussian Markov Random Field (GMRF) prior in <code class="language-plaintext highlighter-rouge">RevBayes</code>.
+<p>This tutorial describes how to run the Coalescent Skyline Analysis from trees with a Gaussian Markov Random Field (GMRF) prior in <code class="language-plaintext highlighter-rouge">RevBayes</code>.
 Here, the trees and population sizes will not be estimated simultaneously, but it is assumed that a single tree or a sample of trees is used as input instead of a sequence alignment.</p>
 
 <h2 class="section" id="inference-example">Inference Example</h2>
@@ -171,7 +171,8 @@ for (T in trees) {
 <p>Now, we will instantiate the stochastic node for the tree.
 Similar to the skyline exercise, we use the <code class="language-plaintext highlighter-rouge">dnCoalescentSkyline</code> distribution for the tree.
 In the GMRF case, however, the method is not based on events, but has specified intervals.
-Also, with having a sample of trees, we use this distribution as prior and need to clamp the tree sample. <strong>(why dnEmpiricalSample?)</strong></p>
+Also, with having a sample of trees, we use this distribution as prior and need to clamp the tree sample.
+<!--- **(why dnEmpiricalSample?)** ---></p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tree_prior = dnCoalescentSkyline(theta=population_size, times=changePoints, method="specified", taxa=taxa)
 psi ~ dnEmpiricalSample( tree_prior)
 psi.clamp(trees)
@@ -222,7 +223,23 @@ mymcmc.run(NUM_MCMC_ITERATIONS, tuning = 100)
 
 <p>After running your analysis, you can plot the results using the <code class="language-plaintext highlighter-rouge">R</code> package <code class="language-plaintext highlighter-rouge">RevGadgets</code>.</p>
 
-<figure id="example_skyline"><p><img src="figures/horses_iso_GMRF_treebased.png" width="800" /></p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>library(RevGadgets)
+
+burnin = 0.1
+probs = c(0.025, 0.975)
+summary = "median"
+
+num_grid_points = 500
+max_age_iso = 5e5
+
+population_size_log = "output/horses_iso_GMRF_treebased_NEs.log"
+interval_change_points_log = "output/horses_iso_GMRF_treebased_times.log"
+df &lt;- processPopSizes(population_size_log, interval_change_points_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_iso)
+p &lt;- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
+ggplot2::ggsave("horses_iso_GMRF_treebased.png", p)
+</code></pre></div></div>
+
+<figure id="results-GMRF_tb"><p><img src="figures/horses_iso_GMRF_treebased.png" width="800" /></p>
 <figcaption>Example output from plotting the GMRF analysis run in this exercise. The bold line represents the median of the posterior distribution of the population size and the shaded are shows the $95\%$ credible intervals.</figcaption>
 </figure>
 

@@ -56,7 +56,7 @@
 	<h1 class="maintitle">Skyline Models</h1>
 	<h3 class="subtitle">Estimating Demographic Histories with Skyline Models</h3>
 	<h4 class="authors">Ronja Billenstein and Sebastian Höhna</h4>
-  <h5>Last modified on March 25, 2022</h5>
+  <h5>Last modified on March 30, 2022</h5>
 </div>
 
 
@@ -72,7 +72,7 @@
           
             <li><a href="/tutorials/coalescent/">Coalescent Analyses</a></li>
           
-            <li><a href="/tutorials/coalescent/constant.html">Constant Coalescent Process</a></li>
+            <li><a href="/tutorials/coalescent/constant.html">Constant Coalescent Model</a></li>
           
           </ul>
         
@@ -117,7 +117,7 @@ First, these models were used for maximum likelihood (ML) estimation of populati
 By now, several extensions allowing for Bayesian estimation have been published (see for example <a class="citation" href="#Drummond2005">Drummond et al. (2005), Heled and Drummond (2008), Gill et al. (2012)</a>).
 In <code class="language-plaintext highlighter-rouge">RevBayes</code>, a Skyline plot method is implemented with constant or linear population size intervals.
 <!--- In other software, you can also find the possibility to have linear skyline intervals. --->
-Even though this is not implemented explicitly as skyline in <code class="language-plaintext highlighter-rouge">RevBayes</code>, you can also piece together linear intervals (have a look at the <a href="/tutorials/coalescent/piecewise">piecewise model exercise</a>, if you are interested in this).
+<!--- Even though this is not implemented explicitly as skyline in `RevBayes`, you can also piece together linear intervals (have a look at the [piecewise model exercise](/tutorials/coalescent/piecewise), if you are interested in this). --->
 <!--- The length of these intervals is not based on the timing of the coalescent events, but can be individually chosen. --->
 The length of the skyline intervals can either be defined by a specific number of intervals ending at coalescent events, or alternatively be chosen individually without depending on the coalescent events.
 <!--- In this tutorial, each interval will have the same length. --->
@@ -183,7 +183,7 @@ With $n$ taxa, we expect $(n-1)$ coalescent events, until there is only one line
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:NUM_INTERVALS) {
     pop_size[i] ~ dnUniform(0,1E6)
-    pop_size[i].setValue(100)
+    pop_size[i].setValue(100000)
     moves.append( mvScale(pop_size[i], lambda=0.1, tune=true, weight=2.0) )
 }
 </code></pre></div></div>
@@ -235,14 +235,17 @@ burnin = 0.1
 probs = c(0.025, 0.975)
 summary = "median"
 
+num_grid_points = 500
+max_age_iso = 5e5
+
 population_size_log = "output/horses_iso_skyline_NEs.log"
 interval_change_points_log = "output/horses_iso_skyline_times.log"
-df &lt;- processPopSizes(population_size_log, interval_change_points_log, method = "events", burnin = burnin, probs = probs, summary = summary)
+df &lt;- processPopSizes(population_size_log, interval_change_points_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_iso)
 p &lt;- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
-ggplot2::ggsave("horses_skyline.png", p)
+ggplot2::ggsave("horses_iso_skyline.png", p)
 </code></pre></div></div>
 
-<figure id="example_skyline"><p><img src="figures/horses_iso_skyline.png" width="800" /></p>
+<figure id="results-skyline"><p><img src="figures/horses_iso_skyline.png" width="800" /></p>
 <figcaption>Example output from plotting the coalescent skyline analysis run in this exercise. The bold line represents the median of the posterior distribution of the population size and the shaded are shows the $95\%$ credible intervals.</figcaption>
 </figure>
 
@@ -267,7 +270,7 @@ The mean of this distribution is set to be the previous population size.
 This means that the population sizes in neighbouring intervals are correlated.
 For the first population size, a log uniform distribution was chosen.</p>
 
-<p>In a skyride analysis (missing reference), the population size is directly estimated on a log scale.
+<p>In a skyride analysis <a class="citation" href="#Minin2008">(Minin et al. 2008)</a>, the population size is directly estimated on a log scale.
 The intervals also are correlated, but a Gaussian Markov Random Field (GMRF) prior is used with the degree of smoothing being regulated by a precision parameter.</p>
 
 <p>For the Extended Bayesian Skyline Plot <a class="citation" href="#Heled2008">(Heled and Drummond 2008)</a>, the number of changing points is estimated by stochastic search variable selection.
@@ -299,6 +302,11 @@ In the next tutorial (<a href="/tutorials/coalescent/GMRF">The GMRF model</a>), 
 <li><span id="Heled2008">Heled J., Drummond A.J. 2008. Bayesian inference of population size history from multiple loci. BMC Evolutionary Biology. 8:289.</span>
 
 <a href="https://doi.org/10.1186/1471-2148-8-289">10.1186/1471-2148-8-289</a>
+
+</li>
+<li><span id="Minin2008">Minin V.N., Bloomquist E.W., Suchard M.A. 2008. Smooth Skyride through a Rough Skyline: Bayesian Coalescent-Based Inference of Population Dynamics. Molecular Biology and Evolution. 25:1459–1471.</span>
+
+<a href="https://doi.org/10.1093/molbev/msn090">10.1093/molbev/msn090</a>
 
 </li>
 <li><span id="Pybus2000">Pybus O.G., Rambaut A., Harvey P.H. 2000. An Integrated Framework for the Inference of Viral Population History From Reconstructed Genealogies. Genetics. 155:1429–1437.</span>

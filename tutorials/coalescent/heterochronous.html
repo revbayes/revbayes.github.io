@@ -54,9 +54,9 @@
 
       <div class="titlebar">
 	<h1 class="maintitle">Coalescent Analyses with heterochronous data</h1>
-	<h3 class="subtitle">Estimating Demographic Histories with Coalescent Processes using heterochronous data</h3>
+	<h3 class="subtitle">Estimating Demographic Histories with Coalescent Models using heterochronous data</h3>
 	<h4 class="authors">Sebastian Höhna and Ronja Billenstein</h4>
-  <h5>Last modified on March 16, 2022</h5>
+  <h5>Last modified on March 30, 2022</h5>
 </div>
 
 
@@ -72,15 +72,15 @@
           
             <li><a href="/tutorials/coalescent/">Coalescent Analyses</a></li>
           
-            <li><a href="/tutorials/coalescent/constant.html">Constant Coalescent Process</a></li>
+            <li><a href="/tutorials/coalescent/constant.html">Constant Coalescent Model</a></li>
           
             <li><a href="/tutorials/coalescent/skyline.html">Skyline Models</a></li>
           
-            <li><a href="/tutorials/coalescent/GMRF.html">Skyline Models with GMRF</a></li>
+            <li><a href="/tutorials/coalescent/GMRF.html">Coalescent Models with GMRF</a></li>
           
-            <li><a href="/tutorials/coalescent/GMRF_treebased.html">Skyline Models from Trees with GMRF</a></li>
+            <li><a href="/tutorials/coalescent/GMRF_treebased.html">Coalescent Models from Trees with GMRF</a></li>
           
-            <li><a href="/tutorials/coalescent/piecewise.html">Piecewise Coalescent Process</a></li>
+            <li><a href="/tutorials/coalescent/piecewise.html">Piecewise Coalescent Model</a></li>
           
           </ul>
         
@@ -185,10 +185,10 @@ Without knowing much about the population size of our horse sample, we set a uni
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pop_size ~ dnUniform(0,1E8)
 </code></pre></div></div>
 
-<p>You may realize that in the full script, we initialize the population size to have a first value of $100$.
+<p>You may realize that in the full script, we initialize the population size to have a first value of $100000$.
 Later in the tutorial, we will constrain the root age of the tree to be inside the interval $[780 000, 1 200 000]$.
-In order for our first proposed tree to comply with this constraint, an initial value of $100$ proved to lead to reasonable initial proposals.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pop_size.setValue(100)
+In order for our first proposed tree to comply with this constraint, an initial value of $100000$ proved to lead to reasonable initial proposals.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pop_size.setValue(100000)
 </code></pre></div></div>
 
 <p>We also add a move for the population size.
@@ -209,7 +209,9 @@ As mentioned above, the root age will be constrained to the interval $[780 000, 
 As we have access to the original analysis from <a class="citation" href="#Vershinina2021">Vershinina et al. (2021)</a>, we could see that this should be the rough range of the root.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root_age := psi.rootAge()
-obs_root_age ~ dnNormal(mean = root_age, sd = 200000, min = 780000, max = 1200000)
+
+diff &lt;- (1200000 - 780000)/2.0
+obs_root_age ~ dnNormal(mean = root_age, sd = 200000, min = root_age - diff, max = root_age + diff)
 obs_root_age.clamp(850000)
 </code></pre></div></div>
 
@@ -332,15 +334,18 @@ burnin = 0.1
 probs = c(0.025, 0.975)
 summary = "median"
 
+num_grid_points = 500
+max_age_het = 1.2e6
+
 population_size_log = "output/horses_het_constant_NE.log"
-df &lt;- processPopSizes(population_size_log, method = "constant", burnin = burnin, probs = probs, summary = summary)
-p &lt;- plotPopSizes(df, method = "constant") + ggplot2::coord_cartesian(ylim = c(1e3, 1e8), xlim = c(1e5, 0))
+df &lt;- processPopSizes(population_size_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_het)
+p &lt;- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
 ggplot2::ggsave("horses_het_constant.png", p)
 </code></pre></div></div>
 
 <p>Your output should look roughly like the following figure.</p>
 
-<figure id="coalescent"><p><img src="figures/horses_het_constant.png" width="800" /></p>
+<figure id="results-het-constant"><p><img src="figures/horses_het_constant.png" width="800" /></p>
 <figcaption>Example output from plotting the constant coalescent analysis with heterochronous data run in this exercise. The bold line represents the median of the posterior distribution of the population size and the shaded are shows the $95\%$ credible intervals.</figcaption>
 </figure>
 

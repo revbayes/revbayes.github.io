@@ -54,9 +54,9 @@
 
       <div class="titlebar">
 	<h1 class="maintitle">Coalescent Analyses</h1>
-	<h3 class="subtitle">Estimating Demographic Histories with Coalescent Processes</h3>
+	<h3 class="subtitle">Estimating Demographic Histories with Coalescent Models</h3>
 	<h4 class="authors">Ronja Billenstein and Sebastian Höhna</h4>
-  <h5>Last modified on March 28, 2022</h5>
+  <h5>Last modified on March 30, 2022</h5>
 </div>
 
 
@@ -204,7 +204,7 @@ The data for these analyes are taken from <a class="citation" href="#Vershinina2
       <td>Little description included in <a href="/tutorials/coalescent/skyline#secAltPriors">skyline</a><br /><br /><a href="scripts/mcmc_isochronous_EBSP.Rev">Example script</a></td>
     </tr>
     <tr>
-      <td>Skyride<br />(missing reference)</td>
+      <td>Skyride<br /><a class="citation" href="#Minin2008">(Minin et al. 2008)</a></td>
       <td>A coalescent model with a piecewise constant population size trajectory. The different pieces are correlated via a Gaussian Markov Random Field (GMRF) Prior, the degree of smoothing is determined by a precision parameter. The times of interval change are dependent on coalescent events (“event-based”).</td>
       <td>constant</td>
       <td>$\theta_i | \theta_{i-1}$ (GMRF Prior with precision parameter)</td>
@@ -240,7 +240,7 @@ The data for these analyes are taken from <a class="citation" href="#Vershinina2
       <td>Little description included in <a href="/tutorials/coalescent/GMRF#secHSMRF">GMRF</a><br /><br />Script in <a href="/tutorials/coalescent/HSMRF">HSMRF</a></td>
     </tr>
     <tr>
-      <td>Compound Poisson Process (CPP) Prior<br />(similar to (missing reference))</td>
+      <td>Compound Poisson Process (CPP) Prior<br />(similar to <a class="citation" href="#OpgenRhein2005">Opgen-Rhein et al. (2005)</a>)</td>
       <td>A coalescent model with a piecewise constant or linear population size trajectory. The number of pieces (intervals) is not fixed. A Poisson Prior is used on the number of interval change points, additional priors need to be defined for population sizes and change points. The number of change points is determined via reversible jump MCMC (rjMCMC).</td>
       <td>constant or linear</td>
       <td>independent and identically distributed (iid)</td>
@@ -249,7 +249,7 @@ The data for these analyes are taken from <a class="citation" href="#Vershinina2
       <td>Little description included in <a href="/tutorials/coalescent/GMRF#secCPP">GMRF</a><br /><br />Script in <a href="/tutorials/coalescent/CPP">CPP</a></td>
     </tr>
     <tr>
-      <td>Piecewise<br />(similar to (missing reference), but with flexible combinations)</td>
+      <td>Piecewise<br />(similar to <a class="citation" href="#Pybus2002">Pybus and Rambaut (2002)</a>, but with flexible combinations)</td>
       <td>A coalescent model with user-defined demographic functions for a number of intervals. Base demographic functions included in RevBayes are constant, linear and exponential population size trajectories. These can be combined in an arbitrary way, but the most ancient one should always be constant due to computational reasons.</td>
       <td>constant and linear and exponential</td>
       <td>individually chosen, independent and identically distributed (iid)</td>
@@ -369,6 +369,21 @@ Have a look at the <a href="/tutorials/coalescent/summary">summary</a>.</p>
 <li><span id="Kingman1982">Kingman J.F.C. 1982. On the Genealogy of Large Populations. Journal of Applied Probability. 19:27–43.</span>
 
 <a href="https://doi.org/10.2307/3213548">10.2307/3213548</a>
+
+</li>
+<li><span id="Minin2008">Minin V.N., Bloomquist E.W., Suchard M.A. 2008. Smooth Skyride through a Rough Skyline: Bayesian Coalescent-Based Inference of Population Dynamics. Molecular Biology and Evolution. 25:1459–1471.</span>
+
+<a href="https://doi.org/10.1093/molbev/msn090">10.1093/molbev/msn090</a>
+
+</li>
+<li><span id="OpgenRhein2005">Opgen-Rhein R., Fahrmeir L., Strimmer K. 2005. Inference of demographic history from genealogical trees using reversible jump Markov chain Monte Carlo. BMC Evolutionary Biology. 5:6.</span>
+
+<a href="https://doi.org/10.1186/1471-2148-5-6">10.1186/1471-2148-5-6</a>
+
+</li>
+<li><span id="Pybus2002">Pybus O.G., Rambaut A. 2002. GENIE: estimating demographic history from molecular phylogenies. Bioinformatics. 18:1404–1405.</span>
+
+<a href="https://doi.org/10.1093/bioinformatics/18.10.1404">10.1093/bioinformatics/18.10.1404</a>
 
 </li>
 <li><span id="Vershinina2021">Vershinina A.O., Heintzman P.D., Froese D.G., Zazula G., Cassatt-Johnstone M., Dalén L., Der Sarkissian C., Dunn S.G., Ermini L., Gamba C., Groves P., Kapp J.D., Mann D.H., Seguin-Orlando A., Southon J., Stiller M., Wooller M.J., Baryshnikov G., Gimranov D., Scott E., Hall E., Hewitson S., Kirillova I., Kosintsev P., Shidlovsky F., Tong H.-W., Tiunov M.P., Vartanyan S., Orlando L., Corbett-Detig R., MacPhee R.D., Shapiro B. 2021. Ancient horse genomes reveal the timing and extent of dispersals across the Bering Land Bridge. Molecular Ecology. 30:6144–6161.</span>
