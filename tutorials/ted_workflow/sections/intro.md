@@ -399,6 +399,7 @@ timetree ~ dnFBDP(originAge = origin_time,
                   psi       = psi,
                   timeline  = breakpoints,
                   condition = "survival",
+                  rho       = Probability(extant_taxa / total_taxa),
                   taxa      = taxa)
 ```
 where `breakpoints` defines where the rate parameters change, if applicable, and we condition on the process surviving (leaving at least one extant descendant).
