@@ -15,7 +15,7 @@ include_example_output: false
 After running all the exercises for coalescent analyses, we want to compare all population size plots.
 
 {% section Results %}
-{% figure all_outputs_iso %}
+{% figure all-outputs-iso %}
 <p align="middle">
   <img src="figures/horses_iso_constant.png" width="32%" />
   <img src="figures/horses_iso_skyline.png" width="32%" />

@@ -1,6 +1,6 @@
 ---
-title: Skyline Models with GMRF
-subtitle: Estimating Demographic Histories with Skyline Models using a Gaussian Markov Random Field Prior
+title: Coalescent Models with GMRF
+subtitle: Estimating Demographic Histories with Coalescent Models using a Gaussian Markov Random Field Prior
 authors: Ronja Billenstein and Sebastian Höhna
 level: 9
 order: 0.3
@@ -35,7 +35,7 @@ Hypothetical example of a Bayesian skyline plot with equally sized intervals, in
 
 {% aside Likelihood Calculation %}
 
-**ADD**
+<!--- **ADD** --->
 
 We assume that the phylogeny of the samples is known.
 There are $n$ samples, with $k$ active lineages at the current point in time $t$.
@@ -49,6 +49,10 @@ $$p(w_k | t_k) = \frac{k (k -1)}{2N_e(t_k + w_k)} exp \left[ \int_{t_k}^{t_k+w_k
 
 Each $t_k$ is the beginning of the respective kth coalescent interval.
 The waiting times $w_k$ refer to the waiting time starting when there are $k$ active lineages.
+
+In the case of interval times not being dependent on coalescent events, a likelihood is calculated for each interval.
+This likelihood is the product of the likelihoods of the coalescent events in the specific interval and the likelihood of no coalescent event happening in the remaining time until the next interval.
+As the intervals can be considered independent from each other, the likelihood of the complete demographic function is the product of the likelihoods of each interval.
 
 <!--- In our case, $N_e(t)$ is a piecewise constant demographic function with $m$ intervals which each have a starting point $t_i$ and the length $l$.
 **Do I need to go into the intervals here?** --->
@@ -103,7 +107,7 @@ For `population_size_at_present` we assume the same prior distribution and initi
 
 ~~~
 population_size_at_present ~ dnUniform(0,1E8)
-population_size_at_present.setValue(100)
+population_size_at_present.setValue(100000)
 ~~~
 
 Note that we apply three different moves to the recent population size here: a scaling move (`mvScaleBactrian`), a mirror move (`mvMirrorMultiplier`) and a random dive move (`mvRandomDive`).
@@ -230,17 +234,20 @@ burnin = 0.1
 probs = c(0.025, 0.975)
 summary = "median"
 
+num_grid_points = 500
+max_age_iso = 5e5
+
 population_size_log = "output/horses_iso_GMRF_NEs.log"
 interval_change_points_log = "output/horses_iso_GMRF_times.log"
-df <- processPopSizes(population_size_log, interval_change_points_log, method = "specified", burnin = burnin, probs = probs, summary = summary)
-p <- plotPopSizes(df, method = "specified") + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
-ggplot2::ggsave("horses_GMRF.png", p)
+df <- processPopSizes(population_size_log, interval_change_points_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_iso)
+p <- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
+ggplot2::ggsave("horses_iso_GMRF.png", p)
 ~~~
 
 <!--- In the example, we set the limits of the x-axis to the root age value from the next exercise (see below).
 This was done to be able to easily compare the plots. --->
 
-{% figure example_skyline %}
+{% figure results-GMRF %}
 <img src="figures/horses_iso_GMRF.png" width="800">
 {% figcaption %}
 Example output from plotting the GMRF analysis run in this exercise. The bold line represents the median of the posterior distribution of the population size and the shaded are shows the $95\%$ credible intervals.
@@ -333,7 +340,7 @@ In the end, all the parameters can be put into the `dnCoalescentSkyline` distrib
 psi ~ dnCoalescentSkyline(theta=population_size, times=changePoints, method="specified", taxa=taxa)
 ~~~
 
-You can have a look at the results [here]({{base.url}}/tutorials/coalescent/CPP)
+You can have a look at the results [here]({{base.url}}/tutorials/coalescent/CPP).
 
 {% endaside %}
 

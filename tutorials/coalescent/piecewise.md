@@ -1,6 +1,6 @@
 ---
-title: Piecewise Coalescent Process
-subtitle: Estimating Demographic Histories with a Piecewise Coalescent Process
+title: Piecewise Coalescent Model
+subtitle: Estimating Demographic Histories with a Piecewise Coalescent Model
 authors: Ronja Billenstein and Sebastian Höhna
 level: 9
 order: 0.5
@@ -16,7 +16,7 @@ include_example_output: true
 ---
 
 {% section Overview %}
-This exercise describes how to run a piecewise Skyline Analysis in `RevBayes`.
+This exercise describes how to run a piecewise coalescent analysis in `RevBayes`.
 In this case, we will define an individual demographic function with different basic "pieces".
 The pieces can be either constant, linear or exponential.
 For all of these pieces, the different values of $N_e$ and the change points in between can be estimated.
@@ -57,7 +57,7 @@ $$N_e(t) = N_e(t_{i,j}) exp((t_{i,j} - t)\alpha).$$
 {% section Inference Example %}
 
 > ## For your info
-> The entire process of the skyline estimation can be executed by using the **mcmc_piecewise.Rev** script in the **scripts** folder.
+> The entire process of the coalescent estimation can be executed by using the **mcmc_piecewise.Rev** script in the **scripts** folder.
 > You can type the following command into `RevBayes`:
 ~~~
 > source("scripts/mcmc_iso_piecewiese.Rev")
@@ -84,7 +84,7 @@ Thus, we need five population sizes.
 ~~~
 for (i in 1:5){
     pop_size[i] ~ dnUniform(0,1E8)
-    pop_size[i].setValue(100)
+    pop_size[i].setValue(100000)
     moves.append( mvScale(pop_size[i], lambda=0.1, tune=true, weight=2.0) )
 }
 ~~~
@@ -154,9 +154,12 @@ burnin = 0.1
 probs = c(0.025, 0.975)
 summary = "median"
 
+num_grid_points = 500
+max_age_iso = 5e5
+
 population_size_log_skyline = "output/horses_skyline_NEs.log"
 interval_change_points_log_skyline = "output/horses_skyline_times.log"
-df_skyline <- processPopSizes(population_size_log = population_size_log_skyline, interval_change_points_log = interval_change_points_log_skyline, method = "events", burnin = burnin, probs = probs, summary = summary)
+df_skyline <- processPopSizes(population_size_log_skyline, interval_change_points_log_skyline, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_iso)
 p_skyline <- plotPopSizes(df_skyline) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
 
 population_size_log = "../output/horses_piecewise_NEs.log"
@@ -276,11 +279,11 @@ df$time <- grid
 p <- p_skyline +
   ggplot2::geom_line(data = df, ggplot2::aes(x = time, y = value), size = 0.9, color = "blue") +
   ggplot2::geom_ribbon(data = df, ggplot2::aes(x = time, ymin = lower, ymax = upper), fill = "blue", alpha = 0.2)
-ggplot2::ggsave("horses_piecewise_6diff.png", p)
+ggplot2::ggsave("horses_iso_piecewise_6diff.png", p)
 ~~~
 {% endaside %}
 
-{% figure example_piecewise %}
+{% figure results-piecewise %}
 <img src="figures/horses_iso_piecewise_6diff.png" width="800">
 {% figcaption %}
 Example output from plotting the piecewise analysis with six pieces run in this exercise. The bold line represents the median of the posterior distribution of the population size and the shaded are shows the $95\%$ credible intervals. The reference skyline result is shown in green and the result of the piecewise analysis is shown in blue.
@@ -288,4 +291,4 @@ Example output from plotting the piecewise analysis with six pieces run in this 
 {% endfigure %}
 
 {% section Summary %}
-When you are done with all exercises, have a look at the [summary]({{base.url}}/tutorials/coalescent/summary).
+When you are done with all exercises, have a look at the [tutorial with heterochronous data]({{base.url}}/tutorials/coalescent/heterochronous) or the [summary]({{base.url}}/tutorials/coalescent/summary).

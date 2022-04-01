@@ -1,6 +1,6 @@
 ---
 title: Coalescent Analyses with heterochronous data
-subtitle: Estimating Demographic Histories with Coalescent Processes using heterochronous data
+subtitle: Estimating Demographic Histories with Coalescent Models using heterochronous data
 authors: Sebastian Höhna and Ronja Billenstein
 level: 9 
 order: 0.6
@@ -92,11 +92,11 @@ Without knowing much about the population size of our horse sample, we set a uni
 pop_size ~ dnUniform(0,1E8)
 ~~~
 
-You may realize that in the full script, we initialize the population size to have a first value of $100$.
+You may realize that in the full script, we initialize the population size to have a first value of $100000$.
 Later in the tutorial, we will constrain the root age of the tree to be inside the interval $\[780 000, 1 200 000\]$.
-In order for our first proposed tree to comply with this constraint, an initial value of $100$ proved to lead to reasonable initial proposals.
+In order for our first proposed tree to comply with this constraint, an initial value of $100000$ proved to lead to reasonable initial proposals.
 ~~~
-pop_size.setValue(100)
+pop_size.setValue(100000)
 ~~~
 
 We also add a move for the population size.
@@ -120,7 +120,9 @@ As we have access to the original analysis from {% citet Vershinina2021 %}, we c
 
 ~~~
 root_age := psi.rootAge()
-obs_root_age ~ dnNormal(mean = root_age, sd = 200000, min = 780000, max = 1200000)
+
+diff <- (1200000 - 780000)/2.0
+obs_root_age ~ dnNormal(mean = root_age, sd = 200000, min = root_age - diff, max = root_age + diff)
 obs_root_age.clamp(850000)
 ~~~
 
@@ -250,15 +252,18 @@ burnin = 0.1
 probs = c(0.025, 0.975)
 summary = "median"
 
+num_grid_points = 500
+max_age_het = 1.2e6
+
 population_size_log = "output/horses_het_constant_NE.log"
-df <- processPopSizes(population_size_log, method = "constant", burnin = burnin, probs = probs, summary = summary)
-p <- plotPopSizes(df, method = "constant") + ggplot2::coord_cartesian(ylim = c(1e3, 1e8), xlim = c(1e5, 0))
+df <- processPopSizes(population_size_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_het)
+p <- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
 ggplot2::ggsave("horses_het_constant.png", p)
 ~~~
 
 Your output should look roughly like the following figure.
 
-{% figure coalescent %}
+{% figure results-het-constant %}
 <img src="figures/horses_het_constant.png" width="800">
 {% figcaption %}
 Example output from plotting the constant coalescent analysis with heterochronous data run in this exercise. The bold line represents the median of the posterior distribution of the population size and the shaded are shows the $95\%$ credible intervals.

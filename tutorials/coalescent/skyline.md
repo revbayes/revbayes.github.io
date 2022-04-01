@@ -25,7 +25,7 @@ First, these models were used for maximum likelihood (ML) estimation of populati
 By now, several extensions allowing for Bayesian estimation have been published (see for example {% citet Drummond2005 Heled2008 Gill2012 %}).
 In `RevBayes`, a Skyline plot method is implemented with constant or linear population size intervals.
 <!--- In other software, you can also find the possibility to have linear skyline intervals. --->
-Even though this is not implemented explicitly as skyline in `RevBayes`, you can also piece together linear intervals (have a look at the [piecewise model exercise]({{base.url}}/tutorials/coalescent/piecewise), if you are interested in this).
+<!--- Even though this is not implemented explicitly as skyline in `RevBayes`, you can also piece together linear intervals (have a look at the [piecewise model exercise]({{base.url}}/tutorials/coalescent/piecewise), if you are interested in this). --->
 <!--- The length of these intervals is not based on the timing of the coalescent events, but can be individually chosen. --->
 The length of the skyline intervals can either be defined by a specific number of intervals ending at coalescent events, or alternatively be chosen individually without depending on the coalescent events.
 <!--- In this tutorial, each interval will have the same length. --->
@@ -97,7 +97,7 @@ For each interval, a population size will be estimated. Choose a prior and add a
 ~~~
 for (i in 1:NUM_INTERVALS) {
     pop_size[i] ~ dnUniform(0,1E6)
-    pop_size[i].setValue(100)
+    pop_size[i].setValue(100000)
     moves.append( mvScale(pop_size[i], lambda=0.1, tune=true, weight=2.0) )
 }
 ~~~
@@ -150,14 +150,17 @@ burnin = 0.1
 probs = c(0.025, 0.975)
 summary = "median"
 
+num_grid_points = 500
+max_age_iso = 5e5
+
 population_size_log = "output/horses_iso_skyline_NEs.log"
 interval_change_points_log = "output/horses_iso_skyline_times.log"
-df <- processPopSizes(population_size_log, interval_change_points_log, method = "events", burnin = burnin, probs = probs, summary = summary)
+df <- processPopSizes(population_size_log, interval_change_points_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_iso)
 p <- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
-ggplot2::ggsave("horses_skyline.png", p)
+ggplot2::ggsave("horses_iso_skyline.png", p)
 ~~~
 
-{% figure example_skyline %}
+{% figure results-skyline %}
 <img src="figures/horses_iso_skyline.png" width="800">
 {% figcaption %}
 Example output from plotting the coalescent skyline analysis run in this exercise. The bold line represents the median of the posterior distribution of the population size and the shaded are shows the $95\%$ credible intervals.
