@@ -1,5 +1,5 @@
 # library(devtools)
-# devtools::install_github("revbayes/RevGadgets", force = TRUE)
+# devtools::install_github("revbayes/RevGadgets", force = TRUE, ref = "dev_pop_size")
 library(RevGadgets)
 # library(ggplot2)
 
