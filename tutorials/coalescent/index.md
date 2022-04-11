@@ -19,6 +19,7 @@ include_files:
 > ## For your info
 > This tutorial and the included exercises are currently under construction.
 > If you want to run the analyses, please compile `RevBayes` from the [dev-coalescent](https://github.com/revbayes/revbayes/tree/dev-coalescent) branch as described [here](https://revbayes.github.io/compile-linux) (for the development branch).
+> For plotting with the `R` package `RevGadgets`, please install the package from the "dev_pop_size" branch using devtools: `devtools::install_github("revbayes/RevGadgets", ref = "dev_pop_size")`.
 {:.info}
 
 {% section Overview %}
