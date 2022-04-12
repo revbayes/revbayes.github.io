@@ -300,7 +300,7 @@ monitors.append( mnFile(filename="output/crocs_EFBDME_extinction_rates.log",prin
 monitors.append( mnFile(filename="output/crocs_EFBDME_extinction_rate_times.log",printgen=10, separator = TAB, interval_times) )
 monitors.append( mnFile(filename="output/crocs_EFBDME_fossilization_rates.log",printgen=10, separator = TAB, fossilization_rate) )
 monitors.append( mnFile(filename="output/crocs_EFBDME_fossilization_rate_times.log",printgen=10, separator = TAB, interval_times) )
-monitors.append( mnFile(filename="output/crocs_EFBDME_mass_extinction_probabilities.log",printgen=10, separator = TAB, fossilization_rate) )
+monitors.append( mnFile(filename="output/crocs_EFBDME_mass_extinction_probabilities.log",printgen=10, separator = TAB, mass_extinction_probabilities) )
 monitors.append( mnFile(filename="output/crocs_EFBDME_mass_extinction_times.log",printgen=10, separator = TAB, interval_times) )
 ```
 
