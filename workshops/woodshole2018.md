@@ -110,7 +110,7 @@ schedule:
   - starttime: 2018-07-28T14:20
     endtime: 2018-07-28T17:00
     topic: "Lab: Divergence-Time Estimation in RevBayes"
-    tutorials: fbd/fbd_specimen
+    tutorials: fbd
     instructors: Tracy Heath
 ---
 

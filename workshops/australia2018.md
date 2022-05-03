@@ -104,7 +104,7 @@ schedule:
   - starttime: 2019-03-27T14:00
     endtime: 2019-03-27T15:30
     topic: "Lab: Estimating Trees and Divergence Times"
-    tutorials: fbd/fbd_specimen
+    tutorials: fbd
     instructors: "&#x1F4BB;"
 
   - starttime: 2019-03-27T15:30

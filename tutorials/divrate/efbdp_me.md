@@ -8,7 +8,7 @@ prerequisites:
 - intro
 - mcmc
 - divrate/ebd
-- fbd/fbd_specimen
+- fbd
 index: true
 redirect: false
 include_all: false

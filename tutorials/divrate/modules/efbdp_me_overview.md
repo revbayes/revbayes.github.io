@@ -8,4 +8,4 @@ Your goal is to estimate whether or not there was a mass extinction using Markov
 This tutorial builds on the time-varying birth-death model in the {% page_ref divrate/ebd %}
 tutorial, where the theory of the underlying time-varying diversification model is covered.
 This model allows the incorporation of fossils in the phylogeny, so the
-{% page_ref fbd/fbd_specimen %} tutorial may also be of interest.
+{% page_ref fbd %} tutorial may also be of interest.

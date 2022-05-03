@@ -20,7 +20,7 @@ This tutorial aims to guide you through different options for calibrating specie
 
 * [Relaxed Clocks & Time Trees]({{ base.url }}/tutorials/clocks/) written by Tracy Heath
 * [Divergence Time Calibration](https://github.com/revbayes/revbayes_tutorial/blob/master/tutorial_TeX/RB_DivergenceTime_Calibration_Tutorial/) written by Tracy Heath and Sebastian Höhna
-* [Combined-Evidence Analysis and the Fossilized Birth-Death Process for Stratigraphic Range Data]({{ base.url }}/tutorials/fbd/) written by Tracy Heath, April Wright and Walker Pett
+* {% page_ref fbd %} written by Tracy Heath, April Wright and Walker Pett
 
 In [exercises 1]({{ base.url }}/tutorials/dating/global) and [2]({{ base.url }}/tutorials/dating/relaxed) we'll use the molecular sequence data to infer the relationships among living species and transform the branch lengths assuming a strict or relaxed clock model. Since these analyses don't incorporate any information from the geological record, this approach can only be used to infer the *relative* age of speciation events. 
 
@@ -61,5 +61,4 @@ In this tutorial, you will work primarily in your text editor and create a set o
 1. [The global molecular clock model]({{ base.url }}/tutorials/dating/global)
 2. [The uncorrelated exponential relaxed clock model]({{ base.url }}/tutorials/dating/relaxed)
 3. [Estimating speciation times using node dating]({{ base.url }}/tutorials/dating/nodedate)
-4. [Estimating speciation times using the fossilized birth-death range process]({{ base.url }}/tutorials/dating/fbdr)
-5. [Estimating speciation times using total-evidence dating]({{ base.url }}/tutorials/dating/tefbd)
+4. [Estimating speciation times using total-evidence dating]({{ base.url }}/tutorials/dating/tefbd)

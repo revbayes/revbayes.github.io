@@ -46,8 +46,7 @@ models and their notation, please see {% cite Hoehna2014b %}.
 
 For a more comprehensive description of these models check out the tutorials written by Tracy Heath, April Wright and Walker Pett.
 
-* [Combined-Evidence Analysis and the Fossilized Birth-Death Process for Stratigraphic Range Data]({{ base.url }}/tutorials/fbd/)
-* [Combined-Evidence Analysis and the Fossilized Birth-Death Process for Analysis of Fossil and Extant Specimens]({{ base.url }}/tutorials/fbd/fbd_specimen)
+* {% page_ref fbd %}
 
 ### The data
 

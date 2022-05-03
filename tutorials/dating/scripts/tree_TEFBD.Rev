@@ -34,7 +34,7 @@ origin_time ~ dnUnif(37.2, 49.0)
 moves.append( mvSlide(origin_time, delta=1.0, tune=true, weight=5.0) )
 
 # Define the tree-prior distribution as the birth-death process #
-tree_dist = dnFBDRP(lambda=speciation_rate, mu=extinction_rate, psi=psi, rho=rho, origin=origin_time, taxa=taxa)
+tree_dist = dnFBDP(lambda=speciation_rate, mu=extinction_rate, psi=psi, rho=rho, origin=origin_time, taxa=taxa)
 
 # Define clade constraints #
 clade_ursinae = clade("Melursus_ursinus", "Ursus_arctos", "Ursus_maritimus", 

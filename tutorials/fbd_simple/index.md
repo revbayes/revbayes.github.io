@@ -8,7 +8,7 @@ prerequisites:
 - intro
 - mcmc
 exclude_files:
-index: false
+index: true
 redirect: false
 ---
 
@@ -199,7 +199,7 @@ The model choices and analysis in this tutorial focus on a simple example.
 Importantly, the modular design of RevBayes 
 allows for many model choices to be swapped with more complex or biologically relevant processes for a given system.
 Analyses of a wide range of data types are also implemented in RevBayes (e.g. [nucleotide sequences]({% page_url ctmc %}), [historical biogeographic ranges]({% page_url biogeo/biogeo_dating %})).
-Moreover, it is possible to fully integrate models describing the generation of data from different sources like in the [“combined-evidence" approach]({% page_url fbd/fbd_specimen %}) {% cite Ronquist2012a Zhang2016 Gavryushkina2016 %} in a single, hierarchical Bayesian model.
+Moreover, it is possible to fully integrate models describing the generation of data from different sources like in the [“combined-evidence" approach]({% page_url fbd %}) {% cite Ronquist2012a Zhang2016 Gavryushkina2016 %} in a single, hierarchical Bayesian model.
 Some researchers may wish to 
 perform analyses with [node calibrations]({% page_url dating/nodedate %})
 Ultimately, for any statistical analysis of empirical data, it is important to consider the processes governing the generation of those data and how they can be represented in a hierarchical model.
@@ -623,7 +623,7 @@ generations (specified in the {% ref exercise_sampler_setup %} section) and/or
 increase the weights of moves applied to these
 stochastic nodes (e.g., the `mvSlide` applied to `origin_time` in the {% ref FBD-Origin %} section). 
 For more details on diagnosing convergence
-of MCMC samples under the FBD model, please see the tutorial on [combined-evidence analysis in RevBayes]({% page_url fbd/fbd_specimen %}).  
+of MCMC samples under the FBD model, please see the tutorial on [combined-evidence analysis in RevBayes]({% page_url fbd %}).  
 
 
 {% subsubsection Summarizing the Tree %}
@@ -708,8 +708,4 @@ to the framework for analysis of
 paleontological and neontological data in RevBayes. 
 For more information on how to apply RevBayes
 datasets combining morphological and molecular
-characters, please refer to the 
-following tutorials:
-
-1. {% page_ref fbd/fbd_specimen %}
-2. {% page_ref fbd %}
+characters, please refer to the {% page_ref fbd %} tutorial.

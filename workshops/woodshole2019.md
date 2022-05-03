@@ -71,7 +71,7 @@ schedule:
   - starttime: 2019-08-04T21:00
     endtime: 2019-08-04T22:00
     topic: "Lab: Divergence-Time Estimation in RevBayes (part 1)"
-    tutorials: fbd/fbd_specimen
+    tutorials: fbd
     instructors: Walker Pett
 
   - starttime: 2019-08-05T09:00
@@ -87,7 +87,7 @@ schedule:
   - starttime: 2019-08-05T20:30
     endtime: 2019-08-05T22:00
     topic: "Lab: Divergence-Time Estimation in RevBayes (part 2)"
-    tutorials: fbd/fbd_specimen
+    tutorials: fbd
     instructors: Walker Pett
 ---
 
