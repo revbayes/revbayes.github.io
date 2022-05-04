@@ -8,7 +8,7 @@ code_layout: bash
 
 **NOTE: These instructions are for compiling the development branch.**
 
-The standard way to build revbayes is to use `cmake`.  If you want to compile using `meson`, see [revbayes/projects/meson/README.md](https://github.com/revbayes/revbayes/blob/development/projects/meson/README.md).
+You can also [compile with meson](https://github.com/revbayes/revbayes/blob/development/projects/meson/README.md) instead of cmake.
 
 ## Pre-requisites
 

@@ -10,7 +10,7 @@ code_layout: bash
 
 **NOTE: Boost now needs to be at least version 1.71.**
 
-The standard way to build revbayes is to use `cmake`. Cross-compiling for Windows from Linux is also possible using `meson`, see [revbayes/projects/meson/README.md](https://github.com/revbayes/revbayes/blob/development/projects/meson/README.md).
+You can also [compile with meson](https://github.com/revbayes/revbayes/blob/development/projects/meson/README.md) instead of cmake.  Meson allows using linux to generate windows binaries ("cross-compiling").
 
 1. Download and install 64-bit cygwin (setup-x86_64.exe). Make sure you include the following packages:
 
