@@ -53,8 +53,7 @@ The simplest way to [install cmake](https://cmake.org/install/) is to [download]
     curl -O -L https://github.com/Kitware/CMake/releases/download/v3.22.1/cmake-3.22.1-linux-x86_64.tar.gz
     tar -zxf cmake-3.22.1-linux-x86_64.tar.gz
     cmake-3.22.1/bin/cmake --version
-    echo "cmake installed at:"
-    pwd cmake-3.22.1/bin/cmake
+    echo "cmake installed at: $(cd cmake-3.22.1/bin; pwd)/cmake"
 
 Note the full path to the cmake executable!
 You may replace the call to cmake on line 161 of `build.sh` with this path to use your custom cmake installation.
@@ -67,8 +66,7 @@ In the rare cases where the downloaded cmake executable will not run on your com
     ./bootstrap -- -DCMAKE_USE_OPENSSL=OFF
     make
     bin/cmake --version
-    echo "cmake installed at:"
-    pwd bin/cmake
+    echo "cmake installed at: $(cd bin; pwd)/cmake"
 
 Note the full path to the cmake executable.
 
