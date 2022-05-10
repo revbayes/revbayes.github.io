@@ -77,18 +77,21 @@ Then you can compile boost:
     curl -O -L https://boostorg.jfrog.io/artifactory/main/release/1.74.0/source/boost_1_74_0.tar.gz
     tar -xzvf boost_1_74_0.tar.gz
     cd boost_1_74_0
-    ./bootstrap.sh --with-libraries=atomic,chrono,filesystem,system,regex,thread,date_time,program_options,math,serialization
-    ./b2 link=static
+    ./bootstrap.sh --with-libraries=atomic,chrono,filesystem,system,regex,thread,date_time,program_options,math,serialization --prefix=../installed-boost-1.74.0
+    ./b2 link=static install
+    echo -e "\n    BOOST root is at $(cd ../installed-boost-1.74.0; pwd)\n"
 
-When it is done, something like the following will be printed. You will need these paths for the next step.
+This creates a new directory called `installed-boost-1.74.0` that contains the boost installation.
+This directory is called the BOOST "root".
+You will need the path to the BOOST root for the next step.
 
->    The following directory should be added to compiler include paths:
->
->    /root/boost_1_74_0
->
->    The following directory should be added to linker library paths:
->
->    /root/boost_1_74_0/stage/lib
+To set up an IDE such as XCode, the following directory should be added to compiler include paths:
+
+    /path/to/installed-boost-1.74.0/include
+
+The following directory should be added to linker library paths:
+
+    /path/to/installed-boost-1.74.0/lib
 
 ## Compile
 
@@ -105,7 +108,7 @@ You will likely see some compiler warnings. This is normal.
 
 To compile revbayes using a locally compiled boost, do the following. Be sure to replace the paths in the build command with those you got from boost in the previous step.
 
-    ./build.sh -boost_root /root/boost_1_74_0 -boost_lib /root/boost_1_74_0/stage/lib
+    ./build.sh -boost_root /path/to/installed-boost-1.74.0
 
 For the MPI version:
 
