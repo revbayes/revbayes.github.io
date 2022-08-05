@@ -38,7 +38,7 @@ moves.append( mvScale(psi, lambda=1,    weight=1) )
 
 # The FBD is conditioned on a starting time for the process, which is the origin time #
 # Specify a uniform prior on the origin #
-origin_time ~ dnUnif(37.0, 55.0)
+origin_time ~ dnUnif(37.2, 55.0)
 
 # Specify a sliding-window move on the origin_time parameter #
 # This move will be applied with 3 different window widths (delta) to help improve mixing # 
@@ -48,7 +48,7 @@ moves.append( mvSlide(origin_time, delta=1,    weight=5.0) )
 
 
 ### Define the tree-prior distribution as the fossilized birth-death process ###
-fbd_dist = dnFBDP(origin=origin_time, lambda=speciation_rate, mu=extinction_rate, psi=psi, rho=rho, taxa=taxa)
+fbd_dist = dnBDSTP(r=1, origin=origin_time, lambda=speciation_rate, mu=extinction_rate, psi=psi, rho=rho, taxa=taxa)
 
 # The will be a random variable of a constrained topology distribution that is governed by the FBD #
 # this distribution will generate FBD trees that match the monophyly constraints defined above #
