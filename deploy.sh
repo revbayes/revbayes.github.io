@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Exit if a command fails
+set -e
+
 scriptpath="$( cd "$(dirname "$0")" ; pwd -P )"
 
 # make sure we are in the repo root
@@ -20,6 +23,15 @@ then
     exit 1
 fi
 
+# if the _site directory is missing, create it.
+# (we assume later that it exists).
+if [ ! -d "_site" ] ; then
+    echo "No _site directory, cloning the master branch into it."
+    git clone git@github.com:revbayes/revbayes.github.io.git _site
+    echo "Done."
+fi
+
+
 # make sure there are no changes to commit
 if git diff-index --quiet HEAD --
 then
@@ -35,13 +47,13 @@ then
     # update the documentation?
     if [ "$1" = "help" ]
     then
-    git update-index --no-assume-unchanged documentation/index.html
-    git ls-files --deleted -z documentation | git update-index --no-assume-unchanged -z --stdin
-    git ls-files -z documentation | git update-index --no-assume-unchanged -z --stdin
+        git update-index --no-assume-unchanged documentation/index.html
+        git ls-files --deleted -z documentation | git update-index --no-assume-unchanged -z --stdin
+        git ls-files -z documentation | git update-index --no-assume-unchanged -z --stdin
     else
-    git update-index --assume-unchanged documentation/index.html
-    git ls-files -z documentation | git update-index --assume-unchanged -z --stdin
-    git ls-files --deleted -z documentation | git update-index --assume-unchanged -z --stdin
+        git update-index --assume-unchanged documentation/index.html
+        git ls-files -z documentation | git update-index --assume-unchanged -z --stdin
+        git ls-files --deleted -z documentation | git update-index --assume-unchanged -z --stdin
     fi
 
     # build the site
