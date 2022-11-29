@@ -15,10 +15,6 @@ CHARACTER_B = "terrestrially"
 NUM_STATES_A = 2
 NUM_STATES_B = 2
 
-#CHARACTER = args[1]
-#NUM_STATES = args[2]
-#NUM_HIDDEN_STATES = args[2]
-
 # Import the morphological character matrix #
 morpho_A <- readDiscreteCharacterData("data/primates_"+CHARACTER_A+".nex")
 morpho_B <- readDiscreteCharacterData("data/primates_"+CHARACTER_B+".nex")
@@ -112,19 +108,27 @@ phyMorpho.clamp( morpho )
 
 # initialize the model object #
 mymodel = model(phylogeny)
+
+
 # Create a vector of monitors #
 # 1. for the full model #
-monitors.append( mnModel(filename="output/"+CHARACTER_B+"_corr_iid.log", printgen=1) )
+monitors.append( mnModel(filename="output/"+CHARACTER_A+"_"+CHARACTER_B+"_corr.log", printgen=1) )
 # 2. and a few select parameters to be printed to the screen #
-monitors.append( mnScreen(printgen=1) )
+monitors.append( mnScreen(printgen=100) )
 # 3. add an ancestral state monitor
 monitors.append( mnJointConditionalAncestralState(tree=phylogeny,
                                                   ctmc=phyMorpho,
-                                                  filename="output/"+CHARACTER_B+"_corr_iid.states.txt",
+                                                  filename="output/"+CHARACTER_A+"_"+CHARACTER_B+"_corr.states.txt",
                                                   type="NaturalNumbers",
                                                   printgen=1,
                                                   withTips=true,
                                                   withStartStates=false) )
+# 4. add an stochastic character map monitor
+monitors.append( mnStochasticCharacterMap(ctmc=phyMorpho,
+                                          filename="output/"+CHARACTER_A+"_"+CHARACTER_B+"_corr_stoch_char_map.log",
+                                          printgen=1,
+                                          include_simmap=true) )
+
 
 # Initialize the MCMC object #
 mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
@@ -132,13 +136,32 @@ mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
 # Run the MCMC #
 mymcmc.run(generations=5000, tuningInterval=200)
 
-# check the performance of the MCMC/moves
-mymcmc.operatorSummary()
-
 
 # Read in the tree trace and construct the ancestral states (ASE) #
-anc_states = readAncestralStateTrace("output/"+CHARACTER_B+"_corr_iid.states.txt")
-anc_tree = ancestralStateTree(tree=phylogeny, ancestral_state_trace_vector=anc_states, include_start_states=false, file="output/"+CHARACTER_B+"_ase_corr_iid.tree", burnin=0.25, summary_statistic="MAP", site=1, nStates=NUM_STATES_A*NUM_STATES_B)
+anc_states = readAncestralStateTrace("output/"+CHARACTER_A+"_"+CHARACTER_B+"_corr.states.txt")
+anc_tree = ancestralStateTree(tree=phylogeny,
+                              ancestral_state_trace_vector=anc_states,
+                              include_start_states=false, file="output/"+CHARACTER_A+"_"+CHARACTER_B+"_ase_corr.tree",
+                              burnin=0.25,
+                              summary_statistic="MAP",
+                              site=1,
+                              nStates=NUM_STATES_A*NUM_STATES_B)
+
+
+
+# read in the sampled character histories
+anc_states_stoch_map = readAncestralStateTrace("output/"+CHARACTER_A+"_"+CHARACTER_B+"_corr_stoch_char_map.log")
+
+#summarizeCharacterMaps(anc_states_stoch_map, phylogeny, file="output/"+CHARACTER_A+"_"+CHARACTER_B+"_corr.events.tsv", burnin=0.25)
+
+
+# make summary tree
+char_map_tree = characterMapTree(tree=phylogeny,
+                 ancestral_state_trace_vector=anc_states_stoch_map,
+                 character_file="output/"+CHARACTER_A+"_"+CHARACTER_B+"_corr_marginal_character.tree",
+                 posterior_file="output/"+CHARACTER_A+"_"+CHARACTER_B+"_corr_marginal_posterior.tree",
+                 burnin=0.25,
+                 num_time_slices=500)
 
 # Quit RevBayes #
 q()
