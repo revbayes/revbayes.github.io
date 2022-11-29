@@ -11,7 +11,6 @@
 #######################
 
 CHARACTER = "solitariness"
-#CHARACTER = "terrestrially"
 NUM_STATES = 2
 NUM_HIDDEN_STATES = 2
 
@@ -89,6 +88,7 @@ rates[4][2] := switch_fast_slow # 1F->1S
 rates[4][3] := rate_loss_fast   # 1F->2F
 
 Q_morpho := fnFreeK(rates, rescaled=FALSE, matrixExponentialMethod="scalingAndSquaringPade")
+#Q_morpho := fnFreeK(rates, rescaled=FALSE)
 
 
 #####################################

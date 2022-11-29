@@ -143,7 +143,7 @@ mymcmc.run(generations=5000, tuningInterval=200)
 
 
 # Read in the tree trace and construct the ancestral states (ASE) #
-anc_states = readAncestralStateTrace("output/"+CHARACTER_B+"_corr_RJ.states.txt")
+anc_states = readAncestralStateTrace("output/"+CHARACTER_A+"_"+CHARACTER_B+"_corr_RJ.states.txt")
 anc_tree = ancestralStateTree(tree=phylogeny,
                               ancestral_state_trace_vector=anc_states,
                               include_start_states=false, file="output/"+CHARACTER_A+"_"+CHARACTER_B+"_ase_corr_RJ.tree",
