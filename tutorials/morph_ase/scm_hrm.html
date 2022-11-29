@@ -56,7 +56,7 @@
 	<h1 class="maintitle">Discrete morphology - Stochastic Character Mapping and Hidden Rates</h1>
 	<h3 class="subtitle">Mapping Character Transitions and Testing for Rate Variation</h3>
 	<h4 class="authors">Sebastian Höhna</h4>
-  <h5>Last modified on March  2, 2022</h5>
+  <h5>Last modified on November 29, 2022</h5>
 </div>
 
 
@@ -430,7 +430,7 @@ Stochastic character mapping, similar to ancestral state estimation, is achieved
 
 <p>We will specify the same model monitor (<code class="language-plaintext highlighter-rouge">mnModel</code>), screen monitor (<code class="language-plaintext highlighter-rouge">mnScreen</code>) and ancestral state monitor (<code class="language-plaintext highlighter-rouge">mnJointConditionalAncestralState</code>) as before (<a href="/tutorials/morph_ase/ase.html">Discrete morphology - Ancestral State Estimation</a>).</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># 1. for the full model #
-monitors.append( mnModel(filename="output/"+CHARACTER+"_hrm.log", printgen=1) )
+monitors.append( mnModel(filename="output/solitariness_hrm.log", printgen=1) )
 # 2. and a few select parameters to be printed to the screen #
 monitors.append( mnScreen(printgen=10) )
 # 3. add an ancestral state monitor
@@ -458,9 +458,9 @@ Each column in the file, though, is the character history for a different node i
 <hr class="subsubsection" />
 
 <p>Setup the MCMC analysis as before (<a href="/tutorials/morph_ase/ase.html">Discrete morphology - Ancestral State Estimation</a>).
-This will run 2 replicated MCMC runs with 10,000 iterations and auto-tuning the moves every 200 iterations.</p>
+This will run 2 replicated MCMC runs with 5,000 iterations and auto-tuning the moves every 200 iterations.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
-mymcmc.run(generations=10000, tuningInterval=200)
+mymcmc.run(generations=5000, tuningInterval=200)
 </code></pre></div></div>
 
 <h4 class="subsubsection" id="summarizing-the-mcmc-output">Summarizing the MCMC output</h4>

@@ -146,9 +146,6 @@ anc_tree = ancestralStateTree(tree=phylogeny, ancestral_state_trace_vector=anc_s
 # read in the sampled character histories
 anc_states_stoch_map = readAncestralStateTrace("output/"+CHARACTER+"_hrm_stoch_char_map.log")
 
-summarizeCharacterMaps(anc_states_stoch_map, phylogeny, file="output/"+CHARACTER+"_hrm.events.tsv", burnin=0.25)
-
-
 # make summary tree
 char_map_tree = characterMapTree(tree=phylogeny,
                  ancestral_state_trace_vector=anc_states_stoch_map,

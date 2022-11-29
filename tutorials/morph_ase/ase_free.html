@@ -56,7 +56,7 @@
 	<h1 class="maintitle">Discrete morphology - Ancestral State Estimation with the independent rates model</h1>
 	<h3 class="subtitle">Testing for Unequal Rates</h3>
 	<h4 class="authors">Sebastian Höhna</h4>
-  <h5>Last modified on March  1, 2022</h5>
+  <h5>Last modified on November 29, 2022</h5>
 </div>
 
 
@@ -156,29 +156,25 @@ In short, it is probably not likely that one single model describes all characte
 <p>The ERM model makes a number of assumptions, but one that may strike you as unrealistic is the assumption that characters are equally likely to change from any one state to any other state.
 That means that a trait is as likely to be gained as lost.
 While this may hold true for some traits, we expect that it may be untrue for many others.
-$$
-Q = \begin{pmatrix}</p>
+$$Q = \begin{pmatrix}</p>
 <ul>
   <li>&amp; \mu_1 <br />
 \mu_2 &amp; -
-\end{pmatrix}
-$$
+\end{pmatrix}$$
 RevBayes has functionality to allow us to relax this assumption.
 For example, we can define the rates
     <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rates := [ [0.0,  mu_1],
-         [ mu_2,  0.0] ]
+        [ mu_2,  0.0] ]
 </code></pre></div>    </div>
     <p>and then create the rate matrix</p>
     <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q := fnFreeK(rates)
 </code></pre></div>    </div>
     <p>which corresponds to the model
-$$
-Q = \begin{pmatrix}</p>
+$$Q = \begin{pmatrix}</p>
   </li>
   <li>&amp; \mu_1 <br />
 \mu_2 &amp; -
-\end{pmatrix}
-$$
+\end{pmatrix}$$
 This is the independent rates model <a class="citation" href="#Pagel1994">(Pagel 1994; Maddison 1994; Schluter et al. 1997)</a>, which we will explore in this tutorial.</li>
 </ul>
 
@@ -226,6 +222,7 @@ moves.append( mvDirichletSimplex( rf, weight=2 ) )
 </code></pre></div></div>
 <p>We need to modify the <code class="language-plaintext highlighter-rouge">dnPhyloCTMC</code> to pass in our new root frequencies parameter.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phyMorpho ~ dnPhyloCTMC(tree=phylogeny, Q=Q_morpho, rootFrequencies=rf, type="Standard")
+phyMorpho.clamp(morpho)
 </code></pre></div></div>
 
 <blockquote class="instruction">
@@ -295,7 +292,7 @@ In fact, it perform <code class="language-plaintext highlighter-rouge">cats=63</
 We chose <code class="language-plaintext highlighter-rouge">cats=63</code> as a conservative estimate.
 Since this performs 64 MCMC simulations with 1000 iterations each, this can take a little while.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>### Compute power posterior distributions```
-pow_p = powerPosterior(mymodel, moves, monitors, "output/"+CHARACTER+"_ERM.out", cats=64, sampleFreq=10)
+pow_p = powerPosterior(mymodel, moves, monitors, "output/"+CHARACTER+"_ERM.out", cats=63, sampleFreq=10)
 pow_p.burnin(generations=2000,tuningInterval=250)
 pow_p.run(generations=1000)
 </code></pre></div></div>
@@ -326,18 +323,21 @@ Progress:
 
 
 Running power posterior analysis ...
-Step   1 / 66		****************************************
-Step   2 / 66		****************************************
-Step   3 / 66		****************************************
+Step   1 / 64		****************************************
+Step   2 / 64		****************************************
+Step   3 / 64		****************************************
 
 ...
 
-Step 65 / 66		****************************************
-Step 66 / 66		****************************************
-   -31.68466
-   -31.68498
+Step 63 / 64		****************************************
+Step 64 / 64		****************************************
+   -31.7236
+   -31.72593
 </code></pre></div></div>
 <p>Note that last two numbers; these are your marginal likelihood estimates.</p>
+
+<p>Now, write another script to compute the power posterior distribution for the independent rates (freeK) model (see the <code class="language-plaintext highlighter-rouge">ml_ase_freeK.Rev</code> script). Then use stepping stone sampling and/or path sampling to calculate the marginal likelihood.</p>
+
 <blockquote class="instruction">
   <p>Compute the Bayes factor! Which model is supported?</p>
 </blockquote>

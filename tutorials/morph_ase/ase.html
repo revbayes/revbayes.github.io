@@ -56,7 +56,7 @@
 	<h1 class="maintitle">Discrete morphology - Ancestral State Estimation</h1>
 	<h3 class="subtitle">The Equal Rates Markov Model</h3>
 	<h4 class="authors">Sebastian Höhna</h4>
-  <h5>Last modified on March  1, 2022</h5>
+  <h5>Last modified on November 29, 2022</h5>
 </div>
 
 
@@ -144,7 +144,7 @@
 
 <p>We are interested, in general, in the evolution of morphological characters in primates.
 In this example we will look at the evolution of morphological character <em>solitariness</em> in primates.
-We have two different types of solitariness: no (0) and yes(1).
+We have two different types of solitariness: group living (0) and solitary living(1).
 You can try different morphological characters too.</p>
 
 <p>Specifically, we want to know what the ancestral state of all primates is.
@@ -223,8 +223,8 @@ Please refer to these files to verify or troubleshoot your own scripts.</p>
 
 <p>The file you will begin in this section will be the one you load into RevBayes when you have completed all of the components of the analysis.
 In this section you will begin the file and write the Rev commands for loading in the taxon list and managing the data matrices.
-Then, starting in section <a href="#subsec_ERM_Model"></a>, you will move on to writing module files for each of the model components.
-Once the model files are complete, you will return to editing <code class="language-plaintext highlighter-rouge">mcmc_ase_ERM.Rev</code> and complete the Rev script with the instructions given in section <a href="#subsec_complete_MCMC"></a>.</p>
+Then, starting in section <a href="#subsec_ERM_Model"></a>, you will move on to write each of the model components.
+After writing all the components for your model, you will complete the Rev script with the instructions given in section <a href="#subsec_complete_MCMC"></a>.</p>
 
 <h4 class="subsubsection" id="subsubsec_load_data">Load Data Matrices</h4>
 <hr class="subsubsection" />
@@ -268,7 +268,9 @@ We need to do this because our rate matrix requires a vector of rates.
 Since we use the ERM model, all rates in this vector are identical.
 We could simply write <code class="language-plaintext highlighter-rouge">rate := [mu,mu]</code>, however, we want our script to be more flexible if we wanted to analyze multistate characters.
 So we use for convenience a loop over the number of rates, which is $K*(K-1)$ rates where $K$ is the number of states.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NUM_RATES = NUM_STATES * (NUM_STATES-1)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NUM_STATES = 2
+
+NUM_RATES = NUM_STATES * (NUM_STATES-1)
 for ( i in 1:NUM_RATES ) {
     rate[i] := mu
 }
@@ -361,8 +363,8 @@ We do this using the <code class="language-plaintext highlighter-rouge">mcmc()</
 </code></pre></div></div>
 
 <p>The MCMC object that we named <code class="language-plaintext highlighter-rouge">mymcmc</code> has a member method called <code class="language-plaintext highlighter-rouge">.run()</code>.
-This will execute our analysis and we will set the chain length to <code class="language-plaintext highlighter-rouge">10000</code> cycles using the <code class="language-plaintext highlighter-rouge">generations</code> option.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=10000, tuningInterval=200)
+This will execute our analysis and we will set the chain length to <code class="language-plaintext highlighter-rouge">25000</code> cycles using the <code class="language-plaintext highlighter-rouge">generations</code> option.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc.run(generations=25000, tuningInterval=200)
 </code></pre></div></div>
 
 <p>Once our Markov chain has terminated, we will process the ancestral state samples.
