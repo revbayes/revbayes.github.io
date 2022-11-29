@@ -48,12 +48,10 @@ In short, it is probably not likely that one single model describes all characte
 The ERM model makes a number of assumptions, but one that may strike you as unrealistic is the assumption that characters are equally likely to change from any one state to any other state.
 That means that a trait is as likely to be gained as lost.
 While this may hold true for some traits, we expect that it may be untrue for many others.
-$$
-Q = \begin{pmatrix}
-- & \mu_1 \\
+$$Q = \begin{pmatrix}
+ - & \mu_1 \\
 \mu_2 & -
-\end{pmatrix}
-$$
+\end{pmatrix}$$
 RevBayes has functionality to allow us to relax this assumption.
 For example, we can define the rates
 ```
@@ -65,12 +63,10 @@ and then create the rate matrix
 Q := fnFreeK(rates)
 ```
 which corresponds to the model
-$$
-Q = \begin{pmatrix}
-- & \mu_1 \\
+$$Q = \begin{pmatrix}
+ - & \mu_1 \\
 \mu_2 & -
-\end{pmatrix}
-$$
+\end{pmatrix}$$
 This is the independent rates model {% cite Pagel1994 Maddison1994 Schluter1997 %}, which we will explore in this tutorial.
 
 >Make a copy of the MCMC and model files you just made.
@@ -120,6 +116,7 @@ moves.append( mvDirichletSimplex( rf, weight=2 ) )
 We need to modify the `dnPhyloCTMC` to pass in our new root frequencies parameter.
 ```
 phyMorpho ~ dnPhyloCTMC(tree=phylogeny, Q=Q_morpho, rootFrequencies=rf, type="Standard")
+phyMorpho.clamp(morpho)
 ```
 
 >Now you are done with your unequal rates model. Give it a run!
@@ -193,7 +190,7 @@ We chose `cats=63` as a conservative estimate.
 Since this performs 64 MCMC simulations with 1000 iterations each, this can take a little while.
 ```
 ### Compute power posterior distributions```
-pow_p = powerPosterior(mymodel, moves, monitors, "output/"+CHARACTER+"_ERM.out", cats=64, sampleFreq=10)
+pow_p = powerPosterior(mymodel, moves, monitors, "output/"+CHARACTER+"_ERM.out", cats=63, sampleFreq=10)
 pow_p.burnin(generations=2000,tuningInterval=250)
 pow_p.run(generations=1000)
 ```
@@ -227,19 +224,22 @@ Progress:
 
 
 Running power posterior analysis ...
-Step   1 / 66		****************************************
-Step   2 / 66		****************************************
-Step   3 / 66		****************************************
+Step   1 / 64		****************************************
+Step   2 / 64		****************************************
+Step   3 / 64		****************************************
 
 ...
 
-Step 65 / 66		****************************************
-Step 66 / 66		****************************************
-   -31.68466
-   -31.68498
+Step 63 / 64		****************************************
+Step 64 / 64		****************************************
+   -31.7236
+   -31.72593
 ```
 {:.Rev-output}
 Note that last two numbers; these are your marginal likelihood estimates.
+
+Now, write another script to compute the power posterior distribution for the independent rates (freeK) model (see the `ml_ase_freeK.Rev` script). Then use stepping stone sampling and/or path sampling to calculate the marginal likelihood.
+
 >Compute the Bayes factor! Which model is supported?
 {:.instruction}
 

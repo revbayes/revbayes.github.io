@@ -46,7 +46,7 @@ redirect: false
 
 We are interested, in general, in the evolution of morphological characters in primates.
 In this example we will look at the evolution of morphological character *solitariness* in primates.
-We have two different types of solitariness: no (0) and yes(1).
+We have two different types of solitariness: group living (0) and solitary living(1).
 You can try different morphological characters too.
 
 Specifically, we want to know what the ancestral state of all primates is.
@@ -127,8 +127,8 @@ Please refer to these files to verify or troubleshoot your own scripts.
 
 The file you will begin in this section will be the one you load into RevBayes when you have completed all of the components of the analysis.
 In this section you will begin the file and write the Rev commands for loading in the taxon list and managing the data matrices.
-Then, starting in section {% ref subsec_ERM_Model %}, you will move on to writing module files for each of the model components.
-Once the model files are complete, you will return to editing `mcmc_ase_ERM.Rev` and complete the Rev script with the instructions given in section {% ref subsec_complete_MCMC %}.
+Then, starting in section {% ref subsec_ERM_Model %}, you will move on to write each of the model components.
+After writing all the components for your model, you will complete the Rev script with the instructions given in section {% ref subsec_complete_MCMC %}.
 
 {% subsubsection Load Data Matrices | subsubsec_load_data %}
 
@@ -176,6 +176,8 @@ Since we use the ERM model, all rates in this vector are identical.
 We could simply write `rate := [mu,mu]`, however, we want our script to be more flexible if we wanted to analyze multistate characters.
 So we use for convenience a loop over the number of rates, which is $K*(K-1)$ rates where $K$ is the number of states.
 ```
+NUM_STATES = 2
+
 NUM_RATES = NUM_STATES * (NUM_STATES-1)
 for ( i in 1:NUM_RATES ) {
     rate[i] := mu
@@ -277,9 +279,9 @@ mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
 ```
 
 The MCMC object that we named `mymcmc` has a member method called `.run()`.
-This will execute our analysis and we will set the chain length to `10000` cycles using the `generations` option.
+This will execute our analysis and we will set the chain length to `25000` cycles using the `generations` option.
 ```
-mymcmc.run(generations=10000, tuningInterval=200)
+mymcmc.run(generations=25000, tuningInterval=200)
 ```
 
 Once our Markov chain has terminated, we will process the ancestral state samples.

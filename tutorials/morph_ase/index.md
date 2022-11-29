@@ -63,9 +63,9 @@ $P( X_\text{internal} \mid X_\text{tip}, \theta, M )$, and to sample
 ancestral states from that distribution.
 This procedure is known as *ancestral state estimation*.
 
-Finally, we might be interested in testing for correlated evolution between discrete morphological characters.
-For example,
-
+%Finally, we might be interested in testing for correlated evolution between discrete morphological characters.
+%For example,
+%
 This tutorial will provide a discussion of modeling morphological characters
 and ancestral state estimation, and will demonstrate how to perform such
 Bayesian phylogenetic analysis using RevBayes {% cite Hoehna2016b %}.
@@ -110,7 +110,7 @@ For more complex models and analyses, it's useful to create separate Rev scripts
 >Create another subdirectory called **scripts**.
 {:.instruction}
 
-In this tutorial, you will work primarily in your text editor and create a set of modular files that can be easily managed and interchanged. Examples of all the commands used to perform each analysis are also provided at the top of this page under **Scripts** but try to write the complete scripts yourself from the beginning to ensure you understand all the steps involved and the differences between setting up each analysis.
+In this tutorial, you will work primarily in your text editor and create a script file that can be easily managed and modified. Examples of all the commands used to perform each analysis are also provided at the top of this page under **Scripts** but try to write the complete scripts yourself from the beginning to ensure you understand all the steps involved and the differences between setting up each analysis.
 
 ### Exercises
 

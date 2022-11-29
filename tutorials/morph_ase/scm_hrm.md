@@ -358,7 +358,7 @@ Stochastic character mapping, similar to ancestral state estimation, is achieved
 We will specify the same model monitor (`mnModel`), screen monitor (`mnScreen`) and ancestral state monitor (`mnJointConditionalAncestralState`) as before ({% page_ref morph_ase/ase %}).
 ```
 # 1. for the full model #
-monitors.append( mnModel(filename="output/"+CHARACTER+"_hrm.log", printgen=1) )
+monitors.append( mnModel(filename="output/solitariness_hrm.log", printgen=1) )
 # 2. and a few select parameters to be printed to the screen #
 monitors.append( mnScreen(printgen=10) )
 # 3. add an ancestral state monitor
@@ -387,10 +387,10 @@ Each column in the file, though, is the character history for a different node i
 {% subsubsection Set-Up the MCMC %}
 
 Setup the MCMC analysis as before ({% page_ref morph_ase/ase %}).
-This will run 2 replicated MCMC runs with 10,000 iterations and auto-tuning the moves every 200 iterations.
+This will run 2 replicated MCMC runs with 5,000 iterations and auto-tuning the moves every 200 iterations.
 ```
 mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
-mymcmc.run(generations=10000, tuningInterval=200)
+mymcmc.run(generations=5000, tuningInterval=200)
 ```
 
 
