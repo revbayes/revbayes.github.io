@@ -289,9 +289,9 @@ monitors.append( mnModel(filename="output/primates_EBD.log",printgen=10, separat
 Additionally, we create four separate file monitors, one for each vector of speciation and extinction rates and for each speciation and extinction rate epoch (\IE the times when the interval ends).
 We want to have the speciation and extinction rates stored separately so that we can plot them nicely afterwards.
 ```
-monitors.append( mnFile(filename="output/primates_EBD_speciation s.log",printgen=10, separator = TAB, speciation) )
+monitors.append( mnFile(filename="output/primates_EBD_speciation_rates.log",printgen=10, separator = TAB, speciation) )
 monitors.append( mnFile(filename="output/primates_EBD_speciation_times.log",printgen=10, separator = TAB, interval_times) )
-monitors.append( mnFile(filename="output/primates_EBD_extinction s.log",printgen=10, separator = TAB, extinction) )
+monitors.append( mnFile(filename="output/primates_EBD_extinction_rates.log",printgen=10, separator = TAB, extinction) )
 monitors.append( mnFile(filename="output/primates_EBD_extinction_times.log",printgen=10, separator = TAB, interval_times) )
 ```
 
@@ -339,7 +339,7 @@ rates <- processDivRates(speciation_time_log = speciation_time_file,
                          summary = "median")
 
 # plot rates through time
-p <- plotDivRates(df = rates) +
+p <- plotDivRates(rates = rates) +
         xlab("Millions of years ago") +
         ylab("Rate per million years")
 
