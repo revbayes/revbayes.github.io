@@ -1,0 +1,999 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: Overview of Moves in MCMC</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
+      </a>
+
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/download">Download</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/documentation/">Documentation</a></li>
+        <li><a href="https://revbayes.github.io/revscripter/">RevScripter</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/jobs/">Jobs</a></li>
+        <li><a href="/developer/">Developer</a></li>
+        <li><a href="/gui">GUI</a></li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <div class="titlebar">
+	<h1 class="maintitle">Overview of Moves in MCMC</h1>
+	<h3 class="subtitle">Guidelines and Recommendation</h3>
+	<h4 class="authors">Sebastian H&#246;hna</h4>
+  <h5>Last modified on November 30, 2022</h5>
+</div>
+
+
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul id="prerequisites">
+          
+            <li><a href="/tutorials/intro/">Getting Started with RevBayes and Rev Language Syntax</a></li>
+          
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+
+
+
+
+<blockquote class="tutorial_files" id="tutorial_files">
+    <h2>Data files and scripts</h2>
+    
+        
+        <strong>Scripts</strong>
+        <ul id="scripts">
+        
+        
+        
+          <li><a href="/tutorials/mcmc/scripts/Binomial_MCMC.Rev">Binomial_MCMC.Rev</a></li>
+        
+          <li><a href="/tutorials/mcmc/scripts/Binomial_MH_algorithm_moves.Rev">Binomial_MH_algorithm_moves.Rev</a></li>
+        
+          <li><a href="/tutorials/mcmc/scripts/mh_algorithm.Rev">mh_algorithm.Rev</a></li>
+        
+        </ul>
+    
+</blockquote>
+
+
+</div>
+<h1 class="section" id="overview">Overview</h1>
+
+<p>This is the very first tutorial for you in <code class="language-plaintext highlighter-rouge">RevBayes</code>. The goal of this set of tutorials is
+getting you started and familiar with the basics in <code class="language-plaintext highlighter-rouge">RevBayes</code>. If you have some familiarity
+with <code class="language-plaintext highlighter-rouge">R</code> or similar software, then this should be straight forward. Nevertheless, we recommend
+you to work through these tutorials to learn all the specific quirks of <code class="language-plaintext highlighter-rouge">RevBayes</code>.</p>
+
+<h1 id="continuous-variables">Continuous Variables</h1>
+
+<h2 id="over-the-full-real-line">Over the full real line</h2>
+
+<figure id="tab_cont" class="table"><figcaption class="table">Moves available in RevBayes for continuous variables.</figcaption>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"><strong>Move</strong></th>
+      <th style="text-align: center"><strong>Description</strong></th>
+      <th style="text-align: center"><strong>Citation</strong></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvMirror</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvRandomDive</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvSlice</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvSlide</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvSlideBactrian</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+  </tbody>
+</table>
+</figure>
+
+<h2 id="positive-only-or-negative-only-continuous-variables">Positive only (or negative only) continuous variables</h2>
+
+<p>Positive continuous variables, such as drawn from a <em>Gamma</em>, <em>Exponental</em> or <em>Lognormal</em> distribution, require moves that don’t change the sign.
+In principle it is possible to apply also moves that work on the full real line, and then let the moves be rejected if they are outside the boundary, but this may be inefficient.</p>
+
+<figure id="tab_cont" class="table"><figcaption class="table">Moves available in RevBayes for positive continuous variables.</figcaption>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"><strong>Move</strong></th>
+      <th style="text-align: center"><strong>Description</strong></th>
+      <th style="text-align: center"><strong>Citation</strong></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvGammaScale</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvLevyJump</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvLevyJumpSum</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvMirrorMultiplier</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvScale</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvScaleBactrian</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvScaleBactrianCauchy</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+  </tbody>
+</table>
+</figure>
+
+<h2 id="multiple-continuous-variables">Multiple Continuous Variables</h2>
+
+<figure id="tab_cont" class="table"><figcaption class="table">Moves available in RevBayes for positive continuous variables.</figcaption>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"><strong>Move</strong></th>
+      <th style="text-align: center"><strong>Description</strong></th>
+      <th style="text-align: center"><strong>Citation</strong></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvAVMVN</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvEllipticalSliceSamplingSimple</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvMultipleElementVectorScale</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvUpDownScale</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvShrinkExpand</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvShrinkExpandScale</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvUpDownScale</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvSynchronizedVectorFixedSingleElementSlide</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvUpDownSlide</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvUpDownSlideBactrian</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvVectorBinarySwitch</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvVectorFixedSingleElementSlide</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvVectorScale</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvVectorSingleElementSlide</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvVectorSlide</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvVectorSlideRecenter</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+  </tbody>
+</table>
+</figure>
+
+<h2 id="gmrf-and-hsmrf">GMRF and HSMRF</h2>
+
+<figure id="tab_cont" class="table"><figcaption class="table">Moves available in RevBayes for positive continuous variables.</figcaption>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"><strong>Move</strong></th>
+      <th style="text-align: center"><strong>Description</strong></th>
+      <th style="text-align: center"><strong>Citation</strong></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvGMRFHyperpriorGibbs</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvGMRFUnevenGridHyperpriorGibbs</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvHSRFHyperpriorsGibbs</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvHSRFIntervalSwap</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvHSRFUnevenGridHyperpriorsGibbs</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+  </tbody>
+</table>
+</figure>
+
+<h2 id="matrices">Matrices</h2>
+
+<figure id="tab_cont" class="table"><figcaption class="table">Moves available in RevBayes for positive continuous variables.</figcaption>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"><strong>Move</strong></th>
+      <th style="text-align: center"><strong>Description</strong></th>
+      <th style="text-align: center"><strong>Citation</strong></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvConjugateInverseWishart</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvCorrelationMatrixElementSwap</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvCorrelationMatrixRandomWalk</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvCorrelationMatrixSingleElementBeta</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvCorrelationMatrixSpecificElementBeta</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvCorrelationMatrixUpdate</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvGraphFlipClique</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvGraphFlipEdge</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvGraphShiftEdge</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvMatrixElementScale</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvMatrixElementSlide</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvSymmetricMatrixElementSlide</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+  </tbody>
+</table>
+</figure>
+
+<h1 id="probabilities-numbers-bounded-between-0-and-1">Probabilities (numbers bounded between 0 and 1)</h1>
+
+<figure id="tab_cont" class="table"><figcaption class="table">Moves available in RevBayes for integer and natural number variables.</figcaption>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"><strong>Move</strong></th>
+      <th style="text-align: center"><strong>Description</strong></th>
+      <th style="text-align: center"><strong>Citation</strong></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvBetaProbability</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvProbabilityElementScale</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+  </tbody>
+</table>
+</figure>
+
+<h1 id="simplices">Simplices</h1>
+
+<figure id="tab_cont" class="table"><figcaption class="table">Moves available in RevBayes for positive continuous variables.</figcaption>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"><strong>Move</strong></th>
+      <th style="text-align: center"><strong>Description</strong></th>
+      <th style="text-align: center"><strong>Citation</strong></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvBetaSimplex</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvDirichletSimplex</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvElementSwapSimplex</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvSimplex</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvSimplexElementScale</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+  </tbody>
+</table>
+</figure>
+
+<h1 id="natural-and-integer-numbers">Natural and Integer numbers</h1>
+
+<figure id="tab_cont" class="table"><figcaption class="table">Moves available in RevBayes for integer and natural number variables.</figcaption>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"><strong>Move</strong></th>
+      <th style="text-align: center"><strong>Description</strong></th>
+      <th style="text-align: center"><strong>Citation</strong></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvBinarySwitch</code></td>
+      <td style="text-align: center">Flipping a value from 0 to 1 and vice versa</td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvRandomGeometricWalk</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvRandomIntegerWalk</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvRandomNaturalWalk</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+  </tbody>
+</table>
+</figure>
+
+<h1 id="trees">Trees</h1>
+
+<figure id="tab_cont" class="table"><figcaption class="table">Moves available in RevBayes for tree variables.</figcaption>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"><strong>Move</strong></th>
+      <th style="text-align: center"><strong>Description</strong></th>
+      <th style="text-align: center"><strong>Citation</strong></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvAddRemoveTip</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvBranchLengthScale</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvCollapseExpandFossilBranch</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvEmpiricalTree</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvFNPR</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvFossilTimeSlideUniform</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvGPR</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvIndependentTopology</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvNNI</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvNarrow</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvNodeTimeScale</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvNodeTimeSlideBeta</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvNodeTimeSlidePathTruncatedNormal</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvNodeTimeSlideUniform</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvNodeTimeSlideUniformAgeConstrained</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvResampleFBD</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvRootTimeScaleBactrian</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvRootTimeSlideUniform</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvSPR</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvSubtreeScale</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvSubtreeSwap</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvTipTimeSlideUniform</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvTreeScale</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+  </tbody>
+</table>
+</figure>
+
+<h2 id="on-trees-and-other-variables">On trees and other variables</h2>
+
+<figure id="tab_cont" class="table"><figcaption class="table">Moves available in RevBayes for tree variables.</figcaption>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"><strong>Move</strong></th>
+      <th style="text-align: center"><strong>Description</strong></th>
+      <th style="text-align: center"><strong>Citation</strong></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvGibbsDrawCharacterHistory</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvBirthDeathEvent</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvBirthDeathEventContinuous</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvBirthDeathEventDiscrete</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvBirthDeathFromAgeEvent</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvBurstEvent</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvCharacterHistory</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvContinuousEventScale</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvDiscreteEventCategoryRandomWalk</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvEventTimeBeta</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvEventTimeSlide</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvLayeredScaleProposal</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvNarrowExchangeRateMatrix</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvNodeRateTimeSlideBeta</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvNodeRateTimeSlideUniform</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvRateAgeBetaShift</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvRateAgeProposal</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvRateAgeSubtreeProposal</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+  </tbody>
+</table>
+</figure>
+
+<h2 id="species-trees">Species Trees</h2>
+
+<figure id="tab_cont" class="table"><figcaption class="table">Moves available in RevBayes for tree variables.</figcaption>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"><strong>Move</strong></th>
+      <th style="text-align: center"><strong>Description</strong></th>
+      <th style="text-align: center"><strong>Citation</strong></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvSpeciesTreeScale</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvSpeciesNarrow</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvSpeciesNodeTimeSlideUniform</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvSpeciesSubtreeScale</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvSpeciesSubtreeScaleBeta</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvSpeciesTreeScale</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+  </tbody>
+</table>
+</figure>
+
+<h1 id="unassigned">Unassigned</h1>
+
+<p>Weird moves …</p>
+
+<figure id="tab_cont" class="table"><figcaption class="table">Moves available in RevBayes for positive continuous variables.</figcaption>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"><strong>Move</strong></th>
+      <th style="text-align: center"><strong>Description</strong></th>
+      <th style="text-align: center"><strong>Citation</strong></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">xxx</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">xxx</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">xxx</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvContinuousCharacterDataSlide</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvDPPAllocateAuxGibbs</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvDPPGibbsConcentration</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvDPPValueBetaSimplex</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvDPPValueScaling</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvDPPValueSliding</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvGibbsMixtureAllocation</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvHomeologPhase</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvMixtureAllocation</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvMultiValueEventBirthDeath</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvMultiValueEventScale</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvMultiValueEventSlide</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvMultiValueEventSlide</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvRJSwitch</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="language-plaintext highlighter-rouge">mvUPPAllocation</code></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"><a class="citation" href="#"></a></td>
+    </tr>
+  </tbody>
+</table>
+</figure>
+
+<ol class="bibliography"></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+    });
+    MathJax.Hub.Queue(function () {
+      $(".aside").each(function() {
+          $("div .MathJax", this).hide();
+      });
+    });
+</script>
+<script src="/assets/js/base.js"></script>
+
+  </body>
+</html>

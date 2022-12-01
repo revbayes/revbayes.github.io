@@ -199,41 +199,36 @@ $\mu$) is a constant node with the value 0.</p>
 <figure id="fig_yule_gm2"><p><img src="figures/yule_gm2.png" width="50%" height="50%" /></p>
 <figcaption>The graphical model representation
 of the pure-birth (Yule) process, where the speciation rate is treated
-as a random variable drawn from a lognormal distribution.</figcaption>
+as a random variable drawn from a uniform distribution.</figcaption>
 </figure>
 
-<p>For this exercise, we will specify a Yule model, such that the
-speciation rate is a stochastic node, drawn from a lognormal
-distribution as in <a href="#fig_yule_gm2"></a>. In a Bayesian framework, we
-are interested in estimating the posterior probability of $\lambda$
-given that we observe a time tree.</p>
+<p>For this exercise, we will specify a Yule model, such that the speciation rate is a stochastic node, drawn from a uniform distribution as in <a href="#fig_yule_gm2"></a>.
+In a Bayesian framework, we are interested in estimating the posterior probability of $\lambda$ given that we observe a time tree.</p>
 
 \[\begin{equation}
 \mathbb{P}(\lambda \mid \Psi) = \frac{\mathbb{P}(\Psi \mid \lambda)\mathbb{P}(\lambda \mid \nu)}{\mathbb{P}(\Psi)}
 \tag{Bayes Theorem}\label{eq:bayes_thereom}
 \end{equation}\]
 
-<p>In this example, we have a phylogeny of 233 primates. We are treating
-the time tree $\Psi$ as an observation, thus clamping the model with an
-observed value. The time tree we are conditioning the process on is
-taken from the analysis by <a class="citation" href="#MagnusonFord2012">Magnuson-Ford and Otto (2012)</a>. Furthermore, there are
-approximately 367 described primates species, so we will fix the
-parameter $\rho$ to $233/367$.</p>
+<p>In this example, we have a phylogeny of 233 primates.
+We are treating the time tree $\Psi$ as an observation, thus clamping the model with an observed value.
+The time tree we are conditioning the process on is taken from the analysis by <a class="citation" href="#MagnusonFord2012">Magnuson-Ford and Otto (2012)</a>.
+Furthermore, there are approximately 367 described primates species, so we will fix the parameter $\rho$ to $233/367$.</p>
 
 <p>⇨ The full Yule-model specification is in the file called <code class="language-plaintext highlighter-rouge">mcmc_Yule.Rev</code>.</p>
 
 <h3 class="subsection" id="read-the-tree">Read the tree</h3>
 <hr class="subsection" />
 
-<p>Begin by reading in the observed tree and get some useful variables. We will need these later on.</p>
+<p>Begin by reading in the observed tree and get some useful variables.
+We will need these later on.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>T &lt;- readTrees("data/primates_tree.nex")[1]
 
 # Get some useful variables from the data. We need these later on.
 taxa &lt;- T.taxa()
 </code></pre></div></div>
 
-<p>Additionally, we can initialize a variable for our vector of
-moves and monitors:</p>
+<p>Additionally, we can initialize a variable for our vector of moves and monitors:</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
 monitors = VectorMonitors()
 </code></pre></div></div>
@@ -244,30 +239,13 @@ monitors = VectorMonitors()
 <h4 class="subsubsection" id="birth-rate">Birth rate</h4>
 <hr class="subsubsection" />
 
-<p>The model we are specifying only has three nodes
-(<a href="#fig_yule_gm2"></a>). We can specify the birth rate $\lambda$, the
-mean and standard deviation of the lognormal hyperprior on $\lambda$,
-and the conditional dependency of the two parameters all in one line of
-<code class="language-plaintext highlighter-rouge">Rev</code> code.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>birth_rate_mean &lt;- ln( ln(367.0/2.0) / T.rootAge() )
-birth_rate_sd &lt;- 0.587405
-birth_rate ~ dnLognormal(mean=birth_rate_mean,sd=birth_rate_sd)
+<p>The model we are specifying only has three nodes (<a href="#fig_yule_gm2"></a>).
+We can specify the birth rate $\lambda$, the minimum and maximum of the uniform hyperprior on $\lambda$, and the conditional dependency of the two parameters all in one line of <code class="language-plaintext highlighter-rouge">Rev</code> code.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>birth_rate ~ dnUniform(0,100.0)
 </code></pre></div></div>
 
-<p>Here, the stochastic node called <code class="language-plaintext highlighter-rouge">birth_rate</code> represents the speciation
-rate $\lambda$. <code class="language-plaintext highlighter-rouge">birth_rate_mean</code> and <code class="language-plaintext highlighter-rouge">birth_rate_sd</code> are the prior
-mean and prior standard deviation, respectively. We chose the prior mean
-so that it is centered around observed number of species
-(<em>i.e.</em>, the expected number of species under a
-Yule process will thus be equal to the observed number of species) and a
-prior standard deviation of 0.587405 which creates a lognormal
-distribution with 95% prior probability spanning exactly one order of
-magnitude. If you want to represent more prior uncertainty by,
-<em>e.g.,</em> allowing for two orders of magnitude in
-the 95% prior probability then you can simply multiply <code class="language-plaintext highlighter-rouge">birth_rate_sd</code>
-by a factor of 2.</p>
-
-<p>To estimate the value of $\lambda$, we assign a proposal mechanism to operate on this node.
+<p>Here, the stochastic node called <code class="language-plaintext highlighter-rouge">birth_rate</code> represents the speciation rate $\lambda$.
+To estimate the value of $\lambda$, we assign a proposal mechanism to operate on this node.
 In RevBayes these MCMC sampling algorithms are called <em>moves</em>.
 We will use a scaling move on $\lambda$ called <code class="language-plaintext highlighter-rouge">mvScale</code>.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale(birth_rate,lambda=1.0,tune=true,weight=3.0) )
@@ -505,7 +483,7 @@ sampling in the present time, and because it is a probability,
 this parameter can only take values between 0 and 1.
 For more information on incomplete taxon sampling, see <a href="/tutorials/divrate/sampling.html">Diversification Rate Estimation with Missing Taxa</a> tutorial.</p>
 
-<figure id="fig_bdp_gm"><p><img src="figures/simple_BD_gm_root.png" height="50%" width="50%" /></p>
+<figure id="fig_bdp_gm"><p><img src="figures/BDP_GM_simple.png" height="50%" width="50%" /></p>
 <figcaption>The graphical model representation of the birth-death process with uniform sampling and
 conditioned on the root age.</figcaption>
 </figure>
@@ -518,7 +496,7 @@ distributions on a transformation of the speciation and extinction rate
 because, for example, we want to enforce that the speciation rate is
 always larger than the extinction rate.</p>
 
-<figure id="fig_bdp_div_turn_gm"><p><img src="figures/cBDR_gm.png" height="50%" width="50%" /></p>
+<figure id="fig_bdp_div_turn_gm"><p><img src="figures/BDP_GM.png" height="50%" width="50%" /></p>
 <figcaption>The graphical model representation of the birth-death process
 with uniform sampling parameterized using the diversification and turnover.</figcaption>
 </figure>
@@ -530,39 +508,41 @@ the <code class="language-plaintext highlighter-rouge">mcmc_Yule.Rev</code> scri
 rename the filenames of the monitors to avoid overwriting of your
 previous results!</p>
 
-<h3 class="subsection" id="diversification-and-turnover">Diversification and turnover</h3>
-<hr class="subsection" />
-
-<p>We have some good prior information about the magnitude of the
-diversification. The diversification rate represent the rate at which
-the species diversity increases. Thus, we just use the same prior for
-the diversification rate as we used before for the birth rate.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>diversification_mean &lt;- ln( ln(367.0/2.0) / T.rootAge() )
-diversification_sd &lt;- 0.587405
-diversification ~ dnLognormal(mean=diversification_mean,sd=diversification_sd)
-moves.append( mvScale(diversification,lambda=1.0,tune=true,weight=3.0) )
-</code></pre></div></div>
-<p>Unfortunately, we have less prior information about the turnover rate.
-The turnover rate is the rate at which one species is replaced by
-another species due to a birth plus death event. Hence, the turnover
-rate represent the longevity of a species. For simplicity we use the
-same prior on the turnover rate but with two orders of magnitude prior
-uncertainty.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>turnover_mean &lt;- ln( ln(367.0/2.0) / T.rootAge() )
-turnover_sd &lt;- 0.587405*2
-turnover ~ dnLognormal(mean=turnover_mean,sd=turnover_sd)
-moves.append( mvScale(turnover,lambda=1.0,tune=true,weight=3.0) )
-</code></pre></div></div>
-
 <h3 class="subsection" id="birth-rate-and-death-rate">Birth rate and death rate</h3>
 <hr class="subsection" />
 
-<p>The birth and death rates are both deterministic nodes. We compute them
-by simple parameter transformation. Note that the death rate is in fact
-equal to the turnover rate.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>birth_rate := diversification + turnover
-death_rate := turnover
+<p>Previously we assumed a uniform prior on the birth rate to signal that we have
+little information. The only information we use is that the rates are positive and
+smaller than 10 events per lineage per million years. We will apply this same prior
+distribution now for our birth-death model for both the birth and death rate.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>birth_rate ~ dnUniform(0,100.0)
+death_rate ~ dnUniform(0,100.0)
 </code></pre></div></div>
+<p>As before we will apply scaling moves on both parameters.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale(birth_rate,lambda=1.0,tune=true,weight=3.0) )
+moves.append( mvScale(death_rate,lambda=1.0,tune=true,weight=3.0) )
+</code></pre></div></div>
+<p>The birth and death rates are likely to be correlated, i.e., we will get
+better MCMC mixing if you jointly update both the birth and death rates.
+Joint updates can be done with our <code class="language-plaintext highlighter-rouge">mvUpDownScale</code> move.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>up_down_scale = mvUpDownScale(weight=3.0)
+up_down_scale.addVariable( birth_rate, up=TRUE )
+up_down_scale.addVariable( death_rate, up=TRUE )
+moves.append( up_down_scale )
+</code></pre></div></div>
+
+<h3 class="subsection" id="diversification-and-turnover">Diversification and turnover</h3>
+<hr class="subsection" />
+
+<p>The birth and death rates are our stochastic parameters and intrinsic
+parameters. However, often we are also interested in the diversification and
+relative extinction rate (or sometimes called turnover rate), which are simple
+transformations of our birth and death rates. Thus, we create some deterministic
+variables called <code class="language-plaintext highlighter-rouge">diversification</code> and <code class="language-plaintext highlighter-rouge">rel_extinction</code>.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>diversification := birth_rate - death_rate
+rel_extinction  := death_rate / birth_rate
+</code></pre></div></div>
+
 <p>All other parameters, such as the sampling probability and the root age
 are kept the same as in the analysis above.</p>
 

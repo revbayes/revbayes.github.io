@@ -21,7 +21,7 @@ this parameter can only take values between 0 and 1.
 For more information on incomplete taxon sampling, see {% page_ref divrate/sampling %} tutorial.
 
 {% figure fig_bdp_gm %}
-<img src="figures/simple_BD_gm_root.png" height="50%" width="50%" />
+<img src="figures/BDP_GM_simple.png" height="50%" width="50%" />
 {% figcaption %}
 The graphical model representation of the birth-death process with uniform sampling and
 conditioned on the root age.
@@ -37,7 +37,7 @@ because, for example, we want to enforce that the speciation rate is
 always larger than the extinction rate.
 
 {% figure fig_bdp_div_turn_gm %}
-<img src="figures/cBDR_gm.png" height="50%" width="50%" />
+<img src="figures/BDP_GM.png" height="50%" width="50%" />
 {% figcaption %}
 The graphical model representation of the birth-death process
 with uniform sampling parameterized using the diversification and turnover.
@@ -51,42 +51,32 @@ the `mcmc_Yule.Rev` script and modify it accordingly. Don't forget to
 rename the filenames of the monitors to avoid overwriting of your
 previous results!
 
-{% subsection Diversification and turnover %}
-
-We have some good prior information about the magnitude of the
-diversification. The diversification rate represent the rate at which
-the species diversity increases. Thus, we just use the same prior for
-the diversification rate as we used before for the birth rate.
-```
-diversification_mean <- ln( ln(367.0/2.0) / T.rootAge() )
-diversification_sd <- 0.587405
-diversification ~ dnLognormal(mean=diversification_mean,sd=diversification_sd)
-moves.append( mvScale(diversification,lambda=1.0,tune=true,weight=3.0) )
-```
-Unfortunately, we have less prior information about the turnover rate.
-The turnover rate is the rate at which one species is replaced by
-another species due to a birth plus death event. Hence, the turnover
-rate represent the longevity of a species. For simplicity we use the
-same prior on the turnover rate but with two orders of magnitude prior
-uncertainty.
-```
-turnover_mean <- ln( ln(367.0/2.0) / T.rootAge() )
-turnover_sd <- 0.587405*2
-turnover ~ dnLognormal(mean=turnover_mean,sd=turnover_sd)
-moves.append( mvScale(turnover,lambda=1.0,tune=true,weight=3.0) )
-```
-
 {% subsection Birth rate and death rate %}
 
-The birth and death rates are both deterministic nodes. We compute them
-by simple parameter transformation. Note that the death rate is in fact
-equal to the turnover rate.
-```
-birth_rate := diversification + turnover
-death_rate := turnover
-```
+Previously we assumed a uniform prior on the birth rate to signal that we have
+little information. The only information we use is that the rates are positive and
+smaller than 10 events per lineage per million years. We will apply this same prior
+distribution now for our birth-death model for both the birth and death rate.
+{{ "mcmc_BD.Rev" | snippet:"line","34-35" }}
+As before we will apply scaling moves on both parameters.
+{{ "mcmc_BD.Rev" | snippet:"line","38-39" }}
+The birth and death rates are likely to be correlated, i.e., we will get
+better MCMC mixing if you jointly update both the birth and death rates.
+Joint updates can be done with our `mvUpDownScale` move.
+{{ "mcmc_BD.Rev" | snippet:"line","41-44" }}
+
+
+{% subsection Diversification and turnover %}
+The birth and death rates are our stochastic parameters and intrinsic
+parameters. However, often we are also interested in the diversification and
+relative extinction rate (or sometimes called turnover rate), which are simple
+transformations of our birth and death rates. Thus, we create some deterministic
+variables called `diversification` and `rel_extinction`.
+{{ "mcmc_BD.Rev" | snippet:"line","47-48" }}
+
 All other parameters, such as the sampling probability and the root age
 are kept the same as in the analysis above.
+
 
 {% subsection The time tree %}
 

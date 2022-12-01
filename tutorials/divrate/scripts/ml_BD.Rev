@@ -31,20 +31,19 @@ monitors = VectorMonitors()
 # birth-death model  #
 ######################
 
-### the birth rate is a stochastic random variable drawn from a lognormal prior
+### the birth rate is a stochastic random variable drawn from a uniform prior
+birth_rate ~ dnUniform(0,100.0)
+death_rate ~ dnUniform(0,100.0)
+
 ### MCMC samples this variable using a scale proposal
-diversification_mean <- ln( ln(367.0/2.0) / T.rootAge() )
-diversification_sd <- 0.587405
-diversification ~ dnLognormal(mean=diversification_mean,sd=diversification_sd)
-moves.append( mvScale(diversification,lambda=1.0,tune=true,weight=3.0)
+moves.append( mvScale(birth_rate,lambda=1.0,tune=true,weight=3.0) )
+moves.append( mvScale(death_rate,lambda=1.0,tune=true,weight=3.0) )
 
-turnover_mean <- ln( ln(367.0/2.0) / T.rootAge() )
-turnover_sd <- 0.587405*2
-turnover ~ dnLognormal(mean=turnover_mean,sd=turnover_sd)
-moves.append( mvScale(turnover,lambda=1.0,tune=true,weight=3.0)
+up_down_scale = mvUpDownScale(weight=3.0)
+up_down_scale.addVariable( birth_rate, up=TRUE )
+up_down_scale.addVariable( death_rate, up=TRUE )
+moves.append( up_down_scale )
 
-birth_rate := diversification + turnover
-death_rate := turnover
 
 ### rho is the probability of sampling species at the present
 ### fix this to 233/367, since there are ~367 described species of primates
@@ -81,7 +80,7 @@ monitors.append( mnScreen(printgen=1000, birth_rate, death_rate) )
 ################
 
 ### compute power posterior distributions
-pow_p = powerPosterior(mymodel, moves, monitors, "output/BD_powp.out", cats=100, sampleFreq=10)
+pow_p = powerPosterior(mymodel, moves, monitors, "output/BD_powp.out", cats=127, sampleFreq=10)
 pow_p.burnin(generations=10000,tuningInterval=200)
 pow_p.run(generations=10000)
 
