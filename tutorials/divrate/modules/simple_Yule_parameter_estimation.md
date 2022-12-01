@@ -46,15 +46,12 @@ $\mu$) is a constant node with the value 0.
 {% figcaption %}
 The graphical model representation
 of the pure-birth (Yule) process, where the speciation rate is treated
-as a random variable drawn from a lognormal distribution.
+as a random variable drawn from a uniform distribution.
 {% endfigcaption %}
 {% endfigure %}
 
-For this exercise, we will specify a Yule model, such that the
-speciation rate is a stochastic node, drawn from a lognormal
-distribution as in {% ref fig_yule_gm2 %}. In a Bayesian framework, we
-are interested in estimating the posterior probability of $\lambda$
-given that we observe a time tree.
+For this exercise, we will specify a Yule model, such that the speciation rate is a stochastic node, drawn from a uniform distribution as in {% ref fig_yule_gm2 %}.
+In a Bayesian framework, we are interested in estimating the posterior probability of $\lambda$ given that we observe a time tree.
 
 $$
 \begin{equation}
@@ -63,23 +60,21 @@ $$
 \end{equation}
 $$
 
-In this example, we have a phylogeny of 233 primates. We are treating
-the time tree $\Psi$ as an observation, thus clamping the model with an
-observed value. The time tree we are conditioning the process on is
-taken from the analysis by {% citet MagnusonFord2012 %}. Furthermore, there are
-approximately 367 described primates species, so we will fix the
-parameter $\rho$ to $233/367$.
+In this example, we have a phylogeny of 233 primates.
+We are treating the time tree $\Psi$ as an observation, thus clamping the model with an observed value.
+The time tree we are conditioning the process on is taken from the analysis by {% citet MagnusonFord2012 %}.
+Furthermore, there are approximately 367 described primates species, so we will fix the parameter $\rho$ to $233/367$.
 
 &#8680; The full Yule-model specification is in the file called `mcmc_Yule.Rev`.
 
 
 {% subsection Read the tree %}
 
-Begin by reading in the observed tree and get some useful variables. We will need these later on.
+Begin by reading in the observed tree and get some useful variables.
+We will need these later on.
 {{ "mcmc_Yule.Rev" | snippet:"line","19-22" }}
 
-Additionally, we can initialize a variable for our vector of
-moves and monitors:
+Additionally, we can initialize a variable for our vector of moves and monitors:
 {{ "mcmc_Yule.Rev" | snippet:"line","26-27" }}
 
 
@@ -87,37 +82,22 @@ moves and monitors:
 
 {% subsubsection Birth rate %}
 
-The model we are specifying only has three nodes
-({% ref fig_yule_gm2 %}). We can specify the birth rate $\lambda$, the
-mean and standard deviation of the lognormal hyperprior on $\lambda$,
-and the conditional dependency of the two parameters all in one line of
-`Rev` code.
-{{ "mcmc_Yule.Rev" | snippet:"line","36-38" }}
+The model we are specifying only has three nodes ({% ref fig_yule_gm2 %}).
+We can specify the birth rate $\lambda$, the minimum and maximum of the uniform hyperprior on $\lambda$, and the conditional dependency of the two parameters all in one line of `Rev` code.
+{{ "mcmc_Yule.Rev" | snippet:"line","35" }}
 
-Here, the stochastic node called `birth_rate` represents the speciation
-rate $\lambda$. `birth_rate_mean` and `birth_rate_sd` are the prior
-mean and prior standard deviation, respectively. We chose the prior mean
-so that it is centered around observed number of species
-(*i.e.*, the expected number of species under a
-Yule process will thus be equal to the observed number of species) and a
-prior standard deviation of 0.587405 which creates a lognormal
-distribution with 95% prior probability spanning exactly one order of
-magnitude. If you want to represent more prior uncertainty by,
-*e.g.,* allowing for two orders of magnitude in
-the 95% prior probability then you can simply multiply `birth_rate_sd`
-by a factor of 2.
-
+Here, the stochastic node called `birth_rate` represents the speciation rate $\lambda$.
 To estimate the value of $\lambda$, we assign a proposal mechanism to operate on this node.
 In RevBayes these MCMC sampling algorithms are called *moves*.
 We will use a scaling move on $\lambda$ called `mvScale`.
-{{ "mcmc_Yule.Rev" | snippet:"line","39" }}
+{{ "mcmc_Yule.Rev" | snippet:"line","38" }}
 
 {% subsubsection Sampling probability %}
 
 Our prior belief is that we have sampled 233 out of 367 living primate
 species. To account for this we can set the sampling parameter as a
 constant node with a value of 233/367
-{{ "mcmc_Yule.Rev" | snippet:"line","44" }}
+{{ "mcmc_Yule.Rev" | snippet:"line","43" }}
 Note that we will assume "uniform" taxon sampling {% cite Hoehna2011 Hoehna2014a %}, which we will specify below.
 If we want to learn more about different taxon sampling options, then look at {% page_ref divrate/sampling %} tutorial.
 
@@ -134,14 +114,14 @@ root by assuming the process started with *two* lineages that both
 originate at the time of the root.
 
 We can get the value for the root from the {% citet MagnusonFord2012 %} tree.
-{{ "mcmc_Yule.Rev" | snippet:"line","47" }}
+{{ "mcmc_Yule.Rev" | snippet:"line","46" }}
 
 {% subsubsection The time tree %}
 
 Now we have all of the parameters we need to specify the full pure-birth
 model. We can initialize the stochastic node representing the time tree.
 Note that we set the `mu` parameter to the constant value `0.0`.
-{{ "mcmc_Yule.Rev" | snippet:"line","51" }}
+{{ "mcmc_Yule.Rev" | snippet:"line","50" }}
 Note that we specified the `condition="survival"`, which says that we assume this process only produced trees that survived until the present.
 Fore more information, see the {% page_ref divrate/conditions %} tutorial.
 
@@ -149,7 +129,7 @@ If you refer back to Equation \eqref{eq:bayes_thereom} and {% ref fig_yule_gm2 %
 the time tree $\Psi$ is the variable we observe,
 *i.e.*, the data. We can set this in `Rev` by
 using the `clamp()` function.
-{{ "mcmc_Yule.Rev" | snippet:"line","54" }}
+{{ "mcmc_Yule.Rev" | snippet:"line","53" }}
 Here we are fixing the value of the time tree to our observed tree from
 {% citet MagnusonFord2012 %}.
 
@@ -179,10 +159,10 @@ called `mn*`, where `*` is the wildcard representing the monitor type.
 First, we will initialize the model monitor using the `mnModel`
 function. This creates a new monitor variable that will output the
 states for all model parameters when passed into a MCMC function.
-{{ "mcmc_Yule.Rev" | snippet:"line","67" }}
+{{ "mcmc_Yule.Rev" | snippet:"line","66" }}
 Additionally, create a screen monitor that will report the states of
 specified variables to the screen with `mnScreen`:
-{{ "mcmc_Yule.Rev" | snippet:"line","68" }}
+{{ "mcmc_Yule.Rev" | snippet:"line","67" }}
 
 
 {% subsubsection Initializing and Running the MCMC Simulation %}
@@ -191,9 +171,9 @@ With a fully specified model, a set of monitors, and a set of moves, we
 can now set up the MCMC algorithm that will sample parameter values in
 proportion to their posterior probability. The `mcmc()` function will
 create our MCMC object:
-{{ "mcmc_Yule.Rev" | snippet:"line","77" }}
+{{ "mcmc_Yule.Rev" | snippet:"line","76" }}
 Now, run the MCMC:
-{{ "mcmc_Yule.Rev" | snippet:"line","80" }}
+{{ "mcmc_Yule.Rev" | snippet:"line","79" }}
 When the analysis is complete, you will have the monitored files in your
 output directory.
 
