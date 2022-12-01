@@ -32,8 +32,8 @@ monitors = VectorMonitors()
 ######################
 
 ### the birth rate is a stochastic random variable drawn from a uniform prior
-birth_rate ~ dnUniform(0,10.0)
-death_rate ~ dnUniform(0,10.0)
+birth_rate ~ dnUniform(0,100.0)
+death_rate ~ dnUniform(0,100.0)
 
 ### MCMC samples this variable using a scale proposal
 moves.append( mvScale(birth_rate,lambda=1.0,tune=true,weight=3.0) )
