@@ -357,16 +357,18 @@ My tutorial directory, as shown in Figure 1, will be written out as:</p>
    Congratulations, you set up your scripts and code directories correctly.
 </code></pre></div></div>
 
-<h2 class="section" id="rstudio">RStudio</h2>
+<h2 class="section" id="using-revbayes-with-r-and-rstudio">Using RevBayes with R and RStudio</h2>
 <hr class="section" />
 
-<p>Many RevBayes users may want to use RevBayes through RStudio (missing reference), a popular graphical interface for R.
-R is a fairly common computing language in biology.
+<p>R is a fairly common computing language in biology.
+RevBayes users may want to use RevBayes through RStudio (missing reference), a popular graphical interface for R.
 In this section of the tutorial, we will focus on running RevBayes from RStudio. Once you’ve followed the RStudio instructions on the <a href="https://revbayes.github.io/gui-setup">installs page</a>, you can run use Rev language as you would in a standard RMarkown document.</p>
 
-<h1 id="installation">Installation</h1>
+<h3 class="subsection" id="installation">Installation</h3>
+<hr class="subsection" />
 
 <p>Revticulate can be installed in two ways.
+Both will assume a working installation of R and (optionally) RStudio.
 The first is via CRAN, using the default <code class="language-plaintext highlighter-rouge">install.packages</code> function in R:</p>
 
 <pre><code class="language-{r}">install.packages("Revticulate")
@@ -379,16 +381,16 @@ The first is via CRAN, using the default <code class="language-plaintext highlig
 
 <p>The GitHub repository for Revticulate contains cutting-edge features and may contain bugfixes, but the CRAN is known to be stable for everyday use.</p>
 
-<p>Upon first installation, Revticulate will run a package check.
-This check searches for and .Renviron file that contains a RevBayes path. If the package doesn’t find this file, or finds it without the path, the package prompts the user to use <code class="language-plaintext highlighter-rouge">usethis::edit_r_environ()</code>. This opens the .Renviron file, and the user will enter <code class="language-plaintext highlighter-rouge">rb={absolute path to revbayes}</code>. This can be edited at any time if there are multiple installs on the system, or if you recompile RevBayes and want to use a new version.</p>
+<p>To begin using your Revticulate package in R, in an RMarkdown chunk, type:</p>
 
-<p>Before using Revticulate in knitr, make sure the following is in your setup chunk:</p>
-
-<pre><code class="language-{r}">library(Revticulate)
-knitRev()
+<pre><code class="language-{r}"> library(Revticulate)
+ knitRev()
 </code></pre>
 
-<p>First, we will test that RevBayes is accessible to us. This is a Rev chunk, which we know because the header says ‘rb’. This will fail if RevBayes cannot be found. If this is the case, check that the path in your Renviron goes to RevBayes, and restart.</p>
+<p>When you execute this chunk, Revticulate will run a package check.
+This check searches for and .Renviron file that contains a RevBayes path. If the package doesn’t find this file, or finds it without the path, the package prompts the user to use <code class="language-plaintext highlighter-rouge">usethis::edit_r_environ()</code>. This opens the .Renviron file, and the user will enter <code class="language-plaintext highlighter-rouge">rb={absolute path to revbayes}</code>. This can be edited at any time if there are multiple installs on the system, or if you recompile RevBayes and want to use a new version.</p>
+
+<p>First, we will test that RevBayes is accessible to us. RevBayes can be used in a KnitR chunk by changing the header to <code class="language-plaintext highlighter-rouge">rb</code> instead of <code class="language-plaintext highlighter-rouge">r</code>. If you are unsure how to edit a chunk to have the proper type, the test.Rmd file in this tutorial provides examples. In the below chunk, we create an object called example and use the assignment operator to give it the value 1. Then we print it. This will fail if RevBayes cannot be found. If this is the case, check that the path in your Renviron goes to RevBayes, and restart.</p>
 
 <pre><code class="language-{rb}">variable &lt;- "Hi there! Welcome to RevBayes! I am now going to read in some test data."
 variable
@@ -396,7 +398,7 @@ variable
 
 <p>Next, we will attempt to read in some data. Use the <code class="language-plaintext highlighter-rouge">setwd()</code> command to ensure that you are in the directory for this tutorial.</p>
 
-<pre><code class="language-{rb}">molecular_data &lt;- readDiscreteCharacterData("../data/example_file.nex")
+<pre><code class="language-{rb}">molecular_data &lt;- readDiscreteCharacterData("data/example_file.nex")
 molecular_data
 </code></pre>
 
