@@ -110,12 +110,11 @@ install.packages("usethis")
 <p>Once installation is complete, type</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>library(Revticulate)
+knitRev()
 </code></pre></div></div>
 
-<p>in a markdown chunk or in the console. This will prompt Revticulate to open your .Renviron file. You will use this to place the path to RevBayes in the Renviron, providing R with the location of RevBayes so that Revticulate may execute code using it. You will enter into the file the location of RevBayes on your hard drive. For example, if I have RevBayes installed in my software directory, this will be:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rb=/Users/software/rb
-</code></pre></div></div>
+<p>Upon first installation, Revticulate will run a package check.
+This check searches for and .Renviron file that contains a RevBayes path. If the package doesn’t find this file, or finds it without the path, the package prompts the user to use <code class="language-plaintext highlighter-rouge">usethis::edit_r_environ()</code>. This opens the .Renviron file, and the user will enter <code class="language-plaintext highlighter-rouge">rb={absolute path to revbayes}</code>. This can be edited at any time if there are multiple installs on the system, or if you recompile RevBayes and want to use a new version.</p>
 
 <p>Now, you may use RevBayes in either KnitR or console. For examples of RevBayes used via Revticulate, see the <a href="https://paleantology.github.io/Revticulate/">Revticulate website</a>.</p>
 
