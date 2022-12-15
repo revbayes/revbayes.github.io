@@ -52,7 +52,7 @@ install.packages("remotes")
 install.packages("usethis")
 ```
 
-Use `remotes` to install RevKnitr:
+Use `remotes` to install Revticulate, an R package for using RevBayes within R and RStudio environments:
 
 ```
 remotes::install_github("revbayes/Revticulate")
