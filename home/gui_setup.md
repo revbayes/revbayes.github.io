@@ -43,7 +43,7 @@ Examples of RevNotebooks can be found in the RevNotebook [repository](https://gi
 
 {% section RStudio %}
 
-Compile or download RevBayes as appropriate for your system above. Add RevBayes to your system path.
+Compile or download RevBayes as appropriate for your system above. Note where on your computer it is stored.
 
 Download [R](https://cran.rstudio.com/) and [RStudio](https://rstudio.com/products/rstudio/download/). Once these are downloaded, start RStudio. Install the `remotes` package. We will also install the package `usethis` to aid with installation:
 

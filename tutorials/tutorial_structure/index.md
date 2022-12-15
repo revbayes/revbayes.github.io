@@ -301,13 +301,13 @@ If everything has succeeded, you will see the following output:
 {:.Rev-output}
 
 
-{% section RStudio %}
+{% section Using RevBayes with R and RStudio %}
 
-Many RevBayes users may want to use RevBayes through RStudio {% cite RStudio %}, a popular graphical interface for R.
 R is a fairly common computing language in biology.
+RevBayes users may want to use RevBayes through RStudio {% cite RStudio %}, a popular graphical interface for R.
 In this section of the tutorial, we will focus on running RevBayes from RStudio. Once you've followed the RStudio instructions on the [installs page](https://revbayes.github.io/gui-setup), you can run use Rev language as you would in a standard RMarkown document.
 
-# Installation
+{% subsection Installation %}
 
 Revticulate can be installed in two ways.
 The first is via CRAN, using the default `install.packages` function in R:
