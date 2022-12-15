@@ -307,17 +307,55 @@ Many RevBayes users may want to use RevBayes through RStudio {% cite RStudio %},
 R is a fairly common computing language in biology.
 In this section of the tutorial, we will focus on running RevBayes from RStudio. Once you've followed the RStudio instructions on the [installs page](https://revbayes.github.io/gui-setup), you can run use Rev language as you would in a standard RMarkown document.
 
-RStudio has an interface with four panes: the editor (upper left), console (lower left), environment (upper right), and files (lower right).
-This can be seen below
-{% figure Rstudio %}
-<img src="figures/RStudio.png" width="800">
-{% figcaption %}
-A sample RStudio window.
-{% endfigcaption %}
-{% endfigure %}
+# Installation
+
+Revticulate can be installed in two ways.
+The first is via CRAN, using the default `install.packages` function in R:
 
 
-You will find in the scripts directory a file called test.Rmd. Open this file in RStudio. This file will walk you through the installation and use of RevBayes via Revticulate.
+```{r eval=FALSE}
+install.packages("Revticulate")
+```
+
+The second is via the remotes package, a lightweight package enabling installation from GitHub repositories.
+
+
+```{r}
+remotes::install_github("revbayes/Revticulate")
+```
+
+ The GitHub repository for Revticulate contains cutting-edge features and may contain bugfixes, but the CRAN is known to be stable for everyday use.
+
+Upon first installation, Revticulate will run a package check.
+This check searches for and .Renviron file that contains a RevBayes path. If the package doesn’t find this file, or finds it without the path, the package prompts the user to use `usethis::edit_r_environ()`. This opens the .Renviron file, and the user will enter `rb={absolute path to revbayes}`. This can be edited at any time if there are multiple installs on the system, or if you recompile RevBayes and want to use a new version.
+
+Before using Revticulate in knitr, make sure the following is in your setup chunk:
+
+```{r}
+library(Revticulate)
+knitRev()
+```
+
+First, we will test that RevBayes is accessible to us. This is a Rev chunk, which we know because the header says 'rb'. This will fail if RevBayes cannot be found. If this is the case, check that the path in your Renviron goes to RevBayes, and restart.
+
+```{rb}
+variable <- "Hi there! Welcome to RevBayes! I am now going to read in some test data."
+variable
+```
+
+Next, we will attempt to read in some data. Use the `setwd()` command to ensure that you are in the directory for this tutorial.
+
+```{rb}
+molecular_data <- readDiscreteCharacterData("../data/example_file.nex")
+molecular_data
+```
+
+If you get an error such as `rb not found`, make sure you executed this block:
+
+```{r}
+library(Revticulate)
+knitRev()
+```
 
 
 
