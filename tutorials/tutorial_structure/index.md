@@ -313,7 +313,7 @@ Revticulate can be installed in two ways.
 The first is via CRAN, using the default `install.packages` function in R:
 
 
-```{r eval=FALSE}
+```{r}
 install.packages("Revticulate")
 ```
 
