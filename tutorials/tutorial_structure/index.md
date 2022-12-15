@@ -310,6 +310,7 @@ In this section of the tutorial, we will focus on running RevBayes from RStudio.
 {% subsection Installation %}
 
 Revticulate can be installed in two ways.
+Both will assume a working installation of R and (optionally) RStudio.
 The first is via CRAN, using the default `install.packages` function in R:
 
 
@@ -326,17 +327,17 @@ remotes::install_github("revbayes/Revticulate")
 
  The GitHub repository for Revticulate contains cutting-edge features and may contain bugfixes, but the CRAN is known to be stable for everyday use.
 
-Upon first installation, Revticulate will run a package check.
+ To begin using your Revticulate package in R, in an RMarkdown chunk, type:
+
+ ```{r}
+ library(Revticulate)
+ knitRev()
+ ```
+
+When you execute this chunk, Revticulate will run a package check.
 This check searches for and .Renviron file that contains a RevBayes path. If the package doesn’t find this file, or finds it without the path, the package prompts the user to use `usethis::edit_r_environ()`. This opens the .Renviron file, and the user will enter `rb={absolute path to revbayes}`. This can be edited at any time if there are multiple installs on the system, or if you recompile RevBayes and want to use a new version.
 
-Before using Revticulate in knitr, make sure the following is in your setup chunk:
-
-```{r}
-library(Revticulate)
-knitRev()
-```
-
-First, we will test that RevBayes is accessible to us. This is a Rev chunk, which we know because the header says 'rb'. This will fail if RevBayes cannot be found. If this is the case, check that the path in your Renviron goes to RevBayes, and restart.
+First, we will test that RevBayes is accessible to us. RevBayes can be used in a KnitR chunk by changing the header to `rb` instead of `r`. If you are unsure how to edit a chunk to have the proper type, the test.Rmd file in this tutorial provides examples. In the below chunk, we create an object called example and use the assignment operator to give it the value 1. Then we print it. This will fail if RevBayes cannot be found. If this is the case, check that the path in your Renviron goes to RevBayes, and restart.
 
 ```{rb}
 variable <- "Hi there! Welcome to RevBayes! I am now going to read in some test data."
@@ -346,7 +347,7 @@ variable
 Next, we will attempt to read in some data. Use the `setwd()` command to ensure that you are in the directory for this tutorial.
 
 ```{rb}
-molecular_data <- readDiscreteCharacterData("../data/example_file.nex")
+molecular_data <- readDiscreteCharacterData("data/example_file.nex")
 molecular_data
 ```
 

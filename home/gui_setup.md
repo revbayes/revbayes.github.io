@@ -52,20 +52,20 @@ install.packages("remotes")
 install.packages("usethis")
 ```
 
-Use `remotes` to install Revticulate, an R package for using RevBayes within R and RStudio environments:
+RStudio does not run RevBayes by default, as RevBayes is a separate piece of software from R or RStudio. Use `remotes` to install Revticulate, an R package for using RevBayes within R and RStudio environments:
 
 ```
 remotes::install_github("revbayes/Revticulate")
 ```
 
-Once installation is complete, type
+Once installation is complete, type into an RMarkdown cell:
 
 ```
 library(Revticulate)
 knitRev()
 ```
 
-Upon first installation, Revticulate will run a package check.
+When you execute the above, Revticulate will run a package check.
 This check searches for and .Renviron file that contains a RevBayes path. If the package doesn’t find this file, or finds it without the path, the package prompts the user to use `usethis::edit_r_environ()`. This opens the .Renviron file, and the user will enter `rb={absolute path to revbayes}`. This can be edited at any time if there are multiple installs on the system, or if you recompile RevBayes and want to use a new version.
 
 Now, you may use RevBayes in either KnitR or console. For examples of RevBayes used via Revticulate, see the [Revticulate website](https://paleantology.github.io/Revticulate/) and our tutorial on [setting up RevBayes](https://revbayes.github.io/tutorials/tutorial_structure/).
