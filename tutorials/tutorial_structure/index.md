@@ -339,25 +339,28 @@ This check searches for and .Renviron file that contains a RevBayes path. If the
 
 First, we will test that RevBayes is accessible to us. RevBayes can be used in a KnitR chunk by changing the header to `rb` instead of `r`. If you are unsure how to edit a chunk to have the proper type, the test.Rmd file in this tutorial provides examples. In the below chunk, we create an object called example and use the assignment operator to give it the value 1. Then we print it. This will fail if RevBayes cannot be found. If this is the case, check that the path in your Renviron goes to RevBayes, and restart.
 
+````
 ```{rb}
 variable <- "Hi there! Welcome to RevBayes! I am now going to read in some test data."
 variable
 ```
-
+````
 Next, we will attempt to read in some data. Use the `setwd()` command to ensure that you are in the directory for this tutorial.
 
+````
 ```{rb}
 molecular_data <- readDiscreteCharacterData("data/example_file.nex")
 molecular_data
 ```
-
+````
 If you get an error such as `rb not found`, make sure you executed this block:
 
+````
 ```{r}
 library(Revticulate)
 knitRev()
 ```
-
+````
 
 
 {% section Using Jupyter %}
