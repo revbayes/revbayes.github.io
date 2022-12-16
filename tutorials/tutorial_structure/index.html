@@ -104,8 +104,6 @@
         
           <li><a href="tutorials/tutorial_structure/scripts/test.Rmd">test.Rmd</a></li>
         
-          <li><a href="/tutorials/tutorial_structure/scripts/test.html">test.html</a></li>
-        
         </ul>
     
 </blockquote>
@@ -392,21 +390,25 @@ This check searches for and .Renviron file that contains a RevBayes path. If the
 
 <p>First, we will test that RevBayes is accessible to us. RevBayes can be used in a KnitR chunk by changing the header to <code class="language-plaintext highlighter-rouge">rb</code> instead of <code class="language-plaintext highlighter-rouge">r</code>. If you are unsure how to edit a chunk to have the proper type, the test.Rmd file in this tutorial provides examples. In the below chunk, we create an object called example and use the assignment operator to give it the value 1. Then we print it. This will fail if RevBayes cannot be found. If this is the case, check that the path in your Renviron goes to RevBayes, and restart.</p>
 
-<pre><code class="language-{rb}">variable &lt;- "Hi there! Welcome to RevBayes! I am now going to read in some test data."
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>```{rb}
+variable &lt;- "Hi there! Welcome to RevBayes! I am now going to read in some test data."
 variable
-</code></pre>
-
+```
+</code></pre></div></div>
 <p>Next, we will attempt to read in some data. Use the <code class="language-plaintext highlighter-rouge">setwd()</code> command to ensure that you are in the directory for this tutorial.</p>
 
-<pre><code class="language-{rb}">molecular_data &lt;- readDiscreteCharacterData("data/example_file.nex")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>```{rb}
+molecular_data &lt;- readDiscreteCharacterData("data/example_file.nex")
 molecular_data
-</code></pre>
-
+```
+</code></pre></div></div>
 <p>If you get an error such as <code class="language-plaintext highlighter-rouge">rb not found</code>, make sure you executed this block:</p>
 
-<pre><code class="language-{r}">library(Revticulate)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>```{r}
+library(Revticulate)
 knitRev()
-</code></pre>
+```
+</code></pre></div></div>
 
 <h2 class="section" id="using-jupyter">Using Jupyter</h2>
 <hr class="section" />
