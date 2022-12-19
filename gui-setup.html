@@ -69,12 +69,29 @@ Use RevBayes with a Graphical Interface
 
 <p>First, download and install Python 3 and the Jupyter Notebook. Installation instructions are available from the Jupyter Development team <a href="https://jupyter.readthedocs.io/en/latest/install.html">here</a>.</p>
 
-<p>Now, use the <a href="https://revbayes.github.io/download">Downloads</a> page to find RevBayes compilation instructions for your operating system. When building RevBayes, substitute</p>
+<h3 class="subsection" id="revbayes-downloads">RevBayes Downloads</h3>
+<hr class="subsection" />
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./build.sh -jupyter true
+<h4 class="subsubsection" id="using-a-pre-built-revbayes">Using a Pre-Built RevBayes</h4>
+<hr class="subsubsection" />
+
+<p>RevBayes <a href="https://github.com/revbayes/revbayes/releases/tag/v1.2.2-preview1">pre-built executables</a> are designed to work with Jupyter. You may want to ensures that <code class="language-plaintext highlighter-rouge">rb</code> executable can be found using the <code class="language-plaintext highlighter-rouge">which</code> command or be located using the environment variable, <code class="language-plaintext highlighter-rouge">REVBAYES_JUPYTER_EXECUTABLE</code>. For instance, you can set the environment variable using</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">REVBAYES_JUPYTER_EXECUTABLE</span><span class="o">=</span>&lt;revbayes_path&gt;/rb
 </code></pre></div></div>
 
-<p>for the normal build step. This will generate an <code class="language-plaintext highlighter-rouge">rb-jupyter</code> executeable. Add this executeable to your system path.</p>
+<h4 class="subsubsection" id="compiling-revbayes">Compiling RevBayes</h4>
+<hr class="subsubsection" />
+
+<p>Now, use the <a href="https://revbayes.github.io/download">Downloads</a> page to find RevBayes compilation instructions for your operating system. When building RevBayes, substitute</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./build.sh -jupyter
+</code></pre></div></div>
+
+<p>for the normal build step. This will generate an <code class="language-plaintext highlighter-rouge">rb</code> executeable. Add this executable to your system path.</p>
+
+<h4 class="subsubsection" id="comnnect-revbayes-and-jupyter">Comnnect RevBayes and Jupyter</h4>
+<hr class="subsubsection" />
 
 <p>Finally, clone the RevBayes Jupyter Kernel.</p>
 
