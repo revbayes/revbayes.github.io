@@ -36,8 +36,9 @@ software:
 - <a href="https://doi.org/10.6084/m9.figshare.7886447.v2">Introduction to Bayesian Inference</a>
 - <a href="https://doi.org/10.6084/m9.figshare.6849005.v6">Bayesian Divergence-Time Estimation</a>
 
-### Workshop Tutorials:
-- TBA
+### Workshop Tutorials (choose your own adventure):
+- [Nucleotide substitution models: Phylogenetic inference of nucleotide data using RevBayes](https://revbayes.github.io/tutorials/ctmc/)
+- [Estimating a Time-Calibrated Phylogeny of Fossil and Extant Taxa using Morphological Data](https://revbayes.github.io/tutorials/fbd_simple/)
 
 <br>
 <br>
