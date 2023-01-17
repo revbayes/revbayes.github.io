@@ -17,7 +17,7 @@ This tutorial comes with a recorded video walkthrough. The video corresponding t
 {% section Overview [![Walkthrough video](/assets/img/YouTube_icon.svg){: height="36" width="36"}](https://youtu.be/7O6Dtdg71wE) | overview %}
 
 This tutorial provides a guide to using RevBayes to perform a simple phylogenetic analysis of extant and fossil bear species (family Ursidae), using morphological data as well as the occurrence times of lineages from the fossil record.
-A version of this tutorial is published as: Barido-Sottani et al. (2020) "Estimating a time-calibrated phylogeny of fossil and extant taxa using RevBayes". In Scornavacca, C., Delsuc, F., and Galtier, N., editors, _Phylogenetics in the Genomic Era_, chapter No. 5.2, pp. 5.2:2–5.2:22. No commercial publisher | Authors open access book.
+A version of this tutorial is published as: [Barido-Sottani et al. (2020) "Estimating a time-calibrated phylogeny of fossil and extant taxa using RevBayes".](https://hal.inria.fr/PGE/hal-02536394) In Scornavacca, C., Delsuc, F., and Galtier, N., editors, _Phylogenetics in the Genomic Era_, chapter No. 5.2, pp. 5.2:2–5.2:22. No commercial publisher | Authors open access book.
 
 
 {% section Introduction | introduction %}
