@@ -33,7 +33,7 @@ software:
 
 ## Bayesian Inference and Divergence-Time Estimation (Tracy Heath)
 ### Lecture Slides:
-- <a href="https://doi.org/10.6084/m9.figshare.21907074.v1">Introduction to Bayesian Inference</a>
+- <a href="https://doi.org/10.6084/m9.figshare.7886447.v2">Introduction to Bayesian Inference</a>
 - <a href="https://doi.org/10.6084/m9.figshare.6849005.v6">Bayesian Divergence-Time Estimation</a>
 
 <br>
