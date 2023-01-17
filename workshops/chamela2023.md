@@ -21,7 +21,6 @@ description:
 - <b>This website will provide links to materials using RevBayes.</b>
 
 software:
-- Participants will need access to a computer (Unix, Mac OSX, Windows) to complete the tutorials, as well as a web-enabled device (computer or mobile device) capable of running communication tools.
 - <a href="https://revbayes.github.io/download">RevBayes v1.2.1</a> 
 - <a href="https://github.com/beast-dev/tracer/releases">Tracer</a>
 - <a href="https://github.com/rambaut/figtree/releases">FigTree</a>
