@@ -39,6 +39,17 @@ software:
 - [Nucleotide substitution models: Phylogenetic inference of nucleotide data using RevBayes](https://revbayes.github.io/tutorials/ctmc/)
 - [Estimating a Time-Calibrated Phylogeny of Fossil and Extant Taxa using Morphological Data](https://revbayes.github.io/tutorials/fbd_simple/)
 
+## Analysis of Biogeography (Isabel Sanmartín)
+All materials: [https://github.com/isabelsanmartin/Phylogenetics-Workshop-Chamela](https://github.com/isabelsanmartin/Phylogenetics-Workshop-Chamela) 
+
+### Lecture Slides:
+- [Introduction to Biogeography in RevBayes](https://github.com/isabelsanmartin/Phylogenetics-Workshop-Chamela/raw/main/Slides/Lecture_Chamela_Biogeography.pdf)
+
+### Workshop Tutorials:
+- [Introduction to RevBayes](https://github.com/isabelsanmartin/Phylogenetics-Workshop-Chamela/blob/main/INTRO/Introduction.md)
+- [Introduction to the Dispersal-Extinction-Cladogenesis (DEC) Model in RevBayes](https://github.com/isabelsanmartin/Phylogenetics-Workshop-Chamela/blob/main/DEC/Introduction-to-DEC.md)
+- [Introduction to the Bayesian Island Biogeography (BIB) Model in RevBayes](https://github.com/isabelsanmartin/Phylogenetics-Workshop-Chamela/blob/main/BIB/Introduction-to-BIB.md)
+
 <br>
 <br>
 
