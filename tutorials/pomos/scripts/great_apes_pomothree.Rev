@@ -3,9 +3,11 @@
 # Authors: Rui Borges and Carolin Kosiol
 
 
-# reading the PoMo alignment
+# reading the PoMo alignment to use with virtual PoMo 3
 
-data <- readCharacterDataDelimited("data/great_apes_pomothree_naturalnumbers.txt", stateLabels=16, type="NaturalNumbers", delimiter=" ", headers=FALSE)
+N <- 3
+
+data <- readPoMoCountFile(countFile="data/great_apes_1000.cf", virtualPopulationSize=N, format="PoMo")
 
 data
 
@@ -24,10 +26,6 @@ monitors = VectorMonitors()
 
 
 # setting the model of evolution
-
-# population size
-
-N <- 10
 
 
 # allele frequencies
@@ -61,7 +59,7 @@ phi := [1.0,gamma,gamma,1.0]
 
 # rate matrix
 
-Q := fnReversiblePoMoThree4N(N,pi,rho,phi)
+Q := fnReversiblePoMo4N(N,pi,rho,phi)
 
 
 
@@ -92,7 +90,7 @@ psi := treeAssembly(topology, branch_lengths)
 
 # wrapping the model
 
-sequences ~ dnPhyloCTMC(psi,Q=Q,type="NaturalNumbers")
+sequences ~ dnPhyloCTMC(psi,Q=Q,type="PoMo")
 
 sequences.clamp(data)
 
