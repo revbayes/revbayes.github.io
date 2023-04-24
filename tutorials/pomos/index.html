@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
-    <title>RevBayes: Polymorphism-aware phylogenetic models</title>
+    <title>RevBayes</title>
   </head>
   <body>
     <div class="container">
@@ -53,10 +53,10 @@
 </nav>
 
       <div class="titlebar">
-	<h1 class="maintitle">Polymorphism-aware phylogenetic models</h1>
-	<h3 class="subtitle">Species tree inference with allele frequency data in RevBayes</h3>
-	<h4 class="authors">Rui Borges, Bastien Boussau, Sebastian Höhna and Carolin Kosiol</h4>
-  <h5>Last modified on May  4, 2021</h5>
+	<h1 class="maintitle"></h1>
+	<h3 class="subtitle"></h3>
+	<h4 class="authors"></h4>
+  <h5>Last modified on April 24, 2023</h5>
 </div>
 
 
@@ -68,14 +68,8 @@
     <div class="col-md-9">
         <strong>Prerequisites</strong>
         
-          <ul id="prerequisites">
-          
-            <li><a href="/tutorials/intro/">Getting Started with RevBayes and Rev Language Syntax</a></li>
-          
-            <li><a href="/tutorials/mcmc/">Introduction to Markov chain Monte Carlo (MCMC) Sampling</a></li>
-          
-            <li><a href="/tutorials/ctmc/">Nucleotide substitution models</a></li>
-          
+          <ul>
+          <li>None</li>
           </ul>
         
     </div>
@@ -98,10 +92,6 @@
         
           <li><a href="/tutorials/pomos/data/great_apes_1000.cf">great_apes_1000.cf</a></li>
         
-          <li><a href="/tutorials/pomos/data/great_apes_pomothree_naturalnumbers.txt">great_apes_pomothree_naturalnumbers.txt</a></li>
-        
-          <li><a href="/tutorials/pomos/data/great_apes_pomotwo_naturalnumbers.txt">great_apes_pomotwo_naturalnumbers.txt</a></li>
-        
         </ul>
     
         
@@ -110,13 +100,9 @@
         
         
         
-          <li><a href="/tutorials/pomos/scripts/counts_to_pomo_states_converter.R">counts_to_pomo_states_converter.R</a></li>
-        
           <li><a href="/tutorials/pomos/scripts/great_apes_pomothree.Rev">great_apes_pomothree.Rev</a></li>
         
           <li><a href="/tutorials/pomos/scripts/great_apes_pomotwo.Rev">great_apes_pomotwo.Rev</a></li>
-        
-          <li><a href="/tutorials/pomos/scripts/weighted_sampled_method.cpp">weighted_sampled_method.cpp</a></li>
         
         </ul>
     
@@ -129,18 +115,18 @@
 <h2 class="section" id="PoMo">Polymorphism-aware phylogenetic models <a href="https://youtu.be/i8XPJbhIuEQ"><img src="/assets/img/YouTube_icon.svg" alt="Walkthrough video" height="36" width="36" /></a></h2>
 <hr class="section" />
 
-<p>The polymorphism-aware phylogenetic models (PoMos) are alternative approaches of species tree estimation <a class="citation" href="#DeMaio2013">(De Maio et al. 2013)</a> that add a new layer of complexity to the standard substitution models by accounting for population-level forces to describe the process of sequence evolution <a class="citation" href="#DeMaio2015">(De Maio et al. 2015; Schrempf et al. 2016; Borges et al. 2019)</a>. PoMos model the evolution of a population of individuals in which changes in allele content (e.g., due to mutations) and frequency (e.g., due to genetic drift or selection) are both possible (<a href="#pomos"></a>).</p>
+<p>The polymorphism-aware phylogenetic models (PoMos) are alternative approaches to species tree estimation <a class="citation" href="#DeMaio2013">(De Maio et al. 2013)</a> that add a new layer of complexity to the standard substitution models by accounting for population-level forces to describe the process of sequence evolution <a class="citation" href="#DeMaio2015">(De Maio et al. 2015; Schrempf et al. 2016; Borges et al. 2019)</a>. PoMos model the evolution of a population of individuals in which changes in allele content (e.g., due to mutations) and frequency (e.g., due to genetic drift or selection) are both possible (<a href="#pomos"></a>).</p>
 
 <figure id="pomos"><p><img src="figures/pomos.png" width="500" /></p>
-<figcaption>PoMoTwo and Three state-spaces. The tetrahedron represents the PoMos state-space for the four-allelic case (A, C, G and T). The fixed sites \(\{Na_i\}\) are represented in the vertices of the tetrahedron, while the polymorphic states \(\{na_i,(N −n)a_j\}\) are represented in its edges. Black and grey arrows respectively distinguish mutations from frequency shifts (i.e., due to genetic drift and selection).</figcaption>
+<figcaption>PoMoTwo and Three state-spaces. The tetrahedron represents the PoMos state-space for the four-allelic case (A, C, G and T). The fixed sites \(\{Na_i\}\) are represented in the vertices of the tetrahedron, while the polymorphic states \(\{na_i,(N −n)a_j\}\) are represented in its edges. The black and gray arrows distinguish mutations from frequency shifts (i.e., due to genetic drift and selection).</figcaption>
 </figure>
 
-<p>PoMos stand out from the standard models of evolution and other species tree methods because they:</p>
+<p>PoMos stand out from the standard phylogenetic substitution models and other species tree methods because they:</p>
 <ul>
-  <li>permit to disentangle the contribution of evolutionary forces to the evolutionary process (e.g., genetic drift, mutational biases and selection);</li>
-  <li>consider polymorphism, thus permitting inferences with data from multiple individuals and populations;</li>
+  <li>permit to disentangle the contribution of evolutionary forces to the evolutionary process (e.g., genetic drift, mutational biases, and selection);</li>
+  <li>consider polymorphisms, thus permitting inferences with data from multiple individuals and populations;</li>
   <li>naturally account for incomplete lineage sorting (i.e., the persistence of ancestral polymorphisms during speciation events), a known process of phylogenetic discord;</li>
-  <li>directly estimate the species tree, circumventing the many constraints between the species tree and the genealogical histories.</li>
+  <li>directly estimate the species tree and is computationally efficient by circumventing the many constraints between the species tree and the genealogical histories.</li>
 </ul>
 
 <p>Overall, PoMos constitute a full-likelihood yet computationally efficient approach to species tree inference. PoMos are designed to cope with recent radiations, including incomplete lineage sorting, and long divergence times.</p>
@@ -148,19 +134,19 @@
 <h2 class="section" id="PoMo_model">Polymorphism-aware phylogenetic models: the model <a href="https://youtu.be/Kp0P9cMcf6o"><img src="/assets/img/YouTube_icon.svg" alt="Walkthrough video" height="36" width="36" /></a></h2>
 <hr class="section" />
 
-<p>PoMos model the evolution of a population of $N$ individuals and $K$ alleles in which changes in the allele content and frequency occur. These are mediated by population forces, such as mutation, genetic drift, and selection. The PoMo state-space includes fixed (or boundary) states \(\{Na_i\}\), in which all $N$ individuals have the same allele \(i \in \{0,1,...,K-1\}\), and polymorphic states \(\{na_i,(N-n)a_j\}\), in which two alleles $a_i$ and $a_j$ are present in the population with absolute frequencies $n$ and $N-n$.</p>
+<p>PoMos model the evolution of a population of $N$ individuals and $K$ alleles in which changes in allele content and frequency occur. These are mediated by population forces such as mutation, genetic drift, and selection. The PoMo state-space includes fixed (or boundary) states \(\{Na_i\}\), in which all $N$ individuals have the same allele \(i \in \{0,1,...,K-1\}\), and polymorphic states \(\{na_i,(N-n)a_j\}\), in which two alleles $a_i$ and $a_j$ are present in the population with absolute frequencies $n$ and $N-n$.</p>
 
 <ul>
   <li>Mutations occur with rate $\mu_{a_ia_j}$. Mutations govern the allele content and only occur in the fixed states:
 \(q_{\{Na_i\} \rightarrow \{(N-1)a_i,1a_j\}}=\mu_{a_ia_j} \label{equation1}\tag{1}\)
-Often, a reversible mutational model is considered. In this case, we break the mutations into a base composition $\pi$ and exchangeability parameter $\rho$ (i.e., $\mu_{a_ia_j}=\rho_{a_ia_j}\pi_{a_j}$) just like the GTR. However, in PoMos, we do not model substitutions but mutations. Such an assumption can still model mutational biases quite well and simplifies obtaining formal quantities with PoMos. Another assumption that PoMos do is that mutations can only occur in the fixed states. This corresponds to assume that mutation rates are low, which is verified for the majority of multicellular eukaryotes.</li>
-  <li>Genetic drift is modeled according to the Moran model, in which one individual is chosen to die, and one individual is chosen to reproduce at each time step. Selection acts to (dis)favor alleles by differentiated fitnesses: $\phi_{a_i}$. Together, genetic drift and selection govern the allele frequency changes:
+Often, a reversible mutational model is considered. In this case, we break the mutations into a base composition $\pi$ and exchangeability parameter $\rho$ (i.e., $\mu_{a_ia_j}=\rho_{a_ia_j}\pi_{a_j}$) just like the GTR. However, in PoMos, these do not represent substitutions but mutations. Such an assumption can still model mutational biases quite well and simplifies obtaining formal quantities with PoMos. Another assumption of PoMos is that mutations can only occur in fixed states. This corresponds to the assumption that mutation rates are low, which is verified for the majority of multicellular eukaryotes.</li>
+  <li>Genetic drift is modeled according to the Moran model, in which one individual is chosen to die and one individual is chosen to reproduce at each time step. Selection acts to (dis)favor alleles by differentiated fitnesses: $\phi_{a_i}$. Together, genetic drift and selection govern the allele frequency changes:
 \(q_{\{na_i,(N-n)a_j\} \rightarrow \{(n+1)a_i,(N-n-1)a_j\}}=\frac{n(N-n)}{N}\phi_{a_i} \label{equation2}\tag{2}\)</li>
 </ul>
 
 <p>Like the standard substitution models, PoMos are continuous-time Markov models and are fully characterized by their rate matrices. The rates in \ref{equation1} and \ref{equation2} define the PoMos rate matrices. RevBayes includes a plethora of PoMo rate matrices that permit modeling population dynamics with any number of alleles, reversible mutations (i.e., $\mu_{a_ia_j}=\rho_{a_ia_j}\pi_{a_j}$) and selection. These are described in <a href="#Table 1"></a>.</p>
 
-<figure id="tab_pomo_models" class="table"><figcaption class="table">Specific functions for PoMos available in RevBayes.</figcaption>
+<figure id="tab_pomo_models" class="table"><figcaption class="table">Specific functions for PoMos are available in RevBayes. For an overview of the specificities and possible applications of these models, please consult <a class="citation" href="#Borges2022b">(Borges et al. 2022)</a>. </figcaption>
 
 <table>
   <thead>
@@ -173,49 +159,49 @@ Often, a reversible mutational model is considered. In this case, we break the m
   <tbody>
     <tr>
       <td style="text-align: center">fnPoMoKN</td>
-      <td style="text-align: center">Describes the evolution of a population with $K$ alleles and $N$ individuals and subjected to mutational bias and selection</td>
-      <td style="text-align: center">$K$, $N$, $\mu$, $\phi$</td>
+      <td style="text-align: center">Describes the evolution of a population with $K$ alleles and $N$ individuals subjected to mutational bias and selection</td>
+      <td style="text-align: center">$K$, $N$, $\mu$, $\phi$  </td>
     </tr>
     <tr>
       <td style="text-align: center">fnReversiblePoMoKN</td>
       <td style="text-align: center">Particular case of PoMoKN when mutations are considered reversible.</td>
-      <td style="text-align: center">$K$, $N$, $\pi$, $\rho$, $\phi$</td>
+      <td style="text-align: center">$K$, $N$, $\pi$, $\rho$, $\phi$  </td>
     </tr>
     <tr>
       <td style="text-align: center">fnPoMo4N</td>
-      <td style="text-align: center">Describes the evolution of a population with 4 alleles (typically the A, C, G, and T nucleotides) and $N$ individuals and subjected to mutational bias and selection</td>
-      <td style="text-align: center">$N$, $\mu$, $\phi$</td>
+      <td style="text-align: center">Describes the evolution of a population with 4 alleles (typically the A, C, G, and T nucleotides) and $N$ individuals subjected to mutational bias and selection</td>
+      <td style="text-align: center">$N$, $\mu$, $\phi$  </td>
     </tr>
     <tr>
       <td style="text-align: center">fnReversiblePoMo4N</td>
       <td style="text-align: center">Particular case of PoMo4N when mutations are considered reversible.</td>
-      <td style="text-align: center">$N$, $\pi$, $\rho$, $\phi$</td>
+      <td style="text-align: center">$N$, $\pi$, $\rho$, $\phi$  </td>
     </tr>
     <tr>
       <td style="text-align: center">fnPoMo2N</td>
-      <td style="text-align: center">Describes the evolution of a population with 2 alleles and $N$ individuals and subjected to mutational bias and selection</td>
-      <td style="text-align: center">$N$, $\mu$, $\phi$</td>
+      <td style="text-align: center">Describes the evolution of a population with 2 alleles and $N$ individuals subjected to mutational bias and selection</td>
+      <td style="text-align: center">$N$, $\mu$, $\phi$  </td>
     </tr>
     <tr>
       <td style="text-align: center">fnReversiblePoMo2N</td>
       <td style="text-align: center">Particular case of PoMo2N when mutations are considered reversible.</td>
-      <td style="text-align: center">$N$, $\pi$, $\rho$, $\phi$</td>
+      <td style="text-align: center">$N$, $\pi$, $\rho$, $\phi$  </td>
     </tr>
     <tr>
       <td style="text-align: center">fnReversiblePoMoTwo4N</td>
-      <td style="text-align: center">Describes the evolution of a virtual population with 4 alleles of 2 individuals (hence PoMoTwo) and subjected to mutational bias</td>
-      <td style="text-align: center">$N$, $\pi$, $\rho$</td>
+      <td style="text-align: center">Describes the evolution of a virtual population with 4 alleles of 2 individuals (hence PoMoTwo) subjected to mutational bias</td>
+      <td style="text-align: center">$N$, $\pi$, $\rho$  </td>
     </tr>
     <tr>
       <td style="text-align: center">fnReversiblePoMoThree4N</td>
-      <td style="text-align: center">Describes the evolution of a virtual population with 4 alleles of 3 individuals (hence PoMoThree) and subjected to mutational bias and selection</td>
-      <td style="text-align: center">$N$, $\pi$, $\rho$, $\phi$</td>
+      <td style="text-align: center">Describes the evolution of a virtual population with 4 alleles of 3 individuals (hence PoMoThree) subjected to mutational bias and selection</td>
+      <td style="text-align: center">$N$, $\pi$, $\rho$, $\phi$  </td>
     </tr>
   </tbody>
 </table>
 </figure>
 
-<p>This tutorial demonstrates how to set up and perform analyses using the polymorphism-aware phylogenetic models. You will perform phylogeny inference under the virtual PoMos Two and Three. These models allow for very efficient species tree inferences under neutrality (PoMoTwo) and selection (PoMoThree) because they operate on a smaller state space <a class="citation" href="#Borges2020">(Borges et al. 2020)</a>. You will perform a Markov chain Monte Carlo (MCMC) analysis to estimate phylogeny and other model parameters. The graphical model representation under PoMoThree is depicted in figure <a href="#pomos_graphical_model"></a>.</p>
+<p>This tutorial demonstrates how to set up and perform analyses using polymorphism-aware phylogenetic models. You will perform phylogeny inference using the virtual PoMos Two and Three. These models allow for very efficient species tree inferences under neutrality (PoMoTwo) and selection (PoMoThree) because they operate on a smaller state space (missing reference). You will perform a Markov chain Monte Carlo (MCMC) analysis to estimate phylogeny and other model parameters. The graphical model representation under PoMoThree is depicted in figure <a href="#pomos_graphical_model"></a>.</p>
 
 <figure id="pomos_graphical_model"><p><img src="figures/dag_pomos.png" /></p>
 <figcaption>Graphical model representation of PoMos. The graphical model shows the dependencies among parameters <a class="citation" href="#Hoehna2014b">(Höhna et al. 2014)</a>. Here, the rate matrix $Q$ is a deterministic variable because it depends on the mutation rates and fitness coefficients. The same applies to the phylogenetic tree $\Psi$, which depends on the topology and branch lengths.</figcaption>
@@ -226,70 +212,69 @@ Often, a reversible mutational model is considered. In this case, we break the m
 
 <p>PoMos perform inferences based on allele frequency data. Count files are the files where we store such data. They contain two header lines. The first line indicates the number of taxa and the number of sites (or loci) in the sequence alignment. You might have noticed that NPOP stands for the number of populations, but this is not necessarily the case. PoMos can be employed to infer the evolutionary history of different species or even other systematic units that one might be interested in studying (e.g., subspecies, communities, etc.).</p>
 
-<p>A second line states the genomic position of every locus (chromosome and location) and the taxa names. The first two columns are not used for inference, which means that if you are working with taxa for which such information is not available, you can input these columns with dummy values (e.g., NA). All the other lines in the count file include allelic counts separated by commas. White spaces separate all the elements in the count file. Let us have a look at some lines of the great ape count file we will analyze in this tutorial:</p>
+<p>A second line states the genomic position of every locus (chromosome and location) and the taxon names. The first two columns are not used for inference, which means that if you are working with taxa for which such information is not available, you can input these columns with dummy values (e.g., NA or ?). All the other lines in the count file include allelic counts separated by commas. White spaces separate all the elements in the count file. Let us have a look at some lines of the great ape count file we will analyze in this tutorial:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>COUNTSFILE NPOP 3 NSITES 5
-CHROM POS       Gorilla_beringei_graueri Gorilla_gorilla_dielhi Gorilla_gorilla_gorilla
-chr1  41275799  6,0,0,0                  2,0,0,0                54,0,0,0 
-chr2  120104878 6,0,0,0                  2,0,0,0                54,0,0,0 
-chr11 61364549  0,6,0,0                  0,2,0,0                0,54,0,0 
-chr17 44837427  6,0,0,0                  2,0,0,0                54,0,0,0 
-chr19 7495905   4,0,2,0                  2,0,0,0                10,0,44,0 
+CHROM POS       Gorilla_beringei_graueri Gorilla_gorilla_dielhi Gorilla_gorilla_gorilla
+chr1  41275799  6,0,0,0                  2,0,0,0                54,0,0,0 
+chr2  120104878 6,0,0,0                  2,0,0,0                54,0,0,0 
+chr11 61364549  0,6,0,0                  0,2,0,0                0,54,0,0 
+chr17 44837427  6,0,0,0                  2,0,0,0                54,0,0,0 
+chr19 7495905   4,0,2,0                  2,0,0,0                10,0,44,0 
 </code></pre></div></div>
 
-<p>The four allelic counts in this count files represent the allelic counts of the A, C, G, and T, respectively. Thus, we know that the Gorilla_gorilla_gorilla has an AG polymorphism at position 7 495 905 of chromosome 19. The allele order in the allelic counts can be any. However, you have to keep in mind that the vector of mutation rates, exchangeabilities, base frequencies, and fitness coefficients all follow the allele counts order.</p>
+<p>The four allelic counts in this count file represent the allelic counts of the A, C, G, and T, respectively. Thus, we know that the <code class="language-plaintext highlighter-rouge">Gorilla_gorilla_gorilla</code> has an AG polymorphism at position 7 495 905 of chromosome 19. The allele order in the allelic counts can be any. However, you have to keep in mind that the vector of mutation rates, exchangeabilities, base frequencies, and fitness coefficients all follow the order of the allele counts in the count file:</p>
 <ul>
-  <li>the base frequencies and the fitness vectors are in the same order as in the counts: i.e., \(\{a_0,a_1,...,a_{K-1}\}\).</li>
-  <li>the mutation rates are \(\{a_0a_1, a_1a_0, a_0a_2, a_2a_0,...\}\)</li>
-  <li>the exchangeabilities follow a similar pattern as for the mutation rates, but without the reversed mutation: i.e., \(\{a_0a_1, a_0a_2, ...\}\)</li>
+  <li>the base frequencies and the fitness vectors are in the same order as in the counts: i.e., \(\{a_0,a_1,...,a_{K-1}\}\);</li>
+  <li>the vector mutation rates (this vector is used in the non-reversible models) are \(\{a_0a_1, a_1a_0, a_0a_2, a_2a_0,...\}\);</li>
+  <li>the vector of exchangeabilities follow a similar pattern as for the mutation rates, but without the reversed mutation: i.e., \(\{a_0a_1, a_0a_2, ...\}\).</li>
 </ul>
 
 <h2 class="section" id="loading_data">Loading the data <a href="https://youtu.be/acjouysOU04"><img src="/assets/img/YouTube_icon.svg" alt="Walkthrough video" height="36" width="36" /></a></h2>
 <hr class="section" />
 
-<p>The first step in this tutorial is to convert the allelic counts into PoMo states. Open the terminal and place it on your working directory <strong>PoMos</strong> (you can choose a name of your preference). Inside <strong>PoMos</strong> create the usual <strong>data</strong> and <strong>output</strong> folders.</p>
+<p>The first step in this tutorial is to convert the allelic counts into PoMo states. Open the terminal and place it in your working directory, lut us call it <strong>PoMos</strong>, but you can use a name of your preference. Inside <strong>PoMos</strong> create the usual <strong>data</strong> and <strong>output</strong> folders. Before starting to actually load the data, run <strong>RevBayes</strong> by typing <code class="language-plaintext highlighter-rouge">./rb</code> (or <code class="language-plaintext highlighter-rouge">./rb-mpi</code>) in the console. Open the <code class="language-plaintext highlighter-rouge">great_apes_pomothree.Rev</code> file using an appropriate text editor so you can follow what each command is doing. Once you know what this <code class="language-plaintext highlighter-rouge">.Rev</code> script is doing in detail, you can automatically run it as follows:</p>
 
-<p>We mentioned previously that the PoMo state-space includes fixed and polymorphic states. However, sampled fixed sites might not be necessarily fixed in the original population. We might just have been unlucky and only sampled individuals with the same allele from a locus that is polymorphic. It is typically the case that the real genetic diversity is undersampled in population genetic studies. The fewer the number of sampled individuals or the rarer are the alleles in the original population (i.e., singletons, doubletons), the more likely are we to observe fake fixed sites in the sequence alignment. The sampled-weighted method helps us to correct for such bias by attributing to each of the allelic counts an appropriate PoMo state (0-based coding). For a population size of 3 virtual individuals, we expect 16 states (coded 0-15), while for a population of 2 virtual individuals, we expected 10 states (coded 0-9).</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./rb great_apes_pomothree.Rev
 
-<p>The script <code class="language-plaintext highlighter-rouge">weighted_sampled_method.cpp</code> is implemented in <strong>C++</strong>, and we will run it using the <strong>Rcpp</strong> package in <strong>R</strong>.  Open the <code class="language-plaintext highlighter-rouge">counts_to_pomo_states_converter.R</code> file and make the appropriate changes to obtain your PoMo alignments suited for PoMoTwo and PoMoThree. As we will be using the virtual PoMos Two and Three, the virtual population sizes are 2 and 3.</p>
-
-<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">count_file</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"count_file.txt"</span><span class="w">     </span><span class="c1"># count file</span><span class="w">
-</span><span class="n">n_alleles</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">4</span><span class="w">                    </span><span class="c1"># the four nucleotide bases A, C, G and T</span><span class="w">
-</span><span class="n">N</span><span class="w">          </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">10</span><span class="w">                   </span><span class="c1"># virtual population size</span><span class="w">
-
-</span><span class="n">alignment</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">counts_to_pomo_states_converter</span><span class="p">(</span><span class="n">count_file</span><span class="p">,</span><span class="n">n_alleles</span><span class="p">,</span><span class="n">N</span><span class="p">)</span><span class="w">
-</span></code></pre></div></div>
-
-<p>Place the produced alignments inside the <strong>data</strong> folder. The output files follow the <code class="language-plaintext highlighter-rouge">NaturalNumbers</code> character type of RevBayes and can easily read by it.</p>
-
-<p>Run <strong>RevBayes</strong> by typing <code class="language-plaintext highlighter-rouge">./rb</code> (or <code class="language-plaintext highlighter-rouge">./rb-mpi</code>) in the console. Open the <code class="language-plaintext highlighter-rouge">great_apes_pomothree.Rev</code> file using an appropriate text editor. First load in the PoMo alignment using the <code class="language-plaintext highlighter-rouge">readCharacterDataDelimited</code> function. This function requires you to input the number of expected states: 10 for PoMoTwo and 16 for PoMoThree.</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data &lt;- readCharacterDataDelimited("data/great_apes_pomothree_naturalnumbers.txt", stateLabels=16, type="NaturalNumbers", delimiter=" ", headers=FALSE)
 </code></pre></div></div>
 
-<p>Information about the alignment can be obtained by typing <code class="language-plaintext highlighter-rouge">data</code>.</p>
+<p>We mentioned previously that the PoMo state space includes fixed and polymorphic states. However, allele counts are samples of (usually) a few individuals from the population. For example, sampled fixed sites might not necessarily be fixed in the original population. We might just have been unlucky and only sampled individuals with the same allele from a locus that is polymorphic. It is typically the case that real genetic diversity is undersampled in population genetic studies. The fewer the number of sampled individuals or the rarer the alleles in the original population (i.e., singletons or doubletons), the more likely we are to observe fake fixed sites in the sequence alignment. There are methods that help us correct for such bias by attributing to each of the allelic counts an appropriate PoMo state. One such method is the weighted-method <a class="citation" href="#Schrempf2016">(Schrempf et al. 2016)</a>, which weights each PoMo state based on binomial sampling. This is automatically done in RevBayes when we use  the function <code class="language-plaintext highlighter-rouge">readPoMoCountFile</code>. We just need to define the location of the counts file, the virtual population size, which, as we will be using the virtual PoMo three for inferences, we set to <code class="language-plaintext highlighter-rouge">3</code>, and the data type format, which is PoMo.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>N &lt;- 3
+data &lt;- readPoMoCountFile(countFile="data/great_apes_1000.cf", virtualPopulationSize=N, format="PoMo")
+</code></pre></div></div>
+
+<p>Information about the alignment can be obtained by typing <code class="language-plaintext highlighter-rouge">data</code>. </p>
 
 <div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;data
-NaturalNumbers character matrix with 12 taxa and 1000 characters
-================================================================
-Origination:                   
-Number of taxa:                12
-Number of included taxa:       12
-Number of characters:          1000
-Number of included characters: 1000
-Datatype:                      NaturalNumbers
+   PoMo character matrix with 12 taxa and 1000 characters
+   ======================================================
+   Origination:                   
+   Number of taxa:                12
+   Number of included taxa:       12
+   Number of characters:          1000
+   Number of included characters: 1000
+   Datatype:                      PoMo
 </code></pre></div></div>
 
-<p>Next, we will specify some useful variables based on our dataset. These include the number of taxa, taxa names, and the number of branches. We will need that information for setting up our model in subsequent steps.</p>
+<p>If, instead of a count file, you have a list of sequences per individual (either in a fasta or nexus file), RevBayes can still convert it to PoMo data format. To do that, you will need to read the sequences, provide a file with the taxon names, and then perform the conversion to the PoMo state space with <code class="language-plaintext highlighter-rouge">pomoStateConver</code>. To identify individual sequences as belonging to the same taxon, just use the same name. These are the commands you will need:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_taxa     &lt;- data.ntaxa()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data_char = readDiscreteCharacterData("data/individual_sequences.nex")
+taxa = readTaxonData("data/taxon_names.txt")
+data = pomoStateConvert(aln=data_char, k=4, virtualNe=N, taxa)
+</code></pre></div></div>
+
+<p>Next, we will specify some useful variables. These include the number of taxa, taxa names, and the number of branches. We will need that information for setting up our model in subsequent steps.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_taxa     &lt;- data.ntaxa()
 n_branches &lt;- 2*n_taxa-3
-taxa       &lt;- data.taxa()
+taxa       &lt;- data.taxa()
 </code></pre></div></div>
 
-<p>Additionally, we set up a variable that holds all the moves and monitors for our analysis. Recall that moves are algorithms used to propose new parameter values during the MCMC simulation. Monitors print the values of model parameters to the screen and/or log files during the MCMC analysis.</p>
+<p>Additionally, we set up a variable that holds all the moves and monitors them for our analysis. Recall that moves are algorithms used to propose new parameter values during the MCMC simulation. Monitors print the values of model parameters to the screen and/or log files during the MCMC analysis.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()  
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()  
 monitors = VectorMonitors()
 </code></pre></div></div>
 
@@ -302,15 +287,11 @@ monitors = VectorMonitors()
   <li>the tree topology and branch lengths.</li>
 </ul>
 
-<p>A given PoMo model is defined by its corresponding instantaneous-rate matrix <code class="language-plaintext highlighter-rouge">Q</code>. PoMoTwo and PoMoThree have three free parameters in common: the population size <code class="language-plaintext highlighter-rouge">N</code>, the allele frequencies <code class="language-plaintext highlighter-rouge">pi</code>, and the exchangeabilities <code class="language-plaintext highlighter-rouge">rho</code>. PoMoThree additionally includes the allele fitnesses <code class="language-plaintext highlighter-rouge">phi</code>, as it accounts for selection. We will set up the virtual PoMoTwo and Three using the function <code class="language-plaintext highlighter-rouge">fnReversiblePoMo4N</code>. You can check the input parameters of any PoMo function by typing its name right after the question mark symbol <code class="language-plaintext highlighter-rouge">?fnReversiblePoMo4N</code>.</p>
+<p>A given PoMo model is defined by its corresponding instantaneous-rate matrix, <code class="language-plaintext highlighter-rouge">Q</code>. PoMoTwo and PoMoThree have three free parameters in common: the population size <code class="language-plaintext highlighter-rouge">N</code>, the allele frequencies <code class="language-plaintext highlighter-rouge">pi</code>, and the exchangeabilities <code class="language-plaintext highlighter-rouge">rho</code>. PoMoThree additionally includes the allele fitnesses <code class="language-plaintext highlighter-rouge">phi</code>, as it accounts for selection. We will set up the virtual PoMoTwo and Three using the function <code class="language-plaintext highlighter-rouge">fnReversiblePoMo4N</code>. You can check the input parameters of any PoMo function by typing its name right after the question mark: <code class="language-plaintext highlighter-rouge">?fnReversiblePoMo4N</code>.</p>
 
-<p>As expected, this function has as inputs parameters the population size <code class="language-plaintext highlighter-rouge">N</code>, base frequencies, exchangeabilities <code class="language-plaintext highlighter-rouge">rho</code> and fitnesses <code class="language-plaintext highlighter-rouge">phi</code>. We will first set out the PoMoThree, which we can do by setting $N$ to 3. Similarly, if you wanted to set out the neutral PoMo (i.e., PoMoTwo), you can set <code class="language-plaintext highlighter-rouge">N</code> to 2 instead. Thus, <code class="language-plaintext highlighter-rouge">N</code> is a fixed node:</p>
+<p>As expected, this function has as inputs parameters the population size <code class="language-plaintext highlighter-rouge">N</code>, base frequencies, exchangeabilities <code class="language-plaintext highlighter-rouge">rho</code> and fitnesses <code class="language-plaintext highlighter-rouge">phi</code>. We will first set out the PoMoThree, which we can do by setting $N$ to 3. Similarly, if you wanted to set out the neutral PoMo (i.e., PoMoTwo), you could set <code class="language-plaintext highlighter-rouge">N</code> to 2 instead. Thus, <code class="language-plaintext highlighter-rouge">N</code> is a fixed node, as we had prevously defined. </p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># virtual population size
-N &lt;- 3
-</code></pre></div></div>
-
-<p>Since <code class="language-plaintext highlighter-rouge">pi</code>, <code class="language-plaintext highlighter-rouge">rho</code>, and <code class="language-plaintext highlighter-rouge">gamma</code> are stochastic variables, we need to specify a move to propose updates to them. A good move on variables drawn from a Dirichlet distribution (i.e., <code class="language-plaintext highlighter-rouge">pi</code>) is the <code class="language-plaintext highlighter-rouge">mvBetaSimplex</code>. This move randomly takes an element from the allele frequencies vector <code class="language-plaintext highlighter-rouge">pi</code>, proposes a new value for it drawn from a Beta distribution, and then rescales all values to sum to 1 again. The weight option inside the moves specifies how often the move will be applied either on average per iteration or relative to all other moves.</p>
+<p>Since <code class="language-plaintext highlighter-rouge">pi</code>, <code class="language-plaintext highlighter-rouge">rho</code>, and <code class="language-plaintext highlighter-rouge">gamma</code> are stochastic variables, we must specify a move to propose updates to them. A good move on variables drawn from a Dirichlet distribution (i.e., <code class="language-plaintext highlighter-rouge">pi</code>) is the <code class="language-plaintext highlighter-rouge">mvBetaSimplex</code>. This move randomly takes an element from the allele frequencies vector <code class="language-plaintext highlighter-rouge">pi</code>, proposes a new value drawn from a beta distribution, and then rescales all values to sum to 1. The weight option inside the moves specifies how often the move will be applied, either on average per iteration or relative to all other moves.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># allele frequencies
 pi_prior &lt;- [1,1,1,1]
@@ -318,11 +299,11 @@ pi ~ dnDirichlet(pi_prior)
 moves.append( mvBetaSimplex(pi, weight=2) )
 </code></pre></div></div>
 
-<p>The <code class="language-plaintext highlighter-rouge">rho</code> and <code class="language-plaintext highlighter-rouge">phi</code> parameters must be a positive real number and a natural choice as the prior distribution is the exponential one. Again, we need to specify a move for these stochastic variables, and a simple scaling move <code class="language-plaintext highlighter-rouge">mvScale</code> typically works. In this tutorial, we want our model to capture the effect of GC-bias gene conversion. For that, we define <code class="language-plaintext highlighter-rouge">gamma</code>, which represents the GC-bias rate. The allele fitnesses <code class="language-plaintext highlighter-rouge">phi</code> of G and C will thus be represented by <code class="language-plaintext highlighter-rouge">gamma</code>, while those of A and T by 1.0. Note that <code class="language-plaintext highlighter-rouge">phi</code> is a deterministic node that depends on the GC-bias rate <code class="language-plaintext highlighter-rouge">gamma</code>.</p>
+<p>The <code class="language-plaintext highlighter-rouge">rho</code> and <code class="language-plaintext highlighter-rouge">phi</code> parameters must be a positive real number and a natural choice for their prior distributions is the exponential distribution. Again, we need to specify a move for these stochastic variables, and a simple scaling move <code class="language-plaintext highlighter-rouge">mvScale</code> typically works. In this tutorial, we want our model to capture the effect of GC-bias gene conversion. For that, we define <code class="language-plaintext highlighter-rouge">gamma</code>, which will represent the GC-bias rate. The allele fitnesses <code class="language-plaintext highlighter-rouge">phi</code> of G and C will thus be represented by <code class="language-plaintext highlighter-rouge">gamma</code>, while those of A and T by 1.0. Note that <code class="language-plaintext highlighter-rouge">phi</code> is a deterministic node that depends on the GC-bias rate <code class="language-plaintext highlighter-rouge">gamma</code>.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># exchangeabilities
 for (i in 1:6){
-  rho[i] ~ dnExponential(10.0)
-  moves.append(mvScale( rho[i], weight=2 ))
+  rho[i] ~ dnExponential(10.0)
+  moves.append(mvScale( rho[i], weight=2 ))
 }
 
 # fitness coefficients
@@ -337,9 +318,9 @@ phi := [1.0,1.0+gamma,1.0+gamma,1.0]
 Q := fnReversiblePoMo4N(N,pi,rho,phi)
 </code></pre></div></div>
 
-<p>We could similarly have used the functions <code class="language-plaintext highlighter-rouge">fnReversiblePoMoTwo4N</code> and <code class="language-plaintext highlighter-rouge">fnReversiblePoMoThree4N</code>, to set the rate-matrices. These are particularly useful when one has information about the mutation rates and bias or the GC-bias gene conversion rate (for some model organisms, this information is available) and wants to include it via informative priors. In that case, the population size is not a fixed node, and it can be jointly estimated. In this tutorial, we are assuming that no prior information is available for the mutation or GC-bias rates. Note that selection is not identifiable with two virtual individuals, so the vector of fitness coefficients can not be inputted for the <code class="language-plaintext highlighter-rouge">fnReversiblePoMoTwo4N</code>: it is by default equal to the unitary vector (i.e., the neutral scenario). To check the input parameters of PoMoTwo type <code class="language-plaintext highlighter-rouge">?fnReversiblePoMoTwo4N</code> at the terminal; you will see that the fitness coefficient <code class="language-plaintext highlighter-rouge">phi</code> is missing. Thus, if we want to employ the PoMoTwo model with the general <code class="language-plaintext highlighter-rouge">fnReversiblePoMoTwo4N</code>, we have to set the fitness coefficients to 1.0.</p>
+<p>An important note: We could similarly have used the functions <code class="language-plaintext highlighter-rouge">fnReversiblePoMoTwo4N</code> and <code class="language-plaintext highlighter-rouge">fnReversiblePoMoThree4N</code>, to set the rate matrices. These are particularly useful when one has information about mutation or the GC-bias gene conversion rate (for some model organisms, this information might be available) and wants to include it via informative priors. In such a case, the population size is not a fixed node, and it can be jointly estimated. In this tutorial, we are assuming that no prior information is available for the mutation or GC-bias rates. Note that selection is not identifiable with two virtual individuals, so the vector of fitness coefficients cannot be inputted for the <code class="language-plaintext highlighter-rouge">fnReversiblePoMoTwo4N</code>: it is by default equal to the unitary vector (i.e., the neutral scenario). To check the input parameters of PoMoTwo, you can type <code class="language-plaintext highlighter-rouge">?fnReversiblePoMoTwo4N</code> ; you will see that the fitness coefficient <code class="language-plaintext highlighter-rouge">phi</code> is missing. As a consequence, if we want to employ the PoMoTwo model with the general <code class="language-plaintext highlighter-rouge">fnReversiblePoMoTwo4N</code>, we have to set the fitness coefficients to 1.0.</p>
 
-<p>The tree topology and branch lengths are stochastic nodes in our phylogenetic model. We will assume that all possible labeled, unrooted tree topologies have equal probability. In the case an unrooted tree topology, we use a nearest-neighbor interchange move <code class="language-plaintext highlighter-rouge">mvNNI</code> (a subtree-prune and regrafting move <code class="language-plaintext highlighter-rouge">mvSPR</code> could also be used).</p>
+<p>The tree topology and branch lengths are stochastic nodes in our phylogenetic model. We will assume that all possible labeled, unrooted tree topologies have equal probability. In the case of an unrooted tree topology, we use the nearest-neighbor interchange move <code class="language-plaintext highlighter-rouge">mvNNI</code> (a subtree-prune and regrafting move <code class="language-plaintext highlighter-rouge">mvSPR</code> could also be used).</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># topology
 topology ~ dnUniformTopology(taxa)
@@ -350,8 +331,8 @@ moves.append( mvNNI(topology, weight=2*n_taxa) )
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># branch lengths
 for (i in 1:n_branches) {
-   branch_lengths[i] ~ dnExponential(10.0)
-   moves.append( mvScale(branch_lengths[i]) )
+   branch_lengths[i] ~ dnExponential(10.0)
+   moves.append( mvScale(branch_lengths[i]) )
 }
 </code></pre></div></div>
 
@@ -362,13 +343,13 @@ for (i in 1:n_branches) {
 
 <p>We have fully specified all of the parameters of our phylogenetic model:</p>
 <ul>
-  <li>the tree with branch lengths <code class="language-plaintext highlighter-rouge">psi</code>;</li>
+  <li>the tree with branch lengths of <code class="language-plaintext highlighter-rouge">psi</code>;</li>
   <li>the PoMo instantaneous-rate matrix <code class="language-plaintext highlighter-rouge">Q</code>;</li>
-  <li>the type of character data: i.e., <code class="language-plaintext highlighter-rouge">NaturalNumbers</code>.</li>
+  <li>the type of character data: i.e., <code class="language-plaintext highlighter-rouge">PoMo</code>.</li>
 </ul>
 
 <p>Collectively, these parameters comprise a distribution called the phylogenetic continuous-time Markov chain, and we use the <code class="language-plaintext highlighter-rouge">dnPhyloCTMC</code> function to create this node. This distribution requires several input arguments:</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sequences ~ dnPhyloCTMC(psi,Q=Q,type="NaturalNumbers")
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sequences ~ dnPhyloCTMC(psi,Q=Q,type="PoMo")
 </code></pre></div></div>
 
 <p>Once the <code class="language-plaintext highlighter-rouge">PhyloCTMC</code> model has been created, we can attach our sequence data to the tip nodes in the tree. Although we assume that our sequence data are random variables, they are realizations of our phylogenetic model. For inference purposes, we assume that the sequence data are <em>clamped</em> to their observed values.</p>
@@ -376,7 +357,7 @@ for (i in 1:n_branches) {
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sequences.clamp(data)
 </code></pre></div></div>
 
-<p>When this function is called, <strong>RevBayes</strong> sets each of the stochastic nodes representing the tree’s tips to the corresponding nucleotide sequence in the alignment. This essentially tells the program that we have observed data for the sequences at the tips.</p>
+<p>When this function is called, <strong>RevBayes</strong> sets each of the stochastic nodes representing the tree’s tips to the corresponding nucleotide sequence in the alignment. This essentially tells the program that we have observed sequence data at the tree tips.</p>
 
 <p>Finally, we wrap the entire model in a single object. To do this, we only need to give the <code class="language-plaintext highlighter-rouge">model</code> function a single node.</p>
 
@@ -386,17 +367,17 @@ for (i in 1:n_branches) {
 <h2 class="section" id="mcmc">Setting, running, and summarizing the MCMC simulation <a href="https://youtu.be/5b1FmykQ37o"><img src="/assets/img/YouTube_icon.svg" alt="Walkthrough video" height="36" width="36" /></a></h2>
 <hr class="section" />
 
-<p>For our MCMC analysis, we need to set up a vector of monitors to record the states of our Markov chain. First, we will initialize the model monitor using the <code class="language-plaintext highlighter-rouge">mnModel</code> function. This creates a new monitor variable that will output the states for all model parameters when passed into an MCMC function. We will sample every 10th iterate, and the resulting file can be found in the <strong>output</strong> folder.</p>
+<p>For our MCMC analysis, we need to set up a vector of monitors to record the states of our Markov chain. First, we will initialize the model monitor using the <code class="language-plaintext highlighter-rouge">mnModel</code> function. This creates a new monitor variable that will output the states for all model parameters when passed into an MCMC function. We will sample every 10th generation, and the resulting file can be found in the <strong>output</strong> folder.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/great_apes_pomothree.log", printgen=10) )
 </code></pre></div></div>
 
-<p>The <code class="language-plaintext highlighter-rouge">mnFile</code> monitor will record the states for only the parameters passed in as arguments. We use this monitor to specify the output for our sampled trees and branch lengths. Again, we sample every 10th iterate.</p>
+<p>The <code class="language-plaintext highlighter-rouge">mnFile</code> monitor will record the states for only the parameters passed in as arguments. We use this monitor to specify the output for our sampled trees and branch lengths. Again, we sample every 10th generation.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnFile(filename="output/great_apes_pomothree.trees", printgen=10, psi) )
 </code></pre></div></div>
 
-<p>Finally, create a screen monitor that will report the states of specified variables to the screen with <code class="language-plaintext highlighter-rouge">mnScreen</code>. This monitor mostly helps us to see the progress of the MCMC run.</p>
+<p>Finally, create a screen monitor that will report the states of specified variables to the screen with <code class="language-plaintext highlighter-rouge">mnScreen</code>. This monitor mostly helps us follow the progress of the MCMC run.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnScreen(printgen=10) )
 </code></pre></div></div>
@@ -406,18 +387,18 @@ for (i in 1:n_branches) {
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pomo_mcmc = mcmc(pomo_model, monitors, moves, nruns=2, combine="mixed")
 </code></pre></div></div>
 
-<p>Now, run the MCMC.</p>
+<p>Now, we can start the MCMC.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pomo_mcmc.run( generations=10000 )
 </code></pre></div></div>
 
-<p>When the analysis is complete, you will have the monitored files in your output directory. Programs like <strong>Tracer</strong> allow evaluating convergence and mixing. Look at the file called <code class="language-plaintext highlighter-rouge">output/great_apes_pomothree.log</code> in <strong>Tracer</strong>. There you see the posterior distribution of the continuous parameters. Let us look at the posterior distribution of the GC-bias rate $\gamma$. Is there any evidence of GC-bias in these great apes sequences?</p>
+<p>When the analysis is complete, you will have the monitored files in your output directory. Software like <a href="https://github.com/beast-dev/tracer/releases/tag/v1.7.2"><strong>Tracer</strong></a> or the R package <a href="https://revbayes.github.io/tutorials/convergence/"><strong>Convenient</strong></a> allow evaluating convergence and mixing. Look at the file called <code class="language-plaintext highlighter-rouge">output/great_apes_pomothree.log</code> in <strong>Tracer</strong>. There you see the posterior distribution of the continuous parameters. Let us look at the posterior distribution of the GC-bias rate $\gamma$. Is there any evidence of GC-bias in these great apes sequences?</p>
 
 <figure id="gamma"><p><img src="figures/gamma_mcmc.png" /></p>
 <figcaption><strong>Left</strong>: Trace of the GC-bias rate ($\gamma$) samples for one MCMC run. You will also see that the effective sample size is comparably large, i.e., much larger than 200. <strong>Right</strong>: Posterior distribution of the great apes GC-bias rate ($\gamma$) under a PoMoThree model.</figcaption>
 </figure>
 
-<p>Apart from the continuous parameters, we need to summarize the trees sampled from the posterior distribution. RevBayes can summarize the sampled trees by reading in the tree-trace file:</p>
+<p>Apart from the continuous parameters, we need to summarize the trees sampled from the posterior distribution. RevBayes can summarize the sampled trees by reading in the tree trace file:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>trace = readTreeTrace("output/great_apes_pomothree.trees", treetype="non-clock", burnin= 0.2)
 </code></pre></div></div>
@@ -438,13 +419,13 @@ for (i in 1:n_branches) {
 
 <ol>
   <li>
-    <p>What is the GC-bias rate (this is the selection coefficient) for the great ape populations? Rescale to its real value by assuming that the great apes have an effective population size of about 10 000 individuals. Hint: You can use the relation $(1+\gamma’)^{M-1}=(1+\gamma)^{N-1}$ to rescale $\gamma$.  $M$ and $N$ are the virtual and the effective population sizes, and $\gamma’$ and $\gamma$ are the GC-bias rates on the virtual and effective populations.</p>
+    <p>What is the GC-bias rate (this is the selection coefficient) for the great ape populations? Rescale to its real value by assuming that the great apes have an effective population size of about 10 000 individuals. You should use the relation $(1+\gamma’)^{M-1}=(1+\gamma)^{N-1}$ to rescale $\gamma$.  $M$ and $N$ are the virtual and effective population sizes, and $\gamma’$ and $\gamma$ are the GC-bias rates on the virtual and effective populations.</p>
   </li>
   <li>
     <p>With <a href="#pomos_graphical_model"></a> as your guide, draw the probabilistic graphical model of the PoMoTwo model.</p>
   </li>
   <li>
-    <p>What changes have to be done to the <code class="language-plaintext highlighter-rouge">great_apes_pomothree.Rev</code> to make inferences under the PoMoTwo model?</p>
+    <p>What changes have to be made to the <code class="language-plaintext highlighter-rouge">great_apes_pomothree.Rev</code> to make inferences under the PoMoTwo model?</p>
   </li>
   <li>
     <p>Run an MCMC analysis to estimate the posterior distribution under the PoMoTwo model. Are the resulting estimates of the mutation rates (base frequencies and exchangeabilities) equal? If not, how much do they differ?</p>
@@ -454,9 +435,9 @@ for (i in 1:n_branches) {
   </li>
 </ol>
 
-<ol class="bibliography"><li><span id="Borges2020">Borges R., Boussau B., Szöllősi G.J., Kosiol C. 2020. Pervasive selection biases inferences of the species tree. bioRxiv.</span>
+<ol class="bibliography"><li><span id="Borges2022b">Borges R., Boussau B., Höhna S., Pereira R.J., Kosiol C. 2022. Polymorphism‐aware estimation of species trees and evolutionary forces from genomic sequences with RevBayes. Methods in Ecology and Evolution.</span>
 
-<a href="https://doi.org/10.1101/2020.07.30.228965">10.1101/2020.07.30.228965</a>
+<a href="https://doi.org/10.1111/2041-210X.13980">10.1111/2041-210X.13980</a>
 
 </li>
 <li><span id="Borges2019">Borges R., Szöllősi G.J., Kosiol C. 2019. Quantifying GC-Biased Gene Conversion in Great Ape Genomes Using Polymorphism-Aware Models. Genetics. 212:1321–1336.</span>

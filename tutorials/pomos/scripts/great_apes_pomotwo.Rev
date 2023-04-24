@@ -2,9 +2,12 @@
 
 # Authors: Rui Borges and Carolin Kosiol
 
-# reading the PoMo alignment
 
-data <- readCharacterDataDelimited("data/great_apes_pomotwo_naturalnumbers.txt", stateLabels=10, type="NaturalNumbers", delimiter=" ", headers=FALSE)
+# reading the PoMo alignment to use with virtual PoMo 2
+
+N <- 2
+
+data <- readPoMoCountFile(countFile="data/great_apes_1000.cf", virtualPopulationSize=N, format="PoMo")
 
 data
 
@@ -22,15 +25,10 @@ moves    = VectorMoves()
 monitors = VectorMonitors()
 
 
-
 # setting the model of evolution
 
-# population size
 
-N <- 10
-
-
-# base frequencies
+# allele frequencies
 
 pi_prior <- [1,1,1,1]
 
@@ -45,14 +43,24 @@ for (i in 1:6){
 
   rho[i] ~ dnExponential(10.0)
 
-  moves.append( mvScale(rho[i], weight=2 ) )
+  moves.append(mvScale( rho[i], weight=2 ))
 
 }
 
 
+# fitness coefficients
+
+gamma ~ dnExponential(1.0)
+
+moves.append(mvScale( gamma, weight=2 ))
+
+phi := [1.0,gamma,gamma,1.0]
+
+
 # rate matrix
 
-Q := fnReversiblePoMoTwo4N(N, pi, rho)
+Q := fnReversiblePoMo4N(N,pi,rho,phi)
+
 
 
 
@@ -75,13 +83,14 @@ for (i in 1:n_branches) {
 
 }
 
+
 psi := treeAssembly(topology, branch_lengths)
 
 
 
 # wrapping the model
 
-sequences ~ dnPhyloCTMC(psi, Q=Q, type="NaturalNumbers")
+sequences ~ dnPhyloCTMC(psi,Q=Q,type="PoMo")
 
 sequences.clamp(data)
 
@@ -99,7 +108,7 @@ monitors.append( mnScreen(printgen=10) )
 
 
 
-# mcmc sampling
+# running the MCMC simulation
 
 pomo_mcmc = mcmc(pomo_model, monitors, moves, nruns=2, combine="mixed")
 
@@ -112,7 +121,6 @@ pomo_mcmc.run( generations=10000 )
 trace = readTreeTrace("output/great_apes_pomotwo.trees", treetype="non-clock", burnin= 0.2)
 
 mapTree(trace, file="output/great_apes_pomotwo_MAP.tree" )
-
 
 
 # quiting revbayes
