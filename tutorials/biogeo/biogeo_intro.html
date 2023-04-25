@@ -55,8 +55,8 @@
       <div class="titlebar">
 	<h1 class="maintitle">Introduction to Phylogenetic Models of Discrete Biogeography</h1>
 	<h3 class="subtitle">Overview of the Dispersal-Extirpation-Cladogenesis (DEC) model</h3>
-	<h4 class="authors">Michael J. Landis</h4>
-  <h5>Last modified on February 28, 2022</h5>
+	<h4 class="authors">Michael J. Landis and Sarah K. Swiston</h4>
+  <h5>Last modified on April 25, 2023</h5>
 </div>
 
 
@@ -72,8 +72,6 @@
           
             <li><a href="/tutorials/intro/">Getting Started with RevBayes and Rev Language Syntax</a></li>
           
-            <li><a href="/tutorials/mcmc/">Introduction to Markov chain Monte Carlo (MCMC) Sampling</a></li>
-          
           </ul>
         
     </div>
@@ -83,46 +81,6 @@
 
 
 
-
-
-<blockquote class="tutorial_files" id="tutorial_files">
-    <h2>Data files and scripts</h2>
-    
-        
-        <strong>Data Files</strong>
-        <ul id="data_files">
-        
-        
-        
-          <li><a href="/tutorials/biogeo/data/primates.bg.nex">primates.bg.nex</a></li>
-        
-          <li><a href="/tutorials/biogeo/data/primates.bg_amb.nex">primates.bg_amb.nex</a></li>
-        
-          <li><a href="/tutorials/biogeo/data/primates_range_colors.n4.txt">primates_range_colors.n4.txt</a></li>
-        
-          <li><a href="/tutorials/biogeo/data/primates_state_labels.simple.n4.txt">primates_state_labels.simple.n4.txt</a></li>
-        
-          <li><a href="/tutorials/biogeo/data/primates_tree.nex">primates_tree.nex</a></li>
-        
-          <li><a href="/tutorials/biogeo/data/n4/silversword_tree.nex">silversword_tree.nex</a></li>
-        
-        </ul>
-    
-        
-        <strong>Scripts</strong>
-        <ul id="scripts">
-        
-        
-        
-          <li><a href="/tutorials/biogeo/scripts/mcmc_primates_bg_simple.Rev">mcmc_primates_bg_simple.Rev</a></li>
-        
-          <li><a href="/tutorials/biogeo/scripts/plot_anc_range_primates_simple.R">plot_anc_range_primates_simple.R</a></li>
-        
-          <li><a href="/tutorials/biogeo/scripts/plot_rates_primates_simple.R">plot_rates_primates_simple.R</a></li>
-        
-        </ul>
-    
-</blockquote>
 
 
 </div>
@@ -143,7 +101,7 @@ major technical challenge of modeling range evolution is how to
 translate these natural processes into stochastic processes that remain
 tractable for inference. This tutorial provides a brief background in
 some of these models, then describes how to perform Bayesian inference
-of historical biogeography using RevBayes.</p>
+of historical biogeography using a Dispersal-Extinction-Cladogenesis (DEC) model in RevBayes.</p>
 
 <!-- <h2 class="section" id="setup">Getting Set Up</h2><hr class="section">
 
@@ -170,9 +128,9 @@ three key components to understanding the DEC model: range characters,
 anagenetic range evolution, and cladogenetic range evolution (<a href="#dec_cartoon"></a>).</p>
 
 <figure id="dec_cartoon"><p><img src="figures/fig_range_evol_events.png" width="75%" /></p>
-<figcaption>Cartoon of behavior of the DEC model.Two anagenetic events (a,b) and five
-cladogenetic (c–g) events are shown for a system with two areas.Areas are shaded
-when inhabited by a given lineage and left blank when uninhabited.Time proceeds
+<figcaption>Cartoon of behavior of the DEC model. Two anagenetic events (a,b) and five
+cladogenetic (c–g) events are shown for a system with two areas. Areas are shaded
+when inhabited by a given lineage and left blank when uninhabited. Time proceeds
 from left to right. (a) Dispersal: a new area to be added to the species range.
 (b) Extirpation (or local extinction): the species range loses a previously
 inhabited area. (c) Narrow sympatry: When the ancestral range contains one area,
@@ -195,8 +153,11 @@ species is observed or not observed across multiple discrete areas. For
 example, say there are three areas, A, B, and C. If a species is present
 in areas A and C, then its range equals AC, which can also be encoded
 into the length-3 bit vector, 101. Bit vectors may also be transformed
-into (decimal) integers, <em>e.g.</em>, the binary
-number 101 equals the decimal number 5.</p>
+into an integer-valued state, <em>e.g.</em>, the binary
+number 101 equals the integer 5. Note, add 1 to the value of the
+integer-valued state to access that state from a RevBayes object, such
+as a rate matrix, <em>e.g.</em> the range AC with integer value 5 is accessed at
+index 6.</p>
 
 <figure id="table1" class="table"><table>
   <thead>
@@ -204,7 +165,7 @@ number 101 equals the decimal number 5.</p>
       <th>Range</th>
       <th>Bits</th>
       <th>Size</th>
-      <th>State</th>
+      <th>Integer</th>
     </tr>
   </thead>
   <tbody>
