@@ -1,13 +1,13 @@
 ---
 title: Introduction to Phylogenetic Models of Discrete Biogeography
 subtitle: Overview of the Dispersal-Extirpation-Cladogenesis (DEC) model
-authors:  Michael J. Landis
+authors:  Michael J. Landis and Sarah K. Swiston
 level: 8
 order: 0
 prerequisites:
 - intro
-- mcmc
 include_example_output: false
+include_data: false
 exclude_files:
 - data/n4/hawaii.n4.connectivity.1.txt
 - data/n4/hawaii.n4.connectivity.2.txt
@@ -58,6 +58,15 @@ exclude_files:
 - data/n4/range_colors.epoch.n4.txt
 - data/n4/range_colors.n4.txt
 - data/n6/range_colors.n6.txt
+- data/primates.bg.nex
+- data/primates.bg_amb.nex
+- data/primates_range_colors.n4.txt
+- data/primates_state_labels.simple.n4.txt
+- data/primates_tree.nex
+- data/n4/silversword_tree.nex
+- scripts/mcmc_primates_bg_simple.Rev
+- scripts/plot_anc_range_primates_simple.R
+- scripts/plot_rates_primates_simple.R
 index: true
 title-old: RB_Biogeography_Tutorial
 redirect: false
@@ -79,7 +88,7 @@ major technical challenge of modeling range evolution is how to
 translate these natural processes into stochastic processes that remain
 tractable for inference. This tutorial provides a brief background in
 some of these models, then describes how to perform Bayesian inference
-of historical biogeography using RevBayes.
+of historical biogeography using a Dispersal-Extinction-Cladogenesis (DEC) model in RevBayes.
 
 <!-- {% section Getting Set Up | setup %}
 
@@ -107,9 +116,9 @@ anagenetic range evolution, and cladogenetic range evolution ({% ref dec_cartoon
 {% figure dec_cartoon %}
 <img src="figures/fig_range_evol_events.png" width="75%">
 {% figcaption %}
-Cartoon of behavior of the DEC model.Two anagenetic events (a,b) and five
-cladogenetic (c–g) events are shown for a system with two areas.Areas are shaded
-when inhabited by a given lineage and left blank when uninhabited.Time proceeds
+Cartoon of behavior of the DEC model. Two anagenetic events (a,b) and five
+cladogenetic (c–g) events are shown for a system with two areas. Areas are shaded
+when inhabited by a given lineage and left blank when uninhabited. Time proceeds
 from left to right. (a) Dispersal: a new area to be added to the species range.
 (b) Extirpation (or local extinction): the species range loses a previously
 inhabited area. (c) Narrow sympatry: When the ancestral range contains one area,
@@ -132,11 +141,14 @@ species is observed or not observed across multiple discrete areas. For
 example, say there are three areas, A, B, and C. If a species is present
 in areas A and C, then its range equals AC, which can also be encoded
 into the length-3 bit vector, 101. Bit vectors may also be transformed
-into (decimal) integers, *e.g.*, the binary
-number 101 equals the decimal number 5.
+into an integer-valued state, *e.g.*, the binary
+number 101 equals the integer 5. Note, add 1 to the value of the
+integer-valued state to access that state from a RevBayes object, such
+as a rate matrix, *e.g.* the range AC with integer value 5 is accessed at
+index 6.
 
 {% table table1 %}
-  |    Range    | Bits  | Size | State |
+  |    Range    | Bits  | Size | Integer |
   |-------------|-------|------|-------|
   |$\emptyset$  |  000  |  0   |   0   |
   |A            |  100  |  1   |   1   |
