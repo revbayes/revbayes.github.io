@@ -9,7 +9,7 @@ prerequisites:
 - mcmc
 - ctmc
 index: true
-title-old: 
+title-old:
 redirect: false
 ---
 
