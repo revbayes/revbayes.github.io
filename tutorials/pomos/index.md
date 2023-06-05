@@ -296,7 +296,7 @@ mapTree(trace, file="output/great_apes_pomothree_MAP.tree" )
 ```
 
 {% figure tree %}
-<img src="figures/great_apes_pomothree_tree.png" />
+<img src="figures/great_apes_pomo_three.png" />
 {% figcaption %}
 Maximum a posteriori estimate of the great ape phylogeny under the PoMoThree model. The numbers at the nodes show the posterior probabilities for the clades. We have rooted the tree at the Oran-Utans clade.
 {% endfigcaption %}
