@@ -10,32 +10,24 @@ code_layout: bash
 
 There are two main graphical user interfaces (GUIs) that can be used with RevBayes. Below, installation instructions are listed for both.
 
-{% section Jupyter Notebook %}
+{% section Jupyter Notebook  %}
 
-First, download and install Python 3 and the Jupyter Notebook. Installation instructions are available from the Jupyter Development team [here](https://jupyter.readthedocs.io/en/latest/install.html).
+{% subsection Get Python3 and Jupyter Notebook %}
+
+First, download and install Python 3 and the Jupyter Notebook.
+Installation instructions are available from the Jupyter Development team [here](https://jupyter.readthedocs.io/en/latest/install.html).
 
 
-{% subsection RevBayes Downloads %}
+{% subsection Get RevBayes %}
 
-{% subsubsection Using a Pre-Built RevBayes %}
 
-RevBayes [pre-built executables](https://github.com/revbayes/revbayes/releases/tag/v1.2.2-preview1) are designed to work with Jupyter. You may want to ensures that `rb` executable can be found using the `which` command or be located using the environment variable, `REVBAYES_JUPYTER_EXECUTABLE`. For instance, you can set the environment variable using
+RevBayes [pre-built executables](https://github.com/revbayes/revbayes/releases/) are designed to work with Jupyter. You may want to ensures that `rb` executable can be found using the `which` command or be located using the environment variable, `REVBAYES_JUPYTER_EXECUTABLE`. For instance, you can set the environment variable using
 
 ```sh
 export REVBAYES_JUPYTER_EXECUTABLE=<revbayes_path>/rb
 ```
 
-{% subsubsection Compiling RevBayes %}
-
-Now, use the [Downloads](https://revbayes.github.io/download) page to find RevBayes compilation instructions for your operating system. When building RevBayes, substitute
-
-```
-./build.sh -jupyter
-```
-
-for the normal build step. This will generate an `rb` executeable. Add this executable to your system path.
-
-{% subsubsection Comnnect RevBayes and Jupyter %}
+{% subsection Connect RevBayes and Jupyter %}
 
 
 Finally, clone the RevBayes Jupyter Kernel.
