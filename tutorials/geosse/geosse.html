@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: State-dependent diversification with GeoSSE</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
+      </a>
+
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/download">Download</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/documentation/">Documentation</a></li>
+        <li><a href="https://revbayes.github.io/revscripter/">RevScripter</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/jobs/">Jobs</a></li>
+        <li><a href="/developer/">Developer</a></li>
+        <li><a href="/gui">GUI</a></li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <div class="titlebar">
+	<h1 class="maintitle">State-dependent diversification with GeoSSE</h1>
+	<h3 class="subtitle">Using geographic ranges as lineage states in a state-dependent speciation and extinction model</h3>
+	<h4 class="authors">Sarah Swiston</h4>
+  <h5>Last modified on June 19, 2023</h5>
+</div>
+
+
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul id="prerequisites">
+          
+            <li><a href="/tutorials/intro/">Getting Started with RevBayes and Rev Language Syntax</a></li>
+          
+            <li><a href="/tutorials/sse/bisse-intro.html">Background on state-dependent diversification rate estimation</a></li>
+          
+            <li><a href="/tutorials/sse/classe.html">State-dependent diversification with the ClaSSE model</a></li>
+          
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+
+
+
+
+<blockquote class="tutorial_files" id="tutorial_files">
+    <h2>Data files and scripts</h2>
+    
+        
+        <strong>Data Files</strong>
+        <ul id="data_files">
+        
+        
+        
+          <li><a href="/tutorials/geosse/data/ranges.nex">ranges.nex</a></li>
+        
+          <li><a href="/tutorials/geosse/data/tree.mcc.tre">tree.mcc.tre</a></li>
+        
+        </ul>
+    
+        
+        <strong>Scripts</strong>
+        <ul id="scripts">
+        
+        
+        
+          <li><a href="/tutorials/geosse/scripts/geosse.R">geosse.R</a></li>
+        
+          <li><a href="/tutorials/geosse/scripts/geosse.Rev">geosse.Rev</a></li>
+        
+        </ul>
+    
+</blockquote>
+
+
+</div>
+<h2 class="section" id="introduction">Introduction</h2>
+<hr class="section" />
+
+<p>In the previous examples, we used a Cladogenetic State change Speciation and Extinction (ClaSSE) model <a class="citation" href="#Goldberg2012">(Goldberg and Igić 2012)</a> to investigate the evolution of primates. ClaSSE jointly models character evolution and the birth-death process, incorporating both anagenetic and cladogenetic state changes. The GeoSSE model <a class="citation" href="#Goldberg2011">(Goldberg et al. 2011)</a> is a specific type of ClaSSE model that is explicitely designed for geographic range evolution, with particular model assumptions related to the ways that species spread and split. This tutorial gives a step-by-step explanation of how to perform a GeoSSE analysis in RevBayes. We will model the evolution and biogeography of the South American lizard genus <em>Liolaemus</em> using two regions: Andean, and non-Andean <a class="citation" href="#Esquerré2019">(Esquerré et al. 2019)</a>.</p>
+
+<p>NOTE: Although this tutorial is written for a two-region biogeographic analysis, it is designed to be applicable to analyses involving more regions. In general, we anticipate it should perform well for as many as eight regions (255 distinct ranges) or more with additional optimizations.</p>
+
+<h3 class="subsection" id="the-geosse-model">The GeoSSE model</h3>
+<hr class="subsection" />
+
+<figure id="geosse"><p><img src="figures/exampletree.png" width="40%" /></p>
+<figcaption>An example tree showing GeoSSE event types: within-region speciation (w), extinction (e), between-region speciation (b), and dispersal (d).</figcaption>
+</figure>
+
+<p>In the GeoSSE model, lineage “states” represent possible geographic ranges, comprised of one or more discrete regions. For example, in a two-region scenario, there are three possible ranges: A, B, and AB. Lineages split and transition between these states according to four core processes: within-region speciation, local extinction (extirpation), between-region speciation, and dispersal. The model is constrained such that a lineage can only experience a single event at any instant in time.</p>
+
+<p>Within- and between-region speciation are cladogenetic processes that create new phylogenetic lineages, which may inherit ranges that differ from the ancestral species. In a within-region speciation event, one daughter lineage inherits the entire ancestral range (which might consist of one or more regions), and the other daughter inherits a single region from the ancestral range. In a between-region speciation event, the widespread ancestral range (of two or more regions) is subdivided and inherited by two new daughter lineages. Between-region speciation rates are always symmetric (separation between A and B is the same as separation between B and A). The standard GeoSSE model does not allow for other kinds of speciation events. For example, an ancestor with a widespread range (of two or more regions) cannot produce daughters that both possess the entire ancestral range (a widespread sympatry scenario).</p>
+
+<p>Extinction and dispersal are anagenetic processes, occurring along the branches of an evolutionary tree. Extinction occurs locally within a single region; there is no separate parameter for global extinction, and lineages can only experience one local extirpation event at a time. Therefore, a widespread lineage can only go extinct by losing each of its regions individually until one remains, then losing that last region. Lineages also disperse by adding individual regions to their ranges, and dispersal rates into a new region are the sum of pairwise dispersal rates from each starting region into the new region.</p>
+
+<p>The GeoSSE model allows each region or region pair to possess its own rate for each process. For example, the within-region speciation rate for region A may not necessary equal the within-region speciation rate for region B. Similarly, the dispersal rate from A to B does not necessarily equal the dispersal rate from B to A. When constructing the GeoSSE model, each rate will be represented with its own parameter. We will represent these rates with the following vectors and matrices: $r_w$ for the vector of within-region speciation rates, $r_e$ for  the vector of extinction rates, $r_b$ for the matrix of between-region speciation rates, and $r_d$ for the matrix of dispersal rates.</p>
+
+<figure id="geosse"><p><img src="figures/geosse.png" width="25%" /></p>
+<figcaption>Transition diagram for the GeoSSE model with two regions, based on Figure 1 from <a class="citation" href="#Goldberg2011">(Goldberg et al. 2011)</a>. Anagenetic processes are represented with dashed arrows, while cladogenetic processes are represented with solid arrows.</figcaption>
+</figure>
+
+<h3 class="subsection" id="setup">Setup</h3>
+<hr class="subsection" />
+
+<blockquote class="info">
+  <h2 id="important-version-info">Important version info!!</h2>
+  <p>This tutorial is the first in a series of lessons explaining how to build increasingly powerful but computationally demanding GeoSSE-type models for biogeographic analyses. Inference under these models is powered by the Tensorphylo plugin for RevBayes, located here: <a href="https://bitbucket.org/mrmay/tensorphylo/src/master/">bitbucket.org/mrmay/tensorphylo/src/master</a> <a class="citation" href="#May2022">(May and Meyer)</a>.
+This tutorial, and following tutorials for GeoSSE-type models, will also require a development version of RevBayes built from the <code class="language-plaintext highlighter-rouge">hawaii_fix</code> branch (this message will be removed when the branch is merged).
+As an alternative to building the development version of RevBayes and installing Tensorphylo, you can instead use the RevBayes Docker image, which comes pre-configured with Tensorphylo enabled. The RevBayes Docker tutorial is located here: <a href="https://revbayes.github.io/tutorials/docker.html">revbayes.github.io/tutorials/docker</a>.</p>
+</blockquote>
+
+<p>Running a GeoSSE analysis in RevBayes requires two important data files: a file representing the time-calibrated phylogeny and a biogeographic data matrix describing the ranges for each species. In this tutorial, <code class="language-plaintext highlighter-rouge">tree.mcc.tre</code> is a time-calibrated phylogeny of <em>Liolaemus</em>. <code class="language-plaintext highlighter-rouge">ranges.nex</code> assigns ranges to each species for a two-region system: an Andean region and a non-Andean region in South America. For each species (row) and region (column), the file reports if the species is present (1) or absent (0) in that region.</p>
+
+<p>If you prefer to run a single script instead of entering each command manually, the RevBayes script called <code class="language-plaintext highlighter-rouge">geosse.Rev</code> contains all of the commands that are used in the tutorial. There is also an R script for plotting the analysis results. The data and script can be found in the <code class="language-plaintext highlighter-rouge">Data files and scripts</code> box in the left sidebar of the tutorial page. Somewhere on your computer, you should create a directory (folder) for this tutorial. Inside the tutorial directory, you should create a <code class="language-plaintext highlighter-rouge">scripts</code> directory. This is the directory where you will run RevBayes commands, or where you will put the <code class="language-plaintext highlighter-rouge">geosse.Rev</code> and <code class="language-plaintext highlighter-rouge">geosse.R</code> scripts. Then, you should create a <code class="language-plaintext highlighter-rouge">data</code> directory inside the tutorial directory, and download the two datafiles to this directory.</p>
+
+<h2 class="section" id="geosse-in-revbayes">GeoSSE in RevBayes</h2>
+<hr class="section" />
+
+<h3 class="subsection" id="getting-started">Getting started</h3>
+<hr class="subsection" />
+
+<p>After starting up RevBayes from within your local <code class="language-plaintext highlighter-rouge">scripts</code> directory, you can load the TensorPhylo plugin. You will need to know where you downloaded the plugin. For example, if you cloned the TensorPhylo directory into your home directory at <code class="language-plaintext highlighter-rouge">~/tensorphylo</code>, you would use the following command to load the plugin:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>loadPlugin("TensorPhylo", "~/tensorphylo/build/installer/lib")
+</code></pre></div></div>
+
+<p>Note that if you’re using the RevBayes Docker image, then the Tensorphylo plugin is installed in the <code class="language-plaintext highlighter-rouge">/</code> (root) directory:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>loadPlugin("TensorPhylo", "/tensorphylo/build/installer/lib")
+</code></pre></div></div>
+
+<p>It is also a good idea to set a seed. If you want to exactly replicate the results of the tutorial, you should use the seed <code class="language-plaintext highlighter-rouge">1</code>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>seed(1)
+</code></pre></div></div>
+
+<p>We also want to tell RevBayes where to find our data (and where to save our output later). If you have set up your tutorial directory in a different way than suggested, you will need to modify the filepaths.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fp          = "../"
+dat_fp      = fp + "data/"
+out_fp      = fp + "output/"
+bg_fn       = dat_fp + "ranges.nex"
+phy_fn      = dat_fp + "tree.mcc.tre"
+</code></pre></div></div>
+
+<h3 class="subsection" id="data">Data</h3>
+<hr class="subsection" />
+
+<p>Next, we will read in the data. Let’s start with the phylogenetic tree.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>phy &lt;- readTrees(phy_fn)[1]
+</code></pre></div></div>
+
+<p>In order to set up our analysis, we will want to know some information about this tree: the root age, the taxa and their names, and the number of taxa.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tree_height &lt;- phy.rootAge()
+taxa = phy.taxa()
+num_taxa = taxa.size()
+</code></pre></div></div>
+
+<p>We also want to read in the range data.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bg_01 = readDiscreteCharacterData(bg_fn)
+</code></pre></div></div>
+
+<p>We want to get some information about this range data: how many regions there are, how many ranges can be constructed from these regions, and how many region pairs there are.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>num_regions = bg_01.nchar()
+num_ranges = abs(2^num_regions - 1)
+num_pairs = num_regions^2 - num_regions
+</code></pre></div></div>
+
+<p>Finally, we want to format the range data to be used in a GeoSSE analysis. This will take the binary range data and output integer states. Note that the integers used to represent ranges are first sorted by range size, then sorted by range patterns given each size-class, following general format of the table in the <a href="https://revbayes.github.io/tutorials/biogeo/biogeo_intro.html">Introduction to Phylogenetic Models of Discrete Biogeography</a> tutorial.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bg_dat = formatDiscreteCharacterData(bg_01, format="GeoSSE", numStates=num_ranges)
+</code></pre></div></div>
+
+<h3 class="subsection" id="model-setup">Model setup</h3>
+<hr class="subsection" />
+
+<p>In the GeoSSE model, there are four processes: within-region speciation, extinction, between-region speciation, and dispersal. For each process, each possible event its own event rate that depends on the involved regions or region pairs. This will result in two rate vectors <code class="language-plaintext highlighter-rouge">r_w</code> and <code class="language-plaintext highlighter-rouge">r_e</code> with lengths equal to the number of regions, and two square rate matrices <code class="language-plaintext highlighter-rouge">r_b</code> and <code class="language-plaintext highlighter-rouge">r_d</code> with a number of entries equal to the number of region pairs. We will construct the event rates by multiplying the region- or pair-specific relative rate parameters in <code class="language-plaintext highlighter-rouge">m_x</code> for each event class $x \in { w, e, b, d}$ against the appropriate base rate parameter <code class="language-plaintext highlighter-rouge">rho_x</code> to produce the absolute rates <code class="language-plaintext highlighter-rouge">r_x</code>. All <code class="language-plaintext highlighter-rouge">rho_x</code> parameters will be drawn from the exponential distribution <code class="language-plaintext highlighter-rouge">dnExp(1)</code>. We will use Dirichlet distributions to generate relative rates.</p>
+
+<p>We will set up within-region speciation rates first.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rho_w ~ dnExp(1)
+m_w_simplex ~ dnDirichlet(rep(1,num_regions))
+m_w := m_w_simplex * num_regions
+r_w := rho_w * m_w
+</code></pre></div></div>
+
+<p>To obtain our vector of relative rates, <code class="language-plaintext highlighter-rouge">m_w</code>, we first create the simplex <code class="language-plaintext highlighter-rouge">m_w_simplex</code> which is a vector containing <code class="language-plaintext highlighter-rouge">num_regions</code> random values that will be estimated, where each value is between 0 and 1 and all values sum to 1. The Dirichlet(1) distribution assigns equal probability to any combination of values in the simplex, making it a “flat prior”. Setting the alpha value to be large sets higher prior probability on relative rates being similar to one another. We design the model in this way so that users can better control how relative rates of within-region speciation are distributed among regions. We then multiply <code class="language-plaintext highlighter-rouge">m_w_simplex</code> by <code class="language-plaintext highlighter-rouge">num_regions</code> to produce the mean relative rate value of 1 for any region represented in the resulting relative rate vector, <code class="language-plaintext highlighter-rouge">m_w</code>. Lastly, we multiply these relative rates by the absolute scaling factor, <code class="language-plaintext highlighter-rouge">rho_w</code>, to obtain our vector of absolute rates, <code class="language-plaintext highlighter-rouge">r_w</code>.</p>
+
+<p>Extinction rates are set up similarly. The same general logic applies as before. However, these rates are applied only to extinction and not to within-region speciation.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rho_e ~ dnExp(1)
+m_e_simplex ~ dnDirichlet(rep(1,num_regions))
+m_e := m_e_simplex * num_regions
+r_e := rho_e * m_e
+</code></pre></div></div>
+
+<p>From these extinction rates (which are actually single-region extinction rates), we will set up global extinction rates for each possible range in the state space. In the GeoSSE model, lineage-level extincion events occur when a species goes globally extinct (i.e. it loses the last region from its range). Therefore, we will assign all multi-region ranges an extinction rate of 0, and we will assign all single-region ranges an extinction rate equal to the local extirpation rate. Note, ranges are numbered such that indices <code class="language-plaintext highlighter-rouge">1</code>, <code class="language-plaintext highlighter-rouge">2</code>, through <code class="language-plaintext highlighter-rouge">num_regions</code> correspond to ranges that respectively contain only region 1, region 2, up through the last region in the system.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:num_ranges) {
+    mu[i] &lt;- 0.0
+    if (i &lt;= num_regions) {
+        mu[i] := r_e[i]
+    }
+}
+</code></pre></div></div>
+
+<p>For between-region speciation, we want to assign rates to each region pair. However, we want these rates to be symmetric, so we only want <code class="language-plaintext highlighter-rouge">num_pairs/2</code> unique values. The same value will be assigned to <code class="language-plaintext highlighter-rouge">m_b[i][j]</code> as <code class="language-plaintext highlighter-rouge">m_b[j][i]</code>. We can do this by creating an initial simplex from a Dirichlet distribution, and assigning successive values from this simplex as we traverse the <code class="language-plaintext highlighter-rouge">m_b</code> matrix.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rho_b ~ dnExp(1)
+m_b_simplex ~ dnDirichlet(rep(1,num_pairs/2))
+m_b_idx = 1
+for (i in 1:num_regions) {
+    m_b[i][i] &lt;- 0.0
+    for (j in 1:num_regions) {
+        if (i &lt; j) {
+            m_b[i][j] := abs(m_b_simplex[m_b_idx] * num_pairs)
+            m_b[j][i] := abs(m_b_simplex[m_b_idx] * num_pairs)
+            m_b_idx += 1
+        }
+        r_b[i][j] := rho_b * m_b[i][j]
+    }
+}
+</code></pre></div></div>
+
+<p>For a two-region system with just one pair of regions, <code class="language-plaintext highlighter-rouge">m_b_simplex</code> will contain only a single relative-rate factor with the value of 1. That means the value of <code class="language-plaintext highlighter-rouge">r_b</code> for between-region speciation is driven entirely by <code class="language-plaintext highlighter-rouge">rho_b</code>. However, when the code is used for analyses with <code class="language-plaintext highlighter-rouge">num_regions &gt; 2</code>, the simplex <code class="language-plaintext highlighter-rouge">m_b_simplex</code> will contain different values. By allowing these values to vary, we allow widespread ranges to split into daughter ranges at different rates depending on the resulting split. These rates are computed using a range-split score <a class="citation" href="#Landis2022">(Landis et al. 2022)</a>, which we will not cover in this tutorial (RevBayes will complete this calculation automatically).</p>
+
+<p>Finally, for dispersal rates, we want to assign rates to each region pair. These rates are allowed to be asymmetric, so we need <code class="language-plaintext highlighter-rouge">num_pairs</code> unique values.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rho_d ~ dnExp(1)
+m_d_simplex ~ dnDirichlet(rep(1,num_pairs))
+m_d_idx = 1
+for (i in 1:num_regions) {
+    m_d[i][i] &lt;- 0.0
+    for (j in 1:num_regions) {
+        if (i != j) {
+            m_d[i][j] := abs(m_d_simplex[m_d_idx++] * num_pairs)
+        }
+        r_d[i][j] := rho_d * m_d[i][j]
+    }
+}
+</code></pre></div></div>
+
+<p>From these rates, we can use RevBayes functions to construct the rate matrices used by the analysis. The first is an anagenetic rate matrix, which gives rates of anagenetic processes. We are not restricting the number of regions that a species can live in at any given time, so we set the <code class="language-plaintext highlighter-rouge">maxRangeSize</code> equal to the number of regions. Settings <code class="language-plaintext highlighter-rouge">maxRangeSize</code> may be used to reduce the number of range patterns in the model, particularly when <code class="language-plaintext highlighter-rouge">num_regions</code> is large.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q_bg := fnBiogeographyRateMatrix(
+    dispersalRates=r_d,
+    extirpationRates=r_e,
+    maxRangeSize=num_regions
+)
+</code></pre></div></div>
+
+<p>We also construct a cladogenetic event matrix, describing the absolute rates of different cladogenetic events. We are not restricting the sizes of ‘split’ subranges following between-region speciation, so we set the <code class="language-plaintext highlighter-rouge">max_subrange_split_size</code> equal to the number of regions. From this matrix, we can obtain the total speciation rates per state, as well as a cladogenetic probability matrix.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clado_map := fnBiogeographyCladoEventsBD(
+    speciation_rates=[rho_w,rho_b],
+    within_region_features=m_w,
+    between_region_features=m_b,
+    max_range_size=num_regions,
+    max_subrange_split_size=num_regions
+)
+lambda := clado_map.getSpeciationRateSumPerState()
+omega := clado_map.getCladogeneticProbabilityMatrix()
+</code></pre></div></div>
+
+<p>Lastly, we need to assign a probability distribution to range of the most recent common ancestor of all species, prior to the first speciation event. In this analysis, we will assume all ranges were equally likely for that ancestor.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pi_base &lt;- rep(1,num_ranges)
+pi &lt;- simplex(pi_base)
+</code></pre></div></div>
+
+<p>With all of the rates constructed, we can create a stochastic variable drawn from this GeoSSE model with state-dependent birth, death, and speciation processes. This establishes how the various processes interact to generate a tree with a topology, divergence times, and terminal taxon states (ranges). Then we can clamp the variable with the fixed tree and present-day range states, allowing us to infer model parameters based on our observed data.</p>
+
+<p>We will use the <code class="language-plaintext highlighter-rouge">dnGLHBDSP</code> distribution that interfaces with the Tenorsphylo plugin to model a Generalized Lineage Heterogeneous Birth Death Sampling Process, which is a generalized model (as the name suggests) that can express simpler models, such as GeoSSE models.</p>
+
+<p>Although most of the model variable arguments provided to construct the <code class="language-plaintext highlighter-rouge">timetree</code> variable have been described above, we pass a few additional arguments to define how we compute the model likelihood. First, we instruct the model to condition on the process evolving for <code class="language-plaintext highlighter-rouge">tree_height</code> units of time by setting <code class="language-plaintext highlighter-rouge">condition="time"</code>. Alternatively, <code class="language-plaintext highlighter-rouge">condition</code> can be used to condition on the process e.g. producing a given number of taxa or surviving until the present (producing &gt;2 taxa). Second, we permit Tensorphylo to use four processors with <code class="language-plaintext highlighter-rouge">nProc=4</code> to speed up computation.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>timetree ~ dnGLHBDSP(
+    rootAge     = tree_height,
+    lambda      = lambda,
+    mu          = mu,
+    eta         = Q_bg,
+    omega       = omega,
+    pi          = pi,
+    condition   = "time",
+    taxa        = taxa,
+    nStates     = num_ranges,
+    nProc       = 4
+)
+timetree.clamp(phy)
+timetree.clampCharData(bg_dat)
+</code></pre></div></div>
+
+<h3 class="subsection" id="mcmc">MCMC</h3>
+<hr class="subsection" />
+
+<p>For this analysis, we will perform a short MCMC of 1000 generations, with 100 generations of hyperparameter-tuning burnin. An analysis of this length may not achieve convergence, so these settings should only be used for testing purposes. You can alter this MCMC by changing the number of iterations, the length of the burnin period, or the move schedule. We will also set up the MCMC to record every 10 iterations.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_gen = 1000
+n_burn = n_gen/10
+printgen = 10
+</code></pre></div></div>
+
+<p>We want MCMC to update all of the base rate <code class="language-plaintext highlighter-rouge">rho</code> parameters, as well as the relative rate Dirichlet simplexes. We will use a scaling move for the base rates, since they should always have positive values. These moves will each be performed once per iteration. Simplexes have a unique kind of move in RevBayes. Instead of performing one simplex move per generation, we will make the number of moves per iteration equal to the number of elements in the simplex.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mvi = 1
+mv[mvi++] = mvScale(rho_w, weight=1)
+mv[mvi++] = mvScale(rho_e, weight=1)
+mv[mvi++] = mvScale(rho_b, weight=1)
+mv[mvi++] = mvScale(rho_d, weight=1)
+mv[mvi++] = mvSimplex(m_e_simplex, weight=m_e.size())
+mv[mvi++] = mvSimplex(m_w_simplex, weight=m_w.size())
+mv[mvi++] = mvSimplex(m_b_simplex, weight=m_b_simplex.size())
+mv[mvi++] = mvSimplex(m_d_simplex, weight=m_d_simplex.size())
+</code></pre></div></div>
+
+<p>We also want MCMC to keep track of certain things while it runs. We want it to print some output to the screen so we can see how it is running (<code class="language-plaintext highlighter-rouge">mnScreen</code>). We also want it to save model parameters to a file (<code class="language-plaintext highlighter-rouge">mnModel</code>). Finally, if we want to use the output for ancestral state reconstruction, we want to save states and stochastic character mappings (<code class="language-plaintext highlighter-rouge">mnJointConditionalAncestralStates</code> and <code class="language-plaintext highlighter-rouge">mnStochasticCharacterMap</code>). All of the output files will be saved in the <code class="language-plaintext highlighter-rouge">output</code> directory so that it can be accessed later.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mni = 1
+mn[mni++] = mnScreen(printgen=printgen)
+mn[mni++] = mnModel(printgen=printgen, filename=out_fp+"model.log")
+mn[mni++] = mnJointConditionalAncestralState(glhbdsp=timetree, tree=timetree, printgen=printgen, filename=out_fp+"states.log", withTips=true, withStartStates=true, type="NaturalNumbers")
+mn[mni++] = mnStochasticCharacterMap(glhbdsp=timetree, printgen=printgen, filename=out_fp+"stoch.log")
+</code></pre></div></div>
+
+<p>Then we can start up the MCMC. It doesn’t matter which model parameter you use to initialize the model, so we will use <code class="language-plaintext highlighter-rouge">m_w</code>. RevBayes will find all the other parameters that are connected to <code class="language-plaintext highlighter-rouge">m_w</code> and include them in the model as well. Then we create an MCMC object with the moves, monitors, and model, add burnin, and run the MCMC.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mdl = model(m_w)
+ch = mcmc(mv, mn, mdl)
+ch.burnin(n_burn, tuningInterval=10)
+ch.run(n_gen)
+</code></pre></div></div>
+
+<p>After the MCMC analysis has concluded, we can summarize the ancestral states we obtained, creating an ancestral state tree. This tree will be written to the file <code class="language-plaintext highlighter-rouge">ase.tre</code>. It may take a little while.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>f_burn = 0.2
+x_stoch = readAncestralStateTrace(file=out_fp+"stoch.log")
+x_states = readAncestralStateTrace(file=out_fp+"states.log")
+summarizeCharacterMaps(x_stoch,timetree,file=out_fp+"events.tsv",burnin=f_burn)
+state_tree = ancestralStateTree(tree=timetree,
+                   ancestral_state_trace_vector=x_states,
+                   include_start_states=true,
+                   file=out_fp+"ase.tre",
+                   summary_statistic="MAP",
+                   reconstruction="marginal",
+                   burnin=f_burn,
+                   nStates=3,
+                   site=1)
+writeNexus(state_tree,filename=out_fp+"ase.tre")
+</code></pre></div></div>
+
+<h3 class="subsection" id="output">Output</h3>
+<hr class="subsection" />
+
+<p>One interesting thing we can do with the output of the GeoSSE analysis is plot ancestral states. This can be done using <a href="https://github.com/revbayes/RevGadgets">RevGadgets</a>, an R packages that processes RevBayes output. You can use R to generate a tree with ancestral states by running the <code class="language-plaintext highlighter-rouge">geosse.R</code> script, or by executing the following code in R. You can also examine the output files, like <code class="language-plaintext highlighter-rouge">model.log</code>, to assess the relative rates of different processes occurring in different regions.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>library(RevGadgets)
+library(ggplot2)
+tree_file = "../output/ase.tre"
+output_file = "../output/states.png"
+states &lt;- processAncStates(tree_file, state_labels=c("0"="Andean", "1"="Non-Andean", "2"="Both"))
+plotAncStatesMAP(t=states,
+                 tree_layout="circular",
+                 node_size=1.5,
+                 node_size_as=NULL) +
+                 ggplot2::theme(legend.position="bottom",
+                                legend.title=element_blank())
+ggsave(output_file, width = 9, height = 9)
+</code></pre></div></div>
+
+<figure id="states"><p><img src="output/states.png" width="95%" /></p>
+<figcaption>Ancestral state reconstruction of <em>Liolaemus</em>.</figcaption>
+</figure>
+
+<ol class="bibliography"><li><span id="Esquerré2019">Esquerré D., Brennan I.G., Catullo R.A., Torres-Pérez F., Keogh J.S. 2019. How mountains shape biodiversity: The role of the Andes in biogeography, diversification, and reproductive biology in South America’s most species-rich lizard radiation (Squamata: Liolaemidae). Evolution. 73:214–230.</span>
+
+<a href="https://doi.org/10.1111/evo.13657">10.1111/evo.13657</a>
+
+</li>
+<li><span id="Goldberg2011">Goldberg E.E., Lancaster L.T., Ree R.H. 2011. Phylogenetic Inference of Reciprocal Effects between Geographic Range Evolution and Diversification. Systematic Biology. 60:451–465.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syr046">10.1093/sysbio/syr046</a>
+
+</li>
+<li><span id="Goldberg2012">Goldberg E.E., Igić B. 2012. Tempo and Mode in Plant Breeding System Evolution. Evolution. 66:3701–3709.</span>
+
+<a href="https://doi.org/10.1111/j.1558-5646.2012.01730.x">10.1111/j.1558-5646.2012.01730.x</a>
+
+</li>
+<li><span id="Landis2022">Landis M.J., Quintero I., Muñoz M.M., Zapata F., Donoghue M.J. 2022. Phylogenetic inference of where species spread or split across barriers. Proceedings of the National Academy of Sciences. 119.</span>
+
+</li>
+<li><span id="May2022">May M.R., Meyer X. TensorPhylo. .</span>
+
+
+<a href="https://bitbucket.org/mrmay/tensorphylo/src/master/">https://bitbucket.org/mrmay/tensorphylo/src/master/</a>
+</li></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+    });
+    MathJax.Hub.Queue(function () {
+      $(".aside").each(function() {
+          $("div .MathJax", this).hide();
+      });
+    });
+</script>
+<script src="/assets/js/base.js"></script>
+
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0Y03X9Q2TJ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-0Y03X9Q2TJ');
+</script>
+
+  </body>
+</html>
