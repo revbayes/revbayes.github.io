@@ -332,7 +332,7 @@ ggsave(output_file, width = 9, height = 9)
 ```
 
 {% figure states %}
-<img src="output/states.png" width="95%">
+<img src="figures/states.png" width="95%">
 {% figcaption %}
 Ancestral state reconstruction of *Liolaemus*.
 {% endfigcaption %}

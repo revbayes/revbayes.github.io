@@ -350,7 +350,7 @@ ggsave(output_file, width = 9, height = 9)
 ```
 
 {% figure states %}
-<img src="output/states.png" width="95%">
+<img src="figures/states.png" width="95%">
 {% figcaption %}
 Ancestral state reconstruction of *Liolaemus*.
 {% endfigcaption %}
@@ -365,7 +365,7 @@ ggsave(posterior_file, width = 9, height = 9)
 ```
 
 {% figure states %}
-<img src="output/posterior.png" width="95%">
+<img src="figures/posterior.png" width="95%">
 {% figcaption %}
 Posterior for the parameter $\phi_d^{Distance}$, which relates quantitative distances between regions to the process of dispersal. The 95% Highest Posterior Density (HPD) interval is shaded in dark blue. Note that 0 (a null effect) falls outside this interval. Therefore, distance is likely related to dispersal. A negative value indicates a negative relationship; more distance between regions reduces dispersal.
 {% endfigcaption %}
