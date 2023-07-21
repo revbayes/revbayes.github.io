@@ -68,11 +68,9 @@ psi.setValue( maptree )
 root_age := psi.rootAge()
 
 diff <- (500000 - 250000)/2.0
-# obs_root_age ~ dnNormal(mean = root_age, sd = 60000, min = 250000, max = 500000)
 obs_root_age ~ dnNormal(mean = root_age, sd = 60000, min = root_age - diff, max = root_age + diff)
 obs_root_age.clamp(375000)
 
-# not implemented yet
 interval_times := changePoints
 
 ### add some moves that change the tree
@@ -115,7 +113,7 @@ moves.append( mvScale(clock, weight=2.0) )
 up_down_move = mvUpDownScale(weight=5.0)
 up_down_move.addVariable(clock,up=TRUE)
 up_down_move.addVariable(psi,up=FALSE)
-moves.append( up_down_move)
+moves.append( up_down_move )
 
 seq ~ dnPhyloCTMC(tree=psi, Q=Q, siteRates=sr, pInv=p_inv, type="DNA", branchRates=clock)
 seq.clamp(sequences)

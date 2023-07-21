@@ -56,7 +56,7 @@
 	<h1 class="maintitle">Coalescent Analyses</h1>
 	<h3 class="subtitle">Estimating Demographic Histories with Coalescent Models</h3>
 	<h4 class="authors">Ronja Billenstein and Sebastian Höhna</h4>
-  <h5>Last modified on April 11, 2022</h5>
+  <h5>Last modified on July 21, 2023</h5>
 </div>
 
 
@@ -75,6 +75,8 @@
             <li><a href="/tutorials/mcmc/">Introduction to Markov chain Monte Carlo (MCMC) Sampling</a></li>
           
             <li><a href="/tutorials/ctmc/">Nucleotide substitution models</a></li>
+          
+            <li><a href="/tutorials/mcmc/moves.html">Overview of Moves in MCMC</a></li>
           
           </ul>
         
@@ -112,7 +114,7 @@
   <h2 id="for-your-info">For your info</h2>
   <p>This tutorial and the included exercises are currently under construction.
 If you want to run the analyses, please compile <code class="language-plaintext highlighter-rouge">RevBayes</code> from the <a href="https://github.com/revbayes/revbayes/tree/dev-coalescent">dev-coalescent</a> branch as described <a href="https://revbayes.github.io/compile-linux">here</a> (for the development branch).
-For plotting with the <code class="language-plaintext highlighter-rouge">R</code> package <code class="language-plaintext highlighter-rouge">RevGadgets</code>, please install the package from the “dev_pop_size” branch using devtools: <code class="language-plaintext highlighter-rouge">devtools::install_github("revbayes/RevGadgets", ref = "dev_pop_size")</code>.</p>
+For plotting with the <code class="language-plaintext highlighter-rouge">R</code> package <code class="language-plaintext highlighter-rouge">RevGadgets</code>, please install the package from the “development” branch using devtools: <code class="language-plaintext highlighter-rouge">devtools::install_github("revbayes/RevGadgets", ref = "development")</code>.</p>
 </blockquote>
 
 <h2 class="section" id="overview">Overview</h2>
@@ -180,16 +182,16 @@ The data for these analyes are taken from <a class="citation" href="#Vershinina2
     <tr>
       <td>Bayesian Skyline Plot without autocorrelation</td>
       <td>A coalescent model with a piecewise constant population size trajectory. The different pieces (intervals) are not correlated. The times of interval change are dependent on coalescent events (“event-based”).</td>
-      <td>constant</td>
+      <td>piecewise constant</td>
       <td>individually chosen, independent and identically distributed (iid)</td>
-      <td>-</td>
-      <td>Yes</td>
+      <td>event-based</td>
+      <td>No, only single loci</td>
       <td><a href="/tutorials/coalescent/skyline">Skyline</a></td>
     </tr>
     <tr>
       <td>Bayesian Skyline Plot with autocorrelation<br /><a class="citation" href="#Drummond2005">(Drummond et al. 2005)</a></td>
       <td>A coalescent model with a piecewise constant population size trajectory. The different pieces (intervals) are correlated, each population size is drawn from an exponential distribution with the mean being the previous population size. The times of interval change are dependent on coalescent events (“event-based”).</td>
-      <td>constant</td>
+      <td>piecewise constant</td>
       <td>$\theta_i | \theta_{i-1}$ (exponential distribution with mean $\theta_{i-1}$)</td>
       <td>event-based</td>
       <td>No, only single loci</td>
@@ -197,8 +199,8 @@ The data for these analyes are taken from <a class="citation" href="#Vershinina2
     </tr>
     <tr>
       <td>Extended Bayesian Skyline Plot<br /><a class="citation" href="#Heled2008">(Heled and Drummond 2008)</a></td>
-      <td>A coalescent model with a piecewise constant or linear population size trajectory. The different pieces are not correlated. The times of interval change are independent from coalescent events, they are independent and identically distributed (iid). The number of changes and thus the number of intervals is determined by stochastic variable search.</td>
-      <td>constant</td>
+      <td>A coalescent model with a piecewise constant or linear population size trajectory. The different pieces are not correlated. The times of interval change are dependent on coalescent events (“event-based”), they are independent and identically distributed (iid). The number of changes and thus the number of intervals is determined by stochastic variable search.</td>
+      <td>piecewise constant or linear</td>
       <td>independent and identically distributed (iid)</td>
       <td>event-based - number and position of change points estimated</td>
       <td>Yes</td>
@@ -207,7 +209,7 @@ The data for these analyes are taken from <a class="citation" href="#Vershinina2
     <tr>
       <td>Skyride<br /><a class="citation" href="#Minin2008">(Minin et al. 2008)</a></td>
       <td>A coalescent model with a piecewise constant population size trajectory. The different pieces are correlated via a Gaussian Markov Random Field (GMRF) Prior, the degree of smoothing is determined by a precision parameter. The times of interval change are dependent on coalescent events (“event-based”).</td>
-      <td>constant</td>
+      <td>piecewise constant</td>
       <td>$\theta_i | \theta_{i-1}$ (GMRF Prior with precision parameter)</td>
       <td>event-based</td>
       <td>No, only single loci</td>
@@ -215,17 +217,17 @@ The data for these analyes are taken from <a class="citation" href="#Vershinina2
     </tr>
     <tr>
       <td>Skygrid<br /><a class="citation" href="#Gill2012">(Gill et al. 2012)</a></td>
-      <td>A coalescent model with a piecewise constant population size trajectory. The different pieces are correlated via a Gaussian Markov Random Field (GMRF) Prior and are equally spaced in time, the degree of smoothing is determined by a precision parameter. The times of interval change are independent from coalescent events, they are independent and identically distributed (iid). Can be considered as extension of the skyride model.</td>
-      <td>constant or linear</td>
+      <td>A coalescent model with a piecewise constant population size trajectory. The different pieces are correlated via a Gaussian Markov Random Field (GMRF) Prior and are equally spaced in time, the degree of smoothing is determined by a precision parameter. The times of interval change are independent from coalescent events, they are independent and identically distributed (iid).</td>
+      <td>piecewise constant</td>
       <td>$\theta_i | \theta_{i-1}$ (GMRF Prior with precision parameter)</td>
       <td>equally sized</td>
       <td>Yes</td>
       <td> </td>
     </tr>
     <tr>
-      <td>Gaussian Markov Random Field (GMRF) Prior with interval change points independent from coalescent events</td>
+      <td>Gaussian Markov Random Field (GMRF) Prior with interval change points independent from coalescent events  <a class="citation" href="#Faulkner2020">(Faulkner et al. 2020)</a></td>
       <td>A coalescent model with a piecewise constant or linear population size trajectory. The different pieces are correlated via a Gaussian Markov Random Field (GMRF) Prior. The times of interval change are independent from coalescent events, they are independent and identically distributed (iid).</td>
-      <td>constant or linear</td>
+      <td>piecewise constant or linear</td>
       <td>$\theta_i | \theta_{i-1}$ (GMRF Prior)</td>
       <td>specified - here equally sized</td>
       <td>Yes</td>
@@ -234,7 +236,7 @@ The data for these analyes are taken from <a class="citation" href="#Vershinina2
     <tr>
       <td>Horseshoe Markov Random Field (HSMRF) Prior with interval change points independent from coalescent events <a class="citation" href="#Faulkner2020">(Faulkner et al. 2020)</a></td>
       <td>A coalescent model with a piecewise constant or linear population size trajectory. The different pieces are correlated via a Horseshoe Markov Random Field (HSMRF) Prior. The times of interval change are independent from coalescent events, they are independent and identically distributed (iid).</td>
-      <td>constant or linear</td>
+      <td>piecewise constant or linear</td>
       <td>$\theta_i | \theta_{i-1}$ (HSMRF Prior)</td>
       <td>specified - here equally sized</td>
       <td>Yes</td>
@@ -243,7 +245,7 @@ The data for these analyes are taken from <a class="citation" href="#Vershinina2
     <tr>
       <td>Compound Poisson Process (CPP) Prior<br />(similar to <a class="citation" href="#OpgenRhein2005">Opgen-Rhein et al. (2005)</a>)</td>
       <td>A coalescent model with a piecewise constant or linear population size trajectory. The number of pieces (intervals) is not fixed. A Poisson Prior is used on the number of interval change points, additional priors need to be defined for population sizes and change points. The number of change points is determined via reversible jump MCMC (rjMCMC).</td>
-      <td>constant or linear</td>
+      <td>piecewise constant or linear</td>
       <td>independent and identically distributed (iid)</td>
       <td>specified - number and position of change points estimated</td>
       <td>Yes</td>
@@ -251,8 +253,8 @@ The data for these analyes are taken from <a class="citation" href="#Vershinina2
     </tr>
     <tr>
       <td>Piecewise<br />(similar to <a class="citation" href="#Pybus2002">Pybus and Rambaut (2002)</a>, but with flexible combinations)</td>
-      <td>A coalescent model with user-defined demographic functions for a number of intervals. Base demographic functions included in RevBayes are constant, linear and exponential population size trajectories. These can be combined in an arbitrary way, but the most ancient one should always be constant due to computational reasons.</td>
-      <td>constant and linear and exponential</td>
+      <td>A coalescent model with user-defined demographic functions for a user-defined number of intervals. Base demographic functions included in RevBayes are constant, linear and exponential population size trajectories. These can be combined in an arbitrary way, but the most ancient one should always be constant due to computational reasons.</td>
+      <td>piecewise constant, linear, or exponential; can be different for every interval</td>
       <td>individually chosen, independent and identically distributed (iid)</td>
       <td>specified - individually chosen</td>
       <td>No, only single loci</td>
@@ -312,6 +314,16 @@ We will also provide a full script in every tutorial that you can easily run for
 
 <blockquote class="instruction">
   <p>Please create a “scripts” directory in the tutorial directory.</p>
+</blockquote>
+
+<h3 class="subsection" id="the-figures">The Figures</h3>
+<hr class="subsection" />
+
+<p>The <code class="language-plaintext highlighter-rouge">R</code> package <code class="language-plaintext highlighter-rouge">RevGadgets</code> provides functionality for plotting <code class="language-plaintext highlighter-rouge">RevBayes</code> results.
+In each exercise, you can plot the population size trajectories resulting from the different analyses.</p>
+
+<blockquote class="instruction">
+  <p>Please create a “figures” directory in the tutorial directory, if you want to plot the results from the exercises.</p>
 </blockquote>
 
 <h2 class="section" id="exercises">Exercises</h2>

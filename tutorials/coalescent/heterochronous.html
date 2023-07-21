@@ -56,7 +56,7 @@
 	<h1 class="maintitle">Coalescent Analyses with heterochronous data</h1>
 	<h3 class="subtitle">Estimating Demographic Histories with Coalescent Models using heterochronous data</h3>
 	<h4 class="authors">Sebastian Höhna and Ronja Billenstein</h4>
-  <h5>Last modified on March 30, 2022</h5>
+  <h5>Last modified on July 21, 2023</h5>
 </div>
 
 
@@ -318,7 +318,7 @@ mymcmc.run(NUM_MCMC_ITERATIONS, tuning = 100)
 <p>To check whether your analysis has converged, you can use the <code class="language-plaintext highlighter-rouge">R</code> package <code class="language-plaintext highlighter-rouge">convenience</code>.
 Have a look at the <a href="/tutorials/convergence/">Convergence assessment</a> tutorial.</p>
 
-<p><strong>Add convergence results here</strong></p>
+<!--- **Add convergence results here** --->
 
 <h2 class="section" id="results">Results</h2>
 <hr class="section" />
@@ -336,11 +336,13 @@ summary = "median"
 
 num_grid_points = 500
 max_age_het = 1.2e6
+min_age = 0
+spacing = "equal"
 
 population_size_log = "output/horses_het_constant_NE.log"
-df &lt;- processPopSizes(population_size_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_het)
+df &lt;- processPopSizes(population_size_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_het, min_age = min_age, spacing = spacing)
 p &lt;- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
-ggplot2::ggsave("horses_het_constant.png", p)
+ggplot2::ggsave("figures/horses_het_constant.png", p)
 </code></pre></div></div>
 
 <p>Your output should look roughly like the following figure.</p>

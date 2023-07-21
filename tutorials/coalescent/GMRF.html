@@ -56,7 +56,7 @@
 	<h1 class="maintitle">Coalescent Models with GMRF</h1>
 	<h3 class="subtitle">Estimating Demographic Histories with Coalescent Models using a Gaussian Markov Random Field Prior</h3>
 	<h4 class="authors">Ronja Billenstein and Sebastian Höhna</h4>
-  <h5>Last modified on March 30, 2022</h5>
+  <h5>Last modified on July 21, 2023</h5>
 </div>
 
 
@@ -224,7 +224,7 @@ moves.append( mvScaleBactrian(population_size_global_scale,weight=5.0) )
 <!--- For each interval we define the prior for the delta log population size to be a Normal Distribution with the standard deviation dependent on the global scale and its hyperprior. --->
 <p>The standard deviation of the aforementioned Normal distribution of the <code class="language-plaintext highlighter-rouge">delta_log_population_size</code> values can now be defined by multiplying the global scale hyperprior with the global scale.
 Here, we achieve all desired properties (favoring similar values but allowing for flexibility) by multiplying a halfCauchy(0,1) distribution with the value of the hyperprior ($0.1203$) that we calculated before.
-This is just a hierarchical way of defining a halfCauchy(0,$0.1203$) distribution. <strong>(Is this true?)</strong>
+This is just a hierarchical way of defining a halfCauchy(0,$0.1203$) distribution.
 We add a sliding move to the <code class="language-plaintext highlighter-rouge">delta_log_population_size</code> values.
 Note that in <code class="language-plaintext highlighter-rouge">RevBayes</code> the standard deviation (<code class="language-plaintext highlighter-rouge">sd</code>) is used as input for the Normal distribution instead of the variance of the distribution (which would be the square of the standard deviation).</p>
 
@@ -319,12 +319,14 @@ summary = "median"
 
 num_grid_points = 500
 max_age_iso = 5e5
+min_age = 0
+spacing = "equal"
 
 population_size_log = "output/horses_iso_GMRF_NEs.log"
 interval_change_points_log = "output/horses_iso_GMRF_times.log"
-df &lt;- processPopSizes(population_size_log, interval_change_points_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_iso)
+df &lt;- processPopSizes(population_size_log, interval_change_points_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_iso, min_age = min_age, spacing = spacing)
 p &lt;- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
-ggplot2::ggsave("horses_iso_GMRF.png", p)
+ggplot2::ggsave("figures/horses_iso_GMRF.png", p)
 </code></pre></div></div>
 
 <!--- In the example, we set the limits of the x-axis to the root age value from the next exercise (see below).
@@ -366,7 +368,7 @@ This is the local scale parameter.</p>
 }
 </code></pre></div></div>
 
-<p>Remember to change the hyperprior value (<code class="language-plaintext highlighter-rouge">setMRFGlobalScaleHyperpriorNShifts(10, "HSMRF")</code> in <code class="language-plaintext highlighter-rouge">RevGadgets</code>) and to add extra moves.</p>
+<p>Remember to change the hyperprior value (<code class="language-plaintext highlighter-rouge">setMRFGlobalScaleHyperpriorNShifts(9, "HSMRF")</code> in <code class="language-plaintext highlighter-rouge">RevGadgets</code>) and to add extra moves.</p>
 
 <p>In case you prefer to download a whole HSMRF script to compare it to the GMRF script, have a look at <a href="/tutorials/coalescent/HSMRF">the HSMRF</a>.</p>
 </blockquote>

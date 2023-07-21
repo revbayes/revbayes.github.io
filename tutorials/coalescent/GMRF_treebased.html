@@ -56,7 +56,7 @@
 	<h1 class="maintitle">Coalescent Models from Trees with GMRF</h1>
 	<h3 class="subtitle">Estimating Demographic Histories with Coalescent Models from Trees using a Gaussian Markov Random Field Prior</h3>
 	<h4 class="authors">Ronja Billenstein and Sebastian Höhna</h4>
-  <h5>Last modified on March 30, 2022</h5>
+  <h5>Last modified on July 21, 2023</h5>
 </div>
 
 
@@ -187,7 +187,7 @@ If you would like to read them out later, you can set them here.</p>
 <p>Again, we constrain the root age as before and add the same moves for the tree.</p>
 
 <blockquote class="aside"><h2>Working with one tree as input</h2><p>As mentioned above, you can also have a single tree as input.
-In this case, you can read it in with <code class="language-plaintext highlighter-rouge">readTrees</code>. <strong>(is this correct?)</strong>
+In this case, you can read it in with <code class="language-plaintext highlighter-rouge">readTrees</code>.
 Here, we first generate the maximum a posteriori (MAP) tree from the tree sample.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>trees = readTreeTrace("output/horses_constant.trees", treetype = "clock", burnin = 0.1)
 maptree = mapTree(trace=trees)
@@ -231,12 +231,14 @@ summary = "median"
 
 num_grid_points = 500
 max_age_iso = 5e5
+min_age = 0
+spacing = "equal"
 
 population_size_log = "output/horses_iso_GMRF_treebased_NEs.log"
 interval_change_points_log = "output/horses_iso_GMRF_treebased_times.log"
-df &lt;- processPopSizes(population_size_log, interval_change_points_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_iso)
+df &lt;- processPopSizes(population_size_log, interval_change_points_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_iso, min_age = min_age, spacing = spacing)
 p &lt;- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
-ggplot2::ggsave("horses_iso_GMRF_treebased.png", p)
+ggplot2::ggsave("figures/horses_iso_GMRF_treebased.png", p)
 </code></pre></div></div>
 
 <figure id="results-GMRF_tb"><p><img src="figures/horses_iso_GMRF_treebased.png" width="800" /></p>

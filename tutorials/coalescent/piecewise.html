@@ -56,7 +56,7 @@
 	<h1 class="maintitle">Piecewise Coalescent Model</h1>
 	<h3 class="subtitle">Estimating Demographic Histories with a Piecewise Coalescent Model</h3>
 	<h4 class="authors">Ronja Billenstein and Sebastian Höhna</h4>
-  <h5>Last modified on March 30, 2022</h5>
+  <h5>Last modified on July 21, 2023</h5>
 </div>
 
 
@@ -248,14 +248,16 @@ summary = "median"
 
 num_grid_points = 500
 max_age_iso = 5e5
+min_age = 0
+spacing = "equal"
 
-population_size_log_skyline = "output/horses_skyline_NEs.log"
-interval_change_points_log_skyline = "output/horses_skyline_times.log"
-df_skyline &lt;- processPopSizes(population_size_log_skyline, interval_change_points_log_skyline, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_iso)
+population_size_log_skyline = "output/horses_iso_skyline_NEs.log"
+interval_change_points_log_skyline = "output/horses_iso_skyline_times.log"
+df_skyline &lt;- processPopSizes(population_size_log_skyline, interval_change_points_log_skyline, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_iso, min_age = min_age, spacing = spacing)
 p_skyline &lt;- plotPopSizes(df_skyline) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
 
-population_size_log = "../output/horses_piecewise_NEs.log"
-interval_change_points_log = "../output/horses_piecewise_times.log"
+population_size_log = "output/horses_iso_piecewise_6diff_NEs.log"
+interval_change_points_log = "output/horses_iso_piecewise_6diff_times.log"
 pop_sizes &lt;- readTrace(population_size_log, burnin = burnin)[[1]]
 interval_times &lt;- readTrace(interval_change_points_log, burnin = burnin)[[1]]
 
@@ -369,9 +371,9 @@ df$upper &lt;- pop_size_upper
 df$time &lt;- grid
 
 p &lt;- p_skyline +
-  ggplot2::geom_line(data = df, ggplot2::aes(x = time, y = value), size = 0.9, color = "blue") +
+  ggplot2::geom_line(data = df, ggplot2::aes(x = time, y = value), linewidth = 0.9, color = "blue") +
   ggplot2::geom_ribbon(data = df, ggplot2::aes(x = time, ymin = lower, ymax = upper), fill = "blue", alpha = 0.2)
-ggplot2::ggsave("horses_iso_piecewise_6diff.png", p)
+ggplot2::ggsave("figures/horses_iso_piecewise_6diff.png", p)
 </code></pre></div></div>
 </blockquote>
 

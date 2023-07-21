@@ -56,7 +56,7 @@
 	<h1 class="maintitle">Skyline Models</h1>
 	<h3 class="subtitle">Estimating Demographic Histories with Skyline Models</h3>
 	<h4 class="authors">Ronja Billenstein and Sebastian Höhna</h4>
-  <h5>Last modified on March 30, 2022</h5>
+  <h5>Last modified on July 21, 2023</h5>
 </div>
 
 
@@ -109,12 +109,12 @@
 
 <p>Skyline Plots are models for how population size changes through time.
 The classical skyline plot <a class="citation" href="#Pybus2000">(Pybus et al. 2000)</a> provided the first implementation of this idea.
-For each interval between two coalescent events, an effective population size was calculated.
+For each interval between two coalescent events, an effective population size was estimated.
 This led to a plot looking very similar to a skyline, thus giving the method its name (see <a href="#classical-skyline"></a> for a hypothetical example).
 The generalized skyline plot <a class="citation" href="#Strimmer2001">(Strimmer and Pybus 2001)</a> aimed at reducing the noise from analyzing every single interval by grouping several coalescent events into one interval.
 This created a smoother curve.
 First, these models were used for maximum likelihood (ML) estimation of population sizes through time.
-By now, several extensions allowing for Bayesian estimation have been published (see for example <a class="citation" href="#Drummond2005">Drummond et al. (2005), Heled and Drummond (2008), Gill et al. (2012)</a>).
+By now, several extensions allowing for Bayesian estimation have been published (see for example <a class="citation" href="#Drummond2005">Drummond et al. (2005), Heled and Drummond (2008), Minin et al. (2008)</a>).
 In <code class="language-plaintext highlighter-rouge">RevBayes</code>, a Skyline plot method is implemented with constant or linear population size intervals.
 <!--- In other software, you can also find the possibility to have linear skyline intervals. --->
 <!--- Even though this is not implemented explicitly as skyline in `RevBayes`, you can also piece together linear intervals (have a look at the [piecewise model exercise](/tutorials/coalescent/piecewise), if you are interested in this). --->
@@ -173,18 +173,30 @@ You can type the following command into <code class="language-plaintext highligh
 <hr class="subsection" />
 
 <p>For the skyline model, you need to decide on the number of intervals.
-In order to get five coalescent events per interval, we divide the number of coalescent events by five.
+In this case, we would like to have five coalescent events per interval, so we divide the number of coalescent events by five.
 With $n$ taxa, we expect $(n-1)$ coalescent events, until there is only one lineage left.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NUM_INTERVALS = ceil((n_taxa - 1) / 5)
 </code></pre></div></div>
 
-<p>For each interval, a population size will be estimated. Choose a prior and add a move for each population size.</p>
+<p>For each interval, a population size will be estimated.
+Choose a prior and add a move for each population size.
+In the following loop, we also set the number of coalescent events per interval by dividing the number of coalescent events by the number of intervals.
+Remember that we chose the number of intervals based on our wish to have $5$ events per interval.</p>
+
+<!---
+<blockquote class="aside"><h2>Number of coalescent events per interval</h2><p>In this particular example, there are $36$ taxa, resulting in $35$ coalescent events, so there is no remainder when dividing by $5$.
+If there is a remainder</p>
+</blockquote>
+--->
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:NUM_INTERVALS) {
+
     pop_size[i] ~ dnUniform(0,1E6)
     pop_size[i].setValue(100000)
     moves.append( mvScale(pop_size[i], lambda=0.1, tune=true, weight=2.0) )
+    num_events[i] &lt;- ceil( (n_taxa-1) / NUM_INTERVALS )
+
 }
 </code></pre></div></div>
 
@@ -192,10 +204,10 @@ With $n$ taxa, we expect $(n-1)$ coalescent events, until there is only one line
 <hr class="subsection" />
 
 <p>Now, we will instantiate the stochastic node for the tree.
-The Skyline version of the Coalescent distribution function <code class="language-plaintext highlighter-rouge">dnCoalescentSkyline</code> takes the vector of population sizes the taxa as input. <!--- **(need to check whether it can take more)** --->
-By chosing <code class="language-plaintext highlighter-rouge">methods="events"</code>, the interval lengths will be chosen based on the number of events.</p>
+The Skyline version of the Coalescent distribution function <code class="language-plaintext highlighter-rouge">dnCoalescentSkyline</code> takes the vector of population sizes and the taxa as input. <!--- **(need to check whether it can take more)** --->
+By chosing <code class="language-plaintext highlighter-rouge">methods="events"</code>, the interval lengths will be chosen based on the number of events and we have to add the number of coalescent events to the input.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psi ~ dnCoalescentSkyline(theta=pop_size, method="events", taxa=taxa)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psi ~ dnCoalescentSkyline(theta=pop_size, events_per_interval=num_events, method="events", taxa=taxa)
 </code></pre></div></div>
 
 <p>For later plotting and analyzing the population size curve, we need to retrieve the resulting interval times.</p>
@@ -215,7 +227,7 @@ By chosing <code class="language-plaintext highlighter-rouge">methods="events"</
 
 <p>Finally, we need to wrap our model as before.
 We add the monitors and then run the MCMC.
-Here, another monitor is added for the interval times.</p>
+Here, an additional monitor is added for the interval times.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/horses_iso_skyline.log",printgen=THINNING) )
 monitors.append( mnFile(filename="output/horses_iso_skyline.trees",psi,printgen=THINNING) )
@@ -237,12 +249,14 @@ summary = "median"
 
 num_grid_points = 500
 max_age_iso = 5e5
+min_age = 0
+spacing = "equal"
 
 population_size_log = "output/horses_iso_skyline_NEs.log"
 interval_change_points_log = "output/horses_iso_skyline_times.log"
-df &lt;- processPopSizes(population_size_log, interval_change_points_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_iso)
+df &lt;- processPopSizes(population_size_log, interval_change_points_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_iso, min_age = min_age, spacing = spacing)
 p &lt;- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
-ggplot2::ggsave("horses_iso_skyline.png", p)
+ggplot2::ggsave("figures/horses_iso_skyline.png", p)
 </code></pre></div></div>
 
 <figure id="results-skyline"><p><img src="figures/horses_iso_skyline.png" width="800" /></p>
@@ -268,12 +282,15 @@ In other software, the default priors can be defined differently.</p>
 <p>For example, for the Bayesian Skyline Plot <a class="citation" href="#Drummond2005">(Drummond et al. 2005)</a>, all but the first population size are drawn from an exponential distribution.
 The mean of this distribution is set to be the previous population size.
 This means that the population sizes in neighbouring intervals are correlated.
-For the first population size, a log uniform distribution was chosen.</p>
+For the first population size, a log uniform distribution was chosen.
+Additionally, the number of coalescent events per interval is not fixed, but estimated during the MCMC.</p>
 
 <p>In a skyride analysis <a class="citation" href="#Minin2008">(Minin et al. 2008)</a>, the population size is directly estimated on a log scale.
-The intervals also are correlated, but a Gaussian Markov Random Field (GMRF) prior is used with the degree of smoothing being regulated by a precision parameter.</p>
+The intervals also are correlated, but a Gaussian Markov Random Field (GMRF) prior is used with the degree of smoothing being regulated by a precision parameter.
+In this approach, each interval includes one coalescent event, similar to the classical skyline plot.
+The smoothing effect, however, reduces the noise in the resulting population size trajectory.</p>
 
-<p>For the Extended Bayesian Skyline Plot <a class="citation" href="#Heled2008">(Heled and Drummond 2008)</a>, the number of changing points is estimated by stochastic search variable selection.
+<p>For the Extended Bayesian Skyline Plot <a class="citation" href="#Heled2008">(Heled and Drummond 2008)</a>, the number of change points is estimated by stochastic search variable selection.
 The intervals are considered to be iid.
 Also, the default demographic function usually is piecewise linear and not piecewise constant as in this tutorial.
 The estimation of the number of intervals can also be done slightly differently, as we show in the <a href="/tutorials/coalescent/GMRF#secCPP">Compound Poisson Process Prior</a> section of the <a href="/tutorials/coalescent/GMRF">GMRF tutorial</a> which is next.</p>
@@ -283,20 +300,15 @@ If you would like to have an example of what a <code class="language-plaintext h
 <ul>
   <li>the <a href="scripts/mcmc_isochronous_BSP.Rev">example script for a BSP analysis</a>,</li>
   <li>the <a href="scripts/mcmc_isoochronous_skyride.Rev">example script for a skyride analysis</a>, or</li>
-  <li>the <a href="scripts/mcmc_isochronous_EBSP.Rev">example script for an EBSP analysis</a>.</li>
+  <li>the <a href="scripts/mcmc_isochronous_EBSP.Rev">example script for an EBSP analysis</a>. Note that the <code class="language-plaintext highlighter-rouge">.Rev</code> script does not apply stochastic variable search as in the original publication to determine the number of interval change points. The script instead uses reversible jump MCMC.</li>
 </ul>
 
-<p>Note that all three examples have the interval change points on coalescent events (what we call “event-based”, as in the skyline model presented here).
-In the next tutorial (<a href="/tutorials/coalescent/GMRF">The GMRF model</a>), we use intervals with changing points independent from coalescent events.</p>
+<p>All three examples have the interval change points on coalescent events (what we call “event-based”, as in the skyline model presented here).
+In the next tutorial (<a href="/tutorials/coalescent/GMRF">The GMRF model</a>), we use intervals with changing points independent from coalescent events (“specified”).</p>
 
 <ol class="bibliography"><li><span id="Drummond2005">Drummond A.J., Rambaut A., Shapiro B., Pybus O.G. 2005. Bayesian Coalescent Inference of Past Population Dynamics from Molecular Sequences. Molecular Biology and Evolution. 22:1185–1192.</span>
 
 <a href="https://doi.org/10.1093/molbev/msi103">10.1093/molbev/msi103</a>
-
-</li>
-<li><span id="Gill2012">Gill M.S., Lemey P., Faria N.R., Rambaut A., Shapiro B., Suchard M.A. 2012. Improving Bayesian Population Dynamics Inference: A Coalescent-Based Model for Multiple Loci. Molecular Biology and Evolution. 30:713–724.</span>
-
-<a href="https://doi.org/10.1093/molbev/mss265">10.1093/molbev/mss265</a>
 
 </li>
 <li><span id="Heled2008">Heled J., Drummond A.J. 2008. Bayesian inference of population size history from multiple loci. BMC Evolutionary Biology. 8:289.</span>
