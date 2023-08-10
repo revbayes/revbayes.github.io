@@ -41,6 +41,6 @@ code_layout: bash
 
 <br><br>
 <div class="row">
-<p><a href="{% page_url gui_setup %}">Integration with Jupyter and RStudio</a></p>
+<p><a href="{% page_url interfaces %}">RevBayes Interface Tools</a> (GUIs and notebooks)</p>
 <p><a href="{% page_url compile_spack %}">Compile with Spack</a></p>
 </div>
