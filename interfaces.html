@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
-    <title>RevBayes: Graphical User Interfaces</title>
+    <title>RevBayes: Interfaces</title>
   </head>
   <body>
     <div class="container">
@@ -53,35 +53,46 @@
 
       <h1 class="maintitle">
 
-Use RevBayes with a Graphical Interface
+Tools for Interacting with RevBayes
 
 </h1>
 <hr>
 
+<h2 class="section" id="the-rev-language">The Rev Language</h2>
+<hr class="section" />
+
+<p>In practice, most researchers will primarily work with RevBayes by writing scripts in the Rev language and executing these directly. Most of the <a href="/tutorials/">tutorials</a> demonstrate this approach to RevBayes analysis. In the <a href="/documentation/">Documentation</a>, you will find the Rev Language Reference that will allow you to browse the various components of Rev and their associated documentation. If you use RevBayes interactively in your terminal, you can also access Rev language documentation using the <code class="language-plaintext highlighter-rouge">?</code> object. For example, typing <code class="language-plaintext highlighter-rouge">?dnPoisson</code> will output a description and usage details of the Poisson distribution function. This is the same information provided on the Poisson distribution help page: <a href="https://revbayes.github.io/documentation/dnPoisson.html">https://revbayes.github.io/documentation/dnPoisson.html</a>.</p>
+
 <h2 class="section" id="graphical-user-interfaces">Graphical User Interfaces</h2>
 <hr class="section" />
 
-<p>There are two main graphical user interfaces (GUIs) that can be used with RevBayes. Below, installation instructions are listed for both.</p>
+<p>Within the RevBayes project we are developing alternative interfaces for specifying RevBayes models and analyses. These are intended to provide more interactive workflows using different interface styles. Note that some of these projects are still under active development and may not be fully functional.</p>
+<ul>
+  <li><a href="#jupyternb"></a>: specify and execute analyses using the Rev language in a notebook interface</li>
+  <li><a href="#rstudio"></a>: create Rev scripts for execution in RevBayes using R and RStudio</li>
+  <li><a href="#revscripter"></a>: an introductory, menu-driven GUI for generating Rev scripts for a subset of analyses (in development)</li>
+  <li><a href="#macgui"></a>: an interactive macOS GUI for creating analysis workflows and models for RevBayes (in development)</li>
+</ul>
 
-<h2 class="section" id="jupyter-notebook">Jupyter Notebook</h2>
-<hr class="section" />
-
-<h3 class="subsection" id="get-python3-and-jupyter-notebook">Get Python3 and Jupyter Notebook</h3>
+<h3 class="subsection" id="jupyternb">Jupyter Notebook</h3>
 <hr class="subsection" />
+
+<h4 class="subsubsection" id="get-python3-and-jupyter-notebook">Get Python3 and Jupyter Notebook</h4>
+<hr class="subsubsection" />
 
 <p>First, download and install Python 3 and the Jupyter Notebook.
 Installation instructions are available from the Jupyter Development team <a href="https://jupyter.readthedocs.io/en/latest/install.html">here</a>.</p>
 
-<h3 class="subsection" id="get-revbayes">Get RevBayes</h3>
-<hr class="subsection" />
+<h4 class="subsubsection" id="get-revbayes">Get RevBayes</h4>
+<hr class="subsubsection" />
 
 <p>RevBayes <a href="https://github.com/revbayes/revbayes/releases/">pre-built executables</a> are designed to work with Jupyter. You may want to ensures that <code class="language-plaintext highlighter-rouge">rb</code> executable can be found using the <code class="language-plaintext highlighter-rouge">which</code> command or be located using the environment variable, <code class="language-plaintext highlighter-rouge">REVBAYES_JUPYTER_EXECUTABLE</code>. For instance, you can set the environment variable using</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">REVBAYES_JUPYTER_EXECUTABLE</span><span class="o">=</span>&lt;revbayes_path&gt;/rb
 </code></pre></div></div>
 
-<h3 class="subsection" id="connect-revbayes-and-jupyter">Connect RevBayes and Jupyter</h3>
-<hr class="subsection" />
+<h4 class="subsubsection" id="connect-revbayes-and-jupyter">Connect RevBayes and Jupyter</h4>
+<hr class="subsubsection" />
 
 <p>Finally, clone the RevBayes Jupyter Kernel.</p>
 
@@ -98,8 +109,8 @@ pip3 install metakernel
 
 <p>Examples of RevNotebooks can be found in the RevNotebook <a href="https://github.com/revbayes/RevNotebooks">repository</a>.</p>
 
-<h2 class="section" id="rstudio">RStudio</h2>
-<hr class="section" />
+<h3 class="subsection" id="rstudio">RStudio</h3>
+<hr class="subsection" />
 
 <p>Compile or download RevBayes as appropriate for your system above. Note where on your computer it is stored.</p>
 
@@ -125,6 +136,29 @@ This check searches for and .Renviron file that contains a RevBayes path. If the
 
 <p>Now, you may use RevBayes in either KnitR or console. For examples of RevBayes used via Revticulate, see the <a href="https://paleantology.github.io/Revticulate/">Revticulate website</a> and our tutorial on <a href="https://revbayes.github.io/tutorials/tutorial_structure/">setting up RevBayes</a>.</p>
 
+<h3 class="subsection" id="revscripter">RevScripter</h3>
+<hr class="subsection" />
+
+<p>RevScripter is a web-based tool that enables researchers to create scripts describing phylogenetic models and analyses in the Rev language. These script files then can be executed in the program RevBayes. RevScripter is intended to serve as an introductory tool that guides new users through the setup for a subset of phylogenetic analyses.</p>
+
+<p><a href="https://revbayes.github.io/revscripter/" class="btn btn-primary" role="button">RevScripter</a></p>
+
+<p>Currently, the options available in RevScripter are limited and the tool is still very much in development. The tool can create scripts for running an unrooted analysis using nucleotide data under standard substitution models. For more details about the available models and analyses, please see the README file in the RevScripter source repository: <a href="https://github.com/revbayes/revscripter">https://github.com/revbayes/revscripter</a>.</p>
+
+<h3 class="subsection" id="macgui">RevBayes macOS GUI</h3>
+<hr class="subsection" />
+
+<p>The RevBayes macOS GUI is an interactive graphical user interface for RevBayes written in Swift with the use of Cocoa libraries that runs on the macOS platform.</p>
+
+<p>The complexity of the RevBayes program and the Rev language can be a significant barrier to the scientists wanting to use the program. It is the goal of the RevBayes GUI project to overcome that barrier. RevBayes GUI serves to simplify the use of RevBayes while at the same time expose its full functionality.</p>
+
+<p>RevBayes GUI is a document-based application, with a collection of phylogenetic analyses seen as a document. The user can create an analysis by dragging the necessary components from a tool palette and dropping them on the analysis canvas. Adopting a convention from the field of graphical models in computer science, we allow a biologist specify their analysis as a graph. We use a tool metaphor to expose the functionality of the program. Each node in the graph is a tool that carries out a single task, such as reading and visualizing data from a file, setting the phylogenetic model graphically, aligning DNA sequences, etc. Tool Model, often the core of an analysis, allows the user to specify their model assumptions. Like with the analysis, RevBayes GUI exposes a model as a graph. The user can build up models graphically, by bringing together different mathematical components of a model just as a child would build a house out of Lego bricks.</p>
+
+<p>Development of RevBayes GUI is funded by an NSF grant. It is an open-source project on GitHub. The <a href="https://github.com/svetakrasikova/macgui">GitHub repository</a> can be freely cloned.</p>
+
+<p>If you would like to contribute to the project or report issues please contact the <a href="https://github.com/svetakrasikova">lead developer</a> to request access.</p>
+
+
       <br>
 <footer>
   <div class="container">
@@ -148,14 +182,14 @@ This check searches for and .Renviron file that contains a RevBayes path. If the
 $(":not(code).highlighter-rouge").each(function() {
   
   if( this.classList == "highlighter-rouge") {
-    this.classList = "bash highlighter-rouge";
+    this.classList = "default highlighter-rouge";
   }
   
 });
 // $("code.highlighter-rouge").each(function() {
 //   
 //   if( this.classList == "highlighter-rouge") {
-//       this.classList = "bash highlighter-rouge";
+//       this.classList = "default highlighter-rouge";
 //   }
 //   
 // });
