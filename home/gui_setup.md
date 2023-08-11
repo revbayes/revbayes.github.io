@@ -8,7 +8,6 @@ code_layout: bash
 
 {% section Graphical User Interfaces %}
 
-There are two main graphical user interfaces (GUIs) that can be used with RevBayes. Below, installation instructions are listed for both.
 
 {% section Jupyter Notebook  %}
 
