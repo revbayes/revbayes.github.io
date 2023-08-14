@@ -93,8 +93,8 @@ You may want to put the `export` lines into your `~/.profile` or `~/.bash_profil
 Generated documentation for moves, functions, densities, types, etc.
 ====================================================================
 
-The documentation functionality depends on `_includes/help_index.html`, `home/documentation.md`
-and `_plugins/help.rb`.
+The documentation functionality depends on `_includes/help_index.html`, `home/documentation.md`,
+_layouts/help.html and `_plugins/help.rb`.
 
 Files under `_site/documentation` should be generated when `bundle exec jekyll build`
 is run.  Normally this is run from `deploy.sh`.
