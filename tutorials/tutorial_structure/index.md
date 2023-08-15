@@ -305,7 +305,7 @@ If everything has succeeded, you will see the following output:
 
 R is a fairly common computing language in biology.
 RevBayes users may want to use RevBayes through RStudio {% cite RStudio %}, a popular graphical interface for R.
-In this section of the tutorial, we will focus on running RevBayes from RStudio. Once you've followed the RStudio instructions on the [installs page](https://revbayes.github.io/gui-setup), you can run use Rev language as you would in a standard RMarkown document.
+In this section of the tutorial, we will focus on running RevBayes from RStudio. Once you've followed the RStudio instructions on the [interfaces page](https://revbayes.github.io/interfaces), you can run use Rev language as you would in a standard RMarkown document.
 
 {% subsection Installation %}
 
@@ -365,7 +365,7 @@ knitRev()
 
 {% section Using Jupyter %}
 
-Jupyter {% cite Jupyter %} is a popular interface for programming in python, though it implements numerous other languages. Once you have completed the instructions on the [installs page](https://revbayes.github.io/gui-setup), you will be able to choose RevBayes as a possible language. An example of this is below.
+Jupyter {% cite Jupyter %} is a popular interface for programming in python, though it implements numerous other languages. Once you have completed the instructions on the [interfaces page](https://revbayes.github.io/interfaces), you will be able to choose RevBayes as a possible language. An example of this is below.
 
 {% figure mistake %}
 <img src="figures/Jupyter.png" width="800">

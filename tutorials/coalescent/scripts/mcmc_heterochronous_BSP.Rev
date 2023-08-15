@@ -47,9 +47,19 @@ for (i in 2:NUM_INTERVALS) {
 
 }
 
+num_events_pi <- rep(1, NUM_INTERVALS)
+num_e_simplex_init <- rep(1, NUM_INTERVALS)
+
+num_e_simplex <- simplex(num_e_simplex_init)
+n_multi <- n_taxa-1-NUM_INTERVALS
+
+number_events_pi ~ dnMultinomial(p=num_e_simplex, size=n_multi)
+final_number_events_pi := num_events_pi + number_events_pi
+
+moves.append( mvIidPrior(x=number_events_pi) )
 
 ### the time tree is a stochastic node modeled by the coalescent skyline process (dnCoalescentSkyline)
-psi ~ dnCoalescentSkyline(theta=pop_size, method="events", taxa=taxa)
+psi ~ dnCoalescentSkyline(theta=pop_size, method="events", events_per_interval=final_number_events_pi, taxa=taxa)
 
 root_age := psi.rootAge()
 
@@ -100,7 +110,7 @@ moves.append( mvScale(clock, weight=2.0) )
 up_down_move = mvUpDownScale(weight=5.0)
 up_down_move.addVariable(clock,up=TRUE)
 up_down_move.addVariable(psi,up=FALSE)
-moves.append( up_down_move)
+moves.append( up_down_move )
 
 seq ~ dnPhyloCTMC(tree=psi, Q=Q, siteRates=sr, pInv=p_inv, type="DNA", branchRates=clock)
 seq.clamp(sequences)

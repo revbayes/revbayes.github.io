@@ -75,7 +75,7 @@ THINNING            = 10
 We also need to create vectors for the monitors and moves of the MCMC.
 Moves are functions that propose new parameter values in your MCMC, based on the current value.
 These newly proposed parameters can either be accepted or rejected.
-Depending on this acceptance / rejection, the posterior distribution of your parameters will be formed.
+By repeating this process many times, we obtain samples from the posterior distribution.
 See for example {% page_ref mcmc/poisson %} for more information on the acceptance / rejection procedure.
 Monitors are later used to track the progress of your analysis, but are also needed to write output files.
 ~~~
@@ -209,7 +209,7 @@ Note that you could also calibrate the clock rate instead of the root age of the
 up_down_move = mvUpDownScale(weight=5.0)
 up_down_move.addVariable(clock,up=TRUE)
 up_down_move.addVariable(psi,up=FALSE)
-moves.append( up_down_move)
+moves.append( up_down_move )
 ~~~
 The final `dnPhyloCTMC` function combines all of the previous defined parameters.
 We also need to clamp the sequence data.
@@ -270,11 +270,13 @@ summary = "median"
 
 num_grid_points = 500
 max_age_iso = 5e5
+min_age = 0
+spacing = "equal"
 
 population_size_log = "output/horses_iso_constant_NE.log"
-df <- processPopSizes(population_size_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_iso)
+df <- processPopSizes(population_size_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_iso, min_age = min_age, spacing = spacing)
 p <- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
-ggplot2::ggsave("horses_iso_constant.png", p)
+ggplot2::ggsave("figures/horses_iso_constant.png", p)
 ~~~
 
 Your output should look roughly like the following figure.

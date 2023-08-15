@@ -38,12 +38,13 @@ for (i in 1:NUM_INTERVALS) {
     pop_size[i] ~ dnUniform(0,1E8)
     pop_size[i].setValue(100000)
     moves.append( mvScale(pop_size[i], lambda=0.1, tune=true, weight=2.0) )
+    num_events[i] <- ceil( (n_taxa-1) / NUM_INTERVALS )
 
 }
 
 
 ### the time tree is a stochastic node modeled by the coalescent skyline process (dnCoalescentSkyline)
-psi ~ dnCoalescentSkyline(theta=pop_size, method="events", taxa=taxa)
+psi ~ dnCoalescentSkyline(theta=pop_size, events_per_interval=num_events, method="events", taxa=taxa)
 psi.clamp(maptree)
 
 interval_times := psi.getIntervalAges()

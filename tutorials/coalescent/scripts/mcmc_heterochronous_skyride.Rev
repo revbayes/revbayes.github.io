@@ -46,6 +46,8 @@ ln_pop_size[1].setValue( ln(ESTIMATED_ROOT_AGE/2) )
 pop_size[1] := exp( ln_pop_size[1] )
 moves.append( mvSlide(ln_pop_size[1], delta=0.1, tune=true, weight=2.0) )
 
+num_events[1] <- 1
+
 for (i in 2:NUM_INTERVALS) {
 
     ln_pop_size[i] ~ dnNormal( ln_pop_size[i-1], sd )
@@ -54,11 +56,13 @@ for (i in 2:NUM_INTERVALS) {
 
     moves.append( mvSlide(ln_pop_size[i], delta=0.1, tune=true, weight=2.0) )
 
+    num_events[i] <- 1
+
 }
 
 
 ### the time tree is a stochastic node modeled by the coalescent skyline process (dnCoalescentSkyline)
-psi ~ dnCoalescentSkyline(theta=pop_size, method="events", taxa=taxa)
+psi ~ dnCoalescentSkyline(theta=pop_size, events_per_interval=num_events, method="events", taxa=taxa)
 
 root_age := psi.rootAge()
 
@@ -109,7 +113,7 @@ moves.append( mvScale(clock, weight=2.0) )
 up_down_move = mvUpDownScale(weight=5.0)
 up_down_move.addVariable(clock,up=TRUE)
 up_down_move.addVariable(psi,up=FALSE)
-moves.append( up_down_move)
+moves.append( up_down_move )
 
 seq ~ dnPhyloCTMC(tree=psi, Q=Q, siteRates=sr, pInv=p_inv, type="DNA", branchRates=clock)
 seq.clamp(sequences)
