@@ -531,7 +531,7 @@ for (i in 1:n_data_subsets) {
 and the per-partition substitution rate multipliers
 ```
 # specify a rate multiplier for each partition
-part_rate_mult ~ dnDirichlet( rep(1.0, n_data_subsets) )
+part_rate_mult ~ dnDirichlet( rep(10.0, n_data_subsets) )
 moves.append( mvBetaSimplex(part_rate_mult, alpha=1.0, tune=true, weight=n_data_subsets) )
 moves.append( mvDirichletSimplex(part_rate_mult, alpha=1.0, tune=true, weight=2.0) )
 
@@ -629,7 +629,7 @@ These two nodes are linked by the ‘psi‘ node and their log-likelihoods
 are added to get the likelihood of the whole DAG.
 ```
 for (i in 1:n_data_subsets) {
-    seq[i] ~ dnPhyloCTMC(tree=psi, Q=Q[i], branchRates=part_rate_mult[i], siteRates=gamma_rates[i], pInv=pinvar[i], type="DNA")
+    seq[i] ~ dnPhyloCTMC(tree=psi, Q=Q[i], branchRates=part_rate[i], siteRates=gamma_rates[i], pInv=pinvar[i], type="DNA")
     seq[i].clamp(data[i])
 }
 ```
