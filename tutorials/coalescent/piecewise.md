@@ -156,14 +156,16 @@ summary = "median"
 
 num_grid_points = 500
 max_age_iso = 5e5
+min_age = 0
+spacing = "equal"
 
-population_size_log_skyline = "output/horses_skyline_NEs.log"
-interval_change_points_log_skyline = "output/horses_skyline_times.log"
-df_skyline <- processPopSizes(population_size_log_skyline, interval_change_points_log_skyline, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_iso)
+population_size_log_skyline = "output/horses_iso_skyline_NEs.log"
+interval_change_points_log_skyline = "output/horses_iso_skyline_times.log"
+df_skyline <- processPopSizes(population_size_log_skyline, interval_change_points_log_skyline, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_iso, min_age = min_age, spacing = spacing)
 p_skyline <- plotPopSizes(df_skyline) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
 
-population_size_log = "../output/horses_piecewise_NEs.log"
-interval_change_points_log = "../output/horses_piecewise_times.log"
+population_size_log = "output/horses_iso_piecewise_6diff_NEs.log"
+interval_change_points_log = "output/horses_iso_piecewise_6diff_times.log"
 pop_sizes <- readTrace(population_size_log, burnin = burnin)[[1]]
 interval_times <- readTrace(interval_change_points_log, burnin = burnin)[[1]]
 
@@ -277,9 +279,9 @@ df$upper <- pop_size_upper
 df$time <- grid
 
 p <- p_skyline +
-  ggplot2::geom_line(data = df, ggplot2::aes(x = time, y = value), size = 0.9, color = "blue") +
+  ggplot2::geom_line(data = df, ggplot2::aes(x = time, y = value), linewidth = 0.9, color = "blue") +
   ggplot2::geom_ribbon(data = df, ggplot2::aes(x = time, ymin = lower, ymax = upper), fill = "blue", alpha = 0.2)
-ggplot2::ggsave("horses_iso_piecewise_6diff.png", p)
+ggplot2::ggsave("figures/horses_iso_piecewise_6diff.png", p)
 ~~~
 {% endaside %}
 

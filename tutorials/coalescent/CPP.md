@@ -1,6 +1,6 @@
 ---
-title: Coalescent Models with a Compound Poisson Prior
-subtitle: Estimating Demographic Histories with Coalescent Models using a Compound Poisson Prior
+title: Coalescent Models with a Compound Poisson Process Prior
+subtitle: Estimating Demographic Histories with Coalescent Models using a Compound Poisson Process Prior
 authors: Ronja Billenstein and Sebastian Höhna
 level: 9
 order: 0.9
@@ -17,7 +17,7 @@ include_files:
 ---
 
 {% section Overview %}
-This page provides you with scripts for a coalescent analysis with a compound poisson prior on the left side.
+This page provides you with scripts for a coalescent analysis with a compound poisson process (CPP) prior on the left side.
 It is in addition to the [Gaussian Markov Random Field Prior tutorial]({{base.url}}/tutorials/coalescent/GMRF).
 
 {% section Results %}
@@ -29,3 +29,6 @@ After running your analysis, you can plot the results using the `R` package `Rev
 Example output from plotting the CPP analysis. The bold line represents the median of the posterior distribution of the population size and the shaded are shows the $95\%$ credible intervals.
 {% endfigcaption %}
 {% endfigure %}
+
+
+<!--- to add: CPPAC (CPP prior with autocorrelation) --->

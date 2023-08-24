@@ -235,7 +235,7 @@ mymcmc.run(NUM_MCMC_ITERATIONS, tuning = 100)
 To check whether your analysis has converged, you can use the `R` package `convenience`.
 Have a look at the {% page_ref convergence %} tutorial.
 
-**Add convergence results here**
+<!--- **Add convergence results here** --->
 
 
 {% section Results %}
@@ -254,11 +254,13 @@ summary = "median"
 
 num_grid_points = 500
 max_age_het = 1.2e6
+min_age = 0
+spacing = "equal"
 
 population_size_log = "output/horses_het_constant_NE.log"
-df <- processPopSizes(population_size_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_het)
+df <- processPopSizes(population_size_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_het, min_age = min_age, spacing = spacing)
 p <- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
-ggplot2::ggsave("horses_het_constant.png", p)
+ggplot2::ggsave("figures/horses_het_constant.png", p)
 ~~~
 
 Your output should look roughly like the following figure.
