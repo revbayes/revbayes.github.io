@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Polymorphism-aware phylogenetic models</h1>
 	<h3 class="subtitle">Species tree inference with allele frequency data in RevBayes</h3>
 	<h4 class="authors"> Rui Borges, Sebastian Höhna, Bastien Boussau, and Carolin Kosiol</h4>
-  <h5>Last modified on June  5, 2023</h5>
+  <h5>Last modified on August 24, 2023</h5>
 </div>
 
 
@@ -149,7 +149,7 @@ Often, a reversible mutational model is considered. In this case, we break the m
 \(q_{\{na_i,(N-n)a_j\} \rightarrow \{(n+1)a_i,(N-n-1)a_j\}}=\frac{n(N-n)}{N}\phi_{a_i} \label{equation2}\tag{2}\)</li>
 </ul>
 
-<p>Like the standard substitution models, PoMos are continuous-time Markov models and are fully characterized by their rate matrices. The rates in \ref{equation1} and \ref{equation2} define the PoMos rate matrices. RevBayes includes a plethora of PoMo rate matrices that permit modeling population dynamics with any number of alleles, reversible mutations (i.e., $\mu_{a_ia_j}=\rho_{a_ia_j}\pi_{a_j}$) and selection. These are described in <a href="#Table 1"></a>.</p>
+<p>Like the standard substitution models, PoMos are continuous-time Markov models and are fully characterized by their rate matrices. The rates in \ref{equation1} and \ref{equation2} define the PoMos rate matrices. RevBayes includes a plethora of PoMo rate matrices that permit modeling population dynamics with any number of alleles, reversible mutations (i.e., $\mu_{a_ia_j}=\rho_{a_ia_j}\pi_{a_j}$) and selection. These are described in <a href="#tab_pomo_models"></a>.</p>
 
 <figure id="tab_pomo_models" class="table"><figcaption class="table">Specific functions for PoMos are available in RevBayes. For an overview of the specificities and possible applications of these models, please consult <a class="citation" href="#Borges2022b">(Borges et al. 2022)</a>. </figcaption>
 
@@ -232,13 +232,13 @@ chr19 7495905   4,0,2,0                  2,0,0,0               
 <ul>
   <li>the base frequencies and the fitness vectors are in the same order as in the counts: i.e., \(\{a_0,a_1,...,a_{K-1}\}\);</li>
   <li>the vector mutation rates (this vector is used in the non-reversible models) are \(\{a_0a_1, a_1a_0, a_0a_2, a_2a_0,...\}\);</li>
-  <li>the vector of exchangeabilities follow a similar pattern as for the mutation rates, but without the reversed mutation: i.e., \(\{a_0a_1, a_0a_2, ...\}\).</li>
+  <li>the vector of exchangeabilities follows a similar pattern as for the mutation rates, but without the reversed mutation: i.e., \(\{a_0a_1, a_0a_2, ...\}\).</li>
 </ul>
 
 <h2 class="section" id="loading_data">Loading the data <a href="https://youtu.be/acjouysOU04"><img src="/assets/img/YouTube_icon.svg" alt="Walkthrough video" height="36" width="36" /></a></h2>
 <hr class="section" />
 
-<p>The first step in this tutorial is to convert the allelic counts into PoMo states. Open the terminal and place it in your working directory, lut us call it <strong>PoMos</strong>, but you can use a name of your preference. Inside <strong>PoMos</strong> create the usual <strong>data</strong> and <strong>output</strong> folders. Before starting to actually load the data, run <strong>RevBayes</strong> by typing <code class="language-plaintext highlighter-rouge">./rb</code> (or <code class="language-plaintext highlighter-rouge">./rb-mpi</code>) in the console. Open the <code class="language-plaintext highlighter-rouge">great_apes_pomothree.Rev</code> file using an appropriate text editor so you can follow what each command is doing. Once you know what this <code class="language-plaintext highlighter-rouge">.Rev</code> script is doing in detail, you can automatically run it as follows:</p>
+<p>The first step in this tutorial is to convert the allelic counts into PoMo states. Open the terminal and place it in your working directory, let us call it <strong>PoMos</strong>, but you can use a name of your preference. Inside <strong>PoMos</strong> create the usual <strong>data</strong> and <strong>output</strong> folders. Before starting to actually load the data, run <strong>RevBayes</strong> by typing <code class="language-plaintext highlighter-rouge">./rb</code> (or <code class="language-plaintext highlighter-rouge">./rb-mpi</code>) in the console. Open the <code class="language-plaintext highlighter-rouge">great_apes_pomothree.Rev</code> file using an appropriate text editor so you can follow what each command is doing. Once you know what this <code class="language-plaintext highlighter-rouge">.Rev</code> script is doing in detail, you can automatically run it as follows:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./rb great_apes_pomothree.Rev
 
@@ -294,7 +294,7 @@ monitors = VectorMonitors()
 
 <p>A given PoMo model is defined by its corresponding instantaneous-rate matrix, <code class="language-plaintext highlighter-rouge">Q</code>. PoMoTwo and PoMoThree have three free parameters in common: the population size <code class="language-plaintext highlighter-rouge">N</code>, the allele frequencies <code class="language-plaintext highlighter-rouge">pi</code>, and the exchangeabilities <code class="language-plaintext highlighter-rouge">rho</code>. PoMoThree additionally includes the allele fitnesses <code class="language-plaintext highlighter-rouge">phi</code>, as it accounts for selection. We will set up the virtual PoMoTwo and Three using the function <code class="language-plaintext highlighter-rouge">fnReversiblePoMo4N</code>. You can check the input parameters of any PoMo function by typing its name right after the question mark: <code class="language-plaintext highlighter-rouge">?fnReversiblePoMo4N</code>.</p>
 
-<p>As expected, this function has as inputs parameters the population size <code class="language-plaintext highlighter-rouge">N</code>, base frequencies, exchangeabilities <code class="language-plaintext highlighter-rouge">rho</code> and fitnesses <code class="language-plaintext highlighter-rouge">phi</code>. We will first set out the PoMoThree, which we can do by setting $N$ to 3. Similarly, if you wanted to set out the neutral PoMo (i.e., PoMoTwo), you could set <code class="language-plaintext highlighter-rouge">N</code> to 2 instead. Thus, <code class="language-plaintext highlighter-rouge">N</code> is a fixed node, as we had prevously defined. </p>
+<p>As expected, this function has as input parameters the population size <code class="language-plaintext highlighter-rouge">N</code>, base frequencies, exchangeabilities <code class="language-plaintext highlighter-rouge">rho</code> and fitnesses <code class="language-plaintext highlighter-rouge">phi</code>. We will first set out the PoMoThree, which we can do by setting $N$ to 3. Similarly, if you wanted to set out the neutral PoMo (i.e., PoMoTwo), you could set <code class="language-plaintext highlighter-rouge">N</code> to 2 instead. Thus, <code class="language-plaintext highlighter-rouge">N</code> is a fixed node, as we had previously defined. </p>
 
 <p>Since <code class="language-plaintext highlighter-rouge">pi</code>, <code class="language-plaintext highlighter-rouge">rho</code>, and <code class="language-plaintext highlighter-rouge">gamma</code> are stochastic variables, we must specify a move to propose updates to them. A good move on variables drawn from a Dirichlet distribution (i.e., <code class="language-plaintext highlighter-rouge">pi</code>) is the <code class="language-plaintext highlighter-rouge">mvBetaSimplex</code>. This move randomly takes an element from the allele frequencies vector <code class="language-plaintext highlighter-rouge">pi</code>, proposes a new value drawn from a beta distribution, and then rescales all values to sum to 1. The weight option inside the moves specifies how often the move will be applied, either on average per iteration or relative to all other moves.</p>
 

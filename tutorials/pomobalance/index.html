@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: Polymorphism-aware phylogenetic models with balancing selection</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
+      </a>
+
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/download">Download</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/documentation/">Documentation</a></li>
+        <li><a href="/interfaces">Interfaces</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/jobs/">Jobs</a></li>
+        <li><a href="/developer/">Developer</a></li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <div class="titlebar">
+	<h1 class="maintitle">Polymorphism-aware phylogenetic models with balancing selection</h1>
+	<h3 class="subtitle">Species tree inference and identification of preferred allele frequency for balancing selection in RevBayes</h3>
+	<h4 class="authors"> Svitlana Braichenko, Rui Borges, and Carolin Kosiol</h4>
+  <h5>Last modified on August 24, 2023</h5>
+</div>
+
+
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul id="prerequisites">
+          
+            <li><a href="/tutorials/intro/">Getting Started with RevBayes and Rev Language Syntax</a></li>
+          
+            <li><a href="/tutorials/mcmc/">Introduction to Markov chain Monte Carlo (MCMC) Sampling</a></li>
+          
+            <li><a href="/tutorials/ctmc/">Nucleotide substitution models</a></li>
+          
+            <li><a href="/tutorials/pomos/">Polymorphism-aware phylogenetic models</a></li>
+          
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+
+
+
+
+<blockquote class="tutorial_files" id="tutorial_files">
+    <h2>Data files and scripts</h2>
+    
+        
+        <strong>Data Files</strong>
+        <ul id="data_files">
+        
+        
+        
+          <li><a href="/tutorials/pomobalance/data/great_apes_BS_10000.cf">great_apes_BS_10000.cf</a></li>
+        
+        </ul>
+    
+        
+        <strong>Scripts</strong>
+        <ul id="scripts">
+        
+        
+        
+          <li><a href="/tutorials/pomobalance/scripts/great_apes_pomobalance.Rev">great_apes_pomobalance.Rev</a></li>
+        
+        </ul>
+    
+</blockquote>
+
+
+</div>
+<p>This tutorial is based on  <a href="/tutorials/pomos/">Polymorphism-aware phylogenetic models</a> so we recommend you to go through it first.</p>
+
+<h2 class="section" id="polymorphism-aware-phylogenetic-models-with-balancing-selection">Polymorphism-aware phylogenetic models with balancing selection</h2>
+<hr class="section" />
+
+<p>The polymorphism-aware phylogenetic models with balancing selection (PoMoBalance) is a natural extension of <a href="/tutorials/pomos/">polymorphism-aware phylogenetic models</a> <a class="citation" href="#DeMaio2013">(De Maio et al. 2013; De Maio et al. 2015; Schrempf et al. 2016; Borges et al. 2019; Borges et al. 2022; Borges et al. 2022)</a> including all previous capabilities as well as detection of preferred allele frequencies and strength of balancing selection as shown in <a href="#pomobalance"></a>.</p>
+
+<figure id="pomobalance"><p><img src="figures/pomobalance.png" width="800" /></p>
+<figcaption>PoMoBalance model is depicted as a Markov-chain model with boundary mutations and allelic selection ($a_i$ and $a_j$ represents alleles A, C, G and T; $a_ia_j$ represents combinations of alles without repetition).  The boundary (monomorphic) states $Na_i$ and $Na_j$ are shown as larger circles with N individuals carrying allele $a_i$ (blue circles) on the left-hand side and $a_j$ (orange circles) on the right-hand side. All the middle (polymorphic) states $(N-n)a_i$, $na_j$ are shown with smaller circles, each one sequentially carrying one less individual with a prevailing allele. In addition to the selection term, transition rates reflect balancing selection pull towards the state with preferred allele frequency $B_{a_ia_j}$ (dark red arrows) and no such pull (light red crossed arrows) if the transition happens against the preferred state.</figcaption>
+</figure>
+
+<p>In <a href="#pomobalance"></a> the transition rates from the monomorphic states are defined with mutation rates $\mu_{a_ia_j}$ and $\mu_{a_ja_i}$, while the transition rates from the polymorphic states are defined with 
+\(\Phi_n^{a^{\mp}_{i,j}}= \frac{n(N-n)}{N}(1+\sigma_{a_{i,j}})\beta_{a_ia_j}^{\frac{1}{2} [ |n-B_{a_ia_j}|-|n\mp 1-B_{a_ia_j}| +1 ]}, \label{equation1}\tag{1}\)
+where $1+\sigma_{a_{i,j}}$ represents fitness of corresponding alleles, $B_{a_ia_j}$ is a preferred frequency and $\beta_{a_ia_j}$ is a strength of balancing selection.</p>
+
+<p>PoMoBalance in addition to standard <a href="/tutorials/pomos/">PoMos</a> allows one to</p>
+<ul>
+  <li>disentangle genetic drift, mutational biases, directional selection and balancing selection;</li>
+  <li>detect preferred frequencies of polymorphisms corresponding to balancing selection;</li>
+  <li>quantify the strength of balancing selection.</li>
+</ul>
+
+<p>There are few functions implemented in RevBayes shown in <a href="#tab_pomo_models"></a>.</p>
+
+<figure id="tab_pomo_models" class="table"><figcaption class="table">Specific functions for PoMoBalance are available in RevBayes. </figcaption>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"><strong>Function</strong></th>
+      <th style="text-align: center"><strong>Description</strong></th>
+      <th style="text-align: center"><strong>Parameters</strong></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">fnPoMoBalanceKN</td>
+      <td style="text-align: center">Describes the evolution of a population with $K$ alleles and $N$ individuals subjected to mutational bias, selection and balancing selection</td>
+      <td style="text-align: center">$K$, $N$, $\mu$, $\phi$, $\beta$, $B$ </td>
+    </tr>
+    <tr>
+      <td style="text-align: center">fnReversiblePoMoBalanceKN</td>
+      <td style="text-align: center">Particular case of PoMoBalanceKN when mutations are considered reversible and the preferred frequency is in the middle $B=\frac{N}{2}$.</td>
+      <td style="text-align: center">$K$, $N$, $\pi$, $\rho$, $\phi$, $\beta$ </td>
+    </tr>
+    <tr>
+      <td style="text-align: center">fnPoMoBalance4N</td>
+      <td style="text-align: center">Particular case of  fnPoMoBalanceKN where $K=4$.</td>
+      <td style="text-align: center">$N$, $\mu$, $\phi$, $\beta$, $B$ </td>
+    </tr>
+    <tr>
+      <td style="text-align: center">fnReversiblePoMoBalance4N</td>
+      <td style="text-align: center">Particular case of  fnReversiblePoMoBalanceKN where $K=4$.</td>
+      <td style="text-align: center">$N$, $\pi$, $\rho$, $\phi$, $\beta$ </td>
+    </tr>
+  </tbody>
+</table>
+</figure>
+
+<p>The DAG model representation of PoMoBalance is shown in <a href="#pomobalance_graphical_model"></a>.</p>
+
+<figure id="pomobalance_graphical_model"><p><img src="figures/dag_pomobalance.png" /></p>
+<figcaption>Graphical model representation of PoMoBalance. The model is non-reversible due to the presence of balancing selection rather than asymmetry in mutation rates, thus, we consider $\mu_{a_ia_j}=\rho_{a_ia_j}\pi_{a_j}$ still leaving room for the model to accept non-symmetric mutation rates. In contrast to <a href="/tutorials/pomos/">PoMos</a>, we set up the node for GC-bias rate $\sigma$ rather than for the fitness that is easily obtained from it through expression $\phi$=[1, 1+$\sigma$, 1+$\sigma$, 1]. There are also two additional nodes for balancing selection $\beta$ and $B$.</figcaption>
+</figure>
+
+<h2 class="section" id="loading-the-data">Loading the data</h2>
+<hr class="section" />
+
+<p>Similarly to <a href="/tutorials/pomos/">PoMos</a>, we are using count files in the same format. File <code class="language-plaintext highlighter-rouge">great_apes_BS_10000.cf</code> contains an example of heterozygote advantage simulation with the preferred frequency in the middle in $4$ great ape populations performed with the evolutionary simulation framework  <a href="https://messerlab.org/slim/">SLiM</a> <a class="citation" href="#Haller2019">(Haller and Messer 2019)</a>. We generated $10000$ sites, however, normally balancing selection happens in small regions containing only a few genes or around a thousand nucleotides. Thus, to improve the accuracy of the method we recommend increasing the virtual population size. In the current example, we use $N = 10$ and it can be further increased taking into account the interplay between the number of sites and the computational cost.</p>
+
+<p>First, we convert the allelic counts into PoMo states. Open the terminal and copy the data and script into the corresponding subfolders <strong>data</strong> and <strong>scripts</strong> of your working directory, for example, call it, <strong>PoMoBalance</strong>. Inside <strong>PoMoBalance</strong> create <strong>output</strong> folder to store the results. Open the <code class="language-plaintext highlighter-rouge">great_apes_pomobalance.Rev</code> file using an appropriate text editor so you can follow what each command is doing. Then run <strong>RevBayes</strong>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./rb great_apes_pomobalance.Rev
+</code></pre></div></div>
+
+<p>Note, you  may use <code class="language-plaintext highlighter-rouge">./rb</code> or the parallel version <code class="language-plaintext highlighter-rouge">./rb-mpi</code> to speed up the calculations.</p>
+
+<p>Further, let’s do through the commands in the script in more detail. We define the virtual population size and load the counts file similarly to <a href="/tutorials/pomos/">PoMos</a>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>N &lt;- 10
+data &lt;- readPoMoCountFile(countFile="data/great_apes_BS_10000.cf", virtualPopulationSize=N, format="PoMo")
+</code></pre></div></div>
+
+<p>Information about the alignment can be obtained by typing <code class="language-plaintext highlighter-rouge">data</code>. </p>
+
+<div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;data
+   PoMo character matrix with 4 taxa and 10000 characters
+   ======================================================
+   Origination:                   
+   Number of taxa:                4
+   Number of included taxa:       4
+   Number of characters:          10000
+   Number of included characters: 10000
+   Datatype:                      PoMo
+</code></pre></div></div>
+
+<p>Next, we will specify the number of taxa, taxa names, and the number of branches.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_taxa     &lt;- data.ntaxa()
+n_branches &lt;- 2*n_taxa-3
+taxa       &lt;- data.taxa()
+</code></pre></div></div>
+
+<p>Also variable to store moves and monitors for our analysis. You can add multiple kinds of moves into this variable and better explore the parameter space with MCMC, to avoid local minima and correlation between the moves. Monitors are for tracking MCMC analysis.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()  
+monitors = VectorMonitors()
+</code></pre></div></div>
+
+<h2 class="section" id="setting-up-the-model">Setting up the model</h2>
+<hr class="section" />
+
+<p>Two main components are required for unrooted tree estimation with balancing selection:</p>
+<ul>
+  <li>the PoMo model, which in our case PoMoBalance;</li>
+  <li>the tree topology and branch lengths.</li>
+</ul>
+
+<p>Following <a href="/tutorials/pomos/">PoMos</a>, PoMoBalance is also defined with instantaneous-rate matrix, <code class="language-plaintext highlighter-rouge">Q</code> with population size <code class="language-plaintext highlighter-rouge">N</code>, allele frequencies <code class="language-plaintext highlighter-rouge">pi</code>, exchangeabilities <code class="language-plaintext highlighter-rouge">rho</code> (in the non-reversible case combined into mutations <code class="language-plaintext highlighter-rouge">mu</code>), and allele fitnesses <code class="language-plaintext highlighter-rouge">phi</code>. Frequencies must sum up to unity, thus, <code class="language-plaintext highlighter-rouge">pi</code> is initialised with Dirichlet distribution and the move is <code class="language-plaintext highlighter-rouge">mvBetaSimplex</code></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># allele frequencies
+pi_prior &lt;- [0.25,0.25,0.25,0.25]
+pi ~ dnDirichlet(pi_prior)
+moves.append( mvBetaSimplex(pi, weight=2) )
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">rho</code> and <code class="language-plaintext highlighter-rouge">phi</code> parameters must be positive real numbers and a natural choice for their prior distributions is the exponential distribution and the standard moves <code class="language-plaintext highlighter-rouge">mvScale</code>. Let’s add an adaptive variance multivariate-normal proposal move that uses MCMC samples to fit covariance matrix to parameters called <code class="language-plaintext highlighter-rouge">mvAVMVN</code> to <code class="language-plaintext highlighter-rouge">sigma</code> to avoid correlation between GC-bias and balancing selection coefficients</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># exchangeabilities
+for (i in 1:6){
+  rho[i] ~ dnExponential(10.0)
+  moves.append(mvScale( rho[i], weight=2 ))
+}
+
+mu := [pi[2]*rho[1], pi[1]*rho[1], pi[3]*rho[2], pi[1]*rho[2], pi[4]*rho[3], pi[1]*rho[3], pi[3]*rho[4], pi[2]*rho[4], pi[4]*rho[5], pi[2]*rho[5], pi[4]*rho[6], pi[3]*rho[6]]
+
+# fitness coefficients
+sigma ~ dnExponential(1.0)
+moves.append(mvScale( sigma, weight=2 ))
+moves.append(mvAVMVN(sigma) )
+
+phi := [1.0,1.0+sigma,1.0+sigma,1.0]
+
+</code></pre></div></div>
+
+<p>The strength of balancing selection <code class="language-plaintext highlighter-rouge">beta</code> is also exponential and for the same reason as <code class="language-plaintext highlighter-rouge">rho</code> combines two kinds of moves. The preferred frequency <code class="language-plaintext highlighter-rouge">B</code> must be a discrete positive value between 0 and <code class="language-plaintext highlighter-rouge">N</code>, thus, we set up variable <code class="language-plaintext highlighter-rouge">Num</code> with a uniform prior and two kinds of standard moves<code class="language-plaintext highlighter-rouge">mvSlide</code> and <code class="language-plaintext highlighter-rouge">mvScale</code> with high weights to enhance exploration of parameter space. We round <code class="language-plaintext highlighter-rouge">Num</code> on each iteration to obtain discrete <code class="language-plaintext highlighter-rouge">B</code></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+# Strenths of the balancing selection
+
+for (i in 1:6){
+
+  beta[i] ~ dnExponential(1.0)
+
+  moves.append( mvScale( beta[i], weight=30 ) )
+  
+  # Add this move to avoid a correlation between sigma and beta
+  moves.append(mvAVMVN(beta[i]) )
+  
+}
+
+# The preferred frequencies of balancing selection
+
+for (i in 1:6){
+
+  Num[i] ~ dnUniform(0.5,9.5)
+
+  moves.append( mvSlide( Num[i], weight=10 ) )
+  moves.append( mvScale( Num[i], weight=10 ) )
+
+  B[i] := round(Num[i])
+
+}
+
+</code></pre></div></div>
+
+<p>We will set up the virtual PoMoBalance using the function <code class="language-plaintext highlighter-rouge">fnPoMoBalance4N</code>. You can check the input parameters of any PoMo function by typing its name right after the question mark: <code class="language-plaintext highlighter-rouge">?fnPoMoBalance4N</code>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># rate matrix
+Q := fnPoMoBalance4N(N,pi,rho,phi,beta,B)
+</code></pre></div></div>
+
+<p>Note, we could also use function <code class="language-plaintext highlighter-rouge">fnReversiblePoMoBalance4N</code> since the preferred frequency in our example is in the middle. However, we use more general function <code class="language-plaintext highlighter-rouge">fnPoMoBalance4N</code> to test the estimation of preferred frequency <code class="language-plaintext highlighter-rouge">B</code>.</p>
+
+<p>The estimation of tree moves is also identical to <a href="/tutorials/pomos/">PoMos</a> including the nearest-neighbour interchange move <code class="language-plaintext highlighter-rouge">mvNNI</code>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># topology
+topology ~ dnUniformTopology(taxa)
+moves.append( mvNNI(topology, weight=2*n_taxa) )
+</code></pre></div></div>
+
+<p>Nest, we define  <code class="language-plaintext highlighter-rouge">2*n_taxa−3</code>  with standard moves.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># branch lengths
+for (i in 1:n_branches) {
+   branch_lengths[i] ~ dnExponential(10.0)
+   moves.append( mvScale(branch_lengths[i]) )
+}
+</code></pre></div></div>
+
+<p>Finally, we combine the tree topology and branch lengths in <code class="language-plaintext highlighter-rouge">treeAssembly</code> in deterministic node <code class="language-plaintext highlighter-rouge">psi</code></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psi := treeAssembly(topology, branch_lengths)
+</code></pre></div></div>
+
+<p>Let’s combine <code class="language-plaintext highlighter-rouge">Q</code> and <code class="language-plaintext highlighter-rouge">psi</code> into a distribution called the phylogenetic continuous-time Markov chain <code class="language-plaintext highlighter-rouge">dnPhyloCTMC</code></p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sequences ~ dnPhyloCTMC(psi,Q=Q,type="PoMo")
+</code></pre></div></div>
+
+<p>and clamp it to data</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sequences.clamp(data)
+</code></pre></div></div>
+
+<p>Finally, we create the <code class="language-plaintext highlighter-rouge">model</code> function using any node.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pomo_model = model(pi)
+</code></pre></div></div>
+
+<h2 class="section" id="setting-running-and-summarising-the-mcmc-simulation">Setting, running, and summarising the MCMC simulation</h2>
+<hr class="section" />
+
+<p>Let’s set up monitors to track MCMC analysis</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/great_apes_pomobalance.log", printgen=10) )
+
+monitors.append( mnFile(filename="output/great_apes_pomobalance.trees", printgen=10, psi) )
+
+monitors.append( mnScreen(printgen=10) )
+</code></pre></div></div>
+
+<p>Finally, set up <code class="language-plaintext highlighter-rouge">mcmc</code> moves with four independent MCMC runs to ensure proper convergence and mixing.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pomo_mcmc = mcmc(pomo_model, monitors, moves, nruns=4, combine="mixed")
+</code></pre></div></div>
+
+<p>and run</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pomo_mcmc.run( generations=10000 )
+</code></pre></div></div>
+
+<p>Use software <a href="https://github.com/beast-dev/tracer/releases/tag/v1.7.2"><strong>Tracer</strong></a> or the R package <a href="https://revbayes.github.io/tutorials/convergence/"><strong>Convenient</strong></a> to assess trajectories and convergence. Look at <code class="language-plaintext highlighter-rouge">output/great_apes_pomobalance.log</code> in <strong>Tracer</strong>. There you see the posterior distributions of the parameters and correlations between parameters.</p>
+
+<p>Another way to assess the accuracy of parameter estimation is to look at the site frequency spectra (SFS) as shown in <a href="#SFS"></a></p>
+
+<figure id="SFS"><p><img src="figures/SFS_BS.png" /></p>
+<figcaption>SFS of the data simulated with SLiM compared to the SFS inferred by RevBayes with PoMoBalance on the virtual population size $N=10$.</figcaption>
+</figure>
+
+<p>To obtain the tree we need to look at the tree trace file</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>trace = readTreeTrace("output/great_apes_pomobalance.trees", treetype="non-clock", burnin= 0.2)
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">mapTree</code> function will summarise the tree samples and write the maximum a posteriori (MAP) tree to the specified file. The MAP tree can be found in the <strong>output</strong> folder named <code class="language-plaintext highlighter-rouge">great_apes_pomobalance_MAP.tree</code> as in <a href="#tree"></a>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mapTree(trace, file="output/great_apes_pomobalance_MAP.tree" )
+</code></pre></div></div>
+
+<figure id="tree"><p><img src="figures/great_apes_pomobalance_tree.png" width="500" /></p>
+<figcaption>The unrooted tree of great ape species.</figcaption>
+</figure>
+
+<p>Please note that if PoMoBalance struggles to estimate balancing selection and species trees simultaneously, it is possible to estimate the tree with <a href="/tutorials/pomos/">PoMos</a> first and then run PoMoBalance with the fixed tree or the tree topology.</p>
+
+<h2 class="section" id="some-questions">Some questions</h2>
+<hr class="section" />
+
+<ol>
+  <li>
+    <p>With <a href="#pomobalance_graphical_model"></a> as your guide, draw the probabilistic graphical model of the reversible PoMoBalance model.</p>
+  </li>
+  <li>
+    <p>Run an MCMC analysis to estimate the posterior distribution under the reversible PoMoBalance model. Which one estimates the strengths of balancing selection better?</p>
+  </li>
+  <li>
+    <p>Compare the MAP trees estimated under the reversible and nonreversible PoMoBalance model. Are they equal, and if not, how much do they differ?</p>
+  </li>
+</ol>
+
+<ol class="bibliography"><li><span id="Borges2022b">Borges R., Boussau B., Höhna S., Pereira R.J., Kosiol C. 2022. Polymorphism‐aware estimation of species trees and evolutionary forces from genomic sequences with RevBayes. Methods in Ecology and Evolution.</span>
+
+<a href="https://doi.org/10.1111/2041-210X.13980">10.1111/2041-210X.13980</a>
+
+</li>
+<li><span id="Borges2022">Borges R., Boussau B., Szöllősi G.J., Kosiol C. 2022. Nucleotide usage biases distort inferences of the species tree. Genome biology and evolution. 14:1–13.</span>
+
+<a href="https://doi.org/10.1093/gbe/evab290">10.1093/gbe/evab290</a>
+
+</li>
+<li><span id="Borges2019">Borges R., Szöllősi G.J., Kosiol C. 2019. Quantifying GC-Biased Gene Conversion in Great Ape Genomes Using Polymorphism-Aware Models. Genetics. 212:1321–1336.</span>
+
+<a href="https://doi.org/10.1534/genetics.119.302074">10.1534/genetics.119.302074</a>
+
+</li>
+<li><span id="Haller2019">Haller B., Messer P. 2019. SLiM 3: Forward Genetic Simulations Beyond the Wright–Fisher Model. Molecular Biology and Evolution.</span>
+
+<a href="https://doi.org/10.1093/molbev/msy228">10.1093/molbev/msy228</a>
+
+</li>
+<li><span id="Schrempf2016">Schrempf D., Minh B.Q., De Maio N., Haeseler A. von, Kosiol C. 2016. Reversible polymorphism-aware phylogenetic models and their application to tree inference. Journal of Theoretical Biology. 407:362–370.</span>
+
+<a href="https://doi.org/10.1016/j.jtbi.2016.07.042">10.1016/j.jtbi.2016.07.042</a>
+
+</li>
+<li><span id="DeMaio2013">De Maio N., Schlötterer C., Kosiol C. 2013. Linking great apes genome evolution across time scales using polymorphism-aware phylogenetic models. 30:2249–2262.</span>
+
+<a href="https://doi.org/10.1093/molbev/mst131">10.1093/molbev/mst131</a>
+
+</li>
+<li><span id="DeMaio2015">De Maio N., Schrempf D., Kosiol C. 2015. PoMo: An Allele Frequency-Based Approach for Species Tree Estimation. Systematic Biology. 64:1018–1031.</span>
+
+<a href="https://doi.org/10.1093/sysbio/syv048">10.1093/sysbio/syv048</a>
+
+</li></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+    });
+    MathJax.Hub.Queue(function () {
+      $(".aside").each(function() {
+          $("div .MathJax", this).hide();
+      });
+    });
+</script>
+<script src="/assets/js/base.js"></script>
+
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0Y03X9Q2TJ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-0Y03X9Q2TJ');
+</script>
+
+  </body>
+</html>
