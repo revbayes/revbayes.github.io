@@ -90,7 +90,7 @@ Again, we constrain the root age as before and add the same moves for the tree.
 
 {% aside Working with one tree as input %}
 As mentioned above, you can also have a single tree as input.
-In this case, you can read it in with `readTrees`. **(is this correct?)**
+In this case, you can read it in with `readTrees`.
 Here, we first generate the maximum a posteriori (MAP) tree from the tree sample.
 ~~~
 trees = readTreeTrace("output/horses_constant.trees", treetype = "clock", burnin = 0.1)
@@ -137,12 +137,14 @@ summary = "median"
 
 num_grid_points = 500
 max_age_iso = 5e5
+min_age = 0
+spacing = "equal"
 
 population_size_log = "output/horses_iso_GMRF_treebased_NEs.log"
 interval_change_points_log = "output/horses_iso_GMRF_treebased_times.log"
-df <- processPopSizes(population_size_log, interval_change_points_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_iso)
+df <- processPopSizes(population_size_log, interval_change_points_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_iso, min_age = min_age, spacing = spacing)
 p <- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
-ggplot2::ggsave("horses_iso_GMRF_treebased.png", p)
+ggplot2::ggsave("figures/horses_iso_GMRF_treebased.png", p)
 ~~~
 
 {% figure results-GMRF_tb %}

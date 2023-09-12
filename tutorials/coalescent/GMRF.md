@@ -137,7 +137,7 @@ moves.append( mvScaleBactrian(population_size_global_scale,weight=5.0) )
 <!--- For each interval we define the prior for the delta log population size to be a Normal Distribution with the standard deviation dependent on the global scale and its hyperprior. --->
 The standard deviation of the aforementioned Normal distribution of the `delta_log_population_size` values can now be defined by multiplying the global scale hyperprior with the global scale.
 Here, we achieve all desired properties (favoring similar values but allowing for flexibility) by multiplying a halfCauchy(0,1) distribution with the value of the hyperprior ($0.1203$) that we calculated before.
-This is just a hierarchical way of defining a halfCauchy(0,$0.1203$) distribution. **(Is this true?)**
+This is just a hierarchical way of defining a halfCauchy(0,$0.1203$) distribution.
 We add a sliding move to the `delta_log_population_size` values.
 Note that in `RevBayes` the standard deviation (`sd`) is used as input for the Normal distribution instead of the variance of the distribution (which would be the square of the standard deviation).
 
@@ -236,12 +236,14 @@ summary = "median"
 
 num_grid_points = 500
 max_age_iso = 5e5
+min_age = 0
+spacing = "equal"
 
 population_size_log = "output/horses_iso_GMRF_NEs.log"
 interval_change_points_log = "output/horses_iso_GMRF_times.log"
-df <- processPopSizes(population_size_log, interval_change_points_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_iso)
+df <- processPopSizes(population_size_log, interval_change_points_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_iso, min_age = min_age, spacing = spacing)
 p <- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
-ggplot2::ggsave("horses_iso_GMRF.png", p)
+ggplot2::ggsave("figures/horses_iso_GMRF.png", p)
 ~~~
 
 <!--- In the example, we set the limits of the x-axis to the root age value from the next exercise (see below).
@@ -286,7 +288,7 @@ for (i in 1:(NUM_INTERVALS-1)) {
 }
 ~~~
 
-Remember to change the hyperprior value (`setMRFGlobalScaleHyperpriorNShifts(10, "HSMRF")` in `RevGadgets`) and to add extra moves.
+Remember to change the hyperprior value (`setMRFGlobalScaleHyperpriorNShifts(9, "HSMRF")` in `RevGadgets`) and to add extra moves.
 
 In case you prefer to download a whole HSMRF script to compare it to the GMRF script, have a look at [the HSMRF]({{base.url}}/tutorials/coalescent/HSMRF).
 

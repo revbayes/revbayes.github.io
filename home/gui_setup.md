@@ -10,18 +10,25 @@ code_layout: bash
 
 There are two main graphical user interfaces (GUIs) that can be used with RevBayes. Below, installation instructions are listed for both.
 
-{% section Jupyter Notebook %}
+{% section Jupyter Notebook  %}
 
-First, download and install Python 3 and the Jupyter Notebook. Installation instructions are available from the Jupyter Development team [here](https://jupyter.readthedocs.io/en/latest/install.html).
+{% subsection Get Python3 and Jupyter Notebook %}
+
+First, download and install Python 3 and the Jupyter Notebook.
+Installation instructions are available from the Jupyter Development team [here](https://jupyter.readthedocs.io/en/latest/install.html).
 
 
-Now, use the [Downloads](https://revbayes.github.io/download) page to find RevBayes compilation instructions for your operating system. When building RevBayes, substitute
+{% subsection Get RevBayes %}
 
+
+RevBayes [pre-built executables](https://github.com/revbayes/revbayes/releases/) are designed to work with Jupyter. You may want to ensures that `rb` executable can be found using the `which` command or be located using the environment variable, `REVBAYES_JUPYTER_EXECUTABLE`. For instance, you can set the environment variable using
+
+```sh
+export REVBAYES_JUPYTER_EXECUTABLE=<revbayes_path>/rb
 ```
-./build.sh -jupyter true
-```
 
-for the normal build step. This will generate an `rb-jupyter` executeable. Add this executeable to your system path.
+{% subsection Connect RevBayes and Jupyter %}
+
 
 Finally, clone the RevBayes Jupyter Kernel.
 
@@ -43,7 +50,7 @@ Examples of RevNotebooks can be found in the RevNotebook [repository](https://gi
 
 {% section RStudio %}
 
-Compile or download RevBayes as appropriate for your system above. Add RevBayes to your system path.
+Compile or download RevBayes as appropriate for your system above. Note where on your computer it is stored.
 
 Download [R](https://cran.rstudio.com/) and [RStudio](https://rstudio.com/products/rstudio/download/). Once these are downloaded, start RStudio. Install the `remotes` package. We will also install the package `usethis` to aid with installation:
 
@@ -52,22 +59,20 @@ install.packages("remotes")
 install.packages("usethis")
 ```
 
-Use `remotes` to install RevKnitr:
+RStudio does not run RevBayes by default, as RevBayes is a separate piece of software from R or RStudio. Use `remotes` to install Revticulate, an R package for using RevBayes within R and RStudio environments:
 
 ```
 remotes::install_github("revbayes/Revticulate")
 ```
 
-Once installation is complete, type
+Once installation is complete, type into an RMarkdown cell:
 
 ```
 library(Revticulate)
+knitRev()
 ```
 
-in a markdown chunk or in the console. This will prompt Revticulate to open your .Renviron file. You will use this to place the path to RevBayes in the Renviron, providing R with the location of RevBayes so that Revticulate may execute code using it. You will enter into the file the location of RevBayes on your hard drive. For example, if I have RevBayes installed in my software directory, this will be:
+When you execute the above, Revticulate will run a package check.
+This check searches for and .Renviron file that contains a RevBayes path. If the package doesn’t find this file, or finds it without the path, the package prompts the user to use `usethis::edit_r_environ()`. This opens the .Renviron file, and the user will enter `rb={absolute path to revbayes}`. This can be edited at any time if there are multiple installs on the system, or if you recompile RevBayes and want to use a new version.
 
-```
-rb=/Users/software/rb
-```
-
-Now, you may use RevBayes in either KnitR or console. For examples of RevBayes used via Revticulate, see the [Revticulate website](https://paleantology.github.io/Revticulate/).
+Now, you may use RevBayes in either KnitR or console. For examples of RevBayes used via Revticulate, see the [Revticulate website](https://paleantology.github.io/Revticulate/) and our tutorial on [setting up RevBayes](https://revbayes.github.io/tutorials/tutorial_structure/).

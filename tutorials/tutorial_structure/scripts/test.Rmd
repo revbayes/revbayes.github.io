@@ -3,9 +3,8 @@ title: "Using RevBayes in R"
 author: "Caleb Charpentier and April Wright"
 date: Sys.Date()
 output: rmarkdown::html_vignette
-bibliography: refs.bib
 vignette: >
-  %\VignetteIndexEntry{Usage of Revticulate}
+  %\VignetteIndexEntry{Using RevBayes in R}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
@@ -17,7 +16,7 @@ Revticulate can be installed in two ways.
 The first is via CRAN, using the default `install.packages` function in R:
 
 
-```{r}
+```{r eval=FALSE}
 install.packages("Revticulate")
 ```
 
@@ -30,7 +29,7 @@ remotes::install_github("revbayes/Revticulate")
 
  The GitHub repository for Revticulate contains cutting-edge features and may contain bugfixes, but the CRAN is known to be stable for everyday use.
 
-Upon first installation, Revticulate will run a package check.  
+Upon first installation, Revticulate will run a package check.
 This check searches for and .Renviron file that contains a RevBayes path. If the package doesn’t find this file, or finds it without the path, the package prompts the user to use `usethis::edit_r_environ()`. This opens the .Renviron file, and the user will enter `rb={absolute path to revbayes}`. This can be edited at any time if there are multiple installs on the system, or if you recompile RevBayes and want to use a new version.
 
 Before using Revticulate in knitr, make sure the following is in your setup chunk:
@@ -40,7 +39,7 @@ library(Revticulate)
 knitRev()
 ```
 
-First, we will test that RevBayes is accessible to us. This is a Rev chunk, which we know becuase the header says 'rb'. This will fail if RevBayes cannot be found. If this is the case, check that the path in your Renviron goes to RevBayes, and restart.
+First, we will test that RevBayes is accessible to us. This is a Rev chunk, which we know because the header says 'rb'. This will fail if RevBayes cannot be found. If this is the case, check that the path in your Renviron goes to RevBayes, and restart.
 
 ```{rb}
 variable <- "Hi there! Welcome to RevBayes! I am now going to read in some test data."
