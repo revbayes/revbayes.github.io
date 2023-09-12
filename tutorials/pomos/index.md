@@ -45,7 +45,7 @@ Often, a reversible mutational model is considered. In this case, we break the m
 * Genetic drift is modeled according to the Moran model, in which one individual is chosen to die and one individual is chosen to reproduce at each time step. Selection acts to (dis)favor alleles by differentiated fitnesses: $\phi_{a_i}$. Together, genetic drift and selection govern the allele frequency changes:
 $$q_{\{na_i,(N-n)a_j\} \rightarrow \{(n+1)a_i,(N-n-1)a_j\}}=\frac{n(N-n)}{N}\phi_{a_i} \label{equation2}\tag{2}$$
 
-Like the standard substitution models, PoMos are continuous-time Markov models and are fully characterized by their rate matrices. The rates in \ref{equation1} and \ref{equation2} define the PoMos rate matrices. RevBayes includes a plethora of PoMo rate matrices that permit modeling population dynamics with any number of alleles, reversible mutations (i.e., $\mu_{a_ia_j}=\rho_{a_ia_j}\pi_{a_j}$) and selection. These are described in {% ref Table 1 %}.
+Like the standard substitution models, PoMos are continuous-time Markov models and are fully characterized by their rate matrices. The rates in \ref{equation1} and \ref{equation2} define the PoMos rate matrices. RevBayes includes a plethora of PoMo rate matrices that permit modeling population dynamics with any number of alleles, reversible mutations (i.e., $\mu_{a_ia_j}=\rho_{a_ia_j}\pi_{a_j}$) and selection. These are described in {% ref tab_pomo_models %}.
 
 {% table tab_pomo_models %}
 {% tabcaption %}
@@ -94,12 +94,12 @@ chr19 7495905   4,0,2,0                  2,0,0,0               
 The four allelic counts in this count file represent the allelic counts of the A, C, G, and T, respectively. Thus, we know that the ```Gorilla_gorilla_gorilla``` has an AG polymorphism at position 7 495 905 of chromosome 19. The allele order in the allelic counts can be any. However, you have to keep in mind that the vector of mutation rates, exchangeabilities, base frequencies, and fitness coefficients all follow the order of the allele counts in the count file:
 * the base frequencies and the fitness vectors are in the same order as in the counts: i.e., $$\{a_0,a_1,...,a_{K-1}\}$$;
 * the vector mutation rates (this vector is used in the non-reversible models) are $$\{a_0a_1, a_1a_0, a_0a_2, a_2a_0,...\}$$;
-* the vector of exchangeabilities follow a similar pattern as for the mutation rates, but without the reversed mutation: i.e., $$\{a_0a_1, a_0a_2, ...\}$$.
+* the vector of exchangeabilities follows a similar pattern as for the mutation rates, but without the reversed mutation: i.e., $$\{a_0a_1, a_0a_2, ...\}$$.
 
 
 {% section Loading the data [![Walkthrough video](/assets/img/YouTube_icon.svg){: height="36" width="36"}](https://youtu.be/acjouysOU04) | loading_data %}
 
-The first step in this tutorial is to convert the allelic counts into PoMo states. Open the terminal and place it in your working directory, lut us call it **PoMos**, but you can use a name of your preference. Inside **PoMos** create the usual **data** and **output** folders. Before starting to actually load the data, run **RevBayes** by typing ```./rb``` (or ```./rb-mpi```) in the console. Open the ```great_apes_pomothree.Rev``` file using an appropriate text editor so you can follow what each command is doing. Once you know what this ```.Rev``` script is doing in detail, you can automatically run it as follows:
+The first step in this tutorial is to convert the allelic counts into PoMo states. Open the terminal and place it in your working directory, let us call it **PoMos**, but you can use a name of your preference. Inside **PoMos** create the usual **data** and **output** folders. Before starting to actually load the data, run **RevBayes** by typing ```./rb``` (or ```./rb-mpi```) in the console. Open the ```great_apes_pomothree.Rev``` file using an appropriate text editor so you can follow what each command is doing. Once you know what this ```.Rev``` script is doing in detail, you can automatically run it as follows:
 
 ```
 ./rb great_apes_pomothree.Rev
@@ -159,7 +159,7 @@ Estimating an unrooted tree under the virtual PoMos requires specifying two main
 
 A given PoMo model is defined by its corresponding instantaneous-rate matrix, ```Q```. PoMoTwo and PoMoThree have three free parameters in common: the population size ```N```, the allele frequencies ```pi```, and the exchangeabilities ```rho```. PoMoThree additionally includes the allele fitnesses ```phi```, as it accounts for selection. We will set up the virtual PoMoTwo and Three using the function ```fnReversiblePoMo4N```. You can check the input parameters of any PoMo function by typing its name right after the question mark: ```?fnReversiblePoMo4N```.
 
-As expected, this function has as inputs parameters the population size ```N```, base frequencies, exchangeabilities ```rho``` and fitnesses ```phi```. We will first set out the PoMoThree, which we can do by setting $N$ to 3. Similarly, if you wanted to set out the neutral PoMo (i.e., PoMoTwo), you could set ```N``` to 2 instead. Thus, ```N``` is a fixed node, as we had prevously defined. 
+As expected, this function has as input parameters the population size ```N```, base frequencies, exchangeabilities ```rho``` and fitnesses ```phi```. We will first set out the PoMoThree, which we can do by setting $N$ to 3. Similarly, if you wanted to set out the neutral PoMo (i.e., PoMoTwo), you could set ```N``` to 2 instead. Thus, ```N``` is a fixed node, as we had previously defined. 
 
 Since ```pi```, ```rho```, and ```gamma``` are stochastic variables, we must specify a move to propose updates to them. A good move on variables drawn from a Dirichlet distribution (i.e., ```pi```) is the ```mvBetaSimplex```. This move randomly takes an element from the allele frequencies vector ```pi```, proposes a new value drawn from a beta distribution, and then rescales all values to sum to 1. The weight option inside the moves specifies how often the move will be applied, either on average per iteration or relative to all other moves.
 

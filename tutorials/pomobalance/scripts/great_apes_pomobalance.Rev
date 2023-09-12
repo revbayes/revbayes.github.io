@@ -1,0 +1,149 @@
+# RevBayes example: Bayesian inference of phylogeny using polymorphism-aware models (PoMoBalance)
+
+# Authors: Svitlana Braichenko, Rui Borges, and Carolin Kosiol
+
+# reading the PoMo alignment to use with virtual PoMoBalance 10
+
+N <- 10
+
+data <- readPoMoCountFile(countFile="data/great_apes_BS_10000.cf", virtualPopulationSize=N, format="PoMo")
+
+taxa       <- data.taxa()
+
+n_taxa     <- data.ntaxa()
+
+n_branches <- 2 * n_taxa - 3
+
+
+# set up moves and monitors 
+
+moves    = VectorMoves()  
+
+monitors = VectorMonitors()
+
+# setting the model of evolution
+
+# base frequencies
+
+pi_prior <- [0.25,0.25,0.25,0.25]
+
+pi ~ dnDirichlet(pi_prior)
+
+moves.append( mvBetaSimplex( pi , weight=2 ))
+
+
+# exchangebilities
+
+for (i in 1:6){
+
+  rho[i] ~ dnExponential(10.0)
+
+  moves.append(mvScale( rho[i], weight=2 ))
+
+}
+
+# Calculate mutation rates
+
+mu := [pi[2]*rho[1], pi[1]*rho[1], pi[3]*rho[2], pi[1]*rho[2], pi[4]*rho[3], pi[1]*rho[3], pi[3]*rho[4], pi[2]*rho[4], pi[4]*rho[5], pi[2]*rho[5], pi[4]*rho[6], pi[3]*rho[6]]
+
+sigma ~ dnExponential(10.0)
+
+moves.append(mvScale( sigma, weight=2 ))
+
+# Add this move to avid correlation between sigma and beta
+moves.append(mvAVMVN(sigma) )
+
+phi := [1.0,1.0+sigma,1.0+sigma,1.0]
+
+# Strenths of the balancing selection
+
+for (i in 1:6){
+
+  beta[i] ~ dnExponential(1.0)
+
+  moves.append( mvScale( beta[i], weight=30 ) )
+  
+  # Add this move to avoid a correlation between sigma and beta
+  moves.append(mvAVMVN(beta[i]) )
+  
+}
+
+# The preferred frequencies of balancing selection
+
+for (i in 1:6){
+
+  Num[i] ~ dnUniform(0.5,9.5)
+
+  moves.append( mvSlide( Num[i], weight=10 ) )
+  moves.append( mvScale( Num[i], weight=10 ) )
+
+  B[i] := round(Num[i])
+
+}
+
+# Rate matrix
+
+Q := fnPoMoBalance4N(N,mu,phi,beta,B)
+
+
+
+# Defining the tree
+
+# topology
+
+topology ~ dnUniformTopology(taxa)
+
+moves.append( mvNNI(topology, weight=2*n_taxa) )
+
+
+# branch lengths
+
+for (i in 1:n_branches) {
+
+   branch_lengths[i] ~ dnExponential(10.0)
+
+   moves.append( mvScale(branch_lengths[i]) )
+
+}
+
+psi := treeAssembly(topology, branch_lengths)
+
+# Create the substitution model and clamp with our observed data
+
+sequences ~ dnPhyloCTMC(psi,Q=Q,type="PoMo")
+
+sequences.clamp(data)
+
+# MCMC 
+
+# initialize the model object 
+
+mymodel = model(Q)
+
+
+#specify monitors and output files
+
+monitors.append(mnModel(filename="output/great_apes_pomobalance.log",printgen=10))
+  
+monitors.append( mnFile(filename="output/great_apes_pomobalance.trees", printgen=10, psi) )
+
+monitors.append(mnScreen(printgen=10))
+
+
+# mcmc sampling
+
+pbalance_mcmc = mcmc(mymodel,monitors,moves, nruns=4, combine="mixed")
+  
+pbalance_mcmc.burnin(generations=1000,tuningInterval=100)
+pbalance_mcmc.run(generations=10000)
+
+  
+# computing the maximum a posteriori tree
+
+trace = readTreeTrace("output/great_apes_pomobalance.trees", treetype="non-clock", burnin= 0.2)
+
+mapTree(trace, file="output/great_apes_pomobalance_MAP.tree" )
+
+# quiting revbayes
+
+q()

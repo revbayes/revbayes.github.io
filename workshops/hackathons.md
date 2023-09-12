@@ -15,6 +15,18 @@ If you are interested in developing in RevBayes and joining a hackathon, please 
 <td><b>Location</b></td>
 </tr>
 <tr>
+<td>April, 2023</td>
+<td>Germany, Iowa, North Carolina, Illinois, Missouri (virtual)</td>
+</tr>
+<tr>
+<td>October, 2021</td>
+<td>Germany and Iowa (in person and virtual)</td>
+</tr>
+<tr>
+<td>March, 2020</td>
+<td>Germany, Iowa, North Carolina, Missouri, Spain (virtual)</td>
+</tr>
+<tr>
 <td>March, 2018</td>
 <td>University of Minnesota, St. Paul, MN, USA</td>
 </tr>
@@ -31,5 +43,6 @@ If you are interested in developing in RevBayes and joining a hackathon, please 
 <td>University of California, Berkeley, USA</td>
 </tr>
 </table>
+
 
 
