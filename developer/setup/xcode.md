@@ -25,32 +25,28 @@ Set up the XCode Project with an internal build system
 ![](figures/xcode-adding_files.png)
     * _Note:_ On some versions of XCode, you may need to click on the "Options" Tab, and choose "Create Groups" for the import to work properly. This is the default behavior on most XCode installs.
 8. Add the boost library to your Xcode project:
-    * You have to install boost from another source and point your Xcode project to that version. If you use Homebrew as a package management system on your Mac, you can install boost using `brew install boost`. This will install the boost libraries in your `/usr/local` directory. To enable this version in your Xcode project, simply change these search paths:
+    * You have to install boost from another source and point your Xcode project to that version. If you use Homebrew as a package management system on your Mac, you can install boost using `brew install boost`. This will install the boost libraries in your `/usr/local` directory. To enable this version in your Xcode project, scroll to the **Search Paths** section in the **Build Settings** and add the following paths:
         * **Header Search Paths**: `/usr/local/include`
         * **Library Search Paths**: `/usr/local/lib`
-![](figures/xcode-adding_files.png)
-9. Add the boost linker flag
+![](figures/xcode-search-paths.png)
+9. Add boost linker flags
     * Scroll to the **Linking** section in the **Build Settings**
-    * Go to **Other Linker Flags** and double click on the space. This will bring up a box where you can add the flag `-lboost_program_options`.
+    * Go to **Other Linker Flags** and double click on the space. This will bring up a box where you can add the following flags: `-lboost_program_options`, `-lboost_filesystem`, `-lboost_system`.
 ![](figures/xcode-linking.png)
 
 ### Add the `RB_XCODE` Preprocessor Macro to your Xcode project
 
 1. Select the RevBayes project and go to the **Build Settings**.
-2. Search for or Scroll down to the **Apple LLVM X.X - Preprocessing** heading and find the sub-heading named **Preprocessor Macros**.
+2. Search for or Scroll down to the **Apple Clang - Preprocessing** heading and find the sub-heading named **Preprocessor Macros**.
 3. Double click on right hand column, click on the **+** and enter `RB_XCODE`. Do not replace the debug flag that is already present.
 ![](figures/xcode-macro.png)
 
 ### Check C++ language options
 
 1. Select the RevBayes project and go to the **Build Settings**.
-2. Search or scroll to: **Apple LLVM X.X - C++ - Language **.
-3. Make sure C++ Language Dialect is set to ***Compiler Default***.
-4. Make sure C++ Standard Library is set to ***Compiler Default***
-5. If you get compile errors with these settings, you might want to change these to:
-    * Make sure C++ Language Dialect is set to ***Gnu++ 98***.
-    * C++ Standard Library is set to ***libstdc++(Gnu C++)***
-![](figures/xcode-cpp_lang_options2.png)
+2. Search or scroll to: **Apple Clang - Language - C++**.
+3. Make sure C++ Language Dialect is set to **GNU++17 [-std=gnu++17]**.
+![](figures/xcode-cpp_lang_options.png)
 
 At this point, if everything has been setup correctly, you should be able to build the project. You can try by clicking on **Product - Build** or by using **&#8984;+B**.
 
