@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
-    <title>RevBayes: Developer</title>
+    <title>RevBayes: Postprocessing the Output</title>
   </head>
   <body>
     <div class="container">
@@ -51,100 +51,79 @@
   </div>
 </nav>
 
-      <h1 class="maintitle">
-
-Resources for Developers
-
-</h1>
-<hr>
-
-<h3 id="joining-the-revbayes-team">Joining the RevBayes Team</h3>
-
-<p>RevBayes is a collaborative software project involving developers from Europe and North America. 
-Since RevBayes is open source, everyone is free to clone the <a href="https://github.com/revbayes/revbayes">GitHub repository</a>. 
-If you would like to implement new methods or models in any of the RevBayes source code, you can contribute your work to the project by issuing a pull request on GitHub. 
-Alternatively, if you are interested in joining the RevBayes development team, please contact <a href="https://github.com/orgs/revbayes/people">one of the public members</a> to request access.
-Also consider attending a RevBayes <a href="/workshops/hackathons.html">hackathon</a> where the developers get together to work on the software.</p>
-
-<p>Before digging into the developer guide it may be useful to understand the user side of RevBayes. We have provided <a href="/tutorials/">tutorials</a> that walk through the basics of using directed acyclic graphs (DAGs) for conducting phylogenetic analyses in RevBayes.</p>
-
-<h3 id="developers-guide">Developer’s Guide</h3>
-
-<p>The RevBayes Developer’s Guide will provide you with the information needed to implement new methods, models, functions, and algorithms in the RevBayes language and core libraries.</p>
-
-<div class="tutorialbox">
-
-<div class="tutorial">
-<a class="title" href="/developer/git-flow.html"><p>RevBayes Git Workflow</p>
-</a>
-<p class="subtitle"><p>How to contribute code effectively</p>
-</p>
+      <div class="titlebar">
+	<h1 class="maintitle">Postprocessing the Output</h1>
+	<h3 class="subtitle">Plotting Population Size Trajectories and Checking for Convergence</h3>
+	<h4 class="authors">Ronja Billenstein and Sebastian Höhna</h4>
+  <h5>Last modified on October  4, 2023</h5>
 </div>
 
-<div class="tutorial">
-<a class="title" href="/developer/setup/"><p>Setting up an IDE for RevBayes</p>
-</a>
-<p class="subtitle"><p>Setting up XCode, Eclipse, vim</p>
-</p>
-</div>
 
-<div class="tutorial">
-<a class="title" href="/developer/architecture/"><p>Getting familiar with the code</p>
-</a>
-<p class="subtitle"><p>The architecture of the RevBayes source code</p>
-</p>
-</div>
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul id="prerequisites">
+          
+            <li><a href="/tutorials/coalescent/">Coalescent Analyses</a></li>
+          
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
 
-<div class="tutorial">
-<a class="title" href="/developer/automated_builds/"><p>Automated building and testing in RevBayes</p>
-</a>
-<p class="subtitle"><p>Quick automated feedback on code changes</p>
-</p>
-</div>
 
-<div class="tutorial">
-<a class="title" href="/developer/best_practices/"><p>Best practices in RevBayes</p>
-</a>
-<p class="subtitle"><p>Coding and documentation guidelines</p>
-</p>
-</div>
 
-<div class="tutorial">
-<a class="title" href="/developer/docker/"><p>Using Docker with RevBayes</p>
-</a>
-<p class="subtitle"><p>Containerized debugging and executeables</p>
-</p>
-</div>
 
-<div class="tutorial">
-<a class="title" href="/developer/implementation/"><p>Implementing functions, distributions, and moves</p>
-</a>
-<p class="subtitle"><p>Getting started with RevBayes development</p>
-</p>
-</div>
-
-<div class="tutorial">
-<a class="title" href="/developer/tests/"><p>Integration Tests in RevBayes</p>
-</a>
-<p class="subtitle"><p>Ensuring that code changes did not unexpectedly alter the software</p>
-</p>
-</div>
-
-<div class="tutorial">
-<a class="title" href="/developer/tutorial/"><p>Contributing a RevBayes tutorial</p>
-</a>
-<p class="subtitle"><p>How to write and host a tutorial on this website</p>
-</p>
-</div>
-
-<div class="tutorial">
-<a class="title" href="/developer/validation/"><p>Validation Scripts in RevBayes</p>
-</a>
-<p class="subtitle"><p>Ensuring correct performance of models and methods using simulations</p>
-</p>
-</div>
 
 </div>
+<h2 class="section" id="overview">Overview</h2>
+<hr class="section" />
+
+<p>This exercise describes how to plot the results from a coalescent analysis with <code class="language-plaintext highlighter-rouge">RevBayes</code>.
+You need the <code class="language-plaintext highlighter-rouge">R</code> package <code class="language-plaintext highlighter-rouge">RevGadgets</code> from the <code class="language-plaintext highlighter-rouge">development</code> branch.</p>
+
+<h2 class="section" id="processing-output">Processing Output</h2>
+<hr class="section" />
+
+<p>With <code class="language-plaintext highlighter-rouge">RevGadgets</code>, you can use the function <code class="language-plaintext highlighter-rouge">processPopSizes</code> to summarize your output.
+Type <code class="language-plaintext highlighter-rouge">?processPopSizes</code> in <code class="language-plaintext highlighter-rouge">R</code> to see the parameters of the function.</p>
+
+<h2 class="section" id="plotting-population-size-trajectories">Plotting Population Size Trajectories</h2>
+<hr class="section" />
+
+<p>For plotting the population size trajectory from your analysis, you need the <code class="language-plaintext highlighter-rouge">plotPopSizes</code> function.
+Type <code class="language-plaintext highlighter-rouge">?plotPopSizes</code> in <code class="language-plaintext highlighter-rouge">R</code> to see the parameters of the function.
+The input should be a dataframe created with <code class="language-plaintext highlighter-rouge">processPopSizes</code> with the option <code class="language-plaintext highlighter-rouge">distribution = FALSE</code>, which is the default.</p>
+
+<h2 class="section" id="checking-for-convergence">Checking for Convergence</h2>
+<hr class="section" />
+
+<p>To check for convergence, you can calculate the Kolmogorov-Smirnov test statistic for the population size distributions.
+By using <code class="language-plaintext highlighter-rouge">processPopSizes</code> with <code class="language-plaintext highlighter-rouge">distribution = TRUE</code>, you get these distributions at your choice of grid points.</p>
+
+<ol class="bibliography"></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
 
       <br>
 <footer>
@@ -169,14 +148,14 @@ Also consider attending a RevBayes <a href="/workshops/hackathons.html">hackatho
 $(":not(code).highlighter-rouge").each(function() {
   
   if( this.classList == "highlighter-rouge") {
-    this.classList = "default highlighter-rouge";
+    this.classList = "Rev highlighter-rouge";
   }
   
 });
 // $("code.highlighter-rouge").each(function() {
 //   
 //   if( this.classList == "highlighter-rouge") {
-//       this.classList = "default highlighter-rouge";
+//       this.classList = "Rev highlighter-rouge";
 //   }
 //   
 // });
