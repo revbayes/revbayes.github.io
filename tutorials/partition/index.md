@@ -164,14 +164,14 @@ Typing ‘data‘ reports the dimensions of the concatenated matrix, this
 provides information about the alignment:
 
 ```
-       DNA character matrix with 23 taxa and 1852 characters
-       =====================================================
-       Origination:                   primates_and_galeopterus_cox2.nex
-       Number of taxa:                23
-       Number of included taxa:       23
-       Number of characters:          1852
-       Number of included characters: 1852
-       Datatype:                      DNA
+   DNA character matrix with 23 taxa and 1837 characters
+   =====================================================
+   Origination:                   "primates_and_galeopterus_cox2.nex"
+   Number of taxa:                23
+   Number of included taxa:       23
+   Number of characters:          1837
+   Number of included characters: 1837
+   Datatype:                      DNA
 ```
 {:.Rev-output}
 For later use, we will store the taxon information (‘taxa‘) and the
@@ -605,19 +605,19 @@ specify a random variable for our tree parameter which is the same as
 was specified for mcmc_Partition_uniform.Rev.
 ```
 out_group = clade("Galeopterus_variegatus")
-# Prior distribution on the tree topology	
+# Prior distribution on the tree topology
 topology ~ dnUniformTopology(taxa, outgroup=out_group)
 moves.append( mvNNI(topology, weight=n_taxa/2.0) )
 moves.append( mvSPR(topology, weight=n_taxa/10.0) )
 
 # Branch length prior
-for (i in 1:n_branches) {
+for (i in 1:num_branches) {
     bl[i] ~ dnExponential(10.0)
-	moves.append( mvScale(bl[i]) )
+    moves.append( mvScale(bl[i]) )
 }
 
 TL := sum(bl)
-	
+
 psi := treeAssembly(topology, bl)
 ```
 
