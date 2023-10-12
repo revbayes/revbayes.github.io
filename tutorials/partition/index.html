@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Partitioned data analysis</h1>
 	<h3 class="subtitle">Current Protocols in Bioinformatics - Phylogenetic Inference using RevBayes (Protocol &#35;2)</h3>
 	<h4 class="authors">Sebastian Höhna, Michael J. Landis and Tracy A. Heath</h4>
-  <h5>Last modified on August 17, 2023</h5>
+  <h5>Last modified on October 13, 2023</h5>
 </div>
 
 
@@ -271,14 +271,14 @@ genes, we need to combine the two datasets using
 <p>Typing ‘data‘ reports the dimensions of the concatenated matrix, this
 provides information about the alignment:</p>
 
-<div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>       DNA character matrix with 23 taxa and 1852 characters
-       =====================================================
-       Origination:                   primates_and_galeopterus_cox2.nex
-       Number of taxa:                23
-       Number of included taxa:       23
-       Number of characters:          1852
-       Number of included characters: 1852
-       Datatype:                      DNA
+<div class="language-plaintext Rev-output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   DNA character matrix with 23 taxa and 1837 characters
+   =====================================================
+   Origination:                   "primates_and_galeopterus_cox2.nex"
+   Number of taxa:                23
+   Number of included taxa:       23
+   Number of characters:          1837
+   Number of included characters: 1837
+   Datatype:                      DNA
 </code></pre></div></div>
 <p>For later use, we will store the taxon information (‘taxa‘) and the
 number of taxa and branches.</p>
@@ -664,19 +664,19 @@ probability for a site being invariant for this gene), or you create the
 specify a random variable for our tree parameter which is the same as
 was specified for mcmc_Partition_uniform.Rev.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>out_group = clade("Galeopterus_variegatus")
-# Prior distribution on the tree topology	
+# Prior distribution on the tree topology
 topology ~ dnUniformTopology(taxa, outgroup=out_group)
 moves.append( mvNNI(topology, weight=n_taxa/2.0) )
 moves.append( mvSPR(topology, weight=n_taxa/10.0) )
 
 # Branch length prior
-for (i in 1:n_branches) {
+for (i in 1:num_branches) {
     bl[i] ~ dnExponential(10.0)
-	moves.append( mvScale(bl[i]) )
+    moves.append( mvScale(bl[i]) )
 }
 
 TL := sum(bl)
-	
+
 psi := treeAssembly(topology, bl)
 </code></pre></div></div>
 
