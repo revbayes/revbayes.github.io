@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Setting up XCode for RevBayes development</h1>
 	
 	<h4 class="authors"></h4>
-  <h5>Last modified on March 12, 2020</h5>
+  <h5>Last modified on October  3, 2023</h5>
 </div>
 
 <p>XCode is an IDE for Mac OSX. XCode does not keep track of files, so each time you open your RevBayes project in Xcode you must pull the RevBayes master branch from git &amp; remove reference to all of the source. Eclipse Oxygen does a cleaner job of managing the files; you do not need to pull from git each time you work in it.</p>
@@ -85,19 +85,19 @@
   </li>
   <li>Add the boost library to your Xcode project:
     <ul>
-      <li>You have to install boost from another source and point your Xcode project to that version. If you use Homebrew as a package management system on your Mac, you can install boost using <code class="language-plaintext highlighter-rouge">brew install boost</code>. This will install the boost libraries in your <code class="language-plaintext highlighter-rouge">/usr/local</code> directory. To enable this version in your Xcode project, simply change these search paths:
+      <li>You have to install boost from another source and point your Xcode project to that version. If you use Homebrew as a package management system on your Mac, you can install boost using <code class="language-plaintext highlighter-rouge">brew install boost</code>. This will install the boost libraries in your <code class="language-plaintext highlighter-rouge">/usr/local</code> directory. To enable this version in your Xcode project, scroll to the <strong>Search Paths</strong> section in the <strong>Build Settings</strong> and add the following paths:
         <ul>
           <li><strong>Header Search Paths</strong>: <code class="language-plaintext highlighter-rouge">/usr/local/include</code></li>
           <li><strong>Library Search Paths</strong>: <code class="language-plaintext highlighter-rouge">/usr/local/lib</code>
-<img src="figures/xcode-adding_files.png" alt="" /></li>
+<img src="figures/xcode-search-paths.png" alt="" /></li>
         </ul>
       </li>
     </ul>
   </li>
-  <li>Add the boost linker flag
+  <li>Add boost linker flags
     <ul>
       <li>Scroll to the <strong>Linking</strong> section in the <strong>Build Settings</strong></li>
-      <li>Go to <strong>Other Linker Flags</strong> and double click on the space. This will bring up a box where you can add the flag <code class="language-plaintext highlighter-rouge">-lboost_program_options</code>.
+      <li>Go to <strong>Other Linker Flags</strong> and double click on the space. This will bring up a box where you can add the following flags: <code class="language-plaintext highlighter-rouge">-lboost_program_options</code>, <code class="language-plaintext highlighter-rouge">-lboost_filesystem</code>, <code class="language-plaintext highlighter-rouge">-lboost_system</code>.
 <img src="figures/xcode-linking.png" alt="" /></li>
     </ul>
   </li>
@@ -107,7 +107,7 @@
 
 <ol>
   <li>Select the RevBayes project and go to the <strong>Build Settings</strong>.</li>
-  <li>Search for or Scroll down to the <strong>Apple LLVM X.X - Preprocessing</strong> heading and find the sub-heading named <strong>Preprocessor Macros</strong>.</li>
+  <li>Search for or Scroll down to the <strong>Apple Clang - Preprocessing</strong> heading and find the sub-heading named <strong>Preprocessor Macros</strong>.</li>
   <li>Double click on right hand column, click on the <strong>+</strong> and enter <code class="language-plaintext highlighter-rouge">RB_XCODE</code>. Do not replace the debug flag that is already present.
 <img src="figures/xcode-macro.png" alt="" /></li>
 </ol>
@@ -116,16 +116,9 @@
 
 <ol>
   <li>Select the RevBayes project and go to the <strong>Build Settings</strong>.</li>
-  <li>Search or scroll to: **Apple LLVM X.X - C++ - Language **.</li>
-  <li>Make sure C++ Language Dialect is set to <strong><em>Compiler Default</em></strong>.</li>
-  <li>Make sure C++ Standard Library is set to <strong><em>Compiler Default</em></strong></li>
-  <li>If you get compile errors with these settings, you might want to change these to:
-    <ul>
-      <li>Make sure C++ Language Dialect is set to <strong><em>Gnu++ 98</em></strong>.</li>
-      <li>C++ Standard Library is set to <strong><em>libstdc++(Gnu C++)</em></strong>
-<img src="figures/xcode-cpp_lang_options2.png" alt="" /></li>
-    </ul>
-  </li>
+  <li>Search or scroll to: <strong>Apple Clang - Language - C++</strong>.</li>
+  <li>Make sure C++ Language Dialect is set to <strong>GNU++17 [-std=gnu++17]</strong>.
+<img src="figures/xcode-cpp_lang_options.png" alt="" /></li>
 </ol>
 
 <p>At this point, if everything has been setup correctly, you should be able to build the project. You can try by clicking on <strong>Product - Build</strong> or by using <strong>⌘+B</strong>.</p>

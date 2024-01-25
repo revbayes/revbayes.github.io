@@ -1,0 +1,105 @@
+							
+###################
+#
+#	Mk model multistate+GV
+#
+####################
+
+
+taxa <- morpho.names()
+num_taxa <- taxa.size()
+num_branches <- 2 * num_taxa - 3
+
+
+moves = VectorMoves()
+
+
+##############
+# Tree model #
+##############
+
+tree_length ~ dnExponential(1)
+moves.append( mvSlide(tree_length) )
+
+relative_bl ~ dnDirichlet(rep(1, num_branches))
+moves.append( mvBetaSimplex(relative_bl, weight = num_branches / 2.0) )
+
+bl := tree_length * relative_bl
+
+topology ~ dnUniformTopology(taxa)
+moves.append( mvNNI(topology, weight = num_branches / 2.0) )
+moves.append( mvSPR(topology, weight = num_branches / 10.0) )
+
+phylogeny := treeAssembly(topology, bl)
+
+###############################################
+#Gamma-distributed rate variation
+###############################################
+
+# Set up Gamma-distributed rate variation.
+# alpha_morpho ~ dnUniform( 0.0, 1E6 )
+# alpha_morpho.setValue(1)
+alpha_inv ~ dnExponential(1)
+#alpha_inv.setValue(0.1)
+alpha_morpho := 1 / alpha_inv
+rates_morpho := fnDiscretizeGamma( alpha_morpho, alpha_morpho, 4 ) 
+
+# Moves on the parameters to the Gamma distribution.
+moves.append( mvScale(alpha_inv, lambda=0.01, weight=2.0, tune = FALSE) )
+moves.append( mvScale(alpha_inv, lambda=0.1, weight=2.0, tune = FALSE) )
+moves.append( mvScale(alpha_inv, lambda=1, weight=2.0, tune = FALSE) )
+
+
+
+## mikes moves
+
+#tl_alpha_joint_move = mvAVMVN(waitBeforeLearning = 100, waitBeforeUsing = 500, maxUpdates = 1000, weight = 5, tuneTarget = 0.24)
+#tl_alpha_joint_move.addVariable(tree_length)
+#tl_alpha_joint_move.addVariable(alpha_inv)
+#moves.append(tl_alpha_joint_move)
+
+
+######################
+# Substitution Model #
+######################
+
+#### specify the Jukes-Cantor substitution model applied uniformly to all sites ###
+#Q := fnJC(int(num_states)) 
+
+n_max_states <- int(num_states)
+idx = 1
+morpho_bystate[1] <- morpho
+for (i in 2:n_max_states) {
+    morpho_bystate[i] <- morpho                                # make local tmp copy of data
+    morpho_bystate[i].setNumStatesPartition(i)                 # only keep character blocks with state space equal to size i
+    nc = morpho_bystate[i].nchar()                             # get number of characters per character size with i-sized states
+
+    if (nc > 0) {                                              # for non-empty character blocks
+        q[idx] <- fnJC(i)                                      # make i-by-i rate matrix
+        m_morph[idx] ~ dnPhyloCTMC( tree=phylogeny,
+                                    Q=q[idx],
+                                    nSites=nc,
+                                    siteRates=rates_morpho,
+                                    type="Standard",
+                                    coding = "variable")           # create model of evolution for the character block
+
+        m_morph[idx].clamp(morpho_bystate[i])                  # attach the data
+
+        idx = idx + 1                                          # increment counter
+        idx
+    }
+}
+
+
+
+#############
+# THE Model #
+#############
+
+# We define our model.
+# We can use any node of our model as a handle, here we chose to use the rate matrix.
+mymodel = model(phylogeny)
+
+
+
+
