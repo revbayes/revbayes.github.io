@@ -1,18 +1,17 @@
-################################################################################
+							
+###################
 #
-# RevBayes Example: Model adequacy testing using posterior prediction for morphological substitution models.
+#	Mk model multistate+GV
 #
-# authors: Laura Mulvey
-#
-# Script adapted from: Discrete morphology - Multistate Characters
-# author: April Wright
-#
-################################################################################
+####################
 
-# helper variables
+
 taxa <- morpho.names()
 num_taxa <- taxa.size()
 num_branches <- 2 * num_taxa - 3
+
+
+moves = VectorMoves()
 
 
 ##############
@@ -23,11 +22,9 @@ br_len_lambda ~ dnExp(0.2)
 moves.append(mvScale(br_len_lambda, weight=2))
 
 phylogeny ~ dnUniformTopologyBranchLength(taxa, branchLengthDistribution=dnExponential(br_len_lambda))
-
 moves.append(mvNNI(phylogeny, weight=num_branches/2.0))
 moves.append(mvSPR(phylogeny, weight=num_branches/10.0))
 moves.append(mvBranchLengthScale(phylogeny, weight=num_branches))
-
 tree_length := phylogeny.treeLength()
 
 ###############################################
@@ -35,13 +32,12 @@ tree_length := phylogeny.treeLength()
 ###############################################
 
 # Set up Gamma-distributed rate variation.
-alpha_morpho ~ dnUniform( 0.0, 1E5 )
-#alpha_morpho.setValue(1)
+ alpha_morpho ~ dnUniform( 0.0, 1E5 )
+ alpha_morpho.setValue(1)
 rates_morpho := fnDiscretizeGamma( alpha_morpho, alpha_morpho, 4 ) 
 
 # Moves on the parameters to the Gamma distribution.
 moves.append(mvScale(alpha_morpho, lambda=1, weight=2.0))
-
 ######################
 # Substitution Model #
 ######################
@@ -69,7 +65,7 @@ for (i in 2:n_max_states) {
         m_morph[idx].clamp(morpho_bystate[i])                  # attach the data
 
         idx = idx + 1                                          # increment counter
-        #idx
+        idx
     }
 }
 

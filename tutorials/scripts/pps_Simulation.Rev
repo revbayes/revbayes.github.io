@@ -1,19 +1,10 @@
 ################################################################################
 #
-# RevBayes Example: Model adequacy testing using posterior prediction for morphological substitution models.
-#
-# authors: Laura Mulvey
-#
-# Scripts adapted from: Model adequacy testing using posterior prediction for 
-#                    morpholgical substitution models.
+# RevBayes Example: Bayesian model testing using posterior predictive simulation
 #
 # authors: Lyndon M. Coghill, Sebastian Hoehna and Jeremy M. Brown
 #
 ################################################################################
-
-# create some vector for the moves and monitors of this analysis
-moves    = VectorMoves()
-monitors = VectorMonitors()
 
 source( model_file_name )
 
@@ -24,4 +15,4 @@ trace = readStochasticVariableTrace("output_" + model_name + "/" + analysis_name
 pps = posteriorPredictiveSimulation(mymodel, directory="output_" + model_name + "/" + analysis_name + "_post_sims", trace)
 
 # "Running the posterior predictive simulation"
-pps.run(thinning=4)
+pps.run(thinning=1)

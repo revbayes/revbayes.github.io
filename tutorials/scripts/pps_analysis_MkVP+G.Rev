@@ -1,0 +1,29 @@
+################################################################################
+#
+# RevBayes Example: Model adequacy testing using posterior prediction for morpholgical substitution models.
+#
+# authors: Lyndon M. Coghill, Sebastian Hoehna and Jeremy M. Brown
+#
+################################################################################
+
+## EMPIRICAL MCMC
+#inFile = "data/Egi_etal_2005.nex"
+#analysis_name = "pps_morpho_example"
+#morpho <- readDiscreteCharacterData(inFile)
+#model_name = "MkVP+G"
+#model_file_name = "scripts/pps_"+model_name+"_Model.Rev"
+#num_states <- "5"
+#source("scripts/pps_MCMC_Simulation.Rev")
+#clear()
+
+## POSTERIOR PREDICTIVE DATA SIMULATION
+inFile = "data/Egi_etal_2005.nex"
+analysis_name = "pps_morpho_example"
+morpho <- readDiscreteCharacterData(inFile)
+model_name = "MkVP+G"
+num_states <- "5"
+model_file_name = "scripts/pps_"+model_name+"_Model.Rev"
+source("scripts/pps_Simulation.Rev")
+clear()
+
+q()

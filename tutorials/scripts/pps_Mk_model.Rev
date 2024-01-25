@@ -1,0 +1,62 @@
+################################################################################
+#
+# RevBayes Example: Model adequacy testing using posterior prediction for morpholgical substitution models.
+#
+# authors: Laura Mulvey, Rachel Warnock, Mike May
+#
+################################################################################
+
+# helpers
+taxa <- morpho.names()
+num_taxa <- taxa.size()
+num_branches <- 2 * num_taxa - 3
+
+
+# create some vector for the moves and monitors of this analysis
+moves    = VectorMoves()
+
+
+##############
+# Tree model #
+##############
+
+tree_length ~ dnExponential(1)
+moves.append( mvSlide(tree_length) )
+
+relative_bl ~ dnDirichlet(rep(1, num_branches))
+moves.append( mvBetaSimplex(relative_bl, weight = num_branches / 2.0) )
+
+bl := tree_length * relative_bl
+
+topology ~ dnUniformTopology(taxa)
+moves.append( mvNNI(topology, weight = num_branches / 2.0) )
+moves.append( mvSPR(topology, weight = num_branches / 10.0) )
+
+phylogeny := treeAssembly(topology, bl)
+
+######################
+# Substitution Model #
+######################
+Q := fnJC(int(num_states)) 
+
+
+###################
+# PhyloCTMC Model #
+###################
+
+
+# the sequence evolution model
+seq ~ dnPhyloCTMC(tree=phylogeny, Q=Q, type="Standard")
+
+# attach the data
+seq.clamp(morpho)
+
+
+#############
+# THE Model #
+#############
+
+# We define our model.
+# We can use any node of our model as a handle, here we chose to use the rate matrix.
+mymodel = model(phylogeny)
+
