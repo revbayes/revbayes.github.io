@@ -87,6 +87,14 @@ echo "Pulling master"
 )
 echo
 
+# build the site
+echo "Running jekyll to build the static site."
+if ! bundle exec jekyll build; then
+    echo "Jekyll build failed. Master not updated."
+    exit 1
+fi
+echo
+
 # Push the source BEFORE we push master.
 # If the push to source fails, we don't want to update master.
 
@@ -96,14 +104,7 @@ git push --quiet origin source
 echo "   Updated the source branch!"
 echo
 
-# build the site
-echo "Running jekyll to build the static site."
-if ! bundle exec jekyll build; then
-    echo "Jekyll build failed. Master not updated."
-    exit 1
-fi
-echo
-
+# deploy master
 (
     cd _site
 
