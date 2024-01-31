@@ -63,6 +63,12 @@ git pull origin source
     fi
 )
 
+# Push the source BEFORE we push master.
+# If the push to source fails, we don't want to update master.
+
+# deploy source
+git push --quiet origin source
+
 # build the site
 if ! bundle exec jekyll build; then
     echo "Jekyll build failed. Master not updated."
@@ -88,7 +94,5 @@ fi
     fi
 )
 
-# deploy source
-git push --quiet origin source
 echo "Deployment complete."
 
