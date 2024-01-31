@@ -14,6 +14,9 @@ then
     exit 1
 fi
 
+trap "echo; echo 'FAILED!'" EXIT
+trap "echo; echo 'FAILED! (Interrupted)'" SIGINT
+
 # make sure we are on source branch
 branch=`git rev-parse --abbrev-ref HEAD`
 
@@ -93,6 +96,8 @@ fi
         echo "Successfully built and pushed to master."
     fi
 )
+
+trap - EXIT
 
 echo "Deployment complete."
 
