@@ -1,0 +1,36 @@
+################################################################################
+#
+# RevBayes Example: Model adequacy testing using posterior prediction for morphological substitution models.
+#
+# authors: Laura Mulvey
+#
+# Scripts adapted from: Model adequacy testing using posterior prediction for 
+#                    morpholgical substitution models.
+#
+# authors: Lyndon M. Coghill, Sebastian Hoehna and Jeremy M. Brown
+#
+################################################################################
+
+# create some vector for the moves and monitors of this analysis
+moves    = VectorMoves()
+monitors = VectorMonitors()
+
+
+source( model_file_name )
+
+
+
+monitors.append( mnModel(filename="output_" + model_name + "/" + analysis_name + "_posterior.log",printgen=10, separator = TAB)) 
+monitors.append( mnFile(filename="output_" + model_name + "/" + analysis_name + "_posterior.trees",printgen=10, separator = TAB, phylogeny) )
+monitors.append( mnScreen(printgen=1000, tree_length) )
+monitors.append( mnStochasticVariable(filename="output_" + model_name + "/" + analysis_name + "_posterior.var",printgen=10) )
+
+
+mymcmc = mcmc(mymodel, monitors, moves, nruns=2, combine="mixed")
+mymcmc.burnin(generations=200,tuningInterval=200)
+mymcmc.run(generations=10000,tuningInterval=200)
+
+
+# get the MCC summary tree
+trace = readTreeTrace("output_" + model_name + "/" + analysis_name + "_posterior.trees")
+mccTree(trace, file="output_" + model_name + "/MCC.tre")
