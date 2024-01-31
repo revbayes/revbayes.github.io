@@ -26,6 +26,23 @@ then
     exit 1
 fi
 
+remote=`git remote get-url origin`
+
+case $remote in
+    git@*) ;;
+    *) echo "Error: The repo URL must start with git@ to be writeable"
+       echo
+       echo "But your repo URL is"
+       echo "    $remote"
+       echo
+       echo "To fix, run"
+       echo "    git remote rm origin"
+       echo "    git remote add origin git@github.com:revbayes/revbayes.github.io.git"
+       echo
+       exit 1
+       ;;
+esac
+
 # if the _site directory is missing, create it.
 # (we assume later that it exists).
 if [ ! -d "_site" ] ; then
