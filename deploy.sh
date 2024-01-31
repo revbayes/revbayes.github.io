@@ -61,12 +61,15 @@ fi
 
 msg=`git log -1 --pretty=%B`
 
-git pull origin source
+echo "Pulling updates to the source"
+git pull --quiet origin source
+echo
 
 # fetch master
+echo "Pulling master"
 (
     cd _site
-    git checkout master
+    git checkout --quiet master
     git fetch --quiet origin
     git reset --quiet --hard origin/master
 
@@ -82,18 +85,24 @@ git pull origin source
         git ls-files --deleted -z documentation | git update-index --assume-unchanged -z --stdin
     fi
 )
+echo
 
 # Push the source BEFORE we push master.
 # If the push to source fails, we don't want to update master.
 
 # deploy source
+echo "Pushing source files."
 git push --quiet origin source
+echo "   Updated the source branch!"
+echo
 
 # build the site
+echo "Running jekyll to build the static site."
 if ! bundle exec jekyll build; then
     echo "Jekyll build failed. Master not updated."
     exit 1
 fi
+echo
 
 (
     cd _site
@@ -107,12 +116,14 @@ fi
         cd ..
     else
         # deploy the static site
+        echo "Updating the master branch."
         git add . && \
             git commit -am "$msg" && \
             git push --quiet origin master
-        echo "Successfully built and pushed to master."
+        echo "   Successfully built and pushed to master!"
     fi
 )
+echo
 
 trap - EXIT
 
