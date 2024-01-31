@@ -1,0 +1,60 @@
+################################################################################
+#
+# RevBayes Example: Model adequacy testing using posterior prediction for morphological substitution models.
+#
+# authors: Laura Mulvey
+#
+# Script adapted from: Discrete morphology - Multistate Characters
+# author: April Wright
+#
+################################################################################
+
+# helper variables
+taxa <- morpho.names()
+num_taxa <- taxa.size()
+num_branches <- 2 * num_taxa - 3
+
+moves    = VectorMoves()
+
+
+##############
+# Tree model #
+##############
+
+br_len_lambda ~ dnExp(0.2)
+moves.append(mvScale(br_len_lambda, weight=2))
+
+phylogeny ~ dnUniformTopologyBranchLength(taxa, branchLengthDistribution=dnExponential(br_len_lambda))
+moves.append(mvNNI(phylogeny, weight=num_branches/2.0))
+moves.append(mvSPR(phylogeny, weight=num_branches/10.0))
+moves.append(mvBranchLengthScale(phylogeny, weight=num_branches))
+
+
+tree_length := phylogeny.treeLength()
+
+######################
+# Substitution Model #
+######################
+Q := fnJC(int(num_states)) 
+
+
+###################
+# PhyloCTMC Model #
+###################
+
+
+# the sequence evolution model
+seq ~ dnPhyloCTMC(tree=phylogeny, Q=Q, type="Standard")
+
+# attach the data
+seq.clamp(morpho)
+
+
+#############
+# THE Model #
+#############
+
+# We define our model.
+# We can use any node of our model as a handle, here we chose to use the phylogeney.
+mymodel = model(phylogeny)
+
