@@ -45,7 +45,7 @@ confidence that the model is capturing the properties of the empirical data
 and can be used for an analysis. In this way, PPS provides the absolute fit of an
 evolutionary model to a given data set. 
 
-In this tutorial, we will walk through how to use PPS to detemine the fit of a model
+In this tutorial, we will walk through how to use PPS to determine the fit of a model
 to a data set of Hyaenodontidae taken from {% cite Egi2005 %}.
 We will test two models in this tutorial. Each test is completely seperate from
 the other as we are determining the absolute fit of the model to the data set. 
