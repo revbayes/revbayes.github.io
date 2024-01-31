@@ -39,14 +39,14 @@ therefore crucial in order to have confidence in the inference results. Posterio
 prediction is a Bayesian approach to assess the fit of a model to a given data set
 {% cite Bollback2002 Brown2014 Hoehna2018a %}. PPS works by simulating data sets
 based on parameters sampled from the posterior distribution
-({% ref pps_schematic %}) . If the simulated data is found to be similar to the
+({% ref pps_schematic %}). If the simulated data is found to be similar to the
 empirical data, according to the chosen test statistics, you can have
 confidence that the model is capturing the properties of the empirical data 
 and can be used for an analysis. In this way, PPS provides the absolute fit of an
 evolutionary model to a given data set. 
 
 In this tutorial, we will walk through how to use PPS to detemine the fit of a model
-to a data set of Hyaenodontidae taken from {% cite Egi2005 %}
+to a data set of Hyaenodontidae taken from {% cite Egi2005 %}.
 We will test two models in this tutorial. Each test is completely seperate from
 the other as we are determining the absolute fit of the model to the data set. 
 
