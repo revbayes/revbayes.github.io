@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Assessing Phylogenetic Reliability Using RevBayes and $P^{3}$</h1>
 	<h3 class="subtitle">Model adequacy testing using posterior prediction (Morphological Models).</h3>
 	<h4 class="authors">Laura Mulvey</h4>
-  <h5>Last modified on January 25, 2024</h5>
+  <h5>Last modified on January 31, 2024</h5>
 </div>
 
 
@@ -97,7 +97,7 @@
         
           <li><a href="/tutorials/pps_morpho/data/Agnolin_2007a_paleobiodb.nex">Agnolin_2007a_paleobiodb.nex</a></li>
         
-          <li><a href="/tutorials/pps_morpho/data/Egi_etal_2005a_paleobiodb.nex">Egi_etal_2005a_paleobiodb.nex</a></li>
+          <li><a href="/tutorials/pps_morpho/data/Egi_etal_2005.nex">Egi_etal_2005.nex</a></li>
         
         </ul>
     
@@ -115,27 +115,13 @@
         
           <li><a href="/tutorials/pps_morpho/scripts/pps_MCMC.Rev">pps_MCMC.Rev</a></li>
         
-          <li><a href="/tutorials/model_testing_pps/scripts/pps_Simulation.Rev">pps_Simulation.Rev</a></li>
-        
           <li><a href="/tutorials/pps_morpho/scripts/pps_Simulation.Rev">pps_Simulation.Rev</a></li>
+        
+          <li><a href="/tutorials/model_testing_pps/scripts/pps_Simulation.Rev">pps_Simulation.Rev</a></li>
         
           <li><a href="/tutorials/pps_morpho/scripts/pps_analysis_Mk.Rev">pps_analysis_Mk.Rev</a></li>
         
           <li><a href="/tutorials/pps_morpho/scripts/pps_analysis_MkVP+G.Rev">pps_analysis_MkVP+G.Rev</a></li>
-        
-        </ul>
-    
-        
-        <strong>Other</strong>
-        <ul id="other_files">
-        
-        
-        
-          <li><a href="/tutorials/scripts/pps_Simulation.Rev">pps_Simulation.Rev</a></li>
-        
-          <li><a href="/tutorials/scripts/pps_analysis_Mk.Rev">pps_analysis_Mk.Rev</a></li>
-        
-          <li><a href="/tutorials/scripts/pps_analysis_MkVP+G.Rev">pps_analysis_MkVP+G.Rev</a></li>
         
         </ul>
     
@@ -238,7 +224,7 @@ the previous tutorial. We provide scripts for two subsitution models here:</p>
 <h2 class="section" id="assessing-model-fit-with-posterior-prediction">Assessing Model Fit with Posterior Prediction</h2>
 <hr class="section" />
 
-<p>Here we will highlight the main parts of the analysis. The morpholgoical data used here is of a family of extinct birds from the Miocene <a class="citation" href="#agnolin2007">(Agnolin 2007)</a>. The data set contains 12 taxa, 
+<p>Here we will highlight the main parts of the analysis. The morpholgoical data used here is of a family of extinct birds from the Miocene (missing reference). The data set contains 12 taxa, 
 51 characters with a maximum 4 character states. To quickly run the entire PPS pipeline you can run 
 the <strong>pps_analysis_Mk.Rev</strong> script. To run this type the following command into <code class="language-plaintext highlighter-rouge">RevBayes</code></p>
 
@@ -263,7 +249,7 @@ model we will use for the analysis, either Mk or MkVP+G.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>analysis_name = "pps_morpho_example"
 model_name = "Mk"
-model_file_name = "scripts/pps_"+model_name+"_Model.Rev"
+model_file_name = "scripts/" +model_name+"_Model.Rev"
 </code></pre></div></div>
 
 <p>Next specify and read in the data file.</p>
@@ -304,7 +290,14 @@ Typing the following command into <code class="language-plaintext highlighter-ro
 </code></pre></div></div>
 <p>Opening the model file, we can see how we have set it up.</p>
 
-<p>The first part of the file specifies the tree model.
+<p>First we define some helper variables</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>taxa &lt;- morpho.names()
+num_taxa &lt;- taxa.size()
+num_branches &lt;- 2 * num_taxa - 3
+</code></pre></div></div>
+
+<p>The next part of the file specifies the tree model.
 We put a prior on the branch lengths using an exponential distribution with a rate 0.2.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>br_len_lambda ~ dnExp(0.2)
@@ -420,7 +413,7 @@ tutorial.</p>
 <p>We first have to load the data and set up the model as we did in the previous step. As we went through this above you 
 can simply copy and paste this into the terminal.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>inFile = "data/Egi_etal_2005.nex"
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>inFile = "data/Agnolin_2007a_paleobiodb.nex"
 analysis_name = "pps_morpho_example"
 morpho &lt;- readDiscreteCharacterData(inFile)
 model_name = "Mk"
@@ -494,15 +487,10 @@ entire analysis using the other model.</li>
 </code></pre></div></div>
 
 <ul>
-  <li>Try testing the models with the other data set in this tutorial. This morpholgoical data used here is of Proviverrine hyaenodontids (an extinct family of  hypercarnivorous mammals) from <a class="citation" href="#egi2005">(Egi et al. 2005)</a>. The data set contains 15 taxa, 65 characters with a maximum of 5 character states. Are is the same model adequate for this data?</li>
+  <li>Try testing the models with the other data set in this tutorial. This morpholgoical data used here is of Proviverrine hyaenodontids (an extinct family of  hypercarnivorous mammals) from (missing reference). The data set contains 15 taxa, 65 characters with a maximum of 5 character states. Are is the same model adequate for this data? Remember to change the file names and the number of states to match the new dataset!</li>
 </ul>
 
-<ol class="bibliography"><li><span id="agnolin2007">Agnolin F. 2007. Brontornis burmeisteri Moreno &amp; Mercerat, un Anseriformes (Aves) gigante del Mioceno Medio de Patagonia, Argentina. Revista del Museo Argentino de Ciencias Naturales nueva serie. 9:15–25.</span>
-
-<a href="https://doi.org/10.22179/revmacn.9.361">10.22179/revmacn.9.361</a>
-
-</li>
-<li><span id="Bollback2002">Bollback J.P. 2002. Bayesian model adequacy and choice in phylogenetics. Molecular Biology and Evolution. 19:1171–1180.</span>
+<ol class="bibliography"><li><span id="Bollback2002">Bollback J.P. 2002. Bayesian model adequacy and choice in phylogenetics. Molecular Biology and Evolution. 19:1171–1180.</span>
 
 <a href="https://doi.org/10.1093/oxfordjournals.molbev.a004175">10.1093/oxfordjournals.molbev.a004175</a>
 
@@ -510,11 +498,6 @@ entire analysis using the other model.</li>
 <li><span id="Brown2014">Brown J.M. 2014. Predictive approaches to assessing the fit of evolutionary models. Systematic Biology. 63:289–292.</span>
 
 <a href="https://doi.org/10.1093/sysbio/syu009">10.1093/sysbio/syu009</a>
-
-</li>
-<li><span id="egi2005">Egi N., Holroyd P.A., Tsubamoto T., Soe A.N., Takai M., Ciochon R.L. 2005. Proviverrine hyaenodontids (Creodonta: Mammalia) from the Eocene of Myanmar and a phylogenetic analysis of the proviverrines from the Para-Tethys area. Journal of Systematic Palaeontology. 3:337–358.</span>
-
-<a href="https://doi.org/10.1017/S1477201905001707">10.1017/S1477201905001707</a>
 
 </li>
 <li><span id="Hoehna2018a">Höhna S., Coghill L.M., Mount G.G., Thomson R.C., Brown J.M. 2018. P^3: Phylogenetic Posterior Prediction in RevBayes. Molecular Biology and Evolution. 35:1028–1034.</span>
