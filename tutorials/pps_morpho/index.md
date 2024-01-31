@@ -168,7 +168,7 @@ source( model_file_name )
 {:.Rev-output}
 Opening the model file, we can see how we have set it up.
 
-First we define some helper variables
+First we define some helper variables.
 
 ```
 taxa <- morpho.names()
