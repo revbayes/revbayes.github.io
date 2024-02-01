@@ -162,8 +162,8 @@ Typing the following command into `RevBayes` will run the model script.
 source( model_file_name )
 ```
 ~~~
-    Processing file "scripts/Mk_Model.Rev"
-    Processing of file "scripts/Mk_Model.Rev" completed 
+Processing file "scripts/Mk_Model.Rev"
+Processing of file "scripts/Mk_Model.Rev" completed 
 ~~~
 {:.Rev-output}
 Opening the model file, we can see how we have set it up.
