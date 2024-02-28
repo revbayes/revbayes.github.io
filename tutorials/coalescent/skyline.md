@@ -6,12 +6,12 @@ level: 9
 order: 0.2
 prerequisites:
 - coalescent
-- coalescent/constant
+- coalescent/Constant
 index: false
 include_all: false
 include_files:
 - data/horses_isochronous_sequences.fasta
-- scripts/mcmc_isochronous_skyline.Rev
+- scripts/mcmc_isochronous_Skyline.Rev
 ---
 
 {% section Skyline Plots %}
@@ -42,7 +42,7 @@ Hypothetical example of a classical skyline plot. $w_k$ are the waiting times wi
 {% figure event-skyline %}
   <img src="figures/scheme_event_skyline.png" />
 {% figcaption %}
-Hypothetical example of a Bayesian skyline plot with the interval length dependent on the number of coalescent events (event-based).  $w_k$ are the waiting times with $k$ active lineages, $t_{c,k}$ are the coalescent events at the beginning of such a coalescent interval. $t_{i,j}$ mark the points of interval change.  Here, the change points are event-based, *i.e.*, dependent on coalescent events. The bold line represents the median of the posterior distribution of the population size and the shaded are shows the $95\%$ credible intervals.
+Hypothetical example of a Bayesian skyline plot with the interval length dependent on the number of coalescent events (coalescent event based).  $w_k$ are the waiting times with $k$ active lineages, $t_{c,k}$ are the coalescent events at the beginning of such a coalescent interval. $t_{i,j}$ mark the points of interval change.  Here, the change-points are coalescent event based, *i.e.*, dependent on coalescent events. The bold line represents the median of the posterior distribution of the population size and the shaded are shows the $95\%$ credible intervals.
 {% endfigcaption %}
 {% endfigure %}
 
@@ -146,10 +146,10 @@ We add the monitors and then run the MCMC.
 Here, an additional monitor is added for the interval times.
 
 ~~~
-monitors.append( mnModel(filename="output/horses_iso_skyline.log",printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_iso_skyline.trees",psi,printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_iso_skyline_NEs.log",pop_size,printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_iso_skyline_times.log",interval_times,printgen=THINNING) )
+monitors.append( mnModel(filename="output/horses_iso_Skyline.log",printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_Skyline.trees",psi,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_Skyline_NEs.log",pop_size,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_Skyline_times.log",interval_times,printgen=THINNING) )
 monitors.append( mnScreen(pop_size, root_age, printgen=100) )
 ~~~
 
@@ -170,17 +170,17 @@ max_age_iso = 5e5
 min_age = 0
 spacing = "equal"
 
-population_size_log = "output/horses_iso_skyline_NEs.log"
-interval_change_points_log = "output/horses_iso_skyline_times.log"
+population_size_log = "output/horses_iso_Skyline_NEs.log"
+interval_change_points_log = "output/horses_iso_Skyline_times.log"
 df <- processPopSizes(population_size_log, interval_change_points_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_iso, min_age = min_age, spacing = spacing)
 p <- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
-ggplot2::ggsave("figures/horses_iso_skyline.png", p)
+ggplot2::ggsave("figures/horses_iso_Skyline.png", p)
 ~~~
 
 {% figure results-skyline %}
-<img src="figures/horses_iso_skyline.png" width="800">
+<img src="figures/horses_iso_Skyline.png" width="800">
 {% figcaption %}
-Example output from plotting the coalescent skyline analysis run in this exercise. The bold line represents the median of the posterior distribution of the population size and the shaded are shows the $95\%$ credible intervals.
+Example output from plotting the coalescent Skyline analysis run in this exercise. The bold line represents the median of the posterior distribution of the population size and the shaded are shows the $95\%$ credible intervals.
 {% endfigcaption %}
 {% endfigure %}
 
@@ -200,12 +200,12 @@ This means that the population sizes in neighbouring intervals are correlated.
 For the first population size, a log uniform distribution was chosen.
 Additionally, the number of coalescent events per interval is not fixed, but estimated during the MCMC.
 
-In a skyride analysis {% cite Minin2008 %}, the population size is directly estimated on a log scale.
+In a Skyride analysis {% cite Minin2008 %}, the population size is directly estimated on a log scale.
 The intervals also are correlated, but a Gaussian Markov Random Field (GMRF) prior is used with the degree of smoothing being regulated by a precision parameter.
-In this approach, each interval includes one coalescent event, similar to the classical skyline plot.
+In this approach, each interval includes one coalescent event, similar to the classical Skyline plot.
 The smoothing effect, however, reduces the noise in the resulting population size trajectory.
 
-For the Extended Bayesian Skyline Plot {% cite Heled2008 %}, the number of change points is estimated by stochastic search variable selection.
+For the Extended Bayesian Skyline Plot {% cite Heled2008 %}, the number of change-points is estimated by stochastic search variable selection.
 The intervals are considered to be iid.
 Also, the default demographic function usually is piecewise linear and not piecewise constant as in this tutorial.
 The estimation of the number of intervals can also be done slightly differently, as we show in the [Compound Poisson Process Prior]({{base.url}}/tutorials/coalescent/GMRF#secCPP) section of the [GMRF tutorial]({{base.url}}/tutorials/coalescent/GMRF) which is next.
@@ -213,8 +213,8 @@ The estimation of the number of intervals can also be done slightly differently,
 You can try and change the priors now accordingly.
 If you would like to have an example of what a `RevBayes` script with these different priors can look like, have a look at
 * the [example script for a BSP analysis](scripts/mcmc_isochronous_BSP.Rev),
-* the [example script for a skyride analysis](scripts/mcmc_isoochronous_skyride.Rev), or
-* the [example script for an EBSP analysis](scripts/mcmc_isochronous_EBSP.Rev). Note that the `.Rev` script does not apply stochastic variable search as in the original publication to determine the number of interval change points. The script instead uses reversible jump MCMC.
+* the [example script for a Skyride analysis](scripts/mcmc_isoochronous_Skyride.Rev), or
+* the [example script for an EBSP analysis](scripts/mcmc_isochronous_EBSP.Rev). Note that the `.Rev` script does not apply stochastic variable search as in the original publication to determine the number of interval change-points. The script instead uses reversible jump MCMC.
 
-All three examples have the interval change points on coalescent events (what we call "event-based", as in the skyline model presented here).
+All three examples have the interval change-points on coalescent events (what we call "coalescent event based", as in the skyline model presented here).
 In the next tutorial ([The GMRF model]({{base.url}}/tutorials/coalescent/GMRF)), we use intervals with changing points independent from coalescent events ("specified").

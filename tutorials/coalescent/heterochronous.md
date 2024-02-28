@@ -6,8 +6,8 @@ level: 9
 order: 0.6
 prerequisites:
 - coalescent
-- coalescent/constant
-- coalescent/skyline
+- coalescent/Constant
+- coalescent/Skyline
 - coalescent/GMRF
 - coalescent/GMRF_treebased
 - coalescent/piecewise
@@ -16,7 +16,7 @@ include_all: false
 include_files:
 - data/horses_heterochronous_ages.tsv
 - data/horses_heterochronous_sequences.fasta
-- scripts/mcmc_heterochronous_constant.Rev
+- scripts/mcmc_heterochronous_Constant.Rev
 include_example_output: true
 ---
 
@@ -32,11 +32,11 @@ Please specifically have a look at the section {% ref DataSec %} and at the root
 {% section Inference Example %}
 
 > ## For your info
-> The entire process of the estimation can be executed by using the **mcmc_heterochronous_constant.Rev** script that you can download on the left side of the page.
+> The entire process of the estimation can be executed by using the **mcmc_heterochronous_Constant.Rev** script that you can download on the left side of the page.
 > Save it in your **scripts** directory.
 > You can type the following command into `RevBayes`:
 ~~~
-> source("scripts/mcmc_heterochronous_constant.Rev")
+> source("scripts/mcmc_heterochronous_Constant.Rev")
 ~~~
 We will walk you through every single step in the following section.
 {:.info}
@@ -217,9 +217,9 @@ With `mnFile`, you can keep track of the trees or parameters that you would like
 This output will not per se be saved in a file.
 
 ~~~
-monitors.append( mnModel(filename="output/horses_constant.log",printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_constant.trees",psi,printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_constant_NE.log",pop_size,printgen=THINNING) )
+monitors.append( mnModel(filename="output/horses_het_Constant.log",printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_het_Constant.trees",psi,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_het_Constant_NE.log",pop_size,printgen=THINNING) )
 monitors.append( mnScreen(pop_size, root_age, printgen=100) )
 ~~~
 
@@ -257,7 +257,7 @@ max_age_het = 1.2e6
 min_age = 0
 spacing = "equal"
 
-population_size_log = "output/horses_het_constant_NE.log"
+population_size_log = "output/horses_het_Constant_NE.log"
 df <- processPopSizes(population_size_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_het, min_age = min_age, spacing = spacing)
 p <- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
 ggplot2::ggsave("figures/horses_het_constant.png", p)
@@ -277,13 +277,13 @@ Example output from plotting the constant coalescent analysis with heterochronou
 
 Here, you can find scripts for analyses similar to those performed in the previous tutorials for isochronous data.
 The main changing points are the data which is read in and the root age.
-The root age also has an influence on parameters like `MAX_AGE`, which is needed, *e.g*, for the Gaussian Markov Random Field (GMRF) scripts and the `ESTIMATED_ROOT_AGE` parameter, which you can find for example in the skyride script.
+The root age also has an influence on parameters like `MAX_AGE`, which is needed, *e.g*, for the Gaussian Markov Random Field (GMRF) scripts and the `ESTIMATED_ROOT_AGE` parameter, which you can find for example in the Skyride script.
 
-* [Script for a skyline analysis](scripts/mcmc_heterochronous_skyline.Rev), have a look at the [skyline tutorial]({{base.url}}/tutorials/coalescent/skyline)
-* [Script for a skyline analysis with a maximum a posteriori (MAP) tree as input](scripts/mcmc_heterochronous_skyline_maptreebased.Rev)
-* [Script for a skyline analysis with autocorrelated intervals](scripts/mcmc_heterochronous_BSP.Rev), have a look at the [Alternative Priors]({{base.url}}/tutorials/coalescent/skyline#secAltPriors) section of the [skyline tutorial]({{base.url}}/tutorials/coalescent/skyline)
-* [Script for a skyride analysis](scripts/mcmc_heterochronous_skyride.Rev), have a look at the [Alternative Priors]({{base.url}}/tutorials/coalescent/skyline#secAltPriors) section of the [skyline tutorial]({{base.url}}/tutorials/coalescent/skyline)
-* [Script for a skyline analysis with estimation of the number of intervals](scripts/mcmc_heterochronous_EBSP.Rev), have a look at the [Alternative Priors]({{base.url}}/tutorials/coalescent/skyline#secAltPriors) section of the [skyline tutorial]({{base.url}}/tutorials/coalescent/skyline)
+* [Script for a Skyline analysis](scripts/mcmc_heterochronous_skyline.Rev), have a look at the [Skyline tutorial]({{base.url}}/tutorials/coalescent/skyline)
+* [Script for a Skyline analysis with a maximum a posteriori (MAP) tree as input](scripts/mcmc_heterochronous_skyline_maptreebased.Rev)
+* [Script for a Skyline analysis with autocorrelated intervals (BSP model)](scripts/mcmc_heterochronous_BSP.Rev), have a look at the [Alternative Priors]({{base.url}}/tutorials/coalescent/skyline#secAltPriors) section of the [skyline tutorial]({{base.url}}/tutorials/coalescent/skyline)
+* [Script for a Skyride analysis](scripts/mcmc_heterochronous_Skyride.Rev), have a look at the [Alternative Priors]({{base.url}}/tutorials/coalescent/skyline#secAltPriors) section of the [Skyline tutorial]({{base.url}}/tutorials/coalescent/skyline)
+* [Script for a Skyline analysis with estimation of the number of intervals (EBSP model)](scripts/mcmc_heterochronous_EBSP.Rev), have a look at the [Alternative Priors]({{base.url}}/tutorials/coalescent/skyline#secAltPriors) section of the [Skyline tutorial]({{base.url}}/tutorials/coalescent/skyline)
 * [Script for a GMRF analysis](scripts/mcmc_heterochronous_GMRF.Rev), have a look at the [GMRF tutorial]({{base.url}}/tutorials/coalescent/GMRF)
 * [Script for a GMRF analysis with a sample of trees as input](scripts/mcmc_heterochronous_GMRF_treebased.Rev), have a look at the [treebased GMRF tutorial]({{base.url}}/tutorials/coalescent/GMRF_treebased)
 * [Script for a GMRF analysis with a MAP tree as input](scripts/mcmc_heterochronous_GMRF_maptreebased.Rev), have a look at the [treebased GMRF tutorial]({{base.url}}/tutorials/coalescent/GMRF_treebased)
@@ -291,5 +291,6 @@ The root age also has an influence on parameters like `MAX_AGE`, which is needed
 * [Script for an analysis with a Horseshoe Markov Random Field (HSMRF) prior](scripts/mcmc_heterochronous_HSMRF.Rev), have a look at the [HSMRF]({{base.url}}/tutorials/coalescent/GMRF#secHSMRF) section of the [GMRF tutorial]({{base.url}}/tutorials/coalescent/GMRF)
 * [Script for a HSMRF analysis with a MAP tree as input](scripts/mcmc_heterochronous_HSMRF_maptreebased.Rev)
 * Scripts for a HSMRF analysis with $100$ intervals, both [sequence based](scripts/mcmc_heterochronous_HSMRF_100.Rev), and [MAP tree based](scripts/mcmc_heterochronous_HSMRF_maptreebased_100.Rev)
-* [Script for an analysis with a Compound Poisson Process (CPP) prior](scripts/mcmc_heterochronous_CPP.Rev), have a look at the [CPP]({{base.url}}/tutorials/coalescent/GMRF#secCPP) section of the [GMRF tutorial]({{base.url}}/tutorials/coalescent/GMRF)
-* [Script for a CPP analysis with a MAP tree as input](scripts/mcmc_heterochronous_CPP_maptreebased.Rev)
+* [Script for a Skygrid analysis](scripts/mcmc_heterochronous_Skygrid.Rev), have a look at the [Alternative Implementations]({{base.url}}/tutorials/coalescent/GMRF#secAltPriors) section of the [GMRF tutorial]({{base.url}}/tutorials/coalescent/GMRF)
+* [Script for an analysis with the Skyfish model](scripts/mcmc_heterochronous_SkyfishAC.Rev), have a look at the [Skyfish tutorial]({{base.url}}/tutorials/coalescent/Skyfish)
+* [Script for a Skyfish analysis with a MAP tree as input](scripts/mcmc_heterochronous_SkyfishAC_maptreebased.Rev)

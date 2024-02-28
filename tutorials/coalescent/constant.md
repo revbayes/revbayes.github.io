@@ -10,7 +10,7 @@ index: false
 include_all: false
 include_files:
 - data/horses_isochronous_sequences.fasta
-- scripts/mcmc_isochronous_constant.Rev
+- scripts/mcmc_isochronous_Constant.Rev
 ---
 
 {% section Overview %}
@@ -273,16 +273,16 @@ max_age_iso = 5e5
 min_age = 0
 spacing = "equal"
 
-population_size_log = "output/horses_iso_constant_NE.log"
+population_size_log = "output/horses_iso_Constant_NE.log"
 df <- processPopSizes(population_size_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_iso, min_age = min_age, spacing = spacing)
 p <- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
-ggplot2::ggsave("figures/horses_iso_constant.png", p)
+ggplot2::ggsave("figures/horses_iso_Constant.png", p)
 ~~~
 
 Your output should look roughly like the following figure.
 
 {% figure results-constant %}
-<img src="figures/horses_iso_constant.png" width="800">
+<img src="figures/horses_iso_Constant.png" width="800">
 {% figcaption %}
 Example output from plotting the constant coalescent analysis run in this exercise. The bold line represents the median of the posterior distribution of the population size and the shaded are shows the $95\%$ credible intervals.
 {% endfigcaption %}
@@ -291,4 +291,4 @@ Example output from plotting the constant coalescent analysis run in this exerci
 {% section Next Exercise %}
 When you are done, have a look at the next exercise.
 
-* [The skyline model]({{base.url}}/tutorials/coalescent/skyline)
+* [The Skyline model]({{base.url}}/tutorials/coalescent/Skyline)

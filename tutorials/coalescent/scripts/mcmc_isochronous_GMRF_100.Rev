@@ -24,9 +24,8 @@ monitors  = VectorMonitors()
 sequences <- readDiscreteCharacterData("data/horses_isochronous_sequences.fasta")
 taxa <- sequences.taxa()
 
-# Get the number of taxa and branches. We need these later on.
+# Get the number of taxa. We need it later on.
 n_taxa <- taxa.size()
-# n_branches <- 2 * n_taxa - 3
 
 
 ##############
@@ -86,7 +85,6 @@ psi ~ dnCoalescentSkyline(theta=population_size, times=changePoints, method="spe
 root_age := psi.rootAge()
 
 diff <- (500000 - 250000)/2.0
-# obs_root_age ~ dnNormal(mean = root_age, sd = 60000, min = 250000, max = 500000)
 obs_root_age ~ dnNormal(mean = root_age, sd = 60000, min = root_age - diff, max = root_age + diff)
 obs_root_age.clamp(375000)
 
