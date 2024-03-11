@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Coalescent Analyses with heterochronous data</h1>
 	<h3 class="subtitle">Estimating Demographic Histories with Coalescent Models using heterochronous data</h3>
 	<h4 class="authors">Sebastian Höhna and Ronja Billenstein</h4>
-  <h5>Last modified on July 21, 2023</h5>
+  <h5>Last modified on February 28, 2024</h5>
 </div>
 
 
@@ -71,9 +71,9 @@
           
             <li><a href="/tutorials/coalescent/">Coalescent Analyses</a></li>
           
-            <li><a href="/tutorials/coalescent/constant.html">Constant Coalescent Model</a></li>
+            <li><a href="/tutorials/coalescent/Constant.html">Constant Coalescent Model</a></li>
           
-            <li><a href="/tutorials/coalescent/skyline.html">Skyline Models</a></li>
+            <li><a href="/tutorials/coalescent/Skyline.html">Skyline Models</a></li>
           
             <li><a href="/tutorials/coalescent/GMRF.html">Coalescent Models with GMRF</a></li>
           
@@ -105,7 +105,7 @@
         
           <li><a href="/tutorials/coalescent/data/horses_heterochronous_sequences.fasta">horses_heterochronous_sequences.fasta</a></li>
         
-          <li><a href="/tutorials/coalescent/scripts/mcmc_heterochronous_constant.Rev">mcmc_heterochronous_constant.Rev</a></li>
+          <li><a href="/tutorials/coalescent/scripts/mcmc_heterochronous_Constant.Rev">mcmc_heterochronous_Constant.Rev</a></li>
         
         </ul>
     
@@ -129,10 +129,10 @@ Please specifically have a look at the section <a href="#DataSec"></a> and at th
 
 <blockquote class="info">
   <h2 id="for-your-info">For your info</h2>
-  <p>The entire process of the estimation can be executed by using the <strong>mcmc_heterochronous_constant.Rev</strong> script that you can download on the left side of the page.
+  <p>The entire process of the estimation can be executed by using the <strong>mcmc_heterochronous_Constant.Rev</strong> script that you can download on the left side of the page.
 Save it in your <strong>scripts</strong> directory.
 You can type the following command into <code class="language-plaintext highlighter-rouge">RevBayes</code>:</p>
-  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/mcmc_heterochronous_constant.Rev")
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/mcmc_heterochronous_Constant.Rev")
 </code></pre></div>  </div>
   <p>We will walk you through every single step in the following section.</p>
 </blockquote>
@@ -298,9 +298,9 @@ With <code class="language-plaintext highlighter-rouge">mnFile</code>, you can k
 <code class="language-plaintext highlighter-rouge">mnScreen</code> is responsible for having output printed directly to your screen.
 This output will not per se be saved in a file.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/horses_constant.log",printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_constant.trees",psi,printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_constant_NE.log",pop_size,printgen=THINNING) )
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/horses_het_Constant.log",printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_het_Constant.trees",psi,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_het_Constant_NE.log",pop_size,printgen=THINNING) )
 monitors.append( mnScreen(pop_size, root_age, printgen=100) )
 </code></pre></div></div>
 
@@ -338,7 +338,7 @@ max_age_het = 1.2e6
 min_age = 0
 spacing = "equal"
 
-population_size_log = "output/horses_het_constant_NE.log"
+population_size_log = "output/horses_het_Constant_NE.log"
 df &lt;- processPopSizes(population_size_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_het, min_age = min_age, spacing = spacing)
 p &lt;- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
 ggplot2::ggsave("figures/horses_het_constant.png", p)
@@ -355,14 +355,14 @@ ggplot2::ggsave("figures/horses_het_constant.png", p)
 
 <p>Here, you can find scripts for analyses similar to those performed in the previous tutorials for isochronous data.
 The main changing points are the data which is read in and the root age.
-The root age also has an influence on parameters like <code class="language-plaintext highlighter-rouge">MAX_AGE</code>, which is needed, <em>e.g</em>, for the Gaussian Markov Random Field (GMRF) scripts and the <code class="language-plaintext highlighter-rouge">ESTIMATED_ROOT_AGE</code> parameter, which you can find for example in the skyride script.</p>
+The root age also has an influence on parameters like <code class="language-plaintext highlighter-rouge">MAX_AGE</code>, which is needed, <em>e.g</em>, for the Gaussian Markov Random Field (GMRF) scripts and the <code class="language-plaintext highlighter-rouge">ESTIMATED_ROOT_AGE</code> parameter, which you can find for example in the Skyride script.</p>
 
 <ul>
-  <li><a href="scripts/mcmc_heterochronous_skyline.Rev">Script for a skyline analysis</a>, have a look at the <a href="/tutorials/coalescent/skyline">skyline tutorial</a></li>
-  <li><a href="scripts/mcmc_heterochronous_skyline_maptreebased.Rev">Script for a skyline analysis with a maximum a posteriori (MAP) tree as input</a></li>
-  <li><a href="scripts/mcmc_heterochronous_BSP.Rev">Script for a skyline analysis with autocorrelated intervals</a>, have a look at the <a href="/tutorials/coalescent/skyline#secAltPriors">Alternative Priors</a> section of the <a href="/tutorials/coalescent/skyline">skyline tutorial</a></li>
-  <li><a href="scripts/mcmc_heterochronous_skyride.Rev">Script for a skyride analysis</a>, have a look at the <a href="/tutorials/coalescent/skyline#secAltPriors">Alternative Priors</a> section of the <a href="/tutorials/coalescent/skyline">skyline tutorial</a></li>
-  <li><a href="scripts/mcmc_heterochronous_EBSP.Rev">Script for a skyline analysis with estimation of the number of intervals</a>, have a look at the <a href="/tutorials/coalescent/skyline#secAltPriors">Alternative Priors</a> section of the <a href="/tutorials/coalescent/skyline">skyline tutorial</a></li>
+  <li><a href="scripts/mcmc_heterochronous_skyline.Rev">Script for a Skyline analysis</a>, have a look at the <a href="/tutorials/coalescent/skyline">Skyline tutorial</a></li>
+  <li><a href="scripts/mcmc_heterochronous_skyline_maptreebased.Rev">Script for a Skyline analysis with a maximum a posteriori (MAP) tree as input</a></li>
+  <li><a href="scripts/mcmc_heterochronous_BSP.Rev">Script for a Skyline analysis with autocorrelated intervals (BSP model)</a>, have a look at the <a href="/tutorials/coalescent/skyline#secAltPriors">Alternative Priors</a> section of the <a href="/tutorials/coalescent/skyline">skyline tutorial</a></li>
+  <li><a href="scripts/mcmc_heterochronous_Skyride.Rev">Script for a Skyride analysis</a>, have a look at the <a href="/tutorials/coalescent/skyline#secAltPriors">Alternative Priors</a> section of the <a href="/tutorials/coalescent/skyline">Skyline tutorial</a></li>
+  <li><a href="scripts/mcmc_heterochronous_EBSP.Rev">Script for a Skyline analysis with estimation of the number of intervals (EBSP model)</a>, have a look at the <a href="/tutorials/coalescent/skyline#secAltPriors">Alternative Priors</a> section of the <a href="/tutorials/coalescent/skyline">Skyline tutorial</a></li>
   <li><a href="scripts/mcmc_heterochronous_GMRF.Rev">Script for a GMRF analysis</a>, have a look at the <a href="/tutorials/coalescent/GMRF">GMRF tutorial</a></li>
   <li><a href="scripts/mcmc_heterochronous_GMRF_treebased.Rev">Script for a GMRF analysis with a sample of trees as input</a>, have a look at the <a href="/tutorials/coalescent/GMRF_treebased">treebased GMRF tutorial</a></li>
   <li><a href="scripts/mcmc_heterochronous_GMRF_maptreebased.Rev">Script for a GMRF analysis with a MAP tree as input</a>, have a look at the <a href="/tutorials/coalescent/GMRF_treebased">treebased GMRF tutorial</a></li>
@@ -370,8 +370,9 @@ The root age also has an influence on parameters like <code class="language-plai
   <li><a href="scripts/mcmc_heterochronous_HSMRF.Rev">Script for an analysis with a Horseshoe Markov Random Field (HSMRF) prior</a>, have a look at the <a href="/tutorials/coalescent/GMRF#secHSMRF">HSMRF</a> section of the <a href="/tutorials/coalescent/GMRF">GMRF tutorial</a></li>
   <li><a href="scripts/mcmc_heterochronous_HSMRF_maptreebased.Rev">Script for a HSMRF analysis with a MAP tree as input</a></li>
   <li>Scripts for a HSMRF analysis with $100$ intervals, both <a href="scripts/mcmc_heterochronous_HSMRF_100.Rev">sequence based</a>, and <a href="scripts/mcmc_heterochronous_HSMRF_maptreebased_100.Rev">MAP tree based</a></li>
-  <li><a href="scripts/mcmc_heterochronous_CPP.Rev">Script for an analysis with a Compound Poisson Process (CPP) prior</a>, have a look at the <a href="/tutorials/coalescent/GMRF#secCPP">CPP</a> section of the <a href="/tutorials/coalescent/GMRF">GMRF tutorial</a></li>
-  <li><a href="scripts/mcmc_heterochronous_CPP_maptreebased.Rev">Script for a CPP analysis with a MAP tree as input</a></li>
+  <li><a href="scripts/mcmc_heterochronous_Skygrid.Rev">Script for a Skygrid analysis</a>, have a look at the <a href="/tutorials/coalescent/GMRF#secAltPriors">Alternative Implementations</a> section of the <a href="/tutorials/coalescent/GMRF">GMRF tutorial</a></li>
+  <li><a href="scripts/mcmc_heterochronous_SkyfishAC.Rev">Script for an analysis with the Skyfish model</a>, have a look at the <a href="/tutorials/coalescent/Skyfish">Skyfish tutorial</a></li>
+  <li><a href="scripts/mcmc_heterochronous_SkyfishAC_maptreebased.Rev">Script for a Skyfish analysis with a MAP tree as input</a></li>
 </ul>
 
 <ol class="bibliography"><li><span id="Vershinina2021">Vershinina A.O., Heintzman P.D., Froese D.G., Zazula G., Cassatt-Johnstone M., Dalén L., Der Sarkissian C., Dunn S.G., Ermini L., Gamba C., Groves P., Kapp J.D., Mann D.H., Seguin-Orlando A., Southon J., Stiller M., Wooller M.J., Baryshnikov G., Gimranov D., Scott E., Hall E., Hewitson S., Kirillova I., Kosintsev P., Shidlovsky F., Tong H.-W., Tiunov M.P., Vartanyan S., Orlando L., Corbett-Detig R., MacPhee R.D., Shapiro B. 2021. Ancient horse genomes reveal the timing and extent of dispersals across the Bering Land Bridge. Molecular Ecology. 30:6144–6161.</span>

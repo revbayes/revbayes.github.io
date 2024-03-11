@@ -1,10 +1,10 @@
-################################################################################################
+#############################################################################################
 #
-# RevBayes Example: Coalescent process with CPP prior applied to heterochronous horse tree data
+# RevBayes Example: Coalescent Skyfish model applied to isochronous horse tree data
 #
 # authors: Sebastian Hoehna, Ronja Billenstein
 #
-################################################################################################
+#############################################################################################
 
 ## Global settings
 
@@ -21,11 +21,11 @@ monitors  = VectorMonitors()
 #######################
 
 # Read in the tree sample and create a MAP (maximum a posteriori) tree
-trees = readTreeTrace("output/horses_het_constant.trees", treetype = "clock", burnin = 0.1)
+trees = readTreeTrace("output/horses_iso_Constant.trees", treetype = "clock", burnin = 0.1)
 maptree = mapTree(trace=trees)
 taxa <- maptree.taxa()
 
-# Get the number of taxa and branches. We need these later on.
+# Get the number of taxa. We need it later on.
 n_taxa <- taxa.size()
 
 ##############
@@ -35,22 +35,34 @@ n_taxa <- taxa.size()
 MAX_AGE = maptree.rootAge()
 print("max age: ", MAX_AGE)
 
+H = 0.587405
+EXPECTED_POP_SIZE = MAX_AGE/2
+
+ac_sigma ~ dnExponential( 0.25 * MAX_AGE / 2 )
+ac_sigma.setValue( 1.0 / MAX_AGE )
+moves.append( mvScale(ac_sigma, weight=2) )
+
 # we create the events drawn from the multi-value event eventDistribution
 # as a prior on the number of events, we use a Poisson distribution with a mean of 10
 # we have two valueDistribution
-# - the population sizes with prior Uniform(1E4,1E8)
+# - the population sizes with prior Lognormal( ln(EXPECTED_POP_SIZE), sd=2*H )
 # - the change times with prior Uniform(0.0,MAX_AGE)
 # we also assume that there is at least on population size but no change time
-events ~ dnMultiValueEvent (eventDistribution = dnPoisson(lambda=10),
-                   valueDistribution=[dnUniform(1E4,1E8),
-                                      dnUniform(0.0,MAX_AGE)],
-                   names=["theta","time"],
-                   minNumberEvents=[1,0])
+events ~ dnAutocorrelatedEvent(eventDistribution = dnPoisson(lambda=10),
+                               valueDistribution =[dnUniform(0.0,MAX_AGE),
+                                                   dnLognormal( ln(EXPECTED_POP_SIZE), sd=2*H )],
+                               names=["time","theta"],
+                               minNumberEvents=[0,1],
+                               autocorrelationTypes=["NONE","ACLN"],
+                               autocorrelationDependencies=["none","time"],
+                               autocorrelationSigmas=[0,ac_sigma],
+                               sort = "time")
 
 # apply a move that adds and removes pairs of theta+time
 moves.append( mvMultiValueEventBirthDeath(events, weight=50) )
 # add a move that changes the theta variables
 moves.append( mvMultiValueEventScale(events, name="theta", lambda=1.0, weight=10, tune=!FALSE) )
+moves.append( mvMultiValueEventSlide(events, name="theta", lambda=1.0, weight=10, tune=!FALSE) )
 # add a move that changes the time variables
 moves.append( mvMultiValueEventSlide(events, name="time", lambda=10.0, weight=10, tune=!FALSE) )
 moves.append( mvMultiValueEventScale(events, name="time", lambda=0.5, weight=10, tune=!FALSE) )
@@ -81,10 +93,10 @@ mymodel = model(psi)
 ################
 
 #add monitors
-monitors.append( mnModel(filename="output/horses_het_CPP_maptreebased.log",printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_het_CPP_maptreebased_nevents.log",n_events,printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_het_CPP_maptreebased_NEs.log",population_size,printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_het_CPP_maptreebased_times.log",interval_times,printgen=THINNING) )
+monitors.append( mnModel(filename="output/horses_iso_SkyfishAC_maptreebased.log",printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_SkyfishAC_maptreebased_nevents.log",n_events,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_SkyfishAC_maptreebased_NEs.log",population_size,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_SkyfishAC_maptreebased_times.log",interval_times,printgen=THINNING) )
 monitors.append( mnScreen(n_events, printgen=100) )
 
 mymcmc = mcmc(mymodel, monitors, moves, nruns=NUM_REPLICATES, combine="mixed")

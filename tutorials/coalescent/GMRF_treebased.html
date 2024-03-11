@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Coalescent Models from Trees with GMRF</h1>
 	<h3 class="subtitle">Estimating Demographic Histories with Coalescent Models from Trees using a Gaussian Markov Random Field Prior</h3>
 	<h4 class="authors">Ronja Billenstein and Sebastian Höhna</h4>
-  <h5>Last modified on July 21, 2023</h5>
+  <h5>Last modified on February 28, 2024</h5>
 </div>
 
 
@@ -71,9 +71,9 @@
           
             <li><a href="/tutorials/coalescent/">Coalescent Analyses</a></li>
           
-            <li><a href="/tutorials/coalescent/constant.html">Constant Coalescent Model</a></li>
+            <li><a href="/tutorials/coalescent/Constant.html">Constant Coalescent Model</a></li>
           
-            <li><a href="/tutorials/coalescent/skyline.html">Skyline Models</a></li>
+            <li><a href="/tutorials/coalescent/Skyline.html">Skyline Models</a></li>
           
             <li><a href="/tutorials/coalescent/GMRF.html">Coalescent Models with GMRF</a></li>
           
@@ -97,7 +97,7 @@
         
         
         
-          <li><a href="/tutorials/coalescent/output/horses_iso_constant.trees">horses_iso_constant.trees</a></li>
+          <li><a href="/tutorials/coalescent/output/horses_iso_Constant.trees">horses_iso_Constant.trees</a></li>
         
           <li><a href="/tutorials/coalescent/data/horses_isochronous_sequences.fasta">horses_isochronous_sequences.fasta</a></li>
         
@@ -141,7 +141,7 @@ You can have another look at the other exercises, they are listed under prerequi
 If you haven’t done the exercise, please download the file <strong>horses_constant.trees</strong> into an “output” folder in your tutorial directory.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Read in the tree sample
-treetrace = readTreeTrace("output/horses_constant.trees", treetype = "clock", burnin = 0.1)
+treetrace = readTreeTrace("output/horses_Constant.trees", treetype = "clock", burnin = 0.1)
 trees = treetrace.getTrees()
 
 # Get the taxa
@@ -177,7 +177,7 @@ psi ~ dnEmpiricalSample( tree_prior)
 psi.clamp(trees)
 </code></pre></div></div>
 
-<p>The interval times are the defined change points.
+<p>The interval times are the defined change-points.
 If you would like to read them out later, you can set them here.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>interval_times := changePoints
@@ -188,7 +188,7 @@ If you would like to read them out later, you can set them here.</p>
 <blockquote class="aside"><h2>Working with one tree as input</h2><p>As mentioned above, you can also have a single tree as input.
 In this case, you can read it in with <code class="language-plaintext highlighter-rouge">readTrees</code>.
 Here, we first generate the maximum a posteriori (MAP) tree from the tree sample.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>trees = readTreeTrace("output/horses_constant.trees", treetype = "clock", burnin = 0.1)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>trees = readTreeTrace("output/horses_Constant.trees", treetype = "clock", burnin = 0.1)
 maptree = mapTree(trace=trees)
 taxa &lt;- maptree.taxa()
 </code></pre></div></div>

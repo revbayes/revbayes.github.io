@@ -53,9 +53,9 @@
 
       <div class="titlebar">
 	<h1 class="maintitle">Coalescent Analyses</h1>
-	<h3 class="subtitle">Estimating Demographic Histories with Coalescent Models</h3>
+	<h3 class="subtitle">Estimating Demographic Histories with Bayesian Coalescent Skyline Plot Models</h3>
 	<h4 class="authors">Ronja Billenstein and Sebastian Höhna</h4>
-  <h5>Last modified on July 21, 2023</h5>
+  <h5>Last modified on February 28, 2024</h5>
 </div>
 
 
@@ -112,8 +112,7 @@
 <blockquote class="info">
   <h2 id="for-your-info">For your info</h2>
   <p>This tutorial and the included exercises are currently under construction.
-If you want to run the analyses, please compile <code class="language-plaintext highlighter-rouge">RevBayes</code> from the <a href="https://github.com/revbayes/revbayes/tree/dev-coalescent">dev-coalescent</a> branch as described <a href="https://revbayes.github.io/compile-linux">here</a> (for the development branch).
-For plotting with the <code class="language-plaintext highlighter-rouge">R</code> package <code class="language-plaintext highlighter-rouge">RevGadgets</code>, please install the package from the “development” branch using devtools: <code class="language-plaintext highlighter-rouge">devtools::install_github("revbayes/RevGadgets", ref = "development")</code>.</p>
+If you want to run the analyses, please compile <code class="language-plaintext highlighter-rouge">RevBayes</code> from the <a href="https://github.com/revbayes/revbayes/tree/dev-coalescent">dev-coalescent</a> branch as described <a href="https://revbayes.github.io/compile-linux">here</a> (for the development branch).</p>
 </blockquote>
 
 <h2 class="section" id="overview">Overview</h2>
@@ -143,9 +142,9 @@ The data for these analyes are taken from <a class="citation" href="#Vershinina2
     <tr>
       <th>Model</th>
       <th>Description</th>
-      <th>Demographic function</th>
+      <th>Demographic function within intervals</th>
       <th>Prior on the population sizes</th>
-      <th>Interval change point method</th>
+      <th>Interval change-point method</th>
       <th>Multiple loci analysis possible?</th>
       <th>Tutorial</th>
     </tr>
@@ -180,37 +179,37 @@ The data for these analyes are taken from <a class="citation" href="#Vershinina2
     </tr>
     <tr>
       <td>Bayesian Skyline Plot without autocorrelation</td>
-      <td>A coalescent model with a piecewise constant population size trajectory. The different pieces (intervals) are not correlated. The times of interval change are dependent on coalescent events (“event-based”).</td>
+      <td>A coalescent model with a piecewise constant population size trajectory. The different pieces (intervals) are not correlated. The times of interval change are dependent on coalescent events (“coalescent event based”).</td>
       <td>piecewise constant</td>
       <td>individually chosen, independent and identically distributed (iid)</td>
-      <td>event-based</td>
+      <td>coalescent event based</td>
       <td>No, only single loci</td>
       <td><a href="/tutorials/coalescent/skyline">Skyline</a></td>
     </tr>
     <tr>
       <td>Bayesian Skyline Plot with autocorrelation<br /><a class="citation" href="#Drummond2005">(Drummond et al. 2005)</a></td>
-      <td>A coalescent model with a piecewise constant population size trajectory. The different pieces (intervals) are correlated, each population size is drawn from an exponential distribution with the mean being the previous population size. The times of interval change are dependent on coalescent events (“event-based”).</td>
+      <td>A coalescent model with a piecewise constant population size trajectory. The different pieces (intervals) are correlated, each population size is drawn from an exponential distribution with the mean being the previous population size. The times of interval change are dependent on coalescent events (“coalescent event based”).</td>
       <td>piecewise constant</td>
       <td>$\theta_i | \theta_{i-1}$ (exponential distribution with mean $\theta_{i-1}$)</td>
-      <td>event-based</td>
+      <td>coalescent event based</td>
       <td>No, only single loci</td>
       <td>Little description included in <a href="/tutorials/coalescent/skyline#secAltPriors">skyline</a><br /><br /><a href="scripts/mcmc_isochronous_BSP.Rev">Example script</a></td>
     </tr>
     <tr>
       <td>Extended Bayesian Skyline Plot<br /><a class="citation" href="#Heled2008">(Heled and Drummond 2008)</a></td>
-      <td>A coalescent model with a piecewise constant or linear population size trajectory. The different pieces are not correlated. The times of interval change are dependent on coalescent events (“event-based”), they are independent and identically distributed (iid). The number of changes and thus the number of intervals is determined by stochastic variable search.</td>
+      <td>A coalescent model with a piecewise constant or linear population size trajectory. The different pieces are not correlated. The times of interval change are dependent on coalescent events (“coalescent event based”), they are independent and identically distributed (iid). The number of changes and thus the number of intervals is determined by stochastic variable search.</td>
       <td>piecewise constant or linear</td>
       <td>independent and identically distributed (iid)</td>
-      <td>event-based - number and position of change points estimated</td>
+      <td>coalescent event based - number and position of change points estimated</td>
       <td>Yes</td>
       <td>Little description included in <a href="/tutorials/coalescent/skyline#secAltPriors">skyline</a><br /><br /><a href="scripts/mcmc_isochronous_EBSP.Rev">Example script</a></td>
     </tr>
     <tr>
       <td>Skyride<br /><a class="citation" href="#Minin2008">(Minin et al. 2008)</a></td>
-      <td>A coalescent model with a piecewise constant population size trajectory. The different pieces are correlated via a Gaussian Markov Random Field (GMRF) Prior, the degree of smoothing is determined by a precision parameter. The times of interval change are dependent on coalescent events (“event-based”).</td>
+      <td>A coalescent model with a piecewise constant population size trajectory. The different pieces are correlated via a Gaussian Markov Random Field (GMRF) Prior, the degree of smoothing is determined by a precision parameter. The times of interval change are dependent on coalescent events (“coalescent event based”).</td>
       <td>piecewise constant</td>
       <td>$\theta_i | \theta_{i-1}$ (GMRF Prior with precision parameter)</td>
-      <td>event-based</td>
+      <td>coalescent event based</td>
       <td>No, only single loci</td>
       <td>Little description included in <a href="/tutorials/coalescent/skyline#secAltPriors">skyline</a><br /><br /><a href="scripts/mcmc_isochronous_skyride.Rev">Example script</a></td>
     </tr>
@@ -219,7 +218,7 @@ The data for these analyes are taken from <a class="citation" href="#Vershinina2
       <td>A coalescent model with a piecewise constant population size trajectory. The different pieces are correlated via a Gaussian Markov Random Field (GMRF) Prior and are equally spaced in time, the degree of smoothing is determined by a precision parameter. The times of interval change are independent from coalescent events, they are independent and identically distributed (iid).</td>
       <td>piecewise constant</td>
       <td>$\theta_i | \theta_{i-1}$ (GMRF Prior with precision parameter)</td>
-      <td>equally sized</td>
+      <td>coalescent event independent - equally sized</td>
       <td>Yes</td>
       <td> </td>
     </tr>
@@ -228,7 +227,7 @@ The data for these analyes are taken from <a class="citation" href="#Vershinina2
       <td>A coalescent model with a piecewise constant or linear population size trajectory. The different pieces are correlated via a Gaussian Markov Random Field (GMRF) Prior. The times of interval change are independent from coalescent events, they are independent and identically distributed (iid).</td>
       <td>piecewise constant or linear</td>
       <td>$\theta_i | \theta_{i-1}$ (GMRF Prior)</td>
-      <td>specified - here equally sized</td>
+      <td>coalescent event independent, user-specified - here equally sized</td>
       <td>Yes</td>
       <td>With sequences as input data: <a href="/tutorials/coalescent/GMRF">GMRF</a><br /><br />With trees as input data: <a href="/tutorials/coalescent/GMRF_treebased">GMRF treebased</a></td>
     </tr>
@@ -237,25 +236,25 @@ The data for these analyes are taken from <a class="citation" href="#Vershinina2
       <td>A coalescent model with a piecewise constant or linear population size trajectory. The different pieces are correlated via a Horseshoe Markov Random Field (HSMRF) Prior. The times of interval change are independent from coalescent events, they are independent and identically distributed (iid).</td>
       <td>piecewise constant or linear</td>
       <td>$\theta_i | \theta_{i-1}$ (HSMRF Prior)</td>
-      <td>specified - here equally sized</td>
+      <td>coalescent event independent, user-specified - here equally sized</td>
       <td>Yes</td>
       <td>Little description included in <a href="/tutorials/coalescent/GMRF#secHSMRF">GMRF</a><br /><br />Script in <a href="/tutorials/coalescent/HSMRF">HSMRF</a></td>
     </tr>
     <tr>
-      <td>Compound Poisson Process (CPP) Prior<br />(similar to <a class="citation" href="#OpgenRhein2005">Opgen-Rhein et al. (2005)</a>)</td>
+      <td>Skyfish model<br />(similar to <a class="citation" href="#OpgenRhein2005">Opgen-Rhein et al. (2005)</a>)</td>
       <td>A coalescent model with a piecewise constant or linear population size trajectory. The number of pieces (intervals) is not fixed. A Poisson Prior is used on the number of interval change points, additional priors need to be defined for population sizes and change points. The number of change points is determined via reversible jump MCMC (rjMCMC).</td>
       <td>piecewise constant or linear</td>
       <td>independent and identically distributed (iid)</td>
-      <td>specified - number and position of change points estimated</td>
+      <td>coalescent event independent, number and position of change points estimated</td>
       <td>Yes</td>
-      <td>Little description included in <a href="/tutorials/coalescent/GMRF#secCPP">GMRF</a><br /><br />Script in <a href="/tutorials/coalescent/CPP">CPP</a></td>
+      <td>Little description included in <a href="/tutorials/coalescent/GMRF#secCPP">GMRF</a><br /><br />Script in <a href="/tutorials/coalescent/Skyfish">Skyfish</a></td>
     </tr>
     <tr>
       <td>Piecewise<br />(similar to <a class="citation" href="#Pybus2002">Pybus and Rambaut (2002)</a>, but with flexible combinations)</td>
       <td>A coalescent model with user-defined demographic functions for a user-defined number of intervals. Base demographic functions included in RevBayes are constant, linear and exponential population size trajectories. These can be combined in an arbitrary way, but the most ancient one should always be constant due to computational reasons.</td>
       <td>piecewise constant, linear, or exponential; can be different for every interval</td>
       <td>individually chosen, independent and identically distributed (iid)</td>
-      <td>specified - individually chosen</td>
+      <td>coalescent event independent, user-specified</td>
       <td>No, only single loci</td>
       <td><a href="/tutorials/coalescent/piecewise">Piecewise</a></td>
     </tr>
@@ -322,7 +321,7 @@ We will also provide a full script in every tutorial that you can easily run for
 In each exercise, you can plot the population size trajectories resulting from the different analyses.</p>
 
 <blockquote class="instruction">
-  <p>Please create a “figures” directory in the tutorial directory, if you want to plot the results from the exercises.</p>
+  <p>If you want to plot the results from the exercises, please create a “figures” directory in the tutorial directory and install the <code class="language-plaintext highlighter-rouge">R</code> package <code class="language-plaintext highlighter-rouge">RevGadgets</code>.</p>
 </blockquote>
 
 <h2 class="section" id="exercises">Exercises</h2>
@@ -339,9 +338,10 @@ It is therefore recommended to do the exercises for isochronous data first.</p>
 
 <p>The first five exercises work with isochronous data, the last one with heterochronous data:</p>
 <ol>
-  <li><a href="/tutorials/coalescent/constant">The constant coalescent model</a></li>
-  <li><a href="/tutorials/coalescent/skyline">The skyline model</a></li>
+  <li><a href="/tutorials/coalescent/Constant">The constant coalescent model</a></li>
+  <li><a href="/tutorials/coalescent/Skyline">The skyline model</a></li>
   <li><a href="/tutorials/coalescent/GMRF">The Gaussian Markov Random Field (GMRF) model</a></li>
+  <li><a href="/tutorials/coalescent/Skyfish">The Skyfish model</a></li>
   <li><a href="/tutorials/coalescent/GMRF_treebased">The GMRF model with trees as input data</a></li>
   <li><a href="/tutorials/coalescent/piecewise">A piecewise model</a></li>
   <li><a href="/tutorials/coalescent/heterochronous">Heterochronous data</a></li>

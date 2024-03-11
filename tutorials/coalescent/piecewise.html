@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Piecewise Coalescent Model</h1>
 	<h3 class="subtitle">Estimating Demographic Histories with a Piecewise Coalescent Model</h3>
 	<h4 class="authors">Ronja Billenstein and Sebastian Höhna</h4>
-  <h5>Last modified on July 21, 2023</h5>
+  <h5>Last modified on February 28, 2024</h5>
 </div>
 
 
@@ -71,7 +71,7 @@
           
             <li><a href="/tutorials/coalescent/">Coalescent Analyses</a></li>
           
-            <li><a href="/tutorials/coalescent/skyline.html">Skyline Models</a></li>
+            <li><a href="/tutorials/coalescent/Skyline.html">Skyline Models</a></li>
           
           </ul>
         
@@ -109,7 +109,7 @@
 <p>This exercise describes how to run a piecewise coalescent analysis in <code class="language-plaintext highlighter-rouge">RevBayes</code>.
 In this case, we will define an individual demographic function with different basic “pieces”.
 The pieces can be either constant, linear or exponential.
-For all of these pieces, the different values of $N_e$ and the change points in between can be estimated.</p>
+For all of these pieces, the different values of $N_e$ and the change-points in between can be estimated.</p>
 
 <!--- From looking at the output of the skyline analysis, we could assume three pieces:
 * a recent, constant demographic history
@@ -124,7 +124,7 @@ For all of these pieces, the different values of $N_e$ and the change points in 
 
 <p>with $t_{i,j}$ being the time at the beginning of the $j^{th}$ interval.</p>
 
-<p>For the linear model, the slope depends on the starting and ending values of the population size at the interval change points.
+<p>For the linear model, the slope depends on the starting and ending values of the population size at the interval change-points.
 We define $\alpha$ as the slope.</p>
 
 \[\alpha = \frac{N_e(t_{i,(j+1)}) - N_e(t_{i,j})}{t_{i,(j+1)} - t_{i,j}}.\]
@@ -181,7 +181,7 @@ Thus, we need five population sizes.</p>
 }
 </code></pre></div></div>
 
-<p>We also set prior distributions on the times of the change points between pieces.</p>
+<p>We also set prior distributions on the times of the change-points between pieces.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>change_points[1] ~ dnUniform(1E4,2E4)
 change_points[2] ~ dnUniform(3E4,4E4)
@@ -208,7 +208,7 @@ dem_const_2 = dfConstant(pop_size[5])
 <hr class="subsection" />
 
 <p>Now, we will instantiate the stochastic node for the tree with <code class="language-plaintext highlighter-rouge">dnCoalescentDemography</code>.
-In this case, we set the vector of demographic models and the change points as input.</p>
+In this case, we set the vector of demographic models and the change-points as input.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psi ~ dnCoalescentDemography([dem_exp_1,dem_exp_2,dem_lin_1,dem_const_1,dem_lin_2,dem_const_2], changePoints=change_points, taxa=taxa)
 </code></pre></div></div>

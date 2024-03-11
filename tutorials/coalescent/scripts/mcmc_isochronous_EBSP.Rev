@@ -24,9 +24,8 @@ monitors  = VectorMonitors()
 sequences <- readDiscreteCharacterData("data/horses_isochronous_sequences.fasta")
 taxa <- sequences.taxa()
 
-# Get the number of taxa and branches. We need these later on.
+# Get the number of taxa. We need it later on.
 n_taxa <- taxa.size()
-# n_branches <- 2 * n_taxa - 3
 
 
 ##############
@@ -38,7 +37,7 @@ ESTIMATED_ROOT_AGE <- 375000
 NUM_INTERVALS = (n_taxa - 1)
 pop_size[1] ~ dnExponential( 2/ESTIMATED_ROOT_AGE )
 pop_size[1].setValue( ESTIMATED_ROOT_AGE/2 )
-moves.append( mvScale(pop_size[1], lambda=0.1, tune=true, weight=2.0) )
+moves.append( mvScale(pop_size[1], lambda=0.1, tune=false, weight=5.0) )
 indicator[1] <- 1
 num_events[1] <- 1
 
@@ -49,8 +48,8 @@ for (i in 2:NUM_INTERVALS) {
     pop_size[i] ~ dnReversibleJumpMixture(pop_size[i-1],
                             dnExponential( 2/ESTIMATED_ROOT_AGE ),
                             mix_prob)
-    moves.append( mvScale(pop_size[i], lambda=0.1, tune=true, weight=2.0) )
-    moves.append( mvRJSwitch(pop_size[i], weight=2.0) )
+    moves.append( mvScale(pop_size[i], lambda=0.1, tune=false, weight=5.0) )
+    moves.append( mvRJSwitch(pop_size[i], weight=5.0) )
     indicator[i] := ifelse( pop_size[i] == pop_size[i-1], 0, 1 )
     num_events[i] <- 1
 }
@@ -62,7 +61,6 @@ psi ~ dnCoalescentSkyline(theta=pop_size, events_per_interval=num_events, method
 root_age := psi.rootAge()
 
 diff <- (500000 - 250000)/2.0
-# obs_root_age ~ dnNormal(mean = root_age, sd = 60000, min = 250000, max = 500000)
 obs_root_age ~ dnNormal(mean = root_age, sd = 60000, min = root_age - diff, max = root_age + diff)
 obs_root_age.clamp(375000)
 

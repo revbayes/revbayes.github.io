@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Constant Coalescent Model</h1>
 	<h3 class="subtitle">Estimating Demographic Histories with a Constant Coalescent Model</h3>
 	<h4 class="authors">Ronja Billenstein and Sebastian Höhna</h4>
-  <h5>Last modified on July 21, 2023</h5>
+  <h5>Last modified on February 21, 2024</h5>
 </div>
 
 
@@ -93,7 +93,7 @@
         
           <li><a href="/tutorials/coalescent/data/horses_isochronous_sequences.fasta">horses_isochronous_sequences.fasta</a></li>
         
-          <li><a href="/tutorials/coalescent/scripts/mcmc_isochronous_constant.Rev">mcmc_isochronous_constant.Rev</a></li>
+          <li><a href="/tutorials/coalescent/scripts/mcmc_isochronous_Constant.Rev">mcmc_isochronous_Constant.Rev</a></li>
         
         </ul>
     
@@ -347,15 +347,15 @@ max_age_iso = 5e5
 min_age = 0
 spacing = "equal"
 
-population_size_log = "output/horses_iso_constant_NE.log"
+population_size_log = "output/horses_iso_Constant_NE.log"
 df &lt;- processPopSizes(population_size_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_iso, min_age = min_age, spacing = spacing)
 p &lt;- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
-ggplot2::ggsave("figures/horses_iso_constant.png", p)
+ggplot2::ggsave("figures/horses_iso_Constant.png", p)
 </code></pre></div></div>
 
 <p>Your output should look roughly like the following figure.</p>
 
-<figure id="results-constant"><p><img src="figures/horses_iso_constant.png" width="800" /></p>
+<figure id="results-constant"><p><img src="figures/horses_iso_Constant.png" width="800" /></p>
 <figcaption>Example output from plotting the constant coalescent analysis run in this exercise. The bold line represents the median of the posterior distribution of the population size and the shaded are shows the $95\%$ credible intervals.</figcaption>
 </figure>
 
@@ -365,7 +365,7 @@ ggplot2::ggsave("figures/horses_iso_constant.png", p)
 <p>When you are done, have a look at the next exercise.</p>
 
 <ul>
-  <li><a href="/tutorials/coalescent/skyline">The skyline model</a></li>
+  <li><a href="/tutorials/coalescent/Skyline">The Skyline model</a></li>
 </ul>
 
 <ol class="bibliography"><li><span id="Griffiths1994">Griffiths R.C., Tavare S., Bodmer W.F., Donnelly P.J. 1994. Sampling theory for neutral alleles in a varying environment. Philosophical Transactions of the Royal Society of London. Series B: Biological Sciences. 344:403–410.</span>

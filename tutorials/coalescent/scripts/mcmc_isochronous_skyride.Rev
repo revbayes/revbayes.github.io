@@ -1,6 +1,6 @@
 ##########################################################################################
 #
-# RevBayes Example: Coalescent skyride process applied to isochronous horse sequence data
+# RevBayes Example: Coalescent Skyride process applied to isochronous horse sequence data
 #
 # authors: Sebastian Hoehna, Ronja Billenstein
 #
@@ -24,9 +24,8 @@ monitors  = VectorMonitors()
 sequences <- readDiscreteCharacterData("data/horses_isochronous_sequences.fasta")
 taxa <- sequences.taxa()
 
-# Get the number of taxa and branches. We need these later on.
+# Get the number of taxa. We need it later on.
 n_taxa <- taxa.size()
-# n_branches <- 2 * n_taxa - 3
 
 
 ##############
@@ -68,12 +67,8 @@ psi ~ dnCoalescentSkyline(theta=pop_size, events_per_interval=num_events, method
 root_age := psi.rootAge()
 
 diff <- (500000 - 250000)/2.0
-# obs_root_age ~ dnNormal(mean = root_age, sd = 60000, min = 250000, max = 500000)
 obs_root_age ~ dnNormal(mean = root_age, sd = 60000, min = root_age - diff, max = root_age + diff)
 obs_root_age.clamp(375000)
-
-# obs_root_age_unif ~ dnUniform(root_age - diff, root_age + diff)
-# obs_root_age_unif.clamp(375000)
 
 interval_times := psi.getIntervalAges()
 
@@ -138,10 +133,10 @@ mymodel = model(psi)
 ################
 
 #add monitors
-monitors.append( mnModel(filename="output/horses_iso_skyride.log",printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_iso_skyride.trees",psi,printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_iso_skyride_NEs.log",pop_size,printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_iso_skyride_times.log",interval_times,printgen=THINNING) )
+monitors.append( mnModel(filename="output/horses_iso_Skyride.log",printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_Skyride.trees",psi,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_Skyride_NEs.log",pop_size,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_Skyride_times.log",interval_times,printgen=THINNING) )
 monitors.append( mnScreen(root_age, printgen=100) )
 
 mymcmc = mcmc(mymodel, monitors, moves, nruns=NUM_REPLICATES, combine="mixed") 

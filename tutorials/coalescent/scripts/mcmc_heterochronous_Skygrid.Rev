@@ -1,10 +1,10 @@
-##################################################################################################
+#####################################################################################################
 #
-# RevBayes Example: Coalescent process with GMRF prior applied to isochronous horse sequence data
+# RevBayes Example: Coalescent Skygrid process applied to heterochronous horse sequence data
 #
 # authors: Sebastian Hoehna, Ronja Billenstein
 #
-##################################################################################################
+#####################################################################################################
 
 ## Global settings
 
@@ -21,8 +21,8 @@ monitors  = VectorMonitors()
 #######################
 
 # Read in sequence data
-sequences <- readDiscreteCharacterData("data/horses_isochronous_sequences.fasta")
-taxa <- sequences.taxa()
+taxa <- readTaxonData("data/horses_heterochronous_ages.tsv")
+sequences <- readDiscreteCharacterData("data/horses_heterochronous_sequences.fasta")
 
 # Get the number of taxa. We need it later on.
 n_taxa <- taxa.size()
@@ -32,9 +32,9 @@ n_taxa <- taxa.size()
 # Tree model #
 ##############
 
-MAX_AGE = 500000
+MAX_AGE = 1.2E6
 
-NUM_INTERVALS <- 100
+NUM_INTERVALS <- 10
 
 for (i in 1:(NUM_INTERVALS-1)) {
 
@@ -49,16 +49,17 @@ moves.append( mvScaleBactrian(population_size_at_present,weight=5) )
 moves.append( mvMirrorMultiplier(population_size_at_present,weight=5) )
 moves.append( mvRandomDive(population_size_at_present,weight=5) )
 
-# this value depends on the number of intervals, you can find the best value using RevGadgets
-# setMRFGlobalScaleHyperpriorNShifts(99, "GMRF")
-population_size_global_scale_hyperprior <- 0.009469
-population_size_global_scale ~ dnHalfCauchy(0,1)
+# precision := 1/var
+# sd = sqrt(var) = sqrt(1/precision)
+population_size_global_precision ~ dnGamma(shape=0.001, rate=(1.0/1000.0))
+population_size_global_precision.setValue(0.1)
+moves.append(mvScale(population_size_global_precision, weight = 1.0))
 
-moves.append( mvScaleBactrian(population_size_global_scale,weight=5.0) )
+population_size_global_scale := sqrt( 1.0 / population_size_global_precision )
 
 for (i in 1:(NUM_INTERVALS-1)) {
-  # non-centralized parameterization of horseshoe
-  delta_log_population_size[i] ~ dnNormal( mean=0, sd=population_size_global_scale*population_size_global_scale_hyperprior )
+  # non-centralized parameterization of GMRF
+  delta_log_population_size[i] ~ dnNormal( mean=0, sd=population_size_global_scale )
   # Make sure values initialize to something reasonable
   delta_log_population_size[i].setValue(runif(1,-0.1,0.1)[1])
   moves.append( mvSlideBactrian(delta_log_population_size[i], weight=5) )
@@ -75,18 +76,15 @@ rates_up_down_move = mvUpDownScale(weight=10.0)
 rates_up_down_move.addVariable(population_size_at_present,FALSE)
 rates_up_down_move.addVariable(delta_log_population_size,TRUE)
 moves.append( rates_up_down_move )
-# shrink expand moves
-moves.append( mvShrinkExpand( delta_log_population_size, sd=population_size_global_scale, weight=10 ) )
-
 
 ### the time tree is a stochastic node modeled by the coalescent skyline process (dnCoalescentSkyline)
 psi ~ dnCoalescentSkyline(theta=population_size, times=changePoints, method="specified", taxa=taxa)
 
 root_age := psi.rootAge()
 
-diff <- (500000 - 250000)/2.0
-obs_root_age ~ dnNormal(mean = root_age, sd = 60000, min = root_age - diff, max = root_age + diff)
-obs_root_age.clamp(375000)
+diff <- (1200000 - 780000)/2.0
+obs_root_age ~ dnNormal(mean = root_age, sd = 200000, min = root_age - diff, max = root_age + diff)
+obs_root_age.clamp(850000)
 
 interval_times := psi.getIntervalAges()
 
@@ -151,10 +149,10 @@ mymodel = model(psi)
 ################
 
 #add monitors
-monitors.append( mnModel(filename="output/horses_iso_GMRF_100.log",printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_iso_GMRF_100.trees",psi,printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_iso_GMRF_100_NEs.log",population_size,printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_iso_GMRF_100_times.log",interval_times,printgen=THINNING) )
+monitors.append( mnModel(filename="output/horses_het_Skygrid.log",printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_het_Skygrid.trees",psi,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_het_Skygrid_NEs.log",population_size,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_het_Skygrid_times.log",interval_times,printgen=THINNING) )
 monitors.append( mnScreen(population_size, root_age, printgen=100) )
 
 mymcmc = mcmc(mymodel, monitors, moves, nruns=NUM_REPLICATES, combine="mixed")

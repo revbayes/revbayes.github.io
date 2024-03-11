@@ -1,6 +1,6 @@
 #############################################################################################
 #
-# RevBayes Example: Coalescent skyline process applied to heterochronous horse sequence data
+# RevBayes Example: Coalescent Skyline process applied to heterochronous horse sequence data
 #
 # authors: Sebastian Hoehna, Ronja Billenstein
 #
@@ -27,6 +27,7 @@ sequences <- readDiscreteCharacterData("data/horses_heterochronous_sequences.fas
 # Get the number of taxa. We need it later on.
 n_taxa <- taxa.size()
 
+
 ##############
 # Tree model #
 ##############
@@ -42,13 +43,12 @@ for (i in 1:NUM_INTERVALS) {
 }
 
 
-### the time tree is a stochastic node modeled by the coalescent skyline process (dnCoalescentSkyline)
+### the time tree is a stochastic node modeled by the coalescent Skyline process (dnCoalescentSkyline)
 psi ~ dnCoalescentSkyline(theta=pop_size, events_per_interval=num_events, method="events", taxa=taxa)
 
 root_age := psi.rootAge()
 
 diff <- (1200000 - 780000)/2.0
-# obs_root_age ~ dnNormal(mean = root_age, sd = 200000, min = 780000, max = 1200000)
 obs_root_age ~ dnNormal(mean = root_age, sd = 200000, min = root_age - diff, max = root_age + diff)
 obs_root_age.clamp(850000)
 
@@ -115,10 +115,10 @@ mymodel = model(psi)
 ################
 
 #add monitors
-monitors.append( mnModel(filename="output/horses_het_skyline.log",printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_het_skyline.trees",psi,printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_het_skyline_NEs.log",pop_size,printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_het_skyline_times.log",interval_times,printgen=THINNING) )
+monitors.append( mnModel(filename="output/horses_het_Skyline.log",printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_het_Skyline.trees",psi,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_het_Skyline_NEs.log",pop_size,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_het_Skyline_times.log",interval_times,printgen=THINNING) )
 monitors.append( mnScreen(pop_size, root_age, printgen=100) )
 
 mymcmc = mcmc(mymodel, monitors, moves, nruns=NUM_REPLICATES, combine="mixed")

@@ -36,7 +36,7 @@ pop_size ~ dnUniform(0,1E8)
 pop_size.setValue(100000)
 moves.append( mvScale(pop_size, lambda=0.1, tune=true, weight=2.0) )
 
-### the time tree is a stochastic node modeled by the constant coalescent process (dnConstantCoalescent)
+### the time tree is a stochastic node modeled by the constant coalescent process (dnCoalescent)
 psi ~ dnCoalescent(theta=pop_size, taxa=taxa)
 
 root_age := psi.rootAge()
@@ -106,9 +106,9 @@ mymodel = model(psi)
 ################
 
 #add monitors
-monitors.append( mnModel(filename="output/horses_iso_constant.log",printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_iso_constant.trees",psi,printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_iso_constant_NE.log",pop_size,printgen=THINNING) )
+monitors.append( mnModel(filename="output/horses_iso_Constant.log",printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_Constant.trees",psi,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_Constant_NE.log",pop_size,printgen=THINNING) )
 monitors.append( mnScreen(pop_size, root_age, printgen=100) )
 
 mymcmc = mcmc(mymodel, monitors, moves, nruns=NUM_REPLICATES, combine="mixed") 

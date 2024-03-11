@@ -21,11 +21,11 @@ monitors  = VectorMonitors()
 #######################
 
 # Read in the tree sample and create a MAP (maximum a posteriori) tree
-trees = readTreeTrace("output/horses_het_constant.trees", treetype = "clock", burnin = 0.1)
+trees = readTreeTrace("output/horses_het_Constant.trees", treetype = "clock", burnin = 0.1)
 maptree = mapTree(trace=trees)
 taxa <- maptree.taxa()
 
-# Get the number of taxa and branches. We need these later on.
+# Get the number of taxa. We need it later on.
 n_taxa <- taxa.size()
 
 ##############

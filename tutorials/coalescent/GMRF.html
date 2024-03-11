@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Coalescent Models with GMRF</h1>
 	<h3 class="subtitle">Estimating Demographic Histories with Coalescent Models using a Gaussian Markov Random Field Prior</h3>
 	<h4 class="authors">Ronja Billenstein and Sebastian Höhna</h4>
-  <h5>Last modified on July 21, 2023</h5>
+  <h5>Last modified on February 28, 2024</h5>
 </div>
 
 
@@ -71,9 +71,9 @@
           
             <li><a href="/tutorials/coalescent/">Coalescent Analyses</a></li>
           
-            <li><a href="/tutorials/coalescent/constant.html">Constant Coalescent Model</a></li>
+            <li><a href="/tutorials/coalescent/Constant.html">Constant Coalescent Model</a></li>
           
-            <li><a href="/tutorials/coalescent/skyline.html">Skyline Models</a></li>
+            <li><a href="/tutorials/coalescent/Skyline.html">Skyline Models</a></li>
           
           </ul>
         
@@ -119,7 +119,7 @@ Here, the intervals additionally are equally spaced and thus their start and end
 <figure id="equalsize-skyline"><p align="middle">
   <img src="figures/scheme_equalsize_skyline.png" />
 </p>
-<figcaption>Hypothetical example of a Bayesian skyline plot with equally sized intervals, independent from the number of coalescent events (equal-sized). $w_k$ are the waiting times with $k$ active lineages, $t_{c,k}$ are the coalescent events at the beginning of such a coalescent interval. $t_{i,j}$ mark the points of interval change.  Here, the intervals are chosen to be equal-sized and the change points are independent from the coalescent events. The bold line represents the median of the posterior distribution of the population size and the shaded are shows the $95\%$ credible intervals.</figcaption>
+<figcaption>Hypothetical example of a Bayesian skyline plot with equally sized intervals, independent from the number of coalescent events (equal-sized). $w_k$ are the waiting times with $k$ active lineages, $t_{c,k}$ are the coalescent events at the beginning of such a coalescent interval. $t_{i,j}$ mark the points of interval change.  Here, the intervals are chosen to be equal-sized and the change-points are independent from the coalescent events. The bold line represents the median of the posterior distribution of the population size and the shaded are shows the $95\%$ credible intervals.</figcaption>
 </figure>
 
 <blockquote class="aside"><h2>Likelihood Calculation</h2><!--- **ADD** --->
@@ -210,8 +210,8 @@ This way, the estimated parameters can be treated as independent even with the a
 The overall variability of the trajectory is controlled by the standard deviation of the Normal distribution from which these <code class="language-plaintext highlighter-rouge">delta_log_population_size</code> values are drawn.
 This standard deviation is the product of a global scale parameter and its hyperprior.
 Therefore, you first need to define the hyperprior for the global scale parameter. <!--- which controls the overall variability of population sizes from present to past. --->
-You can get the appropriate value for this hyperprior dependent on the number of change points by using the <code class="language-plaintext highlighter-rouge">R</code> package <code class="language-plaintext highlighter-rouge">RevGadgets</code>.
-Here, we ran the function <code class="language-plaintext highlighter-rouge">setMRFGlobalScaleHyperpriorNShifts(9, "GMRF")</code> to know the value of $0.1203$ (remember that there are nine change points with ten intervals).
+You can get the appropriate value for this hyperprior dependent on the number of change-points by using the <code class="language-plaintext highlighter-rouge">R</code> package <code class="language-plaintext highlighter-rouge">RevGadgets</code>.
+Here, we ran the function <code class="language-plaintext highlighter-rouge">setMRFGlobalScaleHyperpriorNShifts(9, "GMRF")</code> to know the value of $0.1203$ (remember that there are nine change-points with ten intervals).
 To have a prior distribution on <code class="language-plaintext highlighter-rouge">delta_log_population_size</code> which favors autocorrelation, but allows for sudden changes, a halfCauchy distribution is chosen for the global scale.
 We also add a scaling move to the global scale.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>population_size_global_scale_hyperprior &lt;- 0.1203
@@ -297,7 +297,7 @@ Remember to change the file names to avoid overwriting your previous results.</p
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/horses_iso_GMRF.log",printgen=THINNING) )
 monitors.append( mnFile(filename="output/horses_iso_GMRF.trees",psi,printgen=THINNING) )
 monitors.append( mnFile(filename="output/horses_iso_GMRF_NEs.log",population_size,printgen=THINNING) )
-# monitors.append( mnFile(filename="output/horses_iso_GMRF_times.log",interval_times,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_GMRF_times.log",interval_times,printgen=THINNING) )
 monitors.append( mnScreen(population_size, root_age, printgen=100) )
 
 mymcmc = mcmc(mymodel, monitors, moves)
@@ -372,70 +372,45 @@ This is the local scale parameter.</p>
 <p>In case you prefer to download a whole HSMRF script to compare it to the GMRF script, have a look at <a href="/tutorials/coalescent/HSMRF">the HSMRF</a>.</p>
 </blockquote>
 
-<h2 class="section" id="secCPP">The Compound Poisson Process Prior</h2>
-<hr class="section" />
-
-<p>It is also possible to have a flexible number of intervals instead of specifying it before the analysis.
-In this case, the number of intervals is also estimated.
-Here, we use a compound poisson process (CPP) prior with a poisson prior on the number of interval change points and two different uniform priors on the population sizes and the change points.
-In this case, a reversible jump MCMC (rjMCMC) is needed to be able to sample from the posterior distribution.
-In <code class="language-plaintext highlighter-rouge">RevBayes</code>, this functionality is implemented in the <code class="language-plaintext highlighter-rouge">dnMultiValueEvent</code> distribution.</p>
-
-<blockquote class="aside"><h2>Reversible Jump MCMC with CPP prior</h2><!--- In RevBayes, there also is the possibility to estimate the number of intervals via reversible jump MCMC (rjMCMC).
-In this approach, you don't specifically set the number of intervals before the analysis, but make it a parameter that is estimated as part of the analysis.
---->
-<p>For the <code class="language-plaintext highlighter-rouge">eventDistribution</code> parameter, a distribution on natural numbers has to be chosen.
-These “events” are the number of change points seperating intervals in this case and not coalescent events.
-In this example, we use a Poisson distribution with an expected value of $10$.
-The <code class="language-plaintext highlighter-rouge">valueDistribution</code> is a vector of prior distributions for the population sizes and the interval times.
-We also should call the variables by their names.
-The <code class="language-plaintext highlighter-rouge">minNumberEvents</code> are $1$ population size and $0$ times corresponding to interval changes.
-We expect to always have one more population size than change points.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>events ~ dnMultiValueEvent (eventDistribution = dnPoisson(lambda=10),
-                   valueDistribution=[dnUniform(1E4,1E8),
-                                      dnUniform(0.0,MAX_AGE)],
-                   names=["theta","time"],
-                   minNumberEvents=[1,0])
-</code></pre></div></div>
-<p>Fo the <code class="language-plaintext highlighter-rouge">dnMultiValueEvent</code> distribution, we add specific moves.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># apply a move that adds and removes pairs of theta+time
-moves.append( mvMultiValueEventBirthDeath(events, weight=50) )
-# add a move that changes the theta variables
-moves.append( mvMultiValueEventScale(events, name="theta", lambda=1.0, weight=10, tune=!FALSE) )
-# add a move that changes the time variables
-moves.append( mvMultiValueEventSlide(events, name="time", lambda=10.0, weight=10, tune=!FALSE) )
-moves.append( mvMultiValueEventScale(events, name="time", lambda=0.5, weight=10, tune=!FALSE) )
-</code></pre></div></div>
-<p>Finally, we need to track the different parameters by assigning them to variables.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_events := events.getNumberOfEvents()
-population_size := events.getRealPosValues(name="theta")
-changePoints := events.getRealPosValues(name="time")
-</code></pre></div></div>
-<p>In the end, all the parameters can be put into the <code class="language-plaintext highlighter-rouge">dnCoalescentSkyline</code> distribution.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psi ~ dnCoalescentSkyline(theta=population_size, times=changePoints, method="specified", taxa=taxa)
-</code></pre></div></div>
-
-<p>You can have a look at the results <a href="/tutorials/coalescent/CPP">here</a>.</p>
-</blockquote>
-
 <h2 class="section" id="next-exercise">Next Exercise</h2>
 <hr class="section" />
 
 <p>When you are done, have a look at the next exercise.</p>
 
 <ul>
-  <li><a href="/tutorials/coalescent/GMRF_treebased">The GMRF model with trees as input data</a></li>
+  <li><a href="/tutorials/coalescent/Skyfish">The Skyfish model</a></li>
 </ul>
 
-<!--- <h2 class="section" id="alternative-implementations">Alternative Implementations</h2><hr class="section"> --->
-<!--- skygrid --->
+<h2 class="section" id="secAltPriors">Alternative Implementations</h2>
+<hr class="section" />
+
+<p>A different model applying a GMRF Prior is the Skygrid model <a class="citation" href="#Gill2012">(Gill et al. 2012)</a>.
+It is based on the Skyride model <a class="citation" href="#Minin2008">(Minin et al. 2008)</a> which is described in the <a href="/tutorials/coalescent/Skyline#secAltPriors">Skyline tutorial</a>.
+The Skyride model does have coalescent event based change-points though, the Skygrid model has independent change-points.
+The degree of smoothing is being regulated by a precision parameter which differs from the global scale parameter presented in this tutorial.</p>
+
+<p>If you would like to have an example of what a <code class="language-plaintext highlighter-rouge">RevBayes</code> script with this prior can look like, have a look at</p>
+<ul>
+  <li>the <a href="scripts/mcmc_isochronous_Skygrid.Rev">example script for a Skygrid analysis</a>.</li>
+</ul>
+
 
 <ol class="bibliography"><li><span id="Faulkner2020">Faulkner J.R., Magee A.F., Shapiro B., Minin V.N. 2020. Horseshoe-based Bayesian nonparametric estimation of effective population size trajectories. Biometrics. 76:677–690.</span>
 
 <a href="https://doi.org/https://doi.org/10.1111/biom.13276">https://doi.org/10.1111/biom.13276</a>
 
 </li>
+<li><span id="Gill2012">Gill M.S., Lemey P., Faria N.R., Rambaut A., Shapiro B., Suchard M.A. 2012. Improving Bayesian Population Dynamics Inference: A Coalescent-Based Model for Multiple Loci. Molecular Biology and Evolution. 30:713–724.</span>
+
+<a href="https://doi.org/10.1093/molbev/mss265">10.1093/molbev/mss265</a>
+
+</li>
 <li><span id="Magee2020">Magee A.F., Höhna S., Vasylyeva T.I., Leaché A.D., Minin V.N. 2020. Locally adaptive Bayesian birth-death model successfully detects slow and rapid rate shifts. PLoS Computational Biology. 16:e1007999.</span>
+
+</li>
+<li><span id="Minin2008">Minin V.N., Bloomquist E.W., Suchard M.A. 2008. Smooth Skyride through a Rough Skyline: Bayesian Coalescent-Based Inference of Population Dynamics. Molecular Biology and Evolution. 25:1459–1471.</span>
+
+<a href="https://doi.org/10.1093/molbev/msn090">10.1093/molbev/msn090</a>
 
 </li></ol>
 

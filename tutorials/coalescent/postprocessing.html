@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Postprocessing the Output</h1>
 	<h3 class="subtitle">Plotting Population Size Trajectories and Checking for Convergence</h3>
 	<h4 class="authors">Ronja Billenstein and Sebastian Höhna</h4>
-  <h5>Last modified on October  4, 2023</h5>
+  <h5>Last modified on February 28, 2024</h5>
 </div>
 
 
@@ -70,6 +70,8 @@
           <ul id="prerequisites">
           
             <li><a href="/tutorials/coalescent/">Coalescent Analyses</a></li>
+          
+            <li><a href="/tutorials/convergence/">Convergence assessment</a></li>
           
           </ul>
         
@@ -87,7 +89,7 @@
 <hr class="section" />
 
 <p>This exercise describes how to plot the results from a coalescent analysis with <code class="language-plaintext highlighter-rouge">RevBayes</code>.
-You need the <code class="language-plaintext highlighter-rouge">R</code> package <code class="language-plaintext highlighter-rouge">RevGadgets</code> from the <code class="language-plaintext highlighter-rouge">development</code> branch.</p>
+You need the <code class="language-plaintext highlighter-rouge">R</code> package <code class="language-plaintext highlighter-rouge">RevGadgets</code>.</p>
 
 <h2 class="section" id="processing-output">Processing Output</h2>
 <hr class="section" />
@@ -105,10 +107,19 @@ The input should be a dataframe created with <code class="language-plaintext hig
 <h2 class="section" id="checking-for-convergence">Checking for Convergence</h2>
 <hr class="section" />
 
-<p>To check for convergence, you can calculate the Kolmogorov-Smirnov test statistic for the population size distributions.
-By using <code class="language-plaintext highlighter-rouge">processPopSizes</code> with <code class="language-plaintext highlighter-rouge">distribution = TRUE</code>, you get these distributions at your choice of grid points.</p>
+<p>To check for convergence, you can calculate the Kolmogorov-Smirnov test statistic for the population size distributions of your replicates.
+By using <code class="language-plaintext highlighter-rouge">processPopSizes</code> with <code class="language-plaintext highlighter-rouge">distribution = TRUE</code> and using the respective files of the different runs as input, you get these distributions of your samples at your choice of grid points.
+Afterwards, you can use the <code class="language-plaintext highlighter-rouge">ks.test</code> function to calculate the statistic at each grid point.
+<a class="citation" href="#Fabreti2022">Fabreti and Höhna (2022)</a> show that the threshold for the statistic should be \({D}_{crit} = 0.0921\).
+If the statistic is below ${D}_{crit}$, the two sets of samples can be considered to be drawn from the same distribution.
+This means that the MCMCs have converged.
+In the tutorial <a href="/tutorials/convergence/">Convergence assessment</a>, you can find more information on the Kolmogorov-Smirnov test.</p>
 
-<ol class="bibliography"></ol>
+<ol class="bibliography"><li><span id="Fabreti2022">Fabreti L.G., Höhna S. 2022. Convergence assessment for Bayesian phylogenetic analysis using MCMC simulation. Methods in Ecology and Evolution. 13:77–90.</span>
+
+<a href="https://doi.org/https://doi.org/10.1111/2041-210X.13727">https://doi.org/10.1111/2041-210X.13727</a>
+
+</li></ol>
 
 <script type="text/javascript">
 var _ol = document.querySelectorAll('ol');
