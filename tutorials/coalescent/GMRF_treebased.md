@@ -15,7 +15,7 @@ include_files:
 - data/horses_isochronous_sequences.fasta
 - scripts/mcmc_isochronous_GMRF_treebased.Rev
 - scripts/mcmc_isochronous_GMRF_maptreebased.Rev
-- output/horses_iso_Constant.trees
+- example_output/horses_iso_Constant.trees
 ---
 
 {% section Overview %}

@@ -17,7 +17,6 @@ include_files:
 - data/horses_heterochronous_ages.tsv
 - data/horses_heterochronous_sequences.fasta
 - scripts/mcmc_heterochronous_Constant.Rev
-include_example_output: true
 ---
 
 {% section Overview %}
