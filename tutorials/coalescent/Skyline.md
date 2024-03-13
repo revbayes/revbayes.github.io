@@ -208,12 +208,12 @@ The smoothing effect, however, reduces the noise in the resulting population siz
 For the Extended Bayesian Skyline Plot {% cite Heled2008 %}, the number of change-points is estimated by stochastic search variable selection.
 The intervals are considered to be iid.
 Also, the default demographic function usually is piecewise linear and not piecewise constant as in this tutorial.
-The estimation of the number of intervals can also be done slightly differently, as we show in the [Compound Poisson Process Prior]({{base.url}}/tutorials/coalescent/GMRF#secCPP) section of the [GMRF tutorial]({{base.url}}/tutorials/coalescent/GMRF) which is next.
+The estimation of the number of intervals can also be done slightly differently, as we show in the [Skyfish tutorial]({{base.url}}/tutorials/coalescent/Skyfish).
 
 You can try and change the priors now accordingly.
 If you would like to have an example of what a `RevBayes` script with these different priors can look like, have a look at
 * the [example script for a BSP analysis](scripts/mcmc_isochronous_BSP.Rev),
-* the [example script for a Skyride analysis](scripts/mcmc_isoochronous_Skyride.Rev), or
+* the [example script for a Skyride analysis](scripts/mcmc_isochronous_Skyride.Rev), or
 * the [example script for an EBSP analysis](scripts/mcmc_isochronous_EBSP.Rev). Note that the `.Rev` script does not apply stochastic variable search as in the original publication to determine the number of interval change-points. The script instead uses reversible jump MCMC.
 
 All three examples have the interval change-points on coalescent events (what we call "coalescent event based", as in the skyline model presented here).

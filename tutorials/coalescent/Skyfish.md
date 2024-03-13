@@ -12,7 +12,6 @@ include_all: false
 include_files:
 - data/horses_isochronous_sequences.fasta
 - scripts/mcmc_isochronous_SkyfishAC.Rev
-- scripts/mcmc_isochronous_SkyfishAC_maptreebased.Rev
 - output/horses_iso_Constant.trees
 ---
 

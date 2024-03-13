@@ -266,7 +266,7 @@ ggplot2::ggsave("figures/horses_het_constant.png", p)
 Your output should look roughly like the following figure.
 
 {% figure results-het-constant %}
-<img src="figures/horses_het_constant.png" width="800">
+<img src="figures/horses_het_Constant.png" width="800">
 {% figcaption %}
 Example output from plotting the constant coalescent analysis with heterochronous data run in this exercise. The bold line represents the median of the posterior distribution of the population size and the shaded are shows the $95\%$ credible intervals.
 
@@ -281,7 +281,7 @@ The root age also has an influence on parameters like `MAX_AGE`, which is needed
 
 * [Script for a Skyline analysis](scripts/mcmc_heterochronous_Skyline.Rev), have a look at the [Skyline tutorial]({{base.url}}/tutorials/coalescent/Skyline)
 * [Script for a Skyline analysis with a maximum a posteriori (MAP) tree as input](scripts/mcmc_heterochronous_Skyline_maptreebased.Rev)
-* [Script for a Skyline analysis with autocorrelated intervals (BSP model)](scripts/mcmc_heterochronous_BSP.Rev), have a look at the [Alternative Priors]({{base.url}}/tutorials/coalescent/Skyline#secAltPriors) section of the [skyline tutorial]({{base.url}}/tutorials/coalescent/Skyline)
+* [Script for a Skyline analysis with autocorrelated intervals (BSP model)](scripts/mcmc_heterochronous_BSP.Rev), have a look at the [Alternative Priors]({{base.url}}/tutorials/coalescent/Skyline#secAltPriors) section of the [Skyline tutorial]({{base.url}}/tutorials/coalescent/Skyline)
 * [Script for a Skyride analysis](scripts/mcmc_heterochronous_Skyride.Rev), have a look at the [Alternative Priors]({{base.url}}/tutorials/coalescent/Skyline#secAltPriors) section of the [Skyline tutorial]({{base.url}}/tutorials/coalescent/Skyline)
 * [Script for a Skyline analysis with estimation of the number of intervals (EBSP model)](scripts/mcmc_heterochronous_EBSP.Rev), have a look at the [Alternative Priors]({{base.url}}/tutorials/coalescent/Skyline#secAltPriors) section of the [Skyline tutorial]({{base.url}}/tutorials/coalescent/Skyline)
 * [Script for a GMRF analysis](scripts/mcmc_heterochronous_GMRF.Rev), have a look at the [GMRF tutorial]({{base.url}}/tutorials/coalescent/GMRF)
