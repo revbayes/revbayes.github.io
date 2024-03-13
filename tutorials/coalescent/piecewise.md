@@ -57,15 +57,15 @@ $$N_e(t) = N_e(t_{i,j}) exp((t_{i,j} - t)\alpha).$$
 {% section Inference Example %}
 
 > ## For your info
-> The entire process of the coalescent estimation can be executed by using the **mcmc_piecewise.Rev** script in the **scripts** folder.
+> The entire process of the coalescent estimation can be executed by using the **mcmc_isochronous_piecewise_6diff.Rev** script in the **scripts** folder.
 > You can type the following command into `RevBayes`:
 ~~~
-> source("scripts/mcmc_iso_piecewiese.Rev")
+> source("scripts/mcmc_isochronous_piecewise_6diff.Rev")
 ~~~
 We will walk you through every single step in the following section.
 {:.info}
 
-We will mainly highlight the parts of the script that change compared to the [constant coalescent model]({{base.url}}/tutorials/coalescent/constant).
+We will mainly highlight the parts of the script that change compared to the [constant coalescent model]({{base.url}}/tutorials/coalescent/Constant).
 
 {% subsection Read the data %}
 Read in the data as described in the first exercise.

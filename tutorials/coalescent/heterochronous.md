@@ -26,7 +26,7 @@ For the description of the whole script, we will focus on an analysis with a con
 At the bottom of the page, you can find links to `RevBayes` scripts performing more complex analyses.
 Theses scripts are similar to the ones described for isochronous data.
 
-If you have already done the tutorial for a [constant coalescent model with isochronous data]({{base.url}}/tutorials/coalescent/constant), most parts will be the same.
+If you have already done the tutorial for a [constant coalescent model with isochronous data]({{base.url}}/tutorials/coalescent/Constant), most parts will be the same.
 Please specifically have a look at the section {% ref DataSec %} and at the root calibration part of the section {% ref ModelSec %}.
 
 {% section Inference Example %}
@@ -279,11 +279,11 @@ Here, you can find scripts for analyses similar to those performed in the previo
 The main changing points are the data which is read in and the root age.
 The root age also has an influence on parameters like `MAX_AGE`, which is needed, *e.g*, for the Gaussian Markov Random Field (GMRF) scripts and the `ESTIMATED_ROOT_AGE` parameter, which you can find for example in the Skyride script.
 
-* [Script for a Skyline analysis](scripts/mcmc_heterochronous_skyline.Rev), have a look at the [Skyline tutorial]({{base.url}}/tutorials/coalescent/skyline)
-* [Script for a Skyline analysis with a maximum a posteriori (MAP) tree as input](scripts/mcmc_heterochronous_skyline_maptreebased.Rev)
-* [Script for a Skyline analysis with autocorrelated intervals (BSP model)](scripts/mcmc_heterochronous_BSP.Rev), have a look at the [Alternative Priors]({{base.url}}/tutorials/coalescent/skyline#secAltPriors) section of the [skyline tutorial]({{base.url}}/tutorials/coalescent/skyline)
-* [Script for a Skyride analysis](scripts/mcmc_heterochronous_Skyride.Rev), have a look at the [Alternative Priors]({{base.url}}/tutorials/coalescent/skyline#secAltPriors) section of the [Skyline tutorial]({{base.url}}/tutorials/coalescent/skyline)
-* [Script for a Skyline analysis with estimation of the number of intervals (EBSP model)](scripts/mcmc_heterochronous_EBSP.Rev), have a look at the [Alternative Priors]({{base.url}}/tutorials/coalescent/skyline#secAltPriors) section of the [Skyline tutorial]({{base.url}}/tutorials/coalescent/skyline)
+* [Script for a Skyline analysis](scripts/mcmc_heterochronous_Skyline.Rev), have a look at the [Skyline tutorial]({{base.url}}/tutorials/coalescent/Skyline)
+* [Script for a Skyline analysis with a maximum a posteriori (MAP) tree as input](scripts/mcmc_heterochronous_Skyline_maptreebased.Rev)
+* [Script for a Skyline analysis with autocorrelated intervals (BSP model)](scripts/mcmc_heterochronous_BSP.Rev), have a look at the [Alternative Priors]({{base.url}}/tutorials/coalescent/Skyline#secAltPriors) section of the [skyline tutorial]({{base.url}}/tutorials/coalescent/Skyline)
+* [Script for a Skyride analysis](scripts/mcmc_heterochronous_Skyride.Rev), have a look at the [Alternative Priors]({{base.url}}/tutorials/coalescent/Skyline#secAltPriors) section of the [Skyline tutorial]({{base.url}}/tutorials/coalescent/Skyline)
+* [Script for a Skyline analysis with estimation of the number of intervals (EBSP model)](scripts/mcmc_heterochronous_EBSP.Rev), have a look at the [Alternative Priors]({{base.url}}/tutorials/coalescent/Skyline#secAltPriors) section of the [Skyline tutorial]({{base.url}}/tutorials/coalescent/Skyline)
 * [Script for a GMRF analysis](scripts/mcmc_heterochronous_GMRF.Rev), have a look at the [GMRF tutorial]({{base.url}}/tutorials/coalescent/GMRF)
 * [Script for a GMRF analysis with a sample of trees as input](scripts/mcmc_heterochronous_GMRF_treebased.Rev), have a look at the [treebased GMRF tutorial]({{base.url}}/tutorials/coalescent/GMRF_treebased)
 * [Script for a GMRF analysis with a MAP tree as input](scripts/mcmc_heterochronous_GMRF_maptreebased.Rev), have a look at the [treebased GMRF tutorial]({{base.url}}/tutorials/coalescent/GMRF_treebased)

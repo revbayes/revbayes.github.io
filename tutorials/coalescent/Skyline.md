@@ -69,16 +69,16 @@ The waiting times $w_k$ refer to the waiting time starting when there are $k$ ac
 {% section Inference Example %}
 
 > ## For your info
-> The entire process of the skyline estimation can be executed by using the **mcmc_isochronous_skyline.Rev** script that you can download on the left side of the page.
+> The entire process of the skyline estimation can be executed by using the **mcmc_isochronous_Skyline.Rev** script that you can download on the left side of the page.
 > Save it in your **scripts** directory.
 > You can type the following command into `RevBayes`:
 ~~~
-> source("scripts/mcmc_isochronous_skyline.Rev")
+> source("scripts/mcmc_isochronous_Skyline.Rev")
 ~~~
 We will walk you through the script in the following section.
 {:.info}
 
-We will mainly highlight the parts of the script that change compared to the [constant coalescent model]({{base.url}}/tutorials/coalescent/constant).
+We will mainly highlight the parts of the script that change compared to the [constant coalescent model]({{base.url}}/tutorials/coalescent/Constant).
 
 {% subsection Read the data %}
 Read in the data as described in the first exercise.
@@ -137,7 +137,7 @@ interval_times := psi.getIntervalAges()
 For this analysis, we constrain the root age as before and add the same moves for the tree.
 
 {% subsection Substitution Model and other parameters %}
-This part is also taken from the [constant coalescent exercise]({{base.url}}/tutorials/coalescent/constant).
+This part is also taken from the [constant coalescent exercise]({{base.url}}/tutorials/coalescent/Constant).
 
 {% subsection Finalize and run the analysis %}
 

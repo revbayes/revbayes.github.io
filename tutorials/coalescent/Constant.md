@@ -48,11 +48,11 @@ Schematic figure of a coalescent tree and the different times associated with it
 {% section Inference Example %}
 
 > ## For your info
-> The entire process of the estimation can be executed by using the **mcmc_isochronous_constant.Rev** script that you can download on the left side of the page.
+> The entire process of the estimation can be executed by using the **mcmc_isochronous_Constant.Rev** script that you can download on the left side of the page.
 > Save it in your **scripts** directory.
 > You can type the following command into `RevBayes`:
 ~~~
-> source("scripts/mcmc_isochronous_constant.Rev")
+> source("scripts/mcmc_isochronous_Constant.Rev")
 ~~~
 We will walk you through every single step in the following section.
 {:.info}
@@ -233,9 +233,9 @@ With `mnFile`, you can keep track of the trees or parameters that you would like
 This output will not per se be saved in a file.
 
 ~~~
-monitors.append( mnModel(filename="output/horses_iso_constant.log",printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_iso_constant.trees",psi,printgen=THINNING) )
-monitors.append( mnFile(filename="output/horses_iso_constant_NE.log",pop_size,printgen=THINNING) )
+monitors.append( mnModel(filename="output/horses_iso_Constant.log",printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_Constant.trees",psi,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_Constant_NE.log",pop_size,printgen=THINNING) )
 monitors.append( mnScreen(pop_size, root_age, printgen=100) )
 ~~~
 

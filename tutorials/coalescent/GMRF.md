@@ -70,7 +70,7 @@ As the intervals can be considered independent from each other, the likelihood o
 We will walk you through the script in the following section.
 {:.info}
 
-We will mainly highlight the parts of the script that change compared to the [constant coalescent model]({{base.url}}/tutorials/coalescent/constant) and the [skyline model]({{base.url}}/tutorials/coalescent/skyline).
+We will mainly highlight the parts of the script that change compared to the [constant coalescent model]({{base.url}}/tutorials/coalescent/Constant) and the [skyline model]({{base.url}}/tutorials/coalescent/Skyline).
 
 {% subsection Read the data %}
 Read in the data as described in the first exercise.

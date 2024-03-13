@@ -39,12 +39,12 @@ We will mainly highlight the parts of the script that change compared to the oth
 You can have another look at the other exercises, they are listed under prerequisites on the left.
 
 {% subsection Read the data %}
-Read in the output from the [constant coalescent exercise]({{base.url}}/tutorials/coalescent/constant).
-If you haven't done the exercise, please download the file **horses_constant.trees** into an "output" folder in your tutorial directory.
+Read in the output from the [constant coalescent exercise]({{base.url}}/tutorials/coalescent/Constant).
+If you haven't done the exercise, please download the file **horses_iso_Constant.trees** into an "output" folder in your tutorial directory.
 
 ~~~
 # Read in the tree sample
-treetrace = readTreeTrace("output/horses_Constant.trees", treetype = "clock", burnin = 0.1)
+treetrace = readTreeTrace("output/horses_iso_Constant.trees", treetype = "clock", burnin = 0.1)
 trees = treetrace.getTrees()
 
 # Get the taxa
@@ -93,7 +93,7 @@ As mentioned above, you can also have a single tree as input.
 In this case, you can read it in with `readTrees`.
 Here, we first generate the maximum a posteriori (MAP) tree from the tree sample.
 ~~~
-trees = readTreeTrace("output/horses_Constant.trees", treetype = "clock", burnin = 0.1)
+trees = readTreeTrace("output/horses_iso_Constant.trees", treetype = "clock", burnin = 0.1)
 maptree = mapTree(trace=trees)
 taxa <- maptree.taxa()
 ~~~
