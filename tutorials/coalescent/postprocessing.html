@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: Postprocessing the Output</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
+      </a>
+
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/download">Download</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/documentation/">Documentation</a></li>
+        <li><a href="/interfaces">Interfaces</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/jobs/">Jobs</a></li>
+        <li><a href="/developer/">Developer</a></li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <div class="titlebar">
+	<h1 class="maintitle">Postprocessing the Output</h1>
+	<h3 class="subtitle">Plotting Population Size Trajectories and Checking for Convergence</h3>
+	<h4 class="authors">Ronja Billenstein and Sebastian Höhna</h4>
+  <h5>Last modified on March 13, 2024</h5>
+</div>
+
+
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul id="prerequisites">
+          
+            <li><a href="/tutorials/coalescent/">Coalescent Analyses</a></li>
+          
+            <li><a href="/tutorials/convergence/">Convergence assessment</a></li>
+          
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+
+
+
+
+</div>
+<h2 class="section" id="overview">Overview</h2>
+<hr class="section" />
+
+<p>This exercise describes how to plot the results from a coalescent analysis with <code class="language-plaintext highlighter-rouge">RevBayes</code>.
+You need the <code class="language-plaintext highlighter-rouge">R</code> package <code class="language-plaintext highlighter-rouge">RevGadgets</code>.</p>
+
+<h2 class="section" id="processing-output">Processing Output</h2>
+<hr class="section" />
+
+<p>With <code class="language-plaintext highlighter-rouge">RevGadgets</code>, you can use the function <code class="language-plaintext highlighter-rouge">processPopSizes</code> to summarize your output.
+Type <code class="language-plaintext highlighter-rouge">?processPopSizes</code> in <code class="language-plaintext highlighter-rouge">R</code> to see the parameters of the function.</p>
+
+<h2 class="section" id="plotting-population-size-trajectories">Plotting Population Size Trajectories</h2>
+<hr class="section" />
+
+<p>For plotting the population size trajectory from your analysis, you need the <code class="language-plaintext highlighter-rouge">plotPopSizes</code> function.
+Type <code class="language-plaintext highlighter-rouge">?plotPopSizes</code> in <code class="language-plaintext highlighter-rouge">R</code> to see the parameters of the function.
+The input should be a dataframe created with <code class="language-plaintext highlighter-rouge">processPopSizes</code> with the option <code class="language-plaintext highlighter-rouge">distribution = FALSE</code>, which is the default.</p>
+
+<h2 class="section" id="checking-for-convergence">Checking for Convergence</h2>
+<hr class="section" />
+
+<p>To check for convergence, you can calculate the Kolmogorov-Smirnov test statistic for the population size distributions of your replicates.
+By using <code class="language-plaintext highlighter-rouge">processPopSizes</code> with <code class="language-plaintext highlighter-rouge">distribution = TRUE</code> and using the respective files of the different runs as input, you get these distributions of your samples at your choice of grid points.
+Afterwards, you can use the <code class="language-plaintext highlighter-rouge">ks.test</code> function to calculate the statistic at each grid point.
+<a class="citation" href="#Fabreti2022">Fabreti and Höhna (2022)</a> show that the threshold for the statistic should be \({D}_{crit} = 0.0921\).
+If the statistic is below ${D}_{crit}$, the two sets of samples can be considered to be drawn from the same distribution.
+This means that the MCMCs have converged.
+In the tutorial <a href="/tutorials/convergence/">Convergence assessment</a>, you can find more information on the Kolmogorov-Smirnov test.</p>
+
+<ol class="bibliography"><li><span id="Fabreti2022">Fabreti L.G., Höhna S. 2022. Convergence assessment for Bayesian phylogenetic analysis using MCMC simulation. Methods in Ecology and Evolution. 13:77–90.</span>
+
+<a href="https://doi.org/https://doi.org/10.1111/2041-210X.13727">https://doi.org/10.1111/2041-210X.13727</a>
+
+</li></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+    });
+    MathJax.Hub.Queue(function () {
+      $(".aside").each(function() {
+          $("div .MathJax", this).hide();
+      });
+    });
+</script>
+<script src="/assets/js/base.js"></script>
+
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0Y03X9Q2TJ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-0Y03X9Q2TJ');
+</script>
+
+  </body>
+</html>

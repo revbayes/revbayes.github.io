@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: Piecewise Coalescent Model</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
+      </a>
+
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/download">Download</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/documentation/">Documentation</a></li>
+        <li><a href="/interfaces">Interfaces</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/jobs/">Jobs</a></li>
+        <li><a href="/developer/">Developer</a></li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <div class="titlebar">
+	<h1 class="maintitle">Piecewise Coalescent Model</h1>
+	<h3 class="subtitle">Estimating Demographic Histories with a Piecewise Coalescent Model</h3>
+	<h4 class="authors">Ronja Billenstein and Sebastian Höhna</h4>
+  <h5>Last modified on March 13, 2024</h5>
+</div>
+
+
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul id="prerequisites">
+          
+            <li><a href="/tutorials/coalescent/">Coalescent Analyses</a></li>
+          
+            <li><a href="/tutorials/coalescent/Skyline.html">Skyline Models</a></li>
+          
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+
+
+
+
+<blockquote class="tutorial_files" id="tutorial_files">
+    <h2>Data files and scripts</h2>
+    
+        
+        <strong>Other</strong>
+        <ul id="other_files">
+        
+        
+        
+          <li><a href="/tutorials/coalescent/data/horses_isochronous_sequences.fasta">horses_isochronous_sequences.fasta</a></li>
+        
+          <li><a href="/tutorials/coalescent/scripts/mcmc_isochronous_piecewise_6diff.Rev">mcmc_isochronous_piecewise_6diff.Rev</a></li>
+        
+        </ul>
+    
+</blockquote>
+
+
+</div>
+<h2 class="section" id="overview">Overview</h2>
+<hr class="section" />
+
+<p>This exercise describes how to run a piecewise coalescent analysis in <code class="language-plaintext highlighter-rouge">RevBayes</code>.
+In this case, we will define an individual demographic function with different basic “pieces”.
+The pieces can be either constant, linear or exponential.
+For all of these pieces, the different values of $N_e$ and the change-points in between can be estimated.</p>
+
+<!--- From looking at the output of the skyline analysis, we could assume three pieces:
+* a recent, constant demographic history
+* an exponential population size trajectory in the middle
+* and another constant piece as most ancient. --->
+
+<blockquote class="aside"><h2>Definition of the different base demographic models</h2><p>The three implemented base demographic models in RevBayes are a constant, a linear and an exponential model.</p>
+
+<p>For the constant model, the population size through time is easily defined:</p>
+
+\[N_e(t) = N_e(t_{i,j}),\]
+
+<p>with $t_{i,j}$ being the time at the beginning of the $j^{th}$ interval.</p>
+
+<p>For the linear model, the slope depends on the starting and ending values of the population size at the interval change-points.
+We define $\alpha$ as the slope.</p>
+
+\[\alpha = \frac{N_e(t_{i,(j+1)}) - N_e(t_{i,j})}{t_{i,(j+1)} - t_{i,j}}.\]
+
+<p>Then, the effective population size through time is calculated as follows:</p>
+
+\[N_e(t) = N_e(t_{i,j}) + (t-t_{i,j}) * \alpha.\]
+
+<p>Finally, for the exponential model, $\alpha$ is defined as follows:</p>
+
+\[\alpha = \frac{log(\frac{N_e(t_{i,(j+1)})}{N_e(t_{i,j})})}{t_{i,j} - t_{i,(j+1)}},\]
+
+<p>and the effective population size is:</p>
+
+\[N_e(t) = N_e(t_{i,j}) exp((t_{i,j} - t)\alpha).\]
+</blockquote>
+
+<h2 class="section" id="inference-example">Inference Example</h2>
+<hr class="section" />
+
+<blockquote class="info">
+  <h2 id="for-your-info">For your info</h2>
+  <p>The entire process of the coalescent estimation can be executed by using the <strong>mcmc_isochronous_piecewise_6diff.Rev</strong> script in the <strong>scripts</strong> folder.
+You can type the following command into <code class="language-plaintext highlighter-rouge">RevBayes</code>:</p>
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/mcmc_isochronous_piecewise_6diff.Rev")
+</code></pre></div>  </div>
+  <p>We will walk you through every single step in the following section.</p>
+</blockquote>
+
+<p>We will mainly highlight the parts of the script that change compared to the <a href="/tutorials/coalescent/Constant">constant coalescent model</a>.</p>
+
+<h3 class="subsection" id="read-the-data">Read the data</h3>
+<hr class="subsection" />
+
+<p>Read in the data as described in the first exercise.</p>
+
+<h3 class="subsection" id="the-piecewise-coalescent">The Piecewise Coalescent</h3>
+<hr class="subsection" />
+
+<p>For the piecewise model, you need to define which kinds of pieces should be included.</p>
+
+<p>For each piece, one or two population sizes will be estimated.
+Choose a prior and add a move for each population size.
+In the case of a constant coalescent process, one population size is needed.
+For the two other processes, one population size for the start of the piece and one for the end of the piece are needed.
+Here, we would like to test six different pieces.
+Two should be constant, two linear and two exponential.
+Thus, we need five population sizes.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (i in 1:5){
+    pop_size[i] ~ dnUniform(0,1E8)
+    pop_size[i].setValue(100000)
+    moves.append( mvScale(pop_size[i], lambda=0.1, tune=true, weight=2.0) )
+}
+</code></pre></div></div>
+
+<p>We also set prior distributions on the times of the change-points between pieces.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>change_points[1] ~ dnUniform(1E4,2E4)
+change_points[2] ~ dnUniform(3E4,4E4)
+change_points[3] ~ dnUniform(6E4,9E4)
+change_points[4] ~ dnUniform(1.2E5,1.7E5)
+change_points[5] ~ dnUniform(2.2E5,3.2E5)
+for (i in 1:5){
+    moves.append( mvSlide(change_points[i], delta=0.1, tune=true, weight=2.0) )
+}
+</code></pre></div></div>
+
+<p>Now, we need to define the different pieces.
+Depending on the type of piece, different parameters need to be added:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dem_exp_1 = dfExponential(N0 = pop_size[1], N1=pop_size[2], t0=0, t1=change_points[1])
+dem_exp_2 = dfExponential(N0 = pop_size[2], N1=pop_size[3], t0=change_points[1], t1=change_points[2])
+dem_lin_1 = dfLinear(N0 = pop_size[3], N1=pop_size[4], t0=change_points[2], t1=change_points[3])
+dem_const_1 = dfConstant(pop_size[4])
+dem_lin_2 = dfLinear(N0 = pop_size[4], N1=pop_size[5], t0=change_points[4], t1=change_points[5])
+dem_const_2 = dfConstant(pop_size[5])
+</code></pre></div></div>
+
+<h3 class="subsection" id="the-tree">The Tree</h3>
+<hr class="subsection" />
+
+<p>Now, we will instantiate the stochastic node for the tree with <code class="language-plaintext highlighter-rouge">dnCoalescentDemography</code>.
+In this case, we set the vector of demographic models and the change-points as input.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psi ~ dnCoalescentDemography([dem_exp_1,dem_exp_2,dem_lin_1,dem_const_1,dem_lin_2,dem_const_2], changePoints=change_points, taxa=taxa)
+</code></pre></div></div>
+
+<p>For this analysis, we constrain the root age as before and add the same moves for the tree.</p>
+
+<h3 class="subsection" id="substitution-model-and-other-parameters">Substitution Model and other parameters</h3>
+<hr class="subsection" />
+
+<p>This part is also taken from the constant coalescent exercise.</p>
+
+<h3 class="subsection" id="finalize-and-run-the-analysis">Finalize and run the analysis</h3>
+<hr class="subsection" />
+
+<p>In the end, we need to wrap our model as before.</p>
+
+<p>Finally, we add the monitors and then run the MCMC.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/horses_iso_piecewise_6diff.log",printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_piecewise_6diff.trees",psi,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_piecewise_6diff_NEs.log",pop_size,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_piecewise_6diff_times.log",change_points,printgen=THINNING) )
+monitors.append( mnScreen(pop_size, root_age, printgen=100) )
+</code></pre></div></div>
+
+<h2 class="section" id="results">Results</h2>
+<hr class="section" />
+
+<p>After running your analysis, you can plot the results using the <code class="language-plaintext highlighter-rouge">R</code> package <code class="language-plaintext highlighter-rouge">RevGadgets</code> and by additionally defining the demographic models from this exercise.</p>
+
+<blockquote class="aside"><h2>R code</h2><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>library(RevGadgets)
+
+burnin = 0.1
+probs = c(0.025, 0.975)
+summary = "median"
+
+num_grid_points = 500
+max_age_iso = 5e5
+min_age = 0
+spacing = "equal"
+
+population_size_log_skyline = "output/horses_iso_skyline_NEs.log"
+interval_change_points_log_skyline = "output/horses_iso_skyline_times.log"
+df_skyline &lt;- processPopSizes(population_size_log_skyline, interval_change_points_log_skyline, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_iso, min_age = min_age, spacing = spacing)
+p_skyline &lt;- plotPopSizes(df_skyline) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
+
+population_size_log = "output/horses_iso_piecewise_6diff_NEs.log"
+interval_change_points_log = "output/horses_iso_piecewise_6diff_times.log"
+pop_sizes &lt;- readTrace(population_size_log, burnin = burnin)[[1]]
+interval_times &lt;- readTrace(interval_change_points_log, burnin = burnin)[[1]]
+
+pop_size_medians = apply(pop_sizes[,grep("size", names(pop_sizes))], 2, median)
+pop_size_quantiles = apply(pop_sizes[,grep("size", names(pop_sizes))], 2, quantile, probs = probs)
+time_medians =apply(interval_times[,grep("change_points", names(interval_times))], 2, median)
+
+exponential_dem &lt;- function(t, N0, N1, t0, t1){
+  alpha = log( N1/N0 ) / (t0 - t1)
+  return (N0 * exp( (t0-t) * alpha))
+}
+
+linear_dem &lt;- function(t, N0, N1, t0, t1){
+  alpha = ( N1-N0 ) / (t1 - t0)
+  return (N0 + (t-t0) * alpha)
+}
+
+all_combined &lt;- function(t){
+  if (t &lt; time_medians[1]){
+
+    return(exponential_dem(t, N0 = pop_size_medians[1], N1 = pop_size_medians[2], t0 = 0, t1 = time_medians[1]))
+
+  } else if (t &lt; time_medians[2]){
+
+    return(exponential_dem(t, N0 = pop_size_medians[2], N1 = pop_size_medians[3], t0 = time_medians[1], t1 = time_medians[2]))
+
+  } else if (t &lt; time_medians[3]){
+
+    return(linear_dem(t, N0 = pop_size_medians[3], N1 = pop_size_medians[4], t0 = time_medians[2], t1 = time_medians[3]))
+
+  } else if (t &lt; time_medians[4]){
+
+    return(pop_size_medians[4])
+
+  } else if (t &lt; time_medians[5]){
+
+    return(linear_dem(t, N0 = pop_size_medians[4], N1 = pop_size_medians[5], t0 = time_medians[4], t1 = time_medians[5]))
+
+  } else {
+
+    return(pop_size_medians[5])
+
+  }
+}
+
+all_lower &lt;- function(t){
+  if (t &lt; time_medians[1]){
+
+    return(exponential_dem(t, N0 = pop_size_quantiles[1,1], N1 = pop_size_quantiles[1,2], t0 = 0, t1 = time_medians[1]))
+
+  } else if (t &lt; time_medians[2]){
+
+    return(exponential_dem(t, N0 = pop_size_quantiles[1,2], N1 = pop_size_quantiles[1,3], t0 = time_medians[1], t1 = time_medians[2]))
+
+  } else if (t &lt; time_medians[3]){
+
+    return(linear_dem(t, N0 = pop_size_quantiles[1,3], N1 = pop_size_quantiles[1,4], t0 = time_medians[2], t1 = time_medians[3]))
+
+  } else if (t &lt; time_medians[4]){
+
+    return(pop_size_quantiles[1,4])
+
+  } else if (t &lt; time_medians[5]){
+
+    return(linear_dem(t, N0 = pop_size_quantiles[1,4], N1 = pop_size_quantiles[1,5], t0 = time_medians[4], t1 = time_medians[5]))
+
+  } else {
+
+    return(pop_size_quantiles[1,5])
+
+  }
+}
+
+all_upper &lt;- function(t){
+  if (t &lt; time_medians[1]){
+
+    return(exponential_dem(t, N0 = pop_size_quantiles[2,1], N1 = pop_size_quantiles[2,2], t0 = 0, t1 = time_medians[1]))
+
+  } else if (t &lt; time_medians[2]){
+
+    return(exponential_dem(t, N0 = pop_size_quantiles[2,2], N1 = pop_size_quantiles[2,3], t0 = time_medians[1], t1 = time_medians[2]))
+
+  } else if (t &lt; time_medians[3]){
+
+    return(linear_dem(t, N0 = pop_size_quantiles[2,3], N1 = pop_size_quantiles[2,4], t0 = time_medians[2], t1 = time_medians[3]))
+
+  } else if (t &lt; time_medians[4]){
+
+    return(pop_size_quantiles[2,4])
+
+  } else if (t &lt; time_medians[5]){
+
+    return(linear_dem(t, N0 = pop_size_quantiles[2,4], N1 = pop_size_quantiles[2,5], t0 = time_medians[4], t1 = time_medians[5]))
+
+  } else {
+
+    return(pop_size_quantiles[2,5])
+
+  }
+}
+
+grid = seq(0, 3.5e5, length.out = 500)
+pop_size_median &lt;- sapply(grid, all_combined)
+pop_size_lower &lt;- sapply(grid, all_lower)
+pop_size_upper &lt;- sapply(grid, all_upper)
+
+df &lt;-tibble::tibble(.rows = length(grid))
+df$value &lt;- pop_size_median
+df$lower &lt;- pop_size_lower
+df$upper &lt;- pop_size_upper
+df$time &lt;- grid
+
+p &lt;- p_skyline +
+  ggplot2::geom_line(data = df, ggplot2::aes(x = time, y = value), linewidth = 0.9, color = "blue") +
+  ggplot2::geom_ribbon(data = df, ggplot2::aes(x = time, ymin = lower, ymax = upper), fill = "blue", alpha = 0.2)
+ggplot2::ggsave("figures/horses_iso_piecewise_6diff.png", p)
+</code></pre></div></div>
+</blockquote>
+
+<figure id="results-piecewise"><p><img src="figures/horses_iso_piecewise_6diff.png" width="800" /></p>
+<figcaption>Example output from plotting the piecewise analysis with six pieces run in this exercise. The bold line represents the median of the posterior distribution of the population size and the shaded are shows the $95\%$ credible intervals. The reference skyline result is shown in green and the result of the piecewise analysis is shown in blue.</figcaption>
+</figure>
+
+<h2 class="section" id="summary">Summary</h2>
+<hr class="section" />
+
+<p>When you are done with all exercises, have a look at the <a href="/tutorials/coalescent/heterochronous">tutorial with heterochronous data</a> or the <a href="/tutorials/coalescent/summary">summary</a>.</p>
+
+<ol class="bibliography"></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+    });
+    MathJax.Hub.Queue(function () {
+      $(".aside").each(function() {
+          $("div .MathJax", this).hide();
+      });
+    });
+</script>
+<script src="/assets/js/base.js"></script>
+
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0Y03X9Q2TJ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-0Y03X9Q2TJ');
+</script>
+
+  </body>
+</html>

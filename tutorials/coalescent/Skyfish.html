@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: The Skyfish Model</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
+      </a>
+
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/download">Download</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/documentation/">Documentation</a></li>
+        <li><a href="/interfaces">Interfaces</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/jobs/">Jobs</a></li>
+        <li><a href="/developer/">Developer</a></li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <div class="titlebar">
+	<h1 class="maintitle">The Skyfish Model</h1>
+	<h3 class="subtitle">Estimating Demographic Histories with the Skyfish Model</h3>
+	<h4 class="authors">Ronja Billenstein and Sebastian Höhna</h4>
+  <h5>Last modified on March 13, 2024</h5>
+</div>
+
+
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul id="prerequisites">
+          
+            <li><a href="/tutorials/coalescent/">Coalescent Analyses</a></li>
+          
+            <li><a href="/tutorials/coalescent/GMRF.html">Coalescent Models with GMRF</a></li>
+          
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+
+
+
+
+<blockquote class="tutorial_files" id="tutorial_files">
+    <h2>Data files and scripts</h2>
+    
+        
+        <strong>Other</strong>
+        <ul id="other_files">
+        
+        
+        
+          <li><a href="/tutorials/coalescent/output/horses_iso_Constant.trees">horses_iso_Constant.trees</a></li>
+        
+          <li><a href="/tutorials/coalescent/data/horses_isochronous_sequences.fasta">horses_isochronous_sequences.fasta</a></li>
+        
+          <li><a href="/tutorials/coalescent/scripts/mcmc_isochronous_SkyfishAC.Rev">mcmc_isochronous_SkyfishAC.Rev</a></li>
+        
+          <li><a href="/tutorials/coalescent/scripts/mcmc_isochronous_SkyfishAC_maptreebased.Rev">mcmc_isochronous_SkyfishAC_maptreebased.Rev</a></li>
+        
+        </ul>
+    
+</blockquote>
+
+
+</div>
+<h2 class="section" id="overview">Overview</h2>
+<hr class="section" />
+
+<p>This tutorial describes how to run a Coaelescent Skyline Analysis with the Skyfish model in <code class="language-plaintext highlighter-rouge">RevBayes</code>.
+The most notable difference to the previous exercise is that the number of intervals is estimated in the analysis.
+In the Skyfish model, we use a compound poisson process (CPP) prior with a poisson prior on the number of interval change-points, a uniform prior on the position of the change-points, and an autocorrelated lognormal prior on the population size.
+In this case, a reversible jump MCMC (rjMCMC) is needed to be able to sample from the posterior distribution.
+In <code class="language-plaintext highlighter-rouge">RevBayes</code>, this functionality is implemented in the <code class="language-plaintext highlighter-rouge">dnAutocorrelatedEvent</code> distribution.</p>
+
+<h2 class="section" id="inference-example">Inference Example</h2>
+<hr class="section" />
+
+<blockquote class="info">
+  <h2 id="for-your-info">For your info</h2>
+  <p>The entire process of the Skyfish estimation can be executed by using the <strong>mcmc_isochronous_SkyfishAC.Rev</strong> script in the <strong>scripts</strong> folder.
+You can type the following command into <code class="language-plaintext highlighter-rouge">RevBayes</code>:</p>
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/mcmc_isochronous_SkyfishAC.Rev")
+</code></pre></div>  </div>
+  <p>We will walk you through the script in the following section.</p>
+</blockquote>
+
+<p>We will mainly highlight the parts of the script that change compared to the <a href="/tutorials/coalescent/GMRF">GMRF model</a>.</p>
+
+<h3 class="subsection" id="read-the-data">Read the data</h3>
+<hr class="subsection" />
+
+<p>Read in the data as described in the first exercise.</p>
+
+<h3 class="subsection" id="the-skyfish-model">The Skyfish Model</h3>
+<hr class="subsection" />
+
+<p>For the Skyfish model, you need to set a maximal age.
+Here, we define the maximal age to be $500000$ which should cover the whole tree (based on our results from the previous exercises).
+Further backwards in time the population size is thought to be in equilibrium and to be equal to the population size of the most ancient interval.
+The first interval (automatically) starts at $t = 0$, the other starting points depend on the number of intervals and the maximal age.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>MAX_AGE = 500000
+</code></pre></div></div>
+
+<p>We also need to set an estimated root age which will be used for the initialization of the population size values.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ESTIMATED_ROOT_AGE &lt;- 375000
+EXPECTED_POP_SIZE = ESTIMATED_ROOT_AGE/2
+</code></pre></div></div>
+
+<p>We need some additional parameters for the analysis to work.
+<code class="language-plaintext highlighter-rouge">H</code> is a parameter governing the standard deviation of the population size (see below).
+It is chosen so that $95\%$ of the prior probability span two orders of magnitude (see <a class="citation" href="#Hoehna2017a">Höhna et al. (2017)</a> for more details).
+<code class="language-plaintext highlighter-rouge">ac_sigma</code> defines the standard deviation of the autocorrelation.
+We draw it from an exponential distribution with rate <code class="language-plaintext highlighter-rouge">MAX_AGE / 8</code>.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>H = 0.587405
+
+ac_sigma ~ dnExponential( 0.25 * MAX_AGE / 2 )
+ac_sigma.setValue( 1.0 / MAX_AGE )
+</code></pre></div></div>
+<p>We add a scaling move for <code class="language-plaintext highlighter-rouge">ac_sigma</code>.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale(ac_sigma, weight=2) )
+</code></pre></div></div>
+
+<p>In the next step, we set up the <code class="language-plaintext highlighter-rouge">dnAutocorrelatedEvent</code> distribution which combines population sizes, the position of interval change-points, and the number of change-points in a single distribution.
+For the <code class="language-plaintext highlighter-rouge">eventDistribution</code> parameter, a distribution on natural numbers has to be chosen.
+These “events” are the number of change-points seperating intervals in this case and not coalescent events.
+In this example, we use a Poisson distribution with an expected value of $10$.
+The <code class="language-plaintext highlighter-rouge">valueDistribution</code> is a vector of prior distributions for the population sizes and the interval times.
+We chose a uniform distribution for the positioning of interval change-points.
+For the first population size, we chose a lognormal distribution based on the expected population size and a standard deviation of <code class="language-plaintext highlighter-rouge">2*H</code>.
+We also should call the variables by their names.
+The <code class="language-plaintext highlighter-rouge">minNumberEvents</code> are $1$ population size and $0$ times corresponding to interval changes.
+We expect to always have one more population size value than change-points.
+For <code class="language-plaintext highlighter-rouge">autocorrelationTypes</code> we set the population size to be autocorrelated through a lognormal distribution (<code class="language-plaintext highlighter-rouge">ACLN</code>).
+The autocorrelation of the population size should be time-dependent, thus we need to set the second value of the <code class="language-plaintext highlighter-rouge">autocorrelationDependencies</code> to <code class="language-plaintext highlighter-rouge">"time"</code>.
+Finally, autocorrelation of the population size is governed by it standard deviation defined by the <code class="language-plaintext highlighter-rouge">ac_sigma</code>  parameter.
+The interval change-points are not autocorrelated, thus we set the respective values to <code class="language-plaintext highlighter-rouge">"NONE"</code>, <code class="language-plaintext highlighter-rouge">"none"</code>, and $0$.
+In the last line, we add the name of the variable to sort the values of all parameters by.
+In our case, we want the population size values to be sorted by time.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>events ~ dnAutocorrelatedEvent(eventDistribution = dnPoisson(lambda=10),
+                               valueDistribution =[dnUniform(0.0,MAX_AGE),
+                                                   dnLognormal( ln(EXPECTED_POP_SIZE), sd=2*H )],
+                               names=["time","theta"],
+                               minNumberEvents=[0,1],
+                               autocorrelationTypes=["NONE","ACLN"],
+                               autocorrelationDependencies=["none","time"],
+                               autocorrelationSigmas=[0,ac_sigma],
+                               sort = "time")
+</code></pre></div></div>
+<p>For the <code class="language-plaintext highlighter-rouge">dnAutocorrelatedEvent</code> distribution, we add specific moves.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># apply a move that adds and removes pairs of theta+time
+moves.append( mvMultiValueEventBirthDeath(events, weight=50) )
+# add a move that changes the theta variables
+moves.append( mvMultiValueEventScale(events, name="theta", lambda=1.0, weight=10, tune=!FALSE) )
+moves.append( mvMultiValueEventSlide(events, name="theta", lambda=1.0, weight=10, tune=!FALSE) )
+# add a move that changes the time variables
+moves.append( mvMultiValueEventSlide(events, name="time", lambda=10.0, weight=10, tune=!FALSE) )
+moves.append( mvMultiValueEventScale(events, name="time", lambda=0.5, weight=10, tune=!FALSE) )
+</code></pre></div></div>
+<p>Finally, we need to track the different parameters by assigning them to variables.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_events := events.getNumberOfEvents()
+population_size := events.getRealPosValues(name="theta")
+changePoints := events.getRealPosValues(name="time")
+</code></pre></div></div>
+
+<h3 class="subsection" id="the-tree">The Tree</h3>
+<hr class="subsection" />
+
+<p>Now, we will instantiate the stochastic node for the tree.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psi ~ dnCoalescentSkyline(theta=population_size, times=changePoints, method="specified", taxa=taxa)
+</code></pre></div></div>
+<p>In our example, we realized that it is difficult to find a starting tree with this model.
+We just set the <em>maximum a posteriori</em> (MAP) tree of the analysis with the Constant model as our starting tree.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>trees = readTreeTrace("output/horses_iso_Constant.trees", treetype = "clock", burnin = 0.1)
+maptree = mapTree(trace=trees)
+psi.setValue( maptree )
+
+root_age := psi.rootAge()
+</code></pre></div></div>
+
+<p>For consistency with the other exercises, we set the <code class="language-plaintext highlighter-rouge">interval_times</code> to be the <code class="language-plaintext highlighter-rouge">changePoints</code> variable that we declared above.
+You might as well omit this line, but then track the <code class="language-plaintext highlighter-rouge">changePoints</code> in your MCMC monitors.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>interval_times := changePoints
+</code></pre></div></div>
+
+<p>Again, we constrain the root age as before and add the same moves for the tree.</p>
+
+<h3 class="subsection" id="substitution-model-and-other-parameters">Substitution Model and other parameters</h3>
+<hr class="subsection" />
+
+<p>This part is taken from the previous exercises.</p>
+
+<h3 class="subsection" id="finalize-and-run-the-analysis">Finalize and run the analysis</h3>
+<hr class="subsection" />
+
+<p>In the end, we need to wrap our model as before.</p>
+
+<p>Finally, we add the monitors and then run the MCMC.
+Remember to change the file names to avoid overwriting your previous results.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/horses_iso_SkyfishAC.log",printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_SkyfishAC_nevents.log",n_events,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_SkyfishAC.trees",psi,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_SkyfishAC_NEs.log",population_size,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_SkyfishAC_times.log",interval_times,printgen=THINNING) )
+monitors.append( mnScreen(n_events, root_age, printgen=100) )
+
+mymcmc = mcmc(mymodel, monitors, moves, nruns=NUM_REPLICATES, combine="mixed")
+mymcmc.burnin(NUM_MCMC_ITERATIONS*0.1,100)
+mymcmc.run(NUM_MCMC_ITERATIONS, tuning = 100)
+</code></pre></div></div>
+
+<h2 class="section" id="results">Results</h2>
+<hr class="section" />
+
+<p>After running your analysis, you can plot the results using the <code class="language-plaintext highlighter-rouge">R</code> package <code class="language-plaintext highlighter-rouge">RevGadgets</code>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>library(RevGadgets)
+
+burnin = 0.1
+probs = c(0.025, 0.975)
+summary = "median"
+
+num_grid_points = 500
+max_age_iso = 5e5
+min_age = 0
+spacing = "equal"
+
+population_size_log = "output/horses_iso_SkyfishAC_NEs.log"
+interval_change_points_log = "output/horses_iso_SkyfishAC_times.log"
+df &lt;- processPopSizes(population_size_log, interval_change_points_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_iso, min_age = min_age, spacing = spacing)
+p &lt;- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
+ggplot2::ggsave("figures/horses_iso_SkyfishAC.png", p)
+</code></pre></div></div>
+
+<figure id="results-SkyfishAC"><p><img src="figures/horses_iso_SkyfishAC.png" width="800" /></p>
+<figcaption>Example output from plotting the Skyfish analysis. The bold line represents the median of the posterior distribution of the population size and the shaded are shows the $95\%$ credible intervals.</figcaption>
+</figure>
+
+<h2 class="section" id="next-exercise">Next Exercise</h2>
+<hr class="section" />
+
+<p>When you are done, have a look at the next exercise.</p>
+
+<ul>
+  <li><a href="/tutorials/coalescent/GMRF_treebased">The GMRF model with trees as input data</a></li>
+</ul>
+
+
+<ol class="bibliography"><li><span id="Hoehna2017a">Höhna S., Landis M.J., Heath T.A. 2017. Phylogenetic Inference using RevBayes. Current Protocols in Bioinformatics.</span>
+
+<a href="https://doi.org/10.1002/cpbi.22">10.1002/cpbi.22</a>
+
+</li></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+    });
+    MathJax.Hub.Queue(function () {
+      $(".aside").each(function() {
+          $("div .MathJax", this).hide();
+      });
+    });
+</script>
+<script src="/assets/js/base.js"></script>
+
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0Y03X9Q2TJ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-0Y03X9Q2TJ');
+</script>
+
+  </body>
+</html>

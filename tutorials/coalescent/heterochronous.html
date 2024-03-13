@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png" >
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="search-domain" value="https://revbayes.github.io/">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+    <title>RevBayes: Coalescent Analyses with heterochronous data</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="/" class="pull-left">
+        
+        <img class="navbar-logo" src="/assets/img/aquabayes-desaturated.png" alt="RevBayes Home" />
+        
+      </a>
+
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar" align="right"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/download">Download</a></li>
+        <li><a href="/tutorials/">Tutorials</a></li>
+        <li><a href="/documentation/">Documentation</a></li>
+        <li><a href="/interfaces">Interfaces</a></li>
+        <li><a href="/workshops/">Workshops</a></li>
+        <li><a href="/jobs/">Jobs</a></li>
+        <li><a href="/developer/">Developer</a></li>
+      </ul>
+      <!-- <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form> -->
+    </div>
+  </div>
+</nav>
+
+      <div class="titlebar">
+	<h1 class="maintitle">Coalescent Analyses with heterochronous data</h1>
+	<h3 class="subtitle">Estimating Demographic Histories with Coalescent Models using heterochronous data</h3>
+	<h4 class="authors">Sebastian Höhna and Ronja Billenstein</h4>
+  <h5>Last modified on March 13, 2024</h5>
+</div>
+
+
+<div class="sidebar no-print">
+<blockquote class="overview" id="overview">
+  <h2>Overview</h2>
+  
+  <div class="row">
+    <div class="col-md-9">
+        <strong>Prerequisites</strong>
+        
+          <ul id="prerequisites">
+          
+            <li><a href="/tutorials/coalescent/">Coalescent Analyses</a></li>
+          
+            <li><a href="/tutorials/coalescent/Constant.html">Constant Coalescent Model</a></li>
+          
+            <li><a href="/tutorials/coalescent/Skyline.html">Skyline Models</a></li>
+          
+            <li><a href="/tutorials/coalescent/GMRF.html">Coalescent Models with GMRF</a></li>
+          
+            <li><a href="/tutorials/coalescent/GMRF_treebased.html">Coalescent Models from Trees with GMRF</a></li>
+          
+            <li><a href="/tutorials/coalescent/piecewise.html">Piecewise Coalescent Model</a></li>
+          
+          </ul>
+        
+    </div>
+  </div>
+  
+</blockquote>
+
+
+
+
+
+<blockquote class="tutorial_files" id="tutorial_files">
+    <h2>Data files and scripts</h2>
+    
+        
+        <strong>Other</strong>
+        <ul id="other_files">
+        
+        
+        
+          <li><a href="/tutorials/coalescent/data/horses_heterochronous_ages.tsv">horses_heterochronous_ages.tsv</a></li>
+        
+          <li><a href="/tutorials/coalescent/data/horses_heterochronous_sequences.fasta">horses_heterochronous_sequences.fasta</a></li>
+        
+          <li><a href="/tutorials/coalescent/scripts/mcmc_heterochronous_Constant.Rev">mcmc_heterochronous_Constant.Rev</a></li>
+        
+        </ul>
+    
+</blockquote>
+
+
+</div>
+<h2 class="section" id="overview">Overview</h2>
+<hr class="section" />
+
+<p>This tutorial describes how to run a coalescent analyses with heterochronous data in <code class="language-plaintext highlighter-rouge">RevBayes</code>.
+For the description of the whole script, we will focus on an analysis with a constant population size.
+At the bottom of the page, you can find links to <code class="language-plaintext highlighter-rouge">RevBayes</code> scripts performing more complex analyses.
+Theses scripts are similar to the ones described for isochronous data.</p>
+
+<p>If you have already done the tutorial for a <a href="/tutorials/coalescent/Constant">constant coalescent model with isochronous data</a>, most parts will be the same.
+Please specifically have a look at the section <a href="#DataSec"></a> and at the root calibration part of the section <a href="#ModelSec"></a>.</p>
+
+<h2 class="section" id="inference-example">Inference Example</h2>
+<hr class="section" />
+
+<blockquote class="info">
+  <h2 id="for-your-info">For your info</h2>
+  <p>The entire process of the estimation can be executed by using the <strong>mcmc_heterochronous_Constant.Rev</strong> script that you can download on the left side of the page.
+Save it in your <strong>scripts</strong> directory.
+You can type the following command into <code class="language-plaintext highlighter-rouge">RevBayes</code>:</p>
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>source("scripts/mcmc_heterochronous_Constant.Rev")
+</code></pre></div>  </div>
+  <p>We will walk you through every single step in the following section.</p>
+</blockquote>
+
+<p>For every MCMC analysis, convergence assessment is an important step.
+In the tutorial <a href="/tutorials/convergence/">Convergence assessment</a>, you can find information and instructions on how to run the convergence assessment with the <code class="language-plaintext highlighter-rouge">R</code> package <code class="language-plaintext highlighter-rouge">convenience</code>.
+It is generally recommended to have at least two replicates per MCMC analysis to be able to compare convergence between runs.
+Thus, we first set the number of replicates:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NUM_REPLICATES      = 2
+</code></pre></div></div>
+
+<p>In the beginning, we also define a few variables for running the MCMC.
+These are the number of iterations, and the so-called “thinning” which we use to say that we want to sample every $10^{th}$ iteration.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NUM_MCMC_ITERATIONS = 10000
+THINNING            = 10
+</code></pre></div></div>
+
+<p>We also need to create vectors for the monitors and moves of the MCMC.
+Moves are functions that propose new parameter values in your MCMC, based on the current value.
+These newly proposed parameters can either be accepted or rejected.
+Depending on this acceptance / rejection, the posterior distribution of your parameters will be formed.
+See for example <a href="/tutorials/mcmc/poisson.html">Introduction to MCMC</a> for more information on the acceptance / rejection procedure.
+Monitors are later used to track the progress of your analysis, but are also needed to write output files.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves     = VectorMoves()
+monitors  = VectorMonitors()
+</code></pre></div></div>
+
+<h3 class="subsection" id="DataSec">Read the data</h3>
+<hr class="subsection" />
+
+<p>Start by reading in the ages and the aligned sequences of the heterochronous horse data.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>taxa &lt;- readTaxonData("data/horses_heterochronous_ages.tsv")
+sequences &lt;- readDiscreteCharacterData("data/horses_heterochronous_sequences.fasta")
+</code></pre></div></div>
+
+<p>You will also need the number of taxa.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>n_taxa &lt;- taxa.size()
+</code></pre></div></div>
+
+<h3 class="subsection" id="ModelSec">The Tree Model</h3>
+<hr class="subsection" />
+
+<p>For the constant coalescent model, only one population size is estimated.
+For this population size, a prior needs to be set.
+Without knowing much about the population size of our horse sample, we set a uniform prior.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pop_size ~ dnUniform(0,1E8)
+</code></pre></div></div>
+
+<p>You may realize that in the full script, we initialize the population size to have a first value of $100000$.
+Later in the tutorial, we will constrain the root age of the tree to be inside the interval $[780 000, 1 200 000]$.
+In order for our first proposed tree to comply with this constraint, an initial value of $100000$ proved to lead to reasonable initial proposals.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pop_size.setValue(100000)
+</code></pre></div></div>
+
+<p>We also add a move for the population size.
+Here, we chose a scaling move which means that the current values is multiplied by a scaling factor to propose a new value.
+See for example <a href="/tutorials/mcmc/binomial.html">Introduction to MCMC using RevBayes</a> for information on moves.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvScale(pop_size, lambda=0.1, tune=true, weight=2.0) )
+</code></pre></div></div>
+
+<p>Now, we will instantiate the stochastic node for the tree.
+The <code class="language-plaintext highlighter-rouge">dnCoalescent</code> distribution should be used for a constant coalescent process.
+It takes a value for the population size (<code class="language-plaintext highlighter-rouge">theta</code>) and the taxa as input.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psi ~ dnCoalescent(theta=pop_size, taxa=taxa)
+</code></pre></div></div>
+
+<p>We calibrate the tree based on the root age.
+We chose a Normal distribution with a mean of $850 000$ and a standard deviation of $200 000$.
+As mentioned above, the root age will be constrained to the interval $[780 000, 1 200 000]$.
+As we have access to the original analysis from <a class="citation" href="#Vershinina2021">Vershinina et al. (2021)</a>, we could see that this should be the rough range of the root.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root_age := psi.rootAge()
+
+diff &lt;- (1200000 - 780000)/2.0
+obs_root_age ~ dnNormal(mean = root_age, sd = 200000, min = root_age - diff, max = root_age + diff)
+obs_root_age.clamp(850000)
+</code></pre></div></div>
+
+<p>We should also add moves for the tree.
+These include moves on a single branch, subtrees or the whole tree.
+Here, the weight of the different moves is based on the number of taxa.
+If a move changes a single branch (<em>e.g.</em> <code class="language-plaintext highlighter-rouge">mvNNI</code>), it will be applied more often and thus have a higher weight than a move which changes the whole tree (<em>e.g.</em> <code class="language-plaintext highlighter-rouge">mvTreeScale</code>).</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves.append( mvNarrow(psi, weight=n_taxa) )
+moves.append( mvNNI(psi, weight=n_taxa) )
+moves.append( mvFNPR(psi, weight=n_taxa/4.0) )
+moves.append( mvSubtreeScale(psi, weight=n_taxa/5.0) )
+moves.append( mvNodeTimeSlideUniform(psi, weight=n_taxa) )
+moves.append( mvRootTimeScaleBactrian(psi, weight=n_taxa/5.0) )
+moves.append( mvTreeScale(psi, weight=n_taxa/5.0) )
+</code></pre></div></div>
+
+<h3 class="subsection" id="substitution-model-and-other-parameters">Substitution Model and other parameters</h3>
+<hr class="subsection" />
+
+<p>Finally, sequence data should be added to the analysis. Here, we assume a GTR+$\Gamma$+I substitution model, but you can of course use others. Have a look at the <a href="/tutorials/ctmc/">Nucleotide substitution models</a> tutorial to see how you can define different substitution models.</p>
+
+<p>For the GTR model, we need to add exchangeability rates (<code class="language-plaintext highlighter-rouge">er</code>) and stationary frequences (<code class="language-plaintext highlighter-rouge">pi</code>).
+Of course, we also add moves for these.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>er_prior &lt;- v(1,1,1,1,1,1)
+pi_prior &lt;- v(1,1,1,1)
+er ~ dnDirichlet(er_prior)
+pi ~ dnDirichlet(pi_prior)
+
+moves.append( mvBetaSimplex(er, weight=3) )
+moves.append( mvDirichletSimplex(er, weight=1) )
+moves.append( mvBetaSimplex(pi, weight=2) )
+moves.append( mvDirichletSimplex(pi, weight=1) )
+</code></pre></div></div>
+<p>This is everything needed for the Q matrix of the GTR model.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Q := fnGTR(er,pi)
+</code></pre></div></div>
+<p>For the $\Gamma$ extension to the GTR model, we need to draw the site rates (<code class="language-plaintext highlighter-rouge">sr</code>) from a discretized Gamma function with two parameters.
+Here, we use <code class="language-plaintext highlighter-rouge">alpha</code> for both parameters.
+We also add a scaling move for <code class="language-plaintext highlighter-rouge">alpha</code>.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alpha ~ dnUniform( 0.0, 1E6 )
+alpha.setValue( 1.0 )
+sr := fnDiscretizeGamma( alpha, alpha, 4 )
+moves.append( mvScale(alpha, weight=2.0) )
+</code></pre></div></div>
+<p>We draw the proportion of invariant sites (<code class="language-plaintext highlighter-rouge">p_inv</code>) from a Beta distribution and add a sliding window move.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>p_inv ~ dnBeta(1,1)
+moves.append( mvSlide(p_inv) )
+</code></pre></div></div>
+<p>The last step is to set the clock rate.
+We draw it from a log uniform distribution here.
+Again, we know from the original analysis <a class="citation" href="#Vershinina2021">(Vershinina et al. 2021)</a> that the true value should be around $4.68*10^{-8}$ and thus set the lower bound of the distribution to $1*10^{-12}$ and the upper bound to $1*10^{-4}$.
+We also initialize the value to be equal to the original analysis.
+Then, we  add a scaling move for the clock rate.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clock ~ dnLoguniform(1e-12,1e-4)
+clock.setValue(4.68e-8)
+moves.append( mvScale(clock, weight=2.0) )
+</code></pre></div></div>
+<p>Additionally, we add a scaling move which makes sure to regulate clock rate and the root age.
+This needs to be done as root age and clock rate are intertwined and can not be clearly seperated.
+Here, whenever the clock rate will be increased, the root age will be decreased.
+Note that you could also calibrate the clock rate instead of the root age of the tree as we do it here.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>up_down_move = mvUpDownScale(weight=5.0)
+up_down_move.addVariable(clock,up=TRUE)
+up_down_move.addVariable(psi,up=FALSE)
+moves.append( up_down_move)
+</code></pre></div></div>
+<p>The final <code class="language-plaintext highlighter-rouge">dnPhyloCTMC</code> function combines all of the previous defined parameters.
+We also need to clamp the sequence data.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>seq ~ dnPhyloCTMC(tree=psi, Q=Q, siteRates=sr, pInv=p_inv, type="DNA", branchRates=clock)
+seq.clamp(sequences)
+</code></pre></div></div>
+
+<h3 class="subsection" id="finalize-and-run-the-analysis">Finalize and run the analysis</h3>
+<hr class="subsection" />
+
+<p>In the end, we need to wrap our model.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymodel = model(psi)
+</code></pre></div></div>
+
+<p>Now, we add some monitors.
+The <code class="language-plaintext highlighter-rouge">mnModel</code> monitor keeps track of all model parameters and thus is written into our main <code class="language-plaintext highlighter-rouge">.log</code> file.
+With <code class="language-plaintext highlighter-rouge">mnFile</code>, you can keep track of the trees or parameters that you would like to keep in an extra file.
+<code class="language-plaintext highlighter-rouge">mnScreen</code> is responsible for having output printed directly to your screen.
+This output will not per se be saved in a file.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>monitors.append( mnModel(filename="output/horses_het_Constant.log",printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_het_Constant.trees",psi,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_het_Constant_NE.log",pop_size,printgen=THINNING) )
+monitors.append( mnScreen(pop_size, root_age, printgen=100) )
+</code></pre></div></div>
+
+<p>The final step is to run the mcmc.
+Make sure to set <code class="language-plaintext highlighter-rouge">combine="mixed"</code> for the output of the two replicates to be combined in the end.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mymcmc = mcmc(mymodel, monitors, moves, nruns=NUM_REPLICATES, combine="mixed") 
+mymcmc.burnin(NUM_MCMC_ITERATIONS*0.1,100)
+mymcmc.run(NUM_MCMC_ITERATIONS, tuning = 100)
+</code></pre></div></div>
+
+<h2 class="section" id="check-convergence">Check Convergence</h2>
+<hr class="section" />
+
+<p>To check whether your analysis has converged, you can use the <code class="language-plaintext highlighter-rouge">R</code> package <code class="language-plaintext highlighter-rouge">convenience</code>.
+Have a look at the <a href="/tutorials/convergence/">Convergence assessment</a> tutorial.</p>
+
+<!--- **Add convergence results here** --->
+
+<h2 class="section" id="results">Results</h2>
+<hr class="section" />
+
+<p>After running your analysis, you can plot the results using the <code class="language-plaintext highlighter-rouge">R</code> package <code class="language-plaintext highlighter-rouge">RevGadgets</code>.
+See the <a href="https://github.com/revbayes/RevGadgets">RevGadgets Github repository</a> for information on how to install the package.
+After installing the package, open <code class="language-plaintext highlighter-rouge">R</code> or <code class="language-plaintext highlighter-rouge">RStudio</code> and set the tutorial directory as your working directory.
+You can plot the <code class="language-plaintext highlighter-rouge">RevBayes</code> output as follows:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>library(RevGadgets)
+
+burnin = 0.1
+probs = c(0.025, 0.975)
+summary = "median"
+
+num_grid_points = 500
+max_age_het = 1.2e6
+min_age = 0
+spacing = "equal"
+
+population_size_log = "output/horses_het_Constant_NE.log"
+df &lt;- processPopSizes(population_size_log, burnin = burnin, probs = probs, summary = summary, num_grid_points = num_grid_points, max_age = max_age_het, min_age = min_age, spacing = spacing)
+p &lt;- plotPopSizes(df) + ggplot2::coord_cartesian(ylim = c(1e3, 1e8))
+ggplot2::ggsave("figures/horses_het_constant.png", p)
+</code></pre></div></div>
+
+<p>Your output should look roughly like the following figure.</p>
+
+<figure id="results-het-constant"><p><img src="figures/horses_het_constant.png" width="800" /></p>
+<figcaption>Example output from plotting the constant coalescent analysis with heterochronous data run in this exercise. The bold line represents the median of the posterior distribution of the population size and the shaded are shows the $95\%$ credible intervals.</figcaption>
+</figure>
+
+<h2 class="section" id="scripts-for-other-analyses">Scripts for other analyses</h2>
+<hr class="section" />
+
+<p>Here, you can find scripts for analyses similar to those performed in the previous tutorials for isochronous data.
+The main changing points are the data which is read in and the root age.
+The root age also has an influence on parameters like <code class="language-plaintext highlighter-rouge">MAX_AGE</code>, which is needed, <em>e.g</em>, for the Gaussian Markov Random Field (GMRF) scripts and the <code class="language-plaintext highlighter-rouge">ESTIMATED_ROOT_AGE</code> parameter, which you can find for example in the Skyride script.</p>
+
+<ul>
+  <li><a href="scripts/mcmc_heterochronous_Skyline.Rev">Script for a Skyline analysis</a>, have a look at the <a href="/tutorials/coalescent/Skyline">Skyline tutorial</a></li>
+  <li><a href="scripts/mcmc_heterochronous_Skyline_maptreebased.Rev">Script for a Skyline analysis with a maximum a posteriori (MAP) tree as input</a></li>
+  <li><a href="scripts/mcmc_heterochronous_BSP.Rev">Script for a Skyline analysis with autocorrelated intervals (BSP model)</a>, have a look at the <a href="/tutorials/coalescent/Skyline#secAltPriors">Alternative Priors</a> section of the <a href="/tutorials/coalescent/Skyline">skyline tutorial</a></li>
+  <li><a href="scripts/mcmc_heterochronous_Skyride.Rev">Script for a Skyride analysis</a>, have a look at the <a href="/tutorials/coalescent/Skyline#secAltPriors">Alternative Priors</a> section of the <a href="/tutorials/coalescent/Skyline">Skyline tutorial</a></li>
+  <li><a href="scripts/mcmc_heterochronous_EBSP.Rev">Script for a Skyline analysis with estimation of the number of intervals (EBSP model)</a>, have a look at the <a href="/tutorials/coalescent/Skyline#secAltPriors">Alternative Priors</a> section of the <a href="/tutorials/coalescent/Skyline">Skyline tutorial</a></li>
+  <li><a href="scripts/mcmc_heterochronous_GMRF.Rev">Script for a GMRF analysis</a>, have a look at the <a href="/tutorials/coalescent/GMRF">GMRF tutorial</a></li>
+  <li><a href="scripts/mcmc_heterochronous_GMRF_treebased.Rev">Script for a GMRF analysis with a sample of trees as input</a>, have a look at the <a href="/tutorials/coalescent/GMRF_treebased">treebased GMRF tutorial</a></li>
+  <li><a href="scripts/mcmc_heterochronous_GMRF_maptreebased.Rev">Script for a GMRF analysis with a MAP tree as input</a>, have a look at the <a href="/tutorials/coalescent/GMRF_treebased">treebased GMRF tutorial</a></li>
+  <li>Scripts for a GMRF analysis with $100$ intervals, both <a href="scripts/mcmc_heterochronous_GMRF_100.Rev">sequence based</a>, and <a href="scripts/mcmc_heterochronous_GMRF_maptreebased_100.Rev">MAP tree based</a></li>
+  <li><a href="scripts/mcmc_heterochronous_HSMRF.Rev">Script for an analysis with a Horseshoe Markov Random Field (HSMRF) prior</a>, have a look at the <a href="/tutorials/coalescent/GMRF#secHSMRF">HSMRF</a> section of the <a href="/tutorials/coalescent/GMRF">GMRF tutorial</a></li>
+  <li><a href="scripts/mcmc_heterochronous_HSMRF_maptreebased.Rev">Script for a HSMRF analysis with a MAP tree as input</a></li>
+  <li>Scripts for a HSMRF analysis with $100$ intervals, both <a href="scripts/mcmc_heterochronous_HSMRF_100.Rev">sequence based</a>, and <a href="scripts/mcmc_heterochronous_HSMRF_maptreebased_100.Rev">MAP tree based</a></li>
+  <li><a href="scripts/mcmc_heterochronous_Skygrid.Rev">Script for a Skygrid analysis</a>, have a look at the <a href="/tutorials/coalescent/GMRF#secAltPriors">Alternative Implementations</a> section of the <a href="/tutorials/coalescent/GMRF">GMRF tutorial</a></li>
+  <li><a href="scripts/mcmc_heterochronous_SkyfishAC.Rev">Script for an analysis with the Skyfish model</a>, have a look at the <a href="/tutorials/coalescent/Skyfish">Skyfish tutorial</a></li>
+  <li><a href="scripts/mcmc_heterochronous_SkyfishAC_maptreebased.Rev">Script for a Skyfish analysis with a MAP tree as input</a></li>
+</ul>
+
+<ol class="bibliography"><li><span id="Vershinina2021">Vershinina A.O., Heintzman P.D., Froese D.G., Zazula G., Cassatt-Johnstone M., Dalén L., Der Sarkissian C., Dunn S.G., Ermini L., Gamba C., Groves P., Kapp J.D., Mann D.H., Seguin-Orlando A., Southon J., Stiller M., Wooller M.J., Baryshnikov G., Gimranov D., Scott E., Hall E., Hewitson S., Kirillova I., Kosintsev P., Shidlovsky F., Tong H.-W., Tiunov M.P., Vartanyan S., Orlando L., Corbett-Detig R., MacPhee R.D., Shapiro B. 2021. Ancient horse genomes reveal the timing and extent of dispersals across the Bering Land Bridge. Molecular Ecology. 30:6144–6161.</span>
+
+<a href="https://doi.org/https://doi.org/10.1111/mec.15977">https://doi.org/10.1111/mec.15977</a>
+
+</li></ol>
+
+<script type="text/javascript">
+var _ol = document.querySelectorAll('ol');
+for (var i = 0, elem_ol; elem_ol = _ol[i]; i++) {
+	if ( elem_ol.classList == "bibliography" ) {
+		var _li = elem_ol.getElementsByTagName("li");
+		//for (var j = 0, elem_li; elem_li = _li[j]; j++)
+		//{
+		//	elem_li.innerHTML = elem_li.innerHTML.replace(/(https?:\/\/)([^\s<]+)/,"<a href=\"$1$2\">$2");
+		//}
+		if(_li.length > 0)
+			elem_ol.outerHTML = "<h2 class='references'>References</h2><hr class='references'>"+elem_ol.outerHTML
+	}
+}
+</script>
+
+      <br>
+<footer>
+  <div class="container">
+  <div class="row">
+    <div class="col-sm-12" align="center">
+      <a href="https://github.com/revbayes">GitHub</a> | <a href="/license">License</a> | <a href="/citation">Citation</a> | <a href="https://groups.google.com/forum/#!forum/revbayes-users">Users Forum</a>
+    </div>
+  </div>
+  <br>
+  </div>
+</footer>
+
+    </div>
+    <script src="/assets/js/vendor/jquery.min.js"></script>
+<script src="/assets/js/vendor/FileSaver.min.js"></script>
+<script src="/assets/js/vendor/jszip.min.js"></script>
+<script src="/assets/js/vendor/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+// Add default language
+$(":not(code).highlighter-rouge").each(function() {
+  
+  if( this.classList == "highlighter-rouge") {
+    this.classList = "Rev highlighter-rouge";
+  }
+  
+});
+// $("code.highlighter-rouge").each(function() {
+//   
+//   if( this.classList == "highlighter-rouge") {
+//       this.classList = "Rev highlighter-rouge";
+//   }
+//   
+// });
+</script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+    });
+    MathJax.Hub.Queue(function () {
+      $(".aside").each(function() {
+          $("div .MathJax", this).hide();
+      });
+    });
+</script>
+<script src="/assets/js/base.js"></script>
+
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0Y03X9Q2TJ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-0Y03X9Q2TJ');
+</script>
+
+  </body>
+</html>
