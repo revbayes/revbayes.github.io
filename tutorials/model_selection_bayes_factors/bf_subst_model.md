@@ -8,7 +8,19 @@ prerequisites:
 - intro
 - mcmc
 - bf_intro
-include_all: false
+exclude_files: 
+- data/sim_locus1.nex
+- data/sim_locus2.nex
+- data/sim_locus3.nex
+- data/sim_locus4.nex
+- scripts/ml_Partition_model.Bodega.Rev
+- scripts/marginal_likelihood_GTR_Gamma_inv.Rev
+- scripts/marginal_likelihood_JC.Rev
+- scripts/marginal_likelihood_partition_1.Rev
+- scripts/marginal_likelihood_partition_2.Rev
+- scripts/marginal_likelihood_partition_3.Rev
+- scripts/marginal_likelihood_partition_4.Rev
+- scripts/marginal_likelihood_partition_5.Rev
 index: true
 title-old: RB_BayesFactor_Tutorial
 redirect: false
