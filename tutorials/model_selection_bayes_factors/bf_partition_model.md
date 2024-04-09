@@ -10,6 +10,11 @@ prerequisites:
 - bf_intro
 - bf_subst_model
 exclude_files: 
+- data/sim_locus1.nex
+- data/sim_locus2.nex
+- data/sim_locus3.nex
+- data/sim_locus4.nex
+- scripts/ml_Partition_model.Bodega.Rev
 - data/primates_and_galeopterus_cytb.nex
 - data/primates_and_galeopterus_cox2.nex
 - scripts/marginal_likelihood_GTR_Gamma_inv.Rev
