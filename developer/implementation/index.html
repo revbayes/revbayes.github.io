@@ -77,9 +77,9 @@
 <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#ifndef HyperbolicCosineFunction_h 
 #define HyperbolicCosineFunction_h
 </span>
-<span class="cp">#include "ContinuousFunction.h"
-#include "TypedDagNode.h"
-#include &lt;cmath&gt;
+<span class="cp">#include</span> <span class="cpf">"ContinuousFunction.h"</span><span class="cp">
+#include</span> <span class="cpf">"TypedDagNode.h"</span><span class="cp">
+#include</span> <span class="cpf">&lt;cmath&gt;</span><span class="cp">
 </span>
 <span class="k">namespace</span> <span class="n">RevBayesCore</span> <span class="p">{</span>
     <span class="cm">/**
@@ -116,7 +116,7 @@
 Next, after including the necessary header files, we have to ensure that our new function is included within the <code class="language-plaintext highlighter-rouge">RevBayesCore</code> namespace.
 Here we are implementing our hyperbolic cosine function as its own class that is derived from the continuous function class that is derived from the typed function class. This class stores the hyperbolic cosine of a value that is held in a DAG node. We have also defined a clone method which can create a clone of our class, and an update method which will update the value of our Hyperbolic Cosine class whenever the value of the DAG node changes. Now we will move on to the <code class="language-plaintext highlighter-rouge">HyperbolicCosineFunction.cpp</code> file.</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include "HyperbolicCosineFunction.h"
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">"HyperbolicCosineFunction.h"</span><span class="cp">
 </span>
 <span class="k">using</span> <span class="k">namespace</span> <span class="n">RevBayesCore</span><span class="p">;</span>
 
@@ -162,10 +162,10 @@ Here we are implementing our hyperbolic cosine function as its own class that is
 <span class="cp">#ifndef Func_hyperbolicCosine_h
 #define Func_hyperbolicCosine_h
 </span>
-<span class="cp">#include "Real.h"
-#include "RlTypedFunction.h"
+<span class="cp">#include</span> <span class="cpf">"Real.h"</span><span class="cp">
+#include</span> <span class="cpf">"RlTypedFunction.h"</span><span class="cp">
 </span>
-<span class="cp">#include &lt;string&gt;
+<span class="cp">#include</span> <span class="cpf">&lt;string&gt;</span><span class="cp">
 </span>
 <span class="k">namespace</span> <span class="n">RevLanguage</span> <span class="p">{</span>
     
@@ -209,12 +209,12 @@ Here we are implementing our hyperbolic cosine function as its own class that is
 
 <p>And the <code class="language-plaintext highlighter-rouge">Func_hyperbolicCosine.cpp</code> should look like this:</p>
 
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include "Func_hyperbolicCosine.h"
-#include "HyperbolicCosineFunction.h"
-#include "Probability.h"
-#include "Real.h"
-#include "RlDeterministicNode.h"
-#include "TypedDagNode.h"
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">"Func_hyperbolicCosine.h"</span><span class="cp">
+#include</span> <span class="cpf">"HyperbolicCosineFunction.h"</span><span class="cp">
+#include</span> <span class="cpf">"Probability.h"</span><span class="cp">
+#include</span> <span class="cpf">"Real.h"</span><span class="cp">
+#include</span> <span class="cpf">"RlDeterministicNode.h"</span><span class="cp">
+#include</span> <span class="cpf">"TypedDagNode.h"</span><span class="cp">
 </span>
 <span class="k">using</span> <span class="k">namespace</span> <span class="n">RevLanguage</span><span class="p">;</span>
 
@@ -317,7 +317,7 @@ Here we are implementing our hyperbolic cosine function as its own class that is
 All mathematical distributions that have been implemented exist in <code class="language-plaintext highlighter-rouge">core/distributions/math</code>.</p>
   </li>
   <li>
-    <p>Note that when implementing a new distribution, you will need to create <code class="language-plaintext highlighter-rouge">.cpp</code> and <code class="language-plaintext highlighter-rouge">.h</code> files in both the <strong>revlanguage</strong> directory and the <strong>core</strong> directory. (For a refresher on the difference between these two directories, refer to the {% page_ref architecture %} section of this Developer’s guide).
+    <p>Note that when implementing a new distribution, you will need to create <code class="language-plaintext highlighter-rouge">.cpp</code> and <code class="language-plaintext highlighter-rouge">.h</code> files in both the <strong>revlanguage</strong> directory and the <strong>core</strong> directory. (For a refresher on the difference between these two directories, refer to the <a href="/developer/architecture/">Getting familiar with the code</a> section of this Developer’s guide).
 The overall naming format remains the same for every distribution in RevBayes. In the Beta Binomial Distribution example provided below, I specify what naming convention to use when creating each file.</p>
   </li>
   <li>
@@ -332,7 +332,7 @@ The overall naming format remains the same for every distribution in RevBayes. I
     <p>Within every new distribution, you will need to include some functions. For example, each new distribution must have: the get class type, name, and help functions. You may not need to implement these from scratch (if they’re dictated by the parent class &amp; are already present), but you will need to implement other functions within your distribution (e.g. cdf, rv, quantile).</p>
   </li>
   <li>
-    <p>Distributions have a prefix <code class="language-plaintext highlighter-rouge">DN</code> (dag node), and all moves have a prefix <code class="language-plaintext highlighter-rouge">MV</code>. RevBayes takes the name within &amp; creates the <code class="language-plaintext highlighter-rouge">DN</code> automatically, so be aware of this. For a refresher on DAG nodes, refer to {% page_ref architecture %}.</p>
+    <p>Distributions have a prefix <code class="language-plaintext highlighter-rouge">DN</code> (dag node), and all moves have a prefix <code class="language-plaintext highlighter-rouge">MV</code>. RevBayes takes the name within &amp; creates the <code class="language-plaintext highlighter-rouge">DN</code> automatically, so be aware of this. For a refresher on DAG nodes, refer to <a href="/developer/architecture/">Getting familiar with the code</a>.</p>
   </li>
 </ul>
 
@@ -376,7 +376,7 @@ The overall naming format remains the same for every distribution in RevBayes. I
 
     <p>For the Beta Binomial distribution, we navigate to the section in the file with the header ‘Distributions’ and then look for the sub-header dealing with ‘math distributions’. Then, add the following line of code:</p>
 
-    <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include "Dist_betaBinomial.h"
+    <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">"Dist_betaBinomial.h"</span><span class="cp">
 </span></code></pre></div>    </div>
 
     <p>This step registers the header file for the beta binomial distribution, effectively adding it to RevBayes.</p>
@@ -397,18 +397,18 @@ The overall naming format remains the same for every distribution in RevBayes. I
 
     <p>There are multiple ways to do this. As a best practice, you should first compile it to ensure there are no errors. Once it compiles with no problems, you can test in various ways (e.g. run each individual function within the new Beta Binomial distribution in R, then run the Binomial distribution with a Beta prior in Rev and see if the output matches). For more information, see the developer tutorials on <a href="../validation/">validation</a> and testing. (TODO)</p>
 
-    <p>After ensuring your code runs properly, you are ready to add it to the git repo. We recommend reading through the {% page_ref git-flow %} section of the Developer’s guide before pushing.</p>
+    <p>After ensuring your code runs properly, you are ready to add it to the git repo. We recommend reading through the <a href="/developer/git-flow.html">RevBayes Git Workflow</a> section of the Developer’s guide before pushing.</p>
   </li>
 </ol>
 
 <p class="section maintitle" id="implement_moves">Implementing a Metropolis-Hastings Move</p>
-<h2 id="general-info-before-getting-started-1">General info before getting started</h2>
+<h2 id="general-info-before-getting-started">General info before getting started</h2>
 
 <p>The steps to implementing a new move vary slightly, depending on the move’s type (e.g., Metropolis-Hastings versus Gibbs). For the purpose of this guide, we will focus on a Metropolis-Hastings move.</p>
 
 <p>In general, the fastest and easiest way to get help is to find the most similar move already implemented in RevBayes and use it as a guide. Remember that, as with implementing a new distribution or function, you’ll need to add relevant code to both the core of RevBayes and the language. Also remember that you’ll need to work out the math appropriate for your move (e.g., the Hastings ratio) ahead of time.</p>
 
-<h2 id="steps-1">Steps</h2>
+<h2 id="steps">Steps</h2>
 
 <ol>
   <li>

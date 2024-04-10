@@ -1,194 +1,567 @@
-@charset "UTF-8";
-body { display: none; font-family: HelveticaNeue,"Helvetica Neue",Helvetica,Arial,"Lucida Grande",sans-serif; font-size: 16px; counter-reset: figures; counter-reset: tables; padding-top: 70px; }
-
-html { overflow: scroll; }
-
-@media print { .no-print, .no-print * { display: none !important; } }
-
-.maintitle { font-family: 'Raleway'; font-size: 2.5em; }
-
-.not_found { margin-top: 4em; margin-bottom: 8em; text-align: center; font-family: 'Raleway'; font-size: 2em; }
-
-:not(pre) > code { background-color: #eff0f1; border-radius: 0; padding: 1px 5px; }
-
-.default pre { font-size: 14px; background-color: #eff0f1; color: #000000; }
-
-.default pre .line::before { content: "" " "; }
-
-.default pre .secondary::before { content: "" " "; }
-
-.Rev pre { font-size: 14px; background-color: #b7cfed; color: #000000; }
-
-.Rev pre .line::before { content: ">" " "; }
-
-.Rev pre .secondary::before { content: "+" " "; }
-
-.rev pre { font-size: 14px; background-color: #b7cfed; color: #000000; }
-
-.rev pre .line::before { content: ">" " "; }
-
-.rev pre .secondary::before { content: "+" " "; }
-
-.rev-output pre { font-size: 14px; background-color: #b7cfed; color: #808080; }
-
-.rev-output pre .line::before { content: "" " "; }
-
-.rev-output pre .secondary::before { content: "" " "; }
-
-.Rev-output pre { font-size: 14px; background-color: #b7cfed; color: #808080; }
-
-.Rev-output pre .line::before { content: "" " "; }
-
-.Rev-output pre .secondary::before { content: "" " "; }
-
-.bash pre { font-size: 14px; background-color: #f0f0f0; color: #000000; }
-
-.bash pre .line::before { content: "$" " "; }
-
-.bash pre .secondary::before { content: ">" " "; }
-
-.instruction { border: 1px solid; border-color: #ddd; display: table; }
-
-.tutorial_files { padding-left: 5px; padding-top: 0; padding-bottom: 0; padding-right: 0; border: 1px solid; border-color: #f4fd9c; padding-bottom: 5px; margin-top: 0; }
-
-.tutorial_files > h2:first-child { padding-top: 5px; padding-bottom: 5px; font-size: 20px; background: linear-gradient(to bottom, #f4fd9c, #f5fda6); border-color: #f4fd9c; margin-top: 0px; margin-left: -5px; }
-
-.tutorial_files > h2:first-child:before { font-family: 'Glyphicons Halflings'; content: ""; float: left; padding-left: 5px; padding-right: 5px; display: inline-block; margin-top: 0px; -webkit-font-smoothing: antialiased; }
-
-.overview { padding-left: 5px; padding-top: 0; padding-bottom: 0; padding-right: 0; border: 1px solid; border-color: #b7cfed; padding-bottom: 5px; margin-top: 0; }
-
-.overview > h2:first-child { padding-top: 5px; padding-bottom: 5px; font-size: 20px; background: linear-gradient(to bottom, #b7cfed, #bed4ef); border-color: #b7cfed; margin-top: 0px; margin-left: -5px; }
-
-.overview > h2:first-child:before { font-family: 'Glyphicons Halflings'; content: ""; float: left; padding-left: 5px; padding-right: 5px; display: inline-block; margin-top: 0px; -webkit-font-smoothing: antialiased; }
-
-.info { padding-left: 5px; padding-top: 0; padding-bottom: 0; padding-right: 0; border: 1px solid; border-color: #eec275; padding-bottom: 5px; margin-top: 0; }
-
-.info > h2:first-child { padding-top: 5px; padding-bottom: 5px; font-size: 20px; background: linear-gradient(to bottom, #eec275, #f0c883); border-color: #eec275; margin-top: 0px; margin-left: -5px; }
-
-.info > h2:first-child:before { font-family: 'Glyphicons Halflings'; content: ""; float: left; padding-left: 5px; padding-right: 5px; display: inline-block; margin-top: 0px; -webkit-font-smoothing: antialiased; }
-
-.aside { padding-left: 5px; padding-top: 0; padding-bottom: 0; padding-right: 0; border: 1px solid; border-color: #eee0e5; padding-bottom: 5px; margin-top: 0; margin-top: 20px; }
-
-.aside > h2:first-child { padding-top: 5px; padding-bottom: 5px; font-size: 20px; background: linear-gradient(to bottom, #eee0e5, #f0e3e8); border-color: #eee0e5; margin-top: 0px; margin-left: -5px; }
-
-.aside > h2:first-child:before { font-family: 'Glyphicons Halflings'; content: ""; float: left; padding-left: 5px; padding-right: 5px; display: inline-block; margin-top: 0px; -webkit-font-smoothing: antialiased; }
-
-.aside span.fold-unfold:first-child { cursor: pointer; float: left; padding-left: 5px; padding-right: 5px; display: inline-block; -webkit-font-smoothing: antialiased; }
-
-.download_files { cursor: pointer; float: left; padding-left: 5px; padding-right: 5px; display: inline-block; -webkit-font-smoothing: antialiased; }
-
-.titlebar { margin-bottom: 2em; text-align: left; font-family: 'Raleway'; }
-
-.titlebar .subtitle { font-size: 1.8em; font-style: italic; }
-
-.titlebar .authors { font-size: 1em; }
-
-h2.section, h2.references { margin-top: 30pt; margin-bottom: 0pt; font-size: 1.85em; }
-
-hr.section, hr.references { margin: 5pt 0pt 5pt 0pt; }
-
-h3.subsection { font-size: 1.6em; }
-
-hr.subsection { display: none; }
-
-h4.subsubsection { margin-top: 15pt; font-size: 1.2em; }
-
-hr.subsubsection { display: none; }
-
-.sidebar { width: 22em; float: left; font-size: 0.9em; margin-right: 1em; margin-top: 0em; padding: 8px; }
-
-.MathJax_Display { pointer-events: none; }
-
-.tutorialbox { display: flex; flex-wrap: wrap; }
-
-.tutorial { width: "30%"; background-color: #fafafa; margin: 0.2em; padding: 0.6em; max-width: 13.5em; text-align: left; }
-
-.tutorial .title { font-size: 1.2em; }
-
-.tutorial .subtitle { font-style: italic; }
-
-figure { padding: 10px 20px; counter-increment: figures; text-align: center; margin-left: auto; margin-right: auto; margin-top: 0.9em; margin-bottom: 0.5em; border-left: 5px solid #eee; border-right: 5px solid #eee; display: table; }
-
-figure img { margin-bottom: 0.5em; }
-
-figure.table { padding: 2px 4px; counter-increment: tables; align-items: center; margin-left: auto; margin-right: auto; margin-top: 0.9em; margin-bottom: 0.5em; border-left: 5px solid #eee; border-right: 5px solid #eee; display: table; }
-
-figure.table figcaption.table { padding: 10px 20px; text-align: center; margin-left: auto; margin-right: auto; margin-top: 0.9em; margin-bottom: 0.5em; }
-
-figure.table table.table { padding: 10px 20px; text-align: left; margin-left: auto; margin-right: auto; margin-top: 0.9em; margin-bottom: 0.5em; }
-
-figure:not(.table) figcaption:before { content: "Figure " counter(figures) ". "; font-weight: bold; }
-
-figure.table figcaption:before { content: "Table " counter(tables) ". "; font-weight: bold; }
-
-@media print { figure { border: 1px solid #999; page-break-inside: avoid; } figure .table { border: 1px solid #999; page-break-inside: avoid; } }
-
-* { box-sizing: border-box; }
-
-body { font: 16px Arial; }
-
-.autocomplete { /*the container must be positioned relative:*/ position: relative; display: inline-block; float: left; }
-
-.btn-clear { margin-left: 10px; }
-
-input { border: 1px solid transparent; background-color: #f1f1f1; padding: 10px; font-size: 16px; }
-
-input[type=text] { background-color: #f1f1f1; width: 100%; }
-
-input[type=submit] { color: #fff; }
-
-.autocomplete-items { position: absolute; border: 1px solid #d4d4d4; border-bottom: none; border-top: none; z-index: 99; /*position the autocomplete items to be the same width as the container:*/ top: 100%; left: 0; right: 0; }
-
-.autocomplete-items div { padding: 10px; cursor: pointer; background-color: #fff; border-bottom: 1px solid #d4d4d4; }
-
-.autocomplete-items div:hover { /*when hovering an item:*/ background-color: #438ac7; color: #ffffff; }
-
-.autocomplete-active { /*when navigating through the items using the arrow keys:*/ background-color: #438ac7 !important; color: #ffffff; }
-
-.btn-keyword { margin: 3px; background-color: #438ac7; color: #ffffff; }
-
-ol.bibliography { padding-left: 0px; }
-
-ol.bibliography li { list-style-type: none; padding-bottom: 10px; }
-
-.sidebar_nav { overflow: auto; height: 75vh; }
-
-.help { overflow: auto; height: 75vh; }
-
-.help-title { padding-bottom: 2pt; }
-
-.help-description { padding-top: 5pt; padding-bottom: 2pt; font-size: 13pt; }
-
-.help-section-header.arguments { margin-bottom: 0px; }
-
-.help-section-body { padding-left: 30px; }
-
-.table.arguments > tbody > tr > td, .table.arguments > tbody > tr > th { border-top: none; }
-
-table.arguments .lhs { text-align: right; padding-top: 0px; padding-bottom: 0px; }
-
-table.arguments .rhs { text-align: left; padding-top: 0px; padding-bottom: 0px; }
-
-table.arguments .lhs.argument, table.arguments .rhs.argument { padding-top: 10px; }
-
-.methods > li { padding-bottom: 4px; }
-
-.footertext { text-align: center; }
-
-img.navbar-logo { height: 40px; padding-top: 5px; padding-right: 10px; padding-left: 40px; }
-
-ul, ol { padding-left: 1em; }
-
-blockquote div:not(:last-child) { margin-bottom: 10px; }
-
-code { padding: 0 0; color: inherit; background-color: inherit; }
-
-img { max-width: 100%; }
-
-.navbar .navbar-collapse { text-align: right; }
-
-.pull-left { float: left; margin-left: 10px; }
-
-.navbar-toggle { float: right; }
+body {
+  display: none;
+  font-family: HelveticaNeue, "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-size: 16px;
+  counter-reset: figures;
+  counter-reset: tables;
+  padding-top: 70px;
+}
+
+html {
+  overflow: scroll;
+}
+
+@media print {
+  .no-print, .no-print * {
+    display: none !important;
+  }
+}
+.maintitle {
+  font-family: "Raleway";
+  font-size: 2.5em;
+}
+
+.not_found {
+  margin-top: 4em;
+  margin-bottom: 8em;
+  text-align: center;
+  font-family: "Raleway";
+  font-size: 2em;
+}
+
+:not(pre) > code {
+  background-color: #eff0f1;
+  border-radius: 0;
+  padding: 1px 5px;
+}
+
+.default pre {
+  font-size: 14px;
+  background-color: #eff0f1;
+  color: #000000;
+}
+.default pre .line::before {
+  content: "" " ";
+}
+.default pre .secondary::before {
+  content: "" " ";
+}
+
+.Rev pre {
+  font-size: 14px;
+  background-color: #b7cfed;
+  color: #000000;
+}
+.Rev pre .line::before {
+  content: ">" " ";
+}
+.Rev pre .secondary::before {
+  content: "+" " ";
+}
+
+.rev pre {
+  font-size: 14px;
+  background-color: #b7cfed;
+  color: #000000;
+}
+.rev pre .line::before {
+  content: ">" " ";
+}
+.rev pre .secondary::before {
+  content: "+" " ";
+}
+
+.rev-output pre {
+  font-size: 14px;
+  background-color: #b7cfed;
+  color: #808080;
+}
+.rev-output pre .line::before {
+  content: "" " ";
+}
+.rev-output pre .secondary::before {
+  content: "" " ";
+}
+
+.Rev-output pre {
+  font-size: 14px;
+  background-color: #b7cfed;
+  color: #808080;
+}
+.Rev-output pre .line::before {
+  content: "" " ";
+}
+.Rev-output pre .secondary::before {
+  content: "" " ";
+}
+
+.bash pre {
+  font-size: 14px;
+  background-color: #f0f0f0;
+  color: #000000;
+}
+.bash pre .line::before {
+  content: "$" " ";
+}
+.bash pre .secondary::before {
+  content: ">" " ";
+}
+
+.instruction {
+  border: 1px solid;
+  border-color: #ddd;
+  display: table;
+}
+
+.tutorial_files {
+  padding-left: 5px;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-right: 0;
+  border: 1px solid;
+  border-color: #f4fd9c;
+  padding-bottom: 5px;
+  margin-top: 0;
+}
+.tutorial_files > h2:first-child {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  font-size: 20px;
+  background: linear-gradient(to bottom, #f4fd9c, #f5fda6);
+  border-color: #f4fd9c;
+  margin-top: 0px;
+  margin-left: -5px;
+}
+.tutorial_files > h2:first-child:before {
+  font-family: "Glyphicons Halflings";
+  content: "";
+  float: left;
+  padding-left: 5px;
+  padding-right: 5px;
+  display: inline-block;
+  margin-top: 0px;
+  -webkit-font-smoothing: antialiased;
+}
+
+.overview {
+  padding-left: 5px;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-right: 0;
+  border: 1px solid;
+  border-color: #b7cfed;
+  padding-bottom: 5px;
+  margin-top: 0;
+}
+.overview > h2:first-child {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  font-size: 20px;
+  background: linear-gradient(to bottom, #b7cfed, #bed4ef);
+  border-color: #b7cfed;
+  margin-top: 0px;
+  margin-left: -5px;
+}
+.overview > h2:first-child:before {
+  font-family: "Glyphicons Halflings";
+  content: "\e105";
+  float: left;
+  padding-left: 5px;
+  padding-right: 5px;
+  display: inline-block;
+  margin-top: 0px;
+  -webkit-font-smoothing: antialiased;
+}
+
+.info {
+  padding-left: 5px;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-right: 0;
+  border: 1px solid;
+  border-color: #eec275;
+  padding-bottom: 5px;
+  margin-top: 0;
+}
+.info > h2:first-child {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  font-size: 20px;
+  background: linear-gradient(to bottom, #eec275, #f0c883);
+  border-color: #eec275;
+  margin-top: 0px;
+  margin-left: -5px;
+}
+.info > h2:first-child:before {
+  font-family: "Glyphicons Halflings";
+  content: "\e086";
+  float: left;
+  padding-left: 5px;
+  padding-right: 5px;
+  display: inline-block;
+  margin-top: 0px;
+  -webkit-font-smoothing: antialiased;
+}
+
+.aside {
+  padding-left: 5px;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-right: 0;
+  border: 1px solid;
+  border-color: #eee0e5;
+  padding-bottom: 5px;
+  margin-top: 0;
+  margin-top: 20px;
+}
+.aside > h2:first-child {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  font-size: 20px;
+  background: linear-gradient(to bottom, #eee0e5, #f0e3e8);
+  border-color: #eee0e5;
+  margin-top: 0px;
+  margin-left: -5px;
+}
+.aside > h2:first-child:before {
+  font-family: "Glyphicons Halflings";
+  content: "";
+  float: left;
+  padding-left: 5px;
+  padding-right: 5px;
+  display: inline-block;
+  margin-top: 0px;
+  -webkit-font-smoothing: antialiased;
+}
+
+.aside span.fold-unfold:first-child {
+  cursor: pointer;
+  float: left;
+  padding-left: 5px;
+  padding-right: 5px;
+  display: inline-block;
+  -webkit-font-smoothing: antialiased;
+}
+
+.download_files {
+  cursor: pointer;
+  float: left;
+  padding-left: 5px;
+  padding-right: 5px;
+  display: inline-block;
+  -webkit-font-smoothing: antialiased;
+}
+
+.titlebar {
+  margin-bottom: 2em;
+  text-align: left;
+  font-family: "Raleway";
+}
+.titlebar .subtitle {
+  font-size: 1.8em;
+  font-style: italic;
+}
+.titlebar .authors {
+  font-size: 1em;
+}
+
+h2.section, h2.references {
+  margin-top: 30pt;
+  margin-bottom: 0pt;
+  font-size: 1.85em;
+}
+
+hr.section, hr.references {
+  margin: 5pt 0pt 5pt 0pt;
+}
+
+h3.subsection {
+  font-size: 1.6em;
+}
+
+hr.subsection {
+  display: none;
+}
+
+h4.subsubsection {
+  margin-top: 15pt;
+  font-size: 1.2em;
+}
+
+hr.subsubsection {
+  display: none;
+}
+
+.sidebar {
+  width: 22em;
+  float: left;
+  font-size: 0.9em;
+  margin-right: 1em;
+  margin-top: 0em;
+  padding: 8px;
+}
+
+.MathJax_Display {
+  pointer-events: none;
+}
+
+.tutorialbox {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.tutorial {
+  width: "30%";
+  background-color: #fafafa;
+  margin: 0.2em;
+  padding: 0.6em;
+  max-width: 13.5em;
+  text-align: left;
+}
+.tutorial .title {
+  font-size: 1.2em;
+}
+.tutorial .subtitle {
+  font-style: italic;
+}
+
+figure {
+  padding: 10px 20px;
+  counter-increment: figures;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 0.9em;
+  margin-bottom: 0.5em;
+  border-left: 5px solid #eee;
+  border-right: 5px solid #eee;
+  display: table;
+}
+figure img {
+  margin-bottom: 0.5em;
+}
+
+figure.table {
+  padding: 2px 4px;
+  counter-increment: tables;
+  align-items: center;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 0.9em;
+  margin-bottom: 0.5em;
+  border-left: 5px solid #eee;
+  border-right: 5px solid #eee;
+  display: table;
+}
+figure.table figcaption.table {
+  padding: 10px 20px;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 0.9em;
+  margin-bottom: 0.5em;
+}
+figure.table table.table {
+  padding: 10px 20px;
+  text-align: left;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 0.9em;
+  margin-bottom: 0.5em;
+}
+
+figure:not(.table) figcaption:before {
+  content: "Figure " counter(figures) ". ";
+  font-weight: bold;
+}
+
+figure.table figcaption:before {
+  content: "Table " counter(tables) ". ";
+  font-weight: bold;
+}
+
+@media print {
+  figure {
+    border: 1px solid #999;
+    page-break-inside: avoid;
+  }
+  figure .table {
+    border: 1px solid #999;
+    page-break-inside: avoid;
+  }
+}
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font: 16px Arial;
+}
+
+.autocomplete {
+  /*the container must be positioned relative:*/
+  position: relative;
+  display: inline-block;
+  float: left;
+}
+
+.btn-clear {
+  margin-left: 10px;
+}
+
+input {
+  border: 1px solid transparent;
+  background-color: #f1f1f1;
+  padding: 10px;
+  font-size: 16px;
+}
+
+input[type=text] {
+  background-color: #f1f1f1;
+  width: 100%;
+}
+
+input[type=submit] {
+  color: #fff;
+}
+
+.autocomplete-items {
+  position: absolute;
+  border: 1px solid #d4d4d4;
+  border-bottom: none;
+  border-top: none;
+  z-index: 99;
+  /*position the autocomplete items to be the same width as the container:*/
+  top: 100%;
+  left: 0;
+  right: 0;
+}
+
+.autocomplete-items div {
+  padding: 10px;
+  cursor: pointer;
+  background-color: #fff;
+  border-bottom: 1px solid #d4d4d4;
+}
+
+.autocomplete-items div:hover {
+  /*when hovering an item:*/
+  background-color: #438ac7;
+  color: #ffffff;
+}
+
+.autocomplete-active {
+  /*when navigating through the items using the arrow keys:*/
+  background-color: #438ac7 !important;
+  color: #ffffff;
+}
+
+.btn-keyword {
+  margin: 3px;
+  background-color: #438ac7;
+  color: #ffffff;
+}
+
+ol.bibliography {
+  padding-left: 0px;
+}
+ol.bibliography li {
+  list-style-type: none;
+  padding-bottom: 10px;
+}
+
+.sidebar_nav {
+  overflow: auto;
+  height: 75vh;
+}
+
+.help {
+  overflow: auto;
+  height: 75vh;
+}
+
+.help-title {
+  padding-bottom: 2pt;
+}
+
+.help-description {
+  padding-top: 5pt;
+  padding-bottom: 2pt;
+  font-size: 13pt;
+}
+
+.help-section-header.arguments {
+  margin-bottom: 0px;
+}
+
+.help-section-body {
+  padding-left: 30px;
+}
+
+.table.arguments > tbody > tr > td,
+.table.arguments > tbody > tr > th {
+  border-top: none;
+}
+
+table.arguments .lhs {
+  text-align: right;
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+table.arguments .rhs {
+  text-align: left;
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+table.arguments .lhs.argument, table.arguments .rhs.argument {
+  padding-top: 10px;
+}
+
+.methods > li {
+  padding-bottom: 4px;
+}
+
+.footertext {
+  text-align: center;
+}
+
+img.navbar-logo {
+  height: 40px;
+  padding-top: 5px;
+  padding-right: 10px;
+  padding-left: 40px;
+}
+
+ul,
+ol {
+  padding-left: 1em;
+}
+
+blockquote div:not(:last-child) {
+  margin-bottom: 10px;
+}
+
+code {
+  padding: 0 0;
+  color: inherit;
+  background-color: inherit;
+}
+
+img {
+  max-width: 100%;
+}
+
+.navbar .navbar-collapse {
+  text-align: right;
+}
+
+.pull-left {
+  float: left;
+  margin-left: 10px;
+}
+
+.navbar-toggle {
+  float: right;
+}
 
 /*# sourceMappingURL=main.css.map */
