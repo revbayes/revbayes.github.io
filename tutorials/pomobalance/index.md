@@ -18,6 +18,8 @@ This tutorial is based on  [Polymorphism-aware phylogenetic models](/tutorials/p
 
 {% section Polymorphism-aware phylogenetic models with balancing selection %}
 
+<span style="color:red">**NB! Please note that the current version of the code has been tested in the development version of [RevBayes](https://github.com/revbayes/revbayes) built from the `dev_PoMo_bs_master` branch. PoMoBalance will be added to the main functionality in the next release.**</span>
+
 The polymorphism-aware phylogenetic models with balancing selection (PoMoBalance) is a natural extension of [polymorphism-aware phylogenetic models](/tutorials/pomos/) {% cite DeMaio2013 DeMaio2015 Schrempf2016 Borges2019 Borges2022 Borges2022b %} including all previous capabilities as well as detection of preferred allele frequencies and strength of balancing selection as shown in {% ref pomobalance %}.
 
 {% figure pomobalance %}
@@ -66,7 +68,26 @@ Graphical model representation of PoMoBalance. The model is non-reversible due t
 
 Similarly to [PoMos](/tutorials/pomos/), we are using count files in the same format. File `great_apes_BS_10000.cf` contains an example of heterozygote advantage simulation with the preferred frequency in the middle in $4$ great ape populations performed with the evolutionary simulation framework  [SLiM](https://messerlab.org/slim/) {% cite Haller2019 %}. We generated $10000$ sites, however, normally balancing selection happens in small regions containing only a few genes or around a thousand nucleotides. Thus, to improve the accuracy of the method we recommend increasing the virtual population size. In the current example, we use $N = 10$ and it can be further increased taking into account the interplay between the number of sites and the computational cost.  
 
-First, we convert the allelic counts into PoMo states. Open the terminal and copy the data and script into the corresponding subfolders **data** and **scripts** of your working directory, for example, call it, **PoMoBalance**. Inside **PoMoBalance** create **output** folder to store the results. Open the ```great_apes_pomobalance.Rev``` file using an appropriate text editor so you can follow what each command is doing. Then run **RevBayes**:
+First, we convert the allelic counts into PoMo states. Open the terminal and copy the data and script into the corresponding subfolders **data** and **scripts** of your working directory, for example, call it, **PoMoBalance**. Inside **PoMoBalance** create **output** folder to store the results. 
+
+PoMo state-space includes fixed and polymorphic states. However, sampled fixed sites might not be necessarily fixed in the original population. We might just have been unlucky and only sampled individuals with the same allele from a locus that is polymorphic. It is typically the case that the real genetic diversity is undersampled in population genetic studies. The fewer the number of sampled individuals or the rarer are the alleles in the original population (i.e., singletons, doubletons), the more likely are we to observe fake fixed sites in the sequence alignment. The sampled-weighted method helps us to correct for such bias by attributing to each of the allelic counts an appropriate PoMo state (0-based coding). For a population size of 3 virtual individuals, we expect 16 states (coded 0-15), while for a population of 2 virtual individuals, we expected 10 states (coded 0-9).
+
+The script ```weighted_sampled_method.cpp``` is implemented in **C++**, and we will run it using the **Rcpp** package in **R**.  Open the ```counts_to_pomo_states_converter.R``` file and make the appropriate changes to obtain your PoMo alignments suited for PoMoBalance. 
+
+```r
+name <- "great_apes_BS_10000"                       # name of the count file
+count_file <- paste0("../data/", name, ".cf")       # path to the count file
+n_alleles  <- 4                                     # the four nucleotide bases A, C, G and T
+N          <- 10                                    # virtual population size
+
+alignment <- counts_to_pomo_states_converter(count_file,n_alleles,N) # Create the alignment
+
+writeLines(alignment,paste0("../data/", name, ".txt"))               # writeg the PoMo alignment
+```
+
+We place the produced alignments inside the **data** folder. The output files follow the ```NaturalNumbers``` character type of RevBayes and can easily read by it.
+
+Open the ```great_apes_pomobalance.Rev``` file using an appropriate text editor so you can follow what each command is doing. Then run **RevBayes**:
 
 ```
 ./rb great_apes_pomobalance.Rev
@@ -151,7 +172,7 @@ The strength of balancing selection ```beta``` is also exponential and for the s
 
 ```
 
-# Strenths of the balancing selection
+# Strengths of the balancing selection
 
 for (i in 1:6){
 
@@ -238,6 +259,11 @@ monitors.append( mnModel(filename="output/great_apes_pomobalance.log", printgen=
 monitors.append( mnFile(filename="output/great_apes_pomobalance.trees", printgen=10, psi) )
 
 monitors.append( mnScreen(printgen=10) )
+```
+Run burn-in tuning the weights of the parameters
+
+```
+pbalance_mcmc.burnin(generations=2000,tuningInterval=200)
 ```
 
 Finally, set up ```mcmc``` moves with four independent MCMC runs to ensure proper convergence and mixing.
