@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Mass Extinction Estimation</h1>
 	<h3 class="subtitle">Estimating Mass Extinctions from Phylogenies with Fossil and Extant Taxa</h3>
 	<h4 class="authors">Andrew Magee and Sebastian Höhna</h4>
-  <h5>Last modified on March 11, 2022</h5>
+  <h5>Last modified on April  2, 2024</h5>
 </div>
 
 
@@ -98,8 +98,6 @@
         
         
           <li><a href="/tutorials/divrate/data/crocs_T1.tre">crocs_T1.tre</a></li>
-        
-          <li><a href="/tutorials/divrate/data/crocs_taxa.txt">crocs_taxa.txt</a></li>
         
         </ul>
     
@@ -177,9 +175,10 @@ birth-death model as in the <a href="/tutorials/divrate/ebd.html">Episodic Diver
 <p>Begin by reading in the ``observed’’ tree.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>T &lt;- readTrees("data/crocs_T1.tre")[1]
 </code></pre></div></div>
-<p>When the tree has fossils, it is best to read in the taxa from a taxon data file.
-This is absolutely required if the tree is to be simultaneously inferred.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>taxa &lt;- readTaxonData("data/crocs_taxa.txt",delim=TAB)
+<p>Here, we extract the fossil ages directly from the tree. If we were to simultaneously
+infer the tree instead, these ages would have to be read in from a taxon data file.
+(You can find an example of such a file in the <a href="/tutorials/divrate/ebd.html">Episodic Diversification Rate Estimation</a> tutorial.)</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>taxa &lt;- T.taxa()
 </code></pre></div></div>
 <p>Additionally, we initialize a variable for our vector of moves and monitors.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>moves    = VectorMoves()
@@ -556,14 +555,14 @@ The support values might change when you use a different resolution, <em>i.e.,</
 <ol class="bibliography"><li><span id="Carvalho2010">Carvalho C.M., Polson N.G., Scott J.G. 2010. The horseshoe estimator for sparse signals. Biometrika. 97:465–480.</span>
 
 </li>
-<li><span id="Hoehna2014a">Höhna S. 2014. Likelihood Inference of Non-Constant Diversification Rates with Incomplete Taxon Sampling. PLoS One. 9:e84184.</span>
-
-<a href="https://doi.org/10.1371/journal.pone.0084184">10.1371/journal.pone.0084184</a>
-
-</li>
 <li><span id="Hoehna2015a">Höhna S. 2015. The time-dependent reconstructed evolutionary process with a key-role for mass-extinction events. Journal of Theoretical Biology. 380:321–331.</span>
 
 <a href="https://doi.org/http://dx.doi.org/10.1016/j.jtbi.2015.06.005">http://dx.doi.org/10.1016/j.jtbi.2015.06.005</a>
+
+</li>
+<li><span id="Hoehna2014a">Höhna S. 2014. Likelihood Inference of Non-Constant Diversification Rates with Incomplete Taxon Sampling. PLoS One. 9:e84184.</span>
+
+<a href="https://doi.org/10.1371/journal.pone.0084184">10.1371/journal.pone.0084184</a>
 
 </li>
 <li><span id="Hoehna2011">Höhna S., Stadler T., Ronquist F., Britton T. 2011. Inferring speciation and extinction rates under different species sampling schemes. Molecular Biology and Evolution. 28:2577–2589.</span>

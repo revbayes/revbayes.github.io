@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Polymorphism-aware phylogenetic models with balancing selection</h1>
 	<h3 class="subtitle">Species tree inference and identification of preferred allele frequency for balancing selection in RevBayes</h3>
 	<h4 class="authors"> Svitlana Braichenko, Rui Borges, and Carolin Kosiol</h4>
-  <h5>Last modified on August 24, 2023</h5>
+  <h5>Last modified on April 21, 2024</h5>
 </div>
 
 
@@ -99,6 +99,8 @@
         
           <li><a href="/tutorials/pomobalance/data/great_apes_BS_10000.cf">great_apes_BS_10000.cf</a></li>
         
+          <li><a href="/tutorials/pomobalance/data/great_apes_BS_10000.txt">great_apes_BS_10000.txt</a></li>
+        
         </ul>
     
         
@@ -107,7 +109,11 @@
         
         
         
+          <li><a href="/tutorials/pomobalance/scripts/counts_to_pomo_states_converter.R">counts_to_pomo_states_converter.R</a></li>
+        
           <li><a href="/tutorials/pomobalance/scripts/great_apes_pomobalance.Rev">great_apes_pomobalance.Rev</a></li>
+        
+          <li><a href="/tutorials/pomobalance/scripts/weighted_sampled_method.cpp">weighted_sampled_method.cpp</a></li>
         
         </ul>
     
@@ -119,6 +125,8 @@
 
 <h2 class="section" id="polymorphism-aware-phylogenetic-models-with-balancing-selection">Polymorphism-aware phylogenetic models with balancing selection</h2>
 <hr class="section" />
+
+<p><span style="color:red"><strong>NB! Please note that the current version of the code has been tested in the development version of <a href="https://github.com/revbayes/revbayes">RevBayes</a> built from the <code class="language-plaintext highlighter-rouge">dev_PoMo_bs_master</code> branch. PoMoBalance will be added to the main functionality in the next release.</strong></span></p>
 
 <p>The polymorphism-aware phylogenetic models with balancing selection (PoMoBalance) is a natural extension of <a href="/tutorials/pomos/">polymorphism-aware phylogenetic models</a> <a class="citation" href="#DeMaio2013">(De Maio et al. 2013; De Maio et al. 2015; Schrempf et al. 2016; Borges et al. 2019; Borges et al. 2022; Borges et al. 2022)</a> including all previous capabilities as well as detection of preferred allele frequencies and strength of balancing selection as shown in <a href="#pomobalance"></a>.</p>
 
@@ -185,7 +193,25 @@ where $1+\sigma_{a_{i,j}}$ represents fitness of corresponding alleles, $B_{a_ia
 
 <p>Similarly to <a href="/tutorials/pomos/">PoMos</a>, we are using count files in the same format. File <code class="language-plaintext highlighter-rouge">great_apes_BS_10000.cf</code> contains an example of heterozygote advantage simulation with the preferred frequency in the middle in $4$ great ape populations performed with the evolutionary simulation framework  <a href="https://messerlab.org/slim/">SLiM</a> <a class="citation" href="#Haller2019">(Haller and Messer 2019)</a>. We generated $10000$ sites, however, normally balancing selection happens in small regions containing only a few genes or around a thousand nucleotides. Thus, to improve the accuracy of the method we recommend increasing the virtual population size. In the current example, we use $N = 10$ and it can be further increased taking into account the interplay between the number of sites and the computational cost.</p>
 
-<p>First, we convert the allelic counts into PoMo states. Open the terminal and copy the data and script into the corresponding subfolders <strong>data</strong> and <strong>scripts</strong> of your working directory, for example, call it, <strong>PoMoBalance</strong>. Inside <strong>PoMoBalance</strong> create <strong>output</strong> folder to store the results. Open the <code class="language-plaintext highlighter-rouge">great_apes_pomobalance.Rev</code> file using an appropriate text editor so you can follow what each command is doing. Then run <strong>RevBayes</strong>:</p>
+<p>First, we convert the allelic counts into PoMo states. Open the terminal and copy the data and script into the corresponding subfolders <strong>data</strong> and <strong>scripts</strong> of your working directory, for example, call it, <strong>PoMoBalance</strong>. Inside <strong>PoMoBalance</strong> create <strong>output</strong> folder to store the results.</p>
+
+<p>PoMo state-space includes fixed and polymorphic states. However, sampled fixed sites might not be necessarily fixed in the original population. We might just have been unlucky and only sampled individuals with the same allele from a locus that is polymorphic. It is typically the case that the real genetic diversity is undersampled in population genetic studies. The fewer the number of sampled individuals or the rarer are the alleles in the original population (i.e., singletons, doubletons), the more likely are we to observe fake fixed sites in the sequence alignment. The sampled-weighted method helps us to correct for such bias by attributing to each of the allelic counts an appropriate PoMo state (0-based coding). For a population size of 3 virtual individuals, we expect 16 states (coded 0-15), while for a population of 2 virtual individuals, we expected 10 states (coded 0-9).</p>
+
+<p>The script <code class="language-plaintext highlighter-rouge">weighted_sampled_method.cpp</code> is implemented in <strong>C++</strong>, and we will run it using the <strong>Rcpp</strong> package in <strong>R</strong>.  Open the <code class="language-plaintext highlighter-rouge">counts_to_pomo_states_converter.R</code> file and make the appropriate changes to obtain your PoMo alignments suited for PoMoBalance.</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">name</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s2">"great_apes_BS_10000"</span><span class="w">                       </span><span class="c1"># name of the count file</span><span class="w">
+</span><span class="n">count_file</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">paste0</span><span class="p">(</span><span class="s2">"../data/"</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="s2">".cf"</span><span class="p">)</span><span class="w">       </span><span class="c1"># path to the count file</span><span class="w">
+</span><span class="n">n_alleles</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">4</span><span class="w">                                     </span><span class="c1"># the four nucleotide bases A, C, G and T</span><span class="w">
+</span><span class="n">N</span><span class="w">          </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">10</span><span class="w">                                    </span><span class="c1"># virtual population size</span><span class="w">
+
+</span><span class="n">alignment</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">counts_to_pomo_states_converter</span><span class="p">(</span><span class="n">count_file</span><span class="p">,</span><span class="n">n_alleles</span><span class="p">,</span><span class="n">N</span><span class="p">)</span><span class="w"> </span><span class="c1"># Create the alignment</span><span class="w">
+
+</span><span class="n">writeLines</span><span class="p">(</span><span class="n">alignment</span><span class="p">,</span><span class="n">paste0</span><span class="p">(</span><span class="s2">"../data/"</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="s2">".txt"</span><span class="p">))</span><span class="w">               </span><span class="c1"># writeg the PoMo alignment</span><span class="w">
+</span></code></pre></div></div>
+
+<p>We place the produced alignments inside the <strong>data</strong> folder. The output files follow the <code class="language-plaintext highlighter-rouge">NaturalNumbers</code> character type of RevBayes and can easily read by it.</p>
+
+<p>Open the <code class="language-plaintext highlighter-rouge">great_apes_pomobalance.Rev</code> file using an appropriate text editor so you can follow what each command is doing. Then run <strong>RevBayes</strong>:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./rb great_apes_pomobalance.Rev
 </code></pre></div></div>
@@ -262,7 +288,7 @@ phi := [1.0,1.0+sigma,1.0+sigma,1.0]
 <p>The strength of balancing selection <code class="language-plaintext highlighter-rouge">beta</code> is also exponential and for the same reason as <code class="language-plaintext highlighter-rouge">rho</code> combines two kinds of moves. The preferred frequency <code class="language-plaintext highlighter-rouge">B</code> must be a discrete positive value between 0 and <code class="language-plaintext highlighter-rouge">N</code>, thus, we set up variable <code class="language-plaintext highlighter-rouge">Num</code> with a uniform prior and two kinds of standard moves<code class="language-plaintext highlighter-rouge">mvSlide</code> and <code class="language-plaintext highlighter-rouge">mvScale</code> with high weights to enhance exploration of parameter space. We round <code class="language-plaintext highlighter-rouge">Num</code> on each iteration to obtain discrete <code class="language-plaintext highlighter-rouge">B</code></p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-# Strenths of the balancing selection
+# Strengths of the balancing selection
 
 for (i in 1:6){
 
@@ -342,6 +368,10 @@ for (i in 1:n_branches) {
 monitors.append( mnFile(filename="output/great_apes_pomobalance.trees", printgen=10, psi) )
 
 monitors.append( mnScreen(printgen=10) )
+</code></pre></div></div>
+<p>Run burn-in tuning the weights of the parameters</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pbalance_mcmc.burnin(generations=2000,tuningInterval=200)
 </code></pre></div></div>
 
 <p>Finally, set up <code class="language-plaintext highlighter-rouge">mcmc</code> moves with four independent MCMC runs to ensure proper convergence and mixing.</p>
