@@ -42,4 +42,3 @@ The final issue that we are going to diagnose is unreasonable starting values. T
 Now that we have some simple looks at what these issues look like, we will now dive deeper into the causes of these problems and how they can be fixed.
 
 {% include_relative Priors.md %}
->>>>>>> 175e578e57b14344b3692284cce6ed72f50fafd3
