@@ -3,7 +3,6 @@ title: Debugging your Markov chain Monte Carlo (MCMC)
 subtitle: Practical guidelines for issues with MCMC for Bayesian phylogenetic inference
 authors: Joëlle Barido-Sottani, Orlando Schwery, Rachel C. M. Warnock, Chi Zhang, April Marie Wright
 level: 1
-order: 7
 index: true
 prerequisites:
 - intro
@@ -25,7 +24,7 @@ Reading a Trace
 
 Before we can understand if there are problems with our MCMC trace, we need to understand how to examine an MCMC for convergence. In this tutorial, we will mainly focus on fairly simple visual convergence diagnostics. But please note that this tutorial offers some more sophisticated techniques for asessing convergence. For this, we will use the software [Tracer](https://beast.community/tracer). 
 
-Start by opening Tracer. You can load in MCMC traces, such as the two provided with this tutorial by clicking the `+` button (Fig. 1). Load in the two traces labeled 'good' provided with this tutorial. These are traces that will demonstrate convergence. We estimated these two traces from this tutorial {{% ref morph-tree %}}. When you load these in, you will see both files, as well as a "combined" trace, showing the total sample contained within both. Note that the combined view will only include analyses that share the same parameters. If you are comparing models or different datasets, they may not combine.
+Start by opening Tracer. You can load in MCMC traces, such as the two provided with this tutorial by clicking the `+` button (Fig. 1). Load in the two traces labeled 'good' provided with this tutorial. These are traces that will demonstrate convergence. We estimated these two traces from this tutorial {% ref morph-tree %}. When you load these in, you will see both files, as well as a "combined" trace, showing the total sample contained within both. Note that the combined view will only include analyses that share the same parameters. If you are comparing models or different datasets, they may not combine.
 
 Click on the `trace` button. This shows the parameter and its values (Y-Axis) and the number of generations (X-axis). If you look at each of these files, you will see that, for each parameter, the lines seem to jump around a central value. This is because this analysis has converged. It has found stationarity, or the point at which increased sampling no longer affects the distribution of values estimated. If you select both traces, you will see that the two traces have both found stationarity at similar values. 
 
