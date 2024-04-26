@@ -27,8 +27,6 @@ Finally, more complex distributions such as mixture distributions are available 
 
 {% subsection Common prior issues %}
 
-{% subsubsection Mispecified priors %}
-
 {% subsubsection Vague priors %}
 
 {% subsubsection Interacting priors %}
@@ -36,3 +34,4 @@ Finally, more complex distributions such as mixture distributions are available 
 {% subsubsection Conflicting priors %}
 
 
+{% subsection Evaluating the influence of the prior %}
