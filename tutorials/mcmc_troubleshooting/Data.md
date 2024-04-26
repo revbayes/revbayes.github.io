@@ -10,5 +10,15 @@ prerequisites:
 redirect: false
 ---
 
-# April
+{% section Data Quality Issues %}
 
+While increasing the amount of data you use to generate a phylogenetic tree is generally a good thing, it can also make convergence more difficult. Increasing the amount of data increases the computational cost of estimating a phylogenetic tree, and therefore, can negatively impact inference performance. This is especially true in situations where the data are highly uncertain, have lots of missing data, or are in conflict with other sources of data. Below, we will examine a few common sources of MCMC difficulties that relate to data quality issues. 
+
+
+{% subsection Conflict %}
+
+
+{% subsection Sparsity %}
+
+
+{% subsection Fossil-Specific Issues %}
