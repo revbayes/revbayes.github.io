@@ -18,7 +18,8 @@ code_layout: bash
 <div class="col-sm-4" align="center">
 <img src="{{ site.baseurl }}{% link assets/img/apple.png %}" alt="" width="100px" />
 <h2>Mac OS X</h2>
-<p><a href="https://github.com/revbayes/revbayes/releases/download/{{ site.version }}/revbayes-{{ site.version }}-mac64.tar.gz" class="btn btn-info" role="button">Download Executable (10.6+)</a></p>
+<p><a href="https://github.com/revbayes/revbayes/releases/download/{{ site.version }}/revbayes-{{ site.version }}-mac-intel64.tar.gz" class="btn btn-info" role="button">Download Intel Executable (10.11+)</a></p>
+<p><a href="https://github.com/revbayes/revbayes/releases/download/{{ site.version }}/revbayes-{{ site.version }}-mac-arm64.tar.gz" class="btn btn-info" role="button">Download Apple Silicon Executable (10.11+)</a></p>
 <p>or <a href="{% page_url compile_osx %}">Compile from source</a></p>
 </div>
 
