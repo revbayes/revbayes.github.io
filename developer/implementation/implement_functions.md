@@ -271,7 +271,7 @@ void HyperbolicCosineFunction::update( void )
     double xValue = x -> getValue();
 
     // compute the function result
-    double result = exp(xValue) + exp(-xValue);
+    double result = (exp(xValue) + exp(-xValue))/2;
 
     // update the stored value
     *value = result;        
