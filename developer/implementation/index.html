@@ -68,95 +68,11 @@
 </div>
 
 <p class="section maintitle" id="implement_functions">Implementing a function</p>
-<p>There are two main classes of functions in RevBayes: member functions and typed functions. Member functions are functions used inside of deterministic nodes and allow access to member methods of a member object. Typed functions are either values within directed acyclic graph (DAG) nodes (i.e. random variables of some distribution), or are associated with a deterministic node. All deterministic nodes hold a function, the value of these deterministic nodes are returned by a call to that function. This has the advantage of simply modifying the value instead of creating a new object.</p>
+<p>There are two main classes of functions in RevBayes: regular functions and member functions.  For our example, we will be implement a regular function. First we need to add two files to the RevBayes source code, <code class="language-plaintext highlighter-rouge">Func_hyperbolicCosineFunction.cpp</code> and <code class="language-plaintext highlighter-rouge">Func_hyperbolicCosineFunction.h</code>. These will go within <code class="language-plaintext highlighter-rouge">revbayes/src/revlanguage/functions/math</code> since we are adding a function and it is a mathematical function. Second, we need to register the function by modifying <code class="language-plaintext highlighter-rouge">revbayes/src/revlanguage/workspace/RbRegister_Func.cpp</code>.</p>
 
-<p>For our example implementation we will be implementing a typed function. We will begin with a simple example of implementing a mathematical function, the hyperbolic cosine function. First we need to add two files to the RevBayes source code, a <code class="language-plaintext highlighter-rouge">HyperbolicCosineFunction.cpp</code> and a <code class="language-plaintext highlighter-rouge">HyperbolicCosineFunction.h</code>. These will go within <code class="language-plaintext highlighter-rouge">revbayes/src/core/functions/math</code> since we are adding a function and it is a mathematical function.</p>
+<h2 class="subsection" id="revlanguage-header-file">RevLanguage Header file</h2>
 
-<p>First, we will write our header file. Within our header file, we need to <code class="language-plaintext highlighter-rouge">include</code> a few other RevBayes header files, including <code class="language-plaintext highlighter-rouge">ContinousFunction.h</code> since hyperbolic cosine is a continuous function, and <code class="language-plaintext highlighter-rouge">TypedDagNode.h</code> since our typed function deals with nodes of DAGs.</p>
-
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#ifndef HyperbolicCosineFunction_h 
-#define HyperbolicCosineFunction_h
-</span>
-<span class="cp">#include</span> <span class="cpf">"ContinuousFunction.h"</span><span class="cp">
-#include</span> <span class="cpf">"TypedDagNode.h"</span><span class="cp">
-#include</span> <span class="cpf">&lt;cmath&gt;</span><span class="cp">
-</span>
-<span class="k">namespace</span> <span class="n">RevBayesCore</span> <span class="p">{</span>
-    <span class="cm">/**
-     * \brief Hyperbolic Cosine of a real number.
-     *
-     * Compute the hyperbolic cosine of a real number x. (cosh(x) = (exp(x) + exp(-x))/2).
-     *
-     * \copyright (c) Copyright 2009-2018 (GPL version 3)
-     * \author &lt;your-name&gt;
-     * \since Version 1.0, 2015-01-31
-     *
-     */</span>
-    <span class="k">class</span> <span class="nc">HyperbolicCosineFunction</span> <span class="o">:</span> <span class="k">public</span> <span class="n">ContinuousFunction</span> <span class="p">{</span>
-
-        <span class="nl">public:</span>
-                                          <span class="n">HyperbolicCosineFunction</span><span class="p">(</span><span class="k">const</span> <span class="n">TypedDagNode</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span> <span class="o">*</span><span class="n">a</span><span class="p">);</span> 
-
-            <span class="n">HyperbolicCosineFunction</span><span class="o">*</span>     <span class="n">clone</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span> <span class="c1">//!&lt; creates a clone</span>
-            <span class="kt">void</span>                          <span class="n">update</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>      <span class="c1">//!&lt; recomputes the value</span>
-
-        <span class="nl">protected:</span>
-            <span class="kt">void</span>                          <span class="n">swapParameterInternal</span><span class="p">(</span><span class="k">const</span> <span class="n">DagNode</span> <span class="o">*</span><span class="n">oldP</span><span class="p">,</span> <span class="k">const</span> <span class="n">DagNode</span> <span class="o">*</span><span class="n">newP</span><span class="p">);</span> <span class="c1">//!&lt; Implementation of swapping parameters</span>
-
-        <span class="nl">private:</span>
-            <span class="k">const</span> <span class="n">TypedDagNode</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;*</span> <span class="n">x</span><span class="p">;</span>
-
-    <span class="p">};</span>
-<span class="p">}</span>
-
-
-<span class="cp">#endif
-</span></code></pre></div></div>
-<p>The first part of this file should be the standard header that goes in all the files giving a brief description about what that file is as well as information about the copyright and the author of that file.
-Next, after including the necessary header files, we have to ensure that our new function is included within the <code class="language-plaintext highlighter-rouge">RevBayesCore</code> namespace.
-Here we are implementing our hyperbolic cosine function as its own class that is derived from the continuous function class that is derived from the typed function class. This class stores the hyperbolic cosine of a value that is held in a DAG node. We have also defined a clone method which can create a clone of our class, and an update method which will update the value of our Hyperbolic Cosine class whenever the value of the DAG node changes. Now we will move on to the <code class="language-plaintext highlighter-rouge">HyperbolicCosineFunction.cpp</code> file.</p>
-
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">"HyperbolicCosineFunction.h"</span><span class="cp">
-</span>
-<span class="k">using</span> <span class="k">namespace</span> <span class="n">RevBayesCore</span><span class="p">;</span>
-
-<span class="n">HyperbolicCosineFunction</span><span class="o">::</span><span class="n">HyperbolicCosineFunction</span><span class="p">(</span><span class="k">const</span> <span class="n">TypedDagNode</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span> <span class="o">*</span><span class="n">a</span><span class="p">)</span> <span class="o">:</span> <span class="n">ContinuousFunction</span><span class="p">(</span> <span class="k">new</span> <span class="nf">double</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span> <span class="p">),</span>
-<span class="n">x</span><span class="p">(</span> <span class="n">a</span> <span class="p">)</span>
-<span class="p">{</span>
-    <span class="n">addParameter</span><span class="p">(</span> <span class="n">a</span> <span class="p">);</span>
-<span class="p">}</span>
-
-
-<span class="n">HyperbolicCosineFunction</span><span class="o">*</span> <span class="n">HyperbolicCosineFunction</span><span class="o">::</span><span class="n">clone</span><span class="p">(</span> <span class="kt">void</span> <span class="p">)</span> <span class="k">const</span>
-<span class="p">{</span>
-    <span class="k">return</span> <span class="k">new</span> <span class="n">HyperbolicCosineFunction</span><span class="p">(</span><span class="o">*</span><span class="k">this</span><span class="p">);</span>
-<span class="p">}</span>
-
-
-<span class="kt">void</span> <span class="n">HyperbolicCosineFunction</span><span class="o">::</span><span class="n">swapParameterInternal</span><span class="p">(</span><span class="k">const</span> <span class="n">DagNode</span> <span class="o">*</span><span class="n">oldP</span><span class="p">,</span> <span class="k">const</span> <span class="n">DagNode</span> <span class="o">*</span><span class="n">newP</span><span class="p">)</span>
-<span class="p">{</span>
-    
-    <span class="k">if</span> <span class="p">(</span><span class="n">oldP</span> <span class="o">==</span> <span class="n">x</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">TypedDagNode</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;*</span> <span class="o">&gt;</span><span class="p">(</span> <span class="n">newP</span> <span class="p">);</span>
-    <span class="p">}</span>
-    
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="n">HyperbolicCosineFunction</span><span class="o">::</span><span class="n">update</span><span class="p">(</span> <span class="kt">void</span> <span class="p">)</span>
-<span class="p">{</span>
-    
-    <span class="c1">// recompute and set the internal value</span>
-    <span class="kt">double</span> <span class="n">myValue</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="n">getValue</span><span class="p">();</span>
-    <span class="kt">double</span> <span class="n">x1</span> <span class="o">=</span> <span class="n">exp</span><span class="p">(</span><span class="n">myValue</span><span class="p">)</span> <span class="o">+</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">myValue</span><span class="p">);</span>
-    <span class="o">*</span><span class="n">value</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">x1</span><span class="p">;</span>
-
-<span class="p">}</span>
-</code></pre></div></div>
-
-<p>Now all we need to do is add the hyperbolic cosine function to the <code class="language-plaintext highlighter-rouge">revlanguage</code> side of things so that when we are using <code class="language-plaintext highlighter-rouge">Rev</code> we can use our function. First we need to add <code class="language-plaintext highlighter-rouge">Func_hyperbolicCosine.cpp</code> and <code class="language-plaintext highlighter-rouge">Func_hyperbolicCosine.h</code> to <code class="language-plaintext highlighter-rouge">/src/revlanguage/functions/math/</code>. Note that the directory structure of <code class="language-plaintext highlighter-rouge">revlanguage</code> is similar to that of the <code class="language-plaintext highlighter-rouge">core</code>. The Revlanguage side serves as a wrapper of the function that we just wrote in the <code class="language-plaintext highlighter-rouge">core</code>.</p>
-
-<p>The <code class="language-plaintext highlighter-rouge">Func_hyperbolicCosine.h</code> should look like the following:</p>
+<p>The file <code class="language-plaintext highlighter-rouge">Func_hyperbolicCosine.h</code> should look like the following:</p>
 
 <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
 <span class="cp">#ifndef Func_hyperbolicCosine_h
@@ -177,16 +93,14 @@ Here we are implementing our hyperbolic cosine function as its own class that is
      * Please read the HyperbolicCosineFunction.h for more info.
      *
      *
-     * @copyright Copyright 2009-
+     * @copyright Copyright 2024-
      * @author The RevBayes Development Core Team (&lt;your-name&gt;)
-     * @since 2016-09-26, version 1.0
+     * @since 2024-04-26, version 1.0
      *
      */</span>
     <span class="k">class</span> <span class="nc">Func_hyperbolicCosine</span> <span class="o">:</span>  <span class="k">public</span> <span class="n">TypedFunction</span><span class="o">&lt;</span><span class="n">Real</span><span class="o">&gt;</span> <span class="p">{</span>
         
     <span class="nl">public:</span>
-        <span class="n">Func_hyperbolicCosine</span><span class="p">(</span> <span class="kt">void</span> <span class="p">);</span>
-        
         <span class="c1">// Basic utility functions</span>
         <span class="n">Func_hyperbolicCosine</span><span class="o">*</span>                         <span class="n">clone</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>                                          <span class="c1">//!&lt; Clone the object</span>
         <span class="k">static</span> <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span>                       <span class="n">getClassType</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>                                         <span class="c1">//!&lt; Get Rev type</span>
@@ -207,6 +121,8 @@ Here we are implementing our hyperbolic cosine function as its own class that is
 </span>
 </code></pre></div></div>
 
+<h2 class="subsection" id="revlanguage-implementation-file">RevLanguage Implementation file</h2>
+
 <p>And the <code class="language-plaintext highlighter-rouge">Func_hyperbolicCosine.cpp</code> should look like this:</p>
 
 <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">"Func_hyperbolicCosine.h"</span><span class="cp">
@@ -218,10 +134,10 @@ Here we are implementing our hyperbolic cosine function as its own class that is
 </span>
 <span class="k">using</span> <span class="k">namespace</span> <span class="n">RevLanguage</span><span class="p">;</span>
 
-<span class="cm">/** default constructor */</span>
-<span class="n">Func_hyperbolicCosine</span><span class="o">::</span><span class="n">Func_hyperbolicCosine</span><span class="p">(</span> <span class="kt">void</span> <span class="p">)</span> <span class="o">:</span> <span class="n">TypedFunction</span><span class="o">&lt;</span><span class="n">Real</span><span class="o">&gt;</span><span class="p">(</span> <span class="p">)</span>
+<span class="kt">double</span><span class="o">*</span> <span class="nf">hyperbolicCosine</span><span class="p">(</span><span class="kt">double</span> <span class="n">x</span><span class="p">)</span>
 <span class="p">{</span>
-    
+    <span class="kt">double</span> <span class="n">result</span> <span class="o">=</span> <span class="p">(</span><span class="n">exp</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span><span class="p">))</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="n">result</span><span class="p">;</span>
 <span class="p">}</span>
 
 
@@ -229,29 +145,25 @@ Here we are implementing our hyperbolic cosine function as its own class that is
  * The clone function is a convenience function to create proper copies of inherited objected.
  * E.g. a.clone() will create a clone of the correct type even if 'a' is of derived type 'b'.
  *
- * \return A new copy of the process.
+ * \return A new copy of the function.
  */</span>
 <span class="n">Func_hyperbolicCosine</span><span class="o">*</span> <span class="n">Func_hyperbolicCosine</span><span class="o">::</span><span class="n">clone</span><span class="p">(</span> <span class="kt">void</span> <span class="p">)</span> <span class="k">const</span>
 <span class="p">{</span>
-    
     <span class="k">return</span> <span class="k">new</span> <span class="n">Func_hyperbolicCosine</span><span class="p">(</span> <span class="o">*</span><span class="k">this</span> <span class="p">);</span>
 <span class="p">}</span>
 
 
 <span class="n">RevBayesCore</span><span class="o">::</span><span class="n">TypedFunction</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;*</span> <span class="n">Func_hyperbolicCosine</span><span class="o">::</span><span class="n">createFunction</span><span class="p">(</span> <span class="kt">void</span> <span class="p">)</span> <span class="k">const</span>
 <span class="p">{</span>
-    
     <span class="n">RevBayesCore</span><span class="o">::</span><span class="n">TypedDagNode</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;*</span> <span class="n">x</span> <span class="o">=</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">Real</span><span class="o">&amp;&gt;</span><span class="p">(</span> <span class="k">this</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">getVariable</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">getRevObject</span><span class="p">()</span> <span class="p">).</span><span class="n">getDagNode</span><span class="p">();</span>
-    <span class="n">RevBayesCore</span><span class="o">::</span><span class="n">HyperbolicCosineFunction</span><span class="o">*</span> <span class="n">f</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RevBayesCore</span><span class="o">::</span><span class="n">HyperbolicCosineFunction</span><span class="p">(</span> <span class="n">x</span> <span class="p">);</span>
     
-    <span class="k">return</span> <span class="n">f</span><span class="p">;</span>
+    <span class="k">return</span> <span class="n">RevBayesCore</span><span class="o">::</span><span class="n">generic_function_ptr</span><span class="o">&lt;</span> <span class="kt">double</span> <span class="o">&gt;</span><span class="p">(</span> <span class="n">hyberbolicCosine</span><span class="p">,</span> <span class="n">x</span> <span class="p">);</span>
 <span class="p">}</span>
 
 
 <span class="cm">/* Get argument rules */</span>
 <span class="k">const</span> <span class="n">ArgumentRules</span><span class="o">&amp;</span> <span class="n">Func_hyperbolicCosine</span><span class="o">::</span><span class="n">getArgumentRules</span><span class="p">(</span> <span class="kt">void</span> <span class="p">)</span> <span class="k">const</span>
 <span class="p">{</span>
-    
     <span class="k">static</span> <span class="n">ArgumentRules</span> <span class="n">argumentRules</span> <span class="o">=</span> <span class="n">ArgumentRules</span><span class="p">();</span>
     <span class="k">static</span> <span class="kt">bool</span>          <span class="n">rules_set</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
     
@@ -262,14 +174,13 @@ Here we are implementing our hyperbolic cosine function as its own class that is
         
         <span class="n">rules_set</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
     <span class="p">}</span>
-    
+
     <span class="k">return</span> <span class="n">argumentRules</span><span class="p">;</span>
 <span class="p">}</span>
 
 
 <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">Func_hyperbolicCosine</span><span class="o">::</span><span class="n">getClassType</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
 <span class="p">{</span>
-    
     <span class="k">static</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">rev_type</span> <span class="o">=</span> <span class="s">"Func_hyperbolicCosine"</span><span class="p">;</span>
     
     <span class="k">return</span> <span class="n">rev_type</span><span class="p">;</span>
@@ -278,7 +189,6 @@ Here we are implementing our hyperbolic cosine function as its own class that is
 <span class="cm">/* Get class type spec describing type of object */</span>
 <span class="k">const</span> <span class="n">TypeSpec</span><span class="o">&amp;</span> <span class="n">Func_hyperbolicCosine</span><span class="o">::</span><span class="n">getClassTypeSpec</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
 <span class="p">{</span>
-    
     <span class="k">static</span> <span class="n">TypeSpec</span> <span class="n">rev_type_spec</span> <span class="o">=</span> <span class="n">TypeSpec</span><span class="p">(</span> <span class="n">getClassType</span><span class="p">(),</span> <span class="k">new</span> <span class="n">TypeSpec</span><span class="p">(</span> <span class="n">Function</span><span class="o">::</span><span class="n">getClassTypeSpec</span><span class="p">()</span> <span class="p">)</span> <span class="p">);</span>
     
     <span class="k">return</span> <span class="n">rev_type_spec</span><span class="p">;</span>
@@ -296,17 +206,150 @@ Here we are implementing our hyperbolic cosine function as its own class that is
     <span class="k">return</span> <span class="n">f_name</span><span class="p">;</span>
 <span class="p">}</span>
 
-
 <span class="k">const</span> <span class="n">TypeSpec</span><span class="o">&amp;</span> <span class="n">Func_hyperbolicCosine</span><span class="o">::</span><span class="n">getTypeSpec</span><span class="p">(</span> <span class="kt">void</span> <span class="p">)</span> <span class="k">const</span>
 <span class="p">{</span>
-    
     <span class="k">static</span> <span class="n">TypeSpec</span> <span class="n">type_spec</span> <span class="o">=</span> <span class="n">getClassTypeSpec</span><span class="p">();</span>
     
     <span class="k">return</span> <span class="n">type_spec</span><span class="p">;</span>
 <span class="p">}</span>
 </code></pre></div></div>
 
-<p>Finally, we need to include the hyperbolic cosine function in the <code class="language-plaintext highlighter-rouge">RbRegister_Func.cpp</code> file located in the <code class="language-plaintext highlighter-rouge">/revlanguage/workspace/</code> directory. To do this go to the <code class="language-plaintext highlighter-rouge">RbRegister_Func.cpp</code> file and locate the math functions and type <code class="language-plaintext highlighter-rouge">#include Func_hyperbolicCosine.h</code> in the correct alphabetical order for that group. Now scroll down in that file until you find the math functions and add the line <code class="language-plaintext highlighter-rouge">addFunction( new Func_hyperbolicCosine());</code></p>
+<h2 class="subsection" id="registering-the-new-function">Registering the new function</h2>
+
+<p>In order to make the new function available for use within the Rev language, we first need to register it.
+To do this,</p>
+<ol>
+  <li>Go to the <code class="language-plaintext highlighter-rouge">src/revlanguage/workspace/</code> directory.</li>
+  <li>Open the file <code class="language-plaintext highlighter-rouge">RbRegister_Func.cpp</code> file in your editor.</li>
+  <li>Scroll down until you find the <code class="language-plaintext highlighter-rouge">#include</code> commands for math functions.</li>
+  <li><strong>Add the line <code class="language-plaintext highlighter-rouge">#include Func_hyperbolicCosine.h</code> in the correct alphabetical order for that group.</strong></li>
+  <li>Scroll down in that file until you find the section of the code that adds math functions.</li>
+  <li><strong>Add the line <code class="language-plaintext highlighter-rouge">addFunction( new Func_hyperbolicCosine() );</code></strong></li>
+</ol>
+
+<h1 class="section" id="functions-with-caching-and-optimized-recalculation">Functions with caching and optimized recalculation</h1>
+
+<p>When recalculating a function, sometimes we wish to avoid starting over from scratch.
+Instead, we wish to save and re-use some part of the previous calculation that has not changed.
+For example, if our function computes <code class="language-plaintext highlighter-rouge">x*(y+z)</code>, then if only <code class="language-plaintext highlighter-rouge">x</code> has changed, we could save the old value of <code class="language-plaintext highlighter-rouge">y+z</code> and re-use it instead of computing <code class="language-plaintext highlighter-rouge">y+z</code> from scratch. (In this case, <code class="language-plaintext highlighter-rouge">y+x</code> is not expensive enough to be worth saving; it is just an example).</p>
+
+<p>To accomplish this, we will write our own <code class="language-plaintext highlighter-rouge">RevBayesCore::Function</code>.  It will have an <code class="language-plaintext highlighter-rouge">update()</code> method to intelligently recalculate the value.  (If this were a real example, it would also include additional data members to save sub-calculations, and we would use these in the <code class="language-plaintext highlighter-rouge">update()</code> method if they have not changed.)</p>
+
+<p>A <code class="language-plaintext highlighter-rouge">RevBayesCore::Function</code> is different from a <code class="language-plaintext highlighter-rouge">RevLanguage::Function</code>.  The <code class="language-plaintext highlighter-rouge">RevBayesCore::Function</code> is an object that performs the calculation and stores the result, whereas the <code class="language-plaintext highlighter-rouge">RevLanguage::Function</code> is used to parse the Rev language command, interpret the function arguments, and create the <code class="language-plaintext highlighter-rouge">RevBayesCore::Function</code>.</p>
+
+<h2 class="subsection" id="revbayescore-header-file">RevBayesCore Header file</h2>
+
+<p>First, we will write our new header file. Within our header file, we need to <code class="language-plaintext highlighter-rouge">#include</code> a few other RevBayes header files, including <code class="language-plaintext highlighter-rouge">TypedDagNode.h</code> since our typed function deals with nodes of DAGs. Note that the directory structure of <code class="language-plaintext highlighter-rouge">core</code> is similar to that of the <code class="language-plaintext highlighter-rouge">revlanguage</code>.  The file <code class="language-plaintext highlighter-rouge">src/core/functions/math/HyperbolicCosineFunction.h</code> will be:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#ifndef HyperbolicCosineFunction_h 
+#define HyperbolicCosineFunction_h
+</span>
+<span class="cp">#include</span> <span class="cpf">"TypedFunction.h"</span><span class="cp">
+#include</span> <span class="cpf">"TypedDagNode.h"</span><span class="cp">
+#include</span> <span class="cpf">&lt;cmath&gt;</span><span class="cp">
+</span>
+<span class="k">namespace</span> <span class="n">RevBayesCore</span> <span class="p">{</span>
+    <span class="cm">/**
+     * \brief Hyperbolic Cosine of a real number.
+     *
+     * Compute the hyperbolic cosine of a real number x. (cosh(x) = (exp(x) + exp(-x))/2).
+     *
+     * \copyright (c) Copyright 2009-2018 (GPL version 3)
+     * \author &lt;your-name&gt;
+     * \since Version 1.0, 2015-01-31
+     *
+     */</span>
+    <span class="k">class</span> <span class="nc">HyperbolicCosineFunction</span> <span class="o">:</span> <span class="k">public</span> <span class="n">TypedFunction</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span> <span class="p">{</span>
+
+        <span class="nl">public:</span>
+                                          <span class="n">HyperbolicCosineFunction</span><span class="p">(</span><span class="k">const</span> <span class="n">TypedDagNode</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span> <span class="o">*</span><span class="n">a</span><span class="p">);</span> 
+
+            <span class="n">HyperbolicCosineFunction</span><span class="o">*</span>     <span class="n">clone</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span> <span class="c1">//!&lt; creates a clone</span>
+            <span class="kt">void</span>                          <span class="n">update</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>      <span class="c1">//!&lt; recomputes the value</span>
+
+        <span class="nl">protected:</span>
+            <span class="kt">void</span>                          <span class="n">swapParameterInternal</span><span class="p">(</span><span class="k">const</span> <span class="n">DagNode</span> <span class="o">*</span><span class="n">oldP</span><span class="p">,</span> <span class="k">const</span> <span class="n">DagNode</span> <span class="o">*</span><span class="n">newP</span><span class="p">);</span> <span class="c1">//!&lt; Implementation of swapping parameters</span>
+
+        <span class="nl">private:</span>
+            <span class="k">const</span> <span class="n">TypedDagNode</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;*</span> <span class="n">x</span><span class="p">;</span>
+
+    <span class="p">};</span>
+<span class="p">}</span>
+
+
+<span class="cp">#endif
+</span></code></pre></div></div>
+<p>The first part of this file should be the standard header that goes in all the files giving a brief description about what that file is as well as information about the copyright and the author of that file.</p>
+
+<h2 class="subsection" id="revbayescore-implementation-file">RevBayesCore Implementation file</h2>
+
+<p>Next, after including the necessary header files, we have to ensure that our new function is included within the <code class="language-plaintext highlighter-rouge">RevBayesCore</code> namespace.
+Here we are implementing our hyperbolic cosine function as its own class that is derived from the typed function class. This class stores the hyperbolic cosine of a value that is held in a DAG node. We have also defined a clone method which can create a clone of our class, and an update method which will update the value of our Hyperbolic Cosine class whenever the value of the DAG node changes.</p>
+
+<p>The file <code class="language-plaintext highlighter-rouge">src/core/functions/math/HyperbolicCosineFunction.cpp</code> will look like:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">"HyperbolicCosineFunction.h"</span><span class="cp">
+</span>
+<span class="k">using</span> <span class="k">namespace</span> <span class="n">RevBayesCore</span><span class="p">;</span>
+
+<span class="n">HyperbolicCosineFunction</span><span class="o">::</span><span class="n">HyperbolicCosineFunction</span><span class="p">(</span><span class="k">const</span> <span class="n">TypedDagNode</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span> <span class="o">*</span><span class="n">a</span><span class="p">)</span> <span class="o">:</span> <span class="n">TypedFunction</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span> <span class="k">new</span> <span class="nf">double</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span> <span class="p">),</span>
+<span class="n">x</span><span class="p">(</span> <span class="n">a</span> <span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">addParameter</span><span class="p">(</span> <span class="n">a</span> <span class="p">);</span>
+<span class="p">}</span>
+
+
+<span class="n">HyperbolicCosineFunction</span><span class="o">*</span> <span class="n">HyperbolicCosineFunction</span><span class="o">::</span><span class="n">clone</span><span class="p">(</span> <span class="kt">void</span> <span class="p">)</span> <span class="k">const</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="n">HyperbolicCosineFunction</span><span class="p">(</span><span class="o">*</span><span class="k">this</span><span class="p">);</span>
+<span class="p">}</span>
+
+
+<span class="kt">void</span> <span class="n">HyperbolicCosineFunction</span><span class="o">::</span><span class="n">swapParameterInternal</span><span class="p">(</span><span class="k">const</span> <span class="n">DagNode</span> <span class="o">*</span><span class="n">oldP</span><span class="p">,</span> <span class="k">const</span> <span class="n">DagNode</span> <span class="o">*</span><span class="n">newP</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">oldP</span> <span class="o">==</span> <span class="n">x</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">TypedDagNode</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;*</span> <span class="o">&gt;</span><span class="p">(</span> <span class="n">newP</span> <span class="p">);</span>
+    <span class="p">}</span>
+    
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">HyperbolicCosineFunction</span><span class="o">::</span><span class="n">update</span><span class="p">(</span> <span class="kt">void</span> <span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// get the current value of x</span>
+    <span class="kt">double</span> <span class="n">xValue</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="n">getValue</span><span class="p">();</span>
+
+    <span class="c1">// compute the function result</span>
+    <span class="kt">double</span> <span class="n">result</span> <span class="o">=</span> <span class="n">exp</span><span class="p">(</span><span class="n">xValue</span><span class="p">)</span> <span class="o">+</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">xValue</span><span class="p">);</span>
+
+    <span class="c1">// update the stored value</span>
+    <span class="o">*</span><span class="n">value</span> <span class="o">=</span> <span class="n">result</span><span class="p">;</span>        
+
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="alternate-implemention-for-createfunction">Alternate implemention for <code class="language-plaintext highlighter-rouge">createFunction</code></h2>
+
+<p>In order to use the new <code class="language-plaintext highlighter-rouge">RevBayesCore::HyperbolicCosineFunction</code> class, we need to modify the <code class="language-plaintext highlighter-rouge">RevLanguage::Func_hyperbolicCosine</code> class to use it instead of <code class="language-plaintext highlighter-rouge">generic_function_ptr( )</code>.  To do this,</p>
+
+<ol>
+  <li>Open <code class="language-plaintext highlighter-rouge">src/revlanguage/functions/math/Func_hyperbolicCosine.cpp</code> in your editor.</li>
+  <li><strong>Add an <code class="language-plaintext highlighter-rouge">#include</code> statement to make the <code class="language-plaintext highlighter-rouge">RevBayesCore::HyperbolicCosineFunction</code> class visible</strong></li>
+  <li><strong>Modify the definition of <code class="language-plaintext highlighter-rouge">Func_hyperbolicCosine::createFunction()</code></strong> as follows:</li>
+</ol>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">...</span>
+<span class="cp">#include</span> <span class="cpf">"HyperbolicCosineFunction.h"</span><span class="cp">
+</span><span class="p">...</span>
+         
+<span class="n">RevBayesCore</span><span class="o">::</span><span class="n">TypedFunction</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;*</span> <span class="n">Func_hyperbolicCosine</span><span class="o">::</span><span class="n">createFunction</span><span class="p">(</span> <span class="kt">void</span> <span class="p">)</span> <span class="k">const</span>
+<span class="p">{</span>
+    
+    <span class="n">RevBayesCore</span><span class="o">::</span><span class="n">TypedDagNode</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;*</span> <span class="n">x</span> <span class="o">=</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">Real</span><span class="o">&amp;&gt;</span><span class="p">(</span> <span class="k">this</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">getVariable</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">getRevObject</span><span class="p">()</span> <span class="p">).</span><span class="n">getDagNode</span><span class="p">();</span>
+    
+    <span class="k">return</span> <span class="k">new</span> <span class="n">RevBayesCore</span><span class="o">::</span><span class="n">HyperbolicCosineFunction</span><span class="p">(</span> <span class="n">x</span> <span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
 
 <p class="section maintitle" id="implement_distributions">Implementing a distribution</p>
 <h2 id="general-info-before-getting-started">General info before getting started</h2>
