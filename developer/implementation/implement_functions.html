@@ -55,7 +55,7 @@
 	<h1 class="maintitle">Implementing a function</h1>
 	
 	<h4 class="authors"></h4>
-  <h5>Last modified on April 29, 2024</h5>
+  <h5>Last modified on April 30, 2024</h5>
 </div>
 
 <p>There are two main classes of functions in RevBayes: regular functions and member functions.  For our example, we will be implement a regular function. First we need to add two files to the RevBayes source code, <code class="language-plaintext highlighter-rouge">Func_hyperbolicCosineFunction.cpp</code> and <code class="language-plaintext highlighter-rouge">Func_hyperbolicCosineFunction.h</code>. These will go within <code class="language-plaintext highlighter-rouge">revbayes/src/revlanguage/functions/math</code> since we are adding a function and it is a mathematical function. Second, we need to register the function by modifying <code class="language-plaintext highlighter-rouge">revbayes/src/revlanguage/workspace/RbRegister_Func.cpp</code>.</p>
@@ -116,18 +116,18 @@
 <p>And the <code class="language-plaintext highlighter-rouge">Func_hyperbolicCosine.cpp</code> should look like this:</p>
 
 <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">"Func_hyperbolicCosine.h"</span><span class="cp">
-#include</span> <span class="cpf">"HyperbolicCosineFunction.h"</span><span class="cp">
 #include</span> <span class="cpf">"Probability.h"</span><span class="cp">
 #include</span> <span class="cpf">"Real.h"</span><span class="cp">
 #include</span> <span class="cpf">"RlDeterministicNode.h"</span><span class="cp">
 #include</span> <span class="cpf">"TypedDagNode.h"</span><span class="cp">
+#include</span> <span class="cpf">"GenericFunction.h"</span><span class="cp">
 </span>
 <span class="k">using</span> <span class="k">namespace</span> <span class="n">RevLanguage</span><span class="p">;</span>
 
 <span class="kt">double</span><span class="o">*</span> <span class="nf">hyperbolicCosine</span><span class="p">(</span><span class="kt">double</span> <span class="n">x</span><span class="p">)</span>
 <span class="p">{</span>
     <span class="kt">double</span> <span class="n">result</span> <span class="o">=</span> <span class="p">(</span><span class="n">exp</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span><span class="p">))</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span>
-    <span class="k">return</span> <span class="k">new</span> <span class="n">result</span><span class="p">;</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="kt">double</span><span class="p">(</span><span class="n">result</span><span class="p">);</span>
 <span class="p">}</span>
 
 
@@ -147,7 +147,7 @@
 <span class="p">{</span>
     <span class="n">RevBayesCore</span><span class="o">::</span><span class="n">TypedDagNode</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;*</span> <span class="n">x</span> <span class="o">=</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">Real</span><span class="o">&amp;&gt;</span><span class="p">(</span> <span class="k">this</span><span class="o">-&gt;</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">getVariable</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">getRevObject</span><span class="p">()</span> <span class="p">).</span><span class="n">getDagNode</span><span class="p">();</span>
     
-    <span class="k">return</span> <span class="n">RevBayesCore</span><span class="o">::</span><span class="n">generic_function_ptr</span><span class="o">&lt;</span> <span class="kt">double</span> <span class="o">&gt;</span><span class="p">(</span> <span class="n">hyberbolicCosine</span><span class="p">,</span> <span class="n">x</span> <span class="p">);</span>
+    <span class="k">return</span> <span class="n">RevBayesCore</span><span class="o">::</span><span class="n">generic_function_ptr</span><span class="o">&lt;</span> <span class="kt">double</span> <span class="o">&gt;</span><span class="p">(</span> <span class="n">hyperbolicCosine</span><span class="p">,</span> <span class="n">x</span> <span class="p">);</span>
 <span class="p">}</span>
 
 
@@ -204,6 +204,19 @@
 <span class="p">}</span>
 </code></pre></div></div>
 
+<p>The function <code class="language-plaintext highlighter-rouge">RevBayesCore::generic_function_ptr&lt; ResultType &gt;(CppFunction, arg1, ...)</code> in <code class="language-plaintext highlighter-rouge">Func_hyperbolicCosine::createFunction( )</code> automatically constructs a <code class="language-plaintext highlighter-rouge">RevBayesCore::Function</code> from the C++ function so that we do not have to.</p>
+
+<p>If <code class="language-plaintext highlighter-rouge">CppFunction</code> is has multiple type signatures, as is the case with functions like <code class="language-plaintext highlighter-rouge">sqrt( )</code>, <code class="language-plaintext highlighter-rouge">generic_function_ptr&lt; &gt;</code> will not work.
+In such cases, we can solve this problem by writing a wrapper function with a single type signature.
+For example,</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// Specialize sqrt to only work on doubles
+double mysqrt(double x)
+{
+   return sqrt(x);
+}
+</code></pre></div></div>
+
 <h2 class="subsection" id="registering-the-new-function">Registering the new function</h2>
 
 <p>In order to make the new function available for use within the Rev language, we first need to register it.
@@ -212,20 +225,25 @@ To do this,</p>
   <li>Go to the <code class="language-plaintext highlighter-rouge">src/revlanguage/workspace/</code> directory.</li>
   <li>Open the file <code class="language-plaintext highlighter-rouge">RbRegister_Func.cpp</code> file in your editor.</li>
   <li>Scroll down until you find the <code class="language-plaintext highlighter-rouge">#include</code> commands for math functions.</li>
-  <li><strong>Add the line <code class="language-plaintext highlighter-rouge">#include Func_hyperbolicCosine.h</code> in the correct alphabetical order for that group.</strong></li>
+  <li><strong>Add the line <code class="language-plaintext highlighter-rouge">#include "Func_hyperbolicCosine.h"</code> in the correct alphabetical order for that group.</strong></li>
   <li>Scroll down in that file until you find the section of the code that adds math functions.</li>
   <li><strong>Add the line <code class="language-plaintext highlighter-rouge">addFunction( new Func_hyperbolicCosine() );</code></strong></li>
 </ol>
 
 <h1 class="section" id="functions-with-caching-and-optimized-recalculation">Functions with caching and optimized recalculation</h1>
 
-<p>When recalculating a function, sometimes we wish to avoid starting over from scratch.
-Instead, we wish to save and re-use some part of the previous calculation that has not changed.
-For example, if our function computes <code class="language-plaintext highlighter-rouge">x*(y+z)</code>, then if only <code class="language-plaintext highlighter-rouge">x</code> has changed, we could save the old value of <code class="language-plaintext highlighter-rouge">y+z</code> and re-use it instead of computing <code class="language-plaintext highlighter-rouge">y+z</code> from scratch. (In this case, <code class="language-plaintext highlighter-rouge">y+x</code> is not expensive enough to be worth saving; it is just an example).</p>
+<p>The above method should be prefered for implementing new functions in RevBayes unless the function needs to save intermediate results and use them during recalculation.
+For example, if our function computes <code class="language-plaintext highlighter-rouge">x*(y+z)</code>, then if only <code class="language-plaintext highlighter-rouge">x</code> has changed, we could save the old value of <code class="language-plaintext highlighter-rouge">y+z</code> and re-use it instead of computing <code class="language-plaintext highlighter-rouge">y+z</code> from scratch.  (In this case, <code class="language-plaintext highlighter-rouge">y+z</code> is not expensive enough to be worth saving, but is just a simple illustration of an intermediate result.)</p>
 
-<p>To accomplish this, we will write our own <code class="language-plaintext highlighter-rouge">RevBayesCore::Function</code>.  It will have an <code class="language-plaintext highlighter-rouge">update()</code> method to intelligently recalculate the value.  (If this were a real example, it would also include additional data members to save sub-calculations, and we would use these in the <code class="language-plaintext highlighter-rouge">update()</code> method if they have not changed.)</p>
+<p>In such cases we will also need to write a <code class="language-plaintext highlighter-rouge">RevBayesCore::Function</code>.
+A <code class="language-plaintext highlighter-rouge">RevBayesCore::Function</code> serves a different role than a <code class="language-plaintext highlighter-rouge">RevLanguage::Function</code>.
+A <code class="language-plaintext highlighter-rouge">RevLanguage::Function</code> interprets the function arguments and connects them to the <code class="language-plaintext highlighter-rouge">RevBayesCore::Function</code>, which performs the actual calculation and holds the result.
+If we write our own <code class="language-plaintext highlighter-rouge">RevBayesCore::Function</code>, then we can use the <code class="language-plaintext highlighter-rouge">update()</code> method to intelligently recalculate the value,
+and we can add data memembers to save intermediate results;</p>
 
-<p>A <code class="language-plaintext highlighter-rouge">RevBayesCore::Function</code> is different from a <code class="language-plaintext highlighter-rouge">RevLanguage::Function</code>.  The <code class="language-plaintext highlighter-rouge">RevBayesCore::Function</code> is an object that performs the calculation and stores the result, whereas the <code class="language-plaintext highlighter-rouge">RevLanguage::Function</code> is used to parse the Rev language command, interpret the function arguments, and create the <code class="language-plaintext highlighter-rouge">RevBayesCore::Function</code>.</p>
+<p>Here will illustrate how to write a simple <code class="language-plaintext highlighter-rouge">RevBayesCore::Function</code> using the hyperbolic cosine example.
+Our example does’t actually save any intermediate results, it just illustrates how a <code class="language-plaintext highlighter-rouge">RevBayesCore::Function</code> works.
+It is therefore equivalent to the <code class="language-plaintext highlighter-rouge">RevBayesCore::Function</code> that is automatically generated by <code class="language-plaintext highlighter-rouge">generic_function_ptr</code>.</p>
 
 <h2 class="subsection" id="revbayescore-header-file">RevBayesCore Header file</h2>
 
