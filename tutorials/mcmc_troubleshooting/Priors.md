@@ -26,11 +26,39 @@ Finally, more complex distributions such as mixture distributions are available 
 
 {% subsection Evaluating the influence of the prior %}
 
+We can evaluate the influence of the prior on estimates by running the same analysis under several different prior distributions. We have set up a toy analysis containing a phylogeny inferred from a morphological matrix under an FBD prior. We estimating the phylogeny, origin time and the parameters of the clock and substitution models. The full details of the inference can be found in the `prior_influence.Rev` file.
+We will try several distributions for the clock rate prior:
+- a uniform distribution
+{{ prior_script | snippet:"block#","10" }}
+- an exponential distribution
+{{ prior_script | snippet:"block#","11" }}
+- a lognormal distribution
+{{ prior_script | snippet:"block#","12" }}
 
+Note that we have chosen distributions which all have the same mean $m = 1.0$, this is important to make sure that the differences we observe come from the **shape** of the prior distribution rather than simply from the fact that we set a different expectation for the value of the parameter. However, because of the differences in shape, the actual range of plausible values can be very different between distributions. We can check the actual ranges by using RevBayes to check the quantiles of each distribution.
+{{ prior_script | snippet:"block#","13" }}
+
+This gives us ranges of [] for the uniform distribution, [] for the exponential distribution, and [] for the lognormal distribution.
+We see the result of our test on the actual inference, by checking the posterior distribution of the clock rate, shown in {% ref fig_prior_comp %}. We can see that the estimated value changes depending on the choice of prior, especially for the lognormal prior. We can also see that the signal provided by the data and the other priors (in particular the prior on origin time) play a role in the final result. In particular, the uniform and exponential distributions mostly differ by their shape in the upper part of the value range, which is not where our posterior is located, and so we do not see large differences between these two priors.
+
+{% figure fig_prior_comp %}
+<img src="figures/Tracer_prior_comp.png" width="900" />
+{% figcaption %}
+Comparison of the posterior distribution of the clock rate under different priors, visualized into Tracer.
+{% endfigcaption %}
+{% endfigure %}
+
+Note that in this example, we subsampled our original alignment to artificially obtain a matrix with very few characters, which increases the influence of the prior. In a real analysis, it is unlikely that we would use an alignment with so few sites. However, this scenario can also happen for instance due to partitioning: when an alignment is split into several partitions, the amount of information present in the alignment can be split very unevenly, such that some partitions contain almost no signal. If separate substitution and clock models are used for each partition, the estimates for the parameters corresponding to the low-information partition will be heavily influenced by the prior chosen.
 
 {% subsection Common prior issues %}
 
 {% subsubsection Vague priors %}
+
+Using very wide or very vague priors can appear tempting, for several reasons. First, sometimes only little information, or contradictory information, is available about the value of certain parameters. Second, setting vague priors lets us avoid some of the work needed to establish more narrow priors, e.g. checking the literature for previous estimates, or thinking deeply about the biological meaning of the parameters. Finally, vague priors provide little information to the inference, and so the final estimates will better reflect the signal coming from the data as opposed to the expectations we have placed on the results.
+
+However, this assumes that there is in fact signal in the data for the specified parameter, which may not always be the case. Some parameters can be difficult to estimate without proper priors, particularly when all samples come from the same point in time: for instance the ages of the phylogeny, the overall substitution rate, or the extinction or death rate. Even when there is enough information in the data to obtain precise estimates from the inference, setting vague priors will slow down the convergence of the chain, as the inference is provided with a much wider range of plausible values to explore.
+
+
 
 {% subsubsection Interacting priors %}
 
@@ -38,7 +66,7 @@ Finally, more complex distributions such as mixture distributions are available 
 
 One challenge is specifying priors is that we usually expect that the prior used by the analysis will be the same as the prior that we have set. This is generally the case, _unless_ the same component or parameter is influenced by several different priors. A common scenario where this can happen is in the case of node ages. Node ages have an implicit prior set on them by the prior used for the phylogeny itself. When using a demographic model such as a coalescent or birth-death process, node ages which are coherent with this model will have a higher probability. Similarly if a prior on branch lengths is used, then this will also impact plausible values for the node ages. But node ages can also have explicit priors set on them, for instance through the use of node calibrations defined directly by the user. Even nodes that are not calibrated will be influenced by the calibrations, since a node has to have a lower age than its ancestors and a higher age than its descendants. Thus the prior on a node age is potentially the result of the interaction of many different components.
 
-This interaction needs to be taken into account in order to correctly interpret the results of the analysis, as we will see in the following example. The full details of the setup can be found in the `age_calibrations.Rev` script, but we will focus on the node calibrations set for this analysis. We have defined a set of clades for our phylogeny:
+This interaction needs to be taken into account in order to correctly interpret the results of the analysis, as we will see in the following example. We use the same toy analysis from the previous examples, but this time we add node calibrations to our inference. The full details of the setup can be found in the `age_calibrations.Rev` script. We have defined a set of clades for our phylogeny:
 {{ calib_script | snippet:"block#","6" }}
 
 Each of these clades has an associated prior distribution on the age of their most recent common ancestor (MRCA):
@@ -85,7 +113,7 @@ The prior for the speciation rate is:
 And finally the prior for the extinction rate is:
 {{ conflict_script | snippet:"block#","4" }}
 
-One issue with lognormal distributions is that it can be difficult to see from the parameter values alone what is the range of plausible values covered by the prior. Thankfully, we can easily check the quantiles of the distribution using RevBayes:
+One issue with lognormal distributions is that it can be difficult to see from the parameter values alone what is the range of plausible values covered by the prior. As we have seen before, we can easily check the quantiles of the distribution using RevBayes:
 {{ prior_script | snippet:"block#","8" }}
 
 We see here that the prior expects the speciation rate to be in the interval of values [4 ; 52.5] events/My. However, our dataset contains only 18 species, we have set our origin time to be in the interval [37 ; 55]My and the mean of our prior on the extinction rate is set to $1/rate = 0.01$ events/My. Considering the other components of our analysis, the expectation on our speciation rate is thus unrealistically high.
