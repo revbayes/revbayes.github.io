@@ -16,6 +16,11 @@ beta ~ dnBeta(alpha = 1.0, beta = 0.8)
 ### Mixture model
 me ~ dnReversibleJumpMixture(0, dnUnif(0.7, 0.95), 0.5)
 
+###### Interacting priors
+
+# running under the prior
+mymcmc.run(generations=1000000, underPrior = true)
+
 ###### Prior conflict
 
 # Checking quantiles
