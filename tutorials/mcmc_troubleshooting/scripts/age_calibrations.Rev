@@ -19,15 +19,14 @@ fbd_dist = dnFBDP(origin=origin_time, lambda=0.1, mu=0.09, psi=0.01, rho=1.0, ta
 ### Clade constraints
 
 clade_ursus = clade("Ursus_arctos","Ursus_maritimus","Ursus_americanus","Ursus_thibetanus")
-
 clade_ursavus = clade("Ursavus_brevirhinus", "Ursavus_primaevus")
-
 fbd_tree ~ dnConstrainedTopology(fbd_dist, constraints=v(clade_ursus, clade_ursavus))
+
+### Node calibrations
 
 age_ursus := tmrca(fbd_tree, clade_ursus)
 age_ursus_prior ~ dnUnif(age_ursus - 28.5, age_ursus - 15.0)
 age_ursus_prior.setValue(0)
-
 age_ursavus := tmrca(fbd_tree, clade_ursavus)
 age_ursavus_prior ~ dnUnif(age_ursavus - 36.0, age_ursavus - 25.0)
 age_ursavus_prior.setValue(0)

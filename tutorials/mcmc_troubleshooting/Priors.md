@@ -38,8 +38,11 @@ Finally, more complex distributions such as mixture distributions are available 
 
 One challenge is specifying priors is that we usually expect that the prior used by the analysis will be the same as the prior that we have set. This is generally the case, _unless_ the same component or parameter is influenced by several different priors. A common scenario where this can happen is in the case of node ages. Node ages have an implicit prior set on them by the prior used for the phylogeny itself. When using a demographic model such as a coalescent or birth-death process, node ages which are coherent with this model will have a higher probability. Similarly if a prior on branch lengths is used, then this will also impact plausible values for the node ages. But node ages can also have explicit priors set on them, for instance through the use of node calibrations defined directly by the user. Even nodes that are not calibrated will be influenced by the calibrations, since a node has to have a lower age than its ancestors and a higher age than its descendants. Thus the prior on a node age is potentially the result of the interaction of many different components.
 
-This interaction needs to be taken into account in order to correctly interpret the results of the analysis, as we will see in the following example. The full details of the setup can be found in the `age_calibrations.Rev` script, but we will focus on the node calibrations set for this analysis.
+This interaction needs to be taken into account in order to correctly interpret the results of the analysis, as we will see in the following example. The full details of the setup can be found in the `age_calibrations.Rev` script, but we will focus on the node calibrations set for this analysis. We have defined a set of clades for our phylogeny:
 {{ calib_script | snippet:"block#","6" }}
+
+Each of these clades has an associated prior distribution on the age of their most recent common ancestor (MRCA):
+{{ calib_script | snippet:"block#","7" }}
 
 We also have a prior set on the origin time of the tree:
 {{ calib_script | snippet:"block#","4" }}
@@ -55,15 +58,16 @@ Posterior distribution of the age of the _Ursavus_ clade, visualized into Tracer
 
 We can check the effective priors for any inference by running the analysis **under the prior**, i.e. without taking the contributions of the data into account. There are two ways to achieve this:
 - we can use the `underPrior` option in the MCMC inference itself. **CAREFUL:** this will remove _all_ clamped nodes, including the node calibrations if they use clamping. Thus this option requires node calibrations to be set using the `setValue` function rather than `clamp`.
+
 {{ prior_script | snippet:"block#","7" }}
 - we can simply comment out all the components of the likelihood, which in the case of our analysis is only the `dnPhyloCTMC` component.
 
-Then we can compare the posterior distribution obtained from the complete inference to the effective prior obtained from the inference under the prior, shown in {% ref fig_age_comparison %}. Here we see that the effective prior for the age of the _Ursavus_ clade is not uniform at all, but in fact also supports heavily the younger ages within the specified range. Indeed, the median of the posterior is $\approx 26.1$My, while the median of the effective prior is $\approx 28.1$My, so they are very close to each other. We can also see that the posterior distribution is different from the effective prior and shows support for a more narrow range of age values, so the data is also contributing to our posterior estimates. However, the support of the data for younger ages is much weaker than our initial impression, because the posterior is largely informed by our choice of priors.
+Then we can compare the posterior distribution obtained from the complete inference to the effective prior obtained from the inference under the prior, shown in {% ref fig_age_comparison %}. Here we see that the effective prior for the age of the _Ursavus_ clade is not uniform at all, but in fact also supports heavily the younger ages within the specified range. Indeed, the median of the posterior is $\approx 26.1$My, while the median of the effective prior is $\approx 27.8$My, so they are very close to each other. We can also see that the posterior distribution is different from the effective prior and shows support for a more narrow range of age values, so the data is also contributing to our posterior estimates. However, the support of the data for younger ages is much weaker than our initial impression, because the posterior is largely informed by our choice of priors.
 
 {% figure fig_age_posterior %}
 <img src="figures/Tracer_age_comparison.png" width="900" />
 {% figcaption %}
-Distributions of the age of the _Ursavus_ clade, visualized into Tracer. We can compare the posterior distribution obtained from a complete inference with data () with the effective prior obtained from a run under the prior ().
+Distributions of the age of the _Ursavus_ clade, visualized into Tracer. We can compare the posterior distribution obtained from a complete inference with data (blue) with the effective prior obtained from a run under the prior (green).
 {% endfigcaption %}
 {% endfigure %}
 
@@ -73,7 +77,7 @@ Overall, this example illustrates why it is crucial to check the effective prior
 
 {% assign conflict_script = "prior_conflict.Rev" %}
 
-Here we see an example of what can happen when priors are misspecified, i.e. when they conflict with either the data or the other priors. We have set up a toy analysis containing a phylogeny under an FBD prior, and estimating the origin time, speciation and extinction rates. The full details of the setup can be found in the `prior_conflict.Rev` file, but we will focus on the priors used.
+In this section we see an example of what can happen when priors are misspecified, i.e. when they conflict with either the data or the other priors. We have set up a toy analysis containing a phylogeny under an FBD prior, and estimating the origin time, speciation and extinction rates. The full details of the setup can be found in the `prior_conflict.Rev` file, but we will focus on the priors used.
 The prior for the origin time is:
 {{ conflict_script | snippet:"block#","2" }}
 The prior for the speciation rate is:
