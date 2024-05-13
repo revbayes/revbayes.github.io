@@ -38,13 +38,22 @@ We will try several distributions for the clock rate prior:
 Note that we have chosen distributions which all have the same mean $m = 1.0$, this is important to make sure that the differences we observe come from the **shape** of the prior distribution rather than simply from the fact that we set a different expectation for the value of the parameter. However, because of the differences in shape, the actual range of plausible values can be very different between distributions. We can check the actual ranges by using RevBayes to check the quantiles of each distribution.
 {{ prior_script | snippet:"block#","13" }}
 
-This gives us ranges of [] for the uniform distribution, [] for the exponential distribution, and [] for the lognormal distribution.
-We see the result of our test on the actual inference, by checking the posterior distribution of the clock rate, shown in {% ref fig_prior_comp %}. We can see that the estimated value changes depending on the choice of prior, especially for the lognormal prior. We can also see that the signal provided by the data and the other priors (in particular the prior on origin time) play a role in the final result. In particular, the uniform and exponential distributions mostly differ by their shape in the upper part of the value range, which is not where our posterior is located, and so we do not see large differences between these two priors.
+This gives us ranges of [0.05 ; 1.95] for the uniform distribution, [0.025 ; 3.69] for the exponential distribution, and [0.26 ; 2.71] for the lognormal distribution.
+We see the result of our test on the actual inference, by checking the posterior distribution of the clock rate, shown in {% ref fig_prior_comp %}. We can see that the estimated value changes depending on the choice of prior, as the median estimate is $0.45$ for the lognormal prior, $0.019$ for the uniform prior and $0.017$ for the exponential prior. In a Bayesian analysis, the final estimate is influenced both by the prior distribution, and by the signal provided by the data and the other priors (in particular the prior on origin time in this case). This explains why the estimate under the lognormal prior is so different: the data drives the estimate towards low values, but this prior has a much higher bound for plausible values than the other two distributions. On the other hand, the uniform and exponential distributions mostly differ by their shape in the upper part of the value range, which is not where our posterior is located, and so we do not see large differences between these two priors.
 
 {% figure fig_prior_comp %}
 <img src="figures/Tracer_prior_comp.png" width="900" />
 {% figcaption %}
 Comparison of the posterior distribution of the clock rate under different priors, visualized into Tracer.
+{% endfigcaption %}
+{% endfigure %}
+
+Finally, we observe that changes in a single prior can have effects not only on the parameter which is directly impacted, but also on other correlated parameters. For instance, the prior on the clock rate also has an effect on the estimate for the $\alpha$ parameter which controls among-site rate heterogeneity, as shown in {% ref fig_prior_comp_alpha %}.
+
+{% figure fig_prior_comp %}
+<img src="figures/Tracer_prior_comp_alpha.png" width="900" />
+{% figcaption %}
+Comparison of the posterior distribution of the among-site rate heterogeneity parameter under different priors for the clock rate, visualized into Tracer.
 {% endfigcaption %}
 {% endfigure %}
 
@@ -116,7 +125,7 @@ And finally the prior for the extinction rate is:
 One issue with lognormal distributions is that it can be difficult to see from the parameter values alone what is the range of plausible values covered by the prior. As we have seen before, we can easily check the quantiles of the distribution using RevBayes:
 {{ prior_script | snippet:"block#","8" }}
 
-We see here that the prior expects the speciation rate to be in the interval of values [4 ; 52.5] events/My. However, our dataset contains only 18 species, we have set our origin time to be in the interval [37 ; 55]My and the mean of our prior on the extinction rate is set to $1/rate = 0.01$ events/My. Considering the other components of our analysis, the expectation on our speciation rate is thus unrealistically high.
+We see here that the prior expects the speciation rate to be in the interval of values [1.04 ; 52.5] events/My. However, our dataset contains only 18 species, we have set our origin time to be in the interval [37 ; 55]My and the mean of our prior on the extinction rate is set to $1/rate = 0.01$ events/My. Considering the other components of our analysis, the expectation on our speciation rate is thus unrealistically high.
 
 This is likely to affect our analysis in two important ways. First, the influence of the prior will orient the estimates of the speciation rate towards values which are higher than the values supported by the data, and this influence will need to be taken into account when interpreting the results. Second, because the prior on speciation rates is in conflict with the data and other components of the analysis, it is likely to make the likelihood surface more complex, and thus slow down the convergence.
 
