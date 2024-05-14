@@ -7,6 +7,8 @@ index: true
 prerequisites:
 - intro
 redirect: false
+exclude_files:
+- priors.Rev
 ---
 
 Overview

@@ -33,7 +33,7 @@ speciation_rate ~ dnLognormal(-3.0, 1.0)
 ###### Prior influence
 
 # Uniform prior
-clock_morpho ~ dnUnif(0.0,2.0)
+clock_morpho ~ dnUnif(0.0, 2.0)
 
 # Exponential prior
 clock_morpho ~ dnExponential(1.0)
@@ -42,9 +42,20 @@ clock_morpho ~ dnExponential(1.0)
 clock_morpho ~ dnLognormal(-0.18, 0.6)
 
 # Checking quantiles
-qUniform(p = 0.025, 0.0,2.0)
-qUniform(p = 0.975, 0.0,2.0)
-qexponential(p = 0.025, 1.0)
+qUniform(p = 0.025, 0.0, 2.0)
+qUniform(p = 0.975, 0.0, 2.0)
 qexponential(p = 0.975, 1.0)
 qlognormal(p = 0.025, -0.18, 0.6)
 qlognormal(p = 0.975, -0.18, 0.6)
+
+###### Wide priors
+
+# Narrow prior
+clock_morpho ~ dnExponential(1.0)
+
+# Wide prior
+clock_morpho ~ dnExponential(0.01)
+
+# Checking quantiles
+qexponential(p = 0.975, 1.0)
+qexponential(p = 0.975, 0.01)
