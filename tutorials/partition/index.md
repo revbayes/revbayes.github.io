@@ -37,7 +37,7 @@ processes.
 This tutorial will construct three multi-gene models. The first model,
 Partition_uniform, assumes all genes evolve under the same process
 parameters. The second model, Partition_gene, assumes all genes evolve
-according to the same process, but each gene has it’s own set of process
+according to the same process, but each gene has its own set of process
 parameters. The third model, Partition_codon, partitions the data not
 only by gene, but also by codon position. Each analysis will generate a
 *maximum a posteriori* tree to summarize the inferred phylogeny. An
@@ -52,7 +52,7 @@ source("scripts/mcmc_Partition_uniform.Rev")
 ```
 If everything loaded properly, then you should see the program begin
 running the Markov chain Monte Carlo analysis needed for estimating the
-posterior distribution. If you continue to let this run, then you will
+posterior distribution. If you continue to let this run, you will
 see it output the states of the Markov chain once the MCMC analysis
 begins.
 
@@ -103,7 +103,7 @@ a way to objectively identify the partition scheme that balances
 estimation bias and error variance associated with under- and
 over-parameterized mixed models, respectively. Increasingly,
 partition-model selection is based on *Bayes factors*
-[e.g., @Suchard2001], which involves first
+[e.g., {% cite Suchard2001 %}], which involves first
 calculating the marginal likelihood under each candidate partition
 scheme and then comparing the ratio of the marginal likelihoods for the
 set of candidate partition schemes
@@ -113,27 +113,26 @@ The analysis pipeline that we will use in this tutorial is depicted in Figure [f
 > ![](figures/pipeline.png) 
 > The analysis pipeline for
 Exercise 1. We will explore three partition schemes for the primates
-dataset.The first model (the ‘uniform model’, $M_0$) assumes that all
-sites evolved under a common GTR+$\Gamma$ substitution model.The second
+dataset. The first model (the ‘uniform model’, $M_0$) assumes that all
+sites evolved under a common GTR+$\Gamma$ substitution model. The second
 model (the ‘moderately partitioned’ model, $M_1$) invokes two data
 subsets corresponding to the two gene regions (cytB and cox2), and
 assumes each subset of sites evolved under an independent GTR+$\Gamma$
-model.The final partition model (the ‘highly partitioned’ model, $M_2$)
+model. The final partition model (the ‘highly partitioned’ model, $M_2$)
 invokes four data subsets—the first two subsets corresponds to the cytB
 gene region, where the first and second codon position sites are
 combined into one subset distinct from the third codon position sites,
 and the cox2 gene has two subsets of its own, partitioned by codon
 positions in the same way—and each data subset is assumed evolved under
-an independent GTR+$\Gamma$ substitution model.Note that we assume that
+an independent GTR+$\Gamma$ substitution model. Note that we assume that
 all sites share a common tree topology, $\Psi$, and branch-length
 proportions, for each of the candidate partition schemes.We perform two
 separate sets of analyses for each partition model—a MCMC simulation to
 approximate the joint posterior probability density of the
 partition-model parameters, and a ‘power-posterior’ MCMC simulation to
-approximate the marginal likelihood for each mixed model.The resulting
+approximate the marginal likelihood for each mixed model. The resulting
 marginal-likelihood estimates are then evaluated using Bayes factors to
 assess the fit of the data to the three candidate partition models.
-
 {:.figure}
 
 
@@ -157,7 +156,7 @@ data_cytb = readDiscreteCharacterData("data/primates_and_galeopterus_cytb.nex")
 ```
 Since the first step in this exercise is to assume a single model across
 genes, we need to combine the two datasets using
-concatenate()
+‘concatenate()‘
 ```
 data = concatenate( data_cox2, data_cytb )
 ```
@@ -165,14 +164,14 @@ Typing ‘data‘ reports the dimensions of the concatenated matrix, this
 provides information about the alignment:
 
 ```
-       DNA character matrix with 23 taxa and 1852 characters
-       =====================================================
-       Origination:                   primates_and_galeopterus_cox2.nex
-       Number of taxa:                23
-       Number of included taxa:       23
-       Number of characters:          1852
-       Number of included characters: 1852
-       Datatype:                      DNA
+   DNA character matrix with 23 taxa and 1837 characters
+   =====================================================
+   Origination:                   "primates_and_galeopterus_cox2.nex"
+   Number of taxa:                23
+   Number of included taxa:       23
+   Number of characters:          1837
+   Number of included characters: 1837
+   Datatype:                      DNA
 ```
 {:.Rev-output}
 For later use, we will store the taxon information (‘taxa‘) and the
@@ -420,7 +419,6 @@ will implement more complex partitioning schemes in a similar manner.
 
 
 
-
 {% section Partitioning by Gene Region %}
 [![Walkthrough video](/assets/img/YouTube_icon.svg){: height="36" width="36"}](https://youtu.be/LPPYGUP1FZc#t=17m06s)
 
@@ -449,13 +447,14 @@ Set a variable for the number of partitions:
 ```
 n_data_subsets <- filenames.size()
 ```
-And create a vector of data matrices called ‘data‘:
+Next we’ll create a vector of data matrices called ‘data‘, and a corresponding vector recording the number of sites in each partition:
 ```
 for (i in 1:n_data_subsets){
     data[i] = readDiscreteCharacterData(filenames[i])
+    num_sites[i] = data[i].nchar()
 }
 ```
-Next, we can initialize some important variables. This does require,
+Now we can initialize some important variables. This does require,
 however, that both of our alignments have the same number of species and
 matching tip names.
 ```
@@ -466,7 +465,6 @@ num_branches <- 2 * n_taxa - 3
 moves    = VectorMoves()
 monitors = VectorMonitors()
 ```
-
 
 
 {% subsection Specify the Parameters by Looping Over Partitions %}
@@ -531,15 +529,20 @@ for (i in 1:n_data_subsets) {
 and the per-partition substitution rate multipliers
 ```
 # specify a rate multiplier for each partition
-part_rate_mult ~ dnDirichlet( rep(1.0, n_data_subsets) )
+part_rate_mult ~ dnDirichlet( rep(10.0, n_data_subsets) )
 moves.append( mvBetaSimplex(part_rate_mult, alpha=1.0, tune=true, weight=n_data_subsets) )
 moves.append( mvDirichletSimplex(part_rate_mult, alpha=1.0, tune=true, weight=2.0) )
 
-# note that we use here a vector multiplication, 
-# i.e., multiplying each element of part_rate_mult by n_data_subsets
-part_rate := part_rate_mult * n_data_subsets
-```
+# Note that here we are dividing two vectors element-wise, i.e., 
+# each element of part_rate_mult gets divided by the corresponding
+# element of num_sites. Then we multiply the result by sum(num_sites),
+# which is just a scalar. This operation ensures that the mean of
+# partition-specific branch lengths, weighted by the number of sites
+# in each partition, stays equal to the branch lengths we are 
+# actually sampling.
 
+part_rate := part_rate_mult / num_sites * sum(num_sites)
+```
 
 
 
@@ -595,7 +598,6 @@ probability for a site being invariant for this gene), or you create the
 {% endaside %}
 
 
-
 {% subsubsection Tree prior %}
 
 We assume that both genes evolve along the same tree. Hence, we need to
@@ -603,19 +605,19 @@ specify a random variable for our tree parameter which is the same as
 was specified for mcmc_Partition_uniform.Rev.
 ```
 out_group = clade("Galeopterus_variegatus")
-# Prior distribution on the tree topology	
+# Prior distribution on the tree topology
 topology ~ dnUniformTopology(taxa, outgroup=out_group)
 moves.append( mvNNI(topology, weight=n_taxa/2.0) )
 moves.append( mvSPR(topology, weight=n_taxa/10.0) )
 
 # Branch length prior
-for (i in 1:n_branches) {
+for (i in 1:num_branches) {
     bl[i] ~ dnExponential(10.0)
-	moves.append( mvScale(bl[i]) )
+    moves.append( mvScale(bl[i]) )
 }
 
 TL := sum(bl)
-	
+
 psi := treeAssembly(topology, bl)
 ```
 
@@ -629,7 +631,7 @@ These two nodes are linked by the ‘psi‘ node and their log-likelihoods
 are added to get the likelihood of the whole DAG.
 ```
 for (i in 1:n_data_subsets) {
-    seq[i] ~ dnPhyloCTMC(tree=psi, Q=Q[i], branchRates=part_rate_mult[i], siteRates=gamma_rates[i], pInv=pinvar[i], type="DNA")
+    seq[i] ~ dnPhyloCTMC(tree=psi, Q=Q[i], branchRates=part_rate[i], siteRates=gamma_rates[i], pInv=pinvar[i], type="DNA")
     seq[i].clamp(data[i])
 }
 ```

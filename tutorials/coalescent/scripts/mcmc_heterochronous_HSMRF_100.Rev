@@ -53,7 +53,6 @@ moves.append( mvRandomDive(population_size_at_present,weight=5) )
 # setMRFGlobalScaleHyperpriorNShifts(99, "HSMRF")
 population_size_global_scale_hyperprior <- 0.0021165
 population_size_global_scale ~ dnHalfCauchy(0,1)
-# population_size_global_scale.setValue(runif(1,0.005,0.1)[1])
 
 moves.append( mvScaleBactrian(population_size_global_scale,weight=5.0) )
 
@@ -96,7 +95,6 @@ psi ~ dnCoalescentSkyline(theta=population_size, times=changePoints, method = "s
 root_age := psi.rootAge()
 
 diff <- (1200000 - 780000)/2.0
-# obs_root_age ~ dnNormal(mean = root_age, sd = 200000, min = 780000, max = 1200000)
 obs_root_age ~ dnNormal(mean = root_age, sd = 200000, min = root_age - diff, max = root_age + diff)
 obs_root_age.clamp(850000)
 

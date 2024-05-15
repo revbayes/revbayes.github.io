@@ -232,7 +232,8 @@ path-sampling very generic and did not provide the information about the
 model here. Our main motivation is to show that the marginal likelihood
 estimation algorithms are independent of the model. Thus, you can apply
 these algorithms to any model, *e.g.*, relaxed
-clock models and birth-death models, as well.
+clock models and birth-death models, as well. 
+For a more concrete example including data and Rev script, please see the follow-up tutorial {% page_ref model_selection_bayes_factors/bf_subst_model %}.
 
 
 

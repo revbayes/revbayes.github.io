@@ -20,13 +20,12 @@ monitors  = VectorMonitors()
 # Reading in the Data #
 #######################
 
-trees = readTreeTrace("output/horses_iso_constant.trees", treetype = "clock", burnin = 0.1)
+trees = readTreeTrace("output/horses_iso_Constant.trees", treetype = "clock", burnin = 0.1)
 maptree = mapTree(trace=trees)
 taxa <- maptree.taxa()
 
-# Get the number of taxa and branches. We need these later on.
+# Get the number of taxa. We need it later on.
 n_taxa <- taxa.size()
-# n_branches <- 2 * n_taxa - 3
 
 
 ##############

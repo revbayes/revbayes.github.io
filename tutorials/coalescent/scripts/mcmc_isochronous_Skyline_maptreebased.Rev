@@ -1,0 +1,81 @@
+######################################################################################
+#
+# RevBayes Example: Coalescent Skyline process applied to isochronous horse tree data
+#
+# authors: Sebastian Hoehna, Ronja Billenstein
+#
+######################################################################################
+
+## Global settings
+
+NUM_REPLICATES      = 2
+NUM_MCMC_ITERATIONS = 10000
+THINNING            = 10
+
+# create the monitor and moves vectors
+moves     = VectorMoves()
+monitors  = VectorMonitors()
+
+#######################
+# Reading in the Data #
+#######################
+
+# Read in the tree sample and create a MAP (maximum a posteriori) tree
+trees = readTreeTrace("output/horses_iso_Constant.trees", treetype = "clock", burnin = 0.1)
+maptree = mapTree(trace=trees)
+taxa <- maptree.taxa()
+
+# Get the number of taxa and branches. We need these later on.
+n_taxa <- taxa.size()
+
+##############
+# Tree model #
+##############
+
+NUM_INTERVALS = ceil((n_taxa - 1) / 5)
+for (i in 1:NUM_INTERVALS) {
+
+    pop_size[i] ~ dnUniform(0,1E8)
+    pop_size[i].setValue(100000)
+    moves.append( mvScale(pop_size[i], lambda=0.1, tune=true, weight=2.0) )
+    num_events[i] <- ceil( (n_taxa-1) / NUM_INTERVALS )
+
+}
+
+
+### the time tree is a stochastic node modeled by the coalescent Skyline process (dnCoalescentSkyline)
+psi ~ dnCoalescentSkyline(theta=pop_size, events_per_interval=num_events, method="events", taxa=taxa)
+psi.clamp(maptree)
+
+interval_times := psi.getIntervalAges()
+
+#############
+# The Model #
+#############
+
+
+### workspace model wrapper ###
+mymodel = model(psi)
+
+
+
+################
+# The Analysis #
+################
+
+#add monitors
+monitors.append( mnModel(filename="output/horses_iso_Skyline_maptreebased.log",printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_Skyline_maptreebased_NEs.log",pop_size,printgen=THINNING) )
+monitors.append( mnFile(filename="output/horses_iso_Skyline_maptreebased_times.log",interval_times,printgen=THINNING) )
+monitors.append( mnScreen(pop_size, printgen=100) )
+
+mymcmc = mcmc(mymodel, monitors, moves, nruns=NUM_REPLICATES, combine="mixed")
+mymcmc.burnin(NUM_MCMC_ITERATIONS*0.1,100)
+mymcmc.run(NUM_MCMC_ITERATIONS, tuning = 100)
+
+mymcmc.operatorSummary()
+
+################
+
+# you may want to quit RevBayes now
+q()

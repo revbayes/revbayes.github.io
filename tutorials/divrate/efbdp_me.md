@@ -14,7 +14,6 @@ redirect: false
 include_all: false
 include_files:
 - data/crocs_T1.tre
-- data/crocs_taxa.txt
 - scripts/mcmc_EFBD_mass_extinctions.Rev
 - scripts/mcmc_CRFBD.Rev
 - scripts/plot_ME.R

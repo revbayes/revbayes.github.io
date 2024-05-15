@@ -6,7 +6,7 @@ level: 9
 order: 0.5
 prerequisites:
 - coalescent
-- coalescent/skyline
+- coalescent/Skyline
 index: false
 include_all: false
 include_files:
@@ -19,7 +19,7 @@ include_example_output: true
 This exercise describes how to run a piecewise coalescent analysis in `RevBayes`.
 In this case, we will define an individual demographic function with different basic "pieces".
 The pieces can be either constant, linear or exponential.
-For all of these pieces, the different values of $N_e$ and the change points in between can be estimated.
+For all of these pieces, the different values of $N_e$ and the change-points in between can be estimated.
 
 <!--- From looking at the output of the skyline analysis, we could assume three pieces:
 * a recent, constant demographic history
@@ -35,7 +35,7 @@ $$N_e(t) = N_e(t_{i,j}),$$
 
 with $t_{i,j}$ being the time at the beginning of the $j^{th}$ interval.
 
-For the linear model, the slope depends on the starting and ending values of the population size at the interval change points.
+For the linear model, the slope depends on the starting and ending values of the population size at the interval change-points.
 We define $\alpha$ as the slope.
 
 $$\alpha = \frac{N_e(t_{i,(j+1)}) - N_e(t_{i,j})}{t_{i,(j+1)} - t_{i,j}}.$$
@@ -57,15 +57,15 @@ $$N_e(t) = N_e(t_{i,j}) exp((t_{i,j} - t)\alpha).$$
 {% section Inference Example %}
 
 > ## For your info
-> The entire process of the coalescent estimation can be executed by using the **mcmc_piecewise.Rev** script in the **scripts** folder.
+> The entire process of the coalescent estimation can be executed by using the **mcmc_isochronous_piecewise_6diff.Rev** script in the **scripts** folder.
 > You can type the following command into `RevBayes`:
 ~~~
-> source("scripts/mcmc_iso_piecewiese.Rev")
+> source("scripts/mcmc_isochronous_piecewise_6diff.Rev")
 ~~~
 We will walk you through every single step in the following section.
 {:.info}
 
-We will mainly highlight the parts of the script that change compared to the [constant coalescent model]({{base.url}}/tutorials/coalescent/constant).
+We will mainly highlight the parts of the script that change compared to the [constant coalescent model]({{base.url}}/tutorials/coalescent/Constant).
 
 {% subsection Read the data %}
 Read in the data as described in the first exercise.
@@ -89,7 +89,7 @@ for (i in 1:5){
 }
 ~~~
 
-We also set prior distributions on the times of the change points between pieces.
+We also set prior distributions on the times of the change-points between pieces.
 
 ~~~
 change_points[1] ~ dnUniform(1E4,2E4)
@@ -117,7 +117,7 @@ dem_const_2 = dfConstant(pop_size[5])
 {% subsection The Tree %}
 
 Now, we will instantiate the stochastic node for the tree with `dnCoalescentDemography`.
-In this case, we set the vector of demographic models and the change points as input.
+In this case, we set the vector of demographic models and the change-points as input.
 
 ~~~
 psi ~ dnCoalescentDemography([dem_exp_1,dem_exp_2,dem_lin_1,dem_const_1,dem_lin_2,dem_const_2], changePoints=change_points, taxa=taxa)
