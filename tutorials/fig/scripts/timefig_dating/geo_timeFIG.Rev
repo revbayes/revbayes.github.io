@@ -1,0 +1,140 @@
+if (!exists("fp"))             fp = "./"
+if (!exists("geo_fp"))         geo_fp = fp + "hawaii_data_v2/"
+if (!exists("feature_fn"))     feature_fn = geo_fp + "feature_summary.csv"
+if (!exists("times_fn"))       times_fn = geo_fp + "age_summary.csv"
+if (!exists("max_range_size")) max_range_size = -1
+if (!exists("use_rj"))         use_rj = false
+
+###########################
+# geofeature_test.Rev     #
+###########################
+
+# read in basic paleogeo system files
+times_table = readDataDelimitedFile(times_fn, delimiter=",", header=true)
+num_times <- times_table.size() + 1 # times.size()
+for (i in 1:(num_times-1)) { times[i] <- times_table[i][2] }
+
+
+#feature_table = readDataDelimitedFile(feature_fn, delimiter=",")
+
+# read files stored in summary_fn, store into RevBayes data structures,
+# normalize/re-center values, then provide methods to get feature-sets
+# for CW/QW/CB/QB associated with D/E/W/B
+
+geo_features <- readRegionalFeatures(feature_fn, delimiter=",", nonexistent_region_token="nan")
+geo_features.normalize("within")
+geo_features.normalize("between")
+
+# get number of times
+
+# get feature-sets for each measurement-type, process-type, and timeslice
+for (i in 1:num_times) {
+	feature_CW[i] <- geo_features.get("within","categorical",i)
+	feature_QW[i] <- geo_features.get("within","quantitative",i)
+	feature_CB[i] <- geo_features.get("between","categorical",i)
+	feature_QB[i] <- geo_features.get("between","quantitative",i)
+
+    #print("time_index = " + i)
+    for (j in 1:feature_CW[i].size()) {
+        layer_CW[i][j] <- feature_CW[i][j].get()
+        #print(i,j,layer_CW[i][j])
+    }
+    for (j in 1:feature_QW[i].size()) {
+        layer_QW[i][j] <- feature_QW[i][j].get()
+        #print(i,j,layer_QW[i][j])
+    }
+    for (j in 1:feature_CB[i].size()) {
+        layer_CB[i][j] <- feature_CB[i][j].get()
+        #print(i,j,layer_CB[i][j])
+    }
+    for (j in 1:feature_QB[i].size()) {
+        layer_QB[i][j] <- feature_QB[i][j].get()
+        #print(i,j,layer_QB[i][j])
+    }
+}
+
+# set up priors for feature effects
+rj_null_value <- 0.0          # fixed "off-value" for RJMCMC
+rj_prob       <- 0.5          # prob. of RJMCMC taking "off-value"
+bound <- 2
+rj_base_sym_dist = dnUniform(-bound, bound) # prior of "on-value" for RJMCMC
+rj_base_neg_dist = dnUniform(-bound, 0) # prior of "on-value" for RJMCMC
+rj_base_pos_dist = dnUniform(0, bound) # prior of "on-value" for RJMCMC
+rj_sym_dist = dnRJMixture(rj_null_value, rj_base_sym_dist, p=rj_prob)
+rj_neg_dist = dnRJMixture(rj_null_value, rj_base_neg_dist, p=rj_prob)
+rj_pos_dist = dnRJMixture(rj_null_value, rj_base_pos_dist, p=rj_prob)
+
+# categorical feature effects
+for (i in 1:feature_CW[1].size()) sigma_w[i] ~ rj_sym_dist
+for (i in 1:feature_CW[1].size()) sigma_e[i] ~ rj_sym_dist
+for (i in 1:feature_CB[1].size()) sigma_d[i] ~ rj_sym_dist
+for (i in 1:feature_CB[1].size()) sigma_b[i] ~ rj_sym_dist
+
+# quantitative feature effects
+for (i in 1:feature_QW[1].size()) phi_w[i] ~ rj_sym_dist
+for (i in 1:feature_QW[1].size()) phi_e[i] ~ rj_sym_dist
+for (i in 1:feature_QB[1].size()) phi_d[i] ~ rj_sym_dist
+for (i in 1:feature_QB[1].size()) phi_b[i] ~ rj_sym_dist
+
+# force signed relationships between region features and rates
+phi_b[1]   ~ rj_pos_dist   # Distance (km) results in faster speciation
+phi_b[2]   ~ rj_pos_dist   # Log-distance (km) results in faster speciation
+sigma_b[1] ~ rj_pos_dist   # LDD (1) results in faster speciation
+sigma_w[1] ~ rj_pos_dist   # High Islands (1) drives faster speciation 
+phi_d[1]   ~ rj_neg_dist   # Distance (km) results in slower dispersal
+phi_d[2]   ~ rj_neg_dist   # Log-distance (km) results in slower dispersal
+sigma_d[1] ~ rj_neg_dist   # LDD (1) results in slower dispersal
+sigma_e[1] ~ rj_neg_dist   # High Islands (1) drives slower extinction
+
+# categorical feature effects
+for (i in 1:feature_CW[1].size()) sigma_w[i].setValue(sigma_w_init)
+for (i in 1:feature_CW[1].size()) sigma_e[i].setValue(sigma_e_init)
+for (i in 1:feature_CB[1].size()) sigma_d[i].setValue(sigma_d_init)
+for (i in 1:feature_CB[1].size()) sigma_b[i].setValue(sigma_b_init)
+
+# quantitative feature effects
+for (i in 1:feature_QW[1].size()) phi_w[i].setValue(phi_w_init)
+for (i in 1:feature_QW[1].size()) phi_e[i].setValue(phi_e_init)
+for (i in 1:feature_QB[1].size()) phi_d[i].setValue(phi_d_init)
+for (i in 1:feature_QB[1].size()) phi_b[i].setValue(phi_b_init)
+
+# TODO
+for (t in 1:num_times) {
+    # do not index [1] in RHS of assignment to drop "dummy" dimension for m_W and m_E!
+	m_w[t] := fnFeatureInformedRates(layer_CW[t], layer_QW[t], sigma_w, phi_w, null_rate=0) # need to think about why using 1e-5 gives weird behavior??
+	m_e[t] := fnFeatureInformedRates(layer_CW[t], layer_QW[t], sigma_e, phi_e, null_rate=1e3)
+	m_d[t] := fnFeatureInformedRates(layer_CB[t], layer_QB[t], sigma_d, phi_d, null_rate=0)
+	m_b[t] := fnFeatureInformedRates(layer_CB[t], layer_QB[t], sigma_b, phi_b, null_rate=1)
+}
+
+# define number of regions, etc.
+n_regions = m_b[1].size()
+n_region_pairs = n_regions * (n_regions-1)
+if (max_range_size == -1) max_range_size = n_regions
+
+# get number of states
+n_states = 0
+for (i in 1:max_range_size) n_states += choose(n_regions, i)
+
+if (false) {
+    for (t in 1:num_times) {
+        print( "m_w[" + t + "][1]=" )
+        print(m_w[t][1])
+        print( "m_e[" + t + "][1]=" )
+        print(m_e[t][1])
+        print( "m_d[" + t + "]=" )
+        print(m_d[t])
+        print( "m_b[" + t + "]=" )
+        print(m_b[t])
+    }
+    print(phi_w)
+    print(phi_e)
+    print(phi_d)
+    print(phi_b)
+    print(sigma_w)
+    print(sigma_e)
+    print(sigma_d)
+    print(sigma_b)
+
+    print("OK!")
+}

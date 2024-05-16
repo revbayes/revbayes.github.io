@@ -3,37 +3,33 @@
 # IMPORTANT: set `tensorphylo_fp` to the directory #
 # containing your `libTensorPhylo.a/dylib` library #
 ####################################################
+#tensorphylo_fp = "/home/ilichtermarck/.plugins"
+#tensorphylo_fp = "/usr/lib/x86_64-linux-gnu"
 
 
-###########################
-# LOAD TENSORPHYLO PLUGIN #
-###########################
-
+use_dirty = !false
 tensorphylo_fp = "/Users/mlandis/.local/lib/tensorphylo"
+#tensorphylo_fp = "/home/mlandis/.local/lib/tensorphylo"
 if (!exists("tensorphylo_fp")) {
   tensorphylo_fp = "~/.plugins/"
 }
+
 loadPlugin("TensorPhylo", tensorphylo_fp)
 
 #######################
 # INITIALIZE SETTINGS # 
 #######################
 
-# RNG seed
-if (!exists("my_seed"))           my_seed = 1
-seed(my_seed)
 
 # Main analysis settings
-if (!exists("clade_name"))        clade_name = "kadua"
-
 # Toggle a default settings with `!`, e.g. `!true` is `false`
 # The analysis filename will indicate non-default settings
 if (!exists("init_parameters"))   init_parameters  = true
 
-if (!exists("use_features"))      use_features     = true
+if (!exists("use_features"))      use_features     = !true
 if (!exists("use_paleogeo"))      use_paleogeo     = true
 if (!exists("use_bg_calib"))      use_bg_calib     = false
-if (!exists("use_root_calib"))    use_root_calib   = true
+if (!exists("use_root_calib"))    use_root_calib   = !true
 if (!exists("under_prior"))       under_prior      = false
 
 if (!exists("use_rj"))            use_rj           = true
@@ -43,63 +39,82 @@ if (!exists("update_topology"))   update_topology  = false
 if (!exists("move_schedule"))     move_schedule    = v("random","single")[1]
 
 # benchmarking
-if (!exists("rel_tol"))           rel_tol = 1e-7
-if (!exists("abs_tol"))           abs_tol = 1e-7
+if (!exists("rel_tol")) rel_tol = 1e-7
+if (!exists("abs_tol")) abs_tol = 1e-7
+if (!exists("time_benchmark")) time_benchmark = false
 
-# param init
-if (!exists("rho_d_init"))        rho_d_init   = 0.1
-if (!exists("rho_e_init"))        rho_e_init   = 0.1
-if (!exists("rho_w_init"))        rho_w_init   = 0.1
-if (!exists("rho_b_init"))        rho_b_init   = 0.1
-if (!exists("phi_d_init"))        phi_d_init   = 0.0
-if (!exists("phi_e_init"))        phi_e_init   = 0.0
-if (!exists("phi_w_init"))        phi_w_init   = 0.0
-if (!exists("phi_b_init"))        phi_b_init   = 0.0
-if (!exists("sigma_d_init"))      sigma_d_init = 0.0
-if (!exists("sigma_b_init"))      sigma_b_init = 0.0
-if (!exists("sigma_e_init"))      sigma_e_init = 0.0
-if (!exists("sigma_w_init"))      sigma_w_init = 0.0
+# move settings
+if (!exists("rho_d_init"))   rho_d_init   = 0.1
+if (!exists("rho_e_init"))   rho_e_init   = 0.1
+if (!exists("rho_w_init"))   rho_w_init   = 0.1
+if (!exists("rho_b_init"))   rho_b_init   = 0.1
+if (!exists("phi_d_init"))   phi_d_init   = 0.0
+if (!exists("phi_e_init"))   phi_e_init   = 0.0
+if (!exists("phi_w_init"))   phi_w_init   = 0.0
+if (!exists("phi_b_init"))   phi_b_init   = 0.0
+if (!exists("sigma_d_init")) sigma_d_init = 0.0
+if (!exists("sigma_b_init")) sigma_b_init = 0.0
+if (!exists("sigma_e_init")) sigma_e_init = 0.0
+if (!exists("sigma_w_init")) sigma_w_init = 0.0
+if (!exists("max_subrange_split_size")) max_subrange_split_size = 100
+if (!exists("max_range_size")) max_range_size = 4
+if (!exists("num_loci")) num_loci = 10
 
-# dataset constraints
-if (!exists("num_loci"))          num_loci = 10
-if (!exists("max_subrange_split_size")) max_subrange_split_size = 7
-if (!exists("max_range_size"))    max_range_size = 4
+# RNG seed
+if (!exists("my_seed")) my_seed = 12
+if (!exists("clade_name")) clade_name = "kadua"
+if (!exists("model_name")) model_name = ""
+seed(my_seed)
+print("My seed is " + my_seed)
 
 # analysis string name
-analysis                                    = clade_name
-if (!use_features)                analysis += "_noFeatures"
-if (!use_root_calib)              analysis += "_noRootCalib"
-if (use_bg_calib)                 analysis += "_yesBgCalib"
-if (!use_paleogeo)                analysis += "_noPaleogeo"
-if (under_prior)                  analysis += "_underPrior"
-if (!use_mol)                     analysis += "_noMolecular"
-if (!use_rj)                      analysis += "_noRjmcmc"
-analysis += "_seed" + my_seed
-
+analysis = "Kadua"
+if (model_name != "") analysis  += "_" + model_name
+if (!use_features) analysis     += "_noFeatures"
+if (!use_root_calib) analysis   += "_noRootCalib"
+if (use_bg_calib) analysis      += "_yesBgCalib"
+if (!use_paleogeo) analysis     += "_noPaleogeo"
+if (under_prior) analysis       += "_underPrior"
+if (!use_mol) analysis          += "_noMolecular"
+if (!use_rj) analysis           += "_noRjmcmc"
+#if (use_dirty) analysis         += "_useDirty"
+analysis += "_" + my_seed
 print("Analysis name: ", analysis)
 
 # analysis settings
-n_proc          = 6
-n_iter          = 10000
-print_gen       = 1
+n_proc    = 6
+n_iter    = 10000
+print_gen = 1
 stoch_print_gen = 20
 
 # filesystem
 fp            = "./"
-dat_fp        = fp + "data/clade/"
-geo_fp        = fp + "data/geo/"
+dat_fp        = fp + "data/"
+geo_fp        = dat_fp + "realistic/"
 feature_fn    = geo_fp + "feature_summary.csv"
-mol_fp        = dat_fp + "/genes/"
-calib_fn      = dat_fp + clade_name + "_calib.csv"
-phy_fn        = dat_fp + clade_name + ".tre"
-bg_fn         = dat_fp + clade_name + "_range.nex"
-label_fn      = dat_fp + clade_name + "_range_label.csv"
+bg_fp         = dat_fp + clade_name + "_data/"
+mol_fp        = dat_fp + clade_name + "_data/genes/"
+calib_fn      = bg_fp + clade_name + "_calib.csv"
+phy_fn        = bg_fp + clade_name + "_chronos_outgroups.tree"
+bg_fn         = bg_fp + clade_name + "_range_outgroups.nex"
 
+mol_idx       = [ 5339, 5398, 5513, 5664, 6038, 6072, 6238, 6265, 6439, 6500, 6527, 6550, 6552, 6791, 6848, 6978, 7013, 7021, 7111 ]
+for (i in 1:mol_idx.size()) {
+    mol_fn[i] = mol_fp + "clean_" + mol_idx[i] + "_supercontig.nexus"
+}
+#mol_fn        = [ mol_fp + "clean_6038_supercontig.nexus",
+#                  mol_fp + "clean_6072_supercontig.nexus",
+#                  mol_fp + "clean_6550_supercontig.nexus",
+#                  mol_fp + "clean_6552_supercontig.nexus" ]
 
-geo_code_fn   = fp + "scripts/geo_timeFIG.Rev"
-mol_code_fn   = fp + "scripts/mol_timeFIG.Rev"
-phylo_code_fn = fp + "scripts/phylo_timeFIG.Rev"
-clade_fn      = fp + "scripts/clade.Rev"
+geo_code_fn   = fp + "code/geo_timeFIG.Rev"
+mol_code_fn   = fp + "code/mol_multi_timeFIG.Rev"
+phylo_code_fn = fp + "code/phylo_timeFIG.Rev"
+clade_fn      = fp + "code/clade.Rev"
+subset        = fp + "code/subset.Rev"
+label_fn      = bg_fp + clade_name + "_range_label.csv"
+
+# model settings
 
 # get phylogenetic data
 phy          <- readTrees(phy_fn)[1]
@@ -116,6 +131,8 @@ num_ranges   = 0
 for (k in 1:max_range_size) {
     num_ranges += choose(num_regions, k)
 }
+
+#num_ranges   = abs(2^num_regions - 1)
 dat_nn       = formatDiscreteCharacterData(dat_01, format="GeoSSE", numStates=num_ranges)
 desc         = dat_nn.getStateDescriptions()
 
@@ -125,10 +142,7 @@ for (i in 1:desc.size()) {
 }
 
 # get molecular data
-mol_idx       = [ 5339, 5398, 5513, 5664, 6038, 6072, 6238, 6265, 6439, 6500, 6527, 6550, 6552, 6791, 6848, 6978, 7013, 7021, 7111 ]
-for (i in 1:mol_idx.size()) {
-    mol_fn[i] = mol_fp + "clean_" + mol_idx[i] + "_supercontig.nexus"
-}
+#num_loci = mol_fn.size()
 num_taxa = taxa.size()
 for (i in 1:num_loci) {
     dat_mol[i] = readDiscreteCharacterData(mol_fn[i])
@@ -161,6 +175,11 @@ if (use_root_calib) {
 # load ingroup clade info
 source(clade_fn)
 
+#load subset script
+if (use_subset){
+	source( subset )
+}
+
 # load geography model script
 source( geo_code_fn )
 
@@ -170,10 +189,30 @@ source( phylo_code_fn )
 # associate phylo/biogeo data with model
 timetree.setValue(phy)
 timetree.clampCharData(dat_nn)
+#timetree.getCharData().show()
 
-# print("Compute Tensorphylo model probability...")
-# timetree.lnProbability()
-# print("...done!")
+
+
+print("Compute Tensorphylo model probability...")
+timetree.lnProbability()
+print("...done!")
+
+
+if (time_benchmark) {
+    num_compute = 30
+    start_time = time()
+    for (i in 1:num_compute) {
+        root_age.setValue(root_age * 1.00001)
+        lnP = timetree.lnProbability()
+    }
+    end_time = time()
+    diff_time = (end_time - start_time) / num_compute
+    fn = "./benchmark.csv"
+    write(rel_tol, abs_tol, lnP, diff_time, file=fn, separator=",", append=true)
+    write("\n", file=fn, append=true)
+    quit()
+}
+
 
 # load molecular model script
 if (use_mol) {

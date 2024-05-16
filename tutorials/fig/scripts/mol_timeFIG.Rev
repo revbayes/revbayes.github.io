@@ -1,4 +1,48 @@
-Q_mol <- fnJC(4)
-mu_mol ~ dnExp(10)
-x_mol ~ dnPhyloCTMC( Q=Q_mol, tree=timetree, branchRates=mu_mol, nSites=num_sites, type="DNA" )
+
+# base substitution rate
+mu_mol_base ~ dnExp(10)
+#mu_mol_sd ~ dnExponential(abs(1 / 0.587405))
+mu_mol_sd <- 0.587405
+
+# relative among branch rate variation
+# mu_mol_branch_rel ~ dnDirichlet(rep(2, num_branches))
+for (i in 1:num_branches) {
+    ln_mean := ln(mu_mol_base) - 0.5 * mu_mol_sd * mu_mol_sd
+    mu_mol_branch[i] ~ dnLnorm(ln_mean, mu_mol_sd)
+}
+
+# relative among loci rate variation
+#mu_mol_locus_rel ~ dnDirichlet(rep(2, num_loci))
+
+# partitioned analysis, HKY+Gamma4
+for (i in 1:num_loci) {
+  
+    if (i == 1) {
+        mu_mol_locus_rel[i] <- 1.0
+    } else {
+        mu_mol_locus_rel[i] ~ dnGamma(2,2)
+    }
+    # relaxed clock across branch-locus rate combinations
+    mu_mol[i] := mu_mol_locus_rel[i] * mu_mol_branch
+
+    # molecular substitution rate matrix
+    kappa[i] ~ dnGamma(2,2)
+    pi_mol[i] ~ dnDirichlet( [1,1,1,1] )
+    Q_mol[i] := fnHKY(kappa=kappa[i], baseFrequencies=pi_mol[i])
+
+    # among site rate variation, +Gamma4 model
+    alpha[i] ~ dnExp(0.1) # expected value 1/0.1 == 10
+    site_rates[i] := fnDiscretizeGamma(shape=alpha[i], rate=alpha[i], numCats=4, median=true)
+    
+    # phylogenetic CTMC for substitution process that generates variation in locus i
+    x_mol[i] ~ dnPhyloCTMC(
+        Q=Q_mol[i],
+        tree=timetree,
+        branchRates=mu_mol[i],
+        siteRates=site_rates[i],
+        rootFrequencies=pi_mol[i],
+        nSites=num_sites[i],
+        type="DNA" )
+
+}
 
