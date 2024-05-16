@@ -3,12 +3,10 @@ title: Tutorial series for phylogenetic biogeography using the FIG model
 subtitle: Using the feature-informed geographic state-dependent speciation-extinction (FIG) model for phylogenetic biogeography
 authors:  Michael Landis, Sarah Swiston, Isaac Lichter Marck, Fabio Mendes, Felipe Zapata
 level: 8
-order: 9
-prerequisites:
-include_all: false
+order: 8
 index: true
+include_all: false
 ---
-
 
 {% section Introduction | introduction %}
 
@@ -27,3 +25,4 @@ Tutorials in this series are:
 - Biogeographic dating with TimeFIG: {% page_ref fig_series/timefig_dating %}
 
 The series was written for the 2024 Phylogenetic Biogeography Workshop in St. Louis as part of an NSF-funded project on Modeling the Origin and Evolution of Hawaiian Plants.
+
