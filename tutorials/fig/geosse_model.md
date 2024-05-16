@@ -10,6 +10,8 @@ prerequisites:
   - fig/fig_intro
 ---
 
+{% section WARNING: INCOMPLETE %}
+
 {% section GeoSSE model with two regions %}
 
 In the previous examples, we used a Cladogenetic State change Speciation and Extinction (ClaSSE) model {% cite Goldberg2012 %} to investigate the evolution of primates. ClaSSE jointly models character evolution and the birth-death process, incorporating both anagenetic and cladogenetic state changes. The GeoSSE model {% cite Goldberg2011 %} is a specific type of ClaSSE model that is explicitely designed for geographic range evolution, with particular model assumptions related to the ways that species spread and split. This tutorial gives a step-by-step explanation of how to perform a GeoSSE analysis in RevBayes. We will model the evolution and biogeography of the South American lizard genus *Liolaemus* using two regions: Andean, and non-Andean {% cite Esquerré2019 %}.

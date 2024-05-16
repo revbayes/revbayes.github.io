@@ -11,6 +11,8 @@ prerequisites:
   - fig/geosse_model
 ---
 
+{% section WARNING: INCOMPLETE %}
+
 {% section Introduction %}
 
 In the previous examples, we used a GeoSSE model {% cite Goldberg2011 %} to investigate the evolution of the South American lizard genus *Liolaemus*. The GeoSSE model allows us to estimate rates of within-region speciation, extinction, between-region speciation, and dispersal that differ among regions. Biologically, we expect that these different rates are informed by features of the regions where the species are evolving. For example, we might expect that species disperse at a lower rate between more distant regions, or go extinct at a higher rate in smaller regions. The FIG model {% cite Landis2022 %} and the Multiple Feature-Informed GeoSSE (MultiFIG) model {% cite Swiston2023 %} address this. Rather than giving each region its own evolutionary rate parameters, it uses functions to link features of those regions to evolutionary rates. This allows us to test hypotheses about the importance of certain environmental features on evolutionary processes. It also has the benefit of reducing the number of parameters that need to be estimated. The number of parameters in the MultiFIG model is constant with respect to the number of regions, so we can investigate systems with more regions. In this tutorial, we will model the evolution and biogeography of *Liolaemus* using six regions {% cite Esquerré2019 %} and eight regional features.
@@ -347,7 +349,7 @@ ggsave(output_file, width = 9, height = 9)
 ```
 
 {% figure states %}
-<img src="figures/states.png" width="95%">
+<img src="figures/fig_model/states.png" width="95%">
 {% figcaption %}
 Ancestral state reconstruction of *Liolaemus*.
 {% endfigcaption %}

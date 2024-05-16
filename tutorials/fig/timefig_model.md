@@ -12,6 +12,7 @@ prerequisites:
   - fig/fig_model
 ---
 
+{% section WARNING: INCOMPLETE %}
 
 In the previous example, we saw how the MultiFIG model {% cite Swiston2023 %} allows us to test hypotheses about the relationships between certain environmental features and evolutionary processes using feature effect rates, as well as infer biogeographic event parameters and ancestral areas using GeoSSE. We used MultiFIG to investigate the evolution of the South American lizard genus *Liolaemus* based on species ranges, present-day regional features, and a time-calibrated phylogeny. However, we know that regional features change over time, and this may impact our ancestral state reconstructions and estimates of feature/process relationships. For example, consider an island system where regions form and subside. Knowing whether regions exist during a particular time period should impact which states are possible during this time period (ranges including absent regions should be disallowed). This should have an effect on our ancestral state reconstructions. As another example, consider a region that was very small for most of its history, with high extinction rates because of its small size (a negative area/extinction relationship). If the region recently became large, and we don't include any information about the region's history, we might infer the opposite relationship between size and extinction! The TimeFIG model (CITATION TBD) addresses the time-heterogeneity of regional features using "time slices" (discrete time periods), allowing regional features to have different values during each time slice, while assuming the relationships between features and processes remain constant.
 
@@ -24,14 +25,14 @@ The age and origin of the many independent radiation of plants, animals, and fun
 The Hawaiian archipelago is a system in which phylogenetic models of historical biogeography will produce much more accurate reconstructions if they incorporate change over time in paleogeography than if change in island feature is ignored. In this tutorial, we apply a TimeFIG model to an endemic hawaiian plant lineage, the silversword alliance (~34 spp.) to infer paleogeographically-informed parameter estimates for biogeographic event rates, effect rates of regional features, and ancestral areas. We also relax the assumption that our input phylogeny is a fully time-calibrated phylogeny, and use "a relaxed rock" approach to update divergence time estimates among silversword taxa. This last bit allows us to test the hypothesis that silverswords colonized older northwest islands before dispersing into, and radiating in the modern high island chain.
 
 {% figure features %}
-<img src="figures/features.png" width="95%">
+<img src="figures/timefig_model/features.png" width="95%">
 {% figcaption %}
 The 4 regional features investigated in this analysis and the 8 associated parameters relating these features to core biogeographic processes.
 {% endfigcaption %}
 {% endfigure %}
 
 {% figure times %}
-<img src="figures/times.png" width="95%">
+<img src="figures/timefig_model/times.png" width="95%">
 {% figcaption %}
 The analysis utilizes 5 different time slices, numbered starting from the present. These time slices are delimited by 4 historical time points: T1, T2, T3, and T4. Distributions may be assigned to these time points to account for uncertainty.
 {% endfigcaption %}
@@ -426,7 +427,7 @@ ggsave(output_file, width = 9, height = 9)
 ```
 
 {% figure states %}
-<img src="figures/states.png" width="95%">
+<img src="figures/timefig_model/states.png" width="95%">
 {% figcaption %}
 Ancestral state reconstruction of Hawaiian Silverswords. Nodes are colored based on the range with the highest probability. Range labels represents sets of regions (R = northwest islands, K = Kauai, O = Oahu, M = Maui Nui, H = Hawaii, Z = outgroup region).
 {% endfigcaption %}
