@@ -11,15 +11,16 @@ prerequisites:
 
 {% section Introduction | introduction %}
 
-This introduces a tutorial series for using the FIG model for phylogenetic biogeography in RevBayes. The FIG model builds upon the geographic state-dependent speciation-extinction (GeoSSE) model {% cite Goldberg2011 %}. The FIG model extends the GeoSSE model by allowing regional features to shape biogeographic rates {% cite Landis2022, Swiston2023 %}.
+Models of phylogenetic biogeography are used to estimate how historical processes have shaped the distribution of species in space over time. This page provides an overview for using the FIG model to study phylogenetic biogeography in RevBayes. Briefly, the FIG model builds upon the geographic state-dependent speciation-extinction (GeoSSE) model {% cite Goldberg2011 %}, a member of the larger SSE model family {% cite Maddison2007 %}. The FIG model extends the GeoSSE model by allowing regional features to shape biogeographic rates {% cite Landis2022, Swiston2023 %}.
 
-The FIG tutorial series targets biologists who are familiar with phylogenetic models and are interested in the following topics in phylogenetic biogeography:
+The purpose of FIG is to allow biologists to test new hypotheses that involve the timing and location of phylogenetic, biogeographic, and paleogeographic events. The FIG tutorial series targets biologists who are familiar with phylogenetic models and are interested in the following topics in phylogenetic biogeography:
 
 - phylogenetic and biogeographic model design
-- divergence time estimation using paleogeography (biogeographic dating)
+- ancestral range estimation
 - detecting relationships between regional features and biogeographic rates
 - modeling biogeographic rates through time
-- ancestral range estimation
+- divergence time estimation using paleogeography (biogeographic dating)
+
 
 Tutorials in this series are:
 - GeoSSE model: {% page_ref fig/geosse_model %}
@@ -27,8 +28,6 @@ Tutorials in this series are:
 - TimeFIG model: {% page_ref fig/timefig_model %}
 - Biogeographic dating with TimeFIG: {% page_ref fig/timefig_dating %}
 
-All tutorials in this series will focus on Hawaiian plant radiation, *Kadua*. We thank our collaborators Nina Rønsted, Warren Wagner, Ken Wood, and Bruce Baldwin for help generating the biological dataset (Kadua) showcased in this tutorial.
+The FIG tutorials are designed to be run in RevBayes using the Tensorphylo plugin. Developed by Mike May and Xavier Meyer, Tensorphylo is a high-performance library for rapidly computing state-dependent diversification model likelihoods. We thank Mike May for his indispensible help optimizing and reconfiguring Tensorphylo for use with TimeFIG analyses for biogeographic dating. Researchers not interested in compiling and installing Tensorphylo and RevBayes can use the Docker image developed by Sarah Swiston.
 
-The FIG tutorials are designed to be run in RevBayes with the Tensorphylo plugin, developed by Mike May and Xavier Meyer. Tensorphylo is a high-performance library for rapidly computing state-dependent diversification model likelihoods. We thank Mike May for his indispensible help optimizing and reconfiguring Tensorphylo for use with TimeFIG analyses for biogeographic dating. Researchers not interested in compiling and installing Tensorphylo and RevBayes can use the Docker image developed by Sarah Swiston.
-
-This tutorial series was written for the 2024 Phylogenetic Biogeography Workshop in St. Louis as part of an NSF-funded project on Modeling the Origin and Evolution of Hawaiian Plants.
+This tutorial series was written for the 2024 Phylogenetic Biogeography Workshop in St. Louis as part of an NSF-funded project entitled *Modeling the Origin and Evolution of Hawaiian Plants* (DEB 2040347).
