@@ -3,6 +3,7 @@ title: Biogeographic Dating of Divergence Times
 subtitle: Estimating divergence times with molecular, biogeographic, and paleogeographic evidence under the Dispersal-Extirpation-Cladogenesis (DEC) model
 authors:  Michael J. Landis
 level: 8
+order: 3
 prerequisites:
 - biogeo/biogeo_intro
 - biogeo/biogeo_simple

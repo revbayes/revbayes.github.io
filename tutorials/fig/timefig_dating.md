@@ -5,10 +5,10 @@ authors:  Michael Landis, Sarah Swiston, Isaac Lichter Marck, Fabio Mendes, Feli
 level: 8
 order: 11
 prerequisites:
-  - fig_series/fig_intro
-  - fig_series/geosse_model
-  - fig_series/fig_model
-  - fig_series/timefig_model
+  - fig/fig_intro
+  - fig/geosse_model
+  - fig/fig_model
+  - fig/timefig_model
 include_all: false
 index: true
 ---

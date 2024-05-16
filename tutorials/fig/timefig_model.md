@@ -1,15 +1,15 @@
 ---
 title: The time-heterogeneous FIG (TimeFIG) model
-subtitle: Using the time-heterogeneous FIG (TimeFIG) model for phylogenetic biogeography
+subtitle: A time-heterogeneous FIG model with paleogeographically varying regional features
 authors:  Sarah Swiston, Michael Landis, Isaac Lichter Marck, Fabio Mendes, Felipe Zapata
 level: 8
 order: 10
 index: true
 include_all: false
 prerequisites:
-  - fig_series/fig_intro
-  - fig_series/geosse_model
-  - fig_series/fig_model
+  - fig/fig_intro
+  - fig/geosse_model
+  - fig/fig_model
 ---
 
 
