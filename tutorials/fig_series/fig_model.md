@@ -3,11 +3,12 @@ title: The feature-informed geographic state-dependent speciation-extinction (FI
 subtitle: Using the FIG model for phylogenetic biogeography
 authors:  Sarah Swiston, Michael Landis, Isaac Lichter Marck, Fabio Mendes, Felipe Zapata
 level: 8
-order: 11
+order: 10
 index: true
 include_all: false
 prerequisites:
   - fig_series/fig_intro
+  - fig_series/geosse_model
 ---
 
 {% section Introduction %}
@@ -15,7 +16,7 @@ prerequisites:
 In the previous examples, we used a GeoSSE model {% cite Goldberg2011 %} to investigate the evolution of the South American lizard genus *Liolaemus*. The GeoSSE model allows us to estimate rates of within-region speciation, extinction, between-region speciation, and dispersal that differ among regions. Biologically, we expect that these different rates are informed by features of the regions where the species are evolving. For example, we might expect that species disperse at a lower rate between more distant regions, or go extinct at a higher rate in smaller regions. The FIG model {% cite Landis2022 %} and the Multiple Feature-Informed GeoSSE (MultiFIG) model {% cite Swiston2023 %} address this. Rather than giving each region its own evolutionary rate parameters, it uses functions to link features of those regions to evolutionary rates. This allows us to test hypotheses about the importance of certain environmental features on evolutionary processes. It also has the benefit of reducing the number of parameters that need to be estimated. The number of parameters in the MultiFIG model is constant with respect to the number of regions, so we can investigate systems with more regions. In this tutorial, we will model the evolution and biogeography of *Liolaemus* using six regions {% cite Esquerré2019 %} and eight regional features.
 
 {% figure map %}
-<img src="figures/map.png" width="50%">
+<img src="figures/fig_model/map.png" width="50%">
 {% figcaption %}
 Six regions of southern South America used in the analysis of *Liolaemus* with abbreviations: Aa (Altiplanic Andes), Ca (Central Andes), Pa (Patagonia), Cc (Central Chile), Ad (Atacama Desert), El (Eastern Lowlands).
 {% endfigcaption %}
@@ -26,7 +27,7 @@ Six regions of southern South America used in the analysis of *Liolaemus* with a
 Much like the GeoSSE model, MultiFIG uses four core processes: within-region speciation, extinction, between-region speciation, and dispersal. However, instead of assigning each region or region pair its own rate for each process, MultiFIG uses regional feature data and a series of strength parameters and functions to construct rates.
 
 {% figure model %}
-<img src="figures/model.png" width="95%">
+<img src="figures/fig_model/model.png" width="95%">
 {% figcaption %}
 Graphical model of MultiFIG. Square nodes represent constant values (data). Circle nodes with solid lines represent stochastic variables (model parameters, and the phylogeny, which is fixed in this analysis). Circle nodes with dotted lines represent deterministic variables (functions). Large rectangles indicate iterative plates.
 {% endfigcaption %}
@@ -41,7 +42,7 @@ For each process, the categorical and quantitative feature effects (with feature
 In this analysis, we are examining 8 regional features. 4 are quantitative: area, mean altitude, distance, and difference in mean altitude. The other 4 are categorical: size, height, adjacency, and height sameness. While the categorical features are closely related to the quantitative features in this analysis, this is not a requirement of the model. Because each within-region feature acts on 2 processes and each between-region feature acts on 2 processes, this creates a total of 16 parameters. Adding one $\rho$ parameter for each process results in a total of 20 model parameters to be estimated. We will use a time-calibrated phylogeny and present-day ranges for *Liolaemus* to estimate these parameters, and use those estimates to determine which regional features are most strongly related to particular processes.
 
 {% figure map %}
-<img src="figures/features.png" width="95%">
+<img src="figures/fig_model/features.png" width="95%">
 {% figcaption %}
 The 8 regional features investigated in this analysis and the 16 associated parameters relating these features to core biogeographic processes.
 {% endfigcaption %}
@@ -361,7 +362,7 @@ ggsave(posterior_file, width = 9, height = 9)
 ```
 
 {% figure states %}
-<img src="figures/posterior.png" width="95%">
+<img src="figures/fig_model/posterior.png" width="95%">
 {% figcaption %}
 Posterior for the parameter $\phi_d^{Distance}$, which relates quantitative distances between regions to the process of dispersal. The 95% Highest Posterior Density (HPD) interval is shaded in dark blue. Note that 0 (a null effect) falls outside this interval. Therefore, distance is likely related to dispersal. A negative value indicates a negative relationship; more distance between regions reduces dispersal.
 {% endfigcaption %}

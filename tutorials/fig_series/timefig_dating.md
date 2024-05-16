@@ -3,9 +3,10 @@ title: Biogeographic dating using the TimeFIG model
 subtitle: Using the TimeFIG model to jointly infer historical biogeography and divergence times
 authors:  Michael Landis, Sarah Swiston, Isaac Lichter Marck, Fabio Mendes, Felipe Zapata
 level: 8
-order: 13
+order: 11
 prerequisites:
   - fig_series/fig_intro
+  - fig_series/geosse_model
   - fig_series/fig_model
   - fig_series/timefig_model
 include_all: false
