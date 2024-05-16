@@ -30,4 +30,4 @@ Tutorials in this series are:
 
 The FIG tutorials are designed to be run in RevBayes using the Tensorphylo plugin. Developed by Mike May and Xavier Meyer, Tensorphylo is a high-performance library for rapidly computing state-dependent diversification model likelihoods. We thank Mike May for his indispensible help optimizing and reconfiguring Tensorphylo for use with TimeFIG analyses for biogeographic dating. Researchers not interested in compiling and installing Tensorphylo and RevBayes can use the Docker image developed by Sarah Swiston.
 
-This tutorial series was written for the 2024 Phylogenetic Biogeography Workshop in St. Louis as part of an NSF-funded project entitled *Modeling the Origin and Evolution of Hawaiian Plants* (DEB 2040347).
+This tutorial series was written for the 2024 Phylogenetic Biogeography Workshop in St. Louis as part of an NSF-funded project entitled *Modeling the Origin and Evolution of Hawaiian Plants* (DEB 2040347). The *Kadua* dataset featured in this tutorial series was generated with our project collaborators: Nina Rønsted, Warren Wagner, Bruce Baldwin, and Ken Wood. 
