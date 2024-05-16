@@ -1,0 +1,32 @@
+##mini script to produce subset trees and loci for analyses of 
+##divergence time estimation and biogeography on a densely sampled
+##phylogeny that contains multiple samples per taxon in the starting
+##tree
+
+##Isaac Lichter-Marck
+
+##enter tips to exclude into a vector
+exclude <- v("Psychotria_hexandra_var_hexandra_Kauai_Wood_16705_ILM2",
+"Psychotria_hexandra_var_oahuensis_Oahu_Perlman_17724_ILM30",
+"Psychotria_grandiflora___Kauai_Wood_18130_ILM7",
+"Psychotria_hobdyi___Kauai_Wood_16331_ILM17",
+"Psychotria_mariniana___Kauai_Wood_18498_ILM13",
+"Psychotria_mariniana___Kauai_Wood_15591_ILM11",
+"Psychotria_mariniana___Kauai_Wood_17488_ILM12")
+
+##Subset the phylogeny
+num_exclude <- exclude.size()
+if (use_mol) {
+	for (i in 1:num_exclude) {
+                 phy.dropTip(exclude[i])
+        }
+}
+
+##subset alignments using the taxa remaining in the tree
+for (i in 1:num_loci) {
+	dat_mol[i].addMissingTaxa(taxa)
+	dat_mol[i].removeTaxa(exclude)
+}
+
+##subset gographical nexus data
+dat_01.removeTaxa(exclude)
