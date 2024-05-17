@@ -80,4 +80,10 @@ Now that we have some simple looks at what these issues look like, we will now d
 {% include_relative Priors.md %}
 
 
+{% include_relative MCMC_Moves.md %}
+
+
+{% include_relative StartingValues.md %}
+
+
 {% include_relative Data.md %}
