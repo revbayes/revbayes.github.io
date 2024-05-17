@@ -31,20 +31,15 @@ if (!exists("tensorphylo_fp")) {
     loadPlugin("TensorPhylo", tensorphylo_fp)
 }
 
-
 #######################################
 # define model base rates             #
 #######################################
 
 # base rate parameters
-#rho_mean <- 0.1         # mean vaule of 0.1
-#rho_sd <- 0.587405 * 2  # 95% of values are within 2 orders of magnitude
-#ln_rho_mean <- ln(rho_mean) - 0.5 * rho_sd * rho_sd
-
-rho_d ~ dnExp(30)     # dnLnorm(ln_rho_mean, rho_sd)
-rho_e ~ dnExp(30)     # dnLnorm(ln_rho_mean, rho_sd)
-rho_w ~ dnExp(30)     # dnLnorm(ln_rho_mean, rho_sd)
-rho_b ~ dnExp(30)     # dnLnorm(ln_rho_mean, rho_sd)
+rho_d ~ dnExp(30)
+rho_e ~ dnExp(30)
+rho_w ~ dnExp(30)
+rho_b ~ dnExp(30)
 
 # summarize base rates
 speciation_rates := [ rho_w, rho_b ]
@@ -94,11 +89,14 @@ for (k in 1:num_times) {
 
     # monitor variables for absolute speciation rates
     r_w[k] := rho_w * m_w[k][1]
+
     # NOTE: this rate only represents species with range size 2
-    # i.e., the inverse sum of inverse edge weights
-    # (relative rates in m_b[i][j]) is equal to the edge weight
-    # of a 2-region range
-    r_b[k] := rho_b * matrix(m_b[k])
+    #       i.e., the inverse sum of inverse edge weights
+    #       (relative rates in m_b[i][j]) is equal to the edge weight
+    #       of a 2-region range
+    for (i in 1:num_regions) {
+        r_b[k][i] := rho_b * m_b[k][i]
+    }
 }
 
 
@@ -109,21 +107,28 @@ for (k in 1:num_times) {
 for (k in 1:num_times) {
     # extinction rates (lineage death)
     for (i in 1:num_ranges) {
-        mu[k][i] <- abs(0)
         if (i <= num_regions) {
-            # only possible if range is size 1
+            # species with range-size 1 can go extinct
             mu[k][i] := r_e[k][i]
+        } else {
+            # widespread species cannot
+            mu[k][i] <- abs(0)
         }
     }
 }
 
+####################################
+# starting and sampling conditions #
+####################################
+
 # base frequencies
 pi_bg_base <- rep(0, num_ranges)
+
 # assume that the integer equal to "num_regions" is the
 # range-integer for a species that occurs only in the
 # mainland region, for base-indexing of 1 (Rev script).
-# For example, region 7 is Mainland US, set the
-# range-integer for the range {7} to 1.
+# For example, region 7 is the non-Hawaiian region,
+# set the range-integer for the range {7} to 1.
 pi_allowed_ranges <- [ num_regions ]
 for (i in 1:pi_allowed_ranges.size()) {
     j = pi_allowed_ranges[i]
@@ -144,13 +149,7 @@ n_sample_ingroup  <- 24
 n_sample_outgroup <- 3
 rho_ingroup       <- Probability(n_sample_ingroup/n_total_ingroup) 
 rho_outgroup      <- Probability(n_sample_outgroup/n_total_outgroup)
-
 rho_poorly_sampled_ranges <- [ 7 ]
-#rho_poorly_sampled_ranges.append(17:21)
-#rho_poorly_sampled_ranges.append(32:41)
-#rho_poorly_sampled_ranges.append(47:56)
-#rho_poorly_sampled_ranges.append(59:63)
-
 for (i in 1:num_ranges) {
     rho_sample[1][i] <- rho_ingroup
 }
@@ -161,21 +160,6 @@ rho_times <- [ 0.0 ]
 
 # tree settings
 condition <- "time"
-
-if (init_parameters) {
-    rho_d.setValue(rho_d_init)
-    rho_e.setValue(rho_e_init)
-    rho_w.setValue(rho_w_init)
-    rho_b.setValue(rho_b_init)
-    for (i in 1:phi_d.size()) { phi_d[i].setValue(phi_d_init) }
-    for (i in 1:phi_e.size()) { phi_e[i].setValue(phi_e_init) }
-    for (i in 1:phi_w.size()) { phi_w[i].setValue(phi_w_init) }
-    for (i in 1:phi_b.size()) { phi_b[i].setValue(phi_b_init) }
-    for (i in 1:sigma_d.size()) { sigma_d[i].setValue(sigma_d_init) }
-    for (i in 1:sigma_e.size()) { sigma_e[i].setValue(sigma_e_init) }
-    for (i in 1:sigma_w.size()) { sigma_w[i].setValue(sigma_w_init) }
-    for (i in 1:sigma_b.size()) { sigma_b[i].setValue(sigma_b_init) }
-}
 
 
 ############
@@ -193,6 +177,30 @@ if (use_root_calib) {
 }
 
 root_age.setValue(tree_height)
+
+####################################
+# initialize parameters (optional) #
+####################################
+
+if (init_parameters) {
+    rho_d.setValue(rho_d_init)
+    rho_e.setValue(rho_e_init)
+    rho_w.setValue(rho_w_init)
+    rho_b.setValue(rho_b_init)
+    for (i in 1:phi_d.size()) { phi_d[i].setValue(phi_d_init) }
+    for (i in 1:phi_e.size()) { phi_e[i].setValue(phi_e_init) }
+    for (i in 1:phi_w.size()) { phi_w[i].setValue(phi_w_init) }
+    for (i in 1:phi_b.size()) { phi_b[i].setValue(phi_b_init) }
+    for (i in 1:sigma_d.size()) { sigma_d[i].setValue(sigma_d_init) }
+    for (i in 1:sigma_e.size()) { sigma_e[i].setValue(sigma_e_init) }
+    for (i in 1:sigma_w.size()) { sigma_w[i].setValue(sigma_w_init) }
+    for (i in 1:sigma_b.size()) { sigma_b[i].setValue(sigma_b_init) }
+}
+
+
+#############
+# SSE model #
+#############
 
 # build FIG model (SSE variant)
 print("Initializing FIG model using TensorPhylo SSE distribution (dnGLHBDSP)...")
@@ -243,6 +251,10 @@ if (use_paleogeo) {
                           nProc        = n_proc )
 }
 
+#####################
+# Node age monitors #
+#####################
+
 age_ingroup := tmrca(timetree, clade_ingroup)
 age_affinis := tmrca(timetree, clade_affinis)
 age_centrantoides := tmrca(timetree, clade_centrantoides)
@@ -250,6 +262,9 @@ age_flynni := tmrca(timetree, clade_flynni)
 age_littoralis := tmrca(timetree, clade_littoralis)
 age_littoralis_flynni := tmrca(timetree, clade_littoralis_flynni)
 
+#########################
+# Node age calibrations #
+#########################
 
 if (use_bg_calib) {
     age_bg_min <- 0.0

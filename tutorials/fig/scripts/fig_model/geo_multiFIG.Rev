@@ -1,0 +1,91 @@
+#
+if (!exists("fp"))             fp = "./"
+if (!exists("geo_fp"))         geo_fp = fp + "geo/"
+if (!exists("feature_fn"))     feature_fn = geo_fp + "feature_summary.csv"
+if (!exists("max_range_size")) max_range_size = -1
+if (!exists("use_rj"))         use_rj = false
+
+###########################
+# geo_multiFIG.Rev     #
+###########################
+
+# read files stored in feature_fn, store into RevBayes data structures,
+# normalize/re-center values, then provide methods to get feature-sets
+# for CW/QW/CB/QB associated with D/E/W/B
+geo_features <- readRegionalFeatures(feature_fn, delimiter=",", nonexistent_region_token="nan")
+geo_features.normalize("within")
+geo_features.normalize("between")
+
+# get feature-sets for each measurement-type, process-type, and timeslice
+feature_CW <- geo_features.get("within","categorical",1)
+feature_QW <- geo_features.get("within","quantitative",1)
+feature_CB <- geo_features.get("between","categorical",1)
+feature_QB <- geo_features.get("between","quantitative",1)
+
+for (j in 1:feature_CW.size()) {
+    layer_CW[j] <- feature_CW[j].get()
+}
+for (j in 1:feature_QW.size()) {
+    layer_QW[j] <- feature_QW[j].get()
+}
+for (j in 1:feature_CB.size()) {
+    layer_CB[j] <- feature_CB[j].get()
+}
+for (j in 1:feature_QB.size()) {
+    layer_QB[j] <- feature_QB[j].get()
+}
+
+# set up priors for feature effects
+rj_null_value <- 0.0          # fixed "off-value" for RJMCMC
+rj_prob       <- 0.5          # prob. of RJMCMC taking "off-value"
+
+# prior of "on-value" for RJMCMC
+bound <- 2
+rj_base_sym_dist = dnUniform(-bound, bound)
+rj_base_neg_dist = dnUniform(-bound, 0)     # negative only (e.g. distance on dispersal)
+rj_base_pos_dist = dnUniform(0, bound)      # positive only (e.g. distance on betw.-reg. speciation)
+
+rj_sym_dist = dnRJMixture(rj_null_value, rj_base_sym_dist, p=rj_prob)
+rj_neg_dist = dnRJMixture(rj_null_value, rj_base_neg_dist, p=rj_prob)
+rj_pos_dist = dnRJMixture(rj_null_value, rj_base_pos_dist, p=rj_prob)
+
+# categorical feature effects
+for (i in 1:feature_CW.size()) sigma_w[i] ~ rj_sym_dist
+for (i in 1:feature_CW.size()) sigma_e[i] ~ rj_sym_dist
+for (i in 1:feature_CB.size()) sigma_d[i] ~ rj_sym_dist
+for (i in 1:feature_CB.size()) sigma_b[i] ~ rj_sym_dist
+
+# quantitative feature effects
+for (i in 1:feature_QW.size()) phi_w[i] ~ rj_sym_dist
+for (i in 1:feature_QW.size()) phi_e[i] ~ rj_sym_dist
+for (i in 1:feature_QB.size()) phi_d[i] ~ rj_sym_dist
+for (i in 1:feature_QB.size()) phi_b[i] ~ rj_sym_dist
+
+# force signed relationships between region features and rates
+phi_b[1]   ~ rj_pos_dist   # Distance (km) results in faster speciation
+phi_b[2]   ~ rj_pos_dist   # Log-distance (km) results in faster speciation
+sigma_b[1] ~ rj_pos_dist   # LDD (1) results in faster speciation
+sigma_w[1] ~ rj_pos_dist   # High Islands (1) drives faster speciation 
+phi_d[1]   ~ rj_neg_dist   # Distance (km) results in slower dispersal
+phi_d[2]   ~ rj_neg_dist   # Log-distance (km) results in slower dispersal
+sigma_d[1] ~ rj_neg_dist   # LDD (1) results in slower dispersal
+sigma_e[1] ~ rj_neg_dist   # High Islands (1) drives slower extinction
+
+# categorical feature effects
+for (i in 1:feature_CW.size()) sigma_w[i].setValue(sigma_w_init)
+for (i in 1:feature_CW.size()) sigma_e[i].setValue(sigma_e_init)
+for (i in 1:feature_CB.size()) sigma_d[i].setValue(sigma_d_init)
+for (i in 1:feature_CB.size()) sigma_b[i].setValue(sigma_b_init)
+
+# quantitative feature effects
+for (i in 1:feature_QW.size()) phi_w[i].setValue(phi_w_init)
+for (i in 1:feature_QW.size()) phi_e[i].setValue(phi_e_init)
+for (i in 1:feature_QB.size()) phi_d[i].setValue(phi_d_init)
+for (i in 1:feature_QB.size()) phi_b[i].setValue(phi_b_init)
+
+# do not index [1] in RHS of assignment to drop "dummy" dimension for m_W and m_E!
+m_w := fnFeatureInformedRates(layer_CW, layer_QW, sigma_w, phi_w, null_rate=0)
+m_e := fnFeatureInformedRates(layer_CW, layer_QW, sigma_e, phi_e, null_rate=1e3)
+m_d := fnFeatureInformedRates(layer_CB, layer_QB, sigma_d, phi_d, null_rate=0)
+m_b := fnFeatureInformedRates(layer_CB, layer_QB, sigma_b, phi_b, null_rate=1)
+
